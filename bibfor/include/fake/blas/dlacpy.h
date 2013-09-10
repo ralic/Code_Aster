@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dlacpy(uplo, m, n, a, lda,&
                       b, ldb)
-        integer :: ldb
-        integer :: lda
-        character(len=1) :: uplo
-        integer :: m
-        integer :: n
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: b(ldb, *)
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: uplo
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        real(kind=8) ,intent(in) :: a(lda, *)
+        real(kind=8) ,intent(out) :: b(ldb, *)
     end subroutine dlacpy
 end interface

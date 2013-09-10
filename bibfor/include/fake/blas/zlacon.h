@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zlacon(n, v, x, est, kase)
-        integer :: n
-        complex(kind=8) :: v(n)
-        complex(kind=8) :: x(n)
-        real(kind=8) :: est
-        integer :: kase
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(out) :: v(n)
+        complex(kind=8) ,intent(inout) :: x(n)
+        real(kind=8) ,intent(inout) :: est
+        blas_int, intent(inout) :: kase
     end subroutine zlacon
 end interface

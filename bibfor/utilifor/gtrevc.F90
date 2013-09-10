@@ -180,6 +180,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !     .. LOCAL SCALARS ..
     logical :: allv, bothv, leftv, over, rightv, somev
     integer :: i, ii, is, j, k, ki
+    integer(kind=4) :: info4
     real(kind=8) :: remax, scale, smin, smlnum, ulp, unfl
     complex(kind=8) :: cdum
 !     ..
@@ -217,23 +218,24 @@ subroutine gtrevc(side, howmny, select, n, t,&
         m = n
     endif
 !
-    info = 0
+    info4 = 0
     if (.not.rightv .and. .not.leftv) then
-        info = -1
+        info4 = -1
     else if (.not.allv .and. .not.over .and. .not.somev) then
-        info = -2
+        info4 = -2
     else if (n.lt.0) then
-        info = -4
+        info4 = -4
     else if (ldt.lt.max( 1, n )) then
-        info = -6
+        info4 = -6
     else if (ldvl.lt.1 .or. ( leftv .and. ldvl.lt.n )) then
-        info = -8
+        info4 = -8
     else if (ldvr.lt.1 .or. ( rightv .and. ldvr.lt.n )) then
-        info = -10
+        info4 = -10
     else if (mm.lt.m) then
-        info = -11
+        info4 = -11
     endif
-    if (info .ne. 0) then
+    if (info4 .ne. 0) then
+        info=info4
         call xerbla('GTREVC', -info)
         goto 1000
     endif
@@ -294,7 +296,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
             if (ki .gt. 1) then
                 call zlatrs('U', 'N', 'N', 'Y', ki-1,&
                             t, ldt, work( 1 ), scale, rwork,&
-                            info)
+                            info4)
                 work( ki ) = scale
             endif
 !
@@ -361,7 +363,7 @@ subroutine gtrevc(side, howmny, select, n, t,&
             if (ki .lt. n) then
                 call zlatrs('U', 'C', 'N', 'Y', n-ki,&
                             t( ki+1, ki+1 ), ldt, work( ki+1 ), scale, rwork,&
-                            info)
+                            info4)
                 work( ki ) = scale
             endif
 !
@@ -398,8 +400,10 @@ subroutine gtrevc(side, howmny, select, n, t,&
     endif
 !
 1000  continue
+    info=info4
     call matfpe(1)
 !
 !     END OF GTREVC
 !
 end subroutine
+

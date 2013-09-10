@@ -34,7 +34,6 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -49,13 +48,11 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: i, iaux, imult, nbddl, nbddlc, iauxj, j
-    integer(kind=4) :: nbi4
     real(kind=8) :: rmult
 !
 ! ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT
 !
 ! MONITORING
-    nbi4=nbi
     if (infofe(1:1) .eq. 'T') then
         if (scalin(1:4) .eq. 'SANS') then
             write(ifm,*)'<FETI/FETSCA> SANS SCALING'
@@ -68,7 +65,7 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
 ! ----------------------------------------------------------------------
 ! ----  PAS DE SCALING
 ! ----------------------------------------------------------------------
-        call dcopy(nbi4, vi, 1, vo, 1)
+        call dcopy(nbi, vi, 1, vo, 1)
 !
     else if (scalin(1:4).eq.'MULT') then
 ! ----------------------------------------------------------------------

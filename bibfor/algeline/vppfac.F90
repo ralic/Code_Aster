@@ -50,7 +50,6 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     character(len=19) :: masse
     character(len=24) :: posddl, vecau1, vecau2
     real(kind=8) :: rmin, rmax, raux, rval
-    integer(kind=4) :: nbi4
 !     ------------------------------------------------------------------
     data nomddl / 'DX      ', 'DY      ', 'DZ      ' ,&
      &              'DRX     ', 'DRY     ', 'DRZ     ' /
@@ -83,7 +82,6 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !     ----------- CALCUL DE  FREQ * MASSE * UNITAIRE_DIRECTION ---------
 !     ------------------------------------------------------------------
-    nbi4=neq
     neq1=neq-1
     rmin=100.d0*r8miem()
     rmax=0.01d0*r8maem()
@@ -95,7 +93,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
         call mrmult('ZERO', lmasse, zr(laux1), zr(laux2), 1,&
                     .false.)
         do 200 ivect = 1, nbvect
-            rval = ddot(nbi4,vect(1,ivect),1,zr(laux2),1)
+            rval = ddot(neq,vect(1,ivect),1,zr(laux2),1)
             raux = masgen(ivect)
             if (abs(raux) .lt. rmin) then
                 masmod(ivect,iddl) = rmax

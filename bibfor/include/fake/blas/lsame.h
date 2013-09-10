@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     function lsame(ca, cb)
-        character(len=1) :: ca
-        character(len=1) :: cb
+        character(len=1) ,intent(in) :: ca
+        character(len=1) ,intent(in) :: cb
         logical(kind=4) :: lsame
     end function lsame
 end interface

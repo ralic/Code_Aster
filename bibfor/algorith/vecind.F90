@@ -56,8 +56,9 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 #include "blas/dgemm.h"
 #include "blas/dgesvd.h"
     integer :: lvec, nbl, nbc, nindep, lwork, jwork, lmat, ltrav1, ltrav2
-    integer :: ltrav3, jnsta, i1, k1, l1, info, lcopy, force, indnz, vecnz
-    integer :: ideeq
+    integer :: ltrav3, jnsta, i1, k1, l1, iret, lcopy, force, indnz, vecnz
+    integer(kind=4) :: info
+    integer :: ideeq, ibid
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
     character(len=19) :: mat, nume
@@ -69,8 +70,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     indnz=0
     if (mat .ne. ' ') then
         call jeveuo(mat//'.&INT', 'L', lmat)
-        call dismoi('F', 'NOM_NUME_DDL', mat(1:8), 'MATR_ASSE', info,&
-                    nume, info)
+        call dismoi('F', 'NOM_NUME_DDL', mat(1:8), 'MATR_ASSE', ibid,&
+                    nume, iret)
         call jeveuo(nume(1:8)//'      .NUME.DEEQ', 'L', ideeq)
     endif
 !
@@ -145,8 +146,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 550      continue
 !
         call getvtx('  ', 'ORTHO', 1, iarg, 8,&
-                    ortho, info)
-        if ((info .eq. 1) .and. (ortho.eq.'OUI')) then
+                    ortho, iret)
+        if ((iret .eq. 1) .and. (ortho.eq.'OUI')) then
 !-- SELECTION DES VECTEURS NON NULS POUR REMPLIR LA BASE
             do 590 i1 = 1, nbc
                 if (zr(jnsta + (i1-1)*(nbc+1) ) .gt. 1d-10) then

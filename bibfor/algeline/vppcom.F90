@@ -60,7 +60,6 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !
 !     --- VARIABLES LOCALES
     mpi_int :: rangl, rangll, mpicow, mpicou, mpico0, l1, l2
-    blas_int :: i4
     integer :: nconvl, nconvg, nconvm
     integer :: ibid, izero, i, idecal, j, i8, jlcom, jlbuff, jlbufs, ifm
     integer :: niv
@@ -141,8 +140,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !         --- AUTRES PROCESSUS DE MPICO0.
             call wkvect(k24buf, 'V V R', nconvm*neq, jlbuff)
             call wkvect(k24bus, 'V V R', nconvm*neq, jlbufs)
-            i4 = to_blas_int(nconvl*neq)
-            call dcopy(i4, vectr, 1, zr(jlbufs), 1)
+            call dcopy(nconvl*neq, vectr, 1, zr(jlbufs), 1)
             do 115 i = 1, icom2
                 idecal=0
                 do 114 j = 1, i-1
@@ -150,10 +148,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 114              continue
                 if (idecal .lt. 0) ASSERT(.false.)
                 i8=neq*zi(jlcom+i-1)
-                i4 = to_blas_int(i8)
-                if (i .eq. icom1) call dcopy(i4, zr(jlbufs), 1, zr(jlbuff), 1)
+                if (i .eq. icom1) call dcopy(i8, zr(jlbufs), 1, zr(jlbuff), 1)
                 call asmpi_comm_vect('BCASTP', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
-                call dcopy(i4, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
+                call dcopy(i8, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
 115          continue
             call jedetr(k24bus)
             call jedetr(k24buf)

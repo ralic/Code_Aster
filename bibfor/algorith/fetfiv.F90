@@ -39,7 +39,6 @@ subroutine fetfiv(nbsd, nbi, vd1, vd2, vdo,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -69,12 +68,10 @@ subroutine fetfiv(nbsd, nbi, vd1, vd2, vdo,&
     character(len=19) :: matdd
     character(len=24) :: nomsdp, sdfetg, k24b
     logical :: lpara
-    integer(kind=4) :: nbi4
 !
 ! ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT
 !
 ! INITS DIVERSES
-    nbi4=nbi
     if (nbproc .eq. 1) then
         lpara=.false.
     else
@@ -177,7 +174,7 @@ subroutine fetfiv(nbsd, nbi, vd1, vd2, vdo,&
             call fetrex(1, idd, nbddl, zr(jxsol), nbi,&
                         vd2, irex)
 ! CUMUL DANS LE VECTEUR VDO=SOMME(I=1,NBSD)(RI * ((KI)+ * RIT * V))
-            call daxpy(nbi4, 1.d0, vd2, 1, vdo,&
+            call daxpy(nbi, 1.d0, vd2, 1, vdo,&
                        1)
 ! FIN DU IF ILIMPI
         endif

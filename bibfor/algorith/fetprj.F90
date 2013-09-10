@@ -91,14 +91,11 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
     character(len=8) :: nomsd
     character(len=24) :: nomsdr, sdfetg, k24b
     logical :: lpara
-    integer(kind=4) :: dimgi4, nbi4
 !
 !
     call matfpe(-1)
 !
 ! INITS DIVERSES
-    dimgi4=dimgi
-    nbi4=nbi
     if (nbproc .eq. 1) then
         lpara=.false.
     else
@@ -127,7 +124,7 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
         if (.not.lrigid) then
 !
             if (option .ne. 1) call u2mess('F', 'ALGORITH3_66')
-            call dcopy(nbi4, vi, 1, vo, 1)
+            call dcopy(nbi, vi, 1, vo, 1)
 !
         else
 !---------------------------------------------------------------------
@@ -147,8 +144,8 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
             jgitv1=jgitvi-1
 !
             if (lstogi) then
-                call dgemv('T', nbi4, dimgi4, 1.d0, zr(jgi),&
-                           nbi4, vi, 1, 0.d0, zr(jgitvi),&
+                call dgemv('T', nbi, dimgi, 1.d0, zr(jgi),&
+                           nbi, vi, 1, 0.d0, zr(jgitvi),&
                            1)
             else
 ! SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
@@ -186,19 +183,19 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
             infol8=0
 ! DESCENTE-REMONTEE MATRICE SYMETRIQUE INDEFINIE (STOCKEE PAR PAQUET)
 ! VIA LAPACK
-            call dsptrs('L', dimgi4, 1, zr(jgitgi), zi4(ipiv),&
-                        zr(jgitvi), dimgi4, infola)
+            call dsptrs('L', dimgi, 1, zr(jgitgi), zi4(ipiv),&
+                        zr(jgitvi), dimgi, infola)
             infol8=infola
             ASSERT(infol8.eq.0)
             if (option .eq. 1) then
 ! --------------------------------------------------------------------
 ! CONSTITUTION DE V0=VI-GI*((GI)T*GI)-1*(GI)T*VI (OPTION=1)
 ! --------------------------------------------------------------------
-                call dcopy(nbi4, vi, 1, vo, 1)
+                call dcopy(nbi, vi, 1, vo, 1)
 !
                 if (lstogi) then
-                    call dgemv('N', nbi4, dimgi4, -1.d0, zr(jgi),&
-                               nbi4, zr(jgitvi), 1, 1.d0, vo,&
+                    call dgemv('N', nbi, dimgi, -1.d0, zr(jgi),&
+                               nbi, zr(jgitvi), 1, 1.d0, vo,&
                                1)
                 else
 ! SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
@@ -214,7 +211,7 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
                                 raux=-zr(jgitv1)
                                 call fetrex(1, idd, nbddl, zr(ifetr+(imc- 1)*nbddl), nbi,&
                                             zr(gii), irex)
-                                call daxpy(nbi4, raux, zr(gii), 1, vo,&
+                                call daxpy(nbi, raux, zr(gii), 1, vo,&
                                            1)
 190                          continue
                             call jelibe(jexnom(nomsdr, nomsd))
@@ -231,7 +228,7 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
 ! --------------------------------------------------------------------
 ! CONSTITUTION DE V0=((GI)T*GI)-1*(GI)T*VI (OPTION=2)
 ! --------------------------------------------------------------------
-                call dcopy(dimgi4, zr(jgitvi), 1, vo, 1)
+                call dcopy(dimgi, zr(jgitvi), 1, vo, 1)
 !
 ! MONITORING
                 if (infofe(1:1) .eq. 'T') write(ifm, *)'<FETI/FETPRJ', rang,&

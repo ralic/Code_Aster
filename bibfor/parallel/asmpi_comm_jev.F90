@@ -65,7 +65,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
     integer :: ibid
     integer :: jtrav, k
     integer :: iobj, nbobj, nlong, iret
-    mpi_int :: iermpi, lint, lint4, lr8, lc8, nbpro4, n4, mpicou
+    mpi_int :: iermpi, lint, lint4, lr8, lc8, nbpro4, mpicou
     character(len=1) :: typsca, xous
     character(len=8) :: kbid
     character(len=24) :: notrav
@@ -109,17 +109,16 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         call jelira(nomjev, 'TYPE', ibid, typsca)
         call jelira(nomjev, 'LONMAX', nlong, kbid)
 !
-        n4=nlong
         call jeveuo(nomjev, 'E', jnomjv)
 !
         if (typsca .eq. 'R') then
-            call MPI_BCAST(zr(jnomjv), n4, lr8, 0, mpicou,&
+            call MPI_BCAST(zr(jnomjv), nlong, lr8, 0, mpicou,&
                            iermpi)
         else if (typsca.eq.'I') then
-            call MPI_BCAST(zi(jnomjv), n4, lint, 0, mpicou,&
+            call MPI_BCAST(zi(jnomjv), nlong, lint, 0, mpicou,&
                            iermpi)
         else if (typsca.eq.'S') then
-            call MPI_BCAST(zi4(jnomjv), n4, lint4, 0, mpicou,&
+            call MPI_BCAST(zi4(jnomjv), nlong, lint4, 0, mpicou,&
                            iermpi)
         else
             ASSERT(.false.)
@@ -132,32 +131,31 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         call jelira(nomjev, 'TYPE', ibid, typsca)
         call jelira(nomjev, 'LONMAX', nlong, kbid)
 !
-        n4=nlong
         call jeveuo(nomjev, 'E', jnomjv)
 !
         if (typsca .eq. 'R') then
             call wkvect(notrav, 'V V R', nlong, jtrav)
-            call dcopy(n4, zr(jnomjv), 1, zr(jtrav), 1)
-            call MPI_REDUCE(zr(jtrav), zr(jnomjv), n4, lr8, MPI_SUM,&
+            call dcopy(nlong, zr(jnomjv), 1, zr(jtrav), 1)
+            call MPI_REDUCE(zr(jtrav), zr(jnomjv), nlong, lr8, MPI_SUM,&
                             0, mpicou, iermpi)
         else if (typsca.eq.'C') then
             call wkvect(notrav, 'V V C', nlong, jtrav)
-            call zcopy(n4, zc(jnomjv), 1, zc(jtrav), 1)
-            call MPI_REDUCE(zc(jtrav), zc(jnomjv), n4, lc8, MPI_SUM,&
+            call zcopy(nlong, zc(jnomjv), 1, zc(jtrav), 1)
+            call MPI_REDUCE(zc(jtrav), zc(jnomjv), nlong, lc8, MPI_SUM,&
                             0, mpicou, iermpi)
         else if (typsca.eq.'I') then
             call wkvect(notrav, 'V V I', nlong, jtrav)
-            do 1, k=1,n4
+            do 1, k=1,nlong
             zi(jtrav-1+k)=zi(jnomjv-1+k)
  1          continue
-            call MPI_REDUCE(zi(jtrav), zi(jnomjv), n4, lint, MPI_SUM,&
+            call MPI_REDUCE(zi(jtrav), zi(jnomjv), nlong, lint, MPI_SUM,&
                             0, mpicou, iermpi)
         else if (typsca.eq.'S') then
             call wkvect(notrav, 'V V S', nlong, jtrav)
-            do 2, k=1,n4
+            do 2, k=1,nlong
             zi4(jtrav-1+k)=zi4(jnomjv-1+k)
  2          continue
-            call MPI_REDUCE(zi4(jtrav), zi4(jnomjv), n4, lint4, MPI_SUM,&
+            call MPI_REDUCE(zi4(jtrav), zi4(jnomjv), nlong, lint4, MPI_SUM,&
                             0, mpicou, iermpi)
         else
             ASSERT(.false.)
@@ -187,31 +185,30 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
             call jelira(jexnum(nomjev, iobj), 'LONMAX', nlong, kbid)
         endif
 !
-        n4=nlong
 !
         if (typsca .eq. 'R') then
             call wkvect(notrav, 'V V R', nlong, jtrav)
-            call dcopy(n4, zr(jnomjv), 1, zr(jtrav), 1)
-            call MPI_ALLREDUCE(zr(jtrav), zr(jnomjv), n4, lr8, MPI_SUM,&
+            call dcopy(nlong, zr(jnomjv), 1, zr(jtrav), 1)
+            call MPI_ALLREDUCE(zr(jtrav), zr(jnomjv), nlong, lr8, MPI_SUM,&
                                mpicou, iermpi)
         else if (typsca.eq.'C') then
             call wkvect(notrav, 'V V C', nlong, jtrav)
-            call zcopy(n4, zc(jnomjv), 1, zc(jtrav), 1)
-            call MPI_ALLREDUCE(zc(jtrav), zc(jnomjv), n4, lc8, MPI_SUM,&
+            call zcopy(nlong, zc(jnomjv), 1, zc(jtrav), 1)
+            call MPI_ALLREDUCE(zc(jtrav), zc(jnomjv), nlong, lc8, MPI_SUM,&
                                mpicou, iermpi)
         else if (typsca.eq.'I') then
             call wkvect(notrav, 'V V I', nlong, jtrav)
-            do 3, k=1,n4
+            do 3, k=1,nlong
             zi(jtrav-1+k)=zi(jnomjv-1+k)
  3          continue
-            call MPI_ALLREDUCE(zi(jtrav), zi(jnomjv), n4, lint, MPI_SUM,&
+            call MPI_ALLREDUCE(zi(jtrav), zi(jnomjv), nlong, lint, MPI_SUM,&
                                mpicou, iermpi)
         else if (typsca.eq.'S') then
             call wkvect(notrav, 'V V S', nlong, jtrav)
-            do 4, k=1,n4
+            do 4, k=1,nlong
             zi4(jtrav-1+k)=zi4(jnomjv-1+k)
  4          continue
-            call MPI_ALLREDUCE(zi4(jtrav), zi4(jnomjv), n4, lint4, MPI_SUM,&
+            call MPI_ALLREDUCE(zi4(jtrav), zi4(jnomjv), nlong, lint4, MPI_SUM,&
                                mpicou, iermpi)
         else
             ASSERT(.false.)

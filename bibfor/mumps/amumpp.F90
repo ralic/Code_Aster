@@ -85,7 +85,6 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     type (zmumps_struc) , pointer :: zmpsk
     integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, jdelg, k, ifm, niv
     integer :: jdlg2, jj
-    blas_int :: n4
     character(len=1) :: rouc
     character(len=4) :: etam
     character(len=8) :: kbid
@@ -144,7 +143,6 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         ASSERT(.false.)
     endif
     nnbsol=n*nbsol
-    n4=to_blas_int(nnbsol)
     nomat=nomats(kxmps)
     nosolv=nosols(kxmps)
     nonu=nonus(kxmps)
@@ -339,10 +337,10 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 enddo
                 deallocate(cmpsk%rhs)
             else if (type.eq.'D') then
-                call dcopy(n4, dmpsk%rhs, 1, rsolu, 1)
+                call dcopy(nnbsol, dmpsk%rhs, 1, rsolu, 1)
                 deallocate(dmpsk%rhs)
             else if (type.eq.'Z') then
-                call zcopy(n4, zmpsk%rhs, 1, csolu, 1)
+                call zcopy(nnbsol, zmpsk%rhs, 1, csolu, 1)
                 deallocate(zmpsk%rhs)
             else
                 ASSERT(.false.)

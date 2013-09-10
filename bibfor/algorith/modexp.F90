@@ -66,7 +66,8 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     integer :: lmast, numlia, nbno, lnres, lmodet, sizeco, connec, lconnc, nbec
     integer :: lprno, ipos1, lcphi, nbddl, lnoint, lindin, llino, lindno, lipos
     integer :: ik, lddld, linlag, lintrf, linddl, nddlin, nbvect, ltramo, lmatmo
-    integer :: lclin, rank, lwork, jwork, info, lphiex, lcpet
+    integer :: lclin, lwork, jwork, lphiex, lcpet
+    integer(kind=4) :: info,rank
     real(kind=8) :: shift, swork(1)
     complex(kind=8) :: cbid
     character(len=4) :: k4bid
@@ -339,7 +340,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
     call dismoi('F', 'SOLVEUR', raide, 'MATR_ASSE', ibid,&
                 solveu, ibid)
-    call preres(solveu, 'V', info, '&&OP0091.MATPRE', raide,&
+    call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide,&
                 ibid, 1)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nbmod,&
                 ' ', ' ', ' ', zr(lmodet), cbid,&

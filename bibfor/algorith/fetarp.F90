@@ -26,7 +26,7 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1504
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -52,7 +52,6 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
     real(kind=8) :: tol
     character(len=24) :: k24b
     logical :: lpara
-    integer(kind=4) :: nbi4
 !
 ! COMMON ARPACK
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
@@ -62,7 +61,6 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
      &  mnaupd,mnaup2,mnaitr,mneigh,mnapps,mngets,mneupd
 !
 ! INITS DIVERSES
-    nbi4=int(nbi,4)
     if (nbproc .eq. 1) then
         lpara=.false.
     else
@@ -122,7 +120,7 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
                         k24b)
             goto 31
         else if (ido.eq.2) then
-            call dcopy(nbi4, zr(itest2+ipntr(1)-1), 1, zr(itest2+ipntr(2) -1), 1)
+            call dcopy(nbi, zr(itest2+ipntr(1)-1), 1, zr(itest2+ipntr(2) -1), 1)
             goto 31
         endif
         if ((info.ne.0) .or. ((ido.eq.99).and.(iparam(5).lt.nfreq))) then

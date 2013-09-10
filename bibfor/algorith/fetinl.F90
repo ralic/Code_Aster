@@ -84,7 +84,7 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
     integer :: i, jve, idd, ifetr, nbmc, imc, nbmc1, idecai, ibid, ivale, idecao
     integer :: nbddl, ifetc, jve1, gii, infol8, ilimpi, dimgi1, nivmpi, jgi
     integer :: jgitgi
-    integer(kind=4) :: infola, dimgi4, nbi4
+    integer(kind=4) :: infola
     real(kind=8) :: raux, rbid
     character(len=8) :: nomsd
     character(len=19) :: chsmdd
@@ -97,8 +97,6 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
     call matfpe(-1)
 !
 ! INITS.
-    dimgi4=dimgi
-    nbi4=nbi
     if (infofe(10:10) .eq. 'T') then
         nivmpi=2
     else
@@ -201,7 +199,7 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
                     write(ifm,*)'E(I)',i,zr(jve+i-1)
 105              continue
             endif
-            raux=dnrm2(dimgi4,zr(jve),1)
+            raux=dnrm2(dimgi,zr(jve),1)
             write(ifm,*)'NORME DE E ',raux
         endif
 ! --------------------------------------------------------------------
@@ -214,14 +212,14 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
                 infol8=0
 ! FACTORISATION/DESCENTE-REMONTEE SYMETRIQUE INDEFINIE (STOCKEE PAR
 ! PAQUET) VIA LAPACK. A NE FAIRE Qu'AU PREMIER PAS DE TEMPS
-                call dsptrf('L', dimgi4, zr(jgitgi), zi4(ipiv), infola)
+                call dsptrf('L', dimgi, zr(jgitgi), zi4(ipiv), infola)
                 infol8=infola
                 ASSERT(infol8.eq.0)
             endif
             infol8=0
             infola=0
-            call dsptrs('L', dimgi4, 1, zr(jgitgi), zi4(ipiv),&
-                        zr(jve), dimgi4, infola)
+            call dsptrs('L', dimgi, 1, zr(jgitgi), zi4(ipiv),&
+                        zr(jve), dimgi, infola)
             infol8=infola
             ASSERT(infol8.eq.0)
 ! MONITORING
@@ -233,7 +231,7 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
                         write(ifm,*)'(GIT*GI)-1*E(I)',i,zr(jve+i-1)
 115                  continue
                 endif
-                raux=dnrm2(dimgi4,zr(jve),1)
+                raux=dnrm2(dimgi,zr(jve),1)
                 write(ifm,*)'NORME DE (GIT*GI)-1*E ',raux
             endif
 !
@@ -242,8 +240,8 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
 ! --------------------------------------------------------------------
 !
             if (lstogi) then
-                call dgemv('N', nbi4, dimgi4, 1.d0, zr(jgi),&
-                           nbi4, zr(jve), 1, 1.d0, vlagi,&
+                call dgemv('N', nbi, dimgi, 1.d0, zr(jgi),&
+                           nbi, zr(jve), 1, 1.d0, vlagi,&
                            1)
             else
 ! SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
@@ -266,7 +264,7 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
                             raux=zr(jve1)
                             call fetrex(1, idd, nbddl, zr(ifetr+(imc-1)* nbddl), nbi,&
                                         zr(gii), irex)
-                            call daxpy(nbi4, raux, zr(gii), 1, vlagi,&
+                            call daxpy(nbi, raux, zr(gii), 1, vlagi,&
                                        1)
 190                      continue
                         call jelibe(jexnom(nomsdr, nomsd))
@@ -285,7 +283,7 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
                         write(ifm,*)'LANDA0(I)',i,vlagi(i)
 205                  continue
                 endif
-                raux=dnrm2(nbi4,vlagi,1)
+                raux=dnrm2(nbi,vlagi,1)
                 write(ifm,*)'NORME DE LANDA0 ',raux
             endif
 !

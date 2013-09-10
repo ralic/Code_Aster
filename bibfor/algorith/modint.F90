@@ -1,7 +1,6 @@
 subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                   matmod, masse, raide, neq, coint,&
                   noddli, nnoint, vefreq, switch)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +90,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     integer :: lkpro, lmored, lmatrm, lmatrk, lwork, llwork, lalpr, lddld, lfreq
     integer :: lindfr, lkryl, lmath, limped, lmolol, lmolor, lmatma, iret
     integer :: nbvect, ibid, decal, jwork, ldelg, no, nbsst, lindin, coeff, lvp
-    integer :: lintrf, info
+    integer :: lintrf
+    integer(kind=4) :: info
     real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), rand, max
     real(kind=8) :: abs
     parameter    (pi=3.141592653589793238462643d0)
@@ -264,12 +264,12 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-- RESOLUTION DU PROBLEME AUX VALEURS PROPRES
         call dgeev('N', 'V', nbvect, zr(lmath), nbvect,&
                    zr(lwr), zr(lwi), zr(lmolol), nbvect, zr(lmolor),&
-                   nbvect, swork, -1, iret)
+                   nbvect, swork, -1, info)
         lwork=int(swork(1))
         call wkvect('&&MODINT.MATR_EIGEN_WORK', 'V V R', lwork, jwork)
         call dgeev('N', 'V', nbvect, zr(lmath), nbvect,&
                    zr(lwr), zr(lwi), zr(lmolol), nbvect, zr(lmolor),&
-                   nbvect, zr(jwork), lwork, iret)
+                   nbvect, zr(jwork), lwork, info)
         call jedetr('&&MODINT.MATR_EIGEN_WORK')
 !
 !-- TRI DES VALEURS PROPRES

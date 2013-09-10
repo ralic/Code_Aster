@@ -15,23 +15,25 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dgeev(jobvl, jobvr, n, a, lda,&
                      wr, wi, vl, ldvl, vr,&
                      ldvr, work, lwork, info)
-        integer :: ldvr
-        integer :: ldvl
-        integer :: lda
-        character(len=1) :: jobvl
-        character(len=1) :: jobvr
-        integer :: n
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: wr(*)
-        real(kind=8) :: wi(*)
-        real(kind=8) :: vl(ldvl, *)
-        real(kind=8) :: vr(ldvr, *)
-        real(kind=8) :: work(*)
-        integer :: lwork
-        integer :: info
+        integer, intent(in) :: ldvr
+        integer, intent(in) :: ldvl
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: jobvl
+        character(len=1) ,intent(in) :: jobvr
+        integer, intent(in) :: n
+        real(kind=8) ,intent(inout) :: a(lda, *)
+        real(kind=8) ,intent(out) :: wr(*)
+        real(kind=8) ,intent(out) :: wi(*)
+        real(kind=8) ,intent(out) :: vl(ldvl, *)
+        real(kind=8) ,intent(out) :: vr(ldvr, *)
+        real(kind=8) ,intent(out) :: work(*)
+        integer, intent(in) :: lwork
+        blas_int, intent(out) :: info
     end subroutine dgeev
 end interface

@@ -22,9 +22,9 @@ interface
         integer :: ipg
         integer :: ipoids
         integer :: idfde
-        real(kind=8) :: coor(1)
-        real(kind=8) :: dfdx(1)
-        real(kind=8) :: dfdy(1)
-        real(kind=8) :: jac
+        real(kind=8), intent(in)  :: coor(2*nno)
+        real(kind=8), intent(out) :: dfdx(nno)
+        real(kind=8), intent(out) :: dfdy(nno)
+        real(kind=8), intent(out) :: jac
     end subroutine dfdm2d
 end interface

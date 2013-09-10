@@ -4,7 +4,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                   neqact, ilscal, irscal, optiof, omemin,&
                   omemax, omeshi, ddlexc, nfreq, lmasse,&
                   lraide, lamor, numedd, sigma, icscal,&
-                  ivscal, iiscal, ibscal, flage)
+                  ivscal, iiscal, bwork, flage)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! IN  NUMEDD : K19: NOM DU NUME_DDL
 ! IN  SIGMA  : C16: VALEUR DU SHIFT EN GENE COMPLEXE ET QUADRATIQUE
 ! IN ICSCAL/IVSCAL: IS :ADRESSE JEVEUX VECTEURS AUX POUR QZ_EQUI
-! IN IISCAL/IBSCAL: IS/LOG : ADR. JEVEUX VECTEURS AUX POUR QZ_EQUI
+! IN IISCAL: IS : ADR. JEVEUX VECTEURS AUX POUR QZ_EQUI
+! INOUT bwork: L4 : vecteur de travail de type logical*4
+
 ! OUT FLAGE  : LO : FLAG PERMETTANT DE GERER LES IMPRESSIONS
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -121,7 +123,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 #include "blas/zcopy.h"
 #include "blas/zggev.h"
 #include "blas/zggevx.h"
-    integer :: qrn, iqrn, lqrn, qrar, qrai, icscal, ivscal, iiscal, ibscal, qrba
+    integer :: qrn, iqrn, lqrn, qrar, qrai, icscal, ivscal, iiscal, qrba
     integer :: qrvl, lvec, kqrn, lvalpr, nconv, kqrnr, neqact, ilscal, irscal
     integer :: ddlexc(*), nfreq, lmasse, lraide, lamor
     character(len=1) :: ktyp, kmsg
@@ -130,14 +132,17 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     real(kind=8) :: omecor, omemin, omemax, omeshi
     complex(kind=8) :: sigma
     logical :: flage
+    logical(kind=4) :: bwork(:)
+
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: i, j, decal, ideb, ifin, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret, ivalr
+    integer :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret, ivalr
     integer :: ivalm, iadia, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
     integer :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
     integer :: j2m1, iaux21, ics1
-    integer(kind=4) :: qrn4, ldvl4, ldvr4, qrlwo4, qrinfo, ilo, ihi, iauxh4
+    integer :: ldvl
+    integer(kind=4) :: qrinfo, ilo, ihi
     real(kind=8) :: abnrm, bbnrm, baux, rauxi, aaux, valr(4), raux, anorm, bnorm, prec2, vpinf
     real(kind=8) :: prec, vpmax, vpcour, alpha, prec3, run, rzero, rauxr, rauxm, cnorm, caux
     real(kind=8) :: coefn, anorm1, bnorm1, f1, f2, fr, anorm2, anorm3, depi, aaux1, baux1, caux1
@@ -169,11 +174,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     alpha = 0.717d0
     depi=r8depi()
 ! ---- PARAMETRES POUR LAPACK
-    qrn4 = int(qrn, 4)
-    qrlwo4 = -1
+    qrlwo = -1
 ! ---- ON CHERCHE LES VECTEURS PROPRES A DROITE
-    ldvl4 = 1
-    ldvr4 = int(qrn, 4)
+    ldvl = 1
 ! ---- METTRE LTEST=.TRUE. SI ON VEUX FAIRE DES TESTS UNITAIRES SUR LES
 ! ---- SOLVEURS LAPACK.
 ! ---- IDEM AVEC LDEBUG POUR DIAGNOSTIQUER UN BUG
@@ -624,56 +627,56 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         call wkvect('&&VPQZLA.QRRCONDE', 'V V R', qrn, ics1)
         if ((lkr) .and. (.not.lc) .and. (.not.lnsr) .and. (.not.lnsm)) then
 ! RECHERCHE DE LA TAILLE OPTIMALE POUR L'ESPACE DE TRAVAIL
-            call dggevx(kbal, 'N', 'V', ksens, qrn4,&
-                        zr(iqrn), qrn4, zr( lqrn), qrn4, zr(qrar),&
-                        zr(qrai), zr(qrba), zr(qrvl), ldvl4, zr( lvec3),&
-                        ldvr4, ilo, ihi, zr(ilscal), zr(irscal),&
+            call dggevx(kbal, 'N', 'V', ksens, qrn,&
+                        zr(iqrn), qrn, zr( lqrn), qrn, zr(qrar),&
+                        zr(qrai), zr(qrba), zr(qrvl), ldvl, zr( lvec3),&
+                        qrn, ilo, ihi, zr(ilscal), zr(irscal),&
                         abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn),&
-                        qrlwo4, zi(iiscal), zl( ibscal), qrinfo)
+                        qrlwo, zi4(iiscal), bwork, qrinfo)
 ! CREATION DU VECTEUR DE TRAVAIL OPTIMALE, DESTRUCTION DU PRECEDENT
 ! ET RESOLUTION
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(zr(kqrn), 4)
+                qrlwo = int(zr(kqrn))
                 qrlwor = int(zr(kqrn))
 ! PATCH POUR MKL INTEL 11.1 : MKL DIT 10*N, NETLIB DIT 12*N
-                if (qrlwo4 .lt. (12*qrn4)) then
-                    qrlwo4 = int(12*qrn4, 4)
-                    qrlwor = 12*qrn4
+                if (qrlwo .lt. (12*qrn)) then
+                    qrlwo = int(12*qrn)
+                    qrlwor = 12*qrn
                 endif
 ! FIN PATCH
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-                call dggevx(kbal, 'N', 'V', ksens, qrn4,&
-                            zr(iqrn), qrn4, zr( lqrn), qrn4, zr(qrar),&
-                            zr(qrai), zr(qrba), zr(qrvl), ldvl4, zr(lvec3),&
-                            ldvr4, ilo, ihi, zr(ilscal), zr(irscal),&
+                call dggevx(kbal, 'N', 'V', ksens, qrn,&
+                            zr(iqrn), qrn, zr( lqrn), qrn, zr(qrar),&
+                            zr(qrai), zr(qrba), zr(qrvl), ldvl, zr(lvec3),&
+                            qrn, ilo, ihi, zr(ilscal), zr(irscal),&
                             abnrm, bbnrm, zr(icscal), zr(ivscal), zr(kqrn2),&
-                            qrlwo4, zi( iiscal), zl(ibscal), qrinfo)
+                            qrlwo, zi4( iiscal), bwork, qrinfo)
             endif
         else
-            call zggevx(kbal, 'N', 'V', ksens, qrn4,&
-                        zc(iqrn), qrn4, zc( lqrn), qrn4, zc(qrar),&
-                        zc(qrba), zc(qrvl), ldvl4, zc(lvec3), ldvr4,&
+            call zggevx(kbal, 'N', 'V', ksens, qrn,&
+                        zc(iqrn), qrn, zc( lqrn), qrn, zc(qrar),&
+                        zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn,&
                         ilo, ihi, zr(ilscal), zr(irscal), abnrm,&
-                        bbnrm, zr( icscal), zr(ivscal), zc(kqrn), qrlwo4,&
-                        zr(kqrnr), zi(iiscal), zl(ibscal), qrinfo)
+                        bbnrm, zr( icscal), zr(ivscal), zc(kqrn), qrlwo,&
+                        zr(kqrnr), zi4(iiscal), bwork, qrinfo)
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(dble(zc(kqrn)), 4)
+                qrlwo = int(dble(zc(kqrn)))
                 qrlwor = int(dble(zc(kqrn)))
 ! PATCH POUR MKL INTEL 11.1 : MKL DIT 4*N, NETLIB DIT 2*N
-                if (qrlwo4 .lt. (4*qrn4)) then
-                    qrlwo4 = int(4*qrn4, 4)
-                    qrlwor = 4*qrn4
+                if (qrlwo .lt. (4*qrn)) then
+                    qrlwo = int(4*qrn)
+                    qrlwor = 4*qrn
                 endif
 ! FIN PATCH
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V C', qrlwor, kqrn2)
-                call zggevx(kbal, 'N', 'V', ksens, qrn4,&
-                            zc(iqrn), qrn4, zc( lqrn), qrn4, zc(qrar),&
-                            zc(qrba), zc(qrvl), ldvl4, zc(lvec3), ldvr4,&
+                call zggevx(kbal, 'N', 'V', ksens, qrn,&
+                            zc(iqrn), qrn, zc( lqrn), qrn, zc(qrar),&
+                            zc(qrba), zc(qrvl), ldvl, zc(lvec3), qrn,&
                             ilo, ihi, zr(ilscal), zr(irscal), abnrm,&
-                            bbnrm, zr( icscal), zr(ivscal), zc(kqrn2), qrlwo4,&
-                            zr(kqrnr), zi( iiscal), zl(ibscal), qrinfo)
+                            bbnrm, zr( icscal), zr(ivscal), zc(kqrn2), qrlwo,&
+                            zr(kqrnr), zi4( iiscal), bwork, qrinfo)
             endif
         endif
 ! --- SI TOUT VA BIEN ON CALCUL UN MAJORANT DE L'ERREUR SUR LES
@@ -691,33 +694,33 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ----  QZ SIMPLE
     else if (typeqz(1:9).eq.'QZ_SIMPLE') then
         if ((lkr) .and. (.not.lc) .and. (.not.lnsr) .and. (.not.lnsm)) then
-            call dggev('N', 'V', qrn4, zr(iqrn), qrn4,&
-                       zr(lqrn), qrn4, zr( qrar), zr(qrai), zr(qrba),&
-                       zr(qrvl), ldvl4, zr(lvec3), ldvr4, zr(kqrn),&
-                       qrlwo4, qrinfo)
+            call dggev('N', 'V', qrn, zr(iqrn), qrn,&
+                       zr(lqrn), qrn, zr( qrar), zr(qrai), zr(qrba),&
+                       zr(qrvl), ldvl, zr(lvec3), qrn, zr(kqrn),&
+                       qrlwo, qrinfo)
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(zr(kqrn), 4)
+                qrlwo = int(zr(kqrn))
                 qrlwor = int(zr(kqrn))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-                call dggev('N', 'V', qrn4, zr(iqrn), qrn4,&
-                           zr(lqrn), qrn4, zr(qrar), zr(qrai), zr(qrba),&
-                           zr(qrvl), ldvl4, zr(lvec3), ldvr4, zr(kqrn2),&
-                           qrlwo4, qrinfo)
+                call dggev('N', 'V', qrn, zr(iqrn), qrn,&
+                           zr(lqrn), qrn, zr(qrar), zr(qrai), zr(qrba),&
+                           zr(qrvl), ldvl, zr(lvec3), qrn, zr(kqrn2),&
+                           qrlwo, qrinfo)
             endif
         else
-            call zggev('N', 'V', qrn4, zc(iqrn), qrn4,&
-                       zc(lqrn), qrn4, zc( qrar), zc(qrba), zc(qrvl),&
-                       ldvl4, zc(lvec3), ldvr4, zc(kqrn), qrlwo4,&
+            call zggev('N', 'V', qrn, zc(iqrn), qrn,&
+                       zc(lqrn), qrn, zc( qrar), zc(qrba), zc(qrvl),&
+                       ldvl, zc(lvec3), qrn, zc(kqrn), qrlwo,&
                        zr(kqrnr), qrinfo)
             if (qrinfo .eq. 0) then
-                qrlwo4 = int(dble(zc(kqrn)), 4)
+                qrlwo = int(dble(zc(kqrn)))
                 qrlwor = int(dble(zc(kqrn)))
                 call jedetr('&&VPQZLA.QR.WORK')
                 call wkvect('&&VPQZLA.QR.WORK', 'V V C', qrlwor, kqrn2)
-                call zggev('N', 'V', qrn4, zc(iqrn), qrn4,&
-                           zc(lqrn), qrn4, zc(qrar), zc(qrba), zc(qrvl),&
-                           ldvl4, zc(lvec3), ldvr4, zc(kqrn2), qrlwo4,&
+                call zggev('N', 'V', qrn, zc(iqrn), qrn,&
+                           zc(lqrn), qrn, zc(qrar), zc(qrba), zc(qrvl),&
+                           ldvl, zc(lvec3), qrn, zc(kqrn2), qrlwo,&
                            zr(kqrnr), qrinfo)
             endif
         endif
@@ -726,17 +729,17 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     else if (typeqz(1:5).eq.'QZ_QR') then
 ! ---- CONFIGURATION ILLICITE
         if (lc .or. lnsm .or. lnsr .or. (.not.lkr)) ASSERT(.false.)
-        call dsygv(1, 'V', 'U', qrn4, zr(iqrn),&
-                   qrn4, zr(lqrn), qrn4, zr(lvalpr), zr(kqrn),&
-                   qrlwo4, qrinfo)
+        call dsygv(1, 'V', 'U', qrn, zr(iqrn),&
+                   qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn),&
+                   qrlwo, qrinfo)
         if (qrinfo .eq. 0) then
-            qrlwo4 = int(zr(kqrn), 4)
+            qrlwo = int(zr(kqrn))
             qrlwor = int(zr(kqrn))
             call jedetr('&&VPQZLA.QR.WORK')
             call wkvect('&&VPQZLA.QR.WORK', 'V V R', qrlwor, kqrn2)
-            call dsygv(1, 'V', 'U', qrn4, zr(iqrn),&
-                       qrn4, zr(lqrn), qrn4, zr(lvalpr), zr(kqrn2),&
-                       qrlwo4, qrinfo)
+            call dsygv(1, 'V', 'U', qrn, zr(iqrn),&
+                       qrn, zr(lqrn), qrn, zr(lvalpr), zr(kqrn2),&
+                       qrlwo, qrinfo)
         endif
     else
 ! ---- OPTION INVALIDE
@@ -866,7 +869,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                                 vali, 4, valr)
                 endif
                 zr(lvalpr+im1-decal) = zr(qrar+im1)/zr(qrba+im1)
-                call dcopy(qrn4, zr(lvec3+im1*qrn), 1, zr(lvec+(im1- decal)*qrn), 1)
+                call dcopy(qrn, zr(lvec3+im1*qrn), 1, zr(lvec+(im1- decal)*qrn), 1)
                 if (lqze) zr(ics1+im1-decal)=zr(icscal+im1)
             else
                 decal = decal+1
@@ -902,9 +905,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 endif
                 zc(lvalpr+im1-decal) = zc(qrar+im1)/zc(qrba+im1)
                 if (lc) then
-                    call zcopy(qrn4, zc(lvec3+im1*qrn), 1, zc(lvec4+( im1-decal)*qrn), 1)
+                    call zcopy(qrn, zc(lvec3+im1*qrn), 1, zc(lvec4+( im1-decal)*qrn), 1)
                 else
-                    call zcopy(qrn4, zc(lvec3+im1*qrn), 1, zc(lvec+(im1- decal)*qrn), 1)
+                    call zcopy(qrn, zc(lvec3+im1*qrn), 1, zc(lvec+(im1- decal)*qrn), 1)
                 endif
                 if (lqze) zr(ics1+im1-decal)=zr(icscal+im1)
             else
@@ -944,7 +947,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 endif
             else
                 zr(lvalpr+im1-decal) = zr(lvalpr+im1)
-                call dcopy(qrn4, zr(iqrn+im1*qrn), 1, zr(lvec+(im1- decal)*qrn), 1)
+                call dcopy(qrn, zr(iqrn+im1*qrn), 1, zr(lvec+(im1- decal)*qrn), 1)
             endif
 57      continue
     endif
@@ -1011,7 +1014,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 if ((vpcour.ge.vpinf) .and. (vpcour.le.vpmax)) then
                     j = j+1
                     zr(lvalpr-1+j) = vpcour
-                    call dcopy(qrn4, zr(lvec+(i-1)*qrn), 1, zr(lvec+(j- 1)*qrn), 1)
+                    call dcopy(qrn, zr(lvec+(i-1)*qrn), 1, zr(lvec+(j- 1)*qrn), 1)
                 endif
 80          continue
             nconv = j
@@ -1113,7 +1116,6 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             call wkvect('&&VPQZLA.TAMPON.PROV_1', 'V V C', iauxh, iaux1)
             call wkvect('&&VPQZLA.TAMPON.PROV_2', 'V V C', iauxh, iaux2)
         endif
-        iauxh4 = int(iauxh, 4)
         do 91 i = 1, nconv
             call jerazo('&&VPQZLA.TAMPON.PROV_1', iauxh, 1)
             call jerazo('&&VPQZLA.TAMPON.PROV_2', iauxh, 1)
@@ -1123,12 +1125,12 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 freq=fr*cun
                 call mrmult('ZERO', lraide, zr(lvec+iauxh*(i-1)), zr(iaux1), 1,&
                             .false.)
-                anorm1=dnrm2(iauxh4,zr(iaux1),1)
+                anorm1=dnrm2(iauxh,zr(iaux1),1)
                 call mrmult('ZERO', lmasse, zr(lvec+iauxh*(i-1)), zr(iaux2), 1,&
                             .false.)
-                call daxpy(iauxh4, -fr, zr(iaux2), 1, zr(iaux1),&
+                call daxpy(iauxh, -fr, zr(iaux2), 1, zr(iaux1),&
                            1)
-                anorm2=dnrm2(iauxh4,zr(iaux1),1)
+                anorm2=dnrm2(iauxh,zr(iaux1),1)
             else
                 if (lc) then
                     freq = zc(lvalpr-1+i)
@@ -1137,22 +1139,22 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 endif
                 call mcmult('ZERO', lraide, zc(lvec+iauxh*(i-1)), zc(iaux1), 1,&
                             .false.)
-                anorm1=dznrm2(iauxh4,zc(iaux1),1)
+                anorm1=dznrm2(iauxh,zc(iaux1),1)
                 call mcmult('ZERO', lmasse, zc(lvec+iauxh*(i-1)), zc(iaux2), 1,&
                             .false.)
                 if (lc) then
                     call mcmult('ZERO', lamor, zc(lvec+iauxh*(i-1)), zc(iaux3), 1,&
                                 .false.)
-                    call zaxpy(iauxh4, freq, zc(iaux3), 1, zc(iaux1),&
+                    call zaxpy(iauxh, freq, zc(iaux3), 1, zc(iaux1),&
                                1)
                     freq2 = freq*freq
-                    call zaxpy(iauxh4, freq2, zc(iaux2), 1, zc(iaux1),&
+                    call zaxpy(iauxh, freq2, zc(iaux2), 1, zc(iaux1),&
                                1)
                 else
-                    call zaxpy(iauxh4, -freq, zc(iaux2), 1, zc(iaux1),&
+                    call zaxpy(iauxh, -freq, zc(iaux2), 1, zc(iaux1),&
                                1)
                 endif
-                anorm2=dznrm2(iauxh4,zc(iaux1),1)
+                anorm2=dznrm2(iauxh,zc(iaux1),1)
             endif
             if (abs(freq) .gt. omecor) then
                 if (anorm1 .gt. prec) then

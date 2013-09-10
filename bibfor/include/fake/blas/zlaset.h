@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zlaset(uplo, m, n, alpha, beta,&
                       a, lda)
-        integer :: lda
-        character(len=1) :: uplo
-        integer :: m
-        integer :: n
-        complex(kind=8) :: alpha
-        complex(kind=8) :: beta
-        complex(kind=8) :: a(lda, *)
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: uplo
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(in) :: alpha
+        complex(kind=8) ,intent(in) :: beta
+        complex(kind=8) ,intent(inout) :: a(lda, *)
     end subroutine zlaset
 end interface

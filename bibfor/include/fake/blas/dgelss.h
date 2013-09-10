@@ -15,22 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dgelss(m, n, nrhs, a, lda,&
                       b, ldb, s, rcond, rank,&
                       work, lwork, info)
-        integer :: ldb
-        integer :: lda
-        integer :: m
-        integer :: n
-        integer :: nrhs
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: b(ldb, *)
-        real(kind=8) :: s(*)
-        real(kind=8) :: rcond
-        integer :: rank
-        real(kind=8) :: work(*)
-        integer :: lwork
-        integer :: info
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        integer, intent(in) :: nrhs
+        real(kind=8) ,intent(inout) :: a(lda, *)
+        real(kind=8) ,intent(inout) :: b(ldb, *)
+        real(kind=8) ,intent(out) :: s(*)
+        real(kind=8) ,intent(in) :: rcond
+        blas_int, intent(out) :: rank
+        real(kind=8) ,intent(out) :: work(*)
+        integer, intent(in) :: lwork
+        blas_int, intent(out) :: info
     end subroutine dgelss
 end interface

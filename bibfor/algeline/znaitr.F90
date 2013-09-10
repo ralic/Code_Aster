@@ -224,7 +224,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
 !
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1501
+! aslint: disable=W1304
     implicit none
 !
 !
@@ -296,7 +296,7 @@ subroutine znaitr(ido, bmat, n, k, np,&
     logical :: first, orth1, orth2, rstart, step3, step4
     integer(kind=4) :: infol4
     integer :: ierr, i, ipj, irj, ivj, iter, itry, j, msglvl, jj
-    real(kind=8) :: smlnum, tst1, ulp, unfl, betaj, temp1, rnorm1, wnorm, rbid
+    real(kind=8) :: smlnum, tst1, ulp, unfl, betaj, temp1, rnorm1, wnorm, rbid(1)
     complex(kind=8) :: cnorm
 !
     save       first, orth1, orth2, rstart, step3, step4,&

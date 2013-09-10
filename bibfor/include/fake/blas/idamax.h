@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     function idamax(n, dx, incx)
-        integer :: n
-        real(kind=8) :: dx(*)
-        integer :: incx
-        integer :: idamax
+        integer, intent(in) :: n
+        real(kind=8),intent(in) :: dx(*)
+        integer, intent(in) :: incx
+        blas_int              :: idamax
     end function idamax
 end interface

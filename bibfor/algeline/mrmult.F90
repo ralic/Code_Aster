@@ -1,6 +1,5 @@
 subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
                   prepos)
-! aslint: disable=W1304
     implicit none
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -60,7 +59,6 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
     character(len=19) :: matas
     integer :: neq, jtemp, neql, jrefa, ibid, jsmhc, jsmdi, jvtemp
     logical :: lmatd
-    integer(kind=4) :: neq4
 !     ---------------------------------------------------------------
 !
     prepo2=prepos
@@ -84,8 +82,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
     if (kmpic .eq. 'NON') then
         if (cumul .eq. 'CUMU') then
             call wkvect('&&MRMULT.XTEMP', 'V V R', nbvect*neq, jtemp)
-            neq4=int(nbvect*neq, 4)
-            call dcopy(neq4, xsol, 1, zr(jtemp), 1)
+            call dcopy(nbvect*neq, xsol, 1, zr(jtemp), 1)
         endif
 !
         call dismoi('F', 'MATR_DISTR', matas, 'MATR_ASSE', ibid,&
@@ -104,7 +101,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
         call asmpi_comm_vect('MPI_SUM', 'R', nbval=nbvect*neq, vr=xsol)
 !
         if (cumul .eq. 'CUMU') then
-            call daxpy(neq4, 1.d0, zr(jtemp), 1, xsol,&
+            call daxpy(nbvect*neq, 1.d0, zr(jtemp), 1, xsol,&
                        1)
             call jedetr('&&MRMULT.XTEMP')
         endif

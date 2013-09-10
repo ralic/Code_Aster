@@ -1,5 +1,4 @@
 subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
-! aslint: disable=W1304
     implicit   none
 #include "asterfort/vecink.h"
 #include "blas/dscal.h"
@@ -28,12 +27,10 @@ subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
 !     ------------------------------------------------------------------
 !
     integer :: imode, ieq
-    integer(kind=4) :: nbi4
     real(kind=8) :: normx, invx, absnx, rexc, arexc
     character(len=24) :: k24b
 !
     k24b='SANS_CMP: LAGR'
-    nbi4=neq
     do 100 imode = 1, nbmode
         normx = vecp(1,imode)*exclus(1)
         absnx=abs(normx)
@@ -47,7 +44,7 @@ subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
 110      continue
         if (normx .ne. 0.d0) then
             invx=1.d0/normx
-            call dscal(nbi4, invx, vecp(1, imode), 1)
+            call dscal(neq, invx, vecp(1, imode), 1)
         endif
 100  end do
     call vecink(nbmode, k24b, resufk)

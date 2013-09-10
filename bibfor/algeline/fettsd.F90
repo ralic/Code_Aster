@@ -58,7 +58,6 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 !----------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -93,7 +92,6 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
     integer :: compt, iret5, iret, iret6, ifetj, nbii, itest, ifeti1, ino, ifetn
     integer :: ideeq, nequa, iadval, jsmdi, nsmdi, nber, jsmhc, nz, jcol, nbmrma
     integer :: kterm, ilig, nbchar, ifm18, icmp, nberm, nbmr, k, neq, l, ino1
-    integer(kind=4) :: nbi4
     real(kind=8) :: raux, rbid, dii, dii2, dii3, tol, ecarmi, ecarma, ecarmo
     character(len=8) :: nomsd, k8bid
     character(len=14) :: k14b
@@ -127,7 +125,6 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 !
 ! INIT
         call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        nbi4=int(nbi, 4)
         sdfeth=sdfeti//'.FETH'
         sdfetl=sdfeti//'.FLII'
         sdfett=sdfeti//'.FETI'
@@ -155,7 +152,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
                             zr(iret3), irex)
                 call fetsca(nbi, zr(iret3), zr(iret4), k24bs, infofe,&
                             nbi2, ifeti, ifm)
-                call daxpy(nbi4, 1.d0, zr(iret4), 1, zr(iret2),&
+                call daxpy(nbi, 1.d0, zr(iret4), 1, zr(iret2),&
                            1)
             endif
 10      continue

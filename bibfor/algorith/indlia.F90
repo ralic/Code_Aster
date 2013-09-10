@@ -62,7 +62,8 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
 !-- VARIABLES DE LA ROUTINE
     integer :: i1, j1, k1, l1, m1, nbsst, nblia, ne, nd1, nd2, lnoli1, lnoli2
     integer :: nedec, nd1deq, nd2deq, nbeqt, inds, lds, ldelia, llprof, lknoms
-    integer :: lmalia, lmats, lsilia, lwork, jwork, info, lselia, ltau, neq
+    integer :: lmalia, lmats, lsilia, lwork, jwork, lselia, ltau, neq
+    integer(kind=4) :: info
     integer :: ldiaqr
 !
     character(len=8) :: int1, int2

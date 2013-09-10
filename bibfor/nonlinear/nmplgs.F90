@@ -78,7 +78,8 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
     common  /trucit/iteamm
     character(len=8) :: typmod(*), fami, poum
     character(len=16) :: option, compor(*)
-    integer :: nbvois, nvoima, numav, iret, reuss, nscoma, iteamm
+    integer :: nbvois, nvoima, numav, iret, nscoma, iteamm
+    integer(kind=4) :: reuss
     parameter(nvoima=12,nscoma=4)
     integer :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mate, lgpg, codret
     integer :: livois(1:nvoima), numa

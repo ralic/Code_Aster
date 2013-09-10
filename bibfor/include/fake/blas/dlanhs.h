@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     function dlanhs(norm, n, a, lda, work)
-        integer :: lda
-        character(len=1) :: norm
-        integer :: n
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: work(*)
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: norm
+        integer, intent(in) :: n
+        real(kind=8) ,intent(in) :: a(lda, *)
+        real(kind=8) ,intent(out) :: work(*)
         real(kind=8) :: dlanhs
     end function dlanhs
 end interface

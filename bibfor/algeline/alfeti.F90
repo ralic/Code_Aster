@@ -46,7 +46,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1501
+! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -125,7 +125,6 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
     character(len=24) :: kvide, kcf, k24mul, colau3, chsmdd, prfdee
     logical :: reorth, igsmkp, gs, lumpe, lrigid, lstogi, lpara, lacma, lacsm
     logical :: logbid, lreac, lresta, lresok
-    integer(kind=4) :: nbi4
 !
 ! CORPS DU PROGRAMME
     call matfpe(-1)
@@ -260,7 +259,6 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
     nbi2=zi(idime+1)
 !  NOMBRE DE DDLS D'INTERFACE
     nbi=zi(idime+3)
-    nbi4=int(nbi,4)
 !  NOMBRE DE DDLS TOTAL
     nbtot=zi(idime+4)
 !
@@ -745,7 +743,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 !  EVENTUELLEMENT REORTHOGONALISEE PAR RAPPORT AUX PAS DE TEMPS
 !  PRECEDENT + CALCUL DE ALPHAN0 = G0.P0 (=G0.G0 SI NON PRECOND)
     if ((itps.eq.1) .or. (.not.lacsm)) then
-        call dcopy(nbi4, zr(irh), 1, zr(irp), 1)
+        call dcopy(nbi, zr(irh), 1, zr(irp), 1)
         if (rang .eq. 0) alphan=ddot(nbi,zr(irg),1,zr(irp),1)
     else
         call fetreo(reorth, alphan, nbi, irg, 0,&
@@ -781,7 +779,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
                 iaux1=0
             endif
             call jeveuo(k24ddr, 'E', iddro)
-            call dcopy(nbi4, zr(irp), 1, zr(iddro+iaux1), 1)
+            call dcopy(nbi, zr(irp), 1, zr(iddro+iaux1), 1)
             call jelibe(k24ddr)
         endif
 !
@@ -797,7 +795,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 !  STOCKAGE FI*PK
         if ((reorth) .and. (rang.eq.0)) then
             call jeveuo(k24fir, 'E', iddfro)
-            call dcopy(nbi4, zr(irz), 1, zr(iddfro+iaux1), 1)
+            call dcopy(nbi, zr(irz), 1, zr(iddfro+iaux1), 1)
             call jelibe(k24fir)
         endif
 !
@@ -830,7 +828,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 !----  3.4  CALCUL DE LA PROJECTION 1 (ZR(IRG)): GK+1 = P * RK+1
 !---------------------------------------------------
 !
-        call daxpy(nbi4, alpha, zr(irp), 1, zr(ivlagi),&
+        call daxpy(nbi, alpha, zr(irp), 1, zr(ivlagi),&
                    1)
         if (reacre .eq. 0) then
             lreac=.false.
@@ -861,7 +859,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
                         zi(ifetf), zi(ifeth), matas, nomgi, lstogi,&
                         infofe, irex, iprj, nbproc, rang,&
                         kvide)
-            call daxpy(nbi4, -alpha, zr(ir1), 1, zr(irg),&
+            call daxpy(nbi, -alpha, zr(ir1), 1, zr(irg),&
                        1)
             irg1=ir1
 !  MAINTENANT ON DIFFUSE ZR(IRG)

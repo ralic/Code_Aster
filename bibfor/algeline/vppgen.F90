@@ -46,7 +46,6 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
     real(kind=8) :: rzero
     character(len=24) :: vecaux, vecau1
     integer :: ieq, ivect, laux, laux1
-    integer(kind=4) :: nbi4
 !-----------------------------------------------------------------------
     data  vecaux/'&&VPPGEN.VECTEUR.AUX0'/
     data  vecau1/'&&VPPGEN.VECTEUR.AUX1'/
@@ -57,7 +56,6 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
     laux = laux - 1
     laux1= laux1- 1
 !
-    nbi4=neq
     rzero=0.d0
 !     ------------------------------------------------------------------
 !     ----------------- CALCUL DE LA MASSE GENERALISEE -----------------
@@ -66,7 +64,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
         do 100 ivect = 1, nbvect
             call mrmult('ZERO', lmasse, vect(1, ivect), zr(laux+1), 1,&
                         .false.)
-            masseg(ivect) = ddot(nbi4,vect(1,ivect),1,zr(laux+1),1)
+            masseg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
 100      continue
     endif
 !     ------------------------------------------------------------------
@@ -76,7 +74,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
         do 200 ivect = 1, nbvect
             call mrmult('ZERO', lamor, vect(1, ivect), zr(laux+1), 1,&
                         .false.)
-            amorg(ivect) = ddot(nbi4,vect(1,ivect),1,zr(laux+1),1)
+            amorg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
 200      continue
     else
         call vecini(nbvect, rzero, amorg)
@@ -91,7 +89,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
 310          continue
             call mrmult('ZERO', lraide, zr(laux1+1), zr(laux+1), 1,&
                         .false.)
-            raideg(ivect) = ddot(nbi4,zr(laux+1),1,zr(laux1+1),1)
+            raideg(ivect) = ddot(neq,zr(laux+1),1,zr(laux1+1),1)
 300      continue
     endif
 !     ------------------------------------------------------------------

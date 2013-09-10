@@ -43,7 +43,7 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1504
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -75,13 +75,11 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
     integer :: imsmr1, imsmr2, imsmr3, imsmr4, nbi1, j1
     character(len=8) :: k8bid1
     character(len=24) :: k24bid
-    integer(kind=4) :: nbi4, nb4
 !
 ! CORPS DU PROGRAMME
     call jemarq()
     call infniv(ifm, niv)
     nbi1=nbi-1
-    nbi4=nbi
     if (option .eq. 1) then
 !
 !  ON REMET A JOUR LAMBDA0, RO ET G0 SI TAILLE ESPACE DE PROJECTION NON
@@ -91,7 +89,6 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
             call wkvect('&&FETI.MSM.R1', 'V V R', dimtet, imsmr)
             do 30 i = 1, nbreoa
                 nbddsm=zi(imsmi-1+i)
-                nb4=nbddsm
 !  POUR SAUTER LES PAS DE TEMPS SANS INFORMATION
                 if (nbddsm .ne. 0) then
                     k8bid1=zk24(imsmk-1+i)(1:8)
@@ -104,10 +101,10 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
 20                  continue
 !  MISE A JOUR DU RESIDU ET RESIDU PROJETE
                     iaux1=iddfro+nbi
-                    call dgemv('N', nbi4, nb4, 1.d0, zr(iaux1),&
-                               nbi4, zr( imsmr), 1, 0.d0, zr(ir1),&
+                    call dgemv('N', nbi, nbddsm, 1.d0, zr(iaux1),&
+                               nbi, zr( imsmr), 1, 0.d0, zr(ir1),&
                                1)
-                    call daxpy(nbi4, -1.d0, zr(ir1), 1, zr(irr),&
+                    call daxpy(nbi, -1.d0, zr(ir1), 1, zr(irr),&
                                1)
                     k24bid(1:4)='VIDE'
                     call fetprj(nbi, zr(ir1), zr(ir2), nomggt, lrigid,&
@@ -115,12 +112,12 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
                                 vsdf, vddl, matas, nomgi, lstogi,&
                                 infofe, irex, iprj, nbproc, rang,&
                                 k24bid)
-                    call daxpy(nbi4, -1.d0, zr(ir2), 1, zr(irg),&
+                    call daxpy(nbi, -1.d0, zr(ir2), 1, zr(irg),&
                                1)
 !  MISE A JOUR DU LAGRANGE INITIAL
                     iaux1=iddro+nbi
-                    call dgemv('N', nbi4, nb4, 1.d0, zr(iaux1),&
-                               nbi4, zr( imsmr), 1, 1.d0, zr(ivlagi),&
+                    call dgemv('N', nbi, nbddsm, 1.d0, zr(iaux1),&
+                               nbi, zr( imsmr), 1, 1.d0, zr(ivlagi),&
                                1)
                     call jelibe('&&FETI.PS.'//k8bid1)
                     call jelibe('&&FETI.DD.'//k8bid1)
@@ -145,7 +142,6 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
             call wkvect('&&FETI.MMA.R4', 'V V R', dimtet, imsmr4)
             do 50 i = 1, nbreoa
                 nbddsm=zi(imsmi-1+i)
-                nb4=nbddsm
 !  POUR SAUTER LES PAS DE TEMPS SANS INFORMATION
                 if (nbddsm .ne. 0) then
                     k8bid1=zk24(imsmk-1+i)(1:8)
@@ -162,7 +158,7 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
                         do 42 j = 0, nbi1
                             zr(imsmr1+j)=0.d0
 42                      continue
-                        call dcopy(nbi4, zr(ir2), 1, zr(imsmr2), 1)
+                        call dcopy(nbi, zr(ir2), 1, zr(imsmr2), 1)
                     endif
                     do 43 j = 1, dimtet
                         zr(imsmr3+j-1)=0.d0
@@ -170,13 +166,13 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
 43                  continue
 ! PRODUIT MATRICE-VECTEUR (AI*VI)T * SOMME PRECEDENTE
                     iaux1=iddfro+nbi
-                    call dgemv('T', nbi4, nb4, 1.d0, zr(iaux1),&
-                               nbi4, zr(imsmr2), 1, 0.d0, zr(imsmr3),&
+                    call dgemv('T', nbi, nbddsm, 1.d0, zr(iaux1),&
+                               nbi, zr(imsmr2), 1, 0.d0, zr(imsmr3),&
                                1)
 ! PRODUIT MATRICE-VECTEUR VIT * GK
                     iaux1=iddro+nbi
-                    call dgemv('T', nbi4, nb4, 1.d0, zr(iaux1),&
-                               nbi4, zr(ir1), 1, 0.d0, zr(imsmr4),&
+                    call dgemv('T', nbi, nbddsm, 1.d0, zr(iaux1),&
+                               nbi, zr(ir1), 1, 0.d0, zr(imsmr4),&
                                1)
 ! THETAI
                     do 45 j = 1, nbddsm
@@ -186,8 +182,8 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
 45                  continue
 ! PRODUIT MATRICE-VECTEUR VI * THETAI ET MISE A JOUR STOCKAGE
                     iaux1=iddro+nbi
-                    call dgemv('N', nbi4, nb4, 1.d0, zr(iaux1),&
-                               nbi4, zr(imsmr3), 1, 1.d0, zr(imsmr1),&
+                    call dgemv('N', nbi, nbddsm, 1.d0, zr(iaux1),&
+                               nbi, zr(imsmr3), 1, 1.d0, zr(imsmr1),&
                                1)
                     call jelibe('&&FETI.PS.'//k8bid1)
                     call jelibe('&&FETI.DD.'//k8bid1)
@@ -195,7 +191,7 @@ subroutine fetacc(option, rang, dimtet, imsmi, imsmk,&
                 endif
 50          continue
 ! MISE A JOUR VECTEUR SOLUTION
-            call daxpy(nbi4, 1.d0, zr(imsmr1), 1, zr(ir2),&
+            call daxpy(nbi, 1.d0, zr(imsmr1), 1, zr(ir2),&
                        1)
             call jedetr('&&FETI.MMA.R1')
             call jedetr('&&FETI.MMA.R2')

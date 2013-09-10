@@ -97,7 +97,8 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
     integer :: k, kdmax, indi(6), indip(6), nbact, l, i, iret, kd, kd2
 !
-    integer :: info, ntest, jcara
+    integer :: ntest, jcara
+    integer(kind=4) :: info
     real(kind=8) :: wr(6), wi(6), work(18), vl(1), vr(1)
 !
     real(kind=8) :: eps(8)

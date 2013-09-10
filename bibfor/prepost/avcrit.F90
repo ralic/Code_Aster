@@ -20,7 +20,6 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-! aslint: disable=W1306
     implicit      none
 #include "jeveux.h"
 !

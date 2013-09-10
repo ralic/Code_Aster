@@ -15,20 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zlatrs(uplo, trans, diag, normin, n,&
                       a, lda, x, scale, cnorm,&
                       info)
-        integer :: lda
-        character(len=1) :: uplo
-        character(len=1) :: trans
-        character(len=1) :: diag
-        character(len=1) :: normin
-        integer :: n
-        complex(kind=8) :: a(lda, *)
-        complex(kind=8) :: x(*)
-        real(kind=8) :: scale
-        real(kind=8) :: cnorm(*)
-        integer :: info
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: uplo
+        character(len=1) ,intent(in) :: trans
+        character(len=1) ,intent(in) :: diag
+        character(len=1) ,intent(in) :: normin
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(in) :: a(lda, *)
+        complex(kind=8) ,intent(inout) :: x(*)
+        real(kind=8) ,intent(out) :: scale
+        real(kind=8) ,intent(inout) :: cnorm(*)
+        blas_int, intent(out) :: info
     end subroutine zlatrs
 end interface

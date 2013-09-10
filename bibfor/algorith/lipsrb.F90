@@ -82,7 +82,8 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     integer :: lnoma1, lnoma2, lcoor1, lcoor2, numno, lno1, lno2, dima, ldepen
     integer :: ier, nbmast, nbslav, lnomas, lnosla, ldist, indmin, lphir, lvisla
     integer :: ltramo, lprojt, decal, lmats, lmatu, lmatv, lmsm1u, lvsm1u
-    integer :: lindma, lindsl, info, lwork, jwork, possla, posmas, indsla
+    integer :: lindma, lindsl, lwork, jwork, possla, posmas, indsla
+    integer(kind=4) :: info
     integer :: indmas, lvimas
     character(len=8) :: kbid, mail1, mail2
     real(kind=8) :: tr1(3), tr2(3), ang1(3), ang2(3), rot1(3, 3), rot2(3, 3)

@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
+          interface
             subroutine vpqzla(typeqz,qrn,iqrn,lqrn,qrar,qrai,qrba,qrvl, &
      &lvec,kqrn,lvalpr,nconv,omecor,ktyp,kqrnr,neqact,ilscal,irscal,    &
      &optiof,omemin,omemax,omeshi,ddlexc,nfreq,lmasse,lraide,lamor,     &
-     &numedd,sigma,icscal,ivscal,iiscal,ibscal,flage)
+     &numedd,sigma,icscal,ivscal,iiscal,bwork,flage)
               character(len=16) :: typeqz
               integer :: qrn
               integer :: iqrn
@@ -52,7 +52,7 @@
               integer :: icscal
               integer :: ivscal
               integer :: iiscal
-              integer :: ibscal
+              logical(kind=4) :: bwork(:)
               logical :: flage
             end subroutine vpqzla
-          end interface 
+          end interface

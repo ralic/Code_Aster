@@ -15,17 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dorgqr(m, n, k, a, lda,&
                       tau, work, lwork, info)
-        integer :: lda
-        integer :: m
-        integer :: n
-        integer :: k
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: tau(*)
-        real(kind=8) :: work(*)
-        integer :: lwork
-        integer :: info
+        integer, intent(in) :: lda
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        integer, intent(in) :: k
+        real(kind=8) ,intent(inout) :: a(lda, *)
+        real(kind=8) ,intent(in) :: tau(*)
+        real(kind=8) ,intent(out) :: work(*)
+        integer, intent(in) :: lwork
+        blas_int, intent(out) :: info
     end subroutine dorgqr
 end interface

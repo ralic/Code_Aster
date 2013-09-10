@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dlarfx(side, m, n, v, tau,&
                       c, ldc, work)
-        integer :: ldc
-        character(len=1) :: side
-        integer :: m
-        integer :: n
-        real(kind=8) :: v(*)
-        real(kind=8) :: tau
-        real(kind=8) :: c(ldc, *)
-        real(kind=8) :: work(*)
+        integer, intent(in) :: ldc
+        character(len=1) ,intent(in) :: side
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        real(kind=8) ,intent(in) :: v(*)
+        real(kind=8) ,intent(in) :: tau
+        real(kind=8) ,intent(inout) :: c(ldc, *)
+        real(kind=8) ,intent(out) :: work(*)
     end subroutine dlarfx
 end interface

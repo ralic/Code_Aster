@@ -48,7 +48,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1504
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -74,10 +74,8 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
     character(len=8) :: k8bid
     character(len=24) :: k24b
     logical :: lpara
-    integer(kind=4) :: nbi4
 !
 ! INITS DIVERSES
-    nbi4=nbi
     if (nbproc .eq. 1) then
         lpara=.false.
     else
@@ -113,7 +111,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
 ! CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 1)
 ! (ZR(IRP)) PK+1 = HK+1 (EQUIVAUT A GK+1 SI SANS PRECOND)
 ! -----------------------------
-            call dcopy(nbi4, zr(irh), 1, zr(irp), 1)
+            call dcopy(nbi, zr(irh), 1, zr(irp), 1)
 !
 ! -----------------------------
 ! -----------------------------
@@ -154,7 +152,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
 ! CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 2.2)
 ! (ZR(IRP)) PK+1_PRIM = PK+1 + BETAKI * PI
 ! --------------
-                    call daxpy(nbi4, raux, zr(iaux1), 1, zr(irp),&
+                    call daxpy(nbi, raux, zr(iaux1), 1, zr(irp),&
                                1)
 !
 ! --------------
@@ -174,7 +172,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
 ! CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 3.2)
 ! (ZR(IRP)) PK+1_SEC = PK+1_PRIM + BETAKI_PRIM * PI
 ! --------------
-                            call daxpy(nbi4, raux, zr(iaux1), 1, zr(irp),&
+                            call daxpy(nbi, raux, zr(iaux1), 1, zr(irp),&
                                        1)
 ! --------------
 ! SECOND TEST (ETAPE 3.3)
@@ -224,7 +222,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
                             endif
                             iaux1=iddro+j*nbi
                             if (igsmkp) normav=ddot(nbi,zr(irp),1,zr( irp),1)
-                            call daxpy(nbi4, raux, zr(iaux1), 1, zr(irp),&
+                            call daxpy(nbi, raux, zr(iaux1), 1, zr(irp),&
                                        1)
                             if (igsmkp) then
                                 normap=ddot(nbi,zr(irp),1,zr(irp),1)
@@ -233,7 +231,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
                                     raux=-ddot(nbi,zr(irp),1,zr(iaux1)&
                                     ,1)/zr(ipsro+j)
                                     iaux1=iddro+j*nbi
-                                    call daxpy(nbi4, raux, zr(iaux1), 1, zr(irp),&
+                                    call daxpy(nbi, raux, zr(iaux1), 1, zr(irp),&
                                                1)
                                     normav=ddot(nbi,zr(irp),1,zr(irp),&
                                     1)

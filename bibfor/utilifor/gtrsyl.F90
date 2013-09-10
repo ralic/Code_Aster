@@ -130,7 +130,7 @@ subroutine gtrsyl(trana, tranb, isgn, m, n,&
     complex(kind=8) :: a11, suml, sumr, vec, x11
 !     ..
 !     .. LOCAL ARRAYS ..
-    real(kind=8) :: dum
+    real(kind=8) :: dum(1)
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..

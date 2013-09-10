@@ -56,7 +56,6 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
 !-----------------------------------------------------------------------
     integer :: i, iaux1, iaux2, j, neq, ivec
     real(kind=8) :: xseuil, rmin, raux
-    integer(kind=4) :: nbi4, neq4
 !-----------------------------------------------------------------------
     call jemarq()
     xseuil = omecor
@@ -75,12 +74,10 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
 !     ------------------------------------------------------------------
     rmin=100.d0*r8miem()
 !
-    nbi4=nbprop
-    neq4=neq
 !        --- NON PRISE EN COMPTE DES DDLS EXCLUS
     do 15 i = 1, neq
         raux=excl(i)
-        call dscal(nbi4, raux, vecp(i), neq4)
+        call dscal(nbprop, raux, vecp(i), neq)
 15  end do
 !
     do 30 i = 1, nbprop
@@ -95,7 +92,7 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
             anorm1 = anorm1+raux*raux*excl(j)
 20      continue
         raux=-valp(i)
-        call daxpy(neq4, raux, zr(iaux2), 1, zr(iaux1),&
+        call daxpy(neq, raux, zr(iaux2), 1, zr(iaux1),&
                    1)
         anorm2 = 0.d0
         do 25 j = 1, neq

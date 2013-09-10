@@ -43,12 +43,7 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
 ! CORPS DU PROGRAMME
     implicit none
 !
-!     %-----------------%
-!     | ARRAY ARGUMENTS |
-!     %-----------------%
-!
 #include "jeveux.h"
-!
 #include "asterfort/jedetr.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/wkvect.h"
@@ -56,38 +51,16 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta,&
 #include "blas/dlarnv.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
+    integer :: n, ldh, ldv, indico, proj
     integer :: ddlsta(n), ddlexc(n)
     real(kind=8) :: h(ldh, ldh), v(ldv, ldh)
     real(kind=8) :: vectt(ldv)
-!
-!     %-----------------%
-!     | SCALAR ARGUMENTS|
-!     %-----------------%
-!
-    integer :: n, ldh, ldv, indico, proj
-!
-!
-!
-!
-!     %------------------------%
-!     | LOCAL SCALARS & ARRAYS |
-!     %------------------------%
-!
-    integer :: iseed(4), i, j, nitmax, num, npro
+    integer :: i, j, nitmax, num, npro
+    integer(kind=4) :: iseed(4)
     integer :: x0, bounds, x
     real(kind=8) :: norm
     real(kind=8) :: temp, epsil, one, zero
     real(kind=8) :: crit2, epsf
-!
-!     %-----------%
-!     | FUNCTIONS |
-!     %-----------%
-!
-!
-!     %-----------%
-!     | PARAMETER |
-!     %-----------%
-!
     parameter (epsil=1.d-15)
     parameter (crit2=1.d-12)
     parameter (nitmax = 40000)

@@ -62,7 +62,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1504
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -111,7 +111,6 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
     real(kind=8) :: rauxl, alpha, rbid
 !     REAL*8       RMIN
     logical :: ldup, lpara, lbid, lrec
-    integer(kind=4) :: nbddl4, nbi4
 !
 ! CORPS DU PROGRAMME
     call jemarq()
@@ -127,7 +126,6 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
     nomsdr=matas//'.FETR'
 !
 ! INITS DIVERSES
-    nbi4=nbi
     if (nbproc .eq. 1) then
         lpara=.false.
     else
@@ -231,7 +229,6 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
             typsym=zi(lmat+4)
 ! NBRE DE DDLS DU SOUS-DOMAINE
             nbddl=vddl(idd)
-            nbddl4=nbddl
             nbddl1=nbddl-1
 ! VECTEUR AUXILIAIRE DE TAILLE NDDL(SOUS_DOMAINE_IDD)
             jxsol=zi(k+3)
@@ -246,7 +243,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 ! RECOPIE DE FIDD - (RIDD)T*LANDA (0 OU SOL) DANS VECTEUR AUX
 ! POUR R8AXPY ON STOCKE L'OPPOSE, ON COMPENSERA PAR LA SUITE
 ! SUIVANT LES OPTIONS
-            call daxpy(nbddl4, -1.d0, zr(ivale), 1, zr(jxsol),&
+            call daxpy(nbddl, -1.d0, zr(ivale), 1, zr(jxsol),&
                        1)
 !
 ! SCALING VIA ALPHA DES COMPOSANTES DU SECOND MEMBRE DUES AUX LAGRANGES
@@ -299,7 +296,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
                             vd1, irex)
 !
 ! CUMUL DANS LE VECTEUR VDO=SOMME(I=1,NBSD)(RI*((KI)+ *(FI-RIT*LANDA0))
-                call daxpy(nbi4, -1.d0, vd1, 1, vdo,&
+                call daxpy(nbi, -1.d0, vd1, 1, vdo,&
                            1)
 !
             else
@@ -318,7 +315,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 ! COEFF. ALPHAI MULTIPLICATEUR
                         alpha=zr(idecaa)
 ! USOLI = USOLI + BI * ALPHAI
-                        call daxpy(nbddl4, alpha, zr(idecai), 1, zr(jxsol),&
+                        call daxpy(nbddl, alpha, zr(idecai), 1, zr(jxsol),&
                                    1)
                         idecai=idecai+nbddl
                         idecaa=idecaa+1

@@ -217,7 +217,8 @@ subroutine gtrsen(job, compq, select, n, t,&
 !     ..
 !     .. LOCAL SCALARS ..
     logical :: wantbh, wantq, wants, wantsp
-    integer :: ierr, k, kase, ks, n1, n2, nn
+    integer :: ierr, k, ks, n1, n2, nn
+    integer(kind=4) :: kase
     real(kind=8) :: est, rnorm, scale
 !     ..
 !     .. LOCAL ARRAYS ..

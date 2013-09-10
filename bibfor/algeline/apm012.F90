@@ -59,7 +59,8 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 !
-    integer(kind=4) :: nk4, ilo, ihi, lwork4, info4
+    integer :: ilo, ihi
+    integer(kind=4) ::  info4
     integer :: ifm, niv, imata, nk2, nkm1, i, ivect, iwork, vali, ideeq, iret, j
     integer :: imatb, imatc, nkj, lwork, k, ideb, ifin, jm1, im1, iauxh, iauxh1
     integer :: ivalr, ivalm, ihcol, iadia, ibid, idelg, imult, ifin1, imata0
@@ -77,7 +78,6 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
     niv=2
 !
 !   --- STEP 0: INITIALIZATIONS AND BUILDING OF THE WORKING MATRIX ---
-    nk4=int(nk,4)
     nk2=nk*nk
     nkm1=nk-1
 !
@@ -143,13 +143,6 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
             ideb=ifin+1
 18      continue
 !
-!   --- FOR DEBUGING ONLY ---
-!        CALL UTIMSD(6,2,.FALSE.,.TRUE.,'.NUME.DELG',15,'G')
-!        CALL UTIMSD(6,2,.FALSE.,.TRUE.,'.SMOS',15,'G')
-!        CALL UTIMSD(6,2,.FALSE.,.TRUE.,'MATASSR',1,'G')
-!        CALL UTIMSD(6,2,.FALSE.,.TRUE.,'MATASSM',1,'G')
-!        CALL UTIMSD(6,2,.FALSE.,.TRUE.,RAI19,1,'V')
-!        CALL UTIMSD(6,2,.FALSE.,.TRUE.,MAS19,1,'V')
 !
         k19b=' '
         call preres(solveu, 'V', iret, k19b, mas19,&
@@ -187,25 +180,6 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
             zc(imata+im1)=zr(imata0+im1)*cun
 41      continue
 !
-!   --- FOR DEBUGGING ONLY
-!   --- COMPUTATIONS OF THE EIGENVALUES OF THE                     ---
-!   --- WORKING MATRIX A THANKS TO THE LAPACK DGEEV                ---
-!        LWORK=10*NK
-!        LWORK4=LWORK
-!        CALL WKVECT('&&APM012.TEST.DGEEV.WR','V V R',NK,IWR)
-!        CALL WKVECT('&&APM012.TEST.DGEEV.WI','V V R',NK,IWI)
-!        CALL WKVECT('&&APM012.TEST.DGEEV.WO','V V R',LWORK,IWORK)
-!        CALL DGEEV('N','N',NK4,ZR(IMATA0),NK4,ZR(IWR),ZR(IWI),
-!     &               RBID,NK4,RBID,NK4,ZR(IWORK),LWORK4,INFO4)
-!        WRITE(IFM,*)'**** EIGENVALUE WORKING MATRIX *******'
-!        WRITE(IFM,*)'    INFO LAPACK= ',INFO4
-!        DO 2 I=1,NK
-!          WRITE(IFM,*)I,ZR(IWR-1+I),ZR(IWI-1+I)
-!   2    CONTINUE
-!        CALL JEDETR('&&APM012.TEST.DGEEV.WR')
-!        CALL JEDETR('&&APM012.TEST.DGEEV.WI')
-!        CALL JEDETR('&&APM012.TEST.DGEEV.WO')
-!
         call jedetr('&&APM012.MATRICE.A0')
 !
     else
@@ -220,16 +194,15 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
     call wkvect('&&APM012.ZGEHRD.TAU', 'V V C', nk-1, ivect)
     call wkvect('&&APM012.ZGEHRD.WORK', 'V V C', nk, iwork)
     ilo=1
-    ihi=nk4
-    call zgehrd(nk4, ilo, ihi, zc(imata), nk4,&
+    ihi=nk
+    call zgehrd(nk, ilo, ihi, zc(imata), nk,&
                 zc(ivect), zc(iwork), -1, info4)
     if (info4 .eq. 0) then
         lwork =int(dble(zc(iwork)))
-        lwork4=int(lwork,4)
         call jedetr('&&APM012.ZGEHRD.WORK')
         call wkvect('&&APM012.ZGEHRD.WORK', 'V V C', lwork, iwork)
-        call zgehrd(nk4, ilo, ihi, zc(imata), nk4,&
-                    zc(ivect), zc(iwork), lwork4, info4)
+        call zgehrd(nk, ilo, ihi, zc(imata), nk,&
+                    zc(ivect), zc(iwork), lwork, info4)
     endif
     vali=info4
     if (vali .ne. 0) call u2mesi('F', 'ALGELINE4_12', 1, vali)

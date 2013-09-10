@@ -2,7 +2,6 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                   vecpr8, vecpc8, mxresf, nbpari, nbparr,&
                   nbpark, nopara, mod45, resufi, resufr,&
                   resufk, iprec)
-! aslint: disable=W1304
     implicit   none
 #include "jeveux.h"
 !
@@ -64,7 +63,6 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     integer :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
     integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
     integer :: jmod2, jlime, jmeri
-    integer(kind=4) :: nbi4
     parameter    ( nbpast = 19 )
     character(len=8) :: res, k8b, modele, chmat, carael, basemo
     character(len=16) :: typcon, nomcmd, nosy, typmod
@@ -272,11 +270,10 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
             call juveca(chamno//'.REFE', 2)
         endif
         call jeveuo(chamno//'.VALE', 'E', lvale)
-        nbi4=neq
         if (type(1:1) .eq. 'R') then
-            call dcopy(nbi4, vecpr8(1, kmode), 1, zr(lvale), 1)
+            call dcopy(neq, vecpr8(1, kmode), 1, zr(lvale), 1)
         else if (type(1:1) .eq. 'C') then
-            call zcopy(nbi4, vecpc8(1, kmode), 1, zc(lvale), 1)
+            call zcopy(neq, vecpc8(1, kmode), 1, zc(lvale), 1)
         endif
 !       SI LE CHAMP A DEJA ETE NOTE PAR SEMOCO, ON NE LE REFAIT PAS
         if (ier .ne. 0) call rsnoch(modes, nosy, nordr)

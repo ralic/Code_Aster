@@ -72,7 +72,6 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !     VARIABLES LOCALES
     integer :: iprem, k, ibid, ierd, nglo, kdeb, jnequ
     integer :: jrefa, jtrav, kptsc
-    integer(kind=4) :: n4
 !
     character(len=19) :: solveu, matas, vcine
     character(len=14) :: nu
@@ -221,13 +220,12 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
     if (action .eq. 'RESOUD') then
         call wkvect('&&APETSC.TRAVAIL', 'V V R', nglo, jtrav)
-        n4 = nglo
         do k = 1, nbsol
             kdeb = (k-1)*nglo+1
-            call dcopy(n4, rsolu(kdeb), 1, zr(jtrav), 1)
+            call dcopy(nglo, rsolu(kdeb), 1, zr(jtrav), 1)
             call apmain(action, kptsc, zr(jtrav), vcine, istop,&
                         iret)
-            call dcopy(n4, zr(jtrav), 1, rsolu(kdeb), 1)
+            call dcopy(nglo, zr(jtrav), 1, rsolu(kdeb), 1)
         end do
         call jedetr('&&APETSC.TRAVAIL')
     else

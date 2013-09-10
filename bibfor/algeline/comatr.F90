@@ -45,7 +45,6 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! IN/OUT VECTC: C8  : MATRICE COMPLEXE A COMMUNIQUER  (DIM1C X DIM2C)
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! aslint: disable=W1304,W1306
     implicit none
 !
 ! PARAMETRES D'APPEL
@@ -68,7 +67,6 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! VARIABLES LOCALES
     integer :: nconv, nconvg, i, j, idecal, iaux1, izero, idim1, idim2
     integer :: ifm, niv
-    integer(kind=4) :: i40, i41
     real(kind=8) :: rzero
     complex(kind=8) :: czero, dcmplx
     logical :: ldebug
@@ -126,10 +124,8 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     if (ldebug) then
         write(ifm,*)'INITIALISATION***************************'
         if ((typev.eq.'R') .and. (option.eq.'S')) then
-            i40=int(idim1,4)
-            i41=1
             do 18 j = 1, idim2
-                write(ifm,*)j,dnrm2(i40,vectr(1,j),i41)
+                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
 18          continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
 ! --- ON NE FAIT QU'IMPRIMER LES TERMES CAR CERTAINS SONT EN 1.E+308
@@ -185,10 +181,8 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     if (ldebug) then
         write(ifm,*)'STEP 1***************************'
         if ((typev.eq.'R') .and. (option.eq.'S')) then
-            i40=int(idim1,4)
-            i41=1
             do 28 j = 1, idim2
-                write(ifm,*)j,dnrm2(i40,vectr(1,j),i41)
+                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
 28          continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 29 i = 1, idim1
@@ -254,10 +248,8 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     if (ldebug) then
         write(ifm,*)'STEP 2***************************'
         if ((typev.eq.'R') .and. (option.eq.'S')) then
-            i40=int(idim1,4)
-            i41=1
             do 38 j = 1, idim2
-                write(ifm,*)j,dnrm2(i40,vectr(1,j),i41)
+                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
 38          continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 39 i = 1, idim1
@@ -303,10 +295,8 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     if (ldebug) then
         write(ifm,*)'STEP 3***************************'
         if ((typev.eq.'R') .and. (option.eq.'S')) then
-            i40=int(idim1,4)
-            i41=1
             do 48 j = 1, idim2
-                write(ifm,*)j,dnrm2(i40,vectr(1,j),i41)
+                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
 48          continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 49 i = 1, idim1
@@ -332,10 +322,8 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     if (ldebug) then
         write(ifm,*)'FINALISATION***************************'
         if ((typev.eq.'R') .and. (option.eq.'S')) then
-            i40=int(idim1,4)
-            i41=1
             do 58 j = 1, idim2
-                write(ifm,*)j,dnrm2(i40,vectr(1,j),i41)
+                write(ifm,*)j,dnrm2(idim1,vectr(1,j),1)
 58          continue
         else if ((typev.eq.'R').and.(option.eq.'T')) then
             do 59 i = 1, idim1

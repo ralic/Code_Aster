@@ -135,7 +135,7 @@ subroutine op0045()
     integer :: nparr, nbcine, neq, nitqrm, izero, nbrss, nitbat, niv, mxresf, nblagr, nperm
     integer :: nitjac, n1, nstoc, nconv, iexin, lworkr, laur, qrn, qrlwor, iqrn, lqrn
     integer :: qrar, qrai, qrba, qrvl, kqrn, qrn2, ilscal, irscal, lauc, laul, icscal, ivscal
-    integer :: iiscal, ibscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, iarg, rang
+    integer :: iiscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, iarg, rang
     integer :: nbproc, typeco, vali(5), nbvecg, nfreqg, rangl, icom1, icom2, l, l1, l2, l3, indf
 !     &             ,IETFIN,IETDEB,IETRAT,IETMAX
     real(kind=8) :: prorto, fmin, fmax, alpha, tolsor, det(2), rzero, omemin, omemax, omeshi, undf
@@ -152,7 +152,8 @@ subroutine op0045()
     character(len=19) :: solveu, tabmod
     character(len=24) :: cborvp, valk(5), nopara(nbpara), metres, kzero
     logical :: flage, lqz, lkr, lc, lns, lnsc, lnsk, lnsm, ltabmo, lpg, lcomod
-!    &             ,LCPU
+    logical(kind=4), pointer, dimension(:) :: bwork
+
 !     ------------------------------------------------------------------
     data cborvp / '&&OP0045.BORNE.VALP.USR ' /
     data  nopara /&
@@ -179,6 +180,7 @@ subroutine op0045()
 !      LCPU=.TRUE.
 !      LCPU=.FALSE.
 !      IF (LCPU) CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+    nullify (bwork)
     undf=r8vide()
     indf=isnnem()
     rzero=0.d0
@@ -946,8 +948,8 @@ subroutine op0045()
             call wkvect('&&OP0045.QRRSCALE.WORK', 'V V R', qrn, irscal)
             call wkvect('&&OP0045.QRRCONDE.WORK', 'V V R', qrn, icscal)
             call wkvect('&&OP0045.QRRCONDV.WORK', 'V V R', qrn, ivscal)
-            call wkvect('&&OP0045.QRI.WORK', 'V V I', qrn+6, iiscal)
-            call wkvect('&&OP0045.QRB.WORK', 'V V L', qrn, ibscal)
+            call wkvect('&&OP0045.QRI.WORK', 'V V S', qrn+6, iiscal)
+            allocate(bwork(qrn))
         endif
         if (lkr .and. (.not.lc) .and. (.not.lns)) then
             call wkvect('&&OP0045.QZ.VALPRO', 'V V R', qrn, lvalpr)
@@ -1143,7 +1145,7 @@ subroutine op0045()
                         neqact, ilscal, irscal, optiof, omemin,&
                         omemax, omeshi, zi(lprod), nfreq, lmasse,&
                         lraide, lamor, numedd, sigma, icscal,&
-                        ivscal, iiscal, ibscal, flage)
+                        ivscal, iiscal, bwork, flage)
             call rectfr(nconv, nconv, omeshi, npivot, nblagr,&
                         zr(lvalpr), nfreq, zi(lresui), zr(lresur), mxresf)
             call vpbost(typres, nconv, nconv, omeshi, zr(lvalpr),&
@@ -1179,7 +1181,7 @@ subroutine op0045()
                         neqact, ilscal, irscal, optiof, omemin,&
                         omemax, omeshi, zi(lprod), nfreq, lmasse,&
                         lraide, lamor, numedd, sigma, icscal,&
-                        ivscal, iiscal, ibscal, flage)
+                        ivscal, iiscal, bwork, flage)
             npivot = nblagr
 !
             call rectfc(nconv, nconv, sigma, npivot, nblagr,&
@@ -1316,7 +1318,7 @@ subroutine op0045()
                         neqact, ilscal, irscal, optiof, omemin,&
                         omemax, omeshi, zi(lprod), nfreq, lmasse,&
                         lraide, lamor, numedd, sigma, icscal,&
-                        ivscal, iiscal, ibscal, flage)
+                        ivscal, iiscal, bwork, flage)
             nfreq=nfreq/2
             call wp4vec(nfreq, nconv, neq, sigma, zc(lvalpr),&
                         zc(lvec), mxresf, zi(lresui), zr(lresur), zi(lprod),&
@@ -1537,6 +1539,7 @@ subroutine op0045()
         matpsc=zk24(zi(lmtpsc+1))(1:19)
         call detrsd('MATR_ASSE', matpsc)
     endif
+    if (associated(bwork)) deallocate(bwork)
 !
 !     ------------------------------------------------------------------
 !     -----------------------MACRO_MODE_MECA PARALLELE (PART V) -------

@@ -39,7 +39,6 @@ subroutine fetprc(nbsd, nbi, vd1, vd2, vdo,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -64,10 +63,8 @@ subroutine fetprc(nbsd, nbi, vd1, vd2, vdo,&
     real(kind=8) :: rbid
     character(len=24) :: k24b
     logical :: lpara
-    integer(kind=4) :: nbi4
 !
 ! INITS DIVERSES
-    nbi4=nbi
     if (nbproc .eq. 1) then
         lpara=.false.
     else
@@ -84,7 +81,7 @@ subroutine fetprc(nbsd, nbi, vd1, vd2, vdo,&
     ifm=zi(ifiv)
     if (preco(1:4) .eq. 'SANS') then
 ! PAS DE PRECONDITIONNEMENT: ZR(IR1)=ZR(IRG) (VD0=VD1)
-        call dcopy(nbi4, vd1, 1, vdo, 1)
+        call dcopy(nbi, vd1, 1, vdo, 1)
 ! MONITORING
         if (infofe(1:1) .eq. 'T') write(ifm, *)'<FETI/FETPRC', rang, '> SANS PRECONDITIONNEMENT'
 !
@@ -128,7 +125,7 @@ subroutine fetprc(nbsd, nbi, vd1, vd2, vdo,&
                 call fetrex(1, idd, nbddl, zr(jxsol2), nbi,&
                             vd2, irex)
 ! CUMUL DANS LE VECTEUR VDO=SOMME(I=1,NBSD)(RI * ((KI)+ * RIT * V))
-                call daxpy(nbi4, 1.d0, vd2, 1, vdo,&
+                call daxpy(nbi, 1.d0, vd2, 1, vdo,&
                            1)
             endif
 !========================================
