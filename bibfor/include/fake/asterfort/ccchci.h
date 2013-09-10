@@ -16,9 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ccchci(critz, questz, repi)
-        character(*) :: critz
-        character(*) :: questz
-        integer :: repi
+    subroutine ccchci(questz, type_comp, crit, norm, nb_form, &
+                      repi)
+        character(len=*), intent(in) :: questz
+        character(len=16), intent(in) :: type_comp
+        character(len=16), intent(in) :: crit
+        character(len=16), intent(in) :: norm
+        integer, intent(in) :: nb_form
+        integer, intent(out) :: repi
     end subroutine ccchci
 end interface

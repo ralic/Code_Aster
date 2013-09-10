@@ -1,4 +1,21 @@
-subroutine ccchut(resuin, resuou, lisord, nbordr)
+subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/ccchuc.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,82 +32,115 @@ subroutine ccchut(resuin, resuou, lisord, nbordr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
-#include "asterfort/assert.h"
-#include "asterfort/ccchuc.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    integer :: nbordr
-    character(len=8) :: resuou, resuin
-    character(len=19) :: lisord
 ! person_in_charge: mathieu.courtois at edf.fr
-! ----------------------------------------------------------------------
-!  CALC_CHAMP - TRAITEMENT DE CHAM_UTIL
-!  -    -                     --   --
-! ----------------------------------------------------------------------
-! IN  :
-!   RESUIN K8   NOM DE LA SD IN
-!   RESUOU K8   NOM DE LA SD OUT
-!   LISORD K19  NOM DE LA LISTE DES NUMEROS D'ORDRE
-!   NBORDR I    NOMBRE DE NUMEROS D'ORDRE
-! ----------------------------------------------------------------------
-    character(len=9) :: mcfact
-    parameter   (mcfact='CHAM_UTIL')
-    character(len=19) :: lform
-    parameter   (lform='&&CCHUT.FORMULE    ')
 !
-    integer :: ifm, niv, ioc, nuti, nf, nc, ibid
-    integer :: jform, nchout
+    character(len=8), intent(in) :: sdresu_in
+    character(len=8), intent(in) :: sdresu_out
+    character(len=19), intent(in) :: list_ordr
+    integer , intent(in) :: nb_ordr
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Command CALC_CHAMP
+!
+! Compute CHAM_UTIL
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  sdresu_in      : name of input results data-structure
+! In  sdresu_out     : name of output results data-structure
+! In  nb_ordr        : number of order index in list_ordr
+! In  list_ordr      : name of list of order
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: keywordfact
+    character(len=19) :: lform
+    integer :: ioc, nuti, ibid
+    integer :: nb_form, nb_crit, nb_norm
+    integer :: jform, nume_field_out
     character(len=8) :: k8b
-    character(len=16) :: chin, crit
+    character(len=16) :: field_type, crit, norm, type_comp
     integer :: iarg
-!     ----- FIN  DECLARATIONS ------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infmaj()
-    call infniv(ifm, niv)
 !
-    call getfac(mcfact, nuti)
-    if (nuti .eq. 0) then
-        goto 9999
-    endif
+! - Initializations
 !
-!     BOUCLE SUR LES OCCURRENCES DE CHAM_UTIL
-    do 10 ioc = 1, nuti
-        call getvtx(mcfact, 'NOM_CHAM', ioc, iarg, 1,&
-                    chin, ibid)
-        call getvis(mcfact, 'NUME_CHAM_RESU', ioc, iarg, 1,&
-                    nchout, ibid)
-        ASSERT(nchout.ge.1 .and. nchout.le.20)
-!       CRITERE OU FORMULE ?
-        crit = ' '
-        call getvid(mcfact, 'FORMULE', ioc, iarg, 0,&
-                    k8b, nf)
-        if (nf .eq. 0) then
-            call getvtx(mcfact, 'CRITERE', ioc, iarg, 1,&
-                        crit, nc)
-            jform = 1
-        else
-            nf = -nf
-            call wkvect(lform, 'V V K8', nf, jform)
-            call getvid(mcfact, 'FORMULE', ioc, iarg, nf,&
-                        zk8(jform), ibid)
+    keywordfact = 'CHAM_UTIL'
+    lform       = '&&CCCHUT.FORMULE'
+    call getfac(keywordfact, nuti)
+!
+! - Loop on occurrences
+!
+    do ioc = 1, nuti
+        call getvtx(keywordfact, 'NOM_CHAM', ioc, iarg, 1,&
+                    field_type, ibid)
+        call getvis(keywordfact, 'NUME_CHAM_RESU', ioc, iarg, 1,&
+                    nume_field_out, ibid)
+        ASSERT(nume_field_out.ge.1 .and. nume_field_out.le.20)
+!
+! ----- Which kind of computation ?
+!
+        call getvid(keywordfact, 'FORMULE', ioc, iarg, 0,&
+                    k8b, nb_form)
+        nb_form = -nb_form
+        call getvtx(keywordfact, 'CRITERE', ioc, iarg, 0,&
+                    k8b, nb_crit)
+        nb_crit = -nb_crit
+        call getvtx(keywordfact, 'NORME', ioc, iarg, 0,&
+                    k8b, nb_norm)
+        nb_norm = -nb_norm
+!
+! ----- Case NORME
+!
+        if (nb_form .eq. 1) then
+
         endif
-        call ccchuc(resuin, resuou, chin, nchout, crit,&
-                    nf, zk8(jform), lisord, nbordr)
-        call jedetr(lform)
-10  end do
 !
-9999  continue
+! ----- Type of computation
+!
+        crit  = ' '
+        norm  = ' '
+        jform = 1
+        if (nb_crit .ne. 0) then
+            ASSERT(nb_crit.eq.1)
+            ASSERT(nb_form.eq.0)
+            ASSERT(nb_norm.eq.0)
+            type_comp = 'CRITERE'
+            call getvtx(keywordfact, type_comp, ioc, iarg, nb_crit, &
+                        crit, ibid)
+!
+        elseif (nb_form .ne. 0) then
+            ASSERT(nb_crit.eq.0)
+            ASSERT(nb_norm.eq.0)
+            type_comp = 'FORMULE'
+            call wkvect(lform, 'V V K8', nb_form, jform)
+            call getvid(keywordfact, type_comp, ioc, iarg, nb_form,&
+                        zk8(jform), ibid)
+!
+        elseif (nb_norm .ne. 0) then
+            ASSERT(nb_crit.eq.0)
+            ASSERT(nb_form.eq.0)
+            ASSERT(nb_norm.eq.1)
+            type_comp = 'NORME'
+            call getvtx(keywordfact, type_comp, ioc, iarg, nb_norm, &
+                        norm, ibid)
+        else
+            ASSERT(.false.)
+        endif
+!
+! ----- Computation
+!
+        call ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, &
+                    crit     , norm      , nb_form , zk8(jform)    , list_ordr, &
+                    nb_ordr)
+!
+        call jedetr(lform)
+    enddo
+!
     call jedema()
 !
 end subroutine

@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ccchcr(crit, nomgd, nbcmp, valin, licmp,&
-                      nbcmpr, valres, iret)
-        integer :: nbcmpr
-        integer :: nbcmp
-        character(len=16) :: crit
-        character(len=8) :: nomgd
-        real(kind=8) :: valin(nbcmp)
-        character(len=8) :: licmp(nbcmp)
-        real(kind=8) :: valres(nbcmpr)
-        integer :: iret
+    subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
+                      nb_cmp_out, val_out, ichk)
+        character(len=16), intent(in) :: crit
+        character(len=8), intent(in) :: name_gd
+        integer, intent(in) :: nb_val_in
+        real(kind=8), intent(in) :: val_in(nb_val_in)
+        character(len=8), intent(in) :: cmp_in(nb_val_in)
+        integer, intent(in) :: nb_cmp_out
+        real(kind=8), intent(out) :: val_out(nb_cmp_out)
+        integer, intent(out) :: ichk
     end subroutine ccchcr
 end interface

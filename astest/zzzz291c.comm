@@ -134,6 +134,8 @@ FNORM3=FORMULE(VALE='DX*DX + DY*DY + DZ*DZ',
 FNORM6=FORMULE(VALE='SIXX*SIXX + SIYY*SIYY + SIZZ*SIZZ + 2*SIXY*SIXY + 2*SIYZ*SIYZ + 2*SIXZ*SIXZ',
                NOM_PARA=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'));
 
+FFROB6=FORMULE(VALE='SIXX*SIXX + SIYY*SIYY + SIZZ*SIZZ + SIXY*SIXY + SIYZ*SIYZ + SIXZ*SIXZ',
+               NOM_PARA=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'));
 
 # Creation des champs de fonctions
 
@@ -148,6 +150,12 @@ F3DEGA=CREA_CHAMP(OPERATION='AFFE',
                   MODELE=MO,
                   PROL_ZERO='OUI',
                   AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORM6),);
+
+FFDEGA=CREA_CHAMP(OPERATION='AFFE',
+                  TYPE_CHAM='ELGA_NEUT_F',
+                  MODELE=MO,
+                  PROL_ZERO='OUI',
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FFROB6),);
 
 F2DEGA=CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELGA_NEUT_F',
@@ -172,6 +180,11 @@ TEMP00=CREA_CHAMP(OPERATION='EVAL',
 TEMPAA=CREA_CHAMP(OPERATION='EVAL',
                   TYPE_CHAM='ELGA_NEUT_R',
                   CHAM_F=F3DEGA,
+                  CHAM_PARA=SIGA);
+
+TEMPAB=CREA_CHAMP(OPERATION='EVAL',
+                  TYPE_CHAM='ELGA_NEUT_R',
+                  CHAM_F=FFDEGA,
                   CHAM_PARA=SIGA);
 
 TEMPAZ=CREA_CHAMP(OPERATION='EVAL',
@@ -214,6 +227,11 @@ Norme11=POST_ELEM(MODELE=MO,
                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1',GROUP_MA='CUBE'),);
 
 
+NormeF1=POST_ELEM(MODELE=MO,
+                  CHAM_GD=TEMPAB,
+                  CHAM_MATER=CHMAT,
+                  INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1',GROUP_MA='CUBE'),);
+
 Norme22=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPBB,
                   CHAM_MATER=CHMAT,
@@ -231,6 +249,8 @@ Norm02=math.sqrt(Norme02['INTE_X1',1]);
 Norm03=math.sqrt(Norme03['INTE_X1',1]);
 
 Norm11=math.sqrt(Norme11['INTE_X1',1]);
+
+NormF1=math.sqrt(NormeF1['INTE_X1',1]);
 
 Norm22=math.sqrt(Norme22['INTE_X1',1]);
 
@@ -269,6 +289,11 @@ TBA1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         MODELE=MO),);
 
 TBA2=POST_ELEM(NORME=_F(TYPE_NORM='L2',
+                        GROUP_MA='CUBE',
+                        CHAM_GD=SIGA,
+                        MODELE=MO),);
+
+TCA2=POST_ELEM(NORME=_F(TYPE_NORM='FROBENIUS',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGA,
                         MODELE=MO),);
@@ -409,6 +434,15 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=98102201161.0,
            NOM_PARA='VALE_NORM',
            TABLE=TBA2,);
+
+
+# champ SIEF_ELGA (3D) : GROUP_MA='CUBE'
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=1.0E-06,
+           VALE_CALC=9.2945333742089E+10,
+           VALE_REFE=92945333742.1,
+           NOM_PARA='VALE_NORM',
+           TABLE=TCA2,);
 
 # champ SIEF_ELGA (2D et 3D) :  TOUT='OUI'
 # apres interpolation aux noeuds

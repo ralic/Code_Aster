@@ -33,6 +33,7 @@ MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     ENORME   = NEUT_R   ELEM__         (X1       )
     EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+    EMNEUT_I = NEUT_I   ELEM__         (X[1]     )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
 
 VECTEUR__
@@ -48,6 +49,7 @@ OPTION__
     CHAR_MECA_PESA_R    427   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG 
+                              OUT__  EGGEOP_R PCOORPG
     NORME_L2            563   IN__   EGGEOP_R PCOORPG  EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR
-                              OUT__  ENORME   PNORME                             
+                                     EMNEUT_I PCALCI
+                              OUT__  ENORME   PNORME

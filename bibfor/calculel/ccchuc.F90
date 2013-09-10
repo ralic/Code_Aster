@@ -1,5 +1,40 @@
-subroutine ccchuc(resuin, resuou, chin, nchout, crit,&
-                  nf, nfor, lisord, nbordr)
+subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, &
+                  crit, norm, nb_form, name_form, list_ordr, &
+                  nb_ordr)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/ccchci.h"
+#include "asterfort/ccchuc_chamel.h"
+#include "asterfort/ccchuc_chamno.h"
+#include "asterfort/ccchuc_norm.h"
+#include "asterfort/ccchuc_ligr.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescrm.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,368 +51,272 @@ subroutine ccchuc(resuin, resuou, chin, nchout, crit,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/ccchcf.h"
-#include "asterfort/ccchci.h"
-#include "asterfort/ccchcr.h"
-#include "asterfort/celces.h"
-#include "asterfort/cescel.h"
-#include "asterfort/cescrm.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/cnocns.h"
-#include "asterfort/cnscno.h"
-#include "asterfort/cnscre.h"
-#include "asterfort/codent.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exlim1.h"
-#include "asterfort/gnomsd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeundf.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/wkvect.h"
-    integer :: nbordr, nchout, nf
-    character(len=8) :: resuin, resuou, nfor(nf)
-    character(len=16) :: chin, crit
-    character(len=19) :: lisord
 ! person_in_charge: mathieu.courtois at edf.fr
-! ----------------------------------------------------------------------
-!  CALC_CHAMP - TRAITEMENT DE CHAM_UTIL - CRITERE
-!  -    -                     --   -      -
-! ----------------------------------------------------------------------
-! IN  :
-!   RESUIN K8    NOM DE LA SD IN
-!   RESUOU K8    NOM DE LA SD OUT
-!   CHIN   K16   NOM DU CHAMP EN ENTREE
-!   CHOUT  K16   NOM DU CHAMP EN SORTIE
-!   CRIT   K16   NOM DU CRITERE A CALCULER (UTILISE SI NF=0)
-!   NF     I     NOMBRE DE FORMULES
-!   NFOR   K8(*) NOMS DES FORMULES
-!   LISORD K19   NOM DE LA LISTE DES NUMEROS D'ORDRE
-!   NBORDR I     NOMBRE DE NUMEROS D'ORDRE
-! ----------------------------------------------------------------------
-    integer :: jordr, i, iret, ima, iordr, ipt, isp, icmp, nbaj
-    integer :: jchsd, jchsl, jchsv, jchsc, jchrd, jchrl, jchrv, jval
-    integer :: jvres, iad, ibid, jcmp, jlima, jlast, ichk, iv
-    integer :: nbma, nbpt, nbsp, nbcmp, nbcmpp, nbcmpr
+!
+    character(len=8), intent(in) :: sdresu_in
+    character(len=8), intent(in) :: sdresu_out
+    character(len=16), intent(in) :: field_type
+    character(len=16), intent(in) :: type_comp
+    character(len=16), intent(in) :: crit
+    character(len=16), intent(in) :: norm
+    integer, intent(in) :: nb_form
+    character(len=8), intent(in) :: name_form(nb_form)
+    integer , intent(in) :: nume_field_out
+    character(len=19), intent(in) :: list_ordr
+    integer , intent(in) :: nb_ordr
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Command CALC_CHAMP
+!
+! Compute CHAM_UTIL for one occurrence
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  sdresu_in      : name of input result data-structure
+! In  sdresu_out     : name of output result data-structure
+! In  field_type     : type of field in result data-structure
+! In  nume_field_out : order index for output field
+! In  type_comp      : type of computation (CRITERE, NORME or FORMULE)
+! In  crit           : type of criterion
+! In  norm           : type of norm
+! In  nb_form        : number of formulas
+! In  name_form      : names of formulas
+! In  nb_ordr        : number of order index in list_ordr
+! In  list_ordr      : name of list of order
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: jordr, numord
+    integer :: iord, icmp
+    integer :: jchsd
+    integer :: ibid, jcmp, ichk, iret
+    integer :: nb_node_new, nb_elem_new
+    integer :: nb_elem, nb_node
+    integer :: nb_cmp
+    integer :: nb_cmp_resu
     integer :: vali(3)
-    logical :: idem
     real(kind=8) :: rbid
     character(len=2) :: cnum
-    character(len=4) :: typces
+    character(len=4) :: type_field_in, type_field_out
     character(len=8) :: ma, model, nomgd
-    character(len=16) :: chout, typs, valk(3)
-    character(len=19) :: chs, chr, wkin, ligrel
-    character(len=19) :: wkout, wkcmp, wlima, wlast
-    character(len=24) :: chps, chres, noojb
-    character(len=8) :: nompro
-    data nompro /'&&CCCHUC'/
-!     ----- FIN  DECLARATIONS ------------------------------------------
+    character(len=16) :: typs, valk(3), name_field_out
+    character(len=19) :: field_in_s, field_out_s
+    character(len=19) :: ligrel_old, ligrel_new
+    character(len=24) :: list_elem_new, work_out_val, wkcmp, list_elem_stor
+    integer :: j_elem, j_resu
+    character(len=24) :: field_in, field_out, field_out_sd
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    typces = '    '
-    nomgd = '        '
-    chout = '                '
-    chs = nompro//'.CHSIN'
-    chr = nompro//'.CHSOUT'
-    chres = nompro//'.CHRES'
-    wkin = nompro//'.VALIN'
-    wkcmp = nompro//'.CMPS'
-    wkout = nompro//'.VALRES'
-    wlima = nompro//'.WLIMA'
-    wlast = nompro//'.WLAST'
-    ligrel = 'NOT_INIT'
-    call codent(nchout, 'D0', cnum)
-    ASSERT((nf.eq.0 .and. crit.ne.' ') .or.(nf.ne.0 .and. crit.eq.' '))
 !
-!     RECUPERATION DE LA LISTE DE NUMEROS D'ORDRE
-    call jeveuo(lisord, 'L', jordr)
+! - Initializations
 !
-! --- BOUCLE SUR LES NUMEROS D'ORDRE
-    do 10 i = 1, nbordr
-        iordr = zi(jordr-1+i)
-!       TEST L'EXISTENCE DANS RESUIN OU RESUOU
-        call rsexch(' ', resuin, chin, iordr, chps,&
+    type_field_in  = ' '
+    type_field_out = ' '
+    nomgd  = ' '
+    field_in_s  = '&&CCCHUC.CHSIN'
+    field_out_s = '&&CCCHUC.CHSOUT'
+    field_out   = '&&CCCHUC.CHOUT'
+    wkcmp  = '&&CCCHUC.CMPS'
+    work_out_val = '&&CCCHUC.VAL'
+    list_elem_new   = '&&CCCHUC.LIST_NEW'
+    list_elem_stor  = '&&CCCHUC.LIST_STO'
+    ligrel_old      = 'NOT_INIT'
+!
+! - Size of output field
+!
+    call ccchci('NBCMP', type_comp, crit, norm, nb_form, nb_cmp_resu)
+    call wkvect(work_out_val, 'V V R', nb_cmp_resu, j_resu)
+!
+! - Access to result
+!
+    call jeveuo(list_ordr, 'L', jordr)
+!
+    do iord = 1, nb_ordr
+!
+! ----- Get input field
+!
+        numord = zi(jordr-1+iord)
+        call rsexch(' ', sdresu_in, field_type, numord, field_in,&
                     iret)
         if (iret .ne. 0) then
-            if (resuin .eq. resuou) then
-                valk(1) = chin
-                valk(2) = resuin
-                vali(1) = iordr
+            if (sdresu_in .eq. sdresu_out) then
+                valk(1) = field_type
+                valk(2) = sdresu_in
+                vali(1) = numord
                 call u2mesg('F', 'CHAMPS_6', 2, valk, 1,&
                             vali, 0, rbid)
             else
-                call rsexch(' ', resuou, chin, iordr, chps,&
+                call rsexch(' ', sdresu_out, field_type, numord, field_in,&
                             iret)
                 if (iret .ne. 0) then
-                    valk(1) = chin
-                    valk(2) = resuin
-                    valk(3) = resuou
-                    vali(1) = iordr
+                    valk(1) = field_type
+                    valk(2) = sdresu_in
+                    valk(3) = sdresu_out
+                    vali(1) = numord
                     call u2mesg('F', 'CHAMPS_9', 3, valk, 1,&
                                 vali, 0, rbid)
                 endif
             endif
         endif
-        if (i .eq. 1) then
-            call dismoi('F', 'NOM_GD', chps, 'CHAMP', ibid,&
+!
+! ----- Get input field properties
+!
+        if (iord .eq. 1) then
+            call dismoi('F', 'NOM_GD', field_in, 'CHAMP', ibid,&
                         nomgd, iret)
-            call dismoi('F', 'TYPE_CHAMP', chps, 'CHAMP', ibid,&
-                        typces, iret)
-            ASSERT(typces.ne.'CART' .and. typces.ne.'RESL')
-            chout = 'UT'//cnum//'_'//typces
-        endif
-        call dismoi('F', 'NOM_MAILLA', chps, 'CHAMP', ibid,&
-                    ma, iret)
-        if (nf .eq. 0) then
-            call ccchci(crit, 'NBCMP', nbcmpr)
-        else
-            nbcmpr = nf
+            call dismoi('F', 'TYPE_CHAMP', field_in, 'CHAMP', ibid,&
+                        type_field_in, iret)
+            if (type_field_in.ne.'NOEU') then
+                call dismoi('F', 'NOM_LIGREL', field_in, 'CHAMP', ibid,&
+                            ligrel_old, iret)
+                call dismoi('F', 'NOM_MODELE', field_in, 'CHAMP', ibid,&
+                            model, ibid)
+            endif
+            ASSERT(type_field_in.ne.'CART' .and. type_field_in.ne.'RESL')
+            call codent(nume_field_out, 'D0', cnum)
+            name_field_out = 'UT'//cnum//'_'//type_field_in
+            call dismoi('F', 'NOM_MAILLA', field_in, 'CHAMP', ibid,&
+                        ma, iret)
         endif
 !
-!       CHAM_NO_S OU CHAM_ELEM_S ?
-        if (typces .eq. 'NOEU') then
+! ----- Type of output field
 !
-! ------- TRAITEMENT DES CHAM_ELEM
+        type_field_out = type_field_in
+        if (type_comp .eq. 'NORME') then
+            if (type_field_in .eq. 'NOEU') then
+                call u2mess('F','CHAMPS_17')
+            endif
+            ASSERT(type_field_in(1:2) .eq. 'EL')
+            type_field_out = 'ELEM'
+            name_field_out = 'UT'//cnum//'_ELEM'
+        endif
+!
+! ----- Compute CHAM_UTIL
+!
+        if (type_field_in .eq. 'NOEU') then
+!
             typs = 'CHAM_NO_S'
 !
-            call cnocns(chps, 'V', chs)
-            call jeveuo(chs//'.CNSD', 'L', jchsd)
-            call jeveuo(chs//'.CNSC', 'L', jchsc)
-            call jeveuo(chs//'.CNSV', 'L', jchsv)
-            call jeveuo(chs//'.CNSL', 'L', jchsl)
+! --------- Create <CHAM_NO_S> from input field
 !
-!         CREATION DU CHAM_NO_S RESULTAT
-            call wkvect(wkcmp, 'V V K8', nbcmpr, jcmp)
-            do 100 icmp = 1, nbcmpr
+            call cnocns(field_in, 'V', field_in_s)
+            call jeveuo(field_in_s//'.CNSD', 'L', jchsd)
+            nb_node = zi(jchsd-1+1)
+            nb_cmp  = zi(jchsd-1+2)
+!
+! --------- Create output field
+!
+            call wkvect(wkcmp, 'V V K8', nb_cmp_resu, jcmp)
+            do icmp = 1, nb_cmp_resu
                 call codent(icmp, 'G', cnum)
                 zk8(jcmp-1+icmp) = 'X'//cnum
-100          continue
-            call cnscre(ma, 'NEUT_R', nbcmpr, zk8(jcmp), 'V',&
-                        chr)
-            call jedetr(wkcmp)
+            enddo
+            ASSERT(type_field_out .eq. 'NOEU')
+            call cnscre(ma, 'NEUT_R', nb_cmp_resu, zk8(jcmp), 'V',&
+                        field_out_s)
 !
-            call jeveuo(chr//'.CNSD', 'E', jchrd)
-            call jeveuo(chr//'.CNSL', 'E', jchrl)
-            call jeveuo(chr//'.CNSV', 'E', jchrv)
-!         VECTEURS DE TRAVAIL DES VALEURS PAR COMPOSANTE
-            nbcmp = zi(jchsd-1+2)
-            call wkvect(wkin, 'V V R', nbcmp, jval)
-            call wkvect(wkcmp, 'V V K8', nbcmp, jcmp)
-            call wkvect(wkout, 'V V R', nbcmpr, jvres)
+! --------- Compute on <CHAM_NO>
 !
-            nbpt = zi(jchsd-1+1)
-            nbaj = 0
-            do 110 ipt = 1, nbpt
-                call jeundf(wkin)
-                call jeundf(wkcmp)
-                iv = 0
-                do 112 icmp = 1, nbcmp
-                    if (zl(jchsl-1+(ipt-1)*nbcmp+icmp)) then
-                        iv = iv + 1
-                        zr(jval-1+iv) = zr(jchsv-1+(ipt-1)*nbcmp+icmp)
-                        zk8(jcmp-1+iv) = zk8(jchsc-1+icmp)
-                    endif
-112              continue
+            call ccchuc_chamno(field_in_s, field_out_s, nb_node, nb_cmp, type_comp, &
+                               crit, nb_form, name_form, nomgd, nb_cmp_resu, work_out_val, &
+                               nb_node_new, ichk)
 !
-                if (nf .eq. 0) then
-                    call ccchcr(crit, nomgd, iv, zr(jval), zk8(jcmp),&
-                                nbcmpr, zr(jvres), ichk)
-                else
-                    call ccchcf(nfor, iv, zr(jval), zk8(jcmp), nbcmpr,&
-                                zr(jvres), ichk)
-                endif
-                if (ichk .ne. 0) then
-                    goto 110
-                endif
+! --------- Print
 !
-                nbaj = nbaj + 1
-                do 114 icmp = 1, nbcmpr
-                    zl(jchrl-1+(ipt-1)*nbcmpr+icmp) = .true.
-                    zr(jchrv-1+(ipt-1)*nbcmpr+icmp) = zr(jvres-1+icmp)
-114              continue
-110          continue
-!
-            vali(1) = iordr
-            vali(2) = nbaj
-            vali(3) = nbpt
-            call u2mesi('I', 'CHAMPS_10', 3, vali)
-!
-!         STOCKAGE DU CHAMP
-            call rsexch(' ', resuou, chout, iordr, chres,&
-                        iret)
-            if (iret .ne. 100) then
-                valk(1) = chout
-                valk(2) = resuou
-                call u2mesk('F', 'CHAMPS_14', 2, valk)
+            if (ichk.eq.0) then
+                vali(1) = numord
+                vali(2) = nb_node_new
+                vali(3) = nb_node
+                call u2mesi('I', 'CHAMPS_10', 3, vali)
+            else
+                call u2mesi('A', 'CHAMPS_15', 1, numord)
             endif
-            call cnscno(chr, ' ', 'UNUSED', 'G', chres,&
-                        'F', iret)
-            ASSERT(iret.eq.0)
-            call rsnoch(resuou, chout, iordr)
 !
-            call detrsd(typs, chs)
-            call detrsd(typs, chr)
-            call jedetr(wkcmp)
-            call jedetr(wkin)
-            call jedetr(wkout)
-!
-! ------- ENDIF CHAM_NO
         else
 !
-! ------- TRAITEMENT DES CHAM_ELEM
             typs = 'CHAM_ELEM_S'
-!
-            if (i .eq. 1) then
-                call dismoi('F', 'NOM_LIGREL', chps, 'CHAMP', ibid,&
-                            ligrel, iret)
-            endif
-!
-            call celces(chps, 'V', chs)
-            call jeveuo(chs//'.CESD', 'L', jchsd)
-            call jeveuo(chs//'.CESL', 'L', jchsl)
-            call jeveuo(chs//'.CESV', 'L', jchsv)
-            call jeveuo(chs//'.CESC', 'L', jchsc)
-!
-!         CREATION DU CHAM_ELEM_S RESULTAT
-            call cescrm('V', chr, typces, 'NEUT_R', nbcmpr,&
-                        ' ', chs)
-!
-            call jeveuo(chr//'.CESD', 'E', jchrd)
-            call jeveuo(chr//'.CESL', 'E', jchrl)
-            call jeveuo(chr//'.CESV', 'E', jchrv)
-!         VECTEURS DE TRAVAIL DES VALEURS PAR COMPOSANTE
-            nbcmp = zi(jchsd-1+2)
-            call wkvect(wkin, 'V V R', nbcmp, jval)
-            call wkvect(wkcmp, 'V V K8', nbcmp, jcmp)
-            call wkvect(wkout, 'V V R', nbcmpr, jvres)
-!
-            nbma = zi(jchsd-1+1)
-            call wkvect(wlima, 'V V I', nbma, jlima)
-            nbaj = 0
-            do 200 ima = 1, nbma
-                ichk = -1
-                nbpt = zi(jchsd-1+5+4*(ima-1)+1)
-                nbsp = zi(jchsd-1+5+4*(ima-1)+2)
-                nbcmpp = zi(jchsd-1+5+4*(ima-1)+3)
-                do 210 ipt = 1, nbpt
-                    do 212 isp = 1, nbsp
-                        call jeundf(wkin)
-                        call jeundf(wkcmp)
-                        iv = 0
-                        do 214 icmp = 1, nbcmpp
-                            call cesexi('S', jchsd, jchsl, ima, ipt,&
-                                        isp, icmp, iad)
-                            if (iad .gt. 0) then
-                                iv = iv + 1
-                                zr(jval-1+iv) = zr(jchsv-1+iad)
-                                zk8(jcmp-1+iv) = zk8(jchsc-1+icmp)
-                            endif
-214                      continue
-!
-                        if (nf .eq. 0) then
-                            call ccchcr(crit, nomgd, iv, zr(jval), zk8( jcmp),&
-                                        nbcmpr, zr(jvres), ichk)
-                        else
-                            call ccchcf(nfor, iv, zr(jval), zk8(jcmp), nbcmpr,&
-                                        zr(jvres), ichk)
-                        endif
-                        if (ichk .ne. 0) then
-                            goto 200
-                        endif
-!
-                        do 216 icmp = 1, nbcmpr
-                            call cesexi('S', jchrd, jchrl, ima, ipt,&
-                                        isp, icmp, iad)
-                            iad = -iad
-                            zl(jchrl-1+iad) = .true.
-                            zr(jchrv-1+iad) = zr(jvres-1+icmp)
-216                      continue
-212                  continue
-210              continue
-                if (ichk .eq. 0) then
-!             ON CONSERVE LA MAILLE SI LE CRITERE A PU ETRE CALCULE SUR
-!             TOUS SES POINTS
-                    nbaj = nbaj + 1
-                    zi(jlima-1+nbaj) = ima
-                endif
-200          continue
-!
-            vali(1) = iordr
-            vali(2) = nbaj
-            vali(3) = nbma
-            call u2mesi('I', 'CHAMPS_8', 3, vali)
-!
-!         FAUT-IL CREER UN NOUVEAU LIGREL ?
-            idem = .true.
-            call jeexin(wlast, iret)
-            if (iret .eq. 0) then
-!           ON STOCKE EN INDICE 1 LE NOMBRE DE MAILLES DU LIGREL
-                call wkvect(wlast, 'V V I', nbma+1, jlast)
-                if (nbaj .ne. nbma) then
-                    idem = .false.
-                endif
+            if (type_comp .eq. 'NORME') then
+                call ccchuc_norm(norm, model, nomgd, field_in, type_field_in, &
+                                 field_out)
             else
-                if (zi(jlast-1+1) .ne. nbaj) goto 51
-                do 50 ima = 1, nbaj
-                    if (zi(jlast-1+ima+1) .ne. zi(jlima-1+ima)) then
-                        idem = .false.
-                        goto 51
-                    endif
-50              continue
-51              continue
-            endif
-            zi(jlast-1+1) = nbaj
-            do 52 ima = 1, nbaj
-                zi(jlast-1+ima+1) = zi(jlima-1+ima)
-52          continue
 !
-            if (.not.idem) then
-!           SI PAS LES MEMES MAILLES, ON CREE UN NOUVEAU LIGREL
-                call dismoi('F', 'NOM_MODELE', chps, 'CHAMP', ibid,&
-                            model, ibid)
-                noojb='12345678.LIGR000000.NBNO'
-                call gnomsd(' ', noojb, 14, 19)
-                ligrel=noojb(1:19)
-                call exlim1(zi(jlima), nbaj, model, 'G', ligrel)
-            endif
+! ------------- Create <CHAM_ELEM_S> from input field
 !
-!         STOCKAGE DU CHAMP
-            call rsexch(' ', resuou, chout, iordr, chres,&
-                        iret)
-            if (iret .ne. 100) then
-                valk(1) = chout
-                valk(2) = resuou
-                call u2mesk('F', 'CHAMPS_14', 2, valk)
-            endif
-            call cescel(chr, ligrel, ' ', ' ', 'NAN',&
-                        ibid, 'G', chres, 'F', iret)
-            ASSERT(iret.eq.0)
-            call rsnoch(resuou, chout, iordr)
+                call celces(field_in, 'V', field_in_s)
+                call jeveuo(field_in_s//'.CESD', 'L', jchsd)
+                nb_elem = zi(jchsd-1+1)
+                nb_cmp  = zi(jchsd-1+2)
 !
-            call detrsd(typs, chs)
-            call detrsd(typs, chr)
-            call jedetr(wkcmp)
-            call jedetr(wkin)
-            call jedetr(wkout)
-            call jedetr(wlima)
+! ------------- Work vector for element in output field
 !
-! ------- ENDIF CHAM_ELEM
+                call wkvect(list_elem_new, 'V V I', nb_elem, j_elem)
+!
+! ------------- Create output field
+!
+                call cescrm('V', field_out_s, type_field_out, 'NEUT_R', nb_cmp_resu,&
+                            ' ', field_in_s)
+!
+! ------------- Compute on <CHAM_ELEM>
+!
+                call ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp, &
+                                   crit, nb_form, name_form, nomgd, nb_cmp_resu, work_out_val,&
+                                   list_elem_new, nb_elem_new, ichk)
+!
+! ------------- Print
+!
+                if (ichk.eq.0) then
+                    vali(1) = numord
+                    vali(2) = nb_elem_new
+                    vali(3) = nb_elem
+                    call u2mesi('I', 'CHAMPS_8', 3, vali)
+                else
+                    call u2mesi('A', 'CHAMPS_15', 1, numord)
+                endif
+!
+! ------------- Manage <LIGREL> - Create new if necessary 
+!
+                call ccchuc_ligr(list_elem_stor, nb_elem, nb_elem_new, list_elem_new, &
+                                 ligrel_old, ligrel_new)
+            endif       
         endif
 !
-10  end do
+! ----- Save in result
 !
-    call jedetr(wlast)
+        call rsexch(' ', sdresu_out, name_field_out, numord, field_out_sd, &
+                    iret)
+        if (iret .ne. 100) then
+            valk(1) = name_field_out
+            valk(2) = sdresu_out
+            call u2mesk('F', 'CHAMPS_14', 2, valk)
+        endif
+        if (type_field_in .eq. 'NOEU') then
+            call cnscno(field_out_s, ' ', 'UNUSED', 'G', field_out_sd, &
+                        'F', iret)
+        else
+            if (type_comp .eq. 'NORME') then
+                iret = 0
+                call copisd('CHAMP_GD', 'G', field_out, field_out_sd)
+                call detrsd('CHAMP', field_out)
+            else
+                call cescel(field_out_s, ligrel_new, ' ', ' ', 'NAN',&
+                            ibid, 'G', field_out_sd, 'F', iret)
+            endif
+        endif
+        ASSERT(iret.eq.0)
+        call rsnoch(sdresu_out, name_field_out, numord)
+!
+        call detrsd(typs, field_in_s)
+        call detrsd(typs, field_out_s)
+        call jedetr(wkcmp)
+        call jedetr(list_elem_new)
+!
+    end do
+!
+    call jedetr(list_elem_stor)
+    call jedetr(work_out_val)
 !
     call jedema()
 !

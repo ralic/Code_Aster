@@ -16,16 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ccchuc(resuin, resuou, chin, nchout, crit,&
-                      nf, nfor, lisord, nbordr)
-        integer :: nf
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=16) :: chin
-        integer :: nchout
-        character(len=16) :: crit
-        character(len=8) :: nfor(nf)
-        character(len=19) :: lisord
-        integer :: nbordr
+    subroutine ccchuc(sdresu_in, sdresu_out, field_in, nume_field_out, type_comp, &
+                      crit, norm, nb_form, name_form, list_ordr, &
+                      nb_ordr)
+        character(len=8), intent(in) :: sdresu_in
+        character(len=8), intent(in) :: sdresu_out
+        character(len=16), intent(in) :: field_in
+        character(len=16), intent(in) :: type_comp
+        character(len=16), intent(in) :: crit
+        character(len=16), intent(in) :: norm
+        integer, intent(in) :: nb_form
+        character(len=8), intent(in) :: name_form(nb_form)
+        integer , intent(in) :: nume_field_out
+        character(len=19), intent(in) :: list_ordr
+        integer , intent(in) :: nb_ordr
     end subroutine ccchuc
 end interface

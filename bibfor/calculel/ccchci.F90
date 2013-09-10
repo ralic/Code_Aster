@@ -1,4 +1,10 @@
-subroutine ccchci(critz, questz, repi)
+subroutine ccchci(questz, type_comp, crit, norm, nb_form, &
+                  repi)
+!
+    implicit none
+!
+#include "asterfort/assert.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,38 +21,60 @@ subroutine ccchci(critz, questz, repi)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "asterfort/assert.h"
-    character(len=*) :: critz, questz
-    integer :: repi
 ! person_in_charge: mathieu.courtois at edf.fr
-! ----------------------------------------------------------------------
-!  CALC_CHAMP - TRAITEMENT DE CHAM_UTIL - CRITERE INFO
-!  -    -                     --          -       -
-!  RETOURNE DES INFOS SUR LE CRITERE CALCULE.
-!  QUESTION :
-!     'NBCMP' : RETOURNE LE NOMBRE DE COMPOSANTE A REMPLIR
-! ----------------------------------------------------------------------
-! IN  :
-!   CRIT   K16  NOM DU CRITERE A CALCULER
-!   QUEST  K16  QUESTION
-! OUT :
-!   REPI   I    VALEUR ENTIERE RETOURNEE
-! ----------------------------------------------------------------------
-    character(len=5) :: quest
-    character(len=16) :: crit
-!     ----- FIN  DECLARATIONS ------------------------------------------
-    crit = critz
-    quest = questz
 !
-    if (quest .eq. 'NBCMP') then
-        if (crit .eq. 'VMIS' .or. crit .eq. 'INVA_2' .or. crit .eq. 'TRACE') then
-            repi = 1
+    character(len=*), intent(in) :: questz
+    character(len=16), intent(in) :: type_comp
+    character(len=16), intent(in) :: crit
+    character(len=16), intent(in) :: norm
+    integer, intent(in) :: nb_form
+    integer, intent(out) :: repi
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Command CALC_CHAMP
+!
+! Get info for CHAM_UTIL
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  question       : question
+! In  type_comp      : type of computation (CRITERE, NORME or FORMULE)
+! In  crit           : type of criterion
+! In  norm           : type of norm
+! In  nb_form        : number of formulas
+! Out repi           : answer
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=5) :: question
+!
+! --------------------------------------------------------------------------------------------------
+!
+    question = questz
+    repi     = 0
+!
+    if (question .eq. 'NBCMP') then
+        if (type_comp .eq. 'CRITERE') then
+            if (crit .eq. 'VMIS' .or. crit .eq. 'INVA_2' .or. crit .eq. 'TRACE') then
+                repi = 1
+            else
+                ASSERT(.false.)
+            endif
+        elseif (type_comp .eq. 'NORME') then
+            if (norm .eq. 'L2') then
+                repi = 1
+            elseif (norm .eq. 'FROBENIUS') then
+                repi = 1
+            else
+                ASSERT(.false.)
+            endif
+        elseif (type_comp .eq. 'FORMULE') then
+            repi = nb_form
         else
             ASSERT(.false.)
         endif
     else
-!       QUESTION INVALIDE
         ASSERT(.false.)
     endif
 !

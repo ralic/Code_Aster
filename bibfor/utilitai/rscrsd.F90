@@ -55,7 +55,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     parameter (ncmec1=35)
     parameter (ncmec2=49)
     parameter (ncmec3=34)
-    parameter (ncmuti=30)
+    parameter (ncmuti=40)
     parameter (ncmeca=ncmec1+ncmec2+ncmec3+ncmuti)
     character(len=16) :: chmec1(ncmec1)
     character(len=16) :: chmec2(ncmec2)
@@ -145,16 +145,16 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !
 !      '1234567890123456','1234567890123456','1234567890123456',
     data chmuti/&
-     & 'UT01_ELGA',       'UT01_ELNO',       'UT01_NOEU',&
-     & 'UT02_ELGA',       'UT02_ELNO',       'UT02_NOEU',&
-     & 'UT03_ELGA',       'UT03_ELNO',       'UT03_NOEU',&
-     & 'UT04_ELGA',       'UT04_ELNO',       'UT04_NOEU',&
-     & 'UT05_ELGA',       'UT05_ELNO',       'UT05_NOEU',&
-     & 'UT06_ELGA',       'UT06_ELNO',       'UT06_NOEU',&
-     & 'UT07_ELGA',       'UT07_ELNO',       'UT07_NOEU',&
-     & 'UT08_ELGA',       'UT08_ELNO',       'UT08_NOEU',&
-     & 'UT09_ELGA',       'UT09_ELNO',       'UT09_NOEU',&
-     & 'UT10_ELGA',       'UT10_ELNO',       'UT10_NOEU'/
+     & 'UT01_ELGA',       'UT01_ELNO',      'UT01_ELEM', 'UT01_NOEU',&
+     & 'UT02_ELGA',       'UT02_ELNO',      'UT02_ELEM', 'UT02_NOEU',&
+     & 'UT03_ELGA',       'UT03_ELNO',      'UT03_ELEM', 'UT03_NOEU',&
+     & 'UT04_ELGA',       'UT04_ELNO',      'UT04_ELEM', 'UT04_NOEU',&
+     & 'UT05_ELGA',       'UT05_ELNO',      'UT05_ELEM', 'UT05_NOEU',&
+     & 'UT06_ELGA',       'UT06_ELNO',      'UT06_ELEM', 'UT06_NOEU',&
+     & 'UT07_ELGA',       'UT07_ELNO',      'UT07_ELEM', 'UT07_NOEU',&
+     & 'UT08_ELGA',       'UT08_ELNO',      'UT08_ELEM', 'UT08_NOEU',&
+     & 'UT09_ELGA',       'UT09_ELNO',      'UT09_ELEM', 'UT09_NOEU',&
+     & 'UT10_ELGA',       'UT10_ELNO',      'UT10_ELEM', 'UT10_NOEU'/
 !     ------------------------------------------------------------------
 !                      C H A M P _ T H E R M I Q U E
 !     ------------------------------------------------------------------
@@ -204,25 +204,25 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     call wkvect(noms2//'.ORDR', bas1//' V I', nbordr, jordr)
     call jeecra(noms2//'.ORDR', 'LONUTI', 0)
 !
-    do 10 i = 1, ncmec1
+    do i = 1, ncmec1
         chmeca(i)=chmec1(i)
-10  end do
-    do 20 i = 1, ncmec2
+    end do
+    do i = 1, ncmec2
         chmeca(i+ncmec1)=chmec2(i)
-20  end do
-    do 30 i = 1, ncmec3
+    end do
+    do i = 1, ncmec3
         chmeca(i+ncmec1+ncmec2)=chmec3(i)
-30  end do
-    do 35 i = 1, ncmuti
+    end do
+    do i = 1, ncmuti
         chmeca(i+ncmec1+ncmec2+ncmec3)=chmuti(i)
-35  end do
+    end do
 !
-    do 11 i = 1, ncthe1
+    do i = 1, ncthe1
         chther(i)=chthe1(i)
-11  end do
-    do 36 i = 1, ncmuti
+    end do
+    do i = 1, ncmuti
         chther(i+ncthe1)=chmuti(i)
-36  end do
+    end do
 !
 !     -- DECLARATION ET INITIALISATION DES PARAMETRES ET VAR. D'ACCES :
 !     ------------------------------------------------------------------
@@ -234,11 +234,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='EVEL')
-        do 40 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-40      continue
+        enddo
 !
-        goto 320
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'MULT_ELAS') then
@@ -246,10 +246,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='MUEL')
-        do 60 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-60      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'FOURIER_ELAS') then
@@ -257,11 +257,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='FOEL')
-        do 80 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-80      continue
+        enddo
 !
-        goto 320
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'FOURIER_THER') then
@@ -269,11 +269,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncther
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='FOTH')
-        do 90 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chther(i)))
-90      continue
+        enddo
 !
-        goto 320
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'EVOL_NOLI') then
@@ -281,11 +281,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='EVNO')
-        do 100 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-100      continue
+        enddo
 !
-        goto 320
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'DYNA_TRANS') then
@@ -293,10 +293,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='DYTR')
-        do 120 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-120      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'DYNA_HARMO') then
@@ -304,10 +304,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='DYHA')
-        do 140 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-140      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'HARM_GENE') then
@@ -315,10 +315,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='HAGE')
-        do 160 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-160      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'ACOU_HARMO') then
@@ -326,11 +326,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncacou
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='ACHA')
-        do 170 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chacou(i)))
-170      continue
+        enddo
 !
-        goto 320
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'EVOL_CHAR') then
@@ -344,7 +344,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         call jecroc(jexnom(noms2//'.DESC', 'FSUR_3D'))
         call jecroc(jexnom(noms2//'.DESC', 'FSUR_2D'))
         call jecroc(jexnom(noms2//'.DESC', 'VITE_VENT'))
-        goto 320
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'EVOL_THER') then
@@ -352,10 +352,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncther
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='EVTH')
-        do 190 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chther(i)))
-190      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'EVOL_VARC') then
@@ -363,10 +363,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncvarc
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='EVVA')
-        do 210 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chvarc(i)))
-210      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
         elseif (types2.eq.'MODE_MECA' .or. types2.eq.'MODE_MECA_C' .or.&
@@ -392,11 +392,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         else
             nbcham=ncmeca
             call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
-            do 230 i = 1, nbcham
+            do i = 1, nbcham
                 call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-230          continue
+            enddo
         endif
-        goto 320
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'MODE_FLAMB') then
@@ -404,10 +404,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='MOFL')
-        do 250 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-250      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'MODE_STAB') then
@@ -415,10 +415,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='MOSB')
-        do 260 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-260      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'COMB_FOURIER') then
@@ -426,13 +426,13 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncmeca+ncthe1
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='COFO')
-        do 270 i = 1, ncmeca
+        do i = 1, ncmeca
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
-270      continue
-        do 280 i = 1, ncthe1
+        enddo
+        do i = 1, ncthe1
             call jecroc(jexnom(noms2//'.DESC', chthe1(i)))
-280      continue
-        goto 320
+        enddo
+        goto 99
 !
 !     ------------------------------------------------------------------
     else if (types2.eq.'THETA_GEOM') then
@@ -440,17 +440,17 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         nbcham=ncthet
         call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
         call jeecra(noms2//'.DESC', 'DOCU', cval='THET')
-        do 290 i = 1, nbcham
+        do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chthet(i)))
-290      continue
-        goto 320
+        enddo
+        goto 99
 !
     else
         call u2mesk('F', 'UTILITAI4_31', 1, types2)
     endif
 !
 !     ------------------------------------------------------------------
-320  continue
+99  continue
 !
 !     --- CREATION DE .TACH
 !     -------------------------
@@ -461,12 +461,12 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !
 !     -- POUR QUE LES COLLECTIONS .TACH ET .TAVA SOIENT BIEN CREEES :
 !     ---------------------------------------------------------------
-    do 330,k=1,nbcham
-    call jecroc(jexnum(noms2//'.TACH', k))
-    330 end do
+    do k=1,nbcham
+        call jecroc(jexnum(noms2//'.TACH', k))
+    end do
     call jelira(noms2//'.NOVA', 'NOMMAX', nbnova)
-    do 340,k=1,nbnova
-    call jecroc(jexnum(noms2//'.TAVA', k))
-    340 end do
+    do  k=1,nbnova
+        call jecroc(jexnum(noms2//'.TAVA', k))
+    end do
 !
 end subroutine

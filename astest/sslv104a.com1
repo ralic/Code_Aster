@@ -15,8 +15,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 import numpy as NP
+import math 
 
-POURSUITE(CODE=_F(NOM='SSLV104A'),
+POURSUITE(CODE=_F(NOM='SSLV104A'),PAR_LOT='NON',
           DEBUG=_F(SDVERI='OUI',),
 )
 
@@ -35,7 +36,7 @@ RES = CREA_RESU(
 # comparaison SIEQ_ELGA vs VMIS(SIGM_ELGA)
 res = CALC_CHAMP(
     RESULTAT=RES,
-    CONTRAINTE='SIGM_ELGA',
+    CONTRAINTE=('SIGM_ELGA','SIGM_ELNO',),
     CRITERES='SIEQ_ELGA',
 )
 
@@ -115,6 +116,7 @@ RES = CALC_CHAMP(
     RESULTAT=RES,
     CRITERES='EPEQ_NOEU',
 )
+
 
 RES = CALC_CHAMP(
     reuse=RES,
@@ -310,5 +312,162 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=9.9999999999999995E-07,),
                 ),
           )
+
+#############################
+# Test NORME_L2
+#############################
+
+SIGA=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='ELGA_SIEF_R',
+                NOM_CHAM='SIGM_ELGA',
+                NUME_ORDRE=1,
+                RESULTAT=RES);
+
+FNORML2 = FORMULE(VALE='(SIXX*SIXX + SIYY*SIYY + SIZZ*SIZZ + 2*SIXY*SIXY + 2*SIYZ*SIYZ + 2*SIXZ*SIXZ)',
+                  NOM_PARA=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'));
+
+CNORML2 = CREA_CHAMP(OPERATION='AFFE',
+                  TYPE_CHAM='ELGA_NEUT_F',
+                  MODELE=MODELE,
+                  PROL_ZERO='OUI',
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORML2),);
+
+TEMPAA = CREA_CHAMP(OPERATION='EVAL',
+                    TYPE_CHAM='ELGA_NEUT_R',
+                    CHAM_F=CNORML2,
+                    CHAM_PARA=SIGA);
+
+Norme11 = POST_ELEM(MODELE=MODELE,
+                    CHAM_GD=TEMPAA,
+                    CHAM_MATER=CHAMPMAT,
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1'),);
+
+IMPR_TABLE(TABLE=Norme11, )
+#n1 = math.sqrt( Norme11['INTE_X1',1])
+
+RES = CALC_CHAMP(
+    reuse=RES,
+    RESULTAT=RES,
+    CHAM_UTIL=_F(
+        NOM_CHAM='SIGM_ELGA',
+        NORME='L2',
+        NUME_CHAM_RESU=5,
+    ),
+)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   MAILLE = 'MA1',
+                   RESULTAT=RES,
+                   NOM_CHAM='UT05_ELEM',
+                   NOM_CMP='X1',
+                   VALE_CALC=2.2649254072846E+07,
+                   VALE_REFE=22649254.0728,
+                   PRECISION=9.9999999999999995E-07,),))
+
+
+##################################
+# Test NORME_FROBENIUS: SIGM_ELGA
+###################################
+
+FNORMFR = FORMULE(VALE='(SIXX*SIXX + SIYY*SIYY + SIZZ*SIZZ + SIXY*SIXY + SIYZ*SIYZ + SIXZ*SIXZ)',
+                  NOM_PARA=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'));
+
+CNORMFR = CREA_CHAMP(OPERATION='AFFE',
+                  TYPE_CHAM='ELGA_NEUT_F',
+                  MODELE=MODELE,
+                  PROL_ZERO='OUI',
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORMFR),);
+
+TEMPBB = CREA_CHAMP(OPERATION='EVAL',
+                    TYPE_CHAM='ELGA_NEUT_R',
+                    CHAM_F=CNORMFR,
+                    CHAM_PARA=SIGA);
+
+Norme22 = POST_ELEM(MODELE=MODELE,
+                    CHAM_GD=TEMPBB,
+                    CHAM_MATER=CHAMPMAT,
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1'),);
+
+IMPR_TABLE(TABLE=Norme22, )
+#n2 = math.sqrt( Norme22['INTE_X1',1])
+
+RES = CALC_CHAMP(
+    reuse=RES,
+    RESULTAT=RES,
+    CHAM_UTIL=_F(
+        NOM_CHAM='SIGM_ELGA',
+        NORME='FROBENIUS',
+        NUME_CHAM_RESU=6,
+    ),
+)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   MAILLE = 'MA1',
+                   RESULTAT=RES,
+                   NOM_CHAM='UT06_ELEM',
+                   NOM_CMP='X1',
+                   VALE_CALC=1.849559569989E+07,
+                   VALE_REFE=18495595.6999,
+                   PRECISION=9.9999999999999995E-07,),))
+
+##################################
+# Test NORME_FROBENIUS: SIGM_ELNO
+###################################
+
+RES = CALC_CHAMP(
+    reuse=RES,
+    RESULTAT=RES,
+    CONTRAINTE=('SIGM_ELNO',),
+)
+
+SIGELA=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='ELNO_SIEF_R',
+                NOM_CHAM='SIGM_ELNO',
+                NUME_ORDRE=1,
+                RESULTAT=RES);
+
+CNORMF2 = CREA_CHAMP(OPERATION='AFFE',
+                  TYPE_CHAM='ELNO_NEUT_F',
+                  MODELE=MODELE,
+                  PROL_ZERO='OUI',
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORMFR),);
+
+TEMPB2 = CREA_CHAMP(OPERATION='EVAL',
+                    TYPE_CHAM='ELNO_NEUT_R',
+                    CHAM_F=CNORMF2,
+                    CHAM_PARA=SIGELA);
+
+Norme25 = POST_ELEM(MODELE=MODELE,
+                    CHAM_GD=TEMPB2,
+                    CHAM_MATER=CHAMPMAT,
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELNO',NOM_CMP='X1'),);
+
+IMPR_TABLE(TABLE=Norme25, )
+n2 = math.sqrt( Norme25['INTE_X1',1])
+
+print n2
+
+RES = CALC_CHAMP(
+    reuse=RES,
+    RESULTAT=RES,
+    CHAM_UTIL=_F(
+        NOM_CHAM='SIGM_ELNO',
+        NORME='FROBENIUS',
+        NUME_CHAM_RESU=7,
+    ),
+)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   MAILLE = 'MA1',
+                   RESULTAT=RES,
+                   NOM_CHAM='UT07_ELEM',
+                   NOM_CMP='X1',
+                   VALE_CALC=1.8495416733621E+07,
+                   VALE_REFE=18495422.9542,
+                   PRECISION=9.9999999999999995E-07,),))
+
 
 FIN()

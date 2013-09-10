@@ -8,6 +8,9 @@ subroutine penorm(resu, modele)
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/calc_norm_coef.h"
+#include "asterfort/calc_norm_elem.h"
+#include "asterfort/calc_coor_elga.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesred.h"
@@ -65,32 +68,64 @@ subroutine penorm(resu, modele)
 !     TRAITEMENT DU MOT CLE-FACTEUR : "NORME"
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nco
-    integer :: jno, jin, jcoef
-    integer :: nbpar, nbpmax, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
+    integer :: nb_cmp_max, nbpmax
+    parameter(nbpmax=13,nb_cmp_max=31)
+    character(len=8)  :: typpar(nbpmax)
+    character(len=16) :: nompar(nbpmax)
+!
+    integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nb_coef_user
+    integer :: jno, jin, j_coef_user
+    integer :: nbpar, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
     integer :: nn
-    integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
-    integer :: jlicmx, nb30, ncmpt, nbcoef
-    parameter(nbpmax=13,nb30=30)
+    integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm,  ifm, niv
+    integer :: nb_cmp_act
     real(kind=8) :: r8b, prec, inst, vnorm(1)
     complex(kind=8) :: c16b
     logical :: exiord
     character(len=4) :: tych, ki, exirdm
     character(len=8) :: mailla, k8b, resuco, chamg, typmcl(1), tout
-    character(len=8) :: tmpres, typpar(nbpmax), nomgd, lpain(3), lpawpg(1), crit
-    character(len=8) :: nopar, infoma, lpaout(1), tynorm
+    character(len=8) :: tmpres, nomgd, crit
+    character(len=8) :: nopar, infoma
+    character(len=16) :: tynorm
     character(len=19) :: knum, kins, lisins, cham2, chamtm, celmod, ligrel
-    character(len=19) :: liscoe
-    character(len=19) :: tmpcha, cham1
-    character(len=16) :: optio2, nomcha, valk, nompar(nbpmax), mocles(1), option
-    character(len=24) :: mesmai, mesmaf, valr, vali, lchin(3), lchwpg(1)
-    character(len=24) :: lchout(1)
-    character(len=24) :: chgeom, coefca, valk2(5), grouma
+    character(len=19) :: liscoe, field_resu
+    character(len=19) :: tmpcha, cham1, chgaus, chgeom, chcalc
+    character(len=16) :: optio2, nomcha, valk, mocles(1)
+    character(len=24) :: mesmai, mesmaf, valr, vali
+    character(len=24) :: coefca, valk2(5), grouma
+    character(len=24) :: list_cmp, list_cmp_neut
     integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
+!
+    valr = '&&PENORM.VALR'
+    vali = '&&PENORM.VALI'
+    valk = '&&PENORM.VALK'
+    knum = '&&PENORM.NUME_ORDRE'
+    kins = '&&PENORM.INST'
+    mesmai = '&&PENORM.MES_MAILLES'
+    mesmaf = '&&PENORM.MAIL_FILTRE'
+    cham1 = '&&PENORM.CHAM1'
+    cham2 = '&&PENORM.CHAM2'
+    chamtm = '&&PENORM.CHAMTM'
+    ligrel = '&&PENORM.LIGREL'
+    coefca = '&&PENORM.CARTE_COEF'
+    chcalc = '&&PENORM.CHCALC'
+    liscoe = '&&PENORM.COEFMULT'
+    list_cmp      = '&&PENORM.CMP1'
+    list_cmp_neut = '&&PENORM.CMP2'
+    field_resu = '&&PENORM.NORM_L2'
+    chgaus     = '&&PENORM.CHGAUS'
+    chgeom     = '&&PENORM.CHGEOM'
+    exiord=.false.
+    nb_cmp_act =0
+    ligrel = modele//'.MODELE'
+!
+! - Geometry
+!
+    call megeom(modele, chgeom)
 !
 ! --- 1- RECUPERATION DU MAILLAGE ET DU NOMBRE DE MAILLES
 !     ===================================================
@@ -122,24 +157,13 @@ subroutine penorm(resu, modele)
     call getvtx('NORME', 'TYPE_NORM', 1, iarg, 1,&
                 tynorm, iret)
     call getvr8('NORME', 'COEF_MULT', 1, iarg, 0,&
-                r8b, nco)
-!
-    valr = '&&PENORM.VALR'
-    vali = '&&PENORM.VALI'
-    valk = '&&PENORM.VALK'
-    knum = '&&PENORM.NUME_ORDRE'
-    kins = '&&PENORM.INST'
-    mesmai = '&&PENORM.MES_MAILLES'
-    mesmaf = '&&PENORM.MAIL_FILTRE'
-    cham1 = '&&PENORM.CHAM1'
-    cham2 = '&&PENORM.CHAM2'
-    chamtm = '&&PENORM.CHAMTM'
-    ligrel = '&&PENORM.LIGREL'
-    coefca = '&&PENORM.CARTE_COEF'
-    liscoe = '&&PENORM.COEFMULT'
-!
-    exiord=.false.
-    ncmpt =0
+                r8b, nb_coef_user)
+    if (nb_coef_user.ne.0) then
+        nb_coef_user = -nb_coef_user
+        call wkvect(liscoe, 'V V R', nb_coef_user, j_coef_user)
+        call getvr8('NORME', 'COEF_MULT', 1, iarg, nb_coef_user,&
+                    zr(j_coef_user), iret)
+    endif
 !
     if (nd .ne. 0) then
 !
@@ -252,7 +276,7 @@ subroutine penorm(resu, modele)
     endif
 !
 !     -- VERIFICATION DE L'UTILISATION DE COEF_MULT
-    if (nr .eq. 0 .and. nco .ne. 0) then
+    if (nr .eq. 0 .and. nb_coef_user .ne. 0) then
         call dismoi('C', 'NOM_GD', tmpcha, 'CHAMP', ibid,&
                     nomgd, iret)
         if (nomgd(1:6) .ne. 'NEUT_R') then
@@ -352,12 +376,7 @@ subroutine penorm(resu, modele)
             call u2mess('F', 'UTILITAI8_60')
         endif
 !
-!       - INFOS
-        if (niv .gt. 1) then
-            write(6,*) '<PENORM> NOMBRE DE MAILLES A TRAITER : ',nbma
-        endif
-!
-!      -- 4.3 CHANGEMENT DE LA GRANDEUR DU CHAMP (-> NEUT_R) --
+! ----- Convert CHAMNO/CHAMELEM input field to CHAMNO_S/CHAMELEM_S field
 !
         if (tych(1:4) .eq. 'NOEU') then
             call cnocns(cham2, 'V', chamtm)
@@ -367,131 +386,46 @@ subroutine penorm(resu, modele)
             call celces(cham2, 'V', chamtm)
             call jeveuo(chamtm//'.CESC', 'L', jlicmp)
             call jelira(chamtm//'.CESC', 'LONMAX', ncmpm)
+        else
+            goto 999
         endif
-        call jedetr('&&PENORM.CMP1')
-        call wkvect('&&PENORM.CMP1', 'V V K8', ncmpm, jlicm1)
-        call jedetr('&&PENORM.CMP2')
-        call wkvect('&&PENORM.CMP2', 'V V K8', ncmpm, jlicm2)
-        do 15 i = 1, ncmpm
+!
+! ----- List of input field components
+!
+        call jedetr(list_cmp)
+        call wkvect(list_cmp, 'V V K8', ncmpm, jlicm1)
+        do i = 1, ncmpm
+            zk8(jlicm1+i-1) = zk8(jlicmp+i-1)
+        enddo
+!
+! ----- List of <NEUT_R> components
+!
+        call jedetr(list_cmp)
+        call jedetr(list_cmp_neut)
+        call wkvect(list_cmp, 'V V K8', ncmpm, jlicm1)
+        call wkvect(list_cmp_neut, 'V V K8', ncmpm, jlicm2)
+        do i = 1, ncmpm
             call codent(i, 'G', ki)
             zk8(jlicm2+i-1)='X'//ki(1:len(ki))
             zk8(jlicm1+i-1)=zk8(jlicmp+i-1)
-15      continue
-        ligrel = modele//'.MODELE'
+        enddo
+!
+! ----- Transform input field in NEUT_R
+!
         call chsut1(chamtm, 'NEUT_R', ncmpm, zk8(jlicm1), zk8(jlicm2),&
                     'V', chamtm)
 !
-!       - INFOS
-        if (niv .gt. 1) then
-            write(6,*) '<PENORM> NOMBRE DE COMPOSANTES : ',ncmpm
-        endif
+! ----- Construction of <CARTE> of <NEUT_R> by selection of components
 !
-!      -- 4.4 CREATION D'UNE CARTE DE COEFFICIENTS
-!             (UTILE POUR LES TENSEURS) --
+        call calc_norm_coef(modele  , nomgd , nb_cmp_max, ncmpm , tynorm, &
+                            'SQUA'  ,list_cmp, nb_coef_user   , zr(j_coef_user)   , coefca, &
+                            chcalc, nb_cmp_act)
 !
-        call jedetr('&&PENORM.COEF')
-        call wkvect('&&PENORM.COEF', 'V V R', nb30, jcoef)
-        call jedetr('&&PENORM.CMPX')
-        call wkvect('&&PENORM.CMPX', 'V V K8', nb30, jlicmx)
-        if (nco .eq. 0) then
-            do 18 i = 1, nb30
-                call codent(i, 'G', ki)
-                zk8(jlicmx+i-1)='X'//ki(1:len(ki))
-                zr(jcoef+i-1)=1.d0
-18          continue
-        else
-            do 19 i = 1, nb30
-                call codent(i, 'G', ki)
-                zk8(jlicmx+i-1)='X'//ki(1:len(ki))
-                zr(jcoef+i-1)=0.d0
-19          continue
-        endif
-        if (nomgd(1:4) .eq. 'DEPL') then
-            do 20 i = 1, ncmpm
-                if (zk8(jlicm1+i-1) .eq. 'DX      ' .or. zk8(jlicm1+i-1) .eq. 'DY      '&
-                    .or. zk8(jlicm1+i-1) .eq. 'DZ      ') then
-                    zr(jcoef+i-1)=1.d0
-                    ncmpt=ncmpt+1
-                else
-                    zr(jcoef+i-1)=0.d0
-                endif
-20          continue
-        else if (nomgd(1:4).eq.'TEMP') then
-            do 21 i = 1, ncmpm
-                if (zk8(jlicm1+i-1) .eq. 'TEMP    ') then
-                    zr(jcoef+i-1)=1.d0
-                    ncmpt=ncmpt+1
-                else
-                    zr(jcoef+i-1)=0.d0
-                endif
-21          continue
-        else if (nomgd(1:4).eq.'FLUX') then
-            do 22 i = 1, ncmpm
-                if (zk8(jlicm1+i-1) .eq. 'FLUX    ' .or. zk8(jlicm1+i-1) .eq. 'FLUY    '&
-                    .or. zk8(jlicm1+i-1) .eq. 'FLUZ    ') then
-                    zr(jcoef+i-1)=1.d0
-                    ncmpt=ncmpt+1
-                else
-                    zr(jcoef+i-1)=0.d0
-                endif
-22          continue
-        else if (nomgd(1:4).eq.'EPSI') then
-            do 23 i = 1, ncmpm
-                if (zk8(jlicm1+i-1) .eq. 'EPXX    ' .or. zk8(jlicm1+i-1) .eq. 'EPYY    '&
-                    .or. zk8(jlicm1+i-1) .eq. 'EPZZ    ') then
-                    zr(jcoef+i-1)=1.d0
-                    ncmpt=ncmpt+1
-                    elseif(zk8(jlicm1+i-1).eq.'EPXY    '.or.&
-     &               zk8(jlicm1+i-1).eq.'EPXZ    '.or.&
-     &               zk8(jlicm1+i-1).eq.'EPYZ    ')then
-                    zr(jcoef+i-1)=2.d0
-                    ncmpt=ncmpt+1
-                else
-                    zr(jcoef+i-1)=0.d0
-                endif
-23          continue
-        else if (nomgd(1:4).eq.'SIEF') then
-            do 24 i = 1, ncmpm
-                if (zk8(jlicm1+i-1) .eq. 'SIXX    ' .or. zk8(jlicm1+i-1) .eq. 'SIYY    '&
-                    .or. zk8(jlicm1+i-1) .eq. 'SIZZ    ') then
-                    zr(jcoef+i-1)=1.d0
-                    ncmpt=ncmpt+1
-                    elseif(zk8(jlicm1+i-1).eq.'SIXY    '.or.&
-     &               zk8(jlicm1+i-1).eq.'SIXZ    '.or.&
-     &               zk8(jlicm1+i-1).eq.'SIYZ    ')then
-                    zr(jcoef+i-1)=2.d0
-                    ncmpt=ncmpt+1
-                else
-                    zr(jcoef+i-1)=0.d0
-                endif
-24          continue
-        else if (nomgd(1:6).eq.'NEUT_R') then
-            if (nco .ne. 0) then
-                nbcoef=-nco
-                call wkvect(liscoe, 'V V R', nbcoef, jno)
-                call getvr8('NORME', 'COEF_MULT', 1, iarg, nbcoef,&
-                            zr(jno), iret)
-                do 25 i = 1, nbcoef
-                    zr(jcoef+i-1)=zr(jno+i-1)
-                    if (zr(jno+i-1) .ne. 0.d0) ncmpt=ncmpt+1
-25              continue
-            endif
-        endif
-!
-!       - INFOS
-        if (niv .gt. 1) then
-            write(6,*) '<PENORM> NOMBRE DE COMPOSANTES TRAITEES: ',&
-            ncmpt
-        endif
-!
-        call mecact('V', coefca, 'MODELE', modele, 'NEUT_R',&
-                    nb30, zk8( jlicmx), ibid, zr(jcoef), c16b,&
-                    k8b)
+! ----- Convert CHAMNO_S/CHAMELEM_S field to CHAMNO/CHAMELEM field
 !
         if (tych(1:4) .eq. 'NOEU') then
             call cnscno(chamtm, ' ', 'OUI', 'V', cham2,&
                         'F', iret)
-            call cnocns(cham2, 'V', chamtm)
             call detrsd('CHAM_NO_S', chamtm)
         else if (tych(1:4).eq.'ELNO') then
             optio2 ='TOU_INI_ELNO'
@@ -540,38 +474,18 @@ subroutine penorm(resu, modele)
                     nncp, 'V', cham1, 'F', ibid)
         call detrsd('CHAM_ELEM_S', chamtm)
 !
-!      -- 4.6 CALCUL DES COORD. ET DES POIDS DES POINTS DE GAUSS
+! ----- Compute <CARTE> with informations on Gauss points 
 !
-        call megeom(modele, chgeom)
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
-        lchwpg(1)='&&PEECAL.PGCOOR'
-        lpawpg(1)='PCOORPG'
-        option = 'COOR_ELGA'
+        call calc_coor_elga(ligrel, chgeom, chgaus)
 !
-        call calcul('S', option, ligrel, 1, lchin,&
-                    lpain, 1, lchwpg, lpawpg, 'V',&
-                    'OUI')
+! ----- Compute Norm_L2 * Norm_L2 by element (integration on finite element)
 !
-!      -- 4.7 CALCUL DE LA NORME SUR CHAQUE ELEMENT --
-!
-        lpaout(1) = 'PNORME'
-        lchout(1) = '&&PNORME'
-        lpain(1) = 'PCOORPG'
-        lchin(1) = lchwpg(1)
-        lpain(2) = 'PCHAMPG'
-        lchin(2) = cham1
-        lpain(3) = 'PCOEFR'
-        lchin(3) = coefca
-        option = 'NORME_L2'
-!
-        call calcul('S', option, ligrel, 3, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
-                    'OUI')
+        call calc_norm_elem('L2' , ligrel, coefca, chgaus, chcalc, &
+                            cham1, field_resu)
 !
 !      -- 4.8 SOMMATION DE LA NORME SUR LES ELEMENTS DESIRES --
 !
-        call mesomm(lchout(1), 1, ibid, vnorm, c16b,&
+        call mesomm(field_resu, 1, ibid, vnorm, c16b,&
                     0, ibid)
 !
 !      -- 4.9 ON REMPLIT LA TABLE --
@@ -606,6 +520,7 @@ subroutine penorm(resu, modele)
 !
         call detrsd('CHAMP', cham1)
         call detrsd('CHAMP', cham2)
+        
         call jedetr(valr)
         call jedetr(vali)
         call jedetr(valk)
@@ -617,7 +532,7 @@ subroutine penorm(resu, modele)
 !
 !     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE NORME
 !     ---------------------------------------------------------
-999  continue
+999 continue
 !
     if (nr .ne. 0) then
         call detrsd('RESULTAT', tmpres)

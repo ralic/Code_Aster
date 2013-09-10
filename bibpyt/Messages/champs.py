@@ -99,4 +99,21 @@ Conseil:
 
 """),
 
+15 : _(u"""
+    Numéro d'ordre %(i1)4d : échec lors du calcul du critère donné par CHAM_UTIL.
+"""),
+
+16 : _(u"""
+ On ne peut utiliser COEF_MULT que lorsque la grandeur en entrée est de type NEUT_R.
+ Les coefficients donnés ont été ignorés.
+"""),
+
+17 : _(u"""
+ On ne sait pas calculer une norme sur un champ nodal.
+"""),
+
+18 : _(u"""
+ On ne sait pas calculer la norme sur le champ car sa grandeur %(k1)s a trop de composantes.
+"""),
+
 }

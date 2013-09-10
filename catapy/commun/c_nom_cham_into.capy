@@ -343,7 +343,7 @@ class NOM_CHAM_INTO:  #COMMUN#
             "VITE_VENT":        ( (),
                                  _(u"Chargement vitesse du vent"), ),
         }
-        for typ in ('ELGA', 'ELNO', 'NOEU', 'CART'):
+        for typ in ('ELGA', 'ELNO', 'ELEM', 'NOEU', 'CART'):
             for i in range(1, 11):
                 d['AUTRES']['UT%02d_%s' % (i, typ)]=( (),
                                  _(u"Champ utilisateur numéro %02d_%s" % (i, typ)), )

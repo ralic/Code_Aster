@@ -1,5 +1,10 @@
-subroutine ccchcf(nomfor, nbcmp, valin, licmp, nbcmpr,&
-                  valres, iret)
+subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out,&
+                  val_out, ichk)
+!
+    implicit none
+!
+#include "asterfort/fointe.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,56 +21,57 @@ subroutine ccchcf(nomfor, nbcmp, valin, licmp, nbcmpr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/fointe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    integer :: nbcmp, nbcmpr, iret
-    real(kind=8) :: valin(nbcmp), valres(nbcmpr)
-    character(len=8) :: nomfor(nbcmpr), licmp(nbcmp)
 ! person_in_charge: mathieu.courtois at edf.fr
-! ----------------------------------------------------------------------
-!  CALC_CHAMP - TRAITEMENT DE CHAM_UTIL - CALCUL FORMULE
-!  -    -                     --          -      -
-!  EVALUE LES FORMULES (SUR LA GRANDEUR 'NOMGD') SUR LES
-!  'NBCMP' VALEURS DES COMPOSANTES. RANGE LE RESULTAT DANS 'VALRES'.
-! ----------------------------------------------------------------------
-! IN  :
-!   NOMFOR K8(*) NOMS DES FORMULES
-!   NOMGD  K8    NOM DE LA GRANDEUR DU CHAMP IN
-!   NBCMP  I     NBRE DE COMPOSANTES DEFINIES SUR LE POINT COURANT
-!   VALIN  R(*)  VALEURS DES COMPOSANTES
-!   LICMP  K8(*) NOM DES COMPOSANTES EFFECTIVEMENT REMPLIES
-!   NBCMPR I     NOMBRE DE COMPOSANTES EN SORTIE
-! IN :
-!   VALRES R(*)  VALEURS DU CRITERE
-!   IRET   I     CODE RETOUR : = 0 OK,
-!                              > 0 ON N'A PAS PU CALCULER LE CRITERE
-! ----------------------------------------------------------------------
+!
+    integer, intent(in) :: nb_cmp_out
+    character(len=8), intent(in) :: name_form(nb_cmp_out)
+    integer, intent(in) :: nb_val_in
+    real(kind=8), intent(in) :: val_in(nb_val_in)
+    character(len=8), intent(in) :: cmp_in(nb_val_in)
+    real(kind=8), intent(out) :: val_out(nb_cmp_out)
+    integer, intent(out) :: ichk
+!
+! --------------------------------------------------------------------------------------------------
+!
+! CALC_CHAMP - CHAM_UTIL
+!
+! Compute FORMULE
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  name_form  : names of formulas
+! In  nb_val_in  : number of input values
+! In  val_in     : input values
+! In  cmp_in     : name of input components
+! In  nb_cmp_out : number of output values
+! Out val_out    : output values
+! Out ichk       : 0 if OK
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: i
     character(len=1) :: codmes
     character(len=8) :: nomf
-!     ----- FIN  DECLARATIONS ------------------------------------------
 !
-    call jemarq()
-    iret = 1
+! --------------------------------------------------------------------------------------------------
+!
+!
+! - Initializations
+!
+    ichk = 1
 !     METTRE 'A' POUR DEBUG, ' ' EN PROD
     codmes = 'A'
-    if (nbcmp .eq. 0) goto 9999
+    if (nb_val_in .eq. 0) goto 999
 !
-    do 100 i = 1, nbcmpr
-        nomf = nomfor(i)
-!       VERIFIER QUE LES PARAMETRES DE LA FORMULE SONT DANS LES
-!       COMPOSANTES FOURNIES
-        call fointe(codmes, nomf, nbcmp, licmp, valin,&
-                    valres(i), iret)
-        if (iret .ne. 0) then
-            goto 9999
-        endif
-100  end do
+! - Evaluate formulas
 !
-9999  continue
-    call jedema()
+    do i = 1, nb_cmp_out
+        nomf = name_form(i)
+        call fointe(codmes, nomf, nb_val_in, cmp_in, val_in,&
+                    val_out(i), ichk)
+        if (ichk .ne. 0) goto 999
+    end do
+!
+999 continue
 !
 end subroutine
