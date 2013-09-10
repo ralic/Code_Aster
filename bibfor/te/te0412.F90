@@ -220,8 +220,8 @@ subroutine te0412(option, nomte)
                 call jevech('PCACOQU', 'L', jcara)
                 alpha = zr(jcara+1) * r8dgrd()
                 beta = zr(jcara+2) * r8dgrd()
-(??)                call coqrep(pgl, alpha, beta, t2ev, t2ve,&
-(??)                            c, s)
+                call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+                            c, s)
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
