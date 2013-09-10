@@ -1,4 +1,4 @@
-subroutine refe81(nomres, basmod, raidf, massf, amorf,&
+subroutine refe81(nomres, basmod, raid, mass, amor,&
                   mailla)
     implicit none
 ! ======================================================================
@@ -30,9 +30,9 @@ subroutine refe81(nomres, basmod, raidf, massf, amorf,&
 !
 ! NOMRES /I/ : NOM UTILISATEUR DU RESULTAT
 ! BASMOD /O/ : NOM UT DE LA BASE MODALE DE PROJECTION
-! RAIDF  /O/ : NOM UT DE LA MATRICE RAIDEUR A PROJETER
-! MASSEF /O/ : NOM UT DE LA MATRICE DE MASSE A PROJETER
-! AMORF  /O/ : NOM UT DE LA MATRICE D'AMORTISSEMENT A PROJETER
+! RAID   /O/ : NOM UT DE LA MATRICE RAIDEUR A PROJETER
+! MASS   /O/ : NOM UT DE LA MATRICE DE MASSE A PROJETER
+! AMOR   /O/ : NOM UT DE LA MATRICE D'AMORTISSEMENT A PROJETER
 ! MAILLA /O/ : NOM UT DU MAILLAGE EN AMONT
 !
 !
@@ -48,178 +48,111 @@ subroutine refe81(nomres, basmod, raidf, massf, amorf,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: valk(2), typbas
-    character(len=8) :: nomres, mailla, basmod, maillb, amor, blanc, lintf
+    character(len=8) :: nomres, mailla, basmod, maillb, bl8, lintf
     character(len=8) :: k8bid
     character(len=14) :: numddl, numbis, numter
-    character(len=19) :: raid, raidb, mass, massb, massf, raidf, amorf, amorb
+    character(len=19) :: raid, mass, amor
     integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadref, ibid, ioc, iret, l, lddesc, lldesc
-    integer :: llref, llrefb, nbval
+    integer :: iadref, ibid, ioc, iret, lddesc, lldesc
+    integer :: llref, nbval
 !-----------------------------------------------------------------------
-    data blanc         /'        '/
+    data bl8         /'        '/
 !-----------------------------------------------------------------------
-!
-! --- RECUPERATION EVENTUELLE MATRICE RAIDEUR EN ARGUMENT
-!
     call jemarq()
-    call getvid(blanc, 'MATR_RIGI', 1, iarg, 0,&
-                k8bid, ioc)
-    ioc=-ioc
-    if (ioc .eq. 0) then
-        raid=blanc
-    else if (ioc.eq.1) then
-        call getvid(blanc, 'MATR_RIGI', 1, iarg, 1,&
-                    raid, l)
-    else
-        call u2mesg('F', 'ALGORITH14_14', 0, ' ', 0,&
-                    0, 0, 0.d0)
-    endif
-!
-! --- RECUPERATION EVENTUELLE MATRICE MASSE EN ARGUMENT
-!
-    call getvid(blanc, 'MATR_MASS', 1, iarg, 0,&
-                k8bid, ioc)
-    ioc=-ioc
-    if (ioc .eq. 0) then
-        mass=blanc
-    else if (ioc.eq.1) then
-        call getvid(blanc, 'MATR_MASS', 1, iarg, 1,&
-                    mass, l)
-    else
-        call u2mesg('F', 'ALGORITH14_15', 0, ' ', 0,&
-                    0, 0, 0.d0)
-    endif
-!
-! --- RECUPERATION EVENTUELLE MATRICE AMORTISSEMENT EN ARGUMENT
-!
-    call getvid(blanc, 'MATR_AMOR', 1, iarg, 0,&
-                k8bid, ioc)
-    ioc=-ioc
-    if (ioc .eq. 0) then
-        amor=blanc
-    else if (ioc.eq.1) then
-        call getvid(blanc, 'MATR_AMOR', 1, iarg, 1,&
-                    amor, l)
-    else
-        call u2mesg('F', 'ALGORITH14_16', 0, ' ', 0,&
-                    0, 0, 0.d0)
-    endif
 !
 ! --- RECUPERATION BASE MODALE OBLIGATOIRE
 !
-    raidb=blanc
-    massb=blanc
-    amorb=blanc
-    call getvid(blanc, 'BASE_MODALE', 1, iarg, 1,&
-                basmod, nbval)
-    call jeveuo(basmod//'           .REFD', 'L', llrefb)
-    raidb=zk24(llrefb)(1:8)
-    massb=zk24(llrefb+1)(1:8)
-    amorb=zk24(llrefb+2)(1:8)
-    numddl=zk24(llrefb+3)(1:14)
-    lintf=zk24(llrefb+4)(1:8)
-    typbas=zk24(llrefb+6)
+    call getvid(' ', 'BASE_MODALE', 1, iarg, 1, basmod, nbval)
+!
+! --- RECUPERATION MATRICE RAIDEUR EN ARGUMENT
+!
+    raid = bl8
+    call getvid(' ', 'MATR_RIGI', 1, iarg, 0, k8bid, ioc)
+    ioc = -ioc
+    if (ioc .eq. 0) then
+        call dismoi('C', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid, raid, iret)
+    else if (ioc .eq. 1) then
+        call getvid(' ', 'MATR_RIGI', 1, iarg, 1, raid, iret)
+    else
+        call u2mesg('F', 'ALGORITH14_14', 0, ' ', 0, 0, 0, 0.d0)
+    endif
+!
+! --- RECUPERATION MATRICE MASSE EN ARGUMENT
+!
+    mass = bl8
+    call getvid(' ', 'MATR_MASS', 1, iarg, 0, k8bid, ioc)
+    ioc = -ioc
+    if (ioc .eq. 0) then
+        call dismoi('C', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, mass, iret)
+    else if (ioc .eq. 1) then
+        call getvid(' ', 'MATR_MASS', 1, iarg, 1, mass, iret)
+    else
+        call u2mesg('F', 'ALGORITH14_15', 0, ' ', 0, 0, 0, 0.d0)
+    endif
+!
+! --- RECUPERATION MATRICE AMORTISSEMENT EN ARGUMENT
+!
+    amor = bl8
+    call getvid(' ', 'MATR_AMOR', 1, iarg, 0, k8bid, ioc)
+    ioc = -ioc
+    if (ioc .eq. 0) then
+        call dismoi('C', 'REF_AMOR_PREM', basmod, 'RESU_DYNA', ibid, amor, iret)
+    else if (ioc .eq. 1) then
+        call getvid(' ', 'MATR_AMOR', 1, iarg, 1, amor, iret)
+    else
+        call u2mesg('F', 'ALGORITH14_16', 0, ' ', 0, 0, 0, 0.d0)
+    endif
+!
+    call dismoi('C', 'NUME_DDL'     , basmod, 'RESU_DYNA', ibid, numddl, iret)
+    call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lintf , iret)
+    call dismoi('C', 'TYPE_BASE'    , basmod, 'RESU_DYNA', ibid, typbas, iret)
 !
 !
 ! --- RECUPERATION MAILLAGE
 !
-    if (lintf .ne. blanc) then
+    if (lintf .ne. bl8) then
         call jeveuo(lintf//'.IDC_REFE', 'L', llref)
-        mailla=zk24(llref)
+        mailla = zk24(llref)
     else
-        call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                    mailla, iret)
-    endif
-!
-! --- RECUPERATION DU TYPE DE BASE MODALE
-!
-! --- CAS DE LA DONNEE DES MATRICE DE LA BASE
-!
-    if (typbas(1:4) .ne. 'RITZ') then
-        if (mass .eq. massb) mass=blanc
-        if (raid .eq. raidb) raid=blanc
-        if (amor .eq. amorb) amor=blanc
-    endif
-!
-!
-! --- CAS BASE MODALE CLASSIQUE
-!
-    if ((typbas(1:9).eq.'CLASSIQUE') .or. (typbas(1:9).eq.'DIAG_MASS') .or.&
-        (typbas(1:9).eq.'         ')) then
-!
-        if (mass .ne. blanc) then
-            massf=mass
-        else
-            massf=massb
-        endif
-        if (raid .ne. blanc) then
-            raidf=raid
-        else
-            raidf=raidb
-        endif
-        if (amor .ne. blanc) then
-            amorf=amor
-        else
-            amorf=amorb
-        endif
-    endif
-!
-! --- CAS BASE MODALE RITZ
-    if ((typbas(1:4).eq.'RITZ')) then
-!
-! --- TRAITEMENT DU NOM FINAL MASSE ET RAIDEUR
-!
-        massf=mass
-        raidf=raid
-        amorf=amor
+        call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid, mailla, iret)
     endif
 !
 ! --- TRAITEMENT COHERENCE MATRICE ASSEMBLEES
-!     SI MASSF ET RAIDF NON BLANC
+!     SI MASSF ET RAIDF NON BL8
 !
+    if (raid .eq. bl8 .or. mass .eq. bl8) goto 10
 !
-    if (raidf .eq. blanc .or. massf .eq. blanc) goto 10
+    call dismoi('F', 'NOM_NUME_DDL', raid  , 'MATR_ASSE', ibid, numddl, iret)
+    call dismoi('F', 'NOM_MAILLA'  , numddl, 'NUME_DDL' , ibid, maillb, iret)
+    call dismoi('F', 'NOM_NUME_DDL', mass  , 'MATR_ASSE', ibid, numbis, iret)
 !
-    call dismoi('F', 'NOM_NUME_DDL', raidf, 'MATR_ASSE', ibid,&
-                numddl, iret)
-!
-    call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                maillb, iret)
-!
-    call dismoi('F', 'NOM_NUME_DDL', massf, 'MATR_ASSE', ibid,&
-                numbis, iret)
-!
-    if (amorf .ne. blanc) then
-        call dismoi('F', 'NOM_NUME_DDL', amorf, 'MATR_ASSE', ibid,&
-                    numter, iret)
+    if (amor .ne. bl8) then
+        call dismoi('F', 'NOM_NUME_DDL', amor, 'MATR_ASSE', ibid, numter, iret)
     endif
 !
 ! --- CONTROLE DE LA COHERENCE DES MATRICES ASSEMBLEES
 !
     if (numddl .ne. numbis) then
-        valk (1) = mass
-        valk (2) = raid
-        call u2mesg('F', 'ALGORITH14_21', 2, valk, 0,&
-                    0, 0, 0.d0)
+        valk(1) = mass
+        valk(2) = raid
+        call u2mesg('F', 'ALGORITH14_21', 2, valk, 0, 0, 0, 0.d0)
     endif
 !
-    if (amor .ne. blanc) then
+    if (amor .ne. bl8) then
         if (numddl .ne. numter) then
-            valk (1) = amor
-            valk (2) = raid
-            call u2mesg('F', 'ALGORITH14_22', 2, valk, 0,&
-                        0, 0, 0.d0)
+            valk(1) = amor
+            valk(2) = raid
+            call u2mesg('F', 'ALGORITH14_22', 2, valk, 0, 0, 0, 0.d0)
         endif
     endif
 !
     if (mailla .ne. maillb) then
-        valk (1) = maillb
-        valk (2) = mailla
-        call u2mesg('F', 'ALGORITH14_23', 2, valk, 0,&
-                    0, 0, 0.d0)
+        valk(1) = maillb
+        valk(2) = mailla
+        call u2mesg('F', 'ALGORITH14_23', 2, valk, 0, 0, 0, 0.d0)
     endif
 !
 10  continue
@@ -227,17 +160,17 @@ subroutine refe81(nomres, basmod, raidf, massf, amorf,&
 ! --- REMPLISSAGE DU .REFE
 !
     call wkvect(nomres//'.MAEL_REFE', 'G V K24', 2, iadref)
-    zk24(iadref)=basmod
-    zk24(iadref+1)=mailla
+    zk24(iadref)   = basmod
+    zk24(iadref+1) = mailla
 !
 ! --- REMPLISSAGE DU .DESC
 !
     call wkvect(nomres//'.MAEL_DESC', 'G V I', 3, lddesc)
-    if (lintf .ne. blanc) then
+    if (lintf .ne. bl8) then
         call jeveuo(lintf//'.IDC_DESC', 'L', lldesc)
-        zi(lddesc)=zi(lldesc+1)
-        zi(lddesc+1)=zi(lldesc+2)
-        zi(lddesc+2)=zi(lldesc+3)
+        zi(lddesc)   = zi(lldesc+1)
+        zi(lddesc+1) = zi(lldesc+2)
+        zi(lddesc+2) = zi(lldesc+3)
     endif
 !
     call jedema()

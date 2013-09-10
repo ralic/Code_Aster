@@ -121,11 +121,11 @@ class ModeMeca(Resultat):
 
     def get_matrices(self):
         """ recuperation des matrices du REFD et du nume_ddl"""
-        refd = aster.getvectjev( self.nom.ljust(19)+'.REFD' )
-        if refd:
-            self.kass_name = refd[0].strip()
-            self.mass_name = refd[1].strip()
-            self.cass_name = refd[2].strip()
+        indi = aster.getvectjev( self.nom.ljust(19)+'.INDI' )
+        if indi:
+            iret,ibid,self.kass_name = aster.dismoi('C','REF_RIGI_PREM',self.nom,'RESU_DYNA')
+            iret,ibid,self.mass_name = aster.dismoi('C','REF_MASS_PREM',self.nom,'RESU_DYNA')
+            iret,ibid,self.cass_name = aster.dismoi('C','REF_AMOR_PREM',self.nom,'RESU_DYNA')
             try:
                 self.kass = self.objects.matrices[self.kass_name]
                 self.mass = self.objects.matrices[self.mass_name]
@@ -136,9 +136,9 @@ class ModeMeca(Resultat):
 
     def get_nume(self):
         """Recuperation de la numerotation et du nume_ddl"""
-        refd = aster.getvectjev( self.nom.ljust(19)+'.REFD' )
-        if refd :
-          toto = refd[3][0:8]
+        indi = aster.getvectjev( self.nom.ljust(19)+'.INDI' )
+        if indi :
+          iret,ibid,toto = aster.dismoi('C','NUME_DDL',self.nom,'RESU_DYNA')
           self.nume_name = toto.strip()
           if self.nume_name:
             self.nume = self.objects.nume_ddl[self.nume_name]

@@ -79,7 +79,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     character(len=14) :: numddl
     character(len=19) :: caelem
     character(len=24) :: fsvi, fsvk, fsvr, fsgm, fscr, fsgr
-    character(len=24) :: refei, matria, nomrac
+    character(len=24) :: matria, nomrac
     character(len=24) :: grpno
     real(kind=8) :: som(9), ru, alpha, coorpe(3), don(5), carac(2)
     integer :: irot(3), iddl(6), ndim(14)
@@ -90,7 +90,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     integer :: ifscr, ifsgm, ifsgr, ifsvi, ifsvk, ifsvr, igreq
     integer :: ikn, ilargg, ilongg, im, imataa, imatma
     integer :: imatra, inbmag, inbneq, inbnog, inomcy, inomeq, inum
-    integer :: ior, iphix, iphiy, ire, irefei, ireq, irint
+    integer :: ior,iphix,iphiy,ire,ireq,irint
     integer :: irugg, ixint, iyint, iz, izg, izint, j
     integer :: jdco, jtypg, lfacx, lmasg, lrigg, n, n1
     integer :: nbcyl, nbddl, nbfin, nbgrma, nbgrmx, nbgrp, nbgtot
@@ -284,9 +284,8 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
 !-----RECUPERATION D'INFORMATIONS POUR CREATION DES OBJETS DE TRAVAIL
 !
-    refei = base//'           .REFD'
-    call jeveuo(refei, 'L', irefei)
-    matria = zk24(irefei)
+
+    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi, matria, ire)
     call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
                 numddl, ire)
     call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', neq,&

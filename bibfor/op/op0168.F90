@@ -57,7 +57,7 @@ subroutine op0168()
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, impr, iord, iprec, iret
     integer :: j, jadr, jme, jnom, jor, jordr
-    integer :: k, lmod, lmode, lvali, lvalk, lvalr, n1
+    integer :: k, lmod, lvali, lvalk, lvalr, n1
     integer :: n10, n2, n3, n4, n5, n6, n7
     integer :: n8, n9, nbfilt, nbme, nbmode, nbmodt, nbmodu
     integer :: nbmr, nbpara, nbpari, nbpark, nbparr, ndimt, neq
@@ -122,22 +122,17 @@ subroutine op0168()
 !
             if (nbmr .eq. 1) then
 !      --- MATRICES DE REFERENCE DES MODES ---
-                refd(1:8) = modein
-                call jeveuo(refd, 'L', lmode)
-                raide = zk24(lmode)
-                masse = zk24(lmode+1)
-                amor = zk24(lmode+2)
-                numedd = zk24(lmode+3)(1:19)
-                call vpcrea(0, modeou, masse, amor, raide,&
-                            numedd, ibid)
+                call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, raide, iret)
+                call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, masse, iret)
+                call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, amor, iret)
+                call dismoi('F', 'NUME_DDL', modein, 'RESU_DYNA', ibid, numedd, iret)
+                call vpcrea(0, modeou, masse, amor, raide, numedd, ibid)
             endif
 !
             zk8(jnom+nbmr-1) = modein
-            refd(1:8) = modein
-            call jeveuo(refd, 'L', lmode)
-            raidi = zk24(lmode)
-            massi = zk24(lmode+1)
-            amori = zk24(lmode+2)
+            call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, raidi, iret)
+            call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, massi, iret)
+            call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, amori, iret)
             if (massi .ne. masse .or. amori .ne. amor .or. raidi .ne. raide) call u2mess(&
                                                                              'F', 'ALGELINE3_9')
 !
@@ -402,7 +397,7 @@ subroutine op0168()
         call jedetr(kvalk)
 102      continue
         call jedema()
-100  end do
+100  continue
 !
 !     --- ON ALARME SI NUME_MODE IDENTIQUE ---
 !
@@ -430,7 +425,7 @@ subroutine op0168()
                             vali, 0, 0.d0)
             endif
 210      continue
-200  end do
+200  continue
 !
 !     --- LES IMPRESSIONS ---
 !

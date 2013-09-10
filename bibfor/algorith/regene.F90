@@ -19,6 +19,8 @@ subroutine regene(nomres, resgen, profno)
 #include "asterfort/jexnum.h"
 #include "asterfort/mdgepc.h"
 #include "asterfort/mdgeph.h"
+#include "asterfort/refdaj.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -63,19 +65,18 @@ subroutine regene(nomres, resgen, profno)
 !
 !
 !
-    integer :: i, iadref, iadrif, iarefe, ibid, idbase, ier, iord, iret, itresu
-    integer :: jbid, ldnew, llchol, llinsk, llnueq, lrefe, nbmod, nbnot, neq
-    integer :: nno, numo, iadpar(7), nbmo2, llref1, llref2, llref3, llref4
-    integer :: llref5, llref6
+    integer :: i, iadref, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
+    integer :: jbid, ldnew, llchol, llinsk, llnueq, nbmod, nbnot, neq
+    integer :: nno, numo, iadpar(7), nbmo2, llref2, llref3, llref4, llref5
     real(kind=8) :: freq, genek, genem, omeg2, rbid, xsi
     complex(kind=8) :: cbid
     character(len=1) ::  typsca
     character(len=8) :: basmod, respro, kbid, k8b, modmec, mailsk, modgen
     character(len=14) :: numddl
     character(len=16) :: depl, nompar(7), typrep
-    character(len=19) :: chamno, kint, krefe, chamne, raid, numgen, profno
+    character(len=19) :: chamno, kint, chamne, raid, numgen, profno
     character(len=24) :: chamol, indirf, crefe(2), numedd, basmo2
-    character(len=24) :: valk
+    character(len=24) :: valk, matric(3)
     logical :: zcmplx
     integer :: iarg
 !
@@ -150,9 +151,7 @@ subroutine regene(nomres, resgen, profno)
 !
 ! ------ RECUPERATION DU MODELE GENERALISE
 !
-        call jeveuo(resgen//'           .REFD', 'L', llref1)
-        raid=zk24(llref1)
-        call jelibe(resgen//'           .REFD')
+        call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid, raid, iret)
 !
         call jeveuo(raid//'.REFA', 'L', llref2)
         numgen(1:14)=zk24(llref2+1)
@@ -163,17 +162,15 @@ subroutine regene(nomres, resgen, profno)
         respro=zk24(llref3)
         call jelibe(numgen//'.REFN')
 !
-        call jeveuo(respro//'           .REFD', 'L', llref4)
-        raid=zk24(llref4)
-        call jelibe(respro//'           .REFD')
+        call dismoi('F', 'REF_RIGI_PREM', respro, 'RESU_DYNA', ibid, raid, iret)
 !
-        call jeveuo(raid//'.REFA', 'L', llref5)
-        numgen(1:14)=zk24(llref5+1)
+        call jeveuo(raid//'.REFA', 'L', llref4)
+        numgen(1:14)=zk24(llref4+1)
         numgen(15:19)='.NUME'
         call jelibe(raid//'.REFA')
 !
-        call jeveuo(numgen//'.REFN', 'L', llref6)
-        modgen=zk24(llref6)
+        call jeveuo(numgen//'.REFN', 'L', llref5)
+        modgen=zk24(llref5)
         call jelibe(numgen//'.REFN')
 !
 ! ------ CREATION DU PROF-CHAMNO
@@ -258,18 +255,16 @@ subroutine regene(nomres, resgen, profno)
 !-----------------------------------------------------------------------
     else
 !-----------------------------------------------------------------------
-        call jeveuo(basmod//'           .REFD', 'L', iadrif)
+
 !
         call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
                     cbid, rbid, kbid, nbmo2, 1,&
                     ibid)
-!
-!         IF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
-        numedd = zk24(iadrif+3)
-!           WRITE(6,*) 'NUMEDD ',NUMEDD
+
+        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numedd, iret)
         call getvid(' ', 'NUME_DDL', 1, iarg, 1,&
-                    k8b, ibid)
-        if (ibid .ne. 0) then
+                    k8b, iret1)
+        if (iret1 .ne. 0) then
             call getvid(' ', 'NUME_DDL', 1, iarg, 1,&
                         numedd, ibid)
             numedd = numedd(1:14)//'.NUME'
@@ -333,16 +328,14 @@ subroutine regene(nomres, resgen, profno)
             call jelibe(chamol)
 20      continue
 !
-        krefe = nomres
-        call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
-        zk24(lrefe ) = zk24(iadrif)
-        zk24(lrefe+1) = zk24(iadrif+1)
-        zk24(lrefe+2) = zk24(iadrif+2)
-        zk24(lrefe+3) = numedd
-        zk24(lrefe+4) = zk24(iadrif+4)
-        zk24(lrefe+5) = zk24(iadrif+5)
-        zk24(lrefe+6) = zk24(iadrif+6)
-        call jelibe(krefe//'.REFD')
+        if (iret1 .ne. 0) then
+            matric(1) = ' '
+            matric(2) = ' '           
+            matric(3) = ' '
+            call refdaj('F', nomres, nbmod, numedd, 'DYNAMIQUE', matric, ier)
+        else
+            call refdcp(basmod,nomres)
+        endif
     endif
 !
 ! --- MENAGE

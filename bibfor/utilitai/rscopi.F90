@@ -81,6 +81,8 @@ subroutine rscopi(base, sd1, sd2)
     call jedupo(sdr1//'.TAVA', bas2, sdr2//'.TAVA', .false.)
     call jedupo(sdr1//'.ORDR', bas2, sdr2//'.ORDR', .false.)
     call jedupo(sdr1//'.REFD', bas2, sdr2//'.REFD', .false.)
+    call jedupo(sdr1//'.INDI', bas2, sdr2//'.INDI', .false.)
+
 !
 !     --- LE .TACH ---
 !
@@ -103,7 +105,7 @@ subroutine rscopi(base, sd1, sd2)
                 call rsnoch(sd2, nomsy, zi(jordr+j))
             endif
 10      continue
-20  end do
+20  continue
 !
 !     --- LES VARIABLES ET PARAMETRES D'ACCES ---
 !
@@ -129,7 +131,7 @@ subroutine rscopi(base, sd1, sd2)
         endif
         call jedupo(sdr1//nomobj, bas2, sdr2//nomobj, .false.)
 !
-30  end do
+30  continue
     call jedetr(nompar)
 !
     call jedema()

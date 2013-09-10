@@ -55,7 +55,7 @@ subroutine op0079()
     integer :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
     integer :: idvec1, idvec2
 !-----------------------------------------------------------------------
-    integer :: iadref, iadrif, iadvec, iamatr, iarg, ibid, icod
+    integer :: iadvec, iamatr, iarg, ibid, icod, iadref
     integer :: iddeeq, idvect, iliord, imod, ind, iord, isym
     integer :: jmod, jrefa, llnequ, n0, n1, n2, n4
     integer :: nbid, neq
@@ -126,15 +126,15 @@ subroutine op0079()
 !     ON RECUPERE LES NUME_DDL DANS LES REFD DES DEUX SD
 !     SI ELLES SONT ABSENTES, ON ESSAYE AVEC LES MATRICES
 !
-    call jeveuo(res//'           .REFD', 'L', iadref)
-    call jeveuo(basemo//'           .REFD', 'L', iadrif)
+
+
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
-        nu=zk24(iadref+3)
+        call dismoi('F', 'NUME_DDL', res, 'RESU_DYNA', ibid, nu, iret)
         if (nu(1:1) .ne. ' ') then
             numdd1=nu
         else
-            matric = zk24(iadref)
+            call dismoi('F', 'REF_RIGI_PREM', res, 'RESU_DYNA', ibid, matric, iret)
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
@@ -143,11 +143,11 @@ subroutine op0079()
             endif
             if (iret .eq. 0) call u2mesk('F', 'ALGORITH17_8', 1, res)
         endif
-        nu=zk24(iadrif+3)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, nu, iret)
         if (nu(1:1) .ne. ' ') then
             numdd2=nu
         else
-            matric = zk24(iadrif)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
@@ -158,8 +158,8 @@ subroutine op0079()
         endif
 !
     else if (typbas(1:9).eq.'MODE_GENE') then
-        numdd1=zk24(iadref+1)
-        matric = zk24(iadrif)
+        call dismoi('F', 'NUME_DDL', res, 'RESU_DYNA', ibid, nu, iret)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', jrefa)
         numdd2=zk24(jrefa-1+2)
@@ -184,8 +184,7 @@ subroutine op0079()
 !
 ! --- INITIALISATION DE LA SD_RESULTAT
 !
-    call mdall2(nomres, basemo, numgen, res, nbo,&
-                nbmode)
+    call mdall2(nomres, basemo, res, nbo, nbmode)
 !
 ! --- RECUPERE LA BASE MODALE SOUS LA FORME D'UN VECT NBMODE*NEQ
 !
@@ -209,7 +208,6 @@ subroutine op0079()
             if (iret .ne. 0) goto 40
             call jeveuo(nochno//'.VALE', 'L', iadvec)
             call jeveuo(nochno//'.REFE', 'L', iadref)
-            call jeveuo(basemo//'           .REFD', 'L', iadrif)
             call jelira(nochno//'.VALE', 'TYPE', cval=typvec)
 ! --- LE CAS COMPLEXE (SD HARMONIQUES) N'EST PAS TRAITE
             if (typvec .eq. 'C') then
@@ -315,7 +313,7 @@ subroutine op0079()
             endif
 !
 50      continue
-40  end do
+40  continue
 !
     call jedema()
 end subroutine

@@ -35,7 +35,6 @@ subroutine op0150()
 #include "asterc/getvis.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/assert.h"
 #include "asterfort/carcha.h"
 #include "asterfort/dismoi.h"
@@ -57,6 +56,7 @@ subroutine op0150()
 #include "asterfort/lrvema.h"
 #include "asterfort/lrvemo.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexpa.h"
@@ -303,7 +303,7 @@ subroutine op0150()
             call u2mesg('F', 'UTILITAI8_24', 2, valk, 0,&
                         0, 0, 0.d0)
         endif
-30  end do
+30  continue
 !
 !
 !
@@ -516,7 +516,8 @@ subroutine op0150()
 !     ---------------------------------------------------
     if (typres .eq. 'DYNA_TRANS' .or. typres .eq. 'DYNA_HARMO' .or. typres(1:9) .eq.&
         'MODE_MECA') then
-        call ajrefd(' ', resu, 'FORCE')
+        call jeexin(resu//'           .REFD', iret)
+        if (iret .eq. 0) call refdaj(' ', resu, -1, ' ', 'INIT', ' ' , iret)
     endif
 !
 !     -- SI NECESSAIRE, ON MET LES CHAMPS DE DEPL_R/C DANS

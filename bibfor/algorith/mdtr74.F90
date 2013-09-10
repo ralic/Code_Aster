@@ -1,5 +1,4 @@
 subroutine mdtr74(nomres)
-! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -88,8 +87,8 @@ subroutine mdtr74(nomres)
     character(len=24) :: valk(3)
     character(len=19) :: marig
     logical :: lamor, lflu
-    integer :: kref, itypfl, nexcit, nexcir, ntotex
-    integer :: vali(3), jvec, jvecr, j1, j2
+    integer :: itypfl, nexcit, nexcir, ntotex
+    integer :: vali(3), jvec, jvecr, j1
     real(kind=8) :: r8b, xlambd, acrit, agene
     real(kind=8) :: valr(3)
     real(kind=8) :: dt, dts, dtu, dtmax, dtmin
@@ -126,7 +125,7 @@ subroutine mdtr74(nomres)
     integer :: isoupl, itemax, itrans, itrloc, ivchoc, iveci1, ivecr1
     integer :: ivecr2, ivecr3, ivecr4, ivecr5, jabsc, jaccs, jamo1
     integer :: jamo2, jamog, jarch, jbase, jbasf, jcodim, jcoefm
-    integer :: jdcho, jdep0, jdepl, jdeps, jdesc, jdfk, jdrif
+    integer :: jdcho, jdep0, jdepl, jdeps, jdesc, jdfk
     integer :: jfcho, jfk, jfond, jfonv, jgr, jiadve, jicho
     integer :: jidesc, jinst, jinti, jinumo, jlocf, jmasg, jnoacc
     integer :: jnodep, jnoec, jnomfo, jnovit, jordr, jparc, jpard
@@ -218,8 +217,7 @@ subroutine mdtr74(nomres)
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
             call jeveuo(masgen//'           .REFA', 'L', j1)
             bamo1=zk24(j1-1+1)(1:8)
-            call jeveuo(resgen//'           .REFD', 'L', j2)
-            bamo2=zk24(j2-1+5)(1:8)
+            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid, bamo2, iret)
             if (bamo1 .ne. bamo2) then
                 call u2mesg('F', 'ALGORITH17_18', 0, k8b, 1,&
                             i, 0, r8b)
@@ -247,10 +245,9 @@ subroutine mdtr74(nomres)
     call jeveuo(masgen//'           .DESC', 'L', jdesc)
     nbmode = zi(jdesc+1)
     basemo = zk24(jrefam-1+1)(1:8)
-    call jeveuo(basemo//'           .REFD', 'L', jdrif)
-    rigass = zk24(jdrif) (1:8)
+    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, rigass, iret)
 !------------on recupere le type de base modale---------
-    typeba=zk24(jdrif+6)
+    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid, typeba, iret)
 !-------------------------------------------------------
     marig = '&&MDTR74.RIGI'
     call copisd('MATR_ASSE', 'V', rigass, marig)
@@ -280,7 +277,7 @@ subroutine mdtr74(nomres)
     nbstoc = nbmode
 !
     if (typba2(1:9) .eq. 'MODE_MECA' .and. typeba(1:1) .eq. ' ') then
-        matass = zk24(jdrif) (1:8)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matass, iret)
         call dismoi('F', 'NOM_MAILLA', matass, 'MATR_ASSE', ibid,&
                     mailla, ie)
         call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ib,&
@@ -290,14 +287,14 @@ subroutine mdtr74(nomres)
         nbmod2 = nbmode
 !
     else if (typeba(1:1).ne.' ') then
-        numddl = zk24(jdrif+3) (1:14)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numddl, iret)
         call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
                     mailla, ie)
         call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                     k8b, ie)
         nbmod2 = nbmode
     else if (typba2(1:9).eq.'MODE_GENE') then
-        matass = zk24(jdrif) (1:8)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matass, iret)
         call jeveuo(matass//'           .REFA', 'L', jrefa)
         numddl = zk24(jrefa-1+2)(1:14)
         call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
@@ -332,7 +329,7 @@ subroutine mdtr74(nomres)
         omeg2 = abs(zr(jraig+i)/zr(jmasg+i))
         zr(jpuls+i) = sqrt(omeg2)
         zr(jpul2+i) = omeg2
-20  end do
+20  continue
 !
 !     --- RECUPERATION DE L AMORTISSEMENT ---
 !
@@ -596,7 +593,7 @@ subroutine mdtr74(nomres)
                 nbchoc = nbchoc + 1
             endif
         endif
-200  end do
+200  continue
 !
     nbnli = nbchoc + nbsism + nbflam
 !
@@ -984,8 +981,7 @@ subroutine mdtr74(nomres)
 !
 ! --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
 !
-        call jeveuo(basemo//'           .REFD', 'L', kref)
-        masse = zk24(kref+1)(1:19)
+        call dismoi('F', 'REF_MASS_PREM', basemo, 'RESU_DYNA', ibid, masse, iret)
         call mtdscr(masse)
 !
 !

@@ -64,7 +64,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 !   EXIPOU  L    LOGIQUE INDIQUANT LE PRESENCE DE POUTRES
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: ibid, ierd, jrefe, jcha, ltymo, nbmaal
+    integer :: ibid, ierd, jcha, ltymo, nbmaal
     integer :: jlisma, n1, n2
 !
     character(len=8) :: k8b
@@ -109,8 +109,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
             'DYNA_TRANS' .or. typesd .eq. 'MODE_ACOU' .or. typesd .eq. 'DYNA_HARMO') then
             refe=resuin
             suropt='MASS_MECA'
-            call jeveuo(refe//'.REFD', 'L', jrefe)
-            masse=zk24(jrefe+1)(1:19)
+            call dismoi('C', 'REF_MASS_PREM', refe, 'RESU_DYNA', ibid, masse, ierd)
             if (masse .ne. ' ') then
                 call dismoi('C', 'SUR_OPTION', masse, 'MATR_ASSE', ibid,&
                             suropt, ierd)

@@ -15,6 +15,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 #include "asterfort/mdallo.h"
 #include "asterfort/mdarch.h"
 #include "asterfort/mdarnl.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -60,7 +61,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !     ------------------------------------------------------------------
     integer :: nbordr, ltps, jordr, ibid, i, nbsym, iarg
-    integer :: ltps2, ieq, ier, neq, lval, lvals, jrefe, iret, nbva2
+    integer :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
     integer :: nbsauv, iarchi, isto1, isto2, isto3, isto4
     integer :: jdeps, jvits, jaccs, jpass, jinst
     integer :: jfcho, jdcho, jvcho, jicho, jredc, jredd, jrevc, jrevd
@@ -73,12 +74,11 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     character(len=8) :: k8b
     character(len=8) :: masgen, riggen, amogen, basemo
     character(len=16) :: typout
-    character(len=19) :: chdep, chdeps, krefe
-    character(len=24) :: typres, chdep2, refe
-    character(len=24) :: raide
+    character(len=19) :: chdep, chdeps
+    character(len=24) :: typres, chdep2
+    character(len=24) :: raide, numedd
     complex(kind=8) :: r1c
 !
-    data  refe  /'                   .REFD'/
 !     ------------------------------------------------------------------
     call jemarq()
     grande = grand
@@ -98,10 +98,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     else if (typres(1:9).eq.'TRAN_GENE') then
         typout='HARM_GENE'
         nbva2=2*nbva
-        call jeveuo(resin(1:8)//'           .REFD', 'L', jrefe)
-        riggen = zk24(jrefe)(1:8)
-        masgen = zk24(jrefe+1)(1:8)
-        amogen = zk24(jrefe+2)(1:8)
+        call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, riggen, iret)
+        call dismoi('F', 'REF_MASS_PREM', resin, 'RESU_DYNA', ibid, masgen, iret)
+        call dismoi('F', 'REF_AMOR_PREM', resin, 'RESU_DYNA', ibid, amogen, iret)
     endif
 !
 !  Creation objet de stockage en LTPS pour les valeurs d'instants
@@ -130,9 +129,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     call jeexin(resou(1:8)//'           .DESC', ires)
     if ((ires.eq.0) .and. (typout(6:9).ne.'GENE')) call rscrsd('G', resou, typout, nbordr)
 !
-    refe(1:8) = resin
-    call jeveuo(refe, 'L', jrefe)
-    raide = zk24(jrefe)
+    call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, raide, iret)
 !
     if (typout(1:10) .eq. 'DYNA_HARMO') then
 !        --- CAS OU RESULTAT EST HARMO SUR BASE PHYSIQUE
@@ -157,7 +154,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             else
 !              --- CREATION D'UNE STRUCTURE CHAM_NO "CHAMP" BASEE
 !                  SUR BASE MODALE (.REFD[3])
-                call vtcreb(chdeps, zk24(jrefe+3), 'G', 'C', n1)
+
+                call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numedd, iret)
+                call vtcreb(chdeps, numedd(1:8), 'G', 'C', n1)
                 ASSERT(n1.eq.neq)
             endif
 !           -------------------------------------------------------
@@ -183,7 +182,8 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             if (raide(1:1) .ne. ' ') then
                 call vtcrem(chdeps, raide, 'G', 'R')
             else
-                call vtcreb(chdeps, zk24(jrefe+3), 'G', 'R', n1)
+                call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numedd, iret)
+                call vtcreb(chdeps, numedd(1:8), 'G', 'R', n1)
                 ASSERT(n1.eq.neq)
             endif
 !
@@ -216,9 +216,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             jvint = 1
 !           --- INFORMATIONS POUR LE .REFD TRANSMIS DIRECTEMENT DE
 !               HARM_GENE A TRAN_GENE
-            riggen = zk24(jrefe)(1:8)
-            masgen = zk24(jrefe+1)(1:8)
-            amogen = zk24(jrefe+2)(1:8)
+            call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, riggen, iret)
+            call dismoi('F', 'REF_MASS_PREM', resin, 'RESU_DYNA', ibid, masgen, iret)
+            call dismoi('F', 'REF_AMOR_PREM', resin, 'RESU_DYNA', ibid, amogen, iret)
 !
             nbsauv = nbordr
 !           --- RECUPERATION DU PAS DE TEMPS, NOMBRE DE MODES ET
@@ -309,9 +309,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !           --- INFORMATIONS POUR LE .REFD TRANSMIS DIRECTEMENT DE
 !               TRAN_GENE A HARM_GENE
-            riggen = zk24(jrefe)(1:8)
-            masgen = zk24(jrefe+1)(1:8)
-            amogen = zk24(jrefe+2)(1:8)
+            call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, riggen, iret)
+            call dismoi('F', 'REF_MASS_PREM', resin, 'RESU_DYNA', ibid, masgen, iret)
+            call dismoi('F', 'REF_AMOR_PREM', resin, 'RESU_DYNA', ibid, amogen, iret)
 !
             nbsauv = nbordr
 !           --- RECUPERATION DU NOMBRE DE MODES ET LA BASE MODALE
@@ -400,16 +400,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !     --- FINALISER LE .REFD POUR LES CAS AVEC RESU SUR BASE PHYSIQUE
     if ((ires.eq.0) .and. (typout(6:9).ne.'GENE')) then
-        krefe = resou(1:8)
-        call wkvect(krefe//'.REFD', 'G V K24', 7, jordr)
-        zk24(jordr) = zk24(jrefe)
-        zk24(jordr+1) = zk24(jrefe+1)
-        zk24(jordr+2) = zk24(jrefe+2)
-        zk24(jordr+3) = zk24(jrefe+3)
-        zk24(jordr+4) = zk24(jrefe+4)
-        zk24(jordr+5) = zk24(jrefe+5)
-        zk24(jordr+6) = zk24(jrefe+6)
-        call jelibe(krefe//'.REFD')
+        call refdcp(resin,resou)
     endif
 !
     call jedetr('&&ECRESU.PARAMACC')

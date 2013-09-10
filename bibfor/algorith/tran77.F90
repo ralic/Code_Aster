@@ -43,6 +43,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 #include "asterfort/mdgeph.h"
 #include "asterfort/rbph01.h"
 #include "asterfort/rbph02.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -65,17 +66,17 @@ subroutine tran77(nomres, typres, nomin, basemo)
     character(len=8) :: nomin, mode, nomma, matgen, nomgd
     character(len=14) :: numddl
     character(len=16) :: typres, type(8), typcha, typbas(8), concep
-    character(len=19) :: kinst, knume, krefe, trange, typref(8), prof
+    character(len=19) :: kinst, knume, trange, typref(8), prof
     character(len=24) :: matric, chamno, crefe(2), nomcha, objve1, k24bid
     character(len=24) :: objve2, objve3, objve4
     logical :: tousno, multap, leffor, prems
     integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadesc, iadrif, iarchi, iarefe, ibid, ich, idbase
+    integer :: iadesc, iarchi, ibid, ich, idbase, iadrif
     integer :: idec, idefm, idinsg, idresu, idvecg, ie, inocmp
     integer :: inoecp, inuddl, inumno, iret, iretou, isk
-    integer :: j3refe, jc, jinst, jnume, linst, llcha, lrefe
+    integer :: j3refe, jc, jinst, jnume, linst, llcha
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
     integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct
 !-----------------------------------------------------------------------
@@ -112,12 +113,10 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
 !
     if (mode .eq. blanc) then
-        call jeveuo(trange//'.REFD', 'L', iarefe)
-        matgen = zk24(iarefe)(1:8)
-        basemo = zk24(iarefe+4)(1:8)
-        call jeveuo(basemo//'           .REFD', 'L', iadrif)
+        call dismoi('F', 'REF_RIGI_PREM', trange, 'RESU_DYNA', ibid, matgen, iret)
+        call dismoi('F', 'REF_INTD_PREM', trange, 'RESU_DYNA', ibid, basemo, iret)
         if (matgen(1:8) .ne. blanc) then
-            matric = zk24(iadrif)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
             if (matric .ne. blanc) then
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
@@ -126,7 +125,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                 if (tousno) call dismoi('F', 'NB_EQUA', matric, 'MATR_ASSE', neq,&
                                         k8b, iret)
             else
-                numddl = zk24(iadrif+3)(1:14)
+                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numddl, iret)
                 call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
                             nomgd, ie)
                 call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
@@ -136,9 +135,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
             endif
         else
 !  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
-            matric = zk24(iadrif+3)
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, matric, iret)
             if (matric(1:8) .eq. blanc) then
-                matric=zk24(iadrif)
+                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
             else
@@ -147,7 +146,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            matric = zk24(iadrif)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
             if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                                     k8b, iret)
         endif
@@ -379,20 +378,10 @@ subroutine tran77(nomres, typres, nomin, basemo)
 210  continue
 !
 !
-    krefe = nomres
-    call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
+
     if (mode .eq. blanc) then
-!
-        zk24(lrefe ) = zk24(iadrif)
-        zk24(lrefe+1) = zk24(iadrif+1)
-        zk24(lrefe+2) = zk24(iadrif+2)
-        zk24(lrefe+3) = zk24(iadrif+3)
-        zk24(lrefe+4) = '        '
-        zk24(lrefe+5) = zk24(iadrif+4)
-        zk24(lrefe+6) = '        '
-!
+        call refdcp(basemo,nomres)
     endif
-    call jelibe(krefe//'.REFD')
 !
     call jedetr('&&TRAN77.NUME_NOEUD  ')
     call jedetr('&&TRAN77.NOM_CMP     ')

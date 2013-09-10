@@ -37,7 +37,7 @@ subroutine op0071()
 #include "asterfort/rsorac.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
-    integer :: ibid, n1, n2, n3, n4, ier, nbmode, iadrif, neq, jsmde
+    integer :: ibid, n1, n2, n3, n4, ier, nbmode, neq, jsmde, iret
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typmat
@@ -87,13 +87,12 @@ subroutine op0071()
 !
     call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
                 numdd1, ier)
-    call jeveuo(basemo//'           .REFD', 'L', iadrif)
-    matric = zk24(iadrif)
+    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
     if (matric .ne. ' ') then
         call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                     numdd2, ier)
     else
-        numdd2 = zk24(iadrif+1)(1:14)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numdd2, iret)
     endif
     if (numdd1 .ne. numdd2) then
         call u2mess('I', 'ALGORITH9_39')

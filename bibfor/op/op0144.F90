@@ -72,7 +72,7 @@ subroutine op0144()
     character(len=16) :: concep, cmd, nompar
     character(len=19) :: nomu, cham19, prchno
     character(len=24) :: desc, numo, vite, freq, masg, fact
-    character(len=24) :: numoi, fsic, nomcha, matria, refebm, chrefe, chdesc
+    character(len=24) :: numoi, fsic, nomcha, matria, chrefe, chdesc
     character(len=24) :: chvale
     character(len=32) :: nomvar
     integer :: iarg
@@ -81,7 +81,7 @@ subroutine op0144()
     integer :: i, iacmp, iamor, iav, icmp, idec, idesc
     integer :: iec, ier, ifact, ifm, ifr, ifreq, ifsic
     integer :: ii, imasg, inec, ino, inumo, io, ipar
-    integer :: irefbm, irefe, iret, itypfl, iv, ivite
+    integer :: irefe, iret, itypfl, iv, ivite
     integer :: j, jcdesc, jcrefe, jdesc, jj, jprno, long
     integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
     integer :: nec, nivdef, nivpar, numgd
@@ -288,9 +288,7 @@ subroutine op0144()
 ! ---     A LA CREATION DES OBJETS ASSOCIES AUX CHAMPS
 ! ---     A LA CREATION DU PROF_CHNO COMMUN
 !
-    refebm = nombm//'           .REFD'
-    call jeveuo(refebm, 'L', irefbm)
-    matria = zk24(irefbm)
+    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ibid, matria, iret)
 !
     call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibid,&
                 mailla, iret)
@@ -315,7 +313,7 @@ subroutine op0144()
                 zi(jdesc+(ino-1)*nec+iec-1) = ior( zi(jdesc+(ino-1)* nec+iec-1), 2**jj )
             endif
 50      continue
-40  end do
+40  continue
 !
 ! --- 6.2.CREATION DE LA STRUCTURE TABLE
 !
@@ -406,7 +404,7 @@ subroutine op0144()
 !
 70      continue
 !
-60  end do
+60  continue
 !
 !
 ! --- 7.LANCEMENT DU CALCUL EN FONCTION DU TYPE DE LA CONFIGURATION ---

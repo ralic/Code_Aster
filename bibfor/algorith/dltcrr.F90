@@ -42,16 +42,17 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 !  IN  : NUME      : NUMERO D'ORDRE DE REPRISE
 !
 !
-! aslint: disable=W1504
+! aslint: disable=W1504,W1306
     implicit none
 #include "jeveux.h"
 #include "asterfort/dlarch.h"
 #include "asterfort/jelibe.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/titre.h"
 #include "asterfort/wkvect.h"
-    integer :: neq, nbordr, iarchi, ifm
+    integer :: neq, nbordr, iarchi, ifm, ir
     integer :: nume, nbtyar
 !
     real(kind=8) :: dep0(neq), vit0(neq), acc0(neq), t0
@@ -61,16 +62,15 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
     character(len=8) :: result
     character(len=16) :: typres
     character(len=16) :: typear(nbtyar)
-    character(len=24) :: numedd
+    character(len=24) :: numedd, matric(3)
     character(len=*) :: texte
 !
     logical :: lcrea
 !
 !
 !
-    character(len=19) :: krefe
     integer :: istoc
-    integer :: lrefe
+
 !
 !
 !====
@@ -82,16 +82,10 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 ! 2.1. ==> CREATION DE LA STRUCTURE DE DONNEE RESULTAT
 !
         call rscrsd('G', result, typres, nbordr)
-        krefe(1:19) = result
-        call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
-        zk24(lrefe ) = rigid
-        zk24(lrefe+1) = masse
-        zk24(lrefe+2) = amort
-        zk24(lrefe+3) = numedd
-        zk24(lrefe+4) = ' '
-        zk24(lrefe+5) = ' '
-        zk24(lrefe+6) = ' '
-        call jelibe(krefe//'.REFD')
+        matric (1) = rigid
+        matric (2) = masse
+        matric (3) = amort
+        call refdaj ('F', result, nbordr, numedd, 'DYNAMIQUE', matric, ir)
 !
 ! 2.2. ==> ARCHIVAGE INITIAL
 !

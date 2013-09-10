@@ -45,11 +45,11 @@ subroutine rsmode(resu)
 !
 !    IN/JXVAR : RESU  NOM DU CONCEPT SD_RESULTAT
 !-----------------------------------------------------------------------
-    integer :: iret, ibid, neq, iordr, isymb, jordr, jrefd, k, krang
+    integer :: iret, ibid, neq, iordr, isymb, jordr, k, krang
     integer :: nbnosy, nbordr, iexi, nbval, jliprf
     character(len=1) :: kbid, typ1
     character(len=8) :: resu8, nomgd, ma1, ma2
-    character(len=19) :: resu19, matr
+    character(len=19) :: resu19
     character(len=14) :: nu
     character(len=16) :: nomsym
     character(len=19) :: prchno, champt, nomcha, prchn1
@@ -63,25 +63,12 @@ subroutine rsmode(resu)
     call jeexin(resu19//'.REFD', iexi)
     if (iexi .eq. 0) goto 50
 !
-    call jeveuo(resu19//'.REFD', 'L', jrefd)
     nu=' '
-    if (zk24(jrefd-1+4) .ne. ' ') then
-        nu=zk24(jrefd-1+4)(1:14)
-    else
-        do 10,k=1,3
-        if (zk24(jrefd-1+k) .ne. ' ') then
-            matr=zk24(jrefd-1+k)(1:19)
-            call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid,&
-                        nu, iret)
-            goto 20
-!
-        endif
-10      continue
-20      continue
-    endif
+    call dismoi('C', 'NUME_DDL', resu, 'RESU_DYNA', ibid, nu, iret)
+
     if (nu .eq. ' ') goto 50
 !
-    prchn1=nu//'.NUME'
+    prchn1=nu(1:8)//'.NUME'
     call dismoi('F', 'NOM_MAILLA', nu, 'NUME_DDL', ibid,&
                 ma1, iret)
 !
@@ -127,7 +114,7 @@ subroutine rsmode(resu)
             call copisd('CHAMP', 'G', champt, nomcha)
             call detrsd('CHAM_NO', champt)
 30      continue
-40  end do
+40  continue
 !
 !
 !     -- IL FAUT ENCORE DETRUIRE LES PROF_CHNO QUI ONT ETE CREES

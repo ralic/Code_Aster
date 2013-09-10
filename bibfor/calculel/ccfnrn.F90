@@ -64,8 +64,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !  -    -                  -      -              -         -
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: jordr, jref, ibid, iret, iordr, i, jinfc, nbchar, ic
-    integer :: iachar, ichar, ii, nuord, nh, jnmo, nbddl, lmat, lref, iad, ind
+    integer :: jordr, ibid, iret, iordr, i, jinfc, nbchar, ic, jref
+    integer :: iachar, ichar, ii, nuord, nh, jnmo, nbddl, lmat, iad, ind
     integer :: neq, jnoch, jfo, jfono, lonch, jchmp, jreno
     integer :: jcgmp, jfpip, ldepl, lonc2, ltrav, j, inume, jddl, jddr, lacce
     integer :: ierd, cret
@@ -82,7 +82,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume
     character(len=24) :: mater
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
-    character(len=24) :: strx
+    character(len=24) :: strx, raide
     character(len=24) :: bidon, chacce, k24b, modele, kstr
     logical :: exitim, lbid, lstr, lstr2, fnoevo
     parameter(nompro='CCFNRN')
@@ -111,8 +111,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'MODE_MECA' .or. typesd.eq.'DYNA_TRANS') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call jeveuo(resuin//'           .REFD', 'L', lref)
-            masse=zk24(lref+1)
+            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid, masse, iret)
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
@@ -122,8 +121,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'DYNA_HARMO') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call jeveuo(resuin//'           .REFD', 'L', lref)
-            masse=zk24(lref+1)
+            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid, masse, iret)
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
@@ -132,9 +130,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     endif
     if (typesd .eq. 'MODE_MECA' .or. typesd .eq. 'DYNA_TRANS') then
         numref=' '
-        call jeveuo(resuin//'           .REFD', 'L', jref)
-        if (zk24(jref) .ne. ' ') then
-            call dismoi('F', 'NOM_NUME_DDL', zk24(jref), 'MATR_ASSE', ibid,&
+        call dismoi('F', 'REF_RIGI_PREM', resuin, 'RESU_DYNA', ibid, raide, iret)
+        if (raide .ne. ' ') then
+            call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
                         numref, iret)
         endif
     endif

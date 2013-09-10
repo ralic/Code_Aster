@@ -54,7 +54,7 @@ subroutine diag99(nomres)
 !----------------------------------------------------------------------
 !
 !
-    integer :: iad, jiad, llref, ier, ibid, jordm, idmode, lmasse, idstat, jords
+    integer :: iad,jiad,ier,ibid,jordm,idmode,lmasse,idstat,jords
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jnsta, i, j, k, ieq, nbord
     integer :: nbmode, nbstat, neq, n1, iorne, iorol, jvale
     real(kind=8) :: alpha, r8scal
@@ -76,9 +76,11 @@ subroutine diag99(nomres)
 !
     call jelira(meca//'           .ORDR', 'LONUTI', nbmode)
     call jeveuo(meca//'           .ORDR', 'L', jordm)
-    call jeveuo(nomres//'           .REFD', 'L', llref)
-    masse = zk24(llref+1)
-    numddl = zk24(llref+3)
+
+
+    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid, masse, ier)
+    call dismoi('F', 'NUME_DDL', nomres, 'RESU_DYNA', ibid, numddl, ier)
+
     nu = numddl(1:14)
 !
     call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
@@ -145,11 +147,11 @@ subroutine diag99(nomres)
             zr(jnsta+(j-1)*neq+(k-1)) = zr( idstat+(j-1)*neq+(k-1)) - zr(jtrav1+(k-1) )
 40      continue
 !
-10  end do
+10  continue
 !
     do 50 i = 1, neq
         zi(jtrav4+i-1) = 1
-50  end do
+50  continue
     alpha = 0.717d0
 !
     call vpgskp(neq, nbstat, zr(jnsta), alpha, lmasse,&
@@ -212,7 +214,7 @@ subroutine diag99(nomres)
                     0, jiad, k8b)
         zk16(jiad) = zk16(iad)
 !
-80  end do
+80  continue
 !
     do 90 i = 1, nbstat
         iorol = zi(jords+i-1)

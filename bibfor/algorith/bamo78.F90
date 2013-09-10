@@ -29,6 +29,7 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/megeom.h"
 #include "asterfort/meharm.h"
 #include "asterfort/rcmfmc.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
@@ -79,7 +80,6 @@ subroutine bamo78(nomres, trange, typres)
     integer :: neq
     integer :: nbinst
     integer :: nbmode
-    integer :: iadrif
     integer :: idbase, jrestr, ldnew, linst
     character(len=14) :: numddl
     character(len=24) :: numedd
@@ -90,7 +90,7 @@ subroutine bamo78(nomres, trange, typres)
     character(len=24) :: k24bla
     character(len=24) :: chvarc, chvref
     character(len=19) :: knume, kinst, krefe
-    integer :: jnume, jinst, jrefe
+    integer :: jnume,jinst
     character(len=8) :: ctype, sdnoli, k8bla, modele, materi, crit
     character(len=1) :: typcoe
     character(len=2) :: codret
@@ -156,8 +156,7 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- NUME_DDL ATTACHE A LA BASE MODALE
 !
-    call jeveuo(basemo//'           .REFD', 'L', iadrif)
-    numedd = zk24(iadrif+3)
+    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numedd, iret)
 !
 ! --- NOUVELLE NUMEROTATION PAS NECESSAIRE ENCORE DANS REST_COND_TRAN
 !
@@ -311,23 +310,15 @@ subroutine bamo78(nomres, trange, typres)
             call jelibe(chgene)
 !
 310      continue
-300  end do
+300  continue
 !
 ! --- ENRICHISSEMENT SD TRAN_GENE -> EVOL_NOLI SD_VERI = 'NON' !!!
 !
-    if (typres .eq. 'EVOL_NOLI') goto 9998
-    call wkvect(krefe(1:19)//'.REFD', 'G V K24', 7, jrefe)
-    zk24(jrefe ) = zk24(iadrif)
-    zk24(jrefe+1) = zk24(iadrif+1)
-    zk24(jrefe+2) = zk24(iadrif+2)
-    zk24(jrefe+3) = numedd
-    zk24(jrefe+4) = zk24(iadrif+4)
-    zk24(jrefe+5) = zk24(iadrif+5)
-    zk24(jrefe+6) = zk24(iadrif+6)
-    call jelibe(krefe(1:19)//'.REFD')
+    if (typres .ne. 'EVOL_NOLI') then
+        call refdcp(basemo,krefe(1:8))
+        goto 9999
+    endif
 !
-9998  continue
-    if (typres .ne. 'EVOL_NOLI') goto 9999
     ches1 = '&&BAMO78.CHES1'
     ches2 = '&&BAMO78.CHES2'
     ches3 = '&&BAMO78.CHES3'
@@ -360,7 +351,7 @@ subroutine bamo78(nomres, trange, typres)
     valcmp(6)='1'
     do 350 i = 7, 20
         valcmp(i) = ' '
-350  end do
+350  continue
     do 400 iarch = 1, nbinst
         num0 = zi(jnume+iarch-1)
         nume = zi(jordr+num0-1)
@@ -437,7 +428,7 @@ subroutine bamo78(nomres, trange, typres)
                     lcoc, 'V', ches3)
         call cescar(ches3, chamel, 'G')
         call rsnoch(nomres, 'COMPORTEMENT', iarc2)
-400  end do
+400  continue
 !
 9999  continue
 !

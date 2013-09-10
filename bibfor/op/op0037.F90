@@ -1,5 +1,4 @@
 subroutine op0037()
-! aslint: disable=W1501
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -80,9 +79,7 @@ subroutine op0037()
     parameter   ( nbpami=1 , nbpamr=15 , nbpamk=1, nbpamt=17 )
 !     PARAMETRES "MODE_FLAMB"
     parameter   ( nbpafi=1 , nbpafr=1  , nbpafk=1, nbpaft=3  )
-    integer :: lmat(2), ibid, ifm, niv, lddl2
-    integer :: vali
-    integer :: iret
+    integer :: lmat(2), ibid, ifm, niv, lddl2, vali, iret
     integer :: l1, l2, l3, lmasse, lraide, lamor, lddl
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
@@ -93,9 +90,9 @@ subroutine op0037()
     character(len=14) :: nume
     character(len=16) :: typcon, nomcmd, norm, nomsy
     character(len=19) :: k19b, chamno
-    character(len=24) :: masse, amor, raide, refe, method, kvec, kvali, kvalr, kvalk
-    character(len=24) :: noparm(nbpamt), noparf(nbpaft), nopara(nbpamt), mate, cara, modele
-    character(len=24) :: typeba, nomgrn
+    character(len=24) :: masse, amor, raide, refe, method, kvec, kvali, kvalr
+    character(len=24) :: kvalk, noparm(nbpamt), noparf(nbpaft), nopara(nbpamt)
+    character(len=24) :: mate, cara, modele, typeba, nomgrn
 !
     integer :: iarg
 !     ------------------------------------------------------------------
@@ -119,18 +116,15 @@ subroutine op0037()
     call gcucon(modeou, typcon, iex)
 !
     lbasm = .false.
-    lamo = .false.
+    lamo  = .false.
     lcmplx= .false.
     lparam= .false.
 !
     call getvid('  ', 'MODE', 1, iarg, 1,&
                 modein, l)
 !
-    refe = modein//'           .REFD'
-    call jeveuo(refe, 'L', lmode)
-    typeba=zk24(lmode+6)
-    if (typeba(1:1) .ne. ' ') lbasm=.true.
-!
+    call dismoi('C', 'TYPE_BASE', modein, 'RESU_DYNA', ibid, typeba, iret)
+    if (typeba(1:1) .ne. ' ') lbasm = .true.
 !
     if (iex .gt. 0) then
         if (modeou .ne. modein) then
@@ -140,32 +134,33 @@ subroutine op0037()
         endif
     endif
 !
-    if (typcon(1:9) .eq. 'MODE_MECA') then
-        nomsy = 'DEPL'
-!
-!        --- VERIFIER SI TOUS LES PARAMETRES MODAUX EXISTENT DANS LA SD
-!          - OU BIEN ILS SERONT CALCULES DANS NORM_MODE
-!          - (CAS DES MODE_MECA NON DYNAMIQUES)
-        call rsvpar(modein, 1, 'FACT_PARTICI_DX', ibid, r8vide(), k8b, iret)
-        if ((iret.eq.110) .or. lbasm) lparam=.true.
-!
-        nbpari = nbpami
-        nbparr = nbpamr
-        nbpark = nbpamk
-        nbpara = nbpamt
-        if (.not.lparam) then
-            nbparr = nbpamr - 9
-            nbpara = nbpamt - 9
-        endif
-        do 1 i = 1, nbpara
-            nopara(i) = noparm(i)
- 1      continue
-    else if (typcon(1:11) .eq. 'MODE_MECA_C') then
+    if (typcon(1:11) .eq. 'MODE_MECA_C') then
         nomsy = 'DEPL'
         nbpari = nbpami
         nbparr = nbpamr - 9
         nbpark = nbpamk
         nbpara = nbpamt - 9
+        do 1 i = 1, nbpara
+            nopara(i) = noparm(i)
+ 1      continue
+    else if (typcon(1:9) .eq. 'MODE_MECA') then
+        nomsy = 'DEPL'
+!        --- VERIFIER SI TOUS LES PARAMETRES MODAUX EXISTENT DANS LA SD
+!          - OU BIEN ILS SERONT CALCULES DANS NORM_MODE
+!          - (CAS DES MODE_MECA NON DYNAMIQUES)
+        call rsvpar(modein, 1, 'FACT_PARTICI_DX', ibid, r8vide(),k8b, l1)
+        call rsvpar(modein, 1, 'FACT_PARTICI_DY', ibid, r8vide(),k8b, l2)
+        call rsvpar(modein, 1, 'FACT_PARTICI_DZ', ibid, r8vide(),k8b, l3)
+        if ((l1+l2+l3).eq.330) lparam = .true.
+!
+        nbpari = nbpami
+        nbparr = nbpamr
+        nbpark = nbpamk
+        nbpara = nbpamt
+        if (.not.(lbasm .or. lparam)) then
+            nbparr = nbpamr - 9
+            nbpara = nbpamt - 9
+        endif
         do 2 i = 1, nbpara
             nopara(i) = noparm(i)
  2      continue
@@ -181,7 +176,6 @@ subroutine op0037()
     else
         call u2mesk('F', 'ALGELINE2_33', 1, typcon)
     endif
-!
 !
 !
 !     ---RECUPERATION DU NIVEAU D'IMPRESSION---
@@ -223,7 +217,7 @@ subroutine op0037()
         call jelira(k19b//'.VALE', 'TYPE', cval=typmod)
         if (typmod .eq. 'C') lcmplx = .true.
 !
-77  end do
+77  continue
 !
 !     --- INITIALISATION ---
     norm = ' '
@@ -243,21 +237,32 @@ subroutine op0037()
     if (lbasm) then
         call getvid(' ', 'RAIDE', 0, iarg, 1, mat1, l1)
         call getvid(' ', 'MASSE', 0, iarg, 1, mat2, l2)
-        call getvid(' ', 'AMOR', 0, iarg, 1, mat3, l3)
+        call getvid(' ', 'AMOR' , 0, iarg, 1, mat3, l3)
+        if (l1 .eq. 0) then
+            call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, mat1, iret)
+            if (iret .eq. 0) l1 = 1
+        endif
+        if (l2 .eq. 0) then
+            call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, mat2, iret)
+            if (iret .eq. 0) l2 = 1
+        endif
+        if (l3 .eq. 0) then
+            call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, mat3, iret)
+            if (iret .eq. 0) l3 = 1
+        endif
         if ((l1*l2) .eq. 0) call u2mess('F', 'ALGELINE_6')
         masse = mat2
         raide = mat1
         amor = ' '
         lamo=.false.
-        if (l3 .ne. 0) then
+        if ((l3 .ne. 0) .and. (mat3 .ne. ' ')) then
             lamo=.true.
             amor=mat3
         endif
     else
-        call jeveuo(refe, 'L', lmode)
-        raide = zk24(lmode)
-        masse = zk24(lmode+1)
-        amor = zk24(lmode+2)
+        call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, raide, iret)
+        call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, masse, iret)
+        call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, amor, iret)
         if (raide .eq. ' ') then
             lrefe = .false.
             call rsexch(' ', modein, 'DEPL', 1, chamno, iret)
@@ -507,6 +512,7 @@ subroutine op0037()
             call u2mess('F', 'ALGELINE2_40')
         endif
     endif
+
 !
 !     --- RECUPERATION DES COMPOSANTES ---
     if (norm .eq. 'AVEC_CMP' .or. norm .eq. 'SANS_CMP' .or. norm(1:4) .eq. 'EUCL') then
@@ -590,7 +596,7 @@ subroutine op0037()
     call jeveuo(kvalr, 'E', lvalr)
     call jeveuo(kvalk, 'E', lvalk)
 !
-    if (lbasm) then
+    if (lbasm .and. .not.(lparam)) then
         call mtdscr(masse)
         call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
         call mtdscr(raide)
@@ -609,12 +615,17 @@ subroutine op0037()
         call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
         call vpddl(raide(1:19), masse(1:19), neq, ib, ib,&
                    ib, zi(lddl2), zi(lprod), ierd)
+        call utimsd(6, 2, .false., .true.,kvec, 1,' ')
+        call utimsd(6, 2, .false., .true.,kvali, 1,' ')
+        call utimsd(6, 2, .false., .true.,kvalr, 1,' ')
+        call utimsd(6, 2, .false., .true.,kvalk, 1,' ')
         call vppgen(lmasse, lamor, lraide, zr(lvalr+3*nbmode), zr(lvalr+ 5*nbmode),&
                     zr(lvalr+4*nbmode), zr(lmod), neq, nbmode, zi(lprod))
 !
-!        CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
+!       CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
         call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode,&
                     nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
+        lparam = .true.
     endif
 !
 !     --- NORMALISATION DES MODES ET ARCHIVAGE ---
@@ -661,7 +672,7 @@ subroutine op0037()
     do 60 im = 1, nbmode
         call rsadpa(modeou, 'E', 1, 'NORME', zi(lnumor+im-1), 0, lnorm, k8b)
         zk24(lnorm) = method
-60  end do
+60  continue
 !
 !     --- ON MET UN TITRE ----
     call titre()

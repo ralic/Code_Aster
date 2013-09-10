@@ -1,5 +1,6 @@
 subroutine flexib(basmod, nbmod, flex, nl, nc,&
                   numl, numc)
+! aslint: disable=W1306
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,10 +63,11 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
-    integer :: nl, nc
-    real(kind=8) :: flex(nl, nc)
-    character(len=6) :: pgc
-    character(len=8) :: basmod, typint, intf, kbid, k8bid
+!
+    integer           :: nl, nc
+    real(kind=8)      :: flex(nl, nc)
+    character(len=6)  :: pgc
+    character(len=8)  :: basmod, typint, intf, kbid, k8bid
     character(len=19) :: numddl
     character(len=24) :: chamva, noeint
     character(len=24) :: valk
@@ -74,7 +76,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !-----------------------------------------------------------------------
     integer :: i, ibid, iddeeq, iord, iran, iret, j
     integer :: jj, k, kk, ldkge, ldmge, llcham, lldes
-    integer :: llnoc, llnol, llref, lltyp, ltextc, ltextl, ltorc
+    integer :: llnoc,llnol,lltyp,ltextc,ltextl,ltorc
     integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
     integer :: numc, numl
     real(kind=8) :: toto, xkgen, xx
@@ -90,10 +92,9 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 ! --- RECUPERATION CONCEPTS AMONT
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    intf=zk24(llref+4)
-    numddl=zk24(llref+3)
-    call jelibe(basmod//'           .REFD')
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
+
     if (intf .eq. '        ') then
         valk = basmod
         call u2mesg('F', 'ALGORITH13_17', 1, valk, 0,&
@@ -189,7 +190,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 70      continue
         call jelibe(chamva)
         call jedetr('&&'//pgc//'.VECT')
-60  end do
+60  continue
 !
 ! --- SUPPRESSION CONTRIBUTION STATIQUE DES MODES CONNUS
 !
@@ -217,7 +218,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 90      continue
         call jelibe(chamva)
         call jedetr('&&'//pgc//'.VECT')
-80  end do
+80  continue
 !
     call jedetr('&&'//pgc//'.ORDREC')
     call jedetr('&&'//pgc//'.EXTRACC')

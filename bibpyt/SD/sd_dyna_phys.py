@@ -15,32 +15,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: hassan.berro at edf.fr
 
 from SD import *
-
 from SD.sd_resultat import sd_resultat
-from SD.sd_nume_ddl import sd_nume_ddl
-from SD.sd_matr_asse import sd_matr_asse
-from SD.sd_interf_dyna_clas import sd_interf_dyna_clas
-from SD.sd_proj_mesu import sd_proj_mesu
+from SD.sd_resu_dyna import sd_resu_dyna
 
-
-class sd_resultat_dyn(sd_resultat):
-#--------------------------------------------------
-    nomj = SDNom(fin=8)
-    REFD = AsVK24(SDNom(debut=19), lonmax=7, )
-
-    # si utilisation de PROJ_MESU_MODAL :
-    PROJM = Facultatif(sd_proj_mesu())
-
-    # indirection vers les SD de .REFD :
-    def check_resultat_dyn_i_REFD(self, checker):
-        refd = self.REFD.get_stripped()
-        if not refd : return
-        for k in 0,1,2 :
-            if refd[k] :
-                sd2 = sd_matr_asse(refd[0]); sd2.check(checker)
-        if refd[3] :
-            sd2 = sd_nume_ddl(refd[3]); sd2.check(checker)
-        if refd[4] :
-            sd2 = sd_interf_dyna_clas(refd[4]); sd2.check(checker)
+class sd_dyna_phys(sd_resultat,sd_resu_dyna) :
+#---------------------------------------------
+    pass

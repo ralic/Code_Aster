@@ -31,7 +31,6 @@ subroutine op0191()
 #include "asterc/getvid.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesfus.h"
@@ -47,6 +46,7 @@ subroutine op0191()
 #include "asterfort/jemarq.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -190,7 +190,7 @@ subroutine op0191()
 !
             call jedema()
 12      continue
-10  end do
+10  continue
 !
     nompar = '&&OP0191.NOMS_PARA'
     call rsnopa(resuin, 2, nompar, nbac, nbpa)
@@ -221,7 +221,7 @@ subroutine op0191()
                 zk8(iadou) = zk8(iadin)
             endif
 22      continue
-20  end do
+20  continue
 !
     call titre()
 !
@@ -231,7 +231,7 @@ subroutine op0191()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call ajrefd(resuin, resuou, 'COPIE')
+    call refdcp(resuin, resuou)
 !
 !
 ! TRAITEMENT DU CAS OU IL Y A REENTRANCE

@@ -19,6 +19,7 @@ subroutine macr78(nomres, trange, typres)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mdgeph.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -59,18 +60,18 @@ subroutine macr78(nomres, trange, typres)
     character(len=8) :: nomnol, nogdsi, maya
     character(len=14) :: numddl
     character(len=16) :: concep, champ(8)
-    character(len=19) :: kinst, knume, krefe, cham19
+    character(len=19) :: kinst, knume, cham19
     character(len=24) :: chamno, nomcha, numedd, nprno
 !      CHARACTER*3  TREDU
     logical :: lredu
     integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaconx, iadref, iadrif, iaprno, iarc0, iarch
+    integer :: i, iaconx, iadref, iaprno, iarc0, iarch
     integer :: ibid, icmp, idbase, iddl, ie, ierd, im
     integer :: inoe, inu0, inum, iret, iretou, ivale, j
     integer :: jinst, jnocmp, jnume, jordr, jrestr, k, ldnew
-    integer :: linst, lnocm2, lnocmp, lpa2, lpar, lrefe, n0
+    integer :: linst, lnocm2, lnocmp, lpa2, lpar, n0
     integer :: n1, nbcham, nbec, nbinst, nbmdef, nbmdyn, nbmode
     integer :: nbndef, nbndyn, nbnoe, nbntot, nbtdyn, nec, neq
     integer :: nes, nmc
@@ -96,13 +97,11 @@ subroutine macr78(nomres, trange, typres)
     call jeveuo(macrel//'.MAEL_REFE', 'L', iadref)
     basemo = zk24(iadref)
     call rsorac(basemo, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, k8b, nbmode, 1,&
-                ibid)
-    call jeveuo(basemo//'           .REFD', 'L', iadrif)
-    numedd = zk24(iadrif+3)
+                cbid, rbid, k8b, nbmode, 1, ibid)
+    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numedd, iret)
     call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
                 mailla, iret)
-    lintf = zk24(iadrif+4)
+    call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, lintf, iret)
     call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
     call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmdef,&
                 k8b, ierd)
@@ -169,7 +168,7 @@ subroutine macr78(nomres, trange, typres)
             zk8(jnocmp+2*nec*(i-1)+2*j-2) = nomnol
             zk8(jnocmp+2*nec*(i-1)+2*j-1) = nomcmp(j)
 22      continue
-21  end do
+21  continue
 !        CALL GETVID(' ','NUME_DDL',1,IARG,1,K8B,IBID)
 !        IF (IBID.NE.0) THEN
 !          CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
@@ -287,17 +286,10 @@ subroutine macr78(nomres, trange, typres)
                 zk8(lpar) = zk8(lpa2)
             endif
 310      continue
-300  end do
-    krefe = nomres
-    call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
-    zk24(lrefe ) = zk24(iadrif)
-    zk24(lrefe+1) = zk24(iadrif+1)
-    zk24(lrefe+2) = zk24(iadrif+2)
-    zk24(lrefe+3) = numedd
-    zk24(lrefe+4) = zk24(iadrif+4)
-    zk24(lrefe+5) = zk24(iadrif+5)
-    zk24(lrefe+6) = zk24(iadrif+6)
-    call jelibe(krefe//'.REFD')
+300  continue
+
+    call refdcp(basemo,nomres)
+
 !
 ! --- MENAGE
 !

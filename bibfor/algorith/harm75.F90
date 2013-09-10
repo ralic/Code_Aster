@@ -51,6 +51,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 #include "asterfort/mdgepc.h"
 #include "asterfort/rbph01.h"
 #include "asterfort/rbph02.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -72,14 +73,14 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     character(len=8) :: nomgd, basem2, blanc
     character(len=14) :: numddl
     character(len=16) :: nomcmd, typres, typbas(8), typcha, type(3)
-    character(len=19) :: krefe, knume, kfreq, hrange, prchno, prof, typref(8)
+    character(len=19) :: knume, kfreq, hrange, prchno, prof, typref(8)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
     logical :: tousno, leffor, prems
     integer :: iarg, inocmp, inoecp, inumno, inuddl
-    integer :: j, jc, i, ie, iadesc, iadrif, iarchi, iarefe, ich
+    integer :: j, jc, i, ie, iadesc, iarchi, ich
     integer :: idbase, idvecg, iret, iretou, jfreq
-    integer :: jnume, lfreq, llcha, lrefe, lvale, nbcham, nbinsg
+    integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
     integer :: n1, n2, n3, n4, j3refe, idec, idefm, idinsg, idresu
     integer :: nbfreq, neq, nbnoeu, ncmp
 ! ------------------------------------------------------------------
@@ -148,17 +149,18 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
     if (mode .eq. ' ') then
 !
-        call jeveuo(hrange//'.REFD', 'L', iarefe)
-        matgen = zk24(iarefe)(1:8)
-        basemo = zk24(iarefe+4)(1:8)
-        call jeveuo(basemo//'           .REFD', 'L', iadrif)
+
+
+        call dismoi('F', 'REF_RIGI_PREM', hrange, 'RESU_DYNA', ibid, matgen, iret)
+        call dismoi('F', 'BASE_MODALE'  , hrange, 'RESU_DYNA', ibid, basemo, iret)
+
         if (matgen(1:8) .ne. blanc) then
-            matric = zk24(iadrif)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
             if (matric .ne. blanc) then
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
             else
-                numddl = zk24(iadrif+3)(1:14)
+                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numddl, iret)
             endif
             prchno=numddl//'.NUME'
             call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
@@ -170,9 +172,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         else
 !          -- POUR LES CALCULS SANS MATRICE GENERALISEE
 !             (PROJ_MESU_MODAL)
-            matric = zk24(iadrif+3)
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, matric, iret)
             if (matric(1:8) .eq. blanc) then
-                matric=zk24(iadrif)
+                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
             else
@@ -182,7 +184,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            matric = zk24(iadrif)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
             if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                                     k8b, iret)
         endif
@@ -382,18 +384,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         call jedetr('&&HARM75.BASE')
 210  continue
 !
-    krefe = nomres
-    call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
-    if (mode .eq. ' ') then
-        zk24(lrefe ) = zk24(iadrif)
-        zk24(lrefe+1) = zk24(iadrif+1)
-        zk24(lrefe+2) = zk24(iadrif+2)
-        zk24(lrefe+3) = zk24(iadrif+3)
-        zk24(lrefe+4) = zk24(iadrif+4)
-        zk24(lrefe+5) = zk24(iadrif+5)
-        zk24(lrefe+6) = zk24(iadrif+6)
-    endif
-    call jelibe(krefe//'.REFD')
+    if (mode .eq. ' ') call refdcp(basemo, nomres)
 !
 !
 ! --- MENAGE

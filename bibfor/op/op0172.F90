@@ -69,7 +69,7 @@ subroutine op0172()
     character(len=14) :: nume
     character(len=16) :: concep, nomcmd, valek(2)
     character(len=19) :: enerpo
-    character(len=24) :: nprno, refd, deeq, nomch1, nomob1, nomob2
+    character(len=24) :: nprno, deeq, nomch1, nomob1, nomob2
     character(len=24) :: magrno, manono, magrma, manoma, nomgr
     integer :: iarg
 !     ------------------------------------------------------------------
@@ -78,7 +78,7 @@ subroutine op0172()
     integer :: idga, idgm, idgn, idn2, idno, ienemo, ienmot
     integer :: ifr, ii, ij, im, imod, in, ino
     integer :: inoe, ire, iret, irigno, jbor, jcoor
-    integer :: jfreq, jnbp, jnume, jnuor, jpas, jrefd, jval
+    integer :: jfreq, jnbp, jnume, jnuor, jpas, jval
     integer :: ldgm, ldgn, ldnm, nb, nba, nbb
     integer :: nben, nbg, nbga, nbgr, nbmd, nbmod2, nbno
     integer :: nbnoeu, nbocc, nbs, nbv, nbvale, ncg, nco
@@ -87,8 +87,6 @@ subroutine op0172()
     real(kind=8) :: alfa, amoge, beta, enesol, f, omega, pi
     real(kind=8) :: xg, yg, zg, zrig
 !-----------------------------------------------------------------------
-    data  refd  /'                   .REFD'/
-!     ------------------------------------------------------------------
 !
     call jemarq()
     call infmaj()
@@ -124,9 +122,7 @@ subroutine op0172()
 !
     call getvid('ENER_SOL', 'MODE_MECA', 1, iarg, 1,&
                 meca, nmm)
-    refd(1:8) = meca
-    call jeveuo(refd, 'L', jrefd)
-    masse = zk24(jrefd+1)
+    call dismoi('F', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid, masse, iret)
 !
 !     --- ON RECUPERE LA TABLE D'ENERGIE ---
 !
@@ -155,7 +151,7 @@ subroutine op0172()
         if (zi(jnuor+i-1) .eq. zi(jnume+nbmode-1)) goto 10
         nbmode = nbmode + 1
         zi(jnume+nbmode-1) = zi(jnuor+i-1)
-10  end do
+10  continue
 !
     nomob1 = '&&OP0172.FREQ'
     call wkvect(nomob1, 'V V R', nbmode, jfreq)
@@ -169,7 +165,7 @@ subroutine op0172()
         else
             call u2mess('F', 'PREPOST4_18')
         endif
-12  end do
+12  continue
 !
 !
 !--------RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
@@ -236,7 +232,7 @@ subroutine op0172()
             ii = ii + 1
             zi(idno+ii) = zi(ldgn+in)
 22      continue
-20  end do
+20  continue
     goto 111
 114  continue
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
@@ -259,13 +255,13 @@ subroutine op0172()
                 zi(idn2+inoe-1) = zi(idn2+inoe-1) + 1
 24          continue
 23      continue
-21  end do
+21  continue
     ii = 0
     do 25 ij = 1, nbnoeu
         if (zi(idn2+ij-1) .eq. 0) goto 25
         ii = ii + 1
         zi(idno+ii-1) = ij
-25  end do
+25  continue
     nbno = ii
     call jedetr('&&OP0172.GROUP_MA')
 111  continue
@@ -369,7 +365,7 @@ subroutine op0172()
 75              continue
 72          continue
         endif
-51  end do
+51  continue
 !
     if (ncmp .eq. 6) write(ifr,1000)
     if (ncmp .eq. 3) write(ifr,2000)
@@ -389,7 +385,7 @@ subroutine op0172()
         f = zr(jfreq+i-1)
         write(ifr,1001) f,(zr(ienemo+(ic-1)*nbmode+i-1),ic=1,ncmp),&
         zr(ienmot+i-1)
-54  end do
+54  continue
 !
 !        --- ON RECUPERE LES SOUS_STRUC ET LEURS AMOR ---
 !
@@ -466,12 +462,12 @@ subroutine op0172()
             call u2mesg('I', 'PREPOST5_64', 0, ' ', 1,&
                         vali, 2, valrr)
         endif
-60  end do
+60  continue
 !
     write(ifr,1002)
     do 64 imod = 1, nbmode
         write(ifr,1003) imod, zr(jfreq+imod-1), zr(iamomo+imod-1)
-64  end do
+64  continue
 !
     goto 9999
 9998  continue
@@ -495,7 +491,7 @@ subroutine op0172()
         omega=2.d0*pi*zr(jfreq)
         zr(iamomo+imod-1) = 0.5d0*(alfa*omega+beta/omega)
         write(ifr,1003) imod, zr(jfreq), zr(iamomo+imod-1)
-11  end do
+11  continue
 9999  continue
     nbvale = nbmode
     if (nbvale .gt. 1) then

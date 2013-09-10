@@ -1,5 +1,6 @@
 subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
                   nbacti)
+! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +59,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 #include "asterfort/u2mess.h"
 !-----------------------------------------------------------------------
     integer :: i, icomp, ier, inu, j, lldesc, llnoa
-    integer :: llref, nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
+    integer :: nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
     integer :: nbnoa, nbnot, numa
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)
@@ -75,8 +76,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !-------------------RECUPERATION DE LA LISTE-INTERFACE------------------
 !
     call jemarq()
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    intf=zk24(llref+4)(1:8)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ier, intf, ier)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
@@ -138,7 +138,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
                 if (nbacti .le. nblis) lisnu(nbacti)=icomp
             endif
 20      continue
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

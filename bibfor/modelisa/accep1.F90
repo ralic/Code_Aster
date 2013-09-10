@@ -48,10 +48,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
     integer :: nbm, i
-    integer :: iret, irefe, ilime, inoli, ibid
-    integer :: ngrel, ipg
-    integer :: n1
-    integer ::  jlgrf
+    integer :: iret, ilime, inoli, ibid, ngrel, ipg, n1, jlgrf
     integer :: ncham, icham, nn, nbelto, nbelgr, ntail, ialiel
     integer :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: rbid
@@ -59,11 +56,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
     complex(kind=8) :: cbid
     character(len=7) :: incr, ielem, imode
-    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b
-    character(len=8) ::  partit
+    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, partit, k8b
     character(len=16) :: option
-    character(len=19) :: nomcha, chgeom, matas, chharm
-    character(len=19) :: chamno
+    character(len=19) :: nomcha, chgeom, matas, chharm, chamno
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     logical :: yang
     integer :: iarg
@@ -81,10 +76,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
                     k8b, iret)
         if (iret .gt. 0) then
-            call jeveuo(modmec//'           .REFD', 'L', irefe)
             call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
                         iret)
-            matas = zk24(irefe) (1:19)
+            call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', ibid, matas, iret)
             call jeveuo(matas//'.LIME', 'L', ilime)
             call jeveuo(zk24(ilime)(1:8)//'.ME001     .NOLI', 'L', inoli)
             modele = zk24(inoli) (1:8)
@@ -151,7 +145,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         call detrsd('CARTE', chharm)
-70  end do
+70  continue
     if (ncham .gt. 0) call jedetr('&&ACCEP1.VEC')
 !
 !
@@ -167,7 +161,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     do 80 igr = 1, ngrel
         nbelgr = nbelem(ligrmo,igr)
         nbelto = nbelto + nbelgr
-80  end do
+80  continue
 !
 ! TAILLE DU TABLEAU
 !          NTAIL=16*NBELTO*NBM
@@ -236,7 +230,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 90              continue
 100          continue
 110      continue
-120  end do
+120  continue
 !
     call jedema()
 end subroutine

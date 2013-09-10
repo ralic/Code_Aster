@@ -67,19 +67,19 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
     integer :: i, iad, iar, ibid, idep, ieq, ier, iord, iret, j, jbid, k, l
     integer :: ldnew, llchab, llchol, llind, lliner, llinsk, llmass, i1, k1
-    integer :: llnueq, llors, llprs, llrot, lrefe, ltrotx, ltroty, ltrotz, ltvec
+    integer :: llnueq, llors, llprs, llrot, ltrotx, ltroty, ltrotz, ltvec
     integer :: ltype, nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod, nbnot, nbsst
-    integer :: neq, neqs, nno, numo, nutars, llref1, llref2, llref3, elim, lmoet
+    integer :: neq, neqs, nno, numo, nutars, llref2, llref3, elim, lmoet
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst
     integer :: iadpar(9)
     integer :: vali(2)
     real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek
     real(kind=8) :: genem, mat(3, 3), omeg2, rbid
-    character(len=8) :: basmod, macrel, modgen, soutr, kbid
+    character(len=8)  :: basmod, macrel, modgen, soutr, kbid
     character(len=16) :: depl, nompar(9)
     character(len=19) :: raid, numddl, numgen, chamne
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
-    character(len=24) :: valk, nomsst
+    character(len=24) :: valk, nomsst, intf
     complex(kind=8) :: cbid
     integer :: iarg
 !
@@ -111,9 +111,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----RECUPERATION DU MODELE GENERALISE--------------------------------
 !
-    call jeveuo(resgen//'           .REFD', 'L', llref1)
-    raid=zk24(llref1)
-    call jelibe(resgen//'           .REFD')
+    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid, raid, iret)
 !
     call jeveuo(raid//'.REFA', 'L', llref2)
     numgen(1:14)=zk24(llref2+1)
@@ -139,7 +137,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         zr(ltrotz+i-1)=zr(llrot)
         zr(ltroty+i-1)=zr(llrot+1)
         zr(ltrotx+i-1)=zr(llrot+2)
-15  end do
+15  continue
 !
 !-----CREATION DU PROF-CHAMNO-------------------------------------------
 !
@@ -286,8 +284,9 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
                 call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
                             basmod)
-                call jeveuo(basmod//'           .REFD', 'L', lrefe)
-                call jeveuo(zk24(lrefe+4)(1:8)//'.IDC_TYPE', 'L', ltype)
+
+                call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+                call jeveuo(intf(1:8)//'.IDC_TYPE', 'L', ltype)
                 if (zk8(ltype) .eq. 'AUCUN') then
                     vali (1) = k
                     vali (2) = k
@@ -387,7 +386,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     nbnot, nbcmp, 2)
         call rotchm(profno, zr(ldnew), zr(ltrotx), nbsst, zi(llinsk),&
                     nbnot, nbcmp, 1)
-20  end do
+20  continue
 !
 ! --- MENAGE
     call jedetr('&&REGEGL.ROTX')

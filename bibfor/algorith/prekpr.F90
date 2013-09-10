@@ -39,7 +39,7 @@ subroutine prekpr(modmec, mtrmas, nbddl, numer, mailla,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, ie, iad1
+    integer :: ibid,ie
     character(len=8) :: k8b
 !
 !---------CONSTITUTION DE LA LISTE COMPLETE DES ET DDLS EN CAS D EFFORT
@@ -47,8 +47,9 @@ subroutine prekpr(modmec, mtrmas, nbddl, numer, mailla,&
 !
     call jemarq()
 !
-    call jeveuo(modmec//'           .REFD', 'L', iad1)
-    mtrmas = zk24(iad1+1)(1:8)
+
+
+    call dismoi('F', 'REF_MASS_PREM', modmec, 'RESU_DYNA', ibid, mtrmas, ie)
     call dismoi('F', 'NB_EQUA', mtrmas, 'MATR_ASSE', nbddl,&
                 k8b, ie)
     call dismoi('F', 'NOM_NUME_DDL', mtrmas, 'MATR_ASSE', ibid,&

@@ -76,7 +76,7 @@ subroutine calimc(chargz)
     integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i2, i3, iaconx, iadref, iadrif, iaprno
+    integer :: i, i2, i3, iaconx, iadref, iaprno
     integer :: ibid, icmp, icmp2, idbase, idcoec, idcoer, idddl
     integer :: iddl, iddl2, idimen, idirec, idnoeu, ierd, ii
     integer :: imod, imod2, inoe, iocc, iret, j, j2
@@ -148,11 +148,10 @@ subroutine calimc(chargz)
         call rsorac(basemo, 'LONUTI', ibid, rbid, k8b,&
                     cbid, rbid, k8b, nbmode, 1,&
                     ibid)
-        call jeveuo(basemo//'           .REFD', 'L', iadrif)
-        numedd = zk24(iadrif+3)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numedd, iret)
         call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
                     mailla, iret)
-        lintf = zk24(iadrif+4)
+        call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, lintf, iret)
 ! On recupere le nbre de noeuds presents dans interf_dyna
         call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
 ! On recupere la liste des noeuds presents dans interf_dyna
@@ -361,7 +360,7 @@ subroutine calimc(chargz)
         call jedetr('&&CALIMC.NCMPIN')
         call jedetr('&&CALIMC.BASE')
 !
-30  end do
+30  continue
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------

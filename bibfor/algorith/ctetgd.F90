@@ -1,5 +1,6 @@
 subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
                   nbtet)
+! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +59,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !-----------------------------------------------------------------------
     integer :: i, ibid, icomp, ier, iloci, ilocj, inod
     integer :: inog, iret, j, k, lldesc, llnod, llnog
-    integer :: llref, nbcmp, nbcpmx, nbdcou, nbddr, nbdga, nbec
+    integer ::nbcmp,nbcpmx,nbdcou,nbddr,nbdga,nbec
     integer :: nbnod, nbnog, nbnot, nbsec, nbtet, noer, numd
     integer :: numg
     real(kind=8) :: angle, pi, x
@@ -85,8 +86,9 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !-----------------RECUPERATION DES CONCEPTS AMONT-----------------------
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    intf=zk24(llref+4)
+
+
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
     call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
                 mailla, iret)
 !
@@ -250,7 +252,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
         nbdcou=nbdcou+icomp
 !
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

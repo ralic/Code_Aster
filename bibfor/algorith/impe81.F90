@@ -54,7 +54,7 @@ subroutine impe81(nomres, impe, basemo)
 !
 !
 !
-    integer :: i, j, ier, nbmode, iadrif
+    integer :: i,j,ier,nbmode
     integer :: ldblo, ldbloi, lddesa, lddesm, lddesr, ldrefa, ldrefm
     integer :: ldrefr, ldresa, ldresm, ldresr, ldresi, ldrefi
     integer :: nbdef, nbmodd, nbmods, nfr, nim, ntail
@@ -107,7 +107,7 @@ subroutine impe81(nomres, impe, basemo)
     zk24(ldrefa) = basemo
     zk24(ldrefa+1) = blanc
 !
-    call jeveuo(basemo//'           .REFD', 'L', iadrif)
+
     call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmodd,&
                 k8b, ier)
     call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&
@@ -169,7 +169,7 @@ subroutine impe81(nomres, impe, basemo)
             endif
 !
 40      continue
-30  end do
+30  continue
 !
 ! --- CREATION DU .DESC
 !

@@ -1,5 +1,4 @@
-subroutine mdall2(nomres, basemo, numgen, res, nbo,&
-                  nbmode)
+subroutine mdall2(nomres, basemo, res, nbo, nbmode)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -7,7 +6,7 @@ subroutine mdall2(nomres, basemo, numgen, res, nbo,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdallo.h"
 #include "asterfort/rsadpa.h"
-    character(len=8) :: basemo, nomres, numgen, res, blanc8
+    character(len=8) :: basemo, nomres, res, blanc8
     character(len=16) :: blan16
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -32,7 +31,6 @@ subroutine mdall2(nomres, basemo, numgen, res, nbo,&
 !     ------------------------------------------------------------------
 ! IN  : NOMRES : NOM DU RESULTAT DELA COMMANDE (RESU_GENE)
 ! IN  : BASEMO : BASE MODALE SUR LAQUELLE ON PROJETTE RES
-! IN  : NUMGEN : NUME_DDL_GENE
 ! IN  : RES    : RESULTAT PHYSIQUE A PROJETER
 ! IN  : NBO    : NOMBRE DE PAS DE TEMPS
 ! IN  : NBMODE : NOMBRE DE MODES
@@ -41,7 +39,7 @@ subroutine mdall2(nomres, basemo, numgen, res, nbo,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iinst, inord, iordr, iptem, jacce, jvite, jdepl, jpass
-    integer :: ibid, jinst, jordr, jrefe, nbmode, nbo
+    integer :: ibid, jinst, jordr, nbmode, nbo
     real(kind=8) :: dtbid
     character(len=4) :: k4bid(3)
     character(len=8) :: k8b
@@ -63,10 +61,6 @@ subroutine mdall2(nomres, basemo, numgen, res, nbo,&
                 ibid, ibid, ibid, ibid, blan16,&
                 ibid, k4bid, 'TRAN', 'GLOB')
 !
-!---- MODIFICATION DU .REFD POUR Y AJOUTER LE NUMGEN
-    call jeveuo(nomres//'           .REFD', 'E', jrefe)
-    zk24(jrefe+3) = numgen
-!
 !---- EN ABSENCE D'INFORMATION SUR LE PAS DE TEMPS, LE .PTEM EST
 !---- EST FORCE A ZERO
     if (nbo .ne. 0) then
@@ -82,7 +76,7 @@ subroutine mdall2(nomres, basemo, numgen, res, nbo,&
         call rsadpa(res, 'L', 1, 'INST', zi(iordr-1+inord),&
                     0, iinst, k8b)
         zr(jinst-1+inord) = zr(iinst)
-10  end do
+10  continue
 !
 !
     call jedema()

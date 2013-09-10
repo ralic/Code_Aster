@@ -139,9 +139,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    intf = zk24(llref+4)
-    numddl = zk24(llref+3)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, ier)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, ier)
     call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqsec,&
                 k8b, ier)
     call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
@@ -158,7 +157,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION MATRICE DE MASSE-------------------------------------
 !
-    mass = zk24(llref+1)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, mass, ier)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
@@ -226,7 +225,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     nbmoc = 0
     do 5 iddi = 1, nbdia
         nbmoc = nbmoc + zi(lldiam+nbdia+iddi-1)
- 5  end do
+ 5  continue
     call wkvect('&&REMNGL.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&REMNGL.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
     call ordr8(zr(llfreq), nbmoc, zi(ltorto))
@@ -243,7 +242,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
         zi(ltorf+iormo-1) = nborc
         idiam = zi(lldiam+idicou-1)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
- 6  end do
+ 6  continue
     call jedetr('&&REMNGL.ORDRE.TMPO')
 !
 !-----RECUPERATION DES MODES COMPLEXES----------------------------------
@@ -255,7 +254,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     call wkvect('&&REMNGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
     do 8 i = 1, nbsec
         zr(lttsc+i-1) = depi*(i-1) / nbsec
- 8  end do
+ 8  continue
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
 !
@@ -450,7 +449,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
             endif
 !
 15      continue
-10  end do
+10  continue
 !
     call jedetr('&&REMNGL.VEC.TRAVC')
     call jedetr('&&REMNGL.VEC.COMP')

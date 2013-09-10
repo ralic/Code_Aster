@@ -44,7 +44,7 @@ subroutine op0076()
     integer :: iarg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadesc, iarefe, idcham, iddesc, idinst, idrefe, idvecg
+    integer :: iadesc, idcham, iddesc, idinst, idrefe, idvecg
     integer :: ierd, n1, nbinst, nbmode, nt, nf, ni
 !-----------------------------------------------------------------------
     call jemarq()
@@ -74,15 +74,14 @@ subroutine op0076()
 !     --- RECUPERATION DES INFORMATIONS MODALES ---
 !
     call jeveuo(trange//'           .DESC', 'L', iadesc)
-    call jeveuo(trange//'           .REFD', 'L', iarefe)
     call jeveuo(trange//'           .DISC', 'L', idinst)
     call jelira(trange//'           .DISC', 'LONMAX', nbinst)
     call jeveuo(trange//'           .'//nomcha(1:4), 'L', idcham)
 !
 !     --- RECUPERATION DE LA NUMEROTATION GENERALISEE NUME_DDL_GENE
-    nddlge = zk24(iarefe+3)(1:8)
+    call dismoi('F', 'NUME_DDL', trange, 'RESU_DYNA', iarg, nddlge, ierd)
 !     --- RECUPERATION DE LA BASE MODALE ET LE NOMBRE DE MODES
-    basemo = zk24(iarefe+4)(1:8)
+    call dismoi('F', 'BASE_MODALE', trange, 'RESU_DYNA', iarg, basemo, ierd)
     nbmode = zi(iadesc+1)
 !
     call wkvect(nomres//'           .REFE', 'G V K24', 2, idrefe)

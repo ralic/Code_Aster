@@ -39,7 +39,6 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
 #include "jeveux.h"
 !
-#include "asterfort/ajrefd.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getres.h"
@@ -58,6 +57,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 #include "asterfort/jexnom.h"
 #include "asterfort/pjspma.h"
 #include "asterfort/pjxxch.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -352,7 +352,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     ico = ico + 1
 !
 20  continue
-    30 end do
+    30 continue
 !
     if (ico .eq. 0) call u2mess('F', 'CALCULEL4_64')
     call jedetr('&&PJXXPR.NUME_ORDRE')
@@ -369,8 +369,10 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     endif
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
-    call ajrefd(resu1, resu2, 'ZERO')
-!
-!
+    call jeexin(resu1//'           .REFD', iret)
+    if (iret .gt. 0) then
+        call jeexin(resu2//'           .REFD', iret)
+        if (iret .eq. 0) call refdaj(' ', resu2, -1, ' ', 'INIT', ' ' , ibid)
+    endif
     call jedema()
 end subroutine

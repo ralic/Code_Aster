@@ -19,10 +19,10 @@
 
 from SD import *
 
-from SD.sd_resultat_dyn import sd_resultat_dyn
+from SD.sd_resu_dyna import sd_resu_dyna
 
 
-class sd_mode_meca(sd_resultat_dyn):
+class sd_mode_meca(sd_resu_dyna):
 #--------------------------------------------------
     nomj = SDNom(fin=8)
 #    UTIL = Facultatif(AsVI(SDNom(debut=19)))  # AJACOT_PB : .UTIL n'existe pas pour sdlx201a

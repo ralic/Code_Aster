@@ -1,5 +1,6 @@
 subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                   seul)
+! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 !
@@ -67,7 +68,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     parameter   (nbpabm=10)
     integer :: ldpar(nbpabm), ldpa2(nbpabm)
     integer :: nbcham, nbold, nbtrou, vali
-    integer :: i, ii, jrba, jref, jtyp, ier, iorol, ire, ibid, jordr
+    integer :: i, ii, jtyp, ier, iorol, ire, ibid, jordr
     integer :: llkge, llmge, llncp, llom2, lltmo, llval2, llvalo
 !
     real(kind=8) :: genek, genem, omeg2, rbid, epsi
@@ -109,8 +110,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     if (nbmod .eq. 0) goto 9999
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call jeveuo(nomres//'           .REFD', 'L', jref)
-    interf = zk24(jref+4) (1:8)
+    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid, interf, ire)
     if (interf .ne. ' ') then
         type = interf//'.IDC_TYPE'
         call jeveuo(type, 'L', jtyp)
@@ -124,8 +124,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
     typeba=' '
     if (typres .ne. 'MULT_ELAS') then
-        call jeveuo(resul//'           .REFD', 'L', jrba)
-        typeba=zk24(jrba+6)
+        call dismoi('C', 'TYPE_BASE', resul, 'RESU_DYNA', ibid, typeba, ire)
     endif
 !
     typmo=' '
@@ -250,7 +249,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
         iorne=iorne+1
 !
-10  end do
+10  continue
 !
 !
 9999  continue

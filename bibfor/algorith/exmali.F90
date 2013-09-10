@@ -55,7 +55,7 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
     character(len=6) :: pgc
     character(len=8) :: basmod, nomint, lintf, kbid
     character(len=24) :: chamva, nommat
-    integer :: ord, ii, llref, numint, nbdef, nbcol, ibid, nbddl, nblig, ltrang
+    integer :: ord, ii, numint, nbdef, nbcol, ibid, nbddl, nblig, ltrang
     integer :: llcham, iran, iad, i, j, ldmat, ier
 !
 !-----------------------------------------------------------------------
@@ -65,8 +65,8 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !---------------------RECUPERATION LISTE_INTERFACE AMONT----------------
 !
     call jemarq()
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    lintf=zk24(llref+4)
+
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lintf, ier)
 !
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
@@ -117,7 +117,7 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 20      continue
 !
 !
-10  end do
+10  continue
 !
 !
     call jedetr('&&'//pgc//'.RAN.DDL')

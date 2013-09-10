@@ -65,7 +65,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: iam, ib, idiff, ie, im, indic, iv, j, jabsc, jbasf, jcodim, jnuor
-    integer :: jphie, jpoids, jrhoe, kchref, kdrif, kfreq, kfsic, kmasg, knumo
+    integer :: jphie, jpoids, jrhoe, kchref, kfreq, kfsic, kmasg, knumo
     integer :: krefe, kvite, lamog, lires, lmasg, lomeg, lprofv, n1, n2, nbamor
     integer :: nbmcfc, nbnoeu, neq, nmp, nbtrou
     real(kind=8) :: deuxpi, r8b, xamor
@@ -138,8 +138,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! 4.  RECUPERATION DU NOMBRE D'EQUATIONS DU MODELE
 !     --------------------------------------------
-    call jeveuo(nombm//'           .REFD', 'L', kdrif)
-    matass = zk24(kdrif)(1:8)
+    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ib, matass, ie)
     call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ib,&
                 numddl, ie)
     call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
@@ -191,7 +190,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                     0, lmasg, k8b)
         zr(jmasg+im-1) = zr(lmasg)
         zl(jlocf+im-1) = .false.
-10  end do
+10  continue
 !
 ! 6.3 AMORTISSEMENTS MODAUX
 !     STRUCTURE NON COUPLEE AVEC LE FLUIDE
@@ -285,7 +284,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             zr(jamo1+im-1) = 2.0d0 * zr(jamog+im-1) * zr(jmasg+im-1) * zr(jpuls+im-1)
             zl(jlocf+im-1) = .true.
         endif
-50  end do
+50  continue
 !
 !
 ! 7.  RECUPERATION DES CARACTERISTIQUES DE LA CONFIGURATION ETUDIEE
@@ -295,7 +294,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
     call wkvect('&&MDITMI.NUOR', 'V V I', nbmode, jnuor)
     do 60 j = 1, nbmode
         zi(jnuor+j-1) = j
-60  end do
+60  continue
 !
     if (itypfl .eq. 1) then
         call wkvect('&&MDITMI.TEMP.IRES', 'V V I', nbnoeu, lires)

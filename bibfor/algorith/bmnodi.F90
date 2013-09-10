@@ -1,5 +1,6 @@
 subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
                   ivcord, nbdif)
+! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,14 +67,14 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
     character(len=*) :: basmdz, nmintz, intfz
     character(len=24) :: noeint, idesc
     character(len=24) :: valk(3)
-    integer :: nbdef, ivcord(nbdef), idec(300)
-    integer :: vali, ier
+    integer :: vali, ier, nbdef
+    integer :: ivcord(nbdef), idec(300), ibid
     character(len=10) :: typbas(3)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, inoe, iordef, iret, j, lldes, llnoe
-    integer :: llref, nbcmp, nbdif, nbec, nbmod, nbnoe
+    integer :: nbcmp, nbdif, nbec, nbmod, nbnoe
     integer :: nbnot, numint
 !-----------------------------------------------------------------------
     data typbas/'CLASSIQUE','CYCLIQUE','RITZ'/
@@ -99,8 +100,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !-------------RECUPERATION DU TYPE DE BASE ET INTERF_DYNA------------
 !
     if (basmod .ne. blanc) then
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        idesc=zk24(llref+6)
+        call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid, idesc, ier)
         call dismoi('F', 'NB_MODES_DYN', basmod, 'RESULTAT', nbmod,&
                     k8bid, ier)
         if (idesc(1:9) .ne. 'CLASSIQUE') then
@@ -111,8 +111,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
                         0, 0, 0.d0)
         endif
 !
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        intfb=zk24(llref+4)(1:8)
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intfb, ier)
         if (intf .ne. blanc .and. intf .ne. intfb) then
             valk (1) = basmod
             valk (2) = intfb
@@ -179,7 +178,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
             endif
 30      continue
 !
-20  end do
+20  continue
 !
     nbdif=-nbdif
 !

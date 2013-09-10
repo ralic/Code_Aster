@@ -18,13 +18,13 @@
 
 from SD import *
 from SD.sd_titre import sd_titre
-from SD.sd_nume_ddl_gene import sd_nume_ddl_gene
-from SD.sd_matr_asse_gene import sd_matr_asse_gene
+from SD.sd_resu_dyna import sd_resu_dyna
+
 from SD.sd_proj_mesu import sd_proj_mesu
 from SD.sd_util import *
 
 
-class sd_dyna_gene(sd_titre) :
+class sd_dyna_gene(sd_titre,sd_resu_dyna) :
 #--------------------------------------
     nomj = SDNom(fin=19)
 
@@ -39,8 +39,6 @@ class sd_dyna_gene(sd_titre) :
     ORDR = AsVI()  # gros objet. 
 
     DESC = AsVI(lonmax=5, )
-
-    REFD = AsVK24(lonmax=5, )
 
     # si CHOC :
     DLOC = Facultatif(AsVR())
@@ -67,11 +65,6 @@ class sd_dyna_gene(sd_titre) :
     REVN = Facultatif(AsVK24(lonmax=1, ))
     REVC = Facultatif(AsVI())
     REVD = Facultatif(AsVR())
-
-
-    # si utilisation de PROJ_MESU_MODAL :
-    PROJM = Facultatif(sd_proj_mesu(SDNom(debut=8)))
-
 
     def u_dime(self):# --> ok
     
@@ -101,8 +94,6 @@ class sd_dyna_gene(sd_titre) :
         return (type_calcul, nbmode, nbchoc, nbsauv, nbexcit, nbrede, nbrevi)
 
 
-
-
     def check_DESC(self,checker):# --> ok
     
         desc=self.DESC.get()
@@ -114,34 +105,7 @@ class sd_dyna_gene(sd_titre) :
         if (desc[0]==4):
                 assert desc[2]==0 ## pas de choc si HARM
                 assert desc[3]==0 ## pas de rel eff-depl si HARM
-                assert desc[4]==0 ## pas de rel eff-vit si HARM
-        
-        
-
-    def check_REFD(self,checker):# --> ok
-    
-      
-        refd=self.REFD.get_stripped()
-
-        if self.PROJM.exists :
-          ## --> dans le cas de PROJ_MESU_MODAL on a du mal a tester l'integrite du .REFD.   
-          ##     On se contente de verifier qu'il n'est pas totalement vide
-          assert ((refd[0] != '') or (refd[1] != '') or (refd[2] != '') or (refd[3] != '') or (refd[4] != ''))
-
-        else:
-
-           assert refd[0] != '' , refd
-           sd2= sd_matr_asse_gene(refd[0]) ; sd2.check() ## --> presence et conformite de la rigidite
-   
-           assert refd[1] != '' , refd
-           sd2= sd_matr_asse_gene(refd[1]) ; sd2.check() ## --> presence et conformite de la masse
-           
-           if refd[2] != '' :
-               sd2= sd_matr_asse_gene(refd[2]) ; sd2.check() ## --> presence et conformite de l'amortissement si present
-           
-           assert refd[3] != '' , refd
-           sd2= sd_nume_ddl_gene(refd[3]) ; sd2.check()
-        
+                assert desc[4]==0 ## pas de rel eff-vit si HARM     
 
     def check_ORDR_DISC(self,checker):
         

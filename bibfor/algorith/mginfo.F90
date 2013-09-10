@@ -46,8 +46,8 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 !
 !
 !
-    integer :: iadrif, iret, ibid
-    character(len=8) :: k8bid
+    integer           :: iret, ibid
+    character(len=8)  :: k8bid
     character(len=24) :: matric
 !
 ! ----------------------------------------------------------------------
@@ -56,9 +56,10 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 !
 ! --- INFORMATIONS SUR MATRICE DES MODES MECANIQUES
 !
-    call jeveuo(modmec//'           .REFD', 'L', iadrif)
-    numddl = zk24(iadrif+3)(1:14)
-    matric = zk24(iadrif)(1:8)
+
+
+    call dismoi('F', 'NUME_DDL'     , modmec, 'RESU_DYNA', ibid, numddl, iret)
+    call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', ibid, matric, iret)
     if (numddl(1:1) .ne. ' ') then
         call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                     k8bid, iret)

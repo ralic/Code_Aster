@@ -1,6 +1,7 @@
 subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                   noma, nomgrp, iaxe, kec, geom,&
                   vicoq, torco, tcoef, ifreba)
+! aslint: disable=W1306
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -79,13 +80,13 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     character(len=8) :: k8bid, nompar(3)
     character(len=14) :: numddl
     character(len=19) :: nomrc
-    character(len=24) :: refeba, matria, coorno, rcvalk, rcvalr, nomgrp(*)
+    character(len=24) :: matria, coorno, rcvalk, rcvalr, nomgrp(*)
     character(len=32) :: grpno
 !
 !-----------------------------------------------------------------------
     integer :: ibi, icoor, icoq, idec, idecm, idecmn, idefm
     integer :: ifm, ifreba, imod, inmaxe, inmaxi, ino, inunoe
-    integer :: inunoi, iok1, iok2, iok3, ipara, irefba, iret
+    integer :: inunoi,iok1,iok2,iok3,ipara,iret
     integer :: ivalk, ivalr, nbeq, nbnoex, nbnoin, nbnoto
     integer :: nbpara, numnoe, numod, nunoe0
     real(kind=8) :: dpmaxe, dpmaxi, dpnorm, drmax, dx1, dx2, fremod
@@ -153,7 +154,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             iok3 = 1
             rho1 = zr(ivalr+ipara-1)
         endif
-10  end do
+10  continue
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call u2mess('F', 'ALGELINE_93')
     else if (young1.eq.0.d0) then
@@ -185,7 +186,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
             iok3 = 1
             rho2 = zr(ivalr+ipara-1)
         endif
-20  end do
+20  continue
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
         call u2mess('F', 'ALGELINE_96')
     else if (young2.eq.0.d0) then
@@ -196,9 +197,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 ! --- 3.EXTRACTION DES DEFORMEES MODALES DANS LES DEUX DIRECTIONS DU
 ! ---   PLAN ORTHOGONAL A L'AXE DE REVOLUTION DES COQUES
 !
-    refeba = base//'           .REFD'
-    call jeveuo(refeba, 'L', irefba)
-    matria = zk24(irefba)
+    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi, matria, iret)
 !
     call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
                 numddl, iret)
@@ -377,7 +376,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         write(ifm,530)
         write(ifm,*)
 !
-40  end do
+40  continue
 !
 ! --- MENAGE
     call jedetr('&&MODCOQ.TEMP.DEFM')

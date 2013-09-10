@@ -51,6 +51,7 @@ subroutine crtype()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lisccr.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
@@ -69,7 +70,7 @@ subroutine crtype()
     integer :: jcham, jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf
     integer :: ino, nbv, jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini
-    integer :: valii(2), jrefd, nfr, n4, jnmo, nmode, iarg, nbcmpd, nbcmpi
+    integer :: valii(2), nfr, n4, jnmo, nmode, iarg, nbcmpd, nbcmpi
 !
     parameter  (mxpara=10)
 !
@@ -86,7 +87,7 @@ subroutine crtype()
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
     character(len=19) :: nomch, champ, listr8, excit, pchn1, resu19
     character(len=24) :: k24, linst, nsymb, typres, lcpt, o1, o2, profch, noojb
-    character(len=24) :: valkk(4)
+    character(len=24) :: valkk(4), matric(3)
     character(len=32) :: kjexn
 !
     data linst,listr8,lcpt/'&&CRTYPE_LINST','&&CRTYPE_LISR8',&
@@ -577,25 +578,35 @@ subroutine crtype()
 80  continue
 !
 !     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
-    if (typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' .or. typres(1:10)&
-        .eq. 'DYNA_TRANS') then
-        call jeexin(resu19//'.REFD', ier)
-        if (ier .eq. 0) then
-            call wkvect(resu19//'.REFD', 'G V K24', 7, jrefd)
-        else
-            call jeveuo(resu19//'.REFD', 'E', jrefd)
-        endif
-        call getvid(' ', 'MATR_RIGI', 0, iarg, 1,&
-                    matr, n1)
+    if (     typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' & 
+        .or. typres(1:10).eq. 'DYNA_TRANS') then
+        matric(1) = ' '
+        matric(2) = ' '
+        matric(3) = ' '
+        numedd    = ' '
+        call getvid(' ', 'MATR_RIGI', 0, iarg, 1, matr, n1)
         if (n1 .eq. 1) then
-            zk24(jrefd-1+1)=matr
-            call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid,&
-                        numedd, ier)
-            zk24(jrefd-1+4)=numedd
+            call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid, numedd, ier)
+            matric(1) = matr
+        else
+            call getvid(' ', 'MATR_MASS', 0, iarg, 1, matr, n1)
+            if (n1 .eq. 1) then
+                call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid, numedd, ier)
+            endif
         endif
-        call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                    matr, n1)
-        if (n1 .eq. 1) zk24(jrefd-1+2)=matr
+        call getvid(' ', 'MATR_MASS', 0, iarg, 1, matr, n1)
+        if (n1 .eq. 1) then
+            matric(2) = matr
+        endif
+!       If no numbering information could be found, try to recuperate the information from
+!       the fields composing the sd_resultat
+        if (numedd .eq. ' ') then
+            call getvid('AFFE', 'CHAM_GD', 1, iarg, 1, champ, ier)
+            call dismoi('F', 'PROF_CHNO', champ, 'CHAMP', ibid, profch, ier)
+            call refdaj('F', resu19, -1, profch, 'DYNAMIQUE', matric, ier)
+        else
+            call refdaj('F', resu19, -1, numedd, 'DYNAMIQUE', matric, ier)
+        endif
     endif
 !
     if ( typres .eq. 'EVOL_NOLI' .or. typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_THER' ) then

@@ -44,9 +44,9 @@ subroutine clas99(nomres)
     integer :: vali
 !
 !
-    character(len=24) :: valk
-    character(len=8) :: nomres, intf, kbid
-    character(len=19) :: numddl, raid, mass, raidlt
+    character(len=24) :: valk, concep(3)
+    character(len=8) :: nomres, intf, kbid, resul1
+    character(len=19) :: numddl, raid, mass, raidlt, amor
     complex(kind=8) :: cbid
     integer :: iarg
 !
@@ -56,17 +56,17 @@ subroutine clas99(nomres)
 ! --- RECUPERATION DES CONCEPTS AMONT
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ii, inor, lldesc, llref, lrang
+    integer :: i, ibid, ii, inor, lldesc, lrang, ir
     integer :: ltmome, ltnbmo, nbid, nbmod, nbmodo, nbmoma, nbmome
     integer :: nbmout, nbsdd
     real(kind=8) :: bid, ebid
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(nomres//'           .REFD', 'L', llref)
-    raid=zk24(llref)
-    mass=zk24(llref+1)
-    numddl=zk24(llref+3)
-    intf=zk24(llref+4)
+!
+    call dismoi('F', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid, raid  , ir)
+    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid, mass  , ir)
+    call dismoi('F', 'NUME_DDL'     , nomres, 'RESU_DYNA', ibid, numddl, ir)
+    call dismoi('F', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid, intf  , ir)
 !
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
@@ -112,16 +112,17 @@ subroutine clas99(nomres)
         zi(ltnbmo+i-1) = nbmodo
         nbmoma = max(nbmoma,nbmodo)
         nbmod = nbmod+nbmodo
- 5  end do
+ 5  continue
 !
     call wkvect('&&CLAS99.NUME.RANG', 'V V I', nbmoma, lrang)
     do 10 ii = 1, nbmoma
         zi(lrang+ii-1)=ii
-10  end do
+10  continue
 !
 !
 ! --- DETERMINATION NOMBRE TOTAL DE MODES ET DEFORMEES
 !
+    call assert(intf(1:8) .ne. ' ')
     call jeveuo(intf//'.IDC_DESC', 'L', lldesc)
     nbsdd=nbmod+zi(lldesc+4)
 !      NBSDD1=ZI(LLDESC+4)
@@ -142,7 +143,7 @@ subroutine clas99(nomres)
     do 6 i = 1, nbmome
         call moco99(nomres, zk8(ltmome+i-1), zi(ltnbmo+i-1), zi(lrang), inor,&
                     .true.)
- 6  end do
+ 6  continue
     if (nbmoma .gt. 0) call jedetr('&&CLAS99.NUME.ORD')
     if (nbmome .gt. 0) call jedetr('&&CLAS99.LIST.MODE_MECA')
     if (nbmome .gt. 0) call jedetr('&&CLAS99.LIST.NBMOD')

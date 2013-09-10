@@ -16,11 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdall2(nomres, basemo, numgen, res, nbo,&
-                      nbmode)
+    subroutine mdall2(nomres, basemo, res, nbo, nbmode)
         character(len=8) :: nomres
         character(len=8) :: basemo
-        character(len=8) :: numgen
         character(len=8) :: res
         integer :: nbo
         integer :: nbmode

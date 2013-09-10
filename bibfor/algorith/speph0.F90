@@ -53,7 +53,7 @@ subroutine speph0(nomu, table)
     integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn, inoen
     integer :: icmpn, nbmail, i, imain, inddl, inoeud, iddl, nupo, ivari, napex1
     integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
-    integer :: isip, icham, nbn1, nbn2, ltypa
+    integer :: isip, icham, nbn1, nbn2
     integer :: i1, lnumi, lnumj, mxval, lrefe, lfreq, lrefes, lfreqs
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
@@ -63,12 +63,11 @@ subroutine speph0(nomu, table)
     character(len=16) :: optch1, maille
     character(len=16) :: option
     character(len=24) :: cham19, typba
-    character(len=24) :: valk(3), refd
+    character(len=24) :: valk(3)
     character(len=24) :: chnumi, chnumj, chfreq
 !
     character(len=3) :: toutor
     integer :: iarg
-    data  refd  /'                   .REFD'/
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -176,7 +175,7 @@ subroutine speph0(nomu, table)
         if (zi(lnumi-1+i1) .ge. idim0) then
             idim0 = zi(lnumi-1+i1)
         endif
-200  end do
+200  continue
 !
     if (idim1 .ne. idim0) then
         call u2mess('F', 'ALGORITH10_63')
@@ -339,11 +338,9 @@ subroutine speph0(nomu, table)
             icham1 = icham + nbn* (imr-1) + in - 1
             zr(icham1) = zr(isip+zi(inddl+in-1)-1)
 50      continue
-60  end do
+60  continue
 !
-    refd(1:8) = modmec
-    call jeveuo(refd, 'L', ltypa)
-    typba=zk24(ltypa+6)
+    call dismoi('C', 'TYPE_BASE', modmec, 'RESU_DYNA', ibid, typba, iret)
 !
     do 90 imr = 1, nbmod1
         numod = zi(ilmode+imr-1)
@@ -392,7 +389,7 @@ subroutine speph0(nomu, table)
                 zr(icham1) = zr(isip+zi(inddl+in-1)-1)
 80          continue
         endif
-90  end do
+90  continue
 !
 !     --- CREATION DE LA TABLE DE SORTIE ---
 !
@@ -409,7 +406,7 @@ subroutine speph0(nomu, table)
 !
     do 100 if1 = 1, nbpf
         zr(lfreqs+if1-1) = zr(lfreq+if1-1)
-100  end do
+100  continue
 !
     call speph2(movrep, napexc, nbmode, nbpf, intmod,&
                 table, zr(ifor), zr(ifoi))

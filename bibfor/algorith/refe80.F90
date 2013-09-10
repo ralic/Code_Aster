@@ -51,7 +51,7 @@ subroutine refe80(nomres)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, ioc1, iret, ldref, llref
+    integer :: ibid, ioc1, iret, ldref
 !-----------------------------------------------------------------------
     data typbas/'CLASSIQUE','CYCLIQUE','RITZ'/
 !
@@ -68,8 +68,7 @@ subroutine refe80(nomres)
 !
 !------------------CONTROLE SUR TYPE DE BASE MODALE---------------------
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    idesc=zk24(llref+6)
+    call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid, idesc, iret)
 !
     if (idesc(1:9) .ne. 'CLASSIQUE') then
         valk (1) = basmod
@@ -81,7 +80,7 @@ subroutine refe80(nomres)
 !
 !--------------------RECUPERATION DES CONCEPTS AMONTS-------------------
 !
-    intf=zk24(llref+4)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
     call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
                 mailla, iret)
 !

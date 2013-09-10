@@ -37,6 +37,7 @@ subroutine op0155()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsnopa.h"
@@ -141,13 +142,13 @@ subroutine op0155()
                 zk8(iadou)=zk8(iadin)
             endif
 10      continue
-20  end do
+20  continue
     call jedetr(nompar)
 !
 !
 !     -- 6. RECOPIE DE L'OBJET .REFD (SI NECESSAIRE) :
 !     --------------------------------------------------
-    call jedup1(resu19//'.REFD', 'G', nomr19//'.REFD')
+    call refdcp(resu19,nomr19)
 !
 !
 !

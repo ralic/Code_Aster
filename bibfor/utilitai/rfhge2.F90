@@ -65,7 +65,7 @@ subroutine rfhge2(harmge)
     integer :: iagno, iaref2, ibid, idbase, iddl, idinsg, idvecg
     integer :: ie, ierd, ign2, ii, ino, inoeud, iordr, ldesc
     integer :: iret, itresu, jinst, jj, lfon, lg1, lg2
-    integer :: lordr, lpro, lrefe, lvar, mxmode, n1, n2
+    integer :: lordr, lpro, lvar, mxmode, n1, n2
     integer :: n3, nbinsg, nbmode, nbordr, nbpari, nbpark, nbparr
     integer :: neq, ngn, numcmp
     real(kind=8) :: epsi
@@ -165,12 +165,10 @@ subroutine rfhge2(harmge)
 !
 ! --- CAS D'UNE VARIABLE PHYSIQUE
 !
-        call jeveuo(resu//'.REFD', 'L', lrefe)
-        matpro = zk24(lrefe)(1:8)
+        call dismoi('F', 'REF_RIGI_PREM', resu, 'RESU_DYNA', ibid, matpro, iret)
         call jeveuo(matpro//'           .REFA', 'L', iaref2)
         basemo = zk24(iaref2)(1:8)
-        call jeveuo(basemo//'           .REFD', 'L', lrefe)
-        matras = zk24(lrefe)(1:19)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matras, iret)
 !
         nomsy = 'DEPL'
 ! ---   RECUPERATION DE LA BASE MODALE DANS UN VECTEUR DE TRAVAIL
@@ -188,7 +186,7 @@ subroutine rfhge2(harmge)
             call dismoi('F', 'NOM_MAILLA', matras, 'MATR_ASSE', ibid,&
                         noma, ie)
         else
-            nume = zk24(lrefe+3)(1:14)
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, nume, iret)
             call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
                         noma, ie)
             call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&

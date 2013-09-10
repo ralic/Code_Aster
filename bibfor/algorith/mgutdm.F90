@@ -61,13 +61,13 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
 #include "asterfort/u2mesk.h"
 !
 !
-    integer :: repi, iret, lldesc, llmcl, llref, nuss, nusst
+    integer :: repi, iret, lldesc, llmcl, llref, nuss, nusst, ibid
     integer :: vali
-    character(len=*) :: questi
+    character(len=*)  :: questi
     character(len=24) :: repk
-    character(len=24) :: valk(2)
+    character(len=24) :: valk(2), nume
     character(len=8) :: modgen, nommcl, basmod, nomsst
-    character(len=14) :: nume, llref2
+    character(len=14) :: llref2
     character(len=*) :: mdgenz, nmsstz, repkz
 !
 !-----------------------------------------------------------------------
@@ -118,15 +118,13 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         nommcl=zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        repk(1:14)=zk24(llref+3)
+        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, repk, iret)
     else if (questi(1:12).eq.'NOM_MODELE  ') then
         call jeveuo(jexnum(modgen//'      .MODG.SSME', nuss), 'L', llmcl)
         nommcl=zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        nume(1:14)=zk24(llref+3)
+        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, nume, iret)
         call jenuno(jexnum(nume(1:14)//'.NUME.LILI', 2), llref2)
         repk(1:8)=llref2(1:8)
     else if (questi(1:15).eq.'NOM_LIST_INTERF') then
@@ -134,8 +132,8 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         nommcl=zk8(llmcl)
         call jeveuo(nommcl//'.MAEL_REFE', 'L', llref)
         basmod(1:8)=zk24(llref)
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        repk(1:8)=zk24(llref+4)
+!       call utimsd(6, 2, .false., .true.,basmod(1:8)//'           .REFD', 1, ' ')
+        call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, repk, iret)
     else if (questi(1:10).eq.'NB_CMP_MAX') then
         call jeveuo(modgen//'      .MODG.DESC', 'L', lldesc)
         repi=zi(lldesc+1)

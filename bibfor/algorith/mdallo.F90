@@ -5,7 +5,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
                   jdisc, jfcho, jdcho, jvcho, jadcho,&
                   jredc, jredd, jrevc, jrevd, method,&
                   nbsym, nomsym, typcal, sauve)
-! aslint: disable=W1504
+! aslint: disable=W1504,W1306
     implicit none
 #include "jeveux.h"
 !
@@ -18,11 +18,13 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
+    integer          :: nbrede, nbrevi, nbchoc
     character(len=*) :: basemo, masgen, riggen, amogen
     character(len=8) :: nomres, intitu(*)
-    integer :: nbchoc, nbrede, nbrevi
     character(len=8) :: noecho(nbchoc, *), fonred(nbrede, *), fonrev(nbrevi, *)
     character(len=16) :: method
 ! ----------------------------------------------------------------------
@@ -71,12 +73,15 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     character(len=4) :: typcal, nomsym(3), sauve
     character(len=3) :: typsau
     character(len=12) :: bl11pt
+    character(len=24) :: matric(3)
+
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
+    logical :: entvid
     integer :: i, ic, iret, jacce, jadcho, jdcho, jdepl, jchmp
     integer :: jdesc, jfcho, jdisc, jinti, jncho, jordr, jptem
     integer :: jredc, jredd, jredn, jrevc, jrevd, jrevn
-    integer :: jrefe, jsst, jvcho, jvint
+    integer :: jsst, jvcho, jvint
     integer :: jvite, nbmode, nbsto1
     real(kind=8) :: dt
 !-----------------------------------------------------------------------
@@ -92,7 +97,6 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     jptem=1
     jordr=1
     jdisc=1
-    jrefe=1
     jdesc=1
     jchmp=1
     jfcho = 1
@@ -107,21 +111,32 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     bl11pt = '           .'
 !
     call jeexin(nomres//'           .REFD', iret)
+    entvid = .false.
+    if (      (riggen .eq. ' ') .and. (masgen .eq. ' ') &
+        .and. (amogen .eq. ' ')) entvid = .true.
+!
     if (iret .eq. 0) then
-! On recupere la numerotation generalisee
-        call jeexin(riggen(1:8)//'           .REFA', iret)
-        if (iret .ne. 0) then
-            call jeveuo(riggen(1:8)//'           .REFA', 'L', j1refe)
-            numgen = zk24(j1refe+1)(1:8)
+        if (entvid) then
+            if (basemo .ne. blanc) then
+                matric(1) = basemo
+                call refdaj('F', nomres, nbsauv, ' ', 'MESURE', matric, iret)
+            else
+                call refdaj(' ', nomres, nbsauv, ' ', 'INIT', ' ' , iret)
+            endif
         else
-            numgen = blanc
+!           On recupere la numerotation generalisee
+            call jeexin(riggen(1:8)//'           .REFA', iret)
+            if (iret .ne. 0) then
+                call jeveuo(riggen(1:8)//'           .REFA', 'L', j1refe)
+                numgen = zk24(j1refe+1)(1:8)
+            else
+                numgen = blanc
+            endif
+            matric(1) = riggen(1:8)
+            matric(2) = masgen(1:8)
+            matric(3) = amogen(1:8)
+            call refdaj ('F', nomres, nbsauv, numgen(1:8), 'DYNAMIQUE', matric, iret)
         endif
-        call wkvect(nomres//'           .REFD', typsau//' K24', 5, jrefe)
-        zk24(jrefe) = riggen(1:8)
-        zk24(jrefe+1) = masgen(1:8)
-        zk24(jrefe+2) = amogen(1:8)
-        zk24(jrefe+3) = numgen(1:8)
-        zk24(jrefe+4) = basemo(1:8)
     endif
 !
     call jeexin(nomres//'           .DESC', iret)

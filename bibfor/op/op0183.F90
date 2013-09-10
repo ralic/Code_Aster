@@ -47,6 +47,7 @@ subroutine op0183()
 #include "asterfort/nmdome.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/onerrf.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -64,10 +65,9 @@ subroutine op0183()
     integer :: iordr, iret, iret2, j
     integer :: jfo, jfono, jinfc
     integer :: jnoch, jordr
-    integer :: lonch, lref, lvafon, n0, n2, nbchar
+    integer :: lonch, lvafon, n0, n2, nbchar
     integer :: nbddl, nbordr, nc, neq, nh, np
     integer :: ii, ltps, ltps2
-    integer :: jref
     real(kind=8) :: time, prec, partps(3)
 !
     character(len=2) :: codret
@@ -79,7 +79,7 @@ subroutine op0183()
     character(len=19) :: resuco, knum, infcha, ligrel, resuc1, chdep2
     character(len=24) :: modele, mater, carac, charge, infoch, chamno
     character(len=24) :: nume, vfono, vafono, sigma, chdepl, k24bid
-    character(len=24) :: vreno, compor, chvive, chacve
+    character(len=24) :: vreno, compor, chvive, chacve, raide
     character(len=24) :: bidon, chvarc
     character(len=24) :: numref, valk(3)
 !     ------------------------------------------------------------------
@@ -184,25 +184,10 @@ subroutine op0183()
 !
 !
     numref=' '
-    call wkvect(resuc1//'.REFD', 'G V K24', 7, jref)
-    call jeveuo(resuco//'.REFD', 'L', lref)
-    zk24(jref)=zk24(lref)
-    zk24(jref+1)=zk24(lref+1)
-    zk24(jref+2)=zk24(lref+2)
-    zk24(jref+3)=zk24(lref+3)
-    zk24(jref+4)=zk24(lref+4)
-    zk24(jref+5)=zk24(lref+5)
-    zk24(jref+6)=zk24(lref+6)
-    if (zk24(jref) .ne. ' ') then
-        call dismoi('F', 'NOM_NUME_DDL', zk24(jref), 'MATR_ASSE', ibid,&
-                    numref, iret)
-    endif
-!
-!
-    numref=' '
-    call jeveuo(resuco//'.REFD', 'L', jref)
-    if (zk24(jref) .ne. ' ') then
-        call dismoi('F', 'NOM_NUME_DDL', zk24(jref), 'MATR_ASSE', ibid,&
+    call refdcp(resuco,resuc1)
+    call dismoi('F', 'REF_RIGI_PREM', resuc1, 'RESU_DYNA', ibid, raide, iret)
+    if (raide .ne. ' ') then
+        call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
                     numref, iret)
     endif
 !

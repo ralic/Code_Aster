@@ -1,5 +1,4 @@
 subroutine prcycb(nomres, soumat, repmat)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +93,7 @@ subroutine prcycb(nomres, soumat, repmat)
     integer :: ldkpjj, ldm0aa, ldm0aj, ldm0ia, ldm0ii, ldm0ij, ldm0jj
     integer :: ldmpaa, ldmpaj, ldmpia, ldmpij, ldmpja, ldmpjj, llcham
     integer :: lldesc, llnin, llnoa, llnod, llnog, llnoms, llref1
-    integer :: llref2, lmatk, lmatm, ltetax, ltetgd, ltkaa, ltkag
+    integer :: lmatk, lmatm, ltetax, ltetgd, ltkaa, ltkag
     integer :: ltkdg, ltkgg, ltkia, ltkig, ltmaa, ltmag, ltmdg
     integer :: ltmgg, ltmia, ltmig, ltora, ltord, ltorg, ltvec1
     integer :: ltvec3, ltveca, ltvecb, ltvecc, ltvecd, nbdax, nbddr
@@ -112,10 +111,8 @@ subroutine prcycb(nomres, soumat, repmat)
     intf  =zk24(llref1+1)
     basmod=zk24(llref1+2)
     call jelibe(nomres//'.CYCL_REFE')
-    call jeveuo(basmod//'           .REFD', 'L', llref2)
-    raid=zk24(llref2)
-    mass=zk24(llref2+1)
-    call jelibe(basmod//'           .REFD')
+    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid, raid, iret)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, mass, iret)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
@@ -350,7 +347,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call dcopy(neq, zr(llcham), 1, zr(ltveca+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltveca+(i-1)*neq))
-666  end do
+666 continue
     do 667 i = 1, nbddr
         iord=zi(ltord+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
@@ -358,7 +355,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call dcopy(neq, zr(llcham), 1, zr(ltvecb+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvecb+(i-1)*neq))
-667  end do
+667 continue
     do 668 i = 1, nbddr
         iord=zi(ltorg+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
@@ -366,7 +363,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call dcopy(neq, zr(llcham), 1, zr(ltvecc+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvecc+(i-1)*neq))
-668  end do
+668 continue
     if (nbdax .gt. 0) then
         do 669 i = 1, nbdax
             iord=zi(ltora+i-1)
@@ -442,7 +439,7 @@ subroutine prcycb(nomres, soumat, repmat)
             ktrian = ktrian + 1
 20      continue
 !
-10  end do
+10  continue
 !
 ! --- PRODUIT MATRICE DEFORMEES DROITES
 !
@@ -536,7 +533,7 @@ subroutine prcycb(nomres, soumat, repmat)
 75          continue
         endif
 !
-60  end do
+60  continue
 !
 !
 ! --- TRAITEMENT DES PRODUITS MATRICIELS PAR TETA
@@ -641,7 +638,7 @@ subroutine prcycb(nomres, soumat, repmat)
 105          continue
         endif
 !
-80  end do
+80  continue
 !
 !
 ! --- TRAITEMENT DES PRODUITS MATRICIELS PAR TETA

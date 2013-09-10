@@ -88,7 +88,7 @@ subroutine ssdt74(nomres, nomcmd)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier, ifm, info, iparch, iret
-    integer :: itemax, j1, j2, jaccs, jadcho, jamog, jarch
+    integer :: itemax, j1, jaccs, jadcho, jamog, jarch
     integer :: jcoefm, jconl, jdcho, jdepl, jdeps, jfcho, jfond
     integer :: jfonv, jiadve, jidesc, jinst, jinti, jinumo, jmasg
     integer :: jnoacc, jnodep, jnoec, jnomfo, jnovit, jordr, jparc
@@ -181,8 +181,7 @@ subroutine ssdt74(nomres, nomcmd)
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
             call jeveuo(masgen//'           .REFA', 'L', j1)
             bamo1=zk24(j1-1+1)(1:8)
-            call jeveuo(resgen//'           .REFD', 'L', j2)
-            bamo2=zk24(j2-1+5)(1:8)
+            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid, bamo2, ier)
             if (bamo1 .ne. bamo2) then
                 call u2mesg('F', 'ALGORITH17_18', 0, ' ', 1,&
                             i, 0, 0.d0)
@@ -210,7 +209,7 @@ subroutine ssdt74(nomres, nomcmd)
         call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbbas,&
                     kbid, ier)
         nbmody = nbmody + nbbas
-20  end do
+20  continue
     nbmost = nbmode - nbmody
     call jeveuo(numgen//'.SLCS.SCDE', 'L', jscde)
     neqgen = zi(jscde-1+1)
@@ -229,7 +228,7 @@ subroutine ssdt74(nomres, nomcmd)
     do 31 k = 1, neqgen
         zr(jpuls+k-1) = 0
         zr(jpul2+k-1) = 0
-31  end do
+31  continue
     nbmodi = 0
     do 30 k = 1, nbsst
         kbid = '        '
@@ -245,7 +244,7 @@ subroutine ssdt74(nomres, nomcmd)
         call dismoi('F', 'NB_MODES_TOT', basemo, 'RESULTAT', nbbas,&
                     kbid, ier)
         nbmodi = nbmodi + nbbas
-30  end do
+30  continue
 !
     if (namor .ne. 0) then
         call extdia(amogen, numg24, 1, zr(jamog))

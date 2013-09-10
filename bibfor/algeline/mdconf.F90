@@ -101,7 +101,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
     integer :: ifsvi, ifsvk, igrap, ik, imail, imod, ipas
     integer :: ipm, ipv, ire, ireszo, iret, irhoe, irhoi
     integer :: irota1, irota2, itran1, itran2, itypfl, ivale, izone
-    integer :: j, kref, lfsvk, lfsvr, lmasg, lmasse, n1
+    integer :: j,lfsvk,lfsvr,lmasg,lmasse,n1
     integer :: n2, nbma, nbmano, neq, numno0, numod, nuzo
     integer :: nzex
     real(kind=8) :: aire, alonto, cm1, cm2, cocaj, cokaj, comaj
@@ -266,11 +266,9 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 if (depla(ide) .eq. depl) idep = ide
 70          continue
 !
-!
 ! ---       DEFORMEES MODALES
 !
-            call jeveuo(base//'           .REFD', 'L', kref)
-            masse = zk24(kref+1)(1:19)
+            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
             call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
@@ -284,7 +282,6 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                         neq, lnoe, idep, 1)
 !
         endif
-!
 !
 ! ---   2.6.IMPRESSION  ---
 !
@@ -324,10 +321,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             call jelira(mlgnma, 'NOMMAX', nbma)
             call wkvect('&&MDCONF.TEMP.MAIL', 'V V I', nbma, imail)
 !
-!
 !------- RECUPERATION DES DONNEES DANS LE CONCEPT TYPE_FLUI_STRU
 !        DEDUCTION DE DONNEES COMPLEMENTAIRES
-!
 ! ---    3.2.TYPE DE CONFIGURATION GRAPPE --> VARIABLE INDIC ---
 !
             do 120 igrap = 1, 4
@@ -363,7 +358,6 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !------- 3.4.RECUPERATION DES GRANDEURS GEOMETRIQUES CARACTERISTIQUES --
 !        DEDUCTION DE COEFFICIENTS DE DIMENSIONNEMENT                ---
 ! ---                                            --> VECTEUR VECR2   ---
-!
             lp = phie * 986.d0/890.d0
 !
             comaj = 0.5d0*rhof*phie*phie*lp
@@ -403,9 +397,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !------- 3.5.PONDERATIONS DUES AUX DEFORMEES MODALES
 !                                                --> VECTEUR VECR3  ---
 !            MASSES MODALES EN EAU               --> VECTEUR VECR1  ---
-!
-            call jeveuo(base//'           .REFD', 'L', kref)
-            masse = zk24(kref+1)(1:19)
+
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
             call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&

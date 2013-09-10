@@ -1,4 +1,5 @@
 subroutine cpdepl(melflu, base, nuor, nbm)
+! aslint: disable=W1306
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -47,9 +48,9 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     integer :: iddl(6)
     character(len=8) :: mailla, k8bid
     character(len=14) :: numddl
-    character(len=24) :: nomcha, refei, matria, nomnoe
+    character(len=24) :: nomcha, matria, nomnoe
 !-----------------------------------------------------------------------
-    integer :: ibi, icham, im, imod, irefei, iret, lnoe
+    integer :: ibi,icham,im,imod,iret,lnoe
     integer :: neq
 !-----------------------------------------------------------------------
     data iddl    /1,2,3,4,5,6/
@@ -62,9 +63,8 @@ subroutine cpdepl(melflu, base, nuor, nbm)
 !
     call wkvect('&&CPDEPL.TEMP.NUOR', 'V V I', 1, imod)
 !
-    refei = base//'           .REFD'
-    call jeveuo(refei, 'L', irefei)
-    matria = zk24(irefei)
+
+    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi, matria, iret)
 !
     call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
                 numddl, iret)
@@ -82,7 +82,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
         call extmod(base, numddl, zi(imod), 1, zr(icham),&
                     neq, lnoe, iddl, 6)
         call jelibe(nomcha)
-10  end do
+10  continue
 !
 !     MENAGE
     call jedetr('&&CPDEPL.TEMP.NUOR')

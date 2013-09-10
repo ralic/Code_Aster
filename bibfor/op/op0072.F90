@@ -60,7 +60,7 @@ subroutine op0072()
     character(len=8) :: nomres, basemo, vectas, nomtyp, maill1, maill2, k8bid
     character(len=14) :: numgen, numdd1, numdd2
     character(len=16) :: typres, nomcom, typbas, matri2
-    character(len=19) :: proch1, proch2, nomcha
+    character(len=19) :: proch1, proch2, nume2, nomcha
     character(len=24) :: matric, kbid, deeq, typeba, valk(24)
     complex(kind=8) :: cbid, dcmplx
     real(kind=8) :: zero
@@ -70,7 +70,7 @@ subroutine op0072()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadesc, iadref, iadrif, iadvec, iamatr, iarefe
+    integer :: i, iadesc, iadref, iadvec, iamatr, iarefe
     integer :: iavale, ibid, icod, idbase, iddeeq, idvec1, idvec2
     integer :: idvec3, idvec4, idvect, iret, j, jrefa, llnequ
     integer :: n0, n1, n2, n3, n4, nbid, nbmode
@@ -110,13 +110,12 @@ subroutine op0072()
 !
     call jeveuo(vectas//'           .VALE', 'L', iadvec)
     call jeveuo(vectas//'           .REFE', 'L', iadref)
-    call jeveuo(basemo//'           .REFD', 'L', iadrif)
     call jelira(vectas//'           .VALE', 'TYPE', cval=typvec)
-    typeba = zk24(iadrif+6)
+    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid, typeba, iret)
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
         proch1 = zk24(iadref+1)
-        matric = zk24(iadrif)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
@@ -126,7 +125,8 @@ subroutine op0072()
                 proch2 = proch1
             endif
         else
-            proch2 = zk24(iadrif+3)(1:14)//'.NUME'
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, nume2, iret)
+            proch2 = nume2(1:8)//'.NUME'
         endif
 !
         if (proch1 .ne. proch2) then
@@ -136,7 +136,7 @@ subroutine op0072()
     else if (typbas(1:9).eq.'MODE_GENE') then
         numdd1=zk24(iadref+1)
         proch1 = numdd1//'.NUME'
-        matric = zk24(iadrif)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', jrefa)
         numdd2=zk24(jrefa-1+2)
@@ -186,24 +186,26 @@ subroutine op0072()
         zi(iadesc+2) = 2
     endif
     call wkvect('&&OP0072.BASEMO', 'V V R', nbmode*neq, idbase)
-!
-! --- VERIFICTION QUE LES MAILLAGES DU CHAMP A PROJETER ET DES CHAMPS
-!   - DE LA BASE MODALE SONT IDENTIQUES
-!   - 1. MAILLAGE DE REFERENCE POUR LA BASE
-    call rsexch('F', basemo, 'DEPL', 1, nomcha,&
-                iret)
-    call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
-                maill1, iret)
-!   - 2. MAILLAGE DE REFERENCE POUR LE CHAM_NO
-    call dismoi('F', 'NOM_MAILLA', vectas, 'CHAM_NO', ibid,&
-                maill2, iret)
-    if (maill1 .ne. maill2) then
-        valk (1) = proch2
-        valk (2) = maill2
-        valk (3) = proch1
-        valk (4) = maill1
-        call u2mesg('F', 'ALGORITH12_62', 4, valk, 0,&
-                    0, 0, 0.d0)
+
+    if ((typbas(1:9).eq.'MODE_MECA')) then
+!       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER 
+!         - LES DEFORMEES MODALES SONT IDENTIQUES
+!         - 1. MAILLAGE DE REFERENCE POUR LA BASE
+        call rsexch('F', basemo, 'DEPL', 1, nomcha,&
+                    iret)
+        call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
+                    maill1, iret)
+!       - 2. MAILLAGE DE REFERENCE POUR LE CHAM_NO
+        call dismoi('F', 'NOM_MAILLA', vectas, 'CHAM_NO', ibid,&
+                    maill2, iret)
+        if (maill1 .ne. maill2) then
+            valk (1) = proch2
+            valk (2) = maill2
+            valk (3) = proch1
+            valk (4) = maill1
+            call u2mesg('F', 'ALGORITH12_62', 4, valk, 0,&
+                        0, 0, 0.d0)
+        endif
     endif
 !
 ! --- CONVERSION DE BASEMO A LA NUMEROTATION NU

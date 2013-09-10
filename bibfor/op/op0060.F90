@@ -96,7 +96,7 @@ subroutine op0060()
     integer :: neq, nbmat
     integer :: ie, jrefa
     integer :: ifreq, ieq, inom, ier
-    integer :: lrefe, lsecmb, jsecmb, jsolut, jvezer
+    integer :: lsecmb, jsecmb, jsolut, jvezer
     integer :: icoef, icode
     integer :: lvale, linst, iret, ladpa, jord, lmasse
     integer :: ldgec, lvgec, lagec, jordr, jfreq
@@ -116,7 +116,7 @@ subroutine op0060()
     character(len=19) :: lifreq, masse, raide, amor, dynam, impe, chamno
     character(len=19) :: solveu, maprec, secmbr, soluti, vezero, crgc
     character(len=19) :: nomt, nomi
-    character(len=24) :: nomat(4), basemo
+    character(len=24) :: nomat(4), basemo, matric(3)
     character(len=24) :: exreco, exresu
     integer :: nbexre
     integer :: iarg
@@ -310,7 +310,6 @@ subroutine op0060()
     else if (newcal) then
 !     --- SI NOUVEAU CALCUL SUR BASE PHYSIQUE
         call utcrre(result, nbfreq)
-        call wkvect(result//'           .REFD', 'G V K24', 7, lrefe)
         nbold=0
 !
     else
@@ -320,19 +319,14 @@ subroutine op0060()
                     c16bid, r8bid, 'ABSOLU', nbold, 1,&
                     ibid)
         call rsagsd(result, nbfreq+nbold)
-        call jeveuo(result//'           .REFD', 'E', lrefe)
     endif
 !
     if (.not.calgen) then
-!       --- SAUVEGARDE DE L'OBJET .REFD POUR LES CALCULS SUR BASE PHYS
-        zk24(lrefe ) = raide
-        zk24(lrefe+1) = masse
-        zk24(lrefe+2) = amor
-        zk24(lrefe+3) = numddl
-        zk24(lrefe+4) = ' '
-        zk24(lrefe+5) = ' '
-        zk24(lrefe+6) = ' '
-        call jelibe(result//'           .REFD')
+!       --- SAUVEGARDE DE LA COLLECTION .REFD POUR LES CALCULS SUR BASE PHYS
+        matric(1) = raide
+        matric(2) = masse
+        matric(3) = amor
+        call refdaj('F', result, -1, numddl, 'DYNAMIQUE', matric, iret)
     endif
 !
 !
@@ -348,7 +342,7 @@ subroutine op0060()
 !
     do 41 i = 1, nbmat
         call jeveuo(nomat(i), 'L', lmat(i))
-41  end do
+41  continue
     neq = zi(lmat(1)+2)
     typcst(1) = 'R'
     typcst(2) = 'R'
@@ -368,7 +362,7 @@ subroutine op0060()
         if (zk24(jrefe-1+9) .eq. 'MR') then
             jpomr=icomb
         endif
-15  end do
+15  continue
     if (jpomr .eq. 0) then
         if (lamor .ne. 0) then
             call mtdefs(dynam, amor, 'V', typres)
@@ -564,7 +558,7 @@ subroutine op0060()
             call utexcm(28, 'DYNAMIQUE_13', 0, k8bid, 1,&
                         ifreq, 2, rtab)
         endif
-42  end do
+42  continue
 !
 !     --- DETRUIRE LES OBJETS TEMPORAIRES A LA FIN DU CALCUL GENE
     if (calgen) then

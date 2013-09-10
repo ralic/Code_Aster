@@ -65,7 +65,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !     ------------------------------------------------------------------
 !
     integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
-    integer :: ie, jref, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, lfreq, nbparr, nbpard
+    integer :: ie, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, lfreq, nbparr, nbpard
     integer :: nbpaep, iocc, jma, nf, inume, ifm, niv, ier
     parameter (nbpaep=2,nbparr=6,nbpard=4)
     real(kind=8) :: prec, xfreq, varpep(nbpaep), alpha, valer(3), inst
@@ -172,8 +172,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !        - DANS LE CAS OU CE N'EST PAS UN RESULTAT DE TYPE EVOL_NOLI -
 !        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
         if (typres(1:9) .ne. 'EVOL_NOLI') then
-            call jeveuo(resul//'           .REFD', 'L', jref)
-            nommas = zk24(jref+1)(1:8)
+            call dismoi('C', 'REF_MASS_PREM', resul, 'RESU_DYNA', ibid, nommas, iret)
             if (nommas .eq. ' ') goto 5
             call dismoi('C', 'SUR_OPTION', nommas, 'MATR_ASSE', ibid,&
                         opt, ie)

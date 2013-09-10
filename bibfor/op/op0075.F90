@@ -45,8 +45,8 @@ subroutine op0075()
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, basemo
     logical :: prsimp
-    integer :: jord, nbord, i, iord, lpain(3), lpaout(3), iarg, ibid, ir1
-    integer :: j, j1refe, j2refe, j3refe, jrefn, n1, nbcham
+    integer :: jord, nbord, i, iord, lpain(3), lpaout(3), iarg, ibid, ir1, iret
+    integer :: j, j2refe, j3refe, jrefn, n1, nbcham
 !     ------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -93,12 +93,11 @@ subroutine op0075()
 !       -           OU 2) SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
     prsimp=.true.
 !
-    call jeveuo(resin//'           .REFD', 'L', j1refe)
-    matgen=zk24(j1refe)
-    numgen=zk24(j1refe+3)
-    basemo=zk24(j1refe+4)
-!
-!     --- LE RESU_GENE NE VIENT PAS DE PROJ_MESU_MODAL
+    call dismoi('C', 'BASE_MODALE', resin, 'RESU_DYNA', ibid, basemo, iret)
+    call dismoi('C', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numgen, iret)
+    call dismoi('C', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, matgen, iret)
+    
+!   --- LE RESU_GENE NE VIENT PAS DE PROJ_MESU_MODAL
     if ((matgen(1:8).ne.blanc8) .or. (numgen(1:8).ne.blanc8)) then
         typrep = 'MODE_MECA'
         if (basemo(1:8) .ne. blanc8) call gettco(basemo, typrep)
@@ -116,6 +115,7 @@ subroutine op0075()
             call gettco(zk24(j3refe), typrep)
         endif
     endif
+
 !
 !
 !     --- DYNAMIQUE TRANSITOIRE ---

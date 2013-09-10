@@ -44,7 +44,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 !-----------------------------------------------------------------------
     integer :: i, iad, ib, ifi, im, imode
     integer :: ir, istru, j, jdeeq, jdesc, jfreq, jnume
-    integer :: jordr, jpara, jrefe, jvale, ltyba, nbcmpg, nbmode
+    integer :: jordr, jpara, jrefe, jvale, nbcmpg, nbmode
 !
     real(kind=8) :: ximag, xreal
 !-----------------------------------------------------------------------
@@ -58,10 +58,12 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     call jelira(gene//'.VALE', 'TYPE', cval=typval)
 !
     mode = zk24(jrefe)(1:8)
+    typrem = ' '
+    if (mode .ne. blan) call gettco(mode, typrem)
 !
 !        --- CALCUL PAR SOUS-STRUCTURATION ---
 !
-    if (mode .eq. blan) then
+    if ( (mode .eq. blan) .or. (typrem .eq. 'MODELE_GENE') ) then
         nugene = zk24(jrefe+1)(1:14)
         call jeveuo(nugene//'.NUME.REFN', 'L', jnume)
         mogene = zk24(jnume)(1:8)
@@ -134,10 +136,8 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 !
 !      --- CALCUL TRADITIONNEL ---
 !
-        call gettco(mode, typrem)
 !---------ON RECUPERE LE TYPE DE BASE MODALE S'IL S'AGIT D'UNE BASE
-        call jeveuo(mode//'           .REFD', 'L', ltyba)
-        typeba=zk24(ltyba+6)
+        call dismoi('C', 'TYPE_BASE', mode, 'RESU_DYNA', ib, typeba, ir)
 !---------ON RECUPERE LE TYPE DE MODES STAT/DYN
         call rsadpa(mode, 'L', 1, 'TYPE_MODE', 1,&
                     0, iad, k8b)

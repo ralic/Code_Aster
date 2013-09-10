@@ -34,16 +34,14 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbval, lmode, iret, ibid, imat(3), i4, i, ier1
+    integer :: iret,ibid,imat(3),i4,i
     character(len=14) :: nume2, numat(3)
     character(len=19) :: numddl, numtmp, nomat(3)
-    character(len=24) :: refd
-    character(len=24) :: valk(4)
-!     ------------------------------------------------------------------
+    character(len=24) :: valk(4), matric(3), raide2, masse2, amor2
+!   integer :: nbmodes
+!   character(len=24) :: k24bid
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data  refd  /'                   .REFD'/
-!     ------------------------------------------------------------------
     call jemarq()
     ier = 0
 !
@@ -66,7 +64,7 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
         else
             numat(i)=' '
         endif
- 1  end do
+ 1  continue
     if (i4 .ne. 0) then
         do 10 i = 1, 3
             if ((numat(i).ne.nume2) .and. (numat(i).ne.' ')) then
@@ -89,34 +87,27 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 !
 !     --------------------------- REFD --------------------------------
 !     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
-    refd(1:8) = modes
-    call jeexin(refd, ier1)
-    if (ier1 .eq. 0) then
-        if (icond .eq. 0) then
-            nbval = 7
-            call wkvect(refd, 'G V K24', nbval, lmode)
-! On remplie les champs relatifs aux matrices assemblees
-            zk24(lmode) = raide
-            zk24(lmode+1) = masse
-            zk24(lmode+2) = amor
-            zk24(lmode+3) = numddl
-        endif
+!    call dismoi('C', 'NB_MODES_TOT', modes, 'RESULTAT', nbmodes, k24bid, iret)
+    if (icond .eq. 0) then
+        ! On remplie les champs relatifs aux matrices assemblees
+        matric(1) = raide
+        matric(2) = masse
+        matric(3) = amor
+!       call refdaj('F',modes,nbmodes,numddl,'DYNAMIQUE',matric,iret)
+        call refdaj('F',modes,-1,numddl,'DYNAMIQUE',matric,iret)       
     else
-        call jeveuo(refd, 'L', lmode)
-        if (zk24(lmode) .ne. raide) ier = ier + 1
-        if (zk24(lmode+1) .ne. masse) ier = ier + 1
-        if (zk24(lmode+2) .ne. amor) ier = ier + 1
+        call dismoi('F', 'REF_RIGI_PREM', modes, 'RESU_DYNA', ibid, raide2, iret)
+        call dismoi('F', 'REF_MASS_PREM', modes, 'RESU_DYNA', ibid, masse2, iret)
+        call dismoi('F', 'REF_AMOR_PREM', modes, 'RESU_DYNA', ibid, amor2 , iret)
+        if ((raide.ne.raide2).or.(masse.ne.masse2).or.(amor.ne.amor2)) ier = 1
         if (ier .ne. 0) then
-            if (zk24(lmode+2)(1:8) .ne. ' ') then
-                valk(1) = refd(1:8)
-                valk(2) = zk24(lmode)(1:8)
-                valk(3) = zk24(lmode+1)(1:8)
-                valk(4) = zk24(lmode+2)(1:8)
+            valk(1) = modes
+            valk(2) = raide2
+            valk(3) = masse2
+            valk(4) = amor2
+            if (amor2(1:8).ne.' ') then 
                 call u2mesk('F', 'ALGELINE3_61', 4, valk)
             else
-                valk(1) = refd(1:8)
-                valk(2) = zk24(lmode)(1:8)
-                valk(3) = zk24(lmode+1)(1:8)
                 call u2mesk('F', 'ALGELINE3_62', 3, valk)
             endif
         endif

@@ -52,6 +52,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rotchc.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -83,8 +84,8 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     integer :: idep, idresu, ieq, ier, ire1
     integer :: ire2, ire3, iret, iretou, j, jfreq, jnume
     integer :: k, k1, l, ldnew, lfreq, llchab, llind
-    integer :: llinsk, llnequ, llnueq, llors, llprs, llref1, llref2
-    integer :: llrot, lrefe, ltrotx, ltroty, ltrotz, ltvec, n1
+    integer :: llinsk,llnequ,llnueq,llors,llprs,llref2
+    integer :: llrot,ltrotx,ltroty,ltrotz,ltvec,n1
     integer :: nbbas, nbcham, nbcmp, nbcou, nbfreq, nbnot
     integer :: nbsst, neq, neqgen, neqs, numsst, nutars
 !-----------------------------------------------------------------------
@@ -199,8 +200,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     endif
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
-    call jeveuo(harmge//'.REFD', 'L', llref1)
-    k24bid=zk24(llref1+3)
+    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid, k24bid, iret)
     numgen(1:14)=k24bid(1:14)
     numgen(15:19) = '.NUME'
     call jeveuo(numgen//'.REFN', 'L', llref2)
@@ -222,7 +222,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
         zr(ltrotz+i-1) = zr(llrot)
         zr(ltroty+i-1) = zr(llrot+1)
         zr(ltrotx+i-1) = zr(llrot+2)
-15  end do
+15  continue
 !
 ! --- CREATION DU PROF-CHAMNO
     call genugl(profno, indirf, modgen, mailsk)
@@ -418,16 +418,8 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
     endif
 !
-    call wkvect(nomres//'           .REFD', 'G V K24', 7, lrefe)
-!
-    zk24(lrefe ) = zk24(llref1)
-    zk24(lrefe+1) = zk24(llref1+1)
-    zk24(lrefe+2) = zk24(llref1+2)
-    zk24(lrefe+3) = zk24(llref1+3)
-    zk24(lrefe+4) = zk24(llref1+4)
-    zk24(lrefe+5) = zk24(llref1+5)
-    zk24(lrefe+6) = zk24(llref1+6)
-!
+    call refdcp(basmod,nomres)
+
 ! --- MENAGE
     call jedetr('&&'//pgc//'ROTX')
     call jedetr('&&'//pgc//'ROTY')

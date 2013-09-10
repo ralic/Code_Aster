@@ -12,6 +12,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pteddl.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/titre.h"
@@ -70,7 +71,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !
     integer :: iddl(6), ifrfl, imafl, ifafl, neq, nbmode, j, i
     integer :: lmod, iret, ibid, ideeq, ivit, numod, imas
-    integer :: ifac, ifre, ieq, k, icm, iprec, ivale, kref, lref
+    integer :: ifac, ifre, ieq, k, icm, iprec, ivale
     integer :: lmat(2), lddl, lvali, lvalr, lvalk, lcoef
     integer :: npari, nparr, npark
     integer :: nbpari, nbparr, nbpark, nbpara
@@ -81,11 +82,10 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     character(len=19) :: prchno
     character(len=16) :: norm
     character(len=19) :: nomcha
-    character(len=24) :: chamfl, kvec, refd, nopara(nbpara)
+    character(len=24) :: chamfl, kvec, nopara(nbpara)
     character(len=24) :: kvali, kvalr, kvalk
     logical :: lmasin, lnorm
 !
-    data refd  / '                   .REFD' /
     data iddl  / 1, 2, 3, 4, 5, 6 /
     data  nopara /&
      &  'NUME_MODE'       , 'NORME'           ,&
@@ -110,17 +110,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !
     if (newres) then
         call rscrsd('G', nomres, 'MODE_MECA', nbnuor)
-        refd(1:8) = basemo
-        call jeveuo(refd, 'L', kref)
-        refd(1:8) = nomres
-        call wkvect(refd, 'G V K24', 7, lref)
-        zk24(lref ) = zk24(kref )
-        zk24(lref+1) = zk24(kref+1)
-        zk24(lref+2) = zk24(kref+2)
-        zk24(lref+3) = zk24(kref+3)
-        zk24(lref+4) = zk24(kref+4)
-        zk24(lref+5) = zk24(kref+5)
-        zk24(lref+6) = zk24(kref+6)
+        call refdcp(basemo,nomres)
     endif
 !
 !     --- PARAMETRES SOUS ECOULEMENT ---
@@ -214,7 +204,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                 endif
             endif
 20      continue
-10  end do
+10  continue
 !
 !     --- ON NORMALISE 'SANS_CMP: LAGR'
 !

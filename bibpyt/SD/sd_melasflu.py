@@ -23,7 +23,7 @@ from SD.sd_table import sd_table
 from SD.sd_cham_no import sd_cham_no
 from SD.sd_matr_asse_gene import sd_matr_asse_gene
 from SD.sd_type_flui_stru import sd_type_flui_stru
-from SD.sd_resultat_dyn import sd_resultat_dyn
+from SD.sd_resu_dyna import sd_resu_dyna
 from SD.sd_util import *
 
 
@@ -53,7 +53,7 @@ class sd_melasflu(AsBase):
     def check_melasflu_i_REMF(self, checker):
         remf=self.REMF.get_stripped()
         sd2 = sd_type_flui_stru(remf[0]) ; sd2.check(checker)
-        sd2 = sd_resultat_dyn(remf[1]) ; sd2.check(checker)
+        sd2 = sd_resu_dyna(remf[1]) ; sd2.check(checker)
 
 
     # Vérifications supplémentaires :

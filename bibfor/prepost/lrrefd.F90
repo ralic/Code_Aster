@@ -53,11 +53,11 @@ subroutine lrrefd(resu, prchnd)
 !
 !
     integer :: iret, iret1, iret2, ibid
-    integer :: jrefd
 !
     character(len=8) :: matrig, matmas
     character(len=14) :: nuddlr, nuddlm
     character(len=19) :: pronur, pronum
+    character(len=24) :: matric(3)
     integer :: iarg
 !
 ! ----------------------------------------------------------------------
@@ -75,10 +75,8 @@ subroutine lrrefd(resu, prchnd)
 !
     ibid = 1
 !
-    call getvid(' ', 'MATR_RIGI', ibid, iarg, 1,&
-                matrig, iret1)
-    call getvid(' ', 'MATR_MASS', ibid, iarg, 1,&
-                matmas, iret2)
+    call getvid(' ', 'MATR_RIGI', ibid, iarg, 1, matrig, iret1)
+    call getvid(' ', 'MATR_MASS', ibid, iarg, 1, matmas, iret2)
 !
     if (iret1 .eq. 1) then
         call u2mesk('I', 'PREPOST_14', 1, matrig)
@@ -101,14 +99,10 @@ subroutine lrrefd(resu, prchnd)
         endif
     endif
 !
-    call wkvect(resu//'           .REFD', 'G V K24', 7, jrefd)
-    zk24(jrefd-1+1) = matrig
-    zk24(jrefd-1+2) = matmas
-    zk24(jrefd-1+3) = ' '
-    zk24(jrefd-1+4) = nuddlr
-    zk24(jrefd-1+5) = ' '
-    zk24(jrefd-1+6) = ' '
-    zk24(jrefd-1+7) = ' '
+    matric(1) = matrig
+    matric(2) = matmas
+    matric(3) = ' '
+    call refdaj('F', resu, -1, nuddlr, 'DYNAMIQUE', matric, iret)
 !
     call jedema()
 !

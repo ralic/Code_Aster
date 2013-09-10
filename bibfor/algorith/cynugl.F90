@@ -65,7 +65,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, iec, ieq, ipoint
     integer :: iret, j, lddeeq, ldnueq, ldprno, linueq, llinsk
-    integer :: llnoms, llnueq, llprno, llref1, llref2, ltinse, lttds
+    integer :: llnoms,llnueq,llprno,llref1,ltinse,lttds
     integer :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
     integer :: neqsec, nsecpr, ntail, numnos, numsec
 !-----------------------------------------------------------------------
@@ -92,10 +92,11 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !----------------RECUPERATION DU NUMDDLET DE L'INTERF_DYNA--------------
 !
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref2)
-    intf  =zk24(llref2+4)
-    numddl=zk24(llref2+3)
-    call jelibe(basmod//'           .REFD')
+
+
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
+
 !
 !---------------RECUPERATION DU NOMBRE DE COMPOSANTES-------------------
 !
@@ -147,7 +148,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
         nddlt=nddlt+zi(llprno+(numnos-1)*(2+nbec)+1)
         zi(lttds+numsec-1)=zi(lttds+numsec-1)+ zi(llprno+(numnos-1)*(&
         2+nbec)+1)
-10  end do
+10  continue
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
@@ -182,7 +183,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
         ntail=2*zi(lttds+i-1)
         call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
         zi(lttds+i-1)=0
-20  end do
+20  continue
 !
 !
 !---------------REMPLISSAGE DES OBJETS EVIDENTS-------------------------
@@ -235,7 +236,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
                 zi(lttds+numsec-1)=zi(lttds+numsec-1)+1
             endif
 50      continue
-30  end do
+30  continue
 !
     call jelibe(jexnum(indirf, nsecpr))
 !

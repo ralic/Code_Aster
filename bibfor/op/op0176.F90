@@ -40,7 +40,6 @@ subroutine op0176()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/getvid.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/dyarc0.h"
 #include "asterfort/extrs1.h"
 #include "asterfort/extrs2.h"
@@ -52,6 +51,7 @@ subroutine op0176()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsinfo.h"
 #include "asterfort/rsnopa.h"
@@ -195,7 +195,7 @@ subroutine op0176()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call ajrefd(resuin, resuou, 'COPIE')
+    call refdcp(resuin, resuou)
 !
 !
     call jedema()

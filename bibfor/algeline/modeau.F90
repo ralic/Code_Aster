@@ -2,6 +2,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
                   freqi, nbm, nuor, vicoq, torco,&
                   tcoef, amor, masg, fact, amfr,&
                   vecpr, maj)
+! aslint: disable=W1306
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -86,12 +87,12 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
     real(kind=8) :: mcf0, mi, mk, ki
     character(len=8) :: k8b
     character(len=14) :: numddl
-    character(len=24) :: refei, matria, nomcha
+    character(len=24) :: matria, nomcha
 !
 !-----------------------------------------------------------------------
     integer :: ibid, icalc, idec1, idec2, idpla, idple, ier
     integer :: ifact, ifr, imat1, imat2, imata, imatm, imatz
-    integer :: imax, imod, ire, irefei, ivale, ivapr
+    integer :: imax,imod,ire,ivale,ivapr
     integer :: ivec, ivecw, iwrk2, jmod, k, kmod, lfacx
     integer :: lmasg, nbm2, nbnoe, neq, nitqr, numod
     real(kind=8) :: cf0, ck, fi, fim, fk, fre, omegai
@@ -147,7 +148,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
             zr(imat2+idec1) = -0.5d0 * ( dble(zc(imat1+idec1)) +dble( zc(imat1+idec2)))
             zr(imatm+idec1) = zr(imat2+idec1)
 11      continue
-10  end do
+10  continue
     if (nbm .gt. 1) then
         do 12 jmod = 1, nbm-1
             do 13 imod = jmod+1, nbm
@@ -171,7 +172,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
             write(ifr,500) imod,jmod,zr(imat2+nbm*(jmod-1)+imod-1)
 15      continue
         write(ifr,*)
-14  end do
+14  continue
 !
 !
 !-----4.CALCUL DE LA MATRICE DE MASSE COMPLETE  => MATM
@@ -194,7 +195,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
         do 21 jmod = 1, nbm
             zr(imata+nbm*(jmod-1)+imod-1) = -zr(imatm+nbm*(jmod-1)+ imod-1 ) / ki
 21      continue
-20  end do
+20  continue
 !
 !
 !-----5.RESOLUTION DU PROBLEME MODAL GENERALISE EN EAU AU REPOS
@@ -213,7 +214,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
         do 31 jmod = 1, nbm
             vecpr(imod,jmod) = zr(imatz+2*nbm*(jmod-1)+2*(imod-1))
 31      continue
-30  end do
+30  continue
 !
 !
 !-----6.ON REORDONNE LES VALEURS PROPRES PAR VALEURS ABSOLUES
@@ -247,9 +248,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !-----7.DECOMPOSITION DES DEFORMEES MODALES EN EAU AU REPOS SUR LA
 !       BASE PHYSIQUE
 !
-    refei = base//'           .REFD'
-    call jeveuo(refei, 'L', irefei)
-    matria = zk24(irefei)
+    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibid, matria, ire)
     call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibid,&
                 numddl, ire)
     call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', neq,&
@@ -275,7 +274,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
             zr(ivale+k-1) = zr(idple+6*nbnoe*(imod-1)+k-1)
 51      continue
         call jelibe(nomcha)
-50  end do
+50  continue
 !
 !
 !-----8.CALCULS SIMULTANES :
@@ -309,7 +308,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
             ck = 4.d0*pi*fk*amor(kmod)*mk
             amfr(imod,1) = amfr(imod,1) + vecpr(kmod,imod) * ck * vecpr(kmod,imod)
 61      continue
-60  end do
+60  continue
 !
 ! --- MENAGE
 !

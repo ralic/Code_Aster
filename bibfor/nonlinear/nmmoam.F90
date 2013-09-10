@@ -71,7 +71,7 @@ subroutine nmmoam(sdammz, nbmoda)
     character(len=24) :: matric, nomcha
     character(len=24) :: sdammo
     real(kind=8) :: pi, r8bid
-    integer :: iret, iam, imode, vali(3), iadrif
+    integer :: iret, iam, imode, vali(3)
     integer :: na, nb, n, nm
     integer :: nbmd, neq, nbmax, nbamor
     integer :: iddeeq, lmat, iamor, ltvec
@@ -106,8 +106,7 @@ subroutine nmmoam(sdammz, nbmoda)
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE
 !
-    call jeveuo(modmec//'           .REFD', 'L', iadrif)
-    matric = zk24(iadrif)(1:8)
+    call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', iarg, matric, iret)
     call mtdscr(matric(1:8))
     call jeveuo(matric(1:19)//'.&INT', 'E', lmat)
 !
@@ -188,7 +187,7 @@ subroutine nmmoam(sdammz, nbmoda)
                     0, jfreq, k8bid)
         zr(jvalmo+3*(imode-1)+2-1) = zr(jfreq)*2.d0*pi
         zr(jvalmo+3*(imode-1)+3-1) = zr(jamor+imode-1)
-10  end do
+10  continue
 !
 ! --- CREATION BASE MODALE
 !
@@ -203,7 +202,7 @@ subroutine nmmoam(sdammz, nbmoda)
         call mrmult('ZERO', lmat, zr(ltvec), zr(jbasmo+(imode-1)*neq), 1,&
                     .true.)
         call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
-11  end do
+11  continue
 !
 ! --- MENAGE
 !

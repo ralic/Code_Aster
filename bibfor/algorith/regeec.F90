@@ -17,6 +17,7 @@ subroutine regeec(nomres, resgen, nomsst)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -62,10 +63,10 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     integer :: i, iad, ibid, ieq, ier, iord, iret, j, jbid, k, ldnew, llchab
     integer :: llchol, llnueq, llors, llprs, vali(2), nbbas, nbddg, nbmod, nbsst
-    integer :: neq, nno, numo, nusst, nutars, iadpar(6), llref1, llref2, llref3
-    integer :: llref4, elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
+    integer :: neq, nno, numo, nusst, nutars, iadpar(6), llref2, llref3
+    integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid
-    character(len=8) :: kbid, basmod, mailla, lint, modgen, soutr
+    character(len=8) :: kbid, basmod, mailla, lint, modgen, soutr, macelem
     character(len=16) :: depl, nompar(6), typres, quamod
     character(len=19) :: raid, numddl, numgen, chamne
     character(len=24) :: crefe(2), chamol, chamba
@@ -85,9 +86,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DU MODELE GENERALISE
 !
-    call jeveuo(resgen//'           .REFD', 'L', llref1)
-    raid = zk24(llref1)
-    call jelibe(resgen//'           .REFD')
+    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid, raid, iret)
 !
     call jeveuo(raid//'.REFA', 'L', llref2)
     numgen(1:14) = zk24(llref2+1)
@@ -108,6 +107,7 @@ subroutine regeec(nomres, resgen, nomsst)
         call u2mesg('F', 'ALGORITH14_25', 2, valk, 0,&
                     0, 0, 0.d0)
     endif
+!
 !
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
@@ -171,6 +171,8 @@ subroutine regeec(nomres, resgen, nomsst)
     call mgutdm(modgen, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
                 basmod)
 !
+    call refdcp(basmod,nomres)
+
     call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbbas,&
                 kbid, ier)
 !
@@ -184,9 +186,7 @@ subroutine regeec(nomres, resgen, nomsst)
         endif
     endif
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref4)
-    lint=zk24(llref4+4)
-    call jelibe(basmod//'           .REFD')
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lint, iret)
 !
     call dismoi('F', 'NOM_MAILLA', lint, 'INTERF_DYNA', ibid,&
                 mailla, iret)
@@ -301,7 +301,7 @@ subroutine regeec(nomres, resgen, nomsst)
         zk16(iadpar(6)) = 'MODE_DYN'
 !
         call jelibe(chamol)
-20  end do
+20  continue
 !
     call jelibe(numgen//'.NUEQ')
     call jedetr('&&REGEEC.NUME')

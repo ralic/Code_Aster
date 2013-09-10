@@ -61,7 +61,7 @@ subroutine op0162()
 !-----------------------------------------------------------------------
     integer :: i, iadmo1, iadmo2, ibid, ic, idbase, iddeeq
     integer :: idvec1, idvec2, ifm, ifmis, iret, isvect, j
-    integer :: j2, jfonc, jrefe, jtyp, jval, jvect, k
+    integer :: j2, jfonc, jrefe, jtyp, jvect, k
     integer :: n, n1, n2, n3, n4, nbmode, nbmods
     integer :: nbmodt, nbnoeu, nbval, nc, ncharb, nchars, neq
     integer :: nfo, niv, nmm, nsourf, nsours, nti, nu
@@ -99,8 +99,7 @@ subroutine op0162()
 !
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call jeveuo(basemo(1:8)//'           .REFD', 'L', jval)
-    interf = zk24(jval+4) (1:8)
+    call dismoi('C', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, interf, ierd)
     if (interf .ne. ' ') then
 !       CALL BMNBMD(BASEMO,'MODE',NBMODE)
 !       CALL BMNBMD(BASEMO,'DEFORMEE',NBMODS)
@@ -123,15 +122,15 @@ subroutine op0162()
     endif
     nbmodt = nbmode + nbmods
 !
-    write(ifm,'(1X,I6,1X,''MODES DYNAMIQUES'',1X,A8)') nbmode,typi
-    write(ifm,'(1X,I6,1X,''MODES STATIQUES'',2X,A8)') nbmods,typi
-    write(ifmis,'(''DYNA'',1X,I6,1X,A8)') nbmode,typi
-    write(ifmis,'(''STAT'',1X,I6,1X,A8)') nbmods,typi
+    write(ifm,'(1x,i6,1x,''MODES DYNAMIQUES'',1x,a8)') nbmode,typi
+    write(ifm,'(1x,i6,1x,''MODES STATIQUES'',2x,a8)') nbmods,typi
+    write(ifmis,'(''DYNA'',1x,i6,1x,a8)') nbmode,typi
+    write(ifmis,'(''STAT'',1x,i6,1x,a8)') nbmods,typi
 !
     call getvtx(' ', 'TITRE', 1, iarg, 1,&
                 titre, nti)
-    if (nti .ne. 0) write(ifmis,'(''TITRE'',/A80)') titre
-    if (nti .ne. 0) write(ifm,'(A80)') titre
+    if (nti .ne. 0) write(ifmis,'(''TITRE'',/a80)') titre
+    if (nti .ne. 0) write(ifm,'(a80)') titre
 !
 !
 !--------RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
@@ -165,14 +164,14 @@ subroutine op0162()
     call getvr8(' ', 'PAS', 1, iarg, 1,&
                 pas, n)
     if (n1 .ne. 0) then
-        write(ifmis,'(''TEMPS DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') &
+        write(ifmis,'(''TEMPS DE'',1x,1pe12.5,1x,''A'',1x,1pe12.5,1x,''PAS'',1x,1pe12.5)') &
               tini,tfin,pas
-        write(ifm,'(''TEMPS DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') & 
+        write(ifm,'(''TEMPS DE'',1x,1pe12.5,1x,''A'',1x,1pe12.5,1x,''PAS'',1x,1pe12.5)') &
               tini,tfin,pas
     else
-        write(ifmis,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') &
+        write(ifmis,'(''FREQ DE'',1x,1pe12.5,1x,''A'',1x,1pe12.5,1x,''PAS'',1x,1pe12.5)') &
               fini,ffin,pas
-        write(ifm,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') &
+        write(ifm,'(''FREQ DE'',1x,1pe12.5,1x,''A'',1x,1pe12.5,1x,''PAS'',1x,1pe12.5)') &
               fini,ffin,pas
     endif
     ic=0
@@ -180,13 +179,13 @@ subroutine op0162()
                 di(1), n)
     if (n .ne. 0) then
         write(ifmis,'(''DIRE ONDE'')')
-        write(ifmis,'(3(1X,1PE12.5))') (di(i),i=1,3)
+        write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,3)
     endif
 !     ----- RECUPERATION NIVEAU IMPRESSION ---
 !
     call getfac('EXCIT', ncharb)
-    write(ifmis,'(''CHARGE'',1X,I6)') ncharb
-    write(ifm,'(''CHARGE'',1X,I6)') ncharb
+    write(ifmis,'(''CHARGE'',1x,i6)') ncharb
+    write(ifm,'(''CHARGE'',1x,i6)') ncharb
     if (ncharb .eq. 0) goto 9998
     if (nbmode .eq. 0) then
         call wkvect('&&OP0162.DVECT', 'V V R', 1, jvect)
@@ -245,14 +244,14 @@ subroutine op0162()
             pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
             zr(isvect+j-1) = pij + petir8
 72      continue
-        if (niv .gt. 1) write(ifm,'(''DYNA CHAR'',1X,I6)') ic
-        if (niv .gt. 1) write(ifm,'(6(1X,1PE12.5))') (zr(jvect+k-1),k=1, nbmode )
-        if (niv .gt. 1) write(ifm,'(''STAT CHAR'',1X,I6)') ic
-        if (niv .gt. 1) write( ifm,'(6(1X,1PE12.5))') (zr(isvect+k-1),k= 1,nbmods)
-        write(ifmis,'(''DYNA CHAR'',1X,I6)') ic
-        write(ifmis,'(6(1X,1PE12.5))') (zr(jvect+k-1),k=1,nbmode)
-        write(ifmis,'(''STAT CHAR'',1X,I6)') ic
-        write(ifmis,'(6(1X,1PE12.5))') (zr(isvect+k-1),k=1,nbmods)
+        if (niv .gt. 1) write(ifm,'(''DYNA CHAR'',1x,i6)') ic
+        if (niv .gt. 1) write(ifm,'(6(1x,1pe12.5))') (zr(jvect+k-1),k=1, nbmode )
+        if (niv .gt. 1) write(ifm,'(''STAT CHAR'',1x,i6)') ic
+        if (niv .gt. 1) write( ifm,'(6(1x,1pe12.5))') (zr(isvect+k-1),k= 1,nbmods)
+        write(ifmis,'(''DYNA CHAR'',1x,i6)') ic
+        write(ifmis,'(6(1x,1pe12.5))') (zr(jvect+k-1),k=1,nbmode)
+        write(ifmis,'(''STAT CHAR'',1x,i6)') ic
+        write(ifmis,'(6(1x,1pe12.5))') (zr(isvect+k-1),k=1,nbmods)
         call getvid('EXCIT', 'FONC_MULT', ic, iarg, 1,&
                     nomfon, nfo)
         if (nfo .ne. 0) goto 80
@@ -261,59 +260,59 @@ subroutine op0162()
         call getvr8('EXCIT', 'COEF_MULT', ic, iarg, 1,&
                     coef, nc)
         nbval = 1
-        if (niv .gt. 1) write(ifm, '(''FONC CHAR'',1X,I6, ''VALE'',1X,I6)') ic, nbval
-        if (niv .gt. 1) write(ifm,'(6(1X,1PE12.5))') t, coef
-        write(ifmis,'(''FONC CHAR'',2(1X,I6))') ic,nbval
-        write(ifmis,'(6(1X,1PE12.5))') t, coef
+        if (niv .gt. 1) write(ifm, '(''FONC CHAR'',1x,i6, ''VALE'',1x,i6)') ic, nbval
+        if (niv .gt. 1) write(ifm,'(6(1x,1pe12.5))') t, coef
+        write(ifmis,'(''FONC CHAR'',2(1x,i6))') ic,nbval
+        write(ifmis,'(6(1x,1pe12.5))') t, coef
         goto 81
 80      continue
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
-        if (niv .gt. 1) write(ifm, '(''FONC CHAR'',1X,I6, ''VALE'',1X,I6)') ic, nbval
+        if (niv .gt. 1) write(ifm, '(''FONC CHAR'',1x,i6, ''VALE'',1x,i6)') ic, nbval
         if (niv .gt. 1) write(&
-                        ifm, '(6(1X,1PE12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
-        write(ifmis,'(''FONC CHAR'',2(1X,I6))') ic,nbval
-        write(ifmis,'(6(1X,1PE12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
+                        ifm, '(6(1x,1pe12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
+        write(ifmis,'(''FONC CHAR'',2(1x,i6))') ic,nbval
+        write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
 81      continue
-70  end do
+70  continue
 9998  continue
     call getfac('EXCIT_SOL', nchars)
-    write(ifmis,'(''SOLS'',1X,I6)') nchars
-    write(ifm,'(''SOLS'',1X,I6)') nchars
+    write(ifmis,'(''SOLS'',1x,i6)') nchars
+    write(ifm,'(''SOLS'',1x,i6)') nchars
     if (nchars .eq. 0) goto 9999
     do 73 ic = 1, nchars
         call getvr8('EXCIT_SOL', 'DIRECTION', ic, iarg, 3,&
                     di(1), n)
         call getvtx('EXCIT_SOL', 'NOM_CHAM', ic, iarg, 1,&
                     typi, n)
-        if (niv .gt. 1) write(ifm,'(''DIRE SOLS'',1X,I6)') ic
-        if (niv .gt. 1) write(ifm,'(3(1X,1PE12.5))') (di(i),i=1,3)
-        if (niv .gt. 1) write(ifm, '(''SOLS'',1X,I6,1X, ''TYPE'',1X,A8)') ic, typi
-        write(ifmis,'(''DIRE SOLS'',1X,I6)') ic
-        write(ifmis,'(3(1X,1PE12.5))') (di(i),i=1,3)
-        write(ifmis,'(''TYPE SOLS'',1X,I6,1X,A8)') ic,typi
+        if (niv .gt. 1) write(ifm,'(''DIRE SOLS'',1x,i6)') ic
+        if (niv .gt. 1) write(ifm,'(3(1x,1pe12.5))') (di(i),i=1,3)
+        if (niv .gt. 1) write(ifm, '(''SOLS'',1x,i6,1x, ''TYPE'',1x,a8)') ic, typi
+        write(ifmis,'(''DIRE SOLS'',1x,i6)') ic
+        write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,3)
+        write(ifmis,'(''TYPE SOLS'',1x,i6,1x,a8)') ic,typi
         call getvid('EXCIT_SOL', 'FONC_SIGNAL', ic, iarg, 1,&
                     nomfon, n)
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
-        if (niv .gt. 1) write(ifm, '(''FONC SOLS'',1X,I6,1X, ''VALE'',1X,I6)' ) ic, nbval
+        if (niv .gt. 1) write(ifm, '(''FONC SOLS'',1x,i6,1x, ''VALE'',1x,i6)' ) ic, nbval
         if (niv .gt. 1) write(&
-                        ifm, '(6(1X,1PE12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
-        write(ifmis,'(''FONC SOLS'',2(1X,I6))') ic,nbval
-        write(ifmis,'(6(1X,1PE12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
+                        ifm, '(6(1x,1pe12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
+        write(ifmis,'(''FONC SOLS'',2(1x,i6))') ic,nbval
+        write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
-73  end do
+73  continue
 9999  continue
 !
     call getfac('SOURCE_SOL', nsours)
     if (nsours .eq. 0) goto 9995
-    write(ifmis,'(''SOUS'',1X,I6)') nsours
-    write(ifm,'(''SOUS'',1X,I6)') nsours
+    write(ifmis,'(''SOUS'',1x,i6)') nsours
+    write(ifm,'(''SOUS'',1x,i6)') nsours
     do 74 ic = 1, nsours
 !         IC = 1
         call getvr8('SOURCE_SOL', 'POINT', ic, iarg, 3,&
@@ -322,56 +321,56 @@ subroutine op0162()
                     di(4), n)
         call getvtx('SOURCE_SOL', 'NOM_CHAM', ic, iarg, 1,&
                     typi, n)
-        if (niv .gt. 1) write(ifm,'(''DIRE SOUS'',1X,I6)') ic
-        if (niv .gt. 1) write(ifm,'(3(1X,1PE12.5))') (di(i),i=1,6)
-        if (niv .gt. 1) write(ifm, '(''SOLS'',1X,I6,1X, ''TYPE'',1X,A8)') ic, typi
-        write(ifmis,'(''DIRE SOUS'',1X,I6)') ic
-        write(ifmis,'(3(1X,1PE12.5))') (di(i),i=1,6)
-        write(ifmis,'(''TYPE SOUS'',1X,I6,1X,A8)') ic,typi
+        if (niv .gt. 1) write(ifm,'(''DIRE SOUS'',1x,i6)') ic
+        if (niv .gt. 1) write(ifm,'(3(1x,1pe12.5))') (di(i),i=1,6)
+        if (niv .gt. 1) write(ifm, '(''SOLS'',1x,i6,1x, ''TYPE'',1x,a8)') ic, typi
+        write(ifmis,'(''DIRE SOUS'',1x,i6)') ic
+        write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,6)
+        write(ifmis,'(''TYPE SOUS'',1x,i6,1x,a8)') ic,typi
         call getvid('SOURCE_SOL', 'FONC_SIGNAL', ic, iarg, 1,&
                     nomfon, n)
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
-        if (niv .gt. 1) write(ifm, '(''FONC SOUS'',1X,I6,1X, ''VALE'',1X,I6)' ) ic, nbval
+        if (niv .gt. 1) write(ifm, '(''FONC SOUS'',1x,i6,1x, ''VALE'',1x,i6)' ) ic, nbval
         if (niv .gt. 1) write(&
-                        ifm, '(6(1X,1PE12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
-        write(ifmis,'(''FONC SOUS'',2(1X,I6))') ic,nbval
-        write(ifmis,'(6(1X,1PE12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
+                        ifm, '(6(1x,1pe12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
+        write(ifmis,'(''FONC SOUS'',2(1x,i6))') ic,nbval
+        write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
-74  end do
+74  continue
 9995  continue
 !
     call getfac('SOURCE_FLUIDE', nsourf)
     if (nsourf .eq. 0) goto 9996
-    write(ifmis,'(''SOUF'',1X,I6)') nsourf
-    write(ifm,'(''SOUF'',1X,I6)') nsourf
+    write(ifmis,'(''SOUF'',1x,i6)') nsourf
+    write(ifm,'(''SOUF'',1x,i6)') nsourf
     do 75 ic = 1, nsourf
 !         IC = 1
         call getvr8('SOURCE_FLUIDE', 'POINT', ic, iarg, 3,&
                     di(1), n)
         call getvtx('SOURCE_FLUIDE', 'NOM_CHAM', ic, iarg, 1,&
                     typi, n)
-        if (niv .gt. 1) write(ifm,'(''DIRE SOUF'',1X,I6)') ic
-        if (niv .gt. 1) write(ifm,'(3(1X,1PE12.5))') (di(i),i=1,3)
-        if (niv .gt. 1) write(ifm, '(''SOLS'',1X,I6,1X, ''TYPE'',1X,A8)') ic, typi
-        write(ifmis,'(''DIRE SOUF'',1X,I6)') ic
-        write(ifmis,'(3(1X,1PE12.5))') (di(i),i=1,3)
-        write(ifmis,'(''TYPE SOUF'',1X,I6,1X,A8)') ic,typi
+        if (niv .gt. 1) write(ifm,'(''DIRE SOUF'',1x,i6)') ic
+        if (niv .gt. 1) write(ifm,'(3(1x,1pe12.5))') (di(i),i=1,3)
+        if (niv .gt. 1) write(ifm, '(''SOLS'',1x,i6,1x, ''TYPE'',1x,a8)') ic, typi
+        write(ifmis,'(''DIRE SOUF'',1x,i6)') ic
+        write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,3)
+        write(ifmis,'(''TYPE SOUF'',1x,i6,1x,a8)') ic,typi
         call getvid('SOURCE_FLUIDE', 'FONC_SIGNAL', ic, iarg, 1,&
                     nomfon, n)
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
-        if (niv .gt. 1) write(ifm, '(''FONC SOUF'',1X,I6,1X, ''VALE'',1X,I6)' ) ic, nbval
+        if (niv .gt. 1) write(ifm, '(''FONC SOUF'',1x,i6,1x, ''VALE'',1x,i6)' ) ic, nbval
         if (niv .gt. 1) write(&
-                        ifm, '(6(1X,1PE12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
-        write(ifmis,'(''FONC SOUF'',2(1X,I6))') ic,nbval
-        write(ifmis,'(6(1X,1PE12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
+                        ifm, '(6(1x,1pe12.5))') (zr(jfonc+k-1), zr( jfonc+k+nbval-1), k=1, nbval)
+        write(ifmis,'(''FONC SOUF'',2(1x,i6))') ic,nbval
+        write(ifmis,'(6(1x,1pe12.5))') (zr(jfonc+k-1),zr(jfonc+k+&
         nbval-1),k=1,nbval)
-75  end do
+75  continue
 9996  continue
 !
     call jedema()

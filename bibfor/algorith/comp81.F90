@@ -73,7 +73,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     integer :: nbmtot, nbmdef, ier
     integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie, ierd
     integer :: iacon1, iadesc, iadesm, ialica, ialich, iaprno, icas
-    integer :: igex, instdy, iocc, ival, ldgn, ldgn0, llrefb, lnocmp
+    integer :: igex, instdy, iocc, ival, ldgn, ldgn0, lnocmp
     integer :: n1, nbndef, nbno, nbno2, nbnot, ncmpmx, nocc, nueq, nunot
 !
     real(kind=8) :: rbndyn, rbndef
@@ -100,9 +100,8 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! **********************
 !     RECUPERATION DES INFOS UTILES
 ! **********************
-    call jeveuo(basmod//'           .REFD', 'L', llrefb)
-    numddl=zk24(llrefb+3)(1:14)
-    lintf=zk24(llrefb+4)(1:8)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, ier)
+    call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lintf, ier)
 !
     call dismoi('F', 'NOM_MODELE', numddl, 'NUME_DDL', ibid,&
                 nomo, iret)
@@ -160,7 +159,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
             nueq = zi(iaprno-1+ (i-1)* (nec+2)+2)
             ncmpmx = max(ncmpmx,nueq)
         endif
-553  end do
+553  continue
 ! ON VA CHOISIR PLUSIEURS NOEUDS QUI NE SONT PAS PRESENTS DANS
 ! L'INTERFACE ET TELS QUE LE NBRE DE DDL CONSIDERE SOIT EGAL
 ! AU NBRE DE MODES DYNAMIQUES
@@ -210,7 +209,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
                 k=k+1
             endif
         endif
-555  end do
+555  continue
 !
 554  continue
     if (nbmdef .ne. 0) then
@@ -316,10 +315,10 @@ subroutine comp81(nomres, basmod, raidf, noma)
     call wkvect(nomres//'.LINO', 'G V I', nbndef+nbndyn, iaconx)
     do 665 i = 1, nbndyn
         zi(iaconx+i-1)=zi(inebid+i-1)
-665  end do
+665  continue
     do 666 i = nbndyn+1, nbndef+nbndyn
         zi(iaconx+i-1)=zi(instdy+i-nbndyn-1)
-666  end do
+666  continue
 !
 ! **********************
 !     CREATION DU .CONX
@@ -329,12 +328,12 @@ subroutine comp81(nomres, basmod, raidf, noma)
         zi(iacon1+3*i-3)=1
         zi(iacon1+3*i-2)=zi(inebid+i-1)
         zi(iacon1+3*i-1)=0
-667  end do
+667  continue
     do 668 i = nbndyn+1, nbndef+nbndyn
         zi(iacon1+3*i-3)=1
         zi(iacon1+3*i-2)=zi(instdy+i-nbndyn-1)
         zi(iacon1+3*i-1)=0
-668  end do
+668  continue
 669  continue
 !
 ! **********************

@@ -149,7 +149,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    v_refa_mass = MATR_GENE['MATR_MASS'].sdj.REFA.get()
    # MAILLAGE
    nom_bamo = v_refa_rigi[0]
-   nume_ddl = aster.getvectjev(nom_bamo[0:8] + '           .REFD        ' )[3]
+   iret,ibid,nume_ddl = aster.dismoi('F','NUME_DDL',nom_bamo,'RESU_DYNA')
    nom_mail = aster.getvectjev( nume_ddl[0:14] + '.NUME.REFN        ' )[0]
    maillage = sd_maillage(nom_mail)
    # MODELE, DDLGENE

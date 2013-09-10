@@ -245,14 +245,18 @@ class CalcEssaiModifStruct:
 
             if modllu == self.support_modele.nom:
                 support_modele = resu.obj
-                refd = support_modele.sdj.REFD.get()
-                nom_raideur = refd[0].strip()
+
+                iret,ibid,nom_raideur = aster.dismoi('F','REF_RIGI_PREM',support_modele.nom,'RESU_DYNA')
+                nom_raideur = nom_raideur.strip()
 
                 if nom_raideur == self.matr_rig.nom:
-                    nom_masse = refd[1].strip()
+
+                    iret,ibid,nom_masse = aster.dismoi('F','REF_MASS_PREM',support_modele.nom,'RESU_DYNA')
+                    nom_masse = nom_masse.strip()
                     matr_masse = self.objects.get_matr(nom_masse)
 
-                    nume_name = refd[3].strip()
+                    iret,ibid,nume_name = aster.dismoi('F','NUME_DDL',support_modele.nom,'RESU_DYNA')
+                    nume_name = nume_name.strip()
                     numesup = self.objects.nume_ddl[nume_name]
 
                     iret,ibid,var_carelem = aster.dismoi('F','CARA_ELEM',name,'RESULTAT')

@@ -1,5 +1,6 @@
 subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
                   numnoe, nbdif)
+! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +66,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !                 SI DONNEE BASE MODALE OU INTERF_DYNA
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, lldes, llint, llref, nbdif, nbeffi
+    integer :: i, inoe, lldes, llint, nbdif, nbeffi, ibid, ir
     integer :: nbnoe, numcou, numint
 !-----------------------------------------------------------------------
     call jemarq()
@@ -74,8 +75,8 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
     basmod = basmdz
 !
     if (basmod(1:1) .ne. ' ') then
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        intf=zk24(llref+4)(1:8)
+
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, ir)
         if (intf .eq. '        ') then
             valk (1) = basmod
             call u2mesg('F', 'ALGORITH12_30', 1, valk, 0,&
@@ -129,7 +130,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
         numcou=zi(lldes+inoe-1)
         nbdif=nbdif-1
         if (nbdif .ge. 0) numnoe(nbnoi-nbdif)=numcou
-20  end do
+20  continue
 !
     nbdif=-nbdif
 !

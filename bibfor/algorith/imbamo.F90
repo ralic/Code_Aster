@@ -45,7 +45,7 @@ subroutine imbamo(nomres)
     character(len=8) :: nomres, intf, nomnoe, nomcmp
     character(len=19) :: raid, mass, typeba, valk(4)
     character(len=14) :: numref
-    integer :: ldpar(nbpabm), llref, ier, vali(2)
+    integer :: ldpar(nbpabm), ier, vali(2)
     character(len=16) :: bmpara(nbpabm), typdef
     character(len=8) :: rescyc
     character(len=8) :: k8bid
@@ -66,28 +66,23 @@ subroutine imbamo(nomres)
 !
 !------------------RECUPERATION DES CONCEPT AMONT-----------------------
 !
-    call jeveuo(nomres//'           .REFD', 'L', llref)
-    raid=zk24(llref)(1:19)
-    mass=zk24(llref+1)(1:19)
-    numref=zk24(llref+3)(1:14)
-    intf=zk24(llref+4)(1:8)
-    typeba=zk24(llref+6)(1:19)
+    call dismoi('C', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid, raid, ier)
+    call dismoi('C', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid, mass, ier)
+    call dismoi('C', 'NUME_DDL', nomres, 'RESU_DYNA', ibid, numref, ier)
+    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid, intf, ier)
+    call dismoi('C', 'TYPE_BASE', nomres, 'RESU_DYNA', ibid, typeba, ier)
 !
 !--------------------------------ECRITURES------------------------------
 !
     call u2mesk('I', 'ALGELINE6_1', 1, nomres)
+    call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot, k8bid, ier)
 !
 !    CAS D'UNE BASE DE TYPE CONNUE
 !
     if (typeba(1:9) .eq. 'CLASSIQUE') then
 !
-        call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot,&
-                    k8bid, ier)
-        call dismoi('F', 'NB_MODES_STA', nomres, 'RESULTAT', nbdef,&
-                    k8bid, ier)
-        call dismoi('F', 'NB_MODES_DYN', nomres, 'RESULTAT', nbmod,&
-                    k8bid, ier)
-!
+        call dismoi('F', 'NB_MODES_STA', nomres, 'RESULTAT', nbdef, k8bid, ier)
+        call dismoi('F', 'NB_MODES_DYN', nomres, 'RESULTAT', nbmod, k8bid, ier)
 !
         valk(1)=intf
         valk(2)=numref
@@ -98,16 +93,12 @@ subroutine imbamo(nomres)
         call u2mesg('I', 'ALGELINE6_2', 4, valk, 2,&
                     vali, 0, 0.d0)
 !
-!
     endif
 !
 !   CAS D'UNE BASE DE TYPE CYCLIQUE
 !
     if (typeba(1:8) .eq. 'CYCLIQUE') then
-        call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot,&
-                    k8bid, ier)
-        call dismoi('F', 'NOM_MODE_CYCL', intf, 'INTERF_DYNA', ibid,&
-                    rescyc, iret)
+        call dismoi('F', 'NOM_MODE_CYCL', intf, 'INTERF_DYNA', ibid, rescyc, iret)
 !
         valk(1)=intf
         valk(2)=numref
@@ -118,9 +109,6 @@ subroutine imbamo(nomres)
 ! CAS D'UNE BASE DE RITZ
 !
     if (typeba(1:4) .eq. 'RITZ') then
-!
-        call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot,&
-                    k8bid, ier)
 !
         valk(1)=numref
         vali(1)=nbtot
@@ -133,8 +121,7 @@ subroutine imbamo(nomres)
 !
     do 10 i = 1, nbtot
 !
-        call rsadpa(nomres, 'L', nbpabm, bmpara, i,&
-                    0, ldpar, k8bid)
+        call rsadpa(nomres, 'L', nbpabm, bmpara, i, 0, ldpar, k8bid)
 !
         typdef=zk16(ldpar(5))
 !
@@ -147,8 +134,7 @@ subroutine imbamo(nomres)
             valr(1)=freq
             valr(2)=genem
             valr(3)=genek
-            call u2mesg('I', 'ALGELINE6_6', 0, ' ', 1,&
-                        vali, 3, valr)
+            call u2mesg('I', 'ALGELINE6_6', 0, ' ', 1, vali, 3, valr)
 !
         else
 !
@@ -157,11 +143,10 @@ subroutine imbamo(nomres)
             valk(1)=typdef
             valk(2)=nomnoe
             valk(3)=nomcmp
-            call u2mesg('I', 'ALGELINE6_7', 3, valk, 1,&
-                        vali, 0, 0.d0)
+            call u2mesg('I', 'ALGELINE6_7', 3, valk, 1, vali, 0, 0.d0)
 !
         endif
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

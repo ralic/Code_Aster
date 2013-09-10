@@ -13,6 +13,7 @@ subroutine dismoi(arret, questi, nomob, typeco, repi,&
 #include "asterfort/dismcr.h"
 #include "asterfort/dismct.h"
 #include "asterfort/dismes.h"
+#include "asterfort/dismdy.h"
 #include "asterfort/dismff.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/dismic.h"
@@ -158,6 +159,8 @@ subroutine dismoi(arret, questi, nomob, typeco, repi,&
         call dismff(quest1, nomo1(1:8), repi1, repk1, ierd1)
     else if (typec1.eq.'CARTE_COMPOR') then
         call dismco(quest1, nomo1(1:19), repi1, repk1, ierd1)
+    else if (typec1.eq.'RESU_DYNA') then
+        call dismdy(quest1, nomo1(1:8), repi1, repk1, ierd1)
     else
         if (arret2 .eq. 'F') then
             repk1 = typeco

@@ -75,7 +75,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     character(len=16) :: nomcmd, typres, k16bid, nomcha, kcham
     character(len=19) :: chs, chamno, sd2
 !
-    character(len=24) :: vabs, vmes, typba
+    character(len=24) :: vabs, vmes, typba, raide
 !
     logical :: lfonct, zcmplx
 !
@@ -83,7 +83,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     integer :: jdep, jvit, jacc, jpass, jordr, lord, imes, iret, gd
     integer :: labs, lmesu, lcoef, lred, jcnsd, jcnsc, jcnsv, n1
     integer :: ncoef, nfonc, lfonc, null, ibid, jcnsl, nbcmp
-    integer :: lvale, lonmax, iocc, numord, ino, icmp, indice, jraid
+    integer :: lvale, lonmax, iocc, numord, ino, icmp, indice
     integer :: idesc, jcnsk, lrange, lnoeud, nbabs, jord, nbord
     integer :: jbasm, lcham, nbcham, ich, lch, jpames
 !
@@ -376,7 +376,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         else
             zi(jordr-1 + i) = i - 1
         endif
-400  end do
+400  continue
 !     -- REMPLISSAGE DE L'OBJET .PTEM :
     if (typres(1:9) .eq. 'TRAN_GENE') then
         call jeexin(nommes//'           .PTEM', iexi)
@@ -418,18 +418,17 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
                 zr(jpara) = zr(labs-1 + i)
             endif
         endif
-402  end do
+402  continue
 !
 !
 ! --- STOCKAGE
     if (typres(1:9) .eq. 'MODE_GENE') then
         call jeveuo(nomres//'           .ORDR', 'L', jord)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
-        call gettco(nombas, typba)
-        call jeveuo(nombas//'           .REFD', 'L', jraid)
-        typba=zk24(jraid+6)
+        call dismoi('C', 'TYPE_BASE', nombas, 'RESU_DYNA', ibid, typba, iret)
+        call dismoi('F', 'REF_RIGI_PREM', nombas, 'RESU_DYNA', ibid, raide, iret)
         if (typba(1:1) .ne. ' ') then
-            if (zk24(jraid)(1:8) .eq. '        ') then
+            if (raide(1:8) .eq. '        ') then
                 call jeveuo(jexnum(nombas//'           .TACH', 1), 'L', jbasm)
                 sd2=zk24(jbasm)(1:8)
                 call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
@@ -446,18 +445,18 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         endif
 !
 !       -- POUR LES BASES TYPE MODE_MECA SANS REFERENCE
-        if (zk24(jraid)(1:8) .eq. '        ') then
+        if (raide(1:8) .eq. '        ') then
             modele='        '
             chmat ='        '
             carael='        '
             goto 44
         endif
 !
-        call dismoi('F', 'NOM_MODELE', zk24(jraid)(1:8), 'MATR_ASSE', ibid,&
+        call dismoi('F', 'NOM_MODELE', raide(1:8), 'MATR_ASSE', ibid,&
                     modele, iret)
-        call dismoi('F', 'CHAM_MATER', zk24(jraid)(1:8), 'MATR_ASSE', ibid,&
+        call dismoi('F', 'CHAM_MATER', raide(1:8), 'MATR_ASSE', ibid,&
                     chmat, iret)
-        call dismoi('F', 'CARA_ELEM', zk24(jraid)(1:8), 'MATR_ASSE', ibid,&
+        call dismoi('F', 'CARA_ELEM' , raide(1:8), 'MATR_ASSE', ibid,&
                     carael, iret)
 44      continue
 !

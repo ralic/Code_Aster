@@ -61,7 +61,7 @@ subroutine rfrgen(trange)
 !
 !     OPERATEUR "RECU_FONCTION"  MOT CLE "RESU_GENE"
 !     ------------------------------------------------------------------
-    integer :: ibid, lrefe1, lrefe2
+    integer :: ibid
     integer :: ifm, niv
     character(len=1) :: type
     character(len=24) :: valk(2), nogno
@@ -233,10 +233,8 @@ subroutine rfrgen(trange)
 42              continue
             endif
         else
-            call jeveuo(resu//'.REFD', 'L', lrefe1)
-            basemo = zk24(lrefe1+4)(1:8)
-            call jeveuo(basemo//'           .REFD', 'L', lrefe2)
-            matras = zk24(lrefe2)(1:19)
+            call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid, basemo, iret)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matras, iret)
             nomsy = 'DEPL'
 !
 !
@@ -255,7 +253,7 @@ subroutine rfrgen(trange)
                 call dismoi('F', 'NOM_MAILLA', matras, 'MATR_ASSE', ibid,&
                             noma, ie)
             else
-                nume = zk24(lrefe2+3)(1:14)
+                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, nume, iret)
                 call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
                             noma, ie)
                 call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&

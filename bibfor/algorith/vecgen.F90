@@ -81,7 +81,7 @@ subroutine vecgen(nomres, numeg)
 !-----------------------------------------------------------------------
     integer :: i, iadmod, iavale, iddeeq, idvale, idvect, ioc
     integer :: ipos, iret, j, ladrve, lddesc, ldesc, ldnddl
-    integer :: ldnsst, ldnvec, ldprs, ldstr, llneq, llref, llrefb
+    integer :: ldnsst, ldnvec, ldprs, ldstr, llneq, llref
     integer :: lrdesc, lrefe, lrref, lrval, nbchar, nbmod, nddl0
     integer :: neq, neqgen, num, nusst
     real(kind=8) :: rbid
@@ -307,10 +307,9 @@ subroutine vecgen(nomres, numeg)
 !
         call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid,&
                     basmod)
-        call jeveuo(basmod//'           .REFD', 'L', llrefb)
-        nubamo = zk24(llrefb+3)
-!
-        typeba = zk24(llrefb+6)
+
+        call dismoi('F', 'NUME_DDL' , basmod, 'RESU_DYNA', ibid, nubamo, iret)
+        call dismoi('F', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid, typeba, iret)
 !
         if (typeba(1:4) .ne. 'RITZ' .and. typeba(1:9) .ne. 'CLASSIQUE') then
             valk (1) = nomsst
@@ -331,7 +330,7 @@ subroutine vecgen(nomres, numeg)
 !
 !     COPIE DU NUME_DDL DANS LE .LICH
         zk8(ldnddl+i-1) = nubamo(1:8)
-10  end do
+10  continue
 !
 !     ECRITURE DU .REFE
     zk24(llref) = modgen
@@ -417,7 +416,7 @@ subroutine vecgen(nomres, numeg)
 !
 20      continue
         call jedetr('&&'//pgc//'.VECTA')
-50  end do
+50  continue
 !
 !     3/ ASSEMBLAGE
 !     =============
@@ -486,7 +485,7 @@ subroutine vecgen(nomres, numeg)
 90              continue
 100          continue
         endif
-200  end do
+200  continue
 !
     call jedema()
 end subroutine

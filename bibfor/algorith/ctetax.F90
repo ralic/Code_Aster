@@ -1,4 +1,5 @@
 subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
+! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +62,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 #include "asterfort/u2mess.h"
 !-----------------------------------------------------------------------
     integer :: i, ibid, icomp, ier, iloci, ilocj, inoa
-    integer :: iret, j, k, lldesc, llnoa, llref, nbcmp
+    integer :: iret, j, k, lldesc, llnoa, nbcmp
     integer :: nbcpmx, nbdax, nbdcou, nbec, nbnoa, nbnot, nbsec
     integer :: nbtet, noer, nta, numa
     real(kind=8) :: angle, pi, x
@@ -87,8 +88,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !-------------------RECUPERATION DU MAILLAGE----------------------------
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    intf=zk24(llref+4)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
     call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
                 mailla, iret)
 !
@@ -220,7 +220,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
         nbdcou=nbdcou+icomp
 !
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

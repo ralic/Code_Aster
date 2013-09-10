@@ -74,7 +74,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
     integer :: idia, idiam, idicou, ier, ii, inum, iorc
     integer :: iormo, j, jj, ldfre, ldkge, ldmge, ldom2
     integer :: ldomo, ldotm, ldtyd, llcham, lldesc, lldiam, llfreq
-    integer :: llmoc, llnsec, llnumi, llref, lmass, ltetax, ltetgd
+    integer :: llmoc, llnsec, llnumi, lmass, ltetax, ltetgd
     integer :: ltflax, ltfldr, ltflga, ltorf, ltorto, ltveco, ltvere
     integer :: ltvezt, mdiapa, nbdax, nbddg, nbddr, nbdia, nbmoc
     integer :: nbmod, nbmor, nborc, nbsec, nbtmp, neq, numa
@@ -119,11 +119,9 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !-----------------RECUPERATION DU NOMBRE DE DDL PHYSIQUES---------------
 !
-    call jeveuo(basmod//'           .REFD', 'L', llref)
-    numddl = zk24(llref+3)
-    matrix = zk24(llref)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                k8b, ier)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, ier)
+    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid, matrix, ier)
+    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq, k8b, ier)
 !
 !-------------RECUPERATION DES FREQUENCES ------------------------------
 !
@@ -131,8 +129,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !----------------RECUPERATION MATRICE DE MASSE--------------------------
 !
-!      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
-    mass = zk24(llref+1)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, mass, ier)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
@@ -209,7 +206,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
         else
             nbmor = nbmor + 2*nbtmp
         endif
- 5  end do
+ 5  continue
     call wkvect('&&REMNEC.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&REMNEC.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
     call ordr8(zr(llfreq), nbmoc, zi(ltorto))
@@ -234,7 +231,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
         zi(ltorf+iormo-1) = nborc
         idiam = zi(lldiam+idicou-1)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
- 6  end do
+ 6  continue
     call jedetr('&&REMNEC.ORDRE.TMPO')
 !
 !---------------------RECUPERATION DES MODES COMPLEXES------------------
@@ -372,7 +369,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 15      continue
 !
-10  end do
+10  continue
 !
     call jedetr('&&REMNEC.VEC.TRAVC')
     call jedetr('&&REMNEC.VEC.COMP')

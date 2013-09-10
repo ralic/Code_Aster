@@ -171,10 +171,10 @@ def macro_expans_ops( self,
     if NUME_DDL:
         nume = NUME_DDL
     if not nume :
-        if __resuex.sdj.REFD.get():
-            tmp = __resuex.sdj.REFD.get()[3]
-            if tmp.strip() :
-                nume = self.get_concept(tmp)
+        iret,ibid,tmp = aster.dismoi('C','NUME_DDL',self.nom,'RESU_DYNA')
+        if iret==0:
+            tmp = tmp.strip()
+            if tmp : nume = self.get_concept(tmp)
         else:
             UTMESS('A','CALCESSAI0_5')
     __resurd = PROJ_CHAMP( METHODE    = 'COLLOCATION',

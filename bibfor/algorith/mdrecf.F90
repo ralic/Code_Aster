@@ -2,6 +2,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                   iadvec, inumor, fondep, fonvit, fonacc,&
                   neq, typbas, basemo, nbmode, riggen,&
                   nommot, nomres)
+! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 #include "asterc/getvid.h"
@@ -86,19 +87,18 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ib, ibid, iddeeq, ieq, ii, iinst, imod
-    integer :: imodco, inum, iret, jdepl, jdrif, jmod, jordr
+    integer :: imodco, inum, iret, jdepl, jmod, jordr
     integer :: jvale, l1, lprol, m1, n1, n2, n3
     integer :: n4, n5, na, nbv, nf, nm
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
 ! ---    CALCUL TRANSITOIRE CLASSIQUE
-    call jeveuo(basemo//'           .REFD', 'L', jdrif)
-    typeba=zk24(jdrif+6)
+    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ib, typeba, ier)
 !
 !
     if (typbas(1:9) .eq. 'MODE_MECA' .and. typeba(1:1) .eq. ' ') then
-        matass = zk24(jdrif)(1:8)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ib, matass, ier)
         call dismoi('F', 'NOM_MAILLA', matass, 'MATR_ASSE', ib,&
                     mailla, ier)
         call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ibid,&
@@ -106,7 +106,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
         deeq = numddl//'.NUME.DEEQ'
         call jeveuo(deeq, 'L', iddeeq)
     else if (typeba(1:1).ne.' ') then
-        numddl = zk24(jdrif+3)(1:14)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ib, numddl, ier)
         call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
                     mailla, ier)
         deeq = numddl//'.NUME.DEEQ'
@@ -278,7 +278,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 ASSERT(.false.)
             endif
         endif
-10  end do
+10  continue
 !
 !
 ! --- EXCITATIONS SOUS LE MOT-CLE EXCIT_RESU
@@ -327,7 +327,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
 21      continue
 !
-11  end do
+11  continue
 !
     call jedema()
 end subroutine

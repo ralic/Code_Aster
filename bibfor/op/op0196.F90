@@ -27,7 +27,6 @@ subroutine op0196()
 !
 #include "jeveux.h"
 #include "asterc/gettco.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cnscno.h"
@@ -40,6 +39,7 @@ subroutine op0196()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -220,7 +220,7 @@ subroutine op0196()
                         0, jmod, kbid)
             zk8(jmod)=mo
 !
-            call ajrefd(resuco, resux, 'COPIE')
+            call refdcp(resuco, resux)
         endif
 !
         call detrsd('CHAM_NO_S', cns1)
@@ -233,7 +233,7 @@ subroutine op0196()
         call detrsd('CHAM_ELEM_S', comps1)
         call detrsd('CHAM_ELEM_S', comps2)
 !
-10  end do
+10  continue
 !
     call jeexin(mailc, iret)
     if (iret .ne. 0) call jedetr(mailc)

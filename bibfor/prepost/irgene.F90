@@ -5,6 +5,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
     implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/irpara.h"
 #include "asterfort/irparb.h"
 #include "asterfort/irvgen.h"
@@ -43,12 +44,12 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 !     IMPRESSION D'UN CONCEPT GENERALISE
 !     ------------------------------------------------------------------
     character(len=1) :: cecr
-    character(len=16) :: typcon, typrem
+    character(len=16) :: typcon
     character(len=19) :: gene, noch19
-    character(len=24) :: nomst
+    character(len=24) :: nomst, nuddl, basemo
     logical :: lordr
-    integer :: iocc, ifi, nbnosy, nbcmpg, nbpara, nbordr, i, im, iord
-    integer :: iret, isy, itresu, jdesc, jordr, jpara, jrefe, jtitr, kdesc
+    integer :: iocc, ifi, nbnosy, nbcmpg, nbpara, nbordr, i, im, iord, ibid
+    integer :: iret, isy, itresu, jdesc, jordr, jpara, jtitr, kdesc
     integer :: krefe, kvale, nbmode, nbtitr, npara, itcal, nbdisc
 !     ------------------------------------------------------------------
     call jemarq()
@@ -120,7 +121,6 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
         endif
         call jeveuo(gene//'.DESC', 'L', jdesc)
         nbmode = zi(jdesc+1)
-        call jeveuo(gene//'.REFD', 'L', jrefe)
         noch19 = '&&IRGENE_VECTEUR'
         call wkvect(noch19//'.DESC', 'V V I', 2, kdesc)
         call wkvect(noch19//'.REFE', 'V V K24', 2, krefe)
@@ -140,21 +140,14 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 !
         zi(kdesc+1) = nbmode
 !
-!        --- TYPE DE CONCEPT AU 5EME ENTREE DE .REFD DU TRAN_GENE  --
-        call gettco(zk24(jrefe+4), typrem)
+        call dismoi('F', 'NUME_DDL', gene(1:8), 'RESU_DYNA', ibid, nuddl, iret)
+        call jeexin(nuddl(1:14)//'.NUME.DESC',iret)
+        call dismoi('C', 'BASE_MODALE', gene(1:8), 'RESU_DYNA', ibid, basemo, ibid)
 !
-!        --- TEST POUR LE CAS DE LA SOUS-STRUCTURATION             --
-        if (typrem(1:8) .eq. 'NUME_DDL') then
-!        --- MANQUE D'UNE BASE MODALE GLOBALE, DU COUP NOUS        --
-!        --- SAUVEGARDONS LE NUME_DDL_GENE AU 2EME ENTREE DU REFE  --
-            zk24(krefe) = ' '
-            zk24(krefe+1) = zk24(jrefe+4)
-        else
-!        --- POUR LES AUTRES CAS, UNE BASE MODALE EST DEFINIE      --
-!        --- ELLE EST SAUVEGARDEE DANS LA 1ERE ENTREE DU REFE      --
-            zk24(krefe) = zk24(jrefe+4)
-            zk24(krefe+1) = ' '
-        endif
+!       -- TEST POUR LE CAS DE LA SOUS-STRUCTURATION : EXISTENCE DE NUME_DDL_GENE  --
+        if ((iret .eq. 0) ) nuddl = ' '
+        zk24(krefe)   = basemo
+        zk24(krefe+1) = nuddl
 !
         do 200 i = 1, nbdisc
             iord = nume(i)
@@ -187,7 +180,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 220              continue
                 call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
 210          continue
-200      continue
+200     continue
         call jedetr(noch19//'.DESC')
         call jedetr(noch19//'.REFE')
         call jedetr(noch19//'.VALE')

@@ -59,7 +59,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     character(len=24) :: nomch0
     character(len=80) :: titre
     logical :: lamor
-    integer :: iarg
+    integer :: iarg, ir
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -67,7 +67,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     integer :: iddl, iddl0, idgm, idgm2, idgm3, idgm4, idgm5
     integer :: idno, ie, ifmis, ii, ij, imess, in
     integer :: ino, inoe, iparno, j, j2, jcoor
-    integer :: jtyp, jval, k, l, ldgm, ldnm, nb
+    integer :: jtyp, k, l, ldgm, ldnm, nb
     integer :: nbgr, nbgr2, nbgr3, nbgr4, nbgr5, nbma, nbma2
     integer :: nbma3, nbma4, nbma5, nbmode, nbmods, nbmodt, nbno
     integer :: nbnoeu, nbv, ncmp, nec, neq, nf, ni
@@ -98,8 +98,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call jeveuo(basemo//'           .REFD', 'L', jval)
-    interf = zk24(jval+4) (1:8)
+    call dismoi('C', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, interf, ir)
     if (interf .ne. ' ') then
         call jeveuo(interf//'.IDC_TYPE', 'L', jtyp)
         typi = zk8(jtyp)
@@ -203,7 +202,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
 74          continue
 72      continue
-70  end do
+70  continue
     do 80 i = 1, nbgr2
         call jelira(jexnom(magrma, zk24(idgm2+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm2+i-1)), 'L', ldgm)
@@ -219,7 +218,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
 84          continue
 82      continue
-80  end do
+80  continue
     do 90 i = 1, nbgr3
         call jelira(jexnom(magrma, zk24(idgm3+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm3+i-1)), 'L', ldgm)
@@ -235,7 +234,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
 94          continue
 92      continue
-90  end do
+90  continue
     do 100 i = 1, nbgr4
         call jelira(jexnom(magrma, zk24(idgm4+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm4+i-1)), 'L', ldgm)
@@ -251,7 +250,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
 104          continue
 102      continue
-100  end do
+100  continue
     do 110 i = 1, nbgr5
         call jelira(jexnom(magrma, zk24(idgm5+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm5+i-1)), 'L', ldgm)
@@ -261,13 +260,13 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             inoe = zi(ldnm)
             zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
 112      continue
-110  end do
+110  continue
 !
     nbno = 0
     do 105 ij = 1, nbnoeu
         if (zi(iparno+ij-1) .eq. 0) goto 105
         nbno = nbno + 1
-105  end do
+105  continue
 !
     call wkvect('&&IREDM1.NOEUD', 'V V I', nbno, idno)
     ii = 0
@@ -275,7 +274,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         if (zi(iparno+ij-1) .eq. 0) goto 106
         ii = ii + 1
         zi(idno+ii-1) = ij
-106  end do
+106  continue
 !
 !
 !     --- ECRITURE DESCRIPTION NOEUDS STRUCTURE ---
@@ -291,7 +290,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
         write(ifmis,'(3(1X,1PE12.5))') ( zr(jcoor+3*(inoe-1)+in-1) ,&
         in=1,3 )
-40  end do
+40  continue
     write(imess,'(1X,I6,1X,''ELEMENTS SOLSTRU'')') nbma
     write(ifmis,'(''ELEM'',1X,I6)') nbma
     do 21 i = 1, nbgr
@@ -316,7 +315,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 25          continue
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
 23      continue
-21  end do
+21  continue
     write(imess,'(1X,I6,1X,''ELEMENTS FLUSTRU'')') nbma2
     if (nbma2 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma2
     do 121 i = 1, nbgr2
@@ -341,7 +340,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 125          continue
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
 123      continue
-121  end do
+121  continue
     write(imess,'(1X,I6,1X,''ELEMENTS FLUSOL'')') nbma3
     if (nbma3 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma3
     do 131 i = 1, nbgr3
@@ -366,7 +365,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 135          continue
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
 133      continue
-131  end do
+131  continue
     write(imess,'(1X,I6,1X,''ELEMENTS LIBRE'')') nbma4
     if (nbma4 .ne. 0) write(ifmis,'(''ELEM'',1X,I6)') nbma4
     do 141 i = 1, nbgr4
@@ -391,7 +390,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 145          continue
             write(ifmis,'(8(1X,I6))') (tabl(k),k=1,8)
 143      continue
-141  end do
+141  continue
     write(imess,'(1X,I6,1X,''POINTS CONTROLE'')') nbma5
     if (nbma5 .ne. 0) write(ifmis,'(''POINT'',1X,I6)') nbma5
     do 151 i = 1, nbgr5
@@ -404,7 +403,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 157          continue
             write(ifmis,'(1X,I6)') inoe
 153      continue
-151  end do
+151  continue
 !
     call wkvect('&&IREDM1.BASEMO', 'V V R', nbmodt*neq, idbase)
     call copmod(basemo, 'DEPL', neq, nume, nbmodt,&

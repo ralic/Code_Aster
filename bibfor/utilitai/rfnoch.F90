@@ -38,7 +38,7 @@ subroutine rfnoch()
 #include "asterfort/u2mesk.h"
 #include "asterfort/utnono.h"
     integer :: ifm, niv
-    integer :: ibid, n, nc, ng, int, ind, nsst, iret, jrefe1
+    integer :: ibid, n, nc, ng, int, ind, nsst, iret
     character(len=8) :: k8b, noma, sst, basemo, noeud, intitu
     character(len=24) :: valk(2), nogno
     character(len=16) :: parax, paray, nomcmd, typcon
@@ -78,8 +78,7 @@ subroutine rfnoch()
 !
     else
 !
-        call jeveuo(resu//'.REFD', 'L', jrefe1)
-        basemo = zk24(jrefe1+4)(1:8)
+        call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid, basemo, iret)
         call dismoi('F', 'NOM_MAILLA', basemo, 'RESULTAT', ibid,&
                     noma, iret)
 !

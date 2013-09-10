@@ -65,10 +65,6 @@ cata_msg={
    nombre de mode        : %(i2)d
 """),
 
-12: _(u"""
- amortissement non diagonal, on ne sait pas traiter.
-"""),
-
 13: _(u"""
  il manque des amortissements modaux
    nombre d'amortissements: %(i1)d

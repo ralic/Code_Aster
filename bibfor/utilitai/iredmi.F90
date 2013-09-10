@@ -48,7 +48,7 @@ subroutine iredmi(macr)
     integer :: i, i2, iam, icamor, icmass, icrigi, ier
     integer :: iret, isamor, ismass, isrigi, ival1, ival2, ival3
     integer :: j, j2, jamo2, jamor, jfreq, jmass, jordr
-    integer :: jrefe, jrigi, jval, k, lamor, n1, n2
+    integer :: jrefe, jrigi, k, lamor, n1, n2
     integer :: nbamor, nbmode, nbmods, nbmodt
     real(kind=8) :: petir8, pi, r8b
 !-----------------------------------------------------------------------
@@ -64,7 +64,6 @@ subroutine iredmi(macr)
     noma = zk24(jrefe+1)(1:8)
     call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt)
     call jeveuo(basemo//'           .ORDR', 'L', jordr)
-    call jeveuo(basemo//'           .REFD', 'L', jval)
 !
     call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmode,&
                 k8b, ier)
@@ -119,7 +118,7 @@ subroutine iredmi(macr)
             zr(jrigi+i-1+(j-1)*nbmode) = zr(ival2+k-1) + petir8
             zr(jrigi+j-1+(i-1)*nbmode) = zr(ival2+k-1) + petir8
 21      continue
-20  end do
+20  continue
     do 22 j = nbmode+1, nbmodt
         do 23 i = 1, nbmode
             k = j*(j-1)/2 + i
@@ -136,7 +135,7 @@ subroutine iredmi(macr)
             zr(isrigi+i2-1+(j2-1)*nbmods) = zr(ival2+k-1) + petir8
             zr(isrigi+j2-1+(i2-1)*nbmods) = zr(ival2+k-1) + petir8
 24      continue
-22  end do
+22  continue
 !
     call jeexin(mael//'.MAEL_AMOR_VALE', iret)
     if (iret .ne. 0) then

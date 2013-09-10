@@ -101,7 +101,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !-----------------------------------------------------------------------
     integer :: iamfr, ibid, icoupl, ieq, ier, ifreqi, ifsic
     integer :: ifsvk, im, imod, ind, indic, ior, ire
-    integer :: iret, iv, ivale, kmasg, kref, labsc, laux1
+    integer :: iret,iv,ivale,kmasg,labsc,laux1
     integer :: laux2, lddl, ldefm, lfact, lires, lmasg, lmasse
     integer :: lnoe, lprofv, lrho, lvale, neq, nt
     real(kind=8) :: pi, rval1
@@ -132,8 +132,9 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !
 ! --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
 !
-    call jeveuo(base//'           .REFD', 'L', kref)
-    masse = zk24(kref+1)
+
+
+    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
     call mtdscr(masse)
     call jeveuo(masse//'.&INT', 'L', lmasse)
     call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&

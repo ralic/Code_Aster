@@ -25,7 +25,7 @@ subroutine op0052()
 #include "asterc/getvid.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
-#include "asterfort/ajrefd.h"
+#include "asterfort/onerrf.h"
 #include "asterfort/ccbcop.h"
 #include "asterfort/ccchut.h"
 #include "asterfort/cclopu.h"
@@ -35,7 +35,7 @@ subroutine op0052()
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/onerrf.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
@@ -107,7 +107,7 @@ subroutine op0052()
 !     ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
     call onerrf(compex, k16bid, ibid)
 !
-    call ajrefd(resuco, resuc1, 'COPIE')
+    call refdcp(resuco, resuc1)
 !
     call jedema()
 !

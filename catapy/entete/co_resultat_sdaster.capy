@@ -47,23 +47,6 @@ class resultat_jeveux(resultat_sdaster):
       resultat_sdaster.__init__(self)
       self.set_name(nom_jeveux)
 
-class resultat_dyn(resultat_sdaster):
-    cata_sdj = "SD.sd_resultat_dyn.sd_resultat_dyn"
-
-class mode_meca(resultat_dyn):
-    cata_sdj = "SD.sd_mode_meca.sd_mode_meca"
-
-class base_modale(resultat_dyn):
-    cata_sdj = "SD.sd_base_modale.sd_base_modale"
-
-
-class acou_harmo(resultat_dyn): pass
-class dyna_harmo(resultat_dyn): pass
-class dyna_trans(resultat_dyn): pass
-class mode_acou(resultat_dyn): pass
-class mode_flamb(resultat_dyn): pass
-class mode_gene(resultat_dyn): pass
-
 class comb_fourier(resultat_sdaster): pass
 class fourier_elas(resultat_sdaster): pass
 class fourier_ther(resultat_sdaster): pass
@@ -78,5 +61,4 @@ class evol_noli(evol_sdaster): pass
 class evol_ther(evol_sdaster): pass
 class evol_varc(evol_sdaster): pass
 
-# resultat_sdaster/mode_meca :
-class mode_meca_c(mode_meca): pass
+

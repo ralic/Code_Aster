@@ -74,7 +74,7 @@ subroutine prcymn(nomres, soumat, repmat)
     integer :: ldk0aa, ldk0ai, ldk0aj, ldk0ii, ldk0ji, ldk0jj, ldkpaa
     integer :: ldkpai, ldkpaj, ldkpja, ldkpji, ldkpjj, ldm0ii, llcham
     integer :: lldesc, llkge, llmge, llnin, llnoa, llnod, llnog
-    integer :: llnoms, llref1, llref2, ltcap, ltcdp, ltcgp, ltetax
+    integer :: llnoms, llref1, ltcap, ltcdp, ltcgp, ltetax
     integer :: ltetgd, ltexa, ltexd, ltexg, ltflex, ltmat, ltvec
     integer :: nbdax, nbddr, nbmod, nbnoa, nbnod, nbnog, nbsec
     integer :: nbsma, nbv, neq, ntail, ntrian, numa, numd
@@ -91,12 +91,13 @@ subroutine prcymn(nomres, soumat, repmat)
     intf  =zk24(llref1+1)
     basmod=zk24(llref1+2)
     call jelibe(nomres//'.CYCL_REFE')
-    call jeveuo(basmod//'           .REFD', 'L', llref2)
-    numddl=zk24(llref2+3)
+
+
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
-    raid  =zk24(llref2)
-    call jelibe(basmod//'           .REFD')
+
+    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid, raid, iret)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
@@ -197,7 +198,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call rsadpa(basmod, 'L', 1, 'MASS_GENE', i,&
                     0, llmge, k8bid)
         zr(ldm0ii+i*(i-1)/2) = zr(llmge)
-10  end do
+10  continue
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL
 !
@@ -303,7 +304,7 @@ subroutine prcymn(nomres, soumat, repmat)
                        1, j, i)
 81      continue
         call jelibe(chamva)
-80  end do
+80  continue
 !
     call daxpy(nbmod*nbddr, -1.d0, zr(ltcdp), 1, zr(ldk0ji),&
                1)
@@ -331,7 +332,7 @@ subroutine prcymn(nomres, soumat, repmat)
                        1, j, i)
 91      continue
         call jelibe(chamva)
-90  end do
+90  continue
 !
     call pmppr(zr(ltetgd), nbddr, nbddr, -1, zr(ltcgp),&
                nbddr, nbmod, 1, zr(ldkpji), nbddr,&

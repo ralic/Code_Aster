@@ -34,7 +34,6 @@ subroutine op0042()
 #include "asterc/getvid.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/ccvrpu.h"
 #include "asterfort/cresol.h"
 #include "asterfort/dismoi.h"
@@ -147,7 +146,7 @@ subroutine op0042()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call ajrefd(resuco, resuc1, 'COPIE')
+!   call ajrefd(resuco, resuc1, 'COPIE')
 !
     call jedema()
 end subroutine

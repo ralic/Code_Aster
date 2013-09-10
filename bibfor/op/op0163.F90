@@ -51,9 +51,9 @@ subroutine op0163()
     character(len=8) :: mael, basemo
     character(len=14) :: numddl
     character(len=16) :: concep, nomcmd, typres, k16nom
-    character(len=19) :: krefe, kinst, knume
+    character(len=19) :: kinst, knume
     character(len=24) :: refe, matrk
-    character(len=24) :: matrm, chamno, chamn1, chamn2
+    character(len=24) :: matrm, chamno, chamn1, chamn2, numer, matric(3)
     character(len=32) :: fichi
     character(len=64) :: base
     character(len=80) :: titre
@@ -63,7 +63,7 @@ subroutine op0163()
 !-----------------------------------------------------------------------
     integer :: i, iarch, ibi, ich, idbase, idresi
     integer :: idresr, ie, ifmis, imess, iord, iret
-    integer :: j, jinst, jnume, jrefe, linst, lrefe, lval1
+    integer :: j, jinst, jnume, jrefe, linst, lval1
     integer :: lval2, lvale, nbcham, nbinst, nbmodd, nbmode, nbmods
     integer :: nbsauv, nbsto, neq, nf, nmm, nti, nu
 !
@@ -149,7 +149,7 @@ subroutine op0163()
     call wkvect(kinst, 'V V R8', nbinst, jinst)
     do 60 iord = 0, nbinst-1
         zi(jnume+iord) = iord + 1
-60  end do
+60  continue
     read(ifmis,1001) (zr(jinst+iord-1),iord=1,nbinst)
     read(ifmis,1001) ((zr(itresr(1)+j-1+(zi(jnume+i-1)-1)*nbmode),&
      &             j=1,nbmodd),i=1,nbinst)
@@ -234,18 +234,13 @@ subroutine op0163()
                         0, linst, k8b)
         endif
         zr(linst) = zr(jinst+i)
-90  end do
+90  continue
 !
-    krefe = nomres
-    call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
-    zk24(lrefe) = matrk
-    zk24(lrefe+1 ) = matrm
-    zk24(lrefe+2) = '  '
-    zk24(lrefe+3) = '  '
-    zk24(lrefe+4) = '  '
-    zk24(lrefe+5) = '  '
-    zk24(lrefe+6) = '  '
-    call jelibe(krefe//'.REFD')
+    matric(1) = matrk
+    matric(2) = matrm
+    matric(3) = ' '
+    call dismoi('F', 'NOM_NUME_DDL', matrk, 'MATR_ASSE', iarg, numer, iret)
+    call refdaj('F', nomres, nbcham, numer, 'DYNAMIQUE', matric, iret)
 !
     1000 format(i6)
     1001 format(6(1pe12.5))

@@ -17,6 +17,7 @@ subroutine orth99(nomres, ritz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -55,16 +56,17 @@ subroutine orth99(nomres, ritz)
 !----------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iadri1, iddeeq
+    integer :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iddeeq
     integer :: llnequ, neq, idmode, jtrav1, jtrav3, jtrav4, iorol, iorne, iad
-    integer :: jiad, jvale, ieq, i, nindep, lrefe
+    integer :: jiad, jvale, ieq, i, nindep
     real(kind=8) :: alpha, rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, matras, base, ortho, intf
     character(len=16) :: typbas
     character(len=14) :: nu, numdd1, numdda, matri1
     character(len=19) :: matr, chamol
-    integer :: iarg
+    character(len=24) :: concep(1)
+    integer :: iarg, ir
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -126,20 +128,19 @@ subroutine orth99(nomres, ritz)
 !
     call jeveuo(base//'           .ORDR', 'L', jordm)
 ! RECUPERATION DE LA NUMEROTATION DES BASES
-    call jeveuo(base//'           .REFD', 'L', iadri1)
     if ((typbas.eq.'MODE_MECA') .or. (typbas.eq.'MODE_GENE')) then
-        matri1 = zk24(iadri1)
+        call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibid, matri1, ir)
     else
-        matri1 = zk24(iadri1+2)
+        call dismoi('F', 'REF_AMOR_PREM', base, 'RESU_DYNA', ibid, matri1, ir)
     endif
     if (matri1 .ne. ' ') then
         call dismoi('F', 'NOM_NUME_DDL', matri1, 'MATR_ASSE', ibid,&
                     numdd1, ier)
     else
-        numdd1 = zk24(iadri1+3)(1:14)
+        call dismoi('F', 'NUME_DDL', base, 'RESU_DYNA', ibid, numdd1, ir)
     endif
 !
-    intf=zk24(iadri1+4)(1:8)
+    call dismoi('F', 'REF_INTD_PREM', base, 'RESU_DYNA', ibid, intf, ir)
 !
     if (numdd1 .ne. numdda) then
         call u2mess('I', 'ALGELINE2_81')
@@ -160,7 +161,7 @@ subroutine orth99(nomres, ritz)
 !
     do 50 i = 1, neq
         zi(jtrav4+i-1) = 1
-50  end do
+50  continue
 !
     if (matr .eq. ' ') then
 ! ORTHONORMALISATION L2
@@ -183,23 +184,24 @@ subroutine orth99(nomres, ritz)
             zi(ibid+i-1)=zi(jordm+i-1)
 10      continue
         jordm=ibid
+!
+!       Save the old REFD information in a temporary location
+        call refdcp(nomres,'&&ORTH99')
+!
+!       Delete the old result concept
         call jedetc('G', nomres, 1)
     endif
     call rscrsd('G', nomres, 'MODE_MECA', nbmode)
 !
+!   If an existing concept was used, recuperate its reference information
+    if (ier .ne. 0) call refdcp('&&ORTH99',nomres)
+!
 !-- CREATION DU REFD POUR SD_VERI, ET REUTILISATION ULTERIEURE
-    call jeexin(nomres(1:8)//'           .REFD', ibid)
-    if (ibid .eq. 0) then
-        call wkvect(nomres//'           .REFD', 'G V K24', 7, lrefe)
-        zk24(lrefe)=' '
-        zk24(lrefe+1)=' '
-        zk24(lrefe+2)=' '
-        zk24(lrefe+3)=numdd1
-        zk24(lrefe+4)=intf
-        zk24(lrefe+5)=' '
-        zk24(lrefe+6)='RITZ'
-        call jelibe(nomres//'           .REFD')
-    endif
+!    call jeexin(nomres(1:8)//'           .REFD', ibid)
+!    if (ibid .eq. 0) then
+!        concep(1) = intf
+!        call refdaj('F', nomres, nbmode, numdd1, 'INTERF_DYNA', concep, ir)
+!    endif
 !
 !
     iorne =0
@@ -257,7 +259,7 @@ subroutine orth99(nomres, ritz)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
                     0, jiad, k8b)
         zk16(jiad) = zk16(iad)
-80  end do
+80  continue
 !
 !
     call jedetr('&&ORTH99.TRAV1')
@@ -268,9 +270,6 @@ subroutine orth99(nomres, ritz)
 !
 !
 9999  continue
-!
-!      CALL JELIBE(NOMRES//'           .REFD')
-!
 !
     call jedema()
 end subroutine

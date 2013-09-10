@@ -56,7 +56,7 @@ subroutine op0141()
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/zcopy.h"
-    integer :: n1, n2, n3, ibid, nbmod1, nbmod2, iadri1, iadri2, neq, idbas1
+    integer :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
     integer :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
     integer :: idvec1, iddeeq, idvec2, ifm, niv, llneq1, neq1, llneq2, iret
     integer :: iddl, ier, indv
@@ -146,20 +146,19 @@ subroutine op0141()
                 ibid)
 !
 ! RECUPERATION DE LA NUMEROTATION DES BASES
-    call jeveuo(base1//'           .REFD', 'L', iadri1)
+
     if ((typba1(1:9).eq.'MODE_MECA') .or. (typba1(1:9).eq.'MODE_GENE')) then
-!       On passe par les matrices du REFD
-        matri1 = zk24(iadri1)
+        call dismoi('F', 'REF_RIGI_PREM', base1, 'RESU_DYNA', ibid, matri1, ier)
         call exisd('MATR_ASSE', matri1, iret)
         if (iret .ne. 0) then
             call dismoi('F', 'NOM_NUME_DDL', matri1, 'MATR_ASSE', ibid,&
                         numdd1, ier)
         else
-            numdd1 = zk24(iadri1+3)(1:14)
+            call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid, numdd1, ier)
         endif
     else
 !       On passe par la numerotation du REFD
-        numdd1 = zk24(iadri1+3)(1:14)
+        call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid, numdd1, ier)
     endif
     call exisd('NUME_DDL', numdd1, iret)
     if (iret .ne. 1) then
@@ -169,18 +168,18 @@ subroutine op0141()
     call jeveuo(numdd1//'.NUME.NEQU', 'L', llneq1)
     neq1 = zi(llneq1)
 !
-    call jeveuo(base2//'           .REFD', 'L', iadri2)
+
     if ((typba2(1:9).eq.'MODE_MECA') .or. (typba2(1:9).eq.'MODE_GENE')) then
-        matri2 = zk24(iadri2)
+        call dismoi('F', 'REF_RIGI_PREM', base2, 'RESU_DYNA', ibid, matri2, ier)
         call exisd('MATR_ASSE', matri2, iret)
         if (iret .ne. 0) then
             call dismoi('F', 'NOM_NUME_DDL', matri2, 'MATR_ASSE', ibid,&
                         numdd2, ier)
         else
-            numdd2 = zk24(iadri2+3)(1:14)
+            call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid, numdd2, ier)
         endif
     else
-        numdd2 = zk24(iadri2+3)(1:14)
+        call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid, numdd2, ier)
     endif
     call exisd('NUME_DDL', numdd2, iret)
     if (iret .ne. 1) then
@@ -218,7 +217,7 @@ subroutine op0141()
     call wkvect('&&OP0141.NOM_PARA', 'V V K16', nbpara, inom)
     do 20 i = 1, 2
         zk8(ityp+i-1)='I'
-20  end do
+20  continue
     if (zcmplx) then
         call wkvect('&&OP0141.MAC', 'V V R', 1, indv)
     else

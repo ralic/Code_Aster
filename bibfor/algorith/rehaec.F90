@@ -51,6 +51,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -80,8 +81,8 @@ subroutine rehaec(nomres, resgen, nomsst)
     integer :: i, i1, iad, iarchi, ibid, ich
     integer :: idresu, ieq, ier, ire1, ire2, ire3
     integer :: iretou, j, jfreq, jnume, k, k1, ldnew
-    integer :: lfreq, llchab, llnequ, llnueq, llors, llprs, llref1
-    integer :: llref2, llrefe, lmapro, lmoet, lrefe, lsilia, lsst
+    integer :: lfreq, llchab, llnequ, llnueq, llors, llprs
+    integer :: llref2, lmapro, lmoet, lsilia, lsst
     integer :: n1, nbcham, nbddg, nbfreq, nbsst, neq
     integer :: neqet, neqgen, neqred, nusst, nutars
 !-----------------------------------------------------------------------
@@ -185,9 +186,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
 !
-    call jeveuo(harmge//'.REFD', 'L', llref1)
-    numgen(1:14) = zk24(llref1+3)(1:14)
-    call jelibe(harmge//'.REFD')
+    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid, numgen(1:14), iret)
     numgen(15:19) = '.NUME'
     call jeveuo(numgen//'.REFN', 'L', llref2)
     modgen = zk24(llref2)(1:8)
@@ -264,10 +263,9 @@ subroutine rehaec(nomres, resgen, nomsst)
         call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbddg,&
                     kbid, ier)
     endif
-!
-    call jeveuo(basmod//'           .REFD', 'L', llrefe)
+
 ! -->AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
-    lint = zk24(llrefe+4)(1:8)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lint, iret)
     call dismoi('F', 'NOM_MAILLA', lint, 'INTERF_DYNA', ibid,&
                 mailla, iret)
     call dismoi('F', 'NOM_NUME_DDL', lint, 'INTERF_DYNA', ibid,&
@@ -378,18 +376,8 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
     endif
 !
-    call wkvect(nomres//'           .REFD', 'G V K24', 7, lrefe)
 ! --> AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
-    zk24(lrefe ) = zk24(llrefe)
-    zk24(lrefe+1) = zk24(llrefe+1)
-    zk24(lrefe+2) = zk24(llrefe+2)
-    zk24(lrefe+3) = zk24(llrefe+3)
-    zk24(lrefe+4) = zk24(llrefe+4)
-    zk24(lrefe+5) = zk24(llrefe+5)
-    zk24(lrefe+6) = zk24(llrefe+6)
-    call jelibe(nomres//'           .REFD')
-    call jelibe(basmod//'           .REFD')
-!
+    call refdcp(basmod,nomres)
     call jelibe(numgen//'.NUEQ')
     call jedetr('&&RETREC.NUM_RANG')
     call jedetr('&&RETREC.FREQ')

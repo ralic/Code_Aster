@@ -30,7 +30,6 @@ subroutine op0109()
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/ascalc.h"
 #include "asterfort/asenap.h"
 #include "asterfort/asexci.h"
@@ -47,6 +46,7 @@ subroutine op0109()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
@@ -60,10 +60,10 @@ subroutine op0109()
     integer :: vali(2)
 !-----------------------------------------------------------------------
     integer :: iam, ibid, id, ierd, ifm, ifu, ii
-    integer :: im, info, iret, j, jamo2, jamog
-    integer :: jamor, jarm, jasy, jcsu, jdep, jdesc, jdir
-    integer :: jkno, jnsu, jopt, jordr, jrea, jrefc, jspe
-    integer :: lmod, lmode, lval, n1, na, na1, nbamor
+    integer :: im, info, iret, j, jamo2
+    integer :: jamor, jarm, jasy, jcsu, jdep, jdir
+    integer :: jkno, jnsu, jopt, jordr, jrea, jspe
+    integer :: lmod, lval, na, na1, nbamor
     integer :: nbfac, nbmode, nbopt, nbordr, nbpara, nbpari, nbpark
     integer :: nbparr, nbsup, nc, ncd, ncm, ncmt, ndepl
     integer :: neq, nf1, nf2, nimpr, nla, nmm, nmult
@@ -78,11 +78,11 @@ subroutine op0109()
     character(len=3) :: corf
     character(len=4) :: ctyp
     character(len=8) :: k8b, resu, meca, psmo, stat, masse, typcmo, typcdi
-    character(len=8) :: crit, amogen, tmas, noma
+    character(len=8) :: crit, tmas, noma
     character(len=8) :: nature, typcma, paraki(2), valeki(2)
     character(len=9) :: niveau
     character(len=16) :: nomcmd, concep, nomsy
-    character(len=14) :: nume, numgec
+    character(len=14) :: nume
     character(len=19) :: kvec, kval, kspect, kasysp, knoeu, knume
     character(len=19) :: liar
     character(len=24) :: desc, refd, nopara(nbpara)
@@ -146,9 +146,7 @@ subroutine op0109()
                 prec, crit, iret)
     if (iret .ne. 0) goto 9999
     call jeveuo(knume, 'L', jordr)
-    refd(1:8) = meca
-    call jeveuo(refd, 'L', lmode)
-    masse = zk24(lmode+1)(1:8)
+    call dismoi('F', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid, masse, iret)
     nomsy = 'DEPL'
     call vprecu(meca, nomsy, nbordr, zi(jordr), kvec,&
                 nbpara, nopara, k8b, kval, k8b,&
@@ -222,21 +220,22 @@ subroutine op0109()
         else
 !           A MODIFIER
             ASSERT(.false.)
-            call getvid(' ', 'AMOR_GENE', 1, iarg, 1,&
-                        amogen, n1)
-            refd(1:8) = amogen
-            call jeveuo(refd, 'L', jrefc)
-            numgec = zk24(jrefc+1)(1:14)
-            desc(1:19) = numgec//'.SLCS'
-            call jeveuo(desc, 'L', jdesc)
-            nbamor = zi(jdesc)
-            if (zi(jdesc+3) .ne. 1) then
-                call u2mess('F', 'SEISME_12')
-            else
-                call wkvect('&&OP0109.AMORTI', 'V V R8', nbamor*nbamor, jamog)
-                call copmat(amogen, numgec, zr(jamog))
-                jamor = jamog
-            endif
+!            call getvid(' ', 'AMOR_GENE', 1, iarg, 1,&
+!                        amogen, n1)
+!            refd(1:8) = amogen
+!            call jeveuo(refd, 'L', jrefc)
+!            numgec = zk24(jrefc+1)(1:14)
+!            desc(1:19) = numgec//'.SLCS'
+!            call jeveuo(desc, 'L', jdesc)
+!            nbamor = zi(jdesc)
+!            if (zi(jdesc+3) .ne. 1) then
+!                amortissement non diagonal, on ne sait pas traiter..
+!                call u2mess('F', 'SEISME_12') 
+!            else
+!                call wkvect('&&OP0109.AMORTI', 'V V R8', nbamor*nbamor, jamog)
+!                call copmat(amogen, numgec, zr(jamog))
+!                jamor = jamog
+!            endif
         endif
     endif
     if (nbamor .ne. nbmode) then
@@ -494,7 +493,7 @@ subroutine op0109()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call ajrefd(' ', resu, 'FORCE')
+    call refdaj(' ', resu, -1, ' ', 'INIT', ' ' , iret)
 !
 !
 !

@@ -64,7 +64,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d, icmp1, icmp2
     integer :: jcns2c, jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
     integer :: ncmp, ibid, gd, ncmp2, ino2, icmp, ino1, icmpd
-    integer :: jrefd, iamacr, isma, lori, lref, lrefms
+    integer :: iamacr, isma, lori, lref, lrefms
     integer :: iddl, jddl, imod, ipos, iposi, iposj, lnoeud, lrange
     integer :: lnoeum, lrangm, nbmesu, nbord, nddle, lmesu, ltrav
     real(kind=8) :: v1, v2, coef1, valx, valy, valz, eps
@@ -134,9 +134,8 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     call jeveuo(vorien, 'L', lori)
 !
 ! BASEMO : POUR LA RECUPERATION DU MAILLAGE DU MODELE SUPPORT (MA2)
-    call jeveuo(basemo//'           .REFD', 'L', jrefd)
-!
-    k24bid = zk24(jrefd-1+4)
+
+    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, k24bid, iret)
     numddl = k24bid(1:8)
     call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
                 ma2, ibid)
@@ -164,7 +163,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     call wkvect(licmp, 'V V K8', 3*ncmp, lcmp)
     do 230 icmp = 1, ncmp
         zk8(lcmp-1+icmp)=zk8(jcns1c-1+icmp)
-230  end do
+230  continue
     ncmp2 = ncmp
     do 220 iddl = 1, nbmesu
         kcmp = zk8(lrange-1+iddl)
@@ -177,7 +176,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             ncmp2 = ncmp2+1
             zk8(lcmp-1+ncmp2) = kcmp
         endif
-220  end do
+220  continue
 !
     call cnscre(ma3, nomgd, ncmp2, zk8(lcmp), base,&
                 cns2)
@@ -218,7 +217,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                 zr(ltrav-1+ipos) = zr(ltrav-1+ipos) + zr(lmesu-1+ iposi)*zr(lvsu-1+iposj)
 430          continue
 420      continue
-410  end do
+410  continue
 !
 !
 ! INITIALISATION A ZERO
@@ -235,7 +234,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                 zc(jcns2v-1+ (ino2-1)*ncmp2+icmp)=v2c
             endif
 70      continue
-110  end do
+110  continue
 !
 !
 ! PROJECTION DU CHAMP SUIVANT LA DIRECTION DE MESURE
@@ -333,7 +332,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             endif
         endif
 !
-100  end do
+100  continue
 !
     call jedetr(trav)
     call jedetr(licmp)

@@ -33,6 +33,7 @@ subroutine resu60(resu1, resu2)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
@@ -51,7 +52,7 @@ subroutine resu60(resu1, resu2)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: lref1, lref2
+
     integer :: jacce, jacce1, jacce2, jvite, jvite1, jvite2
     integer :: jdepl, jdepl1, jdepl2, jdesc
     integer :: jfreq, jfreq1, jfreq2, jordr, jordr1, jordr2
@@ -131,7 +132,7 @@ subroutine resu60(resu1, resu2)
 !     --- CUMULER LES NUMEROS D'ORDRE POUR CONSERVER LA MONOTONIE
     do 20 i = 0, nbsau2-1
         zi(jordr2+i) = zi(jordr2+i) + zi(jordr1+nbsau1-1) + 1
-20  end do
+20  continue
 !
     nbsauv = nbsau1 + nbsau2
 !
@@ -159,11 +160,7 @@ subroutine resu60(resu1, resu2)
 !
 !     --- COPIE DU NOUVEAU .REFD DANS LA SD FINALE ---
 !
-    call jeveuo(resu1//'           .REFD', 'E', lref1)
-    call jeveuo(resu2//'           .REFD', 'L', lref2)
-    do 10 i = 0, 4
-        zk24(lref1+i) = zk24(lref2+i)
-10  end do
+    call refdcp(resu2,resu1)
 !
 !     --- DESTRUCTION DES OBJETS PROVISOIRES
 !

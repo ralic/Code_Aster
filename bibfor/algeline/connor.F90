@@ -68,7 +68,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     real(kind=8) :: coef(nbm), delta(nbm), rhotub, rhos
     integer :: imode, im, ifsvr, ifsvi, nbma, nbzex, nmamin, nmamax
     integer :: iener, ima, izone, ivcn, iven, icste, modul, nbval, i, j
-    integer :: jconn, modul2, k, jzone, ifsvk, ide, ire, neq, idep, kref, ibid
+    integer :: jconn,modul2,k,jzone,ifsvk,ide,ire,neq,idep,ibid
     integer :: ldepl(6), lmasg, increm, id, irap
     real(kind=8) :: di, de, mastub, ltube, numera(nbm), denomi
     real(kind=8) :: pas, correl, a, b, c, d, e, f, mphi2(nbm)
@@ -110,7 +110,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     nbval=1
     do 5 i = 1, nbzex
         nbval=nbval*zi(ifsvi+1+nbzex+i)
- 5  end do
+ 5  continue
 !
 ! =======================
 !     VECTEUR DE TRAVAIL CONTENANT POUR CHAQUE MODE ET CHAQUE ZONE
@@ -136,11 +136,11 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     depl = zk8(ifsvk+1)
     do 7 ide = 1, 3
         if (depla(ide) .eq. depl) idep = ide
- 7  end do
+ 7  continue
 ! ---  DEFORMEES MODALES
 !
-    call jeveuo(base//'           .REFD', 'L', kref)
-    masse = zk24(kref+1)
+
+    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
     call mtdscr(masse)
     call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
                 numddl, ire)
@@ -167,7 +167,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 &/2)&
                 )
         rhos = rhos + (abscur(ima+1)-abscur(ima))* ((rho(ima)+rho(ima+ 1))/2)
-10  end do
+10  continue
 !
     mastub = ((r8pi()/4)*(de**2-di**2)*rhoeq)/ltube
     rhos = rhos/ltube
@@ -233,7 +233,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 abscur(ima))
 40          continue
 30      continue
-20  end do
+20  continue
 !
     do 50 i = 1, nbval
         modul=1
@@ -263,7 +263,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
             zr(ivcn-1+(im-1)*nbval+i)= sqrt((numera(im)/denomi))*coef(&
             im)
 70      continue
-50  end do
+50  continue
 !
 !    CALCUL DE LA VITESSE EFFICACE POUR CHAQUE MODE PROPRE
 !
@@ -302,7 +302,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
         do 95 i = 1, nbval
             zr(irap-1+(im-1)*nbval+i) = zr(iven-1+im)/ zr(ivcn-1+(im- 1)*nbval+i)
 95      continue
-90  end do
+90  continue
 !
 !
 !
@@ -376,7 +376,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 coeff6*(abscur(ima+1)-abscur(ima))
 140          continue
 130      continue
-120  end do
+120  continue
 !
     do 150 i = 1, nbval
         modul=1
@@ -407,7 +407,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
             zr(ivcn-1+(im-1)*nbval+i+nbm*nbval)= sqrt((numera(im)/&
             denomi))*coef(im)
 170      continue
-150  end do
+150  continue
 !
 !    CALCUL DE LA VITESSE EFFICACE POUR CHAQUE MODE PROPRE
 !
@@ -423,7 +423,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
             zr(irap-1+(im-1)*nbval+i+nbm*nbval) = zr(iven-1+nbm+im)/ zr(ivcn-1+(im-1)*nbval+i+nbm&
                                                   &*nbval)
 195      continue
-190  end do
+190  continue
 !
 !
 !

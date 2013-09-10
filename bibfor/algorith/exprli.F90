@@ -63,7 +63,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 #include "asterfort/u2mess.h"
 !
 !
-    integer :: idec(30), llint4, nbcmpm, llref, nbec, ierd, nbcmp, nbddl, ordo
+    integer :: idec(30),llint4,nbcmpm,nbec,ierd,nbcmp,nbddl,ordo
     integer :: ii, llact, iec, ldmap, numint, nbdef, ibid, nbnoe, icomp, i, j
     integer :: ier
     parameter   (nbcmpm=10)
@@ -87,8 +87,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     famprl = famprz
 !
     if (basmod .ne. blanc) then
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        lintf=zk24(llref+4)
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lintf, ier)
     endif
 !
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
@@ -158,7 +157,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
         do 30 j = 1, 6
             icomp=icomp+idec(j)
 30      continue
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

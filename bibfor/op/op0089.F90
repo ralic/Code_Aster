@@ -24,7 +24,6 @@ subroutine op0089()
 #include "asterc/gettco.h"
 #include "asterc/getvid.h"
 #include "asterc/getvtx.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infmaj.h"
@@ -111,7 +110,7 @@ subroutine op0089()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call ajrefd(ug, ul, 'ZERO')
+!   call ajrefd(ug, ul, 'ZERO')
 !
 !
     call jedema()

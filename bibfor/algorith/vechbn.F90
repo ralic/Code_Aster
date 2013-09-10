@@ -50,7 +50,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iliai, inoeu, jlino1, jlino2, jnoeu1, jnoeu2
-    integer :: lbamo1, lbamo2, ldefo1, ldefo2, lliai, llino1, llino2
+    integer :: ir, ldefo1,ldefo2,lliai,llino1,llino2
     integer :: llnom1, llnom2, lmacr1, lmacr2, lrefe1, lrefe2, nbliai
     integer :: nbnoeu
 !-----------------------------------------------------------------------
@@ -79,10 +79,8 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
             call jeveuo(macro2//'.MAEL_MASS_REFE', 'L', lmacr2)
             bamo1 = zk24(lmacr1)
             bamo2 = zk24(lmacr2)
-            call jeveuo(bamo1(1:19)//'.REFD', 'L', lbamo1)
-            call jeveuo(bamo2(1:19)//'.REFD', 'L', lbamo2)
-            intf1 = zk24(lbamo1+4)
-            intf2 = zk24(lbamo2+4)
+            call dismoi('F', 'REF_INTD_PREM', bamo1, 'RESU_DYNA', ibid, intf1, ir)
+            call dismoi('F', 'REF_INTD_PREM', bamo2, 'RESU_DYNA', ibid, intf2, ir)
             lino1 = intf1(1:8)//'.IDC_LINO'
             lino2 = intf2(1:8)//'.IDC_LINO'
             call jenonu(jexnom(lino1(1:13)//'NOMS', liai1), ibid)
@@ -131,7 +129,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
         endif
 !
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

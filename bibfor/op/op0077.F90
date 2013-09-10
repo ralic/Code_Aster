@@ -31,8 +31,8 @@ subroutine op0077()
 #include "asterc/getvid.h"
 #include "asterc/getvis.h"
 #include "asterc/getvtx.h"
-#include "asterfort/ajrefd.h"
 #include "asterfort/excygl.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/harm75.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
@@ -44,6 +44,7 @@ subroutine op0077()
 #include "asterfort/jexnum.h"
 #include "asterfort/recyec.h"
 #include "asterfort/recygl.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/regeec.h"
 #include "asterfort/regegl.h"
 #include "asterfort/regene.h"
@@ -62,18 +63,19 @@ subroutine op0077()
     character(len=8) :: k8bid, result, blanc, param(3)
     character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
     character(len=19) :: profno
-    character(len=24) :: matgen, numgen
+    character(len=24) :: matgen, numgen, vbl24(1)
     integer :: ioc1, jord, nbord, i, iord, lpaout(3)
     integer :: iarg
 !
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, ir, ir1, iret, isk, j, j1refe
-    integer :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge, lnume
-    integer :: lraid, lrefm, n1, n2, nbcham, numsec
+    integer :: ibid, ir, ir1, iret, isk, j
+    integer :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge
+    integer :: lrefm, n1, n2, nbcham, numsec
 !-----------------------------------------------------------------------
     data k8b/'        '/
     data param/'MODELE','CHAMPMAT','CARAELEM'/
+    data vbl24 /'                        '/
 !
     call jemarq()
     call infmaj()
@@ -115,6 +117,7 @@ subroutine op0077()
 ! --- CREATION D'UN OBJET REFN DU PROFIL SUR BASE VOLATILE
     call wkvect(profno//'.REFN', 'V V K24', 4, jrefn)
     zk24(jrefn+1)='DEPL_R'
+
 !
 !
 ! --- LE RESULTAT EST-IL GENERALISE OU PAS :
@@ -157,14 +160,14 @@ subroutine op0077()
             endif
         endif
     endif
+
 !
 ! INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
 !      PROMES=.FALSE.
     if ((concep(1:9).eq.'TRAN_GENE') .or. (concep(1:9).eq.'MODE_GENE') .or.&
         (concep(1:9).eq.'HARM_GENE')) then
-        call jeveuo(resin//'           .REFD', 'L', j1refe)
-        matgen=zk24(j1refe)
-        numgen=zk24(j1refe+3)
+        call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, matgen, ir)
+        call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numgen, ir)
 ! LE RESU_GENE VIENT DE PROJ_MESU_MODAL
         if ((matgen(1:8).eq.blanc) .and. (numgen(1:8).eq.blanc)) then
 !          PROMES=.TRUE.
@@ -216,6 +219,7 @@ subroutine op0077()
             endif
             call tran77(nomres, typres, resin, mode)
         endif
+
 !
 !
 !     --- CALCUL MODAL PAR SOUS-STRUCTURATION CLASSIQUE ---
@@ -320,9 +324,12 @@ subroutine op0077()
                         nomsst, ibid)
 !
 !-- RECUPERATION DU MACRO ELEMENT ASSOCIE A LA SOUS STRUCTURE
-            call jeveuo(resin//'           .REFD', 'L', lraid)
-            call jeveuo(zk24(lraid)(1:19)//'.REFA', 'L', lnume)
-            call jeveuo(zk24(lnume+1)(1:14)//'.NUME.REFN', 'L', lmodge)
+!           call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, raide, ir)
+!           call jeveuo(raide(1:8)//'           .REFA', 'L', lnume)
+!           call jeveuo(zk24(lnume+1)(1:14)//'.NUME.REFN', 'L', lmodge)
+!
+            call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numgen, ir)
+            call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', lmodge)
             call jenonu(jexnom(zk24(lmodge)(1:8)//'      .MODG.SSNO', nomsst), iret)
             call jeveuo(jexnum(zk24(lmodge)(1:8)//'      .MODG.SSME', iret), 'L', lmacr)
 !-- RECUPERATION DES INFOS CARA_ELEM / MATER / MODELE POUR LES SST
@@ -341,7 +348,8 @@ subroutine op0077()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call ajrefd(' ', nomres, 'FORCE')
+    call jeexin(nomres//'           .REFD', iret)
+    if (iret .eq. 0) call refdaj(' ', nomres, -1, profno, 'INIT', ' ' , iret)
 !
     call jedema()
 end subroutine

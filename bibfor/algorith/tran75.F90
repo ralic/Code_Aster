@@ -57,6 +57,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/pteddl.h"
 #include "asterfort/rbph01.h"
 #include "asterfort/rbph02.h"
+#include "asterfort/refdaj.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -77,7 +79,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=8) :: nomin, nomcmp(6), mode, monmot(2), matgen, nomgd
     character(len=14) :: numddl
     character(len=16) :: typres, type(8), typcha, typbas(8), concep
-    character(len=19) :: fonct, kinst, knume, krefe, prchno, prchn1, trange
+    character(len=19) :: fonct, kinst, knume, prchno, prchn1, trange
     character(len=19) :: typref(8), prof
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod
@@ -85,12 +87,12 @@ subroutine tran75(nomres, typres, nomin, basemo)
     integer :: iarg, iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadesc, iadrif, iarchi, iarefe, ibid, ich, id
+    integer :: iadesc, iarchi, ibid, ich, id
     integer :: idbase, idec, idefm, idinsg, idresu, idvecg, ie
-    integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, iret
-    integer :: iretou, j3refe, jc, jddl, jinst, jnoacc
+    integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
+    integer :: irou, j3refe, jc, jddl, jinst, jnoacc
     integer :: jnodep, jnovit, jnume, jpsdel, jvec, linst, llcha
-    integer :: lpsdel, lrefe, lval2, lvale, n1, n2, n3
+    integer :: lpsdel, lval2, lvale, n1, n2, n3
     integer :: n4, nbcham, nbd, nbdir, nbexci, nbinsg, nbinst
     integer :: nbmode, nbnoeu, ncmp, neq, nfonct
     complex(kind=8) :: cbid
@@ -156,33 +158,31 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
 !
     if (mode .eq. blanc) then
-        call jeveuo(trange//'.REFD', 'L', iarefe)
-        matgen = zk24(iarefe)(1:8)
-        basemo = zk24(iarefe+4)(1:8)
-        call jeveuo(basemo//'           .REFD', 'L', iadrif)
+!
+        call dismoi('C', 'BASE_MODALE'  , trange, 'RESU_DYNA', ibid, basemo, ir)
+        call dismoi('C', 'REF_RIGI_PREM', trange, 'RESU_DYNA', ibid, matgen, ir)
+!
         if (matgen(1:8) .ne. blanc) then
-            matric = zk24(iadrif)
-            if (matric .ne. blanc) then
-                call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            numddl, iret)
-            else
-                numddl = zk24(iadrif+3)(1:14)
-            endif
+            call dismoi('C', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numddl, ir)
+            call dismoi('C', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, ir)
+
+            if (numddl .eq. blanc) then
+                if (matric .ne. blanc) then
+                    call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE',ibid,numddl,ir)
+                endif
+            endif 
             prchno=numddl//'.NUME'
-            call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
-                        nomgd, ie)
-            call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
-                        mailla, iret)
-            if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                    k8b, iret)
+            call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid, nomgd, ie)
+            call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid, mailla, ir)
+            if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq, k8b, ir)
         else
 !          -- POUR LES CALCULS SANS MATRICE GENERALISEE
 !             (PROJ_MESU_MODAL)
-            matric = zk24(iadrif+3)
+            call dismoi('C', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, matric, ir)
             if (matric(1:8) .eq. blanc) then
-                matric=zk24(iadrif)
+                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, ir)
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
-                            numddl, iret)
+                            numddl, ir)
             else
                 numddl = matric(1:8)
             endif
@@ -190,9 +190,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            matric = zk24(iadrif)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, ir)
             if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
-                                    k8b, iret)
+                                    k8b, ir)
         endif
 !
         basem2 = basemo
@@ -202,7 +202,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 !
         call rsexch('F', basemo, 'DEPL', 1, chmod,&
-                    iret)
+                    ir)
         chmod = chmod(1:19)//'.REFE'
         call dismoi('F', 'NOM_GD', chmod, 'CHAM_NO', ibid,&
                     nomgd, ie)
@@ -292,12 +292,12 @@ subroutine tran75(nomres, typres, nomin, basemo)
     knume = '&&TRAN75.NUM_RANG'
     kinst = '&&TRAN75.INSTANT'
     call rstran(interp, trange, ' ', 1, kinst,&
-                knume, nbinst, iretou)
-    if (iretou .ne. 0) then
+                knume, nbinst, irou)
+    if (irou .ne. 0) then
         call u2mess('F', 'UTILITAI4_24')
     endif
-    call jeexin(kinst, iret)
-    if (iret .gt. 0) then
+    call jeexin(kinst, ir)
+    if (ir .gt. 0) then
         call jeveuo(kinst, 'L', jinst)
         call jeveuo(knume, 'L', jnume)
     endif
@@ -344,7 +344,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
         typcha = typbas(ich)
         call rsexch('F', basemo, typcha, 1, nomcha,&
-                    iret)
+                    ir)
         nomcha = nomcha(1:19)//'.VALE'
         call jeexin(nomcha, ibid)
         if (ibid .gt. 0) then
@@ -361,7 +361,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         else
             do 110 j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
-                            iret)
+                            ir)
                 call jeexin(nomcha(1:19)//'.VALE', iexi)
 !              TOUSNO=.FALSE. => ON NE S'INTERESSE QU'AUX CHAM_NO :
                 ASSERT(iexi.gt.0)
@@ -389,18 +389,18 @@ subroutine tran75(nomres, typres, nomin, basemo)
         endif
         iarchi = 0
         if (interp(1:3) .eq. 'NON') then
-            call jeexin(trange//'.ORDR', iret)
-            if (iret .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
+            call jeexin(trange//'.ORDR', ir)
+            if (ir .ne. 0 .and. zi(jnume) .eq. 1) iarchi = -1
         endif
         idresu = itresu(ich)
         prems=.true.
         do 200 i = 0, nbinst-1
             iarchi = iarchi + 1
             call rsexch(' ', nomres, type(ich), iarchi, chamno,&
-                        iret)
-            if (iret .eq. 0) then
+                        ir)
+            if (ir .eq. 0) then
                 call u2mesk('A', 'ALGORITH2_64', 1, chamno)
-            else if (iret .eq. 100) then
+            else if (ir .eq. 100) then
                 if (tousno) then
                     if (mode .eq. blanc) then
                         if (leffor) then
@@ -417,7 +417,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                         call cnocre(mailla, nomgd, nbnoeu, zi(inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', ' ', chamno)
                         call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
-                                    prof, iret)
+                                    prof, ir)
                     else
                         call cnocre(mailla, nomgd, nbnoeu, zi( inumno), ncmp,&
                                     zk8(inocmp), zi(inoecp), 'G', prof, chamno)
@@ -460,7 +460,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             endif
 !            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
             if (type(ich) .eq. 'ACCE_ABSOLU' .and. nfonct .ne. 0) then
-                iret = 0
+                ir = 0
                 call fointe('F', fonct, 1, 'INST', zr(jinst+i),&
                             alpha, ier)
 !               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
@@ -488,18 +488,11 @@ subroutine tran75(nomres, typres, nomin, basemo)
 210  continue
 !
 !
-    krefe = nomres
-    call wkvect(krefe//'.REFD', 'G V K24', 7, lrefe)
     if (mode .eq. blanc) then
-        zk24(lrefe) = zk24(iadrif)
-        zk24(lrefe+1) = zk24(iadrif+1)
-        zk24(lrefe+2) = zk24(iadrif+2)
-        zk24(lrefe+3) = zk24(iadrif+3)
-        zk24(lrefe+4) = zk24(iadrif+4)
-        zk24(lrefe+5 ) = zk24(iadrif+5)
-        zk24(lrefe+6 ) = zk24(iadrif+6)
+        call refdcp(basemo,nomres)
+    else 
+        call refdaj(' ', nomres, -1, ' ', 'INIT', ' ' , ir)
     endif
-    call jelibe(krefe//'.REFD')
 !
 ! --- MENAGE
     call detrsd('CHAM_NO', '&&TRAN75.CHAMN2')

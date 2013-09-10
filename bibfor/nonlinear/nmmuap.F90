@@ -52,7 +52,7 @@ subroutine nmmuap(sddyna)
     character(len=24) :: deeq, matric
     integer :: nbmd, neq, na, nd, nbexci, nf, nv
     integer :: ibid, ier, iret, i
-    integer :: iadrif, iddeeq
+    integer :: iddeeq
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
     integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
     integer :: iarg
@@ -65,8 +65,7 @@ subroutine nmmuap(sddyna)
 !
     call getvid(' ', 'MODE_STAT', 1, iarg, 1,&
                 modsta, nbmd)
-    call jeveuo(modsta//'           .REFD', 'L', iadrif)
-    matric = zk24(iadrif)(1:8)
+    call dismoi('F', 'REF_RIGI_PREM', modsta, 'RESU_DYNA', ibid, matric, iret)
     call dismoi('F', 'NOM_MAILLA', matric, 'MATR_ASSE', ibid,&
                 mailla, ier)
     call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
@@ -134,7 +133,7 @@ subroutine nmmuap(sddyna)
 !
             call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+(i-1)*neq))
         endif
-10  end do
+10  continue
 !
     call jedema()
 end subroutine

@@ -1,5 +1,6 @@
 subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
                   ivddl, nbdif, ord, nliais)
+! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +56,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 #include "asterfort/u2mesg.h"
 !
 !
-    integer :: nbcpmx, nbddl, nbdif, llref, numint, iret, i, j, nbec, nbcmp, neq
+    integer :: nbcpmx, nbddl, nbdif, numint, iret, i, j, nbec, nbcmp, neq, ibid
     integer :: nunoe, iran, lldesc, ord, nliais, llint3, llint4, llact, llnoe
     integer :: lldeeq, nbnoe, inoe
     parameter (nbcpmx=300)
@@ -80,21 +81,22 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
     if (basmod(1:1) .ne. ' ') then
 !
-        call jeveuo(basmod//'           .REFD', 'L', llref)
-        intf=zk24(llref+4)(1:8)
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
         if (intf .eq. ' ') then
             valk (1) = basmod
             call u2mesg('F', 'ALGORITH12_30', 1, valk, 0,&
                         0, 0, 0.d0)
         endif
-        numddl=zk24(llref+3)(1:19)
+
+        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
 !
 !  SI ON A DONNE UNE LIST_INTERFACE
 !
     else
         if (intf(1:1) .ne. ' ') then
-            call jeveuo(intf//'.IDC_REFE', 'L', llref)
-            numddl=zk24(llref+1)(1:19)
+
+        call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, numddl, iret)
+        
         else
             valk (1) = basmod
             valk (2) = intf
@@ -172,7 +174,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
                 endif
             endif
 30      continue
-20  end do
+20  continue
 !
     nbdif=-nbdif
 !
