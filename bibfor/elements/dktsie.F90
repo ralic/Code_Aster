@@ -62,7 +62,7 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
     real(kind=8) :: bf(3, nddlfl*nnomai), bm(3, nddlme*nnomai)
     real(kind=8) :: sm(3), sf(3), hft2(2, 6), hlt2(4, 6)
     real(kind=8) :: eps(3), sig(3), cist(2), dcis(2)
-    real(kind=8) :: qsi, eta, carat3(21), t2ev(4), t2ve(4), t1ve(9)
+    real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: hicou
     logical :: coupmf, lcalct
 !     ------------------------------------------------------------------
@@ -79,7 +79,7 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
     call dxmate(fami, df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2ev, t2ve, t1ve)
+                multic, coupmf, t2iu, t2ui, t1ve)
 !
 !     -------- CALCUL DE LA MATRICE DE HOOKE EN MEMBRANE ---------------
     if (multic .eq. 0) then
@@ -180,7 +180,7 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
 !             -- EN MULTICOUCHES
 !             -- ON CALCULE TOUT D'UN COUP
                 iniv = ig - 2
-                call dxdmul(lcalct, icou, iniv, t1ve, t2ve,&
+                call dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
                             h, d1i, d2i, zic, hicou)
             endif
 !

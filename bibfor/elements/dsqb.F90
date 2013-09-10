@@ -51,7 +51,7 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
     real(kind=8) :: bfb(3, 12), bfa(3, 4), bfn(3, 12), bf(3, 12)
     real(kind=8) :: bcb(2, 12), bca(2, 4), bcn(2, 12), bc(2, 12), bcm(2, 8)
     real(kind=8) :: hft2(2, 6), an(4, 12), hmft2(2, 6)
-    real(kind=8) :: bm(3, 8), qsi, eta, jacob(5), t2ev(4), t2ve(4), t1ve(9)
+    real(kind=8) :: bm(3, 8), qsi, eta, jacob(5), t2iu(4), t2ui(4), t1ve(9)
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: multic, i, j, k
     logical :: coupmf
@@ -71,7 +71,7 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
 !     ----------------------------------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2ev, t2ve, t1ve)
+                multic, coupmf, t2iu, t2ui, t1ve)
 !
 ! --- CALCUL DE LA MATRICE (AN) RELIANT LES INCONNUES NOTEES (ALFA)
 ! --- PAR BATOZ AUX INCONNUES (UN) = (...,W_I,BETAX_I,BETAY_I,...)

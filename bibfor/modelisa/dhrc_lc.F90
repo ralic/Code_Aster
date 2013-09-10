@@ -161,7 +161,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     eps(3)=eps(3)/2.d0
     eps(6)=eps(6)/2.d0
     call r8inir(8, 0.0d0, epsg, 1)
-    call dxefro(1, t2ve2, eps, epsg)
+    call dxefro(1, t2ev2, eps, epsg)
     epsg(3)=epsg(3)*2.d0
     epsg(6)=epsg(6)*2.d0
 !
@@ -515,7 +515,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! ---  AU REPERE INTRINSEQUE A L'ELEMENT => SIG
     if (resi) then
         call r8inir(8, 0.0d0, sig, 1)
-        call dxefro(1, t2ev2, sigg, sig)
+        call dxefro(1, t2ve2, sigg, sig)
     endif
 !
 ! ---  PASSAGE DE LA MATRICE TANGENTE DSIDEG DU REPERE GLOBAL DE LA

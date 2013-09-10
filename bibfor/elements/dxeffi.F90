@@ -47,7 +47,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
     integer :: multic, iniv
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
-    real(kind=8) :: t2ev(2, 2), t2ve(2, 2), t1ve(3, 3)
+    real(kind=8) :: t2iu(2, 2), t2ui(2, 2), t1ve(3, 3)
     real(kind=8) :: hm(3, 3)
     real(kind=8) :: d1i(2, 2), d2i(2, 4)
     logical :: coupmf
@@ -78,7 +78,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
         call dxmate('RIGI', df, dm, dmf, dc,&
                     dci, dmc, dfc, nno, pgl,&
-                    multic, coupmf, t2ev, t2ve, t1ve)
+                    multic, coupmf, t2iu, t2ui, t1ve)
     endif
 !
 !     -- GRANDEURS GEOMETRIQUES :
@@ -118,7 +118,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
     endif
     if (multic .gt. 0) then
         iniv = igauh - 2
-        call dxdmul(.false., icou, iniv, t1ve, t2ve,&
+        call dxdmul(.false., icou, iniv, t1ve, t2ui,&
                     hm, d1i, d2i, zic, hic)
     endif
 !

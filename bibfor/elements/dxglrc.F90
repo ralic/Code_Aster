@@ -154,7 +154,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 !           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
 !           LE MATERIAU EST SUPPOSE HOMOGENE
 !
-    real(kind=8) :: t2ev(4), t2ve(4), t1ve(9), c, s
+    real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), c, s
 !
     logical :: leul, lrgm
     logical :: lbid, vecteu, matric
@@ -301,19 +301,19 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 !
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERE
 !
-!     T2EV : MATRICE DE PASSAGE (2x2) ; UTILISATEUR -> INTRINSEQUE
-!     T2VE : MATRICE DE PASSAGE (2x2) ; INTRINSEQUE -> UTILISATEUR
+!     T2IU : MATRICE DE PASSAGE (2x2) ; UTILISATEUR -> INTRINSEQUE
+!     T2UI : MATRICE DE PASSAGE (2x2) ; INTRINSEQUE -> UTILISATEUR
 !
         call jevech('PCACOQU', 'L', icara)
         alpha = zr(icara+1) * r8dgrd()
         beta = zr(icara+2) * r8dgrd()
-        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
                     c, s)
 !
 ! --- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !     DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
 !
-        call dxefro(npg, t2ev, sigmam, efform)
+        call dxefro(npg, t2ui, sigmam, efform)
     endif
 !
 !     ON VERIFIE QUE LE NOMBRE DE VARINT TIENT DANS ECR
@@ -416,8 +416,9 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
         endif
 !
         if (compor(1)(1:4) .eq. 'ELAS') then
-            call dxmate('RIGI', dff, dmm, dmff, dcc, dci, dmc, dfc, nno, pgl, multic, coupmf,&
-                       t2ev, t2ve, t1ve)
+            call dxmate('RIGI', dff, dmm, dmff, dcc,&
+                        dci, dmc, dfc, nno, pgl,&
+                        multic, coupmf, t2iu, t2ui, t1ve)
             call r8inir(36, 0.d0, dsidep, 1)
 ! -- MEMBRANE
             dsidep(1,1) = dmm(1)
@@ -679,7 +680,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 !     DU REPERE INTRINSEQUE AU REPERE LOCAL
 !     STOCKAGE DES EFFORTS GENERALISES
 !
-            call dxefro(npg, t2ve, effint, efforp)
+            call dxefro(npg, t2iu, effint, efforp)
             do i = 1, nbcon*npg
                 zr(icontp-1+i) = efforp(i)
             end do
