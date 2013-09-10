@@ -54,7 +54,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: bf(3, 12), bm(3, 8)
     real(kind=8) :: xab1(3, 12), depl(24), caraq4(25), jacob(5), qsi, eta
-    real(kind=8) :: flex(144), memb(64), mefl(96), t2ev(4), t2ve(4), t1ve(9)
+    real(kind=8) :: flex(144), memb(64), mefl(96), t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: bsigth(24), enerth, excent, un, ctor
     logical :: coupmf, exce, indith
 !     ------------------------------------------------------------------
@@ -82,7 +82,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2ev, t2ve, t1ve)
+                multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)
 !

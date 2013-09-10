@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lgdmvm(imate, compor, epsm, deps, vim,&
+    subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
                       option, sigm, sig, vip, dsidep,&
                       crit, iret)
         integer :: imate
@@ -31,5 +31,5 @@ interface
         real(kind=8) :: dsidep(6, *)
         real(kind=8) :: crit(*)
         integer :: iret
-    end subroutine lgdmvm
+    end subroutine kit_glrc_dm_vmis
 end interface

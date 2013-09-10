@@ -37,7 +37,7 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
 !     ------------------------------------------------------------------
     real(kind=8) :: airetr(4), c1, c2, fno(6, 4, 4)
     real(kind=8) :: fx, fy, alpha, beta
-    real(kind=8) :: t2ev(4), t2ve(4), caraq4(25), c, s
+    real(kind=8) :: t2iu(4), t2ui(4), caraq4(25), c, s
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -51,19 +51,19 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
     beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
                 c, s)
 !
     if (.not. global) then
         do 50 i = 1, nno
             fx = for(1,i)
             fy = for(2,i)
-            for(1,i) = t2ev(1)*fx + t2ev(3)*fy
-            for(2,i) = t2ev(2)*fx + t2ev(4)*fy
+            for(1,i) = t2iu(1)*fx + t2iu(3)*fy
+            for(2,i) = t2iu(2)*fx + t2iu(4)*fy
             fx = for(4,i)
             fy = for(5,i)
-            for(4,i) = t2ev(1)*fx + t2ev(3)*fy
-            for(5,i) = t2ev(2)*fx + t2ev(4)*fy
+            for(4,i) = t2iu(1)*fx + t2iu(3)*fy
+            for(5,i) = t2iu(2)*fx + t2iu(4)*fy
 50      continue
     endif
 !

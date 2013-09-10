@@ -1,11 +1,5 @@
 subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
-! aslint: disable=W1306
     implicit none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utflm2.h"
     integer :: nbma, ierr
     character(len=*) :: nomaz, tymaz
 ! ----------------------------------------------------------------------
@@ -55,22 +49,26 @@ subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
 !           LE NOMBRE DE MAILLES RETOURNE EST LA LONGUEUR DE LA LISTE
 !           INITIALE.
 !
-! -------------------------------------------------------
+! ----------------------------------------------------------------------
 !
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utflmd.h"
 !
-    integer :: i, dim, jlima, nbtrou, tabmai(nbma), tatrou(nbma)
+! ----------------------------------------------------------------------
+!
+    integer :: i, dim, jlima, jlimaf, nbmaf
     character(len=8) :: noma, tyma, typmai
-    character(len=24) :: lisma
+    character(len=24) :: lisma, lismaf
 !
     call jemarq()
 !
     noma=nomaz
     tyma=tymaz
-!
-    call jeveuo(lisma, 'L', jlima)
-    do 10 i = 1, nbma
-        tabmai(i)=zi(jlima+i-1)
-10  end do
+    lismaf='&&CGMFTM.MAILLES_FILTRE'
 !
     if (tyma .eq. '0D') then
         dim = 0
@@ -86,20 +84,23 @@ subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
         typmai=tyma
     endif
 !
-    call utflm2(noma, tabmai, nbma, dim, typmai,&
-                nbtrou, tatrou)
+    call utflmd(noma, lisma, dim, typmai, nbmaf,&
+                lismaf)
 !
     if (nbma .eq. 0) then
         ierr = 1
     else
         ierr = 0
-        nbma = nbtrou
+        nbma = nbmaf
+        call jeveuo(lismaf, 'L', jlimaf)
         call jeveuo(lisma, 'E', jlima)
-        do 20 i = 1, nbma
-            zi(jlima+i-1)=tatrou(i)
-20      continue
+        do i = 1, nbma
+            zi(jlima+i-1)=zi(jlimaf+i-1)
+        end do
 !
     endif
+!
+    call jedetr(lismaf)
 !
     call jedema()
 !

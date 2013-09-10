@@ -58,7 +58,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    real(kind=8) :: xd(3), angl(3), alphal, betal, t2ev(2, 2), t2ve(2, 2), c, s
+    real(kind=8) :: xd(3), angl(3), alphal, betal, t2iu(2, 2), t2ui(2, 2), c, s
     real(kind=8) :: mat1(3, 3), mat2(3, 3)
 !
     if (typecp .eq. 'P') then
@@ -87,7 +87,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
 !
 !       MODIFICATION DE LA MATRICE POUR PRENDRE EN COMPTE
 !       LA CARCOQUE UTILISATEUR
-        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
                     c, s)
         mat1(1,1) = pgl(1,1)
         mat1(1,2) = pgl(2,1)
@@ -98,11 +98,11 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
         mat1(3,1) = pgl(1,3)
         mat1(3,2) = pgl(2,3)
         mat1(3,3) = pgl(3,3)
-        mat2(1,1) = t2ve(1,1)
-        mat2(1,2) = t2ve(2,1)
+        mat2(1,1) = t2ui(1,1)
+        mat2(1,2) = t2ui(2,1)
         mat2(1,3) = 0.d0
-        mat2(2,1) = t2ve(1,2)
-        mat2(2,2) = t2ve(2,2)
+        mat2(2,1) = t2ui(1,2)
+        mat2(2,2) = t2ui(2,2)
         mat2(2,3) = 0.d0
         mat2(3,1) = 0.d0
         mat2(3,2) = 0.d0

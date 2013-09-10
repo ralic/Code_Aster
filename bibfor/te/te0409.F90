@@ -297,7 +297,7 @@ subroutine te0409(option, nomte)
                 call dcopy(8, zr(icontm), 1, effgt(8*(ipg-1)+1), 1)
             end do
         else
-            call dxefro(npg, t2ev, effort, effgt)
+            call dxefro(npg, t2ve, effort, effgt)
         endif
 !
         reactu = .false.

@@ -44,7 +44,7 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
     integer :: multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
-    real(kind=8) :: kxx, kyy, kxy, t2ev(4), t2ve(4), t1ve(9)
+    real(kind=8) :: kxx, kyy, kxy, t2iu(4), t2ui(4), t1ve(9)
     logical :: coupmf
 !     ------------------------------------------------------------------
 !
@@ -80,7 +80,7 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
 !
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2ev, t2ve, t1ve)
+                multic, coupmf, t2iu, t2ui, t1ve)
 !
 ! --- CHOIX DE NOTATIONS PLUS EXPLICITES POUR LES DEFORMATIONS
 ! --- INITIALES

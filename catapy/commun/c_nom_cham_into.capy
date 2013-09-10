@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jacques.pellet at edf.fr
+# person_in_charge: josselin.delmas at edf.fr
 
 class NOM_CHAM_INTO:  #COMMUN#
     """
@@ -297,32 +297,6 @@ class NOM_CHAM_INTO:  #COMMUN#
             "VITE_ABSOLU":      ( (),
                                  _(u"Vitesse absolue aux noeuds"), ),
         }
-        d['POST_ELEM'] = {
-            "DEPL":             ( (),
-                                 _(u"Déplacements aux noeuds"), ),
-            "TEMP":             ( (),
-                                 _(u"Température aux noeuds"), ),
-            "NEUT_R":             ( (),
-                                 _(u"Variable de commande 'neutre'"), ),
-            "FLUX_ELGA":        ( (),
-                                 _(u"Flux thermique aux points de Gauss"), ),
-            "FLUX_ELNO":        ( (),
-                                 _(u"Flux thermique aux noeuds par élément"), ),
-            "FLUX_NOEU":        ( (),
-                                 _(u"Flux thermique aux noeuds"), ),
-            "EPSI_ELGA":        ( ("lin", "nonlin",),
-                                 _(u"Déformations aux points de Gauss"), ),
-            "EPSI_ELNO":        ( ("lin", "nonlin",),
-                                 _(u"Déformations aux noeuds par élément"), ),
-            "EPSI_NOEU":        ( ("lin", "nonlin",),
-                                 _(u"Déformations aux noeuds"), ),
-            "SIEF_ELGA":        ( ("lin",),
-                                 _(u"Contraintes et efforts aux points de Gauss"), ),
-            "SIEF_ELNO":        ( ("lin", "nonlin",),
-                                 _(u"Contraintes et efforts aux noeuds par élément"), ),
-            "SIEF_NOEU":        ( ("lin", "nonlin",),
-                                 _(u"Contraintes et efforts aux noeuds"), ),
-        }
         d['AUTRES'] = {
             "COMPORTEMENT":     ( (),
                                  _(u"Carte de comportement mécanique"), ),
@@ -376,16 +350,42 @@ class NOM_CHAM_INTO:  #COMMUN#
         self.d_all = d
         return
 
-    def Check(self):
-        """ Check des doublons
+    def CheckPhenom(self):
+        """ Vérification de la cohérence entre les phenomènes et les clés
+        """
+        l_keys = list(self.d_all.keys())
+        l_phen = list(self.all_phenomenes)
+        uniq_keys = set(l_keys)
+        uniq_phen = set(l_phen)
+        if len(l_keys) != len(uniq_keys) or len(l_phen) != len(uniq_phen) :
+            for i in uniq_keys :
+                l_keys.remove(i)
+            assert len(l_keys) == 0, 'Keys must be unique: %s' % l_keys
+            for i in uniq_phen :
+                l_phen.remove(i)
+            assert len(l_phen) == 0, 'Phenomenon must be unique: %s' % l_phen
+        if len(l_keys) > len(l_phen) :
+            for i in l_phen :
+                l_keys.remove(i)
+            assert len(l_keys) == 0, 'Key %s not listed in the list of phenomenons' % l_keys
+        if len(l_keys) < len(l_phen) :
+            for i in l_keys:
+                l_phen.remove(i)
+            assert len(l_phen) == 0, 'Phenomenon %s not known as a key' % l_phen
+
+
+    def CheckField(self):
+        """ Vérification des doublons dans les noms des champs
         """
         l_cham = []
         for phen in self.all_phenomenes:
-            for cham in self.d_all[phen].keys():
-                if cham in l_cham:
-                    raise "Erreur : %s est en doublon dans c_nom_cham_into" % cham
-                else:
-                    l_cham.append(cham)
+            l_cham.extend(self.d_all[phen].keys())
+        uniq = set(l_cham)
+        if len(l_cham) != len(uniq):
+            for i in uniq:
+                l_cham.remove(i)
+            assert len(l_cham) == 0, 'Field names must be unique: %s' % l_cham
+
 
     def InfoChamps(self, l_nom_cham):
         """ on renvoie juste les informations relatives au(x) champ(s)
@@ -416,7 +416,6 @@ class NOM_CHAM_INTO:  #COMMUN#
         for phen in l_phen:
             # parcours de tous les champs
             for cham in self.d_all[phen].keys():
-               #print cham, categorie, l_typ_cham
                isok = True
                # Filtre par categorie
                if categorie is not None:
@@ -444,7 +443,8 @@ class NOM_CHAM_INTO:  #COMMUN#
         self.Tous()
         # check les doublons (fonctionnalite developpeur permettant de detecter les doublons dans les champs)
         if 1:
-            self.Check()
+            self.CheckPhenom()
+            self.CheckField()
 
     def __call__(self, *l_typ_cham, **kwargs):
         """Cette fonction retourne la liste des "into" possibles pour le mot-clé NOM_CHAM.
