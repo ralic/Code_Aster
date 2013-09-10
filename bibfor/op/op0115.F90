@@ -88,7 +88,7 @@ subroutine op0115()
     chfreq = nomref//'.FREQ'
 !
     k8bid = 'BIDON'
-    do 10 ipf = 1, iocpf
+    do ipf = 1, iocpf
         if (ipf .eq. 1) then
             call getvtx(motfac(1), 'NOEUD_I', ipf, iarg, 0,&
                         noei, n2)
@@ -130,9 +130,9 @@ subroutine op0115()
 !
         call getvid(motfac(1), 'FONCTION', ipf, iarg, 1,&
                     zk8(lfonc-1+ipf), nbval)
-10  end do
+    end do
 !
-    do 110 ifonc = 1, iocpf
+    do ifonc = 1, iocpf
         fonc = zk8(lfonc-1+ifonc)
         chfonc = fonc//'           '
         call jeveuo(chfonc//'.VALE', 'L', lvale)
@@ -143,8 +143,8 @@ subroutine op0115()
         if (tfonc .eq. 'FONCT_C') nbfreq = nbval/3
         diag = .false.
         if (n2 .lt. 0) then
-            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoei-1+ifonc)) .and.&
-                (zk8(lcmpi-1+ifonc) .eq. zk8(lcmpi-1+ifonc))) then
+            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoej-1+ifonc)) .and.&
+                (zk8(lcmpi-1+ifonc) .eq. zk8(lcmpj-1+ifonc))) then
                 nbabs = nbfreq
                 diag = .true.
             else
@@ -163,29 +163,35 @@ subroutine op0115()
         call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs)
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
         if ((diag) .and. (tfonc .eq. 'FONCT_C')) then
-            do 107 inum = 1, nbabs
+            do inum = 1, nbabs
                 zr(ispec-1+inum) = zr(lvale-1+nbfreq+2*(inum-1)+1)
-107          continue
+            end do
+        elseif ((.not.diag) .and. (tfonc .eq. 'FONCTION')) then
+            do inum = 1, nbfreq
+                zr(ispec-1+2*inum-1) = zr(lvale-1+nbfreq+inum)
+                zr(ispec-1+2*inum) = 0.d0
+            end do
         else
             nbabs = nbval - nbfreq
-            do 109 inum = 1, nbabs
+            do inum = 1, nbabs
                 zr(ispec-1+inum) = zr(lvale-1+nbfreq+inum)
-109          continue
+            end do
         endif
-110  end do
+    end do
+
     if (iocpf .gt. 0) then
         call jeexin(chfreq, ibid)
         if (ibid .eq. 0) then
             call wkvect(chfreq, 'G V R', nbfreq, lfreq)
-            do 104 ifreq = 1, nbfreq
+            do ifreq = 1, nbfreq
                 zr(lfreq-1+ifreq) = zr(lvale-1+ifreq)
-104          continue
+            end do
         endif
     endif
 !
     depi = r8depi()
 !
-    do 20 ikt = 1, iockt
+    do ikt = 1, iockt
         if (ikt .eq. 1) then
             call getvtx(motfac(2), 'NOEUD_I', ikt, iarg, 0,&
                         noei, n4)
@@ -259,7 +265,7 @@ subroutine op0115()
         call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbfreq)
         call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbfreq)
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
-        do 210 ifreq = 1, nbfreq
+        do ifreq = 1, nbfreq
             freq = fmin + pas*(ifreq-1)
             if (ifreq .eq. nbfreq) freq = fmax
             rbid = 4.0d0*ared*ared*fmoy*fmoy*freq*freq
@@ -267,10 +273,10 @@ subroutine op0115()
             den = fmoy*fmoy-freq*freq
             den = den*den+rbid
             zr(ispec-1+ifreq) = depi*valr*num/den
-210      continue
-20  end do
+        end do
+    end do
 !
-    do 30 ics = 1, ioccs
+    do ics = 1, ioccs
         if (ics .eq. 1) then
             call getvtx(motfac(3), 'NOEUD_I', ics, iarg, 0,&
                         noei, n6)
@@ -336,8 +342,8 @@ subroutine op0115()
         nbfreq=int((fmax-fmin)/pas) + 1
         diag = .false.
         if (n6 .lt. 0) then
-            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoei-1+ifonc)) .and.&
-                (zk8(lcmpi-1+ifonc) .eq. zk8(lcmpi-1+ifonc))) then
+            if ((zk8(lnoei-1+ifonc) .eq. zk8(lnoej-1+ifonc)) .and.&
+                (zk8(lcmpi-1+ifonc) .eq. zk8(lcmpj-1+ifonc))) then
                 nbabs = nbfreq
                 diag = .true.
             else
@@ -355,7 +361,7 @@ subroutine op0115()
         call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbabs)
         call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs)
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
-        do 310 ifreq = 1, nbfreq
+        do ifreq = 1, nbfreq
             if (diag) then
                 if (nbvalr .lt. 0) then
                     zr(ispec-1+ifreq) = valr
@@ -371,18 +377,18 @@ subroutine op0115()
                     zr(ispec-1+2*ifreq) = dimag(valc)
                 endif
             endif
-310      continue
-30  end do
+        end do
+    end do
 !
     if ((iockt .gt. 0) .or. (ioccs .gt. 0)) then
         call jeexin(chfreq, ibid)
         if (ibid .eq. 0) then
             call wkvect(chfreq, 'G V R', nbfreq, lfreq)
-            do 204 ifreq = 1, nbfreq
+            do ifreq = 1, nbfreq
                 freq = fmin + pas*(ifreq-1)
                 if (ifreq .eq. nbfreq) freq = fmax
                 zr(lfreq-1+ifreq) = freq
-204          continue
+            end do
         endif
     endif
 !

@@ -257,7 +257,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=216.0,
+           VALE_CALC=50.0,
            NOM_PARA='LAMBDA_00',
            TABLE=STADECS,
            FILTRE=(_F(NOM_PARA='NOM_CMP_I',
