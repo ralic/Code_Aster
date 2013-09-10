@@ -5,7 +5,7 @@ function dmadp2(rho22, sat, phi, cs, mamolg,&
     real(kind=8) :: dphip2, em
     logical :: emmag
 ! ======================================================================
-!            
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

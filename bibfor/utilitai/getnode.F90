@@ -43,7 +43,7 @@ subroutine getnode(mesh, keywordfact, iocc, suffix, stop_void, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Read mesh affectation - Nodes 
+! Read mesh affectation - Nodes
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,15 +51,15 @@ subroutine getnode(mesh, keywordfact, iocc, suffix, stop_void, &
 !  - read MAILLE/GROUP_MA/TOUT/NOEU_GROUP_NO keywords
 !  - remove by SANS_MAILLE/SANS_GROUP_MA/SANS_NOEUD/SANS_GROUP_NO keywords
 !  - can use <SUFFIX> to enhance keyword. For instance:
-!           suffix = '_1': GROUP_MA -> GROUP_MA_1 
-!                          MAILLE -> MAILLE_1 
-!                          SANS_GROUP_MA -> SANS_GROUP_MA_1 
-!                          SANS_MAILLE -> SANS_MAILLE_1 
-!                          GROUP_NO -> GROUP_NO_1 
-!                          NOEUD -> NOEUD_1 
-!                          SANS_GROUP_NO -> SANS_GROUP_NO_1 
-!                          SANS_NOEUD -> SANS_NOEUD_1 
-!           WARNING ->     TOUT -> TOUT  
+!           suffix = '_1': GROUP_MA -> GROUP_MA_1
+!                          MAILLE -> MAILLE_1
+!                          SANS_GROUP_MA -> SANS_GROUP_MA_1
+!                          SANS_MAILLE -> SANS_MAILLE_1
+!                          GROUP_NO -> GROUP_NO_1
+!                          NOEUD -> NOEUD_1
+!                          SANS_GROUP_NO -> SANS_GROUP_NO_1
+!                          SANS_NOEUD -> SANS_NOEUD_1
+!           WARNING ->     TOUT -> TOUT
 !  - can stop or alarm if no elements in final list
 !
 ! In  mesh         : name of mesh
@@ -102,8 +102,8 @@ subroutine getnode(mesh, keywordfact, iocc, suffix, stop_void, &
     if (present(model)) model_name = model
 !
 ! - Read nodes
-! 
-    nb_mocl = 0  
+!
+    nb_mocl = 0
     if (getexm(keywordfact,'TOUT') .eq. 1) then
         nb_mocl = nb_mocl + 1
         moclm(nb_mocl)  = 'TOUT'
@@ -139,7 +139,7 @@ subroutine getnode(mesh, keywordfact, iocc, suffix, stop_void, &
     endif
 !
 ! - Read nodes excludes
-! 
+!
     nb_mocl = 0
     keyword = 'SANS_GROUP_MA'//suffix
     if (getexm(keywordfact,keyword) .eq. 1) then

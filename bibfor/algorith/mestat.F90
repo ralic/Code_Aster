@@ -223,7 +223,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !       --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
         if (etausr() .eq. 1) call sigusr()
-        
+
 !
 ! 2.3. ==> CONTROLE DU TEMPS CPU
 !

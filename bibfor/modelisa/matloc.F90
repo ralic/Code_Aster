@@ -106,7 +106,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
         enddo
         call u2mesk('F', 'CHARGES2_39', 1, node_name)
 24      continue
-    endif  
+    endif
 !
 ! - Check element type
 !

@@ -88,7 +88,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
     iqiren = indk16( zk16(jopt), 'QIRE_NOEU', 1, nbopt )
 !
     if (ierz1+ierz2+inoz1+inoz2+ierth+ierto+iertno+ierme+iermo+iermno+iqirel+iqiren.eq. 0) then
-        goto 999 
+        goto 999
     endif
 !
     lesop2 = '&&OP0058.NEW_OPTION'

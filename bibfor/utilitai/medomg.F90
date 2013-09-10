@@ -103,7 +103,7 @@ subroutine medomg(result, numord, modele, mate, lischa)
 !
     call exixfe(modele, iret)
     lxfem = iret.ne.0
-    if (lxfem) then 
+    if (lxfem) then
       codarr = 'A'
     else
       codarr = 'F'

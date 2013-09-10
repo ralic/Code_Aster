@@ -45,7 +45,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !                                 N = NOMBRE DE PALIERS
 !                OUT RETCOM
 ! ======================================================================
-! aslint: disable=W1504    
+! aslint: disable=W1504
     implicit      none
 #include "asterfort/calela.h"
 #include "asterfort/dpvplc.h"
@@ -531,7 +531,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         tini = t - dt
         if (option(6:9).eq.'COUP') then
 !           on interdit le couplage fluage-eib car dans ce cas dsdeme(6,12)
-            call u2mess('F', 'ALGORITH_74')           
+            call u2mess('F', 'ALGORITH_74')
         endif
 !       dsdeme12(i,j) ne sert qu'a la compatibilite de l'interface
 !       tous les termess i,6+j doive,t etre nuls

@@ -101,7 +101,7 @@ subroutine calirg(mesh, nbno, list_node, tran, cent, &
                 k8bid, ier)
 !
 ! - Rotation matrix
-!        
+!
     if (l_angl_naut) then
         call matrot(angl_naut, matr_rota)
         l_rota = .true.

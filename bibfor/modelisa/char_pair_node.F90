@@ -89,7 +89,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
 !
 ! - Initializations
 !
-    ier = 0 
+    ier = 0
     i_error = 0
     call jeveuo(mesh//'.COORDO    .VALE', 'L', jgeom_init)
     angl_naut_d(1) = angl_naut(1)*r8dgrd()
@@ -97,7 +97,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
     angl_naut_d(3) = angl_naut(3)*r8dgrd()
 !
 ! - Rotation matrix
-!        
+!
     call matrot(angl_naut_d, matr_rota)
 !
 ! - Input lists
@@ -116,11 +116,11 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
     call wkvect('&&PACOAP.LISOU4', 'V V I', nb_node, j_node_o4)
     call wkvect('&&PACOAP.LISINV', 'V V I', nb_node, j_node_inv)
 !
-! - Pairing: list_node_1 -> list_node_2 
+! - Pairing: list_node_1 -> list_node_2
 !
     do ino_1 = 1, nb_node
 !
-        nume_node_1 = zi(j_node_i1-1+ino_1)      
+        nume_node_1 = zi(j_node_i1-1+ino_1)
 !
 ! ----- Apply transformation for translation/rotation
 !
@@ -217,7 +217,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
             i_error = 1
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
             call u2mesk('F', 'CHARGES2_50', 1, name_node_2)
-            goto 99    
+            goto 99
         endif
         nume_node_1 = zi(j_node_i1-1+ino_mini)
 !
@@ -258,7 +258,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
         call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
         do ino_2 = 1, nb_node
             nume_node_3 = zi(j_node_o3-1+ino_2)
-            nume_node_4 = zi(j_node_o4-1+ino_2)        
+            nume_node_4 = zi(j_node_o4-1+ino_2)
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_3), name_node_3)
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_4), name_node_4)
             if (nume_node_2 .eq. nume_node_3) then

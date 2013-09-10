@@ -83,7 +83,7 @@ subroutine te0019(option, nomte)
     coef_mult = 1.d0
     if (option.eq.'CHAR_MECA_EFON_F') then
         call jevech('PEFOND', 'L', j_effe)
-        coef_mult = zr(j_effe-1+1)    
+        coef_mult = zr(j_effe-1+1)
     endif
 !
 ! - Parameters of function

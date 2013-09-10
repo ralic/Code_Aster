@@ -67,12 +67,12 @@ subroutine char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_key
     call jemarq()
 !
 ! - Global affectation keywords - Count
-! 
-    n_keyexcl = 0  
+!
+    n_keyexcl = 0
     if (getexm(keywordfact,'TOUT') .eq. 1) n_keyexcl = n_keyexcl + 1
 !
 ! - Global affectation keywords - Count
-! 
+!
     if (n_suffix.eq.0) then
         do i_keyw = 1, n_keyexcl_affe
             keyword = excl_affe(i_keyw)
@@ -89,7 +89,7 @@ subroutine char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_key
     endif
 !
 ! - Other keywords - Count
-! 
+!
     if (keywordfact.eq.'FACE_IMPO') then
         n_keyexcl = n_keyexcl + 2
     elseif (keywordfact.eq.'ARETE_IMPO') then
@@ -117,7 +117,7 @@ subroutine char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_key
     call wkvect(keywordexcl,'V V K24', n_keyexcl, j_kexcl)
 !
 ! - Global affectation keywords - Affect
-! 
+!
     n_keyexcl = 0
     if (getexm(keywordfact,'TOUT') .eq. 1) then
         n_keyexcl = n_keyexcl + 1

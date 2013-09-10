@@ -93,7 +93,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 ! -----  ARGUMENTS
-    integer :: ngi 
+    integer :: ngi
     character(len=*) :: chgeoz, tempez, lisgma(ngi)
 ! -----  VARIABLES LOCALES
     integer :: gd

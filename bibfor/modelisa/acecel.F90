@@ -38,7 +38,7 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! 
+!
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
 !     COMPTEUR D'ELEMENTS
@@ -109,7 +109,7 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
         do 48 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbepo+nbedi+ nbeco+nbeca+nbeba+nbema+nbegb
             if(nutyel.eq.ntyele(i))ngribt = ngribt + 1
 48      continue
-        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1,& 
+        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1,&
                    nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb
             if(nutyel.eq.ntyele(i))nmembr = nmembr + 1
 49      continue

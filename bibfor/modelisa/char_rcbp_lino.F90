@@ -101,8 +101,8 @@ subroutine char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
     enddo
     nb_node = indlis
 !
-    call jedetr('&&CAPREC.INDICE') 
-    call jedetr('&&CAPREC.LIST')                                   
+    call jedetr('&&CAPREC.INDICE')
+    call jedetr('&&CAPREC.LIST')
 !
     call jedema()
 end subroutine

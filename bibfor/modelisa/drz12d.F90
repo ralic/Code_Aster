@@ -35,7 +35,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================    
+! ======================================================================
     character(len=8), intent(in)  :: noma
     character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in) :: type_vale

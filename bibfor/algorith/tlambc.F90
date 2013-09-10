@@ -32,7 +32,7 @@ subroutine tlambc(angmas, lambct, tlamct, aniso, ndim)
     call matini(3, 3, 0.d0, work)
     call matini(3, 3, 0.d0, tk2)
     call matini(ndim, ndim, 0.d0, tlamct)
-    call matini(3, 3, 0.d0, tlamcti)   
+    call matini(3, 3, 0.d0, tlamcti)
     if (aniso .eq. 0) then
 ! ======================================================================
 ! --- CAS ISOTROPE -----------------------------------------------------

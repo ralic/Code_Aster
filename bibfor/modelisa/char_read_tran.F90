@@ -34,9 +34,9 @@ subroutine char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
     logical, intent(out) :: l_tran
     real(kind=8), intent(out) :: tran(3)
     logical, intent(out) :: l_cent
-    real(kind=8), intent(out) :: cent(3)  
+    real(kind=8), intent(out) :: cent(3)
     logical, intent(out) :: l_angl_naut
-    real(kind=8), intent(out) :: angl_naut(3)  
+    real(kind=8), intent(out) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +88,7 @@ subroutine char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
         call getvr8(keywordfact, 'TRAN', iocc, iarg, 0,&
                     tran, ntran)
         ntran = -ntran
-        if (ntran.ne.0) then      
+        if (ntran.ne.0) then
             l_tran = .true.
             if (ntran.ne.ndim) then
                 vali(1) = ndim
@@ -107,7 +107,7 @@ subroutine char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
         call getvr8(keywordfact, 'CENTRE', iocc, iarg, 0,&
                     cent, ncent)
         ncent = -ncent
-        if (ncent.ne.0) then      
+        if (ncent.ne.0) then
             l_cent = .true.
             if (ncent.ne.ndim) then
                 vali(1) = ndim

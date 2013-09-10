@@ -332,7 +332,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
             dsde(adcote,addete)=dsde(adcote,addete)+dqdt(coeps)
             dsde(adcote,addep1)=dsde(adcote,addep1)+dqdp(signe,alp11,&
             t)
-        
+
 ! ======================================================================
 ! --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------

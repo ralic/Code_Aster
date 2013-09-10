@@ -251,7 +251,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
         else
             ifactm=1
         endif
- 
+
 10      continue
         call amumpt(2, kmonit, temps, rang, nbproc,&
                     kxmps, lquali, type, ietdeb, ietrat,&

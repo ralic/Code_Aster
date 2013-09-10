@@ -88,9 +88,9 @@ subroutine calyrc(chargz)
     logical :: l_tran
     real(kind=8) :: tran(3)
     logical :: l_cent
-    real(kind=8) :: cent(3)  
+    real(kind=8) :: cent(3)
     logical :: l_angl_naut
-    real(kind=8) :: angl_naut(3)  
+    real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
 ! ----------------------------------------------------------------------
 !

@@ -53,11 +53,11 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! New linear relation 
+! New linear relation
 !
 !       coef(iterm) . dof_name(iterm) = vale
 !
-! With:  
+! With:
 !       iterm = 1,nbterm
 !       coef = coef_real if type_coef = 'REEL'
 !       coef = coef_cplx if type_coef = 'COMP'
@@ -88,7 +88,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !                   if '12' - First Lagrange multiplier before physical dof, second after
 !                   if '22' - First Lagrange multiplier after physical dof, second after too
 ! In  epsi      : tolerance to detect "zero" coefficient
-! In  lisrel    : JEVEUX object list_rela for relations list management 
+! In  lisrel    : JEVEUX object list_rela for relations list management
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: vale_real_norm
@@ -203,7 +203,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     nbrel0 = zi(idnbre)
     nbrela = nbrel0 + 1
 !
-! - Initial maximum linear relations number 
+! - Initial maximum linear relations number
 !
     call jelira(lisrel//'.RLNT', 'LONMAX', nbrmax)
 !

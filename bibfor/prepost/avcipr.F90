@@ -88,16 +88,16 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !                     RAINFLOW.
 ! NCYCL     OUT  I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 !                     VECTEURS NORMAUX.
-! JVMIN      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MIN DES CYCLES ELEMENTAIRES 
+! JVMIN      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MIN DES CYCLES ELEMENTAIRES
 !                     POUR TOUS LES VECTEURS NORMAUX.
-! JVMAX      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MAX DES CYCLES ELEMENTAIRES 
+! JVMAX      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MAX DES CYCLES ELEMENTAIRES
 !                     POUR TOUS LES VECTEURS NORMAUX.
-! JOMIN      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX 
-!                      VALEURS MIN DESCYCLES ELEMENTAIRES POUR TOUS LES 
-!                      VECTEURS  NORMAUX.                     
-! JOMAX      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX 
-!                      VALEURS MAX DES CYCLES ELEMENTAIRES POUR TOUS LES 
-!                      VECTEURS NORMAUX                     
+! JOMIN      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX
+!                      VALEURS MIN DESCYCLES ELEMENTAIRES POUR TOUS LES
+!                      VECTEURS  NORMAUX.
+! JOMAX      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX
+!                      VALEURS MAX DES CYCLES ELEMENTAIRES POUR TOUS LES
+!                      VECTEURS NORMAUX
 ! REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
@@ -171,13 +171,13 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 ! Real
     call wkvect('&&AVCIPR_VECTRA', 'V V R', 2*nbvec*nbordr, jvectr)
     call wkvect('&&AVCIPR_RAXE', 'V V R', nbvec*nbordr, jraxe)
-    call wkvect('&&AVCIPR_VALPOI', 'V V R', nbvec*nbordr, jvalpo) 
-    call wkvect('&&AVCIPR_PIC', 'V V R', nbvec*(nbordr+2), jpic) 
-    call wkvect('&&AVCIPR_RTRV', 'V V R', (nbordr+2), jrtrv) 
+    call wkvect('&&AVCIPR_VALPOI', 'V V R', nbvec*nbordr, jvalpo)
+    call wkvect('&&AVCIPR_PIC', 'V V R', nbvec*(nbordr+2), jpic)
+    call wkvect('&&AVCIPR_RTRV', 'V V R', (nbordr+2), jrtrv)
 
 ! Integer
     call wkvect('&&AVCIPR_ITVR', 'V V I', 2*(nbordr+2), jitrv)
-    call wkvect('&&AVCIPR_VALORD', 'V V I', nbvec*nbordr, jvalor) 
+    call wkvect('&&AVCIPR_VALORD', 'V V I', nbvec*nbordr, jvalor)
     call wkvect('&&AVCIPR_ORPIC', 'V V I', nbvec*(nbordr+2), jordpi)
 
 
@@ -234,7 +234,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
                 jordpi, fatsoc, ncycl, jvmin, jvmax,&
                 jomin, jomax)
 !
-!   
+!
     call jedetr('&&AVCIPR_VECTRA')
     call jedetr('&&AVCIPR_ITVR')
     call jedetr('&&AVCIPR_RAXE')

@@ -110,7 +110,7 @@ subroutine jerazo(nomlu, ni, i1)
             typei = type( jtype(iclaco) + ixdeso )
             ltypi = ltyp( jltyp(iclaco) + ixdeso )
         endif
-    else 
+    else
         ASSERT(.false.)
     endif
 100 continue
@@ -149,11 +149,11 @@ subroutine jerazo(nomlu, ni, i1)
     else if (typei .eq. 'C') then
         do i = j1, j2
             zc(jini+i) = (0.d0,0.d0)
-        end do    
+        end do
     else if (typei .eq. 'L') then
         do i = j1, j2
             zl(jini+i) = .false.
-        end do    
+        end do
     else if (typei .eq. 'K') then
         if (ltypi .eq. 8) then
             do i = j1, j2

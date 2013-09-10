@@ -182,7 +182,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                     call lisnnl(phenom, charge, prefob)
 !
 ! ----------------- CARTE D'ENTREE
-!                  
+!
                     call lisdef('CART', motcle, ibid, nomobj, itypob)
                     ASSERT(itypob(1).eq.1)
                     cartei = prefob(1:13)//nomobj(1:6)

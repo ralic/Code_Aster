@@ -81,7 +81,7 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
     gamcjs = mater (12,2)
     pref = mater (15,2)
     call lceqvn(ndt, yf(1), sn(1))
-    invn  =yf(ndt+1) 
+    invn  =yf(ndt+1)
     gampn =yf(ndt+2)
     evpn  =yf(ndt+3)
     deltan=yf(ndt+4)

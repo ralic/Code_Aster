@@ -90,7 +90,7 @@ subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,  &
     endif
 
     if (ndim.eq.2) then
-        topo_elem = topo_2d  
+        topo_elem = topo_2d
     elseif (ndim.eq.3) then
         topo_elem = topo_3d
     else

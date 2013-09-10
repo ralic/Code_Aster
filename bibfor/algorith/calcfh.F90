@@ -53,7 +53,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 ! VALFAC : SOCKAGE DES VALEURS CALCULEES AUX ARETES EN VF IFA!=0
 !          =>DES VALEURS AU CENTRE
 !
-! aslint: disable=W1501,W1504 
+! aslint: disable=W1501,W1504
    implicit none
 !
 #include "asterfort/hmderp.h"

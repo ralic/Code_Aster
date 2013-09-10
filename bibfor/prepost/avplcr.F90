@@ -94,7 +94,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
     real(kind=8) :: vecn1(3*nbvec), vecu1(3*nbvec), vecv1(3*nbvec)
     real(kind=8) :: dgam2, pi, phi0, cudom1, cudom2
     real(kind=8) :: prec
-    character(len=8) :: method 
+    character(len=8) :: method
 !     --------------------------
     epsilo = 1.0d-7
     pi = r8pi()

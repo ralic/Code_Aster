@@ -82,7 +82,7 @@ subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
     if (typfct.eq.'FONCT_REEL') then
       if (nomfct(1:2).eq.'&&') typfct = 'CONST_REEL'
     endif
-    
+
 !
     call jedema()
 end subroutine

@@ -157,7 +157,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
             g13 = elas2(5)
             tal(1,1) = elas2(6)
             tal(2,2) = elas2(6)
-            tal(3,3) = elas2(7)            
+            tal(3,3) = elas2(7)
 !            alpha3 = elas2(7)
             call utbtab('ZERO', 3, 3, tal, pass,work, talg)
             al(1) = talg(1,1)
@@ -224,7 +224,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
             al(4) = talg(1,2)
             al(5) = talg(1,3)
             al(6) = talg(2,3)
-! 
+!
         endif
         nu21 = nu12*young2/young1
         nu31 = nu13*young3/young1

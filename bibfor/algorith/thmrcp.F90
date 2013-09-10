@@ -1073,7 +1073,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !  attention au décalage
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             0.0d0, 1, ncra35(10), val35(11),icodre,0)
-                            
+
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
@@ -1087,7 +1087,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                 0.0d0, 2, ncra35(4), val35(4), icodre,&
                                 0)
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                                0.0d0, 1, ncra35(10), val35(11), icodre,& 
+                                0.0d0, 1, ncra35(10), val35(11), icodre,&
                                 0)
                 endif
             else if (icodre(1).eq.0) then
@@ -1299,7 +1299,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 retcom = 2
                 goto 500
             endif
-!       
+!
             call tebiot(angmas, biot, tbiot, aniso, ndim)
 !
         else if (thmc.eq.'LIQU_GAZ') then

@@ -27,11 +27,11 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !       /'MPI_MAX'  == 'ALLREDUCE + MAX' (seulement 'R'/'I')
 !       /'MPI_MIN'  == 'ALLREDUCE + MIN' (seulement 'R'/'I')
 !       /'MPI_SUM'  == 'ALLREDUCE + SUM'
-!       
+!
 !       /'REDUCE'   == 'REDUCE + SUM' : tous -> 0
 !       /'BCAST'    == 'BCAST'             : proc de rang=bcrank -> tous
 !       /'BCASTP'   == 'BCAST' par paquets : proc de rang=bcrank -> tous
-!       
+!
 ! in    typsca : /'I' /'R' /'C'
 ! in    nbval  : longueur du vecteur v* (optionnel, 1 si absent)
 ! in    bcrank : rang du processus mpi d'ou emane le bcast

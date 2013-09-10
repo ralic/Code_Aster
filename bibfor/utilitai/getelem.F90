@@ -50,11 +50,11 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
 !  - read MAILLE/GROUP_MA/TOUT keywords
 !  - remove by SANS_MAILLE/SANS_GROUP_MA keywords
 !  - can use <SUFFIX> to enhance keyword. For instance:
-!           suffix = '_1': GROUP_MA -> GROUP_MA_1 
-!                          MAILLE -> MAILLE_1 
-!                          SANS_GROUP_MA -> SANS_GROUP_MA_1 
-!                          SANS_MAILLE -> SANS_MAILLE_1 
-!           WARNING ->     TOUT -> TOUT  
+!           suffix = '_1': GROUP_MA -> GROUP_MA_1
+!                          MAILLE -> MAILLE_1
+!                          SANS_GROUP_MA -> SANS_GROUP_MA_1
+!                          SANS_MAILLE -> SANS_MAILLE_1
+!           WARNING ->     TOUT -> TOUT
 !  - can stop or alarm if no elements in final list
 !
 ! In  mesh         : name of mesh

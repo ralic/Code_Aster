@@ -89,7 +89,7 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
         pmax = abs(zr(jvalpo + (ivect-1)*nbordr + 1))
         nmax = 1
         do 20 i = 2, npoin(ivect)
-            if (abs(zr(jvalpo + (ivect-1)*nbordr + i)) .gt. & 
+            if (abs(zr(jvalpo + (ivect-1)*nbordr + i)) .gt. &
                     pmax*(1.0d0+ epsilo)) then
 
                 pmax = abs(zr(jvalpo + (ivect-1)*nbordr + i))

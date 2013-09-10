@@ -48,13 +48,13 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
 !                     DES DEFORMATIONS.
 ! NCYCL     OUT  I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 !                     VECTEURS NORMAUX.
-! JVMIN      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MIN DES CYCLES ELEMENTAIRES 
+! JVMIN      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MIN DES CYCLES ELEMENTAIRES
 !                     POUR TOUS LES VECTEURS NORMAUX.
-! JVMAX      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MAX DES CYCLES ELEMENTAIRES 
+! JVMAX      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MAX DES CYCLES ELEMENTAIRES
 !                     POUR TOUS LES VECTEURS NORMAUX.
-! JOMIN      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX 
+! JOMIN      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX
 !                     VALEURS  MIN DESCYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
-!                      NORMAUX.                     
+!                      NORMAUX.
 ! JOMAX      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX VALEURS
 !
 !-----------------------------------------------------------------------
@@ -110,7 +110,7 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
 !
         if ((e1.ge. e2) .and. (e3 .ge. e2)) then
             ncycl(ivect) = ncycl(ivect) + 1
-            if (zr(jpic+ adrs+ zi(jitrv + i+1)) .ge. & 
+            if (zr(jpic+ adrs+ zi(jitrv + i+1)) .ge. &
                 zr(jpic + adrs+ zi(jitrv + i+2))) then
                 zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs + &
                                                  zi(jitrv + i+1))/ fatsoc

@@ -5,7 +5,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                   mecani, press1, press2, tempe, dimdef,&
                   dimcon, dimuel, nbvari, ndim, compor,&
                   typmod, typvf, axi, perman)
-! aslint: disable=W1501,W1504    
+! aslint: disable=W1501,W1504
     implicit none
 !
 #include "jeveux.h"

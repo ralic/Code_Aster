@@ -29,7 +29,7 @@ subroutine calcft(option, thmc, imate, ndim, dimdef,&
 ! ROUTINE CALC_FLUX_THERM ----------------------------------------------
 ! CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE DES FLUX -
 ! ======================================================================
-! aslint: disable=W1504    
+! aslint: disable=W1504
     implicit none
 #include "asterfort/dilata.h"
 #include "asterfort/unsmfi.h"

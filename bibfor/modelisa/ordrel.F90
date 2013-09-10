@@ -35,7 +35,7 @@ subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Rearrangement of nodes, dof and relation coefficient tables in ascending order of nodes and dof 
+! Rearrangement of nodes, dof and relation coefficient tables in ascending order of nodes and dof
 ! for a given node
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc,&
         end do
     end do
 !
-! - Rearrangement of nodes, dof and relation coefficient tables in ascending order of dof for a 
+! - Rearrangement of nodes, dof and relation coefficient tables in ascending order of dof for a
 ! - given node
 !
     k = 0

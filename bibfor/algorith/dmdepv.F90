@@ -1,7 +1,7 @@
 subroutine dmdepv(rho, fsat, tbiot, dmdeps)
 
 ! ======================================================================
-!          
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ subroutine dmdepv(rho, fsat, tbiot, dmdeps)
 !
     integer :: i
     real(kind=8) :: rho, fsat, tbiot(6), dmdeps(6)
-    real(kind=8) :: rac2  
+    real(kind=8) :: rac2
     rac2=sqrt(2.d0)
     do 10 i = 1, 3
         dmdeps(i) = rho*tbiot(i)*fsat

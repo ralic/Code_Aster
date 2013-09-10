@@ -23,7 +23,7 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
 #include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
-    real(kind=8) :: vwork(tdisp) 
+    real(kind=8) :: vwork(tdisp)
 !    real(kind=8) ::vsign(nbvec*nbordr)
     integer ::jvsign
 ! ----------------------------------------------------------------------

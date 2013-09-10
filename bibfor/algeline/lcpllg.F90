@@ -102,9 +102,9 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
     call lceqvn(ndt, se, yd)
     yd(ndt+1)=invare
-    yd(ndt+2)=gamp 
-    yd(ndt+3)=evp 
-    yd(ndt+4)=delta 
+    yd(ndt+2)=gamp
+    yd(ndt+3)=evp
+    yd(ndt+4)=delta
 ! ======================================================================
 ! --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 ! ======================================================================
@@ -268,7 +268,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                                   &(4)
                     endif
                     vinf(1)=gamps
-                    vinf(2)=evp 
+                    vinf(2)=evp
                     vinf(nvi) = 1.0d0
                     irteti = 0
                 else

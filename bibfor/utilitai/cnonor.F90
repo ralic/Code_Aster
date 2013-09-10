@@ -161,7 +161,7 @@ subroutine cnonor(nomo, gran, base, cno)
 !
         do idim = 1, ndim
             valr(idim) = zr(jnorm-1+ndim*(ii-1)+idim)
-        enddo 
+        enddo
 !
         call affeno(1, ino, nocmp, nbcomp, zk8(iacmp),&
                     ncmpmx, valr, k8b, zi(jdesc), zr(jval),&

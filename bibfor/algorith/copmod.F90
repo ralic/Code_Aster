@@ -233,9 +233,9 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
         if (champ .eq. 'DEPL') then
            if (typc .ne. 'C') then
               call zerlag(neq, zi(jdeeq), vectr=bmodr((i-1)*neq+1))
-           else 
+           else
               call zerlag(neq, zi(jdeeq), vectz=bmodz((i-1)*neq+1))
-           endif   
+           endif
         endif
 !
 10  end do

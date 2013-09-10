@@ -56,7 +56,7 @@ subroutine gcfonc(ichar ,iord  ,cartei,lfchar,lfmult,&
     nomchf = ' '
 !
 ! - SI FONCTION MULT + CHARGEMENT *_F -> ON DOIT COMBINER
-! 
+!
     if (lfmult) then
         if (lfchar) then
             nomchf = '&FM00000'

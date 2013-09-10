@@ -195,7 +195,7 @@ subroutine te0600(option, nomte)
                 angleu(1) = angmas(5)
             endif
             call eulnau(angleu/r8dgrd(), angnau/r8dgrd())
-!     
+!
 !# CAS OU AFFE_CARA_ELEM EST EN ANGLE NAUTIQUE (OK PAS DE CONVERSION)
         else
             if (ndim .eq. 3) then

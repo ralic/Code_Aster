@@ -48,7 +48,7 @@ subroutine gverfo(cartei, ier)
         if (zk8(ival+in-1)(1:7) .ne. '&FOZERO' .and. zk8(ival+in-1)(1:7) .ne. '       '&
             .and. zk8(ival+in-1)(1:6) .ne. 'GLOBAL') then
             nch19=zk8(ival+in-1)
-            
+
             call jeveuo(nch19//'.PROL', 'L', iprol)
             if (zk24(iprol)(1:8) .eq. 'INTERPRE') then
                 ier=1

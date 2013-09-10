@@ -3,7 +3,7 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
 
     implicit none
 ! ======================================================================
-!  
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
      talpha(1,1)=elas1(1)
      talpha(2,2)=elas1(1)
      talpha(3,3)=elas1(1)
-     
+
 ! =====================================================================
 ! --- CALCUL CAS ISOTROPE TRANSVERSE 3D-------------------------------
 ! =====================================================================

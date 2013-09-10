@@ -108,7 +108,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
                 else
                     call u2mesk('A', 'RUPTURE2_4', 1, charge)
                     call jedupo(cartei//'.VALE', 'V', carteo//'.VALE', .false.)
-                    goto 999 
+                    goto 999
                 endif
             endif
 20      continue

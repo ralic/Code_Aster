@@ -301,11 +301,11 @@ subroutine jelira (nomlu, catr, ival, cval)
     if (lcv .ne. 0) then
         if (present(cval)) then
             cval = cva(1:lcv)
-        endif     
+        endif
     else
        if (present(ival)) then
             ival = iva
-        endif     
+        endif
     endif
 !
     if (lcol) then

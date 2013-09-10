@@ -118,7 +118,7 @@ subroutine medomp(result, modele, mate, carele, nh)
         endif
 !
 ! ----- VERIFICATION DE L'UNICITE DU MODELE DANS LE RESULTAT
-!       
+!
         numord = numlu
         call rslesd(result,numord,modele,materi,carele,k19bid,iexcit)
         do 99 iordr = 2, nbordr

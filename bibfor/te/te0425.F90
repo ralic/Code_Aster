@@ -38,9 +38,9 @@ subroutine te0425(option, nomte)
 ! Elementary computation
 !
 ! Elements: 3D
-! Option: RIGI_MECA_PRSU_F 
+! Option: RIGI_MECA_PRSU_F
 !         CHAR_MECA_PRSU_F
-!         RIGI_MECA_EFSU_F 
+!         RIGI_MECA_EFSU_F
 !         CHAR_MECA_EFSU_F
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ subroutine te0425(option, nomte)
     coef_mult = 1.d0
     if (option.eq.'CHAR_MECA_EFSU_F'.or.option.eq.'RIGI_MECA_EFSU_F') then
         call jevech('PEFOND', 'L', j_effe)
-        coef_mult = zr(j_effe-1+1)    
+        coef_mult = zr(j_effe-1+1)
     endif
 !
 ! - Pressure

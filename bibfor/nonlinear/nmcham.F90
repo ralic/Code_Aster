@@ -155,13 +155,13 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     mat(6) = w
     mat(7) = gamma0
     mat(8) = ainf
-    
+
     if (b < 0.d0) then
         valk(1)=compor(1)
         valk(2)='b'
         call u2mesg('A', 'COMPOR1_84', 2, valk, 0, ibid, 1, b)
     endif
-    
+
     if (w < 0.d0) then
         valk(1)=compor(1)
         valk(2)='w'

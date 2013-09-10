@@ -340,12 +340,12 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 ! --------------------------------------------------------------------
 !
     ASSERT(nse.le.nsemax)
-    if(ninter.eq.3.and.npts.eq.1.and.ndime.eq.2) then 
+    if(ninter.eq.3.and.npts.eq.1.and.ndime.eq.2) then
       lsnbc=lsn(cnset(nnose*(it-1)+b))+lsn(cnset(nnose*(it-1)+c))
       heav(1)=-sign(1.d0,lsnbc)
       heav(2)=sign(1.d0,lsnbc)
       heav(3)=sign(1.d0,lsnbc)
-    else 
+    else
       do 300 ise = 1, nse
         heav(ise)=1.d0
         do 310 in = 1, ndime+1

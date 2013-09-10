@@ -74,7 +74,7 @@ subroutine char_impo_liai(nomg, type_liai, cmp_nb, cmp_name, cmp_index,  &
     cmp_nb    = 0
 !
 ! - Information about <GRANDEUR>
-! 
+!
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
 !
 ! - DOF index in catalogue

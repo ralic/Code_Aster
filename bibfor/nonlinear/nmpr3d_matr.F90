@@ -40,7 +40,7 @@ subroutine nmpr3d_matr(nno, npg, poidsg, vff, dff, &
 !
 ! Loads computation
 !
-! Pressure for faces of 3D elements - Tangent matrix 
+! Pressure for faces of 3D elements - Tangent matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !

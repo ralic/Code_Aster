@@ -112,7 +112,7 @@ subroutine op0107()
                 call rsutnu(resuco, ' ', 0, knum, nbordr,&
                             prec, crit, iret)
                 if (nbordr .ne. 1) call u2mess('F', 'POSTELEM_10')
-                if (iret .ne. 0) goto 999 
+                if (iret .ne. 0) goto 999
                 call jeveuo(knum, 'L', jordr)
                 call rsexch('F', resuco, 'DEPL', zi(jordr), chdef,&
                             iret)

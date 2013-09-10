@@ -32,7 +32,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*),  intent(in) :: phenom
-    character(len=16), intent(in) :: load_type 
+    character(len=16), intent(in) :: load_type
     character(len=8), intent(in)  :: load
     character(len=8), intent(in)  :: mesh
     character(len=19), intent(in) :: ligrmo
@@ -78,7 +78,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 ! - Number of <CARTE> objects - TODO: using lisdef utility
 !
     if (load_type.eq.'EFFE_FOND') then
-        nb_carte = 2   
+        nb_carte = 2
     elseif (load_type.eq.'ONDE_PLANE') then
         nb_carte = 2
     elseif (load_type.eq.'ROTATION') then

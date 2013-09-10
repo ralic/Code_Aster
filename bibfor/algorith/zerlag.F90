@@ -64,13 +64,13 @@ subroutine zerlag(nbddl, ideeq, vectr, vectz )
             ityp = ideeq(2*i)
             if (ityp .le. 0) vectr(i)=0.d0
         end do
-    endif    
+    endif
     if (present(vectz)) then
 !     1.2 - CAS COMPLEXE
         do i = 1, nbddl
             ityp = ideeq(2*i)
             if (ityp .le. 0) vectz(i)=dcmplx(0.d0,0.d0)
-        end do 
+        end do
     endif
 !  ____________________________________________________________________
 !

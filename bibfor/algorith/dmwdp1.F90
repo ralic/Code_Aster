@@ -1,7 +1,7 @@
 function dmwdp1(rho11, signe, sat, dsatp1, phi,&
                 cs, cliq, dp11p1, emmag, em)
 ! ======================================================================
-!            
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

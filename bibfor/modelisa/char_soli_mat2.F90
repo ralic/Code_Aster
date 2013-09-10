@@ -22,7 +22,7 @@ subroutine char_soli_mat2(am, matr_inve_1, matr_2, matr_4, matr_3,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!    
+!
     real(kind=8), intent(in) :: am(3)
     real(kind=8), intent(in) :: matr_inve_1(3, 3)
     real(kind=8), intent(in) :: matr_2(3, 12)

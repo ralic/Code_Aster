@@ -38,9 +38,9 @@ subroutine te0424(option, nomte)
 ! Elementary computation
 !
 ! Elements: 3D
-! Option: RIGI_MECA_PRSU_R 
+! Option: RIGI_MECA_PRSU_R
 !         CHAR_MECA_PRSU_R
-!         RIGI_MECA_EFSU_R 
+!         RIGI_MECA_EFSU_R
 !         CHAR_MECA_EFSU_R
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ subroutine te0424(option, nomte)
     coef_mult = 1.d0
     if (option.eq.'CHAR_MECA_EFSU_R'.or.option.eq.'RIGI_MECA_EFSU_R') then
         call jevech('PEFOND', 'L', j_effe)
-        coef_mult = zr(j_effe-1+1)    
+        coef_mult = zr(j_effe-1+1)
     endif
 !
 ! - Evaluation of pressure at Gauss points (from nodes)
