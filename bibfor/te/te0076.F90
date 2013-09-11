@@ -75,7 +75,7 @@ subroutine te0076(option, nomte)
     call jevech('PTEMPSR', 'L', itemps)
     theta = zr(itemps+2)
 !
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
     aniso = .false.
     if (phenom .eq. 'THER') then

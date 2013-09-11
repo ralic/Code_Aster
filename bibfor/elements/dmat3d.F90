@@ -82,7 +82,7 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 !      --------------------------------------------
-    call rccoma(mater, 'ELAS', 1, phenom, icodre)
+    call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
 !
 !      ------------
 ! ---- CAS ISOTROPE

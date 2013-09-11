@@ -57,7 +57,7 @@ subroutine te0318(option, nomte)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PSOUR_R', 'E', iflux)
 !
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
     fami='FPG1'
     kpg=1

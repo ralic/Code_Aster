@@ -101,7 +101,7 @@ subroutine fornpd(option, nomte)
     endif
     call jevech('PDEPLMR', 'L', ideplm)
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .ne. 'ELAS') then
         call u2mess('F', 'ELEMENTS_42')

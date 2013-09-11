@@ -227,7 +227,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         alpha = valres(3)
         k3a = alpha * e / (1.d0-2.d0*nu)
 !
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('XFEM', ipg, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', 0.d0,&
                     1, 'RHO', rho, codrho, 0)

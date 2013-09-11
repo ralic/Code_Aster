@@ -60,7 +60,7 @@ subroutine dxsit2(nomte, pgl, sigma)
     integer :: iret1, iret2, iret3, iret4, iret5
     integer :: icou, icou2, nbcou, ipg, igauh, npgh, icpg, nbcmp, imoy
     integer :: jnbspi, jmate
-    integer :: indith, icodre
+    integer :: indith, icodre(1)
 !
     real(kind=8) :: dm(3, 3), tref
     real(kind=8) :: tinf(4), tmoy(4), tsup(4)
@@ -127,7 +127,7 @@ subroutine dxsit2(nomte, pgl, sigma)
  5  end do
 !
     call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
 ! --- CAS NON TRAITES PAR CETTE ROUTINE
     if ((phenom.eq.'ELAS') .or. (phenom.eq.'ELAS_ISTR') .or. (phenom.eq.'ELAS_ORTH') .or.&

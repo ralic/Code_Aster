@@ -115,7 +115,7 @@ subroutine rcevoa(typtab, nommat)
     nomval(2) = 'B_AMORC'
     nomval(3) = 'D_AMORC'
     nomval(4) = 'R_AMORC'
-    call rcvale(nommat, 'RCCM', nbpar, nompar, r8b,&
+    call rcvale(nommat, 'RCCM', nbpar, nompar, [r8b],&
                 4, nomval, valres, icodre, 2)
     aamorc = valres(1)
     bamorc = valres(2)

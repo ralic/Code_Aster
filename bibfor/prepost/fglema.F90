@@ -52,7 +52,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
     character(len=16) :: pheno, phenom
     real(kind=8) :: valmoi(3), valplu(3), temmoi, templu, pmoi, pplu
     real(kind=8) :: sihmoi, sihplu, seqmoi, seqplu, vmoi, vplu, vale
-    real(kind=8) :: vseuil, exps, expo
+    real(kind=8) :: vseuil(1), exps(1), expo
     real(kind=8) :: null, un, deux, trois
 !-----------------------------------------------------------------------
     integer :: i, ide, idev, nbpar
@@ -88,21 +88,21 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 ! --- RECUPERATION DE EXP_S
         nompar = '       '
         nomres(1) = 'EXP_S'
-        call rcvale(nommat, 'DOMMA_LEMAITRE', 0, nompar, rbid,&
-                    1, nomres(1), exps, icodre(1), 2)
+        call rcvale(nommat, 'DOMMA_LEMAITRE', 0, nompar, [rbid],&
+                    1, nomres(1), exps(1), icodre(1), 2)
 ! --- RECUPERATION DU VSEUIL AUX INSTANTS TI+1
         nbpar = 1
         nompar = 'TEMP'
         temmoi = temp(i)
         templu = temp(i+1)
         nomres(1) = 'EPSP_SEU'
-        call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, templu,&
-                    1, nomres(1), vseuil, icodre(1), 2)
+        call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [templu],&
+                    1, nomres(1), vseuil(1), icodre(1), 2)
 !
         pmoi = defpla(i)
         pplu = defpla(i+1)
 !
-        if (pplu .gt. vseuil-zero) then
+        if (pplu .gt. vseuil(1)-zero) then
 !
 ! --- RECUPERATION DE E,NU,S,PD AUX INSTANTS TI ET TI+1
 !
@@ -110,13 +110,13 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
             nomres(2) = 'NU'
             nomres(3) = 'S'
 !
-            call rcvale(nommat, 'ELAS', nbpar, nompar, temmoi,&
+            call rcvale(nommat, 'ELAS', nbpar, nompar, [temmoi],&
                         2, nomres(1), valmoi(1), icodre(1), 2)
-            call rcvale(nommat, 'ELAS', nbpar, nompar, templu,&
+            call rcvale(nommat, 'ELAS', nbpar, nompar, [templu],&
                         2, nomres(1), valplu(1), icodre(1), 2)
-            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, temmoi,&
+            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [temmoi],&
                         1, nomres(3), valmoi(3), icodre(3), 2)
-            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, templu,&
+            call rcvale(nommat, 'DOMMA_LEMAITRE', nbpar, nompar, [templu],&
                         1, nomres(3), valplu(3), icodre(3), 2)
 !
 ! --- CALCUL DE SIGMAH ET SIGMA EQUIVALENTE AUX INSTANTS TI ET TI+1
@@ -153,19 +153,19 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
             vmoi = ((un/trois)*(un+valmoi(2))*seqmoi)
             vmoi = vmoi+((trois/deux)*(un-deux*valmoi(2))*sihmoi)
             vmoi = (un/(valmoi(1)*valmoi(3)))*vmoi
-            vmoi = vmoi**exps
+            vmoi = vmoi**exps(1)
 !
 !
             vplu = ((un/trois)*(un+valplu(2))*seqplu)
             vplu = vplu+((trois/deux)*(un-deux*valplu(2))*sihplu)
             vplu = (un/(valplu(1)*valplu(3)))*vplu
-            vplu = vplu**exps
+            vplu = vplu**exps(1)
 !
 !
             vale = (un/deux)*(vmoi+vplu)
             vale = vale * (pplu-pmoi)
 !
-            expo = deux*exps+un
+            expo = deux*exps(1)+un
             if (dom(i) .gt. un) then
                 vale = -expo*vale
             else

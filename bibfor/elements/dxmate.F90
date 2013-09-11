@@ -105,7 +105,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
         multic = 0
         goto 999
     endif
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS_COQMU') then
 !

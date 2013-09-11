@@ -329,7 +329,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 !
 !  FIN remplissage de MATER(*,2)
 !
-    call rccoma(imat, 'ELAS', 1, phenom, cerr)
+    call rccoma(imat, 'ELAS', 1, phenom, cerr(1))
     if (phenom .eq. 'ELAS') then
 !
 ! -    ELASTICITE ISOTROPE

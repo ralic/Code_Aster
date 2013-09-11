@@ -112,7 +112,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
     real(kind=8) :: sigmax, exm, eym, ezm, epsnm1, epnm1m, sigmin
     real(kind=8) :: strema, stremi, veps(6), eqeps, vepst, epspac
     integer :: nperm, itype, iordre, nvp, nitjac, ordini, ordfin
-    integer :: i, j, k, l, ibid, jprof, nparma, np, icodre, adr, iret, ipar
+    integer :: i, j, k, l, ibid, jprof, nparma, np, icodre(1), adr, iret, ipar
     integer :: decal, paract(30), adrl, iarg, nbf, nbtot
     character(len=24) :: chnom, cbid
     character(len=16) :: phenom, typcha
@@ -677,8 +677,8 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
             endif
 !
 !        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
-            call rccome(nommat, 'FATIGUE', phenom, icodre)
-            if (icodre .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            call rccome(nommat, 'FATIGUE', phenom, icodre(1))
+            if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
 !        POUR CRITERE= DANG_VAN OU MATAKE
 !
 !
@@ -689,7 +689,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
 !
                 call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', grdeq(k),&
-                            1, 'WOHLER  ', nrupt(k), icodre, 1)
+                            1, 'WOHLER  ', nrupt(k), icodre(1), 1)
             endif
             dom(k) = 1.d0/nrupt(k)
             nrupt(k)= nint(nrupt(k))
@@ -755,8 +755,8 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 ! CELAAS DE SENS.
 !
 !        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
-            call rccome(nommat, 'FATIGUE', phenom, icodre)
-            if (icodre .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            call rccome(nommat, 'FATIGUE', phenom, icodre(1))
+            if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
 !
 !        POUR CRITERE= FORMULE
 !
@@ -771,18 +771,18 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
                     nomgrd = 'SIGM    '
                     grdvie(7:8) = '  '
                     call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k),&
-                                1, grdvie, nrupt(k), icodre, 1)
+                                1, grdvie, nrupt(k), icodre(1), 1)
                 endif
 !
                 if (grdvie(1:8) .eq. 'MANSON_C') then
                     nomgrd = 'EPSI    '
                     call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k),&
-                                1, grdvie, nrupt(k), icodre, 1)
+                                1, grdvie, nrupt(k), icodre(1), 1)
                 endif
 !
                 if (grdvie(1:8) .eq. 'FORM_VIE') then
 !
-                    call renrfa(forvie, grdeq(k), nrupt(k), icodre)
+                    call renrfa(forvie, grdeq(k), nrupt(k), icodre(1))
 !
                 endif
 !

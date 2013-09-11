@@ -88,7 +88,7 @@ subroutine te0190(option, nomte)
 ! ---- RECUPERATION DU MATERIAU
 !      ------------------------
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 !      ------------------------------------------------------------

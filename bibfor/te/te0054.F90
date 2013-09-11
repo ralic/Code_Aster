@@ -37,7 +37,7 @@ subroutine te0054(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/u2mess.h"
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option, phenom
     real(kind=8) :: valpar, dfdx(27), dfdy(27), dfdz(27), poids
@@ -59,8 +59,8 @@ subroutine te0054(option, nomte)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PMATTTR', 'E', imattt)
 !
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
-    if (icodre .ne. 0) call u2mess('A', 'ELEMENTS2_63')
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
+    if (icodre(1) .ne. 0) call u2mess('A', 'ELEMENTS2_63')
     fami='FPG1'
     kpg=1
     spt=1
@@ -70,7 +70,7 @@ subroutine te0054(option, nomte)
     deltat = zr(itemps+1)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
                 ' ', phenom, 1, 'INST', valpar,&
-                1, 'RHO_CP', cp, icodre, 1)
+                1, 'RHO_CP', cp, icodre(1), 1)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !

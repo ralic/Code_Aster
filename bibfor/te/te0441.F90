@@ -104,7 +104,7 @@ subroutine te0441(option, nomte)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     PARAMETRE MATERIAU : RHO MASSE VOLUMIQUE
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     famil='FPG1'
     kpg=1
     spt=1

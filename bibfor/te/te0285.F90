@@ -45,7 +45,7 @@ subroutine te0285(option, nomte)
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9)
     real(kind=8) :: matine(6), r8b, xxi, xyi, yyi, volume
     real(kind=8) :: ixrp2, iyrp2, xp(9), yp(9), xpg, ypg
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: elrefe
     character(len=16) :: phenom
 !     ------------------------------------------------------------------
@@ -60,12 +60,12 @@ subroutine te0285(option, nomte)
 !
     if (option .eq. 'MASS_INER') then
         call jevech('PMATERC', 'L', imate)
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                         ' ', phenom, 0, ' ', r8b,&
-                        1, 'RHO', rho, icodre, 1)
+                        1, 'RHO', rho, icodre(1), 1)
             if (rho .le. r8prem()) then
                 call u2mess('F', 'ELEMENTS5_45')
             endif

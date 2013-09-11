@@ -64,7 +64,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     character(len=19) :: chequi, chequ2(nbordr)
     character(len=24) :: nomdmg
     character(len=24) :: valk(3)
-    integer :: icodre
+    integer :: icodre(1)
 !
     real(kind=8) :: su, salt0, dmax, saltm, val(1)
     real(kind=8) :: valr(3), r8b, dmin, smax, coeff, r8min
@@ -110,9 +110,9 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !
     nomrm(1) = 'SU'
     nompar = ' '
-    call rcvale(nommat, 'RCCM', 0, nompar, r8b,&
-                1, nomrm, val, icodre, 2)
-    if (icodre .ne. 0) then
+    call rcvale(nommat, 'RCCM', 0, nompar, [r8b],&
+                1, nomrm, val, icodre(1), 2)
+    if (icodre(1) .ne. 0) then
         valk(1) = 'SU'
         call u2mesk('F', 'FATIGUE1_88', 1, valk)
     endif

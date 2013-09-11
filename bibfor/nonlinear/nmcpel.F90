@@ -60,7 +60,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, icodre
+    integer :: i, icodre(1)
     real(kind=8) :: sigm(6), energi(2), r8bid
     character(len=16) :: phenom
 !
@@ -68,10 +68,10 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
 !
     codret = 0
 !
-    call rccoma(imate, 'ELAS', 1, phenom, icodre)
+    call rccoma(imate, 'ELAS', 1, phenom, icodre(1))
 !
 ! - ORTHOTROPIE OU ISOTROPIE TRANSVERSE LINEAIRE
-    if (icodre .eq. 0 .and. (phenom(1:6).eq.'ELAS_O'.or.phenom(1:6).eq.'ELAS_I')) then
+    if (icodre(1) .eq. 0 .and. (phenom(1:6).eq.'ELAS_O'.or.phenom(1:6).eq.'ELAS_I')) then
         if (compor(1)(1:5) .eq. 'ELAS ') then
             do 30 i = 1, 6
                 sigm(i)=0.d0

@@ -266,7 +266,7 @@ subroutine te0600(option, nomte)
         call jevech('PMATERC', 'L', imate)
         call jevech('PPESANR', 'L', ipesa)
         call jevech('PVECTUR', 'E', ivectu)
-        call rccoma(zi(imate), 'THM_DIFFU', 1, phenom, icodre)
+        call rccoma(zi(imate), 'THM_DIFFU', 1, phenom, icodre(1))
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', r8bid,&
                     1, 'RHO', rho, icodre, 1)

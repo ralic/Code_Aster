@@ -69,7 +69,7 @@ subroutine te0225(option, nomte)
 !
 ! --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !     -------------------------------------------------
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS') then
 !

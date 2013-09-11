@@ -28,10 +28,10 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
 !     OPERATEUR POST_RCCM: CALCUL DU KE, SALT, NADM
 !
 !     ------------------------------------------------------------------
-    real(kind=8) :: un, xm, xn, sns3, troism
+    real(kind=8) :: un, xm, xn, sns3, troism, tnadm(1)
     character(len=8) :: kbid
     real(kind=8) :: valr(2)
-    integer :: icodre
+    integer :: icodre(1)
     logical :: endur
 !     ------------------------------------------------------------------
 !
@@ -75,8 +75,9 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
     if (endur) then
         nadm=r8maem()
     else
-        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', salt,&
-                    1, 'WOHLER  ', nadm, icodre, 2)
+        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salt],&
+                    1, 'WOHLER  ', tnadm(1), icodre(1), 2)
+        nadm=tnadm(1)           
         if (nadm .lt. 0) then
             valr (1) = salt
             valr (2) = nadm

@@ -84,7 +84,7 @@ subroutine te0078(option, nomte)
     call jevech('PVECTTR', 'E', ivectt)
     deltat = zr(itemps+1)
     theta = zr(itemps+2)
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
 !====
 ! 1.3 PREALABLES LIES A LA RECUPERATION DES DONNEES MATERIAUX

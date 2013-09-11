@@ -48,7 +48,7 @@ subroutine te0082(option, nomte)
 !
     character(len=16) :: phenom
     character(len=1) :: stopz(3)
-    integer :: icodre
+    integer :: icodre(1)
 !      CHARACTER*4        FAMI
     real(kind=8) :: valres, dfdx(9), dfdy(9), poids, r, r8b, vfi, vfj
     real(kind=8) :: matp(18, 18), matv(171), masvit(18), masdep(18)
@@ -77,10 +77,10 @@ subroutine te0082(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                 ' ', phenom, 0, ' ', r8b,&
-                1, 'RHO', valres, icodre, 1)
+                1, 'RHO', valres, icodre(1), 1)
 !
     do 2 k = 1, nvec
         matv(k) = 0.0d0

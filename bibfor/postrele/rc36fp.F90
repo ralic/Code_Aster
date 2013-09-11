@@ -44,9 +44,9 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, nsitup, ifm, niv, icompt
     integer :: jspas, nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
-    real(kind=8) :: saltm, nadm, ukl, vale(2)
+    real(kind=8) :: saltm, nadm(1), ukl, vale(2)
     logical :: trouve, endur, yapass
-    integer :: icodre
+    integer :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=3) :: typass
     character(len=8) :: k8b
@@ -106,15 +106,15 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
     if (endur) then
         ukl = 0.d0
     else
-        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', saltm,&
-                    1, 'WOHLER  ', nadm, icodre, 2)
-        if (nadm .lt. 0) then
+        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [saltm],&
+                    1, 'WOHLER  ', nadm(1), icodre(1), 2)
+        if (nadm(1) .lt. 0) then
             vale(1) = saltm
-            vale(2) = nadm
+            vale(2) = nadm(1)
             call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
                         0, 2, vale)
         endif
-        ukl = dble( n0 ) / nadm
+        ukl = dble( n0 ) / nadm(1)
     endif
 !
     if (icompt .le. 49) then
@@ -145,7 +145,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
             , k2l, situ(2*(isl-1)+1), k2c
         endif
         write(ifm,1030)'          N0 = ', n0
-        write(ifm,1020)'        NADM = ', nadm
+        write(ifm,1020)'        NADM = ', nadm(1)
         write(ifm,1020)'         UKL = ', ukl
     endif
 !

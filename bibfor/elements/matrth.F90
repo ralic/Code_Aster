@@ -47,7 +47,7 @@ subroutine matrth(fami, npg, young, nu, alpha,&
 !
     call jevech('PMATERC', 'L', jmate)
 !
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS') then
 !

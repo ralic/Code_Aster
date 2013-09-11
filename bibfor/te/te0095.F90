@@ -173,7 +173,7 @@ subroutine te0095(option, nomte)
     endif
 !
     if ((ipesau.ne.0) .or. (irotau.ne.0)) then
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
                     ' ', phenom, 1, ' ', rbid,&
                     1, 'RHO', rho, icodre, 1)
@@ -201,7 +201,7 @@ subroutine te0095(option, nomte)
     endif
 !
     if ((ipesav.ne.0) .or. (irotav.ne.0)) then
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
                     ' ', phenom, 1, ' ', rbid,&
                     1, 'RHO', rho, icodre, 1)

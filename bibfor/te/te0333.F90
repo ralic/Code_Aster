@@ -119,7 +119,7 @@ subroutine te0333(option, nomte)
 ! ---    (POUR L'INSTANT PAS D'ORTHOTROPIE NI D'ISOTROPIE TRANSVERSE
 ! ---    EN PLASTICITE) :
 !        --------------
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
         call u2mesk('F', 'ELEMENTS3_75', 1, phenom(1:12))
     endif

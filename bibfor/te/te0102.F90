@@ -126,7 +126,7 @@ subroutine te0102(option, nomte)
 !
 ! --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM :
 !     -------------------------------------------------
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
 ! --- DETERMINATION DU TENSEUR DE CAPACITE THERMIQUE :
 !     ==============================================

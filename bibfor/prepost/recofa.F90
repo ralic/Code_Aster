@@ -48,8 +48,8 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !                  DE LA FATIGUE AUX NOEUDS.
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    real(kind=8) :: r8b
-    integer :: icodre
+    real(kind=8) :: r8b, v(1)
+    integer :: icodre(1)
     character(len=8) :: k8b
     character(len=16) :: phenom
 !     ------------------------------------------------------------------
@@ -66,8 +66,8 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         goto 999
     endif
 !
-    call rccome(nommat, 'CISA_PLAN_CRIT', phenom, icodre)
-    if (icodre .eq. 1) then
+    call rccome(nommat, 'CISA_PLAN_CRIT', phenom, icodre(1))
+    if (icodre(1) .eq. 1) then
         call u2mess('F', 'FATIGUE1_63')
     endif
 !
@@ -75,20 +75,23 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !     LA MAILLE COURANTE
 !
     if (nomcri(1:14) .eq. 'MATAKE_MODI_AC') then
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'MATAKE_A', vala, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'MATAKE_A', v(1), icodre(1), 0)
+        vala=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_64')
         endif
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'MATAKE_B', valb, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'MATAKE_B', v(1), icodre(1), 0)
+        valb=v(1)            
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_65')
         endif
 !
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'COEF_FLE', coefpa, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'COEF_FLE', v(1), icodre(1), 0)
+        coefpa=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_66')
         endif
 !
@@ -96,21 +99,24 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !     LA MAILLE COURANTE
 !
     else if (nomcri(1:16) .eq. 'DANG_VAN_MODI_AC') then
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'D_VAN_A ', vala, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'D_VAN_A ', v(1), icodre(1), 0)
+        vala=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_67')
         endif
 !
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'D_VAN_B ', valb, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'D_VAN_B ', v(1), icodre(1), 0)
+        valb=v(1) 
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_68')
         endif
 !
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'COEF_CIS', coefpa, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'COEF_CIS', v(1), icodre(1), 0)
+        coefpa=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_69')
         endif
     endif
@@ -119,20 +125,23 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !     POUR LA MAILLE COURANTE
 !
     if (nomcri(1:14) .eq. 'MATAKE_MODI_AV') then
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'MATAKE_A', vala, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'MATAKE_A', v(1), icodre(1), 0)
+        vala=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_70')
         endif
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'MATAKE_B', valb, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'MATAKE_B', v(1), icodre(1), 0)
+        valb=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_71')
         endif
 !
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'COEF_FLE', coefpa, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'COEF_FLE', v(1), icodre(1), 0)
+        coefpa=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_72')
         endif
     endif
@@ -141,20 +150,23 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !     POUR LA MAILLE COURANTE
 !
     if (nomcri(1:16) .eq. 'DANG_VAN_MODI_AV') then
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'D_VAN_A ', vala, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'D_VAN_A ', v(1), icodre(1), 0)
+        vala=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_73')
         endif
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'D_VAN_B ', valb, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'D_VAN_B ', v(1), icodre(1), 0)
+        valb=v(1)            
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_74')
         endif
 !
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'COEF_CIS', coefpa, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'COEF_CIS', v(1), icodre(1), 0)
+        coefpa=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_72')
         endif
     endif
@@ -163,17 +175,19 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !     POUR LA MAILLE COURANTE
 !
     if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'FATSOC_A', vala, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'FATSOC_A', v(1), icodre(1), 0)
+        vala=v(1)            
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_75')
         endif
 !
         valb = 1.0d0
 !
-        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, r8b,&
-                    1, 'COEF_CIS', coefpa, icodre, 0)
-        if (icodre .eq. 1) then
+        call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
+                    1, 'COEF_CIS', v(1), icodre(1), 0)
+        coefpa=v(1)
+        if (icodre(1) .eq. 1) then
             call u2mess('F', 'FATIGUE1_72')
         endif
 !

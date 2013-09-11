@@ -98,7 +98,7 @@ subroutine dxefn2(nomte, pgl, sigt)
 42  end do
 !
     call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if ((phenom.eq.'ELAS') .or. (phenom.eq.'ELAS_COQUE') .or. (phenom.eq.'ELAS_COQMU')) then
 !

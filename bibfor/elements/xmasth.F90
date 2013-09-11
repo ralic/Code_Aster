@@ -84,7 +84,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     real(kind=8) :: r
     integer :: ivf, kpg, ibid, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl
-    integer :: mxstac, icodre, spt, ipoids, idfde, nosema, ind1, lddl, jnp
+    integer :: mxstac, icodre(1), spt, ipoids, idfde, nosema, ind1, lddl, jnp
     integer :: iddlma
     integer ::  ind2
 !
@@ -114,8 +114,8 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     deltat = zr(itemps-1+2)
 !
 !     POUR PREPARER L'APPEL A RCVALB
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
-    if (icodre .ne. 0) call u2mess('F', 'ELEMENTS2_63')
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
+    if (icodre(1) .ne. 0) call u2mess('F', 'ELEMENTS2_63')
 !     POUR L'INSTANT ON NE TRAITE PAS 'THER_ORTH'
     ASSERT(phenom.eq.'THER')
     valpar(1) = zr(itemps-1+1)

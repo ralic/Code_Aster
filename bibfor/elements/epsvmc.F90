@@ -66,7 +66,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
     character(len=8) :: phenom
     real(kind=8) :: epsth(162), eps2(162), xyzgau(3), d(4, 4)
     real(kind=8) :: zero, un, deux
-    integer :: i, igau, icodre
+    integer :: i, igau, icodre(1)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
@@ -100,7 +100,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 ! --- CALCUL DES DEFORMATIONS THERMIQUES AUX POINTS D'INTEGRATION
 ! --- (AJOUTEES AUX DEFORMATIONS DE RETRAIT ENDOGENE/DESSICCATION)
 !      ----------------------------------------------------------
-    call rccoma(mater, 'ELAS', 1, phenom, icodre)
+    call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
     if (phenom(1:8) .ne. 'ELAS_MET') then
         call epthmc(fami, nno, ndim, nbsig, npg,&
                     zr(ivf), xyz, repere, instan, mater,&

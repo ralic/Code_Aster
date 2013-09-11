@@ -34,7 +34,7 @@ subroutine te0085(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre
+    integer :: icodre(1)
     real(kind=8) :: dfdx(9), dfdy(9), poids, rx
     integer :: nno, kp, k, npg, i, ivectu, ipesa
     integer :: ipoids, ivf, idfde, igeom, imate
@@ -52,10 +52,10 @@ subroutine te0085(option, nomte)
     call jevech('PPESANR', 'L', ipesa)
     call jevech('PVECTUR', 'E', ivectu)
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                 ' ', phenom, 0, ' ', r8b,&
-                1, 'RHO', rho, icodre, 1)
+                1, 'RHO', rho, icodre(1), 1)
 !
     do 101 kp = 1, npg
         k = nno*(kp-1)

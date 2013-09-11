@@ -65,7 +65,7 @@ subroutine te0033(option, nomte)
     integer :: jdepg, jeffg, jgeom, jmate, jsigm
     integer :: np, multic
     integer :: jnbspi, nbcou, icou
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
 !
     real(kind=8) :: zero, epi, epais, eptot, alpha, beta
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid, valr(2)
@@ -137,8 +137,8 @@ subroutine te0033(option, nomte)
             poum='+'
             call rcvalb(famil, kpg, spt, poum, zi(jmate),&
                         ' ', 'ELAS_COQMU', 0, ' ', r8bid,&
-                        1, nomres, epi, icodre, 0)
-            if (icodre .eq. 0) then
+                        1, nomres, epi, icodre(1), 0)
+            if (icodre(1) .eq. 0) then
                 eptot=eptot+epi
                 goto 5
             endif
@@ -217,7 +217,7 @@ subroutine te0033(option, nomte)
             ASSERT(.false.)
         endif
 !
-        call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !        ON NE SAIT PAS TRAITER LE CAS ELAS_COQUE
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
             call dxsith(nomte, zi(jmate), zr(jsigm))

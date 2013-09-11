@@ -143,7 +143,7 @@ subroutine te0101(option, nomte)
 !
 ! --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !     -------------------------------------------------
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
 ! --- DETERMINATION DES TENSEURS DE CONDUCTIVITE MEMBRANAIRE
 ! --- ET TRANSVERSE :

@@ -50,7 +50,7 @@ subroutine matrc2(nbpar, nompar, valpar, kcis, matc,&
 !
     call jevech('PMATERC', 'L', jmate)
 !
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS') then
         nbv=2

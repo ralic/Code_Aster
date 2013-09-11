@@ -61,13 +61,13 @@ subroutine rc32ma(mater)
     motclf = 'SITUATION'
     call getfac(motclf, nbsitu)
 !
-    call rccome(mater, 'ELAS', phenom, icodre)
+    call rccome(mater, 'ELAS', phenom, icodre(1))
     if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'ELAS')
 !
-    call rccome(mater, 'FATIGUE', phenom, icodre)
+    call rccome(mater, 'FATIGUE', phenom, icodre(1))
     if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'FATIGUE')
 !
-    call rccome(mater, 'RCCM', phenom, icodre)
+    call rccome(mater, 'RCCM', phenom, icodre(1))
     if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
 !
     nocmp(1) = 'E'
@@ -101,13 +101,13 @@ subroutine rc32ma(mater)
         nopa = 'TEMP'
     endif
 !
-    call rcvale(mater, 'ELAS', nbpa, nopa, tempa,&
+    call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
                 3, nocmp(1), para(1), icodre, 2)
 !
-    call rcvale(mater, 'FATIGUE', nbpa, nopa, tempa,&
+    call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
                 1, nocmp(4), para(4), icodre, 2)
 !
-    call rcvale(mater, 'RCCM', nbpa, nopa, tempa,&
+    call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
                 3, nocmp(5), para(5), icodre, 2)
 !
     do 12 i = 1, nbcmp
@@ -129,13 +129,13 @@ subroutine rc32ma(mater)
         nopb = 'TEMP'
     endif
 !
-    call rcvale(mater, 'ELAS', nbpb, nopb, tempb,&
+    call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
                 3, nocmp(1), para(1), icodre, 2)
 !
-    call rcvale(mater, 'FATIGUE', nbpb, nopb, tempb,&
+    call rcvale(mater, 'FATIGUE', nbpb, nopb, [tempb],&
                 1, nocmp(4), para(4), icodre, 2)
 !
-    call rcvale(mater, 'RCCM', nbpb, nopb, tempb,&
+    call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
                 3, nocmp(5), para(5), icodre, 2)
 !
     do 14 i = 1, nbcmp

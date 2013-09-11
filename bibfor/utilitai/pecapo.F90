@@ -57,11 +57,11 @@ subroutine pecapo(resu, modele, cara, nh)
     character(len=19) :: nomtab
     character(len=24) :: chgeom, chcara(18), chharm, nogrma, noma, nomail
     complex(kind=8) :: c16b
-    real(kind=8) :: k1, k2, ky, kz, kyeq, kzeq, iyeq, izeq, seq, ee, gg, hh, ksi, nu
+    real(kind=8) :: k1, k2, ky, kz, kyeq, kzeq, iyeq, izeq, seq, ee, gg, hh, ksi, nu(1)
     real(kind=8) :: c1, c2, phi1, phi2, alphar, cos2, sin2, alpheq, ygeq, zgeq
     character(len=16) :: ll
     character(len=8) :: mater
-    integer :: icodre
+    integer :: icodre(1)
     integer :: ilignm, n1
     integer :: iarg
 !     ------------------------------------------------------------------
@@ -123,11 +123,11 @@ subroutine pecapo(resu, modele, cara, nh)
             call getvid('CARA_POUTRE', 'MATERIAU', 1, iarg, 1,&
                         mater, n1)
             if (n1 .eq. 0) then
-                nu=0.d0
+                nu(1)=0.d0
             else
                 k8b = ' '
-                call rcvale(mater, 'ELAS', 0, k8b, r8b,&
-                            1, 'NU      ', nu, icodre, 1)
+                call rcvale(mater, 'ELAS', 0, k8b, [r8b],&
+                            1, 'NU      ', nu(1), icodre(1), 1)
             endif
         endif
     endif
@@ -377,7 +377,7 @@ subroutine pecapo(resu, modele, cara, nh)
 !
 !         SEUL LE RAPPORT E/G EST IMPORTANT
 !
-            gg=1.d0/2.d0/(1.d0+nu)
+            gg=1.d0/2.d0/(1.d0+nu(1))
             ee=1.d0
             ksi=1.d0
             if (ll .eq. 'ROTULE') ksi=4.d0

@@ -81,7 +81,7 @@ subroutine te0109(option, nomte)
 ! --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !     -------------------------------------------------
     mater = zi(imate)
-    call rccoma(mater, 'THER', 1, phenom, icodre)
+    call rccoma(mater, 'THER', 1, phenom, icodre(1))
 !
 !       --------------------------
 ! ----- CAS DES COQUES ISOTROPES :

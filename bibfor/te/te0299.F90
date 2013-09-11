@@ -208,7 +208,7 @@ subroutine te0299(option, nomte)
 ! --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
 !
     if (lpesa .or. lrota) then
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
                     ' ', phenom, 1, ' ', rbid,&
                     1, 'RHO', rho, icodre, 1)
@@ -307,7 +307,7 @@ subroutine te0299(option, nomte)
             dfdm(3,3)= dfdm(1,4)/ray
         endif
 !
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
 ! ----- RECUPERATION DE E, NU
 !

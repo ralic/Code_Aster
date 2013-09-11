@@ -101,7 +101,7 @@ subroutine vdgnlr(option, nomte)
     integer :: nb1, nb2, nbpar
     integer :: iinstm, iinstp, jmate
     real(kind=8) :: valpar, epsthe
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: nompar
     character(len=10) :: phenom
 !
@@ -212,7 +212,7 @@ subroutine vdgnlr(option, nomte)
 !______________________________________________________________________
 !
     call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
 !

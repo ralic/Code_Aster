@@ -62,12 +62,12 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
     character(len=8) :: fami, poum
     character(len=16) :: phenom
     character(len=16) :: option
-    integer :: icodre
+    integer :: icodre(1)
 !
 !
     idec = dlns - ndim
 !
-    call rccoma(mate, 'ELAS', 1, phenom, icodre)
+    call rccoma(mate, 'ELAS', 1, phenom, icodre(1))
 !
     call r8inir(ndim*ndim*nno*nno, 0.d0, a, 1)
     call r8inir(ndim*nno*(ndim*nno+1)/2, 0.d0, matv, 1)

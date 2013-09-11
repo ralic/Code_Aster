@@ -94,11 +94,11 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     integer :: adrm, nbm, icmp, jconx1, jconx2, jfact, jnumgr, jpassa, npass
     integer :: ifm, niv, iocs, iad, jseigr, ioc2, jcinl, jccal, nbp12, nbp23
     integer :: nbp13
-    real(kind=8) :: ppi, ppj, snmax, samax, utot, saltij, ug, nadm, mpi(3)
+    real(kind=8) :: ppi, ppj, snmax, samax, utot, saltij, ug, nadm(1), mpi(3)
     real(kind=8) :: mpj(3), sm, sn, sp, c(3), k(3), cara(3), matpi(14)
     real(kind=8) :: matpj(14), mse(3), snb, sab, smm, vale(2)
     logical :: seisme, endur
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: k8b, nommat, noeud, valk(7), kbid
     character(len=24) :: momepi, momepj, nommai, nomnoe, connex, matepi, matepj
     real(kind=8) :: typeke, spmeca, spther
@@ -371,15 +371,15 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     if (endur) then
                         ug=0.d0
                     else
-                        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', saltij,&
-                                    1, 'WOHLER  ', nadm, icodre, 2)
-                        if (nadm .lt. 0) then
+                        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [saltij],&
+                                    1, 'WOHLER  ', nadm(1), icodre(1), 2)
+                        if (nadm(1) .lt. 0) then
                             vale(1) = saltij
-                            vale(2) = nadm
+                            vale(2) = nadm(1)
                             call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
                                         0, 2, vale)
                         endif
-                        ug = dble( nocc ) / nadm
+                        ug = dble( nocc ) / nadm(1)
                     endif
                     utot = utot + ug
 !

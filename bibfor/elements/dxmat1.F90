@@ -80,7 +80,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
 !     ------------------------------------------------
     indith = 0
     call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS') then
         if (norm .le. r8prem()) then

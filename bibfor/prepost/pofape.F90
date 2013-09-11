@@ -465,7 +465,7 @@ subroutine pofape()
     nomres(2) = 'TAU0'
     nbpar = 0
     nompar = ' '
-    call rcvale(nommat, 'FATIGUE ', nbpar, nompar, rbid,&
+    call rcvale(nommat, 'FATIGUE ', nbpar, nompar, [rbid],&
                 2, nomres, val, icodre, 2)
 !
     if (criter .eq. 'CROSSLAND') then

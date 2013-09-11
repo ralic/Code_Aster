@@ -46,7 +46,7 @@ subroutine te0012(option, nomte)
 #include "asterfort/u2mesk.h"
 #include "asterfort/vecma.h"
 #include "blas/ddot.h"
-    integer :: icodre
+    integer :: icodre(1)
 !
     character(len=16) :: nomte, option, phenom
     character(len=4) :: fami
@@ -79,7 +79,7 @@ subroutine te0012(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     do 50 k = 1, 3
         do 40 l = 1, 3
@@ -99,7 +99,7 @@ subroutine te0012(option, nomte)
                     dfdx, dfdy, dfdz, poids)
         call rcvalb(fami, kp, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', 0.d0,&
-                    1, 'RHO', rho, icodre, 1)
+                    1, 'RHO', rho, icodre(1), 1)
         do 80 i = 1, nno
             do 70 j = 1, i
                 a(1,1,i,j) = a(1,1,i,j) + rho*poids*zr(ivf+l+i-1)* zr(ivf+l+j-1)

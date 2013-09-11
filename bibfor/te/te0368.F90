@@ -273,7 +273,7 @@ subroutine te0368(option, nomte)
     if (yaprp .or. yarop .or. yaprd .or. yarod) then
 !
         call jevech('PMATERC', 'L', imate)
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         nompar(1)='RHO'
         fami='FPG1'
         kpg=1

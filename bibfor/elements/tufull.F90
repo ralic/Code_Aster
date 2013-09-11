@@ -237,7 +237,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !===============================================================
 !     RECUPERATION COMPORTEMENT POUR TERME DE CISAILLEMENT
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, valret)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, valret(1))
 !
 !
 !==============================================================

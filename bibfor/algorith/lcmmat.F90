@@ -84,8 +84,8 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
     real(kind=8) :: epsi, angmas(3), pgl(3, 3), hookf(6, 6)
     real(kind=8) :: valres(nmat), ms(6), ng(3), lg(3), vind(*)
     real(kind=8) :: hsr(nsg, nsg), toutms(nfs, nsg, 6)
-    character(len=8) :: mod, nomc(14)
-    integer :: cerr(14)
+    character(len=8) :: mod, nomc(3)
+    integer :: cerr(3)
     character(len=3) :: matcst
     character(len=*) :: fami
     character(len=16) :: comp(*), nmater, necoul, necris, necrci
@@ -242,7 +242,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !
 61  end do
 !
-    call rccoma(imat, 'ELAS', 1, phenom, cerr)
+    call rccoma(imat, 'ELAS', 1, phenom, cerr(1))
 !
     if (phenom .eq. 'ELAS') then
 !

@@ -52,7 +52,7 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
     nbpar = 0
     nomres(1) = 'A_BASQUI'
     nomres(2) = 'BETA_BAS'
-    call rcvale(nommat, 'FATIGUE', nbpar, nompar, rbid,&
+    call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                 2, nomres, val, icodre, 2)
     do 10 i = 1, nbcycl
         delta = (1.d0/2.d0)*abs(sigmax(i)-sigmin(i))

@@ -141,7 +141,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !---- RECUPERATION DU COMPORTEMENT
 !
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, codres)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, codres(1))
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !

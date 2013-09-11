@@ -215,7 +215,7 @@ subroutine te0295(option, nomte)
 ! --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
 !
     if (lpesa .or. lrota) then
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
                     ' ', phenom, 1, ' ', rbid,&
                     1, 'RHO', rho, icodre, 1)
@@ -330,7 +330,7 @@ subroutine te0295(option, nomte)
         ttrg = tpg(kp) - tref
         ttrgv = 0.d0
 !
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
 ! ----- RECUPERATION DE E, NU ET ALPHA
 !

@@ -35,11 +35,11 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
 !     ------------------------------------------------------------------
     integer :: is1, is2, is3, i, i1, i2, ind1, ind2, ifm, l, niv, ns2, icmp
     integer :: icomp
-    real(kind=8) :: salt, saltm, nadm, u1kl, u2kl, sp, snkl, saltkl, mij, sm
+    real(kind=8) :: salt, saltm, nadm(1), u1kl, u2kl, sp, snkl, saltkl, mij, sm
     real(kind=8) :: vale(2)
     logical :: trouve, endur
     real(kind=8) :: typeke, spmeca, spther
-    integer :: icodre
+    integer :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=8) :: kbid
 !     ------------------------------------------------------------------
@@ -106,15 +106,15 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
         if (endur) then
             u1kl=0.d0
         else
-            call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', saltm,&
-                        1, 'WOHLER  ', nadm, icodre, 2)
-            if (nadm .lt. 0) then
+            call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [saltm],&
+                        1, 'WOHLER  ', nadm(1), icodre(1), 2)
+            if (nadm(1) .lt. 0) then
                 vale(1) = saltm
-                vale(2) = nadm
+                vale(2) = nadm(1)
                 call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
                             0, 2, vale)
             endif
-            u1kl = 1.d0 / nadm
+            u1kl = 1.d0 / nadm(1)
         endif
 !
         snkl = sn(nbsig2*(is1-1)+(is2-1))
@@ -127,15 +127,15 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
         if (endur) then
             u2kl=0.d0
         else
-            call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', saltkl,&
-                        1, 'WOHLER  ', nadm, icodre, 2)
-            if (nadm .lt. 0) then
+            call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [saltkl],&
+                        1, 'WOHLER  ', nadm(1), icodre(1), 2)
+            if (nadm(1) .lt. 0) then
                 vale(1) = saltkl
-                vale(2) = nadm
+                vale(2) = nadm(1)
                 call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
                             0, 2, vale)
             endif
-            u2kl = dble( 2*nscy-1 ) / nadm
+            u2kl = dble( 2*nscy-1 ) / nadm(1)
         endif
 !
         if (niv .ge. 2) then

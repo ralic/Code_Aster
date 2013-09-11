@@ -39,10 +39,10 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: nomres, nompar, nomp(2)
     character(len=10) :: pheno
-    real(kind=8) :: nrupt, delta, dsigm, depsi, epmax, valp(2)
+    real(kind=8) :: nrupt(1), delta, dsigm, depsi, epmax, valp(2)
 !-----------------------------------------------------------------------
     integer :: i, ier, nbpar
     real(kind=8) :: zero
@@ -60,9 +60,9 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
         delta = (abs(epsmax(i)-epsmin(i)))/2.d0
         if (delta .gt. epmax-zero) then
             epmax = delta
-            call rcvale(nommat, pheno, nbpar, nompar, delta,&
-                        1, nomres, nrupt, icodre, 2)
-            dom(i) = 1.d0/nrupt
+            call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+                        1, nomres, nrupt(1), icodre(1), 2)
+            dom(i) = 1.d0/nrupt(1)
         else
             nomp(1) = 'X'
             nomp(2) = 'EPSI'
@@ -73,9 +73,9 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
             nomp(2) = 'SIGM'
             call fointe('F ', nomfo1, 1, nomp(2), dsigm,&
                         depsi, ier)
-            call rcvale(nommat, pheno, nbpar, nompar, depsi,&
-                        1, nomres, nrupt, icodre, 2)
-            dom(i) = 1.d0/nrupt
+            call rcvale(nommat, pheno, nbpar, nompar, [depsi],&
+                        1, nomres, nrupt(1), icodre(1), 2)
+            dom(i) = 1.d0/nrupt(1)
         endif
 10  end do
 !

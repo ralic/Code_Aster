@@ -63,7 +63,7 @@ subroutine te0319(option, nomte)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PSOUR_R', 'E', iflux)
 !
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'

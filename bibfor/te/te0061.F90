@@ -84,7 +84,7 @@ subroutine te0061(option, nomte)
     valpar(1) = zr(itps)
     deltat = zr(itps+1)
     theta = zr(itps+2)
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
 !====
 ! 1.3 PREALABLES LIES A LA RECUPERATION DES DONNEES MATERIAUX

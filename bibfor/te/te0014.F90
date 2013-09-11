@@ -42,7 +42,7 @@ subroutine te0014(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: amm(81, 81), ft(81), x(27), y(27), z(27)
     real(kind=8) :: xi, xij
@@ -94,10 +94,10 @@ subroutine te0014(option, nomte)
 !
 ! - Material
 !
-    call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(j_mate),&
                 ' ', phenom, 0, ' ', r8b,&
-                1, 'RHO', rho, icodre, 1)
+                1, 'RHO', rho, icodre(1), 1)
 !
 ! - Computation
 !

@@ -85,7 +85,7 @@ subroutine ortrep(mater, ndim, coor, repere)
 !
 ! ----   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !        -------------------------------------------------
-            call rccoma(mater, 'ELAS', 1, phenom, icodre)
+            call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !
@@ -132,7 +132,7 @@ subroutine ortrep(mater, ndim, coor, repere)
 !
 ! ----   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !        -------------------------------------------------
-            call rccoma(mater, 'ELAS', 1, phenom, icodre)
+            call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !

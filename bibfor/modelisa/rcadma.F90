@@ -96,7 +96,7 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
         endif
 150  end do
 !
-    call rcvals(iarret, icodre, 1, nomres)
+    call rcvals(iarret, [icodre], 1, nomres)
 !
 9999  continue
 !

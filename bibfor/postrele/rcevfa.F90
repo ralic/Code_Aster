@@ -43,11 +43,11 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 !
     integer :: nbordr, jsno, jsne, jspo, jspe, jfao, jfae, ind, jnoc, nbinst, i1
     integer :: i2, jspto, jspte, jspmo, jspme
-    real(kind=8) :: sno, sne, spo, spe, keo, kee, salto, salte, nadmo, nadme
+    real(kind=8) :: sno, sne, spo, spe, keo, kee, salto, salte, nadmo(1), nadme(1)
     real(kind=8) :: kth, ketheo, kethee, spto, spte, spmo, spme, kemeco, kemece
     real(kind=8) :: nbid, saltmo, saltme, saltho, salthe, valr(2)
     character(len=8) :: k8b
-    integer :: icodre
+    integer :: icodre(1)
     logical :: endur
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -98,20 +98,20 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                 spe = zr(jspe+ind-1)
 !
                 call prccm3(nommat, para, sm, sno, spo,&
-                            keo, salto, nadmo)
+                            keo, salto, nadmo(1))
                 call prccm3(nommat, para, sm, sne, spe,&
-                            kee, salte, nadme)
+                            kee, salte, nadme(1))
 !
                 zr(jfao-1+5*(ind-1)+1) = keo
                 zr(jfao-1+5*(ind-1)+2) = salto
-                zr(jfao-1+5*(ind-1)+3) = nadmo
+                zr(jfao-1+5*(ind-1)+3) = nadmo(1)
 !
                 zr(jfae-1+5*(ind-1)+1) = kee
                 zr(jfae-1+5*(ind-1)+2) = salte
-                zr(jfae-1+5*(ind-1)+3) = nadme
+                zr(jfae-1+5*(ind-1)+3) = nadme(1)
 !
-                zr(jfao-1+5*(ind-1)+4) = 1.d0 / nadmo
-                zr(jfae-1+5*(ind-1)+4) = 1.d0 / nadme
+                zr(jfao-1+5*(ind-1)+4) = 1.d0 / nadmo(1)
+                zr(jfae-1+5*(ind-1)+4) = 1.d0 / nadme(1)
             else
 !
 ! --- 2EME CAS : KE_MIXTE
@@ -140,13 +140,13 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 !
                 call limend(nommat, salto, 'WOHLER', k8b, endur)
                 if (endur) then
-                    nadmo=r8maem()
+                    nadmo(1)=r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', salto,&
-                                1, 'WOHLER  ', nadmo, icodre, 2)
-                    if (nadmo .lt. 0) then
+                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salto],&
+                                1, 'WOHLER  ', nadmo(1), icodre(1), 2)
+                    if (nadmo(1) .lt. 0) then
                         valr (1) = salto
-                        valr (2) = nadmo
+                        valr (2) = nadmo(1)
                         call u2mesg('A', 'POSTRELE_61', 0, ' ', 0,&
                                     0, 2, valr)
                     endif
@@ -154,13 +154,13 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 !
                 call limend(nommat, salte, 'WOHLER', k8b, endur)
                 if (endur) then
-                    nadme=r8maem()
+                    nadme(1)=r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', salte,&
-                                1, 'WOHLER  ', nadme, icodre, 2)
-                    if (nadmo .lt. 0) then
+                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salte],&
+                                1, 'WOHLER  ', nadme(1), icodre(1), 2)
+                    if (nadmo(1) .lt. 0) then
                         valr (1) = salte
-                        valr (2) = nadme
+                        valr (2) = nadme(1)
                         call u2mesg('A', 'POSTRELE_61', 0, ' ', 0,&
                                     0, 2, valr)
                     endif
@@ -169,14 +169,14 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                 zr(jfao-1+5*(ind-1)+1) = kemeco
                 zr(jfao-1+5*(ind-1)+5) = ketheo
                 zr(jfao-1+5*(ind-1)+2) = salto
-                zr(jfao-1+5*(ind-1)+3) = nadmo
-                zr(jfao-1+5*(ind-1)+4) = 1.d0 / nadmo
+                zr(jfao-1+5*(ind-1)+3) = nadmo(1)
+                zr(jfao-1+5*(ind-1)+4) = 1.d0 / nadmo(1)
 !
                 zr(jfae-1+5*(ind-1)+1) = kemece
                 zr(jfae-1+5*(ind-1)+5) = kethee
                 zr(jfae-1+5*(ind-1)+2) = salte
-                zr(jfae-1+5*(ind-1)+3) = nadme
-                zr(jfae-1+5*(ind-1)+4) = 1.d0 / nadme
+                zr(jfae-1+5*(ind-1)+3) = nadme(1)
+                zr(jfae-1+5*(ind-1)+4) = 1.d0 / nadme(1)
 !
             endif
 !

@@ -84,7 +84,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     real(kind=8) :: pdscal
     integer :: ivf, kpg, ibid, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl
-    integer :: mxstac, icodre, spt, ipoids, idfde, nosema, ind1, lddl, jnp
+    integer :: mxstac, icodre(1), spt, ipoids, idfde, nosema, ind1, lddl, jnp
     integer :: iddlma
     integer :: idim, ind2
 !
@@ -114,7 +114,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     theta = zr(itemps-1+3)
 !
 !     POUR PREPARER L'APPEL A RCVALB
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !     POUR L'INSTANT ON NE TRAITE PAS 'THER_ORTH'
     ASSERT(phenom.eq.'THER')
     valpar(1) = zr(itemps-1+1)
@@ -229,7 +229,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !         RECUPERER LES PARAMETRES MATERIAUX
             call rcvalb('XFEM', kpg, spt, poum, zi(imate),&
                         ' ', phenom, 1, 'INST', valpar,&
-                        1, 'LAMBDA', valres, icodre, 1)
+                        1, 'LAMBDA', valres, icodre(1), 1)
             lambda = valres(1)
 !
 !         DFFENR : TABLEAU DES DERIVEES DES FF ENRICHIES

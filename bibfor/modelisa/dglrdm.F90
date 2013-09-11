@@ -146,7 +146,7 @@ subroutine dglrdm()
     k8b = ' '
     call getvr8('BETON', 'EPAIS', 1, iarg, 1,&
                 h, ibid)
-    call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+    call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
                 5, nomres, valres, icodr2, 0)
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) call u2mess('A', 'ALGORITH6_8')
 !
@@ -166,7 +166,7 @@ subroutine dglrdm()
     endif
 !
     nomres(1) = 'SYT'
-    call rcvale(mater, 'BETON_ECRO_LINE ', 0, k8b, r8b,&
+    call rcvale(mater, 'BETON_ECRO_LINE ', 0, k8b, [r8b],&
                 1, nomres, valres, icodr2, 0)
     if (icodr2(1) .ne. 0) call u2mess('A', 'ALGORITH6_9')
     sytb = valres(1)
@@ -202,7 +202,7 @@ subroutine dglrdm()
     nomres(3) = 'RHO'
 !          NOMRES(4) = 'AMOR_ALPHA'
 !          NOMRES(5) = 'AMOR_BETA'
-    call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+    call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
                 3, nomres, valres, icodr2, 0)
 !
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) call u2mess('A', 'ALGORITH6_10')
@@ -221,7 +221,7 @@ subroutine dglrdm()
 !            AMORB = VALRES(5)
 !          ENDIF
     nomres(1) = 'SY'
-    call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
+    call rcvale(mater, 'ECRO_LINE       ', 0, k8b, [r8b],&
                 1, nomres, valres, icodr2, 0)
     if (icodr2(1) .eq. 0) then
         sya(ilit) = valres(1)

@@ -49,14 +49,14 @@ subroutine hujmat(mod, imat, tempf, materf, ndt,&
     real(kind=8) :: materf(22, 2), tempf, nu21, nu31, nu32
     character(len=16) :: phenom
     character(len=8) :: mod, nomc(24)
-    integer :: icodre
+    integer :: icodre(1)
     integer :: cerr(24)
 !
     call jemarq()
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 !      --------------------------------------------
-    call rccoma(imat, 'ELAS', 1, phenom, icodre)
+    call rccoma(imat, 'ELAS', 1, phenom, icodre(1))
 !
 ! -  NB DE COMPOSANTES / VARIABLES INTERNES
     call hujnvi(mod, ndt, ndi, nvi)

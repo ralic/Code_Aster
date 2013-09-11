@@ -36,9 +36,9 @@ subroutine rc32r8(nomres, mater, symax)
 !
     integer :: ibid, npar1, im, jresu
     parameter    ( npar1 = 7 )
-    real(kind=8) :: rbid, valer(npar1), valres
+    real(kind=8) :: rbid, valer(npar1), valres(1)
     complex(kind=8) :: c16b
-    integer :: icodre
+    integer :: icodre(1)
     character(len=4) :: lieu(2)
     character(len=8) :: k8b, typar1(npar1), valek(2)
     character(len=16) :: nopar1(npar1)
@@ -53,10 +53,10 @@ subroutine rc32r8(nomres, mater, symax)
     call tbajpa(nomres, npar1-2, nopar1(3), typar1(3))
 !
     if (symax .eq. r8vide()) then
-        call rcvale(mater, 'RCCM', 0, k8b, rbid,&
-                    1, 'SY_02   ', valres, icodre, 0)
-        if (icodre .eq. 0) then
-            symax = valres
+        call rcvale(mater, 'RCCM', 0, k8b, [rbid],&
+                    1, 'SY_02   ', valres(1), icodre(1), 0)
+        if (icodre(1) .eq. 0) then
+            symax = valres(1)
         else
             call u2mess('A', 'POSTRCCM_4')
             goto 9999

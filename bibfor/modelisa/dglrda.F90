@@ -61,7 +61,7 @@ subroutine dglrda()
     real(kind=8) :: mf2x, mf2y, rho, amora, amorb, eeq, nueq, mf1, mf2
     real(kind=8) :: normm, normn, valres(5), mp1n0, mp2n0, aux, maxmp(2)
     real(kind=8) :: minmp(2)
-    real(kind=8) :: nmax0, nmin(2), nmax(2), oml(na), r8b, par1, par2, elb(2)
+    real(kind=8) :: nmax0, nmin(2), nmax(2), oml(na), r8b(1), par1, par2, elb(2)
     real(kind=8) :: mp1cst(2), mp2cst(2), omt, eat, bt1, bt2, pflua, pretr
     integer :: icodr2(5)
     character(len=8) :: mater, fon(4), k8b, nomres(5)
@@ -100,7 +100,7 @@ subroutine dglrda()
     nomres(3) = 'RHO'
 !
     k8b = ' '
-    call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+    call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
                 3, nomres, valres, icodr2, 1)
 !
     eb = valres(1)
@@ -110,7 +110,7 @@ subroutine dglrda()
     nomres(1) = 'AMOR_ALP'
     nomres(2) = 'AMOR_BET'
 !
-    call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+    call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
                 2, nomres, valres, icodr2, 0)
 !
     if (icodr2(1) .ne. 0) then
@@ -127,7 +127,7 @@ subroutine dglrda()
 !
     nomres(1) = 'SYT'
     nomres(2) = 'SYC'
-    call rcvale(mater, 'BETON_ECRO_LINE ', 0, k8b, r8b,&
+    call rcvale(mater, 'BETON_ECRO_LINE ', 0, k8b, r8b(1),&
                 2, nomres, valres, icodr2, 1)
     ft = valres(1)
     fc = valres(2)
@@ -135,7 +135,7 @@ subroutine dglrda()
 ! PERT_FLUA et PERT_RETR
     nomres(1) = 'PERT_FLU'
     nomres(2) = 'PERT_RET'
-    call rcvale(mater, 'BPEL_BETON      ', 0, k8b, r8b,&
+    call rcvale(mater, 'BPEL_BETON      ', 0, k8b, r8b(1),&
                 2, nomres, valres, icodr2, 0)
     if (icodr2(1) .eq. 0) then
         pflua = valres(1)
@@ -187,11 +187,11 @@ subroutine dglrda()
             call getvid('NAPPE', 'MATER', ilit, iarg, 1,&
                         mater, ibid)
             nomres(1) = 'E'
-            call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+            call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             ea(ilit) = valres(1)
             nomres(1) = 'SY'
-            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
+            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             sy(ilit) = valres(1)
             call getvr8('NAPPE', 'OMX', ilit, iarg, 1,&
@@ -214,11 +214,11 @@ subroutine dglrda()
             call getvid('CABLE_PREC', 'MATER', ii, iarg, 1,&
                         mater, ibid)
             nomres(1) = 'E'
-            call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+            call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             ea(ilit) = valres(1)
             nomres(1) = 'SY'
-            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
+            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             sy(ilit) = valres(1)
             call getvr8('CABLE_PREC', 'OMX', ii, iarg, 1,&
@@ -248,12 +248,12 @@ subroutine dglrda()
                         mater, ibid)
             nomres(1) = 'E'
             nomres(2) = 'NU'
-            call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+            call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
                         2, nomres, valres, icodr2, 1)
             ea(ilit) = valres(1)
             nua(ilit) = valres(2)
             nomres(1) = 'SY'
-            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
+            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             sy(ilit) = valres(1)
             call getvr8('LINER', 'OML', ii, iarg, 1,&

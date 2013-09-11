@@ -41,8 +41,8 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     character(len=8) :: method, mecomp, nompar
     character(len=8) :: nomres(6), kcorre, kbid
     character(len=16) :: pheno, phenom
-    real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re
-    real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt
+    real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re(1)
+    real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
     integer :: ibask, ifonc, ihosin, iawho2, nbval
     logical :: endur
     integer :: iarg
@@ -93,7 +93,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
         nomres(6) = 'SL'
         nbpar = 0
         nompar = ' '
-        call rcvale(nommat, 'FATIGUE', nbpar, nompar, rbid,&
+        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                     1, nomres(6), val(6), icodre(6), 2)
         valmin = val(6)
         valmax = 10*sqrt(xm0)
@@ -152,7 +152,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nomres(3) = 'SM'
             nbpar = 0
             nompar = ' '
-            call rcvale(nommat, 'RCCM', nbpar, nompar, rbid,&
+            call rcvale(nommat, 'RCCM', nbpar, nompar, [rbid],&
                         3, nomres(1), val(1), icodre(1), 2)
             do 304 ipoint = 1, nbpoin
                 delta = zr(iapics+ipoint-1)
@@ -188,9 +188,9 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                 if (endur) then
                     zr(iawho2+ipoint-1) = 0.d0
                 else
-                    call rcvale(nommat, pheno, nbpar, nompar, delta,&
-                                1, nomres(1), nrupt, icodre(1), 2)
-                    zr(iawho2+ipoint-1) = 1.d0 / nrupt
+                    call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+                                1, nomres(1), nrupt(1), icodre(1), 2)
+                    zr(iawho2+ipoint-1) = 1.d0 / nrupt(1)
                 endif
 307          continue
         else if (ibask.ne.0) then
@@ -198,7 +198,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nbpar = 0
             nomres(1) = 'A_BASQUI'
             nomres(2) = 'BETA_BAS'
-            call rcvale(nommat, 'FATIGUE', nbpar, nompar, rbid,&
+            call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                         2, nomres, val, icodre, 2)
             do 308 ipoint = 1, nbpoin
                 zr(iawho2+ipoint-1) = val(1)*zr(iapics+ipoint-1)**val( 2)
@@ -212,13 +212,13 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             nomres(6) = 'SL'
             nbpar = 0
             nompar = ' '
-            call rcvale(nommat, 'FATIGUE', nbpar, nompar, rbid,&
+            call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                         6, nomres, val, icodre, 2)
             nomres(1) = 'E'
-            call rcvale(nommat, 'ELAS', nbpar, nompar, rbid,&
-                        1, nomres, re, icodre, 2)
+            call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid],&
+                        1, nomres, re(1), icodre, 2)
             do 309 ipoint = 1, nbpoin
-                salt = (val(1)/re)*zr(iapics+ipoint-1)
+                salt = (val(1)/re(1))*zr(iapics+ipoint-1)
                 if (salt .ge. val(6)) then
                     x = log10 (salt)
                     y = val(2) + val(3)*x + val(4)*(x**2) + val(5)*( x**3)

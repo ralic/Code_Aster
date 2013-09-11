@@ -24,9 +24,9 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
     real(kind=8) :: normf, x0
     real(kind=8) :: xrac
     integer :: ier1, ier2, iter, itermx
-    real(kind=8) :: fx1, fx2, fx, dfx1, dfx2, dfx, tole, err
+    real(kind=8) :: fx1(1), fx2(1), fx, dfx1, dfx2, dfx, tole, err
     character(len=16) :: phenom
-    integer :: icodr2
+    integer :: icodr2(1)
 !
     phenom = 'GLRC_DAMAGE'
     iter=0
@@ -34,12 +34,12 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
     xrac=x0
 !
     k8b = 'X '
-    call rcvale(mater, phenom, 1, k8b, xrac,&
-                1, kfonc1, fx1, icodr2, 1)
-    call rcvale(mater, phenom, 1, k8b, xrac,&
-                1, kfonc2, fx2, icodr2, 1)
+    call rcvale(mater, phenom, 1, k8b, [xrac],&
+                1, kfonc1, fx1(1), icodr2(1), 1)
+    call rcvale(mater, phenom, 1, k8b, [xrac],&
+                1, kfonc2, fx2(1), icodr2(1), 1)
 !
-    fx=fx1-fx2
+    fx=fx1(1)-fx2(1)
     err=abs(fx)
     tole=1.d-8*normf
 !
@@ -56,11 +56,11 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
     endif
 !
     xrac=xrac-fx/dfx
-    call rcvale(mater, phenom, 1, k8b, xrac,&
-                1, kfonc1, fx1, icodr2, 1)
-    call rcvale(mater, phenom, 1, k8b, xrac,&
-                1, kfonc2, fx2, icodr2, 1)
-    fx=fx1-fx2
+    call rcvale(mater, phenom, 1, k8b, [xrac],&
+                1, kfonc1, fx1(1), icodr2(1), 1)
+    call rcvale(mater, phenom, 1, k8b, [xrac],&
+                1, kfonc2, fx2(1), icodr2(1), 1)
+    fx=fx1(1)-fx2(1)
     err=abs(fx)
  9  continue
     call u2mess('F', 'ELEMENTS2_27')

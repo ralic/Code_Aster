@@ -37,7 +37,7 @@ subroutine te0015(option, nomte)
 !.......................................................................
 !
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: r8bid, rho, coef
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
@@ -58,10 +58,10 @@ subroutine te0015(option, nomte)
     call jevech('PPESANR', 'L', ipesa)
     call jevech('PVECTUR', 'E', ivectu)
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                 ' ', phenom, 0, ' ', r8bid,&
-                1, 'RHO', rho, icodre, 1)
+                1, 'RHO', rho, icodre(1), 1)
 !
     ndl = 3*nno
     do 10 i = 1, ndl

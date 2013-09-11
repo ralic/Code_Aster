@@ -47,10 +47,10 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 !
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: e, ec, para(3), m, n, nadm, saltm, salth, kemeca, kether
+    real(kind=8) :: e, ec, para(3), m, n, nadm(1), saltm, salth, kemeca, kether
     real(kind=8) :: kethe1, valr(2)
     character(len=8) :: kbid
-    integer :: icodre
+    integer :: icodre(1)
     logical :: endur
 ! DEB ------------------------------------------------------------------
 !
@@ -73,16 +73,16 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 !
 ! --- CALCUL DU COEFFICIENT DE CONCENTRATION ELASTO-PLASTIQUE KE
 ! --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
-! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM
+! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE nadm(1)
 !
     if (typeke .lt. 0.d0) then
         call prccm3(nommat, para, sm, snpq, spij(1),&
-                    kemeca, saltij(1), nadm)
-        fuij(1) = 1.d0 / nadm
+                    kemeca, saltij(1), nadm(1))
+        fuij(1) = 1.d0 / nadm(1)
         if (typz .eq. 'COMB') then
             call prccm3(nommat, para, sm, snpq, spij(2),&
-                        kemeca, saltij(2), nadm)
-            fuij(2) = 1.d0 / nadm
+                        kemeca, saltij(2), nadm(1))
+            fuij(2) = 1.d0 / nadm(1)
         endif
         kether = r8vide()
     else
@@ -92,48 +92,48 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
         kethe1 = 1.86d0*(1.d0-(1.d0/(1.66d0+snpq/sm)))
         kether = max(1.d0,kethe1)
         call prccm3(nommat, para, sm, snpq, spmeca(1),&
-                    kemeca, saltm, nadm)
+                    kemeca, saltm, nadm(1))
         salth = 0.5d0 * para(3) * kether * spther(1)
         saltij(1) = saltm + salth
 !
-! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM : TR. 1
+! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE nadm(1) : TR. 1
 !
         call limend(nommat, saltij(1), 'WOHLER', kbid, endur)
         if (endur) then
-            nadm=r8maem()
+            nadm(1)=r8maem()
         else
             call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', saltij(1),&
-                        1, 'WOHLER  ', nadm, icodre, 2)
-            if (nadm .lt. 0) then
+                        1, 'WOHLER  ', nadm(1), icodre(1), 2)
+            if (nadm(1) .lt. 0) then
                 valr (1) = saltij(1)
-                valr (2) = nadm
+                valr (2) = nadm(1)
                 call u2mesg('A', 'POSTRELE_61', 0, ' ', 0,&
                             0, 2, valr)
             endif
         endif
-        fuij(1) = 1.d0 / nadm
+        fuij(1) = 1.d0 / nadm(1)
 !
         if (typz .eq. 'COMB') then
             call prccm3(nommat, para, sm, snpq, spmeca(2),&
-                        kemeca, saltm, nadm)
+                        kemeca, saltm, nadm(1))
             salth = 0.5d0 * para(3) * kether * spther(2)
             saltij(2) = saltm + salth
-! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM : TR. 2
+! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE nadm(1) : TR. 2
 !
             call limend(nommat, saltij(2), 'WOHLER', kbid, endur)
             if (endur) then
-                nadm=r8maem()
+                nadm(1)=r8maem()
             else
                 call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', saltij(2),&
-                            1, 'WOHLER  ', nadm, icodre, 2)
-                if (nadm .lt. 0) then
+                            1, 'WOHLER  ', nadm(1), icodre(1), 2)
+                if (nadm(1) .lt. 0) then
                     valr (1) = saltij(1)
-                    valr (2) = nadm
+                    valr (2) = nadm(1)
                     call u2mesg('A', 'POSTRELE_61', 0, ' ', 0,&
                                 0, 2, valr)
                 endif
             endif
-            fuij(2) = 1.d0 / nadm
+            fuij(2) = 1.d0 / nadm(1)
         endif
 !
     endif

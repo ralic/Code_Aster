@@ -39,7 +39,7 @@ subroutine te0077(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=16) :: phenom
     character(len=8) :: elrefe, alias8
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, cp
@@ -71,15 +71,15 @@ subroutine te0077(option, nomte)
     call jevech('PMATTTR', 'E', imattt)
     deltat = zr(itemps+1)
 !
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     if (phenom .eq. 'THER') then
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                     ' ', phenom, 1, 'INST', zr(itemps),&
-                    1, 'RHO_CP', cp, icodre, 1)
+                    1, 'RHO_CP', cp, icodre(1), 1)
     else if (phenom .eq. 'THER_ORTH') then
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                     ' ', phenom, 1, 'INST', zr(itemps),&
-                    1, 'RHO_CP', cp, icodre, 1)
+                    1, 'RHO_CP', cp, icodre(1), 1)
     else
         call u2mess('F', 'ELEMENTS2_63')
     endif

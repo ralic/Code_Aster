@@ -241,7 +241,7 @@ subroutine vdpnlr(option, nomte, codret)
         lgpg = itab(6)*itab(7)
     endif
     call jevech('PCARCRI', 'L', icarcr)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS') then
         nbv = 2

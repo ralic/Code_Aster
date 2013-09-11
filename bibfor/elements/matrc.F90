@@ -62,7 +62,7 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
     call moytem(fami, npg, 3*zi(jcou), '+', valpar,&
                 iret)
 !
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS') then
         nbv = 2

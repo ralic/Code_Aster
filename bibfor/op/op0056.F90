@@ -211,9 +211,9 @@ subroutine op0056()
             nomres(9) = 'G_TN'
 !         EN PRINCIPE G_LN = G_LT CF BATOZ
             k8b = ' '
-            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, r8bid,&
+            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         6, nomres, valres, icodre, 2)
-            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, r8bid,&
+            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         3, nomres(7), valres(7), icodre(7), 0)
             el = valres(1)
             et = valres(2)
@@ -296,7 +296,7 @@ subroutine op0056()
             nomres(4) = 'YC'
             nomres(5) = 'S_LT'
             k8b = ' '
-            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, r8bid,&
+            call rcvale(zk16(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         5, nomres, valres, icodre, 2)
             if (icodre(1) .ne. 0) then
                 xt=r8vide()
@@ -738,7 +738,7 @@ subroutine op0056()
             nomres(3) = 'LAMBDA_N'
             nomres(4) = 'RHO_CP'
             k8b = ' '
-            call rcvale(zk16(jrela+i+1) (1:8), 'THER_ORTH', 0, k8b, r8bid,&
+            call rcvale(zk16(jrela+i+1) (1:8), 'THER_ORTH', 0, k8b, [r8bid],&
                         nbres, nomres, valres, icodre, 0)
             laml = valres(1)
             lamt = valres(2)

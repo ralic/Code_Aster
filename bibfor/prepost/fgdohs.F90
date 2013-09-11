@@ -44,7 +44,7 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
     character(len=8) :: nompar
     character(len=8) :: nomres(6)
 !
-    real(kind=8) :: delta, salt, x, y, nrupt, slmodi, val(6), rbid, re
+    real(kind=8) :: delta, salt, x, y, nrupt, slmodi, val(6), rbid, re(1)
 !
 !-----------------------------------------------------------------------
     integer :: i, nbpar
@@ -57,11 +57,11 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
     nomres(6) = 'SL'
     nbpar = 0
     nompar = ' '
-    call rcvale(nommat, 'FATIGUE', nbpar, nompar, rbid,&
+    call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                 6, nomres, val, icodre, 2)
     nomres(1) = 'E'
-    call rcvale(nommat, 'ELAS', nbpar, nompar, rbid,&
-                1, nomres, re, icodre, 2)
+    call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid],&
+                1, nomres, re(1), icodre, 2)
     do 10 i = 1, nbcycl
         delta = abs(sigmax(i)-sigmin(i))
         if (lke) delta = delta * rke(i)
@@ -71,7 +71,7 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
         else
             slmodi = val(6)
         endif
-        salt = 1.d0/2.d0*(val(1)/re)*delta
+        salt = 1.d0/2.d0*(val(1)/re(1))*delta
         x = log10 (salt)
         if (salt .ge. slmodi) then
             y = val(2) + val(3)*x + val(4)*x**2 + val(5)*x**3

@@ -102,7 +102,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 !
 9999  continue
 !
-    call rcvals(iarret, icodre, 1, nomres)
+    call rcvals(iarret, [icodre], 1, nomres)
 !
     call jedema()
 !

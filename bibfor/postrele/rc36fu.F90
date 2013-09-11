@@ -34,9 +34,9 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
 !
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, ifm, niv, icompt
-    real(kind=8) :: saltm, nadm, ukl, vale(2)
+    real(kind=8) :: saltm, nadm(1), ukl, vale(2)
     logical :: trouve, endur
-    integer :: icodre
+    integer :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=8) :: kbid
 !     ------------------------------------------------------------------
@@ -75,15 +75,15 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
     if (endur) then
         ukl = 0.d0
     else
-        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', saltm,&
-                    1, 'WOHLER  ', nadm, icodre, 2)
-        if (nadm .lt. 0) then
+        call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [saltm],&
+                    1, 'WOHLER  ', nadm(1), icodre(1), 2)
+        if (nadm(1) .lt. 0) then
             vale(1) = saltm
-            vale(2) = nadm
+            vale(2) = nadm(1)
             call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
                         0, 2, vale)
         endif
-        ukl = dble( n0 ) / nadm
+        ukl = dble( n0 ) / nadm(1)
     endif
 !
     if (icompt .le. 49) then
@@ -108,7 +108,7 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
         write(ifm,1040)'=> SALT MAXI = ', saltm, situ(2*(isk-1)+1),&
         k2l, situ(2*(isl-1)+1), k2c
         write(ifm,1030)'          N0 = ', n0
-        write(ifm,1020)'        NADM = ', nadm
+        write(ifm,1020)'        nadm(1) = ', nadm(1)
         write(ifm,1020)'         UKL = ', ukl
     endif
 !

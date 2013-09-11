@@ -62,7 +62,7 @@ subroutine bsthco(nomte, bsigth, indith)
     real(kind=8) :: ksi3s2, kappa, matc(5, 5)
     real(kind=8) :: coef, deux, epais, eptot, quatre, trois, un, valpar, zero
     real(kind=8) :: zic, zmin, epsthe
-    integer :: icodre
+    integer :: icodre(1)
     character(len=10) :: phenom
 !     ------------------------------------------------------------------
 !
@@ -162,7 +162,7 @@ subroutine bsthco(nomte, bsigth, indith)
 ! --- RECUPERATION DU MATERIAU :
 !     ------------------------
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !______________________________________________________________________
 !
 !---- RECUPERATION DE LA TEMPERATURE

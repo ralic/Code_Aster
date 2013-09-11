@@ -94,7 +94,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                     nmater, necris, 0, ' ', 0.d0,&
                     nbval, nomres, vallue, icodre, 1)
 !         CALCUL ET STOCKAGE DE MU
-        call rccoma(imat, 'ELAS', 1, phenom, icodre)
+        call rccoma(imat, 'ELAS', 1, phenom, icodre(1))
 !
         if (phenom .eq. 'ELAS') then
             call rcvalb(fami, kpg, ksp, poum, imat,&
@@ -135,7 +135,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                     nbval, nomres, vallue, icodre, 1)
 !
 !         CALCUL ET STOCKAGE DE MU
-        call rccoma(imat, 'ELAS', 1, phenom, icodre)
+        call rccoma(imat, 'ELAS', 1, phenom, icodre(1))
 !
         if (phenom .eq. 'ELAS') then
             call rcvalb(fami, kpg, ksp, poum, imat,&
@@ -173,7 +173,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !
     else if (necris(1:11).eq.'MONO_DD_FAT') then
 !         CALCUL ET STOCKAGE DE MU
-        call rccoma(imat, 'ELAS', 1, phenom, icodre)
+        call rccoma(imat, 'ELAS', 1, phenom, icodre(1))
 !
         if (phenom .eq. 'ELAS') then
             call rcvalb(fami, kpg, ksp, poum, imat,&

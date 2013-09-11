@@ -46,8 +46,8 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
     character(len=8) :: nomre1, nomre2, nompa1, nomp(2), nomres(10)
     character(len=8) :: cara, nompar, kbid
     character(len=10) :: pheno
-    real(kind=8) :: nrupt, delta, dnap, epmax, valp(2), val(10)
-    real(kind=8) :: salt, x, re, slmodi, y
+    real(kind=8) :: nrupt(1), delta, dnap, epmax, valp(2), val(10)
+    real(kind=8) :: salt, x, re(1), slmodi, y
     logical :: endur
 !-----------------------------------------------------------------------
     integer :: i, ier, nbpar
@@ -74,7 +74,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
         nbpar = 0
         nomres(2) = 'A_BASQUI'
         nomres(3) = 'BETA_BAS'
-        call rcvale(nommat, 'FATIGUE', nbpar, nompar, rbid,&
+        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                     2, nomres(2), val(2), icodre(2), 2)
         mode = 'BASQ'
     endif
@@ -89,11 +89,11 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
         nomres(9) = 'SL'
         nbpar = 0
         nompar = ' '
-        call rcvale(nommat, 'FATIGUE', nbpar, nompar, rbid,&
+        call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                     6, nomres(4), val(4), icodre(4), 2)
         nomres(10) = 'E'
-        call rcvale(nommat, 'ELAS', nbpar, nompar, rbid,&
-                    1, nomres(10), re, icodre(10), 2)
+        call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid],&
+                    1, nomres(10), re(1), icodre(10), 2)
         mode = 'ZONE'
     endif
 !
@@ -104,9 +104,9 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
 !
 ! --- INTERPOLATION SUR MANSON_COFFIN ---
 !
-            call rcvale(nommat, pheno, nbpar, nompa1, delta,&
-                        1, nomre1, nrupt, icodre(1), 2)
-            dom(i) = 1.d0/nrupt
+            call rcvale(nommat, pheno, nbpar, nompa1, [delta],&
+                        1, nomre1, nrupt(1), icodre(1), 2)
+            dom(i) = 1.d0/nrupt(1)
         else
             nomp(1) = 'X'
             nomp(2) = 'EPSI'
@@ -124,20 +124,20 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
                 if (endur) then
                     dom(i) = 0.d0
                 else
-                    call rcvale(nommat, pheno, nbpar, nompar, dnap,&
-                                1, nomre2, nrupt, icodre(1), 2)
-                    dom(i) = 1.d0/nrupt
+                    call rcvale(nommat, pheno, nbpar, nompar, [dnap],&
+                                1, nomre2, nrupt(1), icodre(1), 2)
+                    dom(i) = 1.d0/nrupt(1)
                 endif
             else if (mode.eq.'BASQ') then
                 dom(i) = val(2)* dnap**val(3)
             else if (mode.eq.'ZONE') then
                 slmodi = val(9)
-                salt = (val(4)/re)*dnap
+                salt = (val(4)/re(1))*dnap
                 x = log10 (salt)
                 if (salt .ge. slmodi) then
                     y = val(5) + val(6)*x + val(7)*x**2 + val(8)*x**3
-                    nrupt = 10**y
-                    dom(i) = 1.d0 / nrupt
+                    nrupt(1) = 10**y
+                    dom(i) = 1.d0 / nrupt(1)
                 else
                     dom(i) = 0.d0
                 endif

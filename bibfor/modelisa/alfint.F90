@@ -70,14 +70,14 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     character(len=*) :: chmatz, nommaz, noparz
     character(len=19) :: ch19
 ! -----  VARIABLES LOCALES
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: k8b, chmat, nommat, nopara, ktref, nomgd, valk(2)
     character(len=10) :: phenom
     character(len=16) :: typres, nomcmd
     character(len=19) :: chwork
     integer :: nummat, ncmp, jnomrc, idvale, idvalw, i, nbpts, imate
     integer :: nbec, k, ier, ec1, kk, igd, ngdmax, jdesc, jvale, jprol
-    real(kind=8) :: prec, undemi, tref, alfref, alphai, ti, tim1, tip1
+    real(kind=8) :: prec, undemi, tref, alfref(1), alphai, ti, tim1, tip1
     real(kind=8) :: alfim1, alfip1, dalref, tdef
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -161,8 +161,8 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     endif
 !
 ! --- CALCUL DE ALPHA A LA TEMPERATURE DE REFERENCE :
-    call rcvale(nommat, phenom, 1, 'TEMP    ', tref,&
-                1, nopara, alfref, icodre, 2)
+    call rcvale(nommat, phenom, 1, 'TEMP    ', [tref],&
+                1, nopara, alfref(1), icodre(1), 2)
 !
 ! --- RECUPERATION DU .VALE DE LA FONCTION DESTINEE A CONTENIR LES
 ! --- VALEURS DE ALPHA INTERPOLEES :
@@ -183,7 +183,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 ! ---                 /(TI-TREF)   :
         if (abs(ti-tref) .ge. prec) then
 !
-            zr(idvalw+i+nbpts-1) = ( alphai*(ti-tdef)- alfref*(tref- tdef)) /(ti-tref )
+            zr(idvalw+i+nbpts-1) = ( alphai*(ti-tdef)- alfref(1)*(tref- tdef)) /(ti-tref )
 ! --- DANS LE CAS OU ABS(TI-TREF) < PREC :
 ! --- IL FAUT D'ABORD CALCULER LA DERIVEE DE ALPHA PAR RAPPORT
 ! --- A LA TEMPERATURE EN TREF : D(ALPHA)/DT( TREF) :
@@ -200,7 +200,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
                 if (tip1 .eq. tref) call u2mess('F', 'MODELISA2_2')
                 if (tim1 .eq. tref) call u2mess('F', 'MODELISA2_2')
 !
-                dalref = undemi*( (alfip1-alfref)/(tip1-tref) +(alfref- alfim1)/(tref-tim1) )
+                dalref = undemi*( (alfip1-alfref(1))/(tip1-tref) +(alfref(1)- alfim1)/(tref-tim1) )
 !
 ! ---   DANS LE CAS OU I = NBPTS :
 ! ---   D(ALPHA)/DT( TREF) = (ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1) :
@@ -210,7 +210,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
                 alfim1 = zr(idvale+i+nbpts-1-1)
                 if (tim1 .eq. tref) call u2mess('F', 'MODELISA2_2')
 !
-                dalref = (alfref-alfim1)/(tref-tim1)
+                dalref = (alfref(1)-alfim1)/(tref-tim1)
 !
 ! ---   DANS LE CAS OU I = 1 :
 ! ---   D(ALPHA)/DT( TREF) = (ALPHA(TI+1)-ALPHA(TREF))/(TI+1-TREF) :
@@ -220,13 +220,13 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
                 alfip1 = zr(idvale+i+nbpts+1-1)
                 if (tip1 .eq. tref) call u2mess('F', 'MODELISA2_2')
 !
-                dalref = (alfip1-alfref)/(tip1-tref)
+                dalref = (alfip1-alfref(1))/(tip1-tref)
 !
             endif
 ! ---   DANS CE CAS OU ABS(TI-TREF) < PREC , ON A :
 ! ---   ALPHA_NEW(TI) = ALPHA_NEW(TREF)
 ! ---   ET ALPHA_NEW(TREF) = D(ALPHA)/DT (TREF)*(TREF-TDEF)+ALPHA(TREF):
-            zr(idvalw+i+nbpts-1) = dalref*(tref-tdef) + alfref
+            zr(idvalw+i+nbpts-1) = dalref*(tref-tdef) + alfref(1)
 !
         endif
 !

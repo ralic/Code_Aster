@@ -497,7 +497,7 @@ subroutine te0003(option, nomte)
 !------------------------------------------------------------------
 !
 ! RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     ASSERT(icodre(1).eq.0)
     if ((phenom.eq.'THER') .or. (phenom.eq.'THER_ORTH')) then
         lnonli = .false.

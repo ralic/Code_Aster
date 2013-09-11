@@ -62,7 +62,7 @@ subroutine te0421(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
                 iret)

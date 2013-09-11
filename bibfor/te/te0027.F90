@@ -80,7 +80,7 @@ subroutine te0027(option, nomte)
 !
     logical :: grand, fonc, incr, epsini
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=4) :: fami
     character(len=8) :: nompar(4), typmod(2)
     character(len=16) :: compor(4), oprupt, phenom
@@ -226,19 +226,19 @@ subroutine te0027(option, nomte)
     endif
 !
     if (ivites .ne. 0) then
-        call rccoma(matcod, 'ELAS', 1, phenom, icodre)
+        call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', matcod,&
                     ' ', phenom, 1, ' ', rbid,&
-                    1, 'RHO', rho, icodre, 1)
+                    1, 'RHO', rho, icodre(1), 1)
     endif
 !
 !
 ! CORRECTION DES FORCES VOLUMIQUES
     if ((ipesa.ne.0) .or. (irota.ne.0)) then
-        call rccoma(matcod, 'ELAS', 1, phenom, icodre)
+        call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', matcod,&
                     ' ', phenom, 1, ' ', rbid,&
-                    1, 'RHO', rho, icodre, 1)
+                    1, 'RHO', rho, icodre(1), 1)
         if (ipesa .ne. 0) then
             do 150 i = 1, nno
                 do 140 j = 1, ndim
@@ -478,12 +478,12 @@ subroutine te0027(option, nomte)
 490          continue
 !
 ! CALCUL DE LA DEFORMATION DE REFERENCE
-            call rccoma(matcod, 'ELAS', 1, phenom, icodre)
+            call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'NU', nu, icodre,&
+                        rbid, 1, 'NU', nu, icodre(1),&
                         1)
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'E', e, icodre,&
+                        rbid, 1, 'E', e, icodre(1),&
                         1)
 !
             mu = e/(2.d0*(1.d0+nu))

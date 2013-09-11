@@ -200,7 +200,7 @@ subroutine pofaun()
         nomres(3) = 'SM'
         nbpar = 0
         nompar = ' '
-        call rcvale(nommat, 'RCCM', nbpar, nompar, r8b,&
+        call rcvale(nommat, 'RCCM', nbpar, nompar, [r8b],&
                     3, nomres, val, icodre, 2)
         call wkvect('&&POFAUN.KE', 'V V R', nbcycl, ivke)
         lke = .true.
@@ -227,7 +227,7 @@ subroutine pofaun()
             nomres(1) = 'SU'
             nbpar = 0
             nompar = ' '
-            call rcvale(nommat, 'RCCM', nbpar, nompar, r8b,&
+            call rcvale(nommat, 'RCCM', nbpar, nompar, [r8b],&
                         1, nomres, val, icodre, 2)
             call wkvect('&&POFAUN.HAIG', 'V V R', nbcycl, ivcorr)
             lhaigh = .true.

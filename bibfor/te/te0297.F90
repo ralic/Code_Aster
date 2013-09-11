@@ -135,7 +135,7 @@ subroutine te0297(option, nomte)
         puls = 0.d0
     endif
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb(fami, 1, 1, '+', zi(imate),&
                 ' ', phenom, 0, ' ', 0.d0,&
                 1, 'RHO', rho, codrho, 0)

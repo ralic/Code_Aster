@@ -37,10 +37,10 @@ subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: nomres, nompar
     character(len=10) :: pheno
-    real(kind=8) :: nrupt, delta
+    real(kind=8) :: nrupt(1), delta
 !
 !-----------------------------------------------------------------------
     integer :: i, nbpar
@@ -53,9 +53,9 @@ subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
 !
     do 10 i = 1, nbcycl
         delta = (abs(epsmax(i)-epsmin(i)))/2.d0
-        call rcvale(nommat, pheno, nbpar, nompar, delta,&
-                    1, nomres, nrupt, icodre, 2)
-        dom(i) = 1.d0/nrupt
+        call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+                    1, nomres, nrupt(1), icodre(1), 2)
+        dom(i) = 1.d0/nrupt(1)
 10  end do
 !
     call jedema()

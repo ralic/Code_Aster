@@ -90,10 +90,10 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: spmecp, spmecq(2), spthe2(2), spthep(2), sptheq(2)
     character(len=8) ::  knumes, kbid
 !CC
-    integer :: icodre
+    integer :: icodre(1)
     logical :: endur, cmax, meca
     integer :: nocc
-    real(kind=8) :: nadm
+    real(kind=8) :: nadm(1)
 ! DEB ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
@@ -394,14 +394,14 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             ug=0.d0
         else
             call rcvale(mater, 'FATIGUE', 1, 'SIGM    ', saltij(1),&
-                        1, 'WOHLER  ', nadm, icodre, 2)
-            if (nadm .lt. 0) then
+                        1, 'WOHLER  ', nadm(1), icodre(1), 2)
+            if (nadm(1) .lt. 0) then
                 vale(1) = saltij(1)
-                vale(2) = nadm
+                vale(2) = nadm(1)
                 call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
                             0, 2, vale)
             endif
-            ug = dble( nocc ) / nadm
+            ug = dble( nocc ) / nadm(1)
         endif
         resuas(10*(is1-1)+10) = ug
         resuss(10*(is1-1)+10) = ug

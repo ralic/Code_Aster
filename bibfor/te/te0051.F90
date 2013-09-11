@@ -69,7 +69,7 @@ subroutine te0051(option, nomte)
     theta = zr(itemps+2)
 !
     valpar(1) = zr(itemps)
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     fami='FPG1'
     kpg=1
     spt=1

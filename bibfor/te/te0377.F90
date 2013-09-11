@@ -200,7 +200,7 @@ subroutine te0377(option, nomte)
     if (yapr .or. yaro .or. typnor .eq. 'NRJ') then
 !
         call jevech('PMATERC', 'L', imate)
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         ibid = 0
         if (typnor .eq. 'NRJ') then
             ibid = ibid +1

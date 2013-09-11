@@ -60,7 +60,7 @@ subroutine dxefg2(pgl, sigt)
     call r8inir(32, 0.d0, sigt, 1)
 !
     call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
 ! --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
 ! --- DE L'EPAISSEUR DE LA COQUE

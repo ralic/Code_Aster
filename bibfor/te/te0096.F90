@@ -58,7 +58,7 @@ subroutine te0096(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
     character(len=16) :: compor(4), oprupt, phenom
@@ -260,21 +260,21 @@ subroutine te0096(option, nomte)
     endif
 !
     if (ivites .ne. 0) then
-        call rccoma(matcod, 'ELAS', 1, phenom, icodre)
+        call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb(famil, kpg, spt, poum, matcod,&
                     ' ', phenom, 1, ' ', rbid,&
-                    1, 'RHO', rho, icodre, 1)
+                    1, 'RHO', rho, icodre(1), 1)
         call rcvalb(famil, kpg, spt, poum, matcod,&
                     ' ', phenom, 1, ' ', rbid,&
-                    1, 'NU', nu, icodre, 1)
+                    1, 'NU', nu, icodre(1), 1)
     endif
 !
 ! CORRECTION DES FORCES VOLUMIQUES
     if ((ipesa.ne.0) .or. (irota.ne.0)) then
-        call rccoma(matcod, 'ELAS', 1, phenom, icodre)
+        call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb(famil, kpg, spt, poum, matcod,&
                     ' ', phenom, 1, ' ', rbid,&
-                    1, 'RHO', rho, icodre, 1)
+                    1, 'RHO', rho, icodre(1), 1)
         if (ipesa .ne. 0) then
             do 95 i = 1, nno
                 ij = ndim*(i-1)
@@ -567,13 +567,11 @@ subroutine te0096(option, nomte)
 463          continue
 !
 ! CALCUL DE LA DEFORMATION DE REFERENCE
-            call rccoma(matcod, 'ELAS', 1, phenom, icodre)
+            call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'NU', nu, icodre,&
-                        1)
+                        rbid, 1, 'NU', nu, icodre(1), 1)
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'E', e, icodre,&
-                        1)
+                        rbid, 1, 'E', e, icodre(1), 1)
 !
             mu = e/(2.d0*(1.d0+nu))
 !

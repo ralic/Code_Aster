@@ -51,7 +51,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !
     call jemarq()
 !
-    call rccoma(imate, comp(1:6), 1, phenom, icodre)
+    call rccoma(imate, comp(1:6), 1, phenom, icodre(1))
 !
     fami='FPG1'
     kpg=1

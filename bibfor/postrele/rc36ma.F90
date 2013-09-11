@@ -220,26 +220,26 @@ subroutine rc36ma(nommat, noma)
         if (nb .eq. 0) tempb = temprb
 !
         zk8(jmater+im-1) = mater
-        call rccome(mater, 'ELAS', phenom, icodre)
+        call rccome(mater, 'ELAS', phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'ELAS')
 !
-        call rccome(mater, 'FATIGUE', phenom, icodre)
+        call rccome(mater, 'FATIGUE', phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'FATIGUE')
 !
-        call rccome(mater, 'RCCM', phenom, icodre)
+        call rccome(mater, 'RCCM', phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
 !
 !   INTERPOLATION POUR TEMP_A
-        call rcvale(mater, 'ELAS', nbpa, nopa, tempa,&
+        call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
                     1, nocmp(1), para( 1), icodre, 2)
 !
-        call rcvale(mater, 'ELAS', nbpa, nopa, tempra,&
+        call rcvale(mater, 'ELAS', nbpa, nopa, [tempra],&
                     3, nocmp(2), para( 2), icodre, 2)
 !
-        call rcvale(mater, 'FATIGUE', nbpa, nopa, tempa,&
+        call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
                     1, nocmp(5), para(5), icodre, 2)
 !
-        call rcvale(mater, 'RCCM', nbpa, nopa, tempa,&
+        call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
                     3, nocmp(6), para( 6), icodre, 2)
 !
 ! --------- LES MAILLES AFFECTEES
@@ -259,16 +259,16 @@ subroutine rc36ma(nommat, noma)
 20      continue
 !
 !   INTERPOLATION POUR TEMP_B
-        call rcvale(mater, 'ELAS', nbpb, nopb, tempb,&
+        call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
                     1, nocmp(1), para( 1), icodre, 2)
 !
-        call rcvale(mater, 'ELAS', nbpb, nopb, temprb,&
+        call rcvale(mater, 'ELAS', nbpb, nopb, [temprb],&
                     3, nocmp(2), para( 2), icodre, 2)
 !
-        call rcvale(mater, 'FATIGUE', nbpb, nopb, tempb,&
+        call rcvale(mater, 'FATIGUE', nbpb, nopb, [tempb],&
                     1, nocmp(5), para(5), icodre, 2)
 !
-        call rcvale(mater, 'RCCM', nbpb, nopb, tempb,&
+        call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
                     3, nocmp(6), para( 6), icodre, 2)
 !
 ! --------- LES MAILLES AFFECTEES
@@ -368,26 +368,26 @@ subroutine rc36ma(nommat, noma)
         if (nb .eq. 0) tempb = temprb
 !
         zk8(jmater+im-1) = mater
-        call rccome(mater, 'ELAS', phenom, icodre)
+        call rccome(mater, 'ELAS', phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'ELAS')
 !
-        call rccome(mater, 'FATIGUE', phenom, icodre)
+        call rccome(mater, 'FATIGUE', phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'FATIGUE')
 !
-        call rccome(mater, 'RCCM', phenom, icodre)
+        call rccome(mater, 'RCCM', phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
 !
 !   INTERPOLATION POUR TEMP_A
-        call rcvale(mater, 'ELAS', nbpa, nopa, tempa,&
+        call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
                     1, nocmp(1), para( 1), icodre, 2)
 !
-        call rcvale(mater, 'ELAS', nbpa, nopa, tempra,&
+        call rcvale(mater, 'ELAS', nbpa, nopa, [tempra],&
                     3, nocmp(2), para( 2), icodre, 2)
 !
-        call rcvale(mater, 'FATIGUE', nbpa, nopa, tempa,&
+        call rcvale(mater, 'FATIGUE', nbpa, nopa, [tempa],&
                     1, nocmp(5), para(5), icodre, 2)
 !
-        call rcvale(mater, 'RCCM', nbpa, nopa, tempa,&
+        call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
                     3, nocmp(6), para( 6), icodre, 2)
 !
 ! --------- LES MAILLES AFFECTEES
@@ -407,16 +407,16 @@ subroutine rc36ma(nommat, noma)
 120      continue
 !
 !   INTERPOLATION POUR TEMP_B
-        call rcvale(mater, 'ELAS', nbpb, nopb, tempb,&
+        call rcvale(mater, 'ELAS', nbpb, nopb, [tempb],&
                     1, nocmp(1), para( 1), icodre, 2)
 !
-        call rcvale(mater, 'ELAS', nbpb, nopb, temprb,&
+        call rcvale(mater, 'ELAS', nbpb, nopb, [temprb],&
                     3, nocmp(2), para( 2), icodre, 2)
 !
-        call rcvale(mater, 'FATIGUE', nbpb, nopb, tempb,&
+        call rcvale(mater, 'FATIGUE', nbpb, nopb, [tempb],&
                     1, nocmp(5), para(5), icodre, 2)
 !
-        call rcvale(mater, 'RCCM', nbpb, nopb, tempb,&
+        call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
                     3, nocmp(6), para( 6), icodre, 2)
 !
 ! --------- LES MAILLES AFFECTEES

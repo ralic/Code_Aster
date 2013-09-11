@@ -39,7 +39,7 @@ subroutine te0404(option, nomte)
     character(len=16) :: option, nomte
 !
     character(len=4) :: fami
-    integer :: icodre
+    integer :: icodre(1)
     integer :: codres(2)
     character(len=2) :: nomres(2)
     character(len=8) :: cnd
@@ -100,7 +100,7 @@ subroutine te0404(option, nomte)
 !
 !     RECUPERATION DU MODULE D'YOUNG ET DE LA MASSE VOLUMIQUE
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS') then
         nomres(1) = 'E'
         nomres(2) = 'NU'
@@ -130,7 +130,7 @@ subroutine te0404(option, nomte)
 !
     call rcvalb(fami, 1, 1, '+', zi(imate),&
                 ' ', phenom, 0, ' ', 0.d0,&
-                1, 'RHO', rho, icodre, 1)
+                1, 'RHO', rho, icodre(1), 1)
 !
 !     CALCUL DE LA CELERITE DES ONDES DANS LE MATERIAU
 !

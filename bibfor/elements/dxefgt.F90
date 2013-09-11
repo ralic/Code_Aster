@@ -63,7 +63,7 @@ subroutine dxefgt(pgl, sigt)
 ! --- THERMIQUES POUR LES MATERIAUX MULTICOUCHES
 !     ------------------------------------------
     call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
 ! --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
 ! --- DE L'EPAISSEUR DE LA COQUE

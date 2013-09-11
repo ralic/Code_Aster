@@ -39,7 +39,7 @@ subroutine dxroep(rho, epais)
 !
     call jevech('PMATERC', 'L', jmate)
 !
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS_COQMU') then
         nomres(1) = 'HOM_19'

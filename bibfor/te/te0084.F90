@@ -44,7 +44,7 @@ subroutine te0084(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: phenom
-    integer :: icodre
+    integer :: icodre(1)
     real(kind=8) :: dfdx(9), dfdy(9), poids, rx, ry
     integer :: nno, kp, k, npg1, i, jgano, ndim, nnos
     integer :: ipoids, ivf, idfde
@@ -104,10 +104,10 @@ subroutine te0084(option, nomte)
 !
 ! - Material
 !
-    call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(j_mate),&
                 ' ', phenom, 0, ' ', r8b,&
-                1, 'RHO', rho, icodre, 1)
+                1, 'RHO', rho, icodre(1), 1)
 !
 ! - Computation
 !

@@ -43,10 +43,10 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: nomres, nompar, kbid
     character(len=10) :: pheno
-    real(kind=8) :: nrupt, delta
+    real(kind=8) :: nrupt(1), delta
     logical :: endur
 !
 !-----------------------------------------------------------------------
@@ -65,9 +65,9 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
         if (endur) then
             dom(i) = 0.d0
         else
-            call rcvale(nommat, pheno, nbpar, nompar, delta,&
-                        1, nomres, nrupt, icodre, 2)
-            dom(i) = 1.d0/nrupt
+            call rcvale(nommat, pheno, nbpar, nompar, [delta],&
+                        1, nomres, nrupt(1), icodre(1), 2)
+            dom(i) = 1.d0/nrupt(1)
         endif
 10  end do
 !

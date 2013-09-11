@@ -54,7 +54,7 @@ subroutine te0065(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     if (lielrf(2)(1:4) .eq. 'POHO') then
 !
@@ -75,7 +75,7 @@ subroutine te0065(option, nomte)
         rhopou = valres(1)
 !
 !        - DETERMINATION DU RHO 'FLUIDE': RHOFLU
-        call rccoma(zi(imate), 'FLUIDE', 1, phenom, icodre)
+        call rccoma(zi(imate), 'FLUIDE', 1, phenom, icodre(1))
         if (phenom .eq. 'FLUIDE') then
             nomres(1) = 'RHO'
             nbv = 1

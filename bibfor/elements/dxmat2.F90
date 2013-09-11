@@ -95,7 +95,7 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
 !     ------------------------------------------------
     indith = 0
     call jevech('PMATERC', 'L', jmate)
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS_COQMU') then
 !

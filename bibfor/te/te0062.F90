@@ -74,7 +74,7 @@ subroutine te0062(option, nomte)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PFLUXPG', 'E', iflux)
-    call rccoma(zi(imate), 'THER', 1, phenom, icodre)
+    call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
 !
 !====
 ! 1.3 PREALABLES LIES A LA RECUPERATION DES DONNEES MATERIAUX EN

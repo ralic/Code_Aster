@@ -162,7 +162,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     call vectan(nb1, nb2, xi, zr(lzr), vecta,&
                 vectn, vectpt)
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, valret)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, valret(1))
 !
     if (phenom .ne. 'ELAS') then
         call u2mess('F', 'ELEMENTS_42')

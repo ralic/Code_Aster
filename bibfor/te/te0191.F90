@@ -41,7 +41,7 @@ subroutine te0191(option, nomte)
 !
     character(len=8) :: fami, poum
     character(len=16) :: phenom
-    integer :: icodre
+    integer :: icodre(1)
     real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r, r8b, rho
     real(kind=8) :: matp(27, 27), matv(378)
     integer :: nno, kp, nnos, npg2, i, j, k, l, imatuu, nddl, nvec, iacce, ivect
@@ -57,10 +57,10 @@ subroutine te0191(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
 !
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
                 ' ', phenom, 0, ' ', r8b,&
-                1, 'RHO', rho, icodre, 1)
+                1, 'RHO', rho, icodre(1), 1)
 !
     do 113 k = 1, 3
         do 113 l = 1, 3

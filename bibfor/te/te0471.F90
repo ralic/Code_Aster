@@ -125,7 +125,7 @@ subroutine te0471(option, nomte)
 !     --- RECUPERATION LOI DE COMPORTEMENT MATERIAU ---
 !     -------------------------------------------------
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS') then
         nomres(1) = 'E'
         nomres(2) = 'NU'
@@ -144,7 +144,7 @@ subroutine te0471(option, nomte)
                 nbv, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
-    call rccoma(zi(imate), 'FLUIDE', 1, phenom, icodre)
+    call rccoma(zi(imate), 'FLUIDE', 1, phenom, icodre(1))
     if (phenom .eq. 'FLUIDE') then
         nomres(1) = 'RHO'
         nbv = 1
