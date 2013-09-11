@@ -146,7 +146,7 @@ subroutine op0109()
                 prec, crit, iret)
     if (iret .ne. 0) goto 9999
     call jeveuo(knume, 'L', jordr)
-    call dismoi('F', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid, masse, iret)
+    call dismoi('C', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid, masse, iret)
     nomsy = 'DEPL'
     call vprecu(meca, nomsy, nbordr, zi(jordr), kvec,&
                 nbpara, nopara, k8b, kval, k8b,&
