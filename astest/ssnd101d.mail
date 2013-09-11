@@ -1,0 +1,67 @@
+COOR_3D
+ NT1        0.00E+00  0.00E+00  0.00E+00
+ NT2        1.00E-01  0.00E+00  0.00E+00
+ NT3        2.00E-01  0.00E+00  0.00E+00
+ NT4        1.50E-01  0.00E+00  0.00E+00
+
+ NZ1       0.00E+00  0.00E+00  0.00E+00
+ NZ2       1.00E-01  0.00E+00  0.00E+00
+
+FINSF
+
+SEG2
+    MT1     NT1     NT2
+    MT2     NT2     NT3
+    MT3     NT2     NT4
+    MT4     NT4     NT3
+
+    MZ1     NZ1     NZ2
+
+FINSF
+POI1
+    MPT1      NT1
+    MPZ1      NZ1
+FINSF
+
+GROUP_NO
+    PT1         NT1
+FINSF
+GROUP_NO
+    PT2         NT2
+FINSF
+GROUP_NO
+    PT3         NT3
+FINSF
+GROUP_NO
+    PT4         NT4
+FINSF
+GROUP_MA
+    RESST1      MT1
+FINSF
+GROUP_MA
+    RESST2      MT2
+FINSF
+GROUP_MA
+    RESST3      MT3
+FINSF
+GROUP_MA
+    AMORT3      MT4
+FINSF
+GROUP_MA
+    MASST1      MPT1
+FINSF
+
+GROUP_NO
+    PZ1         NZ1
+FINSF
+GROUP_NO
+    PZ2         NZ2
+FINSF
+GROUP_MA
+    ZENER01     MZ1
+FINSF
+GROUP_MA
+    MASSZ1      MPZ1
+FINSF
+
+FIN

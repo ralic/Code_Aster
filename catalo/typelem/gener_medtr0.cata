@@ -30,6 +30,8 @@ MODE_LOCAL__
     CCADISM  = CADISM   ELEM__         (M[36]    )
     CCINFDI  = CINFDI   ELEM__         (REPK     REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI)
     CCAORIE  = CAORIE   ELEM__         (ALPHA   BETA GAMMA    )
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
+                                        TOLDEBO  ITEDEBO)
     ECODRET  = CODE_I   ELEM__         (IRET   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
@@ -108,14 +110,13 @@ OPTION__
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
-                                     CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI  CCARCRI  PCARCRI
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    FULL_MECA_ELAS      47    IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR  CCINFDI  PCINFDI  CCAORIE  PCAORIE CCADISK  PCADISK
-                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+    FULL_MECA_ELAS      47    IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR  CCINFDI  PCINFDI  CCAORIE  PCAORIE
+                                     CCADISK  PCADISK  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMR  CINSTPR  PINSTMR
-
+                                     ZVARIPG  PVARIMR  CINSTPR  PINSTMR  CCARCRI  PCARCRI
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     INIT_VARC           99    IN__
@@ -142,7 +143,7 @@ OPTION__
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
-                                     CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI  CCARCRI  PCARCRI
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      39    IN__   EREFCO   PREFCO   CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
@@ -154,11 +155,10 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS
     RIGI_MECA           41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    RIGI_MECA_ELAS      47    IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR  CCINFDI  PCINFDI  CCAORIE  PCAORIE CCADISK  PCADISK
-                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+    RIGI_MECA_ELAS      47    IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR  CCINFDI  PCINFDI  CCAORIE  PCAORIE
+                                     CCADISK  PCADISK  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMR  CINSTPR  PINSTMR
-
+                                     ZVARIPG  PVARIMR  CINSTPR  PINSTMR  CCARCRI  PCARCRI
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_HYST      41    IN__   MMATUUR  PRIGIEL  CCINFDI  PCINFDI
                               OUT__  MMATUUC  PMATUUC
@@ -167,7 +167,7 @@ OPTION__
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
-                                     CCINFDI  PCINFDI
+                                     CCINFDI  PCINFDI  CCARCRI  PCARCRI
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA           42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR CCINFDI  PCINFDI
                               OUT__  EEFGEGA  PCONTRR  EEFGEGC  PCONTRC
@@ -185,3 +185,4 @@ OPTION__
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
+

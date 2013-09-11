@@ -1,17 +1,15 @@
 subroutine dinonc(nomte, icodre, valre, klv, raide,&
-                  nbpar, param, nploi, okdire)
-! ----------------------------------------------------------------------
+                  nbpar, param, okdire)
     implicit none
 #include "asterfort/u2mesk.h"
     character(len=16) :: nomte
     integer :: icodre(*)
-    integer :: nbpar, nploi
+    integer :: nbpar
     real(kind=8) :: valre(*), klv(*), raide(*), param(6, nbpar)
     logical :: okdire(6)
 !
-! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,15 +24,14 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-! ======================================================================
+! person_in_charge: jean-luc.flejou at edf.fr
+! --------------------------------------------------------------------------------------------------
 !           AFFECTATION DES VALEURS ISSUES DU COMPORTEMENT
 !
-!   SI ON ESSAYE D'AFFECTER UN COMPORTEMENT SUR UN DDL NON AUTORISE
-!   ON SORT EN 'F'
+!   si on essaye d'affecter un comportement sur un ddl non autorise on sort en 'f'
 !
-!   POUR QUE CELA FONCTIONNE CORRECTEMENT IL FAUT QUE LES PARAMETRES
-!   SOIENT RANGES DANS LE DATA 'NOMRE' (TE0047) DE LA FACON SUIVANTE
+!   pour que cela fonctionne correctement il faut que les paramètres soient ranges dans le
+!   data 'nomre' de la façon suivante
 !
 !   PARAMETRES SUIVANT X        PARAMETRES SUIVANT Y        ETC
 !   P_1_DX  P_2_DX  P_3_DX ...  P_1_DY  P_2_DY  P_3_DY ...
@@ -45,39 +42,36 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
 !             'MLIM_X','PUIS_RX',
 !             'MLIM_Y','PUIS_RY',
 !             'MLIM_Z','PUIS_RZ'/
-! ======================================================================
+! --------------------------------------------------------------------------------------------------
 !
 !  IN
-!     NOMTE : NOM DE L'ELEMENT
-!     ICODRE : 0 SI LE COEFF EST PRESENT SINON 1
-!     VALRE : VALEUR DES COEFFICIENTS
-!     KLV   : RAIDEUR ELASTIQUE DU DISCRET
-!     NBPAR : NOMBRE DE PARAMETRE MAXIMUM DE LA LOI
-!     NPLOI : NOMBRE DE PARAMETRE DE LA LOI PAR DDL
+!     nomte : nom de l'élément
+!     icodre : 0 si le coeff est présent sinon 1
+!     valre : valeur des coefficients
+!     klv   : raideur élastique du discret
+!     nbpar : nombre de paramètre de la loi par ddl
+!
 !  OUT
-!     RAIDE  : RAIDEUR AU COMPORTEMENT
-!     PARAM  : PARAMETRES DE LA LOI
-!     OKDIRE : VRAI SI LA DIRECTION EST AFFECTEE PAR LE COMPORTEMENT
+!     raide  : raideur au comportement
+!     param  : paramètres de la loi
+!     okdire : vrai si la direction est affectée par le comportement
 !
-!***************** DECLARATION DES VARIABLES LOCALES *******************
-!
+! --------------------------------------------------------------------------------------------------
     integer :: ii, jj
 !
-!************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
-!
-    do 50 ii = 1, 6
+    do ii = 1, 6
         okdire(ii)= .false.
-50  end do
+    enddo
 !
     if ((nomte .eq. 'MECA_DIS_TR_N') .or. (nomte .eq. 'MECA_DIS_TR_L')) then
-        do 101 ii = 0, 5
-            do 102 jj = 1, nploi
-                if (icodre(nploi*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nploi*ii+jj)
+        do ii = 0, 5
+            do jj = 1, nbpar
+                if (icodre(nbpar*ii+jj) .eq. 0) then
+                    param(ii+1,jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
                 endif
-102          continue
-101      continue
+            enddo
+        enddo
         raide(1)= klv(1)
         raide(2)= klv(3)
         raide(3)= klv(6)
@@ -86,68 +80,68 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
         raide(6)= klv(21)
     endif
     if ((nomte .eq. 'MECA_DIS_T_N') .or. (nomte .eq. 'MECA_DIS_T_L')) then
-        do 105 ii = 0, 2
-            do 106 jj = 1, nploi
-                if (icodre(nploi*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nploi*ii+jj)
+        do ii = 0, 2
+            do jj = 1, nbpar
+                if (icodre(nbpar*ii+jj) .eq. 0) then
+                    param(ii+1,jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
                 endif
-106          continue
-105      continue
-        do 107 ii = 3, 5
-            do 108 jj = 1, nploi
-                if (icodre(nploi*ii+jj) .eq. 0) then
+            enddo
+        enddo
+        do ii = 3, 5
+            do jj = 1, nbpar
+                if (icodre(nbpar*ii+jj) .eq. 0) then
                     call u2mesk('F', 'DISCRETS_1', 1, nomte)
                 endif
-108          continue
-107      continue
+            enddo
+        enddo
         raide(1)= klv(1)
         raide(2)= klv(3)
         raide(3)= klv(6)
     endif
     if ((nomte .eq. 'MECA_2D_DIS_TR_N') .or. (nomte .eq. 'MECA_2D_DIS_TR_L')) then
-        do 110 ii = 0, 1
-            do 111 jj = 1, nploi
-                if (icodre(nploi*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nploi*ii+jj)
+        do ii = 0, 1
+            do jj = 1, nbpar
+                if (icodre(nbpar*ii+jj) .eq. 0) then
+                    param(ii+1,jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
                 endif
-111          continue
-110      continue
+            enddo
+        enddo
         ii= 5
-        do 112 jj = 1, nploi
-            if (icodre(nploi*ii+jj) .eq. 0) then
-                param(3,jj) = valre(nploi*ii+jj)
+        do jj = 1, nbpar
+            if (icodre(nbpar*ii+jj) .eq. 0) then
+                param(3,jj) = valre(nbpar*ii+jj)
                 okdire(3) = .true.
             endif
-112      continue
-        do 113 ii = 2, 4
-            do 114 jj = 1, nploi
-                if (icodre(nploi*ii+jj) .eq. 0) then
+        enddo
+        do ii = 2, 4
+            do jj = 1, nbpar
+                if (icodre(nbpar*ii+jj) .eq. 0) then
                     call u2mesk('F', 'DISCRETS_2', 1, nomte)
                 endif
-114          continue
-113      continue
+            enddo
+        enddo
         raide(1)= klv(1)
         raide(2)= klv(3)
         raide(3)= klv(6)
     endif
     if ((nomte .eq. 'MECA_2D_DIS_T_N') .or. (nomte .eq. 'MECA_2D_DIS_T_L')) then
-        do 115 ii = 0, 1
-            do 116 jj = 1, nploi
-                if (icodre(nploi*ii+jj) .eq. 0) then
-                    param(ii+1,jj) = valre(nploi*ii+jj)
+        do ii = 0, 1
+            do jj = 1, nbpar
+                if (icodre(nbpar*ii+jj) .eq. 0) then
+                    param(ii+1,jj) = valre(nbpar*ii+jj)
                     okdire(ii+1) = .true.
                 endif
-116          continue
-115      continue
-        do 117 ii = 2, 5
-            do 118 jj = 1, nploi
-                if (icodre(nploi*ii+jj) .eq. 0) then
+            enddo
+        enddo
+        do ii = 2, 5
+            do jj = 1, nbpar
+                if (icodre(nbpar*ii+jj) .eq. 0) then
                     call u2mesk('F', 'DISCRETS_3', 1, nomte)
                 endif
-118          continue
-117      continue
+            enddo
+        enddo
         raide(1)= klv(1)
         raide(2)= klv(3)
     endif

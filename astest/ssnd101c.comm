@@ -1,0 +1,219 @@
+#
+# TITRE DISCRETS AVEC COMPORTEMENT VISQUEUX 3D
+#
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                   DISCRET COMPORTEMENT ZENER GENERALISE
+#
+#   Validation du comportement et de la dissipation : fluage
+#
+#   Segment : K_T_D_L
+#
+# --------------------------------------------------------------------------------------------------
+
+DEBUT(CODE=_F(NOM='SSND101A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),)
+
+MAIL=LIRE_MAILLAGE()
+
+MODE=AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA='ZENER01',  PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+    ),
+)
+
+# Le déplacement imposé
+U01 = 0.10
+
+# Liste d'instant
+TempsMaxi = 1.00
+DeltaPas  = 4.0E-02
+
+linstS=DEFI_LIST_REEL(
+    DEBUT= -1.0E-08,
+    INTERVALLE=(
+        _F(JUSQU_A = 0.0, NOMBRE = 1,),
+        _F(JUSQU_A = TempsMaxi, PAS = DeltaPas,),
+    ),
+)
+
+CONDLIM =AFFE_CHAR_MECA(MODELE=MODE,
+    DDL_IMPO = (
+        _F(GROUP_NO='PT1', LIAISON='ENCASTRE',),
+        _F(GROUP_NO='PT2', DX=U01, DY=0.0, DZ=0.0,),
+    ),
+)
+
+# Définition des materiaux
+Zener01  = DEFI_MATERIAU(
+    DIS_VISC=_F(K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5 ),
+)
+
+CHMAT=AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+      _F(GROUP_MA='ZENER01',  MATER=Zener01,),
+   ),
+)
+
+CARELEM=AFFE_CARA_ELEM(
+    MODELE=MODE,
+    DISCRET=(
+        _F( REPERE='LOCAL',CARA='K_T_D_L',  GROUP_MA='ZENER01',
+            VALE=(50.0, 120.0, 130.0,), ),
+   ),
+)
+
+RESU=STAT_NON_LINE(
+    MODELE     = MODE,
+    CHAM_MATER = CHMAT,
+    CARA_ELEM  = CARELEM,
+    EXCIT=_F(CHARGE=CONDLIM),
+    COMP_INCR=(
+        _F(RELATION='DIS_VISC', GROUP_MA='ZENER01',),
+    ),
+    INCREMENT=_F(LIST_INST=linstS,),
+    CONVERGENCE=_F(ARRET='OUI', ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=30,),
+    NEWTON=_F(REAC_INCR=1,REAC_ITER=1, MATRICE='TANGENTE',),
+)
+
+#IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU,),)
+
+Temps = (
+DeltaPas* 2.0, DeltaPas* 3.0, DeltaPas* 5.0, DeltaPas* 7.0,
+DeltaPas*10.0, DeltaPas*15.0, DeltaPas*17.0,
+DeltaPas*25.0,
+)
+
+
+def Critere(valr):
+    if ( abs(valr) <= 1.0E-08 ): return 'ABSOLU'
+    return 'RELATIF'
+
+# --------------------------------------------------------------------------------------------------
+# Calcul de la force à DX imposé
+def Force(u):
+    Epsi0 = 0.10
+    E1=120.0; E2=10.0; E3=60.0; H=1.7
+    AAs = (E3+E2)*(E1+E2+E3)*H**2
+    BBs = Epsi0*E1*E3**2
+    return Epsi0*E1*(AAs+BBs*E2*u)/( ((E3+E2+E1)*H)**2 + BBs*(E2+E1)*u )
+
+# Calcul de la dissipation à DX imposé
+def DissipationEpsi(u):
+    Epsi0 = 0.10
+    E1=120.0; E2=10.0; E3=60.0; H=1.7
+    AAe=((E3+E2+E1)*H)**2
+    BBe=Epsi0*E1*E3**2*(E2+E1)
+    return ( Epsi0**3*E1**3*E3**3 / (2*(E3+E2+E1)) )*u*(2*AAe+BBe*u)/(AAe+BBe*u)**2
+
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur ZENER01
+#
+TABSIEF1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER01',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',
+   ),
+)
+TABVARI1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER01',NOM_CHAM='VARI_ELGA',TOUT_CMP='OUI',
+   ),
+)
+TABSIEF1 = CALC_TABLE(reuse=TABSIEF1,
+    TABLE=TABSIEF1,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=2),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','N',),)
+    ),
+)
+TABVARI1 = CALC_TABLE(reuse=TABVARI1,
+   TABLE=TABVARI1,
+   ACTION=(
+      _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=2),
+      _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','V3'),)
+   ),
+)
+TABRES1= CALC_TABLE(
+   TABLE=TABSIEF1,
+   ACTION=(
+      _F(OPERATION='COMB',TABLE=TABVARI1,NOM_PARA='NUME_ORDRE'),
+   ),
+)
+for inst in Temps:
+    force = Force(inst)
+    TEST_TABLE(
+        TABLE = TABRES1,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'N', VALE_CALC=force, VALE_REFE=force, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(force),
+    )
+    dissip = DissipationEpsi(inst)
+    TEST_TABLE(
+        TABLE = TABRES1,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'V3', VALE_CALC=dissip, VALE_REFE=dissip, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(dissip),
+    )
+
+#IMPR_TABLE(FORMAT='TABLEAU',TABLE=TABSIEF1)
+#IMPR_TABLE(FORMAT='TABLEAU',TABLE=TABVARI1)
+#IMPR_TABLE(FORMAT='TABLEAU',TABLE=TABRES1,FORMAT_R='E20.13')
+"""
+TABDEPL0 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER01',NOM_CHAM='DEPL',TOUT_CMP='OUI',
+    ),
+)
+TABDEPL0 = CALC_TABLE(reuse=TABDEPL0,
+    TABLE=TABDEPL0,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='NOEUD',CRIT_COMP='EQ',VALE_K='N2'),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','DX'),)
+    ),
+)
+
+TABVARI0 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER01',NOM_CHAM='VARI_ELGA',TOUT_CMP='OUI',
+    ),
+)
+TABVARI0 = CALC_TABLE(reuse=TABVARI0,
+    TABLE=TABVARI0,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=2),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','V1','V2','V3','V4'),)
+    ),
+)
+TABRES0= CALC_TABLE(
+    TABLE=TABDEPL0,
+    ACTION=(
+        _F(OPERATION='COMB',TABLE=TABDEPL0,NOM_PARA='NUME_ORDRE'),
+        _F(OPERATION='COMB',TABLE=TABVARI0,NOM_PARA='NUME_ORDRE'),
+        _F(OPERATION='SUPPRIME',NOM_PARA='NUME_ORDRE'),
+    ),
+)
+IMPR_TABLE(FORMAT='TABLEAU',TABLE=TABRES0,FORMAT_R='E20.13')
+"""
+
+FIN()
+
+
+

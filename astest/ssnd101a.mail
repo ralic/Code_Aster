@@ -1,66 +1,51 @@
 COOR_3D
  N1        0.00E+00  0.00E+00  0.00E+00
  N2        1.00E-01  0.00E+00  0.00E+00
- N3        1.00E-01  0.00E+00  0.00E+00
-
- N4        0.00E+00  0.00E+00  0.00E+00
+ N3        0.00E+00  0.00E+00  0.00E+00
+ N4        1.00E-01  0.00E+00  0.00E+00
  N5        0.00E+00  0.00E+00  0.00E+00
-
  N6        0.00E+00  0.00E+00  0.00E+00
- N7        1.00E-01  0.00E+00  0.00E+00
 FINSF
 
 SEG2
-   M1       N1       N2
-   M2       N1       N3
-
-   M6       N6       N7
+    M1      N1      N2
+    M2      N3      N4
 FINSF
 POI1
-   M3       N4
-   M4       N5
-
-   M7       N6
-   M8       N7
+    M3      N5
+    M4      N6
 FINSF
 
 GROUP_NO
-   PT1      N1
+    PT1     N1
 FINSF
 GROUP_NO
-   PT2      N2
+    PT2     N2
 FINSF
 GROUP_NO
-   PT3      N3
+    PT3     N3
 FINSF
 GROUP_NO
-   PT4      N4
+    PT4     N4
 FINSF
 GROUP_NO
-   PT5      N5
+    PT5     N5
 FINSF
 GROUP_NO
-   PT6      N6
+    PT6     N6
 FINSF
 
 GROUP_MA
-   DL_T     M1
+    ZENER01     M1
 FINSF
 GROUP_MA
-   DL_TR    M2
-FINSF
-
-GROUP_MA
-   DN_T     M3
+    ZENER02     M2
 FINSF
 GROUP_MA
-   DN_TR    M4
+    ZENER03     M3
 FINSF
 GROUP_MA
-   DIS_T    M6
-FINSF
-GROUP_MA
-   POI_1    M7       M8
+    ZENER04     M4
 FINSF
 
 FIN

@@ -16,15 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dinonc(nomte, icodre, valre, klv, raide,&
-                      nbpar, param, okdire)
-        integer :: nbpar
-        character(len=16) :: nomte
-        integer :: icodre(*)
-        real(kind=8) :: valre(*)
-        real(kind=8) :: klv(*)
-        real(kind=8) :: raide(*)
-        real(kind=8) :: param(6, nbpar)
-        logical :: okdire(6)
-    end subroutine dinonc
-end interface 
+    subroutine digric(option, nomte, ndim, nbt, nno,&
+                      nc, ulm, dul, pgl, iret)
+        character(*) :: option
+        character(*) :: nomte
+        integer :: ndim
+        integer :: nbt
+        integer :: nno
+        integer :: nc
+        real(kind=8) :: ulm(12)
+        real(kind=8) :: dul(12)
+        real(kind=8) :: pgl(3, 3)
+        integer :: iret
+    end subroutine digric
+end interface

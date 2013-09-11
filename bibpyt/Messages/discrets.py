@@ -62,13 +62,7 @@ Pour information :
 """),
 
 7 : _(u"""
-Le Comportement <%(k4)s> affecté à un DISCRET est non valide
-Les comportements valides sont :
-   COMP_ELAS   ELAS
-
-   COMP_INCR   ELAS           DIS_GRICRA  DIS_VISC  DIS_ECRO_CINE
-               DIS_BILI_ELAS  ASSE_CORN   ARME      DIS_CHOC
-               DIS_GOUJ2E
+Le Comportement <%(k4)s> affecté à un DISCRET est non valide.
 
 Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>

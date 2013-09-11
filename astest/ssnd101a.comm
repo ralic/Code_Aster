@@ -1,4 +1,6 @@
+#
 # TITRE DISCRETS AVEC COMPORTEMENT VISQUEUX 3D : T ET TR SUR NOEUD ET SEG2
+#
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,523 +17,435 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ----------------------------------------------------------------------
-# DISCRET 3D AVEC COMPORTEMENT VISQUEUX
-#    K_T_D_L    K_TR_D_L
-#    K_T_D_N    K_TR_D_N
-# A LA FIN DU FICHIER DE COMMANDE, ON COMPARE DIS_VISC EN LINEAIRE
-# AVEC UNE MODELISATION UTILISANT UN AMORTISSEMENT DONNE DANS
-# AFFE_CARA_ELEM
-#=======================================================================
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                   DISCRET COMPORTEMENT ZENER GENERALISE
+#
+#   Validation du comportement
+#
+#   Segment : K_T_D_L     K_TR_D_L
+#   Noeud   : K_T_D_N     K_TR_D_N
+#
+# --------------------------------------------------------------------------------------------------
 
-from math import pow
-import numpy as NP
-
-DEBUT(CODE=_F(NOM='SSND101A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
-# SDVERI='NON' car la verification est trop couteuse en CPU
+DEBUT(CODE=_F(NOM='SSND101A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),)
 
 MAIL=LIRE_MAILLAGE()
 
 MODE=AFFE_MODELE(
-   MAILLAGE=MAIL,
-   AFFE=(
-      _F(GROUP_MA='DL_T',  PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
-      _F(GROUP_MA='DL_TR', PHENOMENE='MECANIQUE', MODELISATION='DIS_TR',),
-      _F(GROUP_MA='DN_T',  PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
-      _F(GROUP_MA='DN_TR', PHENOMENE='MECANIQUE', MODELISATION='DIS_TR',),
-   ),
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA='ZENER01',  PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+        _F(GROUP_MA='ZENER02',  PHENOMENE='MECANIQUE', MODELISATION='DIS_TR',),
+        _F(GROUP_MA='ZENER03',  PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+        _F(GROUP_MA='ZENER04',  PHENOMENE='MECANIQUE', MODELISATION='DIS_TR',),
+    ),
 )
-
 
 #
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 def Sinus(t,freq):
-   return sin(2.0*pi*freq*t)
+    return sin(2.0*pi*freq*t)
 
-# Caracteristiques des signaux
-#   frequence (Hz)       Amplitude (m)
-# DL_T
-flt_dx  = 0.80; clt_dx  = 40.0E-03;
-flt_dy  = 1.90; clt_dy  = 50.0E-03;
-flt_dz  = 2.50; clt_dz  = 30.0E-03;
-# DL_TR
-fltr_dx = 1.35; cltr_dx = 40.0E-03;
-fltr_dy = 1.65; cltr_dy = 35.0E-03;
-fltr_dz = 2.35; cltr_dz = 25.0E-03;
-fltr_rx = 3.00; cltr_rx = 15.0E-03;
-fltr_ry = 2.60; cltr_ry = 30.0E-03;
-fltr_rz = 2.45; cltr_rz = 20.0E-03;
-# DN_T
-fnt_dx  = 1.25; cnt_dx  = 40.0E-03;
-fnt_dy  = 0.90; cnt_dy  = 30.0E-03;
-fnt_dz  = 1.15; cnt_dz  = 35.0E-03;
-# DN_TR
-fntr_dx = 1.00; cntr_dx = 40.0E-03;
-fntr_dy = 1.50; cntr_dy = 50.0E-03;
-fntr_dz = 2.00; cntr_dz = 60.0E-03;
-fntr_rx = 0.50; cntr_rx = 30.0E-03;
-fntr_ry = 0.75; cntr_ry = 20.0E-03;
-fntr_rz = 1.25; cntr_rz = 70.0E-03;
+Freq01 = 5.0 ; U01 = 0.10
+# Le déplacement imposé
+Depla01  = FORMULE(VALE='U01*Sinus(INST,Freq01)',   NOM_PARA='INST')
 
+# Liste d'instant
+TempsMaxi = 1.00
+DeltaPas  = 4.0E-03
 
-# Les Signaux Sinus
-Slt_dx  = FORMULE(VALE='clt_dx*Sinus(INST,flt_dx)',   NOM_PARA='INST')
-Slt_dy  = FORMULE(VALE='clt_dy*Sinus(INST,flt_dy)',   NOM_PARA='INST')
-Slt_dz  = FORMULE(VALE='clt_dz*Sinus(INST,flt_dz)',   NOM_PARA='INST')
+linstS=DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=_F(JUSQU_A = TempsMaxi, PAS = DeltaPas,), )
 
-Sltr_dx = FORMULE(VALE='cltr_dx*Sinus(INST,fltr_dx)', NOM_PARA='INST')
-Sltr_dy = FORMULE(VALE='cltr_dy*Sinus(INST,fltr_dy)', NOM_PARA='INST')
-Sltr_dz = FORMULE(VALE='cltr_dz*Sinus(INST,fltr_dz)', NOM_PARA='INST')
-Sltr_rx = FORMULE(VALE='cltr_rx*Sinus(INST,fltr_rx)', NOM_PARA='INST')
-Sltr_ry = FORMULE(VALE='cltr_ry*Sinus(INST,fltr_ry)', NOM_PARA='INST')
-Sltr_rz = FORMULE(VALE='cltr_rz*Sinus(INST,fltr_rz)', NOM_PARA='INST')
-
-Snt_dx  = FORMULE(VALE='cnt_dx*Sinus(INST,fnt_dx)',   NOM_PARA='INST')
-Snt_dy  = FORMULE(VALE='cnt_dy*Sinus(INST,fnt_dy)',   NOM_PARA='INST')
-Snt_dz  = FORMULE(VALE='cnt_dz*Sinus(INST,fnt_dz)',   NOM_PARA='INST')
-
-Sntr_dx = FORMULE(VALE='cntr_dx*Sinus(INST,fntr_dx)', NOM_PARA='INST')
-Sntr_dy = FORMULE(VALE='cntr_dy*Sinus(INST,fntr_dy)', NOM_PARA='INST')
-Sntr_dz = FORMULE(VALE='cntr_dz*Sinus(INST,fntr_dz)', NOM_PARA='INST')
-Sntr_rx = FORMULE(VALE='cntr_rx*Sinus(INST,fntr_rx)', NOM_PARA='INST')
-Sntr_ry = FORMULE(VALE='cntr_ry*Sinus(INST,fntr_ry)', NOM_PARA='INST')
-Sntr_rz = FORMULE(VALE='cntr_rz*Sinus(INST,fntr_rz)', NOM_PARA='INST')
-
-TempsMaxi = 5.0
-PasInst = min([flt_dx, flt_dy, flt_dz,
-           fltr_dx,fltr_dy,fltr_dz,fltr_rx,fltr_ry,fltr_rz,
-           fnt_dx, fnt_dy, fnt_dz,
-           fntr_dx,fntr_dy,fntr_dz,fntr_rx,fntr_ry,fntr_rz])/60.0
-
-linstS=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A = TempsMaxi, PAS = PasInst,), )
 CONDLIM =AFFE_CHAR_MECA_F(MODELE=MODE,
-   DDL_IMPO = (
-      _F(GROUP_NO=('PT1'), LIAISON='ENCASTRE',),
-      _F(GROUP_NO=('PT2'), DX =Slt_dx , DY =Slt_dy,  DZ =Slt_dz,),
-      _F(GROUP_NO=('PT3'), DX =Sltr_dx, DY =Sltr_dy, DZ =Sltr_dz,
-                           DRX=Sltr_rx, DRY=Sltr_ry, DRZ=Sltr_rz,),
-      _F(GROUP_NO=('PT4'), DX =Snt_dx , DY =Snt_dy,  DZ =Snt_dz,),
-      _F(GROUP_NO=('PT5'), DX =Sntr_dx, DY =Sntr_dy, DZ =Sntr_dz,
-                           DRX=Sntr_rx, DRY=Sntr_ry, DRZ=Sntr_rz,),
-   ),
+    DDL_IMPO = (
+        _F(GROUP_NO='PT1', LIAISON='ENCASTRE',),
+        _F(GROUP_NO='PT2', DX=Depla01, DY=Depla01, DZ=Depla01,),
+        _F(GROUP_NO='PT3', LIAISON='ENCASTRE',),
+        _F(GROUP_NO='PT4', DX=Depla01, DY=Depla01, DZ=Depla01,
+                           DRX=Depla01, DRY=Depla01, DRZ=Depla01),
+        _F(GROUP_NO='PT5', DX=Depla01, DY=Depla01, DZ=Depla01,),
+        _F(GROUP_NO='PT6', DX=Depla01, DY=Depla01, DZ=Depla01,
+                           DRX=Depla01, DRY=Depla01, DRZ=Depla01),
+    ),
 )
 
-# Caracteristiques des amortisseurs : Puissance , Force maxi
-plt_dx  = 1.20; Fmlt_dx  = 10000.0;
-plt_dy  = 1.40; Fmlt_dy  = 12000.0;
-plt_dz  = 2.25; Fmlt_dz  =  8000.0;
-
-pltr_dx = 0.25; Fmltr_dx = 10000.0;
-pltr_dy = 0.50; Fmltr_dy = 12000.0;
-pltr_dz = 0.60; Fmltr_dz = 15000.0;
-pltr_rx = 0.70; Fmltr_rx =  8000.0;
-pltr_ry = 0.80; Fmltr_ry =  9000.0;
-pltr_rz = 0.90; Fmltr_rz =  7500.0;
-
-pnt_dx  = 1.25; Fmnt_dx  = 10000.0;
-pnt_dy  = 1.40; Fmnt_dy  = 12000.0;
-pnt_dz  = 2.00; Fmnt_dz  =  8000.0;
-
-pntr_dx = 0.25; Fmntr_dx = 10000.0;
-pntr_dy = 0.45; Fmntr_dy = 12000.0;
-pntr_dz = 0.15; Fmntr_dz = 13000.0;
-pntr_rx = 0.30; Fmntr_rx =  8000.0;
-pntr_ry = 0.40; Fmntr_ry =  7500.0;
-pntr_rz = 0.10; Fmntr_rz =  7000.0;
-
-# Calcul des raideurs pour trouver les efforts maximum
-#  Fmaxi est proche de C.(2.Pi.f.Amplitude)_puissance(a)
-klt_dx  = Fmlt_dx /pow(2.0*pi*flt_dx*clt_dx,plt_dx);
-klt_dy  = Fmlt_dy /pow(2.0*pi*flt_dy*clt_dy,plt_dy);
-klt_dz  = Fmlt_dz /pow(2.0*pi*flt_dz*clt_dz,plt_dz);
-
-kltr_dx = Fmltr_dx/pow(2.0*pi*fltr_dx*cltr_dx,pltr_dx);
-kltr_dy = Fmltr_dy/pow(2.0*pi*fltr_dy*cltr_dy,pltr_dy);
-kltr_dz = Fmltr_dz/pow(2.0*pi*fltr_dz*cltr_dz,pltr_dz);
-kltr_rx = Fmltr_rx/pow(2.0*pi*fltr_rx*cltr_rx,pltr_rx);
-kltr_ry = Fmltr_ry/pow(2.0*pi*fltr_ry*cltr_ry,pltr_ry);
-kltr_rz = Fmltr_rz/pow(2.0*pi*fltr_rz*cltr_rz,pltr_rz);
-
-knt_dx  = Fmnt_dx /pow(2.0*pi*fnt_dx*cnt_dx,pnt_dx);
-knt_dy  = Fmnt_dy /pow(2.0*pi*fnt_dy*cnt_dy,pnt_dy);
-knt_dz  = Fmnt_dz /pow(2.0*pi*fnt_dz*cnt_dz,pnt_dz);
-
-kntr_dx = Fmntr_dx/pow(2.0*pi*fntr_dx*cntr_dx,pntr_dx);
-kntr_dy = Fmntr_dy/pow(2.0*pi*fntr_dy*cntr_dy,pntr_dy);
-kntr_dz = Fmntr_dz/pow(2.0*pi*fntr_dz*cntr_dz,pntr_dz);
-kntr_rx = Fmntr_rx/pow(2.0*pi*fntr_rx*cntr_rx,pntr_rx);
-kntr_ry = Fmntr_ry/pow(2.0*pi*fntr_ry*cntr_ry,pntr_ry);
-kntr_rz = Fmntr_rz/pow(2.0*pi*fntr_rz*cntr_rz,pntr_rz);
-
-# Definition des materiaux
-MAT_LT  = DEFI_MATERIAU(
-   DIS_VISC=_F(PUIS_DX = plt_dx, COEF_DX = klt_dx,
-               PUIS_DY = plt_dy, COEF_DY = klt_dy,
-               PUIS_DZ = plt_dz, COEF_DZ = klt_dz,),
+# Définition des materiaux
+Zener01  = DEFI_MATERIAU(
+    DIS_VISC=_F(K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.8 ),
 )
-MAT_LTR = DEFI_MATERIAU(
-   DIS_VISC=_F(PUIS_DX = pltr_dx, COEF_DX = kltr_dx,
-               PUIS_DY = pltr_dy, COEF_DY = kltr_dy,
-               PUIS_DZ = pltr_dz, COEF_DZ = kltr_dz,
-               PUIS_RX = pltr_rx, COEF_RX = kltr_rx,
-               PUIS_RY = pltr_ry, COEF_RY = kltr_ry,
-               PUIS_RZ = pltr_rz, COEF_RZ = kltr_rz,),
+Zener02  = DEFI_MATERIAU(
+    DIS_VISC=_F(K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.8 ),
 )
-MAT_NT = DEFI_MATERIAU(
-   DIS_VISC=_F(PUIS_DX = pnt_dx, COEF_DX = knt_dx,
-               PUIS_DY = pnt_dy, COEF_DY = knt_dy,
-               PUIS_DZ = pnt_dz, COEF_DZ = knt_dz,),
+Zener03  = DEFI_MATERIAU(
+    DIS_VISC=_F(K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.8 ),
 )
-MAT_NTR = DEFI_MATERIAU(
-   DIS_VISC=_F(PUIS_DX = pntr_dx, COEF_DX = kntr_dx,
-               PUIS_DY = pntr_dy, COEF_DY = kntr_dy,
-               PUIS_DZ = pntr_dz, COEF_DZ = kntr_dz,
-               PUIS_RX = pntr_rx, COEF_RX = kntr_rx,
-               PUIS_RY = pntr_ry, COEF_RY = kntr_ry,
-               PUIS_RZ = pntr_rz, COEF_RZ = kntr_rz,),
+Zener04  = DEFI_MATERIAU(
+    DIS_VISC=_F(K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.8 ),
 )
+
 CHMAT=AFFE_MATERIAU(
-   MAILLAGE=MAIL,
-   AFFE=(
-      _F(GROUP_MA='DL_T',  MATER=MAT_LT,),
-      _F(GROUP_MA='DL_TR', MATER=MAT_LTR,),
-      _F(GROUP_MA='DN_T',  MATER=MAT_NT,),
-      _F(GROUP_MA='DN_TR', MATER=MAT_NTR,),
+    MAILLAGE=MAIL,
+    AFFE=(
+      _F(GROUP_MA='ZENER01',  MATER=Zener01,),
+      _F(GROUP_MA='ZENER02',  MATER=Zener02,),
+      _F(GROUP_MA='ZENER03',  MATER=Zener03,),
+      _F(GROUP_MA='ZENER04',  MATER=Zener04,),
    ),
 )
 
 CARELEM=AFFE_CARA_ELEM(
-   MODELE=MODE,
-   DISCRET=(
-      _F(REPERE='LOCAL',CARA='K_T_D_L',  GROUP_MA='DL_T',
-         VALE=(klt_dx, klt_dy, klt_dz,),),
-      _F(REPERE='LOCAL',CARA='K_TR_D_L', GROUP_MA='DL_TR',
-         VALE=(kltr_dx,kltr_dy,kltr_dz,kltr_rx,kltr_ry,kltr_rz),),
-      _F(REPERE='LOCAL',CARA='K_T_D_N',  GROUP_MA='DN_T',
-         VALE=(knt_dx, knt_dy, knt_dz,),),
-      _F(REPERE='LOCAL',CARA='K_TR_D_N', GROUP_MA='DN_TR',
-         VALE=(kntr_dx,kntr_dy,kntr_dz,kntr_rx,kntr_ry,kntr_rz),),
+    MODELE=MODE,
+    DISCRET=(
+        _F( REPERE='LOCAL',CARA='K_T_D_L',  GROUP_MA='ZENER01',
+            VALE=(50.0, 120.0, 130.0,), ),
+        _F( REPERE='LOCAL',CARA='K_TR_D_L', GROUP_MA='ZENER02',
+            VALE=(50.0, 120.0, 130.0, 140.0, 150.0, 160.0,), ),
+        _F( REPERE='LOCAL',CARA='K_T_D_N',  GROUP_MA='ZENER03',
+            VALE=(50.0, 120.0, 130.0,), ),
+        _F( REPERE='LOCAL',CARA='K_TR_D_N', GROUP_MA='ZENER04',
+            VALE=(50.0, 120.0, 130.0, 140.0, 150.0, 160.0,), ),
    ),
 )
 
 RESU=STAT_NON_LINE(
-   MODELE     = MODE,
-   CHAM_MATER = CHMAT,
-   CARA_ELEM  = CARELEM,
-   EXCIT=_F(CHARGE=CONDLIM),
-   COMP_INCR=(
-      _F(RELATION='DIS_VISC', GROUP_MA='DL_T',),
-      _F(RELATION='DIS_VISC', GROUP_MA='DL_TR',),
-      _F(RELATION='DIS_VISC', GROUP_MA='DN_T',),
-      _F(RELATION='DIS_VISC', GROUP_MA='DN_TR',),
-   ),
-   INCREMENT=_F(LIST_INST=linstS,),
-   CONVERGENCE=(_F(ARRET='OUI', ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=30,),),
-   NEWTON=(_F(REAC_INCR=1, MATRICE='TANGENTE',)),
+    MODELE     = MODE,
+    CHAM_MATER = CHMAT,
+    CARA_ELEM  = CARELEM,
+    EXCIT=_F(CHARGE=CONDLIM),
+    COMP_INCR=(
+        _F(RELATION='DIS_VISC', GROUP_MA='ZENER01',),
+        _F(RELATION='DIS_VISC', GROUP_MA='ZENER02',),
+        _F(RELATION='DIS_VISC', GROUP_MA='ZENER03',),
+        _F(RELATION='DIS_VISC', GROUP_MA='ZENER04',),
+    ),
+    INCREMENT=_F(LIST_INST=linstS,),
+    CONVERGENCE=_F(ARRET='OUI', ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=30,),
+    NEWTON=_F(REAC_INCR=1,REAC_ITER=1, MATRICE='TANGENTE',),
 )
 
-
 #IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU,),)
+#     INST        DX                    N
+Resultat1X = [
+    ( 2.000E-02,  5.8778525229247E-02,  2.1877105796323E+00 ),
+    ( 4.000E-02,  9.5105651629515E-02,  2.8291922232323E+00 ),
+    ( 6.000E-02,  9.5105651629515E-02,  2.0357495899118E+00 ),
+    ( 8.000E-02,  5.8778525229247E-02,  2.4024089620810E-01 ),
+    ( 1.000E-01, -1.6539504141266E-16, -1.8512215526750E+00 ),
+    ( 1.320E-01, -8.4432792550202E-02, -3.4450429465391E+00 ),
+    ( 2.000E-01,  4.1961334580620E-16,  1.7457029385192E+00 ),
+    ( 2.320E-01,  8.4432792550202E-02,  3.4090951314394E+00 ),
+    ( 2.680E-01,  8.4432792550201E-02,  1.6264717851227E+00 ),
+    ( 3.160E-01, -4.8175367410172E-02, -2.9624356500615E+00 ),
+    ( 3.560E-01, -9.8228725072869E-02, -2.5900083113825E+00 ),
+    ( 4.120E-01,  3.6812455268469E-02,  2.7248354435096E+00 ),
+    ( 4.360E-01,  9.0482705246602E-02,  3.3941506791302E+00 ),
+    ( 5.200E-01, -5.8778525229248E-02, -3.1510259043462E+00 ),
+    ( 6.240E-01,  6.8454710592870E-02,  3.2892833167128E+00 ),
+    ( 7.160E-01, -4.8175367410173E-02, -2.9622788763364E+00 ),
+    ( 8.000E-01,  1.6783856205890E-15,  1.7508449848294E+00 ),
+    ( 8.160E-01,  4.8175367410173E-02,  2.9622788751731E+00 ),
+    ( 8.480E-01,  9.9802672842827E-02,  3.0471350262093E+00 ),
+    ( 9.400E-01, -9.5105651629516E-02, -3.3268606028725E+00 ),
+    ( 9.680E-01, -8.4432792550200E-02, -1.6270372687398E+00 ),
+    ( 1.000E+00, -1.2246063538224E-16,  1.7508449848939E+00 ),
+]
 
-# ==========================================================
-# Recupere les reponses sur les 4 discrets pour tous les DDL
+def Critere(valr):
+    if ( abs(valr) <= 1.0E-08 ): return 'ABSOLU'
+    return 'RELATIF'
+
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur ZENER01
 #
+TABDEPL1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER01',NOM_CHAM='DEPL',TOUT_CMP='OUI',
+    ),
+)
+TABSIEF1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER01',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',
+    ),
+)
+TABDEPL1 = CALC_TABLE(reuse=TABDEPL1,
+    TABLE=TABDEPL1,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='NOEUD',CRIT_COMP='EQ',VALE_K='N2'),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','DX'),)
+    ),
+)
+TABSIEF1 = CALC_TABLE(reuse=TABSIEF1,
+    TABLE=TABSIEF1,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=2),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','N','VY','VZ'),)
+    ),
+)
+TABRES1= CALC_TABLE(
+    TABLE=TABDEPL1,
+    ACTION=(
+        _F(OPERATION='COMB',TABLE=TABSIEF1,NOM_PARA='NUME_ORDRE'),
+    ),
+)
+for inst,dx,force in Resultat1X:
+    TEST_TABLE(
+        TABLE = TABRES1,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'DX', VALE_CALC=dx, VALE_REFE=dx, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(dx), LEGENDE='%s' % inst,
+    )
 
-# Fabrique la liste des instants les plus proches de ceux utilises : linstS
-#   qui correspondent aux maxima/minima des efforts
-#   on calcule les valeurs theoriques de l'effort a cet instant
-def InstVale(Freq,Fmax,Puis,Dt,Tmax):
-   alpha = int(Tmax*Freq)
-   LKp = NP.arange(1.0,alpha+1.0)
-   LKm = NP.arange(0.0,alpha)+0.5
-   lesinstp =  NP.array(map(round,LKp/(Freq*Dt)))*Dt
-   lesvalep = -Fmax*NP.power(abs(NP.cos(lesinstp*2.0*pi*Freq)),Puis)
-   lesinstm =  NP.array(map(round,LKm/(Freq*Dt)))*Dt
-   lesvalem = +Fmax*NP.power(abs(NP.cos(lesinstm*2.0*pi*Freq)),Puis)
-   return list(lesinstp)+list(lesinstm),list(lesvalep)+list(lesvalem)
+    TEST_TABLE(
+        TABLE = TABRES1,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'N', VALE_CALC=force, VALE_REFE=force, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(force), LEGENDE='%s' % inst,
+    )
+    forceY = 120.0*U01*Sinus(inst,Freq01)
+    forceZ = 130.0*U01*Sinus(inst,Freq01)
+    TEST_TABLE(
+        TABLE = TABRES1,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VY', VALE_CALC=forceY, VALE_REFE=forceY, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceY), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES1,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VZ', VALE_CALC=forceZ, VALE_REFE=forceZ, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceZ), LEGENDE='%s' % inst,
+    )
 
-# On utilise la liste et pas un LesDiscrets.key(). Cela permet d'imposer l'ordre
-# des tests
-ListeDiscrets = ['DN_TR','DN_T','DL_TR','DL_T']
-LesDiscrets = {}
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur ZENER02
+#
+TABDEPL2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER02',NOM_CHAM='DEPL',TOUT_CMP='OUI',
+    ),
+)
+TABSIEF2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER02',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',
+    ),
+)
+TABDEPL2 = CALC_TABLE(reuse=TABDEPL2,
+    TABLE=TABDEPL2,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='NOEUD',CRIT_COMP='EQ',VALE_K='N4'),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','DX'),)
+    ),
+)
+TABSIEF2 = CALC_TABLE(reuse=TABSIEF2,
+    TABLE=TABSIEF2,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=2),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','N','VY','VZ','MT','MFY','MFZ',),),
+    ),
+)
+TABRES2= CALC_TABLE(
+    TABLE=TABDEPL2,
+    ACTION=(
+        _F(OPERATION='COMB',TABLE=TABSIEF2,NOM_PARA='NUME_ORDRE'),
+    ),
+)
+for inst,dx,force in Resultat1X:
+    TEST_TABLE(
+        TABLE = TABRES2,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'DX', VALE_CALC=dx, VALE_REFE=dx, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(dx), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES2,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'N', VALE_CALC=force, VALE_REFE=force, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(force), LEGENDE='%s' % inst,
+    )
+    forceY  = 120.0*U01*Sinus(inst,Freq01)
+    forceZ  = 130.0*U01*Sinus(inst,Freq01)
+    MomentX = 140.0*U01*Sinus(inst,Freq01)
+    MomentY = 150.0*U01*Sinus(inst,Freq01)
+    MomentZ = 160.0*U01*Sinus(inst,Freq01)
+    TEST_TABLE(
+        TABLE = TABRES2,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VY', VALE_CALC=forceY, VALE_REFE=forceY, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceY), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES2,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VZ', VALE_CALC=forceZ, VALE_REFE=forceZ, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceZ), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES2,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'MT', VALE_CALC=MomentX, VALE_REFE=MomentX, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(MomentX), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES2,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'MFY', VALE_CALC=MomentY, VALE_REFE=MomentY, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(MomentY), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES2,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'MFZ', VALE_CALC=MomentZ, VALE_REFE=MomentZ, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(MomentZ), LEGENDE='%s' % inst,
+    )
 
-LesDiscrets['DL_T']  = {}
-LesDiscrets['DL_T']['NOEUD']  = 'N2'
-LesDiscrets['DL_T']['COMPO']  = [('N','DX'),('VY','DY'),('VZ','DZ')]
-LesDiscrets['DL_T']['MAILLE'] = 'M1'
-LesDiscrets['DL_T']['ENERG']  = [4842.766985,16663.54058,7733.415243]
-LesDiscrets['DL_T']['N']      = {}
-LesDiscrets['DL_T']['VY']     = {}
-LesDiscrets['DL_T']['VZ']     = {}
-LesDiscrets['DL_T']['N']['INST'],  LesDiscrets['DL_T']['N']['VALE']  = InstVale(flt_dx,Fmlt_dx,plt_dx,PasInst,TempsMaxi)
-LesDiscrets['DL_T']['VY']['INST'], LesDiscrets['DL_T']['VY']['VALE'] = InstVale(flt_dy,Fmlt_dy,plt_dy,PasInst,TempsMaxi)
-LesDiscrets['DL_T']['VZ']['INST'], LesDiscrets['DL_T']['VZ']['VALE'] = InstVale(flt_dz,Fmlt_dz,plt_dz,PasInst,TempsMaxi)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur ZENER03
+#
+TABDEPL3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER03',NOM_CHAM='DEPL',TOUT_CMP='OUI',
+    ),
+)
+TABSIEF3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER03',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',
+    ),
+)
+TABDEPL3 = CALC_TABLE(reuse=TABDEPL3,
+    TABLE=TABDEPL3,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='NOEUD',CRIT_COMP='EQ',VALE_K='N5'),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','DX'),)
+    ),
+)
+TABSIEF3 = CALC_TABLE(reuse=TABSIEF3,
+    TABLE=TABSIEF3,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=1),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','N','VY','VZ',),),
+    ),
+)
+TABRES3= CALC_TABLE(
+    TABLE=TABDEPL3,
+    ACTION=(
+        _F(OPERATION='COMB',TABLE=TABSIEF3,NOM_PARA='NUME_ORDRE'),
+    ),
+)
+for inst,dx,force in Resultat1X:
+    TEST_TABLE(
+        TABLE = TABRES3,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'DX', VALE_CALC=dx, VALE_REFE=dx, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(dx), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES3,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'N', VALE_CALC=force, VALE_REFE=force, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(force),
+    )
+    forceY  = 120.0*U01*Sinus(inst,Freq01)
+    forceZ  = 130.0*U01*Sinus(inst,Freq01)
+    TEST_TABLE(
+        TABLE = TABRES3,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VY', VALE_CALC=forceY, VALE_REFE=forceY, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceY), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES3,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VZ', VALE_CALC=forceZ, VALE_REFE=forceZ, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceZ), LEGENDE='%s' % inst,
+    )
 
-LesDiscrets['DL_TR'] = {}
-LesDiscrets['DL_TR']['NOEUD']  = 'N3'
-LesDiscrets['DL_TR']['COMPO']  = [('N','DX'),('VY','DY'),('VZ','DZ'),('MT','DRX'),('MFY','DRY'),('MFZ','DRZ')]
-LesDiscrets['DL_TR']['MAILLE'] = 'M2'
-LesDiscrets['DL_TR']['ENERG']  = [10053.43981,12113.9059,15051.01114,6013.348235,11478.77322,5887.444214]
-LesDiscrets['DL_TR']['N']      = {}
-LesDiscrets['DL_TR']['VY']     = {}
-LesDiscrets['DL_TR']['VZ']     = {}
-LesDiscrets['DL_TR']['MFX']    = {}
-LesDiscrets['DL_TR']['MFY']    = {}
-LesDiscrets['DL_TR']['MFZ']    = {}
-LesDiscrets['DL_TR']['N']['INST'],   LesDiscrets['DL_TR']['N']['VALE']   = InstVale(fltr_dx,Fmltr_dx,pltr_dx,PasInst,TempsMaxi)
-LesDiscrets['DL_TR']['VY']['INST'],  LesDiscrets['DL_TR']['VY']['VALE']  = InstVale(fltr_dy,Fmltr_dy,pltr_dy,PasInst,TempsMaxi)
-LesDiscrets['DL_TR']['VZ']['INST'],  LesDiscrets['DL_TR']['VZ']['VALE']  = InstVale(fltr_dz,Fmltr_dz,pltr_dz,PasInst,TempsMaxi)
-LesDiscrets['DL_TR']['MFX']['INST'], LesDiscrets['DL_TR']['MFX']['VALE'] = InstVale(fltr_rx,Fmltr_rx,pltr_rx,PasInst,TempsMaxi)
-LesDiscrets['DL_TR']['MFY']['INST'], LesDiscrets['DL_TR']['MFY']['VALE'] = InstVale(fltr_ry,Fmltr_ry,pltr_ry,PasInst,TempsMaxi)
-LesDiscrets['DL_TR']['MFZ']['INST'], LesDiscrets['DL_TR']['MFZ']['VALE'] = InstVale(fltr_rz,Fmltr_rz,pltr_rz,PasInst,TempsMaxi)
-
-
-LesDiscrets['DN_T']  = {}
-LesDiscrets['DN_T']['NOEUD']  = 'N4'
-LesDiscrets['DN_T']['COMPO']  = [('N','DX'),('VY','DY'),('VZ','DZ')]
-LesDiscrets['DN_T']['MAILLE'] = 'M3'
-LesDiscrets['DN_T']['ENERG']  = [7499.743876,4735.953639,4293.333333]
-LesDiscrets['DN_T']['N']      = {}
-LesDiscrets['DN_T']['VY']     = {}
-LesDiscrets['DN_T']['VZ']     = {}
-LesDiscrets['DN_T']['N']['INST'],  LesDiscrets['DN_T']['N']['VALE']  = InstVale(fnt_dx,Fmnt_dx,pnt_dx,PasInst,TempsMaxi)
-LesDiscrets['DN_T']['VY']['INST'], LesDiscrets['DN_T']['VY']['VALE'] = InstVale(fnt_dy,Fmnt_dy,pnt_dy,PasInst,TempsMaxi)
-LesDiscrets['DN_T']['VZ']['INST'], LesDiscrets['DN_T']['VZ']['VALE'] = InstVale(fnt_dz,Fmnt_dz,pnt_dz,PasInst,TempsMaxi)
-
-LesDiscrets['DN_TR'] = {}
-LesDiscrets['DN_TR']['NOEUD']  = 'N5'
-LesDiscrets['DN_TR']['COMPO']  = [('N','DX'),('VY','DY'),('VZ','DZ'),('MT','DRX'),('MFY','DRY'),('MFZ','DRZ')]
-LesDiscrets['DN_TR']['MAILLE'] = 'M4'
-LesDiscrets['DN_TR']['ENERG']  = [7446.992455,15922.43889,29852.92901,2204.743155,2014.924218,11889.98883]
-LesDiscrets['DN_TR']['N']      = {}
-LesDiscrets['DN_TR']['VY']     = {}
-LesDiscrets['DN_TR']['VZ']     = {}
-LesDiscrets['DN_TR']['MFX']    = {}
-LesDiscrets['DN_TR']['MFY']    = {}
-LesDiscrets['DN_TR']['MFZ']    = {}
-LesDiscrets['DN_TR']['N']['INST'],   LesDiscrets['DN_TR']['N']['VALE']   = InstVale(fntr_dx,Fmntr_dx,pntr_dx,PasInst,TempsMaxi)
-LesDiscrets['DN_TR']['VY']['INST'],  LesDiscrets['DN_TR']['VY']['VALE']  = InstVale(fntr_dy,Fmntr_dy,pntr_dy,PasInst,TempsMaxi)
-LesDiscrets['DN_TR']['VZ']['INST'],  LesDiscrets['DN_TR']['VZ']['VALE']  = InstVale(fntr_dz,Fmntr_dz,pntr_dz,PasInst,TempsMaxi)
-LesDiscrets['DN_TR']['MFX']['INST'], LesDiscrets['DN_TR']['MFX']['VALE'] = InstVale(fntr_rx,Fmntr_rx,pntr_rx,PasInst,TempsMaxi)
-LesDiscrets['DN_TR']['MFY']['INST'], LesDiscrets['DN_TR']['MFY']['VALE'] = InstVale(fntr_ry,Fmntr_ry,pntr_ry,PasInst,TempsMaxi)
-LesDiscrets['DN_TR']['MFZ']['INST'], LesDiscrets['DN_TR']['MFZ']['VALE'] = InstVale(fntr_rz,Fmntr_rz,pntr_rz,PasInst,TempsMaxi)
-
-# Generation des TEST_FONCTION et des TEST_RESU
-for LeDiscret in ListeDiscrets:
-   LeNoeud    = LesDiscrets[LeDiscret]['NOEUD']
-   ListeCompo = LesDiscrets[LeDiscret]['COMPO']
-   LaF = [None]*len(ListeCompo)
-   LeD = [None]*len(ListeCompo)
-   ii = 0
-   for Force,DDL in ListeCompo:
-      LaF[ii] = RECU_FONCTION(
-         RESULTAT = RESU, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = Force,
-         GROUP_MA = LeDiscret, POINT = 1,INTERPOL='LIN',PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
-      LeD[ii] = RECU_FONCTION(RESULTAT=RESU, NOM_CHAM='DEPL', NOM_CMP=DDL, NOEUD= LeNoeud,
-         INTERPOL='LIN',PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
-      # TESTS DES RESULTATS : efforts maximum et minimum
-      if ( Force in LesDiscrets[LeDiscret].keys() ):
-         Linst = LesDiscrets[LeDiscret][Force]['INST']
-         Lvale = LesDiscrets[LeDiscret][Force]['VALE']
-         motclefs = {}
-         motclefs['VALEUR'] = []
-         for ind in range(len(Linst)):
-            motclefs['VALEUR'].append(_F(FONCTION=LaF[ii],NOM_PARA='INST',PRECISION=0.70E-2,
-                                         VALE_PARA=Linst[ind],TOLE_MACHINE=0.70E-2,    #TODO vale_calc
-                                         VALE_CALC=Lvale[ind], VALE_REFE=Lvale[ind],
-                                         REFERENCE='ANALYTIQUE',CRITERE='RELATIF'))
-         TEST_FONCTION(**motclefs)
-      ii += 1
-   # TESTS DES RESULTATS : energie
-   if ( "ENERG" in LesDiscrets[LeDiscret].keys() ):
-      LaMaille = LesDiscrets[LeDiscret]['MAILLE']
-      Energie  = LesDiscrets[LeDiscret]['ENERG']
-      motclefs = {}
-      motclefs['RESU'] = []
-      for jj in range(len(Energie)):
-         vale = Energie[jj]
-         vari = "V%d" % (jj*2+2)
-         motclefs['RESU'].append(_F(RESULTAT=RESU,INST=TempsMaxi,NOM_CHAM='VARI_ELGA',REFERENCE='ANALYTIQUE',
-                                    CRITERE=('RELATIF','ABSOLU'),
-                                    TOLE_MACHINE=(0.25E-02,1.0E-05),PRECISION=0.25E-02,   #TODO vale_calc
-                                    MAILLE=LaMaille,POINT=1,NOM_CMP=vari,VALE_CALC=vale,VALE_REFE=vale,))
-      TEST_RESU(**motclefs)
-
-   motclefs = {}
-   motclefs['CONCEPT'] = []
-   for ii in range(len(LaF)):
-      motclefs['CONCEPT'].append(_F(NOM=LaF[ii]))
-      motclefs['CONCEPT'].append(_F(NOM=LeD[ii]))
-   DETRUIRE(INFO=1,**motclefs)
-
-# C'EST A PARTIR D'ICI QU'ON COMPARE DIS_VISC A UN AMORTISSEMENT DISCRET PROVENANT D'AFFE_CARA_ELEM
-MOD2=AFFE_MODELE(MAILLAGE=MAIL,
-                 AFFE=(_F(GROUP_MA='DIS_T',
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION='DIS_T',),),);
-
-# ON BLOQUE LE SEG2 PAR UN DE SES COTE
-CD_LIM=AFFE_CHAR_MECA(MODELE=MOD2,
-                      DDL_IMPO=_F(NOEUD=('N6',),
-                                  DX=0,
-                                  DY=0,
-                                  DZ=0,),);
-
-NUME=NUME_DDL(MODELE=MOD2,
-              CHARGE=CD_LIM,);
-
-# PREMIERE PASSE : UTILISATION DE DIS_VISC
-AMORT1=DEFI_MATERIAU(DIS_VISC=_F(PUIS_DX=1,
-                                 COEF_DX=100,),);
-
-MATER1=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=(_F(GROUP_MA='DIS_T',
-                              MATER=AMORT1,),),);
-
-# ON NE DONNE ICI QU'UNE RAIDEUR ET QU'UNE MASSE
-CARADIS1=AFFE_CARA_ELEM(MODELE=MOD2,
-                        DISCRET=(_F(REPERE='LOCAL',
-                                    SYME='OUI',
-                                    CARA='K_T_D_L',
-                                    GROUP_MA='DIS_T',
-                                    VALE=(1,0,0,),),
-                                 _F(REPERE='LOCAL',
-                                    CARA='M_T_D_L',
-                                    GROUP_MA='DIS_T',
-                                    VALE=1.0,),),);
-
-RIGIELE1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                        MODELE=MOD2,
-                        CHAM_MATER=MATER1,
-                        CARA_ELEM=CARADIS1,
-                        CHARGE=CD_LIM,);
-
-MASSELE1=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                        MODELE=MOD2,
-                        CHAM_MATER=MATER1,
-                        CARA_ELEM=CARADIS1,
-                        CHARGE=CD_LIM,);
-
-MD1=ASSE_MATRICE(MATR_ELEM=MASSELE1,
-                 NUME_DDL=NUME,);
-
-SEISMEX1=CALC_CHAR_SEISME(MATR_MASS=MD1,
-                          DIRECTION=(1,0,0,),
-                          MONO_APPUI='OUI',);
-
-CH_SEIS1=AFFE_CHAR_MECA(MODELE=MOD2,
-                        VECT_ASSE=SEISMEX1,);
-
-# LE CHARGEMENT EST UNE RAMPE
-ACCEL_X=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0,0,
-                            1,-10,),);
-
-LIST_INC=DEFI_LIST_REEL(DEBUT=0,
-                        INTERVALLE=_F(JUSQU_A=1,
-                                      PAS=0.002,),);
-
-# CALCUL AVEC DIS_VISC
-D_N_L1=DYNA_NON_LINE(MODELE=MOD2,
-                     CHAM_MATER=MATER1,
-                     CARA_ELEM=CARADIS1,
-                     EXCIT=(_F(CHARGE=CD_LIM,),
-                            _F(CHARGE=CH_SEIS1,
-                               FONC_MULT=ACCEL_X,),),
-                     COMP_INCR=_F(RELATION='DIS_VISC',
-                                  GROUP_MA='DIS_T',),
-                     INCREMENT=_F(LIST_INST=LIST_INC,),
-                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                     FORMULATION='DEPLACEMENT',),);
-
-AMORT2=DEFI_MATERIAU(ELAS=_F(E=0,
-                             NU=0,
-                             AMOR_ALPHA=0,
-                             AMOR_BETA=0,),);
-
-MATER2=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=(_F(GROUP_MA='DIS_T',
-                              MATER=AMORT2,),),);
-
-# CETTE FOIS-CI, ON DONNE L'AMORTISSEMENT VIA AFFE_CARA_ELEM
-CARADIS2=AFFE_CARA_ELEM(MODELE=MOD2,
-                        DISCRET=(_F(REPERE='LOCAL',
-                                    SYME='OUI',
-                                    CARA='A_T_D_L',
-                                    GROUP_MA='DIS_T',
-                                    VALE=(100,0,0,),),
-                                 _F(REPERE='LOCAL',
-                                    SYME='OUI',
-                                    CARA='K_T_D_L',
-                                    GROUP_MA='DIS_T',
-                                    VALE=(1,0,0,),),
-                                 _F(REPERE='LOCAL',
-                                    CARA='M_T_D_L',
-                                    GROUP_MA='DIS_T',
-                                    VALE=1,),),);
-
-RIGIELE2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                        MODELE=MOD2,
-                        CHAM_MATER=MATER2,
-                        CARA_ELEM=CARADIS2,
-                        CHARGE=CD_LIM,);
-
-MASSELE2=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                        MODELE=MOD2,
-                        CHAM_MATER=MATER2,
-                        CARA_ELEM=CARADIS2,
-                        CHARGE=CD_LIM,);
-
-MD2=ASSE_MATRICE(MATR_ELEM=MASSELE2,
-                 NUME_DDL=NUME,);
-
-SEISMEX2=CALC_CHAR_SEISME(MATR_MASS=MD2,
-                          DIRECTION=(1,0,0,),
-                          MONO_APPUI='OUI',);
-
-CH_SEIS2=AFFE_CHAR_MECA(MODELE=MOD2,
-                        VECT_ASSE=SEISMEX2,);
-
-D_N_L2=DYNA_NON_LINE(MODELE=MOD2,
-                     CHAM_MATER=MATER2,
-                     CARA_ELEM=CARADIS2,
-                     EXCIT=(_F(CHARGE=CD_LIM,),
-                            _F(CHARGE=CH_SEIS2,
-                               FONC_MULT=ACCEL_X,),),
-                     COMP_INCR=_F(RELATION='ELAS',
-                                  TOUT='OUI',),
-                     INCREMENT=_F(LIST_INST=LIST_INC,),
-                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                     FORMULATION='DEPLACEMENT',),);
-
-TEST_RESU(RESU=(_F(INST=1,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=D_N_L1,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N7',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.049108316,
-                   VALE_REFE=0.049108300000000001,
-                   PRECISION=1.0E-05,),
-                _F(INST=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=D_N_L1,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N7',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.049108316,
-                   VALE_REFE=0.048853406000000002,
-                   PRECISION=6.0E-3,),
-                _F(INST=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=D_N_L2,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N7',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.048853406,
-                   VALE_REFE=0.048853406000000002,
-                   PRECISION=1.0E-05,),
-                ),
-          )
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur ZENER04
+#
+TABDEPL4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER04',NOM_CHAM='DEPL',TOUT_CMP='OUI',
+    ),
+)
+TABSIEF4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU,
+        GROUP_MA='ZENER04',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',
+    ),
+)
+TABDEPL4 = CALC_TABLE(reuse=TABDEPL4,
+    TABLE=TABDEPL4,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='NOEUD',CRIT_COMP='EQ',VALE_K='N6'),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','DX'),)
+    ),
+)
+TABSIEF4 = CALC_TABLE(reuse=TABSIEF4,
+    TABLE=TABSIEF4,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=1),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','N','VY','VZ','MT','MFY','MFZ',),),
+    ),
+)
+TABRES4= CALC_TABLE(
+    TABLE=TABDEPL4,
+    ACTION=(
+        _F(OPERATION='COMB',TABLE=TABSIEF4,NOM_PARA='NUME_ORDRE'),
+    ),
+)
+for inst,dx,force in Resultat1X:
+    TEST_TABLE(
+        TABLE = TABRES4,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'DX', VALE_CALC=dx, VALE_REFE=dx, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(dx), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES4,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'N', VALE_CALC=force, VALE_REFE=force, REFERENCE='SOURCE_EXTERNE',
+        CRITERE= Critere(force), LEGENDE='%s' % inst,
+    )
+    forceY  = 120.0*U01*Sinus(inst,Freq01)
+    forceZ  = 130.0*U01*Sinus(inst,Freq01)
+    MomentX = 140.0*U01*Sinus(inst,Freq01)
+    MomentY = 150.0*U01*Sinus(inst,Freq01)
+    MomentZ = 160.0*U01*Sinus(inst,Freq01)
+    TEST_TABLE(
+        TABLE = TABRES4,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VY', VALE_CALC=forceY, VALE_REFE=forceY, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceY), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES4,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'VZ', VALE_CALC=forceZ, VALE_REFE=forceZ, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(forceZ), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES4,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'MT', VALE_CALC=MomentX, VALE_REFE=MomentX, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(MomentX), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES4,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'MFY', VALE_CALC=MomentY, VALE_REFE=MomentY, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(MomentY), LEGENDE='%s' % inst,
+    )
+    TEST_TABLE(
+        TABLE = TABRES4,
+        FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=inst ),
+        NOM_PARA= 'MFZ', VALE_CALC=MomentZ, VALE_REFE=MomentZ, REFERENCE='ANALYTIQUE',
+        CRITERE= Critere(MomentZ), LEGENDE='%s' % inst,
+    )
 
 FIN()
+
+
+
