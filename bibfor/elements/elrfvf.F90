@@ -36,16 +36,16 @@ subroutine elrfvf(elrefz, x, dimf, ff, nno)
 !   -------------------------------------------------------------------
     character(len=8) :: elrefe
     integer :: i
-    real(kind=8) :: al31, al32, al33, u, x0, y0, z0, al, z01, z02, z04, pface1
+    real(kind=8) ::  x0, y0, z0, al, z01, z02, z04, pface1
     real(kind=8) :: pface2
     real(kind=8) :: pface3, pface4, pmili1, pmili2, pmili3, pmili4
     real(kind=8) :: x1, x2, x3, x4, d1, d2, d3, d4
     real(kind=8) :: zero, undemi, un, deux, quatre, uns4, uns8
 !
 ! -----  FONCTIONS FORMULES
-    al31(u) = 0.5d00*u* (u-1.d00)
-    al32(u) = - (u+1.d00)* (u-1.d00)
-    al33(u) = 0.5d00*u* (u+1.d00)
+#define al31(u)   0.5d0*(u)* (u-1.d0)
+#define al32(u)   (-(u+1.d0)*(u-1.d0))
+#define al33(u)   0.5d0*(u)* (u+1.d0)
 ! DEB ------------------------------------------------------------------
 !
     elrefe = elrefz

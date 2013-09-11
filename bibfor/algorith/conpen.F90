@@ -51,11 +51,10 @@ subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
     character(len=8) :: macor(nbcor+2), macoc(nbcoc+2), ma
 !
     logical :: locorr, lface, quadra, loreor
-    logical :: face
     integer :: i1, i2, i3
 !-----------------------------------------------------------------------
-    face(i1,i2,i3)=nococ(1).eq.i1.and.nococ(2).eq.i2.and.&
-     &               nococ(3).eq.i3
+#define face(i1,i2,i3) nococ(1).eq.i1.and.nococ(2).eq.i2.and. \
+        nococ(3).eq.i3
 !
 !     ------------------------------------------------------------------
 !

@@ -47,14 +47,14 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
     integer :: nno, nnos, nbfpg, nbpg1(nbfamx), ino, ifam
     real(kind=8) :: xpg(nbpgmx), ypg(nbpgmx), zpg(nbpgmx), hpg(nbpgmx), a(4)
     real(kind=8) :: h(4)
-    real(kind=8) :: aty(7), atz(7), ht(7), u, t
+    real(kind=8) :: aty(7), atz(7), ht(7)
     real(kind=8) :: aa, bb, cc, hh, h1, h2, h3, rac5, rac15, a1, b1, b6, c1, c8
     real(kind=8) :: d1, d12
     real(kind=8) :: p1, p2, p3, p4, p5, xxg5(20), xyg5(20), xzg5(20)
     real(kind=8) :: pxg5(20), xa, xb
     real(kind=8) :: zero, unquar, undemi, un, deux, xno(3*27), vol, a2, b2
 ! -----  FONCTIONS FORMULES
-    t(u) = 2.0d0*u - 1.0d0
+#define t(u)   2.0d0*(u) - 1.0d0
 ! DEB ------------------------------------------------------------------
 !
     elrefa = elrefz

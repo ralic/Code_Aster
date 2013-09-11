@@ -25,17 +25,16 @@ subroutine focoli(ipt, coli, interp, x, y,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    real(kind=8) :: linlin, linlog, loglog, loglin, x0, x1, y1, x2, y2
     real(kind=8) :: epsi, tole
     real(kind=8) :: valr(3)
 ! ----------------------------------------------------------------------
-    linlin(x0,x1,y1,x2,y2)= y1+(x0-x1)*(y2-y1)/(x2-x1)
-    linlog(x0,x1,y1,x2,y2)=exp(log(y1)+(x0-x1)*(log(y2)-log(y1))&
-     &                                        /(x2-x1))
-    loglog(x0,x1,y1,x2,y2)=exp(log(y1)+(log(x0)-log(x1))*(log(y2)&
-     &                                     -log(y1))/(log(x2)-log(x1)))
-    loglin(x0,x1,y1,x2,y2)=y1+(log(x0)-log(x1))*(y2-y1)&
-     &                                         /(log(x2)-log(x1))
+#define linlin(x0,x1,y1,x2,y2)  y1+(x0-x1)*(y2-y1)/(x2-x1)
+#define linlog(x0,x1,y1,x2,y2) exp(log(y1)+(x0-x1)*(log(y2)-log(y1)) \
+        /(x2-x1))
+#define loglog(x0,x1,y1,x2,y2) exp(log(y1)+(log(x0)-log(x1))*(log(y2) \
+        -log(y1))/(log(x2)-log(x1)))
+#define loglin(x0,x1,y1,x2,y2) y1+(log(x0)-log(x1))*(y2-y1) \
+        /(log(x2)-log(x1))
 ! ----------------------------------------------------------------------
 !
 !     --- PAS D'INTERPOLATION ---

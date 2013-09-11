@@ -62,20 +62,15 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
 !     ------------------------------------------------------------------
     character(len=19) :: nomf
     character(len=24) :: valk(3)
-    real(kind=8) :: linlin, linlog, loglin, loglog
     real(kind=8) :: valr(3)
     integer :: i, ires, ivar, jres, lnova, lonuti
-    real(kind=8) :: x, x1, x2, y1, y2
 !-----------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
-    linlin(x,x1,y1,x2,y2)= y1+(x-x1)*(y2-y1)/(x2-x1)
-    linlog(x,x1,y1,x2,y2)=exp(log(y1)+(x-x1)*(log(y2)-log(y1))&
-     &                                        /(x2-x1))
-    loglog(x,x1,y1,x2,y2)=exp(log(y1)+(log(x)-log(x1))*(log(y2)&
-     &                                     -log(y1))/(log(x2)-log(x1)))
-    loglin(x,x1,y1,x2,y2)=y1+(log(x)-log(x1))*(y2-y1)&
-     &                                         /(log(x2)-log(x1))
+#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlog(x,x1,y1,x2,y2) exp(log(y1)+(x-x1)*(log(y2)-log(y1))/(x2-x1))
+#define loglog(x,x1,y1,x2,y2) exp(log(y1)+(log(x)-log(x1))*(log(y2)-log(y1))/(log(x2)-log(x1)))
+#define loglin(x,x1,y1,x2,y2) y1+(log(x)-log(x1))*(y2-y1)/(log(x2)-log(x1))
 !     ------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -130,8 +125,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
             else if (chprol(5)(1:1) .eq. 'L') then
 !           --- EXTRAPOLATION LINEAIRE ---
                 do 130 jres = 1, ires-1
-                    fonres(jres)=linlin(varres(jres),var(ivar),fon(&
-                    ivar), var(ivar+1),fon(ivar+1))
+                    fonres(jres)=linlin(varres(jres),var(ivar),fon(ivar), var(ivar+1),fon(ivar+1))
 130              continue
 !
             else if (chprol(5)(1:1) .eq. 'I') then
@@ -161,24 +155,23 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
             if (varres(ires) .le. var(ivar+1)) then
                 if (chprol(2)(1:8) .eq. 'LIN LIN ') then
 !              --- INTERPOLATION LINEAIRE ---
-                    fonres(ires) = linlin(&
-                                   varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
+                    fonres(ires) = &
+                        linlin(varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
                 else if (chprol(2)(1:8).eq.'LOG LOG ') then
 !              --- INTERPOLATION LOGARITHMIQUE ---
-                    fonres(ires) = loglog(&
-                                   varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
+                    fonres(ires) = &
+                        loglog(varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
                 else if (chprol(2)(1:8).eq.'LIN LOG ') then
 !              --- INTERPOLATION LIN-LOG ---
-                    fonres(ires) = linlog(&
-                                   varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
+                    fonres(ires) = &
+                        linlog(varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
                 else if (chprol(2)(1:8).eq.'LOG LIN ') then
 !              --- INTERPOLATION LOG-LIN ---
-                    fonres(ires) = loglin(&
-                                   varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
+                    fonres(ires) = &
+                        loglin(varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
                 else if (chprol(2)(1:3).eq.'INT') then
                     call jeveuo(nomf//'.NOVA', 'L', lnova)
-                    call fointe('F ', nomf, 1, zk8(lnova), varres(ires),&
-                                fonres(ires), ier)
+                    call fointe('F ', nomf, 1, zk8(lnova), varres(ires), fonres(ires), ier)
                 else if (chprol(2)(1:3).eq.'NON') then
                     if (varres(ires) .eq. var(ivar)) then
                         fonres(ires) = fon(ivar)
@@ -218,15 +211,14 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
 310              continue
             else if (chprol(5)(2:2) .eq. 'L') then
                 do 320 jres = ires, nbres
-                    fonres(jres)=linlin(varres(jres),var(nbvar-1),fon(&
-                    nbvar-1), var(nbvar),fon(nbvar))
+                    fonres(jres) = &
+                        linlin(varres(jres),var(nbvar-1),fon(nbvar-1), var(nbvar),fon(nbvar))
 320              continue
             else if (chprol(5)(2:2) .eq. 'I') then
 !           --- EXTRAPOLATION INTERPRETEE ----
                 call jeveuo(nomf//'.NOVA', 'L', lnova)
                 do 330 jres = ires, nbres
-                    call fointe('F ', nomf, 1, zk8(lnova), varres(jres),&
-                                fonres(jres), ier)
+                    call fointe('F ', nomf, 1, zk8(lnova), varres(jres), fonres(jres), ier)
 330              continue
 !
             else if (chprol(5)(2:2) .eq. 'E') then

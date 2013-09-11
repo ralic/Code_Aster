@@ -96,7 +96,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
     character(len=8) :: ma
 !
     logical :: inval
-    logical :: cas2d, cas3d, valid
+    logical :: cas2d, cas3d
 !
     integer :: nbnoe, noecon(nbnoe), maicon(nbmar), marcon(nbmar)
     integer :: mbcor(nbmar), jmicor(nbmar)
@@ -105,10 +105,10 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
     integer :: nbmarc, niv
 !-----------------------------------------------------------------------
 !     TYPES VALIDES POUR LES MAILLES DE REFERENCE
-    valid()=(cas2d .and. (ktyr(:4).eq.'TRIA'.or.ktyc(:&
-     &        4).eq.'QUAD')) .or. (cas3d .and.&
-     &        (ktyr(:5).eq.'PENTA'.or.ktyr(:4).eq.'HEXA'.or.ktyr(:&
-     &        5).eq.'PYRAM'.or.ktyr(:5).eq.'TETRA'))
+#define valid() (cas2d .and. (ktyr(:4).eq.'TRIA'.or.ktyc(: \
+        4).eq.'QUAD')) .or. (cas3d .and. \
+        (ktyr(:5).eq.'PENTA'.or.ktyr(:4).eq.'HEXA'.or.ktyr(: \
+        5).eq.'PYRAM'.or.ktyr(:5).eq.'TETRA'))
 !
 !
     inval=.false.

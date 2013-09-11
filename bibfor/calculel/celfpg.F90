@@ -73,12 +73,12 @@ subroutine celfpg(celz, nomobj, iret)
     character(len=19) :: cel, ligrel, ligrsv
     character(len=24) :: nomosv
     integer :: jobj, ibid, nbma, jcelv, jceld, nec
-    integer :: igr, iel, ialiel, illiel, numail
+    integer :: igr, iel, ialiel, illiel
     integer :: jcelk, nbgr, imolo, jmolo, numa, nbel, kfpg
     integer :: iexi
     save ligrsv,nomosv
 !
-    numail(igr,iel)=zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -33,9 +33,9 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
 !             D'ORIGINE THERMIQUE (VARIATION DE TEMPERATURE PARABOLIQUE)
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: linlin, x, x1, y1, x2, y2, yprim, valer(3)
+    real(kind=8) ::  x, yprim, valer(3)
 !
-    linlin(x,x1,y1,x2,y2)= y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
 ! DEB ------------------------------------------------------------------
 !
     x = sigm / symax

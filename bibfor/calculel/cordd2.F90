@@ -43,16 +43,15 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
     integer :: nbecmx, ncmp
     parameter (nbecmx = 10)
     integer :: ifin(nbecmx)
-    integer :: prno
     integer :: pos(1)
     integer :: ecodg, ecodl(*)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ili, nunoel, l, jprn1, jprn2, nec, iec, in
+    integer :: ili, jprn1, jprn2, nec, iec, in
     integer :: nddloc, n, i, iecdg, iecdl
 !
 !     FONCTION D ACCES A PRNO
-    prno(ili,nunoel,l) = zi(jprn1-1+zi(jprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define prno(ili,nunoel,l)   zi(jprn1-1+zi(jprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
 ! - DEB ----------------------------------------------------------------
 !

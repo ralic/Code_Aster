@@ -49,7 +49,6 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: lprol, i, i1, i2, lvale, lfonc, nbvale
-    real(kind=8) :: linlin, linlog, loglog, loglin, x, x1, y1, x2, y2
     real(kind=8) :: epsi, tole, valr, resu(2)
     character(len=1) :: coli
     character(len=24) :: interp, prolgd
@@ -70,13 +69,13 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 !     ------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
-    linlin(x,x1,y1,x2,y2)= y1+(x-x1)*(y2-y1)/(x2-x1)
-    linlog(x,x1,y1,x2,y2)=exp(log(y1)+(x-x1)*(log(y2)-log(y1))&
-     &                                        /(x2-x1))
-    loglog(x,x1,y1,x2,y2)=exp(log(y1)+(log(x)-log(x1))*(log(y2)&
-     &                                     -log(y1))/(log(x2)-log(x1)))
-    loglin(x,x1,y1,x2,y2)=y1+(log(x)-log(x1))*(y2-y1)&
-     &                                         /(log(x2)-log(x1))
+#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlog(x,x1,y1,x2,y2) exp(log(y1)+(x-x1)*(log(y2)-log(y1)) \
+        /(x2-x1))
+#define loglog(x,x1,y1,x2,y2) exp(log(y1)+(log(x)-log(x1))*(log(y2) \
+        -log(y1))/(log(x2)-log(x1)))
+#define loglin(x,x1,y1,x2,y2) y1+(log(x)-log(x1))*(y2-y1) \
+        /(log(x2)-log(x1))
 !     ------------------------------------------------------------------
     call jemarq()
 !

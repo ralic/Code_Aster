@@ -30,14 +30,13 @@ function iorim2(num1, n1, num2, n2, reorie)
 !                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 !                                      FALLU REORIENTER)
 !
-    logical :: egal
 !     DONNEES POUR TRIA3,TRIA6,TRIA7,QUAD4,QUAD8,QUAD9
 !     NOMBRE DE SOMMETS EN FONCTION DU NOMBRE DE NOEUDS DE L'ELEMENT
     integer :: nso(9), nso1, nso2, i1, j1, i2, j2, i, k, l
     data nso /0,0,3,4,0,3,3,4,4/
 !
-    egal(i1,j1,i2,j2)=(num1(i1).eq.num2(i2)).and.&
-     &                  (num1(j1).eq.num2(j2))
+#define egal(i1,j1,i2,j2) (num1(i1).eq.num2(i2)).and. \
+        (num1(j1).eq.num2(j2))
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

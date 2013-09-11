@@ -54,8 +54,7 @@ subroutine conqua(macor, nbcor, macoc, nbcoc, lface,&
     logical :: lomodi, locorr, lface, quadra, loreor
     integer :: i1, i2
 !-----------------------------------------------------------------------
-    logical :: face
-    face(i1,i2)=nococ(1).eq.i1.and.nococ(2).eq.i2
+#define face(i1,i2) nococ(1).eq.i1.and.nococ(2).eq.i2
 !
 !     ------------------------------------------------------------------
 !

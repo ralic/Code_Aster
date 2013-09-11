@@ -123,8 +123,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: ibid, iconx1, iconx2, idbgav, idd
     integer :: idime, jlres, jprn1, jprn2, jresl, jrsvi
     integer :: iel, ier, ierd, ifcpu, ifel1, ifel2, ifel3, ifel4
-    integer :: ifel5, jfetm, jfetn, ifm, igr, igrel
-    integer :: ili, jfnusd, ilima, ilimat, ilimo, ilimpi, ilinu
+    integer :: ifel5, jfetm, jfetn, ifm, igr
+    integer ::  jfnusd, ilima, ilimat, ilimo, ilimpi, ilinu
     integer :: imat, jnumsd, jrefn, iresu
     integer :: iret, iret1, iret2, iret3, itbloc
     integer :: jrefa, jsmde, jsmdi, jsmhc, jvalm(2)
@@ -137,14 +137,13 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
-    integer :: zzngel, zznelg, zzliel
     mpi_int :: mrank, msize
 !
-    zzngel(ili)=zi(jadli+3*(ili-1))
-    zznelg(ili,igrel)=zi(zi(jadli+3*(ili-1)+2)+igrel)-&
-     &                  zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
-    zzliel(ili,igrel,iel)=zi(zi(jadli+3*(ili-1)+1)-1+&
-     &                    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+iel-1)
+#define zzngel(ili) zi(jadli+3*(ili-1))
+#define zznelg(ili,igrel) zi(zi(jadli+3*(ili-1)+2)+igrel)- \
+        zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
+#define zzliel(ili,igrel,iel) zi(zi(jadli+3*(ili-1)+1)-1+ \
+        zi(zi(jadli+3*(ili-1)+2)+igrel-1)+iel-1)
 !----------------------------------------------------------------------
 !
 !

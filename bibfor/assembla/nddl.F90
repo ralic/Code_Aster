@@ -27,10 +27,10 @@ function nddl(ili, nunoel, nec, idprn1, idprn2)
 !----------------------------------------------------------------------
 !     FONCTION D ACCES A PRNO
 !----------------------------------------------------------------------
-    integer :: zzprno, idprn1, idprn2, iec, j, k, l, nec, lshift
+    integer ::  idprn1, idprn2, iec, j, k, nec, lshift
 !
 !-----------------------------------------------------------------------
-    zzprno(ili,nunoel,l) = zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define zzprno(ili,nunoel,l)   zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !---- DEBUT
     nddl = 0
     do 100 iec = 1, nec

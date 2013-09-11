@@ -611,18 +611,18 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !     DANS LE CAS DES ELEMENTS FINIS ANGMAS EST NECESSAIRE
 !     DANS LE CAS DES VOLUMES FINIS ON INITIALISE À 0 ANGMAS(7)
     real(kind=8) :: angbid(3)
-    integer :: zzadma, ivois, lig, col
-    integer :: iadp1k, iadp2k, iadp1, iadp2
-    integer :: adcm1, adcm2, adcf1, adcf2
+    integer ::  ivois
+    integer :: iadp1k, iadp2k
+    integer :: adcm1, adcm2
 !
 !---------------------------------------
 ! FONCTIONS FORMULES D ADRESSAGE DES DDL
 !---------------------------------------
-    zzadma(ivois,lig,col)=ivois*dimuel*dimuel+(lig-1)*dimuel+col
-    iadp1(fa)=2*(fa-1)+1
-    iadp2(fa)=2*(fa-1)+2
-    adcf1(fa)=2*(fa-1)+1
-    adcf2(fa)=2*(fa-1)+2
+#define zzadma(ivois,lig,col) (ivois)*(dimuel)*(dimuel)+(lig-1)*(dimuel)+col
+#define iadp1(fa) 2*(fa-1)+1
+#define iadp2(fa) 2*(fa-1)+2
+#define adcf1(fa) 2*(fa-1)+1
+#define adcf2(fa) 2*(fa-1)+2
     iadp1k=2*nface+1
     iadp2k=2*nface+2
     adcm1 = 2*nface+1
@@ -1611,17 +1611,13 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | FAS1S + FAD1S |
 !                 | FAS2S + FAD2S |
 ! *******************************************************************
-            matuu(zzadma(0,adcm1,iadp1k))= matuu(zzadma(0,adcm1,&
-            iadp1k))+fw1s(1)+fvp1s(1)
+            matuu(zzadma(0,adcm1,iadp1k))= matuu(zzadma(0,adcm1,iadp1k))+fw1s(1)+fvp1s(1)
 !
-            matuu(zzadma(0,adcm1,iadp2k))= matuu(zzadma(0,adcm1,&
-            iadp2k))+fw2s(1)+fvp2s(1)
+            matuu(zzadma(0,adcm1,iadp2k))= matuu(zzadma(0,adcm1,iadp2k))+fw2s(1)+fvp2s(1)
 !
-            matuu(zzadma(0,adcm2,iadp1k))= matuu(zzadma(0,adcm2,&
-            iadp1k))+fas1s(1)+fad1s(1)
+            matuu(zzadma(0,adcm2,iadp1k))= matuu(zzadma(0,adcm2,iadp1k))+fas1s(1)+fad1s(1)
 !
-            matuu(zzadma(0,adcm2,iadp2k))= matuu(zzadma(0,adcm2,&
-            iadp2k))+fas2s(1)+fad2s(1)
+            matuu(zzadma(0,adcm2,iadp2k))= matuu(zzadma(0,adcm2,iadp2k))+fas2s(1)+fad2s(1)
             do 27 ifa = 1, nface
 ! ATTENTION QD LES MAILLES SERONT DIFFERENTES NFACEV PEUT ETRE DIFFERENT
 ! SELON LES MAILLES
@@ -1638,17 +1634,17 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | FAS1S + FAD1S |
 !                 | FAS2S + FAD2S |
 ! *******************************************************************
-                matuu(zzadma(0,adcm1,iadp1(ifa)))= matuu(zzadma(0,&
-                adcm1,iadp1(ifa))) +fw1s(ifa+1)+fvp1s(ifa+1)
+                matuu(zzadma(0,adcm1,iadp1(ifa)))= matuu(zzadma(0,adcm1,iadp1(ifa))) +&
+                    fw1s(ifa+1)+fvp1s(ifa+1)
 !
-                matuu(zzadma(0,adcm1,iadp2(ifa)))= matuu(zzadma(0,&
-                adcm1,iadp2(ifa))) +fw2s(ifa+1)+fvp2s(ifa+1)
+                matuu(zzadma(0,adcm1,iadp2(ifa)))= matuu(zzadma(0,adcm1,iadp2(ifa))) +&
+                    fw2s(ifa+1)+fvp2s(ifa+1)
 !
-                matuu(zzadma(0,adcm2,iadp1(ifa)))= matuu(zzadma(0,&
-                adcm2,iadp1(ifa))) +fas1s(ifa+1)+fad1s(ifa+1)
+                matuu(zzadma(0,adcm2,iadp1(ifa)))= matuu(zzadma(0,adcm2,iadp1(ifa))) +&
+                    fas1s(ifa+1)+fad1s(ifa+1)
 !
-                matuu(zzadma(0,adcm2,iadp2(ifa)))= matuu(zzadma(0,&
-                adcm2,iadp2(ifa))) +fas2s(ifa+1)+fad2s(ifa+1)
+                matuu(zzadma(0,adcm2,iadp2(ifa)))= matuu(zzadma(0,adcm2,iadp2(ifa))) +&
+                    fas2s(ifa+1)+fad2s(ifa+1)
 ! *******************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE POUR L
 !                 (DERIVEES % VARIABLES DU CENTRE)
@@ -1659,17 +1655,17 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | FAS2SV + FAD2SV |
 ! *******************************************************************
 !
-                matuu(zzadma(kvois,adcm1,iadp1k))= matuu(zzadma(kvois,&
-                adcm1,iadp1k))+ fw1sv(ifa)+fvp1sv(ifa)
+                matuu(zzadma(kvois,adcm1,iadp1k))= matuu(zzadma(kvois,adcm1,iadp1k))+&
+                    fw1sv(ifa)+fvp1sv(ifa)
 !
-                matuu(zzadma(kvois,adcm1,iadp2k))= matuu(zzadma(kvois,&
-                adcm1,iadp2k))+ fw2sv(ifa)+fvp2sv(ifa)
+                matuu(zzadma(kvois,adcm1,iadp2k))= matuu(zzadma(kvois,adcm1,iadp2k))+&
+                    fw2sv(ifa)+fvp2sv(ifa)
 !
-                matuu(zzadma(kvois,adcm2,iadp1k))= matuu(zzadma(kvois,&
-                adcm2,iadp1k))+ fas1sv(ifa)+fad1sv(ifa)
+                matuu(zzadma(kvois,adcm2,iadp1k))= matuu(zzadma(kvois,adcm2,iadp1k))+&
+                    fas1sv(ifa)+fad1sv(ifa)
 !
-                matuu(zzadma(kvois,adcm2,iadp2k))= matuu(zzadma(kvois,&
-                adcm2,iadp2k))+ fas2sv(ifa)+fad2sv(ifa)
+                matuu(zzadma(kvois,adcm2,iadp2k))= matuu(zzadma(kvois,adcm2,iadp2k))+&
+                    fas2sv(ifa)+fad2sv(ifa)
 !
                 if (finter(ifa)) then
                     nnov=nbnovo(kvois)
@@ -1683,17 +1679,17 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | MOYAS1+ MOYAD1 |
 !                 | MOYAS2+ MOYAD2 |
 ! *******************************************************************
-                    matuu(zzadma(0,adcm1,iadp1k))= matuu(zzadma(0,&
-                    adcm1,iadp1k))+ moyvp1(ifa,1,0)
+                    matuu(zzadma(0,adcm1,iadp1k))= matuu(zzadma(0,adcm1,iadp1k))+&
+                        moyvp1(ifa,1,0)
 !
-                    matuu(zzadma(0,adcm1,iadp2k))= matuu(zzadma(0,&
-                    adcm1,iadp2k))+ moyvp2(ifa,1,0)
+                    matuu(zzadma(0,adcm1,iadp2k))= matuu(zzadma(0,adcm1,iadp2k))+&
+                        moyvp2(ifa,1,0)
 !
-                    matuu(zzadma(0,adcm2,iadp1k))= matuu(zzadma(0,&
-                    adcm2,iadp1k))+ moyas1(ifa,1,0) + moyad1(ifa,1,0)
+                    matuu(zzadma(0,adcm2,iadp1k))= matuu(zzadma(0,adcm2,iadp1k))+&
+                        moyas1(ifa,1,0) + moyad1(ifa,1,0)
 !
-                    matuu(zzadma(0,adcm2,iadp2k))= matuu(zzadma(0,&
-                    adcm2,iadp2k))+ moyas2(ifa,1,0) + moyad2(ifa,1,0)
+                    matuu(zzadma(0,adcm2,iadp2k))= matuu(zzadma(0,adcm2,iadp2k))+&
+                        moyas2(ifa,1,0) + moyad2(ifa,1,0)
 ! *******************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE POUR K
 !                 (DERIVEES % VARIABLES DE L ARETE)
@@ -1728,17 +1724,17 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | DFGKS1 |
 !                 | DFGKS2 |
 ! *****************************************************************
-                    matuu(zzadma(0,adcf1(ifa),iadp1k))= matuu(zzadma(&
-                    0,adcf1(ifa),iadp1k)) +dflks1(1,ifa)
+                    matuu(zzadma(0,adcf1(ifa),iadp1k))= matuu(&
+                        zzadma(0,adcf1(ifa),iadp1k)) +dflks1(1,ifa)
 !
-                    matuu(zzadma(0,adcf1(ifa),iadp2k))= matuu(zzadma(&
-                    0,adcf1(ifa),iadp2k)) +dflks2(1,ifa)
+                    matuu(zzadma(0,adcf1(ifa),iadp2k))= matuu(&
+                        zzadma(0,adcf1(ifa),iadp2k)) +dflks2(1,ifa)
 !
-                    matuu(zzadma(0,adcf2(ifa),iadp1k))= matuu(zzadma(&
-                    0,adcf2(ifa),iadp1k)) +dfgks1(1,ifa)
+                    matuu(zzadma(0,adcf2(ifa),iadp1k))= matuu(&
+                        zzadma(0,adcf2(ifa),iadp1k)) +dfgks1(1,ifa)
 !
-                    matuu(zzadma(0,adcf2(ifa),iadp2k))= matuu(zzadma(&
-                    0,adcf2(ifa),iadp2k)) +dfgks2(1,ifa)
+                    matuu(zzadma(0,adcf2(ifa),iadp2k))= matuu(&
+                        zzadma(0,adcf2(ifa),iadp2k)) +dfgks2(1,ifa)
 ! *******************************************************************
 ! EQUATION DE LA CONTINUITE DES FLUX POUR K
 !                 (DERIVEES % VARIABLES DE L ARETE)
@@ -1773,18 +1769,18 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | MOYAS1+ MOYAD1 |
 !                 | MOYAS2+ MOYAD2 |
 ! *******************************************************************
-                    matuu(zzadma(kvois,adcm1,iadp1k))= matuu(zzadma(&
-                    kvois,adcm1,iadp1k)) + moyvp1(ifa,1,1)
+                    matuu(zzadma(kvois,adcm1,iadp1k))= matuu(&
+                        zzadma(kvois,adcm1,iadp1k)) + moyvp1(ifa,1,1)
 !
-                    matuu(zzadma(kvois,adcm1,iadp2k))= matuu(zzadma(&
-                    kvois,adcm1,iadp2k)) + moyvp2(ifa,1,1)
+                    matuu(zzadma(kvois,adcm1,iadp2k))= matuu(&
+                        zzadma(kvois,adcm1,iadp2k)) + moyvp2(ifa,1,1)
 !
-                    matuu(zzadma(kvois,adcm2,iadp1k))= matuu(zzadma(&
-                    kvois,adcm2,iadp1k)) + moyas1(ifa,1,1)+ moyad1(&
+                    matuu(zzadma(kvois,adcm2,iadp1k))= matuu(&
+                        zzadma(kvois,adcm2,iadp1k)) + moyas1(ifa,1,1)+ moyad1(&
                     ifa,1,1)
 !
-                    matuu(zzadma(kvois,adcm2,iadp2k))= matuu(zzadma(&
-                    kvois,adcm2,iadp2k)) + moyas2(ifa,1,1)+ moyad2(&
+                    matuu(zzadma(kvois,adcm2,iadp2k))= matuu(&
+                        zzadma(kvois,adcm2,iadp2k)) + moyas2(ifa,1,1)+ moyad2(&
                     ifa,1,1)
 ! *******************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE POUR L
@@ -1825,18 +1821,18 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | FAS1SK+ FAD1SK |
 !                 | FAS2SK+ FAD2SK |
 ! *******************************************************************
-                    matuu(zzadma(0,adcm1,iadp1k))= matuu(zzadma(0,&
-                    adcm1,iadp1k))+ fvp1sk(1,ifa)
+                    matuu(zzadma(0,adcm1,iadp1k))= matuu(&
+                        zzadma(0,adcm1,iadp1k))+ fvp1sk(1,ifa)
 !
-                    matuu(zzadma(0,adcm1,iadp2k))= matuu(zzadma(0,&
-                    adcm1,iadp2k))+ fvp2sk(1,ifa)
+                    matuu(zzadma(0,adcm1,iadp2k))= matuu(&
+                        zzadma(0,adcm1,iadp2k))+ fvp2sk(1,ifa)
 !
 !
-                    matuu(zzadma(0,adcm2,iadp1k))= matuu(zzadma(0,&
-                    adcm2,iadp1k))+fas1sk(1,ifa) +fad1sk(1,ifa)
+                    matuu(zzadma(0,adcm2,iadp1k))= matuu(&
+                        zzadma(0,adcm2,iadp1k))+fas1sk(1,ifa) +fad1sk(1,ifa)
 !
-                    matuu(zzadma(0,adcm2,iadp2k))= matuu(zzadma(0,&
-                    adcm2,iadp2k))+ fas2sk(1,ifa) + fad2sk(1,ifa)
+                    matuu(zzadma(0,adcm2,iadp2k))= matuu(&
+                        zzadma(0,adcm2,iadp2k))+ fas2sk(1,ifa) + fad2sk(1,ifa)
 !
 ! *******************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE POUR K
@@ -1870,21 +1866,21 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !                 | FM1ASS + FM1ADS + FAS1SK + FAD1SK |
 !                 | FM2ASS + FM2ADS + FAS2SK + FAD2SK |
 ! *****************************************************************
-                    matuu(zzadma(0,adcf1(ifa),iadp1k))= matuu(zzadma(&
-                    0,adcf1(ifa),iadp1k))+ fm1ws(1,ifa)+fm1vps(1,ifa)+&
+                    matuu(zzadma(0,adcf1(ifa),iadp1k))= matuu(&
+                        zzadma(0,adcf1(ifa),iadp1k))+ fm1ws(1,ifa)+fm1vps(1,ifa)+&
                     fvp1sk(1,ifa)
 !
 !
-                    matuu(zzadma(0,adcf1(ifa),iadp2k))= matuu(zzadma(&
-                    0,adcf1(ifa),iadp2k))+ fm2ws(1,ifa)+fm2vps(1,ifa)+&
+                    matuu(zzadma(0,adcf1(ifa),iadp2k))= matuu(&
+                        zzadma(0,adcf1(ifa),iadp2k))+ fm2ws(1,ifa)+fm2vps(1,ifa)+&
                     fvp2sk(1,ifa)
 !
-                    matuu(zzadma(0,adcf2(ifa),iadp1k))= matuu(zzadma(&
-                    0,adcf2(ifa),iadp1k))+ fm1ass(1,ifa)+fm1ads(1,ifa)&
+                    matuu(zzadma(0,adcf2(ifa),iadp1k))= matuu(&
+                        zzadma(0,adcf2(ifa),iadp1k))+ fm1ass(1,ifa)+fm1ads(1,ifa)&
                     +fas1sk(1,ifa) +fad1sk(1,ifa)
 !
-                    matuu(zzadma(0,adcf2(ifa),iadp2k))= matuu(zzadma(&
-                    0,adcf2(ifa),iadp2k))+ fm2ass(1,ifa)+fm2ads(1,ifa)&
+                    matuu(zzadma(0,adcf2(ifa),iadp2k))= matuu(&
+                        zzadma(0,adcf2(ifa),iadp2k))+ fm2ass(1,ifa)+fm2ads(1,ifa)&
                     +fas2sk(1,ifa) +fad2sk(1,ifa)
 ! *******************************************************************
 ! EQUATION DE LA CONTINUITE DES FLUX POUR K

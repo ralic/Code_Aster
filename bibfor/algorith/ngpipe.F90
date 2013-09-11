@@ -65,8 +65,7 @@ subroutine ngpipe(typilo, npg, neps, nddl, b,&
     real(kind=8) :: epsm(0:epsmax*npgmax-1), epsd(0:epsmax*npgmax-1)
     real(kind=8) :: epsp(0:epsmax*npgmax-1)
 ! ----------------------------------------------------------------------
-    integer :: os
-    os(g) = (g-1)*neps
+#define os(g)   (g-1)*neps
 ! ----------------------------------------------------------------------
 !
 !

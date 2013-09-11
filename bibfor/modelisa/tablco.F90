@@ -58,7 +58,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 !
 !
 !
-    integer :: nbnom, ilmaco, numglm, iamaco
+    integer ::  ilmaco, iamaco
     integer :: ima, ino, nbid, i, no
     integer :: numno, numa
     integer :: nmax, nbno, nbma
@@ -77,10 +77,10 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 ! ----------------------------------------------------------------------
 !
 !     FONCTION "FORMULE" D'ACCES AU NOMBRE DE NEOUDS DES MAILLES
-    nbnom(ima)=zi(ilmaco+ima)-zi(ilmaco-1+ima)
+#define nbnom(ima) zi(ilmaco+ima)-zi(ilmaco-1+ima)
 !
 !     FONCTION "FORMULE" D'ACCES A LA CONNECTIVITE DES MAILLES
-    numglm(ima,ino)=zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+#define numglm(ima,ino) zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
 !
 ! ----------------------------------------------------------------------
 !

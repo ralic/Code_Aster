@@ -257,23 +257,22 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !     DANS LE CAS DES ELEMENTS FINIS ANGMAS EST NECESSAIRE
 !     DANS LE CAS DES VOLUMES FINIS ON INITIALISE À 0 ANGMAS(3)
     real(kind=8) :: angbid(3)
-    integer :: zzadma, ivois, lig, col
-    integer :: iadp1k, iadp2k, iadp1, iadp2
-    integer :: adcm1, adcm2, adcf1, adcf2
+    integer :: iadp1k, iadp2k
+    integer :: adcm1, adcm2
 ! ====================================================
 ! ADRESSE DANS LA MATRICE DE L ELEMENT CALCULE PAR
 ! LE VOISIN IVOIS EN LIGNE LIG ET COLONNE COL
 ! LA CONTRIBUTION PROPRE CORRESPOND AU VOISIN 0
 ! DES DONNEES DES VOISINS DE LA MAILLE NUMA (0 SI MAILLE PAS ACTIVE)
 ! ====================================================
-    zzadma(ivois,lig,col)=ivois*dimuel*dimuel+(lig-1)*dimuel+col
+#define zzadma(ivois,lig,col) (ivois)*(dimuel)*(dimuel)+(lig-1)*(dimuel)+col
 ! ===================================================
 ! FONCTIONS FORMULES D ADRESSAGE DES DDL
 ! ===================================================
-    iadp1(fa)=2*(fa-1)+1
-    iadp2(fa)=2*(fa-1)+2
-    adcf1(fa)=2*(fa-1)+1
-    adcf2(fa)=2*(fa-1)+2
+#define iadp1(fa) 2*(fa-1)+1
+#define iadp2(fa) 2*(fa-1)+2
+#define adcf1(fa) 2*(fa-1)+1
+#define adcf2(fa) 2*(fa-1)+2
     iadp1k=2*nface+1
     iadp2k=2*nface+2
     adcm1 = 2*nface+1
@@ -896,17 +895,17 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !           | FAS1S + FAD1S |
 !           | FAS2S + FAD2S |
 ! *******************************************************************
-            matuu(zzadma(0,adcm1,iadp1(ifa)))= matuu(zzadma(0,adcm1,&
-            iadp1(ifa))) +fw1s(ifa+1)+fvp1s(ifa+1)
+            matuu(zzadma(0,adcm1,iadp1(ifa)))= matuu(zzadma(0,adcm1,iadp1(ifa))) +&
+                fw1s(ifa+1)+fvp1s(ifa+1)
 !
-            matuu(zzadma(0,adcm1,iadp2(ifa)))= matuu(zzadma(0,adcm1,&
-            iadp2(ifa))) +fw2s(ifa+1)+fvp2s(ifa+1)
+            matuu(zzadma(0,adcm1,iadp2(ifa)))= matuu(zzadma(0,adcm1,iadp2(ifa))) +&
+                fw2s(ifa+1)+fvp2s(ifa+1)
 !
-            matuu(zzadma(0,adcm2,iadp1(ifa)))= matuu(zzadma(0,adcm2,&
-            iadp1(ifa))) +fas1s(ifa+1)+fad1s(ifa+1)
+            matuu(zzadma(0,adcm2,iadp1(ifa)))= matuu(zzadma(0,adcm2,iadp1(ifa))) +&
+                fas1s(ifa+1)+fad1s(ifa+1)
 !
-            matuu(zzadma(0,adcm2,iadp2(ifa)))= matuu(zzadma(0,adcm2,&
-            iadp2(ifa))) +fas2s(ifa+1)+fad2s(ifa+1)
+            matuu(zzadma(0,adcm2,iadp2(ifa)))= matuu(zzadma(0,adcm2,iadp2(ifa))) +&
+                fas2s(ifa+1)+fad2s(ifa+1)
 ! *******************************************************************
 ! EQUATION DE LA CONTINUITE DES FLUX POUR K
 !           (DERIVEES % VARIABLES DU CENTRE)
@@ -915,17 +914,17 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !           | FM1ASS + FM1ADS |
 !           | FM2ASS + FM2ADS |
 ! *****************************************************************
-            matuu(zzadma(0,adcf1(ifa),iadp1k))= matuu(zzadma(0,adcf1(&
-            ifa),iadp1k))+ fm1ws(1,ifa)+fm1vps(1,ifa)
+            matuu(zzadma(0,adcf1(ifa),iadp1k))= matuu(zzadma(0,adcf1(ifa),iadp1k)) +&
+                fm1ws(1,ifa)+fm1vps(1,ifa)
 !
-            matuu(zzadma(0,adcf1(ifa),iadp2k))= matuu(zzadma(0,adcf1(&
-            ifa),iadp2k))+ fm2ws(1,ifa)+fm2vps(1,ifa)
+            matuu(zzadma(0,adcf1(ifa),iadp2k))= matuu(zzadma(0,adcf1(ifa),iadp2k)) +&
+                fm2ws(1,ifa)+fm2vps(1,ifa)
 !
-            matuu(zzadma(0,adcf2(ifa),iadp1k))= matuu(zzadma(0,adcf2(&
-            ifa),iadp1k))+ fm1ass(1,ifa)+fm1ads(1,ifa)
+            matuu(zzadma(0,adcf2(ifa),iadp1k))= matuu(zzadma(0,adcf2(ifa),iadp1k)) +&
+                fm1ass(1,ifa)+fm1ads(1,ifa)
 !
-            matuu(zzadma(0,adcf2(ifa),iadp2k))= matuu(zzadma(0,adcf2(&
-            ifa),iadp2k))+ fm2ass(1,ifa)+fm2ads(1,ifa)
+            matuu(zzadma(0,adcf2(ifa),iadp2k))= matuu(zzadma(0,adcf2(ifa),iadp2k)) +&
+                fm2ass(1,ifa)+fm2ads(1,ifa)
 ! *******************************************************************
 ! EQUATION DE LA CONTINUITE DES FLUX POUR K
 !           (DERIVEES % VARIABLES DE L ARETE)
@@ -935,20 +934,18 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !           | FM2ASS + FM2ADS |
 ! *******************************************************************
             do 181 jfa = 1, nface
-                matuu(zzadma(0,adcf1(ifa),iadp1(jfa)))= matuu(zzadma(&
-                0,adcf1(ifa),iadp1(jfa))) + fm1ws(jfa+1,ifa)+fm1vps(&
+                matuu(zzadma(0,adcf1(ifa),iadp1(jfa)))= matuu(zzadma(0,adcf1(ifa),iadp1(jfa))) +&
+                    fm1ws(jfa+1,ifa)+fm1vps(jfa+1,ifa)
+!
+                matuu(zzadma(0,adcf1(ifa),iadp2(jfa)))= matuu(zzadma(0,adcf1(ifa),iadp2(jfa))) +&
+                    fm2ws(jfa+1,ifa)+fm2vps(&
                 jfa+1,ifa)
 !
-                matuu(zzadma(0,adcf1(ifa),iadp2(jfa)))= matuu(zzadma(&
-                0,adcf1(ifa),iadp2(jfa))) +fm2ws(jfa+1,ifa)+fm2vps(&
-                jfa+1,ifa)
+                matuu(zzadma(0,adcf2(ifa),iadp1(jfa)))= matuu(zzadma(0,adcf2(ifa),iadp1(jfa))) +&
+                    fm1ass(jfa+1,ifa)+fm1ads(jfa+1,ifa)
 !
-                matuu(zzadma(0,adcf2(ifa),iadp1(jfa)))= matuu(zzadma(&
-                0,adcf2(ifa),iadp1(jfa))) +fm1ass(jfa+1,ifa)+fm1ads(&
-                jfa+1,ifa)
-!
-                matuu(zzadma(0,adcf2(ifa),iadp2(jfa)))= matuu(zzadma(&
-                0,adcf2(ifa),iadp2(jfa))) +fm2ass(jfa+1,ifa)+fm2ads(&
+                matuu(zzadma(0,adcf2(ifa),iadp2(jfa)))= matuu(zzadma(0,adcf2(ifa),iadp2(jfa))) +&
+                    fm2ass(jfa+1,ifa)+fm2ads(&
                 jfa+1,ifa)
 181          continue
 18      continue

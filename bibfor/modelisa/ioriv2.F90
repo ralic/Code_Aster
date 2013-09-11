@@ -39,13 +39,13 @@ function ioriv2(num, n, noeud, vect, coor)
     integer :: n1, n2, n3, noeud, nso
     real(kind=8) :: scal, x1, x2, x3, xa, xb, xn
     real(kind=8) :: y1, y2, y3, ya, yb, yn, z1
-    real(kind=8) :: z2, z3, za, zb, zn, x, y, z
+    real(kind=8) :: z2, z3, za, zb, zn
 !-----------------------------------------------------------------------
     data nsom /0,0,3,4,0,3,3,4,4/
 !
-    x(i)=coor(1,i)
-    y(i)=coor(2,i)
-    z(i)=coor(3,i)
+#define x(i) coor(1,i)
+#define y(i) coor(2,i)
+#define z(i) coor(3,i)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

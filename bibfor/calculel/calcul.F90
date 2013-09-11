@@ -137,7 +137,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: nbobtr, nval
     character(len=32) :: phemod
     integer :: opt, afaire
-    integer :: iel, numc, numail
+    integer :: iel, numc
     integer :: i, ipar, nin2, nin3, nou2, nou3, jtypma, jprti, jprtk
     character(len=1) :: base2
     character(len=8) :: nompar, cas, exiele, k8bid, partit, tych
@@ -149,7 +149,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !     -- FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-    numail(igr,iel)=zi(ialiel-1+zi(illiel-1+igr)-1+iel)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel-1+igr)-1+iel)
 !
 ! DEB-------------------------------------------------------------------
 !

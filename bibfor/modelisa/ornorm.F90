@@ -54,14 +54,14 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
     integer :: p1, p2, ifm, niv, ktyp, p3, p4
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, nconex, zero
-    logical :: pasori, dime1, dime2
+    logical ::  dime1, dime2
     character(len=1) :: lect
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
     character(len=24) :: valk(2)
 !
-    pasori(ima) = zi(lori-1+ima).eq.0
+#define pasori(ima)   zi(lori-1+ima).eq.0
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

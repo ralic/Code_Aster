@@ -78,14 +78,13 @@ subroutine glartg(f, g, cs, sn, r)
 !     ..
 !     .. LOCAL SCALARS ..
     real(kind=8) :: d, di, f1, f2, fa, g1, g2, ga
-    complex(kind=8) :: fs, gs, ss, t
+    complex(kind=8) :: fs, gs, ss
 !     ..
 !     .. STATEMENT FUNCTIONS ..
-    real(kind=8) :: abs1, abssq
 !     ..
 !     .. STATEMENT FUNCTION DEFINITIONS ..
-    abs1( t ) = abs( dble( t ) ) + abs( dimag( t ) )
-    abssq( t ) = dble( t )**2 + dimag( t )**2
+#define abs1( t )   abs( dble( t ) ) + abs( dimag( t ) )
+#define abssq( t )   dble( t )**2 + dimag( t )**2
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !

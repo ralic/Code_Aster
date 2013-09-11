@@ -63,8 +63,6 @@ subroutine nupodd(nu, base, rang, nbproc)
 !
     logical :: ldist, ldgrel
 !----------------------------------------------------------------------
-    integer :: zzprno, nunoel, l, igrel, j
-    integer :: zzngel, zznelg, zzliel, zznsup, zznema
     mpi_int :: mrank, msize
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
@@ -78,18 +76,18 @@ subroutine nupodd(nu, base, rang, nbproc)
 !
 !      IZZPRN(ILI,NUNOEL,L) = (IDPRN1-1+ZI(IDPRN2+ILI-1)+
 !     &                       (NUNOEL-1)* (NEC+2)+L-1)
-    zzprno(ili,nunoel,l)=zi(idprn1-1+zi(idprn2+ili-1)+&
-     &                     (nunoel-1)*(nec+2)+l-1)
+#define zzprno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ \
+        (nunoel-1)*(nec+2)+l-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
-    zzngel(ili)=zi(jadli+3*(ili-1))
+#define zzngel(ili) zi(jadli+3*(ili-1))
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE TEMP.
 !     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
-    zznelg(ili,igrel)=zi(zi(jadli+3*(ili-1)+2)+igrel)-&
-     &                  zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
+#define zznelg(ili,igrel) zi(zi(jadli+3*(ili-1)+2)+igrel)- \
+        zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -98,21 +96,21 @@ subroutine nupodd(nu, base, rang, nbproc)
 !          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
-    zzliel(ili,igrel,j)=zi(zi(jadli+3*(ili-1)+1)-1+&
-     &                    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
+#define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \
+        zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
-    zznsup(ili,iel)=zi(zi(jadne+3*(ili-1)+2)+iel)-&
-     &                zi(zi(jadne+3*(ili-1)+2)+iel-1)-1
+#define zznsup(ili,iel) zi(zi(jadne+3*(ili-1)+2)+iel)- \
+        zi(zi(jadne+3*(ili-1)+2)+iel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 !
-    zznema(ili,iel,j)=zi(zi(jadne+3*(ili-1)+1)-1+&
-     &                  zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
+#define zznema(ili,iel,j) zi(zi(jadne+3*(ili-1)+1)-1+ \
+        zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
 !
     call jemarq()
 !

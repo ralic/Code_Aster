@@ -97,7 +97,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
     integer :: ii, ino, iret, j, j1, jj, k
     integer :: n1, nbno, nddle, nddli, nddlt, nulag, nuno
     integer :: nunold, nunop
-    integer :: di, dj, dmi, dmj, v1, v2, m1, m2, m1t
+    integer :: di, dj, dmi, dmj
     real(kind=8) :: p1(10, 10), p2(10, 10), l2(6, 6), li(10, 10), lj(10, 10)
 !-----------------------------------------------------------------------
 !
@@ -105,11 +105,11 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
 !     FONCTIONS FORMULES:
 !     -------------------
-    m1 (i,j) = iadm1-1+(j-1)*j/2+i
-    m2 (i,j) = iadm2-1+(j-1)*j/2+i
-    m1t(i,j) = iadm1-1+(i-1)*i/2+j
-    v1 (i)   = iadm1-1+i
-    v2 (i)   = iadm2-1+i
+#define m1(i,j)    iadm1-1+(j-1)*(j)/2+i
+#define m2(i,j)    iadm2-1+(j-1)*(j)/2+i
+#define m1t(i,j)   iadm1-1+(i-1)*(i)/2+j
+#define v1(i)      iadm1-1+i
+#define v2(i)      iadm2-1+i
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -409,8 +409,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
         do 51, ii=1,dmi
         zr(v2(i1-1+ii))=0.0d0
         do 511, k=1,dmi
-        zr(v2(i1-1+ii))=zr(v2(i1-1+ii))+l2(k,ii)*zr(v1(i1-&
-                    1+k))
+        zr(v2(i1-1+ii))=zr(v2(i1-1+ii))+l2(k,ii)*zr(v1(i1-1+k))
 511      continue
 51      continue
  5      continue

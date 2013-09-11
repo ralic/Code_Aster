@@ -52,14 +52,13 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
     integer :: g
     real(kind=8) :: rac2, r2, r, dfdi1(27*3), dfdi2(8*3), unsurr
 ! ----------------------------------------------------------------------
-    integer :: iu1, iu2, ia, il, n, i
-    real(kind=8) :: dff1, dff2
-    iu1(n,i) = (n-1)*(ndim+2) + i
-    iu2(n,i) = nno2*2 + (n-1)*ndim + i
-    ia(n) = (n-1)*(ndim+2) + ndim + 1
-    il(n) = (n-1)*(ndim+2) + ndim + 2
-    dff1(n,i) = dfdi1(nno1*(i-1) + n)
-    dff2(n,i) = dfdi2(nno2*(i-1) + n)
+    integer ::  n, i
+#define iu1(n,i)   (n-1)*(ndim+2) + i
+#define iu2(n,i)   nno2*2 + (n-1)*ndim + i
+#define ia(n)   (n-1)*(ndim+2) + ndim + 1
+#define il(n)   (n-1)*(ndim+2) + ndim + 2
+#define dff1(n,i)   dfdi1(nno1*(i-1) + n)
+#define dff2(n,i)   dfdi2(nno2*(i-1) + n)
 ! ----------------------------------------------------------------------
     ASSERT(nno1.le.27)
     ASSERT(nno2.le.8)

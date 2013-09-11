@@ -59,7 +59,7 @@ subroutine celces(celz, basez, cesz)
     logical :: diff
     integer :: nec, gd, ncmpmx, ibid, nbma, jcorr1, jcelv, jceld
     integer :: iadg, icmp, ncmp, jcesl, jcesv, jcorr2, kcmp
-    integer :: ieq, icmp1, igr, iel, ialiel, illiel, numail
+    integer :: ieq, icmp1, igr, iel, ialiel, illiel
     integer :: jcelk, nbpt, nbgr, imolo, jmolo, k, nbgr2
     integer :: ipt, numa, iad, jnbpt, jnbspt, jnbcmp, vali(2)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
@@ -67,7 +67,7 @@ subroutine celces(celz, basez, cesz)
     character(len=24) :: valk(2)
     real(kind=8) :: rbid
 !
-    numail(igr,iel) = zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel)   zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
 !
     call jemarq()

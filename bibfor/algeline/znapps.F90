@@ -211,7 +211,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !
     integer :: i, iend, istart, j, jj, kplusp, msglvl
     logical :: first
-    complex(kind=8) :: cdum, f, g, h11, h21, r, s, sigma(1), t
+    complex(kind=8) ::  f, g, h11, h21, r, s, sigma(1), t
     real(kind=8) :: c, smlnum, ulp, unfl, tst1, rbid(1)
     save       first, smlnum, ulp, unfl
 !
@@ -225,8 +225,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     | STATEMENT FUNCTIONS |
 !     %---------------------%
 !
-    real(kind=8) :: zabs1
-    zabs1( cdum ) = abs( dble( cdum ) ) + abs( dimag( cdum ) )
+#define zabs1( cdum )   abs( dble( cdum ) ) + abs( dimag( cdum ) )
 !
 !     %----------------%
 !     | DATA STATMENTS |

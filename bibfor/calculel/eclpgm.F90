@@ -80,10 +80,10 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     integer :: k, te, tabno(27), iret1, jobj, numa, nch
     integer :: igr, iel, iacoor, iamaco, ilmaco, ialiel, illiel
     integer :: dimgeo, iacose, ibid, ino, ino1, ino2
-    integer :: numglm, nbmail, nbnoeu, nbcoor, iadime, kse
+    integer ::  nbmail, nbnoeu, nbcoor, iadime, kse
     integer :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
-    integer :: npg1, nbpi, iagepi, iagese, nno2, nbnoma, nuse, nse1
-    integer :: ima, nbelgr, numail, nupoin, npoini, iterm, ipoini
+    integer :: npg1, nbpi, iagepi, iagese, nno2, nuse, nse1
+    integer :: ima, nbelgr, nupoin, npoini, iterm, ipoini
     integer :: iret, ich, jrefe, nch2
     character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, famil, nompar
     character(len=8) :: tych
@@ -118,12 +118,12 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
 !     FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-    numail(igr,iel)=zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
-    nbnoma(ima)=zi(ilmaco-1+ima+1)-zi(ilmaco-1+ima)
+#define nbnoma(ima) zi(ilmaco-1+ima+1)-zi(ilmaco-1+ima)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-    numglm(ima,ino)=zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+#define numglm(ima,ino) zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

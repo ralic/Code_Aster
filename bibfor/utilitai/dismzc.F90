@@ -51,12 +51,12 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     integer :: iadime, iamaco, ianbno, ianoma, iatypm, idnema, ier
     integer :: ii, ilmaco, ima, ino, iocc, itypm, jcoor
     integer :: jima, jnbno, nbma, nbnoma, nbnot, nbpt, numail
-    integer :: nunoel, nunota, nutioc, numglm
+    integer :: nunoel, nunota, nutioc
     real(kind=8) :: z1
 ! -----  FONCTIONS FORMULES
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-    numglm(numail,ino)=zi(iamaco-1+zi(ilmaco+numail-1)+ino-1)
+#define numglm(numail,ino) zi(iamaco-1+zi(ilmaco+numail-1)+ino-1)
 ! --------------------------------------------------------------------
     call jemarq()
     ASSERT(questi.eq.'Z_CST')

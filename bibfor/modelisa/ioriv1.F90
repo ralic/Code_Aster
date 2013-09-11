@@ -28,11 +28,11 @@ function ioriv1(num, noeud, vect, coor)
 !                                      FALLU REORIENTER)
 #include "asterfort/u2mess.h"
     integer :: num(2)
-    real(kind=8) :: vect(2), coor(3, *), x, y
+    real(kind=8) :: vect(2), coor(3, *)
     integer :: i, ioriv1, k, l, n1, n2, noeud
     real(kind=8) :: scal, x1, x2, xn, y1, y2, yn
-    x(i)=coor(1,i)
-    y(i)=coor(2,i)
+#define x(i) coor(1,i)
+#define y(i) coor(2,i)
 !
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================

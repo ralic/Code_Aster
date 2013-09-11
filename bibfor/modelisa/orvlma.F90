@@ -60,13 +60,13 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
     integer :: nbnmai, jdesm1, jdesm2
     integer :: nbmavo, indi, im3, jcoor
     integer :: nbmaor, ii, kdeb
-    logical :: pasori, dime1, dime2, reorie
+    logical ::  dime1, dime2, reorie
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
     character(len=24) :: valk(2)
 !
-    pasori(ima) = zi(lori-1+ima).eq.0
+#define pasori(ima)   zi(lori-1+ima).eq.0
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

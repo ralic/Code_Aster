@@ -29,8 +29,7 @@ function iorim1(num1, num2, reorie)
 !                                      FALLU REORIENTER)
 !
     integer :: i1, j1, k, l
-    logical :: egal
-    egal(i1,j1) = num1(i1).eq.num2(j1)
+#define egal(i1,j1)   num1(i1).eq.num2(j1)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

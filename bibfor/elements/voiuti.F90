@@ -58,22 +58,20 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
     integer :: lcod, ityvo, ntyvo, lityvo(1:ntymax)
     character(len=2) :: tybase(9)
 !-----------FONCTIONS  D ACCES A VGE -----------------------------------
-    integer :: zzadvo, zznbvo, zzadve, zzmavo, zztyvo, zznbno, zznbsc, zzloc1
-    integer :: zzloc2
 !     IADDVO : ADRESSE JEVEUX DU TABLEAU DE POINTEURS DANS LA SD EL_VOIS
 !     IADVOI : ADRESSE JEVEUX DE LA SD EL_VOIS
 !
 !     DES DONNEES DES VOISINS DE LA MAILLE NUMA (0 SI MAILLE PAS ACTIVE)
-    zzadvo(numa)=zi(iaddvo+numa-1)+iadvoi
+#define zzadvo(numa) zi(iaddvo+numa-1)+iadvoi
 !
 !     NOMBBRE DE VOISINS DE NUMA EME MAILLE
-    zznbvo(numa)=zi(zzadvo(numa)-1+1)
+#define zznbvo(numa) zi(zzadvo(numa)-1+1)
 !
 !     POUR LA MAILLE NUMA
 !     POUR LE VOISIN IV
 !     ADRESSE DES DONNEES
 ! FAUX ???      ZZADVE(NUMA,IV) = ZI(ZZADVO(NUMA)-1+1+IV)+IADVOI-1
-    zzadve(numa,iv)=zi(zzadvo(numa)-1+1+iv)+zzadvo(numa)-1
+#define zzadve(numa,iv) zi(zzadvo(numa)-1+1+iv)+zzadvo(numa)-1
 !
 !     POUR LA MAILLE NUMA
 !     POUR LE VOISIN IV
@@ -87,30 +85,30 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !        2D PAR SOMMET  : S2 : 7
 !        1D PAR SOMMET  : S1 : 8
 !        0D PAR SOMMET  : S0 : 9
-    zztyvo(numa,iv)=zi(zzadve(numa,iv)-1+1)
+#define zztyvo(numa,iv) zi(zzadve(numa,iv)-1+1)
 !
 !     POUR LA MAILLE NUMA
 !     POUR LE VOISIN IV
 !     NUMERO DE MAILLE
-    zzmavo(numa,iv)=zi(zzadve(numa,iv)-1+2)
+#define zzmavo(numa,iv) zi(zzadve(numa,iv)-1+2)
 !
 !     POUR LA MAILLE NUMA
 !     POUR LE VOISIN IV
 !     NOMBRE DE NOEUDS DE MAILLE
-    zznbno(numa,iv)=zi(zzadve(numa,iv)-1+3)
+#define zznbno(numa,iv) zi(zzadve(numa,iv)-1+3)
 !
 !
 !     POUR LA MAILLE NUMA
 !     POUR LE VOISIN IV
 !        NOMBRE DE SOMMETS COMMUNS
-    zznbsc(numa,iv)=zi(zzadve(numa,iv)-1+4)
+#define zznbsc(numa,iv) zi(zzadve(numa,iv)-1+4)
 !
 !
 !     POUR LA MAILLE NUMA
 !     POUR LE VOISIN IV
 !     POUR LE SOMMET COMMUN IS
 !     NUMERO LOCAL DANS NUMA
-    zzloc1(numa,iv,is)=zi(zzadve(numa,iv)-1+4+1+2*(is-1))
+#define zzloc1(numa,iv,is) zi(zzadve(numa,iv)-1+4+1+2*(is-1))
 !
 !
 !
@@ -118,7 +116,7 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !     POUR LE VOISIN IV
 !    POUR LE SOMMET COMMUN IS
 !     NUMERO LOCAL DANS IV
-    zzloc2(numa,iv,is)=zi(zzadve(numa,iv)-1+4+1+2*(is-1)+1)
+#define zzloc2(numa,iv,is) zi(zzadve(numa,iv)-1+4+1+2*(is-1)+1)
 !-----------FIN FONCTIONS  D ACCES A VGE -------------------------------
     data tybase/'F3','F2','A3','A2','A1','S3','S2','S1','S0'/
 !

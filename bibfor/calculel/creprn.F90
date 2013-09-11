@@ -70,10 +70,9 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     character(len=*) :: ligrez, molocz, basez, prnmz, prnsz
     integer :: gd, i, iaconx, ialiel, iamaco, iamail, iamsco, jmoloc, iancmp
     integer :: ianmcr, iaprnm, iaprno, iaprns, iasssa, ibid, icmp
-    integer :: icodla, iec, iel, ier, igr, illiel, ilmaco, ilmsco
+    integer :: icodla, iec, ier, igr, illiel, ilmaco, ilmsco
     integer :: ima, imode, ino, inold, iret, ite, j, k, l, lgncmp, nbnm
     integer :: nbnoms, nbsma, nbssa, nec, nel, nl, nm, nnoe, numa, nunoel
-    integer :: numail, numglm, numgls
     integer :: admodl, lcmodl
     integer :: lshift
     character(len=1) :: base
@@ -86,13 +85,13 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
 ! -----  FONCTIONS FORMULES
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-    numail(igr,iel) = zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel)   zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-    numglm(ima,ino) = zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+#define numglm(ima,ino)   zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
 !     NUMGLS(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE SUPPLEMENTAIRE DU LIGREL
-    numgls(ima,ino) = zi(iamsco-1+zi(ilmsco+ima-1)+ino-1)
+#define numgls(ima,ino)   zi(iamsco-1+zi(ilmsco+ima-1)+ino-1)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

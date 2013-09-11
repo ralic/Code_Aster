@@ -53,7 +53,6 @@ subroutine exchno(imodat, iparg)
 !
 !     FONCTIONS EXTERNES:
 !     -------------------
-    integer :: numail, numglm, numgls
 !
 !     VARIABLES LOCALES:
 !     ------------------
@@ -67,13 +66,13 @@ subroutine exchno(imodat, iparg)
 !
 !     -- FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-    numail(igr,iel)=zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-    numglm(ima,ino)=zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+#define numglm(ima,ino) zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
 !     NUMGLS(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE SUPPLEMENTAIRE DU LIGREL
-    numgls(ima,ino)=zi(iamsco-1+zi(ilmsco+ima-1)+ino-1)
+#define numgls(ima,ino) zi(iamsco-1+zi(ilmsco+ima-1)+ino-1)
 ! DEB-------------------------------------------------------------------
 !
 !     PARALLELE OR NOT ?
@@ -201,7 +200,7 @@ subroutine exchno(imodat, iparg)
                 if (ima .gt. 0) then
                     nugl=numglm(ima,ino)
                 else
-                    nugl=numgls(-ima,ino)
+                    nugl=numgls((-ima),ino)
                 endif
                 deb1=(nugl-1)*long+1
 !
@@ -239,7 +238,7 @@ subroutine exchno(imodat, iparg)
                 if (ima .gt. 0) then
                     nugl=numglm(ima,ino)
                 else
-                    nugl=numgls(-ima,ino)
+                    nugl=numgls((-ima),ino)
                 endif
                 deb1=(abs(nugl)-1)*(nec+2)+1
                 idg1=(abs(nugl)-1)*(nec+2)+3

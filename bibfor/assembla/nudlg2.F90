@@ -51,19 +51,19 @@ subroutine nudlg2(nu)
 ! ----------------------------------------------------------------------
 !
     integer :: neq, ili, ier, nbligr, iexi, jprno, jdlg2
-    integer :: ima, nn, zznsup, n1, n2, n3, n4, zznema
+    integer :: ima, nn, n1, n2, n3, n4
     integer :: j1nema, j2nema, nbma
-    integer :: ieq2, ieq3, nueq2, nueq3, nec, ibid, jnueq, j
+    integer :: ieq2, ieq3, nueq2, nueq3, nec, ibid, jnueq
     character(len=19) :: ligr19
     character(len=14) :: nu14
     character(len=8) :: nogd
     character(len=1) :: kbid
 !
 !     -- ZZNSUP : NOMBRE DE NOEUDS DE LA MAILLE TARDIVE
-    zznsup(ili,ima) = zi(j2nema+ima) - zi(j2nema+ima-1) - 1
+#define zznsup(ili,ima)   zi(j2nema+ima) - zi(j2nema+ima-1) - 1
 !
 !     -- ZZNEMA : NUMERO DES NOEUDS DE LA MAILLE TARDIVE
-    zznema(ili,ima,j) = zi(j1nema-1+ zi(j2nema+ima-1)+j-1)
+#define zznema(ili,ima,j)   zi(j1nema-1+ zi(j2nema+ima-1)+j-1)
 !
 !
 !

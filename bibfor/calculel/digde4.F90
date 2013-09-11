@@ -48,11 +48,11 @@ function digde4(igr, iel, opt, ipar, dim1,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: lon1, numa, numail
+    integer :: lon1, numa
     integer :: numav, igr2, te2, mode2, dim2
     integer :: kvois, nel2p1
 !
-    numail(igr,iel) = zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel)   zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !
 ! DEB-------------------------------------------------------------------
     ASSERT(evfini.eq.1)

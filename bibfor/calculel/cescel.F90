@@ -104,7 +104,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     integer :: ncmpmx, ncmp1, jcmpgd, icmp1, k, iopt, iadg
     integer :: jcelv, neq, nbvces, jcopi, nbvcop, nbvaco
     integer :: igr, iel, ialiel, illiel, jceld, nbgr, imolo, jmolo
-    integer :: nbpt, ico, ipt, numa, iad, ieq, numail, iad2
+    integer :: nbpt, ico, ipt, numa, iad, ieq, iad2
     integer :: jdceld, jdcell, jdcelv, ima, nbma, nbspt, ispt, icmpmx
     integer :: adiel, jlpt, jlcupt, lgcata, ncdyn, cumu, nbel, nptmx
     integer :: nbsp, nbcmp, isp, nbpt2, vali(2), inan
@@ -119,7 +119,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     character(len=3) :: prol0
     real(kind=8) :: rnan
 !
-    numail(igr,iel) = zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel)   zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
     call jemarq()
 !

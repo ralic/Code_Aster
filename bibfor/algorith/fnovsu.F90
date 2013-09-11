@@ -36,7 +36,7 @@ subroutine fnovsu(option, nface, congem, vectu, press1,&
     real(kind=8) :: congem(dimcon, maxfa+1)
     real(kind=8) :: vectu(dimuel)
     character(len=16) :: option
-    integer :: ifa, fa, nface
+    integer :: ifa, nface
 !
 ! =====================================================================
 !.......................................................................
@@ -110,13 +110,13 @@ subroutine fnovsu(option, nface, congem, vectu, press1,&
 ! SFLUAD SOMME SUR FACES FLUX AIR DISSOUS
 !
     real(kind=8) :: sfluw, sfluvp, sfluas, sfluad
-    integer :: adcm1, adcm2, adcf1, adcf2
+    integer :: adcm1, adcm2
 !
 ! FONCTIONS FORMULES D ADRESSAGE DES DDL
 !
 !
-    adcf1(fa)=2*(fa-1)+1
-    adcf2(fa)=2*(fa-1)+2
+#define adcf1(fa) 2*(fa-1)+1
+#define adcf2(fa) 2*(fa-1)+2
 !
     adcm1 = 2*nface+1
     adcm2 = 2*nface+2

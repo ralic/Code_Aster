@@ -44,8 +44,8 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !
 !
     integer :: nbma1, nbma2, jtyma1, jtyma2, jgma1, jgma2, ima, ima1, ima2, ino
-    integer :: ino1, ino2, nbnoma, nutyp1, numgl1, iamac1, ilmac1, nutyp2
-    integer :: numgl2, iamac2, ilmac2, jcoor1, jcoor2, jnum1, jnum2, jma
+    integer :: ino1, ino2, nutyp1, iamac1, ilmac1, nutyp2
+    integer ::  iamac2, ilmac2, jcoor1, jcoor2, jnum1, jnum2, jma
     real(kind=8) :: x1, y1, z1, x2, y2, z2, v1, v2, v3
     real(kind=8) :: valr(3)
     logical :: erreur
@@ -55,11 +55,11 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
     character(len=24) :: conne2
 !
 !     NBNOMA(IMA) = NOMBRE DE NOEUDS DE LA MAILLE IMA
-    nbnoma(ima) = zi(ilmac1-1+ima+1) - zi(ilmac1-1+ima)
+#define nbnoma(ima)   zi(ilmac1-1+ima+1) - zi(ilmac1-1+ima)
 !
 !     NUMGLM(IMA,INO) = NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
-    numgl1(ima,ino) = zi(iamac1-1+zi(ilmac1+ima-1)+ino-1)
-    numgl2(ima,ino) = zi(iamac2-1+zi(ilmac2+ima-1)+ino-1)
+#define numgl1(ima,ino)   zi(iamac1-1+zi(ilmac1+ima-1)+ino-1)
+#define numgl2(ima,ino)   zi(iamac2-1+zi(ilmac2+ima-1)+ino-1)
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

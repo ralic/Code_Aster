@@ -48,16 +48,16 @@ subroutine glegen(nbre, lobj2, xl, absgam, legen)
     character(len=24) :: absgam
     real(kind=8) :: legen(1)
     integer :: i, j
-    real(kind=8) :: cof1, cof2, x, pleg2, pleg3, pleg4, pleg5, pleg6, pleg7
+    real(kind=8) :: cof1, cof2
 !
 !   POLYNOMES DE LEGENDRE
 !
-    pleg2(x) = (3.d0*x*x-1.d0)/2.d0
-    pleg3(x) = x*(5.d0*x*x-3.d0)/2.d0
-    pleg4(x) = (35.d0*x**4-30.d0*x*x+3.d0)/8.d0
-    pleg5(x) = x*(63.d0*x**4-70.d0*x*x+15.d0)/8.d0
-    pleg6(x) = (231.d0*x**6-315.d0*x**4+105.d0*x*x-5.d0)/16.d0
-    pleg7(x) = x*(429.d0*x**6-693.d0*x**4+315.d0*x*x-35.d0)/16.d0
+#define pleg2(x)   (3.d0*(x)*(x)-1.d0)/2.d0
+#define pleg3(x)   (x)*(5.d0*(x)*(x)-3.d0)/2.d0
+#define pleg4(x)   (35.d0*(x)**4-30.d0*(x)*(x)+3.d0)/8.d0
+#define pleg5(x)   (x)*(63.d0*(x)**4-70.d0*(x)*(x)+15.d0)/8.d0
+#define pleg6(x)   (231.d0*(x)**6-315.d0*(x)**4+105.d0*(x)*(x)-5.d0)/16.d0
+#define pleg7(x)   (x)*(429.d0*(x)**6-693.d0*(x)**4+315.d0*(x)*(x)-35.d0)/16.d0
 !
 !-----------------------------------------------------------------------
     call jemarq()

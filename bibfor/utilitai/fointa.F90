@@ -46,7 +46,6 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
     integer :: npar(2), indfct, jpro, jpar, lpara, nbvn, nbpara, i
     integer :: nupar, nbpt, jval, inume, ier, iret
     real(kind=8) :: tab(4), rpar, rvar, epsi, valr(4)
-    real(kind=8) :: linlin, linlog, loglog, loglin, x, x1, y1, x2, y2
     character(len=1) :: coli
     character(len=19) :: nomf
     character(len=24) :: nompf(2)
@@ -60,13 +59,13 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 ! ----------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
-    linlin(x,x1,y1,x2,y2)= y1+(x-x1)*(y2-y1)/(x2-x1)
-    linlog(x,x1,y1,x2,y2)=exp(log(y1)+(x-x1)*(log(y2)-log(y1))&
-     &                                        /(x2-x1))
-    loglog(x,x1,y1,x2,y2)=exp(log(y1)+(log(x)-log(x1))*(log(y2)&
-     &                                     -log(y1))/(log(x2)-log(x1)))
-    loglin(x,x1,y1,x2,y2)=y1+(log(x)-log(x1))*(y2-y1)&
-     &                                         /(log(x2)-log(x1))
+#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlog(x,x1,y1,x2,y2) exp(log(y1)+(x-x1)*(log(y2)-log(y1)) \
+        /(x2-x1))
+#define loglog(x,x1,y1,x2,y2) exp(log(y1)+(log(x)-log(x1))*(log(y2) \
+        -log(y1))/(log(x2)-log(x1)))
+#define loglin(x,x1,y1,x2,y2) y1+(log(x)-log(x1))*(y2-y1) \
+        /(log(x2)-log(x1))
 !     ------------------------------------------------------------------
     npar(1) = 0
     npar(2) = 0

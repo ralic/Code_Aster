@@ -95,7 +95,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     integer :: i, iad, iadlie, iadnem, ianueq, ibid, icddlb
     integer :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
     integer :: idnbno, idnequ, idnocm, idprn1, idprn2, idref
-    integer :: iec, iel, ier, iexi1, ifm, igr, igrel, ilag, ilag2, ilag3
+    integer :: iec, iel, ier, iexi1, ifm, igr, ilag, ilag2, ilag3
     integer :: ili, ilsuiv, inewn, ino, inulag, inum2, inum21
     integer :: inuno1, inuno2, ioldn, iprnm, iprns, ipsuiv, ire, iret
     integer :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
@@ -126,8 +126,6 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 !     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 !-----------------------------------------------------------------------
-    integer :: zzliel, zzngel, zznsup, zznelg, zznels
-    integer :: zznema, zzprno, izzprn, suiv, suivdi, idsuiv
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL
@@ -136,28 +134,26 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
-    zzliel(ili,igrel,j) = zi(zi( iadlie+3* (ili-1)+1)-1+ zi(zi(iadlie+3* (ili-1)+2)+igrel-1 )+j-1&
-                          )
+#define zzliel(ili,igrel,j)   zi(zi(iadlie+3*(ili-1)+1)-1+ zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
-    zzngel(ili) = zi(iadlie+3* (ili-1))
+#define zzngel(ili)   zi(iadlie+3* (ili-1))
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
-    zznsup(ili,iel) = zi( zi(iadnem+3* (ili-1)+2)+iel) - zi(zi(iadnem+3* (ili-1)+2 )+iel-1 ) - 1
+#define zznsup(ili,iel)   zi(zi(iadnem+3* (ili-1)+2)+iel) - zi(zi(iadnem+3*(ili-1)+2)+iel-1 ) - 1
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
-    zznelg(ili,igrel) = zi(zi( iadlie+3* (ili-1)+2)+igrel) - zi(zi(iadlie+3* (ili-1)+2 )+igrel-1&
-                        ) - 1
+#define zznelg(ili,igrel) zi(zi(iadlie+3*(ili-1)+2)+igrel) - zi(zi(iadlie+3*(ili-1)+2)+igrel-1) - 1
 !
 !---- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DE .LILI
 !
-    zznels(ili) = zi(iadnem+3* (ili-1))
+#define zznels(ili)   zi(iadnem+3* (ili-1))
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL
@@ -169,7 +165,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     ZZNEMA(ILI,IEL,ZZNELS(ILI)+1)=NUMERO DU TYPE_MAILLE DE LA MAILLE
 !                                   IEL DU LIGREL ILI
 !
-    zznema(ili,iel,j) = zi( zi( iadnem+3* (ili-1)+1)-1+ zi(zi(iadnem+3* (ili-1)+2)+iel-1 )+j-1 )
+#define zznema(ili,iel,j)   zi( zi( iadnem+3* (ili-1)+1)-1+ zi(zi(iadnem+3* (ili-1)+2)+iel-1 )+j-1 )
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
@@ -180,8 +176,8 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
 !     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
 !
-    izzprn(ili,nunoel,l) = (idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
-    zzprno(ili,nunoel,l) = zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define izzprn(ili,nunoel,l)   (idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define zzprno(ili,nunoel,l)   zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES OBJETS VSUIV ET PSUIV DE LA
 !     BASE VOLATILE
@@ -197,9 +193,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     RELATION AVEC NI+1 + NBRE DE "LAGR2" EN RELATION AVEC NI
 !     SUIVDI(I,J)= NUMERO DU JEME NOEUD SUP SI IL EST A NUMEROTE APRES
 !     LE NOEUD NI, -1 "SINON" (NI/= NIMAX DU BLOCAGE RELATIF A J)
-    suivdi(i) = zi(ipsuiv+i) - zi(ipsuiv+i-1)
-    idsuiv(i,j) = ivsuiv + (zi(ipsuiv+i-1)+j-1) - 1
-    suiv(i,j) = zi(ivsuiv+ (zi(ipsuiv+i-1)+j-1)-1)
+#define suivdi(i)   zi(ipsuiv+i) - zi(ipsuiv+i-1)
+#define idsuiv(i,j)   ivsuiv + (zi(ipsuiv+i-1)+j-1) - 1
+#define suiv(i,j)   zi(ivsuiv+ (zi(ipsuiv+i-1)+j-1)-1)
 !----------------------------------------------------------------------
 !
     call infniv(ifm, niv)

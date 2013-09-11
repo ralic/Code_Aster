@@ -30,10 +30,10 @@ function ioriv3(num, noeud, vect, coor)
     integer :: num(2), i, ioriv3, k, l, n1, n2, noeud
     real(kind=8) :: scal, x1, x2, y1, y2, z1, z2
 !-----------------------------------------------------------------------
-    real(kind=8) :: vect(3), coor(3, *), x, y, z
-    x(i)=coor(1,i)
-    y(i)=coor(2,i)
-    z(i)=coor(3,i)
+    real(kind=8) :: vect(3), coor(3, *)
+#define x(i) coor(1,i)
+#define y(i) coor(2,i)
+#define z(i) coor(3,i)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

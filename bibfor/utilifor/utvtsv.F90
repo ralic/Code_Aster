@@ -30,10 +30,10 @@ subroutine utvtsv(raz, n, s, v, vtsv)
 !OUT  R   VTSV PRODUIT VT . S . V
 !     ------------------------------------------------------------------
     character(len=4) :: raz2
-    integer :: i, ik, j, k, l, k1, k2
+    integer ::  ik, k, l
 !-----------------------------------------------------------------------
-    k1(i,j)=j*(j-1)/2+i
-    k2(i,j)=i*(i-1)/2+j
+#define k1(i,j) (j)*(j-1)/2+i
+#define k2(i,j) (i)*(i-1)/2+j
 !-----------------------------------------------------------------------
     raz2=raz
     if (raz2 .eq. 'ZERO') vtsv = 0.d0

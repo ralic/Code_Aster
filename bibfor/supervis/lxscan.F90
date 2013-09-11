@@ -67,9 +67,8 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
 !
     logical :: nbeneg, expneg
     character(len=1) :: carext
-    integer :: classe
     real(kind=8) :: xndec, xdec
-    integer :: nival, inival, lclass, num
+    integer :: nival, inival
     character(len=80) :: serr
 !
 !     ------------------------------------------------------------------
@@ -107,9 +106,9 @@ subroutine lxscan(chin, ideb, iclass, ival, rval,&
     data   rinfin / 1.d75   /
 !     ------------------------------------------------------------------
 !     FONCTIONS INTRINSEQUES
-    classe(carext) = ichar(class(ichar(carext)))
-    num   (carext) = ichar(carext)-ichar('0')
-    lclass(kclass) = min(kclass,mxcla1)
+#define classe(carext)   ichar(class(ichar(carext)))
+#define num(carext)      ichar(carext)-ichar('0')
+#define lclass(kclass)   min(kclass,mxcla1)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------

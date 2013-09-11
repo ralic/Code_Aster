@@ -55,19 +55,18 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     integer :: jsupma, jnmacr, jnueq, jnulo1, jprno, jposd1, ibid
     integer :: iec, ierd, ima, inold, nbterm, jprn1, jprn2
     integer :: jresl, jsmdi, jsmhc, jsssa, jvalm(2), k1
-    integer :: k2, n1, kno, l, nugd, iancmp, lgncmp, icmp
+    integer :: k2, n1, nugd, iancmp, lgncmp, icmp
     integer :: nbsma, nbssa, ncmp, nbvel, nddl1, nddl2, jtmp2, lgtmp2
     integer :: nec, nm, nmxcmp, nnoe, i, jec
     integer :: lshift
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
-    integer :: zzprno, posdd1, numlo1, k, nunoel, ili, kddl
 !
-    zzprno(ili,nunoel,l)=zi(jprn1-1+zi(jprn2+ili-1)+&
-     &                     (nunoel-1)*(nec+2)+l-1)
-    numlo1(kno,k)=zi(jnulo1-1+2*(kno-1)+k)
-    posdd1(kno,kddl)=zi(jposd1-1+nmxcmp*(kno-1)+kddl)
+#define zzprno(ili,nunoel,l) zi(jprn1-1+zi(jprn2+ili-1)+ \
+        (nunoel-1)*(nec+2)+l-1)
+#define numlo1(kno,k) zi(jnulo1-1+2*(kno-1)+k)
+#define posdd1(kno,kddl) zi(jposd1-1+nmxcmp*(kno-1)+kddl)
 !-----------------------------------------------------------------------
 !
 !

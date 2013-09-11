@@ -45,7 +45,7 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
     character(len=16) :: option
     integer :: nno, nnos, nnom, nface
 !
-    integer :: ifa, fa
+    integer :: ifa
     integer :: ipoids, ivf, idfde, ipoid2, ivf2, idfde2, npi2, jgano
 !
 !
@@ -107,12 +107,12 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
 !
     real(kind=8) :: sfluw, sfluvp, sfluas, sfluad
     integer :: iadzi, iazk24
-    integer :: adcm1, adcm2, adcf1, adcf2
+    integer :: adcm1, adcm2
 ! ============================================
 ! FONCTIONS FORMULES D ADRESSAGE DES DDL
 ! ============================================
-    adcf1(fa)=2*(fa-1)+1
-    adcf2(fa)=2*(fa-1)+2
+#define adcf1(fa) 2*(fa-1)+1
+#define adcf2(fa) 2*(fa-1)+2
     adcm1 = 2*nface+1
     adcm2 = 2*nface+2
 !

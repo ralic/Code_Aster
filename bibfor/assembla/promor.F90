@@ -60,9 +60,9 @@ subroutine promor(nuz, base)
     character(len=14) :: nu
     logical :: lfeti, ldist, ldgrel, lmadis
     character(len=19) :: nomlig
-    integer :: imail, j, iconx1, iconx2, ili, igrel, iadlie, iel, iadnem
-    integer :: zzconx, zznbne, zzliel, zzngel, zznsup, zznelg, nunoel, l, idprn1
-    integer :: zznema, zzprno, idprn2, ifm, niv, iret, ibid, ier, nnoe, jnueq
+    integer ::  iconx1, iconx2, ili, iadlie, iel, iadnem
+    integer ::  idprn1
+    integer ::  idprn2, ifm, niv, iret, ibid, ier, nnoe, jnueq
     integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1
     integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
     integer :: iasssa, ierd, iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
@@ -87,11 +87,11 @@ subroutine promor(nuz, base)
 !     MAILLAGE
 !     ZZCONX(IMAIL,J) = NUMERO DANS LA NUMEROTATION DU MAILLAGE
 !         DU NOEUD J DE LA MAILLE IMAIL
-    zzconx(imail,j)=zi(iconx1-1+zi(iconx2+imail-1)+j-1)
+#define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
 !
 !---- NBRE DE NOEUDS DE LA MAILLE IMAIL DU MAILLAGE
 !
-    zznbne(imail)=zi(iconx2+imail)-zi(iconx2+imail-1)
+#define zznbne(imail) zi(iconx2+imail)-zi(iconx2+imail-1)
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -100,25 +100,25 @@ subroutine promor(nuz, base)
 !          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
-    zzliel(ili,igrel,j)=zi(zi(iadlie+3*(ili-1)+1)-1+&
-     &                    zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
+#define zzliel(ili,igrel,j) zi(zi(iadlie+3*(ili-1)+1)-1+ \
+        zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
-    zzngel(ili)=zi(iadlie+3*(ili-1))
+#define zzngel(ili) zi(iadlie+3*(ili-1))
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
-    zznsup(ili,iel)=zi(zi(iadnem+3*(ili-1)+2)+iel)-&
-     &                zi(zi(iadnem+3*(ili-1)+2)+iel-1)-1
+#define zznsup(ili,iel) zi(zi(iadnem+3*(ili-1)+2)+iel)- \
+        zi(zi(iadnem+3*(ili-1)+2)+iel-1)-1
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE TEMP.
 !     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
-    zznelg(ili,igrel)=zi(zi(iadlie+3*(ili-1)+2)+igrel)-&
-     &                  zi(zi(iadlie+3*(ili-1)+2)+igrel-1)-1
+#define zznelg(ili,igrel) zi(zi(iadlie+3*(ili-1)+2)+igrel)- \
+        zi(zi(iadlie+3*(ili-1)+2)+igrel-1)-1
 !
 !---- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DU
 !     REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -127,8 +127,8 @@ subroutine promor(nuz, base)
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 !
-    zznema(ili,iel,j)=zi(zi(iadnem+3*(ili-1)+1)-1+&
-     &                  zi(zi(iadnem+3*(ili-1)+2)+iel-1)+j-1)
+#define zznema(ili,iel,j) zi(zi(iadnem+3*(ili-1)+1)-1+ \
+        zi(zi(iadnem+3*(ili-1)+2)+iel-1)+j-1)
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS NU.LILI DE LA S.D. NUME_DDL ET A LEURS ADRESSES
@@ -139,8 +139,8 @@ subroutine promor(nuz, base)
 !     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
 !     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
 !
-    zzprno(ili,nunoel,l)=zi(idprn1-1+zi(idprn2+ili-1)+&
-     &                     (nunoel-1)*(nec+2)+l-1)
+#define zzprno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ \
+        (nunoel-1)*(nec+2)+l-1)
 !----------------------------------------------------------------------
 !
     call infniv(ifm, niv)

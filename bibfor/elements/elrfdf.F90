@@ -43,16 +43,15 @@ subroutine elrfdf(elrefz, x, dimd, dff, nno,&
     real(kind=8) :: x0, y0, z0, al, x1, x2, x3, x4, d1, d2, d3, d4
     real(kind=8) :: pface1, pface2, pface3, pface4, z01, z02, z04
     real(kind=8) :: pmili1, pmili2, pmili3, pmili4, huit
-    real(kind=8) :: u, al31, al32, al33, dal31, dal32, dal33
     real(kind=8) :: r, r1, r2, a, b, c, d, e, f, g, h, o, p, q, s, t
 !
 ! -----  FONCTIONS FORMULES
-    al31(u) = 0.5d0*u*(u-1.0d0)
-    al32(u) = -(u+1.0d0)*(u-1.0d0)
-    al33(u) = 0.5d0*u*(u+1.0d0)
-    dal31(u) = 0.5d0*(2.0d0*u-1.0d0)
-    dal32(u) = -2.0d0*u
-    dal33(u) = 0.5d0*(2.0d0*u+1.0d0)
+#define al31(u)   0.5d0*(u)*(u-1.0d0)
+#define al32(u)   (-(u+1.0d0)*(u-1.0d0))
+#define al33(u)   0.5d0*(u)*(u+1.0d0)
+#define dal31(u)   0.5d0*(2.0d0*(u)-1.0d0)
+#define dal32(u)   (-2.0d0*(u))
+#define dal33(u)   0.5d0*(2.0d0*(u)+1.0d0)
 ! DEB ------------------------------------------------------------------
     elrefe = elrefz
 !

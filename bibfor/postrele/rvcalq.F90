@@ -28,7 +28,6 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     character(len=8) :: nomcp(*), repere, courbe
     integer :: nbcpnc, nbcpcd, codir
     real(kind=8) :: valdir(*), vec1(*), vec2(*)
-    real(kind=8) :: vtv, vax, vay, vaz, vbx, vby, vbz
     logical :: tridim
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -102,12 +101,10 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     integer :: tcoe, tcoq, tnde, tndq
 !
     integer :: asgtu
-    real(kind=8) :: sgtu
-    integer :: iarg
-    sgtu(i) = zr(asgtu+i-1)
+#define sgtu(i)   zr(asgtu+i-1)
 !     FORME BILINEAIRE ASSOCIEE AU TENSEUR
-    vtv(vax,vay,vaz,vbx,vby,vbz) = vax* (vbx*txx+vby*txy+vbz*txz) + vay* (vbx*txy+vby*tyy+vbz*tyz&
-                                   &) + vaz* (vbx*txz+vby*tyz+vbz*tzz)
+#define vtv(vax,vay,vaz,vbx,vby,vbz)   (vax) * ((vbx)*txx+(vby)*txy+(vbz)*txz) + \
+        (vay) * ((vbx)*txy+(vby)*tyy+(vbz)*tyz) + (vaz) * ((vbx)*txz+(vby)*tyz+(vbz)*tzz)
 !
 !======================================================================
 !

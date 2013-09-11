@@ -70,23 +70,21 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
-    integer :: zzconx, zzliel
-    integer :: zznema, zzprno, posdd1, posdd2, numlo1, numlo2
-    integer :: imail, j, ili, igrel, nunoel, l, kno, kddl, k, ellagr
+    integer ::  ellagr
     integer :: nnov, igr2, mode2, numav, kvois
 !
-    zzconx(imail,j)=zi(iconx1-1+zi(iconx2+imail-1)+j-1)
-    zzliel(ili,igrel,j)=zi(zi(jadli+3*(ili-1)+1)-1+&
-     &                    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
-    zznema(ili,iel,j)=zi(zi(jadne+3*(ili-1)+1)-1+&
-     &                  zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
-    zzprno(ili,nunoel,l)=zi(jprn1-1+zi(jprn2+ili-1)+&
-     &                     (nunoel-1)*(nec+2)+l-1)
+#define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
+#define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \
+        zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
+#define zznema(ili,iel,j) zi(zi(jadne+3*(ili-1)+1)-1+ \
+        zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
+#define zzprno(ili,nunoel,l) zi(jprn1-1+zi(jprn2+ili-1)+ \
+        (nunoel-1)*(nec+2)+l-1)
 !
-    numlo1(kno,k)=zi(jnulo1-1+2*(kno-1)+k)
-    numlo2(kno,k)=zi(jnulo2-1+2*(kno-1)+k)
-    posdd1(kno,kddl)=zi(jposd1-1+nmxcmp*(kno-1)+kddl)
-    posdd2(kno,kddl)=zi(jposd2-1+nmxcmp*(kno-1)+kddl)
+#define numlo1(kno,k) zi(jnulo1-1+2*(kno-1)+k)
+#define numlo2(kno,k) zi(jnulo2-1+2*(kno-1)+k)
+#define posdd1(kno,kddl) zi(jposd1-1+nmxcmp*(kno-1)+kddl)
+#define posdd2(kno,kddl) zi(jposd2-1+nmxcmp*(kno-1)+kddl)
 !----------------------------------------------------------------------
 !
     nbterm=0

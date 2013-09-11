@@ -102,12 +102,12 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
 ! ---------------------------------------------------------------------
     logical :: lvari
-    integer :: numa, jnofpg, numail, kk
+    integer :: numa, jnofpg, kk
     integer :: k, te, npg1, npoini, ideca2
     integer :: igr, jmaco, jcmaco, jliel, jcliel, jcnsl2
     integer :: ibid, nbpg, ino, nbgr, inogl, kse
-    integer :: numglm, iamol1, jcelv1, jcnsv2, mxcmp
-    integer :: ima, nbelgr, nbnoma, jval2, nbno, nddl, iddl, adiel
+    integer ::  iamol1, jcelv1, jcnsv2, mxcmp
+    integer :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
     integer :: iipg, jceld1, jcelk1, moloc1, ncmpmx
     parameter(mxcmp=100)
     integer :: nuddl(mxcmp), mxvari, iel, ncmp, jnocmp, jcorr1
@@ -118,11 +118,11 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     character(len=24) :: valk(2), nomfpg
 !     FONCTIONS FORMULES :
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
-    nbnoma(ima)=zi(jcmaco-1+ima+1)-zi(jcmaco-1+ima)
+#define nbnoma(ima) zi(jcmaco-1+ima+1)-zi(jcmaco-1+ima)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-    numglm(ima,ino)=zi(jmaco-1+zi(jcmaco+ima-1)+ino-1)
-    numail(igr,iel)=zi(jliel-1+zi(jcliel+igr-1)+iel-1)
+#define numglm(ima,ino) zi(jmaco-1+zi(jcmaco+ima-1)+ino-1)
+#define numail(igr,iel) zi(jliel-1+zi(jcliel+igr-1)+iel-1)
 ! DEB -----------------------------------------------------------------
     call jemarq()
 !

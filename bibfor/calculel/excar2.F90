@@ -40,11 +40,11 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     integer :: debgd, indval, debugr
     integer :: iachii, iachik, iachix, ialiel, iamaco, iamsco
     integer :: iel, illiel, ilmaco, ilmsco
-    integer :: numail, jparal, iexi
+    integer ::  jparal, iexi
     logical :: lparal
 !     -- FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-    numail(igr,iel) = zi(ialiel-1+zi(illiel-1+igr)-1+iel)
+#define numail(igr,iel)   zi(ialiel-1+zi(illiel-1+igr)-1+iel)
 !
 ! DEB-------------------------------------------------------------------
 !

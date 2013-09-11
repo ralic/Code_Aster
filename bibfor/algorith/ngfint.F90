@@ -79,9 +79,8 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
     real(kind=8) :: dsidep(0:epsmax*epsmax*npgmax-1), dum
     real(kind=8) :: ktgb(0:epsmax*npgmax*ddlmax-1)
 ! ----------------------------------------------------------------------
-    integer :: os, dos
-    os(g) = (g-1)*neps
-    dos(g) = (g-1)*neps*neps
+#define os(g)   (g-1)*neps
+#define dos(g)   (g-1)*neps*neps
 ! ----------------------------------------------------------------------
 !
 ! - INITIALISATION

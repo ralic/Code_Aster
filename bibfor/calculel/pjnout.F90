@@ -38,13 +38,13 @@ subroutine pjnout(modele)
 !     ------------------------------------------------------------------
 !
     character(len=8) :: k8b, noma
-    integer :: nbnoeu, ibid, jnout, ima, nbno, j, jmaill, imail, nbmail
+    integer :: nbnoeu, ibid, jnout, ima, nbno, j, jmaill, nbmail
 !     ------------------------------------------------------------------
 !
 !     FONCTIONS "FORMULES" POUR ACCEDER RAPIDEMENT A LA CONNECTIVITE :
-    integer :: iconx1, iconx2, zzconx, zznbne
-    zzconx(imail,j) = zi(iconx1-1+zi(iconx2+imail-1)+j-1)
-    zznbne(imail) = zi(iconx2+imail) - zi(iconx2+imail-1)
+    integer :: iconx1, iconx2
+#define zzconx(imail,j)   zi(iconx1-1+zi(iconx2+imail-1)+j-1)
+#define zznbne(imail)   zi(iconx2+imail) - zi(iconx2+imail-1)
 !     ------------------------------------------------------------------
 !
 !

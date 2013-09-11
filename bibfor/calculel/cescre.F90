@@ -102,11 +102,11 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     character(len=24) :: valk(2)
     integer :: gd, ncmpmx, ibid, nbma, jcmpgd, icmp, jcmp, jcesk, jcesd
     integer :: jcesc, k, jcesl, jcesv, ncmpg, ima, jlconx, decal
-    integer :: nptma, nbnoma, nsptma, ncmpma, ncmp2, jlicmp, iret
+    integer :: nptma, nsptma, ncmpma, ncmp2, jlicmp, iret
 !
 !     FONCTION FORMULE:
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
-    nbnoma(ima) = zi(jlconx-1+ima+1) - zi(jlconx-1+ima)
+#define nbnoma(ima)   zi(jlconx-1+ima+1) - zi(jlconx-1+ima)
 !     ------------------------------------------------------------------
 !
     call jemarq()

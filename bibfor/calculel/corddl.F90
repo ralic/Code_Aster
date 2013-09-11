@@ -41,12 +41,11 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
 !-----------------------------------------------------------------------
 #include "asterfort/entcod.h"
     integer :: i, idprn1, idprn2, iec, iecdg, iecdl, ili
-    integer :: in, k, l, mode, n, nbecmx, ncmp
-    integer :: nddloc, nec, nunoel
+    integer :: in, k, mode, n, nbecmx, ncmp
+    integer :: nddloc, nec
 !-----------------------------------------------------------------------
     parameter (nbecmx = 10)
     integer :: ifin(nbecmx)
-    integer :: prno
     integer :: admodl, lcmodl, pos(1)
     integer :: ecodg, ecodl
 !
@@ -59,7 +58,7 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
 !
 !     FONCTION D ACCES A PRNO
 !
-    prno(ili,nunoel,l) = zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define prno(ili,nunoel,l)   zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 ! - DEB ----------------------------------------------------------------
 !
 ! --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE DDLS

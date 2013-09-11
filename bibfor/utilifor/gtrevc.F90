@@ -182,15 +182,13 @@ subroutine gtrevc(side, howmny, select, n, t,&
     integer :: i, ii, is, j, k, ki
     integer(kind=4) :: info4
     real(kind=8) :: remax, scale, smin, smlnum, ulp, unfl
-    complex(kind=8) :: cdum
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..
 !     .. STATEMENT FUNCTIONS ..
-    real(kind=8) :: cabs1
 !     ..
 !     .. STATEMENT FUNCTION DEFINITIONS ..
-    cabs1( cdum ) = abs( dble( cdum ) ) + abs( dimag( cdum ) )
+#define cabs1( cdum )   abs( dble( cdum ) ) + abs( dimag( cdum ) )
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !
