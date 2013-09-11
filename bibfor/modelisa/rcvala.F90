@@ -7,10 +7,11 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
 #include "asterfort/rcvals.h"
 #include "asterfort/tecael.h"
 #include "asterfort/u2mesk.h"
-    integer :: imat, nbpar, nbres, iarret
-    real(kind=8) :: valpar(nbpar), valres(nbres)
-    integer :: icodre(nbres)
-    character(len=*) :: nomat, phenom, nompar(nbpar), nomres(nbres)
+    integer, intent(in) :: jmat, nbpar, nbres, iarret
+    real(kind=8), intent(in) :: valpar(nbpar)
+    real(kind=8), intent(out) :: valres(nbres)
+    integer, intent(out) :: icodre(nbres)
+    character(len=*), intent(in) :: nomat, phenom, nompar(nbpar), nomres(nbres)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +60,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
     parameter  ( lmat = 7 , lfct = 9 , lsup = 2 )
 !
     integer :: ires, icomp, ipi, iadzi, iazk24, nbobj, nbr, nbc, nbf, ivalk
-    integer :: ivalr, ir, ipif, ik, nbmat, jmat, kmat, inom
+    integer :: ivalr, ir, ipif, ik, nbmat, imat, kmat, inom
     character(len=8) :: nomail, nomi
     character(len=10) :: nomphe
     character(len=24) :: valk(2)

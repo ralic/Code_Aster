@@ -27,13 +27,14 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rcvals.h"
 #include "asterfort/u2mesk.h"
-    integer :: nbpar, nbres
-    character(len=*) :: phenom
-    integer :: iarret
+    integer, intent(in) :: nbpar, nbres
+    character(len=*), intent(in) :: phenom
+    integer, intent(in) :: iarret
     character(len=*) :: nommaz
-    integer :: icodre(nbres)
-    character(len=8) :: nompar(nbpar), nomres(nbres)
-    real(kind=8) :: valpar(nbpar), valres(nbres)
+    integer, intent(out) :: icodre(nbres)
+    character(len=8), intent(in) :: nompar(nbpar), nomres(nbres)
+    real(kind=8), intent(in) :: valpar(nbpar)
+    real(kind=8), intent(out) :: valres(nbres)
 ! ----------------------------------------------------------------------
 !     OBTENTION DE LA VALEUR VALRES D'UN "ELEMENT" D'UNE RELATION DE
 !     COMPORTEMENT D'UN MATERIAU DONNE (NOUVELLE FORMULE RAPIDE)

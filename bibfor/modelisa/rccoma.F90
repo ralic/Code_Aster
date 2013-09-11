@@ -3,8 +3,10 @@ subroutine rccoma(jmat, pheno, iarret, phenom, icodre)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/u2mesk.h"
-    integer :: jmat, iarret, icodre
-    character(len=*) :: pheno, phenom
+    integer, intent(in)  :: jmat, iarret 
+    integer, intent(out) :: icodre
+    character(len=*), intent(out) :: phenom
+    character(len=*), intent(in) :: pheno
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

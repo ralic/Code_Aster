@@ -159,9 +159,11 @@ subroutine te0062(option, nomte)
             fluxz = fluxz + zr(itempe-1+i)*dfdz(i)
 20      continue
 !
-        if (phenom .eq. 'THER_NL') call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                                               ' ', phenom, 1, 'TEMP', tpg,&
-                                               1, 'LAMBDA', lambda, icodre, 1)
+        if (phenom .eq. 'THER_NL') then
+            call rcvalb('FPG1', 1, 1, '+', zi(imate),&
+                        ' ', phenom, 1, 'TEMP', tpg,&
+                        1, 'LAMBDA', lambda, icodre, 1)
+        endif
 !
         if (.not.aniso) then
             fluglo(1) = lambda*fluxx

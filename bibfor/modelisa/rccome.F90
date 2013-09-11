@@ -20,8 +20,9 @@ subroutine rccome(nommat, pheno, phenom, icodre)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mess.h"
-    character(len=*) :: nommat, pheno, phenom
-    integer :: icodre
+    character(len=*), intent(in) :: nommat, pheno
+    character(len=*), intent(out) :: phenom
+    integer, intent(out) :: icodre
 ! ----------------------------------------------------------------------
 !     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
 !     D'UN PREMISSE

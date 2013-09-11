@@ -4,9 +4,9 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
 #include "asterfort/tecael.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
-    integer :: iarret, nbres
-    integer :: icodre(nbres)
-    character(len=*) :: nomres(nbres)
+    integer, intent(in) :: iarret, nbres
+    integer, intent(in) :: icodre(nbres)
+    character(len=*), intent(in) :: nomres(nbres)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,6 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ----------------------------------------------------------------------
-!
-!
-!
 !
     character(len=24) :: valk
     character(len=8) :: nomail, para

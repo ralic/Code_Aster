@@ -633,6 +633,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! --- CAS DE L'INITIALISATION -----------------------------------------
 ! =====================================================================
 !
+    fpesa(1)=0
     retcom = 0
     un = 1.d0
     zero=0.d0
@@ -685,7 +686,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !
     else if (etape.eq.'INTERMED') then
-! =====================================================================
+ ! =====================================================================
 ! --- CAS INTERMEDIAIRE -----------------------------------------------
 ! =====================================================================
         if (thmc .eq. 'LIQU_SATU') then
@@ -2498,7 +2499,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             valpar(1) = pvp
             valpar(2) = p2
             valpar(3) = val40(22)
-!
 !
 !
 !           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT

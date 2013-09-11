@@ -19,16 +19,16 @@ interface
     subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
                       valpar, nbres, nomres, valres, icodre,&
                       iarret)
-        integer :: nbres
-        integer :: nbpar
-        integer :: jmat
-        character(*) :: nomat
-        character(*) :: phenom
-        character(*) :: nompar(nbpar)
-        real(kind=8) :: valpar(nbpar)
-        character(*) :: nomres(nbres)
-        real(kind=8) :: valres(nbres)
-        integer :: icodre(nbres)
-        integer :: iarret
+        integer, intent(in) :: nbres
+        integer, intent(in) :: nbpar
+        integer, intent(in) :: jmat
+        character(*), intent(in) :: nomat
+        character(*), intent(in) :: phenom
+        character(*), intent(in) :: nompar(nbpar)
+        real(kind=8), intent(in) :: valpar(nbpar)
+        character(*), intent(in) :: nomres(nbres)
+        real(kind=8), intent(out) :: valres(nbres)
+        integer, intent(out) :: icodre(nbres)
+        integer, intent(in) :: iarret
     end subroutine rcvala
 end interface

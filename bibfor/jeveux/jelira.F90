@@ -24,7 +24,7 @@ subroutine jelira (nomlu, catr, ival, cval)
 #include "asterfort/jjlirs.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/u2mesk.h"
-    character(len=*) :: nomlu, catr
+    character(len=*), intent(in) :: nomlu, catr
     character(len=*), intent(out), optional :: cval
     integer, intent(out), optional :: ival
 !     ------------------------------------------------------------------
