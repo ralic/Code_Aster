@@ -416,14 +416,7 @@ Risque et conseils :
  une des charges n'est pas acoustique
 """),
 
-94 : _(u"""
- le champ doit être un CHAM_ELEM aux points de gauss
-"""),
 
-95 : _(u"""
- avec un CHAM_ELEM calcule sur une liste de maille,
- il faut utiliser le mot clé "MODELE"
-"""),
 
 96 : _(u"""
   Pour prendre en compte les termes d'inertie,

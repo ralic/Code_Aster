@@ -209,7 +209,7 @@ IMPR_TABLE(TABLE=T_CONT,);
 #           RESU=_F(RESULTAT=RESU,
 #                   NOM_CHAM='VALE_CONT',),);
 
-# TEST DE CALC_VECT_ELEM OPTION FORC_NODA
+# TEST DE CALCUL OPTION FORC_NODA_ELEM
 
 SIGM = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
                   OPERATION = 'EXTR',
@@ -217,10 +217,59 @@ SIGM = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
                   NOM_CHAM  = 'SIEF_ELGA',
                   INST      = 20.0,);
 
-FORC = CALC_VECT_ELEM(OPTION    = 'FORC_NODA',
-                      MODELE    = MO,
-                      SIEF_ELGA = SIGM,
-                      CARA_ELEM = CAR_DIS,);
+VARI = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
+                  OPERATION = 'EXTR',
+                  RESULTAT  = RESU,
+                  NOM_CHAM  ='VARI_ELGA',
+                  INST      = 20.0,);
+
+DEPL0 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
+                  OPERATION = 'EXTR',
+                  RESULTAT  = RESU,
+                  NOM_CHAM  ='DEPL',
+                  INST      = 19.0,);
+
+DEPL1 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
+                  OPERATION = 'EXTR',
+                  RESULTAT  = RESU,
+                  NOM_CHAM  ='DEPL',
+                  INST      = 20.0,);
+
+DU = CREA_CHAMP(OPERATION='ASSE',
+                   MODELE=MO,
+                   TYPE_CHAM='NOEU_DEPL_R',
+                   ASSE=(_F(CHAM_GD=DEPL1,
+                            TOUT='OUI',
+                            CUMUL='OUI',
+                            COEF_R=1.),
+                         _F(CHAM_GD=DEPL0,
+                            TOUT='OUI',
+                            CUMUL='OUI',
+                            COEF_R=-1.),
+                        ))
+
+TABFORC = CALCUL(OPTION    = 'FORC_NODA_ELEM',
+              MODELE    = MO,
+              CARA_ELEM = CAR_DIS,
+              CHAM_MATER= CHMAT,
+              SIGM      = SIGM,
+              VARI      = VARI,
+              DEPL      = DEPL1,
+              INCR_DEPL = DU,
+              EXCIT     =(_F(CHARGE=BLOCAGE,),
+                          _F(CHARGE=DEPL,
+                             FONC_MULT=F_FORC,),
+                          _F(CHARGE=BLOC_DIS,),),
+              COMP_INCR =_F(RELATION='ELAS',),
+              INCREMENT =_F(LIST_INST=L_TPS,
+                           NUME_ORDRE=20),
+              );
+
+FORC=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
+                 TABLE=TABFORC,
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='FORC_NODA_ELEM'),)
 
 NUME = NUME_DDL(MODELE = MO);
 

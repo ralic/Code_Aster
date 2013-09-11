@@ -23,14 +23,11 @@ subroutine op0008()
 #include "jeveux.h"
 !
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
 #include "asterc/getvid.h"
 #include "asterc/getvis.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
 #include "asterfort/assert.h"
-#include "asterfort/chpver.h"
-#include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jecreo.h"
@@ -44,24 +41,20 @@ subroutine op0008()
 #include "asterfort/me2mme.h"
 #include "asterfort/me2mth.h"
 #include "asterfort/mecact.h"
-#include "asterfort/memare.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/ss2mme.h"
 #include "asterfort/u2mess.h"
-#include "asterfort/vefnme.h"
-#include "asterfort/wkvect.h"
-    logical :: fnoevo
-    integer :: nbchme, ibid, ich, icha, ied, ierd, jlmat, jlvf, ncha, nh
-    integer :: nbss, n1, n3, n4, n5, n6, n7, n9, iad, iresu, jrelr, iexi, nbresu
-    real(kind=8) :: time, tps(6), partps(3), vcmpth(4)
+    integer :: ibid, ich, icha, ied, ncha, nh
+    integer :: n1, n3, n4, n5, n7, n9, iresu, jrelr, iexi, nbresu
+    real(kind=8) :: time, tps(6), vcmpth(4)
     complex(kind=8) :: cbid
     logical :: exitim
     character(len=8) :: matez, modele, cha, cara, kbid, k8bid, kmpic
-    character(len=8) :: nomcmp(6), mo1, tych, materi, ncmpth(4), k8b
-    character(len=16) :: type, oper, suropt, typco
-    character(len=19) :: vresul, matel, resuel
-    character(len=24) :: time2, cham, vfono, vafono, vmatel, ch24, mate
+    character(len=8) :: nomcmp(6), mo1, materi, ncmpth(4)
+    character(len=16) :: type, oper, suropt
+    character(len=19) :: matel, resuel
+    character(len=24) :: time2, mate
     integer :: iarg
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
@@ -71,8 +64,6 @@ subroutine op0008()
 !
     call jemarq()
     call infmaj()
-    vfono = ' '
-    vafono = ' '
 !
     call getres(matez, type, oper)
     matel=matez
@@ -110,21 +101,6 @@ subroutine op0008()
             call u2mess('F', 'CALCULEL3_89')
         endif
 10      continue
-    endif
-!
-    if (suropt .eq. 'FORC_NODA') then
-        call getvid(' ', 'SIEF_ELGA', 0, iarg, 1,&
-                    cham, n6)
-        if (n6 .ne. 0) then
-            call chpver('F', cham(1:19), 'ELGA', 'SIEF_R', ierd)
-        endif
-    endif
-!
-    if (suropt .ne. 'FORC_NODA') then
-        call dismoi('F', 'NB_SS_ACTI', modele, 'MODELE', nbss,&
-                    kbid, ied)
-    else
-        nbss = 0
     endif
 !
 !
@@ -175,12 +151,6 @@ subroutine op0008()
 40      continue
     endif
 !
-    if ((suropt.eq.'FORC_NODA')) then
-        call dismoi('F', 'TYPE_CHAMP', cham, 'CHAMP', ibid,&
-                    tych, ierd)
-        if (tych(1:4) .ne. 'ELGA') call u2mess('F', 'CALCULEL3_94')
-    endif
-!
 !
 !
     if (suropt .eq. 'CHAR_MECA') then
@@ -209,40 +179,6 @@ subroutine op0008()
     else if (suropt.eq.'CHAR_ACOU') then
         call me2mac(modele, ncha, zk8(icha), mate, matel)
 !
-!
-    else if (suropt.eq.'FORC_NODA') then
-!     ----------------------------------
-!       - ON CHERCHE LE NOM DU MODELE A ATTACHER AU VECT_ELEM :
-        call jeveuo(cham(1:19)//'.CELK', 'L', iad)
-        k8b = zk24(iad)(1:8)
-        call gettco(k8b, typco)
-        if (typco(1:14) .eq. 'MODELE_SDASTER') then
-            modele = k8b
-        else
-            call getvid(' ', 'MODELE', 0, iarg, 1,&
-                        modele, n1)
-            if (n1 .eq. 0) call u2mess('F', 'CALCULEL3_95')
-        endif
-!
-        partps(1) = 0.d0
-        partps(2) = 0.d0
-        partps(3) = 0.d0
-        ch24 = ' '
-        fnoevo=.false.
-        call vefnme(modele, cham, cara, ' ', ' ',&
-                    vfono, mate, ' ', nh, fnoevo,&
-                    partps, ' ', ch24, ' ', suropt,&
-                    ' ', 'V')
-        call jeveuo(vfono, 'L', jlvf)
-        vafono = zk24(jlvf)
-        call jelira(vfono, 'LONUTI', nbchme)
-        vmatel = matel//'.RELR'
-        call memare('G', matel, modele, mate, cara,&
-                    'CHAR_MECA')
-        call wkvect(vmatel, 'G V K24', nbchme, jlmat)
-        vresul = matel(1:8)//'.VE001     '
-        zk24(jlmat) = vresul
-        call copisd('CHAMP', 'G', vafono(1:19), vresul)
     endif
 !
 !

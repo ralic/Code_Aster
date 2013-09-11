@@ -289,6 +289,7 @@ subroutine op0026()
         partps(1)=0.d0
         partps(2)=0.d0
         partps(3)=0.d0
+        if (.not.l_merimo) call copisd('CHAMP_GD', 'V', sigmoi, sigplu)
         call vefnme(modele, sigplu, carele, depplu, ' '   , &
                     veforc, mate  , compor, 0     , .false.,&
                     partps, k24bid, complu, ligrmo, option, &
