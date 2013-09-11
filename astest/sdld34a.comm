@@ -16,7 +16,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from numpy import math
 
 DEBUT(CODE=_F(NOM='SDLD34A',
               NIV_PUB_WEB='INTERNET',
@@ -158,9 +157,9 @@ MODES_G=MODE_ITER_SIMULT(TYPE_RESU='GENERAL',
                          CALC_CHAR_CRIT=_F(OPTION='TOUT',),);
 
 # FREQUENCE PROPRE
-f0 = sqrt( k/m ) / (2*math.pi)
+f0 = sqrt( k/m ) / (2*pi)
 # VALEUR PROPRE CORRESPONDANTE
-vp0 = (2*math.pi * f0)**2
+vp0 = (2*pi * f0)**2
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -203,6 +202,13 @@ DXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMO,
 
 DXGEMO=RECU_FONCTION(RESU_GENE=TRANSMO,
                      NOM_CHAM='DEPL',
+                     NUME_CMP_GENE=1,)
+
+
+DXGEM2=RECU_FONCTION(RESU_GENE=TRANSMO,
+                     NOM_CHAM='DEPL',
+                     INST=2.0, 
+                     INTERP_NUME='LIN',
                      NUME_CMP_GENE=1,)
 
 TRANSMOV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -251,6 +257,12 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.999999866513,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-4,
                          FONCTION=DXGEMO,),
+                      _F(VALE_CALC=0.999995906947,
+                         VALE_REFE=1,
+                         VALE_PARA=2,
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=1.E-4,
+                         FONCTION=DXGEM2,),
                       _F(VALE_CALC=3.1415924177,
                          VALE_REFE=3.1415926535897931,
                          VALE_PARA=1.5,
