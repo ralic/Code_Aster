@@ -76,7 +76,7 @@ def build(self):
     )
     # install generated headers (C + fortran)
     bld = self.path.get_bld().parent
-    config_includes = bld.ant_glob('aster*_config.h')
+    config_includes = bld.ant_glob('aster*_config.h', quiet=True)
     self.install_files(
         osp.join(env.INCLUDEDIR, 'aster'),
         config_includes
