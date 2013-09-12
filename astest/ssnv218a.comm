@@ -187,6 +187,7 @@ FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                        CONFIG_INIT='DECOLLEE',
                        FOND_FISS=_F(GROUP_MA='LFOND',
                                     GROUP_NO_ORIG='PFONI',),
+                       SYME='OUI',
                        NORMALE=(0.,0.,1.,),
 
                        );
@@ -223,7 +224,7 @@ tabgp=CALC_GP(RESULTAT=RESU,
 IMPR_TABLE(TABLE=tabgp);
 IMPR_TABLE(TABLE=gtheta,UNITE=8)
 #Test du calcul de G
-TEST_TABLE(VALE_CALC=10.399110363417,
+TEST_TABLE(VALE_CALC=20.798220726834,
            NOM_PARA='G',
            TABLE=gtheta,
            FILTRE=(_F(NOM_PARA='NOEUD',
@@ -238,7 +239,7 @@ TEST_TABLE(VALE_CALC=10.399110363417,
 
 #Test du calcul des GP
 
-TEST_TABLE(VALE_CALC=0.21940774897803,
+TEST_TABLE(VALE_CALC=0.43881549795606,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
@@ -249,7 +250,7 @@ TEST_TABLE(VALE_CALC=0.21940774897803,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.24048709344207,
+TEST_TABLE(VALE_CALC=0.48097418688415,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
@@ -260,7 +261,7 @@ TEST_TABLE(VALE_CALC=0.24048709344207,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.22295532741574,
+TEST_TABLE(VALE_CALC=0.44591065483148,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
@@ -271,7 +272,7 @@ TEST_TABLE(VALE_CALC=0.22295532741574,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.247711571421,
+TEST_TABLE(VALE_CALC=0.49542314284199,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
@@ -282,7 +283,7 @@ TEST_TABLE(VALE_CALC=0.247711571421,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.3390042321781,
+TEST_TABLE(VALE_CALC=0.67800846435620,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
@@ -293,7 +294,7 @@ TEST_TABLE(VALE_CALC=0.3390042321781,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.36636595902158,
+TEST_TABLE(VALE_CALC=0.73273191804316,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
@@ -304,7 +305,7 @@ TEST_TABLE(VALE_CALC=0.36636595902158,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.36467247091831,
+TEST_TABLE(VALE_CALC=0.72934494183661,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
@@ -315,7 +316,7 @@ TEST_TABLE(VALE_CALC=0.36467247091831,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=0.40834078942128,
+TEST_TABLE(VALE_CALC=0.81668157884256,
            NOM_PARA='GP',
            TABLE=tabgp,
            FILTRE=(_F(NOM_PARA='ZONE',
