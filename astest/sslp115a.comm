@@ -188,8 +188,8 @@ THETAc2=CALC_THETA(MODELE=MO,
                    DIRECTION=(-1,0,0,),
                    THETA_2D=_F(GROUP_NO='G',
                                MODULE=1,
-                               R_INF=5,
-                               R_SUP=10,),);
+                               R_INF=10,
+                               R_SUP=20,),);
 
 ########## Calcul de G en presence du champ de contrainte residuelle genere par le calcul thermique) #########
 ## Definition de la liste d'instants
@@ -276,7 +276,7 @@ TEST_TABLE(PRECISION=0.02,
            )
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=55.370142027918,
+           VALE_CALC=55.370419348994,
            VALE_REFE=55.359999999999999,
            REFERENCE='SOURCE_EXTERNE',
            NOM_PARA='G',
@@ -285,7 +285,7 @@ TEST_TABLE(PRECISION=0.02,
                      VALE=3,),
            )
 
-TEST_TABLE(VALE_CALC=55.365086381667,
+TEST_TABLE(VALE_CALC=55.365162051341,
            NOM_PARA='G',
            TABLE=GTHER,
            FILTRE=_F(NOM_PARA='INST',
