@@ -30,13 +30,14 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 #include "asterfort/verift.h"
 #include "asterfort/vmci1d.h"
     integer :: imate, codret, kpg, ksp
-    character(len=16) :: compor(*), option, valkm(3)
+    character(len=16) :: compor(*), option
     character(len=*) :: fami
     real(kind=8) :: epsm, deps, sigm, vim(*)
     real(kind=8) :: angmas(3)
 !
     real(kind=8) :: sigp, vip(*), dsidep
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 !          REALISE LES LOIS 1D (DEBORST OU EXPLICITEMENT 1D)
 !
 !
@@ -55,8 +56,8 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !     VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
 !     DSIDEP  : RIGIDITE (SCALAIRE DANS CE CAS)
 !     CODRET  : CODE RETOUR NON NUL SI SIGYY OU SIGZZ NON NULS
-! ----------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
 !
     logical :: cine, isot, pinto, com1d, elas, cinegc
     real(kind=8) :: e, et, sigy
@@ -68,14 +69,9 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
     real(kind=8) :: em, ep, depsth, depsm
     integer :: codres
 !
-    integer :: nbval
-    parameter     (nbval=4)
-    integer :: icodre(nbval)
-    real(kind=8) :: valres(nbval)
-!
-    character(len=8) :: ecroli(4), materi
-    data ecroli    /'D_SIGM_E','SY','SIGM_LIM','EPSI_LIM'/
-! --- ------------------------------------------------------------------
+    character(len=8) ::  materi
+    character(len=16) :: valkm(2)
+! --------------------------------------------------------------------------------------------------
 !
     elas = .false.
     isot = .false.
@@ -106,11 +102,11 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
     endif
 !
     if (.not.com1d) then
-! --- CARACTERISTIQUES ELASTIQUES A TMOINS
+!       caractéristiques élastiques à t-
         call rcvalb(fami, kpg, ksp, '-', imate,&
                     ' ', 'ELAS', 0, ' ', 0.d0,&
                     1, 'E', em, codres, 1)
-! --- CARACTERISTIQUES ELASTIQUES A TPLUS
+!       caractéristiques élastiques à t+
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'ELAS', 0, ' ', 0.d0,&
                     1, 'E', ep, codres, 1)
@@ -136,17 +132,6 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
         call verift(fami, kpg, ksp, 'T', imate,&
                     materi, 'ELAS', 1, depsth, iret)
         depsm = deps-depsth
-! ---    VERIFICATION QUE SIGM_LIM, EPSI_LIM SONT PRESENTS
-        call r8inir(nbval, 0.d0, valres, 1)
-        call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
-                    4, ecroli, valres, icodre, 1)
-        if (icodre(3)+icodre(4) .ne. 0) then
-            valkm(1)='VMIS_CINE_GC'
-            valkm(2)=ecroli(3)
-            valkm(3)=ecroli(4)
-            call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
-        endif
         call vmci1d('RIGI', kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
                     ' ', sigp, vip, dsidep)

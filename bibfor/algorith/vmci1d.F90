@@ -21,13 +21,15 @@ subroutine vmci1d(fami, kpg, ksp, imate, em,&
 ! person_in_charge: jean-luc.flejou at edf.fr
     implicit none
 #include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, imate
     real(kind=8) :: ep, em, sigm, deps, sigp, dsde
     real(kind=8) :: vim(*), vip(*)
     character(len=16) :: option
     character(len=*) :: fami, materi
 !
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 !           PLASTICITE VON MISES CINEMATIQUE LINEAIRE EN 1D
 !              FORTEMENT INSPIRE DE NM1DCI
 !  IN
@@ -46,7 +48,7 @@ subroutine vmci1d(fami, kpg, ksp, imate, em,&
 !        SIGP   : CONTRAINTES PLUS
 !        VIP    : VARIABLE INTERNES PLUS
 !        DSDE   : DSIG/DEPS
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !     VARIABLES INTERNES
 !        1  -> ICELS : CRITERE SIGMA
 !        2  -> ICELU : CRITERE EPSI
@@ -54,42 +56,48 @@ subroutine vmci1d(fami, kpg, ksp, imate, em,&
 !        4  -> IPLAS : INDICATEUR PLASTIQUE
 !        5  -> IDISS : DISSIPATION PLASTIQUE
 !        6  -> IWTHE : DISSIPATION THERMODYNAMIQUE
-! --- ------------------------------------------------------------------
-!     INDEX DES VARIABLES INTERNES
-    integer :: icels, icelu, ixm, iplas, idiss, iwthe
-    parameter     (icels=1,icelu=2,ixm=3,iplas=4,idiss=5,iwthe=6)
-! --- ------------------------------------------------------------------
-    integer :: icodre(4)
-    real(kind=8) :: sigy, sieleq, sige, dp, etm, etp, xp, xm, hm, hp, sgels
-    real(kind=8) :: epelu
-    real(kind=8) :: valres(4)
+! --------------------------------------------------------------------------------------------------
+!   index des variables internes
+    integer :: icels,  icelu,  ixm,  iplas,  idiss,  iwthe
+    parameter (icels=1,icelu=2,ixm=3,iplas=4,idiss=5,iwthe=6)
+! --------------------------------------------------------------------------------------------------
+    real(kind=8) :: sigy, sieleq, sige, dp, etm, etp, xp, xm, hm, hp, sgels, epelu
+    character(len=16) :: valkm(3)
+    integer ::          icodre(4)
+    real(kind=8) ::     valres(4)
     character(len=8) :: nomecl(4)
 !
     data nomecl/'D_SIGM_E','SY','SIGM_LIM','EPSI_LIM'/
-! --- ------------------------------------------------------------------
-!     INSTANT -
+! --------------------------------------------------------------------------------------------------
+!   instant -
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 materi, 'ECRO_LINE', 0, ' ', 0.d0,&
                 1, nomecl, valres, icodre, 1)
     etm = valres(1)
     hm = em*etm/(em-etm)
-!     INSTANT +
+!   instant +
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 materi, 'ECRO_LINE', 0, ' ', 0.d0,&
                 4, nomecl, valres, icodre, 1)
+!   vérification que SIGM_LIM, EPSI_LIM sont présents
+    if (icodre(3)+icodre(4) .ne. 0) then
+        valkm(1)='VMIS_CINE_GC'
+        valkm(2)=nomecl(3)
+        valkm(3)=nomecl(4)
+        call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
+    endif
     etp = valres(1)
     sigy = valres(2)
     sgels = valres(3)
     epelu = valres(4)
-! --- ------------------------------------------------------------------
+!
     hp = ep*etp/(ep-etp)
     xm = vim(ixm)
-! --- ------------------------------------------------------------------
+!
     sige = ep*(sigm/em+deps) - hp*xm/hm
     sieleq = abs(sige)
-! --- ------------------------------------------------------------------
-!     CALCUL EPSP, P , SIG
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!   calcul : EPSP, P , SIG
     if ((option(1:9).eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA')) then
         if (sieleq .le. sigy) then
             vip(iplas) = 0.d0
@@ -113,9 +121,9 @@ subroutine vmci1d(fami, kpg, ksp, imate, em,&
             vip(icelu) = ((sigp-sigy)/etp + sigy/ep)/epelu
         endif
         vip(icels) = sigp/sgels
-!        DISSIPATION THERMODYNAMIQUE
+!       dissipation thermodynamique
         vip(iwthe) = vim(iwthe) + sigy*dp
-!        DISSIPATION IRREVERSIBLE
+!       dissipation irréversible
         vip(idiss) = vim(idiss) + (dsde*deps-(sigp-sigm))*deps/2.0d0
     endif
     if (option(1:10) .eq. 'RIGI_MECA_') then
