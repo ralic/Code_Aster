@@ -24,12 +24,11 @@ subroutine op0146()
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -49,6 +48,7 @@ subroutine op0146()
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lvmoy, n1, n2, nb, nbm
     integer :: dim, ij, nbabs
 !-----------------------------------------------------------------------
@@ -80,18 +80,14 @@ subroutine op0146()
 !
     call getres(nomu, concep, cmd)
 !
-    call getvis(' ', 'NB_POIN  ', 0, iarg, 0,&
-                ibid, npoi)
+    call getvis(' ', 'NB_POIN  ', nbval=0, nbret=npoi)
     npoi = abs(npoi)
     nfi = 1
     nff = 1
     if (npoi .ne. 0) then
-        call getvis(' ', 'NB_POIN  ', 0, iarg, 1,&
-                    nbpf, zi)
-        call getvr8(' ', 'FREQ_INIT', 0, iarg, 1,&
-                    freqi, zi)
-        call getvr8(' ', 'FREQ_FIN ', 0, iarg, 1,&
-                    freqf, zi)
+        call getvis(' ', 'NB_POIN  ', scal=nbpf)
+        call getvr8(' ', 'FREQ_INIT', scal=freqi)
+        call getvr8(' ', 'FREQ_FIN ', scal=freqf)
     else
         nfi = 0
         nff = 0
@@ -121,12 +117,10 @@ subroutine op0146()
 ! --- 1.1.RECUPERATION DES SPECTRES ET VERIFICATIONS A L'EXECUTION ---
 ! ---     DE LA COMPATIBILITE DES SPECTRES SI COMBINAISON          ---
 !
-    call getvid(' ', 'SPEC_TURB', 0, iarg, 0,&
-                k8b, nbspec)
+    call getvid(' ', 'SPEC_TURB', nbval=0, nbret=nbspec)
     nbspec = abs(nbspec)
     call wkvect('&&OP0146.TEMP.NOMS', 'V V K8', nbspec, lspec)
-    call getvid(' ', 'SPEC_TURB', 0, iarg, nbspec,&
-                zk8(lspec), ibid)
+    call getvid(' ', 'SPEC_TURB', nbval=nbspec, vect=zk8(lspec))
 !
     call wkvect('&&OP0146.TEMP.INDS', 'V V I', nbspec, linds)
     call wkvect('&&OP0146.TEMP.VMOY', 'V V R', nbspec, lvmoy)
@@ -156,8 +150,7 @@ subroutine op0146()
         zk16(lrefe) = 'DEPL'
         zk16(lrefe+1) = 'TOUT'
     else
-        call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                    option, zi)
+        call getvtx(' ', 'OPTION', scal=option)
         zk16(lrefe) = 'SPEC_GENE'
         zk16(lrefe+1) = option
     endif
@@ -168,8 +161,7 @@ subroutine op0146()
 !
 ! --- 2.RECUPERATION DES OBJETS DE LA BASE MODALE PERTURBEE ---
 !
-        call getvid(' ', 'BASE_ELAS_FLUI', 0, iarg, 1,&
-                    base, zi)
+        call getvid(' ', 'BASE_ELAS_FLUI', scal=base)
 !
         vite = base//'.VITE'
         freq = base//'.FREQ'
@@ -177,10 +169,8 @@ subroutine op0146()
 !
         call jeveuo(vite, 'L', ivite)
         call jelira(vite, 'LONUTI', npv)
-        call getvr8(' ', 'VITE_FLUI', 0, iarg, 1,&
-                    vitef, zi)
-        call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                    epsi, zi)
+        call getvr8(' ', 'VITE_FLUI', scal=vitef)
+        call getvr8(' ', 'PRECISION', scal=epsi)
 !
         ivitef = 1
         do 300 i3 = 1, npv
@@ -314,8 +304,7 @@ subroutine op0146()
 ! --- 3.RECUPERATION DE L'OPTION DE CALCUL
 !
         casint = .true.
-        call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                    option, zi)
+        call getvtx(' ', 'OPTION', scal=option)
         if (option(1:4) .eq. 'DIAG') casint = .false.
 !
 ! --- 4.DECOUPAGE DE LA BANDE DE FREQUENCE ---

@@ -16,15 +16,14 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit       none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -39,6 +38,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     character(len=*) :: motfaz, prefiz, nomaz, lisi1z, lisi2z, modz
     integer :: iocc
 ! ---------------------------------------------------------------------
@@ -148,20 +148,20 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
         centre(i) = 0.0d0
 10  continue
 !
-    call getvr8(motfac, 'TRAN', iocc, iarg, 3,&
-                t, nt)
+    call getvr8(motfac, 'TRAN', iocc=iocc, nbval=3, vect=t,&
+                nbret=nt)
     if (nt .lt. 0) then
         call u2mesk('F', 'MODELISA3_9', 1, motfac)
     endif
 !
-    call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, 3,&
-                theta, nr)
+    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=theta,&
+                nbret=nr)
     if (nr .lt. 0) then
         call u2mesk('F', 'MODELISA3_10', 1, motfac)
     endif
 !
-    call getvr8(motfac, 'CENTRE', iocc, iarg, 3,&
-                centre, no)
+    call getvr8(motfac, 'CENTRE', iocc=iocc, nbval=3, vect=centre,&
+                nbret=no)
     if (no .lt. 0) then
         call u2mesk('F', 'MODELISA3_11', 1, motfac)
     endif
@@ -182,30 +182,22 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
         n6 = 0
         n7 = 0
         n8 = 0
-        call getvtx(motfac, 'GROUP_NO_1', iocc, iarg, 1,&
-                    nom1, n1)
+        call getvtx(motfac, 'GROUP_NO_1', iocc=iocc, scal=nom1, nbret=n1)
         if (n1 .gt. 0) valk(1)='GROUP_NO_1'
-        call getvtx(motfac, 'NOEUD_1', iocc, iarg, 1,&
-                    nom1, n2)
+        call getvtx(motfac, 'NOEUD_1', iocc=iocc, scal=nom1, nbret=n2)
         if (n2 .gt. 0) valk(1)='NOEUD_1   '
-        call getvtx(motfac, 'GROUP_MA_1', iocc, iarg, 1,&
-                    nom1, n3)
+        call getvtx(motfac, 'GROUP_MA_1', iocc=iocc, scal=nom1, nbret=n3)
         if (n3 .gt. 0) valk(1)='GROUP_MA_1'
-        call getvtx(motfac, 'MAILLE_1', iocc, iarg, 1,&
-                    nom1, n4)
+        call getvtx(motfac, 'MAILLE_1', iocc=iocc, scal=nom1, nbret=n4)
         if (n4 .gt. 0) valk(1)='MAILLE_1  '
 !
-        call getvtx(motfac, 'GROUP_NO_2', iocc, iarg, 1,&
-                    nom2, n5)
+        call getvtx(motfac, 'GROUP_NO_2', iocc=iocc, scal=nom2, nbret=n5)
         if (n5 .gt. 0) valk(2)='GROUP_NO_2'
-        call getvtx(motfac, 'NOEUD_2', iocc, iarg, 1,&
-                    nom2, n6)
+        call getvtx(motfac, 'NOEUD_2', iocc=iocc, scal=nom2, nbret=n6)
         if (n6 .gt. 0) valk(2)='NOEUD_2   '
-        call getvtx(motfac, 'GROUP_MA_2', iocc, iarg, 1,&
-                    nom2, n7)
+        call getvtx(motfac, 'GROUP_MA_2', iocc=iocc, scal=nom2, nbret=n7)
         if (n7 .gt. 0) valk(2)='GROUP_MA_2'
-        call getvtx(motfac, 'MAILLE_2', iocc, iarg, 1,&
-                    nom2, n8)
+        call getvtx(motfac, 'MAILLE_2', iocc=iocc, scal=nom2, nbret=n8)
         if (n8 .gt. 0) valk(2)='MAILLE_2  '
 !
         vali(1)= lonli1
@@ -243,12 +235,10 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 ! --- AUX NOEUDS
 !
     ddl1 = ' '
-    call getvtx(motfac, 'DDL_1', iocc, iarg, 1,&
-                ddl1, n1)
+    call getvtx(motfac, 'DDL_1', iocc=iocc, scal=ddl1, nbret=n1)
 !
     ddl2 = ' '
-    call getvtx(motfac, 'DDL_2', iocc, iarg, 1,&
-                ddl2, n1)
+    call getvtx(motfac, 'DDL_2', iocc=iocc, scal=ddl2, nbret=n1)
 !
     if (ddl1 .eq. 'DNOR' .or. ddl2 .eq. 'DNOR') then
         dnor = .true.

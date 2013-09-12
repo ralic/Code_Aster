@@ -27,11 +27,11 @@ subroutine capesa(char, noma, ipesa, ndim)
 !      LIGRMO: NOM DU LIGREL DE MODELE
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8miem.h"
 #include "asterfort/alcart.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
@@ -56,10 +56,9 @@ subroutine capesa(char, noma, ipesa, ndim)
 !-----------------------------------------------------------------------
     motclf = 'PESANTEUR'
     do iocc = 1, ipesa
-        call getvr8('PESANTEUR', 'GRAVITE', iocc, iarg, 1,&
-                    pesa(1), npesa)
-        call getvr8('PESANTEUR', 'DIRECTION', iocc, iarg, 3,&
-                    pes, npesa)
+        call getvr8('PESANTEUR', 'GRAVITE', iocc=iocc, scal=pesa(1), nbret=npesa)
+        call getvr8('PESANTEUR', 'DIRECTION', iocc=iocc, nbval=3, vect=pes,&
+                    nbret=npesa)
 !
         norme=sqrt( pes(1)*pes(1)+pes(2)*pes(2)+pes(3)*pes(3) )
         if (norme .gt. r8miem()) then
@@ -70,10 +69,8 @@ subroutine capesa(char, noma, ipesa, ndim)
             call u2mess('F', 'CHARGES2_53')
         endif
 !
-        call getvtx('PESANTEUR', 'MAILLE', iocc, iarg, 1,&
-                    k8b, nbmail)
-        call getvtx('PESANTEUR', 'GROUP_MA', iocc, iarg, 1,&
-                    k8b, nbgpma)
+        call getvtx('PESANTEUR', 'MAILLE', iocc=iocc, scal=k8b, nbret=nbmail)
+        call getvtx('PESANTEUR', 'GROUP_MA', iocc=iocc, scal=k8b, nbret=nbgpma)
         nbma=nbmail+nbgpma
 !
 !   SI NBMA = 0, ALORS IL N'Y A AUCUN MOT CLE GROUP_MA OU MAILLE,
@@ -127,7 +124,7 @@ subroutine capesa(char, noma, ipesa, ndim)
             zr(jvalv+3) = pesa(4)
             cartes(1) = carte
             ncmps(1) = ncmp
-            call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+            call char_affe_neum(noma, ndim, motclf, iocc, 1,&
                                 cartes, ncmps)
         endif
     end do

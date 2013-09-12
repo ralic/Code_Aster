@@ -25,11 +25,11 @@ subroutine debut()
 !
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterc/prhead.h"
 #include "asterfort/foint0.h"
 #include "asterfort/fozero.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/ibbase.h"
 #include "asterfort/ibcata.h"
 #include "asterfort/ibdbgs.h"
@@ -57,8 +57,7 @@ subroutine debut()
 !        FERMETURE DU .CODE (OUVERT PAR IB0MAI)
         call ulopen(-15, ' ', ' ', ' ', ' ')
     endif
-    call getvtx('ERREUR', 'ERREUR_F', 1, iarg, 1,&
-                cmput, n)
+    call getvtx('ERREUR', 'ERREUR_F', iocc=1, scal=cmput, nbret=n)
     if (n .eq. 1) then
         cmpdef = cmput
     endif
@@ -68,8 +67,7 @@ subroutine debut()
     call ibdbgs()
 !
 ! --- ALARME GENERIQUE
-    call getvtx(' ', 'PAR_LOT', 1, iarg, 1,&
-                repons, n)
+    call getvtx(' ', 'PAR_LOT', scal=repons, nbret=n)
     if (repons .eq. 'NON') then
         call u2mess('A', 'SUPERVIS_1')
     endif

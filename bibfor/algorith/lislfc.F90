@@ -20,13 +20,13 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/focstc.h"
 #include "asterfort/focste.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -80,20 +80,16 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !
     if (lfcplx) then
 !
-        call getvid('EXCIT', 'FONC_MULT_C', ichar, iarg, 1,&
-                    nomfct, nfcplx)
-        call getvid('EXCIT', 'FONC_MULT', ichar, iarg, 1,&
-                    nomfct, nfreel)
+        call getvid('EXCIT', 'FONC_MULT_C', iocc=ichar, scal=nomfct, nbret=nfcplx)
+        call getvid('EXCIT', 'FONC_MULT', iocc=ichar, scal=nomfct, nbret=nfreel)
 !
         if ((nfcplx.eq.0) .and. (nfreel.eq.0)) then
             call codent(ichar, 'D0', knum)
             nomfct = '&&NC'//knum
 !
-            call getvc8('EXCIT', 'COEF_MULT_C', ichar, iarg, 1,&
-                        ccoef, nccplx)
+            call getvc8('EXCIT', 'COEF_MULT_C', iocc=ichar, scal=ccoef, nbret=nccplx)
             if (nccplx .eq. 0) then
-                call getvr8('EXCIT', 'COEF_MULT', ichar, iarg, 1,&
-                            rcoef, ncreel)
+                call getvr8('EXCIT', 'COEF_MULT', iocc=ichar, scal=rcoef, nbret=ncreel)
                 ASSERT(ncreel.eq.0)
                 call focste(nomfct, 'TOUTRESU', rcoef, 'V')
             else
@@ -111,15 +107,13 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
                 nfreel = 1
             endif
         else if (iexcit.eq.1) then
-            call getvid('EXCIT', 'FONC_MULT', indic, iarg, 1,&
-                        k24bid, nfreel)
+            call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=k24bid, nbret=nfreel)
         else
             ASSERT(.false.)
         endif
 !
         if (lacce) then
-            call getvid('EXCIT', 'ACCE', indic, iarg, 1,&
-                        k24bid, nfacce)
+            call getvid('EXCIT', 'ACCE', iocc=indic, scal=k24bid, nbret=nfacce)
         else
             nfacce = 0
         endif
@@ -140,14 +134,12 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
                 if (iexcit .eq. 0) then
                     nomfct = zk24(jfcha2+ichar-1)(1:8)
                 else if (nexci.ne.0) then
-                    call getvid('EXCIT', 'FONC_MULT', indic, iarg, 1,&
-                                nomfct, nfreel)
+                    call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=nomfct, nbret=nfreel)
                 endif
             endif
 !
             if (nfacce .ne. 0) then
-                call getvid('EXCIT', 'ACCE', indic, iarg, 1,&
-                            nomfct, nfacce)
+                call getvid('EXCIT', 'ACCE', iocc=indic, scal=nomfct, nbret=nfacce)
             endif
 !
         endif

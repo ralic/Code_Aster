@@ -20,14 +20,13 @@ subroutine cacoco(char, motfac, noma)
 !
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -38,6 +37,7 @@ subroutine cacoco(char, motfac, noma)
 #include "asterfort/mminfl.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: char, noma
     character(len=16) :: motfac
 !
@@ -67,7 +67,7 @@ subroutine cacoco(char, motfac, noma)
     integer :: izone, imae, nmaco
     real(kind=8) :: ep, exc
     logical :: ya
-    character(len=8) ::  carael, nommae
+    character(len=8) :: carael, nommae
     character(len=24) :: defico
     character(len=24) :: contma, jeucoq
     integer :: jmaco, jjcoq
@@ -102,8 +102,7 @@ subroutine cacoco(char, motfac, noma)
         ldcoq = mminfl(defico,'DIST_COQUE',izone )
         if (ldcoq) then
             ya = .true.
-            call getvid(motfac, 'CARA_ELEM', izone, iarg, 1,&
-                        carael, noc)
+            call getvid(motfac, 'CARA_ELEM', iocc=izone, scal=carael, nbret=noc)
             if (noc .eq. 0) then
                 ASSERT(.false.)
             endif

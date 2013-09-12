@@ -1,13 +1,12 @@
 subroutine speph0(nomu, table)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -26,6 +25,7 @@ subroutine speph0(nomu, table)
 #include "asterfort/u2mess.h"
 #include "asterfort/utchdl.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomu, table
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -71,8 +71,7 @@ subroutine speph0(nomu, table)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                modmec, ibid)
+    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=ibid)
     call gettco(modmec, typmec)
 !
     epsi = 0.d0
@@ -83,12 +82,10 @@ subroutine speph0(nomu, table)
     call rsorac(modmec, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, epsi, k8b, zi(lnumor), nbmod1,&
                 nbtrou)
-    call getvis(' ', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, nbmode)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nbmode)
     nbmode = -nbmode
     if (nbmode .eq. 0) then
-        call getvtx(' ', 'TOUT_ORDRE', 1, iarg, 1,&
-                    toutor, ibid)
+        call getvtx(' ', 'TOUT_ORDRE', scal=toutor, nbret=ibid)
         if (toutor .eq. 'OUI') then
             nbmode=nbmod1
             call wkvect('&&SPEPH0.LISTEMODES', 'V V I', nbmod1, ilmode)
@@ -97,8 +94,7 @@ subroutine speph0(nomu, table)
                 zi(ilmode-1+im)=zi(lnumor+im-1)
 11          continue
         else
-            call getvr8(' ', 'BANDE', 1, iarg, 2,&
-                        bande, ibid)
+            call getvr8(' ', 'BANDE', nbval=2, vect=bande, nbret=ibid)
             if (ibid .eq. 0) then
                 call u2mess('F', 'ALGORITH10_61')
             endif
@@ -118,14 +114,12 @@ subroutine speph0(nomu, table)
             endif
         endif
     else
-        call getvis(' ', 'NUME_ORDRE', 1, iarg, 0,&
-                    ilmode, ibid)
+        call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=ibid)
         if (ibid .eq. 0) then
             call u2mess('F', 'ALGORITH10_62')
         endif
         call wkvect('&&SPEPH0.LISTEMODES', 'V V I', nbmode, ilmode)
-        call getvis(' ', 'NUME_ORDRE', 1, iarg, nbmode,&
-                    zi(ilmode), ibid)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbmode, vect=zi(ilmode), nbret=ibid)
         do 20 im = 1, nbmode
             if (zi(ilmode-1+im) .gt. nbmod1) then
                 call u2mess('F', 'ALGORITH10_32')
@@ -135,29 +129,25 @@ subroutine speph0(nomu, table)
 !
     napexc = 0
     movrep = 'RELATIF'
-    call getvid(' ', 'MODE_STAT', 1, iarg, 1,&
-                modsta, ibid)
+    call getvid(' ', 'MODE_STAT', scal=modsta, nbret=ibid)
     if (ibid .ne. 0) then
-        call getvtx('EXCIT', 'NOEUD', 1, iarg, 0,&
-                    k8b, napexc)
+        call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=0, nbret=napexc)
         napexc = -napexc
         if (napexc .ne. 0) then
             call wkvect('&&SPEPH0.LISTENOEEXC', 'V V K8', napexc, ilnoex)
-            call getvtx('EXCIT', 'NOEUD', 1, iarg, napexc,&
-                        zk8(ilnoex), ibid)
+            call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=napexc, vect=zk8(ilnoex),&
+                        nbret=ibid)
         endif
 !
-        call getvtx('EXCIT', 'NOM_CMP', 1, iarg, 0,&
-                    k8b, ncmpex)
+        call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=0, nbret=ncmpex)
         ncmpex = -ncmpex
         if (ncmpex .ne. 0) then
             call wkvect('&&SPEPH0.LISTECMPEXC', 'V V K8', ncmpex, ilcpex)
-            call getvtx('EXCIT', 'NOM_CMP', 1, iarg, ncmpex,&
-                        zk8(ilcpex), ibid)
+            call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=ncmpex, vect=zk8(ilcpex),&
+                        nbret=ibid)
         endif
 !
-        call getvtx(' ', 'MOUVEMENT', 1, iarg, 1,&
-                    movrep, ibid)
+        call getvtx(' ', 'MOUVEMENT', scal=movrep, nbret=ibid)
     endif
 !
     idim1 = nbmode + napexc
@@ -183,8 +173,7 @@ subroutine speph0(nomu, table)
 !
 !     --- OPTION DE RECOMBINAISON ---
 !
-    call getvtx(' ', 'NOM_CHAM', 0, iarg, 1,&
-                optcha, ibid)
+    call getvtx(' ', 'NOM_CHAM', scal=optcha, nbret=ibid)
 !
 !     --- VERIFICATION DES DONNEES INTERSPECTRE ---
 !
@@ -213,31 +202,25 @@ subroutine speph0(nomu, table)
 !
 !     --- RECUPERATION DES NOEUDS, NOM_CMP ET MAILLE ---
 !
-    call getvtx(' ', 'NOEUD', 0, iarg, 0,&
-                k8b, nbn1)
-    call getvtx(' ', 'NOM_CMP', 0, iarg, 0,&
-                k8b, nbn2)
+    call getvtx(' ', 'NOEUD', nbval=0, nbret=nbn1)
+    call getvtx(' ', 'NOM_CMP', nbval=0, nbret=nbn2)
     if (nbn1 .ne. nbn2) then
         call u2mess('F', 'ALGORITH10_68')
     endif
     nbn = -nbn1
     call wkvect('&&SPEPH0.NOEUD_REP', 'V V K8', nbn, inoen)
     call wkvect('&&SPEPH0.NOCMP_REP', 'V V K8', nbn, icmpn)
-    call getvtx(' ', 'NOEUD', 0, iarg, nbn,&
-                zk8(inoen), ibid)
-    call getvtx(' ', 'NOM_CMP', 0, iarg, nbn,&
-                zk8(icmpn), ibid)
+    call getvtx(' ', 'NOEUD', nbval=nbn, vect=zk8(inoen), nbret=ibid)
+    call getvtx(' ', 'NOM_CMP', nbval=nbn, vect=zk8(icmpn), nbret=ibid)
 !
-    call getvtx(' ', 'MAILLE', 0, iarg, 0,&
-                k8b, nbmail)
+    call getvtx(' ', 'MAILLE', nbval=0, nbret=nbmail)
     if (nbmail .ne. 0) then
         nbmail = -nbmail
         if (nbn .ne. nbmail) then
             call u2mess('F', 'ALGORITH10_69')
         endif
         call wkvect('&&SPEPH0.MAILLE_REP', 'V V K8', nbn, imain)
-        call getvtx(' ', 'MAILLE', 0, iarg, nbn,&
-                    zk8(imain), ibid)
+        call getvtx(' ', 'MAILLE', nbval=nbn, vect=zk8(imain), nbret=ibid)
     endif
 !
 !     --- RECUPERATION DU NUMERO DU DDL ---
@@ -290,8 +273,7 @@ subroutine speph0(nomu, table)
         call u2mess('F', 'CALCULEL_17')
     endif
 !
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                optcal, ibid)
+    call getvtx(' ', 'OPTION', scal=optcal, nbret=ibid)
     intphy = .false.
     intmod = .false.
     if (optcal(1:4) .eq. 'TOUT') intphy = .true.
@@ -340,7 +322,8 @@ subroutine speph0(nomu, table)
 50      continue
 60  continue
 !
-    call dismoi('C', 'TYPE_BASE', modmec, 'RESU_DYNA', ibid, typba, iret)
+    call dismoi('C', 'TYPE_BASE', modmec, 'RESU_DYNA', ibid,&
+                typba, iret)
 !
     do 90 imr = 1, nbmod1
         numod = zi(ilmode+imr-1)

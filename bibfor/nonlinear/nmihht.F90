@@ -25,8 +25,8 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -78,8 +78,7 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
         write (ifm,*) '<MECANONLINE> INITIALISATION MULTI-PAS'
     endif
 !
-    call getvid('ETAT_INIT', 'EVOL_NOLI', 1, iarg, 1,&
-                k24bid, nocc)
+    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=k24bid, nbret=nocc)
     evonol = nocc .gt. 0
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX

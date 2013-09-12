@@ -4,14 +4,13 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                   camor)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -27,6 +26,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
+!
     character(len=8) :: masse, noma, basemo
     real(kind=8) :: mass(*), rigi(*), smass(*), srigi(*), samor(*), cmass(*)
     real(kind=8) :: crigi(*), camor(*), amored(*), freq(*)
@@ -83,22 +83,18 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     manoma = noma//'.CONNEX'
     lamor = iamor .ne. 0
     call getres(k8b, k8b, nomcmd)
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ifmis, nu)
+    call getvis(' ', 'UNITE', scal=ifmis, nbret=nu)
     call ulopen(ifmis, ' ', ' ', 'NEW', 'O')
-    call getvtx(' ', 'IMPR_MODE_STAT', 1, iarg, 1,&
-                impmod, ni)
-    call getvtx(' ', 'IMPR_MODE_MECA', 1, iarg, 1,&
-                impmec, ni)
-    call getvtx(' ', 'FORMAT_R', 1, iarg, 1,&
-                formim, nf)
-    call getvtx(' ', 'SOUS_TITRE', 1, iarg, 1,&
-                titre, nti)
+    call getvtx(' ', 'IMPR_MODE_STAT', scal=impmod, nbret=ni)
+    call getvtx(' ', 'IMPR_MODE_MECA', scal=impmec, nbret=ni)
+    call getvtx(' ', 'FORMAT_R', scal=formim, nbret=nf)
+    call getvtx(' ', 'SOUS_TITRE', scal=titre, nbret=nti)
 !
 !
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call dismoi('C', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, interf, ir)
+    call dismoi('C', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid,&
+                interf, ir)
     if (interf .ne. ' ') then
         call jeveuo(interf//'.IDC_TYPE', 'L', jtyp)
         typi = zk8(jtyp)

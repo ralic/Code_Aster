@@ -19,15 +19,14 @@ subroutine dfllty(sdlist, metlis, dtmin)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfllli.h"
 #include "asterfort/dfllvd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -38,6 +37,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: sdlist
     character(len=16) :: metlis
     real(kind=8) :: dtmin
@@ -109,8 +109,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
 !
 ! --- LECTURE METHODE
 !
-    call getvtx(motfac, 'METHODE', 1, iarg, 1,&
-                metlis, ibid)
+    call getvtx(motfac, 'METHODE', iocc=1, scal=metlis, nbret=ibid)
 !
 ! --- METHODE DE CONSTRUCTION DE LA LISTE D'INSTANT
 !
@@ -124,20 +123,17 @@ subroutine dfllty(sdlist, metlis, dtmin)
 !
 ! --- RECUPERATION DE LA LISTE D'INSTANTS FOURNIE
 !
-    call getvid(motfac, 'LIST_INST', 1, iarg, 1,&
-                lisins, n1)
-    call getvr8(motfac, 'VALE', 1, iarg, 0,&
-                r8b, n2)
-    call getvid(motfac, 'RESULTAT', 1, iarg, 1,&
-                resu, n3)
+    call getvid(motfac, 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
+    call getvr8(motfac, 'VALE', iocc=1, nbval=0, nbret=n2)
+    call getvid(motfac, 'RESULTAT', iocc=1, scal=resu, nbret=n3)
 !
 !     CAS OU ON A RENSEIGNE VALE : ON RECONSTRUIT UNE SD LISTE
     if (n2 .ne. 0) then
         lisins = '&&DFLLTY.LIST_INST'
         nval = -n2
         call wkvect(lisins//'.VALE', 'V V R', nval, jinst)
-        call getvr8(motfac, 'VALE', 1, iarg, nval,&
-                    zr(jinst), n2)
+        call getvr8(motfac, 'VALE', iocc=1, nbval=nval, vect=zr(jinst),&
+                    nbret=n2)
     endif
 !
 !     CAS OU ON A RENSEIGNE RESU : ON RECONSTRUIT UNE LISTE PLUS FINE
@@ -164,8 +160,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
         call jeveuo(lisres, 'L', jlisre)
 !
 !       RECUPERATION DU NOMBRE DE DECOUPE
-        call getvis(motfac, 'SUBD_PAS', 1, iarg, 1,&
-                    nbdec, iret)
+        call getvis(motfac, 'SUBD_PAS', iocc=1, scal=nbdec, nbret=iret)
         ASSERT(iret.ne.0)
         ASSERT(nbdec.gt.0)
 !
@@ -207,8 +202,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
 !
     if (metlis .eq. 'AUTO') then
         call getfac('ADAPTATION', nadapt)
-        call getvtx('ADAPTATION', 'MODE_CALCUL_TPLUS', nadapt, iarg, 1,&
-                    modetp, ibid)
+        call getvtx('ADAPTATION', 'MODE_CALCUL_TPLUS', iocc=nadapt, scal=modetp, nbret=ibid)
         if (nadapt .ne. 1 .and. modetp .eq. 'IMPLEX') then
             call u2mess('F', 'DISCRETISATION_15')
         endif
@@ -218,8 +212,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
 !
     if (metlis .eq. 'AUTO') then
 !
-        call getvr8(motfac, 'PAS_MAXI', 1, iarg, 1,&
-                    pasmax, iret)
+        call getvr8(motfac, 'PAS_MAXI', iocc=1, scal=pasmax, nbret=iret)
         if (iret .eq. 0) pasmax = zr(jditr-1+nbinst) - zr(jditr-1+1)
 !
 ! ----- CAS D'IMPLEX
@@ -234,12 +227,10 @@ subroutine dfllty(sdlist, metlis, dtmin)
             if (iret .eq. 0) pasmax = zr(jditr-1+nbinst) - zr(jditr-1+1)
         endif
 !
-        call getvr8(motfac, 'PAS_MINI', 1, iarg, 1,&
-                    pasmin, iret)
+        call getvr8(motfac, 'PAS_MINI', iocc=1, scal=pasmin, nbret=iret)
         if (pasmin .gt. dtmin) call u2mess('F', 'DISCRETISATION_1')
 !
-        call getvis(motfac, 'NB_PAS_MAXI', 1, iarg, 1,&
-                    nbpamx, iret)
+        call getvis(motfac, 'NB_PAS_MAXI', iocc=1, scal=nbpamx, nbret=iret)
 !
         zr(jlinr-1+2) = pasmin
         zr(jlinr-1+3) = pasmax

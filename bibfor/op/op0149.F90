@@ -23,10 +23,10 @@ subroutine op0149()
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -59,12 +59,10 @@ subroutine op0149()
 !
 !-----0.VERIFICATIONS AVANT EXECUTION
 !
-    call getvis(' ', 'NUME_ORDRE', 0, iarg, 0,&
-                ibid, nbnuo1)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nbnuo1)
     nbnuo1 = abs(nbnuo1)
     if (nbnuo1 .ne. 0) then
-        call getvr8(' ', 'AMOR_REDUIT', 0, iarg, 0,&
-                    rbid, na1)
+        call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=na1)
         nbamo1 = abs( na1 )
         if (nbamo1 .ne. 0) then
             if (nbamo1 .ne. nbnuo1) then
@@ -84,45 +82,36 @@ subroutine op0149()
     call getres(nomres, typres, nomcmd)
 !
     newres = .true.
-    call getvid(' ', 'BASE', 0, iarg, 1,&
-                basemo, ibid)
+    call getvid(' ', 'BASE', scal=basemo, nbret=ibid)
     if (basemo .eq. nomres) newres = .false.
 !
-    call getvid(' ', 'BASE_ELAS_FLUI', 0, iarg, 1,&
-                basefl, ibid)
-    call getvis(' ', 'NUME_VITE_FLUI', 0, iarg, 1,&
-                numvit, ibid)
+    call getvid(' ', 'BASE_ELAS_FLUI', scal=basefl, nbret=ibid)
+    call getvis(' ', 'NUME_VITE_FLUI', scal=numvit, nbret=ibid)
 !
     lnuor = .false.
-    call getvis(' ', 'NUME_ORDRE', 0, iarg, 0,&
-                ibid, nbnuo1)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nbnuo1)
     nbnuo1 = abs(nbnuo1)
     if (nbnuo1 .ne. 0) then
         lnuor = .true.
         call wkvect('&&OP0149.TEMP.NUO1', 'V V I', nbnuo1, inuo1)
-        call getvis(' ', 'NUME_ORDRE', 0, iarg, nbnuo1,&
-                    zi(inuo1), ibid)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbnuo1, vect=zi(inuo1), nbret=ibid)
     endif
 !
     lamor = .false.
     lamoru = .false.
-    call getvr8(' ', 'AMOR_REDUIT', 0, iarg, 0,&
-                rbid, na1)
+    call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=na1)
     nbamo1 = abs( na1 )
     if (nbamo1 .ne. 0) then
         lamor = .true.
         call wkvect('&&OP0149.TEMP.AMO1', 'V V R', nbamo1, iamo1)
         if (na1 .ne. 0) then
-            call getvr8(' ', 'AMOR_REDUIT', 0, iarg, nbamo1,&
-                        zr(iamo1), ibid)
+            call getvr8(' ', 'AMOR_REDUIT', nbval=nbamo1, vect=zr(iamo1), nbret=ibid)
         endif
     else
-        call getvr8(' ', 'AMOR_UNIF', 0, iarg, 0,&
-                    rbid, nbamun)
+        call getvr8(' ', 'AMOR_UNIF', nbval=0, nbret=nbamun)
         if (nbamun .ne. 0) then
             lamoru = .true.
-            call getvr8(' ', 'AMOR_UNIF', 0, iarg, 1,&
-                        amorun, ibid)
+            call getvr8(' ', 'AMOR_UNIF', scal=amorun, nbret=ibid)
         endif
     endif
 !

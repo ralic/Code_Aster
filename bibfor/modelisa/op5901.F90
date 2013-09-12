@@ -19,12 +19,11 @@ subroutine op5901(nboccm, ifm, niv, compor)
 ! person_in_charge: jean-michel.proix at edf.fr
 !     COMMANDE:  DEFI_COMPOR MONOCRISTAL
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jemarq.h"
@@ -38,6 +37,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
+!
     character(len=8) :: compor, materi, typpar(5), chaine
     character(len=16) :: nompar(5), ecoule, ecrois, ecroci, elasti, nomvar(200)
     character(len=16) :: fasygl, noms(6), comdes, rota, tbinte, systgl
@@ -98,16 +98,11 @@ subroutine op5901(nboccm, ifm, niv, compor)
     irr2=0
 !
     do 9 iocc = 1, nboccm
-        call getvid('MONOCRISTAL', 'MATER', iocc, iarg, 1,&
-                    materi, nbmat)
-        call getvtx('MONOCRISTAL', 'ECOULEMENT', iocc, iarg, 1,&
-                    ecoule, nbecou)
-        call getvtx('MONOCRISTAL', 'ECRO_ISOT', iocc, iarg, 1,&
-                    ecrois, nbecro)
-        call getvtx('MONOCRISTAL', 'ECRO_CINE', iocc, iarg, 1,&
-                    ecroci, nbcine)
-        call getvtx('MONOCRISTAL', 'ELAS', iocc, iarg, 1,&
-                    elasti, nbela1)
+        call getvid('MONOCRISTAL', 'MATER', iocc=iocc, scal=materi, nbret=nbmat)
+        call getvtx('MONOCRISTAL', 'ECOULEMENT', iocc=iocc, scal=ecoule, nbret=nbecou)
+        call getvtx('MONOCRISTAL', 'ECRO_ISOT', iocc=iocc, scal=ecrois, nbret=nbecro)
+        call getvtx('MONOCRISTAL', 'ECRO_CINE', iocc=iocc, scal=ecroci, nbret=nbcine)
+        call getvtx('MONOCRISTAL', 'ELAS', iocc=iocc, scal=elasti, nbret=nbela1)
         if (nbela1 .gt. 0) then
             if (nbelas .eq. 0) then
                 nbelas=1
@@ -129,16 +124,14 @@ subroutine op5901(nboccm, ifm, niv, compor)
             irr2=irr2+1
         endif
 !
-        call getvtx('MONOCRISTAL', 'FAMI_SYST_GLIS', iocc, iarg, 1,&
-                    fasygl, nbfasy)
+        call getvtx('MONOCRISTAL', 'FAMI_SYST_GLIS', iocc=iocc, scal=fasygl, nbret=nbfasy)
         noms(1)=fasygl
         noms(2)=materi
         noms(3)=ecoule
         noms(4)=ecrois
         noms(5)=ecroci
         if (fasygl .eq. 'UTILISATEUR') then
-            call getvid('MONOCRISTAL', 'TABL_SYST_GLIS', iocc, iarg, 1,&
-                        systgl, itsg)
+            call getvid('MONOCRISTAL', 'TABL_SYST_GLIS', iocc=iocc, scal=systgl, nbret=itsg)
             noms(1)='UTIL'
             nbtbsg=nbtbsg+1
             call codent(nbtbsg, 'G', noms(1)(5:5))
@@ -196,8 +189,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !     CONTRAINTE DE CLIVAGE MAX
     nvi=nvi+1
 !     ROTATION DE RESEAU
-    call getvtx(' ', 'ROTA_RESEAU', 0, iarg, 1,&
-                rota, nbrota)
+    call getvtx(' ', 'ROTA_RESEAU', scal=rota, nbret=nbrota)
     irota=0
     if (nbrota .ne. 0) then
         if (rota .ne. 'NON') then
@@ -279,8 +271,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
 !
 !
     zk24(imk+5*nboccm)=elasti
-    call getvid(' ', 'MATR_INTER', 0, iarg, 1,&
-                tbinte, itab)
+    call getvid(' ', 'MATR_INTER', scal=tbinte, nbret=itab)
     if (itab .ne. 0) then
         listr = '&&LCMMAT.TABL_INTER'
         call tbexlr(tbinte, listr, 'V')

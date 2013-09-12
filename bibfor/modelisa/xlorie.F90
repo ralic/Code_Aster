@@ -19,10 +19,10 @@ subroutine xlorie(fiss)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mesi.h"
@@ -63,17 +63,14 @@ subroutine xlorie(fiss)
 ! --- REMPLISSAGE DU VECTEUR DE STOCKAGE
 !
 !     TYPE ENRICHISSEMENT (TOPOLOGIQUE OU GEOMETRIQUE)
-    call getvtx(' ', 'TYPE_ENRI_FOND', 1, iarg, 1,&
-                typenr, ibid)
+    call getvtx(' ', 'TYPE_ENRI_FOND', scal=typenr, nbret=ibid)
     ASSERT(typenr.eq.'TOPOLOGIQUE'.or.typenr.eq.'GEOMETRIQUE')
     if (typenr .eq. 'TOPOLOGIQUE') then
         rayon = 0.d0
         ncouch = 0
     else if (typenr.eq.'GEOMETRIQUE') then
-        call getvr8(' ', 'RAYON_ENRI', 1, iarg, 1,&
-                    rayon, ir)
-        call getvis(' ', 'NB_COUCHES', 1, iarg, 1,&
-                    ncouch, in)
+        call getvr8(' ', 'RAYON_ENRI', scal=rayon, nbret=ir)
+        call getvis(' ', 'NB_COUCHES', scal=ncouch, nbret=in)
         if (ir .eq. 0) then
             rayon = 0.d0
             if (ncouch .gt. 7) call u2mesi('A', 'XFEM_5', 1, ncouch)

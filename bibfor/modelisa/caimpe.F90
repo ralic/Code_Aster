@@ -1,11 +1,11 @@
 subroutine caimpe(char, ligrmo, noma, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -89,15 +89,12 @@ subroutine caimpe(char, ligrmo, noma, fonree)
 !
         if (fonree .eq. 'REEL') then
 !
-            call getvc8(motclf, 'IMPE', iocc, iarg, 1,&
-                        zc(jvalv), n)
+            call getvc8(motclf, 'IMPE', iocc=iocc, scal=zc(jvalv), nbret=n)
         else
-            call getvid(motclf, 'IMPE', iocc, iarg, 1,&
-                        zk8(jvalv), n)
+            call getvid(motclf, 'IMPE', iocc=iocc, scal=zk8(jvalv), nbret=n)
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ligrmo, 1)

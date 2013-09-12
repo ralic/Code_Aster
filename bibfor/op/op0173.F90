@@ -1,5 +1,5 @@
 subroutine op0173()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,10 @@ subroutine op0173()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterc/putvir.h"
 #include "asterfort/copisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/tbimfi.h"
@@ -50,15 +50,12 @@ subroutine op0173()
 !
     call getres(nomres, concep, nomcmd)
 !
-    call getvid(' ', 'TABLE', 1, iarg, 1,&
-                table, n1)
+    call getvid(' ', 'TABLE', scal=table, nbret=n1)
     newtab = table
 !
-    call getvtx(' ', 'NOM_PARA', 1, iarg, 1,&
-                para, n1)
+    call getvtx(' ', 'NOM_PARA', scal=para, nbret=n1)
 !
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                typesd, n1)
+    call getvtx(' ', 'TYPE_RESU', scal=typesd, nbret=n1)
 !
     call getfac('FILTRE', nparfi)
     if (nparfi .ne. 0) then

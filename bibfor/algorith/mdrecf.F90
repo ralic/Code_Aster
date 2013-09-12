@@ -4,13 +4,13 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                   nommot, nomres)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
@@ -93,11 +93,13 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     call jemarq()
     ier = 0
 ! ---    CALCUL TRANSITOIRE CLASSIQUE
-    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ib, typeba, ier)
+    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ib,&
+                typeba, ier)
 !
 !
     if (typbas(1:9) .eq. 'MODE_MECA' .and. typeba(1:1) .eq. ' ') then
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ib, matass, ier)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ib,&
+                    matass, ier)
         call dismoi('F', 'NOM_MAILLA', matass, 'MATR_ASSE', ib,&
                     mailla, ier)
         call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ibid,&
@@ -105,7 +107,8 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
         deeq = numddl//'.NUME.DEEQ'
         call jeveuo(deeq, 'L', iddeeq)
     else if (typeba(1:1).ne.' ') then
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ib, numddl, ier)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ib,&
+                    numddl, ier)
         call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
                     mailla, ier)
         deeq = numddl//'.NUME.DEEQ'
@@ -120,20 +123,13 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
     do 10 i = 1, nexci
 !
-        call getvis('EXCIT', 'NUME_ORDRE', i, iarg, 1,&
-                    inum, nf)
-        call getvid('EXCIT', 'VECT_ASSE_GENE', i, iarg, 1,&
-                    veasge, l1)
-        call getvid('EXCIT', 'FONC_MULT', i, iarg, 1,&
-                    fonct, n1)
-        call getvr8('EXCIT', 'COEF_MULT', i, iarg, 1,&
-                    alpha, m1)
-        call getvid('EXCIT', 'ACCE', i, iarg, 1,&
-                    facce, na)
-        call getvtx('EXCIT', 'MULT_APPUI', i, iarg, 1,&
-                    monmot(1), n2)
-        call getvtx('EXCIT', 'CORR_STAT', i, iarg, 1,&
-                    monmot(2), n3)
+        call getvis('EXCIT', 'NUME_ORDRE', iocc=i, scal=inum, nbret=nf)
+        call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=veasge, nbret=l1)
+        call getvid('EXCIT', 'FONC_MULT', iocc=i, scal=fonct, nbret=n1)
+        call getvr8('EXCIT', 'COEF_MULT', iocc=i, scal=alpha, nbret=m1)
+        call getvid('EXCIT', 'ACCE', iocc=i, scal=facce, nbret=na)
+        call getvtx('EXCIT', 'MULT_APPUI', iocc=i, scal=monmot(1), nbret=n2)
+        call getvtx('EXCIT', 'CORR_STAT', iocc=i, scal=monmot(2), nbret=n3)
 !
         if (n1 .ne. 0) then
 !         CAS D'UNE FONC_MULT
@@ -195,8 +191,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                     call jeveuo(nomres//'           .IPSD', 'E', jpsdel)
                 endif
 !
-                call getvid(' ', 'MODE_STAT', 1, iarg, 1,&
-                            modsta, nbv)
+                call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
                 if (nbv .eq. 0) then
                     ier =ier+1
                     call u2mesg('E', 'ALGORITH13_46', 0, ' ', 0,&
@@ -205,13 +200,11 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 endif
                 call trmult(modsta, i, mailla, neq, iddeeq,&
                             zr(jpsdel+(i-1) *neq))
-                call getvid('EXCIT', 'VITE', i, iarg, 1,&
-                            fonvit(i), n4)
+                call getvid('EXCIT', 'VITE', iocc=i, scal=fonvit(i), nbret=n4)
                 fonct = fonvit(i)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
                 fonvit(i+nexcit) = zk24(lprol)(1:8)
-                call getvid('EXCIT', 'DEPL', i, iarg, 1,&
-                            fondep(i), n5)
+                call getvid('EXCIT', 'DEPL', iocc=i, scal=fondep(i), nbret=n5)
                 fonct = fondep(i)(1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
                 fondep(i+nexcit) = zk24(lprol)(1:8)
@@ -228,21 +221,18 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 else
                     call jeveuo(nomres//'           .IPSD', 'E', jpsdel)
                 endif
-                call getvid(' ', 'MODE_CORR', 1, iarg, 1,&
-                            modcor, nbv)
+                call getvid(' ', 'MODE_CORR', scal=modcor, nbret=nbv)
                 if (nbv .eq. 0) then
                     ier =ier+1
                     call u2mesg('E', 'ALGORITH13_47', 0, ' ', 0,&
                                 0, 0, 0.d0)
                     goto 10
                 endif
-                call getvid('EXCIT', 'D_FONC_DT', i, iarg, 1,&
-                            fonvit(i), n4)
+                call getvid('EXCIT', 'D_FONC_DT', iocc=i, scal=fonvit(i), nbret=n4)
                 fonct = fonvit(i)(1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
                 fonvit(i+nexcit) = zk24(lprol)(1:8)
-                call getvid('EXCIT', 'D_FONC_DT2', i, iarg, 1,&
-                            fonacc(i), n5)
+                call getvid('EXCIT', 'D_FONC_DT2', iocc=i, scal=fonacc(i), nbret=n5)
                 fonct = fonacc(i)(1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
                 fonacc(i+nexcit) = zk24(lprol)(1:8)
@@ -288,10 +278,8 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     call jeveuo(basemo//'           .ORDR', 'L', jordr)
     do 11 i = 1, nexcir
 !
-        call getvid('EXCIT_RESU', 'RESULTAT', i, iarg, 1,&
-                    resu, l1)
-        call getvr8('EXCIT_RESU', 'COEF_MULT', i, iarg, 1,&
-                    alpha, m1)
+        call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resu, nbret=l1)
+        call getvr8('EXCIT_RESU', 'COEF_MULT', iocc=i, scal=alpha, nbret=m1)
 ! ----- NOMBRE DE PAS DE TEMPS DU RESULTAT
         call jelira(resu//'.DISC', 'LONMAX', ninst)
         call jeveuo(resu//'.DISC', 'L', jinst)

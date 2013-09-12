@@ -6,17 +6,22 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/catang.h"
 #include "asterfort/celces.h"
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_read_keyw.h"
+#include "asterfort/char_read_val.h"
+#include "asterfort/char_xfem.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getelem.h"
+#include "asterfort/getnode.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -34,12 +39,6 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xddlim.h"
-#include "asterfort/char_excl_keyw.h"
-#include "asterfort/char_read_val.h"
-#include "asterfort/char_read_keyw.h"
-#include "asterfort/getnode.h"
-#include "asterfort/getelem.h"
-#include "asterfort/char_xfem.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,10 +58,10 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -135,7 +134,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     lagr_type = '12'
     coef_cplx_unit = (1.d0,0.d0)
     coef_real_unit = 1.d0
-    dof_name  = 'DEPL'
+    dof_name = 'DEPL'
 !
 ! - Model informations
 !
@@ -153,7 +152,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords
 !
     keywordexcl = '&&CAAREI.KEYWORDEXCL'
-    n_suffix    = 0
+    n_suffix = 0
     list_suffix = ' '
     call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
@@ -173,7 +172,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
 ! - Xfem fields
 !
-    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat, &
+    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat,&
                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
@@ -188,22 +187,22 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
         list_node = '&&CAAREI.LIST_NODE'
         list_elem = '&&CAAREI.LIST_ELEM'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
                      list_node, nb_node)
-        call getelem(mesh, keywordfact, iocc, list_suffix, 'F', &
+        call getelem(mesh, keywordfact, iocc, list_suffix, 'F',&
                      list_elem, nb_elem)
-        call jeveuo(list_node,'L',jlino)
-        call jeveuo(list_elem,'L',jlima)
+        call jeveuo(list_node, 'L', jlino)
+        call jeveuo(list_elem, 'L', jlima)
 !
 ! ----- Read keywords and their values except for affectation
 !
-        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,  &
-                            n_max_keyword, n_keyword, keywordlist, nbterm, vale_real, &
+        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+                            n_max_keyword, n_keyword, keywordlist, nbterm, vale_real,&
                             vale_func, vale_cplx)
 !
 ! ----- Detection of DTAN and others
 !
-        call char_read_val(keywordfact, iocc, 'DTAN', vale_type, val_nb_dtan, &
+        call char_read_val(keywordfact, iocc, 'DTAN', vale_type, val_nb_dtan,&
                            val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan.gt.0
         l_ocmp = n_keyword.gt.0
@@ -239,8 +238,8 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
                 call afrela(coef_real_unit, coef_cplx_unit, dof_name, name_node, repe_type,&
                             repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
                             coef_type, vale_type, lagr_type, 0.d0, list_rela)
-
-115             continue
+!
+115              continue
             enddo
         endif
 !
@@ -257,18 +256,18 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afddli(model, nbcmp, zk8(inom), nume_node, name_node, &
-                            zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3* (nume_node-1)),  &
-                            coef_type, n_keyword, keywordlist, &
-                            nbterm, vale_type, vale_real, vale_func, vale_cplx, &
-                            zi(jcompt), list_rela, lxfem, jnoxfl, jnoxfv,  &
-                            ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
+                call afddli(model, nbcmp, zk8(inom), nume_node, name_node,&
+                            zi(jprnm-1+(nume_node-1)*nbec+1), 0, zr(jdirec+3* (nume_node-1)),&
+                            coef_type, n_keyword, keywordlist, nbterm, vale_type,&
+                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                            ch_xfem_ltno, connex_inv)
 !
             enddo
 !
 ! --------- Components doesn't exist on all nodes
 !
-            do i_keyword = 1,n_keyword
+            do i_keyword = 1, n_keyword
                 keyword = keywordlist(i_keyword)
                 if (zi(jcompt-1+i_keyword) .eq. 0) then
                     call u2mesk('F', 'CHARGES2_45', 1, keyword)
@@ -299,6 +298,6 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
         call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
     endif
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

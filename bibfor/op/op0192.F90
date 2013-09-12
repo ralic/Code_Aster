@@ -32,23 +32,23 @@ subroutine op0192()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfinvr.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lrchme.h"
 #include "asterfort/lrvema.h"
 #include "asterfort/lrvemo.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/as_mfinvr.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
@@ -119,12 +119,10 @@ subroutine op0192()
 !
 ! 2.1. ==> FORMAT DU FICHIER
 !
-    call getvtx(' ', 'FORMAT', 0, iarg, 1,&
-                format, iaux)
+    call getvtx(' ', 'FORMAT', scal=format, nbret=iaux)
 !
     if (format .eq. 'MED') then
-        call getvtx(' ', 'NOM_MED', 0, iarg, 1,&
-                    nochmd, iaux)
+        call getvtx(' ', 'NOM_MED', scal=nochmd, nbret=iaux)
         if (iaux .eq. 0) then
             call u2mess('F', 'MED_96')
         endif
@@ -134,8 +132,7 @@ subroutine op0192()
 !
 ! 2.2. ==> TYPE DE CHAMP A LIRE
 !
-    call getvtx(' ', 'TYPE_CHAM', 0, iarg, 1,&
-                tych, iaux)
+    call getvtx(' ', 'TYPE_CHAM', scal=tych, nbret=iaux)
     call getres(chanom, typech, nomcmd)
     nomgd = tych(6:13)
     if (tych(1:11) .eq. 'ELGA_SIEF_R') then
@@ -165,8 +162,7 @@ subroutine op0192()
 ! - -  VERIFICATIONS - -
 !
     if (tych(1:2) .eq. 'EL') then
-        call getvid(' ', 'MODELE', 0, iarg, 1,&
-                    nomo, iaux)
+        call getvid(' ', 'MODELE', scal=nomo, nbret=iaux)
         call lrvemo(nomo)
     endif
 !
@@ -175,8 +171,7 @@ subroutine op0192()
     ncmpva = '&&'//nompro//'.'//lcmpva
     ncmpvm = '&&'//nompro//'.'//lcmpvm
 !
-    call getvtx(' ', 'NOM_CMP_IDEM', 0, iarg, 1,&
-                rep, iaux)
+    call getvtx(' ', 'NOM_CMP_IDEM', scal=rep, nbret=iaux)
 !
 ! 2.3.1. ==> C'EST PAR IDENTITE DE NOMS
 !
@@ -192,14 +187,12 @@ subroutine op0192()
 !
 ! 2.3.2. ==> C'EST PAR ASSOCIATION DE LISTE
 !
-        call getvtx(' ', lcmpva, 0, iarg, 0,&
-                    rep, iaux)
+        call getvtx(' ', lcmpva, nbval=0, nbret=iaux)
         if (iaux .lt. 0) then
             nbcmpv = -iaux
         endif
 !
-        call getvtx(' ', lcmpvm, 0, iarg, 0,&
-                    rep, iaux)
+        call getvtx(' ', lcmpvm, nbval=0, nbret=iaux)
         if (-iaux .ne. nbcmpv) then
             valk(1) = lcmpva
             valk(2) = lcmpvm
@@ -208,35 +201,29 @@ subroutine op0192()
 !
         if (nbcmpv .gt. 0) then
             call wkvect(ncmpva, 'V V K8', nbcmpv, jcmpva)
-            call getvtx(' ', lcmpva, 0, iarg, nbcmpv,&
-                        zk8(jcmpva), iaux)
+            call getvtx(' ', lcmpva, nbval=nbcmpv, vect=zk8(jcmpva), nbret=iaux)
             call wkvect(ncmpvm, 'V V K16', nbcmpv, jcmpvm)
-            call getvtx(' ', lcmpvm, 0, iarg, nbcmpv,&
-                        zk16(jcmpvm), iaux)
+            call getvtx(' ', lcmpvm, nbval=nbcmpv, vect=zk16(jcmpvm), nbret=iaux)
         endif
 !
     endif
 !
 ! 2.4a ==> PROLONGEMENT PAR ZERO OU NOT A NUMBER
 !
-    call getvtx(' ', 'PROL_ZERO', 0, iarg, 1,&
-                prolz, iaux)
+    call getvtx(' ', 'PROL_ZERO', scal=prolz, nbret=iaux)
     if (prolz .ne. 'OUI') then
         prolz = 'NAN'
     endif
 !
 ! 2.4b ==> UNITE LOGIQUE LIE AU FICHIER
 !
-    call getvis(' ', 'UNITE', 0, iarg, 1,&
-                unite, iaux)
+    call getvis(' ', 'UNITE', scal=unite, nbret=iaux)
 !
 ! 2.5. ==> NOM DU MODELE, NOM DU MAILLAGE ASTER ASSOCIE
 !
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                nomo, iaux)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=iaux)
 !
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                nomaas, iaux)
+    call getvid(' ', 'MAILLAGE', scal=nomaas, nbret=iaux)
     if (iaux .eq. 0) then
         call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', iaux,&
                     nomaas, codret)
@@ -247,8 +234,7 @@ subroutine op0192()
 !
 ! 2.6. ==> NOM DU MAILLAGE MED ASSOCIE
 !
-    call getvtx(' ', 'NOM_MAIL_MED', 0, iarg, 1,&
-                nomamd, iaux)
+    call getvtx(' ', 'NOM_MAIL_MED', scal=nomamd, nbret=iaux)
 !
     if (iaux .eq. 0) then
         nomamd = ' '
@@ -257,16 +243,14 @@ subroutine op0192()
 ! 2.7. CARACTERISTIQUES TEMPORELLES
 ! 2.7.1. ==> NUMERO D'ORDRE EVENTUEL
 !
-    call getvis(' ', 'NUME_ORDRE', 0, iarg, 1,&
-                numord, iaux)
+    call getvis(' ', 'NUME_ORDRE', scal=numord, nbret=iaux)
     if (iaux .eq. 0) then
         numord = ednono
     endif
 !
 ! 2.7.2. ==> NUMERO DE PAS DE TEMPS EVENTUEL
 !
-    call getvis(' ', 'NUME_PT', 0, iarg, 1,&
-                numpt, jaux)
+    call getvis(' ', 'NUME_PT', scal=numpt, nbret=jaux)
     if (jaux .eq. 0) then
         numpt = ednopt
     endif
@@ -276,14 +260,11 @@ subroutine op0192()
 !
     if (iaux .eq. 0 .and. jaux .eq. 0) then
 !
-        call getvr8(' ', 'INST', 1, iarg, 1,&
-                    inst, iinst)
+        call getvr8(' ', 'INST', scal=inst, nbret=iinst)
 !
         if (iinst .ne. 0) then
-            call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                        prec, iaux)
-            call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                        crit, iaux)
+            call getvr8(' ', 'PRECISION', scal=prec, nbret=iaux)
+            call getvtx(' ', 'CRITERE', scal=crit, nbret=iaux)
         endif
 !
     else

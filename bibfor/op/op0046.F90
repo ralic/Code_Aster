@@ -31,9 +31,6 @@ subroutine op0046()
 ! 0.3. ==> VARIABLES LOCALES
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/allir8.h"
 #include "asterfort/assert.h"
@@ -42,6 +39,9 @@ subroutine op0046()
 #include "asterfort/detmat.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/infmaj.h"
@@ -134,11 +134,9 @@ subroutine op0046()
 !
 ! -- ACCES A LA LISTE D'INSTANTS
 !
-    call getvid(' ', 'LIST_INST', 0, iarg, 1,&
-                listps, n4)
+    call getvid(' ', 'LIST_INST', scal=listps, nbret=n4)
     if (n4 .eq. 0) then
-        call getvr8(' ', 'INST', 0, iarg, 1,&
-                    temps, n5)
+        call getvr8(' ', 'INST', scal=temps, nbret=n5)
         if (n5 .eq. 0) then
             temps = 0.d0
         endif
@@ -160,8 +158,7 @@ subroutine op0046()
                 noma, ierd)
     call dismoi('F', 'NB_CHAMP_MAX', result, 'RESULTAT', nbmax,&
                 k8bla, ierd)
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                nosy, n7)
+    call getvtx(' ', 'OPTION', scal=nosy, nbret=n7)
     ASSERT(nosy.eq.'SIEF_ELGA'.or.nosy.eq.'SANS')
 !
 !   A-t-on des POU_D_EM qui utilisent le champ STRX_ELGA en lineaire
@@ -173,7 +170,7 @@ subroutine op0046()
     call dismoi('F', 'EXI_VARC', mate, 'CHAM_MATER', ibid,&
                 k8bla, iret)
 !   On interdit provisoirement les POU_D_EM avec les VARC
-    if ( (k8bla(1:3).eq.'OUI').and.(kstr(1:3).eq.'OUI')) then
+    if ((k8bla(1:3).eq.'OUI') .and. (kstr(1:3).eq.'OUI')) then
         call u2mess('F', 'MECASTATIQUE_1')
     endif
 !
@@ -195,10 +192,8 @@ subroutine op0046()
         typcoe = 'R'
         alpha = 1.d0
         if (iocc .gt. 0) then
-            call getvid('EXCIT', 'CHARGE', iocc, iarg, 1,&
-                        charep, n1)
-            call getvid('EXCIT', 'FONC_MULT', iocc, iarg, 1,&
-                        nomfon, nfon)
+            call getvid('EXCIT', 'CHARGE', iocc=iocc, scal=charep, nbret=n1)
+            call getvid('EXCIT', 'FONC_MULT', iocc=iocc, scal=nomfon, nbret=nfon)
         endif
     endif
 !

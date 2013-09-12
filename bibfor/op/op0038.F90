@@ -27,12 +27,7 @@ subroutine op0038()
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterc/utalrm.h"
 #include "asterfort/calcul.h"
@@ -41,6 +36,10 @@ subroutine op0038()
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -51,6 +50,7 @@ subroutine op0038()
 #include "asterfort/sdmpic.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     integer :: ibid, ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh, iarg
 !
     real(kind=8) :: time, rundf
@@ -83,8 +83,7 @@ subroutine op0038()
     exitim = .false.
 !
     call getres(chelem, type, oper)
-    call getvid(' ', 'ACCE', 0, iarg, 0,&
-                option, n1)
+    call getvid(' ', 'ACCE', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         call u2mess('A', 'CALCULEL3_96')
     endif
@@ -97,16 +96,11 @@ subroutine op0038()
 !
     call exlima(' ', 0, 'G', modele, ligrel)
 !
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                option, n1)
-    call getvid(' ', 'TEMP', 0, iarg, 1,&
-                temp, n3)
-    call getvid(' ', 'PRES', 0, iarg, 1,&
-                press, n4)
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                time, n6)
-    call getvis(' ', 'MODE_FOURIER', 0, iarg, 1,&
-                nh, n7)
+    call getvtx(' ', 'OPTION', scal=option, nbret=n1)
+    call getvid(' ', 'TEMP', scal=temp, nbret=n3)
+    call getvid(' ', 'PRES', scal=press, nbret=n4)
+    call getvr8(' ', 'INST', scal=time, nbret=n6)
+    call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n7)
     if (n3 .ne. 0) then
         chtemp = temp
         call chpver('F', chtemp, 'NOEU', 'TEMP_R', ierd)

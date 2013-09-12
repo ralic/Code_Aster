@@ -1,9 +1,9 @@
 subroutine acevco(nbocc, nlm, nlg, ier)
     implicit none
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
@@ -48,24 +48,15 @@ subroutine acevco(nbocc, nlm, nlg, ier)
     nlm = 0
     nlg = 0
     do 10 ioc = 1, nbocc
-        call getvtx('COQUE', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('COQUE', 'MAILLE', ioc, iarg, 0,&
-                    k8b, nm)
-        call getvr8('COQUE', 'EPAIS', ioc, iarg, 0,&
-                    r8b, ne)
-        call getvid('COQUE', 'EPAIS_FO', ioc, iarg, 0,&
-                    k8b, nef)
-        call getvr8('COQUE', 'A_CIS', ioc, iarg, 0,&
-                    r8b, nk)
-        call getvr8('COQUE', 'EXCENTREMENT', ioc, iarg, 0,&
-                    r8b, nex)
-        call getvid('COQUE', 'EXCENTREMENT_FO', ioc, iarg, 0,&
-                    k8b, nexf)
-        call getvtx('COQUE', 'INER_ROTA', ioc, iarg, 0,&
-                    k8b, nin)
-        call getvtx('COQUE', 'MODI_METRIQUE', ioc, iarg, 0,&
-                    k8b, nco)
+        call getvtx('COQUE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('COQUE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
+        call getvr8('COQUE', 'EPAIS', iocc=ioc, nbval=0, nbret=ne)
+        call getvid('COQUE', 'EPAIS_FO', iocc=ioc, nbval=0, nbret=nef)
+        call getvr8('COQUE', 'A_CIS', iocc=ioc, nbval=0, nbret=nk)
+        call getvr8('COQUE', 'EXCENTREMENT', iocc=ioc, nbval=0, nbret=nex)
+        call getvid('COQUE', 'EXCENTREMENT_FO', iocc=ioc, nbval=0, nbret=nexf)
+        call getvtx('COQUE', 'INER_ROTA', iocc=ioc, nbval=0, nbret=nin)
+        call getvtx('COQUE', 'MODI_METRIQUE', iocc=ioc, nbval=0, nbret=nco)
 !
         if (ioc .eq. 1 .and. abs(ne+nef) .ne. 1) then
             call u2mess('E', 'MODELISA_53')
@@ -73,8 +64,7 @@ subroutine acevco(nbocc, nlm, nlg, ier)
         endif
 !
         if ((nex+nexf) .ne. 0 .and. nin .ne. 0) then
-            call getvtx('COQUE', 'INER_ROTA', ioc, iarg, 1,&
-                        k8b, nin)
+            call getvtx('COQUE', 'INER_ROTA', iocc=ioc, scal=k8b, nbret=nin)
             if (k8b .eq. 'NON') then
                 call u2mess('E', 'MODELISA_54')
                 ier = ier + 1

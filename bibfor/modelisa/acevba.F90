@@ -2,11 +2,11 @@ subroutine acevba(nbocc, nlm, nlg, ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8maem.h"
 #include "asterfort/acedat.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -85,22 +85,16 @@ subroutine acevba(nbocc, nlm, nlg, ier)
     nlg = 0
     do 10 ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
-        call getvtx('BARRE', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('BARRE', 'MAILLE', ioc, iarg, 0,&
-                    k8b, nm)
-        call getvtx('BARRE', 'SECTION', ioc, iarg, 0,&
-                    k8b, ns)
-        call getvtx('BARRE', 'SECTION', ioc, iarg, 1,&
-                    sec, nsec)
-        call getvtx('BARRE', 'CARA', ioc, iarg, 0,&
-                    k8b, nc)
-        call getvtx('BARRE', 'CARA', ioc, iarg, nbcar,&
-                    zk8(jcara), ncar)
-        call getvr8('BARRE', 'VALE', ioc, iarg, 0,&
-                    r8b, nv)
-        call getvr8('BARRE', 'VALE', ioc, iarg, nbval,&
-                    zr(jvale), nval)
+        call getvtx('BARRE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('BARRE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
+        call getvtx('BARRE', 'SECTION', iocc=ioc, nbval=0, nbret=ns)
+        call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
+        call getvtx('BARRE', 'CARA', iocc=ioc, nbval=0, nbret=nc)
+        call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=zk8(jcara),&
+                    nbret=ncar)
+        call getvr8('BARRE', 'VALE', iocc=ioc, nbval=0, nbret=nv)
+        call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=zr(jvale),&
+                    nbret=nval)
 !
 ! -- CARA
         if (ncar .gt. 0) then

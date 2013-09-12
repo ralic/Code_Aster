@@ -16,7 +16,7 @@ subroutine ntdomt(parmer)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-#include "asterc/getvr8.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/u2mess.h"
     real(kind=8) :: parmer(1)
 ! ----------------------------------------------------------------------
@@ -32,8 +32,7 @@ subroutine ntdomt(parmer)
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call getvr8(' ', 'PARM_THETA', 0, iarg, 1,&
-                theta, n1)
+    call getvr8(' ', 'PARM_THETA', scal=theta, nbret=n1)
     if ((theta.lt.0.0d0) .or. (theta.gt.1.0d0)) then
         call u2mess('F', 'ALGORITH9_4')
     endif

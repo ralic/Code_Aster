@@ -1,6 +1,32 @@
 subroutine pofape()
-    implicit   none
+    implicit none
 #include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/anacri.h"
+#include "asterfort/avgrno.h"
+#include "asterfort/dtauno.h"
+#include "asterfort/fgdoba.h"
+#include "asterfort/fgdohs.h"
+#include "asterfort/fgdowh.h"
+#include "asterfort/fmcros.h"
+#include "asterfort/fmpapa.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbnuli.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,32 +49,6 @@ subroutine pofape()
 !              CHARGEMENT PERIODIQUE
 !     -----------------------------------------------------------------
 !
-#include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
-#include "asterfort/anacri.h"
-#include "asterfort/avgrno.h"
-#include "asterfort/dtauno.h"
-#include "asterfort/fgdoba.h"
-#include "asterfort/fgdohs.h"
-#include "asterfort/fgdowh.h"
-#include "asterfort/fmcros.h"
-#include "asterfort/fmpapa.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/rccome.h"
-#include "asterfort/rcpare.h"
-#include "asterfort/rcvale.h"
-#include "asterfort/tbajli.h"
-#include "asterfort/tbajpa.h"
-#include "asterfort/tbcrsd.h"
-#include "asterfort/tbnuli.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/wkvect.h"
     integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, nbc, ibid, iordo
     integer :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract (30), nbeps
     integer :: ifonc2, ifonce, iordoe, ifonc3, ifoncp, iordop, nbepsp
@@ -106,40 +106,33 @@ subroutine pofape()
 !     --- DETERMINATION DES CRITERES---
 !
     criter = ' '
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                criter, n1)
+    call getvtx(' ', 'CRITERE', scal=criter, nbret=n1)
 !
     typcha = ' '
-    call getvtx(' ', 'TYPE_CHARGE', 1, iarg, 1,&
-                typcha, n1)
+    call getvtx(' ', 'TYPE_CHARGE', scal=typcha, nbret=n1)
 !
-    call getvid(' ', 'FORMULE_GRDEQ', 1, iarg, 1,&
-                nomfor, nval)
+    call getvid(' ', 'FORMULE_GRDEQ', scal=nomfor, nbret=nval)
     if (nval .eq. 0) then
         nomfor = '        '
     endif
 !
-    call getvid(' ', 'FORMULE_VIE', 1, iarg, 1,&
-                forvie, nval)
+    call getvid(' ', 'FORMULE_VIE', scal=forvie, nbret=nval)
     if (nval .eq. 0) then
         forvie = '        '
     endif
 !
     kdomm = ' '
-    call getvtx(' ', 'DOMMAGE', 1, iarg, 1,&
-                kdomm, n1)
+    call getvtx(' ', 'DOMMAGE', scal=kdomm, nbret=n1)
 !
 ! ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                nommet, nval)
+    call getvtx(' ', 'METHODE', scal=nommet, nbret=nval)
     if (nval .eq. 0) then
         nommet = '        '
     endif
 !
 ! ---   PROJECTION SUR UN AXE OU SUR DEUX AXES
 !     (CHARGEMENT NON_PERIODIQUE UNIQUEMENT)
-    call getvtx(' ', 'PROJECTION', 1, iarg, 1,&
-                proaxe, nval)
+    call getvtx(' ', 'PROJECTION', scal=proaxe, nbret=nval)
     if (nval .eq. 0) then
         proaxe = '        '
     endif
@@ -156,18 +149,12 @@ subroutine pofape()
 !     --- RECUPERATION DE LA FONCTION CHARGEMENT ---
 !
 !CCCCCCCCC RECUPERER LA CONTRAINTE
-    call getvid('HISTOIRE', 'SIGM_XX', 1, iarg, 1,&
-                nomten(1), n1)
-    call getvid('HISTOIRE', 'SIGM_YY', 1, iarg, 1,&
-                nomten(2), n2)
-    call getvid('HISTOIRE', 'SIGM_ZZ', 1, iarg, 1,&
-                nomten(3), n3)
-    call getvid('HISTOIRE', 'SIGM_XY', 1, iarg, 1,&
-                nomten(4), n4)
-    call getvid('HISTOIRE', 'SIGM_XZ', 1, iarg, 1,&
-                nomten(5), n5)
-    call getvid('HISTOIRE', 'SIGM_YZ', 1, iarg, 1,&
-                nomten(6), n6)
+    call getvid('HISTOIRE', 'SIGM_XX', iocc=1, scal=nomten(1), nbret=n1)
+    call getvid('HISTOIRE', 'SIGM_YY', iocc=1, scal=nomten(2), nbret=n2)
+    call getvid('HISTOIRE', 'SIGM_ZZ', iocc=1, scal=nomten(3), nbret=n3)
+    call getvid('HISTOIRE', 'SIGM_XY', iocc=1, scal=nomten(4), nbret=n4)
+    call getvid('HISTOIRE', 'SIGM_XZ', iocc=1, scal=nomten(5), nbret=n5)
+    call getvid('HISTOIRE', 'SIGM_YZ', iocc=1, scal=nomten(6), nbret=n6)
     nbf = n1 + n2 + n3 + n4 + n5 + n6
 !
     if (nbf .ne. 0) then
@@ -176,18 +163,12 @@ subroutine pofape()
     endif
 !
 !CCCCCCCCC RECUPERER LA DEFORMATION TOTALE
-    call getvid('HISTOIRE', 'EPS_XX', 1, iarg, 1,&
-                nomeps(1), n1)
-    call getvid('HISTOIRE', 'EPS_YY', 1, iarg, 1,&
-                nomeps(2), n2)
-    call getvid('HISTOIRE', 'EPS_ZZ', 1, iarg, 1,&
-                nomeps(3), n3)
-    call getvid('HISTOIRE', 'EPS_XY', 1, iarg, 1,&
-                nomeps(4), n4)
-    call getvid('HISTOIRE', 'EPS_XZ', 1, iarg, 1,&
-                nomeps(5), n5)
-    call getvid('HISTOIRE', 'EPS_YZ', 1, iarg, 1,&
-                nomeps(6), n6)
+    call getvid('HISTOIRE', 'EPS_XX', iocc=1, scal=nomeps(1), nbret=n1)
+    call getvid('HISTOIRE', 'EPS_YY', iocc=1, scal=nomeps(2), nbret=n2)
+    call getvid('HISTOIRE', 'EPS_ZZ', iocc=1, scal=nomeps(3), nbret=n3)
+    call getvid('HISTOIRE', 'EPS_XY', iocc=1, scal=nomeps(4), nbret=n4)
+    call getvid('HISTOIRE', 'EPS_XZ', iocc=1, scal=nomeps(5), nbret=n5)
+    call getvid('HISTOIRE', 'EPS_YZ', iocc=1, scal=nomeps(6), nbret=n6)
     nbeps = n1 + n2 + n3 + n4 + n5 + n6
 !
     if (nbeps .ne. 0) then
@@ -196,18 +177,12 @@ subroutine pofape()
     endif
 !
 !CCCCCCCCC RECUPERER LA DEFORMATION PLASTIQUE
-    call getvid('HISTOIRE', 'EPSP_XX', 1, iarg, 1,&
-                nomepp(1), n1)
-    call getvid('HISTOIRE', 'EPSP_YY', 1, iarg, 1,&
-                nomepp(2), n2)
-    call getvid('HISTOIRE', 'EPSP_ZZ', 1, iarg, 1,&
-                nomepp(3), n3)
-    call getvid('HISTOIRE', 'EPSP_XY', 1, iarg, 1,&
-                nomepp(4), n4)
-    call getvid('HISTOIRE', 'EPSP_XZ', 1, iarg, 1,&
-                nomepp(5), n5)
-    call getvid('HISTOIRE', 'EPSP_YZ', 1, iarg, 1,&
-                nomepp(6), n6)
+    call getvid('HISTOIRE', 'EPSP_XX', iocc=1, scal=nomepp(1), nbret=n1)
+    call getvid('HISTOIRE', 'EPSP_YY', iocc=1, scal=nomepp(2), nbret=n2)
+    call getvid('HISTOIRE', 'EPSP_ZZ', iocc=1, scal=nomepp(3), nbret=n3)
+    call getvid('HISTOIRE', 'EPSP_XY', iocc=1, scal=nomepp(4), nbret=n4)
+    call getvid('HISTOIRE', 'EPSP_XZ', iocc=1, scal=nomepp(5), nbret=n5)
+    call getvid('HISTOIRE', 'EPSP_YZ', iocc=1, scal=nomepp(6), nbret=n6)
     nbepsp = n1 + n2 + n3 + n4 + n5 + n6
 !
     if (nbepsp .ne. 0) then
@@ -315,8 +290,7 @@ subroutine pofape()
 !CC  RECUPERER LE MATERIAU
 !
     nommat = ' '
-    call getvid(' ', 'MATER', 1, iarg, 1,&
-                nommat, n1)
+    call getvid(' ', 'MATER', scal=nommat, nbret=n1)
 !
     if (crepse) then
         if ((nbeps + nbepsp) .eq. 0) then
@@ -499,8 +473,7 @@ subroutine pofape()
     if (criter .ne. 'FORMULE_CRITERE') then
 !     --- CORRECTION POUR CALCUL DU DOMMAGE ----
 !
-        call getvr8(' ', 'COEF_CORR', 1, iarg, 1,&
-                    pcorr, n1)
+        call getvr8(' ', 'COEF_CORR', scal=pcorr, nbret=n1)
         if (n1 .ne. 0) then
             vmax = 2.d0*(rcrit+val(2))*pcorr
             vmin = 0.d0

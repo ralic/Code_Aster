@@ -1,12 +1,12 @@
 subroutine exlim3(motfaz, base, modelz, ligrel)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
@@ -83,8 +83,7 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !     ------------------------------------------------------
     if (getexm(motfac,'TOUT') .eq. 1) then
         do 10,iocc=1,nocc
-        call getvtx(motfac, 'TOUT', iocc, iarg, 1,&
-                    k8bid, n1)
+        call getvtx(motfac, 'TOUT', iocc=iocc, scal=k8bid, nbret=n1)
         if (n1 .eq. 1) goto 60
 10      continue
     endif

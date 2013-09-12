@@ -24,9 +24,9 @@ subroutine chcore(chou)
 !    - SA PARTIE IMAGINAIRE EST NULLE.
 !     -----------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -50,8 +50,7 @@ subroutine chcore(chou)
     call jemarq()
 !
 !     RECUPERATION DU CHAMP REEL
-    call getvid(' ', 'CHAM_GD', 0, iarg, 1,&
-                chin, iret)
+    call getvid(' ', 'CHAM_GD', scal=chin, nbret=iret)
 !
 !     VERIFICATION : CHIN REEL?
     call dismoi('F', 'NOM_GD', chin, 'CHAMP', ibid,&

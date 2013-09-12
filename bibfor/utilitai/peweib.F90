@@ -2,18 +2,17 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                   nh, nbocc, iresu, nomcmd)
     implicit none
 #include "jeveux.h"
-!
+#include "asterc/gettco.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chmrck.h"
 #include "asterfort/chpve2.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlim3.h"
-#include "asterc/gettco.h"
 #include "asterfort/getvem.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -38,6 +37,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iresu, nh, nbocc
     character(len=*) :: resu, modele, mate, cara, nomcmd
 !     ------------------------------------------------------------------
@@ -121,32 +121,28 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     inst = 0.d0
 !
     nd = 0
-    if (.not.opti) call getvid(' ', 'CHAM_GD', 1, iarg, 1,&
-                               contg, nd)
+    if (.not.opti) then
+        call getvid(' ', 'CHAM_GD', scal=contg, nbret=nd)
+    endif
     if (nd .ne. 0) then
         call chpve2(contg, 3, tabtyp, ier)
     endif
     ni = 0
-    if (.not.opti) call getvr8(' ', 'INST', 1, iarg, 1,&
-                               inst, ni)
+    if (.not.opti) then
+        call getvr8(' ', 'INST', scal=inst, nbret=ni)
+    endif
 !
     if (.not.opti) then
-        call getvid(motcl2, 'RESULTAT', 1, iarg, 1,&
-                    resul, nr)
+        call getvid(motcl2, 'RESULTAT', iocc=1, scal=resul, nbret=nr)
     else
-        call getvid(motcl2, 'EVOL_NOLI', iresu, iarg, 1,&
-                    resul, nr)
+        call getvid(motcl2, 'EVOL_NOLI', iocc=iresu, scal=resul, nbret=nr)
     endif
-    call getvtx(motcl1, 'OPTION', 1, iarg, 1,&
-                optcal(1), np)
-    call getvtx(motcl1, 'CORR_PLAST', 1, iarg, 1,&
-                optcal(2), nq)
+    call getvtx(motcl1, 'OPTION', iocc=1, scal=optcal(1), nbret=np)
+    call getvtx(motcl1, 'CORR_PLAST', iocc=1, scal=optcal(2), nbret=nq)
     if (nbocc .gt. 1) then
         do 10 i = 2, nbocc
-            call getvtx(motcl1, 'OPTION', i, iarg, 1,&
-                        toptca(1), n1)
-            call getvtx(motcl1, 'CORR_PLAST', i, iarg, 1,&
-                        toptca(2), n2)
+            call getvtx(motcl1, 'OPTION', iocc=i, scal=toptca(1), nbret=n1)
+            call getvtx(motcl1, 'CORR_PLAST', iocc=i, scal=toptca(2), nbret=n2)
             if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
                 call u2mess('F', 'UTILITAI3_83')
             endif
@@ -185,11 +181,13 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         endif
 !
         np = 0
-        if (.not.opti) call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                                   prec, np)
+        if (.not.opti) then
+            call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+        endif
         nc = 0
-        if (.not.opti) call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                                   crit, nc)
+        if (.not.opti) then
+            call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
+        endif
 !
         if (.not.opti) then
             call rsutnu(resul, motcl2, 1, knum, nbordr,&
@@ -219,8 +217,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 !     --- VERIF D'HOMOGENEITE WEIBULL ---
 !
     if (.not.opti) then
-        call getvid(motcl2, 'CHAM_MATER', iresu, iarg, 1,&
-                    chmat, n3)
+        call getvid(motcl2, 'CHAM_MATER', iocc=iresu, scal=chmat, nbret=n3)
         if (n3 .eq. 0) chmat = mate(1:8)
     endif
     call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm)
@@ -351,14 +348,12 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
             else
                 inum = iresu
             endif
-            call getvtx(motcl3, 'TOUT', inum, iarg, 0,&
-                        k8b, nt)
+            call getvtx(motcl3, 'TOUT', iocc=inum, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', motcl3, 'MAILLE', inum,&
                         iarg, 0, k8b, nm)
             call getvem(noma, 'GROUP_MA', motcl3, 'GROUP_MA', inum,&
                         iarg, 0, k8b, ng)
-            call getvr8(motcl3, 'COEF_MULT', inum, iarg, 1,&
-                        coesym, n1)
+            call getvr8(motcl3, 'COEF_MULT', iocc=inum, scal=coesym, nbret=n1)
 !
             if (nt .ne. 0) then
                 call mesomm(chelem, mxvale, ibid, zr(lvale), c16b,&

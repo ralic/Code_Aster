@@ -1,11 +1,10 @@
 subroutine ssgngm(noma, iocc, nbgnaj)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gmgnre.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -21,6 +20,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -71,8 +71,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 !
 !     ---  CAS : "TOUT_GROUP_MA"
 !     --------------------------
-    call getvtx('CREA_GROUP_NO', 'TOUT_GROUP_MA', iocc, iarg, 1,&
-                koui, n1)
+    call getvtx('CREA_GROUP_NO', 'TOUT_GROUP_MA', iocc=iocc, scal=koui, nbret=n1)
     if (n1 .eq. 1) then
         call jelira(noma//'.GROUPEMA', 'NMAXOC', nbgma)
         call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
@@ -86,12 +85,10 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     else
 !
 !      CRITERE DE SELECTION
-        call getvtx('CREA_GROUP_NO', 'CRIT_NOEUD', iocc, iarg, 1,&
-                    selec, ibid)
+        call getvtx('CREA_GROUP_NO', 'CRIT_NOEUD', iocc=iocc, scal=selec, nbret=ibid)
         call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
                     iarg, 0, k8b, nb)
-        call getvtx('CREA_GROUP_NO', 'NOM', iocc, iarg, 0,&
-                    k8b, no)
+        call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=0, nbret=no)
         nbgma = -nb
         call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
         call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
@@ -100,8 +97,8 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             nbgno = -no
             if (nbgno .ne. nbgma) call u2mess('F', 'MODELISA7_8')
             call wkvect('&&SSGNGM.NOM_GNO', 'V V K24', nbgno, iangno)
-            call getvtx('CREA_GROUP_NO', 'NOM', iocc, iarg, nbgno,&
-                        zk24(iangno), no)
+            call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=nbgno, vect=zk24(iangno),&
+                        nbret=no)
         else
             iangno = ialgma
         endif
@@ -139,7 +136,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             call u2mesk('A', 'MODELISA7_9', 1, nomgno)
         else
             call jecroc(jexnom(grpno, nomgno))
-            call jeecra(jexnom(grpno, nomgno), 'LONMAX', max(n1,1))
+            call jeecra(jexnom(grpno, nomgno), 'LONMAX', max(n1, 1))
             call jeecra(jexnom(grpno, nomgno), 'LONUTI', n1)
             call jeveuo(jexnom(grpno, nomgno), 'E', iad2)
             do 40 j = 1, n1

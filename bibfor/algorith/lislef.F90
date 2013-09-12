@@ -18,17 +18,17 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/exisd.h"
 #include "asterfort/focstc.h"
 #include "asterfort/focste.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lispcp.h"
@@ -90,30 +90,24 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
 !
 ! --- TYPE DE FONCTION MULTIPLICATRICE PRESENTE: REELLE OU COMPLEXE ?
 !
-    call getvid(motfac, 'FONC_MULT', iexci, iarg, 1,&
-                k24bid, nfreel)
+    call getvid(motfac, 'FONC_MULT', iocc=iexci, scal=k24bid, nbret=nfreel)
     if (eximcp .eq. 1) then
-        call getvid(motfac, 'FONC_MULT_C', iexci, iarg, 1,&
-                    k24bid, nfcplx)
+        call getvid(motfac, 'FONC_MULT_C', iocc=iexci, scal=k24bid, nbret=nfcplx)
     endif
 !
 ! --- FONCTIONS MULTIPLICATIVES DES CHARGES - CAS COMPLEXE
 !
     if (eximcp .eq. 1) then
         if (nfcplx .ne. 0) then
-            call getvid(motfac, 'FONC_MULT_C', iexci, iarg, 1,&
-                        nomfct, ibid)
+            call getvid(motfac, 'FONC_MULT_C', iocc=iexci, scal=nomfct, nbret=ibid)
             typfct = 'FONCT_COMP'
         else if (nfreel.ne.0) then
-            call getvid(motfac, 'FONC_MULT', iexci, iarg, 1,&
-                        nomfct, ibid)
+            call getvid(motfac, 'FONC_MULT', iocc=iexci, scal=nomfct, nbret=ibid)
             typfct = 'FONCT_REEL'
         else if ((nfcplx.eq.0).and.(nfreel.eq.0)) then
-            call getvc8(motfac, 'COEF_MULT_C', iexci, iarg, 1,&
-                        ccoef, nccplx)
+            call getvc8(motfac, 'COEF_MULT_C', iocc=iexci, scal=ccoef, nbret=nccplx)
             if (nccplx .eq. 0) then
-                call getvr8(motfac, 'COEF_MULT', iexci, iarg, 1,&
-                            rcoef, ncreel)
+                call getvr8(motfac, 'COEF_MULT', iocc=iexci, scal=rcoef, nbret=ncreel)
                 ASSERT(ncreel.ne.0)
                 lcrfcr = .true.
             else
@@ -133,8 +127,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
         rcoef = 1.d0
         lcrfcr = .true.
     else
-        call getvid(motfac, 'FONC_MULT', iexci, iarg, 1,&
-                    nomfct, ibid)
+        call getvid(motfac, 'FONC_MULT', iocc=iexci, scal=nomfct, nbret=ibid)
         typfct = 'FONCT_REEL'
     endif
 !

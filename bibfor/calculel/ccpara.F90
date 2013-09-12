@@ -3,10 +3,9 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -17,6 +16,7 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
 #include "asterfort/rsexch.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
+!
     integer :: numord, nordm1
     character(len=8) :: modele, resuin, resuou, mateco, carael
     character(len=16) :: option
@@ -160,8 +160,7 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
                         chdret)
 !
         else if (curcha.eq.chnova) then
-            call getvtx(' ', 'NOM_VARI', 0, iarg, 1,&
-                        vari, ibid)
+            call getvtx(' ', 'NOM_VARI', scal=vari, nbret=ibid)
             call mecact('V', chnova, 'MAILLA', mailla, 'NEUT_K24',&
                         1, 'Z1', ibid, rbid, cbid,&
                         vari)

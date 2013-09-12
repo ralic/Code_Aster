@@ -3,12 +3,11 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
                   ldmax, distma, alarm2)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inslri.h"
 #include "asterfort/jedema.h"
@@ -27,6 +26,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
 #include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres, k16bid, nomcmd
     character(len=*) :: geom1, geom2
     character(len=8) :: moa1, moa2
@@ -306,8 +306,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
         alarme='OUI'
         call getres(k16bid, k16bid, nomcmd)
         if (nomcmd .eq. 'PROJ_CHAMP') then
-            call getvtx(' ', 'ALARME', 1, iarg, 1,&
-                        alarme, ibid)
+            call getvtx(' ', 'ALARME', scal=alarme, nbret=ibid)
         endif
         if (alarm2 .ne. ' ') alarme=alarm2
 !

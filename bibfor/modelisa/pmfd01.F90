@@ -30,7 +30,6 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cescre.h"
@@ -39,6 +38,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -67,8 +67,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
 !
     call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
                 kbid, ibid)
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                modele, ibid)
+    call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
     ligrmo = modele//'.MODELE'
 !
     call getfac('MULTIFIBRE', nb1)

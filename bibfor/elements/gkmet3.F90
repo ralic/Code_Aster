@@ -4,14 +4,14 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
     implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gsyste.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nnoff, iadrgk, iadgks, iadgki, num
     character(len=8) :: modele
     character(len=24) :: chfond, abscur
@@ -88,8 +88,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
         gith(i)=g1th(i)*g1th(i) +g2th(i)*g2th(i) +g3th(i)*g3th(i)
 10  end do
 !
-    call getvtx('LISSAGE', 'LISSAGE_G', 1, iarg, 1,&
-                lissg, ibid)
+    call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ibid)
 !
     if (lissg .eq. 'LAGRANGE_NO_NO') then
 !

@@ -1,15 +1,14 @@
 subroutine fonnof(resu, noma, typfon, nbnoff)
 !
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/cgnop0.h"
 #include "asterfort/dfflon.h"
 #include "asterfort/dfftan.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/gmgnre.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -24,6 +23,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 #include "asterfort/jexnum.h"
 #include "asterfort/oreino.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, resu, typfon
     integer :: nbnoff
 ! ======================================================================
@@ -78,11 +78,9 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !                        LE MAILLAGE, LE FOND
 !     ------------------------------------------------------------------
 !
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                noma, n1)
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=n1)
 !
-    call getvr8(' ', 'PREC_NORM', 1, iarg, 1,&
-                precn, n1)
+    call getvr8(' ', 'PREC_NORM', scal=precn, nbret=n1)
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', igeom)
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoe,&

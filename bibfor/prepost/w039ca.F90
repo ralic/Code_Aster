@@ -1,12 +1,12 @@
 subroutine w039ca(ifi, form)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lgphmo.h"
@@ -62,8 +62,7 @@ subroutine w039ca(ifi, form)
 !
 !       -- CHAM_MATER :
 !       ----------------
-        call getvid('CONCEPT', 'CHAM_MATER', iocc, iarg, 1,&
-                    chmat, n1)
+        call getvid('CONCEPT', 'CHAM_MATER', iocc=iocc, scal=chmat, nbret=n1)
         if (n1 .eq. 1) then
             if (.not.lexi) then
                 call dismoi('F', 'NOM_MAILLA', chmat, 'CHAM_MATER', ibid,&
@@ -79,8 +78,7 @@ subroutine w039ca(ifi, form)
 !
 !       -- CARA_ELEM :
 !       ----------------
-        call getvid('CONCEPT', 'CARA_ELEM', iocc, iarg, 1,&
-                    carele, n1)
+        call getvid('CONCEPT', 'CARA_ELEM', iocc=iocc, scal=carele, nbret=n1)
         if (n1 .eq. 1) then
             if (.not.lexi) then
                 call dismoi('F', 'NOM_MAILLA', carele, 'CARA_ELEM', ibid,&
@@ -130,12 +128,10 @@ subroutine w039ca(ifi, form)
             titre='Orientation des coques et des poutres'
             call w039c1(carele//'.CARORIEN', ifi, form, ligrel, titre)
 !
-            call getvtx('CONCEPT', 'REPERE_LOCAL', iocc, iarg, 1,&
-                        rplo, ibid)
+            call getvtx('CONCEPT', 'REPERE_LOCAL', iocc=iocc, scal=rplo, nbret=ibid)
             ASSERT(ibid.eq.1)
             if (rplo .eq. 'OUI') then
-                call getvid('CONCEPT', 'MODELE', iocc, iarg, 1,&
-                            modele, ibid)
+                call getvid('CONCEPT', 'MODELE', iocc=iocc, scal=modele, nbret=ibid)
                 ASSERT(ibid.eq.1)
 !
                 titre = 'vecteur du repere local'
@@ -148,8 +144,7 @@ subroutine w039ca(ifi, form)
 !
 !       -- CHARGE :
 !       ----------------
-        call getvid('CONCEPT', 'CHARGE', iocc, iarg, 1,&
-                    charge, n1)
+        call getvid('CONCEPT', 'CHARGE', iocc=iocc, scal=charge, nbret=n1)
         if (n1 .eq. 1) then
             if (.not.lexi) then
                 call dismoi('F', 'NOM_MAILLA', charge, 'CHARGE', ibid,&

@@ -2,13 +2,12 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                   nbcpc, nlscpc, nomojb, repere, option,&
                   quant, codir, dir, iret)
 ! aslint: disable=W1501
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2trgi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -26,6 +25,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 #include "asterfort/u2mess.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: mcf
     character(len=24) :: nlscpc, nomojb, quant
     character(len=19) :: nch19
@@ -109,22 +109,14 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     call jenuno(jexnum('&CATA.GD.NOMGD' , gd), nomgd)
     call jeveuo(nlscpc, 'L', alscpc)
     if (mcf(1:6) .eq. 'ACTION') then
-        call getvtx(mcf, 'TOUT_CMP', iocc, iarg, 0,&
-                    k8b, ntc)
-        call getvtx(mcf, 'NOM_CMP', iocc, iarg, 0,&
-                    k8b, nnc)
-        call getvtx(mcf, 'INVARIANT', iocc, iarg, 0,&
-                    k8b, nin)
-        call getvtx(mcf, 'ELEM_PRINCIPAUX', iocc, iarg, 0,&
-                    k8b, nep)
-        call getvtx(mcf, 'TRAC_NOR', iocc, iarg, 0,&
-                    k8b, ntn2)
-        call getvtx(mcf, 'TRAC_DIR', iocc, iarg, 0,&
-                    k8b, ntd2)
-        call getvtx(mcf, 'RESULTANTE', iocc, iarg, 0,&
-                    k8b, nso)
-        call getvtx(mcf, 'REPERE', iocc, iarg, 1,&
-                    repere, i)
+        call getvtx(mcf, 'TOUT_CMP', iocc=iocc, nbval=0, nbret=ntc)
+        call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nnc)
+        call getvtx(mcf, 'INVARIANT', iocc=iocc, nbval=0, nbret=nin)
+        call getvtx(mcf, 'ELEM_PRINCIPAUX', iocc=iocc, nbval=0, nbret=nep)
+        call getvtx(mcf, 'TRAC_NOR', iocc=iocc, nbval=0, nbret=ntn2)
+        call getvtx(mcf, 'TRAC_DIR', iocc=iocc, nbval=0, nbret=ntd2)
+        call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=0, nbret=nso)
+        call getvtx(mcf, 'REPERE', iocc=iocc, scal=repere, nbret=i)
         if (repere .eq. 'UTILISAT') then
 !           --- REPERE TRAITE DANS "EXTCHE" OU "EXTCHN" ---
             repere = 'GLOBAL  '
@@ -292,8 +284,8 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 !
 !      /* LA DIRECTION EST AU PLUS SUIVANT (X,Y,Z) */
 !
-        call getvr8(mcf, 'DIRECTION', iocc, iarg, 3,&
-                    dir, ibid)
+        call getvr8(mcf, 'DIRECTION', iocc=iocc, nbval=3, vect=dir,&
+                    nbret=ibid)
         if (abs(dir(1)) .lt. 1.0d-6) then
             dirx = .false.
         else

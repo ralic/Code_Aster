@@ -31,13 +31,12 @@ subroutine defint(mailla, nomres)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/compno.h"
 #include "asterfort/defdda.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -53,6 +52,7 @@ subroutine defint(mailla, nomres)
 #include "asterfort/recuno.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !-----------------------------------------------------------------------
@@ -110,8 +110,7 @@ subroutine defint(mailla, nomres)
     nbint=0
 !
     do 10 i = 1, ioc
-        call getvtx(int, nom, i, iarg, 1,&
-                    kar80, nbval)
+        call getvtx(int, nom, iocc=i, scal=kar80, nbret=nbval)
         if (nbval .gt. 0) nbint=nbint+1
 10  end do
 !
@@ -138,13 +137,10 @@ subroutine defint(mailla, nomres)
 !   VERIFICATION EXCLUSIVITE DE NOEUD ET GROUPNO PAR OCCURENCE MOTFAC
 !             ET STOCKAGE DES NOMS DES INTERFACES
 !
-    call getvtx(int, no, 1, iarg, 0,&
-                k8bid, nbvan)
-    call getvtx(int, grno, 1, iarg, 0,&
-                k8bid, nbvag)
+    call getvtx(int, no, iocc=1, nbval=0, nbret=nbvan)
+    call getvtx(int, grno, iocc=1, nbval=0, nbret=nbvag)
 !
-    call getvtx(int, nom, 1, iarg, 1,&
-                kar80, nbval)
+    call getvtx(int, nom, iocc=1, scal=kar80, nbret=nbval)
     nomcou=kar80
     call jecroc(jexnom(nomint, nomcou))
     call jecroc(jexnom(notint, nomcou))
@@ -159,8 +155,7 @@ subroutine defint(mailla, nomres)
     if (ioc .gt. 1) then
 !
         do 20 i = 2, ioc
-            call getvtx(int, nom, i, iarg, 1,&
-                        kar80, nbval)
+            call getvtx(int, nom, iocc=i, scal=kar80, nbret=nbval)
             nomcou=kar80
             call jeexin(jexnom(notint, nomcou), iret)
             if (iret .ne. 0) then
@@ -169,10 +164,8 @@ subroutine defint(mailla, nomres)
                 call u2mesg('F', 'ALGORITH12_78', 1, valk, 1,&
                             vali, 0, 0.d0)
             endif
-            call getvtx(int, no, i, iarg, 0,&
-                        k8bid, nbvan)
-            call getvtx(int, grno, i, iarg, 0,&
-                        k8bid, nbvag)
+            call getvtx(int, no, iocc=i, nbval=0, nbret=nbvan)
+            call getvtx(int, grno, iocc=i, nbval=0, nbret=nbvag)
 !
             if (nbval .gt. 0) then
                 maxgr=max(maxgr,nbgr)
@@ -247,11 +240,9 @@ subroutine defint(mailla, nomres)
 !
 !-----STOCKAGE DU TYPE DE L'INTERFACE COURANTE--------------------------
 !
-        call getvtx(int, nom, ideb, iarg, 1,&
-                    kar80, nbbid)
+        call getvtx(int, nom, iocc=ideb, scal=kar80, nbret=nbbid)
         nomcou=kar80
-        call getvtx(int, 'TYPE', ideb, iarg, 1,&
-                    kar80, nbval)
+        call getvtx(int, 'TYPE', iocc=ideb, scal=kar80, nbret=nbval)
         type=kar80
         zk8(lltyp+i-1)=type
 !
@@ -259,10 +250,9 @@ subroutine defint(mailla, nomres)
 !
         nbno=0
         do 40 j = ideb, ifin
-            call getvtx(int, no, j, iarg, 0,&
-                        k8bid, nbvan)
-            call getvtx(int, grno, j, iarg, maxgr,&
-                        zk24(ltlgr), nbvag)
+            call getvtx(int, no, iocc=j, nbval=0, nbret=nbvan)
+            call getvtx(int, grno, iocc=j, nbval=maxgr, vect=zk24(ltlgr),&
+                        nbret=nbvag)
             call compno(mailla, nbvag, zk24(ltlgr), nbuf)
             nbno=nbno-nbvan+nbuf
 40      continue
@@ -289,10 +279,10 @@ subroutine defint(mailla, nomres)
 !
         nbpre=0
         do 50 j = ideb, ifin
-            call getvtx(int, no, j, iarg, maxno,&
-                        zk8(ltlno), nbvan)
-            call getvtx(int, grno, j, iarg, maxgr,&
-                        zk24(ltlgr), nbvag)
+            call getvtx(int, no, iocc=j, nbval=maxno, vect=zk8(ltlno),&
+                        nbret=nbvan)
+            call getvtx(int, grno, iocc=j, nbval=maxgr, vect=zk24(ltlgr),&
+                        nbret=nbvag)
             call recuno(mailla, nbvan, nbvag, zk8(ltlno), zk24(ltlgr),&
                         nbcou, zi(llnin+nbpre))
 !
@@ -317,8 +307,7 @@ subroutine defint(mailla, nomres)
 !
 !----------------RECUPERATION FREQUENCE POUR CB_HARMO-------------------
 !
-    call getvr8('   ', 'FREQ', 1, iarg, 1,&
-                freq, ioc)
+    call getvr8('   ', 'FREQ', iocc=1, scal=freq, nbret=ioc)
     call wkvect(nomres//'.IDC_DY_FREQ', 'G V R', 1, ldfreq)
     zr(ldfreq)=freq
 !

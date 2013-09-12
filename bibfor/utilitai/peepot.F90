@@ -1,16 +1,16 @@
 subroutine peepot(resu, modele, mate, cara, nh,&
                   nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
+#include "asterc/gettco.h"
+#include "asterc/r8vide.h"
 #include "asterfort/chpve2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim3.h"
-#include "asterc/gettco.h"
 #include "asterfort/getvem.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -27,7 +27,6 @@ subroutine peepot(resu, modele, mate, cara, nh,&
 #include "asterfort/mechti.h"
 #include "asterfort/meharm.h"
 #include "asterfort/peenca.h"
-#include "asterc/r8vide.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
@@ -39,6 +38,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara
 !     ------------------------------------------------------------------
@@ -104,15 +104,12 @@ subroutine peepot(resu, modele, mate, cara, nh,&
     calpha = (1.d0,1.d0)
     chtemp= ' '
 !
-    call getvid(' ', 'CHAM_GD', 1, iarg, 1,&
-                depla, nd)
+    call getvid(' ', 'CHAM_GD', scal=depla, nbret=nd)
     if (nd .ne. 0) then
         call chpve2(depla, 3, tabtyp, ier)
     endif
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resul, nr)
-    call getvr8(' ', 'INST', 1, iarg, 1,&
-                inst, ni)
+    call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
+    call getvr8(' ', 'INST', scal=inst, nbret=ni)
     if (ni .ne. 0) exitim = .true.
     if (nr .ne. 0) then
         call gettco(resul, typres)
@@ -150,10 +147,8 @@ subroutine peepot(resu, modele, mate, cara, nh,&
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbpard, nopard, typard)
     else
-        call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                    prec, np)
-        call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                    crit, nc)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+        call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
         call rsutnu(resul, ' ', 0, knum, nbordr,&
                     prec, crit, iret)
         if (iret .ne. 0) goto 80
@@ -259,8 +254,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
         call peenca(chelem, nbpaep, varpep, 0, ibid)
 !
         do 60 iocc = 1, nbocc
-            call getvtx(option(1:9), 'TOUT', iocc, iarg, 0,&
-                        k8b, nt)
+            call getvtx(option(1:9), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
                         iarg, 0, k8b, nm)
             call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&

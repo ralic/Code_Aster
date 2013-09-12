@@ -5,8 +5,8 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -90,16 +90,13 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
         endif
     else
 !
-        call getvid(' ', 'MODELE', 0, iarg, 1,&
-                    modele, n1)
-        call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                    cara, n2)
+        call getvid(' ', 'MODELE', scal=modele, nbret=n1)
+        call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n2)
         call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
                     k8b, ie)
         if ((n2.eq.0) .and. (k8b(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_39')
 !
-        call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                    materi, n3)
+        call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
         call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
                     k8b, ie)
         if ((n3.eq.0) .and. (k8b(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_40')
@@ -131,10 +128,8 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
             call wkvect(kcha//'.LCHA', 'V V K8', n5, icha)
             call wkvect(kcha//'.FCHA', 'V V K8', n5, ikf)
             do 20 iexcit = 1, n5
-                call getvid('EXCIT', 'CHARGE', iexcit, iarg, 1,&
-                            zk8(icha+ iexcit-1), n)
-                call getvid('EXCIT', 'FONC_MULT', iexcit, iarg, 1,&
-                            k8b, n)
+                call getvid('EXCIT', 'CHARGE', iocc=iexcit, scal=zk8(icha+ iexcit-1), nbret=n)
+                call getvid('EXCIT', 'FONC_MULT', iocc=iexcit, scal=k8b, nbret=n)
                 if (n .ne. 0) then
                     zk8(ikf+iexcit-1) = k8b
                 endif

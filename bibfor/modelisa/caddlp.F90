@@ -5,14 +5,13 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_excl_keyw.h"
-#include "asterfort/getnode.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getnode.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -48,10 +47,10 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +75,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     complex(kind=8) :: valimc(n_max_keyword)
     character(len=8) :: valimf(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
-
+!
 !
     integer :: cmp_nb_glo
     parameter (cmp_nb_glo=6)
@@ -86,7 +85,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     character(len=8) :: cmp_valf_glo(cmp_nb_glo)
     character(len=16) :: cmp_name_glo(cmp_nb_glo)
 !
-    integer :: nddli,  iocc,  ibid, ino
+    integer :: nddli, iocc, ibid, ino
     integer :: ier, nbec, nbnoeu, n_keyword
     integer :: jdirec, jdimen, nume_node
     integer :: jnom, nbcmp, jcompt, jprnm
@@ -131,7 +130,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using in load_read_keyw
 !
     keywordexcl = '&&CADDLP.KEYWORDEXCL'
-    n_suffix    = 0
+    n_suffix = 0
     list_suffix = ' '
     call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
@@ -157,8 +156,8 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLP.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
-                    list_node, nb_node)
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
+                     list_node, nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Counting components
@@ -173,29 +172,29 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 !
 ! --------- Read affected components and their values
 !
-            call char_read_keyw(keywordfact, iocc , vale_type, n_keyexcl, keywordexcl,  &
-                                n_max_keyword, n_keyword ,keywordlist, ddlimp, valimr, &
+            call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+                                n_max_keyword, n_keyword, keywordlist, ddlimp, valimr,&
                                 valimf, valimc)
             ASSERT(n_keyword.le.cmp_nb_glo)
 !
 ! --------- Change components with local coordinate system
 !
-            call char_beam_lcs(mesh, model, ncncin, keywordfact, iocc, nume_node,&
-                               name_node, keywordlist, valimr, cmp_name_glo, &
+            call char_beam_lcs(mesh, model, ncncin, keywordfact, iocc,&
+                               nume_node, name_node, keywordlist, valimr, cmp_name_glo,&
                                cmp_acti_glo, cmp_valr_glo)
 !
 ! --------- Final linear relation
 !
-            call afddli(model, nbcmp, zk8(jnom), nume_node, name_node, &
-                        zi(jprnm-1+(nume_node-1)*nbec+1), zi(jdimen+nume_node-1),  &
-                        zr(jdirec+3*(nume_node-1)), coef_type,  cmp_nb_glo, cmp_name_glo,  &
-                        cmp_acti_glo,vale_type, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,  &
-                        zi(jcompt), lisrel, .false., ibid, ibid, &
+            call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
+                        zi(jprnm-1+(nume_node-1)*nbec+1), zi(jdimen+nume_node-1),&
+                        zr(jdirec+3*(nume_node-1)), coef_type, cmp_nb_glo, cmp_name_glo,&
+                        cmp_acti_glo, vale_type, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,&
+                        zi(jcompt), lisrel, .false., ibid, ibid,&
                         k19bid, k19bid, k19bid, k19bid)
         enddo
-        do i_keyword = 1,6
+        do i_keyword = 1, 6
             keyword = cmp_name_glo(i_keyword)
-            if (cmp_acti_glo(i_keyword).eq.1) then
+            if (cmp_acti_glo(i_keyword) .eq. 1) then
                 if (zi(jcompt-1+i_keyword) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1, keyword)
             endif
         enddo
@@ -211,7 +210,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     call jedetr('&&CADDLP.DIMENSION')
     call jedetr(ncncin)
 !
-999 continue
+999  continue
 !
     call jedema()
 !

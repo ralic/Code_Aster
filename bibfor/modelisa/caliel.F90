@@ -18,9 +18,9 @@ subroutine caliel(fonrez, chargz)
 ! ======================================================================
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -101,8 +101,7 @@ subroutine caliel(fonrez, chargz)
                 k19b, ibid)
 !
     do 10 iocc = 1, nliai
-        call getvtx(motfac, 'OPTION', iocc, iarg, 1,&
-                    option, iop)
+        call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
         if (option .eq. '3D_POU') then
             call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
         else if (option.eq.'2D_POU') then

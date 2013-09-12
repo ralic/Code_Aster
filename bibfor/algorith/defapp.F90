@@ -2,7 +2,6 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
                   geomf)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/copisd.h"
@@ -16,6 +15,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 #include "asterfort/jexnom.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: alpha
     character(len=1) :: base
     character(len=8) :: depla, k8b, ma

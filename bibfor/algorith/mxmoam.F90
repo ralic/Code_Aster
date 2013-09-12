@@ -18,12 +18,11 @@ subroutine mxmoam(sddyna, nbmodp)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -38,6 +37,7 @@ subroutine mxmoam(sddyna, nbmodp)
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
+!
     character(len=19) :: sddyna
     integer :: nbmodp
 !
@@ -107,20 +107,16 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 ! --- MATRICE DES MODES MECA
 !
-    call getvid('PROJ_MODAL', 'MODE_MECA', 1, iarg, 1,&
-                modmec, nbmd)
+    call getvid('PROJ_MODAL', 'MODE_MECA', iocc=1, scal=modmec, nbret=nbmd)
     if (nbmd .eq. 0) then
         ASSERT(.false.)
     endif
 !
 ! --- MASSE, RIGIDITE ET AMORTISSEMENT GENERALISES
 !
-    call getvid('PROJ_MODAL', 'MASS_GENE', 1, iarg, 1,&
-                magene, nbmg)
-    call getvid('PROJ_MODAL', 'RIGI_GENE', 1, iarg, 1,&
-                rigene, nbrg)
-    call getvid('PROJ_MODAL', 'AMOR_GENE', 1, iarg, 1,&
-                amgene, nbag)
+    call getvid('PROJ_MODAL', 'MASS_GENE', iocc=1, scal=magene, nbret=nbmg)
+    call getvid('PROJ_MODAL', 'RIGI_GENE', iocc=1, scal=rigene, nbret=nbrg)
+    call getvid('PROJ_MODAL', 'AMOR_GENE', iocc=1, scal=amgene, nbret=nbag)
 !
 ! --- IL FAUT MASS_GENE _ET_ RIGI_GENE (VOIR CAPY)
 !
@@ -136,8 +132,7 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 ! --- NOMBRE DE MODES
 !
-    call getvis('PROJ_MODAL', 'NB_MODE', 1, iarg, 1,&
-                nbmax, ibid)
+    call getvis('PROJ_MODAL', 'NB_MODE', iocc=1, scal=nbmax, nbret=ibid)
     if (nbmax .ne. nbmodp) then
         vali(1) = nbmodp
         vali(2) = nbmax
@@ -263,10 +258,10 @@ subroutine mxmoam(sddyna, nbmodp)
 !
         if (nbgene .ne. 0) then
             do 11 ifonc = 1, nbgene
-                call getvid('EXCIT_GENE', 'FONC_MULT', ifonc, iarg, 1,&
-                            zk24(jfonge+ifonc-1), nf)
-                call getvid('EXCIT_GENE', 'VECT_GENE', ifonc, iarg, 1,&
-                            zk24(jlifge+ifonc-1), nf)
+                call getvid('EXCIT_GENE', 'FONC_MULT', iocc=ifonc, scal=zk24(jfonge+ifonc-1),&
+                            nbret=nf)
+                call getvid('EXCIT_GENE', 'VECT_GENE', iocc=ifonc, scal=zk24(jlifge+ifonc-1),&
+                            nbret=nf)
                 call jeveuo(zk24(jlifge+ifonc-1)(1:19)//'.VALE', 'L', jfge)
                 do 12 imode = 1, nbmodp
                     zr(jforge+(ifonc-1)*nbmodp+imode-1) = zr(jfge+ imode-1)

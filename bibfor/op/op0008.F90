@@ -21,14 +21,13 @@ subroutine op0008()
 !
 ! ......................................................................
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -45,6 +44,7 @@ subroutine op0008()
 #include "asterfort/sdmpic.h"
 #include "asterfort/ss2mme.h"
 #include "asterfort/u2mess.h"
+!
     integer :: ibid, ich, icha, ied, ncha, nh
     integer :: n1, n3, n4, n5, n7, n9, iresu, jrelr, iexi, nbresu
     real(kind=8) :: time, tps(6), vcmpth(4)
@@ -68,16 +68,13 @@ subroutine op0008()
     call getres(matez, type, oper)
     matel=matez
 !
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                suropt, n3)
+    call getvtx(' ', 'OPTION', scal=suropt, nbret=n3)
 !
 !     - ON VERIFIE LE NOM DU MODELE:
 !     -------------------------------
     modele = ' '
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                modele, n1)
-    call getvid(' ', 'CHARGE', 0, iarg, 0,&
-                cha, ncha)
+    call getvid(' ', 'MODELE', scal=modele, nbret=n1)
+    call getvid(' ', 'CHARGE', nbval=0, nbret=ncha)
 !
 !
     if (ncha .lt. 0) then
@@ -86,8 +83,7 @@ subroutine op0008()
         n3=max(1,ncha)
         call jeecra(matel(1:8)//'.CHARGES', 'LONMAX', n3)
         call jeveuo(matel(1:8)//'.CHARGES', 'E', icha)
-        call getvid(' ', 'CHARGE', 0, iarg, ncha,&
-                    zk8(icha), ibid)
+        call getvid(' ', 'CHARGE', nbval=ncha, vect=zk8(icha), nbret=ibid)
 !
         call dismoi('F', 'NOM_MODELE', zk8(icha), 'CHARGE', ibid,&
                     mo1, ied)
@@ -106,22 +102,18 @@ subroutine op0008()
 !
     cara = ' '
     materi = ' '
-    call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                cara, n5)
-    call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                materi, n4)
+    call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n5)
+    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n4)
     if (n4 .ne. 0) then
         call rcmfmc(materi, mate)
     else
         mate = ' '
     endif
 !
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                time, n7)
+    call getvr8(' ', 'INST', scal=time, nbret=n7)
     exitim = .false.
     if (n7 .eq. 1) exitim = .true.
-    call getvis(' ', 'MODE_FOURIER', 0, iarg, 1,&
-                nh, n9)
+    call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n9)
     if (n9 .eq. 0) nh = 0
 !
 !     -- VERIFICATION DES CHARGES:
@@ -195,7 +187,7 @@ subroutine op0008()
                     kmpic, ibid)
         ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
         if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
-101     continue
+101      continue
     end do
 !
 !

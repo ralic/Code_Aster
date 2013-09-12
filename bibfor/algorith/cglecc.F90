@@ -2,9 +2,8 @@ subroutine cglecc(typfis, resu, vecord, calsig)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -12,6 +11,7 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 #include "asterfort/rsexch.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
+!
     character(len=8) :: typfis, resu, calsig
     character(len=19) :: vecord
 !
@@ -60,8 +60,7 @@ subroutine cglecc(typfis, resu, vecord, calsig)
     call getfac('COMP_ELAS', ncelas)
 !
     if (ncelas .gt. 0) then
-        call getvtx(' ', 'CALCUL_CONTRAINTE', 0, iarg, 1,&
-                    calsig, ier)
+        call getvtx(' ', 'CALCUL_CONTRAINTE', scal=calsig, nbret=ier)
     endif
 !
 !     CALSIG='NON' N'EST PAS COMPATIBLE AVEC X-FEM

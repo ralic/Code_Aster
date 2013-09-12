@@ -7,12 +7,12 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 ! aslint: disable=W1501,W1504
     implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -146,8 +146,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     radimp = rdimp
 !
 !     RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, ibid)
+    call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
 !
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&

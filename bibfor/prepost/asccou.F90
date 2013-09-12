@@ -1,8 +1,8 @@
 subroutine asccou(mailla)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8pi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -44,10 +44,8 @@ subroutine asccou(mailla)
 !
     call jemarq()
 !
-    call getvr8('TUBE_COUDE', 'R_CINTR', 1, iarg, 1,&
-                rc, n1)
-    call getvr8('TUBE_COUDE', 'ANGLE', 1, iarg, 1,&
-                alpha, n1)
+    call getvr8('TUBE_COUDE', 'R_CINTR', iocc=1, scal=rc, nbret=n1)
+    call getvr8('TUBE_COUDE', 'ANGLE', iocc=1, scal=alpha, nbret=n1)
 !
     coord = mailla//'.COORDO    .VALE'
     dime = mailla//'.DIME           '

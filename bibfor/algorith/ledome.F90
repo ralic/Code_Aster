@@ -18,9 +18,9 @@ subroutine ledome(option, nomo, materi, mate, carele)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "asterc/getvid.h"
+    implicit none
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/u2mess.h"
     character(len=8) :: nomo
@@ -54,13 +54,11 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
 ! --- RECUPERER LE MODELE
 !
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomo, n)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=n)
 !
 ! --- RECUPERER LE MATERIAU
 !
-    call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                materi, n)
+    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n)
     if (nomo .ne. ' ') then
         call dismoi('F', 'BESOIN_MATER', nomo, 'MODELE', ibid,&
                     repons, iret)
@@ -79,8 +77,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
 ! --- RECUPERER LES CARACTERISTIQUES ELEMENTAIRES
 !
-    call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
-                carele, n)
+    call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n)
     if (nomo .ne. ' ') then
         call dismoi('F', 'EXI_RDM', nomo, 'MODELE', ibid,&
                     repons, iret)

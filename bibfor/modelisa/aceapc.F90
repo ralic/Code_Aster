@@ -2,9 +2,6 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8rddg.h"
@@ -12,6 +9,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 #include "asterfort/acnoex.h"
 #include "asterfort/alcart.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -29,6 +28,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 #include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -133,26 +133,16 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                     iarg, lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'DEFI_ARC', 'MAILLE', ioc,&
                     iarg, lmax, zk24(jdls), nm)
-        call getvr8('DEFI_ARC', 'RAYON', ioc, iarg, 1,&
-                    xrc, nr)
-        call getvr8('DEFI_ARC', 'ORIE_ARC', ioc, iarg, 1,&
-                    xang, na)
-        call getvr8('DEFI_ARC', 'COEF_FLEX', ioc, iarg, 1,&
-                    xfl, nf)
-        call getvr8('DEFI_ARC', 'COEF_FLEX_XY', ioc, iarg, 1,&
-                    xfly, nfy)
-        call getvr8('DEFI_ARC', 'COEF_FLEX_XZ', ioc, iarg, 1,&
-                    xflz, nfz)
-        call getvr8('DEFI_ARC', 'INDI_SIGM', ioc, iarg, 1,&
-                    xsi, ns)
-        call getvr8('DEFI_ARC', 'INDI_SIGM_XY', ioc, iarg, 1,&
-                    xsiy, nsy)
-        call getvr8('DEFI_ARC', 'INDI_SIGM_XZ', ioc, iarg, 1,&
-                    xsiz, nsz)
-        call getvtx('DEFI_ARC', 'CRITERE', ioc, iarg, 1,&
-                    crit, n1)
-        call getvr8('DEFI_ARC', 'PRECISION', ioc, iarg, 1,&
-                    epsi, n2)
+        call getvr8('DEFI_ARC', 'RAYON', iocc=ioc, scal=xrc, nbret=nr)
+        call getvr8('DEFI_ARC', 'ORIE_ARC', iocc=ioc, scal=xang, nbret=na)
+        call getvr8('DEFI_ARC', 'COEF_FLEX', iocc=ioc, scal=xfl, nbret=nf)
+        call getvr8('DEFI_ARC', 'COEF_FLEX_XY', iocc=ioc, scal=xfly, nbret=nfy)
+        call getvr8('DEFI_ARC', 'COEF_FLEX_XZ', iocc=ioc, scal=xflz, nbret=nfz)
+        call getvr8('DEFI_ARC', 'INDI_SIGM', iocc=ioc, scal=xsi, nbret=ns)
+        call getvr8('DEFI_ARC', 'INDI_SIGM_XY', iocc=ioc, scal=xsiy, nbret=nsy)
+        call getvr8('DEFI_ARC', 'INDI_SIGM_XZ', iocc=ioc, scal=xsiz, nbret=nsz)
+        call getvtx('DEFI_ARC', 'CRITERE', iocc=ioc, scal=crit, nbret=n1)
+        call getvr8('DEFI_ARC', 'PRECISION', iocc=ioc, scal=epsi, nbret=n2)
 !
         call utcono('DEFI_ARC', mclept, ioc, noma, ndim,&
                     xtan, np)

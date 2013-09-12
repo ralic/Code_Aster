@@ -38,11 +38,10 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -56,6 +55,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 #include "asterfort/zerlag.h"
 #include "blas/daxpy.h"
 #include "blas/ddot.h"
+!
     character(len=1) :: listyp(2)
     character(len=4) :: k4bid
     character(len=8) :: modgen, rest1, mraid, mmass
@@ -68,8 +68,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     character(len=24) :: lisint
     integer :: iarg
 !
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                unit, ibid)
+    call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1=numsst
 !
 !-- RECHERCHE DU MACRO ELEMENT ASSOCIE A LA SST
@@ -99,8 +98,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     call dismoi('F', 'NOM_NUME_DDL', mraid, 'MATR_ASSE', ibid,&
                 nume91, ibid)
 !
-    call getvr8(' ', 'SHIFT', 1, iarg, 1,&
-                shift, ibid)
+    call getvr8(' ', 'SHIFT', scal=shift, nbret=ibid)
     comlin(1)=1.d0
     comlin(2)=-((shift*2.d0*3.1415927d0)**2)
     listyp(1)='R'

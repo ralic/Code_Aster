@@ -53,13 +53,13 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     implicit none
 !
 ! PARAMETRES D'APPELS
-#include "asterc/getvtx.h"
 #include "asterfort/ajchca.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jeexin.h"
@@ -249,8 +249,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                 lpaout(1) = 'PCONTRR'
             else if (optio2.eq.'VAEX_ELGA') then
                 noma=chgeom(1:8)
-                call getvtx(' ', 'NOM_VARI', 0, iarg, 1,&
-                            vari, ibid)
+                call getvtx(' ', 'NOM_VARI', scal=vari, nbret=ibid)
                 call mecact('V', chnova, 'MAILLA', noma, 'NEUT_K24',&
                             1, 'Z1', ibid, r8b, c16b,&
                             vari)
@@ -262,8 +261,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                 nbin =2
             else if (optio2.eq.'VAEX_ELNO') then
                 noma=chgeom(1:8)
-                call getvtx(' ', 'NOM_VARI', 0, iarg, 1,&
-                            vari, ibid)
+                call getvtx(' ', 'NOM_VARI', scal=vari, nbret=ibid)
                 call mecact('V', chnova, 'MAILLA', noma, 'NEUT_K24',&
                             1, 'Z1', ibid, r8b, c16b,&
                             vari)

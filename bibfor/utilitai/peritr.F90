@@ -1,16 +1,15 @@
 subroutine peritr(resu, modele, cara, nh, nbocc)
     implicit none
 #include "jeveux.h"
-!
+#include "asterc/gettco.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chpve2.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterc/gettco.h"
 #include "asterfort/getvem.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -37,6 +36,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nh, nbocc
     character(len=*) :: resu, modele, cara
 !     ------------------------------------------------------------------
@@ -95,25 +95,18 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     call infniv(ifm, niv)
 !
     inst = 0.d0
-    call getvid(' ', 'CHAM_GD', 1, iarg, 1,&
-                contg, nd)
+    call getvid(' ', 'CHAM_GD', scal=contg, nbret=nd)
     if (nd .ne. 0) then
         call chpve2(contg, 3, tabtyp, ier)
     endif
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resul, nr)
-    call getvr8(' ', 'INST', 1, iarg, 1,&
-                inst, ni)
-    call getvtx('RICE_TRACEY', 'OPTION', 1, iarg, 1,&
-                optcal(1), np)
-    call getvtx('RICE_TRACEY', 'LOCAL', 1, iarg, 1,&
-                optcal(2), nq)
+    call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
+    call getvr8(' ', 'INST', scal=inst, nbret=ni)
+    call getvtx('RICE_TRACEY', 'OPTION', iocc=1, scal=optcal(1), nbret=np)
+    call getvtx('RICE_TRACEY', 'LOCAL', iocc=1, scal=optcal(2), nbret=nq)
     if (nbocc .gt. 1) then
         do 10 i = 2, nbocc
-            call getvtx('RICE_TRACEY', 'OPTION', i, iarg, 1,&
-                        toptca(1), n1)
-            call getvtx('RICE_TRACEY', 'LOCAL', i, iarg, 1,&
-                        toptca(2), n2)
+            call getvtx('RICE_TRACEY', 'OPTION', iocc=i, scal=toptca(1), nbret=n1)
+            call getvtx('RICE_TRACEY', 'LOCAL', iocc=i, scal=toptca(2), nbret=n2)
             if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
                 call u2mess('F', 'UTILITAI3_83')
             endif
@@ -149,10 +142,8 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         if (typres(1:9) .ne. 'EVOL_NOLI') then
             call u2mess('F', 'UTILITAI3_84')
         endif
-        call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                    prec, np)
-        call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                    crit, nc)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+        call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
         call rsutnu(resul, ' ', 0, knum, nbordr,&
                     prec, crit, iret)
         if (iret .ne. 0) goto 100
@@ -246,8 +237,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     'OUI')
 !
         do 80 iocc = 1, nbocc
-            call getvtx(option(1:11), 'TOUT', iocc, iarg, 0,&
-                        k8b, nt)
+            call getvtx(option(1:11), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc,&
                         iarg, 0, k8b, nm)
             call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc,&

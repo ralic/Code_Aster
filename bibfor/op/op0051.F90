@@ -20,7 +20,7 @@ subroutine op0051()
 !     OPERATEUR   POST_RELEVE_T
 !     ------------------------------------------------------------------
 !
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
@@ -30,13 +30,12 @@ subroutine op0051()
 ! 0.3. ==> VARIABLES LOCALES
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
@@ -62,6 +61,7 @@ subroutine op0051()
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=6) :: nompro
     parameter ( nompro = 'OP0051' )
 !
@@ -136,8 +136,7 @@ subroutine op0051()
 !
     do 3, iocc = 1, nbpost, 1
 !
-    call getvtx('ACTION', 'OPERATION', iocc, iarg, 1,&
-                k16, iret)
+    call getvtx('ACTION', 'OPERATION', iocc=iocc, scal=k16, nbret=iret)
     if (k16(1:7) .eq. 'EXTREMA') then
         call rvmima(latabl, iocc)
         goto 3
@@ -153,14 +152,12 @@ subroutine op0051()
 !
     if (iret .ne. 0) then
 !
-        call getvtx(mcf, 'MOYE_NOEUD', iocc, iarg, 1,&
-                    k8b, n1)
+        call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, scal=k8b, nbret=n1)
 !
 !        --- EST-CE UN RESULTAT ? ---
 !
         resuco = '        '
-        call getvid(mcf, 'RESULTAT', iocc, iarg, 1,&
-                    resuco, nbresu)
+        call getvid(mcf, 'RESULTAT', iocc=iocc, scal=resuco, nbret=nbresu)
 !
 !
 !
@@ -170,12 +167,9 @@ subroutine op0051()
 !
 !           /* CAS D' UN RESULTAT */
 !
-            call getvtx(mcf, 'NOM_CHAM', iocc, iarg, 1,&
-                        nchsym, n1)
-            call getvtx(mcf, 'CRITERE', iocc, iarg, 1,&
-                        criter, n1)
-            call getvr8(mcf, 'PRECISION', iocc, iarg, 1,&
-                        epsi, n1)
+            call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nchsym, nbret=n1)
+            call getvtx(mcf, 'CRITERE', iocc=iocc, scal=criter, nbret=n1)
+            call getvr8(mcf, 'PRECISION', iocc=iocc, scal=epsi, nbret=n1)
 !
             call rvgacc(iocc, codacc, naccis, naccr8, nbacce)
 !
@@ -208,8 +202,7 @@ subroutine op0051()
             call jeecra(jexnum(ncheff//'.LSCHEFF', 1), 'LONMAX', 1)
             call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'E', jacc)
 !
-            call getvid(mcf, 'CHAM_GD', iocc, iarg, 1,&
-                        zk24(jacc), n1)
+            call getvid(mcf, 'CHAM_GD', iocc=iocc, scal=zk24(jacc), nbret=n1)
 !
             call dismoi('F', 'TYPE_CHAMP', zk24(jacc), 'CHAMP', ibid,&
                         k8b, ie)

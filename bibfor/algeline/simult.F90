@@ -27,13 +27,12 @@ subroutine simult()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/compno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -45,6 +44,7 @@ subroutine simult()
 #include "asterfort/simul2.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ibid
     real(kind=8) :: xnorm, depl(6)
     character(len=8) :: masse, modsta, mailla, nomnoe
@@ -69,18 +69,15 @@ subroutine simult()
 !
 !     --- MATRICE DE MASSE ---
 !
-    call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                masse, nbv)
+    call getvid(' ', 'MATR_MASS', scal=masse, nbret=nbv)
     call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
                 mailla, ier)
 !
 !     --- QUELLE EST LA DIRECTION ? ---
 !
-    call getvr8(' ', 'DIRECTION', 0, iarg, 0,&
-                depl, nbd)
+    call getvr8(' ', 'DIRECTION', nbval=0, nbret=nbd)
     nbdir = -nbd
-    call getvr8(' ', 'DIRECTION', 0, iarg, nbdir,&
-                depl, nbd)
+    call getvr8(' ', 'DIRECTION', nbval=nbdir, vect=depl, nbret=nbd)
 !
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
@@ -97,8 +94,7 @@ subroutine simult()
 !
 !     --- ON RECUPERE LES MODES STATIQUES ---
 !
-    call getvid(' ', 'MODE_STAT', 0, iarg, 1,&
-                modsta, nbv)
+    call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
 !
 !     --- ON RECUPERE LES POINTS D'ANCRAGE ---
 !

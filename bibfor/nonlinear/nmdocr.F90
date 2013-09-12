@@ -35,19 +35,18 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 ! ----------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/lcalgo.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
 #include "asterfort/alcart.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -64,6 +63,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/utlcal.h"
+!
     character(len=8) :: noma, k8b, typmcl(2)
     character(len=16) :: tymatg, comp, algo, mocles(2), moclef(2), crirup
     character(len=16) :: texte(3), comcod, method, k16bid, nomcmd
@@ -141,10 +141,8 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
             call reliem(modele, noma, 'NU_MAILLE', moclef(i), k,&
                         2, mocles, typmcl, mesmai, nbma)
 !
-            call getvtx(moclef(i), 'ALGO_INTE', k, iarg, 1,&
-                        algo, iret)
-            call getvtx(moclef(i), 'RELATION', k, iarg, 1,&
-                        comp, n1)
+            call getvtx(moclef(i), 'ALGO_INTE', iocc=k, scal=algo, nbret=iret)
+            call getvtx(moclef(i), 'RELATION', iocc=k, scal=comp, nbret=n1)
 !         CREATION DE L'OBJET COMPORTEMENT A PARTIR DU CATALOGUE
             call lccree(1, comp, comcod)
 !
@@ -199,8 +197,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !
             itepas = 0
             if (moclef(i) .eq. 'COMP_INCR') then
-                call getvis(moclef(i), 'ITER_INTE_PAS', k, iarg, 1,&
-                            itepas, iret)
+                call getvis(moclef(i), 'ITER_INTE_PAS', iocc=k, scal=itepas, nbret=iret)
             endif
 !
 !         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
@@ -213,41 +210,35 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
             typtgt = 0
             tymatg=' '
             if (moclef(i) .eq. 'COMP_INCR') then
-                call getvis(moclef(i), 'ITER_CPLAN_MAXI', k, iarg, 1,&
-                            itdebo, iret)
-                call getvr8(moclef(i), 'RESI_CPLAN_MAXI', k, iarg, 1,&
-                            resid, iret)
+                call getvis(moclef(i), 'ITER_CPLAN_MAXI', iocc=k, scal=itdebo, nbret=iret)
+                call getvr8(moclef(i), 'RESI_CPLAN_MAXI', iocc=k, scal=resid, nbret=iret)
                 if (iret .ne. 0) then
                     resid=-resid
                 else
-                    call getvr8(moclef(i), 'RESI_CPLAN_RELA', k, iarg, 1,&
-                                resid, iret)
+                    call getvr8(moclef(i), 'RESI_CPLAN_RELA', iocc=k, scal=resid, nbret=iret)
                 endif
                 exits = getexm(moclef(i),'TYPE_MATR_TANG')
                 if (exits .eq. 1) then
 !               DANS ZR(JVALV+1) ON STOCKE LE TYPE DE MATRICE TGTE
-                    call getvtx(moclef(i), 'TYPE_MATR_TANG', k, iarg, 1,&
-                                tymatg, iret)
+                    call getvtx(moclef(i), 'TYPE_MATR_TANG', iocc=k, scal=tymatg, nbret=iret)
                     if (iret .eq. 0) then
                         typtgt = 0
                     else
                         if (tymatg .eq. 'PERTURBATION') then
                             typtgt = 1
-                            call getvr8(moclef(i), 'VALE_PERT_RELA', k, iarg, 1,&
-                                        pert, iret)
+                            call getvr8(moclef(i), 'VALE_PERT_RELA', iocc=k, scal=pert,&
+                                        nbret=iret)
                         else if (tymatg.eq.'VERIFICATION') then
                             typtgt = 2
-                            call getvr8(moclef(i), 'VALE_PERT_RELA', k, iarg, 1,&
-                                        pert, iret)
+                            call getvr8(moclef(i), 'VALE_PERT_RELA', iocc=k, scal=pert,&
+                                        nbret=iret)
                             elseif (tymatg(1:16).eq.'TANGENTE_SECANTE')&
                         then
 !                     MATRICE EVOLUTIVE TANGENTE/SECANTE
-                            call getvr8(moclef(i), 'SEUIL', k, iarg, 1,&
-                                        tseuil, iret)
-                            call getvr8(moclef(i), 'AMPLITUDE', k, iarg, 1,&
-                                        tsampl, iret)
-                            call getvr8(moclef(i), 'TAUX_RETOUR', k, iarg, 1,&
-                                        tsretu, iret)
+                            call getvr8(moclef(i), 'SEUIL', iocc=k, scal=tseuil, nbret=iret)
+                            call getvr8(moclef(i), 'AMPLITUDE', iocc=k, scal=tsampl, nbret=iret)
+                            call getvr8(moclef(i), 'TAUX_RETOUR', iocc=k, scal=tsretu,&
+                                        nbret=iret)
                         endif
 !                  VERIF QUE TYMATG EST POSSIBLE POUR COMP
                         call lctest(comcod, 'TYPE_MATR_TANG', tymatg, irett)
@@ -261,8 +252,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
                 endif
 ! GLUTE POUR IMPLEX
                 if (nomcmd(1:13) .eq. 'STAT_NON_LINE') then
-                    call getvtx(' ', 'METHODE', 0, iarg, 1,&
-                                method, iret)
+                    call getvtx(' ', 'METHODE', scal=method, nbret=iret)
                     if (iret .ne. 0) then
                         if (method .eq. 'IMPLEX') then
                             if ((typtgt.ne.0) .and. (comp.ne.'SANS')) then
@@ -289,10 +279,8 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
             endif
 !
             if (moclef(i) .eq. 'COMP_INCR') then
-                call getvr8(moclef(i), 'PARM_THETA', k, iarg, 1,&
-                            theta, iret)
-                call getvr8(moclef(i), 'PARM_ALPHA', k, iarg, 1,&
-                            alpha, iret)
+                call getvr8(moclef(i), 'PARM_THETA', iocc=k, scal=theta, nbret=iret)
+                call getvr8(moclef(i), 'PARM_ALPHA', iocc=k, scal=alpha, nbret=iret)
             else
                 theta=1.d0
                 alpha=1.d0
@@ -300,8 +288,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !         TOLERANCE POUR LE CRITERE DE RADIALITE
             if (moclef(i) .eq. 'COMP_INCR') then
                 if (typtgt .eq. 0 .and. tymatg(1:16) .ne. 'TANGENTE_SECANTE') then
-                    call getvr8(moclef(i), 'RESI_RADI_RELA', k, iarg, 1,&
-                                tolrad, iret)
+                    call getvr8(moclef(i), 'RESI_RADI_RELA', iocc=k, scal=tolrad, nbret=iret)
                     if (iret .ne. 0) then
                         tseuil=tolrad
                     else
@@ -312,8 +299,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !         CRIT_RUPT
             if (moclef(i) .eq. 'COMP_INCR') then
                 if (typtgt .eq. 0 .and. tymatg(1:16) .ne. 'TANGENTE_SECANTE') then
-                    call getvtx(moclef(i), 'POST_ITER', k, iarg, 1,&
-                                crirup, iret)
+                    call getvtx(moclef(i), 'POST_ITER', iocc=k, scal=crirup, nbret=iret)
                     if (iret .eq. 1) then
 !            VERIF QUE CRIRUP EST POSSIBLE POUR COMP
                         tsampl = 1.d0

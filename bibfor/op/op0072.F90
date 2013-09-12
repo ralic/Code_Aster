@@ -28,14 +28,13 @@ subroutine op0072()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -55,6 +54,7 @@ subroutine op0072()
 #include "blas/ddot.h"
 #include "blas/zcopy.h"
 #include "blas/zdotc.h"
+!
     integer :: jsmde
     character(len=1) :: typvec
     character(len=8) :: nomres, basemo, vectas, nomtyp, maill1, maill2, k8bid
@@ -84,16 +84,11 @@ subroutine op0072()
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 !
     call getres(nomres, typres, nomcom)
-    call getvid(' ', 'NUME_DDL_GENE', 0, iarg, 1,&
-                numgen, n0)
-    call getvid(' ', 'VECT_ASSE', 0, iarg, 1,&
-                vectas, n1)
-    call getvid(' ', 'VECT_ASSE_GENE', 0, iarg, 1,&
-                vectas, n3)
-    call getvid(' ', 'BASE', 0, iarg, 1,&
-                basemo, n4)
-    call getvtx(' ', 'TYPE_VECT', 0, iarg, 1,&
-                nomtyp, n2)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n0)
+    call getvid(' ', 'VECT_ASSE', scal=vectas, nbret=n1)
+    call getvid(' ', 'VECT_ASSE_GENE', scal=vectas, nbret=n3)
+    call getvid(' ', 'BASE', scal=basemo, nbret=n4)
+    call getvtx(' ', 'TYPE_VECT', scal=nomtyp, nbret=n2)
     call gettco(basemo, typbas)
 !
 ! --- RECUPERATION DU NB DE MODES
@@ -111,11 +106,13 @@ subroutine op0072()
     call jeveuo(vectas//'           .VALE', 'L', iadvec)
     call jeveuo(vectas//'           .REFE', 'L', iadref)
     call jelira(vectas//'           .VALE', 'TYPE', cval=typvec)
-    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid, typeba, iret)
+    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid,&
+                typeba, iret)
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
         proch1 = zk24(iadref+1)
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                    matric, iret)
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
@@ -125,7 +122,8 @@ subroutine op0072()
                 proch2 = proch1
             endif
         else
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, nume2, iret)
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                        nume2, iret)
             proch2 = nume2(1:8)//'.NUME'
         endif
 !
@@ -136,7 +134,8 @@ subroutine op0072()
     else if (typbas(1:9).eq.'MODE_GENE') then
         numdd1=zk24(iadref+1)
         proch1 = numdd1//'.NUME'
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                    matric, iret)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', jrefa)
         numdd2=zk24(jrefa-1+2)
@@ -186,7 +185,7 @@ subroutine op0072()
         zi(iadesc+2) = 2
     endif
     call wkvect('&&OP0072.BASEMO', 'V V R', nbmode*neq, idbase)
-
+!
     if ((typbas(1:9).eq.'MODE_MECA')) then
 !       --- VERIFIER QUE LES MAILLAGES DU CHAMP A PROJETER 
 !         - LES DEFORMEES MODALES SONT IDENTIQUES

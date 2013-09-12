@@ -17,11 +17,11 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infniv.h"
 #include "asterfort/lischk.h"
 #include "asterfort/lisimp.h"
@@ -85,10 +85,9 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
         call wkvect(exreco, 'V V C  ', nbexre, jlccre)
         call wkvect(exresu, 'V V K8 ', nbexre, jlresu)
         do 252 iresu = 1, nbexre
-            call getvid('EXCIT_RESU', 'RESULTAT', iresu, iarg, 1,&
-                        zk8( jlresu+iresu-1), n)
-            call getvc8('EXCIT_RESU', 'COEF_MULT_C', iresu, iarg, 1,&
-                        zc (jlccre+iresu-1), n)
+            call getvid('EXCIT_RESU', 'RESULTAT', iocc=iresu, scal=zk8( jlresu+iresu-1), nbret=n)
+            call getvc8('EXCIT_RESU', 'COEF_MULT_C', iocc=iresu, scal=zc (jlccre+iresu-1),&
+                        nbret=n)
 252      continue
     endif
 !

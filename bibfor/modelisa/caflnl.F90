@@ -2,9 +2,9 @@ subroutine caflnl(char, ligrmo, noma)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -81,11 +81,9 @@ subroutine caflnl(char, ligrmo, noma)
 !
     do 10 iocc = 1, nflux
 !
-        call getvid(motclf, 'FLUN', iocc, iarg, 1,&
-                    zk8(jvalv), nf)
+        call getvid(motclf, 'FLUN', iocc=iocc, scal=zk8(jvalv), nbret=nf)
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ligrmo, ncmp)

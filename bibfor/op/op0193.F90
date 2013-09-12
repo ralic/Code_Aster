@@ -1,5 +1,5 @@
 subroutine op0193()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ subroutine op0193()
 !     NUMERIQUE EN DYNAMIQUE
 !     ------------------------------------------------------------------
 !
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -42,13 +42,11 @@ subroutine op0193()
 !
 ! --- RECUPERATION DE LA BASE DE PROJECTION ---
 !
-    call getvid('MODELE_CALCUL', 'BASE', 1, iarg, 1,&
-                basemo, n1)
+    call getvid('MODELE_CALCUL', 'BASE', iocc=1, scal=basemo, nbret=n1)
 !
 ! --- RECUPERATION DE LA MESURE
 !
-    call getvid('MODELE_MESURE', 'MESURE', 1, iarg, 1,&
-                nommes, n1)
+    call getvid('MODELE_MESURE', 'MESURE', iocc=1, scal=nommes, nbret=n1)
 !
 ! --- PROJECTION SUR LE MODELE NUMERIQUE
 !

@@ -20,7 +20,7 @@ subroutine dfllne(mcfact, nechec, nerreu)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mess.h"
@@ -64,8 +64,7 @@ subroutine dfllne(mcfact, nechec, nerreu)
 ! --- NOMBRE D'OCCURRENCES DES EVENEMENTS
 !
     do 100 iechec = 1, nechec
-        call getvtx(mcfact, 'EVENEMENT', iechec, iarg, 1,&
-                    even, ibid)
+        call getvtx(mcfact, 'EVENEMENT', iocc=iechec, scal=even, nbret=ibid)
         if (even .eq. 'ERREUR') nerreu = nerreu+1
 100  end do
 !

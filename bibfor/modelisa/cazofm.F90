@@ -20,10 +20,10 @@ subroutine cazofm(char, motfac, iform, nzoco)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -96,20 +96,17 @@ subroutine cazofm(char, motfac, iform, nzoco)
 !
 ! --- FROTTEMENT ?
 !
-    call getvtx(' ', 'FROTTEMENT', 1, iarg, 1,&
-                frott, noc)
+    call getvtx(' ', 'FROTTEMENT', scal=frott, nbret=noc)
     lfrot = frott.eq.'COULOMB'
 !
 ! --- RECUPERATION DES METHODES
 !
-    call getvtx(motfac, 'ALGO_CONT', 1, iarg, 1,&
-                algoc, noc)
+    call getvtx(motfac, 'ALGO_CONT', iocc=1, scal=algoc, nbret=noc)
 !
     valk(1) = formul
     valk(2) = algoc
     if (lfrot) then
-        call getvtx(motfac, 'ALGO_FROT', 1, iarg, 1,&
-                    algof, noc)
+        call getvtx(motfac, 'ALGO_FROT', iocc=1, scal=algof, nbret=noc)
         valk(3) = algof
     endif
 !
@@ -172,8 +169,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
         if (lfrot) then
             lmunul = .false.
             do 10 izone = 1, nzoco
-                call getvr8(motfac, 'COULOMB', izone, iarg, 1,&
-                            coefff, noc)
+                call getvr8(motfac, 'COULOMB', iocc=izone, scal=coefff, nbret=noc)
                 lmunul = lmunul.or.(coefff.ne.0.d0)
 10          continue
             if (.not.lmunul) then

@@ -36,10 +36,9 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -47,6 +46,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !-----------------------------------------------------------------------
     integer :: i1, i2, ibid1, iderex, ij2, ilcmpi
     integer :: ilcmpj, ilcpex, ilfex, ilindi, ilindj, illex, ilnoex
@@ -64,43 +64,38 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     integer :: iarg, lnumi, lnumj, mxval, num, lcmpi, lcmpj
     integer :: nbfreq, ifreq
 !
-    call getvid('EXCIT', 'INTE_SPEC', 1, iarg, 1,&
-                intexc, ibid)
+    call getvid('EXCIT', 'INTE_SPEC', iocc=1, scal=intexc, nbret=ibid)
 !
-    call getvis('EXCIT', 'DERIVATION', 1, iarg, 1,&
-                iderex, ibid)
+    call getvis('EXCIT', 'DERIVATION', iocc=1, scal=iderex, nbret=ibid)
 !
-    call getvis('EXCIT', 'NUME_ORDRE_I', 1, iarg, 0,&
-                ibid, nindex)
+    call getvis('EXCIT', 'NUME_ORDRE_I', iocc=1, nbval=0, nbret=nindex)
     if (nindex .ne. 0) then
         lindi = .true.
         nindex = -nindex
         call wkvect('&&RECIEX.INDI_I', 'V V I', nindex, ilindi)
         call wkvect('&&RECIEX.INDI_J', 'V V I', nindex, ilindj)
-        call getvis('EXCIT', 'NUME_ORDRE_I', 1, iarg, nindex,&
-                    zi(ilindi), ibid)
-        call getvis('EXCIT', 'NUME_ORDRE_J', 1, iarg, nindex,&
-                    zi(ilindj), ibid)
+        call getvis('EXCIT', 'NUME_ORDRE_I', iocc=1, nbval=nindex, vect=zi(ilindi),&
+                    nbret=ibid)
+        call getvis('EXCIT', 'NUME_ORDRE_J', iocc=1, nbval=nindex, vect=zi(ilindj),&
+                    nbret=ibid)
     else
-        call getvtx('EXCIT', 'NOEUD_I', 1, iarg, 0,&
-                    k8b, nindex)
+        call getvtx('EXCIT', 'NOEUD_I', iocc=1, nbval=0, nbret=nindex)
         lindi = .false.
         nindex = -nindex
         call wkvect('&&RECIEX.INDI_I', 'V V K8', nindex, ilindi)
         call wkvect('&&RECIEX.INDI_J', 'V V K8', nindex, ilindj)
         call wkvect('&&RECIEX.CMP_I', 'V V K8', nindex, ilcmpi)
         call wkvect('&&RECIEX.CMP_J', 'V V K8', nindex, ilcmpj)
-        call getvtx('EXCIT', 'NOEUD_I', 1, iarg, nindex,&
-                    zk8(ilindi), ibid)
-        call getvtx('EXCIT', 'NOEUD_J', 1, iarg, nindex,&
-                    zk8(ilindj), ibid)
-        call getvtx('EXCIT', 'NOM_CMP_I', 1, iarg, nindex,&
-                    zk8(ilcmpi), ibid)
-        call getvtx('EXCIT', 'NOM_CMP_J', 1, iarg, nindex,&
-                    zk8(ilcmpj), ibid)
+        call getvtx('EXCIT', 'NOEUD_I', iocc=1, nbval=nindex, vect=zk8(ilindi),&
+                    nbret=ibid)
+        call getvtx('EXCIT', 'NOEUD_J', iocc=1, nbval=nindex, vect=zk8(ilindj),&
+                    nbret=ibid)
+        call getvtx('EXCIT', 'NOM_CMP_I', iocc=1, nbval=nindex, vect=zk8(ilcmpi),&
+                    nbret=ibid)
+        call getvtx('EXCIT', 'NOM_CMP_J', iocc=1, nbval=nindex, vect=zk8(ilcmpj),&
+                    nbret=ibid)
     endif
-    call getvis('EXCIT', 'NUME_VITE_FLUI', 1, iarg, 1,&
-                ivite, ibid)
+    call getvis('EXCIT', 'NUME_VITE_FLUI', iocc=1, scal=ivite, nbret=ibid)
 !
     ndim = nindex * ( nindex + 1 ) / 2
     call wkvect('&&OP0131.LIADRFEX1', 'V V I', ndim, ilfex)
@@ -167,49 +162,44 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !
 !----TYPE MODAL ('NON' PAR DEFAUT)
 !
-    call getvtx('EXCIT', 'MODAL', 1, iarg, 1,&
-                excmod, ibid)
+    call getvtx('EXCIT', 'MODAL', iocc=1, scal=excmod, nbret=ibid)
     if (excmod .eq. 'OUI') napexc = nindex
 !
 !----GRANDEUR   (DEPL_R PAR DEFAUT)
 !
-    call getvtx('EXCIT', 'GRANDEUR', 1, iarg, 1,&
-                graexc, ibid)
+    call getvtx('EXCIT', 'GRANDEUR', iocc=1, scal=graexc, nbret=ibid)
 !
 !---NOEUDS APPUIS
 !
-    call getvtx('EXCIT', 'NOEUD', 1, iarg, 0,&
-                k8b, nnoeex)
+    call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=0, nbret=nnoeex)
     nnoeex=-nnoeex
     if (nnoeex .ne. 0) then
         napexc = nnoeex
         call wkvect('&&OP0131.LISTENOEEXC', 'V V K8', nnoeex, ilnoex)
-        call getvtx('EXCIT', 'NOEUD', 1, iarg, nnoeex,&
-                    zk8(ilnoex), ibid)
+        call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=nnoeex, vect=zk8(ilnoex),&
+                    nbret=ibid)
     endif
 !
 !---CMP APPUIS
 !
-    call getvtx('EXCIT', 'NOM_CMP', 1, iarg, 0,&
-                k8b, ncmpex)
+    call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=0, nbret=ncmpex)
     ncmpex=-ncmpex
     if (ncmpex .ne. 0) then
         call wkvect('&&OP0131.LISTECMPEXC', 'V V K8', ncmpex, ilcpex)
-        call getvtx('EXCIT', 'NOM_CMP', 1, iarg, ncmpex,&
-                    zk8(ilcpex), ibid)
+        call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=ncmpex, vect=zk8(ilcpex),&
+                    nbret=ibid)
     endif
 !
 !---VECTEURS ASSEMBLES
 !
-    call getvid('EXCIT', 'CHAM_NO', 1, iarg, 0,&
-                k8b, nvasex)
+    call getvid('EXCIT', 'CHAM_NO', iocc=1, nbval=0, nbret=nvasex)
     nvasex=-nvasex
     if (nvasex .ne. 0) then
         napexc = nvasex
         graexc = 'EFFO'
         call wkvect('&&OP0131.LVECTASSEXC', 'V V K8', nvasex, ilvaex)
-        call getvid('EXCIT', 'CHAM_NO', 1, iarg, nvasex,&
-                    zk8(ilvaex), ibid1)
+        call getvid('EXCIT', 'CHAM_NO', iocc=1, nbval=nvasex, vect=zk8(ilvaex),&
+                    nbret=ibid1)
     endif
 !
     if (graexc .eq. 'EFFO') iderex = 0

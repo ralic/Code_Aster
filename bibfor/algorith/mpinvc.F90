@@ -39,10 +39,10 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
 !
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -99,23 +99,19 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
     call wkvect(v, 'V V R', nbmode*nbmode, lv)
 !
 ! METHODE DE RESOLUTION : LU / SVD
-    call getvtx('RESOLUTION', 'METHODE', 1, iarg, 1,&
-                method, ibid)
+    call getvtx('RESOLUTION', 'METHODE', iocc=1, scal=method, nbret=ibid)
     if (ibid .eq. 0) method = 'LU'
 !
     if (method .eq. 'SVD') then
-        call getvr8('RESOLUTION', 'EPS', 1, iarg, 1,&
-                    eps, ibid)
+        call getvr8('RESOLUTION', 'EPS', iocc=1, scal=eps, nbret=ibid)
         if (ibid .eq. 0) eps = 0.d0
     endif
 !
 ! REGULARISATION : NON / NORM_MIN / TIK_RELA
-    call getvtx('RESOLUTION', 'REGUL', 1, iarg, 1,&
-                regul, ibid)
+    call getvtx('RESOLUTION', 'REGUL', iocc=1, scal=regul, nbret=ibid)
     if (ibid .eq. 0) regul = 'NON'
 !
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', 1, iarg, 1,&
-                nomcha, ibid)
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, scal=nomcha, nbret=ibid)
 !
     zero = 0.d0
     depi = r8depi()

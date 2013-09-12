@@ -22,12 +22,12 @@ subroutine rfnoch()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/foattr.h"
 #include "asterfort/focrch.h"
 #include "asterfort/foimpr.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -52,23 +52,15 @@ subroutine rfnoch()
 !
     call getres(nomfon, typcon, nomcmd)
 !
-    call getvtx(' ', 'INTITULE', 0, iarg, 1,&
-                intitu, int)
-    call getvid(' ', 'RESU_GENE', 0, iarg, 1,&
-                resu, n)
-    call getvtx(' ', 'PARA_X', 0, iarg, 1,&
-                parax, n)
-    call getvtx(' ', 'PARA_Y', 0, iarg, 1,&
-                paray, n)
-    call getvid(' ', 'LIST_PARA', 0, iarg, 1,&
-                listr, ind)
-    call getvtx(' ', 'SOUS_STRUC', 0, iarg, 1,&
-                sst, nsst)
+    call getvtx(' ', 'INTITULE', scal=intitu, nbret=int)
+    call getvid(' ', 'RESU_GENE', scal=resu, nbret=n)
+    call getvtx(' ', 'PARA_X', scal=parax, nbret=n)
+    call getvtx(' ', 'PARA_Y', scal=paray, nbret=n)
+    call getvid(' ', 'LIST_PARA', scal=listr, nbret=ind)
+    call getvtx(' ', 'SOUS_STRUC', scal=sst, nbret=nsst)
 !
-    call getvtx(' ', 'NOEUD_CHOC', 0, iarg, 1,&
-                noeud, nc)
-    call getvtx(' ', 'GROUP_NO_CHOC', 0, iarg, 1,&
-                nogno, ng)
+    call getvtx(' ', 'NOEUD_CHOC', scal=noeud, nbret=nc)
+    call getvtx(' ', 'GROUP_NO_CHOC', scal=nogno, nbret=ng)
 !
     if (nc .ne. 0) then
 !
@@ -78,7 +70,8 @@ subroutine rfnoch()
 !
     else
 !
-        call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid, basemo, iret)
+        call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid,&
+                    basemo, iret)
         call dismoi('F', 'NOM_MAILLA', basemo, 'RESULTAT', ibid,&
                     noma, iret)
 !

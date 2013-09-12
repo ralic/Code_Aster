@@ -41,14 +41,14 @@ subroutine op0081()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8pi.h"
 #include "asterfort/calamo.h"
 #include "asterfort/calprc.h"
 #include "asterfort/calpro.h"
 #include "asterfort/comp81.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/impe81.h"
 #include "asterfort/iner81.h"
 #include "asterfort/infmaj.h"
@@ -90,29 +90,25 @@ subroutine op0081()
 !
     if (nbval .eq. 0) then
         impe = blanc
-        call getvid(' ', 'MATR_IMPE', 1, iarg, 1,&
-                    impe, n1)
+        call getvid(' ', 'MATR_IMPE', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
             typmat='MATR_ASSE_DEPL_R'
             goto 10
         endif
-        call getvid(' ', 'MATR_IMPE_RIGI', 1, iarg, 1,&
-                    impe, n1)
+        call getvid(' ', 'MATR_IMPE_RIGI', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
             typmat='MATR_ASSE_DEPL_R'
             goto 10
         endif
-        call getvid(' ', 'MATR_IMPE_MASS', 1, iarg, 1,&
-                    impe, n1)
+        call getvid(' ', 'MATR_IMPE_MASS', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
             typmat='MATR_ASSE_DEPL_R'
             goto 10
         endif
-        call getvid(' ', 'MATR_IMPE_AMOR', 1, iarg, 1,&
-                    impe, n1)
+        call getvid(' ', 'MATR_IMPE_AMOR', scal=impe, nbret=n1)
         if (impe .ne. blanc) then
             call impe81(nomres, impe, basmod)
             typmat='MATR_ASSE_DEPL_R'
@@ -137,8 +133,7 @@ subroutine op0081()
             nommat=nomres//'.MAEL_AMOR'
             call calpro(nommat, 'G', basmod, amor)
         else
-            call getvr8(blanc, 'AMOR_REDUIT', 1, iarg, 0,&
-                        rbid, ioc)
+            call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=ioc)
             if (ioc .lt. 0) then
                 nommat=nomres//'.MAEL_AMOR'
                 call calamo(nommat, 'G', basmod)
@@ -165,8 +160,8 @@ subroutine op0081()
 !
 ! ---   MASSE GENERALISEE
         call wkvect('&&OP0081.MASS', 'V V R', nbmod, lmass)
-        call getvr8('MODELE_MESURE', 'MASS_GENE', 1, iarg, nbmod,&
-                    zr( lmass), iocm)
+        call getvr8('MODELE_MESURE', 'MASS_GENE', iocc=1, nbval=nbmod, vect=zr( lmass),&
+                    nbret=iocm)
         if (iocm .ne. nbmod) then
             vali(1) = nbmod
             vali(2) = iocm
@@ -177,8 +172,8 @@ subroutine op0081()
 !
 ! ---   FREQUENCES PROPRES
         call wkvect('&&OP0081.RIGI', 'V V R', nbmod, lrigi)
-        call getvr8('MODELE_MESURE ', 'FREQ', 1, iarg, nbmod,&
-                    zr(lrigi), iocf)
+        call getvr8('MODELE_MESURE ', 'FREQ', iocc=1, nbval=nbmod, vect=zr(lrigi),&
+                    nbret=iocf)
 !
         if (iocf .ne. nbmod) then
             vali(1) = nbmod
@@ -190,8 +185,8 @@ subroutine op0081()
 !
 ! ---   AMORTISSEMENTS REDUITS
         call wkvect('&&OP0081.AMOR', 'V V R', nbmod, lamor)
-        call getvr8('MODELE_MESURE', 'AMOR_REDUIT', 1, iarg, nbmod,&
-                    zr( lamor), ioca)
+        call getvr8('MODELE_MESURE', 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr( lamor),&
+                    nbret=ioca)
         if (ioca .ne. 0 .and. ioca .ne. nbmod) then
             vali(1) = nbmod
             vali(2) = ioca

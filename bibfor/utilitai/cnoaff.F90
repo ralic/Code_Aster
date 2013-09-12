@@ -1,18 +1,17 @@
 subroutine cnoaff(noma, nomgd, base, cno)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -26,6 +25,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 #include "asterfort/u2mess.h"
 #include "asterfort/vericp.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: base
     character(len=8) :: nomgd, noma, cno
 ! ----------------------------------------------------------------------
@@ -100,16 +100,11 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !     ----------------------------
     call getfac('AFFE', nocc)
     do 20 iocc = 1, nocc
-        call getvtx('AFFE', 'NOM_CMP', iocc, iarg, 0,&
-                    kbid, nbcmp)
-        call getvr8('AFFE', 'VALE', iocc, iarg, 0,&
-                    rbid, nbvar)
-        call getvis('AFFE', 'VALE_I', iocc, iarg, 0,&
-                    ibid, nbvai)
-        call getvc8('AFFE', 'VALE_C', iocc, iarg, 0,&
-                    cbid, nbvac)
-        call getvid('AFFE', 'VALE_F', iocc, iarg, 0,&
-                    kbid, nbvak)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
+        call getvr8('AFFE', 'VALE', iocc=iocc, nbval=0, nbret=nbvar)
+        call getvis('AFFE', 'VALE_I', iocc=iocc, nbval=0, nbret=nbvai)
+        call getvc8('AFFE', 'VALE_C', iocc=iocc, nbval=0, nbret=nbvac)
+        call getvid('AFFE', 'VALE_F', iocc=iocc, nbval=0, nbret=nbvak)
 !
 !       => VERIF : NOMBRE DE COMPOSANTES = NOMBRE DE VALEURS
         nbva=nbvar+nbvai+nbvac+nbvak
@@ -124,8 +119,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
         nbcmp=-nbcmp
         ASSERT(nbcmp.gt.0)
         call wkvect('&&CNOAFF.LISTE_COMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('AFFE', 'NOM_CMP', iocc, iarg, nbcmp,&
-                    zk8(jcmp), nbcmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                    nbret=nbcmp)
         do 21 i = 1, nbcmp
             call vericp(zk8(jcmpmx), zk8(jcmp+i-1), ncmpmx, iret)
             if (iret .ne. 0) then
@@ -149,12 +144,11 @@ subroutine cnoaff(noma, nomgd, base, cno)
     mescmp = '&&CNOAFF.MES_CMP'
     call wkvect(mescmp, 'V V K8', ncmpmx, jcmpt)
     do 30 iocc = 1, nocc
-        call getvtx('AFFE', 'NOM_CMP', iocc, iarg, 0,&
-                    kbid, ncmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=ncmp)
         ncmp=-ncmp
         call wkvect('&&CNOAFF.TMP', 'V V K8', ncmp, jtmp)
-        call getvtx('AFFE', 'NOM_CMP', iocc, iarg, ncmp,&
-                    zk8(jtmp), ncmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jtmp),&
+                    nbret=ncmp)
         if (iocc .eq. 1) then
             do 31 i = 1, ncmp
                 zk8(jcmpt+i-1)=zk8(jtmp+i-1)
@@ -207,8 +201,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
 !  --    NOEUDS CONCERNES
 !        ----------------
-        call getvtx('AFFE', 'TOUT', iocc, iarg, 1,&
-                    kbid, nbtou)
+        call getvtx('AFFE', 'TOUT', iocc=iocc, scal=kbid, nbret=nbtou)
         if (nbtou .ne. 0) then
             nbnoe=nbno
             call jedetr(mesnoe)
@@ -224,24 +217,19 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
 !  --    COMPOSANTES CONCERNEES
 !        ----------------------
-        call getvtx('AFFE', 'NOM_CMP', iocc, iarg, 0,&
-                    kbid, ncmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=ncmp)
         ncmp=-ncmp
         call jedetr('&&CNOAFF.CMP_IOCC')
         call wkvect('&&CNOAFF.CMP_IOCC', 'V V K8', ncmp, jcmp)
-        call getvtx('AFFE', 'NOM_CMP', iocc, iarg, ncmp,&
-                    zk8(jcmp), ncmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jcmp),&
+                    nbret=ncmp)
 !
 !  --    VALEURS
 !        -------
-        call getvr8('AFFE', 'VALE', iocc, iarg, 0,&
-                    rbid, nbvar)
-        call getvid('AFFE', 'VALE_F', iocc, iarg, 0,&
-                    kbid, nbvak)
-        call getvis('AFFE', 'VALE_I', iocc, iarg, 0,&
-                    ibid, nbvai)
-        call getvc8('AFFE', 'VALE_C', iocc, iarg, 0,&
-                    cbid, nbvac)
+        call getvr8('AFFE', 'VALE', iocc=iocc, nbval=0, nbret=nbvar)
+        call getvid('AFFE', 'VALE_F', iocc=iocc, nbval=0, nbret=nbvak)
+        call getvis('AFFE', 'VALE_I', iocc=iocc, nbval=0, nbret=nbvai)
+        call getvc8('AFFE', 'VALE_C', iocc=iocc, nbval=0, nbret=nbvac)
 !
 !  --    REMPLISSAGE DES OBJETS .CNSL ET .CNSV
 !        -------------------------------------
@@ -252,8 +240,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbvar=-nbvar
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V R', nbvar, jval)
-            call getvr8('AFFE', 'VALE', iocc, iarg, nbvar,&
-                        zr(jval), nbvar)
+            call getvr8('AFFE', 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jval),&
+                        nbret=nbvar)
             do 52 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
@@ -271,8 +259,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbvai=-nbvai
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V I', nbvai, jval)
-            call getvis('AFFE', 'VALE_I', iocc, iarg, nbvai,&
-                        zi(jval), nbval)
+            call getvis('AFFE', 'VALE_I', iocc=iocc, nbval=nbvai, vect=zi(jval),&
+                        nbret=nbval)
             do 54 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
@@ -290,8 +278,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbvac=-nbvac
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V C', nbvac, jval)
-            call getvc8('AFFE', 'VALE_C', iocc, iarg, nbvac,&
-                        zc(jval), nbvac)
+            call getvc8('AFFE', 'VALE_C', iocc=iocc, nbval=nbvac, vect=zc(jval),&
+                        nbret=nbvac)
             do 56 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
@@ -309,8 +297,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbvak=-nbvak
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V K8', nbvak, jval)
-            call getvid('AFFE', 'VALE_F', iocc, iarg, nbvak,&
-                        zk8(jval), nbvak)
+            call getvid('AFFE', 'VALE_F', iocc=iocc, nbval=nbvak, vect=zk8(jval),&
+                        nbret=nbvak)
             do 58 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
@@ -329,8 +317,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 ! --- 5. PASSAGE DU CHAM_NO_S AU CHAM_NO :
 !     =============================================
     prchno=' '
-    call getvtx(' ', 'PROL_ZERO', 0, iarg, 1,&
-                prol0, ibid)
+    call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ibid)
     call cnscno(cnos, prchno, prol0, base, cno,&
                 'F', iret)
 !

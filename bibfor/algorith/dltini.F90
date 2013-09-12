@@ -37,8 +37,8 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/chpver.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -74,8 +74,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
 ! 2.  --- EST-ON EN REPRISE ? ---
 !====
 !
-    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                reuse, ndy)
+    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=reuse, nbret=ndy)
     lener=.false.
     call getfac('ENERGIE', nocc)
     if (nocc .gt. 0) then
@@ -151,8 +150,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
         endif
 !
         nume = 0
-        call getvid('ETAT_INIT', 'DEPL', 1, iarg, 1,&
-                    champ, ndi)
+        call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=champ, nbret=ndi)
         if (ndi .gt. 0) then
             if (lener) then
                 linfo = .true.
@@ -168,8 +166,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call u2mess('I', 'ALGORITH3_28')
         endif
 !
-        call getvid('ETAT_INIT', 'VITE', 1, iarg, 1,&
-                    champ, nvi)
+        call getvid('ETAT_INIT', 'VITE', iocc=1, scal=champ, nbret=nvi)
         if (nvi .gt. 0) then
             if (lener) then
                 linfo = .true.
@@ -185,8 +182,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call u2mess('I', 'ALGORITH3_29')
         endif
 !
-        call getvid('ETAT_INIT', 'ACCE', 1, iarg, 1,&
-                    champ, nai)
+        call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=champ, nbret=nai)
         if (nai .gt. 0) then
             if (lener) then
                 linfo = .true.

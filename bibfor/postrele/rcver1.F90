@@ -1,8 +1,8 @@
 subroutine rcver1(phenoz, tablz, tably)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -127,8 +127,7 @@ subroutine rcver1(phenoz, tablz, tably)
 !
 ! --- VERIFICATION DU NOMBRE DE LIGAMENTS
 !     -----------------------------------
-    call getvtx(' ', 'TYPE_RESU_MECA', 1, iarg, 1,&
-                typmec, n1)
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     call tbexip(tabcom, valek(4), exist, k8b)
     ASSERT(exist)
     call tbexv1(tabcom, valek(4), intit2, 'V', nbint2,&

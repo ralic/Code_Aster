@@ -1,14 +1,14 @@
 subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                   nkcmp, nbcmp, ndim, chpgs, noma,&
                   nbno, nbma, nbval, tsca)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -85,10 +85,8 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     nomo=' '
     tsca=' '
     exicar=.false.
-    call getvid('RESU', 'RESULTAT', 1, iarg, 0,&
-                k8b, n0)
-    call getvid('RESU', 'CHAM_GD', 1, iarg, 0,&
-                k8b, n4)
+    call getvid('RESU', 'RESULTAT', iocc=1, nbval=0, nbret=n0)
+    call getvid('RESU', 'CHAM_GD', iocc=1, nbval=0, nbret=n4)
     do 60 i = 1, nbval
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
             call dismoi('F', 'TYPE_CHAMP', zk24(jkcha+i-1)(1:19), 'CHAMP', ibid,&
@@ -118,8 +116,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                                 noca, iret)
                     if (iret .eq. 0) exicar=.true.
                 else if (n4.ne.0) then
-                    call getvid('RESU', 'CARA_ELEM', 1, iarg, 1,&
-                                noca, n5)
+                    call getvid('RESU', 'CARA_ELEM', iocc=1, scal=noca, nbret=n5)
                     if (n5 .ne. 0) exicar=.true.
                 endif
 !               DIMENSION MODELE POUR IMPRESSION COOR POINT GAUSS
@@ -155,8 +152,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
         typmcl(2) = 'GROUP_NO'
         typmcl(3) = 'MAILLE'
         typmcl(4) = 'GROUP_MA'
-        call getvtx('RESU', 'TOUT', 1, iarg, 0,&
-                    k8b, n1)
+        call getvtx('RESU', 'TOUT', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call wkvect(mesnoe, 'V V I', nbno, jlno)
             do 70 i = 1, nbno
@@ -172,10 +168,8 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     else if (tych(1:2).eq.'EL'.or.tych.eq.'CART') then
 !
 !          VERIFICATIONS
-        call getvtx('RESU', 'NOEUD', 1, iarg, 0,&
-                    k8b, n1)
-        call getvtx('RESU', 'GROUP_NO', 1, iarg, 0,&
-                    k8b, n2)
+        call getvtx('RESU', 'NOEUD', iocc=1, nbval=0, nbret=n1)
+        call getvtx('RESU', 'GROUP_NO', iocc=1, nbval=0, nbret=n2)
         n3=-n1-n2
         if (n3 .ne. 0) call u2mess('F', 'TABLE0_41')
 !
@@ -183,8 +177,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
         motcle(2) = 'GROUP_MA'
         typmcl(1) = 'MAILLE'
         typmcl(2) = 'GROUP_MA'
-        call getvtx('RESU', 'TOUT', 1, iarg, 0,&
-                    k8b, n1)
+        call getvtx('RESU', 'TOUT', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call wkvect(mesmai, 'V V I', nbma, jlma)
             do 80 i = 1, nbma
@@ -234,14 +227,13 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 !
 !  --- 3. RECUPERATION DES COMPOSANTES
 !
-    call getvtx('RESU', 'NOM_CMP', 1, iarg, 0,&
-                k8b, n1)
+    call getvtx('RESU', 'NOM_CMP', iocc=1, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         nbcmp=-n1
         toucmp=.false.
         call wkvect(nkcmp, 'V V K8', nbcmp, jcmp)
-        call getvtx('RESU', 'NOM_CMP', 1, iarg, nbcmp,&
-                    zk8(jcmp), n1)
+        call getvtx('RESU', 'NOM_CMP', iocc=1, nbval=nbcmp, vect=zk8(jcmp),&
+                    nbret=n1)
     else
         nbcmp=0
         toucmp=.true.

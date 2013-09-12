@@ -1,5 +1,5 @@
 subroutine rc3600()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,12 +29,12 @@ subroutine rc3600()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cesimp.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -68,12 +68,9 @@ subroutine rc3600()
 !     ------------------------------------------------------------------
 !               LE MATERIAU , MODELE , CARA_ELEM
 !     ------------------------------------------------------------------
-    call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                nommat, n1)
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                modele, n1)
-    call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
-                carael, n1)
+    call getvid(' ', 'CHAM_MATER', scal=nommat, nbret=n1)
+    call getvid(' ', 'MODELE', scal=modele, nbret=n1)
+    call getvid(' ', 'CARA_ELEM', scal=carael, nbret=n1)
 !
     call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
                 noma, ierd)
@@ -92,8 +89,7 @@ subroutine rc3600()
     typmcs(1) = 'GROUP_MA'
     typmcs(2) = 'MAILLE'
 !
-    call getvtx(motclf, 'TOUT', 1, iarg, 1,&
-                k8b, nbtou)
+    call getvtx(motclf, 'TOUT', iocc=1, scal=k8b, nbret=nbtou)
     if (nbtou .ne. 0) then
         nbma = nbmat
         call wkvect(mesmai, 'V V I', nbma, jma)

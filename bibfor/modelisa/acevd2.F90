@@ -1,13 +1,12 @@
 subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
-    implicit          none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/acevtr.h"
 #include "asterfort/assert.h"
 #include "asterfort/crlinu.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -17,6 +16,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 #include "asterfort/jexnom.h"
 #include "asterfort/verdis.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, nbocc
     character(len=8) :: noma, nomo
     character(len=*) :: mcf
@@ -93,8 +93,8 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
                     iarg, lmax, zk24(jdls), nj)
         call getvem(noma, 'NOEUD', mcf, 'NOEUD', ioc,&
                     iarg, lmax, zk24(jdls), nn)
-        call getvtx(mcf, 'CARA', ioc, iarg, nbcar,&
-                    car, ncar)
+        call getvtx(mcf, 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
+                    nbret=ncar)
 !
         if (ncar .gt. ncar) ASSERT(.false.)
         do 25 icar = 1, ncar

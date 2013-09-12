@@ -27,11 +27,11 @@ subroutine op0128()
 !-----------------------------------------------------------------------
 !
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asgeel.h"
 #include "asterfort/assgcy.h"
 #include "asterfort/assgen.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jeexin.h"
     integer :: iret
@@ -51,19 +51,16 @@ subroutine op0128()
 !
 !-------------------RECUPERATION CONCEPTS AMONT-------------------------
 !
-    call getvid(' ', 'NUME_DDL_GENE', 1, iarg, 1,&
-                numeg, ibid)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numeg, nbret=ibid)
     nugene=numeg
 !
 !-------------------------RECUPERATION DE L'OPTION----------------------
 !
-    call getvtx(' ', 'OPTION', 1, iarg, 1,&
-                option, ibid)
+    call getvtx(' ', 'OPTION', scal=option, nbret=ibid)
 !
 !---------------------------------ASSEMBLAGE----------------------------
 !
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, iopt)
+    call getvtx(' ', 'METHODE', scal=method, nbret=iopt)
 !
 !-- ON TESTE SI LES OBJETS POUR L'ELIMINATION EXISTENT
     call jeexin(nugene//'.ELIM.BASE', iret)

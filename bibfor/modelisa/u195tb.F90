@@ -21,19 +21,19 @@ subroutine u195tb(chou)
 !
 !     " CREATION D'UN CHAMP A PARTIR D'UNE TABLE "
 !
-    implicit   none
+    implicit none
 !
 !     ------------------------------------------------------------------
 ! 0.1. ==> ARGUMENT
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -57,10 +57,8 @@ subroutine u195tb(chou)
 !
     chs='&&U195TB.CHAMP_S'
 !
-    call getvid(' ', 'TABLE', 0, iarg, 1,&
-                tabin, n1)
-    call getvtx(' ', 'TYPE_CHAM', 0, iarg, 1,&
-                tychlu, n1)
+    call getvid(' ', 'TABLE', scal=tabin, nbret=n1)
+    call getvtx(' ', 'TYPE_CHAM', scal=tychlu, nbret=n1)
 !
     typchs=tychlu(1:4)
     typch2=typchs
@@ -69,25 +67,20 @@ subroutine u195tb(chou)
 !
 !     VERIFICATIONS
     if (typchs .eq. 'NOEU' .or. typchs .eq. 'CART') then
-        call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                    ma, n1)
+        call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
         if (n1 .eq. 0) call u2mess('F', 'MODELISA7_61')
         option=' '
         mo=' '
     else if (typchs(1:2).eq.'EL') then
-        call getvid(' ', 'MODELE', 0, iarg, 0,&
-                    k8b, n1)
-        call getvtx(' ', 'OPTION', 0, iarg, 0,&
-                    k8b, n2)
+        call getvid(' ', 'MODELE', nbval=0, nbret=n1)
+        call getvtx(' ', 'OPTION', nbval=0, nbret=n2)
         if (n1 .ne. 0) then
             n1=-n1
-            call getvid(' ', 'MODELE', 0, iarg, 1,&
-                        mo, n1)
+            call getvid(' ', 'MODELE', scal=mo, nbret=n1)
         endif
         if (n2 .ne. 0) then
             n2=-n2
-            call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                        option, n2)
+            call getvtx(' ', 'OPTION', scal=option, nbret=n2)
         endif
         if (n1 .eq. 0 .or. n2 .eq. 0) call u2mess('F', 'MODELISA7_62')
         call jeveuo(mo//'.MODELE    .LGRF', 'L', jnoma)
@@ -99,8 +92,7 @@ subroutine u195tb(chou)
                 chs)
 !
 !     TRANSFORMATION : CHAM_S --> CHAMP
-    call getvtx(' ', 'PROL_ZERO', 0, iarg, 1,&
-                prol0, n1)
+    call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=n1)
     if (n1 .eq. 0) prol0='NON'
     if (typchs .eq. 'NOEU') then
         call cnscno(chs, ' ', prol0, 'G', chou,&

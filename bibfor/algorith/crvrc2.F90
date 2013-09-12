@@ -1,5 +1,5 @@
 subroutine crvrc2()
-    implicit  none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,12 @@ subroutine crvrc2()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -64,12 +64,9 @@ subroutine crvrc2()
 !
 !
     call getres(resu, type, oper)
-    call getvid('PREP_VRC2', 'MODELE', 1, iarg, 1,&
-                modele, n1)
-    call getvid('PREP_VRC2', 'CARA_ELEM', 1, iarg, 1,&
-                carele, n1)
-    call getvid('PREP_VRC2', 'EVOL_THER', 1, iarg, 1,&
-                resu1, n1)
+    call getvid('PREP_VRC2', 'MODELE', iocc=1, scal=modele, nbret=n1)
+    call getvid('PREP_VRC2', 'CARA_ELEM', iocc=1, scal=carele, nbret=n1)
+    call getvid('PREP_VRC2', 'EVOL_THER', iocc=1, scal=resu1, nbret=n1)
 !
 !     -- ON VERIFIE QUE LE CARA_ELEM S'APPUIE BIEN SUR LE MODELE
     call jeexin(carele//'.CANBSP    .CELK', iexi)

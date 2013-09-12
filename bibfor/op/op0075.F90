@@ -23,12 +23,11 @@ subroutine op0075()
 !
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!     ------------------------------------------------------------------
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/harm75.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
@@ -40,6 +39,7 @@ subroutine op0075()
 #include "asterfort/tran75.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!     ------------------------------------------------------------------
     character(len=8) :: k8bid, nomres, resin, mode, blanc8, param(3)
     character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
     character(len=19) :: profno
@@ -58,8 +58,7 @@ subroutine op0075()
     call getres(nomres, typres, nomcmd)
 !
 !     --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 4,&
-                champ, nbcham)
+    call getvtx(' ', 'NOM_CHAM', nbval=4, vect=champ, nbret=nbcham)
     if (nbcham .lt. 0) then
         call u2mess('E', 'ALGORITH9_44')
     else
@@ -70,8 +69,7 @@ subroutine op0075()
                 endif
 10          continue
             if (champ(i) .eq. 'ACCE_ABSOLU') then
-                call getvid(' ', 'ACCE_MONO_APPUI', 1, iarg, 1,&
-                            k8bid, n1)
+                call getvid(' ', 'ACCE_MONO_APPUI', scal=k8bid, nbret=n1)
                 if (n1 .eq. 0) then
                     call u2mess('E', 'ALGORITH9_45')
                 endif
@@ -85,18 +83,20 @@ subroutine op0075()
     call wkvect(profno(1:19)//'.REFN', 'V V K24', 4, jrefn)
     zk24(jrefn+1)='DEPL_R'
 !
-    call getvid(' ', 'RESU_GENE', 1, iarg, 1,&
-                resin, ir1)
+    call getvid(' ', 'RESU_GENE', scal=resin, nbret=ir1)
     call gettco(resin, concep)
 !
 !     --- INDICATEUR : 1) CALCUL CLASSIQUE AVEC UNE SIMPLE PROJECTION
 !       -           OU 2) SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
     prsimp=.true.
 !
-    call dismoi('C', 'BASE_MODALE', resin, 'RESU_DYNA', ibid, basemo, iret)
-    call dismoi('C', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numgen, iret)
-    call dismoi('C', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, matgen, iret)
-    
+    call dismoi('C', 'BASE_MODALE', resin, 'RESU_DYNA', ibid,&
+                basemo, iret)
+    call dismoi('C', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
+                numgen, iret)
+    call dismoi('C', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
+                matgen, iret)
+!
 !   --- LE RESU_GENE NE VIENT PAS DE PROJ_MESU_MODAL
     if ((matgen(1:8).ne.blanc8) .or. (numgen(1:8).ne.blanc8)) then
         typrep = 'MODE_MECA'
@@ -115,7 +115,7 @@ subroutine op0075()
             call gettco(zk24(j3refe), typrep)
         endif
     endif
-
+!
 !
 !
 !     --- DYNAMIQUE TRANSITOIRE ---
@@ -126,8 +126,7 @@ subroutine op0075()
 !
         else if (typrep(1:9).eq.'MODE_GENE') then
 !         --- RECUPERER LA BASE MODALE POUR DOUBLE RESTITUTION
-            call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                        mode, ibid)
+            call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) call u2mess('F', 'ALGORITH9_48')
 !
             call tran75(nomres, typres, resin, mode)
@@ -152,8 +151,7 @@ subroutine op0075()
 !
         else if (typrep(1:9).eq.'MODE_GENE') then
 !         --- AVEC SOUS STRUCTURATION, RECUPERER LA BASE MODALE
-            call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                        mode, ibid)
+            call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) call u2mess('F', 'ALGORITH9_48')
 !
             call harm75(nomres, typres, resin, nomcmd, mode)

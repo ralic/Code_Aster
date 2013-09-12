@@ -1,5 +1,5 @@
 subroutine op0136()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ subroutine op0136()
 !     ------------------------------------------------------------------
 !     COMMANDE POST_FATIGUE
 !     ------------------------------------------------------------------
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/pofape.h"
 #include "asterfort/pofaqu.h"
@@ -32,8 +32,7 @@ subroutine op0136()
 !     ------------------------------------------------------------------
 !
     call infmaj()
-    call getvtx(' ', 'CHARGEMENT', 1, iarg, 1,&
-                typcha, n1)
+    call getvtx(' ', 'CHARGEMENT', scal=typcha, nbret=n1)
 !
 !     --- CHARGEMENT PUREMENT UNAXIAL ---
 !

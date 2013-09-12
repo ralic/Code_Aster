@@ -2,8 +2,8 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getvis.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
@@ -70,8 +70,7 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
 !     ------------------------------------------------------------------
 !
 !     NUMERO DU FOND A TRAITER
-    call getvis('THETA', 'NUME_FOND', 1, iarg, 1,&
-                numfon, ibid)
+    call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
     idepfi=zi(ifomul-1+2*(numfon-1)+1)
     iarrfi=zi(ifomul-1+2*(numfon-1)+2)
@@ -101,8 +100,7 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
 !     ------------------------------------------------------------------
 !
 !     DOIT-ON PRENDRE UNE REPARTITION UNIFORME ?
-    call getvis('THETA', 'NB_POINT_FOND', 1, iarg, 1,&
-                nfonu, ibid)
+    call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=nfonu, nbret=ibid)
     if (ibid .eq. 0) nfonu = 0
 !
     if (nfonu .gt. 0) then

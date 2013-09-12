@@ -40,8 +40,8 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! -----  ARGUMENTS
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -110,13 +110,11 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DU RAYON DE LA SPHERE :
 !     ----------------------------------
-    call getvr8(motfac, 'RAYON', iocc, iarg, 0,&
-                rayon, nrayon)
+    call getvr8(motfac, 'RAYON', iocc=iocc, nbval=0, nbret=nrayon)
     if (nrayon .eq. 0) then
         call u2mess('F', 'MODELISA3_82')
     else
-        call getvr8(motfac, 'RAYON', iocc, iarg, 1,&
-                    rayon, nb)
+        call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call u2mess('F', 'MODELISA3_83')
         endif
@@ -124,13 +122,11 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DE LA DEMI-EPAISSEUR DE L'ENVELOPPE :
 !     ------------------------------------------------
-    call getvr8(motfac, 'PRECISION', iocc, iarg, 0,&
-                prec, nprec)
+    call getvr8(motfac, 'PRECISION', iocc=iocc, nbval=0, nbret=nprec)
     if (nprec .eq. 0) then
         call u2mess('F', 'MODELISA3_90')
     else
-        call getvr8(motfac, 'PRECISION', iocc, iarg, 1,&
-                    prec, nb)
+        call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
             call u2mess('F', 'MODELISA3_91')
         endif

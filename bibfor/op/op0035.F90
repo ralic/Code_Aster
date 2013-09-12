@@ -24,9 +24,9 @@ subroutine op0035()
 ! DECLARATION VARIABLES LOCALES
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterc/uttrst.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -58,14 +58,12 @@ subroutine op0035()
 !- NOM DES PARAMETRES REELS A RECUPERER
 !=======================================================================
 !
-    call getvtx(' ', 'LISTE_INFO', 0, iarg, 0,&
-                k16bid, nbval)
+    call getvtx(' ', 'LISTE_INFO', nbval=0, nbret=nbval)
     nbval=-nbval
     call wkvect('&&LISTE_INFO', 'V V K16', nbval, jkval)
     call wkvect('&&TYPE_INFO', 'V V K8', nbval, jtval)
 !
-    call getvtx(' ', 'LISTE_INFO', 0, iarg, nbval,&
-                zk16(jkval), ibid)
+    call getvtx(' ', 'LISTE_INFO', nbval=nbval, vect=zk16(jkval), nbret=ibid)
     do 20 k = 1, nbval
         if (zk16(jkval+k-1) .eq. 'CPU_RESTANT') then
             zk8(jtval+k-1) = 'R'
@@ -90,11 +88,9 @@ subroutine op0035()
             call tbajli(result, nbval, zk16(jkval+k-1), ul, rbid,&
                         cbid, k8bid, 0)
         else if (zk16(jkval+k-1) .eq. 'ETAT_UNITE') then
-            call getvis(' ', 'UNITE', 0, iarg, 1,&
-                        ul, nbunit)
+            call getvis(' ', 'UNITE', scal=ul, nbret=nbunit)
             if (nbunit .eq. 0) then
-                call getvtx(' ', 'FICHIER', 0, iarg, 1,&
-                            kfic, nbfic)
+                call getvtx(' ', 'FICHIER', scal=kfic, nbret=nbfic)
                 ul = ulnomf (kfic, k8bid, k8bid)
             endif
             etat='FERME  '

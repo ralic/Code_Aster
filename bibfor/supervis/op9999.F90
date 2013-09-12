@@ -25,10 +25,10 @@ subroutine op9999()
 !-----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/gettyp.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterc/jdcset.h"
 #include "asterfort/fin999.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -66,8 +66,7 @@ subroutine op9999()
 !
     ifm = 0
     fchier = ' '
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ifm, l)
+    call getvis(' ', 'UNITE', scal=ifm, nbret=l)
     if (.not. ulexis( ifm )) then
         call ulopen(ifm, ' ', fchier, 'NEW', 'O')
     endif
@@ -98,15 +97,13 @@ subroutine op9999()
 !
 ! --- RETASSAGE EVENTUEL DE LA GLOBALE
 !
-    call getvtx(' ', 'RETASSAGE', 1, iarg, 1,&
-                ouinon, l)
+    call getvtx(' ', 'RETASSAGE', scal=ouinon, nbret=l)
     if (ouinon .eq. 'OUI') call jetass('G')
 !
 ! --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
 !
     fhdf = 'NON'
-    call getvtx(' ', 'FORMAT_HDF', 1, iarg, 1,&
-                fhdf, nfhdf)
+    call getvtx(' ', 'FORMAT_HDF', scal=fhdf, nbret=nfhdf)
     if (nfhdf .gt. 0) then
         if (fhdf .eq. 'OUI') then
             if (ouinon .eq. 'OUI') then

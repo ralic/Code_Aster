@@ -2,9 +2,8 @@ subroutine asmaco(ma1, ma2, mag)
 ! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -26,6 +25,7 @@ subroutine asmaco(ma1, ma2, mag)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma1, ma2, mag
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,10 +114,8 @@ subroutine asmaco(ma1, ma2, mag)
 !CC   ------------------------------------------------------------------
 !CC RECUPERATION DES 2 GROUP_MA A COLLER
 !CC   ------------------------------------------------------------------
-    call getvtx('COLLAGE', 'GROUP_MA_1', 1, iarg, 1,&
-                cgpm1, ibid)
-    call getvtx('COLLAGE', 'GROUP_MA_2', 1, iarg, 1,&
-                cgpm2, ibid)
+    call getvtx('COLLAGE', 'GROUP_MA_1', iocc=1, scal=cgpm1, nbret=ibid)
+    call getvtx('COLLAGE', 'GROUP_MA_2', iocc=1, scal=cgpm2, nbret=ibid)
     elim=.false.
     call jeexin(jexnom(ma1//'.GROUPEMA', cgpm1), iret1)
     if (iret1 .eq. 0) then
@@ -491,7 +489,7 @@ subroutine asmaco(ma1, ma2, mag)
             if (ilgma .ne. 0) then
                 icompt=icompt+1
                 call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-                call jeecra(jexnum(mag//'.GROUPEMA', icompt), 'LONMAX', max(1,ilgma))
+                call jeecra(jexnum(mag//'.GROUPEMA', icompt), 'LONMAX', max(1, ilgma))
                 call jeecra(jexnum(mag//'.GROUPEMA', icompt), 'LONUTI', ilgma)
                 call jeveuo(jexnum(mag//'.GROUPEMA', icompt), 'E', iagmax)
                 ilgm2=0
@@ -545,7 +543,7 @@ subroutine asmaco(ma1, ma2, mag)
             if (ilgma .ne. 0) then
                 icompt = icompt + 1
                 call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-                call jeecra(jexnum(mag//'.GROUPEMA', icompt), 'LONMAX', max(1,ilgma))
+                call jeecra(jexnum(mag//'.GROUPEMA', icompt), 'LONMAX', max(1, ilgma))
                 call jeecra(jexnum(mag//'.GROUPEMA', icompt), 'LONUTI', ilgma)
                 call jeveuo(jexnum(mag//'.GROUPEMA', icompt), 'E', iagmax)
                 ilgm2=0
@@ -589,7 +587,7 @@ subroutine asmaco(ma1, ma2, mag)
         call jelira(jexnum(ma1//'.GROUPENO', i), 'LONUTI', n)
         call jenuno(jexnum(ma1//'.GROUPENO', i), nogno)
         call jecroc(jexnom(mag//'.GROUPENO', nogno))
-        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPENO', i), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i), 'E', iagnox)
         do 811, ii=1,n
@@ -623,7 +621,7 @@ subroutine asmaco(ma1, ma2, mag)
         icompt = icompt + 1
         i1 = nbgn1 + icompt
         call jecroc(jexnom(mag//'.GROUPENO', nogno))
-        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i1), 'E', iagnox)
         do 824, ii=1,n

@@ -24,15 +24,14 @@ subroutine op0119()
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/codent.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gfmaco.h"
 #include "asterfort/gfmacr.h"
 #include "asterfort/gfmafi.h"
@@ -55,6 +54,7 @@ subroutine op0119()
 #include "asterfort/reliem.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
 !
     integer :: nbval, ncarfi, itrois
     parameter  (nbval=999,ncarfi=3,itrois=3)
@@ -138,8 +138,7 @@ subroutine op0119()
     do 40 ioc = 1, nboccs
         nbfigr=0
 ! ---    LES SECTIONS MAINTENANT
-        call getvid('SECTION', 'MAILLAGE_SECT', ioc, iarg, 1,&
-                    nomas, nbv)
+        call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
         mlgtms = nomas//'.TYPMAIL'
         mlgcnx = nomas//'.CONNEX'
         mlgtno = nomas//'.NOMNOE'
@@ -181,12 +180,11 @@ subroutine op0119()
 !
     do 50 ioc = 1, nboccp
 ! ---    NOMBRE DE FIBRES PONCTUELLES
-        call getvr8('FIBRE', 'VALE', ioc, iarg, nbval,&
-                    val, nbv)
+        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
+                    nbret=nbv)
 ! ---    VERIF MULTIPLE DE 3 POUR 'VALE' DANS 'FIBRE'
         if (dble(nbv)/dtrois .ne. nbv/itrois) then
-            call getvtx('FIBRE', 'GROUP_FIBRE', ioc, iarg, 1,&
-                        nomgf, ibid)
+            call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
             call codent(ioc, 'G', kioc)
             call codent(nbv, 'G', knbv)
             valk(1)=nomgf
@@ -214,17 +212,15 @@ subroutine op0119()
     nufib = 0
     do 90 ioc = 1, nboccs
         ig=ig+1
-        call getvtx('SECTION', 'GROUP_FIBRE', ioc, iarg, 1,&
-                    nomgf, ibid)
+        call getvtx('SECTION', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
 ! ---    CREATION DU GROUPE DE MAILLE
         call gfmagr(nogfma, nomgf, zi(jnfg+ig-1))
         if (niv .eq. 2) write(ifm,1000) nomgf
 ! ---    ON RECUPERE LE MAILLAGE
-        call getvid('SECTION', 'MAILLAGE_SECT', ioc, iarg, 1,&
-                    nomas, nbv)
+        call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
 ! ---    RECUPERATION DES COORDONNEES DE L'AXE DE LA POUTRE
-        call getvr8('SECTION', 'COOR_AXE_POUTRE', ioc, iarg, 2,&
-                    axep, iret)
+        call getvr8('SECTION', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep,&
+                    nbret=iret)
         if (iret .ne. 2) then
             axep(1) = zero
             axep(2) = zero
@@ -291,20 +287,18 @@ subroutine op0119()
 ! --- TRAITEMENT DES FIBRES
     do 120 ioc = 1, nboccp
         ig=ig+1
-        call getvtx('FIBRE', 'GROUP_FIBRE', ioc, iarg, 1,&
-                    nomgf, ibid)
+        call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
 ! ---    CREATION DU GROUPE DE MAILLE
         call gfmagr(nogfma, nomgf, zi(jnfg+ig-1))
         if (niv .eq. 2) write (ifm,2000) nomgf
 ! ---    SURFACE OU DIAMETRE
-        call getvtx('FIBRE', 'CARA', ioc, iarg, 1,&
-                    ksudi, iret)
+        call getvtx('FIBRE', 'CARA', iocc=ioc, scal=ksudi, nbret=iret)
         if (iret .eq. 0) ksudi = 'SURFACE '
-        call getvr8('FIBRE', 'VALE', ioc, iarg, nbval,&
-                    val, nbv)
+        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
+                    nbret=nbv)
 ! ---    RECUPERATION DES COORDONNEES DE L'AXE DE LA POUTRE
-        call getvr8('FIBRE', 'COOR_AXE_POUTRE', ioc, iarg, 2,&
-                    axep, iret)
+        call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep,&
+                    nbret=iret)
         if (iret .ne. 2) then
             axep(1) = zero
             axep(2) = zero

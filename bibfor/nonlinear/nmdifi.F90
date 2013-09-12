@@ -19,10 +19,10 @@ subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -71,10 +71,8 @@ subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
 !
 ! --- LECTURE MOTS-CLEFS
 !
-    call getvis(motfac, 'NUME_INST_FIN', iocc, iarg, 1,&
-                numfin, n1)
-    call getvr8(motfac, 'INST_FIN', iocc, iarg, 1,&
-                inst, n2)
+    call getvis(motfac, 'NUME_INST_FIN', iocc=iocc, scal=numfin, nbret=n1)
+    call getvr8(motfac, 'INST_FIN', iocc=iocc, scal=inst, nbret=n2)
 !
 ! --- PAS D'OCCURENCE DES MOTS-CLES -> NUMERO INITIAL
 !

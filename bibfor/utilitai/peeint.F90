@@ -1,11 +1,6 @@
 subroutine peeint(resu, modele, nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/alchml.h"
 #include "asterfort/chpchd.h"
@@ -18,6 +13,10 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/dismlg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -36,6 +35,7 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc
     character(len=8) :: modele
     character(len=19) :: resu
@@ -93,22 +93,14 @@ subroutine peeint(resu, modele, nbocc)
 !
 !
 !     --- RECUPERATION DU RESULTAT ET DU NUMERO D'ORDRE
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resuco, nr)
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
-    call getvr8(' ', 'INST', 1, iarg, 0,&
-                rbid, ni)
-    call getvis(' ', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, no)
-    call getvid(' ', 'LIST_INST', 1, iarg, 0,&
-                kbid, nli)
-    call getvid(' ', 'LIST_ORDRE', 1, iarg, 0,&
-                kbid, nlo)
-    call getvid(' ', 'CHAM_GD', 1, iarg, 1,&
-                chamg, nd)
+    call getvid(' ', 'RESULTAT', scal=resuco, nbret=nr)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
+    call getvr8(' ', 'INST', nbval=0, nbret=ni)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=no)
+    call getvid(' ', 'LIST_INST', nbval=0, nbret=nli)
+    call getvid(' ', 'LIST_ORDRE', nbval=0, nbret=nlo)
+    call getvid(' ', 'CHAM_GD', scal=chamg, nbret=nd)
 !
 !     --- CREATION DE LA TABLE
     call tbcrsd(resu, 'G')
@@ -133,28 +125,24 @@ subroutine peeint(resu, modele, nbocc)
             exiord=.true.
             nbordr=-no
             call wkvect(knum, 'V V I', nbordr, jno)
-            call getvis(' ', 'NUME_ORDRE', 1, iarg, nbordr,&
-                        zi(jno), iret)
+            call getvis(' ', 'NUME_ORDRE', nbval=nbordr, vect=zi(jno), nbret=iret)
         endif
 !
         if (ni .ne. 0) then
             nbordr=-ni
             call wkvect(kins, 'V V R', nbordr, jin)
-            call getvr8(' ', 'INST', 1, iarg, nbordr,&
-                        zr(jin), iret)
+            call getvr8(' ', 'INST', nbval=nbordr, vect=zr(jin), nbret=iret)
         endif
 !
         if (nli .ne. 0) then
-            call getvid(' ', 'LIST_INST', 1, iarg, 1,&
-                        lisins, iret)
+            call getvid(' ', 'LIST_INST', scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
         if (nlo .ne. 0) then
             exiord=.true.
-            call getvid(' ', 'LIST_ORDRE', 1, iarg, 1,&
-                        lisins, iret)
+            call getvid(' ', 'LIST_ORDRE', scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
@@ -210,8 +198,7 @@ subroutine peeint(resu, modele, nbocc)
                 endif
 !
 !         --- CHAMP DU POST-TRAITEMENT
-                call getvtx('INTEGRALE', 'NOM_CHAM', iocc, iarg, 1,&
-                            nomcha, iret)
+                call getvtx('INTEGRALE', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
                 if (iret .eq. 0) call u2mess('F', 'POSTELEM_4')
 !
                 call rsexch('F', resuco, nomcha, numo, cham2,&
@@ -287,12 +274,12 @@ subroutine peeint(resu, modele, nbocc)
                         tych, iret)
 !
 !         --- COMPOSANTES DU POST-TRAITEMENT
-            call getvtx('INTEGRALE', 'NOM_CMP', iocc, iarg, nzero,&
-                        k8b, nbcmp)
+            call getvtx('INTEGRALE', 'NOM_CMP', iocc=iocc, nbval=nzero, vect=k8b,&
+                        nbret=nbcmp)
             nbcmp=-nbcmp
             call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)
-            call getvtx('INTEGRALE', 'NOM_CMP', iocc, iarg, nbcmp,&
-                        zk8(jcmp), iret)
+            call getvtx('INTEGRALE', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                        nbret=iret)
 !
 !         COMPOSANTES A AFFICHER DANS LA TABLE: ZK8(JCPINI)
             call wkvect('&&PEEINT.CMP_INIT', 'V V K8', nbcmp, jcpini)
@@ -308,8 +295,8 @@ subroutine peeint(resu, modele, nbocc)
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNE : MOT-CLE 'TOUT'
-            call getvtx('INTEGRALE', 'TOUT', iocc, iarg, nzero,&
-                        k8b, iret)
+            call getvtx('INTEGRALE', 'TOUT', iocc=iocc, nbval=nzero, vect=k8b,&
+                        nbret=iret)
             if (iret .ne. 0) then
                 call peecal(tych, resu, nomcha, tout, tout,&
                             modele, nr, cham, nbcmp, zk8(jcmp),&
@@ -317,13 +304,13 @@ subroutine peeint(resu, modele, nbocc)
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
-            call getvtx('INTEGRALE', 'GROUP_MA', iocc, iarg, nzero,&
-                        k8b, n1)
+            call getvtx('INTEGRALE', 'GROUP_MA', iocc=iocc, nbval=nzero, vect=k8b,&
+                        nbret=n1)
             if (n1 .ne. 0) then
                 nbgma=-n1
                 call wkvect('&&PEEINT_GMA', 'V V K24', nbgma, jgma)
-                call getvtx('INTEGRALE', 'GROUP_MA', iocc, iarg, nbgma,&
-                            zk24(jgma), n1)
+                call getvtx('INTEGRALE', 'GROUP_MA', iocc=iocc, nbval=nbgma, vect=zk24(jgma),&
+                            nbret=n1)
                 do 20 igm = 1, nbgma
                     call jelira(jexnom(mailla//'.GROUPEMA', zk24(jgma+ igm-1)), 'LONMAX', nma,&
                                 k8b)
@@ -336,13 +323,13 @@ subroutine peeint(resu, modele, nbocc)
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'MAILLE'
-            call getvtx('INTEGRALE', 'MAILLE', iocc, iarg, nzero,&
-                        k8b, n1)
+            call getvtx('INTEGRALE', 'MAILLE', iocc=iocc, nbval=nzero, vect=k8b,&
+                        nbret=n1)
             if (n1 .ne. 0) then
                 nma=-n1
                 call wkvect('&&PEEINT_MAIL', 'V V K8', nma, jma)
-                call getvtx('INTEGRALE', 'MAILLE', iocc, iarg, nma,&
-                            zk8(jma), n1)
+                call getvtx('INTEGRALE', 'MAILLE', iocc=iocc, nbval=nma, vect=zk8(jma),&
+                            nbret=n1)
                 do 30 im = 1, nma
                     call jenonu(jexnom(mailla//'.NOMMAI', zk8(jma+im-1) ), numa)
                     call peecal(tych, resu, nomcha, maille, zk8(jma+im-1),&

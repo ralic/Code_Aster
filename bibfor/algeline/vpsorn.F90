@@ -99,7 +99,6 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/dnaupd.h"
 #include "asterfort/dneupd.h"
 #include "asterfort/mrmult.h"
@@ -109,6 +108,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vpgskp.h"
 #include "asterfort/vpordo.h"
+!
     integer :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq), neqact
     integer :: maxitr, ifm, niv, priram(8), nconv
     real(kind=8) :: tolsor, vect(nbeq, nbvect), resid(nbeq), workd(3*nbeq), workl(lonwl)

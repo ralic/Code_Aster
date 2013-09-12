@@ -31,7 +31,6 @@ subroutine op0030()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
 #include "asterfort/cagene.h"
@@ -43,6 +42,7 @@ subroutine op0030()
 #include "asterfort/cormgi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/initel.h"
@@ -104,8 +104,7 @@ subroutine op0030()
 !
 ! --- RECUPERATION DE LA FORMULATION (UNIQUE !)
 !
-    call getvtx(' ', 'FORMULATION', 1, iarg, 1,&
-                formul, noc)
+    call getvtx(' ', 'FORMULATION', scal=formul, nbret=noc)
     if (noc .eq. 0) then
         ASSERT(.false.)
     endif

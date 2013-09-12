@@ -84,8 +84,8 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterc/r8prem.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -227,8 +227,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !----------------------------------
 !        CAS ETCC_REPRISE
 !----------------------------------
-        call getvid('DEFI_CABLE', 'TENSION_CT', icabl, iarg, 1,&
-                    ntable, n1)
+        call getvid('DEFI_CABLE', 'TENSION_CT', iocc=icabl, scal=ntable, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('F', 'MODELISA2_56')
         endif

@@ -20,11 +20,11 @@ subroutine dfllac(mcfact, iechec, dtmin, even, action,&
 ! ======================================================================
 !
     implicit none
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfllae.h"
 #include "asterfort/dflldc.h"
 #include "asterfort/dfllin.h"
+#include "asterfort/getvtx.h"
     character(len=16) :: mcfact, even
     integer :: iechec
     real(kind=8) :: pasmin, dtmin
@@ -66,8 +66,7 @@ subroutine dfllac(mcfact, iechec, dtmin, even, action,&
 !
 ! --- ACTION
 !
-    call getvtx(mcfact, 'ACTION', iechec, iarg, 1,&
-                action, iret)
+    call getvtx(mcfact, 'ACTION', iocc=iechec, scal=action, nbret=iret)
     if (action .eq. 'ARRET') then
 ! ----- PAS D'OPTIONS
     else if (action.eq.'REAC_PRECOND') then

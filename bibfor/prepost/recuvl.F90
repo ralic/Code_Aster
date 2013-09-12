@@ -1,8 +1,8 @@
 subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
                   tbscrv, nomdb, tbscmb)
 !
-    implicit      none
-#include "asterc/getvid.h"
+    implicit none
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -53,12 +53,9 @@ subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
 ! ======================================================================
 ! --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 ! ======================================================================
-    call getvid(motfac, 'TABL_MECA_REV', 1, iarg, 1,&
-                tabrev, ibid)
-    call getvid(motfac, 'TABL_MECA_MDB', 1, iarg, 1,&
-                tabmdb, ibid)
-    call getvid(motfac, 'TABL_THER', 1, iarg, 1,&
-                tabthr, ibid)
+    call getvid(motfac, 'TABL_MECA_REV', iocc=1, scal=tabrev, nbret=ibid)
+    call getvid(motfac, 'TABL_MECA_MDB', iocc=1, scal=tabmdb, nbret=ibid)
+    call getvid(motfac, 'TABL_THER', iocc=1, scal=tabthr, nbret=ibid)
 ! ======================================================================
 ! --- RECUPERATION DES LISTES D'INSTANT --------------------------------
 ! ======================================================================

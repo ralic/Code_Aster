@@ -26,17 +26,16 @@ subroutine op0112()
     implicit none
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/cpldb.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -49,6 +48,7 @@ subroutine op0112()
 #include "asterfort/nocart.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !
     integer :: nbval, icmp, ibid, idecal, ino2
     integer :: ino1, ii, jj, icmpg, iocc, ima, nbnog1, nbmag1
@@ -92,19 +92,13 @@ subroutine op0112()
 !     ! ========================== !
 !     ! RECUPERATION DES MOTS-CLES !
 !     ! ========================== !
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                tf, ibid)
-    call getvr8(' ', 'PAS', 0, iarg, 1,&
-                dt, ibid)
-    call getvis(' ', 'NUME_ORDRE_YACS', 0, iarg, 1,&
-                numpas, ibid)
+    call getvr8(' ', 'INST', scal=tf, nbret=ibid)
+    call getvr8(' ', 'PAS', scal=dt, nbret=ibid)
+    call getvis(' ', 'NUME_ORDRE_YACS', scal=numpas, nbret=ibid)
     numpa4 = int(numpas, 4)
-    call getvid(' ', 'CHAR_MECA', 1, iarg, 1,&
-                charg, ibid)
-    call getvid(' ', 'MATR_PROJECTION', 1, iarg, 1,&
-                corres, ibid)
-    call getvtx(' ', 'NOM_CMP_IFS', 1, iarg, 3,&
-                nomcmp, ibid)
+    call getvid(' ', 'CHAR_MECA', scal=charg, nbret=ibid)
+    call getvid(' ', 'MATR_PROJECTION', scal=corres, nbret=ibid)
+    call getvtx(' ', 'NOM_CMP_IFS', nbval=3, vect=nomcmp, nbret=ibid)
     call getfac('VIS_A_VIS', nbocc)
     if (nbocc .lt. 1) then
         call u2mess('F', 'COUPLAGEIFS_5')
@@ -188,7 +182,7 @@ subroutine op0112()
     nomvar = 'FORAST'
     ti = tf
     call cpldb(icompo, cpiter, ti, tf, numpa4,&
-               nomvar, int(3*nbno4,4), taille, zr(jforc2), ibid4)
+               nomvar, int(3*nbno4, 4), taille, zr(jforc2), ibid4)
 !
 !     ! ====================================== !
 !     ! LISTE DES NOEUDS DU MAILLAGE 1 COUPLES !
@@ -203,8 +197,7 @@ subroutine op0112()
     grpma = ma1//'.GROUPEMA'
     do iocc = 1, nbocc
 !        CALL GETVID('VIS_A_VIS','GROUP_MA_1',IOCC,IARG,1,NOMGMA,IBID)
-        call getvtx('VIS_A_VIS', 'GROUP_MA_1', iocc, iarg, 1,&
-                    nomgma, ibid)
+        call getvtx('VIS_A_VIS', 'GROUP_MA_1', iocc=iocc, scal=nomgma, nbret=ibid)
         call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1)
         call jeveuo(jexnom(grpma, nomgma), 'L', jalim1)
         do ii = 1, nbmag1
@@ -226,8 +219,7 @@ subroutine op0112()
     grpno = ma2//'.GROUPENO'
     do iocc = 1, nbocc
 !        CALL GETVID('VIS_A_VIS','GROUP_NO_2',IOCC,IARG,1,NOMGNO,IBID)
-        call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc, iarg, 1,&
-                    nomgno, ibid)
+        call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc=iocc, scal=nomgno, nbret=ibid)
         call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2)
         call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
         do jj = 1, nbno2

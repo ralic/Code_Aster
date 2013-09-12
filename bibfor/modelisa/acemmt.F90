@@ -2,7 +2,7 @@ subroutine acemmt(noma, nmmt)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -54,8 +54,7 @@ subroutine acemmt(noma, nmmt)
 !
     do 10 iocc = 1, nbocpo
 !
-        call getvtx(motfac, 'MODI_METRIQUE', iocc, iarg, 1,&
-                    mmt, ibid)
+        call getvtx(motfac, 'MODI_METRIQUE', iocc=iocc, scal=mmt, nbret=ibid)
         if (mmt .eq. 'NON') then
             immt = 0
         else if (mmt.eq.'OUI') then

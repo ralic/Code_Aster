@@ -1,13 +1,12 @@
 subroutine comp81(nomres, basmod, raidf, noma)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -25,6 +24,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, noma, basmod
     character(len=19) :: raidf
 ! ----------------------------------------------------------------------
@@ -100,8 +100,10 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! **********************
 !     RECUPERATION DES INFOS UTILES
 ! **********************
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, ier)
-    call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lintf, ier)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                numddl, ier)
+    call dismoi('C', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                lintf, ier)
 !
     call dismoi('F', 'NOM_MODELE', numddl, 'NUME_DDL', ibid,&
                 nomo, iret)
@@ -164,8 +166,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! L'INTERFACE ET TELS QUE LE NBRE DE DDL CONSIDERE SOIT EGAL
 ! AU NBRE DE MODES DYNAMIQUES
 ! ON PREND COMME POSTULAT QUE NBNDYN=PARTIE_ENTIERE DE NBMDYN/NCMPMX
-    call getvtx(' ', 'SANS_GROUP_NO', 1, iarg, 1,&
-                gnex, igex)
+    call getvtx(' ', 'SANS_GROUP_NO', scal=gnex, nbret=igex)
     if (igex .ne. 0) then
         call jelira(jexnom(noma//'.GROUPENO', gnex), 'LONUTI', nbno2)
         call jeveuo(jexnom(noma//'.GROUPENO', gnex), 'L', ldgn0)
@@ -356,10 +357,8 @@ subroutine comp81(nomres, basmod, raidf, noma)
         call jeecra(nomres//'.LICH', 'LONMAX', 2)
 !
         do 670, iocc= 1,nocc
-        call getvtx('CAS_CHARGE', 'NOM_CAS', iocc, iarg, 1,&
-                    nomcas, n1)
-        call getvid('CAS_CHARGE', 'VECT_ASSE_GENE', iocc, iarg, 1,&
-                    vectas, n1)
+        call getvtx('CAS_CHARGE', 'NOM_CAS', iocc=iocc, scal=nomcas, nbret=n1)
+        call getvid('CAS_CHARGE', 'VECT_ASSE_GENE', iocc=iocc, scal=vectas, nbret=n1)
         call jecroc(jexnom(nomres//'.LICA', nomcas))
         call jecroc(jexnom(nomres//'.LICH', nomcas))
         call jenonu(jexnom(nomres//'.LICA', nomcas), icas)

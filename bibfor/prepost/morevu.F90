@@ -1,8 +1,8 @@
 subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
                   volobs)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -63,8 +63,7 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
     call tbexp2(nomta, 'V_USUR_OBST_CUMU')
     call tbexp2(nomta, 'ANGLE_DEBUT')
 !
-    call getvr8(' ', 'INST', 1, iarg, 1,&
-                dinst, nis)
+    call getvr8(' ', 'INST', scal=dinst, nbret=nis)
     if (nis .eq. 0) then
         call tbexv1(nomta, 'INST', '&&MOREVU.INST', 'V', nbvpu,&
                     k8b)

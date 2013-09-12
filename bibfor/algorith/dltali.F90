@@ -55,13 +55,13 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/ajlagr.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dlfdyn.h"
 #include "asterfort/dlfext.h"
 #include "asterfort/dltini.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrmult.h"
@@ -188,8 +188,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 ! CALCUL DE LA FORCE INITIALE SI PAS DE REPRISE A PARTIR D UN RESULTAT
 !
 !
-    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                dyna, ndy)
+    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=dyna, nbret=ndy)
     if (ndy .eq. 0) then
         call wkvect('FEXT0M', 'V V R', neq, ifextm)
         call mrmult('ZERO', imat(1), dep0, fexte0, 1,&

@@ -4,15 +4,14 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
                   cmamax, vaamax, maamin, noamin, isamin,&
                   cmamin, vaamin)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterc/r8vide.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -20,6 +19,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 #include "asterfort/reliem.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ioc, ispmax, ispmin, isamax, isamin
     real(kind=8) :: valmin, valmax, vaamin, vaamax
     character(len=8) :: mamax, nomax, cmpmax, mamin, nomin, cmpmin
@@ -88,19 +88,16 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
         nbmail = nbma
     endif
 !
-    call getvtx('ACTION', 'NOEUD', ioc, iarg, 0,&
-                k8b, ier1)
-    call getvtx('ACTION', 'GROUP_NO', ioc, iarg, 0,&
-                k8b, ier2)
+    call getvtx('ACTION', 'NOEUD', iocc=ioc, nbval=0, nbret=ier1)
+    call getvtx('ACTION', 'GROUP_NO', iocc=ioc, nbval=0, nbret=ier2)
     if (ier1 .ne. 0 .or. ier2 .ne. 0) call u2mess('F', 'POSTRELE_66')
 !
-    call getvtx('ACTION', 'NOM_CMP', ioc, iarg, 0,&
-                k8b, nbc)
+    call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then
         nbcmp = -nbc
         call wkvect('&&PREXEL.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('ACTION', 'NOM_CMP', ioc, iarg, nbcmp,&
-                    zk8(jcmp), ibid)
+        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=zk8(jcmp),&
+                    nbret=ibid)
     else
         nbcmp = ncmp
     endif

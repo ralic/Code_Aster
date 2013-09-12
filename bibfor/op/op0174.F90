@@ -1,5 +1,5 @@
 subroutine op0174()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,10 @@ subroutine op0174()
 #include "jeveux.h"
 #include "asterc/getltx.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -59,16 +59,14 @@ subroutine op0174()
     call infmaj()
 !
     call getres(table, typcon, nomcmd)
-    call getvid(' ', 'CO', 1, iarg, 1,&
-                concpt, iret)
+    call getvid(' ', 'CO', scal=concpt, nbret=iret)
 !
 !
 ! --------------------------
 !   EXTRACTION D'UNE TABLE
 ! --------------------------
 !
-    call getvtx(' ', 'NOM_TABLE', 0, iarg, 1,&
-                nomsym, iret)
+    call getvtx(' ', 'NOM_TABLE', scal=nomsym, nbret=iret)
     if (iret .ne. 0) then
         call ltnotb(concpt, nomsym, nomtab)
         call copisd('TABLE', 'G', nomtab, table)
@@ -83,8 +81,7 @@ subroutine op0174()
 ! ----------------------------
 !
 !    NOMBRE DE PARAMETRES
-    call getvtx(' ', 'NOM_PARA', 0, iarg, 0,&
-                k16b, nbpara)
+    call getvtx(' ', 'NOM_PARA', nbval=0, nbret=nbpara)
     ASSERT(nbpara.ne.0)
     nbpara = -nbpara
 !
@@ -112,8 +109,7 @@ subroutine op0174()
 10  end do
 !
     zk16(inom) = 'NUME_ORDRE'
-    call getvtx(' ', 'NOM_PARA', 0, iarg, nbpara,&
-                zk16(inom+1), ibid)
+    call getvtx(' ', 'NOM_PARA', nbval=nbpara, vect=zk16(inom+1), nbret=ibid)
 !
     do 20 i = 1, nbpara
         nom = zk16(inom + i)

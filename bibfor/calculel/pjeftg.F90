@@ -29,14 +29,14 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 !       SI PAS DE GEOMETRIE TRANSFORMEE GEOMI=' '
 !
 ! ----------------------------------------------------------------------
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
@@ -71,11 +71,11 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 !     PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2] : CALCUL DE GEOMI
 !     --------------------------------------------------------------
     if (igeom .eq. 1) then
-        call getvid(motfac, 'TRANSF_GEOM_1', iocc, iarg, 3,&
-                    lfonc, nfonc)
+        call getvid(motfac, 'TRANSF_GEOM_1', iocc=iocc, nbval=3, vect=lfonc,&
+                    nbret=nfonc)
     else
-        call getvid(motfac, 'TRANSF_GEOM_2', iocc, iarg, 3,&
-                    lfonc, nfonc)
+        call getvid(motfac, 'TRANSF_GEOM_2', iocc=iocc, nbval=3, vect=lfonc,&
+                    nbret=nfonc)
     endif
     ASSERT(nfonc.ge.0)
     if (nfonc .gt. 0) then

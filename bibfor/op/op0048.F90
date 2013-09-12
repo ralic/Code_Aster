@@ -37,9 +37,6 @@ subroutine op0048()
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cochre.h"
 #include "asterfort/dismoi.h"
@@ -49,6 +46,9 @@ subroutine op0048()
 #include "asterfort/dltali.h"
 #include "asterfort/dltlec.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -106,8 +106,7 @@ subroutine op0048()
 !
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 !
-    call getvis(' ', 'INFO', 0, iarg, 1,&
-                niv, ibid)
+    call getvis(' ', 'INFO', scal=niv, nbret=ibid)
     call infmaj()
 !
     call infniv(ifm, niv)
@@ -168,10 +167,8 @@ subroutine op0048()
         call wkvect(baseno//'.COEF_RRE', 'V V R  ', nbexre, lcrre)
         call wkvect(baseno//'.LISTRESU', 'V V K8 ', nbexre, lresu)
         do 252 iresu = 1, nbexre
-            call getvid('EXCIT_RESU', 'RESULTAT', iresu, iarg, 1,&
-                        zk8( lresu+iresu-1), l)
-            call getvr8('EXCIT_RESU', 'COEF_MULT', iresu, iarg, 1,&
-                        zr(lcrre+iresu-1), l)
+            call getvid('EXCIT_RESU', 'RESULTAT', iocc=iresu, scal=zk8( lresu+iresu-1), nbret=l)
+            call getvr8('EXCIT_RESU', 'COEF_MULT', iocc=iresu, scal=zr(lcrre+iresu-1), nbret=l)
 252      continue
     endif
 !
@@ -272,10 +269,8 @@ subroutine op0048()
                     call u2mess('F', 'DYNAMIQUE_19')
                 endif
                 if (iocc .gt. 0) then
-                    call getvid('EXCIT', 'CHARGE', iocc, iarg, 1,&
-                                charep, iret)
-                    call getvid('EXCIT', 'FONC_MULT', iocc, iarg, 1,&
-                                nomfon, nfon)
+                    call getvid('EXCIT', 'CHARGE', iocc=iocc, scal=charep, nbret=iret)
+                    call getvid('EXCIT', 'FONC_MULT', iocc=iocc, scal=nomfon, nbret=nfon)
                 endif
             endif
             typcoe = 'R'

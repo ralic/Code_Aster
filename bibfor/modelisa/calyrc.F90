@@ -1,20 +1,18 @@
 subroutine calyrc(chargz)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
-#include "asterfort/char_read_tran.h"
-
 #include "asterfort/calirg.h"
 #include "asterfort/canort.h"
+#include "asterfort/char_read_tran.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprel.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -32,6 +30,8 @@ subroutine calyrc(chargz)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
+!
     character(len=*) :: chargz
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -170,8 +170,7 @@ subroutine calyrc(chargz)
 !
         dnor = .false.
         if (typlia .eq. 'DEPL') then
-            call getvtx(motfac, 'DDL_ESCL', iocc, iarg, 1,&
-                        ddl2, nddl2)
+            call getvtx(motfac, 'DDL_ESCL', iocc=iocc, scal=ddl2, nbret=nddl2)
             if (nddl2 .gt. 0) dnor = .true.
         endif
 !
@@ -261,8 +260,8 @@ subroutine calyrc(chargz)
                 zi(indire+zi(jnunoe+i-1)-1) = i
 20          continue
 !
-            call canort(noma, nbma3, zi(idmai3), ndim,&
-                        nbno3, zi(jnunoe), 1)
+            call canort(noma, nbma3, zi(idmai3), ndim, nbno3,&
+                        zi(jnunoe), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
             call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false.)
             call jeveuo('&&CALYRC.LINONU', 'L', iagno3)
@@ -271,14 +270,14 @@ subroutine calyrc(chargz)
 !
 !       1.3 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 !       ------------------------------------------
-        call char_read_tran(motfac, iocc , ndim, l_tran, tran, &
+        call char_read_tran(motfac, iocc, ndim, l_tran, tran,&
                             l_cent, cent, l_angl_naut, angl_naut)
-
+!
         geom3 = '&&CALYRC.GEOM_TRANSF'
         list_node = '&&CALYRC.LINONU'
-        call calirg(noma, nbno3, list_node, tran,  cent, &
+        call calirg(noma, nbno3, list_node, tran, cent,&
                     l_angl_naut, angl_naut, geom3, lrota, mrota)
-
+!
 !
 !       2. CALCUL DE CORRES :
 !       -------------------
@@ -327,22 +326,19 @@ subroutine calyrc(chargz)
 !       3.0 RECUPERATION D'UN FACTEUR :
 !       =================
 !        -- 1er groupe maitre --
-        call getvr8(motfac, 'COEF_MAIT1', iocc, iarg, 1,&
-                    coef11, icoef1)
+        call getvr8(motfac, 'COEF_MAIT1', iocc=iocc, scal=coef11, nbret=icoef1)
         if (icoef1 .le. 0) then
             coef11 = 1.d0
         endif
         if (nbma2 .gt. 0) then
 !        -- 2eme groupe maitre --
-            call getvr8(motfac, 'COEF_MAIT2', iocc, iarg, 1,&
-                        coef12, icoef2)
+            call getvr8(motfac, 'COEF_MAIT2', iocc=iocc, scal=coef12, nbret=icoef2)
             if (icoef2 .le. 0) then
                 coef12 = 1.d0
             endif
         endif
 !        -- 1er groupe esclave --
-        call getvr8(motfac, 'COEF_ESCL', iocc, iarg, 1,&
-                    coef3, icoef3)
+        call getvr8(motfac, 'COEF_ESCL', iocc=iocc, scal=coef3, nbret=icoef3)
         if (icoef3 .le. 0) then
             coef3 = 1.d0
         endif

@@ -1,10 +1,9 @@
 subroutine rc36in(noma, nbma, listma, chindi)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -12,6 +11,7 @@ subroutine rc36in(noma, nbma, listma, chindi)
 #include "asterfort/jexatr.h"
 #include "asterfort/rc36zz.h"
 #include "asterfort/reliem.h"
+!
     integer :: nbma, listma(*)
     character(len=8) :: noma
     character(len=24) :: chindi
@@ -91,21 +91,14 @@ subroutine rc36in(noma, nbma, listma, chindi)
 !
     do 10, iocc = 1, nbindi, 1
 !
-    call getvr8(motclf, 'C1', iocc, iarg, 1,&
-                vale(1), n1)
-    call getvr8(motclf, 'C2', iocc, iarg, 1,&
-                vale(2), n1)
-    call getvr8(motclf, 'C3', iocc, iarg, 1,&
-                vale(3), n1)
-    call getvr8(motclf, 'K1', iocc, iarg, 1,&
-                vale(4), n1)
-    call getvr8(motclf, 'K2', iocc, iarg, 1,&
-                vale(5), n1)
-    call getvr8(motclf, 'K3', iocc, iarg, 1,&
-                vale(6), n1)
+    call getvr8(motclf, 'C1', iocc=iocc, scal=vale(1), nbret=n1)
+    call getvr8(motclf, 'C2', iocc=iocc, scal=vale(2), nbret=n1)
+    call getvr8(motclf, 'C3', iocc=iocc, scal=vale(3), nbret=n1)
+    call getvr8(motclf, 'K1', iocc=iocc, scal=vale(4), nbret=n1)
+    call getvr8(motclf, 'K2', iocc=iocc, scal=vale(5), nbret=n1)
+    call getvr8(motclf, 'K3', iocc=iocc, scal=vale(6), nbret=n1)
 !
-    call getvtx(motclf, 'TYPE_ELEM_STANDARD', iocc, iarg, 1,&
-                type, n1)
+    call getvtx(motclf, 'TYPE_ELEM_STANDARD', iocc=iocc, scal=type, nbret=n1)
     if (n1 .eq. 0) then
         vale(7) = 0.d0
     else
@@ -115,10 +108,8 @@ subroutine rc36in(noma, nbma, listma, chindi)
         if (type(1:3) .eq. 'TEE') vale(7) = 40.d0
     endif
 !
-    call getvtx(motclf, 'GROUP_NO', iocc, iarg, 0,&
-                k8b, n1)
-    call getvtx(motclf, 'NOEUD', iocc, iarg, 0,&
-                k8b, n2)
+    call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
+    call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
     if (n1+n2 .ne. 0) then
         call reliem(' ', noma, 'NU_NOEUD', motclf, iocc,&
                     2, motcln, typmcn, mesnoe, nbnoeu)
@@ -127,8 +118,7 @@ subroutine rc36in(noma, nbma, listma, chindi)
         nbnoeu = 0
     endif
 !
-    call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                k8b, nbtou)
+    call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
     if (nbtou .ne. 0) then
         do 100 im = 1, nbma
             ima = listma(im)

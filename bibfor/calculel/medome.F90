@@ -3,11 +3,11 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -87,18 +87,15 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     lpost = (nomcmd.eq.'POST_ELEM')
 !
     if (lpost .and. (result(1:1).ne.' ')) then
-        call getvis(' ', 'NUME_ORDRE', 0, iarg, 1,&
-                    nuord, inuord)
+        call getvis(' ', 'NUME_ORDRE', scal=nuord, nbret=inuord)
         if (inuord .eq. 0 .and. nomcmd .eq. 'POST_ELEM') then
 !
 !     L'UTILISATEUR N'A PAS FOURNI DE NUMERO D'ORDRE :
 !     RECUPERATION DU PREMIER NUMERO D'ORDRE DANS LA SD RESULTAT
 !     ----------------------------------------------------------
             knum = '&&'//nompro//'.NUME_ORDRE'
-            call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                        prec, np)
-            call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                        crit, nc)
+            call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+            call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
             call rsutnu(result, ' ', 0, knum, nbordr,&
                         prec, crit, iret)
             call jeveuo(knum, 'L', jordr)
@@ -137,19 +134,16 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
         endif
     else
 !
-        call getvid(' ', 'MODELE', 0, iarg, 1,&
-                    modele, n1)
+        call getvid(' ', 'MODELE', scal=modele, nbret=n1)
         if (n1 .eq. 0) call u2mess('F', 'CALCULEL6_84')
 !
-        call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                    cara, n2)
+        call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n2)
         call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
                     k8b, ie)
         if ((n2.eq.0) .and. (k8b(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_39')
 !
 !
-        call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                    materi, n3)
+        call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
         call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
                     k8b, ie)
         if ((nomcmd.ne.'CALC_MATR_ELEM') .and. (n3.eq.0) .and. (k8b(1:3) .eq.'OUI')) then
@@ -168,12 +162,10 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 !   SI IEXCIT=1 ON PREND LE CHARGEMENT DONNE PAR L'UTILISATEUR
 !
     if (iexcit .eq. 1) then
-        call getvid(' ', 'CHARGE', 0, iarg, 0,&
-                    k8b, n4)
+        call getvid(' ', 'CHARGE', nbval=0, nbret=n4)
         ncha = -n4
         call wkvect(kcha, 'V V K8', max(1, ncha), icha)
-        call getvid(' ', 'CHARGE', 0, iarg, ncha,&
-                    zk8(icha), n4)
+        call getvid(' ', 'CHARGE', nbval=ncha, vect=zk8(icha), nbret=n4)
 !
 !     -- ON VERIFIE QUE LES CHARGES PORTENT TOUTES SUR LE MEME MODELE.
         if (ncha .gt. 0) then

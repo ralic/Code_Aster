@@ -1,15 +1,15 @@
 subroutine dlfext(nveca, nchar, temps, neq, liad,&
                   lifo, charge, infoch, fomult, modele,&
                   mate, carele, numedd, f)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
 #include "asterfort/assert.h"
 #include "asterfort/fext.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -98,8 +98,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
 !
 ! --- METHODE D'INTEGRATION
 !
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                method, n1)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
 !
 !
 ! 2.1. ==> --- CAS D'UN CHARGEMENT DEFINI PAR VECT_ASSE ---
@@ -139,14 +138,14 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
 !
 ! -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)
         iret = 0
-        do ieq = 1,lonch
+        do ieq = 1, lonch
             if (abs(zr(if2+ieq-1)) .gt. r8prem()) iret = 1
         enddo
         if ((iret.eq.1) .and. (method.ne.'NEWMARK')) then
             call u2mess('F', 'ALGORITH3_20')
         endif
 !
-        do ieq = 1,lonch
+        do ieq = 1, lonch
             f(ieq) = f(ieq) + zr(if2+ieq-1)
         enddo
 !

@@ -20,8 +20,8 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jacopo.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -47,8 +47,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
 !
 !     GESTION DU .REFD EN CAS DE SOUS-STRUCTURATION
     if (basemo .eq. '        ') then
-        call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                    nommat, nm)
+        call getvid(' ', 'MATR_MASS', scal=nommat, nbret=nm)
         call jeveuo(nommat//'           .REFA', 'L', jrefa)
         krefd = zk24(jrefa-1+2)(1:8)
     else

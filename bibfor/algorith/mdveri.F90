@@ -26,9 +26,9 @@ subroutine mdveri()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
@@ -47,13 +47,10 @@ subroutine mdveri()
     integer :: npas, nts
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                method, n1)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
 !
-    call getvid(' ', 'MATR_AMOR', 0, iarg, 1,&
-                amogen, nagen)
-    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8bid, nared)
+    call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=nagen)
+    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nared)
     if (nagen .ne. 0 .and. method .eq. 'DEVOGE') then
         call u2mess('E', 'ALGORITH5_67')
     endif
@@ -62,32 +59,25 @@ subroutine mdveri()
 !     ENDIF
 !
     if (method(1:4) .eq. 'ITMI') then
-        call getvid('SCHEMA_TEMPS', 'BASE_ELAS_FLUI', 1, iarg, 0,&
-                    k8bid, nbasfl)
+        call getvid('SCHEMA_TEMPS', 'BASE_ELAS_FLUI', iocc=1, nbval=0, nbret=nbasfl)
         if (nbasfl .eq. 0) call u2mess('E', 'ALGORITH5_69')
 !
-        call getvr8('INCREMENT', 'PAS', 1, iarg, 0,&
-                    r8bid, npas)
+        call getvr8('INCREMENT', 'PAS', iocc=1, nbval=0, nbret=npas)
         if (npas .eq. 0) call u2mess('E', 'ALGORITH5_70')
 !
-        call getvtx('SCHEMA_TEMPS', 'ETAT_STAT', 1, iarg, 1,&
-                    ouinon, ibid)
+        call getvtx('SCHEMA_TEMPS', 'ETAT_STAT', iocc=1, scal=ouinon, nbret=ibid)
         if (ouinon(1:3) .eq. 'OUI') then
-            call getvr8('SCHEMA_TEMPS', 'TS_REG_ETAB', 1, iarg, 0,&
-                        r8bid, nts)
+            call getvr8('SCHEMA_TEMPS', 'TS_REG_ETAB', iocc=1, nbval=0, nbret=nts)
             if (nts .eq. 0) call u2mess('E', 'ALGORITH5_71')
         endif
 !
-        call getvtx('CHOC', 'SOUS_STRUC_1', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvtx('CHOC', 'SOUS_STRUC_1', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) call u2mess('E', 'ALGORITH5_72')
 !
-        call getvtx('CHOC', 'NOEUD_2', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvtx('CHOC', 'NOEUD_2', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) call u2mess('E', 'ALGORITH5_73')
 !
-        call getvtx('CHOC', 'SOUS_STRUC_2', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvtx('CHOC', 'SOUS_STRUC_2', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) call u2mess('E', 'ALGORITH5_74')
     endif
 !
@@ -109,8 +99,7 @@ subroutine mdveri()
     call getfac('EXCIT', nbexc)
     kf = 0
     do 20 i = 1, nbexc
-        call getvid('EXCIT', 'VECT_ASSE_GENE', i, iarg, 0,&
-                    k8bid, nm)
+        call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, nbval=0, nbret=nm)
         if (nm .ne. 0) then
             kf = kf+1
         endif
@@ -120,10 +109,8 @@ subroutine mdveri()
     endif
 !
 !     COHERENCE MATRICES
-    call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                matr1, ibid)
-    call getvid(' ', 'MATR_RIGI', 0, iarg, 1,&
-                matr2, ibid)
+    call getvid(' ', 'MATR_MASS', scal=matr1, nbret=ibid)
+    call getvid(' ', 'MATR_RIGI', scal=matr2, nbret=ibid)
     call jeveuo(matr1//'           .REFA', 'L', jref1)
     call jeveuo(matr2//'           .REFA', 'L', jref2)
     ref1=zk24(jref1)
@@ -135,8 +122,8 @@ subroutine mdveri()
 !     COHERENCE SOUS LE MC EXCIT/VECT_ASSE_GENE ET LES MATRICES
     basemo=ref1(1:8)
     do 21 i = 1, nbexc
-        call getvid('EXCIT', 'VECT_ASSE_GENE', i, iarg, ibid,&
-                    channo, nm)
+        call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, nbval=ibid, vect=channo,&
+                    nbret=nm)
         if (nm .ne. 0) then
             call jeveuo(channo//'           .REFE', 'L', jref1)
             ref1=zk24(jref1)

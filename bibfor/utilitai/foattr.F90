@@ -1,8 +1,8 @@
 subroutine foattr(motcle, iocc, nomfon)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -52,35 +52,30 @@ subroutine foattr(motcle, iocc, nomfon)
     if (zk24(lpro) .eq. 'NAPPE   ') then
         nbfonc = ( nbprol - 7 ) / 2
 !
-        call getvtx(motcle, 'INTERPOL', iocc, iarg, 2,&
-                    interp, l1)
+        call getvtx(motcle, 'INTERPOL', iocc=iocc, nbval=2, vect=interp,&
+                    nbret=l1)
         if (l1 .eq. 1) zk24(lpro+1) = interp(1)//interp(1)
         if (l1 .eq. 2) zk24(lpro+1) = interp(1)//interp(2)
 !
-        call getvtx(motcle, 'NOM_PARA', iocc, iarg, 1,&
-                    npara, l2)
+        call getvtx(motcle, 'NOM_PARA', iocc=iocc, scal=npara, nbret=l2)
         if (l2 .ne. 0) zk24(lpro+2) = npara
 !
-        call getvtx(motcle, 'NOM_RESU', iocc, iarg, 1,&
-                    nresu, l3)
+        call getvtx(motcle, 'NOM_RESU', iocc=iocc, scal=nresu, nbret=l3)
         if (l3 .ne. 0) zk24(lpro+3) = nresu
 !
-        call getvtx(motcle, 'PROL_GAUCHE', iocc, iarg, 1,&
-                    prolg, l4)
+        call getvtx(motcle, 'PROL_GAUCHE', iocc=iocc, scal=prolg, nbret=l4)
         if (l4 .ne. 0) zk24(lpro+4)(1:1) = prolg(1:1)
 !
-        call getvtx(motcle, 'PROL_DROITE', iocc, iarg, 1,&
-                    prold, l5)
+        call getvtx(motcle, 'PROL_DROITE', iocc=iocc, scal=prold, nbret=l5)
         if (l5 .ne. 0) zk24(lpro+4)(2:2) = prold(1:1)
 !
         zk24(lpro+5) = temp
 !
-        call getvtx(motcle, 'NOM_PARA_FONC', iocc, iarg, 1,&
-                    npara, l6)
+        call getvtx(motcle, 'NOM_PARA_FONC', iocc=iocc, scal=npara, nbret=l6)
         if (l6 .ne. 0) zk24(lpro+6) = npara
 !
-        call getvtx(motcle, 'INTERPOL_FONC', iocc, iarg, 2,&
-                    interp, l7)
+        call getvtx(motcle, 'INTERPOL_FONC', iocc=iocc, nbval=2, vect=interp,&
+                    nbret=l7)
         if (l7 .ne. 0) then
             do 10 if = 1, nbfonc
                 if (l7 .eq. 1) zk24(lpro+7+2*(if-1)) = interp(1)// interp(1)
@@ -88,16 +83,14 @@ subroutine foattr(motcle, iocc, nomfon)
 10          continue
         endif
 !
-        call getvtx(motcle, 'PROL_GAUCHE_FONC', iocc, iarg, 1,&
-                    prolg, l8)
+        call getvtx(motcle, 'PROL_GAUCHE_FONC', iocc=iocc, scal=prolg, nbret=l8)
         if (l8 .ne. 0) then
             do 12 if = 1, nbfonc
                 zk24(lpro+8+2*(if-1))(1:1) = prolg(1:1)
 12          continue
         endif
 !
-        call getvtx(motcle, 'PROL_DROITE_FONC', iocc, iarg, 1,&
-                    prold, l9)
+        call getvtx(motcle, 'PROL_DROITE_FONC', iocc=iocc, scal=prold, nbret=l9)
         if (l9 .ne. 0) then
             do 14 if = 1, nbfonc
                 zk24(lpro+8+2*(if-1))(2:2) = prold(1:1)
@@ -107,27 +100,23 @@ subroutine foattr(motcle, iocc, nomfon)
 !
     else
 !
-        call getvtx(motcle, 'INTERPOL', iocc, iarg, 2,&
-                    interp, l1)
+        call getvtx(motcle, 'INTERPOL', iocc=iocc, nbval=2, vect=interp,&
+                    nbret=l1)
         if (l1 .ne. 0) then
             if (l1 .eq. 1) zk24(lpro+1) = interp(1)//interp(1)
             if (l1 .eq. 2) zk24(lpro+1) = interp(1)//interp(2)
         endif
 !
-        call getvtx(motcle, 'NOM_PARA', iocc, iarg, 1,&
-                    npara, l2)
+        call getvtx(motcle, 'NOM_PARA', iocc=iocc, scal=npara, nbret=l2)
         if (l2 .ne. 0) zk24(lpro+2) = npara
 !
-        call getvtx(motcle, 'NOM_RESU', iocc, iarg, 1,&
-                    nresu, l3)
+        call getvtx(motcle, 'NOM_RESU', iocc=iocc, scal=nresu, nbret=l3)
         if (l3 .ne. 0) zk24(lpro+3) = nresu
 !
-        call getvtx(motcle, 'PROL_GAUCHE', iocc, iarg, 1,&
-                    prolg, l4)
+        call getvtx(motcle, 'PROL_GAUCHE', iocc=iocc, scal=prolg, nbret=l4)
         if (l4 .ne. 0) zk24(lpro+4)(1:1) = prolg(1:1)
 !
-        call getvtx(motcle, 'PROL_DROITE', iocc, iarg, 1,&
-                    prold, l5)
+        call getvtx(motcle, 'PROL_DROITE', iocc=iocc, scal=prold, nbret=l5)
         if (l5 .ne. 0) zk24(lpro+4)(2:2) = prold(1:1)
 !
         zk24(lpro+5) = temp

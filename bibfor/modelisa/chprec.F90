@@ -20,7 +20,7 @@ subroutine chprec(chou)
 !
 !     ------------------------------------------------------------------
 !
-    implicit   none
+    implicit none
 !
 !
 ! 0.1. ==> ARGUMENTS
@@ -28,14 +28,14 @@ subroutine chprec(chou)
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/chmima.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -81,22 +81,18 @@ subroutine chprec(chou)
     call getres(k8bid, k16bid, nomcmd)
     noch19 = chou
 !
-    call getvtx(' ', 'NOEUD_CMP', 0, iarg, 0,&
-                k8bid, n1)
+    call getvtx(' ', 'NOEUD_CMP', nbval=0, nbret=n1)
     if (n1 .ne. 0 .and. n1 .ne. -2) call u2mess('F', 'MODELISA4_16')
     nomch=' '
-    call getvtx(' ', 'NOM_CHAM', 0, iarg, 1,&
-                nomch, n2)
+    call getvtx(' ', 'NOM_CHAM', scal=nomch, nbret=n2)
     tychlu=' '
-    call getvtx(' ', 'TYPE_CHAM', 0, iarg, 1,&
-                tychlu, n2)
+    call getvtx(' ', 'TYPE_CHAM', scal=tychlu, nbret=n2)
 !
 !
 !     1. CAS DE LA RECUPERATION DU CHAMP DE GEOMETRIE D'UN MAILLAGE
 !     ==============================================================
     if (nomch .eq. 'GEOMETRIE') then
-        call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                    ma, n1)
+        call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
         if (n1 .eq. 0) call u2mess('F', 'MODELISA4_17')
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
@@ -119,8 +115,7 @@ subroutine chprec(chou)
 !
 !     2. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD FISS_XFEM
 !     ==============================================================
-    call getvid(' ', 'FISSURE', 0, iarg, 1,&
-                fis, n1)
+    call getvid(' ', 'FISSURE', scal=fis, nbret=n1)
     if (n1 .eq. 1) then
 !
 !       VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
@@ -181,8 +176,7 @@ subroutine chprec(chou)
 !
 !     3. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD CARA_ELEM
 !     ==============================================================
-    call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                cara, n1)
+    call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n1)
     if (n1 .eq. 1) then
 !
         ASSERT(nomch(1:1).eq.'.')
@@ -210,8 +204,7 @@ subroutine chprec(chou)
 !
 !     4. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD CHAR_MECA
 !     ==============================================================
-    call getvid(' ', 'CHARGE', 0, iarg, 1,&
-                charme, n1)
+    call getvid(' ', 'CHARGE', scal=charme, nbret=n1)
     if (n1 .eq. 1) then
 !
         ASSERT(nomch(1:1).eq.'.')
@@ -239,14 +232,11 @@ subroutine chprec(chou)
 !
 !     5. CAS DE LA RECUPERATION D'UN CHAMP D'UNE SD RESULTAT
 !     ==============================================================
-    call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                resuco, n1)
+    call getvid(' ', 'RESULTAT', scal=resuco, nbret=n1)
     interp=' '
-    call getvtx(' ', 'INTERPOL', 0, iarg, 1,&
-                interp, n3)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n3)
     typmax=' '
-    call getvtx(' ', 'TYPE_MAXI', 0, iarg, 1,&
-                typmax, n5)
+    call getvtx(' ', 'TYPE_MAXI', scal=typmax, nbret=n5)
     call gettco(resuco, tysd)
 !
 !     --- ON PEUT FAIRE UNE INTERPOLATION ---
@@ -255,8 +245,7 @@ subroutine chprec(chou)
         tysd .eq. 'DYNA_TRANS' .or. tysd .eq. 'EVOL_VARC') then
 !
         if (interp(1:3) .eq. 'LIN') then
-            call getvr8(' ', 'INST', 0, iarg, 1,&
-                        inst, n4)
+            call getvr8(' ', 'INST', scal=inst, nbret=n4)
             ASSERT(n4.eq.1)
             proldr = 'EXCLUS'
             prolga = 'EXCLUS'
@@ -268,10 +257,8 @@ subroutine chprec(chou)
                 call chmima(resuco, nomch, typmax, noch19)
             else
                 knum = '&&'//nompro//'.NUME_ORDRE'
-                call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                            epsi, np)
-                call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                            crit, nc)
+                call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
+                call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
                 call rsutnu(resuco, ' ', 0, knum, nbordr,&
                             epsi, crit, iret)
                 if ((iret.ne.0) .or. (nbordr.gt.1)) goto 10
@@ -311,10 +298,8 @@ subroutine chprec(chou)
                         0, 0, 0.d0)
         else
             knum = '&&'//nompro//'.NUME_ORDRE'
-            call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                        epsi, np)
-            call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                        crit, nc)
+            call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
+            call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
             call rsutnu(resuco, ' ', 0, knum, nbordr,&
                         epsi, crit, iret)
             if ((iret.ne.0) .or. (nbordr.gt.1)) goto 10

@@ -1,5 +1,5 @@
 subroutine op0160()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,10 +20,10 @@ subroutine op0160()
 !     OPERATEUR   IMPR_MACR_ELEM
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iredmi.h"
 #include "asterfort/iredsu.h"
@@ -42,8 +42,7 @@ subroutine op0160()
     ific = 0
     fichie = ' '
 !
-    call getvid(' ', 'MACR_ELEM_DYNA', 1, iarg, 1,&
-                macrel, n1)
+    call getvid(' ', 'MACR_ELEM_DYNA', scal=macrel, nbret=n1)
 !
 !     ----- VERIFICATION QUE LA BASE MODALE EST A JOUR -----
 !
@@ -64,16 +63,13 @@ subroutine op0160()
     endif
 !     ------------------------------------------------------------------
 !
-    call getvtx(' ', 'FORMAT', 1, iarg, 1,&
-                format, n1)
+    call getvtx(' ', 'FORMAT', scal=format, nbret=n1)
 !
     if (format .eq. 'IDEAS') then
 !
-        call getvis(' ', 'VERSION', 1, iarg, 1,&
-                    versio, n1)
+        call getvis(' ', 'VERSION', scal=versio, nbret=n1)
 !
-        call getvis(' ', 'UNITE', 1, iarg, 1,&
-                    ific, n1)
+        call getvis(' ', 'UNITE', scal=ific, nbret=n1)
         if (.not. ulexis( ific )) then
             call ulopen(ific, ' ', fichie, 'NEW', 'O')
         endif

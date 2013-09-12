@@ -3,11 +3,10 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -20,6 +19,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: dnoma, fiss, noma
     character(len=19) :: dcnxin, disfr, cnxinv, ndomp, edomg
     real(kind=8) :: damax, radtor
@@ -130,8 +130,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !     DETERMINE WHICH NODES MUST BE CONSIDERED FOR THE PROJECTION.
 !     THIS VALUE WILL BE INCREASED BELOW IN ORDER TO INCLUDE ALL THE
 !     ELEMENTS CUT BY THE BORDER OF THE TORE.
-    call getvr8(' ', 'RAYON', 1, iarg, 1,&
-                rayon, iret)
+    call getvr8(' ', 'RAYON', scal=rayon, nbret=iret)
     radtor = (rayon+damax)**2
 !
 ! ----------------------------------------------------------------------

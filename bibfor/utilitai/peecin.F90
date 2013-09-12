@@ -1,16 +1,17 @@
 subroutine peecin(resu, modele, mate, cara, nh,&
                   nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
+#include "asterc/gettco.h"
+#include "asterc/r8depi.h"
+#include "asterc/r8vide.h"
 #include "asterfort/chpve2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim3.h"
-#include "asterc/gettco.h"
 #include "asterfort/getvem.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -28,8 +29,6 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 #include "asterfort/mechti.h"
 #include "asterfort/meharm.h"
 #include "asterfort/peenca.h"
-#include "asterc/r8depi.h"
-#include "asterc/r8vide.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
@@ -41,6 +40,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara
 !     ------------------------------------------------------------------
@@ -105,17 +105,13 @@ subroutine peecin(resu, modele, mate, cara, nh,&
     inst = 0.d0
     chtemp = ' '
     chfreq = ' '
-    call getvid(' ', 'CHAM_GD', 1, iarg, 1,&
-                depla, nd)
+    call getvid(' ', 'CHAM_GD', scal=depla, nbret=nd)
     if (nd .ne. 0) then
         call chpve2(depla, 3, tabtyp, ier)
     endif
-    call getvr8(' ', 'FREQ', 1, iarg, 1,&
-                xfreq, nf)
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resul, nr)
-    call getvr8(' ', 'INST', 1, iarg, 1,&
-                inst, ni)
+    call getvr8(' ', 'FREQ', scal=xfreq, nbret=nf)
+    call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
+    call getvr8(' ', 'INST', scal=inst, nbret=ni)
     if (ni .ne. 0) exitim = .true.
     if (nr .ne. 0) then
         call gettco(resul, typres)
@@ -161,10 +157,8 @@ subroutine peecin(resu, modele, mate, cara, nh,&
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbpard, nopard, typard)
     else
-        call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                    prec, np)
-        call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                    crit, nc)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+        call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
         call rsutnu(resul, ' ', 0, knum, nbordr,&
                     prec, crit, iret)
         if (iret .ne. 0) goto 80
@@ -172,7 +166,8 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !        - DANS LE CAS OU CE N'EST PAS UN RESULTAT DE TYPE EVOL_NOLI -
 !        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
         if (typres(1:9) .ne. 'EVOL_NOLI') then
-            call dismoi('C', 'REF_MASS_PREM', resul, 'RESU_DYNA', ibid, nommas, iret)
+            call dismoi('C', 'REF_MASS_PREM', resul, 'RESU_DYNA', ibid,&
+                        nommas, iret)
             if (nommas .eq. ' ') goto 5
             call dismoi('C', 'SUR_OPTION', nommas, 'MATR_ASSE', ibid,&
                         opt, ie)
@@ -186,8 +181,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !        --- ON VERIFIE SI L'UTILISATEUR A DEMANDE L'UTILISATION ---
 !        --- D'UNE MATRICE DE MASSE DIAGONALE                    ---
 !        --- DANS LA COMMANDE POST_ELEM                          ---
-        call getvtx(option(1:9), 'OPTION', 1, iarg, 1,&
-                    optmas, nt)
+        call getvtx(option(1:9), 'OPTION', iocc=1, scal=optmas, nbret=nt)
         if (optmas(1:14) .eq. 'MASS_MECA_DIAG') then
             inume = 0
             call u2mess('I', 'UTILITAI3_72')
@@ -318,8 +312,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
         call peenca(chelem, nbpaep, varpep, 0, ibid)
 !
         do 60 iocc = 1, nbocc
-            call getvtx(option(1:9), 'TOUT', iocc, iarg, 0,&
-                        k8b, nt)
+            call getvtx(option(1:9), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
                         iarg, 0, k8b, nm)
             call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&

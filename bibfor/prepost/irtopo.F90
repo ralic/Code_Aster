@@ -1,9 +1,10 @@
 subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                   nbmato, nonuma, nbnoto, nonuno, codret)
-    implicit   none
+    implicit none
 !
-#include "asterc/getvtx.h"
+#include "jeveux.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/irmama.h"
 #include "asterfort/irmano.h"
 #include "asterfort/irnono.h"
@@ -62,7 +63,6 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !                 JEVEUO SUR NONUNO EST FAISABLE)
 !   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
 !
-#include "jeveux.h"
 !
     integer :: nbno, nbgrn, nbma, nbgrm, iarg, nbnofa, nbgnfa, nbmafa
     integer :: nbgmfa, jtopo, jlgrn, jngrn, ibid, jlno, jnno, jlgrm, jngrm
@@ -90,14 +90,10 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     nbnou = 0
 !
     codret=0
-    call getvtx('RESU', 'NOEUD', ioccur, iarg, 0,&
-                k8b, nbnofa)
-    call getvtx('RESU', 'GROUP_NO', ioccur, iarg, 0,&
-                k8b, nbgnfa)
-    call getvtx('RESU', 'MAILLE', ioccur, iarg, 0,&
-                k8b, nbmafa)
-    call getvtx('RESU', 'GROUP_MA', ioccur, iarg, 0,&
-                k8b, nbgmfa)
+    call getvtx('RESU', 'NOEUD', iocc=ioccur, nbval=0, nbret=nbnofa)
+    call getvtx('RESU', 'GROUP_NO', iocc=ioccur, nbval=0, nbret=nbgnfa)
+    call getvtx('RESU', 'MAILLE', iocc=ioccur, nbval=0, nbret=nbmafa)
+    call getvtx('RESU', 'GROUP_MA', iocc=ioccur, nbval=0, nbret=nbgmfa)
     if ((nbnofa.ne.0.or.nbgnfa.ne.0.or.nbmafa.ne.0.or.nbgmfa.ne.0) .and.&
         (formaf(1:6).eq.'CASTEM')) then
         call u2mess('A', 'PREPOST3_73')
@@ -115,8 +111,8 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
             call wkvect('&&IRTOPO.LIST_GRNO', 'V V K24', nbgrn, jlgrn)
             call wkvect('&&IRTOPO.NOM_GRNO', 'V V K80', nbgrn, jngrn)
-            call getvtx('RESU', 'GROUP_NO', ioccur, iarg, nbgrn,&
-                        zk24( jlgrn), ibid)
+            call getvtx('RESU', 'GROUP_NO', iocc=ioccur, nbval=nbgrn, vect=zk24( jlgrn),&
+                        nbret=ibid)
             zi(jtopo-1+3) = nbgrn
         else
             jlgrn=1
@@ -130,8 +126,8 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
             call wkvect('&&IRTOPO.LIST_NOE', 'V V K8', nbno, jlno)
             call wkvect('&&IRTOPO.NOM_NOE', 'V V K80', nbno, jnno)
-            call getvtx('RESU', 'NOEUD', ioccur, iarg, nbno,&
-                        zk8(jlno), ibid)
+            call getvtx('RESU', 'NOEUD', iocc=ioccur, nbval=nbno, vect=zk8(jlno),&
+                        nbret=ibid)
             zi(jtopo-1+1) = nbno
         endif
 !
@@ -143,8 +139,8 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
             call wkvect('&&IRTOPO.LIST_GRMA', 'V V K24', nbgrm, jlgrm)
             call wkvect('&&IRTOPO.NOM_GRMA', 'V V K80', nbgrm, jngrm)
-            call getvtx('RESU', 'GROUP_MA', ioccur, iarg, nbgrm,&
-                        zk24( jlgrm), ibid)
+            call getvtx('RESU', 'GROUP_MA', iocc=ioccur, nbval=nbgrm, vect=zk24( jlgrm),&
+                        nbret=ibid)
             zi(jtopo-1+7) = nbgrm
         else
             jlgrm=1
@@ -159,8 +155,8 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
             call wkvect('&&IRTOPO.LIST_MAI', 'V V K8', nbma, jlma)
             call wkvect('&&IRTOPO.NOM_MAI', 'V V K80', nbma, jmma)
-            call getvtx('RESU', 'MAILLE', ioccur, iarg, nbma,&
-                        zk8(jlma), ibid)
+            call getvtx('RESU', 'MAILLE', iocc=ioccur, nbval=nbma, vect=zk8(jlma),&
+                        nbret=ibid)
             zi(jtopo-1+5) = nbma
         else
             jlma=1

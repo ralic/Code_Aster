@@ -37,13 +37,12 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsprj.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -53,6 +52,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 #include "asterfort/rsexch.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: basemo, nommes
     character(len=24) :: vnoeud, vrange, basepr, vcham
     integer :: nbmesu, nbmtot
@@ -94,16 +94,15 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
 ! RECUPERATION DES NOMS DU CHAMP MESURE
 !
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', 1, iarg, 0,&
-                nomcha, nbcham)
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=0, nbret=nbcham)
     if (nbcham .ne. 0) then
         nbcham = -nbcham
     else
         call u2mess('A', 'ALGORITH10_93')
     endif
     call wkvect('&&LISTE_CHAMP', 'V V K16', nbcham, lch)
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', 1, iarg, nbcham,&
-                zk16(lch), ibid)
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch),&
+                nbret=ibid)
 !
 !     -> OBJET MATRICE MODALE REDUITE SUIVANT DIRECTION DE MESURE
 !

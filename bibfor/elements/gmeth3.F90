@@ -20,7 +20,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gsyste.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
@@ -76,8 +76,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 !     ABSCISSES CURVILIGNES DES NOEUDS DU FOND DE FISSURE
     call jeveuo(objcur, 'L', iabsc)
 !
-    call getvtx('LISSAGE', 'LISSAGE_G', 1, iarg, 1,&
-                lissg, ibid)
+    call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ibid)
 !
     if (lissg .eq. 'LAGRANGE_NO_NO') then
         vect = '&&METHO3.VECT'

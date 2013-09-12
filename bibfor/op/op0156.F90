@@ -1,5 +1,5 @@
 subroutine op0156()
-    implicit  none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,9 +25,9 @@ subroutine op0156()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/idensd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
@@ -62,8 +62,7 @@ subroutine op0156()
 !
 !     0. MATRICE :
 !     -------------
-    call getvid(' ', 'MATR_ASSE', 0, iarg, 1,&
-                masse, n1)
+    call getvid(' ', 'MATR_ASSE', scal=masse, nbret=n1)
     call mtdscr(masse)
     call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
     if (zi(lmat+3) .eq. 1) then
@@ -81,8 +80,7 @@ subroutine op0156()
 !
 !     1. CHAM_NO  :
 !     -------------
-    call getvid(' ', 'CHAM_NO', 0, iarg, 1,&
-                chamno, n1)
+    call getvid(' ', 'CHAM_NO', scal=chamno, nbret=n1)
     call chpver('F', chamno, 'NOEU', '*', ier)
     call jelira(chamno//'.VALE', 'TYPE', cval=typres)
     if (typmat .ne. typres) then

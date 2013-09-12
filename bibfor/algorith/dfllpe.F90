@@ -19,8 +19,8 @@ subroutine dfllpe(mcfact, iechec, even, penmax, nocham,&
 ! ======================================================================
 !
     implicit none
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
     character(len=16) :: mcfact
     integer :: iechec
     character(len=16) :: even
@@ -61,16 +61,12 @@ subroutine dfllpe(mcfact, iechec, even, penmax, nocham,&
 ! --- EVENEMENT
 !
     if (even .eq. 'DELTA_GRANDEUR') then
-        call getvr8(mcfact, 'VALE_REF', iechec, iarg, 1,&
-                    valere, ibid)
-        call getvtx(mcfact, 'NOM_CHAM', iechec, iarg, 1,&
-                    nocham, ibid)
-        call getvtx(mcfact, 'NOM_CMP', iechec, iarg, 1,&
-                    nocmp, ibid)
+        call getvr8(mcfact, 'VALE_REF', iocc=iechec, scal=valere, nbret=ibid)
+        call getvtx(mcfact, 'NOM_CHAM', iocc=iechec, scal=nocham, nbret=ibid)
+        call getvtx(mcfact, 'NOM_CMP', iocc=iechec, scal=nocmp, nbret=ibid)
         cricmp = 'GT'
     else if (even.eq.'INTERPENETRATION') then
-        call getvr8(mcfact, 'PENE_MAXI', iechec, iarg, 1,&
-                    penmax, ibid)
+        call getvr8(mcfact, 'PENE_MAXI', iocc=iechec, scal=penmax, nbret=ibid)
     endif
 !
 end subroutine

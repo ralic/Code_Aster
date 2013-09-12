@@ -1,5 +1,5 @@
 subroutine op0195()
-    implicit  none
+    implicit none
 !     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,6 @@ subroutine op0195()
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/caraff.h"
@@ -42,6 +40,8 @@ subroutine op0195()
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -92,14 +92,11 @@ subroutine op0195()
 !
 !     ------------------------------------------------------------------
 !
-    call getvtx(' ', 'OPERATION', 0, iarg, 1,&
-                opera, ib)
+    call getvtx(' ', 'OPERATION', scal=opera, nbret=ib)
 !
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                mo, n1)
+    call getvid(' ', 'MODELE', scal=mo, nbret=n1)
     if (n1 .eq. 0) mo = ' '
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                ma, n1)
+    call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
     if (n1 .eq. 0) ma = ' '
     if (mo .ne. ' ') then
         call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ib,&
@@ -113,20 +110,17 @@ subroutine op0195()
     if (test .eq. 1) then
         if (.not.((opera.eq.'ASSE').or.(opera.eq.'COMB'))) call u2mess('F', 'UTILITAI3_43')
     endif
-    call getvtx(' ', 'TYPE_CHAM', 0, iarg, 1,&
-                tychr1, ib)
+    call getvtx(' ', 'TYPE_CHAM', scal=tychr1, nbret=ib)
     tychr = tychr1(1:4)
     nomgd = tychr1(6:13)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ib,&
                 tsca, ib)
 !
     prol0=' '
-    call getvtx(' ', 'PROL_ZERO', 0, iarg, 1,&
-                prol0, ib)
+    call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ib)
     if ((prol0.eq.'NON') .and. (tsca.eq.'R')) prol0='NAN'
 !
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                option, n1)
+    call getvtx(' ', 'OPTION', scal=option, nbret=n1)
     if (n1 .eq. 0) option = ' '
 !
 !
@@ -147,8 +141,7 @@ subroutine op0195()
 !           -- SI OPERATION 'ASSE', IL Y A PEUT-ETRE UNE MEILLEURE
 !              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
                 if (opera .eq. 'ASSE') then
-                    call getvid('ASSE', 'CHAM_GD', 1, iarg, 1,&
-                                chin, ib)
+                    call getvid('ASSE', 'CHAM_GD', iocc=1, scal=chin, nbret=ib)
                     call dismoi('F', 'NOM_MAILLA', chin, 'CHAMP', ib,&
                                 ma2, ib)
                     if (ma2 .ne. ma) then
@@ -264,8 +257,7 @@ subroutine op0195()
 !
     else if (opera.eq.'DISC') then
 !     -----------------------------------------
-        call getvid(' ', 'CHAM_GD', 0, iarg, 1,&
-                    chin, ib)
+        call getvid(' ', 'CHAM_GD', scal=chin, nbret=ib)
         call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
                     nomgd2, ib)
         if (nomgd .ne. nomgd2) then
@@ -282,8 +274,7 @@ subroutine op0195()
 !
     else if (opera.eq.'EXTR') then
 !     -----------------------------------------
-        call getvid(' ', 'TABLE', 0, iarg, 1,&
-                    ta, n1)
+        call getvid(' ', 'TABLE', scal=ta, nbret=n1)
         if (n1 .eq. 0) then
             call chprec(chou)
 !
@@ -296,10 +287,8 @@ subroutine op0195()
 ! 4.  SI ON A CREE UN CHAM_NO, ON PEUT IMPOSER SA NUMEROTATION :
 ! --------------------------------------------------------------
     if (tychr .eq. 'NOEU') then
-        call getvid(' ', 'CHAM_NO', 0, iarg, 1,&
-                    ch1, i11)
-        call getvid(' ', 'NUME_DDL', 0, iarg, 1,&
-                    nu1, i12)
+        call getvid(' ', 'CHAM_NO', scal=ch1, nbret=i11)
+        call getvid(' ', 'NUME_DDL', scal=nu1, nbret=i12)
         if ((i11+i12) .gt. 0) then
             call dismoi('F', 'NOM_GD', chou, 'CHAMP', ib,&
                         nogd, ib)
@@ -337,8 +326,7 @@ subroutine op0195()
                 call cnocns(chou, 'V', cns1)
                 if (prchn2(1:8) .eq. chou(1:8)) call detrsd('PROF_CHNO', prchn2)
                 prol0='NON'
-                call getvtx(' ', 'PROL_ZERO', 0, iarg, 1,&
-                            prol0, ibid)
+                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ibid)
                 call cnscno(cns1, prchn1, prol0, 'G', chou,&
                             'F', ibid)
                 call detrsd('CHAM_NO_S', cns1)

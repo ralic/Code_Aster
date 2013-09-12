@@ -28,7 +28,7 @@ subroutine op0049()
 !
 !
 #include "jeveux.h"
-#include "asterc/getvis.h"
+#include "asterfort/getvis.h"
 #include "asterfort/giecas.h"
 #include "asterfort/gilir2.h"
 #include "asterfort/infmaj.h"
@@ -47,10 +47,8 @@ subroutine op0049()
     integer :: ibid, n1, nbobj, ndim, nfias, nfigi
 !-----------------------------------------------------------------------
     call infmaj()
-    call getvis(' ', 'UNITE_GIBI', 0, iarg, 1,&
-                nfigi, n1)
-    call getvis(' ', 'UNITE_MAILLAGE', 0, iarg, 1,&
-                nfias, n1)
+    call getvis(' ', 'UNITE_GIBI', scal=nfigi, nbret=n1)
+    call getvis(' ', 'UNITE_MAILLAGE', scal=nfias, nbret=n1)
     k16nom ='                '
     if (ulisop ( nfigi, k16nom ) .eq. 0) then
         call ulopen(nfigi, ' ', ' ', 'NEW', 'O')

@@ -4,10 +4,10 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -82,10 +82,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     nbdisc = 0
     type = 'R8  '
     call getres(k8b, k8b, nomcmd)
-    call getvr8(motcle, 'PRECISION', iocc, iarg, 1,&
-                epsi, n)
-    call getvtx(motcle, 'CRITERE', iocc, iarg, 1,&
-                crit, n)
+    call getvr8(motcle, 'PRECISION', iocc=iocc, scal=epsi, nbret=n)
+    call getvtx(motcle, 'CRITERE', iocc=iocc, scal=crit, nbret=n)
 !
     call jeexin(resu//'.DISC', ier1)
     if (ier1 .gt. 0) then
@@ -112,15 +110,14 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 !     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
 !
-    call getvis(motcle, 'NUME_ORDRE', iocc, iarg, 0,&
-                ibid, nno)
+    call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=0, nbret=nno)
     if (nno .ne. 0) then
         nbdisc = -nno
         call wkvect(krang, 'V V I', nbdisc, jrang)
         call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
         call wkvect('&&RSTRAN.NUME', 'V V I', nbdisc, jbid)
-        call getvis(motcle, 'NUME_ORDRE', iocc, iarg, nbdisc,&
-                    zi(jbid), nno)
+        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=zi(jbid),&
+                    nbret=nno)
         do 40 i = 0, nbdisc - 1
             do 20 iord = 0, nbi - 1
                 if (zi(jbid+i) .eq. zi(jordr+iord)) goto 30
@@ -139,11 +136,9 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 !     --- RECHERCHE A PARTIR D'UN INSTANT ---
 !
-    call getvr8(motcle, 'INST', iocc, iarg, 0,&
-                rbid, lt)
+    call getvr8(motcle, 'INST', iocc=iocc, nbval=0, nbret=lt)
     if (lt .eq. 0) then
-        call getvid(motcle, 'LIST_INST', iocc, iarg, 1,&
-                    listr, lli)
+        call getvid(motcle, 'LIST_INST', iocc=iocc, scal=listr, nbret=lli)
         if (lli .ne. 0) then
             call jeveuo(listr//'.VALE', 'L', laccr)
             call jelira(listr//'.VALE', 'LONMAX', nbdisc)
@@ -153,8 +148,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     else
         nbdisc = -lt
         call wkvect('&&RSTRAN.INSTANTS', 'V V R', nbdisc, laccr)
-        call getvr8(motcle, 'INST', iocc, iarg, nbdisc,&
-                    zr(laccr), l)
+        call getvr8(motcle, 'INST', iocc=iocc, nbval=nbdisc, vect=zr(laccr),&
+                    nbret=l)
     endif
     call wkvect(krang, 'V V I', nbdisc, jrang)
     call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
@@ -197,11 +192,9 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
     call gettco(resu(1:8), typres)
     if (typres(1:9) .eq. 'HARM_GENE') then
-        call getvr8(motcle, 'FREQ', iocc, iarg, 0,&
-                    rbid, lt)
+        call getvr8(motcle, 'FREQ', iocc=iocc, nbval=0, nbret=lt)
         if (lt .eq. 0) then
-            call getvid(motcle, 'LIST_FREQ', iocc, iarg, 1,&
-                        listr, lli)
+            call getvid(motcle, 'LIST_FREQ', iocc=iocc, scal=listr, nbret=lli)
             if (lli .ne. 0) then
                 call jeveuo(listr//'.VALE', 'L', laccr)
                 call jelira(listr//'.VALE', 'LONMAX', nbdisc)
@@ -211,8 +204,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         else
             nbdisc = -lt
             call wkvect('&&RSTRAN.FREQUENCES', 'V V R', nbdisc, laccr)
-            call getvr8(motcle, 'FREQ', iocc, iarg, nbdisc,&
-                        zr(laccr), l)
+            call getvr8(motcle, 'FREQ', iocc=iocc, nbval=nbdisc, vect=zr(laccr),&
+                        nbret=l)
         endif
         call wkvect(krang, 'V V I', nbdisc, jrang)
         call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
@@ -249,10 +242,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 81  continue
 !
-    call getvtx(motcle, 'TOUT_INST', iocc, iarg, 1,&
-                k8b, nto)
-    call getvtx(motcle, 'TOUT_ORDRE', iocc, iarg, 1,&
-                k8b, nto)
+    call getvtx(motcle, 'TOUT_INST', iocc=iocc, scal=k8b, nbret=nto)
+    call getvtx(motcle, 'TOUT_ORDRE', iocc=iocc, scal=k8b, nbret=nto)
     nbdisc = nbi
     call wkvect(krang, 'V V I', nbdisc, jrang)
     call wkvect(kdisc, 'V V R8', nbdisc, jdisc)

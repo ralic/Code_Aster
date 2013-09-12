@@ -1,12 +1,11 @@
 subroutine macr78(nomres, trange, typres)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -30,6 +29,7 @@ subroutine macr78(nomres, trange, typres)
 #include "asterfort/u2mess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres
     character(len=16) :: typres
     character(len=19) :: trange
@@ -92,16 +92,18 @@ subroutine macr78(nomres, trange, typres)
     lredu = .false.
 !      CALL GETVTX ( ' ', 'REDUC' , 1,IARG,1, TREDU, N2 )
 !      IF (TREDU.EQ.'OUI') LREDU = .TRUE.
-    call getvid(' ', 'MACR_ELEM_DYNA', 1, iarg, 1,&
-                macrel, nmc)
+    call getvid(' ', 'MACR_ELEM_DYNA', scal=macrel, nbret=nmc)
     call jeveuo(macrel//'.MAEL_REFE', 'L', iadref)
     basemo = zk24(iadref)
     call rsorac(basemo, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, k8b, nbmode, 1, ibid)
-    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numedd, iret)
+                cbid, rbid, k8b, nbmode, 1,&
+                ibid)
+    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                numedd, iret)
     call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
                 mailla, iret)
-    call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, lintf, iret)
+    call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid,&
+                lintf, iret)
     call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
     call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmdef,&
                 k8b, ierd)
@@ -180,20 +182,17 @@ subroutine macr78(nomres, trange, typres)
     call wkvect('&&MACR78.BASE', 'V V R', nbmode*neq, idbase)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
                 'R', zr(idbase), cbid)
-    call getvtx(' ', 'TOUT_CHAM', 1, iarg, 0,&
-                k8b, n0)
+    call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n0)
     if (n0 .ne. 0) then
         nbcham = 3
         champ(1) = 'DEPL'
         champ(2) = 'VITE'
         champ(3) = 'ACCE'
     else
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbcham = -n1
-            call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                        champ, n1)
+            call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
         else
             call u2mess('A', 'ALGORITH10_93')
             goto 9999
@@ -287,9 +286,9 @@ subroutine macr78(nomres, trange, typres)
             endif
 310      continue
 300  continue
-
-    call refdcp(basemo,nomres)
-
+!
+    call refdcp(basemo, nomres)
+!
 !
 ! --- MENAGE
 !

@@ -4,24 +4,24 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                   fonca, typbas, basemo, tinit, iparch,&
                   nbsauv, itemax, prec, xlambd, lflu,&
                   nbchoc, logcho, dplmod, parcho, noecho,&
-                  nbrede, dplred, fonred, nbrevi,&
-                  dplrev, fonrev, depsto, vitsto, accsto,&
-                  iorsto, temsto, fchost, dchost, vchost,&
-                  ichost, iredst, dredst, irevst, drevst,&
-                  coefm, liad, inumor, idescf, nofdep,&
-                  nofvit, nofacc, nomfon, psidel, monmot,&
-                  nbrfis, fk, dfk, angini, foncp,&
-                  nbpal, dtsto, vrotat, prdeff, nomres,&
-                  nbexci, passto)
+                  nbrede, dplred, fonred, nbrevi, dplrev,&
+                  fonrev, depsto, vitsto, accsto, iorsto,&
+                  temsto, fchost, dchost, vchost, ichost,&
+                  iredst, dredst, irevst, drevst, coefm,&
+                  liad, inumor, idescf, nofdep, nofvit,&
+                  nofacc, nomfon, psidel, monmot, nbrfis,&
+                  fk, dfk, angini, foncp, nbpal,&
+                  dtsto, vrotat, prdeff, nomres, nbexci,&
+                  passto)
 !
 ! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
 #include "asterc/etausr.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -198,11 +198,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
             amogen(im) = deux * amogen(im) * pulsat(im)
 100      continue
     else
-        call getvtx(' ', 'VITESSE_VARIABLE', 1, iarg, 0,&
-                    k8b, n1)
+        call getvtx(' ', 'VITESSE_VARIABLE', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvtx(' ', 'VITESSE_VARIABLE', 1, iarg, 1,&
-                        vvar, n1)
+            call getvtx(' ', 'VITESSE_VARIABLE', scal=vvar, nbret=n1)
         endif
         vrotin = 0.d0
         arotin = 0.d0
@@ -334,16 +332,16 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !         CAS DES FORCES DE LAME FLUIDE
 !
-        call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfext),&
-                    zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc   ,&
-                    logcho   , dplmod   , parcho   , noecho    , zr(jchor),&
-                    nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
-                    nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
-                    tinit    , nofdep   , nofvit   , nofacc    , nbexci   , psidel,&
-                    monmot   , nbrfis   , fk       , dfk       , angini   ,&
-                    foncp    , 1        , 0        , dt        , dtsto    ,&
-                    vrotat   , typal    , finpal   , cnpal     , prdeff   ,&
-                    conv     , fsauv)
+        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+                    zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
+                    logcho, dplmod, parcho, noecho, zr(jchor),&
+                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                    tinit, nofdep, nofvit, nofacc, nbexci,&
+                    psidel, monmot, nbrfis, fk, dfk,&
+                    angini, foncp, 1, 0, dt,&
+                    dtsto, vrotat, typal, finpal, cnpal,&
+                    prdeff, conv, fsauv)
         if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
             call u2mess('F', 'EDYOS_46')
         else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -379,17 +377,17 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !       CAS CLASSIQUE
 !
         if (nbpal .ne. 0) nbchoc = 0
-        call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfext),&
-                    masgen   , r8b      , pulsa2   , zr(jamgy) , nbchoc,&
-                    logcho   , dplmod   , parcho   , noecho    , zr(jchor),&
-                    nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
-                    nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
-                    tinit    , nofdep   , nofvit   , nofacc    , nbexci   , psidel,&
-                    monmot   , nbrfis   , fk       , dfk       , angini   ,&
-                    foncp    , 1        , nbpal    , dt        , dtsto    ,&
-                    vrotat   , typal    , finpal   , cnpal     , prdeff   ,&
-                    conv     , fsauv)
-
+        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+                    masgen, r8b, pulsa2, zr(jamgy), nbchoc,&
+                    logcho, dplmod, parcho, noecho, zr(jchor),&
+                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                    tinit, nofdep, nofvit, nofacc, nbexci,&
+                    psidel, monmot, nbrfis, fk, dfk,&
+                    angini, foncp, 1, nbpal, dt,&
+                    dtsto, vrotat, typal, finpal, cnpal,&
+                    prdeff, conv, fsauv)
+!
         if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
             call u2mess('F', 'EDYOS_46')
         else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -499,17 +497,17 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 !         --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
-                call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfexti),&
+                call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfexti),&
                             zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
-                            logcho   , dplmod   , parcho   , noecho   , zr(jchor),&
-                            nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
-                            nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
-                            temps    , nofdep   , nofvit   , nofacc   , nbexci , psidel,&
-                            monmot   , nbrfis   , fk       , dfk      , angini ,&
-                            foncp    , (i+1)    , nbpal    , dt       , dtsto  ,&
-                            vrotat   , typal    , finpal   , cnpal    , prdeff ,&
-                            conv     , fsauv)
-
+                            logcho, dplmod, parcho, noecho, zr(jchor),&
+                            nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                            nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                            temps, nofdep, nofvit, nofacc, nbexci,&
+                            psidel, monmot, nbrfis, fk, dfk,&
+                            angini, foncp, (i+1), nbpal, dt,&
+                            dtsto, vrotat, typal, finpal, cnpal,&
+                            prdeff, conv, fsauv)
+!
                 if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
                     call u2mess('F', 'EDYOS_46')
                 else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -547,17 +545,17 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
-            call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfext),&
-                        r8b      , r8b      , r8b      , r8b       , nbchoc,&
-                        logcho   , dplmod   , parcho   , noecho    , zr(jchor),&
-                        nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
-                        nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
-                        temps    , nofdep   , nofvit   , nofacc    , nbexci   , psidel,&
-                        monmot   , nbrfis   , fk       , dfk       , angini   ,&
-                        foncp    , (i+1)    , nbpal    , dt        , dtsto    ,&
-                        vrotat   , typal    , finpal   , cnpal     , prdeff   ,&
-                        conv     , fsauv)
-
+            call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+                        r8b, r8b, r8b, r8b, nbchoc,&
+                        logcho, dplmod, parcho, noecho, zr(jchor),&
+                        nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                        nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                        temps, nofdep, nofvit, nofacc, nbexci,&
+                        psidel, monmot, nbrfis, fk, dfk,&
+                        angini, foncp, (i+1), nbpal, dt,&
+                        dtsto, vrotat, typal, finpal, cnpal,&
+                        prdeff, conv, fsauv)
+!
             if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
                 call u2mess('F', 'EDYOS_46')
             else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -607,8 +605,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                             nbrevi)
                 if (nomres .eq. '&&OP0074') then
 !          --- CAS D'UNE POURSUITE ---
-                    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                                tran, ndt)
+                    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=ndt)
                     if (ndt .ne. 0) call resu74(tran, nomres)
                 endif
                 vali (1) = i

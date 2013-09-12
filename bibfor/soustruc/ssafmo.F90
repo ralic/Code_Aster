@@ -20,10 +20,9 @@ subroutine ssafmo(mo)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -33,6 +32,7 @@ subroutine ssafmo(mo)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mo
 ! ----------------------------------------------------------------------
 !     BUT: TRAITER LE MOT-CLEF AFFE_SOUS_STRUC DE LA COMMANDE
@@ -82,8 +82,7 @@ subroutine ssafmo(mo)
 !
 !     -- CAS : TOUT: 'OUI' :
 !     ----------------------
-    call getvtx('AFFE_SOUS_STRUC', 'TOUT', ioc, iarg, 1,&
-                kbid, n1)
+    call getvtx('AFFE_SOUS_STRUC', 'TOUT', iocc=ioc, scal=kbid, nbret=n1)
     if (n1 .eq. 1) then
         do 1, i=1,nbsma
         zi(iasssa-1+i)=1
@@ -94,11 +93,10 @@ subroutine ssafmo(mo)
 !
 !     -- CAS : MAILLE: L_MAIL
 !     -----------------------
-    call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', ioc, iarg, 0,&
-                kbid, n1)
+    call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n1)
     call wkvect('&&SSAFMO.LMAI', 'V V K8', -n1, ialmai)
-    call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', ioc, iarg, -n1,&
-                zk8(ialmai), n2)
+    call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', iocc=ioc, nbval=-n1, vect=zk8(ialmai),&
+                nbret=n2)
     nbss= -n1
     do 2, i=1,-n1
     nosma=zk8(ialmai-1+i)

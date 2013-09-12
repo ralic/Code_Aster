@@ -58,7 +58,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/lrceme.h"
 #include "asterfort/lrcnme.h"
 #include "asterfort/u2mesk.h"
@@ -101,8 +101,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
                     numpt, numord, inst, crit, prec,&
                     nrofic, codret)
     else if (typech(1:2).eq.'EL'.or.typech(1:2).eq.'CA') then
-        call getvid(' ', 'MODELE', 0, iarg, 1,&
-                    nommod, iaux)
+        call getvid(' ', 'MODELE', scal=nommod, nbret=iaux)
         if (iaux .eq. 0 .and. typech(1:4) .ne. 'CART') then
             call u2mess('F', 'MED_71')
         endif

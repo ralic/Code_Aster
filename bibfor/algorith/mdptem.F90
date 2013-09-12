@@ -5,12 +5,12 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mesg.h"
@@ -87,26 +87,21 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     dtu = 1.d+10
     dtmax = 1.d+10
     lisins= ' '
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                method, n1)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
 !
 !     VERIFICATION DE PRESENCE DU PAS SI ADAPT OU RUNGE-KUTTA
 !     (DEJA FAIT DANS MDVERI POUR ITMI)
     if ((method(1:5).eq.'ADAPT') .or. (method(1:5).eq.'RUNGE')) then
-        call getvr8('INCREMENT', 'PAS', 1, iarg, 0,&
-                    dta, ibid)
+        call getvr8('INCREMENT', 'PAS', iocc=1, nbval=0, nbret=ibid)
         if (ibid .eq. 0) call u2mess('F', 'ALGORITH3_11')
     endif
 !
 !     RECUPERATION de TINIT
-    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                tran, nr)
+    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=nr)
     if (nr .ne. 0) then
-        call getvis('ETAT_INIT', 'NUME_ORDRE', 1, iarg, 1,&
-                    nume, nni)
+        call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=nume, nbret=nni)
         if (nni .eq. 0) then
-            call getvr8('ETAT_INIT', 'INST_INIT', 1, iarg, 1,&
-                        tinit, nt)
+            call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=nt)
             if (nt .eq. 0) then
                 call jeveuo(tran//'           .DISC', 'L', jinst)
                 call jelira(tran//'           .DISC', 'LONUTI', nbinst)
@@ -124,14 +119,12 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             tinit = zr(jinst+i-1)
         endif
     else
-        call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                    li, nt)
+        call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=li, nbret=nt)
         if (nt .ne. 0) then
             call jeveuo(li//'           .BINT', 'L', jbint)
             tinit = zr (jbint)
         else
-            call getvr8('INCREMENT', 'INST_INIT', 1, iarg, 1,&
-                        tinit, n2)
+            call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=tinit, nbret=n2)
             if (n2 .eq. 0) then
                 call u2mess('I', 'ALGORITH5_62')
             endif
@@ -139,8 +132,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     endif
 !
 !     RECUPERATION de DT et TFIN
-    call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                li, nt)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=li, nbret=nt)
     if (nt .ne. 0) then
         if (method(1:5) .eq. 'RUNGE') then
             call u2mess('F', 'ALGORITH3_9')
@@ -168,11 +160,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 33          continue
             tfin = zr (jbint+nbgrpa)
         endif
-        call getvis('INCREMENT', 'NUME_FIN', 1, iarg, 1,&
-                    numef, n1)
+        call getvis('INCREMENT', 'NUME_FIN', iocc=1, scal=numef, nbret=n1)
         if (n1 .eq. 0) then
-            call getvr8('INCREMENT', 'INST_FIN', 1, iarg, 1,&
-                        tfin, n1)
+            call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=n1)
             if (n1 .eq. 0) goto 99
         else
             call jeveuo(li//'           .VALE', 'L', jvalr)
@@ -181,15 +171,12 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             tfin = zr(jvalr+numef)
         endif
     else
-        call getvr8('INCREMENT', 'INST_FIN', 1, iarg, 1,&
-                    tfin, n3)
-        call getvr8('INCREMENT', 'PAS', 1, iarg, 1,&
-                    dtu, n4)
+        call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=n3)
+        call getvr8('INCREMENT', 'PAS', iocc=1, scal=dtu, nbret=n4)
         if (dtu .eq. 0.d0) call u2mess('F', 'ALGORITH3_12')
     endif
 99  continue
-    call getvtx('INCREMENT', 'VERI_PAS', 1, iarg, 1,&
-                veripa, n5)
+    call getvtx('INCREMENT', 'VERI_PAS', iocc=1, scal=veripa, nbret=n5)
     if (veripa .eq. 'OUI') iveri = 1
 !
     do 10 i = 1, nbmode
@@ -291,10 +278,8 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 !     SI LIST_INST DANS ARCHIVAGE ALORS:
 !     BESOIN D'UNE LISTE DES INSTANTS DE CALCUL POUR LA CREATION
 !     DE LA LISTE D'ARCHIVAGE DANS DYARCH.F
-    call getvid('ARCHIVAGE', 'LIST_INST', 1, iarg, 0,&
-                numarc, n6)
-    call getvr8('ARCHIVAGE', 'INST', 1, iarg, 0,&
-                r8bid, n7)
+    call getvid('ARCHIVAGE', 'LIST_INST', iocc=1, nbval=0, nbret=n6)
+    call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=0, nbret=n7)
     if (n6 .ne. 0 .or. n7 .ne. 0) then
         if ((method(1:5) .ne. 'ADAPT') .or. (method.ne.'ITMI') .or.&
             (method(1:5).ne.'RUNGE')) then
@@ -312,11 +297,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 !
 !     GESTION DU PAS MAXIMAL POUR SCHEMA ADAPT OU RUNGE-KUTTA
     if (method(1:5) .eq. 'ADAPT' .or. (method(1:5).eq.'RUNGE')) then
-        call getvr8('INCREMENT', 'PAS_MAXI', 1, iarg, 1,&
-                    r8bid, n6)
+        call getvr8('INCREMENT', 'PAS_MAXI', iocc=1, scal=r8bid, nbret=n6)
         if (n6 .ne. 0) then
-            call getvr8('INCREMENT', 'PAS_MAXI', 1, iarg, 1,&
-                        dtmax, n6)
+            call getvr8('INCREMENT', 'PAS_MAXI', iocc=1, scal=dtmax, nbret=n6)
             if (dtmax .gt. (dts/20.d0)) then
                 valr (1) = dtmax
                 valr (2) = dt
@@ -339,11 +322,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 !
 !     GESTION DU PAS MINI POUR SCHEMA RUNGE-KUTTA
     if (method(1:5) .eq. 'RUNGE') then
-        call getvr8('INCREMENT', 'PAS_MINI', 1, iarg, 1,&
-                    r8bid, n6)
+        call getvr8('INCREMENT', 'PAS_MINI', iocc=1, scal=r8bid, nbret=n6)
         if (n6 .ne. 0) then
-            call getvr8('INCREMENT', 'PAS_MINI', 1, iarg, 1,&
-                        dtmin, n6)
+            call getvr8('INCREMENT', 'PAS_MINI', iocc=1, scal=dtmin, nbret=n6)
         else
             dtmin = 1000.d0*r8prem()
         endif

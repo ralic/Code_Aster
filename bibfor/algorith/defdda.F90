@@ -40,8 +40,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iscode.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -50,6 +49,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomcou
     character(len=*) :: motcle
     character(len=24) :: temddl, temidc
@@ -71,8 +71,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     if (motcle(1:9) .eq. 'DDL_ACTIF') then
         nbval = 0
     else
-        call getvtx('INTERFACE', motcle, ioc, iarg, 0,&
-                    kar80, nbval)
+        call getvtx('INTERFACE', motcle, iocc=ioc, nbval=0, nbret=nbval)
         nbval = -nbval
     endif
 !
@@ -108,8 +107,8 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     if (motcle(1:9) .eq. 'DDL_ACTIF') then
         ibid = 0
     else
-        call getvtx('INTERFACE', motcle, ioc, iarg, nbval,&
-                    zk80(ltddl), ibid)
+        call getvtx('INTERFACE', motcle, iocc=ioc, nbval=nbval, vect=zk80(ltddl),&
+                    nbret=ibid)
     endif
 !
     do 10 i = 1, nbval

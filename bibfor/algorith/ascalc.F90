@@ -5,11 +5,9 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                   amort, spectr, asspec, nomsup, reasup,&
                   depsup, tcosup, corfre, f1gup, f2gup)
 ! aslint: disable=W1306,W1504
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asacce.h"
 #include "asterfort/ascorm.h"
 #include "asterfort/asdir.h"
@@ -20,6 +18,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 #include "asterfort/astron.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -32,6 +31,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ndir(*), tcosup(*), nordr(*), nsupp(*)
     real(kind=8) :: amort(*), spectr(*), asspec(*), depsup(*), reasup(*)
     real(kind=8) :: f1gup, f2gup
@@ -124,7 +124,8 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     kve3 = '&&ASCALC.REP_DIR'
     kve4 = '&&ASCALC.TABS'
     kve5 = '&&ASCALC.C_REP_MOD_RIG'
-    call rsexch('F', mome, 'DEPL', 1, moncha, ier)
+    call rsexch('F', mome, 'DEPL', 1, moncha,&
+                ier)
 !
     call getfac('COMB_DEPL_APPUI', ndepl)
     if (ndepl .ne. 0) then
@@ -154,17 +155,15 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !  ---- SI GROUP_APPUI EST PRESENT ----
         if (noc .ne. 0) then
             do 100 ioc = 1, noc
-                call getvtx(motfa1, 'NOEUD', ioc, iarg, 0,&
-                            noeu, n1)
+                call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     nno = -n1
                     call wkvect('&&ASCALC.NOEUD', 'V V K8', nno, jnoe1)
-                    call getvtx(motfa1, 'NOEUD', ioc, iarg, nno,&
-                                zk8(jnoe1), n1)
+                    call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe1),&
+                                nbret=n1)
                     do 101 ino = 1, nno
                         noeu = zk8(jnoe1+ino-1)
-                        call getvtx(motfa1, 'NOEUD', ioc, iarg, 0,&
-                                    noeu, n1)
+                        call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                         do 102 is = 1, nbsup
                             do 103 id = 1, 3
                                 if (nomsup((id-1)*nbsup+is) .eq. noeu) then

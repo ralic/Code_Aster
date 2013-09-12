@@ -1,14 +1,13 @@
 subroutine pecage(resu, modele, nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim3.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -28,6 +27,7 @@ subroutine pecage(resu, modele, nbocc)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc
     character(len=*) :: resu, modele
 !     ------------------------------------------------------------------
@@ -118,14 +118,12 @@ subroutine pecage(resu, modele, nbocc)
 !
     nsymx = .false.
     nsymy = .false.
-    call getvtx('CARA_GEOM', 'SYME_X', 1, iarg, 1,&
-                symex, ns1)
-    call getvtx('CARA_GEOM', 'SYME_Y', 1, iarg, 1,&
-                symey, ns2)
+    call getvtx('CARA_GEOM', 'SYME_X', iocc=1, scal=symex, nbret=ns1)
+    call getvtx('CARA_GEOM', 'SYME_Y', iocc=1, scal=symey, nbret=ns2)
     if (symex .eq. 'OUI') nsymx = .true.
     if (symey .eq. 'OUI') nsymy = .true.
-    call getvr8('CARA_GEOM', 'ORIG_INER', 1, iarg, 2,&
-                xyp, np)
+    call getvr8('CARA_GEOM', 'ORIG_INER', iocc=1, nbval=2, vect=xyp,&
+                nbret=np)
 !
 !     --- CREATION DE LA TABLE ---
 !
@@ -142,12 +140,9 @@ subroutine pecage(resu, modele, nbocc)
     call wkvect('&&PECAGE.TRAV1', 'V V R', mxvale, lvale)
     do 40 iocc = 1, nbocc
 !
-        call getvtx('CARA_GEOM', 'TOUT', iocc, iarg, 0,&
-                    k8b, nt)
-        call getvtx('CARA_GEOM', 'GROUP_MA', iocc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('CARA_GEOM', 'MAILLE', iocc, iarg, 0,&
-                    k8b, nm)
+        call getvtx('CARA_GEOM', 'TOUT', iocc=iocc, nbval=0, nbret=nt)
+        call getvtx('CARA_GEOM', 'GROUP_MA', iocc=iocc, nbval=0, nbret=ng)
+        call getvtx('CARA_GEOM', 'MAILLE', iocc=iocc, nbval=0, nbret=nm)
 !
         do 10 i = 1, nbparr
             valpar(i) = r8vide()
@@ -171,8 +166,8 @@ subroutine pecage(resu, modele, nbocc)
         if (ng .ne. 0) then
             nbgrma = -ng
             call wkvect('&&PECAGE_GROUPM', 'V V K24', nbgrma, jgr)
-            call getvtx('CARA_GEOM', 'GROUP_MA', iocc, iarg, nbgrma,&
-                        zk24(jgr), ng)
+            call getvtx('CARA_GEOM', 'GROUP_MA', iocc=iocc, nbval=nbgrma, vect=zk24(jgr),&
+                        nbret=ng)
             valk(2) = 'GROUP_MA'
             do 20 ig = 1, nbgrma
                 call jeexin(jexnom(mlggma, zk24(jgr+ig-1)), iret)
@@ -202,8 +197,8 @@ subroutine pecage(resu, modele, nbocc)
         if (nm .ne. 0) then
             nbmail = -nm
             call wkvect('&&PECAGE_MAILLE', 'V V K8', nbmail, jma)
-            call getvtx('CARA_GEOM', 'MAILLE', iocc, iarg, nbmail,&
-                        zk8(jma), nm)
+            call getvtx('CARA_GEOM', 'MAILLE', iocc=iocc, nbval=nbmail, vect=zk8(jma),&
+                        nbret=nm)
             valk(2) = 'MAILLE'
             do 30 im = 1, nbmail
                 call jeexin(jexnom(mlgnma, zk8(jma+im-1)), iret)

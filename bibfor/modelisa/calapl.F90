@@ -1,12 +1,11 @@
 subroutine calapl(char, ligrmo, noma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -16,6 +15,7 @@ subroutine calapl(char, ligrmo, noma)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
 ! ----------------------------------------------------------------------
@@ -110,16 +110,18 @@ subroutine calapl(char, ligrmo, noma)
         zk16(jvalv) = listma
         zk16(jvalv+1) = ltrans
 !
-        call getvr8(motclf, 'TRANS', iocc, iarg, 0,&
-                    rbid, ntra)
-        call getvr8(motclf, 'SYME', iocc, iarg, 0,&
-                    rbid, nsym)
+        call getvr8(motclf, 'TRANS', iocc=iocc, nbval=0, nbret=ntra)
+        call getvr8(motclf, 'SYME', iocc=iocc, nbval=0, nbret=nsym)
         ntra = -ntra
         nsym = -nsym
-        if (ntra .ne. 0) call getvr8(motclf, 'TRANS', iocc, iarg, ntra,&
-                                     zr(jtran), ntra)
-        if (nsym .ne. 0) call getvr8(motclf, 'SYME', iocc, iarg, nsym,&
-                                     zr(jtran), nsym)
+        if (ntra .ne. 0) then
+            call getvr8(motclf, 'TRANS', iocc=iocc, nbval=ntra, vect=zr(jtran),&
+                        nbret=ntra)
+        endif
+        if (nsym .ne. 0) then
+            call getvr8(motclf, 'SYME', iocc=iocc, nbval=nsym, vect=zr(jtran),&
+                        nbret=nsym)
+        endif
 !
 ! ------ GEOMETRIE DU CONDUCTEUR SECONDAIRE
 !
@@ -129,8 +131,7 @@ subroutine calapl(char, ligrmo, noma)
 !
 ! ------ GEOMETRIE DU CONDUCTEUR PRINCIPAL
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             if (nbma2 .eq. 0) then
                 call wkvect(listma, 'G V I', 2*into, jnuma)

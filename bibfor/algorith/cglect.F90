@@ -4,8 +4,6 @@ subroutine cglect(resu, modele, ndim, option, cas,&
     implicit none
 !
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cgleff.h"
 #include "asterfort/cgtyfi.h"
 #include "asterfort/cgveca.h"
@@ -16,6 +14,8 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 #include "asterfort/cgverc.h"
 #include "asterfort/cgveth.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: ndim, lnoff, ndeg
@@ -71,8 +71,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
     call jemarq()
 !
 !     RECUPERATION DE LA SD RESULTAT : RESU
-    call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                resu, ier)
+    call getvid(' ', 'RESULTAT', scal=resu, nbret=ier)
 !
 !     LECTURE DES CHARGES ET VERIFICATION DE LA COMPATIBILITE AVEC RESU
     call getfac('EXCIT', nexci)
@@ -85,8 +84,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
                 k8b, ier)
 !
 !     RECUPERATION DE L'OPTION
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                option, ier)
+    call getvtx(' ', 'OPTION', scal=option, nbret=ier)
 !
 !     VERIFICATION DE LA COMPATIBILITE ENTRE NDIM ET OPTION
     call cgvedo(ndim, option)

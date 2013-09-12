@@ -26,11 +26,11 @@ subroutine ibdbgs()
 !     ----- DEBUT COMMON DE DEBUG JEVEUX
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/jdcset.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/impvem.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -65,8 +65,7 @@ subroutine ibdbgs()
 !
 !     -- DEBUG / JXVERI :
     repons = 'NON'
-    call getvtx('DEBUG', 'JXVERI', 1, iarg, 1,&
-                repons, l)
+    call getvtx('DEBUG', 'JXVERI', iocc=1, scal=repons, nbret=l)
     if (l .eq. 0) then
         if (repons .eq. 'OUI') then
             call u2mess('I', 'SUPERVIS_23')
@@ -77,8 +76,7 @@ subroutine ibdbgs()
 !
 !     -- DEBUG / SDVERI :
     repons = 'NON'
-    call getvtx('DEBUG', 'SDVERI', 1, iarg, 1,&
-                repons, l)
+    call getvtx('DEBUG', 'SDVERI', iocc=1, scal=repons, nbret=l)
     if (l .eq. 0) then
         if (ncode .gt. 0) then
 !          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
@@ -99,8 +97,7 @@ subroutine ibdbgs()
 !     -- DEBUG / JEVEUX :
 !     -----------------------------------------------------
     repons = 'NON'
-    call getvtx('DEBUG', 'JEVEUX', 1, iarg, 1,&
-                repons, l)
+    call getvtx('DEBUG', 'JEVEUX', iocc=1, scal=repons)
     ASSERT(repons.eq.'OUI' .or. repons.eq.'NON')
     if (repons .eq. 'OUI') then
         call u2mess('I', 'SUPERVIS_12')
@@ -111,8 +108,7 @@ subroutine ibdbgs()
 !     -- DEBUG / ENVIMA :
 !     -----------------------------------------------------
     repons = 'NON'
-    call getvtx('DEBUG', 'ENVIMA', 1, iarg, 1,&
-                repons, l)
+    call getvtx('DEBUG', 'ENVIMA', iocc=1, scal=repons)
     if (repons .eq. 'TES') then
         ifi = iunifi ( 'RESULTAT' )
         call impvem(ifi)
@@ -121,11 +117,9 @@ subroutine ibdbgs()
 !
 !     -- MESURE_TEMPS:
 !     -----------------------------------------------------
-    call getvis('MESURE_TEMPS', 'NIVE_DETAIL', 1, iarg, 1,&
-                mtpniv, l)
+    call getvis('MESURE_TEMPS', 'NIVE_DETAIL', iocc=1, scal=mtpniv)
     repons = 'NON'
-    call getvtx('MESURE_TEMPS', 'MOYENNE', 1, iarg, 1,&
-                repons, l)
+    call getvtx('MESURE_TEMPS', 'MOYENNE', iocc=1, scal=repons)
     if (repons .eq. 'OUI') then
         mtpsta = 1
     else
@@ -135,10 +129,8 @@ subroutine ibdbgs()
 !     -- MEMOIRE  :
 !     -----------------------------------------------------
 !
-    call getvr8('MEMOIRE', 'TAILLE_BLOC', 1, iarg, 1,&
-                tbloc, l)
-    call getvis('MEMOIRE', 'TAILLE_GROUP_ELEM', 1, iarg, 1,&
-                i1, l)
+    call getvr8('MEMOIRE', 'TAILLE_BLOC', iocc=1, scal=tbloc)
+    call getvis('MEMOIRE', 'TAILLE_GROUP_ELEM', iocc=1, scal=i1)
     tgrel=dble(i1)
 !
     call jedema()

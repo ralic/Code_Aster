@@ -1,10 +1,9 @@
-subroutine calirg(mesh, nbno, list_node, tran, cent, &
+subroutine calirg(mesh, nbno, list_node, tran, cent,&
                   l_angl_naut, angl_naut, geom_defo, l_rota, matr_rota)
 !
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"

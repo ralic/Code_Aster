@@ -17,7 +17,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    implicit   none
+    implicit none
 ! ---------------------------------------------------------------------
 ! BUT :
 !  PROJETER LES CHAMPS CONTENUS DANS LA SD RESU1
@@ -38,14 +38,13 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -70,6 +69,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: base
     character(len=8) :: resu1, resu2, moa1, moa2, noca
     character(len=16) :: corres, typres
@@ -164,18 +164,14 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                     nbsym, acceno)
         ASSERT(nbsym.gt.0)
 !
-        call getvtx(' ', 'PROL_ZERO', 1, iarg, 1,&
-                    prol0, ier)
-        call getvtx(' ', 'TYPE_CHAM', 1, iarg, 1,&
-                    tychv, ibid)
+        call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ier)
+        call getvtx(' ', 'TYPE_CHAM', scal=tychv, nbret=ibid)
 !
 !
 !     1- CREATION DE LA SD RESULTAT : RESU2
 !     ------------------------------------
-        call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                    prec, ie)
-        call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                    crit, ie)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=ie)
+        call getvtx(' ', 'CRITERE', scal=crit, nbret=ie)
         call rsutnu(resu1, ' ', 0, '&&PJXXPR.NUME_ORDRE', nbordr,&
                     prec, crit, iret)
         if (iret .ne. 0) then
@@ -201,8 +197,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
     else
 !       ON ESSAYE DE RECUPERER LA NUMEROTATION IMPOSEE
-        call getvid(' ', 'NUME_DDL', 1, iarg, 1,&
-                    nume, ier)
+        call getvid(' ', 'NUME_DDL', scal=nume, nbret=ier)
         if (ier .ne. 0) then
             prfch2 = nume(1:8)//'      .NUME'
         endif
@@ -320,8 +315,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
     else
 !           REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
-        call getvtx(' ', 'NOM_PARA', 1, iarg, nbmax,&
-                    kpar, ipar)
+        call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
     endif
 !
 !
@@ -352,7 +346,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     ico = ico + 1
 !
 20  continue
-    30 continue
+30  continue
 !
     if (ico .eq. 0) call u2mess('F', 'CALCULEL4_64')
     call jedetr('&&PJXXPR.NUME_ORDRE')
@@ -372,7 +366,8 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     call jeexin(resu1//'           .REFD', iret)
     if (iret .gt. 0) then
         call jeexin(resu2//'           .REFD', iret)
-        if (iret .eq. 0) call refdaj(' ', resu2, -1, ' ', 'INIT', ' ' , ibid)
+        if (iret .eq. 0) call refdaj(' ', resu2, -1, ' ', 'INIT',&
+                                     ' ', ibid)
     endif
     call jedema()
 end subroutine

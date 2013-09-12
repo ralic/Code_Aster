@@ -20,9 +20,9 @@ subroutine op0090()
 ! person_in_charge: mathieu.courtois at edf.fr
 !     OPERATEUR "RECU_FONCTION"
 !     ------------------------------------------------------------------
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/chpve2.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/rfbefl.h"
 #include "asterfort/rfinte.h"
 #include "asterfort/rfnapp.h"
@@ -44,8 +44,7 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                      --- CAS D'UN CHAM_GD ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'CHAM_GD', 0, iarg, 1,&
-                cham19, nch)
+    call getvid(' ', 'CHAM_GD', scal=cham19, nbret=nch)
     if (nch .ne. 0) then
         call chpve2(cham19, 8, tabtyp, ier)
         call rfrcha()
@@ -55,8 +54,7 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                       --- CAS D'UN RESULTAT ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'RESULTAT ', 0, iarg, 1,&
-                resu, nres)
+    call getvid(' ', 'RESULTAT ', scal=resu, nbret=nres)
     if (nres .ne. 0) then
         call rfresu()
         goto 10
@@ -65,10 +63,8 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                   --- CAS D'UN NOEUD DE CHOC ---
 !     -----------------------------------------------------------------
-    call getvtx(' ', 'NOEUD_CHOC', 0, iarg, 1,&
-                k8b, nc)
-    call getvtx(' ', 'GROUP_NO_CHOC', 0, iarg, 1,&
-                k8b, ng)
+    call getvtx(' ', 'NOEUD_CHOC', scal=k8b, nbret=nc)
+    call getvtx(' ', 'GROUP_NO_CHOC', scal=k8b, nbret=ng)
     if (nc+ng .ne. 0) then
         call rfnoch()
         goto 10
@@ -77,8 +73,7 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                    --- CAS D'UN RESU_GENE ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'RESU_GENE', 0, iarg, 1,&
-                resu, nreg)
+    call getvid(' ', 'RESU_GENE', scal=resu, nbret=nreg)
     if (nreg .ne. 0) then
         call rfrgen(resu)
         goto 10
@@ -87,8 +82,7 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                       --- CAS D'UNE TABLE ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'TABLE', 0, iarg, 1,&
-                tabres, nta)
+    call getvid(' ', 'TABLE', scal=tabres, nbret=nta)
     if (nta .ne. 0) then
         call rftabl(tabres)
         goto 10
@@ -97,8 +91,7 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                 --- CAS D'UNE BASE_ELAS_FLUI ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'BASE_ELAS_FLUI', 0, iarg, 1,&
-                resu, nrb)
+    call getvid(' ', 'BASE_ELAS_FLUI', scal=resu, nbret=nrb)
     if (nrb .ne. 0) then
         call rfbefl(resu)
         goto 10
@@ -107,8 +100,7 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                 --- CAS D'UNE SD_INTERSPECTRE ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'INTE_SPEC', 0, iarg, 1,&
-                resu, nrb)
+    call getvid(' ', 'INTE_SPEC', scal=resu, nbret=nrb)
     if (nrb .ne. 0) then
         call rfinte(resu)
         goto 10
@@ -118,8 +110,7 @@ subroutine op0090()
 !     -----------------------------------------------------------------
 !                     --- CAS D'UNE NAPPE ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'NAPPE', 0, iarg, 1,&
-                nappe, nna)
+    call getvid(' ', 'NAPPE', scal=nappe, nbret=nna)
     if (nna .ne. 0) then
         call rfnapp(nappe)
         goto 10

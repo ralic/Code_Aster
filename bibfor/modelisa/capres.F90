@@ -1,13 +1,13 @@
 subroutine capres(char, ligrmo, noma, ndim, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -59,7 +59,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
     character(len=19) :: carte
     character(len=24) :: mesmai, lismai
     integer :: iarg
-        character(len=19) :: cartes(1)
+    character(len=19) :: cartes(1)
     integer :: ncmps(1)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -108,31 +108,25 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
     do iocc = 1, npres
 !
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'PRES', iocc, iarg, 1,&
-                        zr(jvalv), np)
-            call getvr8(motclf, 'CISA_2D', iocc, iarg, 1,&
-                        zr(jvalv+1), nc)
+            call getvr8(motclf, 'PRES', iocc=iocc, scal=zr(jvalv), nbret=np)
+            call getvr8(motclf, 'CISA_2D', iocc=iocc, scal=zr(jvalv+1), nbret=nc)
         else
-            call getvid(motclf, 'PRES', iocc, iarg, 1,&
-                        zk8(jvalv), np)
-            call getvid(motclf, 'CISA_2D', iocc, iarg, 1,&
-                        zk8(jvalv+1), nc)
+            call getvid(motclf, 'PRES', iocc=iocc, scal=zk8(jvalv), nbret=np)
+            call getvid(motclf, 'CISA_2D', iocc=iocc, scal=zk8(jvalv+1), nbret=nc)
         endif
         if (nc .ne. 0 .and. ndim .eq. 3) call u2mess('F', 'MODELISA9_94')
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
-        call getvid(motclf, 'FISSURE', iocc, iarg, 0,&
-                    k8b, nfiss)
-
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
+        call getvid(motclf, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
+!
         if (nfiss .ne. 0) then
 !
 !           PAS DE CISA_2D SUR LES LÈVRES DES FISSURES X-FEM
             if (nc .ne. 0) call u2mess('F', 'XFEM_14')
 !
             nfiss = -nfiss
-            call getvid(motclf, 'FISSURE', iocc, iarg, nfiss,&
-                        fiss, ibid)
+            call getvid(motclf, 'FISSURE', iocc=iocc, nbval=nfiss, vect=fiss,&
+                        nbret=ibid)
 !           VERIFICATION DE LA COHERENCE ENTRE LES FISSURES ET LE MODELE
             call xvelfm(nfiss, fiss, ligrmo(1:8))
 !           RECUPERATION DES MAILLES PRINCIPALES X-FEM FISSUREES
@@ -148,7 +142,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !
             cartes(1) = carte
             ncmps(1) = ncmp
-            call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+            call char_affe_neum(noma, ndim, motclf, iocc, 1,&
                                 cartes, ncmps)
         endif
 !

@@ -24,9 +24,9 @@ subroutine op0158()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -51,8 +51,7 @@ subroutine op0158()
     call infniv(ifm, niv)
 !
     call getres(matfac, concep, nomcmd)
-    call getvid('  ', 'MATR_ASSE', 0, iarg, 1,&
-                matass, ibid)
+    call getvid('  ', 'MATR_ASSE', scal=matass, nbret=ibid)
     ASSERT(matass.eq.matfac)
     mass = matass
     call dismoi('F', 'METH_RESO', mass, 'MATR_ASSE', ibid,&

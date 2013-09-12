@@ -1,12 +1,11 @@
 subroutine orth99(nomres, ritz)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -28,6 +27,7 @@ subroutine orth99(nomres, ritz)
 #include "asterfort/vpgskp.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres
     integer :: ritz
 !----------------------------------------------------------------------
@@ -82,18 +82,16 @@ subroutine orth99(nomres, ritz)
 !
     if (ritz .eq. 1) then
 !
-        call getvtx('  ', 'ORTHO', 1, iarg, 8,&
-                    ortho, ibid)
+        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho,&
+                    nbret=ibid)
 !
         if (ortho .eq. 'OUI     ') then
-            call getvid(' ', 'MATRICE', 1, iarg, 1,&
-                        matras, n1)
+            call getvid(' ', 'MATRICE', scal=matras, nbret=n1)
         else
             goto 9999
         endif
     else
-        call getvid('ORTHO_BASE', 'MATRICE', 1, iarg, 1,&
-                    matras, n1)
+        call getvid('ORTHO_BASE', 'MATRICE', iocc=1, scal=matras, nbret=n1)
     endif
 !
     if (n1 .ne. 0) then
@@ -115,8 +113,7 @@ subroutine orth99(nomres, ritz)
     if (ritz .eq. 1) then
         base=nomres
     else
-        call getvid('ORTHO_BASE', 'BASE', 1, iarg, 1,&
-                    base, n1)
+        call getvid('ORTHO_BASE', 'BASE', iocc=1, scal=base, nbret=n1)
     endif
 !
 ! RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
@@ -128,18 +125,22 @@ subroutine orth99(nomres, ritz)
     call jeveuo(base//'           .ORDR', 'L', jordm)
 ! RECUPERATION DE LA NUMEROTATION DES BASES
     if ((typbas.eq.'MODE_MECA') .or. (typbas.eq.'MODE_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibid, matri1, ir)
+        call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibid,&
+                    matri1, ir)
     else
-        call dismoi('F', 'REF_AMOR_PREM', base, 'RESU_DYNA', ibid, matri1, ir)
+        call dismoi('F', 'REF_AMOR_PREM', base, 'RESU_DYNA', ibid,&
+                    matri1, ir)
     endif
     if (matri1 .ne. ' ') then
         call dismoi('F', 'NOM_NUME_DDL', matri1, 'MATR_ASSE', ibid,&
                     numdd1, ier)
     else
-        call dismoi('F', 'NUME_DDL', base, 'RESU_DYNA', ibid, numdd1, ir)
+        call dismoi('F', 'NUME_DDL', base, 'RESU_DYNA', ibid,&
+                    numdd1, ir)
     endif
 !
-    call dismoi('F', 'REF_INTD_PREM', base, 'RESU_DYNA', ibid, intf, ir)
+    call dismoi('F', 'REF_INTD_PREM', base, 'RESU_DYNA', ibid,&
+                intf, ir)
 !
     if (numdd1 .ne. numdda) then
         call u2mess('I', 'ALGELINE2_81')
@@ -185,7 +186,7 @@ subroutine orth99(nomres, ritz)
         jordm=ibid
 !
 !       Save the old REFD information in a temporary location
-        call refdcp(nomres,'&&ORTH99')
+        call refdcp(nomres, '&&ORTH99')
 !
 !       Delete the old result concept
         call jedetc('G', nomres, 1)
@@ -193,7 +194,7 @@ subroutine orth99(nomres, ritz)
     call rscrsd('G', nomres, 'MODE_MECA', nbmode)
 !
 !   If an existing concept was used, recuperate its reference information
-    if (ier .ne. 0) call refdcp('&&ORTH99',nomres)
+    if (ier .ne. 0) call refdcp('&&ORTH99', nomres)
 !
 !-- CREATION DU REFD POUR SD_VERI, ET REUTILISATION ULTERIEURE
 !    call jeexin(nomres(1:8)//'           .REFD', ibid)

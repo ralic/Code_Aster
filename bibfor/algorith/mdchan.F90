@@ -1,11 +1,11 @@
 subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
                   repere, xjeu, nbnli, noecho, parcho)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/angvx.h"
 #include "asterfort/angvxy.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/normev.h"
 #include "asterfort/orient.h"
@@ -66,10 +66,9 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
 !
     if (motfac .eq. 'CHOC' .or. motfac .eq. 'FLAMBAGE') then
 !          ------------------------------------------
-        call getvr8(motfac, 'NORM_OBST', ioc, iarg, 3,&
-                    txloc, n1)
-        call getvr8(motfac, 'ANGL_VRIL', ioc, iarg, 1,&
-                    angl, n1)
+        call getvr8(motfac, 'NORM_OBST', iocc=ioc, nbval=3, vect=txloc,&
+                    nbret=n1)
+        call getvr8(motfac, 'ANGL_VRIL', iocc=ioc, scal=angl, nbret=n1)
 !
         if (n1 .ne. 0) then
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then

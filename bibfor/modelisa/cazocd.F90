@@ -20,12 +20,12 @@ subroutine cazocd(char, motfac, izone, nzoco)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -86,19 +86,16 @@ subroutine cazocd(char, motfac, izone, nzoco)
 ! --- PARAMETRES DU FROTTEMENT
 !
     if (lfrot) then
-        call getvr8(motfac, 'COULOMB', izone, iarg, 1,&
-                    coefff, noc)
+        call getvr8(motfac, 'COULOMB', iocc=izone, scal=coefff, nbret=noc)
         zr(jcmdf+zcmdf*(izone-1)+4-1) = coefff
-        call getvr8(motfac, 'COEF_MATR_FROT', izone, iarg, 1,&
-                    coefte, noc)
+        call getvr8(motfac, 'COEF_MATR_FROT', iocc=izone, scal=coefte, nbret=noc)
         zr(jcmdf+zcmdf*(izone-1)+1-1) = coefte
     endif
 !
 ! --- CARACTERISTIQUES POUR LES METHODES AVEC PENALISATION
 !
     if (lpenac) then
-        call getvr8(motfac, 'E_N', izone, iarg, 1,&
-                    coefpn, nocn)
+        call getvr8(motfac, 'E_N', iocc=izone, scal=coefpn, nbret=nocn)
         if (nocn .eq. 0) then
             ASSERT(.false.)
         else
@@ -107,8 +104,7 @@ subroutine cazocd(char, motfac, izone, nzoco)
     endif
 !
     if (lpenaf) then
-        call getvr8(motfac, 'E_T', izone, iarg, 1,&
-                    coefpt, nocn)
+        call getvr8(motfac, 'E_T', iocc=izone, scal=coefpt, nbret=nocn)
         if (nocn .eq. 0) then
             ASSERT(.false.)
         else
@@ -120,13 +116,11 @@ subroutine cazocd(char, motfac, izone, nzoco)
 !
     if (lcact) then
         call cazouu(motfac, nzoco, 'GLISSIERE')
-        call getvtx(motfac, 'GLISSIERE', 1, iarg, 1,&
-                    glis, noc)
+        call getvtx(motfac, 'GLISSIERE', iocc=1, scal=glis, nbret=noc)
         if (glis(1:3) .eq. 'OUI') then
             zr(jcmdf+zcmdf*(izone-1)+6-1) = 1.d0
             call cazouu(motfac, nzoco, 'ALARME_JEU')
-            call getvr8(motfac, 'ALARME_JEU', 1, iarg, 1,&
-                        aljeu, noc)
+            call getvr8(motfac, 'ALARME_JEU', iocc=1, scal=aljeu, nbret=noc)
             zr(jcmdf+zcmdf*(izone-1)+5-1) = aljeu
         else if ((glis(1:3) .eq. 'NON').or.(noc.eq.0)) then
             zr(jcmdf+zcmdf*(izone-1)+6-1) = 0.d0

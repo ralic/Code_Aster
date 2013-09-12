@@ -1,11 +1,12 @@
 subroutine pmfd02(noma, cesdec)
     implicit none
+#include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
 #include "asterfort/alcart.h"
 #include "asterfort/carces.h"
 #include "asterfort/cescre.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -43,7 +44,6 @@ subroutine pmfd02(noma, cesdec)
 !           POUTRE / TUYAU_NSEC
 !
 ! ----------------------------------------------------------------------
-#include "jeveux.h"
 !
     integer :: nbocc, iocc, iret, nbma, nbcou, nbv, nbsec
     integer :: nbap, k, i, jncmp, jvalv, jma, iarg
@@ -87,8 +87,7 @@ subroutine pmfd02(noma, cesdec)
         call reliem(' ', noma, 'NU_MAILLE', 'COQUE', iocc,&
                     2, mocles, typmcl, mesmai, nbma)
 !
-        call getvis('COQUE', 'COQUE_NCOU', iocc, iarg, 1,&
-                    nbcou, nbv)
+        call getvis('COQUE', 'COQUE_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
         zk8(jncmp-1+1) = 'COQ_NCOU'
         zi(jvalv-1+1) = nbcou
 !
@@ -104,10 +103,8 @@ subroutine pmfd02(noma, cesdec)
         call reliem(' ', noma, 'NU_MAILLE', 'POUTRE', iocc,&
                     2, mocles, typmcl, mesmai, nbma)
 !
-        call getvis('POUTRE', 'TUYAU_NCOU', iocc, iarg, 1,&
-                    nbcou, nbv)
-        call getvis('POUTRE', 'TUYAU_NSEC', iocc, iarg, 1,&
-                    nbsec, nbv)
+        call getvis('POUTRE', 'TUYAU_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
+        call getvis('POUTRE', 'TUYAU_NSEC', iocc=iocc, scal=nbsec, nbret=nbv)
         zk8(jncmp-1+1) = 'TUY_NCOU'
         zk8(jncmp-1+2) = 'TUY_NSEC'
         zi(jvalv-1+1) = nbcou

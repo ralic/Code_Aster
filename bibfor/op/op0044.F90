@@ -44,12 +44,7 @@ subroutine op0044()
 !
 ! VARIABLES LOCALES
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8vide.h"
@@ -58,6 +53,10 @@ subroutine op0044()
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -83,6 +82,7 @@ subroutine op0044()
 #include "asterfort/wkvect.h"
 #include "asterfort/wp1inv.h"
 #include "asterfort/wp1mul.h"
+!
     integer :: nbpari, nbparr, nbpark, nbpara, mxddl
     parameter     ( nbpari=8 , nbparr=16 , nbpark=3, nbpara=27 )
     parameter     ( mxddl = 1 )
@@ -151,8 +151,7 @@ subroutine op0044()
 !
 !     --- TYPE DE CALCUL : DYNAMIQUE OU FLAMBEMENT OU GENERAL  ---
 !     TYPE_RESU : 'DYNAMIQUE' OU 'MODE_FLAMB' OU 'GENERAL'
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                typres, ltypre)
+    call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=ltypre)
 !
 !     --- CATALOGUE DE COMMANDE, DIFFERENT SELON LE TYPE_RESU
 !     -> ON STOCKE DANS DES VARIABLES POUR EVITER DE FAIRE DES GETXXX
@@ -178,13 +177,12 @@ subroutine op0044()
 !
 !     --- RECUPERATION DES ARGUMENTS MATRICIELS
     amor = ' '
-    call getvid(' ', matra, 1, iarg, 1,&
-                raide, l)
-    call getvid(' ', matrb, 1, iarg, 1,&
-                masse, l)
+    call getvid(' ', matra, scal=raide, nbret=l)
+    call getvid(' ', matrb, scal=masse, nbret=l)
     lamor=0
-    if (typres .ne. 'MODE_FLAMB') call getvid(' ', matrc, 1, iarg, 1,&
-                                              amor, lamor)
+    if (typres .ne. 'MODE_FLAMB') then
+        call getvid(' ', matrc, scal=amor, nbret=lamor)
+    endif
 !
 !     ON NE SAIT TRAITER QUE LE CAS DE LA MATRICE DE RAIDEUR REELLE
     ktyp='R'
@@ -201,34 +199,23 @@ subroutine op0044()
                 numedd, i)
 !
 !     TYPE_RESU : 'DYNAMIQUE' OU 'FLAMBEMENT'
-    call getvr8('CALC_'//typevp, typevp, 1, iarg, 0,&
-                rbid, ncritr)
+    call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=ncritr)
 !
 !     --- RECUPERATION DES ARGUMENTS CONCERNANT LE NOMBRE DE SHIFT ---
-    call getvis('CALC_'//typevp, 'NMAX_ITER_SHIFT', 1, iarg, 1,&
-                nbrss, lbrss)
+    call getvis('CALC_'//typevp, 'NMAX_ITER_SHIFT', iocc=1, scal=nbrss, nbret=lbrss)
 !
 !     --- OPTION DES FREQUENCES ET DES MODES  ---
-    call getvtx('CALC_MODE', 'OPTION', 1, iarg, 1,&
-                optiom, lmo)
-    call getvtx('CALC_'//typevp, 'OPTION', 1, iarg, 1,&
-                optiof, lmf)
+    call getvtx('CALC_MODE', 'OPTION', iocc=1, scal=optiom, nbret=lmo)
+    call getvtx('CALC_'//typevp, 'OPTION', iocc=1, scal=optiof, nbret=lmf)
 !
 !     --- RECUPERATION DES ARGUMENTS POUR LE CALCUL DES FREQUENCES ---
-    call getvis('CALC_'//typevp, 'NMAX_'//typevp, 1, iarg, 1,&
-                mxfreq, l)
-    call getvr8('CALC_'//typevp, 'PREC_SEPARE', 1, iarg, 1,&
-                tolsep, l)
-    call getvis('CALC_'//typevp, 'NMAX_ITER_SEPARE', 1, iarg, 1,&
-                nitsep, l)
-    call getvr8('CALC_'//typevp, 'PREC_AJUSTE', 1, iarg, 1,&
-                tolaju, l)
-    call getvis('CALC_'//typevp, 'NMAX_ITER_AJUSTE', 1, iarg, 1,&
-                nitaju, l)
-    call getvr8('CALC_'//typevp, 'SEUIL_'//typevp, 1, iarg, 1,&
-                fcorig, l)
-    call getvr8('CALC_'//typevp, 'PREC_SHIFT', 1, iarg, 1,&
-                precsh, l)
+    call getvis('CALC_'//typevp, 'NMAX_'//typevp, iocc=1, scal=mxfreq, nbret=l)
+    call getvr8('CALC_'//typevp, 'PREC_SEPARE', iocc=1, scal=tolsep, nbret=l)
+    call getvis('CALC_'//typevp, 'NMAX_ITER_SEPARE', iocc=1, scal=nitsep, nbret=l)
+    call getvr8('CALC_'//typevp, 'PREC_AJUSTE', iocc=1, scal=tolaju, nbret=l)
+    call getvis('CALC_'//typevp, 'NMAX_ITER_AJUSTE', iocc=1, scal=nitaju, nbret=l)
+    call getvr8('CALC_'//typevp, 'SEUIL_'//typevp, iocc=1, scal=fcorig, nbret=l)
+    call getvr8('CALC_'//typevp, 'PREC_SHIFT', iocc=1, scal=precsh, nbret=l)
     if (typres .eq. 'DYNAMIQUE') then
         omecor = omega2(fcorig)
     else
@@ -236,17 +223,13 @@ subroutine op0044()
     endif
 !
 !     --- RECUPERATION DES ARGUMENTS POUR LE CALCUL DES MODES ---
-    call getvr8('CALC_MODE', 'PREC', 1, iarg, 1,&
-                tolv, l)
-    call getvis('CALC_MODE', 'NMAX_ITER', 1, iarg, 1,&
-                nitv, l)
+    call getvr8('CALC_MODE', 'PREC', iocc=1, scal=tolv, nbret=l)
+    call getvis('CALC_MODE', 'NMAX_ITER', iocc=1, scal=nitv, nbret=l)
 !
 !
     if (optiof .eq. 'SEPARE' .or. optiof .eq. 'AJUSTE') then
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, 0,&
-                    rbid, nfreqr)
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, 0,&
-                    rbid, ncritr)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=nfreqr)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=ncritr)
 !
         nfreq = -nfreqr
         ncrit = -ncritr
@@ -258,26 +241,26 @@ subroutine op0044()
         else
             call wkvect(cborne, 'V V R', nbmod, lborne)
             if (nfreq .ne. 0) then
-                call getvr8('CALC_'//typevp, typevp, 1, iarg, nfreq,&
-                            zr(lborne), l)
+                call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne),&
+                            nbret=l)
             else
-                call getvr8('CALC_'//typevp, typevp, 1, iarg, nfreq,&
-                            zr(lborne), l)
+                call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne),&
+                            nbret=l)
             endif
             call jedetr(cborne)
         endif
     endif
     na1=0
-    if (typres .ne. 'MODE_FLAMB') call getvr8('CALC_'//typevp, 'AMOR_REDUIT', 1, iarg, 0,&
-                                              rbid, na1)
+    if (typres .ne. 'MODE_FLAMB') then
+        call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na1)
+    endif
     namorr = na1
     if ((lamor.eq.0) .and. (namorr.ne.0)) call u2mess('E', 'ALGELINE2_55')
     if ((lamor.ne.0) .and. (namorr.ne.0) .and. (optiof.ne.'PROCHE')) then
         call u2mess('E', 'ALGELINE2_56')
     endif
     if (optiof .eq. 'PROCHE') then
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, 0,&
-                    rbid, nfreqr)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=nfreqr)
         if ((namorr.ne.0) .and. (namorr.ne.nfreqr)) then
             call u2mess('E', 'ALGELINE2_57')
         endif
@@ -356,10 +339,8 @@ subroutine op0044()
 !     ------------------------------------------------------------------
 !
 !     --- OPTION DES FREQUENCES ET DES MODES  ---
-    call getvtx('CALC_'//typevp, 'OPTION', 1, iarg, 1,&
-                optiof, lmf)
-    call getvtx('CALC_MODE', 'OPTION', 1, iarg, 1,&
-                optiom, lmo)
+    call getvtx('CALC_'//typevp, 'OPTION', iocc=1, scal=optiof, nbret=lmf)
+    call getvtx('CALC_MODE', 'OPTION', iocc=1, scal=optiom, nbret=lmo)
 !
     optior = 'SEPARE'
     if ((lamor.ne.0) .and. (optiof.eq.'AJUSTE')) then
@@ -371,15 +352,14 @@ subroutine op0044()
     nfreqr = 0
     ncritr = 0
     if (typres .eq. 'DYNAMIQUE') then
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, 0,&
-                    rbid, nfreqr)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=nfreqr)
     else
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, 0,&
-                    rbid, ncritr)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=ncritr)
     endif
     na1=0
-    if (typres .ne. 'MODE_FLAMB') call getvr8('CALC_'//typevp, 'AMOR_REDUIT', 1, iarg, 0,&
-                                              rbid, na1)
+    if (typres .ne. 'MODE_FLAMB') then
+        call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na1)
+    endif
     namorr = na1
     nfreq = - nfreqr
     ncrit = - ncritr
@@ -388,8 +368,8 @@ subroutine op0044()
     if ((nfreqr .ne. 0) .and. (namorr.eq.0)) then
         nfreq = -nfreqr
         call wkvect(cborne, 'V V R', nfreq, lborne)
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, nfreq,&
-                    zr(lborne), l)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lborne),&
+                    nbret=l)
 !         --- CONTROLE DE FREQUENCE NEGATIVE ---
         ierfr = 0
         do 4 ifreq = 0, nfreq - 1
@@ -403,8 +383,8 @@ subroutine op0044()
     if ((typres.eq.'MODE_FLAMB') .and. (namorr.eq.0)) then
         ncrit = -ncritr
         call wkvect(cborne, 'V V R', ncrit, lborne)
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, ncrit,&
-                    zr(lborne), l)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=ncrit, vect=zr(lborne),&
+                    nbret=l)
     endif
 !
 !     --- LISTE DES AMORTISSEMENTS (CAS QUADRATIQUE) ---
@@ -412,12 +392,12 @@ subroutine op0044()
         nfreq = -nfreqr
         call wkvect(cborne, 'V V R', 2*nfreq, lborne)
         call wkvect(cfreq, 'V V R', nfreq, lfreq)
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, nfreq,&
-                    zr(lfreq), l)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nfreq, vect=zr(lfreq),&
+                    nbret=l)
         call wkvect(camor, 'V V R', nfreq, lamort)
         if (na1 .ne. 0) then
-            call getvr8('CALC_'//typevp, 'AMOR_REDUIT', 1, iarg, nfreq,&
-                        zr(lamort), l)
+            call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=nfreq, vect=zr(lamort),&
+                        nbret=l)
         endif
 !
 !         --- PASSAGE EN VALEURS PROPRES COMPLEXES ---
@@ -753,8 +733,7 @@ subroutine op0044()
 !     ----------- CONTROLE DE VALIDITE DES MODES CALCULES  -------------
 !     ------------------------------------------------------------------
 !
-    call getvtx('VERI_MODE', 'STOP_ERREUR', 1, iarg, 1,&
-                optiov, lmf)
+    call getvtx('VERI_MODE', 'STOP_ERREUR', iocc=1, scal=optiov, nbret=lmf)
     if (optiov .eq. 'OUI') then
         ctyp = 'E'
     else
@@ -762,8 +741,7 @@ subroutine op0044()
     endif
     optiov = ' '
 !
-    call getvr8('VERI_MODE', 'SEUIL', 1, iarg, 1,&
-                seuil, lmf)
+    call getvr8('VERI_MODE', 'SEUIL', iocc=1, scal=seuil, nbret=lmf)
     lmat(1) = lraide
     lmat(2) = lmasse
     lmat(3) = 0

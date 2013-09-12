@@ -34,9 +34,9 @@ subroutine op0126()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/arg126.h"
 #include "asterfort/callis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/vecomo.h"
 #include "asterfort/versst.h"
@@ -66,34 +66,24 @@ subroutine op0126()
 !
     call getfac('VERIF', ival)
     if (ival .ne. 0) then
-        call getvtx('VERIF', 'STOP_ERREUR', 1, iarg, 1,&
-                    rep, ibid)
+        call getvtx('VERIF', 'STOP_ERREUR', iocc=1, scal=rep, nbret=ibid)
         if (rep .eq. 'NON') goto 20
     endif
 !
     call getfac('LIAISON', nblia)
 !
     do 10 i = 1, nblia
-        call getvtx('LIAISON', 'OPTION', i, iarg, 1,&
-                    option, iopt)
-        call getvtx('LIAISON', 'SOUS_STRUC_1', i, iarg, 1,&
-                    sst1, ibid)
-        call getvtx('LIAISON', 'SOUS_STRUC_2', i, iarg, 1,&
-                    sst2, ibid)
-        call getvtx('LIAISON', 'INTERFACE_1', i, iarg, 1,&
-                    intf1, ibid)
-        call getvtx('LIAISON', 'INTERFACE_2', i, iarg, 1,&
-                    intf2, ibid)
+        call getvtx('LIAISON', 'OPTION', iocc=i, scal=option, nbret=iopt)
+        call getvtx('LIAISON', 'SOUS_STRUC_1', iocc=i, scal=sst1, nbret=ibid)
+        call getvtx('LIAISON', 'SOUS_STRUC_2', iocc=i, scal=sst2, nbret=ibid)
+        call getvtx('LIAISON', 'INTERFACE_1', iocc=i, scal=intf1, nbret=ibid)
+        call getvtx('LIAISON', 'INTERFACE_2', iocc=i, scal=intf2, nbret=ibid)
         iinc=0
 !     ON TESTE SI LA LIAISON EST INCOMPATIBLE
-        call getvtx('LIAISON', 'GROUP_MA_MAIT_1', i, iarg, 1,&
-                    k8bid, irep11)
-        call getvtx('LIAISON', 'MAILLE_MAIT_1', i, iarg, 1,&
-                    k8bid, irep12)
-        call getvtx('LIAISON', 'GROUP_MA_MAIT_2', i, iarg, 1,&
-                    k8bid, irep21)
-        call getvtx('LIAISON', 'MAILLE_MAIT_2', i, iarg, 1,&
-                    k8bid, irep22)
+        call getvtx('LIAISON', 'GROUP_MA_MAIT_1', iocc=i, scal=k8bid, nbret=irep11)
+        call getvtx('LIAISON', 'MAILLE_MAIT_1', iocc=i, scal=k8bid, nbret=irep12)
+        call getvtx('LIAISON', 'GROUP_MA_MAIT_2', iocc=i, scal=k8bid, nbret=irep21)
+        call getvtx('LIAISON', 'MAILLE_MAIT_2', iocc=i, scal=k8bid, nbret=irep22)
         if ((irep11.ne.0) .or. (irep12.ne.0)) then
             iinc=1
         else if ((irep21.ne.0).or.(irep22.ne.0)) then

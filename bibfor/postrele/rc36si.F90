@@ -1,12 +1,11 @@
 subroutine rc36si(noma, nbma, listma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedetr.h"
@@ -19,6 +18,7 @@ subroutine rc36si(noma, nbma, listma)
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbma, listma(*)
     character(len=8) :: noma
 ! ----------------------------------------------------------------------
@@ -97,31 +97,26 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ LE NUMERO DE SITUATION:
 !        -----------------------
-    call getvis(motcl1, 'NUME_SITU', iocc, iarg, 1,&
-                zi(jnsitu+iocc-1), n1)
+    call getvis(motcl1, 'NUME_SITU', iocc=iocc, scal=zi(jnsitu+iocc-1), nbret=n1)
 !
 ! ------ LE NOMBRE D'OCCURRENCE:
 !        -----------------------
-    call getvis(motcl1, 'NB_OCCUR', iocc, iarg, 1,&
-                nocc, n1)
+    call getvis(motcl1, 'NB_OCCUR', iocc=iocc, scal=nocc, nbret=n1)
     zi(jnbocc+2*iocc-2) = nocc
 !
 ! ------ LES PRESSIONS:
 !        --------------
-    call getvr8(motcl1, 'PRES_A', iocc, iarg, 1,&
-                zr(jpresa+iocc-1), n1)
-    call getvr8(motcl1, 'PRES_B', iocc, iarg, 1,&
-                zr(jpresb+iocc-1), n1)
+    call getvr8(motcl1, 'PRES_A', iocc=iocc, scal=zr(jpresa+iocc-1), nbret=n1)
+    call getvr8(motcl1, 'PRES_B', iocc=iocc, scal=zr(jpresb+iocc-1), nbret=n1)
 !
 ! ------ LES NUMEROS DE GROUPE:
 !        ----------------------
-    call getvis(motcl1, 'NUME_GROUPE', iocc, iarg, 0,&
-                numpas, n1)
+    call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         nbvg = -n1
         call wkvect('&&RC36SI.VALE_GR', 'V V I', nbvg, jnbvg)
-        call getvis(motcl1, 'NUME_GROUPE', iocc, iarg, nbvg,&
-                    zi( jnbvg), n1)
+        call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=nbvg, vect=zi( jnbvg),&
+                    nbret=n1)
         do 26 ing = 1, nbvg
             numgr = zi(jnbvg+ing-1)
             if (numgr .le. 0) call u2mess('F', 'POSTRCCM_12')
@@ -144,11 +139,10 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ LES NUMEROS DE PASSAGE:
 !        -----------------------
-    call getvis(motcl1, 'NUME_PASSAGE', iocc, iarg, 0,&
-                numpas, n1)
+    call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvis(motcl1, 'NUME_PASSAGE', iocc, iarg, 2,&
-                    numpas, n1)
+        call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=2, vect=numpas,&
+                    nbret=n1)
         if (numpas(1) .le. 0) call u2mess('F', 'POSTRCCM_12')
         if (numpas(2) .le. 0) call u2mess('F', 'POSTRCCM_12')
         if (numpas(1) .gt. 3) call u2mess('F', 'POSTRCCM_12')
@@ -174,8 +168,7 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ COMBINABLE DANS SON GROUPE:
 !        ---------------------------
-    call getvtx(motcl1, 'COMBINABLE', iocc, iarg, 1,&
-                ouinon, n1)
+    call getvtx(motcl1, 'COMBINABLE', iocc=iocc, scal=ouinon, nbret=n1)
     if (ouinon(1:3) .eq. 'OUI') then
         zl(jcombi+iocc-1) = .true.
     else
@@ -184,12 +177,11 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ ETAT DE CHARGEMENT POUR "A":
 !        ----------------------------
-    call getvis(motcl1, 'CHAR_ETAT_A', iocc, iarg, 0,&
-                ibid, n1)
+    call getvis(motcl1, 'CHAR_ETAT_A', iocc=iocc, nbval=0, nbret=n1)
     nbchar = -n1
     call wkvect('&&RC36SI.CHAR_ETAT', 'V V I', nbchar, jchar1)
-    call getvis(motcl1, 'CHAR_ETAT_A', iocc, iarg, nbchar,&
-                zi(jchar1), n1)
+    call getvis(motcl1, 'CHAR_ETAT_A', iocc=iocc, nbval=nbchar, vect=zi(jchar1),&
+                nbret=n1)
 !
     chmome = '&&RC36SI_A'//k8b
     call rc36cm(iocc, 'A', nbma, listma, nbchar,&
@@ -199,12 +191,11 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ ETAT DE CHARGEMENT POUR "B":
 !        ----------------------------
-    call getvis(motcl1, 'CHAR_ETAT_B', iocc, iarg, 0,&
-                ibid, n1)
+    call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=0, nbret=n1)
     nbchar = -n1
     call wkvect('&&RC36SI.CHAR_MECA', 'V V I', nbchar, jchar2)
-    call getvis(motcl1, 'CHAR_ETAT_B', iocc, iarg, nbchar,&
-                zi(jchar2), n1)
+    call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=nbchar, vect=zi(jchar2),&
+                nbret=n1)
 !
     chmome = '&&RC36SI_B'//k8b
     call rc36cm(iocc, 'B', nbma, listma, nbchar,&
@@ -214,8 +205,7 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
 !        ---------------------------------------------
-    call getvis(motcl1, 'NUME_RESU_THER', iocc, iarg, 0,&
-                ibid, n1)
+    call getvis(motcl1, 'NUME_RESU_THER', iocc=iocc, nbval=0, nbret=n1)
     nbth = -n1
     call jecroc(jexnum('&&RC3600.SITU_THERMIQUE', iocc))
     nbm = max(1,nbth)
@@ -226,8 +216,8 @@ subroutine rc36si(noma, nbma, listma)
     else
         call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'LONUTI', nbth)
         call jeveuo(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'E', jreth)
-        call getvis(motcl1, 'NUME_RESU_THER', iocc, iarg, nbth,&
-                    zi(jreth), n1)
+        call getvis(motcl1, 'NUME_RESU_THER', iocc=iocc, nbval=nbth, vect=zi(jreth),&
+                    nbret=n1)
 !     ------------------------------------------------------------------
 !                   RESULTATS DES CALCULS THERMIQUES
 !     ------------------------------------------------------------------
@@ -241,8 +231,7 @@ subroutine rc36si(noma, nbma, listma)
 !
     call codent(nbsitu+iocc, 'D0', k8b)
 !
-    call getvis(motcl2, 'NUME_GROUPE', iocc, iarg, 1,&
-                nume, n1)
+    call getvis(motcl2, 'NUME_GROUPE', iocc=iocc, scal=nume, nbret=n1)
     zi(jsigr+2*(nbsitu+iocc)-2) = nume
     zi(jsigr+2*(nbsitu+iocc)-1) = nume
 !
@@ -250,26 +239,22 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ LE NUMERO DE SITUATION:
 !        -----------------------
-    call getvis(motcl2, 'NUME_SITU', iocc, iarg, 1,&
-                zi(jnsitu+nbsitu+ iocc-1), n1)
+    call getvis(motcl2, 'NUME_SITU', iocc=iocc, scal=zi(jnsitu+nbsitu+ iocc-1), nbret=n1)
 !
 ! ------ LE NOMBRE D'OCCURRENCE:
 !        -----------------------
-    call getvis(motcl2, 'NB_OCCUR', iocc, iarg, 1,&
-                nocc, n1)
+    call getvis(motcl2, 'NB_OCCUR', iocc=iocc, scal=nocc, nbret=n1)
     zi(jnbocc+2*(nbsitu+iocc)-2) = nocc
-    call getvis(motcl2, 'NB_CYCL_SEISME', iocc, iarg, 1,&
-                nscy, n1)
+    call getvis(motcl2, 'NB_CYCL_SEISME', iocc=iocc, scal=nscy, nbret=n1)
     zi(jnbocc+2*(nbsitu+iocc)-1) = nscy
 !
 ! ------ ETAT DE CHARGEMENT:
 !        -------------------
-    call getvis(motcl2, 'CHAR_ETAT', iocc, iarg, 0,&
-                ibid, n1)
+    call getvis(motcl2, 'CHAR_ETAT', iocc=iocc, nbval=0, nbret=n1)
     nbchar = -n1
     call wkvect('&&RC36SI.CHAR_ETAT', 'V V I', nbchar, jchar1)
-    call getvis(motcl2, 'CHAR_ETAT', iocc, iarg, nbchar,&
-                zi(jchar1), n1)
+    call getvis(motcl2, 'CHAR_ETAT', iocc=iocc, nbval=nbchar, vect=zi(jchar1),&
+                nbret=n1)
 !
     chmome = '&&RC36SI_A'//k8b
     call rc36cm(iocc, 'S', nbma, listma, nbchar,&
@@ -317,23 +302,21 @@ subroutine rc36si(noma, nbma, listma)
 ! ------ ON COMPTE LES SITUATIONS DU GROUPE
         nbsigr = 0
         do 32, iocc = 1, nbsitu, 1
-        call getvis(motcl1, 'NUME_GROUPE', iocc, iarg, 0,&
-                    nbvg, n1)
+        call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbvg = -n1
             call wkvect('&&RC36SI.VALE_GR', 'V V I', nbvg, jnbvg)
-            call getvis(motcl1, 'NUME_GROUPE', iocc, iarg, nbvg,&
-                        zi(jnbvg), n1)
+            call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=nbvg, vect=zi(jnbvg),&
+                        nbret=n1)
             do 321 ing = 1, nbvg
                 if (zi(jnbvg+ing-1) .eq. numgr) nbsigr = nbsigr + 1
 321          continue
             call jedetr('&&RC36SI.VALE_GR')
         endif
-        call getvis(motcl1, 'NUME_PASSAGE', iocc, iarg, 0,&
-                    nbvg, n1)
+        call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvis(motcl1, 'NUME_PASSAGE', iocc, iarg, 2,&
-                        numpas, n1)
+            call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=2, vect=numpas,&
+                        nbret=n1)
             if (numpas(1) .eq. numgr) nbsigr = nbsigr + 1
             if (numpas(2) .eq. numgr) nbsigr = nbsigr + 1
         endif
@@ -341,8 +324,7 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ ON COMPTE LES SITUATIONS DE SEISME
         do 36, iocc = 1, nbseis, 1
-        call getvis(motcl2, 'NUME_GROUPE', iocc, iarg, 1,&
-                    numgs, n1)
+        call getvis(motcl2, 'NUME_GROUPE', iocc=iocc, scal=numgs, nbret=n1)
         if (numgs .eq. numgr) nbsigr = nbsigr + 1
 36      continue
 !
@@ -352,13 +334,12 @@ subroutine rc36si(noma, nbma, listma)
         call jeveuo(jexnum('&&RC3600.LES_GROUPES', numgr), 'E', jnsg)
         ii = 0
         do 34, iocc = 1, nbsitu, 1
-        call getvis(motcl1, 'NUME_GROUPE', iocc, iarg, 0,&
-                    nbvg, n1)
+        call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbvg = -n1
             call wkvect('&&RC36SI.VALE_GR', 'V V I', nbvg, jnbvg)
-            call getvis(motcl1, 'NUME_GROUPE', iocc, iarg, nbvg,&
-                        zi(jnbvg), n1)
+            call getvis(motcl1, 'NUME_GROUPE', iocc=iocc, nbval=nbvg, vect=zi(jnbvg),&
+                        nbret=n1)
             do 341 ing = 1, nbvg
                 if (zi(jnbvg+ing-1) .eq. numgr) then
                     ii = ii + 1
@@ -367,11 +348,10 @@ subroutine rc36si(noma, nbma, listma)
 341          continue
             call jedetr('&&RC36SI.VALE_GR')
         endif
-        call getvis(motcl1, 'NUME_PASSAGE', iocc, iarg, 0,&
-                    nbvg, n1)
+        call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvis(motcl1, 'NUME_PASSAGE', iocc, iarg, 2,&
-                        numpas, n1)
+            call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=2, vect=numpas,&
+                        nbret=n1)
             if (numpas(1) .eq. numgr) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
@@ -383,8 +363,7 @@ subroutine rc36si(noma, nbma, listma)
         endif
 34      continue
         do 38, iocc = 1, nbseis, 1
-        call getvis(motcl2, 'NUME_GROUPE', iocc, iarg, 1,&
-                    numgs, n1)
+        call getvis(motcl2, 'NUME_GROUPE', iocc=iocc, scal=numgs, nbret=n1)
         if (numgs .eq. numgr) then
             ii = ii + 1
             zi(jnsg+ii-1) = nbsitu+iocc

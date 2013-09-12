@@ -1,11 +1,11 @@
 subroutine carayo(char, ligrmo, noma, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -96,23 +96,16 @@ subroutine carayo(char, ligrmo, noma, fonree)
 !
     do 10 iocc = 1, nrayo
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'SIGMA', iocc, iarg, 1,&
-                        zr(jvalv), n)
-            call getvr8(motclf, 'EPSILON', iocc, iarg, 1,&
-                        zr(jvalv+1), n)
-            call getvr8(motclf, 'TEMP_EXT', iocc, iarg, 1,&
-                        zr(jvalv+2), n)
+            call getvr8(motclf, 'SIGMA', iocc=iocc, scal=zr(jvalv), nbret=n)
+            call getvr8(motclf, 'EPSILON', iocc=iocc, scal=zr(jvalv+1), nbret=n)
+            call getvr8(motclf, 'TEMP_EXT', iocc=iocc, scal=zr(jvalv+2), nbret=n)
         else
-            call getvid(motclf, 'SIGMA', iocc, iarg, 1,&
-                        zk8(jvalv), n)
-            call getvid(motclf, 'EPSILON', iocc, iarg, 1,&
-                        zk8(jvalv+1), n)
-            call getvid(motclf, 'TEMP_EXT', iocc, iarg, 1,&
-                        zk8(jvalv+2), n)
+            call getvid(motclf, 'SIGMA', iocc=iocc, scal=zk8(jvalv), nbret=n)
+            call getvid(motclf, 'EPSILON', iocc=iocc, scal=zk8(jvalv+1), nbret=n)
+            call getvid(motclf, 'TEMP_EXT', iocc=iocc, scal=zk8(jvalv+2), nbret=n)
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ligrmo, ncmp)

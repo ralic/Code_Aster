@@ -25,14 +25,14 @@ subroutine tran77(nomres, typres, nomin, basemo)
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocre.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/extrac.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -96,14 +96,10 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !     ---                PORTE LA RESTITUTION                 ---
     tousno = .true.
     prems = .true.
-    call getvtx(' ', 'GROUP_NO', 1, iarg, 0,&
-                k8b, n1)
-    call getvtx(' ', 'NOEUD', 1, iarg, 0,&
-                k8b, n2)
-    call getvtx(' ', 'GROUP_MA', 1, iarg, 0,&
-                k8b, n3)
-    call getvtx(' ', 'MAILLE', 1, iarg, 0,&
-                k8b, n4)
+    call getvtx(' ', 'GROUP_NO', nbval=0, nbret=n1)
+    call getvtx(' ', 'NOEUD', nbval=0, nbret=n2)
+    call getvtx(' ', 'GROUP_MA', nbval=0, nbret=n3)
+    call getvtx(' ', 'MAILLE', nbval=0, nbret=n4)
     if (n1+n2+n3+n4 .ne. 0) tousno = .false.
 !
 !     --- RECUPERATION DE LA BASE MODALE ---
@@ -113,10 +109,13 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
 !
     if (mode .eq. blanc) then
-        call dismoi('F', 'REF_RIGI_PREM', trange, 'RESU_DYNA', ibid, matgen, iret)
-        call dismoi('F', 'REF_INTD_PREM', trange, 'RESU_DYNA', ibid, basemo, iret)
+        call dismoi('F', 'REF_RIGI_PREM', trange, 'RESU_DYNA', ibid,&
+                    matgen, iret)
+        call dismoi('F', 'REF_INTD_PREM', trange, 'RESU_DYNA', ibid,&
+                    basemo, iret)
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                        matric, iret)
             if (matric .ne. blanc) then
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
@@ -125,7 +124,8 @@ subroutine tran77(nomres, typres, nomin, basemo)
                 if (tousno) call dismoi('F', 'NB_EQUA', matric, 'MATR_ASSE', neq,&
                                         k8b, iret)
             else
-                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numddl, iret)
+                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                            numddl, iret)
                 call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
                             nomgd, ie)
                 call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
@@ -135,9 +135,11 @@ subroutine tran77(nomres, typres, nomin, basemo)
             endif
         else
 !  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, matric, iret)
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                        matric, iret)
             if (matric(1:8) .eq. blanc) then
-                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                            matric, iret)
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
             else
@@ -146,7 +148,8 @@ subroutine tran77(nomres, typres, nomin, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                        matric, iret)
             if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                                     k8b, iret)
         endif
@@ -168,8 +171,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
 !------ON VERIFIE QUE L'UTILISATEUR A RENSEIGNE LE MEME SUPPORT DE
 !------RESTITUTION DANS LE FICHIER DE COMMANDE
-        call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                    nomma, isk)
+        call getvid(' ', 'SQUELETTE', scal=nomma, nbret=isk)
         if (isk .ne. 0) then
             if (nomma .ne. mailla) then
                 valk (1) = nomma
@@ -214,12 +216,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
 !     --- RECUPERATION DES INSTANTS ---
 !
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 1,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
 !
     knume = '&&TRAN77.NUM_RANG'
     kinst = '&&TRAN77.INSTANT'
@@ -248,16 +247,11 @@ subroutine tran77(nomres, typres, nomin, basemo)
     fomi = 0
     fomf = 0
     fomo = 0
-    call getvid(' ', 'LIST_INST', 0, iarg, 1,&
-                k8b, foci)
-    call getvid(' ', 'LIST_FREQ', 0, iarg, 1,&
-                k8b, focf)
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                r8b, fomi)
-    call getvr8(' ', 'FREQ', 0, iarg, 1,&
-                r8b, fomf)
-    call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                k8b, fomo)
+    call getvid(' ', 'LIST_INST', scal=k8b, nbret=foci)
+    call getvid(' ', 'LIST_FREQ', scal=k8b, nbret=focf)
+    call getvr8(' ', 'INST', scal=r8b, nbret=fomi)
+    call getvr8(' ', 'FREQ', scal=r8b, nbret=fomf)
+    call getvid(' ', 'MODE_MECA', scal=k8b, nbret=fomo)
     if ((interp(1:3).ne.'NON') .and.&
         (&
         foci .eq. 0 .and. focf .eq. 0 .and. fomi .eq. 0 .and. fomf .eq. 0 .and. fomo .eq. 0&
@@ -378,9 +372,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
 210  continue
 !
 !
-
+!
     if (mode .eq. blanc) then
-        call refdcp(basemo,nomres)
+        call refdcp(basemo, nomres)
     endif
 !
     call jedetr('&&TRAN77.NUME_NOEUD  ')

@@ -1,7 +1,6 @@
 subroutine orishb(noma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/getvem.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -17,6 +16,7 @@ subroutine orishb(noma)
 #include "asterfort/orish8.h"
 #include "asterfort/pacoor.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
 !.======================================================================
 ! ======================================================================

@@ -18,7 +18,7 @@ subroutine dfllin(mcfact, iechec, cmmaxi)
 ! ======================================================================
 !
     implicit none
-#include "asterc/getvr8.h"
+#include "asterfort/getvr8.h"
     character(len=16) :: mcfact
     integer :: iechec
     real(kind=8) :: cmmaxi
@@ -51,7 +51,6 @@ subroutine dfllin(mcfact, iechec, cmmaxi)
 !
 ! --- OPTIONS DE L'ACTION
 !
-    call getvr8(mcfact, 'COEF_MAXI', iechec, iarg, 1,&
-                cmmaxi, iret)
+    call getvr8(mcfact, 'COEF_MAXI', iocc=iechec, scal=cmmaxi, nbret=iret)
 !
 end subroutine

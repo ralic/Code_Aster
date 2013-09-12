@@ -32,9 +32,6 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lctest.h"
@@ -42,6 +39,9 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 #include "asterfort/alcart.h"
 #include "asterfort/crcmel.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imvari.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -134,8 +134,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 !       NOMBRE D'OCCURRENCES
         do 150 k = 1, nbocc
 !
-            call getvtx(moclef(i), 'RELATION', k, iarg, 1,&
-                        comp, n1)
+            call getvtx(moclef(i), 'RELATION', iocc=k, scal=comp, nbret=n1)
             ncomel=1
             lcomel(ncomel)=comp
 !
@@ -204,16 +203,14 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             tymatg=' '
             exist = getexm(moclef(i),'TYPE_MATR_TANG')
             if (exist .eq. 1) then
-                call getvtx(moclef(i), 'TYPE_MATR_TANG', k, iarg, 1,&
-                            tymatg, n1)
+                call getvtx(moclef(i), 'TYPE_MATR_TANG', iocc=k, scal=tymatg, nbret=n1)
                 if (n1 .gt. 0) then
                     if (tymatg .eq. 'TANGENTE_SECANTE') nbvari=nbvari+1
                 endif
             endif
 !         CAS PARTICULIER DE MONOCRISTAL
             if (comp(1:8) .eq. 'MONOCRIS') then
-                call getvid(moclef(i), 'COMPOR', k, iarg, 1,&
-                            sdcomp, n1)
+                call getvid(moclef(i), 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
                 call jeveuo(sdcomp//'.CPRI', 'L', icpri)
                 nbvari=zi(icpri-1+3)
                 zk16(jvalv-1+7) = sdcomp
@@ -222,8 +219,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
                     nbvari=nbvari+9+9
                 endif
             else if (comp(1:8).eq.'POLYCRIS') then
-                call getvid(moclef(i), 'COMPOR', k, iarg, 1,&
-                            sdcomp, n1)
+                call getvid(moclef(i), 'COMPOR', iocc=k, scal=sdcomp, nbret=n1)
                 call jeveuo(sdcomp//'.CPRI', 'L', icpri)
                 nbvari=zi(icpri-1+3)
                 zk16(jvalv-1+7) = sdcomp
@@ -233,23 +229,20 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 !         STOCKAGE DE VI SI POST_ITER='CRIT_RUPT'
             if (nomcmd(1:6) .ne. 'CALC_G') then
                 if (moclef(i) .eq. 'COMP_INCR') then
-                    call getvtx(moclef(i), 'POST_ITER', k, iarg, 1,&
-                                crirup, iret)
+                    call getvtx(moclef(i), 'POST_ITER', iocc=k, scal=crirup, nbret=iret)
                     if (iret .eq. 1) then
                         nbvari=nbvari+6
                     endif
                 endif
             endif
 !
-
+!
             if (comp(1:8) .eq. 'MULTIFIB') exipmf=.true.
             if (comp(1:4) .eq. 'ZMAT') then
                 iszmat = .true.
-                call getvis(moclef, 'NB_VARI', k, iarg, 1,&
-                            nbvarz, n1)
+                call getvis(moclef(i), 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
                 nbvari=nbvarz+nbvari
-                call getvis(moclef, 'UNITE', k, iarg, 1,&
-                            nunit, n1)
+                call getvis(moclef(i), 'UNITE', iocc=k, scal=nunit, nbret=n1)
                 write (zk16(jvalv-1+7),'(I16)') nunit
             endif
 !         POUR COMPORTEMENT KIT_
@@ -276,13 +269,10 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 !         ON STOCKE LA LIB DANS KIT1-KIT8 (128 CARACTERES)
 !         ET LA SUBROUTINE DANS KIT9
             if ((comp.eq.'UMAT') .or. (comp.eq.'MFRONT')) then
-                call getvis(moclef, 'NB_VARI', k, iarg, 1,&
-                            nbvarz, n1)
+                call getvis(moclef(i), 'NB_VARI', iocc=k, scal=nbvarz, nbret=n1)
                 nbvari=nbvarz+nbvari
-                call getvtx(moclef, 'LIBRAIRIE', k, iarg, 1,&
-                            nomlib, n1)
-                call getvtx(moclef, 'NOM_ROUTINE', k, iarg, 1,&
-                            nomsub, n1)
+                call getvtx(moclef(i), 'LIBRAIRIE', iocc=k, scal=nomlib, nbret=n1)
+                call getvtx(moclef(i), 'NOM_ROUTINE', iocc=k, scal=nomsub, nbret=n1)
                 do 30 ii = 1, dimaki-1
                     zk16(jvalv-1+ii+7) = nomlib(16*(ii-1)+1:16*ii)
 30              continue

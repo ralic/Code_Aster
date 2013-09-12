@@ -20,10 +20,10 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
 ! ======================================================================
 !
     implicit none
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mess.h"
     character(len=16) :: mcfact, even
     integer :: iechec
@@ -73,26 +73,20 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
 !
 ! --- TYPE DE LA DECOUPE
 !
-    call getvtx(mcfact, 'SUBD_METHODE', iechec, iarg, 1,&
-                submet, iret)
+    call getvtx(mcfact, 'SUBD_METHODE', iocc=iechec, scal=submet, nbret=iret)
 !
 ! --- OPTIONS
 !
-    call getvr8(mcfact, 'SUBD_PAS_MINI', iechec, iarg, 1,&
-                pasmin, iret)
+    call getvr8(mcfact, 'SUBD_PAS_MINI', iocc=iechec, scal=pasmin, nbret=iret)
     if (pasmin .gt. dtmin) call u2mess('F', 'DISCRETISATION_2')
     if (submet .eq. 'MANUEL') then
-        call getvis(mcfact, 'SUBD_NIVEAU', iechec, iarg, 1,&
-                    niveau, iret)
-        call getvis(mcfact, 'SUBD_PAS', iechec, iarg, 1,&
-                    nbrpas, iret)
+        call getvis(mcfact, 'SUBD_NIVEAU', iocc=iechec, scal=niveau, nbret=iret)
+        call getvis(mcfact, 'SUBD_PAS', iocc=iechec, scal=nbrpas, nbret=iret)
         if (nbrpas .lt. 2) ASSERT(.false.)
     else if (submet.eq.'AUTO') then
         if (even .eq. 'COLLISION') then
-            call getvr8(mcfact, 'SUBD_INST', iechec, iarg, 1,&
-                        subins, iret)
-            call getvr8(mcfact, 'SUBD_DUREE', iechec, iarg, 1,&
-                        subdur, iret)
+            call getvr8(mcfact, 'SUBD_INST', iocc=iechec, scal=subins, nbret=iret)
+            call getvr8(mcfact, 'SUBD_DUREE', iocc=iechec, scal=subdur, nbret=iret)
             subaut = 'COLLISION'
         else
             subaut = 'EXTRAPOLE'

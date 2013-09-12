@@ -1,8 +1,8 @@
 subroutine acevca(nbocc, nlm, nlg, ier)
     implicit none
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
@@ -43,12 +43,9 @@ subroutine acevca(nbocc, nlm, nlg, ier)
     nlm = 0
     nlg = 0
     do 10 ioc = 1, nbocc
-        call getvtx('CABLE', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('CABLE', 'MAILLE', ioc, iarg, 0,&
-                    k8b, nm)
-        call getvr8('CABLE', 'SECTION', ioc, iarg, 0,&
-                    r8b, ne)
+        call getvtx('CABLE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('CABLE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
+        call getvr8('CABLE', 'SECTION', iocc=ioc, nbval=0, nbret=ne)
 !
         if (ioc .eq. 1 .and. ne .eq. 0) then
             call u2mess('E', 'MODELISA_52')

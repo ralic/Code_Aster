@@ -59,10 +59,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-- VARIABLES EN ENTREES / SORTIE
 #include "jeveux.h"
 #include "asterc/getran.h"
-#include "asterc/getvr8.h"
 #include "asterc/matfpe.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/intdis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -120,8 +120,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     lismat(1)=raiint
     lismat(2)=ssami
     if (switch .eq. 1) then
-        call getvr8('MODE_INTERF', 'SHIFT', 1, iarg, 1,&
-                    rbid, ibid)
+        call getvr8('MODE_INTERF', 'SHIFT', iocc=1, scal=rbid, nbret=ibid)
         shift=-(rbid*2.d0*pi)**2
     endif
 !

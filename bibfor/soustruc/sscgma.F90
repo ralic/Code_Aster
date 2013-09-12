@@ -27,10 +27,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgmaal.h"
 #include "asterfort/cgmaap.h"
@@ -42,6 +39,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "asterfort/cgmftm.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -58,6 +57,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
 #include "asterfort/wkvect.h"
+!
 !
     character(len=8) :: ma, noma, kbid, kpos, nom1, tout
     character(len=8) :: alarm, tyma
@@ -96,14 +96,12 @@ subroutine sscgma(ma, nbgmp, nbgmin)
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmat,&
                 kbid, ierd)
 !
-    call getvtx(' ', 'ALARME', 1, iarg, 1,&
-                alarm, nalar)
+    call getvtx(' ', 'ALARME', scal=alarm, nbret=nalar)
 !
     nbgnaj = 0
     do 210,iocc = 1,nbgmp
 !
-    call getvtx('CREA_GROUP_MA', 'NOM', iocc, iarg, 1,&
-                nogma, n1)
+    call getvtx('CREA_GROUP_MA', 'NOM', iocc=iocc, scal=nogma, nbret=n1)
 !
     call jenonu(jexnom(ma//'.GROUPEMA', nogma), ibid)
     if (ibid .gt. 0) then
@@ -112,18 +110,13 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
     call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc,&
                 iarg, 0, kbid, n2)
-    call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc, iarg, 0,&
-                kbid, n3)
-    call getvtx('CREA_GROUP_MA', 'UNION', iocc, iarg, 0,&
-                kbid, n4)
-    call getvtx('CREA_GROUP_MA', 'DIFFE   ', iocc, iarg, 0,&
-                kbid, n5)
+    call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc=iocc, nbval=0, nbret=n3)
+    call getvtx('CREA_GROUP_MA', 'UNION', iocc=iocc, nbval=0, nbret=n4)
+    call getvtx('CREA_GROUP_MA', 'DIFFE   ', iocc=iocc, nbval=0, nbret=n5)
     call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc,&
                 iarg, 0, kbid, n6)
-    call getvtx('CREA_GROUP_MA', 'OPTION', iocc, iarg, 0,&
-                option, n7)
-    call getvtx('CREA_GROUP_MA', 'TOUT', iocc, iarg, 0,&
-                tout, n8)
+    call getvtx('CREA_GROUP_MA', 'OPTION', iocc=iocc, nbval=0, nbret=n7)
+    call getvtx('CREA_GROUP_MA', 'TOUT', iocc=iocc, nbval=0, nbret=n8)
     n2 = -n2
     n3 = -n3
     n4 = -n4
@@ -192,19 +185,16 @@ subroutine sscgma(ma, nbgmp, nbgmin)
     if (n6 .gt. 0) then
         call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc,&
                     iarg, 1, nogma2, nbid)
-        call getvtx('CREA_GROUP_MA', 'POSITION', iocc, iarg, 0,&
-                    kpos, n6b)
+        call getvtx('CREA_GROUP_MA', 'POSITION', iocc=iocc, nbval=0, nbret=n6b)
         call jenonu(jexnom(ma//'.GROUPEMA', nogma2), igm2)
         call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
         ind1 = 0
         ind2 = 0
         if (n6b .eq. 0) then
-            call getvis('CREA_GROUP_MA', 'NUME_INIT', iocc, iarg, 1,&
-                        ind1, n6a)
+            call getvis('CREA_GROUP_MA', 'NUME_INIT', iocc=iocc, scal=ind1, nbret=n6a)
             if (n6a .eq. 0) ind1 = 1
-            call getvis('CREA_GROUP_MA', 'NUME_FIN', iocc, iarg, 1,&
-                        ind2, n6a)
+            call getvis('CREA_GROUP_MA', 'NUME_FIN', iocc=iocc, scal=ind2, nbret=n6a)
             if (n6a .eq. 0) ind2 = ili2
             if (ind2 .lt. ind1) call u2mess('F', 'SOUSTRUC_33')
             if (ili2 .lt. ind2) call u2mess('F', 'SOUSTRUC_34')
@@ -221,8 +211,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 40          continue
             goto 219
         endif
-        call getvtx('CREA_GROUP_MA', 'POSITION', iocc, iarg, 1,&
-                    kpos, n6b)
+        call getvtx('CREA_GROUP_MA', 'POSITION', iocc=iocc, scal=kpos, nbret=n6b)
         if (kpos .eq. 'INIT') then
             zi(jlisma) = zi(iagm2)
         else if (kpos.eq.'FIN') then
@@ -239,8 +228,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- MOT CLEF INTER:
 !       -------------------
     if (n3 .gt. 0) then
-        call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc, iarg, n3,&
-                    zk24(ialik8), nbid)
+        call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc=iocc, nbval=n3, vect=zk24(ialik8),&
+                    nbret=nbid)
         do 50,igm = 1,n3
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
         if (igm2 .eq. 0) call u2mesk('F', 'SOUSTRUC_35', 1, zk24(ialik8-1+igm))
@@ -291,8 +280,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- MOT CLEF UNION:
 !       -------------------
     if (n4 .gt. 0) then
-        call getvtx('CREA_GROUP_MA', 'UNION', iocc, iarg, n4,&
-                    zk24( ialik8), nbid)
+        call getvtx('CREA_GROUP_MA', 'UNION', iocc=iocc, nbval=n4, vect=zk24( ialik8),&
+                    nbret=nbid)
         do 100,igm = 1,n4
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
         if (igm2 .eq. 0) call u2mesk('F', 'SOUSTRUC_35', 1, zk24(ialik8-1+igm))
@@ -353,8 +342,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- MOT CLEF DIFFE:
 !       -------------------
     if (n5 .gt. 0) then
-        call getvtx('CREA_GROUP_MA', 'DIFFE', iocc, iarg, n5,&
-                    zk24( ialik8), nbid)
+        call getvtx('CREA_GROUP_MA', 'DIFFE', iocc=iocc, nbval=n5, vect=zk24( ialik8),&
+                    nbret=nbid)
         do 150,igm = 1,n5
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
         if (igm2 .eq. 0) call u2mesk('F', 'SOUSTRUC_35', 1, zk24(ialik8-1+igm))
@@ -406,8 +395,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -------------------
     if (n7 .gt. 0) then
 !
-        call getvtx('CREA_GROUP_MA', 'OPTION', iocc, iarg, 1,&
-                    option, nb)
+        call getvtx('CREA_GROUP_MA', 'OPTION', iocc=iocc, scal=option, nbret=nb)
 !
 !            -- TRAITEMENT DE L'OPTION FACE_NORMALE :
 !               -----------------------------------
@@ -453,8 +441,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 219  continue
 !
     if (nbma .gt. 0) then
-        call getvtx('CREA_GROUP_MA', 'TYPE_MAILLE', iocc, iarg, 1,&
-                    tyma, ntyp)
+        call getvtx('CREA_GROUP_MA', 'TYPE_MAILLE', iocc=iocc, scal=tyma, nbret=ntyp)
         if (tyma(1:4) .ne. 'TOUT') then
             call cgmftm(tyma, ma, lisma, nbma, ierr)
             if (ierr .ne. 0) then
@@ -473,7 +460,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
         call jeveuo(lisma, 'L', idlima)
 !
         call jecroc(jexnom(ma//'.GROUPEMA', nogma))
-        call jeecra(jexnom(ma//'.GROUPEMA', nogma), 'LONMAX', max(1,nbma))
+        call jeecra(jexnom(ma//'.GROUPEMA', nogma), 'LONMAX', max(1, nbma))
         call jeecra(jexnom(ma//'.GROUPEMA', nogma), 'LONUTI', nbma)
         call jeveuo(jexnom(ma//'.GROUPEMA', nogma), 'E', jgma)
 !

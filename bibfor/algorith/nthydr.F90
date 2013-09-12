@@ -1,7 +1,7 @@
 subroutine nthydr(hydrat)
-    implicit   none
+    implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
     logical :: hydrat
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -32,8 +32,7 @@ subroutine nthydr(hydrat)
 !
     do 10 i = 1, nbocc
 !
-        call getvtx('COMP_THER_NL', 'RELATION', i, iarg, 1,&
-                    comp, n1)
+        call getvtx('COMP_THER_NL', 'RELATION', iocc=i, scal=comp, nbret=n1)
 !
         if (comp(1:9) .eq. 'THER_HYDR') hydrat = .true.
 !

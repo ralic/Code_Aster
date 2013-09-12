@@ -18,10 +18,10 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmcrpa.h"
@@ -124,8 +124,7 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
 !
     n1 = 0
     if (nbinst .eq. 0) then
-        call getvis(motfac, motpas, iocc, iarg, 1,&
-                    freq, n1)
+        call getvis(motfac, motpas, iocc=iocc, scal=freq, nbret=n1)
         if (n1 .ne. 0) then
             ASSERT(freq.ge.0)
         endif

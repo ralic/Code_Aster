@@ -25,11 +25,11 @@ subroutine cetucr(motfac, model0)
 ! IN  : MOTFAC  : MOT-CLE FACTEUR
 ! IN  : MODEL0  : NOM DE LA SD MODELE
 !     ------------------------------------------------------------------
-    implicit   none
+    implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
 ! -------------------------------
-#include "asterc/getvr8.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/ltcrsd.h"
@@ -98,8 +98,7 @@ subroutine cetucr(motfac, model0)
 !
     do 10 , iaux = 1 , nbmcle
 !
-    call getvr8(motfac, motcle(iaux), 1, iarg, 1,&
-                vr, n1)
+    call getvr8(motfac, motcle(iaux), iocc=1, scal=vr, nbret=n1)
     if (n1 .gt. 0) then
         vk = nomgrd(iaux)
         call tbajli(table, nbpar, nompar, ibid, vr,&

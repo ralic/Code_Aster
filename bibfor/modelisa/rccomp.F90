@@ -1,13 +1,13 @@
 subroutine rccomp(chmat, nomail, nomode)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -81,8 +81,7 @@ subroutine rccomp(chmat, nomail, nomode)
     mesmai = '&&RCCOMP.MES_MAILLES'
 !
     do 10 i = 1, nocc
-        call getvid('AFFE_COMPOR', 'COMPOR', i, iarg, 1,&
-                    sdcomp, nm)
+        call getvid('AFFE_COMPOR', 'COMPOR', iocc=i, scal=sdcomp, nbret=nm)
         call jeveuo(sdcomp//'.CPRI', 'L', icpri)
         ASSERT(zi(icpri).eq.3)
 ! ---ON MET LE NOM DE LA PREMIERE RELATION NON VIDE DANS RELCOM POUR QUE
@@ -109,8 +108,7 @@ subroutine rccomp(chmat, nomail, nomode)
         write(zk16(jvalv-1+6),'(I16)') numlc
         zk16(jvalv-1+7) = sdcomp//'.CPRK'
 !
-        call getvtx('AFFE_COMPOR', 'TOUT', i, iarg, 1,&
-                    k8b, nt)
+        call getvtx('AFFE_COMPOR', 'TOUT', iocc=i, scal=k8b, nbret=nt)
         if (nt .ne. 0) then
             call nocart(compor, 1, k8b, k8b, 0,&
                         k8b, ibid, ' ', ncmpma)

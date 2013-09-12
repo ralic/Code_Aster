@@ -1,13 +1,13 @@
 subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
                   nbexcl, type)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dyarc1.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -60,14 +60,11 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
     if (nbocc .ne. 0) then
 !
 !
-        call getvid('ARCHIVAGE', 'LIST_INST', 1, iarg, 1,&
-                    numarc, n1)
+        call getvid('ARCHIVAGE', 'LIST_INST', iocc=1, scal=numarc, nbret=n1)
         if (n1 .ne. 0) then
             call jeveuo(lisins, 'L', jinsc)
-            call getvr8('ARCHIVAGE', 'PRECISION', 1, iarg, 1,&
-                        epsi, n1)
-            call getvtx('ARCHIVAGE', 'CRITERE', 1, iarg, 1,&
-                        rela, n1)
+            call getvr8('ARCHIVAGE', 'PRECISION', iocc=1, scal=epsi, nbret=n1)
+            call getvtx('ARCHIVAGE', 'CRITERE', iocc=1, scal=rela, nbret=n1)
             call jeveuo(numarc//'.VALE', 'L', jnum)
             call jelira(numarc//'.VALE', 'LONUTI', lnum)
             call dyarc1(zr(jinsc), nbpas, zr(jnum), lnum, zi(jarch),&
@@ -76,18 +73,15 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
             goto 100
         endif
 !
-        call getvr8('ARCHIVAGE', 'INST', 1, iarg, 0,&
-                    epsi, n1)
+        call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call jeveuo(lisins, 'L', jinsc)
             lnum = -n1
-            call getvr8('ARCHIVAGE', 'PRECISION', 1, iarg, 1,&
-                        epsi, n1)
-            call getvtx('ARCHIVAGE', 'CRITERE', 1, iarg, 1,&
-                        rela, n1)
+            call getvr8('ARCHIVAGE', 'PRECISION', iocc=1, scal=epsi, nbret=n1)
+            call getvtx('ARCHIVAGE', 'CRITERE', iocc=1, scal=rela, nbret=n1)
             call wkvect('&&DYARCH.VALE_INST', 'V V R', lnum, jnum)
-            call getvr8('ARCHIVAGE', 'INST', 1, iarg, lnum,&
-                        zr(jnum), n1)
+            call getvr8('ARCHIVAGE', 'INST', iocc=1, nbval=lnum, vect=zr(jnum),&
+                        nbret=n1)
             call dyarc1(zr(jinsc), nbpas, zr(jnum), lnum, zi(jarch),&
                         epsi, rela)
             call jedetr('&&DYARCH.VALE_INST')
@@ -95,8 +89,7 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
             goto 100
         endif
 !
-        call getvis('ARCHIVAGE', 'PAS_ARCH', 1, iarg, 1,&
-                    ipach, n1)
+        call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=ipach, nbret=n1)
         if (n1 .eq. 0) ipach = 1
 !
         do 10 k = ipach, nbpas, ipach
@@ -109,12 +102,11 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
         if (ich .ne. 0) then
 !
 !        --- LES SORTIES ---
-            call getvtx('ARCHIVAGE', 'CHAM_EXCLU', 1, iarg, 0,&
-                        k8b, n1)
+            call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
                 nbexcl = -n1
-                call getvtx('ARCHIVAGE', 'CHAM_EXCLU', 1, iarg, nbexcl,&
-                            type, n1)
+                call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=nbexcl, vect=type,&
+                            nbret=n1)
             endif
         endif
 !

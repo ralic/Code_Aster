@@ -2,10 +2,10 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     implicit none
 #include "jeveux.h"
 #include "asterc/erfcam.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/limend.h"
 #include "asterfort/rccome.h"
@@ -60,10 +60,8 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     ihosin = 0
     pi = r8pi()
     rundf = r8vide()
-    call getvtx(' ', 'DOMMAGE', 1, iarg, 1,&
-                method, nbval)
-    call getvid(' ', 'MATER', 1, iarg, 1,&
-                nommat, nbval)
+    call getvtx(' ', 'DOMMAGE', scal=method, nbret=nbval)
+    call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
     pheno = 'FATIGUE'
     call rccome(nommat, pheno, phenom, icodre(1))
     if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
@@ -85,8 +83,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 !
 !----  DEFINITION DES BORNES INTEGRATION
 !
-    call getvtx(' ', 'COMPTAGE', 1, iarg, 1,&
-                mecomp, nbval)
+    call getvtx(' ', 'COMPTAGE', scal=mecomp, nbret=nbval)
     if (mecomp .eq. 'PIC     ' .and. xm4 .eq. rundf) then
         call u2mess('F', 'FATIGUE1_35')
     endif
@@ -140,13 +137,10 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 !
 !---------CORRECTION ELASTO-PLASTIQUE
 !
-    call getvtx(' ', 'CORR_KE', 1, iarg, 0,&
-                kcorre, nbval)
+    call getvtx(' ', 'CORR_KE', nbval=0, nbret=nbval)
     if (nbval .ne. 0) then
-        call getvtx(' ', 'CORR_KE', 1, iarg, 1,&
-                    kcorre, nbval)
-        call getvid(' ', 'MATER', 1, iarg, 1,&
-                    nommat, nbval)
+        call getvtx(' ', 'CORR_KE', scal=kcorre, nbret=nbval)
+        call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         if (kcorre .eq. 'RCCM') then
             nomres(1) = 'N_KE'
             nomres(2) = 'M_KE'

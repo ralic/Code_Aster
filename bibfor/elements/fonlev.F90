@@ -1,9 +1,8 @@
 subroutine fonlev(resu, noma, nbnoff)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -17,6 +16,7 @@ subroutine fonlev(resu, noma, nbnoff)
 #include "asterfort/reliem.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: resu, noma
     integer :: nbnoff
 ! ======================================================================
@@ -106,10 +106,9 @@ subroutine fonlev(resu, noma, nbnoff)
 !     ET CALCUL DU NOMBRE TOTAL DE MAILLES
 !     ------------------------------------------------------------------
 !
-        call getvtx(motfac, 'GROUP_MA', 1, iarg, nbmal,&
-                    zk24(jjj2), ngr)
-        call getvtx(motfac, 'MAILLE', 1, iarg, 0,&
-                    k8b, nent)
+        call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=nbmal, vect=zk24(jjj2),&
+                    nbret=ngr)
+        call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=nent)
 !
 !
 ! ---   ALLOCATION D'UN PREMIER OBJET DE TRAVAIL

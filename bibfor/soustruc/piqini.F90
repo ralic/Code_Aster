@@ -1,16 +1,16 @@
 subroutine piqini(mailla)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8pi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/ordgmn.h"
 #include "asterfort/piquag.h"
+!
     character(len=8) :: mailla
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -97,32 +97,19 @@ subroutine piqini(mailla)
     call getvem(mailla, 'GROUP_NO', 'EQUE_PIQUA', 'GROUP_NO', 1,&
                 iarg, 1, nogrno, n1)
 !
-    call getvr8('EQUE_PIQUA', 'E_BASE', 1, iarg, 1,&
-                ept1, n1)
-    call getvr8('EQUE_PIQUA', 'DEXT_BASE', 1, iarg, 1,&
-                det1, n1)
-    call getvr8('EQUE_PIQUA', 'L_BASE', 1, iarg, 1,&
-                d1, n1)
-    call getvr8('EQUE_PIQUA', 'L_CHANF', 1, iarg, 1,&
-                d2, n1)
-    call getvtx('EQUE_PIQUA', 'TYPE', 1, iarg, 1,&
-                typsou, n1)
-    call getvr8('EQUE_PIQUA', 'H_SOUD', 1, iarg, 1,&
-                h, n1)
-    call getvr8('EQUE_PIQUA', 'ANGL_SOUD', 1, iarg, 1,&
-                alpha, n1)
-    call getvr8('EQUE_PIQUA', 'JEU_SOUD', 1, iarg, 1,&
-                jeu, n1)
-    call getvr8('EQUE_PIQUA', 'E_CORP', 1, iarg, 1,&
-                epc, n1)
-    call getvr8('EQUE_PIQUA', 'DEXT_CORP', 1, iarg, 1,&
-                dec, n1)
-    call getvr8('EQUE_PIQUA', 'AZIMUT   ', 1, iarg, 1,&
-                theta, n1)
-    call getvtx('EQUE_PIQUA', 'RAFF_MAIL', 1, iarg, 1,&
-                typmai, n1)
-    call getvr8('EQUE_PIQUA', 'X_MAX', 1, iarg, 1,&
-                xmax, n1)
+    call getvr8('EQUE_PIQUA', 'E_BASE', iocc=1, scal=ept1, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'DEXT_BASE', iocc=1, scal=det1, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'L_BASE', iocc=1, scal=d1, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'L_CHANF', iocc=1, scal=d2, nbret=n1)
+    call getvtx('EQUE_PIQUA', 'TYPE', iocc=1, scal=typsou, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'H_SOUD', iocc=1, scal=h, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'ANGL_SOUD', iocc=1, scal=alpha, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'JEU_SOUD', iocc=1, scal=jeu, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'E_CORP', iocc=1, scal=epc, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'DEXT_CORP', iocc=1, scal=dec, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'AZIMUT   ', iocc=1, scal=theta, nbret=n1)
+    call getvtx('EQUE_PIQUA', 'RAFF_MAIL', iocc=1, scal=typmai, nbret=n1)
+    call getvr8('EQUE_PIQUA', 'X_MAX', iocc=1, scal=xmax, nbret=n1)
 !
 !
     rmc = ( dec - epc ) / 2.0d0

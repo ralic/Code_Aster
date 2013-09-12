@@ -28,10 +28,9 @@ subroutine ritz99(nomres)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -47,6 +46,7 @@ subroutine ritz99(nomres)
 #include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
+!
     complex(kind=8) :: cbid
     integer :: vali(3)
     character(len=8) :: nomres, resul1, resul2, k8b, intf, listam
@@ -78,33 +78,33 @@ subroutine ritz99(nomres)
     tempor = '&&RITZ99.GLOBAL'
     trang1 = '&&RITZ99.NUME.RANG1'
     trang2 = '&&RITZ99.NUME.RANG2'
-    tempi  = '&&RITZ99.LISTE'
+    tempi = '&&RITZ99.LISTE'
     tempi2 = '&&RITZ99.LISTE2'
     concep(1) = ' '
 !
 ! --- RECUPERATION NUMEROTATION DE REFERENCE
 !
     call jemarq()
-
-    call dismoi('C', 'NUME_DDL', nomres, 'RESU_DYNA', ibid, numref, ier)
+!
+    call dismoi('C', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
+                numref, ier)
     if (ier .ne. 0) then
-        call getvid('    ', 'NUME_REF', 1, iarg, 1, numref, ibid)
+        call getvid('    ', 'NUME_REF', iocc=1, scal=numref, nbret=ibid)
     endif
 !
 ! --- DETERMINATION DU NOMBRE DE CONCEPT(S) MODE_* (RESUL1) DEJA
 !     ISSUS DE DEFI_BASE_MODALE
 !
-    call getvid('RITZ', 'BASE_MODALE', 1, iarg, 1, resul1, ibmo)
+    call getvid('RITZ', 'BASE_MODALE', iocc=1, scal=resul1, nbret=ibmo)
 !
 ! --- DETERMINATION DU NOMBRE DE CONCEPT(S) MODE_* (RESUL2)
 !
-    call getvid('RITZ', 'MODE_INTF', 2, iarg, 1, resul2, ibi1)
+    call getvid('RITZ', 'MODE_INTF', iocc=2, scal=resul2, nbret=ibi1)
 !
 ! SI IBMO <> 0 ALORS LE CONCEP EST REENTRANT
 ! DEBUT DE LA BOUCLE DE TRAITEMENT DE "BASE_MODALE"
     if (ibmo .ne. 0) then
-        call getvis('RITZ', 'NMAX_MODE', 2, iarg, 1,&
-                    nbmod2, ibi4)
+        call getvis('RITZ', 'NMAX_MODE', iocc=2, scal=nbmod2, nbret=ibi4)
         call rsorac(resul2, 'LONUTI', ibid, bid, k8b,&
                     cbid, ebid, 'ABSOLU', nbold, 1,&
                     nbid)
@@ -136,14 +136,16 @@ subroutine ritz99(nomres)
                         cbid, ebid, 'ABSOLU', nbold, 1,&
                         nbid)
             if (nbtot .gt. nbold) call rsagsd(nomres, nbtot)
-
-            call getvid('    ', 'NUME_REF', 1, iarg, 1, numref, ibid)
-            if (ibid .eq. 0)  call u2mess('E', 'ALGORITH17_9')
+!
+            call getvid('    ', 'NUME_REF', iocc=1, scal=numref, nbret=ibid)
+            if (ibid .eq. 0) call u2mess('E', 'ALGORITH17_9')
             numref(15:19)='.NUME'
-
+!
             intf = ' '
-            call getvid('  ', 'INTERF_DYNA', 1, iarg, 0, k8b, ioci)
-            if (ioci .lt. 0) call getvid('  ', 'INTERF_DYNA', 1, iarg, 1, intf, ioci)
+            call getvid('  ', 'INTERF_DYNA', iocc=1, nbval=0, nbret=ioci)
+            if (ioci .lt. 0) then
+                call getvid('  ', 'INTERF_DYNA', iocc=1, scal=intf, nbret=ioci)
+            endif
         endif
 !
         if (nbmod1 .gt. 0) then
@@ -173,25 +175,29 @@ subroutine ritz99(nomres)
 !
 ! --- DETERMINATION DU NOMBRE DE CONCEPT(S) MODE_MECA
 !
-    call getvid('RITZ', 'MODE_MECA', 1, iarg, 0, k8b, nbgl)
+    call getvid('RITZ', 'MODE_MECA', iocc=1, nbval=0, nbret=nbgl)
     nbgl = -nbgl
     if (nbgl .eq. 0) then
         call u2mess('F', 'ALGORITH14_51')
     endif
-    if (nbgl .eq. 1) call getvid('RITZ', 'MODE_MECA', 1, iarg, 1, resul1, ibid)
+    if (nbgl .eq. 1) then
+        call getvid('RITZ', 'MODE_MECA', iocc=1, scal=resul1, nbret=ibid)
+    endif
     if (nbgl .gt. 1) then
         call wkvect(tempor, 'V V K8', nbgl, idgl)
-        call wkvect(tempi , 'V V I' , nbgl, idor)
+        call wkvect(tempi, 'V V I', nbgl, idor)
 !  ---ON RECUPERE ICI LE NB DE VAL DE LA LISTE NMAX_MODE
-        call getvis('RITZ', 'NMAX_MODE', 1, iarg, 0, ibid, nbli)
+        call getvis('RITZ', 'NMAX_MODE', iocc=1, nbval=0, nbret=nbli)
         nbli=-nbli
         if ((nbli.ne.0) .and. (nbli.ne.nbgl)) then
             vali(1)=nbgl
             vali(2)=nbli
             call u2mesi('F', 'ALGORITH14_31', 2, vali)
         endif
-        call getvid('RITZ', 'MODE_MECA', 1, iarg, nbgl, zk8(idgl), nbg)
-        call getvis('RITZ', 'NMAX_MODE', 1, iarg, nbli, zi(idor), nbi)
+        call getvid('RITZ', 'MODE_MECA', iocc=1, nbval=nbgl, vect=zk8(idgl),&
+                    nbret=nbg)
+        call getvis('RITZ', 'NMAX_MODE', iocc=1, nbval=nbli, vect=zi(idor),&
+                    nbret=nbi)
     endif
 !
 !
@@ -203,7 +209,7 @@ subroutine ritz99(nomres)
     endif
 !
     if (nbgl .eq. 1) then
-        call getvis('RITZ', 'NMAX_MODE', 1, iarg, 1, nbmod1, ibi5)
+        call getvis('RITZ', 'NMAX_MODE', iocc=1, scal=nbmod1, nbret=ibi5)
         nbmoda = nbmod1
         call rsorac(resul1, 'LONUTI', ibid, bid, k8b,&
                     cbid, ebid, 'ABSOLU', nbold, 1,&
@@ -215,8 +221,7 @@ subroutine ritz99(nomres)
         endif
     else if (nbgl.gt.1) then
         nbmoda=0
-        call getvis('RITZ', 'NMAX_MODE', 1, iarg, 1,&
-                    nbmod1, ibi5)
+        call getvis('RITZ', 'NMAX_MODE', iocc=1, scal=nbmod1, nbret=ibi5)
         call wkvect(tempi2, 'V V I', nbgl, lnbm)
         do 30 i = 1, nbgl
             call rsorac(zk8(idgl+i-1), 'LONUTI', ibid, bid, k8b,&
@@ -240,8 +245,7 @@ subroutine ritz99(nomres)
     endif
 !
     if (.not.seul) then
-        call getvis('RITZ', 'NMAX_MODE', 2, iarg, 1,&
-                    nbmod2, ibi6)
+        call getvis('RITZ', 'NMAX_MODE', iocc=2, scal=nbmod2, nbret=ibi6)
         call rsorac(resul2, 'LONUTI', ibid, bid, k8b,&
                     cbid, ebid, 'ABSOLU', nbold, 1,&
                     nbid)
@@ -267,11 +271,9 @@ subroutine ritz99(nomres)
 !
 ! --- ON AJOUTE LA LIST_AMOR--------------------------------------
 !
-    call getvid(' ', 'LIST_AMOR', 0, iarg, 0,&
-                k8b, nam)
+    call getvid(' ', 'LIST_AMOR', nbval=0, nbret=nam)
     if (nam .ne. 0) then
-        call getvid(' ', 'LIST_AMOR', 0, iarg, 1,&
-                    listam, n)
+        call getvid(' ', 'LIST_AMOR', scal=listam, nbret=n)
         call jelira(listam//'           .VALE', 'LONMAX', nbamor)
         if (nbamor .gt. nbmoda) then
             vali (1) = nbmoda
@@ -339,12 +341,17 @@ subroutine ritz99(nomres)
     inord=1
     if (nbmoda .gt. 0) then
         if (nbgl .eq. 1) then
-            call moco99(nomres, resul1, nbmoda, zi(lrang1), inord, .true.)
+            call moco99(nomres, resul1, nbmoda, zi(lrang1), inord,&
+                        .true.)
 !
-            call dismoi('F', 'NUME_DDL', resul1, 'RESU_DYNA', ibid, nume1, ier)
-            call dismoi('C', 'REF_RIGI_PREM', resul1, 'RESU_DYNA', ibid, rigi1, ier)
-            call dismoi('C', 'REF_MASS_PREM', resul1, 'RESU_DYNA', ibid, mass1, ier)
-            call dismoi('C', 'REF_AMOR_PREM', resul1, 'RESU_DYNA', ibid, amor1, ier)
+            call dismoi('F', 'NUME_DDL', resul1, 'RESU_DYNA', ibid,&
+                        nume1, ier)
+            call dismoi('C', 'REF_RIGI_PREM', resul1, 'RESU_DYNA', ibid,&
+                        rigi1, ier)
+            call dismoi('C', 'REF_MASS_PREM', resul1, 'RESU_DYNA', ibid,&
+                        mass1, ier)
+            call dismoi('C', 'REF_AMOR_PREM', resul1, 'RESU_DYNA', ibid,&
+                        amor1, ier)
         else if (nbgl.gt.1) then
             do 20 i = 1, nbgl
                 call moco99(nomres, zk8(idgl+i-1), zi(lnbm+i-1), zi( lrang1), inord,&
@@ -359,11 +366,12 @@ subroutine ritz99(nomres)
 !
     if (.not.seul) then
         if (nbmodb .gt. 0) then
-            call moco99(nomres, resul2, nbmodb, zi(lrang2), inord, .false.)
+            call moco99(nomres, resul2, nbmodb, zi(lrang2), inord,&
+                        .false.)
             call jedetr(trang2)
         endif
     endif
-
+!
 40  continue
 !
     call jedetr(tempor)

@@ -1,15 +1,14 @@
 subroutine rc36th(noma, nbma, listma, chth, iocs,&
                   nbths, liths)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cescre.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -26,6 +25,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbma, listma(*), iocs, nbths, liths(*)
     character(len=8) :: noma
     character(len=24) :: chth(*)
@@ -124,8 +124,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 !
     do 12, iocc = 1, nbreth, 1
 !
-    call getvis(motclf, 'NUME_RESU_THER', iocc, iarg, 1,&
-                ith, n1)
+    call getvis(motclf, 'NUME_RESU_THER', iocc=iocc, scal=ith, nbret=n1)
 !
     iths = liths(it1)
     if (ith .eq. iths) goto 14
@@ -135,8 +134,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     call u2mesi('F', 'POSTRCCM_23', 2, vali)
 14  continue
 !
-    call getvid(motclf, 'TABL_RESU_THER', iocc, iarg, 1,&
-                tbther, n1)
+    call getvid(motclf, 'TABL_RESU_THER', iocc=iocc, scal=tbther, nbret=n1)
 !        ON VERIFIE L'ORDRE DES NOEUDS DANS LA TABLE
     call rcveri(tbther)
 !
@@ -160,8 +158,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
                 k8b)
     call jeveuo(abscur, 'L', jabsc)
 !
-    call getvid(motclf, 'TABL_MOYE_THER', iocc, iarg, 1,&
-                tbmoye, n1)
+    call getvid(motclf, 'TABL_MOYE_THER', iocc=iocc, scal=tbmoye, nbret=n1)
 !
     call tbexip(tbmoye, 'INST', exist, k8b)
     if (.not. exist) then
@@ -259,8 +256,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 20  continue
 22  continue
 !
-    call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                k8b, nbtou)
+    call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !
     if (nbtou .ne. 0) then
         nbmail = nbmat
@@ -274,10 +270,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
         call jeveuo(mesmai, 'L', jmail)
     endif
 !
-    call getvtx(motclf, 'GROUP_NO', iocc, iarg, 0,&
-                k8b, n1)
-    call getvtx(motclf, 'NOEUD', iocc, iarg, 0,&
-                k8b, n2)
+    call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
+    call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
     if (n1+n2 .ne. 0) then
         call reliem(' ', noma, 'NU_NOEUD', motclf, iocc,&
                     2, motcln, typmcn, mesnoe, nbnoeu)

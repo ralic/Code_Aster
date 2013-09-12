@@ -1,6 +1,36 @@
 subroutine pmfd00()
-    implicit  none
+    implicit none
 #include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/indik8.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pmfd01.h"
+#include "asterfort/pmfd02.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/reliem.h"
+#include "asterfort/rgcmpg.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,36 +63,6 @@ subroutine pmfd00()
 !
 ! --- ------------------------------------------------------------------
 !
-#include "asterc/getfac.h"
-#include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
-#include "asterc/indik8.h"
-#include "asterfort/alchml.h"
-#include "asterfort/assert.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/imprsd.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/pmfd01.h"
-#include "asterfort/pmfd02.h"
-#include "asterfort/pmfitg.h"
-#include "asterfort/reliem.h"
-#include "asterfort/rgcmpg.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/wkvect.h"
 !
     integer :: ncarfi
     parameter  (ncarfi=3)
@@ -104,8 +104,7 @@ subroutine pmfd00()
     call jemarq()
     call infniv(ifm, niv)
 !
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomo, nbvm)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=nbvm)
 !
     call getres(carele, concep, cmd)
 !
@@ -114,8 +113,7 @@ subroutine pmfd00()
 ! --- -------------------------------------------------------
     call getfac('MULTIFIBRE', nbocc0)
     if (nbocc0 .ne. 0) then
-        call getvid(' ', 'GEOM_FIBRE', 1, iarg, 1,&
-                    sdgf, ibid)
+        call getvid(' ', 'GEOM_FIBRE', scal=sdgf, nbret=ibid)
         vnbfig = sdgf//'.NB_FIBRE_GROUPE'
         vpoint = sdgf//'.POINTEUR'
         vcarfi = sdgf//'.CARFI'
@@ -146,8 +144,7 @@ subroutine pmfd00()
     call getfac('MEMBRANE', nbocc4)
     if ((nbocc0+nbocc1+nbocc2+nbocc3+nbocc4) .eq. 0) goto 9999
 !     2EME CHANCE :
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                modele, ibid)
+    call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
     ligrmo = modele//'.MODELE'
     celbid='&&PMFD00.CELBID'
     call alchml(ligrmo, 'TOU_INI_ELEM', 'PNBSP_I', 'V', celbid,&
@@ -188,15 +185,14 @@ subroutine pmfd00()
                     2, ltymcl, ltymcl, '&&PMFD00.MAILLSEP', nmailp)
         call jeveuo('&&PMFD00.MAILLSEP', 'L', jmp)
 ! ---    NOMBRE DE GROUPES A AFFECTER
-        call getvtx('MULTIFIBRE', 'GROUP_FIBRE', ioc, iarg, 0,&
-                    k8b, ngf)
+        call getvtx('MULTIFIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=0, nbret=ngf)
         ngf=-ngf
         if (ngf .gt. ngmxel) then
             call u2mesk('F', 'MODELISA8_7', 1, kngmx)
         endif
 ! ---    NOMS DES GROUPES A AFFECTER
-        call getvtx('MULTIFIBRE', 'GROUP_FIBRE', ioc, iarg, ngf,&
-                    zk24( jngf), ibid)
+        call getvtx('MULTIFIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=ngf, vect=zk24( jngf),&
+                    nbret=ibid)
 ! ---    NOMBRE DE FIBRES DE L'ENSEMBLE DES GROUPES
 !        ON NOTE LES NUMEROS DE GROUPES
         nbfib=0
@@ -309,8 +305,7 @@ subroutine pmfd00()
                 call u2mesk('F', 'MODELISA8_2', 2, valmk)
             endif
 !           COMPARAISON DE LA SOMME DES AIRES DES FIBRES
-            call getvr8('MULTIFIBRE', 'PREC_AIRE', ioc, iarg, 1,&
-                        precai, iret)
+            call getvr8('MULTIFIBRE', 'PREC_AIRE', iocc=ioc, scal=precai, nbret=iret)
             erre=abs(airpou-casect(1))/airpou
             if (erre .gt. precai) then
                 valmi = ioc
@@ -323,8 +318,7 @@ subroutine pmfd00()
                             valmi, 4, valmr)
             endif
 !           COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
-            call getvr8('MULTIFIBRE', 'PREC_INERTIE', ioc, iarg, 1,&
-                        precai, iret)
+            call getvr8('MULTIFIBRE', 'PREC_INERTIE', iocc=ioc, scal=precai, nbret=iret)
             erre=abs(moinoy-casect(5))/moinoy
             if (erre .gt. precai) then
                 valmi = ioc

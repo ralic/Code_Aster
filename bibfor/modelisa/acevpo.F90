@@ -2,9 +2,9 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mesg.h"
@@ -54,21 +54,15 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
     nlg = 0
     do 100 ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
-        call getvtx('POUTRE', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('POUTRE', 'MAILLE', ioc, iarg, 0,&
-                    k8b, nm)
-        call getvtx('POUTRE', 'SECTION', ioc, iarg, 1,&
-                    sec, ns)
-        call getvtx('POUTRE', 'VARI_SECT', ioc, iarg, 1,&
-                    vsec, nvs)
-        call getvtx('POUTRE', 'CARA', ioc, iarg, 0,&
-                    k8b, nc)
+        call getvtx('POUTRE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('POUTRE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
+        call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=ns)
+        call getvtx('POUTRE', 'VARI_SECT', iocc=ioc, scal=vsec, nbret=nvs)
+        call getvtx('POUTRE', 'CARA', iocc=ioc, nbval=0, nbret=nc)
         ncar = -nc
-        call getvtx('POUTRE', 'CARA', ioc, iarg, ncar,&
-                    cara, nc)
-        call getvr8('POUTRE', 'VALE', ioc, iarg, 0,&
-                    r8b, nv)
+        call getvtx('POUTRE', 'CARA', iocc=ioc, nbval=ncar, vect=cara,&
+                    nbret=nc)
+        call getvr8('POUTRE', 'VALE', iocc=ioc, nbval=0, nbret=nv)
         nval = -nv
 !
         if (nval .ne. ncar) then

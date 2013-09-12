@@ -21,9 +21,6 @@ subroutine op0026()
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/catabl.h"
 #include "asterfort/chpver.h"
@@ -32,6 +29,9 @@ subroutine op0026()
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -72,8 +72,8 @@ subroutine op0026()
 !
     integer :: nbomax
     parameter       (nbomax=7)
-    character(len=16)    newobj(nbomax)
-    character(len=24)    newsd(nbomax)
+    character(len=16) :: newobj(nbomax)
+    character(len=24) :: newsd(nbomax)
 !-----------------------------------------------------------------------
     integer :: n1, nbopt, iterat, numins, i, ibid
     integer :: niv, ifm
@@ -92,7 +92,7 @@ subroutine op0026()
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
     character(len=19) :: mediri, merigi, vediri, vefint, veforc
     logical :: lmatr, lvnod, lvfin, lcomp
-    logical :: l_merimo , l_medime, l_vefnme
+    logical :: l_merimo, l_medime, l_vefnme
     logical :: tabret(0:10)
     integer :: fonact(100)
     integer :: iarg
@@ -110,7 +110,7 @@ subroutine op0026()
 !
 ! - Initializations
 !
-    nuord  = 0
+    nuord = 0
     modele = ' '
     k19bla = ' '
     do i = 1, 100
@@ -126,8 +126,7 @@ subroutine op0026()
 !
 ! - Name of reused table
 !
-    call getvid(' ', 'TABLE', 0, iarg, 0,&
-                oldtab, n1)
+    call getvid(' ', 'TABLE', nbval=0, nbret=n1)
 !
 ! - Collecting variables
 !
@@ -140,7 +139,7 @@ subroutine op0026()
 !
 ! - Options
 !
-    call getvtx(' ', 'OPTION', 0, iarg, 4, lopt, nbopt)
+    call getvtx(' ', 'OPTION', nbval=4, vect=lopt, nbret=nbopt)
 !
 ! - Model, material and loadings
 !
@@ -151,10 +150,8 @@ subroutine op0026()
 !
 ! - Get displacements
 !
-    call getvid(' ', 'DEPL', 0, iarg, 1,&
-                depmoi, n1)
-    call getvid(' ', 'INCR_DEPL', 0, iarg, 1,&
-                depdel, n1)
+    call getvid(' ', 'DEPL', scal=depmoi, nbret=n1)
+    call getvid(' ', 'INCR_DEPL', scal=depdel, nbret=n1)
     call nmcha0('VALINC', 'DEPMOI', depmoi, valinc)
     call nmcha0('SOLALG', 'DEPDEL', depdel, solalg)
 !
@@ -165,15 +162,13 @@ subroutine op0026()
 !
 ! - Get stresses
 !
-    call getvid(' ', 'SIGM', 0, iarg, 1,&
-                sigmoi, n1)
+    call getvid(' ', 'SIGM', scal=sigmoi, nbret=n1)
     call chpver('F', sigmoi, 'ELGA', 'SIEF_R', iret)
     call nmcha0('VALINC', 'SIGMOI', sigmoi, valinc)
 !
 ! - Get internal variables
 !
-    call getvid(' ', 'VARI', 0, iarg, 1,&
-                varmoi, n1)
+    call getvid(' ', 'VARI', scal=varmoi, nbret=n1)
     call chpver('F', varmoi, 'ELGA', 'VARI_R', iret)
     call nmcha0('VALINC', 'VARMOI', varmoi, valinc)
 !
@@ -184,10 +179,8 @@ subroutine op0026()
 ! - Get current time
 !
     linst = ' '
-    call getvis('INCREMENT', 'NUME_ORDRE', 1, iarg, 1,&
-                numins, n1)
-    call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                linst, n1)
+    call getvis('INCREMENT', 'NUME_ORDRE', iocc=1, scal=numins, nbret=n1)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=linst, nbret=n1)
     instap = diinst(linst,numins-1)
     instam = diinst(linst,numins)
     partps(1) = instam
@@ -290,9 +283,9 @@ subroutine op0026()
         partps(2)=0.d0
         partps(3)=0.d0
         if (.not.l_merimo) call copisd('CHAMP_GD', 'V', sigmoi, sigplu)
-        call vefnme(modele, sigplu, carele, depplu, ' '   , &
-                    veforc, mate  , compor, 0     , .false.,&
-                    partps, k24bid, complu, ligrmo, option, &
+        call vefnme(modele, sigplu, carele, depplu, ' ',&
+                    veforc, mate, compor, 0, .false.,&
+                    partps, k24bid, complu, ligrmo, option,&
                     carcri, 'G')
     endif
 !
@@ -303,43 +296,43 @@ subroutine op0026()
         nbnobj = nbnobj + 1
         ASSERT(nbnobj.le.nbomax)
         newobj(nbnobj) = 'FORC_DIRI_ELEM'
-        newsd(nbnobj)  = vediri
+        newsd(nbnobj) = vediri
     endif
     if (l_merimo) then
         nbnobj = nbnobj + 1
         ASSERT(nbnobj.le.nbomax)
         newobj(nbnobj) = 'FORC_INTE_ELEM'
-        newsd(nbnobj)  = vefint
+        newsd(nbnobj) = vefint
         nbnobj = nbnobj + 1
         ASSERT(nbnobj.le.nbomax)
         newobj(nbnobj) = 'SIEF_ELGA'
-        newsd(nbnobj)  = sigplu
+        newsd(nbnobj) = sigplu
         nbnobj = nbnobj + 1
         ASSERT(nbnobj.le.nbomax)
         newobj(nbnobj) = 'VARI_ELGA'
-        newsd(nbnobj)  = varplu
+        newsd(nbnobj) = varplu
         nbnobj = nbnobj + 1
         ASSERT(nbnobj.le.nbomax)
         newobj(nbnobj) = 'CODE_RETOUR_INTE'
-        newsd(nbnobj)  = codere
+        newsd(nbnobj) = codere
         if (lmatr) then
             nbnobj = nbnobj + 1
             ASSERT(nbnobj.le.nbomax)
             newobj(nbnobj) = 'MATR_TANG_ELEM'
-            newsd(nbnobj)  = merigi
+            newsd(nbnobj) = merigi
         endif
     endif
     if (l_vefnme) then
         nbnobj = nbnobj + 1
         ASSERT(nbnobj.le.nbomax)
         newobj(nbnobj) = 'FORC_NODA_ELEM'
-        newsd(nbnobj)  = veforc
+        newsd(nbnobj) = veforc
     endif
 !
 ! - Table management
 !
-    call catabl(newtab, oldtab, instap, numins, nbnobj, &
-                newobj ,newsd )
+    call catabl(newtab, oldtab, instap, numins, nbnobj,&
+                newobj, newsd)
 !
     call jedema()
 !

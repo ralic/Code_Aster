@@ -34,14 +34,14 @@ subroutine refe80(nomres)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, basmod, intf, mailla
     character(len=10) :: typbas(3)
     character(len=24) :: blanc, idesc
@@ -63,12 +63,12 @@ subroutine refe80(nomres)
 !
 !------------RECUPERATION DU NOMBRE D'OCCURENCES DES MOT-CLE------------
 !
-    call getvid(blanc, 'BASE_MODALE', 1, iarg, 1,&
-                basmod, ioc1)
+    call getvid(blanc, 'BASE_MODALE', iocc=1, scal=basmod, nbret=ioc1)
 !
 !------------------CONTROLE SUR TYPE DE BASE MODALE---------------------
 !
-    call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid, idesc, iret)
+    call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid,&
+                idesc, iret)
 !
     if (idesc(1:9) .ne. 'CLASSIQUE') then
         valk (1) = basmod
@@ -80,7 +80,8 @@ subroutine refe80(nomres)
 !
 !--------------------RECUPERATION DES CONCEPTS AMONTS-------------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                intf, iret)
     call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
                 mailla, iret)
 !

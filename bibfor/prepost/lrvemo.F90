@@ -2,8 +2,8 @@ subroutine lrvemo(modele)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mesk.h"
@@ -49,8 +49,7 @@ subroutine lrvemo(modele)
 !     LA SD RESULTAT A PRODUIRE
 !     =========================
     if (nomcmd(1:9) .eq. 'LIRE_RESU') then
-        call getvtx(' ', 'TYPE_RESU', 0, iarg, 1,&
-                    typres, n1)
+        call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=n1)
         call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
                     pheno, n1)
         valk(1)=pheno
@@ -69,8 +68,7 @@ subroutine lrvemo(modele)
     else if (nomcmd(1:10).eq.'LIRE_CHAMP') then
         call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
                     pheno, n1)
-        call getvtx(' ', 'TYPE_CHAM', 0, iarg, 1,&
-                    tych, n1)
+        call getvtx(' ', 'TYPE_CHAM', scal=tych, nbret=n1)
     endif
 !
     call jedema()

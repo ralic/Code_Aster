@@ -20,17 +20,16 @@ subroutine op0015()
 !     OPERATEUR RESOUDRE
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -38,6 +37,7 @@ subroutine op0015()
 #include "asterfort/jeveuo.h"
 #include "asterfort/resoud.h"
 #include "asterfort/titre.h"
+!
     integer :: ibid, ifm, niv, nb, j1, mxiter, ier
     character(len=8) :: xsol, secmbr, matr, vcine, matf, metres, kvari
     character(len=16) :: concep, nomcmd
@@ -54,22 +54,18 @@ subroutine op0015()
 !
     call getres(xsol, concep, nomcmd)
 !
-    call getvid('  ', 'MATR', 0, iarg, 1,&
-                matr, nb)
+    call getvid('  ', 'MATR', scal=matr, nbret=nb)
     ASSERT(nb.eq.1)
 !
     matf=' '
-    call getvid(' ', 'MATR_PREC', 0, iarg, 1,&
-                matf, nb)
+    call getvid(' ', 'MATR_PREC', scal=matf, nbret=nb)
 !
-    call getvid('  ', 'CHAM_NO', 0, iarg, 1,&
-                secmbr, nb)
+    call getvid('  ', 'CHAM_NO', scal=secmbr, nbret=nb)
     ASSERT(nb.eq.1)
     call chpver('F', secmbr, 'NOEU', '*', ier)
 !
     vcine = ' '
-    call getvid('  ', 'CHAM_CINE', 0, iarg, 1,&
-                vcine, nb)
+    call getvid('  ', 'CHAM_CINE', scal=vcine, nbret=nb)
     if (nb .eq. 1) call chpver('F', vcine, 'NOEU', '*', ier)
 !
 !
@@ -89,26 +85,22 @@ subroutine op0015()
     endif
 !
 !     -- MODIFICATION DU SOLVEUR DU FAIT DE CERTAINS MOTS CLES :
-    call getvr8(' ', 'RESI_RELA', 0, iarg, 1,&
-                eps, nb)
+    call getvr8(' ', 'RESI_RELA', scal=eps, nbret=nb)
     if (nb .eq. 1) then
         call jeveuo(solve2//'.SLVR', 'E', j1)
         zr(j1-1+2)=eps
     endif
-    call getvtx(' ', 'POSTTRAITEMENTS', 1, iarg, 1,&
-                kvari, nb)
+    call getvtx(' ', 'POSTTRAITEMENTS', scal=kvari, nbret=nb)
     if (nb .eq. 1) then
         call jeveuo(solve2//'.SLVK', 'E', j1)
         zk24(j1-1+11)=kvari
     endif
-    call getvis(' ', 'NMAX_ITER', 0, iarg, 1,&
-                mxiter, nb)
+    call getvis(' ', 'NMAX_ITER', scal=mxiter, nbret=nb)
     if (nb .eq. 1) then
         call jeveuo(solve2//'.SLVI', 'E', j1)
         zi(j1-1+2)=mxiter
     endif
-    call getvtx(' ', 'ALGORITHME', 1, iarg, 1,&
-                kvari, nb)
+    call getvtx(' ', 'ALGORITHME', scal=kvari, nbret=nb)
     if ((nb.eq.1) .and. (metres.eq.'PETSC')) then
         call jeveuo(solve2//'.SLVK', 'E', j1)
         zk24(j1-1+6)=kvari

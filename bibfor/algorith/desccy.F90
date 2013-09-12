@@ -31,10 +31,9 @@ subroutine desccy(nomres)
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
 #include "asterfort/bmnodi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -42,6 +41,7 @@ subroutine desccy(nomres)
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     integer :: vali(3)
 !
 !
@@ -134,8 +134,7 @@ subroutine desccy(nomres)
 !
 !  NOMBRE DE MODES DEMANDES
 !
-    call getvis('   ', 'NB_MODE', 1, iarg, 1,&
-                nbmod1, ibid)
+    call getvis('   ', 'NB_MODE', iocc=1, scal=nbmod1, nbret=ibid)
 !
 !  NOMBRE DE MODES EXISTANTS
     call dismoi('F', 'NB_MODES_DYN', basmod, 'RESULTAT', nbmod2,&
@@ -151,14 +150,12 @@ subroutine desccy(nomres)
 !
 !---------DETERMINATION DU NOMBRE DE MODES PROPRES A CALCULER-----------
 !
-    call getvis('CALCUL', 'NMAX_FREQ', 1, iarg, 0,&
-                ibid, nboc)
+    call getvis('CALCUL', 'NMAX_FREQ', iocc=1, nbval=0, nbret=nboc)
 !
     if (nboc .eq. 0) then
         nbmcal=nbmod
     else
-        call getvis('CALCUL', 'NMAX_FREQ', 1, iarg, 1,&
-                    nbmcal, ibid)
+        call getvis('CALCUL', 'NMAX_FREQ', iocc=1, scal=nbmcal, nbret=ibid)
     endif
 !
     if (nbmcal .gt. nbmod) then

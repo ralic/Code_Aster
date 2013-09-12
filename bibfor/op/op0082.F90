@@ -32,9 +32,9 @@ subroutine op0082()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/copisd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -61,8 +61,7 @@ subroutine op0082()
     call getres(grille, k16bid, k16bid)
 !
 !     MAILLAGE EN ENTREE
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                mail, ibid)
+    call getvid(' ', 'MAILLAGE', scal=mail, nbret=ibid)
 !
 !     DUPLIQUE LA SD_MAILLAGE
     call copisd('MAILLAGE', 'G', mail, grille)

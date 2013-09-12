@@ -1,18 +1,18 @@
 subroutine impe81(nomres, impe, basemo)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8pi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, basemo
     character(len=19) :: impe
 ! ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine impe81(nomres, impe, basemo)
 !
 !
 !
-    integer :: i,j,ier,nbmode
+    integer :: i, j, ier, nbmode
     integer :: ldblo, ldbloi, lddesa, lddesm, lddesr, ldrefa, ldrefm
     integer :: ldrefr, ldresa, ldresm, ldresr, ldresi, ldrefi
     integer :: nbdef, nbmodd, nbmods, nfr, nim, ntail
@@ -81,18 +81,12 @@ subroutine impe81(nomres, impe, basemo)
 !
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 !
-    call getvr8(' ', 'FREQ_EXTR', 1, iarg, 1,&
-                freq, nfr)
-    call getvr8(' ', 'AMOR_SOL', 1, iarg, 1,&
-                amso, nfr)
-    call getvid(' ', 'MATR_IMPE_INIT', 1, iarg, 1,&
-                impini, nim)
-    call getvid(' ', 'MATR_IMPE_RIGI', 1, iarg, 1,&
-                impk, nk)
-    call getvid(' ', 'MATR_IMPE_MASS', 1, iarg, 1,&
-                impm, nm)
-    call getvid(' ', 'MATR_IMPE_AMOR', 1, iarg, 1,&
-                impc, nc)
+    call getvr8(' ', 'FREQ_EXTR', scal=freq, nbret=nfr)
+    call getvr8(' ', 'AMOR_SOL', scal=amso, nbret=nfr)
+    call getvid(' ', 'MATR_IMPE_INIT', scal=impini, nbret=nim)
+    call getvid(' ', 'MATR_IMPE_RIGI', scal=impk, nbret=nk)
+    call getvid(' ', 'MATR_IMPE_MASS', scal=impm, nbret=nm)
+    call getvid(' ', 'MATR_IMPE_AMOR', scal=impc, nbret=nc)
     if (nfr .ne. 0) amso = 2.d0*amso
 !
     call wkvect(nomres//'.MAEL_RAID_REFE', 'G V K24', 2, ldrefr)
@@ -107,7 +101,7 @@ subroutine impe81(nomres, impe, basemo)
     zk24(ldrefa) = basemo
     zk24(ldrefa+1) = blanc
 !
-
+!
     call dismoi('F', 'NB_MODES_DYN', basemo, 'RESULTAT', nbmodd,&
                 k8b, ier)
     call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmods,&

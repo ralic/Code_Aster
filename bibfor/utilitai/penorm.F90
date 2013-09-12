@@ -1,16 +1,12 @@
 subroutine penorm(resu, modele)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
-#include "asterfort/calcul.h"
+#include "asterfort/calc_coor_elga.h"
 #include "asterfort/calc_norm_coef.h"
 #include "asterfort/calc_norm_elem.h"
-#include "asterfort/calc_coor_elga.h"
+#include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesred.h"
@@ -23,6 +19,10 @@ subroutine penorm(resu, modele)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -70,14 +70,14 @@ subroutine penorm(resu, modele)
 !
     integer :: nb_cmp_max, nbpmax
     parameter(nbpmax=13,nb_cmp_max=31)
-    character(len=8)  :: typpar(nbpmax)
+    character(len=8) :: typpar(nbpmax)
     character(len=16) :: nompar(nbpmax)
 !
     integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nb_coef_user
     integer :: jno, jin, j_coef_user
     integer :: nbpar, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
     integer :: nn
-    integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm,  ifm, niv
+    integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
     integer :: nb_cmp_act
     real(kind=8) :: r8b, prec, inst, vnorm(1)
     complex(kind=8) :: c16b
@@ -114,11 +114,11 @@ subroutine penorm(resu, modele)
     coefca = '&&PENORM.CARTE_COEF'
     chcalc = '&&PENORM.CHCALC'
     liscoe = '&&PENORM.COEFMULT'
-    list_cmp      = '&&PENORM.CMP1'
+    list_cmp = '&&PENORM.CMP1'
     list_cmp_neut = '&&PENORM.CMP2'
     field_resu = '&&PENORM.NORM_L2'
-    chgaus     = '&&PENORM.CHGAUS'
-    chgeom     = '&&PENORM.CHGEOM'
+    chgaus = '&&PENORM.CHGAUS'
+    chgeom = '&&PENORM.CHGEOM'
     exiord=.false.
     nb_cmp_act =0
     ligrel = modele//'.MODELE'
@@ -137,32 +137,22 @@ subroutine penorm(resu, modele)
 !
 ! --- 2- RECUPERATION DU RESULTAT ET DES NUMEROS D'ORDRE
 !     ==================================================
-    call getvid('NORME', 'RESULTAT', 1, iarg, 1,&
-                resuco, nr)
-    call getvid('NORME', 'CHAM_GD', 1, iarg, 1,&
-                chamg, nd)
+    call getvid('NORME', 'RESULTAT', iocc=1, scal=resuco, nbret=nr)
+    call getvid('NORME', 'CHAM_GD', iocc=1, scal=chamg, nbret=nd)
 !
-    call getvr8('NORME', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvtx('NORME', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
-    call getvr8('NORME', 'INST', 1, iarg, 0,&
-                r8b, ni)
-    call getvis('NORME', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, no)
-    call getvid('NORME', 'LIST_INST', 1, iarg, 0,&
-                k8b, nli)
-    call getvid('NORME', 'LIST_ORDRE', 1, iarg, 0,&
-                k8b, nlo)
-    call getvtx('NORME', 'TYPE_NORM', 1, iarg, 1,&
-                tynorm, iret)
-    call getvr8('NORME', 'COEF_MULT', 1, iarg, 0,&
-                r8b, nb_coef_user)
-    if (nb_coef_user.ne.0) then
+    call getvr8('NORME', 'PRECISION', iocc=1, scal=prec, nbret=np)
+    call getvtx('NORME', 'CRITERE', iocc=1, scal=crit, nbret=nc)
+    call getvr8('NORME', 'INST', iocc=1, nbval=0, nbret=ni)
+    call getvis('NORME', 'NUME_ORDRE', iocc=1, nbval=0, nbret=no)
+    call getvid('NORME', 'LIST_INST', iocc=1, nbval=0, nbret=nli)
+    call getvid('NORME', 'LIST_ORDRE', iocc=1, nbval=0, nbret=nlo)
+    call getvtx('NORME', 'TYPE_NORM', iocc=1, scal=tynorm, nbret=iret)
+    call getvr8('NORME', 'COEF_MULT', iocc=1, nbval=0, nbret=nb_coef_user)
+    if (nb_coef_user .ne. 0) then
         nb_coef_user = -nb_coef_user
         call wkvect(liscoe, 'V V R', nb_coef_user, j_coef_user)
-        call getvr8('NORME', 'COEF_MULT', 1, iarg, nb_coef_user,&
-                    zr(j_coef_user), iret)
+        call getvr8('NORME', 'COEF_MULT', iocc=1, nbval=nb_coef_user, vect=zr(j_coef_user),&
+                    nbret=iret)
     endif
 !
     if (nd .ne. 0) then
@@ -179,15 +169,14 @@ subroutine penorm(resu, modele)
             exiord=.true.
             nbordr=-no
             call wkvect(knum, 'V V I', nbordr, jno)
-            call getvis('NORME', 'NUME_ORDRE', 1, iarg, nbordr,&
-                        zi(jno), iret)
+            call getvis('NORME', 'NUME_ORDRE', iocc=1, nbval=nbordr, vect=zi(jno),&
+                        nbret=iret)
         endif
 !
 !       -- LIST_ORDRE --
         if (nlo .ne. 0) then
             exiord=.true.
-            call getvid('NORME', 'LIST_ORDRE', 1, iarg, 1,&
-                        lisins, iret)
+            call getvid('NORME', 'LIST_ORDRE', iocc=1, scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
@@ -196,14 +185,13 @@ subroutine penorm(resu, modele)
         if (ni .ne. 0) then
             nbordr=-ni
             call wkvect(kins, 'V V R', nbordr, jin)
-            call getvr8('NORME', 'INST', 1, iarg, nbordr,&
-                        zr(jin), iret)
+            call getvr8('NORME', 'INST', iocc=1, nbval=nbordr, vect=zr(jin),&
+                        nbret=iret)
         endif
 !
 !       -- LIST_INST --
         if (nli .ne. 0) then
-            call getvid('NORME', 'LIST_INST', 1, iarg, 1,&
-                        lisins, iret)
+            call getvid('NORME', 'LIST_INST', iocc=1, scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
@@ -305,8 +293,7 @@ subroutine penorm(resu, modele)
                             c16b, prec, crit, numo, nbordr,&
                             iret)
             endif
-            call getvtx('NORME', 'NOM_CHAM', 1, iarg, 1,&
-                        nomcha, iret)
+            call getvtx('NORME', 'NOM_CHAM', iocc=1, scal=nomcha, nbret=iret)
             if (iret .eq. 0) call u2mess('F', 'POSTELEM_4')
             call rsexch(' ', tmpres, nomcha, numo, cham2,&
                         iret)
@@ -332,8 +319,7 @@ subroutine penorm(resu, modele)
 !
 !      -- 4.2 RECUPERATION DES MAILLES --
 !
-        call getvtx('NORME', 'TOUT', 1, iarg, 1,&
-                    tout, iret)
+        call getvtx('NORME', 'TOUT', iocc=1, scal=tout, nbret=iret)
 !
         if (iret .ne. 0) then
             mocles(1) = 'TOUT'
@@ -342,8 +328,7 @@ subroutine penorm(resu, modele)
         else
             mocles(1) = 'GROUP_MA'
             typmcl(1) = 'GROUP_MA'
-            call getvtx('NORME', 'GROUP_MA', 1, iarg, 1,&
-                        grouma, iret)
+            call getvtx('NORME', 'GROUP_MA', iocc=1, scal=grouma, nbret=iret)
         endif
 !
 !       - MAILLES FOURNIES PAR L'UTILISATEUR -
@@ -352,8 +337,7 @@ subroutine penorm(resu, modele)
 !
 !       - MAILLES EVENTUELLEMENT FILTREES EN FONCTION DE LA DIMENSION
 !         GEOMETRIQUE (2D OU 3D)
-        call getvtx('NORME', 'TYPE_MAILLE', 1, iarg, 1,&
-                    infoma, iret)
+        call getvtx('NORME', 'TYPE_MAILLE', iocc=1, scal=infoma, nbret=iret)
         if (iret .ne. 0) then
             if (infoma(1:2) .eq. '2D') then
                 iresma=2
@@ -417,8 +401,8 @@ subroutine penorm(resu, modele)
 !
 ! ----- Construction of <CARTE> of <NEUT_R> by selection of components
 !
-        call calc_norm_coef(modele  , nomgd , nb_cmp_max, ncmpm , tynorm, &
-                            'SQUA'  ,list_cmp, nb_coef_user   , zr(j_coef_user)   , coefca, &
+        call calc_norm_coef(modele, nomgd, nb_cmp_max, ncmpm, tynorm,&
+                            'SQUA', list_cmp, nb_coef_user, zr(j_coef_user), coefca,&
                             chcalc, nb_cmp_act)
 !
 ! ----- Convert CHAMNO_S/CHAMELEM_S field to CHAMNO/CHAMELEM field
@@ -480,7 +464,7 @@ subroutine penorm(resu, modele)
 !
 ! ----- Compute Norm_L2 * Norm_L2 by element (integration on finite element)
 !
-        call calc_norm_elem('L2' , ligrel, coefca, chgaus, chcalc, &
+        call calc_norm_elem('L2', ligrel, coefca, chgaus, chcalc,&
                             cham1, field_resu)
 !
 !      -- 4.8 SOMMATION DE LA NORME SUR LES ELEMENTS DESIRES --
@@ -520,7 +504,7 @@ subroutine penorm(resu, modele)
 !
         call detrsd('CHAMP', cham1)
         call detrsd('CHAMP', cham2)
-        
+!
         call jedetr(valr)
         call jedetr(vali)
         call jedetr(valk)
@@ -532,7 +516,7 @@ subroutine penorm(resu, modele)
 !
 !     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE NORME
 !     ---------------------------------------------------------
-999 continue
+999  continue
 !
     if (nr .ne. 0) then
         call detrsd('RESULTAT', tmpres)

@@ -1,7 +1,7 @@
 subroutine ibfhdf(fichdf)
     implicit none
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
     character(len=80) :: fichdf
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -31,8 +31,7 @@ subroutine ibfhdf(fichdf)
     fichdf = ' '
     call getres(cbid, cbid, nomcmd)
     if (nomcmd .eq. 'POURSUITE') then
-        call getvtx(' ', 'FORMAT_HDF', 1, iarg, 1,&
-                    fhdf, nfhdf)
+        call getvtx(' ', 'FORMAT_HDF', scal=fhdf, nbret=nfhdf)
         if (nfhdf .gt. 0) then
             if (fhdf .eq. 'OUI') then
                 fichdf = 'bhdf.1'

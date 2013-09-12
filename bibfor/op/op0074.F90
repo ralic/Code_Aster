@@ -28,8 +28,8 @@ subroutine op0074()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
 #include "asterfort/cresol.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -57,8 +57,7 @@ subroutine op0074()
 !     --- RECUPERATION NOM DE LA COMMANDE ---
 !
     call getres(nomres, typres, nomcmd)
-    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                tran, ndt)
+    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=ndt)
     if (ndt .ne. 0) then
 !        --- TEST SI REPRISE AVEC NOM DE CONCEPT IDENTIQUE ---
         if (tran .eq. nomres) nomres='&&OP0074'
@@ -66,8 +65,7 @@ subroutine op0074()
 !
 !     --- DETERMINATION DU TYPE DE CALCUL ---
 !
-    call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                matgen, nm)
+    call getvid(' ', 'MATR_MASS', scal=matgen, nbret=nm)
     call jeveuo(matgen//'           .REFA', 'L', jrefe)
     numgen = zk24(jrefe+1)(1:14)
     call jeveuo(numgen//'.NUME.REFN', 'L', jrefe)

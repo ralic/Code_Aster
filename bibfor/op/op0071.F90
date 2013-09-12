@@ -26,8 +26,8 @@ subroutine op0071()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -56,14 +56,10 @@ subroutine op0071()
 !
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 !
-    call getvid(' ', 'MATR_ASSE', 1, iarg, 1,&
-                matras, n1)
-    call getvid(' ', 'MATR_ASSE_GENE', 1, iarg, 1,&
-                matras, n3)
-    call getvid(' ', 'BASE', 1, iarg, 1,&
-                basemo, n4)
-    call getvid(' ', 'NUME_DDL_GENE', 1, iarg, 1,&
-                numgen, n2)
+    call getvid(' ', 'MATR_ASSE', scal=matras, nbret=n1)
+    call getvid(' ', 'MATR_ASSE_GENE', scal=matras, nbret=n3)
+    call getvid(' ', 'BASE', scal=basemo, nbret=n4)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n2)
     nugene=numgen
 !
     call gettco(basemo, typbas)
@@ -87,12 +83,14 @@ subroutine op0071()
 !
     call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
                 numdd1, ier)
-    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                matric, iret)
     if (matric .ne. ' ') then
         call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                     numdd2, ier)
     else
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numdd2, iret)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                    numdd2, iret)
     endif
     if (numdd1 .ne. numdd2) then
         call u2mess('I', 'ALGORITH9_39')

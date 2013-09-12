@@ -2,10 +2,9 @@ subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
                   dplrev, fonrev, ier)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -18,6 +17,7 @@ subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbrevi, nbmode, neq, ier
     real(kind=8) :: dplrev(nbrevi, nbmode, *), bmodal(neq, *)
     character(len=8) :: fonrev(nbrevi, *)
@@ -83,14 +83,10 @@ subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
 !
     do 10 i = 1, nbrevi
 !
-        call getvtx('RELA_EFFO_VITE', 'NOEUD', i, iarg, 1,&
-                    noeu, nn)
-        call getvtx('RELA_EFFO_VITE', 'NOM_CMP', i, iarg, 1,&
-                    comp, nc)
-        call getvid('RELA_EFFO_VITE', 'RELATION', i, iarg, 1,&
-                    fonc, nf)
-        call getvtx('RELA_EFFO_DEPL', 'SOUS_STRUC', i, iarg, 1,&
-                    sst, ns)
+        call getvtx('RELA_EFFO_VITE', 'NOEUD', iocc=i, scal=noeu, nbret=nn)
+        call getvtx('RELA_EFFO_VITE', 'NOM_CMP', iocc=i, scal=comp, nbret=nc)
+        call getvid('RELA_EFFO_VITE', 'RELATION', iocc=i, scal=fonc, nbret=nf)
+        call getvtx('RELA_EFFO_DEPL', 'SOUS_STRUC', iocc=i, scal=sst, nbret=ns)
 !
         if (comp(1:2) .eq. 'DX') icomp = 1
         if (comp(1:2) .eq. 'DY') icomp = 2

@@ -19,7 +19,6 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/getvem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -31,6 +30,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 #include "asterfort/jexnom.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: motcle
     character(len=8) :: noma
     integer :: nbno, iliste(*)

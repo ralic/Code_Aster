@@ -19,9 +19,9 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -167,8 +167,7 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
         nomcha = zk24(jextch+2*(icham-1)+1-1)
         nomchs = zk24(jextch+2*(icham-1)+2-1)
         if (nomcha .eq. 'NONE') then
-            call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 1,&
-                        nomchx, ibid)
+            call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomchx, nbret=ibid)
             call u2mesk('A', 'EXTRACTION_99', 1, nomchx)
             goto 999
         endif

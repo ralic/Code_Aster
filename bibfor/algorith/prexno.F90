@@ -1,20 +1,20 @@
 subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
                   nomin, cmpmin, valmin, noamax, cmamax,&
                   vaamax, noamin, cmamin, vaamin)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ioc
     real(kind=8) :: valmin, valmax, vaamin, vaamax
     character(len=8) :: nomax, nomin, cmpmax, cmpmin
@@ -85,13 +85,12 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
         nbnoeu = nbno
     endif
 !
-    call getvtx('ACTION', 'NOM_CMP', ioc, iarg, 0,&
-                k8b, nbc)
+    call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then
         nbcmp = -nbc
         call wkvect('&&PREXNO.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('ACTION', 'NOM_CMP', ioc, iarg, nbcmp,&
-                    zk8(jcmp), ibid)
+        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=zk8(jcmp),&
+                    nbret=ibid)
     else
         nbcmp = ncmp
     endif

@@ -38,13 +38,12 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/calcop.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/erglth.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -71,6 +70,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbordr, nchar
     integer :: vali
     character(len=4) :: ctyp
@@ -123,12 +123,10 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getvtx(' ', 'OPTION', 1, iarg, 0,&
-                k8b, n2)
+    call getvtx(' ', 'OPTION', nbval=0, nbret=n2)
     nbopt = -n2
     call wkvect(lesopt, 'V V K16', nbopt, jopt)
-    call getvtx(' ', 'OPTION', 1, iarg, nbopt,&
-                zk16(jopt), n2)
+    call getvtx(' ', 'OPTION', nbval=nbopt, vect=zk16(jopt), nbret=n2)
     call modopt(resuco, modele, lesopt, nbopt)
     call jeveuo(lesopt, 'L', jopt)
 !

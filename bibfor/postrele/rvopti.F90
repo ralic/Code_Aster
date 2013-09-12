@@ -3,8 +3,8 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
     implicit none
 !
 #include "asterc/getexm.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
     character(len=*) :: mcf
     character(len=19) :: nch19
     character(len=16) :: option
@@ -59,8 +59,7 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
 !
         lnch = getexm ( mcf, 'NOM_CHAM' )
         if (lnch .eq. 1) then
-            call getvtx(mcf, 'NOM_CHAM', iocc, iarg, 1,&
-                        option, nc)
+            call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=option, nbret=nc)
             if (option(6:9) .eq. 'NOEU') goto 9999
         endif
 !

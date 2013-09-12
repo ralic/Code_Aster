@@ -1,7 +1,7 @@
 subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                   basemo, typref, typbas, tousno, multap)
-    implicit   none
-#include "asterc/getvtx.h"
+    implicit none
+#include "asterfort/getvtx.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
@@ -45,8 +45,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
     mode = basemo
 !
     champ(1)=' '
-    call getvtx(' ', 'TOUT_CHAM', 1, iarg, 1,&
-                champ, n1)
+    call getvtx(' ', 'TOUT_CHAM', scal=champ(1), nbret=n1)
 !
     if (champ(1) .eq. 'OUI') then
         nbcham = 3
@@ -98,11 +97,9 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
 !
     else
 !
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
         nbcham = -n1
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
 !
         do 10 i = 1, nbcham
             if (champ(i) .eq. 'DEPL') then

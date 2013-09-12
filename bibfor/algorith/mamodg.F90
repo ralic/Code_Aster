@@ -38,9 +38,8 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !             NORMAUX
 !---------------------------------------------------------------------
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -55,6 +54,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto, idelat
     integer :: ivx, ivy, itpx, itpy, ipres, iprsto, iadia, ihcol, imatz
     integer :: iablo, irang, jrang, i, j, iblo, ldblo, ivz, itpz, iadirg
@@ -72,8 +72,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     call jemarq()
 !
     call infniv(ifm, niv)
-    call getvtx(' ', 'AVEC_MODE_STAT', 0, iarg, 1,&
-                repon, nn)
+    call getvtx(' ', 'AVEC_MODE_STAT', scal=repon, nbret=nn)
     if (repon(1:3) .eq. 'NON') call jeveuo('&&DELAT.INDIC', 'L', idelat)
 !
     call jeexin(stolci//'.SCHC', iret1)

@@ -36,8 +36,6 @@ subroutine op0019()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aceaba.h"
 #include "asterfort/aceaca.h"
 #include "asterfort/aceaco.h"
@@ -72,6 +70,8 @@ subroutine op0019()
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/coqucf.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -234,7 +234,7 @@ subroutine op0019()
     do i = 1, nbel1
         nomele(i) = nomel1(i)
     end do
-    do   i = 1, nbel2
+    do i = 1, nbel2
         nomele(i+nbel1) = nomel2(i)
     end do
     do i = 1, nbel3
@@ -254,8 +254,7 @@ subroutine op0019()
 !
 ! --- ------------------------------------------------------------------
 ! --- VERIFICATIONS SUPPLEMENTAIRES DE SYNTAXE
-    call getvtx(' ', 'VERIF', 1, iarg, 2,&
-                ver, nbver)
+    call getvtx(' ', 'VERIF', nbval=2, vect=ver, nbret=nbver)
     do i = 1, 3
         ivr(i) = 0
     end do
@@ -369,8 +368,7 @@ subroutine op0019()
 !
 ! --- ------------------------------------------------------------------
 ! --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomo, nbvm)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=nbvm)
     modnom = nomo//'.MODELE    .LGRF'
     modnem = nomo//'.MODELE    .NEMA'
 !
@@ -461,8 +459,8 @@ subroutine op0019()
         do 90 ioc = 1, nbocc(iclf)
             call codent(ioc, 'G', kioc)
             do 80 icle = 1, nbmcle(iclf)
-                call getvtx(mclf(iclf), mcle(icle), ioc, iarg, lmax,&
-                            zk24(jdls), ng)
+                call getvtx(mclf(iclf), mcle(icle), iocc=ioc, nbval=lmax, vect=zk24(jdls),&
+                            nbret=ng)
                 call verima(noma, zk24(jdls), ng, mcle(icle))
 80          continue
 90      continue

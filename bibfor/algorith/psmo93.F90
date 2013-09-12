@@ -25,9 +25,9 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -69,11 +69,9 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     call jeveuo(masse(1:19)//'.&INT', 'E', lmatm)
 !
     do 30 i = 1, nbpsmo
-        call getvtx('PSEUDO_MODE', 'AXE', i, iarg, 0,&
-                    k8b, na)
+        call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
         if (na .ne. 0) nbmoda = nbmoda - na
-        call getvr8('PSEUDO_MODE', 'DIRECTION', i, iarg, 0,&
-                    r8b, nd)
+        call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=0, nbret=nd)
         if (nd .ne. 0) nbmoda = nbmoda + 1
 30  continue
 !
@@ -92,15 +90,14 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     do 32 i = 1, nbpsmo
 !
 !-- PSEUDO MODE AUTOUR D'UN AXE
-        call getvtx('PSEUDO_MODE', 'AXE', i, iarg, 0,&
-                    monaxe, na)
+        call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
         if (na .ne. 0) then
             nbacc = nbacc + 1
             nnaxe = -na
             accuni = .true.
             call wkvect('&&OP0093.AXE', 'V V K8', nnaxe, jaxe)
-            call getvtx('PSEUDO_MODE', 'AXE', i, iarg, nnaxe,&
-                        zk8(jaxe), na)
+            call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=nnaxe, vect=zk8(jaxe),&
+                        nbret=na)
             do 34 ia = 1, nnaxe
                 monaxe = zk8(jaxe+ia-1)
                 if (monaxe(1:1) .eq. 'X') then
@@ -127,8 +124,8 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
         endif
 !
 !-- PSEUDO MODE DANS UNE DIRECTION
-        call getvr8('PSEUDO_MODE', 'DIRECTION', i, iarg, 3,&
-                    coef, nd)
+        call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=3, vect=coef,&
+                    nbret=nd)
         if (nd .ne. 0) then
             nbacc = nbacc + 1
             accuni = .true.

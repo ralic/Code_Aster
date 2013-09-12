@@ -22,12 +22,11 @@ subroutine op0076()
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/extrac.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -37,6 +36,7 @@ subroutine op0076()
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
+!
     real(kind=8) :: temps, prec, freq
     character(len=8) :: nomres, trange, basemo, nomcha, interp, crit
     character(len=16) :: concep, nomcmd
@@ -54,20 +54,13 @@ subroutine op0076()
 !
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
-    call getvid(' ', 'RESU_GENE', 0, iarg, 1,&
-                trange, n1)
-    call getvtx(' ', 'NOM_CHAM', 0, iarg, 1,&
-                nomcha, n1)
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                temps, nt)
-    call getvr8(' ', 'FREQ', 0, iarg, 1,&
-                freq, nf)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 1,&
-                interp, ni)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                prec, n1)
+    call getvid(' ', 'RESU_GENE', scal=trange, nbret=n1)
+    call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=n1)
+    call getvr8(' ', 'INST', scal=temps, nbret=nt)
+    call getvr8(' ', 'FREQ', scal=freq, nbret=nf)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=ni)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=n1)
 !
     if (ni .eq. 0) interp(1:3) = 'NON'
 !
@@ -79,9 +72,11 @@ subroutine op0076()
     call jeveuo(trange//'           .'//nomcha(1:4), 'L', idcham)
 !
 !     --- RECUPERATION DE LA NUMEROTATION GENERALISEE NUME_DDL_GENE
-    call dismoi('F', 'NUME_DDL', trange, 'RESU_DYNA', iarg, nddlge, ierd)
+    call dismoi('F', 'NUME_DDL', trange, 'RESU_DYNA', iarg,&
+                nddlge, ierd)
 !     --- RECUPERATION DE LA BASE MODALE ET LE NOMBRE DE MODES
-    call dismoi('F', 'BASE_MODALE', trange, 'RESU_DYNA', iarg, basemo, ierd)
+    call dismoi('F', 'BASE_MODALE', trange, 'RESU_DYNA', iarg,&
+                basemo, ierd)
     nbmode = zi(iadesc+1)
 !
     call wkvect(nomres//'           .REFE', 'G V K24', 2, idrefe)

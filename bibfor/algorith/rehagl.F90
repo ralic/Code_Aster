@@ -35,13 +35,12 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/genugl.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -67,6 +66,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 #include "asterfort/wkvect.h"
 !
 !
+!
     real(kind=8) :: epsi
     character(len=4) :: champ(8)
     character(len=6) :: pgc
@@ -84,8 +84,8 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     integer :: idep, idresu, ieq, ier, ire1
     integer :: ire2, ire3, iret, iretou, j, jfreq, jnume
     integer :: k, k1, l, ldnew, lfreq, llchab, llind
-    integer :: llinsk,llnequ,llnueq,llors,llprs,llref2
-    integer :: llrot,ltrotx,ltroty,ltrotz,ltvec,n1
+    integer :: llinsk, llnequ, llnueq, llors, llprs, llref2
+    integer :: llrot, ltrotx, ltroty, ltrotz, ltvec, n1
     integer :: nbbas, nbcham, nbcmp, nbcou, nbfreq, nbnot
     integer :: nbsst, neq, neqgen, neqs, numsst, nutars
 !-----------------------------------------------------------------------
@@ -125,11 +125,9 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                     0, 0, 0.d0)
     endif
 !
-    call getvtx(' ', 'TOUT_CHAM', 0, iarg, 0,&
-                k8rep, n1)
+    call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvtx(' ', 'TOUT_CHAM', 0, iarg, 1,&
-                    k8rep, n1)
+        call getvtx(' ', 'TOUT_CHAM', scal=k8rep, nbret=n1)
     else
         k8rep=' '
     endif
@@ -152,11 +150,9 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
         call jeveuo(harmge//'.ACCE', 'L', itresu(3))
     else
 ! ----  ON RECHERCHE LES CHAMPS QU'IL FAUT RESTITUER
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
         nbcham = -n1
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
 ! ----   BOUCLE SUR LES CHAMPS DEMANDES
         do 69 i = 1, nbcham
 !
@@ -200,7 +196,8 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     endif
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
-    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid, k24bid, iret)
+    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid,&
+                k24bid, iret)
     numgen(1:14)=k24bid(1:14)
     numgen(15:19) = '.NUME'
     call jeveuo(numgen//'.REFN', 'L', llref2)
@@ -237,12 +234,9 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     crefe(2) = profno
 !
 ! --- RECUPERATION DES FREQUENCES
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 1,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
 !
     knume = '&&RETREC.NUM_RANG'
     kfreq = '&&RETREC.FREQ'
@@ -418,8 +412,8 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
     endif
 !
-    call refdcp(basmod,nomres)
-
+    call refdcp(basmod, nomres)
+!
 ! --- MENAGE
     call jedetr('&&'//pgc//'ROTX')
     call jedetr('&&'//pgc//'ROTY')

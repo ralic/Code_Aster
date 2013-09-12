@@ -37,8 +37,6 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterc/matfpe.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -46,6 +44,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 #include "asterfort/ddllag.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -62,12 +61,13 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
 !
 !
+!
     integer :: nbmod, lbid, i1, j1, k1, isst1, ibid, lclef, lnum, nbeq1, nl, nc
     integer :: lmast, numlia, nbno, lnres, lmodet, sizeco, connec, lconnc, nbec
     integer :: lprno, ipos1, lcphi, nbddl, lnoint, lindin, llino, lindno, lipos
     integer :: ik, lddld, linlag, lintrf, linddl, nddlin, nbvect, ltramo, lmatmo
     integer :: lclin, lwork, jwork, lphiex, lcpet
-    integer(kind=4) :: info,rank
+    integer(kind=4) :: info, rank
     real(kind=8) :: shift, swork(1)
     complex(kind=8) :: cbid
     character(len=4) :: k4bid
@@ -166,8 +166,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
                 noddli, nbno, nume91, raiint, ssami)
 !
 !-- CALCUL DES MODES DU MODELE D'INTERFACE
-    call getvr8(' ', 'SHIFT', 1, iarg, 1,&
-                shift, ibid)
+    call getvr8(' ', 'SHIFT', scal=shift, nbret=ibid)
     shift=-((shift*2.d0*3.1415927d0)**2)
     matmod='&&MODEXP.MATRICE_MODES'
     vefreq='&&MODEXP.VECTEUR_FREQ'

@@ -1,21 +1,20 @@
 subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
-                 symech, chfond, nnoff, basloc,courb,&
-                   ndeg, thlagr, glagr, thlag2,pair,&
-                   ndimte, nbprup, noprup, fiss,lonvec,&
-                   ivec, resuco, lmelas,lncas,lord,&
-                    milieu, connex, lischa)
+                  symech, chfond, nnoff, basloc, courb,&
+                  ndeg, thlagr, glagr, thlag2, pair,&
+                  ndimte, nbprup, noprup, fiss, lonvec,&
+                  ivec, resuco, lmelas, lncas, lord,&
+                  milieu, connex, lischa)
 ! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/cakg3d.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -30,6 +29,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbprup, lonvec, ivec, nnoff, ndeg, ndimte
     character(len=8) :: modele, thetai, fiss, latabl
     character(len=8) :: symech, resuco
@@ -109,8 +109,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !-INUTILE ???
-    call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                chsigi, init)
+    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_MAX'
         call u2mesk('F', 'RUPTURE1_13', 1, valk)
@@ -146,11 +145,11 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         lmoda = .false.
         puls = 0.d0
         call cakg3d(optio2, latabl, modele, depla, thetai,&
-                    mate, compor, lischa, symech,chfond,&
+                    mate, compor, lischa, symech, chfond,&
                     nnoff, basloc, courb, iord, ndeg,&
-                    thlagr, glagr, thlag2, pair,ndimte,&
-                    exitim, time, nbprup, noprup,fiss,&
-                    lmelas, nomcas, lmoda, puls,milieu,&
+                    thlagr, glagr, thlag2, pair, ndimte,&
+                    exitim, time, nbprup, noprup, fiss,&
+                    lmelas, nomcas, lmoda, puls, milieu,&
                     connex)
  1  continue
 !
@@ -178,24 +177,20 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     call getfac('SIGNES', nborn)
     if (nborn .ne. 0) then
         call wkvect('&&MMAXKL.TYPE_CHAR', 'V V K8', lonvec, itypc)
-        mxval = 0
-        call getvis('SIGNES', 'CHARGE_NS', 1, iarg, mxval,&
-                    ibid, nbv)
+        call getvis('SIGNES', 'CHARGE_NS', iocc=1, nbval=0, nbret=nbv)
         mxval = -nbv
         call wkvect('&&MMAXKL.TMP', 'V V I', mxval, itmp)
-        call getvis('SIGNES', 'CHARGE_NS', 1, iarg, mxval,&
-                    zi(itmp), nbv)
+        call getvis('SIGNES', 'CHARGE_NS', iocc=1, nbval=mxval, vect=zi(itmp),&
+                    nbret=nbv)
         do 2 i = 1, mxval
             zk8(itypc+zi(itmp+i-1)-1) = 'NON_SIGN'
  2      continue
         call jedetr('&&MMAXKL.TMP')
-        mxval = 0
-        call getvis('SIGNES', 'CHARGE_S', 1, iarg, mxval,&
-                    ibid, nbv)
+        call getvis('SIGNES', 'CHARGE_S', iocc=1, nbval=0, nbret=nbv)
         mxval = -nbv
         call wkvect('&&MMAXKL.TMP', 'V V I', mxval, itmp)
-        call getvis('SIGNES', 'CHARGE_S', 1, iarg, mxval,&
-                    zi(itmp), nbv)
+        call getvis('SIGNES', 'CHARGE_S', iocc=1, nbval=mxval, vect=zi(itmp),&
+                    nbret=nbv)
         do 3 i = 1, mxval
             zk8(itypc+zi(itmp+i-1)-1) = 'SIGNE'
  3      continue
@@ -257,12 +252,12 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     lmoda = .false.
     puls = 0.d0
     call cakg3d(optio2, latabl, modele, depmax, thetai,&
-                mate, compor, lischa, symech,chfond,&
-                 nnoff, basloc, courb, 1,ndeg,&
-                 thlagr, glagr, thlag2, pair,ndimte,&
-                 exitim, time, nbprup, noprup,fiss,&
-                 lmelas, k16bid, lmoda, puls,milieu,&
-                 connex)
+                mate, compor, lischa, symech, chfond,&
+                nnoff, basloc, courb, 1, ndeg,&
+                thlagr, glagr, thlag2, pair, ndimte,&
+                exitim, time, nbprup, noprup, fiss,&
+                lmelas, k16bid, lmoda, puls, milieu,&
+                connex)
 !
     call tbexve(latabl, 'G', '&&MMAXKL.GMAX', 'V', nbval,&
                 k8b)

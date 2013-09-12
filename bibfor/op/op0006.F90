@@ -1,5 +1,5 @@
 subroutine op0006()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,9 +24,9 @@ subroutine op0006()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/afvarc.h"
 #include "asterfort/cmtref.h"
+#include "asterfort/getvid.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -44,11 +44,9 @@ subroutine op0006()
     call infniv(ifm, niv)
 !
     nomode = ' '
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomode, n1)
+    call getvid(' ', 'MODELE', scal=nomode, nbret=n1)
     call getres(chmat, type, nomcmd)
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                nomail, n1)
+    call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n1)
 !
 !
 !     1- TRAITEMENT DU MOT-CLE AFFE :

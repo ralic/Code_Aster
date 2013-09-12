@@ -1,5 +1,5 @@
 subroutine rc32th()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,12 +24,11 @@ subroutine rc32th()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -48,6 +47,7 @@ subroutine rc32th()
 #include "asterfort/trace.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ibid, n1, iocc, nbther, nume, nbinst, jinst, i, j, k, l, ndim
     integer :: nbabsc, jabsc, jorig, jextr, ncmp, jcont, iret, kk
     parameter  ( ncmp = 6 )
@@ -91,19 +91,16 @@ subroutine rc32th()
                 nbther)
 !
     motcl2 = 'RESU_MECA_UNIT'
-    call getvid(motcl2, 'TABL_PRES', 1, iarg, 1,&
-                tbpres, n1)
+    call getvid(motcl2, 'TABL_PRES', iocc=1, scal=tbpres, nbret=n1)
     ASSERT(n1.ne.0)
 !
     do 10, iocc = 1, nbther, 1
 !
-    call getvis(motclf, 'NUME_RESU_THER', iocc, iarg, 1,&
-                nume, n1)
+    call getvis(motclf, 'NUME_RESU_THER', iocc=iocc, scal=nume, nbret=n1)
     knume = 'T       '
     call codent(nume, 'D0', knume(2:8))
 !
-    call getvid(motclf, 'TABL_RESU_THER', iocc, iarg, 1,&
-                table, n1)
+    call getvid(motclf, 'TABL_RESU_THER', iocc=iocc, scal=table, nbret=n1)
 !
 ! ------ ON VERIFIE L'ORDRE DES NOEUDS
     call rcveri(table)

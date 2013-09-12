@@ -36,11 +36,11 @@ subroutine op0166()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -83,10 +83,8 @@ subroutine op0166()
 !                  LES CHAMPS
 !       / '1'    : ON CALCULE LA SD_CORRESP_2_MAILLA ET ON S'ARRETE
 !       / '2'    : ON UTILISE LA SD_CORRESP_2_MAILLA DEJA CALCULEE
-    call getvtx(' ', 'PROJECTION', 1, iarg, 1,&
-                projon, n1)
-    call getvid(' ', 'MATR_PROJECTION', 1, iarg, 1,&
-                corru, n2)
+    call getvtx(' ', 'PROJECTION', scal=projon, nbret=n1)
+    call getvid(' ', 'MATR_PROJECTION', scal=corru, nbret=n2)
     if (n2 .eq. 0) corru=' '
     if (projon .eq. 'NON') then
         typcal='1'
@@ -112,12 +110,10 @@ subroutine op0166()
 !        CHAM1  : NOM DU CHAMP A PROJETER (SI ISOLE)
 !        RESUIN : NOM DE LA SD_RESULTAT A PROJETER (SI .NOT.ISOLE)
     call getres(resuou, typres, nomcmd)
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, n1)
+    call getvtx(' ', 'METHODE', scal=method, nbret=n1)
     if (n1 .eq. 0) method=' '
     if (projon .eq. 'OUI') then
-        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                    resuin, n2)
+        call getvid(' ', 'RESULTAT', scal=resuin, nbret=n2)
         if (n2 .eq. 1) then
             isole=.false.
             cham1=' '
@@ -126,8 +122,7 @@ subroutine op0166()
             norein = resuin
         else
             isole=.true.
-            call getvid(' ', 'CHAM_GD', 1, iarg, 1,&
-                        cham1, n3)
+            call getvid(' ', 'CHAM_GD', scal=cham1, nbret=n3)
             norein = cham1(1:8)
             call dismoi('F', 'NOM_MAILLA', cham1, 'CHAMP', ibid,&
                         nomare, ibid)
@@ -161,30 +156,26 @@ subroutine op0166()
 !        MOA2  : NOMO2 SI NON ' '. SINON : NOMA2
 !        CNREF : NOM DU CHAM_NO "MODELE" "2" (SI NUAGE_DEG_0/1)
     if (typcal .eq. '1' .or. typcal .eq. '1ET2') then
-        call getvid(' ', 'MODELE_1', 1, iarg, 1,&
-                    nomo1, n1)
+        call getvid(' ', 'MODELE_1', scal=nomo1, nbret=n1)
         if (n1 .eq. 1) then
             call dismoi('F', 'NOM_MAILLA', nomo1, 'MODELE', ibid,&
                         noma1, ie)
             moa1=nomo1
         else
             nomo1=' '
-            call getvid(' ', 'MAILLAGE_1', 1, iarg, 1,&
-                        noma1, n2)
+            call getvid(' ', 'MAILLAGE_1', scal=noma1, nbret=n2)
             ASSERT(n2.eq.1)
             moa1=noma1
         endif
 !
-        call getvid(' ', 'MODELE_2', 1, iarg, 1,&
-                    nomo2, n1)
+        call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 1) then
             call dismoi('F', 'NOM_MAILLA', nomo2, 'MODELE', ibid,&
                         noma2, ie)
             moa2=nomo2
         else
             nomo2=' '
-            call getvid(' ', 'MAILLAGE_2', 1, iarg, 1,&
-                        noma2, n2)
+            call getvid(' ', 'MAILLAGE_2', scal=noma2, nbret=n2)
             ASSERT(n2.eq.1)
             moa2=noma2
         endif
@@ -202,8 +193,7 @@ subroutine op0166()
             call u2mesk('F', 'CALCULEL4_59', 4, valk)
         endif
 !
-        call getvid(' ', 'CHAM_NO_REFE', 1, iarg, 1,&
-                    cnref, n1)
+        call getvid(' ', 'CHAM_NO_REFE', scal=cnref, nbret=n1)
         if (n1 .eq. 1) then
             call dismoi('F', 'NOM_MAILLA', cnref, 'CHAMP', ibid,&
                         noma3, ie)
@@ -220,12 +210,10 @@ subroutine op0166()
 !
     if (method .eq. 'SOUS_POINT') then
 !       RECUPERATION DU CARA_ELEM
-        call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
-                    noca, n1)
+        call getvid(' ', 'CARA_ELEM', scal=noca, nbret=n1)
         ASSERT(n1.ne.0)
 !       LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
-        call getvid(' ', 'MODELE_2', 1, iarg, 1,&
-                    nomo2, n1)
+        call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('F', 'CALCULEL5_40')
         endif
@@ -284,8 +272,7 @@ subroutine op0166()
             call u2mesk('F', 'CALCULEL4_59', 4, valk)
         endif
 !        -- POUR POUVOIR PROJETER LES CHAM_ELEM, IL FAUT MODELE_2
-        call getvid(' ', 'MODELE_2', 1, iarg, 1,&
-                    nomo2, n1)
+        call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 1) then
             call dismoi('F', 'NOM_MAILLA', nomo2, 'MODELE', ibid,&
                         noma2, ie)
@@ -317,11 +304,9 @@ subroutine op0166()
 !       ---- ON PEUT PROJETER DES CHAM_NO OU DES CHAM_ELEM
 !       ---- ON INTERDIT LE MOT-CLE 'TYPE_CHAM' POUR UN CHAMP ISOLE
 !
-            call getvtx(' ', 'TYPE_CHAM', 1, iarg, 0,&
-                        tychv, n1)
+            call getvtx(' ', 'TYPE_CHAM', nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvtx(' ', 'TYPE_CHAM', 1, iarg, 1,&
-                            tychv, n1)
+                call getvtx(' ', 'TYPE_CHAM', scal=tychv, nbret=n1)
             else
                 tychv=' '
             endif
@@ -359,10 +344,8 @@ subroutine op0166()
                     call u2mesk('F', 'CALCULEL5_33', 2, valk)
                 endif
 !       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
-                call getvtx(' ', 'PROL_ZERO', 1, iarg, 1,&
-                            prol0, ie)
-                call getvid(' ', 'MODELE_2', 1, iarg, 1,&
-                            nomo2, n1)
+                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
+                call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call u2mess('F', 'CALCULEL5_37')
                 endif
@@ -385,10 +368,8 @@ subroutine op0166()
                     call u2mesk('F', 'CALCULEL5_33', 2, valk)
                 endif
 !       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
-                call getvtx(' ', 'PROL_ZERO', 1, iarg, 1,&
-                            prol0, ie)
-                call getvid(' ', 'MODELE_2', 1, iarg, 1,&
-                            nomo2, n1)
+                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
+                call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call u2mess('F', 'CALCULEL5_37')
                 endif
@@ -406,15 +387,12 @@ subroutine op0166()
                     call u2mesk('F', 'CALCULEL5_33', 2, valk)
                 endif
 !       ------  LES MOTS-CLES 'MODELE_1' ET 'MODELE_2' SONT OBLIGATOIRES
-                call getvtx(' ', 'PROL_ZERO', 1, iarg, 1,&
-                            prol0, ie)
-                call getvid(' ', 'MODELE_1', 1, iarg, 1,&
-                            nomo1, n1)
+                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
+                call getvid(' ', 'MODELE_1', scal=nomo1, nbret=n1)
                 if (n1 .eq. 0) then
                     call u2mess('F', 'CALCULEL5_35')
                 endif
-                call getvid(' ', 'MODELE_2', 1, iarg, 1,&
-                            nomo2, n1)
+                call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
                     call u2mess('F', 'CALCULEL5_37')
                 endif

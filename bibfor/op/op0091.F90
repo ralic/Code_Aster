@@ -31,16 +31,15 @@ subroutine op0091()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterc/r8pi.h"
 #include "asterfort/arch93.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -73,6 +72,7 @@ subroutine op0091()
 #include "asterfort/wkvect.h"
 !
 !
+!
     character(len=4) :: k4bid, num4l
     character(len=8) :: nomres, modgen, resgen, sst1, sst2, intf1, intf2, kb
     character(len=8) :: rest1, mraid, mmass, vk(3)
@@ -93,12 +93,9 @@ subroutine op0091()
 !     -----------------------------------------------------------------
     call jemarq()
     call getres(nomres, typres, nomcmd)
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                unit, ibid)
-    call getvid(' ', 'MODELE_GENE', 1, iarg, 1,&
-                modgen, lmodge)
-    call getvid(' ', 'RESU_GENE', 1, iarg, 1,&
-                resgen, lresge)
+    call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
+    call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=lmodge)
+    call getvid(' ', 'RESU_GENE', scal=resgen, nbret=lresge)
 !
 !-- INITIALISATION DE LA TABLE_CONTAINER
     call detrsd('TABLE_CONTAINER', nomres)

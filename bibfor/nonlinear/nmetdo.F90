@@ -18,10 +18,10 @@ subroutine nmetdo(sdcriq)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -71,11 +71,10 @@ subroutine nmetdo(sdcriq)
         call u2mess('F', 'INDICATEUR_25')
     else
         do 10 iocc = 1, nbocc
-            call getvtx('COMP_INCR', 'RELATION', iocc, iarg, 1,&
-                        comp1, n1)
+            call getvtx('COMP_INCR', 'RELATION', iocc=iocc, scal=comp1, nbret=n1)
             if (comp1(1:6) .eq. 'KIT_HM') then
-                call getvtx('COMP_INCR', 'RELATION_KIT', iocc, iarg, dimaki,&
-                            comel(1), n2)
+                call getvtx('COMP_INCR', 'RELATION_KIT', iocc=iocc, nbval=dimaki, vect=comel(1),&
+                            nbret=n2)
                 if (n2 .eq. 0) then
                     ASSERT(.false.)
                 else if (n2.gt.dimaki) then

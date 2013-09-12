@@ -22,16 +22,15 @@ subroutine op0037()
 !
 !     PARAMETRES "MODE_MECA"
 #include "jeveux.h"
-!-----------------------------------------------------------------------
 #include "asterc/gcucon.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -66,6 +65,7 @@ subroutine op0037()
 #include "asterfort/vpstor.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/wpnorm.h"
+!-----------------------------------------------------------------------
     integer :: i, ib, ic, ideb, ie, ieq, ierd
     integer :: iex, ifin, ilgcon, im, ind, iprec, isign
     integer :: ival, l, ladpa, lcmp, lcoef, lg, lmod, lgr, ln
@@ -116,14 +116,14 @@ subroutine op0037()
     call gcucon(modeou, typcon, iex)
 !
     lbasm = .false.
-    lamo  = .false.
+    lamo = .false.
     lcmplx= .false.
     lparam= .false.
 !
-    call getvid('  ', 'MODE', 1, iarg, 1,&
-                modein, l)
+    call getvid('  ', 'MODE', iocc=1, scal=modein, nbret=l)
 !
-    call dismoi('C', 'TYPE_BASE', modein, 'RESU_DYNA', ibid, typeba, iret)
+    call dismoi('C', 'TYPE_BASE', modein, 'RESU_DYNA', ibid,&
+                typeba, iret)
     if (typeba(1:1) .ne. ' ') lbasm = .true.
 !
     if (iex .gt. 0) then
@@ -148,10 +148,13 @@ subroutine op0037()
 !        --- VERIFIER SI TOUS LES PARAMETRES MODAUX EXISTENT DANS LA SD
 !          - OU BIEN ILS SERONT CALCULES DANS NORM_MODE
 !          - (CAS DES MODE_MECA NON DYNAMIQUES)
-        call rsvpar(modein, 1, 'FACT_PARTICI_DX', ibid, r8vide(),k8b, l1)
-        call rsvpar(modein, 1, 'FACT_PARTICI_DY', ibid, r8vide(),k8b, l2)
-        call rsvpar(modein, 1, 'FACT_PARTICI_DZ', ibid, r8vide(),k8b, l3)
-        if ((l1+l2+l3).eq.330) lparam = .true.
+        call rsvpar(modein, 1, 'FACT_PARTICI_DX', ibid, r8vide(),&
+                    k8b, l1)
+        call rsvpar(modein, 1, 'FACT_PARTICI_DY', ibid, r8vide(),&
+                    k8b, l2)
+        call rsvpar(modein, 1, 'FACT_PARTICI_DZ', ibid, r8vide(),&
+                    k8b, l3)
+        if ((l1+l2+l3) .eq. 330) lparam = .true.
 !
         nbpari = nbpami
         nbparr = nbpamr
@@ -198,12 +201,15 @@ subroutine op0037()
 !     --- PROTECTION DES OBJETS PERES (AYANT GENERE DES OBJETS .PAPA)
 !
     call rsorac(modein, 'LONUTI', ibid, r8b, k8b,&
-                c16b, 0.0d0, k8b, nbmod, 1, nbtrou)
+                c16b, 0.0d0, k8b, nbmod, 1,&
+                nbtrou)
     call wkvect('&&OP0037.NUMERO.ORDRE', 'V V I', nbmod, lnumor)
     call rsorac(modein, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, 0.0d0, k8b, zi(lnumor), nbmod, nbtrou)
+                c16b, 0.0d0, k8b, zi(lnumor), nbmod,&
+                nbtrou)
     do 77 im = 1, nbmod
-        call rsexch(' ', modein, 'DEPL', zi(lnumor+im-1), k19b, iret)
+        call rsexch(' ', modein, 'DEPL', zi(lnumor+im-1), k19b,&
+                    iret)
         call jeexin(k19b//'.PAPA', iret)
         if (iret .ne. 0) then
             call jelira(k19b//'.PAPA', 'LONUTI', ival)
@@ -235,19 +241,22 @@ subroutine op0037()
 !     --- MATRICES DE REFERENCE DES MODES ---
     lrefe = .true.
     if (lbasm) then
-        call getvid(' ', 'RAIDE', 0, iarg, 1, mat1, l1)
-        call getvid(' ', 'MASSE', 0, iarg, 1, mat2, l2)
-        call getvid(' ', 'AMOR' , 0, iarg, 1, mat3, l3)
+        call getvid(' ', 'RAIDE', scal=mat1, nbret=l1)
+        call getvid(' ', 'MASSE', scal=mat2, nbret=l2)
+        call getvid(' ', 'AMOR', scal=mat3, nbret=l3)
         if (l1 .eq. 0) then
-            call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, mat1, iret)
+            call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
+                        mat1, iret)
             if (iret .eq. 0) l1 = 1
         endif
         if (l2 .eq. 0) then
-            call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, mat2, iret)
+            call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
+                        mat2, iret)
             if (iret .eq. 0) l2 = 1
         endif
         if (l3 .eq. 0) then
-            call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, mat3, iret)
+            call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
+                        mat3, iret)
             if (iret .eq. 0) l3 = 1
         endif
         if ((l1*l2) .eq. 0) call u2mess('F', 'ALGELINE_6')
@@ -260,12 +269,16 @@ subroutine op0037()
             amor=mat3
         endif
     else
-        call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, raide, iret)
-        call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, masse, iret)
-        call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, amor, iret)
+        call dismoi('C', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
+                    raide, iret)
+        call dismoi('C', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
+                    masse, iret)
+        call dismoi('C', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
+                    amor, iret)
         if (raide .eq. ' ') then
             lrefe = .false.
-            call rsexch(' ', modein, 'DEPL', 1, chamno, iret)
+            call rsexch(' ', modein, 'DEPL', 1, chamno,&
+                        iret)
             refe = k19b//'.REFE'
             call jeveuo(refe, 'L', lmode)
             noma = zk24(lmode )(1:8)
@@ -277,11 +290,16 @@ subroutine op0037()
 !
 !
 !     --- NUMEROTATION ASSOCIEE AUX DDL ---
-    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid, nume, iret)
-    call dismoi('F', 'NOM_MAILLA', raide, 'MATR_ASSE', ibid, noma, iret)
-    call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', ibid, cara, iret)
-    call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', ibid, mate, iret)
-    call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', ibid, modele, iret)
+    call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
+                nume, iret)
+    call dismoi('F', 'NOM_MAILLA', raide, 'MATR_ASSE', ibid,&
+                noma, iret)
+    call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', ibid,&
+                cara, iret)
+    call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', ibid,&
+                mate, iret)
+    call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', ibid,&
+                modele, iret)
 !
 !     --- COMPATIBILITE DES MODES ---
     call vpcrea(0, modeou, masse, amor, raide,&
@@ -305,8 +323,7 @@ subroutine op0037()
 !
 !     --- OPTION DE NORMALISATION  ---
     method = '                        '
-    call getvtx(' ', 'NORME', 1, iarg, 1,&
-                norm, l)
+    call getvtx(' ', 'NORME', scal=norm, nbret=l)
     if (l .ne. 0) then
         if (norm .eq. 'MASS_GENE') then
 !        --- CALCUL DE LA MASSE DU MODELE
@@ -375,17 +392,18 @@ subroutine op0037()
         else
             valk (1) = norm
             vali = ibid
-            call u2mesg('F', 'ALGELINE4_36', 1, valk, 1, vali, 0, 0.d0)
+            call u2mesg('F', 'ALGELINE4_36', 1, valk, 1,&
+                        vali, 0, 0.d0)
         endif
     endif
 !
     call getvem(noma, 'NOEUD', ' ', 'NOEUD', 1,&
                 iarg, 1, noeud, ln)
-    call getvtx(' ', 'GROUP_NO', 1, iarg, 1,&
-                nomgrn, lgr)
+    call getvtx(' ', 'GROUP_NO', scal=nomgrn, nbret=lgr)
 !
     if (lgr .ne. 0) then
-        call utnono(' ', noma, 'NOEUD', nomgrn, noeud, l)
+        call utnono(' ', noma, 'NOEUD', nomgrn, noeud,&
+                    l)
         if (l .eq. 10) then
             call u2mesk('F', 'ELEMENTS_67', 1, nomgrn)
         else if (l.eq.1) then
@@ -404,11 +422,13 @@ subroutine op0037()
         ifin = ideb + lg
         method(ideb:ifin) = ' '//noeud(1:lg)
         call wkvect('&&OP0037.LISTE.CMP', 'V V K8', ncmp, lcmp)
-        call getvtx(' ', 'NOM_CMP', 1, iarg, 1, zk8(lcmp), l)
+        call getvtx(' ', 'NOM_CMP', scal=zk8(lcmp), nbret=l)
         if (lrefe) then
-            call posddl('NUME_DDL', nume, noeud, zk8(lcmp), numnoe, numddl)
+            call posddl('NUME_DDL', nume, noeud, zk8(lcmp), numnoe,&
+                        numddl)
         else
-            call posddl('CHAM_NO', chamno, noeud, zk8(lcmp), numnoe, numddl)
+            call posddl('CHAM_NO', chamno, noeud, zk8(lcmp), numnoe,&
+                        numddl)
         endif
         if (numnoe .eq. 0) then
             call u2mess('F', 'ALGELINE2_36')
@@ -430,13 +450,13 @@ subroutine op0037()
 52      continue
     endif
 !
-    call getvtx(' ', 'AVEC_CMP', 1, iarg, 0, k8b, l)
+    call getvtx(' ', 'AVEC_CMP', nbval=0, nbret=l)
     if (l .ne. 0) then
         norm = 'AVEC_CMP'
         ncmp = -l
         method(1:9) = 'AVEC_CMP:'
         call wkvect('&&OP0037.LISTE.CMP', 'V V K8', ncmp, lcmp)
-        call getvtx(' ', 'AVEC_CMP', 1, iarg, ncmp, zk8(lcmp), l)
+        call getvtx(' ', 'AVEC_CMP', nbval=ncmp, vect=zk8(lcmp), nbret=l)
         ideb = 10
         do 30 ic = 1, ncmp
             lg = lxlgut(zk8(lcmp+ic-1))
@@ -451,14 +471,13 @@ subroutine op0037()
 32      continue
     endif
 !
-    call getvtx(' ', 'SANS_CMP', 1, iarg, 0,&
-                k8b, l)
+    call getvtx(' ', 'SANS_CMP', nbval=0, nbret=l)
     if (l .ne. 0) then
         norm = 'SANS_CMP'
         ncmp = -l
         method(1:9) = 'SANS_CMP:'
         call wkvect('&&OP0037.LISTE.CMP', 'V V K8', ncmp, lcmp)
-        call getvtx(' ', 'SANS_CMP', 1, iarg, ncmp, zk8(lcmp), l)
+        call getvtx(' ', 'SANS_CMP', nbval=ncmp, vect=zk8(lcmp), nbret=l)
         ideb = 10
         do 40 ic = 1, ncmp
             lg = lxlgut(zk8(lcmp+ic-1))
@@ -480,7 +499,8 @@ subroutine op0037()
             do 79 im = 1, nbmod
                 valk(1) = method
                 vali = zi(lnumor+im-1)
-                call u2mesg('I', 'ALGELINE7_8', 1, valk, 1, vali, 0, 0.d0)
+                call u2mesg('I', 'ALGELINE7_8', 1, valk, 1,&
+                            vali, 0, 0.d0)
 79          continue
         else
             call u2mess('I', 'ALGELINE7_9')
@@ -490,7 +510,8 @@ subroutine op0037()
                 valk(1) = zk24(ladpa)
                 valk(2) = method
                 vali = zi(lnumor+im-1)
-                call u2mesg('I', 'ALGELINE7_10', 2, valk, 1, vali, 0, 0.d0)
+                call u2mesg('I', 'ALGELINE7_10', 2, valk, 1,&
+                            vali, 0, 0.d0)
 78          continue
         endif
     endif
@@ -499,7 +520,8 @@ subroutine op0037()
 !
     call vprecu(modein, nomsy, nbmod, zi(lnumor), kvec,&
                 nbpara, nopara, kvali, kvalr, kvalk,&
-                neq, nbmode, typmod, npari, nparr, npark)
+                neq, nbmode, typmod, npari, nparr,&
+                npark)
 !
     if (.not.lbasm) then
         if (npari .ne. nbpari) then
@@ -512,15 +534,17 @@ subroutine op0037()
             call u2mess('F', 'ALGELINE2_40')
         endif
     endif
-
+!
 !
 !     --- RECUPERATION DES COMPOSANTES ---
     if (norm .eq. 'AVEC_CMP' .or. norm .eq. 'SANS_CMP' .or. norm(1:4) .eq. 'EUCL') then
         call wkvect('&&OP0037.POSITION.DDL', 'V V I', neq*ncmp, lddl)
         if (lrefe) then
-            call pteddl('NUME_DDL', nume, ncmp, zk8(lcmp), neq, zi(lddl))
+            call pteddl('NUME_DDL', nume, ncmp, zk8(lcmp), neq,&
+                        zi(lddl))
         else
-            call pteddl('CHAM_NO', chamno, ncmp, zk8(lcmp), neq, zi(lddl))
+            call pteddl('CHAM_NO', chamno, ncmp, zk8(lcmp), neq,&
+                        zi(lddl))
         endif
         do 20 ic = 2, ncmp
             ind = (ic-1)*neq
@@ -555,10 +579,12 @@ subroutine op0037()
     isign = 0
     call getfac('MODE_SIGNE', mosign)
     if (mosign .ne. 0) then
-        call getvem(noma, 'NOEUD', 'MODE_SIGNE', 'NOEUD', 1, iarg, 1, noeud, l)
+        call getvem(noma, 'NOEUD', 'MODE_SIGNE', 'NOEUD', 1,&
+                    iarg, 1, noeud, l)
         if (l .eq. 0) then
-            call getvtx('MODE_SIGNE', 'GROUP_NO', 1, iarg, 1, nomgrn, l)
-            call utnono(' ', noma, 'NOEUD', nomgrn, noeud, l)
+            call getvtx('MODE_SIGNE', 'GROUP_NO', iocc=1, scal=nomgrn, nbret=l)
+            call utnono(' ', noma, 'NOEUD', nomgrn, noeud,&
+                        l)
             if (l .eq. 10) then
                 call u2mesk('F', 'ELEMENTS_67', 1, nomgrn)
             else if (l.eq.1) then
@@ -567,11 +593,13 @@ subroutine op0037()
                 call u2mesk('A', 'SOUSTRUC_87', 2, valk)
             endif
         endif
-        call getvtx('MODE_SIGNE', 'NOM_CMP', 1, iarg, 1, cmp, l)
+        call getvtx('MODE_SIGNE', 'NOM_CMP', iocc=1, scal=cmp, nbret=l)
         if (lrefe) then
-            call posddl('NUME_DDL', nume, noeud, cmp, numnoe, numddl)
+            call posddl('NUME_DDL', nume, noeud, cmp, numnoe,&
+                        numddl)
         else
-            call posddl('CHAM_NO', chamno, noeud, cmp, numnoe, numddl)
+            call posddl('CHAM_NO', chamno, noeud, cmp, numnoe,&
+                        numddl)
         endif
         if (numnoe .eq. 0) then
             call u2mess('F', 'ALGELINE2_36')
@@ -580,7 +608,7 @@ subroutine op0037()
             call u2mess('F', 'ALGELINE2_37')
         endif
         isign = 1
-        call getvtx('MODE_SIGNE', 'SIGNE', 1, iarg, 1, k8b, l)
+        call getvtx('MODE_SIGNE', 'SIGNE', iocc=1, scal=k8b, nbret=l)
         if (k8b(1:7) .eq. 'NEGATIF') isign = -1
         if (typmod .eq. 'C') then
             isign = 0
@@ -615,10 +643,14 @@ subroutine op0037()
         call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
         call vpddl(raide(1:19), masse(1:19), neq, ib, ib,&
                    ib, zi(lddl2), zi(lprod), ierd)
-        call utimsd(6, 2, .false., .true.,kvec, 1,' ')
-        call utimsd(6, 2, .false., .true.,kvali, 1,' ')
-        call utimsd(6, 2, .false., .true.,kvalr, 1,' ')
-        call utimsd(6, 2, .false., .true.,kvalk, 1,' ')
+        call utimsd(6, 2, .false., .true., kvec,&
+                    1, ' ')
+        call utimsd(6, 2, .false., .true., kvali,&
+                    1, ' ')
+        call utimsd(6, 2, .false., .true., kvalr,&
+                    1, ' ')
+        call utimsd(6, 2, .false., .true., kvalk,&
+                    1, ' ')
         call vppgen(lmasse, lamor, lraide, zr(lvalr+3*nbmode), zr(lvalr+ 5*nbmode),&
                     zr(lvalr+4*nbmode), zr(lmod), neq, nbmode, zi(lprod))
 !
@@ -670,7 +702,8 @@ subroutine op0037()
     endif
 !
     do 60 im = 1, nbmode
-        call rsadpa(modeou, 'E', 1, 'NORME', zi(lnumor+im-1), 0, lnorm, k8b)
+        call rsadpa(modeou, 'E', 1, 'NORME', zi(lnumor+im-1),&
+                    0, lnorm, k8b)
         zk24(lnorm) = method
 60  continue
 !

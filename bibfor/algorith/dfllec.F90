@@ -19,13 +19,13 @@ subroutine dfllec(sdlist, dtmin)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dfdevn.h"
 #include "asterfort/dfllac.h"
 #include "asterfort/dfllne.h"
 #include "asterfort/dfllpe.h"
 #include "asterfort/dfllsv.h"
 #include "asterfort/dfllvd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -139,8 +139,7 @@ subroutine dfllec(sdlist, dtmin)
         evd = evdord(iordr)
         loblig = oblord(iordr)
         do 101 iechec = 1, nechec
-            call getvtx(mcfact, 'EVENEMENT', iechec, iarg, 1,&
-                        even, ibid)
+            call getvtx(mcfact, 'EVENEMENT', iocc=iechec, scal=even, nbret=ibid)
             if (loblig) then
                 if (even .eq. 'ERREUR') then
                     lisord(iordr) = iechec

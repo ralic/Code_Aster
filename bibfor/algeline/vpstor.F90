@@ -2,13 +2,12 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                   vecpr8, vecpc8, mxresf, nbpari, nbparr,&
                   nbpark, nopara, mod45, resufi, resufr,&
                   resufk, iprec)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/indk24.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -27,6 +26,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 #include "asterfort/vtcrem.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
+!
     integer :: ineg, nbmode, neq, mxresf, nbpari, nbparr, nbpark
     integer :: iprec, resufi(mxresf, *)
     character(len=4) :: mod45
@@ -58,7 +58,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 !                     ENSUITE LES NOMS DE PARAMETRES DE TYPE REEL
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer ::imode, jmode, ier, nmin, imin, nmax, imax
+    integer :: imode, jmode, ier, nmin, imin, nmax, imax
     integer :: vali(3), jpara
     integer :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
     integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
@@ -98,31 +98,37 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         nosy = 'DEPL'
     endif
 !
-    lbasm  = .false.
-    lrefd  = .true.
+    lbasm = .false.
+    lrefd = .true.
     lstock = .false.
 !
     call jeexin(modes(1:8)//'           .REFD', iret)
     if (iret .eq. 0) then
-        call refdaj(' ', modes, -1, ' ', 'INIT', ' ' , iret)
+        call refdaj(' ', modes, -1, ' ', 'INIT',&
+                    ' ', iret)
         lrefd = .false.
     endif
 !
     typeba = ' '
-    call dismoi('C', 'TYPE_BASE', modes, 'RESU_DYNA', iarg, typeba, iret)
+    call dismoi('C', 'TYPE_BASE', modes, 'RESU_DYNA', iarg,&
+                typeba, iret)
     if (typeba(1:1) .ne. ' ') lbasm = .true.
     if (lbasm) then
-        call getvid(' ', 'RAIDE'        , 0, iarg, 1, raide, ier)
-        call dismoi('F', 'NOM_NUME_DDL' , raide, 'MATR_ASSE', iarg, nume , iret)
+        call getvid(' ', 'RAIDE', scal=raide, nbret=ier)
+        call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', iarg,&
+                    nume, iret)
     else
-        call dismoi('C', 'REF_RIGI_PREM', modes, 'RESU_DYNA', iarg, k24b, iret)
+        call dismoi('C', 'REF_RIGI_PREM', modes, 'RESU_DYNA', iarg,&
+                    k24b, iret)
         raide = k24b(1:8)
         call exisd('MATR_ASSE', raide, iret)
         if (iret .ne. 0) then
-            call dismoi('F', 'NOM_NUME_DDL' , raide, 'MATR_ASSE', iarg, nume, iret)
+            call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', iarg,&
+                        nume, iret)
             lstock = .true.
         else
-            call dismoi('C', 'NUME_DDL'     , modes, 'RESU_DYNA', iarg, nume, iret)
+            call dismoi('C', 'NUME_DDL', modes, 'RESU_DYNA', iarg,&
+                        nume, iret)
         endif
     endif
 !
@@ -160,26 +166,33 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 !     DETERMINER LE NOM DU MODELE, DU MATERIAU ET DES
 !     CARACTERISTIQUES ELEMENTAIRES
     if (lstock) then
-        if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon(1:9) .eq. 'MODE_ACOU' .or. &
-            typcon(1:10).eq.'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
-            call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', iarg, modele, iret)
-            call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', iarg, chmat , iret)
-            call dismoi('F', 'CARA_ELEM' , raide, 'MATR_ASSE', iarg, carael, iret)
+        if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon(1:9) .eq. 'MODE_ACOU' .or.&
+            typcon(1:10) .eq. 'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
+            call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', iarg,&
+                        modele, iret)
+            call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', iarg,&
+                        chmat, iret)
+            call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', iarg,&
+                        carael, iret)
         else if (typcon(1:9).eq.'MODE_GENE') then
             call jeveuo(raide(1:19)//'.LIME', 'L', jmodg)
             if (zk24(jmodg)(1:8) .eq. '        ') then
 !            ON EST PASSE PAR UN PROJ_MATR_BASE
                 call jeveuo(raide(1:19)//'.REFA', 'L', jmodg)
                 basemo = zk24(jmodg)(1:8)
-                call dismoi('C', 'REF_RIGI_PREM', basemo,'RESU_DYNA',iarg,raide2,iret)
+                call dismoi('C', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', iarg,&
+                            raide2, iret)
                 if (raide2 .eq. ' ') then
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
-                    sd2    = zk24(jmod2)(1:8)
-                    call rsadpa(sd2, 'L', 1, 'MODELE'  , 1, 0, jpara, k8b)
+                    sd2 = zk24(jmod2)(1:8)
+                    call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
+                                0, jpara, k8b)
                     modele = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, 0, jpara, k8b)
-                    chmat  = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, 0, jpara, k8b)
+                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
+                                0, jpara, k8b)
+                    chmat = zk8(jpara)
+                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
+                                0, jpara, k8b)
                     carael = zk8(jpara)
                     goto 39
                 else
@@ -191,12 +204,12 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                             call jeveuo(zk24(jlime)(1:8)//'      .MODG.SSME', 'L', jmacr)
                             call jeveuo(zk8(jmacr)//'.MAEL_INER_REFE', 'L', jbasm)
                             basemo = zk24(jbasm)(1:8)
-                            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA',&
-                                              iarg, raide2, iret)
+                            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', iarg,&
+                                        raide2, iret)
                             call jeveuo(raide2(1:19)//'.LIME', 'L', jlime)
                             call jeveuo(zk24(jlime)(1:8)//'           .RERR', 'L', jmeri)
                             modele = zk24(jmeri)(1:8)
-                            chmat  = zk24(jmeri+3)(1:8)
+                            chmat = zk24(jmeri+3)(1:8)
                             carael = zk24(jmeri+4)(1:8)
                             goto 39
                         endif
@@ -207,22 +220,29 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                 call jeveuo(zk24(jmodg)(1:8)//'      .MODG.SSME', 'L', jmacr)
                 call jeveuo(zk8(jmacr)//'.MAEL_INER_REFE', 'L', jbasm)
                 basemo = zk24(jbasm)(1:8)
-                call dismoi('C', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', iarg, raide2, iret)
+                call dismoi('C', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', iarg,&
+                            raide2, iret)
                 if (raide2 .eq. ' ') then
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
-                    sd2    = zk24(jmod2)(1:8)
-                    call rsadpa(sd2, 'L', 1, 'MODELE'  , 1, 0, jpara, k8b)
+                    sd2 = zk24(jmod2)(1:8)
+                    call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
+                                0, jpara, k8b)
                     modele = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1, 0, jpara, k8b)
-                    chmat  = zk8(jpara)
-                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1, 0, jpara, k8b)
+                    call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
+                                0, jpara, k8b)
+                    chmat = zk8(jpara)
+                    call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
+                                0, jpara, k8b)
                     carael = zk8(jpara)
                     goto 39
                 endif
             endif
-            call dismoi('F', 'NOM_MODELE', raide2(1:8), 'MATR_ASSE', iarg, modele, iret)
-            call dismoi('F', 'CHAM_MATER', raide2(1:8), 'MATR_ASSE', iarg, chmat , iret)
-            call dismoi('F', 'CARA_ELEM' , raide2(1:8), 'MATR_ASSE', iarg, carael, iret)
+            call dismoi('F', 'NOM_MODELE', raide2(1:8), 'MATR_ASSE', iarg,&
+                        modele, iret)
+            call dismoi('F', 'CHAM_MATER', raide2(1:8), 'MATR_ASSE', iarg,&
+                        chmat, iret)
+            call dismoi('F', 'CARA_ELEM', raide2(1:8), 'MATR_ASSE', iarg,&
+                        carael, iret)
         endif
     endif
 !

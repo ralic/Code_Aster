@@ -29,15 +29,15 @@ subroutine ssdt74(nomres, nomcmd)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/ajlagr.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dyarch.h"
 #include "asterfort/extdia.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -142,14 +142,10 @@ subroutine ssdt74(nomres, nomcmd)
 !
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                method, n1)
-    call getvis('PARA_LAME_FLUI', 'NMAX_ITER', 1, iarg, 1,&
-                itemax, n1)
-    call getvr8('PARA_LAME_FLUI', 'RESI_RELA', 1, iarg, 1,&
-                prec, n1)
-    call getvr8('PARA_LAME_FLUI', 'LAMBDA', 1, iarg, 1,&
-                xlambd, n1)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
+    call getvis('PARA_LAME_FLUI', 'NMAX_ITER', iocc=1, scal=itemax, nbret=n1)
+    call getvr8('PARA_LAME_FLUI', 'RESI_RELA', iocc=1, scal=prec, nbret=n1)
+    call getvr8('PARA_LAME_FLUI', 'LAMBDA', iocc=1, scal=xlambd, nbret=n1)
     call getfac('EXCIT', nexcit)
     call getfac('EXCIT_RESU', nexcir)
     nbchoc = 0
@@ -158,30 +154,26 @@ subroutine ssdt74(nomres, nomcmd)
 !
 !     --- RECUPERATION DES MATRICES PROJETEES ---
 !
-    call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                masgen, nm)
-    call getvid(' ', 'MATR_RIGI', 0, iarg, 1,&
-                riggen, nr)
-    call getvid(' ', 'MATR_AMOR', 0, iarg, 1,&
-                amogen, namor)
+    call getvid(' ', 'MATR_MASS', scal=masgen, nbret=nm)
+    call getvid(' ', 'MATR_RIGI', scal=riggen, nbret=nr)
+    call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=namor)
     if (nexcit .ne. 0) then
         call wkvect('&&SSDT74.NOMVEC', 'V V K8', nexcit, jvec)
         do 10 i = 1, nexcit
-            call getvid('EXCIT', 'VECT_ASSE_GENE', i, iarg, 1,&
-                        vecgen, nv)
+            call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen, nbret=nv)
             zk8(jvec-1+i) = vecgen
 10      continue
     endif
     if (nexcir .ne. 0) then
         call wkvect('&&SSDT74.NOMVER', 'V V K8', nexcir, jvecr)
         do 11 i = 1, nexcir
-            call getvid('EXCIT_RESU', 'RESULTAT', i, iarg, 1,&
-                        resgen, nv)
+            call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resgen, nbret=nv)
             zk8(jvecr-1+i) = resgen
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
             call jeveuo(masgen//'           .REFA', 'L', j1)
             bamo1=zk24(j1-1+1)(1:8)
-            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid, bamo2, ier)
+            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid,&
+                        bamo2, ier)
             if (bamo1 .ne. bamo2) then
                 call u2mesg('F', 'ALGORITH17_18', 0, ' ', 1,&
                             i, 0, 0.d0)
@@ -303,8 +295,7 @@ subroutine ssdt74(nomres, nomcmd)
 !
 !     --- ARCHIVAGE ---
     if (method(1:5) .eq. 'ADAPT') then
-        call getvis('ARCHIVAGE', 'PAS_ARCH', 1, iarg, 1,&
-                    iparch, n1)
+        call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=n1)
         if (n1 .eq. 0) iparch = 1
         dtarch = dtmax*iparch
         nbsauv = int((tfin-tinit)/dtarch) + 1
@@ -431,15 +422,15 @@ subroutine ssdt74(nomres, nomcmd)
                     fbid, typbas, k8b, tinit, zi(jarch),&
                     nbsauv, itemax, prec, xlambd, lflu,&
                     nbchoc, zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
-                    nbrede, zr(jrede), zk8(jfond), nbrevi,&
-                    zr(jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
-                    zi(jordr), zr(jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
-                    zi(jadcho), zi(jredc), zr(jredd), zi(jrevc), zr(jrevv),&
-                    zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8( jnodep),&
-                    zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
-                    0, fbid, fbid, 0.d0, fbid,&
-                    nbpal, dtsto, vrotat, prdeff, nomres,&
-                    ntotex, zr(jpass))
+                    nbrede, zr(jrede), zk8(jfond), nbrevi, zr(jrevi),&
+                    zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs), zi(jordr),&
+                    zr(jinst), zr(jfcho), zr(jdcho), zr(jvcho), zi(jadcho),&
+                    zi(jredc), zr(jredd), zi(jrevc), zr(jrevv), zr(jcoefm),&
+                    zi(jiadve), zi(jinumo), zi(jidesc), zk8( jnodep), zk8(jnovit),&
+                    zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot, 0,&
+                    fbid, fbid, 0.d0, fbid, nbpal,&
+                    dtsto, vrotat, prdeff, nomres, ntotex,&
+                    zr(jpass))
 !
     else if (method(1:5).eq.'ADAPT') then
         call mdadap(dt, dtmax, neqgen, zr(jpuls), zr(jpul2),&
@@ -447,14 +438,14 @@ subroutine ssdt74(nomres, nomcmd)
                     zr(jamog), desca, typbas, k8b, tinit,&
                     tfin, dtarch, nbsauv, itemax, prec,&
                     xlambd, lflu, nbchoc, zi( jranc), zr(jdepl),&
-                    zr(jparc), zk8(jnoec), nbrede, zr(jrede),&
-                    zk8(jfond), nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps),&
-                    zr( jvits), zr(jaccs), zr(jpass), zi(jordr), zr(jinst),&
-                    zr(jfcho), zr( jdcho), zr(jvcho), zi(jadcho), zi(jredc),&
-                    zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
-                    zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
-                    monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevv))
+                    zr(jparc), zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
+                    nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps), zr( jvits),&
+                    zr(jaccs), zr(jpass), zi(jordr), zr(jinst), zr(jfcho),&
+                    zr( jdcho), zr(jvcho), zi(jadcho), zi(jredc), zr(jredd),&
+                    zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep),&
+                    zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
+                    nbpal, dtsto, vrotat, prdeff, method,&
+                    nomres, ntotex, zi(jrevc), zr(jrevv))
 !
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&
@@ -463,13 +454,13 @@ subroutine ssdt74(nomres, nomcmd)
                     r8b, lamor, zr(jamog), desca, r8b,&
                     fbid, fbid, typbas, k8b, lflu,&
                     nbchoc, zk8(jinti), zi(jranc), zr(jdepl), zr(jparc),&
-                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
-                    nbrevi, zr(jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve),&
-                    zi(jinumo), zi(jidesc), zk8( jnodep), zk8(jnovit), zk8(jnoacc),&
-                    zk8(jnomfo), zr(jpsid), monmot, 0, fbid,&
-                    fbid, 0.d0, fbid, nbpal, dtsto,&
-                    vrotat, prdeff, nomres, ntotex, masgen,&
-                    riggen, amogen)
+                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
+                    zr(jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve), zi(jinumo),&
+                    zi(jidesc), zk8( jnodep), zk8(jnovit), zk8(jnoacc), zk8(jnomfo),&
+                    zr(jpsid), monmot, 0, fbid, fbid,&
+                    0.d0, fbid, nbpal, dtsto, vrotat,&
+                    prdeff, nomres, ntotex, masgen, riggen,&
+                    amogen)
 !
 !
 !

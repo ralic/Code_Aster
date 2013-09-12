@@ -23,13 +23,12 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -43,6 +42,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 #include "asterfort/xcatls.h"
 #include "asterfort/xls2d.h"
 #include "asterfort/xls3d.h"
+!
     character(len=8) :: noma, meth, nfonf, nfong, cote
     character(len=8) :: maiaux
     character(len=16) :: geofis
@@ -229,10 +229,8 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !       DANS LE CAS OU ON DONNE UN CHAMP DE LEVEL SET
 !-----------------------------------------------------------------------
 !
-        call getvid('DEFI_FISS', 'CHAM_NO_LSN', 1, iarg, 1,&
-                    nchamn, me4)
-        call getvid('DEFI_FISS', 'CHAM_NO_LST', 1, iarg, 1,&
-                    nchamt, ibid)
+        call getvid('DEFI_FISS', 'CHAM_NO_LSN', iocc=1, scal=nchamn, nbret=me4)
+        call getvid('DEFI_FISS', 'CHAM_NO_LST', iocc=1, scal=nchamt, nbret=ibid)
 !
         chslsn='&&XINILS.CHAM_S_LSN'
         chslst='&&XINILS.CHAM_S_LST'

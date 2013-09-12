@@ -23,12 +23,11 @@ subroutine op0148()
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
@@ -44,6 +43,7 @@ subroutine op0148()
 #include "asterfort/titre.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, ibid, icham, icham1, ichref, icode, idep
     integer :: idis, ifoi, ifor, ifreq, ifsic, ifsvk, im
@@ -72,19 +72,15 @@ subroutine op0148()
     call infmaj()
 !
     call getres(nomu, concep, cmd)
-    call getvtx(' ', 'NOM_CHAM', 0, iarg, 1,&
-                optcha, ibid)
-    call getvtx(' ', 'NOM_CMP', 0, iarg, 1,&
-                nomcmp, ibid)
+    call getvtx(' ', 'NOM_CHAM', scal=optcha)
+    call getvtx(' ', 'NOM_CMP', scal=nomcmp)
 !
 ! --- 3.RECUPERATION DU NOM DE LA TABLE
 !       VERIFICATION DES PARAMETRES ---
 !
-    call getvid(' ', 'INTE_SPEC_GENE', 0, iarg, 1,&
-                table, ibid)
+    call getvid(' ', 'INTE_SPEC_GENE', scal=table)
 !
-    call getvid(' ', 'BASE_ELAS_FLUI', 0, iarg, 1,&
-                base, ibid)
+    call getvid(' ', 'BASE_ELAS_FLUI', scal=base, nbret=ibid)
     if (ibid .eq. 0) then
         call speph0(nomu, table)
         goto 9999
@@ -114,12 +110,10 @@ subroutine op0148()
         else
             ismf = 6
         endif
-        call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                    mode, ibid)
+        call getvid(' ', 'MODE_MECA', scal=mode)
     endif
 !
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                optcal, ibid)
+    call getvtx(' ', 'OPTION', scal=optcal)
     intphy = .false.
     intmod = .false.
     if (optcal(1:4) .eq. 'TOUT') intphy = .true.
@@ -128,8 +122,7 @@ subroutine op0148()
 !
 ! --- 2.RECUPERATION DES OBJETS DE LA BASE MODALE PERTURBEE ---
 !
-    call getvid(' ', 'BASE_ELAS_FLUI', 0, iarg, 1,&
-                base, ibid)
+    call getvid(' ', 'BASE_ELAS_FLUI', scal=base)
 !
     refeba = base//'.REMF'
     call jeveuo(refeba, 'L', irefba)
@@ -149,10 +142,8 @@ subroutine op0148()
     vite = base//'.VITE'
     call jeveuo(vite, 'L', ivite)
     call jelira(vite, 'LONUTI', npv)
-    call getvr8(' ', 'VITE_FLUI', 0, iarg, 1,&
-                vitef, zi)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, zi)
+    call getvr8(' ', 'VITE_FLUI', scal=vitef)
+    call getvr8(' ', 'PRECISION', scal=epsi)
 !
     ivitef = 1
     do 300 i3 = 1, npv
@@ -182,8 +173,7 @@ subroutine op0148()
 !
 ! --- 3.RECUPERATION DU NOM DE LA TABLE ---
 !
-    call getvid(' ', 'INTE_SPEC_GENE', 0, iarg, 1,&
-                table, ibid)
+    call getvid(' ', 'INTE_SPEC_GENE', scal=table)
 !
 ! --- CARACTERISATION DU CONTENU DE LA TABLE   ---
 ! --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---

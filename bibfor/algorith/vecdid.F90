@@ -20,13 +20,12 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 !
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/dbgcal.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
@@ -40,6 +39,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 #include "asterfort/reajre.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/u2mesk.h"
+!
     character(len=*) :: vecelz
     character(len=24) :: modele
     character(len=19) :: depdid
@@ -107,10 +107,8 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 !
 ! --- CONSTRUCTION DE LA CONFIGURATION DE REFERENCE
 !
-    call getvis('ETAT_INIT', 'NUME_DIDI', 1, iarg, 1,&
-                numref, n1)
-    call getvid('ETAT_INIT', 'EVOL_NOLI', 1, iarg, 1,&
-                evol, nevo)
+    call getvis('ETAT_INIT', 'NUME_DIDI', iocc=1, scal=numref, nbret=n1)
+    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=evol, nbret=nevo)
     if ((n1.gt.0) .and. (nevo.gt.0)) then
         call rsexch(' ', evol, 'DEPL', numref, depdid,&
                     iret)

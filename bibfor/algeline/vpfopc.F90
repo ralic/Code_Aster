@@ -2,9 +2,8 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
                   raide, lqz, solveu)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterc/r8depi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -14,6 +13,7 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
 #include "asterfort/preres.h"
 #include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
+!
     character(len=*) :: matopa, raide
     integer :: lmasse, lraide
     real(kind=8) :: fmin
@@ -74,8 +74,7 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
     fshift = r8depi()*fmin
     ashift = 0.d0
 !
-    call getvr8('CALC_FREQ', 'AMOR_REDUIT', 1, iarg, 1,&
-                ashift, ibid)
+    call getvr8('CALC_FREQ', 'AMOR_REDUIT', iocc=1, scal=ashift, nbret=ibid)
 !
     if (abs(ashift) .ge. 1.d0) then
         ashift = 0.95d0

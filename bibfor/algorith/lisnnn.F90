@@ -17,14 +17,14 @@ subroutine lisnnn(motfac, iexci, charge)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getexm.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+!
     character(len=16) :: motfac
     integer :: iexci
     character(len=8) :: charge
@@ -59,8 +59,7 @@ subroutine lisnnn(motfac, iexci, charge)
 !
     eximve = getexm(motfac,'VECT_ASSE')
     if (eximve .eq. 1) then
-        call getvid(motfac, 'VECT_ASSE', iexci, iarg, 1,&
-                    charge, nval)
+        call getvid(motfac, 'VECT_ASSE', iocc=iexci, scal=charge, nbret=nval)
         ASSERT(nval.ge.0)
     endif
 !
@@ -68,15 +67,13 @@ subroutine lisnnn(motfac, iexci, charge)
 !
     eximvg = getexm(motfac,'VECT_ASSE_GENE')
     if (eximvg .eq. 1) then
-        call getvid(motfac, 'VECT_ASSE_GENE', iexci, iarg, 1,&
-                    charge, nval)
+        call getvid(motfac, 'VECT_ASSE_GENE', iocc=iexci, scal=charge, nbret=nval)
         ASSERT(nval.ge.0)
     endif
 !
 ! --- CHARGE STANDARD
 !
-    call getvid(motfac, 'CHARGE', iexci, iarg, 1,&
-                charge, nval)
+    call getvid(motfac, 'CHARGE', iocc=iexci, scal=charge, nbret=nval)
     ASSERT(nval.ge.0)
 !
     call jedema()

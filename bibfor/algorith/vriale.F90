@@ -1,5 +1,5 @@
 subroutine vriale()
-    implicit   none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,10 +25,10 @@ subroutine vriale()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mess.h"
     integer :: ibid, nbamor, nbmode, nindex, nbindi, nbindj, nbcmpi, nbcmpj
     integer :: nnoeex, nvasex, ncmpex, nmost1, napexc
@@ -43,26 +43,19 @@ subroutine vriale()
 !
 !---NB MODES=NB AMORTISSEMENTS
 !
-    call getvr8('BASE_MODALE', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8b, nbamor)
-    call getvis('BASE_MODALE', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, nbmode)
+    call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nbamor)
+    call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=0, nbret=nbmode)
     nbamor = -nbamor
     nbmode = -nbmode
     if (nbamor .ne. 0 .and. nbamor .ne. nbmode) then
         call u2mess('E', 'ALGORITH11_29')
     endif
 !
-    call getvtx('EXCIT', 'MODAL', 1, iarg, 1,&
-                excmod, ibid)
-    call getvis('EXCIT', 'NUME_ORDRE_I', 1, iarg, 0,&
-                ibid, nindex)
-    call getvtx('EXCIT', 'GRANDEUR', 1, iarg, 1,&
-                graexc, ibid)
-    call getvis('EXCIT', 'NUME_ORDRE_I', 1, iarg, 0,&
-                ibid, nbindi)
-    call getvis('EXCIT', 'NUME_ORDRE_J', 1, iarg, 0,&
-                ibid, nbindj)
+    call getvtx('EXCIT', 'MODAL', iocc=1, scal=excmod, nbret=ibid)
+    call getvis('EXCIT', 'NUME_ORDRE_I', iocc=1, nbval=0, nbret=nindex)
+    call getvtx('EXCIT', 'GRANDEUR', iocc=1, scal=graexc, nbret=ibid)
+    call getvis('EXCIT', 'NUME_ORDRE_I', iocc=1, nbval=0, nbret=nbindi)
+    call getvis('EXCIT', 'NUME_ORDRE_J', iocc=1, nbval=0, nbret=nbindj)
 !
 !--- COHERENCE ENTRE LES MODES ET L'INTERSPECTRE DE LA FONCTION
 !                                  ACCEPTANCE
@@ -75,14 +68,10 @@ subroutine vriale()
 !---NNOEEX=NINDEX OU NNOEEX=2*NINDEX
 !
     if (nbindi .eq. 0) then
-        call getvtx('EXCIT', 'NOEUD_I', 1, iarg, 0,&
-                    k8b, nbindi)
-        call getvtx('EXCIT', 'NOEUD_J', 1, iarg, 0,&
-                    k8b, nbindj)
-        call getvtx('EXCIT', 'NOM_CMP_I', 1, iarg, 0,&
-                    k8b, nbcmpi)
-        call getvtx('EXCIT', 'NOM_CMP_J', 1, iarg, 0,&
-                    k8b, nbcmpj)
+        call getvtx('EXCIT', 'NOEUD_I', iocc=1, nbval=0, nbret=nbindi)
+        call getvtx('EXCIT', 'NOEUD_J', iocc=1, nbval=0, nbret=nbindj)
+        call getvtx('EXCIT', 'NOM_CMP_I', iocc=1, nbval=0, nbret=nbcmpi)
+        call getvtx('EXCIT', 'NOM_CMP_J', iocc=1, nbval=0, nbret=nbcmpj)
         if (nbcmpi .ne. nbcmpj) then
             call u2mess('E', 'PREPOST3_84')
         endif
@@ -95,8 +84,7 @@ subroutine vriale()
     endif
     nindex = -nbindi
 !
-    call getvtx('EXCIT', 'NOEUD', 1, iarg, 0,&
-                k8b, nnoeex)
+    call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=0, nbret=nnoeex)
     nnoeex = -nnoeex
     if (nnoeex .ne. 0) then
         napexc = nnoeex
@@ -104,8 +92,7 @@ subroutine vriale()
         napexc=0
     endif
 !
-    call getvid('EXCIT', 'CHAM_NO', 1, iarg, 0,&
-                k8b, nvasex)
+    call getvid('EXCIT', 'CHAM_NO', iocc=1, nbval=0, nbret=nvasex)
     nvasex = -nvasex
     if (nvasex .ne. 0) then
         napexc = nvasex
@@ -122,8 +109,7 @@ subroutine vriale()
 !
 !------NNOEEX=NCMPEX
 !
-    call getvtx('EXCIT', 'NOM_CMP', 1, iarg, 0,&
-                k8b, ncmpex)
+    call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=0, nbret=ncmpex)
     ncmpex = -ncmpex
     if (nnoeex .ne. ncmpex) then
         call u2mess('E', 'ALGORITH11_34')
@@ -131,8 +117,7 @@ subroutine vriale()
 !
 !---PRESENCE DE MODE STATIQUE QUAND ON EST EN DEPL IMPOSE
 !
-    call getvid(' ', 'MODE_STAT', 0, iarg, 0,&
-                k8b, nmost1)
+    call getvid(' ', 'MODE_STAT', nbval=0, nbret=nmost1)
     if ((graexc.eq.'DEPL_R') .and. (nmost1.eq.0) .and. (nvasex.eq.0)) then
         call u2mess('E', 'ALGORITH11_35')
     else if ((graexc.ne.'DEPL_R').and.(nmost1.ne.0)) then
@@ -141,17 +126,13 @@ subroutine vriale()
 !
 !---FREMIN < FREMAX
 !
-    call getvr8('REPONSE', 'FREQ_MIN', 1, iarg, 0,&
-                r8b, ibid)
+    call getvr8('REPONSE', 'FREQ_MIN', iocc=1, nbval=0, nbret=ibid)
     if (ibid .ne. 0) then
-        call getvr8('REPONSE', 'FREQ_MIN', 1, iarg, 1,&
-                    fremin, ibid)
+        call getvr8('REPONSE', 'FREQ_MIN', iocc=1, scal=fremin, nbret=ibid)
     endif
-    call getvr8('REPONSE', 'FREQ_MAX', 1, iarg, 0,&
-                r8b, ibid)
+    call getvr8('REPONSE', 'FREQ_MAX', iocc=1, nbval=0, nbret=ibid)
     if (ibid .ne. 0) then
-        call getvr8('REPONSE', 'FREQ_MAX', 1, iarg, 1,&
-                    fremax, ibid)
+        call getvr8('REPONSE', 'FREQ_MAX', iocc=1, scal=fremax, nbret=ibid)
         if (fremin .ge. fremax) then
             call u2mess('E', 'ALGORITH11_37')
         endif

@@ -21,11 +21,11 @@ subroutine nmdopo(sddyna, method, sdpost)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -169,29 +169,29 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
 ! ----- TYPE DE MATRICE DE RIGIDITE
 !
-        call getvtx(motfac, 'MATR_RIGI', iocc, iarg, 1,&
-                    matrig, iret)
+        call getvtx(motfac, 'MATR_RIGI', iocc=iocc, scal=matrig, nbret=iret,&
+                    isdefault=iarg)
         call nmecsd('POST_TRAITEMENT', sdpost, 'TYPE_MATR_VIBR', ibid, r8bid,&
                     matrig)
 !
 ! ----- NOMBRE DE FREQUENCES
 !
-        call getvis(motfac, 'NB_FREQ', iocc, iarg, 1,&
-                    nfreq, iret)
+        call getvis(motfac, 'NB_FREQ', iocc=iocc, scal=nfreq, nbret=iret,&
+                    isdefault=iarg)
         call nmecsd('POST_TRAITEMENT', sdpost, 'NB_FREQ_VIBR', nfreq, r8bid,&
                     k24bid)
 !
 ! ----- DIMENSION SOUS-ESPACE
 !
-        call getvis(motfac, 'COEF_DIM_ESPACE', iocc, iarg, 1,&
-                    cdsp, iret)
+        call getvis(motfac, 'COEF_DIM_ESPACE', iocc=iocc, scal=cdsp, nbret=iret,&
+                    isdefault=iarg)
         call nmecsd('POST_TRAITEMENT', sdpost, 'COEF_DIM_VIBR', cdsp, r8bid,&
                     k24bid)
 !
 ! ----- BANDE DE RECH. DE FREQ.
 !
-        call getvr8(motfac, 'BANDE', iocc, iarg, 2,&
-                    bande, iret)
+        call getvr8(motfac, 'BANDE', iocc=iocc, nbval=2, vect=bande,&
+                    nbret=iret, isdefault=iarg)
         if (iret .eq. 0) then
             optmod = 'PLUS_PETITE'
         else
@@ -223,22 +223,22 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
 ! ----- NOMBRE DE FREQUENCES
 !
-        call getvis(motfac, 'NB_FREQ', iocc, iarg, 1,&
-                    nfreq, iret)
+        call getvis(motfac, 'NB_FREQ', iocc=iocc, scal=nfreq, nbret=iret,&
+                    isdefault=iarg)
         call nmecsd('POST_TRAITEMENT', sdpost, 'NB_FREQ_FLAMB', nfreq, r8bid,&
                     k24bid)
 !
 ! ----- DIMENSION SOUS-ESPACE
 !
-        call getvis(motfac, 'COEF_DIM_ESPACE', iocc, iarg, 1,&
-                    cdsp, iret)
+        call getvis(motfac, 'COEF_DIM_ESPACE', iocc=iocc, scal=cdsp, nbret=iret,&
+                    isdefault=iarg)
         call nmecsd('POST_TRAITEMENT', sdpost, 'COEF_DIM_FLAMB', cdsp, r8bid,&
                     k24bid)
 !
 ! ----- BANDE DE RECH. DE FREQ.
 !
-        call getvr8(motfac, 'CHAR_CRIT', iocc, iarg, 2,&
-                    bande, iret)
+        call getvr8(motfac, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=bande,&
+                    nbret=iret, isdefault=iarg)
         if (iarg .eq. 0) then
             optmod = 'BANDE'
         else
@@ -253,8 +253,8 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
 ! ----- PRISE EN COMPTE MATRICE RIGIDITE GEOMETRIQUE OU PAS
 !
-        call getvtx(motfac, 'RIGI_GEOM', iocc, iarg, 1,&
-                    ngeo, iret)
+        call getvtx(motfac, 'RIGI_GEOM', iocc=iocc, scal=ngeo, nbret=iret,&
+                    isdefault=iarg)
         if (ngeo .eq. 'NON') then
             optrig = 'RIGI_GEOM_NON'
         else if (ngeo.eq.'OUI') then
@@ -267,8 +267,8 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
 ! ----- EXCLUSION DE CERTAINS DDLS  ET MODIFICATION RIGIDITE
 !
-        call getvtx(motfac, 'DDL_EXCLUS', iocc, iarg, 0,&
-                    k16bid, nddle)
+        call getvtx(motfac, 'DDL_EXCLUS', iocc=iocc, nbval=0, nbret=nddle,&
+                    isdefault=iarg)
         nddle = -nddle
         call nmecsd('POST_TRAITEMENT', sdpost, 'NB_DDL_EXCLUS', nddle, r8bid,&
                     k24bid)
@@ -276,8 +276,8 @@ subroutine nmdopo(sddyna, method, sdpost)
             if (nddle .le. maxddl) then
                 ddlexc = sdpost(1:14)//'.EXCL'
                 call wkvect(ddlexc, 'V V K8', nddle, jpexcl)
-                call getvtx(motfac, 'DDL_EXCLUS', iocc, iarg, nddle,&
-                            zk8(jpexcl), iret)
+                call getvtx(motfac, 'DDL_EXCLUS', iocc=iocc, nbval=nddle, vect=zk8(jpexcl),&
+                            nbret=iret, isdefault=iarg)
                 call nmecsd('POST_TRAITEMENT', sdpost, 'NOM_DDL_EXCLUS', ibid, r8bid,&
                             ddlexc)
             else
@@ -287,8 +287,8 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
 ! ----- ETUDE DE STABILITE
 !
-        call getvtx(motfac, 'DDL_STAB', iocc, iarg, 0,&
-                    k16bid, nsta)
+        call getvtx(motfac, 'DDL_STAB', iocc=iocc, nbval=0, nbret=nsta,&
+                    isdefault=iarg)
         nsta = -nsta
         call nmecsd('POST_TRAITEMENT', sdpost, 'NB_DDL_STAB', nsta, r8bid,&
                     k24bid)
@@ -296,16 +296,16 @@ subroutine nmdopo(sddyna, method, sdpost)
             if (nsta .le. maxddl) then
                 dlstab = sdpost(1:14)//'.STAB'
                 call wkvect(dlstab, 'V V K8', nsta, jpstab)
-                call getvtx(motfac, 'DDL_STAB', iocc, iarg, nsta,&
-                            zk8(jpstab), iret)
+                call getvtx(motfac, 'DDL_STAB', iocc=iocc, nbval=nsta, vect=zk8(jpstab),&
+                            nbret=iret, isdefault=iarg)
                 call nmecsd('POST_TRAITEMENT', sdpost, 'NOM_DDL_STAB', ibid, r8bid,&
                             dlstab)
             else
                 ASSERT(.false.)
             endif
         endif
-        call getvtx(motfac, 'MODI_RIGI', iocc, iarg, 1,&
-                    modrig, iret)
+        call getvtx(motfac, 'MODI_RIGI', iocc=iocc, scal=modrig, nbret=iret,&
+                    isdefault=iarg)
         if (modrig(1:3) .eq. 'OUI') then
             opmrig = 'MODI_RIGI_OUI'
         else if (modrig(1:3).eq.'NON') then
@@ -315,12 +315,12 @@ subroutine nmdopo(sddyna, method, sdpost)
         endif
         call nmecsd('POST_TRAITEMENT', sdpost, 'MODI_RIGI', ibid, r8bid,&
                     opmrig)
-        call getvr8(motfac, 'PREC_INSTAB', iocc, iarg, 1,&
-                    prec, iret)
+        call getvr8(motfac, 'PREC_INSTAB', iocc=iocc, scal=prec, nbret=iret,&
+                    isdefault=iarg)
         call nmecsd('POST_TRAITEMENT', sdpost, 'PREC_INSTAB', ibid, prec,&
                     k24bid)
-        call getvtx(motfac, 'SIGNE', iocc, iarg, 1,&
-                    sign, iret)
+        call getvtx(motfac, 'SIGNE', iocc=iocc, scal=sign, nbret=iret,&
+                    isdefault=iarg)
         call nmecsd('POST_TRAITEMENT', sdpost, 'SIGN_INSTAB', ibid, r8bid,&
                     sign)
 !

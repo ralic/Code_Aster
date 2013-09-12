@@ -22,8 +22,6 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
 #include "asterc/r8pi.h"
@@ -32,6 +30,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 #include "asterfort/carces.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedisp.h"
@@ -44,6 +43,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
+!
     integer :: tdisp, nbnop, lisnoe(nbnop), nbnot, nbordr, nnoini
     integer :: tspaq
     logical :: fordef, post
@@ -137,8 +137,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
 ! RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 !
-        call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                    chmat1, iret)
+        call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
         chmat = chmat1//'.CHAMP_MAT'
         cesmat = '&&AVGRNO.CESMAT'
         call carces(chmat, 'ELEM', ' ', 'V', cesmat,&

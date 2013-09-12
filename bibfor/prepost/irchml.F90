@@ -8,8 +8,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
 #include "asterfort/celcel.h"
 #include "asterfort/celces.h"
 #include "asterfort/celver.h"
@@ -17,6 +15,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 #include "asterfort/cncinv.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
 #include "asterfort/i2trgi.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/iradhs.h"
@@ -41,6 +40,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chamel, nomcmp(*), form, titre, loc, nomsd, nomsym
     character(len=*) :: formr, partie
     real(kind=8) :: borsup, borinf
@@ -94,7 +94,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !     NIVE   : NIVEAU IMPRESSION CASTEM 3 OU 10
 ! ----------------------------------------------------------------------
 !
-    character(len=1) ::  type
+    character(len=1) :: type
     integer :: gd, nuti, jcelv, iprem
     integer :: vali(2), versio
     character(len=8) :: nomma, nomgd, nomel, nomno, cbid
@@ -303,8 +303,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
             endif
         endif
         call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
-        call getvis(' ', 'VERSION', 0, iarg, 1,&
-                    versio, iret)
+        call getvis(' ', 'VERSION', scal=versio, nbret=iret)
         call jeexin('&IRCHML.PERMUTA', iret)
         if (iret .eq. 0) call iradhs(versio)
         call jeveuo('&&IRADHS.PERMUTA', 'L', jperm)

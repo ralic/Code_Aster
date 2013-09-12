@@ -1,13 +1,12 @@
 subroutine cmcovo(main, maout, nbma, lima, prefno,&
                   prefma, inima, epais, plan, trans)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"
@@ -33,6 +32,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
+!
     integer :: inima, nbma, lima(nbma)
     character(len=8) :: main, maout, prefno, prefma, plan, trans
     real(kind=8) :: epais
@@ -76,7 +76,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg, jrefe
     integer :: nbmai, jgg, nbmat, jno, ima2
     character(len=1) :: k1b
-    character(len=8) ::  knume, cdim, typm, ma1, ma2
+    character(len=8) :: knume, cdim, typm, ma1, ma2
     character(len=10) :: kangl
     character(len=24) :: normno, nonuma, grpmai, grpmav
     character(len=24) :: valk(4)
@@ -553,8 +553,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 112          continue
 110      continue
 !
-        call getvtx('COQU_VOLU', 'NOM', 1, iarg, 1,&
-                    nomg, n1)
+        call getvtx('COQU_VOLU', 'NOM', iocc=1, scal=nomg, nbret=n1)
         call jeexin(jexnom(grpmai, nomg), iret)
         if (iret .eq. 0) then
             call jecroc(jexnom(grpmai, nomg))

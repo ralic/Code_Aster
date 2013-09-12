@@ -26,12 +26,12 @@ subroutine op0093()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/arch93.h"
 #include "asterfort/cresol.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -88,10 +88,8 @@ subroutine op0093()
 !
     call getres(resu, concep, nomcmd)
 !
-    call getvid(' ', 'MATR_RIGI', 1, iarg, 1,&
-                raide, nra)
-    call getvid(' ', 'MATR_MASS', 1, iarg, 1,&
-                masse, nma)
+    call getvid(' ', 'MATR_RIGI', scal=raide, nbret=nra)
+    call getvid(' ', 'MATR_MASS', scal=masse, nbret=nma)
 !
     call getfac('PSEUDO_MODE', nbpsmo)
     if (nbpsmo .ne. 0) then
@@ -199,8 +197,7 @@ subroutine op0093()
         if (massfa .lt. 1) then
             call mtdscr(masse)
         endif
-        call getvis('MODE_INTERF', 'NBMOD', 1, iarg, 1,&
-                    nbmodi, ibid)
+        call getvis('MODE_INTERF', 'NBMOD', iocc=1, scal=nbmodi, nbret=ibid)
         call moin93(masse, raide, raidfa, nbmodi, mointf,&
                     vefreq)
     endif

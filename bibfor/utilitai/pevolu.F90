@@ -1,11 +1,6 @@
 subroutine pevolu(resu, modele, nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -17,6 +12,10 @@ subroutine pevolu(resu, modele, nbocc)
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -38,6 +37,7 @@ subroutine pevolu(resu, modele, nbocc)
 #include "asterfort/u2mess.h"
 #include "asterfort/utflmd.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc
     character(len=8) :: modele
     character(len=19) :: resu
@@ -97,23 +97,15 @@ subroutine pevolu(resu, modele, nbocc)
 !
 ! --- 2- RECUPERATION DU RESULTAT ET DES NUMEROS D'ORDRE
 !     ==================================================
-    call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                resuco, nr)
-    call getvid(' ', 'CHAM_GD', 0, iarg, 1,&
-                chamg, nd)
+    call getvid(' ', 'RESULTAT', scal=resuco, nbret=nr)
+    call getvid(' ', 'CHAM_GD', scal=chamg, nbret=nd)
 !
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                prec, np)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, nc)
-    call getvr8(' ', 'INST', 0, iarg, 0,&
-                r8b, ni)
-    call getvis(' ', 'NUME_ORDRE', 0, iarg, 0,&
-                ibid, no)
-    call getvid(' ', 'LIST_INST', 0, iarg, 0,&
-                k8b, nli)
-    call getvid(' ', 'LIST_ORDRE', 0, iarg, 0,&
-                k8b, nlo)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
+    call getvr8(' ', 'INST', nbval=0, nbret=ni)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=no)
+    call getvid(' ', 'LIST_INST', nbval=0, nbret=nli)
+    call getvid(' ', 'LIST_ORDRE', nbval=0, nbret=nlo)
 !
     valr = '&&PEVOLU.VALR'
     vali = '&&PEVOLU.VALI'
@@ -141,15 +133,13 @@ subroutine pevolu(resu, modele, nbocc)
             exiord=.true.
             nbordr=-no
             call wkvect(knum, 'V V I', nbordr, jno)
-            call getvis(' ', 'NUME_ORDRE', 0, iarg, nbordr,&
-                        zi(jno), iret)
+            call getvis(' ', 'NUME_ORDRE', nbval=nbordr, vect=zi(jno), nbret=iret)
         endif
 !
 !       -- LIST_ORDRE --
         if (nlo .ne. 0) then
             exiord=.true.
-            call getvid(' ', 'LIST_ORDRE', 0, iarg, 1,&
-                        lisins, iret)
+            call getvid(' ', 'LIST_ORDRE', scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
@@ -158,14 +148,12 @@ subroutine pevolu(resu, modele, nbocc)
         if (ni .ne. 0) then
             nbordr=-ni
             call wkvect(kins, 'V V R', nbordr, jin)
-            call getvr8(' ', 'INST', 0, iarg, nbordr,&
-                        zr(jin), iret)
+            call getvr8(' ', 'INST', nbval=nbordr, vect=zr(jin), nbret=iret)
         endif
 !
 !       -- LIST_INST --
         if (nli .ne. 0) then
-            call getvid(' ', 'LIST_INST', 0, iarg, 1,&
-                        lisins, iret)
+            call getvid(' ', 'LIST_INST', scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
@@ -266,8 +254,7 @@ subroutine pevolu(resu, modele, nbocc)
                                 c16b, prec, crit, numo, nbordr,&
                                 iret)
                 endif
-                call getvtx('VOLUMOGRAMME', 'NOM_CHAM', iocc, iarg, 1,&
-                            nomcha, iret)
+                call getvtx('VOLUMOGRAMME', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
                 if (iret .eq. 0) call u2mess('F', 'POSTELEM_4')
 !
                 call rsexch(' ', resuco, nomcha, numo, cham2,&
@@ -344,8 +331,7 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !      -- 4.2 RECUPERATION DE LA COMPOSANTE --
 !
-            call getvtx('VOLUMOGRAMME', 'NOM_CMP', iocc, iarg, 1,&
-                        nomcmp, nbcmp)
+            call getvtx('VOLUMOGRAMME', 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=nbcmp)
             ncpini=nomcmp
             if (toneut) then
                 nucmp=indik8(zk8(jlicm1),nomcmp,1,ncmpm)
@@ -354,8 +340,7 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !      -- 4.3 RECUPERATION DES MAILLES --
 !
-            call getvtx('VOLUMOGRAMME', 'TOUT', iocc, iarg, 1,&
-                        tout, iret)
+            call getvtx('VOLUMOGRAMME', 'TOUT', iocc=iocc, scal=tout, nbret=iret)
             if (iret .ne. 0) then
                 mocles(1) = 'TOUT'
                 typmcl(1) = 'TOUT'
@@ -363,8 +348,7 @@ subroutine pevolu(resu, modele, nbocc)
             else
                 mocles(1) = 'GROUP_MA'
                 typmcl(1) = 'GROUP_MA'
-                call getvtx('VOLUMOGRAMME', 'GROUP_MA', iocc, iarg, 1,&
-                            grouma, iret)
+                call getvtx('VOLUMOGRAMME', 'GROUP_MA', iocc=iocc, scal=grouma, nbret=iret)
             endif
 !
 !         - MAILLES FOURNIES PAR L'UTILISATEUR -
@@ -374,8 +358,7 @@ subroutine pevolu(resu, modele, nbocc)
             mesmae=mesmai
 !         - MAILLES EVENTUELLEMENT FILTREES EN FONCTION DE LA DIMENSION
 !           GEOMETRIQUE (2D OU 3D)
-            call getvtx('VOLUMOGRAMME', 'TYPE_MAILLE', iocc, iarg, 1,&
-                        infoma, iret)
+            call getvtx('VOLUMOGRAMME', 'TYPE_MAILLE', iocc=iocc, scal=infoma, nbret=iret)
             if (iret .ne. 0) then
                 mesmae=mesmaf
                 if (infoma .eq. '2D') then
@@ -395,20 +378,17 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !        - ON RECUPERE LE NOMBRE D'INTERVALLES OU LE SEUIL ET LA NORME
 !        - POUR CALCUL RELATIF OU ABSOLU
-            call getvis('VOLUMOGRAMME', 'NB_INTERV', iocc, iarg, 1,&
-                        nbint, iret)
+            call getvis('VOLUMOGRAMME', 'NB_INTERV', iocc=iocc, scal=nbint, nbret=iret)
             seuil = 0.d0
             lseuil = .false.
-            call getvr8('VOLUMOGRAMME', 'SEUIL', iocc, iarg, 1,&
-                        seuil, iret)
+            call getvr8('VOLUMOGRAMME', 'SEUIL', iocc=iocc, scal=seuil, nbret=iret)
             if (iret .ne. 0) then
                 nbint = 2
                 lseuil = .true.
             endif
-            call getvtx('VOLUMOGRAMME', 'NORME', iocc, iarg, 1,&
-                        norme, iret)
-            call getvr8('VOLUMOGRAMME', 'BORNES', iocc, iarg, 2,&
-                        borne, iret)
+            call getvtx('VOLUMOGRAMME', 'NORME', iocc=iocc, scal=norme, nbret=iret)
+            call getvr8('VOLUMOGRAMME', 'BORNES', iocc=iocc, nbval=2, vect=borne,&
+                        nbret=iret)
             if (iret .ne. 0) then
                 bfix=1
                 ASSERT(borne(1).lt.borne(2))
@@ -489,7 +469,7 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE VOLUMOGRAMME
 !     ----------------------------------------------------------------
-10  continue
+10      continue
     end do
 !
     if (nr .eq. 0) then

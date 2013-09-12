@@ -29,15 +29,14 @@ subroutine op0152()
 !
 !---------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cal152.h"
 #include "asterfort/calmdg.h"
 #include "asterfort/chpver.h"
 #include "asterfort/cresol.h"
 #include "asterfort/crnslv.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecreo.h"
@@ -61,6 +60,7 @@ subroutine op0152()
 #include "asterfort/ualfva.h"
 #include "asterfort/ver152.h"
 #include "asterfort/wkvect.h"
+!
     logical :: vrai
     integer :: ldblo, ibid
     integer :: nbmo, nbmode, ndble, indice, tabad(5)
@@ -111,29 +111,18 @@ subroutine op0152()
 !
 !
     materi = ' '
-    call getvid(' ', 'MODELE_FLUIDE', 0, iarg, 1,&
-                moflui, n1)
-    call getvid(' ', 'CHARGE', 0, iarg, 1,&
-                char, n2)
-    call getvid(' ', 'MODELE_INTERFACE', 0, iarg, 1,&
-                moint, n3)
-    call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                materi, n4)
+    call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
+    call getvid(' ', 'CHARGE', scal=char, nbret=n2)
+    call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n3)
+    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n4)
     modmec=' '
-    call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                modmec, n5)
-    call getvid(' ', 'CHAM_NO', 0, iarg, 0,&
-                chamno, n6)
-    call getvid(' ', 'NUME_DDL_GENE', 0, iarg, 1,&
-                numgen, n9)
-    call getvid(' ', 'MODELE_GENE', 0, iarg, 1,&
-                modgen, n10)
-    call getvid(' ', 'POTENTIEL', 0, iarg, 1,&
-                phibar, n12)
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                option, n13)
-    call getvtx(' ', 'NOEUD_DOUBLE', 0, iarg, 1,&
-                nd, n14)
+    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
+    call getvid(' ', 'CHAM_NO', nbval=0, nbret=n6)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n9)
+    call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=n10)
+    call getvid(' ', 'POTENTIEL', scal=phibar, nbret=n12)
+    call getvtx(' ', 'OPTION', scal=option, nbret=n13)
+    call getvtx(' ', 'NOEUD_DOUBLE', scal=nd, nbret=n14)
 !
 ! LECTURE DES PARAMETRES DONNES APRES LE MOT CLE FACTEUR SOLVEUR
 !
@@ -238,8 +227,7 @@ subroutine op0152()
             call jecreo('&&OP0152.VEC', 'V V K8')
             call jeecra('&&OP0152.VEC', 'LONMAX', n7)
             call jeveuo('&&OP0152.VEC', 'E', ivalk)
-            call getvid(' ', 'CHAM_NO', 0, iarg, n7,&
-                        zk8(ivalk), n6)
+            call getvid(' ', 'CHAM_NO', nbval=n7, vect=zk8(ivalk), nbret=n6)
             nocham = zk8(ivalk)
             call chpver('F', nocham, 'NOEU', 'DEPL_R', ierd)
         endif

@@ -20,7 +20,7 @@ subroutine limacx(char, motfac, ndim, nzoco)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -79,8 +79,7 @@ subroutine limacx(char, motfac, ndim, nzoco)
 ! --- LECTURE DES FISSURES EN CONTACT
 !
     do 10 iocc = 1, nzoco
-        call getvid(motfac, 'FISS_MAIT', iocc, iarg, 1,&
-                    fiss, ibid)
+        call getvid(motfac, 'FISS_MAIT', iocc=iocc, scal=fiss, nbret=ibid)
         zk8(jfimai-1+iocc) = fiss
 10  end do
 !

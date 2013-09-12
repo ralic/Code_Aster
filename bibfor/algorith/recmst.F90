@@ -40,8 +40,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -53,6 +52,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: kbid, modsta
     character(len=16) :: graexc, grdmod
     character(len=24) :: k24bd1, k24bd2, k24bd3
@@ -66,12 +66,10 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     integer :: nmost1, nmost2, nnoeex
 !-----------------------------------------------------------------------
     call jemarq()
-    call getvid(' ', 'MODE_STAT', 0, iarg, 0,&
-                kbid, n)
+    call getvid(' ', 'MODE_STAT', nbval=0, nbret=n)
     nmost1=-n
     if (n .ne. 0) then
-        call getvid(' ', 'MODE_STAT', 0, iarg, 1,&
-                    modsta, ibid)
+        call getvid(' ', 'MODE_STAT', scal=modsta, nbret=ibid)
     endif
 !
 !---------CONSTITUTION DE LA LISTE DES ADRESSES DES MODES STATIQUES

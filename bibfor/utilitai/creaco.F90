@@ -46,9 +46,8 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 !
 ! DECLARATION VARIABLES D'APPEL
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -61,6 +60,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmato, renum, renum2, renum3, co, idco, nbmama, nbbord, mabord
     integer :: nblien, nbmabo
     character(len=8) :: ma, bord
@@ -218,8 +218,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 !
 ! ------- ENLEVE T ON LES MAILLES DE BORDS ? -------------------------
 !
-    call getvtx(' ', 'TRAITER_BORDS', 0, iarg, 1,&
-                bord, err)
+    call getvtx(' ', 'TRAITER_BORDS', scal=bord, nbret=err)
 !
 ! ------- ON CHERCHE LES MAILLES DE BORDS ----------------------------
 !

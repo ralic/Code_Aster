@@ -6,13 +6,12 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -27,6 +26,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vafcar.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmcf, ntyele(*), nbocc(*), ivr(*)
     integer :: nbepo, nbedi, nbeco, nbeca, nbeba, nbegb, nbemb, nbtel
     integer :: jdlm, jdln, lmax, ier
@@ -133,13 +133,12 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 call getvem(noma, 'NOEUD', mclf(mcl), 'NOEUD', ioc,&
                             iarg, lmax, zk24(jdls), nn)
             else if ((mcl.eq.11).or.(mcl.eq.14)) then
-                call getvr8(mclf(mcl), 'AXE', ioc, iarg, 0,&
-                            r8b, naxe)
+                call getvr8(mclf(mcl), 'AXE', iocc=ioc, nbval=0, nbret=naxe)
             endif
             if (mcl .eq. 1 .or. mcl .eq. 3 .or. mcl .eq. 4 .or. mcl .eq. 13 .or. mcl .eq.&
                 10) then
-                call getvtx(mclf(mcl), 'CARA', ioc, iarg, nbcar,&
-                            car, ncar)
+                call getvtx(mclf(mcl), 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
+                            nbret=ncar)
                 if (ncar .gt. 0) ncara = ncar
             endif
 !

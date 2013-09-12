@@ -27,8 +27,8 @@ subroutine op0078()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -53,8 +53,7 @@ subroutine op0078()
 !
 ! --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
 !
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 4,&
-                champ, nbcham)
+    call getvtx(' ', 'NOM_CHAM', nbval=4, vect=champ, nbret=nbcham)
     if (nbcham .lt. 0) then
         call u2mess('E', 'ALGORITH9_44')
     else
@@ -67,8 +66,7 @@ subroutine op0078()
 20      continue
     endif
 !
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resin, ir)
+    call getvid(' ', 'RESULTAT', scal=resin, nbret=ir)
     call tran78(nomres, typres, resin)
 !
 !

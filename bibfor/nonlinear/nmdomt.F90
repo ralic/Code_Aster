@@ -20,12 +20,12 @@ subroutine nmdomt(method, parmet)
 !
     implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/u2mess.h"
     character(len=16) :: method(*)
@@ -81,57 +81,49 @@ subroutine nmdomt(method, parmet)
 !
 ! --- RECUPERATION DE LA METHODE DE RESOLUTION
 !
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method(1), ibid)
+    call getvtx(' ', 'METHODE', scal=method(1), nbret=ibid)
 !
 ! --- INITIALISATIONS
 !
     if ((method(1) .eq. 'NEWTON') .or. (method(1) .eq. 'NEWTON_KRYLOV')) then
 !
-        call getvtx('NEWTON', 'MATRICE', 1, iarg, 1,&
-                    method(2), iret)
+        call getvtx('NEWTON', 'MATRICE', iocc=1, scal=method(2), nbret=iret)
 !
-        call getvis('NEWTON', 'REAC_INCR', 1, iarg, 1,&
-                    reincr, iret)
+        call getvis('NEWTON', 'REAC_INCR', iocc=1, scal=reincr, nbret=iret)
         if (reincr .lt. 0) then
             ASSERT(.false.)
         else
             parmet(1) = reincr
         endif
 !
-        call getvis('NEWTON', 'REAC_ITER', 1, iarg, 1,&
-                    reiter, iret)
+        call getvis('NEWTON', 'REAC_ITER', iocc=1, scal=reiter, nbret=iret)
         if (reiter .lt. 0) then
             ASSERT(.false.)
         else
             parmet(2) = reiter
         endif
 !
-        call getvr8('NEWTON', 'PAS_MINI_ELAS', 1, iarg, 1,&
-                    pasmin, iret)
+        call getvr8('NEWTON', 'PAS_MINI_ELAS', iocc=1, scal=pasmin, nbret=iret)
         if (iret .le. 0) then
             parmet(3) = -9999.0d0
         else
             parmet(3) = pasmin
         endif
 !
-        call getvis('NEWTON', 'REAC_ITER_ELAS', 1, iarg, 1,&
-                    reitel, iret)
+        call getvis('NEWTON', 'REAC_ITER_ELAS', iocc=1, scal=reitel, nbret=iret)
         if (reiter .lt. 0) then
             ASSERT(.false.)
         else
             parmet(4) = reitel
         endif
 !
-        call getvtx('NEWTON', 'PREDICTION', 1, iarg, 1,&
-                    method(5), iret)
+        call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=method(5), nbret=iret)
         if (iret .le. 0) then
             method(5) = method(2)
         endif
 !
         if (method(5) .eq. 'DEPL_CALCULE') then
-            call getvid('NEWTON', 'EVOL_NOLI', 1, iarg, 1,&
-                        method(6), iret)
+            call getvid('NEWTON', 'EVOL_NOLI', iocc=1, scal=method(6), nbret=iret)
             if (iret .le. 0) call u2mess('F', 'MECANONLINE5_45')
         endif
 !
@@ -154,18 +146,12 @@ subroutine nmdomt(method, parmet)
 !
     call getfac('RECH_LINEAIRE', nocc)
     if (nocc .ne. 0) then
-        call getvtx('RECH_LINEAIRE', 'METHODE', 1, iarg, 1,&
-                    relmet, iret)
-        call getvr8('RECH_LINEAIRE', 'RESI_LINE_RELA', 1, iarg, 1,&
-                    relirl, iret)
-        call getvis('RECH_LINEAIRE', 'ITER_LINE_MAXI', 1, iarg, 1,&
-                    itrlmx, iret)
-        call getvr8('RECH_LINEAIRE', 'RHO_MIN', 1, iarg, 1,&
-                    rhomin, iret)
-        call getvr8('RECH_LINEAIRE', 'RHO_MAX', 1, iarg, 1,&
-                    rhomax, iret)
-        call getvr8('RECH_LINEAIRE', 'RHO_EXCL', 1, iarg, 1,&
-                    rhoexc, iret)
+        call getvtx('RECH_LINEAIRE', 'METHODE', iocc=1, scal=relmet, nbret=iret)
+        call getvr8('RECH_LINEAIRE', 'RESI_LINE_RELA', iocc=1, scal=relirl, nbret=iret)
+        call getvis('RECH_LINEAIRE', 'ITER_LINE_MAXI', iocc=1, scal=itrlmx, nbret=iret)
+        call getvr8('RECH_LINEAIRE', 'RHO_MIN', iocc=1, scal=rhomin, nbret=iret)
+        call getvr8('RECH_LINEAIRE', 'RHO_MAX', iocc=1, scal=rhomax, nbret=iret)
+        call getvr8('RECH_LINEAIRE', 'RHO_EXCL', iocc=1, scal=rhoexc, nbret=iret)
 !
         if (rhomin .ge. -rhoexc .and. rhomin .le. rhoexc) then
             call u2mess('A', 'MECANONLINE5_46')
@@ -178,10 +164,8 @@ subroutine nmdomt(method, parmet)
 !
         if (rhomax .lt. rhomin) then
             call u2mess('A', 'MECANONLINE5_44')
-            call getvr8('RECH_LINEAIRE', 'RHO_MIN', 1, iarg, 1,&
-                        rhomax, iret)
-            call getvr8('RECH_LINEAIRE', 'RHO_MAX', 1, iarg, 1,&
-                        rhomin, iret)
+            call getvr8('RECH_LINEAIRE', 'RHO_MIN', iocc=1, scal=rhomax, nbret=iret)
+            call getvr8('RECH_LINEAIRE', 'RHO_MAX', iocc=1, scal=rhomin, nbret=iret)
         endif
 !
         if (abs(rhomax-rhomin) .le. r8prem()) then

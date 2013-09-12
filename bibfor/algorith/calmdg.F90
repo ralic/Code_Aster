@@ -5,11 +5,10 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
 #include "asterfort/delat.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -25,6 +24,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 #include "asterfort/tabcor.h"
 #include "asterfort/trprot.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: mate
 !
 !---------------------------------------------------------------------
@@ -104,8 +104,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !=====================================================================
 !
     call jelira(modgen//'      .MODG.SSNO        ', 'NOMMAX', nbsst)
-    call getvtx(' ', 'AVEC_MODE_STAT', 0, iarg, 1,&
-                repon, nn)
+    call getvtx(' ', 'AVEC_MODE_STAT', scal=repon, nbret=nn)
     if (repon(1:3) .eq. 'NON') then
         call delat(modgen, nbsst, nbmo)
         call jeveuo('&&DELAT.INDIC', 'L', idelat)

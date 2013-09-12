@@ -50,9 +50,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !     --- ARGUMENTS ---
 !
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
 #include "asterc/r8vide.h"
 #include "asterfort/alchml.h"
 #include "asterfort/codent.h"
@@ -62,6 +60,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 #include "asterfort/exisd.h"
 #include "asterfort/exithm.h"
 #include "asterfort/exixfe.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -87,6 +86,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/vrcins.h"
+!
     integer :: nbordr, jordr, nchar, jcha
     integer :: codret
     real(kind=8) :: tbgrca(3)
@@ -461,10 +461,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 4.1. ==> PREALABLES
 ! 4.1.1. ==> RECUPERE LES NOMS DES SD RESULTAT
-        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                    resup, np)
-        call getvid(' ', 'RESU_DUAL', 1, iarg, 1,&
-                    resud, nd)
+        call getvid(' ', 'RESULTAT', scal=resup, nbret=np)
+        call getvid(' ', 'RESU_DUAL', scal=resud, nbret=nd)
 !
 ! 4.1.2. ==> RECHERCHE DES VOISINS
         call reslo2(modele, ligrmo, chvois, cvoisx, tabido)
@@ -626,10 +624,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
     else if (option.eq.'QIZ1_ELEM' .or. option.eq.'QIZ2_ELEM') then
 !
 ! 6.1. ==> RECUPERE LES NOMS DES SD RESULTAT
-        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                    resup, np)
-        call getvid(' ', 'RESU_DUAL', 1, iarg, 1,&
-                    resud, nd)
+        call getvid(' ', 'RESULTAT', scal=resup, nbret=np)
+        call getvid(' ', 'RESU_DUAL', scal=resud, nbret=nd)
 !
 ! 6.2. ==> BOUCLE SUR LES NUMEROS D'ORDRE
 !

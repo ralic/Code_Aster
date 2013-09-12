@@ -17,7 +17,7 @@ subroutine op0114()
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
 ! aslint: disable=W1304,W1305
-    implicit   none
+    implicit none
 !  ----- OPERATEUR RECU_PARA_YACS             --------------------------
 !  RECUPERATION DE VALEURS D'INITIALISATION POUR COUPLAGE IFS VIA YACS
 !     ------------------------------------------------------------------
@@ -26,9 +26,9 @@ subroutine op0114()
 #include "asterc/cpldb.h"
 #include "asterc/cplen.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -70,8 +70,7 @@ subroutine op0114()
 !
     call getres(resu, concep, nomcmd)
 !
-    call getvtx(' ', 'DONNEES', 0, iarg, 1,&
-                option, ibid)
+    call getvtx(' ', 'DONNEES', scal=option, nbret=ibid)
     if (niv .eq. 2) then
         valk(1) = 'OP0114'
         valk(2) = 'DONNEES'
@@ -90,8 +89,7 @@ subroutine op0114()
     call wkvect(resu//'.VALE', 'G V R', nbvale, jval)
 !
     if (option(1:4) .eq. 'INIT') then
-        call getvr8(' ', 'PAS', 0, iarg, 1,&
-                    dt, ibid)
+        call getvr8(' ', 'PAS', scal=dt, nbret=ibid)
 ! reception des parametres utilisateurs a l iteration 0
         numpa4 = 0
         numpas = 0
@@ -109,50 +107,47 @@ subroutine op0114()
 !  RECEPTION NOMBRE DE PAS DE TEMPS
         nomvar = 'NBPDTM'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, int(1,4), taille, eyacs, ibid4)
+                   nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor) = eyacs(1)
         zr(jval) = eyacs(1)
 !  RECEPTION NOMBRE DE SOUS-ITERATIONS
         nomvar = 'NBSSIT'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, int(1,4), taille, eyacs, ibid4)
+                   nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor+1) = eyacs(1)
         zr(jval+1) = eyacs(1)
 !  RECEPTION EPSILON
         nomvar = 'EPSILO'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                   nomvar, int(1,4), taille, ryacs, ibid4)
+                   nomvar, int(1, 4), taille, ryacs, ibid4)
         zr(jbor+2) = ryacs(1)
         zr(jval+2) = ryacs(1)
         nomvar = 'ISYNCP'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, int(1,4), taille, eyacs, ibid4)
+                   nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor+3) = eyacs(1)
         zr(jval+3) = eyacs(1)
         nomvar = 'NTCHRO'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                   nomvar, int(1,4), taille, eyacs, ibid4)
+                   nomvar, int(1, 4), taille, eyacs, ibid4)
         zr(jbor+4) = eyacs(1)
         zr(jval+4) = eyacs(1)
         nomvar = 'TTINIT'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                   nomvar, int(1,4), taille, ryacs, ibid4)
+                   nomvar, int(1, 4), taille, ryacs, ibid4)
         zr(jbor+5) = ryacs(1)
         zr(jval+5) = ryacs(1)
 !  RECEPTION PAS DE TEMPS DE REFERENCE
         nomvar = 'PDTREF'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                   nomvar, int(1,4), taille, ryacs, ibid4)
+                   nomvar, int(1, 4), taille, ryacs, ibid4)
         zr(jbor+6) = ryacs(1)
         zr(jval+6) = ryacs(1)
     else
-        call getvr8(' ', 'INST', 0, iarg, 1,&
-                    tf, ibid)
-        call getvis(' ', 'NUME_ORDRE_YACS', 0, iarg, 1,&
-                    numpas, ibid)
+        call getvr8(' ', 'INST', scal=tf, nbret=ibid)
+        call getvis(' ', 'NUME_ORDRE_YACS', scal=numpas, nbret=ibid)
         numpa4 = int(numpas, 4)
-        call getvr8(' ', 'PAS', 0, iarg, 1,&
-                    dt, ibid)
+        call getvr8(' ', 'PAS', scal=dt, nbret=ibid)
         ti = tf
         if (option(1:3) .eq. 'FIN') then
             nomvar = 'END'
@@ -161,15 +156,15 @@ subroutine op0114()
             if (option(1:4) .eq. 'CONV') then
                 nomvar = 'ICVAST'
                 call cplen(icompo, cpiter, ti4, tf4, numpa4,&
-                           nomvar, int(1,4), taille, eyacs, ibid4)
+                           nomvar, int(1, 4), taille, eyacs, ibid4)
                 ryacs(1) = eyacs(1)
             else
                 nomvar = 'DTAST'
                 call cpedb(icompo, cpiter, ti, numpa4, nomvar,&
-                           int(1,4), [dt], ibid4)
+                           int(1, 4), [dt], ibid4)
                 nomvar = 'DTCALC'
                 call cpldb(icompo, cpiter, ti, tf, numpa4,&
-                           nomvar, int(1,4), taille, ryacs, ibid4)
+                           nomvar, int(1, 4), taille, ryacs, ibid4)
             endif
         endif
         zr(jbor) = ryacs(1)

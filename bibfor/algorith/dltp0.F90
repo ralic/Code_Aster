@@ -2,10 +2,10 @@ subroutine dltp0(t0, nume)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -58,14 +58,11 @@ subroutine dltp0(t0, nume)
 !
 !     INITIALISATION DE T0 PAR DEFAUT
 !
-    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                dyna, ndy)
+    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=dyna, nbret=ndy)
     if (ndy .ne. 0) then
-        call getvis('ETAT_INIT', 'NUME_ORDRE', 1, iarg, 1,&
-                    nume, nni)
+        call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=nume, nbret=nni)
         if (nni .eq. 0) then
-            call getvr8('ETAT_INIT', 'INST_INIT', 1, iarg, 1,&
-                        temps, nt)
+            call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=temps, nbret=nt)
             if (nt .eq. 0) then
                 call rsorac(dyna, 'DERNIER', ibid, temps, k8b,&
                             c16b, prec, crit, nume, 1,&
@@ -74,10 +71,8 @@ subroutine dltp0(t0, nume)
                     call u2mess('F', 'ALGORITH3_24')
                 endif
             else
-                call getvr8('ETAT_INIT', 'PRECISION', 1, iarg, 1,&
-                            prec, np)
-                call getvtx('ETAT_INIT', 'CRITERE', 1, iarg, 1,&
-                            crit, nc)
+                call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
+                call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
                 call rsorac(dyna, 'INST', ibid, temps, k8b,&
                             c16b, prec, crit, nume, 1,&
                             nbtrou)
@@ -118,8 +113,7 @@ subroutine dltp0(t0, nume)
 !
 !     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "LIST_INST" ---
 !
-        call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                    li, n1)
+        call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=li, nbret=n1)
         if (n1 .ne. 0) then
             call jeveuo(li//'           .BINT', 'L', jbint)
             t0 = zr (jbint)
@@ -129,8 +123,7 @@ subroutine dltp0(t0, nume)
 !     --- DEFINITION DE L'INSTANT INITIAL AVEC "INST_INIT" ---
 !
             t0 = 0.d0
-            call getvr8('INCREMENT', 'INST_INIT', 1, iarg, 1,&
-                        t0, np)
+            call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=t0, nbret=np)
             if (np .eq. 0) call u2mess('I', 'ALGORITH5_62')
         endif
     endif

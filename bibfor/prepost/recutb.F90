@@ -1,8 +1,8 @@
 subroutine recutb(ik1d, nomgrn, tabrev, tabmdb, tabthr)
 !
-    implicit      none
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
+    implicit none
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: ik1d
@@ -46,14 +46,10 @@ subroutine recutb(ik1d, nomgrn, tabrev, tabmdb, tabthr)
 ! --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 ! ======================================================================
     motfac = 'K1D'
-    call getvid(motfac, 'TABL_MECA_REV', ik1d, iarg, 1,&
-                tabrev, ibid)
-    call getvid(motfac, 'TABL_MECA_MDB', ik1d, iarg, 1,&
-                tabmdb, ibid)
-    call getvid(motfac, 'TABL_THER', ik1d, iarg, 1,&
-                tabthr, ibid)
-    call getvtx(motfac, 'INTITULE', ik1d, iarg, 1,&
-                nomgrn, ibid)
+    call getvid(motfac, 'TABL_MECA_REV', iocc=ik1d, scal=tabrev, nbret=ibid)
+    call getvid(motfac, 'TABL_MECA_MDB', iocc=ik1d, scal=tabmdb, nbret=ibid)
+    call getvid(motfac, 'TABL_THER', iocc=ik1d, scal=tabthr, nbret=ibid)
+    call getvtx(motfac, 'INTITULE', iocc=ik1d, scal=nomgrn, nbret=ibid)
 ! ======================================================================
     call jedema()
 ! ======================================================================

@@ -5,10 +5,6 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
@@ -16,15 +12,15 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 #include "asterfort/celces.h"
 #include "asterfort/char_excl_keyw.h"
 #include "asterfort/char_impo_liai.h"
-#include "asterfort/char_read_val.h"
 #include "asterfort/char_read_keyw.h"
-#include "asterfort/getnode.h"
+#include "asterfort/char_read_val.h"
 #include "asterfort/char_xfem.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getnode.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -38,7 +34,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
-
+!
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,10 +55,10 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keywordfact
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,13 +103,13 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     real(kind=8) :: val_r_liai
     character(len=8) :: val_f_liai
     character(len=16) :: val_t_liai
-    complex(kind=8):: val_c_liai
+    complex(kind=8) :: val_c_liai
     character(len=8) :: liai_cmp_name(6)
     integer :: liai_cmp_index(6)
     integer :: liai_cmp_nb
     real(kind=8) :: liai_vale_real
     character(len=8) :: liai_vale_fonc
-    complex(kind=8):: liai_vale_cplx
+    complex(kind=8) :: liai_vale_cplx
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     integer :: n_suffix
@@ -133,13 +129,13 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CADDLI.KEYWORDEXCL'
-    n_suffix    = 0
+    n_suffix = 0
     list_suffix = ' '
     call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
 ! - Type of linear coefficient
 !
-    if (keywordfact.eq. 'DDL_IMPO') then
+    if (keywordfact .eq. 'DDL_IMPO') then
         coef_type = 'REEL'
     else if (keywordfact.eq. 'TEMP_IMPO') then
         coef_type = 'REEL'
@@ -151,7 +147,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! - Information about <GRANDEUR>
 !
-    if (keywordfact.eq. 'DDL_IMPO') then
+    if (keywordfact .eq. 'DDL_IMPO') then
         nomg = 'DEPL_R'
     else if (keywordfact.eq. 'TEMP_IMPO') then
         nomg = 'TEMP_R'
@@ -174,7 +170,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! - Xfem fields
 !
-    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat, &
+    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat,&
                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
@@ -188,17 +184,17 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLI.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, ' ', &
+        call getnode(mesh, keywordfact, iocc, list_suffix, ' ',&
                      list_node, nb_node)
 !
 ! ----- No nodes (empty groups)
 !
-        if (nb_node.eq.0) goto 60
-        call jeveuo(list_node,'L',jlino)
+        if (nb_node .eq. 0) goto 60
+        call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Detection of LIAISON
 !
-        call char_read_val(keywordfact, iocc, 'LIAISON', 'TEXT', val_nb_liai, &
+        call char_read_val(keywordfact, iocc, 'LIAISON', 'TEXT', val_nb_liai,&
                            val_r_liai, val_f_liai, val_c_liai, val_t_liai)
         l_liai = val_nb_liai.gt.0
 !
@@ -214,7 +210,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! --------- Data preparation for LIAISON
 !
             ASSERT(val_nb_liai.eq.1)
-            call char_impo_liai(nomg, val_t_liai, liai_cmp_nb, liai_cmp_name, liai_cmp_index, &
+            call char_impo_liai(nomg, val_t_liai, liai_cmp_nb, liai_cmp_name, liai_cmp_index,&
                                 liai_vale_real, liai_vale_cplx, liai_vale_fonc)
 !
 ! --------- Loop on nodes
@@ -222,23 +218,23 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                cmp_nb    = 0
+                cmp_nb = 0
                 do icmp = 1, liai_cmp_nb
                     if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),liai_cmp_index(icmp))) then
                         cmp_nb = cmp_nb + 1
-                        cmp_acti(cmp_nb)  = 1
+                        cmp_acti(cmp_nb) = 1
                         cmp_name(cmp_nb) = liai_cmp_name(icmp)
                         vale_real(cmp_nb) = liai_vale_real
                         vale_cplx(cmp_nb) = liai_vale_cplx
                         vale_func(cmp_nb) = liai_vale_fonc
                     endif
                 enddo
-                call afddli(model, nbcmp, zk8(jnom), nume_node, name_node, &
-                            zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)), &
-                            coef_type, cmp_nb, cmp_name, cmp_acti, &
-                            vale_type, vale_real, vale_func, vale_cplx, &
-                            zi(jcompt), list_rela, lxfem, jnoxfl, jnoxfv,  &
-                            ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
+                call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
+                            zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
+                            coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
+                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                            ch_xfem_ltno, connex_inv)
             enddo
 !
             call jedetr('&&CADDLI.ICOMPT')
@@ -246,8 +242,8 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,  &
-                            n_max_cmp, cmp_nb, cmp_name, cmp_acti, vale_real, &
+        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+                            n_max_cmp, cmp_nb, cmp_name, cmp_acti, vale_real,&
                             vale_func, vale_cplx)
         l_ocmp = cmp_nb.gt.0
 !
@@ -264,12 +260,12 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afddli(model, nbcmp, zk8(jnom), nume_node, name_node, &
-                            zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),  &
-                            coef_type, cmp_nb, cmp_name, cmp_acti, &
-                            vale_type, vale_real, vale_func, vale_cplx, &
-                            zi(jcompt), list_rela, lxfem, jnoxfl, jnoxfv,  &
-                            ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
+                call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
+                            zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
+                            coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
+                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                            ch_xfem_ltno, connex_inv)
             enddo
             do icmp = 1, cmp_nb
                 if (zi(jcompt-1+icmp) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1, cmp_name(icmp))
@@ -297,6 +293,6 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
         call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
     endif
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

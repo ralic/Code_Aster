@@ -20,8 +20,8 @@ subroutine nmdidi(modele, lischa, depmoi, vedidi)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsexch.h"
@@ -60,10 +60,8 @@ subroutine nmdidi(modele, lischa, depmoi, vedidi)
 ! --- CONSTRUCTION DE LA CONFIGURATION DE REFERENCE
 !
     depdid = depmoi
-    call getvis('ETAT_INIT', 'NUME_DIDI', 1, iarg, 1,&
-                numref, n1)
-    call getvid('ETAT_INIT', 'EVOL_NOLI', 1, iarg, 1,&
-                evol, nevo)
+    call getvis('ETAT_INIT', 'NUME_DIDI', iocc=1, scal=numref, nbret=n1)
+    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=evol, nbret=nevo)
     if ((n1.gt.0) .and. (nevo.gt.0)) then
         call rsexch(' ', evol, 'DEPL', numref, depdid,&
                     iret)

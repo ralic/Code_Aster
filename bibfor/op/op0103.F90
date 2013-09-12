@@ -21,8 +21,8 @@ subroutine op0103()
 !                   MODI_MODELE
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/ajlipa.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     character(len=8) :: modele
@@ -34,8 +34,7 @@ subroutine op0103()
 !
 !     -- MODIFICATION DE LA PARTITION  :
 !     ---------------------------------------------------
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                modele, ib)
+    call getvid(' ', 'MODELE', scal=modele, nbret=ib)
     call ajlipa(modele, 'G')
 !
     call jedema()

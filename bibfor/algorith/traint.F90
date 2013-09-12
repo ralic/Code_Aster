@@ -38,11 +38,10 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
 #include "asterfort/codent.h"
 #include "asterfort/ddllag.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
@@ -56,6 +55,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/ddot.h"
+!
 !
 !
     character(len=4) :: k4bid
@@ -72,8 +72,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     real(kind=8) :: travm, travk, trvint
     integer :: iarg
 !
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                unit, ibid)
+    call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1=numlia
 !
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)

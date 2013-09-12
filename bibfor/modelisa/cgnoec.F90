@@ -41,10 +41,10 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! -----  ARGUMENTS
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -123,13 +123,11 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DU RAYON DU CYLINDRE :
 !     ---------------------------------
-    call getvr8(motfac, 'RAYON', iocc, iarg, 0,&
-                rayon, nrayon)
+    call getvr8(motfac, 'RAYON', iocc=iocc, nbval=0, nbret=nrayon)
     if (nrayon .eq. 0) then
         call u2mess('F', 'MODELISA3_74')
     else
-        call getvr8(motfac, 'RAYON', iocc, iarg, 1,&
-                    rayon, nb)
+        call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call u2mess('F', 'MODELISA3_75')
         endif
@@ -137,11 +135,9 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DE LA DIRECTION DEFINISSANT L'AXE DU CYLINDRE :
 !     ----------------------------------------------------------
-    call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, 0,&
-                r8bid, nangle)
+    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangle)
     if (nangle .eq. 0) then
-        call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, 0,&
-                    r8bid, nvect)
+        call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
             call u2mess('F', 'MODELISA3_85')
         else
@@ -149,8 +145,8 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
             if (nvect .ne. 3) then
                 call u2mess('F', 'MODELISA3_86')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, nvect,&
-                            axe, nv)
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe,&
+                            nbret=nv)
             endif
         endif
     else
@@ -158,8 +154,8 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
         if (nangle .ne. 2) then
             call u2mess('F', 'MODELISA3_87')
         endif
-        call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, nangle,&
-                    angle, nv)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+                    nbret=nv)
 !
         angle(1) = angle(1)*r8dgrd()
         angle(2) = angle(2)*r8dgrd()
@@ -183,13 +179,11 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DE LA DEMI-EPAISSEUR DE L'ENVELOPPE :
 !     ------------------------------------------------
-    call getvr8(motfac, 'PRECISION', iocc, iarg, 0,&
-                prec, nprec)
+    call getvr8(motfac, 'PRECISION', iocc=iocc, nbval=0, nbret=nprec)
     if (nprec .eq. 0) then
         call u2mess('F', 'MODELISA3_88')
     else
-        call getvr8(motfac, 'PRECISION', iocc, iarg, 1,&
-                    prec, nb)
+        call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
             call u2mess('F', 'MODELISA3_89')
         endif

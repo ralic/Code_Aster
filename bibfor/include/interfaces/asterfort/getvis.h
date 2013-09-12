@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine getvid(motfac, motcle, iocc, iarg, mxval,&
-                      idval, nbval)
-        character(*) :: motfac
-        character(*) :: motcle
-        integer :: iocc
-        integer :: iarg
-        integer :: mxval
-        character(*) :: idval
-        integer :: nbval
-    end subroutine getvid
+    subroutine getvis(motfac, motcle, iocc, nbval, vect,&
+                      scal, nbret, isdefault)
+        character(len=*), intent(in) :: motfac
+        character(len=*), intent(in) :: motcle
+        integer, intent(in), optional :: iocc
+        integer, intent(in), optional :: nbval
+        integer, intent(out), optional :: vect(*)
+        integer, intent(out), optional :: scal
+        integer, intent(out), optional :: nbret
+        integer, intent(out), optional :: isdefault
+    end subroutine getvis
 end interface

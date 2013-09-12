@@ -1,6 +1,6 @@
 subroutine acevpf(nbocc, nlm, nlg)
     implicit none
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
     integer :: nbocc, nlm, nlg
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -37,10 +37,8 @@ subroutine acevpf(nbocc, nlm, nlg)
     nlm = 0
     nlg = 0
     do 10 ioc = 1, nbocc
-        call getvtx('POUTRE_FLUI', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('POUTRE_FLUI', 'MAILLE', ioc, iarg, 0,&
-                    k8b, nm)
+        call getvtx('POUTRE_FLUI', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('POUTRE_FLUI', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
 !
         nsom = ng + nm
         if (nsom .eq. ng .or. nsom .eq. nm) then

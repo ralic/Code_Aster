@@ -1,6 +1,6 @@
 subroutine acevmb(nbocc, nlm, nlg)
-    implicit  none
-#include "asterc/getvtx.h"
+    implicit none
+#include "asterfort/getvtx.h"
     integer :: nbocc, nlm, nlg
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -35,10 +35,8 @@ subroutine acevmb(nbocc, nlm, nlg)
     nlm = 0
     nlg = 0
     do 10 ioc = 1, nbocc
-        call getvtx('MEMBRANE', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('MEMBRANE', 'MAILLE', ioc, iarg, 0,&
-                    k8b, nm)
+        call getvtx('MEMBRANE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('MEMBRANE', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
 !
         nsom = ng + nm
         if (nsom .eq. ng .or. nsom .eq. nm) then

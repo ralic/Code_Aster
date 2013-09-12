@@ -1,10 +1,9 @@
 subroutine cmdgma(mailla)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -20,6 +19,7 @@ subroutine cmdgma(mailla)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: mailla
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -54,8 +54,7 @@ subroutine cmdgma(mailla)
     call jelira(ma//'.GROUPEMA', 'NMAXOC', ival=ngrma)
     call wkvect('&&CMDGMA.NUGRMA_A_DETR', 'V V I', ngrma, ianugr)
 !
-    call getvis('DETR_GROUP_MA', 'NB_MAILLE', 1, iarg, 1,&
-                limit, n1)
+    call getvis('DETR_GROUP_MA', 'NB_MAILLE', iocc=1, scal=limit, nbret=n1)
 !     --------------------------------------------------------
     if (limit .gt. 0) then
         do 1,igma=1,ngrma

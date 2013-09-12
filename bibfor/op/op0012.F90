@@ -24,13 +24,12 @@ subroutine op0012()
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -40,6 +39,7 @@ subroutine op0012()
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nu, matas, charge, syme, sym2, kmpic
     character(len=16) :: typm, oper
     character(len=19) :: matel, solveu
@@ -64,19 +64,16 @@ subroutine op0012()
 !
 !
 !---- RECUPERATION DES MATRICES ELEMENTAIRES ---
-    call getvid(' ', 'MATR_ELEM', 0, iarg, 0,&
-                kbidon, nbmat)
+    call getvid(' ', 'MATR_ELEM', nbval=0, nbret=nbmat)
     nbmat = -nbmat
     lmatel='&&OP0012.LMATEL'
     call wkvect(lmatel, 'V V K24', nbmat, jlimat)
-    call getvid(' ', 'MATR_ELEM', 0, iarg, nbmat,&
-                zk24(jlimat), ibid)
+    call getvid(' ', 'MATR_ELEM', nbval=nbmat, vect=zk24(jlimat), nbret=ibid)
 !
 !
 !---- RECUPERATION DES CHARGES CINEMATIQUES ---
     lchci='&&OP0012.LCHARCINE'
-    call getvid(' ', 'CHAR_CINE', 0, iarg, 0,&
-                kbidon, nbchc)
+    call getvid(' ', 'CHAR_CINE', nbval=0, nbret=nbchc)
     nbchc = -nbchc
 !     -- LES SD_CHAR_XXX PEUVENT CONTENIR UNE SD_CHAR_CINE :
     do 1, k=1,nbmat
@@ -96,8 +93,7 @@ subroutine op0012()
 !
     if (nbchc .gt. 0) then
         call wkvect(lchci, 'V V K24', nbchc, jlchci)
-        call getvid(' ', 'CHAR_CINE', 0, iarg, nbchc,&
-                    zk24(jlchci), ico)
+        call getvid(' ', 'CHAR_CINE', nbval=nbchc, vect=zk24(jlchci), nbret=ico)
         do 3, k=1,nbmat
         matel=zk24(jlimat-1+k)
         call jeexin(matel//'.RECC', iexi)
@@ -118,13 +114,11 @@ subroutine op0012()
 !
 !
 !---- MOT CLE : NUME_DDL
-    call getvid(' ', 'NUME_DDL', 0, iarg, 1,&
-                nu, ibid)
+    call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
 !
 !---- ASSEMBLAGE PROPREMENT DIT
     syme = ' '
-    call getvtx(' ', 'SYME', 1, iarg, 1,&
-                syme, ibid)
+    call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
     if (syme .eq. 'OUI') then
         call dismoi('F', 'SOLVEUR', nu, 'NUME_DDL', ibid,&
                     solveu, iret)

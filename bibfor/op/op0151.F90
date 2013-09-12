@@ -52,17 +52,16 @@ subroutine op0151()
 !                                                      /DOMA_ELNO_EPME
 !       ----------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alchml.h"
 #include "asterfort/anacri.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmgmod.h"
 #include "asterfort/fgvdmg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -83,6 +82,7 @@ subroutine op0151()
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !       ---------------------------------------------------------------
     integer :: icodre, icodwo, icodba, icodhs, icodma
     character(len=8) :: nomu, nomres, nommai, nommat
@@ -117,8 +117,7 @@ subroutine op0151()
     call getres(nomu, concep, cmd)
 !
 ! ---   TYPE DE CALCUL
-    call getvtx(' ', 'TYPE_CALCUL', 1, iarg, 1,&
-                typcal, nval)
+    call getvtx(' ', 'TYPE_CALCUL', scal=typcal, nbret=nval)
 !
 ! ---------------------------------------------------------------------
 ! ---- FATIGUE MULTIAXIALE
@@ -128,60 +127,50 @@ subroutine op0151()
 !
 ! ---   TYPE DU CHARGEMENT APPLIQUE (PERIODIQUE OU NON_PERIODIQUE)
 !
-        call getvtx(' ', 'TYPE_CHARGE', 1, iarg, 1,&
-                    typcha, nval)
+        call getvtx(' ', 'TYPE_CHARGE', scal=typcha, nbret=nval)
 !
 ! ---   NOM DE L'OPTION (CALCUL AUX POINTS DE GAUSS OU AUX NOEUDS
 !                        CHAM_NO)
-        call getvtx(' ', 'OPTION', 1, iarg, 1,&
-                    nomopt, nval)
+        call getvtx(' ', 'OPTION', scal=nomopt, nbret=nval)
 !
 ! ---   STRUCTURE RESULTAT CONTENANT LES CHAM_ELEMS DE SIGMA
 !       OU LES CHAM_NOS DE SIGMA
-        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                    nomres, nval)
+        call getvid(' ', 'RESULTAT', scal=nomres, nbret=nval)
         nomsd = nomres
 !
 ! ---   NOM DU CRITERE
-        call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                    nomcri, nval)
+        call getvtx(' ', 'CRITERE', scal=nomcri, nbret=nval)
 !
-        call getvid(' ', 'FORMULE_GRDEQ', 1, iarg, 1,&
-                    nomfor, nval)
+        call getvid(' ', 'FORMULE_GRDEQ', scal=nomfor, nbret=nval)
         if (nval .eq. 0) then
             nomfor = '        '
         endif
 !
-        call getvtx(' ', 'COURBE_GRD_VIE', 1, iarg, 1,&
-                    grdvie, nval)
+        call getvtx(' ', 'COURBE_GRD_VIE', scal=grdvie, nbret=nval)
         if (nval .eq. 0) then
             grdvie = '        '
         endif
 !
-        call getvid(' ', 'FORMULE_VIE', 1, iarg, 1,&
-                    forvie, nval)
+        call getvid(' ', 'FORMULE_VIE', scal=forvie, nbret=nval)
         if (nval .eq. 0) then
             forvie = '        '
         endif
 !
 ! ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
-        call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                    nommet, nval)
+        call getvtx(' ', 'METHODE', scal=nommet, nbret=nval)
         if (nval .eq. 0) then
             nommet = '        '
         endif
 !
 ! ---   PROJECTION SUR UN AXE OU SUR DEUX AXES
 !       (CHARGEMENT NON_PERIODIQUE UNIQUEMENT)
-        call getvtx(' ', 'PROJECTION', 1, iarg, 1,&
-                    proaxe, nval)
+        call getvtx(' ', 'PROJECTION', scal=proaxe, nbret=nval)
         if (nval .eq. 0) then
             proaxe = '        '
         endif
 !
 ! ---   NOM DU MAILLAGE
-        call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                    nommai, nval)
+        call getvid(' ', 'MAILLAGE', scal=nommai, nbret=nval)
         if (nval .eq. 0) then
             nommai = '        '
         endif
@@ -192,12 +181,9 @@ subroutine op0151()
         inscri = '        '
         instic = 0.d0
 !
-        call getvr8(' ', 'INST_INIT_CYCL', 1, iarg, 1,&
-                    instic, nval)
-        call getvtx(' ', 'INST_CRIT', 1, iarg, 1,&
-                    inscri, nval)
-        call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                    prec, nval)
+        call getvr8(' ', 'INST_INIT_CYCL', scal=instic, nbret=nval)
+        call getvtx(' ', 'INST_CRIT', scal=inscri, nbret=nval)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=nval)
 !
 !
 !---    ANALYSER LE CRITERE
@@ -236,25 +222,20 @@ subroutine op0151()
 ! ---------------------------------------------------------------------
 !
 ! ---   NOM DE LA GRANDEUR EQUIVALENTE
-    call getvtx('HISTOIRE', 'EQUI_GD', 1, iarg, 1,&
-                nomgde, nval)
+    call getvtx('HISTOIRE', 'EQUI_GD', iocc=1, scal=nomgde, nbret=nval)
 !
 ! ---   IMPRESSIONS
-    call getvis(' ', 'INFO', 1, iarg, 1,&
-                impr, nval)
+    call getvis(' ', 'INFO', scal=impr, nbret=nval)
 !
 ! ---   CHAMP : NOM DE L'OPTION RESULTANTE
 !   'DOMA_ELNO_SIGM'/'DOMA_ELGA_SIGM'/'DOMA_ELNO_EPSI'/'DOMA_ELGA_EPSI
 !   'DOMA_ELNO_EPME'/'DOMA_ELGA_EPME'
 !
-    call getvtx(' ', 'OPTION', 1, iarg, 1,&
-                nomopt, nval)
+    call getvtx(' ', 'OPTION', scal=nomopt, nbret=nval)
 !
 ! ---   NOM DE LA METHODE DE CALCUL DU DOMMAGE
-    call getvtx(' ', 'DOMMAGE', 1, iarg, 1,&
-                mdomag, nval)
-    call getvid(' ', 'MATER', 1, iarg, 1,&
-                nommat, nval)
+    call getvtx(' ', 'DOMMAGE', scal=mdomag, nbret=nval)
+    call getvid(' ', 'MATER', scal=nommat, nbret=nval)
 !
 ! ---   NOMBRE DE NUMEROS D ORDRE DE POINTS (NOEUDS/PG) DE CMPS ...
 !       ---------------------------------------------------------------
@@ -311,8 +292,7 @@ subroutine op0151()
     if (typcal(1:13) .eq. 'CUMUL_DOMMAGE') then
 !
 ! ---   STRUCTURE RESULTAT CONTENANT LES CHAM_ELEMS DE SIGMA EQUIVALENT
-        call getvid('HISTOIRE', 'RESULTAT', 1, iarg, 1,&
-                    nomres, nval)
+        call getvid('HISTOIRE', 'RESULTAT', iocc=1, scal=nomres, nbret=nval)
         nomsd = nomres
 !
         if (mdomag .eq. 'WOHLER') then
@@ -353,13 +333,11 @@ subroutine op0151()
             cara = 'MANSON_C'
             call rcpare(nommat, pheno, cara, icodma)
             if (icodma .ne. 0) call u2mess('F', 'FATIGUE1_32')
-            call getvid(' ', 'TAHERI_NAPPE', 1, iarg, 1,&
-                        nomnap, nval)
+            call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nval)
             if (nval .eq. 0) then
                 call u2mess('F', 'FATIGUE1_26')
             endif
-            call getvid(' ', 'TAHERI_FONC', 1, iarg, 1,&
-                        nomfon, nval)
+            call getvid(' ', 'TAHERI_FONC', scal=nomfon, nbret=nval)
             if (nval .eq. 0) then
                 call u2mess('F', 'FATIGUE1_27')
             endif
@@ -383,8 +361,7 @@ subroutine op0151()
             if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
                 call u2mess('F', 'FATIGUE1_30')
             endif
-            call getvid(' ', 'TAHERI_NAPPE', 1, iarg, 1,&
-                        nomnap, nval)
+            call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nval)
             if (nval .eq. 0) then
                 call u2mess('F', 'FATIGUE1_26')
             endif
@@ -466,11 +443,9 @@ subroutine op0151()
 !
     else if (typcal(1:13) .eq. 'FATIGUE_VIBR') then
 ! ---   STRUCTURE RESULTAT CONTENANT LES CHAM_ELEMS DE SIGMA EQUIVALENT
-        call getvid('HISTOIRE', 'RESULTAT', 1, iarg, 1,&
-                    nomres, nval)
+        call getvid('HISTOIRE', 'RESULTAT', iocc=1, scal=nomres, nbret=nval)
         nomsd = nomres
-        call getvid('HISTOIRE', 'MODE_MECA', 1, iarg, 1,&
-                    nommod, nval)
+        call getvid('HISTOIRE', 'MODE_MECA', iocc=1, scal=nommod, nbret=nval)
         nomsd2 = nommod
 !
         if (mdomag .eq. 'WOHLER') then
@@ -542,10 +517,8 @@ subroutine op0151()
         endif
 !
 !-- NOMBRE ET NUMERO D ORDRE
-        call getvis('HISTOIRE', 'NUME_MODE', 1, iarg, 0,&
-                    ibid, nbord)
-        call getvr8('HISTOIRE', 'FACT_PARTICI', 1, iarg, 0,&
-                    rbid, nbord2)
+        call getvis('HISTOIRE', 'NUME_MODE', iocc=1, nbval=0, nbret=nbord)
+        call getvr8('HISTOIRE', 'FACT_PARTICI', iocc=1, nbval=0, nbret=nbord2)
 !
         if (nbord .ne. nbord2) then
             call u2mess('F', 'FATIGUE1_86')
@@ -553,11 +526,11 @@ subroutine op0151()
 !
         nbord = -nbord
         call wkvect('&&OP0151.LMODE', 'V V I', nbord, jordr)
-        call getvis('HISTOIRE', 'NUME_MODE', 1, iarg, nbord,&
-                    zi(jordr), ibid)
+        call getvis('HISTOIRE', 'NUME_MODE', iocc=1, nbval=nbord, vect=zi(jordr),&
+                    nbret=ibid)
         call wkvect('&&OP0151.CMODE', 'V V R', nbord, jcoef)
-        call getvr8('HISTOIRE', 'FACT_PARTICI', 1, iarg, nbord,&
-                    zr(jcoef), ibid)
+        call getvr8('HISTOIRE', 'FACT_PARTICI', iocc=1, nbval=nbord, vect=zr(jcoef),&
+                    nbret=ibid)
 !
         if (impr .ge. 1) then
             typeq = nomgde

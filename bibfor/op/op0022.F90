@@ -25,10 +25,10 @@ subroutine op0022()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dlidef.h"
 #include "asterfort/dliext.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/liimpr.h"
@@ -42,8 +42,7 @@ subroutine op0022()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getvtx(' ', 'OPERATION', 0, iarg, 1,&
-                opera, nv)
+    call getvtx(' ', 'OPERATION', scal=opera, nbret=nv)
     call getres(resu, concep, nomcmd)
 !
     if (opera .eq. 'DEFI') then

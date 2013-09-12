@@ -18,10 +18,10 @@ subroutine nmextf(motfac, iocc, extrcp)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
+    implicit none
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
     character(len=16) :: motfac
     integer :: iocc
     character(len=8) :: extrcp
@@ -48,13 +48,11 @@ subroutine nmextf(motfac, iocc, extrcp)
 !
 ! ----------------------------------------------------------------------
 !
-    call getvtx(motfac, 'EVAL_CMP', iocc, iarg, 1,&
-                typext, n1)
+    call getvtx(motfac, 'EVAL_CMP', iocc=iocc, scal=typext, nbret=n1)
     if (typext .eq. 'VALE') then
         extrcp = ' '
     else if (typext.eq.'FORMULE') then
-        call getvid(motfac, 'FORMULE', iocc, iarg, 1,&
-                    extrcp, n1)
+        call getvid(motfac, 'FORMULE', iocc=iocc, scal=extrcp, nbret=n1)
     else
         ASSERT(.false.)
     endif

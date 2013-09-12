@@ -22,13 +22,8 @@ subroutine op0167()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chckma.h"
@@ -50,6 +45,10 @@ subroutine op0167()
 #include "asterfort/dismoi.h"
 #include "asterfort/eclpgm.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/infoma.h"
@@ -78,6 +77,7 @@ subroutine op0167()
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, nbmst, iqtr, nbvolu
     integer :: n1, numma, nbjoin, nbrest, n1a, n1b
 !
@@ -124,20 +124,16 @@ subroutine op0167()
 ! ----------------------------------------------------------------------
     call getfac('ECLA_PG', nbecla)
     if (nbecla .gt. 0) then
-        call getvid('ECLA_PG', 'MODELE', 1, iarg, 1,&
-                    mo, ibid)
+        call getvid('ECLA_PG', 'MODELE', iocc=1, scal=mo, nbret=ibid)
         ASSERT(ibid.eq.1)
-        call getvr8('ECLA_PG', 'SHRINK', 1, iarg, 1,&
-                    shrink, ibid)
-        call getvr8('ECLA_PG', 'TAILLE_MIN', 1, iarg, 1,&
-                    lonmin, ibid)
-        call getvtx('ECLA_PG', 'NOM_CHAM', 1, iarg, 0,&
-                    k16bid, nch)
+        call getvr8('ECLA_PG', 'SHRINK', iocc=1, scal=shrink, nbret=ibid)
+        call getvr8('ECLA_PG', 'TAILLE_MIN', iocc=1, scal=lonmin, nbret=ibid)
+        call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=0, nbret=nch)
         if (nch .lt. 0) then
             nch=-nch
             call wkvect('&&OP0167.NOMCHAMP', 'V V K16', nch, icham)
-            call getvtx('ECLA_PG', 'NOM_CHAM', 1, iarg, nch,&
-                        zk16(icham), nch)
+            call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=nch, vect=zk16(icham),&
+                        nbret=nch)
         else
             icham=1
         endif
@@ -152,8 +148,7 @@ subroutine op0167()
 ! ----------------------------------------------------------------------
 !          TRAITEMENT DU MOT CLE "GEOM_FIBRE"
 ! ----------------------------------------------------------------------
-    call getvid(' ', 'GEOM_FIBRE', 1, iarg, 1,&
-                geofi, nfi)
+    call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nfi)
     if (nfi .ne. 0) then
         call jeveuo(geofi//'.GFMA', 'L', jgeofi)
         call copisd('MAILLAGE', 'G', zk8(jgeofi), nomaou)
@@ -161,8 +156,7 @@ subroutine op0167()
     endif
 !
 !
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                nomain, nn1)
+    call getvid(' ', 'MAILLAGE', scal=nomain, nbret=nn1)
     if (nn1 .eq. 0) call u2mess('F', 'CALCULEL5_10')
 !
 ! ----------------------------------------------------------------------
@@ -195,15 +189,11 @@ subroutine op0167()
         ASSERT(nbmoma.eq.1)
         if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_90')
 !
-        call getvtx('LINE_QUAD', 'PREF_NOEUD', 1, iarg, 1,&
-                    prefix, n1)
-        call getvis('LINE_QUAD', 'PREF_NUME', 1, iarg, 1,&
-                    ndinit, n1)
+        call getvtx('LINE_QUAD', 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
+        call getvis('LINE_QUAD', 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
 !
-        call getvtx('LINE_QUAD', 'MAILLE', 1, iarg, 0,&
-                    k8b, n1a)
-        call getvtx('LINE_QUAD', 'GROUP_MA', 1, iarg, 0,&
-                    k8b, n1b)
+        call getvtx('LINE_QUAD', 'MAILLE', iocc=1, nbval=0, nbret=n1a)
+        call getvtx('LINE_QUAD', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
         if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, 'LINE_QUAD')
 !
         motcle(1)='MAILLE'
@@ -236,10 +226,8 @@ subroutine op0167()
     if (nbmoma .gt. 0) then
         if (nn1 .eq. 0) call u2mesk('F', 'MAIL0_14', 1, motfac)
 !
-        call getvtx(motfac, 'MAILLE', 1, iarg, 0,&
-                    k8b, n1a)
-        call getvtx(motfac, 'GROUP_MA', 1, iarg, 0,&
-                    k8b, n1b)
+        call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=n1a)
+        call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
         if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, motfac)
 !
         lpb=.false.
@@ -260,10 +248,8 @@ subroutine op0167()
         endif
         if (lpb) call u2mesk('A', 'MODELISA4_11', 1, motfac)
 !
-        call getvtx(motfac, 'PREF_NOEUD', 1, iarg, 1,&
-                    prefix, n1)
-        call getvis(motfac, 'PREF_NUME', 1, iarg, 1,&
-                    ndinit, n1)
+        call getvtx(motfac, 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
+        call getvis(motfac, 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
 !
         motcle(1)='MAILLE'
         motcle(2)='GROUP_MA'
@@ -293,10 +279,8 @@ subroutine op0167()
         ASSERT(nbmoma.eq.1)
         if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_93')
 !
-        call getvtx('QUAD_LINE', 'MAILLE', 1, iarg, 0,&
-                    k8b, n1a)
-        call getvtx('QUAD_LINE', 'GROUP_MA', 1, iarg, 0,&
-                    k8b, n1b)
+        call getvtx('QUAD_LINE', 'MAILLE', iocc=1, nbval=0, nbret=n1a)
+        call getvtx('QUAD_LINE', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
         if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, 'QUAD_LINE')
 !
         motcle(1)='MAILLE'
@@ -327,8 +311,7 @@ subroutine op0167()
 !
         iqtr=0
         do 20 iocc = 1, nbmoma
-            call getvtx('MODI_MAILLE', 'OPTION', iocc, iarg, 1,&
-                        option, n1)
+            call getvtx('MODI_MAILLE', 'OPTION', iocc=iocc, scal=option, nbret=n1)
             if (option .eq. 'QUAD_TRIA3') then
                 iqtr=iqtr+1
                 iocct=iocc
@@ -340,20 +323,16 @@ subroutine op0167()
         else if (iqtr.gt.1) then
             call u2mess('F', 'ALGELINE2_97')
         else
-            call getvtx('MODI_MAILLE', 'MAILLE', iocct, iarg, 0,&
-                        k8b, n1a)
-            call getvtx('MODI_MAILLE', 'GROUP_MA', iocct, iarg, 0,&
-                        k8b, n1b)
+            call getvtx('MODI_MAILLE', 'MAILLE', iocc=iocct, nbval=0, nbret=n1a)
+            call getvtx('MODI_MAILLE', 'GROUP_MA', iocc=iocct, nbval=0, nbret=n1b)
             if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, 'QUAD_TRIA3')
             call dismoi('F', 'EXI_TRIA6', nomain, 'MAILLAGE', ibid,&
                         repk, ierd)
             if (repk .eq. 'OUI') call u2mess('A', 'MODELISA4_2')
         endif
 !
-        call getvtx('MODI_MAILLE', 'PREF_MAILLE', 1, iarg, 1,&
-                    prefix, n1)
-        call getvis('MODI_MAILLE', 'PREF_NUME', 1, iarg, 1,&
-                    ndinit, n1)
+        call getvtx('MODI_MAILLE', 'PREF_MAILLE', iocc=1, scal=prefix, nbret=n1)
+        call getvis('MODI_MAILLE', 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
 !
         motcle(1)='MAILLE'
         motcle(2)='GROUP_MA'
@@ -381,21 +360,15 @@ subroutine op0167()
             call u2mess('F', 'ALGELINE2_98')
         endif
 !
-        call getvr8('COQU_VOLU', 'EPAIS', 1, iarg, 1,&
-                    epais, n1)
-        call getvtx('COQU_VOLU', 'PREF_NOEUD', 1, iarg, 1,&
-                    prfno, n1)
-        call getvtx('COQU_VOLU', 'PREF_MAILLE', 1, iarg, 1,&
-                    prfma, n1)
-        call getvis('COQU_VOLU', 'PREF_NUME', 1, iarg, 1,&
-                    numma, n1)
-        call getvtx('COQU_VOLU', 'PLAN', 1, iarg, 1,&
-                    plan, n1)
+        call getvr8('COQU_VOLU', 'EPAIS', iocc=1, scal=epais, nbret=n1)
+        call getvtx('COQU_VOLU', 'PREF_NOEUD', iocc=1, scal=prfno, nbret=n1)
+        call getvtx('COQU_VOLU', 'PREF_MAILLE', iocc=1, scal=prfma, nbret=n1)
+        call getvis('COQU_VOLU', 'PREF_NUME', iocc=1, scal=numma, nbret=n1)
+        call getvtx('COQU_VOLU', 'PLAN', iocc=1, scal=plan, nbret=n1)
 !
         if (plan .eq. 'MOY') then
             trans='INF'
-            call getvtx('COQU_VOLU', 'TRANSLATION', 1, iarg, 1,&
-                        trans, n1)
+            call getvtx('COQU_VOLU', 'TRANSLATION', iocc=1, scal=trans, nbret=n1)
         endif
 !
         nomjv='&&OP0167.LISTE_MAV'
@@ -509,20 +482,19 @@ subroutine op0167()
 !
         iad=1
         do 60 iocc = 1, nbmoma
-            call getvtx('MODI_MAILLE', 'OPTION', iocc, iarg, 1,&
-                        option, n1)
+            call getvtx('MODI_MAILLE', 'OPTION', iocc=iocc, scal=option, nbret=n1)
             zi(jiad+iocc-1)=1
-            call getvtx('MODI_MAILLE', 'PREF_NOEUD', iocc, iarg, 0,&
-                        k8b, n1)
+            call getvtx('MODI_MAILLE', 'PREF_NOEUD', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvtx('MODI_MAILLE', 'PREF_NOEUD', iocc, iarg, 1,&
-                            zk8(jpro+iocc-1), n1)
+                call getvtx('MODI_MAILLE', 'PREF_NOEUD', iocc=iocc, scal=zk8(jpro+iocc-1),&
+                            nbret=n1)
                 lgno=lxlgut(zk8(jpro+iocc-1))
             endif
-            call getvis('MODI_MAILLE', 'PREF_NUME', iocc, iarg, 0,&
-                        ibid, n1)
-            if (n1 .ne. 0) call getvis('MODI_MAILLE', 'PREF_NUME', iocc, iarg, 1,&
-                                       zi(jnum+iocc-1), n1)
+            call getvis('MODI_MAILLE', 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
+            if (n1 .ne. 0) then
+                call getvis('MODI_MAILLE', 'PREF_NUME', iocc=iocc, scal=zi(jnum+iocc-1),&
+                            nbret=n1)
+            endif
             call palim2('MODI_MAILLE', iocc, nomain, momanu, momano,&
                         zi(jiad+iocc-1))
             if (zi(jiad+iocc-1)-1 .le. 0) then
@@ -766,16 +738,12 @@ subroutine op0167()
         if (nn1 .eq. 0) then
             call u2mess('F', 'ALGELINE3_4')
         endif
-        call getvid('REPERE', 'TABLE', 1, iarg, 0,&
-                    k8b, ntab)
+        call getvid('REPERE', 'TABLE', iocc=1, nbval=0, nbret=ntab)
         if (ntab .ne. 0) then
-            call getvid('REPERE', 'TABLE', 1, iarg, 1,&
-                        table, ntab)
-            call getvtx('REPERE', 'NOM_ORIG', 1, iarg, 0,&
-                        k8b, nori)
+            call getvid('REPERE', 'TABLE', iocc=1, scal=table, nbret=ntab)
+            call getvtx('REPERE', 'NOM_ORIG', iocc=1, nbval=0, nbret=nori)
             if (nori .ne. 0) then
-                call getvtx('REPERE', 'NOM_ORIG', 1, iarg, 1,&
-                            nomori, nori)
+                call getvtx('REPERE', 'NOM_ORIG', iocc=1, scal=nomori, nbret=nori)
                 if (nomori .eq. 'CDG') then
                     call chcoma(table, nomaou)
                 else if (nomori.eq.'TORSION') then
@@ -997,7 +965,7 @@ subroutine op0167()
             endif
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
             call jelira(jexnum(grpmav, i), 'LONMAX', nbma)
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma,1))
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma, 1))
             call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
@@ -1006,8 +974,7 @@ subroutine op0167()
 240          continue
 250      continue
         do 270 i = 1, nbgrma
-            call getvtx('CREA_GROUP_MA', 'NOM', i, iarg, 1,&
-                        nomg, n1)
+            call getvtx('CREA_GROUP_MA', 'NOM', iocc=i, scal=nomg, nbret=n1)
             ASSERT(n1.eq.1)
             call jeexin(jexnom(grpmai, nomg), iret)
             if (iret .eq. 0) then
@@ -1021,7 +988,7 @@ subroutine op0167()
             call palim3('CREA_GROUP_MA', i, nomain, crgrnu, crgrno,&
                         nbmaj2)
             call jeveuo(crgrno, 'L', jcrgno)
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbmaj2,1))
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbmaj2, 1))
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbmaj2)
             call jeveuo(jexnom(grpmai, nomg), 'E', iagma)
             do 260 ima = 0, nbmaj2-1
@@ -1053,7 +1020,7 @@ subroutine op0167()
                 call u2mesg('F', 'ALGELINE4_11', 1, valk, 0,&
                             0, 0, 0.d0)
             endif
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno,1))
+            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno, 1))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 280 j = 0, nbno-1
@@ -1072,8 +1039,7 @@ subroutine op0167()
     if (nbcrp1 .ne. 0) then
         nbgrma=0
         do 300 iocc = 1, nbcrp1
-            call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc, iarg, 0,&
-                        k8b, n1)
+            call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) nbgrma=nbgrma+1
 300      continue
         if (nbgrma .ne. 0) then
@@ -1106,7 +1072,7 @@ subroutine op0167()
                     endif
                     call jeveuo(jexnum(grpmav, i), 'L', jvg)
                     call jelira(jexnum(grpmav, i), 'LONMAX', nbma)
-                    call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1,nbma))
+                    call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma))
                     call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
                     call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
                     call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
@@ -1116,11 +1082,9 @@ subroutine op0167()
 320              continue
             endif
             do 340 iocc = 1, nbcrp1
-                call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc, iarg, 0,&
-                            k8b, n1)
+                call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
-                    call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc, iarg, 1,&
-                                nogma, n1)
+                    call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, scal=nogma, nbret=n1)
                     call jenonu(jexnom(grpmai, nogma), ibid)
                     if (ibid .gt. 0) call u2mesk('F', 'ALGELINE3_7', 1, nogma)
                     call reliem(' ', nomain, 'NO_NOEUD', motfac, iocc,&
@@ -1135,7 +1099,7 @@ subroutine op0167()
                         call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
                                     0, 0, 0.d0)
                     endif
-                    call jeecra(jexnom(grpmai, nogma), 'LONMAX', max(nbma,1))
+                    call jeecra(jexnom(grpmai, nogma), 'LONMAX', max(nbma, 1))
                     call jeecra(jexnom(grpmai, nogma), 'LONUTI', nbma)
                     call jeveuo(jexnom(grpmai, nogma), 'E', iagma)
                     do 330,ima=0,nbma-1

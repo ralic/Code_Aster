@@ -1,10 +1,10 @@
 subroutine aceama(nomu, noma, lmax, nbocc)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterfort/alcart.h"
 #include "asterfort/eulnau.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -95,14 +95,14 @@ subroutine aceama(nomu, noma, lmax, nbocc)
                     iarg, lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'MASSIF', 'MAILLE', ioc,&
                     iarg, lmax, zk8(jdls2), nm)
-        call getvr8('MASSIF', 'ANGL_REP', ioc, iarg, 3,&
-                    ang(1), nrep)
-        call getvr8('MASSIF', 'ANGL_EULER', ioc, iarg, 3,&
-                    angeul(1), neul)
-        call getvr8('MASSIF', 'ANGL_AXE', ioc, iarg, 2,&
-                    ang(1), naxe)
-        call getvr8('MASSIF', 'ORIG_AXE', ioc, iarg, 3,&
-                    orig(1), norig)
+        call getvr8('MASSIF', 'ANGL_REP', iocc=ioc, nbval=3, vect=ang(1),&
+                    nbret=nrep)
+        call getvr8('MASSIF', 'ANGL_EULER', iocc=ioc, nbval=3, vect=angeul(1),&
+                    nbret=neul)
+        call getvr8('MASSIF', 'ANGL_AXE', iocc=ioc, nbval=2, vect=ang(1),&
+                    nbret=naxe)
+        call getvr8('MASSIF', 'ORIG_AXE', iocc=ioc, nbval=3, vect=orig(1),&
+                    nbret=norig)
 !
         if (nrep .ne. 0) then
             zr(jdvc ) = 1.d0

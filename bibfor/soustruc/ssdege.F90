@@ -19,10 +19,10 @@ subroutine ssdege(nomu)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -57,16 +57,14 @@ subroutine ssdege(nomu)
     integer :: nbec, nbnoto, nch, nchar, nvalap
 !-----------------------------------------------------------------------
     call jemarq()
-    call getvid('DEFINITION', 'CHAR_MACR_ELEM', 1, iarg, 0,&
-                kbi81, n1)
+    call getvid('DEFINITION', 'CHAR_MACR_ELEM', iocc=1, nbval=0, nbret=n1)
     nchar=-n1
 !
     call wkvect(nomu//'.REFM', 'G V K8', 9+nchar, iarefm)
 !
 !     -- RECUPERARTION DES NOMS DES REFERENCES:
 !     -----------------------------------------
-    call getvid('DEFINITION', 'MODELE', 1, iarg, 1,&
-                nomo, n1)
+    call getvid('DEFINITION', 'MODELE', iocc=1, scal=nomo, nbret=n1)
 !
     call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', ibi,&
                 noma, ier)
@@ -79,19 +77,16 @@ subroutine ssdege(nomu)
 !
     zk8(iarefm-1+1)= nomo
     zk8(iarefm-1+2)= noma
-    call getvid('DEFINITION', 'CHAM_MATER', 1, iarg, 1,&
-                kbi81, n1)
+    call getvid('DEFINITION', 'CHAM_MATER', iocc=1, scal=kbi81, nbret=n1)
     if (n1 .ne. 0) zk8(iarefm-1+3)=kbi81
-    call getvid('DEFINITION', 'CARA_ELEM', 1, iarg, 1,&
-                kbi81, n1)
+    call getvid('DEFINITION', 'CARA_ELEM', iocc=1, scal=kbi81, nbret=n1)
     if (n1 .ne. 0) zk8(iarefm-1+4)=kbi81
 !
     zk8(iarefm-1+6)= 'NON_RIGI'
     zk8(iarefm-1+7)= 'NON_MASS'
     zk8(iarefm-1+8)= 'NON_AMOR'
 !
-    call getvid('DEFINITION', 'PROJ_MESU', 1, iarg, 1,&
-                promes, ier)
+    call getvid('DEFINITION', 'PROJ_MESU', iocc=1, scal=promes, nbret=ier)
     if (ier .eq. 0) then
         zk8(iarefm-1+9)= ' '
     else
@@ -101,28 +96,25 @@ subroutine ssdege(nomu)
 !     -- RECUPERARTION DU NOM DES CHARGES CINEMATIQUES:
 !     -------------------------------------------------
     if (nchar .gt. 0) then
-        call getvid('DEFINITION', 'CHAR_MACR_ELEM', 1, iarg, nchar,&
-                    zk8( iarefm-1+9+1), n1)
+        call getvid('DEFINITION', 'CHAR_MACR_ELEM', iocc=1, nbval=nchar, vect=zk8( iarefm-1+9+1),&
+                    nbret=n1)
     endif
 !
 !     -- CREATION DES OBJETS .LICA ET .LICH:
 !     --------------------------------------
-    call getvis('DEFINITION', 'NMAX_CAS', 1, iarg, 1,&
-                nbc, n1)
+    call getvis('DEFINITION', 'NMAX_CAS', iocc=1, scal=nbc, nbret=n1)
     nbc= max(nbc,1)
     call jecrec(nomu//'.LICA', 'G V R', 'NO', 'DISPERSE', 'CONSTANT',&
                 nbc)
     call jecrec(nomu//'.LICH', 'G V K8', 'NO', 'CONTIG', 'CONSTANT',&
                 nbc)
-    call getvis('DEFINITION', 'NMAX_CHAR', 1, iarg, 1,&
-                nch, n1)
+    call getvis('DEFINITION', 'NMAX_CHAR', iocc=1, scal=nch, nbret=n1)
     call jeecra(nomu//'.LICH', 'LONMAX', nch)
 !
 !
 !     -- CREATION DE L'OBJET .VARM:
 !     ------------------------------
-    call getvr8('DEFINITION', 'INST', 1, iarg, 1,&
-                time, n1)
+    call getvr8('DEFINITION', 'INST', iocc=1, scal=time, nbret=n1)
     call wkvect(nomu//'.VARM', 'G V R', 2, jvarm)
     zr(jvarm-1+1)=jevtbl('TAILLE_BLOC')
     zr(jvarm-1+2)=time

@@ -1,11 +1,10 @@
 subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -20,6 +19,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: xdicmp, xdncmp, vcheff
     integer :: i, ier
 !     ------------------------------------------------------------------
@@ -80,10 +80,8 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 !                  D' UN CHAMP EFFECTIF ASSOCIE
 !
         ier = 0
-        call getvid('ACTION', 'RESULTAT', i, iarg, 1,&
-                    nresu, n1)
-        call getvtx('ACTION', 'NOM_CHAM', i, iarg, 1,&
-                    nchsym, n1)
+        call getvid('ACTION', 'RESULTAT', iocc=i, scal=nresu, nbret=n1)
+        call getvtx('ACTION', 'NOM_CHAM', iocc=i, scal=nchsym, nbret=n1)
         call gettco(nresu, tresu)
 !
         valk(1) = nchsym
@@ -140,13 +138,11 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 !        --- VERIFICATION DE CONCORDANCE DES MAILLAGES ---
         call dismoi('F', 'NOM_MAILLA', ncheff, 'CHAMP', n1,&
                     nmaich, ierd)
-        call getvid('ACTION', 'CHEMIN', i, iarg, 0,&
-                    zk8, nbcrb)
+        call getvid('ACTION', 'CHEMIN', iocc=i, nbval=0, nbret=nbcrb)
         nbcrb = -nbcrb
         if (nbcrb .ne. 0) then
 !           /* LE LIEU DU POST TRAITEMENT EST UNE COURBE */
-            call getvid('ACTION', 'CHEMIN', i, iarg, 1,&
-                        nomcrb, n1)
+            call getvid('ACTION', 'CHEMIN', iocc=i, scal=nomcrb, nbret=n1)
             call jeexin(nomcrb//'.NOMMAIL', n1)
             if (n1 .ne. 0) then
                 call jeveuo(nomcrb//'.NOMMAIL', 'L', amaicb)
@@ -163,18 +159,16 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         else
 !           /* LE LIEU DU POST TRAITEMENT EST UN ENSMBLE DE NOEUDS */
 !           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
-            call getvtx('ACTION', 'GROUP_NO', i, iarg, 0,&
-                        zk8(1), nbgrpn)
-            call getvtx('ACTION', 'NOEUD', i, iarg, 0,&
-                        zk8(1), nbneud)
+            call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=0, nbret=nbgrpn)
+            call getvtx('ACTION', 'NOEUD', iocc=i, nbval=0, nbret=nbneud)
             nbgrpn = -nbgrpn
             nbneud = -nbneud
             if (nbgrpn .ne. 0) then
                 call jecreo('&&OP0051.NOM.GRPN', 'V V K24')
                 call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn)
                 call jeveuo('&&OP0051.NOM.GRPN', 'E', agrpnd)
-                call getvtx('ACTION', 'GROUP_NO', i, iarg, nbgrpn,&
-                            zk24(agrpnd), n1)
+                call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=zk24(agrpnd),&
+                            nbret=n1)
                 do 120, k = 1, nbgrpn, 1
                 nomgrn = zk24(agrpnd + k-1)
                 call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
@@ -187,8 +181,8 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             endif
             if (nbneud .ne. 0) then
                 call wkvect('&&OP0051.NOM.NEUD', 'V V K8', nbneud, alneud)
-                call getvtx('ACTION', 'NOEUD', i, iarg, nbneud,&
-                            zk8( alneud), n1)
+                call getvtx('ACTION', 'NOEUD', iocc=i, nbval=nbneud, vect=zk8( alneud),&
+                            nbret=n1)
                 nrepnd = nmaich//'.NOMNOE'
                 do 130, k = 1, nbneud, 1
                 nomnd = zk8(alneud + k-1)

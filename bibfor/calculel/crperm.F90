@@ -1,5 +1,5 @@
 subroutine crperm()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,14 +24,8 @@ subroutine crperm()
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
-!
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cetran.h"
@@ -42,6 +36,9 @@ subroutine crperm()
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -51,6 +48,9 @@ subroutine crperm()
 #include "asterfort/rsorac.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
+!
+!
     integer :: n1, nbcham, iord1, iord2, nbperm, jordr, nbtrou, ip, ibid, ic
     integer :: iret, jlim1, jlim2, nbma, jlino, nbno2, nncp
     real(kind=8) :: inst1, tran(3), prec
@@ -71,19 +71,15 @@ subroutine crperm()
 ! --- RECUPERATION DES DONNEES UTILISATEUR :
 !     ------------------------------------
 !
-    call getvid(' ', 'RESU_INIT', 1, iarg, 1,&
-                resu1, n1)
-    call getvr8(' ', 'INST_INIT', 1, iarg, 1,&
-                inst1, n1)
+    call getvid(' ', 'RESU_INIT', scal=resu1, nbret=n1)
+    call getvr8(' ', 'INST_INIT', scal=inst1, nbret=n1)
     if (n1 .eq. 0) then
         call jelira(resu1//'           .ORDR', 'LONUTI', ibid)
         call jeveuo(resu1//'           .ORDR', 'L', jordr)
         iord1 = zi(jordr+ibid-1)
     else
-        call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                    prec, n1)
-        call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                    crit, n1)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=n1)
+        call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
         call rsorac(resu1, 'INST', ibid, inst1, k8b,&
                     cbid, prec, crit, iord1, 1,&
                     nbtrou)
@@ -98,14 +94,10 @@ subroutine crperm()
                         0, 1, valr)
         endif
     endif
-    call getvid(' ', 'MAILLAGE_INIT', 1, iarg, 1,&
-                ma1, n1)
-    call getvid(' ', 'RESU_FINAL', 1, iarg, 1,&
-                resu2, n1)
-    call getvid(' ', 'MAILLAGE_FINAL', 1, iarg, 1,&
-                ma2, n1)
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                k8b, n1)
+    call getvid(' ', 'MAILLAGE_INIT', scal=ma1, nbret=n1)
+    call getvid(' ', 'RESU_FINAL', scal=resu2, nbret=n1)
+    call getvid(' ', 'MAILLAGE_FINAL', scal=ma2, nbret=n1)
+    call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
     if (n1 .eq. 0) then
         nbcham = 3
         cham(1) = 'DEPL'
@@ -113,8 +105,7 @@ subroutine crperm()
         cham(3) = 'VARI_ELGA'
     else
         nbcham = -n1
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                    cham, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=cham, nbret=n1)
 !
     endif
 !
@@ -195,10 +186,9 @@ subroutine crperm()
         call getvem(ma2, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_FINAL', ip,&
                     iarg, 1, gma2, n1)
 !
-        call getvr8('PERM_CHAM', 'TRAN', ip, iarg, 3,&
-                    tran, n1)
-        call getvr8('PERM_CHAM', 'PRECISION', ip, iarg, 1,&
-                    prec, n1)
+        call getvr8('PERM_CHAM', 'TRAN', iocc=ip, nbval=3, vect=tran,&
+                    nbret=n1)
+        call getvr8('PERM_CHAM', 'PRECISION', iocc=ip, scal=prec, nbret=n1)
 !
 ! ------ VERIFICATION DES GROUPES DE MAILLES FOURNIES :
 !        --------------------------------------------

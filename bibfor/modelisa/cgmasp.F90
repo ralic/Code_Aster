@@ -39,10 +39,9 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -54,6 +53,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! -----  ARGUMENTS
     character(len=*) :: mofaz, nomaz, lismaz
@@ -85,8 +85,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
 !     --------------------------------------------------
-    call getvtx(motfac, 'CRIT_NOEUD', iocc, iarg, 1,&
-                selec, ibid)
+    call getvtx(motfac, 'CRIT_NOEUD', iocc=iocc, scal=selec, nbret=ibid)
 !
     zero = 0.0d0
 !
@@ -126,13 +125,11 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU RAYON DE LA SPHERE :
 !     ----------------------------------
-    call getvr8(motfac, 'RAYON', iocc, iarg, 0,&
-                rayon, nrayon)
+    call getvr8(motfac, 'RAYON', iocc=iocc, nbval=0, nbret=nrayon)
     if (nrayon .eq. 0) then
         call u2mess('F', 'MODELISA3_82')
     else
-        call getvr8(motfac, 'RAYON', iocc, iarg, 1,&
-                    rayon, nb)
+        call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call u2mess('F', 'MODELISA3_83')
         endif

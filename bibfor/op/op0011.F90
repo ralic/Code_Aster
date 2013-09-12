@@ -1,5 +1,5 @@
 subroutine op0011()
-    implicit  none
+    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,9 +30,9 @@ subroutine op0011()
 !----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/crsolv.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
@@ -55,10 +55,8 @@ subroutine op0011()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getvtx(' ', 'METHODE', 0, iarg, 1,&
-                method, nbid)
-    call getvtx(' ', 'RENUM', 0, iarg, 1,&
-                renum, nbid)
+    call getvtx(' ', 'METHODE', scal=method, nbret=nbid)
+    call getvtx(' ', 'RENUM', scal=renum, nbret=nbid)
 !
     charge = '&&OP0011.CHARGES   .LCHA'
     base ='GG'
@@ -77,19 +75,15 @@ subroutine op0011()
 !
 ! --- TRAITEMENT DU MOT CLE MATR_RIGI OU MODELE :
 !     -----------------------------------------
-    call getvid(' ', 'MATR_RIGI', 0, iarg, 0,&
-                k8b, nbmat)
+    call getvid(' ', 'MATR_RIGI', nbval=0, nbret=nbmat)
 !
     if (nbmat .eq. 0) then
-        call getvid(' ', 'MODELE', 1, iarg, 1,&
-                    mo, nbid)
-        call getvid(' ', 'CHARGE', 1, iarg, 0,&
-                    k8b, nbcha)
+        call getvid(' ', 'MODELE', scal=mo, nbret=nbid)
+        call getvid(' ', 'CHARGE', nbval=0, nbret=nbcha)
         nbcha = -nbcha
         if (nbcha .ne. 0) then
             call wkvect(charge, 'V V K24', nbcha, iacha)
-            call getvid(' ', 'CHARGE', 1, iarg, nbcha,&
-                        zk24(iacha), nbid)
+            call getvid(' ', 'CHARGE', nbval=nbcha, vect=zk24(iacha), nbret=nbid)
         endif
         call numero(' ', mo, charge(1:19), solveu, base,&
                     nudev)
@@ -99,8 +93,7 @@ subroutine op0011()
 !
 !
     nbmat = -nbmat
-    call getvid(' ', 'MATR_RIGI', 0, iarg, nbmat,&
-                tlimat, nbmat)
+    call getvid(' ', 'MATR_RIGI', nbval=nbmat, vect=tlimat, nbret=nbmat)
     call wkvect('&&OP001_LIST_MATEL', 'V V K24', nbmat, imatel)
     do 10 il = 1, nbmat
         zk24(imatel+il-1)=tlimat(il)

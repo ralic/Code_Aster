@@ -35,9 +35,6 @@ subroutine op0060()
 #include "asterc/gcucon.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -49,6 +46,9 @@ subroutine op0060()
 #include "asterfort/dylach.h"
 #include "asterfort/dylech.h"
 #include "asterfort/dylema.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -156,8 +156,7 @@ subroutine op0060()
     newcal = .true.
     call gcucon(result, typcon, iret)
     if (iret .gt. 0) then
-        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                    resuco, ibid)
+        call getvid(' ', 'RESULTAT', scal=resuco, nbret=ibid)
         if (ibid .eq. 0) then
             newcal = .true.
         else
@@ -188,31 +187,26 @@ subroutine op0060()
 !
 ! --- LISTE DES FREQUENCES POUR LE CALCUL
 !
-    call getvid(' ', 'LIST_FREQ', 0, iarg, 1,&
-                lifreq, n1)
+    call getvid(' ', 'LIST_FREQ', scal=lifreq, nbret=n1)
     if (n1 .gt. 0) then
         call jeveuo(lifreq//'.VALE', 'L', lfreq)
         call jelira(lifreq//'.VALE', 'LONMAX', nbfreq)
     else
-        call getvr8(' ', 'FREQ', 0, iarg, 0,&
-                    r8bid, nbfreq)
+        call getvr8(' ', 'FREQ', nbval=0, nbret=nbfreq)
         nbfreq = - nbfreq
         call wkvect(baseno//'.LISTE.FREQ', 'V V R', nbfreq, lfreq)
-        call getvr8(' ', 'FREQ', 0, iarg, nbfreq,&
-                    zr(lfreq), nbfreq)
+        call getvr8(' ', 'FREQ', nbval=nbfreq, vect=zr(lfreq), nbret=nbfreq)
     endif
 !
 ! --- NOM DES CHAMPS CALCULES
 !
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 3,&
-                nomsym, nbsym)
+    call getvtx(' ', 'NOM_CHAM', nbval=3, vect=nomsym, nbret=nbsym)
     ASSERT(nbsym.le.3)
     if (typcon .eq. 'ACOU_HARMO') then
         nbsym = 1
         nomsym(1) = 'PRES'
     else
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, 3,&
-                    nomsym, nbsym)
+        call getvtx(' ', 'NOM_CHAM', nbval=3, vect=nomsym, nbret=nbsym)
         if (nbsym .eq. 0) then
             nbsym = 3
             nomsym(1) = 'DEPL'
@@ -229,14 +223,10 @@ subroutine op0060()
     call dylema(baseno, nbmat, nomat, raide, masse,&
                 amor, impe)
     ASSERT(nbmat.le.4)
-    call getvid(' ', 'MATR_AMOR', 0, iarg, 1,&
-                k19bid, lamor)
-    call getvid(' ', 'MATR_IMPE_PHI', 0, iarg, 1,&
-                k19bid, limpe)
-    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8bid, n1)
-    call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 0,&
-                k8bid, n2)
+    call getvid(' ', 'MATR_AMOR', scal=k19bid, nbret=lamor)
+    call getvid(' ', 'MATR_IMPE_PHI', scal=k19bid, nbret=limpe)
+    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
+    call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
     if (n1 .ne. 0 .or. n2 .ne. 0) lamor1 = 1
 !
 ! --- TEST: LES MATRICES SONT TOUTES BASEES SUR LA MEME NUMEROTATION ?
@@ -326,7 +316,8 @@ subroutine op0060()
         matric(1) = raide
         matric(2) = masse
         matric(3) = amor
-        call refdaj('F', result, -1, numddl, 'DYNAMIQUE', matric, iret)
+        call refdaj('F', result, -1, numddl, 'DYNAMIQUE',&
+                    matric, iret)
     endif
 !
 !

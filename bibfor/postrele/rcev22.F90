@@ -1,15 +1,14 @@
 subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                   ccont, lfatig, flexio, lrocht, cnoc,&
                   cresu, cpres)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -23,6 +22,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbinti
     logical :: lfatig, flexio, lrocht
     character(len=16) :: kinti
@@ -92,26 +92,21 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     nbinst = 0
     cfait = .false.
 !
-    call getvid(motclf, 'TABL_RESU_MECA', iocc, iarg, 1,&
-                tabl0, n1)
-    call getvid(motclf, 'TABL_SIGM_THER', iocc, iarg, 1,&
-                tabfl0, n1)
+    call getvid(motclf, 'TABL_RESU_MECA', iocc=iocc, scal=tabl0, nbret=n1)
+    call getvid(motclf, 'TABL_SIGM_THER', iocc=iocc, scal=tabfl0, nbret=n1)
     if (n1 .ne. 0) flexio = .true.
-    call getvid(motclf, 'TABL_RESU_PRES', iocc, iarg, 1,&
-                tabpr0, n1)
+    call getvid(motclf, 'TABL_RESU_PRES', iocc=iocc, scal=tabpr0, nbret=n1)
     if (n1 .ne. 0) then
         lrocht = .true.
         call wkvect(cpres, 'V V K8', 1, jresp)
         zk8(jresp-1+1) = tabpr0
     endif
 !
-    call getvr8(motclf, 'INST', iocc, iarg, 1,&
-                r8b, n1)
+    call getvr8(motclf, 'INST', iocc=iocc, scal=r8b, nbret=n1)
     if (n1 .ne. 0) then
         nbins0 = -n1
     else
-        call getvid(motclf, 'LIST_INST', iocc, iarg, 1,&
-                    nomf, n1)
+        call getvid(motclf, 'LIST_INST', iocc=iocc, scal=nomf, nbret=n1)
         if (n1 .ne. 0) then
             call jelira(nomf//'.VALE', 'LONMAX', nbins0)
         else
@@ -306,32 +301,25 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
 ! --- RECUPERATION DES INFORMATIONS
 !
-    call getvis(motclf, 'NB_OCCUR', iocc, iarg, 1,&
-                nbcycl, n1)
+    call getvis(motclf, 'NB_OCCUR', iocc=iocc, scal=nbcycl, nbret=n1)
 !
 ! --- ON RECUPERE LES INSTANTS DANS LA TABLE
 !
-    call getvr8(motclf, 'INST', iocc, iarg, 1,&
-                r8b, n1)
+    call getvr8(motclf, 'INST', iocc=iocc, scal=r8b, nbret=n1)
     if (n1 .ne. 0) then
         nbins0 = -n1
         call wkvect(instan, 'V V R', nbins0, kinst)
-        call getvr8(motclf, 'INST', iocc, iarg, nbins0,&
-                    zr(kinst), n1)
-        call getvr8(motclf, 'PRECISION', iocc, iarg, 1,&
-                    prec(1), n1)
-        call getvtx(motclf, 'CRITERE', iocc, iarg, 1,&
-                    crit(1), n1)
+        call getvr8(motclf, 'INST', iocc=iocc, nbval=nbins0, vect=zr(kinst),&
+                    nbret=n1)
+        call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec(1), nbret=n1)
+        call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit(1), nbret=n1)
     else
-        call getvid(motclf, 'LIST_INST', iocc, iarg, 1,&
-                    nomf, n1)
+        call getvid(motclf, 'LIST_INST', iocc=iocc, scal=nomf, nbret=n1)
         if (n1 .ne. 0) then
             call jelira(nomf//'.VALE', 'LONMAX', nbins0)
             call jeveuo(nomf//'.VALE', 'L', kinst)
-            call getvr8(motclf, 'PRECISION', iocc, iarg, 1,&
-                        prec(1), n1)
-            call getvtx(motclf, 'CRITERE', iocc, iarg, 1,&
-                        crit(1), n1)
+            call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec(1), nbret=n1)
+            call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit(1), nbret=n1)
         else
             prec(1) = 1.0d-06
             crit(1) = 'RELATIF'

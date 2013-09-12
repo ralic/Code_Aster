@@ -18,12 +18,12 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mesr.h"
@@ -74,10 +74,8 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
 !
 ! --- LECTURE
 !
-    call getvr8(motfac, 'PRECISION', iocc, iarg, 1,&
-                prec, n1)
-    call getvtx(motfac, 'CRITERE', iocc, iarg, 1,&
-                criter, n2)
+    call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+    call getvtx(motfac, 'CRITERE', iocc=iocc, scal=criter, nbret=n2)
     if (criter .eq. 'ABSOLU') then
         if (n1 .eq. 0) call u2mess('F', 'LISTINST_1')
     else if (criter.eq.'RELATIF') then

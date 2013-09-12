@@ -3,11 +3,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                   jdlm)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/acedat.h"
 #include "asterfort/affdef.h"
 #include "asterfort/affgen.h"
@@ -17,6 +13,9 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 #include "asterfort/codent.h"
 #include "asterfort/coecis.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -34,6 +33,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, npoutr, nbocc, nbepo, ifm, jdlm
     integer :: ntyele(*), ivr(*)
     character(len=8) :: noma, nomo
@@ -156,17 +156,13 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                     iarg, lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'POUTRE', 'MAILLE', ioc,&
                     iarg, lmax, zk24(jdls), nm)
-        call getvtx('POUTRE', 'SECTION', ioc, iarg, 1,&
-                    sec, nsec)
-        call getvtx('POUTRE', 'VARI_SECT', ioc, iarg, 1,&
-                    varsec, nvsec)
+        call getvtx('POUTRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
+        call getvtx('POUTRE', 'VARI_SECT', iocc=ioc, scal=varsec, nbret=nvsec)
 !
 !
-        call getvid('POUTRE', 'TABLE_CARA', ioc, iarg, 1,&
-                    tabcar, ntab)
+        call getvid('POUTRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
         if (ntab .eq. 1) then
-            call getvtx('POUTRE', 'NOM_SEC', ioc, iarg, 1,&
-                        nomsec, nnosec)
+            call getvtx('POUTRE', 'NOM_SEC', iocc=ioc, scal=nomsec, nbret=nnosec)
             ASSERT(nnosec.eq.1)
 !
             call jeveuo(tabcar//'.TBNP', 'L', itbnp)
@@ -214,17 +210,16 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 96          continue
             ncarac=jj
         else
-            call getvtx('POUTRE', 'CARA', ioc, iarg, nbcar,&
-                        zk8(jcara), ncar)
-            call getvr8('POUTRE', 'VALE', ioc, iarg, nbval,&
-                        zr(jvale), nval)
+            call getvtx('POUTRE', 'CARA', iocc=ioc, nbval=nbcar, vect=zk8(jcara),&
+                        nbret=ncar)
+            call getvr8('POUTRE', 'VALE', iocc=ioc, nbval=nbval, vect=zr(jvale),&
+                        nbret=nval)
             ASSERT(ncar.gt.0)
             ncarac=ncar
         endif
 !
         fcx = '.'
-        call getvid('POUTRE', 'FCX', ioc, iarg, 1,&
-                    fcx, nfcx)
+        call getvid('POUTRE', 'FCX', iocc=ioc, scal=fcx, nbret=nfcx)
 !
         ivar = 2
 !

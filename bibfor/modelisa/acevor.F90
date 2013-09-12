@@ -2,9 +2,9 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
                   ier)
     implicit none
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
     integer :: nbocc, nlm, nlg, nln, nlj, ier
@@ -58,22 +58,16 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
 !
     do 10 ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
-        call getvtx('ORIENTATION', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, ng)
-        call getvtx('ORIENTATION', 'MAILLE', ioc, iarg, 0,&
-                    k8b, nm)
-        call getvtx('ORIENTATION', 'GROUP_NO', ioc, iarg, 0,&
-                    k8b, nj)
-        call getvtx('ORIENTATION', 'NOEUD', ioc, iarg, 0,&
-                    k8b, nn)
-        call getvtx('ORIENTATION', 'CARA', ioc, iarg, 0,&
-                    k8b, nc)
-        call getvtx('ORIENTATION', 'CARA', ioc, iarg, nbcar,&
-                    car, ncar)
-        call getvr8('ORIENTATION', 'VALE', ioc, iarg, 0,&
-                    r8b, nv)
-        call getvr8('ORIENTATION', 'VALE', ioc, iarg, nbval,&
-                    val, nval)
+        call getvtx('ORIENTATION', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('ORIENTATION', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
+        call getvtx('ORIENTATION', 'GROUP_NO', iocc=ioc, nbval=0, nbret=nj)
+        call getvtx('ORIENTATION', 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
+        call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=0, nbret=nc)
+        call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
+                    nbret=ncar)
+        call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=0, nbret=nv)
+        call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
+                    nbret=nval)
 !
 ! -- IOC = 1
         if (ioc .eq. 1) then

@@ -33,11 +33,10 @@ subroutine argu80(nomres)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -46,6 +45,7 @@ subroutine argu80(nomres)
 #include "asterfort/u2mesg.h"
 #include "asterfort/verecy.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: valk
     character(len=8) :: droite, gauche, axe, typd, typg, typa
     character(len=8) :: nomres, intf
@@ -78,17 +78,13 @@ subroutine argu80(nomres)
 !
 !----------RECUPERATION NOM DES INTERFACES DE LIAISON-------------------
 !
-    call getvtx('LIAISON', 'DROITE', 1, iarg, 1,&
-                kar8, ibid)
+    call getvtx('LIAISON', 'DROITE', iocc=1, scal=kar8, nbret=ibid)
     droite=kar8
-    call getvtx('LIAISON', 'GAUCHE', 1, iarg, 1,&
-                kar8, ibid)
+    call getvtx('LIAISON', 'GAUCHE', iocc=1, scal=kar8, nbret=ibid)
     gauche=kar8
-    call getvtx('LIAISON', 'AXE', 1, iarg, 0,&
-                kar8, ibaxe)
+    call getvtx('LIAISON', 'AXE', iocc=1, nbval=0, nbret=ibaxe)
     if (ibaxe .eq. -1) then
-        call getvtx('LIAISON', 'AXE', 1, iarg, 1,&
-                    kar8, ibid)
+        call getvtx('LIAISON', 'AXE', iocc=1, scal=kar8, nbret=ibid)
         axe=kar8
     else
         axe=' '
@@ -163,8 +159,7 @@ subroutine argu80(nomres)
 !
 !  RECUPERATION DU NOMBRE DE SECTEURS
 !
-    call getvis(blanc, 'NB_SECTEUR', 1, iarg, 1,&
-                nbsec, ibid)
+    call getvis(blanc, 'NB_SECTEUR', iocc=1, scal=nbsec, nbret=ibid)
     if (nbsec .lt. 2) then
         vali = nbsec
         call u2mesg('F', 'ALGORITH15_59', 0, ' ', 1,&
@@ -176,10 +171,8 @@ subroutine argu80(nomres)
 !---------------VERIFICATION DE LA REPETITIVITE SUR MAILLAGE------------
 !
     call getfac('VERI_CYCL', nveri)
-    call getvr8('VERI_CYCL', 'PRECISION', 1, iarg, 1,&
-                prec, ibid)
-    call getvr8('VERI_CYCL', 'DIST_REFE', 1, iarg, 1,&
-                dist, ndist)
+    call getvr8('VERI_CYCL', 'PRECISION', iocc=1, scal=prec, nbret=ibid)
+    call getvr8('VERI_CYCL', 'DIST_REFE', iocc=1, scal=dist, nbret=ndist)
     if (nveri .eq. 0) prec=1.d-3
     if (ndist .eq. 0) then
 !     --- AU CAS OU LA DISTANCE DE REFERENCE N'EST PAS DONNEE,ON DEVRAIT

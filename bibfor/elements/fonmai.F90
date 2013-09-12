@@ -1,10 +1,9 @@
 subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cgnoor.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -21,6 +20,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
 #include "asterfort/u2mess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbnoff
     character(len=8) :: resu, nomail, typfon
 ! ======================================================================
@@ -107,18 +107,14 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
     if (typfon .eq. 'FERME') then
 !
         numma = 0
-        call getvtx(motfac, 'MAILLE_ORIG', 1, iarg, 0,&
-                    nomma, n1)
+        call getvtx(motfac, 'MAILLE_ORIG', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvtx(motfac, 'MAILLE_ORIG', 1, iarg, 1,&
-                        nomma, n1)
+            call getvtx(motfac, 'MAILLE_ORIG', iocc=1, scal=nomma, nbret=n1)
             call jenonu(jexnom(nommai, nomma), numma)
         else
-            call getvtx(motfac, 'GROUP_MA_ORIG', 1, iarg, 0,&
-                        nogrp, n1)
+            call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvtx(motfac, 'GROUP_MA_ORIG', 1, iarg, 1,&
-                            nogrp, n1)
+                call getvtx(motfac, 'GROUP_MA_ORIG', iocc=1, scal=nogrp, nbret=n1)
                 call utnono(' ', nomail, 'MAILLE', nogrp, nomma,&
                             iret)
                 if (iret .eq. 10) then

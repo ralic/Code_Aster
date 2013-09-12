@@ -20,7 +20,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -105,12 +105,9 @@ subroutine ndloam(sddyna, result, evonol, nume)
 !
     if (.not.evonol) then
         linit = .true.
-        call getvid('PROJ_MODAL', 'DEPL_INIT_GENE', 1, iarg, 1,&
-                    depgen, nocc1)
-        call getvid('PROJ_MODAL', 'VITE_INIT_GENE', 1, iarg, 1,&
-                    vitgen, nocc2)
-        call getvid('PROJ_MODAL', 'ACCE_INIT_GENE', 1, iarg, 1,&
-                    accgen, nocc3)
+        call getvid('PROJ_MODAL', 'DEPL_INIT_GENE', iocc=1, scal=depgen, nbret=nocc1)
+        call getvid('PROJ_MODAL', 'VITE_INIT_GENE', iocc=1, scal=vitgen, nbret=nocc2)
+        call getvid('PROJ_MODAL', 'ACCE_INIT_GENE', iocc=1, scal=accgen, nbret=nocc3)
         nocc = nocc1+nocc2+nocc3
         if (nocc .ne. 0) linit = .false.
     else

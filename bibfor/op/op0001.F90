@@ -44,14 +44,14 @@ subroutine op0001()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/abscur.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chckma.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/infoma.h"
@@ -90,21 +90,17 @@ subroutine op0001()
 !
     call getres(nomu, concep, cmd)
 !
-    call getvis(' ', 'UNITE', 0, iarg, 1,&
-                ifl, iaux)
+    call getvis(' ', 'UNITE', scal=ifl, nbret=iaux)
 !
-    call getvtx(' ', 'FORMAT', 0, iarg, 1,&
-                fmt, iaux)
+    call getvtx(' ', 'FORMAT', scal=fmt, nbret=iaux)
 !
     if (fmt(1:3) .eq. 'MED') then
-        call getvtx(' ', 'NOM_MED', 0, iarg, 1,&
-                    nomamd, iaux)
+        call getvtx(' ', 'NOM_MED', scal=nomamd, nbret=iaux)
         if (iaux .eq. 0) then
 !                   12345678901234567890123456789012
             nomamd = '                                '//'                      '
         endif
-        call getvis(' ', 'INFO_MED', 0, iarg, 1,&
-                    infmed, iaux)
+        call getvis(' ', 'INFO_MED', scal=infmed, nbret=iaux)
 !
 !   --- LECTURE DES CORRESPONDANCES NOM MED - NOM ASTER
 !
@@ -112,10 +108,8 @@ subroutine op0001()
         if (nbcgrm .gt. 0) then
             call wkvect(vecgrm, 'V V K80', nbcgrm*2, ivgrm)
             do 100 i = 1, nbcgrm
-                call getvtx('RENOMME', 'NOM_MED', i, iarg, 1,&
-                            zk80(ivgrm- 1+i*2-1), ibid)
-                call getvtx('RENOMME', 'NOM', i, iarg, 1,&
-                            zk80(ivgrm-1+i* 2), ibid)
+                call getvtx('RENOMME', 'NOM_MED', iocc=i, scal=zk80(ivgrm- 1+i*2-1), nbret=ibid)
+                call getvtx('RENOMME', 'NOM', iocc=i, scal=zk80(ivgrm-1+i* 2), nbret=ibid)
                 ilng = lxlgut(zk80(ivgrm-1+i*2))
                 ASSERT(ilng.gt.0 .and. ilng.le.8)
 100          continue
@@ -142,12 +136,10 @@ subroutine op0001()
     call getfac('ABSC_CURV', ioc)
     if (ioc .eq. 1) then
         itout = 0
-        call getvtx('ABSC_CURV', 'TOUT', 1, iarg, 0,&
-                    zk8, nbval)
+        call getvtx('ABSC_CURV', 'TOUT', iocc=1, nbval=0, nbret=nbval)
         nbval = abs(nbval)
         if (nbval .ne. 0) then
-            call getvtx('ABSC_CURV', 'TOUT', 1, iarg, 1,&
-                        totm, n1)
+            call getvtx('ABSC_CURV', 'TOUT', iocc=1, scal=totm, nbret=n1)
             if (n1 .ne. 0) then
                 itout = 1
                 call abscur(nomu, itout)
@@ -180,11 +172,9 @@ subroutine op0001()
 !
 ! --- PHASE DE VERIFICATION DU MAILLAGE :
 !     ---------------------------------
-    call getvtx('VERI_MAIL', 'VERIF', 1, iarg, 1,&
-                veri, iret)
+    call getvtx('VERI_MAIL', 'VERIF', iocc=1, scal=veri, nbret=iret)
     if (veri .eq. 'OUI') then
-        call getvr8('VERI_MAIL', 'APLAT', 1, iarg, 1,&
-                    dtol, iret)
+        call getvr8('VERI_MAIL', 'APLAT', iocc=1, scal=dtol, nbret=iret)
         call chckma(nomu, dtol)
     else
         call u2mess('A', 'MODELISA5_49')

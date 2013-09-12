@@ -16,14 +16,14 @@ subroutine vrcinp(nbvrcm, ind, instam, instap)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveut.h"
@@ -76,13 +76,11 @@ subroutine vrcinp(nbvrcm, ind, instam, instap)
 !
         do 10 iocc = 1, nbocc
 !           ON STOCKE LES NOMS PUIS LES FONCTIONS
-            call getvtx('AFFE_VARC', 'NOM_VARC', iocc, iarg, 1,&
-                        zk8( jvcnom-1+iocc), n1)
-            call getvid('AFFE_VARC', 'VALE_FONC', iocc, iarg, 1,&
-                        zk8( jvcfon-1+iocc), n1)
+            call getvtx('AFFE_VARC', 'NOM_VARC', iocc=iocc, scal=zk8( jvcnom-1+iocc), nbret=n1)
+            call getvid('AFFE_VARC', 'VALE_FONC', iocc=iocc, scal=zk8( jvcfon-1+iocc), nbret=n1)
 !           AJOUTER LES FONCTIONS DEVRIVANT LES PHASES METALLURGIQUES
-            call getvr8('AFFE_VARC', 'VALE_REF', iocc, iarg, 1,&
-                        zr( jvcval-1+3*(iocc-1)+3), n1)
+            call getvr8('AFFE_VARC', 'VALE_REF', iocc=iocc, scal=zr( jvcval-1+3*(iocc-1)+3),&
+                        nbret=n1)
 !
 10      continue
 !

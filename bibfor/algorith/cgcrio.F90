@@ -1,9 +1,9 @@
 subroutine cgcrio(resu, vecord)
     implicit none
 !
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsutnu.h"
@@ -44,10 +44,8 @@ subroutine cgcrio(resu, vecord)
 !
     call jemarq()
 !
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                prec, ier)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, ier)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=ier)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=ier)
 !
     call rsutnu(resu, ' ', 0, vecord, nbord,&
                 prec, crit, ier)

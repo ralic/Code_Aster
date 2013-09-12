@@ -2,12 +2,11 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                   bascor, nbmal, lima)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -27,6 +26,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 #include "asterfort/reliem.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, nomare
     character(len=*) :: corrn, corrm
     character(len=1) :: base, bascor
@@ -272,20 +272,18 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !     --- OBJET .GROUPEMA
 !     --------------------
     if (nbmal .eq. 0) then
-        call getvtx('RESTREINT', 'TOUT_GROUP_MA', 1, iarg, 1,&
-                    ttgrma, iret)
+        call getvtx('RESTREINT', 'TOUT_GROUP_MA', iocc=1, scal=ttgrma, nbret=iret)
     else
         ttgrma='OUI'
     endif
     if (ttgrma .eq. 'NON') then
 !       'TOUT_GROUP_MA'='NON'
-        call getvtx('RESTREINT', 'GROUP_MA', 1, iarg, 0,&
-                    k8b, nbgma)
+        call getvtx('RESTREINT', 'GROUP_MA', iocc=1, nbval=0, nbret=nbgma)
         nbgma=-nbgma
         if (nbgma .eq. 0) goto 141
         call wkvect('&&RDTMAI_GRMA_FOURNIS', 'V V K24', nbgma, jgma)
-        call getvtx('RESTREINT', 'GROUP_MA', 1, iarg, nbgma,&
-                    zk24(jgma), iret)
+        call getvtx('RESTREINT', 'GROUP_MA', iocc=1, nbval=nbgma, vect=zk24(jgma),&
+                    nbret=iret)
         call jecreo(ptngrm, base//' N K24')
         call jeecra(ptngrm, 'NOMMAX', nbgma)
         call jecrec(grpmai, base//' V I', 'NO '//ptngrm, 'DISPERSE', 'VARIABLE',&
@@ -294,7 +292,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             nomgma=zk24(jgma+igm-1)
             call jecroc(jexnom(grpmai, nomgma))
             call jelira(jexnom(noma//'.GROUPEMA', nomgma), 'LONUTI', nbma)
-            call jeecra(jexnom(grpmai, nomgma), 'LONMAX', max(nbma,1))
+            call jeecra(jexnom(grpmai, nomgma), 'LONMAX', max(nbma, 1))
             call jeecra(jexnom(grpmai, nomgma), 'LONUTI', nbma)
             call jeveuo(jexnom(noma//'.GROUPEMA', nomgma), 'L', jadin)
             call jeveuo(jexnom(grpmai, nomgma), 'E', jadou)
@@ -365,10 +363,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !     --- OBJET .GROUPENO
 !     --------------------
     if (nbmal .eq. 0) then
-        call getvtx('RESTREINT', 'TOUT_GROUP_NO', 1, iarg, 1,&
-                    ttgrno, iret)
-        call getvtx('RESTREINT', 'GROUP_NO', 1, iarg, 0,&
-                    k8b, nbgno)
+        call getvtx('RESTREINT', 'TOUT_GROUP_NO', iocc=1, scal=ttgrno, nbret=iret)
+        call getvtx('RESTREINT', 'GROUP_NO', iocc=1, nbval=0, nbret=nbgno)
     else
         ttgrno='OUI'
         nbgno=0
@@ -377,8 +373,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     if (nbgno .ne. 0) then
         nbgno=-nbgno
         call wkvect('&&RDTMAI.GRP_NOEU_IN', 'V V K24', nbgno, jnugn)
-        call getvtx('RESTREINT', 'GROUP_NO', 1, iarg, nbgno,&
-                    zk24(jnugn), iret)
+        call getvtx('RESTREINT', 'GROUP_NO', iocc=1, nbval=nbgno, vect=zk24(jnugn),&
+                    nbret=iret)
     endif
 !
 !     SI 'TOUT_GROUP_NO'='NON' ET 'GROUP_NO' ABSENT => ON SORT

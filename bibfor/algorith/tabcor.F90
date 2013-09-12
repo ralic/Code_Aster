@@ -2,12 +2,11 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
                   num, ndble, icor)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterfort/calflu.h"
 #include "asterfort/crchno.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jenonu.h"
@@ -15,6 +14,7 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 #include "asterfort/jeveut.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+!
     character(len=*) :: moint, mate
 !---------------------------------------------------------------------
 ! ======================================================================
@@ -69,8 +69,7 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !
 ! RECUPERATION DE LA TAILLE DE REFERENCE
 !
-    call getvr8(' ', 'DIST_REFE', 0, iarg, 1,&
-                tailmi, nbid)
+    call getvr8(' ', 'DIST_REFE', scal=tailmi, nbret=nbid)
     call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
                 repk, ierd)
     tailm2=(epsi*tailmi)**2

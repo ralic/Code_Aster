@@ -35,8 +35,8 @@ subroutine calamo(nomres, classe, basmod)
 !
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -97,8 +97,7 @@ subroutine calamo(nomres, classe, basmod)
 !
 ! --- REMPLISSAGE DES VALEURS DIAGONALES
 !
-    call getvr8(blanc, 'AMOR_REDUIT', 1, iarg, 0,&
-                bid, ioc)
+    call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=ioc)
     nbamor = -ioc
     if (nbamor .gt. nbmod) then
         vali (1) = nbmod
@@ -107,13 +106,13 @@ subroutine calamo(nomres, classe, basmod)
         call u2mesg('A', 'ALGORITH15_90', 0, ' ', 3,&
                     vali, 0, 0.d0)
         call wkvect('&&CALAMO.COEFF', 'V V R', nbmod, lamor)
-        call getvr8(blanc, 'AMOR_REDUIT', 1, iarg, nbmod,&
-                    zr(lamor), ioc)
+        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor),&
+                    nbret=ioc)
 !
     else if (nbamor.lt.nbmod) then
         call wkvect('&&CALAMO.COEFF', 'V V R', nbamor, lamor)
-        call getvr8(blanc, 'AMOR_REDUIT', 1, iarg, nbamor,&
-                    zr(lamor), ioc)
+        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(lamor),&
+                    nbret=ioc)
         idiff = nbmod - nbamor
         vali (1) = idiff
         vali (2) = nbmod
@@ -131,8 +130,8 @@ subroutine calamo(nomres, classe, basmod)
 !
     else if (nbamor.eq.nbmod) then
         call wkvect('&&CALAMO.COEFF', 'V V R', nbmod, lamor)
-        call getvr8(blanc, 'AMOR_REDUIT', 1, iarg, nbmod,&
-                    zr(lamor), ioc)
+        call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor),&
+                    nbret=ioc)
     endif
 !
     do 10 i = 1, nbmod

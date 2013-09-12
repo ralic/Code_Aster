@@ -23,13 +23,8 @@ subroutine op0144()
 !
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
@@ -39,6 +34,10 @@ subroutine op0144()
 #include "asterfort/flust2.h"
 #include "asterfort/flust3.h"
 #include "asterfort/flust4.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jecreo.h"
@@ -59,6 +58,7 @@ subroutine op0144()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
     character(len=8) :: typflu
     common  / kop144 / typflu
@@ -124,12 +124,9 @@ subroutine op0144()
     call infmaj()
 !
     call getres(nomu, concep, cmd)
-    call getvis('BASE_MODALE', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, nbno)
-    call getvr8('BASE_MODALE', 'AMOR_REDUIT', 1, iarg, 0,&
-                rbid, nbam)
-    call getvr8('BASE_MODALE', 'AMOR_REDUIT_CONN', 1, iarg, 0,&
-                rbid, nbconn)
+    call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=0, nbret=nbno)
+    call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nbam)
+    call getvr8('BASE_MODALE', 'AMOR_REDUIT_CONN', iocc=1, nbval=0, nbret=nbconn)
     ifr = iunifi('RESULTAT')
     ifm = iunifi('MESSAGE')
     write(ifr,1000)
@@ -147,8 +144,7 @@ subroutine op0144()
 !
 ! --- 1.RECUPERATION DES CARACTERISTIQUES MODALES AVANT COUPLAGE ---
 !
-    call getvid('BASE_MODALE', 'MODE_MECA', 1, iarg, 1,&
-                nombm, zi)
+    call getvid('BASE_MODALE', 'MODE_MECA', iocc=1, scal=nombm)
 !
     tmode = .false.
     calcul(1)=.false.
@@ -171,8 +167,7 @@ subroutine op0144()
             zi(inumo+i-1) = i
 10      continue
     else
-        call getvis('BASE_MODALE', 'NUME_ORDRE', 1, iarg, nbno,&
-                    zi(inumo), ibid)
+        call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbno, vect=zi(inumo))
     endif
 !
 ! --- 1.2.CREATION D'UN VECTEUR TEMPORAIRE POUR LES AMORTISSEMENTS
@@ -180,23 +175,18 @@ subroutine op0144()
     call wkvect('&&OP0144.TEMP.AMOR', 'V V R', nbno, iamor)
     call wkvect('&&OP0144.CONNORS.AMOR', 'V V R', nbno, iconn)
     if (nbam .ne. 0) then
-        call getvr8('BASE_MODALE', 'AMOR_REDUIT', 1, iarg, 0,&
-                    amor, ibid)
-        call getvr8('BASE_MODALE', 'AMOR_REDUIT', 1, iarg, nbno,&
-                    zr(iamor), ibid)
+        call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=nbno, vect=zr(iamor))
         calcul(1)=.true.
     else if (nbconn.eq.0) then
         calcul(1)=.true.
-        call getvr8('BASE_MODALE', 'AMOR_UNIF', 1, iarg, 1,&
-                    amor, ibid)
+        call getvr8('BASE_MODALE', 'AMOR_UNIF', iocc=1, scal=amor)
         do 20 i = 1, nbno
             zr(iamor+i-1) = amor
 20      continue
     endif
 !
     if (nbconn .ne. 0) then
-        call getvr8('BASE_MODALE', 'AMOR_REDUIT_CONN', 1, iarg, nbno,&
-                    zr(iconn), ibid)
+        call getvr8('BASE_MODALE', 'AMOR_REDUIT_CONN', iocc=1, nbval=nbno, vect=zr(iconn))
         calcul(2)=.true.
     endif
 !
@@ -205,12 +195,9 @@ subroutine op0144()
 !
 ! --- 2.1.CREATION ET REMPLISSAGE DE L'OBJET .VITE
 !
-    call getvr8('VITE_FLUI', 'VITE_MIN', 1, iarg, 1,&
-                vmin, zi)
-    call getvr8('VITE_FLUI', 'VITE_MAX', 1, iarg, 1,&
-                vmax, zi)
-    call getvis('VITE_FLUI', 'NB_POIN ', 1, iarg, 1,&
-                nbpv, zi)
+    call getvr8('VITE_FLUI', 'VITE_MIN', iocc=1, scal=vmin)
+    call getvr8('VITE_FLUI', 'VITE_MAX', iocc=1, scal=vmax)
+    call getvis('VITE_FLUI', 'NB_POIN ', iocc=1, scal=nbpv)
     if (vmin .gt. vmax) then
         umin = vmin
         vmin = vmax
@@ -243,8 +230,7 @@ subroutine op0144()
 ! --- 3.1.CREATION ET REMPLISSAGE DE L'OBJET .REMF
 !
     call wkvect(nomu//'.REMF', 'G V K8', 2, irefe)
-    call getvid(' ', 'TYPE_FLUI_STRU', 0, iarg, 1,&
-                typflu, ibid)
+    call getvid(' ', 'TYPE_FLUI_STRU', scal=typflu)
     zk8(irefe) = typflu
     zk8(irefe+1) = nombm
 !
@@ -261,11 +247,9 @@ subroutine op0144()
     nivdef = 0
     call getfac('IMPRESSION', nbocc)
     if (nbocc .ne. 0) then
-        call getvtx('IMPRESSION', 'PARA_COUPLAGE', 1, iarg, 1,&
-                    k8b, ibid)
+        call getvtx('IMPRESSION', 'PARA_COUPLAGE', iocc=1, scal=k8b)
         if (k8b(1:3) .eq. 'OUI') nivpar = 1
-        call getvtx('IMPRESSION', 'DEFORMEE', 1, iarg, 1,&
-                    k8b, ibid)
+        call getvtx('IMPRESSION', 'DEFORMEE', iocc=1, scal=k8b)
         if (k8b(1:3) .eq. 'OUI') nivdef = 1
     endif
 !
@@ -288,7 +272,8 @@ subroutine op0144()
 ! ---     A LA CREATION DES OBJETS ASSOCIES AUX CHAMPS
 ! ---     A LA CREATION DU PROF_CHNO COMMUN
 !
-    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ibid, matria, iret)
+    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ibid,&
+                matria, iret)
 !
     call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibid,&
                 mailla, iret)

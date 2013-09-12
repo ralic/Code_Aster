@@ -24,12 +24,12 @@ subroutine op0105()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asmaco.h"
 #include "asterfort/asmael.h"
 #include "asterfort/asmasu.h"
 #include "asterfort/cargeo.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -46,14 +46,11 @@ subroutine op0105()
     call jemarq()
     call infmaj()
 !
-    call getvtx(' ', 'OPERATION', 1, iarg, 1,&
-                oper, n1)
+    call getvtx(' ', 'OPERATION', scal=oper, nbret=n1)
 !
     call getres(mag, kbi1, kbi2)
-    call getvid(' ', 'MAILLAGE_1', 1, iarg, 1,&
-                dm(1), n1)
-    call getvid(' ', 'MAILLAGE_2', 1, iarg, 1,&
-                dm(2), n1)
+    call getvid(' ', 'MAILLAGE_1', scal=dm(1), nbret=n1)
+    call getvid(' ', 'MAILLAGE_2', scal=dm(2), nbret=n1)
 !
 !     --OBJET .TITR:
 !     ---------------

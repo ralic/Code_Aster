@@ -1,5 +1,5 @@
 subroutine op0047()
-    implicit   none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,8 @@ subroutine op0047()
 !       IERR   : NON UTILISE
 !     ------------------------------------------------------------
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gmsast.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/stbast.h"
@@ -40,10 +40,8 @@ subroutine op0047()
 !
     if (cmd(5:9) .eq. 'IDEAS') then
         lgrcou = .false.
-        call getvis(' ', 'UNITE_IDEAS', 1, iarg, 1,&
-                    nfie, n)
-        call getvtx(' ', 'CREA_GROUP_COUL', 1, iarg, 1,&
-                    k8b, n)
+        call getvis(' ', 'UNITE_IDEAS', scal=nfie, nbret=n)
+        call getvtx(' ', 'CREA_GROUP_COUL', scal=k8b, nbret=n)
         if (k8b(1:3) .eq. 'OUI') then
             lgrcou = .true.
         else
@@ -52,13 +50,11 @@ subroutine op0047()
 !
 !
     else if (cmd(5:8).eq.'GMSH') then
-        call getvis(' ', 'UNITE_GMSH', 1, iarg, 1,&
-                    nfie, n)
+        call getvis(' ', 'UNITE_GMSH', scal=nfie, nbret=n)
 !
     endif
 !
-    call getvis(' ', 'UNITE_MAILLAGE', 1, iarg, 1,&
-                nfis, n)
+    call getvis(' ', 'UNITE_MAILLAGE', scal=nfis, nbret=n)
 !
 !
     if (cmd(5:9) .eq. 'IDEAS') then

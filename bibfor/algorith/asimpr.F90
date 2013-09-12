@@ -1,12 +1,11 @@
 subroutine asimpr(nbsup, tcosup, nomsup)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -16,6 +15,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbsup, tcosup(nbsup, *)
     character(len=8) :: nomsup(nbsup, *)
 ! ======================================================================
@@ -40,7 +40,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 !     ------------------------------------------------------------------
 !
     character(len=4) :: typdir
-    character(len=8) ::  noeu, cmp, noref
+    character(len=8) :: noeu, cmp, noref
     character(len=8) :: knum, kdir
     character(len=19) :: knoeu, didi, lnore, nbnor, ordr
     character(len=80) :: nomcas, chainq, chainl, chaina
@@ -137,11 +137,9 @@ subroutine asimpr(nbsup, tcosup, nomsup)
         do 20 icas = 1, ncas
             nucas = zi(jcas+icas-1)
             do 30 idep = 1, ndep
-                call getvis('DEPL_MULT_APPUI', 'NUME_CAS', idep, iarg, 1,&
-                            nume, ibid)
+                call getvis('DEPL_MULT_APPUI', 'NUME_CAS', iocc=idep, scal=nume, nbret=ibid)
                 if (nume .eq. nucas) then
-                    call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', idep, iarg, 1,&
-                                nomcas, ibid)
+                    call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=idep, scal=nomcas, nbret=ibid)
                     knum = 'N       '
                     call codent(nucas, 'D0', knum(2:8))
                     kdir = 'D       '

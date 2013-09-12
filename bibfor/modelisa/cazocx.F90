@@ -20,13 +20,13 @@ subroutine cazocx(char, nomo, motfac, izone)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/exixfe.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -122,21 +122,17 @@ subroutine cazocx(char, nomo, motfac, izone)
 !
 ! --- TYPE INTEGRATION
 !
-    call getvtx(motfac, 'INTEGRATION', izone, iarg, 1,&
-                integ, noc)
+    call getvtx(motfac, 'INTEGRATION', iocc=izone, scal=integ, nbret=noc)
     if (integ(1:5) .eq. 'NOEUD') then
         zr(jcmxf+zcmxf*(izone-1)+1-1) = 1.d0
     else if (integ(1:5) .eq. 'GAUSS') then
-        call getvis(motfac, 'ORDRE_INT', izone, iarg, 1,&
-                    paring, noc)
+        call getvis(motfac, 'ORDRE_INT', iocc=izone, scal=paring, nbret=noc)
         zr(jcmxf+zcmxf*(izone-1)+1-1) = 10.d0*paring + 2.d0
     else if (integ(1:7) .eq. 'SIMPSON') then
-        call getvis(motfac, 'ORDRE_INT', izone, iarg, 1,&
-                    paring, noc)
+        call getvis(motfac, 'ORDRE_INT', iocc=izone, scal=paring, nbret=noc)
         zr(jcmxf+zcmxf*(izone-1)+1-1) = 10.d0*paring + 3.d0
     else if (integ(1:6) .eq. 'NCOTES') then
-        call getvis(motfac, 'ORDRE_INT', izone, iarg, 1,&
-                    paring, noc)
+        call getvis(motfac, 'ORDRE_INT', iocc=izone, scal=paring, nbret=noc)
         zr(jcmxf+zcmxf*(izone-1)+1-1) = 10.d0*paring + 4.d0
     else
         ASSERT(.false.)
@@ -144,17 +140,14 @@ subroutine cazocx(char, nomo, motfac, izone)
 !
 ! --- OPTIONS ALGORITHME CONTACT
 !
-    call getvtx(motfac, 'ALGO_CONT', izone, iarg, 1,&
-                algoc, noc)
+    call getvtx(motfac, 'ALGO_CONT', iocc=izone, scal=algoc, nbret=noc)
     if (algoc(1:10) .eq. 'STANDARD') then
-        call getvr8(motfac, 'COEF_CONT', izone, iarg, 1,&
-                    coef, noc)
+        call getvr8(motfac, 'COEF_CONT', iocc=izone, scal=coef, nbret=noc)
         coefcr = coef
         coefcp = 0.d0
         algocr = 1.d0
     else if (algoc(1:14) .eq. 'PENALISATION') then
-        call getvr8(motfac, 'COEF_PENA_CONT', izone, iarg, 1,&
-                    coefcp, noc)
+        call getvr8(motfac, 'COEF_PENA_CONT', iocc=izone, scal=coefcp, nbret=noc)
         coefcr = 0.d0
         algocr = 2.d0
     else if (algoc(1:3) .eq. 'CZM') then
@@ -170,17 +163,14 @@ subroutine cazocx(char, nomo, motfac, izone)
 ! --- OPTIONS ALGORITHME FROTTEMENT
 !
     if (lfrot) then
-        call getvtx(motfac, 'ALGO_FROT', izone, iarg, 1,&
-                    algof, noc)
+        call getvtx(motfac, 'ALGO_FROT', iocc=izone, scal=algof, nbret=noc)
         if (algof(1:10) .eq. 'STANDARD') then
-            call getvr8(motfac, 'COEF_FROT', izone, iarg, 1,&
-                        coef, noc)
+            call getvr8(motfac, 'COEF_FROT', iocc=izone, scal=coef, nbret=noc)
             coeffr = coef
             coeffp = 0.d0
             algofr = 1.d0
         else if (algof(1:14) .eq. 'PENALISATION') then
-            call getvr8(motfac, 'COEF_PENA_FROT', izone, iarg, 1,&
-                        coeffp, noc)
+            call getvr8(motfac, 'COEF_PENA_FROT', iocc=izone, scal=coeffp, nbret=noc)
             coeffr = 0.d0
             algofr = 2.d0
         else
@@ -200,11 +190,9 @@ subroutine cazocx(char, nomo, motfac, izone)
 !
     if (lfrot) then
         zr(jcmxf+zcmxf*(izone-1)+5-1) = 3.d0
-        call getvr8(motfac, 'COULOMB', izone, iarg, 1,&
-                    coefff, noc)
+        call getvr8(motfac, 'COULOMB', iocc=izone, scal=coefff, nbret=noc)
         zr(jcmxf+zcmxf*(izone-1)+4-1) = coefff
-        call getvr8(motfac, 'SEUIL_INIT', izone, iarg, 1,&
-                    reacsi, noc)
+        call getvr8(motfac, 'SEUIL_INIT', iocc=izone, scal=reacsi, nbret=noc)
         zr(jcmxf+zcmxf*(izone-1)+6-1) = reacsi
     else
         zr(jcmxf+zcmxf*(izone-1)+5-1) = 1.d0
@@ -213,8 +201,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 ! --- CONTACT INITIAL
 !
     if (algocr .ne. 3.d0) then
-        call getvtx(motfac, 'CONTACT_INIT', izone, iarg, 1,&
-                    staco0, noc)
+        call getvtx(motfac, 'CONTACT_INIT', iocc=izone, scal=staco0, nbret=noc)
         if (staco0 .eq. 'OUI') then
             zr(jcmxf+zcmxf*(izone-1)+7-1) = 1.d0
         else if (staco0 .eq. 'NON') then
@@ -225,8 +212,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 !
 ! --- GLISSIERE
 !
-        call getvtx(motfac, 'GLISSIERE', izone, iarg, 1,&
-                    glis, noc)
+        call getvtx(motfac, 'GLISSIERE', iocc=izone, scal=glis, nbret=noc)
         if (glis(1:3) .eq. 'OUI') then
             zr(jcmxf+zcmxf*(izone-1)+10-1) = 1.d0
         else if (glis(1:3) .eq. 'NON') then
@@ -238,8 +224,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 !
 ! --- ALGORITHME DE RESTRICTION DE L'ESPACE DES MULITPLICATEURS
 !
-    call getvtx(motfac, 'ALGO_LAGR', 1, iarg, 1,&
-                algola, noc)
+    call getvtx(motfac, 'ALGO_LAGR', iocc=1, scal=algola, nbret=noc)
     if (algola .eq. 'NON') then
         zr(jcmxf+zcmxf*(izone-1)+9-1) = 0.d0
     else if (algola.eq.'VERSION1') then
@@ -255,8 +240,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 ! --- TOLE_PROJ_EXT >0: LA PROJECTION HORS DE LA MAILLE EST AUTORISEE
 ! ---                    MAIS LIMITEE PAR TOLJ
 !
-    call getvr8(motfac, 'TOLE_PROJ_EXT', izone, iarg, 1,&
-                tolj, noc)
+    call getvr8(motfac, 'TOLE_PROJ_EXT', iocc=izone, scal=tolj, nbret=noc)
     if (tolj .lt. 0.d0) then
         zr(jcmxf+zcmxf*(izone-1)+15-1) = -1.d0
     else
@@ -266,8 +250,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 ! --- RELATION CZM-XFEM
 !
     if (algocr .eq. 3.d0) then
-        call getvtx(motfac, 'RELATION', izone, iarg, 1,&
-                    rela, noc)
+        call getvtx(motfac, 'RELATION', iocc=izone, scal=rela, nbret=noc)
         if (rela .eq. 'CZM_EXP_REG') then
             zr(jcmxf+zcmxf*(izone-1)+16-1) = 1.d0
         else if (rela.eq.'CZM_LIN_REG') then

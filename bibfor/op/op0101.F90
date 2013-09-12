@@ -24,9 +24,9 @@ subroutine op0101()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/charci.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -53,16 +53,14 @@ subroutine op0101()
     cinef=(oper(15:16).eq.'_F')
 !
 ! --- RECUPERATION DU MODELE :
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                mo, n1)
+    call getvid(' ', 'MODELE', scal=mo, nbret=n1)
 !
 ! --- CREATION DU .AFCK:
     call wkvect(chci19//'.AFCK', 'G V K8', 3, jafck)
     zk8(jafck-1+2)=mo
 !
     if (oper .eq. 'AFFE_CHAR_CINE') then
-        call getvid(' ', 'EVOL_IMPO', 1, iarg, 1,&
-                    evoim, n1)
+        call getvid(' ', 'EVOL_IMPO', scal=evoim, nbret=n1)
         if (n1 .eq. 1) zk8(jafck-1+3)=evoim
     endif
 !

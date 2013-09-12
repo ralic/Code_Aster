@@ -1,5 +1,5 @@
 subroutine crasse()
-    implicit  none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,13 +24,12 @@ subroutine crasse()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -44,6 +43,7 @@ subroutine crasse()
 #include "asterfort/rsmena.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/u2mesr.h"
+!
 !
 !
     integer :: iret, nbfac, iocc, nbord1, iord2, iord1
@@ -72,8 +72,7 @@ subroutine crasse()
 !        SD_RESULTAT :
     nordmx=0
     do 101 iocc = 1, nbfac
-        call getvid('ASSE', 'RESULTAT', iocc, iarg, 1,&
-                    resu1, n1)
+        call getvid('ASSE', 'RESULTAT', iocc=iocc, scal=resu1, nbret=n1)
         resu19=resu1
         call jelira(resu19//'.ORDR', 'LONUTI', nbord1)
         nordmx=nordmx+nbord1
@@ -91,10 +90,8 @@ subroutine crasse()
     iord2=0
     tprev=-1.d300
     do 100 iocc = 1, nbfac
-        call getvr8('ASSE', 'TRANSLATION', iocc, iarg, 1,&
-                    trans, n1)
-        call getvid('ASSE', 'RESULTAT', iocc, iarg, 1,&
-                    resu1, n1)
+        call getvr8('ASSE', 'TRANSLATION', iocc=iocc, scal=trans, nbret=n1)
+        call getvid('ASSE', 'RESULTAT', iocc=iocc, scal=resu1, nbret=n1)
         resu19=resu1
         call jelira(resu19//'.ORDR', 'LONUTI', nbord1)
         call jeveuo(resu19//'.ORDR', 'L', jord1)

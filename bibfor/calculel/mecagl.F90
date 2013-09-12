@@ -1,17 +1,14 @@
 subroutine mecagl(option, result, modele, depla, thetai,&
-                  mate, compor, lischa, symech,chfond,&
-                  nnoff, iord, ndeg, thlagr,glagr,&
-                  thlag2, milieu, ndimte, pair,extim,&
-                  time, nbprup, noprup, chvite,chacce,&
+                  mate, compor, lischa, symech, chfond,&
+                  nnoff, iord, ndeg, thlagr, glagr,&
+                  thlag2, milieu, ndimte, pair, extim,&
+                  time, nbprup, noprup, chvite, chacce,&
                   lmelas, nomcas, kcalc, fonoeu)
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/alchml.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chpchd.h"
@@ -20,6 +17,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/gimpgs.h"
 #include "asterfort/gmeth1.h"
 #include "asterfort/gmeth2.h"
@@ -42,7 +41,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-    integer :: iord,  nbprup, ndimte
+!
+    integer :: iord, nbprup, ndimte
 !
     real(kind=8) :: time
 !
@@ -143,8 +143,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     call megeom(modele, chgeom)
 !
-    call getvid('THETA', 'FISSURE', 1, iarg, 1,&
-                fiss, ibid)
+    call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
 !
@@ -157,8 +156,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     endif
 !
     if (incr .ne. 0) then
-        call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                    resu, nres)
+        call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
         call dismoi('F', 'TYPE_RESU', resu, 'RESULTAT', ibid,&
                     type, ierd)
         if (type .ne. 'EVOL_NOLI') then
@@ -174,8 +172,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
 !- RECUPERATION DE L'ETAT INITIAL
     if (incr .ne. 0) then
-        call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                    chsigi, nsig)
+        call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=nsig)
 !- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
         if (nsig .ne. 0) then
             call chpver('C', chsigi, 'ELNO', 'SIEF_R', ino1)
@@ -210,8 +207,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     chepsi = '&&MECAGL.EPSI'
     chpesa = '&&MECAGL.PESA'
     chrota = '&&MECAGL.ROTA'
-    call gcharg(modele, lischa, chvolu, cf1d2d,cf2d3d,&
-                chpres, chepsi, chpesa, chrota,fonc,&
+    call gcharg(modele, lischa, chvolu, cf1d2d, cf2d3d,&
+                chpres, chepsi, chpesa, chrota, fonc,&
                 time, iord)
     if (fonc) then
         pavolu = 'PFFVOLU'
@@ -370,8 +367,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             endif
         endif
         if (kcalc .eq. 'NON') then
-            call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                        resu, iret)
+            call getvid(' ', 'RESULTAT', scal=resu, nbret=iret)
             call rsexch(' ', resu, 'SIEF_ELGA', iord, chsig,&
                         iret)
             lpain(nchin+1) = 'PCONTGR'
@@ -450,8 +446,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                     time, iord, ifm)
     endif
 !
-    call getvis('THETA', 'NUME_FOND', 1, iarg, 1,&
-                numfon, ibid)
+    call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
     if (lxfem) then
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)

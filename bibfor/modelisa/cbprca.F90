@@ -17,7 +17,7 @@ subroutine cbprca(char)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -31,8 +31,7 @@ subroutine cbprca(char)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call getvid(' ', 'EVOL_CHAR', 0, iarg, 1,&
-                calc, ncalc)
+    call getvid(' ', 'EVOL_CHAR', scal=calc, nbret=ncalc)
     if (ncalc .ne. 0) then
         obj = char//'.CHME.EVOL.CHAR'
         call wkvect(obj, 'G V K8', 1, jcalc)

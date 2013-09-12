@@ -20,10 +20,8 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterfort/anacri.h"
 #include "asterfort/aveppr.h"
 #include "asterfort/aveteq.h"
@@ -34,9 +32,11 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 #include "asterfort/avsipr.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     integer :: nbvec, nbordr, ncycl(nbvec)
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
     integer :: tdisp, kwork, sommw, tspaq, i
@@ -44,7 +44,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     real(kind=8) :: vwork(tdisp)
     real(kind=8) :: vala, coefpa
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
-    integer ::jomin, jomax, jvmin, jvmax, jgdreq
+    integer :: jomin, jomax, jvmin, jvmax, jgdreq
 !    real(kind=8) :: gdreq(nbvec*nbordr)
     character(len=16) :: nomcri, nomfor
 ! ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !                     MIN DESCYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
 !                     NORMAUX.
 ! JOMAX      IN  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX VALEURS
-
+!
 ! JGDREQ    OUT  I  : ADDRESSE VECTEUR CONTENANT LES VALEURS DE LA GRANDEUR
 !                     EQUIVALENTE, POUR TOUS LES NUMEROS D'ORDRE
 !                     DE CHAQUE VECTEUR NORMAL.
@@ -74,15 +74,15 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     integer :: ivect, ad0, ad1, ad2, icycl, nval, ipar, j, np
     integer :: ibid, nparma, jprof, paract(30), iarg
     real(kind=8) :: coepre, valpar(30), valpu(30)
-    integer :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn,jveppr
-    integer ::jvsipn, jvsieq, jveteq
-
+    integer :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn, jveppr
+    integer :: jvsipn, jvsieq, jveteq
+!
 !    real(kind=8) :: vsign(nbvec*nbordr), vphydr(nbordr)
 !    real(kind=8) :: vsipr(nbordr), vepsn(nbordr)
 !    real(kind=8) :: vetpr(nbordr), vsitn(nbordr)
 !    real(kind=8) :: veppr(nbordr), vsipn(nbordr)
 !    real(kind=8) :: vsieq(nbordr), veteq(nbordr)
-
+!
     logical :: fordef, lbid
     character(len=8) :: nompf(30), nompar(30)
     character(len=16) :: typcha
@@ -112,7 +112,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !
     call wkvect('&&AVCRIT.VSIGN', 'V V R', nbvec*nbordr, jvsign)
     call wkvect('&&AVCRIT.VPHYDR', 'V V R', nbordr, jvphyd)
-    call wkvect('&&AVCRIT.VSIPR', 'V V R', nbordr,  jvsipr)
+    call wkvect('&&AVCRIT.VSIPR', 'V V R', nbordr, jvsipr)
     call wkvect('&&AVCRIT.VEPSN', 'V V R', nbordr, jvepsn)
     call wkvect('&&AVCRIT.VETPR', 'V V R', nbordr, jvetpr)
     call wkvect('&&AVCRIT.VSITN', 'V V R', nbordr, jvsitn)
@@ -120,7 +120,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     call wkvect('&&AVCRIT.VSIPN', 'V V R', nbordr, jvsipn)
     call wkvect('&&AVCRIT.VSIEQ', 'V V R', nbordr, jvsieq)
     call wkvect('&&AVCRIT.VETEQ', 'V V R', nbordr, jveteq)
-
+!
 ! RECUPERER LA LISTE DE GRANDEURS ACTIVES
 !
     typcha = 'NON_PERIODIQUE'
@@ -146,8 +146,8 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !
     endif
 !
-    if ((paract(9) .eq. 1 ) .or. (paract(10) .eq. 1 ) .or. &
-        (paract(11) .eq. 1 ) .or. (paract(12) .eq. 1 )) then
+    if ((paract(9) .eq. 1 ) .or. (paract(10) .eq. 1 ) .or. (paract(11) .eq. 1 ) .or.&
+        (paract(12) .eq. 1 )) then
 !
         call avsipr(nbordr, vwork, tdisp, kwork, sommw,&
                     tspaq, i, jvsipr, jvepsn)
@@ -155,16 +155,16 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     endif
 !
 !
-    if ((paract(13) .eq. 1 ) .or. (paract(14) .eq. 1 ) .or. &
-        (paract(15) .eq. 1 ) .or. (paract(16) .eq. 1 )) then
+    if ((paract(13) .eq. 1 ) .or. (paract(14) .eq. 1 ) .or. (paract(15) .eq. 1 ) .or.&
+        (paract(16) .eq. 1 )) then
 !
         call avetpr(nbordr, vwork, tdisp, kwork, sommw,&
                     tspaq, i, jvetpr, jvsitn)
 !
     endif
 !
-    if ((paract(17) .eq. 1 ) .or. (paract(18) .eq. 1 ) .or. &
-        (paract(19) .eq. 1 ) .or. (paract(20) .eq. 1 )) then
+    if ((paract(17) .eq. 1 ) .or. (paract(18) .eq. 1 ) .or. (paract(19) .eq. 1 ) .or.&
+        (paract(20) .eq. 1 )) then
 !
         call aveppr(nbordr, vwork, tdisp, kwork, sommw,&
                     tspaq, i, jveppr, jvsipn)
@@ -189,8 +189,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !----------------------------------------------------------------------
 ! 1. CRITERE DE DANG_VAN MODIFIE (AMPLITUDE VARIABLE)
 !      IF (.NOT. POST) THEN
-    call getvr8(' ', 'COEF_PREECROU', 1, iarg, 1,&
-                coepre, nval)
+    call getvr8(' ', 'COEF_PREECROU', scal=coepre, nbret=nval)
 !      ENDIF
 !
     if (nomcri(1:7) .eq. 'FORMULE') then
@@ -204,7 +203,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
         call fonbpa(nomfor, zk24(jprof), cbid, nparma, np,&
                     nompf)
     endif
-
+!
     do ivect = 1, nbvec
         ad0 = (ivect-1)*nbordr
         do icycl = 1, ncycl(ivect)
@@ -294,7 +293,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     call jedetr('&&AVCRIT.VSIPN')
     call jedetr('&&AVCRIT.VSIEQ')
     call jedetr('&&AVCRIT.VETEQ')
-
+!
     call jedema()
 !
 end subroutine

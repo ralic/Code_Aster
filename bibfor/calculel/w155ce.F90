@@ -22,11 +22,11 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -77,11 +77,9 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 !     -- 2.  : NOMSYM, MPLAN :
 !     --------------------------------------------------
     motfac='COQU_EXCENT'
-    call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 1,&
-                nomsym, ibid)
+    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=ibid)
     ASSERT(nomsym.eq.'EFGE_ELNO'.or.nomsym.eq.'EFGE_ELGA')
-    call getvtx(motfac, 'MODI_PLAN', iocc, iarg, 1,&
-                mplan, ibid)
+    call getvtx(motfac, 'MODI_PLAN', iocc=iocc, scal=mplan, nbret=ibid)
     ASSERT(mplan.eq.'OUI')
     lnoeu=nomsym.eq.'EFGE_ELNO'
 !

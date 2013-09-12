@@ -16,17 +16,16 @@ subroutine pewext(resu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsdot.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jerecu.h"
@@ -38,6 +37,7 @@ subroutine pewext(resu)
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/u2mesk.h"
+!
     character(len=*) :: resu
 ! ----------------------------------------------------------------------
 !
@@ -58,8 +58,7 @@ subroutine pewext(resu)
 !
     call jemarq()
     lisord='&&PEWEXT.VECTORDR'
-    call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                result, iret)
+    call getvid(' ', 'RESULTAT', scal=result, nbret=iret)
 !
 !
 ! -- INITIALISATION DE LA TABLE RESULTAT
@@ -81,10 +80,8 @@ subroutine pewext(resu)
 !
 ! -- EXTRACTION DES NUMEROS D'ORDRE DU CALCUL
 !
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, iret)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, iret)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=iret)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=iret)
     call rsutnu(result, ' ', 0, lisord, nbord,&
                 prec, crit, iret)
     if (iret .ne. 0) call u2mesk('F', 'POSTELEM_11', 1, result)

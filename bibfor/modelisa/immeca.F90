@@ -67,12 +67,11 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/immeno.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -88,6 +87,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 #include "asterfort/u2mess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
     integer :: nbnobe, icabl, nbnoca(*)
@@ -149,10 +149,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 ! RECUPERATION DES MOTS-CLES
 !
 !     TRAITEMENT DU MOT-CLE 'CONE'
-    call getvr8('CONE', 'RAYON', 1, iarg, 1,&
-                rayon, nbval)
-    call getvr8('CONE', 'LONGUEUR', 1, iarg, 1,&
-                long, nbval2)
+    call getvr8('CONE', 'RAYON', iocc=1, scal=rayon, nbret=nbval)
+    call getvr8('CONE', 'LONGUEUR', iocc=1, scal=long, nbret=nbval2)
     if (nbval .eq. 0) then
         rayon = zero
     endif
@@ -161,15 +159,15 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     endif
     presen(1) = k8vide
     presen(2) = k8vide
-    call getvtx('CONE', 'PRESENT', 1, iarg, 2,&
-                presen, n1)
+    call getvtx('CONE', 'PRESENT', iocc=1, nbval=2, vect=presen,&
+                nbret=n1)
 !
 !
 !     TRAITEMENT DU MOT-CLE 'NOEUD_ANCRAGE'
     noancr(1) = k8vide
     noancr(2) = k8vide
-    call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', icabl, iarg, 2,&
-                noancr, n1)
+    call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', iocc=icabl, nbval=2, vect=noancr,&
+                nbret=n1)
 !
 !     TRAITEMENT DU MOT-CLE 'GROUP_NO_ANCRAGE'
     if (n1 .eq. 0) then

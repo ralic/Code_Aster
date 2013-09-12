@@ -2,8 +2,8 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
                   vitcho, nbchto, nbchoc, parcho, noecho)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -46,7 +46,7 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
 ! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
 ! ----------------------------------------------------------------------
     integer :: i, ifr, icho, ipas, ix, iy, iz, nbtitr
-    character(len=8) ::  typeob, blan8
+    character(len=8) :: typeob, blan8
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -61,18 +61,14 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
 !
 !     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 !
-    call getvtx('IMPRESSION', 'NIVEAU', 1, iarg, 1,&
-                niveau, nimpr)
+    call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
     if (nimpr .eq. 0) then
-        call getvtx('IMPRESSION', 'TOUT', 1, iarg, 1,&
-                    niveau, nimpr)
+        call getvtx('IMPRESSION', 'TOUT', iocc=1, scal=niveau, nbret=nimpr)
         if (niveau(1:3) .ne. 'OUI') goto 9999
         niveau='TOUT_LOC'
     endif
-    call getvr8('IMPRESSION', 'INST_INIT', 1, iarg, 1,&
-                debut, ndeb)
-    call getvr8('IMPRESSION', 'INST_FIN', 1, iarg, 1,&
-                fin, nfin)
+    call getvr8('IMPRESSION', 'INST_INIT', iocc=1, scal=debut, nbret=ndeb)
+    call getvr8('IMPRESSION', 'INST_FIN', iocc=1, scal=fin, nbret=nfin)
     if (ndeb .eq. 0) debut=temps(1)
     if (nfin .eq. 0) fin=temps(nbstoc)
 !

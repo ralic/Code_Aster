@@ -29,16 +29,15 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 ! IN  NLSMAC : K : NOM DU VECTEUR DES MAILLES ACTIVES
 ! IN  NLSNAC : K : NOM DU VECTEUR DES NOEUDS ACTIFS
 !     ------------------------------------------------------------------
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/extche.h"
 #include "asterfort/extchn.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -60,6 +59,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 #include "asterfort/rvpsts.h"
 #include "asterfort/tuesch.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, i1, i2
     character(len=2) :: dim
     character(len=8) :: nresu
@@ -90,11 +90,10 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
     chok = .true.
     call infniv(ifm, niv)
 !
-    call getvtx(mcf, 'OPERATION', iocc, iarg, 0,&
-                k8b, nboper)
+    call getvtx(mcf, 'OPERATION', iocc=iocc, nbval=0, nbret=nboper)
     nboper = -nboper
-    call getvtx(mcf, 'OPERATION', iocc, iarg, nboper,&
-                operat, n0)
+    call getvtx(mcf, 'OPERATION', iocc=iocc, nbval=nboper, vect=operat,&
+                nbret=n0)
 !
     if (nch19(1:1) .eq. '&') then
         if (niv .gt. 1) call rvinfo(ifm, iocc, i1, i2, 'E',&
@@ -154,19 +153,18 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                             nbnac, zi( jlsnac))
             endif
 !
-            call getvr8('ACTION', 'VECT_Y', iocc, iarg, 3,&
-                        vecty, ny)
+            call getvr8('ACTION', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+                        nbret=ny)
             tridim=ny.ne.0
 !
             if (chok) then
                 call dismoi('F', 'NOM_MAILLA', nch19, 'CHAMP', i,&
                             mailla, ie)
-                call getvid(mcf, 'CHEMIN', iocc, iarg, 0,&
-                            k8b, nbcrb)
+                call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=0, nbret=nbcrb)
                 nbcrb = -nbcrb
                 if (nbcrb .ne. 0) then
-                    call getvid(mcf, 'CHEMIN', iocc, iarg, nbcrb,&
-                                courbe, n1)
+                    call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=nbcrb, vect=courbe,&
+                                nbret=n1)
                     typco = 'CHEMIN'
                 else
                     typco = 'AUTRE'
@@ -175,8 +173,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                 sdlieu = '&&RVPOST.NOM.VECT.LIEU'
                 sdeval = '&&RVPOST.NOM.VECT.EVAL'
 !
-                call getvtx(mcf, 'MOYE_NOEUD', iocc, iarg, 1,&
-                            k8b, n)
+                call getvtx(mcf, 'MOYE_NOEUD', iocc=iocc, scal=k8b, nbret=n)
                 if (k8b(1:1) .eq. 'O') then
                     ca = 'N'
                 else
@@ -188,8 +185,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                 call jelira(sdlieu, 'LONMAX', nbsd)
                 call jeveuo(sdlieu, 'L', jsdli)
                 call jeveuo(sdeval, 'L', jsdev)
-                call getvtx(mcf, 'RESULTANTE', iocc, iarg, 0,&
-                            zk80, nr)
+                call getvtx(mcf, 'RESULTANTE', iocc=iocc, nbval=0, nbret=nr)
                 sdnewr = '&&RVPOST.NEW.REPERE'
                 if (repere(1:1) .ne. 'G' .and. .not.tridim) then
                     call rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&

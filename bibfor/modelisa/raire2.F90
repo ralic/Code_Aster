@@ -2,12 +2,11 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                   nbno, tabnoe, rignoe)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/compma.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -21,6 +20,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: nbgr, nbno, nbnoeu, tabnoe(nbnoeu)
     character(len=8) :: noma
     character(len=24) :: ligrma(nbgr)
@@ -89,15 +89,14 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     xg = zero
     yg = zero
     zg = zero
-    call getvr8('ENER_SOL', 'COOR_CENTRE', 1, iarg, 0,&
-                r8b, ncg)
+    call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=0, nbret=ncg)
     call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
                 iarg, 0, k8b, nno)
     call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
                 iarg, 0, k8b, ngn)
     if (ncg .ne. 0) then
-        call getvr8('ENER_SOL', 'COOR_CENTRE', 1, iarg, 3,&
-                    c, ncg)
+        call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=3, vect=c,&
+                    nbret=ncg)
         xg = c(1)
         yg = c(2)
         zg = c(3)
@@ -120,20 +119,18 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 !
 !       RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
 !
-    call getvr8('ENER_SOL', 'COEF_GROUP', 1, iarg, 0,&
-                r8b, ncg)
+    call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
         call wkvect('&&RAIRE2.COEGRO', 'V V R', nbgr, icoegr)
-        call getvr8('ENER_SOL', 'COEF_GROUP', 1, iarg, nbgr,&
-                    zr(icoegr), ncg)
+        call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=nbgr, vect=zr(icoegr),&
+                    nbret=ncg)
     else
-        call getvid('ENER_SOL', 'FONC_GROUP', 1, iarg, 0,&
-                    k8b, ncf)
+        call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=0, nbret=ncf)
         if (ncf .eq. 0) call u2mess('F', 'MODELISA6_33')
         call wkvect('&&RAIRE2.FONGRO', 'V V K8', nbgr, ifongr)
         lfonc = .true.
-        call getvid('ENER_SOL', 'FONC_GROUP', 1, iarg, nbgr,&
-                    zk8(ifongr), nfg)
+        call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=nbgr, vect=zk8(ifongr),&
+                    nbret=nfg)
     endif
 !
     do 20 i = 1, nbgr

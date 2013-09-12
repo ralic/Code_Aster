@@ -2,8 +2,8 @@ subroutine ibcata(ier)
     implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/ibcatc.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/u2mesg.h"
@@ -87,11 +87,11 @@ subroutine ibcata(ier)
 !
     iun = 1
     do 10 iocc = 1, nbocc
-        call getvtx(motfac, 'FICHIER', iocc, iarg, iun,&
-                    nom(iocc), nbnom)
+        call getvtx(motfac, 'FICHIER', iocc=iocc, nbval=iun, vect=nom(iocc),&
+                    nbret=nbnom)
         call lxcadr(nom(iocc))
-        call getvis(motfac, 'UNITE', iocc, iarg, iun,&
-                    unite(iocc), nbunit)
+        call getvis(motfac, 'UNITE', iocc=iocc, nbval=iun, vect=unite(iocc),&
+                    nbret=nbunit)
         if (nbunit .eq. 0) then
             call utremt(nom(iocc), dfnom, mxdfca, iplace)
             if (iplace .gt. 0) unite(iocc) = dfunit(iplace)

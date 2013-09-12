@@ -1,5 +1,5 @@
 subroutine op0176()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,10 +39,10 @@ subroutine op0176()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/dyarc0.h"
 #include "asterfort/extrs1.h"
 #include "asterfort/extrs2.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/irecri.h"
 #include "asterfort/iunifi.h"
@@ -96,8 +96,7 @@ subroutine op0176()
 !
     call getres(resuou, typcon, nomcmd)
 !
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resuin, ibid)
+    call getvid(' ', 'RESULTAT', scal=resuin, nbret=ibid)
 !
 !     --- CHAMPS ---
 !
@@ -130,10 +129,8 @@ subroutine op0176()
     lrest = .false.
     if (nbrest .gt. 0) then
         lrest = .true.
-        call getvid('RESTREINT', 'MAILLAGE', 1, iarg, 1,&
-                    noma, nmail)
-        call getvid('RESTREINT', 'MODELE', 1, iarg, 1,&
-                    nomo, nmode)
+        call getvid('RESTREINT', 'MAILLAGE', iocc=1, scal=noma, nbret=nmail)
+        call getvid('RESTREINT', 'MODELE', iocc=1, scal=nomo, nbret=nmode)
     endif
     if ((nbarch.eq.0) .and. (nbrest.eq.0)) then
         goto 9997

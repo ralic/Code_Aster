@@ -1,6 +1,6 @@
 subroutine usuban(mater, isupp, para, ier)
     implicit none
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/u2mesg.h"
     real(kind=8) :: para(*)
@@ -40,10 +40,8 @@ subroutine usuban(mater, isupp, para, ier)
 !-----------------------------------------------------------------------
     ier = 0
     mate = mater
-    call getvtx(' ', 'LOI_USURE', 1, iarg, 1,&
-                loi, n1)
-    call getvtx(' ', 'CONTACT', 1, iarg, 1,&
-                type, n2)
+    call getvtx(' ', 'LOI_USURE', scal=loi, nbret=n1)
+    call getvtx(' ', 'CONTACT', scal=type, nbret=n2)
 !
 ! **********************************************************************
 !                 M O D E L E     A R C H A R D

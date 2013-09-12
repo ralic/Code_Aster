@@ -1,9 +1,8 @@
 subroutine rscrmo(iocc, nomsd, nomjv)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -17,6 +16,7 @@ subroutine rscrmo(iocc, nomsd, nomjv)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc
     character(len=*) :: nomsd, nomjv
 !     ------------------------------------------------------------------
@@ -54,22 +54,19 @@ subroutine rscrmo(iocc, nomsd, nomjv)
     nomd2 = nomsd
 !
     knum = '&&RSCRMO.NUME_ORDRE'
-    call getvr8('RESU', 'PRECISION', iocc, iarg, 1,&
-                prec, np)
-    call getvtx('RESU', 'CRITERE', iocc, iarg, 1,&
-                crit, nc)
+    call getvr8('RESU', 'PRECISION', iocc=iocc, scal=prec, nbret=np)
+    call getvtx('RESU', 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
     call rsutnu(nomsd, 'RESU', iocc, knum, nbordt,&
                 prec, crit, iret)
     if (iret .ne. 0) goto 9999
     call jeveuo(knum, 'L', jnume)
 !
-    call getvtx('RESU', 'NOM_CHAM', iocc, iarg, 0,&
-                k8b, n22)
+    call getvtx('RESU', 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n22)
     if (n22 .ne. 0) then
         nbnosy = - n22
         call wkvect('&&RSCRMO.NOM_SYMBOL', 'V V K16', nbnosy, jnosy)
-        call getvtx('RESU', 'NOM_CHAM', iocc, iarg, nbnosy,&
-                    zk16(jnosy), n22)
+        call getvtx('RESU', 'NOM_CHAM', iocc=iocc, nbval=nbnosy, vect=zk16(jnosy),&
+                    nbret=n22)
     else
         call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
         if (nbnosy .eq. 0) goto 9999

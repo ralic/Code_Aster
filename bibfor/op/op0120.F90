@@ -22,14 +22,13 @@ subroutine op0120()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/calint.h"
 #include "asterfort/fft.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/intimp.h"
@@ -44,6 +43,7 @@ subroutine op0120()
 #include "asterfort/titre.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, ifft, ifm, imatr, it, j, k
     integer :: kb, kf, kk, ktabl, l, l1, l2
@@ -73,14 +73,10 @@ subroutine op0120()
 !
     call getres(nomu, concep, nomcmd)
 !
-    call getvr8(' ', 'INST_INIT', 0, iarg, 1,&
-                tinst1, l)
-    call getvr8(' ', 'INST_FIN', 0, iarg, 1,&
-                tinst2, l)
-    call getvis(' ', 'NB_POIN', 0, iarg, 1,&
-                nbpts, l)
-    call getvid(' ', 'FONCTION', 0, iarg, 0,&
-                k8b, nfonc)
+    call getvr8(' ', 'INST_INIT', scal=tinst1, nbret=l)
+    call getvr8(' ', 'INST_FIN', scal=tinst2, nbret=l)
+    call getvis(' ', 'NB_POIN', scal=nbpts, nbret=l)
+    call getvid(' ', 'FONCTION', nbval=0, nbret=nfonc)
     nfonc = abs(nfonc)
 !
 !    --- VERIFICATION DU NOMBRE DE POINTS ---
@@ -102,12 +98,10 @@ subroutine op0120()
     zk16(lrefe+1) = 'TOUT'
 !
     durana = tinst2 - tinst1
-    call getvr8(' ', 'DUREE_ANALYSE', 0, iarg, 1,&
-                durana, nda)
+    call getvr8(' ', 'DUREE_ANALYSE', scal=durana, nbret=nda)
 !
     durdec = durana
-    call getvr8(' ', 'DUREE_DECALAGE', 0, iarg, 1,&
-                durdec, ndd)
+    call getvr8(' ', 'DUREE_DECALAGE', scal=durdec, nbret=ndd)
 !
     if (nda .ne. 0) then
         bmatr = ( (tinst2-tinst1) - durana ) / durdec
@@ -119,8 +113,7 @@ subroutine op0120()
     call wkvect('&&OP0120.TEMP.LFON', 'V V K8', nfonc, lfon)
     call wkvect('&&OP0120.TEMP.VALE', 'V V C', nbpts, lvale)
 !
-    call getvid(' ', 'FONCTION', 0, iarg, nfonc,&
-                zk8(lfon), l)
+    call getvid(' ', 'FONCTION', nbval=nfonc, vect=zk8(lfon), nbret=l)
 !
     dt = durana / nbpts
     long = nbpts * nfonc / 2

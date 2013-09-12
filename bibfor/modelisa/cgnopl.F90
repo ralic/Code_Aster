@@ -41,10 +41,10 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! -----  ARGUMENTS
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/cgnop0.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -108,11 +108,9 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- RECUPERATION DE LA DIRECTION PERPENDICULAIRE AU PLAN MILIEU
 ! --- DE LA BANDE :
 !     -----------
-    call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, 0,&
-                r8bid, nangle)
+    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangle)
     if (nangle .eq. 0) then
-        call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, 0,&
-                    r8bid, nvect)
+        call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
             call u2mess('F', 'MODELISA3_93')
         else
@@ -122,16 +120,16 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
             else if (ndim.eq.2.and.nvect.ne.2) then
                 call u2mess('F', 'MODELISA3_95')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, nvect,&
-                            vecnor, nv)
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
+                            nbret=nv)
             endif
         endif
     else
         nangle = -nangle
         ndim1 = ndim - 1
         nangle = min (nangle,ndim1)
-        call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, nangle,&
-                    angle, nv)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+                    nbret=nv)
 !
         if (ndim .eq. 2) then
             angle(1) = angle(1)*r8dgrd()
@@ -163,13 +161,11 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DE LA TOLERANCE :
 !     ----------------------------
-    call getvr8(motfac, 'PRECISION', iocc, iarg, 0,&
-                prec, nprec)
+    call getvr8(motfac, 'PRECISION', iocc=iocc, nbval=0, nbret=nprec)
     if (nprec .eq. 0) then
         call u2mess('F', 'MODELISA3_97')
     else
-        call getvr8(motfac, 'PRECISION', iocc, iarg, 1,&
-                    prec, nb)
+        call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
             call u2mess('F', 'MODELISA3_98')
         endif

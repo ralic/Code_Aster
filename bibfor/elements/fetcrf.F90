@@ -44,14 +44,13 @@ subroutine fetcrf(sdfet1)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gmgnre.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
@@ -75,6 +74,7 @@ subroutine fetcrf(sdfet1)
 #include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: sdfet1
 !
 !
@@ -133,8 +133,7 @@ subroutine fetcrf(sdfet1)
     nomfcm=sdfeti//'.FCFM'
     nomfcn=sdfeti//'.FCFN'
 !     RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomo, nbvm)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=nbvm)
 !
 !     LIGREL DU MODELE
     ligrmo = nomo(1:8)//'.MODELE'
@@ -144,8 +143,7 @@ subroutine fetcrf(sdfet1)
     if (nbchar .gt. 0) then
         call wkvect('&&FETCRF.NOMCHA   ', 'V V K8', nbchar, nomcha)
         do 800 i = 1, nbchar
-            call getvid('EXCIT', 'CHARGE', i, iarg, 1,&
-                        k8b, nd)
+            call getvid('EXCIT', 'CHARGE', iocc=i, scal=k8b, nbret=nd)
             zk8(nomcha-1+i)=k8b
 800      continue
     endif
@@ -176,8 +174,7 @@ subroutine fetcrf(sdfet1)
     if (niv .ge. 4) call utimsd(ifm, 2, .false., .true., nomref,&
                                 1, 'G')
 !     MA: MAILLAGE ASSOCIE AU MODELE
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                noma, nbvm)
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=nbvm)
     if (nbvm .eq. 0) then
         call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
         ma = zk8(jnoma)
@@ -198,20 +195,17 @@ subroutine fetcrf(sdfet1)
 !
 !     LECTURE DU CONTENU DES MOT-CLES DEFI
     do 1 i = 1, nbsd
-        call getvtx('DEFI', 'GROUP_MA', i, iarg, 1,&
-                    zk24(lstgma-1+i), zi(ngma-1+i))
+        call getvtx('DEFI', 'GROUP_MA', iocc=i, scal=zk24(lstgma-1+i), nbret=zi(ngma-1+i))
         if (zi(ngma-1+i) .ne. 1) then
             vali(1)=i
             call u2mesi('F', 'ELEMENTS5_25', 1, vali)
         endif
-        call getvtx('DEFI', 'GROUP_MA_BORD', i, iarg, 1,&
-                    zk24(lstbrd-1+i), zi(nbrd-1+i))
+        call getvtx('DEFI', 'GROUP_MA_BORD', iocc=i, scal=zk24(lstbrd-1+i), nbret=zi(nbrd-1+i))
  1  end do
 !
 !     NOMS DES SOUS-DOMAINES : NOMSD
 !     ON PREND LE MOT-CLE NOM TRONQUE A 4  ET ON AJOUTE LE NUM
-    call getvtx(' ', 'NOM', 1, iarg, 1,&
-                nom, nbid)
+    call getvtx(' ', 'NOM', scal=nom, nbret=nbid)
     k4tmp=nom(1:4)
     itmp=0
     iaux=len(k4tmp)

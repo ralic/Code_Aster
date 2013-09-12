@@ -30,7 +30,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -94,8 +94,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 !
 ! 2.2.1. ==> EST-CE UN RESULTAT ?
 !
-    call getvid(mcf, 'RESULTAT', iocc, iarg, 0,&
-                k8b, nbresu)
+    call getvid(mcf, 'RESULTAT', iocc=iocc, nbval=0, nbret=nbresu)
 !
 !
 ! 2.2.2.1. ==> ON CHERCHE SI CETTE CONFIGURATION EST DEJA ENREGISTREE ;

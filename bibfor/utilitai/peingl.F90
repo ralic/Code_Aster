@@ -1,8 +1,9 @@
 subroutine peingl(resu, modele, mate, cara, nh,&
                   nbocc, motfaz)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
+#include "asterc/gettco.h"
+#include "asterc/r8prem.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
@@ -10,11 +11,10 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 #include "asterfort/etenca.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/exlim3.h"
-#include "asterc/gettco.h"
 #include "asterfort/getvem.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -27,7 +27,6 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mecham.h"
 #include "asterfort/mesomm.h"
-#include "asterc/r8prem.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
@@ -39,6 +38,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara, motfaz
 ! ======================================================================
@@ -224,8 +224,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! --- RECUPERATION DU RESULTAT A TRAITER :
 !     ----------------------------------
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resul, nr)
+    call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
 !
     if (nr .eq. 0) then
         call u2mess('F', 'UTILITAI3_76')
@@ -242,13 +241,11 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! --- RECUPERATION DE LA PRECISION POUR LE TRAITEMENT DES NUMEROS
 ! --- D'ORDRE :
 !     -------
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, np)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
 !
 ! --- RECUPERATION DU CRITERE POUR LE TRAITEMENT DES NUMEROS D'ORDRE :
 !     --------------------------------------------------------------
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
 !
 ! --- RECUPERATION DES NUMEROS D'ORDRE A TRAITER :
 !     ------------------------------------------
@@ -511,8 +508,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---   RECUPERATION DES MAILLES POUR LESQUELLES ON VA CALCULER
 ! ---   L'INDICATEUR :
 !       ------------
-            call getvtx(motfac, 'TOUT', iocc, iarg, 0,&
-                        k8b, nt)
+            call getvtx(motfac, 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', motfac, 'MAILLE', iocc,&
                         iarg, 0, k8b, nm)
             call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc,&

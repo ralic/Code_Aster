@@ -42,15 +42,14 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -63,6 +62,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 #include "asterfort/rsutnu.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nuord, np, nc, iexcit, jordr
     integer :: jlcha, jinfc, jfcha
     integer :: nbordr
@@ -124,10 +124,8 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         knume = '&&'//nompro//'.NUME_ORDRE'
         call jeexin(knume, iret)
         if (iret .ne. 0) call jedetr(knume)
-        call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                    prec, np)
-        call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                    crit, nc)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+        call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
         call rsutnu(result, ' ', 0, knume, nbordr,&
                     prec, crit, iret)
         call jeveuo(knume, 'L', jordr)
@@ -148,14 +146,12 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
     else
 !
 ! 2.1. ==> LE MODELE
-        call getvid(' ', nommod, 0, iarg, 1,&
-                    mode, n1)
+        call getvid(' ', nommod, scal=mode, nbret=n1)
         modele = mode
 !
 ! 2.2. ==> LE MATERIAU
         materi = ' '
-        call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                    materi, n1)
+        call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
         call dismoi('F', 'THER_F_INST', materi, 'CHAM_MATER', ibid,&
                     repk, ierd)
         matcst = .false.
@@ -163,8 +159,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         call rcmfmc(materi, mate)
 !
 ! 2.3. ==> LES CARACTERISTIQUES ELEMENTAIRES
-        call getvid(' ', nomcar, 0, iarg, 1,&
-                    cara, n1)
+        call getvid(' ', nomcar, scal=cara, nbret=n1)
         if (n1 .le. 0) cara = '        '
         carele = cara
     endif
@@ -199,8 +194,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         do 32 , ich = 1 , nchar
 !
         if (iexcit .eq. 1) then
-            call getvid(nomexc, 'CHARGE', ich, iarg, 1,&
-                        nomcha, n1)
+            call getvid(nomexc, 'CHARGE', iocc=ich, scal=nomcha, nbret=n1)
             zk24(ialich+ich-1) = nomcha
         else
             call jeveuo(excit//'.LCHA', 'L', jlcha)
@@ -252,8 +246,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 !
         fmult = .false.
         if (iexcit .eq. 1) then
-            call getvid(nomexc, 'FONC_MULT', ich, iarg, 1,&
-                        zk24( ialifc+ich-1), n1)
+            call getvid(nomexc, 'FONC_MULT', iocc=ich, scal=zk24( ialifc+ich-1), nbret=n1)
         else
             call jeveuo(excit//'.FCHA', 'L', jfcha)
             n1=0

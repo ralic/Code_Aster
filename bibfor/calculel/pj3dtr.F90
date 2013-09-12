@@ -18,13 +18,12 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elraca.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
 #include "asterfort/inslri.h"
 #include "asterfort/jedema.h"
@@ -40,6 +39,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres, cortr3
     character(len=8) :: elrf3d(10)
     integer :: nutm3d(10)
@@ -194,7 +194,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     call wkvect(corres//'.PJEF_NB', 'V V I', nno2, i2conb)
     call wkvect(corres//'.PJEF_M1', 'V V I', nno2, i2com1)
     ideca2=0
-    do ino2=1,nno2
+    do ino2 = 1, nno2
 !       ITR : TETR4 ASSOCIE A INO2
         itr=zi(i1cotr-1+ino2)
         if (itr .eq. 0) goto 10
@@ -219,7 +219,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     call wkvect(corres//'.PJEF_CO', 'V V R', 3*nno2, i2coco)
     ideca1=0
     ideca2=0
-    do ino2=1,nno2
+    do ino2 = 1, nno2
 !       ITR : TETR4 ASSOCIE A INO2
         itr = zi(i1cotr-1+ino2)
         if (itr .eq. 0) goto 20
@@ -245,7 +245,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         dzeta=0.d0
 !
         if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10') then
-            do kk=1,4
+            do kk = 1, 4
                 x1 = crrefe(ndim*(cntetr(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cntetr(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cntetr(kk,ityp)-1)+3)
@@ -254,9 +254,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
             enddo
 !
-        elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or.&
+            elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or.&
                                      elrefa.eq.'P18' ) then
-            do kk=1,4
+            do kk = 1, 4
                 x1 = crrefe(ndim*(cnpent(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnpent(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cnpent(kk,ityp)-1)+3)
@@ -265,9 +265,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
             enddo
 !
-        elseif (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
+            elseif (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
                                      elrefa.eq.'H27' ) then
-            do kk=1,4
+            do kk = 1, 4
                 x1 = crrefe(ndim*(cnhexa(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnhexa(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cnhexa(kk,ityp)-1)+3)
@@ -276,8 +276,8 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
             enddo
 !
-        elseif (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
-            do kk=1,4
+        else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
+            do kk = 1, 4
                 x1 = crrefe(ndim*(cnpyra(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnpyra(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cnpyra(kk,ityp)-1)+3)
@@ -296,9 +296,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !
 !       -- ON ESSAYE D'AMELIORER LA PRECISION DE XR1(*)
 !          EN UTILISANT REEREG :
-        do ino=1,nbno
+        do ino = 1, nbno
             nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
-            do kdim=1,ndim
+            do kdim = 1, ndim
                 cooele(ndim*(ino-1)+kdim)=geom1(3*(nuno-1)+kdim)
             enddo
         enddo
@@ -328,7 +328,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !       --------------------------------------------------------------
         call elrfvf(elrefa, xr3, 27, ff, nno)
 !
-        do ino=1,nbno
+        do ino = 1, nbno
             nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
             zr(i2cocf-1+ideca2+ino) = ff(ino)
@@ -344,11 +344,10 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         alarme='OUI'
         call getres(k16bid, k16bid, nomcmd)
         if (nomcmd .eq. 'PROJ_CHAMP') then
-            call getvtx(' ', 'ALARME', 1, iarg, 1,&
-                        alarme, ibid)
+            call getvtx(' ', 'ALARME', scal=alarme, nbret=ibid)
         endif
         if (alarme .eq. 'OUI') then
-            do ii=1,nbnod
+            do ii = 1, nbnod
                 ino2m = tino2m(ii)
                 call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
                 umessr(1) = geom2(3*(ino2m-1)+1)

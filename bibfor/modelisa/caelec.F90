@@ -1,10 +1,10 @@
 subroutine caelec(char, ligrmo, noma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -84,51 +84,46 @@ subroutine caelec(char, ligrmo, noma)
 !
     do 120 iocc = 1, nbfel
 !
-        call getvtx(motclf, 'POSITION', iocc, iarg, 1,&
-                    code, n)
+        call getvtx(motclf, 'POSITION', iocc=iocc, scal=code, nbret=n)
 !
         if (n .eq. 0) then
             zcod = 10.d0
-            call getvr8(motclf, 'FX', iocc, iarg, 1,&
-                        p1(1), n)
-            call getvr8(motclf, 'FY', iocc, iarg, 1,&
-                        p1(2), n)
-            call getvr8(motclf, 'FZ', iocc, iarg, 1,&
-                        p1(3), n)
+            call getvr8(motclf, 'FX', iocc=iocc, scal=p1(1), nbret=n)
+            call getvr8(motclf, 'FY', iocc=iocc, scal=p1(2), nbret=n)
+            call getvr8(motclf, 'FZ', iocc=iocc, scal=p1(3), nbret=n)
             p2(1) = 0.d0
             p2(2) = 0.d0
             p2(3) = 0.d0
         else
             if (code .eq. 'PARA') then
-                call getvr8(motclf, 'DIST', iocc, iarg, 1,&
-                            d, n)
+                call getvr8(motclf, 'DIST', iocc=iocc, scal=d, nbret=n)
                 if (n .ne. 0) then
                     zcod = 12.d0
                     p1(1)=d
                     p1(2)=0.d0
                     p1(3)=0.d0
-                    call getvr8(motclf, 'POINT2', iocc, iarg, 3,&
-                                p2, n)
+                    call getvr8(motclf, 'POINT2', iocc=iocc, nbval=3, vect=p2,&
+                                nbret=n)
                 else
                     zcod = 11.d0
-                    call getvr8(motclf, 'TRANS', iocc, iarg, 3,&
-                                p1, n)
+                    call getvr8(motclf, 'TRANS', iocc=iocc, nbval=3, vect=p1,&
+                                nbret=n)
                     p2(1)=0.d0
                     p2(2)=0.d0
                     p2(3)=0.d0
                 endif
             else if (code.eq.'INFI') then
                 zcod = 2.d0
-                call getvr8(motclf, 'POINT1', iocc, iarg, 3,&
-                            p1, n)
-                call getvr8(motclf, 'POINT2', iocc, iarg, 3,&
-                            p2, n)
+                call getvr8(motclf, 'POINT1', iocc=iocc, nbval=3, vect=p1,&
+                            nbret=n)
+                call getvr8(motclf, 'POINT2', iocc=iocc, nbval=3, vect=p2,&
+                            nbret=n)
             else if (code.eq.'FINI') then
                 zcod = 3.d0
-                call getvr8(motclf, 'POINT1', iocc, iarg, 3,&
-                            p1, n)
-                call getvr8(motclf, 'POINT2', iocc, iarg, 3,&
-                            p2, n)
+                call getvr8(motclf, 'POINT1', iocc=iocc, nbval=3, vect=p1,&
+                            nbret=n)
+                call getvr8(motclf, 'POINT2', iocc=iocc, nbval=3, vect=p2,&
+                            nbret=n)
             endif
         endif
 !
@@ -140,8 +135,7 @@ subroutine caelec(char, ligrmo, noma)
         zr(jvalv-1+6) = p2(3)
         zr(jvalv-1+7) = zcod
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !
         if (nbtou .ne. 0) then
 !

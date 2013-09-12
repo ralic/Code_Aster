@@ -35,15 +35,14 @@ subroutine calimc(chargz)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -55,6 +54,7 @@ subroutine calimc(chargz)
 #include "asterfort/jexnum.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! -----  ARGUMENTS
     character(len=*) :: chargz
@@ -141,17 +141,18 @@ subroutine calimc(chargz)
 !          TYPLAG = '12'
 !        ENDIF
         typlag = '12'
-        call getvid(motfac, 'MACR_ELEM_DYNA', iocc, iarg, 1,&
-                    macrel, nmc)
+        call getvid(motfac, 'MACR_ELEM_DYNA', iocc=iocc, scal=macrel, nbret=nmc)
         call jeveuo(macrel//'.MAEL_REFE', 'L', iadref)
         basemo = zk24(iadref)
         call rsorac(basemo, 'LONUTI', ibid, rbid, k8b,&
                     cbid, rbid, k8b, nbmode, 1,&
                     ibid)
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numedd, iret)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                    numedd, iret)
         call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
                     mailla, iret)
-        call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, lintf, iret)
+        call dismoi('F', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid,&
+                    lintf, iret)
 ! On recupere le nbre de noeuds presents dans interf_dyna
         call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
 ! On recupere la liste des noeuds presents dans interf_dyna
@@ -199,8 +200,7 @@ subroutine calimc(chargz)
         nprno = numddl//'.NUME.PRNO'
         call jeveuo(jexnum(nprno, 1), 'L', iaprno)
 !
-        call getvtx(motfac, 'TYPE_LIAISON', iocc, iarg, 1,&
-                    typlia, n2)
+        call getvtx(motfac, 'TYPE_LIAISON', iocc=iocc, scal=typlia, nbret=n2)
 !
         if (typlia .eq. 'RIGIDE') then
             nbterm = nbmdef+1

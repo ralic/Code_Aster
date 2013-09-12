@@ -20,7 +20,7 @@ subroutine op0117()
 !     BUT: RECUPERER LE NUMERO DE COMPONENT VENANT DE YACS
 !     ON LE MET DANS UN OBJET JEVEUX &ADR_YACS
 #include "jeveux.h"
-#include "asterc/getvis.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -41,8 +41,7 @@ subroutine op0117()
     call jemarq()
 !
 !
-    call getvis(' ', 'COMPO', 0, iarg, 1,&
-                icompo, ibid)
+    call getvis(' ', 'COMPO', scal=icompo, nbret=ibid)
 !
 !
 !     ICOMPO MIS EN COMMON ASTER

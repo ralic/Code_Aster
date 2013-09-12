@@ -1,10 +1,9 @@
 subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -14,6 +13,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/reliem.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/utreno.h"
+!
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 ! ======================================================================
@@ -94,10 +94,8 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DE LA PRECISION ET DU CRITERE :
 !     ------------------------------------------
-    call getvr8(motfac, 'PRECISION', iocc, iarg, 1,&
-                tole, n1)
-    call getvtx(motfac, 'CRITERE', iocc, iarg, 1,&
-                crit, n1)
+    call getvr8(motfac, 'PRECISION', iocc=iocc, scal=tole, nbret=n1)
+    call getvtx(motfac, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
 ! --- ON ORDONNE :
 !     ----------

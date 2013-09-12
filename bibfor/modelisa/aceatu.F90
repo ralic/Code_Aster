@@ -2,14 +2,13 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                   ifm, nbocc)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aceat2.h"
 #include "asterfort/aceat3.h"
 #include "asterfort/acemmt.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -22,6 +21,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbepo, ntyele(*), nbocc(*), ivr(3), ifm
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
@@ -243,18 +243,15 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                         iarg, 1, nomlu, nj)
             call getvem(noma, 'NOEUD', 'ORIENTATION', 'NOEUD', ioc,&
                         iarg, 1, nomlu, nn)
-            call getvtx('ORIENTATION', 'CARA', ioc, iarg, 1,&
-                        car, ncar)
-            call getvr8('ORIENTATION', 'VALE', ioc, iarg, 3,&
-                        val, nval)
-            call getvr8('ORIENTATION', 'PRECISION', ioc, iarg, 1,&
-                        epsi, ibid)
+            call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=car, nbret=ncar)
+            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=3, vect=val,&
+                        nbret=nval)
+            call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=epsi, nbret=ibid)
             if (ibid .eq. 0) then
                 epsi=1.d-4
                 crit='RELATIF'
             endif
-            call getvtx('ORIENTATION', 'CRITERE', ioc, iarg, 1,&
-                        crit, ibid)
+            call getvtx('ORIENTATION', 'CRITERE', iocc=ioc, scal=crit, nbret=ibid)
             if (car .eq. 'GENE_TUY') then
                 if (nj .gt. 0) then
                     if (nj .eq. 1) then

@@ -2,11 +2,11 @@ subroutine rfbefl(base)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/foattr.h"
 #include "asterfort/foimpr.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -68,14 +68,10 @@ subroutine rfbefl(base)
 !
 !     --- RECUPERATION DES ENTREES ---
 !
-    call getvtx(' ', 'PARA_Y', 0, iarg, 1,&
-                paray, n2)
-    call getvtx(' ', 'TOUT_ORDRE', 0, iarg, 1,&
-                ttordr, n3)
-    call getvis(' ', 'NUME_MODE', 0, iarg, 1,&
-                nummod, n4)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 2,&
-                interp, n5)
+    call getvtx(' ', 'PARA_Y', scal=paray, nbret=n2)
+    call getvtx(' ', 'TOUT_ORDRE', scal=ttordr, nbret=n3)
+    call getvis(' ', 'NUME_MODE', scal=nummod, nbret=n4)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n5)
     if (n5 .eq. 1) interp(2) = interp(1)
 !
 !     --- REMPLISSAGE DU .PROL ---
@@ -103,12 +99,10 @@ subroutine rfbefl(base)
 !
     if (ttordr .ne. 'OUI') then
         numeo = '&&RFBEFL.NUME_ORDRE'
-        call getvis(' ', 'NUME_ORDRE', 0, iarg, 0,&
-                    ibid, nbno)
+        call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nbno)
         nbno = -nbno
         call wkvect(numeo, 'V V I', nbno, inumeo)
-        call getvis(' ', 'NUME_ORDRE', 0, iarg, nbno,&
-                    zi(inumeo), n1)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbno, vect=zi(inumeo), nbret=n1)
         min = zi(inumeo)
         do 10 i = 1, nbno
             id = min - zi(inumeo + i - 1)

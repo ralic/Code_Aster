@@ -2,12 +2,11 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
                   iadr)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getexm.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2rdl2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -19,6 +18,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
 #include "asterfort/reliem.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     integer :: iocc, iadr
     character(len=*) :: mcfact, nomaz, nomvei, nomvek
 !-----------------------------------------------------------------------
@@ -69,8 +69,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
     ier = 0
 !
     if (lopt .eq. 1) then
-        call getvtx(mcfact, 'OPTION', iocc, iarg, 1,&
-                    option, n1)
+        call getvtx(mcfact, 'OPTION', iocc=iocc, scal=option, nbret=n1)
         if (option .eq. 'TRIA6_7') then
             oldtyp = 'TRIA6'
         else if (option .eq. 'QUAD8_9') then
@@ -84,23 +83,19 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
     lmail = .false.
     lnume = .false.
     if (lnom .eq. 1) then
-        call getvtx(mcfact, 'PREF_MAILLE', iocc, iarg, 0,&
-                    k8b, n1)
+        call getvtx(mcfact, 'PREF_MAILLE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvtx(mcfact, 'PREF_MAILLE', iocc, iarg, 1,&
-                        prfm, n1)
+            call getvtx(mcfact, 'PREF_MAILLE', iocc=iocc, scal=prfm, nbret=n1)
             lgp = lxlgut(prfm)
             lmail = .true.
         else
             lgp = 0
             prfm = ' '
         endif
-        call getvis(mcfact, 'PREF_NUME', iocc, iarg, 0,&
-                    ibid, n1)
+        call getvis(mcfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             lnume = .true.
-            call getvis(mcfact, 'PREF_NUME', iocc, iarg, 1,&
-                        nume, n1)
+            call getvis(mcfact, 'PREF_NUME', iocc=iocc, scal=nume, nbret=n1)
         endif
     endif
 !

@@ -18,10 +18,10 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmetob.h"
@@ -65,15 +65,13 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
 !
 ! --- LECTURE: IL FAUT UN CHAMP ET UN SEUL
 !
-    call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 0,&
-                k8bid, n1)
+    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n1)
     nchp = -n1
     ASSERT(nchp.eq.1)
 !
 ! --- NOM DU CHAMP
 !
-    call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 1,&
-                nomcha, nchp)
+    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=nchp)
 !
 ! --- INDICE DU CHAMP
 !

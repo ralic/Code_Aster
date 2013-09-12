@@ -1,16 +1,16 @@
 subroutine cachre(char, ligrmo, noma, ndim, fonree,&
                   param, motcl)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -124,25 +124,18 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
         nrep = 0
         ncmp = 0
         if (motclf .eq. 'FORCE_POUTRE') then
-            call getvtx(motclf, 'TYPE_CHARGE', iocc, iarg, 1,&
-                        typch, n)
+            call getvtx(motclf, 'TYPE_CHARGE', iocc=iocc, scal=typch, nbret=n)
             if (typch .eq. 'VENT') nrep = 2
         endif
         if (fonree .eq. 'COMP') then
-            call getvc8(motclf, 'FX', iocc, iarg, 1,&
-                        cfx, nfx)
-            call getvc8(motclf, 'FY', iocc, iarg, 1,&
-                        cfy, nfy)
-            call getvc8(motclf, 'FZ', iocc, iarg, 1,&
-                        cfz, nfz)
+            call getvc8(motclf, 'FX', iocc=iocc, scal=cfx, nbret=nfx)
+            call getvc8(motclf, 'FY', iocc=iocc, scal=cfy, nbret=nfy)
+            call getvc8(motclf, 'FZ', iocc=iocc, scal=cfz, nbret=nfz)
             if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_POUTRE' .and. motclf&
                 .ne. 'FORCE_FACE') then
-                call getvc8(motclf, 'MX', iocc, iarg, 1,&
-                            cmx, nmx)
-                call getvc8(motclf, 'MY', iocc, iarg, 1,&
-                            cmy, nmy)
-                call getvc8(motclf, 'MZ', iocc, iarg, 1,&
-                            cmz, nmz)
+                call getvc8(motclf, 'MX', iocc=iocc, scal=cmx, nbret=nmx)
+                call getvc8(motclf, 'MY', iocc=iocc, scal=cmy, nbret=nmy)
+                call getvc8(motclf, 'MZ', iocc=iocc, scal=cmz, nbret=nmz)
             else
                 nmx = 0
                 nmy = 0
@@ -151,30 +144,21 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
                 if (motclf .eq. 'FORCE_POUTRE') then
                     nrep = 1
-                    call getvc8(motclf, 'N', iocc, iarg, 1,&
-                                cfx, nfx)
-                    call getvc8(motclf, 'VY', iocc, iarg, 1,&
-                                cfy, nfy)
-                    call getvc8(motclf, 'VZ', iocc, iarg, 1,&
-                                cfz, nfz)
+                    call getvc8(motclf, 'N', iocc=iocc, scal=cfx, nbret=nfx)
+                    call getvc8(motclf, 'VY', iocc=iocc, scal=cfy, nbret=nfy)
+                    call getvc8(motclf, 'VZ', iocc=iocc, scal=cfz, nbret=nfz)
 !                 CALL GETVC8 ( MOTCLF, 'MT' , IOCC,IARG, 1, CMX, NMX )
 !                 CALL GETVC8 ( MOTCLF, 'MFY', IOCC,IARG, 1, CMY, NMY )
 !                 CALL GETVC8 ( MOTCLF, 'MFZ', IOCC,IARG, 1, CMZ, NMZ )
                 else if (motclf .eq. 'FORCE_COQUE') then
                     nrep = 1
-                    call getvc8(motclf, 'PRES', iocc, iarg, 1,&
-                                cvpre, nfz)
+                    call getvc8(motclf, 'PRES', iocc=iocc, scal=cvpre, nbret=nfz)
                     if (nfz .eq. 0) then
-                        call getvc8(motclf, 'F1', iocc, iarg, 1,&
-                                    cfx, nfx)
-                        call getvc8(motclf, 'F2', iocc, iarg, 1,&
-                                    cfy, nfy)
-                        call getvc8(motclf, 'F3', iocc, iarg, 1,&
-                                    cfz, nfz)
-                        call getvc8(motclf, 'MF1', iocc, iarg, 1,&
-                                    cmx, nmx)
-                        call getvc8(motclf, 'MF2', iocc, iarg, 1,&
-                                    cmy, nmy)
+                        call getvc8(motclf, 'F1', iocc=iocc, scal=cfx, nbret=nfx)
+                        call getvc8(motclf, 'F2', iocc=iocc, scal=cfy, nbret=nfy)
+                        call getvc8(motclf, 'F3', iocc=iocc, scal=cfz, nbret=nfz)
+                        call getvc8(motclf, 'MF1', iocc=iocc, scal=cmx, nbret=nmx)
+                        call getvc8(motclf, 'MF2', iocc=iocc, scal=cmy, nbret=nmy)
                         nmz = 0
                     else
                         cfz = -cvpre
@@ -225,19 +209,13 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
                 if (nrep .eq. 2) zc(jvalv-1+ncmp) = 2.d0
             endif
         else if (fonree.eq.'REEL') then
-            call getvr8(motclf, 'FX', iocc, iarg, 1,&
-                        fx, nfx)
-            call getvr8(motclf, 'FY', iocc, iarg, 1,&
-                        fy, nfy)
-            call getvr8(motclf, 'FZ', iocc, iarg, 1,&
-                        fz, nfz)
+            call getvr8(motclf, 'FX', iocc=iocc, scal=fx, nbret=nfx)
+            call getvr8(motclf, 'FY', iocc=iocc, scal=fy, nbret=nfy)
+            call getvr8(motclf, 'FZ', iocc=iocc, scal=fz, nbret=nfz)
             if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE') then
-                call getvr8(motclf, 'MX', iocc, iarg, 1,&
-                            mx, nmx)
-                call getvr8(motclf, 'MY', iocc, iarg, 1,&
-                            my, nmy)
-                call getvr8(motclf, 'MZ', iocc, iarg, 1,&
-                            mz, nmz)
+                call getvr8(motclf, 'MX', iocc=iocc, scal=mx, nbret=nmx)
+                call getvr8(motclf, 'MY', iocc=iocc, scal=my, nbret=nmy)
+                call getvr8(motclf, 'MZ', iocc=iocc, scal=mz, nbret=nmz)
             else
                 nmx = 0
                 nmy = 0
@@ -246,33 +224,21 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
                 if (motclf .eq. 'FORCE_POUTRE') then
                     nrep = 1
-                    call getvr8(motclf, 'N', iocc, iarg, 1,&
-                                fx, nfx)
-                    call getvr8(motclf, 'VY', iocc, iarg, 1,&
-                                fy, nfy)
-                    call getvr8(motclf, 'VZ', iocc, iarg, 1,&
-                                fz, nfz)
-                    call getvr8(motclf, 'MT', iocc, iarg, 1,&
-                                mx, nmx)
-                    call getvr8(motclf, 'MFY', iocc, iarg, 1,&
-                                my, nmy)
-                    call getvr8(motclf, 'MFZ', iocc, iarg, 1,&
-                                mz, nmz)
+                    call getvr8(motclf, 'N', iocc=iocc, scal=fx, nbret=nfx)
+                    call getvr8(motclf, 'VY', iocc=iocc, scal=fy, nbret=nfy)
+                    call getvr8(motclf, 'VZ', iocc=iocc, scal=fz, nbret=nfz)
+                    call getvr8(motclf, 'MT', iocc=iocc, scal=mx, nbret=nmx)
+                    call getvr8(motclf, 'MFY', iocc=iocc, scal=my, nbret=nmy)
+                    call getvr8(motclf, 'MFZ', iocc=iocc, scal=mz, nbret=nmz)
                 else if (motclf .eq. 'FORCE_COQUE') then
                     nrep = 1
-                    call getvr8(motclf, 'PRES', iocc, iarg, 1,&
-                                vpre, nfz)
+                    call getvr8(motclf, 'PRES', iocc=iocc, scal=vpre, nbret=nfz)
                     if (nfz .eq. 0) then
-                        call getvr8(motclf, 'F1', iocc, iarg, 1,&
-                                    fx, nfx)
-                        call getvr8(motclf, 'F2', iocc, iarg, 1,&
-                                    fy, nfy)
-                        call getvr8(motclf, 'F3', iocc, iarg, 1,&
-                                    fz, nfz)
-                        call getvr8(motclf, 'MF1', iocc, iarg, 1,&
-                                    mx, nmx)
-                        call getvr8(motclf, 'MF2', iocc, iarg, 1,&
-                                    my, nmy)
+                        call getvr8(motclf, 'F1', iocc=iocc, scal=fx, nbret=nfx)
+                        call getvr8(motclf, 'F2', iocc=iocc, scal=fy, nbret=nfy)
+                        call getvr8(motclf, 'F3', iocc=iocc, scal=fz, nbret=nfz)
+                        call getvr8(motclf, 'MF1', iocc=iocc, scal=mx, nbret=nmx)
+                        call getvr8(motclf, 'MF2', iocc=iocc, scal=my, nbret=nmy)
                         nmz = 0
                     else
                         fz = -vpre
@@ -321,19 +287,13 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
                 if (nrep .eq. 2) zr(jvalv-1+ncmp) = 2.d0
             endif
         else
-            call getvid(motclf, 'FX', iocc, iarg, 1,&
-                        kfx, nfx)
-            call getvid(motclf, 'FY', iocc, iarg, 1,&
-                        kfy, nfy)
-            call getvid(motclf, 'FZ', iocc, iarg, 1,&
-                        kfz, nfz)
+            call getvid(motclf, 'FX', iocc=iocc, scal=kfx, nbret=nfx)
+            call getvid(motclf, 'FY', iocc=iocc, scal=kfy, nbret=nfy)
+            call getvid(motclf, 'FZ', iocc=iocc, scal=kfz, nbret=nfz)
             if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE') then
-                call getvid(motclf, 'MX', iocc, iarg, 1,&
-                            kmx, nmx)
-                call getvid(motclf, 'MY', iocc, iarg, 1,&
-                            kmy, nmy)
-                call getvid(motclf, 'MZ', iocc, iarg, 1,&
-                            kmz, nmz)
+                call getvid(motclf, 'MX', iocc=iocc, scal=kmx, nbret=nmx)
+                call getvid(motclf, 'MY', iocc=iocc, scal=kmy, nbret=nmy)
+                call getvid(motclf, 'MZ', iocc=iocc, scal=kmz, nbret=nmz)
             else
                 nmx = 0
                 nmy = 0
@@ -342,33 +302,21 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
                 if (motclf .eq. 'FORCE_POUTRE') then
                     nrep = 1
-                    call getvid(motclf, 'N', iocc, iarg, 1,&
-                                kfx, nfx)
-                    call getvid(motclf, 'VY', iocc, iarg, 1,&
-                                kfy, nfy)
-                    call getvid(motclf, 'VZ', iocc, iarg, 1,&
-                                kfz, nfz)
-                    call getvid(motclf, 'MT', iocc, iarg, 1,&
-                                kmx, nmx)
-                    call getvid(motclf, 'MFY', iocc, iarg, 1,&
-                                kmy, nmy)
-                    call getvid(motclf, 'MFZ', iocc, iarg, 1,&
-                                kmz, nmz)
+                    call getvid(motclf, 'N', iocc=iocc, scal=kfx, nbret=nfx)
+                    call getvid(motclf, 'VY', iocc=iocc, scal=kfy, nbret=nfy)
+                    call getvid(motclf, 'VZ', iocc=iocc, scal=kfz, nbret=nfz)
+                    call getvid(motclf, 'MT', iocc=iocc, scal=kmx, nbret=nmx)
+                    call getvid(motclf, 'MFY', iocc=iocc, scal=kmy, nbret=nmy)
+                    call getvid(motclf, 'MFZ', iocc=iocc, scal=kmz, nbret=nmz)
                 else if (motclf .eq. 'FORCE_COQUE') then
                     nrep = 1
-                    call getvid(motclf, 'PRES', iocc, iarg, 1,&
-                                kfz, nfz)
+                    call getvid(motclf, 'PRES', iocc=iocc, scal=kfz, nbret=nfz)
                     if (nfz .eq. 0) then
-                        call getvid(motclf, 'F1', iocc, iarg, 1,&
-                                    kfx, nfx)
-                        call getvid(motclf, 'F2', iocc, iarg, 1,&
-                                    kfy, nfy)
-                        call getvid(motclf, 'F3', iocc, iarg, 1,&
-                                    kfz, nfz)
-                        call getvid(motclf, 'MF1', iocc, iarg, 1,&
-                                    kmx, nmx)
-                        call getvid(motclf, 'MF2', iocc, iarg, 1,&
-                                    kmy, nmy)
+                        call getvid(motclf, 'F1', iocc=iocc, scal=kfx, nbret=nfx)
+                        call getvid(motclf, 'F2', iocc=iocc, scal=kfy, nbret=nfy)
+                        call getvid(motclf, 'F3', iocc=iocc, scal=kfz, nbret=nfz)
+                        call getvid(motclf, 'MF1', iocc=iocc, scal=kmx, nbret=nmx)
+                        call getvid(motclf, 'MF2', iocc=iocc, scal=kmy, nbret=nmy)
                         nmz = 0
                     else
                         nfx = 0
@@ -423,8 +371,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
         if (ncmp .eq. 0) goto 20
 !
         if (motclf .eq. 'FORCE_COQUE') then
-            call getvtx(motclf, 'PLAN', iocc, iarg, 1,&
-                        plan, nplan)
+            call getvtx(motclf, 'PLAN', iocc=iocc, scal=plan, nbret=nplan)
             if (nplan .ne. 0) then
                 ncmp = ncmp + 1
                 zk8(jncmp-1+ncmp) = 'PLAN'
@@ -446,7 +393,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+        call char_affe_neum(noma, ndim, motclf, iocc, 1,&
                             cartes, ncmps)
 !
 20      continue

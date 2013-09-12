@@ -1,13 +1,12 @@
 subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -18,6 +17,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 ! ======================================================================
@@ -89,17 +89,15 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --  RECUPERATION DU TYPE GROUPE :
 !     ============================
-    call getvtx(motfac, 'TYPE_GROUP', iocc, iarg, 1,&
-                typgrp, n1)
+    call getvtx(motfac, 'TYPE_GROUP', iocc=iocc, scal=typgrp, nbret=n1)
 !
 ! --  RECUPERATION DES NOMS DES FISSURES :
 !     ===================================
-    call getvid(motfac, 'FISSURE', iocc, iarg, 0,&
-                k8bid, nfiss)
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
     nfiss = -nfiss
     call wkvect('&&CGNOXF.FISS', 'V V K8', nfiss, jfiss)
-    call getvid(motfac, 'FISSURE', iocc, iarg, nfiss,&
-                zk8(jfiss), ibid)
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=zk8(jfiss),&
+                nbret=ibid)
 !
 ! --- TYPE DE NOEUD = 'HEAVISIDE'
 !     ============================
@@ -196,16 +194,13 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                 call jeveuo(stnot, 'L', ibid)
                 nomafi = zk8(ibid)
 !
-                call getvr8(motfac, 'RAYON_TORE', 1, iarg, 1,&
-                            rayon, ibid)
+                call getvr8(motfac, 'RAYON_TORE', iocc=1, scal=rayon, nbret=ibid)
                 rayon = rayon**2
 !
 !              RETREIVE THE TWO LEVEL SETS
-                call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                            ma, ibid)
+                call getvid(' ', 'MAILLAGE', scal=ma, nbret=ibid)
                 if (ibid .eq. 0) then
-                    call getvid(' ', 'GRILLE', 1, iarg, 1,&
-                                ma, ibid)
+                    call getvid(' ', 'GRILLE', scal=ma, nbret=ibid)
 !                  CHECK FOR THE PRESENCE OF THE GRID
                     stnot = fiss//'.GRI.MODELE'
                     call jeexin(stnot, ibid)

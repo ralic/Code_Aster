@@ -1,19 +1,18 @@
 subroutine mbilgl(option, result, modele, depla1, depla2,&
-                  thetai, mate, lischa, symech,chfond,&
-                  nnoff , ndeg, thlagr, glagr,thlag2,&
-                  milieu, ndimte, pair, extim,timeu,&
-                  timev , indi, indj, nbprup,noprup,&
+                  thetai, mate, lischa, symech, chfond,&
+                  nnoff, ndeg, thlagr, glagr, thlag2,&
+                  milieu, ndimte, pair, extim, timeu,&
+                  timev, indi, indj, nbprup, noprup,&
                   lmelas, nomcas, fonoeu)
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gcharg.h"
+#include "asterfort/getvid.h"
 #include "asterfort/gimpgs.h"
 #include "asterfort/gmeth1.h"
 #include "asterfort/gmeth3.h"
@@ -34,7 +33,8 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-    integer ::  nnoff, indi, indj, ndeg
+!
+    integer :: nnoff, indi, indj, ndeg
     integer :: nbprup, ndimte
 !
     real(kind=8) :: timeu, timev
@@ -157,8 +157,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !
-    call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                chsigi, init)
+    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='G_BILI'
         call u2mesk('F', 'RUPTURE1_13', 1, valk)
@@ -174,8 +173,8 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 ! - TRAITEMENT DES CHARGES U
 !
 !
-    call gcharg(modele, lischa, uchvol, ucf12d,ucf23d,&
-                uchpre, ucheps, uchpes, uchrot,ufonc,&
+    call gcharg(modele, lischa, uchvol, ucf12d, ucf23d,&
+                uchpre, ucheps, uchpes, uchrot, ufonc,&
                 timeu, indi)
 !
     if (ufonc) then
@@ -194,8 +193,8 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
 ! - TRAITEMENT DES CHARGES V
 !
-    call gcharg(modele, lischa, vchvol, vcf12d,vcf23d,&
-                vchpre, vcheps, vchpes, vchrot,vfonc,&
+    call gcharg(modele, lischa, vchvol, vcf12d, vcf23d,&
+                vchpre, vcheps, vchpes, vchrot, vfonc,&
                 timev, indj)
 !
     if (vfonc) then

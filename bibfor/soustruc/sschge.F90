@@ -20,14 +20,13 @@ subroutine sschge(nomacr)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -41,6 +40,7 @@ subroutine sschge(nomacr)
 #include "asterfort/ss2mm2.h"
 #include "asterfort/ssvau1.h"
 #include "asterfort/u2mess.h"
+!
     character(len=8) :: nomacr
 ! ----------------------------------------------------------------------
 !     BUT: TRAITER LE MOT CLEF "CAS_CHARGE"
@@ -103,8 +103,7 @@ subroutine sschge(nomacr)
 !
     do 1, iocc= 1,nocc
 !
-    call getvtx('CAS_CHARGE', 'NOM_CAS', iocc, iarg, 1,&
-                nomcas, n1)
+    call getvtx('CAS_CHARGE', 'NOM_CAS', iocc=iocc, scal=nomcas, nbret=n1)
     call jecroc(jexnom(nomacr//'.LICA', nomcas))
     call jecroc(jexnom(nomacr//'.LICH', nomcas))
     call jenonu(jexnom(nomacr//'.LICA', nomcas), icas)
@@ -113,23 +112,20 @@ subroutine sschge(nomacr)
 !
 !       -- MISE A JOUR DE .LICH:
 !       ------------------------
-    call getvtx('CAS_CHARGE', 'SUIV', iocc, iarg, 1,&
-                kbid, n1)
+    call getvtx('CAS_CHARGE', 'SUIV', iocc=iocc, scal=kbid, nbret=n1)
     if (kbid(1:3) .eq. 'OUI') then
         zk8(ialich-1+1)= 'OUI_SUIV'
     else
         zk8(ialich-1+1)= 'NON_SUIV'
     endif
-    call getvid('CAS_CHARGE', 'CHARGE', iocc, iarg, 0,&
-                kbid, n1)
+    call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
     if (-n1 .gt. nch) call u2mess('F', 'SOUSTRUC_40')
-    call getvid('CAS_CHARGE', 'CHARGE', iocc, iarg, -n1,&
-                zk8(ialich+1), n2)
+    call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=-n1, vect=zk8(ialich+1),&
+                nbret=n2)
 !
 !       -- INSTANT:
 !       -----------
-    call getvr8('CAS_CHARGE', 'INST', iocc, iarg, 1,&
-                time, n2)
+    call getvr8('CAS_CHARGE', 'INST', iocc=iocc, scal=time, nbret=n2)
 !
 !       -- CALCULS VECTEURS ELEMENTAIRES DU CHARGEMENT :
 !       ------------------------------------------------

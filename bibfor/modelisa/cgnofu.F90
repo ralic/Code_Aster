@@ -1,11 +1,11 @@
 subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! aslint: disable=
-    implicit  none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8maem.h"
 #include "asterfort/cgnoor.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/gmgnre.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -133,15 +133,13 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DU RAYON DU TUNNEL :
 !     -------------------------------
-    call getvr8(motfac, 'RAYON', iocc, iarg, 1,&
-                rfut, nrf)
+    call getvr8(motfac, 'RAYON', iocc=iocc, scal=rfut, nbret=nrf)
     rfut2 = rfut * rfut
 !
 ! --- RECUPERATION DE LA LONGUEUR TUNNEL A TRAITER :
 !     --------------------------------------------
     lfut = r8maem( )
-    call getvr8(motfac, 'LONGUEUR', iocc, iarg, 1,&
-                lfut, nlf)
+    call getvr8(motfac, 'LONGUEUR', iocc=iocc, scal=lfut, nbret=nlf)
 !
     call wkvect('&&CGNOFU.NOEUDS_CUBE', 'V V I', nbnot, jnord)
     call wkvect('&&CGNOFU.NOEUDS_TROUVES', 'V V I', nbnot, jnotr)

@@ -5,7 +5,7 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
 #include "asterc/getfac.h"
 #include "asterc/getltx.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -86,8 +86,7 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
     endif
 !
     if (motcle .ne. '   ') then
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    cbid, nbtitr)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=nbtitr)
         nbtitr = - nbtitr
     else
         nbtitr = 0
@@ -102,8 +101,8 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
 !        --- TITRE UTILISATEUR ---
         call wkvect('&&TITRE .TAMPON.ENTREE', 'V V K80', nbtitr, ldon)
         call wkvect('&&TITRE .LONGUEUR     ', 'V V I  ', nbtitr, llon)
-        call getvtx(motfac, motcle, iocc, iarg, nbtitr,&
-                    zk80(ldon), l)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=nbtitr, vect=zk80(ldon),&
+                    nbret=l)
         call getltx(motfac, motcle, iocc, 80, nbtitr,&
                     zi(llon), l)
     endif

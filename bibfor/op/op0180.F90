@@ -30,18 +30,17 @@ subroutine op0180()
 ! VARIABLES LOCALES
 ! -----------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/caelca.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/crelrl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/etenca.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gromab.h"
 #include "asterfort/immeca.h"
 #include "asterfort/infmaj.h"
@@ -59,8 +58,8 @@ subroutine op0180()
 #include "asterfort/projca.h"
 #include "asterfort/reliem.h"
 #include "asterfort/sigmca.h"
-#include "asterfort/tbajpa.h"
 #include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/tensca.h"
 #include "asterfort/titre.h"
@@ -71,6 +70,7 @@ subroutine op0180()
 #include "asterfort/u2mess.h"
 #include "asterfort/voisca.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno, jncmp, jsief
     integer :: jvalv, n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
     integer :: ncaba, nsief, nbmabe, jlimab, nbnoca
@@ -78,7 +78,7 @@ subroutine op0180()
     real(kind=8) :: trelax, valr(2)
     logical :: mail2d, relax, quad
     character(len=3) :: k3b
-    character(len=8) :: caelem, chmat, k8b, mailla, modele, noancr(2), nomu,adher
+    character(len=8) :: caelem, chmat, k8b, mailla, modele, noancr(2), nomu, adher
     character(len=8) :: typanc(2)
     character(len=16) :: cmd, concep
     character(len=19) :: carsig, carte, ligrmo, lirela, numaca, nunobe, xnoca
@@ -139,28 +139,22 @@ subroutine op0180()
 !
     call getfac('DEFI_CABLE', nbcabl)
     nbcabl = abs(nbcabl)
-    call getvr8(' ', 'TENSION_INIT', 0, iarg, 1,&
-                f0, ibid)
-    call getvr8(' ', 'RECUL_ANCRAGE', 0, iarg, 1,&
-                delta, ibid)
-    call getvtx(' ', 'ADHERENT', 1, iarg, 1,&
-                adher, ibid)
+    call getvr8(' ', 'TENSION_INIT', scal=f0, nbret=ibid)
+    call getvr8(' ', 'RECUL_ANCRAGE', scal=delta, nbret=ibid)
+    call getvtx(' ', 'ADHERENT', scal=adher, nbret=ibid)
     valr(1)=f0
     valr(2)=delta
     valk(7)= adher
-
-    if (adher.eq.'NON')call u2mess('I','MODELISA3_39')
-
-    call getvtx(' ', 'TYPE_RELAX', 1, iarg, 1,&
-                typrel, ibid)
+!
+    if (adher .eq. 'NON') call u2mess('I', 'MODELISA3_39')
+!
+    call getvtx(' ', 'TYPE_RELAX', scal=typrel, nbret=ibid)
     if (typrel .eq. 'BPEL') then
         relax = .true.
-        call getvr8(' ', 'R_J', 0, iarg, 1,&
-                    trelax, ibid)
+        call getvr8(' ', 'R_J', scal=trelax, nbret=ibid)
     else if (typrel(1:4).eq.'ETCC') then
         relax = .true.
-        call getvr8(' ', 'NBH_RELAX', 0, iarg, 1,&
-                    trelax, ibid)
+        call getvr8(' ', 'NBH_RELAX', scal=trelax, nbret=ibid)
     else
         relax = .false.
     endif
@@ -181,10 +175,8 @@ subroutine op0180()
 !
     do icabl = 1, nbcabl
 !
-        call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', icabl, iarg, 0,&
-                    k8b, n1)
-        call getvtx('DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl, iarg, 0,&
-                    k8b, n2)
+        call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', iocc=icabl, nbval=0, nbret=n1)
+        call getvtx('DEFI_CABLE', 'GROUP_NO_ANCRAGE', iocc=icabl, nbval=0, nbret=n2)
         nbancr = n1 + n2
         if (abs(nbancr) .ne. 2) then
             write(k3b,'(I3)') icabl
@@ -195,8 +187,8 @@ subroutine op0180()
             endif
         else
             if (n1 .ne. 0) then
-                call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', icabl, iarg, 2,&
-                            noancr(1), ibid)
+                call getvtx('DEFI_CABLE', 'NOEUD_ANCRAGE', iocc=icabl, nbval=2, vect=noancr(1),&
+                            nbret=ibid)
                 if (noancr(1) .eq. noancr(2)) then
                     write(k3b,'(I3)') icabl
                     call u2mesk('F', 'MODELISA5_85', 1, k3b)
@@ -206,8 +198,8 @@ subroutine op0180()
                 valk(3) = noancr(1)
                 valk(6) = noancr(2)
             else
-                call getvtx('DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl, iarg, 2,&
-                            noancr(1), ibid)
+                call getvtx('DEFI_CABLE', 'GROUP_NO_ANCRAGE', iocc=icabl, nbval=2,&
+                            vect=noancr(1), nbret=ibid)
                 if (noancr(1) .eq. noancr(2)) then
                     write(k3b,'(I3)') icabl
                     call u2mesk('F', 'MODELISA5_86', 1, k3b)
@@ -221,8 +213,7 @@ subroutine op0180()
 !
 ! TEST DU TYPE D'ANCRAGE
 !    LE CATALOGUE ASSURE QU'IL Y A DEUX OCCURENCES DE CE MOT-CLE
-        call getvtx(' ', 'TYPE_ANCRAGE', icabl, iarg, 2,&
-                    typanc(1), ibid)
+        call getvtx(' ', 'TYPE_ANCRAGE', nbval=2, vect=typanc(1), nbret=ibid)
         if (typanc(1)(1:5) .eq. 'ACTIF') then
             valk(1) = 'ACTIF'
         else
@@ -258,12 +249,9 @@ subroutine op0180()
 ! 3   SAISIE DES ARGUMENTS A L'EXECUTION
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                modele, ibid)
-    call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                chmat, ibid)
-    call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                caelem, ibid)
+    call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
+    call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=ibid)
+    call getvid(' ', 'CARA_ELEM', scal=caelem, nbret=ibid)
     call titre()
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -418,8 +406,8 @@ subroutine op0180()
 ! 4.8.2  RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES DU CABLE
 ! .....
         call caelca(modele, chmat, caelem, irana1, icabl,&
-                    zi(jnbno), numaca, quad, regl, relax, &
-                    ea,rh1000, mu0, fprg, frco, &
+                    zi(jnbno), numaca, quad, regl, relax,&
+                    ea, rh1000, mu0, fprg, frco,&
                     frli, sa)
 !
 ! 4.8.3  INTERPOLATION DE LA TRAJECTOIRE DU CABLE

@@ -20,16 +20,16 @@ subroutine op0118()
 !    GENERATION D'UN VECTEUR DE FONCTIONS ALEATOIRES
 !
 !     ------------------------------------------------------------------
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/iniran.h"
 #include "asterfort/fft.h"
 #include "asterfort/gefact.h"
 #include "asterfort/genale.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -54,7 +54,7 @@ subroutine op0118()
     real(kind=8) :: pui2, pui2d, pui3d, freini, frefin, dfreq, tt, dt, r8b, tini
     real(kind=8) :: tfin, duree
     complex(kind=8) :: c16b
-    character(len=8) ::  typar(2), nomvec
+    character(len=8) :: typar(2), nomvec
     character(len=16) :: typvec, nomcmd, nopar(2)
     character(len=19) :: nominf, nomfon
     integer :: iarg
@@ -76,16 +76,13 @@ subroutine op0118()
 ! 2. LECTURE DES DONNEES LIEES A LA GENERATION
 !===============
 !
-    call getvis(' ', 'NB_TIRAGE', 0, iarg, 1,&
-                nbtir, l)
+    call getvis(' ', 'NB_TIRAGE', scal=nbtir, nbret=l)
     if (l .eq. 0) nbtir = 0
 !
-    call getvr8(' ', 'DUREE_TIRAGE', 0, iarg, 1,&
-                duree, l)
+    call getvr8(' ', 'DUREE_TIRAGE', scal=duree, nbret=l)
     if (l .eq. 0) duree = -1.d0
 !
-    call getvis(' ', 'INIT_ALEA', 0, iarg, 1,&
-                jump, l)
+    call getvis(' ', 'INIT_ALEA', scal=jump, nbret=l)
     if (l .ne. 0) call iniran(jump)
 !
 !===============

@@ -1,13 +1,13 @@
 subroutine cachei(char, ligrmo, noma, fonree, param,&
                   motcl)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -134,36 +134,21 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     do 20 iocc = 1, nchei
 !
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'EPXX', iocc, iarg, 1,&
-                        epxx, nxx)
-            call getvr8(motclf, 'EPYY', iocc, iarg, 1,&
-                        epyy, nyy)
-            call getvr8(motclf, 'EPZZ', iocc, iarg, 1,&
-                        epzz, nzz)
-            call getvr8(motclf, 'EPXY', iocc, iarg, 1,&
-                        epxy, nxy)
-            call getvr8(motclf, 'EPXZ', iocc, iarg, 1,&
-                        epxz, nxz)
-            call getvr8(motclf, 'EPYZ', iocc, iarg, 1,&
-                        epyz, nyz)
-            call getvr8(motclf, 'EPX', iocc, iarg, 1,&
-                        epx, nex)
-            call getvr8(motclf, 'KY', iocc, iarg, 1,&
-                        xky, nky)
-            call getvr8(motclf, 'KZ', iocc, iarg, 1,&
-                        xkz, nkz)
-            call getvr8(motclf, 'EXX', iocc, iarg, 1,&
-                        xexx, nexx)
-            call getvr8(motclf, 'EYY', iocc, iarg, 1,&
-                        xeyy, neyy)
-            call getvr8(motclf, 'EXY', iocc, iarg, 1,&
-                        xexy, nexy)
-            call getvr8(motclf, 'KXX', iocc, iarg, 1,&
-                        xkxx, nkxx)
-            call getvr8(motclf, 'KYY', iocc, iarg, 1,&
-                        xkyy, nkyy)
-            call getvr8(motclf, 'KXY', iocc, iarg, 1,&
-                        xkxy, nkxy)
+            call getvr8(motclf, 'EPXX', iocc=iocc, scal=epxx, nbret=nxx)
+            call getvr8(motclf, 'EPYY', iocc=iocc, scal=epyy, nbret=nyy)
+            call getvr8(motclf, 'EPZZ', iocc=iocc, scal=epzz, nbret=nzz)
+            call getvr8(motclf, 'EPXY', iocc=iocc, scal=epxy, nbret=nxy)
+            call getvr8(motclf, 'EPXZ', iocc=iocc, scal=epxz, nbret=nxz)
+            call getvr8(motclf, 'EPYZ', iocc=iocc, scal=epyz, nbret=nyz)
+            call getvr8(motclf, 'EPX', iocc=iocc, scal=epx, nbret=nex)
+            call getvr8(motclf, 'KY', iocc=iocc, scal=xky, nbret=nky)
+            call getvr8(motclf, 'KZ', iocc=iocc, scal=xkz, nbret=nkz)
+            call getvr8(motclf, 'EXX', iocc=iocc, scal=xexx, nbret=nexx)
+            call getvr8(motclf, 'EYY', iocc=iocc, scal=xeyy, nbret=neyy)
+            call getvr8(motclf, 'EXY', iocc=iocc, scal=xexy, nbret=nexy)
+            call getvr8(motclf, 'KXX', iocc=iocc, scal=xkxx, nbret=nkxx)
+            call getvr8(motclf, 'KYY', iocc=iocc, scal=xkyy, nbret=nkyy)
+            call getvr8(motclf, 'KXY', iocc=iocc, scal=xkxy, nbret=nkxy)
 !
             do 22 i = 1, ncmp
                 zr(jvalv-1+i) = 0.d0
@@ -189,18 +174,12 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
                 call u2mess('F', 'MODELISA2_38')
             endif
         else
-            call getvid(motclf, 'EPXX', iocc, iarg, 1,&
-                        kepxx, nxx)
-            call getvid(motclf, 'EPYY', iocc, iarg, 1,&
-                        kepyy, nyy)
-            call getvid(motclf, 'EPZZ', iocc, iarg, 1,&
-                        kepzz, nzz)
-            call getvid(motclf, 'EPXY', iocc, iarg, 1,&
-                        kepxy, nxy)
-            call getvid(motclf, 'EPXZ', iocc, iarg, 1,&
-                        kepxz, nxz)
-            call getvid(motclf, 'EPYZ', iocc, iarg, 1,&
-                        kepyz, nyz)
+            call getvid(motclf, 'EPXX', iocc=iocc, scal=kepxx, nbret=nxx)
+            call getvid(motclf, 'EPYY', iocc=iocc, scal=kepyy, nbret=nyy)
+            call getvid(motclf, 'EPZZ', iocc=iocc, scal=kepzz, nbret=nzz)
+            call getvid(motclf, 'EPXY', iocc=iocc, scal=kepxy, nbret=nxy)
+            call getvid(motclf, 'EPXZ', iocc=iocc, scal=kepxz, nbret=nxz)
+            call getvid(motclf, 'EPYZ', iocc=iocc, scal=kepyz, nbret=nyz)
             do 111 i = 1, ncmp
                 zk8(jvalv-1+i) = '&FOZERO'
 111          continue
@@ -212,8 +191,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             if (nyz .ne. 0) zk8(jvalv-1+6) = kepyz
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !
         if (nbtou .ne. 0) then
 !

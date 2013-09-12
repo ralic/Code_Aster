@@ -27,12 +27,12 @@ subroutine op0033()
 !
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dierre.h"
 #include "asterfort/diinst.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -128,8 +128,7 @@ subroutine op0033()
 !
 !     RECUPERATION DES OPTIONS DEMANDEES
 !     ----------------------------------
-    call getvid(' ', 'MATER', 0, iarg, 6,&
-                mater, n1)
+    call getvid(' ', 'MATER', nbval=6, vect=mater, nbret=n1)
 !
 !     RECUPERATION DU COMPORTEMENT
 !     ----------------------------

@@ -27,16 +27,16 @@ subroutine op0014()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -76,8 +76,7 @@ subroutine op0014()
 !
     call getres(matfac, concep, nomcmd)
     mfac = matfac
-    call getvid('  ', 'MATR_ASSE', 0, iarg, 1,&
-                matass, ibid)
+    call getvid('  ', 'MATR_ASSE', scal=matass, nbret=ibid)
     mass = matass
     call dismoi('F', 'METH_RESO', mass, 'MATR_ASSE', ibid,&
                 metres, ibid)
@@ -101,8 +100,7 @@ subroutine op0014()
             call u2mess('F', 'ALGELINE5_57')
         endif
 !
-        call getvtx(' ', 'PRE_COND', 0, iarg, 1,&
-                    precon, ibid)
+        call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
 !
         if (precon .eq. 'LDLT_INC') then
 !          ON ECRIT DANS LA SD SOLVEUR LE TYPE DE PRECONDITIONNEU
@@ -111,8 +109,7 @@ subroutine op0014()
             call jeveuo(solveu//'.SLVK', 'E', jslvk)
             zk24(jslvk-1+2) = precon
 !
-            call getvis(' ', 'NIVE_REMPLISSAGE', 0, iarg, 1,&
-                        niremp, iret)
+            call getvis(' ', 'NIVE_REMPLISSAGE', scal=niremp, nbret=iret)
             call pcldlt(mfac, mass, niremp, 'G')
         else if (precon.eq.'LDLT_SP') then
 !          OBLIGATOIRE POUR AVOIR UN CONCEPT DE SORTIE SD_VERI OK
@@ -123,10 +120,8 @@ subroutine op0014()
 !          SIMPLE PRECISION
             call gcncon('.', solvbd)
 !          LECTURE PARAMETRE
-            call getvis(' ', 'REAC_PRECOND', 0, iarg, 1,&
-                        reacpr, ibid)
-            call getvis(' ', 'PCENT_PIVOT', 0, iarg, 1,&
-                        pcpiv, ibid)
+            call getvis(' ', 'REAC_PRECOND', scal=reacpr, nbret=ibid)
+            call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
 !
 !      --- ON REMPLIT LA SD_SOLVEUR GCPC
             call dismoi('F', 'SOLVEUR', mass, 'MATR_ASSE', ibid,&
@@ -152,10 +147,8 @@ subroutine op0014()
     endif
 !
 !
-    call getvis('  ', 'NPREC', 0, iarg, 1,&
-                nprec, ibid)
-    call getvtx('  ', 'STOP_SINGULIER', 0, iarg, 1,&
-                kstop, ibid)
+    call getvis('  ', 'NPREC', scal=nprec, nbret=ibid)
+    call getvtx('  ', 'STOP_SINGULIER', scal=kstop, nbret=ibid)
     if (kstop .eq. 'OUI') then
         istop = 0
     else if (kstop.eq.'NON') then
@@ -174,16 +167,11 @@ subroutine op0014()
         if (mass .ne. mfac) call copisd('MATR_ASSE', 'G', mass, mfac)
         call dismoi('F', 'SOLVEUR', mass, 'MATR_ASSE', ibid,&
                     solveu, ier1)
-        call getvis(' ', 'PCENT_PIVOT', 1, iarg, 1,&
-                    pcpiv, ibid)
-        call getvtx(' ', 'TYPE_RESOL', 1, iarg, 1,&
-                    ktypr, ibid)
-        call getvtx(' ', 'PRETRAITEMENTS', 1, iarg, 1,&
-                    ktyps, ibid)
-        call getvtx(' ', 'ELIM_LAGR2', 1, iarg, 1,&
-                    klag2, ibid)
-        call getvtx(' ', 'GESTION_MEMOIRE', 1, iarg, 1,&
-                    kooc, ibid)
+        call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
+        call getvtx(' ', 'TYPE_RESOL', scal=ktypr, nbret=ibid)
+        call getvtx(' ', 'PRETRAITEMENTS', scal=ktyps, nbret=ibid)
+        call getvtx(' ', 'ELIM_LAGR2', scal=klag2, nbret=ibid)
+        call getvtx(' ', 'GESTION_MEMOIRE', scal=kooc, nbret=ibid)
         call jeveuo(solveu//'.SLVI', 'E', jslvi)
         call jeveuo(solveu//'.SLVK', 'E', jslvk)
         call jeveuo(solveu//'.SLVR', 'E', jslvr)
@@ -215,18 +203,15 @@ subroutine op0014()
         mfac=mass
         call dismoi('F', 'SOLVEUR', mass, 'MATR_ASSE', ibid,&
                     solveu, ier1)
-        call getvtx(' ', 'PRE_COND', 0, iarg, 1,&
-                    precon, ibid)
+        call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
         call jeveuo(solveu//'.SLVK', 'E', jslvk)
         call jeveuo(solveu//'.SLVR', 'E', jslvr)
         call jeveuo(solveu//'.SLVI', 'E', jslvi)
         zk24(jslvk-1+2) = precon
 !
         if (precon .eq. 'LDLT_INC') then
-            call getvis(' ', 'NIVE_REMPLISSAGE', 0, iarg, 1,&
-                        niremp, ibid)
-            call getvr8(' ', 'REMPLISSAGE', 0, iarg, 1,&
-                        fillin, ibid)
+            call getvis(' ', 'NIVE_REMPLISSAGE', scal=niremp, nbret=ibid)
+            call getvr8(' ', 'REMPLISSAGE', scal=fillin, nbret=ibid)
             zr(jslvr-1+3) = fillin
             zi(jslvi-1+4) = niremp
         else if (precon.eq.'LDLT_SP') then
@@ -234,10 +219,8 @@ subroutine op0014()
 !          SIMPLE PRECISION
             call gcncon('.', solvbd)
 !          LECTURE PARAMETRE
-            call getvis(' ', 'REAC_PRECOND', 0, iarg, 1,&
-                        reacpr, ibid)
-            call getvis(' ', 'PCENT_PIVOT', 0, iarg, 1,&
-                        pcpiv, ibid)
+            call getvis(' ', 'REAC_PRECOND', scal=reacpr, nbret=ibid)
+            call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
             zk24(jslvk-1+3) = solvbd
             zi(jslvi-1+5) = 0
             zi(jslvi-1+6) = reacpr
@@ -262,17 +245,13 @@ subroutine op0014()
     if (metres .ne. 'MUMPS') then
         ildeb = 1
         ilfin = 0
-        call getvis('  ', 'DDL_DEBUT', 0, iarg, 1,&
-                    ildeb, ibid)
-        call getvis('  ', 'DDL_FIN', 0, iarg, 1,&
-                    ilfin, ibid)
+        call getvis('  ', 'DDL_DEBUT', scal=ildeb, nbret=ibid)
+        call getvis('  ', 'DDL_FIN', scal=ilfin, nbret=ibid)
 !     - 2) AVEC BLOC_XXX
         ibdeb = 1
         ibfin = 0
-        call getvis('  ', 'BLOC_DEBUT', 0, iarg, 1,&
-                    ibdeb, ldtblo)
-        call getvis('  ', 'BLOC_FIN', 0, iarg, 1,&
-                    ibfin, lfnblo)
+        call getvis('  ', 'BLOC_DEBUT', scal=ibdeb, nbret=ldtblo)
+        call getvis('  ', 'BLOC_FIN', scal=ibfin, nbret=lfnblo)
 !
 !
 !     --- EXISTENCE / COMPATIBILITE DES MATRICES ---

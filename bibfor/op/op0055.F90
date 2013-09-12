@@ -1,5 +1,5 @@
 subroutine op0055()
-    implicit   none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,11 +24,8 @@ subroutine op0055()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/fonbas.h"
@@ -40,6 +37,8 @@ subroutine op0055()
 #include "asterfort/fonnoe.h"
 #include "asterfort/fonnof.h"
 #include "asterfort/fonvec.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -50,6 +49,7 @@ subroutine op0055()
 #include "asterfort/jexnom.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iadr1, ifm, niv
     integer :: nbocc, nbnoff
     integer :: ibas, ibid, iocc, idon, idonn, ifonoe, ndonn
@@ -77,8 +77,7 @@ subroutine op0055()
 ! ---  RECUPERATIONS RELATIVES AU MAILLAGE
 !      -----------------------------------
 !
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                noma, nbocc)
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=nbocc)
 !
 ! ---  RECUPERATION DE LA CONNECTIVITE INVERSE
 !
@@ -94,11 +93,9 @@ subroutine op0055()
     call getfac('FOND_FISS', nbocc)
     do 1 iocc = 1, nbocc
 !
-        call getvtx('FOND_FISS', 'TYPE_FOND', iocc, iarg, 0,&
-                    k6b, n1)
+        call getvtx('FOND_FISS', 'TYPE_FOND', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvtx('FOND_FISS', 'TYPE_FOND', iocc, iarg, 1,&
-                        typfon, n1)
+            call getvtx('FOND_FISS', 'TYPE_FOND', iocc=iocc, scal=typfon, nbret=n1)
         else
             typfon = 'OUVERT'
         endif
@@ -137,13 +134,12 @@ subroutine op0055()
             ndonn = 6
         endif
         do 11 idonn = 1, ndonn
-            call getvtx('FOND_FISS', motcl(idonn), iocc, iarg, 0,&
-                        k8b, n1)
+            call getvtx('FOND_FISS', motcl(idonn), iocc=iocc, nbval=0, nbret=n1)
             n1 = -n1
             if (n1 .gt. 0) then
                 call wkvect('&&'//nompro//'.'//motcl(idonn), 'V V K24', n1, iadr1)
-                call getvtx('FOND_FISS', motcl(idonn), iocc, iarg, n1,&
-                            zk24(iadr1), n2)
+                call getvtx('FOND_FISS', motcl(idonn), iocc=iocc, nbval=n1, vect=zk24(iadr1),&
+                            nbret=n2)
                 do 111 idon = 1, n1
                     entnom = zk24(iadr1-1 + idon)
                     call jenonu(jexnom(noma//entit(idonn), entnom), ibid)
@@ -257,8 +253,7 @@ subroutine op0055()
 !     EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
 !     ---------------------------------------------------------------
 !
-    call getvtx(' ', 'CONFIG_INIT', 0, iarg, 1,&
-                confin, ibid)
+    call getvtx(' ', 'CONFIG_INIT', scal=confin, nbret=ibid)
     if (confin .eq. 'COLLEE') then
         call jeexin(resu//'.LEVRESUP.MAIL', irets)
         if (irets .ne. 0) then

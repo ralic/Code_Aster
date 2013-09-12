@@ -2,8 +2,8 @@ subroutine crsdfi(linoch, nbnoch, noidez)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -87,45 +87,40 @@ subroutine crsdfi(linoch, nbnoch, noidez)
         do 90 ich = 1, nbnoch
 !
             do 80 iocc = 1, nbocc
-                call getvtx('FORMAT_IDEAS', 'NOM_CHAM', iocc, iarg, 1,&
-                            nocham, nch)
+                call getvtx('FORMAT_IDEAS', 'NOM_CHAM', iocc=iocc, scal=nocham, nbret=nch)
                 if (nocham .eq. linoch(ich)) then
 !- NOM_CHAM
                     zk16(lfinom-1+ich) = linoch(ich)
 !- NUME_DATASET
-                    call getvis('FORMAT_IDEAS', 'NUME_DATASET', iocc, iarg, 1,&
-                                ival, nval)
+                    call getvis('FORMAT_IDEAS', 'NUME_DATASET', iocc=iocc, scal=ival, nbret=nval)
                     if (nval .ne. 0) then
                         zi(lfinum-1+ich) = ival
                     endif
 !- RECORD 3
-                    call getvis('FORMAT_IDEAS', 'RECORD_3', iocc, iarg, 0,&
-                                rec, nb)
+                    call getvis('FORMAT_IDEAS', 'RECORD_3', iocc=iocc, nbval=0, nbret=nb)
                     nval = -nb
-                    call getvis('FORMAT_IDEAS', 'RECORD_3', iocc, iarg, nval,&
-                                rec, nb)
+                    call getvis('FORMAT_IDEAS', 'RECORD_3', iocc=iocc, nbval=nval, vect=rec,&
+                                nbret=nb)
                     if (nval .ne. 0) then
                         do 40 i = 1, nval
                             zi(lfipar-1+ (ich-1)*800+80+i) = rec(i)
 40                      continue
                     endif
 !- RECORD 6
-                    call getvis('FORMAT_IDEAS', 'RECORD_6', iocc, iarg, 0,&
-                                rec, nb)
+                    call getvis('FORMAT_IDEAS', 'RECORD_6', iocc=iocc, nbval=0, nbret=nb)
                     nval = -nb
-                    call getvis('FORMAT_IDEAS', 'RECORD_6', iocc, iarg, nval,&
-                                rec, nb)
+                    call getvis('FORMAT_IDEAS', 'RECORD_6', iocc=iocc, nbval=nval, vect=rec,&
+                                nbret=nb)
                     if (nval .ne. 0) then
                         do 50 i = 1, nval
                             zi(lfipar-1+ (ich-1)*800+200+i) = rec(i)
 50                      continue
                     endif
 !- RECORD 9
-                    call getvis('FORMAT_IDEAS', 'RECORD_9', iocc, iarg, 0,&
-                                rec, nb)
+                    call getvis('FORMAT_IDEAS', 'RECORD_9', iocc=iocc, nbval=0, nbret=nb)
                     nval = -nb
-                    call getvis('FORMAT_IDEAS', 'RECORD_9', iocc, iarg, nval,&
-                                rec, nb)
+                    call getvis('FORMAT_IDEAS', 'RECORD_9', iocc=iocc, nbval=nval, vect=rec,&
+                                nbret=nb)
                     if (nval .ne. 0) then
                         do 60 i = 1, nval
                             zi(lfipar-1+ (ich-1)*800+320+i) = rec(i)
@@ -133,46 +128,46 @@ subroutine crsdfi(linoch, nbnoch, noidez)
                     endif
 !- POSI_ORDRE
                     param='POSI_ORDRE'
-                    call getvis('FORMAT_IDEAS', param, iocc, iarg, 2,&
-                                posi, nposi)
+                    call getvis('FORMAT_IDEAS', param, iocc=iocc, nbval=2, vect=posi,&
+                                nbret=nposi)
                     zi(lfiloc-1+ (ich-1)*12+1) = posi(1)
                     zi(lfiloc-1+ (ich-1)*12+2) = posi(2)
 !- POSI_INST
                     param='POSI_INST'
-                    call getvis('FORMAT_IDEAS', param, iocc, iarg, 2,&
-                                posi, nposi)
+                    call getvis('FORMAT_IDEAS', param, iocc=iocc, nbval=2, vect=posi,&
+                                nbret=nposi)
                     if (nposi .eq. 2) then
                         zi(lfiloc-1+ (ich-1)*12+3) = posi(1)
                         zi(lfiloc-1+ (ich-1)*12+4) = posi(2)
                     endif
 !- POSI_FREQ
                     param='POSI_FREQ'
-                    call getvis('FORMAT_IDEAS', param, iocc, iarg, 2,&
-                                posi, nposi)
+                    call getvis('FORMAT_IDEAS', param, iocc=iocc, nbval=2, vect=posi,&
+                                nbret=nposi)
                     if (nposi .eq. 2) then
                         zi(lfiloc-1+ (ich-1)*12+5) = posi(1)
                         zi(lfiloc-1+ (ich-1)*12+6) = posi(2)
                     endif
 !- POSI_NUME_MODE
                     param='POSI_NUME_MODE'
-                    call getvis('FORMAT_IDEAS', param, iocc, iarg, 2,&
-                                posi, nposi)
+                    call getvis('FORMAT_IDEAS', param, iocc=iocc, nbval=2, vect=posi,&
+                                nbret=nposi)
                     if (nposi .eq. 2) then
                         zi(lfiloc-1+ (ich-1)*12+7) = posi(1)
                         zi(lfiloc-1+ (ich-1)*12+8) = posi(2)
                     endif
 !- POSI_MASS_GENE
                     param='POSI_MASS_GENE'
-                    call getvis('FORMAT_IDEAS', param, iocc, iarg, 2,&
-                                posi, nposi)
+                    call getvis('FORMAT_IDEAS', param, iocc=iocc, nbval=2, vect=posi,&
+                                nbret=nposi)
                     if (nposi .eq. 2) then
                         zi(lfiloc-1+ (ich-1)*12+9) = posi(1)
                         zi(lfiloc-1+ (ich-1)*12+10) = posi(2)
                     endif
 !- POSI_AMOR_GENE
                     param='POSI_AMOR_GENE'
-                    call getvis('FORMAT_IDEAS', param, iocc, iarg, 2,&
-                                posi, nposi)
+                    call getvis('FORMAT_IDEAS', param, iocc=iocc, nbval=2, vect=posi,&
+                                nbret=nposi)
                     if (nposi .eq. 2) then
                         zi(lfiloc-1+ (ich-1)*12+11) = posi(1)
                         zi(lfiloc-1+ (ich-1)*12+12) = posi(2)
@@ -180,11 +175,10 @@ subroutine crsdfi(linoch, nbnoch, noidez)
 !
 !
 !- CMP ET NOMBRE DE COMPOSANTES
-                    call getvtx('FORMAT_IDEAS', 'NOM_CMP', iocc, iarg, 0,&
-                                cmp, nb)
+                    call getvtx('FORMAT_IDEAS', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nb)
                     nbcmp = -nb
-                    call getvtx('FORMAT_IDEAS', 'NOM_CMP', iocc, iarg, nbcmp,&
-                                cmp, nb)
+                    call getvtx('FORMAT_IDEAS', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=cmp,&
+                                nbret=nb)
                     if (nb .ne. 0) then
                         do 70 i = 1, nbcmp
                             zk8(lficmp-1+ (ich-1)*1000+i) = cmp(i)

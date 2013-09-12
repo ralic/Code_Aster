@@ -1,6 +1,6 @@
 subroutine op0056()
 ! aslint: disable=W1501
-    implicit   none
+    implicit none
 !.......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,14 +49,14 @@ subroutine op0056()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -119,8 +119,7 @@ subroutine op0056()
     elas = .false.
     ther = .false.
     do 20 icou = 1, nbcou
-        call getvid('COUCHE', 'MATER', icou, iarg, 1,&
-                    mater, n)
+        call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
         call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', iadr)
         call jelira(mater//'.MATERIAU.NOMRC ', 'LONMAX', nbad)
         do 10 i = 1, nbad
@@ -148,8 +147,7 @@ subroutine op0056()
         nimpr = 1
         ifr = 0
         fichie = ' '
-        call getvis('IMPRESSION', 'UNITE', 1, iarg, 1,&
-                    ifr, n1)
+        call getvis('IMPRESSION', 'UNITE', iocc=1, scal=ifr, nbret=n1)
         if (.not. ulexis( ifr )) then
             call ulopen(ifr, ' ', fichie, 'NEW', 'O')
         endif
@@ -177,12 +175,9 @@ subroutine op0056()
             zk8(jmate+i-1) = 'HOM_'//num
 30      continue
         do 50 icou = 1, nbcou
-            call getvr8('COUCHE', 'EPAIS', icou, iarg, 1,&
-                        epais, n)
-            call getvid('COUCHE', 'MATER', icou, iarg, 1,&
-                        mater, n)
-            call getvr8('COUCHE', 'ORIENTATION', icou, iarg, 1,&
-                        orien, n)
+            call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
+            call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
+            call getvr8('COUCHE', 'ORIENTATION', iocc=icou, scal=orien, nbret=n)
             zk16(jrela+1+icou) = mater
             call codent(icou, 'G', num)
             do 40 i = 1, nv
@@ -707,12 +702,9 @@ subroutine op0056()
             zk8(jmate+i-1) = 'HOM_'//num
 250      continue
         do 270 icou = 1, nbcou
-            call getvr8('COUCHE', 'EPAIS', icou, iarg, 1,&
-                        epais, n)
-            call getvid('COUCHE', 'MATER', icou, iarg, 1,&
-                        mater, n)
-            call getvr8('COUCHE', 'ORIENTATION', icou, iarg, 1,&
-                        orien, n)
+            call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
+            call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
+            call getvr8('COUCHE', 'ORIENTATION', iocc=icou, scal=orien, nbret=n)
             zk16(jrela+1+icou) = mater
             call codent(icou, 'G', num)
             do 260 i = 1, 3

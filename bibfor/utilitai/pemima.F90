@@ -1,12 +1,11 @@
 subroutine pemima(indch, chamgd, resu, modele, nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -22,6 +21,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc, indch
     character(len=8) :: modele
     character(len=19) :: resu
@@ -79,20 +79,13 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     if (indch .eq. 0) then
 !
 !        --- RECUPERATION DU RESULTAT ET DU NUMERO D'ORDRE
-        call getvid('MINMAX', 'RESULTAT', 1, iarg, 1,&
-                    resuco, nr)
-        call getvr8('MINMAX', 'PRECISION', 1, iarg, 1,&
-                    prec, np)
-        call getvtx('MINMAX', 'CRITERE', 1, iarg, 1,&
-                    crit, nc)
-        call getvr8('MINMAX', 'INST', 1, iarg, 0,&
-                    rbid, ni)
-        call getvis('MINMAX', 'NUME_ORDRE', 1, iarg, 0,&
-                    ibid, no)
-        call getvid('MINMAX', 'LIST_INST', 1, iarg, 0,&
-                    kbid, nli)
-        call getvid('MINMAX', 'LIST_ORDRE', 1, iarg, 0,&
-                    kbid, nlo)
+        call getvid('MINMAX', 'RESULTAT', iocc=1, scal=resuco, nbret=nr)
+        call getvr8('MINMAX', 'PRECISION', iocc=1, scal=prec, nbret=np)
+        call getvtx('MINMAX', 'CRITERE', iocc=1, scal=crit, nbret=nc)
+        call getvr8('MINMAX', 'INST', iocc=1, nbval=0, nbret=ni)
+        call getvis('MINMAX', 'NUME_ORDRE', iocc=1, nbval=0, nbret=no)
+        call getvid('MINMAX', 'LIST_INST', iocc=1, nbval=0, nbret=nli)
+        call getvid('MINMAX', 'LIST_ORDRE', iocc=1, nbval=0, nbret=nlo)
 !
         knum = '&&PEMIMA.NUME_ORDRE'
         kins = '&&PEMIMA.INST'
@@ -101,28 +94,26 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             exiord=.true.
             nbordr=-no
             call wkvect(knum, 'V V I', nbordr, jno)
-            call getvis('MINMAX', 'NUME_ORDRE', 1, iarg, nbordr,&
-                        zi(jno), iret)
+            call getvis('MINMAX', 'NUME_ORDRE', iocc=1, nbval=nbordr, vect=zi(jno),&
+                        nbret=iret)
         endif
 !
         if (ni .ne. 0) then
             nbordr=-ni
             call wkvect(kins, 'V V R', nbordr, jin)
-            call getvr8('MINMAX', 'INST', 1, iarg, nbordr,&
-                        zr(jin), iret)
+            call getvr8('MINMAX', 'INST', iocc=1, nbval=nbordr, vect=zr(jin),&
+                        nbret=iret)
         endif
 !
         if (nli .ne. 0) then
-            call getvid('MINMAX', 'LIST_INST', 1, iarg, 1,&
-                        lisins, iret)
+            call getvid('MINMAX', 'LIST_INST', iocc=1, scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
         if (nlo .ne. 0) then
             exiord=.true.
-            call getvid('MINMAX', 'LIST_ORDRE', 1, iarg, 1,&
-                        lisins, iret)
+            call getvid('MINMAX', 'LIST_ORDRE', iocc=1, scal=lisins, nbret=iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
             call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
@@ -169,8 +160,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                 endif
 !
 !             --- CHAMP DU POST-TRAITEMENT
-                call getvtx('MINMAX', 'NOM_CHAM', iocc, iarg, 1,&
-                            nomcha, iret)
+                call getvtx('MINMAX', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
                 call rsexch(' ', resuco, nomcha, numo, cham,&
                             iret)
             else
@@ -188,17 +178,17 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             if (nomgd(6:6) .eq. 'C') goto 10
 !
 !         --- COMPOSANTES DU POST-TRAITEMENT
-            call getvtx('MINMAX', 'NOM_CMP', iocc, iarg, nzero,&
-                        k8b, nbcmp)
+            call getvtx('MINMAX', 'NOM_CMP', iocc=iocc, nbval=nzero, vect=k8b,&
+                        nbret=nbcmp)
             nbcmp=-nbcmp
             call wkvect('&&PEMIMA.CMP', 'V V K8', nbcmp, jcmp)
-            call getvtx('MINMAX', 'NOM_CMP', iocc, iarg, nbcmp,&
-                        zk8(jcmp), iret)
+            call getvtx('MINMAX', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                        nbret=iret)
 !
 !         --- CALCUL ET STOCKAGE DES MINMAX : MOT-CLE 'TOUT'
 !
-            call getvtx('MINMAX', 'TOUT', iocc, iarg, nzero,&
-                        k8b, iret)
+            call getvtx('MINMAX', 'TOUT', iocc=iocc, nbval=nzero, vect=k8b,&
+                        nbret=iret)
             if (iret .ne. 0) then
                 if (tych(1:2) .eq. 'EL') then
                     call pemaxe(resu, nomcha, tout, tout, modele,&
@@ -211,13 +201,13 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
-            call getvtx('MINMAX', 'GROUP_MA', iocc, iarg, nzero,&
-                        k8b, n1)
+            call getvtx('MINMAX', 'GROUP_MA', iocc=iocc, nbval=nzero, vect=k8b,&
+                        nbret=n1)
             if (n1 .ne. 0) then
                 nbgma=-n1
                 call wkvect('&&PEMIMA_GMA', 'V V K8', nbgma, jgma)
-                call getvtx('MINMAX', 'GROUP_MA', iocc, iarg, nbgma,&
-                            zk8(jgma), n1)
+                call getvtx('MINMAX', 'GROUP_MA', iocc=iocc, nbval=nbgma, vect=zk8(jgma),&
+                            nbret=n1)
                 do 20 igm = 1, nbgma
                     call jelira(jexnom(mailla//'.GROUPEMA', zk8(jgma+ igm-1)), 'LONMAX', nma,&
                                 k8b)

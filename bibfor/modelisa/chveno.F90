@@ -1,15 +1,14 @@
 subroutine chveno(fonree, noma, nomo)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/chbord.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -25,6 +24,7 @@ subroutine chveno(fonree, noma, nomo)
 #include "asterfort/utmamo.h"
 #include "asterfort/utmotp.h"
 #include "asterfort/wkvect.h"
+!
     character(len=4) :: fonree
     character(len=*) :: noma, nomo
 ! ======================================================================
@@ -64,11 +64,11 @@ subroutine chveno(fonree, noma, nomo)
     integer :: jcoor, jtyma, jgroup, jgro, jnma, jmab, jpri, jbor
     integer :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
     integer :: norien, norie1, norie2, jlima, nbmamo
-    real(kind=8) ::  dnor
+    real(kind=8) :: dnor
     logical :: reorie, mcfl(nbt)
     character(len=8) :: k8b, mot, nomma, nommo, typel
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
-    character(len=19) ::  limamo
+    character(len=19) :: limamo
     character(len=24) :: grmama, mailma, nogr, nomail
     character(len=24) :: valk(2)
     integer :: iarg
@@ -95,8 +95,7 @@ subroutine chveno(fonree, noma, nomo)
     mailma = nomma//'.NOMMAI'
     limamo = '&&CHVENO.MAIL_MODEL'
 !
-    call getvtx(' ', 'VERI_NORM', 0, iarg, 1,&
-                mot, n)
+    call getvtx(' ', 'VERI_NORM', scal=mot, nbret=n)
     if (mot .eq. 'NON') nbmfac = 0
 !
     ndim = 0
@@ -127,8 +126,7 @@ subroutine chveno(fonree, noma, nomo)
                 if (ipres .eq. 0 .and. idnor .eq. 0 .and. idtan .eq. 0) goto 200
                 if (idnor .ne. 0) then
                     if (fonree .eq. 'REEL') then
-                        call getvr8(motfac, 'DNOR', iocc, iarg, 1,&
-                                    dnor, n)
+                        call getvr8(motfac, 'DNOR', iocc=iocc, scal=dnor, nbret=n)
                         if (abs(dnor) .le. r8prem()) goto 200
                     endif
                 endif
@@ -164,8 +162,7 @@ subroutine chveno(fonree, noma, nomo)
 ! ---     RECUPERATION DE LA DIMENSION DU PROBLEME
 !
             do 210 ic = 1, nbmc
-                call getvtx(motfac, valmc(ic), iocc, iarg, 0,&
-                            k8b, nbobj)
+                call getvtx(motfac, valmc(ic), iocc=iocc, nbval=0, nbret=nbobj)
                 if (nbobj .eq. 0) goto 210
 !
                 nbobj = -nbobj

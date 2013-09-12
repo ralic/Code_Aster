@@ -19,8 +19,8 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -62,8 +62,7 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 !
 ! --- MODELE
 !
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                mod, ibid)
+    call getvid(' ', 'MODELE', scal=mod, nbret=ibid)
 !
 ! --- RECUPERATION DU LIGREL DE MODELE ET DU NOM DU MAILLAGE
 !
@@ -78,11 +77,11 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
     valk(1) = oper
     valk(2) = phen
     if (oper(11:14) .eq. 'THER' .and. phen .ne. 'THERMIQUE') then
-        call u2mesk('F', 'CHARGES2_64',2,valk)
-    elseif (oper(11:14) .eq. 'MECA' .and. phen .ne. 'MECANIQUE') then
-        call u2mesk('F', 'CHARGES2_64',2,valk)
-    elseif (oper(11:14) .eq. 'ACOU' .and. phen .ne. 'ACOUSTIQUE') then
-        call u2mesk('F', 'CHARGES2_64',2,valk)
+        call u2mesk('F', 'CHARGES2_64', 2, valk)
+    else if (oper(11:14) .eq. 'MECA' .and. phen .ne. 'MECANIQUE') then
+        call u2mesk('F', 'CHARGES2_64', 2, valk)
+    else if (oper(11:14) .eq. 'ACOU' .and. phen .ne. 'ACOUSTIQUE') then
+        call u2mesk('F', 'CHARGES2_64', 2, valk)
     endif
 !
 ! --- RECUPERATION DE LA DIMENSION REELLE DU PROBLEME

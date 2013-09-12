@@ -1,7 +1,6 @@
 subroutine peaire(resu, modele, nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/getvem.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -17,6 +16,7 @@ subroutine peaire(resu, modele, nbocc)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc
     character(len=*) :: resu, modele
 !     ------------------------------------------------------------------

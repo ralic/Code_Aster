@@ -23,11 +23,11 @@ subroutine op0199()
 !---------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cal152.h"
 #include "asterfort/calmdg.h"
 #include "asterfort/cresol.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -86,24 +86,15 @@ subroutine op0199()
 !
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 !
-    call getvid(' ', 'MODELE_FLUIDE', 0, iarg, 1,&
-                moflui, n1)
-    call getvid(' ', 'CHARGE', 0, iarg, 1,&
-                char, n2)
-    call getvid(' ', 'MODELE_INTERFACE', 0, iarg, 1,&
-                moint, n3)
-    call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                materi, n4)
-    call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                modmec, n5)
-    call getvid(' ', 'NUME_DDL_GENE', 0, iarg, 1,&
-                numgen, n6)
-    call getvid(' ', 'MODELE_GENE', 0, iarg, 1,&
-                modgen, n7)
-    call getvid(' ', 'POTENTIEL', 0, iarg, 1,&
-                phibar, n8)
-    call getvtx(' ', 'NOEUD_DOUBLE', 0, iarg, 1,&
-                nd, n9)
+    call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
+    call getvid(' ', 'CHARGE', scal=char, nbret=n2)
+    call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n3)
+    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n4)
+    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n6)
+    call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=n7)
+    call getvid(' ', 'POTENTIEL', scal=phibar, nbret=n8)
+    call getvtx(' ', 'NOEUD_DOUBLE', scal=nd, nbret=n9)
 !
 ! --- LECTURE DES PARAMETRES  SOLVEUR
 !

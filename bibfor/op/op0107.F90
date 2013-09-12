@@ -1,5 +1,5 @@
 subroutine op0107()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,13 +21,12 @@ subroutine op0107()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
-#include "asterfort/chpve2.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/chpve2.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -52,6 +51,7 @@ subroutine op0107()
 #include "asterfort/rsutnu.h"
 #include "asterfort/titre.h"
 #include "asterfort/u2mess.h"
+!
     integer :: nh, iret, jordr, n1, n2, nbocc, nbordr, nc, np, nr, ier
     real(kind=8) :: prec
     character(len=8) :: k8b, modele, carele, deform, resuco, crit
@@ -65,8 +65,7 @@ subroutine op0107()
     call jemarq()
 !
     call getres(resu, concep, nomcmd)
-    call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                resuco, nr)
+    call getvid(' ', 'RESULTAT', scal=resuco, nbret=nr)
 !
     if (nr .eq. 0) resuco = ' '
 !
@@ -93,22 +92,17 @@ subroutine op0107()
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, carele, nh)
         chdef = ' '
-        call getvtx(' ', 'GEOMETRIE', 1, iarg, 1,&
-                    deform, n1)
+        call getvtx(' ', 'GEOMETRIE', scal=deform, nbret=n1)
         if (deform .eq. 'DEFORMEE') then
-            call getvid(' ', 'CHAM_GD', 1, iarg, 1,&
-                        chdef, n2)
+            call getvid(' ', 'CHAM_GD', scal=chdef, nbret=n2)
             if (n2 .eq. 0) then
                 tabtyp(1)='NOEU#DEPL_R'
                 tabtyp(2)='NOEU#TEMP_R'
                 tabtyp(3)='ELEM#ENER_R'
                 knum = '&&OP0107.NUME_ORDRE'
-                call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                            resuco, nr)
-                call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                            prec, np)
-                call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                            crit, nc)
+                call getvid(' ', 'RESULTAT', scal=resuco, nbret=nr)
+                call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+                call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
                 call rsutnu(resuco, ' ', 0, knum, nbordr,&
                             prec, crit, iret)
                 if (nbordr .ne. 1) call u2mess('F', 'POSTELEM_10')
@@ -149,14 +143,11 @@ subroutine op0107()
     call getfac('NORME', nbocc)
     if (nbocc .ne. 0) then
 !         --- ON RECUPERE LE MODELE
-        call getvid('NORME', 'CHAM_GD', 1, iarg, 1,&
-                    chdef, n1)
+        call getvid('NORME', 'CHAM_GD', iocc=1, scal=chdef, nbret=n1)
         if (n1 .ne. 0) then
-            call getvid('NORME', 'MODELE', 1, iarg, 1,&
-                        modele, n2)
+            call getvid('NORME', 'MODELE', iocc=1, scal=modele, nbret=n2)
         else
-            call getvid('NORME', 'RESULTAT', 1, iarg, 1,&
-                        resuco, nr)
+            call getvid('NORME', 'RESULTAT', iocc=1, scal=resuco, nbret=nr)
             call medomp(resuco, modele, mate, carele, nh)
         endif
         call penorm(resu, modele)
@@ -170,14 +161,11 @@ subroutine op0107()
 !
     call getfac('MINMAX', nbocc)
     if (nbocc .ne. 0) then
-        call getvid('MINMAX', 'CHAM_GD', 1, iarg, 1,&
-                    chdef, n1)
+        call getvid('MINMAX', 'CHAM_GD', iocc=1, scal=chdef, nbret=n1)
         if (n1 .ne. 0) then
-            call getvid('MINMAX', 'MODELE', 1, iarg, 1,&
-                        modele, n2)
+            call getvid('MINMAX', 'MODELE', iocc=1, scal=modele, nbret=n2)
         else
-            call getvid('MINMAX', 'RESULTAT', 1, iarg, 1,&
-                        resuco, nr)
+            call getvid('MINMAX', 'RESULTAT', iocc=1, scal=resuco, nbret=nr)
             call medomp(resuco, modele, mate, carele, nh)
         endif
         call pemima(n1, chdef, resu, modele, nbocc)
@@ -243,7 +231,7 @@ subroutine op0107()
                     nbocc, 'ENER_DISS')
     endif
 !
-999   continue
+999  continue
     call titre()
 !
     call jedema()

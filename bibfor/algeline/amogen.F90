@@ -17,9 +17,8 @@ subroutine amogen(mat19)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -32,6 +31,7 @@ subroutine amogen(mat19)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: mat19
     character(len=8) :: masse, raid, k8bid, listam
     character(len=16) :: nomcmd
@@ -45,14 +45,10 @@ subroutine amogen(mat19)
     call jemarq()
 !
     nomcmd = 'CALC_AMOR_GENE'
-    call getvid(nomcmd, 'MASS_GENE', 1, iarg, 1,&
-                masse, nbid)
-    call getvid(nomcmd, 'RIGI_GENE', 1, iarg, 1,&
-                raid, nbid)
-    call getvr8(nomcmd, 'AMOR_REDUIT', 1, iarg, 0,&
-                r8bid, n1)
-    call getvid(nomcmd, 'LIST_AMOR', 1, iarg, 0,&
-                k8bid, n2)
+    call getvid(nomcmd, 'MASS_GENE', iocc=1, scal=masse, nbret=nbid)
+    call getvid(nomcmd, 'RIGI_GENE', iocc=1, scal=raid, nbret=nbid)
+    call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
+    call getvid(nomcmd, 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
     call jeveuo(masse//'           .DESC', 'E', idesc)
     n=zi(idesc+1)
     call jelira(masse//'           .VALM', 'LONMAX', m)
@@ -67,8 +63,7 @@ subroutine amogen(mat19)
     if (n1 .ne. 0) then
         nbamor = -n1
     else
-        call getvid(nomcmd, 'LIST_AMOR', 1, iarg, 1,&
-                    listam, nlist)
+        call getvid(nomcmd, 'LIST_AMOR', iocc=1, scal=listam, nbret=nlist)
         call jelira(listam//'           .VALE', 'LONMAX', nbamor)
     endif
 !
@@ -81,8 +76,8 @@ subroutine amogen(mat19)
                     vali, 0, 0.d0)
         call wkvect('&&AMORMA.AMORTI', 'V V R8', n, jamog)
         if (n1 .ne. 0) then
-            call getvr8(nomcmd, 'AMOR_REDUIT', 1, iarg, n,&
-                        zr(jamog), nbid)
+            call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=n, vect=zr(jamog),&
+                        nbret=nbid)
         else
             call jeveuo(listam//'           .VALE', 'L', iamog)
             do 30 i = 1, n
@@ -92,8 +87,8 @@ subroutine amogen(mat19)
     else
         call wkvect('&&AMORMA.AMORTI', 'V V R8', n, jamog)
         if (n1 .ne. 0) then
-            call getvr8(nomcmd, 'AMOR_REDUIT', 1, iarg, nbamor,&
-                        zr(jamog), nbid)
+            call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamog),&
+                        nbret=nbid)
         else
             call jeveuo(listam//'           .VALE', 'L', iamog)
             do 40 i = 1, nbamor

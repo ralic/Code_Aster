@@ -1,9 +1,9 @@
 subroutine trjeve(ific, nocc)
-    implicit   none
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+    implicit none
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/utest3.h"
 #include "asterfort/utesto.h"
     integer :: ific, nocc
@@ -39,19 +39,14 @@ subroutine trjeve(ific, nocc)
 !     ------------------------------------------------------------------
 !
     do 100 iocc = 1, nocc
-        call getvtx('OBJET', 'NOM', iocc, iarg, 1,&
-                    nomobj, n1)
-        call getvtx('OBJET', 'VALE_ABS', iocc, iarg, 1,&
-                    ssigne, n1)
-        call getvr8('OBJET', 'TOLE_MACHINE', iocc, iarg, 1,&
-                    epsi, n1)
-        call getvtx('OBJET', 'CRITERE', iocc, iarg, 1,&
-                    crit, n1)
+        call getvtx('OBJET', 'NOM', iocc=iocc, scal=nomobj, nbret=n1)
+        call getvtx('OBJET', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
+        call getvr8('OBJET', 'TOLE_MACHINE', iocc=iocc, scal=epsi, nbret=n1)
+        call getvtx('OBJET', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
         call utest3('OBJET', iocc, tbtxt)
         lref=.false.
-        call getvr8('OBJET', 'PRECISION', iocc, iarg, 1,&
-                    epsir, iret)
+        call getvr8('OBJET', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
             lref=.true.
             tbref(1)=tbtxt(1)
@@ -62,28 +57,24 @@ subroutine trjeve(ific, nocc)
         write (ific,*) '---- OBJET '
         write (ific,*) '     ',nomobj
 !
-        call getvis('OBJET', 'VALE_CALC_I', iocc, iarg, 1,&
-                    refi, n2)
+        call getvis('OBJET', 'VALE_CALC_I', iocc=iocc, scal=refi, nbret=n2)
         if (n2 .eq. 1) then
             call utesto(nomobj, 'I', tbtxt, refi, refr,&
                         epsi, crit, ific, .true., ssigne)
             if (lref) then
-                call getvis('OBJET', 'VALE_REFE_I', iocc, iarg, 1,&
-                            refir, n2r)
+                call getvis('OBJET', 'VALE_REFE_I', iocc=iocc, scal=refir, nbret=n2r)
                 ASSERT(n2.eq.n2r)
                 call utesto(nomobj, 'I', tbref, refir, refrr,&
                             epsir, crit, ific, .false., ssigne)
             endif
         endif
 !
-        call getvr8('OBJET', 'VALE_CALC', iocc, iarg, 1,&
-                    refr, n2)
+        call getvr8('OBJET', 'VALE_CALC', iocc=iocc, scal=refr, nbret=n2)
         if (n2 .eq. 1) then
             call utesto(nomobj, 'R', tbtxt, refi, refr,&
                         epsi, crit, ific, .true., ssigne)
             if (lref) then
-                call getvr8('OBJET', 'VALE_REFE', iocc, iarg, 1,&
-                            refrr, n2r)
+                call getvr8('OBJET', 'VALE_REFE', iocc=iocc, scal=refrr, nbret=n2r)
                 ASSERT(n2.eq.n2r)
                 call utesto(nomobj, 'R', tbref, refir, refrr,&
                             epsir, crit, ific, .false., ssigne)

@@ -3,7 +3,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -87,8 +87,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     nbropt = 0
     do 10 ityp = 1, ntymax
         typopt = tygrop(ityp)
-        call getvtx(' ', typopt, 1, iarg, 0,&
-                    k8b, n1)
+        call getvtx(' ', typopt, nbval=0, nbret=n1)
         zi(jopty+ityp-1) = -n1
         nbropt = nbropt-n1
 10  end do
@@ -101,8 +100,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
         typopt = tygrop(ityp)
         nbopfa = zi(jopty+ityp-1)
         if (nbopfa .eq. 0) goto 20
-        call getvtx(' ', typopt, 1, iarg, nbopfa,&
-                    zk16(jopt+postmp), n1)
+        call getvtx(' ', typopt, nbval=nbopfa, vect=zk16(jopt+postmp), nbret=n1)
         postmp = postmp+nbopfa
 20  end do
 !
@@ -123,8 +121,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     call jeveuo(lisord, 'L', jord)
     nsup = 0
     do 30 ioc = 1, nuti
-        call getvtx(mcfact, 'NOM_CHAM', ioc, iarg, 1,&
-                    option, ibid)
+        call getvtx(mcfact, 'NOM_CHAM', iocc=ioc, scal=option, nbret=ibid)
         vu = .true.
 !       OPTION PRESENTE DANS RESUIN A TOUS LES NUME_ORDRE A CALCULER ?
         do 31 i = 1, nbordr

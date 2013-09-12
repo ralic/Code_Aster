@@ -23,10 +23,10 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -84,21 +84,17 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !
 !     -- 2.  : NOMSYM, NUCOU, NICOU, NANGL, NUFIB
 !     --------------------------------------------------
-    call getvtx(motfac, 'NOM_CHAM', 1, iarg, 10,&
-                nomsym, nbsym)
+    call getvtx(motfac, 'NOM_CHAM', iocc=1, nbval=10, vect=nomsym,&
+                nbret=nbsym)
     ASSERT(nbsym.gt.0)
     if (motfac .eq. 'EXTR_COQUE' .or. motfac .eq. 'EXTR_TUYAU') then
-        call getvis(motfac, 'NUME_COUCHE', 1, iarg, 1,&
-                    nucou, ibid)
-        call getvtx(motfac, 'NIVE_COUCHE', 1, iarg, 1,&
-                    nicou, ibid)
+        call getvis(motfac, 'NUME_COUCHE', iocc=1, scal=nucou, nbret=ibid)
+        call getvtx(motfac, 'NIVE_COUCHE', iocc=1, scal=nicou, nbret=ibid)
         if (motfac .eq. 'EXTR_TUYAU') then
-            call getvis(motfac, 'ANGLE', 1, iarg, 1,&
-                        nangl, ibid)
+            call getvis(motfac, 'ANGLE', iocc=1, scal=nangl, nbret=ibid)
         endif
     else if (motfac.eq.'EXTR_PMF') then
-        call getvis(motfac, 'NUME_FIBRE', 1, iarg, 1,&
-                    nufib, ibid)
+        call getvis(motfac, 'NUME_FIBRE', iocc=1, scal=nufib, nbret=ibid)
     endif
 !
 !

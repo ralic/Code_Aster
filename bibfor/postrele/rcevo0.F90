@@ -1,9 +1,9 @@
 subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -54,12 +54,9 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
 !
     do 100, iocc = 1, nbtran
 !
-    call getvid(motclf, 'TABL_RESU_MECA', iocc, iarg, 1,&
-                table, n1)
-    call getvid(motclf, 'TABL_SIGM_THER', iocc, iarg, 1,&
-                tabfl0, n2)
-    call getvid(motclf, 'TABL_RESU_PRES', iocc, iarg, 1,&
-                tabpr0, n3)
+    call getvid(motclf, 'TABL_RESU_MECA', iocc=iocc, scal=table, nbret=n1)
+    call getvid(motclf, 'TABL_SIGM_THER', iocc=iocc, scal=tabfl0, nbret=n2)
+    call getvid(motclf, 'TABL_RESU_PRES', iocc=iocc, scal=tabpr0, nbret=n3)
 !
 !       VERIFICATION DE L'ORDRE DES NOEUDS DANS LES TABLES
     call rcveri(table)

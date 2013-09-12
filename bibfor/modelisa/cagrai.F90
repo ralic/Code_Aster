@@ -1,11 +1,11 @@
 subroutine cagrai(char, ligrmo, noma, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -93,12 +93,9 @@ subroutine cagrai(char, ligrmo, noma, fonree)
     do 20 iocc = 1, nchgi
 !
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'FLUX_X', iocc, iarg, 1,&
-                        grx, nx)
-            call getvr8(motclf, 'FLUX_Y', iocc, iarg, 1,&
-                        gry, ny)
-            call getvr8(motclf, 'FLUX_Z', iocc, iarg, 1,&
-                        grz, nz)
+            call getvr8(motclf, 'FLUX_X', iocc=iocc, scal=grx, nbret=nx)
+            call getvr8(motclf, 'FLUX_Y', iocc=iocc, scal=gry, nbret=ny)
+            call getvr8(motclf, 'FLUX_Z', iocc=iocc, scal=grz, nbret=nz)
             do 22 i = 1, 3
                 zr(jvalv-1+i) = 0.d0
 22          continue
@@ -106,12 +103,9 @@ subroutine cagrai(char, ligrmo, noma, fonree)
             if (ny .ne. 0) zr(jvalv-1+2) = gry
             if (nz .ne. 0) zr(jvalv-1+3) = grz
         else if (fonree.eq.'FONC') then
-            call getvid(motclf, 'FLUX_X', iocc, iarg, 1,&
-                        grxf, nx)
-            call getvid(motclf, 'FLUX_Y', iocc, iarg, 1,&
-                        gryf, ny)
-            call getvid(motclf, 'FLUX_Z', iocc, iarg, 1,&
-                        grzf, nz)
+            call getvid(motclf, 'FLUX_X', iocc=iocc, scal=grxf, nbret=nx)
+            call getvid(motclf, 'FLUX_Y', iocc=iocc, scal=gryf, nbret=ny)
+            call getvid(motclf, 'FLUX_Z', iocc=iocc, scal=grzf, nbret=nz)
             do 24 i = 1, 3
                 zk8(jvalv-1+i) = '&FOZERO'
 24          continue
@@ -120,8 +114,7 @@ subroutine cagrai(char, ligrmo, noma, fonree)
             if (nz .ne. 0) zk8(jvalv-1+3) = grzf
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ligrmo, 3)

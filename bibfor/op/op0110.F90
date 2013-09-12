@@ -25,15 +25,14 @@ subroutine op0110()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/cla110.h"
 #include "asterfort/cyc110.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -41,6 +40,7 @@ subroutine op0110()
 #include "asterfort/jeveuo.h"
 #include "asterfort/rec110.h"
 #include "asterfort/titre.h"
+!
     integer :: ioc1, ioc2, ioc3, ioc11, llref, llnbs, nbsect, ioc12, ibid
     character(len=8) :: modelg, rescyc, nomres, noma, nomsqu
     character(len=16) :: nomope, nomcmd
@@ -52,27 +52,22 @@ subroutine op0110()
 !
     call getres(nomres, nomcmd, nomope)
     call getfac('CYCLIQUE', ioc1)
-    call getvid(' ', 'MODELE_GENE', 1, iarg, 1,&
-                modelg, ioc2)
-    call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                nomsqu, ioc3)
+    call getvid(' ', 'MODELE_GENE', scal=modelg, nbret=ioc2)
+    call getvid(' ', 'SQUELETTE', scal=nomsqu, nbret=ioc3)
 !
 !
 !------------------------CAS CYCLIQUE-----------------------------------
 !
     if (ioc1 .gt. 0) then
-        call getvid('CYCLIQUE', 'MODE_CYCL', 1, iarg, 1,&
-                    rescyc, ioc11)
+        call getvid('CYCLIQUE', 'MODE_CYCL', iocc=1, scal=rescyc, nbret=ioc11)
         if (ioc11 .gt. 0) then
             call jeveuo(rescyc//'.CYCL_REFE', 'L', llref)
             noma = zk24(llref)
             call jeveuo(rescyc//'.CYCL_NBSC', 'L', llnbs)
             nbsect = zi(llnbs)
         else
-            call getvid('CYCLIQUE', 'MAILLAGE', 1, iarg, 1,&
-                        noma, ioc12)
-            call getvis('CYCLIQUE', 'NB_SECTEUR', 1, iarg, 1,&
-                        nbsect, ibid)
+            call getvid('CYCLIQUE', 'MAILLAGE', iocc=1, scal=noma, nbret=ioc12)
+            call getvis('CYCLIQUE', 'NB_SECTEUR', iocc=1, scal=nbsect, nbret=ibid)
         endif
         call cyc110(nomres, noma, nbsect)
 !

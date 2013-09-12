@@ -60,10 +60,6 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
@@ -71,6 +67,10 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 #include "asterfort/dmat3d.h"
 #include "asterfort/eulnau.h"
 #include "asterfort/fozero.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/nmcrga.h"
 #include "asterfort/nmcrli.h"
@@ -124,22 +124,19 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !     ----------------------------------------
     call getres(table, k24bid, k24bid)
     iforta=0
-    call getvtx(' ', 'FORMAT_TABLE', 1, iarg, 1,&
-                fortab, n1)
+    call getvtx(' ', 'FORMAT_TABLE', scal=fortab, nbret=n1)
     if (n1 .ne. 0) then
         if (fortab .eq. 'CMP_LIGNE') then
             iforta=1
         endif
     endif
     nbvita=nbvari
-    call getvis(' ', 'NB_VARI_TABLE', 1, iarg, 1,&
-                k, n1)
+    call getvis(' ', 'NB_VARI_TABLE', scal=k, nbret=n1)
     if (n1 .gt. 0) nbvita=k
     nbvita=min(nbvita,nbvari)
 !
     imptgt=0
-    call getvtx(' ', 'OPER_TANGENT', 0, iarg, 1,&
-                optgt, n1)
+    call getvtx(' ', 'OPER_TANGENT', scal=optgt, nbret=n1)
     if (n1 .ne. 0) then
         if (optgt .eq. 'OUI') then
             imptgt=1
@@ -147,8 +144,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     endif
     ncmp=6
     igrad=0
-    call getvid(' ', nomgrd(1), 1, iarg, 1,&
-                fongrd(1), n1)
+    call getvid(' ', nomgrd(1), scal=fongrd(1), nbret=n1)
     if (n1 .ne. 0) then
         ncmp=9
         igrad=1
@@ -214,10 +210,10 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     call r8inir(7, 0.d0, ang, 1)
     call r8inir(3, 0.d0, angeul, 1)
     call r8inir(3, 0.d0, xyzgau, 1)
-    call getvr8('MASSIF', 'ANGL_REP', 1, iarg, 3,&
-                ang(1), n1)
-    call getvr8('MASSIF', 'ANGL_EULER', 1, iarg, 3,&
-                angeul, n2)
+    call getvr8('MASSIF', 'ANGL_REP', iocc=1, nbval=3, vect=ang(1),&
+                nbret=n1)
+    call getvr8('MASSIF', 'ANGL_EULER', iocc=1, nbval=3, vect=angeul,&
+                nbret=n2)
 !
     if (n1 .gt. 0) then
         ang(1) = ang(1)*r8dgrd()
@@ -250,8 +246,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     call r8inir(nbvari, 0.d0, vip, 1)
     irota=0
 !     ANGLE DE ROTATION
-    call getvr8(' ', 'ANGLE', 1, iarg, 1,&
-                ang1(1), n1)
+    call getvr8(' ', 'ANGLE', scal=ang1(1), nbret=n1)
     if ((n1.ne.0) .and. (ang1(1).ne.0.d0)) then
 !        VERIFS
         irota=1
@@ -270,8 +265,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     call getfac('SIGM_INIT', nbocc)
     if (nbocc .gt. 0) then
         do 15 i = 1, 6
-            call getvr8('SIGM_INIT', nomsig(i), 1, iarg, 1,&
-                        sigi, n1)
+            call getvr8('SIGM_INIT', nomsig(i), iocc=1, scal=sigi, nbret=n1)
             if (n1 .ne. 0) then
                 sigm(i)=sigi
             endif
@@ -282,8 +276,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     call getfac('EPSI_INIT', nbocc)
     if (nbocc .gt. 0) then
         do 16 i = 1, 6
-            call getvr8('EPSI_INIT', nomeps(i), 1, iarg, 1,&
-                        sigi, n1)
+            call getvr8('EPSI_INIT', nomeps(i), iocc=1, scal=sigi, nbret=n1)
             if (n1 .ne. 0) then
                 epsm(i)=sigi
             endif
@@ -292,8 +285,8 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     endif
     call getfac('VARI_INIT', nbocc)
     if (nbocc .gt. 0) then
-        call getvr8('VARI_INIT', 'VALE', 1, iarg, nbvari,&
-                    vim, n1)
+        call getvr8('VARI_INIT', 'VALE', iocc=1, nbval=nbvari, vect=vim,&
+                    nbret=n1)
         if (n1 .ne. nbvari) then
             imes(1)=n1
             imes(2)=nbvari
@@ -321,10 +314,8 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
         fonimp(i)=f0
 23  end do
     do 14 i = 1, 6
-        call getvid(' ', nomeps(i), 1, iarg, 1,&
-                    foneps(i), n1)
-        call getvid(' ', nomsig(i), 1, iarg, 1,&
-                    fonsig(i), n2)
+        call getvid(' ', nomeps(i), scal=foneps(i), nbret=n1)
+        call getvid(' ', nomsig(i), scal=fonsig(i), nbret=n2)
         if (n1 .ne. 0) then
             cimpo(i,6+i)=1.d0
             fonimp(i)=foneps(i)
@@ -338,8 +329,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
         endif
 14  end do
     do 141 i = 1, 9
-        call getvid(' ', nomgrd(i), 1, iarg, 1,&
-                    fongrd(i), n1)
+        call getvid(' ', nomgrd(i), scal=fongrd(i), nbret=n1)
         if (n1 .ne. 0) then
             fonimp(i)=fongrd(i)
             igrad=igrad+1
@@ -355,12 +345,9 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     if (nbocc .ne. 0) then
         ic1c2=1
         do 55 i = 1, nbocc
-            call getvis('MATR_C1', 'NUME_LIGNE', i, iarg, 1,&
-                        iligne, n1)
-            call getvis('MATR_C1', 'NUME_COLONNE', i, iarg, 1,&
-                        icolon, n1)
-            call getvr8('MATR_C1', 'VALE', i, iarg, 1,&
-                        vale, n1)
+            call getvis('MATR_C1', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
+            call getvis('MATR_C1', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
+            call getvr8('MATR_C1', 'VALE', iocc=i, scal=vale, nbret=n1)
             cimpo(iligne,icolon)=vale
 55      continue
     endif
@@ -368,22 +355,17 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
     if (nbocc .ne. 0) then
         ic1c2=1
         do 56 i = 1, nbocc
-            call getvis('MATR_C2', 'NUME_LIGNE', i, iarg, 1,&
-                        iligne, n1)
-            call getvis('MATR_C2', 'NUME_COLONNE', i, iarg, 1,&
-                        icolon, n1)
-            call getvr8('MATR_C2', 'VALE', i, iarg, 1,&
-                        vale, n1)
+            call getvis('MATR_C2', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
+            call getvis('MATR_C2', 'NUME_COLONNE', iocc=i, scal=icolon, nbret=n1)
+            call getvr8('MATR_C2', 'VALE', iocc=i, scal=vale, nbret=n1)
             cimpo(iligne,icolon+6)=vale
 56      continue
     endif
     call getfac('VECT_IMPO', nbocc)
     if (nbocc .ne. 0) then
         do 57 i = 1, nbocc
-            call getvis('VECT_IMPO', 'NUME_LIGNE', i, iarg, 1,&
-                        iligne, n1)
-            call getvid('VECT_IMPO', 'VALE', i, iarg, 1,&
-                        valef, n1)
+            call getvis('VECT_IMPO', 'NUME_LIGNE', iocc=i, scal=iligne, nbret=n1)
+            call getvid('VECT_IMPO', 'VALE', iocc=i, scal=valef, nbret=n1)
             fonimp(iligne)=valef
 57      continue
     endif
@@ -457,8 +439,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !     ----------------------------------------
 !     CREATION SD DISCRETISATION
 !     ----------------------------------------
-    call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                lisins, n1)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
     instin = r8vide()
     call nmcrli(instin, lisins, sddisc)
 !     ----------------------------------------
@@ -472,15 +453,13 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !     LECTURE DE NEWTON
 !     ----------------------------------------
     pred=1
-    call getvtx('NEWTON', 'PREDICTION', 1, iarg, 1,&
-                predic, n1)
+    call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=predic, nbret=n1)
     if (n1 .ne. 0) then
         if (predic .eq. 'ELASTIQUE') pred=0
     endif
     matrel=0
     option='FULL_MECA'
-    call getvtx('NEWTON', 'MATRICE', 1, iarg, 1,&
-                matric, n1)
+    call getvtx('NEWTON', 'MATRICE', iocc=1, scal=matric, nbret=n1)
     if (n1 .ne. 0) then
         if (matric .eq. 'ELASTIQUE') then
             matrel=1

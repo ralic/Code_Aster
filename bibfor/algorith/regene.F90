@@ -1,14 +1,13 @@
 subroutine regene(nomres, resgen, profno)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/genugl.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -31,6 +30,7 @@ subroutine regene(nomres, resgen, profno)
 #include "asterfort/vtcrea.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, resgen
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -70,7 +70,7 @@ subroutine regene(nomres, resgen, profno)
     integer :: nno, numo, iadpar(7), nbmo2, llref2, llref3, llref4, llref5
     real(kind=8) :: freq, genek, genem, omeg2, rbid, xsi
     complex(kind=8) :: cbid
-    character(len=1) ::  typsca
+    character(len=1) :: typsca
     character(len=8) :: basmod, respro, kbid, k8b, modmec, mailsk, modgen
     character(len=14) :: numddl
     character(len=16) :: depl, nompar(7), typrep
@@ -101,13 +101,11 @@ subroutine regene(nomres, resgen, profno)
 !
 ! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 !
-    call getvis(' ', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, nno)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nno)
     if (nno .ne. 0) then
         nbmod = -nno
         call wkvect('&&REGENE.NUME', 'V V I', nbmod, jbid)
-        call getvis(' ', 'NUME_ORDRE', 1, iarg, nbmod,&
-                    zi(jbid), nno)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbmod, vect=zi(jbid), nbret=nno)
     else
         call wkvect('&&REGENE.NUME', 'V V I', nbmod, jbid)
         do 2 i = 1, nbmod
@@ -135,8 +133,7 @@ subroutine regene(nomres, resgen, profno)
     call gettco(basmo2, typrep)
 !
     if (typrep(1:9) .eq. 'MODE_GENE') then
-        call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                    mailsk, ibid)
+        call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
         indirf = '&&REGEGL'//'.INDIR.SST'
 !
 ! ------ VERIF SQUELETTE
@@ -151,7 +148,8 @@ subroutine regene(nomres, resgen, profno)
 !
 ! ------ RECUPERATION DU MODELE GENERALISE
 !
-        call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid, raid, iret)
+        call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid,&
+                    raid, iret)
 !
         call jeveuo(raid//'.REFA', 'L', llref2)
         numgen(1:14)=zk24(llref2+1)
@@ -162,7 +160,8 @@ subroutine regene(nomres, resgen, profno)
         respro=zk24(llref3)
         call jelibe(numgen//'.REFN')
 !
-        call dismoi('F', 'REF_RIGI_PREM', respro, 'RESU_DYNA', ibid, raid, iret)
+        call dismoi('F', 'REF_RIGI_PREM', respro, 'RESU_DYNA', ibid,&
+                    raid, iret)
 !
         call jeveuo(raid//'.REFA', 'L', llref4)
         numgen(1:14)=zk24(llref4+1)
@@ -193,8 +192,7 @@ subroutine regene(nomres, resgen, profno)
 !C
 !
         call jeveuo(numgen//'.NUEQ', 'L', llnueq)
-        call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                    modmec, ibid)
+        call getvid(' ', 'MODE_MECA', scal=modmec, nbret=ibid)
         if (ibid .ne. 0) basmod=modmec
         call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
                     cbid, rbid, kbid, nbmo2, 1,&
@@ -255,18 +253,17 @@ subroutine regene(nomres, resgen, profno)
 !-----------------------------------------------------------------------
     else
 !-----------------------------------------------------------------------
-
+!
 !
         call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
                     cbid, rbid, kbid, nbmo2, 1,&
                     ibid)
-
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numedd, iret)
-        call getvid(' ', 'NUME_DDL', 1, iarg, 1,&
-                    k8b, iret1)
+!
+        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                    numedd, iret)
+        call getvid(' ', 'NUME_DDL', scal=k8b, nbret=iret1)
         if (iret1 .ne. 0) then
-            call getvid(' ', 'NUME_DDL', 1, iarg, 1,&
-                        numedd, ibid)
+            call getvid(' ', 'NUME_DDL', scal=numedd, nbret=ibid)
             numedd = numedd(1:14)//'.NUME'
         endif
         numddl = numedd(1:14)
@@ -330,11 +327,12 @@ subroutine regene(nomres, resgen, profno)
 !
         if (iret1 .ne. 0) then
             matric(1) = ' '
-            matric(2) = ' '           
+            matric(2) = ' '
             matric(3) = ' '
-            call refdaj('F', nomres, nbmod, numedd, 'DYNAMIQUE', matric, ier)
+            call refdaj('F', nomres, nbmod, numedd, 'DYNAMIQUE',&
+                        matric, ier)
         else
-            call refdcp(basmod,nomres)
+            call refdcp(basmod, nomres)
         endif
     endif
 !

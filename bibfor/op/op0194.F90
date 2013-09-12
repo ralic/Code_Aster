@@ -23,16 +23,15 @@ subroutine op0194()
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/calcop.h"
 #include "asterfort/chpver.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -45,6 +44,7 @@ subroutine op0194()
 #include "asterfort/smevol.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     character(len=6) :: nompro
     parameter(nompro='OP0194')
 !
@@ -73,8 +73,7 @@ subroutine op0194()
     kordre='&&'//nompro//'.NUME_ORDRE'
     kcha = '&&'//nompro//'.CHARGES   '
 !
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                temper, n1)
+    call getvid(' ', 'RESULTAT', scal=temper, nbret=n1)
     call gettco(temper, tysd)
 !
     call rsorac(temper, 'LONUTI', ibid, r8b, k8b,&
@@ -89,12 +88,10 @@ subroutine op0194()
     call medom1(modele, mate, cara, kcha, nchar,&
                 ctyp, temper, nuord)
 !
-    call getvtx(' ', 'OPTION', 1, iarg, 0,&
-                k8b, nb)
+    call getvtx(' ', 'OPTION', nbval=0, nbret=nb)
     nbopt = -nb
     call wkvect(lesopt, 'V V K16', nbopt, jopt)
-    call getvtx(' ', 'OPTION', 1, iarg, nbopt,&
-                zk16(jopt), nb)
+    call getvtx(' ', 'OPTION', nbval=nbopt, vect=zk16(jopt), nbret=nb)
     call jeveuo(lesopt, 'L', jopt)
 !
     do iopt = 1, nbopt
@@ -107,24 +104,18 @@ subroutine op0194()
 !
 ! ----- ETAT INITIAL
             numpha = 0
-            call getvid('ETAT_INIT', 'META_INIT_ELNO', 1, iarg, 1,&
-                        chmeta, n3)
+            call getvid('ETAT_INIT', 'META_INIT_ELNO', iocc=1, scal=chmeta, nbret=n3)
             if (n3 .gt. 0) then
                 phasin = '&&SMEVOL_ZINIT'
                 call chpver('F', chmeta(1:19), 'CART', 'VAR2_R', ier)
                 call copisd('CHAMP_GD', 'V', chmeta, phasin(1:19))
             else
-                call getvid('ETAT_INIT', 'EVOL_THER', 1, iarg, 1,&
-                            temper, n1)
-                call getvis('ETAT_INIT', 'NUME_INIT', 1, iarg, 1,&
-                            num, n2)
+                call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=temper, nbret=n1)
+                call getvis('ETAT_INIT', 'NUME_INIT', iocc=1, scal=num, nbret=n2)
                 if (n2 .eq. 0) then
-                    call getvr8('ETAT_INIT', 'INST_INIT', 1, iarg, 1,&
-                                inst, n3)
-                    call getvr8('ETAT_INIT', 'PRECISION', 1, iarg, 1,&
-                                prec, n3)
-                    call getvtx('ETAT_INIT', 'CRITERE', 1, iarg, 1,&
-                                crit, n3)
+                    call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=inst, nbret=n3)
+                    call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=n3)
+                    call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=n3)
                     nbordt = 1
                     call rsorac(temper, 'INST', ibid, inst, k8b,&
                                 c16b, prec, crit, num, nbordt,&
@@ -160,7 +151,7 @@ subroutine op0194()
             if (iret .eq. 0) goto 100
 !
         endif
-100     continue
+100      continue
 !
     end do
 !

@@ -2,13 +2,12 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -86,35 +85,25 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
     do iocc = 1, nflux
         n5 = 0
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'FLUN', iocc, iarg, 0,&
-                        r8b, n11)
-            call getvr8(motclf, 'FLUN_INF', iocc, iarg, 0,&
-                        r8b, n2)
-            call getvr8(motclf, 'FLUN_SUP', iocc, iarg, 0,&
-                        r8b, n3)
-            call getvid(motclf, 'CARA_TORSION', iocc, iarg, 0,&
-                        k8b, n12)
+            call getvr8(motclf, 'FLUN', iocc=iocc, nbval=0, nbret=n11)
+            call getvr8(motclf, 'FLUN_INF', iocc=iocc, nbval=0, nbret=n2)
+            call getvr8(motclf, 'FLUN_SUP', iocc=iocc, nbval=0, nbret=n3)
+            call getvid(motclf, 'CARA_TORSION', iocc=iocc, nbval=0, nbret=n12)
             n1 = n11 + n12
         else if (fonree.eq.'FONC') then
-            call getvid(motclf, 'FLUN', iocc, iarg, 0,&
-                        k8b, n1)
-            call getvid(motclf, 'FLUN_INF', iocc, iarg, 0,&
-                        k8b, n2)
-            call getvid(motclf, 'FLUN_SUP', iocc, iarg, 0,&
-                        k8b, n3)
-            call getvid(motclf, 'FLUX_X', iocc, iarg, 0,&
-                        k8b, n6)
-            call getvid(motclf, 'FLUX_Y', iocc, iarg, 0,&
-                        k8b, n7)
-            call getvid(motclf, 'FLUX_Z', iocc, iarg, 0,&
-                        k8b, n8)
+            call getvid(motclf, 'FLUN', iocc=iocc, nbval=0, nbret=n1)
+            call getvid(motclf, 'FLUN_INF', iocc=iocc, nbval=0, nbret=n2)
+            call getvid(motclf, 'FLUN_SUP', iocc=iocc, nbval=0, nbret=n3)
+            call getvid(motclf, 'FLUX_X', iocc=iocc, nbval=0, nbret=n6)
+            call getvid(motclf, 'FLUX_Y', iocc=iocc, nbval=0, nbret=n7)
+            call getvid(motclf, 'FLUX_Z', iocc=iocc, nbval=0, nbret=n8)
             n5 = n6+n7+n8
         else
             ASSERT(.false.)
         endif
         n4 = n1+n2+n3
         if ((n5.ne.0) .and. (n4.ne.0)) then
-            if (fonree.eq.'FONC') call u2mess('F', 'MODELISA2_64')
+            if (fonree .eq. 'FONC') call u2mess('F', 'MODELISA2_64')
         endif
         if (n4 .ne. 0) icre1 = .true.
         if (n5 .ne. 0) icre2 = .true.
@@ -189,8 +178,7 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 !
         if (fonree .eq. 'REEL') then
 !
-            call getvid(motclf, 'CARA_TORSION', iocc, iarg, 1,&
-                        nomtab, n)
+            call getvid(motclf, 'CARA_TORSION', iocc=iocc, scal=nomtab, nbret=n)
             if (n .eq. 1) then
 !              VERIFICATION DES PARAMETRES DE LA TABLE 'NOMTAB'
                 call tbexp2(nomtab, 'AIRE')
@@ -241,22 +229,19 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                 zk8(jncmp1-1 + ncmp1) = 'FLUN'
                 zr(jvalv1-1 + ncmp1) = 2.0d0 * aire / xlong
             endif
-            call getvr8(motclf, 'FLUN', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'FLUN', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1 + ncmp1) = 'FLUN'
                 zr(jvalv1-1 + ncmp1) = r8b
             endif
-            call getvr8(motclf, 'FLUN_INF', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'FLUN_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1 + ncmp1) = 'FLUN_INF'
                 zr(jvalv1-1 + ncmp1) = r8b
             endif
-            call getvr8(motclf, 'FLUN_SUP', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'FLUN_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1 + ncmp1) = 'FLUN_SUP'
@@ -264,44 +249,38 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
             endif
 !
         else
-            call getvid(motclf, 'FLUN', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'FLUN', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1 + ncmp1) = 'FLUN'
                 zk8(jvalv1-1 + ncmp1) = k8b
             endif
-            call getvid(motclf, 'FLUN_INF', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'FLUN_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1 + ncmp1) = 'FLUN_INF'
                 zk8(jvalv1-1 + ncmp1) = k8b
             endif
-            call getvid(motclf, 'FLUN_SUP', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'FLUN_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1 + ncmp1) = 'FLUN_SUP'
                 zk8(jvalv1-1 + ncmp1) = k8b
             endif
 !
-            call getvid(motclf, 'FLUX_X', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'FLUX_X', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1 + ncmp2) = 'FLUX'
                 zk8(jvalv2-1 + ncmp2) = k8b
             endif
-            call getvid(motclf, 'FLUX_Y', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'FLUX_Y', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1 + ncmp2) = 'FLUY'
                 zk8(jvalv2-1 + ncmp2) = k8b
             endif
-            call getvid(motclf, 'FLUX_Z', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'FLUX_Z', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1 + ncmp2) = 'FLUZ'
@@ -309,14 +288,14 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
             endif
         endif
 !
-
+!
         cartes(1) = cart1
         cartes(2) = cart2
         ncmps(1) = ncmp1
         ncmps(2) = ncmp2
-        call char_affe_neum(noma, ndim, motclf, iocc, 2, &
+        call char_affe_neum(noma, ndim, motclf, iocc, 2,&
                             cartes, ncmps)
-
+!
     end do
 !
     if (icre1) call tecart(cart1)

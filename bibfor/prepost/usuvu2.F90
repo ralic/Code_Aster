@@ -33,8 +33,8 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
 !                NE CALCULE PAS LE VOLUME USE OBSTACLE, ISUPP = 0
 !-----------------------------------------------------------------------
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/usuban.h"
@@ -56,8 +56,7 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
 !-----------------------------------------------------------------------
     ifires = iunifi('RESULTAT')
 !
-    call getvtx(' ', 'LOI_USURE', 1, iarg, 1,&
-                loi, n1)
+    call getvtx(' ', 'LOI_USURE', scal=loi, nbret=n1)
     iret = 0
 !
 ! **********************************************************************
@@ -86,42 +85,29 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
     else if (loi(1:8) .eq. 'KWU_EPRI') then
         if (isupp .eq. 1) then
             write(ifires,1010)
-            call getvr8('MOBILE', 'COEF_USURE', 1, iarg, 1,&
-                        para(1), n1)
-            call getvr8('MOBILE', 'COEF_FNOR', 1, iarg, 1,&
-                        para(2), n2)
-            call getvr8('MOBILE', 'COEF_VTAN', 1, iarg, 1,&
-                        para(3), n3)
-            call getvr8('MOBILE', 'COEF_K', 1, iarg, 1,&
-                        para(4), n4)
-            call getvr8('MOBILE', 'COEF_C', 1, iarg, 1,&
-                        para(5), n5)
+            call getvr8('MOBILE', 'COEF_USURE', iocc=1, scal=para(1), nbret=n1)
+            call getvr8('MOBILE', 'COEF_FNOR', iocc=1, scal=para(2), nbret=n2)
+            call getvr8('MOBILE', 'COEF_VTAN', iocc=1, scal=para(3), nbret=n3)
+            call getvr8('MOBILE', 'COEF_K', iocc=1, scal=para(4), nbret=n4)
+            call getvr8('MOBILE', 'COEF_C', iocc=1, scal=para(5), nbret=n5)
             if (n4 .eq. 0) para(4) = 5.d0
             if (n5 .eq. 0) para(5) = 10.d0
-            call getvtx(' ', 'MATER_USURE', 1, iarg, 1,&
-                        mate, n6)
+            call getvtx(' ', 'MATER_USURE', scal=mate, nbret=n6)
             if (n6 .ne. 0) then
                 call usuban(mate, isupp, para, iret)
             endif
             write(ifires,2100)
         else if (isupp .eq. 2) then
-            call getvr8('OBSTACLE', 'COEF_USURE', 1, iarg, 1,&
-                        para(1), n1)
-            call getvr8('OBSTACLE', 'COEF_FNOR', 1, iarg, 1,&
-                        para(2), n2)
-            call getvr8('OBSTACLE', 'COEF_VTAN', 1, iarg, 1,&
-                        para(3), n3)
-            call getvr8('OBSTACLE', 'COEF_K', 1, iarg, 1,&
-                        para(4), n4)
-            call getvr8('OBSTACLE', 'COEF_C', 1, iarg, 1,&
-                        para(5), n5)
+            call getvr8('OBSTACLE', 'COEF_USURE', iocc=1, scal=para(1), nbret=n1)
+            call getvr8('OBSTACLE', 'COEF_FNOR', iocc=1, scal=para(2), nbret=n2)
+            call getvr8('OBSTACLE', 'COEF_VTAN', iocc=1, scal=para(3), nbret=n3)
+            call getvr8('OBSTACLE', 'COEF_K', iocc=1, scal=para(4), nbret=n4)
+            call getvr8('OBSTACLE', 'COEF_C', iocc=1, scal=para(5), nbret=n5)
             if (n4 .eq. 0) para(4) = 5.d0
             if (n5 .eq. 0) para(5) = 10.d0
-            call getvtx(' ', 'MATER_USURE', 1, iarg, 1,&
-                        mate, n6)
+            call getvtx(' ', 'MATER_USURE', scal=mate, nbret=n6)
             if (n6 .ne. 0) then
-                call getvtx(' ', 'USURE_OBST', 1, iarg, 1,&
-                            k8b, n2)
+                call getvtx(' ', 'USURE_OBST', scal=k8b, nbret=n2)
                 if (k8b(1:3) .eq. 'OUI') then
                     call usuban(mate, isupp, para, iret)
                 else
@@ -157,20 +143,15 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
     else if (loi(1:6) .eq. 'EDF_MZ') then
         if (isupp .eq. 1) then
             write(ifires,1020)
-            call getvr8('MOBILE', 'COEF_S', 1, iarg, 1,&
-                        xs, n1)
-            call getvr8('MOBILE', 'COEF_B', 1, iarg, 1,&
-                        xb, n2)
-            call getvr8('MOBILE', 'COEF_N', 1, iarg, 1,&
-                        xn, n3)
-            call getvr8('MOBILE', 'COEF_USURE', 1, iarg, 1,&
-                        xa, n4)
+            call getvr8('MOBILE', 'COEF_S', iocc=1, scal=xs, nbret=n1)
+            call getvr8('MOBILE', 'COEF_B', iocc=1, scal=xb, nbret=n2)
+            call getvr8('MOBILE', 'COEF_N', iocc=1, scal=xn, nbret=n3)
+            call getvr8('MOBILE', 'COEF_USURE', iocc=1, scal=xa, nbret=n4)
             if (n1 .eq. 0) xs = 1.14d-16
             if (n2 .eq. 0) xb = 1.2d0
             if (n3 .eq. 0) xn = 2.44d-08
             if (n4 .eq. 0) xa = 1.d-13
-            call getvtx(' ', 'MATER_USURE', 1, iarg, 1,&
-                        mate, n5)
+            call getvtx(' ', 'MATER_USURE', scal=mate, nbret=n5)
             if (n5 .ne. 0) then
                 call usuban(mate, isupp, para, iret)
                 xs = para(1)
@@ -180,23 +161,17 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
             endif
             write(ifires,2100)
         else if (isupp .eq. 2) then
-            call getvr8('OBSTACLE', 'COEF_S', 1, iarg, 1,&
-                        xs, n1)
-            call getvr8('OBSTACLE', 'COEF_B', 1, iarg, 1,&
-                        xb, n2)
-            call getvr8('OBSTACLE', 'COEF_N', 1, iarg, 1,&
-                        xn, n3)
-            call getvr8('OBSTACLE', 'COEF_USURE', 1, iarg, 1,&
-                        xa, n4)
+            call getvr8('OBSTACLE', 'COEF_S', iocc=1, scal=xs, nbret=n1)
+            call getvr8('OBSTACLE', 'COEF_B', iocc=1, scal=xb, nbret=n2)
+            call getvr8('OBSTACLE', 'COEF_N', iocc=1, scal=xn, nbret=n3)
+            call getvr8('OBSTACLE', 'COEF_USURE', iocc=1, scal=xa, nbret=n4)
             if (n1 .eq. 0) xs = 1.14d-16
             if (n2 .eq. 0) xb = 1.2d0
             if (n3 .eq. 0) xn = 2.44d-08
             if (n4 .eq. 0) xa = 1.d-13
-            call getvtx(' ', 'MATER_USURE', 1, iarg, 1,&
-                        mate, n5)
+            call getvtx(' ', 'MATER_USURE', scal=mate, nbret=n5)
             if (n5 .ne. 0) then
-                call getvtx(' ', 'USURE_OBST', 1, iarg, 1,&
-                            k8b, n6)
+                call getvtx(' ', 'USURE_OBST', scal=k8b, nbret=n6)
                 if (k8b(1:3) .eq. 'OUI') then
                     call usuban(mate, isupp, para, iret)
                     xs = para(2)

@@ -1,7 +1,7 @@
 subroutine tran78(nomres, typres, nomin)
     implicit none
-#include "asterc/getvid.h"
 #include "asterfort/bamo78.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/macr78.h"
@@ -39,8 +39,7 @@ subroutine tran78(nomres, typres, nomin)
 !-----------------------------------------------------------------------
     call jemarq()
     trange = nomin
-    call getvid(' ', 'MACR_ELEM_DYNA', 1, iarg, 1,&
-                macrel, nmc)
+    call getvid(' ', 'MACR_ELEM_DYNA', scal=macrel, nbret=nmc)
 !
     if (nmc .ne. 0) then
         call macr78(nomres, trange, typres)

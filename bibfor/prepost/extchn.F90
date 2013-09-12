@@ -1,14 +1,13 @@
 subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
                   nbc, indic, nsschn, mcf, iocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exchnn.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -28,6 +27,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 #include "asterfort/rvrecu.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbn, nbc, numnd(*), iocc
     character(len=6) :: indic
     character(len=8) :: nnoeud(*), ncmp(*)
@@ -179,7 +179,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     logical :: utili
-    character(len=8) ::  repere
+    character(len=8) :: repere
     character(len=24) :: nomjv
     integer :: iarg
 ! ----------------------------------------------------------------------
@@ -210,13 +210,12 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !
     utili = .false.
     if (mcf(1:6) .eq. 'ACTION') then
-        call getvtx(mcf, 'REPERE', iocc, iarg, 1,&
-                    repere, n1)
+        call getvtx(mcf, 'REPERE', iocc=iocc, scal=repere, nbret=n1)
         if (repere .eq. 'UTILISAT') then
             utili = .true.
             nomjv = '&&EXTCHN.NEW_CHAMP'
-            call getvr8(mcf, 'ANGL_NAUT', iocc, iarg, 3,&
-                        angl, n1)
+            call getvr8(mcf, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl,&
+                        nbret=n1)
             angl(1) = angl(1) * r8dgrd()
             angl(2) = angl(2) * r8dgrd()
             angl(3) = angl(3) * r8dgrd()
@@ -226,10 +225,10 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
         else if (repere .eq. 'CYLINDRI') then
             utili = .true.
             nomjv = '&&EXTCHN.NEW_CHAMP'
-            call getvr8(mcf, 'ORIGINE', iocc, iarg, 3,&
-                        orig, n1)
-            call getvr8(mcf, 'AXE_Z', iocc, iarg, 3,&
-                        axez, n1)
+            call getvr8(mcf, 'ORIGINE', iocc=iocc, nbval=3, vect=orig,&
+                        nbret=n1)
+            call getvr8(mcf, 'AXE_Z', iocc=iocc, nbval=3, vect=axez,&
+                        nbret=n1)
             xnormz = zero
             do 30 i = 1, 3
                 xnormz = xnormz + axez(i)*axez(i)

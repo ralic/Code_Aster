@@ -1,5 +1,5 @@
 subroutine op0050()
-    implicit  none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,8 @@ subroutine op0050()
 !
 ! ----------------------------------------------------------------------
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/i2chem.h"
 #include "asterfort/i2segm.h"
 #include "asterfort/infmaj.h"
@@ -41,8 +41,7 @@ subroutine op0050()
 !                 LE MAILLAGE DOIT ETRE 2D OU PLAN
 !
 !----------------------------------------------------------------------
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                nomail, n1)
+    call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n1)
     call dismoi('F', 'Z_CST', nomail, 'MAILLAGE', ibid,&
                 k8b, ibid)
     if (k8b(1:3) .eq. 'NON') then

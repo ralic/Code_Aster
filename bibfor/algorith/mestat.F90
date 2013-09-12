@@ -39,11 +39,11 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8maem.h"
 #include "asterfort/alfeti.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -83,7 +83,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     real(kind=8) :: time, instf, tps1(4), tps2(4), tps3(4), tcpu, partps(3)
     real(kind=8) :: rbid, valr(3)
     character(len=1) :: base
-    character(len=8) ::  repk, result
+    character(len=8) :: repk, result
     character(len=14) :: nuposs
     character(len=16) :: k16bid
     character(len=19) :: maprec, vecass, chdepl, k19b, matass
@@ -175,8 +175,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
     call jeveuo(ltps//'           .VALE', 'L', jval)
     instf=r8maem()
-    call getvr8(' ', 'INST_FIN', 0, iarg, 1,&
-                instf, ibid)
+    call getvr8(' ', 'INST_FIN', scal=instf, nbret=ibid)
 !
 !
 !====
@@ -184,7 +183,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !====
 !
     ninstc=0
-    do itps = 1 , nbval
+    do itps = 1, nbval
         call jerecu('V')
 !
 !       SI LE PAS DE TEMPS A DEJA ETE CALCULE, ON SAUTE L'ITERATION
@@ -223,7 +222,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !       --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
         if (etausr() .eq. 1) call sigusr()
-
+!
 !
 ! 2.3. ==> CONTROLE DU TEMPS CPU
 !
@@ -246,10 +245,10 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
             goto 999
         endif
 !
-2       continue
+ 2      continue
     end do
 !
-999 continue
+999  continue
     call detrsd('CHAMP_GD', vecass)
 !
     if (lfeti) then

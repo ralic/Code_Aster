@@ -4,9 +4,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-!
 #include "asterc/getexm.h"
-#include "asterc/getvtx.h"
 #include "asterfort/ccchel.h"
 #include "asterfort/ccchno.h"
 #include "asterfort/ccliop.h"
@@ -18,6 +16,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/indk16.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -37,6 +36,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbordr, ncharg, codret
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou
@@ -178,10 +178,8 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
         n1 = getexm(' ','MAILLE')
         mesmai = '&&OP0106.MES_MAILLES'
         if (n0+n1 .ne. 0) then
-            call getvtx(' ', 'MAILLE', 1, iarg, 0,&
-                        k8b, n2)
-            call getvtx(' ', 'GROUP_MA', 1, iarg, 0,&
-                        k8b, n3)
+            call getvtx(' ', 'MAILLE', nbval=0, nbret=n2)
+            call getvtx(' ', 'GROUP_MA', nbval=0, nbret=n3)
             if (n2+n3 .ne. 0) then
                 motcle(1) = 'GROUP_MA'
                 motcle(2) = 'MAILLE'

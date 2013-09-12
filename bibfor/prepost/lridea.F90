@@ -1,11 +1,9 @@
 subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                   listrz, listiz, precis, crit, epsi,&
                   acces, mfich, noma, ligrez, nbvari)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -15,6 +13,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 #include "asterfort/decod1.h"
 #include "asterfort/decod2.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/iradhs.h"
 #include "asterfort/jedema.h"
@@ -35,6 +34,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     character(len=*) :: typres, linoch(*), nomcmd
     character(len=8) :: resu
     character(len=*) :: listrz, listiz, crit, acces
@@ -399,8 +399,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
             call jeveuo(chs//'.CNSV', 'E', jcnsv)
             call jeveuo(chs//'.CNSL', 'E', jcnsl)
 !
-            call getvtx(' ', 'PROL_ZERO', 0, iarg, 1,&
-                        prolo, iret)
+            call getvtx(' ', 'PROL_ZERO', scal=prolo, nbret=iret)
             if (prolo(1:3) .eq. 'OUI') then
                 call u2mesk('I', 'PREPOST_13', 1, nomch)
                 call jelira(chs//'.CNSV', 'LONMAX', nbval)

@@ -1,12 +1,12 @@
 subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -75,8 +75,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DES MAILLES DE GROUP_MA_1 :
 !     -----------------------------------------
-    call getvid(motfac, 'MAILLAGE_INCL', iocc, iarg, 1,&
-                noma1, n1)
+    call getvid(motfac, 'MAILLAGE_INCL', iocc=iocc, scal=noma1, nbret=n1)
     if (n1 .eq. 0) noma1=noma2
     mesma1='&&CGNOIN.MAILLE1'
     nbmc=1
@@ -103,12 +102,10 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- CREATION DE LA SD CORRESP_2_MAILLA   :
 !     -----------------------------------------
     corres='&&CGNOIN.CORRES'
-    call getvtx(motfac, 'CAS_FIGURE', iocc, iarg, 1,&
-                ncas, n1)
+    call getvtx(motfac, 'CAS_FIGURE', iocc=iocc, scal=ncas, nbret=n1)
 !
     ldmax=.true.
-    call getvr8(motfac, 'DISTANCE_MAX', iocc, iarg, 1,&
-                distma, n1)
+    call getvr8(motfac, 'DISTANCE_MAX', iocc=iocc, scal=distma, nbret=n1)
     if (n1 .eq. 0) then
 !
 !       POUR QUE LES NOEUDS SITUES SUR LES FRONTIERES INTER-ELEMENTS

@@ -29,9 +29,6 @@ subroutine op0100()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cakg2d.h"
 #include "asterfort/cakg3d.h"
@@ -48,6 +45,9 @@ subroutine op0100()
 #include "asterfort/gcour2.h"
 #include "asterfort/gcour3.h"
 #include "asterfort/gcouro.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gver2d.h"
 #include "asterfort/gveri3.h"
 #include "asterfort/gverig.h"
@@ -190,8 +190,7 @@ subroutine op0100()
 !
 !     ON RECHERCHE LA PRESENCE DE SYMETRIE
     symech='NON'
-    call getvtx('THETA', 'SYME', 1, iarg, 1,&
-                symech, ibid)
+    call getvtx('THETA', 'SYME', iocc=1, scal=symech, nbret=ibid)
     if (typfis .eq. 'FONDFISS') then
         call dismoi('F', 'SYME', nomfis, 'FOND_FISS', ibid,&
                     symech, ier)
@@ -216,8 +215,8 @@ subroutine op0100()
         theta = table//'_CHAM_THETA'
 !
 !       MOT-CLE A RECUPERER, INDEPENDAMMENT DE NDIM
-        call getvr8('THETA', 'DIRECTION', 1, iarg, 3,&
-                    dir, iret)
+        call getvr8('THETA', 'DIRECTION', iocc=1, nbval=3, vect=dir,&
+                    nbret=iret)
         if (ndim .eq. 2) dir(3)=0.d0
         if (iret .eq. 0) then
             direc=.false.
@@ -389,14 +388,14 @@ subroutine op0100()
                 optio2 = 'G_BILI'
                 if (cas .eq. '3D_LOCAL') then
                     call mbilgl(optio2, table, modele, depla1, depla2,&
-                                thetai, mate, lischa, symech, chfond, &
-                                lnoff,ndeg, thlagr, glagr, thlag2,&
-                                milieu,ndimte, pair, exitim, timeu, &
-                                timev,i, j, nbpara, linopa, &
-                                lmelas,nomcas, fonoeu)
+                                thetai, mate, lischa, symech, chfond,&
+                                lnoff, ndeg, thlagr, glagr, thlag2,&
+                                milieu, ndimte, pair, exitim, timeu,&
+                                timev, i, j, nbpara, linopa,&
+                                lmelas, nomcas, fonoeu)
                 else
                     call mebilg(optio2, table, modele, depla1, depla2,&
-                                theta, mate, lischa, symech,  timeu, &
+                                theta, mate, lischa, symech, timeu,&
                                 timev, i, j, nbpara, linopa)
                 endif
 !
@@ -418,12 +417,11 @@ subroutine op0100()
                 nbco = 2*nborn
                 call wkvect('&&'//nompro//'.COUPLES_BORNES', 'V V R8', nbco, ibor)
                 do 313 i = 1, nborn
-                    call getvis('BORNES', 'NUME_ORDRE', i, iarg, 1,&
-                                iord0, ier)
-                    call getvr8('BORNES', 'VALE_MIN', i, iarg, 1,&
-                                zr(ibor+ 2*(iord0-1)), ier)
-                    call getvr8('BORNES', 'VALE_MAX', i, iarg, 1,&
-                                zr(ibor+ 2*(iord0-1)+1), ier)
+                    call getvis('BORNES', 'NUME_ORDRE', iocc=i, scal=iord0, nbret=ier)
+                    call getvr8('BORNES', 'VALE_MIN', iocc=i, scal=zr(ibor+ 2*(iord0-1)),&
+                                nbret=ier)
+                    call getvr8('BORNES', 'VALE_MAX', iocc=i, scal=zr(ibor+ 2*(iord0-1)+1),&
+                                nbret=ier)
 313              continue
 !
                 if (cas .eq. '3D_LOCAL') then
@@ -516,7 +514,7 @@ subroutine op0100()
                     symech, chfond, lnoff, basloc, courb,&
                     ndeg, thlagr, glagr, thlag2, pair,&
                     ndimte, nbpara, linopa, nomfis, nbord,&
-                    ivec, resu, lmelas, lncas,zl( jnord),&
+                    ivec, resu, lmelas, lncas, zl( jnord),&
                     milieu, connex, lischa)
 !
 !     -------------------------------
@@ -579,18 +577,18 @@ subroutine op0100()
             if ((option(1:6).eq.'CALC_G'.and.cas.eq.'2D') .or. option .eq. 'CALC_G_GLOB') then
 !
                 call mecalg(option, table, modele, depla, theta,&
-                            mate, lischa,symech, compor, incr, &
-                            time,iord, nbpara, linopa, chvite, &
-                            chacce,lmelas, nomcas, calsig)
+                            mate, lischa, symech, compor, incr,&
+                            time, iord, nbpara, linopa, chvite,&
+                            chacce, lmelas, nomcas, calsig)
 !
             else if (option(1:6).eq.'CALC_G'.and.cas.eq.'3D_LOCAL') then
 !
                 call mecagl(option, table, modele, depla, thetai,&
-                            mate, compor, lischa,symech, chfond, &
-                            lnoff,iord, ndeg, thlagr, glagr, &
-                            thlag2,milieu, ndimte, pair, exitim, &
-                            time,nbpara, linopa, chvite, chacce, &
-                            lmelas,nomcas, calsig, fonoeu)
+                            mate, compor, lischa, symech, chfond,&
+                            lnoff, iord, ndeg, thlagr, glagr,&
+                            thlag2, milieu, ndimte, pair, exitim,&
+                            time, nbpara, linopa, chvite, chacce,&
+                            lmelas, nomcas, calsig, fonoeu)
 !
             else if (option(1:6).eq.'CALC_K'.and.cas.eq.'2D') then
 !

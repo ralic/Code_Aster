@@ -1,10 +1,10 @@
 subroutine caonde(char, ligrmo, noma, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -90,11 +90,9 @@ subroutine caonde(char, ligrmo, noma, fonree)
     do 10 iocc = 1, nonfl
 !
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'PRES', iocc, iarg, 1,&
-                        zr(jvalv), n)
+            call getvr8(motclf, 'PRES', iocc=iocc, scal=zr(jvalv), nbret=n)
         else
-            call getvid(motclf, 'PRES', iocc, iarg, 1,&
-                        zk8(jvalv), n)
+            call getvid(motclf, 'PRES', iocc=iocc, scal=zk8(jvalv), nbret=n)
         endif
 !
         call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&

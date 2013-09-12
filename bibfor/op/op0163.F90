@@ -21,14 +21,13 @@ subroutine op0163()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -45,6 +44,7 @@ subroutine op0163()
 #include "asterfort/ulopen.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ier, itresr(3), itresi(3)
     character(len=4) :: type(3)
     character(len=8) :: k8b, nomres
@@ -83,10 +83,8 @@ subroutine op0163()
     write(imess,'(''TYPE DE RESULTAT :'',1X,A16)') concep
 !
 !     ----- RECUPERATION UNITE DE MISS ---
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ifmis, nu)
-    call getvtx(' ', 'NOM', 1, iarg, 1,&
-                fichi, nf)
+    call getvis(' ', 'UNITE', scal=ifmis, nbret=nu)
+    call getvtx(' ', 'NOM', scal=fichi, nbret=nf)
     if (nf .eq. 0) then
         k16nom = ' '
         if (ulisop ( ifmis, k16nom ) .eq. 0) then
@@ -97,13 +95,11 @@ subroutine op0163()
         call ulopen(ifmis, base, ' ', 'NEW', 'O')
     endif
 !
-    call getvtx(' ', 'TITRE', 1, iarg, 1,&
-                titre, nti)
+    call getvtx(' ', 'TITRE', scal=titre, nbret=nti)
     if (nti .ne. 0) write(imess,'(A80)') titre
 !
 !     ----- RECUPERATION DES MODES -----
-    call getvid(' ', 'MACR_ELEM_DYNA', 1, iarg, 1,&
-                mael, nmm)
+    call getvid(' ', 'MACR_ELEM_DYNA', scal=mael, nbret=nmm)
     refe(1:18) = mael//'.MAEL_RAID'
     call jeveuo(refe, 'L', jrefe)
     matrk = zk24(jrefe+1)
@@ -239,8 +235,10 @@ subroutine op0163()
     matric(1) = matrk
     matric(2) = matrm
     matric(3) = ' '
-    call dismoi('F', 'NOM_NUME_DDL', matrk, 'MATR_ASSE', iarg, numer, iret)
-    call refdaj('F', nomres, nbcham, numer, 'DYNAMIQUE', matric, iret)
+    call dismoi('F', 'NOM_NUME_DDL', matrk, 'MATR_ASSE', iarg,&
+                numer, iret)
+    call refdaj('F', nomres, nbcham, numer, 'DYNAMIQUE',&
+                matric, iret)
 !
     1000 format(i6)
     1001 format(6(1pe12.5))

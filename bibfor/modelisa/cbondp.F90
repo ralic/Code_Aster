@@ -1,14 +1,14 @@
 subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 !
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_crea_cart.h"
-#include "asterfort/getelem.h"
 #include "asterfort/char_read_val.h"
+#include "asterfort/getelem.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -35,11 +35,11 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
-    integer, intent(in)  :: ndim
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: ndim
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,7 +89,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo, &
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo,&
                         vale_type, nb_carte, carte)
     ASSERT(nb_carte.eq.2)
 !
@@ -101,14 +101,14 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 !
         list_elem = '&&CBONDP.LIST_ELEM'
         suffix = ' '
-        call getelem(mesh, keywordfact, iocc, suffix, 'A', &
+        call getelem(mesh, keywordfact, iocc, suffix, 'A',&
                      list_elem, nb_elem)
-        if (nb_elem.eq.0) goto 100
-        call jeveuo(list_elem,'L',j_elem)
+        if (nb_elem .eq. 0) goto 100
+        call jeveuo(list_elem, 'L', j_elem)
 !
 ! ----- Get wave function
 !
-        call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb, &
+        call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb,&
                            r8dummy, signal, c16dummy, k16dummy)
         ASSERT(val_nb.eq.1)
 !
@@ -125,16 +125,15 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
         wave_dire(1) = 0.d0
         wave_dire(2) = 0.d0
         wave_dire(3) = 0.d0
-        call getvr8(keywordfact, 'DIRECTION', iocc, iarg, 0,   &
-                    wave_dire, ndir)
+        call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=0, nbret=ndir)
         ndir = - ndir
         ASSERT(ndir.eq.3)
-        call getvr8(keywordfact, 'DIRECTION', iocc, iarg, ndir,&
-                    wave_dire, ibid)
+        call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=ndir, vect=wave_dire,&
+                    nbret=ibid)
 !
 ! ----- Get wave type
 !
-        call char_read_val(keywordfact, iocc, 'TYPE_ONDE', 'TEXT', val_nb, &
+        call char_read_val(keywordfact, iocc, 'TYPE_ONDE', 'TEXT', val_nb,&
                            r8dummy, k8dummy, c16dummy, wave_type)
         ASSERT(val_nb.eq.1)
         if (ndim .eq. 3) then
@@ -149,7 +148,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
             else
                 ASSERT(.false.)
             endif
-        elseif (ndim .eq. 2) then
+        else if (ndim .eq. 2) then
             if (wave_type .eq. 'P ') then
                 wave_type_r = 0.d0
             else if (wave_type.eq.'S ') then
@@ -174,16 +173,16 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
         zr(jvalv-1+4) = wave_type_r
         call nocart(carte(2), 3, k8dummy, 'NUM', nb_elem,&
                     k8dummy, zi(j_elem), ' ', nb_cmp)
-
-100     continue
+!
+100      continue
 !
 ! ----- Check elements
 !
-        call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem, &
+        call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem,&
                     codret)
 !
         call jedetr(list_elem)
-
+!
     enddo
 !
 99  continue

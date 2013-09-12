@@ -1,6 +1,6 @@
 subroutine utest3(mclfac, iocc, tbref)
-    implicit   none
-#include "asterc/getvtx.h"
+    implicit none
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxnoac.h"
@@ -40,22 +40,18 @@ subroutine utest3(mclfac, iocc, tbref)
 !
     call jemarq()
 !
-    call getvtx(mclfac, 'LEGENDE', iocc, iarg, 0,&
-                legend, n0)
-    call getvtx(mclfac, 'REFERENCE', iocc, iarg, 0,&
-                refer, n2)
+    call getvtx(mclfac, 'LEGENDE', iocc=iocc, nbval=0, nbret=n0)
+    call getvtx(mclfac, 'REFERENCE', iocc=iocc, nbval=0, nbret=n2)
 !
     legend='XXXX'
     if (n0 .lt. 0) then
-        call getvtx(mclfac, 'LEGENDE', iocc, iarg, 1,&
-                    legend, n0)
+        call getvtx(mclfac, 'LEGENDE', iocc=iocc, scal=legend, nbret=n0)
         call lxnoac(legend, legend)
     endif
 !
     refer='NON_REGRESSION'
     if (n2 .lt. 0) then
-        call getvtx(mclfac, 'REFERENCE', iocc, iarg, 1,&
-                    refer, n2)
+        call getvtx(mclfac, 'REFERENCE', iocc=iocc, scal=refer, nbret=n2)
     endif
 !
     tbref(1)=refer

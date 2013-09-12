@@ -31,15 +31,14 @@ subroutine op0113()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -58,6 +57,7 @@ subroutine op0113()
 #include "asterfort/xmolig.h"
 #include "asterfort/xtyele.h"
 #include "asterfort/xvermo.h"
+!
     real(kind=8) :: crimax
     integer :: ibid, iel, ima
     integer :: i, j2
@@ -90,8 +90,7 @@ subroutine op0113()
 !
 ! --- NOM DU MODELE INITIAL
 !
-    call getvid(motfac, 'MODELE_IN', 1, iarg, 1,&
-                mod1, ibid)
+    call getvid(motfac, 'MODELE_IN', iocc=1, scal=mod1, nbret=ibid)
     ligr1 = mod1//'.MODELE'
     liel1 = ligr1//'.LIEL'
 !
@@ -107,8 +106,7 @@ subroutine op0113()
 !
 ! --- RECUPERER LE NOMBRE DE FISSURES
 !
-    call getvid(motfac, 'FISSURE', 1, iarg, 0,&
-                k8bid, nfiss)
+    call getvid(motfac, 'FISSURE', iocc=1, nbval=0, nbret=nfiss)
     nfiss = -nfiss
 !
 ! --- CREATION DES OBJETS POUR MULTIFISSURATION DANS MODELE MODIFIE
@@ -119,10 +117,9 @@ subroutine op0113()
 !
 ! --- RECUPERER LES FISSURES ET REMPLISSAGE DE MODELX//'.FISS'
 !
-    call getvid(motfac, 'FISSURE', 1, iarg, nfiss,&
-                zk8(jmofis), ibid)
-    call getvr8(motfac, 'CRITERE', 1, iarg, 1,&
-                crimax, ibid)
+    call getvid(motfac, 'FISSURE', iocc=1, nbval=nfiss, vect=zk8(jmofis),&
+                nbret=ibid)
+    call getvr8(motfac, 'CRITERE', iocc=1, scal=crimax, nbret=ibid)
 !
 !     VERIFICATION DE LA COHERENCE DES MOT-CLES FISSURE ET MODELE_IN
     call xvermo(nfiss, zk8(jmofis), mod1)
@@ -130,8 +127,7 @@ subroutine op0113()
 !
 ! --- CONTACT ?
 !
-    call getvtx(motfac, 'CONTACT', 1, iarg, 1,&
-                k8cont, ibid)
+    call getvtx(motfac, 'CONTACT', iocc=1, scal=k8cont, nbret=ibid)
     call wkvect(modelx//'.XFEM_CONT', 'G V I', 1, jxc)
     if (k8cont .eq. 'P1P1') then
         zi(jxc) = 1

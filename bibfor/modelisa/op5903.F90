@@ -1,10 +1,11 @@
 subroutine op5903(nbocci, compor)
     implicit none
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
+#include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lctest.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -42,7 +43,6 @@ subroutine op5903(nbocci, compor)
 !
 !     COMMANDE:  DEFI_COMPOR MOT-CLE MULTIFIBRE
 !
-#include "jeveux.h"
 !
     integer :: iarg, idbor, imi, imk, iocc, irett
     integer :: ibid, nbg, nbgmax, img, ig, ig1, jnfg, iaff
@@ -61,8 +61,7 @@ subroutine op5903(nbocci, compor)
     nbvf=0
     moclef='MULTIFIBRE'
 !
-    call getvid(' ', 'GEOM_FIBRE', 0, iarg, 1,&
-                sdgf, ibid)
+    call getvid(' ', 'GEOM_FIBRE', scal=sdgf, nbret=ibid)
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'
     rnomgf = sdgf//'.NOMS_GROUPES'
     call jeveuo(vnbfig, 'L', jnfg)
@@ -76,15 +75,12 @@ subroutine op5903(nbocci, compor)
     idbor = 0
 !
     do 25 iocc = 1, nbocci
-        call getvtx(moclef, 'GROUP_FIBRE', iocc, iarg, 0,&
-                    k8bid, nbg)
+        call getvtx(moclef, 'GROUP_FIBRE', iocc=iocc, nbval=0, nbret=nbg)
         nbg=-nbg
-        call getvtx(moclef, 'GROUP_FIBRE', iocc, iarg, nbg,&
-                    zk24(img), ibid)
-        call getvid(moclef, 'MATER', iocc, iarg, 1,&
-                    materi, ibid)
-        call getvtx(moclef, 'RELATION', iocc, iarg, 1,&
-                    nomrel, ibid)
+        call getvtx(moclef, 'GROUP_FIBRE', iocc=iocc, nbval=nbg, vect=zk24(img),&
+                    nbret=ibid)
+        call getvid(moclef, 'MATER', iocc=iocc, scal=materi, nbret=ibid)
+        call getvtx(moclef, 'RELATION', iocc=iocc, scal=nomrel, nbret=ibid)
         ncomel = 1
         lcomel(ncomel) = nomrel
 !        AFFECTATION ALGO_1D ANALYTIQUE OU DEBORST
@@ -143,8 +139,7 @@ subroutine op5903(nbocci, compor)
 51  end do
 !
 !     ON RECUPERE LE NOM DU MATERIAU POUR LA TORSION, MIS A LA FIN
-    call getvid(' ', 'MATER_SECT', 0, iarg, 1,&
-                mator, ibid)
+    call getvid(' ', 'MATER_SECT', scal=mator, nbret=ibid)
     zk24(imk-1+nbgmax*6+1)=mator
     call wkvect(compor//'.CPRI', 'G V I', 3, imi)
 !     TYPE 3 = MULTIFIBRE

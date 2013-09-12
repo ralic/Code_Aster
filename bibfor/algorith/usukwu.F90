@@ -20,7 +20,7 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
 ! ======================================================================
 !----------------------------------------------------------------------
 !
-#include "asterc/getvr8.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/u2mess.h"
     real(kind=8) :: fn(*), vg(*), para(*)
@@ -58,10 +58,8 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
 !
 !     --- RECHERCHE DES MAX ---
 !
-    call getvr8(' ', 'FNOR_MAXI', 1, iarg, 1,&
-                fnm, n1)
-    call getvr8(' ', 'VTAN_MAXI', 1, iarg, 1,&
-                vgm, n2)
+    call getvr8(' ', 'FNOR_MAXI', scal=fnm, nbret=n1)
+    call getvr8(' ', 'VTAN_MAXI', scal=vgm, nbret=n2)
     if ((n1+n2) .eq. 0) then
         fnm = zero
         vgm = zero

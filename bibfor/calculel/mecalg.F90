@@ -1,6 +1,6 @@
 subroutine mecalg(optioz, result, modele, depla, theta,&
-                  mate, lischa, symech, compor,incr,&
-                  time, iord, nbprup, noprup,chvite,&
+                  mate, lischa, symech, compor, incr,&
+                  time, iord, nbprup, noprup, chvite,&
                   chacce, lmelas, nomcas, kcalc)
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -48,16 +48,15 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterfort/assert.h"
 #include "asterfort/alchml.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/chpver.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gcharg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
@@ -71,6 +70,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
+!
     character(len=8) :: modele, result, symech
     character(len=8) :: kcalc
     character(len=19) :: lischa
@@ -133,8 +133,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     celmod = '&&MECALG.CELMOD'
     sigout = '&&MECALG.SIGOUT'
 !
-    call getvid('THETA', 'FISSURE', 1, iarg, 1,&
-                fiss, ibid)
+    call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
 !
@@ -145,8 +144,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !- RECUPERATION DU COMPORTEMENT
 !
     if (incr) then
-        call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                    resu, nres)
+        call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
         call rsexch('F', resu, 'SIEF_ELGA', iord, chsig,&
                     iret)
         call rsexch('F', resuco, 'EPSP_ELNO', iord, chepsp,&
@@ -157,8 +155,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 !- RECUPERATION DE L'ETAT INITIAL
     if (incr) then
-        call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                    chsigi, nsig)
+        call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=nsig)
 !- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
         if (nsig .ne. 0) then
             call chpver('C', chsigi(1:19), 'ELNO', 'SIEF_R', ino1)
@@ -190,7 +187,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
     call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                 chpres, chepsi, chpesa, chrota, lfonc,&
-                time  , iord)
+                time, iord)
 !
     if (lfonc) then
         pavolu = 'PFFVOLU'
@@ -348,8 +345,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     endif
 !
     if (kcalc .eq. 'NON') then
-        call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                    resu, iret)
+        call getvid(' ', 'RESULTAT', scal=resu, nbret=iret)
         call rsexch(' ', resu, 'SIEF_ELGA', iord, chsig,&
                     iret)
         lpain(nchin+1) = 'PCONTGR'
@@ -371,8 +367,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 !- IMPRESSION DE G ET ECRITURE DANS LA TABLE RESULT
 !
-    call getvis('THETA', 'NUME_FOND', 1, iarg, 1,&
-                numfon, ibid)
+    call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
     if (lxfem) then
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)

@@ -1,13 +1,12 @@
 subroutine asefen(muapde, nomsy, id, stat, neq,&
                   nbsup, ndir, nsupp, masse, nomsup,&
                   depsup, recmod, nintra, nbdis)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -22,6 +21,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 #include "asterfort/rsorac.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: id, neq, nbsup, nsupp(*), ndir(*), nintra, nbdis(nbsup)
     real(kind=8) :: depsup(nbsup, *), recmod(nbsup, neq, *)
     character(len=*) :: stat, nomsup(nbsup, *), masse
@@ -88,27 +88,21 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     inorf =0
 !
     motfac ='DEPL_MULT_APPUI'
-    call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', 1, iarg, 0,&
-                k8b, ns)
+    call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=1, nbval=0, nbret=ns)
     if (ns .ne. 0) then
         call getfac(motfac, ncas)
         do 2 ioc = 1, ncas
-            call getvtx(motfac, 'NOEUD_REFE', ioc, iarg, 1,&
-                        noeref, nnr)
+            call getvtx(motfac, 'NOEUD_REFE', iocc=ioc, scal=noeref, nbret=nnr)
             if (nnr .ne. 0) inorf = 1
-            call getvtx(motfac, 'NOEUD', ioc, iarg, 0,&
-                        noeu, nn)
+            call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
             if (nn .ne. 0) then
                 nno = -nn
                 call wkvect('&&ASEFEN.NOEUD', 'V V K8', nno, jnoe)
-                call getvtx(motfac, 'NOEUD', ioc, iarg, nno,&
-                            zk8(jnoe), nn)
-                call getvr8(motfac, 'DX', ioc, iarg, 1,&
-                            dx, nx)
-                call getvr8(motfac, 'DY', ioc, iarg, 1,&
-                            dy, ny)
-                call getvr8(motfac, 'DZ', ioc, iarg, 1,&
-                            dz, nz)
+                call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe),&
+                            nbret=nn)
+                call getvr8(motfac, 'DX', iocc=ioc, scal=dx, nbret=nx)
+                call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
+                call getvr8(motfac, 'DZ', iocc=ioc, scal=dz, nbret=nz)
                 do 22 ino = 1, nno
                     noeu = zk8(jnoe+ino-1)
                     call jenonu(jexnom(obj2, noeu), iret)
@@ -139,18 +133,14 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 !
             else
 !
-                call getvtx(motfac, 'GROUP_NO', ioc, iarg, 0,&
-                            k8b, ng)
+                call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=ng)
                 ngr = -ng
                 call wkvect('&&ASEFEN.GROUP_NO', 'V V K24', ngr, jgrn)
-                call getvtx(motfac, 'GROUP_NO', ioc, iarg, ngr,&
-                            zk24(jgrn), ng)
-                call getvr8(motfac, 'DX', ioc, iarg, 1,&
-                            dx, nx)
-                call getvr8(motfac, 'DY', ioc, iarg, 1,&
-                            dy, ny)
-                call getvr8(motfac, 'DZ', ioc, iarg, 1,&
-                            dz, nz)
+                call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=zk24(jgrn),&
+                            nbret=ng)
+                call getvr8(motfac, 'DX', iocc=ioc, scal=dx, nbret=nx)
+                call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
+                call getvr8(motfac, 'DZ', iocc=ioc, scal=dz, nbret=nz)
 !
                 do 26 igr = 1, ngr
                     grnoeu = zk24(jgrn+igr-1)

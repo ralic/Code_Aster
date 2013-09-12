@@ -1,21 +1,20 @@
 subroutine calirc(chargz)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/calir3.h"
 #include "asterfort/calir4.h"
 #include "asterfort/calir5.h"
-#include "asterfort/char_read_tran.h"
 #include "asterfort/calirg.h"
 #include "asterfort/canort.h"
+#include "asterfort/char_read_tran.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprel.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -34,6 +33,7 @@ subroutine calirc(chargz)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chargz
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
@@ -188,11 +188,9 @@ subroutine calirc(chargz)
         dnor=.false.
         typrac=' '
         if (typlia .eq. 'DEPL') then
-            call getvtx(motfac, 'DDL_ESCL', iocc, iarg, 1,&
-                        ddl2, nddl2)
+            call getvtx(motfac, 'DDL_ESCL', iocc=iocc, scal=ddl2, nbret=nddl2)
             if (nddl2 .gt. 0) dnor=.true.
-            call getvtx(motfac, 'TYPE_RACCORD', iocc, iarg, 1,&
-                        typrac, ibid)
+            call getvtx(motfac, 'TYPE_RACCORD', iocc=iocc, scal=typrac, nbret=ibid)
             if (typrac .eq. 'COQUE') ASSERT(ndim.eq.3)
             if (typrac .eq. 'COQUE_MASSIF') ASSERT(ndim.eq.3)
             if (typrac .eq. 'MASSIF_COQUE') ASSERT(ndim.eq.3)
@@ -267,8 +265,8 @@ subroutine calirc(chargz)
                 zi(indire+zi(jnunoe+i-1)-1)=i
 30          continue
 !
-            call canort(noma, nbma2, zi(idmai2), ndim,&
-                        nbno2, zi(jnunoe), 1)
+            call canort(noma, nbma2, zi(idmai2), ndim, nbno2,&
+                        zi(jnunoe), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
             call jedupo('&&NBNLMA.LN', 'V', '&&CALIRC.LINONU2', .false.)
             call jeveuo('&&CALIRC.LINONU2', 'L', iagno2)
@@ -278,8 +276,7 @@ subroutine calirc(chargz)
 !       1.3 ON ELIMINE DE LINONU2 LES NOEUDS DEJA ELIMINES LORS DES
 !           OCCURENCES PRECEDENTES DE LIAISON_MAILLE
 !       ---------------------------------------------------------------
-        call getvtx(motfac, 'ELIM_MULT', iocc, iarg, 1,&
-                    kelim, ibid)
+        call getvtx(motfac, 'ELIM_MULT', iocc=iocc, scal=kelim, nbret=ibid)
         if (kelim .eq. 'NON') then
             kkno2=0
             call wkvect('&&CALIRC.LINONU2BIS', 'V V I', nbno2, jnu2bs)
@@ -304,20 +301,20 @@ subroutine calirc(chargz)
 !
 !       1.4 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 !       ------------------------------------------
-
+!
 !
 ! ----- Read transformation
 !
-        call char_read_tran(motfac, iocc , ndim, l_tran, tran, &
+        call char_read_tran(motfac, iocc, ndim, l_tran, tran,&
                             l_cent, cent, l_angl_naut, angl_naut)
 !
 ! ----- Apply trasnformation
 !
         geom2='&&CALIRC.GEOM_TRANSF'
         list_node = '&&CALIRC.LINONU2'
-        call calirg(noma, nbno2, list_node, tran,  cent,  &
+        call calirg(noma, nbno2, list_node, tran, cent,&
                     l_angl_naut, angl_naut, geom2, lrota, mrota)
-
+!
 !       -- LROTA = .TRUE. : ON A UTILISE LE MOT CLE ANGL_NAUT
         if (typrac .eq. 'COQUE_MASSIF') ASSERT(.not.lrota)
         if (typrac .eq. 'MASSIF_COQUE') ASSERT(.not.lrota)

@@ -38,10 +38,10 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
 !---------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvid.h"
 #include "asterfort/ca2mam.h"
 #include "asterfort/calmaa.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
@@ -71,12 +71,10 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
     call jemarq()
     n7=0
     if (getexm(' ','CHAM_NO') .eq. 1) then
-        call getvid(' ', 'CHAM_NO', 0, iarg, 0,&
-                    chamno, n6)
+        call getvid(' ', 'CHAM_NO', nbval=0, nbret=n6)
         n7 =-n6
     endif
-    call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                modmec, n5)
+    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
 !------ RECUPERATION D'ARGUMENTS COMMUNS AUX CALCULS DES DEUX ---
 !-------------------------MATR_ELEM -----------------------------
 !

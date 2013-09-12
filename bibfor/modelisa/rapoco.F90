@@ -20,11 +20,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !    ATTENTION CETTE PROGRAMMATION SUPPOSE QUE L'OBJET NUEQ EST UN
 !    VECTEUR IDENTITE. A MODIFIER
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
@@ -36,6 +32,9 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/exisdg.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprel.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -58,6 +57,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc
     character(len=8) :: charge
     character(len=14) :: numddl
@@ -117,8 +117,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     lisrel = lisrez
 !
     motfac = 'LIAISON_ELEM'
-    call getvtx(motfac, 'OPTION', iocc, iarg, 1,&
-                option, iop)
+    call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
     if ((option.ne.'COQ_POU') .and. (option.ne.'COQ_TUYA')) then
         call u2mesk('F', 'MODELISA6_39', 1, option)
     endif
@@ -172,11 +171,9 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- SI NON TYPLAG = '12' :
 !     -------------------
 !
-    call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 0,&
-                k8bid, narl)
+    call getvtx(motfac, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=narl)
     if (narl .ne. 0) then
-        call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 1,&
-                    poslag, nrl)
+        call getvtx(motfac, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=nrl)
         if (poslag(1:5) .eq. 'APRES') then
             typlag = '22'
         else
@@ -319,8 +316,8 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- RECUPERATION DU VECTEUR ORIENTANT LA POUTRE ET DIRIGE
 ! --- DE LA PARTIE COQUE VERS LA PARTIE POUTRE :
 !     ----------------------------------------
-    call getvr8(motfac, 'AXE_POUTRE', iocc, iarg, 3,&
-                axepou, naxe)
+    call getvr8(motfac, 'AXE_POUTRE', iocc=iocc, nbval=3, vect=axepou,&
+                nbret=naxe)
     if (naxe .eq. 0) then
         call u2mess('F', 'MODELISA6_51')
     endif
@@ -349,8 +346,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES :
 !     ----------------------------------------------
-    call getvid(motfac, 'CARA_ELEM', iocc, iarg, 1,&
-                cara, ncara)
+    call getvid(motfac, 'CARA_ELEM', iocc=iocc, scal=cara, nbret=ncara)
     if (ncara .eq. 0) then
         call u2mess('F', 'MODELISA6_53')
     endif
@@ -450,8 +446,10 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VERIFICATION DE L'IDENTITE GEOMETRIQUE DE G AVEC LE
 ! --- NOEUD POUTRE A RACCORDER :
 !     ------------------------
-    dnorme = sqrt((xpou-xg)* (xpou-xg)+ (ypou-yg)* (ypou-yg)+ (zpou-zg)* (zpou-zg)) &
-           / sqrt(s/3.14159265d0)
+    dnorme = sqrt(&
+             (xpou-xg)* (xpou-xg)+ (ypou-yg)* (ypou-yg)+ (zpou-zg)* (zpou-zg)) / sqrt(s/3.1415926&
+             &5d0&
+             )
     if (dnorme .gt. eps) then
         valr(1) = xg
         valr(2) = yg

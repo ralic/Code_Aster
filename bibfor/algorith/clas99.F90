@@ -24,13 +24,12 @@ subroutine clas99(nomres)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/camoat.h"
 #include "asterfort/camoch.h"
 #include "asterfort/camoco.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -41,6 +40,7 @@ subroutine clas99(nomres)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: vali
 !
 !
@@ -63,18 +63,21 @@ subroutine clas99(nomres)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('F', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid, raid  , ir)
-    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid, mass  , ir)
-    call dismoi('F', 'NUME_DDL'     , nomres, 'RESU_DYNA', ibid, numddl, ir)
-    call dismoi('F', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid, intf  , ir)
+    call dismoi('F', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid,&
+                raid, ir)
+    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid,&
+                mass, ir)
+    call dismoi('F', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
+                numddl, ir)
+    call dismoi('F', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid,&
+                intf, ir)
 !
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
 !
 ! --- RECUPERATION DU NOMBRE DE MODE_MECA A PRENDRE EN COMPTE
 !
-    call getvid('CLASSIQUE', 'MODE_MECA', 1, iarg, 0,&
-                kbid, nbmome)
+    call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=0, nbret=nbmome)
     nbmome = -nbmome
 !
 ! --- CREATION DES OBJETS TEMPORAIRES
@@ -82,10 +85,9 @@ subroutine clas99(nomres)
     call wkvect('&&CLAS99.LIST.MODE_MECA', 'V V K8', nbmome, ltmome)
     call wkvect('&&CLAS99.LIST.NBMOD', 'V V I', nbmome, ltnbmo)
 !
-    call getvid('CLASSIQUE', 'MODE_MECA', 1, iarg, nbmome,&
-                zk8(ltmome), ibid)
-    call getvis('CLASSIQUE', 'NMAX_MODE', 1, iarg, 1,&
-                nbmout, nbid)
+    call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=nbmome, vect=zk8(ltmome),&
+                nbret=ibid)
+    call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nbmout, nbret=nbid)
 !
 ! --- DETERMINATION DU NOMBRE TOTAL DE MODES PROPRES DE LA BASE
 !

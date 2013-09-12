@@ -23,12 +23,12 @@ subroutine op0159()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jacopo.h"
@@ -63,20 +63,17 @@ subroutine op0159()
     call getres(xsol, concep, nomcmd)
     csol19=xsol
 !
-    call getvid('  ', 'MATR', 0, iarg, 1,&
-                matr, nb)
+    call getvid('  ', 'MATR', scal=matr, nbret=nb)
     ASSERT(nb.eq.1)
 !
-    call getvid('  ', 'CHAM_NO', 0, iarg, 1,&
-                secmbr, nb)
+    call getvid('  ', 'CHAM_NO', scal=secmbr, nbret=nb)
     ASSERT(nb.eq.1)
     call chpver('F', secmbr, 'NOEU', '*', ier)
     secm19=secmbr
 !
 !
     vcine = ' '
-    call getvid('  ', 'CHAM_CINE', 0, iarg, 1,&
-                vcine, nb)
+    call getvid('  ', 'CHAM_CINE', scal=vcine, nbret=nb)
     if (nb .eq. 1) call chpver('F', vcine, 'NOEU', '*', ier)
     vci19=vcine
 !

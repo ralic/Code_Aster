@@ -3,25 +3,25 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                   amogen, desca, typbas, basemo, tinit,&
                   tfin, dtarch, nbsauv, itemax, prec,&
                   xlambd, lflu, nbchoc, logcho, dplmod,&
-                  parcho, noecho, nbrede, dplred, &
-                  fonred, nbrevi, dplrev, fonrev, depsto,&
-                  vitsto, accsto, passto, iorsto, temsto,&
-                  fchost, dchost, vchost, ichost, iredst,&
-                  dredst, coefm, liad, inumor, idescf,&
-                  nofdep, nofvit, nofacc, nomfon, psidel,&
-                  monmot, nbpal, dtsto, vrotat, prdeff,&
-                  method, nomres, nbexci, irevst, drevst)
+                  parcho, noecho, nbrede, dplred, fonred,&
+                  nbrevi, dplrev, fonrev, depsto, vitsto,&
+                  accsto, passto, iorsto, temsto, fchost,&
+                  dchost, vchost, ichost, iredst, dredst,&
+                  coefm, liad, inumor, idescf, nofdep,&
+                  nofvit, nofacc, nomfon, psidel, monmot,&
+                  nbpal, dtsto, vrotat, prdeff, method,&
+                  nomres, nbexci, irevst, drevst)
 !
 ! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
 #include "asterc/etausr.h"
-#include "asterc/getvid.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/frqapp.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -362,17 +362,17 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !         CAS DES FORCES DE LAME FLUIDE
 !
-        call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfext),&
+        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
                     zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
-                    logcho   , dplmod   , parcho   , noecho    , zr(jchor),&
-                    nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
-                    nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&
-                    tinit    , nofdep   , nofvit   , nofacc    , nbexci   , psidel,&
-                    monmot   , 0        , fbid     , fbid      , 0.d0     ,&
-                    k8bid    , 1        , 0        , dt2       , dtsto    ,&
-                    vrotat   , typal    , finpal   , cnpal     , prdeff   ,&
-                    conv     , fsauv)
-
+                    logcho, dplmod, parcho, noecho, zr(jchor),&
+                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                    tinit, nofdep, nofvit, nofacc, nbexci,&
+                    psidel, monmot, 0, fbid, fbid,&
+                    0.d0, k8bid, 1, 0, dt2,&
+                    dtsto, vrotat, typal, finpal, cnpal,&
+                    prdeff, conv, fsauv)
+!
         if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
 !
 !     --- ACCELERATIONS GENERALISEES INITIALES ---
@@ -385,16 +385,16 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !       CAS CLASSIQUE
 !
         call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                    masgen, r8b      , pulsa2   , amogen   , nbchoc   ,&
-                    logcho, dplmod   , parcho   , noecho   , zr(jchor),&
-                    nbrede, dplred   , fonred   , zr(jredr), zi(jredi),&
-                    nbrevi, dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
-                    tinit , nofdep   , nofvit   , nofacc   , nbexci   , psidel,&
-                    monmot, 0        , fbid     , fbid     , 0.d0     ,&
-                    k8bid , 1        , nbpal    , dt2      , dtsto    ,&
-                    vrotat, typal    , finpal   , cnpal    , prdeff   ,&
-                    conv  , fsauv)
-
+                    masgen, r8b, pulsa2, amogen, nbchoc,&
+                    logcho, dplmod, parcho, noecho, zr(jchor),&
+                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                    tinit, nofdep, nofvit, nofacc, nbexci,&
+                    psidel, monmot, 0, fbid, fbid,&
+                    0.d0, k8bid, 1, nbpal, dt2,&
+                    dtsto, vrotat, typal, finpal, cnpal,&
+                    prdeff, conv, fsauv)
+!
         if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
 !
 !
@@ -502,17 +502,17 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !           --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
                     ii = ii + 1
-                    call mdfnli(neqgen   ,zr(jdep2),zr(jvip2),zr(jacgi1),zr(jfexti),&
-                                zr(jmass),zr(jphi2),zr(jpuls),zr(jamogi),nbchoc,&
-                                logcho   ,dplmod  ,parcho   ,noecho    ,zr(jcho2),&
-                                nbrede   ,dplred  ,fonred   ,zr(jredr) ,zi(jredi),&
-                                nbrevi   ,dplrev  ,fonrev   ,zr(jrevr) ,zi(jrevi),&  
-                                r8val    ,nofdep  ,nofvit   ,nofacc    ,nbexci,psidel,&
-                                monmot   ,0       ,fbid     ,fbid      ,0.d0     ,&
-                                k8bid    ,ii      ,nbpal    ,dt2       ,dtsto    ,&
-                                vrotat   ,typal   ,finpal   ,cnpal     ,prdeff   ,&
-                                conv     ,fsauv)
-
+                    call mdfnli(neqgen, zr(jdep2), zr(jvip2), zr(jacgi1), zr(jfexti),&
+                                zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
+                                logcho, dplmod, parcho, noecho, zr(jcho2),&
+                                nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                                nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                                r8val, nofdep, nofvit, nofacc, nbexci,&
+                                psidel, monmot, 0, fbid, fbid,&
+                                0.d0, k8bid, ii, nbpal, dt2,&
+                                dtsto, vrotat, typal, finpal, cnpal,&
+                                prdeff, conv, fsauv)
+!
                     if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
 !
 !
@@ -553,16 +553,16 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                 r8val = temps + dt2
                 ii = ii + 1
                 call mdfnli(neqgen, zr(jdep2), zr(jvip2), zr(jacce), zr( jfext),&
-                            r8b   , r8b      , r8b      , r8b      , nbchoc,&
-                            logcho, dplmod   , parcho   , noecho, zr(jcho2),&
-                            nbrede, dplred   , fonred   , zr(jredr) ,zi(jredi),&
-                            nbrevi, dplrev   , fonrev   , zr(jrevr) ,zi(jrevi),&  
-                            r8val , nofdep   , nofvit   , nofacc, nbexci, psidel,&
-                            monmot, 0        , fbid     , fbid     , 0.d0,&
-                            k8bid , ii       , nbpal    , dt2      , dtsto,&
-                            vrotat, typal, finpal, cnpal, prdeff,&
-                            conv, fsauv)
-
+                            r8b, r8b, r8b, r8b, nbchoc,&
+                            logcho, dplmod, parcho, noecho, zr(jcho2),&
+                            nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                            nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                            r8val, nofdep, nofvit, nofacc, nbexci,&
+                            psidel, monmot, 0, fbid, fbid,&
+                            0.d0, k8bid, ii, nbpal, dt2,&
+                            dtsto, vrotat, typal, finpal, cnpal,&
+                            prdeff, conv, fsauv)
+!
                 if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
 !
 !
@@ -749,8 +749,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     if (tps1(1) .le. max(tjob/100.d0,15.d0)) then
         if (nomres .eq. '&&OP0074') then
 !       --- CAS D'UNE POURSUITE ---
-            call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                        tran, ndt)
+            call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=ndt)
             if (ndt .ne. 0) call resu74(tran, nomres)
         endif
         call mdsize(nomres, isto1, neqgen, nbchoc, nbrede,&

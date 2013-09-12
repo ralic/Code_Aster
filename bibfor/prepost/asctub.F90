@@ -1,9 +1,9 @@
 subroutine asctub(mailla)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8pi.h"
 #include "asterfort/asctri.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -46,14 +46,10 @@ subroutine asctub(mailla)
 !
     call jemarq()
 !
-    call getvr8('PLAQ_TUBE', 'DEXT', 1, iarg, 1,&
-                dext, n1)
-    call getvr8('PLAQ_TUBE', 'EPAIS', 1, iarg, 1,&
-                ep, n1)
-    call getvr8('PLAQ_TUBE', 'AZIMUT', 1, iarg, 1,&
-                azim, n1)
-    call getvr8('PLAQ_TUBE', 'L_TUBE_P1', 1, iarg, 1,&
-                ltchar, n1)
+    call getvr8('PLAQ_TUBE', 'DEXT', iocc=1, scal=dext, nbret=n1)
+    call getvr8('PLAQ_TUBE', 'EPAIS', iocc=1, scal=ep, nbret=n1)
+    call getvr8('PLAQ_TUBE', 'AZIMUT', iocc=1, scal=azim, nbret=n1)
+    call getvr8('PLAQ_TUBE', 'L_TUBE_P1', iocc=1, scal=ltchar, nbret=n1)
 !
     rm = (dext-ep)/2.d0
 !

@@ -17,11 +17,11 @@ subroutine listap(motfac, iexci, typapp)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
     character(len=16) :: motfac
     integer :: iexci
     character(len=16) :: typapp
@@ -46,15 +46,14 @@ subroutine listap(motfac, iexci, typapp)
 ! ----------------------------------------------------------------------
 !
     integer :: eximc
-    integer :: n,iarg
+    integer :: n, iarg
 !
 ! ----------------------------------------------------------------------
 !
     eximc = getexm(motfac,'TYPE_CHARGE')
-
+!
     if (eximc .eq. 1) then
-        call getvtx(motfac, 'TYPE_CHARGE', iexci, iarg, 1,&
-                    typapp, n)
+        call getvtx(motfac, 'TYPE_CHARGE', iocc=iexci, scal=typapp, nbret=n)
         ASSERT(n.eq.1)
     else
         typapp = 'FIXE_CSTE'

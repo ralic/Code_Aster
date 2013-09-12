@@ -1,5 +1,5 @@
 subroutine op0054()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,16 +23,15 @@ subroutine op0054()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcou2d.h"
 #include "asterfort/gcouro.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gimpte.h"
 #include "asterfort/gver2d.h"
 #include "asterfort/gverig.h"
@@ -48,6 +47,7 @@ subroutine op0054()
 #include "asterfort/u2mess.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+!
     real(kind=8) :: module
 !
     integer :: nbv, nbr8, nbno, nocc2d, nocc3d, iadrt1
@@ -55,7 +55,7 @@ subroutine op0054()
     integer :: icode, ific, n1, ibid, ier
     real(kind=8) :: r8b, dir(3), rinf, rsup
     logical :: ldirec
-    character(len=8) ::  noma, modele, fond, resu, noeud, format, config
+    character(len=8) :: noma, modele, fond, resu, noeud, format, config
     character(len=16) :: type, oper, fichie, valk(2)
     character(len=24) :: trav1, trav2, trav3, trav4, stok4
     character(len=24) :: obj1, nomno, coorn, obj2, taillr
@@ -71,20 +71,17 @@ subroutine op0054()
 !
     call getres(resu, type, oper)
 !
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                modele, nbv)
+    call getvid(' ', 'MODELE', scal=modele, nbret=nbv)
 !
     call getfac('THETA_3D', nocc3d)
     call getfac('THETA_2D', nocc2d)
     call getfac('IMPRESSION', impr)
 !
     if (impr .ne. 0) then
-        call getvtx('IMPRESSION', 'FORMAT ', 1, iarg, 1,&
-                    format, nbv)
+        call getvtx('IMPRESSION', 'FORMAT ', iocc=1, scal=format, nbret=nbv)
         ific = 0
         fichie = ' '
-        call getvis('IMPRESSION', 'UNITE', 1, iarg, 1,&
-                    ific, n1)
+        call getvis('IMPRESSION', 'UNITE', iocc=1, scal=ific, nbret=n1)
         if (.not. ulexis( ific )) then
             call ulopen(ific, ' ', fichie, 'NEW', 'O')
         endif
@@ -136,19 +133,16 @@ subroutine op0054()
 !
     if (nocc3d .ne. 0) then
 !
-        call getvid(' ', 'FOND_FISS', 0, iarg, 1,&
-                    fond, nbv)
+        call getvid(' ', 'FOND_FISS', scal=fond, nbret=nbv)
 !
-        call getvr8(' ', 'DIRECTION', 0, iarg, 0,&
-                    r8b, nbr8)
+        call getvr8(' ', 'DIRECTION', nbval=0, nbret=nbr8)
 !
         if (nbr8 .ne. 0) then
             nbr8 = -nbr8
             if (nbr8 .ne. 3) then
                 call u2mess('F', 'RUPTURE1_30')
             else
-                call getvr8(' ', 'DIRECTION', 0, iarg, 3,&
-                            dir, nbr8)
+                call getvr8(' ', 'DIRECTION', nbval=3, vect=dir, nbret=nbr8)
                 ldirec = .true.
             endif
         endif
@@ -193,16 +187,14 @@ subroutine op0054()
 !
     if (nocc2d .ne. 0) then
 !
-        call getvr8(' ', 'DIRECTION', 0, iarg, 0,&
-                    r8b, nbr8)
+        call getvr8(' ', 'DIRECTION', nbval=0, nbret=nbr8)
 !
         if (nbr8 .ne. 0) then
             nbr8 = -nbr8
             if (nbr8 .ne. 3) then
                 call u2mess('F', 'RUPTURE1_30')
             else
-                call getvr8(' ', 'DIRECTION', 0, iarg, 3,&
-                            dir, nbr8)
+                call getvr8(' ', 'DIRECTION', nbval=3, vect=dir, nbret=nbr8)
                 ldirec = .true.
             endif
         else

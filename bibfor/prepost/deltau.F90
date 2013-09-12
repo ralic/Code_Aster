@@ -18,9 +18,8 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
 #include "asterc/r8pi.h"
@@ -29,6 +28,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedisp.h"
@@ -133,8 +133,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
 ! RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 !
-    call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                chmat1, iret)
+    call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
     chmat = chmat1//'.CHAMP_MAT'
     cesmat = '&&DELTAU.CESMAT'
     call carces(chmat, 'ELEM', ' ', 'V', cesmat,&

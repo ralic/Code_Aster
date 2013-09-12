@@ -20,8 +20,8 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -68,8 +68,7 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
 !
     call jeveuo(liscmp, 'E', jlicmp)
     call jelira(liscmp, 'LONMAX', ival=nddl)
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomo, ibid)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
     call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', iadrma)
     nomap = zk8(iadrma)
     call dismoi('F', 'DIM_GEOM', nomap, 'MAILLAGE', ndim,&

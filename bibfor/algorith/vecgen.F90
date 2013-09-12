@@ -27,12 +27,11 @@ subroutine vecgen(nomres, numeg)
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -54,6 +53,7 @@ subroutine vecgen(nomres, numeg)
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
+!
     integer :: ier
 !
 !
@@ -228,8 +228,7 @@ subroutine vecgen(nomres, numeg)
 !        LE .LICH.
 !-----------------------------------------------------------------------
 !
-        call getvtx(motfac, 'SOUS_STRUC', i, iarg, 0,&
-                    nomsst, ioc)
+        call getvtx(motfac, 'SOUS_STRUC', iocc=i, nbval=0, nbret=ioc)
         ioc = -ioc
         if (ioc .ne. 1) then
             vali (1) = i
@@ -238,8 +237,7 @@ subroutine vecgen(nomres, numeg)
             call u2mesg('F', 'ALGORITH15_70', 0, ' ', 3,&
                         vali, 0, 0.d0)
         else
-            call getvtx(motfac, 'SOUS_STRUC', i, iarg, 1,&
-                        nomsst, ioc)
+            call getvtx(motfac, 'SOUS_STRUC', iocc=i, scal=nomsst, nbret=ioc)
         endif
         zk8(ldnsst+i-1) = nomsst
 !
@@ -248,8 +246,7 @@ subroutine vecgen(nomres, numeg)
 !        DANS LE .LICH
 !-----------------------------------------------------------------------
 !
-        call getvid(motfac, 'VECT_ASSE', i, iarg, 0,&
-                    nom2mb, ioc)
+        call getvid(motfac, 'VECT_ASSE', iocc=i, nbval=0, nbret=ioc)
         ioc = -ioc
         if (ioc .ne. 1) then
             vali (1) = i
@@ -258,8 +255,7 @@ subroutine vecgen(nomres, numeg)
             call u2mesg('F', 'ALGORITH15_71', 0, ' ', 3,&
                         vali, 0, 0.d0)
         else
-            call getvid(motfac, 'VECT_ASSE', i, iarg, 1,&
-                        nom2mb, ioc)
+            call getvid(motfac, 'VECT_ASSE', iocc=i, scal=nom2mb, nbret=ioc)
             call chpver('F', nom2mb, 'NOEU', 'DEPL_R', ier)
         endif
 !
@@ -307,9 +303,11 @@ subroutine vecgen(nomres, numeg)
 !
         call mgutdm(modgen, nomsst, 0, 'NOM_BASE_MODALE', ibid,&
                     basmod)
-
-        call dismoi('F', 'NUME_DDL' , basmod, 'RESU_DYNA', ibid, nubamo, iret)
-        call dismoi('F', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid, typeba, iret)
+!
+        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                    nubamo, iret)
+        call dismoi('F', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid,&
+                    typeba, iret)
 !
         if (typeba(1:4) .ne. 'RITZ' .and. typeba(1:9) .ne. 'CLASSIQUE') then
             valk (1) = nomsst

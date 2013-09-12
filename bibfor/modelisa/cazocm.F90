@@ -20,13 +20,13 @@ subroutine cazocm(char, motfac, izone)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -111,8 +111,7 @@ subroutine cazocm(char, motfac, izone)
 !
 ! --- RECUPERATION DU TYPE D'APPARIEMENT
 !
-    call getvtx(motfac, 'APPARIEMENT', izone, iarg, 1,&
-                appa, noc)
+    call getvtx(motfac, 'APPARIEMENT', iocc=izone, scal=appa, nbret=noc)
     if (appa(1:5) .eq. 'NODAL') then
         zi(jmeth+zmeth*(izone-1)+1-1) = 0
     else if (appa(1:9) .eq. 'MAIT_ESCL') then
@@ -123,21 +122,18 @@ subroutine cazocm(char, motfac, izone)
 !
 ! --- PRESENCE DE DIST_POUTRE/DIST_COQUE
 !
-    call getvtx(motfac, 'DIST_POUTRE', izone, iarg, 1,&
-                typm, noc)
+    call getvtx(motfac, 'DIST_POUTRE', iocc=izone, scal=typm, nbret=noc)
     if (typm(1:3) .eq. 'OUI') then
         zi(jmeth+zmeth*(izone-1)+2-1) = 1
     endif
-    call getvtx(motfac, 'DIST_COQUE', izone, iarg, 1,&
-                typm, noc)
+    call getvtx(motfac, 'DIST_COQUE', iocc=izone, scal=typm, nbret=noc)
     if (typm(1:3) .eq. 'OUI') then
         zi(jmeth+zmeth*(izone-1)+3-1) = 1
     endif
 !
 ! --- TYPE DE NORMALE
 !
-    call getvtx(motfac, 'NORMALE', izone, iarg, 1,&
-                norm, noc)
+    call getvtx(motfac, 'NORMALE', iocc=izone, scal=norm, nbret=noc)
 !
     if (norm(1:4) .eq. 'MAIT') then
         if (norm(5:9) .eq. '_ESCL') then
@@ -153,8 +149,7 @@ subroutine cazocm(char, motfac, izone)
 !
 ! --- DEFINITION DU TYPE DE NORMALE - MAITRE
 !
-    call getvtx(motfac, 'VECT_MAIT', izone, iarg, 1,&
-                typnor, noc)
+    call getvtx(motfac, 'VECT_MAIT', iocc=izone, scal=typnor, nbret=noc)
 !
     if (typnor .eq. 'AUTO') then
         zi(jmeth+zmeth*(izone-1)+5-1) = 0
@@ -166,8 +161,8 @@ subroutine cazocm(char, motfac, izone)
             call u2mess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+5-1) = 1
-        call getvr8(motfac, 'MAIT_FIXE', izone, iarg, 3,&
-                    dir, noc)
+        call getvr8(motfac, 'MAIT_FIXE', iocc=izone, nbval=3, vect=dir,&
+                    nbret=noc)
         if (noc .eq. 0) then
             ASSERT(.false.)
         endif
@@ -186,8 +181,8 @@ subroutine cazocm(char, motfac, izone)
             call u2mess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+5-1) = 2
-        call getvr8(motfac, 'MAIT_VECT_Y', izone, iarg, 3,&
-                    dir, noc)
+        call getvr8(motfac, 'MAIT_VECT_Y', iocc=izone, nbval=3, vect=dir,&
+                    nbret=noc)
         if (noc .eq. 0) then
             ASSERT(.false.)
         endif
@@ -204,8 +199,7 @@ subroutine cazocm(char, motfac, izone)
 !
 ! --- DEFINITION DU TYPE DE NORMALE - ESCLAVE
 !
-    call getvtx(motfac, 'VECT_ESCL', izone, iarg, 1,&
-                typnor, noc)
+    call getvtx(motfac, 'VECT_ESCL', iocc=izone, scal=typnor, nbret=noc)
 !
     if (typnor .eq. 'AUTO') then
         zi(jmeth+zmeth*(izone-1)+6-1) = 0
@@ -217,8 +211,8 @@ subroutine cazocm(char, motfac, izone)
             call u2mess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+6-1) = 1
-        call getvr8(motfac, 'ESCL_FIXE', izone, iarg, 3,&
-                    dir, noc)
+        call getvr8(motfac, 'ESCL_FIXE', iocc=izone, nbval=3, vect=dir,&
+                    nbret=noc)
         if (noc .eq. 0) then
             ASSERT(.false.)
         endif
@@ -237,8 +231,8 @@ subroutine cazocm(char, motfac, izone)
             call u2mess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+6-1) = 2
-        call getvr8(motfac, 'ESCL_VECT_Y', izone, iarg, 3,&
-                    dir, noc)
+        call getvr8(motfac, 'ESCL_VECT_Y', iocc=izone, nbval=3, vect=dir,&
+                    nbret=noc)
         if (noc .eq. 0) then
             ASSERT(.false.)
         endif
@@ -255,14 +249,13 @@ subroutine cazocm(char, motfac, izone)
 !
 ! --- RECH. APPARIEMENT DANS UNE DIRECTION FIXE: DIRE_APPA
 !
-    call getvtx(motfac, 'TYPE_APPA', izone, iarg, 1,&
-                apty, noc)
+    call getvtx(motfac, 'TYPE_APPA', iocc=izone, scal=apty, nbret=noc)
     if (apty(1:6) .eq. 'PROCHE') then
         zi(jmeth+zmeth*(izone-1)+7-1) = 0
     else if (apty(1:4) .eq. 'FIXE') then
         zi(jmeth+zmeth*(izone-1)+7-1) = 1
-        call getvr8(motfac, 'DIRE_APPA', izone, iarg, 3,&
-                    dir, noc)
+        call getvr8(motfac, 'DIRE_APPA', iocc=izone, nbval=3, vect=dir,&
+                    nbret=noc)
         call normev(dir, noor)
         if (noor .le. r8prem()) then
             call u2mess('F', 'CONTACT3_15')
@@ -276,8 +269,7 @@ subroutine cazocm(char, motfac, izone)
 !
 ! --- PRESENCE DE VERIF
 !
-    call getvtx(motfac, 'RESOLUTION', izone, iarg, 1,&
-                veri, noc)
+    call getvtx(motfac, 'RESOLUTION', iocc=izone, scal=veri, nbret=noc)
     if (veri(1:3) .eq. 'NON') then
         zi(jmeth+zmeth*(izone-1)+22-1) = 1
         lcalc = .false.
@@ -285,11 +277,9 @@ subroutine cazocm(char, motfac, izone)
 !
 ! --- PARAMETRE APPARIEMENT: DIST_MAIT/DIST_ESCL
 !
-    call getvid(motfac, 'DIST_MAIT', izone, iarg, 1,&
-                jeuf1, noc)
+    call getvid(motfac, 'DIST_MAIT', iocc=izone, scal=jeuf1, nbret=noc)
     if (noc .ne. 0) zk8(jjfo1+izone-1) = jeuf1
-    call getvid(motfac, 'DIST_ESCL', izone, iarg, 1,&
-                jeuf2, noc)
+    call getvid(motfac, 'DIST_ESCL', iocc=izone, scal=jeuf2, nbret=noc)
     if (noc .ne. 0) zk8(jjfo2+izone-1) = jeuf2
 !
 ! --- PARAMETRE APPARIEMENT: TOLE_PROJ_EXT
@@ -297,8 +287,7 @@ subroutine cazocm(char, motfac, izone)
 ! --- TOLE_PROJ_EXT >0: LA PROJECTION HORS DE LA MAILLE EST AUTORISEE
 ! ---                    MAIS LIMITEE PAR TOLJ
 !
-    call getvr8(motfac, 'TOLE_PROJ_EXT', izone, iarg, 1,&
-                tolj, noc)
+    call getvr8(motfac, 'TOLE_PROJ_EXT', iocc=izone, scal=tolj, nbret=noc)
     if (tolj .lt. 0.d0) then
         zr(jtole+ztole*(izone-1)+1-1) = -1.d0
     else
@@ -309,8 +298,7 @@ subroutine cazocm(char, motfac, izone)
 ! --- TOLE_APPA <0: ON APPARIE QUELQUE SOIT LA DISTANCE ESCLAVE/MAITRE
 ! --- TOLE_APPA >0: ON APPARIE SI DISTANCE ESCLAVE/MAITRE<TOLE
 !
-    call getvr8(motfac, 'TOLE_APPA', izone, iarg, 1,&
-                tola, noc)
+    call getvr8(motfac, 'TOLE_APPA', iocc=izone, scal=tola, nbret=noc)
     if (tola .lt. 0.d0) then
         zr(jtole+ztole*(izone-1)+2-1) = -1.d0
     else
@@ -320,8 +308,7 @@ subroutine cazocm(char, motfac, izone)
 ! --- SPECIFIQUE METHODE SANS RESOLUTION
 !
     if (.not.lcalc) then
-        call getvr8(motfac, 'TOLE_INTERP', izone, iarg, 1,&
-                    tolint, noc)
+        call getvr8(motfac, 'TOLE_INTERP', iocc=izone, scal=tolint, nbret=noc)
         zr(jtole+ztole*(izone-1)+3-1) = tolint
     endif
 !

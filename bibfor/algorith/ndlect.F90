@@ -22,12 +22,12 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -200,8 +200,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI') .or. (rep3(1:3).eq.'OUI') .or.&
         (rep4(1:3).eq.'OUI')) then
         lamor = .true.
-        call getvtx(' ', 'AMOR_RAYL_RIGI', 1, iarg, 1,&
-                    rigiam, iret)
+        call getvtx(' ', 'AMOR_RAYL_RIGI', scal=rigiam, nbret=iret)
         if (rigiam .eq. 'TANGENTE') lktan = .true.
     endif
     lamra = lamor
@@ -223,8 +222,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     theta = 0.d0
     kappa = 0.d0
     alpha = 0.d0
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                schema, iret)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=schema, nbret=iret)
 !
     if (schema(1:9) .eq. 'DIFF_CENT') then
         beta = 0.d0
@@ -234,26 +232,20 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     else if (schema(1:7).eq.'TCHAMWA') then
         beta = 0.d0
         gamma = 0.5d0
-        call getvr8('SCHEMA_TEMPS', 'PHI', 1, iarg, 1,&
-                    phi, n1)
+        call getvr8('SCHEMA_TEMPS', 'PHI', iocc=1, scal=phi, nbret=n1)
         zk16(jtsch+8-1) = 'TCHAMWA'
     else if (schema(1:7).eq.'NEWMARK') then
-        call getvr8('SCHEMA_TEMPS', 'BETA', 1, iarg, 1,&
-                    beta, n1)
-        call getvr8('SCHEMA_TEMPS', 'GAMMA', 1, iarg, 1,&
-                    gamma, n1)
+        call getvr8('SCHEMA_TEMPS', 'BETA', iocc=1, scal=beta, nbret=n1)
+        call getvr8('SCHEMA_TEMPS', 'GAMMA', iocc=1, scal=gamma, nbret=n1)
         phi = 0.5d0
         zk16(jtsch+2-1) = 'NEWMARK'
     else if (schema(1:13).eq.'THETA_METHODE') then
-        call getvr8('SCHEMA_TEMPS', 'THETA', 1, iarg, 1,&
-                    theta, n2)
+        call getvr8('SCHEMA_TEMPS', 'THETA', iocc=1, scal=theta, nbret=n2)
         zk16(jtsch+4-1) = 'THETA_METHODE'
         phi = 0.5d0
     else if (schema(1:3).eq.'HHT') then
-        call getvr8('SCHEMA_TEMPS', 'ALPHA', 1, iarg, 1,&
-                    alpha, n1)
-        call getvtx('SCHEMA_TEMPS', 'MODI_EQUI', 1, iarg, 1,&
-                    rep, n1)
+        call getvr8('SCHEMA_TEMPS', 'ALPHA', iocc=1, scal=alpha, nbret=n1)
+        call getvtx('SCHEMA_TEMPS', 'MODI_EQUI', iocc=1, scal=rep, nbret=n1)
         if (rep(1:3) .eq. 'NON') then
             zk16(jtsch+3-1) = 'HHT'
         else
@@ -263,8 +255,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         beta = (un-alpha)* (un-alpha)/quatre
         gamma = undemi - alpha
     else if (schema(1:5).eq.'KRENK') then
-        call getvr8('SCHEMA_TEMPS', 'KAPPA', 1, iarg, 1,&
-                    kappa, n2)
+        call getvr8('SCHEMA_TEMPS', 'KAPPA', iocc=1, scal=kappa, nbret=n2)
         zk16(jtsch+9-1) = 'KRENK'
         phi = 0.5d0
     else
@@ -292,8 +283,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! --- DECALAGE MASSE
 !
-    call getvr8('SCHEMA_TEMPS', 'COEF_MASS_SHIFT', 1, iarg, 1,&
-                shima, n1)
+    call getvr8('SCHEMA_TEMPS', 'COEF_MASS_SHIFT', iocc=1, scal=shima, nbret=n1)
     if (abs(shima) .gt. r8prem()) then
         lshima = .true.
     else
@@ -304,8 +294,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! --- TYPE DE FORMULATION
 !
-    call getvtx('SCHEMA_TEMPS', 'FORMULATION', 1, iarg, 1,&
-                kform, n1)
+    call getvtx('SCHEMA_TEMPS', 'FORMULATION', iocc=1, scal=kform, nbret=n1)
     if (kform(1:11) .eq. 'DEPLACEMENT') then
         iform = 1
     else if (kform(1:7).eq.'VITESSE') then
@@ -371,8 +360,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 ! --- MASSE DIAGONALE POUR SCHEMAS EXPLICITES
 !
     zl(jlosd+4-1) = .false.
-    call getvtx(' ', 'MASS_DIAG', 1, iarg, 1,&
-                texte, n1)
+    call getvtx(' ', 'MASS_DIAG', scal=texte, nbret=n1)
     if (n1 .gt. 0) then
         if (texte(1:3) .eq. 'OUI') then
             if (lexpl) then
@@ -392,8 +380,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         if (iret .gt. 0) then
             zl(jlosd+5-1) = .true.
             call mxmoam(sddyna, nbmodp)
-            call getvid('PROJ_MODAL', 'MASS_GENE', 1, iarg, 1,&
-                        k8bid, nbmg)
+            call getvid('PROJ_MODAL', 'MASS_GENE', iocc=1, scal=k8bid, nbret=nbmg)
             zl(jlosd+9-1) = nbmg.ne.0
             zi(jncha+5-1) = nbmodp
         endif
@@ -437,8 +424,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! --- MODE MULTI-APPUI
 !
-    call getvid(' ', 'MODE_STAT', 1, iarg, 1,&
-                k8bid, nbmods)
+    call getvid(' ', 'MODE_STAT', scal=k8bid, nbret=nbmods)
     lmuap = nbmods.gt.0
     if (lmuap) then
         call nmmuap(sddyna)
@@ -455,8 +441,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! --- REACTUALISATION DE L'AMORT A CHAQUE ITERATION ?
 !
-        call getvtx('AMOR_MODAL', 'REAC_VITE', 1, iarg, 1,&
-                    k8bid, nrv)
+        call getvtx('AMOR_MODAL', 'REAC_VITE', iocc=1, scal=k8bid, nbret=nrv)
         if (k8bid .eq. 'OUI') nreavi = 1
     else
         nreavi = 0

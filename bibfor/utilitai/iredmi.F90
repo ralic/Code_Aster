@@ -1,12 +1,11 @@
 subroutine iredmi(macr)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8pi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/iredm1.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -17,6 +16,7 @@ subroutine iredmi(macr)
 #include "asterfort/rslipa.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: macr
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -166,10 +166,8 @@ subroutine iredmi(macr)
     endif
 !
 !     ----- RECUPERATION DES AMORTISSEMENTS -----
-    call getvr8(' ', 'AMOR_REDUIT', 0, iarg, 0,&
-                r8b, n1)
-    call getvid(' ', 'LIST_AMOR', 0, iarg, 0,&
-                k8b, n2)
+    call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=n1)
+    call getvid(' ', 'LIST_AMOR', nbval=0, nbret=n2)
     if (nbmode .eq. 0) then
         call wkvect('&&IREDMI.AMORTISSEMENT', 'V V R', 1, jamor)
     else
@@ -178,11 +176,9 @@ subroutine iredmi(macr)
     if (n1 .ne. 0 .or. n2 .ne. 0) then
         if (n1 .ne. 0) then
             nbamor = -n1
-            call getvr8(' ', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                        zr(jamor), n1)
+            call getvr8(' ', 'AMOR_REDUIT', nbval=nbamor, vect=zr(jamor), nbret=n1)
         else
-            call getvid(' ', 'LIST_AMOR', 0, iarg, 1,&
-                        listam, n2)
+            call getvid(' ', 'LIST_AMOR', scal=listam, nbret=n2)
             call jelira(listam//'           .VALE', 'LONMAX', nbamor)
             call jeveuo(listam//'           .VALE', 'L', jamor)
         endif

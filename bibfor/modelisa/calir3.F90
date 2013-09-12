@@ -2,11 +2,11 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
                   geom2, corre1, corre2, jlisv1, iocc)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -48,10 +48,8 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     call jemarq()
     call jeveuo(geom2, 'E', jgeom2)
 !
-    call getvid('LIAISON_MAIL', 'CHAM_NORMALE', iocc, iarg, 1,&
-                chnorm, ibid)
-    call getvr8('LIAISON_MAIL', 'EPAIS', iocc, iarg, 1,&
-                epais, ibid)
+    call getvid('LIAISON_MAIL', 'CHAM_NORMALE', iocc=iocc, scal=chnorm, nbret=ibid)
+    call getvr8('LIAISON_MAIL', 'EPAIS', iocc=iocc, scal=epais, nbret=ibid)
 !
     csnorm='&&CALIR3.CSNORM'
     call cnocns(chnorm, 'V', csnorm)

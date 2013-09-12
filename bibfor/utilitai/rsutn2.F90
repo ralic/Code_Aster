@@ -1,9 +1,9 @@
 subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
                   nbordr)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -54,10 +54,8 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
 !
 !     --- LECTURE DE LA PRECISION ET DU CRITERE ---
 !
-    call getvr8(motcle, 'PRECISION', iocc, iarg, 1,&
-                prec, np)
-    call getvtx(motcle, 'CRITERE', iocc, iarg, 1,&
-                crit, nc)
+    call getvr8(motcle, 'PRECISION', iocc=iocc, scal=prec, nbret=np)
+    call getvtx(motcle, 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
 !
 !     --- RECUPERATION DES NUMEROS D'ORDRE ---
 !

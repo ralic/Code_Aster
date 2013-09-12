@@ -20,8 +20,8 @@ subroutine pascom(meca, sddyna, sddisc)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -97,8 +97,7 @@ subroutine pascom(meca, sddyna, sddisc)
         if (dt .lt. dtcou) dtcou = dt
 21  end do
 !
-    call getvtx('SCHEMA_TEMPS', 'STOP_CFL', 1, iarg, 1,&
-                stocfl, n1)
+    call getvtx('SCHEMA_TEMPS', 'STOP_CFL', iocc=1, scal=stocfl, nbret=n1)
 !
 !     VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
     call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&

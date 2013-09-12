@@ -1,5 +1,5 @@
 subroutine inidbg()
-    implicit      none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ subroutine inidbg()
 !
 !
 #include "jeveux.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -54,14 +54,12 @@ subroutine inidbg()
     call infniv(ifm, niv)
     if (niv .ne. 2) goto 9999
 !
-    call getvtx(' ', 'INFO_DBG', 1, iarg, 0,&
-                k16b, n)
+    call getvtx(' ', 'INFO_DBG', nbval=0, nbret=n)
     if (n .ne. 0) then
 !        -- ON IMPRIME UNIQUEMENT CE QUI EST DEMANDE --
         n=-n
         call wkvect('&&INIDBG', 'V V K16', n, jdbg)
-        call getvtx(' ', 'INFO_DBG', 1, iarg, n,&
-                    zk16(jdbg), n)
+        call getvtx(' ', 'INFO_DBG', nbval=n, vect=zk16(jdbg), nbret=n)
         do 10 i = 1, n
             if (zk16(jdbg+i-1)(1:7) .eq. 'CONTACT') then
                 czcont='CONTACT'

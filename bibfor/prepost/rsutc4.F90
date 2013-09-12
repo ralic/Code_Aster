@@ -1,9 +1,8 @@
 subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
                   nbch, acceno)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/indk16.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -11,6 +10,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, dimlis, nbch
     logical :: acceno
     character(len=*) :: resu, lisch(*), motfac
@@ -70,13 +70,12 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 !
     acceno = .false.
 !
-    call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 0,&
-                k16bid, n2)
+    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n2)
     n2 = -n2
     if (n2 .gt. 0) then
         call wkvect('&&RSUTC4.LICH', 'V V K16', n2, jl2)
-        call getvtx(motfac, 'NOM_CHAM', iocc, iarg, n2,&
-                    zk16(jl2), ibid)
+        call getvtx(motfac, 'NOM_CHAM', iocc=iocc, nbval=n2, vect=zk16(jl2),&
+                    nbret=ibid)
         do 20,k = 1,n2
         kk = indk16(zk16(jl1),zk16(jl2-1+k),1,nbnosy)
         if (kk .eq. 0) then

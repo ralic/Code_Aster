@@ -25,8 +25,6 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -34,6 +32,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -47,6 +46,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbm, i
     integer :: iret, ilime, inoli, ibid, ngrel, ipg, n1, jlgrf
     integer :: ncham, icham, nn, nbelto, nbelgr, ntail, ialiel
@@ -67,18 +67,17 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     call jemarq()
 !
     option = 'ACCEPTANCE'
-    call getvid(' ', 'MODELE_INTERFACE', 0, iarg, 1,&
-                modele, iret)
+    call getvid(' ', 'MODELE_INTERFACE', scal=modele, nbret=iret)
     if (iret .le. 0) then
 !       --- PAS DE MODELE D'INTERFACE, ALORS RECUPERER LE MODELE MECA
 !           GLOBAL A PARTIR DE LA MATRICE DE RIGIDITE ASSEMBLEE QUI
 !           EST REFERENCEE DANS LE .REFD DE LA BASE MODALE MODE_MECA
-        call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                    k8b, iret)
+        call getvid(' ', 'MODE_MECA', scal=k8b, nbret=iret)
         if (iret .gt. 0) then
             call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
                         iret)
-            call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', ibid, matas, iret)
+            call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', ibid,&
+                        matas, iret)
             call jeveuo(matas//'.LIME', 'L', ilime)
             call jeveuo(zk24(ilime)(1:8)//'.ME001     .NOLI', 'L', inoli)
             modele = zk24(inoli) (1:8)
@@ -115,13 +114,11 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     lpain(3) = 'PNUMMOD'
     lpaout(1) = 'PVECTUR'
 ! RECHERCHE SI UN CHAMNO A ETE DONNE
-    call getvid(' ', 'CHAM_NO', 0, iarg, 0,&
-                chamno, ncham)
+    call getvid(' ', 'CHAM_NO', nbval=0, nbret=ncham)
     if (ncham .ne. 0) then
         ncham = -ncham
         call wkvect('&&ACCEP1.VEC', 'V V K8', ncham, icham)
-        call getvid(' ', 'CHAM_NO', 0, iarg, ncham,&
-                    zk8(icham), nn)
+        call getvid(' ', 'CHAM_NO', nbval=ncham, vect=zk8(icham), nbret=nn)
     endif
 ! BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
     do 70 i = 1, nbm

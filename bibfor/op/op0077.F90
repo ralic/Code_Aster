@@ -24,15 +24,14 @@ subroutine op0077()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
-#include "asterfort/excygl.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/excygl.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/harm75.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
@@ -57,6 +56,7 @@ subroutine op0077()
 #include "asterfort/tran77.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     character(len=8) :: k8b, nomres, resin, nomsst, mailsk, mode
@@ -88,8 +88,7 @@ subroutine op0077()
     call getres(nomres, typres, nomcmd)
 !
 ! --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 4,&
-                champ, nbcham)
+    call getvtx(' ', 'NOM_CHAM', nbval=4, vect=champ, nbret=nbcham)
     if (nbcham .lt. 0) then
         call u2mess('E', 'ALGORITH9_44')
     else
@@ -105,8 +104,7 @@ subroutine op0077()
 !
 ! --- CREATION DU PROFIL :
 !     ---------------------------
-    call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                k8b, ir)
+    call getvid(' ', 'SQUELETTE', scal=k8b, nbret=ir)
 !     --- SI RESTITUTION SUR UNE SQUELETTE, ALORS ATTACHER UN PROF_CHNO
 !         AU RESULTAT
     if (ir .eq. 0) then
@@ -117,23 +115,19 @@ subroutine op0077()
 ! --- CREATION D'UN OBJET REFN DU PROFIL SUR BASE VOLATILE
     call wkvect(profno//'.REFN', 'V V K24', 4, jrefn)
     zk24(jrefn+1)='DEPL_R'
-
+!
 !
 !
 ! --- LE RESULTAT EST-IL GENERALISE OU PAS :
 !     ---------------------------
-    call getvid(' ', 'RESULTAT', 1, iarg, 0,&
-                k8bid, ir)
+    call getvid(' ', 'RESULTAT', nbval=0, nbret=ir)
     if (ir .eq. 0) then
-        call getvid(' ', 'RESU_GENE', 1, iarg, 1,&
-                    resin, ir1)
+        call getvid(' ', 'RESU_GENE', scal=resin, nbret=ir1)
         call gettco(resin, concep)
     else
 !      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
-        call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                    mailsk, ibid)
-        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                    result, ibid)
+        call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
+        call getvid(' ', 'RESULTAT', scal=result, nbret=ibid)
         zk24(jrefn)=mailsk
         call getfac('CYCLIQUE', ioc1)
         if (ioc1 .gt. 0) then
@@ -160,14 +154,16 @@ subroutine op0077()
             endif
         endif
     endif
-
+!
 !
 ! INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
 !      PROMES=.FALSE.
     if ((concep(1:9).eq.'TRAN_GENE') .or. (concep(1:9).eq.'MODE_GENE') .or.&
         (concep(1:9).eq.'HARM_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, matgen, ir)
-        call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numgen, ir)
+        call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid,&
+                    matgen, ir)
+        call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
+                    numgen, ir)
 ! LE RESU_GENE VIENT DE PROJ_MESU_MODAL
         if ((matgen(1:8).eq.blanc) .and. (numgen(1:8).eq.blanc)) then
 !          PROMES=.TRUE.
@@ -187,15 +183,12 @@ subroutine op0077()
     if (concep(1:9) .eq. 'TRAN_GENE') then
 !
         if (typrep(1:11) .eq. 'MODELE_GENE') then
-            call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
-                        k8b, isk)
+            call getvid(' ', 'SQUELETTE', nbval=0, nbret=isk)
             if (isk .eq. 0) then
-                call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
-                            nomsst, ibid)
+                call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=ibid)
                 call retrec(nomres, resin, nomsst)
             else
-                call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                            mailsk, ibid)
+                call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
                 call retrgl(nomres, resin, mailsk, profno)
                 call jeveuo(profno//'.REFN', 'E', jrefnb)
                 zk24(jrefnb)=mailsk
@@ -205,21 +198,18 @@ subroutine op0077()
 !
 !
         else if (typrep(1:9).eq.'MODE_GENE') then
-            call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
-                        nomsst, n1)
-            call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                        mailsk, n2)
+            call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=n1)
+            call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=n2)
             if ((n1.ne.0.and.n2.ne.0)) then
                 call u2mess('F', 'ALGORITH9_47')
             endif
-            call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                        mode, ibid)
+            call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) then
                 call u2mess('F', 'ALGORITH9_48')
             endif
             call tran77(nomres, typres, resin, mode)
         endif
-
+!
 !
 !
 !     --- CALCUL MODAL PAR SOUS-STRUCTURATION CLASSIQUE ---
@@ -230,15 +220,12 @@ subroutine op0077()
 ! --- CAS DE LA SOUS-STRUCTURATION MODALE
         if (typrep(1:11) .eq. 'MODELE_GENE') then
 !
-            call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
-                        k8b, isk)
+            call getvid(' ', 'SQUELETTE', nbval=0, nbret=isk)
             if (isk .eq. 0) then
-                call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
-                            nomsst, ibid)
+                call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=ibid)
                 call regeec(nomres, resin, nomsst)
             else
-                call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                            mailsk, ibid)
+                call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
                 call regegl(nomres, resin, mailsk, profno)
                 call jeveuo(profno//'.REFN', 'E', jrefnb)
                 zk24(jrefnb)=mailsk
@@ -253,15 +240,12 @@ subroutine op0077()
 !     --- CALCUL MODAL PAR SOUS-STYRUCTURATION CYCLIQUE ---
 !
     else if (concep(1:9).eq.'MODE_CYCL') then
-        call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
-                    k8b, isk)
+        call getvid(' ', 'SQUELETTE', nbval=0, nbret=isk)
         if (isk .eq. 0) then
-            call getvis(' ', 'SECTEUR', 1, iarg, 1,&
-                        numsec, ibid)
+            call getvis(' ', 'SECTEUR', scal=numsec, nbret=ibid)
             call recyec(nomres, resin, numsec, 'MODE_MECA')
         else
-            call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                        mailsk, ibid)
+            call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
             call recygl(nomres, 'MODE_MECA', resin, mailsk, profno)
             call jeveuo(profno//'.REFN', 'E', jrefnb)
             zk24(jrefnb)=mailsk
@@ -274,15 +258,12 @@ subroutine op0077()
 !
 ! --- CAS DE LA SOUS-STRUCTURATION HARMONIQUE
         if (typrep(1:11) .eq. 'MODELE_GENE') then
-            call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
-                        k8b, isk)
+            call getvid(' ', 'SQUELETTE', nbval=0, nbret=isk)
             if (isk .eq. 0) then
-                call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
-                            nomsst, ibid)
+                call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=ibid)
                 call rehaec(nomres, resin, nomsst)
             else
-                call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                            mailsk, ibid)
+                call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
                 call rehagl(nomres, resin, mailsk, profno)
                 call jeveuo(profno//'.REFN', 'E', jrefnb)
                 zk24(jrefnb)=mailsk
@@ -290,15 +271,12 @@ subroutine op0077()
             endif
 !
         else if (typrep(1:9).eq.'MODE_GENE') then
-            call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
-                        nomsst, n1)
-            call getvid(' ', 'SQUELETTE', 1, iarg, 1,&
-                        mailsk, n2)
+            call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=n1)
+            call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=n2)
             if ((n1.ne.0.and.n2.ne.0)) then
                 call u2mess('F', 'ALGORITH9_47')
             endif
-            call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                        mode, ibid)
+            call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) then
                 call u2mess('F', 'ALGORITH9_48')
             endif
@@ -317,18 +295,17 @@ subroutine op0077()
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
 !
-        call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
-                    k8b, isk)
+        call getvid(' ', 'SQUELETTE', nbval=0, nbret=isk)
         if (isk .eq. 0) then
-            call getvtx(' ', 'SOUS_STRUC', 1, iarg, 1,&
-                        nomsst, ibid)
+            call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=ibid)
 !
 !-- RECUPERATION DU MACRO ELEMENT ASSOCIE A LA SOUS STRUCTURE
 !           call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, raide, ir)
 !           call jeveuo(raide(1:8)//'           .REFA', 'L', lnume)
 !           call jeveuo(zk24(lnume+1)(1:14)//'.NUME.REFN', 'L', lmodge)
 !
-            call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid, numgen, ir)
+            call dismoi('F', 'NUME_DDL', resin, 'RESU_DYNA', ibid,&
+                        numgen, ir)
             call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', lmodge)
             call jenonu(jexnom(zk24(lmodge)(1:8)//'      .MODG.SSNO', nomsst), iret)
             call jeveuo(jexnum(zk24(lmodge)(1:8)//'      .MODG.SSME', iret), 'L', lmacr)
@@ -349,7 +326,8 @@ subroutine op0077()
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
     call jeexin(nomres//'           .REFD', iret)
-    if (iret .eq. 0) call refdaj(' ', nomres, -1, profno, 'INIT', ' ' , iret)
+    if (iret .eq. 0) call refdaj(' ', nomres, -1, profno, 'INIT',&
+                                 ' ', iret)
 !
     call jedema()
 end subroutine

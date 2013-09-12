@@ -1,5 +1,5 @@
 subroutine op0094()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ subroutine op0094()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -66,18 +66,16 @@ subroutine op0094()
 !
     lonmax = 0
     do 100 i = 1, nbhist
-        call getvr8('HIST_EXP', 'VALE', i, iarg, 0,&
-                    rbid, nbval)
+        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=0, nbret=nbval)
         lonmax = max ( lonmax , -nbval )
 100  end do
     call wkvect('&&OP0094.VALE', 'V V R', lonmax, jvale)
 !
     do 110 i = 1, nbhist
-        call getvr8('HIST_EXP', 'VALE', i, iarg, 0,&
-                    rbid, nbval)
+        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=0, nbret=nbval)
         nbval = -nbval
-        call getvr8('HIST_EXP', 'VALE', i, iarg, nbval,&
-                    zr(jvale), nbval)
+        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=nbval, vect=zr(jvale),&
+                    nbret=nbval)
         call tbajli(nomtrc, 8, noparr, ibid, zr(jvale),&
                     c16b, k8b, 0)
         xnbv = dble(( nbval - 8 ) / 4 )
@@ -86,11 +84,10 @@ subroutine op0094()
 110  end do
 !
     do 120 i = 1, nbhist
-        call getvr8('HIST_EXP', 'VALE', i, iarg, 0,&
-                    rbid, nbval)
+        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=0, nbret=nbval)
         nbval = -nbval
-        call getvr8('HIST_EXP', 'VALE', i, iarg, nbval,&
-                    zr(jvale), nbval)
+        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=nbval, vect=zr(jvale),&
+                    nbret=nbval)
         nbv = ( nbval - 8 ) / 4
         do 122 j = 1, nbv
             ind = jvale + 8 + 4*(j-1)
@@ -102,19 +99,13 @@ subroutine op0094()
 !
 !
     do 200 i = 1, nbtrc
-        call getvr8('TEMP_MS', 'SEUIL', i, iarg, 1,&
-                    vale(1), ibid)
-        call getvr8('TEMP_MS', 'AKM', i, iarg, 1,&
-                    vale(2), ibid)
-        call getvr8('TEMP_MS', 'BKM', i, iarg, 1,&
-                    vale(3), ibid)
-        call getvr8('TEMP_MS', 'TPLM', i, iarg, 1,&
-                    vale(4), ibid)
-        call getvr8('GRAIN_AUST', 'DREF', i, iarg, 1,&
-                    vale(5), ibid)
+        call getvr8('TEMP_MS', 'SEUIL', iocc=i, scal=vale(1), nbret=ibid)
+        call getvr8('TEMP_MS', 'AKM', iocc=i, scal=vale(2), nbret=ibid)
+        call getvr8('TEMP_MS', 'BKM', iocc=i, scal=vale(3), nbret=ibid)
+        call getvr8('TEMP_MS', 'TPLM', iocc=i, scal=vale(4), nbret=ibid)
+        call getvr8('GRAIN_AUST', 'DREF', iocc=i, scal=vale(5), nbret=ibid)
         if (ibid .eq. 0) vale(5) = 0.d0
-        call getvr8('GRAIN_AUST', 'A', i, iarg, 1,&
-                    vale(6), ibid)
+        call getvr8('GRAIN_AUST', 'A', iocc=i, scal=vale(6), nbret=ibid)
         if (ibid .eq. 0) vale(6) = 0.d0
         call tbajli(nomtrc, 6, noparr(14), ibid, vale,&
                     c16b, k8b, 0)

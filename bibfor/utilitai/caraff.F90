@@ -1,16 +1,15 @@
 subroutine caraff(noma, gran, base, cartz)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/alcart.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -25,6 +24,7 @@ subroutine caraff(noma, gran, base, cartz)
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     character(len=1) :: base
     character(len=8) :: noma, gran
     character(len=*) :: cartz
@@ -104,29 +104,22 @@ subroutine caraff(noma, gran, base, cartz)
 !     --------------------------------------------
     do 30 iocc = 1, nocc
 !
-        call getvtx(motclf, 'NOEUD', iocc, iarg, 0,&
-                    k8b, n1)
+        call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) call u2mess('F', 'UTILITAI_12')
 !
-        call getvtx(motclf, 'GROUP_NO', iocc, iarg, 0,&
-                    k8b, n1)
+        call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) call u2mess('F', 'UTILITAI_13')
 !
-        call getvtx(motclf, 'NOM_CMP', iocc, iarg, 0,&
-                    k8b, nbcmp)
+        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
 !
         if (tsca .eq. 'R') then
-            call getvr8(motclf, 'VALE', iocc, iarg, 0,&
-                        rbid, nbvar)
+            call getvr8(motclf, 'VALE', iocc=iocc, nbval=0, nbret=nbvar)
         else if (tsca.eq.'I') then
-            call getvis(motclf, 'VALE_I', iocc, iarg, 0,&
-                        ibid, nbvar)
+            call getvis(motclf, 'VALE_I', iocc=iocc, nbval=0, nbret=nbvar)
         else if (tsca.eq.'C') then
-            call getvc8(motclf, 'VALE_C', iocc, iarg, 0,&
-                        cbid, nbvar)
+            call getvc8(motclf, 'VALE_C', iocc=iocc, nbval=0, nbret=nbvar)
         else if (tsca.eq.'K8') then
-            call getvid(motclf, 'VALE_F', iocc, iarg, 0,&
-                        k8b, nbvar)
+            call getvid(motclf, 'VALE_F', iocc=iocc, nbval=0, nbret=nbvar)
         else
             call u2mesk('F', 'UTILITAI_14', 1, tsca)
         endif
@@ -141,25 +134,24 @@ subroutine caraff(noma, gran, base, cartz)
         else
             nbcmp = -nbcmp
             nbvar = -nbvar
-            call getvtx(motclf, 'NOM_CMP', iocc, iarg, nbcmp,&
-                        zk8(jncmp), nbcmp)
+            call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jncmp),&
+                        nbret=nbcmp)
             if (tsca .eq. 'R') then
-                call getvr8(motclf, 'VALE', iocc, iarg, nbvar,&
-                            zr(jvalv), nbvar)
+                call getvr8(motclf, 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jvalv),&
+                            nbret=nbvar)
             else if (tsca.eq.'I') then
-                call getvis(motclf, 'VALE_I', iocc, iarg, nbvar,&
-                            zi( jvalv), nbvar)
+                call getvis(motclf, 'VALE_I', iocc=iocc, nbval=nbvar, vect=zi( jvalv),&
+                            nbret=nbvar)
             else if (tsca.eq.'C') then
-                call getvc8(motclf, 'VALE_C', iocc, iarg, nbvar,&
-                            zc( jvalv), nbvar)
+                call getvc8(motclf, 'VALE_C', iocc=iocc, nbval=nbvar, vect=zc( jvalv),&
+                            nbret=nbvar)
             else if (tsca.eq.'K8') then
-                call getvid(motclf, 'VALE_F', iocc, iarg, nbvar,&
-                            zk8( jvalv), nbvar)
+                call getvid(motclf, 'VALE_F', iocc=iocc, nbval=nbvar, vect=zk8( jvalv),&
+                            nbret=nbvar)
             endif
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ' ', nbcmp)

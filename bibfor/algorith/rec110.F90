@@ -29,12 +29,11 @@ subroutine rec110(nomres, nomsqu, modgen)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -50,6 +49,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !   PARAMETER : REPRESENTE LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
@@ -111,19 +111,15 @@ subroutine rec110(nomres, nomsqu, modgen)
 ! --- LECTURE DE RECO_GLOBAL ---
 !
 !
-    call getvtx('RECO_GLOBAL', 'GROUP_NO_1', 1, iarg, 0,&
-                k8bid, igr)
+    call getvtx('RECO_GLOBAL', 'GROUP_NO_1', iocc=1, nbval=0, nbret=igr)
     if (igr .eq. 0) then
 !
 ! --- ON FUSIONNE LES NOEUDS DE TOUTES LES INTERFACES DYNAMIQUES ---
 !
 !     --- LECTURE DE LA PRECISION
-        call getvr8('RECO_GLOBAL', 'PRECISION', 1, iarg, 1,&
-                    prec, ibid)
-        call getvr8('RECO_GLOBAL', 'DIST_REFE', 1, iarg, 1,&
-                    dist, ndist)
-        call getvtx('RECO_GLOBAL', 'CRITERE', 1, iarg, 1,&
-                    crit, ndist)
+        call getvr8('RECO_GLOBAL', 'PRECISION', iocc=1, scal=prec, nbret=ibid)
+        call getvr8('RECO_GLOBAL', 'DIST_REFE', iocc=1, scal=dist, nbret=ndist)
+        call getvtx('RECO_GLOBAL', 'CRITERE', iocc=1, scal=crit, nbret=ndist)
         if (ndist .eq. 0) then
 !     --- AU CAS OU LA DISTANCE DE REFERENCE N'EST PAS DONNEE,ON DEVRAIT
 !         LA LIRE DANS LA SD MAILLAGE (VOIR COMMANDE LIRE_MAILLAGE).
@@ -257,26 +253,21 @@ subroutine rec110(nomres, nomsqu, modgen)
         nbfuse = 0
         nbmoin = 0
         do 170 ireco = 1, nbreco
-            call getvtx('RECO_GLOBAL', 'GROUP_NO_1', ireco, iarg, 0,&
-                        k8bid, nr)
+            call getvtx('RECO_GLOBAL', 'GROUP_NO_1', iocc=ireco, nbval=0, nbret=nr)
             if (nr .eq. 0) then
                 call u2mesg('F+', 'ALGORITH15_63', 0, ' ', 0,&
                             0, 0, 0.d0)
             endif
 !        --- LECTURE DE LA PRECISION
-            call getvr8('RECO_GLOBAL', 'PRECISION', ireco, iarg, 1,&
-                        prec, ibid)
-            call getvr8('RECO_GLOBAL', 'DIST_REFE', ireco, iarg, 1,&
-                        dist, ndist)
-            call getvtx('RECO_GLOBAL', 'CRITERE', ireco, iarg, 1,&
-                        crit, ndist)
+            call getvr8('RECO_GLOBAL', 'PRECISION', iocc=ireco, scal=prec, nbret=ibid)
+            call getvr8('RECO_GLOBAL', 'DIST_REFE', iocc=ireco, scal=dist, nbret=ndist)
+            call getvtx('RECO_GLOBAL', 'CRITERE', iocc=ireco, scal=crit, nbret=ndist)
             if (ndist .eq. 0) then
 !        --- AU CAS OU LA DISTANCE DE REFERENCE N'EST PAS DONNEE,
 !            ON DEVRAIT LA LIRE DANS LA SD MAILLAGE.
                 crit='RELATIF'
             endif
-            call getvtx('RECO_GLOBAL', 'SOUS_STRUC_1', ireco, iarg, 1,&
-                        nomsst, ibid)
+            call getvtx('RECO_GLOBAL', 'SOUS_STRUC_1', iocc=ireco, scal=nomsst, nbret=ibid)
 !        --- RECHERCHE DE LA SOUS-STRUCTURE ---
             istac = 0
 90          continue
@@ -292,8 +283,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         lintf)
             call jenuno(jexnum(lintf//'.IDC_NOMS', 2), k8bid)
-            call getvtx('RECO_GLOBAL', 'GROUP_NO_1', ireco, iarg, 1,&
-                        nomnoe, ibid)
+            call getvtx('RECO_GLOBAL', 'GROUP_NO_1', iocc=ireco, scal=nomnoe, nbret=ibid)
             if (nomnoe .ne. k8bid) then
                 valk (1) = lintf
                 valk (2) = nomsst
@@ -318,8 +308,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             do 110 in = 1, nbni
                 zi(ltabi-1+in) = zi(lintd-1+in) + incr
 110          continue
-            call getvtx('RECO_GLOBAL', 'SOUS_STRUC_2', ireco, iarg, 1,&
-                        nomsst, ibid)
+            call getvtx('RECO_GLOBAL', 'SOUS_STRUC_2', iocc=ireco, scal=nomsst, nbret=ibid)
 !        --- RECHERCHE DE LA SOUS-STRUCTURE ---
             jstac = 0
 120          continue
@@ -335,8 +324,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         ljntf)
             call jenuno(jexnum(ljntf//'.IDC_NOMS', 1), k8bid)
-            call getvtx('RECO_GLOBAL', 'GROUP_NO_2', ireco, iarg, 1,&
-                        nomnoe, ibid)
+            call getvtx('RECO_GLOBAL', 'GROUP_NO_2', iocc=ireco, scal=nomnoe, nbret=ibid)
             if (nomnoe .ne. k8bid) then
                 valk (1) = ljntf
                 valk (2) = nomsst

@@ -1,10 +1,10 @@
 subroutine tbimfi(nparfi, table, newtab, iret)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -76,48 +76,36 @@ subroutine tbimfi(nparfi, table, newtab, iret)
     ik = -1
 !
     do 20 ioc = 1, nparfi
-        call getvtx('FILTRE', 'NOM_PARA', ioc, iarg, 1,&
-                    zk24(jpafi+ioc-1), l)
-        call getvtx('FILTRE', 'CRIT_COMP', ioc, iarg, 1,&
-                    zk8(jccfi+ioc-1), l)
+        call getvtx('FILTRE', 'NOM_PARA', iocc=ioc, scal=zk24(jpafi+ioc-1), nbret=l)
+        call getvtx('FILTRE', 'CRIT_COMP', iocc=ioc, scal=zk8(jccfi+ioc-1), nbret=l)
         montit = ' '
-        call getvis('FILTRE', 'VALE_I', ioc, iarg, 0,&
-                    ibid, l1)
-        call getvr8('FILTRE', 'VALE', ioc, iarg, 0,&
-                    r8b, l2)
-        call getvc8('FILTRE', 'VALE_C', ioc, iarg, 0,&
-                    cbid, l3)
-        call getvtx('FILTRE', 'VALE_K', ioc, iarg, 0,&
-                    k8b, l4)
+        call getvis('FILTRE', 'VALE_I', iocc=ioc, nbval=0, nbret=l1)
+        call getvr8('FILTRE', 'VALE', iocc=ioc, nbval=0, nbret=l2)
+        call getvc8('FILTRE', 'VALE_C', iocc=ioc, nbval=0, nbret=l3)
+        call getvtx('FILTRE', 'VALE_K', iocc=ioc, nbval=0, nbret=l4)
         if (l1 .ne. 0) then
             ii = ii + 1
-            call getvis('FILTRE', 'VALE_I', ioc, iarg, 1,&
-                        zi(jvifi+ii), l)
+            call getvis('FILTRE', 'VALE_I', iocc=ioc, scal=zi(jvifi+ii), nbret=l)
             write(montit,1010) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
             zi(jvifi+ii)
         endif
         if (l2 .ne. 0) then
             ir = ir + 1
-            call getvr8('FILTRE', 'VALE', ioc, iarg, 1,&
-                        zr(jvrfi+ir), l)
-            call getvr8('FILTRE', 'PRECISION', ioc, iarg, 1,&
-                        zr(jprfi+ir), l)
-            call getvtx('FILTRE', 'CRITERE', ioc, iarg, 1,&
-                        zk8(jcrfi+ir), l)
+            call getvr8('FILTRE', 'VALE', iocc=ioc, scal=zr(jvrfi+ir), nbret=l)
+            call getvr8('FILTRE', 'PRECISION', iocc=ioc, scal=zr(jprfi+ir), nbret=l)
+            call getvtx('FILTRE', 'CRITERE', iocc=ioc, scal=zk8(jcrfi+ir), nbret=l)
             write(montit,1020) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
             zr(jvrfi+ir)
         endif
         if (l3 .ne. 0) then
             ic = ic + 1
-            call getvc8('FILTRE', 'VALE_C', ioc, iarg, 1,&
-                        zc(jvcfi+ic), l)
+            call getvc8('FILTRE', 'VALE_C', iocc=ioc, scal=zc(jvcfi+ic), nbret=l)
             write(montit,1030) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
             zc(jvcfi+ic)
         endif
         if (l4 .ne. 0) then
             ik = ik + 1
-            call getvtx('FILTRE', 'VALE_K', ioc, iarg, 1,&
-                        zk80(jvkfi+ik), l)
+            call getvtx('FILTRE', 'VALE_K', iocc=ioc, scal=zk80(jvkfi+ik), nbret=l)
             write(montit,1040) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
             zk80(jvkfi+ik)
         endif

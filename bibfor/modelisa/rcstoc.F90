@@ -1,19 +1,18 @@
 subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                   valk, nbr, nbc, nbk)
 ! aslint: disable=
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getmjm.h"
 #include "asterc/gettco.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/focain.h"
 #include "asterfort/foverf.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -31,6 +30,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbr, nbc, nbk, nbobj
     real(kind=8) :: valr(*)
     complex(kind=8) :: valc(*)
@@ -128,8 +128,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     do 50 i = 1, nbobj
         if (zk8(jtypo+i-1)(1:2) .eq. 'TX') then
             if (nomrc(1:9) .eq. 'ELAS_META') then
-                call getvtx(nomrc, zk16(jnomo+i-1), 1, iarg, 1,&
-                            valtx, n)
+                call getvtx(nomrc, zk16(jnomo+i-1), iocc=1, scal=valtx, nbret=n)
                 if (n .eq. 1) then
                     if (zk16(jnomo+i-1) .eq. 'PHASE_REFE' .and. valtx .eq. 'CHAUD') then
                         nbr = nbr + 1
@@ -143,8 +142,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                     endif
                 endif
             else if (nomrc .eq. 'BETON_DOUBLE_DP') then
-                call getvtx(nomrc, zk16(jnomo+i-1), 1, iarg, 1,&
-                            valtx, n)
+                call getvtx(nomrc, zk16(jnomo+i-1), iocc=1, scal=valtx, nbret=n)
                 if (n .eq. 1) then
                     if (zk16(jnomo+i-1) .eq. 'ECRO_COMP_P_PIC' .or. zk16(jnomo+i-1) .eq.&
                         'ECRO_TRAC_P_PIC') then
@@ -159,8 +157,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                 endif
                 elseif ((nomrc.eq.'RUPT_FRAG') .or.(&
             nomrc.eq.'CZM_LAB_MIX')) then
-                call getvtx(nomrc, zk16(jnomo+i-1), 1, iarg, 1,&
-                            valtx, n)
+                call getvtx(nomrc, zk16(jnomo+i-1), iocc=1, scal=valtx, nbret=n)
                 if (n .eq. 1) then
                     if (zk16(jnomo+i-1) .eq. 'CINEMATIQUE') then
                         nbr = nbr + 1
@@ -186,8 +183,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !
     do 100 i = 1, nbobj
         if (zk8(jtypo+i-1)(1:3) .eq. 'R8 ') then
-            call getvr8(nomrc, zk16(jnomo+i-1), 1, iarg, 1,&
-                        valr8, n)
+            call getvr8(nomrc, zk16(jnomo+i-1), iocc=1, scal=valr8, nbret=n)
             if (n .eq. 1) then
                 nbr = nbr + 1
                 valr(nbr) = valr8
@@ -201,8 +197,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !
     do 115 i = 1, nbobj
         if (zk8(jtypo+i-1)(1:3) .eq. 'C8 ') then
-            call getvc8(nomrc, zk16(jnomo+i-1), 1, iarg, 1,&
-                        valc8, n)
+            call getvc8(nomrc, zk16(jnomo+i-1), iocc=1, scal=valc8, nbret=n)
             if (n .eq. 1) then
                 nbc = nbc + 1
                 valc(nbr+nbc) = valc8
@@ -216,8 +211,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !
     do 110 i = 1, nbobj
         if (zk8(jtypo+i-1)(1:3) .eq. 'CO ') then
-            call getvid(nomrc, zk16(jnomo+i-1), 1, iarg, 1,&
-                        valch, n)
+            call getvid(nomrc, zk16(jnomo+i-1), iocc=1, scal=valch, nbret=n)
             if (n .eq. 1) then
                 nbk = nbk + 1
                 if (zk16(jnomo+i-1) .eq. 'PROF_RHO_F_INT') then
@@ -236,8 +230,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     ibk = 0
     do 120 i = 1, nbobj
         if (zk8(jtypo+i-1)(1:3) .eq. 'CO ') then
-            call getvid(nomrc, zk16(jnomo+i-1), 1, iarg, 1,&
-                        valch, n)
+            call getvid(nomrc, zk16(jnomo+i-1), iocc=1, scal=valch, nbret=n)
             if (n .eq. 1) then
                 call gettco(valch, typeco)
                 ibk = ibk + 1
@@ -458,8 +451,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     if (nomrc(1:10) .eq. 'META_ACIER') then
         do 720 i = 1, nbk
             if (valk(nbr+nbc+i)(1:3) .eq. 'TRC') then
-                call getvid(nomrc, 'TRC', 1, iarg, 1,&
-                            table, n)
+                call getvid(nomrc, 'TRC', iocc=1, scal=table, nbret=n)
                 call tbexp2(table, 'VITESSE')
                 call tbexp2(table, 'PARA_EQ')
                 call tbexp2(table, 'COEF_0')

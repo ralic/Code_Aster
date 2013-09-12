@@ -5,14 +5,13 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/impfic.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -35,6 +34,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: modele, fondf, result, symech
     character(len=8) :: noeud
     character(len=16) :: optioz, noprup(*), nomcas
@@ -98,7 +98,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     integer :: i, ibid, ific, inorma, init, ifm, niv, jnor, jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno
     integer :: lobj2, ndimte, nunoff, ndim, nchin, ier, ixfem, jfond, numfon
-    integer :: iret, livi(nbmxpa),nbchar
+    integer :: iret, livi(nbmxpa), nbchar
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
     complex(kind=8) :: cbid, livc(nbmxpa)
@@ -130,7 +130,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
 !
-    call lisnnb(lischa,nbchar)
+    call lisnnb(lischa, nbchar)
     ASSERT(nbchar.le.mxstac)
     call infniv(ifm, niv)
     option = optioz
@@ -143,8 +143,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !
-    call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                chsigi, init)
+    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_G'
         call u2mesk('F', 'RUPTURE1_13', 1, valk)
@@ -196,8 +195,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !
 !     CAS X-FEM
 !     MOSAIN = MODELE ISSU DE AFFE_MODELE
-    call getvid('THETA', 'FISSURE', 1, iarg, 1,&
-                fiss, ixfem)
+    call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ixfem)
     if (ixfem .gt. 0) then
         call dismoi('F', 'NOM_MODELE', fiss, 'FISS_XFEM', ibid,&
                     mosain, ier)
@@ -253,8 +251,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         rcmp(2) = zr(iadrco+ndim* (nunoff-1)+1)
     else
         call jeveuo(fiss//'.FONDFISS', 'L', jfond)
-        call getvis('THETA', 'NUME_FOND', 1, iarg, 1,&
-                    numfon, ibid)
+        call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
         rcmp(1) = zr(jfond-1+4*(numfon-1)+1)
         rcmp(2) = zr(jfond-1+4*(numfon-1)+2)
         call jeveuo(fiss//'.BASEFOND', 'L', jnor)

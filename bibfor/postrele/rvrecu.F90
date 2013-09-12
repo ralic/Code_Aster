@@ -1,7 +1,7 @@
 subroutine rvrecu(mcf, iocc, champ, nomvec)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -34,7 +34,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
 !     ------------------------------------------------------------------
 !
     character(len=1) :: type
-    character(len=8) ::  form
+    character(len=8) :: form
     character(len=19) :: nch19
     character(len=24) :: vecteu
 !
@@ -53,8 +53,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     call jeveuo(nch19//'.VALE', 'L', jval)
     call wkvect(vecteu, 'V V R', neq, kval)
 !
-    call getvtx(mcf, 'FORMAT_C', iocc, iarg, 1,&
-                form, n1)
+    call getvtx(mcf, 'FORMAT_C', iocc=iocc, scal=form, nbret=n1)
 !
     if (form .eq. 'MODULE') then
         do 11 i = 0, neq-1

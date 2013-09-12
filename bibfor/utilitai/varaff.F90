@@ -2,13 +2,13 @@ subroutine varaff(noma, gran, base, ceselz)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -76,8 +76,8 @@ subroutine varaff(noma, gran, base, ceselz)
 !     --------------------------------------------------------
     nuvamx=0
     do 29 iocc = 1, nocc
-        call getvtx(motclf, 'NOM_CMP', iocc, iarg, nvarmx,&
-                    zk8(jlnovx), n1)
+        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=zk8(jlnovx),&
+                    nbret=n1)
         ASSERT(n1.gt.0)
         do 28, k=1,n1
         ASSERT(zk8(jlnovx-1+k)(1:1).eq.'V')
@@ -109,23 +109,20 @@ subroutine varaff(noma, gran, base, ceselz)
 !     --------------------------------------------
     do 30 iocc = 1, nocc
 !
-        call getvtx(motclf, 'NOEUD', iocc, iarg, 0,&
-                    kbid, n1)
+        call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) call u2mess('F', 'UTILITAI_12')
-        call getvtx(motclf, 'GROUP_NO', iocc, iarg, 0,&
-                    kbid, n1)
+        call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) call u2mess('F', 'UTILITAI_13')
 !
-        call getvtx(motclf, 'NOM_CMP', iocc, iarg, nvarmx,&
-                    zk8(jlnovx), n1)
-        call getvr8(motclf, 'VALE', iocc, iarg, nvarmx,&
-                    zr(jlvavx), n2)
+        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=zk8(jlnovx),&
+                    nbret=n1)
+        call getvr8(motclf, 'VALE', iocc=iocc, nbval=nvarmx, vect=zr(jlvavx),&
+                    nbret=n2)
         ASSERT(n1.eq.n2)
 !
 !
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    kbid, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=kbid, nbret=nbtou)
         if (nbtou .eq. 1) then
             ltou=.true.
             nbmail=nbmato

@@ -4,11 +4,11 @@ subroutine cagrou(load, mesh, vale_type)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/getnode.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -36,9 +36,9 @@ subroutine cagrou(load, mesh, vale_type)
 ! ======================================================================
 !  Person in charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
-    character(len=4), intent(in)  :: vale_type
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,7 +63,7 @@ subroutine cagrou(load, mesh, vale_type)
     character(len=8) :: node_name(nb_term)
     integer :: node_nume(nb_term)
     integer :: repe_type(nb_term)
-    real(kind=8) :: repe_defi(3,nb_term)
+    real(kind=8) :: repe_defi(3, nb_term)
 !
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
@@ -103,17 +103,17 @@ subroutine cagrou(load, mesh, vale_type)
     coef_real_unit(1) = 1.d0
     coef_real_unit(2) = -1.d0
     list_rela = '&&CAGROU.RLLISTE'
-    list_dof  = '&&CAGROU.LIST_DOF'
+    list_dof = '&&CAGROU.LIST_DOF'
     list_suffix = ' '
 !
 ! - Initializations of types
 !
     lagr_type = '12'
-    if (vale_type.eq.'COMP') then
+    if (vale_type .eq. 'COMP') then
         ASSERT(.false.)
-    elseif (vale_type.eq.'REEL') then
+    else if (vale_type.eq.'REEL') then
         coef_type = 'REEL'
-    elseif (vale_type.eq.'FONC') then
+    else if (vale_type.eq.'FONC') then
         coef_type = 'REEL'
     else
         ASSERT(.false.)
@@ -124,20 +124,19 @@ subroutine cagrou(load, mesh, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CAGROU.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
                      list_node, nb_node)
         if (nb_node .lt. 2) call u2mess('F', 'CHARGES2_82')
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Get dof
 !
-        call getvtx(keywordfact, 'DDL', iocc, iarg, 0,&
-                    k8bid, nb_dof)
+        call getvtx(keywordfact, 'DDL', iocc=iocc, nbval=0, nbret=nb_dof)
         ASSERT(nb_dof .ne. 0)
         nb_dof= - nb_dof
         call wkvect(list_dof, 'V V K8', nb_dof, jlidof)
-        call getvtx(keywordfact, 'DDL', iocc, iarg, nb_dof,&
-                    zk8(jlidof), ibid)
+        call getvtx(keywordfact, 'DDL', iocc=iocc, nbval=nb_dof, vect=zk8(jlidof),&
+                    nbret=ibid)
 !
 ! ----- First node
 !
@@ -153,7 +152,7 @@ subroutine cagrou(load, mesh, vale_type)
                 node_nume(2) = zi(jlino-1+i_no)
                 call jenuno(jexnum(mesh//'.NOMNOE', node_nume(2)), node_name(2))
                 call afrela(coef_real_unit, coef_cplx_unit, dof_name, node_name, repe_type,&
-                            repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero, &
+                            repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero,&
                             coef_type, vale_type, lagr_type, 0.d0, list_rela)
             enddo
         enddo
@@ -166,6 +165,6 @@ subroutine cagrou(load, mesh, vale_type)
 !
     call aflrch(list_rela, load)
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

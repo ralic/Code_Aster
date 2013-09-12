@@ -3,10 +3,10 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
                   numlc, nbvari)
 ! person_in_charge: jean-michel.proix at edf.fr
     implicit none
-#include "asterc/getvtx.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/nmthmc.h"
     integer :: dimaki, nbkit, ncomel, k, nbnvi(*), numlc
     character(len=*) :: modele
@@ -47,7 +47,7 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
     character(len=16) :: comcod
     integer :: iarg
 !
-
+!
     nbkit=0
     if ((comp(1:4).eq.'KIT_') .or. (comp(1:4).eq.'META')) then
         do 101 ii = 1, dimaki
@@ -55,8 +55,7 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
 101      continue
 !        KIT META
         if (comp(1:4) .eq. 'META') then
-            call getvtx(moclef, 'RELATION_KIT', k, iarg, 1,&
-                        nomkit(1), n1)
+            call getvtx(moclef, 'RELATION_KIT', iocc=k, scal=nomkit(1), nbret=n1)
             call lccree(1, lcomel(1), comcod)
             call lcinfo(comcod, numlc, nbvari)
 !          NOMBRE DE VARIABLES INTERNES POUR LES PHASES METALLURGIQUES
@@ -66,19 +65,18 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
             nbvari = nbvari*nbvarm + nbvari + 1
         else if ((comp.eq.'KIT_DDI').or.(comp.eq.'KIT_CG')) then
             nbkit=2
-            call getvtx(moclef, 'RELATION_KIT', k, iarg, 2,&
-                        nomkit(1), n1)
+            call getvtx(moclef, 'RELATION_KIT', iocc=k, nbval=2, vect=nomkit(1),&
+                        nbret=n1)
             do 102 ii = 1, nbkit
                 ncomel=ncomel+1
                 lcomel(ncomel)=nomkit(ii)
 102          continue
             elseif ((comp(1:5).eq.'KIT_H') .or.(comp(1:6).eq.'KIT_TH'))&
         then
-            call getvtx(moclef, 'RELATION_KIT', k, iarg, 0,&
-                        nomkit(1), n1)
+            call getvtx(moclef, 'RELATION_KIT', iocc=k, nbval=0, nbret=n1)
             nbkit = -n1
-            call getvtx(moclef, 'RELATION_KIT', k, iarg, nbkit,&
-                        nomkit(1), n1)
+            call getvtx(moclef, 'RELATION_KIT', iocc=k, nbval=nbkit, vect=nomkit(1),&
+                        nbret=n1)
             call nmthmc(comp, modele, moclef, k, nomkit,&
                         nbkit, nbnvi)
             do 103 ii = 1, 4

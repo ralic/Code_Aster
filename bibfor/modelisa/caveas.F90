@@ -37,8 +37,8 @@ subroutine caveas(chargz)
 !
 ! -----  ARGUMENTS
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/chpver.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -55,8 +55,7 @@ subroutine caveas(chargz)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call getvid(' ', 'VECT_ASSE', 0, iarg, 1,&
-                vecass, nvecas)
+    call getvid(' ', 'VECT_ASSE', scal=vecass, nbret=nvecas)
     if (nvecas .eq. 0) goto 9999
 !
     call chpver('F', vecass, 'NOEU', 'DEPL_R', ier)

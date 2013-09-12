@@ -1,6 +1,6 @@
 subroutine op0182()
 ! aslint: disable=
-    implicit  none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,14 +31,14 @@ subroutine op0182()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/calfig.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -164,24 +164,20 @@ subroutine op0182()
 !            LES VOLUMES D'USURE TUBE ET OBST PAR SECTEUR
 !     ------------------------------------------------------------------
 !
-    call getvid(' ', 'TABL_USURE', 1, iarg, 1,&
-                tabpus, npu)
+    call getvid(' ', 'TABL_USURE', scal=tabpus, nbret=npu)
     if (npu .ne. 0) then
         call morevu(tabpus, dinst, ns, sect, voltub,&
                     volobs)
     endif
 !
-    call getvr8(' ', 'V_USUR_TUBE', 1, iarg, 0,&
-                vust, nis)
+    call getvr8(' ', 'V_USUR_TUBE', nbval=0, nbret=nis)
     if (nis .ne. 0) then
         ns = -nis
         if (ns .ne. 10 .and. ns .ne. 12) then
             call u2mess('F', 'PREPOST3_63')
         endif
-        call getvr8(' ', 'V_USUR_TUBE', 1, iarg, ns,&
-                    vust, nis)
-        call getvr8(' ', 'V_USUR_OBST', 1, iarg, ns,&
-                    vuso, nis)
+        call getvr8(' ', 'V_USUR_TUBE', nbval=ns, vect=vust, nbret=nis)
+        call getvr8(' ', 'V_USUR_OBST', nbval=ns, vect=vuso, nbret=nis)
         do 12 i = 1, ns
             sect(i) = (i-1)*360.d0/ns
             voltub(i) = vust(i)
@@ -195,16 +191,14 @@ subroutine op0182()
 !            REMPLACEMENT DU TUBE PERCE PAR UN TUBE NEUF
 !     ------------------------------------------------------------------
 !
-    call getvr8(' ', 'PERCEMENT', 1, iarg, 1,&
-                perce, nis)
+    call getvr8(' ', 'PERCEMENT', scal=perce, nbret=nis)
 !
 !     ------------------------------------------------------------------
 !          PARAMETRES POUR L'USURE DES OBSTACLES EN FONCTION DE LA
 !                    HAUTEUR DE LA CARTE OU DU GUIDAGE
 !     ------------------------------------------------------------------
 !
-    call getvid(' ', 'GUIDE', 1, iarg, 1,&
-                guide, n1)
+    call getvid(' ', 'GUIDE', scal=guide, nbret=n1)
 !
     call tbliva(guide, 1, 'LIEU', ibid, r8b,&
                 c16b, 'DEFIOBST', k8b, r8b, 'TYPE',&
@@ -278,10 +272,8 @@ subroutine op0182()
     arete = asin(denc/robst)*180.d0/pi
     arete2 = 180.d0-arete
 !
-    call getvr8(' ', 'R_MOBILE', 1, iarg, 1,&
-                rtube, nr)
-    call getvid(' ', 'CRAYON', 1, iarg, 1,&
-                obcray, nc)
+    call getvr8(' ', 'R_MOBILE', scal=rtube, nbret=nr)
+    call getvid(' ', 'CRAYON', scal=obcray, nbret=nc)
     if (nr .eq. 0) then
         if (nc .eq. 0) then
             if (type(14:17) .eq. '1300') rtube = 4.84d-3

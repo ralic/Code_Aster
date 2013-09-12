@@ -1,9 +1,9 @@
 subroutine rc32ma(mater)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rccome.h"
@@ -50,8 +50,7 @@ subroutine rc32ma(mater)
     call jemarq()
 !
 !    RECUP TYPE KE
-    call getvtx(' ', 'TYPE_KE', 0, iarg, 1,&
-                typeke, nb)
+    call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
     if (typeke .eq. 'KE_MECA') then
         tke=-1.d0
     else
@@ -90,8 +89,7 @@ subroutine rc32ma(mater)
 ! ------ ETAT STABILISE "A"
 !        ------------------
 !
-    call getvr8(motclf, 'TEMP_REF_A', iocc, iarg, 1,&
-                tempa, na)
+    call getvr8(motclf, 'TEMP_REF_A', iocc=iocc, scal=tempa, nbret=na)
     if (na .eq. 0) then
         nbpa = 0
         nopa = ' '
@@ -118,8 +116,7 @@ subroutine rc32ma(mater)
 ! ------ ETAT STABILISE "B"
 !        ------------------
 !
-    call getvr8(motclf, 'TEMP_REF_B', iocc, iarg, 1,&
-                tempb, nb)
+    call getvr8(motclf, 'TEMP_REF_B', iocc=iocc, scal=tempb, nbret=nb)
     if (na .eq. 0) then
         nbpb = 0
         nopb = ' '

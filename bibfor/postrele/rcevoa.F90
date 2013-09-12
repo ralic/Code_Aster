@@ -16,16 +16,15 @@ subroutine rcevoa(typtab, nommat)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -46,6 +45,7 @@ subroutine rcevoa(typtab, nommat)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nommat
     character(len=16) :: typtab
 !     ------------------------------------------------------------------
@@ -129,8 +129,7 @@ subroutine rcevoa(typtab, nommat)
 ! --- LA PREMIERE TABLE DEFINIT LES THETA A TRAITER
 !     ON VERIFIE QUE LES ABSC_CURV CORRESPONDENT AU RAMORC
 !
-    call getvid(motclf, 'TABL_SIGM_THETA', 1, iarg, 1,&
-                table, n1)
+    call getvid(motclf, 'TABL_SIGM_THETA', iocc=1, scal=table, nbret=n1)
     call tbexip(table, valek(1), exist, k8b)
     if (.not. exist) then
         valk(1) = table
@@ -175,8 +174,7 @@ subroutine rcevoa(typtab, nommat)
     nbitot = 0
     do 20 ioc = 1, nbtran
 !
-        call getvid(motclf, 'TABL_SIGM_THETA', ioc, iarg, 1,&
-                    table, n1)
+        call getvid(motclf, 'TABL_SIGM_THETA', iocc=ioc, scal=table, nbret=n1)
         valk(1) = table
         do 22 i1 = 1, 4
             call tbexip(table, valek(i1), exist, k8b)
@@ -186,19 +184,17 @@ subroutine rcevoa(typtab, nommat)
             endif
 22      continue
 !
-        call getvr8(motclf, 'INST', ioc, iarg, 0,&
-                    r8b, n1)
+        call getvr8(motclf, 'INST', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbins0 = -n1
             call jecroc(jexnum('&&RCEVOA.SITUATION', ioc))
             call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONMAX', nbins0)
             call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0)
             call jeveuo(jexnum('&&RCEVOA.SITUATION', ioc), 'E', kinst)
-            call getvr8(motclf, 'INST', ioc, iarg, nbins0,&
-                        zr(kinst), n1)
+            call getvr8(motclf, 'INST', iocc=ioc, nbval=nbins0, vect=zr(kinst),&
+                        nbret=n1)
         else
-            call getvid(motclf, 'LIST_INST', ioc, iarg, 1,&
-                        nomf, n1)
+            call getvid(motclf, 'LIST_INST', iocc=ioc, scal=nomf, nbret=n1)
             if (n1 .ne. 0) then
                 call jelira(nomf//'.VALE', 'LONMAX', nbins0)
                 call jeveuo(nomf//'.VALE', 'L', jinst)
@@ -231,11 +227,9 @@ subroutine rcevoa(typtab, nommat)
         call jeveuo(jexnum('&&RCEVOA.SITUATION', ioc), 'L', kinst)
         call jelira(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0)
 !
-        call getvis(motclf, 'NB_OCCUR', ioc, iarg, 1,&
-                    nbcycl, n1)
+        call getvis(motclf, 'NB_OCCUR', iocc=ioc, scal=nbcycl, nbret=n1)
 !
-        call getvid(motclf, 'TABL_SIGM_THETA', ioc, iarg, 1,&
-                    table, n1)
+        call getvid(motclf, 'TABL_SIGM_THETA', iocc=ioc, scal=table, nbret=n1)
 !
         do 32 i = 1, nbins0
             ind = ind + 1

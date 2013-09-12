@@ -58,9 +58,6 @@ subroutine op0041()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnscno.h"
@@ -69,6 +66,9 @@ subroutine op0041()
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/infmaj.h"
@@ -119,8 +119,7 @@ subroutine op0041()
 !
 ! --- NOM DU MODELE ET TYPE DE PHENOMENE
 !
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomo, ibid)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
     call dismoi('F', 'PHENOMENE', nomo, 'MODELE', ibid,&
                 pheno, ibid)
     ASSERT(pheno.eq.'MECANIQUE' .or. pheno.eq.'THERMIQUE')
@@ -141,8 +140,7 @@ subroutine op0041()
     goinop=.false.
 !
 !     CHECK IF THE USER WANTS TO USE AN AUXILIARY GRID
-    call getvid(' ', 'MODELE_GRILLE', 1, iarg, 1,&
-                griaux, iret)
+    call getvid(' ', 'MODELE_GRILLE', scal=griaux, nbret=iret)
     if (iret .gt. 0) then
 !        YES
         grille = .true.
@@ -171,8 +169,7 @@ subroutine op0041()
 !
 !     CHECK IF THE USER HAS GIVEN THE CRACK FROM WHICH THE GRID MUST
 !     BE COPIED
-    call getvid(' ', 'FISS_GRILLE', 1, iarg, 1,&
-                fisgri, iret)
+    call getvid(' ', 'FISS_GRILLE', scal=fisgri, nbret=iret)
     if (iret .gt. 0) then
 !        YES, THE GRID INFOS ARE DUPLICATED FOR THE NEW CRACK.
 !        CHECK IF A GRID IS ASSOCIATED TO THE GIVEN CRACK.
@@ -208,11 +205,9 @@ subroutine op0041()
     info = fiss//'.INFO'
     call wkvect(info, 'G V K16', 3, jinfo)
 !     TYPE DE DISCONTINUITE : FISSURE OU INTERFACE
-    call getvtx(' ', 'TYPE_DISCONTINUITE', 1, iarg, 1,&
-                typdis, ibid)
+    call getvtx(' ', 'TYPE_DISCONTINUITE', scal=typdis, nbret=ibid)
 !     CHAMP DISCONTINU : DEPLACEMENTS OU CONTRAINTES
-    call getvtx(' ', 'CHAM_DISCONTINUITE', 1, iarg, 1,&
-                chadis, ibid)
+    call getvtx(' ', 'CHAM_DISCONTINUITE', scal=chadis, nbret=ibid)
     zk16(jinfo-1+1) = typdis
     zk16(jinfo-1+2) = chadis
     zk16(jinfo-1+3) = '      '
@@ -220,19 +215,15 @@ subroutine op0041()
 !
 ! --- MOT-CLEFS DEFINITION FISSURE
 !
-    call getvid('DEFI_FISS', 'FONC_LT', 1, iarg, 1,&
-                nfonf, ibid)
-    call getvid('DEFI_FISS', 'FONC_LN', 1, iarg, 1,&
-                nfong, me1)
+    call getvid('DEFI_FISS', 'FONC_LT', iocc=1, scal=nfonf, nbret=ibid)
+    call getvid('DEFI_FISS', 'FONC_LN', iocc=1, scal=nfong, nbret=me1)
     if (me1 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') call u2mesk('F', 'XFEM_24', 1,&
                                                                               'FONC_LT')
     if (me1 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') call u2mesk('A', 'XFEM_25',&
                                                                                 1, 'FONC_LT')
 !
-    call getvtx('DEFI_FISS', 'GROUP_MA_FISS', 1, iarg, 1,&
-                mafis, me2)
-    call getvtx('DEFI_FISS', 'GROUP_MA_FOND', 1, iarg, 1,&
-                fonfis, ibid)
+    call getvtx('DEFI_FISS', 'GROUP_MA_FISS', iocc=1, scal=mafis, nbret=me2)
+    call getvtx('DEFI_FISS', 'GROUP_MA_FOND', iocc=1, scal=fonfis, nbret=ibid)
     if (me2 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') call u2mesk('F', 'XFEM_24', 1,&
                                                                               'GROUP_MA_FOND')
     if (me2 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') call u2mesk('A', 'XFEM_25',&
@@ -240,67 +231,59 @@ subroutine op0041()
                                                                                 'GROUP_MA_FOND')
 !
     mxval = 0
-    call getvtx('DEFI_FISS', 'FORM_FISS', 1, iarg, mxval,&
-                geofis, me3)
+    call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofis,&
+                nbret=me3)
 !
-    call getvid('DEFI_FISS', 'CHAM_NO_LSN', 1, iarg, 1,&
-                ncham, me4)
-    call getvid('DEFI_FISS', 'CHAM_NO_LST', 1, iarg, 1,&
-                ncham, ibid)
+    call getvid('DEFI_FISS', 'CHAM_NO_LSN', iocc=1, scal=ncham, nbret=me4)
+    call getvid('DEFI_FISS', 'CHAM_NO_LST', iocc=1, scal=ncham, nbret=ibid)
     if (me4 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') call u2mesk('F', 'XFEM_24', 1,&
                                                                               'CHAM_NO_LST')
     if (me4 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') call u2mesk('A', 'XFEM_25',&
                                                                                 1, 'CHAM_NO_LST')
 !
     if (me3 .eq. -1) then
-        call getvtx('DEFI_FISS', 'FORM_FISS', 1, iarg, 1,&
-                    geofis, me3)
-        call getvr8('DEFI_FISS', 'RAYON_CONGE', 1, iarg, 1,&
-                    r, ibid)
+        call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, scal=geofis, nbret=me3)
+        call getvr8('DEFI_FISS', 'RAYON_CONGE', iocc=1, scal=r, nbret=ibid)
         if (geofis .eq. 'ELLIPSE' .or. geofis .eq. 'RECTANGLE' .or. geofis .eq. 'CYLINDRE') then
-            call getvr8('DEFI_FISS', 'DEMI_GRAND_AXE', 1, iarg, 1,&
-                        a, ibid)
-            call getvr8('DEFI_FISS', 'DEMI_PETIT_AXE', 1, iarg, 1,&
-                        b, ibid)
-            call getvr8('DEFI_FISS', 'CENTRE', 1, iarg, 3,&
-                        noeud, ibid)
-            call getvr8('DEFI_FISS', 'VECT_X', 1, iarg, 3,&
-                        vect1, ibid)
-            call getvr8('DEFI_FISS', 'VECT_Y', 1, iarg, 3,&
-                        vect2, ibid)
-            call getvtx('DEFI_FISS', 'COTE_FISS', 1, iarg, 1,&
-                        cote, ibid)
+            call getvr8('DEFI_FISS', 'DEMI_GRAND_AXE', iocc=1, scal=a, nbret=ibid)
+            call getvr8('DEFI_FISS', 'DEMI_PETIT_AXE', iocc=1, scal=b, nbret=ibid)
+            call getvr8('DEFI_FISS', 'CENTRE', iocc=1, nbval=3, vect=noeud,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'VECT_X', iocc=1, nbval=3, vect=vect1,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'VECT_Y', iocc=1, nbval=3, vect=vect2,&
+                        nbret=ibid)
+            call getvtx('DEFI_FISS', 'COTE_FISS', iocc=1, scal=cote, nbret=ibid)
         else if (geofis.eq.'DEMI_PLAN') then
-            call getvr8('DEFI_FISS', 'PFON', 1, iarg, 3,&
-                        noeud, ibid)
-            call getvr8('DEFI_FISS', 'NORMALE', 1, iarg, 3,&
-                        vect1, ibid)
-            call getvr8('DEFI_FISS', 'DTAN', 1, iarg, 3,&
-                        vect2, ibid)
+            call getvr8('DEFI_FISS', 'PFON', iocc=1, nbval=3, vect=noeud,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'NORMALE', iocc=1, nbval=3, vect=vect1,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'DTAN', iocc=1, nbval=3, vect=vect2,&
+                        nbret=ibid)
         else if (geofis.eq.'SEGMENT') then
-            call getvr8('DEFI_FISS', 'PFON_ORIG', 1, iarg, 3,&
-                        vect1, ibid)
-            call getvr8('DEFI_FISS', 'PFON_EXTR', 1, iarg, 3,&
-                        vect2, ibid)
+            call getvr8('DEFI_FISS', 'PFON_ORIG', iocc=1, nbval=3, vect=vect1,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'PFON_EXTR', iocc=1, nbval=3, vect=vect2,&
+                        nbret=ibid)
         else if (geofis.eq.'DEMI_DROITE') then
-            call getvr8('DEFI_FISS', 'PFON', 1, iarg, 3,&
-                        noeud, ibid)
-            call getvr8('DEFI_FISS', 'DTAN', 1, iarg, 3,&
-                        vect1, ibid)
+            call getvr8('DEFI_FISS', 'PFON', iocc=1, nbval=3, vect=noeud,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'DTAN', iocc=1, nbval=3, vect=vect1,&
+                        nbret=ibid)
         else if (geofis.eq.'DROITE') then
-            call getvr8('DEFI_FISS', 'POINT', 1, iarg, 3,&
-                        noeud, ibid)
-            call getvr8('DEFI_FISS', 'DTAN', 1, iarg, 3,&
-                        vect1, ibid)
+            call getvr8('DEFI_FISS', 'POINT', iocc=1, nbval=3, vect=noeud,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'DTAN', iocc=1, nbval=3, vect=vect1,&
+                        nbret=ibid)
         else if (geofis.eq.'ENTAILLE') then
-            call getvr8('DEFI_FISS', 'DEMI_LONGUEUR', 1, iarg, 1,&
-                        a, ibid)
-            call getvr8('DEFI_FISS', 'CENTRE', 1, iarg, 3,&
-                        noeud, ibid)
-            call getvr8('DEFI_FISS', 'VECT_X', 1, iarg, 3,&
-                        vect1, ibid)
-            call getvr8('DEFI_FISS', 'VECT_Y', 1, iarg, 3,&
-                        vect2, ibid)
+            call getvr8('DEFI_FISS', 'DEMI_LONGUEUR', iocc=1, scal=a, nbret=ibid)
+            call getvr8('DEFI_FISS', 'CENTRE', iocc=1, nbval=3, vect=noeud,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'VECT_X', iocc=1, nbval=3, vect=vect1,&
+                        nbret=ibid)
+            call getvr8('DEFI_FISS', 'VECT_Y', iocc=1, nbval=3, vect=vect2,&
+                        nbret=ibid)
         else
             ASSERT(.false.)
         endif
@@ -524,8 +507,7 @@ subroutine op0041()
 ! --- RECUPERATION EVENTUELLE DES FISSURES DE JONCTION
 !
     cnslj = '&&OP0041.CNSLJ'
-    call getvid('JONCTION', 'FISSURE', 1, iarg, 0,&
-                kbid, me1)
+    call getvid('JONCTION', 'FISSURE', iocc=1, nbval=0, nbret=me1)
     if (me1 .lt. 0) then
         if (pheno .eq. 'THERMIQUE') call u2mesk('F', 'XFEM_71', 1, nomo)
         call xinlsj(noma, ndim, fiss, me1, cnslj)

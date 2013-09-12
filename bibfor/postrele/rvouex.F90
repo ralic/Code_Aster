@@ -2,15 +2,14 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                   lstnac, iret)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/celcel.h"
 #include "asterfort/celver.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2fnoe.h"
 #include "asterfort/i2trgi.h"
 #include "asterfort/jecreo.h"
@@ -30,6 +29,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 #include "asterfort/utmach.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: lstcmp, lstmac, lstnac
     character(len=*) :: mcf, nchpt
     integer :: iocc, iret
@@ -98,12 +98,11 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
     call jeveuo(jexnum(lstcmp, iocc), 'L', acmp)
     malist = '&&RVOUEX_MALIST'
 !
-    call getvid(mcf, 'CHEMIN', iocc, iarg, 0,&
-                zk8, nbcrb)
+    call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=0, nbret=nbcrb)
     nbcrb = -nbcrb
     if (nbcrb .ne. 0) then
-        call getvid(mcf, 'CHEMIN', iocc, iarg, nbcrb,&
-                    courbe, ibib)
+        call getvid(mcf, 'CHEMIN', iocc=iocc, nbval=nbcrb, vect=courbe,&
+                    nbret=ibib)
     endif
 !
     nchp19 = nchpt
@@ -141,27 +140,24 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
         nbtrou = 0
         jmmail = 1
 !
-        call getvtx(mcf, 'NOM_CMP', iocc, iarg, 0,&
-                    k8b, nc)
+        call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nc)
         if (nc .lt. 0 .and. nbcrb .eq. 0) then
             nbcmp = -nc
             call wkvect('&&RVOUEX.NOM_CMP', 'V V K8', nbcmp, jcmp)
-            call getvtx(mcf, 'NOM_CMP', iocc, iarg, nbcmp,&
-                        zk8(jcmp), nc)
+            call getvtx(mcf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                        nbret=nc)
 !
 ! VERIFICATION QUE LES COMPOSANTES DEMANDEES
 ! APPARTIENNENT BIEN AU CHAMP
 !
-            call getvid(mcf, 'RESULTAT', iocc, iarg, 1,&
-                        resuco, ibib)
+            call getvid(mcf, 'RESULTAT', iocc=iocc, scal=resuco, nbret=ibib)
             if (ibib .ne. 0) then
                 nomobj = '&&RVOUEX.NOM_CMP1'
                 call jeexin(nomobj, ier)
                 if (ier .ne. 0) call jedetr(nomobj)
                 call utncmp(nchp19, nbcmp1, nomobj)
                 call jeveuo(nomobj, 'L', jcmp1)
-                call getvtx(mcf, 'NOM_CHAM', iocc, iarg, 1,&
-                            nchsym, n1)
+                call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nchsym, nbret=n1)
                 nbr=nbcmp1
                 if (zk8(jcmp1) .eq. 'VARI') nbr=nbvari
                 do 102 i = 1, nbcmp
@@ -187,8 +183,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
             call jedetr('&&RVOUEX.NOM_CMP')
         endif
 !
-        call getvtx(mcf, 'TOUT_CMP', iocc, iarg, 0,&
-                    k8b, ntc)
+        call getvtx(mcf, 'TOUT_CMP', iocc=iocc, nbval=0, nbret=ntc)
         if (ntc .lt. 0 .and. nbcrb .eq. 0) then
             nomobj = '&&RVOUEX.NOMCMP.USER'
             call utncmp(nchp19, nbcmp, nomobj)
@@ -214,10 +209,8 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 call rvgnoe(mcf, iocc, nmaila, lstnac, 0,&
                             ibid)
 !
-                call getvtx(mcf, 'GROUP_MA', iocc, iarg, 0,&
-                            k8b, n1)
-                call getvtx(mcf, 'MAILLE', iocc, iarg, 0,&
-                            k8b, n2)
+                call getvtx(mcf, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
+                call getvtx(mcf, 'MAILLE', iocc=iocc, nbval=0, nbret=n2)
                 if ((n1+n2) .eq. 0) then
                     nbmalu = 0
                 else

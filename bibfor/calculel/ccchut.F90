@@ -4,11 +4,11 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/ccchuc.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -37,7 +37,7 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
     character(len=8), intent(in) :: sdresu_in
     character(len=8), intent(in) :: sdresu_out
     character(len=19), intent(in) :: list_ordr
-    integer , intent(in) :: nb_ordr
+    integer, intent(in) :: nb_ordr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,72 +70,67 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
 ! - Initializations
 !
     keywordfact = 'CHAM_UTIL'
-    lform       = '&&CCCHUT.FORMULE'
+    lform = '&&CCCHUT.FORMULE'
     call getfac(keywordfact, nuti)
 !
 ! - Loop on occurrences
 !
     do ioc = 1, nuti
-        call getvtx(keywordfact, 'NOM_CHAM', ioc, iarg, 1,&
-                    field_type, ibid)
-        call getvis(keywordfact, 'NUME_CHAM_RESU', ioc, iarg, 1,&
-                    nume_field_out, ibid)
+        call getvtx(keywordfact, 'NOM_CHAM', iocc=ioc, scal=field_type, nbret=ibid)
+        call getvis(keywordfact, 'NUME_CHAM_RESU', iocc=ioc, scal=nume_field_out, nbret=ibid)
         ASSERT(nume_field_out.ge.1 .and. nume_field_out.le.20)
 !
 ! ----- Which kind of computation ?
 !
-        call getvid(keywordfact, 'FORMULE', ioc, iarg, 0,&
-                    k8b, nb_form)
+        call getvid(keywordfact, 'FORMULE', iocc=ioc, nbval=0, nbret=nb_form)
         nb_form = -nb_form
-        call getvtx(keywordfact, 'CRITERE', ioc, iarg, 0,&
-                    k8b, nb_crit)
+        call getvtx(keywordfact, 'CRITERE', iocc=ioc, nbval=0, nbret=nb_crit)
         nb_crit = -nb_crit
-        call getvtx(keywordfact, 'NORME', ioc, iarg, 0,&
-                    k8b, nb_norm)
+        call getvtx(keywordfact, 'NORME', iocc=ioc, nbval=0, nbret=nb_norm)
         nb_norm = -nb_norm
 !
 ! ----- Case NORME
 !
         if (nb_form .eq. 1) then
-
+!
         endif
 !
 ! ----- Type of computation
 !
-        crit  = ' '
-        norm  = ' '
+        crit = ' '
+        norm = ' '
         jform = 1
         if (nb_crit .ne. 0) then
             ASSERT(nb_crit.eq.1)
             ASSERT(nb_form.eq.0)
             ASSERT(nb_norm.eq.0)
             type_comp = 'CRITERE'
-            call getvtx(keywordfact, type_comp, ioc, iarg, nb_crit, &
-                        crit, ibid)
+            call getvtx(keywordfact, type_comp, iocc=ioc, nbval=nb_crit, vect=crit,&
+                        nbret=ibid)
 !
-        elseif (nb_form .ne. 0) then
+        else if (nb_form .ne. 0) then
             ASSERT(nb_crit.eq.0)
             ASSERT(nb_norm.eq.0)
             type_comp = 'FORMULE'
             call wkvect(lform, 'V V K8', nb_form, jform)
-            call getvid(keywordfact, type_comp, ioc, iarg, nb_form,&
-                        zk8(jform), ibid)
+            call getvid(keywordfact, type_comp, iocc=ioc, nbval=nb_form, vect=zk8(jform),&
+                        nbret=ibid)
 !
-        elseif (nb_norm .ne. 0) then
+        else if (nb_norm .ne. 0) then
             ASSERT(nb_crit.eq.0)
             ASSERT(nb_form.eq.0)
             ASSERT(nb_norm.eq.1)
             type_comp = 'NORME'
-            call getvtx(keywordfact, type_comp, ioc, iarg, nb_norm, &
-                        norm, ibid)
+            call getvtx(keywordfact, type_comp, iocc=ioc, nbval=nb_norm, vect=norm,&
+                        nbret=ibid)
         else
             ASSERT(.false.)
         endif
 !
 ! ----- Computation
 !
-        call ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, &
-                    crit     , norm      , nb_form , zk8(jform)    , list_ordr, &
+        call ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
+                    crit, norm, nb_form, zk8(jform), list_ordr,&
                     nb_ordr)
 !
         call jedetr(lform)

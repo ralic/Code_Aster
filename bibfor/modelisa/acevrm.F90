@@ -17,13 +17,13 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+!
     integer :: nbocc, noemax
     character(len=8) :: noma
 ! ----------------------------------------------------------------------
@@ -47,10 +47,8 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
     noemaf = 0
 ! --- BOUCLE SUR LES OCCURENCES DE DISCRET
     do 10 ioc = 1, nbocc
-        call getvtx('RIGI_MISS_3D', 'GROUP_MA_POI1', ioc, iarg, 1,&
-                    nogp, ngp)
-        call getvtx('RIGI_MISS_3D', 'GROUP_MA_SEG2', ioc, iarg, 1,&
-                    nogl, ngl)
+        call getvtx('RIGI_MISS_3D', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
+        call getvtx('RIGI_MISS_3D', 'GROUP_MA_SEG2', iocc=ioc, scal=nogl, nbret=ngl)
 !
         if (ngp .ne. 0) then
             call jelira(jexnom(magrma, nogp), 'LONUTI', nma)

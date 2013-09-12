@@ -21,15 +21,14 @@ subroutine op0168()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jecrec.h"
@@ -54,6 +53,7 @@ subroutine op0168()
 #include "asterfort/vprecu.h"
 #include "asterfort/vpstor.h"
 #include "asterfort/wkvect.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, impr, iord, iprec, iret
     integer :: j, jadr, jme, jnom, jor, jordr
@@ -69,7 +69,7 @@ subroutine op0168()
     integer :: lpar(3)
     integer :: vali(2)
     real(kind=8) :: r8b, prec, zero, mastot, valr(7)
-    character(len=1) ::  typmod
+    character(len=1) :: typmod
     character(len=3) :: ouinon
     character(len=8) :: k8b, modeou, modein
     character(len=16) :: typcon, nomcmd, critfi, nompar(3), nomsy, nompav
@@ -114,25 +114,32 @@ subroutine op0168()
         call jecrec(kmode, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                     nbfilt)
         do 10 i = 1, nbfilt
-            call getvid('FILTRE_MODE', 'MODE', i, iarg, 1,&
-                        modein, n1)
+            call getvid('FILTRE_MODE', 'MODE', iocc=i, scal=modein, nbret=n1)
             call jelira(modein//'           .ORDR', 'LONUTI', iret)
             if (iret .eq. 0) goto 10
             nbmr = nbmr + 1
 !
             if (nbmr .eq. 1) then
 !      --- MATRICES DE REFERENCE DES MODES ---
-                call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, raide, iret)
-                call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, masse, iret)
-                call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, amor, iret)
-                call dismoi('F', 'NUME_DDL', modein, 'RESU_DYNA', ibid, numedd, iret)
-                call vpcrea(0, modeou, masse, amor, raide, numedd, ibid)
+                call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
+                            raide, iret)
+                call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
+                            masse, iret)
+                call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
+                            amor, iret)
+                call dismoi('F', 'NUME_DDL', modein, 'RESU_DYNA', ibid,&
+                            numedd, iret)
+                call vpcrea(0, modeou, masse, amor, raide,&
+                            numedd, ibid)
             endif
 !
             zk8(jnom+nbmr-1) = modein
-            call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid, raidi, iret)
-            call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid, massi, iret)
-            call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid, amori, iret)
+            call dismoi('F', 'REF_RIGI_PREM', modein, 'RESU_DYNA', ibid,&
+                        raidi, iret)
+            call dismoi('F', 'REF_MASS_PREM', modein, 'RESU_DYNA', ibid,&
+                        massi, iret)
+            call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
+                        amori, iret)
             if (massi .ne. masse .or. amori .ne. amor .or. raidi .ne. raide) call u2mess(&
                                                                              'F', 'ALGELINE3_9')
 !
@@ -148,8 +155,7 @@ subroutine op0168()
             call jeecra(jexnum(kmode, nbmr), 'LONMAX', nbmodt)
             call jeveuo(jexnum(kmode, nbmr), 'E', jordr)
 !
-            call getvtx('FILTRE_MODE', 'TOUT_ORDRE', i, iarg, 1,&
-                        ouinon, n1)
+            call getvtx('FILTRE_MODE', 'TOUT_ORDRE', iocc=i, scal=ouinon, nbret=n1)
             if (n1 .ne. 0 .and. ouinon .eq. 'OUI') then
                 nbmode = nbmodt
                 do 12 j = 1, nbmode
@@ -161,13 +167,12 @@ subroutine op0168()
                 goto 10
             endif
 !
-            call getvis('FILTRE_MODE', 'NUME_ORDRE', i, iarg, 0,&
-                        ibid, n2)
+            call getvis('FILTRE_MODE', 'NUME_ORDRE', iocc=i, nbval=0, nbret=n2)
             if (n2 .ne. 0) then
                 nbmodu = -n2
                 call wkvect('&&OP0168.NUME_MODE', 'V V I', nbmodu, jme)
-                call getvis('FILTRE_MODE', 'NUME_ORDRE', i, iarg, nbmodu,&
-                            zi(jme), n2)
+                call getvis('FILTRE_MODE', 'NUME_ORDRE', iocc=i, nbval=nbmodu, vect=zi(jme),&
+                            nbret=n2)
                 nbmode = 0
                 do 20 j = 1, nbmodu
                     do 22 k = 1, nbmodt
@@ -189,13 +194,12 @@ subroutine op0168()
                 goto 10
             endif
 !
-            call getvis('FILTRE_MODE', 'NUME_MODE', i, iarg, 0,&
-                        ibid, n3)
+            call getvis('FILTRE_MODE', 'NUME_MODE', iocc=i, nbval=0, nbret=n3)
             if (n3 .ne. 0) then
                 nbmodu = -n3
                 call wkvect('&&OP0168.NUME_MODE', 'V V I', nbmodu, jme)
-                call getvis('FILTRE_MODE', 'NUME_MODE', i, iarg, nbmodu,&
-                            zi(jme), n3)
+                call getvis('FILTRE_MODE', 'NUME_MODE', iocc=i, nbval=nbmodu, vect=zi(jme),&
+                            nbret=n3)
                 nbmode = 0
                 do 30 j = 1, nbmodt
                     iord = zi(jor+j-1)
@@ -216,13 +220,12 @@ subroutine op0168()
                 goto 10
             endif
 !
-            call getvis('FILTRE_MODE', 'NUME_MODE_EXCLU', i, iarg, 0,&
-                        ibid, n4)
+            call getvis('FILTRE_MODE', 'NUME_MODE_EXCLU', iocc=i, nbval=0, nbret=n4)
             if (n4 .ne. 0) then
                 nbme = -n4
                 call wkvect('&&OP0168.NUME_MODE', 'V V I', nbme, jme)
-                call getvis('FILTRE_MODE', 'NUME_MODE_EXCLU', i, iarg, nbme,&
-                            zi(jme), n4)
+                call getvis('FILTRE_MODE', 'NUME_MODE_EXCLU', iocc=i, nbval=nbme, vect=zi(jme),&
+                            nbret=n4)
                 nbmode = 0
                 do 40 j = 1, nbmodt
                     iord = zi(jor+j-1)
@@ -242,15 +245,11 @@ subroutine op0168()
                 goto 10
             endif
 !
-            call getvr8('FILTRE_MODE', 'FREQ_MIN', i, iarg, 0,&
-                        r8b, n5)
+            call getvr8('FILTRE_MODE', 'FREQ_MIN', iocc=i, nbval=0, nbret=n5)
             if (n5 .ne. 0) then
-                call getvr8('FILTRE_MODE', 'FREQ_MIN', i, iarg, 1,&
-                            fremin, n5)
-                call getvr8('FILTRE_MODE', 'FREQ_MAX', i, iarg, 1,&
-                            fremax, n5)
-                call getvr8('FILTRE_MODE', 'PRECISION', i, iarg, 1,&
-                            prec, n5)
+                call getvr8('FILTRE_MODE', 'FREQ_MIN', iocc=i, scal=fremin, nbret=n5)
+                call getvr8('FILTRE_MODE', 'FREQ_MAX', iocc=i, scal=fremax, nbret=n5)
+                call getvr8('FILTRE_MODE', 'PRECISION', iocc=i, scal=prec, nbret=n5)
                 fremin = fremin - prec
                 fremax = fremax + prec
                 nbmode = 0
@@ -270,19 +269,13 @@ subroutine op0168()
                 goto 10
             endif
 !
-            call getvtx('FILTRE_MODE', 'CRIT_EXTR', i, iarg, 0,&
-                        k8b, n6)
+            call getvtx('FILTRE_MODE', 'CRIT_EXTR', iocc=i, nbval=0, nbret=n6)
             if (n6 .ne. 0) then
-                call getvtx('FILTRE_MODE', 'CRIT_EXTR', i, iarg, 1,&
-                            critfi, n6)
-                call getvr8('FILTRE_MODE', 'SEUIL', i, iarg, 1,&
-                            seuil, n7)
-                call getvr8('FILTRE_MODE', 'SEUIL_X', i, iarg, 1,&
-                            seuil, n8)
-                call getvr8('FILTRE_MODE', 'SEUIL_Y', i, iarg, 1,&
-                            seuil, n9)
-                call getvr8('FILTRE_MODE', 'SEUIL_Z', i, iarg, 1,&
-                            seuil, n10)
+                call getvtx('FILTRE_MODE', 'CRIT_EXTR', iocc=i, scal=critfi, nbret=n6)
+                call getvr8('FILTRE_MODE', 'SEUIL', iocc=i, scal=seuil, nbret=n7)
+                call getvr8('FILTRE_MODE', 'SEUIL_X', iocc=i, scal=seuil, nbret=n8)
+                call getvr8('FILTRE_MODE', 'SEUIL_Y', iocc=i, scal=seuil, nbret=n9)
+                call getvr8('FILTRE_MODE', 'SEUIL_Z', iocc=i, scal=seuil, nbret=n10)
                 nbmode = 0
                 if (critfi .eq. 'MASS_EFFE_UN' .and. typcon(1:9) .eq. 'MODE_MECA') then
                     do 60 j = 1, nbmodt
@@ -435,10 +428,8 @@ subroutine op0168()
         valk(2)=typcon
         valk(3)=nomcmd
         call u2mesk('I', 'ALGELINE6_8', 3, valk)
-        call getvtx('IMPRESSION', 'CUMUL', 1, iarg, 1,&
-                    ouinon, n1)
-        call getvtx('IMPRESSION', 'CRIT_EXTR', 1, iarg, 1,&
-                    critfi, n2)
+        call getvtx('IMPRESSION', 'CUMUL', iocc=1, scal=ouinon, nbret=n1)
+        call getvtx('IMPRESSION', 'CRIT_EXTR', iocc=1, scal=critfi, nbret=n2)
 !
         call rsvpar(modeou, 1, 'MASS_EFFE_UN_DX', ibid, undf,&
                     k8b, iret)

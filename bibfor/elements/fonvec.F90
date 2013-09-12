@@ -1,11 +1,10 @@
 subroutine fonvec(resu, noma, cnxinv)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/fonnor.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -13,6 +12,7 @@ subroutine fonvec(resu, noma, cnxinv)
 #include "asterfort/u2mesr.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     character(len=8) :: resu, noma
     character(len=19) :: cnxinv
 ! ======================================================================
@@ -61,33 +61,29 @@ subroutine fonvec(resu, noma, cnxinv)
     call jeveuo(cooval, 'L', jvale)
 !
 !     --------------------------------------------------------------
-    call getvr8('FOND_FISS', 'DTAN_ORIG', 1, iarg, 0,&
-                zrbid, ndtaor)
+    call getvr8('FOND_FISS', 'DTAN_ORIG', iocc=1, nbval=0, nbret=ndtaor)
     if (ndtaor .ne. 0) then
         ndtaor = -ndtaor
         call wkvect(resu//'.DTAN_ORIGINE', 'G V R8', 3, jorig)
-        call getvr8('FOND_FISS', 'DTAN_ORIG', 1, iarg, 3,&
-                    zr(jorig), ndtaor)
+        call getvr8('FOND_FISS', 'DTAN_ORIG', iocc=1, nbval=3, vect=zr(jorig),&
+                    nbret=ndtaor)
     endif
 !
 !     --------------------------------------------------------------
-    call getvr8('FOND_FISS', 'DTAN_EXTR', 1, iarg, 0,&
-                zrbid, ndtaex)
+    call getvr8('FOND_FISS', 'DTAN_EXTR', iocc=1, nbval=0, nbret=ndtaex)
     if (ndtaex .ne. 0) then
         ndtaex = -ndtaex
         call wkvect(resu//'.DTAN_EXTREMITE', 'G V R8', 3, jextr)
-        call getvr8('FOND_FISS', 'DTAN_EXTR', 1, iarg, 3,&
-                    zr(jextr), ndtaex)
+        call getvr8('FOND_FISS', 'DTAN_EXTR', iocc=1, nbval=3, vect=zr(jextr),&
+                    nbret=ndtaex)
     endif
 !
 !     --------------------------------------------------------------
-    call getvr8(' ', 'NORMALE', 1, iarg, 0,&
-                zrbid, nvenor)
+    call getvr8(' ', 'NORMALE', nbval=0, nbret=nvenor)
     if (nvenor .ne. 0) then
         nvenor = -nvenor
         call wkvect(resu//'.NORMALE', 'G V R8', 3, jnorm)
-        call getvr8(' ', 'NORMALE', 1, iarg, 3,&
-                    zr(jnorm), nvenor)
+        call getvr8(' ', 'NORMALE', nbval=3, vect=zr(jnorm), nbret=nvenor)
     else
         call fonnor(resu, noma, cnxinv)
     endif

@@ -20,9 +20,9 @@ subroutine ntdcom(evolsc)
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
     character(len=8) :: evolsc
@@ -52,8 +52,7 @@ subroutine ntdcom(evolsc)
         lrela = .false.
         lsech = .false.
         do 100 k = 1, iocc
-            call getvtx(motcle, 'RELATION', k, iarg, 1,&
-                        comp, n1)
+            call getvtx(motcle, 'RELATION', iocc=k, scal=comp, nbret=n1)
             if (comp(1:10) .eq. 'SECH_NAPPE') lsech = .true.
             if (comp(1:12) .eq. 'SECH_GRANGER') lsech = .true.
             if (comp(1:5) .ne. 'SECH_') lrela = .true.
@@ -65,13 +64,11 @@ subroutine ntdcom(evolsc)
 !
         evolsc = ' '
         if (lsech) then
-            call getvid(' ', 'EVOL_THER_SECH', 1, iarg, 0,&
-                        k8b, n1)
+            call getvid(' ', 'EVOL_THER_SECH', nbval=0, nbret=n1)
             if (n1 .eq. 0) then
                 call u2mess('F', 'ALGORITH8_97')
             else
-                call getvid(' ', 'EVOL_THER_SECH', 1, iarg, 1,&
-                            evolsc, n1)
+                call getvid(' ', 'EVOL_THER_SECH', scal=evolsc, nbret=n1)
 !
 ! ----------VERIFICATION DU CHAMP DE TEMPERATURE
 !

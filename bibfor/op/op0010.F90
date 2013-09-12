@@ -34,13 +34,13 @@ subroutine op0010()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
@@ -137,8 +137,7 @@ subroutine op0010()
 !
 ! --- RETRIEVE THE NAME OF THE CRACK THAT MUST BE ELABORATED
 !
-    call getvid(' ', 'FISS_PROP', 1, iarg, 1,&
-                fispre, ibid)
+    call getvid(' ', 'FISS_PROP', scal=fispre, nbret=ibid)
 !
 !     VERIFICATION QUE L'ON TRAITE UNE FISSURE ET NON UNE INTERFACE
     call dismoi('F', 'TYPE_DISCONTINUITE', fispre, 'FISS_XFEM', ibid,&
@@ -148,8 +147,7 @@ subroutine op0010()
 !
 ! --- NOM DU MODELE
 !
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                nomo, ibid)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
 !
 !     CHECK THAT A CRACK HAS BEEN DEFINED ON THE MODEL
 !     AND RETRIEVE THE NUMBER OF CRACKS IN THE MODEL
@@ -200,15 +198,13 @@ subroutine op0010()
 !
 !     CHECK IF THE LOCALIZATION OF THE DOMAIN SHOULD BE ACTIVATED
     locdom=.false.
-    call getvtx(' ', 'ZONE_MAJ', 1, iarg, 1,&
-                k8bid, ibid)
+    call getvtx(' ', 'ZONE_MAJ', scal=k8bid, nbret=ibid)
     radimp=0.d0
     if (k8bid(1:4) .eq. 'TORE') then
 !        OK, THE LOCALIZATION MUST BE ACTIVATED
         locdom = .true.
 !        CHECK IF THE USER HAS SPECIFIED THE RADIUS OF THE TORUS
-        call getvr8(' ', 'RAYON_TORE', 1, iarg, 1,&
-                    radimp, ibid)
+        call getvr8(' ', 'RAYON_TORE', scal=radimp, nbret=ibid)
         if (ibid .eq. 0) then
 !           THE USER HAS NOT SPECIFIED THE RADIUS OF THE TORUS
             radimp = -1.d0
@@ -246,12 +242,10 @@ subroutine op0010()
     call cncinv(noma, ibid, 0, 'V', cnxinv)
 !
 !     RETRIEVE THE MAXIMUM ADVANCEMENT OF THE CRACK FRONT
-    call getvr8(' ', 'DA_MAX', 1, iarg, 1,&
-                damax, ibid)
+    call getvr8(' ', 'DA_MAX', scal=damax, nbret=ibid)
 !
 !     RETRIEVE THE VALUE FOR THE "TEST_MAIL" PARAMETER
-    call getvtx(' ', 'TEST_MAIL', 1, iarg, 1,&
-                test, ibid)
+    call getvtx(' ', 'TEST_MAIL', scal=test, nbret=ibid)
 !
 !     ISSUE AN ALARM FOR THE USER
     if (test(1:3) .eq. 'OUI') then
@@ -265,23 +259,18 @@ subroutine op0010()
     vvit = '&&OP0010.VVIT'
     vbeta = '&&OP0010.VBETA'
 !
-    call getvr8(' ', 'VITESSE', 0, iarg, 0,&
-                r8b, nbval)
+    call getvr8(' ', 'VITESSE', nbval=0, nbret=nbval)
 !
     call wkvect(vbeta, 'V V R8', -nbval, jbeta)
     call wkvect(vvit, 'V V R8', -nbval, jvit)
 !
-    call getvr8(' ', 'ANGLE', 0, iarg, -nbval,&
-                zr(jbeta), ibid)
-    call getvr8(' ', 'VITESSE', 0, iarg, -nbval,&
-                zr(jvit), ibid)
+    call getvr8(' ', 'ANGLE', nbval=-nbval, vect=zr(jbeta), nbret=ibid)
+    call getvr8(' ', 'VITESSE', nbval=-nbval, vect=zr(jvit), nbret=ibid)
 !
-    call getvr8(' ', 'DA_FISS', 0, iarg, 1,&
-                dafiss, ibid)
+    call getvr8(' ', 'DA_FISS', scal=dafiss, nbret=ibid)
 !
 !     RECUPERATION DU NOMBRE DE CYCLES
-    call getvr8(' ', 'NB_CYCLES', 0, iarg, 1,&
-                dttot, ibid)
+    call getvr8(' ', 'NB_CYCLES', scal=dttot, nbret=ibid)
 !
 ! --- RECUPERATION DES LEVEL SETS ET GRADIENTS
 !
@@ -313,12 +302,10 @@ subroutine op0010()
     call jeveuo(fiss//'.CARAFOND', 'L', jcaraf)
 !
 !   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, ibid)
+    call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
 !
 !   RETRIEVE THE RADIUS THAT MUST BE USED TO ASSESS THE LOCAL RESIDUAL
-    call getvr8(' ', 'RAYON', 1, iarg, 1,&
-                rayon, ibid)
+    call getvr8(' ', 'RAYON', scal=rayon, nbret=ibid)
 !
 !     SET THE DEFAULT VALUES FOR THE DOMAIN RESTRICTION FLAG
     ldpre = .false.
@@ -988,14 +975,11 @@ subroutine op0010()
     if (test(1:3) .eq. 'OUI') then
 !        RETREIVE THE DISTANCE BETWEEN THE PROPAGATED CRACK AND THE
 !        INITIAL FRONT
-        call getvr8(' ', 'DISTANCE', 1, iarg, 1,&
-                    dist, ibid)
+        call getvr8(' ', 'DISTANCE', scal=dist, nbret=ibid)
 !        RETREIVE THE VALUE OF THE TOLERANCE
-        call getvr8(' ', 'TOLERANCE', 1, iarg, 1,&
-                    distol, ibid)
+        call getvr8(' ', 'TOLERANCE', scal=distol, nbret=ibid)
 !        RETREIVE THE INITIAL CRACK
-        call getvid(' ', 'FISS_INITIALE', 1, iarg, 1,&
-                    fisini, ibid)
+        call getvid(' ', 'FISS_INITIALE', scal=fisini, nbret=ibid)
 !        CHECK THE CRACK FRONT
         call xprdis(fisini, fiss, dist, distol, lcmin)
 !

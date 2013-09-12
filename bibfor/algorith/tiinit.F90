@@ -20,8 +20,8 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterc/getvid.h"
+    implicit none
+#include "asterfort/getvid.h"
 #include "asterfort/nmcrob.h"
 #include "asterfort/ntcra0.h"
 #include "asterfort/ntcrar.h"
@@ -69,8 +69,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
     nomo = modele(1:8)
     result = resulz(1:8)
 !
-    call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                lisins, n1)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
     if (n1 .eq. 0) then
         if (.not.lostat) then
             call u2mess('F', 'DISCRETISATION_8')

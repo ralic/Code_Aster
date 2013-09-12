@@ -4,20 +4,20 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 #include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/wkvect.h"
     integer :: istop, nprec
@@ -96,14 +96,11 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     compt=-9999
     if ((eximod.eq.1) .and. (niv.ge.2)) then
         if (eximo1 .eq. 1) then
-            call getvid(' ', 'MODELE', 1, iarg, 1,&
-                        modele, ibid)
+            call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
             if (ibid .ne. 1) goto 70
         else
-            call getvid(' ', 'MATR_RIGI', 1, iarg, 1,&
-                        matra, ibid)
-            call getvid(' ', 'MATR_A', 1, iarg, 1,&
-                        matra, ibid)
+            call getvid(' ', 'MATR_RIGI', scal=matra, nbret=ibid)
+            call getvid(' ', 'MATR_A', scal=matra, nbret=ibid)
             if (ibid .ne. 1) goto 70
             k19b=' '
             k19b=matra
@@ -203,39 +200,31 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     endif
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
-    call getvis(motfac, 'PCENT_PIVOT', 1, iarg, 1,&
-                pcpiv, ibid)
+    call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'TYPE_RESOL', 1, iarg, 1,&
-                ktypr, ibid)
+    call getvtx(motfac, 'TYPE_RESOL', iocc=1, scal=ktypr, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'PRETRAITEMENTS', 1, iarg, 1,&
-                ktyps, ibid)
+    call getvtx(motfac, 'PRETRAITEMENTS', iocc=1, scal=ktyps, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
     ktypp='SANS'
     eximc=getexm(motfac,'POSTTRAITEMENTS')
     if (eximc .eq. 1) then
-        call getvtx(motfac, 'POSTTRAITEMENTS', 1, iarg, 1,&
-                    ktypp, ibid)
+        call getvtx(motfac, 'POSTTRAITEMENTS', iocc=1, scal=ktypp, nbret=ibid)
     endif
 !
-    call getvtx(motfac, 'RENUM', 1, iarg, 1,&
-                ktyprn, ibid)
+    call getvtx(motfac, 'RENUM', iocc=1, scal=ktyprn, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'ELIM_LAGR2', 1, iarg, 1,&
-                klag2, ibid)
+    call getvtx(motfac, 'ELIM_LAGR2', iocc=1, scal=klag2, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
     eps=-1.d0
     eximc=getexm(motfac,'RESI_RELA')
     if (eximc .eq. 1) then
-        call getvr8(motfac, 'RESI_RELA', 1, iarg, 1,&
-                    eps, ibid)
+        call getvr8(motfac, 'RESI_RELA', iocc=1, scal=eps, nbret=ibid)
     endif
 !
-    call getvtx(motfac, 'GESTION_MEMOIRE', 1, iarg, 1,&
-                kooc, ibid)
+    call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=kooc, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
 ! --- ON REMPLIT LA SD_SOLVEUR

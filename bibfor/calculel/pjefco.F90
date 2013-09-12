@@ -1,5 +1,5 @@
 subroutine pjefco(moa1, moa2, corres, base)
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,12 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -65,7 +65,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer :: n1, nbocc, iocc, ie, ibid, nbno2, nbma1
     integer :: iagno2, iagma1, iexi
 !
-    logical :: ldmax,dbg
+    logical :: ldmax, dbg
     real(kind=8) :: distma
     integer :: iarg
 !----------------------------------------------------------------------
@@ -101,8 +101,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !     --------------------------------------------------------
     ldmax = .false.
     distma = r8maem()
-    call getvr8(' ', 'DISTANCE_MAX', 1, iarg, 1,&
-                distma, n1)
+    call getvr8(' ', 'DISTANCE_MAX', scal=distma, nbret=n1)
     if (n1 .eq. 1) ldmax = .true.
 !
 !
@@ -116,9 +115,9 @@ subroutine pjefco(moa1, moa2, corres, base)
 !        --------------------------------------------
         call pjeftg(1, geom1, noma1, ' ', 1)
         call pjeftg(2, geom2, noma2, ' ', 1)
-
-
-
+!
+!
+!
         dbg=.false.
         if (dbg) then
 !          -- pour debug : on copie les 2 maillages sous les noms
@@ -130,14 +129,14 @@ subroutine pjefco(moa1, moa2, corres, base)
 !             U2=PROJ_CHAMP(...)
 !             IMPR_RRESU(RESU=_F(MAILLAGE=XXXMA1))
 !             IMPR_RRESU(RESU=_F(MAILLAGE=XXXMA2))
-
-           call detrsd('MAILLAGE','XXXMA1')
-           call detrsd('MAILLAGE','XXXMA2')
-           call copisd('MAILLAGE', 'G', noma1, 'XXXMA1')
-           call copisd('MAILLAGE', 'G', noma2, 'XXXMA2')
+!
+            call detrsd('MAILLAGE', 'XXXMA1')
+            call detrsd('MAILLAGE', 'XXXMA2')
+            call copisd('MAILLAGE', 'G', noma1, 'XXXMA1')
+            call copisd('MAILLAGE', 'G', noma2, 'XXXMA2')
         endif
-
-
+!
+!
         if (ncas .eq. '2D') then
             call pj2dco('TOUT', moa1, moa2, 0, 0,&
                         0, 0, geom1, geom2, corres,&
@@ -157,15 +156,15 @@ subroutine pjefco(moa1, moa2, corres, base)
         else
             ASSERT(.false.)
         endif
-
+!
     else
-
+!
 !        -- CAS : VIS_A_VIS
 !        ------------------------
-
+!
 !       -- le mot cle VIS_A_VIS ne peut pas fonctionner avec la methode ECLA_PG :
-        if (noma1(1:2).eq.'&&') call u2mess('F','CALCULEL4_17')
-
+        if (noma1(1:2) .eq. '&&') call u2mess('F', 'CALCULEL4_17')
+!
         do 30 iocc = 1, nbocc
 !
 !           -- RECUPERATION DE LA LISTE DE MAILLES LMA1 :
@@ -176,9 +175,9 @@ subroutine pjefco(moa1, moa2, corres, base)
             tymocl(2) = 'GROUP_MA'
             motcle(3) = 'TOUT_1'
             tymocl(3) = 'TOUT'
-
-
-
+!
+!
+!
             call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc,&
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
             call jeveuo('&&PJEFCO.LIMANU1', 'L', iagma1)

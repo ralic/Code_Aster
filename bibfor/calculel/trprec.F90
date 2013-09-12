@@ -1,8 +1,8 @@
 subroutine trprec(mcf, iocc, epsi, crit, prec,&
                   crit2)
-    implicit   none
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+    implicit none
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
     character(len=*) :: mcf
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -36,36 +36,32 @@ subroutine trprec(mcf, iocc, epsi, crit, prec,&
     integer :: iarg
 !     ------------------------------------------------------------------
 !
-    call getvr8(mcf, 'TOLE_MACHINE', iocc, iarg, 0,&
-                epsi, np)
+    call getvr8(mcf, 'TOLE_MACHINE', iocc=iocc, nbval=0, nbret=np)
     np = -np
     if (np .eq. 0) then
         epsi = 1.d-6
         prec = 1.d-6
     else if (np.eq.1) then
-        call getvr8(mcf, 'TOLE_MACHINE', iocc, iarg, 1,&
-                    epsi, np)
+        call getvr8(mcf, 'TOLE_MACHINE', iocc=iocc, scal=epsi, nbret=np)
         prec = epsi
     else
-        call getvr8(mcf, 'TOLE_MACHINE', iocc, iarg, 2,&
-                    epsir, np)
+        call getvr8(mcf, 'TOLE_MACHINE', iocc=iocc, nbval=2, vect=epsir,&
+                    nbret=np)
         epsi = epsir(1)
         prec = epsir(2)
     endif
 !
-    call getvtx(mcf, 'CRITERE', iocc, iarg, 0,&
-                crit, nc)
+    call getvtx(mcf, 'CRITERE', iocc=iocc, nbval=0, nbret=nc)
     nc = -nc
     if (nc .eq. 0) then
         crit = 'RELATIF'
         crit2 = 'RELATIF'
     else if (nc.eq.1) then
-        call getvtx(mcf, 'CRITERE', iocc, iarg, 1,&
-                    crit, nc)
+        call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
         crit2 = crit
     else
-        call getvtx(mcf, 'CRITERE', iocc, iarg, 2,&
-                    critr, nc)
+        call getvtx(mcf, 'CRITERE', iocc=iocc, nbval=2, vect=critr,&
+                    nbret=nc)
         crit = critr(1)
         crit2 = critr(2)
     endif

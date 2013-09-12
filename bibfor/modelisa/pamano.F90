@@ -2,11 +2,10 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                   lisnoz, lonlis)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -19,6 +18,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: motfaz, moclez, nomaz, listyz, lisnoz
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -141,8 +141,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !              ET VERIFICATION DE L'APPARTENANCE DES GROUP_MA
 !              AUX GROUP_MA DU MAILLAGE
 !              -----------------------------------------------------
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, ng)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=ng)
         if (ng .ne. 0) then
             ng = -ng
             call wkvect('&&PAMANO.TRAV', 'V V K24', ng, jjj)
@@ -189,8 +188,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !              ET VERIFICATION DE L'APPARTENANCE DES MAILLES
 !              AUX MAILLES DU MAILLAGE
 !              ----------------------------------------------------
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, nbma)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=nbma)
         if (nbma .ne. 0) then
             nbma = -nbma
             call wkvect('&&PAMANO.TRAV', 'V V K8', nbma, jjj)
@@ -233,8 +231,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !              ET VERIFICATION DE L'APPARTENANCE DES GROUP_NO
 !              AUX GROUP_NO DU MAILLAGE
 !              ------------------------------------------------
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, ng)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=ng)
         if (ng .ne. 0) then
             ng = -ng
             call wkvect('&&PAMANO.TRAV', 'V V K24', ng, jjj)
@@ -255,8 +252,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !              ET VERIFICATION DE L'APPARTENANCE DES NOEUDS
 !              AUX NOEUDS DU MAILLAGE
 !              ---------------------------------------------
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, nbno)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=nbno)
         if (nbno .ne. 0) then
             nbno = -nbno
             call wkvect('&&PAMANO.TRAV', 'V V K8', nbno, jjj)
@@ -294,12 +290,11 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !        -------------------------------------------------------
     if (motcle .eq. mgrma1 .or. motcle .eq. mgrma2) then
 !
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, ng)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=ng)
         if (ng .ne. 0) then
             ng = -ng
-            call getvtx(motfac, motcle, iocc, iarg, ng,&
-                        zk24(jjj), ngr)
+            call getvtx(motfac, motcle, iocc=iocc, nbval=ng, vect=zk24(jjj),&
+                        nbret=ngr)
             do 50 igr = 1, ngr
                 call jeveuo(jexnom(grmama, zk24(jjj+igr-1)), 'L', jgro)
                 call jelira(jexnom(grmama, zk24(jjj+igr-1)), 'LONUTI', nbmail)
@@ -322,12 +317,11 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !        -------------------------------------------------------
     else if (motcle.eq.mmail1.or.motcle.eq.mmail2) then
 !
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, nbma)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=nbma)
         if (nbma .ne. 0) then
             nbma = -nbma
-            call getvtx(motfac, motcle, iocc, iarg, nbma,&
-                        zk8(jjj), nmai)
+            call getvtx(motfac, motcle, iocc=iocc, nbval=nbma, vect=zk8(jjj),&
+                        nbret=nmai)
             do 80 ima = 1, nmai
                 call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj+ima-1)), ibid)
                 call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
@@ -345,12 +339,11 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !        -------------------------------------------------------
     else if (motcle.eq.mgrno1.or.motcle.eq.mgrno2) then
 !
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, ng)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=ng)
         if (ng .ne. 0) then
             ng = -ng
-            call getvtx(motfac, motcle, iocc, iarg, ng,&
-                        zk24(jjj), ngr)
+            call getvtx(motfac, motcle, iocc=iocc, nbval=ng, vect=zk24(jjj),&
+                        nbret=ngr)
             do 100 igr = 1, ngr
                 call jeveuo(jexnom(grnoma, zk24(jjj+igr-1)), 'L', jgro)
                 call jelira(jexnom(grnoma, zk24(jjj+igr-1)), 'LONUTI', n3)
@@ -367,12 +360,11 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !        -------------------------------------------------------
     else if (motcle.eq.mnoeu1.or.motcle.eq.mnoeu2) then
 !
-        call getvtx(motfac, motcle, iocc, iarg, 0,&
-                    k8bid, nbno)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=0, nbret=nbno)
         if (nbno .ne. 0) then
             nbno = -nbno
-            call getvtx(motfac, motcle, iocc, iarg, nbno,&
-                        zk8(jjj), nno)
+            call getvtx(motfac, motcle, iocc=iocc, nbval=nbno, vect=zk8(jjj),&
+                        nbret=nno)
             do 120 ino = 1, nno
                 indnoe = indnoe + 1
                 zk8(jlist+indnoe-1) = zk8(jjj+ino-1)

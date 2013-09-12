@@ -23,12 +23,8 @@ subroutine op0109()
 !
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/ascalc.h"
 #include "asterfort/asenap.h"
@@ -39,6 +35,9 @@ subroutine op0109()
 #include "asterfort/asveri.h"
 #include "asterfort/copmat.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iunifi.h"
@@ -57,6 +56,7 @@ subroutine op0109()
 #include "asterfort/u2mess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
+!
     integer :: vali(2)
 !-----------------------------------------------------------------------
     integer :: iam, ibid, id, ierd, ifm, ifu, ii
@@ -117,36 +117,30 @@ subroutine op0109()
 !
 !     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 !
-    call getvtx('IMPRESSION', 'NIVEAU', 1, iarg, 1,&
-                niveau, nimpr)
+    call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
     if (nimpr .eq. 0) niveau='TOUT     '
 !
 !     ----- RECUPERATION DES OPTIONS DE CALCUL -----
 !
-    call getvtx(' ', 'OPTION', 1, iarg, 0,&
-                k8b, ns)
+    call getvtx(' ', 'OPTION', nbval=0, nbret=ns)
     nbopt = -ns
     call wkvect('&&OP0109.OPTION', 'V V K16', nbopt, jopt)
-    call getvtx(' ', 'OPTION', 1, iarg, nbopt,&
-                zk16(jopt), ns)
+    call getvtx(' ', 'OPTION', nbval=nbopt, vect=zk16(jopt), nbret=ns)
 !
 !     ----- RECUPERATION DES MODES -----
 !
-    call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                meca, nmm)
-    call getvid(' ', 'MODE_CORR', 1, iarg, 1,&
-                psmo, npm)
+    call getvid(' ', 'MODE_MECA', scal=meca, nbret=nmm)
+    call getvid(' ', 'MODE_CORR', scal=psmo, nbret=npm)
     if (npm .ne. 0) tronc = .true.
 !
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
     call rsutnu(meca, ' ', 0, knume, nbordr,&
                 prec, crit, iret)
     if (iret .ne. 0) goto 9999
     call jeveuo(knume, 'L', jordr)
-    call dismoi('C', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid, masse, iret)
+    call dismoi('C', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid,&
+                masse, iret)
     nomsy = 'DEPL'
     call vprecu(meca, nomsy, nbordr, zi(jordr), kvec,&
                 nbpara, nopara, k8b, kval, k8b,&
@@ -168,15 +162,13 @@ subroutine op0109()
     endif
 !
 !     ----- RECUPERATION DES AMORTISSEMENTS -----
-    call getvr8(' ', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8b, na1)
+    call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=na1)
     na = na1
     if (na .ne. 0) then
         nbamor = -na
         call wkvect('&&OP0109.AMORTISSEMENT', 'V V R', nbamor, jamor)
         if (na1 .ne. 0) then
-            call getvr8(' ', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                        zr(jamor), na)
+            call getvr8(' ', 'AMOR_REDUIT', nbval=nbamor, vect=zr(jamor), nbret=na)
         endif
         if (nbamor .gt. nbmode) then
             vali(1) = nbamor
@@ -195,8 +187,7 @@ subroutine op0109()
             jamor = jamo2
         endif
     else
-        call getvid(' ', 'LIST_AMOR', 1, iarg, 1,&
-                    liar, nla)
+        call getvid(' ', 'LIST_AMOR', scal=liar, nbret=nla)
         if (nla .ne. 0) then
             call jelira(liar//'.VALE', 'LONUTI', nbamor)
             if (nbamor .gt. nbmode) then
@@ -242,27 +233,20 @@ subroutine op0109()
         call u2mesi('F', 'SEISME_13', 2, vali)
     endif
 !     ----- DIVERS RECOMBINAISON -----
-    call getvtx('COMB_MODE', 'TYPE', 1, iarg, 1,&
-                typcmo, ncm)
-    call getvr8('COMB_MODE', 'DUREE', 1, iarg, 1,&
-                temps, ncmt)
-    call getvr8('COMB_MODE', 'FREQ_1', 1, iarg, 1,&
-                f1gup, nf1)
-    call getvr8('COMB_MODE', 'FREQ_2', 1, iarg, 1,&
-                f2gup, nf2)
+    call getvtx('COMB_MODE', 'TYPE', iocc=1, scal=typcmo, nbret=ncm)
+    call getvr8('COMB_MODE', 'DUREE', iocc=1, scal=temps, nbret=ncmt)
+    call getvr8('COMB_MODE', 'FREQ_1', iocc=1, scal=f1gup, nbret=nf1)
+    call getvr8('COMB_MODE', 'FREQ_2', iocc=1, scal=f2gup, nbret=nf2)
 !
-    call getvtx('COMB_DIRECTION', 'TYPE', 1, iarg, 1,&
-                typcdi, ncd)
+    call getvtx('COMB_DIRECTION', 'TYPE', iocc=1, scal=typcdi, nbret=ncd)
     if (ncd .ne. 0) comdir = .true.
-    call getvtx('EXCIT', 'NATURE', 1, iarg, 1,&
-                nature, nna)
+    call getvtx('EXCIT', 'NATURE', iocc=1, scal=nature, nbret=nna)
 !
     call infmaj()
     call infniv(ifu, info)
 !
     corfre = .false.
-    call getvtx(' ', 'CORR_FREQ', 1, iarg, 1,&
-                corf, nc)
+    call getvtx(' ', 'CORR_FREQ', scal=corf, nbret=nc)
     if (corf .eq. 'OUI') corfre = .true.
 !
     if (info .eq. 1 .or. info .eq. 2) then
@@ -302,8 +286,7 @@ subroutine op0109()
     call getfac('COMB_DEPL_APPUI', ndepl)
     if (info .eq. 1 .or. info .eq. 2) then
         if ((.not.monoap) .and. (.not.muapde)) then
-            call getvtx('COMB_MULT_APPUI', 'TYPE_COMBI', 1, iarg, 1,&
-                        typcma, nty2)
+            call getvtx('COMB_MULT_APPUI', 'TYPE_COMBI', iocc=1, scal=typcma, nbret=nty2)
             call getfac('COMB_MULT_APPUI', nmult)
             if (ndepl .ne. 0 .and. nmult .eq. 0) then
                 call u2mess('F', 'SEISME_14')
@@ -323,11 +306,11 @@ subroutine op0109()
 !     ----- MASSE DE LA STRUCTURE ---
     calmas = .false.
     xmastr = 1.d0
-    call getvid(' ', 'MASS_INER', 1, iarg, 1,&
-                tmas, nt)
+    call getvid(' ', 'MASS_INER', scal=tmas, nbret=nt)
     if (nt .ne. 0) then
 !        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
-        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid, noma, ierd)
+        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
+                    noma, ierd)
         call tbexp2(tmas, 'LIEU')
         call tbexp2(tmas, 'MASSE')
         call tbliva(tmas, 1, 'LIEU', ibid, r8b,&
@@ -438,12 +421,10 @@ subroutine op0109()
 34      continue
     endif
 !     --- RECUPERATION DES MODES STATIQUES ---
-    call getvtx(' ', 'MULTI_APPUI', 1, iarg, 0,&
-                k8b, nret1)
+    call getvtx(' ', 'MULTI_APPUI', nbval=0, nbret=nret1)
     call getfac('DEPL_MULT_APPUI', nret2)
     if ((nret1.ne.0) .and. (nret2.eq.0)) call u2mess('A', 'SEISME_31')
-    call getvid('DEPL_MULT_APPUI', 'MODE_STAT', 1, iarg, 1,&
-                stat, ns)
+    call getvid('DEPL_MULT_APPUI', 'MODE_STAT', iocc=1, scal=stat, nbret=ns)
 !     --- VERIFICATION - SI GUPTA -> PAS DE MULTI_APPUI ---
     if ((typcmo.eq.'GUPTA') .and. (nret1.ne.0)) then
         call u2mess('F', 'SEISME_32')
@@ -455,14 +436,15 @@ subroutine op0109()
 !     --- VERIFICATION DES MODES ---
     if (masse .ne. ' ') then
 ! dans les cas non standards (sous-structuration) on passe sans verif
-       call asveri(zk16(jopt), nbopt, meca, psmo, stat,&
-                tronc, monoap, nbsup, zi(jnsu), zk8(jkno),&
-                zi(jdir), zi(jordr), nbmode)
+        call asveri(zk16(jopt), nbopt, meca, psmo, stat,&
+                    tronc, monoap, nbsup, zi(jnsu), zk8(jkno),&
+                    zi(jdir), zi(jordr), nbmode)
     endif
 !     ----- CAS DU MULTI-SUPPORT -----
     if (.not.monoap) then
-        call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid, nume, iret)
-        if (nume.eq.' ')  call u2mess('F', 'SEISME_40')
+        call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
+                    nume, iret)
+        if (nume .eq. ' ') call u2mess('F', 'SEISME_40')
         call wkvect('&&OP0109.REAC_SUP', 'V V R', nbsup*nbmode*3, jrea)
         call wkvect('&&OP0109.DEPL_SUP', 'V V R', nbsup*3, jdep)
         call wkvect('&&OP0109.TYPE_COM', 'V V I', nbsup*3, jcsu)
@@ -495,7 +477,8 @@ subroutine op0109()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call refdaj(' ', resu, -1, ' ', 'INIT', ' ' , iret)
+    call refdaj(' ', resu, -1, ' ', 'INIT',&
+                ' ', iret)
 !
 !
 !

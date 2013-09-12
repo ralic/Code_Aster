@@ -4,11 +4,11 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -91,8 +91,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
 !
 !
     if (getexm(' ','METHODE') .eq. 1) then
-        call getvtx(' ', 'METHODE', 0, iarg, 1,&
-                    meth, ibid)
+        call getvtx(' ', 'METHODE', scal=meth, nbret=ibid)
         ASSERT(ibid.eq.1)
         elim=(meth.eq.'ELIMINATION')
     else
@@ -240,7 +239,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
             endif
         enddo
         ASSERT(.false.)
-123     continue
+123      continue
 !
         zi(jafci+3*(ico-1)+1)=nuno
         zi(jafci+3*(ico-1)+2)=nucmp2
@@ -262,7 +261,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
 !
 !     4. CALCUL DE NBDUAL ET NBSURC:
 !     ------------------------------
-999 continue
+999  continue
     nbdual=0
     nbsurc=0
     do irela = 1, nbrela

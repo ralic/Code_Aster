@@ -24,13 +24,9 @@ subroutine op0191()
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesfus.h"
@@ -39,6 +35,9 @@ subroutine op0191()
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -58,6 +57,7 @@ subroutine op0191()
 #include "asterfort/titre.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     integer :: n0, nbordr, iret, nocc, i, j, np, iordr
     integer :: n1, nbcmp, iord, ioc, ibid, nc
     integer :: jordr, nbnosy, jpa, iadin, iadou
@@ -88,7 +88,7 @@ subroutine op0191()
     call infniv(ifm, niv)
 !
     call getres(resuou, concep, nomcmd)
-    call getvid(' ', 'RESULTAT', 1, iarg, 1, resuin, n0)
+    call getvid(' ', 'RESULTAT', scal=resuin, nbret=n0)
 !
     call jelira(resuin//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) goto 9999
@@ -114,8 +114,7 @@ subroutine op0191()
 !
 ! ----- DEFINITION DU REPERE UTILISE -----
 !
-    call getvtx(' ', 'REPERE', 1, iarg, 1,&
-                repere, i)
+    call getvtx(' ', 'REPERE', scal=repere, nbret=i)
 !
 ! ----- RECUPERATION DES NUMEROS D'ORDRE DE LA STRUCTURE DE
 ! ----- DONNEES DE TYPE RESULTAT RESU A PARTIR DES VARIABLES
@@ -123,10 +122,8 @@ subroutine op0191()
 ! ----- (VARIABLE D'ACCES 'TOUT_ORDRE' PAR DEFAUT)
 !
     knum = '&&OP0191.NUME_ORDRE'
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
     call rsutnu(resuin, ' ', 1, knum, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
@@ -141,9 +138,9 @@ subroutine op0191()
 !
     do 10 ioc = 1, nocc
 !
-        call getvtx('MODI_CHAM', 'NOM_CHAM', ioc, iarg, 1, option, n0)
-        call getvtx('MODI_CHAM', 'TYPE_CHAM', ioc, iarg, 1, type, n0)
-        call getvtx('MODI_CHAM', 'NOM_CMP', ioc, iarg, 0, k8b, n1)
+        call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
+        call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type, nbret=n0)
+        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=ioc, nbval=0, nbret=n1)
         nbcmp = - n1
 !
         do 12 iord = 1, nbordr
@@ -151,25 +148,31 @@ subroutine op0191()
             call jerecu('V')
             iordr = zi(jordr-1+iord)
 !
-            call rsexch('F', resuin, option, iordr, champ0, iret)
+            call rsexch('F', resuin, option, iordr, champ0,&
+                        iret)
             call dismoi('F', 'NOM_MAILLA', champ0(1:19), 'CHAMP', ibid,&
                         nomma, iret)
             call dismoi('C', 'TYPE_CHAMP', champ0, 'CHAMP', ibid,&
                         tych, iret)
 !
-            call rsexch(' ', resuou, option, iordr, champ1, iret)
+            call rsexch(' ', resuou, option, iordr, champ1,&
+                        iret)
 !           CHAMP1 SERA ENSUITE RECREE SUR LA BASE GLOBALE
             call copisd('CHAMP_GD', 'V', champ0, champ1)
 !
 ! ----- RECUPERATION DU MODELE ASSOCIE AU CHAMP
-            call rslesd(resuin(1:8), iordr, modele, k8bid, carele, kbid, ibid)
-            if (modele.ne.'') then
-                call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid, exipla, iret)
-                call dismoi('F', 'EXI_COQUE', modele, 'MODELE', ibid, exicoq, iret)
+            call rslesd(resuin(1:8), iordr, modele, k8bid, carele,&
+                        kbid, ibid)
+            if (modele .ne. '') then
+                call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid,&
+                            exipla, iret)
+                call dismoi('F', 'EXI_COQUE', modele, 'MODELE', ibid,&
+                            exicoq, iret)
                 if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
                     ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
-                    ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) &
-                        call u2mess('F', 'ALGORITH3_7')
+                    ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) call u2mess(&
+                                                                               'F',&
+                                                                               'ALGORITH3_7')
             endif
 !
 ! ----- RECUPERATION DE LA NATURE DES CHAMPS
@@ -242,16 +245,17 @@ subroutine op0191()
 !
         do 25 ioc = 1, nocc
 !
-            call getvtx('MODI_CHAM', 'NOM_CHAM', ioc, iarg, 1,&
-                        option, n0)
+            call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
 !
             do 30 iord = 1, nbordr
                 call jemarq()
                 call jerecu('V')
                 iordr = zi(jordr-1+iord)
 !
-                call rsexch('F', resuin, option, iordr, champ0, iret)
-                call rsexch(' ', resuou, option, iordr, champ1, iret)
+                call rsexch('F', resuin, option, iordr, champ0,&
+                            iret)
+                call rsexch(' ', resuou, option, iordr, champ1,&
+                            iret)
 !
                 chams0='&&CHRPEL.CHAMS0'
                 chams1='&&CHRPEL.CHAMS1'

@@ -36,8 +36,8 @@ subroutine op0029()
 !
 ! DECLARATION VARIABLES LOCALES
 #include "jeveux.h"
-#include "asterc/getvis.h"
 #include "asterfort/fetskp.h"
+#include "asterfort/getvis.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -49,8 +49,7 @@ subroutine op0029()
     call jemarq()
 !
 ! RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
-    call getvis(' ', 'INFO', 0, iarg, 1,&
-                niv, ibid)
+    call getvis(' ', 'INFO', scal=niv, nbret=ibid)
     call infmaj()
     call infniv(ifm, niv)
 !

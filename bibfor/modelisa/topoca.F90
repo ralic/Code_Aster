@@ -47,10 +47,9 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !           SENS   : ORIENTATION DES MAILLES
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
-#include "asterfort/getvem.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -65,6 +64,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! ARGUMENTS
 ! ---------
@@ -174,11 +174,11 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 ! ---
     nogrno(1) = '        '
     nogrno(2) = '        '
-    call getvtx('DEFI_CABLE', 'GROUP_NO_FUT', icabl, iarg, 2,&
-                nogrno, n1)
+    call getvtx('DEFI_CABLE', 'GROUP_NO_FUT', iocc=icabl, nbval=2, vect=nogrno,&
+                nbret=n1)
     if (n1 .eq. 1) then
-        call getvtx('CONE', 'PRESENT', 1, iarg, 2,&
-                    presen, n1)
+        call getvtx('CONE', 'PRESENT', iocc=1, nbval=2, vect=presen,&
+                    nbret=n1)
         if (presen(2)(1:3) .eq. 'OUI') then
             nogrno(2) = nogrno(1)
             nogrno(1) = '        '
@@ -225,8 +225,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
     endif
 !
-    call getvtx(' ', 'TYPE_ANCRAGE', icabl, iarg, 2,&
-                tyancr(1), ibid)
+    call getvtx(' ', 'TYPE_ANCRAGE', nbval=2, vect=tyancr(1), nbret=ibid)
     nbf0 = 0
     if (tyancr(1)(1:5) .eq. 'ACTIF') nbf0 = nbf0 + 1
     if (tyancr(2)(1:5) .eq. 'ACTIF') nbf0 = nbf0 + 1

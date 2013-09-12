@@ -45,14 +45,13 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/canor2.h"
 #include "asterfort/canor3.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -64,6 +63,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! -----  ARGUMENTS
     character(len=*) :: mofaz, nomaz, lismaz
@@ -131,18 +131,16 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 ! --- ET COINCIDANT AVEC LA NORMALE DES ELEMENTS SURFACIQUES
 ! --- QUE L'ON SOUHAITE RECUPERER :
 !     ---------------------------
-    call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, 0,&
-                r8bid, nangle)
+    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangle)
     if (nangle .eq. 0) then
-        call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, 0,&
-                    r8bid, nvect)
+        call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
             call u2mess('F', 'MODELISA3_80')
         else
             nvect = -nvect
             nvect = min (nvect,ndim)
-            call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, nvect,&
-                        vecnor, nv)
+            call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
+                        nbret=nv)
             if (abs(nv) .ne. ndim) then
                 valk = motfac
                 vali (1) = iocc
@@ -166,8 +164,8 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
         nangle = -nangle
         ndim1 = ndim - 1
         nangle = min (nangle,ndim1)
-        call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, nangle,&
-                    angle, nv)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+                    nbret=nv)
         if (abs(nv) .ne. ndim1) then
             valk = motfac
             vali (1) = iocc
@@ -219,13 +217,11 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 ! --- FOURNIE PAR L'UTILISATEUR ET LA DIRECTION NORMALE A
 ! --- L'ELEMENT :
 !     ---------
-    call getvr8(motfac, 'ANGL_PREC', iocc, iarg, 0,&
-                angpre, nbang)
+    call getvr8(motfac, 'ANGL_PREC', iocc=iocc, nbval=0, nbret=nbang)
     if (nbang .eq. 0) then
         angpre = undemi*r8dgrd()
     else
-        call getvr8(motfac, 'ANGL_PREC', iocc, iarg, 1,&
-                    angpre, nb)
+        call getvr8(motfac, 'ANGL_PREC', iocc=iocc, scal=angpre, nbret=nb)
         angpre = angpre*r8dgrd()
     endif
 !
@@ -233,13 +229,11 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 ! --- FOURNIE PAR L'UTILISATEUR ET LA DIRECTION NORMALE A
 ! --- L'ELEMENT ONT LA MEME ORIENTATION :
 !     ---------------------------------
-    call getvtx(motfac, 'VERI_SIGNE', iocc, iarg, 0,&
-                ouinon, nboui)
+    call getvtx(motfac, 'VERI_SIGNE', iocc=iocc, nbval=0, nbret=nboui)
     if (nboui .eq. 0) then
         ouinon = 'OUI'
     else
-        call getvtx(motfac, 'VERI_SIGNE', iocc, iarg, 1,&
-                    ouinon, nbo)
+        call getvtx(motfac, 'VERI_SIGNE', iocc=iocc, scal=ouinon, nbret=nbo)
     endif
 !
 ! --- RECUPERATION DE LA DIMENSION DE L'ESPACE DES COORDONNEES :

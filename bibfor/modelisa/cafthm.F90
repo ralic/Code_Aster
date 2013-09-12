@@ -1,13 +1,13 @@
 subroutine cafthm(char, noma, ligrmo, fonree)
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -60,7 +60,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !
     motclf = 'FLUX_THM_REP'
     call getfac(motclf, nflux)
-    if (nflux.eq.0) goto 99
+    if (nflux .eq. 0) goto 99
 !
     mod = ligrmo(1:8)
     call dismoi('F', 'MODELISATION', mod, 'MODELE', ibid,&
@@ -108,26 +108,19 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !
     do iocc = 1, nflux
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'FLUN_HYDR1', iocc, iarg, 1,&
-                        zr(jvalv), n1)
-            call getvr8(motclf, 'FLUN_HYDR2', iocc, iarg, 1,&
-                        zr(jvalv+1), n2)
-            call getvr8(motclf, 'FLUN', iocc, iarg, 1,&
-                        zr(jvalv+2), n3)
+            call getvr8(motclf, 'FLUN_HYDR1', iocc=iocc, scal=zr(jvalv), nbret=n1)
+            call getvr8(motclf, 'FLUN_HYDR2', iocc=iocc, scal=zr(jvalv+1), nbret=n2)
+            call getvr8(motclf, 'FLUN', iocc=iocc, scal=zr(jvalv+2), nbret=n3)
         else
-            call getvid(motclf, 'FLUN_HYDR1', iocc, iarg, 1,&
-                        zk8(jvalv), n1)
-            call getvid(motclf, 'FLUN_HYDR2', iocc, iarg, 1,&
-                        zk8(jvalv+1), n2)
-            call getvid(motclf, 'FLUN', iocc, iarg, 1,&
-                        zk8(jvalv+2), n3)
+            call getvid(motclf, 'FLUN_HYDR1', iocc=iocc, scal=zk8(jvalv), nbret=n1)
+            call getvid(motclf, 'FLUN_HYDR2', iocc=iocc, scal=zk8(jvalv+1), nbret=n2)
+            call getvid(motclf, 'FLUN', iocc=iocc, scal=zk8(jvalv+2), nbret=n3)
         endif
 !
 ! --- TEST SUR LES CAL
 !
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !
         if (nbtou .ne. 0) then
 !
@@ -137,16 +130,16 @@ subroutine cafthm(char, noma, ligrmo, fonree)
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .ne. 0) then
-            call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', ncmp)
-            call jedetr(mesmai)
+                call jeveuo(mesmai, 'L', jma)
+                call nocart(carte, 3, k8b, 'NUM', nbma,&
+                            k8b, zi(jma), ' ', ncmp)
+                call jedetr(mesmai)
             endif
         endif
 !
     end do
 99  continue
-
+!
 !
     call jedema()
 end subroutine

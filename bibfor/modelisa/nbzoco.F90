@@ -18,7 +18,7 @@ subroutine nbzoco(motfac, noma, izone, jzone, nsuco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/getvem.h"
 #include "asterfort/jedema.h"

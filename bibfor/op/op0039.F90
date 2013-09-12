@@ -1,5 +1,5 @@
 subroutine op0039()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
@@ -25,13 +25,13 @@ subroutine op0039()
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/irmail.h"
 #include "asterfort/irmfac.h"
@@ -77,8 +77,7 @@ subroutine op0039()
     call getfac('RESU', nocc)
 !
     do 100 iocc = 1, nocc
-        call getvtx('RESU', 'NOEUD_CMP', iocc, iarg, 0,&
-                    k8b, nmo)
+        call getvtx('RESU', 'NOEUD_CMP', iocc=iocc, nbval=0, nbret=nmo)
         if (nmo .ne. 0) then
             nn = nmo / 2
             if (2*nn .ne. nmo) then
@@ -92,8 +91,7 @@ subroutine op0039()
 !     -----------------
     lmod = .false.
     modele = ' '
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                modele, nmod)
+    call getvid(' ', 'MODELE', scal=modele, nbret=nmod)
     if (nmod .ne. 0) lmod= .true.
 !
 !     ----------------------------------------------------------------
@@ -116,8 +114,7 @@ subroutine op0039()
 !          TOUJOURS FOURNI :
         ASSERT(nocc.le.9)
         do 74,iocc=1,nocc
-        call getvid('RESU', 'RESULTAT', iocc, iarg, 1,&
-                    resur(iocc), nresu)
+        call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resur(iocc), nbret=nresu)
         if (nresu .eq. 0) call u2mess('F', 'CALCULEL4_5')
 74      continue
 !
@@ -159,8 +156,7 @@ subroutine op0039()
 !     ---------------------------------------------
 !
 !     --- FORMAT ---
-    call getvtx(' ', 'FORMAT', 1, iarg, 1,&
-                form, nforma)
+    call getvtx(' ', 'FORMAT', scal=form, nbret=nforma)
     if (lrest .and. form .ne. 'MED') call u2mess('F', 'CALCULEL4_3')
 !
 !     --- VERIFICATION DE LA COHERENCE ENTRE LE MAILLAGE ---
@@ -168,10 +164,8 @@ subroutine op0039()
 !     --- L'UTILISATEUR DANS IMPR_RESU(FORMAT='IDEAS')   ---
 !
     if (form(1:5) .eq. 'IDEAS') then
-        call getvid('RESU', 'RESULTAT', 1, iarg, 1,&
-                    resu, nres)
-        call getvid('RESU', 'MAILLAGE', 1, iarg, 1,&
-                    noma, nmail)
+        call getvid('RESU', 'RESULTAT', iocc=1, scal=resu, nbret=nres)
+        call getvid('RESU', 'MAILLAGE', iocc=1, scal=noma, nbret=nmail)
         if (nres*nmail .gt. 0) then
             call dismoi('F', 'NOM_MAILLA', resu, 'RESULTAT', ibid,&
                         nomsq, ier)
@@ -191,18 +185,15 @@ subroutine op0039()
     lcasts = .false.
     if (form .eq. 'CASTEM') then
         lcasts = .true.
-        call getvis(' ', 'NIVE_GIBI', 1, iarg, 1,&
-                    nive, ngibi)
+        call getvis(' ', 'NIVE_GIBI', scal=nive, nbret=ngibi)
     else if (form(1:5) .eq. 'IDEAS') then
         versio = 5
-        call getvis(' ', 'VERSION', 1, iarg, 1,&
-                    versio, ngibi)
+        call getvis(' ', 'VERSION', scal=versio, nbret=ngibi)
     else if (form(1:4) .eq. 'GMSH') then
         versio = 1
         versi2 = 1.0d0
         eps = 1.0d-6
-        call getvr8(' ', 'VERSION', 1, iarg, 1,&
-                    versi2, ngibi)
+        call getvr8(' ', 'VERSION', scal=versi2, nbret=ngibi)
         if (versi2 .gt. 1.0d0-eps .and. versi2 .lt. 1.0d0+eps) then
             versio = 1
         else if (versi2.gt.1.2d0-eps.and.versi2.lt.1.2d0+eps) then
@@ -213,8 +204,7 @@ subroutine op0039()
 !     --- FICHIER ---
     ifi = 0
     fich = 'F_'//form
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ifi, n11)
+    call getvis(' ', 'UNITE', scal=ifi, nbret=n11)
     ifc = ifi
     if (.not. ulexis( ifi )) then
         call ulopen(ifi, ' ', fich, 'NEW', 'O')
@@ -252,16 +242,14 @@ subroutine op0039()
                     zk24(jmodl) = modele//'.MODELE'
                 endif
                 do 202 ioc2 = 1, nocc
-                    call getvid('RESU', 'RESULTAT', ioc2, iarg, 1,&
-                                resu, nresu)
+                    call getvid('RESU', 'RESULTAT', iocc=ioc2, scal=resu, nbret=nresu)
                     if (nresu .ne. 0) call rscrmo(ioc2, resu, nomjv)
 202              continue
                 numemo = numemo + 1
             endif
 !
 !           ---  IMPRESSION DU MAILLAGE -----
-            call getvid('RESU', 'MAILLAGE', iocc, iarg, 1,&
-                        noma, nmail)
+            call getvid('RESU', 'MAILLAGE', iocc=iocc, scal=noma, nbret=nmail)
             if (nmail .ne. 0) then
                 if (lmod) then
                     call dismoi('C', 'NOM_MAILLA', modele, 'MODELE', ibid,&
@@ -285,12 +273,9 @@ subroutine op0039()
         lmail=.false.
         lresu=.false.
         do 220 iocc = 1, nocc
-            call getvid('RESU', 'MAILLAGE', iocc, iarg, 1,&
-                        noma, nmail)
-            call getvid('RESU', 'RESULTAT', iocc, iarg, 1,&
-                        resu, nresu)
-            call getvid('RESU', 'CHAM_GD', iocc, iarg, 1,&
-                        resu, ncham)
+            call getvid('RESU', 'MAILLAGE', iocc=iocc, scal=noma, nbret=nmail)
+            call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resu, nbret=nresu)
+            call getvid('RESU', 'CHAM_GD', iocc=iocc, scal=resu, nbret=ncham)
             if (nresu .ne. 0 .or. ncham .ne. 0) then
                 lresu=.true.
                 goto 220

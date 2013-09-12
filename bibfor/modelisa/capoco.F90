@@ -20,13 +20,13 @@ subroutine capoco(char, motfac)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -98,8 +98,7 @@ subroutine capoco(char, motfac)
         ldpou = mminfl(defico,'DIST_POUTRE',izone )
         if (ldpou) then
             ya = .true.
-            call getvid(motfac, 'CARA_ELEM', izone, iarg, 1,&
-                        carael, noc)
+            call getvid(motfac, 'CARA_ELEM', iocc=izone, scal=carael, nbret=noc)
             if (noc .eq. 0) then
                 ASSERT(.false.)
             endif

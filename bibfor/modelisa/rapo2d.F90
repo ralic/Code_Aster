@@ -17,9 +17,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
@@ -29,6 +27,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprel.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -50,6 +49,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: numdlz, chargz, fonrez, lisrez
 ! -------------------------------------------------------
 !     RACCORD POUTRE-2D PAR DES RELATIONS LINEAIRES
@@ -105,8 +105,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     lisrel = lisrez
 !
     motfac = 'LIAISON_ELEM'
-    call getvtx(motfac, 'OPTION', iocc, iarg, 1,&
-                option, iop)
+    call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
     if (option .ne. '2D_POU') then
         call u2mesk('F', 'MODELISA6_39', 1, option)
     endif
@@ -153,11 +152,9 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- SI OUI TYPLAG = '22'
 ! --- SI NON TYPLAG = '12'
 !     -------------------
-    call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 0,&
-                k8bid, narl)
+    call getvtx(motfac, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=narl)
     if (narl .ne. 0) then
-        call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 1,&
-                    poslag, nrl)
+        call getvtx(motfac, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=nrl)
         if (poslag(1:5) .eq. 'APRES') then
             typlag = '22'
         else

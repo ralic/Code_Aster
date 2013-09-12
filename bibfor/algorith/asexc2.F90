@@ -2,15 +2,14 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                   corfre, noma, ndir, nomsup, nomspe,&
                   dirspe, echspe, nature, nbsupm, nsupp,&
                   knoeu, kvspe, kaspe)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -25,6 +24,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc, nbmode, ndir(*), nature(3, *), nsupp(*)
     real(kind=8) :: parmod(nbmode, *), amort(*), dirspe(3, *), echspe(3, *)
     character(len=8) :: nomsup(3, *), nomspe(3, *), noma
@@ -75,7 +75,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
     real(kind=8) :: echsp0(3), valpu(2), omega, omega2, r8b
     real(kind=8) :: resu, un, uns2pi, xnorm, zero
 !
-    character(len=1) ::  dir(3)
+    character(len=1) :: dir(3)
     character(len=4) :: knat
     character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2)
     character(len=9) :: niveau
@@ -106,8 +106,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 !     --- LECTURE MOT-CLE FACTEUR IMPRESSION ---
 !
-    call getvtx('IMPRESSION', 'NIVEAU', 1, iarg, 1,&
-                niveau, nimpr)
+    call getvtx('IMPRESSION', 'NIVEAU', iocc=1, scal=niveau, nbret=nimpr)
     if (nimpr .eq. 0) niveau='TOUT     '
 !
 !     --- NOMBRE DE SUPPORTS PAR DIRECTION ---
@@ -122,11 +121,10 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
         xnorm = un
 !
 !        --- UN SPECTRE SUIVANT UN AXE ---
-        call getvr8(motfac, 'AXE', ioc, iarg, 0,&
-                    r8b, n1)
+        call getvr8(motfac, 'AXE', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvr8(motfac, 'AXE', ioc, iarg, 3,&
-                        dirsp0, n1)
+            call getvr8(motfac, 'AXE', iocc=ioc, nbval=3, vect=dirsp0,&
+                        nbret=n1)
             xnorm = zero
             do 12 id = 1, 3
                 xnorm = xnorm + dirsp0(id) * dirsp0(id)
@@ -137,13 +135,11 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                 goto 10
             endif
             xnorm = un / sqrt(xnorm)
-            call getvid(motfac, 'SPEC_OSCI', ioc, iarg, 1,&
-                        spect, n1)
+            call getvid(motfac, 'SPEC_OSCI', iocc=ioc, scal=spect, nbret=n1)
             nomsp0(1) = spect
             nomsp0(2) = spect
             nomsp0(3) = spect
-            call getvr8(motfac, 'ECHELLE', ioc, iarg, 1,&
-                        echel, n1)
+            call getvr8(motfac, 'ECHELLE', iocc=ioc, scal=echel, nbret=n1)
             if (n1 .ne. 0) then
                 echsp0(1) = echel
                 echsp0(2) = echel
@@ -152,18 +148,15 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 !        --- UN SPECTRE DANS LES 3 DIRECTIONS ---
         else
-            call getvr8(motfac, 'TRI_AXE', ioc, iarg, 0,&
-                        r8b, n1)
+            call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvr8(motfac, 'TRI_AXE', ioc, iarg, 3,&
-                            dirsp0, n1)
-                call getvid(motfac, 'SPEC_OSCI', ioc, iarg, 1,&
-                            spect, n1)
+                call getvr8(motfac, 'TRI_AXE', iocc=ioc, nbval=3, vect=dirsp0,&
+                            nbret=n1)
+                call getvid(motfac, 'SPEC_OSCI', iocc=ioc, scal=spect, nbret=n1)
                 nomsp0(1) = spect
                 nomsp0(2) = spect
                 nomsp0(3) = spect
-                call getvr8(motfac, 'ECHELLE', ioc, iarg, 1,&
-                            echel, n1)
+                call getvr8(motfac, 'ECHELLE', iocc=ioc, scal=echel, nbret=n1)
                 if (n1 .ne. 0) then
                     echsp0(1) = echel
                     echsp0(2) = echel
@@ -173,16 +166,15 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !        --- 3 SPECTRES DANS LES 3 DIRECTIONS ---
             else
 !
-                call getvid(motfac, 'SPEC_OSCI', ioc, iarg, 3,&
-                            nomsp0, n1)
-                call getvr8(motfac, 'ECHELLE', ioc, iarg, 3,&
-                            echsp0, n1)
+                call getvid(motfac, 'SPEC_OSCI', iocc=ioc, nbval=3, vect=nomsp0,&
+                            nbret=n1)
+                call getvr8(motfac, 'ECHELLE', iocc=ioc, nbval=3, vect=echsp0,&
+                            nbret=n1)
 !
             endif
         endif
 !
-        call getvtx(motfac, 'NATURE', ioc, iarg, 1,&
-                    knat, n1)
+        call getvtx(motfac, 'NATURE', iocc=ioc, scal=knat, nbret=n1)
         if (knat .eq. 'ACCE') inat = 1
         if (knat .eq. 'VITE') inat = 2
         if (knat .eq. 'DEPL') inat = 3

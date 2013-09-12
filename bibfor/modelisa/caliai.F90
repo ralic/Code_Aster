@@ -1,18 +1,17 @@
 subroutine caliai(fonree, charge)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvc8.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -27,6 +26,7 @@ subroutine caliai(fonree, charge)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=4) :: fonree
     character(len=8) :: charge
 ! ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine caliai(fonree, charge)
     character(len=24) :: trav, grouno, noeuma
     character(len=24) :: valk(3)
     character(len=15) :: coordo
-    character(len=1) ::  nompar(3)
+    character(len=1) :: nompar(3)
     real(kind=8) :: valpar(3), vale
     integer :: iarg
 !-----------------------------------------------------------------------
@@ -111,11 +111,9 @@ subroutine caliai(fonree, charge)
 !        --------------------------------------------------
     ndim1 = 0
     do 10 i = 1, nliai
-        call getvtx(motfac, mogrou, i, iarg, 0,&
-                    k8bid, nent)
+        call getvtx(motfac, mogrou, iocc=i, nbval=0, nbret=nent)
         ndim1 = max(ndim1,-nent)
-        call getvtx(motfac, motcle, i, iarg, 0,&
-                    k8bid, nent)
+        call getvtx(motfac, motcle, iocc=i, nbval=0, nbret=nent)
         ndim1 = max(ndim1,-nent)
 10  end do
 !
@@ -129,8 +127,8 @@ subroutine caliai(fonree, charge)
 !        -------------------------------------------------------
     ndim2 = ndim1
     do 40 iocc = 1, nliai
-        call getvtx(motfac, mogrou, iocc, iarg, ndim1,&
-                    zk24(jjj), ngr)
+        call getvtx(motfac, mogrou, iocc=iocc, nbval=ndim1, vect=zk24(jjj),&
+                    nbret=ngr)
         nbgt = 0
         do 20 igr = 1, ngr
             call jeexin(jexnom(grouno, zk24(jjj+igr-1)), iret)
@@ -144,8 +142,8 @@ subroutine caliai(fonree, charge)
             endif
 20      continue
         ndim2 = max(ndim2,nbgt)
-        call getvtx(motfac, motcle, iocc, iarg, ndim1,&
-                    zk24(jjj), nno)
+        call getvtx(motfac, motcle, iocc=iocc, nbval=ndim1, vect=zk24(jjj),&
+                    nbret=nno)
         do 30 ino = 1, nno
             call jenonu(jexnom(noeuma, zk24(jjj+ino-1)), iret)
             if (iret .eq. 0) then
@@ -172,17 +170,17 @@ subroutine caliai(fonree, charge)
 !     -----------------------------------
     call getres(char, concep, oper)
     do 80 i = 1, nliai
-        call getvr8(motfac, 'COEF_MULT', i, iarg, ndim2,&
-                    zr(jcmur), n2)
+        call getvr8(motfac, 'COEF_MULT', iocc=i, nbval=ndim2, vect=zr(jcmur),&
+                    nbret=n2)
         if (oper .eq. 'AFFE_CHAR_MECA_F') then
-            call getvid(motfac, 'COEF_MULT_FONC', i, iarg, ndim2,&
-                        zk8( jcmuf), n3)
+            call getvid(motfac, 'COEF_MULT_FONC', iocc=i, nbval=ndim2, vect=zk8( jcmuf),&
+                        nbret=n3)
         else
             n3=0
         endif
         if (n3 .ne. 0) typco2='FONC'
-        call getvtx(motfac, 'DDL', i, iarg, ndim2,&
-                    zk8(jddl), n1)
+        call getvtx(motfac, 'DDL', iocc=i, nbval=ndim2, vect=zk8(jddl),&
+                    nbret=n1)
         typcoe = 'REEL'
 !
 !
@@ -207,16 +205,13 @@ subroutine caliai(fonree, charge)
 !       -- RECUPERATION DU 2ND MEMBRE :
 !       ------------------------------
         if (fonree .eq. 'REEL') then
-            call getvr8(motfac, 'COEF_IMPO', i, iarg, 1,&
-                        beta, nb)
+            call getvr8(motfac, 'COEF_IMPO', iocc=i, scal=beta, nbret=nb)
             typval = 'REEL'
         else if (fonree.eq.'FONC') then
-            call getvid(motfac, 'COEF_IMPO', i, iarg, 1,&
-                        betaf, nb)
+            call getvid(motfac, 'COEF_IMPO', iocc=i, scal=betaf, nbret=nb)
             typval = 'FONC'
         else if (fonree.eq.'COMP') then
-            call getvc8(motfac, 'COEF_IMPO', i, iarg, 1,&
-                        betac, nb)
+            call getvc8(motfac, 'COEF_IMPO', iocc=i, scal=betac, nbret=nb)
             typval = 'COMP'
         else
             call u2mess('F', 'DVP_1')

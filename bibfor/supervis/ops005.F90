@@ -22,7 +22,7 @@ subroutine ops005()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -46,12 +46,10 @@ subroutine ops005()
     zk24(lprol+3) = nomres
     zk24(lprol+4) = 'II      '
     zk24(lprol+5) = nomfon
-    call getvtx(' ', 'NOM_PARA', 1, iarg, 1,&
-                kbid, nk)
+    call getvtx(' ', 'NOM_PARA', scal=kbid, nbret=nk)
     if (nk .ne. 1) nk=-nk
     call wkvect(nomfon//'.NOVA', 'G V K8', nk, lnova)
-    call getvtx(' ', 'NOM_PARA', 1, iarg, nk,&
-                zk8(lnova), ir)
+    call getvtx(' ', 'NOM_PARA', nbval=nk, vect=zk8(lnova), nbret=ir)
 !
     call jedema()
 end subroutine

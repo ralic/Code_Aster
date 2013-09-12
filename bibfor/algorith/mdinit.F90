@@ -2,10 +2,10 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
                   vint, ier, tinit)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/extrac.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -58,8 +58,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
     ier = 0
 !
 !     --- DEPLACEMENT ---
-    call getvid('ETAT_INIT', 'DEPL', 1, iarg, 1,&
-                nomdep, n1)
+    call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=nomdep, nbret=n1)
     if (n1 .ne. 0) then
         call jeveuo(nomdep//'.VALE', 'L', jdepi)
 !
@@ -80,8 +79,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
     endif
 !
 !     --- VITESSE ---
-    call getvid('ETAT_INIT', 'VITE', 1, iarg, 1,&
-                nomvit, n1)
+    call getvid('ETAT_INIT', 'VITE', iocc=1, scal=nomvit, nbret=n1)
     if (n1 .ne. 0) then
         call jeveuo(nomvit//'.VALE', 'L', jviti)
 !
@@ -102,16 +100,12 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
     endif
 !
 !     --- CAS D UNE REPRISE ---
-    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                tran, nt)
+    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=nt)
     if (nt .ne. 0) then
 !     --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
-        call getvtx('ETAT_INIT', 'CRITERE', 1, iarg, 1,&
-                    crit, nc)
-        call getvr8('ETAT_INIT', 'PRECISION', 1, iarg, 1,&
-                    prec, np)
-        call getvr8('ETAT_INIT', 'INST_INIT', 1, iarg, 1,&
-                    tinit, ni)
+        call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
+        call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
+        call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
         call jeveuo(tran//'           .DEPL', 'E', jdeplt)
         call jeveuo(tran//'           .DISC', 'E', jinst)
         call jelira(tran//'           .DISC', 'LONUTI', nbinst)

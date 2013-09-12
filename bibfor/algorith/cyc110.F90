@@ -29,12 +29,11 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterfort/codent.h"
 #include "asterfort/compma.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -51,6 +50,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 #include "asterfort/trnuli.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     integer :: ligne(2)
@@ -88,33 +88,30 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
     nbma = 0
     ltnmma = 1
-    call getvtx(motfac, mcmail, 1, iarg, 0,&
-                k8bid, nbma)
+    call getvtx(motfac, mcmail, iocc=1, nbval=0, nbret=nbma)
     if (nbma .lt. 0) then
         nbma = -nbma
         call wkvect('&&CYC110.NOM.MA', 'V V K8', nbma, ltnmma)
-        call getvtx(motfac, mcmail, 1, iarg, nbma,&
-                    zk8(ltnmma), nbid)
+        call getvtx(motfac, mcmail, iocc=1, nbval=nbma, vect=zk8(ltnmma),&
+                    nbret=nbid)
     endif
 !
 !-------TRAITEMENT DES GROUPES DE MAILLES EN ENTREE---------------------
 !
     nbuf = 0
     ltnmgr = 1
-    call getvtx(motfac, mcgrm, 1, iarg, 0,&
-                k8bid, nbgr)
+    call getvtx(motfac, mcgrm, iocc=1, nbval=0, nbret=nbgr)
     if (nbgr .lt. 0) then
         nbgr = -nbgr
         call wkvect('&&CYC110.NOM.GRMA', 'V V K24', nbgr, ltnmgr)
-        call getvtx(motfac, mcgrm, 1, iarg, nbgr,&
-                    zk24(ltnmgr), nbid)
+        call getvtx(motfac, mcgrm, iocc=1, nbval=nbgr, vect=zk24(ltnmgr),&
+                    nbret=nbid)
         call compma(mailla, nbgr, zk24(ltnmgr), nbuf)
     endif
 !
 !-----------CAS DE LA RESTITUTION DU MAILLAGE EN ENTIER-----------------
 !
-    call getvtx(motfac, 'TOUT', 1, iarg, 0,&
-                k8bid, ioctou)
+    call getvtx(motfac, 'TOUT', iocc=1, nbval=0, nbret=ioctou)
     if (ioctou .lt. 0) then
         ioctou = 1
         call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbtout,&

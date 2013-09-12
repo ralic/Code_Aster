@@ -5,7 +5,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -102,8 +102,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
     n1=0
     nomlu=' '
     if (getexm(' ','MODELE') .eq. 1) then
-        call getvid(' ', 'MODELE', 0, iarg, 1,&
-                    nomlu, n1)
+        call getvid(' ', 'MODELE', scal=nomlu, nbret=n1)
     endif
 !
     call rsadpa(result, 'L', 1, 'MODELE', nuord,&
@@ -145,8 +144,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
                 0, jpara, k8b)
     nomsd=zk8(jpara)
     if (getexm(' ','CARA_ELEM') .eq. 1) then
-        call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                    nomlu, n2)
+        call getvid(' ', 'CARA_ELEM', scal=nomlu, nbret=n2)
     else
         n2=0
         nomlu=' '
@@ -185,8 +183,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !---  RECUPERATION DU NOM DU CHAMP MATERIAU
 !
     if (getexm(' ','CHAM_MATER') .eq. 1) then
-        call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                    nomlu, n3)
+        call getvid(' ', 'CHAM_MATER', scal=nomlu, nbret=n3)
     else
         n3=0
         nomlu=' '
@@ -240,11 +237,9 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
             call wkvect(kfon, 'V V K8', nchalu, fchalu)
 !
             do 10 iex = 1, nchalu
-                call getvid('EXCIT', 'CHARGE', iex, iarg, 1,&
-                            zk8(lchalu+ iex-1), n1)
+                call getvid('EXCIT', 'CHARGE', iocc=iex, scal=zk8(lchalu+ iex-1), nbret=n1)
 !
-                call getvid('EXCIT', 'FONC_MULT', iex, iarg, 1,&
-                            fonclu, n2)
+                call getvid('EXCIT', 'FONC_MULT', iocc=iex, scal=fonclu, nbret=n2)
                 if (n2 .ne. 0) then
                     zk8(fchalu+iex-1) = fonclu
                 endif
@@ -253,13 +248,11 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
     endif
 !
     if (getexm(' ','CHARGE') .eq. 1) then
-        call getvid(' ', 'CHARGE', 0, iarg, 0,&
-                    k8b, n4)
+        call getvid(' ', 'CHARGE', nbval=0, nbret=n4)
         ncha = -n4
         nchalu = max(1,ncha)
         call wkvect(kcha, 'V V K8', nchalu, lchalu)
-        call getvid(' ', 'CHARGE', 0, iarg, ncha,&
-                    zk8(lchalu), n4)
+        call getvid(' ', 'CHARGE', nbval=ncha, vect=zk8(lchalu), nbret=n4)
     endif
 !
 !--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT

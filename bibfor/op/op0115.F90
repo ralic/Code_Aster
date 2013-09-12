@@ -1,15 +1,14 @@
 subroutine op0115()
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -22,6 +21,7 @@ subroutine op0115()
 #include "asterfort/titre.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,10 +90,8 @@ subroutine op0115()
     k8bid = 'BIDON'
     do ipf = 1, iocpf
         if (ipf .eq. 1) then
-            call getvtx(motfac(1), 'NOEUD_I', ipf, iarg, 0,&
-                        noei, n2)
-            call getvis(motfac(1), 'NUME_ORDRE_I', ipf, iarg, 0,&
-                        numi, n3)
+            call getvtx(motfac(1), 'NOEUD_I', iocc=ipf, nbval=0, nbret=n2)
+            call getvis(motfac(1), 'NUME_ORDRE_I', iocc=ipf, nbval=0, nbret=n3)
 !
             if (n2 .lt. 0) then
                 chnoei = nomref//'.NOEI'
@@ -113,23 +111,16 @@ subroutine op0115()
         endif
 !
         if (n2 .lt. 0) then
-            call getvtx(motfac(1), 'NOEUD_I', ipf, iarg, 1,&
-                        zk8(lnoei-1+ ipf), nbval)
-            call getvtx(motfac(1), 'NOEUD_J', ipf, iarg, 1,&
-                        zk8(lnoej-1+ ipf), nbval)
-            call getvtx(motfac(1), 'NOM_CMP_I', ipf, iarg, 1,&
-                        zk8(lcmpi-1+ ipf), nbval)
-            call getvtx(motfac(1), 'NOM_CMP_J', ipf, iarg, 1,&
-                        zk8(lcmpj-1+ ipf), nbval)
+            call getvtx(motfac(1), 'NOEUD_I', iocc=ipf, scal=zk8(lnoei-1+ ipf), nbret=nbval)
+            call getvtx(motfac(1), 'NOEUD_J', iocc=ipf, scal=zk8(lnoej-1+ ipf), nbret=nbval)
+            call getvtx(motfac(1), 'NOM_CMP_I', iocc=ipf, scal=zk8(lcmpi-1+ ipf), nbret=nbval)
+            call getvtx(motfac(1), 'NOM_CMP_J', iocc=ipf, scal=zk8(lcmpj-1+ ipf), nbret=nbval)
         else if (n3 .lt. 0) then
-            call getvis(motfac(1), 'NUME_ORDRE_I', ipf, iarg, 1,&
-                        zi(lnumi- 1+ipf), nbval)
-            call getvis(motfac(1), 'NUME_ORDRE_J', ipf, iarg, 1,&
-                        zi(lnumj- 1+ipf), nbval)
+            call getvis(motfac(1), 'NUME_ORDRE_I', iocc=ipf, scal=zi(lnumi- 1+ipf), nbret=nbval)
+            call getvis(motfac(1), 'NUME_ORDRE_J', iocc=ipf, scal=zi(lnumj- 1+ipf), nbret=nbval)
         endif
 !
-        call getvid(motfac(1), 'FONCTION', ipf, iarg, 1,&
-                    zk8(lfonc-1+ipf), nbval)
+        call getvid(motfac(1), 'FONCTION', iocc=ipf, scal=zk8(lfonc-1+ipf), nbret=nbval)
     end do
 !
     do ifonc = 1, iocpf
@@ -166,7 +157,7 @@ subroutine op0115()
             do inum = 1, nbabs
                 zr(ispec-1+inum) = zr(lvale-1+nbfreq+2*(inum-1)+1)
             end do
-        elseif ((.not.diag) .and. (tfonc .eq. 'FONCTION')) then
+        else if ((.not.diag) .and. (tfonc .eq. 'FONCTION')) then
             do inum = 1, nbfreq
                 zr(ispec-1+2*inum-1) = zr(lvale-1+nbfreq+inum)
                 zr(ispec-1+2*inum) = 0.d0
@@ -178,7 +169,7 @@ subroutine op0115()
             end do
         endif
     end do
-
+!
     if (iocpf .gt. 0) then
         call jeexin(chfreq, ibid)
         if (ibid .eq. 0) then
@@ -193,10 +184,8 @@ subroutine op0115()
 !
     do ikt = 1, iockt
         if (ikt .eq. 1) then
-            call getvtx(motfac(2), 'NOEUD_I', ikt, iarg, 0,&
-                        noei, n4)
-            call getvis(motfac(2), 'NUME_ORDRE_I', ikt, iarg, 0,&
-                        numi, n5)
+            call getvtx(motfac(2), 'NOEUD_I', iocc=ikt, nbval=0, nbret=n4)
+            call getvis(motfac(2), 'NUME_ORDRE_I', iocc=ikt, nbval=0, nbret=n5)
 !
             if (n4 .lt. 0) then
                 chnoei = nomref//'.NOEI'
@@ -222,42 +211,34 @@ subroutine op0115()
         endif
 !
         if (n4 .lt. 0) then
-            call getvtx(motfac(2), 'NOEUD_I', ikt, iarg, 1,&
-                        zk8(lnoei-1+ iocpf+ikt), nbval)
-            call getvtx(motfac(2), 'NOEUD_J', ikt, iarg, 1,&
-                        zk8(lnoej-1+ iocpf+ikt), nbval)
-            call getvtx(motfac(2), 'NOM_CMP_I', ikt, iarg, 1,&
-                        zk8(lcmpi-1+ iocpf+ikt), nbval)
-            call getvtx(motfac(2), 'NOM_CMP_J', ikt, iarg, 1,&
-                        zk8(lcmpj-1+ iocpf+ikt), nbval)
+            call getvtx(motfac(2), 'NOEUD_I', iocc=ikt, scal=zk8(lnoei-1+ iocpf+ikt),&
+                        nbret=nbval)
+            call getvtx(motfac(2), 'NOEUD_J', iocc=ikt, scal=zk8(lnoej-1+ iocpf+ikt),&
+                        nbret=nbval)
+            call getvtx(motfac(2), 'NOM_CMP_I', iocc=ikt, scal=zk8(lcmpi-1+ iocpf+ikt),&
+                        nbret=nbval)
+            call getvtx(motfac(2), 'NOM_CMP_J', iocc=ikt, scal=zk8(lcmpj-1+ iocpf+ikt),&
+                        nbret=nbval)
         else if (n5 .lt. 0) then
-            call getvis(motfac(2), 'NUME_ORDRE_I', ikt, iarg, 1,&
-                        zi(lnumi- 1+iocpf+ikt), nbval)
-            call getvis(motfac(2), 'NUME_ORDRE_J', ikt, iarg, 1,&
-                        zi(lnumj- 1+iocpf+ikt), nbval)
+            call getvis(motfac(2), 'NUME_ORDRE_I', iocc=ikt, scal=zi(lnumi- 1+iocpf+ikt),&
+                        nbret=nbval)
+            call getvis(motfac(2), 'NUME_ORDRE_J', iocc=ikt, scal=zi(lnumj- 1+iocpf+ikt),&
+                        nbret=nbval)
         endif
         nbvalr = 0
-        call getvr8(motfac(2), 'VALE_R', ikt, iarg, 0,&
-                    valr, nbvalr)
+        call getvr8(motfac(2), 'VALE_R', iocc=ikt, nbval=0, nbret=nbvalr)
         if (nbvalr .lt. 0) then
-            call getvr8(motfac(2), 'VALE_R', ikt, iarg, 1,&
-                        valr, nbval)
+            call getvr8(motfac(2), 'VALE_R', iocc=ikt, scal=valr, nbret=nbval)
         else
-            call getvc8(motfac(2), 'VALE_C', ikt, iarg, 1,&
-                        valc, nbval)
+            call getvc8(motfac(2), 'VALE_C', iocc=ikt, scal=valc, nbret=nbval)
 ! ON NE RETIENT QUE LA PARTIE REELLE
             valr = dble(valc)
         endif
-        call getvr8(motfac(2), 'FREQ_MOY', ikt, iarg, 1,&
-                    fmoy, nbval)
-        call getvr8(motfac(2), 'AMOR_REDUIT', ikt, iarg, 1,&
-                    ared, nbval)
-        call getvr8(motfac(2), 'FREQ_MIN', ikt, iarg, 1,&
-                    fmin, nbval)
-        call getvr8(motfac(2), 'FREQ_MAX', ikt, iarg, 1,&
-                    fmax, nbval)
-        call getvr8(motfac(2), 'PAS', ikt, iarg, 1,&
-                    pas, nbval)
+        call getvr8(motfac(2), 'FREQ_MOY', iocc=ikt, scal=fmoy, nbret=nbval)
+        call getvr8(motfac(2), 'AMOR_REDUIT', iocc=ikt, scal=ared, nbret=nbval)
+        call getvr8(motfac(2), 'FREQ_MIN', iocc=ikt, scal=fmin, nbret=nbval)
+        call getvr8(motfac(2), 'FREQ_MAX', iocc=ikt, scal=fmax, nbret=nbval)
+        call getvr8(motfac(2), 'PAS', iocc=ikt, scal=pas, nbret=nbval)
         if (fmax .lt. fmin) call u2mesk('F', 'SPECTRAL0_2', 1, motfac(2))
         nbfreq=int((fmax-fmin)/pas) + 1
         ifonc = iocpf + ikt
@@ -278,10 +259,8 @@ subroutine op0115()
 !
     do ics = 1, ioccs
         if (ics .eq. 1) then
-            call getvtx(motfac(3), 'NOEUD_I', ics, iarg, 0,&
-                        noei, n6)
-            call getvis(motfac(3), 'NUME_ORDRE_I', ics, iarg, 0,&
-                        numi, n7)
+            call getvtx(motfac(3), 'NOEUD_I', iocc=ics, nbval=0, nbret=n6)
+            call getvis(motfac(3), 'NUME_ORDRE_I', iocc=ics, nbval=0, nbret=n7)
 !
             if (n6 .lt. 0) then
                 chnoei = nomref//'.NOEI'
@@ -307,37 +286,31 @@ subroutine op0115()
         endif
 !
         if (n6 .lt. 0) then
-            call getvtx(motfac(3), 'NOEUD_I', ics, iarg, 1,&
-                        zk8(lnoei-1+ iocpf+iockt+ics), nbval)
-            call getvtx(motfac(3), 'NOEUD_J', ics, iarg, 1,&
-                        zk8(lnoej-1+ iocpf+iockt+ics), nbval)
-            call getvtx(motfac(3), 'NOM_CMP_I', ics, iarg, 1,&
-                        zk8(lcmpi-1+ iocpf+iockt+ics), nbval)
-            call getvtx(motfac(3), 'NOM_CMP_J', ics, iarg, 1,&
-                        zk8(lcmpj-1+ iocpf+iockt+ics), nbval)
+            call getvtx(motfac(3), 'NOEUD_I', iocc=ics, scal=zk8(lnoei-1+ iocpf+iockt+ics),&
+                        nbret=nbval)
+            call getvtx(motfac(3), 'NOEUD_J', iocc=ics, scal=zk8(lnoej-1+ iocpf+iockt+ics),&
+                        nbret=nbval)
+            call getvtx(motfac(3), 'NOM_CMP_I', iocc=ics, scal=zk8(lcmpi-1+ iocpf+iockt+ics),&
+                        nbret=nbval)
+            call getvtx(motfac(3), 'NOM_CMP_J', iocc=ics, scal=zk8(lcmpj-1+ iocpf+iockt+ics),&
+                        nbret=nbval)
         else if (n7 .lt. 0) then
-            call getvis(motfac(3), 'NUME_ORDRE_I', ics, iarg, 1,&
-                        zi(lnumi- 1+iocpf+iockt+ics), nbval)
-            call getvis(motfac(3), 'NUME_ORDRE_J', ics, iarg, 1,&
-                        zi(lnumj- 1+iocpf+iockt+ics), nbval)
+            call getvis(motfac(3), 'NUME_ORDRE_I', iocc=ics, scal=zi(lnumi- 1+iocpf+iockt+ics),&
+                        nbret=nbval)
+            call getvis(motfac(3), 'NUME_ORDRE_J', iocc=ics, scal=zi(lnumj- 1+iocpf+iockt+ics),&
+                        nbret=nbval)
         endif
         ifonc = iocpf + iockt +ics
         nbvalr = 0
-        call getvr8(motfac(3), 'VALE_R', ics, iarg, 0,&
-                    valr, nbvalr)
+        call getvr8(motfac(3), 'VALE_R', iocc=ics, nbval=0, nbret=nbvalr)
         if (nbvalr .lt. 0) then
-            call getvr8(motfac(3), 'VALE_R', ics, iarg, 1,&
-                        valr, nbval)
+            call getvr8(motfac(3), 'VALE_R', iocc=ics, scal=valr, nbret=nbval)
         else
-            call getvc8(motfac(3), 'VALE_C', ics, iarg, 1,&
-                        valc, nbval)
+            call getvc8(motfac(3), 'VALE_C', iocc=ics, scal=valc, nbret=nbval)
         endif
-        call getvr8(motfac(3), 'FREQ_MIN', ics, iarg, 1,&
-                    fmin, nbval)
-        call getvr8(motfac(3), 'FREQ_MAX', ics, iarg, 1,&
-                    fmax, nbval)
-        call getvr8(motfac(3), 'PAS', ics, iarg, 1,&
-                    pas, nbval)
+        call getvr8(motfac(3), 'FREQ_MIN', iocc=ics, scal=fmin, nbret=nbval)
+        call getvr8(motfac(3), 'FREQ_MAX', iocc=ics, scal=fmax, nbret=nbval)
+        call getvr8(motfac(3), 'PAS', iocc=ics, scal=pas, nbret=nbval)
         if (fmax .lt. fmin) call u2mesk('F', 'SPECTRAL0_2', 1, motfac(3))
         nbfreq=int((fmax-fmin)/pas) + 1
         diag = .false.

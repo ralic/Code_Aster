@@ -20,12 +20,12 @@ subroutine cazocc(char, motfac, izone)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -109,22 +109,18 @@ subroutine cazocc(char, motfac, izone)
 !
 ! --- TYPE INTEGRATION
 !
-    call getvtx(motfac, 'INTEGRATION', izone, iarg, 1,&
-                integ, noc)
+    call getvtx(motfac, 'INTEGRATION', iocc=izone, scal=integ, nbret=noc)
     if (integ(1:4) .eq. 'AUTO') then
         lintno = .true.
         typint = 1.d0
     else if (integ(1:5) .eq. 'GAUSS') then
-        call getvis(motfac, 'ORDRE_INT', izone, iarg, 1,&
-                    parint, noc)
+        call getvis(motfac, 'ORDRE_INT', iocc=izone, scal=parint, nbret=noc)
         typint = 10.d0*parint + 2.d0
     else if (integ(1:7) .eq. 'SIMPSON') then
-        call getvis(motfac, 'ORDRE_INT', izone, iarg, 1,&
-                    parint, noc)
+        call getvis(motfac, 'ORDRE_INT', iocc=izone, scal=parint, nbret=noc)
         typint = 10.d0*parint + 3.d0
     else if (integ(1:6) .eq. 'NCOTES') then
-        call getvis(motfac, 'ORDRE_INT', izone, iarg, 1,&
-                    parint, noc)
+        call getvis(motfac, 'ORDRE_INT', iocc=izone, scal=parint, nbret=noc)
         typint = 10.d0*parint + 4.d0
     else
         ASSERT(.false.)
@@ -132,15 +128,12 @@ subroutine cazocc(char, motfac, izone)
 !
 ! --- OPTIONS CONTACT
 !
-    call getvtx(motfac, 'ALGO_CONT', izone, iarg, 1,&
-                algoc, noc)
+    call getvtx(motfac, 'ALGO_CONT', iocc=izone, scal=algoc, nbret=noc)
     if (algoc(1:10) .eq. 'STANDARD') then
-        call getvr8(motfac, 'COEF_CONT', izone, iarg, 1,&
-                    coefac, noc)
+        call getvr8(motfac, 'COEF_CONT', iocc=izone, scal=coefac, nbret=noc)
         algocr = 1.d0
     else if (algoc(1:14) .eq. 'PENALISATION') then
-        call getvr8(motfac, 'COEF_PENA_CONT', izone, iarg, 1,&
-                    coefac, noc)
+        call getvr8(motfac, 'COEF_PENA_CONT', iocc=izone, scal=coefac, nbret=noc)
         algocr = 3.d0
     else
         ASSERT(.false.)
@@ -149,15 +142,12 @@ subroutine cazocc(char, motfac, izone)
 ! --- OPTIONS FROTTEMENT
 !
     if (lfrot) then
-        call getvtx(motfac, 'ALGO_FROT', izone, iarg, 1,&
-                    algof, noc)
+        call getvtx(motfac, 'ALGO_FROT', iocc=izone, scal=algof, nbret=noc)
         if (algof(1:10) .eq. 'STANDARD') then
-            call getvr8(motfac, 'COEF_FROT', izone, iarg, 1,&
-                        coefaf, noc)
+            call getvr8(motfac, 'COEF_FROT', iocc=izone, scal=coefaf, nbret=noc)
             algofr = 1.d0
         else if (algof(1:14) .eq. 'PENALISATION') then
-            call getvr8(motfac, 'COEF_PENA_FROT', izone, iarg, 1,&
-                        coefaf, noc)
+            call getvr8(motfac, 'COEF_PENA_FROT', iocc=izone, scal=coefaf, nbret=noc)
             algofr = 3.d0
         else
             ASSERT(.false.)
@@ -177,10 +167,8 @@ subroutine cazocc(char, motfac, izone)
 ! --- CARACTERISTIQUES DU FROTTEMENT PAR ZONE
 !
     if (lfrot) then
-        call getvr8(motfac, 'COULOMB', izone, iarg, 1,&
-                    coefff, noc)
-        call getvr8(motfac, 'SEUIL_INIT', izone, iarg, 1,&
-                    seuili, noc)
+        call getvr8(motfac, 'COULOMB', iocc=izone, scal=coefff, nbret=noc)
+        call getvr8(motfac, 'SEUIL_INIT', iocc=izone, scal=seuili, nbret=noc)
         if (coefff .eq. 0.d0) then
             coefaf = 0.d0
             algofr = 0.d0
@@ -189,24 +177,18 @@ subroutine cazocc(char, motfac, izone)
 !
 ! --- TRAITEMENT EXCLUSION NOEUDS CONTACT
 !
-    call getvtx(motfac, 'SANS_GROUP_NO', izone, iarg, 1,&
-                sgrno, noc)
-    call getvtx(motfac, 'SANS_NOEUD', izone, iarg, 1,&
-                sgrno, nocc)
+    call getvtx(motfac, 'SANS_GROUP_NO', iocc=izone, scal=sgrno, nbret=noc)
+    call getvtx(motfac, 'SANS_NOEUD', iocc=izone, scal=sgrno, nbret=nocc)
     lsscon = (noc.ne.0) .or. (nocc.ne.0)
 !
-    call getvtx(motfac, 'SANS_GROUP_MA', izone, iarg, 1,&
-                sgrno, noc)
-    call getvtx(motfac, 'SANS_MAILLE', izone, iarg, 1,&
-                sgrno, nocc)
+    call getvtx(motfac, 'SANS_GROUP_MA', iocc=izone, scal=sgrno, nbret=noc)
+    call getvtx(motfac, 'SANS_MAILLE', iocc=izone, scal=sgrno, nbret=nocc)
     lsscon = lsscon.or.((noc.ne.0).or.(nocc.ne.0))
 !
 ! --- TRAITEMENT EXCLUSION NOEUDS FROTTEMENT
 !
-    call getvtx(motfac, 'SANS_GROUP_NO_FR', izone, iarg, 1,&
-                sgrno, noc)
-    call getvtx(motfac, 'SANS_NOEUD_FR', izone, iarg, 1,&
-                sgrno, nocc)
+    call getvtx(motfac, 'SANS_GROUP_NO_FR', iocc=izone, scal=sgrno, nbret=noc)
+    call getvtx(motfac, 'SANS_NOEUD_FR', iocc=izone, scal=sgrno, nbret=nocc)
     lssfro = (noc.ne.0) .or. (nocc.ne.0)
 !
 ! --- SI NOEUD EXCLUS, ON VERIFIE QU'ON A UNE INTEGRATION AUX NOEUDS
@@ -223,8 +205,8 @@ subroutine cazocc(char, motfac, izone)
 ! --- NOMBRE DE DIRECTIONS A EXCLURE ET VECTEUR DIRECTEUR
 !
     if (lssfro) then
-        call getvr8(motfac, 'DIRE_EXCL_FROT', izone, iarg, 3,&
-                    direxf, noc)
+        call getvr8(motfac, 'DIRE_EXCL_FROT', iocc=izone, nbval=3, vect=direxf,&
+                    nbret=noc)
         lexdir = (noc .ne. 0)
         if (.not.lexdir) then
 ! ------- TOUTES LES DIRECTIONS SONT EXCLUES
@@ -245,8 +227,7 @@ subroutine cazocc(char, motfac, izone)
 !
 ! --- CONTACT INITIAL
 !
-    call getvtx(motfac, 'CONTACT_INIT', izone, iarg, 1,&
-                staco0, noc)
+    call getvtx(motfac, 'CONTACT_INIT', iocc=izone, scal=staco0, nbret=noc)
     if (staco0 .eq. 'OUI') then
         ctrini = 1.d0
     else if (staco0 .eq. 'INTERPENETRE') then
@@ -259,8 +240,7 @@ subroutine cazocc(char, motfac, izone)
 !
 ! --- GLISSIERE
 !
-    call getvtx(motfac, 'GLISSIERE', izone, iarg, 1,&
-                glis, noc)
+    call getvtx(motfac, 'GLISSIERE', iocc=izone, scal=glis, nbret=noc)
     if (glis(1:3) .eq. 'OUI') then
         lgliss = .true.
     else if (glis(1:3) .eq. 'NON') then

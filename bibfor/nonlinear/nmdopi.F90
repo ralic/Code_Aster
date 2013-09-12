@@ -20,9 +20,6 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -31,6 +28,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -153,42 +153,34 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 ! --- LECTURE DU TYPE ET DE LA ZONE
 !
     call wkvect(sdpilo(1:19)// '.PLTK', 'V V K24', 7, jpltk)
-    call getvtx('PILOTAGE', 'TYPE', 1, iarg, 1,&
-                typpil, n1)
+    call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=typpil, nbret=n1)
     zk24(jpltk) = typpil
-    call getvtx('PILOTAGE', 'PROJ_BORNES', 1, iarg, 1,&
-                projbo, n1)
+    call getvtx('PILOTAGE', 'PROJ_BORNES', iocc=1, scal=projbo, nbret=n1)
     zk24(jpltk+4) = projbo
-    call getvtx('PILOTAGE', 'SELECTION', 1, iarg, 1,&
-                typsel, n1)
+    call getvtx('PILOTAGE', 'SELECTION', iocc=1, scal=typsel, nbret=n1)
     zk24(jpltk+5) = typsel
-    call getvtx('PILOTAGE', 'EVOL_PARA', 1, iarg, 1,&
-                evolpa, n1)
+    call getvtx('PILOTAGE', 'EVOL_PARA', iocc=1, scal=evolpa, nbret=n1)
     zk24(jpltk+6) = evolpa
 !
 ! --- PARAMETRES COEF_MULT ET ETA_PILO_MAX
 !
     call wkvect(sdpilo(1:19)// '.PLIR', 'V V R8', 6, jplir)
-    call getvr8('PILOTAGE', 'COEF_MULT', 1, iarg, 1,&
-                coef, n1)
+    call getvr8('PILOTAGE', 'COEF_MULT', iocc=1, scal=coef, nbret=n1)
     zr(jplir) = coef
     zr(jplir+5) = coef
     if (abs(coef) .le. r8prem()) then
         call u2mess('F', 'PILOTAGE_3')
     endif
 !
-    call getvr8('PILOTAGE', 'ETA_PILO_R_MAX', 1, iarg, 1,&
-                etrmax, n1)
+    call getvr8('PILOTAGE', 'ETA_PILO_R_MAX', iocc=1, scal=etrmax, nbret=n1)
     if (n1 .ne. 1) etrmax = r8gaem()
     zr(jplir+3) = etrmax
 !
-    call getvr8('PILOTAGE', 'ETA_PILO_R_MIN', 1, iarg, 1,&
-                etrmin, n2)
+    call getvr8('PILOTAGE', 'ETA_PILO_R_MIN', iocc=1, scal=etrmin, nbret=n2)
     if (n2 .ne. 1) etrmin = -r8gaem()
     zr(jplir+4) = etrmin
 !
-    call getvr8('PILOTAGE', 'ETA_PILO_MAX', 1, iarg, 1,&
-                etamax, n1)
+    call getvr8('PILOTAGE', 'ETA_PILO_MAX', iocc=1, scal=etamax, nbret=n1)
     if (n1 .ne. 1) then
         etamax = r8vide()
     else
@@ -196,8 +188,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     endif
     zr(jplir+1) = etamax
 !
-    call getvr8('PILOTAGE', 'ETA_PILO_MIN', 1, iarg, 1,&
-                etamin, n2)
+    call getvr8('PILOTAGE', 'ETA_PILO_MIN', iocc=1, scal=etamin, nbret=n2)
     if (n2 .ne. 1) then
         etamin = r8vide()
     else
@@ -207,22 +198,18 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
     if (typpil .eq. 'SAUT_IMPO' .or. typpil .eq. 'SAUT_LONG_ARC') then
         if (.not.isxfe) call u2mess('F', 'PILOTAGE_60')
-        call getvid('PILOTAGE', 'FISSURE', 1, iarg, 0,&
-                    fiss, n1)
+        call getvid('PILOTAGE', 'FISSURE', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvid('PILOTAGE', 'FISSURE', 1, iarg, 1,&
-                        fiss, n1)
+            call getvid('PILOTAGE', 'FISSURE', iocc=1, scal=fiss, nbret=n1)
         else
             call u2mess('F', 'PILOTAGE_58')
         endif
     endif
 !
     if (isxfe .and. (typsel.eq.'ANGL_INCR_DEPL' .or.typsel.eq.'NORM_INCR_DEPL')) then
-        call getvid('PILOTAGE', 'FISSURE', 1, iarg, 0,&
-                    fiss, n1)
+        call getvid('PILOTAGE', 'FISSURE', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvid('PILOTAGE', 'FISSURE', 1, iarg, 1,&
-                        fiss, n1)
+            call getvid('PILOTAGE', 'FISSURE', iocc=1, scal=fiss, nbret=n1)
         else
             call u2mess('F', 'PILOTAGE_59')
         endif
@@ -296,8 +283,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
              )
 !
     if (selfem) then
-        call getvtx('PILOTAGE', 'NOM_CMP', 1, iarg, 0,&
-                    k8bid, nddl)
+        call getvtx('PILOTAGE', 'NOM_CMP', iocc=1, nbval=0, nbret=nddl)
         nddl = -nddl
         if (nddl .ne. 1 .and. typpil .eq. 'DDL_IMPO') then
             txt(1)='NOM_CMP'
@@ -310,8 +296,8 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         endif
         if (nddl .gt. 0) then
             call wkvect(liscmp, 'V V K8', nddl, jlicmp)
-            call getvtx('PILOTAGE', 'NOM_CMP', 1, iarg, nddl,&
-                        zk8(jlicmp), ibid)
+            call getvtx('PILOTAGE', 'NOM_CMP', iocc=1, nbval=nddl, vect=zk8(jlicmp),&
+                        nbret=ibid)
         endif
         call jeveuo(lisnoe, 'L', jlinoe)
     endif
@@ -319,8 +305,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
 !
     if (selxfe) then
-        call getvtx('PILOTAGE', 'DIRE_PILO', 1, iarg, 0,&
-                    k8bid, nddl)
+        call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=0, nbret=nddl)
         nddl = -nddl
         if (nddl .ne. 1 .and. typpil .eq. 'SAUT_IMPO') then
             txt(1)='DIRE_PILO'
@@ -335,8 +320,8 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         endif
         if (nddl .gt. 0) then
             call wkvect(liscmp, 'V V K8', nddl, jlicmp)
-            call getvtx('PILOTAGE', 'DIRE_PILO', 1, iarg, nddl,&
-                        zk8( jlicmp), ibid)
+            call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=nddl, vect=zk8( jlicmp),&
+                        nbret=ibid)
         endif
 !
         lisno1 ='&&NMDOPI.LISNO1'

@@ -1,8 +1,8 @@
 subroutine rcevol(typtab, nommat, symax, nbopt, option)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rcev22.h"
@@ -129,8 +129,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     endif
 !
     kemixt = .false.
-    call getvtx(' ', 'TYPE_KE', 0, iarg, 1,&
-                typeke, n1)
+    call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=n1)
     if (typeke .eq. 'KE_MIXTE') kemixt = .true.
 !
 !     ------------------------------------------------------------------

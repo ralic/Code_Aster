@@ -1,7 +1,7 @@
 subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
-    implicit   none
-#include "asterc/getvtx.h"
+    implicit none
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/u2mesg.h"
     integer :: iocc
@@ -45,8 +45,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
     integer :: iarg
 !     ------------------------------------------------------------------
 !
-    call getvtx(mcfac, 'NOM_CMP', iocc, iarg, 1,&
-                nomcmp, n2)
+    call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)
     ASSERT(n2.eq.1)
 !
 !

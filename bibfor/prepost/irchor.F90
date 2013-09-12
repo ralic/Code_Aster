@@ -2,9 +2,10 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                   nlicmp, novcmp, nnopar, nbnosy, nbordr,&
                   nbrcmp, nbcmdu, nbpara, codret)
     implicit none
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "jeveux.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/irparb.h"
 #include "asterfort/irvcmp.h"
 #include "asterfort/jedema.h"
@@ -72,7 +73,6 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !   NPARAM  I    NOMBRE DE PARAMETRES (FORMAT 'RESULTAT')
 !   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
 !
-#include "jeveux.h"
 !
 !
     integer :: jnosy, jncmed, jpa, jordr, iarg, n23, iret, n21, nvcmp
@@ -109,24 +109,19 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
         nbordr = 1
         call wkvect(nnuord, 'V V I', nbordr, jordr)
         zi(jordr) = 1
-        call getvtx('RESU', 'NOM_CHAM_MED', ioccur, iarg, 0,&
-                    k64bid, n23)
+        call getvtx('RESU', 'NOM_CHAM_MED', iocc=ioccur, nbval=0, nbret=n23)
         nbcmdu = - n23
-        call getvtx('RESU', 'NOM_CHAM_MED', ioccur, iarg, nbcmdu,&
-                    zk80( jncmed), iret)
+        call getvtx('RESU', 'NOM_CHAM_MED', iocc=ioccur, nbval=nbcmdu, vect=zk80( jncmed),&
+                    nbret=iret)
 !
 !     --- ECRITURE D'UN RESULTAT_COMPOSE ---
     else
 !       --- ON REGARDE QUELS SONT LES NOM_CHAM A IMPRIMER:
         toucha = 'OUI'
-        call getvtx('RESU', 'TOUT_CHAM', ioccur, iarg, 1,&
-                    toucha, n21)
-        call getvtx('RESU', 'NOM_CHAM', ioccur, iarg, 0,&
-                    k16bid, n22)
-        call getvtx('RESU', 'NOM_CHAM_MED', ioccur, iarg, 0,&
-                    k64bid, n23)
-        call getvtx('RESU', 'NOM_RESU_MED', ioccur, iarg, 0,&
-                    k8b, nnrmed)
+        call getvtx('RESU', 'TOUT_CHAM', iocc=ioccur, scal=toucha, nbret=n21)
+        call getvtx('RESU', 'NOM_CHAM', iocc=ioccur, nbval=0, nbret=n22)
+        call getvtx('RESU', 'NOM_CHAM_MED', iocc=ioccur, nbval=0, nbret=n23)
+        call getvtx('RESU', 'NOM_RESU_MED', iocc=ioccur, nbval=0, nbret=nnrmed)
 !       *** N22 EST NEGATIF SI L'UTILISATEUR DONNE UNE LISTE DE NOMS
 !           (PAR DEFAUT TOUS LES CHAMPS CAR MOT-CLE FACULTATIF)
         if (abs(n21)+abs(n22) .eq. 0) n21=1
@@ -147,24 +142,22 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
             call wkvect(novcmp, 'V V K80', nbnosy, jncmed)
 !
 !         - ON RECUPERE LA LISTE DES NOMS DONNEE PAR L'UTILISATEUR
-            call getvtx('RESU', 'NOM_CHAM', ioccur, iarg, nbnosy,&
-                        zk16( jnosy), nnocha)
-            call getvtx('RESU', 'NOM_CHAM_MED', ioccur, iarg, nbcmdu,&
-                        zk80(jncmed), iret)
+            call getvtx('RESU', 'NOM_CHAM', iocc=ioccur, nbval=nbnosy, vect=zk16( jnosy),&
+                        nbret=nnocha)
+            call getvtx('RESU', 'NOM_CHAM_MED', iocc=ioccur, nbval=nbcmdu, vect=zk80(jncmed),&
+                        nbret=iret)
             if ((nbcmdu.ne.0) .and. (nbcmdu.ne.nbnosy)) then
                 call u2mess('F', 'PREPOST2_1')
             endif
         else if (nnrmed.lt.0) then
-            call getvtx('RESU', 'NOM_CMP', ioccur, iarg, 0,&
-                        k8b, nnocmp)
+            call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=0, nbret=nnocmp)
             if (nnocmp .lt. 0) then
                 valk(1)='NOM_CMP'
                 valk(2)='NOM_RESU_MED'
                 call u2mesk('F', 'MED2_6', 2, valk)
             endif
             call jelira(leresu//'           .DESC', 'NOMUTI', nbcmdu)
-            call getvtx('RESU', 'NOM_RESU_MED', ioccur, iarg, 1,&
-                        resmed, nnrmed)
+            call getvtx('RESU', 'NOM_RESU_MED', iocc=ioccur, scal=resmed, nbret=nnrmed)
             call wkvect(nchsym, 'V V K16', nbcmdu, jnosy)
             call wkvect(novcmp, 'V V K80', nbcmdu, jncmed)
             nbnosy=nbcmdu
@@ -180,13 +173,12 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
         endif
 !
 !       --- ON REGARDE QUELS SONT LES NOM_CMP A IMPRIMER:
-        call getvtx('RESU', 'NOM_CMP', ioccur, iarg, 0,&
-                    k8b, nnocmp)
+        call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=0, nbret=nnocmp)
         if (nnocmp .lt. 0) then
             nvcmp=-nnocmp
             call wkvect('&&IRCHOR.VERI_NOM_CMP', 'V V K8', nvcmp, jvcmp)
-            call getvtx('RESU', 'NOM_CMP', ioccur, iarg, nvcmp,&
-                        zk8(jvcmp), ibid)
+            call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=nvcmp, vect=zk8(jvcmp),&
+                        nbret=ibid)
             afaire = .true.
         endif
 !
@@ -195,10 +187,8 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !       --- NUMEROS D'ORDRE POUR IOCCUR DU MOT-CLE FACTEUR RESU
         knum = nnuord
 !       *** TEST DE PRESENCE DES MOTS CLES PRECISION ET CRITERE
-        call getvr8('RESU', 'PRECISION', ioccur, iarg, 1,&
-                    prec, npreci)
-        call getvtx('RESU', 'CRITERE', ioccur, iarg, 1,&
-                    crit, ncrit)
+        call getvr8('RESU', 'PRECISION', iocc=ioccur, scal=prec, nbret=npreci)
+        call getvtx('RESU', 'CRITERE', iocc=ioccur, scal=crit, nbret=ncrit)
 !       *** RECUPERATION DES NUMEROS D'ORDRE DE LA STRUCTURE DE
 !          DONNEES DE TYPE RESULTAT LERESU A PARTIR DES VARIABLES
 !          D'ACCES UTILISATEUR 'NUME_ORDRE','FREQ','INST','NOEUD_CMP'
@@ -258,10 +248,8 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !       --- ON RECHERCHE LES PARAMETRES A ECRIRE ---
 !           (UNIQUEMENT SI FORMAT FICHIER = 'RESULTAT')
         toupar = 'NON'
-        call getvtx('RESU', 'TOUT_PARA', ioccur, iarg, 1,&
-                    toupar, ntpara)
-        call getvtx('RESU', 'NOM_PARA', ioccur, iarg, 0,&
-                    k8b, nnpara)
+        call getvtx('RESU', 'TOUT_PARA', iocc=ioccur, scal=toupar, nbret=ntpara)
+        call getvtx('RESU', 'NOM_PARA', iocc=ioccur, nbval=0, nbret=nnpara)
         if (nnpara .eq. 0) ntpara = 1
         if (ntpara .ne. 0 .and. toupar .eq. 'NON') then
             nparam = 0
@@ -272,20 +260,19 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
         else if (nnpara.ne.0) then
             nparam = -nnpara
             call wkvect('&&IRCHOR.NOMUTI_PARA', 'V V K16', nparam, jpa)
-            call getvtx('RESU', 'NOM_PARA', ioccur, iarg, nparam,&
-                        zk16( jpa), nparam)
+            call getvtx('RESU', 'NOM_PARA', iocc=ioccur, nbval=nparam, vect=zk16( jpa),&
+                        nbret=nparam)
         endif
     endif
 !
 !     --- CHOIX DES COMPOSANTES AUX FORMATS ---
 !         RESULTAT, CASTEM, MED ET GMSH
-    call getvtx('RESU', 'NOM_CMP', ioccur, iarg, 0,&
-                k8b, nnocmp)
+    call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=0, nbret=nnocmp)
     if (nnocmp .lt. 0) then
         nbrcmp=-nnocmp
         call wkvect(nlicmp, 'V V K8', nbrcmp, jcmp)
-        call getvtx('RESU', 'NOM_CMP', ioccur, iarg, nbrcmp,&
-                    zk8(jcmp), ibid)
+        call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=nbrcmp, vect=zk8(jcmp),&
+                    nbret=ibid)
     endif
 !
 !     - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')

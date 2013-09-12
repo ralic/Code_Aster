@@ -30,13 +30,12 @@ subroutine cla110(nomres, modgen)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codlet.h"
 #include "asterfort/compma.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gma110.h"
 #include "asterfort/intet0.h"
 #include "asterfort/jecrec.h"
@@ -62,6 +61,7 @@ subroutine cla110(nomres, modgen)
 #include "asterfort/u2mesg.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !   PARAMETER : REPRESENTE LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
@@ -109,8 +109,7 @@ subroutine cla110(nomres, modgen)
     call getfac(css, ioc)
 !
     do 20 i = 1, ioc
-        call getvtx(css, 'NOM', i, iarg, 1,&
-                    nomsst, ibid)
+        call getvtx(css, 'NOM', iocc=i, scal=nomsst, nbret=ibid)
         call jenonu(jexnom(repnom, nomsst), nusst)
         if (nusst .eq. 0) then
             valk (1) = nomsst
@@ -147,18 +146,15 @@ subroutine cla110(nomres, modgen)
                 nbstac)
 !
 ! --- RECHERCHE DES NOMS DE GROUPES DE MAILLES UTILISATEUR ---
-    call getvtx(' ', 'EXCLUSIF', 0, iarg, 1,&
-                exclu, ibid)
+    call getvtx(' ', 'EXCLUSIF', scal=exclu, nbret=ibid)
     call getfac('NOM_GROUP_MA', nbgrut)
     if (nbgrut .gt. 0) then
         call wkvect(tt//'.UT.NOM', 'V V K24', nbgrut, lutnom)
         call wkvect(tt//'.UT.SST', 'V V K8', nbgrut, lutsst)
         call wkvect(tt//'.UT.GMA', 'V V K24', nbgrut, lutgma)
         do 100 i = 1, nbgrut
-            call getvtx('NOM_GROUP_MA', 'NOM', i, iarg, 1,&
-                        zk24(lutnom-1+ i), ibid)
-            call getvtx('NOM_GROUP_MA', 'SOUS_STRUC', i, iarg, 1,&
-                        zk8( lutsst-1+i), ibid)
+            call getvtx('NOM_GROUP_MA', 'NOM', iocc=i, scal=zk24(lutnom-1+ i), nbret=ibid)
+            call getvtx('NOM_GROUP_MA', 'SOUS_STRUC', iocc=i, scal=zk8( lutsst-1+i), nbret=ibid)
             call getvem(mailla, 'GROUP_MA', 'NOM_GROUP_MA', 'GROUP_MA', i,&
                         iarg, 1, zk24(lutgma-1+i), ibid)
 !           --- RECHERCHE SI LA SOUS-STRUCTURE EXISTE ---
@@ -204,11 +200,9 @@ subroutine cla110(nomres, modgen)
     maxgr=0
 !
     do 210 i = 1, ioc
-        call getvtx(css, cma, i, iarg, 0,&
-                    k8bid, nbvma)
+        call getvtx(css, cma, iocc=i, nbval=0, nbret=nbvma)
         maxma=max(maxma,-nbvma)
-        call getvtx(css, cgr, i, iarg, 0,&
-                    k8bid, nbvgr)
+        call getvtx(css, cgr, iocc=i, nbval=0, nbret=nbvgr)
         maxgr=max(maxgr,-nbvgr)
 210  end do
 !
@@ -228,26 +222,22 @@ subroutine cla110(nomres, modgen)
 !-----DETERMINATION DU NOMBRE DE MAILLES POUR CHAQUE SST ACTIVE---------
     ngrmat = 0
     do 220 i = 1, ioc
-        call getvtx(css, 'NOM', i, iarg, 1,&
-                    nomsst, ibid)
+        call getvtx(css, 'NOM', iocc=i, scal=nomsst, nbret=ibid)
         call jenonu(jexnom(repnom, nomsst), nusst)
         nuact=zi(ltdesc-1+nusst)
-        call getvtx(css, cma, i, iarg, 0,&
-                    k8bid, nbma)
+        call getvtx(css, cma, iocc=i, nbval=0, nbret=nbma)
         nbma=-nbma
-        call getvtx(css, cgr, i, iarg, 0,&
-                    k8bid, nbgr)
+        call getvtx(css, cgr, iocc=i, nbval=0, nbret=nbgr)
         nbgr=-nbgr
-        call getvtx(css, 'TOUT', i, iarg, 0,&
-                    k8bid, nbtout)
+        call getvtx(css, 'TOUT', iocc=i, nbval=0, nbret=nbtout)
         nbtout=-nbtout
         call mgutdm(modgen, nomsst, ibid, 'NOM_MAILLAGE', ibid,&
                     mailla)
         zk8(ltmail+nuact-1)=mailla
         ngrma = 0
         if (nbtout .eq. 0) then
-            call getvtx(css, cgr, i, iarg, nbgr,&
-                        zk24(ltnogr), ibid)
+            call getvtx(css, cgr, iocc=i, nbval=nbgr, vect=zk24(ltnogr),&
+                        nbret=ibid)
             call compma(mailla, nbgr, zk24(ltnogr), nbuf)
             nbma=nbma+nbuf
         else
@@ -280,12 +270,10 @@ subroutine cla110(nomres, modgen)
 !-----DETERMINATION DES LISTES DES MAILLES PAR SST ACTIVE---------------
 !
     do 240 i = 1, ioc
-        call getvtx(css, 'NOM', i, iarg, 1,&
-                    nomsst, ibid)
+        call getvtx(css, 'NOM', iocc=i, scal=nomsst, nbret=ibid)
         call jenonu(jexnom(repnom, nomsst), nusst)
         nuact=zi(ltdesc-1+nusst)
-        call getvtx(css, 'TOUT', i, iarg, 0,&
-                    k8bid, nbtout)
+        call getvtx(css, 'TOUT', iocc=i, nbval=0, nbret=nbtout)
         nbtout=-nbtout
         mailla=zk8(ltmail+nuact-1)
         call jeveuo(jexnum(tt//'.LISTE.MA', nuact), 'E', ltlima)
@@ -298,16 +286,14 @@ subroutine cla110(nomres, modgen)
 250          continue
             zi(ltnbma+nuact-1)=zi(ltnbma+nuact-1)+nbma
         else
-            call getvtx(css, cma, i, iarg, 0,&
-                        k8bid, nbma)
+            call getvtx(css, cma, iocc=i, nbval=0, nbret=nbma)
             nbma=-nbma
-            call getvtx(css, cgr, i, iarg, 0,&
-                        k8bid, nbgr)
+            call getvtx(css, cgr, iocc=i, nbval=0, nbret=nbgr)
             nbgr=-nbgr
-            call getvtx(css, cma, i, iarg, nbma,&
-                        zk8(ltnoma), ibid)
-            call getvtx(css, cgr, i, iarg, nbgr,&
-                        zk24(ltnogr), ibid)
+            call getvtx(css, cma, iocc=i, nbval=nbma, vect=zk8(ltnoma),&
+                        nbret=ibid)
+            call getvtx(css, cgr, iocc=i, nbval=nbgr, vect=zk24(ltnogr),&
+                        nbret=ibid)
             iad=ltlima+zi(ltnbma+nuact-1)
             call recuma(mailla, nbma, nbgr, zk8(ltnoma), zk24(ltnogr),&
                         nbskma, zi(iad))

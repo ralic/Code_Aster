@@ -20,10 +20,10 @@ subroutine nmdoin(evol, evonol, instin, numein)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsadpa.h"
@@ -77,10 +77,8 @@ subroutine nmdoin(evol, evonol, instin, numein)
 !
 ! ----- NUMERO D'ACCES ET INSTANT CORRESPONDANT
 !
-        call getvr8(motfac, 'INST', 1, iarg, 1,&
-                    inst, n1)
-        call getvis(motfac, 'NUME_ORDRE', 1, iarg, 1,&
-                    nume, n2)
+        call getvr8(motfac, 'INST', iocc=1, scal=inst, nbret=n1)
+        call getvis(motfac, 'NUME_ORDRE', iocc=1, scal=nume, nbret=n2)
 !
 ! ----- NUME_ORDRE ET INST ABSENTS, ON PREND LE DERNIER PAS ARCHIVE
 !
@@ -102,10 +100,8 @@ subroutine nmdoin(evol, evonol, instin, numein)
 !
         if (n1 .ne. 0) then
             instin = inst
-            call getvr8(motfac, 'PRECISION', 1, iarg, 1,&
-                        prec, ibid)
-            call getvtx(motfac, 'CRITERE', 1, iarg, 1,&
-                        criter, ibid)
+            call getvr8(motfac, 'PRECISION', iocc=1, scal=prec, nbret=ibid)
+            call getvtx(motfac, 'CRITERE', iocc=1, scal=criter, nbret=ibid)
             call rsorac(evol, 'INST', ibid, instin, k8bid,&
                         c16bid, prec, criter, numein, 1,&
                         n3)
@@ -125,8 +121,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
 !
 ! --- DEFINITION INSTANT INITIAL
 !
-    call getvr8(motfac, 'INST_ETAT_INIT', 1, iarg, 1,&
-                inst, n2)
+    call getvr8(motfac, 'INST_ETAT_INIT', iocc=1, scal=inst, nbret=n2)
     if (n2 .ne. 0) then
         instin = inst
     endif

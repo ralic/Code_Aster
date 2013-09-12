@@ -40,12 +40,11 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -57,6 +56,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! -----  ARGUMENTS
     character(len=*) :: mofaz, nomaz, lismaz
@@ -90,8 +90,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
 !     --------------------------------------------------
-    call getvtx(motfac, 'CRIT_NOEUD', iocc, iarg, 1,&
-                selec, ibid)
+    call getvtx(motfac, 'CRIT_NOEUD', iocc=iocc, scal=selec, nbret=ibid)
 !
     zero = 0.0d0
     un = 1.0d0
@@ -146,13 +145,11 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU RAYON DU CYLINDRE :
 !     ---------------------------------
-    call getvr8(motfac, 'RAYON', iocc, iarg, 0,&
-                rayon, nrayon)
+    call getvr8(motfac, 'RAYON', iocc=iocc, nbval=0, nbret=nrayon)
     if (nrayon .eq. 0) then
         call u2mess('F', 'MODELISA3_74')
     else
-        call getvr8(motfac, 'RAYON', iocc, iarg, 1,&
-                    rayon, nb)
+        call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
             call u2mess('F', 'MODELISA3_75')
         endif
@@ -160,11 +157,9 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DE LA DIRECTION DEFINISSANT L'AXE DU CYLINDRE :
 !     ----------------------------------------------------------
-    call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, 0,&
-                r8bid, nangle)
+    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangle)
     if (nangle .eq. 0) then
-        call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, 0,&
-                    r8bid, nvect)
+        call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
             call u2mess('F', 'MODELISA3_76')
         else
@@ -172,8 +167,8 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
             if (nvect .ne. 3) then
                 call u2mess('F', 'MODELISA3_77')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, nvect,&
-                            axe, nv)
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe,&
+                            nbret=nv)
             endif
         endif
     else
@@ -181,8 +176,8 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
         if (nangle .ne. 2) then
             call u2mess('F', 'MODELISA3_78')
         endif
-        call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, nangle,&
-                    angle, nv)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+                    nbret=nv)
 !
         angle(1) = angle(1)*r8dgrd()
         angle(2) = angle(2)*r8dgrd()

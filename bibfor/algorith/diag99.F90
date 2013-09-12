@@ -1,10 +1,10 @@
 subroutine diag99(nomres)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/copisd.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -54,7 +54,7 @@ subroutine diag99(nomres)
 !----------------------------------------------------------------------
 !
 !
-    integer :: iad,jiad,ier,ibid,jordm,idmode,lmasse,idstat,jords
+    integer :: iad, jiad, ier, ibid, jordm, idmode, lmasse, idstat, jords
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jnsta, i, j, k, ieq, nbord
     integer :: nbmode, nbstat, neq, n1, iorne, iorol, jvale
     real(kind=8) :: alpha, r8scal
@@ -71,16 +71,17 @@ subroutine diag99(nomres)
 ! --- RECUPERATION DES MODES PROPRES
 !-----------------------------------------------------------------------
 !
-    call getvid('DIAG_MASS', 'MODE_MECA', 1, iarg, 1,&
-                meca, n1)
+    call getvid('DIAG_MASS', 'MODE_MECA', iocc=1, scal=meca, nbret=n1)
 !
     call jelira(meca//'           .ORDR', 'LONUTI', nbmode)
     call jeveuo(meca//'           .ORDR', 'L', jordm)
-
-
-    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid, masse, ier)
-    call dismoi('F', 'NUME_DDL', nomres, 'RESU_DYNA', ibid, numddl, ier)
-
+!
+!
+    call dismoi('F', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid,&
+                masse, ier)
+    call dismoi('F', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
+                numddl, ier)
+!
     nu = numddl(1:14)
 !
     call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
@@ -95,8 +96,7 @@ subroutine diag99(nomres)
 ! --- RECUPERATION DES MODES STATIQUES
 !-----------------------------------------------------------------------
 !
-    call getvid('DIAG_MASS', 'MODE_STAT', 1, iarg, 1,&
-                stat, n1)
+    call getvid('DIAG_MASS', 'MODE_STAT', iocc=1, scal=stat, nbret=n1)
 !
     call jelira(stat//'           .ORDR', 'LONUTI', nbstat)
     call jeveuo(stat//'           .ORDR', 'L', jords)

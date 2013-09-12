@@ -6,8 +6,6 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/acmata.h"
@@ -16,6 +14,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 #include "asterfort/fmrayo.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lcdevi.h"
@@ -26,6 +25,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 #include "asterfort/renrfa.h"
 #include "asterfort/teneps.h"
 #include "asterfort/u2mess.h"
+!
     integer :: jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jdtaum, jresun
     character(len=16) :: nommet, nomcri, nomfor, forvie
@@ -647,8 +647,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 ! RECUPERATION DU COEFFICIENT DE PRE-ECROUISSAGE DONNE
 ! PAR L'UTILISATE
 !
-            call getvr8(' ', 'COEF_PREECROU', 1, iarg, 1,&
-                        coepre, iret)
+            call getvr8(' ', 'COEF_PREECROU', scal=coepre, nbret=iret)
 !
 !        1/ C DE MATAKE
             if (nomcri(1:14) .eq. 'MATAKE_MODI_AC') then

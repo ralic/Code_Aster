@@ -22,8 +22,8 @@ subroutine op0013()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
 #include "asterfort/assvec.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecreo.h"
@@ -53,16 +53,14 @@ subroutine op0013()
     call infniv(ifm, niv)
     call getres(vecas, typv, oper)
 !
-    call getvid(' ', 'VECT_ELEM', 0, iarg, 0,&
-                k8, nbvec)
+    call getvid(' ', 'VECT_ELEM', nbval=0, nbret=nbvec)
     nbvec = -nbvec
 !
 !
     call jecreo(vecas//'.LI2VECEL', 'V V K8 ')
     call jeecra(vecas//'.LI2VECEL', 'LONMAX', nbvec)
     call jeveuo(vecas//'.LI2VECEL', 'E', ilivec)
-    call getvid(' ', 'VECT_ELEM', 0, iarg, nbvec,&
-                zk8(ilivec), nbvec)
+    call getvid(' ', 'VECT_ELEM', nbval=nbvec, vect=zk8(ilivec), nbret=nbvec)
     call gettco(zk8(ilivec), typv)
     if (typv(16:16) .eq. 'R') type=1
     if (typv(16:16) .eq. 'C') type=2
@@ -75,8 +73,7 @@ subroutine op0013()
         zr(ilicoe-1+i) = 1.0d0
  5  end do
 !
-    call getvid(' ', 'NUME_DDL', 0, iarg, 1,&
-                nu, ibid)
+    call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
     vprof = '        '
     call assvec('G', vecas, nbvec, zk8(ilivec), zr(ilicoe),&
                 nu, vprof, 'ZERO', type)

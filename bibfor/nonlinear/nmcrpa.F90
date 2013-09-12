@@ -19,11 +19,11 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -77,10 +77,8 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 !
 ! --- CREATION ET INITIALISATION SD
 !
-    call getvid(motfac, 'LIST_INST', iocc, iarg, 1,&
-                list, n2)
-    call getvr8(motfac, 'INST', iocc, iarg, 0,&
-                r8bid, n3)
+    call getvid(motfac, 'LIST_INST', iocc=iocc, scal=list, nbret=n2)
+    call getvr8(motfac, 'INST', iocc=iocc, nbval=0, nbret=n3)
     n3 = -n3
 !
 ! --- RECUPERATION DU NOMBRE D'INSTANTS
@@ -105,8 +103,8 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 ! --- REMPLISSAGE DE LA LISTE
 !
     if (n3 .ge. 1) then
-        call getvr8(motfac, 'INST', iocc, iarg, nbinst,&
-                    zr(jslist), iret)
+        call getvr8(motfac, 'INST', iocc=iocc, nbval=nbinst, vect=zr(jslist),&
+                    nbret=iret)
     else
         call jeveuo(list//'.VALE', 'L', jlist)
         do 43 i = 1, nbinst

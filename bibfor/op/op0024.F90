@@ -37,8 +37,8 @@ subroutine op0024()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -66,8 +66,7 @@ subroutine op0024()
 !
 !
     call getres(resu, concep, nomcmd)
-    call getvr8(' ', 'VALE', 0, iarg, 0,&
-                r8b, nv)
+    call getvr8(' ', 'VALE', nbval=0, nbret=nv)
 !
 !
 !     CAS DU MOT CLE VALE=
@@ -80,8 +79,7 @@ subroutine op0024()
         call wkvect(resu//'.BINT', 'G V R', nbvale, jbor)
         call wkvect(resu//'.VALE', 'G V R', nbvale, jval)
         call wkvect('&&OP0024.VALE', 'V V R', nbvale, kval)
-        call getvr8(' ', 'VALE', 0, iarg, nbvale,&
-                    zr(kval), nv)
+        call getvr8(' ', 'VALE', nbval=nbvale, vect=zr(kval), nbret=nv)
         do 10 i = 1, nbvale - 1
             zr(jpas+i-1) = zr(kval+i) - zr(kval+i-1)
             zi(jnbp+i-1) = 1
@@ -95,8 +93,7 @@ subroutine op0024()
 !     CAS DU MOT CLE INTERVALLE=
 !    ----------------------------
     else
-        call getvr8(' ', 'DEBUT', 0, iarg, 1,&
-                    debut, n1)
+        call getvr8(' ', 'DEBUT', scal=debut, nbret=n1)
         call getfac('INTERVALLE', nbocc)
         toler = 1.d-3
 !
@@ -105,10 +102,8 @@ subroutine op0024()
 !       ---------------------------------------------------------
         nsup = 0
         do 20 iocc = 1, nbocc
-            call getvr8('INTERVALLE', 'JUSQU_A', iocc, iarg, 1,&
-                        fin, n1)
-            call getvr8('INTERVALLE', 'PAS', iocc, iarg, 1,&
-                        pas, np)
+            call getvr8('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=fin, nbret=n1)
+            call getvr8('INTERVALLE', 'PAS', iocc=iocc, scal=pas, nbret=np)
             if (np .eq. 1) then
                 if (pas .eq. 0.d0) call u2mess('F', 'ALGORITH9_16')
 !
@@ -134,19 +129,16 @@ subroutine op0024()
         call wkvect(resu//'.NBPA', 'G V I', nbocc+nsup, jnbp)
         call wkvect(resu//'.BINT', 'G V R', nbocc+nsup+1, jbor)
 !
-        call getvr8(' ', 'DEBUT', 0, iarg, 1,&
-                    debut, n1)
+        call getvr8(' ', 'DEBUT', scal=debut, nbret=n1)
         zr(jbor-1+1) = debut
         nbval = 1
         iinter = 0
         do 30 iocc = 1, nbocc
             iinter = iinter + 1
-            call getvr8('INTERVALLE', 'JUSQU_A', iocc, iarg, 1,&
-                        fin, n1)
+            call getvr8('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=fin, nbret=n1)
 !
             xxx = fin - debut
-            call getvr8('INTERVALLE', 'PAS', iocc, iarg, 1,&
-                        pas, np)
+            call getvr8('INTERVALLE', 'PAS', iocc=iocc, scal=pas, nbret=np)
 !
             if (np .eq. 1) then
                 nbpas = nint(xxx/pas)
@@ -181,8 +173,7 @@ subroutine op0024()
                 endif
 !
             else
-                call getvis('INTERVALLE', 'NOMBRE', iocc, iarg, 1,&
-                            nbpas, n1)
+                call getvis('INTERVALLE', 'NOMBRE', iocc=iocc, scal=nbpas, nbret=n1)
                 if (nbpas .le. 0) call u2mess('F', 'ALGORITH9_17')
                 zi(jnbp-1+iinter) = nbpas
                 zr(jpas-1+iinter) = xxx/nbpas

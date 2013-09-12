@@ -34,12 +34,11 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -63,6 +62,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 #include "asterfort/u2mess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     real(kind=8) :: epsi
@@ -109,11 +109,9 @@ subroutine rehaec(nomres, resgen, nomsst)
                     0, 0, 0.d0)
     endif
 !
-    call getvtx(' ', 'TOUT_CHAM', 0, iarg, 0,&
-                k8rep, n1)
+    call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvtx(' ', 'TOUT_CHAM', 0, iarg, 1,&
-                    k8rep, n1)
+        call getvtx(' ', 'TOUT_CHAM', scal=k8rep, nbret=n1)
     else
         k8rep=' '
     endif
@@ -136,11 +134,9 @@ subroutine rehaec(nomres, resgen, nomsst)
         call jeveuo(harmge//'.ACCE', 'L', itresu(3))
     else
 ! ----  ON RECHERCHE LES CHAMPS QU'IL FAUT RESTITUER
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
         nbcham = -n1
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
 ! ----   BOUCLE SUR LES CHAMPS DEMANDES
         do 69 i = 1, nbcham
 !
@@ -186,7 +182,8 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
 !
-    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid, numgen(1:14), iret)
+    call dismoi('F', 'NUME_DDL', harmge, 'RESU_DYNA', ibid,&
+                numgen(1:14), iret)
     numgen(15:19) = '.NUME'
     call jeveuo(numgen//'.REFN', 'L', llref2)
     modgen = zk24(llref2)(1:8)
@@ -263,9 +260,10 @@ subroutine rehaec(nomres, resgen, nomsst)
         call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbddg,&
                     kbid, ier)
     endif
-
+!
 ! -->AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lint, iret)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                lint, iret)
     call dismoi('F', 'NOM_MAILLA', lint, 'INTERF_DYNA', ibid,&
                 mailla, iret)
     call dismoi('F', 'NOM_NUME_DDL', lint, 'INTERF_DYNA', ibid,&
@@ -278,12 +276,9 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DES FREQUENCES
 !
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 1,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
 !
     knume = '&&RETREC.NUM_RANG'
     kfreq = '&&RETREC.FREQ'
@@ -377,7 +372,7 @@ subroutine rehaec(nomres, resgen, nomsst)
     endif
 !
 ! --> AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
-    call refdcp(basmod,nomres)
+    call refdcp(basmod, nomres)
     call jelibe(numgen//'.NUEQ')
     call jedetr('&&RETREC.NUM_RANG')
     call jedetr('&&RETREC.FREQ')

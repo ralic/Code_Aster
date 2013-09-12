@@ -1,11 +1,10 @@
 subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgmaal.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -15,6 +14,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 ! ======================================================================
@@ -87,8 +87,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
     call cgmaal(motfac, iocc, noma, listrv, nbmala)
 !
 ! --  RECUPERATION DU TYPE D'APPUI :
-    call getvtx('CREA_GROUP_MA', 'TYPE_APPUI', iocc, iarg, 1,&
-                typapp, n1)
+    call getvtx('CREA_GROUP_MA', 'TYPE_APPUI', iocc=iocc, scal=typapp, nbret=n1)
     call jeveuo(listrv, 'L', jmala)
 !
 ! --- TYPE D'APPUI = 'AU_MOINS_UN'

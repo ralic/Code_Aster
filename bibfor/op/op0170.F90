@@ -1,5 +1,5 @@
 subroutine op0170()
-    implicit   none
+    implicit none
 !     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,9 +24,9 @@ subroutine op0170()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pdadom.h"
@@ -63,15 +63,12 @@ subroutine op0170()
 !
     call getres(nomres, concep, nomcmd)
 !
-    call getvr8(' ', 'DUREE', 1, iarg, 1,&
-                rduree, n1)
+    call getvr8(' ', 'DUREE', scal=rduree, nbret=n1)
 !
-    call getvid(' ', 'TABL_POST_ALEA', 1, iarg, 0,&
-                table, nbtab)
+    call getvid(' ', 'TABL_POST_ALEA', nbval=0, nbret=nbtab)
 !
     if (nbtab .ne. 0) then
-        call getvid(' ', 'TABL_POST_ALEA', 1, iarg, 1,&
-                    table, n1)
+        call getvid(' ', 'TABL_POST_ALEA', scal=table, nbret=n1)
 !        CALL TBEXP2(TABLE,'GRANDEUR')
         call tbexp2(table, 'LAMBDA_00')
         call tbexp2(table, 'LAMBDA_02')
@@ -108,12 +105,9 @@ subroutine op0170()
 !
     else
 !
-        call getvr8(' ', 'MOMENT_SPEC_0', 1, iarg, 1,&
-                    xm0, n1)
-        call getvr8(' ', 'MOMENT_SPEC_2', 1, iarg, 1,&
-                    xm2, n1)
-        call getvr8(' ', 'MOMENT_SPEC_4', 1, iarg, 1,&
-                    xm4, n1)
+        call getvr8(' ', 'MOMENT_SPEC_0', scal=xm0, nbret=n1)
+        call getvr8(' ', 'MOMENT_SPEC_2', scal=xm2, nbret=n1)
+        call getvr8(' ', 'MOMENT_SPEC_4', scal=xm4, nbret=n1)
         nbmom = 1
         call wkvect('&&OP0170.MOMENT', 'V V R', 3*nbmom, ivmom)
         zr(ivmom ) = xm0

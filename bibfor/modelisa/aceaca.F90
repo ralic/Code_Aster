@@ -1,10 +1,10 @@
 subroutine aceaca(nomu, noma, lmax, nbocc)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/alcart.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -82,20 +82,16 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
         call getvem(noma, 'MAILLE', 'CABLE', 'MAILLE', ioc,&
                     iarg, lmax, zk8( jdls2), nm)
 !
-        call getvr8('CABLE', 'SECTION', ioc, iarg, 1,&
-                    sct, nv)
+        call getvr8('CABLE', 'SECTION', iocc=ioc, scal=sct, nbret=nv)
         if (nv .eq. 0) then
-            call getvr8('CABLE', 'A', ioc, iarg, 1,&
-                        sct, nv)
+            call getvr8('CABLE', 'A', iocc=ioc, scal=sct, nbret=nv)
         endif
         zr(jdvc) = sct
-        call getvr8('CABLE', 'N_INIT', ioc, iarg, 1,&
-                    tens, nt)
+        call getvr8('CABLE', 'N_INIT', iocc=ioc, scal=tens, nbret=nt)
         zr(jdvc+1) = tens
 !
         fcx = '.'
-        call getvid('CABLE', 'FCX', ioc, iarg, 1,&
-                    fcx, nfcx)
+        call getvid('CABLE', 'FCX', iocc=ioc, scal=fcx, nbret=nfcx)
         zk8(jdvcf) = fcx
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES

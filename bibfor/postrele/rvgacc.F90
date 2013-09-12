@@ -15,12 +15,12 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -48,7 +48,7 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
     integer :: nbis, nbnc, nbnf, nbni, nbnm, nbno, nbr8, nbto, nbtrou
     real(kind=8) :: prec, r8b
     complex(kind=8) :: c16b
-    character(len=8) ::  resu, crit
+    character(len=8) :: resu, crit
     character(len=16) :: nomcas
     character(len=24) :: nlist
     integer :: iarg
@@ -56,34 +56,20 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
 !================== CORPS DE LA ROUTINE ===============================
 !
     call jemarq()
-    call getvid('ACTION', 'RESULTAT', iocc, iarg, 1,&
-                resu, n1)
-    call getvr8('ACTION', 'PRECISION', iocc, iarg, 1,&
-                prec, n1)
-    call getvtx('ACTION', 'CRITERE', iocc, iarg, 1,&
-                crit, n1)
-    call getvtx('ACTION', 'TOUT_ORDRE', iocc, iarg, 0,&
-                zk80, nbto)
-    call getvis('ACTION', 'NUME_ORDRE', iocc, iarg, 0,&
-                zi, nbno)
-    call getvid('ACTION', 'LIST_ORDRE', iocc, iarg, 0,&
-                zk8, nbio)
-    call getvis('ACTION', 'NUME_MODE', iocc, iarg, 0,&
-                zi, nbnm)
-    call getvtx('ACTION', 'NOM_CAS', iocc, iarg, 0,&
-                zk16, nbnc)
-    call getvtx('ACTION', 'NOEUD_CMP', iocc, iarg, 0,&
-                zk16, nbcm)
-    call getvid('ACTION', 'LIST_MODE', iocc, iarg, 0,&
-                zk8, nbim)
-    call getvr8('ACTION', 'INST', iocc, iarg, 0,&
-                zr, nbni)
-    call getvid('ACTION', 'LIST_INST', iocc, iarg, 0,&
-                zk8, nbii)
-    call getvr8('ACTION', 'FREQ', iocc, iarg, 0,&
-                zr, nbnf)
-    call getvid('ACTION', 'LIST_FREQ', iocc, iarg, 0,&
-                zk8, nbif)
+    call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=resu, nbret=n1)
+    call getvr8('ACTION', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+    call getvtx('ACTION', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
+    call getvtx('ACTION', 'TOUT_ORDRE', iocc=iocc, nbval=0, nbret=nbto)
+    call getvis('ACTION', 'NUME_ORDRE', iocc=iocc, nbval=0, nbret=nbno)
+    call getvid('ACTION', 'LIST_ORDRE', iocc=iocc, nbval=0, nbret=nbio)
+    call getvis('ACTION', 'NUME_MODE', iocc=iocc, nbval=0, nbret=nbnm)
+    call getvtx('ACTION', 'NOM_CAS', iocc=iocc, nbval=0, nbret=nbnc)
+    call getvtx('ACTION', 'NOEUD_CMP', iocc=iocc, nbval=0, nbret=nbcm)
+    call getvid('ACTION', 'LIST_MODE', iocc=iocc, nbval=0, nbret=nbim)
+    call getvr8('ACTION', 'INST', iocc=iocc, nbval=0, nbret=nbni)
+    call getvid('ACTION', 'LIST_INST', iocc=iocc, nbval=0, nbret=nbii)
+    call getvr8('ACTION', 'FREQ', iocc=iocc, nbval=0, nbret=nbnf)
+    call getvid('ACTION', 'LIST_FREQ', iocc=iocc, nbval=0, nbret=nbif)
     nbto = -nbto
     nbno = -nbno
     nbio = -nbio
@@ -104,20 +90,20 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             typac = 'NO'
             nbval = nbno
             call wkvect(nival, 'V V I', nbno, aival)
-            call getvis('ACTION', 'NUME_ORDRE', iocc, iarg, nbno,&
-                        zi( aival), n1)
+            call getvis('ACTION', 'NUME_ORDRE', iocc=iocc, nbval=nbno, vect=zi( aival),&
+                        nbret=n1)
         else if (nbnm .ne. 0) then
             typac = 'NM'
             nbval = nbnm
             call wkvect(nival, 'V V I', nbnm, aival)
-            call getvis('ACTION', 'NUME_MODE', iocc, iarg, nbnm,&
-                        zi(aival), n1)
+            call getvis('ACTION', 'NUME_MODE', iocc=iocc, nbval=nbnm, vect=zi(aival),&
+                        nbret=n1)
         else if (nbnc .ne. 0) then
             typac = 'NO'
             nbval = nbnc
             call wkvect(nival, 'V V I', nbnc, aival)
-            call getvtx('ACTION', 'NOM_CAS', iocc, iarg, nbnc,&
-                        nomcas, n1)
+            call getvtx('ACTION', 'NOM_CAS', iocc=iocc, nbval=nbnc, vect=nomcas,&
+                        nbret=n1)
             call rsorac(resu, 'NOM_CAS', ibid, r8b, nomcas,&
                         c16b, prec, crit, zi(aival), 1,&
                         nbtrou)
@@ -125,20 +111,18 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             typac = 'NO'
             nbval = nbcm
             call wkvect(nival, 'V V I', nbnc, aival)
-            call getvtx('ACTION', 'NOEUD_CMP', iocc, iarg, nbcm,&
-                        nomcas, n1)
+            call getvtx('ACTION', 'NOEUD_CMP', iocc=iocc, nbval=nbcm, vect=nomcas,&
+                        nbret=n1)
             call rsorac(resu, 'NOEUD_CMP', ibid, r8b, nomcas,&
                         c16b, prec, crit, zi(aival), 1,&
                         nbtrou)
         else
             if (nbio .ne. 0) then
                 typac = 'NO'
-                call getvid('ACTION', 'LIST_ORDRE', iocc, iarg, 1,&
-                            nlist, n1)
+                call getvid('ACTION', 'LIST_ORDRE', iocc=iocc, scal=nlist, nbret=n1)
             else
                 typac = 'NM'
-                call getvid('ACTION', 'LIST_MODE', iocc, iarg, 1,&
-                            nlist, n1)
+                call getvid('ACTION', 'LIST_MODE', iocc=iocc, scal=nlist, nbret=n1)
             endif
             nlist(9:24) = '           .VALE'
             call jelira(nlist, 'LONMAX', nbval)
@@ -155,23 +139,21 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
             typac = 'NI'
             nbval = nbni
             call wkvect(nrval, 'V V R', nbni, arval)
-            call getvr8('ACTION', 'INST', iocc, iarg, nbni,&
-                        zr(arval), n1)
+            call getvr8('ACTION', 'INST', iocc=iocc, nbval=nbni, vect=zr(arval),&
+                        nbret=n1)
         else if (nbnf .ne. 0) then
             typac = 'NF'
             nbval = nbnf
             call wkvect(nrval, 'V V R', nbnf, arval)
-            call getvr8('ACTION', 'FREQ', iocc, iarg, nbnf,&
-                        zr(arval), n1)
+            call getvr8('ACTION', 'FREQ', iocc=iocc, nbval=nbnf, vect=zr(arval),&
+                        nbret=n1)
         else
             if (nbii .ne. 0) then
                 typac = 'NI'
-                call getvid('ACTION', 'LIST_INST', iocc, iarg, 1,&
-                            nlist, n1)
+                call getvid('ACTION', 'LIST_INST', iocc=iocc, scal=nlist, nbret=n1)
             else
                 typac = 'NF'
-                call getvid('ACTION', 'LIST_FREQ', iocc, iarg, 1,&
-                            nlist, n1)
+                call getvid('ACTION', 'LIST_FREQ', iocc=iocc, scal=nlist, nbret=n1)
             endif
             nlist(9:24) = '           .VALE'
             call jelira(nlist, 'LONMAX', nbval)

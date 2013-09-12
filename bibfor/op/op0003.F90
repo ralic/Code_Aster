@@ -23,15 +23,15 @@ subroutine op0003()
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/defcur.h"
 #include "asterfort/foimpr.h"
 #include "asterfort/foverf.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -67,21 +67,14 @@ subroutine op0003()
 !
     call getres(nomfon, typfon, nomcmd)
     verif = ' '
-    call getvtx(' ', 'VERIF', 0, iarg, 1,&
-                verif, n1)
-    call getvr8(' ', 'VALE', 0, iarg, 0,&
-                r8bid, n2)
-    call getvr8(' ', 'VALE_C', 0, iarg, 0,&
-                r8bid, n3)
-    call getvr8(' ', 'ABSCISSE', 0, iarg, 0,&
-                r8bid, nbla)
+    call getvtx(' ', 'VERIF', scal=verif, nbret=n1)
+    call getvr8(' ', 'VALE', nbval=0, nbret=n2)
+    call getvr8(' ', 'VALE_C', nbval=0, nbret=n3)
+    call getvr8(' ', 'ABSCISSE', nbval=0, nbret=nbla)
 !
-    call getvtx(' ', 'NOEUD_PARA', 0, iarg, 0,&
-                k8b, nbln)
-    call getvid(' ', 'VALE_PARA', 0, iarg, 0,&
-                k8b, nblr)
-    call getvr8(' ', 'VALE_Y', 0, iarg, 0,&
-                r8bid, nblv)
+    call getvtx(' ', 'NOEUD_PARA', nbval=0, nbret=nbln)
+    call getvid(' ', 'VALE_PARA', nbval=0, nbret=nblr)
+    call getvr8(' ', 'VALE_Y', nbval=0, nbret=nblv)
     nbvr = abs(n2)
     nbvc = abs(n3)
     nbla = abs(nbla)
@@ -98,8 +91,7 @@ subroutine op0003()
         endif
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvc, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
-        call getvr8(' ', 'VALE_C', 0, iarg, nbvc,&
-                    zr(lpara), l)
+        call getvr8(' ', 'VALE_C', nbval=nbvc, vect=zr(lpara), nbret=l)
         do 2 i = 0, nbcoup-1
             zr(lpar2+i) = zr(lpara+3*i)
  2      continue
@@ -119,8 +111,7 @@ subroutine op0003()
         endif
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvr, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
-        call getvr8(' ', 'VALE', 0, iarg, nbvr,&
-                    zr(lpara), l)
+        call getvr8(' ', 'VALE', nbval=nbvr, vect=zr(lpara), nbret=l)
         do 4 i = 0, nbcoup-1
             zr(lpar2+i) = zr(lpara+2*i)
  4      continue
@@ -134,15 +125,13 @@ subroutine op0003()
         if (nbla .lt. 2) then
             call u2mess('F', 'UTILITAI2_66')
         endif
-        call getvr8(' ', 'ORDONNEE', 0, iarg, 0,&
-                    r8bid, nblo)
+        call getvr8(' ', 'ORDONNEE', nbval=0, nbret=nblo)
         nblo = abs(nblo)
         if (nblo .ne. nbla) then
             call u2mess('F', 'UTILITAI2_77')
         endif
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbla, lpar2)
-        call getvr8(' ', 'ABSCISSE', 0, iarg, nbla,&
-                    zr(lpar2), l)
+        call getvr8(' ', 'ABSCISSE', nbval=nbla, vect=zr(lpar2), nbret=l)
 !        VERIF QUE LES PARAMETRES SONT STRICT CROISSANTS
         if (verif .eq. 'CROISSANT') then
             iret=2
@@ -151,17 +140,12 @@ subroutine op0003()
         endif
     endif
 !
-    call getvtx(' ', 'NOM_PARA', 0, iarg, 1,&
-                nompar, n1)
-    call getvtx(' ', 'NOM_RESU', 0, iarg, 1,&
-                nomres, n2)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 2,&
-                interp, n3)
+    call getvtx(' ', 'NOM_PARA', scal=nompar, nbret=n1)
+    call getvtx(' ', 'NOM_RESU', scal=nomres, nbret=n2)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n3)
     if (n3 .eq. 1) interp(2) = interp(1)
-    call getvtx(' ', 'PROL_GAUCHE', 0, iarg, 1,&
-                prolgd(1:1), n4)
-    call getvtx(' ', 'PROL_DROITE', 0, iarg, 1,&
-                prolgd(2:2), n5)
+    call getvtx(' ', 'PROL_GAUCHE', scal=prolgd(1:1), nbret=n4)
+    call getvtx(' ', 'PROL_DROITE', scal=prolgd(2:2), nbret=n5)
 !
 !
     ASSERT(lxlgut(nomfon).le.24)
@@ -194,8 +178,7 @@ subroutine op0003()
     min3=r8maem()
 !
     if (nbln .ne. 0) then
-        call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                    nommai, ibid)
+        call getvid(' ', 'MAILLAGE', scal=nommai, nbret=ibid)
         nommas = nommai//'.NOMMAI'
         call jelira(nommas, 'NOMUTI', nbrma)
 !
@@ -204,8 +187,7 @@ subroutine op0003()
         if (nblv .ne. nbln) then
             call u2mess('F', 'UTILITAI2_69')
         endif
-        call getvr8(' ', 'VALE_Y', 0, iarg, nblv,&
-                    zr(jval), n)
+        call getvr8(' ', 'VALE_Y', nbval=nblv, vect=zr(jval), nbret=n)
         call getvem(nommai, 'NOEUD', ' ', 'NOEUD_PARA', 0,&
                     iarg, nblv, zk8( jnoe), n)
         nbval = 2*(nbrma+1)
@@ -220,8 +202,7 @@ subroutine op0003()
  9      continue
     else if (nbvc.ne.0) then
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nbvc, jval)
-        call getvr8(' ', 'VALE_C', 0, iarg, nbvc,&
-                    zr(jval), n)
+        call getvr8(' ', 'VALE_C', nbval=nbvc, vect=zr(jval), nbret=n)
         call wkvect(nomfon//'.VALE', 'G V R', nbvc, lval)
         nbcoup = nbvc / 3
         lfon = lval + nbcoup - 1
@@ -236,8 +217,7 @@ subroutine op0003()
 !
     else if (nbvr.ne.0 .and. nbln.eq.0) then
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nbvr, jval)
-        call getvr8(' ', 'VALE', 0, iarg, nbvr,&
-                    zr(jval), n)
+        call getvr8(' ', 'VALE', nbval=nbvr, vect=zr(jval), nbret=n)
         call wkvect(nomfon//'.VALE', 'G V R', nbvr, lval)
         nbcoup = nbvr / 2
         lfon = lval + nbcoup
@@ -249,10 +229,8 @@ subroutine op0003()
 20      continue
 !
     else if (nblr.ne.0) then
-        call getvid(' ', 'VALE_PARA', 1, iarg, 1,&
-                    listpa, n1)
-        call getvid(' ', 'VALE_FONC', 1, iarg, 1,&
-                    listfo, n1)
+        call getvid(' ', 'VALE_PARA', scal=listpa, nbret=n1)
+        call getvid(' ', 'VALE_FONC', scal=listfo, nbret=n1)
         call jelira(listpa//'.VALE', 'LONMAX', nbcoup)
         call jelira(listfo//'.VALE', 'LONMAX', nbcou2)
         if (nbcou2 .ne. nbcoup) then
@@ -280,10 +258,8 @@ subroutine op0003()
 30      continue
     else if (nbla.ne.0) then
         call wkvect(nomfon//'.VALE', 'G V R', nbla*2, lval)
-        call getvr8(' ', 'ABSCISSE', 0, iarg, nbla,&
-                    zr(lval), n)
-        call getvr8(' ', 'ORDONNEE', 0, iarg, nbla,&
-                    zr(lval+nbla), n)
+        call getvr8(' ', 'ABSCISSE', nbval=nbla, vect=zr(lval), nbret=n)
+        call getvr8(' ', 'ORDONNEE', nbval=nbla, vect=zr(lval+nbla), nbret=n)
 !
     endif
 !

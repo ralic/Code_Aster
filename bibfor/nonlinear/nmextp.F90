@@ -19,11 +19,11 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/celces.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -97,8 +97,7 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 !
 ! --- LECTURE TYPE EXTRACTION
 !
-    call getvtx(motfac, 'EVAL_ELGA', iocc, iarg, 1,&
-                extrga, n1)
+    call getvtx(motfac, 'EVAL_ELGA', iocc=iocc, scal=extrga, nbret=n1)
     if (n1 .eq. 0) then
         extrga = 'VALE'
         call u2mesk('A', 'EXTRACTION_6', 1, nomcha)
@@ -112,10 +111,8 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 ! --- COMPTE NOMBRE DE POINTS
 !
     if (extrga .eq. 'VALE') then
-        call getvis(motfac, 'POINT', iocc, iarg, 0,&
-                    ibid, n2)
-        call getvis(motfac, 'SOUS_POINT', iocc, iarg, 0,&
-                    ibid, n3)
+        call getvis(motfac, 'POINT', iocc=iocc, nbval=0, nbret=n2)
+        call getvis(motfac, 'SOUS_POINT', iocc=iocc, nbval=0, nbret=n3)
         if (n2 .eq. 0) then
             call u2mesk('F', 'EXTRACTION_7', 2, valk)
         endif
@@ -145,11 +142,11 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 ! --- REMPLISSAGE SD
 !
     if (extrga .eq. 'VALE') then
-        call getvis(motfac, 'POINT', iocc, iarg, nbpi,&
-                    zi(jpi), n2)
+        call getvis(motfac, 'POINT', iocc=iocc, nbval=nbpi, vect=zi(jpi),&
+                    nbret=n2)
         if (nbspi .ne. 0) then
-            call getvis(motfac, 'SOUS_POINT', iocc, iarg, nbspi,&
-                        zi(jspi), n3)
+            call getvis(motfac, 'SOUS_POINT', iocc=iocc, nbval=nbspi, vect=zi(jspi),&
+                        nbret=n3)
             if (n3 .eq. 0) then
                 do 132 ispi = 1, nbspi
                     zi(jspi-1+ispi ) = ispi

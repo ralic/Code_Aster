@@ -26,14 +26,14 @@ subroutine op0031()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/amogen.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -102,8 +102,7 @@ subroutine op0031()
 !         CREATION D UN .DESC POUR LA MATRASS GENE RESULTAT
         call wkvect(matr19//'.DESC', base//' V I', 3, ldesc)
         if (nbocc .ne. 0) then
-            call getvid(combrc, 'MATR_ASSE', 1, iarg, 1,&
-                        matri1, l)
+            call getvid(combrc, 'MATR_ASSE', iocc=1, scal=matri1, nbret=l)
             call jeveuo(matri1//'           .REFA', 'L', iref1)
             numgen = zk24(iref1+1)(1:14)
             call jeveuo(numgen//'.NUME.REFN', 'L', iref2)
@@ -123,8 +122,7 @@ subroutine op0031()
     call wkvect(cnom, 'V V K8', nbocc, lnom)
     jpomr=0
     do 10 iocc = 0, nbocc - 1
-        call getvid(combrc, 'MATR_ASSE', iocc+1, iarg, 1,&
-                    zk8(lnom+iocc), l)
+        call getvid(combrc, 'MATR_ASSE', iocc=iocc+1, scal=zk8(lnom+iocc), nbret=l)
 !        ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
         nomi=zk8(lnom+iocc)
         call jeveuo(nomi//'.REFA', 'L', jrefe)
@@ -135,8 +133,7 @@ subroutine op0031()
 !
 !
     nomddl=' '
-    call getvtx(' ', 'SANS_CMP', 1, iarg, 1,&
-                nomddl, ibid)
+    call getvtx(' ', 'SANS_CMP', scal=nomddl, nbret=ibid)
 !
 !
 !     --- RECUPERATION DES COEFFICIENTS :
@@ -150,14 +147,12 @@ subroutine op0031()
 !
     nbcst = 0
     do 25 iocc = 0, nbocc - 1
-        call getvr8(combrc, 'COEF_R', iocc+1, iarg, 1,&
-                    r8val, lr)
+        call getvr8(combrc, 'COEF_R', iocc=iocc+1, scal=r8val(1), nbret=lr)
         if (lr .eq. 1) then
             lcoefc=.false.
             if (combrc .eq. 'COMB_R') then
                 partie=' '
-                call getvtx(combrc, 'PARTIE', iocc+1, iarg, 1,&
-                            partie, ibid)
+                call getvtx(combrc, 'PARTIE', iocc=iocc+1, scal=partie, nbret=ibid)
                 if (partie .eq. 'IMAG') lcoefc=.true.
             endif
 !
@@ -172,8 +167,7 @@ subroutine op0031()
                 zk8(ltypec+iocc) = 'C'
             endif
         else
-            call getvc8(combrc, 'COEF_C', iocc+1, iarg, 1,&
-                        cval, lc)
+            call getvc8(combrc, 'COEF_C', iocc=iocc+1, scal=cval, nbret=lc)
             ASSERT(lc.eq.1)
             zr(lcoef+nbcst) = dble(cval)
             zr(lcoef+nbcst+1) = dimag(cval)

@@ -20,10 +20,10 @@ subroutine cazouu(motfac, nzoco, nommcz)
 !
     implicit none
 #include "asterc/getmjm.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesk.h"
     character(len=16) :: motfac
     integer :: nzoco
@@ -86,16 +86,13 @@ subroutine cazouu(motfac, nzoco, nommcz)
                     parak = ' '
                     if (typmc(1:1) .eq. 'I') then
                         tt = 'I'
-                        call getvis(motfac, nommc, izone, iarg, 1,&
-                                    parai, noc)
+                        call getvis(motfac, nommc, iocc=izone, scal=parai, nbret=noc)
                     else if (typmc(1:2).eq.'TX') then
                         tt = 'T'
-                        call getvtx(motfac, nommc, izone, iarg, 1,&
-                                    parak, noc)
+                        call getvtx(motfac, nommc, iocc=izone, scal=parak, nbret=noc)
                     else if (typmc(1:2).eq.'R8') then
                         tt = 'R'
-                        call getvr8(motfac, nommc, izone, iarg, 1,&
-                                    parar, noc)
+                        call getvr8(motfac, nommc, iocc=izone, scal=parar, nbret=noc)
                     else
                         ASSERT(.false.)
                     endif

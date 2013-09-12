@@ -16,17 +16,16 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/affdis.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdis.h"
 #include "asterfort/irmifr.h"
 #include "asterfort/iunifi.h"
@@ -46,6 +45,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, nbocc, ivr(*), noemaf, impr
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
@@ -153,18 +153,14 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         irep = 1
         isym = 1
         rep = repdis(1)
-        call getvis('RIGI_MISS_3D', 'UNITE_RESU_IMPE', ioc, iarg, 1,&
-                    impris, nu)
+        call getvis('RIGI_MISS_3D', 'UNITE_RESU_IMPE', iocc=ioc, scal=impris, nbret=nu)
         k16nom = ' '
         if (ulisop ( impris, k16nom ) .eq. 0) then
             call ulopen(impris, ' ', ' ', 'NEW', 'O')
         endif
-        call getvr8('RIGI_MISS_3D', 'FREQ_EXTR', ioc, iarg, 1,&
-                    freq, nfr)
-        call getvtx('RIGI_MISS_3D', 'GROUP_MA_POI1', ioc, iarg, 1,&
-                    nogp, ngp)
-        call getvtx('RIGI_MISS_3D', 'GROUP_MA_SEG2', ioc, iarg, 1,&
-                    nogl, ngl)
+        call getvr8('RIGI_MISS_3D', 'FREQ_EXTR', iocc=ioc, scal=freq, nbret=nfr)
+        call getvtx('RIGI_MISS_3D', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
+        call getvtx('RIGI_MISS_3D', 'GROUP_MA_SEG2', iocc=ioc, scal=nogl, nbret=ngl)
         do 32 i = 1, nrd
             if (rep .eq. repdis(i)) irep = i
 32      continue

@@ -21,12 +21,11 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -38,6 +37,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
     character(len=16) :: motfac
     integer :: iocc
@@ -115,8 +115,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 ! --- LECTURE DES COMPOSANTES : IL FAUT AU MOINS UNE COMPOSANTE MAIS
 ! --- MOINS DE NPARX
 !
-    call getvtx(motfac, 'NOM_CMP', iocc, iarg, 0,&
-                k8bid, n1)
+    call getvtx(motfac, 'NOM_CMP', iocc=iocc, nbval=0, nbret=n1)
     nbcmp = -n1
     if ((nbcmp.lt.1) .or. (nbcmp.gt.nparx)) then
         vali(1) = nparx
@@ -127,8 +126,8 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 ! --- LECTURE EFFECTIVE DES NOMS DE COMPOSANTES
 !
     call wkvect(listcp, 'V V K8', nbcmp, jcmp)
-    call getvtx(motfac, 'NOM_CMP', iocc, iarg, nbcmp,&
-                zk8(jcmp), iret)
+    call getvtx(motfac, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                nbret=iret)
 !
 ! --- VERIFICATION QUE LES NOEUDS SUPPORTENT LES COMPOSANTES FOURNIES
 !

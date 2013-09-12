@@ -18,13 +18,13 @@ subroutine nmetl2(motfac, sdieto, icham)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -108,8 +108,7 @@ subroutine nmetl2(motfac, sdieto, icham)
 !
     motcei = zk24(jiolch+zioch*(icham-1)+3-1)
     if (motcei .ne. ' ') then
-        call getvid(motfac, motcei, 1, iarg, 1,&
-                    champ1, ilecc)
+        call getvid(motfac, motcei, iocc=1, scal=champ1, nbret=ilecc)
     endif
 !
 ! --- TRAITEMENT DU CHAMP

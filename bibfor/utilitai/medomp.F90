@@ -3,13 +3,13 @@ subroutine medomp(result, modele, mate, carele, nh)
     implicit none
 !
 #include "jeveux.h"
+#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterc/getexm.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -58,7 +58,7 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! ----------------------------------------------------------------------
 !
     integer :: iexcit, iret, ibid
-    integer :: nbordr, iordr, jordr, numord, inuord,numlu
+    integer :: nbordr, iordr, jordr, numord, inuord, numlu
     integer :: n1, n2, n3
     real(kind=8) :: prec
     character(len=8) :: materi, modnew
@@ -77,44 +77,47 @@ subroutine medomp(result, modele, mate, carele, nh)
     materi = ' '
     modele = ' '
     carele = ' '
-    mate   = ' '
+    mate = ' '
     nbordr = 0
     numord = 0
-    nh     = 0
+    nh = 0
 !
     if (result(1:1) .eq. ' ') then
 !
 ! ----- RECUPERATION DU MODELE DANS LA COMMANDE
 !
-        call getvid(' ', 'MODELE', 0, iarg, 1,modele, n1)
+        call getvid(' ', 'MODELE', scal=modele, nbret=n1)
         if (n1 .eq. 0) call u2mess('F', 'POSTELEM_20')
-        call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,repons,iret)
+        call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
+                    repons, iret)
         lrdm = repons.eq.'OUI'
-        call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,repons, iret)
+        call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
+                    repons, iret)
         lmater = repons.eq.'OUI'
 !
 ! ----- RECUPERATION DU CARA_ELEM DANS LA COMMANDE
 !
-        call getvid(' ', 'CARA_ELEM', 0, iarg, 1,carele, n2)
+        call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n2)
         if ((n2.eq.0) .and. lrdm) call u2mess('A', 'CALCULEL3_39')
 !
 ! ----- RECUPERATION DU CHAM_MATER DANS LA COMMANDE
 !
-        call getvid(' ', 'CHAM_MATER', 0, iarg, 1,materi, n3)
+        call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
         if ((n3.eq.0) .and. lmater) call u2mess('A', 'CALCULEL3_40')
 !
     else
 !
-        call getvis(' ', 'NUME_ORDRE', 0, iarg, 1,numlu, inuord)
+        call getvis(' ', 'NUME_ORDRE', scal=numlu, nbret=inuord)
 !
 ! ----- L'UTILISATEUR N'A PAS FOURNI DE NUMERO D'ORDRE :
 ! ----- RECUPERATION DU PREMIER NUMERO D'ORDRE DANS LA SD RESULTAT
 !
         knum = '&&MEDOMP.NUME_ORDRE'
         if (inuord .eq. 0) then
-            call getvr8(' ', 'PRECISION', 1, iarg, 1,prec, n1)
-            call getvtx(' ', 'CRITERE', 1, iarg, 1,crit, n2)
-            call rsutnu(result, ' ', 0, knum, nbordr,prec, crit, iret)
+            call getvr8(' ', 'PRECISION', scal=prec, nbret=n1)
+            call getvtx(' ', 'CRITERE', scal=crit, nbret=n2)
+            call rsutnu(result, ' ', 0, knum, nbordr,&
+                        prec, crit, iret)
             call jeveuo(knum, 'L', jordr)
             numlu = zi(jordr)
         endif
@@ -122,18 +125,21 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! ----- VERIFICATION DE L'UNICITE DU MODELE DANS LE RESULTAT
 !
         numord = numlu
-        call rslesd(result,numord,modele,materi,carele,k19bid,iexcit)
+        call rslesd(result, numord, modele, materi, carele,&
+                    k19bid, iexcit)
         do 99 iordr = 2, nbordr
             numord = zi(jordr+iordr-1)
-            call rslesd(result, numord, modnew, materi, carele,k19bid, iexcit)
+            call rslesd(result, numord, modnew, materi, carele,&
+                        k19bid, iexcit)
             if (modnew .ne. modele) call u2mess('F', 'POSTELEM_23')
 99      continue
         call jedetr(knum)
 !
 ! ----- RECUPERATION MODELE, MATERIAU ET CARA_ELEM DANS LA SD RESULTAT
 !
-        call rslesd(result,numlu,modele,materi,carele,k19bid,iexcit)
-
+        call rslesd(result, numlu, modele, materi, carele,&
+                    k19bid, iexcit)
+!
     endif
 !
 ! --- CODAGE DU MATERIAU
@@ -143,7 +149,9 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! --- MODE FOURIER SI NECESSAIRE
 !
     lfour = getexm(' ','MODE_FOURIER')
-    if (lfour.eq.1) call getvis(' ', 'MODE_FOURIER', 1, iarg, 1,nh, n1)
+    if (lfour .eq. 1) then
+        call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n1)
+    endif
 !
     call jedema()
 end subroutine

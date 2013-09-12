@@ -1,5 +1,5 @@
 subroutine x195cb(tychr, nomgd, chou)
-    implicit  none
+    implicit none
 !     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,12 +25,12 @@ subroutine x195cb(tychr, nomgd, chou)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -59,8 +59,7 @@ subroutine x195cb(tychr, nomgd, chou)
 !     -------------------------------------------------------------
 !     -- ATTENTION : LA COMMANDE PEUT ETRE REENTRANTE,
 !        IL NE FAUT PAS DETRUIRE CHOU TOUT DE SUITE.
-    call getvid('COMB', 'CHAM_GD', 1, iarg, 1,&
-                ch1, ib)
+    call getvid('COMB', 'CHAM_GD', iocc=1, scal=ch1, nbret=ib)
     ch2='&&X195CB.CHOU'
     call copisd('CHAMP', 'V', ch1, ch2)
 !     -- INITIALISATION A ZERO :
@@ -76,8 +75,7 @@ subroutine x195cb(tychr, nomgd, chou)
 !     -- 2. CALCUL DU CONTENU DE CH2 :
 !     ---------------------------------
     do 10,iocc = 1,nbocc
-    call getvid('COMB', 'CHAM_GD', iocc, iarg, 1,&
-                ch1, ib)
+    call getvid('COMB', 'CHAM_GD', iocc=iocc, scal=ch1, nbret=ib)
 !
 !       -- QUELQUES VERIFICATIONS DE COHERENCE :
     call dismoi('F', 'TYPE_CHAMP', ch1, 'CHAMP', ib,&
@@ -105,8 +103,7 @@ subroutine x195cb(tychr, nomgd, chou)
 !
 !       -- CUMUL DES VALEURS :
     call jeveuo(ch1//'.VALE', 'L', jvale1)
-    call getvr8('COMB', 'COEF_R', iocc, iarg, 1,&
-                coefr, ib)
+    call getvr8('COMB', 'COEF_R', iocc=iocc, scal=coefr, nbret=ib)
     ASSERT(ib.eq.1)
     if (tsca .eq. 'R') then
         do 11, k=1,n1

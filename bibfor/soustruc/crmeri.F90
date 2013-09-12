@@ -26,13 +26,12 @@ subroutine crmeri(promes, iakpee)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -51,6 +50,7 @@ subroutine crmeri(promes, iakpee)
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: promes
     integer :: iakpee
 !
@@ -113,8 +113,7 @@ subroutine crmeri(promes, iakpee)
     mestit = nomres//'.TITP'
 !
 ! RECUPERATION DES ELEMENTS RELATIFS AU MODES MESURES
-    call getvid('DEFINITION', 'MODE_MESURE', 1, iarg, 1,&
-                modmes, ibid)
+    call getvid('DEFINITION', 'MODE_MESURE', iocc=1, scal=modmes, nbret=ibid)
     vref = nomres//'.PROJM    .PJMRF'
     call jeexin(vref, iexist)
     if (iexist .eq. 0) then
@@ -146,8 +145,7 @@ subroutine crmeri(promes, iakpee)
     if (iexist .eq. 0) then
 !
 ! CREATION DE LA BASE RESTREINTE AUX DDL EXTERIEUR
-        call getvid('DEFINITION', 'MODELE', 1, iarg, 1,&
-                    modele, ibid)
+        call getvid('DEFINITION', 'MODELE', iocc=1, scal=modele, nbret=ibid)
         call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
                     ma, iret)
 !

@@ -30,13 +30,13 @@ subroutine op0177()
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -100,24 +100,17 @@ subroutine op0177()
     endif
     write(ific,1000)
 !
-    call getvid(' ', 'TABLE', 1, iarg, 1,&
-                latabl, n1)
+    call getvid(' ', 'TABLE', scal=latabl, nbret=n1)
 !
     call getfac('FILTRE', nparfi)
 !
-    call getvtx(' ', 'VALE_ABS', 1, iarg, 1,&
-                ssigne, n1)
-    call getvr8(' ', 'TOLE_MACHINE', 1, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, n1)
+    call getvtx(' ', 'VALE_ABS', scal=ssigne, nbret=n1)
+    call getvr8(' ', 'TOLE_MACHINE', scal=epsi, nbret=n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
 !
-    call getvr8(' ', 'VALE_CALC', 1, iarg, 0,&
-                r8b, n1)
-    call getvis(' ', 'VALE_CALC_I', 1, iarg, 0,&
-                ibid, n2)
-    call getvc8(' ', 'VALE_CALC_C', 1, iarg, 0,&
-                c16b, n3)
+    call getvr8(' ', 'VALE_CALC', nbval=0, nbret=n1)
+    call getvis(' ', 'VALE_CALC_I', nbval=0, nbret=n2)
+    call getvc8(' ', 'VALE_CALC_C', nbval=0, nbret=n3)
 !
     irefr=1
     irefi=1
@@ -127,35 +120,28 @@ subroutine op0177()
         typr = 'R'
         call jedetr(travr)
         call wkvect(travr, 'V V R', nref, irefr)
-        call getvr8(' ', 'VALE_CALC', 1, iarg, nref,&
-                    zr(irefr), iret)
+        call getvr8(' ', 'VALE_CALC', nbval=nref, vect=zr(irefr), nbret=iret)
     else if (n2 .ne. 0) then
         nref=-n2
         typr = 'I'
         call jedetr(travi)
         call wkvect(travi, 'V V I', nref, irefi)
-        call getvis(' ', 'VALE_CALC_I', 1, iarg, nref,&
-                    zi(irefi), iret)
+        call getvis(' ', 'VALE_CALC_I', nbval=nref, vect=zi(irefi), nbret=iret)
     else if (n3 .ne. 0) then
         nref=-n3
         typr = 'C'
         call jedetr(travc)
         call wkvect(travc, 'V V C', nref, irefc)
-        call getvc8(' ', 'VALE_CALC_C', 1, iarg, nref,&
-                    zc(irefc), iret)
+        call getvc8(' ', 'VALE_CALC_C', nbval=nref, vect=zc(irefc), nbret=iret)
     endif
 ! ----------------------------------------------------------------------
     lref=.false.
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                epsir, iret)
+    call getvr8(' ', 'PRECISION', scal=epsir, nbret=iret)
     if (iret .ne. 0) then
         lref=.true.
-        call getvr8(' ', 'VALE_REFE', 1, iarg, 0,&
-                    r8b, n1r)
-        call getvis(' ', 'VALE_REFE_I', 1, iarg, 0,&
-                    ibid, n2r)
-        call getvc8(' ', 'VALE_REFE_C', 1, iarg, 0,&
-                    c16b, n3r)
+        call getvr8(' ', 'VALE_REFE', nbval=0, nbret=n1r)
+        call getvis(' ', 'VALE_REFE_I', nbval=0, nbret=n2r)
+        call getvc8(' ', 'VALE_REFE_C', nbval=0, nbret=n3r)
 !
         irefrr=1
         irefir=1
@@ -165,32 +151,27 @@ subroutine op0177()
             nref=-n1r
             call jedetr(travrr)
             call wkvect(travrr, 'V V R', nref, irefrr)
-            call getvr8(' ', 'VALE_REFE', 1, iarg, nref,&
-                        zr(irefrr), iret)
+            call getvr8(' ', 'VALE_REFE', nbval=nref, vect=zr(irefrr), nbret=iret)
         else if (n2r.ne.0) then
             ASSERT((n2r.eq.n2))
             nref=-n2r
             call jedetr(travir)
             call wkvect(travir, 'V V I', nref, irefir)
-            call getvis(' ', 'VALE_REFE_I', 1, iarg, nref,&
-                        zi(irefir), iret)
+            call getvis(' ', 'VALE_REFE_I', nbval=nref, vect=zi(irefir), nbret=iret)
         else if (n3r.ne.0) then
             ASSERT((n3r.eq.n3))
             nref=-n3r
             call jedetr(travcr)
             call wkvect(travcr, 'V V C', nref, irefcr)
-            call getvc8(' ', 'VALE_REFE_C', 1, iarg, nref,&
-                        zc(irefcr), iret)
+            call getvc8(' ', 'VALE_REFE_C', nbval=nref, vect=zc(irefcr), nbret=iret)
         endif
     endif
 ! ----------------------------------------------------------------------
 !
 !
-    call getvtx(' ', 'NOM_PARA', 1, iarg, 1,&
-                para, n1)
+    call getvtx(' ', 'NOM_PARA', scal=para, nbret=n1)
 !
-    call getvtx(' ', 'TYPE_TEST', 1, iarg, 1,&
-                typtes, n1)
+    call getvtx(' ', 'TYPE_TEST', scal=typtes, nbret=n1)
 !
     lign1 = ' '
     lign2 = ' '

@@ -39,8 +39,8 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
 !     OUT: INTEGER : NUNO1 : NUMERO DU NOEUD ANTECEDENT
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -61,8 +61,7 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
     integer :: ierd, ino1, nbid
 !-----------------------------------------------------------------------
     call jemarq()
-    call getvr8(' ', 'DIST_REFE', 0, iarg, 1,&
-                tailmi, nbid)
+    call getvr8(' ', 'DIST_REFE', scal=tailmi, nbret=nbid)
 !
     call jeveuo(mail//'.COORDO    .VALE', 'L', igeom)
 !

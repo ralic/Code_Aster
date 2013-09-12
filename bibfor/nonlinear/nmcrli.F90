@@ -18,13 +18,13 @@ subroutine nmcrli(instin, lisins, sddisc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8vide.h"
 #include "asterfort/diinst.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -158,8 +158,7 @@ subroutine nmcrli(instin, lisins, sddisc)
 !
 ! --- TOLERANCE POUR RECHERCHE DANS LISTE D'INSTANTS
 !
-    call getvr8(motfac, 'PRECISION', 1, iarg, 1,&
-                tole, n1)
+    call getvr8(motfac, 'PRECISION', iocc=1, scal=tole, nbret=n1)
     tole = abs(dtmin) * tole
 !
 ! --- L'INSTANT DE L'ETAT INITIAL EXISTE-T-IL ?

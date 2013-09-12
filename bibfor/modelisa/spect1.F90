@@ -46,10 +46,9 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/coesp1.h"
 #include "asterfort/coesp4.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -63,6 +62,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     logical :: casint
     character(len=8) :: nomu, nomzon
     character(len=19) :: spectr, base
@@ -214,8 +214,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 !
     call wkvect('&&SPECT1.TEMP.DEFM', 'V V R', nbp*nbm, idefm)
 !
-    call getvtx(' ', 'TOUT_CMP', 0, iarg, 1,&
-                tout, nbval)
+    call getvtx(' ', 'TOUT_CMP', scal=tout, nbret=nbval)
     if (tout .eq. 'NON') then
         nbcmp = 1
         do 20 ide = 1, 3

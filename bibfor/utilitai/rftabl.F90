@@ -1,13 +1,13 @@
 subroutine rftabl(tabres)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/foattr.h"
 #include "asterfort/foimpr.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -58,12 +58,9 @@ subroutine rftabl(tabres)
 !
     call getres(nomfon, typcon, nomcmd)
 !
-    call getvtx(' ', 'PARA_X', 0, iarg, 1,&
-                parax, n2)
-    call getvtx(' ', 'PARA_Y', 0, iarg, 1,&
-                paray, n3)
-    call getvtx(' ', 'NOM_PARA_TABL', 0, iarg, 1,&
-                nopara, n4)
+    call getvtx(' ', 'PARA_X', scal=parax, nbret=n2)
+    call getvtx(' ', 'PARA_Y', scal=paray, nbret=n3)
+    call getvtx(' ', 'NOM_PARA_TABL', scal=nopara, nbret=n4)
 !
     interp = 'NON NON '
     prolgd = 'EE      '

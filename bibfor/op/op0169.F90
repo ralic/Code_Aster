@@ -28,8 +28,8 @@ subroutine op0169()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -50,8 +50,7 @@ subroutine op0169()
     call infmaj()
 !
     call getres(nomfon, typfon, cmd)
-    call getvid(' ', 'TYPE_FLUI_STRU', 0, iarg, 1,&
-                typflu, ibid)
+    call getvid(' ', 'TYPE_FLUI_STRU', scal=typflu, nbret=ibid)
 !
 ! --- VERIFICATION A L EXECUTION
     fsic = typflu//'.FSIC'

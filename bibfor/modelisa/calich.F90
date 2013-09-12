@@ -39,14 +39,13 @@ subroutine calich(chargz)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -59,6 +58,7 @@ subroutine calich(chargz)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! -----  ARGUMENTS
     character(len=*) :: chargz
@@ -126,8 +126,7 @@ subroutine calich(chargz)
 ! ---   SI OUI TYPLAG = '22'
 ! ---   SI NON TYPLAG = '12'
 !
-        call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 1,&
-                    poslag, ibid)
+        call getvtx(motfac, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=ibid)
         if (poslag .eq. 'APRES') then
             typlag = '22'
         else
@@ -136,8 +135,7 @@ subroutine calich(chargz)
 !
 ! ---   RECUPERATION DU CHAMNO
 !       ----------------------
-        call getvid(motfac, 'CHAM_NO', iocc, iarg, 1,&
-                    chamno, nb)
+        call getvid(motfac, 'CHAM_NO', iocc=iocc, scal=chamno, nbret=nb)
         if (nb .eq. 0) then
             call u2mess('F', 'MODELISA2_98')
         endif
@@ -163,8 +161,7 @@ subroutine calich(chargz)
 ! ---   RECUPERATION DE LA VALEUR DU SECOND MEMBRE DE LA RELATION
 ! ---   LINEAIRE
 !       --------
-        call getvr8(motfac, 'COEF_IMPO', iocc, iarg, 1,&
-                    beta, nb)
+        call getvr8(motfac, 'COEF_IMPO', iocc=iocc, scal=beta, nbret=nb)
         if (nb .eq. 0) then
             call u2mess('F', 'MODELISA3_2')
         endif

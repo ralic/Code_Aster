@@ -1,12 +1,11 @@
 subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                   nsupp, nomsup, ndir, reasup, tcosup,&
                   nume, lordr)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -26,6 +25,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmode, neq, nbsup, ndir(*), nsupp(*), tcosup(nbsup, *), lordr(*)
     real(kind=8) :: reasup(nbsup, nbmode, *)
     character(len=8) :: masse, meca, nomsup(nbsup, *)
@@ -164,10 +164,8 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
             ctyp = 'QUAD'
             nt = 0
         else
-            call getvtx(motfac, 'TYPE_COMBI', ioc, iarg, 1,&
-                        ctyp, n1)
-            call getvtx(motfac, 'TOUT', ioc, iarg, 1,&
-                        k8b, nt)
+            call getvtx(motfac, 'TYPE_COMBI', iocc=ioc, scal=ctyp, nbret=n1)
+            call getvtx(motfac, 'TOUT', iocc=ioc, scal=k8b, nbret=nt)
         endif
         if (ctyp .ne. 'QUAD') then
             if (nt .ne. 0) then
@@ -177,13 +175,12 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 45                  continue
 44              continue
             else
-                call getvtx(motfac, 'NOEUD', ioc, iarg, 0,&
-                            noeu, n1)
+                call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     nno = -n1
                     call wkvect('&&ASMSUP.NOEUD', 'V V K8', nno, jnoe)
-                    call getvtx(motfac, 'NOEUD', ioc, iarg, nno,&
-                                zk8(jnoe), n1)
+                    call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe),&
+                                nbret=n1)
                     do 46 ino = 1, nno
                         noeu = zk8(jnoe+ino-1)
                         call jenonu(jexnom(obj2, noeu), iret)
@@ -204,13 +201,12 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 46                  continue
                     call jedetr('&&ASMSUP.NOEUD')
                 else
-                    call getvtx(motfac, 'GROUP_NO', ioc, iarg, 0,&
-                                k8b, n1)
+                    call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=n1)
                     if (n1 .ne. 0) then
                         ngr = -n1
                         call wkvect('&&ASMSUP.GROUP_NO', 'V V K24', ngr, jgrn)
-                        call getvtx(motfac, 'GROUP_NO', ioc, iarg, ngr,&
-                                    zk24(jgrn), n1)
+                        call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=zk24(jgrn),&
+                                    nbret=n1)
                         do 50 igr = 1, ngr
                             grnoeu = zk24(jgrn+igr-1)
                             call jeexin(jexnom(obj1, grnoeu), iret)

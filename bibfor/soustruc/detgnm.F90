@@ -1,10 +1,9 @@
 subroutine detgnm(ma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cpclma.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -20,6 +19,7 @@ subroutine detgnm(ma)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma
 !
 ! ======================================================================
@@ -74,12 +74,12 @@ subroutine detgnm(ma)
  5          continue
             do 10 iocc = 1, n1
                 maxval=0
-                call getvtx(detr(ig), 'NOM', iocc, iarg, maxval,&
-                            k8b, nbval)
+                call getvtx(detr(ig), 'NOM', iocc=iocc, nbval=maxval, vect=k8b,&
+                            nbret=nbval)
                 nbval=-nbval
                 call wkvect('&&DETGNM.GROUP_DETR', 'V V K24', nbval, jgmdet)
-                call getvtx(detr(ig), 'NOM', iocc, iarg, nbval,&
-                            zk24( jgmdet), iret)
+                call getvtx(detr(ig), 'NOM', iocc=iocc, nbval=nbval, vect=zk24( jgmdet),&
+                            nbret=iret)
 !              ON RECUPERE LES NUMEROS DES GROUPES A DETRUIRE
                 do 15 i = 1, nbval
                     call jenonu(jexnom(ma//group(ig), zk24(jgmdet+i-1)), numgm)
@@ -111,7 +111,7 @@ subroutine detgnm(ma)
                     call jenuno(jexnum(ma//group(ig), i), nomgp)
                     call jecroc(jexnom(grp, nomgp))
                     call jelira(jexnom(ma//group(ig), nomgp), 'LONMAX', nbmagp)
-                    call jeecra(jexnom(grp, nomgp), 'LONMAX', max(1,nbmagp))
+                    call jeecra(jexnom(grp, nomgp), 'LONMAX', max(1, nbmagp))
                     call jeecra(jexnom(grp, nomgp), 'LONUTI', nbmagp)
                     call jeveuo(jexnom(grp, nomgp), 'E', j2)
                     call jeveuo(jexnom(ma//group(ig), nomgp), 'L', j1)

@@ -1,11 +1,10 @@
 subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
                   coor, iret)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -13,6 +12,7 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
 #include "asterfort/jexnom.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/utnono.h"
+!
     integer :: iocc, ndim, iret
     real(kind=8) :: coor(*)
     character(len=8) :: nomail
@@ -50,11 +50,10 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
     call jemarq()
     iret = 0
 !
-    call getvr8(mcfac, mocle(1), iocc, iarg, 0,&
-                r8b, n1)
+    call getvr8(mcfac, mocle(1), iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvr8(mcfac, mocle(1), iocc, iarg, ndim,&
-                    coor, n1)
+        call getvr8(mcfac, mocle(1), iocc=iocc, nbval=ndim, vect=coor,&
+                    nbret=n1)
         if (n1 .lt. ndim) then
             call getres(k8b, concep, cmd)
             valk (1) = mcfac
@@ -82,11 +81,9 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
     nomnoe = nomail//'.NOMNOE         '
     call jeveuo(coord, 'L', jcoor)
 !
-    call getvtx(mcfac, mocle(2), iocc, iarg, 0,&
-                k8b, n2)
+    call getvtx(mcfac, mocle(2), iocc=iocc, nbval=0, nbret=n2)
     if (n2 .ne. 0) then
-        call getvtx(mcfac, mocle(2), iocc, iarg, 1,&
-                    noeud, n2)
+        call getvtx(mcfac, mocle(2), iocc=iocc, scal=noeud, nbret=n2)
         call jenonu(jexnom(nomnoe, noeud), numno)
         if (numno .eq. 0) then
             call getres(k8b, concep, cmd)
@@ -104,11 +101,9 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
         goto 9999
     endif
 !
-    call getvtx(mcfac, mocle(3), iocc, iarg, 1,&
-                k8b, n3)
+    call getvtx(mcfac, mocle(3), iocc=iocc, scal=k8b, nbret=n3)
     if (n3 .ne. 0) then
-        call getvtx(mcfac, mocle(3), iocc, iarg, 1,&
-                    nomgrn, n3)
+        call getvtx(mcfac, mocle(3), iocc=iocc, scal=nomgrn, nbret=n3)
         call utnono(' ', nomail, 'NOEUD', nomgrn, k8b,&
                     ier)
         if (ier .eq. 10) then

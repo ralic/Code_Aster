@@ -21,13 +21,12 @@ subroutine rvmoye(nomres, iocc)
 !     COMMANDE : POST_RELEVE, OPERATION='MOYENNE_ARITH'
 !
 ! ----------------------------------------------------------------------
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -42,6 +41,7 @@ subroutine rvmoye(nomres, iocc)
 #include "asterfort/tbexip.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     integer :: iocc
     character(len=*) :: nomres
 !
@@ -49,13 +49,13 @@ subroutine rvmoye(nomres, iocc)
     character(len=16) :: nopara(200)
 !
     integer :: ibid, n1, np, nc, iret, icmp, nbcmp
-    integer ::  jordr, i100, nbordr, iord, vali(20), nbc
-    integer ::  ii, ik, ir, jaces, nbacc
+    integer :: jordr, i100, nbordr, iord, vali(20), nbc
+    integer :: ii, ik, ir, jaces, nbacc
     integer :: iadr, iac
     real(kind=8) :: prec, som(64), valr(200)
     complex(kind=8) :: c16b
     character(len=3) :: typpar
-    character(len=8) ::  crit, resu, nocmp(64), tych, ctype
+    character(len=8) :: crit, resu, nocmp(64), tych, ctype
     character(len=16) :: nomcha, intitu
     character(len=19) :: knum, champ
     character(len=24) :: nomjv
@@ -69,16 +69,14 @@ subroutine rvmoye(nomres, iocc)
     knum = '&&RVMOYE.NUME_ORDRE'
     nbc = 0
 !
-    call getvtx('ACTION', 'INTITULE', iocc, iarg, 1,&
-                intitu, n1)
+    call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
     nbpar = 1
     nopara(nbpar) = 'INTITULE'
     valk(1) = intitu
 !
 ! ----- TRAITEMENT DU CHAMP_GD  -----
 !
-    call getvid('ACTION', 'CHAM_GD', iocc, iarg, 1,&
-                champ, n1)
+    call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
     if (n1 .ne. 0) then
         nbpar = nbpar + 1
         nopara(nbpar) = 'CHAM_GD'
@@ -110,16 +108,13 @@ subroutine rvmoye(nomres, iocc)
 !
 ! ----- TRAITEMENT DU RESULTAT  -----
 !
-    call getvid('ACTION', 'RESULTAT', iocc, iarg, 1,&
-                resu, n1)
+    call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=resu, nbret=n1)
     nbpar = nbpar + 1
     nopara(nbpar) = 'RESU'
     valk(2) = resu
 !
-    call getvr8('ACTION', 'PRECISION', iocc, iarg, 1,&
-                prec, np)
-    call getvtx('ACTION', 'CRITERE', iocc, iarg, 1,&
-                crit, nc)
+    call getvr8('ACTION', 'PRECISION', iocc=iocc, scal=prec, nbret=np)
+    call getvtx('ACTION', 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
     call rsutnu(resu, 'ACTION', iocc, knum, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
@@ -130,8 +125,7 @@ subroutine rvmoye(nomres, iocc)
     endif
     call jeveuo(knum, 'L', jordr)
 !
-    call getvtx('ACTION', 'NOM_CHAM', iocc, iarg, 1,&
-                nomcha, nbc)
+    call getvtx('ACTION', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=nbc)
     nbpar = nbpar + 1
     nopara(nbpar) = 'NOM_CHAM'
     valk(3) = nomcha

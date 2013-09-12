@@ -3,8 +3,8 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
@@ -67,12 +67,9 @@ subroutine ccvrpu(resuin, lisord, nbordr)
     modelu = ' '
     carelu = ' '
     chmatu = ' '
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                modelu, n1)
-    call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                carelu, n2)
-    call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                chmatu, n3)
+    call getvid(' ', 'MODELE', scal=modelu, nbret=n1)
+    call getvid(' ', 'CARA_ELEM', scal=carelu, nbret=n2)
+    call getvid(' ', 'CHAM_MATER', scal=chmatu, nbret=n3)
 !
     nchalu=0
     if (getexm('EXCIT','CHARGE') .eq. 1) then
@@ -83,11 +80,9 @@ subroutine ccvrpu(resuin, lisord, nbordr)
             call wkvect(kfon, 'V V K8', nchalu, fchalu)
 !
             do 10 icharg = 1, nchalu
-                call getvid('EXCIT', 'CHARGE', icharg, iarg, 1,&
-                            zk8( lchalu+icharg-1), n1)
+                call getvid('EXCIT', 'CHARGE', iocc=icharg, scal=zk8( lchalu+icharg-1), nbret=n1)
 !
-                call getvid('EXCIT', 'FONC_MULT', icharg, iarg, 1,&
-                            fonclu, n2)
+                call getvid('EXCIT', 'FONC_MULT', iocc=icharg, scal=fonclu, nbret=n2)
 !
                 if (n2 .ne. 0) then
                     zk8(fchalu+icharg-1) = fonclu

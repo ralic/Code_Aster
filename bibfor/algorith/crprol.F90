@@ -24,16 +24,15 @@ subroutine crprol()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -56,6 +55,7 @@ subroutine crprol()
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: ibid, ndimf, nbnoi, nbnof, nbinst, iad
     integer :: vali, iret
     integer :: jinst, iord, jcnsvl, jcnsle, nbval
@@ -87,18 +87,14 @@ subroutine crprol()
 ! --- RECUPERATION DES DONNEES UTILISATEUR :
 !     ------------------------------------
 !
-    call getvid(motfac, 'MAILLAGE_FINAL', 1, iarg, 1,&
-                nommaf, ibid)
-    call getvid(motfac, 'TABLE', 1, iarg, 1,&
-                table, ibid)
-    call getvtx(motfac, 'PROL_DROITE', 1, iarg, 1,&
-                pdroit, ibid)
-    call getvtx(motfac, 'PROL_GAUCHE', 1, iarg, 1,&
-                pgauch, ibid)
-    call getvr8(motfac, 'ORIGINE', 1, iarg, 3,&
-                orig, ibid)
-    call getvr8(motfac, 'AXE_Z', 1, iarg, 3,&
-                axez, ibid)
+    call getvid(motfac, 'MAILLAGE_FINAL', iocc=1, scal=nommaf, nbret=ibid)
+    call getvid(motfac, 'TABLE', iocc=1, scal=table, nbret=ibid)
+    call getvtx(motfac, 'PROL_DROITE', iocc=1, scal=pdroit, nbret=ibid)
+    call getvtx(motfac, 'PROL_GAUCHE', iocc=1, scal=pgauch, nbret=ibid)
+    call getvr8(motfac, 'ORIGINE', iocc=1, nbval=3, vect=orig,&
+                nbret=ibid)
+    call getvr8(motfac, 'AXE_Z', iocc=1, nbval=3, vect=axez,&
+                nbret=ibid)
 !
     call dismoi('F', 'NB_NO_MAILLA', nommaf, 'MAILLAGE', nbnof,&
                 k8b, ibid)

@@ -1,11 +1,12 @@
 subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
                   modele, nomail, nomare, resure, lgmsh)
     implicit none
+#include "jeveux.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/irchor.h"
 #include "asterfort/irecri.h"
 #include "asterfort/iremed.h"
@@ -56,7 +57,6 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 ! IN/OUT :
 !   LGMSH   L    LOGICAL SERVANT A ECRIRE L'ENTETE DU FICHIER GMSH
 !
-#include "jeveux.h"
 !
     integer :: nbnot, nvamin, nbpara, jpara, nbmat, nbcmp, nbnosy, nbordr
     integer :: nbcmdu, jnunot, jnosy, jordr, jcmp, jncmed, jnumat, nfor, nresu
@@ -101,13 +101,11 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !
 !     --- FORMAF D'ECRITURE DES REELS ---
     formr=' '
-    call getvtx('RESU', 'FORMAT_R', ioccur, iarg, 1,&
-                formr, nfor)
+    call getvtx('RESU', 'FORMAT_R', iocc=ioccur, scal=formr, nbret=nfor)
 !
 !     --- MODE D'ECRITURE DES PARAMETRES------
 !         (RMQUE: UNIQUEMENT INTERESSANT POUR FORMAT 'RESULTAT')
-    call getvtx('RESU', 'FORM_TABL', ioccur, iarg, 1,&
-                tabl, nfor)
+    call getvtx('RESU', 'FORM_TABL', iocc=ioccur, scal=tabl, nbret=nfor)
     if (nfor .ne. 0) then
         if (tabl(1:3) .eq. 'OUI') then
             cecr = 'T'
@@ -118,14 +116,12 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !
 !     --- RECUPERATION DU CARA_ELEM
     carael=' '
-    call getvid('RESU', 'CARA_ELEM', ioccur, iarg, 1,&
-                carael, ncarae)
+    call getvid('RESU', 'CARA_ELEM', iocc=ioccur, scal=carael, nbret=ncarae)
 !
 !     --- IMPRESSION DES COORDONNEES------
 !         (ECRITURE VARIABLES DE TYPE RESULTAT AU FORMAT 'RESULTAT')
     coor = ' '
-    call getvtx('RESU', 'IMPR_COOR', ioccur, iarg, 1,&
-                coor, ncoor)
+    call getvtx('RESU', 'IMPR_COOR', iocc=ioccur, scal=coor, nbret=ncoor)
     if (ncoor .ne. 0 .and. coor .eq. 'OUI') lcor = .true.
 !
 !     --- SEPARATION DES DIFFERENTES OCCURENCES (FORMAT 'RESULTAT')
@@ -136,14 +132,12 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !         OU CHAMP_GD (NCHAMP!=0)
     resu = ' '
     partie = ' '
-    call getvid('RESU', 'RESULTAT', ioccur, iarg, 1,&
-                resu, nresu)
+    call getvid('RESU', 'RESULTAT', iocc=ioccur, scal=resu, nbret=nresu)
     if (lrestr) then
         nresu=1
         resu=resure
     endif
-    call getvtx('RESU', 'PARTIE', ioccur, iarg, 1,&
-                partie, npart)
+    call getvtx('RESU', 'PARTIE', iocc=ioccur, scal=partie, nbret=npart)
     if (nresu .ne. 0) then
         call gettco(resu, tyres)
         if (tyres(1:10) .eq. 'DYNA_HARMO' .or. tyres(1:10) .eq. 'ACOU_HARMO') then
@@ -154,8 +148,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
         endif
     endif
 !
-    call getvid('RESU', 'CHAM_GD', ioccur, iarg, 1,&
-                resu, ncham)
+    call getvid('RESU', 'CHAM_GD', iocc=ioccur, scal=resu, nbret=ncham)
     if (ncham .ne. 0) then
         resu19=resu
         call dismoi('C', 'NOM_GD', resu19, 'CHAMP', ibid,&
@@ -170,8 +163,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     lresu = nresu.ne.0
 !     --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
     infmai = 1
-    call getvtx('RESU', 'INFO_MAILLAGE', ioccur, iarg, 1,&
-                saux03, n01)
+    call getvtx('RESU', 'INFO_MAILLAGE', iocc=ioccur, scal=saux03, nbret=n01)
     if (n01 .ne. 0) then
         if (saux03 .eq. 'OUI' .and. formaf .eq. 'MED') then
             infmai = 2
@@ -186,8 +178,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !          IMPRIMER QUE LA PARTIE DU MAILLAGE AFFECTEE DANS LE MODELE
     nomail = ' '
     nomab = ' '
-    call getvid('RESU', 'MAILLAGE', ioccur, iarg, 1,&
-                nomail, nmail)
+    call getvid('RESU', 'MAILLAGE', iocc=ioccur, scal=nomail, nbret=nmail)
     if ((formaf.eq.'ASTER') .and. (nomail.eq.' ')) then
         call u2mess('A', 'PREPOST3_70')
     endif
@@ -267,10 +258,8 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !      BORINF = 0.D
 !      BORSUP = 0.D
     if ((ncham.ne.0.or.nresu.ne.0) .and. (formaf.eq.'RESULTAT')) then
-        call getvr8('RESU', 'BORNE_INF', ioccur, iarg, 1,&
-                    borinf, ninf)
-        call getvr8('RESU', 'BORNE_SUP', ioccur, iarg, 1,&
-                    borsup, nsup)
+        call getvr8('RESU', 'BORNE_INF', iocc=ioccur, scal=borinf, nbret=ninf)
+        call getvr8('RESU', 'BORNE_SUP', iocc=ioccur, scal=borsup, nbret=nsup)
         if (ninf .ne. 0) linf=.true.
         if (nsup .ne. 0) lsup=.true.
     endif
@@ -279,10 +268,8 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     if ((ncham.ne.0.or.nresu.ne.0) .and. (formaf.eq.'RESULTAT')) then
         tmax=' '
         tmin=' '
-        call getvtx('RESU', 'VALE_MAX', ioccur, iarg, 1,&
-                    tmax, nvamax)
-        call getvtx('RESU', 'VALE_MIN', ioccur, iarg, 1,&
-                    tmin, nvamin)
+        call getvtx('RESU', 'VALE_MAX', iocc=ioccur, scal=tmax, nbret=nvamax)
+        call getvtx('RESU', 'VALE_MIN', iocc=ioccur, scal=tmin, nbret=nvamin)
         if (nvamax .ne. 0 .and. tmax .eq. 'OUI') lmax=.true.
         if (nvamin .ne. 0 .and. tmin .eq. 'OUI') lmin=.true.
     endif
@@ -290,13 +277,11 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !     TYPE DE CHAMP A IMPRIMER POUR LE FORMAT GMSH (VERSION >= 1.2)
     tycha=' '
     if ((ncham.ne.0.or.nresu.ne.0) .and. formaf(1:4) .eq. 'GMSH' .and. versio .ge. 2) then
-        call getvtx('RESU', 'TYPE_CHAM', ioccur, iarg, 1,&
-                    tycha, ibid)
+        call getvtx('RESU', 'TYPE_CHAM', iocc=ioccur, scal=tycha, nbret=ibid)
     endif
 !
     variel=' '
-    call getvtx('RESU', 'IMPR_NOM_VARI', ioccur, iarg, 1,&
-                variel, nvari)
+    call getvtx('RESU', 'IMPR_NOM_VARI', iocc=ioccur, scal=variel, nbret=nvari)
     if (variel .eq. 'OUI') then
         lvarie=.true.
     else

@@ -20,13 +20,13 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -181,8 +181,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 !
 ! --- CONCEPT EVOL_NOLI DONNE DANS ETAT_INIT
 !
-    call getvid(motfac, 'EVOL_NOLI', 1, iarg, 1,&
-                evol, nocc)
+    call getvid(motfac, 'EVOL_NOLI', iocc=1, scal=evol, nbret=nocc)
     ASSERT(nocc.le.1)
     evonol = nocc .gt. 0
 !

@@ -1,5 +1,5 @@
 subroutine crtype()
-    implicit  none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,15 +29,15 @@ subroutine crtype()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
@@ -102,10 +102,8 @@ subroutine crtype()
     call getres(resu, type, oper)
     resu19=resu
     call getfac('AFFE', nbfac)
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 1,&
-                nsymb, n1)
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                typres, n1)
+    call getvtx(' ', 'NOM_CHAM', scal=nsymb, nbret=n1)
+    call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=n1)
 !
     call jeexin(resu//'           .DESC', iret)
     if (iret .eq. 0) call rscrsd('G', resu, typres, nboini)
@@ -123,17 +121,13 @@ subroutine crtype()
 !
     do 80 iocc = 1, nbfac
         modele = ' '
-        call getvid('AFFE', 'MODELE', iocc, iarg, 1,&
-                    modele, n1)
+        call getvid('AFFE', 'MODELE', iocc=iocc, scal=modele, nbret=n1)
         materi = blan8
-        call getvid('AFFE', 'CHAM_MATER', iocc, iarg, 1,&
-                    materi, n1)
+        call getvid('AFFE', 'CHAM_MATER', iocc=iocc, scal=materi, nbret=n1)
         carele = blan8
-        call getvid('AFFE', 'CARA_ELEM', iocc, iarg, 1,&
-                    carele, n1)
+        call getvid('AFFE', 'CARA_ELEM', iocc=iocc, scal=carele, nbret=n1)
 !        -- POUR STOCKER INFO_CHARGE DANS LE PARAMETRE EXCIT :
-        call getvid('AFFE', 'CHARGE', iocc, iarg, 0,&
-                    k8b, n1)
+        call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .lt. 0) then
             nchar=-n1
             noojb ='12345678'//'.1234'//'.EXCIT.INFC'
@@ -143,12 +137,11 @@ subroutine crtype()
             call lisccr(excit, nchar, 'G')
             call jeveuo(excit//'.LCHA', 'E', jlcha)
             call jeveuo(excit//'.FCHA', 'E', jfcha)
-            call getvid('AFFE', 'CHARGE', iocc, iarg, nchar,&
-                        zk24(jlcha), n1)
+            call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nchar, vect=zk24(jlcha),&
+                        nbret=n1)
         endif
 !
-        call getvid('AFFE', 'CHAM_GD', iocc, iarg, 1,&
-                    champ, n1)
+        call getvid('AFFE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
         zk8(jcham+iocc-1) = champ(1:8)
         call dismoi('F', 'NOM_MAILLA', champ, 'CHAMP', ibid,&
                     noma, ier)
@@ -220,8 +213,7 @@ subroutine crtype()
                         cbid, rbid, k8b, numini, 1,&
                         nbtrou)
             if (typres .eq. 'MODE_MECA') then
-                call getvis('AFFE', 'NUME_MODE', iocc, iarg, 1,&
-                            nume, n0)
+                call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
                 if (n0 .ne. 0) then
                     j = 0
                     do 100 i = 1, numini
@@ -273,32 +265,28 @@ subroutine crtype()
             call rssepa(resu, numini, modele, materi, carele,&
                         excit)
 !
-            call getvtx('AFFE', 'NOM_CAS', iocc, iarg, 1,&
-                        acces, n0)
+            call getvtx('AFFE', 'NOM_CAS', iocc=iocc, scal=acces, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'NOM_CAS', numini,&
                             0, iad, k8b)
                 zk16(iad) = acces
             endif
 !
-            call getvis('AFFE', 'NUME_MODE', iocc, iarg, 1,&
-                        nume, n0)
+            call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'NUME_MODE', numini,&
                             0, iad, k8b)
                 zi(iad) = nume
             endif
 !
-            call getvtx('AFFE', 'TYPE_MODE', iocc, iarg, 1,&
-                        typmod, n0)
+            call getvtx('AFFE', 'TYPE_MODE', iocc=iocc, scal=typmod, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'TYPE_MODE', numini,&
                             0, iad, k8b)
                 zk8(iad) = typmod
             endif
 !
-            call getvr8('AFFE', 'FREQ', iocc, iarg, 1,&
-                        freq, n0)
+            call getvr8('AFFE', 'FREQ', iocc=iocc, scal=freq, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'FREQ', numini,&
                             0, iad, k8b)
@@ -311,10 +299,8 @@ subroutine crtype()
         nis = 0
         nfr = 0
         nbinst = 0
-        call getvr8('AFFE', 'INST', iocc, iarg, 0,&
-                    rbid, nis)
-        call getvr8('AFFE', 'FREQ', iocc, iarg, 0,&
-                    rbid, nfr)
+        call getvr8('AFFE', 'INST', iocc=iocc, nbval=0, nbret=nis)
+        call getvr8('AFFE', 'FREQ', iocc=iocc, nbval=0, nbret=nfr)
         if (nis .ne. 0) then
             typabs = 'INST'
             nbinst = -nis
@@ -327,12 +313,10 @@ subroutine crtype()
         if ((nis.ne.0) .or. (nfr.ne.0)) then
             call wkvect(lcpt, 'V V I', nbinst, jcpt)
             call wkvect(linst, 'V V R', nbinst, jinst)
-            call getvr8('AFFE', typabs, iocc, iarg, nbinst,&
-                        zr(jinst), n1)
-            call getvr8('AFFE', 'PRECISION', iocc, iarg, 1,&
-                        prec, ibid)
-            call getvtx('AFFE', 'CRITERE', iocc, iarg, 1,&
-                        criter, ibid)
+            call getvr8('AFFE', typabs, iocc=iocc, nbval=nbinst, vect=zr(jinst),&
+                        nbret=n1)
+            call getvr8('AFFE', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
+            call getvtx('AFFE', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
             call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
                         cbid, rbid, k8b, nbv, 1,&
                         ibid)
@@ -359,10 +343,8 @@ subroutine crtype()
 !           MOT CLE LIST_INST/LIST_FREQ PRESENT :
             n1 = 0
             n4 = 0
-            call getvid('AFFE', 'LIST_INST', iocc, iarg, 1,&
-                        listr8, n1)
-            call getvid('AFFE', 'LIST_FREQ', iocc, iarg, 1,&
-                        listr8, n4)
+            call getvid('AFFE', 'LIST_INST', iocc=iocc, scal=listr8, nbret=n1)
+            call getvid('AFFE', 'LIST_FREQ', iocc=iocc, scal=listr8, nbret=n4)
             if (n1 .ne. 0) then
                 typabs = 'INST'
             endif
@@ -370,19 +352,15 @@ subroutine crtype()
                 typabs = 'FREQ'
             endif
 !
-            call getvr8('AFFE', 'PRECISION', iocc, iarg, 1,&
-                        prec, ibid)
-            call getvtx('AFFE', 'CRITERE', iocc, iarg, 1,&
-                        criter, ibid)
+            call getvr8('AFFE', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
+            call getvtx('AFFE', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
             call jelira(listr8//'.VALE', 'LONMAX', nbval)
 !
             nbinst = nbval
             numini = 1
             numfin = nbinst
-            call getvis('AFFE', 'NUME_INIT', iocc, iarg, 1,&
-                        numini, n2)
-            call getvis('AFFE', 'NUME_FIN', iocc, iarg, 1,&
-                        numfin, n3)
+            call getvis('AFFE', 'NUME_INIT', iocc=iocc, scal=numini, nbret=n2)
+            call getvis('AFFE', 'NUME_FIN', iocc=iocc, scal=numfin, nbret=n3)
             if (numfin .gt. nbval) numfin = nbval
             if (n2 .ne. 0 .and. n3 .ne. 0) then
                 if (numfin .lt. numini) then
@@ -578,41 +556,47 @@ subroutine crtype()
 80  continue
 !
 !     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
-    if (     typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' & 
-        .or. typres(1:10).eq. 'DYNA_TRANS') then
+    if (typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' .or. typres(1:10)&
+        .eq. 'DYNA_TRANS') then
         matric(1) = ' '
         matric(2) = ' '
         matric(3) = ' '
-        numedd    = ' '
-        call getvid(' ', 'MATR_RIGI', 0, iarg, 1, matr, n1)
+        numedd = ' '
+        call getvid(' ', 'MATR_RIGI', scal=matr, nbret=n1)
         if (n1 .eq. 1) then
-            call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid, numedd, ier)
+            call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid,&
+                        numedd, ier)
             matric(1) = matr
         else
-            call getvid(' ', 'MATR_MASS', 0, iarg, 1, matr, n1)
+            call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
             if (n1 .eq. 1) then
-                call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid, numedd, ier)
+                call dismoi('F', 'NOM_NUME_DDL', matr, 'MATR_ASSE', ibid,&
+                            numedd, ier)
             endif
         endif
-        call getvid(' ', 'MATR_MASS', 0, iarg, 1, matr, n1)
+        call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
         if (n1 .eq. 1) then
             matric(2) = matr
         endif
 !       If no numbering information could be found, try to recuperate the information from
 !       the fields composing the sd_resultat
         if (numedd .eq. ' ') then
-            call getvid('AFFE', 'CHAM_GD', 1, iarg, 1, champ, ier)
-            call dismoi('F', 'PROF_CHNO', champ, 'CHAMP', ibid, profch, ier)
-            call refdaj('F', resu19, -1, profch, 'DYNAMIQUE', matric, ier)
+            call getvid('AFFE', 'CHAM_GD', iocc=1, scal=champ, nbret=ier)
+            call dismoi('F', 'PROF_CHNO', champ, 'CHAMP', ibid,&
+                        profch, ier)
+            call refdaj('F', resu19, -1, profch, 'DYNAMIQUE',&
+                        matric, ier)
         else
-            call refdaj('F', resu19, -1, numedd, 'DYNAMIQUE', matric, ier)
+            call refdaj('F', resu19, -1, numedd, 'DYNAMIQUE',&
+                        matric, ier)
         endif
     endif
 !
-    if ( typres .eq. 'EVOL_NOLI' .or. typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_THER' ) then
-        call lrcomm(resu, typres, nboini, materi, carele, modele)
+    if (typres .eq. 'EVOL_NOLI' .or. typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_THER') then
+        call lrcomm(resu, typres, nboini, materi, carele,&
+                    modele)
     endif
-
+!
 !
     call jedetr('&&CRTYPE.CHAMPS')
     call jedema()

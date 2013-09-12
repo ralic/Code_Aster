@@ -31,11 +31,8 @@ subroutine op0018()
 !       - L AFFECTATION D ELEMENTS FINIS SUR UNE MAILLE AU MOINS
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/adalig.h"
 #include "asterfort/ajlipa.h"
 #include "asterfort/assert.h"
@@ -46,6 +43,8 @@ subroutine op0018()
 #include "asterfort/crevge.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/initel.h"
@@ -69,6 +68,7 @@ subroutine op0018()
 #include "asterfort/u2mess.h"
 #include "asterfort/w18imp.h"
 #include "asterfort/wkvect.h"
+!
 !
     integer :: vali(4), d1, d2
     character(len=4) :: kioc, cdim
@@ -114,15 +114,14 @@ subroutine op0018()
 !
 ! - MAILLAGE
 !
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                noma, nbv)
-    if (nbv .eq. 0) call getvid(' ', 'GRILLE', 1, iarg, 1,&
-                                noma, nbv)
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=nbv)
+    if (nbv .eq. 0) then
+        call getvid(' ', 'GRILLE', scal=noma, nbret=nbv)
+    endif
 !
 ! - VERIF
 !
-    call getvtx(' ', 'VERIF', 1, iarg, 2,&
-                verif, nbv)
+    call getvtx(' ', 'VERIF', nbval=2, vect=verif, nbret=nbv)
 !
 ! - GRANDEURS CARACTERISTIQUES
 !
@@ -145,8 +144,7 @@ subroutine op0018()
     do 10 ioc = 1, nboc
         call codent(ioc, 'G', kioc)
 !
-        call getvtx('AFFE', 'TOUT', ioc, iarg, 0,&
-                    k8b, nto)
+        call getvtx('AFFE', 'TOUT', iocc=ioc, nbval=0, nbret=nto)
         call getvem(noma, 'GROUP_MA', 'AFFE', 'GROUP_MA', ioc,&
                     iarg, 0, k8b, ngm)
         call getvem(noma, 'GROUP_NO', 'AFFE', 'GROUP_NO', ioc,&
@@ -183,11 +181,9 @@ subroutine op0018()
 !
 !       -- RECHERCHE DU PHENOMENE :
     if (nboc .gt. 0) then
-        call getvtx('AFFE', 'PHENOMENE', 1, iarg, 1,&
-                    phenom, ibid)
+        call getvtx('AFFE', 'PHENOMENE', iocc=1, scal=phenom, nbret=ibid)
     else if (nboc2.gt.0) then
-        call getvtx('AFFE_SOUS_STRUC', 'PHENOMENE', 1, iarg, 1,&
-                    phenom, ibid)
+        call getvtx('AFFE_SOUS_STRUC', 'PHENOMENE', iocc=1, scal=phenom, nbret=ibid)
     endif
     call jeecra(nomu//'.MODELE    .LGRF', 'DOCU', cval=phenom(1:4))
 !
@@ -232,10 +228,9 @@ subroutine op0018()
 !
 !
     do 110 ioc = 1, nboc
-        call getvtx('AFFE', 'PHENOMENE', ioc, iarg, 1,&
-                    phenom, nph)
-        call getvtx('AFFE', 'MODELISATION', ioc, iarg, 10,&
-                    lmodel, nmo)
+        call getvtx('AFFE', 'PHENOMENE', iocc=ioc, scal=phenom, nbret=nph)
+        call getvtx('AFFE', 'MODELISATION', iocc=ioc, nbval=10, vect=lmodel,&
+                    nbret=nmo)
         ASSERT(nmo.gt.0)
         d2=-99
         call jerazo(tmpdef, ndmax, 1)
@@ -243,8 +238,7 @@ subroutine op0018()
         call jerazo('&&OP0018.MAILLE3', nbmail, 1)
 !
 !       -- RAPPEL : LES MOTS CLES TOUT,GROUP_MA,... S'EXCLUENT
-        call getvtx('AFFE', 'TOUT', ioc, iarg, 0,&
-                    k8b, nto)
+        call getvtx('AFFE', 'TOUT', iocc=ioc, nbval=0, nbret=nto)
         call getvem(noma, 'GROUP_MA', 'AFFE', 'GROUP_MA', ioc,&
                     iarg, ndmax, zk24(jdef), ngm)
         call getvem(noma, 'MAILLE', 'AFFE', 'MAILLE', ioc,&
@@ -635,8 +629,7 @@ subroutine op0018()
 !     -- ON VERIFIE QUE LA GEOMETRIE DES MAILLES
 !        N'EST PAS TROP CHAHUTEE :
 !     ---------------------------------------------------
-    call getvtx(' ', 'VERI_JACOBIEN', 1, iarg, 1,&
-                verif, nbv)
+    call getvtx(' ', 'VERI_JACOBIEN', scal=verif(1), nbret=nbv)
     if (verif(1) .eq. 'OUI') call calcul('C', 'VERI_JACOBIEN', ligrel, 1, noma//'.COORDO',&
                                          'PGEOMER', 1, '&&OP0018.CODRET', 'PCODRET', 'V',&
                                          'OUI')

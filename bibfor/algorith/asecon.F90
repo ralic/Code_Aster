@@ -1,13 +1,12 @@
 subroutine asecon(nomsy, neq, mome, resu)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -26,6 +25,7 @@ subroutine asecon(nomsy, neq, mome, resu)
 #include "asterfort/u2mesg.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+!
     integer :: neq
     character(len=16) :: nomsy
     character(len=*) :: mome, resu
@@ -75,8 +75,7 @@ subroutine asecon(nomsy, neq, mome, resu)
     call jemarq()
     call getfac('COMB_DEPL_APPUI', nboc)
     call getfac('DEPL_MULT_APPUI', ndep)
-    call getvid(' ', 'MODE_MECA', 1, iarg, 1,&
-                meca, ibid)
+    call getvid(' ', 'MODE_MECA', scal=meca, nbret=ibid)
 !
     call wkvect('&&ASECON.CUMUL', 'V V R', neq, jcum)
     call wkvect('&&ASECON.AUX', 'V V R', neq*nboc, jaux)
@@ -149,8 +148,7 @@ subroutine asecon(nomsy, neq, mome, resu)
         do 20 icas = 1, ncas
             nucas = zi(jcas+icas-1)
             do 40 idep = 1, ndep
-                call getvis('DEPL_MULT_APPUI', 'NUME_CAS', idep, iarg, 1,&
-                            nume, ibid)
+                call getvis('DEPL_MULT_APPUI', 'NUME_CAS', iocc=idep, scal=nume, nbret=ibid)
                 if (nume .eq. nucas) then
                     knum = 'N       '
                     call codent(nucas, 'D0', knum(2:8))

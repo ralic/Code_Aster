@@ -24,15 +24,14 @@ subroutine op0164()
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/irmifr.h"
 #include "asterfort/irmitm.h"
@@ -48,6 +47,7 @@ subroutine op0164()
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
+!
     integer :: n1, n2, n4, jscde
     real(kind=8) :: partr, parti, inst
     character(len=8) :: k8b, nomres, basemo, numgen
@@ -77,25 +77,17 @@ subroutine op0164()
 !
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 !
-    call getvis(' ', 'UNITE_RESU_IMPE', 1, iarg, 1,&
-                ifmis, n1)
-    call getvr8(' ', 'FREQ_EXTR', 1, iarg, 1,&
-                freq, nfr)
-    call getvr8(' ', 'INST_EXTR', 1, iarg, 1,&
-                inst, nit)
-    call getvid(' ', 'BASE', 1, iarg, 1,&
-                basemo, n4)
-    call getvid(' ', 'NUME_DDL_GENE', 1, iarg, 1,&
-                numgen, n2)
-    call getvtx(' ', 'TYPE', 1, iarg, 1,&
-                typbin, n2)
+    call getvis(' ', 'UNITE_RESU_IMPE', scal=ifmis, nbret=n1)
+    call getvr8(' ', 'FREQ_EXTR', scal=freq, nbret=nfr)
+    call getvr8(' ', 'INST_EXTR', scal=inst, nbret=nit)
+    call getvid(' ', 'BASE', scal=basemo, nbret=n4)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n2)
+    call getvtx(' ', 'TYPE', scal=typbin, nbret=n2)
     lissf = .false.
-    call getvtx(' ', 'ISSF', 1, iarg, 1,&
-                tissf, n2)
+    call getvtx(' ', 'ISSF', scal=tissf, nbret=n2)
     if (tissf(1:3) .eq. 'OUI') lissf = .true.
     lsym = .false.
-    call getvtx(' ', 'SYME', 1, iarg, 1,&
-                tsym, n2)
+    call getvtx(' ', 'SYME', scal=tsym, nbret=n2)
     if (tsym(1:3) .eq. 'OUI') lsym = .true.
 !
     call gettco(basemo, typbas)

@@ -29,9 +29,9 @@ subroutine op0002()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -55,8 +55,7 @@ subroutine op0002()
     call wkvect(chpro, 'G V K24', 6, jpro)
     zk24(jpro) = 'CONSTANT'
     zk24(jpro+1) = 'LIN LIN '
-    call getvtx(' ', 'NOM_RESU', 0, iarg, 1,&
-                nomres, nbval)
+    call getvtx(' ', 'NOM_RESU', scal=nomres, nbret=nbval)
     zk24(jpro+2) = 'TOUTPARA'
     zk24(jpro+3) = nomres(1:8)
     zk24(jpro+4) = 'CC      '
@@ -67,8 +66,7 @@ subroutine op0002()
     chval = nomfon//'.VALE'
     call wkvect(chval, 'G V R', 2, lval)
     zr(lval) = 1.0d0
-    call getvr8(' ', 'VALE', 0, iarg, 1,&
-                zr(lval+1), nbval)
+    call getvr8(' ', 'VALE', scal=zr(lval+1), nbret=nbval)
 !
 !     --- LIBERATIONS ---
 !

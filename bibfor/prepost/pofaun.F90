@@ -1,5 +1,5 @@
 subroutine pofaun()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,12 +23,8 @@ subroutine pofaun()
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/fgcoke.h"
 #include "asterfort/fgcorr.h"
 #include "asterfort/fgcota.h"
@@ -44,6 +40,9 @@ subroutine pofaun()
 #include "asterfort/fgrccm.h"
 #include "asterfort/fgrmax.h"
 #include "asterfort/fgtahe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -58,6 +57,7 @@ subroutine pofaun()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc, ifonc, nbpts, i, n1, nbpapf, ifm, niv, nbp
     integer :: ivke, ivcorr, ivpoin, nbpoin, ivmax, ivmin, ivtrav
     integer :: ibid, intrav, ivpics, nbpics, nbcycl, nbpar, ivdome
@@ -98,10 +98,8 @@ subroutine pofaun()
 !     --- RECUPERATION DE LA FONCTION CHARGEMENT ---
 !
     nomfon = ' '
-    call getvid('HISTOIRE', 'SIGM', 1, iarg, 1,&
-                nomfon, n1)
-    call getvid('HISTOIRE', 'EPSI', 1, iarg, 1,&
-                nomfon, n1)
+    call getvid('HISTOIRE', 'SIGM', iocc=1, scal=nomfon, nbret=n1)
+    call getvid('HISTOIRE', 'EPSI', iocc=1, scal=nomfon, nbret=n1)
     if (n1 .ne. 0) fateps = .true.
 !
     fvale = nomfon//'           .VALE'
@@ -123,16 +121,14 @@ subroutine pofaun()
     rampl = 1
     call getfac('COEF_MULT', nbocc)
     if (nbocc .ne. 0) then
-        call getvr8('COEF_MULT', 'KT', 1, iarg, 1,&
-                    rampl, n1)
+        call getvr8('COEF_MULT', 'KT', iocc=1, scal=rampl, nbret=n1)
 !        CALL FGAMPL(RAMPL,NBPTS,ZR(NBPTS+IFONC))
 !
     endif
 !
 !     --- EXTRACTION DES PICS DE LA FONCTION DE CHARGEMENT ---
 !
-    call getvr8(' ', 'DELTA_OSCI', 1, iarg, 1,&
-                pseuil, n1)
+    call getvr8(' ', 'DELTA_OSCI', scal=pseuil, nbret=n1)
     call fgpeak(nomfon, pseuil, rampl, nbpoin, zr(ivpoin))
 !
 !     --- IMPRESSION DES PICS EXTRAITS DE LA FONCTION ----
@@ -148,8 +144,7 @@ subroutine pofaun()
 !
 !     ---RECUPERATION DE LA LOI DE COMPTAGES DE CYCLES
 !
-    call getvtx(' ', 'COMPTAGE', 1, iarg, 1,&
-                methd1, n1)
+    call getvtx(' ', 'COMPTAGE', scal=methd1, nbret=n1)
     if (methd1(9:12) .ne. '_MAX') then
         method = methd1(1:8)
     else
@@ -191,10 +186,8 @@ subroutine pofaun()
 !     --- CORRECTION ELASTO-PLASTIQUE ---
 !
     kcorre = ' '
-    call getvtx(' ', 'CORR_KE', 1, iarg, 1,&
-                kcorre, n1)
-    call getvid(' ', 'MATER', 1, iarg, 1,&
-                nommat, n1)
+    call getvtx(' ', 'CORR_KE', scal=kcorre, nbret=n1)
+    call getvid(' ', 'MATER', scal=nommat, nbret=n1)
     if (kcorre .eq. 'RCCM') then
         nomres(1) = 'N_KE'
         nomres(2) = 'M_KE'
@@ -212,8 +205,7 @@ subroutine pofaun()
 !     --- CALCUL DU DOMMAGE ELEMENTAIRE ---
 !
     kdomm = ' '
-    call getvtx(' ', 'DOMMAGE', 1, iarg, 1,&
-                kdomm, n1)
+    call getvtx(' ', 'DOMMAGE', scal=kdomm, nbret=n1)
 !
     call wkvect('&&POFAUN.DOMM.ELEM', 'V V R', nbcycl, ivdome)
 !
@@ -222,8 +214,7 @@ subroutine pofaun()
     if (kdomm .eq. 'WOHLER') then
 !        ---CORRECTION DE HAIG (GOODMANN OU GERBER)
         kcorre = ' '
-        call getvtx(' ', 'CORR_SIGM_MOYE', 1, iarg, 1,&
-                    kcorre, n1)
+        call getvtx(' ', 'CORR_SIGM_MOYE', scal=kcorre, nbret=n1)
         if (kcorre .ne. ' ') then
             nomres(1) = 'SU'
             nbpar = 0
@@ -305,8 +296,7 @@ subroutine pofaun()
 !     --- CALCUL DU DOMMAGE TOTAL ---
 !
     txcum = ' '
-    call getvtx(' ', 'CUMUL', 1, iarg, 1,&
-                txcum, n1)
+    call getvtx(' ', 'CUMUL', scal=txcum, nbret=n1)
     if (txcum .eq. 'LINEAIRE') then
 !
         call fgdomm(nbcycl, zr(ivdome), rdomm)

@@ -18,9 +18,6 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 ! person_in_charge: patrick.massin at edf.fr
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
@@ -28,6 +25,8 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -36,6 +35,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 #include "asterfort/jeveuo.h"
 #include "asterfort/padist.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, fiss
     integer :: ndim, nfiss
     character(len=19) :: cnslj
@@ -67,10 +67,10 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     cnsln= '&&XINLSJ.CNSLN'
     cnslt= '&&XINLSJ.CNSLT'
     call wkvect('&&XINLSJ.FISS', 'V V K8', nfiss, jfiss)
-    call getvid('JONCTION', 'FISSURE', 1, iarg, nfiss,&
-                zk8(jfiss), ibid)
-    call getvr8('JONCTION', 'POINT', 1, iarg, 3,&
-                point, ibid)
+    call getvid('JONCTION', 'FISSURE', iocc=1, nbval=nfiss, vect=zk8(jfiss),&
+                nbret=ibid)
+    call getvr8('JONCTION', 'POINT', iocc=1, nbval=3, vect=point,&
+                nbret=ibid)
 !
 ! --- ACCES AU MAILLAGE
 !

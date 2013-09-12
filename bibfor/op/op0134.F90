@@ -1,5 +1,5 @@
 subroutine op0134()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,14 +22,14 @@ subroutine op0134()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcfo.h"
 #include "asterfort/calcna.h"
 #include "asterfort/foattr.h"
 #include "asterfort/foimpr.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -44,7 +44,7 @@ subroutine op0134()
     integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, lnova, nbnova, lprol
     real(kind=8) :: rval
     logical :: compl
-    character(len=8) ::  nopn, nopf
+    character(len=8) :: nopn, nopf
     character(len=16) :: nomcmd, typres
     character(len=19) :: nomfon, nomfin, listp, listf, typco
     character(len=24) :: noparp, noparf, valk(3)
@@ -58,22 +58,18 @@ subroutine op0134()
 !
     call getres(nomfon, typres, nomcmd)
 !
-    call getvid(' ', 'FONCTION', 1, iarg, 1,&
-                nomfin, n1)
+    call getvid(' ', 'FONCTION', scal=nomfin, nbret=n1)
     call gettco(nomfin, typco)
 !
 ! --- LISTE DES VALEURS DU PARAMETRE
 !
-    call getvr8(' ', 'VALE_PARA', 1, iarg, 0,&
-                rval, n1)
+    call getvr8(' ', 'VALE_PARA', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         nbvalp = -n1
         call wkvect('&&OP0134.VALP', 'V V R', nbvalp, lvalp)
-        call getvr8(' ', 'VALE_PARA', 1, iarg, nbvalp,&
-                    zr(lvalp), n1)
+        call getvr8(' ', 'VALE_PARA', nbval=nbvalp, vect=zr(lvalp), nbret=n1)
     else
-        call getvid(' ', 'LIST_PARA', 1, iarg, 1,&
-                    listp, n1)
+        call getvid(' ', 'LIST_PARA', scal=listp, nbret=n1)
         call jeveuo(listp//'.VALE', 'L', lvalp)
         call jelira(listp//'.VALE', 'LONUTI', nbvalp)
     endif
@@ -120,16 +116,13 @@ subroutine op0134()
 ! ------------------------------------------------------------------
 !                 NAPPE
 ! ------------------------------------------------------------------
-        call getvr8(' ', 'VALE_PARA_FONC', 1, iarg, 0,&
-                    rval, n1)
+        call getvr8(' ', 'VALE_PARA_FONC', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbvalf = -n1
             call wkvect('&&OP0134.VALF', 'V V R', nbvalf, lvalf)
-            call getvr8(' ', 'VALE_PARA_FONC', 1, iarg, nbvalf,&
-                        zr(lvalf), n1)
+            call getvr8(' ', 'VALE_PARA_FONC', nbval=nbvalf, vect=zr(lvalf), nbret=n1)
         else
-            call getvid(' ', 'LIST_PARA_FONC', 1, iarg, 1,&
-                        listf, n1)
+            call getvid(' ', 'LIST_PARA_FONC', scal=listf, nbret=n1)
             if (n1 .ne. 0) then
                 call jeveuo(listf//'.VALE', 'L', lvalf)
                 call jelira(listf//'.VALE', 'LONUTI', nbvalf)
@@ -139,8 +132,7 @@ subroutine op0134()
         endif
 !
 !        VERIFIER LA COHERENCE DES NOMS DES PARAMETRES
-        call getvtx(' ', 'NOM_PARA', 1, iarg, 1,&
-                    nopn, n1)
+        call getvtx(' ', 'NOM_PARA', scal=nopn, nbret=n1)
 !        FACULTATIF
         if (n1 .ne. 0 .and. nopn .ne. noparp) then
             valk(1) = nomfin
@@ -153,8 +145,7 @@ subroutine op0134()
             endif
         endif
 !
-        call getvtx(' ', 'NOM_PARA_FONC', 1, iarg, 1,&
-                    nopf, n1)
+        call getvtx(' ', 'NOM_PARA_FONC', scal=nopf, nbret=n1)
 !        OBLIGATOIRE
         ASSERT(n1.eq.1)
         if (nopf .ne. noparf) then

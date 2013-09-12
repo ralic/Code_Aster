@@ -1,7 +1,7 @@
 subroutine utreno(mcf, mcs, iocc, ma, noeud)
-    implicit   none
-#include "asterc/getvtx.h"
+    implicit none
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/utnono.h"
     integer :: iocc
@@ -49,18 +49,15 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud)
         mcgrno = 'GROUP_NO_EXTR'
     endif
 !
-    call getvtx(mcf, mcnoeu, iocc, iarg, 0,&
-                k8b, n1)
+    call getvtx(mcf, mcnoeu, iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         call getvem(ma, 'NOEUD', mcf, mcnoeu, iocc,&
                     iarg, 1, noeud, n1)
     endif
 !
-    call getvtx(mcf, mcgrno, iocc, iarg, 0,&
-                k8b, n1)
+    call getvtx(mcf, mcgrno, iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvtx(mcf, mcgrno, iocc, iarg, 1,&
-                    nogno, n1)
+        call getvtx(mcf, mcgrno, iocc=iocc, scal=nogno, nbret=n1)
         call utnono(' ', ma, 'NOEUD', nogno, noeud,&
                     iret)
         if (iret .eq. 10) then

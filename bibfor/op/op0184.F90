@@ -1,5 +1,5 @@
 subroutine op0184()
-    implicit   none
+    implicit none
 !     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,15 +24,14 @@ subroutine op0184()
 !
 !     -----------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -61,6 +60,7 @@ subroutine op0184()
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
+!
 !
     integer :: nbv, nbmapl, ibid, ntout, nnume, np, iul
     integer :: vali(2)
@@ -93,12 +93,10 @@ subroutine op0184()
 !
 !     LECTURE DE LA NUMEROTATION DES DDL
 !
-    call getvid(' ', 'MAIL_PLEXUS', 0, iarg, 1,&
-                nomapl, nbv)
+    call getvid(' ', 'MAIL_PLEXUS', scal=nomapl, nbret=nbv)
     call dismoi('F', 'NB_MA_MAILLA', nomapl, 'MAILLAGE', nbmapl,&
                 k8b, ier)
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                nomast, nbv)
+    call getvid(' ', 'MAILLAGE', scal=nomast, nbret=nbv)
     call dismoi('F', 'NB_NO_MAILLA', nomast, 'MAILLAGE', nbnoas,&
                 k8b, ier)
     call wkvect('&&OP0184.NOAST_MAPLEX', 'V V I', nbnoas, jnoma)
@@ -155,36 +153,29 @@ subroutine op0184()
 !     --- QUELS SONT LES INSTANTS A RELIRE ---
 !
     nbordr = 0
-    call getvtx(' ', 'TOUT_ORDRE', 0, iarg, 1,&
-                k8b, ntout)
+    call getvtx(' ', 'TOUT_ORDRE', scal=k8b, nbret=ntout)
     if (ntout .eq. 0) then
-        call getvis(' ', 'NUME_ORDRE', 0, iarg, 0,&
-                    ibid, nnume)
+        call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nnume)
         if (nnume .ne. 0) then
             nbordr = -nnume
             call wkvect('&&OP0184.NUME_ORDRE', 'V V I', nbordr, jnume)
-            call getvis(' ', 'NUME_ORDRE', 0, iarg, nbordr,&
-                        zi(jnume), n1)
+            call getvis(' ', 'NUME_ORDRE', nbval=nbordr, vect=zi(jnume), nbret=n1)
         else
-            call getvid(' ', 'LIST_ORDRE', 0, iarg, 1,&
-                        listr8, nnu)
+            call getvid(' ', 'LIST_ORDRE', scal=listr8, nbret=nnu)
             if (nnu .ne. 0) then
                 call jeveuo(listr8//'.VALE', 'L', jnume)
                 call jelira(listr8//'.VALE', 'LONMAX', nbordr)
             else
-                call getvid(' ', 'LIST_INST', 0, iarg, 1,&
-                            listr8, nlinst)
+                call getvid(' ', 'LIST_INST', scal=listr8, nbret=nlinst)
                 if (nlinst .ne. 0) then
                     call jeveuo(listr8//'.VALE', 'L', jlist)
                     call jelira(listr8//'.VALE', 'LONMAX', nbordr)
                 else
-                    call getvr8(' ', 'INST', 0, iarg, 0,&
-                                rbid, nis)
+                    call getvr8(' ', 'INST', nbval=0, nbret=nis)
                     if (nis .ne. 0) then
                         nbinst = -nis
                         call wkvect('&&OP0184.INST', 'V V R', nbordr, jlist)
-                        call getvr8(' ', 'INST', 0, iarg, nbordr,&
-                                    zr(jlist), n1)
+                        call getvr8(' ', 'INST', nbval=nbordr, vect=zr(jlist), nbret=n1)
                     endif
                 endif
             endif
@@ -193,15 +184,12 @@ subroutine op0184()
 !
 !     --- LECTURE DE LA PRECISION ET DU CRITERE ---
 !
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, np)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
 !
 !     FORMAT IDEAS OBLIGATOIRE
 !
-    call getvtx(' ', 'FORMAT', 0, iarg, 1,&
-                form, nfor)
+    call getvtx(' ', 'FORMAT', scal=form, nbret=nfor)
 !
     if (form .ne. 'IDEAS') then
         call u2mess('F', 'UTILITAI3_11')
@@ -228,8 +216,7 @@ subroutine op0184()
 !
 !     CREATION DU CHAMP DE PRESSION
 !
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                nomo, nbv)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=nbv)
     chgeom = nomast//'.COORDO'
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
@@ -250,8 +237,7 @@ subroutine op0184()
     capres = '&&OP0184.PRES'
     call wkvect(capres, 'V V R', nbmapl, jpres)
 !
-    call getvis(' ', 'UNITE', 0, iarg, 1,&
-                ifsig, l)
+    call getvis(' ', 'UNITE', scal=ifsig, nbret=l)
     k16nom = ' '
     if (ulisop ( ifsig, k16nom ) .eq. 0) then
         call ulopen(ifsig, ' ', ' ', 'NEW', 'O')

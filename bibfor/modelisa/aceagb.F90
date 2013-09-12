@@ -1,15 +1,14 @@
 subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/alcart.h"
 #include "asterfort/angvx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -22,6 +21,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 #include "asterfort/normev.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, nbocc
     logical :: locamb
     character(len=8) :: nomu, noma
@@ -103,10 +103,8 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     if (iret .eq. 0) then
 ! ------ DOIT-ON CREER LA CARTE DE FONCTION
         do 100 ioc = 1, nbocc
-            call getvid('GRILLE', 'SECTION_FO', ioc, iarg, 1,&
-                        slf, n1f)
-            call getvid('GRILLE', 'EXCENTREMENT_FO', ioc, iarg, 1,&
-                        ezf, n3f)
+            call getvid('GRILLE', 'SECTION_FO', iocc=ioc, scal=slf, nbret=n1f)
+            call getvid('GRILLE', 'EXCENTREMENT_FO', iocc=ioc, scal=ezf, nbret=n3f)
             if (n1f+n3f .ne. 0) then
                 lcartf = .true.
                 goto 110
@@ -148,20 +146,15 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
         call getvem(noma, 'MAILLE', 'GRILLE', 'MAILLE', ioc,&
                     iarg, lmax, zk8(jdls2), nm)
 !
-        call getvr8('GRILLE', 'SECTION', ioc, iarg, 1,&
-                    sl, n1)
-        call getvid('GRILLE', 'SECTION_FO', ioc, iarg, 1,&
-                    slf, n1f)
-        call getvr8('GRILLE', 'ANGL_REP', ioc, iarg, 2,&
-                    ang, n2)
-        call getvr8('GRILLE', 'EXCENTREMENT', ioc, iarg, 1,&
-                    ez, n3)
-        call getvid('GRILLE', 'EXCENTREMENT_FO', ioc, iarg, 1,&
-                    ezf, n3f)
-        call getvr8('GRILLE', 'COEF_RIGI_DRZ', ioc, iarg, 1,&
-                    ctr, n4)
-        call getvr8('GRILLE', 'AXE', ioc, iarg, 3,&
-                    axey, n5)
+        call getvr8('GRILLE', 'SECTION', iocc=ioc, scal=sl, nbret=n1)
+        call getvid('GRILLE', 'SECTION_FO', iocc=ioc, scal=slf, nbret=n1f)
+        call getvr8('GRILLE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang,&
+                    nbret=n2)
+        call getvr8('GRILLE', 'EXCENTREMENT', iocc=ioc, scal=ez, nbret=n3)
+        call getvid('GRILLE', 'EXCENTREMENT_FO', iocc=ioc, scal=ezf, nbret=n3f)
+        call getvr8('GRILLE', 'COEF_RIGI_DRZ', iocc=ioc, scal=ctr, nbret=n4)
+        call getvr8('GRILLE', 'AXE', iocc=ioc, nbval=3, vect=axey,&
+                    nbret=n5)
 !
         zr(jdvc ) = sl
         zr(jdvc+1) = ang(1)

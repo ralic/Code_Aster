@@ -24,10 +24,10 @@ subroutine op0102()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/calvci.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -59,22 +59,18 @@ subroutine op0102()
 !
 ! --- INST DE CALCUL
 !
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                inst, ibid)
+    call getvr8(' ', 'INST', scal=inst, nbret=ibid)
 !
 ! --- NUME_DDL
 !
-    call getvid(' ', 'NUME_DDL', 0, iarg, 1,&
-                nomnu, inume)
+    call getvid(' ', 'NUME_DDL', scal=nomnu, nbret=inume)
 !
 ! --- CHAR_CINE
 !
-    call getvid(' ', 'CHAR_CINE', 0, iarg, 0,&
-                k8bid, nbchci)
+    call getvid(' ', 'CHAR_CINE', nbval=0, nbret=nbchci)
     nbchci = -nbchci
     call wkvect(vcine//'.&&LICHCIN', 'V V K8', nbchci, ilichc)
-    call getvid(' ', 'CHAR_CINE', 0, iarg, nbchci,&
-                zk8(ilichc), ibid)
+    call getvid(' ', 'CHAR_CINE', nbval=nbchci, vect=zk8(ilichc), nbret=ibid)
 !
 ! --- VERIF SUR LES GRANDEURS  GD ASSOCIEE AU NUME_DDL, GD ASSOCIEE AU
 !     VCINE

@@ -15,14 +15,13 @@ subroutine orilgm(noma)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -39,6 +38,7 @@ subroutine orilgm(noma)
 #include "asterfort/u2mess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
 ! ======================================================================
 !
@@ -55,7 +55,7 @@ subroutine orilgm(noma)
 !
 ! ========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer ::  ifm, niv, nbf1, nbf2, nbf3, iret, jjj, jgro, n1, n2
+    integer :: ifm, niv, nbf1, nbf2, nbf3, iret, jjj, jgro, n1, n2
     integer :: n3, noeud, iocc, ngv, ier, ndim, igr, ng, nbmail, norit, norien
     integer :: ntrait, jjv, nbmavo, jmavo, nbmato, ima, nbmavi, jmavi, k, jgv
     integer :: ncf3, ngs, jgs, nbmasu, jmasu
@@ -124,8 +124,7 @@ subroutine orilgm(noma)
                     iarg, ng, zk24(jjj), ng)
 !        PRESENCE DE GROUP_MA_SURF ?
 !        ---------------------------
-        call getvtx(mofa2d, 'GROUP_MA_SURF', iocc, iarg, 0,&
-                    k8b, ngs)
+        call getvtx(mofa2d, 'GROUP_MA_SURF', iocc=iocc, nbval=0, nbret=ngs)
         if (ngs .ne. 0) then
             ngs = -ngs
             call wkvect('&&ORILGM.WORK2', 'V V K24', ngs, jgs)
@@ -195,8 +194,7 @@ subroutine orilgm(noma)
 !
 !        PRESENCE DE GROUP_MA_VOLU ?
 !        ---------------------------
-        call getvtx(mofa3d, 'GROUP_MA_VOLU', iocc, iarg, 0,&
-                    k8b, ngv)
+        call getvtx(mofa3d, 'GROUP_MA_VOLU', iocc=iocc, nbval=0, nbret=ngv)
         if (ngv .ne. 0) then
             ngv = -ngv
             call wkvect('&&ORILGM.WORK2', 'V V K24', ngv, jgv)
@@ -259,22 +257,18 @@ subroutine orilgm(noma)
 !
     do 300 iocc = 1, nbf3
         orivec = .false.
-        call getvr8(mofb3d, 'VECT_NORM', iocc, iarg, 0,&
-                    vect, n1)
+        call getvr8(mofb3d, 'VECT_NORM', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             orivec = .true.
-            call getvr8(mofb3d, 'VECT_NORM', iocc, iarg, -n1,&
-                        vect, n1)
-            call getvtx(mofb3d, 'NOEUD', iocc, iarg, 0,&
-                        k8b, n2)
+            call getvr8(mofb3d, 'VECT_NORM', iocc=iocc, nbval=-n1, vect=vect,&
+                        nbret=n1)
+            call getvtx(mofb3d, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
             if (n2 .ne. 0) then
-                call getvtx(mofb3d, 'NOEUD', iocc, iarg, 1,&
-                            nnoeud, n2)
+                call getvtx(mofb3d, 'NOEUD', iocc=iocc, scal=nnoeud, nbret=n2)
                 call jenonu(jexnom(nomnoe, nnoeud), noeud)
                 if (noeud .eq. 0) call u2mesk('F', 'MODELISA5_97', 1, nnoeud)
             else
-                call getvtx(mofb3d, 'GROUP_NO', iocc, iarg, 1,&
-                            nnoeud, n3)
+                call getvtx(mofb3d, 'GROUP_NO', iocc=iocc, scal=nnoeud, nbret=n3)
                 call utnono(' ', noma, 'NOEUD', nnoeud, k8b,&
                             ier)
                 if (ier .eq. 10) then
@@ -325,22 +319,18 @@ subroutine orilgm(noma)
 !
     do 400 iocc = 1, ncf3
         orivec = .false.
-        call getvr8(mofc3d, 'VECT_TANG', iocc, iarg, 0,&
-                    vect, n1)
+        call getvr8(mofc3d, 'VECT_TANG', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             orivec = .true.
-            call getvr8(mofc3d, 'VECT_TANG', iocc, iarg, -n1,&
-                        vect, n1)
-            call getvtx(mofc3d, 'NOEUD', iocc, iarg, 0,&
-                        k8b, n2)
+            call getvr8(mofc3d, 'VECT_TANG', iocc=iocc, nbval=-n1, vect=vect,&
+                        nbret=n1)
+            call getvtx(mofc3d, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
             if (n2 .ne. 0) then
-                call getvtx(mofc3d, 'NOEUD', iocc, iarg, 1,&
-                            nnoeud, n2)
+                call getvtx(mofc3d, 'NOEUD', iocc=iocc, scal=nnoeud, nbret=n2)
                 call jenonu(jexnom(nomnoe, nnoeud), noeud)
                 if (noeud .eq. 0) call u2mesk('F', 'MODELISA5_97', 1, nnoeud)
             else
-                call getvtx(mofc3d, 'GROUP_NO', iocc, iarg, 1,&
-                            nnoeud, n3)
+                call getvtx(mofc3d, 'GROUP_NO', iocc=iocc, scal=nnoeud, nbret=n3)
                 call utnono(' ', noma, 'NOEUD', nnoeud, k8b,&
                             ier)
                 if (ier .eq. 10) then

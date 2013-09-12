@@ -21,14 +21,13 @@ subroutine op5902(nboccp, compor)
 !     COMMANDE:  DEFI_COMPOR MOT-CLE POLYCRISTAL
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/eulnau.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -36,8 +35,9 @@ subroutine op5902(nboccp, compor)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesr.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: compor, mono, chaine
-    character(len=16) ::  loca, noms(6), nomvar(100)
+    character(len=16) :: loca, noms(6), nomvar(100)
     real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt
     integer :: iocc, nloc, nboccp, ndl, nda, itbint, nums(3)
     integer :: i, nmono, imk, imi, ipk, ipi, ipr, iorie, irra
@@ -50,16 +50,13 @@ subroutine op5902(nboccp, compor)
 !
     call jemarq()
 !
-    call getvtx(' ', 'LOCALISATION', 0, iarg, 1,&
-                loca, nloc)
+    call getvtx(' ', 'LOCALISATION', scal=loca, nbret=nloc)
     dl=0.d0
     da=0.d0
     nvloc=0
     if (loca .eq. 'BETA') then
-        call getvr8(' ', 'DL', 0, iarg, 1,&
-                    dl, ndl)
-        call getvr8(' ', 'DA', 0, iarg, 1,&
-                    da, nda)
+        call getvr8(' ', 'DL', scal=dl, nbret=ndl)
+        call getvr8(' ', 'DA', scal=da, nbret=nda)
         nvloc=2
     endif
 !
@@ -89,8 +86,7 @@ subroutine op5902(nboccp, compor)
     ncprk=0
 !
     do 13 iocc = 1, nboccp
-        call getvid('POLYCRISTAL', 'MONOCRISTAL', iocc, iarg, 1,&
-                    mono, nmono)
+        call getvid('POLYCRISTAL', 'MONOCRISTAL', iocc=iocc, scal=mono, nbret=nmono)
 !        On ne stocke pas les doublons
         imono=indik8(zk8(ipl),mono,1,nbmono)
         if (imono .eq. 0) then
@@ -169,13 +165,12 @@ subroutine op5902(nboccp, compor)
 !        ON ENLEVE LES TAUS ET LES 3 VARIABLES INTERNES P,SCLIV,INDIC
         nvit=nvit+zi(imi-1+7)+3-zi(imi-1+8)
         jcpri=jcpri+3
-        call getvr8('POLYCRISTAL', 'FRAC_VOL', iocc, iarg, 1,&
-                    fvol, ifvol)
-        call getvr8('POLYCRISTAL', 'ANGL_REP', iocc, iarg, 3,&
-                    orie, iorie)
+        call getvr8('POLYCRISTAL', 'FRAC_VOL', iocc=iocc, scal=fvol, nbret=ifvol)
+        call getvr8('POLYCRISTAL', 'ANGL_REP', iocc=iocc, nbval=3, vect=orie,&
+                    nbret=iorie)
         if (iorie .eq. 0) then
-            call getvr8('POLYCRISTAL', 'ANGL_EULER', iocc, iarg, 3,&
-                        euler, iorie)
+            call getvr8('POLYCRISTAL', 'ANGL_EULER', iocc=iocc, nbval=3, vect=euler,&
+                        nbret=iorie)
             call eulnau(euler, orie)
         endif
         fvolt=fvolt+fvol

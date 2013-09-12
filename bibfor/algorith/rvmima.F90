@@ -1,11 +1,10 @@
 subroutine rvmima(nomres, iocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -21,6 +20,7 @@ subroutine rvmima(nomres, iocc)
 #include "asterfort/tbexip.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     integer :: iocc
     character(len=*) :: nomres
 ! ----------------------------------------------------------------------
@@ -76,15 +76,13 @@ subroutine rvmima(nomres, iocc)
     knum = '&&RVMIMA.NUME_ORDRE'
     nbc = 0
 !
-    call getvtx('ACTION', 'INTITULE', iocc, iarg, 1,&
-                intitu, n1)
+    call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
     nopara(1) = 'INTITULE'
     valk(1) = intitu
 !
 ! ----- TRAITEMENT DU CHAMP_GD  -----
 !
-    call getvid('ACTION', 'CHAM_GD', iocc, iarg, 1,&
-                champ, n1)
+    call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
     if (n1 .ne. 0) then
         valk(2) = champ
         call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ibid,&
@@ -161,15 +159,12 @@ subroutine rvmima(nomres, iocc)
 !
 ! ----- TRAITEMENT DU RESULTAT  -----
 !
-    call getvid('ACTION', 'RESULTAT', iocc, iarg, 1,&
-                resu, n1)
+    call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=resu, nbret=n1)
     nopara(2) = 'RESU'
     valk(2) = resu
 !
-    call getvr8('ACTION', 'PRECISION', iocc, iarg, 1,&
-                prec, np)
-    call getvtx('ACTION', 'CRITERE', iocc, iarg, 1,&
-                crit, nc)
+    call getvr8('ACTION', 'PRECISION', iocc=iocc, scal=prec, nbret=np)
+    call getvtx('ACTION', 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
     call rsutnu(resu, 'ACTION', iocc, knum, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
@@ -180,8 +175,7 @@ subroutine rvmima(nomres, iocc)
     endif
     call jeveuo(knum, 'L', jordr)
 !
-    call getvtx('ACTION', 'NOM_CHAM', iocc, iarg, 1,&
-                nomcha, nbc)
+    call getvtx('ACTION', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=nbc)
     nopara(3) = 'NOM_CHAM'
     valk(3) = nomcha
 !

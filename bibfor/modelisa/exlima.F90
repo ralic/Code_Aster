@@ -1,12 +1,12 @@
 subroutine exlima(motfaz, iocc, base, modelz, ligrel)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnoms2.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedetr.h"
@@ -70,13 +70,11 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 !     ------------------------------------------------------
     if (motfac .ne. ' ') then
         if (getexm(motfac,'TOUT') .eq. 1) then
-            call getvtx(motfac, 'TOUT', iocc, iarg, 0,&
-                        k8bid, n1)
+            call getvtx(motfac, 'TOUT', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) goto 9998
         endif
     else
-        call getvtx(' ', 'TOUT', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvtx(' ', 'TOUT', nbval=0, nbret=n1)
         if (n1 .ne. 0) goto 9998
     endif
 !

@@ -17,11 +17,11 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/irmit2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -120,11 +120,9 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
 !
 ! --- TOLERANCES
 !
-    call getvr8(motfac, 'PRECISION', 1, iarg, 1,&
-                prec, iret)
+    call getvr8(motfac, 'PRECISION', iocc=1, scal=prec, nbret=iret)
     if (iret .eq. 0) prec = 1.d-6
-    call getvtx(motfac, 'CRITERE', 1, iarg, 1,&
-                criter, iret)
+    call getvtx(motfac, 'CRITERE', iocc=1, scal=criter, nbret=iret)
     if (iret .eq. 0) criter = 'RELATIF'
 !
 ! --- RECUPERATION RESULTATS

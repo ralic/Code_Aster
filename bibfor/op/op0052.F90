@@ -22,19 +22,19 @@ subroutine op0052()
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
-#include "asterfort/onerrf.h"
 #include "asterfort/ccbcop.h"
 #include "asterfort/ccchut.h"
 #include "asterfort/cclopu.h"
 #include "asterfort/ccvrpu.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/onerrf.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/u2mesk.h"
@@ -66,13 +66,10 @@ subroutine op0052()
 !
 !     RECUPERATION DES NOMS DES SD RESULTAT
     call getres(resuc1, concep, nomcmd)
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resuco, n0)
+    call getvid(' ', 'RESULTAT', scal=resuco, nbret=n0)
 !
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
     call rsutnu(resuco, ' ', 0, lisord, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then

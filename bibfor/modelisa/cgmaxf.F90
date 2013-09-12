@@ -1,10 +1,9 @@
 subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gmgnre.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -15,6 +14,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xtmafi.h"
+!
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 ! ======================================================================
@@ -72,14 +72,12 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     lismai = lismaz
 !
 ! --  RECUPERATION DU TYPE DE MAILLE XFEM :
-    call getvtx(motfac, 'TYPE_GROUP', iocc, iarg, 1,&
-                typgrp, ibid)
-    call getvid(motfac, 'FISSURE', iocc, iarg, 0,&
-                k8bid, nfiss)
+    call getvtx(motfac, 'TYPE_GROUP', iocc=iocc, scal=typgrp, nbret=ibid)
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
     nfiss = -nfiss
     call wkvect('&&CGMAXF.FISS', 'V V K8', nfiss, jfiss)
-    call getvid(motfac, 'FISSURE', iocc, iarg, nfiss,&
-                zk8(jfiss), ibid)
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=zk8(jfiss),&
+                nbret=ibid)
 !
 !
 ! --- TYPE DE MAILLE = 'HEAVISIDE', 'CRACKTIP' OU  'MIXTE'

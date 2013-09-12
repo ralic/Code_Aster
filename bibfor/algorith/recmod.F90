@@ -1,11 +1,10 @@
 subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                   grdmod)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -16,6 +15,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
 #include "asterfort/rsorac.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmode, nbamor
     real(kind=8) :: bande(2)
     character(len=8) :: modmec, tymmec
@@ -62,8 +62,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
 !
 !-----MODES RETENUS
 !
-    call getvid('BASE_MODALE', 'MODE_MECA', 1, iarg, 1,&
-                modmec, ibid)
+    call getvid('BASE_MODALE', 'MODE_MECA', iocc=1, scal=modmec, nbret=ibid)
 !
     call rsorac(modmec, 'LONUTI', ibid, rbid, k8b,&
                 c16b, 0.0d0, k8b, nbmod1, 1,&
@@ -73,12 +72,11 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                 c16b, 0.0d0, k8b, zi(lnumor), nbmod1,&
                 nbtrou)
 !
-    call getvis('BASE_MODALE', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, nbmode)
+    call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=0, nbret=nbmode)
     nbmode = -nbmode
     if (nbmode .eq. 0) then
-        call getvr8('BASE_MODALE', 'BANDE', 1, iarg, 2,&
-                    bande, ibid)
+        call getvr8('BASE_MODALE', 'BANDE', iocc=1, nbval=2, vect=bande,&
+                    nbret=ibid)
         call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmod1, ilmode)
         do 126 im = 1, nbmod1
             imod1 = zi(lnumor+im-1)
@@ -95,8 +93,8 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
         endif
     else
         call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmode, ilmode)
-        call getvis('BASE_MODALE', 'NUME_ORDRE', 1, iarg, nbmode,&
-                    zi(ilmode), ibid)
+        call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbmode, vect=zi(ilmode),&
+                    nbret=ibid)
         do 232 im = 1, nbmode
             if (zi(ilmode-1+im) .gt. nbmod1) then
                 call u2mess('F', 'ALGORITH10_32')
@@ -107,17 +105,15 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
 !----AMORTISSEMENTS MODAUX RETENUS
 !
     call wkvect('&&OP0131.LISTEAMOR', 'V V R8', nbmode, ilamor)
-    call getvr8('BASE_MODALE', 'AMOR_REDUIT', 1, iarg, 0,&
-                rbid, na1)
+    call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na1)
     nbamor = - ( na1 )
     if (nbamor .ne. 0) then
         if (na1 .ne. 0) then
-            call getvr8('BASE_MODALE', 'AMOR_REDUIT', 1, iarg, nbmode,&
-                        zr(ilamor), na1)
+            call getvr8('BASE_MODALE', 'AMOR_REDUIT', iocc=1, nbval=nbmode, vect=zr(ilamor),&
+                        nbret=na1)
         endif
     else
-        call getvr8('BASE_MODALE', 'AMOR_UNIF', 1, iarg, 1,&
-                    amunif, ibid)
+        call getvr8('BASE_MODALE', 'AMOR_UNIF', iocc=1, scal=amunif, nbret=ibid)
         do 127 im = 1, nbmode
             zr(ilamor-1+im) = amunif
 127      continue

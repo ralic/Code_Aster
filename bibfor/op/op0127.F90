@@ -29,9 +29,9 @@ subroutine op0127()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/crnslv.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jevtbl.h"
 #include "asterfort/nugeel.h"
@@ -54,14 +54,11 @@ subroutine op0127()
 !
 !-----RECUPERATION DU MODELE AMONT
 !
-    call getvid(' ', 'MODELE_GENE', 1, iarg, 1,&
-                modgen, ibid1)
-    call getvid(' ', 'BASE', 1, iarg, 1,&
-                modmec, ibid2)
+    call getvid(' ', 'MODELE_GENE', scal=modgen, nbret=ibid1)
+    call getvid(' ', 'BASE', scal=modmec, nbret=ibid2)
 !
 !
-    call getvtx(' ', 'STOCKAGE', 0, iarg, 1,&
-                typrof, ibid2)
+    call getvtx(' ', 'STOCKAGE', scal=typrof, nbret=ibid2)
 !
     call getres(nomres, nomcon, nomope)
     nugene=nomres
@@ -69,8 +66,7 @@ subroutine op0127()
 !
 !-----NUMEROTATION DES DEGRES DE LIBERTE
     if (ibid1 .ne. 0) then
-        call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                    option, iopt)
+        call getvtx(' ', 'METHODE', scal=option, nbret=iopt)
         if (option .eq. 'CLASSIQU') then
             call numgen(nugene, modgen)
             call strmag(nugene, typrof)

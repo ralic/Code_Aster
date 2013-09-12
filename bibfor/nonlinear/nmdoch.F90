@@ -18,16 +18,16 @@ subroutine nmdoch(lischa, iexcit, excit)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -130,8 +130,7 @@ subroutine nmdoch(lischa, iexcit, excit)
         endif
         if (nexci .gt. 0) then
             do 20 iexc = 1, nexci
-                call getvid('EXCIT', 'CHARGE', iexc, iarg, 1,&
-                            k24bid, nocc)
+                call getvid('EXCIT', 'CHARGE', iocc=iexc, scal=k24bid, nbret=nocc)
 !
 ! --- GLUTE POUR LE CAS DEFI_CABLE_BP: MELANGE
 ! --- CINEMATIQUE/NEUMANN
@@ -226,11 +225,9 @@ subroutine nmdoch(lischa, iexcit, excit)
             if (iexcit .eq. 1) then
                 indic = indic + 1
 30              continue
-                call getvid('EXCIT', 'CHARGE', indic, iarg, 0,&
-                            nomcha, n1)
+                call getvid('EXCIT', 'CHARGE', iocc=indic, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
-                    call getvid('EXCIT', 'CHARGE', indic, iarg, 1,&
-                                nomcha, n1)
+                    call getvid('EXCIT', 'CHARGE', iocc=indic, scal=nomcha, nbret=n1)
                     do 131,ichd = 1,nchar
                     if (nomcha .eq. zk8(jlisdb+ichd-1)) then
                         call u2mesk('E', 'CHARGES_1', 1, nomcha)
@@ -255,8 +252,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 if (nomcmd .eq. 'DYNA_LINE_TRAN' .or. nomcmd .eq. 'DYNA_LINE_HARM') then
                     typcha='FIXE'
                 else
-                    call getvtx('EXCIT', 'TYPE_CHARGE', indic, iarg, 1,&
-                                typcha, n1)
+                    call getvtx('EXCIT', 'TYPE_CHARGE', iocc=indic, scal=typcha, nbret=n1)
                 endif
             else
                 typcha = 'FIXE_CST'
@@ -514,8 +510,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 !
         if (nomcmd .ne. 'LIRE_RESU') then
             if (nomcmd .eq. 'STAT_NON_LINE') then
-                call getvtx('PILOTAGE', 'TYPE', 1, iarg, 1,&
-                            k24bid, n1)
+                call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=k24bid, nbret=n1)
                 if (n1 .ne. 0 .and. npilo .eq. 0) then
                     call u2mess('F', 'CHARGES_39')
                 endif
@@ -530,7 +525,7 @@ subroutine nmdoch(lischa, iexcit, excit)
         if (npilo .gt. 1) then
             call lisexp(lischa)
         endif
-        
+!
     endif
     call jedetr(lisdbl)
     call jedema()

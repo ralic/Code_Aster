@@ -1,9 +1,7 @@
 subroutine afvarc(chmat, nomail, nomode)
-    implicit   none
+    implicit none
+#include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8nnem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/afva01.h"
@@ -12,6 +10,9 @@ subroutine afvarc(chmat, nomail, nomode)
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -47,7 +48,6 @@ subroutine afvarc(chmat, nomail, nomode)
 !     TRAITEMENT DE AFFE_MATERIAU / AFFE_VARC
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
     complex(kind=8) :: cbid
 !
     integer :: n1, n2, nboccv, nbma, k, ncmp
@@ -83,8 +83,7 @@ subroutine afvarc(chmat, nomail, nomode)
 !     1. CALCUL DE NBVARC, NBCVRC, LIVARC ET LIMFAC
 !        ALLOCATION DES 5 OBJETS : .CVRCNOM .CVRCVARC ...
 !     -------------------------------------------------
-    call getvtx(' ', 'LIST_NOM_VARC', 1, iarg, nmxfac,&
-                livarc, n1)
+    call getvtx(' ', 'LIST_NOM_VARC', nbval=nmxfac, vect=livarc, nbret=n1)
     ASSERT(n1.gt.0)
     nbfac=n1
     do 1,ifac=1,nbfac
@@ -96,13 +95,11 @@ subroutine afvarc(chmat, nomail, nomode)
     do 20,ifac = 1,nbfac
     mofac=motfac(ifac)
     ASSERT(mofac(1:5).eq.'VARC_')
-    call getvtx(mofac, 'NOM_VARC', 1, iarg, 1,&
-                novarc, n1)
+    call getvtx(mofac, 'NOM_VARC', iocc=1, scal=novarc, nbret=n1)
     ASSERT(n1.eq.1)
     itrou=0
     do 21,iocc = 1,nboccv
-    call getvtx('AFFE_VARC', 'NOM_VARC', iocc, iarg, 1,&
-                novar1, n1)
+    call getvtx('AFFE_VARC', 'NOM_VARC', iocc=iocc, scal=novar1, nbret=n1)
     ASSERT(n1.eq.1)
     if (novar1 .eq. novarc) itrou=1
 21  continue
@@ -110,8 +107,7 @@ subroutine afvarc(chmat, nomail, nomode)
     nbvarc = nbvarc + 1
     livarc(nbvarc) = novarc
     limfac(nbvarc) = mofac
-    call getvtx(mofac, 'CMP_GD', 1, iarg, 0,&
-                k8b, ncmp)
+    call getvtx(mofac, 'CMP_GD', iocc=1, nbval=0, nbret=ncmp)
     ASSERT(ncmp.lt.0)
     ncmp=-ncmp
     nbcvrc=nbcvrc+ncmp
@@ -159,15 +155,13 @@ subroutine afvarc(chmat, nomail, nomode)
 !
 !       2.1 REPLISSAGE DE .CVRCNOM, .CVRCVARC, ...
 !       ------------------------------------------------------------
-    call getvtx(mofac, 'NOM_VARC', 1, iarg, 1,&
-                novarc, n1)
-    call getvtx(mofac, 'GRANDEUR', 1, iarg, 1,&
-                nomgd, n1)
-    call getvtx(mofac, 'CMP_GD', 1, iarg, nmxcmp,&
-                zk8(jcvcmp+nbcvrc), ncmp)
+    call getvtx(mofac, 'NOM_VARC', iocc=1, scal=novarc, nbret=n1)
+    call getvtx(mofac, 'GRANDEUR', iocc=1, scal=nomgd, nbret=n1)
+    call getvtx(mofac, 'CMP_GD', iocc=1, nbval=nmxcmp, vect=zk8(jcvcmp+nbcvrc),&
+                nbret=ncmp)
     ASSERT(ncmp.ge.1)
-    call getvtx(mofac, 'CMP_VARC', 1, iarg, nmxcmp,&
-                zk8(jcvnom+nbcvrc), n1)
+    call getvtx(mofac, 'CMP_VARC', iocc=1, nbval=nmxcmp, vect=zk8(jcvnom+nbcvrc),&
+                nbret=n1)
     ASSERT(n1.eq.ncmp)
     do 49,k = 1,ncmp
     zk8(jcvvar+nbcvrc-1+k) = novarc
@@ -175,15 +169,14 @@ subroutine afvarc(chmat, nomail, nomode)
 49  continue
 !
     do 80,iocc = 1,nboccv
-    call getvtx('AFFE_VARC', 'NOM_VARC', iocc, iarg, 1,&
-                novar2, n1)
+    call getvtx('AFFE_VARC', 'NOM_VARC', iocc=iocc, scal=novar2, nbret=n1)
     ASSERT(n1.eq.1)
     if (novar2 .ne. novarc) goto 80
 !
 !         2.2 CALCUL DE  VRCREF(:) :
 !         ---------------------------
-    call getvr8('AFFE_VARC', 'VALE_REF', iocc, iarg, nmxcmp,&
-                vrcref, n1)
+    call getvr8('AFFE_VARC', 'VALE_REF', iocc=iocc, nbval=nmxcmp, vect=vrcref,&
+                nbret=n1)
 !         -- ON NE PEUT DONNER QU'UNE SEULE VALEUR (TEMP OU SECH) :
     nref=n1
     ASSERT(n1.eq.0 .or. n1.eq.1)
@@ -205,10 +198,8 @@ subroutine afvarc(chmat, nomail, nomode)
     nomcha = ' '
     errgd = .false.
 !
-    call getvid('AFFE_VARC', 'CHAM_GD', iocc, iarg, 1,&
-                chamgd, n1)
-    call getvid('AFFE_VARC', 'EVOL', iocc, iarg, 1,&
-                evol, n2)
+    call getvid('AFFE_VARC', 'CHAM_GD', iocc=iocc, scal=chamgd, nbret=n1)
+    call getvid('AFFE_VARC', 'EVOL', iocc=iocc, scal=evol, nbret=n2)
     ASSERT(n1+n2.le.1)
     if (n1 .eq. 1) then
         evouch='CHAMP'
@@ -229,8 +220,7 @@ subroutine afvarc(chmat, nomail, nomode)
         if (nomgd2 .ne. nomgd) errgd = .true.
 !
     else if (evouch.eq.'EVOL') then
-        call getvtx('AFFE_VARC', 'NOM_CHAM', iocc, iarg, 1,&
-                    nomcha, n1)
+        call getvtx('AFFE_VARC', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=n1)
 !           -- NOM_CHAMP (VALEUR PAR DEFAUT) :
         if (n1 .eq. 0) then
             if (novarc .eq. 'SECH') then
@@ -251,12 +241,9 @@ subroutine afvarc(chmat, nomail, nomode)
                 nomcha=novarc
             endif
         endif
-        call getvtx('AFFE_VARC', 'PROL_GAUCHE', iocc, iarg, 1,&
-                    prolga, n1)
-        call getvtx('AFFE_VARC', 'PROL_DROITE', iocc, iarg, 1,&
-                    proldr, n1)
-        call getvid('AFFE_VARC', 'FONC_INST', iocc, iarg, 1,&
-                    finst, n1)
+        call getvtx('AFFE_VARC', 'PROL_GAUCHE', iocc=iocc, scal=prolga, nbret=n1)
+        call getvtx('AFFE_VARC', 'PROL_DROITE', iocc=iocc, scal=proldr, nbret=n1)
+        call getvid('AFFE_VARC', 'FONC_INST', iocc=iocc, scal=finst, nbret=n1)
         if (n1 .eq. 0) finst=' '
 !           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
     endif
@@ -309,12 +296,9 @@ subroutine afvarc(chmat, nomail, nomode)
 70  continue
 !
 !         TOUT='OUI' PAR DEFAUT :
-    call getvtx('AFFE_VARC', 'TOUT', iocc, iarg, 1,&
-                k8b, nbtou)
-    call getvtx('AFFE_VARC', 'GROUP_MA', iocc, iarg, 0,&
-                k8b, nbgm1)
-    call getvtx('AFFE_VARC', 'MAILLE', iocc, iarg, 0,&
-                k8b, nbm1)
+    call getvtx('AFFE_VARC', 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
+    call getvtx('AFFE_VARC', 'GROUP_MA', iocc=iocc, nbval=0, nbret=nbgm1)
+    call getvtx('AFFE_VARC', 'MAILLE', iocc=iocc, nbval=0, nbret=nbm1)
     if (nbgm1+nbm1 .eq. 0) nbtou=1
 !
     if (nbtou .ne. 0) then

@@ -2,13 +2,12 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                   geom2, lraff)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elraca.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
 #include "asterfort/inslri.h"
 #include "asterfort/jedema.h"
@@ -24,6 +23,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres, cortr3
     integer :: nbtm
     parameter    (nbtm=6)
@@ -142,7 +142,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     call wkvect(corres//'.PJEF_NB', 'V V I', nno2, i2conb)
     call wkvect(corres//'.PJEF_M1', 'V V I', nno2, i2com1)
     ideca2=0
-    do ino2=1,nno2
+    do ino2 = 1, nno2
 !       ITR : TRIA3 ASSOCIE A INO2
         itr=zi(i1cotr-1+ino2)
         if (itr .eq. 0) goto 10
@@ -167,7 +167,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     call wkvect(corres//'.PJEF_CO', 'V V R', 3*nno2, i2coco)
     ideca1=0
     ideca2=0
-    do ino2=1,nno2
+    do ino2 = 1, nno2
 !       ITR : TRIA3 ASSOCIE A INO2
         itr = zi(i1cotr-1+ino2)
         if (itr .eq. 0) goto 20
@@ -196,18 +196,18 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !
         if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
 !
-            do kk=1,3
+            do kk = 1, 3
                 x1 = crrefe(ndim*(kk-1)+1)
                 x2 = crrefe(ndim*(kk-1)+2)
                 ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
                 eta = eta + zr(i1cocf-1+ideca1+kk)*x2
             enddo
 !
-        elseif (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or.&
+            elseif (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or.&
                                      elrefa.eq.'QU9' ) then
             if (nuno2 .eq. zi(iatr3+4*(itr-1)+2)) then
 !         -- SI 1ER TRIANGLE :
-                do kk=1,3
+                do kk = 1, 3
                     x1 = crrefe(ndim*(cnquad(kk,1)-1)+1)
                     x2 = crrefe(ndim*(cnquad(kk,1)-1)+2)
                     ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
@@ -215,7 +215,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                 enddo
             else
 !         -- SI 2EME TRIANGLE :
-                do kk=1,3
+                do kk = 1, 3
                     x1 = crrefe(ndim*(cnquad(kk,2)-1)+1)
                     x2 = crrefe(ndim*(cnquad(kk,2)-1)+2)
                     ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
@@ -233,9 +233,9 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
         if (lraff) then
 !         -- ON ESSAYE D'AMELIORER LA PRECISION DE XR1(*)
 !            EN UTILISANT REEREG :
-            do ino=1,nbno
+            do ino = 1, nbno
                 nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
-                do kdim=1,ndim
+                do kdim = 1, ndim
                     cooele(ndim*(ino-1)+kdim)=geom1(3*(nuno-1)+kdim)
                 enddo
             enddo
@@ -266,7 +266,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !       2.2.2 :
 !       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT XR3
         call elrfvf(elrefa, xr3, 27, ff, nno)
-        do ino=1,nbno
+        do ino = 1, nbno
             nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
             zr(i2cocf-1+ideca2+ino) = ff(ino)
@@ -283,11 +283,10 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
         alarme='OUI'
         call getres(k16bid, k16bid, nomcmd)
         if (nomcmd .eq. 'PROJ_CHAMP') then
-            call getvtx(' ', 'ALARME', 1, iarg, 1,&
-                        alarme, ibid)
+            call getvtx(' ', 'ALARME', scal=alarme, nbret=ibid)
         endif
         if (alarme .eq. 'OUI') then
-            do ii=1,nbnod
+            do ii = 1, nbnod
                 ino2m = tino2m(ii)
                 call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
                 umessr(1) = geom2(3*(ino2m-1)+1)

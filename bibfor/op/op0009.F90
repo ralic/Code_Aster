@@ -22,15 +22,14 @@ subroutine op0009()
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -58,6 +57,7 @@ subroutine op0009()
 #include "asterfort/redetr.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: time, tps(6)
     character(len=1) :: base
     character(len=4) :: ctyp, kmpic
@@ -85,29 +85,22 @@ subroutine op0009()
     rigi8 = ' '
     mass8 = ' '
     sigg = ' '
-    call getvid(' ', 'RIGI_MECA', 0, iarg, 1,&
-                rigi8, n1)
+    call getvid(' ', 'RIGI_MECA', scal=rigi8, nbret=n1)
     rigiel=rigi8
-    call getvid(' ', 'MASS_MECA', 0, iarg, 1,&
-                mass8, n2)
+    call getvid(' ', 'MASS_MECA', scal=mass8, nbret=n2)
     massel=mass8
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                suropt, n3)
-    call getvid(' ', 'SIEF_ELGA', 0, iarg, 1,&
-                sigg, n4)
+    call getvtx(' ', 'OPTION', scal=suropt, nbret=n3)
+    call getvid(' ', 'SIEF_ELGA', scal=sigg, nbret=n4)
     if (n4 .ne. 0) then
         call chpver('F', sigg, 'ELGA', 'SIEF_R', ier)
     endif
-    call getvid(' ', 'STRX_ELGA', 0, iarg, 1,&
-                strx, n7)
+    call getvid(' ', 'STRX_ELGA', scal=strx, nbret=n7)
     if (n7 .ne. 0) then
         call chpver('F', strx, 'ELGA', 'STRX_R', ier)
     endif
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                time, n5)
+    call getvr8(' ', 'INST', scal=time, nbret=n5)
     if (n5 .eq. 0) time = 0.d0
-    call getvis(' ', 'MODE_FOURIER', 0, iarg, 1,&
-                nh, n6)
+    call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n6)
     kcha = '&&OP0009.CHARGES'
     call medome(modele, mate, cara, kcha, ncha,&
                 ctyp, blan8)
@@ -207,13 +200,11 @@ subroutine op0009()
 !
 !     -- CREATION DE L'OBJET .RECC :
 !     ------------------------------
-    call getvid(' ', 'CHARGE', 0, iarg, 0,&
-                kbid, n1)
+    call getvid(' ', 'CHARGE', nbval=0, nbret=n1)
     if (n1 .lt. 0) then
         nchar=-n1
         call wkvect(matel//'.RECC', 'G V K8', nchar, jrecc)
-        call getvid(' ', 'CHARGE', 0, iarg, nchar,&
-                    zk8(jrecc), n1)
+        call getvid(' ', 'CHARGE', nbval=nchar, vect=zk8(jrecc), nbret=n1)
     endif
 !
 !

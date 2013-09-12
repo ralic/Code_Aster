@@ -1,10 +1,10 @@
 subroutine cbsour(char, noma, ligrmo, ndim, fonree)
-    implicit   none
+    implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/casour.h"
 #include "asterfort/copisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/u2mess.h"
     integer :: ndim
     character(len=4) :: fonree
@@ -44,8 +44,7 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
     nbcalc = 0
     if (fonree .eq. 'REEL') then
         do 10 iocc = 1, nbfac
-            call getvid(motfac, 'SOUR_CALCULEE', iocc, iarg, 1,&
-                        chsour, icalc)
+            call getvid(motfac, 'SOUR_CALCULEE', iocc=iocc, scal=chsour, nbret=icalc)
             nbcalc = nbcalc + icalc
 10      continue
         if (nbcalc .gt. 1) then
@@ -56,11 +55,9 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
     endif
 !
     if (fonree .eq. 'REEL') then
-        call getvr8(motfac, 'SOUR', 1, iarg, 1,&
-                    r8bid, isour)
+        call getvr8(motfac, 'SOUR', iocc=1, scal=r8bid, nbret=isour)
     else
-        call getvid(motfac, 'SOUR', 1, iarg, 1,&
-                    scalc, isour)
+        call getvid(motfac, 'SOUR', iocc=1, scal=scalc, nbret=isour)
     endif
     if (isour .eq. 1) then
         call casour(char, ligrmo, noma, ndim, fonree)

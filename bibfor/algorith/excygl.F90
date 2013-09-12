@@ -37,9 +37,9 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
 !
 !
 #include "jeveux.h"
-#include "asterc/getvis.h"
 #include "asterfort/cynupl.h"
 #include "asterfort/exphgl.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -85,11 +85,9 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
     endif
 !
 !-----RECUPERATION DU NOMBRE DE SECTEURS--------------------------------
-    call getvis('CYCLIQUE', 'NB_SECTEUR', 1, iarg, 1,&
-                nbsec, ibid)
+    call getvis('CYCLIQUE', 'NB_SECTEUR', iocc=1, scal=nbsec, nbret=ibid)
 !
-    call getvis('CYCLIQUE', 'NUME_DIAMETRE', 1, iarg, 1,&
-                numdia, ibid)
+    call getvis('CYCLIQUE', 'NUME_DIAMETRE', iocc=1, scal=numdia, nbret=ibid)
 !
 !-----RECUPERATION NOMBRE NUMERO D'ORDRE UTILISES POUR CALCUL CYCLIQUE--
     call rsutnu(modcyc, ' ', 0, '&&EXCYGL.NUME', nbmcal,&

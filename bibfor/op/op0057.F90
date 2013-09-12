@@ -25,16 +25,15 @@ subroutine op0057()
 !       ET GLRC_DM A PARTIR DES PROPRIETES DU BETON ET DES COUCHES
 !       D ACIER
 !-----------------------------------------------------------------------
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dglrda.h"
 #include "asterfort/dglrdm.h"
+#include "asterfort/getvtx.h"
     integer :: ibid
     character(len=16) :: relat
     integer :: iarg
 !
-    call getvtx(' ', 'RELATION', 1, iarg, 1,&
-                relat, ibid)
+    call getvtx(' ', 'RELATION', scal=relat, nbret=ibid)
 !
     if (relat(1:11) .eq. 'GLRC_DAMAGE') then
         call dglrda()

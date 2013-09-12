@@ -3,8 +3,8 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
     implicit none
 !
 #include "asterc/getexm.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/u2mess.h"
 !
 ! ======================================================================
@@ -25,7 +25,7 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 ! ======================================================================
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in)  :: iocc
+    integer, intent(in) :: iocc
     character(len=*), intent(in) :: keyword_z
     real(kind=8), intent(out) :: vect_r(3)
 !
@@ -51,20 +51,19 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 ! --------------------------------------------------------------------------------------------------
 !
     keyword = keyword_z
-    vect_r(1)  = 0.d0
-    vect_r(2)  = 0.d0
-    vect_r(3)  = 0.d0
+    vect_r(1) = 0.d0
+    vect_r(2) = 0.d0
+    vect_r(3) = 0.d0
 !
     if (getexm(keywordfact,keyword) .eq. 0) goto 99
 !
-    call getvr8(keywordfact, keyword, iocc, iarg, 0,&
-                r8dummy, val_nb)
+    call getvr8(keywordfact, keyword, iocc=iocc, nbval=0, nbret=val_nb)
     val_nb = -val_nb
-    if (val_nb.eq.0) goto 99
+    if (val_nb .eq. 0) goto 99
     ASSERT(val_nb.le.3)
-    call getvr8(keywordfact, keyword, iocc, iarg, val_nb,&
-                vect_r, ibid)
+    call getvr8(keywordfact, keyword, iocc=iocc, nbval=val_nb, vect=vect_r,&
+                nbret=ibid)
 !
- 99 continue
+99  continue
 !
 end subroutine

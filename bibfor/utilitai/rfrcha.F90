@@ -21,14 +21,14 @@ subroutine rfrcha()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/foattr.h"
 #include "asterfort/focste.h"
 #include "asterfort/foimpr.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -67,13 +67,10 @@ subroutine rfrcha()
 !
     call getres(nomfon, typcon, nomcmd)
 !
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
     intres = 'NON     '
-    call getvtx(' ', 'INTERP_NUME', 0, iarg, 1,&
-                intres, n1)
+    call getvtx(' ', 'INTERP_NUME', scal=intres, nbret=n1)
 !
     npoint = 0
     cmp = ' '
@@ -81,25 +78,18 @@ subroutine rfrcha()
     maille = ' '
     nogma = ' '
     nogno = ' '
-    call getvtx(' ', 'MAILLE', 0, iarg, 1,&
-                maille, nm)
-    call getvtx(' ', 'GROUP_MA', 0, iarg, 1,&
-                nogma, ngm)
-    call getvis(' ', 'SOUS_POINT', 0, iarg, 1,&
-                nusp, np)
+    call getvtx(' ', 'MAILLE', scal=maille, nbret=nm)
+    call getvtx(' ', 'GROUP_MA', scal=nogma, nbret=ngm)
+    call getvis(' ', 'SOUS_POINT', scal=nusp, nbret=np)
     if (np .eq. 0) nusp = 0
-    call getvis(' ', 'POINT', 0, iarg, 1,&
-                npoint, np)
-    call getvtx(' ', 'NOEUD', 0, iarg, 1,&
-                noeud, nn)
-    call getvtx(' ', 'GROUP_NO', 0, iarg, 1,&
-                nogno, ngn)
+    call getvis(' ', 'POINT', scal=npoint, nbret=np)
+    call getvtx(' ', 'NOEUD', scal=noeud, nbret=nn)
+    call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
 !
 !     -----------------------------------------------------------------
 !                      --- CAS D'UN CHAM_GD ---
 !     -----------------------------------------------------------------
-    call getvid(' ', 'CHAM_GD', 0, iarg, 1,&
-                cham19, nch)
+    call getvid(' ', 'CHAM_GD', scal=cham19, nbret=nch)
     if (nch .ne. 0) then
         call dismoi('F', 'TYPE_SUPERVIS', cham19, 'CHAMP', ibid,&
                     typcha, ie)
@@ -118,8 +108,7 @@ subroutine rfrcha()
                     call u2mesk('A', 'SOUSTRUC_87', 2, valk)
                 endif
             endif
-            call getvtx(' ', 'NOM_CMP', 0, iarg, 1,&
-                        cmp, nc)
+            call getvtx(' ', 'NOM_CMP', scal=cmp, nbret=nc)
             call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
                         iddl)
             if (inoeud .eq. 0) then

@@ -1,9 +1,7 @@
 subroutine rc36ma(nommat, noma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/carces.h"
 #include "asterfort/cescre.h"
@@ -12,6 +10,8 @@ subroutine rc36ma(nommat, noma)
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -95,8 +95,7 @@ subroutine rc36ma(nommat, noma)
     ndim = nbsitu + nbseis
 !
 !    RECUP TYPE KE
-    call getvtx(' ', 'TYPE_KE', 0, iarg, 1,&
-                typeke, nb)
+    call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
     if (typeke .eq. 'KE_MECA') then
         tke=-1.d0
     else
@@ -166,8 +165,7 @@ subroutine rc36ma(nommat, noma)
 !
     nbpa = 1
     nopa = 'TEMP'
-    call getvr8(motcl1, 'TEMP_REF_A', iocc, iarg, 1,&
-                tempa, na)
+    call getvr8(motcl1, 'TEMP_REF_A', iocc=iocc, scal=tempa, nbret=na)
 !
 ! ------ ETAT STABILISE "B"
 !        ------------------
@@ -184,8 +182,7 @@ subroutine rc36ma(nommat, noma)
 !
     nbpb = 1
     nopb = 'TEMP'
-    call getvr8(motcl1, 'TEMP_REF_B', iocc, iarg, 1,&
-                tempb, nb)
+    call getvr8(motcl1, 'TEMP_REF_B', iocc=iocc, scal=tempb, nbret=nb)
 !
     do 50 im = 1, nbmail
 !
@@ -314,8 +311,7 @@ subroutine rc36ma(nommat, noma)
 !
     nbpa = 1
     nopa = 'TEMP'
-    call getvr8(motcl2, 'TEMP_REF', iocc, iarg, 1,&
-                tempa, na)
+    call getvr8(motcl2, 'TEMP_REF', iocc=iocc, scal=tempa, nbret=na)
 !
 ! ------ ETAT STABILISE "B"
 !        ------------------
@@ -332,8 +328,7 @@ subroutine rc36ma(nommat, noma)
 !
     nbpb = 1
     nopb = 'TEMP'
-    call getvr8(motcl2, 'TEMP_REF', iocc, iarg, 1,&
-                tempb, nb)
+    call getvr8(motcl2, 'TEMP_REF', iocc=iocc, scal=tempb, nbret=nb)
 !
     do 150 im = 1, nbmail
 !

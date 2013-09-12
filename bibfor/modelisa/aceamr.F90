@@ -1,16 +1,15 @@
 subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                   ivr, ifm)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/affdis.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iunifi.h"
@@ -29,6 +28,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifm, lmax, noemaf, nbocc, ivr(*)
     character(len=8) :: noma, nomo
 !
@@ -174,8 +174,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !         CALL GETVR8('MASS_AJOU','VALE'    ,IOC,IARG,NBVAL,VALE,NVAL)
         call r8inir(nbval, 0.0d0, vale, 1)
 !         CALL GETVTX('MASS_AJOU','REPERE'  ,IOC,IARG,1,REP,NREP)
-        call getvtx('MASS_AJOU', 'GROUP_MA_POI1', ioc, iarg, 1,&
-                    nogp, ngp)
+        call getvtx('MASS_AJOU', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
 !
         do 32 i = 1, nrd
             if (rep .eq. repdis(i)) irep = i

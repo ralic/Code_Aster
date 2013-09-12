@@ -3,7 +3,7 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
                   resufi, resufr, lagr, vauc, omecor)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -301,8 +301,7 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
         else
             kmsg='A'
         endif
-        call getvtx(' ', 'TYPE_RESU', 1, ibid, 1,&
-                    typres, ibid)
+        call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=ibid)
         valk='FREQ'
         if (typres .ne. 'DYNAMIQUE') valk='CHAR_CRIT'
         call u2mesg(kmsg//'+', 'ALGELINE5_79', 1, valk, 2,&

@@ -1,8 +1,8 @@
 subroutine cgtyfi(typfis, nomfis)
     implicit none
 !
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     character(len=8) :: typfis, nomfis
@@ -40,12 +40,9 @@ subroutine cgtyfi(typfis, nomfis)
 !
     call jemarq()
 !
-    call getvid('THETA', 'THETA', 1, iarg, 1,&
-                nomfis, ithet)
-    call getvid('THETA', 'FOND_FISS', 1, iarg, 1,&
-                nomfis, ifond)
-    call getvid('THETA', 'FISSURE', 1, iarg, 1,&
-                nomfis, ifiss)
+    call getvid('THETA', 'THETA', iocc=1, scal=nomfis, nbret=ithet)
+    call getvid('THETA', 'FOND_FISS', iocc=1, scal=nomfis, nbret=ifond)
+    call getvid('THETA', 'FISSURE', iocc=1, scal=nomfis, nbret=ifiss)
 !
     ASSERT(ithet.eq.0.or.ithet.eq.1)
     ASSERT(ifond.eq.0.or.ifond.eq.1)

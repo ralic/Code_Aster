@@ -2,11 +2,10 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                   nbmst)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -20,6 +19,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     integer :: iocc, nbmst
     character(len=*) :: mcfact, nomaz, nomvei, nomvek
 !-----------------------------------------------------------------------
@@ -65,26 +65,21 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
     call jelira(nomvek, 'LONMAX', nbv1)
     ier = 0
 !
-    call getvtx(mcfact, 'PREF_MAILLE', iocc, iarg, 1,&
-                prfm, n1)
+    call getvtx(mcfact, 'PREF_MAILLE', iocc=iocc, scal=prfm, nbret=n1)
     lgp = lxlgut(prfm)
 !
     lnume = .false.
-    call getvis(mcfact, 'PREF_NUME', iocc, iarg, 0,&
-                ibid, n1)
+    call getvis(mcfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         lnume = .true.
-        call getvis(mcfact, 'PREF_NUME', iocc, iarg, 1,&
-                    nume, n1)
+        call getvis(mcfact, 'PREF_NUME', iocc=iocc, scal=nume, nbret=n1)
     endif
 !
     lgrpma = .false.
-    call getvtx(mcfact, 'GROUP_MA', iocc, iarg, 0,&
-                k8b, n1)
+    call getvtx(mcfact, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         lgrpma= .true.
-        call getvtx(mcfact, 'GROUP_MA', iocc, iarg, 1,&
-                    grpma, n1)
+        call getvtx(mcfact, 'GROUP_MA', iocc=iocc, scal=grpma, nbret=n1)
     endif
 !
     motcle(1) = 'TOUT'
@@ -134,8 +129,8 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
             endif
             do 32 i = 1, nbmst
                 if (zk8(klist+i-1) .eq. nommai) then
-                    if (mcfact.eq.'CREA_GROUP_MA') then
-                        call u2mesk('F','MODELISA9_57',1,nommai)
+                    if (mcfact .eq. 'CREA_GROUP_MA') then
+                        call u2mesk('F', 'MODELISA9_57', 1, nommai)
                     else
                         goto 34
                     endif

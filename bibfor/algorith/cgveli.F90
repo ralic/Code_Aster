@@ -2,8 +2,8 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
                   ndeg)
     implicit none
 !
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
@@ -66,21 +66,21 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
     if (cas .ne. '3D_LOCAL') then
 !
 !       L'UTILISATEUR NE DOIT PAS AVOIR RENSEIGNE LISSAGE_G
-        call getvtx('LISSAGE', 'LISSAGE_G', 1, iarg, 1,&
-                    lissg, ier)
+        call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ier,&
+                    isdefault=iarg)
         if (iarg .eq. 0) call u2mess('A', 'RUPTURE0_67')
 !
 !       L'UTILISATEUR NE DOIT PAS AVOIR RENSEIGNE LISSAGE_THETA
-        call getvtx('LISSAGE', 'LISSAGE_THETA', 1, iarg, 1,&
-                    lissth, ier)
+        call getvtx('LISSAGE', 'LISSAGE_THETA', iocc=1, scal=lissth, nbret=ier,&
+                    isdefault=iarg)
         if (iarg .eq. 0) call u2mess('A', 'RUPTURE0_67')
 !
     else if (cas.eq.'3D_LOCAL') then
 !
-        call getvtx('LISSAGE', 'LISSAGE_G', 1, iarg, 1,&
-                    lissg, ier)
-        call getvtx('LISSAGE', 'LISSAGE_THETA', 1, iarg, 1,&
-                    lissth, ier)
+        call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ier,&
+                    isdefault=iarg)
+        call getvtx('LISSAGE', 'LISSAGE_THETA', iocc=1, scal=lissth, nbret=ier,&
+                    isdefault=iarg)
 !
         if (lissg .eq. 'LEGENDRE' .and. lissth .eq. 'LEGENDRE') then
             liss='LEGENDRE'
@@ -111,8 +111,8 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
         endif
 !
 !       RECUPERATION DU DEGRE DES POLYNOMES DE LEGENDRE
-        call getvis('LISSAGE', 'DEGRE', 1, iarg, 1,&
-                    ndeg, ier)
+        call getvis('LISSAGE', 'DEGRE', iocc=1, scal=ndeg, nbret=ier,&
+                    isdefault=iarg)
 !
 !       COMPATIBILITE DES DIMENSIONS DES ESPACES EN LISSAGE MIXTE
         if (liss .eq. 'MIXTE') then

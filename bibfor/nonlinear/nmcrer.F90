@@ -18,9 +18,9 @@ subroutine nmcrer(carcri, sdcriq)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -72,8 +72,7 @@ subroutine nmcrer(carcri, sdcriq)
 ! --- ERREUR EN TEMPS (THM)
 !
     chaine='NON'
-    call getvtx(motfac, 'ERRE_TEMPS_THM', 1, iarg, 1,&
-                chaine, ibid)
+    call getvtx(motfac, 'ERRE_TEMPS_THM', iocc=1, scal=chaine, nbret=ibid)
     if (chaine .eq. 'OUI') then
         errthm = sdcriq(1:19)//'.ERRT'
         call wkvect(errthm, 'V V R', 3, jerrt)

@@ -2,9 +2,8 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -14,6 +13,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
 #include "asterfort/rsorac.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: resu
     character(len=19) :: vecord
     character(len=24) :: melord
@@ -74,8 +74,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
     lmelas=.true.
 !
 !     A T-ON RENSEIGNE NOM_CAS DANS CALC_G ?
-    call getvtx(' ', 'NOM_CAS', 0, iarg, 0,&
-                k16b, ncas)
+    call getvtx(' ', 'NOM_CAS', nbval=0, nbret=ncas)
 !
     if (ncas .ne. 0) then
 !
@@ -90,8 +89,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
         call wkvect(melcas, 'V V K16', ncas, jncas)
 !
 !       REMPLISSAGE DU VECTEUR CONTENANT LES NOMS DES CAS
-        call getvtx(' ', 'NOM_CAS', 0, iarg, ncas,&
-                    zk16(jncas), ier)
+        call getvtx(' ', 'NOM_CAS', nbval=ncas, vect=zk16(jncas), nbret=ier)
 !
 !       CREATION DU VECTEUR DE LOGICAL POUR SAVOIR SI UN NUME_ORDRE
 !       DOIT ETRE TRAITE OU PAS

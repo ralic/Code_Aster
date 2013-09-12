@@ -1,14 +1,14 @@
 subroutine trcart(ific, nocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvc8.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
@@ -62,16 +62,14 @@ subroutine trcart(ific, nocc)
         lign1 = ' '
         lign2 = ' '
         noddl = ' '
-        call getvid('CARTE', 'CHAM_GD', iocc, iarg, 1,&
-                    cham19, n1)
+        call getvid('CARTE', 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
         lign1(1:21)='---- '//motcle(1:9)
         lign1(22:22)='.'
         lign2(1:21)='     '//cham19(1:8)
         lign2(22:22)='.'
         call utest3('CARTE', iocc, tbtxt)
 !
-        call getvtx('CARTE', 'NOM_CMP', iocc, iarg, 1,&
-                    noddl, n1)
+        call getvtx('CARTE', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
         ASSERT(n1.eq.1)
         nl1 = lxlgut(lign1)
         nl2 = lxlgut(lign2)
@@ -81,17 +79,12 @@ subroutine trcart(ific, nocc)
         lign2(nl2+17:nl2+17)='.'
 !
 !
-        call getvr8('CARTE', 'TOLE_MACHINE', iocc, iarg, 1,&
-                    epsi, n1)
-        call getvtx('CARTE', 'CRITERE', iocc, iarg, 1,&
-                    crit, n1)
+        call getvr8('CARTE', 'TOLE_MACHINE', iocc=iocc, scal=epsi, nbret=n1)
+        call getvtx('CARTE', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
-        call getvr8('CARTE', 'VALE_CALC', iocc, iarg, 1,&
-                    valr, n1)
-        call getvis('CARTE', 'VALE_CALC_I', iocc, iarg, 1,&
-                    vali, n2)
-        call getvc8('CARTE', 'VALE_CALC_C', iocc, iarg, 1,&
-                    valc, n3)
+        call getvr8('CARTE', 'VALE_CALC', iocc=iocc, scal=valr, nbret=n1)
+        call getvis('CARTE', 'VALE_CALC_I', iocc=iocc, scal=vali, nbret=n2)
+        call getvc8('CARTE', 'VALE_CALC_C', iocc=iocc, scal=valc, nbret=n3)
 !
         if (n1 .eq. 1) then
             typres = 'R'
@@ -103,23 +96,18 @@ subroutine trcart(ific, nocc)
         endif
 ! ----------------------------------------------------------------------
         lref=.false.
-        call getvr8('CARTE', 'PRECISION', iocc, iarg, 1,&
-                    epsir, iret)
+        call getvr8('CARTE', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
             lref=.true.
-            call getvr8('CARTE', 'VALE_REFE', iocc, iarg, 1,&
-                        valrr, n1r)
-            call getvis('CARTE', 'VALE_REFE_I', iocc, iarg, 1,&
-                        valir, n2r)
-            call getvc8('CARTE', 'VALE_REFE_C', iocc, iarg, 1,&
-                        valcr, n3r)
+            call getvr8('CARTE', 'VALE_REFE', iocc=iocc, scal=valrr, nbret=n1r)
+            call getvis('CARTE', 'VALE_REFE_I', iocc=iocc, scal=valir, nbret=n2r)
+            call getvc8('CARTE', 'VALE_REFE_C', iocc=iocc, scal=valcr, nbret=n3r)
             ASSERT(n1r.eq.n1 .and. n2r.eq.n2 .and. n3r.eq.n3)
         endif
 ! ----------------------------------------------------------------------
 !
 !
-        call getvtx('CARTE', 'NOM_CMP', iocc, iarg, 1,&
-                    noddl, n1)
+        call getvtx('CARTE', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
         call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
                     nomma, iret)
         call getvem(nomma, 'MAILLE', 'CARTE', 'MAILLE', iocc,&

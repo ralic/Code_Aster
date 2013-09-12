@@ -3,14 +3,13 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                   amoto, rirot, ndim)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/compma.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -24,6 +23,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: ioc, nbgr, nbno, ndim
     character(len=8) :: noma, tabnoe(*), km
     character(len=24) :: ligrma(nbgr)
@@ -90,15 +90,14 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
 !       RECUPERATION DU CENTRE
 !
-    call getvr8('RIGI_PARASOL', 'COOR_CENTRE', ioc, iarg, 0,&
-                r8b, ncg)
+    call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=0, nbret=ncg)
     call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc,&
                 iarg, 0, k8b, nno)
     call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc,&
                 iarg, 0, k8b, ngn)
     if (ncg .ne. 0) then
-        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', ioc, iarg, 3,&
-                    c, ncg)
+        call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=c,&
+                    nbret=ncg)
         xg = c(1)
         yg = c(2)
         zg = c(3)
@@ -122,17 +121,16 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
 !       RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
 !
-    call getvr8('RIGI_PARASOL', 'COEF_GROUP', ioc, iarg, 0,&
-                r8b, ncg)
+    call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
         call wkvect('&&RAIREP.COEGRO', 'V V R', nbgr, icoegr)
-        call getvr8('RIGI_PARASOL', 'COEF_GROUP', ioc, iarg, nbgr,&
-                    zr(icoegr), ncg)
+        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=zr(icoegr),&
+                    nbret=ncg)
     else
         call wkvect('&&RAIREP.FONGRO', 'V V K8', nbgr, ifongr)
         lfonc = .true.
-        call getvid('RIGI_PARASOL', 'FONC_GROUP', ioc, iarg, nbgr,&
-                    zk8(ifongr), nfg)
+        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=zk8(ifongr),&
+                    nbret=nfg)
     endif
 !
 !

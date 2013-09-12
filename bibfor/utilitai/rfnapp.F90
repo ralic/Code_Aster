@@ -1,13 +1,12 @@
 subroutine rfnapp(nappe)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/foattr.h"
 #include "asterfort/foimpr.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -19,6 +18,7 @@ subroutine rfnapp(nappe)
 #include "asterfort/titre.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: nappe
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,12 +56,9 @@ subroutine rfnapp(nappe)
 !
     call getres(nomfon, typfon, nomcmd)
 !
-    call getvr8(' ', 'VALE_PARA_FONC', 0, iarg, 1,&
-                valp, nv)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                prec, np)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'VALE_PARA_FONC', scal=valp, nbret=nv)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
 !
     call jelira(nappe//'.PARA', 'LONUTI', npar)
     call jeveuo(nappe//'.PARA', 'L', jpara)

@@ -2,15 +2,15 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
                   epsmat, mixpre, kmd)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     integer :: istop, nprec
     real(kind=8) :: epsmat
     character(len=3) :: syme, mixpre, kmd
@@ -60,23 +60,17 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
 !     PARAMETRES FORCEMMENT PRESENTS
-    call getvtx(motfac, 'ALGORITHME', 1, iarg, 1,&
-                kalgo, ibid)
+    call getvtx(motfac, 'ALGORITHME', iocc=1, scal=kalgo, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'PRE_COND', 1, iarg, 1,&
-                kprec, ibid)
+    call getvtx(motfac, 'PRE_COND', iocc=1, scal=kprec, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'RENUM', 1, iarg, 1,&
-                renum, ibid)
+    call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvr8(motfac, 'RESI_RELA', 1, iarg, 1,&
-                epsmax, ibid)
+    call getvr8(motfac, 'RESI_RELA', iocc=1, scal=epsmax, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvis(motfac, 'NMAX_ITER', 1, iarg, 1,&
-                nmaxit, ibid)
+    call getvis(motfac, 'NMAX_ITER', iocc=1, scal=nmaxit, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvr8(motfac, 'RESI_RELA_PC', 1, iarg, 1,&
-                resipc, ibid)
+    call getvr8(motfac, 'RESI_RELA_PC', iocc=1, scal=resipc, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
 !     INITIALISATION DES PARAMETRES OPTIONNELS
@@ -87,19 +81,15 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
     solvbd = ' '
 !
     if (kprec .eq. 'LDLT_INC') then
-        call getvis(motfac, 'NIVE_REMPLISSAGE', 1, iarg, 1,&
-                    niremp, ibid)
+        call getvis(motfac, 'NIVE_REMPLISSAGE', iocc=1, scal=niremp, nbret=ibid)
         ASSERT(ibid.eq.1)
-        call getvr8(motfac, 'REMPLISSAGE', 1, iarg, 1,&
-                    fillin, ibid)
+        call getvr8(motfac, 'REMPLISSAGE', iocc=1, scal=fillin, nbret=ibid)
         ASSERT(ibid.eq.1)
 !     PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR SP
     else if (kprec.eq.'LDLT_SP') then
-        call getvis(motfac, 'REAC_PRECOND', 1, iarg, 1,&
-                    reacpr, ibid)
+        call getvis(motfac, 'REAC_PRECOND', iocc=1, scal=reacpr, nbret=ibid)
         ASSERT(ibid.eq.1)
-        call getvis(motfac, 'PCENT_PIVOT', 1, iarg, 1,&
-                    pcpiv, ibid)
+        call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=ibid)
         ASSERT(ibid.eq.1)
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT

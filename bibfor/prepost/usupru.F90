@@ -26,10 +26,10 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 ! OUT : PRUST  : PROFONDEUR D'USURE DU TUBE POUR CHAQUE INSTANT
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8dgrd.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/usubis.h"
 #include "asterfort/usufon.h"
@@ -65,19 +65,14 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
     para(6) = zero
     para(7) = zero
 !
-    call getvtx(' ', 'CONTACT', 1, iarg, 1,&
-                type, n1)
+    call getvtx(' ', 'CONTACT', scal=type, nbret=n1)
 !
 !     --- TUBE - BARRE ANTI VIBRATOIRE ---
     if (type(1:8) .eq. 'TUBE_BAV') then
-        call getvr8(' ', 'RAYON_MOBILE', 1, iarg, 1,&
-                    rayt, n1)
-        call getvr8(' ', 'LARGEUR_OBST', 1, iarg, 1,&
-                    lsup, n2)
-        call getvr8(' ', 'ANGL_INCLI', 1, iarg, 1,&
-                    angl, n3)
-        call getvr8(' ', 'ANGL_IMPACT', 1, iarg, 1,&
-                    aimp, n4)
+        call getvr8(' ', 'RAYON_MOBILE', scal=rayt, nbret=n1)
+        call getvr8(' ', 'LARGEUR_OBST', scal=lsup, nbret=n2)
+        call getvr8(' ', 'ANGL_INCLI', scal=angl, nbret=n3)
+        call getvr8(' ', 'ANGL_IMPACT', scal=aimp, nbret=n4)
         if (n4 .ne. 0) then
             rapp = cos ( aimp * r8dgrd() )
         else
@@ -127,14 +122,10 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !
 !     --- TUBE - TROU CIRCULAIRE ---
     else if (type(1:12) .eq. 'TUBE_ALESAGE') then
-        call getvr8(' ', 'RAYON_MOBILE', 1, iarg, 1,&
-                    rayt, n1)
-        call getvr8(' ', 'RAYON_OBST', 1, iarg, 1,&
-                    rayo, n2)
-        call getvr8(' ', 'LARGEUR_OBST', 1, iarg, 1,&
-                    lsup, n3)
-        call getvr8(' ', 'ANGL_INCLI', 1, iarg, 1,&
-                    angl, n4)
+        call getvr8(' ', 'RAYON_MOBILE', scal=rayt, nbret=n1)
+        call getvr8(' ', 'RAYON_OBST', scal=rayo, nbret=n2)
+        call getvr8(' ', 'LARGEUR_OBST', scal=lsup, nbret=n3)
+        call getvr8(' ', 'ANGL_INCLI', scal=angl, nbret=n4)
         if (n4 .ne. 0) angl = angl * r8dgrd()
         para(1) = rayt
         para(2) = rayo
@@ -203,16 +194,11 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !     --- TUBE - TROU QUADRIFOLIE OU TRIFOLIE ---
         elseif ( type(1:11) .eq. 'TUBE_4_ENCO' .or. type(1:11) .eq.&
     'TUBE_3_ENCO' ) then
-        call getvr8(' ', 'RAYON_MOBILE', 1, iarg, 1,&
-                    para(1), n1)
-        call getvr8(' ', 'RAYON_OBST', 1, iarg, 1,&
-                    para(2), n2)
-        call getvr8(' ', 'LARGEUR_OBST', 1, iarg, 1,&
-                    para(3), n3)
-        call getvr8(' ', 'ANGL_INCLI', 1, iarg, 1,&
-                    para(4), n4)
-        call getvr8(' ', 'ANGL_ISTHME', 1, iarg, 1,&
-                    para(7), n5)
+        call getvr8(' ', 'RAYON_MOBILE', scal=para(1), nbret=n1)
+        call getvr8(' ', 'RAYON_OBST', scal=para(2), nbret=n2)
+        call getvr8(' ', 'LARGEUR_OBST', scal=para(3), nbret=n3)
+        call getvr8(' ', 'ANGL_INCLI', scal=para(4), nbret=n4)
+        call getvr8(' ', 'ANGL_ISTHME', scal=para(7), nbret=n5)
         if (n4 .ne. 0) para(4) = para(4) * r8dgrd()
         para(7) = para(7) * r8dgrd()
         x1 = zero
@@ -281,10 +267,8 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !
 !     --- TUBE - TUBE ---
     else if (type(1:9) .eq. 'TUBE_TUBE') then
-        call getvr8(' ', 'RAYON_MOBILE', 1, iarg, 1,&
-                    rayt, n1)
-        call getvr8(' ', 'ANGL_INCLI', 1, iarg, 1,&
-                    angl, n2)
+        call getvr8(' ', 'RAYON_MOBILE', scal=rayt, nbret=n1)
+        call getvr8(' ', 'ANGL_INCLI', scal=angl, nbret=n2)
         cst1 = ( un / ( de * rayt ) ) ** uns5
         cst2 = 15.d0 * angl * r8dgrd() / 8.d0
         do 40 i = 1, nbinst
@@ -293,10 +277,8 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !
 !     --- GRAPPE - ALESAGE ---
     else if (type(1:14) .eq. 'GRAPPE_ALESAGE') then
-        call getvr8(' ', 'RAYON_MOBILE', 1, iarg, 1,&
-                    para(1), n1)
-        call getvr8(' ', 'RAYON_OBST', 1, iarg, 1,&
-                    para(2), n2)
+        call getvr8(' ', 'RAYON_MOBILE', scal=para(1), nbret=n1)
+        call getvr8(' ', 'RAYON_OBST', scal=para(2), nbret=n2)
         x11 = zero
         x2 = para(2)
         do 50 i = 1, nbinst

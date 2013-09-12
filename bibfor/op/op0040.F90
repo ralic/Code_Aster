@@ -23,10 +23,9 @@ subroutine op0040()
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/cmpcha.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -39,6 +38,7 @@ subroutine op0040()
 #include "asterfort/jexnum.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+!
     integer :: ifm, niv, ibid, ncmp1, ncmpmx, icmp, jatach, nbcham
     integer :: jnocmp, isy, iord, ifi, n2
     character(len=16) :: nomsym, nomfi
@@ -49,8 +49,7 @@ subroutine op0040()
 !
     ifi = 0
     nomfi = ' '
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ifi, n2)
+    call getvis(' ', 'UNITE', scal=ifi, nbret=n2)
     if (.not. ulexis( ifi )) then
         call ulopen(ifi, ' ', nomfi, 'NEW', 'O')
     endif
@@ -58,8 +57,7 @@ subroutine op0040()
     call jemarq()
 !
 !     RECUPERATION DU NOM DU RESULTAT
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resuin, ibid)
+    call getvid(' ', 'RESULTAT', scal=resuin, nbret=ibid)
 !
     write(ifi,*) '-----------------------------------------------',&
      &                '------------'

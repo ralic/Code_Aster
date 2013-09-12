@@ -1,7 +1,7 @@
 subroutine rvinfa(ifm, mcf, iocc, qnt, opt,&
                   opr, rep)
-    implicit   none
-#include "asterc/getvr8.h"
+    implicit none
+#include "asterfort/getvr8.h"
     integer :: ifm
     character(len=*) :: mcf, qnt, opt, opr, rep
 !     ------------------------------------------------------------------
@@ -87,15 +87,14 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt,&
     write(ifm,*)mess
 !
     if (opr(1:1) .eq. 'S' .and. mcf(1:6) .eq. 'ACTION') then
-        call getvr8(mcf, 'POINT', iocc, iarg, 0,&
-                    poin, n1)
+        call getvr8(mcf, 'POINT', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .eq. -2) then
-            call getvr8(mcf, 'POINT', iocc, iarg, 2,&
-                        poin, n1)
+            call getvr8(mcf, 'POINT', iocc=iocc, nbval=2, vect=poin,&
+                        nbret=n1)
             write(ifm,1000) poin(1) , poin(2)
         else if (n1 .eq. -3) then
-            call getvr8(mcf, 'POINT', iocc, iarg, 3,&
-                        poin, n1)
+            call getvr8(mcf, 'POINT', iocc=iocc, nbval=3, vect=poin,&
+                        nbret=n1)
             write(ifm,1010) poin(1) , poin(2) , poin(3)
         endif
     endif

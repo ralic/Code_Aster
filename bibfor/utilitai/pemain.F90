@@ -1,14 +1,13 @@
 subroutine pemain(resu, modele, mate, cara, nh,&
                   nbocc, deform)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlim3.h"
 #include "asterfort/getvem.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -26,6 +25,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/vtgpld.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara, deform
 !     ------------------------------------------------------------------
@@ -139,8 +139,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
     mxvale = mxval1
     nbparr = nbpar1
     do 10 iocc = 1, nbocc
-        call getvr8('MASS_INER', 'ORIG_INER', iocc, iarg, 0,&
-                    r8b, nr)
+        call getvr8('MASS_INER', 'ORIG_INER', iocc=iocc, nbval=0, nbret=nr)
         if (nr .ne. 0) then
             mxvale = mxval2
             nbparr = nbpar2
@@ -159,19 +158,17 @@ subroutine pemain(resu, modele, mate, cara, nh,&
         orig(1) = zero
         orig(2) = zero
         orig(3) = zero
-        call getvtx('MASS_INER', 'TOUT', iocc, iarg, 0,&
-                    k8b, nt)
+        call getvtx('MASS_INER', 'TOUT', iocc=iocc, nbval=0, nbret=nt)
         call getvem(noma, 'GROUP_MA', 'MASS_INER', 'GROUP_MA', iocc,&
                     iarg, 0, k8b, ng)
         call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc,&
                     iarg, 0, k8b, nm)
-        call getvr8('MASS_INER', 'ORIG_INER', iocc, iarg, 0,&
-                    r8b, nr)
+        call getvr8('MASS_INER', 'ORIG_INER', iocc=iocc, nbval=0, nbret=nr)
         if (nr .ne. 0) then
             iorig = 1
             nre = -nr
-            call getvr8('MASS_INER', 'ORIG_INER', iocc, iarg, nre,&
-                        orig, nr)
+            call getvr8('MASS_INER', 'ORIG_INER', iocc=iocc, nbval=nre, vect=orig,&
+                        nbret=nr)
         endif
         if (nt .ne. 0) then
             call pemica(chelem, mxvale, zr(lvale), 0, ibid,&

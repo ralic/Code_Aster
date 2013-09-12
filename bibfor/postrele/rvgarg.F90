@@ -1,12 +1,11 @@
 subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -29,6 +28,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 #include "asterfort/utcmp2.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: nxdnom, nxdnum, nvchef, nvcodo, nxdvar
 !
 !     ------------------------------------------------------------------
@@ -97,12 +97,11 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     do 100, iocc = 1, nbpost, 1
     n1 = 0
     n2 = 0
-    call getvtx('ACTION', 'OPERATION', iocc, iarg, 0,&
-                k8b, n3)
+    call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=0, nbret=n3)
     n3 = -n3
     call wkvect('&&RVGARG.NOM.OPERATION', 'V V K80', n3, adr)
-    call getvtx('ACTION', 'OPERATION', iocc, iarg, n3,&
-                zk80(adr), n4)
+    call getvtx('ACTION', 'OPERATION', iocc=iocc, nbval=n3, vect=zk80(adr),&
+                nbret=n4)
     if (n3 .eq. 1) then
         text1 = zk80(adr + 1-1)
         if (text1(1:1) .eq. 'E') then
@@ -114,18 +113,14 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
         zi(avcodo + iocc-1) = 2
     endif
     call jedetr('&&RVGARG.NOM.OPERATION')
-    call getvid('ACTION', 'RESULTAT', iocc, iarg, 0,&
-                k8b, nbresu)
-    call getvid('ACTION', 'CHAM_GD', iocc, iarg, 0,&
-                k8b, nbchgd)
+    call getvid('ACTION', 'RESULTAT', iocc=iocc, nbval=0, nbret=nbresu)
+    call getvid('ACTION', 'CHAM_GD', iocc=iocc, nbval=0, nbret=nbchgd)
     nbresu = -nbresu
     nbchgd = -nbchgd
     if (nbresu .ne. 0) then
 !        /* CAS D' UN RESULTAT COMPOSE */
-        call getvid('ACTION', 'RESULTAT', iocc, iarg, 1,&
-                    nresu, n1)
-        call getvtx('ACTION', 'NOM_CHAM', iocc, iarg, 1,&
-                    text80, n1)
+        call getvid('ACTION', 'RESULTAT', iocc=iocc, scal=nresu, nbret=n1)
+        call getvtx('ACTION', 'NOM_CHAM', iocc=iocc, scal=text80, nbret=n1)
         nchsym = text80(1:16)
         call jenonu(jexnom(nresu//'           .DESC', nchsym), n1)
         if (n1 .ne. 0) then
@@ -167,8 +162,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
         endif
     else
 !        /* CAS D'UN CHAMP_GD */
-        call getvid('ACTION', 'CHAM_GD', iocc, iarg, 1,&
-                    nchgd, n1)
+        call getvid('ACTION', 'CHAM_GD', iocc=iocc, scal=nchgd, nbret=n1)
         existe = .true.
         nchp19 = nchgd//'           '
     endif
@@ -201,16 +195,11 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
         gd = zi(adesc + 1-1)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acpgd)
-        call getvtx('ACTION', 'NOM_CMP', iocc, iarg, 0,&
-                    k8b, nbcmp)
-        call getvtx('ACTION', 'TOUT_CMP', iocc, iarg, 0,&
-                    k8b, nbtcp)
-        call getvtx('ACTION', 'INVARIANT', iocc, iarg, 0,&
-                    k8b, nbinv)
-        call getvtx('ACTION', 'ELEM_PRINCIPAUX', iocc, iarg, 0,&
-                    k8b, nbelp)
-        call getvtx('ACTION', 'RESULTANTE', iocc, iarg, 0,&
-                    k8b, nbsom)
+        call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
+        call getvtx('ACTION', 'TOUT_CMP', iocc=iocc, nbval=0, nbret=nbtcp)
+        call getvtx('ACTION', 'INVARIANT', iocc=iocc, nbval=0, nbret=nbinv)
+        call getvtx('ACTION', 'ELEM_PRINCIPAUX', iocc=iocc, nbval=0, nbret=nbelp)
+        call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=nbsom)
         nbcmp = -nbcmp
         nbtcp = -nbtcp
         nbinv = -nbinv
@@ -221,24 +210,22 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 !           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
             if (nbcmp .ne. 0) then
                 call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
-                call getvtx('ACTION', 'NOM_CMP', iocc, iarg, nbcmp,&
-                            zk8(ancpu1), n1)
+                call getvtx('ACTION', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(ancpu1),&
+                            nbret=n1)
             else
                 if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
                     call u2mess('F', 'POSTRELE_20')
                 endif
-                call getvtx('ACTION', 'RESULTANTE', iocc, iarg, 0,&
-                            k8b, n1)
-                call getvtx('ACTION', 'MOMENT', iocc, iarg, 0,&
-                            k8b, n2)
+                call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
+                call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=0, nbret=n2)
                 n1 = -n1
                 n2 = -n2
                 nbcmp = n1+n2
                 call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
-                call getvtx('ACTION', 'RESULTANTE', iocc, iarg, n1,&
-                            zk8(ancpu1), n1)
-                call getvtx('ACTION', 'MOMENT', iocc, iarg, n2,&
-                            zk8( ancpu1+n1), n2)
+                call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=n1, vect=zk8(ancpu1),&
+                            nbret=n1)
+                call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=n2, vect=zk8( ancpu1+n1),&
+                            nbret=n2)
             endif
             if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
                 call utcmp2(granch, 'ACTION', iocc, 50, nomcp,&

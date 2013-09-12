@@ -1,13 +1,13 @@
 subroutine phi199(model, mate, ma, nu, num,&
                   nbmode, solvez, indice, tabad)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/calflu.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupc.h"
@@ -92,12 +92,9 @@ subroutine phi199(model, mate, ma, nu, num,&
     criter = '&&RESGRA_GCPC'
     indice=0
 !
-    call getvid(' ', 'MODELE_FLUIDE', 0, iarg, 1,&
-                moflui, n1)
-    call getvid(' ', 'MODELE_INTERFACE', 0, iarg, 1,&
-                moint, n2)
-    call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                modmec, n3)
+    call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
+    call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n2)
+    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n3)
 !
 ! --- TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 !     DES MAILLAGES COMMUNS
@@ -154,11 +151,9 @@ subroutine phi199(model, mate, ma, nu, num,&
 !
 ! --- QUELLE EST LA DIRECTION ?
 !
-        call getvr8(' ', 'DIRECTION', 0, iarg, 0,&
-                    depl, nbd)
+        call getvr8(' ', 'DIRECTION', nbval=0, nbret=nbd)
         nbdir = -nbd
-        call getvr8(' ', 'DIRECTION', 0, iarg, nbdir,&
-                    depl, nbd)
+        call getvr8(' ', 'DIRECTION', nbval=nbdir, vect=depl, nbret=nbd)
 !
 !     --- ON NORMALISE LE VECTEUR ---
         xnorm = 0.d0
@@ -184,8 +179,7 @@ subroutine phi199(model, mate, ma, nu, num,&
 !
 !     --- ON RECUPERE LES MODES STATIQUES ---
 !
-        call getvid(' ', 'MODE_STAT', 0, iarg, 1,&
-                    modsta, nbsta)
+        call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbsta)
         if (nbsta .eq. 0) goto 41
 !
 !     --- ON RECUPERE LES POINTS D'ANCRAGE ---

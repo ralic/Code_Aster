@@ -21,9 +21,8 @@ subroutine op0016()
 !     DIRECTIVE IMPR_JEVEUX
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jeexin.h"
@@ -39,6 +38,7 @@ subroutine op0016()
 #include "asterfort/jexnum.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/uldefi.h"
+!
     character(len=8) :: fich
     character(len=24) :: nomobj, nom
     character(len=32) :: noml32
@@ -58,12 +58,10 @@ subroutine op0016()
     fich='MESSAGE'
     iuni=imes
 !
-    call getvis('IMPRESSION', 'UNITE', 1, iarg, 1,&
-                iuni, nuni)
+    call getvis('IMPRESSION', 'UNITE', iocc=1, scal=iuni, nbret=nuni)
     call uldefi(iuni, ' ', ' ', 'A', 'N',&
                 'O')
-    call getvtx('IMPRESSION', 'NOM', 1, iarg, 1,&
-                fich, nfic)
+    call getvtx('IMPRESSION', 'NOM', iocc=1, scal=fich, nbret=nfic)
     if (nfic .ne. 0) then
 !
         if (fich(1:8) .eq. 'RESULTAT') then
@@ -81,19 +79,16 @@ subroutine op0016()
     endif
 !
 !
-    call getvtx(' ', 'ENTITE', 0, iarg, 1,&
-                noment, n)
+    call getvtx(' ', 'ENTITE', scal=noment, nbret=n)
     if (n .eq. 0) goto 9999
 !
-    call getvtx(' ', 'COMMENTAIRE', 0, iarg, 1,&
-                txt, n)
+    call getvtx(' ', 'COMMENTAIRE', scal=txt, nbret=n)
     if (n .eq. 0) txt=' '
 !
     if (noment(1:6) .eq. 'DISQUE') then
 !
         nomcla = ' '
-        call getvtx(' ', 'CLASSE', 0, iarg, 1,&
-                    nomcla, n)
+        call getvtx(' ', 'CLASSE', scal=nomcla, nbret=n)
         write(iuni,*) ' '
         call jeimpd(imes, nomcla, txt)
         write(iuni,*) ' '
@@ -107,16 +102,14 @@ subroutine op0016()
     else if (noment .eq. 'REPERTOIRE') then
 !
         nomcla = ' '
-        call getvtx(' ', 'CLASSE', 0, iarg, 1,&
-                    nomcla, n)
+        call getvtx(' ', 'CLASSE', scal=nomcla, nbret=n)
         write(iuni,*) ' '
         call jeimpr(imes, nomcla, txt)
         write(iuni,*) ' '
 !
     else if (noment(1:5) .eq. 'OBJET') then
 !
-        call getvtx(' ', 'NOMOBJ', 0, iarg, 1,&
-                    nomobj, n)
+        call getvtx(' ', 'NOMOBJ', scal=nomobj, nbret=n)
         noml32 = nomobj
         call jjvern(noml32, 0, iret)
         write(iuni,*) ' '
@@ -129,20 +122,16 @@ subroutine op0016()
             write(iuni,*) ' '
             write(iuni,*)' ECRITURE DE L''OBJET : "',nomobj,'"'
         endif
-        call getvtx(' ', 'COMMENTAIRE', 0, iarg, 1,&
-                    txt, n)
+        call getvtx(' ', 'COMMENTAIRE', scal=txt, nbret=n)
         if (n .eq. 0) txt=' '
         write(iuni,*) ' '
         call jeimpa(iuni, nomobj, txt)
         write(iuni,*) ' '
         write(iuni,*) ' '
         if (iret .eq. 2) then
-            call getvis(' ', 'NUMOC', 0, iarg, 1,&
-                        num, n1)
-            call getvtx(' ', 'NOMOC', 0, iarg, 1,&
-                        nom, n2)
-            call getvtx(' ', 'NOMATR', 0, iarg, 1,&
-                        nom, n3)
+            call getvis(' ', 'NUMOC', scal=num, nbret=n1)
+            call getvtx(' ', 'NOMOC', scal=nom, nbret=n2)
+            call getvtx(' ', 'NOMATR', scal=nom, nbret=n3)
 !           CALL LXCAPS(NOM)
             if (n1 .ne. 0) then
                 call jeexin(jexnum(nomobj, num), iret)
@@ -201,10 +190,8 @@ subroutine op0016()
     else if (noment(1:7) .eq. 'SYSTEME') then
 !
         nomcla = ' '
-        call getvtx(' ', 'CLASSE', 0, iarg, 1,&
-                    nomcla, n)
-        call getvtx(' ', 'NOMATR', 0, iarg, 1,&
-                    nom, n3)
+        call getvtx(' ', 'CLASSE', scal=nomcla, nbret=n)
+        call getvtx(' ', 'NOMATR', scal=nom, nbret=n3)
         if (n3 .ne. 0) then
             call jeprat(iuni, '$'//nomcla(1:1), nom(1:8), txt)
             write(iuni,*) ' '
@@ -212,8 +199,7 @@ subroutine op0016()
 !
     else if (noment(1:8) .eq. 'ATTRIBUT') then
 !
-        call getvtx(' ', 'NOMOBJ', 0, iarg, 1,&
-                    nomobj, n)
+        call getvtx(' ', 'NOMOBJ', scal=nomobj, nbret=n)
         call jeexin(nomobj, iret)
         write(iuni,*) ' '
         if (iret .eq. 0) then
@@ -231,12 +217,9 @@ subroutine op0016()
     else if (noment(1:14) .eq. 'ENREGISTREMENT') then
 !
         nomcla = ' '
-        call getvtx(' ', 'CLASSE', 0, iarg, 1,&
-                    nomcla, n)
-        call getvis(' ', 'NUMERO', 0, iarg, 1,&
-                    numerg, nrg)
-        call getvis(' ', 'INFO', 0, iarg, 1,&
-                    info, nif)
+        call getvtx(' ', 'CLASSE', scal=nomcla, nbret=n)
+        call getvis(' ', 'NUMERO', scal=numerg, nbret=nrg)
+        call getvis(' ', 'INFO', scal=info, nbret=nif)
         write(iuni,*) ' '
         call jepreg(fich, nomcla, numerg, txt, info)
         write(iuni,*) ' '

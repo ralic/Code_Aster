@@ -2,12 +2,12 @@ subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
                   epsmat, mixpre, kmd)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+!
     integer :: istop, nprec
     real(kind=8) :: epsmat
     character(len=3) :: syme, mixpre, kmd
@@ -54,8 +54,7 @@ subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
 !
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
-    call getvtx(motfac, 'RENUM', 1, iarg, 1,&
-                renum, ibid)
+    call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
 ! --- ON REMPLIT LA SD_SOLVEUR

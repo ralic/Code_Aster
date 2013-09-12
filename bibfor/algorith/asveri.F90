@@ -3,8 +3,8 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                   ndir, nordr, nbmode)
     implicit none
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/rsutnc.h"
@@ -74,8 +74,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 !
     call getres(resu, concep, nomcmd)
     ier = 0
-    call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', 1, iarg, 0,&
-                k8b, ns)
+    call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=1, nbval=0, nbret=ns)
 !
 !     --- VERIFICATION DES CHAMPS DONNES ---
     if (monoap) then

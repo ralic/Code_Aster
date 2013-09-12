@@ -1,9 +1,6 @@
 subroutine fonnor(resu, noma, cnxinv)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fonext.h"
@@ -15,6 +12,8 @@ subroutine fonnor(resu, noma, cnxinv)
 #include "asterfort/fonno6.h"
 #include "asterfort/fonno7.h"
 #include "asterfort/fonno8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -25,6 +24,7 @@ subroutine fonnor(resu, noma, cnxinv)
 #include "asterfort/jexnom.h"
 #include "asterfort/normev.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: resu, noma
     character(len=19) :: cnxinv
 ! ======================================================================
@@ -81,16 +81,14 @@ subroutine fonnor(resu, noma, cnxinv)
 !
 !
 !     RECUPERATION DU CONCEPT DU MAILLAGE
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                noma, nret)
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=nret)
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
     call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
                 k8b, iret)
 !
 !     RECUPERATION DU TYPE DU FOND DE FISSURE OUVERT OU FERME OU INF/SUP
-    call getvtx('FOND_FISS', 'TYPE_FOND', 1, iarg, 1,&
-                tyfond, iret)
+    call getvtx('FOND_FISS', 'TYPE_FOND', iocc=1, scal=tyfond, nbret=iret)
 !
 !     RECUPERATION DES NOEUDS DU FOND DE FISSURE
 !

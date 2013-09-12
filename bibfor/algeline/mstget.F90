@@ -1,11 +1,10 @@
 subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/compno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -22,6 +21,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbind, ddlsta(*)
     character(len=*) :: nomcmp, matric, motfac
 !     ------------------------------------------------------------------
@@ -120,17 +120,14 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
 !
     do 10 i = 1, nbind
         if (motfac(1:11) .eq. 'PSEUDO_MODE') then
-            call getvtx(motfac, 'AXE', i, iarg, 0,&
-                        kbid, na)
-            call getvtx(motfac, 'DIRECTION', i, iarg, 0,&
-                        kbid, nd)
+            call getvtx(motfac, 'AXE', iocc=i, nbval=0, nbret=na)
+            call getvtx(motfac, 'DIRECTION', iocc=i, nbval=0, nbret=nd)
             if ((na+nd) .ne. 0) goto 10
         endif
 !
 !
 !        --- LES NOEUDS ---
-        call getvtx(motfac, 'TOUT', i, iarg, 0,&
-                    kbid, nt)
+        call getvtx(motfac, 'TOUT', iocc=i, nbval=0, nbret=nt)
         if (nt .ne. 0) then
             lnoe = jind1
         endif
@@ -172,8 +169,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
         endif
 !
 !        --- LES COMPOSANTES ---
-        call getvtx(motfac, 'TOUT_CMP', i, iarg, 0,&
-                    kbid, ntc)
+        call getvtx(motfac, 'TOUT_CMP', iocc=i, nbval=0, nbret=ntc)
         if (ntc .ne. 0) then
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq, lcmp)
             do 26 ieq = 0, neq-1
@@ -181,13 +177,12 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
 26          continue
         endif
 !
-        call getvtx(motfac, 'AVEC_CMP', i, iarg, 0,&
-                    kbid, nac)
+        call getvtx(motfac, 'AVEC_CMP', iocc=i, nbval=0, nbret=nac)
         if (nac .ne. 0) then
             ncmp = -nac
             call wkvect('&&MSTGET.NOM.CMP', 'V V K8', ncmp, jcmp)
-            call getvtx(motfac, 'AVEC_CMP', i, iarg, ncmp,&
-                        zk8(jcmp), ni)
+            call getvtx(motfac, 'AVEC_CMP', iocc=i, nbval=ncmp, vect=zk8(jcmp),&
+                        nbret=ni)
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq*ncmp, lcmp)
             call pteddl('NUME_DDL', nume, ncmp, zk8(jcmp), neq,&
                         zi(lcmp))
@@ -199,13 +194,12 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
 28          continue
         endif
 !
-        call getvtx(motfac, 'SANS_CMP', i, iarg, 0,&
-                    kbid, nsc)
+        call getvtx(motfac, 'SANS_CMP', iocc=i, nbval=0, nbret=nsc)
         if (nsc .ne. 0) then
             ncmp = -nsc
             call wkvect('&&MSTGET.NOM.CMP', 'V V K8', ncmp, jcmp)
-            call getvtx(motfac, 'SANS_CMP', i, iarg, ncmp,&
-                        zk8(jcmp), ni)
+            call getvtx(motfac, 'SANS_CMP', iocc=i, nbval=ncmp, vect=zk8(jcmp),&
+                        nbret=ni)
             ncmp = ncmp + 1
             zk8(jcmp+ncmp-1) = 'LAGR'
             call wkvect('&&MSTGET.LISTE.CMP', 'V V I', neq*ncmp, lcmp)

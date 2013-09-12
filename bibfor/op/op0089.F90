@@ -19,13 +19,12 @@ subroutine op0089()
 !     COMMANDE:  DEPL_INTERNE
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -36,6 +35,7 @@ subroutine op0089()
 #include "asterfort/ssdein.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     character(len=8) :: ul, ug, mail, nocas
     character(len=16) :: kbi1, kbi2, corres, tysd
     character(len=8) :: ouiri, ouima, affick(2)
@@ -52,10 +52,8 @@ subroutine op0089()
 !
     call infmaj()
     call getres(ul, kbi1, kbi2)
-    call getvid(' ', 'DEPL_GLOBAL', 1, iarg, 1,&
-                ug, n1)
-    call getvtx(' ', 'SUPER_MAILLE', 1, iarg, 1,&
-                mail, n1)
+    call getvid(' ', 'DEPL_GLOBAL', scal=ug, nbret=n1)
+    call getvtx(' ', 'SUPER_MAILLE', scal=mail, nbret=n1)
 !
     call gettco(ug, tysd)
     if (tysd(1:4) .ne. 'CHAM') then
@@ -102,8 +100,7 @@ subroutine op0089()
         call chpver('F', ug, 'NOEU', 'DEPL_R', ie)
         call dismoi('F', 'NOM_MAILLA', ug, 'CHAM_NO', ibid,&
                     noma, ie)
-        call getvtx(' ', 'NOM_CAS', 1, iarg, 1,&
-                    nocas, n1)
+        call getvtx(' ', 'NOM_CAS', scal=nocas, nbret=n1)
         call ssdein(ul, ug, mail, nocas)
     endif
 !

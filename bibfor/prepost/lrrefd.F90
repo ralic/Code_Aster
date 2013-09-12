@@ -1,8 +1,8 @@
 subroutine lrrefd(resu, prchnd)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -75,8 +75,8 @@ subroutine lrrefd(resu, prchnd)
 !
     ibid = 1
 !
-    call getvid(' ', 'MATR_RIGI', ibid, iarg, 1, matrig, iret1)
-    call getvid(' ', 'MATR_MASS', ibid, iarg, 1, matmas, iret2)
+    call getvid(' ', 'MATR_RIGI', scal=matrig, nbret=iret1)
+    call getvid(' ', 'MATR_MASS', scal=matmas, nbret=iret2)
 !
     if (iret1 .eq. 1) then
         call u2mesk('I', 'PREPOST_14', 1, matrig)
@@ -102,7 +102,8 @@ subroutine lrrefd(resu, prchnd)
     matric(1) = matrig
     matric(2) = matmas
     matric(3) = ' '
-    call refdaj('F', resu, -1, nuddlr, 'DYNAMIQUE', matric, iret)
+    call refdaj('F', resu, -1, nuddlr, 'DYNAMIQUE',&
+                matric, iret)
 !
     call jedema()
 !

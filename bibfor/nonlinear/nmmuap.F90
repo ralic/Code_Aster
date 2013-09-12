@@ -20,9 +20,9 @@ subroutine nmmuap(sddyna)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -63,9 +63,9 @@ subroutine nmmuap(sddyna)
 !
 ! --- LECTURE INFO. MATRICE MODES STATIQUES
 !
-    call getvid(' ', 'MODE_STAT', 1, iarg, 1,&
-                modsta, nbmd)
-    call dismoi('F', 'REF_RIGI_PREM', modsta, 'RESU_DYNA', ibid, matric, iret)
+    call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbmd)
+    call dismoi('F', 'REF_RIGI_PREM', modsta, 'RESU_DYNA', ibid,&
+                matric, iret)
     call dismoi('F', 'NOM_MAILLA', matric, 'MATR_ASSE', ibid,&
                 mailla, ier)
     call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
@@ -91,38 +91,31 @@ subroutine nmmuap(sddyna)
     call wkvect(mapsid, 'V V R8', nbexci*neq, jpsdel)
 !
     do 10 i = 1, nbexci
-        call getvtx('EXCIT', 'MULT_APPUI', i, iarg, 1,&
-                    rep, nd)
+        call getvtx('EXCIT', 'MULT_APPUI', iocc=i, scal=rep, nbret=nd)
         if (rep(1:3) .eq. 'OUI') then
             zi(jmltap+i-1) = 1
 !
 ! --- ACCELERATIONS AUX APPUIS
 !
-            call getvid('EXCIT', 'ACCE', i, iarg, 1,&
-                        k8bid, na)
+            call getvid('EXCIT', 'ACCE', iocc=i, scal=k8bid, nbret=na)
             if (na .ne. 0) then
-                call getvid('EXCIT', 'ACCE', i, iarg, 1,&
-                            zk8(jnoacc+i-1), na)
+                call getvid('EXCIT', 'ACCE', iocc=i, scal=zk8(jnoacc+i-1), nbret=na)
             endif
 !
 ! --- FONCTIONS MULTIPLICATRICES DES ACCE. AUX APPUIS
 !
-            call getvid('EXCIT', 'FONC_MULT', i, iarg, 1,&
-                        k8bid, nf)
+            call getvid('EXCIT', 'FONC_MULT', iocc=i, scal=k8bid, nbret=nf)
             if (nf .ne. 0) then
-                call getvid('EXCIT', 'FONC_MULT', i, iarg, 1,&
-                            zk8(jnoacc+i- 1), nf)
+                call getvid('EXCIT', 'FONC_MULT', iocc=i, scal=zk8(jnoacc+i- 1), nbret=nf)
             endif
 !
 ! --- VITESSES AUX APPUIS
 !
-            call getvid('EXCIT', 'VITE', i, iarg, 1,&
-                        zk8(jnovit+i-1), nv)
+            call getvid('EXCIT', 'VITE', iocc=i, scal=zk8(jnovit+i-1), nbret=nv)
 !
 ! --- DEPLACEMENTS AUX APPUIS
 !
-            call getvid('EXCIT', 'DEPL', i, iarg, 1,&
-                        zk8(jnodep+i-1), nd)
+            call getvid('EXCIT', 'DEPL', iocc=i, scal=zk8(jnodep+i-1), nbret=nd)
 !
 ! --- CREE ET CALCULE LE VECTEUR PSI*DIRECTION
 !

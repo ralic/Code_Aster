@@ -19,13 +19,12 @@ subroutine ssdmdm(mag)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -40,6 +39,7 @@ subroutine ssdmdm(mag)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -72,8 +72,7 @@ subroutine ssdmdm(mag)
     call getfac('DEFI_SUPER_MAILLE', nocc)
     nbsma=0
     do 1, iocc=1,nocc
-    call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc, iarg, 0,&
-                kbi81, n1)
+    call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=0, nbret=n1)
     nbsma=nbsma-n1
     1 end do
 !
@@ -103,22 +102,22 @@ subroutine ssdmdm(mag)
     isma=0
     do 2, iocc=1,nocc
 !
-    call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc, iarg, nbsma,&
-                zk8(ialk81), n1)
-    call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc, iarg, nbsma,&
-                zk8(ialk82), n2)
+    call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=nbsma, vect=zk8(ialk81),&
+                nbret=n1)
+    call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma, vect=zk8(ialk82),&
+                nbret=n2)
     if (n2 .lt. 0) call u2mess('F', 'SOUSTRUC_50')
     if ((n2.gt.0) .and. (n2.ne.n1)) call u2mess('F', 'SOUSTRUC_51')
 !
     do 3 ,k=1,9
     lisr8(k)=0.0d0
  3  continue
-    call getvr8('DEFI_SUPER_MAILLE', 'TRAN', iocc, iarg, 3,&
-                lisr8(1), n3)
-    call getvr8('DEFI_SUPER_MAILLE', 'ANGL_NAUT', iocc, iarg, 3,&
-                lisr8(4), n4)
-    call getvr8('DEFI_SUPER_MAILLE', 'CENTRE', iocc, iarg, 3,&
-                lisr8(7), n5)
+    call getvr8('DEFI_SUPER_MAILLE', 'TRAN', iocc=iocc, nbval=3, vect=lisr8(1),&
+                nbret=n3)
+    call getvr8('DEFI_SUPER_MAILLE', 'ANGL_NAUT', iocc=iocc, nbval=3, vect=lisr8(4),&
+                nbret=n4)
+    call getvr8('DEFI_SUPER_MAILLE', 'CENTRE', iocc=iocc, nbval=3, vect=lisr8(7),&
+                nbret=n5)
     if (n3 .lt. 0) call u2mess('F', 'SOUSTRUC_52')
     if (n4 .lt. 0) call u2mess('F', 'SOUSTRUC_53')
     if (n5 .lt. 0) call u2mess('F', 'SOUSTRUC_54')

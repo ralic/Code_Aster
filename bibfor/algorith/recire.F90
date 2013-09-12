@@ -1,10 +1,10 @@
 subroutine recire(typopt, iderre, frexci, fremin, fremax,&
                   pas, nbptmd)
-    implicit   none
+    implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
     integer :: iderre, nbptmd
     real(kind=8) :: fremin, fremax, pas
     character(len=4) :: typopt, frexci
@@ -56,36 +56,29 @@ subroutine recire(typopt, iderre, frexci, fremin, fremax,&
 !
 !----TYPE DE REPONSE ET RELATIF/ABSOLU ET MONO/INTER
 !
-        call getvtx('REPONSE', 'OPTION', 1, iarg, 1,&
-                    typopt, ibid)
-        call getvis('REPONSE', 'DERIVATION', 1, iarg, 1,&
-                    iderre, ibid)
+        call getvtx('REPONSE', 'OPTION', iocc=1, scal=typopt, nbret=ibid)
+        call getvis('REPONSE', 'DERIVATION', iocc=1, scal=iderre, nbret=ibid)
 !
 !----INCLUSION DES FREQUENCES DEXCITATION DANS LA DISCRETISATION REPONSE
 !
-        call getvtx('REPONSE', 'FREQ_EXCIT', 1, iarg, 1,&
-                    frexci, ibid)
+        call getvtx('REPONSE', 'FREQ_EXCIT', iocc=1, scal=frexci, nbret=ibid)
 !-
 !----FREQUENCE INITIALE
 !
-        call getvr8('REPONSE', 'FREQ_MIN', 1, iarg, 1,&
-                    fremin, ibid)
+        call getvr8('REPONSE', 'FREQ_MIN', iocc=1, scal=fremin, nbret=ibid)
         if (ibid .ne. 0) frexci = 'SANS'
 !
 !----FREQUENCE FINALE
 !
-        call getvr8('REPONSE', 'FREQ_MAX', 1, iarg, 1,&
-                    fremax, ibid)
+        call getvr8('REPONSE', 'FREQ_MAX', iocc=1, scal=fremax, nbret=ibid)
 !
 !----PAS DE LA DISCRETISATION
 !
-        call getvr8('REPONSE', 'PAS', 1, iarg, 1,&
-                    pas, ibid)
+        call getvr8('REPONSE', 'PAS', iocc=1, scal=pas, nbret=ibid)
 !
 !----NOMBRE DE POINTS PAR MODES
 !
-        call getvis('REPONSE', 'NB_POIN_MODE', 1, iarg, 1,&
-                    nbptmd, ibid)
+        call getvis('REPONSE', 'NB_POIN_MODE', iocc=1, scal=nbptmd, nbret=ibid)
 !
     endif
 !

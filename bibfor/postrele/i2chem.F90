@@ -1,11 +1,10 @@
 subroutine i2chem(nomail, nbparm)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/i2imam.h"
 #include "asterfort/i2rdli.h"
@@ -28,6 +27,7 @@ subroutine i2chem(nomail, nbparm)
 #include "asterfort/u2mess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbparm
     character(len=8) :: nomail
 ! ----------------------------------------------------------------------
@@ -73,8 +73,7 @@ subroutine i2chem(nomail, nbparm)
     call infniv(ifm, niv)
 !
     call getres(nomcrb, typcrb, opera)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n2)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n2)
 !
 !----------------------------------------------------------------------
 !
@@ -92,15 +91,13 @@ subroutine i2chem(nomail, nbparm)
     ier = 0
     nbtm = 0
     do 40,occ = 1,nbparm,1
-    call getvtx('DEFI_CHEMIN', 'MAILLE', occ, iarg, 0,&
-                k8b, n1)
-    call getvtx('DEFI_CHEMIN', 'GROUP_MA', occ, iarg, 0,&
-                k8b, n2)
+    call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=0, nbret=n1)
+    call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=0, nbret=n2)
     if (n1 .ne. 0) then
         n1 = -n1
         call wkvect('&&OP0050.MAILLE', 'V V K8', n1, jmail)
-        call getvtx('DEFI_CHEMIN', 'MAILLE', occ, iarg, n1,&
-                    zk8(jmail), n1)
+        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail),&
+                    nbret=n1)
         do 10,im = 1,n1,1
         nomma = zk8(jmail+im-1)
         call jeexin(jexnom(nommai, nomma), existe)
@@ -130,8 +127,8 @@ subroutine i2chem(nomail, nbparm)
     if (n2 .ne. 0) then
         n2 = -n2
         call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
-        call getvtx('DEFI_CHEMIN', 'GROUP_MA', occ, iarg, n2,&
-                    zk24( jgrma), n2)
+        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24( jgrma),&
+                    nbret=n2)
         do 30,ig = 1,n2,1
         nomgr = zk24(jgrma+ig-1)
         call jenonu(jexnom(grpmai, nomgr), existe)
@@ -168,15 +165,13 @@ subroutine i2chem(nomail, nbparm)
     call wkvect('&INTLISTOTAL', 'V V I', nbtm, alstot)
     libr1 = 1
     do 80,occ = 1,nbparm,1
-    call getvtx('DEFI_CHEMIN', 'MAILLE', occ, iarg, 0,&
-                k8b, n1)
-    call getvtx('DEFI_CHEMIN', 'GROUP_MA', occ, iarg, 0,&
-                k8b, n2)
+    call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=0, nbret=n1)
+    call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=0, nbret=n2)
     if (n1 .ne. 0) then
         n1 = -n1
         call wkvect('&&OP0050.MAILLE', 'V V K8', n1, jmail3)
-        call getvtx('DEFI_CHEMIN', 'MAILLE', occ, iarg, n1,&
-                    zk8(jmail3), n2)
+        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail3),&
+                    nbret=n2)
         do 50,im = 1,n1,1
         call jenonu(jexnom(nommai, zk8(jmail3+im-1)), numm)
         call i2rdli(numm, zi(alstot), libr1)
@@ -185,8 +180,8 @@ subroutine i2chem(nomail, nbparm)
     else
         n2 = -n2
         call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
-        call getvtx('DEFI_CHEMIN', 'GROUP_MA', occ, iarg, n2,&
-                    zk24( jgrma), n2)
+        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24( jgrma),&
+                    nbret=n2)
         do 70,ig = 1,n2,1
         nomgr = zk24(jgrma+ig-1)
         call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
@@ -229,18 +224,14 @@ subroutine i2chem(nomail, nbparm)
 !     --- CHOIX DE L'ABSCISSE CURVILIGNE 0. ---
 !
     numno = 0
-    call getvtx(' ', 'NOEUD_ORIG', 1, iarg, 0,&
-                noeud, n1)
+    call getvtx(' ', 'NOEUD_ORIG', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call getvtx(' ', 'NOEUD_ORIG', 1, iarg, 1,&
-                    noeud, n1)
+        call getvtx(' ', 'NOEUD_ORIG', scal=noeud, nbret=n1)
         call jenonu(jexnom(nomnoe, noeud), numno)
     else
-        call getvtx(' ', 'GROUP_NO_ORIG', 1, iarg, 0,&
-                    noeud, n1)
+        call getvtx(' ', 'GROUP_NO_ORIG', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
-            call getvtx(' ', 'GROUP_NO_ORIG', 1, iarg, 1,&
-                        noeud, n1)
+            call getvtx(' ', 'GROUP_NO_ORIG', scal=noeud, nbret=n1)
             call utnono(' ', nomail, 'NOEUD', noeud, k8b,&
                         iret)
             if (iret .eq. 10) then

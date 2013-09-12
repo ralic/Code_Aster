@@ -22,16 +22,15 @@ subroutine op0153()
 !
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!-----------------------------------------------------------------------
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -57,6 +56,7 @@ subroutine op0153()
 #include "asterfort/usuvu2.h"
 #include "asterfort/usuvus.h"
 #include "asterfort/wkvect.h"
+!-----------------------------------------------------------------------
     integer :: i, ibid, idangt, idcotu, idvcob, idvctu, ifires
     integer :: indic, info, iobst, ipoupr, ipourp, iprfuo, iprfut
     integer :: ipus, ire1, ire2, iret, itube, ivuso
@@ -114,20 +114,17 @@ subroutine op0153()
 !     ------------------------------------------------------------------
 !
     dinst = 0.d0
-    call getvtx(' ', 'TUBE_NEUF', 1, iarg, 1,&
-                k8b, ntn)
+    call getvtx(' ', 'TUBE_NEUF', scal=k8b, nbret=ntn)
     if (ntn .ne. 0) then
         call exisd('TABLE', resu, iret)
         if (iret .eq. 0) then
             call u2mess('F', 'PREPOST4_7')
         endif
-        call getvid(' ', 'TABL_USURE', 1, iarg, 1,&
-                    k8b, n1)
+        call getvid(' ', 'TABL_USURE', scal=k8b, nbret=n1)
         if (k8b .ne. resu(1:8)) then
             call u2mess('F', 'PREPOST4_7')
         endif
-        call getvr8(' ', 'INST', 1, iarg, 1,&
-                    dinst, nis)
+        call getvr8(' ', 'INST', scal=dinst, nbret=nis)
         if (nis .eq. 0) then
             call tbexv1(resu, 'INST', '&&OP0153.INST', 'V', nbv,&
                         k8b)
@@ -144,8 +141,7 @@ subroutine op0153()
     endif
 !
 !     ------------------------------------------------------------------
-    call getvis(' ', 'INFO', 1, iarg, 1,&
-                info, n0)
+    call getvis(' ', 'INFO', scal=info, nbret=n0)
     if (info .gt. 1) then
         write(ifires,1000)
         write(ifires,*)
@@ -163,16 +159,13 @@ subroutine op0153()
     endif
 !
 !     --- RECUPERATION DES INSTANTS DE CALCUL ---
-    call getvr8(' ', 'INST', 1, iarg, 0,&
-                r8b, ni1)
+    call getvr8(' ', 'INST', nbval=0, nbret=ni1)
     if (ni1 .ne. 0) then
         nbinst = -ni1
         call wkvect('&&OP0153.INSTANT', 'V V R', nbinst, jinst)
-        call getvr8(' ', 'INST', 1, iarg, nbinst,&
-                    zr(jinst), n1)
+        call getvr8(' ', 'INST', nbval=nbinst, vect=zr(jinst), nbret=n1)
     else
-        call getvid(' ', 'LIST_INST', 1, iarg, 1,&
-                    linst, n1)
+        call getvid(' ', 'LIST_INST', scal=linst, nbret=n1)
         call jelira(linst//'.VALE', 'LONUTI', nbinst)
         call jeveuo(linst//'.VALE', 'L', jinst)
     endif
@@ -180,8 +173,7 @@ subroutine op0153()
     do 10 i = 0, nbinst-1
         zr(jins2+i) = zr(jinst+i)
 10  end do
-    call getvr8(' ', 'COEF_INST', 1, iarg, 1,&
-                coinst, n1)
+    call getvr8(' ', 'COEF_INST', scal=coinst, nbret=n1)
     if (n1 .ne. 0) then
         do 12 i = 0, nbinst-1
             zr(jins2+i) = zr(jins2+i) * coinst
@@ -212,8 +204,7 @@ subroutine op0153()
         epsil = 1.d-4
         do 14 i = 1, nbsect
             if (i .eq. 1) then
-                call getvr8('SECTEUR', 'ANGL_INIT', 1, iarg, 1,&
-                            zr(idangt), na)
+                call getvr8('SECTEUR', 'ANGL_INIT', iocc=1, scal=zr(idangt), nbret=na)
 !
 !              LES ANGLES SONT CROISSANTS ENTRE -180. ET +180. :
 !              -----------------------------------------------
@@ -221,8 +212,7 @@ subroutine op0153()
                     call u2mess('F', 'PREPOST4_8')
                 endif
             endif
-            call getvr8('SECTEUR', 'ANGL_FIN', i, iarg, 1,&
-                        zr(idangt+i), na)
+            call getvr8('SECTEUR', 'ANGL_FIN', iocc=i, scal=zr(idangt+i), nbret=na)
             if (zr(idangt+i) .lt. zr(idangt+i-1)) then
                 call u2mess('F', 'PREPOST4_9')
             endif
@@ -231,12 +221,9 @@ subroutine op0153()
                     call u2mess('F', 'PREPOST4_10')
                 endif
             endif
-            call getvr8('SECTEUR', 'COEF_USUR_MOBILE', i, iarg, 1,&
-                        zr(idvctu+i-1), n5)
-            call getvr8('SECTEUR', 'COEF_USUR_OBST', i, iarg, 1,&
-                        zr( idvcob+i-1), n5)
-            call getvtx('SECTEUR', 'CONTACT', i, iarg, 1,&
-                        zk16(idcotu+i- 1), n5)
+            call getvr8('SECTEUR', 'COEF_USUR_MOBILE', iocc=i, scal=zr(idvctu+i-1), nbret=n5)
+            call getvr8('SECTEUR', 'COEF_USUR_OBST', iocc=i, scal=zr( idvcob+i-1), nbret=n5)
+            call getvtx('SECTEUR', 'CONTACT', iocc=i, scal=zk16(idcotu+i- 1), nbret=n5)
 14      continue
     else
         indic = 1
@@ -273,14 +260,12 @@ subroutine op0153()
     if (iret .ne. 0) goto 9999
 !
     if (indic .eq. 0) then
-        call getvr8(' ', 'LARGEUR_OBST', 1, iarg, 1,&
-                    haut, n1)
+        call getvr8(' ', 'LARGEUR_OBST', scal=haut, nbret=n1)
         if (n1 .le. 0) then
             haut=0.011d0
         endif
         if (info .gt. 1) write(ifires,1130)
-        call getvr8(' ', 'RAYON_MOBILE', 1, iarg, 1,&
-                    rayot, n1)
+        call getvr8(' ', 'RAYON_MOBILE', scal=rayot, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('F', 'PREPOST4_11')
         endif
@@ -294,8 +279,7 @@ subroutine op0153()
                                               )
 22          continue
 24      continue
-        call getvr8(' ', 'RAYON_OBST', 1, iarg, 1,&
-                    rayoo, n1)
+        call getvr8(' ', 'RAYON_OBST', scal=rayoo, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('F', 'PREPOST4_12')
         endif
@@ -369,8 +353,7 @@ subroutine op0153()
 !     REPRISE EVENTUELLE ET STOCKAGE DE LA TABLE POST_USURE :
 !     -----------------------------------------------------
 !
-    call getvid('ETAT_INIT', 'TABL_USURE', 1, iarg, 1,&
-                tabpus, npu)
+    call getvid('ETAT_INIT', 'TABL_USURE', iocc=1, scal=tabpus, nbret=npu)
     if (npu .eq. 0) then
         dinst = 0.d0
         call tbcrsd(resu, 'G')
@@ -396,8 +379,7 @@ subroutine op0153()
         if (nbsec2 .ne. nbsect) then
             call u2mess('F', 'PREPOST4_14')
         endif
-        call getvr8('ETAT_INIT', 'INST_INIT', 1, iarg, 1,&
-                    dinst, nis)
+        call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=dinst, nbret=nis)
         if (nis .eq. 0) then
             dinst = insdeb
         else if (dinst.gt.insdeb) then

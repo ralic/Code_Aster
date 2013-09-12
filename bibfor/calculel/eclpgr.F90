@@ -1,5 +1,5 @@
 subroutine eclpgr()
-    implicit   none
+    implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,13 +22,13 @@ subroutine eclpgr()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/eclpgc.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -62,17 +62,14 @@ subroutine eclpgr()
 !
 !
     call getres(resu, typre2, nomcmd)
-    call getvid('ECLA_PG', 'RESU_INIT', 1, iarg, 1,&
-                evo1, ibid)
+    call getvid('ECLA_PG', 'RESU_INIT', iocc=1, scal=evo1, nbret=ibid)
     call gettco(evo1, typres)
     if (typres .ne. typre2) call u2mess('F', 'CALCULEL2_37')
 !
-    call getvid('ECLA_PG', 'MAILLAGE', 1, iarg, 1,&
-                ma2, ibid)
-    call getvid('ECLA_PG', 'MODELE_INIT', 1, iarg, 1,&
-                mo1, ibid)
-    call getvtx('ECLA_PG', 'NOM_CHAM', 1, iarg, mxsy,&
-                licham, nbsy)
+    call getvid('ECLA_PG', 'MAILLAGE', iocc=1, scal=ma2, nbret=ibid)
+    call getvid('ECLA_PG', 'MODELE_INIT', iocc=1, scal=mo1, nbret=ibid)
+    call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=mxsy, vect=licham,&
+                nbret=nbsy)
 !
     call dismoi('F', 'NOM_MAILLA', mo1, 'MODELE', ibid,&
                 ma1, ibid)
@@ -83,10 +80,8 @@ subroutine eclpgr()
 !
 !     -- CREATION DE LA SD RESULTAT : RESU
 !     ------------------------------------
-    call getvr8('ECLA_PG', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvtx('ECLA_PG', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
+    call getvr8('ECLA_PG', 'PRECISION', iocc=1, scal=prec, nbret=np)
+    call getvtx('ECLA_PG', 'CRITERE', iocc=1, scal=crit, nbret=nc)
     call rsutnu(evo1, 'ECLA_PG', 1, '&&ECLPGR.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
     if (nbordr .eq. 0) call u2mess('F', 'CALCULEL2_38')

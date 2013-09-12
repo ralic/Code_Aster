@@ -18,10 +18,10 @@ subroutine nmcrdn(sdsuiv, motfac, ntsddl, nbocc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -70,13 +70,12 @@ subroutine nmcrdn(sdsuiv, motfac, ntsddl, nbocc)
         titre(1) = '    SUIVI '
         titre(2) = '     DDL  '
         titre(3) = '     '//chaine
-        call getvtx(motfac, 'TITRE', iocc, iarg, 0,&
-                    k16bid, nbtit)
+        call getvtx(motfac, 'TITRE', iocc=iocc, nbval=0, nbret=nbtit)
         nbtit = - nbtit
         ASSERT(nbtit.le.3)
         if (nbtit .ne. 0) then
-            call getvtx(motfac, 'TITRE', iocc, iarg, nbtit,&
-                        titre, ibid)
+            call getvtx(motfac, 'TITRE', iocc=iocc, nbval=nbtit, vect=titre,&
+                        nbret=ibid)
         endif
         zk16(jddlti+3*(iocc-1)+1-1) = titre(1)
         zk16(jddlti+3*(iocc-1)+2-1) = titre(2)

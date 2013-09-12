@@ -1,14 +1,13 @@
 subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -19,6 +18,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
 #include "asterfort/reliem.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
+!
     integer :: ialloc
     character(len=4) :: fonree
     character(len=8) :: char, noma
@@ -109,15 +109,12 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
     do iocc = 1, npres
 !
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'PRES', iocc, iarg, 1,&
-                        zr(jvalv), npr)
+            call getvr8(motclf, 'PRES', iocc=iocc, scal=zr(jvalv), nbret=npr)
         else
-            call getvid(motclf, 'PRES', iocc, iarg, 1,&
-                        zk8(jvalv), npr)
+            call getvid(motclf, 'PRES', iocc=iocc, scal=zk8(jvalv), nbret=npr)
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !
         if (nbtou .ne. 0) then
             do ima = 1, nmatot
@@ -148,12 +145,12 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
                         valk(1) = maille
                         valk(2) = motclf
                         call u2mesg('A', 'MODELISA9_81', 2, valk, 0,&
-                                0, 0, 0.d0)
+                                    0, 0, 0.d0)
                     endif
                 enddo
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', ncmp)
-            call jedetr(mesmai)
+                call nocart(carte, 3, k8b, 'NUM', nbma,&
+                            k8b, zi(jma), ' ', ncmp)
+                call jedetr(mesmai)
             endif
         endif
 !

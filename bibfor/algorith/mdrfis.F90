@@ -31,9 +31,9 @@ subroutine mdrfis(nbmode, depgen, fexgen, nbnli, nbrfis,&
 ! IN  : ANGINI : ANGLE INITIAL ENTRE FISSURE ET AXE
 ! IN  : VROTAT : VITESSE DE ROTATION AXIALE
 ! ----------------------------------------------------------------------
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gloloc.h"
 #include "asterfort/locglo.h"
 #include "asterfort/togene.h"
@@ -50,8 +50,7 @@ subroutine mdrfis(nbmode, depgen, fexgen, nbnli, nbrfis,&
     real(kind=8) :: drl(3), drg(3), ml(3), mg(3)
 !     --- BOUCLE SUR LES NOEUDS DE NON-LINEARITE ---
 !
-    call getvtx(' ', 'VITESSE_VARIABLE', 1, iarg, 1,&
-                k8b, n1)
+    call getvtx(' ', 'VITESSE_VARIABLE', scal=k8b, nbret=n1)
     if (k8b .eq. 'OUI') then
         call fointe('F ', foncp, 1, 'INST', temps,&
                     angrot, ier)

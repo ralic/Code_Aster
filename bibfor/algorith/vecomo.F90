@@ -40,11 +40,10 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/intet0.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -63,6 +62,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 #include "asterfort/r8inir.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !   PARAMETRE REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
@@ -96,12 +96,10 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
     call jemarq()
     difmax=1.d-3
-    call getvr8('VERIF', 'PRECISION', 1, iarg, 1,&
-                seuil, ival)
+    call getvr8('VERIF', 'PRECISION', iocc=1, scal=seuil, nbret=ival)
     if (ival .ne. 0) difmax=seuil
     icrit=1
-    call getvtx('VERIF', 'CRITERE', 1, iarg, 1,&
-                criter, ival)
+    call getvtx('VERIF', 'CRITERE', iocc=1, scal=criter, nbret=ival)
     if (ival .ne. 0) then
         if (criter .eq. 'ABSOLU') icrit=2
     endif

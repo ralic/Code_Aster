@@ -1,5 +1,5 @@
 subroutine op0023()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,9 +27,9 @@ subroutine op0023()
 !     PREC2 ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
 ! ----------------------------------------------------------------------
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/trcart.h"
@@ -48,8 +48,7 @@ subroutine op0023()
     integer :: iarg
 !     ------------------------------------------------------------------
 !     TEST DU MECANISME DE NAN
-    call getvtx(' ', 'TEST_NAN', 1, iarg, 1,&
-                repons, n)
+    call getvtx(' ', 'TEST_NAN', scal=repons, nbret=n)
     if (repons .eq. 'OUI') then
         tstnan = r8nnem ( )
         resnan = tstnan*1.d0
@@ -70,73 +69,73 @@ subroutine op0023()
 !
     call getfac('OBJET', nocc)
     if (nocc .ne. 0) then
-                     call trjeve(ific, nocc)
-                     if (nfac) then
-                        call u2mess('F', 'CALCULEL6_96')
-                     else
-                        nfac=.true.
-                     endif
+        call trjeve(ific, nocc)
+        if (nfac) then
+            call u2mess('F', 'CALCULEL6_96')
+        else
+            nfac=.true.
+        endif
     endif
-
+!
 !
 !     --- TRAITEMENT D'UN CHAM_NO ---
 !
     call getfac('CHAM_NO', nocc)
     if (nocc .ne. 0) then
-                     call trchno(ific, nocc)
-                     if (nfac) then
-                        call u2mess('F', 'CALCULEL6_96')
-                     else
-                        nfac=.true.
-                     endif
+        call trchno(ific, nocc)
+        if (nfac) then
+            call u2mess('F', 'CALCULEL6_96')
+        else
+            nfac=.true.
+        endif
     endif
 !
 !     --- TRAITEMENT D'UN CHAM_ELEM ---
 !
     call getfac('CHAM_ELEM', nocc)
     if (nocc .ne. 0) then
-                     call trchel(ific, nocc)
-                     if (nfac) then
-                        call u2mess('F', 'CALCULEL6_96')
-                     else
-                        nfac=.true.
-                     endif
+        call trchel(ific, nocc)
+        if (nfac) then
+            call u2mess('F', 'CALCULEL6_96')
+        else
+            nfac=.true.
+        endif
     endif
 !
 !     --- TRAITEMENT D'UNE CARTE ---
 !
     call getfac('CARTE', nocc)
     if (nocc .ne. 0) then
-                     call trcart(ific, nocc)
-                     if (nfac) then
-                        call u2mess('F', 'CALCULEL6_96')
-                     else
-                        nfac=.true.
-                     endif
+        call trcart(ific, nocc)
+        if (nfac) then
+            call u2mess('F', 'CALCULEL6_96')
+        else
+            nfac=.true.
+        endif
     endif
 !
 !     --- TRAITEMENT D'UN CONCEPT RESULTAT ---
 !
     call getfac('RESU', nocc)
     if (nocc .ne. 0) then
-                     call trresu(ific, nocc)
-                     if (nfac) then
-                        call u2mess('F', 'CALCULEL6_96')
-                     else
-                        nfac=.true.
-                     endif
+        call trresu(ific, nocc)
+        if (nfac) then
+            call u2mess('F', 'CALCULEL6_96')
+        else
+            nfac=.true.
+        endif
     endif
 !
 !     --- TRAITEMENT D'UN CONCEPT GENE ---
 !
     call getfac('GENE', nocc)
     if (nocc .ne. 0) then
-                     call trgene(ific, nocc)
-                     if (nfac) then
-                        call u2mess('F', 'CALCULEL6_96')
-                     else
-                        nfac=.true.
-                     endif
+        call trgene(ific, nocc)
+        if (nfac) then
+            call u2mess('F', 'CALCULEL6_96')
+        else
+            nfac=.true.
+        endif
     endif
 !
     1000 format (/,80 ('-'))

@@ -38,16 +38,15 @@ subroutine gefact(duree, nominf)
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/facint.h"
 #include "asterfort/folocx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -61,6 +60,7 @@ subroutine gefact(duree, nominf)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: duree
 !
 !
@@ -107,15 +107,12 @@ subroutine gefact(duree, nominf)
 ! 1. LECTURE DES DONNEES LIEES A L INTERSPECTRE ET VERIFS
 !===============
 !
-    call getvid(' ', 'INTE_SPEC', 1, iarg, 1,&
-                nomint, l)
+    call getvid(' ', 'INTE_SPEC', scal=nomint, nbret=l)
 !
-    call getvtx(' ', 'INTERPOL', 1, iarg, 2,&
-                interp, n1)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n1)
     linter = (interp.eq.'NON')
 !
-    call getvis(' ', 'NB_POIN', 0, iarg, 1,&
-                nbpoin, l)
+    call getvis(' ', 'NB_POIN', scal=nbpoin, nbret=l)
     lnbpn = l .ne. 0
     nbpini = nbpoin
 !
@@ -206,12 +203,10 @@ subroutine gefact(duree, nominf)
     else
 ! 1.2.2 CAS OU ON PEUT INTERPOLER L INTERSPECTRE
 !
-        call getvr8(' ', 'FREQ_FIN', 0, iarg, 1,&
-                    freqf, l)
+        call getvr8(' ', 'FREQ_FIN', scal=freqf, nbret=l)
         lfreqf = l .ne. 0
 !
-        call getvr8(' ', 'FREQ_INIT', 0, iarg, 1,&
-                    freqi, l)
+        call getvr8(' ', 'FREQ_INIT', scal=freqi, nbret=l)
         lfreqi = l .ne. 0
 !
 !      RECHERCHE DES FREQUENCES MIN ET MAX ET DU PAS EN FREQUENCE MIN

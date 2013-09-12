@@ -20,8 +20,6 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
@@ -29,6 +27,8 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 #include "asterfort/detrsd.h"
 #include "asterfort/fointc.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -152,10 +152,8 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
         do 20 k = 1, nbvec
 !
             phase = 0.d0
-            call getvr8('EXCIT', 'PHAS_DEG', k, iarg, 1,&
-                        phase, n1)
-            call getvis('EXCIT', 'PUIS_PULS', k, iarg, 1,&
-                        npuis, n2)
+            call getvr8('EXCIT', 'PHAS_DEG', iocc=k, scal=phase, nbret=n1)
+            call getvis('EXCIT', 'PUIS_PULS', iocc=k, scal=npuis, nbret=n2)
             calpha = exp(dcmplx(0.d0,phase*dgrd))
             if (npuis .ne. 0) calpha = calpha*omega**npuis
 !

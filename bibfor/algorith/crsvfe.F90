@@ -2,15 +2,14 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
                   epsmat, mixpre, kmd)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/creso1.h"
 #include "asterfort/fetmpi.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -19,6 +18,7 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
 #include "asterfort/jevtbl.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: istop, nprec
     real(kind=8) :: epsmat
     character(len=3) :: syme, mixpre, kmd
@@ -107,43 +107,32 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
 !
 ! --- PARAMETRE FETI IDENTIQUE A CELUI DE MULT_FRONT ET HOMOGENE POUR
 !     CHAQUE SOUS-DOMAINE
-    call getvtx(motfac, 'RENUM', 1, iarg, 1,&
-                renum, ibid)
+    call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
     sdfeti=' '
-    call getvid(motfac, 'PARTITION', 1, iarg, 1,&
-                sdfeti(1:8), ibid)
+    call getvid(motfac, 'PARTITION', iocc=1, scal=sdfeti(1:8), nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvis(motfac, 'NMAX_ITER', 1, iarg, 1,&
-                nmaxit, ibid)
+    call getvis(motfac, 'NMAX_ITER', iocc=1, scal=nmaxit, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvis(motfac, 'REAC_RESI', 1, iarg, 1,&
-                reacre, ibid)
+    call getvis(motfac, 'REAC_RESI', iocc=1, scal=reacre, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvr8(motfac, 'RESI_RELA', 1, iarg, 1,&
-                resire, ibid)
+    call getvr8(motfac, 'RESI_RELA', iocc=1, scal=resire, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'VERIF_SDFETI', 1, iarg, 1,&
-                verif, ibid)
+    call getvtx(motfac, 'VERIF_SDFETI', iocc=1, scal=verif, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvr8(motfac, 'TEST_CONTINU', 1, iarg, 1,&
-                testco, ibid)
+    call getvr8(motfac, 'TEST_CONTINU', iocc=1, scal=testco, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'TYPE_REORTHO_DD', 1, iarg, 1,&
-                tyreor, ibid)
+    call getvtx(motfac, 'TYPE_REORTHO_DD', iocc=1, scal=tyreor, nbret=ibid)
     ASSERT(ibid.eq.1)
     if (tyreor(1:4) .ne. 'SANS') then
-        call getvis(motfac, 'NB_REORTHO_DD', 1, iarg, 1,&
-                    nbreor, ibid)
+        call getvis(motfac, 'NB_REORTHO_DD', iocc=1, scal=nbreor, nbret=ibid)
         ASSERT(ibid.eq.1)
-        call getvtx(motfac, 'ACCELERATION_SM', 1, iarg, 1,&
-                    acsm, ibid)
+        call getvtx(motfac, 'ACCELERATION_SM', iocc=1, scal=acsm, nbret=ibid)
         ASSERT(ibid.eq.1)
         if (acsm(1:3) .eq. 'OUI') then
-            call getvis(motfac, 'NB_REORTHO_INST', 1, iarg, 1,&
-                        nbreoi, ibid)
+            call getvis(motfac, 'NB_REORTHO_INST', iocc=1, scal=nbreoi, nbret=ibid)
             ASSERT(ibid.eq.1)
         else
             nbreoi=0
@@ -153,24 +142,20 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
         acsm(1:3)='NON'
         nbreoi=0
     endif
-    call getvtx(motfac, 'PRE_COND', 1, iarg, 1,&
-                preco, ibid)
+    call getvtx(motfac, 'PRE_COND', iocc=1, scal=preco, nbret=ibid)
     ASSERT(ibid.eq.1)
     if (preco(1:4) .ne. 'SANS') then
-        call getvtx(motfac, 'SCALING', 1, iarg, 1,&
-                    scalin, ibid)
+        call getvtx(motfac, 'SCALING', iocc=1, scal=scalin, nbret=ibid)
         ASSERT(ibid.eq.1)
     else
         scalin(1:4)='SANS'
     endif
-    call getvtx(motfac, 'STOCKAGE_GI', 1, iarg, 1,&
-                stogi, ibid)
+    call getvtx(motfac, 'STOCKAGE_GI', iocc=1, scal=stogi, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
 ! --- OBJET TEMPORAIRE POUR MONITORING FETI
     infofe='FFFFFFFFFFFFFFFFFFFFFFFF'
-    call getvtx(motfac, 'INFO_FETI', 1, iarg, 1,&
-                infofe, ibid)
+    call getvtx(motfac, 'INFO_FETI', iocc=1, scal=infofe, nbret=ibid)
     ASSERT(ibid.eq.1)
     call wkvect('&FETI.FINF', 'V V K24', 1, iinf)
     zk24(iinf)=infofe

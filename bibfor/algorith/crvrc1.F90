@@ -1,5 +1,5 @@
 subroutine crvrc1()
-    implicit  none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,12 @@ subroutine crvrc1()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -68,12 +68,9 @@ subroutine crvrc1()
 !
 !
     call getres(resu, type, oper)
-    call getvid('PREP_VRC1', 'MODELE', 1, iarg, 1,&
-                modele, n1)
-    call getvid('PREP_VRC1', 'CARA_ELEM', 1, iarg, 1,&
-                carele, n1)
-    call getvid('PREP_VRC1', 'CHAM_GD', 1, iarg, 1,&
-                tempef, n1)
+    call getvid('PREP_VRC1', 'MODELE', iocc=1, scal=modele, nbret=n1)
+    call getvid('PREP_VRC1', 'CARA_ELEM', iocc=1, scal=carele, nbret=n1)
+    call getvid('PREP_VRC1', 'CHAM_GD', iocc=1, scal=tempef, nbret=n1)
 !
 !     -- ON VERIFIE QUE LE CARA_ELEM S'APPUIE BIEN SUR LE MODELE
     call jeexin(carele//'.CANBSP    .CELK', iexi)
@@ -85,13 +82,12 @@ subroutine crvrc1()
 !
 !
 !     -- INSTANTS DE L'EVOL_THER :
-    call getvr8('PREP_VRC1', 'INST', 1, iarg, 0,&
-                rbid, n1)
+    call getvr8('PREP_VRC1', 'INST', iocc=1, nbval=0, nbret=n1)
     ASSERT(n1.lt.0)
     nbinst = -n1
     call wkvect('&&CRVRC1.LINST', 'V V R', nbinst, jlinst)
-    call getvr8('PREP_VRC1', 'INST', 1, iarg, nbinst,&
-                zr(jlinst), n1)
+    call getvr8('PREP_VRC1', 'INST', iocc=1, nbval=nbinst, vect=zr(jlinst),&
+                nbret=n1)
 !
     call jeexin(resu//'           .DESC', iret)
     if (iret .ne. 0) then

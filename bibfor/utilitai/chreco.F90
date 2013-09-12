@@ -24,11 +24,11 @@ subroutine chreco(chou)
 !    - SA PARTIE IMAGINAIRE EST NULLE.
 !     -----------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8pi.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -51,8 +51,7 @@ subroutine chreco(chou)
     call jemarq()
 !
 !     RECUPERATION DU CHAMP COMPLEXE
-    call getvid(' ', 'CHAM_GD', 0, iarg, 1,&
-                chin, iret)
+    call getvid(' ', 'CHAM_GD', scal=chin, nbret=iret)
 !
 !     VERIFICATION : CHIN COMPLEXE?
     call dismoi('F', 'NOM_GD', chin, 'CHAMP', ibid,&
@@ -100,8 +99,7 @@ subroutine chreco(chou)
     valin(1:19)=chin
     call jeveuo(valin, 'L', jvalin)
 !
-    call getvtx(' ', 'PARTIE', 0, iarg, 1,&
-                partie, iret)
+    call getvtx(' ', 'PARTIE', scal=partie, nbret=iret)
 !
     c1=180.d0/r8pi()
     do 10 i = 1, nbval

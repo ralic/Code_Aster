@@ -39,11 +39,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !     --- ARGUMENTS ---
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcop.h"
 #include "asterfort/celces.h"
@@ -53,6 +49,9 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -82,6 +81,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbordr, nchar
     character(len=4) :: ctyp
     character(len=8) :: resuco, resuc1, modele, cara
@@ -155,15 +155,12 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     call infmaj()
     call infniv(ifm, niv)
     carele=' '
-    call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
-                carele, n1)
+    call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n1)
 !
-    call getvtx(' ', 'OPTION', 1, iarg, 0,&
-                k8b, n2)
+    call getvtx(' ', 'OPTION', nbval=0, nbret=n2)
     nbopt = -n2
     call wkvect(lesopt, 'V V K16', nbopt, jopt)
-    call getvtx(' ', 'OPTION', 1, iarg, nbopt,&
-                zk16(jopt), n2)
+    call getvtx(' ', 'OPTION', nbval=nbopt, vect=zk16(jopt), nbret=n2)
     call modopt(resuco, modele, lesopt, nbopt)
     call jeveuo(lesopt, 'L', jopt)
 !
@@ -328,8 +325,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !    ------------------------------------------------------------------
         else if (option.eq.'SING_ELEM') then
 !
-            call getvr8(' ', 'PREC_ERR', 1, iarg, 1,&
-                        prec, iret1)
+            call getvr8(' ', 'PREC_ERR', scal=prec, nbret=iret1)
             if (iret1 .ne. 1) then
                 call u2mess('F', 'CALCULEL3_12')
             else
@@ -339,8 +335,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
             endif
 !
             types=' '
-            call getvtx(' ', 'TYPE_ESTI', 1, iarg, 1,&
-                        types, ireter)
+            call getvtx(' ', 'TYPE_ESTI', scal=types, nbret=ireter)
             if (ireter .gt. 0) then
                 call u2mesk('I', 'CALCULEL3_24', 1, types)
             endif

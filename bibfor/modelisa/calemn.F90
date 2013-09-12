@@ -51,7 +51,7 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
 ! -----  ARGUMENTS
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reliem.h"
@@ -91,26 +91,22 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
 ! --- DE NOEUDS (I.E. 'GROUP_NO_1' OU 'NOEUD_1' OU 'GROUP_MA_1'
 ! --- OU 'MAILLE_1') :
 !     --------------
-    call getvtx(motfac, 'GROUP_NO_1', iocc, iarg, 0,&
-                k8bid, n1)
+    call getvtx(motfac, 'GROUP_NO_1', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         motcle = 'GROUP_NO_1'
         tymocl = 'GROUP_NO'
     else
-        call getvtx(motfac, 'NOEUD_1', iocc, iarg, 0,&
-                    k8bid, n2)
+        call getvtx(motfac, 'NOEUD_1', iocc=iocc, nbval=0, nbret=n2)
         if (n2 .ne. 0) then
             motcle = 'NOEUD_1'
             tymocl = 'NOEUD'
         else
-            call getvtx(motfac, 'GROUP_MA_1', iocc, iarg, 0,&
-                        k8bid, n3)
+            call getvtx(motfac, 'GROUP_MA_1', iocc=iocc, nbval=0, nbret=n3)
             if (n3 .ne. 0) then
                 motcle = 'GROUP_MA_1'
                 tymocl = 'GROUP_MA'
             else
-                call getvtx(motfac, 'MAILLE_1', iocc, iarg, 0,&
-                            k8bid, n4)
+                call getvtx(motfac, 'MAILLE_1', iocc=iocc, nbval=0, nbret=n4)
                 if (n4 .ne. 0) then
                     motcle = 'MAILLE_1'
                     tymocl = 'MAILLE'
@@ -131,26 +127,22 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
 ! --- DE NOEUDS (I.E. 'GROUP_NO_2' OU 'NOEUD_2' OU 'GROUP_MA_2'
 ! --- OU 'MAILLE_2') :
 !     --------------
-    call getvtx(motfac, 'GROUP_NO_2', iocc, iarg, 0,&
-                k8bid, n5)
+    call getvtx(motfac, 'GROUP_NO_2', iocc=iocc, nbval=0, nbret=n5)
     if (n5 .ne. 0) then
         motcle = 'GROUP_NO_2'
         tymocl = 'GROUP_NO'
     else
-        call getvtx(motfac, 'NOEUD_2', iocc, iarg, 0,&
-                    k8bid, n6)
+        call getvtx(motfac, 'NOEUD_2', iocc=iocc, nbval=0, nbret=n6)
         if (n6 .ne. 0) then
             motcle = 'NOEUD_2'
             tymocl = 'NOEUD'
         else
-            call getvtx(motfac, 'GROUP_MA_2', iocc, iarg, 0,&
-                        k8bid, n7)
+            call getvtx(motfac, 'GROUP_MA_2', iocc=iocc, nbval=0, nbret=n7)
             if (n7 .ne. 0) then
                 motcle = 'GROUP_MA_2'
                 tymocl = 'GROUP_MA'
             else
-                call getvtx(motfac, 'MAILLE_2', iocc, iarg, 0,&
-                            k8bid, n8)
+                call getvtx(motfac, 'MAILLE_2', iocc=iocc, nbval=0, nbret=n8)
                 if (n8 .ne. 0) then
                     motcle = 'MAILLE_2'
                     tymocl = 'MAILLE'

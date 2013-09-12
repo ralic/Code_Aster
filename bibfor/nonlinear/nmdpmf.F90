@@ -1,12 +1,13 @@
 subroutine nmdpmf(compor)
     implicit none
-#include "asterc/getvid.h"
+#include "jeveux.h"
 #include "asterfort/carces.h"
 #include "asterfort/cescar.h"
 #include "asterfort/cesfus.h"
 #include "asterfort/cesred.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mess.h"
@@ -35,7 +36,6 @@ subroutine nmdpmf(compor)
 !
 ! IN/OUT  COMPOR    carte de comportement
 ! ----------------------------------------------------------------------
-#include "jeveux.h"
     integer :: n1, ibid, iarg, iret
     logical :: lcumu(2), lcoc(2)
     character(len=6) :: nompro
@@ -67,8 +67,7 @@ subroutine nmdpmf(compor)
                 'A', ibid)
 !
 !     ON RECUPERE LA CARTE COMPOR DE AFFE_COMPOR ==> CHAM_ELEM_S
-    call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                chmat, n1)
+    call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=n1)
 !
 !     VERIFICATION QU'UN COMPORTEMENT MULTI-FIBRES A ETE AFFECTE
     call exisd('CARTE', chmat//'.COMPOR', iret)

@@ -18,7 +18,7 @@ subroutine dfllae(mcfact, iechec, pcplus)
 ! ======================================================================
 !
     implicit none
-#include "asterc/getvr8.h"
+#include "asterfort/getvr8.h"
     character(len=16) :: mcfact
     integer :: iechec
     real(kind=8) :: pcplus
@@ -51,7 +51,6 @@ subroutine dfllae(mcfact, iechec, pcplus)
 !
 ! --- OPTIONS DE L'ACTION
 !
-    call getvr8(mcfact, 'PCENT_ITER_PLUS', iechec, iarg, 1,&
-                pcplus, iret)
+    call getvr8(mcfact, 'PCENT_ITER_PLUS', iocc=iechec, scal=pcplus, nbret=iret)
 !
 end subroutine

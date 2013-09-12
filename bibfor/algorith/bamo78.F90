@@ -1,10 +1,6 @@
 subroutine bamo78(nomres, trange, typres)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -15,6 +11,9 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -42,6 +41,7 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/vrcref.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres
     character(len=16) :: typres
     character(len=19) :: trange
@@ -90,7 +90,7 @@ subroutine bamo78(nomres, trange, typres)
     character(len=24) :: k24bla
     character(len=24) :: chvarc, chvref
     character(len=19) :: knume, kinst, krefe
-    integer :: jnume,jinst
+    integer :: jnume, jinst
     character(len=8) :: ctype, sdnoli, k8bla, modele, materi, crit
     character(len=1) :: typcoe
     character(len=2) :: codret
@@ -132,21 +132,17 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- RECUPERATION BASE MODALE
 !
-    call getvid(' ', 'BASE_MODALE', 1, iarg, 1,&
-                basemo, ibid)
-    call getvid(' ', 'RESU_FINAL', 1, iarg, 1,&
-                k8bid, ievnew)
+    call getvid(' ', 'BASE_MODALE', scal=basemo, nbret=ibid)
+    call getvid(' ', 'RESU_FINAL', scal=k8bid, nbret=ievnew)
     materi = ' '
-    call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                materi, n1)
+    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
     if (n1 .ne. 0) then
         call rcmfmc(materi, mate)
     else
         mate = ' '
     endif
     carele = ' '
-    call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
-                carele, n1)
+    call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n1)
 !
 ! --- NOMBRE DE MODES
 !
@@ -156,7 +152,8 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- NUME_DDL ATTACHE A LA BASE MODALE
 !
-    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numedd, iret)
+    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                numedd, iret)
 !
 ! --- NOUVELLE NUMEROTATION PAS NECESSAIRE ENCORE DANS REST_COND_TRAN
 !
@@ -179,23 +176,20 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- CHAMPS SUR LESQUELS ON RESTITUE
 !
-    call getvtx(' ', 'TOUT_CHAM', 1, iarg, 0,&
-                k8bid, n0)
+    call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n0)
     if (n0 .ne. 0) then
         nbcham = 3
         champ(1) = 'DEPL'
         champ(2) = 'VITE'
         champ(3) = 'ACCE'
     else
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbcham = -n1
             if (nbcham .gt. 3) then
                 ASSERT(.false.)
             endif
-            call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                        champ, n1)
+            call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
         else
             call u2mess('A', 'ALGORITH10_93')
             goto 9999
@@ -217,10 +211,8 @@ subroutine bamo78(nomres, trange, typres)
         call jeveuo(knume, 'L', jnume)
     endif
     call jeveuo(trange//'.ORDR', 'L', jordr)
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                epsi, n)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, n)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n)
 !
 ! --- CREATION DE LA SD RESULTAT EVOL_NOLI
 !
@@ -315,7 +307,7 @@ subroutine bamo78(nomres, trange, typres)
 ! --- ENRICHISSEMENT SD TRAN_GENE -> EVOL_NOLI SD_VERI = 'NON' !!!
 !
     if (typres .ne. 'EVOL_NOLI') then
-        call refdcp(basemo,krefe(1:8))
+        call refdcp(basemo, krefe(1:8))
         goto 9999
     endif
 !

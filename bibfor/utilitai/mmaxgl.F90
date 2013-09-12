@@ -3,11 +3,10 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -25,6 +24,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nborn, lonvec, nnoff
     real(kind=8) :: born(*), gbil(*), abcur(*)
     character(len=8) :: result, noeu(*)
@@ -85,8 +85,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !-INUTILE ???
-    call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                chsigi, init)
+    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_G_MAX'
         call u2mesk('F', 'RUPTURE1_13', 1, valk)

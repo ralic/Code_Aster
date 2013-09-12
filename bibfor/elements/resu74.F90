@@ -26,9 +26,9 @@ subroutine resu74(tran, nomres)
 !
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedupo.h"
@@ -69,12 +69,9 @@ subroutine resu74(tran, nomres)
 !
 !     --- RECUPERATION DE L'INSTANT DE REPRISE
 !
-    call getvtx('ETAT_INIT', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
-    call getvr8('ETAT_INIT', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvr8('ETAT_INIT', 'INST_INIT', 1, iarg, 1,&
-                tinit, ni)
+    call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
+    call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
+    call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
 !
 !      --- RECHERCHE DU NUMERO D'ORDRE DE L'INSTANT DE REPRISE
 !

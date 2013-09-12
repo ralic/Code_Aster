@@ -514,7 +514,7 @@ void DEFSPS(GETTYP,gettyp, _IN char *typaster, _IN STRING_SIZE ltyp,
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
+void DEFSSPPPPP(GETVC8_WRAP,getvc8_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,
                            _INOUT DOUBLE *val,_OUT INTEGER *nbval)
@@ -588,7 +588,7 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
-void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
+void DEFSSPPPPP(GETVR8_WRAP,getvr8_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,_INOUT DOUBLE *val,
                               _OUT INTEGER *nbval)
@@ -725,7 +725,7 @@ void DEFSPSPPSP(FIINTFC,fiintfc,_IN char *nomfon,_IN STRING_SIZE lfon,
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
+void DEFSSPPPPP(GETVIS_WRAP,getvis_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,
                               _IN INTEGER *iocc,
                               _IN INTEGER *iarg,
@@ -887,9 +887,9 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
-#define CALL_GETVTX(a,b,c,d,e,f,g) CALLSSPPPSP(GETVTX,getvtx,a,b,c,d,e,f,g)
+#define CALL_GETVTX(a,b,c,d,e,f,g) CALLSSPPPSP(GETVTX_WRAP,getvtx_wrap,a,b,c,d,e,f,g)
 
-void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
+void DEFSSPPPSP(GETVTX_WRAP,getvtx_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,
                            _INOUT char *txval,_IN STRING_SIZE ltx,_OUT INTEGER *nbval)
@@ -978,7 +978,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
+void DEFSSPPPSP(GETVID_WRAP,getvid_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
                               _IN INTEGER *iarg,_IN INTEGER *mxval,
                            _INOUT char *txval,_IN STRING_SIZE ltx,_OUT INTEGER *nbval)
@@ -2390,7 +2390,7 @@ int RecupNomCas(void)
                                                    AS_ASSERT(lng>0);
       NomCas = MakeBlankFStr(lng);
                                                    AS_ASSERT(NomCas!=(char*)0);
-      CALL_GETVTX ( "CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval) ;
+      CALL_GETVTX("CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval);
    }
    else{
       /* Erreur  */

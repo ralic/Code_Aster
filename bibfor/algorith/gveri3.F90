@@ -51,9 +51,9 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/glegen.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -97,17 +97,13 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
     call wkvect(trav2, 'V V R', lnoff, iadrt2)
     call wkvect(trav3, 'V V R', (nbre+1)*lnoff, iadrt3)
 !
-    call getvr8('THETA', 'R_INF', 1, iarg, 1,&
-                rinf, nr)
-    call getvr8('THETA', 'R_SUP', 1, iarg, 1,&
-                rsup, nr)
+    call getvr8('THETA', 'R_INF', iocc=1, scal=rinf, nbret=nr)
+    call getvr8('THETA', 'R_SUP', iocc=1, scal=rsup, nbret=nr)
     if (nr .ne. 0 .and. rsup .le. rinf) then
         call u2mess('F', 'RUPTURE1_6')
     endif
-    call getvid('THETA', 'R_INF_FO', 1, iarg, 1,&
-                rinff, nrf)
-    call getvid('THETA', 'R_SUP_FO', 1, iarg, 1,&
-                rsupf, nrf)
+    call getvid('THETA', 'R_INF_FO', iocc=1, scal=rinff, nbret=nrf)
+    call getvid('THETA', 'R_SUP_FO', iocc=1, scal=rsupf, nbret=nrf)
 !     RECUPERATION DE RINF ET DE RSUP DANS LA SD FOND_FISS
     if (nr .eq. 0 .and. nrf .eq. 0) then
         if (config .eq. 'DECOLLEE') call u2mess('F', 'RUPTURE1_7')

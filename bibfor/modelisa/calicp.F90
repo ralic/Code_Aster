@@ -5,15 +5,15 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_pair_node.h"
-#include "asterfort/getnode.h"
 #include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
+#include "asterfort/getnode.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -41,10 +41,10 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 ! ======================================================================
 ! Person in charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,13 +91,13 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
 ! - Initializations
 !
-    list_rela    = '&&CALISO.RLLISTE'
+    list_rela = '&&CALISO.RLLISTE'
     list_node_i1 = '&&CALICP.LIST_NODE_I1'
     list_node_i2 = '&&CALICP.LIST_NODE_I2'
     list_node_o1 = '&&CALICP.LIST_NODE_O1'
     list_node_o2 = '&&CALICP.LIST_NODE_O2'
-    list_pair    = '&&CALICP.LIST_PAIR'
-    type_lagr    = '12'
+    list_pair = '&&CALICP.LIST_PAIR'
+    type_lagr = '12'
     call wkvect(list_pair, 'V V I', 2, j_list_pair)
 !
 ! - Type
@@ -123,17 +123,17 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
-    cmp_name  = 'DX'
+    cmp_name = 'DX'
     cmp_index_dx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DY'
+    cmp_name = 'DY'
     cmp_index_dy = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DZ'
+    cmp_name = 'DZ'
     cmp_index_dz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DRX'
+    cmp_name = 'DRX'
     cmp_index_drx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DRY'
+    cmp_name = 'DRY'
     cmp_index_dry = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DRZ'
+    cmp_name = 'DRZ'
     cmp_index_drz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
     ASSERT(cmp_index_dx.gt.0)
     ASSERT(cmp_index_dy.gt.0)
@@ -148,13 +148,11 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
 ! ----- Definition of position for lagrange multipliers
 !
-        call getvtx(keywordfact, 'NUME_LAGR', iocc, iarg, 0,&
-                    k8dummy, n1)
+        call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             type_lagr = '12'
         else
-            call getvtx(keywordfact, 'NUME_LAGR', iocc, iarg, 1,&
-                        poslag, n1)
+            call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=n1)
             if (poslag .eq. 'APRES') then
                 type_lagr = '22'
             else
@@ -165,13 +163,13 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 ! ----- Read nodes - First list
 !
         suffix = '_1'
-        call getnode(mesh, keywordfact, iocc, suffix, 'F', &
+        call getnode(mesh, keywordfact, iocc, suffix, 'F',&
                      list_node_i1, nb_node_1)
 !
 ! ----- Read nodes - Second list
 !
         suffix = '_2'
-        call getnode(mesh, keywordfact, iocc, suffix, 'F', &
+        call getnode(mesh, keywordfact, iocc, suffix, 'F',&
                      list_node_i2, nb_node_2)
 !
         if (nb_node_1 .ne. nb_node_2) call u2mess('F', 'CHARGES2_8')
@@ -184,14 +182,14 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
 ! ----- Read transformation
 !
-        call char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
+        call char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                             l_cent, cent, l_angl_naut, angl_naut)
 !
 ! ----- Pairing the two lists with transformation
 !
-        call char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
+        call char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
                             list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
-        if (i_error.ne.0) call u2mess('F', 'CHARGES2_9')
+        if (i_error .ne. 0) call u2mess('F', 'CHARGES2_9')
 !
 ! ----- Compute linear relations
 !
@@ -201,12 +199,12 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
             zi(j_list_pair-1+1) = nume_node_1
             zi(j_list_pair-1+2) = nume_node_2
             if (ndim .eq. 2) then
-                call drz12d(mesh, ligrmo, vale_type, 2, list_pair, &
+                call drz12d(mesh, ligrmo, vale_type, 2, list_pair,&
                             cmp_index_drz, type_lagr, list_rela)
             else if (ndim .eq. 3) then
-                call drz13d(mesh, ligrmo, vale_type, 2, list_pair, &
-                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
-                            cmp_index_drz, type_lagr, list_rela)
+                call drz13d(mesh, ligrmo, vale_type, 2, list_pair,&
+                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
+                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela)
             endif
         enddo
         call jedetr(list_node_i1)
@@ -221,7 +219,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
     call jedetr(list_pair)
 !
-999 continue
-
+999  continue
+!
     call jedema()
 end subroutine

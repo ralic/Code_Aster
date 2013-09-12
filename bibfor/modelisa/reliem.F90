@@ -2,11 +2,10 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                   nbmocl, limocl, tymocl, litroz, nbtrou)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -20,6 +19,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbmocl, nbtrou
     character(len=8) :: ma, modele
     character(len=*) :: limocl(nbmocl), tymocl(nbmocl), mo
@@ -149,8 +149,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !        -- CAS TOUT:'OUI'
 !        -----------------
         if (typmcl .eq. 'TOUT') then
-            call getvtx(motfac, motcle, iocc, iarg, 1,&
-                        oui, ntou)
+            call getvtx(motfac, motcle, iocc=iocc, scal=oui, nbret=ntou)
             if (ntou .gt. 0) then
                 if (type2 .eq. 'MAILLE') then
                     do 40,k = 1,nbma

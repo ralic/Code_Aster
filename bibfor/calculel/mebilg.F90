@@ -1,14 +1,13 @@
 subroutine mebilg(optioz, result, modele, depla1, depla2,&
-                  theta, mate, lischa,symech,timeu,&
-                  timev, indi, indj,nbprup, noprup)
+                  theta, mate, lischa, symech, timeu,&
+                  timev, indi, indj, nbprup, noprup)
     implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gcharg.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -21,8 +20,9 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
+!
     character(len=19) :: lischa
-    character(len=8) :: modele,  result, symech
+    character(len=8) :: modele, result, symech
     character(len=16) :: optioz, noprup(*)
     character(len=24) :: depla1, depla2, mate, theta
     real(kind=8) :: timeu, timev
@@ -99,8 +99,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
 !
 !- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
 !
-    call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                chsigi, init)
+    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='G_BILI'
         call u2mesk('F', 'RUPTURE1_13', 1, valk)
@@ -124,8 +123,8 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
     ucheps = '&&MBILGL.EPSI'
     uchpes = '&&MBILGL.PESA'
     uchrot = '&&MBILGL.ROTA'
-    call gcharg(modele, lischa, uchvol, ucf12d,ucf23d,&
-                uchpre, ucheps, uchpes, uchrot,ufonc,&
+    call gcharg(modele, lischa, uchvol, ucf12d, ucf23d,&
+                uchpre, ucheps, uchpes, uchrot, ufonc,&
                 timeu, indi)
 !
     if (ufonc) then
@@ -151,8 +150,8 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
     vcheps = '&&MBILGL.EPSI'
     vchpes = '&&MBILGL.PESA'
     vchrot = '&&MBILGL.ROTA'
-    call gcharg(modele,lischa, vchvol, vcf12d,vcf23d,&
-                vchpre, vcheps, vchpes, vchrot,vfonc,&
+    call gcharg(modele, lischa, vchvol, vcf12d, vcf23d,&
+                vchpre, vcheps, vchpes, vchrot, vfonc,&
                 timev, indj)
 !
     if (vfonc) then

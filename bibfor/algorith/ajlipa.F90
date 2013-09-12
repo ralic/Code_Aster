@@ -2,15 +2,15 @@ subroutine ajlipa(modelz, base)
     implicit none
 #include "aster_types.h"
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -120,8 +120,7 @@ subroutine ajlipa(modelz, base)
 !     -- SI L'UTILISATEUR NE VEUT PAS DE DISTRIBUTION DES CALCULS,
 !        IL N'Y A RIEN A FAIRE :
 !     ------------------------------------------------------------
-    call getvtx('PARTITION', 'PARALLELISME', 1, iarg, 1,&
-                kdis, ibid)
+    call getvtx('PARTITION', 'PARALLELISME', iocc=1, scal=kdis, nbret=ibid)
     if (kdis .eq. 'CENTRALISE') goto 99
 !
 !     -- EN DISTRIBUE, LES SOUS-STRUCTURES SONT INTERDITES :
@@ -171,14 +170,11 @@ subroutine ajlipa(modelz, base)
 !     -------------------------------
 !
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call getvis('PARTITION', 'CHARGE_PROC0_SD', 1, iarg, 1,&
-                    dist0, ibid)
-        call getvid('PARTITION', 'PARTITION', 1, iarg, 1,&
-                    sdfeti, ibid)
+        call getvis('PARTITION', 'CHARGE_PROC0_SD', iocc=1, scal=dist0, nbret=ibid)
+        call getvid('PARTITION', 'PARTITION', iocc=1, scal=sdfeti, nbret=ibid)
         if (ibid .eq. 1) zk24(jprtk-1+2)= sdfeti
     else if (kdis(1:4).eq.'MAIL') then
-        call getvis('PARTITION', 'CHARGE_PROC0_MA', 1, iarg, 1,&
-                    dist0, ibid)
+        call getvis('PARTITION', 'CHARGE_PROC0_MA', iocc=1, scal=dist0, nbret=ibid)
     endif
 !
 !     -- VERIFICATION POUR LE CAS DU PARTITIONNEMENT EN SOUS-DOMAINES :

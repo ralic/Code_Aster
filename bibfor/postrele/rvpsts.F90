@@ -19,10 +19,9 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 ! ======================================================================
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -33,6 +32,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: sdeval
     character(len=24) :: sdmoye, sdlieu
     integer :: iocc
@@ -98,10 +98,8 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     nsova = sdmoye(1:19)//'.VALE'
     nsocp = sdmoye(1:19)//'.NOCP'
 !
-    call getvtx('ACTION', 'RESULTANTE', iocc, iarg, 0,&
-                zk80, nres)
-    call getvtx('ACTION', 'MOMENT', iocc, iarg, 0,&
-                zk80, nmom)
+    call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=nres)
+    call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=0, nbret=nmom)
     nres = -nres
     nmom = -nmom
 !
@@ -284,11 +282,10 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
         do 140, i = 1, l1, 1
         zr(amoye + i-1) = zero
 140      continue
-        call getvr8('ACTION', 'POINT', iocc, iarg, 0,&
-                    t, n)
+        call getvr8('ACTION', 'POINT', iocc=iocc, nbval=0, nbret=n)
         n = -n
-        call getvr8('ACTION', 'POINT', iocc, iarg, n,&
-                    t, i)
+        call getvr8('ACTION', 'POINT', iocc=iocc, nbval=n, vect=t,&
+                    nbret=i)
         x = t(1)
         y = t(2)
         if (n .eq. 2) then

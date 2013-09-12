@@ -1,11 +1,10 @@
 subroutine regeec(nomres, resgen, nomsst)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -27,6 +26,7 @@ subroutine regeec(nomres, resgen, nomsst)
 #include "asterfort/u2mesg.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, resgen, nomsst
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -86,7 +86,8 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DU MODELE GENERALISE
 !
-    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid, raid, iret)
+    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid,&
+                raid, iret)
 !
     call jeveuo(raid//'.REFA', 'L', llref2)
     numgen(1:14) = zk24(llref2+1)
@@ -171,8 +172,8 @@ subroutine regeec(nomres, resgen, nomsst)
     call mgutdm(modgen, nomsst, ibid, 'NOM_BASE_MODALE', ibid,&
                 basmod)
 !
-    call refdcp(basmod,nomres)
-
+    call refdcp(basmod, nomres)
+!
     call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbbas,&
                 kbid, ier)
 !
@@ -186,7 +187,8 @@ subroutine regeec(nomres, resgen, nomsst)
         endif
     endif
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lint, iret)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                lint, iret)
 !
     call dismoi('F', 'NOM_MAILLA', lint, 'INTERF_DYNA', ibid,&
                 mailla, iret)
@@ -209,8 +211,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     call getres(kbid, typres, quamod)
     if (quamod .ne. 'CALC_CORR_SSD') then
-        call getvis(' ', 'NUME_ORDRE', 1, iarg, 0,&
-                    ibid, nno)
+        call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nno)
     else
 !-- SI ON APPELLE DEPUIS QUAL_MODL, ON RESTITUE TOUS LES MODES
         nno=0
@@ -219,8 +220,7 @@ subroutine regeec(nomres, resgen, nomsst)
     if (nno .ne. 0) then
         nbmod = -nno
         call wkvect('&&REGEEC.NUME', 'V V I', nbmod, jbid)
-        call getvis(' ', 'NUME_ORDRE', 1, iarg, nbmod,&
-                    zi(jbid), nno)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbmod, vect=zi(jbid), nbret=nno)
     else
         call wkvect('&&REGEEC.NUME', 'V V I', nbmod, jbid)
         do 2 i = 1, nbmod

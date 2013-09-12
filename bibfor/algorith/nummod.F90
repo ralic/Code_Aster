@@ -1,7 +1,7 @@
 subroutine nummod(nugene, modmec)
-    implicit    none
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+    implicit none
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nummo1.h"
@@ -48,10 +48,8 @@ subroutine nummod(nugene, modmec)
 !
     call jemarq()
 !
-    call getvis(' ', 'NB_VECT', 1, iarg, 1,&
-                nbvect, n1)
-    call getvtx(' ', 'STOCKAGE', 1, iarg, 1,&
-                typrof, n1)
+    call getvis(' ', 'NB_VECT', scal=nbvect, nbret=n1)
+    call getvtx(' ', 'STOCKAGE', scal=typrof, nbret=n1)
 !
 !-----RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA OU MODE_GENE
 !

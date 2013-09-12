@@ -31,11 +31,10 @@ subroutine arg126(nomres)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -48,6 +47,7 @@ subroutine arg126(nomres)
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/u2mesg.h"
+!
     integer :: vali(3)
 !
 !
@@ -109,8 +109,7 @@ subroutine arg126(nomres)
 !-----BOUCLE SUR LES SOUS-STRUCTURES DEFINIES-------------------------
 !
     do 10 i = 1, nbsst
-        call getvtx(clesst, clenom, i, iarg, 0,&
-                    kbid, ioc)
+        call getvtx(clesst, clenom, iocc=i, nbval=0, nbret=ioc)
         ioc=-ioc
         if (ioc .ne. 1) then
             vali (1) = 1
@@ -118,13 +117,11 @@ subroutine arg126(nomres)
             call u2mesg('F', 'ALGORITH11_93', 0, ' ', 2,&
                         vali, 0, 0.d0)
         else
-            call getvtx(clesst, clenom, i, iarg, 1,&
-                        nomsst, ibid)
+            call getvtx(clesst, clenom, iocc=i, scal=nomsst, nbret=ibid)
         endif
         call jecroc(jexnom(repsst, nomsst))
 !
-        call getvid(clesst, clemcl, i, iarg, 0,&
-                    kbid, ioc)
+        call getvid(clesst, clemcl, iocc=i, nbval=0, nbret=ioc)
         ioc=-ioc
         if (ioc .ne. 1) then
             valk (1) = nomsst
@@ -133,8 +130,7 @@ subroutine arg126(nomres)
             call u2mesg('F', 'ALGORITH11_94', 1, valk, 2,&
                         vali, 0, 0.d0)
         else
-            call getvid(clesst, clemcl, i, iarg, 1,&
-                        mclcou, ibid)
+            call getvid(clesst, clemcl, iocc=i, scal=mclcou, nbret=ibid)
         endif
         call jenonu(jexnom(repsst, nomsst), ibid)
         call jeveuo(jexnum(nommcl, ibid), 'E', ldnmcl)
@@ -144,16 +140,15 @@ subroutine arg126(nomres)
 !
         call jenonu(jexnom(repsst, nomsst), ibid)
         call jeveuo(jexnum(rotsst, ibid), 'E', ldrot)
-        call getvr8(clesst, clerot, i, iarg, 0,&
-                    rbid, ioc)
+        call getvr8(clesst, clerot, iocc=i, nbval=0, nbret=ioc)
         ioc=-ioc
         if (ioc .eq. 0) then
             do 30 j = 1, 3
                 zr(ldrot+j-1)=0.d+00
 30          continue
         else if (ioc.eq.3) then
-            call getvr8(clesst, clerot, i, iarg, 3,&
-                        zr(ldrot), ibid)
+            call getvr8(clesst, clerot, iocc=i, nbval=3, vect=zr(ldrot),&
+                        nbret=ibid)
             do 20 j = 1, 3
                 zr(ldrot+j-1)=zr(ldrot+j-1)*pi/180.d+00
 20          continue
@@ -170,16 +165,15 @@ subroutine arg126(nomres)
 !
         call jenonu(jexnom(repsst, nomsst), ibid)
         call jeveuo(jexnum(trasst, ibid), 'E', ldtra)
-        call getvr8(clesst, cletra, i, iarg, 0,&
-                    rbid, ioc)
+        call getvr8(clesst, cletra, iocc=i, nbval=0, nbret=ioc)
         ioc=-ioc
         if (ioc .eq. 0) then
             do 40 j = 1, 3
                 zr(ldtra+j-1)=0.d+00
 40          continue
         else if (ioc.eq.3) then
-            call getvr8(clesst, cletra, i, iarg, 3,&
-                        zr(ldtra), ibid)
+            call getvr8(clesst, cletra, iocc=i, nbval=3, vect=zr(ldtra),&
+                        nbret=ibid)
         else
             valk (1) = nomsst
             vali (1) = ioc
@@ -215,8 +209,7 @@ subroutine arg126(nomres)
 !  BOUCLE SUR LES SOUS-STRUCTURES DE LA LIAISON
 !
         do 150 j = 1, 2
-            call getvtx(clelia, clel(j), i, iarg, 0,&
-                        kbid, ioc)
+            call getvtx(clelia, clel(j), iocc=i, nbval=0, nbret=ioc)
             ioc=-ioc
             if (ioc .ne. 1) then
                 vali (1) = i
@@ -226,8 +219,7 @@ subroutine arg126(nomres)
                 call u2mesg('F', 'ALGORITH11_98', 1, valk, 3,&
                             vali, 0, 0.d0)
             else
-                call getvtx(clelia, clel(j), i, iarg, 1,&
-                            nomcou, ibid)
+                call getvtx(clelia, clel(j), iocc=i, scal=nomcou, nbret=ibid)
 !
 !  VERIFICATION EXISTANCE DE LA SOUS-STRUCTURE
 !
@@ -245,8 +237,7 @@ subroutine arg126(nomres)
 !  BOUCLE SUR LES INTERFACES
 !
         do 160 j = 3, 4
-            call getvtx(clelia, clel(j), i, iarg, 0,&
-                        kbid, ioc)
+            call getvtx(clelia, clel(j), iocc=i, nbval=0, nbret=ioc)
             ioc=-ioc
             if (ioc .ne. 1) then
                 vali (1) = i
@@ -256,8 +247,7 @@ subroutine arg126(nomres)
                 call u2mesg('F', 'ALGORITH11_98', 1, valk, 3,&
                             vali, 0, 0.d0)
             else
-                call getvtx(clelia, clel(j), i, iarg, 1,&
-                            nomcou, ibid)
+                call getvtx(clelia, clel(j), iocc=i, scal=nomcou, nbret=ibid)
             endif
 !
 !  VERIFICATION DE L'EXISTANCE DE L'INTERFACE

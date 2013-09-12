@@ -26,7 +26,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 ! ET REMPLISSAGE DE SES OBJETS AUTRES QUE LE .UALF
 !---------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -138,8 +138,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
         zk24(jrefa-1+1) = ' '
 !
     else if (indice.eq.1) then
-        call getvid(' ', 'NUME_DDL_GENE', 0, iarg, 1,&
-                    nummod, nbid)
+        call getvid(' ', 'NUME_DDL_GENE', scal=nummod, nbret=nbid)
         num14 = nummod
         call jeveuo(num14//'.NUME.REFN', 'L', imodeg)
         zk24(jrefa-1+1) = zk24(imodeg)

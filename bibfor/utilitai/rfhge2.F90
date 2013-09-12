@@ -1,14 +1,13 @@
 subroutine rfhge2(harmge)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -28,6 +27,7 @@ subroutine rfhge2(harmge)
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
+!
     character(len=*) :: harmge
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -79,26 +79,18 @@ subroutine rfhge2(harmge)
     interp(2) = 'NON '
     intres = 'NON '
 !
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERP_NUME', 1, iarg, 1,&
-                intres, n1)
-    call getvtx(' ', 'INTERPOL', 1, iarg, 2,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERP_NUME', scal=intres, nbret=n1)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n1)
     if (n1 .eq. 1) interp(2) = interp(1)
 !
     noeud = ' '
     cmp = ' '
-    call getvtx(' ', 'NOM_CMP', 1, iarg, 1,&
-                cmp, n1)
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 1,&
-                nomcha, n2)
-    call getvtx(' ', 'NOEUD', 1, iarg, 1,&
-                noeud, n3)
-    call getvtx(' ', 'GROUP_NO', 1, iarg, 1,&
-                nogno, ngn)
+    call getvtx(' ', 'NOM_CMP', scal=cmp, nbret=n1)
+    call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=n2)
+    call getvtx(' ', 'NOEUD', scal=noeud, nbret=n3)
+    call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
 !
     call jeexin(resu//'.'//nomcha(1:4), iret)
     if (iret .eq. 0) then
@@ -136,8 +128,7 @@ subroutine rfhge2(harmge)
 !
     call jeveuo(resu//'.DESC', 'L', ldesc)
     nbmode = zi(ldesc+1)
-    call getvis(' ', 'NUME_CMP_GENE', 1, iarg, 1,&
-                numcmp, n1)
+    call getvis(' ', 'NUME_CMP_GENE', scal=numcmp, nbret=n1)
     lfon = lvar + nbordr
 !
 ! --- CAS OU D'UNE VARIABLE GENERALISEE
@@ -165,10 +156,12 @@ subroutine rfhge2(harmge)
 !
 ! --- CAS D'UNE VARIABLE PHYSIQUE
 !
-        call dismoi('F', 'REF_RIGI_PREM', resu, 'RESU_DYNA', ibid, matpro, iret)
+        call dismoi('F', 'REF_RIGI_PREM', resu, 'RESU_DYNA', ibid,&
+                    matpro, iret)
         call jeveuo(matpro//'           .REFA', 'L', iaref2)
         basemo = zk24(iaref2)(1:8)
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matras, iret)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                    matras, iret)
 !
         nomsy = 'DEPL'
 ! ---   RECUPERATION DE LA BASE MODALE DANS UN VECTEUR DE TRAVAIL
@@ -186,7 +179,8 @@ subroutine rfhge2(harmge)
             call dismoi('F', 'NOM_MAILLA', matras, 'MATR_ASSE', ibid,&
                         noma, ie)
         else
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, nume, iret)
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                        nume, iret)
             call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
                         noma, ie)
             call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&

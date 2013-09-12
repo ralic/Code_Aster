@@ -24,10 +24,10 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 ! OUT : PUUSUR : PUISSANCE USURE
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/impus.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -41,7 +41,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    character(len=8) ::  noeu
+    character(len=8) :: noeu
     character(len=19) :: trange, kforn, kvgli
     integer :: iarg
 !
@@ -58,28 +58,22 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     nbpt = 0
     impr = 2
 !
-    call getvr8(' ', 'PUIS_USURE', 1, iarg, 1,&
-                puusur, n1)
+    call getvr8(' ', 'PUIS_USURE', scal=puusur, nbret=n1)
     if (n1 .ne. 0) then
         call impus(ifires, 0, puusur)
         goto 9999
     endif
 !
-    call getvid(' ', 'RESU_GENE', 1, iarg, 1,&
-                trange, nt)
+    call getvid(' ', 'RESU_GENE', scal=trange, nbret=nt)
     if (nt .ne. 0) then
         call jeveuo(trange//'.DESC', 'L', jdesc)
         if (zi(jdesc) .eq. 2 .or. zi(jdesc) .eq. 3) then
             nbchoc = zi(jdesc+2)
-            call getvis(' ', 'NB_BLOC', 1, iarg, 1,&
-                        nbloc, n1)
+            call getvis(' ', 'NB_BLOC', scal=nbloc, nbret=n1)
             if (n1 .eq. 0) nbloc = 1
-            call getvr8(' ', 'INST_INIT', 1, iarg, 1,&
-                        tdebut, n2)
-            call getvr8(' ', 'INST_FIN', 1, iarg, 1,&
-                        tfin, n3)
-            call getvtx(' ', 'NOEUD', 1, iarg, 1,&
-                        noeu, n4)
+            call getvr8(' ', 'INST_INIT', scal=tdebut, nbret=n2)
+            call getvr8(' ', 'INST_FIN', scal=tfin, nbret=n3)
+            call getvtx(' ', 'NOEUD', scal=noeu, nbret=n4)
 !
             call jeveuo(trange//'.NCHO', 'L', jncho)
 !           --- RECHERCHE DU NOEUD DE CHOC ---

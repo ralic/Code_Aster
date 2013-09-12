@@ -1,5 +1,5 @@
 subroutine op0130()
-    implicit   none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,10 @@ subroutine op0130()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -49,27 +49,19 @@ subroutine op0130()
     call getres(nomres, concep, nomcmd)
     call infmaj()
 !
-    call getvid(' ', 'RESU_GENE', 0, iarg, 1,&
-                trange, n1)
+    call getvid(' ', 'RESU_GENE', scal=trange, nbret=n1)
     call jeveuo(trange//'           .DESC', 'L', jdesc)
 !
     call getfac('CHOC', nbind)
     if (nbind .ne. 0) then
         do 10 i = 1, nbind
-            call getvis('CHOC', 'NB_BLOC', i, iarg, 1,&
-                        nbbloc, n1)
-            call getvr8('CHOC', 'INST_INIT', i, iarg, 1,&
-                        tdebut, n1)
-            call getvr8('CHOC', 'INST_FIN', i, iarg, 1,&
-                        tfin, n1)
-            call getvr8('CHOC', 'SEUIL_FORCE', i, iarg, 1,&
-                        offset, n1)
-            call getvr8('CHOC', 'DUREE_REPOS', i, iarg, 1,&
-                        trepos, n1)
-            call getvtx('CHOC', 'OPTION', i, iarg, 1,&
-                        koptio, n1)
-            call getvis('CHOC', 'NB_CLASSE', i, iarg, 1,&
-                        nbclas, n1)
+            call getvis('CHOC', 'NB_BLOC', iocc=i, scal=nbbloc, nbret=n1)
+            call getvr8('CHOC', 'INST_INIT', iocc=i, scal=tdebut, nbret=n1)
+            call getvr8('CHOC', 'INST_FIN', iocc=i, scal=tfin, nbret=n1)
+            call getvr8('CHOC', 'SEUIL_FORCE', iocc=i, scal=offset, nbret=n1)
+            call getvr8('CHOC', 'DUREE_REPOS', iocc=i, scal=trepos, nbret=n1)
+            call getvtx('CHOC', 'OPTION', iocc=i, scal=koptio, nbret=n1)
+            call getvis('CHOC', 'NB_CLASSE', iocc=i, scal=nbclas, nbret=n1)
             if (koptio(1:6) .eq. 'USURE') then
                 loptio = .true.
             else
@@ -88,10 +80,8 @@ subroutine op0130()
     call getfac('RELA_EFFO_DEPL', nbind)
     if (nbind .ne. 0 .and. zi(jdesc+3) .ne. 0) then
         do 20 i = 1, nbind
-            call getvtx('RELA_EFFO_DEPL', 'NOEUD', i, iarg, 1,&
-                        noeu, n2)
-            call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', i, iarg, 1,&
-                        cmp, n2)
+            call getvtx('RELA_EFFO_DEPL', 'NOEUD', iocc=i, scal=noeu, nbret=n2)
+            call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=cmp, nbret=n2)
 !
             call porefd(trange, noeu, cmp, nomres)
 20      continue

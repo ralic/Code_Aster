@@ -19,10 +19,9 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -38,6 +37,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomo
     character(len=19) :: vesstr
     character(len=1) :: base
@@ -105,15 +105,13 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
     ier0 = 0
     do 10 ioc = 1, nboc
 !
-        call getvtx(motfac, 'CAS_CHARGE', ioc, iarg, 1,&
-                    nomcas, n1)
+        call getvtx(motfac, 'CAS_CHARGE', iocc=ioc, scal=nomcas, nbret=n1)
         call jecroc(jexnom(vesstr(1:19)//'.RELC', nomcas))
         call jeveuo(jexnom(vesstr(1:19)//'.RELC', nomcas), 'E', ialsch)
 !
 !       -- CAS : TOUT: 'OUI'
 !
-        call getvtx(motfac, 'TOUT', ioc, iarg, 1,&
-                    k8bid, n1)
+        call getvtx(motfac, 'TOUT', iocc=ioc, scal=k8bid, nbret=n1)
         if (n1 .eq. 1) then
             do 1 i = 1, nbsma
                 if (zi(iasssa-1+i) .eq. 1) zi(ialsch-1+i)=1
@@ -123,13 +121,12 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
 !       -- CAS : MAILLE: L_MAIL
 !
-        call getvtx(motfac, 'SUPER_MAILLE', ioc, iarg, 0,&
-                    k8bid, n2)
+        call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n2)
         if (-n2 .gt. nbsma) then
             call u2mess('F', 'SOUSTRUC_25')
         else
-            call getvtx(motfac, 'SUPER_MAILLE', ioc, iarg, nbsma,&
-                        zk8(ialmai), n2)
+            call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=zk8(ialmai),&
+                        nbret=n2)
         endif
         do 2 i = 1, n2
             nosma = zk8(ialmai-1+i)

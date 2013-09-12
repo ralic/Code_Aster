@@ -1,16 +1,16 @@
 subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
                   repere, nbnli, parcho, lnoue2)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/orient.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ioc, iliai, nbnli
     real(kind=8) :: parcho(nbnli, *)
     logical :: lnoue2
@@ -66,22 +66,19 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
 !
     if (motfac .eq. 'CHOC' .or. motfac .eq. 'FLAMBAGE') then
 !          ------------------------------------------
-        call getvtx(motfac, 'REPERE', ioc, iarg, 0,&
-                    repere, n1)
+        call getvtx(motfac, 'REPERE', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             repere = 'GLOBAL'
         else
-            call getvtx(motfac, 'REPERE', ioc, iarg, 1,&
-                        repere, n1)
+            call getvtx(motfac, 'REPERE', iocc=ioc, scal=repere, nbret=n1)
         endif
-        call getvr8(motfac, 'ORIG_OBST', ioc, iarg, 1,&
-                    tempo, n1)
+        call getvr8(motfac, 'ORIG_OBST', iocc=ioc, scal=tempo(1), nbret=n1)
     endif
 !
     n1 = -n1
     if (n1 .eq. 3) then
-        call getvr8(motfac, 'ORIG_OBST', ioc, iarg, 3,&
-                    tempo, n1)
+        call getvr8(motfac, 'ORIG_OBST', iocc=ioc, nbval=3, vect=tempo,&
+                    nbret=n1)
         if (typnum .eq. 'NUME_DDL_SDASTER') then
             parcho(iliai,14) = tempo(1)
             parcho(iliai,15) = tempo(2)

@@ -47,10 +47,6 @@ subroutine op0045()
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
@@ -65,6 +61,10 @@ subroutine op0045()
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/freqom.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -153,7 +153,7 @@ subroutine op0045()
     character(len=24) :: cborvp, valk(5), nopara(nbpara), metres, kzero
     logical :: flage, lqz, lkr, lc, lns, lnsc, lnsk, lnsm, ltabmo, lpg, lcomod
     logical(kind=4), pointer, dimension(:) :: bwork
-
+!
 !     ------------------------------------------------------------------
     data cborvp / '&&OP0045.BORNE.VALP.USR ' /
     data  nopara /&
@@ -228,12 +228,9 @@ subroutine op0045()
     rang = to_aster_int(mrang)
     nbproc = to_aster_int(mnbproc)
 !
-    call getvis('PARALLELISME_MACRO', 'TYPE_COM', 1, iarg, 1,&
-                typeco, l1)
-    call getvis('PARALLELISME_MACRO', 'IPARA1_COM', 1, iarg, 1,&
-                icom1, l2)
-    call getvis('PARALLELISME_MACRO', 'IPARA2_COM', 1, iarg, 1,&
-                icom2, l3)
+    call getvis('PARALLELISME_MACRO', 'TYPE_COM', iocc=1, scal=typeco, nbret=l1)
+    call getvis('PARALLELISME_MACRO', 'IPARA1_COM', iocc=1, scal=icom1, nbret=l2)
+    call getvis('PARALLELISME_MACRO', 'IPARA2_COM', iocc=1, scal=icom2, nbret=l3)
     valk(1)='TYPE_COM'
     valk(2)='IPARA1_COM'
     valk(3)='IPARA2_COM'
@@ -277,8 +274,7 @@ subroutine op0045()
 !
 !     --- TYPE DE CALCUL : DYNAMIQUE OU FLAMBEMENT OU GENERAL  ---
 !     TYPE_RESU : 'DYNAMIQUE' OU 'MODE_FLAMB' OU 'GENERAL'
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                typres, ltypre)
+    call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=ltypre)
 !
 !
 !     --- CATALOGUE DE COMMANDE, DIFFERENT SELON LE TYPE_RESU
@@ -307,18 +303,15 @@ subroutine op0045()
 !     --- OPTION DEMANDEE : BANDE OU PLUS_PETITE OU PLUS_GRANDE OU
 !         CENTRE OU TOUT ---
 !     OPTIOF : 'BANDE' OU 'CENTRE' OU 'PLUS_PETITE' OU 'TOUT'
-    call getvtx('CALC_'//typevp, 'OPTION', 1, iarg, 1,&
-                optiof, lmf)
+    call getvtx('CALC_'//typevp, 'OPTION', iocc=1, scal=optiof, nbret=lmf)
 !
 !
 !     --- RECUPERATION DES ARGUMENTS MATRICIELS ---
     if (optiof .eq. 'PLUS_GRANDE') then
         optiof = 'PLUS_PETITE'
         lpg = .true.
-        call getvid(' ', matra, 1, iarg, 1,&
-                    masse0, l)
-        call getvid(' ', matrb, 1, iarg, 1,&
-                    raide0, l)
+        call getvid(' ', matra, scal=masse0, nbret=l)
+        call getvid(' ', matrb, scal=raide0, nbret=l)
         raide = 'MATR'
         masse = 'MATM'
 !       - TRANSMISSION DES LAGRANGES DE LA RAIDEUR VERS LA MASSE
@@ -328,15 +321,14 @@ subroutine op0045()
         call mtcmbl(1, 'R', 1.d0, masse0, masse,&
                     'LAGR', ' ', 'ELIM=')
     else
-        call getvid(' ', matra, 1, iarg, 1,&
-                    raide, l)
-        call getvid(' ', matrb, 1, iarg, 1,&
-                    masse, l)
+        call getvid(' ', matra, scal=raide, nbret=l)
+        call getvid(' ', matrb, scal=masse, nbret=l)
     endif
     amor = ' '
     lamor = 0
-    if (typres .ne. 'MODE_FLAMB') call getvid(' ', matrc, 1, iarg, 1,&
-                                              amor, lamor)
+    if (typres .ne. 'MODE_FLAMB') then
+        call getvid(' ', matrc, scal=amor, nbret=lamor)
+    endif
     if (lamor .eq. 0) then
         lc=.false.
     else
@@ -355,8 +347,7 @@ subroutine op0045()
 !
 !     --- METHODE DE RESOLUTION CHOISIE ---
 !     METHOD : 'TRI_DIAG','JACOBI' OU 'SORENSEN' OU 'QZ'
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, lmet)
+    call getvtx(' ', 'METHODE', scal=method, nbret=lmet)
     if (method(1:2) .eq. 'QZ') then
         lqz=.true.
     else
@@ -365,88 +356,67 @@ subroutine op0045()
 !
 !     --- DETECTION DES MODES DE CORPS RIGIDE ---
 !     MODRIG : 'MODE_RIGIDE' OU 'SANS'
-    call getvtx(' ', 'OPTION', 1, iarg, 1,&
-                modrig, ltypri)
+    call getvtx(' ', 'OPTION', scal=modrig, nbret=ltypri)
 !
 !     --- RECUPERATION DES ARGUMENTS CONCERNANT LE NOMBRE DE SHIFT ---
-    call getvis('CALC_'//typevp, 'NMAX_ITER_SHIFT', 1, iarg, 1,&
-                nbrss, lbrss)
+    call getvis('CALC_'//typevp, 'NMAX_ITER_SHIFT', iocc=1, scal=nbrss, nbret=lbrss)
 !
 !     --- RECUPERATION NFREQ ---
 !     NFREQ : NOMBRE DE MODES DEMANDES
-    call getvis('CALC_'//typevp, 'NMAX_'//typevp, 1, iarg, 1,&
-                nfreq, l)
+    call getvis('CALC_'//typevp, 'NMAX_'//typevp, iocc=1, scal=nfreq, nbret=l)
 !
 !     --- RECUPERATION PARAM ESPACE REDUIT ---
 !     NBVECT, NBVEC2 : DIMENSION/COEF MULTIPLICATEUR DE L'ESPACE REDUIT
     nbvect = 0
-    call getvis('CALC_'//typevp, 'DIM_SOUS_ESPACE', 1, iarg, 1,&
-                nbvect, l)
+    call getvis('CALC_'//typevp, 'DIM_SOUS_ESPACE', iocc=1, scal=nbvect, nbret=l)
     nbvec2 = 0
-    call getvis('CALC_'//typevp, 'COEF_DIM_ESPACE', 1, iarg, 1,&
-                nbvec2, l)
+    call getvis('CALC_'//typevp, 'COEF_DIM_ESPACE', iocc=1, scal=nbvec2, nbret=l)
 !
 !     --- RECUPERATION DECALAGE POUR DETERMINER LE SHIFT ---
 !     PRECSH : POUR PRE TRAITEMENT
-    call getvr8('CALC_'//typevp, 'PREC_SHIFT', 1, iarg, 1,&
-                precsh, l)
+    call getvr8('CALC_'//typevp, 'PREC_SHIFT', iocc=1, scal=precsh, nbret=l)
 !     PRECDC : POUR POST TRAITEMENT
-    call getvr8('VERI_MODE', 'PREC_SHIFT', 1, iarg, 1,&
-                precdc, lmf)
+    call getvr8('VERI_MODE', 'PREC_SHIFT', iocc=1, scal=precdc, nbret=lmf)
 !
 !     --- RECUPERATION PARAM LANCZOS ---
     if (method .eq. 'TRI_DIAG') then
-        call getvis(' ', 'NMAX_ITER_ORTHO', 1, iarg, 1,&
-                    nborto, l)
-        call getvr8(' ', 'PREC_ORTHO', 1, iarg, 1,&
-                    prorto, l)
-        call getvr8(' ', 'PREC_LANCZOS', 1, iarg, 1,&
-                    prsudg, l)
-        call getvis(' ', 'NMAX_ITER_QR', 1, iarg, 1,&
-                    nitv, l)
+        call getvis(' ', 'NMAX_ITER_ORTHO', scal=nborto, nbret=l)
+        call getvr8(' ', 'PREC_ORTHO', scal=prorto, nbret=l)
+        call getvr8(' ', 'PREC_LANCZOS', scal=prsudg, nbret=l)
+        call getvis(' ', 'NMAX_ITER_QR', scal=nitv, nbret=l)
 !
 !     --- RECUPERATION PARAM JACOBI ---
     else if (method .eq. 'JACOBI') then
-        call getvis(' ', 'NMAX_ITER_BATHE ', 1, iarg, 1,&
-                    itemax, l)
-        call getvr8(' ', 'PREC_BATHE', 1, iarg, 1,&
-                    tol, l)
-        call getvis(' ', 'NMAX_ITER_JACOBI', 1, iarg, 1,&
-                    nperm, l)
-        call getvr8(' ', 'PREC_JACOBI', 1, iarg, 1,&
-                    toldyn, l)
+        call getvis(' ', 'NMAX_ITER_BATHE ', scal=itemax, nbret=l)
+        call getvr8(' ', 'PREC_BATHE', scal=tol, nbret=l)
+        call getvis(' ', 'NMAX_ITER_JACOBI', scal=nperm, nbret=l)
+        call getvr8(' ', 'PREC_JACOBI', scal=toldyn, nbret=l)
 !
 !     --- RECUPERATION PARAM SORENSEN ---
     else if (method .eq. 'SORENSEN') then
-        call getvr8(' ', 'PREC_SOREN', 1, iarg, 1,&
-                    tolsor, l)
-        call getvis(' ', 'NMAX_ITER_SOREN', 1, iarg, 1,&
-                    maxitr, l)
-        call getvr8(' ', 'PARA_ORTHO_SOREN', 1, iarg, 1,&
-                    alpha, l)
+        call getvr8(' ', 'PREC_SOREN', scal=tolsor, nbret=l)
+        call getvis(' ', 'NMAX_ITER_SOREN', scal=maxitr, nbret=l)
+        call getvr8(' ', 'PARA_ORTHO_SOREN', scal=alpha, nbret=l)
         if ((alpha.lt.1.2d0*eps) .or. (alpha.gt.0.83d0-eps)) call u2mess('E', 'ALGELINE2_64')
 !     --- RECUPERATION PARAM QZ ---
     else if (lqz) then
-        call getvtx(' ', 'TYPE_QZ', 1, iarg, 1,&
-                    typeqz, l)
+        call getvtx(' ', 'TYPE_QZ', scal=typeqz, nbret=l)
     endif
 !
 !     --- RECUPERATION PARAM MODES RIGIDES ---
 !     FCORIG : SEUIL DE FREQUENCE CORPS RIGIDE
-    call getvr8('CALC_'//typevp, 'SEUIL_'//typevp, 1, iarg, 1,&
-                fcorig, l)
+    call getvr8('CALC_'//typevp, 'SEUIL_'//typevp, iocc=1, scal=fcorig, nbret=l)
     omecor = rzero
     if (typres .eq. 'DYNAMIQUE') omecor = omega2(fcorig)
 !
 !     --- LISTES DES FREQUENCES/CHARGES CRITIQUES ---
     nnvalp = 0
-    call getvr8('CALC_'//typevp, typevp, 1, iarg, 0,&
-                rbid, nnvalp)
+    call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=nnvalp)
     if (nnvalp .lt. 0) then
         nnvalp = -nnvalp
         call wkvect(cborvp, ' V V R', nnvalp, lborvp)
-        call getvr8('CALC_'//typevp, typevp, 1, iarg, nnvalp,&
-                    zr(lborvp), l)
+        call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=nnvalp, vect=zr(lborvp),&
+                    nbret=l)
     else
         call wkvect(cborvp, ' V V R', 1, lborvp)
         zr(lborvp)=rzero
@@ -454,8 +424,7 @@ subroutine op0045()
 !
 !     --- APPROCHE (CAS AVEC AMORTISSEMENT) ---
 !     UTILISE SI LMAMOR.NE.0 ET SI METHODE.NE.QZ
-    call getvtx('CALC_'//typevp, 'APPROCHE', 1, iarg, 1,&
-                appr, ibid)
+    call getvtx('CALC_'//typevp, 'APPROCHE', iocc=1, scal=appr, nbret=ibid)
 !
 !     ------------------------------------------------------------------
 !     --------------------  REGLES D'EXCLUSION   -----------------------
@@ -633,8 +602,7 @@ subroutine op0045()
     endif
 !
 !     --- ARRET SI PAS DE FREQUENCE DANS L'INTERVALLE DONNE  ---
-    call getvtx(' ', 'STOP_BANDE_VIDE', 1, iarg, 1,&
-                arret, n1)
+    call getvtx(' ', 'STOP_BANDE_VIDE', scal=arret, nbret=n1)
 !
 !     ------------------------------------------------------------------
 !     ----  DETETECTION DES MODES DE CORPS RIGIDE                 ------
@@ -675,8 +643,7 @@ subroutine op0045()
     effmin=-9999.d0
     effmax=-9999.d0
     if (optiof .eq. 'BANDE') then
-        call getvid('CALC_'//typevp, 'TABLE_'//typevp, 1, ibid, 1,&
-                    tabmod, l)
+        call getvid('CALC_'//typevp, 'TABLE_'//typevp, iocc=1, scal=tabmod, nbret=l)
         if (l .eq. 1) then
             ltabmo=.true.
             call vptabl(tabmod, typevp, fmin, fmax, precdc,&
@@ -1464,18 +1431,15 @@ subroutine op0045()
 !     ----------- CONTROLE DE VALIDITE DES MODES CALCULES  -------------
 !     ------------------------------------------------------------------
 !
-    call getvtx('VERI_MODE', 'STOP_ERREUR', 1, iarg, 1,&
-                optiov, lmf)
+    call getvtx('VERI_MODE', 'STOP_ERREUR', iocc=1, scal=optiov, nbret=lmf)
     if (optiov .eq. 'OUI') then
         ctyp = 'E'
     else
         ctyp = 'A'
     endif
 !
-    call getvr8('VERI_MODE', 'SEUIL', 1, iarg, 1,&
-                seuil, lmf)
-    call getvtx('VERI_MODE', 'STURM', 1, iarg, 1,&
-                optiov, lmf)
+    call getvr8('VERI_MODE', 'SEUIL', iocc=1, scal=seuil, nbret=lmf)
+    call getvtx('VERI_MODE', 'STURM', iocc=1, scal=optiov, nbret=lmf)
     if (optiov .eq. 'NON') then
         optiov = ' '
     else
@@ -1520,8 +1484,7 @@ subroutine op0045()
                 precdc, ierx, vpinf, vpmax, zr(lresur),&
                 zr(lresur+3*mxresf), zr(lresur+mxresf), typres, nblagr, solveu,&
                 nbrss, precsh)
-    call getvtx('VERI_MODE', 'STOP_ERREUR', 1, iarg, 1,&
-                optiov, lmf)
+    call getvtx('VERI_MODE', 'STOP_ERREUR', iocc=1, scal=optiov, nbret=lmf)
 !
     if ((optiov.eq.'OUI') .and. (ierx.ne.0)) call u2mess('F', 'ALGELINE2_74')
 !

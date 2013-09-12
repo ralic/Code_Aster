@@ -17,11 +17,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/assert.h"
@@ -36,6 +33,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -62,6 +61,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 #include "asterfort/utpvgl.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: nbcmp, icham
     character(len=*) :: champ1, champ0, repere, type, nomch, modele, carele
 ! ----------------------------------------------------------------------
@@ -119,8 +119,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 !
     if (nbcmp .gt. 0) then
         call wkvect('&&CHRPEL.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('MODI_CHAM', 'NOM_CMP', icham, iarg, nbcmp,&
-                    zk8(jcmp), ibid)
+        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=zk8(jcmp),&
+                    nbret=ibid)
     else
         call u2mess('F', 'ALGORITH2_6')
     endif
@@ -148,14 +148,12 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 !     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
     call jeveuo(ma//'.DIME   ', 'L', inbno)
     call wkvect('&&CHRPEL.NOEUDS', 'V V K8', zi(inbno), inoeu)
-    call getvtx('AFFE', 'NOEUD', icham, iarg, 0,&
-                zk8(inoeu), iret0)
+    call getvtx('AFFE', 'NOEUD', iocc=icham, nbval=0, nbret=iret0)
     call jeexin(ma//'.GROUPENO', ierk)
     if (ierk .ne. 0) then
         call jelira(ma//'.GROUPENO', 'NMAXOC', nbgno)
         call wkvect('&&CHRPEL.GROUP_NO', 'V V K24', nbgno, igno)
-        call getvtx('AFFE', 'GROUP_NO', icham, iarg, 0,&
-                    zk24(igno), iret1)
+        call getvtx('AFFE', 'GROUP_NO', iocc=icham, nbval=0, nbret=iret1)
     else
         iret1=0
     endif
@@ -221,25 +219,24 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 !
     if (repere(1:11) .eq. 'UTILISATEUR') then
 !        SI LE NOUVEAU REPERE EST DONNE VIA DES VECTEURS
-        call getvr8('AFFE', 'VECT_X', 1, iarg, 3,&
-                    vectx, ibid)
+        call getvr8('AFFE', 'VECT_X', iocc=1, nbval=3, vect=vectx,&
+                    nbret=ibid)
         if (ibid .ne. 0) then
-            call getvr8('AFFE', 'VECT_Y', 1, iarg, 3,&
-                        vecty, ibid)
+            call getvr8('AFFE', 'VECT_Y', iocc=1, nbval=3, vect=vecty,&
+                        nbret=ibid)
             if (ndim .ne. 3) then
                 call u2mess('F', 'ALGORITH2_4')
             endif
             call angvxy(vectx, vecty, angnot)
         else
             if (ndim .eq. 3) then
-                call getvr8('AFFE', 'ANGL_NAUT', 1, iarg, 3,&
-                            angnot, ibid)
+                call getvr8('AFFE', 'ANGL_NAUT', iocc=1, nbval=3, vect=angnot,&
+                            nbret=ibid)
                 if (ibid .ne. 3) then
                     call u2mess('F', 'ALGORITH2_7')
                 endif
             else
-                call getvr8('AFFE', 'ANGL_NAUT', 1, iarg, 1,&
-                            angnot(1), ibid)
+                call getvr8('AFFE', 'ANGL_NAUT', iocc=1, scal=angnot(1), nbret=ibid)
                 if (ibid .ne. 1) then
                     valr = angnot(1)
                     call u2mesg('A', 'ALGORITH12_43', 0, ' ', 0,&
@@ -437,24 +434,23 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         call dismoi('C', 'TYPE_CHAMP', champ1, 'CHAMP', ibid,&
                     tych, iret)
         if (ndim .eq. 3) then
-            call getvr8('AFFE', 'ORIGINE', 1, iarg, 3,&
-                        orig, ibid)
+            call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=3, vect=orig,&
+                        nbret=ibid)
             if (ibid .ne. 3) then
                 call u2mess('F', 'ALGORITH2_8')
             endif
-            call getvr8('AFFE', 'AXE_Z', 1, iarg, 3,&
-                        axez, ibid)
+            call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=3, vect=axez,&
+                        nbret=ibid)
             if (ibid .eq. 0) then
                 call u2mess('F', 'ALGORITH2_9')
             endif
         else
-            call getvr8('AFFE', 'ORIGINE', 1, iarg, 2,&
-                        orig, ibid)
+            call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=2, vect=orig,&
+                        nbret=ibid)
             if (ibid .ne. 2) then
                 call u2mess('A', 'ALGORITH2_10')
             endif
-            call getvr8('AFFE', 'AXE_Z', 1, iarg, 0,&
-                        axez, ibid)
+            call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=0, nbret=ibid)
             if (ibid .ne. 0) then
                 call u2mess('A', 'ALGORITH2_11')
             endif

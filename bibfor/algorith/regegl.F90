@@ -1,11 +1,10 @@
 subroutine regegl(nomres, resgen, mailsk, profno)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/genugl.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -28,6 +27,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 #include "asterfort/u2mesg.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, resgen, mailsk
     character(len=19) :: profno
 !-----------------------------------------------------------------------
@@ -73,9 +73,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst
     integer :: iadpar(12)
     integer :: vali(2)
-    real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek, fpartx, fparty, fpartz
+    real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek, fpartx, fparty
+    real(kind=8) :: fpartz
     real(kind=8) :: genem, mat(3, 3), omeg2, rbid
-    character(len=8)  :: basmod, macrel, modgen, soutr, kbid
+    character(len=8) :: basmod, macrel, modgen, soutr, kbid
     character(len=16) :: depl, nompar(12)
     character(len=19) :: raid, numddl, numgen, chamne
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
@@ -112,7 +113,8 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----RECUPERATION DU MODELE GENERALISE--------------------------------
 !
-    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid, raid, iret)
+    call dismoi('F', 'REF_RIGI_PREM', resgen, 'RESU_DYNA', ibid,&
+                raid, iret)
 !
     call jeveuo(raid//'.REFA', 'L', llref2)
     numgen(1:14)=zk24(llref2+1)
@@ -164,13 +166,11 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 ! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 !
-    call getvis(' ', 'NUME_ORDRE', 1, iarg, 0,&
-                ibid, nno)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nno)
     if (nno .ne. 0) then
         nbmod = -nno
         call wkvect('&&REGEGL.NUME', 'V V I', nbmod, jbid)
-        call getvis(' ', 'NUME_ORDRE', 1, iarg, nbmod,&
-                    zi(jbid), nno)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbmod, vect=zi(jbid), nbret=nno)
     else
         call wkvect('&&REGEGL.NUME', 'V V I', nbmod, jbid)
         do 2 i = 1, nbmod
@@ -285,8 +285,9 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
                 call mgutdm(modgen, kbid, k, 'NOM_BASE_MODALE', ibid,&
                             basmod)
-
-                call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+!
+                call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                            intf, iret)
                 call jeveuo(intf(1:8)//'.IDC_TYPE', 'L', ltype)
                 if (zk8(ltype) .eq. 'AUCUN') then
                     vali (1) = k

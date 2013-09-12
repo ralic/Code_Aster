@@ -24,10 +24,9 @@ subroutine mpjeft(corres)
 ! ----------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -45,6 +44,7 @@ subroutine mpjeft(corres)
 #include "asterfort/reliem.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres
 !
 !
@@ -101,10 +101,8 @@ subroutine mpjeft(corres)
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-    call getvid('MODELE_CALCUL', 'MODELE', 1, iarg, 1,&
-                model1, n1)
-    call getvid('MODELE_MESURE', 'MODELE', 1, iarg, 1,&
-                model2, n1)
+    call getvid('MODELE_CALCUL', 'MODELE', iocc=1, scal=model1, nbret=n1)
+    call getvid('MODELE_MESURE', 'MODELE', iocc=1, scal=model2, nbret=n1)
 !
     call dismoi('F', 'NOM_MAILLA', model1, 'MODELE', ibid,&
                 noma1, ie)

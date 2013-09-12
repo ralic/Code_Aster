@@ -18,10 +18,10 @@ subroutine nmdoim(sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+    implicit none
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/obsetb.h"
 #include "asterfort/obseti.h"
@@ -66,8 +66,7 @@ subroutine nmdoim(sdimpr)
 !
 ! --- INFO SUR LES RESIDUS
 !
-    call getvtx(motfac, 'INFO_RESIDU', 1, iarg, 1,&
-                repk, noc)
+    call getvtx(motfac, 'INFO_RESIDU', iocc=1, scal=repk, nbret=noc)
     if (noc .eq. 0) then
         linfre = .false.
     else
@@ -82,8 +81,7 @@ subroutine nmdoim(sdimpr)
 !
 ! --- INFO SUR LE TEMPS
 !
-    call getvtx(motfac, 'INFO_TEMPS', 1, iarg, 1,&
-                repk, noc)
+    call getvtx(motfac, 'INFO_TEMPS', iocc=1, scal=repk, nbret=noc)
     if (noc .eq. 0) then
         linftp = .false.
     else
@@ -98,8 +96,7 @@ subroutine nmdoim(sdimpr)
 !
 ! --- SORTIE TABLEAU CONVERGENCE DANS FICHIER CSV ?
 !
-    call getvis(motfac, 'UNITE', 1, iarg, 1,&
-                utcvfi, noc)
+    call getvis(motfac, 'UNITE', iocc=1, scal=utcvfi, nbret=noc)
     if (noc .eq. 0) then
         ltcvfi = .false.
     else
@@ -112,8 +109,7 @@ subroutine nmdoim(sdimpr)
 !
 ! --- FREQUENCE DE REACTUALISATION DE L'AFFICHAGE
 !
-    call getvis(motfac, 'PAS', 1, iarg, 1,&
-                pasaff, noc)
+    call getvis(motfac, 'PAS', iocc=1, scal=pasaff, nbret=noc)
     if (noc .eq. 0) then
         pasaff = 1
     endif

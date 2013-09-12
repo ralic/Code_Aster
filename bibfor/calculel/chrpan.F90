@@ -1,9 +1,7 @@
 subroutine chrpan(modele, carte, chelem)
-    implicit       none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterc/r8pi.h"
 #include "asterfort/angvx.h"
@@ -13,6 +11,8 @@ subroutine chrpan(modele, carte, chelem)
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
@@ -85,10 +85,8 @@ subroutine chrpan(modele, carte, chelem)
 !
 ! --- ------------------------------------------------------------------
     do 10 ioc = 1, nrep
-        call getvtx('AFFE', 'MAILLE', ioc, iarg, 0,&
-                    k8b, n1)
-        call getvtx('AFFE', 'GROUP_MA', ioc, iarg, 0,&
-                    k8b, n2)
+        call getvtx('AFFE', 'MAILLE', iocc=ioc, nbval=0, nbret=n1)
+        call getvtx('AFFE', 'GROUP_MA', iocc=ioc, nbval=0, nbret=n2)
         if (n1+n2 .eq. 0) then
             ltout = .true.
             nbma = nbmail
@@ -101,10 +99,10 @@ subroutine chrpan(modele, carte, chelem)
 !
         ang(1) = 0.d0
         ang(2) = 0.d0
-        call getvr8('AFFE', 'ANGL_REP', ioc, iarg, 2,&
-                    ang, na)
-        call getvr8('AFFE', 'VECTEUR', ioc, iarg, 3,&
-                    vect, nvec)
+        call getvr8('AFFE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang,&
+                    nbret=na)
+        call getvr8('AFFE', 'VECTEUR', iocc=ioc, nbval=3, vect=vect,&
+                    nbret=nvec)
         if (nvec .ne. 0) then
             call angvx(vect, ang(1), ang(2))
             ang(1)= ang(1)*180.d0/r8pi()

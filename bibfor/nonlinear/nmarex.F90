@@ -18,9 +18,9 @@ subroutine nmarex(motfac, sdarch)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -59,13 +59,12 @@ subroutine nmarex(motfac, sdarch)
 !
 ! --- CONSTRUCTION CHAMPS EXCLUS DE L'ARCHIVAGE
 !
-    call getvtx(motfac, 'CHAM_EXCLU', 1, iarg, 0,&
-                k16bid, nb)
+    call getvtx(motfac, 'CHAM_EXCLU', iocc=1, nbval=0, nbret=nb)
     nb = -nb
     if (nb .ne. 0) then
         call wkvect(arcexc, 'V V K16', nb, jarexc)
-        call getvtx(motfac, 'CHAM_EXCLU', 1, iarg, nb,&
-                    zk16(jarexc), ibid)
+        call getvtx(motfac, 'CHAM_EXCLU', iocc=1, nbval=nb, vect=zk16(jarexc),&
+                    nbret=ibid)
     endif
 !
     call jedema()

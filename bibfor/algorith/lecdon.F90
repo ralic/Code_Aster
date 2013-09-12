@@ -1,8 +1,8 @@
 subroutine lecdon(ficext, unitpa, prdeff)
-    implicit          none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -232,27 +232,25 @@ subroutine lecdon(ficext, unitpa, prdeff)
         if (nbpal .gt. palmax) call u2mess('F', 'EDYOS_43')
         zi(znpal)=nbpal
         do 201 ipal = 1, nbpal
-            call getvtx('PALIER_EDYOS', 'GROUP_NO', ipal, iarg, 0,&
-                        k8b, n2)
+            call getvtx('PALIER_EDYOS', 'GROUP_NO', iocc=ipal, nbval=0, nbret=n2)
             if (abs(n2) .eq. 0) then
-                call getvtx('PALIER_EDYOS', 'NOEUD', ipal, iarg, 0,&
-                            k8b, n2)
+                call getvtx('PALIER_EDYOS', 'NOEUD', iocc=ipal, nbval=0, nbret=n2)
                 if (abs(n2) .eq. 0) then
                     call u2mess('F', 'EDYOS_49')
                 else
                     ngr = -n2
                     ngr = 1
-                    call getvtx('PALIER_EDYOS', 'NOEUD', ipal, iarg, ngr,&
-                                cnpal(ipal), n2)
+                    call getvtx('PALIER_EDYOS', 'NOEUD', iocc=ipal, nbval=ngr, vect=cnpal(ipal),&
+                                nbret=n2)
                 endif
             else
                 ngr = -n2
                 ngr = 1
-                call getvtx('PALIER_EDYOS', 'GROUP_NO', ipal, iarg, ngr,&
-                            cnpal(ipal), n2)
+                call getvtx('PALIER_EDYOS', 'GROUP_NO', iocc=ipal, nbval=ngr, vect=cnpal(ipal),&
+                            nbret=n2)
             endif
-            call getvtx('PALIER_EDYOS', 'TYPE_EDYOS', ipal, iarg, ngr,&
-                        ctype, n2)
+            call getvtx('PALIER_EDYOS', 'TYPE_EDYOS', iocc=ipal, nbval=ngr, vect=ctype,&
+                        nbret=n2)
             zk8(zcpal+(2*palmax)+(ipal-1))=cnpal(ipal)
             zk8(zcpal+(ipal-1))=ctype
 201      continue

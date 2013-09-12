@@ -2,10 +2,9 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                   pside)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterfort/compno.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -23,6 +22,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+!
     character(len=8) :: modsta, mailla
     integer :: numexi, neq, iddeeq
     real(kind=8) :: pside(neq)
@@ -88,11 +88,10 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 !
 !     --- RECUPERATION DE LA DIRECTION SISMIQUE  ---
 !
-    call getvr8('EXCIT', 'DIRECTION', numexi, iarg, 0,&
-                depl, nbd)
+    call getvr8('EXCIT', 'DIRECTION', iocc=numexi, nbval=0, nbret=nbd)
     nbdir = -nbd
-    call getvr8('EXCIT', 'DIRECTION', numexi, iarg, nbdir,&
-                depl, nbd)
+    call getvr8('EXCIT', 'DIRECTION', iocc=numexi, nbval=nbdir, vect=depl,&
+                nbret=nbd)
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
     do 10 i = 1, nbdir

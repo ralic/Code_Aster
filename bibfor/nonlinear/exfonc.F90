@@ -4,8 +4,8 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cfdisl.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -219,8 +219,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! --- PILOTAGE
 !
     if (lpilo) then
-        call getvtx('PILOTAGE', 'TYPE', 1, iarg, 1,&
-                    typilo, n1)
+        call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=typilo, nbret=n1)
         if (lreli) then
             if (typilo .eq. 'DDL_IMPO') then
                 call u2mess('F', 'MECANONLINE5_34')
@@ -231,8 +230,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
         endif
     endif
     if (lreli) then
-        call getvtx('RECH_LINEAIRE', 'METHODE', 1, iarg, 1,&
-                    typrel, n1)
+        call getvtx('RECH_LINEAIRE', 'METHODE', iocc=1, scal=typrel, nbret=n1)
         if ((typrel.eq.'PILOTAGE') .and. (.not.lpilo)) then
             call u2mess('F', 'MECANONLINE5_35')
         endif

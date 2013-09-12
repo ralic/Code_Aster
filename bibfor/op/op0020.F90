@@ -22,8 +22,8 @@ subroutine op0020()
 !     ------------------------------------------------------------------
 !
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
 #include "asterfort/aidty2.h"
+#include "asterfort/getvis.h"
 #include "asterfort/ibcael.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
@@ -34,8 +34,7 @@ subroutine op0020()
 !
     impr = 0
     fichie = ' '
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                impr, n1)
+    call getvis(' ', 'UNITE', scal=impr, nbret=n1)
     if (.not. ulexis( impr )) then
         call ulopen(impr, ' ', fichie, 'NEW', 'O')
     endif

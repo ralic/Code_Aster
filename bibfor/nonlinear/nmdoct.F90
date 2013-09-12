@@ -21,12 +21,12 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/focste.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -108,8 +108,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
 !
 ! --- RECUPERATION DU NOM DU CHARGEMENT DE CONTACT
 !
-    call getvid(' ', motcle, 1, iarg, 1,&
-                charco, nocc)
+    call getvid(' ', motcle, scal=charco, nbret=nocc)
     if (nocc .le. 0) then
         defico = '&&OP0070.DEFIC'
         goto 999
@@ -155,7 +154,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
     if (iform .eq. 1) then
         ligrel = charco(1:8)
         call jeexin(ligrel//'.CHME.LIGRE.LGRF', rel_lin_disc)
-        if (rel_lin_disc .ne. 0)  nchar2 = nchar2+1
+        if (rel_lin_disc .ne. 0) nchar2 = nchar2+1
     endif
 !
 ! --- EVENTUELLES RELATIONS LINEAIRES - METHODE XFEM
@@ -163,7 +162,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
     if (iform .eq. 3) then
         ligrel = charco(1:8)
         call jeexin(ligrel//'.CHME.LIGRE.LGRF', rel_lin_xfem)
-        if (rel_lin_xfem .ne. 0)  nchar2 = nchar2+1
+        if (rel_lin_xfem .ne. 0) nchar2 = nchar2+1
     endif
 !
     if (nchar2 .ne. nchar1) then

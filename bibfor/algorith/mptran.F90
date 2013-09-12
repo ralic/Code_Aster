@@ -36,15 +36,14 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -64,6 +63,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 #include "asterfort/scalai.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, nombas, nommes
     character(len=24) :: vrange, vnoeud, basepr, vcham
     integer :: nbmesu, nbmode, jpara, iexi, nbsym
@@ -103,8 +103,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! RECUPERATION DU NOM DU CONCEPT RESULTAT
     call getres(nomres, typres, k16bid)
 ! RECUPERATION DU CHAMP MESURE : NOMMES
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', 1, iarg, 0,&
-                nomcha, nbcham)
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=0, nbret=nbcham)
     if (nbcham .ne. 0) then
         nbcham = -nbcham
     else
@@ -112,11 +111,10 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     endif
 !
     call wkvect('&&LISTE_CH', 'V V K16', nbcham, lch)
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', 1, iarg, nbcham,&
-                zk16(lch), ibid)
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch),&
+                nbret=ibid)
 !
-    call getvtx('RESOLUTION', 'REGUL', 1, iarg, 1,&
-                kreg, n1)
+    call getvtx('RESOLUTION', 'REGUL', iocc=1, scal=kreg, nbret=n1)
 !
 ! RECUPERATION DU NOMBRE D ABSCISSES : NBABS
     call rsorac(nommes, 'LONUTI', ibid, r8bid, k8bid,&
@@ -208,10 +206,8 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 140  continue
 !
 ! GESTION PARAMETRES DE REGULARISATION
-    call getvr8('RESOLUTION', 'COEF_PONDER', 1, iarg, 0,&
-                r8bid, ncoef)
-    call getvid('RESOLUTION', 'COEF_PONDER_F', 1, iarg, 0,&
-                k8bid, nfonc)
+    call getvr8('RESOLUTION', 'COEF_PONDER', iocc=1, nbval=0, nbret=ncoef)
+    call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=0, nbret=nfonc)
     iocc = abs(ncoef) + abs(nfonc)
     if ((ncoef .eq. 0) .and. (nfonc .eq. 0)) iocc = 0
 !
@@ -223,8 +219,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             zr(lcoef-1 + i) = 0.d0
  5      continue
     else
-        call getvr8('RESOLUTION', 'COEF_PONDER', 1, iarg, 0,&
-                    r8bid, ncoef)
+        call getvr8('RESOLUTION', 'COEF_PONDER', iocc=1, nbval=0, nbret=ncoef)
         if (-ncoef .gt. 0) then
 ! CAS DE REGULARISATION SOUS FORME DE LISTE DE REELS
             lfonct = .false.
@@ -233,8 +228,8 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             endif
             if (-ncoef .gt. 0) then
                 call wkvect(nomcmd//'.PONDER', 'V V R', nbmode, lcoef)
-                call getvr8('RESOLUTION', 'COEF_PONDER', 1, iarg, - ncoef,&
-                            zr(lcoef), ncoef)
+                call getvr8('RESOLUTION', 'COEF_PONDER', iocc=1, nbval=- ncoef, vect=zr(lcoef),&
+                            nbret=ncoef)
             endif
             if (ncoef .lt. nbmode) then
                 call u2mess('I', 'ALGORITH6_28')
@@ -245,13 +240,12 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         else
 ! CAS DE REGULARISATION SOUS FORME DE LISTE DE FONCTIONS
             lfonct = .true.
-            call getvid('RESOLUTION', 'COEF_PONDER_F', 1, iarg, 0,&
-                        k8bid, nfonc)
+            call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=0, nbret=nfonc)
             if (-nfonc .gt. nbmode) call u2mess('F', 'ALGORITH6_29')
             if (-nfonc .gt. 0) then
                 call wkvect(nomcmd//'.FONC', 'V V K8', nbmode, lfonc)
-                call getvid('RESOLUTION', 'COEF_PONDER_F', 1, iarg, - nfonc,&
-                            zk8(lfonc), nfonc)
+                call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=- nfonc,&
+                            vect=zk8(lfonc), nbret=nfonc)
             endif
             if (nfonc .gt. 0 .and. nfonc .lt. nbmode) then
                 call u2mess('I', 'ALGORITH6_30')
@@ -425,8 +419,10 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     if (typres(1:9) .eq. 'MODE_GENE') then
         call jeveuo(nomres//'           .ORDR', 'L', jord)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
-        call dismoi('C', 'TYPE_BASE', nombas, 'RESU_DYNA', ibid, typba, iret)
-        call dismoi('F', 'REF_RIGI_PREM', nombas, 'RESU_DYNA', ibid, raide, iret)
+        call dismoi('C', 'TYPE_BASE', nombas, 'RESU_DYNA', ibid,&
+                    typba, iret)
+        call dismoi('F', 'REF_RIGI_PREM', nombas, 'RESU_DYNA', ibid,&
+                    raide, iret)
         if (typba(1:1) .ne. ' ') then
             if (raide(1:8) .eq. '        ') then
                 call jeveuo(jexnum(nombas//'           .TACH', 1), 'L', jbasm)
@@ -456,7 +452,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
                     modele, iret)
         call dismoi('F', 'CHAM_MATER', raide(1:8), 'MATR_ASSE', ibid,&
                     chmat, iret)
-        call dismoi('F', 'CARA_ELEM' , raide(1:8), 'MATR_ASSE', ibid,&
+        call dismoi('F', 'CARA_ELEM', raide(1:8), 'MATR_ASSE', ibid,&
                     carael, iret)
 44      continue
 !

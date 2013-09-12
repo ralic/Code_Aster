@@ -18,12 +18,11 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -35,6 +34,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iret
     character(len=*) :: cns1z, basez, cns2z
 ! ------------------------------------------------------------------
@@ -96,8 +96,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
     call jeveuo(ma1//'.NOMACR', 'L', iamacr)
 !
-    call getvtx(' ', 'SUPER_MAILLE', 1, iarg, 1,&
-                mail, ibid)
+    call getvtx(' ', 'SUPER_MAILLE', scal=mail, nbret=ibid)
 !
     call jenonu(jexnom(ma1//'.SUPMAIL', mail), isma)
     if (isma .le. 0) then
@@ -134,8 +133,9 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     call jeveuo(vorien, 'L', lori)
 !
 ! BASEMO : POUR LA RECUPERATION DU MAILLAGE DU MODELE SUPPORT (MA2)
-
-    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, k24bid, iret)
+!
+    call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                k24bid, iret)
     numddl = k24bid(1:8)
     call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
                 ma2, ibid)

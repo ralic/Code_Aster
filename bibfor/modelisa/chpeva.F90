@@ -1,5 +1,5 @@
 subroutine chpeva(chou)
-    implicit  none
+    implicit none
 !     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,6 @@ subroutine chpeva(chou)
 !     -----------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
@@ -38,6 +37,7 @@ subroutine chpeva(chou)
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -63,19 +63,16 @@ subroutine chpeva(chou)
 !      .LPARA1: NOMS DES CHAMPS PARAMETRES POUR LES FONCTIONS
 ! ------------------------------------------------------------------
 !
-    call getvid(' ', 'CHAM_F', 0, iarg, 1,&
-                chin, ib)
+    call getvid(' ', 'CHAM_F', scal=chin, nbret=ib)
 !
     call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
                 nomgd, ib)
     if (nomgd .ne. 'NEUT_F') call u2mess('F', 'MODELISA4_13')
 !
-    call getvid(' ', 'CHAM_PARA', 0, iarg, 0,&
-                kbid, n1)
+    call getvid(' ', 'CHAM_PARA', nbval=0, nbret=n1)
     npara = -n1
     call wkvect('&&CHPEVA.LPARA1', 'V V K8', npara, jpara1)
-    call getvid(' ', 'CHAM_PARA', 0, iarg, npara,&
-                zk8(jpara1), n1)
+    call getvid(' ', 'CHAM_PARA', nbval=npara, vect=zk8(jpara1), nbret=n1)
 !
 !
 ! 2.  ON VERIFIE QUE LES CHAMPS PARA ONT LA MEME DISCRETISATION:

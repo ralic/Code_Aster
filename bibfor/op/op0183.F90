@@ -17,7 +17,7 @@ subroutine op0183()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
+    implicit none
 !
 !-----------------------------------------------------------------------
 !     COMMANDE :  CALC_FORC_NONL
@@ -25,15 +25,15 @@ subroutine op0183()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asasve.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infbav.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infmue.h"
@@ -47,8 +47,8 @@ subroutine op0183()
 #include "asterfort/nmdome.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/onerrf.h"
-#include "asterfort/refdcp.h"
 #include "asterfort/rcmfmc.h"
+#include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -109,13 +109,11 @@ subroutine op0183()
 !
     call getres(resuc1, type, oper)
     ASSERT(type.eq.'DYNA_TRANS')
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resuco, n0)
+    call getvid(' ', 'RESULTAT', scal=resuco, nbret=n0)
     ASSERT(resuco.ne.resuc1)
 !
 !
-    call getvtx(' ', 'OPTION', 1, iarg, 1,&
-                option, n2)
+    call getvtx(' ', 'OPTION', scal=option, nbret=n2)
     ASSERT(n2.eq.1 .and. option.eq.'FONL_NOEU')
 !
 !
@@ -126,10 +124,8 @@ subroutine op0183()
     ibid=1
 !=======================================================================
 !
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, np)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
 !
     call rsutnu(resuco, ' ', 0, knum, nbordr,&
                 prec, crit, iret)
@@ -152,20 +148,17 @@ subroutine op0183()
     charge=' '
     mater=' '
     call rscrsd('G', resuc1, type, nbordr)
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                modele, n0)
+    call getvid(' ', 'MODELE', scal=modele, nbret=n0)
     ligrel=modele(1:8)//'.MODELE'
     ASSERT(n0.eq.1)
-    call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                materi, n0)
+    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n0)
     if (n0 .gt. 0) then
         call rcmfmc(materi, mater)
     else
         mater=' '
     endif
     carac=' '
-    call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
-                carac, n0)
+    call getvid(' ', 'CARA_ELEM', scal=carac, nbret=n0)
 !
 ! INFO. RELATIVE AUX CHARGES
     charge=infcha//'.LCHA'
@@ -184,8 +177,9 @@ subroutine op0183()
 !
 !
     numref=' '
-    call refdcp(resuco,resuc1)
-    call dismoi('F', 'REF_RIGI_PREM', resuc1, 'RESU_DYNA', ibid, raide, iret)
+    call refdcp(resuco, resuc1)
+    call dismoi('F', 'REF_RIGI_PREM', resuc1, 'RESU_DYNA', ibid,&
+                raide, iret)
     if (raide .ne. ' ') then
         call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
                     numref, iret)

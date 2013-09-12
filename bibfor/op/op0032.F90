@@ -27,11 +27,6 @@ subroutine op0032()
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
 #include "asterc/getres.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/apm012.h"
 #include "asterfort/apm345.h"
 #include "asterfort/asmpi_barrier.h"
@@ -41,6 +36,11 @@ subroutine op0032()
 #include "asterfort/cresol.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/freqom.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -116,8 +116,7 @@ subroutine op0032()
 !
 !     INFO // DS MACRO_MODE_MECA
     typeco=-999
-    call getvis('PARALLELISME_MACRO', 'TYPE_COM', 1, iarg, 1,&
-                typeco, l)
+    call getvis('PARALLELISME_MACRO', 'TYPE_COM', iocc=1, scal=typeco, nbret=l)
     valk(1)='TYPE_COM'
     vali(1)=typeco
     if (l .ne. 1) call u2mesg('F', 'APPELMPI_6', 1, valk, 1,&
@@ -139,8 +138,7 @@ subroutine op0032()
 !
 !     INFO // SEUL
     typpar='XXXXXXXXXXXXXXXX'
-    call getvtx(' ', 'NIVEAU_PARALLELISME', 1, iarg, 1,&
-                typpar, l)
+    call getvtx(' ', 'NIVEAU_PARALLELISME', scal=typpar, nbret=l)
     if (l .ne. 1) ASSERT(.false.)
     if ((typpar.ne.'COMPLET') .and. (typpar.ne.'PARTIEL')) ASSERT(.false.)
     if ((typpar.eq.'COMPLET') .and. (nbproc.gt.1) .and. (.not.lcomod)) then
@@ -154,8 +152,7 @@ subroutine op0032()
 !
 !     --- READ OF MATRICES, CHECK OF REFERENCES ---
 !     --- COMPUTATION OF THE MATRIX DESCRIPTORS ---
-    call getvtx(' ', 'TYPE_MODE', 1, iarg, 1,&
-                typmod, ibid)
+    call getvtx(' ', 'TYPE_MODE', scal=typmod, nbret=ibid)
     if (typmod .eq. 'DYNAMIQUE') then
         matra = 'MATR_RIGI'
         matrb = 'MATR_MASS'
@@ -172,15 +169,12 @@ subroutine op0032()
         matrb = 'MATR_MASS'
         matrc = 'MATR_AMOR'
     endif
-    call getvid(' ', matra, 1, iarg, 1,&
-                raide, l)
-    call getvid(' ', matrb, 1, iarg, 1,&
-                masse, l)
+    call getvid(' ', matra, scal=raide, nbret=l)
+    call getvid(' ', matrb, scal=masse, nbret=l)
     amor=' '
     lamor=0
     if ((typmod.eq.'GENERAL') .or. (typmod.eq.'MODE_COMPLEXE')) then
-        call getvid(' ', matrc, 1, iarg, 1,&
-                    amor, lamor)
+        call getvid(' ', matrc, scal=amor, nbret=lamor)
     endif
     if (lamor .eq. 0) then
         lc=.false.
@@ -221,8 +215,7 @@ subroutine op0032()
 !
 !
 !     --- TYPE OF EIGENVALUE-COUNTING METHOD ---
-    call getvtx('COMPTAGE', 'METHODE', 1, iarg, 1,&
-                typmet, ibid)
+    call getvtx('COMPTAGE', 'METHODE', iocc=1, scal=typmet, nbret=ibid)
 !
 !     --- AUTOMATIC PARAMETRIZATION WITH 'AUTO'                 ---
     if (typmet(1:4) .eq. 'AUTO') then
@@ -269,14 +262,12 @@ subroutine op0032()
     if (typmod(1:9) .eq. 'DYNAMIQUE') then
 !     --- COUPLE OR LIST OF FREQUENCIES ---
         ldyna=.true.
-        call getvr8(' ', 'FREQ', 1, iarg, 0,&
-                    rbid, l)
+        call getvr8(' ', 'FREQ', nbval=0, nbret=l)
         nbmod=abs(l)
         call wkvect(k24mod, 'V V R', nbmod, jlmod)
         call wkvect(k24moe, 'V V R', nbmod, jlmoe)
         call wkvect(k24stu, 'V V I', nbmod-1, jstu)
-        call getvr8(' ', 'FREQ', 1, iarg, nbmod,&
-                    zr(jlmod), l)
+        call getvr8(' ', 'FREQ', nbval=nbmod, vect=zr(jlmod), nbret=l)
         if (l .ne. nbmod) ASSERT(.false.)
         do 10 k = 1, nbmod-1
             zi(jstu+k-1)=izero
@@ -287,12 +278,9 @@ subroutine op0032()
 !
     else if (typmod(1:13).eq.'MODE_COMPLEXE') then
 !     --- CHARACTERISTIC OF THE COMPLEX SHAPE ---
-        call getvtx(' ', 'TYPE_CONTOUR', 1, iarg, 1,&
-                    typcon, l1)
-        call getvr8(' ', 'RAYON_CONTOUR', 1, iarg, 1,&
-                    rayonc, l2)
-        call getvc8(' ', 'CENTRE_CONTOUR', 1, iarg, 1,&
-                    centrc, l3)
+        call getvtx(' ', 'TYPE_CONTOUR', scal=typcon, nbret=l1)
+        call getvr8(' ', 'RAYON_CONTOUR', scal=rayonc, nbret=l2)
+        call getvc8(' ', 'CENTRE_CONTOUR', scal=centrc, nbret=l3)
         if ((abs(l1)*abs(l2)*abs(l3)) .ne. 1) ASSERT(.false.)
         calpac(1) = dble(centrc)
         calpac(2) = dimag(centrc)
@@ -302,15 +290,13 @@ subroutine op0032()
     else if (typmod(1:10).eq.'MODE_FLAMB') then
 !     --- COUPLE OR LIST OF BUCKLING MODES ---
         lflamb=.true.
-        call getvr8(' ', 'CHAR_CRIT', 1, iarg, 0,&
-                    rbid, l)
+        call getvr8(' ', 'CHAR_CRIT', nbval=0, nbret=l)
         if (abs(l) .ge. 2) then
             nbmod=abs(l)
             call wkvect(k24mod, 'V V R', nbmod, jlmod)
             call wkvect(k24moe, 'V V R', nbmod, jlmoe)
             call wkvect(k24stu, 'V V I', nbmod-1, jstu)
-            call getvr8(' ', 'CHAR_CRIT', 1, iarg, nbmod,&
-                        zr(jlmod), l)
+            call getvr8(' ', 'CHAR_CRIT', nbval=nbmod, vect=zr(jlmod), nbret=l)
             if (l .ne. nbmod) ASSERT(.false.)
             do 12 k = 1, nbmod-1
                 zi(jstu+k-1)=izero
@@ -338,23 +324,17 @@ subroutine op0032()
     niterc=3
     if (typmet(1:5) .eq. 'STURM') then
         if (typmod(1:9) .eq. 'DYNAMIQUE') then
-            call getvr8('COMPTAGE', 'SEUIL_FREQ', 1, iarg, 1,&
-                        fcorig, ibid)
+            call getvr8('COMPTAGE', 'SEUIL_FREQ', iocc=1, scal=fcorig, nbret=ibid)
             omecor=omega2(fcorig)
         else
-            call getvr8('COMPTAGE', 'SEUIL_CHAR_CRIT', 1, iarg, 1,&
-                        fcorig, ibid)
+            call getvr8('COMPTAGE', 'SEUIL_CHAR_CRIT', iocc=1, scal=fcorig, nbret=ibid)
             omecor=fcorig
         endif
-        call getvr8('COMPTAGE', 'PREC_SHIFT', 1, iarg, 1,&
-                    precsh, ibid)
-        call getvis('COMPTAGE', 'NMAX_ITER_SHIFT', 1, iarg, 1,&
-                    nbrss, ibid)
+        call getvr8('COMPTAGE', 'PREC_SHIFT', iocc=1, scal=precsh, nbret=ibid)
+        call getvis('COMPTAGE', 'NMAX_ITER_SHIFT', iocc=1, scal=nbrss, nbret=ibid)
     else if (typmet(1:3).eq.'APM') then
-        call getvis('COMPTAGE', 'NBPOINT_CONTOUR', 1, iarg, 1,&
-                    nbtetc, ibid)
-        call getvis('COMPTAGE', 'NMAX_ITER_CONTOUR', 1, iarg, 1,&
-                    niterc, ibid)
+        call getvis('COMPTAGE', 'NBPOINT_CONTOUR', iocc=1, scal=nbtetc, nbret=ibid)
+        call getvis('COMPTAGE', 'NMAX_ITER_CONTOUR', iocc=1, scal=niterc, nbret=ibid)
 !     --- TEMPORARY, WE UNPLUG THE USE OF ROMBOUT METHOD, IT NEEDS ---
 !     --- TO BE MORE RELIABLE                                      ---
         typcha='LDLT'

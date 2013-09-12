@@ -20,14 +20,14 @@ subroutine op0178()
 !     COMMANDE:  ENGENDRE_TEST
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/engtce.h"
 #include "asterfort/engtcn.h"
 #include "asterfort/engtrs.h"
 #include "asterfort/engttb.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -62,32 +62,25 @@ subroutine op0178()
 !
     ific = 0
     nomfi = ' '
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ific, n1)
+    call getvis(' ', 'UNITE', scal=ific, nbret=n1)
     if (.not. ulexis( ific )) then
         call ulopen(ific, ' ', nomfi, 'NEW', 'O')
     endif
 !
     format = 'ASTER'
-    call getvtx(' ', 'FORMAT', 0, iarg, 1,&
-                format, ibid)
+    call getvtx(' ', 'FORMAT', scal=format, nbret=ibid)
 !
-    call getvtx(' ', 'FORMAT_R', 0, iarg, 1,&
-                formr, ibid)
-    call getvtx(' ', 'PREC_R', 0, iarg, 1,&
-                preci, ibid)
-    call getvtx(' ', 'TYPE_TEST', 0, iarg, 1,&
-                typtes, ibid)
+    call getvtx(' ', 'FORMAT_R', scal=formr, nbret=ibid)
+    call getvtx(' ', 'PREC_R', scal=preci, nbret=ibid)
+    call getvtx(' ', 'TYPE_TEST', scal=typtes, nbret=ibid)
 !
 ! ---- FORMAT TEST_RESU / STANDARD
 !
     if (format .eq. 'ASTER') then
-        call getvid(' ', 'CO', 1, iarg, 0,&
-                    kbid, n1)
+        call getvid(' ', 'CO', nbval=0, nbret=n1)
         nco =-n1
         call wkvect('&&OP0178.LCO', 'V V K8', nco, ialico)
-        call getvid(' ', 'CO', 1, iarg, nco,&
-                    zk8(ialico), ibid)
+        call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico), nbret=ibid)
 !
         do 100 ico = 1, nco
             nomsd = zk8(ialico+ico-1)(1:8)//'           '
@@ -124,8 +117,7 @@ subroutine op0178()
 !
 !     -- CAS : TOUT:'OUI'
 !    -----------------------------------------
-        call getvtx(' ', 'TOUT', 0, iarg, 1,&
-                    kbid, n1)
+        call getvtx(' ', 'TOUT', scal=kbid, nbret=n1)
         if (n1 .eq. 1) then
             call jelstc('G', ' ', 0, 0, kbid,&
                         nbval)
@@ -142,9 +134,13 @@ subroutine op0178()
                 if (iret .eq. 0) then
 !             -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
                     if ((type.eq.'R') .or. (type.eq.'C')) then
-                        form1 = '(''_F(NOM='''''', A24, '''''', VALE_CALC='', ' &
-                                //formr//', '',TOLE_MACHINE=' //preci(1:lxlgut(preci))&
-                                //'),'')'
+                        form1 = '(&
+                                ''_F(&
+                                NOM='''''', A24, '''''', VALE_CALC='', '  //formr//', '',&
+                                TOLE_MACHINE=' //preci(1:lxlgut(preci)) //'&
+                                ),&
+                                ''&
+                                )'
                         write (ific,form1) obj,sommr
                     else if (type.eq.'I') then
                         write (ific,1003) obj,sommi
@@ -155,13 +151,11 @@ subroutine op0178()
 !
 !     -- CAS : CO: L_CO
 !    -----------------------------------------
-        call getvid(' ', 'CO', 0, iarg, 0,&
-                    kbid, n1)
+        call getvid(' ', 'CO', nbval=0, nbret=n1)
         if (n1 .lt. 0) then
             nco = -n1
             call wkvect('&&OP0178.LCO', 'V V K8', nco, ialico)
-            call getvid(' ', 'CO', 0, iarg, nco,&
-                        zk8(ialico), ibid)
+            call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico), nbret=ibid)
 !
             do 30 ico = 1, nco
                 call jelstc('G', zk8(ialico-1+ico), 1, 0, kbid,&
@@ -179,9 +173,13 @@ subroutine op0178()
                     if (iret .eq. 0) then
 !               -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
                         if ((type.eq.'R') .or. (type.eq.'C')) then
-                            form1 = '(''_F(NOM='''''', A24, '''''', VALE_CALC='', '&
-                                    //formr// ', '',TOLE_MACHINE='//preci(1:lxlgut(preci))&
-                                    //'),'')'
+                            form1 = '(&
+                                    ''_F(&
+                                    NOM='''''', A24, '''''', VALE_CALC='', ' //formr// ', '',&
+                                    TOLE_MACHINE='//preci(1:lxlgut(preci)) //'&
+                                    ),&
+                                    ''&
+                                    )'
                             write (ific,form1) obj,sommr
                         else if (type.eq.'I') then
                             write (ific,1003) obj,sommi

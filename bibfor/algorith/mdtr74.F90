@@ -27,13 +27,8 @@ subroutine mdtr74(nomres)
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/copisd.h"
@@ -43,6 +38,10 @@ subroutine mdtr74(nomres)
 #include "asterfort/dismoi.h"
 #include "asterfort/dyarch.h"
 #include "asterfort/extdia.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inicou.h"
 #include "asterfort/jedema.h"
@@ -75,6 +74,7 @@ subroutine mdtr74(nomres)
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: niv
     character(len=4) :: k4bid(3)
     character(len=8) :: k8b, k8var, nomres, masgen, riggen, amogen, gyogen
@@ -181,43 +181,35 @@ subroutine mdtr74(nomres)
     lflu = .false.
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                method, n1)
-    call getvis('PARA_LAME_FLUI', 'NMAX_ITER', 1, iarg, 1,&
-                itemax, n1)
-    call getvr8('PARA_LAME_FLUI', 'RESI_RELA', 1, iarg, 1,&
-                prec, n1)
-    call getvr8('PARA_LAME_FLUI', 'LAMBDA', 1, iarg, 1,&
-                xlambd, n1)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
+    call getvis('PARA_LAME_FLUI', 'NMAX_ITER', iocc=1, scal=itemax, nbret=n1)
+    call getvr8('PARA_LAME_FLUI', 'RESI_RELA', iocc=1, scal=prec, nbret=n1)
+    call getvr8('PARA_LAME_FLUI', 'LAMBDA', iocc=1, scal=xlambd, nbret=n1)
     call getfac('EXCIT', nexcit)
     call getfac('EXCIT_RESU', nexcir)
 !
 !     --- RECUPERATION DES MATRICES PROJETEES ---
 !
-    call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                masgen, nm)
-    call getvid(' ', 'MATR_RIGI', 0, iarg, 1,&
-                riggen, nr)
-    call getvid(' ', 'MATR_AMOR', 0, iarg, 1,&
-                amogen, na)
+    call getvid(' ', 'MATR_MASS', scal=masgen, nbret=nm)
+    call getvid(' ', 'MATR_RIGI', scal=riggen, nbret=nr)
+    call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=na)
     if (nexcit .ne. 0) then
         call wkvect('&&MDTR74.NOMVEC', 'V V K8', nexcit, jvec)
         do 10 i = 1, nexcit
-            call getvid('EXCIT', 'VECT_ASSE_GENE', i, iarg, 1,&
-                        vecgen, nv)
+            call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen, nbret=nv)
             zk8(jvec-1+i) = vecgen
 10      continue
     endif
     if (nexcir .ne. 0) then
         call wkvect('&&MDTR74.NOMVER', 'V V K8', nexcir, jvecr)
         do 11 i = 1, nexcir
-            call getvid('EXCIT_RESU', 'RESULTAT', i, iarg, 1,&
-                        resgen, nv)
+            call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resgen, nbret=nv)
             zk8(jvecr-1+i) = resgen
 ! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
             call jeveuo(masgen//'           .REFA', 'L', j1)
             bamo1=zk24(j1-1+1)(1:8)
-            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid, bamo2, iret)
+            call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid,&
+                        bamo2, iret)
             if (bamo1 .ne. bamo2) then
                 call u2mesg('F', 'ALGORITH17_18', 0, k8b, 1,&
                             i, 0, r8b)
@@ -245,9 +237,11 @@ subroutine mdtr74(nomres)
     call jeveuo(masgen//'           .DESC', 'L', jdesc)
     nbmode = zi(jdesc+1)
     basemo = zk24(jrefam-1+1)(1:8)
-    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, rigass, iret)
+    call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                rigass, iret)
 !------------on recupere le type de base modale---------
-    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid, typeba, iret)
+    call dismoi('C', 'TYPE_BASE', basemo, 'RESU_DYNA', ibid,&
+                typeba, iret)
 !-------------------------------------------------------
     marig = '&&MDTR74.RIGI'
     call copisd('MATR_ASSE', 'V', rigass, marig)
@@ -277,7 +271,8 @@ subroutine mdtr74(nomres)
     nbstoc = nbmode
 !
     if (typba2(1:9) .eq. 'MODE_MECA' .and. typeba(1:1) .eq. ' ') then
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matass, iret)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                    matass, iret)
         call dismoi('F', 'NOM_MAILLA', matass, 'MATR_ASSE', ibid,&
                     mailla, ie)
         call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ib,&
@@ -287,14 +282,16 @@ subroutine mdtr74(nomres)
         nbmod2 = nbmode
 !
     else if (typeba(1:1).ne.' ') then
-        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numddl, iret)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                    numddl, iret)
         call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
                     mailla, ie)
         call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                     k8b, ie)
         nbmod2 = nbmode
     else if (typba2(1:9).eq.'MODE_GENE') then
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matass, iret)
+        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                    matass, iret)
         call jeveuo(matass//'           .REFA', 'L', jrefa)
         numddl = zk24(jrefa-1+2)(1:14)
         call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ib,&
@@ -338,16 +335,13 @@ subroutine mdtr74(nomres)
     if (lamor) then
 !
         amogen = '&&AMORT'
-        call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, 0,&
-                    r8b, n1)
-        call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 0,&
-                    k8b, n2)
+        call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
+        call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
         if (n1 .ne. 0 .or. n2 .ne. 0) then
             if (n1 .ne. 0) then
                 nbamor = -n1
             else
-                call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 1,&
-                            listam, n)
+                call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=listam, nbret=n)
                 call jelira(listam//'           .VALE', 'LONMAX', nbamor)
             endif
             if (nbamor .gt. nbmode) then
@@ -360,8 +354,8 @@ subroutine mdtr74(nomres)
                             vali, 0, 0.d0)
                 call wkvect('&&MDTR74.AMORTI', 'V V R8', nbmode, jamog)
                 if (n1 .ne. 0) then
-                    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbmode,&
-                                zr(jamog), n)
+                    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbmode,&
+                                vect=zr(jamog), nbret=n)
                 else
                     call jeveuo(listam//'           .VALE', 'L', iamog)
                     do 30 iam = 1, nbmode
@@ -372,8 +366,8 @@ subroutine mdtr74(nomres)
 !
                 call wkvect('&&MDTR74.AMORTI', 'V V R8', nbamor, jamog)
                 if (n1 .ne. 0) then
-                    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                                zr(jamog), n)
+                    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor,&
+                                vect=zr(jamog), nbret=n)
                 else
                     call jeveuo(listam//'           .VALE', 'L', iamog)
                     do 40 iam = 1, nbamor
@@ -397,8 +391,8 @@ subroutine mdtr74(nomres)
 !
                 call wkvect('&&MDTR74.AMORTI', 'V V R8', nbamor, jamog)
                 if (n1 .ne. 0) then
-                    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                                zr(jamog), n)
+                    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor,&
+                                vect=zr(jamog), nbret=n)
                 else
                     call jeveuo(listam//'           .VALE', 'L', iamog)
                     do 70 iam = 1, nbamor
@@ -451,19 +445,14 @@ subroutine mdtr74(nomres)
 !
     endif
     vrotat = 0.d0
-    call getvtx(' ', 'VITESSE_VARIABLE', 1, iarg, 1,&
-                k8var, n1)
+    call getvtx(' ', 'VITESSE_VARIABLE', scal=k8var, nbret=n1)
     call wkvect('&&MDTR74.GYROSC', 'V V R8', nbmode*nbmode, jgyog)
     call wkvect('&&MDTR74.RIGYRO', 'V V R8', nbmode*nbmode, jrgyg)
     if (k8var .eq. 'OUI') then
-        call getvid(' ', 'VITE_ROTA', i, iarg, 1,&
-                    foncv, nng1)
-        call getvid(' ', 'ACCE_ROTA', i, iarg, 1,&
-                    fonca, nng2)
-        call getvid(' ', 'MATR_GYRO', 0, iarg, 1,&
-                    gyogen, ng1)
-        call getvid(' ', 'MATR_RIGY', 0, iarg, 1,&
-                    rgygen, ng2)
+        call getvid(' ', 'VITE_ROTA', scal=foncv, nbret=nng1)
+        call getvid(' ', 'ACCE_ROTA', scal=fonca, nbret=nng2)
+        call getvid(' ', 'MATR_GYRO', scal=gyogen, nbret=ng1)
+        call getvid(' ', 'MATR_RIGY', scal=rgygen, nbret=ng2)
         call jeveuo(gyogen//'           .REFA', 'L', jrefag)
         numgeg = zk24(jrefag-1+2)(1:14)
         nomstg = numgeg//'.SLCS'
@@ -473,8 +462,7 @@ subroutine mdtr74(nomres)
             call copmat(rgygen, numgeg, zr(jrgyg))
         endif
     else
-        call getvr8(' ', 'VITE_ROTA', 1, iarg, 1,&
-                    vrotat, n1)
+        call getvr8(' ', 'VITE_ROTA', scal=vrotat, nbret=n1)
     endif
 !
 !     --- VERIFICATION DES DONNEES GENERALISEES ---
@@ -502,10 +490,8 @@ subroutine mdtr74(nomres)
         call jeveuo('&&MDITMI.AMORTGEN', 'L', jamo1)
         call jeveuo('&&MDITMI.BASEMODE', 'L', jbase)
         call jeveuo('&&MDITMI.LOCFL0', 'L', jlocf)
-        call getvis('SCHEMA_TEMPS', 'NUME_VITE_FLUI', 1, iarg, 1,&
-                    numvif, n1)
-        call getvis('SCHEMA_TEMPS', 'NB_MODE_FLUI', 1, iarg, 1,&
-                    nbmp, nmp)
+        call getvis('SCHEMA_TEMPS', 'NUME_VITE_FLUI', iocc=1, scal=numvif, nbret=n1)
+        call getvis('SCHEMA_TEMPS', 'NB_MODE_FLUI', iocc=1, scal=nbmp, nbret=nmp)
         if (itypfl .eq. 1) then
             call jeveuo('&&MDITMI.TEMP.IRES', 'L', lires)
             call jeveuo('&&MDITMI.TEMP.PROFV', 'L', lprofv)
@@ -572,18 +558,16 @@ subroutine mdtr74(nomres)
 !
     nbchoc = 0
     do 200 ioc = 1, nbcho1
-        call getvtx('CHOC', 'MAILLE', ioc, iarg, 0,&
-                    k8b, n1)
+        call getvtx('CHOC', 'MAILLE', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             nbchoc = nbchoc - n1
         else
-            call getvtx('CHOC', 'GROUP_MA', ioc, iarg, 0,&
-                        k8b, n2)
+            call getvtx('CHOC', 'GROUP_MA', iocc=ioc, nbval=0, nbret=n2)
             if (n2 .ne. 0) then
                 ngr = -n2
                 call wkvect('&&MDTR74.GROUP_MA', 'V V K24', ngr, jgr)
-                call getvtx('CHOC', 'GROUP_MA', ioc, iarg, ngr,&
-                            zk24(jgr), n2)
+                call getvtx('CHOC', 'GROUP_MA', iocc=ioc, nbval=ngr, vect=zk24(jgr),&
+                            nbret=n2)
                 do 210 ig = 0, ngr-1
                     call jelira(jexnom(mailla//'.GROUPEMA', zk24(jgr+ ig)), 'LONMAX', nbmg)
                     nbchoc = nbchoc + nbmg
@@ -607,15 +591,13 @@ subroutine mdtr74(nomres)
         call getfac('PALIER_EDYOS', nbedyo)
         if (nbedyo .ne. 0) then
 ! Lecture des donnees paliers
-            call getvis('PALIER_EDYOS', 'UNITE', 1, iarg, 1,&
-                        unitpa, n1)
+            call getvis('PALIER_EDYOS', 'UNITE', iocc=1, scal=unitpa, nbret=n1)
             if (n1 .ne. 0) then
                 call lecdon(.true., unitpa, prdeff)
             else
                 call lecdon(.false., 0, prdeff)
             endif
-            call getvr8('COUPLAGE_EDYOS', 'PAS_TPS_EDYOS', 1, iarg, 1,&
-                        dtsto, n1)
+            call getvr8('COUPLAGE_EDYOS', 'PAS_TPS_EDYOS', iocc=1, scal=dtsto, nbret=n1)
         else
             call u2mess('F', 'EDYOS_48')
         endif
@@ -638,22 +620,18 @@ subroutine mdtr74(nomres)
         call wkvect('&&MDTR74.FK', 'V V K8', 2*nbrfis, jfk)
         call wkvect('&&MDTR74.DFK', 'V V K8', 2*nbrfis, jdfk)
         do 600 ioc = 1, nbrfis
-            call getvid('ROTOR_FISS', 'K_PHI', ioc, iarg, 1,&
-                        fonct, n1)
+            call getvid('ROTOR_FISS', 'K_PHI', iocc=ioc, scal=fonct, nbret=n1)
             fk(1) = fonct(1:8)
             call jeveuo(fonct//'.PROL', 'L', lprol)
             fk(2) = zk24(lprol)(1:8)
-            call getvid('ROTOR_FISS', 'DK_DPHI', ioc, iarg, 1,&
-                        fonct, n1)
+            call getvid('ROTOR_FISS', 'DK_DPHI', iocc=ioc, scal=fonct, nbret=n1)
             dfk(1) = fonct(1:8)
             call jeveuo(fonct//'.PROL', 'L', lprol)
             dfk(2) = zk24(lprol)(1:8)
             if (k8var .eq. 'OUI') then
-                call getvid('ROTOR_FISS', 'ANGL_ROTA', ioc, iarg, 1,&
-                            foncp, nng0)
+                call getvid('ROTOR_FISS', 'ANGL_ROTA', iocc=ioc, scal=foncp, nbret=nng0)
             else
-                call getvr8('ROTOR_FISS', 'ANGL_INIT', ioc, iarg, 1,&
-                            angini, n1)
+                call getvr8('ROTOR_FISS', 'ANGL_INIT', iocc=ioc, scal=angini, nbret=n1)
                 angini=angini*rad
             endif
 600      continue
@@ -699,12 +677,10 @@ subroutine mdtr74(nomres)
                         zi( iindic), neq, zr(jbase), seuil, marig,&
                         nbnli)
             nbnli = nbnli + nbpal
-            call getvr8('VERI_CHOC', 'SEUIL', 1, iarg, 1,&
-                        crit, n1)
+            call getvr8('VERI_CHOC', 'SEUIL', iocc=1, scal=crit, nbret=n1)
             if (seuil .gt. crit) then
                 niv = 'A'
-                call getvtx('VERI_CHOC', 'STOP_CRITERE', 1, iarg, 1,&
-                            k8b, n1)
+                call getvtx('VERI_CHOC', 'STOP_CRITERE', iocc=1, scal=k8b, nbret=n1)
                 if (k8b .eq. 'OUI') niv = 'F'
                 valr (1) = seuil
                 call u2mesg('I', 'ALGORITH16_21', 0, ' ', 0,&
@@ -763,8 +739,7 @@ subroutine mdtr74(nomres)
 !     --- ARCHIVAGE ---
 !
     if (method(1:5) .eq. 'ADAPT' .or. method .eq. 'ITMI' .or. method(1:5) .eq. 'RUNGE') then
-        call getvis('ARCHIVAGE', 'PAS_ARCH', 1, iarg, 1,&
-                    iparch, n1)
+        call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=n1)
         if (n1 .eq. 0) iparch = 1
         if (method(1:5) .eq. 'ADAPT') then
             dtarch = dtmax*iparch
@@ -887,15 +862,15 @@ subroutine mdtr74(nomres)
                     fonca, typbas, basemo, tinit, zi(jarch),&
                     nbsauv, itemax, prec, xlambd, lflu,&
                     nbnli, zi(jranc), zr(jdepl), zr(jparc), zk8( jnoec),&
-                    nbrede, zr(jrede), zk8(jfond), nbrevi,&
-                    zr( jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
-                    zi(jordr), zr( jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
-                    zi(jicho), zi(jredc), zr( jredd), zi(jrevc), zr(jrevv),&
-                    zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep),&
-                    zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
-                    nbrfis, fk, dfk, angini, foncp,&
-                    nbpal, dtsto, vrotat, prdeff, nomres,&
-                    ntotex, zr(jpass))
+                    nbrede, zr(jrede), zk8(jfond), nbrevi, zr( jrevi),&
+                    zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs), zi(jordr),&
+                    zr( jinst), zr(jfcho), zr(jdcho), zr(jvcho), zi(jicho),&
+                    zi(jredc), zr( jredd), zi(jrevc), zr(jrevv), zr(jcoefm),&
+                    zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep), zk8(jnovit),&
+                    zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot, nbrfis,&
+                    fk, dfk, angini, foncp, nbpal,&
+                    dtsto, vrotat, prdeff, nomres, ntotex,&
+                    zr(jpass))
 !
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&
@@ -904,13 +879,13 @@ subroutine mdtr74(nomres)
                     zr( jrgyg), lamor, zr(jamog), ibid, zr(jgyog),&
                     foncv, fonca, typbas, basemo, lflu,&
                     nbnli, zk8(jinti), zi(jranc), zr(jdepl), zr(jparc),&
-                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
-                    nbrevi, zr( jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve),&
-                    zi(jinumo), zi( jidesc), zk8(jnodep), zk8(jnovit), zk8(jnoacc),&
-                    zk8(jnomfo), zr( jpsid), monmot, nbrfis, fk,&
-                    dfk, angini, foncp, nbpal, dtsto,&
-                    vrotat, prdeff, nomres, ntotex, masgen,&
-                    riggen, amogen)
+                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
+                    zr( jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve), zi(jinumo),&
+                    zi( jidesc), zk8(jnodep), zk8(jnovit), zk8(jnoacc), zk8(jnomfo),&
+                    zr( jpsid), monmot, nbrfis, fk, dfk,&
+                    angini, foncp, nbpal, dtsto, vrotat,&
+                    prdeff, nomres, ntotex, masgen, riggen,&
+                    amogen)
 !
     else if (method(1:5).eq.'ADAPT') then
         call mdadap(dt, dtmax, nbmode, zr(jpuls), zr(jpul2),&
@@ -918,14 +893,14 @@ subroutine mdtr74(nomres)
                     zr(jamog), ibid, typbas, basemo, tinit,&
                     tfin, dtarch, nbsauv, itemax, prec,&
                     xlambd, lflu, nbnli, zi( jranc), zr(jdepl),&
-                    zr(jparc), zk8(jnoec), nbrede, zr(jrede), &
-                    zk8(jfond), nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps),&
-                    zr( jvits), zr(jaccs), zr(jpass), zi(jordr), zr(jinst),&
-                    zr(jfcho), zr( jdcho), zr(jvcho), zi(jicho), zi(jredc),&
-                    zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
-                    zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
-                    monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevv))
+                    zr(jparc), zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
+                    nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps), zr( jvits),&
+                    zr(jaccs), zr(jpass), zi(jordr), zr(jinst), zr(jfcho),&
+                    zr( jdcho), zr(jvcho), zi(jicho), zi(jredc), zr(jredd),&
+                    zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep),&
+                    zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
+                    nbpal, dtsto, vrotat, prdeff, method,&
+                    nomres, ntotex, zi(jrevc), zr(jrevv))
     else if (method.eq.'NEWMARK') then
         call mdnewm(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
                     zr(jmasg), zr(jraig), zr(jrgyg), lamor, zr(jamog),&
@@ -938,13 +913,13 @@ subroutine mdtr74(nomres)
         call mddevo(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
                     zr(jmasg), zr(jamog), basemo, tinit, zi(jarch),&
                     nbsauv, nbnli, zi(jranc), zr( jdepl), zr(jparc),&
-                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
-                    nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps), zr(jvits),&
-                    zr(jaccs), zi(jordr), zr(jinst), zr(jfcho), zr(jdcho),&
-                    zr(jvcho), zi(jicho), zi(jredc), zr(jredd), zr(jcoefm),&
-                    zi(jiadve), zi( jinumo), zi(jidesc), zk8(jnodep), zk8(jnovit),&
-                    zk8(jnoacc), zk8( jnomfo), zr(jpsid), monmot, nomres,&
-                    ntotex, zr(jpass), zi(jrevc), zr(jrevv))
+                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
+                    zr(jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
+                    zi(jordr), zr(jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
+                    zi(jicho), zi(jredc), zr(jredd), zr(jcoefm), zi(jiadve),&
+                    zi( jinumo), zi(jidesc), zk8(jnodep), zk8(jnovit), zk8(jnoacc),&
+                    zk8( jnomfo), zr(jpsid), monmot, nomres, ntotex,&
+                    zr(jpass), zi(jrevc), zr(jrevv))
     endif
 !     --- IMPRESSION DES RESULTATS DE CHOC DANS TOUS LES CAS
 !     --- SAUF ITMI POUR ITMI ON IMPRIME DANS MDITM2
@@ -965,7 +940,8 @@ subroutine mdtr74(nomres)
 !
 ! --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
 !
-        call dismoi('F', 'REF_MASS_PREM', basemo, 'RESU_DYNA', ibid, masse, iret)
+        call dismoi('F', 'REF_MASS_PREM', basemo, 'RESU_DYNA', ibid,&
+                    masse, iret)
         call mtdscr(masse)
 !
 !

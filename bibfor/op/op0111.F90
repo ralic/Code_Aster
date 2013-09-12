@@ -23,18 +23,17 @@ subroutine op0111()
 !
 ! =====================================================================
 ! aslint: disable=W1304
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/cpedb.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -47,6 +46,7 @@ subroutine op0111()
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
@@ -96,14 +96,10 @@ subroutine op0111()
 !     ! ========================== !
 !     ! RECUPERATION DES MOTS-CLES !
 !     ! ========================== !
-    call getvid(' ', 'MATR_PROJECTION', 1, iarg, 1,&
-                corres, ibid)
-    call getvr8(' ', 'INST', 0, iarg, 1,&
-                tf, ibid)
-    call getvr8(' ', 'PAS', 0, iarg, 1,&
-                dt, ibid)
-    call getvis(' ', 'NUME_ORDRE_YACS', 0, iarg, 1,&
-                numpas, ibid)
+    call getvid(' ', 'MATR_PROJECTION', scal=corres, nbret=ibid)
+    call getvr8(' ', 'INST', scal=tf, nbret=ibid)
+    call getvr8(' ', 'PAS', scal=dt, nbret=ibid)
+    call getvis(' ', 'NUME_ORDRE_YACS', scal=numpas, nbret=ibid)
     numpa4 = numpas
     call getfac('VIS_A_VIS', nbocc)
     call getfac('RESULTAT', iresu)
@@ -114,10 +110,8 @@ subroutine op0111()
     ivite = 0
     iacce = 0
     if (iresu .eq. 1) then
-        call getvid('RESULTAT', 'RESU', 1, iarg, 1,&
-                    resu, ibid)
-        call getvis('RESULTAT', 'NUME_ORDRE', 1, iarg, 1,&
-                    nordre, ibid)
+        call getvid('RESULTAT', 'RESU', iocc=1, scal=resu, nbret=ibid)
+        call getvis('RESULTAT', 'NUME_ORDRE', iocc=1, scal=nordre, nbret=ibid)
         if (niv .eq. 2) then
             valk(1) = 'OP0111'
             valk(2) = 'NUME_ORDRE'
@@ -134,12 +128,9 @@ subroutine op0111()
         ivite = 1
         iacce = 1
     else if (ietin.eq.1) then
-        call getvid('ETAT_INIT', 'DEPL', 1, iarg, 1,&
-                    chdepl, idepl)
-        call getvid('ETAT_INIT', 'VITE', 1, iarg, 1,&
-                    chvite, ivite)
-        call getvid('ETAT_INIT', 'ACCE', 1, iarg, 1,&
-                    chacce, iacce)
+        call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=chdepl, nbret=idepl)
+        call getvid('ETAT_INIT', 'VITE', iocc=1, scal=chvite, nbret=ivite)
+        call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=chacce, nbret=iacce)
         if (idepl .gt. 1 .or. ivite .gt. 1 .or. iacce .gt. 1) then
             call u2mess('F', 'COUPLAGEIFS_3')
         endif
@@ -250,8 +241,7 @@ subroutine op0111()
         ilengt = 0
         grpno = ma2//'.GROUPENO'
         do 50 iocc = 1, nbocc
-            call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc, iarg, 1,&
-                        nomgno, ibid)
+            call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc=iocc, scal=nomgno, nbret=ibid)
             call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2)
             call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
             do 60 jj = 1, nbno2

@@ -21,16 +21,16 @@ subroutine rfresu()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/foattr.h"
 #include "asterfort/focrr2.h"
 #include "asterfort/focrr3.h"
 #include "asterfort/focrrs.h"
 #include "asterfort/foimpr.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -61,13 +61,10 @@ subroutine rfresu()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
     intres = 'NON     '
-    call getvtx(' ', 'INTERP_NUME', 0, iarg, 1,&
-                intres, n1)
+    call getvtx(' ', 'INTERP_NUME', scal=intres, nbret=n1)
 !
     npoint = 0
     cmp = ' '
@@ -75,19 +72,13 @@ subroutine rfresu()
     maille = ' '
     nogma = ' '
     nogno = ' '
-    call getvtx(' ', 'MAILLE', 0, iarg, 1,&
-                maille, nm)
-    call getvtx(' ', 'GROUP_MA', 0, iarg, 1,&
-                nogma, ngm)
-    call getvis(' ', 'SOUS_POINT', 0, iarg, 1,&
-                nusp, np)
+    call getvtx(' ', 'MAILLE', scal=maille, nbret=nm)
+    call getvtx(' ', 'GROUP_MA', scal=nogma, nbret=ngm)
+    call getvis(' ', 'SOUS_POINT', scal=nusp, nbret=np)
     if (np .eq. 0) nusp = 0
-    call getvis(' ', 'POINT', 0, iarg, 1,&
-                npoint, np)
-    call getvtx(' ', 'NOEUD', 0, iarg, 1,&
-                noeud, nn)
-    call getvtx(' ', 'GROUP_NO', 0, iarg, 1,&
-                nogno, ngn)
+    call getvis(' ', 'POINT', scal=npoint, nbret=np)
+    call getvtx(' ', 'NOEUD', scal=noeud, nbret=nn)
+    call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
 !
 !     -----------------------------------------------------------------
 !                       --- CAS D'UN RESULTAT ---
@@ -95,20 +86,17 @@ subroutine rfresu()
 !
 !
 !
-    call getvid(' ', 'RESULTAT ', 0, iarg, 1,&
-                resu, nres)
+    call getvid(' ', 'RESULTAT ', scal=resu, nbret=nres)
 !
     if (nres .ne. 0) then
-        call getvtx(' ', 'NOM_PARA_RESU', 0, iarg, 1,&
-                    npresu, npr)
+        call getvtx(' ', 'NOM_PARA_RESU', scal=npresu, nbret=npr)
         if (npr .ne. 0) then
             if (intres(1:3) .ne. 'NON') call u2mess('F', 'UTILITAI4_21')
             call focrr3(nomfon, resu, npresu, 'G', iret)
             goto 10
         endif
 !
-        call getvtx(' ', 'NOM_CHAM', 0, iarg, 1,&
-                    nomcha, l)
+        call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=l)
         call rsutnc(resu, nomcha, 1, cham19, numer1,&
                     nbtrou)
         if (nbtrou .eq. 0) call u2mesk('F', 'UTILITAI4_22', 1, nomcha)

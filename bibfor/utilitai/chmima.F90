@@ -1,11 +1,10 @@
 subroutine chmima(nomsd, nomsy, typmax, nocham)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -20,6 +19,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 #include "asterfort/rsutnu.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbordr
     character(len=*) :: nomsd, nomsy, typmax, nocham
 ! ----------------------------------------------------------------------
@@ -74,15 +74,12 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 !
 !     --- LECTURE DU MOT-CLE TYPE_RESU ---
 !
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                valeur, n2)
+    call getvtx(' ', 'TYPE_RESU', scal=valeur, nbret=n2)
 !
 !     --- RECUPERATION DES NUMEROS D'ORDRE ---
 !
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                epsi, np)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
 !
     call rsutnu(nomsd, ' ', 0, knum, nbordr,&
                 epsi, crit, iret)

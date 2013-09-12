@@ -38,10 +38,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 !     -----------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/codent.h"
@@ -49,6 +46,8 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 #include "asterfort/decod2.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -67,6 +66,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     logical :: astock
     integer :: ideas, precis, nbnoch
     character(len=*) :: nomres, mail, typres, acces, listr8, listis, crit
@@ -419,11 +419,11 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                                 call jeveuo('&&DEFDIR', 'L', iagno2)
                                 do 305 i = 1, nbno2
                                     if (zi(iagno2-1 +i) .eq. ino) then
-                                        call getvis('REDEFI_ORIENT', 'CODE_DIR', iocc, iarg, 1,&
-                                                    icmpm, ibid)
+                                        call getvis('REDEFI_ORIENT', 'CODE_DIR', iocc=iocc,&
+                                                    scal=icmpm, nbret=ibid)
                                         if (icmp .eq. icmpm) then
-                                            call getvr8('REDEFI_ORIENT', 'DIRECTION', iocc, iarg,&
-                                                        3, dir, ibid)
+                                            call getvr8('REDEFI_ORIENT', 'DIRECTION', iocc=iocc,&
+                                                        nbval=3, vect=dir, nbret=ibid)
                                             if (zcmplx) then
                                                 zc(jcnsv-1 + idir+1) = dcmplx( dir(1),0.d0)
                                                 zc(jcnsv-1 + idir+2) = dcmplx( dir(2),0.d0)

@@ -1,14 +1,13 @@
 subroutine aceamb(nomu, noma, lmax, nbocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/alcart.h"
 #include "asterfort/angvx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -21,6 +20,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 #include "asterfort/normev.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, nbocc
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
@@ -103,10 +103,10 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
         call getvem(noma, 'MAILLE', 'MEMBRANE', 'MAILLE', ioc,&
                     iarg, lmax, zk8(jdls2), nm)
 !
-        call getvr8('MEMBRANE', 'ANGL_REP', ioc, iarg, 2,&
-                    ang, n1)
-        call getvr8('MEMBRANE', 'AXE', ioc, iarg, 3,&
-                    axey, n2)
+        call getvr8('MEMBRANE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang,&
+                    nbret=n1)
+        call getvr8('MEMBRANE', 'AXE', iocc=ioc, nbval=3, vect=axey,&
+                    nbret=n2)
         zr(jdvc ) = ang(1)
         zr(jdvc+1) = ang(2)
         if (n2 .eq. 0) then

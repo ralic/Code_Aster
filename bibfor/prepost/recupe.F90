@@ -1,11 +1,11 @@
 subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
                   deklag, prodef, londef, oridef)
-    implicit     none
+    implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mess.h"
@@ -52,8 +52,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 ! ======================================================================
 ! --- RECUPERATION DU MAILLAGE -----------------------------------------
 ! ======================================================================
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                noma, ibid)
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=ibid)
 ! ======================================================================
 ! --- DIMENSION DE L'ESPACE --------------------------------------------
 ! ======================================================================
@@ -67,24 +66,18 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 ! ======================================================================
 ! --- RECUPERATION DES CARACTERISTIQUES DU REVETEMENT ------------------
 ! ======================================================================
-    call getvr8(' ', 'EPAIS_REV', 1, iarg, 1,&
-                lrev, ibid)
-    call getvid(' ', 'MATER_REV', 1, iarg, 1,&
-                matrev, ibid)
+    call getvr8(' ', 'EPAIS_REV', scal=lrev, nbret=ibid)
+    call getvid(' ', 'MATER_REV', scal=matrev, nbret=ibid)
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES DE LA FISSURE ---------------------------
 ! ======================================================================
-    call getvr8('FISSURE', 'DECALAGE', 1, iarg, 1,&
-                deklag, ibid)
+    call getvr8('FISSURE', 'DECALAGE', iocc=1, scal=deklag, nbret=ibid)
     if (deklag .gt. 0.0d0) then
         call u2mess('F', 'PREPOST4_60')
     endif
-    call getvr8('FISSURE', 'PROFONDEUR', 1, iarg, 1,&
-                prodef, ibid)
-    call getvr8('FISSURE', 'LONGUEUR', 1, iarg, 1,&
-                londef, ibid)
-    call getvtx('FISSURE', 'ORIENTATION', 1, iarg, 1,&
-                oridef, ibid)
+    call getvr8('FISSURE', 'PROFONDEUR', iocc=1, scal=prodef, nbret=ibid)
+    call getvr8('FISSURE', 'LONGUEUR', iocc=1, scal=londef, nbret=ibid)
+    call getvtx('FISSURE', 'ORIENTATION', iocc=1, scal=oridef, nbret=ibid)
 ! ======================================================================
 ! --- RECUPERATION DU NOMBRE D'OCCURENCE DE K1D ------------------------
 ! ======================================================================

@@ -30,11 +30,11 @@ subroutine limsst(nomcmd)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesg.h"
+!
     integer :: nbchoc, nbrede, nbrevi
     character(len=24) :: valk(2)
     character(len=16) :: nomcmd, method
@@ -47,11 +47,9 @@ subroutine limsst(nomcmd)
     integer :: n1, n2, namor
     real(kind=8) :: rbid
 !-----------------------------------------------------------------------
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                method, n1)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
     call getfac('ETAT_INIT', n2)
-    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, 0,&
-                rbid, namor)
+    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=namor)
     call getfac('CHOC', nbchoc)
     call getfac('RELA_EFFO_DEPL', nbrede)
     call getfac('RELA_EFFO_VITE', nbrevi)

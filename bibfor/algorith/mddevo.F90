@@ -1,20 +1,20 @@
 subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                   masgen, amogen, basemo, tinit, iparch,&
                   nbsauv, nbchoc, logcho, dplmod, parcho,&
-                  noecho, nbrede, dplred, fonred,&
-                  nbrevi, dplrev, fonrev, depsto, vitsto,&
-                  accsto, iorsto, temsto, fchost, dchost,&
-                  vchost, ichost, iredst, dredst, coefm,&
-                  liad, inumor, idescf, nofdep, nofvit,&
-                  nofacc, nomfon, psidel, monmot, nomres,&
-                  nbexci, passto, irevst, drevst)
+                  noecho, nbrede, dplred, fonred, nbrevi,&
+                  dplrev, fonrev, depsto, vitsto, accsto,&
+                  iorsto, temsto, fchost, dchost, vchost,&
+                  ichost, iredst, dredst, coefm, liad,&
+                  inumor, idescf, nofdep, nofvit, nofacc,&
+                  nomfon, psidel, monmot, nomres, nbexci,&
+                  passto, irevst, drevst)
 !
 ! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
 #include "asterc/etausr.h"
-#include "asterc/getvid.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -217,13 +217,13 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     call mdfnli(nbmode, zr(jdep2), zr(jvit2), zr(jbid1), zr(jfex2),&
                 r8b, r8b, r8b, r8b, nbchoc,&
                 logcho, dplmod, parcho, noecho, zr(jchor),&
-                nbrede, dplred, fonred, zr(jredr),zi(jredi),&
-                nbrevi, dplrev, fonrev, zr(jrevr),zi(jrevi),&
-                tinit, nofdep, nofvit, nofacc, nbexci, psidel,&
-                monmot, 0, fbid, fbid, 0.d0,&
-                k8b, 0, 0, 0.d0, 0.d0,&
-                0.d0, typal, finpal, cnpal, prdeff,&
-                r8b2, fsauv)
+                nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                tinit, nofdep, nofvit, nofacc, nbexci,&
+                psidel, monmot, 0, fbid, fbid,&
+                0.d0, k8b, 0, 0, 0.d0,&
+                0.d0, 0.d0, typal, finpal, cnpal,&
+                prdeff, r8b2, fsauv)
 !
 !     --- INITIALISATION DE L'ALGORITHME ---
     do 100 im = 0, nbmod1
@@ -292,11 +292,11 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                     logcho, dplmod, parcho, noecho, zr(jchor),&
                     nbrede, dplred, fonred, zr(jredr), zi(jredi),&
                     nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                    temps, nofdep, nofvit, nofacc, nbexci, psidel,&
-                    monmot, 0, fbid, fbid, 0.d0,&
-                    k8b, 0, 0, 0.d0, 0.d0,&
-                    0.d0, typal, finpal, cnpal, prdeff,&
-                    r8b2, fsauv)
+                    temps, nofdep, nofvit, nofacc, nbexci,&
+                    psidel, monmot, 0, fbid, fbid,&
+                    0.d0, k8b, 0, 0, 0.d0,&
+                    0.d0, 0.d0, typal, finpal, cnpal,&
+                    prdeff, r8b2, fsauv)
 !
         do 34 im = 0, nbmod1
             im1 = im + 1
@@ -330,11 +330,11 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                     logcho, dplmod, parcho, noecho, zr(jchor),&
                     nbrede, dplred, fonred, zr(jredr), zi(jredi),&
                     nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
-                    temps, nofdep, nofvit, nofacc, nbexci, psidel,&
-                    monmot, 0, fbid, fbid, 0.d0,&
-                    k8b, 0, 0, 0.d0, 0.d0,&
-                    0.d0, typal, finpal, cnpal, prdeff,&
-                    r8b2, fsauv)
+                    temps, nofdep, nofvit, nofacc, nbexci,&
+                    psidel, monmot, 0, fbid, fbid,&
+                    0.d0, k8b, 0, 0, 0.d0,&
+                    0.d0, 0.d0, typal, finpal, cnpal,&
+                    prdeff, r8b2, fsauv)
 !
 !
         do 36 im = 0, nbmod1
@@ -396,8 +396,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                             nbrevi)
                 if (nomres .eq. '&&OP0074') then
 !          --- CAS D'UNE POURSUITE ---
-                    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                                tran, ndt)
+                    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=ndt)
                     if (ndt .ne. 0) call resu74(tran, nomres)
                 endif
                 vali (1) = i

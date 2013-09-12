@@ -4,15 +4,16 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_read_keyw.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getnode.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -30,9 +31,6 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char_excl_keyw.h"
-#include "asterfort/getnode.h"
-#include "asterfort/char_read_keyw.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,10 +49,10 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,7 +128,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CALIOB.KEYWORDEXCL'
-    n_suffix    = 0
+    n_suffix = 0
     list_suffix = ' '
     call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
@@ -152,7 +150,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CALIOB.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
                      list_node, nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
@@ -161,17 +159,17 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
         angl_naut(1) = zero
         angl_naut(2) = zero
         angl_naut(3) = zero
-        call getvr8(keywordfact, 'ANGL_NAUT', iocc, iarg, 3,&
-                    angl_naut, n_angle)
-        do i_angle= 1, min(3, abs(n_angle))
+        call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=angl_naut,&
+                    nbret=n_angle)
+        do i_angle = 1, min(3, abs(n_angle))
             angl_naut(i_angle) = rdgd*angl_naut(i_angle)
         enddo
         call matrot(angl_naut, matr_rota)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,  &
-                            n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
+        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+                            n_max_keyword, n_keyword, keywordlist, ddlimp, valimr,&
                             valimf, valimc)
 !
         do i_keyword = 1, n_keyword
@@ -186,11 +184,11 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
 ! --------- Which direction ?
 !
-            if ((keyword.eq.'DX').or.(keyword.eq.'DRX')) then
+            if ((keyword.eq.'DX') .or. (keyword.eq.'DRX')) then
                 i_direct = 1
-            elseif ((keyword.eq.'DY').or.(keyword.eq.'DRY')) then
+            else if ((keyword.eq.'DY').or.(keyword.eq.'DRY')) then
                 i_direct = 2
-            elseif ((keyword.eq.'DZ').or.(keyword.eq.'DRZ')) then
+            else if ((keyword.eq.'DZ').or.(keyword.eq.'DRZ')) then
                 i_direct = 3
             else
                 ASSERT(.false.)
@@ -201,9 +199,9 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
 ! --------- Which kind of dof ?
 !
-            if ((keyword.eq.'DX').or.(keyword.eq.'DY').or.(keyword.eq.'DZ')) then
+            if ((keyword.eq.'DX') .or. (keyword.eq.'DY') .or. (keyword.eq.'DZ')) then
                 ddl = 'DEPL'
-            elseif ((keyword.eq.'DRX').or.(keyword.eq.'DRY').or.(keyword.eq.'DRZ')) then
+            else if ((keyword.eq.'DRX').or.(keyword.eq.'DRY').or.(keyword.eq.'DRZ')) then
                 ddl = 'ROTA'
             else
                 ASSERT(.false.)
@@ -230,6 +228,6 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     call jedetc('V', '&&CALIOB.RLLISTE', 1)
     call jedetr(keywordexcl)
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

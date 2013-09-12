@@ -42,11 +42,11 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !             MAILLES A PROJETER (OU ' ' SI IOCC=0).
 !  OUT NCAS : CAS DE FIGURE : 3D/2D/2.5D/1.5D
 !---------------------------------------------------------------------
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -80,12 +80,10 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !     -- SI L'UTILISATEUR A UTILISE  CAS_FIGURE :
 !     -------------------------------------------
     if (iocc .eq. 0) then
-        call getvtx(' ', 'CAS_FIGURE', 1, iarg, 1,&
-                    ncas, n1)
+        call getvtx(' ', 'CAS_FIGURE', scal=ncas, nbret=n1)
         if (n1 .eq. 1) goto 30
     else
-        call getvtx('VIS_A_VIS', 'CAS_FIGURE', iocc, iarg, 1,&
-                    ncas, n1)
+        call getvtx('VIS_A_VIS', 'CAS_FIGURE', iocc=iocc, scal=ncas, nbret=n1)
         if (n1 .eq. 1) goto 30
     endif
 !

@@ -24,17 +24,16 @@ subroutine op0197()
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/chmrck.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -65,6 +64,7 @@ subroutine op0197()
 #include "asterfort/u2mess.h"
 #include "asterfort/uttrir.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbparr, nbpark, nbpars, nbpart, info, kk
     integer :: valii
     parameter    ( nbparr = 4, nbpark = 3, nbpars=3, nbpart=3 )
@@ -113,24 +113,16 @@ subroutine op0197()
 !     LECTURE DES MOTS-CLES DE RECA_WEIBULL
 !
     impr = .false.
-    call getvis(' ', 'INFO', 1, iarg, 1,&
-                info, n1)
+    call getvis(' ', 'INFO', scal=info, nbret=n1)
     if (info .eq. 2) impr = .true.
-    call getvtx(' ', 'OPTION', 1, iarg, 1,&
-                optcal(1), n1)
-    call getvtx(' ', 'CORR_PLAST', 1, iarg, 1,&
-                optcal(2), n1)
-    call getvtx(' ', 'METHODE', 0, iarg, 1,&
-                method, n1)
-    call getvis(' ', 'ITER_GLOB_MAXI', 0, iarg, 1,&
-                nitmax, n1)
-    call getvr8(' ', 'INCO_GLOB_RELA', 0, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'LIST_PARA', 0, iarg, 0,&
-                k8bid, n1)
+    call getvtx(' ', 'OPTION', scal=optcal(1), nbret=n1)
+    call getvtx(' ', 'CORR_PLAST', scal=optcal(2), nbret=n1)
+    call getvtx(' ', 'METHODE', scal=method, nbret=n1)
+    call getvis(' ', 'ITER_GLOB_MAXI', scal=nitmax, nbret=n1)
+    call getvr8(' ', 'INCO_GLOB_RELA', scal=epsi, nbret=n1)
+    call getvtx(' ', 'LIST_PARA', nbval=0, nbret=n1)
     nbcal = -n1
-    call getvtx(' ', 'LIST_PARA', 0, iarg, nbcal,&
-                parcal, n1)
+    call getvtx(' ', 'LIST_PARA', nbval=nbcal, vect=parcal, nbret=n1)
 !
 !     CALM,CALS : SIGNIFIE QUE M OU/ET SIGMA ONT CONVERGES
 !     RECM,RECS : SIGNIFIE QUE M OU/ET SIGMA SONT A RECALER
@@ -176,16 +168,12 @@ subroutine op0197()
     ntpsi = 0
     do 100 iresu = 1, nbresu
 !
-        call getvid('RESU', 'MODELE', iresu, iarg, 1,&
-                    zk8(imod-1+iresu), n1)
-        call getvid('RESU', 'CHAM_MATER', iresu, iarg, 1,&
-                    zk8(ichmat-1+ iresu), n1)
-        call getvr8('RESU', 'TEMPE', iresu, iarg, 0,&
-                    r8bid, n1)
+        call getvid('RESU', 'MODELE', iocc=iresu, scal=zk8(imod-1+iresu), nbret=n1)
+        call getvid('RESU', 'CHAM_MATER', iocc=iresu, scal=zk8(ichmat-1+ iresu), nbret=n1)
+        call getvr8('RESU', 'TEMPE', iocc=iresu, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             ntemp = ntemp+1
-            call getvr8('RESU', 'TEMPE', iresu, iarg, 1,&
-                        zr(itemp-1+iresu), n1)
+            call getvr8('RESU', 'TEMPE', iocc=iresu, scal=zr(itemp-1+iresu), nbret=n1)
             ntpsi = ntpsi+1
             zr(itpsi-1+ntpsi) = zr(itemp-1+iresu)
             zi(itpre-1+iresu) = ntpsi
@@ -201,14 +189,13 @@ subroutine op0197()
 !
 !      --- LECTURE DE LA LISTE D'INSTANTS DE RUPTURE (TRI CROISSANT)
 !
-        call getvr8('RESU', 'LIST_INST_RUPT', iresu, iarg, 0,&
-                    r8bid, n1)
+        call getvr8('RESU', 'LIST_INST_RUPT', iocc=iresu, nbval=0, nbret=n1)
         nbins = -n1
         call jecroc(jexnum(collec, iresu))
         call jeecra(jexnum(collec, iresu), 'LONMAX', nbins)
         call jeveuo(jexnum(collec, iresu), 'E', iinst)
-        call getvr8('RESU', 'LIST_INST_RUPT', iresu, iarg, nbins,&
-                    zr( iinst), n1)
+        call getvr8('RESU', 'LIST_INST_RUPT', iocc=iresu, nbval=nbins, vect=zr( iinst),&
+                    nbret=n1)
         nbold = nbins
         call uttrir(nbins, zr(iinst), 0.d0)
         if (nbins .ne. nbold) then
@@ -224,8 +211,7 @@ subroutine op0197()
 !       ON TESTE SI LES INSTANTS DE RUPTURE MIN ET MAX SONT
 !       DANS LES INSTANTS DE CALCUL
 !
-        call getvid('RESU', 'EVOL_NOLI', iresu, iarg, 1,&
-                    resu, n1)
+        call getvid('RESU', 'EVOL_NOLI', iocc=iresu, scal=resu, nbret=n1)
         call rsorac(resu, 'PREMIER', ibid, r8bid, k8bid,&
                     c16b, 0.d0, 'ABSOLU', preor, 1,&
                     ibid)
@@ -459,7 +445,7 @@ subroutine op0197()
 !
         cara = '        '
         call peweib(zk16(itabw-1+iresu), zk8(imod-1+iresu), mate, cara, chcop1,&
-                    0, 1, iresu,nomcmd)
+                    0, 1, iresu, nomcmd)
         call jedetr('&&TE0331')
         call jedetr('&&OP0197.CHARGES')
 !

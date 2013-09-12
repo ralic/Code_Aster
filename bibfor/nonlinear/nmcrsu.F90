@@ -19,15 +19,15 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/crsvit.h"
 #include "asterfort/crsvsi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedup1.h"
@@ -155,8 +155,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 ! --- SI ON NE DONNE PAS NEWTON/PAS_MINI_ELAS ALORS ON NE DOIT PAS
 ! --- TENIR COMPTE DE ITER_GLOB_ELAS
 !
-    call getvr8('NEWTON', 'PAS_MINI_ELAS', 1, iarg, 1,&
-                valr, iret)
+    call getvr8('NEWTON', 'PAS_MINI_ELAS', iocc=1, scal=valr, nbret=iret)
     if (iret .le. 0) then
         iter2 = iter1
     else
@@ -173,8 +172,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 ! --- SI NEWTON/PREDICTION ='DEPL_CALCULE', ALORS ON INTERDIT
 ! --- LA SUBDIVISION
 !
-    call getvtx('NEWTON', 'PREDICTION', 1, iarg, 1,&
-                pred, iret)
+    call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=pred, nbret=iret)
     if (iret .ne. 0) then
         if (pred .eq. 'DEPL_CALCULE') then
             if (ldeco) then
@@ -212,8 +210,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 !     (MATRICE SECANTE) QU'EN CAS DE DIFFICULTE
 !
     if (metlis .eq. 'AUTO') then
-        call getvis('CONVERGENCE', 'ITER_GLOB_MAXI', 1, iarg, 1,&
-                    itmx, iret)
+        call getvis('CONVERGENCE', 'ITER_GLOB_MAXI', iocc=1, scal=itmx, nbret=iret)
         do 25 iadapt = 1, nadapt
             call utdidt('L', sddisc, 'ADAP', iadapt, 'NOM_EVEN',&
                         r8bid, ibid, even)

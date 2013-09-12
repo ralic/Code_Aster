@@ -23,9 +23,6 @@ subroutine op0004()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/foimpr.h"
@@ -33,6 +30,9 @@ subroutine op0004()
 #include "asterfort/foston.h"
 #include "asterfort/foverf.h"
 #include "asterfort/fovern.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
@@ -70,12 +70,9 @@ subroutine op0004()
     verif = ' '
     defonc = .false.
     call getres(nomfon, typfon, nomcmd)
-    call getvtx(' ', 'VERIF', 0, iarg, 1,&
-                verif, n1)
-    call getvr8(' ', 'PARA', 0, iarg, 0,&
-                toto, n2)
-    call getvid(' ', 'FONCTION', 0, iarg, 0,&
-                k8b, n3)
+    call getvtx(' ', 'VERIF', scal=verif, nbret=n1)
+    call getvr8(' ', 'PARA', nbval=0, nbret=n2)
+    call getvid(' ', 'FONCTION', nbval=0, nbret=n3)
     nbpara = abs(n2)
     if (n3 .ne. 0) then
         nbfonc = -n3
@@ -94,8 +91,7 @@ subroutine op0004()
 !     --- VERIFICATION DE LA CROISSANCE DES PARAMETRES ---
     if (verif .eq. 'CROISSANT') then
         call wkvect('&&OP0004.TEMP.PARA', 'V V R', nbpara, lparc)
-        call getvr8(' ', 'PARA', 0, iarg, nbpara,&
-                    zr(lparc), n)
+        call getvr8(' ', 'PARA', nbval=nbpara, vect=zr(lparc), nbret=n)
 !        VERIF QUE LES PARA SONT STRICT CROISSANTS
         iret=2
         call foverf(zr(lparc), nbpara, iret)
@@ -107,8 +103,7 @@ subroutine op0004()
 !
     if (defonc) then
         do 10 iocc = 1, nbfonc
-            call getvr8('DEFI_FONCTION', 'VALE', iocc, iarg, 0,&
-                        rbid, nv)
+            call getvr8('DEFI_FONCTION', 'VALE', iocc=iocc, nbval=0, nbret=nv)
             nv = -nv
             if (mod(nv,2) .ne. 0) then
                 vali (1) = iocc
@@ -119,8 +114,8 @@ subroutine op0004()
                 nbcoup = nv / 2
                 call wkvect('&&OP0004.TEMP.PARA', 'V V R', nv, lpara)
                 call wkvect('&&OP0004.TEMP.PAR2', 'V V R', nbcoup, lpar2)
-                call getvr8('DEFI_FONCTION', 'VALE', iocc, iarg, nv,&
-                            zr(lpara), nbval)
+                call getvr8('DEFI_FONCTION', 'VALE', iocc=iocc, nbval=nv, vect=zr(lpara),&
+                            nbret=nbval)
                 do 12 i = 0, nbcoup-1
                     zr(lpar2+i) = zr(lpara+2*i)
 12              continue
@@ -146,33 +141,25 @@ subroutine op0004()
     ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', nprol, lpro)
     zk24(lpro ) = 'NAPPE   '
-    call getvtx(' ', 'INTERPOL', 0, iarg, 2,&
-                interp, l1)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=l1)
     if (l1 .eq. 1) interp(2) = interp(1)
     zk24(lpro+1) = interp(1)//interp(2)
-    call getvtx(' ', 'NOM_PARA', 0, iarg, 1,&
-                zk24(lpro+2), l)
-    call getvtx(' ', 'NOM_RESU', 0, iarg, 1,&
-                zk24(lpro+3), l)
-    call getvtx(' ', 'PROL_GAUCHE', 0, iarg, 1,&
-                zk24(lpro+4)(1:1), l)
-    call getvtx(' ', 'PROL_DROITE', 0, iarg, 1,&
-                zk24(lpro+4)(2:2), l)
+    call getvtx(' ', 'NOM_PARA', scal=zk24(lpro+2), nbret=l)
+    call getvtx(' ', 'NOM_RESU', scal=zk24(lpro+3), nbret=l)
+    call getvtx(' ', 'PROL_GAUCHE', scal=zk24(lpro+4)(1:1), nbret=l)
+    call getvtx(' ', 'PROL_DROITE', scal=zk24(lpro+4)(2:2), nbret=l)
     zk24(lpro+5) = nomfon
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
     call wkvect(nomfon//'.PARA', 'G V R', nbpara, lpar)
-    call getvr8(' ', 'PARA', 0, iarg, nbpara,&
-                zr(lpar), n)
+    call getvr8(' ', 'PARA', nbval=nbpara, vect=zr(lpar), nbret=n)
 !
     call wkvect('&&OP0004.NOM.FONCTIONS', 'V V K24', nbfonc, lnomf)
     if (defonc) then
-        call getvtx(' ', 'NOM_PARA_FONC', 0, iarg, 1,&
-                    zk24(lpro+6), l)
+        call getvtx(' ', 'NOM_PARA_FONC', scal=zk24(lpro+6), nbret=l)
         mxva = 0
         do 20 ifonc = 1, nbfonc
-            call getvr8('DEFI_FONCTION', 'VALE', ifonc, iarg, 0,&
-                        rbid, nbval)
+            call getvr8('DEFI_FONCTION', 'VALE', iocc=ifonc, nbval=0, nbret=nbval)
             mxva = max(mxva,-nbval)
 20      continue
         call wkvect('&&OP0004.VALEURS.LUES', 'V V R', mxva, jval)
@@ -181,8 +168,8 @@ subroutine op0004()
             zk24(lnomf+ifonc-1) = '&&OP0004.F'
             call codent(ifonc, 'G', zk24(lnomf+ifonc-1)(11:19))
             zk24(lnomf+ifonc-1)(20:24) = '.VALE'
-            call getvr8('DEFI_FONCTION', 'VALE', ifonc, iarg, mxva,&
-                        zr(jval), nbval)
+            call getvr8('DEFI_FONCTION', 'VALE', iocc=ifonc, nbval=mxva, vect=zr(jval),&
+                        nbret=nbval)
             call wkvect(zk24(lnomf+ifonc-1), 'V V R', nbval, lval)
             zi(ladrf+ifonc-1) = lval
             nbcoup = nbval / 2
@@ -211,18 +198,17 @@ subroutine op0004()
                 endif
             endif
 !
-            call getvtx('DEFI_FONCTION', 'INTERPOL', ifonc, iarg, 2,&
-                        interp, l1)
+            call getvtx('DEFI_FONCTION', 'INTERPOL', iocc=ifonc, nbval=2, vect=interp,&
+                        nbret=l1)
             if (l1 .eq. 1) interp(2) = interp(1)
             zk24(lpro+6+2*ifonc-1) = interp(1)//interp(2)
-            call getvtx('DEFI_FONCTION', 'PROL_GAUCHE', ifonc, iarg, 1,&
-                        zk24(lpro+6+2*ifonc)(1:1), l)
-            call getvtx('DEFI_FONCTION', 'PROL_DROITE', ifonc, iarg, 1,&
-                        zk24(lpro+6+2*ifonc)(2:2), l)
+            call getvtx('DEFI_FONCTION', 'PROL_GAUCHE', iocc=ifonc,&
+                        scal=zk24(lpro+6+2*ifonc)(1:1), nbret=l)
+            call getvtx('DEFI_FONCTION', 'PROL_DROITE', iocc=ifonc,&
+                        scal=zk24(lpro+6+2*ifonc)(2:2), nbret=l)
 30      continue
     else
-        call getvid(' ', 'FONCTION', 0, iarg, nbfonc,&
-                    zk24(lnomf), n)
+        call getvid(' ', 'FONCTION', nbval=nbfonc, vect=zk24(lnomf), nbret=n)
         call fovern(zk24(lnomf), nbfonc, zk24(lpro), iret)
     endif
 !

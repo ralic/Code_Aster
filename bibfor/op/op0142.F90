@@ -22,15 +22,14 @@ subroutine op0142()
 !     STOCKAGE DANS UN OBJET DE TYPE FONCTION
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/foimpr.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/i2sens.h"
 #include "asterfort/i2tgrm.h"
@@ -54,6 +53,7 @@ subroutine op0142()
 #include "asterfort/titre.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: pnoe, ptch, ier
     character(len=2) :: prolgd
     character(len=4) :: interp(2)
@@ -85,8 +85,7 @@ subroutine op0142()
 !
     call getres(nomfon, typfon, nomcmd)
 !
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                nommai, l)
+    call getvid(' ', 'MAILLAGE', scal=nommai, nbret=l)
     call getvem(nommai, 'NOEUD', ' ', 'NOEUD_INIT', 0,&
                 iarg, 1, nod, ibid)
     call getvem(nommai, 'NOEUD', ' ', 'NOEUD_FIN', 0,&
@@ -119,13 +118,10 @@ subroutine op0142()
         call u2mess('F', 'UTILITAI2_84')
     endif
 !
-    call getvtx(' ', 'INTERPOL', 0, iarg, 2,&
-                interp, n3)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n3)
     if (n3 .eq. 1) interp(2) = interp(1 )
-    call getvtx(' ', 'PROL_GAUCHE', 0, iarg, 1,&
-                prolgd(1:1), n3)
-    call getvtx(' ', 'PROL_DROITE', 0, iarg, 1,&
-                prolgd(2:2), n3)
+    call getvtx(' ', 'PROL_GAUCHE', scal=prolgd(1:1), nbret=n3)
+    call getvtx(' ', 'PROL_DROITE', scal=prolgd(2:2), nbret=n3)
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON//'.PROL'
 !
@@ -257,11 +253,9 @@ subroutine op0142()
 !
     zr(lval+nbrseg) = zr(labs+3*(nbrseg-1)+1)
 !
-    call getvtx('VITE ', 'PROFIL', 1, iarg, 1,&
-                tprof, ibid)
+    call getvtx('VITE ', 'PROFIL', iocc=1, scal=tprof, nbret=ibid)
     if (tprof .eq. 'UNIFORME') then
-        call getvr8('VITE ', 'VALE', 1, iarg, 1,&
-                    rvale, ibid)
+        call getvr8('VITE ', 'VALE', iocc=1, scal=rvale, nbret=ibid)
         do 50 i = 1, nbrse1
             if (i .ge. iplac1 .and. i .le. iplac2) then
                 zr(lval+nbrse1+i-1) = rvale
@@ -270,8 +264,7 @@ subroutine op0142()
             endif
 50      continue
     else
-        call getvis('VITE ', 'NB_BAV', 1, iarg, 1,&
-                    nbbav, ibid)
+        call getvis('VITE ', 'NB_BAV', iocc=1, scal=nbbav, nbret=ibid)
         if (nbbav .eq. 0) then
             itp = 1
         else if (nbbav .eq. 2) then

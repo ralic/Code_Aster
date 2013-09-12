@@ -32,9 +32,9 @@ subroutine caveis(chargz)
 ! -----  ARGUMENTS
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -62,28 +62,22 @@ subroutine caveis(chargz)
 !
     call wkvect(obj, 'G V K24', 6, idveis)
     ifmis=0
-    call getvis('FORCE_SOL', 'UNITE_RESU_RIGI', 1, iarg, 1,&
-                ifmis, n1)
+    call getvis('FORCE_SOL', 'UNITE_RESU_RIGI', iocc=1, scal=ifmis, nbret=n1)
     call codent(ifmis, 'D', zk24(idveis))
     ifmis=0
-    call getvis('FORCE_SOL', 'UNITE_RESU_MASS', 1, iarg, 1,&
-                ifmis, n1)
+    call getvis('FORCE_SOL', 'UNITE_RESU_MASS', iocc=1, scal=ifmis, nbret=n1)
     call codent(ifmis, 'D', zk24(idveis+1))
     ifmis=0
-    call getvis('FORCE_SOL', 'UNITE_RESU_AMOR', 1, iarg, 1,&
-                ifmis, n1)
+    call getvis('FORCE_SOL', 'UNITE_RESU_AMOR', iocc=1, scal=ifmis, nbret=n1)
     call codent(ifmis, 'D', zk24(idveis+2))
     iffor=0
-    call getvis('FORCE_SOL', 'UNITE_RESU_FORC', 1, iarg, 1,&
-                iffor, n1)
+    call getvis('FORCE_SOL', 'UNITE_RESU_FORC', iocc=1, scal=iffor, nbret=n1)
     call codent(iffor, 'D', zk24(idveis+3))
     gnintf = ' '
-    call getvtx('FORCE_SOL', 'GROUP_NO_INTERF', 1, iarg, 1,&
-                gnintf, ng)
+    call getvtx('FORCE_SOL', 'GROUP_NO_INTERF', iocc=1, scal=gnintf, nbret=ng)
     zk24(idveis+4) = gnintf
     maille = ' '
-    call getvtx('FORCE_SOL', 'SUPER_MAILLE', 1, iarg, 1,&
-                maille, nm)
+    call getvtx('FORCE_SOL', 'SUPER_MAILLE', iocc=1, scal=maille, nbret=nm)
     zk24(idveis+5) = maille
 !
 9999  continue

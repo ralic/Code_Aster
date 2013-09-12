@@ -1,20 +1,20 @@
 subroutine asexci(masse, parmod, amort, nbmode, corfre,&
                   impr, ndir, monoap, muapde, kspect,&
                   kasysp, nbsup, nsupp, knoeu)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asexc1.h"
 #include "asterfort/asexc2.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/typddl.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmode, impr, ndir(*), nbsup, nsupp(*)
     real(kind=8) :: parmod(nbmode, *), amort(*)
     character(len=*) :: masse, kspect, kasysp, knoeu
@@ -77,15 +77,13 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 !     --- EST-ON EN MONO-APPUI OU MULTI-APPUI ? ---
     im1 = 0
     im2 = 0
-    call getvtx(' ', 'MONO_APPUI', 1, iarg, 1,&
-                k8b, nm)
+    call getvtx(' ', 'MONO_APPUI', scal=k8b, nbret=nm)
     if (nm .ne. 0) then
         im1 = im1 + 1
         if (k8b(1:3) .eq. 'OUI') monoap = .true.
     endif
 !
-    call getvtx(' ', 'MULTI_APPUI', 1, iarg, 1,&
-                k8b, nm)
+    call getvtx(' ', 'MULTI_APPUI', scal=k8b, nbret=nm)
     if (nm .ne. 0) then
         im2 = im2 + 1
         if (k8b(1:7) .eq. 'CORRELE') muapde = .false.
@@ -96,15 +94,13 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
     call getfac(motfac, nbocc)
     do 10 ioc = 1, nbocc
 !
-        call getvtx(motfac, 'NOEUD', ioc, iarg, 0,&
-                    k8b, nn)
+        call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
         if (nn .ne. 0 .and. monoap) then
             ier = ier + 1
             call u2mess('E', 'SEISME_8')
         endif
 !
-        call getvtx(motfac, 'GROUP_NO', ioc, iarg, 0,&
-                    k8b, ng)
+        call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=ng)
         if (ng .ne. 0 .and. monoap) then
             ier = ier + 1
             call u2mess('E', 'SEISME_8')
@@ -138,7 +134,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         call wkvect('&&ASEXCI.POSITION.DDL1', 'V V I', neq, jddl1)
         call typddl('BLOQ', nume, neq, zi(jddl1), nba,&
                     nbbloq, nbl, nbliai)
-        if (nbbloq.eq.0) call u2mess('F', 'SEISME_34')
+        if (nbbloq .eq. 0) call u2mess('F', 'SEISME_34')
         call wkvect('&&ASEXCI.NOM_NOEUD', 'V V K8', 3*nbbloq, jnno)
         call wkvect('&&ASEXCI.NOM_SPECTRE', 'V V K8', 3*nbbloq, jnsp)
         call wkvect('&&ASEXCI.DIR_SPECTRE', 'V V R', 3*nbbloq, jdsp)

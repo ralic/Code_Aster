@@ -29,8 +29,8 @@ subroutine cbconv(char)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/chpver.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -56,8 +56,7 @@ subroutine cbconv(char)
         call jecreo(carte//'.VALE', 'G V K8')
         call jeecra(carte//'.VALE', 'LONMAX', 1)
         call jeveuo(carte//'.VALE', 'E', iad)
-        call getvid('CONVECTION', 'VITESSE', 1, iarg, 1,&
-                    vitess, nvites)
+        call getvid('CONVECTION', 'VITESSE', iocc=1, scal=vitess, nbret=nvites)
         zk8(iad-1+1) = vitess
         call chpver('F', zk8(iad-1+1), 'NOEU', 'DEPL_R', ier)
     endif

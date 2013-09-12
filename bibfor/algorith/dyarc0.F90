@@ -1,13 +1,12 @@
 subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
                   lichex)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -22,6 +21,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbarch, nbchex, nbnosy
     character(len=*) :: resuz, lisarc, lichex
 ! ----------------------------------------------------------------------
@@ -77,21 +77,19 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 !
 !     --- LES CHAMPS EN SORTIE ---
 !
-    call getvtx(motcle, 'CHAM_EXCLU', iocc, iarg, 0,&
-                k8b, n1)
+    call getvtx(motcle, 'CHAM_EXCLU', iocc=iocc, nbval=0, nbret=n1)
 !
     if (n1 .ne. 0) then
         nbchex = -n1
         call wkvect(lichex, 'V V K16', nbchex, jchex)
-        call getvtx(motcle, 'CHAM_EXCLU', iocc, iarg, nbchex,&
-                    zk16( jchex), n1)
+        call getvtx(motcle, 'CHAM_EXCLU', iocc=iocc, nbval=nbchex, vect=zk16( jchex),&
+                    nbret=n1)
     else
         call wkvect(lichex, 'V V K16', 1, jchex)
     endif
 !
 !
-    call getvtx(motcle, 'NOM_CHAM', iocc, iarg, 0,&
-                k8b, n2)
+    call getvtx(motcle, 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n2)
 !
 ! --- ON REGENERE UNE LISTE DE CHAMPS EXCLUS A PARTIR DES CHAMPS
 ! --- A GARDER
@@ -106,8 +104,8 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 !
         call wkvect(lichex, 'V V K16', nbchex, jchex)
         call wkvect('&&DYARC0.TRAV1', 'V V K16', nbcham, jtrav)
-        call getvtx(motcle, 'NOM_CHAM', iocc, iarg, nbcham,&
-                    zk16(jtrav), ibid)
+        call getvtx(motcle, 'NOM_CHAM', iocc=iocc, nbval=nbcham, vect=zk16(jtrav),&
+                    nbret=ibid)
 !
 ! ---   ON TESTE SI LES NOM_CHAM EXISTENT DANS LA SD
 ! ---
@@ -149,8 +147,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 !
 !     --- LES NUMEROS D'ORDRE EN SORTIE ---
 !
-    call getvid(motcle, 'LIST_ARCH', iocc, iarg, 1,&
-                numarc, n1)
+    call getvid(motcle, 'LIST_ARCH', iocc=iocc, scal=numarc, nbret=n1)
     if (n1 .ne. 0) then
         call jeveuo(numarc//'.VALE', 'L', jnum)
         call jelira(numarc//'.VALE', 'LONUTI', lnum)
@@ -168,8 +165,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
         goto 9999
     endif
 !
-    call getvis(motcle, 'PAS_ARCH', iocc, iarg, 1,&
-                ipach, n1)
+    call getvis(motcle, 'PAS_ARCH', iocc=iocc, scal=ipach, nbret=n1)
     if (n1 .ne. 0) then
         ipach = 1
         do 20 k = ipach, nbordr, ipach
@@ -178,10 +174,8 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
         goto 9999
     endif
 !
-    call getvtx(motcle, 'CRITERE', iocc, iarg, 1,&
-                crit, n1)
-    call getvr8(motcle, 'PRECISION', iocc, iarg, 1,&
-                prec, n1)
+    call getvtx(motcle, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
+    call getvr8(motcle, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
     knum = '&&DYARC0.NUME_ORDRE'
     call rsutnu(resu, motcle, iocc, knum, nbtrou,&
                 prec, crit, ier)

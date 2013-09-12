@@ -57,14 +57,13 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gabscu.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -80,6 +79,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 #include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: chfond, grpno, nomno, coorn, taillr
     character(len=24) :: trav, trav0, trav1, trav2, trav3, trav4, trav5
     character(len=8) :: config, noma, noeud, noeud1, k8b
@@ -134,8 +134,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
     if (nomcmd .ne. 'CALC_G') then
         do 1 iocc = 1, nocc
 !
-            call getvtx(motfac(1:l), 'TOUT', iocc, iarg, 0,&
-                        k8bid, noui)
+            call getvtx(motfac(1:l), 'TOUT', iocc=iocc, nbval=0, nbret=noui)
             call getvem(noma, 'GROUP_NO', motfac(1:l), 'GROUP_NO', iocc,&
                         iarg, 0, k8bid, ngro)
             call getvem(noma, 'NOEUD', motfac(1:l), 'NOEUD', iocc,&
@@ -175,24 +174,18 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 !
     do 2 iocc = 1, nocc
 !
-        call getvr8(motfac(1:l), 'MODULE', iocc, iarg, ndim,&
-                    thet, nbm)
+        call getvr8(motfac(1:l), 'MODULE', iocc=iocc, scal=thet, nbret=nbm)
         if (nomcmd .eq. 'CALC_G' .and. nbm .ne. 1) then
             thet = 1.d0
         endif
-        call getvr8(motfac(1:l), 'R_INF', iocc, iarg, ndim,&
-                    rinf, nbm)
-        call getvr8(motfac(1:l), 'R_SUP', iocc, iarg, ndim,&
-                    rsup, nbm)
+        call getvr8(motfac(1:l), 'R_INF', iocc=iocc, scal=rinf, nbret=nbm)
+        call getvr8(motfac(1:l), 'R_SUP', iocc=iocc, scal=rsup, nbret=nbm)
         if (nbm .ne. 0 .and. rsup .le. rinf) then
             call u2mess('F', 'RUPTURE1_6')
         endif
-        call getvid(motfac(1:l), 'MODULE_FO', iocc, iarg, ndim,&
-                    thetf, nbmof)
-        call getvid(motfac(1:l), 'R_INF_FO', iocc, iarg, ndim,&
-                    rinff, nbmf)
-        call getvid(motfac(1:l), 'R_SUP_FO', iocc, iarg, ndim,&
-                    rsupf, nbmf)
+        call getvid(motfac(1:l), 'MODULE_FO', iocc=iocc, scal=thetf, nbret=nbmof)
+        call getvid(motfac(1:l), 'R_INF_FO', iocc=iocc, scal=rinff, nbret=nbmf)
+        call getvid(motfac(1:l), 'R_SUP_FO', iocc=iocc, scal=rsupf, nbret=nbmf)
 !
 !       RECUPERATION DE RINF ET DE RSUP DANS LA SD FOND_FISS
         if (nbm .eq. 0 .and. nbmf .eq. 0) then
@@ -221,8 +214,8 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
         if (nomcmd .eq. 'CALC_G') then
             nto=1
         else
-            call getvtx(motfac(1:l), 'TOUT', iocc, iarg, ndim,&
-                        zk8(jjj), nto)
+            call getvtx(motfac(1:l), 'TOUT', iocc=iocc, nbval=ndim, vect=zk8(jjj),&
+                        nbret=nto)
         endif
 !
         do 100 ito = 1, nto

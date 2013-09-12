@@ -2,10 +2,10 @@ subroutine rfmge1(modgen)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -57,12 +57,9 @@ subroutine rfmge1(modgen)
     interp(1) = 'NON '
     interp(2) = 'NON '
 !
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERPOL', 1, iarg, 2,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n1)
     if (n1 .eq. 1) interp(2) = interp(1)
 !
     knume = '&&RFMGE1.NUME_ORDR'
@@ -86,8 +83,7 @@ subroutine rfmge1(modgen)
     call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
     lfon = lvar + nbordr - 1
 !
-    call getvtx(' ', 'NOM_PARA_RESU', 1, iarg, 1,&
-                npara, n1)
+    call getvtx(' ', 'NOM_PARA_RESU', scal=npara, nbret=n1)
     if (n1 .ne. 0) then
         zk24(lpro+3) = npara
         do 200 iord = 1, nbordr
@@ -101,10 +97,8 @@ subroutine rfmge1(modgen)
         goto 9999
     endif
 !
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 1,&
-                nomcha, n1)
-    call getvis(' ', 'NUME_CMP_GENE', 1, iarg, 1,&
-                ncmp, n1)
+    call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=n1)
+    call getvis(' ', 'NUME_CMP_GENE', scal=ncmp, nbret=n1)
 !
     zk24(lpro+3) = nomcha
 !

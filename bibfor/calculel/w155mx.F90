@@ -23,12 +23,12 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -72,12 +72,9 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 !     -- 2.  : NOMSYM, NOCMP, TYMAXI, TYCH :
 !     --------------------------------------------------
     motfac='MIN_MAX_SP'
-    call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 1,&
-                nomsym, ibid)
-    call getvtx(motfac, 'NOM_CMP', iocc, iarg, 1,&
-                nocmp, ibid)
-    call getvtx(motfac, 'TYPE_MAXI', iocc, iarg, 1,&
-                tymaxi, ibid)
+    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=ibid)
+    call getvtx(motfac, 'NOM_CMP', iocc=iocc, scal=nocmp, nbret=ibid)
+    call getvtx(motfac, 'TYPE_MAXI', iocc=iocc, scal=tymaxi, nbret=ibid)
     tych=nomsym(6:9)
     ASSERT(tych.eq.'ELNO' .or. tych.eq.'ELGA')
 !
@@ -101,8 +98,7 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
         endif
 !
         nomsy2='UTXX_'//tych
-        call getvis(motfac, 'NUME_CHAM_RESU', iocc, iarg, 1,&
-                    nchout, ibid)
+        call getvis(motfac, 'NUME_CHAM_RESU', iocc=iocc, scal=nchout, nbret=ibid)
         ASSERT(nchout.ge.1 .and. nchout.le.20)
         call codent(nchout, 'D0', nomsy2(3:4))
         if (tych .eq. 'ELGA') then

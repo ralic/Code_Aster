@@ -111,7 +111,6 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/dnaups.h"
 #include "asterfort/dneupd.h"
 #include "asterfort/resoud.h"
@@ -119,6 +118,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vpgskp.h"
 #include "asterfort/vpordo.h"
+!
     integer :: ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq)
     integer :: neqact, maxitr, ifm, niv, priram(8), nconv, vecddl(nbeq), nbddl
     integer :: ddlsta(nbeq), nsta

@@ -22,9 +22,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getexm.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -32,6 +30,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 #include "asterfort/conare.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -47,6 +46,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 #include "asterfort/xlag2c.h"
 #include "asterfort/xlagsc.h"
 #include "asterfort/xxmmvd.h"
+!
     character(len=8) :: noma, nomo, fiss
     integer :: ndim
     integer :: algola
@@ -253,8 +253,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
             ia=nint(zr(jcesv3-1+iad3))
 ! - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
             if (getexm('PILOTAGE','DIRE_PILO') .eq. 1) then
-                call getvtx('PILOTAGE', 'DIRE_PILO', 1, iarg, 0,&
-                            k8bid, npil)
+                call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=0, nbret=npil)
                 npil=-npil
                 if (npil .ge. 1) then
                     if (ia .eq. 0) then

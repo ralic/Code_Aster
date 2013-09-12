@@ -37,9 +37,8 @@ subroutine callis(nomres)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/inclis.h"
 #include "asterfort/inilag.h"
 #include "asterfort/jecrec.h"
@@ -62,6 +61,7 @@ subroutine callis(nomres)
 #include "asterfort/vecomo.h"
 #include "asterfort/verili.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     character(len=8) :: nomres, option
@@ -143,8 +143,7 @@ subroutine callis(nomres)
         intf2=zk8(lllia+3)
 !
 ! ------------- ON VERIFIE SI MODES REDUITS OU PAS
-        call getvtx('LIAISON', 'OPTION', i, iarg, 1,&
-                    option, iopt)
+        call getvtx('LIAISON', 'OPTION', iocc=i, scal=option, nbret=iopt)
 !------------------------------------------C
 !--                                      --C
 !-- CONSTRUCTION DES MATRICES DE LIAISON --C
@@ -219,14 +218,10 @@ subroutine callis(nomres)
 !
             iinc=0
 !       On teste si la liaison est incompatible
-            call getvtx('LIAISON', 'GROUP_MA_MAIT_1', i, iarg, 1,&
-                        k8bid, irep11)
-            call getvtx('LIAISON', 'MAILLE_MAIT_1', i, iarg, 1,&
-                        k8bid, irep12)
-            call getvtx('LIAISON', 'GROUP_MA_MAIT_2', i, iarg, 1,&
-                        k8bid, irep21)
-            call getvtx('LIAISON', 'MAILLE_MAIT_2', i, iarg, 1,&
-                        k8bid, irep22)
+            call getvtx('LIAISON', 'GROUP_MA_MAIT_1', iocc=i, scal=k8bid, nbret=irep11)
+            call getvtx('LIAISON', 'MAILLE_MAIT_1', iocc=i, scal=k8bid, nbret=irep12)
+            call getvtx('LIAISON', 'GROUP_MA_MAIT_2', iocc=i, scal=k8bid, nbret=irep21)
+            call getvtx('LIAISON', 'MAILLE_MAIT_2', iocc=i, scal=k8bid, nbret=irep22)
             if ((irep11.ne.0) .or. (irep12.ne.0)) then
                 motcle(1) = 'MAILLE_MAIT_1'
                 motcle(2) = 'GROUP_MA_MAIT_1'
@@ -369,14 +364,10 @@ subroutine callis(nomres)
 !--                                    --C
 !----------------------------------------C
 !
-            call getvtx('LIAISON', 'GROUP_MA_MAIT_1', i, iarg, 1,&
-                        k8bid, irep11)
-            call getvtx('LIAISON', 'MAILLE_MAIT_1', i, iarg, 1,&
-                        k8bid, irep12)
-            call getvtx('LIAISON', 'GROUP_MA_MAIT_2', i, iarg, 1,&
-                        k8bid, irep21)
-            call getvtx('LIAISON', 'MAILLE_MAIT_2', i, iarg, 1,&
-                        k8bid, irep22)
+            call getvtx('LIAISON', 'GROUP_MA_MAIT_1', iocc=i, scal=k8bid, nbret=irep11)
+            call getvtx('LIAISON', 'MAILLE_MAIT_1', iocc=i, scal=k8bid, nbret=irep12)
+            call getvtx('LIAISON', 'GROUP_MA_MAIT_2', iocc=i, scal=k8bid, nbret=irep21)
+            call getvtx('LIAISON', 'MAILLE_MAIT_2', iocc=i, scal=k8bid, nbret=irep22)
 !
             if ((irep21.ne.0) .or. (irep22.ne.0)) then
                 imast=2

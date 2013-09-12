@@ -1,13 +1,12 @@
 subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
                   motcle, typmcl, typlig, nbma, ndorig,&
                   ndextr, typm, vecori)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -25,6 +24,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 #include "asterfort/u2mess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbmc, nbma
     character(len=*) :: typlig
     character(len=24) :: mafour
@@ -172,16 +172,12 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 !
 ! --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
-    call getvtx(motfac, 'NOEUD_ORIG', iocc, iarg, 0,&
-                k8b, n1)
-    call getvtx(motfac, 'GROUP_NO_ORIG', iocc, iarg, 0,&
-                nogrp, n2)
+    call getvtx(motfac, 'NOEUD_ORIG', iocc=iocc, nbval=0, nbret=n1)
+    call getvtx(motfac, 'GROUP_NO_ORIG', iocc=iocc, nbval=0, nbret=n2)
     if (n1 .ne. 0) then
-        call getvtx(motfac, 'NOEUD_ORIG', iocc, iarg, 1,&
-                    ndorig, n1)
+        call getvtx(motfac, 'NOEUD_ORIG', iocc=iocc, scal=ndorig, nbret=n1)
     else if (n2.ne.0) then
-        call getvtx(motfac, 'GROUP_NO_ORIG', iocc, iarg, 1,&
-                    nogrp, n2)
+        call getvtx(motfac, 'GROUP_NO_ORIG', iocc=iocc, scal=nogrp, nbret=n2)
         call utnono(' ', nomail, 'NOEUD', nogrp, ndorig,&
                     iret)
         if (iret .eq. 10) then
@@ -197,16 +193,12 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 !
 ! --- LECTURE DU NOM DU NOEUD EXTREMITE (S'IL EST FOURNI)
-    call getvtx(motfac, 'NOEUD_EXTR', iocc, iarg, 0,&
-                k8b, n1)
-    call getvtx(motfac, 'GROUP_NO_EXTR', iocc, iarg, 0,&
-                nogrp, n2)
+    call getvtx(motfac, 'NOEUD_EXTR', iocc=iocc, nbval=0, nbret=n1)
+    call getvtx(motfac, 'GROUP_NO_EXTR', iocc=iocc, nbval=0, nbret=n2)
     if (n1 .ne. 0) then
-        call getvtx(motfac, 'NOEUD_EXTR', iocc, iarg, 1,&
-                    ndextr, n1)
+        call getvtx(motfac, 'NOEUD_EXTR', iocc=iocc, scal=ndextr, nbret=n1)
     else if (n2.ne.0) then
-        call getvtx(motfac, 'GROUP_NO_EXTR', iocc, iarg, 1,&
-                    nogrp, n2)
+        call getvtx(motfac, 'GROUP_NO_EXTR', iocc=iocc, scal=nogrp, nbret=n2)
         call utnono(' ', nomail, 'NOEUD', nogrp, ndextr,&
                     iret)
         if (iret .eq. 10) then
@@ -269,8 +261,8 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     vecori(2)=0.d0
     vecori(3)=0.d0
     if (nomcmd .eq. 'DEFI_GROUP' .and. motfac .eq. 'CREA_GROUP_NO') then
-        call getvr8(motfac, 'VECT_ORIE', iocc, iarg, 3,&
-                    vecori, n1)
+        call getvr8(motfac, 'VECT_ORIE', iocc=iocc, nbval=3, vect=vecori,&
+                    nbret=n1)
         if ((ndorig.eq.ndextr) .and. (ndorig.ne.' ')) then
             if (n1 .le. 0) call u2mess('A', 'ELEMENTS_70')
         endif

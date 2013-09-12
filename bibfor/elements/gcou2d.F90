@@ -1,16 +1,15 @@
 subroutine gcou2d(base, resu, noma, nomno, noeud,&
                   coor, rinf, rsup, module, ldirec,&
                   dir)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -22,6 +21,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: rinf, rsup, module, dir(3), coor(*)
     character(len=1) :: base
     character(len=8) :: noma, noeud
@@ -94,10 +94,8 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
     if (nomcmd .eq. 'CALC_G') then
 !       CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL)
-        call getvid('THETA', 'FOND_FISS', 1, iarg, 1,&
-                    k8b, n1)
-        call getvid('THETA', 'FISSURE', 1, iarg, 1,&
-                    fiss, n2)
+        call getvid('THETA', 'FOND_FISS', iocc=1, scal=k8b, nbret=n1)
+        call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
     endif
 !
 !     DANS LE CAS X-FEM, SI LA DIRECTION A ETE DONNEE, ON LA GARDE FIXE
@@ -160,8 +158,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         yi = coor((num-1)*3+2)
 !     CAS X-FEM
     else if (n2.ne.0) then
-        call getvis('THETA', 'NUME_FOND', 1, iarg, 1,&
-                    numfon, ibid)
+        call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
         call jeveuo(fiss//'.FONDFISS', 'L', jfond)
         xi = zr(jfond-1+4*(numfon-1)+1)
         yi = zr(jfond-1+4*(numfon-1)+2)

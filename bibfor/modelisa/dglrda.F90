@@ -19,20 +19,13 @@ subroutine dglrda()
 ! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
-!
-! ----------------------------------------------------------------------
-!
-! BUT : DETERMINATION DES PARAMETRES MATERIAU POUR LE MODELE GLRC_DAMAGE
-!
-!-----------------------------------------------------------------------
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/foimpr.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/interf.h"
@@ -46,6 +39,13 @@ subroutine dglrda()
 #include "asterfort/rcvale.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
+! ----------------------------------------------------------------------
+!
+! BUT : DETERMINATION DES PARAMETRES MATERIAU POUR LE MODELE GLRC_DAMAGE
+!
+!-----------------------------------------------------------------------
+!
     integer :: na
     parameter (na=10)
     integer :: nnap, nprec, nliner, ibid, ii, ilit, nlit, jlm, jmelk
@@ -92,8 +92,7 @@ subroutine dglrda()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getvid('BETON', 'MATER', 1, iarg, 1,&
-                mater, ibid)
+    call getvid('BETON', 'MATER', iocc=1, scal=mater, nbret=ibid)
 !
     nomres(1) = 'E'
     nomres(2) = 'NU'
@@ -149,43 +148,26 @@ subroutine dglrda()
         pretr = 0.d0
     endif
 !
-    call getvr8('BETON', 'EPAIS', 1, iarg, 1,&
-                hh, ibid)
-    call getvr8('BETON', 'GAMMA', 1, iarg, 1,&
-                gamma, ibid)
-    call getvr8('BETON', 'QP1', 1, iarg, 1,&
-                qp1, ibid)
-    call getvr8('BETON', 'QP2', 1, iarg, 1,&
-                qp2, ibid)
-    call getvr8('BETON', 'C1N1', 1, iarg, 1,&
-                cn(1, 1), ibid)
-    call getvr8('BETON', 'C1N2', 1, iarg, 1,&
-                cn(1, 2), ibid)
-    call getvr8('BETON', 'C1N3', 1, iarg, 1,&
-                cn(1, 3), ibid)
-    call getvr8('BETON', 'C2N1', 1, iarg, 1,&
-                cn(2, 1), ibid)
-    call getvr8('BETON', 'C2N2', 1, iarg, 1,&
-                cn(2, 2), ibid)
-    call getvr8('BETON', 'C2N3', 1, iarg, 1,&
-                cn(2, 3), ibid)
-    call getvr8('BETON', 'C1M1', 1, iarg, 1,&
-                cm(1, 1), ibid)
-    call getvr8('BETON', 'C1M2', 1, iarg, 1,&
-                cm(1, 2), ibid)
-    call getvr8('BETON', 'C1M3', 1, iarg, 1,&
-                cm(1, 3), ibid)
-    call getvr8('BETON', 'C2M1', 1, iarg, 1,&
-                cm(2, 1), ibid)
-    call getvr8('BETON', 'C2M2', 1, iarg, 1,&
-                cm(2, 2), ibid)
-    call getvr8('BETON', 'C2M3', 1, iarg, 1,&
-                cm(2, 3), ibid)
+    call getvr8('BETON', 'EPAIS', iocc=1, scal=hh, nbret=ibid)
+    call getvr8('BETON', 'GAMMA', iocc=1, scal=gamma, nbret=ibid)
+    call getvr8('BETON', 'QP1', iocc=1, scal=qp1, nbret=ibid)
+    call getvr8('BETON', 'QP2', iocc=1, scal=qp2, nbret=ibid)
+    call getvr8('BETON', 'C1N1', iocc=1, scal=cn(1, 1), nbret=ibid)
+    call getvr8('BETON', 'C1N2', iocc=1, scal=cn(1, 2), nbret=ibid)
+    call getvr8('BETON', 'C1N3', iocc=1, scal=cn(1, 3), nbret=ibid)
+    call getvr8('BETON', 'C2N1', iocc=1, scal=cn(2, 1), nbret=ibid)
+    call getvr8('BETON', 'C2N2', iocc=1, scal=cn(2, 2), nbret=ibid)
+    call getvr8('BETON', 'C2N3', iocc=1, scal=cn(2, 3), nbret=ibid)
+    call getvr8('BETON', 'C1M1', iocc=1, scal=cm(1, 1), nbret=ibid)
+    call getvr8('BETON', 'C1M2', iocc=1, scal=cm(1, 2), nbret=ibid)
+    call getvr8('BETON', 'C1M3', iocc=1, scal=cm(1, 3), nbret=ibid)
+    call getvr8('BETON', 'C2M1', iocc=1, scal=cm(2, 1), nbret=ibid)
+    call getvr8('BETON', 'C2M2', iocc=1, scal=cm(2, 2), nbret=ibid)
+    call getvr8('BETON', 'C2M3', iocc=1, scal=cm(2, 3), nbret=ibid)
 !
     if (nnap .gt. 0) then
         do ilit = 1, nnap
-            call getvid('NAPPE', 'MATER', ilit, iarg, 1,&
-                        mater, ibid)
+            call getvid('NAPPE', 'MATER', iocc=ilit, scal=mater, nbret=ibid)
             nomres(1) = 'E'
             call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
@@ -194,14 +176,10 @@ subroutine dglrda()
             call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             sy(ilit) = valres(1)
-            call getvr8('NAPPE', 'OMX', ilit, iarg, 1,&
-                        omx(ilit), ibid)
-            call getvr8('NAPPE', 'OMY', ilit, iarg, 1,&
-                        omy(ilit), ibid)
-            call getvr8('NAPPE', 'RX', ilit, iarg, 1,&
-                        rx(ilit), ibid)
-            call getvr8('NAPPE', 'RY', ilit, iarg, 1,&
-                        ry(ilit), ibid)
+            call getvr8('NAPPE', 'OMX', iocc=ilit, scal=omx(ilit), nbret=ibid)
+            call getvr8('NAPPE', 'OMY', iocc=ilit, scal=omy(ilit), nbret=ibid)
+            call getvr8('NAPPE', 'RX', iocc=ilit, scal=rx(ilit), nbret=ibid)
+            call getvr8('NAPPE', 'RY', iocc=ilit, scal=ry(ilit), nbret=ibid)
             nua(ilit) = 0.0d0
             liner(ilit) = 0.0d0
         end do
@@ -211,8 +189,7 @@ subroutine dglrda()
     if (nprec .gt. 0) then
         do ii = 1, nprec
             ilit = ilit + 1
-            call getvid('CABLE_PREC', 'MATER', ii, iarg, 1,&
-                        mater, ibid)
+            call getvid('CABLE_PREC', 'MATER', iocc=ii, scal=mater, nbret=ibid)
             nomres(1) = 'E'
             call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
@@ -221,18 +198,12 @@ subroutine dglrda()
             call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             sy(ilit) = valres(1)
-            call getvr8('CABLE_PREC', 'OMX', ii, iarg, 1,&
-                        omx(ilit), ibid)
-            call getvr8('CABLE_PREC', 'OMY', ii, iarg, 1,&
-                        omy(ilit), ibid)
-            call getvr8('CABLE_PREC', 'RX', ii, iarg, 1,&
-                        rx(ilit), ibid)
-            call getvr8('CABLE_PREC', 'RY', ii, iarg, 1,&
-                        ry(ilit), ibid)
-            call getvr8('CABLE_PREC', 'PREX', ii, iarg, 1,&
-                        prex, ibid)
-            call getvr8('CABLE_PREC', 'PREY', ii, iarg, 1,&
-                        prey, ibid)
+            call getvr8('CABLE_PREC', 'OMX', iocc=ii, scal=omx(ilit), nbret=ibid)
+            call getvr8('CABLE_PREC', 'OMY', iocc=ii, scal=omy(ilit), nbret=ibid)
+            call getvr8('CABLE_PREC', 'RX', iocc=ii, scal=rx(ilit), nbret=ibid)
+            call getvr8('CABLE_PREC', 'RY', iocc=ii, scal=ry(ilit), nbret=ibid)
+            call getvr8('CABLE_PREC', 'PREX', iocc=ii, scal=prex, nbret=ibid)
+            call getvr8('CABLE_PREC', 'PREY', iocc=ii, scal=prey, nbret=ibid)
             nua(ilit) = 0.0d0
             liner(ilit) = 0.0d0
         end do
@@ -244,8 +215,7 @@ subroutine dglrda()
     if (nliner .gt. 0) then
         do ii = 1, nliner
             ilit = ilit + 1
-            call getvid('LINER', 'MATER', ii, iarg, 1,&
-                        mater, ibid)
+            call getvid('LINER', 'MATER', iocc=ii, scal=mater, nbret=ibid)
             nomres(1) = 'E'
             nomres(2) = 'NU'
             call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1),&
@@ -256,10 +226,8 @@ subroutine dglrda()
             call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b(1),&
                         1, nomres, valres, icodr2, 1)
             sy(ilit) = valres(1)
-            call getvr8('LINER', 'OML', ii, iarg, 1,&
-                        oml(ii), ibid)
-            call getvr8('LINER', 'RLR', ii, iarg, 1,&
-                        rlr(ii), ibid)
+            call getvr8('LINER', 'OML', iocc=ii, scal=oml(ii), nbret=ibid)
+            call getvr8('LINER', 'RLR', iocc=ii, scal=rlr(ii), nbret=ibid)
             rx(ilit) = rlr(ii)
             ry(ilit) = rlr(ii)
             omx(ilit) = oml(ii)
@@ -302,16 +270,12 @@ subroutine dglrda()
     mf2 = (mf2x+mf2y)/2.d0
 !
 !
-    call getvr8('BETON', 'BT1', 1, iarg, 1,&
-                bt1, icis)
-    call getvr8('BETON', 'BT2', 1, iarg, 1,&
-                bt2, icis)
+    call getvr8('BETON', 'BT1', iocc=1, scal=bt1, nbret=icis)
+    call getvr8('BETON', 'BT2', iocc=1, scal=bt2, nbret=icis)
 !
     if (icis .eq. 0) then
-        call getvr8('BETON', 'OMT', 1, iarg, 1,&
-                    omt, icis)
-        call getvr8('BETON', 'EAT', 1, iarg, 1,&
-                    eat, icis)
+        call getvr8('BETON', 'OMT', iocc=1, scal=omt, nbret=icis)
+        call getvr8('BETON', 'EAT', iocc=1, scal=eat, nbret=icis)
         if (icis .ne. 0) then
             bt1 = 5.d0/6.d0*hh/2.d0*(eb/(1.d0+nub)+eat*omt)
         else
@@ -365,8 +329,7 @@ subroutine dglrda()
 !
     call wkvect(mater//'.GLRC_DAMAG.VALK', 'G V K8', 2*lonobj, jmelk)
 !
-    call getvr8('BETON', 'MP1X', 1, iarg, 1,&
-                mp1cst(1), icst)
+    call getvr8('BETON', 'MP1X', iocc=1, scal=mp1cst(1), nbret=icst)
 !
     if (icst .eq. 0) then
         call jeecra(mater//'.GLRC_DAMAG.VALK', 'LONUTI', 59, ' ')
@@ -467,24 +430,17 @@ subroutine dglrda()
 !
 !--------L UTILISATEUR A ENTRE DES CONSTANTES
 !
-    call getvr8('BETON', 'MP1Y', 1, iarg, 1,&
-                mp1cst(2), icst)
-    call getvr8('BETON', 'MP2X', 1, iarg, 1,&
-                mp2cst(1), icst)
-    call getvr8('BETON', 'MP2Y', 1, iarg, 1,&
-                mp2cst(2), icst)
+    call getvr8('BETON', 'MP1Y', iocc=1, scal=mp1cst(2), nbret=icst)
+    call getvr8('BETON', 'MP2X', iocc=1, scal=mp2cst(1), nbret=icst)
+    call getvr8('BETON', 'MP2Y', iocc=1, scal=mp2cst(2), nbret=icst)
 !
     if (icst .eq. 0) then
 !--------L UTILISATEUR A ENTRE DES FONCTIONS
 !
-        call getvid('BETON', 'MP1X_FO', 1, iarg, 1,&
-                    fsncx, impf)
-        call getvid('BETON', 'MP2X_FO', 1, iarg, 1,&
-                    fincx, impf)
-        call getvid('BETON', 'MP1Y_FO', 1, iarg, 1,&
-                    fsncy, impf)
-        call getvid('BETON', 'MP2Y_FO', 1, iarg, 1,&
-                    fincy, impf)
+        call getvid('BETON', 'MP1X_FO', iocc=1, scal=fsncx, nbret=impf)
+        call getvid('BETON', 'MP2X_FO', iocc=1, scal=fincx, nbret=impf)
+        call getvid('BETON', 'MP1Y_FO', iocc=1, scal=fsncy, nbret=impf)
+        call getvid('BETON', 'MP2Y_FO', iocc=1, scal=fincy, nbret=impf)
 !
         if (impf .eq. 1) then
             call gcncon('_', fscxd)
@@ -595,8 +551,8 @@ subroutine dglrda()
                         mp2n0, ibid)
             call mmfonc(fon(2*(ii-1)+1), aux, maxmp(ii))
             call mmfonc(fon(2*ii), minmp(ii), aux)
-            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) &
-                  .or. (maxmp(ii) -minmp(ii) .le. 0.d0)) then
+            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or.&
+                (maxmp(ii) -minmp(ii) .le. 0.d0)) then
                 call u2mess('F', 'ELEMENTS_87')
             endif
         else
@@ -611,10 +567,10 @@ subroutine dglrda()
         if (icst .eq. 0) then
             nmax0 = 1.0d20
             nmin0 = -1.0d20
-            call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm,&
-                        nmin0, nmin(ii))
-            call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm,&
-                         nmax0,nmax(ii))
+            call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm, nmin0,&
+                        nmin(ii))
+            call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm, nmax0,&
+                        nmax(ii))
         else
             nmax(ii)=0.d0
             nmin(ii)=0.d0

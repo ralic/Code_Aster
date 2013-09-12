@@ -1,7 +1,7 @@
 subroutine mechnc(noma, motcle, iocc, chnumc)
     implicit none
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/mecact.h"
     integer :: iocc
     character(len=*) :: noma, motcle
@@ -41,12 +41,9 @@ subroutine mechnc(noma, motcle, iocc, chnumc)
 !-----------------------------------------------------------------------
     integer :: n1, n2, n3, nx3
 !-----------------------------------------------------------------------
-    call getvis(motcle, 'NUME_COUCHE', iocc, iarg, 1,&
-                ncou, n1)
-    call getvtx(motcle, 'NIVE_COUCHE', iocc, iarg, 1,&
-                ordo, n2)
-    call getvis(motcle, 'ANGLE', iocc, iarg, 1,&
-                nangl, n3)
+    call getvis(motcle, 'NUME_COUCHE', iocc=iocc, scal=ncou, nbret=n1)
+    call getvtx(motcle, 'NIVE_COUCHE', iocc=iocc, scal=ordo, nbret=n2)
+    call getvis(motcle, 'ANGLE', iocc=iocc, scal=nangl, nbret=n3)
     chnumc = ' '
     if (n2 .ne. 0) then
         if (ordo .eq. 'SUP') then

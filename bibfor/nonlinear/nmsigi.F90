@@ -21,11 +21,11 @@ subroutine nmsigi(ligrmo, compor, sigini)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     character(len=24) :: ligrmo, compor
@@ -73,8 +73,7 @@ subroutine nmsigi(ligrmo, compor, sigini)
         lchout(1) = '&&NMSIGI.PEPCON3'
         lpaout(1) = 'PEPCON3'
         do 10 iocc = 1, nbocc
-            call getvid('EXCIT', 'CHARGE', iocc, iarg, 1,&
-                        charge, ibid)
+            call getvid('EXCIT', 'CHARGE', iocc=iocc, scal=charge, nbret=ibid)
             sigcha = charge//'.CHME.SIGIN'
             call exisd('CHAMP_GD', sigcha, iret)
             if (iret .gt. 0) then

@@ -17,11 +17,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
@@ -33,6 +29,9 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/exisdg.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprel.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -56,6 +55,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/u2mess.h"
 #include "asterfort/veripl.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: charge
     character(len=14) :: numddl
     character(len=19) :: lisrel
@@ -114,8 +114,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     lisrel = lisrez
 !
     motfac = 'LIAISON_ELEM'
-    call getvtx(motfac, 'OPTION', iocc, iarg, 1,&
-                option, iop)
+    call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
     if ((option.ne.'3D_POU') .and. (option.ne.'3D_TUYAU') .and.&
         (option.ne.'PLAQ_POUT_ORTH')) then
         call u2mesk('F', 'MODELISA6_39', 1, option)
@@ -127,11 +126,9 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !     VERIFIE-T'ON L'EXCENTREMENT DES POUTRES
     vexcen=.true.
     if (option .eq. 'PLAQ_POUT_ORTH') then
-        call getvtx(motfac, 'VERIF_EXCENT', iocc, iarg, 0,&
-                    k8bid, narl)
+        call getvtx(motfac, 'VERIF_EXCENT', iocc=iocc, nbval=0, nbret=narl)
         if (narl .ne. 0) then
-            call getvtx(motfac, 'VERIF_EXCENT', iocc, iarg, 1,&
-                        k8bid, narl)
+            call getvtx(motfac, 'VERIF_EXCENT', iocc=iocc, scal=k8bid, nbret=narl)
             if (k8bid(1:3) .eq. 'NON') vexcen=.false.
         endif
     endif
@@ -180,11 +177,9 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- SI OUI TYPLAG = '22'
 ! --- SI NON TYPLAG = '12'
 !     -------------------
-    call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 0,&
-                k8bid, narl)
+    call getvtx(motfac, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=narl)
     if (narl .ne. 0) then
-        call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 1,&
-                    poslag, nrl)
+        call getvtx(motfac, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=nrl)
         if (poslag(1:5) .eq. 'APRES') then
             typlag = '22'
         else
@@ -275,8 +270,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     call exlim1(zi(jlisma), nbma, mod, 'V', ligrel)
 !
 !     VERIFICATION DE LA PLANEITE DE LA SURFACE :
-    call getvr8(motfac, 'ANGL_MAX', iocc, iarg, 1,&
-                angt, ibid)
+    call getvr8(motfac, 'ANGL_MAX', iocc=iocc, scal=angt, nbret=ibid)
     if (option .eq. 'PLAQ_POUT_ORTH') then
         call veripl(noma, nbma, zi(jlisma), angt, 'F')
     else
@@ -861,8 +855,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 ! --- RACCORD 3D - TUYAU : LIAISONS SUR DDLS DE FOURIER
     if (option .eq. '3D_TUYAU') then
-        call getvid(motfac, 'CARA_ELEM', iocc, iarg, 1,&
-                    cara, ncara)
+        call getvid(motfac, 'CARA_ELEM', iocc=iocc, scal=cara, nbret=ncara)
         if (ncara .eq. 0) then
             call u2mess('F', 'MODELISA6_47')
         endif

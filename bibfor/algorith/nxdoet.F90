@@ -21,12 +21,12 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -136,8 +136,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
 ! --- CONCEPT EVOL_THER DONNE DANS ETAT_INIT
 !
-    call getvid(motfac, 'EVOL_THER', 1, iarg, 1,&
-                evol, nocc)
+    call getvid(motfac, 'EVOL_THER', iocc=1, scal=evol, nbret=nocc)
     ASSERT(nocc.le.1)
     evonol = nocc.gt.0
 !
@@ -194,8 +193,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
 ! ----------- TEMPERATURE INITIALE PAR UN CHAMP
 !
-                call getvid(motfac, 'CHAM_NO', 1, iarg, 1,&
-                            k8bid, nocc)
+                call getvid(motfac, 'CHAM_NO', iocc=1, scal=k8bid, nbret=nocc)
                 if (nocc .eq. 1) then
                     initpr = 2
                     call nmetl2(motfac, sdieto, icham)
@@ -203,8 +201,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
 ! ----------- TEMPERATURE INITIALE STATIONNAIRE
 !
-                call getvtx(motfac, 'STATIONNAIRE', 1, iarg, 1,&
-                            repsta, nocc)
+                call getvtx(motfac, 'STATIONNAIRE', iocc=1, scal=repsta, nbret=nocc)
                 if (nocc .gt. 0) then
                     if (repsta(1:3) .eq. 'OUI') then
                         lostat = .true.
@@ -216,8 +213,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
 ! ----------- TEMPERATURE INITIALE UNIFORME
 !
-                call getvr8(motfac, 'VALE', 1, iarg, 1,&
-                            tempct, nocc)
+                call getvr8(motfac, 'VALE', iocc=1, scal=tempct, nbret=nocc)
                 if (nocc .gt. 0) then
                     initpr = 1
                     do 222 i = 1, neq

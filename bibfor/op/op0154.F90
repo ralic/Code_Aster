@@ -1,5 +1,5 @@
 subroutine op0154()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,9 +25,6 @@ subroutine op0154()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/asccou.h"
 #include "asterfort/asceli.h"
 #include "asterfort/ascrep.h"
@@ -41,6 +38,9 @@ subroutine op0154()
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echell.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/momaba.h"
 #include "asterfort/orilgm.h"
@@ -70,8 +70,7 @@ subroutine op0154()
 !
     call infmaj()
 !
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                ma, n1)
+    call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
 !
     call getres(ma2, kbi1, kbi2)
 !
@@ -90,8 +89,7 @@ subroutine op0154()
 !     ---------------------------------------------
     call getfac('MODI_MAILLE', nbocc)
     if (nbocc .ne. 0) then
-        call getvtx('MODI_MAILLE', 'OPTION', 1, iarg, 1,&
-                    option, n1)
+        call getvtx('MODI_MAILLE', 'OPTION', iocc=1, scal=option, nbret=n1)
         if (option .eq. 'NOEUD_QUART') then
             call momaba(ma)
         endif
@@ -102,10 +100,8 @@ subroutine op0154()
 !     ---------------------------------------
     call getfac('DEFORME', nbocc)
     if (nbocc .ne. 0) then
-        call getvtx('DEFORME', 'OPTION', 1, iarg, 1,&
-                    option, nop)
-        call getvid('DEFORME', 'DEPL', 1, iarg, 1,&
-                    depla, n1)
+        call getvtx('DEFORME', 'OPTION', iocc=1, scal=option, nbret=nop)
+        call getvid('DEFORME', 'DEPL', iocc=1, scal=depla, nbret=n1)
         call dismoi('F', 'NOM_MAILLA', depla, 'CHAM_NO', ibid,&
                     mab, ibid)
         if (mab .ne. ma) then
@@ -131,22 +127,18 @@ subroutine op0154()
 !
 !     --- TRAITEMENT DU MOT CLEF  "TRANSLATION" :
 !     ---------------------------------------
-    call getvr8(' ', 'TRANSLATION', 1, iarg, 0,&
-                r8bid, n1)
+    call getvr8(' ', 'TRANSLATION', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         geomi = ma//'.COORDO'
         bidim = .false.
-        call getvr8(' ', 'TRANSLATION', 1, iarg, 0,&
-                    ltchar, dim)
+        call getvr8(' ', 'TRANSLATION', nbval=0, nbret=dim)
         dim = - dim
         if (dim .eq. 2) then
-            call getvr8(' ', 'TRANSLATION', 1, iarg, 2,&
-                        dir, n1)
+            call getvr8(' ', 'TRANSLATION', nbval=2, vect=dir, nbret=n1)
             dir(3) = 0.d0
             bidim = .true.
         else
-            call getvr8(' ', 'TRANSLATION', 1, iarg, 3,&
-                        dir, n1)
+            call getvr8(' ', 'TRANSLATION', nbval=3, vect=dir, nbret=n1)
         endif
         call tranma(geomi, dir, bidim)
     endif
@@ -158,20 +150,19 @@ subroutine op0154()
     if (nbocc .ne. 0) then
         geomi = ma//'.COORDO'
         bidim = .false.
-        call getvr8('MODI_BASE', 'VECT_X', 1, iarg, 0,&
-                    ltchar, dim)
+        call getvr8('MODI_BASE', 'VECT_X', iocc=1, nbval=0, nbret=dim)
         dim = - dim
         if (dim .eq. 2) then
-            call getvr8('MODI_BASE', 'VECT_X', 1, iarg, 2,&
-                        pt, n1)
+            call getvr8('MODI_BASE', 'VECT_X', iocc=1, nbval=2, vect=pt,&
+                        nbret=n1)
             pt(3) = 0.d0
             call vecini(3, 0.d0, pt2)
             bidim = .true.
         else
-            call getvr8('MODI_BASE', 'VECT_X', 1, iarg, 3,&
-                        pt, n1)
-            call getvr8('MODI_BASE', 'VECT_Y', 1, iarg, 3,&
-                        pt2, n1)
+            call getvr8('MODI_BASE', 'VECT_X', iocc=1, nbval=3, vect=pt,&
+                        nbret=n1)
+            call getvr8('MODI_BASE', 'VECT_Y', iocc=1, nbval=3, vect=pt2,&
+                        nbret=n1)
         endif
         call chgref(geomi, pt, pt2, bidim)
     endif
@@ -184,30 +175,27 @@ subroutine op0154()
         geomi = ma//'.COORDO'
         bidim = .false.
         do 10 i = 1, nbocc
-            call getvr8('ROTATION', 'POIN_1', i, iarg, 0,&
-                        ltchar, dim)
-            call getvr8('ROTATION', 'ANGLE', i, iarg, 1,&
-                        angl, n1)
-            call getvr8('ROTATION', 'POIN_2', i, iarg, 0,&
-                        r8bid, n2)
+            call getvr8('ROTATION', 'POIN_1', iocc=i, nbval=0, nbret=dim)
+            call getvr8('ROTATION', 'ANGLE', iocc=i, scal=angl, nbret=n1)
+            call getvr8('ROTATION', 'POIN_2', iocc=i, nbval=0, nbret=n2)
             dim = - dim
             if (dim .eq. 2) then
-                call getvr8('ROTATION', 'POIN_1', i, iarg, 2,&
-                            pt, n1)
+                call getvr8('ROTATION', 'POIN_1', iocc=i, nbval=2, vect=pt,&
+                            nbret=n1)
                 pt(3) = 0.d0
                 call vecini(3, 0.d0, pt2)
                 call vecini(3, 0.d0, dir)
                 bidim = .true.
             else
-                call getvr8('ROTATION', 'POIN_1', i, iarg, 3,&
-                            pt, n1)
+                call getvr8('ROTATION', 'POIN_1', iocc=i, nbval=3, vect=pt,&
+                            nbret=n1)
                 if (n2 .ne. 0) then
-                    call getvr8('ROTATION', 'POIN_2', i, iarg, 3,&
-                                pt2, n1)
+                    call getvr8('ROTATION', 'POIN_2', iocc=i, nbval=3, vect=pt2,&
+                                nbret=n1)
                     call vdiff(3, pt2, pt, dir)
                 else
-                    call getvr8('ROTATION', 'DIR', i, iarg, 3,&
-                                dir, n1)
+                    call getvr8('ROTATION', 'DIR', iocc=i, nbval=3, vect=dir,&
+                                nbret=n1)
                 endif
             endif
             call rotama(geomi, pt, dir, angl, bidim)
@@ -221,12 +209,9 @@ subroutine op0154()
     if (nbocc .ne. 0) then
         geomi = ma//'.COORDO'
         do 20 i = 1, nbocc
-            call getvr8('SYMETRIE', 'POINT', i, iarg, 0,&
-                        pt, dim)
-            call getvr8('SYMETRIE', 'AXE_1', i, iarg, 0,&
-                        axe1, n1)
-            call getvr8('SYMETRIE', 'AXE_2', i, iarg, 0,&
-                        axe2, n2)
+            call getvr8('SYMETRIE', 'POINT', iocc=i, nbval=0, nbret=dim)
+            call getvr8('SYMETRIE', 'AXE_1', iocc=i, nbval=0, nbret=n1)
+            call getvr8('SYMETRIE', 'AXE_2', iocc=i, nbval=0, nbret=n2)
 !
 !           DIM, N1, N2 = 2 OU 3 ==> IMPOSE PAR LES CATALOGUES
 !           EN 2D : DIM=N1=2    , AXE_2 N'EXISTE PAS N2=0
@@ -238,10 +223,10 @@ subroutine op0154()
                 if (n2 .ne. 0) then
                     call u2mess('A', 'ALGORITH9_63')
                 endif
-                call getvr8('SYMETRIE', 'POINT', i, iarg, 2,&
-                            pt, dim)
-                call getvr8('SYMETRIE', 'AXE_1', i, iarg, 2,&
-                            axe1, n1)
+                call getvr8('SYMETRIE', 'POINT', iocc=i, nbval=2, vect=pt,&
+                            nbret=dim)
+                call getvr8('SYMETRIE', 'AXE_1', iocc=i, nbval=2, vect=axe1,&
+                            nbret=n1)
 !              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A Z ET AXE1
                 perp(1) = -axe1(2)
                 perp(2) = axe1(1)
@@ -253,12 +238,12 @@ subroutine op0154()
                 if (n2 .ne. dim) then
                     call u2mess('F', 'ALGORITH9_64')
                 endif
-                call getvr8('SYMETRIE', 'POINT', i, iarg, 3,&
-                            pt, dim)
-                call getvr8('SYMETRIE', 'AXE_1', i, iarg, 3,&
-                            axe1, n1)
-                call getvr8('SYMETRIE', 'AXE_2', i, iarg, 3,&
-                            axe2, n2)
+                call getvr8('SYMETRIE', 'POINT', iocc=i, nbval=3, vect=pt,&
+                            nbret=dim)
+                call getvr8('SYMETRIE', 'AXE_1', iocc=i, nbval=3, vect=axe1,&
+                            nbret=n1)
+                call getvr8('SYMETRIE', 'AXE_2', iocc=i, nbval=3, vect=axe2,&
+                            nbret=n2)
 !              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A AXE1 ET AXE2
                 perp(1) = axe1(2)*axe2(3) - axe1(3)*axe2(2)
                 perp(2) = axe1(3)*axe2(1) - axe1(1)*axe2(3)
@@ -271,12 +256,10 @@ subroutine op0154()
 !
 !     --- TRAITEMENT DU MOT CLEF  "ECHELLE" :
 !     ---------------------------------------
-    call getvr8(' ', 'ECHELLE', 1, iarg, 0,&
-                r8bid, n1)
+    call getvr8(' ', 'ECHELLE', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         geomi = ma//'.COORDO'
-        call getvr8(' ', 'ECHELLE', 1, iarg, 1,&
-                    ltchar, n2)
+        call getvr8(' ', 'ECHELLE', scal=ltchar, nbret=n2)
         call echell(geomi, ltchar)
     endif
 !
@@ -306,17 +289,14 @@ subroutine op0154()
 !     --------------------------------------------------------
     call getfac('PLAQ_TUBE', nboc1)
     if (nboc1 .ne. 0) then
-        call getvr8('PLAQ_TUBE', 'L_TUBE_P1', 1, iarg, 1,&
-                    ltchar, n1)
-        call getvtx('PLAQ_TUBE', 'COUTURE', 1, iarg, 1,&
-                    coutur, n1)
+        call getvr8('PLAQ_TUBE', 'L_TUBE_P1', iocc=1, scal=ltchar, nbret=n1)
+        call getvtx('PLAQ_TUBE', 'COUTURE', iocc=1, scal=coutur, nbret=n1)
         if (coutur .eq. 'OUI') call asceli(ma)
         call asctub(ma)
     endif
     call getfac('TUBE_COUDE', nboc2)
     if (nboc2 .ne. 0) then
-        call getvr8('TUBE_COUDE', 'L_TUBE_P1', 1, iarg, 1,&
-                    ltchar, n1)
+        call getvr8('TUBE_COUDE', 'L_TUBE_P1', iocc=1, scal=ltchar, nbret=n1)
         call asccou(ma)
     endif
     if (nboc1 .ne. 0 .or. nboc2 .ne. 0) then

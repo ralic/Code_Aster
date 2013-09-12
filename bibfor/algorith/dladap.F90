@@ -66,9 +66,6 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dlarch.h"
@@ -78,6 +75,9 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 #include "asterfort/enerca.h"
 #include "asterfort/extdia.h"
 #include "asterfort/frqapp.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -197,10 +197,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
 ! 1.4. ==> PARAMETRES D'INTEGRATION
 !
-    call getvr8('INCREMENT', 'INST_FIN', 1, iarg, 1,&
-                tfin, ibid)
-    call getvr8('INCREMENT', 'PAS', 1, iarg, 1,&
-                dti, ibid)
+    call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=ibid)
+    call getvr8('INCREMENT', 'PAS', iocc=1, scal=dti, nbret=ibid)
     if (ibid .eq. 0) call u2mess('F', 'ALGORITH3_11')
     if (dti .eq. 0.d0) call u2mess('F', 'ALGORITH3_12')
     dtmax = 0.d0
@@ -284,16 +282,14 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         typear(5) = '         '
         typear(6) = '         '
     endif
-    call getvis('ARCHIVAGE', 'PAS_ARCH', 1, iarg, 1,&
-                iparch, ibid)
+    call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=ibid)
     if (ibid .eq. 0) iparch=1
     dtarch = dti * iparch
-    call getvtx('ARCHIVAGE', 'CHAM_EXCLU', 1, iarg, 0,&
-                k8b, nnc)
+    call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=0, nbret=nnc)
     if (nnc .ne. 0) then
         nbexcl = -nnc
-        call getvtx('ARCHIVAGE', 'CHAM_EXCLU', 1, iarg, nbexcl,&
-                    typ1, nnc)
+        call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=nbexcl, vect=typ1,&
+                    nbret=nnc)
     endif
 !
     if (nbexcl .eq. nbtyar) then

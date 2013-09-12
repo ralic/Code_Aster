@@ -15,7 +15,7 @@ subroutine op0165()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
@@ -25,10 +25,10 @@ subroutine op0165()
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/rc3200.h"
 #include "asterfort/rc3600.h"
@@ -49,11 +49,9 @@ subroutine op0165()
 !
     symax = r8vide()
 !
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                typtab, n1)
+    call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
 !
-    call getvtx(' ', 'TYPE_RESU_MECA', 1, iarg, 1,&
-                typmec, n1)
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
 !
 !     ------------------------------------------------------------------
 !
@@ -63,16 +61,12 @@ subroutine op0165()
 !
     if (typmec .eq. 'EVOLUTION') then
 !
-        call getvtx(' ', 'OPTION', 1, iarg, 0,&
-                    k8b, n1)
+        call getvtx(' ', 'OPTION', nbval=0, nbret=n1)
         nbopt = -n1
-        call getvtx(' ', 'OPTION', 1, iarg, nbopt,&
-                    kopt, n1)
+        call getvtx(' ', 'OPTION', nbval=nbopt, vect=kopt, nbret=n1)
 !
-        call getvid(' ', 'MATER', 1, iarg, 1,&
-                    nommat, n1)
-        call getvr8(' ', 'SY_MAX', 1, iarg, 1,&
-                    symax, n1)
+        call getvid(' ', 'MATER', scal=nommat, nbret=n1)
+        call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rccome(nommat, 'RCCM', phenom, icodre)
         if (icodre .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
@@ -87,8 +81,7 @@ subroutine op0165()
 !
     else if (typmec .eq. 'TUYAUTERIE') then
 !
-        call getvtx(' ', 'OPTION', 1, iarg, 1,&
-                    kopt, n1)
+        call getvtx(' ', 'OPTION', scal=kopt(1), nbret=n1)
 !
         if (kopt(1) .eq. 'FATIGUE') then
 !
@@ -116,11 +109,9 @@ subroutine op0165()
             lrocht = .true.
         endif
 !
-        call getvtx(' ', 'OPTION', 1, iarg, 0,&
-                    k8b, n1)
+        call getvtx(' ', 'OPTION', nbval=0, nbret=n1)
         nbopt = -n1
-        call getvtx(' ', 'OPTION', 1, iarg, nbopt,&
-                    kopt, n1)
+        call getvtx(' ', 'OPTION', nbval=nbopt, vect=kopt, nbret=n1)
         do 30 iopt = 1, nbopt
             if (kopt(iopt) .eq. 'PM_PB') then
                 pmpb = .true.
@@ -133,10 +124,8 @@ subroutine op0165()
             endif
 30      continue
 !
-        call getvid(' ', 'MATER', 1, iarg, 1,&
-                    nommat, n1)
-        call getvr8(' ', 'SY_MAX', 1, iarg, 1,&
-                    symax, n1)
+        call getvid(' ', 'MATER', scal=nommat, nbret=n1)
+        call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rc3200(pmpb, sn, snet, fatigu, lrocht,&
                     nommat, symax)

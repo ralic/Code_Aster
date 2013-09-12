@@ -42,9 +42,9 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
 !
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/matfpe.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lceqvn.h"
@@ -145,8 +145,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
 550      continue
 !
-        call getvtx('  ', 'ORTHO', 1, iarg, 8,&
-                    ortho, iret)
+        call getvtx('  ', 'ORTHO', iocc=1, nbval=8, vect=ortho,&
+                    nbret=iret)
         if ((iret .eq. 1) .and. (ortho.eq.'OUI')) then
 !-- SELECTION DES VECTEURS NON NULS POUR REMPLIR LA BASE
             do 590 i1 = 1, nbc

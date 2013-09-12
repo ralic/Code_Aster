@@ -1,9 +1,9 @@
 subroutine rcveri(tablz)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -94,8 +94,7 @@ subroutine rcveri(tablz)
     endif
 !
 !     VERIFICATION DU NOMBRE DE LIGAMENT DANS LE CAS UNITAIRE
-    call getvtx(' ', 'TYPE_RESU_MECA', 1, iarg, 1,&
-                typmec, n1)
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     if (typmec .eq. 'UNITAIRE' .and. nbinti .ne. 1) then
         call u2mesg('F', 'POSTRCCM_40', 1, table, 1,&
                     nbinti, 0, r8b)

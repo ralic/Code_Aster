@@ -26,10 +26,10 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !  IN   : NBOCC  : NOMBRE D'OCCURENCES DU MOT-CLE FACTEUR UTILISE
 !  IN   : ITYPFL : INDICE CARACTERISTIQUE DE LA CONFIGURATION ETUDIEE
 !-----------------------------------------------------------------------
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/tfvegr.h"
 #include "asterfort/u2mess.h"
     integer :: itypfl
@@ -68,8 +68,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !        MOT-CLE COUPLAGE
         ncoup = 0
         do 10 iocc = 1, nbocc
-            call getvtx(nommcf, 'COUPLAGE', iocc, iarg, 0,&
-                        k8bid, icoup)
+            call getvtx(nommcf, 'COUPLAGE', iocc=iocc, nbval=0, nbret=icoup)
             if (icoup .ne. 0) then
                 ncoup = ncoup + 1
                 jcoup = iocc
@@ -84,22 +83,17 @@ subroutine tfveri(nommcf, nbocc, itypfl)
         nrhoe = 0
         ncmp = 0
         do 20 iocc = 1, nbocc
-            call getvid(nommcf, 'CARA_ELEM', iocc, iarg, 0,&
-                        k8bid, icara)
+            call getvid(nommcf, 'CARA_ELEM', iocc=iocc, nbval=0, nbret=icara)
             if (icara .ne. 0) ncara = ncara + 1
-            call getvid(nommcf, 'PROF_RHO_F_INT', iocc, iarg, 0,&
-                        k8bid, irhoi)
+            call getvid(nommcf, 'PROF_RHO_F_INT', iocc=iocc, nbval=0, nbret=irhoi)
             if (irhoi .ne. 0) nrhoi = nrhoi + 1
-            call getvid(nommcf, 'PROF_RHO_F_EXT', iocc, iarg, 0,&
-                        k8bid, irhoe)
+            call getvid(nommcf, 'PROF_RHO_F_EXT', iocc=iocc, nbval=0, nbret=irhoe)
             if (irhoe .ne. 0) nrhoe = nrhoe + 1
-            call getvtx(nommcf, 'NOM_CMP       ', iocc, iarg, 0,&
-                        k8bid, icmp)
+            call getvtx(nommcf, 'NOM_CMP       ', iocc=iocc, nbval=0, nbret=icmp)
             if (icmp .ne. 0) ncmp = ncmp + 1
 20      continue
 !
-        call getvtx(nommcf, 'COUPLAGE', jcoup, iarg, 1,&
-                    ouinon, ibid)
+        call getvtx(nommcf, 'COUPLAGE', iocc=jcoup, scal=ouinon, nbret=ibid)
 !
 ! -------1.1.SI PRISE EN COMPTE DU COUPLAGE
 !
@@ -109,18 +103,15 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             npas = 0
             ncm = 0
             do 30 iocc = 1, nbocc
-                call getvtx(nommcf, 'TYPE_PAS', iocc, iarg, 0,&
-                            tpas, itpas)
+                call getvtx(nommcf, 'TYPE_PAS', iocc=iocc, nbval=0, nbret=itpas)
                 if (itpas .ne. 0) then
                     ntpas = ntpas + 1
                 endif
-                call getvis(nommcf, 'TYPE_RESEAU', iocc, iarg, 0,&
-                            ibid, itres)
+                call getvis(nommcf, 'TYPE_RESEAU', iocc=iocc, nbval=0, nbret=itres)
                 if (itres .ne. 0) then
                     ntres = ntres + 1
                 endif
-                call getvr8(nommcf, 'PAS', iocc, iarg, 0,&
-                            rbid, ipas)
+                call getvr8(nommcf, 'PAS', iocc=iocc, nbval=0, nbret=ipas)
                 if (ipas .ne. 0) then
 !                  JPAS = IOCC
                     npas = npas + 1
@@ -135,8 +126,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
         else
             ncm = 0
             do 50 iocc = 1, nbocc
-                call getvr8(nommcf, 'COEF_MASS_AJOU', iocc, iarg, 0,&
-                            rbid, icm)
+                call getvr8(nommcf, 'COEF_MASS_AJOU', iocc=iocc, nbval=0, nbret=icm)
                 if (icm .ne. 0) then
                     ncm = ncm + 1
                 endif
@@ -167,11 +157,9 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !
     else if (itypfl.eq.2) then
 !
-        call getvtx(nommcf, 'COUPLAGE', 1, iarg, 1,&
-                    ouinon, ibid)
+        call getvtx(nommcf, 'COUPLAGE', iocc=1, scal=ouinon, nbret=ibid)
         if (ouinon .eq. 'OUI') then
-            call getvtx(nommcf, 'GRAPPE_2', 1, iarg, 0,&
-                        k8bid, igra2)
+            call getvtx(nommcf, 'GRAPPE_2', iocc=1, nbval=0, nbret=igra2)
             if (igra2 .eq. 0) then
                 call u2mess('E', 'MODELISA7_26')
             endif
@@ -196,15 +184,13 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 ! --------    OBLIGATOIRES A CHAQUE OCCURENCE
 ! --------    VERIFICATION DES DONNEES POUR <COOR_TUBE>
 !
-            call getvr8(nommcf, 'RAYON_TUBE', iocc, iarg, 0,&
-                        rbid, irayon)
+            call getvr8(nommcf, 'RAYON_TUBE', iocc=iocc, nbval=0, nbret=irayon)
             if (irayon .eq. 0) then
                 if (nbocc .gt. 1) then
                     call u2mess('E', 'MODELISA7_27')
                 endif
             else
-                call getvr8(nommcf, 'COOR_TUBE', iocc, iarg, 0,&
-                            rbid, nbcoor)
+                call getvr8(nommcf, 'COOR_TUBE', iocc=iocc, nbval=0, nbret=nbcoor)
                 nbcoor = abs(nbcoor)
                 nbtub = int(nbcoor/2)
                 nbtub2 = 2*nbtub
@@ -216,16 +202,15 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 ! --------3.2.INCREMENTATION DU COMPTEUR POUR <VECT_X> ET VERIFICATION
 ! --------    DES DONNEES SI PRESENCE
 !
-            call getvr8(nommcf, 'VECT_X', iocc, iarg, 0,&
-                        rbid, ivect)
+            call getvr8(nommcf, 'VECT_X', iocc=iocc, nbval=0, nbret=ivect)
             if (ivect .ne. 0) then
                 count1 = count1 + 1
                 if (abs(ivect) .ne. 3) then
                     call u2mess('E', 'MODELISA7_29')
                 else
                     ier2 = 0
-                    call getvr8(nommcf, 'VECT_X', iocc, iarg, 3,&
-                                vect(1), ibid)
+                    call getvr8(nommcf, 'VECT_X', iocc=iocc, nbval=3, vect=vect(1),&
+                                nbret=ibid)
                     if (vect(1) .eq. 1.d0) then
                         if (vect(2) .ne. 0.d0 .or. vect(3) .ne. 0.d0) ier2 = 1
                     else if (vect(2).eq.1.d0) then
@@ -242,22 +227,18 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 ! --------3.3.INCREMENTATION DES COMPTEURS POUR <PROF_RHO_FLUI>,
 ! --------    <PROF_VISC_CINE> ET <RUGO_TUBE>
 !
-            call getvid(nommcf, 'PROF_RHO_FLUI', iocc, iarg, 0,&
-                        k8bid, irho)
+            call getvid(nommcf, 'PROF_RHO_FLUI', iocc=iocc, nbval=0, nbret=irho)
             if (irho .ne. 0) count2 = count2 + 1
 !
-            call getvid(nommcf, 'PROF_VISC_CINE', iocc, iarg, 0,&
-                        k8bid, ivisc)
+            call getvid(nommcf, 'PROF_VISC_CINE', iocc=iocc, nbval=0, nbret=ivisc)
             if (ivisc .ne. 0) count3 = count3 + 1
 !
-            call getvr8(nommcf, 'RUGO_TUBE', iocc, iarg, 0,&
-                        rbid, irugo)
+            call getvr8(nommcf, 'RUGO_TUBE', iocc=iocc, nbval=0, nbret=irugo)
             if (irugo .ne. 0) count4 = count4 + 1
 !
 ! --------3.4.VERIFICATION DES DONNEES POUR <PESANTEUR> SI PRESENCE
 !
-            call getvr8(nommcf, 'PESANTEUR', iocc, iarg, 0,&
-                        rbid, ipesan)
+            call getvr8(nommcf, 'PESANTEUR', iocc=iocc, nbval=0, nbret=ipesan)
             ipesan = abs(ipesan)
             if (ipesan .ne. 0 .and. ipesan .ne. 4) then
                 call u2mess('E', 'MODELISA7_31')
@@ -267,24 +248,22 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 ! --------    VERIFICATION DES DONNEES POUR <CARA_PAROI>, <VALE_PAROI>
 ! --------    ET <ANGL_VRIL> SI PRESENCE
 !
-            call getvtx(nommcf, 'CARA_PAROI', iocc, iarg, 0,&
-                        k8bid, icapa)
+            call getvtx(nommcf, 'CARA_PAROI', iocc=iocc, nbval=0, nbret=icapa)
             icapa = abs(icapa)
             if (icapa .ne. 0) then
                 count5 = count5 + 1
                 if (icapa .ne. 3 .and. icapa .ne. 4) then
                     call u2mess('E', 'MODELISA7_32')
                 else
-                    call getvr8(nommcf, 'VALE_PAROI', iocc, iarg, 0,&
-                                rbid, ivapa)
+                    call getvr8(nommcf, 'VALE_PAROI', iocc=iocc, nbval=0, nbret=ivapa)
                     ivapa = abs(ivapa)
                     if (ivapa .ne. icapa) then
                         call u2mess('E', 'MODELISA7_33')
                     else
-                        call getvtx(nommcf, 'CARA_PAROI', iocc, iarg, icapa,&
-                                    carapa(1), ibid)
-                        call getvr8(nommcf, 'VALE_PAROI', iocc, iarg, ivapa,&
-                                    valepa(1), ibid)
+                        call getvtx(nommcf, 'CARA_PAROI', iocc=iocc, nbval=icapa, vect=carapa(1),&
+                                    nbret=ibid)
+                        call getvr8(nommcf, 'VALE_PAROI', iocc=iocc, nbval=ivapa, vect=valepa(1),&
+                                    nbret=ibid)
                         nbyc = 0
                         nbzc = 0
                         nbr = 0
@@ -324,8 +303,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                             ihz).le.0.d0) then
                                 call u2mess('E', 'MODELISA7_37')
                             else
-                                call getvr8(nommcf, 'ANGL_VRIL', iocc, iarg, 0,&
-                                            rbid, iangl)
+                                call getvr8(nommcf, 'ANGL_VRIL', iocc=iocc, nbval=0, nbret=iangl)
                                 if (iangl .eq. 0) then
                                     call u2mess('E', 'MODELISA7_38')
                                 endif
@@ -339,8 +317,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 ! --------    OPERANDES ASSOCIEES AUX CARACTERISTIQUES DES GRILLES
 ! --------    SONT PRESENTES
 !
-            call getvr8(nommcf, 'LONG_TYPG', iocc, iarg, 0,&
-                        rbid, ntypg)
+            call getvr8(nommcf, 'LONG_TYPG', iocc=iocc, nbval=0, nbret=ntypg)
             if (ntypg .ne. 0) then
                 ocgril = iocc
             endif
@@ -373,14 +350,13 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !
     else
 !
-        call getvr8(nommcf, 'VECT_X', 1, iarg, 0,&
-                    rbid, ivect)
+        call getvr8(nommcf, 'VECT_X', iocc=1, nbval=0, nbret=ivect)
         if (abs(ivect) .ne. 3) then
             call u2mess('E', 'MODELISA7_44')
         else
             ier2 = 0
-            call getvr8(nommcf, 'VECT_X', 1, iarg, 3,&
-                        vect(1), ibid)
+            call getvr8(nommcf, 'VECT_X', iocc=1, nbval=3, vect=vect(1),&
+                        nbret=ibid)
             if (vect(1) .eq. 1.d0) then
                 if (vect(2) .ne. 0.d0 .or. vect(3) .ne. 0.d0) ier2 = 1
             else if (vect(2).eq.1.d0) then

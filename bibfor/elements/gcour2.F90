@@ -60,9 +60,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -71,6 +69,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 #include "asterfort/gabscu.h"
 #include "asterfort/gdinor.h"
 #include "asterfort/gdirec.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -85,6 +84,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
+!
     character(len=24) :: trav1, trav2, trav3, objor, objex, chfond, repk
     character(len=24) :: obj3, norm, numgam, chamno
     character(len=24) :: stok4, dire4, coorn, nomno, dire5, indicg
@@ -169,8 +169,8 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !     DANS LE CAS OU LA NORMALE EST DEFINIE DANS DEFI_FOND_FISS/NORMALE,
 !     ON AVERTIT L'UTILISATEUR PAR UNE ALARME SI LA DIRECTION N'EST PAS
 !     FOURNIE
-    call getvr8('THETA', 'DIRECTION', 1, iarg, 3,&
-                dir, nbr8)
+    call getvr8('THETA', 'DIRECTION', iocc=1, nbval=3, vect=dir,&
+                nbret=nbr8)
     if (nbr8 .eq. 0 .and. ienorm .ne. 0) then
         call u2mess('A', 'RUPTURE0_91')
     endif

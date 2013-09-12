@@ -16,7 +16,7 @@ subroutine op0043()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
-    implicit   none
+    implicit none
 ! =====================================================================
 !   - FONCTIONS REALISEES:
 !       COMMANDE IMPR_MAIL_YACS
@@ -26,8 +26,8 @@ subroutine op0043()
 !   - OUT :
 !       IERR   : NON UTILISE
 !     ------------------------------------------------------------
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -43,15 +43,13 @@ subroutine op0043()
     call jemarq()
     call infmaj()
 !
-    call getvis(' ', 'UNITE_MAILLAGE', 1, iarg, 1,&
-                nfis, n)
+    call getvis(' ', 'UNITE_MAILLAGE', scal=nfis, nbret=n)
 ! LECTURE DU MAILLAGE FLUIDE
     k16nom='                '
     if (ulisop ( nfis, k16nom ) .eq. 0) then
         call ulopen(nfis, ' ', 'FICHIER-MODELE', 'NEW', 'O')
     endif
-    call getvtx(' ', 'TYPE_MAILLAGE', 1, iarg, 1,&
-                typema, n)
+    call getvtx(' ', 'TYPE_MAILLAGE', scal=typema, nbret=n)
     call precou(nfis, typema)
 !
     write(nfis,*) 'FIN'

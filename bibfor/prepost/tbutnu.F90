@@ -1,10 +1,10 @@
 subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
                   prec, crit)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -56,14 +56,11 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
 !
     call jemarq()
 !
-    call getvr8(motfac, 'PRECISION', iocc, iarg, 1,&
-                prec, np)
-    call getvtx(motfac, 'CRITERE', iocc, iarg, 1,&
-                crit, nc)
+    call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=np)
+    call getvtx(motfac, 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
 !
     nbinst = 0
-    call getvid(motfac, 'LIST_INST', iocc, iarg, 1,&
-                listr, n1)
+    call getvid(motfac, 'LIST_INST', iocc=iocc, scal=listr, nbret=n1)
     if (n1 .ne. 0) then
         call jeveuo(listr//'.VALE', 'L', jinstd)
         call jelira(listr//'.VALE', 'LONMAX', nbinst)
@@ -75,13 +72,12 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
 10      continue
     endif
 !
-    call getvr8(motfac, 'INST', iocc, iarg, 0,&
-                dinst, n2)
+    call getvr8(motfac, 'INST', iocc=iocc, nbval=0, nbret=n2)
     if (n2 .ne. 0) then
         nbinst = -n2
         call wkvect(nomjv, 'V V R', nbinst, jinst)
-        call getvr8(motfac, 'INST', iocc, iarg, nbinst,&
-                    zr(jinst), n2)
+        call getvr8(motfac, 'INST', iocc=iocc, nbval=nbinst, vect=zr(jinst),&
+                    nbret=n2)
         call wkvect('&&TBUTNU.ORDRE', 'V V I', nbinst, jordr)
         do 12 ii = 1, nbinst
             zi(jordr+ii-1) = ii

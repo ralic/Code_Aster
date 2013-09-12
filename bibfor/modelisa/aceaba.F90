@@ -3,17 +3,16 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                   jdlm)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/acedat.h"
 #include "asterfort/affbar.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -30,6 +29,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, nbarre, nbocc, nbtel, ifm, jdlm
     integer :: ntyele(*), ivr(*)
     character(len=8) :: noma, nomo
@@ -145,13 +145,10 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                     iarg, lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'BARRE', 'MAILLE', ioc,&
                     iarg, lmax, zk8( jdls2), nm)
-        call getvtx('BARRE', 'SECTION', ioc, iarg, 1,&
-                    sec, nsec)
-        call getvid('BARRE', 'TABLE_CARA', ioc, iarg, 1,&
-                    tabcar, ntab)
+        call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
+        call getvid('BARRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
         if (ntab .eq. 1) then
-            call getvtx('BARRE', 'NOM_SEC', ioc, iarg, 1,&
-                        nomsec, nnosec)
+            call getvtx('BARRE', 'NOM_SEC', iocc=ioc, scal=nomsec, nbret=nnosec)
             ASSERT(nnosec.eq.1)
             call jeveuo(tabcar//'.TBNP', 'L', itbnp)
 !            NOMBRE DE CARACTERISTIQUES
@@ -197,15 +194,14 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 96          continue
 98          continue
         else
-            call getvtx('BARRE', 'CARA', ioc, iarg, nbcar,&
-                        zk8(jcara), ncar)
-            call getvr8('BARRE', 'VALE', ioc, iarg, nbval,&
-                        zr(jvale), nval)
+            call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=zk8(jcara),&
+                        nbret=ncar)
+            call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=zr(jvale),&
+                        nbret=nval)
             ASSERT(ncar.gt.0)
         endif
         fcx = '.'
-        call getvid('BARRE', 'FCX', ioc, iarg, 1,&
-                    fcx, nfcx)
+        call getvid('BARRE', 'FCX', iocc=ioc, scal=fcx, nbret=nfcx)
 !
         if (sec .eq. zk16(jsect )) isec = 0
         if (sec .eq. zk16(jsect+1)) isec = 1

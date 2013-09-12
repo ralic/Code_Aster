@@ -32,15 +32,13 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
 !
 #include "jeveux.h"
-!
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocre.h"
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -64,10 +62,12 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+!
+!
     integer :: ibid, nbmode, itresu(8)
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
-    character(len=1) ::  type1
+    character(len=1) :: type1
     character(len=8) :: k8b, basemo, crit, champ(8), interp, nomres, nomin, mode
     character(len=8) :: touch, mailla, matgen
     character(len=8) :: nomgd, basem2, blanc
@@ -99,8 +99,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     mode = basemo
     hrange = nomin
 !
-    call getvtx(' ', 'TOUT_CHAM', 1, iarg, 1,&
-                touch, n1)
+    call getvtx(' ', 'TOUT_CHAM', scal=touch, nbret=n1)
     if (n1 .ne. 0) then
         ASSERT(touch(1:3).eq.'OUI')
         nbcham = 3
@@ -108,11 +107,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         type(2) = 'VITE            '
         type(3) = 'ACCE            '
     else
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n1)
         nbcham = -n1
-        call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                    champ, n1)
+        call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
         do 11 i = 1, nbcham
             if (champ(i)(1:4) .eq. 'DEPL') then
                 type(i) = 'DEPL            '
@@ -130,14 +127,10 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
 !     ---                PORTE LA RESTITUTION                 ---
     tousno = .true.
-    call getvtx(' ', 'GROUP_NO', 1, iarg, 0,&
-                k8b, n1)
-    call getvtx(' ', 'NOEUD', 1, iarg, 0,&
-                k8b, n2)
-    call getvtx(' ', 'GROUP_MA', 1, iarg, 0,&
-                k8b, n3)
-    call getvtx(' ', 'MAILLE', 1, iarg, 0,&
-                k8b, n4)
+    call getvtx(' ', 'GROUP_NO', nbval=0, nbret=n1)
+    call getvtx(' ', 'NOEUD', nbval=0, nbret=n2)
+    call getvtx(' ', 'GROUP_MA', nbval=0, nbret=n3)
+    call getvtx(' ', 'MAILLE', nbval=0, nbret=n4)
     if (n1+n2+n3+n4 .ne. 0) tousno = .false.
 !
 !     --- RECUPERATION DE LA BASE MODALE ---
@@ -149,18 +142,22 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
     if (mode .eq. ' ') then
 !
-
-
-        call dismoi('F', 'REF_RIGI_PREM', hrange, 'RESU_DYNA', ibid, matgen, iret)
-        call dismoi('F', 'BASE_MODALE'  , hrange, 'RESU_DYNA', ibid, basemo, iret)
-
+!
+!
+        call dismoi('F', 'REF_RIGI_PREM', hrange, 'RESU_DYNA', ibid,&
+                    matgen, iret)
+        call dismoi('F', 'BASE_MODALE', hrange, 'RESU_DYNA', ibid,&
+                    basemo, iret)
+!
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                        matric, iret)
             if (matric .ne. blanc) then
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
             else
-                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, numddl, iret)
+                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                            numddl, iret)
             endif
             prchno=numddl//'.NUME'
             call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
@@ -172,9 +169,11 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         else
 !          -- POUR LES CALCULS SANS MATRICE GENERALISEE
 !             (PROJ_MESU_MODAL)
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, matric, iret)
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                        matric, iret)
             if (matric(1:8) .eq. blanc) then
-                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+                call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                            matric, iret)
                 call dismoi('F', 'NOM_NUME_DDL', matric, 'MATR_ASSE', ibid,&
                             numddl, iret)
             else
@@ -184,7 +183,8 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
             matric = zk24(j3refe)
             mailla = matric(1:8)
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matric, iret)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                        matric, iret)
             if (tousno) call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                                     k8b, iret)
         endif
@@ -232,12 +232,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
 !
 !     --- RECUPERATION DES FREQUENCES ---
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 1,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
 ! ON PLANTE LE CALCUL SI ON DEMANDE D'INTERPOLER EN FREQUENCIEL
     if (interp(1:3) .ne. 'NON') call u2mess('F', 'ALGORITH3_86')
 !

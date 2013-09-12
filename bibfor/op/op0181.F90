@@ -23,9 +23,9 @@ subroutine op0181()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/ecresu.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -46,17 +46,13 @@ subroutine op0181()
 !     --- RECUPERATION DES ARGUMENTS UTILISATEUR
 !
 !     --- CAS D'UN CONCEPT SD_RESULTAT ENTRANT (BASE PHYS)
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resin, nval)
+    call getvid(' ', 'RESULTAT', scal=resin, nbret=nval)
     if (nval .eq. 0) then
 !        --- CAS D'UN CONCEPT SD_DYNA_GENE ENTRANT (BASE GENE)
-        call getvid(' ', 'RESU_GENE', 1, iarg, 1,&
-                    resin, nval)
+        call getvid(' ', 'RESU_GENE', scal=resin, nbret=nval)
     endif
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, nval)
-    call getvtx(' ', 'SYMETRIE', 1, iarg, 1,&
-                symetr, nval)
+    call getvtx(' ', 'METHODE', scal=method, nbret=nval)
+    call getvtx(' ', 'SYMETRIE', scal=symetr, nbret=nval)
 !
 !     --- EVALUATION DU SENS DE LA FFT
     call gettco(resin, typres)
@@ -67,8 +63,7 @@ subroutine op0181()
     endif
 !
 !     --- RECUPERER LA LISTE DES CHAMPS RENSEIGNEE
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 3,&
-                grand0, ngran0)
+    call getvtx(' ', 'NOM_CHAM', nbval=3, vect=grand0, nbret=ngran0)
 !     --- CAS DE TOUT_CHAMP='OUI'
     if (ngran0 .eq. 0) then
         ngran0 = 3

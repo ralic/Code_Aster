@@ -19,13 +19,12 @@ subroutine ssdmgn(mag)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getltx.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -44,6 +43,7 @@ subroutine ssdmgn(mag)
 #include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -85,14 +85,13 @@ subroutine ssdmgn(mag)
 !
     nbgnot=0
     lont= 0
-    do iocc=1,nocc
-        call getvis('DEFI_GROUP_NO', 'INDEX', iocc, iarg, 4,&
-                    indi, n1)
+    do iocc = 1, nocc
+        call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi,&
+                    nbret=n1)
         if (n1 .eq. 4) then
             unaun=.false.
         else
-            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc, iarg, 1,&
-                        kbid, n2)
+            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc=iocc, scal=kbid, nbret=n2)
             ASSERT(n2.ne.0)
             unaun=.true.
         endif
@@ -101,10 +100,8 @@ subroutine ssdmgn(mag)
 !     --1.1 CAS : INDEX, TOUT OU MAILLE :
 !     -----------------------------------
         if (.not.unaun) then
-            call getvtx('DEFI_GROUP_NO', 'TOUT', iocc, iarg, 1,&
-                        kbid, n1)
-            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc, iarg, 1,&
-                        nosma, n2)
+            call getvtx('DEFI_GROUP_NO', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
+            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc=iocc, scal=nosma, nbret=n2)
             if (n2 .eq. 1) then
                 call jeexin(jexnom(mag//'.SUPMAIL', nosma), iret)
                 if (iret .eq. 0) then
@@ -115,7 +112,7 @@ subroutine ssdmgn(mag)
                 call jenonu(jexnom(mag//'.SUPMAIL', nosma), nusma)
             endif
 !
-            do isma=1,nbsma
+            do isma = 1, nbsma
                 if ((n2.eq.1) .and. (nusma.ne.isma)) goto 21
                 nomacr= zk8(ianmcr-1+isma)
                 call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
@@ -124,7 +121,7 @@ subroutine ssdmgn(mag)
                 if (iret .eq. 0) goto 21
                 call jelira(mal//'.GROUPENO', 'NUTIOC', nbgno, kbid)
                 nbgnot= nbgnot+nbgno
-                do  igno=1,nbgno
+                do igno = 1, nbgno
                     call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3)
                     lont= lont+n3
                 end do
@@ -135,10 +132,8 @@ subroutine ssdmgn(mag)
 !     --3.2 CAS : MAILLE, GROUP_NO_FIN, GROUP_NO_INIT:
 !     -----------------------------------------------
         else
-            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc, iarg, 1,&
-                        nosma, n1)
-            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_INIT', iocc, iarg, 1,&
-                        nomgnl, n)
+            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc=iocc, scal=nosma, nbret=n1)
+            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_INIT', iocc=iocc, scal=nomgnl, nbret=n)
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
             nomacr= zk8(ianmcr-1+isma)
@@ -169,37 +164,36 @@ subroutine ssdmgn(mag)
 !
 !     --3 REMPLISSAGE:
 !     ----------------
-    do iocc=1,nocc
+    do iocc = 1, nocc
         unaun=.true.
-        call getvis('DEFI_GROUP_NO', 'INDEX', iocc, iarg, 4,&
-                    indi, n1)
+        call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi,&
+                    nbret=n1)
         if (n1 .eq. 4) unaun=.false.
 !
 !
 !       --3.1 CAS : INDEX, TOUT OU MAILLE :
 !       -----------------------------------
         if (.not.unaun) then
-            call getvtx('DEFI_GROUP_NO', 'TOUT', iocc, iarg, 1,&
-                        kbid, n1)
-            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc, iarg, 1,&
-                        nosma, n2)
+            call getvtx('DEFI_GROUP_NO', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
+            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc=iocc, scal=nosma, nbret=n2)
             if (n2 .eq. 1) call jenonu(jexnom(mag//'.SUPMAIL', nosma), nusma)
             lpr=0
             call getltx('DEFI_GROUP_NO', 'PREFIXE', iocc, 8, 1,&
                         lpr, nbid)
             lpref = lpr(1)
-            call getvis('DEFI_GROUP_NO', 'INDEX', iocc, iarg, 4,&
-                        indi, n3)
+            call getvis('DEFI_GROUP_NO', 'INDEX', iocc=iocc, nbval=4, vect=indi,&
+                        nbret=n3)
             lmail=indi(2)-indi(1)+1
             lgnl=indi(4)-indi(3)+1
             lmail=max(lmail,0)
             lgnl=max(lgnl,0)
             longt= lpref+lmail+lgnl
             if (longt .gt. 8) call u2mess('F', 'SOUSTRUC_61')
-            if (lpref .gt. 0) call getvtx('DEFI_GROUP_NO', 'PREFIXE', iocc, iarg, 1,&
-                                          pref, nbid)
+            if (lpref .gt. 0) then
+                call getvtx('DEFI_GROUP_NO', 'PREFIXE', iocc=iocc, scal=pref, nbret=nbid)
+            endif
 !
-            do isma=1,nbsma
+            do isma = 1, nbsma
                 if ((n2.eq.1) .and. (nusma.ne.isma)) goto 51
                 nomacr= zk8(ianmcr-1+isma)
                 call jenuno(jexnum(mag//'.SUPMAIL', isma), nomail)
@@ -214,7 +208,7 @@ subroutine ssdmgn(mag)
                 else
                     call jelira(mal//'.GROUPENO', 'NUTIOC', nbgno)
                 endif
-                do igno=1,nbgno
+                do igno = 1, nbgno
                     call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3)
                     call jeveuo(jexnum(mal//'.GROUPENO', igno), 'L', iagnl)
                     call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3,&
@@ -239,7 +233,7 @@ subroutine ssdmgn(mag)
                         call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONMAX', nbno)
                         call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                         call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
-                        do ii=1,nbno
+                        do ii = 1, nbno
                             inol=zi(iawk1-1+ii)
                             kk= indiis(zi(ialino),inol,1,nbnoex)
                             ASSERT(kk .ne. 0)
@@ -254,12 +248,9 @@ subroutine ssdmgn(mag)
 !       --3.2 CAS : MAILLE, GROUP_NO_FIN, GROUP_NO_INIT:
 !       -----------------------------------------------
         else
-            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc, iarg, 1,&
-                        nosma, n1)
-            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_INIT', iocc, iarg, 1,&
-                        nomgnl, n)
-            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc, iarg, 1,&
-                        nomgng, n)
+            call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc=iocc, scal=nosma, nbret=n1)
+            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_INIT', iocc=iocc, scal=nomgnl, nbret=n)
+            call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc=iocc, scal=nomgng, nbret=n)
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
             i1noe=zi(iadim2-1+4*(isma-1)+3)
@@ -278,7 +269,7 @@ subroutine ssdmgn(mag)
                 call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONMAX', nbno)
                 call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                 call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
-                do ii=1,nbno
+                do ii = 1, nbno
                     inol=zi(iawk1-1+ii)
                     kk= indiis(zi(ialino),inol,1,nbnoex)
                     ASSERT(kk .ne. 0)
@@ -293,6 +284,6 @@ subroutine ssdmgn(mag)
 !
     call jedetr('&&SSDMGN.WORK1')
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

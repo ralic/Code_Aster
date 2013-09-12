@@ -1,14 +1,14 @@
 subroutine cbsint(char, noma, ligrmo, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
+!
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
@@ -73,8 +73,7 @@ subroutine cbsint(char, noma, ligrmo, fonree)
 !
             ncmp = 1
             zk8(jncmp-1+1) = 'Z1'
-            call getvid(motclf, 'SIGM', 1, iarg, 1,&
-                        chsig, ibid)
+            call getvid(motclf, 'SIGM', iocc=1, scal=chsig, nbret=ibid)
             zk8(jvalv-1+1) = chsig
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ligrmo, ncmp)

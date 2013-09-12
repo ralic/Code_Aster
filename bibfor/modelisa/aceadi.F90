@@ -1,18 +1,17 @@
 subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
                   ivr, ifm)
-    implicit       none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/affdis.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/crlinu.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -24,6 +23,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
 #include "asterfort/nocart.h"
 #include "asterfort/verdis.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, nomo
     integer :: lmax, nbocc, ivr(*), ifm
     character(len=*) :: mcf
@@ -180,26 +180,23 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
                     iarg, lmax, zk24(jdls), nj)
         call getvem(noma, 'NOEUD', mcf, 'NOEUD', ioc,&
                     iarg, lmax, zk8( jdls2), nn)
-        call getvr8(mcf, 'VALE', ioc, iarg, nbval,&
-                    val, nval)
+        call getvr8(mcf, 'VALE', iocc=ioc, nbval=nbval, vect=val,&
+                    nbret=nval)
         ASSERT(nbval .ge. 1)
-        call getvtx(mcf, 'CARA', ioc, iarg, nbcar,&
-                    car, ncar)
+        call getvtx(mcf, 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
+                    nbret=ncar)
         if (ncar .gt. 0) ncarac = ncar
         ASSERT(ncarac .eq. 1)
 !
-        call getvtx(mcf, 'REPERE', ioc, iarg, 1,&
-                    rep, nrep)
-        call getvr8(mcf, 'AMOR_HYST', ioc, iarg, 1,&
-                    eta, neta)
+        call getvtx(mcf, 'REPERE', iocc=ioc, scal=rep, nbret=nrep)
+        call getvr8(mcf, 'AMOR_HYST', iocc=ioc, scal=eta, nbret=neta)
         if (ioc .eq. 1 .and. nrep .eq. 0) rep = repdis(1)
         do 32 i = 1, nrd
             if (rep .eq. repdis(i)) irep = i
 32      continue
 !
 !        MATRICE SYMETRIQUE OU NON-SYMETRIQUE : PAR DEFAUT SYMETRIQUE
-        call getvtx(mcf, 'SYME', ioc, iarg, 1,&
-                    sym, nsym)
+        call getvtx(mcf, 'SYME', iocc=ioc, scal=sym, nbret=nsym)
         if (nsym .eq. 0) sym = symdis(1)
         do 33 i = 1, nrd
             if (sym .eq. symdis(i)) isym = i

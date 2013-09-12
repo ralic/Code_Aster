@@ -1,16 +1,16 @@
 subroutine trgene(ific, nocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/extrac.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -93,81 +93,71 @@ subroutine trgene(ific, nocc)
         call trprec('GENE', iocc, epsi, crit, prec,&
                     crit2)
 !
-        call getvtx('GENE', 'VALE_ABS', iocc, iarg, 1,&
-                    ssigne, n1)
+        call getvtx('GENE', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
 !
-        call getvr8('GENE', 'VALE_CALC', iocc, iarg, 0,&
-                    r8b, n1)
-        call getvis('GENE', 'VALE_CALC_I', iocc, iarg, 0,&
-                    ibid, n2)
-        call getvc8('GENE', 'VALE_CALC_C', iocc, iarg, 0,&
-                    c16b, n3)
+        call getvr8('GENE', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)
+        call getvis('GENE', 'VALE_CALC_I', iocc=iocc, nbval=0, nbret=n2)
+        call getvc8('GENE', 'VALE_CALC_C', iocc=iocc, nbval=0, nbret=n3)
         if (n1 .ne. 0) then
             nref=-n1
             typres = 'R'
             call jedetr(travr)
             call wkvect(travr, 'V V R', nref, irefr)
-            call getvr8('GENE', 'VALE_CALC', iocc, iarg, nref,&
-                        zr(irefr), iret)
+            call getvr8('GENE', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
+                        nbret=iret)
         else if (n2 .ne. 0) then
             nref=-n2
             typres = 'I'
             call jedetr(travi)
             call wkvect(travi, 'V V I', nref, irefi)
-            call getvis('GENE', 'VALE_CALC_I', iocc, iarg, nref,&
-                        zi( irefi), iret)
+            call getvis('GENE', 'VALE_CALC_I', iocc=iocc, nbval=nref, vect=zi( irefi),&
+                        nbret=iret)
         else if (n3 .ne. 0) then
             nref=-n3
             typres = 'C'
             call jedetr(travc)
             call wkvect(travc, 'V V C', nref, irefc)
-            call getvc8('GENE', 'VALE_CALC_C', iocc, iarg, nref,&
-                        zc( irefc), iret)
+            call getvc8('GENE', 'VALE_CALC_C', iocc=iocc, nbval=nref, vect=zc( irefc),&
+                        nbret=iret)
         endif
 ! ----------------------------------------------------------------------
         lref=.false.
-        call getvr8('GENE', 'PRECISION', iocc, iarg, 1,&
-                    epsir, iret)
+        call getvr8('GENE', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
             lref=.true.
-            call getvr8('GENE', 'VALE_REFE', iocc, iarg, 0,&
-                        r8b, n1r)
-            call getvis('GENE', 'VALE_REFE_I', iocc, iarg, 0,&
-                        ibid, n2r)
-            call getvc8('GENE', 'VALE_REFE_C', iocc, iarg, 0,&
-                        c16b, n3r)
+            call getvr8('GENE', 'VALE_REFE', iocc=iocc, nbval=0, nbret=n1r)
+            call getvis('GENE', 'VALE_REFE_I', iocc=iocc, nbval=0, nbret=n2r)
+            call getvc8('GENE', 'VALE_REFE_C', iocc=iocc, nbval=0, nbret=n3r)
             if (n1r .ne. 0) then
                 ASSERT((n1r.eq.n1))
                 nref=-n1r
                 call jedetr(travrr)
                 call wkvect(travrr, 'V V R', nref, irefrr)
-                call getvr8('GENE', 'VALE_REFE', iocc, iarg, nref,&
-                            zr(irefrr), iret)
+                call getvr8('GENE', 'VALE_REFE', iocc=iocc, nbval=nref, vect=zr(irefrr),&
+                            nbret=iret)
             else if (n2r.ne.0) then
                 ASSERT((n2r.eq.n2))
                 nref=-n2r
                 call jedetr(travir)
                 call wkvect(travir, 'V V I', nref, irefir)
-                call getvis('GENE', 'VALE_REFE_I', iocc, iarg, nref,&
-                            zi(irefir), iret)
+                call getvis('GENE', 'VALE_REFE_I', iocc=iocc, nbval=nref, vect=zi(irefir),&
+                            nbret=iret)
             else if (n3r.ne.0) then
                 ASSERT((n3r.eq.n3))
                 nref=-n3r
                 call jedetr(travcr)
                 call wkvect(travcr, 'V V C', nref, irefcr)
-                call getvc8('GENE', 'VALE_REFE_C', iocc, iarg, nref,&
-                            zc(irefcr), iret)
+                call getvc8('GENE', 'VALE_REFE_C', iocc=iocc, nbval=nref, vect=zc(irefcr),&
+                            nbret=iret)
             endif
         endif
 ! ----------------------------------------------------------------------
 !
-        call getvid('GENE', 'RESU_GENE', iocc, iarg, 1,&
-                    resu19, n1)
+        call getvid('GENE', 'RESU_GENE', iocc=iocc, scal=resu19, nbret=n1)
         call gettco(resu19, tysd)
 ! ----------------------------------------------------------------------
         if (tysd .eq. 'VECT_ASSE_GENE') then
-            call getvis('GENE', 'NUME_CMP_GENE', iocc, iarg, 1,&
-                        ncmp, n1)
+            call getvis('GENE', 'NUME_CMP_GENE', iocc=iocc, scal=ncmp, nbret=n1)
             call jeveuo(resu19//'.VALE', 'L', jlue)
             call jelira(resu19//'.VALE', 'TYPE', cval=k16b)
 !
@@ -266,8 +256,7 @@ subroutine trgene(ific, nocc)
             call jeveuo(knum, 'L', jordr)
             numord = zi(jordr)
 !
-            call getvtx('GENE', 'PARA', iocc, iarg, 1,&
-                        nopara, n1)
+            call getvtx('GENE', 'PARA', iocc=iocc, scal=nopara, nbret=n1)
             if (n1 .ne. 0) then
                 call rsadpa(resu19, 'L', 1, nopara, numord,&
                             1, jlue, k16b)
@@ -334,10 +323,8 @@ subroutine trgene(ific, nocc)
                 goto 100
             endif
 !
-            call getvtx('GENE', 'NOM_CHAM', iocc, iarg, 1,&
-                        nsym, n1)
-            call getvis('GENE', 'NUME_CMP_GENE', iocc, iarg, 1,&
-                        ncmp, n1)
+            call getvtx('GENE', 'NOM_CHAM', iocc=iocc, scal=nsym, nbret=n1)
+            call getvis('GENE', 'NUME_CMP_GENE', iocc=iocc, scal=ncmp, nbret=n1)
             call rsexch('F', resu19, nsym, numord, cham19,&
                         iret)
             call jeveuo(cham19//'.VALE_CALC', 'L', jlue)
@@ -435,20 +422,16 @@ subroutine trgene(ific, nocc)
             call jedetr(knum)
 !
         else if (tysd .eq. 'HARM_GENE') then
-            call getvtx('GENE', 'NOM_CHAM', iocc, iarg, 1,&
-                        nsym, n1)
-            call getvis('GENE', 'NUME_CMP_GENE', iocc, iarg, 1,&
-                        ncmp, n1)
+            call getvtx('GENE', 'NOM_CHAM', iocc=iocc, scal=nsym, nbret=n1)
+            call getvis('GENE', 'NUME_CMP_GENE', iocc=iocc, scal=ncmp, nbret=n1)
 !
             interp = 'NON'
             call jeveuo(resu19//'.DISC', 'L', jfreq)
             call jelira(resu19//'.DISC', 'LONMAX', nbfreq)
 !
-            call getvr8('GENE', 'FREQ', iocc, iarg, 1,&
-                        freq, n1)
+            call getvr8('GENE', 'FREQ', iocc=iocc, scal=freq, nbret=n1)
             if (n1 .eq. 0) then
-                call getvis('GENE', 'NUME_ORDRE', iocc, iarg, 1,&
-                            numord, n1)
+                call getvis('GENE', 'NUME_ORDRE', iocc=iocc, scal=numord, nbret=n1)
                 freq = zr(jfreq+numord-1)
             endif
 !
@@ -524,20 +507,16 @@ subroutine trgene(ific, nocc)
             call jedetr('&&TRGENE.CHAMP')
 !
         else if (tysd .eq. 'TRAN_GENE') then
-            call getvtx('GENE', 'NOM_CHAM', iocc, iarg, 1,&
-                        nsym, n1)
-            call getvis('GENE', 'NUME_CMP_GENE', iocc, iarg, 1,&
-                        ncmp, n1)
+            call getvtx('GENE', 'NOM_CHAM', iocc=iocc, scal=nsym, nbret=n1)
+            call getvis('GENE', 'NUME_CMP_GENE', iocc=iocc, scal=ncmp, nbret=n1)
 !
             interp = 'NON'
             call jeveuo(resu19//'.DISC', 'L', jinst)
             call jelira(resu19//'.DISC', 'LONMAX', nbinst)
 !
-            call getvr8('GENE', 'INST', iocc, iarg, 1,&
-                        temps, n1)
+            call getvr8('GENE', 'INST', iocc=iocc, scal=temps, nbret=n1)
             if (n1 .eq. 0) then
-                call getvis('GENE', 'NUME_ORDRE', iocc, iarg, 1,&
-                            numord, n1)
+                call getvis('GENE', 'NUME_ORDRE', iocc=iocc, scal=numord, nbret=n1)
                 temps = zr(jinst+numord-1)
             endif
 !

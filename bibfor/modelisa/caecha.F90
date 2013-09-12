@@ -1,13 +1,12 @@
 subroutine caecha(char, ligrmo, noma, ndim, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -116,86 +115,74 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
         ncmp1 = 0
         ncmp2 = 0
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'COEF_H', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'COEF_H', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1= ncmp1 + 1
                 zk8(jncmp1-1+ncmp1) = 'H'
                 zr(jvalv1-1+ncmp1) = r8b
             endif
-            call getvr8(motclf, 'COEF_H_INF', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'COEF_H_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1+ncmp1) = 'H_INF'
                 zr(jvalv1-1+ncmp1) = r8b
             endif
-            call getvr8(motclf, 'COEF_H_SUP', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'COEF_H_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1+ncmp1) = 'H_SUP'
                 zr(jvalv1-1+ncmp1) = r8b
             endif
-            call getvr8(motclf, 'TEMP_EXT', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'TEMP_EXT', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1+ncmp2) = 'TEMP'
                 zr(jvalv2-1+ncmp2) = r8b
             endif
-            call getvr8(motclf, 'TEMP_EXT_INF', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'TEMP_EXT_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1+ncmp2) = 'TEMP_INF'
                 zr(jvalv2-1+ncmp2) = r8b
             endif
-            call getvr8(motclf, 'TEMP_EXT_SUP', iocc, iarg, 1,&
-                        r8b, n)
+            call getvr8(motclf, 'TEMP_EXT_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1+ncmp2) = 'TEMP_SUP'
                 zr(jvalv2-1+ncmp2) = r8b
             endif
         else
-            call getvid(motclf, 'COEF_H', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'COEF_H', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1+ncmp1) = 'H'
                 zk8(jvalv1-1+ncmp1) = k8b
             endif
-            call getvid(motclf, 'COEF_H_INF', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'COEF_H_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1+ncmp1) = 'H_INF'
                 zk8(jvalv1-1+ncmp1) = k8b
             endif
-            call getvid(motclf, 'COEF_H_SUP', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'COEF_H_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1+ncmp1) = 'H_SUP'
                 zk8(jvalv1-1+ncmp1) = k8b
             endif
-            call getvid(motclf, 'TEMP_EXT', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'TEMP_EXT', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1+ncmp2) = 'TEMP'
                 zk8(jvalv2-1+ncmp2) = k8b
             endif
-            call getvid(motclf, 'TEMP_EXT_INF', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'TEMP_EXT_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1+ncmp2) = 'TEMP_INF'
                 zk8(jvalv2-1+ncmp2) = k8b
             endif
-            call getvid(motclf, 'TEMP_EXT_SUP', iocc, iarg, 1,&
-                        k8b, n)
+            call getvid(motclf, 'TEMP_EXT_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 zk8(jncmp2-1+ncmp2) = 'TEMP_SUP'
@@ -207,7 +194,7 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
         cartes(2) = carte2
         ncmps(1) = ncmp1
         ncmps(2) = ncmp2
-        call char_affe_neum(noma, ndim, motclf, iocc, 2, &
+        call char_affe_neum(noma, ndim, motclf, iocc, 2,&
                             cartes, ncmps)
 !
     end do

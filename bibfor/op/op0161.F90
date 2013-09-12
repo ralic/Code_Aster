@@ -21,11 +21,11 @@ subroutine op0161()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -56,8 +56,7 @@ subroutine op0161()
 !
     call getres(resu, concep, nomcmd)
 !
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resuin, n1)
+    call getvid(' ', 'RESULTAT', scal=resuin, nbret=n1)
     call rsorac(resuin, 'LONUTI', ibid, rbid, k8b,&
                 cbid, rbid, k8b, nbordr, 1,&
                 nbtrou)
@@ -66,19 +65,15 @@ subroutine op0161()
                 cbid, rbid, k8b, zi(jordr), nbordr,&
                 ibid)
 !
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 0,&
-                k8b, n2)
+    call getvtx(' ', 'NOM_CHAM', nbval=0, nbret=n2)
     nbcham = -n2
     call wkvect('&&OP0161.CHAMP', 'V V K16', nbcham, jcham)
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
-                zk16(jcham), n2)
+    call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=zk16(jcham), nbret=n2)
 !
-    call getvr8(' ', 'ANGLE', 1, iarg, 0,&
-                angle, n3)
+    call getvr8(' ', 'ANGLE', nbval=0, nbret=n3)
     nbangl = -n3
     call wkvect('&&OP0161.ANGLE', 'V V R', nbangl, jangl)
-    call getvr8(' ', 'ANGLE', 1, iarg, nbangl,&
-                zr(jangl), n3)
+    call getvr8(' ', 'ANGLE', nbval=nbangl, vect=zr(jangl), nbret=n3)
 !
     call rscrsd('G', resu, concep, nbangl)
 !

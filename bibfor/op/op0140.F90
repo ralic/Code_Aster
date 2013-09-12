@@ -32,8 +32,8 @@ subroutine op0140()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -60,11 +60,9 @@ subroutine op0140()
 !
     call getres(nomres, nomcon, nomope)
 !
-    call getvid(' ', 'NUME_DDL_GENE', 1, iarg, 1,&
-                numeg, ibid)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numeg, nbret=ibid)
 !
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, iopt)
+    call getvtx(' ', 'METHODE', scal=method, nbret=iopt)
 !
     elim=0
     seliai=numeg(1:8)//'      .ELIM.BASE'

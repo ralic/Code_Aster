@@ -16,14 +16,12 @@ subroutine casonl(char, ligrmo, noma, ndim)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -31,6 +29,7 @@ subroutine casonl(char, ligrmo, noma, ndim)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/vetyma.h"
+!
     integer :: ndim
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
@@ -46,13 +45,13 @@ subroutine casonl(char, ligrmo, noma, ndim)
 !      NOMA   : NOM DU MAILLAGE
 !      NDIM   : DIMENSION DU PROBLEME (2D/3D) POUR FILTRER LES MAILLES
 !-----------------------------------------------------------------------
-    integer ::  nsour, jvalv, jncmp, n1, ncmp, iocc
+    integer :: nsour, jvalv, jncmp, n1, ncmp, iocc
     character(len=16) :: motclf
     character(len=19) :: carte
     integer :: iarg
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
-
+!
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -77,12 +76,11 @@ subroutine casonl(char, ligrmo, noma, ndim)
 ! --- STOCKAGE DES FONCTIONS SOURCES DANS LA CARTE
 !
     do iocc = 1, nsour
-        call getvid(motclf, 'SOUR', iocc, iarg, 1,&
-                    zk8(jvalv), n1)
+        call getvid(motclf, 'SOUR', iocc=iocc, scal=zk8(jvalv), nbret=n1)
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+        call char_affe_neum(noma, ndim, motclf, iocc, 1,&
                             cartes, ncmps)
     end do
 !

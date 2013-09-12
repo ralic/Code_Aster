@@ -3,9 +3,9 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -58,13 +58,11 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
     call getres(nomres, typres, nomcmd)
 !
 !     --- EST-ON EN REPRISE ? ---
-    call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                dyna, ndy)
+    call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=dyna, nbret=ndy)
 !
 !     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "LIST_INST" ---
 !
-    call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                li, n1)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=li, nbret=n1)
     if (n1 .ne. 0) then
         call jeveuo(li//'           .LPAS', 'L', jlpas)
         call jeveuo(li//'           .NBPA', 'L', jnbpa)
@@ -160,11 +158,9 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
             lisins= '&&OP0048.FI_JVALE'
         endif
 !
-        call getvis('INCREMENT', 'NUME_FIN', 1, iarg, 1,&
-                    numef, n1)
+        call getvis('INCREMENT', 'NUME_FIN', iocc=1, scal=numef, nbret=n1)
         if (n1 .eq. 0) then
-            call getvr8('INCREMENT', 'INST_FIN', 1, iarg, 1,&
-                        tfin, n1)
+            call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=n1)
             if (n1 .eq. 0) goto 9999
         else
             call jeveuo(li//'           .VALE', 'L', jvalr)
@@ -248,10 +244,8 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
 !
 !     --- DEFINITION DES INSTANTS DE CALCUL A PARTIR DE "PAS" ---
 !
-    call getvr8('INCREMENT', 'INST_FIN', 1, iarg, 1,&
-                tfin, ibid)
-    call getvr8('INCREMENT', 'PAS', 1, iarg, 1,&
-                dt, ibid)
+    call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=ibid)
+    call getvr8('INCREMENT', 'PAS', iocc=1, scal=dt, nbret=ibid)
     if (dt .eq. 0.d0) then
         call u2mess('F', 'ALGORITH3_12')
     endif

@@ -2,9 +2,9 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
                   cmp, cdp, dtmin, nper, nrmax)
 !
     implicit none
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesg.h"
     real(kind=8) :: vmin(*), cmp, cpmin, dtmin, dtmax, dti, cdp
     real(kind=8) :: valr(4)
@@ -48,44 +48,37 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
 !
 !     --- VITESSE DE REFERENCE ---
 !
-    call getvtx('INCREMENT', 'VITE_MIN', 1, iarg, 1,&
-                vvar, nv)
+    call getvtx('INCREMENT', 'VITE_MIN', iocc=1, scal=vvar, nbret=nv)
     do 10 i = 1, neq
         vmin(i) = 1.d-15
 10  end do
 !
 !     --- COEFFICIENT DE REMONTEE DU PAS DE TEMPS ---
 !
-    call getvr8('INCREMENT', 'COEF_MULT_PAS', 1, iarg, 1,&
-                cmp, n1)
+    call getvr8('INCREMENT', 'COEF_MULT_PAS', iocc=1, scal=cmp, nbret=n1)
 !
 !     --- COEFFICIENT DE DIVISION DU PAS DE TEMPS ---
 !
-    call getvr8('INCREMENT', 'COEF_DIVI_PAS', 1, iarg, 1,&
-                cdp, n1)
+    call getvr8('INCREMENT', 'COEF_DIVI_PAS', iocc=1, scal=cdp, nbret=n1)
 !
 !     --- COEFFICIENT DETERMINANT DT MIN (=DT INIT * CPMIN) --
 !
-    call getvr8('INCREMENT', 'PAS_MINI', 1, iarg, 1,&
-                dtmin, n1)
+    call getvr8('INCREMENT', 'PAS_MINI', iocc=1, scal=dtmin, nbret=n1)
 !
 !     --- COEFFICIENT DETERMINANT DT MIN (=DT INIT * CPMIN) --
 !
     if (n1 .eq. 0) then
-        call getvr8('INCREMENT', 'PAS_LIMI_RELA', 1, iarg, 1,&
-                    cpmin, n1)
+        call getvr8('INCREMENT', 'PAS_LIMI_RELA', iocc=1, scal=cpmin, nbret=n1)
         dtmin = dti * cpmin
     endif
 !
 !     --- NOMBRE DE POINTS PAR PERIODE
 !
-    call getvis('INCREMENT', 'NB_POIN_PERIODE', 1, iarg, 1,&
-                nper, n1)
+    call getvis('INCREMENT', 'NB_POIN_PERIODE', iocc=1, scal=nper, nbret=n1)
 !
 !     --- NMAX_REDUC_PAS
 !
-    call getvis('INCREMENT', 'NMAX_ITER_PAS', 1, iarg, 1,&
-                nrmax, n1)
+    call getvis('INCREMENT', 'NMAX_ITER_PAS', iocc=1, scal=nrmax, nbret=n1)
 !
 !
     vali (1) = nper

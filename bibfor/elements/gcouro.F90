@@ -59,15 +59,14 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gdinor.h"
 #include "asterfort/gdirec.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -82,6 +81,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
+!
     character(len=24) :: obj3, numgam, chamno
     character(len=24) :: trav1, trav2, trav3, objor, objex, dirth
     character(len=24) :: norm, stok4, dire4, coorn, nomno, dire5, indicg, resu
@@ -184,8 +184,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
         call lcprsn(3, dir, tmpv, psca)
         if (abs(psca) .gt. 0.1d0) call u2mess('F', 'RUPTURE0_94')
     endif
-    call getvid(motfac, 'DIRE_THETA', iocc, iarg, 1,&
-                dirth, nbdir)
+    call getvid(motfac, 'DIRE_THETA', iocc=iocc, scal=dirth, nbret=nbdir)
 !
 ! 1ER CAS: LA DIRECTION DE THETA EST DONNEE, ON LA NORME
 !

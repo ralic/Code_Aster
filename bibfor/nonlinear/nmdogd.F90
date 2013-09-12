@@ -3,7 +3,7 @@ subroutine nmdogd(moclef, comp, k, ncomel, lcomel,&
 ! person_in_charge: jean-michel.proix at edf.fr
     implicit none
 #include "asterc/getexm.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
     integer :: ncomel, k
     character(len=*) :: comp
     character(len=16) :: lcomel(5), defo, moclef
@@ -41,8 +41,7 @@ subroutine nmdogd(moclef, comp, k, ncomel, lcomel,&
     exist = getexm(moclef,'DEFORMATION')
     defo='PETIT'
     if (exist .eq. 1) then
-        call getvtx(moclef, 'DEFORMATION', k, iarg, 1,&
-                    defo, n1)
+        call getvtx(moclef, 'DEFORMATION', iocc=k, scal=defo, nbret=n1)
         ncomel=ncomel+1
         lcomel(ncomel)=defo
     endif

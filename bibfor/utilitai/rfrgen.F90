@@ -1,13 +1,8 @@
 subroutine rfrgen(trange)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
@@ -15,6 +10,10 @@ subroutine rfrgen(trange)
 #include "asterfort/foattr.h"
 #include "asterfort/foimpr.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -40,6 +39,7 @@ subroutine rfrgen(trange)
 #include "asterfort/u2mess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: trange
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -95,10 +95,8 @@ subroutine rfrgen(trange)
     call gettco(trange, tysd)
 ! TRAITEMENT DU MODE_GENE
     if (tysd .eq. 'MODE_GENE') then
-        call getvtx(' ', 'NOM_PARA_RESU', 1, iarg, 1,&
-                    k8b, n1)
-        call getvis(' ', 'NUME_CMP_GENE', 1, iarg, 1,&
-                    ibid, n2)
+        call getvtx(' ', 'NOM_PARA_RESU', scal=k8b, nbret=n1)
+        call getvis(' ', 'NUME_CMP_GENE', scal=ibid, nbret=n2)
         if ((n1+n2) .ne. 0) then
             call rfmge1(trange)
         else
@@ -117,24 +115,17 @@ subroutine rfrgen(trange)
     interp(2) = 'NON '
     intres = 'NON '
 !
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERP_NUME', 0, iarg, 1,&
-                intres, n1)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 2,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERP_NUME', scal=intres, nbret=n1)
+    call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n1)
     if (n1 .eq. 1) interp(2) = interp(1)
 !
     noeud = ' '
     cmp = ' '
-    call getvtx(' ', 'NOEUD', 0, iarg, 1,&
-                noeud, n1)
-    call getvtx(' ', 'NOM_CMP', 0, iarg, 1,&
-                cmp, n2)
-    call getvtx(' ', 'NOM_CHAM', 0, iarg, 1,&
-                nomcha, n3)
+    call getvtx(' ', 'NOEUD', scal=noeud, nbret=n1)
+    call getvtx(' ', 'NOM_CMP', scal=cmp, nbret=n2)
+    call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=n3)
 !
     call jeexin(resu//'.'//nomcha(1:4), iret)
     if (iret .eq. 0) then
@@ -209,8 +200,7 @@ subroutine rfrgen(trange)
     else
         call jeveuo(resu//'.DESC', 'L', ldesc)
         nbmode = zi(ldesc+1)
-        call getvis(' ', 'NUME_CMP_GENE', 1, iarg, 1,&
-                    numcmp, n1)
+        call getvis(' ', 'NUME_CMP_GENE', scal=numcmp, nbret=n1)
         if (n1 .ne. 0) then
             if (numcmp .gt. nbmode) call u2mess('F', 'UTILITAI4_14')
             call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
@@ -233,8 +223,10 @@ subroutine rfrgen(trange)
 42              continue
             endif
         else
-            call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid, basemo, iret)
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid, matras, iret)
+            call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid,&
+                        basemo, iret)
+            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
+                        matras, iret)
             nomsy = 'DEPL'
 !
 !
@@ -253,7 +245,8 @@ subroutine rfrgen(trange)
                 call dismoi('F', 'NOM_MAILLA', matras, 'MATR_ASSE', ibid,&
                             noma, ie)
             else
-                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid, nume, iret)
+                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                            nume, iret)
                 call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
                             noma, ie)
                 call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&
@@ -263,8 +256,7 @@ subroutine rfrgen(trange)
                             'R', zr( idbase), cbid)
             endif
 !
-            call getvtx(' ', 'GROUP_NO', 0, iarg, 1,&
-                        nogno, ngn)
+            call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
             if (ngn .ne. 0) then
                 call jenonu(jexnom(noma//'.GROUPENO', nogno), ign2)
                 if (ign2 .le. 0) call u2mesk('F', 'ELEMENTS_67', 1, nogno)
@@ -288,8 +280,7 @@ subroutine rfrgen(trange)
 !
 !        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
             nfonct = 0
-            call getvid(' ', 'ACCE_MONO_APPUI', 1, iarg, 1,&
-                        fonct, nfonct)
+            call getvid(' ', 'ACCE_MONO_APPUI', scal=fonct, nbret=nfonct)
             if (nfonct .ne. 0) then
                 if (nomcha(1:4) .ne. 'ACCE') then
 !           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
@@ -327,10 +318,8 @@ subroutine rfrgen(trange)
             monmot(1) = 'NON'
             monmot(2) = 'NON'
             nonmot = 'NON'
-            call getvtx(' ', 'MULT_APPUI', 1, iarg, 1,&
-                        monmot(1), n1)
-            call getvtx(' ', 'CORR_STAT', 1, iarg, 1,&
-                        monmot(2), n2)
+            call getvtx(' ', 'MULT_APPUI', scal=monmot(1), nbret=n1)
+            call getvtx(' ', 'CORR_STAT', scal=monmot(2), nbret=n2)
             if (monmot(1) .eq. 'OUI' .or. monmot(2) .eq. 'OUI') nonmot= 'OUI'
             if (nonmot(1:3) .eq. 'OUI') then
                 call jeveuo(resu//'.F'//nomcha(1:3), 'L', jfon)

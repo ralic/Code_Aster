@@ -43,13 +43,13 @@ subroutine majou(model, modmec, solveu, num, nu,&
 !     IN: I: NDBLE: INDICATEUR DE RECHERCHE DE NOEUDS DOUBLES
 !---------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvis.h"
 #include "asterfort/alimrs.h"
 #include "asterfort/calflu.h"
 #include "asterfort/chnucn.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -168,13 +168,11 @@ subroutine majou(model, modmec, solveu, num, nu,&
 !
 ! RECUPERATION DES MODES SELECTIONNES
 !
-    call getvis(' ', 'NUME_MODE_MECA', 0, iarg, 0,&
-                sel, n15)
+    call getvis(' ', 'NUME_MODE_MECA', nbval=0, nbret=n15)
     nbsel=-1*n15
     if (nbsel .gt. 0) then
         call wkvect(tempor, 'V V I', nbsel, idsel)
-        call getvis(' ', 'NUME_MODE_MECA', 0, iarg, nbsel,&
-                    zi(idsel), n16)
+        call getvis(' ', 'NUME_MODE_MECA', nbval=nbsel, vect=zi(idsel), nbret=n16)
     endif
 !
 ! VERIFICATION QUE LES NUMEROS DES MODES DONNES PAR L'USER

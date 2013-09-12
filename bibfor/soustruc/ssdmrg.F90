@@ -19,11 +19,10 @@ subroutine ssdmrg(mag)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -34,6 +33,7 @@ subroutine ssdmrg(mag)
 #include "asterfort/ssdmu1.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -80,8 +80,7 @@ subroutine ssdmrg(mag)
 !
 !     -- ON RECUPERE LA LISTE DES MAILLES A TRAITER :
 !     -----------------------------------------------
-    call getvtx('RECO_GLOBAL', 'TOUT', iocc, iarg, 1,&
-                kbid, n1)
+    call getvtx('RECO_GLOBAL', 'TOUT', iocc=iocc, scal=kbid, nbret=n1)
     if (n1 .eq. 1) then
         nbsmar= nbsma
         do 3, i=1,nbsmar
@@ -98,10 +97,8 @@ subroutine ssdmrg(mag)
  4      continue
     endif
 !
-    call getvr8('RECO_GLOBAL', 'PRECISION', iocc, iarg, 1,&
-                prec, n1)
-    call getvtx('RECO_GLOBAL', 'CRITERE', iocc, iarg, 1,&
-                crit, n1)
+    call getvr8('RECO_GLOBAL', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+    call getvtx('RECO_GLOBAL', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
     do 5, i=1,nbsmar
     isma=zi(ialiis-1+i)

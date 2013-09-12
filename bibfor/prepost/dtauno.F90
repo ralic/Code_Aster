@@ -21,9 +21,6 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
 #include "asterc/r8pi.h"
@@ -31,6 +28,8 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 #include "asterfort/carces.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedisp.h"
@@ -46,6 +45,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
+!
     integer :: jrwork, nbnot, lisnoe(nbnot), nbordr, nnoini, nbnop
     integer :: tspaq, ordini
     logical :: post
@@ -143,13 +143,11 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
 ! RECUPERATION DU COEFFICIENT DE PRE-ECROUISSAGE DONNE PAR L'UTILISATEUR
 !
-        call getvr8(' ', 'COEF_PREECROU', 1, iarg, 1,&
-                    coepre, iret)
+        call getvr8(' ', 'COEF_PREECROU', scal=coepre, nbret=iret)
 !
 ! RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 !
-        call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                    chmat1, iret)
+        call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
         chmat = chmat1//'.CHAMP_MAT'
         cesmat = '&&DTAUNO.CESMAT'
         call carces(chmat, 'ELEM', ' ', 'V', cesmat,&

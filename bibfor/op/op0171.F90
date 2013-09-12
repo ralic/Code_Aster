@@ -25,17 +25,16 @@ subroutine op0171()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/cresol.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -65,6 +64,7 @@ subroutine op0171()
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     logical :: matcst, coecst, prem, reasmt, reasvt
     integer :: parcri(9), iifm, jlagpp, jlagpm, jlagp, jinst
     integer :: ibid, k, neq, iret
@@ -152,16 +152,12 @@ subroutine op0171()
     nomcvg = 'CONVERGENCE'
     call getfac(nomcvg, iocc)
     if (iocc .eq. 1) then
-        call getvr8(nomcvg, 'CRIT_TEMP_RELA', 1, iarg, 1,&
-                    parcrr(4), parcri(4))
-        call getvr8(nomcvg, 'CRIT_ENTH_RELA', 1, iarg, 1,&
-                    parcrr(6), parcri(6))
+        call getvr8(nomcvg, 'CRIT_TEMP_RELA', iocc=1, scal=parcrr(4), nbret=parcri(4))
+        call getvr8(nomcvg, 'CRIT_ENTH_RELA', iocc=1, scal=parcrr(6), nbret=parcri(6))
 !
-        call getvis(nomcvg, 'ITER_GLOB_MAXI', 1, iarg, 1,&
-                    parcri(1), n1)
+        call getvis(nomcvg, 'ITER_GLOB_MAXI', iocc=1, scal=parcri(1), nbret=n1)
 !
-        call getvtx(nomcvg, 'ARRET', 1, iarg, 1,&
-                    k8bid, n1)
+        call getvtx(nomcvg, 'ARRET', iocc=1, scal=k8bid, nbret=n1)
         parcri(9) = 0
         if (n1 .gt. 0) then
             if (k8bid .eq. 'NON') then
@@ -187,11 +183,9 @@ subroutine op0171()
     call vtcreb(vtemp, numedd, 'V', 'R', neq)
 !
 !
-    call getvid('ETAT_INIT', 'EVOL_THER', 1, iarg, 1,&
-                tempev, n1)
+    call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=tempev, nbret=n1)
     if (n1 .gt. 0) then
-        call getvis('ETAT_INIT', 'NUME_ORDRE', 1, iarg, 1,&
-                    num, n2)
+        call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=num, nbret=n2)
         if (n2 .le. 0) then
             ASSERT(.false.)
         else

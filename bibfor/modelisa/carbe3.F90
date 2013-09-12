@@ -17,16 +17,15 @@ subroutine carbe3(charge)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
-#include "asterfort/assert.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -46,6 +45,7 @@ subroutine carbe3(charge)
 #include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: charge
 !
 !     TRAITER LE MOT CLE LIAISON_RBE3 DE AFFE_CHAR_MECA
@@ -148,8 +148,8 @@ subroutine carbe3(charge)
     maxesc = 0
     do idxrbe = 1, nbrbe3
 !
-        call getvtx(motfac, 'GROUP_NO_ESCL', idxrbe, iarg, maxles,&
-                    zk24(jlises), nbgrou)
+        call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=maxles, vect=zk24(jlises),&
+                    nbret=nbgrou)
         if (nbgrou .ne. 0) then
             do idxgro = 1, nbgrou
                 call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbnoeu)
@@ -159,8 +159,7 @@ subroutine carbe3(charge)
                 maxesc = max(maxesc, nbnoeu)
             enddo
         else
-            call getvtx(motfac, 'NOEUD_ESCL', idxrbe, iarg, 0,&
-                        k8bid, nbnoeu)
+            call getvtx(motfac, 'NOEUD_ESCL', iocc=idxrbe, nbval=0, nbret=nbnoeu)
             nbnoeu = -nbnoeu
             maxesc = max(maxesc, nbnoeu)
         endif
@@ -195,13 +194,12 @@ subroutine carbe3(charge)
 !
 !     BOUCLE SUR LES RELATIONS RBE3
 !     -----------------------------------
-    do  idxrbe = 1, nbrbe3
+    do idxrbe = 1, nbrbe3
         if (niv .eq. 2) then
             write(ifm,*) 'INDEX RELATION RBE3 : ',idxrbe
         endif
 !
-        call getvtx(motfac, 'GROUP_NO_MAIT', idxrbe, iarg, 0,&
-                    k8bid, nbent)
+        call getvtx(motfac, 'GROUP_NO_MAIT', iocc=idxrbe, nbval=0, nbret=nbent)
         nbent = -nbent
         if (nbent .ne. 0) then
             call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_MAIT', idxrbe,&
@@ -215,8 +213,7 @@ subroutine carbe3(charge)
             call jenuno(jexnum(noeuma, zi(jnogro-1+1)), noemai)
         endif
 !
-        call getvtx(motfac, 'NOEUD_MAIT', idxrbe, iarg, 0,&
-                    k8bid, nbent)
+        call getvtx(motfac, 'NOEUD_MAIT', iocc=idxrbe, nbval=0, nbret=nbent)
         if (nbent .ne. 0) then
             call getvem(noma, 'NOEUD', motfac, 'NOEUD_MAIT', idxrbe,&
                         iarg, 1, noemai, nbent)
@@ -231,14 +228,14 @@ subroutine carbe3(charge)
             noemai
         endif
 !
-        call getvtx(motfac, 'DDL_MAIT', idxrbe, iarg, 6,&
-                    ddlmac, nbdlma)
+        call getvtx(motfac, 'DDL_MAIT', iocc=idxrbe, nbval=6, vect=ddlmac,&
+                    nbret=nbdlma)
 !
-        do  idxlig = 1, 6
+        do idxlig = 1, 6
             ddlmai(idxlig) = .false.
         enddo
 !
-        do  idxlig = 1, nbdlma
+        do idxlig = 1, nbdlma
             ddlcod = ddlmac(idxlig)(1:lxlgut(ddlmac(idxlig)))
             if (ddltrr(1) .eq. ddlcod) then
                 ddlmai(1) = .true.
@@ -255,19 +252,18 @@ subroutine carbe3(charge)
             endif
         enddo
 !
-        call getvtx(motfac, 'GROUP_NO_ESCL', idxrbe, iarg, 0,&
-                    k8bid, nbgrou)
+        call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=0, nbret=nbgrou)
         if (nbgrou .ne. 0) then
             nbgrou = -nbgrou
             nbnoeu = 0
-            call getvtx(motfac, 'GROUP_NO_ESCL', idxrbe, iarg, nbgrou,&
-                        zk24(jlises), nbent)
+            call getvtx(motfac, 'GROUP_NO_ESCL', iocc=idxrbe, nbval=nbgrou, vect=zk24(jlises),&
+                        nbret=nbent)
             cntnoe = 0
-            do  idxgro = 1, nbgrou
+            do idxgro = 1, nbgrou
                 call jeveuo(jexnom(grouno, zk24(jlises-1+idxgro)), 'L', jnogro)
                 call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbent)
                 nbnoeu = nbnoeu + nbent
-                do  idxnoe = 1, nbent
+                do idxnoe = 1, nbent
                     cntnoe = cntnoe + 1
                     call jenuno(jexnum(noeuma, zi(jnogro-1+idxnoe)), nomnoe)
                     zk8(jnoesc+cntnoe-1) = nomnoe
@@ -275,12 +271,11 @@ subroutine carbe3(charge)
             enddo
         endif
 !
-        call getvtx(motfac, 'NOEUD_ESCL', idxrbe, iarg, 0,&
-                    k8bid, nbent)
+        call getvtx(motfac, 'NOEUD_ESCL', iocc=idxrbe, nbval=0, nbret=nbent)
         if (nbent .ne. 0) then
             nbnoeu = -nbent
-            call getvtx(motfac, 'NOEUD_ESCL', idxrbe, iarg, nbnoeu,&
-                        zk8(jnoesc), nbent)
+            call getvtx(motfac, 'NOEUD_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zk8(jnoesc),&
+                        nbret=nbent)
         endif
 !
         if (niv .eq. 2) then
@@ -288,8 +283,8 @@ subroutine carbe3(charge)
             write(ifm,*) (zk8(jnoesc+idxlig-1),idxlig=1,nbnoeu)
         endif
 !
-        call getvtx(motfac, 'DDL_ESCL', idxrbe, iarg, nbnoeu,&
-                    zk24(jddles), nbddl)
+        call getvtx(motfac, 'DDL_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zk24(jddles),&
+                    nbret=nbddl)
 !
         if (nbddl .ne. 1 .and. nbddl .ne. nbnoeu) then
             vali(1) = nbddl
@@ -300,7 +295,7 @@ subroutine carbe3(charge)
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR EXTRAIRE LES DDLS
 !       -----------------------------------------------------
         nbdles = 0
-        do  idxnoe = 1, nbnoeu
+        do idxnoe = 1, nbnoeu
             if (nbddl .gt. 1 .or. idxnoe .eq. 1) then
                 if (nbddl .eq. 1) then
                     ddlstr = zk24(jddles-1+1)
@@ -310,12 +305,12 @@ subroutine carbe3(charge)
 !
 !           EXTRACTION DDL_ESCL
 !           -------------------------------------------------------
-                do  idxlig = 1, 6
+                do idxlig = 1, 6
                     ddlesc(idxlig) = .false.
                 enddo
 !
                 idxcol = 1
-                do  idxlig = 1, lxlgut(ddlstr)
+                do idxlig = 1, lxlgut(ddlstr)
                     if (ddlstr(idxlig:idxlig) .eq. '-') then
                         ddlcod = ddlstr(idxcol:idxlig-1)
                         idxcol = idxlig + 1
@@ -343,9 +338,9 @@ subroutine carbe3(charge)
                             call u2mesk('F', 'MODELISA10_11', 1, ddlcod)
                         endif
                     endif
-                 enddo
+                enddo
             endif
-            do  idxlig = 1, 6
+            do idxlig = 1, 6
                 if (ddlesc(idxlig)) then
                     nbdles = nbdles + 1
                     zk8(jnorel-1+nbdles) = zk8(jnoesc-1+idxnoe)
@@ -388,8 +383,8 @@ subroutine carbe3(charge)
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR CALCULER W
 !       -------------------------------------------------------
         call wkvect('&&CARBE3.W', 'V V R', nbdles*nbdles, jw)
-        call getvr8(motfac, 'COEF_ESCL', idxrbe, iarg, nbnoeu,&
-                    zr(jcofes), nbcfes)
+        call getvr8(motfac, 'COEF_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zr(jcofes),&
+                    nbret=nbcfes)
         if (nbcfes .lt. 0) then
             nbcfes = -nbcfes
         endif
@@ -436,10 +431,10 @@ subroutine carbe3(charge)
                                 zr(jw-1+idxvec) = cofesc * lcsqua
                             endif
                         endif
-                     enddo
+                    enddo
                     frstco = .false.
                 endif
-             enddo
+            enddo
             inilig = inilig + cntlig
         enddo
 !
@@ -500,9 +495,9 @@ subroutine carbe3(charge)
                             endif
                         endif
                     endif
-                 enddo
+                enddo
                 frstco = .false.
-             enddo
+            enddo
             inilig = inilig + cntlig
         enddo
 !
@@ -570,12 +565,10 @@ subroutine carbe3(charge)
 ! --- SI OUI TYPLAG = '22'
 ! --- SI NON TYPLAG = '12'
 !
-        call getvtx(motfac, 'NUME_LAGR', idxrbe, iarg, 0,&
-                    k8bid, nbent)
+        call getvtx(motfac, 'NUME_LAGR', iocc=idxrbe, nbval=0, nbret=nbent)
 !
         if (nbent .ne. 0) then
-            call getvtx(motfac, 'NUME_LAGR', idxrbe, iarg, 1,&
-                        numlag, nbent)
+            call getvtx(motfac, 'NUME_LAGR', iocc=idxrbe, scal=numlag, nbret=nbent)
             if (numlag(1:5) .eq. 'APRES') then
                 typlag = '22'
             else
@@ -622,6 +615,6 @@ subroutine carbe3(charge)
 !       CALL JXVERI(' ')
 !     ENDIF
 !
-999 continue
+999  continue
 !
 end subroutine

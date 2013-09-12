@@ -18,10 +18,10 @@ subroutine caraun(char, motfac, nzocu, nbgdcu, coefcu,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -117,8 +117,7 @@ subroutine caraun(char, motfac, nzocu, nbgdcu, coefcu,&
     coefcu = '&&CARAUN.COEFCU'
     call wkvect(coefcu, 'V V K8', nzocu, jcoef)
     do 1001 izone = 1, nzocu
-        call getvid(motfac, 'COEF_IMPO', izone, iarg, 1,&
-                    ccoef, noc)
+        call getvid(motfac, 'COEF_IMPO', iocc=izone, scal=ccoef, nbret=noc)
         zk8(jcoef-1+izone) = ccoef
 1001  end do
 !
@@ -129,10 +128,8 @@ subroutine caraun(char, motfac, nzocu, nbgdcu, coefcu,&
     zi(jnbgd) = 1
     ntcmp = 0
     do 1002 izone = 1, nzocu
-        call getvtx(motfac, 'NOM_CMP', izone, iarg, 1,&
-                    k8bid, nbcmp)
-        call getvid(motfac, 'COEF_MULT', izone, iarg, 1,&
-                    k8bid, nbcmul)
+        call getvtx(motfac, 'NOM_CMP', iocc=izone, scal=k8bid, nbret=nbcmp)
+        call getvid(motfac, 'COEF_MULT', iocc=izone, scal=k8bid, nbret=nbcmul)
         if (nbcmp .ne. nbcmul) then
             call u2mess('F', 'UNILATER_42')
         endif
@@ -154,10 +151,10 @@ subroutine caraun(char, motfac, nzocu, nbgdcu, coefcu,&
 !
     do 2000 izone = 1, nzocu
         nbcmp = zi(jnbgd+izone) - zi(jnbgd+izone-1)
-        call getvtx(motfac, 'NOM_CMP', izone, iarg, nbcmp,&
-                    cmpgd, noc)
-        call getvid(motfac, 'COEF_MULT', izone, iarg, nbcmp,&
-                    ccmult, noc)
+        call getvtx(motfac, 'NOM_CMP', iocc=izone, nbval=nbcmp, vect=cmpgd,&
+                    nbret=noc)
+        call getvid(motfac, 'COEF_MULT', iocc=izone, nbval=nbcmp, vect=ccmult,&
+                    nbret=noc)
         do 11 icmp = 1, nbcmp
             zk8(jcmpg-1+zi(jnbgd+izone-1)+icmp-1) = cmpgd(icmp)
             zk8(jmult-1+zi(jnbgd+izone-1)+icmp-1) = ccmult(icmp)

@@ -2,14 +2,13 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
                   corrm, iocc)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -27,6 +26,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 #include "asterfort/rsutnu.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma1, noma2, resu1, resu2
     character(len=24) :: corrn, corrm
     integer :: iocc
@@ -171,10 +171,8 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !
 !     2- ALLOCATION DE RESU2 :
 !     ------------------------------------
-    call getvr8('RESU', 'PRECISION', 1, iarg, 1,&
-                prec, n1)
-    call getvtx('RESU', 'CRITERE', 1, iarg, 1,&
-                crit, n1)
+    call getvr8('RESU', 'PRECISION', iocc=1, scal=prec, nbret=n1)
+    call getvtx('RESU', 'CRITERE', iocc=1, scal=crit, nbret=n1)
     call rsutnu(resu1, 'RESU', iocc, '&&RDTRES.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
     if (iret .ne. 0) then

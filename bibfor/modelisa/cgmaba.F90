@@ -41,11 +41,10 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -58,6 +57,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! -----  ARGUMENTS
     character(len=*) :: mofaz, nomaz, lismaz
@@ -114,8 +114,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
 !     --------------------------------------------------
-    call getvtx(motfac, 'CRIT_NOEUD', iocc, iarg, 1,&
-                selec, ibid)
+    call getvtx(motfac, 'CRIT_NOEUD', iocc=iocc, scal=selec, nbret=ibid)
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------
@@ -141,13 +140,11 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DE LA DEMI-LARGEUR DE LA BANDE :
 !     -------------------------------------------
-    call getvr8(motfac, 'DIST', iocc, iarg, 0,&
-                dist, ndist)
+    call getvr8(motfac, 'DIST', iocc=iocc, nbval=0, nbret=ndist)
     if (ndist .eq. 0) then
         call u2mess('F', 'MODELISA3_67')
     else
-        call getvr8(motfac, 'DIST', iocc, iarg, 1,&
-                    dist, nb)
+        call getvr8(motfac, 'DIST', iocc=iocc, scal=dist, nbret=nb)
         if (dist .le. zero) then
             call u2mess('F', 'MODELISA3_68')
         endif
@@ -156,11 +153,9 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 ! --- RECUPERATION DE LA DIRECTION PERPENDICULAIRE AU PLAN MILIEU
 ! --- DE LA BANDE :
 !     -----------
-    call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, 0,&
-                r8bid, nangle)
+    call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangle)
     if (nangle .eq. 0) then
-        call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, 0,&
-                    r8bid, nvect)
+        call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
             call u2mess('F', 'MODELISA3_69')
         else
@@ -170,16 +165,16 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
             else if (ndim.eq.2.and.nvect.ne.2) then
                 call u2mess('F', 'MODELISA3_71')
             else
-                call getvr8(motfac, 'VECT_NORMALE', iocc, iarg, nvect,&
-                            vecnor, nv)
+                call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
+                            nbret=nv)
             endif
         endif
     else
         nangle = -nangle
         ndim1 = ndim - 1
         nangle = min (nangle,ndim1)
-        call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, nangle,&
-                    angle, nv)
+        call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
+                    nbret=nv)
         if (abs(nv) .ne. ndim1) then
             valk = motfac
             vali (1) = iocc

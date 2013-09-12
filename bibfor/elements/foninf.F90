@@ -2,8 +2,8 @@ subroutine foninf(resu, typfon)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -43,13 +43,11 @@ subroutine foninf(resu, typfon)
     call jemarq()
 !
 !     RECUPERATION DU MOT-CLE SYME
-    call getvtx(' ', 'SYME', 0, iarg, 1,&
-                syme, ibid)
+    call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
     ASSERT(syme.eq.'OUI'.or.syme.eq.'NON')
 !
 !     RECUPERATION DU MOT-CLE CONFIG_INIT
-    call getvtx(' ', 'CONFIG_INIT', 0, iarg, 1,&
-                confin, ibid)
+    call getvtx(' ', 'CONFIG_INIT', scal=confin, nbret=ibid)
     ASSERT(confin.eq.'DECOLLEE'.or.confin.eq.'COLLEE')
 !
 !     CREATION DE L'OBJET .INFO DANS LA SD FOND_FISS

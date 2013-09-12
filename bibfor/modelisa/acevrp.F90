@@ -1,7 +1,6 @@
 subroutine acevrp(nbocc, noma, noemax, noemaf)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/getvem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -11,6 +10,7 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc, noemax
     character(len=8) :: noma
 ! ----------------------------------------------------------------------

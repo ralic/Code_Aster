@@ -1,5 +1,5 @@
 subroutine op0005()
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,8 @@ subroutine op0005()
 #include "asterc/getmat.h"
 #include "asterc/getmjm.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/aniver.h"
+#include "asterfort/getvid.h"
 #include "asterfort/indk16.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -56,7 +56,7 @@ subroutine op0005()
     integer :: ind, ifm, i, k, nbrcme
     integer :: nbr, nbc, nbk, nbk2
     integer :: nbmati, jnorci, krc
-    character(len=8) ::  matout, matin, schout
+    character(len=8) :: matout, matin, schout
     character(len=16) :: nomrc, typmat, materi, k16bid
     character(len=19) :: noobrc
     character(len=24) :: valk(4)
@@ -76,8 +76,7 @@ subroutine op0005()
 !
     matin = ' '
     nbmati = 0
-    call getvid(' ', 'MATER', 1, iarg, 1,&
-                matin, n1)
+    call getvid(' ', 'MATER', scal=matin, nbret=n1)
     if (n1 .ne. 0) then
 !
 ! ------ ON VERIFIE QUE L'ON A QUE DES NOUVEAUX MATERIAUX
@@ -141,8 +140,8 @@ subroutine op0005()
         call getmjm(nomrc, 1, 0, k16bid, k16bid,&
                     nbobm)
         nbobm = - nbobm
-        if ( nbobm .eq. 0 ) then
-          call u2mesk('F','MODELISA9_80',1,nomrc)
+        if (nbobm .eq. 0) then
+            call u2mesk('F', 'MODELISA9_80', 1, nomrc)
         endif
 !
         if (nomrc .eq. 'THER_NL') nbobm = nbobm + 1

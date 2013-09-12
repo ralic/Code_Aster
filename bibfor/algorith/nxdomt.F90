@@ -17,9 +17,9 @@ subroutine nxdomt(parmei, parmer)
 ! ======================================================================
     implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/u2mess.h"
     integer :: parmei(2)
     real(kind=8) :: parmer(2)
@@ -39,8 +39,7 @@ subroutine nxdomt(parmei, parmer)
     integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
-    call getvr8(' ', 'PARM_THETA', 0, iarg, 1,&
-                theta, n1)
+    call getvr8(' ', 'PARM_THETA', scal=theta, nbret=n1)
     if ((theta.lt.0.0d0) .or. (theta.gt.1.0d0)) then
         call u2mess('F', 'ALGORITH9_4')
     endif
@@ -48,14 +47,11 @@ subroutine nxdomt(parmei, parmer)
 !
     call getfac('NEWTON', iocc)
     if (iocc .eq. 1) then
-        call getvis('NEWTON', 'REAC_ITER', 1, iarg, 1,&
-                    parmei(1), n1)
+        call getvis('NEWTON', 'REAC_ITER', iocc=1, scal=parmei(1), nbret=n1)
         ASSERT(parmei(1).ge.0)
 !
-        call getvr8('NEWTON', 'RESI_LINE_RELA', 1, iarg, 1,&
-                    parmer(2), n1)
-        call getvis('NEWTON', 'ITER_LINE_MAXI', 1, iarg, 1,&
-                    parmei(2), n1)
+        call getvr8('NEWTON', 'RESI_LINE_RELA', iocc=1, scal=parmer(2), nbret=n1)
+        call getvis('NEWTON', 'ITER_LINE_MAXI', iocc=1, scal=parmei(2), nbret=n1)
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

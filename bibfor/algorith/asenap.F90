@@ -1,16 +1,15 @@
 subroutine asenap(masse)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -25,6 +24,7 @@ subroutine asenap(masse)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: masse
 !
 ! ======================================================================
@@ -93,8 +93,7 @@ subroutine asenap(masse)
                 nbocc)
 !
     do 10 iocc = 1, nbocc
-        call getvtx(motfac, 'TOUT', iocc, iarg, 0,&
-                    k8b, nt)
+        call getvtx(motfac, 'TOUT', iocc=iocc, nbval=0, nbret=nt)
         if (nt .ne. 0) then
             call getfac('DEPL_MULT_APPUI', ncas)
             if (ncas .lt. 2) then
@@ -104,13 +103,11 @@ subroutine asenap(masse)
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
             do 12 icas = 1, ncas
-                call getvis('DEPL_MULT_APPUI', 'NUME_CAS', icas, iarg, 1,&
-                            nucas, ibid)
+                call getvis('DEPL_MULT_APPUI', 'NUME_CAS', iocc=icas, scal=nucas, nbret=ibid)
                 zi(jcas+icas-1) = nucas
 12          continue
         else
-            call getvis(motfac, 'LIST_CAS', iocc, iarg, 0,&
-                        ibid, nc)
+            call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=0, nbret=nc)
             nc=-nc
             if (nc .lt. 2) then
                 call u2mess('F', 'SEISME_22')
@@ -118,8 +115,8 @@ subroutine asenap(masse)
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', nc)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
-            call getvis(motfac, 'LIST_CAS', iocc, iarg, nc,&
-                        zi(jcas), nc)
+            call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=nc, vect=zi(jcas),&
+                        nbret=nc)
             ncas =ncas+nc
         endif
 10  end do
@@ -131,8 +128,7 @@ subroutine asenap(masse)
     call wkvect('&&ASENAP.TYPE', 'V V I', nbocc, jtyp)
 !
     do 20 iocc = 1, nbocc
-        call getvtx(motfac, 'TYPE_COMBI', iocc, iarg, 1,&
-                    ctyp, nc)
+        call getvtx(motfac, 'TYPE_COMBI', iocc=iocc, scal=ctyp, nbret=nc)
         if (ctyp .eq. 'QUAD') zi(jtyp+iocc-1) = 1
         if (ctyp .eq. 'LINE') zi(jtyp+iocc-1) = 2
         if (ctyp .eq. 'ABS') zi(jtyp+iocc-1) = 3
@@ -161,15 +157,13 @@ subroutine asenap(masse)
 !
     mesnoe = '&&ASENAP.NOEUDS'
     do 30 icas = 1, nocas
-        call getvis(motfac, 'NUME_CAS', icas, iarg, 1,&
-                    nucas, nc)
+        call getvis(motfac, 'NUME_CAS', iocc=icas, scal=nucas, nbret=nc)
 !
 ! INITIALISATION DU DEPLACEMENT DE  NOEUD_REFE
 !
 !
 ! -- STOCKAGE MODE STATIQUE DU NUME_CAS TRAITE
-        call getvid(motfac, 'MODE_STAT', icas, iarg, 1,&
-                    stat, ns)
+        call getvid(motfac, 'MODE_STAT', iocc=icas, scal=stat, nbret=ns)
         zk8(jsta+icas-1)=stat
 ! -- STOCKAGE DES NOEUD
         knum = 'N       '
@@ -196,8 +190,7 @@ subroutine asenap(masse)
         zr(jdref+icas-1) = 0.0d0
         zr(jdref+icas+1-1) = 0.0d0
         zr(jdref+icas+2-1) = 0.0d0
-        call getvtx(motfac, 'NOEUD_REFE', icas, iarg, 1,&
-                    noref, iref)
+        call getvtx(motfac, 'NOEUD_REFE', iocc=icas, scal=noref, nbret=iref)
         if (iref .ne. 0) then
             call jenonu(jexnom(obj2, noref), ire1)
             if (ire1 .eq. 0) then
@@ -222,12 +215,9 @@ subroutine asenap(masse)
         do 36 ino = 1, 3*nbno
             zr(jdir+ino-1)= epsima
 36      continue
-        call getvr8(motfac, 'DX', icas, iarg, 1,&
-                    dx, nx)
-        call getvr8(motfac, 'DY', icas, iarg, 1,&
-                    dy, ny)
-        call getvr8(motfac, 'DZ', icas, iarg, 1,&
-                    dz, nz)
+        call getvr8(motfac, 'DX', iocc=icas, scal=dx, nbret=nx)
+        call getvr8(motfac, 'DY', iocc=icas, scal=dy, nbret=ny)
+        call getvr8(motfac, 'DZ', iocc=icas, scal=dz, nbret=nz)
 !
         do 38 ino = 1, nbno
             if (nx .ne. 0) zr(jdir+3*(ino-1))= dx

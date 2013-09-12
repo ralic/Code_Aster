@@ -20,13 +20,12 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -40,6 +39,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+!
     character(len=24) :: mate, carele
     character(len=19) :: sddyna, sddisc
 !
@@ -78,8 +78,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
     nompro ='OP0070'
 !
-    call getvid(' ', 'MODELE', 1, iarg, 1,&
-                mo, ibid)
+    call getvid(' ', 'MODELE', scal=mo, nbret=ibid)
 !
     ligrel=mo//'.MODELE'
 !
@@ -151,8 +150,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     endif
     10 end do
 !
-    call getvtx('SCHEMA_TEMPS', 'STOP_CFL', 1, iarg, 1,&
-                stocfl, n1)
+    call getvtx('SCHEMA_TEMPS', 'STOP_CFL', iocc=1, scal=stocfl, nbret=n1)
 !
 ! BOOPOS=TRUE SI L'ON A CALCULE DTCOU POUR AU MOINS UN ELEMENT
     if (boopos) then

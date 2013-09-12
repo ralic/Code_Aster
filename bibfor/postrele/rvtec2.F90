@@ -2,14 +2,13 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
                   nomnoe, nbcmp, nbpoin, docu, nomtab,&
                   iocc, xnovar, ncheff, i1, ioc,&
                   isd)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -24,6 +23,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 #include "asterfort/tbexip.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1, ioc, isd
     real(kind=8) :: releve(*), absc(*), coor(*)
     character(len=4) :: docu
@@ -87,11 +87,11 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     endif
     if (nbcmp2 .gt. 3000) call u2mess('F', 'POSTRELE_13')
 !
-    call getvtx('ACTION', 'INTITULE', iocc, iarg, 1, intitu, n1)
-    call getvid('ACTION', 'CHEMIN', iocc, iarg, 1, courbe, nc)
+    call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
+    call getvid('ACTION', 'CHEMIN', iocc=iocc, scal=courbe, nbret=nc)
 !
-    call getvr8('ACTION', 'PRECISION', iocc, iarg, 1, prec, n1)
-    call getvtx('ACTION', 'CRITERE', iocc, iarg, 1, crit, n1)
+    call getvr8('ACTION', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+    call getvtx('ACTION', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
     nomval = ncheff//'.VALACCE'
     nomacc = ncheff//'.TYPACCE'
@@ -194,7 +194,8 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
             nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
             call rsorac(nomres, 'NUME_MODE', zi(adrval+i1-1), 0.d0, k8b,&
-                        c16b, prec, crit, iord, 1, n1)
+                        c16b, prec, crit, iord, 1,&
+                        n1)
             ii = ii + 1
             valei(ii) = iord
             nbpar = nbpar + 1
@@ -205,7 +206,8 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
             nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
             call rsorac(nomres, 'INST', 0, zr(adrval + i1-1), k8b,&
-                        c16b, prec, crit, iord, 1, n1)
+                        c16b, prec, crit, iord, 1,&
+                        n1)
             ii = ii + 1
             valei(ii) = iord
             nbpar = nbpar + 1

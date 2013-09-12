@@ -5,13 +5,13 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                   coefpa, post, cudomx, nxm, nym,&
                   nzm)
 ! aslint: disable=W1306,W1504
-    implicit      none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/avcipr.h"
 #include "asterfort/avgrdo.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/vecnuv.h"
     integer :: nbordr, kwork, i, nbvec
     integer :: somnow, tdisp, tspaq
@@ -85,7 +85,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 ! ----------------------------------------------------------------------
     integer :: ncycl(nbvec), nbvec1, nval, ibid
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
-    integer ::jomin, jomax, jvmin, jvmax
+    integer :: jomin, jomax, jvmin, jvmax
     integer :: vnormx(2), ideb, ifin, n, k, dim, j, kp, nbp
     integer :: iarg, nbplan, vnorm(2)
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
@@ -105,17 +105,16 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 !
     method = 'RAINFLOW'
 !
-    call getvr8(' ', 'DELTA_OSCI', 1, iarg, 1,&
-                pseuil, nval)
+    call getvr8(' ', 'DELTA_OSCI', scal=pseuil, nbret=nval)
 !
 ! CONSTRUCTION DU VECTEUR NORMAL SUR UNE DEMI SPHERE
-
+!
 !
     call wkvect('&&AVPLCR.VECT_OMIN', 'V V I', nbvec*(nbordr+2), jomin)
     call wkvect('&&AVPLCR.VECT_OMAX', 'V V I', nbvec*(nbordr+2), jomax)
     call wkvect('&&AVPLCR.VECT_VMIN', 'V V R', nbvec*(nbordr+2), jvmin)
     call wkvect('&&AVPLCR.VECT_VMAX', 'V V R', nbvec*(nbordr+2), jvmax)
-
+!
     call avcipr(nbvec1, vectn, vectu, vectv, nbordr,&
                 kwork, somnow, vwork, tdisp, tspaq,&
                 i, nomcri, nomfor, fordef, fatsoc,&
@@ -533,12 +532,12 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         nzm(1) = nzm(2)
         cudomx = cudom2
     endif
-
+!
     call jedetr('&&AVPLCR.VECT_OMIN')
     call jedetr('&&AVPLCR.VECT_OMAX')
     call jedetr('&&AVPLCR.VECT_VMIN')
     call jedetr('&&AVPLCR.VECT_VMAX')
-
 !
-
+!
+!
 end subroutine

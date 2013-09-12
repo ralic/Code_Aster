@@ -1,5 +1,5 @@
 subroutine ops026()
-    implicit  none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,10 +20,10 @@ subroutine ops026()
 !    OPERATEUR DEFI_FICHIER
 !
 !     ------------------------------------------------------------------
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterc/putvir.h"
 #include "asterc/rmfile.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/u2mesk.h"
@@ -52,17 +52,12 @@ subroutine ops026()
     ktyp = 'A'
     fichie = ' '
 !
-    call getvtx(' ', 'ACTION', 1, iarg, 1,&
-                action, n1)
-    call getvtx(' ', 'FICHIER', 1, iarg, 1,&
-                fichie, nf)
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                unite, nu)
-    call getvtx(' ', 'ACCES', 1, iarg, 1,&
-                acces, n1)
+    call getvtx(' ', 'ACTION', scal=action, nbret=n1)
+    call getvtx(' ', 'FICHIER', scal=fichie, nbret=nf)
+    call getvis(' ', 'UNITE', scal=unite, nbret=nu)
+    call getvtx(' ', 'ACCES', scal=acces, nbret=n1)
     if (n1 .ne. 0) kacc = acces(1:1)
-    call getvtx(' ', 'TYPE', 1, iarg, 1,&
-                type, n1)
+    call getvtx(' ', 'TYPE', scal=type, nbret=n1)
     if (n1 .ne. 0) ktyp = type(1:1)
 !
     if (action .eq. 'LIBERER ') then

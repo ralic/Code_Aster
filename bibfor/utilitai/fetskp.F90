@@ -37,14 +37,15 @@ subroutine fetskp()
 #include "asterc/aplext.h"
 #include "asterc/fetsco.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterc/gtoptk.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/creaco.h"
 #include "asterfort/creagm.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -55,7 +56,6 @@ subroutine fetskp()
 #include "asterfort/jexnum.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/ulnume.h"
@@ -96,8 +96,7 @@ subroutine fetskp()
 !
 ! ------- ON RECUPERE LES DONNEES DU MAILLAGE OU DU MODELE
 !
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                ma, err)
+    call getvid(' ', 'MAILLAGE', scal=ma, nbret=err)
     if (err .eq. 0) then
         call u2mess('F', 'UTILITAI_78')
     endif
@@ -107,8 +106,7 @@ subroutine fetskp()
         call u2mess('F', 'UTILITAI_79')
     endif
     call wkvect('&&FETSKP.RENUM1', 'V V I', nbmato, renum1)
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                mod, err)
+    call getvid(' ', 'MODELE', scal=mod, nbret=err)
     if (err .eq. 0) then
         write(ifm,*)' -- AUCUN MODELE PRIS EN COMPTE'
         call wkvect('&&FETSKP.RENUM', 'V V I', nbmato, renum)
@@ -158,10 +156,8 @@ subroutine fetskp()
 !
 ! ------- ON RECUPERE LE NBRE DE SD ET LE PARTITONNEUR
 !
-    call getvis(' ', 'NB_PART', 0, iarg, 1,&
-                nbpart, err)
-    call getvtx(' ', 'METHODE', 0, iarg, 1,&
-                meth, err)
+    call getvis(' ', 'NB_PART', scal=nbpart, nbret=err)
+    call getvtx(' ', 'METHODE', scal=meth, nbret=err)
 !
 ! -------  UTILISATION DE CONTRAINTES
 !
@@ -176,8 +172,7 @@ subroutine fetskp()
 !
     call getfac('GROUPAGE', nocc)
     do 116 iocc = 1, nocc
-        call getvtx('GROUPAGE', 'GROUP_MA', iocc, iarg, 1,&
-                    grpema, err)
+        call getvtx('GROUPAGE', 'GROUP_MA', iocc=iocc, scal=grpema, nbret=err)
         call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
         nbma=0
         do 118 j = 1, nbre
@@ -208,8 +203,7 @@ subroutine fetskp()
 !
     call getfac('POIDS_MAILLES', nocc)
     do 117 iocc = 1, nocc
-        call getvtx('POIDS_MAILLES', 'GROUP_MA', iocc, iarg, 1,&
-                    grpema, err)
+        call getvtx('POIDS_MAILLES', 'GROUP_MA', iocc=iocc, scal=grpema, nbret=err)
         call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
         nbma=0
         do 207 j = 1, nbre
@@ -222,8 +216,7 @@ subroutine fetskp()
         if (nbma .eq. 0) then
             call u2mess('F', 'UTILITAI_80')
         endif
-        call getvis('POIDS_MAILLES', 'POIDS', iocc, iarg, 1,&
-                    poids, err)
+        call getvis('POIDS_MAILLES', 'POIDS', iocc=iocc, scal=poids, nbret=err)
         write(ifm,*)'  - POIDS_MAILLES :',grpema
         write(ifm,*)'       AVEC UN POIDS DE : ',poids
         write(ifm,*) ' '
@@ -357,8 +350,7 @@ subroutine fetskp()
         call lxcadr(ktmp2)
         jnom(2)='fort.'//ktmp2
         jnom(3)=ktmp
-        call getvtx(' ', 'LOGICIEL', 0, iarg, 1,&
-                    rep, err)
+        call getvtx(' ', 'LOGICIEL', scal=rep, nbret=err)
         if (err .eq. 0) then
             call gtoptk('repout', rep, iret)
             if (iret .ne. 0) then
@@ -390,8 +382,7 @@ subroutine fetskp()
 !
     sdb=0
     if (bord .eq. 'OUI     ') then
-        call getvtx('        ', 'NOM_GROUP_MA_BORD', 0, iarg, 1,&
-                    sdbord, err)
+        call getvtx('        ', 'NOM_GROUP_MA_BORD', scal=sdbord, nbret=err)
         if (err .ne. 0) then
             nbpart=2*nbpart
             sdb=1
@@ -482,8 +473,7 @@ subroutine fetskp()
 !
 ! ------- VERIFICATION DE LA CONNEXITE
 !
-    call getvtx(' ', 'CORRECTION_CONNEX', 0, iarg, 1,&
-                verif, err)
+    call getvtx(' ', 'CORRECTION_CONNEX', scal=verif, nbret=err)
     val=0
     if (verif .eq. 'OUI     ') then
         call verico(nbmato, nbpart, val)

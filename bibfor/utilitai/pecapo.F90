@@ -1,10 +1,11 @@
 subroutine pecapo(resu, modele, cara, nh)
-    implicit   none
+    implicit none
 #include "jeveux.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -12,7 +13,6 @@ subroutine pecapo(resu, modele, cara, nh)
 #include "asterfort/pecap1.h"
 #include "asterfort/pecap2.h"
 #include "asterfort/pecap3.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
@@ -77,11 +77,9 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- RECUPERATION DE LA TABLE A COMPLETER ISSUE DE L'OPTION
 ! --- CARA_GEOM DE POST_ELEM :
 !     ----------------------
-    call getvid('CARA_POUTRE', 'CARA_GEOM', 1, iarg, 0,&
-                k8b, ntab)
+    call getvid('CARA_POUTRE', 'CARA_GEOM', iocc=1, nbval=0, nbret=ntab)
     if (ntab .ne. 0) then
-        call getvid('CARA_POUTRE', 'CARA_GEOM', 1, iarg, 1,&
-                    nomtab, ntab)
+        call getvid('CARA_POUTRE', 'CARA_GEOM', iocc=1, scal=nomtab, nbret=ntab)
         call tbcopi('G', nomtab, resu)
     else
         call u2mess('F', 'UTILITAI3_59')
@@ -106,22 +104,17 @@ subroutine pecapo(resu, modele, cara, nh)
 !
 !     INSERTION DU PARAMETRE 'RT' DANS LA TABLE 'RESU'
     call tbajpa(resu, 1, prt, 'R')
-    call getvtx('CARA_POUTRE', 'TOUT', 1, iarg, 0,&
-                k8b, nt)
+    call getvtx('CARA_POUTRE', 'TOUT', iocc=1, nbval=0, nbret=nt)
     if (nt .eq. 0) then
-        call getvtx('CARA_POUTRE', 'GROUP_MA', 1, iarg, 0,&
-                    k8b, ngm)
+        call getvtx('CARA_POUTRE', 'GROUP_MA', iocc=1, nbval=0, nbret=ngm)
         if (ngm .ne. 0) then
             ngm = 1
-            call getvtx('CARA_POUTRE', 'GROUP_MA', 1, iarg, ngm,&
-                        nogrma, ngm)
+            call getvtx('CARA_POUTRE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma,&
+                        nbret=ngm)
             noma=nogrma
-            call getvr8('CARA_POUTRE', 'LONGUEUR', 1, iarg, 1,&
-                        hh, n1)
-            call getvtx('CARA_POUTRE', 'LIAISON', 1, iarg, 1,&
-                        ll, n1)
-            call getvid('CARA_POUTRE', 'MATERIAU', 1, iarg, 1,&
-                        mater, n1)
+            call getvr8('CARA_POUTRE', 'LONGUEUR', iocc=1, scal=hh, nbret=n1)
+            call getvtx('CARA_POUTRE', 'LIAISON', iocc=1, scal=ll, nbret=n1)
+            call getvid('CARA_POUTRE', 'MATERIAU', iocc=1, scal=mater, nbret=n1)
             if (n1 .eq. 0) then
                 nu(1)=0.d0
             else
@@ -145,14 +138,12 @@ subroutine pecapo(resu, modele, cara, nh)
 ! ---   RECUPERATION DE L'OPTION DE CALCUL RELATIVE AUX
 ! ---   CARACTERISTIQUES DE POUTRE :
 !       --------------------------
-    call getvtx('CARA_POUTRE', 'OPTION', 1, iarg, 0,&
-                k8b, nopt)
+    call getvtx('CARA_POUTRE', 'OPTION', iocc=1, nbval=0, nbret=nopt)
     if (nopt .eq. 0) then
         call u2mess('F', 'UTILITAI3_60')
     endif
 !
-    call getvtx('CARA_POUTRE', 'OPTION', 1, iarg, 1,&
-                option, nopt)
+    call getvtx('CARA_POUTRE', 'OPTION', iocc=1, scal=option, nbret=nopt)
 !
 ! ---   LES SEULES OPTIONS PERMISES, POUR LE MOMENT, SONT
 ! ---   'CARA_TORSION' ET 'CARA_CISAILLEMENT':
@@ -170,23 +161,19 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- RECUPERATION DU RAYON DE TORSION :
 !     --------------------------------
     if (option .eq. 'CARA_TORSION') then
-        call getvr8('CARA_POUTRE', 'RT', 1, iarg, 0,&
-                    rt, nrt)
+        call getvr8('CARA_POUTRE', 'RT', iocc=1, nbval=0, nbret=nrt)
         if (nrt .ne. 0) then
             nrt=-nrt
-            call getvr8('CARA_POUTRE', 'RT', 1, iarg, 1,&
-                        rt, nrt)
+            call getvr8('CARA_POUTRE', 'RT', iocc=1, scal=rt, nbret=nrt)
         endif
 !
 ! --- RECUPERATION DU RESULTAT DE TYPE EVOL_THER DONT L'INTEGRALE
 ! --- SUR LA SECTION DE LA POUTRE VA DONNER LA CONSTANTE DE TORSION :
 !     -------------------------------------------------------------
-        call getvid('CARA_POUTRE', 'LAPL_PHI', 1, iarg, 0,&
-                    k8b, nct)
+        call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, nbval=0, nbret=nct)
         if (nct .ne. 0) then
             nct=-nct
-            call getvid('CARA_POUTRE', 'LAPL_PHI', 1, iarg, 1,&
-                        temper, nct)
+            call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, scal=temper, nbret=nct)
         else
             call u2mess('F', 'UTILITAI3_62')
         endif
@@ -194,13 +181,12 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- RECUPERATION DES MAILLES DE BORD CONSTITUANT LES
 ! --- CONTOURS INTERIEURS :
 !     -------------------
-        call getvtx('CARA_POUTRE', 'GROUP_MA_INTE', 1, iarg, 0,&
-                    k8b, ngi)
+        call getvtx('CARA_POUTRE', 'GROUP_MA_INTE', iocc=1, nbval=0, nbret=ngi)
         if (ngi .ne. 0) then
             ngi = -ngi
             call wkvect('&&PECAPO.GRMA_INTE', 'V V K24', ngi, idgrmi)
-            call getvtx('CARA_POUTRE', 'GROUP_MA_INTE', 1, iarg, ngi,&
-                        zk24(idgrmi), ngri)
+            call getvtx('CARA_POUTRE', 'GROUP_MA_INTE', iocc=1, nbval=ngi, vect=zk24(idgrmi),&
+                        nbret=ngri)
         else
             call wkvect('&&PECAPO.GRMA_INTE', 'V V K24', 1, idgrmi)
         endif
@@ -229,20 +215,16 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- CALCULER LES COEFFICIENTS DE CISAILLEMENT ET LES COORDONNEES
 ! --- DU CENTRE DE CISAILLEMENT/TORSION :
 !     ---------------------------------
-        call getvid('CARA_POUTRE', 'LAPL_PHI_Y', 1, iarg, 0,&
-                    k8b, ncty)
+        call getvid('CARA_POUTRE', 'LAPL_PHI_Y', iocc=1, nbval=0, nbret=ncty)
         if (ncty .ne. 0) then
-            call getvid('CARA_POUTRE', 'LAPL_PHI_Y', 1, iarg, 1,&
-                        tempe1, ncty)
+            call getvid('CARA_POUTRE', 'LAPL_PHI_Y', iocc=1, scal=tempe1, nbret=ncty)
         else
             call u2mess('F', 'UTILITAI3_63')
         endif
 !
-        call getvid('CARA_POUTRE', 'LAPL_PHI_Z', 1, iarg, 0,&
-                    k8b, nctz)
+        call getvid('CARA_POUTRE', 'LAPL_PHI_Z', iocc=1, nbval=0, nbret=nctz)
         if (nctz .ne. 0) then
-            call getvid('CARA_POUTRE', 'LAPL_PHI_Z', 1, iarg, 1,&
-                        tempe2, nctz)
+            call getvid('CARA_POUTRE', 'LAPL_PHI_Z', iocc=1, scal=tempe2, nbret=nctz)
         else
             call u2mess('F', 'UTILITAI3_64')
         endif
@@ -420,11 +402,9 @@ subroutine pecapo(resu, modele, cara, nh)
 ! --- SUR LA SECTION DE LA POUTRE VA DONNER LA CONSTANTE DE
 ! --- GAUCHISSEMENT :
 !     -------------
-        call getvid('CARA_POUTRE', 'LAPL_PHI', 1, iarg, 0,&
-                    k8b, nct)
+        call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, nbval=0, nbret=nct)
         if (nct .ne. 0) then
-            call getvid('CARA_POUTRE', 'LAPL_PHI', 1, iarg, 1,&
-                        temper, nct)
+            call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, scal=temper, nbret=nct)
         else
             call u2mess('F', 'UTILITAI3_62')
         endif

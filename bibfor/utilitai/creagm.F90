@@ -44,9 +44,8 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
 !
 ! DECLARATION VARIABLES D'APPEL
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/cpclma.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -65,6 +64,7 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmato, nbpart, renum, nbmasd, sdb, nomsdm, masd, idmasd, numsdm
     character(len=8) :: ma
 !
@@ -96,8 +96,7 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
 !
 ! ------- On RECUPERE LE NOM DES SOUS DOMAINES
 !
-    call getvtx(' ', 'NOM_GROUP_MA', 0, iarg, 1,&
-                nom, err)
+    call getvtx(' ', 'NOM_GROUP_MA', scal=nom, nbret=err)
     maxi=0
     do 50 i = 1, len(nom)
         if (nom(i:i) .ne. ' ') maxi=maxi+1
@@ -163,7 +162,7 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
             call jecroc(jexnom(grpma, nom))
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
             call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
-            call jeecra(jexnom(grpma, nom), 'LONMAX', max(1,nbma))
+            call jeecra(jexnom(grpma, nom), 'LONMAX', max(1, nbma))
             call jeecra(jexnom(grpma, nom), 'LONUTI', nbma)
             call jeveuo(jexnom(grpma, nom), 'E', jgg)
             do 102 ima = 0, nbma-1
@@ -179,7 +178,7 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
         nbma=zi(nbmasd-1+isd)
         if (nbma .ne. 0) then
             call jecroc(jexnom(ma//'.GROUPEMA', grpema))
-            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONMAX', max(1,nbma))
+            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONMAX', max(1, nbma))
             call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONUTI', nbma)
             call jeveuo(jexnom(ma//'.GROUPEMA', grpema), 'E', idma)
             do 41 ima = 0, nbma - 1

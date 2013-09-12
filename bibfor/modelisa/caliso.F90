@@ -4,13 +4,13 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz02d.h"
 #include "asterfort/drz03d.h"
@@ -18,6 +18,9 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/drz13d.h"
 #include "asterfort/drzrot.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getnode.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -29,9 +32,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/tbliva.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
-#include "asterfort/char_excl_keyw.h"
-#include "asterfort/getnode.h"
-#include "asterfort/char_read_tran.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,10 +51,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr, mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,7 +134,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CALISO.KEYWORDEXCL'
-    n_suffix    = 0
+    n_suffix = 0
     list_suffix = ' '
     call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
@@ -149,17 +149,17 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
-    cmp_name  = 'DX'
+    cmp_name = 'DX'
     cmp_index_dx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DY'
+    cmp_name = 'DY'
     cmp_index_dy = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DZ'
+    cmp_name = 'DZ'
     cmp_index_dz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DRX'
+    cmp_name = 'DRX'
     cmp_index_drx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DRY'
+    cmp_name = 'DRY'
     cmp_index_dry = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    cmp_name  = 'DRZ'
+    cmp_name = 'DRZ'
     cmp_index_drz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
     ASSERT(cmp_index_dx.gt.0)
     ASSERT(cmp_index_dy.gt.0)
@@ -174,13 +174,11 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! ----- Definition of position for lagrange multipliers
 !
-        call getvtx(keywordfact, 'NUME_LAGR', iocc, iarg, 0,&
-                    k8bid, n1)
+        call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             type_lagr = '12'
         else
-            call getvtx(keywordfact, 'NUME_LAGR', iocc, iarg, 1,&
-                        poslag, n1)
+            call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=n1)
             if (poslag .eq. 'APRES') then
                 type_lagr = '22'
             else
@@ -190,14 +188,13 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! ----- Minimum distance
 !
-        call getvr8(keywordfact, 'DIST_MIN', iocc, iarg, 0,&
-                    dist_mini, n1)
+        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Read mesh affectation
 !
         list_node = '&&CALISO.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
                      list_node, nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
@@ -210,7 +207,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! ----- Read transformation
 !
-        call char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
+        call char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                             l_cent, cent, l_angl_naut, angl_naut)
         ASSERT(.not.l_cent)
         ASSERT(.not.l_angl_naut)
@@ -230,7 +227,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! --------- Is any node has DRZ dof ?
 !
             l_rota_2d = .false.
-            do i_no = 1,nb_node
+            do i_no = 1, nb_node
                 numnoe = zi(jlino+i_no-1)
                 if (exisdg(zi(jprnm-1+(numnoe-1)*nbec+1),cmp_index_drz)) then
                     l_rota_2d = .true.
@@ -256,10 +253,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! --------- Is any node has rotation dofs ?
 !
             l_rota_3d = .false.
-            do i_no = 1,nb_node
+            do i_no = 1, nb_node
                 numnoe = zi(jlino+i_no-1)
-                if (exisdg(zi(jprnm-1+(numnoe-1)*nbec+1),cmp_index_drx).and.&
-                    exisdg(zi(jprnm-1+(numnoe-1)*nbec+1),cmp_index_dry).and.&
+                if (exisdg(zi(jprnm-1+(numnoe-1)*nbec+1),cmp_index_drx) .and.&
+                    exisdg(zi(jprnm-1+(numnoe-1)*nbec+1),cmp_index_dry) .and.&
                     exisdg(zi(jprnm-1+(numnoe-1)*nbec+1),cmp_index_drz)) then
                     l_rota_3d = .true.
                     goto 50
@@ -270,15 +267,15 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! --------- Compute linear relations
 !
             if (l_rota_3d) then
-                call drz13d(mesh, ligrmo, vale_type, nb_node, list_node, &
-                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
-                            cmp_index_drz, type_lagr, list_rela)
+                call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
+                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
+                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela)
             else
-                call drz03d(mesh, vale_type, dist_mini, nb_node, list_node, &
+                call drz03d(mesh, vale_type, dist_mini, nb_node, list_node,&
                             type_lagr, list_rela)
             endif
         endif
-998     continue
+998      continue
 !
         call jedetr(list_node)
 !
@@ -290,6 +287,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
     call jedetr(keywordexcl)
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

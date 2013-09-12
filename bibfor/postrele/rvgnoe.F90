@@ -2,10 +2,9 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
                   linoeu)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -17,6 +16,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 #include "asterfort/oreino.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbtrou, linoeu(*)
     character(len=*) :: mcf
     character(len=8) :: nmaila
@@ -171,8 +171,8 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 !
 ! --- CAS PARTICULIER
 !
-    call getvr8('ACTION', 'VECT_Y', iocc, iarg, 3,&
-                vecty, ny)
+    call getvr8('ACTION', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+                nbret=ny)
     if (ny .ne. 0) then
 !        VERIFICATIONS PRELIMINAIRES
         if ((nbneud.ge.2.and.nbrgpn.eq.0) .or. ( nbneud.eq.0.and.nbrgpn.eq.1)) then
@@ -195,10 +195,8 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
         i2=zi(alstnd-1+libre-1)
         call jeveuo(nmaila//'.COORDO    .VALE', 'L', jvale)
 !       TOLERANCE
-        call getvtx(mcf, 'CRITERE', iocc, iarg, 1,&
-                    crit, n1)
-        call getvr8(mcf, 'PRECISION', iocc, iarg, 1,&
-                    tole, n1)
+        call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
+        call getvr8(mcf, 'PRECISION', iocc=iocc, scal=tole, nbret=n1)
 !       VERIFICATION QUE LES POINTS SONT ALIGNES
         call oreino(nmaila, zi(alstnd), libre-1, i1, i2,&
                     zr(jvale), crit, tole, iera, iret)

@@ -1,5 +1,5 @@
 subroutine sfifj(nomres)
-    implicit   none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,6 @@ subroutine sfifj(nomres)
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/accep1.h"
 #include "asterfort/accep2.h"
@@ -36,6 +32,9 @@ subroutine sfifj(nomres)
 #include "asterfort/dspprs.h"
 #include "asterfort/evalis.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -50,6 +49,7 @@ subroutine sfifj(nomres)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nfinit, nfin, nbm, nbpoin, nbid, iarg
     integer :: npoin, iff, ivare, lvale, ibid, in
     integer :: im1, im2, ivate, ivecx, ivecy, ivecz, nvecx, nvecy
@@ -73,14 +73,12 @@ subroutine sfifj(nomres)
     call jemarq()
 !
 ! RECHERCHE DE LA PRESENCE D'UN CHAMNO
-    call getvid(' ', 'CHAM_NO', 0, iarg, 0,&
-                chamno, ncham)
+    call getvid(' ', 'CHAM_NO', nbval=0, nbret=ncham)
 !
     if (ncham .eq. 0) then
 !
 ! RECUPERATION DE LA BASE MODALE
-        call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                    base, ibid)
+        call getvid(' ', 'MODE_MECA', scal=base, nbret=ibid)
 !
         call jeveuo(base//'.ORDR', 'L', jordr)
         call jelira(base//'.ORDR', 'LONUTI', nbm)
@@ -94,21 +92,17 @@ subroutine sfifj(nomres)
                     0, jpara, k8b)
         fmax = zr(jpara)
     else
-        call getvid(' ', 'CHAM_NO', 0, iarg, 1,&
-                    chamno, ibid)
+        call getvid(' ', 'CHAM_NO', scal=chamno, nbret=ibid)
         call chpver('F', chamno, 'NOEU', 'DEPL_R', ier)
-        call getvid(' ', 'CHAM_NO', 0, iarg, 0,&
-                    k8b, ncham)
+        call getvid(' ', 'CHAM_NO', nbval=0, nbret=ncham)
         nbm = -ncham
     endif
 !
 ! RECUPERATION DE LA FREQUENCE MINIMALE ET MAX DE LA PLAGE
 ! DE FREQUENCE ETUDIEE
 !
-    call getvr8(' ', 'FREQ_INIT', 0, iarg, 1,&
-                finit, nfinit)
-    call getvr8(' ', 'FREQ_FIN', 0, iarg, 1,&
-                ffin, nfin)
+    call getvr8(' ', 'FREQ_INIT', scal=finit, nbret=nfinit)
+    call getvr8(' ', 'FREQ_FIN', scal=ffin, nbret=nfin)
     if ((ffin-finit) .lt. r8prem()) then
         call u2mess('F', 'MODELISA6_97')
     endif
@@ -129,8 +123,7 @@ subroutine sfifj(nomres)
     endif
 !
 ! DISCRETISATION FREQUENTIELLE
-    call getvis(' ', 'NB_POIN', 0, iarg, 1,&
-                nbpoin, npoin)
+    call getvis(' ', 'NB_POIN', scal=nbpoin, nbret=npoin)
 !
 ! PAS FREQUENTIEL
     df = (ffin-finit) / (nbpoin-1)
@@ -140,8 +133,7 @@ subroutine sfifj(nomres)
 !
 ! CALCUL DE L'ACCEPTANCE
 !
-    call getvid(' ', 'SPEC_TURB', 0, iarg, 1,&
-                spectr, ibid)
+    call getvid(' ', 'SPEC_TURB', scal=spectr, nbret=ibid)
     call jeveuo(spectr//'           .VARE', 'L', ivare)
     call jeveuo(spectr//'           .VATE', 'L', ivate)
 !
@@ -206,21 +198,17 @@ subroutine sfifj(nomres)
 !
 ! RECUPERATION DES DIRECTIONS DU PLAN DE LA PLANCHE
     if (method(1:6) .eq. 'CORCOS') then
-        call getvr8(' ', 'VECT_X', 0, iarg, 0,&
-                    rbid, nvecx)
+        call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
         nvecx=-nvecx
         if (nvecx .gt. 0) then
             call wkvect('&&SFIFJ.VECX', 'V V R', 3, ivecx)
-            call getvr8(' ', 'VECT_X', 0, iarg, nvecx,&
-                        zr(ivecx), nbid)
+            call getvr8(' ', 'VECT_X', nbval=nvecx, vect=zr(ivecx), nbret=nbid)
         endif
-        call getvr8(' ', 'VECT_Y', 0, iarg, 0,&
-                    rbid, nvecy)
+        call getvr8(' ', 'VECT_Y', nbval=0, nbret=nvecy)
         nvecy=-nvecy
         if (nvecy .gt. 0) then
             call wkvect('&&SFIFJ.VECY', 'V V R', 3, ivecy)
-            call getvr8(' ', 'VECT_Y', 0, iarg, nvecy,&
-                        zr(ivecy), nbid)
+            call getvr8(' ', 'VECT_Y', nbval=nvecy, vect=zr(ivecy), nbret=nbid)
         endif
         if (nvecx .lt. 0 .or. nvecy .lt. 0) call u2mess('F', 'MODELISA7_2')
 !
@@ -236,16 +224,16 @@ subroutine sfifj(nomres)
  2      continue
     else if (method(1:7).eq.'AU_YANG') then
         yang = .true.
-        call getvr8(' ', 'VECT_X', 0, iarg, 0,&
-                    rbid, nvecx)
+        call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
         nvecx=-nvecx
-        if (nvecx .gt. 0) call getvr8(' ', 'VECT_X', 0, iarg, nvecx,&
-                                      dir(1, 1), nbid)
-        call getvr8(' ', 'ORIG_AXE', 0, iarg, 0,&
-                    rbid, nveco)
+        if (nvecx .gt. 0) then
+            call getvr8(' ', 'VECT_X', nbval=nvecx, vect=dir(1, 1), nbret=nbid)
+        endif
+        call getvr8(' ', 'ORIG_AXE', nbval=0, nbret=nveco)
         nveco=-nveco
-        if (nveco .gt. 0) call getvr8(' ', 'ORIG_AXE', 0, iarg, nveco,&
-                                      dir(1, 2), nbid)
+        if (nveco .gt. 0) then
+            call getvr8(' ', 'ORIG_AXE', nbval=nveco, vect=dir(1, 2), nbret=nbid)
+        endif
         if (nvecx .lt. 0 .or. nveco .lt. 0) call u2mess('F', 'MODELISA7_3')
     endif
 !

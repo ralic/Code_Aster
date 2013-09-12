@@ -1,9 +1,9 @@
 subroutine aceapf(nomu, noma, lmax, nbocc)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterfort/alcart.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -78,18 +78,12 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
                     iarg, lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'POUTRE_FLUI', 'MAILLE', ioc,&
                     iarg, lmax, zk8(jdls2), nm)
-        call getvr8('POUTRE_FLUI', 'B_T', ioc, iarg, 1,&
-                    b(1), nb1)
-        call getvr8('POUTRE_FLUI', 'B_N', ioc, iarg, 1,&
-                    b(2), nb2)
-        call getvr8('POUTRE_FLUI', 'B_TN', ioc, iarg, 1,&
-                    b(3), nb3)
-        call getvr8('POUTRE_FLUI', 'A_FLUI', ioc, iarg, 1,&
-                    afl, nafl)
-        call getvr8('POUTRE_FLUI', 'A_CELL', ioc, iarg, 1,&
-                    ace, nace)
-        call getvr8('POUTRE_FLUI', 'COEF_ECHELLE', ioc, iarg, 1,&
-                    rapp, nr)
+        call getvr8('POUTRE_FLUI', 'B_T', iocc=ioc, scal=b(1), nbret=nb1)
+        call getvr8('POUTRE_FLUI', 'B_N', iocc=ioc, scal=b(2), nbret=nb2)
+        call getvr8('POUTRE_FLUI', 'B_TN', iocc=ioc, scal=b(3), nbret=nb3)
+        call getvr8('POUTRE_FLUI', 'A_FLUI', iocc=ioc, scal=afl, nbret=nafl)
+        call getvr8('POUTRE_FLUI', 'A_CELL', iocc=ioc, scal=ace, nbret=nace)
+        call getvr8('POUTRE_FLUI', 'COEF_ECHELLE', iocc=ioc, scal=rapp, nbret=nr)
 !
         if (nb2 .eq. 0) b(2) = b(1)
         zr(jdvc) = b(1)

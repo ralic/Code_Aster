@@ -20,9 +20,9 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterc/getvid.h"
+    implicit none
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcrar.h"
@@ -75,8 +75,7 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 !
 ! ----------------------------------------------------------------------
 !
-    call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
-                lisins, n1)
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
     ASSERT(n1.ne.0)
 !
 ! --- FONCTIONNALITES ACTIVEES
@@ -94,8 +93,7 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 !
     if (lexpl) then
         if (lprmo) then
-            call getvid('PROJ_MODAL', 'MODE_MECA', 1, iarg, 1,&
-                        meca, nm)
+            call getvid('PROJ_MODAL', 'MODE_MECA', iocc=1, scal=meca, nbret=nm)
             call pascom(meca, sddyna, sddisc)
         else
             call pascou(mate, carele, sddyna, sddisc)

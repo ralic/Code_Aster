@@ -20,12 +20,12 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 !                DETERMINE LA MOYENNE SUR DES ENTITES POUR UN CHAM_NO
 !
 ! ----------------------------------------------------------------------
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
@@ -77,13 +77,12 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
         nbnoeu = nbno
     endif
 !
-    call getvtx('ACTION', 'NOM_CMP', ioc, iarg, 0,&
-                k8b, nbc)
+    call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then
         nbcmp = -nbc
         call wkvect('&&PRMONO.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('ACTION', 'NOM_CMP', ioc, iarg, nbcmp,&
-                    zk8(jcmp), ibid)
+        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=zk8(jcmp),&
+                    nbret=ibid)
     else
         nbcmp = ncmp
     endif

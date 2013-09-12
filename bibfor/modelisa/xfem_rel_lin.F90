@@ -20,8 +20,6 @@ subroutine xfem_rel_lin(char, noma, nomo)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
@@ -101,6 +99,6 @@ subroutine xfem_rel_lin(char, noma, nomo)
     if (nrel .ne. 0) then
         call aflrch(lisrel, char)
     endif
-
+!
     call jedema()
 end subroutine

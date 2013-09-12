@@ -24,10 +24,10 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -77,23 +77,17 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         call getres(maxfem, k16b, k16b)
 !
 !       MODELE ENRICHI : MODELE
-        call getvid(' ', 'MODELE', 0, iarg, 1,&
-                    modele, iret)
+        call getvid(' ', 'MODELE', scal=modele, nbret=iret)
         call exixfe(modele, iret)
         if (iret .eq. 0) call u2mesk('F', 'XFEM_3', 1, modele)
 !
 !
 !       PREFERENCES POUR LE NOMAGE DES NOUVELLES ENTITES
-        call getvtx(' ', 'PREF_NOEUD_X', 1, iarg, 1,&
-                    prefno(1), ibid)
-        call getvtx(' ', 'PREF_NOEUD_M', 1, iarg, 1,&
-                    prefno(2), ibid)
-        call getvtx(' ', 'PREF_NOEUD_P', 1, iarg, 1,&
-                    prefno(3), ibid)
-        call getvtx(' ', 'PREF_MAILLE_X', 1, iarg, 1,&
-                    prefno(4), ibid)
-        call getvtx(' ', 'PREF_GROUP_CO', 1, iarg, 1,&
-                    nogrfi, ibid)
+        call getvtx(' ', 'PREF_NOEUD_X', scal=prefno(1), nbret=ibid)
+        call getvtx(' ', 'PREF_NOEUD_M', scal=prefno(2), nbret=ibid)
+        call getvtx(' ', 'PREF_NOEUD_P', scal=prefno(3), nbret=ibid)
+        call getvtx(' ', 'PREF_MAILLE_X', scal=prefno(4), nbret=ibid)
+        call getvtx(' ', 'PREF_GROUP_CO', scal=nogrfi, nbret=ibid)
 !
 !     ------------------------------------------------------------------
     else if (nomcmd.eq.'POST_CHAM_XFEM') then
@@ -103,14 +97,12 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
         call getres(resux, k16b, k16b)
 !
 !       MODELE DE VISU ET MAILLAGE DE VISU (X-FEM)
-        call getvid(' ', 'MODELE_VISU', 0, iarg, 1,&
-                    modvis, iret)
+        call getvid(' ', 'MODELE_VISU', scal=modvis, nbret=iret)
         call dismoi('F', 'NOM_MAILLA', modvis, 'MODELE', ibid,&
                     maxfem, iret)
 !
 !       NOM ET TYPE DE LA SD RESULTAT EN ENTREE : RESUCO
-        call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                    resuco, ibid)
+        call getvid(' ', 'RESULTAT', scal=resuco, nbret=ibid)
 !
 !       MODELE ENRICHI ASSOCIE AU RESULTAT EN ENTREE
         call dismoi('F', 'NOM_MODELE', resuco, 'RESULTAT', ibid,&

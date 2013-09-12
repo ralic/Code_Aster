@@ -24,10 +24,10 @@ subroutine dliext()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsadpa.h"
@@ -48,13 +48,10 @@ subroutine dliext()
 !
     call getres(resu, concep, nomcmd)
 !
-    call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                sdresu, n1)
+    call getvid(' ', 'RESULTAT', scal=sdresu, nbret=n1)
     resu19 = resu
-    call getvtx(' ', 'PARAMETRE', 0, iarg, 1,&
-                param, n2)
-    call getvr8(' ', 'INTERV_R', 0, iarg, 2,&
-                inter2, n3)
+    call getvtx(' ', 'PARAMETRE', scal=param, nbret=n2)
+    call getvr8(' ', 'INTERV_R', nbval=2, vect=inter2, nbret=n3)
     ASSERT(n1+n2+n3.eq.4)
 !
 !

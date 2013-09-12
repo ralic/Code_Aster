@@ -1,5 +1,5 @@
 subroutine op0096()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,15 +24,14 @@ subroutine op0096()
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i3chgr.h"
 #include "asterfort/i3crdm.h"
 #include "asterfort/i3ctpv.h"
@@ -62,6 +61,7 @@ subroutine op0096()
 #include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
 #include "asterfort/wkvect.h"
+!
 !
     integer :: tetra, penta, hexa, i, j, n, m, l, long, ifm, info, j1, j2
     integer :: asds1, asds2, asds3, asds4, asds5, asds6, asds7, asds8
@@ -108,12 +108,9 @@ subroutine op0096()
     ndim = 3
 !
     call getres(surfac, typres, opera)
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                epsi, n)
-    call getvis(' ', 'INFO', 1, iarg, 1,&
-                info, n)
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                nomail, n)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n)
+    call getvis(' ', 'INFO', scal=info, nbret=n)
+    call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n)
     call getfac('DEFI_SEGMENT', nbsgt)
 !
     call dismoi('F', 'NB_MA_MAILLA', nomail, 'MAILLAGE', nbtma,&
@@ -145,10 +142,8 @@ subroutine op0096()
 !
     lismai = '&&OP0096.NUME_MAIL'
 !
-    call getvtx(' ', 'GROUP_MA', 1, iarg, 0,&
-                k8b, n1)
-    call getvtx(' ', 'MAILLE', 1, iarg, 0,&
-                k8b, n2)
+    call getvtx(' ', 'GROUP_MA', nbval=0, nbret=n1)
+    call getvtx(' ', 'MAILLE', nbval=0, nbret=n2)
 !
     if ((n1+n2) .eq. 0) then
         call wkvect(lismai, 'V V I', nbtma, jnuma)

@@ -1,13 +1,12 @@
 subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                   nlg, nln, nlj, ier)
-    implicit          none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/acevd2.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
@@ -19,6 +18,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 #include "asterfort/verdis.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc, nlm, nlg, nln, nlj, ier
     character(len=*) :: nomaz, nomoz, mcf
 ! ----------------------------------------------------------------------
@@ -88,8 +88,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 ! --- BOUCLE SUR LES OCCURENCES :
 !     -------------------------
     do 10 ioc = 1, nbocc
-        call getvtx(mcf, 'CARA', ioc, iarg, 1,&
-                    cara, nc)
+        call getvtx(mcf, 'CARA', iocc=ioc, scal=cara, nbret=nc)
 !
         call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc,&
                     iarg, 0, k8b, ng)
@@ -120,8 +119,8 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
         if (nm .ne. 0) then
             nbmail = -nm
             call wkvect('&&ACEVDI.MAILLE', 'V V K8', nbmail, jmail)
-            call getvtx(mcf, 'MAILLE', ioc, iarg, nbmail,&
-                        zk8(jmail), n1)
+            call getvtx(mcf, 'MAILLE', iocc=ioc, nbval=nbmail, vect=zk8(jmail),&
+                        nbret=n1)
             do 12 ima = 1, nbmail
                 nomail = zk8(jmail+ima-1)
                 call verima(noma, nomail, 1, 'MAILLE')
@@ -142,8 +141,8 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
         if (ng .ne. 0) then
             nbgrm = -ng
             call wkvect('&&ACEVDI.GROUP_MA', 'V V K24', nbgrm, jgrm)
-            call getvtx(mcf, 'GROUP_MA', ioc, iarg, nbgrm,&
-                        zk24(jgrm), n1)
+            call getvtx(mcf, 'GROUP_MA', iocc=ioc, nbval=nbgrm, vect=zk24(jgrm),&
+                        nbret=n1)
             do 14 ig = 1, nbgrm
                 nogrm = zk24(jgrm+ig-1)
                 call verima(noma, nogrm, 1, 'GROUP_MA')

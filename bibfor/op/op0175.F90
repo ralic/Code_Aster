@@ -22,10 +22,10 @@ subroutine op0175()
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -53,16 +53,13 @@ subroutine op0175()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resu, n0)
+    call getvid(' ', 'RESULTAT', scal=resu, nbret=n0)
     resu19=resu
 !
 !     -- CHOIX DES INSTANTS DE CALCUL :
 !     ---------------------------------
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                prec, ie)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, ie)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=ie)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=ie)
     call rsutnu(resu19, ' ', 0, '&&OP0175.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
     ASSERT(iret.eq.0)

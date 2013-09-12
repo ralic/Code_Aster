@@ -3,12 +3,11 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                   ndim)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/compma.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -21,6 +20,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: ioc, nbgr, nbno, ndim
     character(len=8) :: noma, tabnoe(*)
     character(len=24) :: ligrma(nbgr)
@@ -92,13 +92,12 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
 !      CALL GETVR8('MASS_AJOU','Z0',IOC,IARG,1,Z0,NCG)
     z0 = zero
-    call getvid('MASS_AJOU', 'FONC_GROUP', ioc, iarg, 0,&
-                k8b, nfg)
+    call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=0, nbret=nfg)
     if (nfg .ne. 0) then
         call wkvect('&&MASREP.FONGRO', 'V V K8', nbgr, ifongr)
         lfonc = .true.
-        call getvid('MASS_AJOU', 'FONC_GROUP', ioc, iarg, nbgr,&
-                    zk8( ifongr), nfg)
+        call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=zk8( ifongr),&
+                    nbret=nfg)
     endif
 !
 !

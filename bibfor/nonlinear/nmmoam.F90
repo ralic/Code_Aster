@@ -20,10 +20,10 @@ subroutine nmmoam(sdammz, nbmoda)
     implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8pi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -92,8 +92,7 @@ subroutine nmmoam(sdammz, nbmoda)
 !
 ! --- MATRICE DES MODES MECA
 !
-    call getvid('AMOR_MODAL', 'MODE_MECA', 1, iarg, 1,&
-                modmec, nbmd)
+    call getvid('AMOR_MODAL', 'MODE_MECA', iocc=1, scal=modmec, nbret=nbmd)
     if (nbmd .eq. 0) then
         call u2mess('F', 'ALGORITH17_20')
     endif
@@ -106,14 +105,14 @@ subroutine nmmoam(sdammz, nbmoda)
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE
 !
-    call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', iarg, matric, iret)
+    call dismoi('F', 'REF_RIGI_PREM', modmec, 'RESU_DYNA', iarg,&
+                matric, iret)
     call mtdscr(matric(1:8))
     call jeveuo(matric(1:19)//'.&INT', 'E', lmat)
 !
 ! --- NOMBRE DE MODES
 !
-    call getvis('AMOR_MODAL', 'NB_MODE', 1, iarg, 1,&
-                nbmax, nm)
+    call getvis('AMOR_MODAL', 'NB_MODE', iocc=1, scal=nbmax, nbret=nm)
     if (nbmax .ne. nbmoda) then
         vali(1) = nbmoda
         vali(2) = nbmax
@@ -129,12 +128,10 @@ subroutine nmmoam(sdammz, nbmoda)
 !
     na = 0
     nb = 0
-    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8bid, na)
+    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na)
     exiam = getexm('AMOR_MODAL','LIST_AMOR')
     if (exiam .eq. 1) then
-        call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 0,&
-                    k8bid, nb)
+        call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=nb)
     endif
 !
 !     VERIFICATION QU'UNE LISTE D'AMORTISSEMENTS EST FOURNIE
@@ -145,11 +142,10 @@ subroutine nmmoam(sdammz, nbmoda)
     if (na .ne. 0 .or. nb .ne. 0) then
         if (na .ne. 0) then
             nbamor = -na
-            call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                        zr(jamor), na)
+            call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamor),&
+                        nbret=na)
         else
-            call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 1,&
-                        listam, n)
+            call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=listam, nbret=n)
             call jelira(listam//'           .VALE', 'LONMAX', ival=nbamor)
             call jeveuo(listam//'           .VALE', 'L', iamor)
             do 30 iam = 1, nbmoda

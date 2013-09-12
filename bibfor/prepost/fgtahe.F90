@@ -1,9 +1,9 @@
 subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/fgtaep.h"
 #include "asterfort/fgtaes.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rccome.h"
@@ -54,17 +54,13 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 ! --- CALCUL DU DOMMAGE ELEMENTAIRE DE TAHERI_MANSON_COFFIN
 !
     if (kdomm(1:13) .eq. 'TAHERI_MANSON') then
-        call getvid(' ', 'MATER', 1, iarg, 0,&
-                    nommat, nbval)
+        call getvid(' ', 'MATER', nbval=0, nbret=nbval)
         if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_8')
-        call getvid(' ', 'TAHERI_FONC', 1, iarg, 0,&
-                    nomfo1, nbval)
+        call getvid(' ', 'TAHERI_FONC', nbval=0, nbret=nbval)
         if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_9')
-        call getvid(' ', 'TAHERI_NAPPE', 1, iarg, 0,&
-                    nomnap, nbval)
+        call getvid(' ', 'TAHERI_NAPPE', nbval=0, nbret=nbval)
         if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_10')
-        call getvid(' ', 'MATER', 1, iarg, 1,&
-                    nommat, nbval)
+        call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
@@ -73,10 +69,8 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         if (icodma .ne. 0) then
             call u2mess('F', 'FATIGUE1_11')
         endif
-        call getvid(' ', 'TAHERI_FONC', 1, iarg, 1,&
-                    nomfo1, nbval)
-        call getvid(' ', 'TAHERI_NAPPE', 1, iarg, 1,&
-                    nomnap, nbval)
+        call getvid(' ', 'TAHERI_FONC', scal=nomfo1, nbret=nbval)
+        call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nbval)
         call fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
                     epsmax, dom)
     endif
@@ -84,14 +78,11 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 ! --- CALCUL DU DOMMAGE ELEMENTAIRE DE TAHERI_MIXTE
 !
     if (kdomm(1:14) .eq. 'TAHERI_MIXTE') then
-        call getvid(' ', 'MATER', 1, iarg, 0,&
-                    nommat, nbval)
+        call getvid(' ', 'MATER', nbval=0, nbret=nbval)
         if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_12')
-        call getvid(' ', 'TAHERI_NAPPE', 1, iarg, 0,&
-                    nomnap, nbval)
+        call getvid(' ', 'TAHERI_NAPPE', nbval=0, nbret=nbval)
         if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_10')
-        call getvid(' ', 'MATER', 1, iarg, 1,&
-                    nommat, nbval)
+        call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, phenom, icodre(1))
         if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
@@ -109,8 +100,7 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
             call u2mess('F', 'FATIGUE1_14')
         endif
-        call getvid(' ', 'TAHERI_NAPPE', 1, iarg, 1,&
-                    nomnap, nbval)
+        call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nbval)
         call fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
                     dom)
     endif

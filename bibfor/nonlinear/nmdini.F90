@@ -19,11 +19,11 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -78,10 +78,8 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
 !
 ! --- LECTURE MOTS-CLEFS
 !
-    call getvis(motfac, 'NUME_INST_INIT', iocc, iarg, 1,&
-                numini, n1)
-    call getvr8(motfac, 'INST_INIT', iocc, iarg, 1,&
-                inst, n2)
+    call getvis(motfac, 'NUME_INST_INIT', iocc=iocc, scal=numini, nbret=n1)
+    call getvr8(motfac, 'INST_INIT', iocc=iocc, scal=inst, nbret=n2)
 !
 ! --- PAS D'OCCURRENCE DES MOTS-CLES -> NUMERO INITIAL
 !

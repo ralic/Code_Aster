@@ -21,8 +21,8 @@ subroutine nmlssv(mode, lischa, nbsst)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
@@ -66,8 +66,7 @@ subroutine nmlssv(mode, lischa, nbsst)
             fomul2 = lischa(1:19)//'.FCSS'
             call wkvect(fomul2, 'V V K24', nbsst, jfomu2)
             do 1 i = 1, nbsst
-                call getvid('SOUS_STRUC', 'FONC_MULT', i, iarg, 1,&
-                            zk24(jfomu2+i-1), ibid)
+                call getvid('SOUS_STRUC', 'FONC_MULT', iocc=i, scal=zk24(jfomu2+i-1), nbret=ibid)
                 if (ibid .eq. 0) then
                     zk24(jfomu2+i-1) = '&&CONSTA'
                 endif

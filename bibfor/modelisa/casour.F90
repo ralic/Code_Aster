@@ -1,13 +1,12 @@
 subroutine casour(char, ligrmo, noma, ndim, fonree)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -49,7 +48,7 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer ::  nsour, jvalv, jncmp, n1,  ncmp, iocc
+    integer :: nsour, jvalv, jncmp, n1, ncmp, iocc
     character(len=16) :: motclf
     character(len=19) :: carte
     integer :: iarg
@@ -91,16 +90,14 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
     do iocc = 1, nsour
 !
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'SOUR', iocc, iarg, 1,&
-                        zr(jvalv), n1)
+            call getvr8(motclf, 'SOUR', iocc=iocc, scal=zr(jvalv), nbret=n1)
         else
-            call getvid(motclf, 'SOUR', iocc, iarg, 1,&
-                        zk8(jvalv), n1)
+            call getvid(motclf, 'SOUR', iocc=iocc, scal=zk8(jvalv), nbret=n1)
         endif
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+        call char_affe_neum(noma, ndim, motclf, iocc, 1,&
                             cartes, ncmps)
 !
     end do

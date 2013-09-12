@@ -1,14 +1,14 @@
 subroutine rc32r1(nomres)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
+!
     character(len=8) :: nomres
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -91,8 +91,7 @@ subroutine rc32r1(nomres)
      &                          'R', 'R', 'R', 'R', 'R'  /
 ! DEB ------------------------------------------------------------------
 !
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                typtab, n1)
+    call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
 !
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)

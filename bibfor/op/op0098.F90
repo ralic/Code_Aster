@@ -29,9 +29,9 @@ subroutine op0098()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/calc98.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/imbint.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -63,8 +63,7 @@ subroutine op0098()
 !
 ! --- CREATION .REFE
 !
-    call getvid('   ', 'NUME_DDL', 1, iarg, 1,&
-                numddl, nbid)
+    call getvid('   ', 'NUME_DDL', iocc=1, scal=numddl, nbret=nbid)
     numddl(15:19)='.NUME'
     call dismoi('F', 'NOM_MAILLA', numddl, 'NUME_DDL', ibid,&
                 mailla, ierd)

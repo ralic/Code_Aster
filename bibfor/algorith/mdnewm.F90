@@ -8,10 +8,10 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     implicit none
 #include "jeveux.h"
 #include "asterc/etausr.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/fointe.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -116,10 +116,8 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     vvar = 'NON'
     dt2 = dt * dt
 !
-    call getvr8('SCHEMA_TEMPS', 'BETA', 1, iarg, 1,&
-                beta, n1)
-    call getvr8('SCHEMA_TEMPS', 'GAMMA', 1, iarg, 1,&
-                gamma, n1)
+    call getvr8('SCHEMA_TEMPS', 'BETA', iocc=1, scal=beta, nbret=n1)
+    call getvr8('SCHEMA_TEMPS', 'GAMMA', iocc=1, scal=gamma, nbret=n1)
     res = 0.25d0* (0.5d0+gamma)* (0.5d0*gamma)
     tol = 1.d-8
     if (gamma .lt. (0.5d0-tol) .or. beta .lt. (res-tol)) then
@@ -214,11 +212,9 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                 zr(jtra6+ind-1) = zr(jtra6+ind-1) + a5*amogen(im)* masgen(ind)
 120          continue
         else
-            call getvtx(' ', 'VITESSE_VARIABLE', 1, iarg, 0,&
-                        k8b, n1)
+            call getvtx(' ', 'VITESSE_VARIABLE', nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvtx(' ', 'VITESSE_VARIABLE', 1, iarg, 1,&
-                            vvar, n1)
+                call getvtx(' ', 'VITESSE_VARIABLE', scal=vvar, nbret=n1)
             endif
             vrotin = 0.d0
             arotin = 0.d0
@@ -421,8 +417,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                                 0)
                     if (nomres .eq. '&&OP0074') then
 !             --- CAS D'UNE POURSUITE ---
-                        call getvid('ETAT_INIT', 'RESULTAT', 1, iarg, 1,&
-                                    tran, ndt)
+                        call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=ndt)
                         if (ndt .ne. 0) call resu74(tran, nomres)
                     endif
                     vali (1) = ia+i

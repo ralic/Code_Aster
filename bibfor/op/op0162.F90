@@ -21,16 +21,15 @@ subroutine op0162()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/chpver.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -44,6 +43,7 @@ subroutine op0162()
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
+!
     integer :: ierd, gd
     character(len=8) :: k8b, resu, masse, noma, vect, typi
     character(len=14) :: nume
@@ -82,16 +82,14 @@ subroutine op0162()
     petir8 = 1.d-40
 !
 !     ----- RECUPERATION UNITE DE MISS ---
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ifmis, nu)
+    call getvis(' ', 'UNITE', scal=ifmis, nbret=nu)
     k16nom = ' '
     if (ulisop ( ifmis, k16nom ) .eq. 0) then
         call ulopen(ifmis, ' ', ' ', 'NEW', 'O')
     endif
 !
 !     ----- RECUPERATION DES MODES -----
-    call getvid(' ', 'MACR_ELEM_DYNA', 1, iarg, 1,&
-                mael, nmm)
+    call getvid(' ', 'MACR_ELEM_DYNA', scal=mael, nbret=nmm)
     refe(1:18) = mael//'.MAEL_MASS'
     call jeveuo(refe, 'L', jrefe)
     basemo = zk24(jrefe)
@@ -99,7 +97,8 @@ subroutine op0162()
 !
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call dismoi('C', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid, interf, ierd)
+    call dismoi('C', 'REF_INTD_PREM', basemo, 'RESU_DYNA', ibid,&
+                interf, ierd)
     if (interf .ne. ' ') then
 !       CALL BMNBMD(BASEMO,'MODE',NBMODE)
 !       CALL BMNBMD(BASEMO,'DEFORMEE',NBMODS)
@@ -127,8 +126,7 @@ subroutine op0162()
     write(ifmis,'(''DYNA'',1x,i6,1x,a8)') nbmode,typi
     write(ifmis,'(''STAT'',1x,i6,1x,a8)') nbmods,typi
 !
-    call getvtx(' ', 'TITRE', 1, iarg, 1,&
-                titre, nti)
+    call getvtx(' ', 'TITRE', scal=titre, nbret=nti)
     if (nti .ne. 0) write(ifmis,'(''TITRE'',/a80)') titre
     if (nti .ne. 0) write(ifm,'(a80)') titre
 !
@@ -153,16 +151,11 @@ subroutine op0162()
     call wkvect('&&OP0162.VECTASS2', 'V V R', neq, idvec2)
 !
 !     ----- RECUPERATION INSTANTS OU FREQUENCES ---
-    call getvr8(' ', 'INST_INIT', 1, iarg, 1,&
-                tini, n1)
-    call getvr8(' ', 'INST_FIN', 1, iarg, 1,&
-                tfin, n2)
-    call getvr8(' ', 'FREQ_INIT', 1, iarg, 1,&
-                fini, n3)
-    call getvr8(' ', 'FREQ_FIN', 1, iarg, 1,&
-                ffin, n4)
-    call getvr8(' ', 'PAS', 1, iarg, 1,&
-                pas, n)
+    call getvr8(' ', 'INST_INIT', scal=tini, nbret=n1)
+    call getvr8(' ', 'INST_FIN', scal=tfin, nbret=n2)
+    call getvr8(' ', 'FREQ_INIT', scal=fini, nbret=n3)
+    call getvr8(' ', 'FREQ_FIN', scal=ffin, nbret=n4)
+    call getvr8(' ', 'PAS', scal=pas, nbret=n)
     if (n1 .ne. 0) then
         write(ifmis,'(''TEMPS DE'',1x,1pe12.5,1x,''A'',1x,1pe12.5,1x,''PAS'',1x,1pe12.5)') &
               tini,tfin,pas
@@ -175,8 +168,7 @@ subroutine op0162()
               fini,ffin,pas
     endif
     ic=0
-    call getvr8(' ', 'DIRE_ONDE', ic, iarg, 3,&
-                di(1), n)
+    call getvr8(' ', 'DIRE_ONDE', nbval=3, vect=di(1), nbret=n)
     if (n .ne. 0) then
         write(ifmis,'(''DIRE ONDE'')')
         write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,3)
@@ -206,8 +198,7 @@ subroutine op0162()
     call wkvect('&&OP0162.VECT1', 'V V R', neq, iadmo1)
     call wkvect('&&OP0162.VECT2', 'V V R', neq, iadmo2)
     do 70 ic = 1, ncharb
-        call getvid('EXCIT', 'VECT_ASSE', ic, iarg, 1,&
-                    vect, n)
+        call getvid('EXCIT', 'VECT_ASSE', iocc=ic, scal=vect, nbret=n)
         if (n .ne. 0) then
             call chpver('F', vect, 'NOEU', 'DEPL_R', ierd)
         endif
@@ -252,13 +243,11 @@ subroutine op0162()
         write(ifmis,'(6(1x,1pe12.5))') (zr(jvect+k-1),k=1,nbmode)
         write(ifmis,'(''STAT CHAR'',1x,i6)') ic
         write(ifmis,'(6(1x,1pe12.5))') (zr(isvect+k-1),k=1,nbmods)
-        call getvid('EXCIT', 'FONC_MULT', ic, iarg, 1,&
-                    nomfon, nfo)
+        call getvid('EXCIT', 'FONC_MULT', iocc=ic, scal=nomfon, nbret=nfo)
         if (nfo .ne. 0) goto 80
         coef = 1.d0
         t = 0.d0
-        call getvr8('EXCIT', 'COEF_MULT', ic, iarg, 1,&
-                    coef, nc)
+        call getvr8('EXCIT', 'COEF_MULT', iocc=ic, scal=coef, nbret=nc)
         nbval = 1
         if (niv .gt. 1) write(ifm, '(''FONC CHAR'',1x,i6, ''VALE'',1x,i6)') ic, nbval
         if (niv .gt. 1) write(ifm,'(6(1x,1pe12.5))') t, coef
@@ -284,18 +273,16 @@ subroutine op0162()
     write(ifm,'(''SOLS'',1x,i6)') nchars
     if (nchars .eq. 0) goto 9999
     do 73 ic = 1, nchars
-        call getvr8('EXCIT_SOL', 'DIRECTION', ic, iarg, 3,&
-                    di(1), n)
-        call getvtx('EXCIT_SOL', 'NOM_CHAM', ic, iarg, 1,&
-                    typi, n)
+        call getvr8('EXCIT_SOL', 'DIRECTION', iocc=ic, nbval=3, vect=di(1),&
+                    nbret=n)
+        call getvtx('EXCIT_SOL', 'NOM_CHAM', iocc=ic, scal=typi, nbret=n)
         if (niv .gt. 1) write(ifm,'(''DIRE SOLS'',1x,i6)') ic
         if (niv .gt. 1) write(ifm,'(3(1x,1pe12.5))') (di(i),i=1,3)
         if (niv .gt. 1) write(ifm, '(''SOLS'',1x,i6,1x, ''TYPE'',1x,a8)') ic, typi
         write(ifmis,'(''DIRE SOLS'',1x,i6)') ic
         write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,3)
         write(ifmis,'(''TYPE SOLS'',1x,i6,1x,a8)') ic,typi
-        call getvid('EXCIT_SOL', 'FONC_SIGNAL', ic, iarg, 1,&
-                    nomfon, n)
+        call getvid('EXCIT_SOL', 'FONC_SIGNAL', iocc=ic, scal=nomfon, nbret=n)
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
@@ -315,20 +302,18 @@ subroutine op0162()
     write(ifm,'(''SOUS'',1x,i6)') nsours
     do 74 ic = 1, nsours
 !         IC = 1
-        call getvr8('SOURCE_SOL', 'POINT', ic, iarg, 3,&
-                    di(1), n)
-        call getvr8('SOURCE_SOL', 'DIRECTION', ic, iarg, 3,&
-                    di(4), n)
-        call getvtx('SOURCE_SOL', 'NOM_CHAM', ic, iarg, 1,&
-                    typi, n)
+        call getvr8('SOURCE_SOL', 'POINT', iocc=ic, nbval=3, vect=di(1),&
+                    nbret=n)
+        call getvr8('SOURCE_SOL', 'DIRECTION', iocc=ic, nbval=3, vect=di(4),&
+                    nbret=n)
+        call getvtx('SOURCE_SOL', 'NOM_CHAM', iocc=ic, scal=typi, nbret=n)
         if (niv .gt. 1) write(ifm,'(''DIRE SOUS'',1x,i6)') ic
         if (niv .gt. 1) write(ifm,'(3(1x,1pe12.5))') (di(i),i=1,6)
         if (niv .gt. 1) write(ifm, '(''SOLS'',1x,i6,1x, ''TYPE'',1x,a8)') ic, typi
         write(ifmis,'(''DIRE SOUS'',1x,i6)') ic
         write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,6)
         write(ifmis,'(''TYPE SOUS'',1x,i6,1x,a8)') ic,typi
-        call getvid('SOURCE_SOL', 'FONC_SIGNAL', ic, iarg, 1,&
-                    nomfon, n)
+        call getvid('SOURCE_SOL', 'FONC_SIGNAL', iocc=ic, scal=nomfon, nbret=n)
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
@@ -348,18 +333,16 @@ subroutine op0162()
     write(ifm,'(''SOUF'',1x,i6)') nsourf
     do 75 ic = 1, nsourf
 !         IC = 1
-        call getvr8('SOURCE_FLUIDE', 'POINT', ic, iarg, 3,&
-                    di(1), n)
-        call getvtx('SOURCE_FLUIDE', 'NOM_CHAM', ic, iarg, 1,&
-                    typi, n)
+        call getvr8('SOURCE_FLUIDE', 'POINT', iocc=ic, nbval=3, vect=di(1),&
+                    nbret=n)
+        call getvtx('SOURCE_FLUIDE', 'NOM_CHAM', iocc=ic, scal=typi, nbret=n)
         if (niv .gt. 1) write(ifm,'(''DIRE SOUF'',1x,i6)') ic
         if (niv .gt. 1) write(ifm,'(3(1x,1pe12.5))') (di(i),i=1,3)
         if (niv .gt. 1) write(ifm, '(''SOLS'',1x,i6,1x, ''TYPE'',1x,a8)') ic, typi
         write(ifmis,'(''DIRE SOUF'',1x,i6)') ic
         write(ifmis,'(3(1x,1pe12.5))') (di(i),i=1,3)
         write(ifmis,'(''TYPE SOUF'',1x,i6,1x,a8)') ic,typi
-        call getvid('SOURCE_FLUIDE', 'FONC_SIGNAL', ic, iarg, 1,&
-                    nomfon, n)
+        call getvid('SOURCE_FLUIDE', 'FONC_SIGNAL', iocc=ic, scal=nomfon, nbret=n)
         fonc = nomfon
         call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)

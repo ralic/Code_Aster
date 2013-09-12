@@ -3,14 +3,13 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                   ier)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/focrrs.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -30,6 +29,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 #include "asterfort/u2mess.h"
 #include "asterfort/utch19.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: base
     character(len=8) :: maille, noeud, cmp
     character(len=16) :: nomcha
@@ -95,14 +95,10 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     call getres(k8b, typcon, nomcmd)
     call gettco(resu, typres)
 !
-    call getvr8(' ', 'INST', 1, iarg, 0,&
-                r8b, n1)
-    call getvid(' ', 'LIST_INST', 1, iarg, 0,&
-                k8b, n2)
-    call getvr8(' ', 'FREQ', 1, iarg, 0,&
-                r8b, n3)
-    call getvid(' ', 'LIST_FREQ', 1, iarg, 0,&
-                k8b, n4)
+    call getvr8(' ', 'INST', nbval=0, nbret=n1)
+    call getvid(' ', 'LIST_INST', nbval=0, nbret=n2)
+    call getvr8(' ', 'FREQ', nbval=0, nbret=n3)
+    call getvid(' ', 'LIST_FREQ', nbval=0, nbret=n4)
 !
     if (typres(1:10) .eq. 'DYNA_HARMO') then
         nomacc = 'FREQ'
@@ -118,11 +114,9 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
         if (n3 .ne. 0) then
             nbinst = -n3
             call wkvect('&&FOCRR2.INST', 'V V R', nbinst, jinst)
-            call getvr8(' ', 'FREQ', 1, iarg, nbinst,&
-                        zr(jinst), n3)
+            call getvr8(' ', 'FREQ', nbval=nbinst, vect=zr(jinst), nbret=n3)
         else
-            call getvid(' ', 'LIST_FREQ', 1, iarg, 1,&
-                        listr, n4)
+            call getvid(' ', 'LIST_FREQ', scal=listr, nbret=n4)
             call jeveuo(listr//'.VALE', 'L', jinst)
             call jelira(listr//'.VALE', 'LONMAX', nbinst)
         endif
@@ -140,11 +134,9 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
         if (n1 .ne. 0) then
             nbinst = -n1
             call wkvect('&&FOCRR2.INST', 'V V R', nbinst, jinst)
-            call getvr8(' ', 'INST', 1, iarg, nbinst,&
-                        zr(jinst), n1)
+            call getvr8(' ', 'INST', nbval=nbinst, vect=zr(jinst), nbret=n1)
         else
-            call getvid(' ', 'LIST_INST', 1, iarg, 1,&
-                        listr, n2)
+            call getvid(' ', 'LIST_INST', scal=listr, nbret=n2)
             call jeveuo(listr//'.VALE', 'L', jinst)
             call jelira(listr//'.VALE', 'LONMAX', nbinst)
         endif

@@ -2,11 +2,11 @@ subroutine w175af(modele, chfer1)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -87,8 +87,7 @@ subroutine w175af(modele, chfer1)
 !     2. MOTS CLES GLOBAUX :
 !     ----------------------
 !     2.1 TYPE_COMB :
-    call getvtx(' ', 'TYPE_COMB', 0, iarg, 1,&
-                typcb, n1)
+    call getvtx(' ', 'TYPE_COMB', scal=typcb, nbret=n1)
     ASSERT(typcb.eq.'ELU'.or.typcb.eq.'ELS')
     if (typcb .eq. 'ELU') valr=0.d0
     if (typcb .eq. 'ELS') valr=1.d0
@@ -99,20 +98,13 @@ subroutine w175af(modele, chfer1)
 !     --------------------------------------------
     do 30 iocc = 1, nocc
 !
-        call getvr8('AFFE', 'ENROBG', iocc, iarg, 1,&
-                    zr(jvalv-1+2), n1)
-        call getvr8('AFFE', 'CEQUI', iocc, iarg, 1,&
-                    zr(jvalv-1+3), n2)
-        call getvr8('AFFE', 'SIGM_ACIER', iocc, iarg, 1,&
-                    zr(jvalv-1+4), n3)
-        call getvr8('AFFE', 'SIGM_BETON', iocc, iarg, 1,&
-                    zr(jvalv-1+5), n4)
-        call getvr8('AFFE', 'PIVA', iocc, iarg, 1,&
-                    zr(jvalv-1+6), n5)
-        call getvr8('AFFE', 'PIVB', iocc, iarg, 1,&
-                    zr(jvalv-1+7), n6)
-        call getvr8('AFFE', 'ES', iocc, iarg, 1,&
-                    zr(jvalv-1+8), n7)
+        call getvr8('AFFE', 'ENROBG', iocc=iocc, scal=zr(jvalv-1+2), nbret=n1)
+        call getvr8('AFFE', 'CEQUI', iocc=iocc, scal=zr(jvalv-1+3), nbret=n2)
+        call getvr8('AFFE', 'SIGM_ACIER', iocc=iocc, scal=zr(jvalv-1+4), nbret=n3)
+        call getvr8('AFFE', 'SIGM_BETON', iocc=iocc, scal=zr(jvalv-1+5), nbret=n4)
+        call getvr8('AFFE', 'PIVA', iocc=iocc, scal=zr(jvalv-1+6), nbret=n5)
+        call getvr8('AFFE', 'PIVB', iocc=iocc, scal=zr(jvalv-1+7), nbret=n6)
+        call getvr8('AFFE', 'ES', iocc=iocc, scal=zr(jvalv-1+8), nbret=n7)
 !
         if (typcb .eq. 'ELU') then
             if (n5 .eq. 0 .or. n6 .eq. 0) call u2mess('F', 'CALCULEL_73')
@@ -124,8 +116,7 @@ subroutine w175af(modele, chfer1)
             if (n2 .eq. 0) call u2mess('F', 'CALCULEL_73')
         endif
 !
-        call getvtx('AFFE', 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
+        call getvtx('AFFE', 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(chfer1, 1, ' ', 'NOM', 0,&
                         ' ', 0, ' ', ncmpmx)

@@ -41,13 +41,12 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -57,6 +56,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 #include "asterfort/scalai.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: basemo, nommes
     character(len=24) :: vnoeud, vrange, vcham, vorien
     integer :: nbmesu, nbmtot, nnoema, ncmpma
@@ -91,16 +91,15 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
 ! RECUPERATION DU CHAMP MESURE
 !
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', 1, iarg, 0,&
-                nomcha, nbcham)
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=0, nbret=nbcham)
     if (nbcham .ne. 0) then
         nbcham = -nbcham
     else
         call u2mess('A', 'ALGORITH10_93')
     endif
     call wkvect('&&LISTE_CHAM', 'V V K16', nbcham, lch)
-    call getvtx('MODELE_MESURE', 'NOM_CHAM', 1, iarg, nbcham,&
-                zk16(lch), ibid)
+    call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch),&
+                nbret=ibid)
 !
 ! RECUPERATION DU NB DE VECTEURS DE BASE : NBMTOT
 !
@@ -408,8 +407,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 ! FIN BOUCLE SUR LES NOMCHA
 151  end do
 !
-    call getvid('MODELE_MESURE', 'MODELE', 1, iarg, 1,&
-                modmes, ibid)
+    call getvid('MODELE_MESURE', 'MODELE', iocc=1, scal=modmes, nbret=ibid)
 !
     call jeecra(vnoeud, 'LONUTI', nbmesu)
     call jeecra(vrange, 'LONUTI', nbmesu)

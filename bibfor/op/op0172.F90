@@ -19,18 +19,17 @@ subroutine op0172()
 ! ======================================================================
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/compno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -55,6 +54,7 @@ subroutine op0172()
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
 !
     integer :: ibid, aprno, iddl, ncmp, nec, ierd, gd, nbmode
     integer :: vali
@@ -98,21 +98,14 @@ subroutine op0172()
 !
 !     --- ON RECUPERE LES RAIDEURS ---
 !
-    call getvr8('ENER_SOL', 'KX', 1, iarg, 1,&
-                rigi(1), nk)
-    call getvr8('ENER_SOL', 'KY', 1, iarg, 1,&
-                rigi(2), nk)
-    call getvr8('ENER_SOL', 'KZ', 1, iarg, 1,&
-                rigi(3), nk)
-    call getvr8('ENER_SOL', 'KRX', 1, iarg, 0,&
-                r8b, nk)
+    call getvr8('ENER_SOL', 'KX', iocc=1, scal=rigi(1), nbret=nk)
+    call getvr8('ENER_SOL', 'KY', iocc=1, scal=rigi(2), nbret=nk)
+    call getvr8('ENER_SOL', 'KZ', iocc=1, scal=rigi(3), nbret=nk)
+    call getvr8('ENER_SOL', 'KRX', iocc=1, nbval=0, nbret=nk)
     if (nk .ne. 0) then
-        call getvr8('ENER_SOL', 'KRX', 1, iarg, 1,&
-                    rigi(4), nkr)
-        call getvr8('ENER_SOL', 'KRY', 1, iarg, 1,&
-                    rigi(5), nkr)
-        call getvr8('ENER_SOL', 'KRZ', 1, iarg, 1,&
-                    rigi(6), nkr)
+        call getvr8('ENER_SOL', 'KRX', iocc=1, scal=rigi(4), nbret=nkr)
+        call getvr8('ENER_SOL', 'KRY', iocc=1, scal=rigi(5), nbret=nkr)
+        call getvr8('ENER_SOL', 'KRZ', iocc=1, scal=rigi(6), nbret=nkr)
         ncompo = 6
     else
         ncompo = 3
@@ -120,14 +113,13 @@ subroutine op0172()
 !
 !     ----- RECUPERATION DES MODES -----
 !
-    call getvid('ENER_SOL', 'MODE_MECA', 1, iarg, 1,&
-                meca, nmm)
-    call dismoi('F', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid, masse, iret)
+    call getvid('ENER_SOL', 'MODE_MECA', iocc=1, scal=meca, nbret=nmm)
+    call dismoi('F', 'REF_MASS_PREM', meca, 'RESU_DYNA', ibid,&
+                masse, iret)
 !
 !     --- ON RECUPERE LA TABLE D'ENERGIE ---
 !
-    call getvid('AMOR_INTERNE', 'ENER_POT', 1, iarg, 1,&
-                enerpo, nben)
+    call getvid('AMOR_INTERNE', 'ENER_POT', iocc=1, scal=enerpo, nbret=nben)
 !
 !     --- VERIFICATION DES PARAMETRES DE LA TABLE 'ENERPO'
     call tbexp2(enerpo, 'NUME_ORDRE')
@@ -194,8 +186,7 @@ subroutine op0172()
     call wkvect('&&OP0172.ENMOTO', 'V V R', nbmode, ienmot)
     call wkvect('&&OP0172.RIGNOE', 'V V R', 6*nbnoeu, irigno)
 !
-    call getvtx('ENER_SOL', 'METHODE', 1, iarg, 1,&
-                method, nmt)
+    call getvtx('ENER_SOL', 'METHODE', iocc=1, scal=method, nbret=nmt)
 !
 !       RECUPERATION DU CENTRE
 !
@@ -284,15 +275,14 @@ subroutine op0172()
     zrig = min(abs(rigi(4)),abs(rigi(5)))
     zrig = min(zrig,abs(rigi(6)))
     if (zrig .le. r8prem( )) call u2mess('F', 'PREPOST4_21')
-    call getvr8('ENER_SOL', 'COOR_CENTRE', 1, iarg, 0,&
-                r8b, ncg)
+    call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=0, nbret=ncg)
     call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
                 iarg, 0, k8b, nno)
     call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
                 iarg, 0, k8b, ngn)
     if (ncg .ne. 0) then
-        call getvr8('ENER_SOL', 'COOR_CENTRE', 1, iarg, 3,&
-                    c, ncg)
+        call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=3, vect=c,&
+                    nbret=ncg)
         xg = c(1)
         yg = c(2)
         zg = c(3)
@@ -396,25 +386,20 @@ subroutine op0172()
     call getvem(noma, 'GROUP_MA', 'AMOR_INTERNE', 'GROUP_MA', 1,&
                 iarg, nbga, zk24(idga), nbg)
     call wkvect('&&OP0172.AMINT', 'V V R', nbga, idam)
-    call getvr8('AMOR_INTERNE', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8b, nba)
+    call getvr8('AMOR_INTERNE', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nba)
     nba = -nba
     if (nbga .ne. nba) call u2mess('F', 'PREPOST4_23')
 !
-    call getvr8('AMOR_INTERNE', 'AMOR_REDUIT', 1, iarg, nbga,&
-                zr(idam), nba)
-    call getvr8('AMOR_SOL', 'AMOR_REDUIT', 1, iarg, 1,&
-                amosol, nba)
-    call getvr8('AMOR_SOL', 'SEUIL', 1, iarg, 1,&
-                seuil, nbs)
-    call getvid('AMOR_SOL', 'FONC_AMOR_GEO', 1, iarg, 0,&
-                k8b, nco)
+    call getvr8('AMOR_INTERNE', 'AMOR_REDUIT', iocc=1, nbval=nbga, vect=zr(idam),&
+                nbret=nba)
+    call getvr8('AMOR_SOL', 'AMOR_REDUIT', iocc=1, scal=amosol, nbret=nba)
+    call getvr8('AMOR_SOL', 'SEUIL', iocc=1, scal=seuil, nbret=nbs)
+    call getvid('AMOR_SOL', 'FONC_AMOR_GEO', iocc=1, nbval=0, nbret=nco)
     nco = -nco
     if (ncmp .ne. nco) call u2mess('F', 'PREPOST4_24')
-    call getvid('AMOR_SOL', 'FONC_AMOR_GEO', 1, iarg, ncmp,&
-                amogeo, nba)
-    call getvtx('AMOR_SOL', 'HOMOGENE', 1, iarg, 1,&
-                rep, nrp)
+    call getvid('AMOR_SOL', 'FONC_AMOR_GEO', iocc=1, nbval=ncmp, vect=amogeo,&
+                nbret=nba)
+    call getvtx('AMOR_SOL', 'HOMOGENE', iocc=1, scal=rep, nbret=nrp)
 !
     call wkvect('&&OP0172.AMOMOD', 'V V R', nbmode, iamomo)
 !
@@ -476,12 +461,9 @@ subroutine op0172()
 !
 ! --- MATRICE DES MODES MECA
 !
-    call getvid('AMOR_RAYLEIGH', 'MODE_MECA', 1, iarg, 1,&
-                meca, nbmd)
-    call getvr8('AMOR_RAYLEIGH', 'AMOR_ALPHA', 1, iarg, 1,&
-                alfa, nba)
-    call getvr8('AMOR_RAYLEIGH', 'AMOR_BETA', 1, iarg, 1,&
-                beta, nbb)
+    call getvid('AMOR_RAYLEIGH', 'MODE_MECA', iocc=1, scal=meca, nbret=nbmd)
+    call getvr8('AMOR_RAYLEIGH', 'AMOR_ALPHA', iocc=1, scal=alfa, nbret=nba)
+    call getvr8('AMOR_RAYLEIGH', 'AMOR_BETA', iocc=1, scal=beta, nbret=nbb)
     call mginfo(meca, nume, nbmode, neq)
     call wkvect('&&OP0172.AMOMOD', 'V V R', nbmode, iamomo)
     write(ifr,1002)

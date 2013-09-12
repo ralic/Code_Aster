@@ -26,11 +26,8 @@ subroutine sscgno(ma, nbgnin)
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cgnoec.h"
 #include "asterfort/cgnoes.h"
 #include "asterfort/cgnofu.h"
@@ -42,6 +39,8 @@ subroutine sscgno(ma, nbgnin)
 #include "asterfort/cgnoxf.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -60,6 +59,7 @@ subroutine sscgno(ma, nbgnin)
 #include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: vecori(3)
 !
     integer :: nalar, nbma
@@ -107,30 +107,21 @@ subroutine sscgno(ma, nbgnin)
 !
     motfac = 'CREA_GROUP_NO'
     call getfac(motfac, nbocc)
-    call getvtx(' ', 'ALARME', 1, iarg, 1,&
-                alarm, nalar)
+    call getvtx(' ', 'ALARME', scal=alarm, nbret=nalar)
     nbgnaj = 0
 !
 ! ----------------------------------------------------------------------
 !
     do 100 , iocc = 1 , nbocc
 !
-    call getvtx(motfac, 'NOEUD', iocc, iarg, 0,&
-                k8b, n2)
-    call getvtx(motfac, 'INTERSEC', iocc, iarg, 0,&
-                k8b, n3)
-    call getvtx(motfac, 'UNION', iocc, iarg, 0,&
-                k8b, n4)
-    call getvtx(motfac, 'DIFFE', iocc, iarg, 0,&
-                k8b, n5)
-    call getvtx(motfac, 'GROUP_MA', iocc, iarg, 0,&
-                k8b, n6)
-    call getvtx(motfac, 'TOUT_GROUP_MA', iocc, iarg, 0,&
-                k8b, n7)
-    call getvtx(motfac, 'GROUP_NO', iocc, iarg, 0,&
-                k8b, n8)
-    call getvtx(motfac, 'OPTION', iocc, iarg, 0,&
-                k8b, n9)
+    call getvtx(motfac, 'NOEUD', iocc=iocc, nbval=0, nbret=n2)
+    call getvtx(motfac, 'INTERSEC', iocc=iocc, nbval=0, nbret=n3)
+    call getvtx(motfac, 'UNION', iocc=iocc, nbval=0, nbret=n4)
+    call getvtx(motfac, 'DIFFE', iocc=iocc, nbval=0, nbret=n5)
+    call getvtx(motfac, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n6)
+    call getvtx(motfac, 'TOUT_GROUP_MA', iocc=iocc, nbval=0, nbret=n7)
+    call getvtx(motfac, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n8)
+    call getvtx(motfac, 'OPTION', iocc=iocc, nbval=0, nbret=n9)
 !
 ! ----------------------------------------------------------------------
 ! ----- MOT CLEF "TOUT_GROUP_MA" :
@@ -152,8 +143,7 @@ subroutine sscgno(ma, nbgnin)
 !
 ! ----------------------------------------------------------------------
 !
-    call getvtx(motfac, 'NOM', iocc, iarg, 1,&
-                nogno, n1)
+    call getvtx(motfac, 'NOM', iocc=iocc, scal=nogno, nbret=n1)
     call jenonu(jexnom(grpnoe, nogno), iret)
     if (iret .gt. 0) then
         call u2mesk('F', 'SOUSTRUC_37', 1, nogno)
@@ -207,7 +197,7 @@ subroutine sscgno(ma, nbgnin)
             goto 100
         endif
         call jecroc(jexnom(grpnoe, nogno))
-        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1,n))
+        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, n))
         call jeecra(jexnom(grpnoe, nogno), 'LONUTI', n)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
         do 36 ii = 1, n
@@ -267,7 +257,7 @@ subroutine sscgno(ma, nbgnin)
             endif
         else
             call jecroc(jexnom(grpnoe, nogno))
-            call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1,n))
+            call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, n))
             call jeecra(jexnom(grpnoe, nogno), 'LONUTI', n)
             call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
             do 46 ii = 1, n
@@ -318,7 +308,7 @@ subroutine sscgno(ma, nbgnin)
             endif
         else
             call jecroc(jexnom(grpnoe, nogno))
-            call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1,n))
+            call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, n))
             call jeecra(jexnom(grpnoe, nogno), 'LONUTI', n)
             call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
             do 56 ii = 1, n
@@ -333,8 +323,7 @@ subroutine sscgno(ma, nbgnin)
 ! ----- MOT CLEF "OPTION" :
 !       -------------------
     if (n9 .gt. 0) then
-        call getvtx(motfac, 'OPTION', iocc, iarg, 1,&
-                    option, n9)
+        call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=n9)
 !
 !         -- TRAITEMENT DE L'OPTION "ENV_SPHERE" :
 !         ----------------------------------------
@@ -402,7 +391,7 @@ subroutine sscgno(ma, nbgnin)
             call jeveuo(lisno, 'L', idlino)
 !
             call jecroc(jexnom(ma//'.GROUPENO', nogno))
-            call jeecra(jexnom(ma//'.GROUPENO', nogno), 'LONMAX', max(1,nbno))
+            call jeecra(jexnom(ma//'.GROUPENO', nogno), 'LONMAX', max(1, nbno))
             call jeecra(jexnom(ma//'.GROUPENO', nogno), 'LONUTI', nbno)
             call jeveuo(jexnom(ma//'.GROUPENO', nogno), 'E', iagma)
 !
@@ -444,7 +433,7 @@ subroutine sscgno(ma, nbgnin)
 20      continue
 !
         call jecroc(jexnom(grpnoe, nogno))
-        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1,nbno))
+        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, nbno))
         call jeecra(jexnom(grpnoe, nogno), 'LONUTI', nbno)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagma)
         do 22 ino = 0, nbno - 1
@@ -467,16 +456,13 @@ subroutine sscgno(ma, nbgnin)
         call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
         call jeveuo(jexnum(grpnoe, ign2), 'L', iagn2)
 !
-        call getvtx(motfac, 'POSITION', iocc, iarg, 0,&
-                    kpos, n6b)
+        call getvtx(motfac, 'POSITION', iocc=iocc, nbval=0, nbret=n6b)
         ind1 = 0
         ind2 = 0
         if (n6b .eq. 0) then
-            call getvis(motfac, 'NUME_INIT', iocc, iarg, 1,&
-                        ind1, n6a)
+            call getvis(motfac, 'NUME_INIT', iocc=iocc, scal=ind1, nbret=n6a)
             if (n6a .eq. 0) ind1 = 1
-            call getvis(motfac, 'NUME_FIN', iocc, iarg, 1,&
-                        ind2, n6a)
+            call getvis(motfac, 'NUME_FIN', iocc=iocc, scal=ind2, nbret=n6a)
             if (n6a .eq. 0) ind2 = ili2
             if (ind2 .lt. ind1) call u2mess('F', 'SOUSTRUC_33')
             if (ili2 .lt. ind2) call u2mess('F', 'SOUSTRUC_34')
@@ -486,7 +472,7 @@ subroutine sscgno(ma, nbgnin)
         endif
 !
         call jecroc(jexnom(grpnoe, nogno))
-        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1,n6a))
+        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, n6a))
         call jeecra(jexnom(grpnoe, nogno), 'LONUTI', n6a)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagno)
         nbgnaj = nbgnaj + 1
@@ -497,8 +483,7 @@ subroutine sscgno(ma, nbgnin)
 82      continue
         goto 100
 80      continue
-        call getvtx(motfac, 'POSITION', iocc, iarg, 1,&
-                    kpos, n6b)
+        call getvtx(motfac, 'POSITION', iocc=iocc, scal=kpos, nbret=n6b)
         if (kpos .eq. 'INIT') then
             zi(iagno) = zi(iagn2)
         else if (kpos.eq.'FIN') then

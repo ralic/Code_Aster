@@ -3,12 +3,11 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                   noresi, vcn, grlr, lcmin)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -24,6 +23,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 #include "asterfort/wkvect.h"
 #include "asterfort/xprcfl.h"
 #include "asterfort/xprcnu.h"
+!
     character(len=8) :: model, noma, fispre, fiss
     character(len=19) :: cnsln, cnslt, cnsgls, noesom, noresi, cnxinv
     character(len=24) :: vcn, grlr
@@ -112,8 +112,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
-    call getvtx(' ', 'METHODE', 1, iarg, 1,&
-                method, ibid)
+    call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
 !
     if ((method.eq.'UPWIND') .and. (.not.grille)) then
         call xprcnu(noma, cnxinv, 'V', vcn, grlr,&
@@ -130,12 +129,10 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     if (method .eq. 'GEOMETRI') goto 9999
 !
 !  RECUPERATION DU RAYON DU TORE OU L'ON ESTIME LE RESIDU
-    call getvr8(' ', 'RAYON', 1, iarg, 1,&
-                rayon, iret)
+    call getvr8(' ', 'RAYON', scal=rayon, nbret=iret)
 !
 !   RETRIEVE THE MAXIMUM ADVANCEMENT OF THE CRACK FRONT
-    call getvr8(' ', 'DA_MAX', 1, iarg, 1,&
-                damax, iret)
+    call getvr8(' ', 'DA_MAX', scal=damax, nbret=iret)
 !
 !   RECUPERATION DES VALEURS DES LS ET DU GRADIENT DE LS
     call jeveuo(cnsln//'.CNSV', 'E', jlnno)

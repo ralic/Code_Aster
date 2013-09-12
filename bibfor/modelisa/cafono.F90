@@ -1,18 +1,17 @@
-subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
+subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/affono.h"
-#include "asterfort/alcart.h"
 #include "asterfort/alcar1.h"
+#include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_crea_ligf.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -29,6 +28,7 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=*) :: ligrcz, ligrmz
@@ -110,7 +110,7 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
 ! - Create <LIGREL> on nodes (for "late" elements on nodes)
 !
     call char_crea_ligf(noma, ligrch, nb_node, nb_list_elem, nb_list_node)
-
+!
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_2DDL' ), n2dl)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_3DDL' ), n3dl)
@@ -198,19 +198,18 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
 !     BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR FORCE_NODALE
 ! --------------------------------------------------------------
 !
-    do  i = 1, nfono
+    do i = 1, nfono
         do 20 ii = 1, nbcomp
             forimp(ii) = 0
 20      continue
 !
         if (fonree .eq. 'REEL') then
             do 30 j = 1, 6
-                call getvr8(motclf, motcle(j), i, iarg, 1,&
-                            valfor(j), forimp(j))
+                call getvr8(motclf, motcle(j), iocc=i, scal=valfor(j), nbret=forimp(j))
 30          continue
 !
-            call getvr8(motclf, 'ANGL_NAUT', i, iarg, 3,&
-                        valfor(8), nangl)
+            call getvr8(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfor(8),&
+                        nbret=nangl)
             if (nangl .ne. 0) then
 !              --- REPERE UTILISATEUR ---
                 valfor(7) = -1.d0
@@ -229,12 +228,11 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
                 valfof(ii) = '&FOZERO'
 50          continue
             do 60 j = 1, 6
-                call getvid(motclf, motcle(j), i, iarg, 1,&
-                            valfof(j), forimp(j))
+                call getvid(motclf, motcle(j), iocc=i, scal=valfof(j), nbret=forimp(j))
 60          continue
 !
-            call getvid(motclf, 'ANGL_NAUT', i, iarg, 3,&
-                        valfof(8), nangl)
+            call getvid(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfof(8),&
+                        nbret=nangl)
             if (nangl .ne. 0) then
 !              --- REPERE UTILISATEUR ---
                 valfof(7) = 'UTILISAT'
@@ -270,7 +268,7 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
 100      continue
 !
         call jedetr(mesnoe)
-110     continue
+110      continue
     end do
 !
 !     -----------------------------------------------

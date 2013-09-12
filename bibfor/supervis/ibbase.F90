@@ -2,11 +2,11 @@ subroutine ibbase(ier, fichdf)
     implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterc/loisem.h"
 #include "asterc/mofiem.h"
 #include "asterc/rmfile.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jeinif.h"
 #include "asterfort/jelibf.h"
 #include "asterfort/jelihd.h"
@@ -117,8 +117,7 @@ subroutine ibbase(ier, fichdf)
     do 100 ibase = 1, nbbase
 !
 !        --- MOT CLE "FICHIER" ANCIENNEMENT "NOM" ---------------------
-        call getvtx(motfac, 'FICHIER', ibase, iarg, 1,&
-                    nom, nb)
+        call getvtx(motfac, 'FICHIER', iocc=ibase, scal=nom, nbret=nb)
         call utremt(nom, nomba, mxbase, indbas)
         if (indbas .eq. 0) then
             indbas = 1
@@ -140,8 +139,7 @@ subroutine ibbase(ier, fichdf)
 !
 !        --- MOT CLE "CAS" ---------------------------------------------
 !
-        call getvtx(motfac, 'CAS', ibase, iarg, 1,&
-                    cas, nb)
+        call getvtx(motfac, 'CAS', iocc=ibase, scal=cas, nbret=nb)
         if (nb .gt. 0) then
             call utremt(cas, casca, mxcas, indcas)
             if (indcas .eq. 0) then
@@ -158,13 +156,11 @@ subroutine ibbase(ier, fichdf)
 !
 !        ---NOMBRE DE BLOC D'ENREGISTREMENT ----------------------------
         banbbl(indbas) = nbblca(indbas,indcas)
-        call getvis(motfac, 'NMAX_ENRE', ibase, iarg, 1,&
-                    banbbl(indbas), nb)
+        call getvis(motfac, 'NMAX_ENRE', iocc=ibase, scal=banbbl(indbas), nbret=nb)
 !
 !        --- LONGUEUR D'UN BLOC D'ENREGISTREMENT -----------------------
         balgbl(indbas) = lgblca(indbas,indcas)
-        call getvis(motfac, 'LONG_ENRE', ibase, iarg, 1,&
-                    balgbl(indbas), nb)
+        call getvis(motfac, 'LONG_ENRE', iocc=ibase, scal=balgbl(indbas), nbret=nb)
 !
         ltt = banbbl(indbas)*balgbl(indbas)*loisem()
         if (ltt .gt. mofiem()) then
@@ -177,12 +173,10 @@ subroutine ibbase(ier, fichdf)
 !
 !        --- MOT CLE "LONG_REPE" ---------------------------------------
         balgre(indbas) = lgreca(indbas,indcas)
-        call getvis(motfac, 'LONG_REPE', ibase, iarg, 1,&
-                    balgre(indbas), nb)
+        call getvis(motfac, 'LONG_REPE', iocc=ibase, scal=balgre(indbas), nbret=nb)
 !
 !        --- MOT CLE "TITRE" -------------------------------------------
-        call getvtx(motfac, 'TITRE', ibase, iarg, 1,&
-                    titrba(indbas), nb)
+        call getvtx(motfac, 'TITRE', iocc=ibase, scal=titrba(indbas), nbret=nb)
 !
 100  end do
 !

@@ -27,9 +27,9 @@ subroutine op0145()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -39,7 +39,7 @@ subroutine op0145()
 #include "asterfort/wkvect.h"
     integer :: ibid, dim, mxval
     character(len=1) :: typspe
-    character(len=8) ::  k8bid, intspe, caelem, modele, nomzon
+    character(len=8) :: k8bid, intspe, caelem, modele, nomzon
     character(len=16) :: concep, cmd, nommcf, mcfac(9)
     character(len=19) :: nomu
     character(len=24) :: vain, vare, vate, nnoe, chnumi
@@ -89,21 +89,16 @@ subroutine op0145()
 !     =============================
 !
     if (ispect .eq. 21) then
-        call getvid(nommcf, 'INTE_SPEC', 1, iarg, 0,&
-                    k8bid, iinter)
+        call getvid(nommcf, 'INTE_SPEC', iocc=1, nbval=0, nbret=iinter)
         if (iinter .ne. 0) then
-            call getvtx(nommcf, 'NATURE', 1, iarg, 0,&
-                        k8bid, inatur)
-            call getvr8(nommcf, 'ANGLE', 1, iarg, 0,&
-                        rbid, iangl)
-            call getvtx(nommcf, 'NOEUD', 1, iarg, 0,&
-                        k8bid, inoeud)
+            call getvtx(nommcf, 'NATURE', iocc=1, nbval=0, nbret=inatur)
+            call getvr8(nommcf, 'ANGLE', iocc=1, nbval=0, nbret=iangl)
+            call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
             if (inatur .ne. iangl .or. inatur .ne. inoeud .or. inoeud .ne. iangl) then
                 call u2mess('F', 'MODELISA5_66')
             endif
         else
-            call getvtx(nommcf, 'NOEUD', 1, iarg, 0,&
-                        k8bid, inoeud)
+            call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
             if (abs(inoeud) .ne. 1) then
                 call u2mess('F', 'MODELISA5_67')
             endif
@@ -117,24 +112,20 @@ subroutine op0145()
 !     ===========================
 !
     if (ispect .eq. 11 .or. ispect .eq. 21) then
-        call getvid(nommcf, 'INTE_SPEC', 1, iarg, 0,&
-                    k8bid, iinter)
+        call getvid(nommcf, 'INTE_SPEC', iocc=1, nbval=0, nbret=iinter)
         if (iinter .ne. 0) then
-            call getvid(nommcf, 'INTE_SPEC', 1, iarg, 1,&
-                        intspe, ibid)
+            call getvid(nommcf, 'INTE_SPEC', iocc=1, scal=intspe, nbret=ibid)
             chnumi = intspe//'.NUMI'
             call jelira(chnumi, 'LONMAX', mxval)
             if (ispect .eq. 11) then
-                call getvid(nommcf, 'FONCTION', 1, iarg, 0,&
-                            k8bid, ifonct)
+                call getvid(nommcf, 'FONCTION', iocc=1, nbval=0, nbret=ifonct)
                 dim = abs(ifonct)
                 dim = dim*(dim+1)/2
                 if (dim .ne. mxval) then
                     call u2mess('F', 'MODELISA5_68')
                 endif
             else
-                call getvtx(nommcf, 'NOEUD', 1, iarg, 0,&
-                            k8bid, inoeud)
+                call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
                 dim = abs(inoeud)
                 dim = dim*(dim+1)/2
                 if (dim .ne. mxval) then
@@ -244,27 +235,22 @@ subroutine op0145()
         imci = 0
         do 20 imc = 1, nbmcl
             if (zk16(lnom+imc-1) .eq. 'PROF_VITE_FLUI  ') then
-                call getvid(nommcf, 'PROF_VITE_FLUI', 1, iarg, 1,&
-                            nomzon, ibid)
+                call getvid(nommcf, 'PROF_VITE_FLUI', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
                 zk8(jvavf)=nomzon
             else if (zk16(lnom+imc-1).eq.'METHODE         ') then
-                call getvtx(nommcf, 'METHODE', 1, iarg, 1,&
-                            nomzon, ibid)
+                call getvtx(nommcf, 'METHODE', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
             else if (zk16(lnom+imc-1).eq.'FONCTION        ') then
-                call getvid(nommcf, 'FONCTION', 1, iarg, 1,&
-                            nomzon, ibid)
+                call getvid(nommcf, 'FONCTION', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
             else if (zk16(lnom+imc-1).eq.'TABLE_FONCTION  ') then
-                call getvid(nommcf, 'TABLE_FONCTION', 1, iarg, 1,&
-                            nomzon, ibid)
+                call getvid(nommcf, 'TABLE_FONCTION', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
             else if (zk16(lnom+imc-1).ne.'                ') then
                 imci = imci + 1
                 zk16(lvate+imc) = zk16(lnom+imc-1)
-                call getvr8(nommcf, zk16(lnom+imc-1), 1, iarg, 1,&
-                            zr( lvare+imci-1), ibid)
+                call getvr8(nommcf, zk16(lnom+imc-1), iocc=1, scal=zr( lvare+imci-1), nbret=ibid)
             endif
 20      continue
         zi(lvain) = ispect
@@ -280,8 +266,7 @@ subroutine op0145()
 ! ------2.1.1.OBJET .VAIN
 !
         call wkvect(vain, 'G V I', 3, lvain)
-        call getvtx(nommcf, 'NOEUD', 1, iarg, 0,&
-                    k8bid, nnap)
+        call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=nnap)
         nnap = abs(nnap)
         zi(lvain) = ispect
         if (iinter .eq. 0) then
@@ -294,8 +279,8 @@ subroutine op0145()
 ! ------2.1.2.OBJET .NNOE
 !
         call wkvect(nnoe, 'G V K8', nnap, lnnoe)
-        call getvtx(nommcf, 'NOEUD', 1, iarg, nnap,&
-                    zk8(lnnoe), ibid)
+        call getvtx(nommcf, 'NOEUD', iocc=1, nbval=nnap, vect=zk8(lnnoe),&
+                    nbret=ibid)
 !
 ! ------2.2.OBJETS .VATE ET .VARE
 !
@@ -311,10 +296,8 @@ subroutine op0145()
         endif
 !
         call wkvect(vate, 'G V K16', long, lvate)
-        call getvid(nommcf, 'CARA_ELEM', 1, iarg, 1,&
-                    caelem, ibid)
-        call getvid(nommcf, 'MODELE', 1, iarg, 1,&
-                    modele, ibid)
+        call getvid(nommcf, 'CARA_ELEM', iocc=1, scal=caelem, nbret=ibid)
+        call getvid(nommcf, 'MODELE', iocc=1, scal=modele, nbret=ibid)
         zk16(lvate) = nommcf
         zk16(lvate+1) = caelem
         zk16(lvate+2) = modele
@@ -324,12 +307,11 @@ subroutine op0145()
         if (ispect .eq. 11) then
             if (iinter .eq. 0) then
                 zk16(lvate+3) = 'GRAPPE_1'
-                call getvtx(nommcf, 'GRAPPE_1', 1, iarg, 1,&
-                            zk16(lvate+4), ibid)
+                call getvtx(nommcf, 'GRAPPE_1', iocc=1, scal=zk16(lvate+4), nbret=ibid)
             else
                 call wkvect('OP0145.TEMP.FON', 'V V K8', ifonct, lfon)
-                call getvid(nommcf, 'FONCTION', 1, iarg, ifonct,&
-                            zk8(lfon), ibid)
+                call getvid(nommcf, 'FONCTION', iocc=1, nbval=ifonct, vect=zk8(lfon),&
+                            nbret=ibid)
                 zk16(lvate+3) = intspe
                 do 30 ifo = 1, ifonct
                     zk16(lvate+3+ifo) = zk8(lfon+ifo-1)
@@ -341,25 +323,23 @@ subroutine op0145()
         else
             if (iinter .eq. 0) then
                 zk16(lvate+3) = 'GRAPPE_2'
-                call getvtx(nommcf, 'GRAPPE_2', 1, iarg, 1,&
-                            zk16(lvate+4), ibid)
+                call getvtx(nommcf, 'GRAPPE_2', iocc=1, scal=zk16(lvate+4), nbret=ibid)
 !
                 call wkvect(vare, 'G V R', 1, lvare)
-                call getvr8(nommcf, 'RHO_FLUI', 1, iarg, 1,&
-                            zr(lvare), ibid)
+                call getvr8(nommcf, 'RHO_FLUI', iocc=1, scal=zr(lvare), nbret=ibid)
 !
             else
                 call wkvect('OP0145.TEMP.NAT', 'V V K8', inoeud, lnat)
-                call getvtx(nommcf, 'NATURE', 1, iarg, inoeud,&
-                            zk8(lnat), ibid)
+                call getvtx(nommcf, 'NATURE', iocc=1, nbval=inoeud, vect=zk8(lnat),&
+                            nbret=ibid)
                 zk16(lvate+3) = intspe
                 do 40 inat = 1, inoeud
                     zk16(lvate+3+inat) = zk8(lnat+inat-1)
 40              continue
 !
                 call wkvect(vare, 'G V R', inoeud, lvare)
-                call getvr8(nommcf, 'ANGLE', 1, iarg, inoeud,&
-                            zr(lvare), ibid)
+                call getvr8(nommcf, 'ANGLE', iocc=1, nbval=inoeud, vect=zr(lvare),&
+                            nbret=ibid)
 !
             endif
 !

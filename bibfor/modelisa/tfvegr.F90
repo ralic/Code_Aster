@@ -29,14 +29,14 @@ subroutine tfvegr(nommcf, ocgril)
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: nommcf
     integer :: ocgril, ntypg
     integer :: iarg
@@ -49,38 +49,30 @@ subroutine tfvegr(nommcf, ocgril)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call getvr8(nommcf, 'LONG_TYPG', ocgril, iarg, 0,&
-                rbid, ntypg)
+    call getvr8(nommcf, 'LONG_TYPG', iocc=ocgril, nbval=0, nbret=ntypg)
     ntypg = abs(ntypg)
-    call getvr8(nommcf, 'COOR_GRILLE', ocgril, iarg, 0,&
-                rbid, nbgtot)
+    call getvr8(nommcf, 'COOR_GRILLE', iocc=ocgril, nbval=0, nbret=nbgtot)
     nbgtot = abs(nbgtot)
     if (nbgtot .lt. ntypg) then
         call u2mess('E', 'MODELISA7_15')
     endif
-    call getvis(nommcf, 'TYPE_GRILLE', ocgril, iarg, 0,&
-                ibid, ntot2)
+    call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=0, nbret=ntot2)
     if (abs(ntot2) .ne. nbgtot) then
         call u2mess('E', 'MODELISA7_16')
     endif
     call wkvect('&&TFVEGR.TEMP.VECI', 'V V I', nbgtot, iveci)
-    call getvis(nommcf, 'TYPE_GRILLE', ocgril, iarg, nbgtot,&
-                zi(iveci), ibid)
+    call getvis(nommcf, 'TYPE_GRILLE', iocc=ocgril, nbval=nbgtot, vect=zi(iveci),&
+                nbret=ibid)
     do 100 igril = 1, nbgtot
         if ((zi(iveci+igril-1).lt.1) .or. (zi(iveci+igril-1).gt.ntypg)) then
             call u2mess('E', 'MODELISA7_17')
         endif
 100  continue
-    call getvr8(nommcf, 'LARG_TYPG', ocgril, iarg, 0,&
-                rbid, ntypg2)
-    call getvr8(nommcf, 'EPAI_TYPG', ocgril, iarg, 0,&
-                rbid, ntypg3)
-    call getvr8(nommcf, 'RUGO_TYPG', ocgril, iarg, 0,&
-                rbid, ntypg4)
-    call getvr8(nommcf, 'COEF_TRAI_TYPG', ocgril, iarg, 0,&
-                rbid, ntypg5)
-    call getvr8(nommcf, 'COEF_DPOR_TYPG', ocgril, iarg, 0,&
-                rbid, ntypg6)
+    call getvr8(nommcf, 'LARG_TYPG', iocc=ocgril, nbval=0, nbret=ntypg2)
+    call getvr8(nommcf, 'EPAI_TYPG', iocc=ocgril, nbval=0, nbret=ntypg3)
+    call getvr8(nommcf, 'RUGO_TYPG', iocc=ocgril, nbval=0, nbret=ntypg4)
+    call getvr8(nommcf, 'COEF_TRAI_TYPG', iocc=ocgril, nbval=0, nbret=ntypg5)
+    call getvr8(nommcf, 'COEF_DPOR_TYPG', iocc=ocgril, nbval=0, nbret=ntypg6)
     if ((abs(ntypg2).ne.ntypg) .or. (abs(ntypg3).ne.ntypg) .or. (abs(ntypg4).ne.ntypg) .or.&
         (abs(ntypg5).ne.ntypg) .or. (abs(ntypg6).ne.ntypg)) then
         call u2mess('E', 'MODELISA7_18')

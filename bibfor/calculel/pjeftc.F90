@@ -25,10 +25,10 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 ! 0.1. ==> ARGUMENTS
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -79,10 +79,8 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 !
 !         -- NOMS DES GROUPES DE MAILLES ET DE NOEUDS COUPLES :
 !         -----------------------------------------------------------
-            call getvtx('VIS_A_VIS', 'GROUP_MA_1', iocc, iarg, 1,&
-                        nomgma, nbval)
-            call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc, iarg, 1,&
-                        nomgno, nbval)
+            call getvtx('VIS_A_VIS', 'GROUP_MA_1', iocc=iocc, scal=nomgma, nbret=nbval)
+            call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc=iocc, scal=nomgno, nbret=nbval)
 !
 !         -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
 !         ----------------------------------------------

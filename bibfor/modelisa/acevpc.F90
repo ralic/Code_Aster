@@ -1,8 +1,8 @@
 subroutine acevpc(nbocc, nlm, nlg, ier)
     implicit none
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
@@ -47,22 +47,14 @@ subroutine acevpc(nbocc, nlm, nlg, ier)
     nlm = 0
     nlg = 0
     do 10 ioc = 1, nbocc
-        call getvtx('DEFI_ARC', 'GROUP_MA', ioc, iarg, 0,&
-                    k8bid, ng)
-        call getvtx('DEFI_ARC', 'MAILLE', ioc, iarg, 0,&
-                    k8bid, nm)
-        call getvr8('DEFI_ARC', 'RAYON', ioc, iarg, 1,&
-                    xrc, nr)
-        call getvr8('DEFI_ARC', 'ORIE_ARC', ioc, iarg, 1,&
-                    xoa, na)
-        call getvr8('DEFI_ARC', 'CENTRE', ioc, iarg, 0,&
-                    xoc, nc)
-        call getvr8('DEFI_ARC', 'POIN_TANG', ioc, iarg, 0,&
-                    xop, np)
-        call getvr8('DEFI_ARC', 'COEF_FLEX', ioc, iarg, 1,&
-                    xfl, nf)
-        call getvr8('DEFI_ARC', 'INDI_SIGM', ioc, iarg, 1,&
-                    xsi, ns)
+        call getvtx('DEFI_ARC', 'GROUP_MA', iocc=ioc, nbval=0, nbret=ng)
+        call getvtx('DEFI_ARC', 'MAILLE', iocc=ioc, nbval=0, nbret=nm)
+        call getvr8('DEFI_ARC', 'RAYON', iocc=ioc, scal=xrc, nbret=nr)
+        call getvr8('DEFI_ARC', 'ORIE_ARC', iocc=ioc, scal=xoa, nbret=na)
+        call getvr8('DEFI_ARC', 'CENTRE', iocc=ioc, nbval=0, nbret=nc)
+        call getvr8('DEFI_ARC', 'POIN_TANG', iocc=ioc, nbval=0, nbret=np)
+        call getvr8('DEFI_ARC', 'COEF_FLEX', iocc=ioc, scal=xfl, nbret=nf)
+        call getvr8('DEFI_ARC', 'INDI_SIGM', iocc=ioc, scal=xsi, nbret=ns)
 !
         if (nr .ne. 0) then
             if (xrc .le. 0.d0) then

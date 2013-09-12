@@ -1,14 +1,13 @@
 subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
                   masgen, amogen, lflu, nbnli, noecho,&
                   logcho, parcho, intitu, ddlcho, ier)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -22,6 +21,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 #include "asterfort/u2mess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/vechbn.h"
+!
     integer :: nbnli, iamor, imode, ier, logcho(nbnli, *), ddlcho(*)
     real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
     logical :: lflu
@@ -91,8 +91,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 !
         lnoue2 = .false.
 !
-        call getvtx(motfac, 'SOUS_STRUC_1', i, iarg, 1,&
-                    sst1, n1)
+        call getvtx(motfac, 'SOUS_STRUC_1', iocc=i, scal=sst1, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('F', 'ALGORITH5_31')
         endif
@@ -105,13 +104,11 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
         call mgutdm(mdgene, sst1, ibid, 'NOM_MAILLAGE', ibid,&
                     maya1)
 !
-        call getvtx(motfac, 'NOEUD_1', i, iarg, 1,&
-                    nomno1, ibid)
+        call getvtx(motfac, 'NOEUD_1', iocc=i, scal=nomno1, nbret=ibid)
         if (ibid .ne. 0) then
             noecho(i,1) = nomno1
         else
-            call getvtx(motfac, 'GROUP_NO_1', i, iarg, 1,&
-                        nomgr1, ibid)
+            call getvtx(motfac, 'GROUP_NO_1', iocc=i, scal=nomgr1, nbret=ibid)
             call utnono(' ', maya1, 'NOEUD', nomgr1, nomno1,&
                         iret)
             if (iret .eq. 10) then
@@ -127,14 +124,11 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
         noecho(i,3) = nume1(1:8)
         noecho(i,4) = maya1
 !
-        call getvtx(motfac, 'NOEUD_2', i, iarg, 1,&
-                    nomno2, nn1)
-        call getvtx(motfac, 'GROUP_NO_2', i, iarg, 1,&
-                    nomgr2, nn2)
+        call getvtx(motfac, 'NOEUD_2', iocc=i, scal=nomno2, nbret=nn1)
+        call getvtx(motfac, 'GROUP_NO_2', iocc=i, scal=nomgr2, nbret=nn2)
         if (nn1 .ne. 0 .or. nn2 .ne. 0) then
             lnoue2 = .true.
-            call getvtx(motfac, 'SOUS_STRUC_2', i, iarg, 1,&
-                        sst2, n2)
+            call getvtx(motfac, 'SOUS_STRUC_2', iocc=i, scal=sst2, nbret=n2)
             if (n2 .eq. 0) then
                 call u2mess('F', 'ALGORITH5_33')
             endif
@@ -147,8 +141,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
             call mgutdm(mdgene, sst2, ibid, 'NOM_MAILLAGE', ibid,&
                         maya2)
             if (nn1 .ne. 0) then
-                call getvtx(motfac, 'NOEUD_2', i, iarg, 1,&
-                            nomno2, nn1)
+                call getvtx(motfac, 'NOEUD_2', iocc=i, scal=nomno2, nbret=nn1)
                 noecho(i,5) = nomno2
             else
                 call utnono(' ', maya2, 'NOEUD', nomgr2, nomno2,&
@@ -191,46 +184,29 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 !
         ktang = 0.d0
         ctang = 0.d0
-        call getvtx(motfac, 'INTITULE', i, iarg, 1,&
-                    intitu(i), n1)
-        call getvr8(motfac, 'JEU', i, iarg, 1,&
-                    parcho(i, 1), n1)
-        call getvr8(motfac, 'DIST_1', i, iarg, 1,&
-                    parcho(i, 30), n1)
-        call getvr8(motfac, 'DIST_2', i, iarg, 1,&
-                    parcho(i, 31), n1)
-        call getvr8(motfac, 'RIGI_NOR', i, iarg, 1,&
-                    parcho(i, 2), n1)
-        call getvr8(motfac, 'AMOR_NOR', i, iarg, 1,&
-                    parcho(i, 3), n1)
-        call getvr8(motfac, 'RIGI_TAN', i, iarg, 1,&
-                    ktang, n1)
-        call getvr8(motfac, 'COULOMB', i, iarg, 1,&
-                    parcho(i, 6), n1)
+        call getvtx(motfac, 'INTITULE', iocc=i, scal=intitu(i), nbret=n1)
+        call getvr8(motfac, 'JEU', iocc=i, scal=parcho(i, 1), nbret=n1)
+        call getvr8(motfac, 'DIST_1', iocc=i, scal=parcho(i, 30), nbret=n1)
+        call getvr8(motfac, 'DIST_2', iocc=i, scal=parcho(i, 31), nbret=n1)
+        call getvr8(motfac, 'RIGI_NOR', iocc=i, scal=parcho(i, 2), nbret=n1)
+        call getvr8(motfac, 'AMOR_NOR', iocc=i, scal=parcho(i, 3), nbret=n1)
+        call getvr8(motfac, 'RIGI_TAN', iocc=i, scal=ktang, nbret=n1)
+        call getvr8(motfac, 'COULOMB', iocc=i, scal=parcho(i, 6), nbret=n1)
         parcho(i,7) = parcho(i,6)
-        call getvr8(motfac, 'COULOMB_DYNA', i, iarg, 1,&
-                    parcho(i, 6), n1)
-        call getvr8(motfac, 'COULOMB_STAT', i, iarg, 1,&
-                    parcho(i, 7), n1)
-        call getvr8(motfac, 'AMOR_TAN', i, iarg, 1,&
-                    ctang, n1)
-        call getvtx(motfac, 'LAME_FLUIDE', i, iarg, 1,&
-                    kbid, n1)
+        call getvr8(motfac, 'COULOMB_DYNA', iocc=i, scal=parcho(i, 6), nbret=n1)
+        call getvr8(motfac, 'COULOMB_STAT', iocc=i, scal=parcho(i, 7), nbret=n1)
+        call getvr8(motfac, 'AMOR_TAN', iocc=i, scal=ctang, nbret=n1)
+        call getvtx(motfac, 'LAME_FLUIDE', iocc=i, scal=kbid, nbret=n1)
         if (kbid(1:3) .eq. 'OUI') then
             lflu = .true.
             logcho(i,2) = 1
-            call getvr8(motfac, 'ALPHA   ', i, iarg, 1,&
-                        parcho(i, 32), n1)
-            call getvr8(motfac, 'BETA    ', i, iarg, 1,&
-                        parcho(i, 33), n1)
-            call getvr8(motfac, 'CHI     ', i, iarg, 1,&
-                        parcho(i, 34), n1)
-            call getvr8(motfac, 'DELTA   ', i, iarg, 1,&
-                        parcho(i, 35), n1)
+            call getvr8(motfac, 'ALPHA   ', iocc=i, scal=parcho(i, 32), nbret=n1)
+            call getvr8(motfac, 'BETA    ', iocc=i, scal=parcho(i, 33), nbret=n1)
+            call getvr8(motfac, 'CHI     ', iocc=i, scal=parcho(i, 34), nbret=n1)
+            call getvr8(motfac, 'DELTA   ', iocc=i, scal=parcho(i, 35), nbret=n1)
         endif
 !
-        call getvid(motfac, 'OBSTACLE', i, iarg, 1,&
-                    noecho(i, 9), n1)
+        call getvid(motfac, 'OBSTACLE', iocc=i, scal=noecho(i, 9), nbret=n1)
 !
         call tbliva(noecho(i, 9), 1, 'LIEU', ibid, r8bid,&
                     cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&

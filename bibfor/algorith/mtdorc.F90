@@ -1,18 +1,18 @@
 subroutine mtdorc(modelz, compoz, carcri)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
+!
     character(len=*) :: modelz, compoz
     character(len=24) :: carcri
 ! ----------------------------------------------------------------------
@@ -109,10 +109,8 @@ subroutine mtdorc(modelz, compoz, carcri)
 !       nombre d'occurrences
         do 150 k = 1, nbocc
 !
-            call getvtx(moclef(i), 'RELATION', k, iarg, 1,&
-                        comp, n1)
-            call getvis(moclef(i), comp, k, iarg, 1,&
-                        nbvari, n1)
+            call getvtx(moclef(i), 'RELATION', iocc=k, scal=comp, nbret=n1)
+            call getvis(moclef(i), comp, iocc=k, scal=nbvari, nbret=n1)
             zk16(jvalv-1+1) = comp
             write (zk16(jvalv-1+2),'(I16)') nbvari
             zk16(jvalv-1+3) = ' '

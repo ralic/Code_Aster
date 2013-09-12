@@ -39,10 +39,10 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irecri.h"
 #include "asterfort/irparb.h"
@@ -329,13 +329,12 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
         imoda = 0
         do 70 i = 1, nbpsmo
             direct = .false.
-            call getvtx('PSEUDO_MODE', 'AXE', i, iarg, 0,&
-                        monaxe, na)
+            call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=0, nbret=na)
             if (na .ne. 0) then
                 nnaxe = -na
                 call wkvect('&&OP0093.AXE', 'V V K8', nnaxe, jaxe)
-                call getvtx('PSEUDO_MODE', 'AXE', i, iarg, nnaxe,&
-                            zk8( jaxe), na)
+                call getvtx('PSEUDO_MODE', 'AXE', iocc=i, nbval=nnaxe, vect=zk8( jaxe),&
+                            nbret=na)
                 ifin = 0
                 do 72 ia = 1, nnaxe
                     monaxe = zk8(jaxe+ia-1)
@@ -361,8 +360,8 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 72              continue
                 call jedetr('&&OP0093.AXE')
             else
-                call getvr8('PSEUDO_MODE', 'DIRECTION', i, iarg, 3,&
-                            coef, na)
+                call getvr8('PSEUDO_MODE', 'DIRECTION', iocc=i, nbval=3, vect=coef,&
+                            nbret=na)
                 if (na .ne. 0) then
 !              --- ON NORME LA DIRECTION ---
                     xnorm = zero
@@ -373,8 +372,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                     do 82 id = 1, 3
                         coef(id) = coef(id) * xnorm
 82                  continue
-                    call getvtx('PSEUDO_MODE', 'NOM_DIR', i, iarg, 1,&
-                                nomdir, nnd)
+                    call getvtx('PSEUDO_MODE', 'NOM_DIR', iocc=i, scal=nomdir, nbret=nnd)
                     direct = .true.
                     ifin = 1
                 else

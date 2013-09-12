@@ -22,10 +22,10 @@ subroutine ve0124()
 ! ----------------------------------------------------------------------
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mess.h"
     character(len=8) :: k8bid, resu
     character(len=16) :: type, oper, typres
@@ -36,19 +36,16 @@ subroutine ve0124()
     real(kind=8) :: r8bid
 !-----------------------------------------------------------------------
     call getres(resu, type, oper)
-    call getvtx(' ', 'TYPE_RESU', 0, iarg, 1,&
-                typres, n1)
+    call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=n1)
     call getfac('AFFE', iocc)
 !
     if (typres .eq. 'EVOL_THER') then
         do 700 k = 1, iocc
-            call getvtx('AFFE', 'NOM_CAS', k, iarg, 1,&
-                        k8bid, n0)
+            call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_7')
             endif
-            call getvis('AFFE', 'NUME_MODE', k, iarg, 1,&
-                        ibid, n0)
+            call getvis('AFFE', 'NUME_MODE', iocc=k, scal=ibid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_8')
             endif
@@ -56,18 +53,15 @@ subroutine ve0124()
 !
     else if (typres .eq. 'MULT_ELAS') then
         do 702 k = 1, iocc
-            call getvis('AFFE', 'NUME_MODE', k, iarg, 1,&
-                        ibid, n0)
+            call getvis('AFFE', 'NUME_MODE', iocc=k, scal=ibid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_9')
             endif
-            call getvr8('AFFE', 'INST', k, iarg, 1,&
-                        r8bid, n0)
+            call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_10')
             endif
-            call getvid('AFFE', 'LIST_INST', k, iarg, 1,&
-                        k8bid, n0)
+            call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_10')
             endif
@@ -75,18 +69,15 @@ subroutine ve0124()
 !
     else if (typres .eq. 'FOURIER_ELAS') then
         do 704 k = 1, iocc
-            call getvtx('AFFE', 'NOM_CAS', k, iarg, 1,&
-                        k8bid, n0)
+            call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_11')
             endif
-            call getvr8('AFFE', 'INST', k, iarg, 1,&
-                        r8bid, n0)
+            call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_12')
             endif
-            call getvid('AFFE', 'LIST_INST', k, iarg, 1,&
-                        k8bid, n0)
+            call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_12')
             endif
@@ -94,18 +85,15 @@ subroutine ve0124()
 !
     else if (typres .eq. 'FOURIER_THER') then
         do 705 k = 1, iocc
-            call getvtx('AFFE', 'NOM_CAS', k, iarg, 1,&
-                        k8bid, n0)
+            call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_13')
             endif
-            call getvr8('AFFE', 'INST', k, iarg, 1,&
-                        r8bid, n0)
+            call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_14')
             endif
-            call getvid('AFFE', 'LIST_INST', k, iarg, 1,&
-                        k8bid, n0)
+            call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
                 call u2mess('E', 'ALGORITH11_14')
             endif
@@ -114,23 +102,19 @@ subroutine ve0124()
 !
     call getfac('PERM_CHAM', iocc)
     if (iocc .gt. 0) then
-        call getvid(' ', 'RESU_INIT', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvid(' ', 'RESU_INIT', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('E', 'ALGORITH11_15')
         endif
-        call getvid(' ', 'MAILLAGE_INIT', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvid(' ', 'MAILLAGE_INIT', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('E', 'ALGORITH11_16')
         endif
-        call getvid(' ', 'RESU_FINAL', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvid(' ', 'RESU_FINAL', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('E', 'ALGORITH11_17')
         endif
-        call getvid(' ', 'MAILLAGE_FINAL', 1, iarg, 0,&
-                    k8bid, n1)
+        call getvid(' ', 'MAILLAGE_FINAL', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             call u2mess('E', 'ALGORITH11_18')
         endif

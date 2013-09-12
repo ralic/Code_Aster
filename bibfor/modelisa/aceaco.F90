@@ -2,22 +2,22 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
                   nbocc)
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8pi.h"
 #include "asterfort/alcart.h"
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, nbocc
     logical :: locagb, locamb
     character(len=8) :: nomu, noma
@@ -94,10 +94,8 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     if (iret .eq. 0) then
 ! ------ DOIT-ON CREER LA CARTE DE FONCTION
         do 100 ioc = 1, nbocc
-            call getvid('COQUE', 'EPAIS_FO', ioc, iarg, 1,&
-                        epaf, nvf)
-            call getvid('COQUE', 'EXCENTREMENT_FO', ioc, iarg, 1,&
-                        excf, nexf)
+            call getvid('COQUE', 'EPAIS_FO', iocc=ioc, scal=epaf, nbret=nvf)
+            call getvid('COQUE', 'EXCENTREMENT_FO', iocc=ioc, scal=excf, nbret=nexf)
             if (nvf+nexf .ne. 0) then
                 lcartf = .true.
                 goto 110
@@ -139,26 +137,18 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
                     iarg, lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'COQUE', 'MAILLE', ioc,&
                     iarg, lmax, zk8(jdls2), nm)
-        call getvr8('COQUE', 'EPAIS', ioc, iarg, 1,&
-                    epa, nv)
-        call getvid('COQUE', 'EPAIS_FO', ioc, iarg, 1,&
-                    epaf, nvf)
-        call getvr8('COQUE', 'ANGL_REP', ioc, iarg, 2,&
-                    ang, na)
-        call getvr8('COQUE', 'VECTEUR', ioc, iarg, 3,&
-                    vect, nvec)
-        call getvr8('COQUE', 'A_CIS', ioc, iarg, 1,&
-                    kappa, nk)
-        call getvtx('COQUE', 'MODI_METRIQUE', ioc, iarg, 1,&
-                    korrec, nco)
-        call getvr8('COQUE', 'COEF_RIGI_DRZ', ioc, iarg, 1,&
-                    rigi, ncr)
-        call getvr8('COQUE', 'EXCENTREMENT', ioc, iarg, 1,&
-                    excent, nex)
-        call getvid('COQUE', 'EXCENTREMENT_FO', ioc, iarg, 1,&
-                    excf, nexf)
-        call getvtx('COQUE', 'INER_ROTA', ioc, iarg, 1,&
-                    inert, nin)
+        call getvr8('COQUE', 'EPAIS', iocc=ioc, scal=epa, nbret=nv)
+        call getvid('COQUE', 'EPAIS_FO', iocc=ioc, scal=epaf, nbret=nvf)
+        call getvr8('COQUE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang,&
+                    nbret=na)
+        call getvr8('COQUE', 'VECTEUR', iocc=ioc, nbval=3, vect=vect,&
+                    nbret=nvec)
+        call getvr8('COQUE', 'A_CIS', iocc=ioc, scal=kappa, nbret=nk)
+        call getvtx('COQUE', 'MODI_METRIQUE', iocc=ioc, scal=korrec, nbret=nco)
+        call getvr8('COQUE', 'COEF_RIGI_DRZ', iocc=ioc, scal=rigi, nbret=ncr)
+        call getvr8('COQUE', 'EXCENTREMENT', iocc=ioc, scal=excent, nbret=nex)
+        call getvid('COQUE', 'EXCENTREMENT_FO', iocc=ioc, scal=excf, nbret=nexf)
+        call getvtx('COQUE', 'INER_ROTA', iocc=ioc, scal=inert, nbret=nin)
 !        EPAIS EST OBLIGATOIRE : ASSERT SI PAS LA
         if (nv .ne. 0) then
             zr(jdvc) = epa

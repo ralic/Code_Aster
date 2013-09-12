@@ -1,5 +1,5 @@
 subroutine op0036()
-    implicit   none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,11 +20,11 @@ subroutine op0036()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/ctresu.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -81,13 +81,13 @@ subroutine op0036()
         dimmax=0
 !
         do 50 iocc = 1, nocc
-            call getvtx('LISTE', 'PARA', iocc, iarg, 1,nmpar, jp)
+            call getvtx('LISTE', 'PARA', iocc=iocc, scal=nmpar, nbret=jp)
             zk16(jd+iocc-1)=nmpar
-            call getvis('LISTE', 'LISTE_I', iocc, iarg, 0, ibid, ni)
-            call getvis('LISTE', 'NUME_LIGN', iocc, iarg, 0, ibid, nindi)
-            call getvr8('LISTE', 'LISTE_R', iocc, iarg, 0, rbid, nr)
-            call getvtx('LISTE', 'LISTE_K', iocc, iarg, 0, kbid, nk)
-            call getvtx('LISTE', 'TYPE_K', iocc, iarg, 1, ntyp, jt)
+            call getvis('LISTE', 'LISTE_I', iocc=iocc, nbval=0, nbret=ni)
+            call getvis('LISTE', 'NUME_LIGN', iocc=iocc, nbval=0, nbret=nindi)
+            call getvr8('LISTE', 'LISTE_R', iocc=iocc, nbval=0, nbret=nr)
+            call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=0, nbret=nk)
+            call getvtx('LISTE', 'TYPE_K', iocc=iocc, scal=ntyp, nbret=jt)
 !
             if (nindi .ne. 0) then
                 if ((-ni-nr-nk) .ne. (-nindi)) then
@@ -95,8 +95,8 @@ subroutine op0036()
                 endif
                 call wkvect(indic, 'V V I', -nindi, iii)
                 longco=0
-                call getvis('LISTE', 'NUME_LIGN', iocc, iarg, -nindi,&
-                            zi(iii), ir)
+                call getvis('LISTE', 'NUME_LIGN', iocc=iocc, nbval=-nindi, vect=zi(iii),&
+                            nbret=ir)
                 do 55 i = 1, -nindi
                     longco=max(longco,zi(iii+i-1))
 55              continue
@@ -128,11 +128,11 @@ subroutine op0036()
                     dimmax)
 !
         do 200 iocc = 1, nocc
-            call getvis('LISTE', 'LISTE_I', iocc, iarg, 0, ibid, ni)
-            call getvis('LISTE', 'NUME_LIGN', iocc, iarg, 0, ibid, nindi)
-            call getvr8('LISTE', 'LISTE_R', iocc, iarg, 0, rbid, nr)
-            call getvtx('LISTE', 'LISTE_K', iocc, iarg, 0, kbid, nk)
-            call getvtx('LISTE', 'PARA', iocc, iarg, 1, nmpar, jp)
+            call getvis('LISTE', 'LISTE_I', iocc=iocc, nbval=0, nbret=ni)
+            call getvis('LISTE', 'NUME_LIGN', iocc=iocc, nbval=0, nbret=nindi)
+            call getvr8('LISTE', 'LISTE_R', iocc=iocc, nbval=0, nbret=nr)
+            call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=0, nbret=nk)
+            call getvtx('LISTE', 'PARA', iocc=iocc, scal=nmpar, nbret=jp)
             do 150 j = 1, nocc
                 nmpar1=zk16(jd+j-1)
                 if ((nmpar.eq.nmpar1) .and. (j.ne.iocc)) then
@@ -143,8 +143,8 @@ subroutine op0036()
             if (nindi .ne. 0) then
                 nindi=-nindi
                 call wkvect(indic, 'V V I', nindi, iii)
-                call getvis('LISTE', 'NUME_LIGN', iocc, iarg, nindi,&
-                            zi(iii), ir)
+                call getvis('LISTE', 'NUME_LIGN', iocc=iocc, nbval=nindi, vect=zi(iii),&
+                            nbret=ir)
             else
                 call wkvect(indic, 'V V I', (-ni-nr-nk), iii)
                 do 175 i = 1, (-ni-nr-nk)
@@ -157,8 +157,8 @@ subroutine op0036()
             if (ni .ne. 0) then
                 ni=-ni
                 call wkvect(trav, 'V V I', ni, jtrav1)
-                call getvis('LISTE', 'LISTE_I', iocc, iarg, ni,&
-                            zi(jtrav1), ir)
+                call getvis('LISTE', 'LISTE_I', iocc=iocc, nbval=ni, vect=zi(jtrav1),&
+                            nbret=ir)
                 call tbajco(resu, nmpar, 'I', ni, zi(jtrav1),&
                             rbid, cbid, kbid, 'R', zi(iii))
             endif
@@ -168,8 +168,8 @@ subroutine op0036()
             if (nr .ne. 0) then
                 nr=-nr
                 call wkvect(trav, 'V V R', nr, jtrav2)
-                call getvr8('LISTE', 'LISTE_R', iocc, iarg, nr,&
-                            zr(jtrav2), ir)
+                call getvr8('LISTE', 'LISTE_R', iocc=iocc, nbval=nr, vect=zr(jtrav2),&
+                            nbret=ir)
                 call tbajco(resu, nmpar, 'R', nr, ibid,&
                             zr(jtrav2), cbid, kbid, 'R', zi(iii))
             endif
@@ -178,29 +178,28 @@ subroutine op0036()
 !           -----------------------------
             if (nk .ne. 0) then
                 nk=-nk
-                call getvtx('LISTE', 'TYPE_K', iocc, iarg, 1,&
-                            ntyp, jt)
+                call getvtx('LISTE', 'TYPE_K', iocc=iocc, scal=ntyp, nbret=jt)
 !              CHAINES DE 8 CARACTERES
                 if (ntyp(2:2) .eq. '8') then
                     call wkvect(trav, 'V V K8', nk, jtrav3)
-                    call getvtx('LISTE', 'LISTE_K', iocc, iarg, nk,&
-                                zk8(jtrav3), ir)
+                    call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=nk, vect=zk8(jtrav3),&
+                                nbret=ir)
                     call tbajco(resu, nmpar, 'K8', nk, ibid,&
                                 rbid, cbid, zk8(jtrav3), 'R', zi(iii))
 !
 !              CHAINES DE 16 CARACTERES
                 else if (ntyp(2:2).eq.'1') then
                     call wkvect(trav, 'V V K16', nk, jtrav4)
-                    call getvtx('LISTE', 'LISTE_K', iocc, iarg, nk,&
-                                zk16(jtrav4), ir)
+                    call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=nk, vect=zk16(jtrav4),&
+                                nbret=ir)
                     call tbajco(resu, nmpar, 'K16', nk, ibid,&
                                 rbid, cbid, zk16(jtrav4), 'R', zi(iii))
 !
 !              CHAINES DE 24 CARACTERES
                 else if (ntyp(2:2).eq.'2') then
                     call wkvect(trav, 'V V K24', nk, jtrav5)
-                    call getvtx('LISTE', 'LISTE_K', iocc, iarg, nk,&
-                                zk24(jtrav5), ir)
+                    call getvtx('LISTE', 'LISTE_K', iocc=iocc, nbval=nk, vect=zk24(jtrav5),&
+                                nbret=ir)
                     call tbajco(resu, nmpar, 'K24', nk, ibid,&
                                 rbid, cbid, zk24(jtrav5), 'R', zi(iii))
                 endif
@@ -213,7 +212,7 @@ subroutine op0036()
 ! --- CAS : FONCTION
 !     ==============
     else if (nocc2.ne.0) then
-        call getvid('FONCTION', 'FONCTION', 1, iarg, 1, nfct, ir)
+        call getvid('FONCTION', 'FONCTION', iocc=1, scal=nfct, nbret=ir)
 !
         call jelira(nfct//'.VALE', 'LONMAX', ndim)
         call jeveuo(nfct//'.VALE', 'L', jvale)
@@ -221,8 +220,8 @@ subroutine op0036()
 !
         if (zk24(jprol) .ne. 'FONCTION' .and. zk24(jprol) .ne. 'CONSTANT' .and. zk24(jprol)&
             .ne. 'FONCT_C') call u2mesk('F', 'UTILITAI2_78', 1, nomcmd)
-        call getvtx('FONCTION', 'PARA', 1, iarg, 2,&
-                    nmparf, ir)
+        call getvtx('FONCTION', 'PARA', iocc=1, nbval=2, vect=nmparf,&
+                    nbret=ir)
         if (ir .eq. 0) then
             nmparf(1)=zk24(jprol+2)(1:16)
             nmparf(2)=zk24(jprol+3)(1:16)
@@ -237,7 +236,8 @@ subroutine op0036()
             nmparc(2)=nmparf(2)(1:npar)//'_R'
             nmparc(3)=nmparf(2)(1:npar)//'_I'
 !
-            call tbcrsv(resu, 'G', 3, nmparc, typarc, ndim/3)
+            call tbcrsv(resu, 'G', 3, nmparc, typarc,&
+                        ndim/3)
             call tbajpa(resu, 3, nmparc, typarc)
             vectcr='&&OP0036.VCR'
             vectci='&&OP0036.VCI'
@@ -256,7 +256,8 @@ subroutine op0036()
             call jedetr(vectcr)
             call jedetr(vectci)
         else
-            call tbcrsv(resu, 'G', 2, nmparf, typarr, ndim/2)
+            call tbcrsv(resu, 'G', 2, nmparf, typarr,&
+                        ndim/2)
             call tbajpa(resu, 2, nmparf, typarr)
             call tbajco(resu, nmparf(1), 'R', ndim/2, ibid,&
                         zr(jvale), cbid, kbid, 'R', -1)

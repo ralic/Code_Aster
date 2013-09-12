@@ -28,9 +28,9 @@ subroutine simono()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -64,8 +64,7 @@ subroutine simono()
 !
 ! --- MATRICE DE MASSE
 !
-    call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                masse, nbv)
+    call getvid(' ', 'MATR_MASS', scal=masse, nbret=nbv)
     call mtdscr(masse)
     call jeveuo(masse//'           .&INT', 'E', lmat)
     call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
@@ -75,11 +74,9 @@ subroutine simono()
 !
 ! --- QUELLE EST LA DIRECTION ?
 !
-    call getvr8(' ', 'DIRECTION', 0, iarg, 0,&
-                depl, nbd)
+    call getvr8(' ', 'DIRECTION', nbval=0, nbret=nbd)
     nbdir = -nbd
-    call getvr8(' ', 'DIRECTION', 0, iarg, nbdir,&
-                depl, nbd)
+    call getvr8(' ', 'DIRECTION', nbval=nbdir, vect=depl, nbret=nbd)
 !
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0

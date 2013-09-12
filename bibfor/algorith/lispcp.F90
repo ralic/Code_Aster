@@ -17,11 +17,11 @@ subroutine lispcp(motfac, iexci, phase, npuis)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
     character(len=16) :: motfac
     integer :: iexci
     real(kind=8) :: phase
@@ -52,10 +52,8 @@ subroutine lispcp(motfac, iexci, phase, npuis)
     npuis = 0
     eximcp = getexm(motfac,'PHAS_DEG')
     if (eximcp .eq. 1) then
-        call getvr8(motfac, 'PHAS_DEG', iexci, iarg, 1,&
-                    phase, n)
-        call getvis(motfac, 'PUIS_PULS', iexci, iarg, 1,&
-                    npuis, n)
+        call getvr8(motfac, 'PHAS_DEG', iocc=iexci, scal=phase, nbret=n)
+        call getvis(motfac, 'PUIS_PULS', iocc=iexci, scal=npuis, nbret=n)
     endif
 !
 end subroutine

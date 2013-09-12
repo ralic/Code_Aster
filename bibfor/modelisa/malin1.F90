@@ -2,11 +2,10 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                   lonlis)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -17,6 +16,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: motfaz, chargz, lisnoz
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -105,8 +105,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !        ET VERIFICATION DE L'APPARTENANCE DES GROUP_MA
 !        AUX GROUP_MA DU MAILLAGE
 !        -------------------------------------------------------
-    call getvtx(motfac, mogrma, iocc, iarg, 0,&
-                k8bid, ng)
+    call getvtx(motfac, mogrma, iocc=iocc, nbval=0, nbret=ng)
     if (ng .ne. 0) then
         ng = -ng
         call wkvect('&&MALIN1.TRAV1', 'V V K24', ng, jjj1)
@@ -129,8 +128,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !        ET VERIFICATION DE L'APPARTENANCE DES MAILLES
 !        AUX MAILLES DU MAILLAGE
 !        -------------------------------------------------------
-    call getvtx(motfac, momail, iocc, iarg, 0,&
-                k8bid, nbma)
+    call getvtx(motfac, momail, iocc=iocc, nbval=0, nbret=nbma)
     if (nbma .ne. 0) then
         nbma = -nbma
         call wkvect('&&MALIN1.TRAV2', 'V V K8', nbma, jjj2)
@@ -153,12 +151,11 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !
     indnoe = 0
 !
-    call getvtx(motfac, mogrma, iocc, iarg, 0,&
-                k8bid, ng)
+    call getvtx(motfac, mogrma, iocc=iocc, nbval=0, nbret=ng)
     if (ng .ne. 0) then
         ng = -ng
-        call getvtx(motfac, mogrma, iocc, iarg, ng,&
-                    zk24(jjj1), ngr)
+        call getvtx(motfac, mogrma, iocc=iocc, nbval=ng, vect=zk24(jjj1),&
+                    nbret=ngr)
         do 40 igr = 1, ngr
             call jeveuo(jexnom(grmama, zk24(jjj1+igr-1)), 'L', jgro)
             call jelira(jexnom(grmama, zk24(jjj1+igr-1)), 'LONUTI', nbmail)
@@ -177,12 +174,11 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 40      continue
     endif
 !
-    call getvtx(motfac, momail, iocc, iarg, 0,&
-                k8bid, nbma)
+    call getvtx(motfac, momail, iocc=iocc, nbval=0, nbret=nbma)
     if (nbma .ne. 0) then
         nbma = -nbma
-        call getvtx(motfac, momail, iocc, iarg, nbma,&
-                    zk8(jjj2), nmai)
+        call getvtx(motfac, momail, iocc=iocc, nbval=nbma, vect=zk8(jjj2),&
+                    nbret=nmai)
         do 70 ima = 1, nmai
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
             call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)

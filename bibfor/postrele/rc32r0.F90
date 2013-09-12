@@ -1,14 +1,14 @@
 subroutine rc32r0(nomres, pmpb, sn, snet)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
+!
     character(len=8) :: nomres
     logical :: pmpb, sn, snet
 !     ------------------------------------------------------------------
@@ -40,7 +40,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     real(kind=8) :: valer(5)
     complex(kind=8) :: c16b
     character(len=4) :: lieu(2)
-    character(len=8) ::  valek(3), typar0(npar0), typar1(npar1), typtab
+    character(len=8) :: valek(3), typar0(npar0), typar1(npar1), typtab
     character(len=16) :: nopar0(npar0), nopar1(npar1), nopar2(npar2)
     character(len=24) :: k24a, k24s
     integer :: iarg
@@ -61,8 +61,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
      &              'NUME_SITU', 'PM', 'PB', 'PMPB', 'SN', 'SN*'  /
 ! DEB ------------------------------------------------------------------
 !
-    call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
-                typtab, n1)
+    call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
 !
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)

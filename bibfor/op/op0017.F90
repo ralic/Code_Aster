@@ -25,9 +25,9 @@ subroutine op0017()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getltx.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -51,68 +51,59 @@ subroutine op0017()
     call infmaj()
 !
     nivo = 0
-    call getvis(' ', 'NIVEAU', 1, iarg, 1,&
-                nivo, n3)
+    call getvis(' ', 'NIVEAU', scal=nivo, nbret=n3)
 !
-    call getvtx(' ', 'ATTRIBUT', 0, iarg, 1,&
-                chaine, n3)
+    call getvtx(' ', 'ATTRIBUT', scal=chaine, nbret=n3)
     if (chaine(1:3) .eq. 'OUI') then
         lattr = .true.
     else
         lattr = .false.
     endif
 !
-    call getvtx(' ', 'CONTENU', 0, iarg, 1,&
-                chaine, n3)
+    call getvtx(' ', 'CONTENU', scal=chaine, nbret=n3)
     if (chaine(1:3) .eq. 'OUI') then
         lcont = .true.
     else
         lcont = .false.
     endif
 !
-    call getvtx(' ', 'BASE', 0, iarg, 1,&
-                chaine, n1)
+    call getvtx(' ', 'BASE', scal=chaine, nbret=n1)
     base=chaine(1:1)
 !
     ifi = 0
     nomfi = ' '
-    call getvis(' ', 'UNITE', 1, iarg, 1,&
-                ifi, n2)
+    call getvis(' ', 'UNITE', scal=ifi, nbret=n2)
     if (.not. ulexis( ifi )) then
         call ulopen(ifi, ' ', nomfi, 'NEW', 'O')
     endif
 !
     call getfac('CONCEPT', nbocc)
     do iocc = 1, nbocc
-        call getvid('CONCEPT', 'NOM', iocc, iarg, 0,&
-                    kbid, ncon)
+        call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=0, nbret=ncon)
         ncon= -ncon
         if (ncon .gt. 0) then
             call wkvect('&&OP0017.LISTE_CO', 'V V K8', ncon, ialico)
-            call getvid('CONCEPT', 'NOM', iocc, iarg, ncon,&
-                        zk8(ialico), n1)
+            call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=zk8(ialico),&
+                        nbret=n1)
             do i = 1, ncon
-            leresu = zk8(ialico-1+i)
-            call utimsd(ifi, nivo, lattr, lcont, leresu,&
-                        1, base)
+                leresu = zk8(ialico-1+i)
+                call utimsd(ifi, nivo, lattr, lcont, leresu,&
+                            1, base)
             end do
             call jedetr('&&OP0017.LISTE_CO')
         endif
     end do
 !
-    call getvtx(' ', 'CHAINE', 0, iarg, 1,&
-                chaine, n2)
+    call getvtx(' ', 'CHAINE', scal=chaine, nbret=n2)
     if (n2 .gt. 0) then
         call getltx(' ', 'CHAINE', 1, 72, 1,&
                     long, n3)
-        call getvis(' ', 'POSITION', 0, iarg, 1,&
-                    ipos, n4)
+        call getvis(' ', 'POSITION', scal=ipos, nbret=n4)
         call utimsd(ifi, nivo, lattr, lcont, chaine(1:long(1)),&
                     ipos, base)
     endif
 !
-    call getvtx(' ', 'TOUT', 0, iarg, 1,&
-                chaine, n2)
+    call getvtx(' ', 'TOUT', scal=chaine, nbret=n2)
     if (n2 .gt. 0) then
         call utimsd(ifi, nivo, lattr, lcont, ' ',&
                     0, base)

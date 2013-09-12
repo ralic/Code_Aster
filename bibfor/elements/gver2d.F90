@@ -48,14 +48,13 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -71,6 +70,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
 #include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: motfaz
     character(len=8) :: config, noma, noeud, k8b, fond, kfon
     character(len=16) :: motfac, nomcmd, k16b
@@ -125,18 +125,15 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
         call wkvect(trav, 'V V K8', ndim, jjj)
         call wkvect(trav2, 'V V K24', ndim, jjj2)
 !
-    else if (nomcmd.eq.'CALC_G') then
+    else
         ndim = 1
     endif
 !
     do 2 iocc = 1, nocc
 !
-        call getvr8(motfac(1:l), 'MODULE', iocc, iarg, ndim,&
-                    module, nbm)
-        call getvr8(motfac(1:l), 'R_INF', iocc, iarg, ndim,&
-                    rinf, nbm)
-        call getvr8(motfac(1:l), 'R_SUP', iocc, iarg, ndim,&
-                    rsup, nbm)
+        call getvr8(motfac(1:l), 'MODULE', iocc=iocc, scal=module, nbret=nbm)
+        call getvr8(motfac(1:l), 'R_INF', iocc=iocc, scal=rinf, nbret=nbm)
+        call getvr8(motfac(1:l), 'R_SUP', iocc=iocc, scal=rsup, nbret=nbm)
 !
         if (nbm .ne. 0 .and. rsup .le. rinf) then
             call u2mess('F', 'RUPTURE1_6')
@@ -195,12 +192,10 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
  6          continue
 !
         else
-            call getvr8(motfac(1:l), 'R_INF_FO', iocc, iarg, ndim,&
-                        rbid, ibid)
+            call getvr8(motfac(1:l), 'R_INF_FO', iocc=iocc, scal=rbid, nbret=ibid)
             if (ibid .ne. 0) call u2mess('F', 'RUPTURE1_18')
 !
-            call getvid('THETA', 'FOND_FISS', 1, iarg, 1,&
-                        fond, n1)
+            call getvid('THETA', 'FOND_FISS', iocc=1, scal=fond, nbret=n1)
             if (n1 .ne. 0) then
 !           CAS CLASSIQUE
                 chfond = fond//'.FOND.NOEU'
@@ -219,12 +214,10 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 endif
             else
 !           CAS X-FEM
-                call getvid('THETA', 'FISSURE', 1, iarg, 1,&
-                            fond, n2)
+                call getvid('THETA', 'FISSURE', iocc=1, scal=fond, nbret=n2)
                 if (n2 .eq. 0) call u2mess('F', 'RUPTURE1_11')
 !           RECUPERATION DU NUMERO DU FOND DE FISSURE DEMANDE
-                call getvis('THETA', 'NUME_FOND', 1, iarg, 1,&
-                            numfon, ibid)
+                call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !           ON ECRIT 'NUM'+_i OU i=NUMFON
 !           A LA PLACE DU NOM DU NOEUD EN FOND DE FISSURE
                 call codent(numfon, 'G', kfon)

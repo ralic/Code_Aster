@@ -3,13 +3,12 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
                   sddyna, sdcriq, mate, compoz, result,&
                   fonact)
 !
-   implicit      none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/gcucon.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -17,6 +16,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 #include "asterfort/dismoi.h"
 #include "asterfort/exfonc.h"
 #include "asterfort/exixfe.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/ischar.h"
 #include "asterfort/isdiri.h"
@@ -140,12 +140,12 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --- ELEMENTS EN GRANDES ROTATIONS
 !
     call jeexin(sdnume(1:19)//'.NDRO', iret)
-    if (iret.ne.0) fonact(15) = 1
+    if (iret .ne. 0) fonact(15) = 1
 !
 ! --- ELEMENTS AVEC ENDO AUX NOEUDS
 !
     call jeexin(sdnume(1:19)//'.ENDO', iret)
-    if (iret.ne.0) fonact(40) = 1
+    if (iret .ne. 0) fonact(40) = 1
 !
 ! --- RECHERCHE LINEAIRE
 !
@@ -179,8 +179,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --- MATR_DISTRIBUEE
 !
     matdis='NON'
-    call getvtx('SOLVEUR', 'MATR_DISTRIBUEE', 1, iarg, 1,&
-                matdis, nmatdi)
+    call getvtx('SOLVEUR', 'MATR_DISTRIBUEE', iocc=1, scal=matdis, nbret=nmatdi)
     if (matdis .eq. 'OUI') fonact(52) = 1
 !
 ! --- DEBORST ?
@@ -344,8 +343,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --- CALCUL DE STABILITE
 !
     istab = 0
-    call getvtx('CRIT_STAB', 'DDL_STAB', 1, iarg, 0,&
-                k16bid, nsta)
+    call getvtx('CRIT_STAB', 'DDL_STAB', iocc=1, nbval=0, nbret=nsta)
     istab = -nsta
     if (istab .gt. 0) fonact(49) = 1
 !

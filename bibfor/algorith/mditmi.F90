@@ -34,13 +34,13 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8depi.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -105,8 +105,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! 1.  RECUPERATION DU CONCEPT MELASFLU
 !     --------------------------------
-    call getvid('SCHEMA_TEMPS', 'BASE_ELAS_FLUI', 1, iarg, 1,&
-                basefl, n1)
+    call getvid('SCHEMA_TEMPS', 'BASE_ELAS_FLUI', iocc=1, scal=basefl, nbret=n1)
     call jeveuo(basefl//'.REMF', 'L', krefe)
     typflu = zk8(krefe)
     nombm = zk8(krefe+1)
@@ -138,7 +137,8 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! 4.  RECUPERATION DU NOMBRE D'EQUATIONS DU MODELE
 !     --------------------------------------------
-    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ib, matass, ie)
+    call dismoi('F', 'REF_RIGI_PREM', nombm, 'RESU_DYNA', ib,&
+                matass, ie)
     call dismoi('F', 'NOM_NUME_DDL', matass, 'MATR_ASSE', ib,&
                 numddl, ie)
     call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
@@ -153,8 +153,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                 nbtrou)
 !     NBM0 = NBMCFC
 !
-    call getvis('SCHEMA_TEMPS', 'NB_MODE', 1, iarg, 1,&
-                nbmode, n1)
+    call getvis('SCHEMA_TEMPS', 'NB_MODE', iocc=1, scal=nbmode, nbret=n1)
     if (n1 .eq. 0) then
         nbmode = nbm0
     else if (nbmode.gt.nbm0) then
@@ -195,16 +194,13 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 ! 6.3 AMORTISSEMENTS MODAUX
 !     STRUCTURE NON COUPLEE AVEC LE FLUIDE
 !
-    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8b, n1)
-    call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 0,&
-                k8b, n2)
+    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
+    call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
     if ((n1.ne.0) .or. (n2.ne.0)) then
         if (n1 .ne. 0) then
             nbamor = -n1
         else
-            call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 0,&
-                        listam, ib)
+            call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=ib)
             call jelira(listam//'           .VALE', 'LONMAX', nbamor)
         endif
         if (nbamor .gt. nbmode) then
@@ -217,8 +213,8 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
         endif
         if (nbamor .ge. nbmode) then
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbmode,&
-                            zr(jamog), ib)
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbmode, vect=zr(jamog),&
+                            nbret=ib)
             else
                 call jeveuo(listam//'           .VALE', 'L', lamog)
                 do 20 iam = 1, nbmode
@@ -232,8 +228,8 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             vali (3) = idiff
             call u2mesi('I', 'ALGORITH16_13', 3, vali)
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                            zr(jamog), ib)
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamog),&
+                            nbret=ib)
             else
                 call jeveuo(listam//'           .VALE', 'L', lamog)
                 do 30 iam = 1, nbamor
@@ -257,8 +253,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! 6.5 RECUPERATION DE LA VITESSE D'ECOULEMENT DU FLUIDE
 !
-    call getvis('SCHEMA_TEMPS', 'NUME_VITE_FLUI', 1, iarg, 1,&
-                numvif, n1)
+    call getvis('SCHEMA_TEMPS', 'NUME_VITE_FLUI', iocc=1, scal=numvif, nbret=n1)
     call jeveuo(basefl//'.VITE', 'L', kvite)
     vgap = zr(kvite+numvif-1)
 !
@@ -333,22 +328,17 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 ! 8.1 CALCUL OU NON D'UN TRANSITOIRE
 !
     itrans = 0
-    call getvtx('SCHEMA_TEMPS', 'ETAT_STAT', 1, iarg, 1,&
-                ouinon, n1)
-    call getvr8('SCHEMA_TEMPS', 'PREC_DUREE', 1, iarg, 1,&
-                eps, n1)
-    call getvr8('SCHEMA_TEMPS', 'TS_REG_ETAB', 1, iarg, 1,&
-                ts, nts)
+    call getvtx('SCHEMA_TEMPS', 'ETAT_STAT', iocc=1, scal=ouinon, nbret=n1)
+    call getvr8('SCHEMA_TEMPS', 'PREC_DUREE', iocc=1, scal=eps, nbret=n1)
+    call getvr8('SCHEMA_TEMPS', 'TS_REG_ETAB', iocc=1, scal=ts, nbret=nts)
     if (ouinon .eq. 'OUI') itrans = 1
 !
 ! 8.2 PRISE EN COMPTE OU NON DU SAUT DE FORCE FLUIDELASTIQUE
 !     D'AMORTISSEMENT AU COURS DES PHASES DE CHOC
 !
     icoupl = 0
-    call getvtx('SCHEMA_TEMPS', 'CHOC_FLUI', 1, iarg, 1,&
-                ouinon, n1)
-    call getvis('SCHEMA_TEMPS', 'NB_MODE_FLUI', 1, iarg, 1,&
-                nbmp, nmp)
+    call getvtx('SCHEMA_TEMPS', 'CHOC_FLUI', iocc=1, scal=ouinon, nbret=n1)
+    call getvis('SCHEMA_TEMPS', 'NB_MODE_FLUI', iocc=1, scal=nbmp, nbret=nmp)
     if (ouinon .eq. 'OUI') icoupl = 1
     if (nbmp .eq. 0) icoupl = 0
 !

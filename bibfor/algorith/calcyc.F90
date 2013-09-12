@@ -24,15 +24,14 @@ subroutine calcyc(nomres)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/askcyc.h"
 #include "asterfort/asmcyc.h"
 #include "asterfort/axacti.h"
 #include "asterfort/cmphdi.h"
 #include "asterfort/cmphii.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -44,6 +43,7 @@ subroutine calcyc(nomres)
 #include "asterfort/wkvect.h"
 #include "asterfort/zconju.h"
 #include "asterfort/zreord.h"
+!
     integer :: vali(3)
 !
 !
@@ -95,11 +95,9 @@ subroutine calcyc(nomres)
 !
 !----------RECUPERATION DU NOMBRE DE DIAMETRES NODAUX EN COMMANDE-------
 !
-    call getvis('CALCUL', 'NB_DIAM', 1, iarg, 0,&
-                ibid, nbdia1)
+    call getvis('CALCUL', 'NB_DIAM', iocc=1, nbval=0, nbret=nbdia1)
     nbdia1=-nbdia1
-    call getvtx('CALCUL', 'TOUT_DIAM', 1, iarg, 0,&
-                k8b, nbdia2)
+    call getvtx('CALCUL', 'TOUT_DIAM', iocc=1, nbval=0, nbret=nbdia2)
     nbdia2=-nbdia2
 !
     if (nbdia2 .gt. 0) then
@@ -118,8 +116,8 @@ subroutine calcyc(nomres)
 !-------------------RECUPERATION DES DIAMETRES MODAUX-------------------
 !
     if (nbdia1 .ne. 0) then
-        call getvis('CALCUL', 'NB_DIAM', 1, iarg, nbdia1,&
-                    zi(ltnbd), ibid)
+        call getvis('CALCUL', 'NB_DIAM', iocc=1, nbval=nbdia1, vect=zi(ltnbd),&
+                    nbret=ibid)
     endif
 !
     if (nbdia2 .ne. 0) then
@@ -172,19 +170,14 @@ subroutine calcyc(nomres)
 !
 !----------------RECUPERATION DU TYPE DE METHODE------------------------
 !
-    call getvtx('CALCUL', 'OPTION', 1, iarg, 1,&
-                option, ibid)
-    call getvis('CALCUL', 'NMAX_ITER', 1, iarg, 1,&
-                nmaxit, ibid)
-    call getvr8('CALCUL', 'PREC_AJUSTE', 1, iarg, 1,&
-                precaj, ibid)
-    call getvr8('CALCUL', 'PREC_SEPARE', 1, iarg, 1,&
-                precse, ibid)
+    call getvtx('CALCUL', 'OPTION', iocc=1, scal=option, nbret=ibid)
+    call getvis('CALCUL', 'NMAX_ITER', iocc=1, scal=nmaxit, nbret=ibid)
+    call getvr8('CALCUL', 'PREC_AJUSTE', iocc=1, scal=precaj, nbret=ibid)
+    call getvr8('CALCUL', 'PREC_SEPARE', iocc=1, scal=precse, nbret=ibid)
 !
     comshi=dcmplx(0.d0,0.d0)
 !
-    call getvr8('CALCUL', 'FREQ', 1, iarg, 0,&
-                bid, nblif)
+    call getvr8('CALCUL', 'FREQ', iocc=1, nbval=0, nbret=nblif)
     nblif=-nblif
     if (option .eq. 'PLUS_PETITE' .or. option .eq. 'CENTRE') then
         if (nblif .gt. 1) then
@@ -193,8 +186,8 @@ subroutine calcyc(nomres)
             call u2mesg('F', 'ALGORITH14_85', 1, valk, 1,&
                         vali, 0, 0.d0)
         else if (nblif.eq.1) then
-            call getvr8('CALCUL', 'FREQ', 1, iarg, nblif,&
-                        rlome2, ibid)
+            call getvr8('CALCUL', 'FREQ', iocc=1, nbval=nblif, vect=rlome2,&
+                        nbret=ibid)
             rlome2(1)=(rlome2(1)*2.d0*pi)**2
             comshi=dcmplx(rlome2(1),0.d0)
         else
@@ -207,8 +200,8 @@ subroutine calcyc(nomres)
             call u2mesg('F', 'ALGORITH14_85', 1, valk, 1,&
                         vali, 0, 0.d0)
         else
-            call getvr8('CALCUL', 'FREQ', 1, iarg, nblif,&
-                        rlome2, ibid)
+            call getvr8('CALCUL', 'FREQ', iocc=1, nbval=nblif, vect=rlome2,&
+                        nbret=ibid)
             rlome2(1)=(rlome2(1)*2.d0*pi)**2
             rlome2(2)=(rlome2(2)*2.d0*pi)**2
         endif

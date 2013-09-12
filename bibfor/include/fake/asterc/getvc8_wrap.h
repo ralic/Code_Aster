@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine getvr8(motfac, motcle, iocc, iarg, mxval,&
-                      r8val, nbval)
+    subroutine getvc8_wrap(motfac, motcle, iocc, iarg, mxval,&
+                           c8val, nbval)
         character(*) :: motfac
         character(*) :: motcle
         integer :: iocc
         integer :: iarg
         integer :: mxval
-        real(kind=8) :: r8val(*)
+        complex(kind=8) :: c8val(*)
         integer :: nbval
-    end subroutine getvr8
+    end subroutine getvc8_wrap
 end interface

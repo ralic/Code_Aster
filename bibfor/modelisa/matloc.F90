@@ -1,13 +1,13 @@
-subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
+subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
                   node_name, nb_repe_elem, list_repe_elem, matr_glob_loca)
 !
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/angvx.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -114,7 +114,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
     call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
     valk(2) = node_name
     valk(1) = elem_name
-    if (type_elem(1:3) .ne. 'SEG') call u2mesk('F', 'CHARGES2_40',2,valk)
+    if (type_elem(1:3) .ne. 'SEG') call u2mesk('F', 'CHARGES2_40', 2, valk)
 !
 ! - Get nodes of element connected
 !
@@ -135,15 +135,15 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
     vxn = sqrt( vx(1)**2 + vx(2)**2 + vx(3)**2 )
     valk(2) = node_name
     valk(1) = elem_name
-    if (vxn.le.r8prem()) call u2mesk('F', 'CHARGES2_41',2,valk)
+    if (vxn .le. r8prem()) call u2mesk('F', 'CHARGES2_41', 2, valk)
     vx(1) = vx(1) / vxn
     vx(2) = vx(2) / vxn
     vx(3) = vx(3) / vxn
 !
 ! - Is VECT_Y ?
 !
-    call getvr8(keywordfact, 'VECT_Y', iocc, iarg, 3,&
-                vecty, nocc)
+    call getvr8(keywordfact, 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+                nbret=nocc)
     if (nocc .ne. 0) then
 !
 ! ----- VECT_Y
@@ -181,8 +181,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
 !
 ! --- SI ANGL_VRIL
 !
-    call getvr8(keywordfact, 'ANGL_VRIL', iocc, iarg, 1,&
-                gamma, nocc)
+    call getvr8(keywordfact, 'ANGL_VRIL', iocc=iocc, scal=gamma, nbret=nocc)
     if (nocc .ne. 0) then
 !
 ! ----- Get nautic angles
@@ -198,7 +197,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
         goto 999
     endif
 !
-999 continue
+999  continue
 !
     call jedema()
 !

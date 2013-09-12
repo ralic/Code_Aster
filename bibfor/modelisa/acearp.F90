@@ -1,19 +1,18 @@
 subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                   ivr, ifm)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/affdis.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/crlinu.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iunifi.h"
@@ -34,6 +33,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifm, lmax, noemaf, nbocc, ivr(*)
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
@@ -121,8 +121,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !     AVOIR EUROPLEXUS='OUI'. TEST SUR LA 1ERE OCCURENCE DU MOT CLEF,
 !     PUIS DANS LA BOUCLE SUR LES OCCURRENCES QUE L'OPTION NE CHANGE PAS
     eurplx = .false.
-    call getvtx('RIGI_PARASOL', 'EUROPLEXUS', 1, iarg, 1,&
-                k8bid, ibid)
+    call getvtx('RIGI_PARASOL', 'EUROPLEXUS', iocc=1, scal=k8bid, nbret=ibid)
     if (ibid .ne. 0) then
         eurplx = ( k8bid(1:3) .eq. 'OUI' )
     endif
@@ -211,17 +210,14 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !
         call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc,&
                     iarg, lmax, zk24(jdls), ng)
-        call getvtx('RIGI_PARASOL', 'CARA', ioc, iarg, nbcar,&
-                    car, ncar)
-        call getvr8('RIGI_PARASOL', 'VALE', ioc, iarg, nbval,&
-                    val, nval)
-        call getvtx('RIGI_PARASOL', 'REPERE', ioc, iarg, 1,&
-                    rep, nrep)
-        call getvtx('RIGI_PARASOL', 'GROUP_MA_POI1', ioc, iarg, 1,&
-                    nogp, ngp)
+        call getvtx('RIGI_PARASOL', 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
+                    nbret=ncar)
+        call getvr8('RIGI_PARASOL', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
+                    nbret=nval)
+        call getvtx('RIGI_PARASOL', 'REPERE', iocc=ioc, scal=rep, nbret=nrep)
+        call getvtx('RIGI_PARASOL', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
         if (ngp .eq. 0) then
-            call getvtx('RIGI_PARASOL', 'GROUP_MA_SEG2', ioc, iarg, 1,&
-                        nogp, ngp)
+            call getvtx('RIGI_PARASOL', 'GROUP_MA_SEG2', iocc=ioc, scal=nogp, nbret=ngp)
         endif
         if (nrep .ne. 0) then
             do 32 i = 1, nrd
@@ -230,8 +226,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
         endif
 !        POUR EUROPLEXUS
         lbid = .false.
-        call getvtx('RIGI_PARASOL', 'EUROPLEXUS', 1, iarg, 1,&
-                    k8bid, ibid)
+        call getvtx('RIGI_PARASOL', 'EUROPLEXUS', iocc=1, scal=k8bid, nbret=ibid)
         if (ibid .ne. 0) then
             lbid = ( k8bid(1:3) .eq. 'OUI' )
         endif
@@ -239,8 +234,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
             call u2mesi('F', 'MODELISA9_93', 1, ioc)
         endif
 !        UNITE POUR IMPRIMER LES VALEUR DES DISCRETS
-        call getvis('RIGI_PARASOL', 'UNITE', ioc, iarg, 1,&
-                    ibid, ier)
+        call getvis('RIGI_PARASOL', 'UNITE', iocc=ioc, scal=ibid, nbret=ier)
         iunite = -1
         if (ier .ne. 0) then
             iunite = ibid

@@ -25,7 +25,7 @@ subroutine dlidef()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mesg.h"
@@ -43,10 +43,8 @@ subroutine dlidef()
     nbval = 1
 !
     call getres(resu, concep, nomcmd)
-    call getvis(' ', 'VALE', 0, iarg, 0,&
-                ibid, nv)
-    call getvis(' ', 'DEBUT', 0, iarg, 1,&
-                idebut, n1)
+    call getvis(' ', 'VALE', nbval=0, nbret=nv)
+    call getvis(' ', 'DEBUT', scal=idebut, nbret=n1)
     call getfac('INTERVALLE', nbocc)
 !
     if (nv .ne. 0) then
@@ -55,8 +53,7 @@ subroutine dlidef()
         call wkvect('&&DLIDEF.BORNE', 'V V I', nbocc+1, jbor)
         zi(jbor) = idebut
         do 10 iocc = 1, nbocc
-            call getvis('INTERVALLE', 'JUSQU_A', iocc, iarg, 1,&
-                        zi(jbor+ iocc), n1)
+            call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+ iocc), nbret=n1)
             iii = zi(jbor+iocc) - zi(jbor-1+iocc)
             if (iii .le. 0) then
                 vali(1) = zi(jbor+iocc-1)
@@ -64,11 +61,9 @@ subroutine dlidef()
                 call u2mesg('F', 'ALGORITH13_78', 0, ' ', 2,&
                             vali, 0, 0.d0)
             endif
-            call getvis('INTERVALLE', 'PAS', iocc, iarg, 0,&
-                        ibid, np)
+            call getvis('INTERVALLE', 'PAS', iocc=iocc, nbval=0, nbret=np)
             if (np .ne. 0) then
-                call getvis('INTERVALLE', 'PAS', iocc, iarg, 1,&
-                            jpas, n1)
+                call getvis('INTERVALLE', 'PAS', iocc=iocc, scal=jpas, nbret=n1)
                 jnbp = int(iii/jpas)
                 irest = iii - jnbp*jpas
                 if (irest .ne. 0) then
@@ -79,8 +74,7 @@ subroutine dlidef()
                 endif
 !
             else
-                call getvis('INTERVALLE', 'NOMBRE', iocc, iarg, 1,&
-                            jnbp, n1)
+                call getvis('INTERVALLE', 'NOMBRE', iocc=iocc, scal=jnbp, nbret=n1)
                 if (jnbp .gt. 0) then
                     ipdt = int(iii/jnbp)
                     irest = iii - jnbp*ipdt
@@ -104,8 +98,7 @@ subroutine dlidef()
         call wkvect(resu//'           .BINT', 'G V I', nbvale, jbor)
         call wkvect(resu//'           .VALE', 'G V I', nbvale, jval)
         call wkvect('&&DLIDEF.VALE', 'V V I', nbvale, kval)
-        call getvis(' ', 'VALE', 0, iarg, nbvale,&
-                    zi(kval), nv)
+        call getvis(' ', 'VALE', nbval=nbvale, vect=zi(kval), nbret=nv)
         do 20 i = 1, nbvale - 1
             if (zi(kval+i-1) .ge. zi(kval+i)) then
                 vali(1) = zi(kval+i-1)
@@ -129,19 +122,15 @@ subroutine dlidef()
 !
         zi(jbor) = idebut
         do 30 iocc = 1, nbocc
-            call getvis('INTERVALLE', 'JUSQU_A', iocc, iarg, 1,&
-                        zi(jbor+ iocc), n1)
+            call getvis('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=zi(jbor+ iocc), nbret=n1)
             iii = zi(jbor+iocc) - zi(jbor-1+iocc)
-            call getvis('INTERVALLE', 'PAS', iocc, iarg, 0,&
-                        ibid, np)
+            call getvis('INTERVALLE', 'PAS', iocc=iocc, nbval=0, nbret=np)
             if (np .ne. 0) then
-                call getvis('INTERVALLE', 'PAS', iocc, iarg, 1,&
-                            zi(jpas+ iocc-1), n1)
+                call getvis('INTERVALLE', 'PAS', iocc=iocc, scal=zi(jpas+ iocc-1), nbret=n1)
                 zi(jnbp+iocc-1) = iii/zi(jpas+iocc-1)
 !
             else
-                call getvis('INTERVALLE', 'NOMBRE', iocc, iarg, 1,&
-                            zi(jnbp+iocc-1), n1)
+                call getvis('INTERVALLE', 'NOMBRE', iocc=iocc, scal=zi(jnbp+iocc-1), nbret=n1)
                 zi(jpas+iocc-1) = iii/zi(jnbp+iocc-1)
             endif
             nbval = nbval + zi(jnbp+iocc-1)

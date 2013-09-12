@@ -1,13 +1,13 @@
 subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                   prec, crit, ier)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2trgi.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
@@ -95,13 +95,12 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     endif
 !
 !     --- CAS "NUME_ORDRE" ---
-    call getvis(motcle, 'NUME_ORDRE', iocc, iarg, 0,&
-                ibid, n1)
+    call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         nbordr = -n1
         call wkvect(knum, 'V V I', nbordr, jordr)
-        call getvis(motcle, 'NUME_ORDRE', iocc, iarg, nbordr,&
-                    zi(jordr), n1)
+        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbordr, vect=zi(jordr),&
+                    nbret=n1)
         goto 100
     endif
 !
@@ -121,14 +120,11 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             call rsadpa(resu, 'L', 1, zk16(jpara-1+iacc), iord,&
                         1, iad, ctyp)
             if (ctyp(1:1) .eq. 'I') then
-                call getvis(motcle, zk16(jpara-1+iacc), iocc, iarg, 0,&
-                            ibid, n2)
+                call getvis(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
             else if (ctyp(1:1).eq.'R') then
-                call getvr8(motcle, zk16(jpara-1+iacc), iocc, iarg, 0,&
-                            r8b, n2)
+                call getvr8(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
             else if (ctyp(1:1).eq.'K') then
-                call getvtx(motcle, zk16(jpara-1+iacc), iocc, iarg, 0,&
-                            k8bid, n2)
+                call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
                 if (zk16(jpara-1+iacc) (1:9) .eq. 'NOEUD_CMP') n2 = n2/ 2
             endif
 !
@@ -142,37 +138,37 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                 iut = lxlgut(ctyp)
                 call wkvect(kvacc, 'V V '//ctyp(1:iut), nbval, jval)
                 if (ctyp(1:1) .eq. 'I') then
-                    call getvis(motcle, zk16(jpara-1+iacc), iocc, iarg, nbval,&
-                                zi(jval), n2)
+                    call getvis(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                                vect=zi(jval), nbret=n2)
                 else if (ctyp(1:1).eq.'R') then
-                    call getvr8(motcle, zk16(jpara-1+iacc), iocc, iarg, nbval,&
-                                zr(jval), n2)
+                    call getvr8(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                                vect=zr(jval), nbret=n2)
                 else if (ctyp(1:2).eq.'K8') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc, iarg, nbval,&
-                                zk8(jval), n2)
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                                vect=zk8(jval), nbret=n2)
                 else if (ctyp(1:3).eq.'K16') then
                     if (zk16(jpara-1+iacc) (1:9) .eq. 'NOEUD_CMP') then
                         nbva2 = 2*nbval
                         call wkvect(knmod, 'V V K8', nbva2, jnch)
-                        call getvtx(motcle, zk16(jpara-1+iacc), iocc, iarg, nbva2,&
-                                    zk8(jnch), n2)
+                        call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbva2,&
+                                    vect=zk8(jnch), nbret=n2)
                         do 10 ii = 1, nbval
                             zk16(jval+ii-1) = zk8( jnch+ (2*ii-1)-1)// zk8(jnch+ (2*ii)-1 )
 10                      continue
                         call jedetr(knmod)
                     else
-                        call getvtx(motcle, zk16(jpara-1+iacc), iocc, iarg, nbval,&
-                                    zk16(jval), n2)
+                        call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                                    vect=zk16(jval), nbret=n2)
                     endif
                 else if (ctyp(1:3).eq.'K24') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc, iarg, nbval,&
-                                zk24(jval), n2)
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                                vect=zk24(jval), nbret=n2)
                 else if (ctyp(1:3).eq.'K32') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc, iarg, nbval,&
-                                zk32(jval), n2)
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                                vect=zk32(jval), nbret=n2)
                 else if (ctyp(1:3).eq.'K80') then
-                    call getvtx(motcle, zk16(jpara-1+iacc), iocc, iarg, nbval,&
-                                zk80(jval), n2)
+                    call getvtx(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=nbval,&
+                                vect=zk80(jval), nbret=n2)
                 endif
                 nbordr = 1
                 do 20 ival = 1, nbval
@@ -325,8 +321,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
     linst = getexm(motcle,'LIST_INST')
     if (linst .eq. 1) then
-        call getvid(motcle, 'LIST_INST', iocc, iarg, 1,&
-                    listr, n1)
+        call getvid(motcle, 'LIST_INST', iocc=iocc, scal=listr, nbret=n1)
         if (n1 .ne. 0) then
             call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
                         c16b, r8b, k8b, nbordt, 1,&
@@ -375,8 +370,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
     lfreq = getexm(motcle,'LIST_FREQ')
     if (lfreq .eq. 1) then
-        call getvid(motcle, 'LIST_FREQ', iocc, iarg, 1,&
-                    listr, n1)
+        call getvid(motcle, 'LIST_FREQ', iocc=iocc, scal=listr, nbret=n1)
         if (n1 .ne. 0) then
             call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
                         c16b, r8b, k8b, nbordt, 1,&
@@ -425,8 +419,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
     lordr = getexm(motcle,'LIST_ORDRE')
     if (lordr .eq. 1) then
-        call getvid(motcle, 'LIST_ORDRE', iocc, iarg, 1,&
-                    listr, n1)
+        call getvid(motcle, 'LIST_ORDRE', iocc=iocc, scal=listr, nbret=n1)
         if (n1 .ne. 0) then
             call jeveuo(listr//'.VALE', 'L', laccr)
             call jelira(listr//'.VALE', 'LONMAX', nbordr)

@@ -1,7 +1,7 @@
 subroutine getvem(noma, typent, motfac, motcle, iocc,&
                   iarg, mxval, vk, nbval)
     implicit none
-#include "asterc/getvtx.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/verima.h"
     character(len=*) :: noma, typent, motfac, motcle, vk(*)
     integer :: iocc, iarg, mxval, nbval
@@ -42,8 +42,8 @@ subroutine getvem(noma, typent, motfac, motcle, iocc,&
 !-----------------------------------------------------------------------
     integer :: mm
 !-----------------------------------------------------------------------
-    call getvtx(motfac, motcle, iocc, iarg, mxval,&
-                vk, nbval)
+    call getvtx(motfac, motcle, iocc=iocc, nbval=mxval, vect=vk,&
+                nbret=nbval)
     if (mxval .ne. 0) then
         mm=min(mxval,abs(nbval))
         call verima(noma, vk, mm, typent)

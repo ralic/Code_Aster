@@ -1,5 +1,5 @@
 subroutine op0073()
-    implicit  none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,10 +23,10 @@ subroutine op0073()
 !-----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -63,8 +63,7 @@ subroutine op0073()
     call getres(nomres, typres, nomcom)
 !
 !     --- VERIFICATIONS DE PREMIER NIVEAU ---
-    call getvr8(' ', 'VALE', 0, iarg, 0,&
-                r8bid, nbval)
+    call getvr8(' ', 'VALE', nbval=0, nbret=nbval)
     nbval = -nbval
     if ((nbval/2)*2 .ne. nbval) then
         call u2mess('F', 'ALGORITH9_43')
@@ -75,8 +74,7 @@ subroutine op0073()
     call tbajpa(nomres, nbpara, nopara, typara)
 !
 ! --- TYPE DE L'OBSTACLE
-    call getvtx(' ', 'TYPE', 0, iarg, 1,&
-                type, ibid)
+    call getvtx(' ', 'TYPE', scal=type, nbret=ibid)
 !
 ! --- FONCTION R=F(THETA EN RADIAN) DECRIVANT LA GEOMETRIE
     nomfon = nomres//'_INITIAL'
@@ -98,8 +96,7 @@ subroutine op0073()
     if (type(1:7) .eq. 'DISCRET') then
         if (nbval .gt. 0) then
             call wkvect('&&OP0073.TEMP', 'V V R', nbval, idtemp)
-            call getvr8(' ', 'VALE', 0, iarg, nbval,&
-                        zr(idtemp), ibid)
+            call getvr8(' ', 'VALE', nbval=nbval, vect=zr(idtemp), nbret=ibid)
 !
             call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
             lfon = lval + nbpair

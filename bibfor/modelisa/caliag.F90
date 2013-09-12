@@ -17,11 +17,7 @@ subroutine caliag(fonrez, chargz)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
@@ -31,6 +27,9 @@ subroutine caliag(fonrez, chargz)
 #include "asterfort/calinn.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -50,6 +49,7 @@ subroutine caliag(fonrez, chargz)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: fonrez, chargz
 ! ----------------------------------------------------------------------
 !
@@ -165,15 +165,13 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- LECTURE DES DDLS IMPOSES SUR LA LISTE 1 ---
 !
-        call getvtx(motfac, 'DDL_1', iocc, iarg, 0,&
-                    k8bid, nddl1)
+        call getvtx(motfac, 'DDL_1', iocc=iocc, nbval=0, nbret=nddl1)
         nddl1 = -nddl1
 !
 ! --- LECTURE DES COEF. MULT. ASSOCIES AUX DDLS IMPOSES ---
 ! --- SUR LA LISTE 1                                    ---
 !
-        call getvr8(motfac, 'COEF_MULT_1', iocc, iarg, 0,&
-                    rbid, nmult1)
+        call getvr8(motfac, 'COEF_MULT_1', iocc=iocc, nbval=0, nbret=nmult1)
         nmult1 = -nmult1
         if (nddl1 .ne. nmult1) then
             vali (1) = nddl1
@@ -186,8 +184,8 @@ subroutine caliag(fonrez, chargz)
         call jeecra(jexnum(nomdd1, iocc), 'LONMAX', nddl1)
         call jeveuo(jexnum(nomdd1, iocc), 'E', iddl1)
         call jeecra(jexnum(nomdd1, iocc), 'LONUTI', nddl1)
-        call getvtx(motfac, 'DDL_1', iocc, iarg, nddl1,&
-                    zk8(iddl1), nddl1)
+        call getvtx(motfac, 'DDL_1', iocc=iocc, nbval=nddl1, vect=zk8(iddl1),&
+                    nbret=nddl1)
         do k = 1, nddl1
             call lxcaps(zk8(iddl1-1+k))
             call lxcadr(zk8(iddl1-1+k))
@@ -196,8 +194,8 @@ subroutine caliag(fonrez, chargz)
         call jecroc(jexnum(coef1, iocc))
         call jeecra(jexnum(coef1, iocc), 'LONMAX', nddl1)
         call jeveuo(jexnum(coef1, iocc), 'E', imult1)
-        call getvr8(motfac, 'COEF_MULT_1', iocc, iarg, nddl1,&
-                    zr(imult1), nddl1)
+        call getvr8(motfac, 'COEF_MULT_1', iocc=iocc, nbval=nddl1, vect=zr(imult1),&
+                    nbret=nddl1)
 !
 ! --- CAS DE DNOR : ON VA GENERE UNE LIAISON SUR DX,DY DZ POUR ---
 ! --- CHAQUE COUPLE DE LA LIST(UN GREL PAR COUPLE)             ---
@@ -208,28 +206,26 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- LECTURE DES DDLS IMPOSES SUR LA LISTE 2 ---
 !
-        call getvtx(motfac, 'DDL_2', iocc, iarg, 0,&
-                    k8bid, nddl2)
+        call getvtx(motfac, 'DDL_2', iocc=iocc, nbval=0, nbret=nddl2)
         nddl2 = -nddl2
 !
 ! --- LECTURE DES COEF. MULT. ASSOCIES AUX DDLS IMPOSES ---
 ! --- SUR LA LISTE 2                                    ---
 !
-        call getvr8(motfac, 'COEF_MULT_2', iocc, iarg, 0,&
-                    rbid, nmult2)
+        call getvr8(motfac, 'COEF_MULT_2', iocc=iocc, nbval=0, nbret=nmult2)
         nmult2 = -nmult2
         if (nddl2 .ne. nmult2) then
             vali (1) = nddl2
             vali (2) = nmult2
-            call u2mesi('F', 'MODELISA8_44',2,vali)
+            call u2mesi('F', 'MODELISA8_44', 2, vali)
         endif
 !
         call jecroc(jexnum(nomdd2, iocc))
         call jeecra(jexnum(nomdd2, iocc), 'LONMAX', nddl2)
         call jeveuo(jexnum(nomdd2, iocc), 'E', iddl2)
         call jeecra(jexnum(nomdd2, iocc), 'LONUTI', nddl2)
-        call getvtx(motfac, 'DDL_2', iocc, iarg, nddl2,&
-                    zk8(iddl2), nddl2)
+        call getvtx(motfac, 'DDL_2', iocc=iocc, nbval=nddl2, vect=zk8(iddl2),&
+                    nbret=nddl2)
         do k = 1, nddl2
             call lxcaps(zk8(iddl2-1+k))
             call lxcadr(zk8(iddl2-1+k))
@@ -238,8 +234,8 @@ subroutine caliag(fonrez, chargz)
         call jecroc(jexnum(coef2, iocc))
         call jeecra(jexnum(coef2, iocc), 'LONMAX', nddl2)
         call jeveuo(jexnum(coef2, iocc), 'E', imult2)
-        call getvr8(motfac, 'COEF_MULT_2', iocc, iarg, nddl2,&
-                    zr(imult2), nddl2)
+        call getvr8(motfac, 'COEF_MULT_2', iocc=iocc, nbval=nddl2, vect=zr(imult2),&
+                    nbret=nddl2)
         if ((nddl2.eq.1) .and. (zk8(iddl2).eq.'DNOR')) then
             if (.not.dnor) call u2mess('F', 'MODELISA2_94')
         endif
@@ -284,11 +280,9 @@ subroutine caliag(fonrez, chargz)
 !
     do iocc = 1, nliag
         if (fonree .eq. 'REEL') then
-            call getvr8(motfac, 'COEF_IMPO', iocc, iarg, 1,&
-                        beta, nb)
+            call getvr8(motfac, 'COEF_IMPO', iocc=iocc, scal=beta, nbret=nb)
         else
-            call getvid(motfac, 'COEF_IMPO', iocc, iarg, 1,&
-                        kbeta, nb)
+            call getvid(motfac, 'COEF_IMPO', iocc=iocc, scal=kbeta, nbret=nb)
         endif
         call jeveuo(jexnum(coni, iocc), 'L', idconi)
 ! --- NOMBRE DE NOEUDS DE CHACUNES DES LISTES EN VIS A VIS
@@ -460,7 +454,7 @@ subroutine caliag(fonrez, chargz)
 !
         call infniv(ifm, niv)
         if (niv .eq. 2) then
-            call u2mesi('I','CHARGES2_35',1,iocc)
+            call u2mesi('I', 'CHARGES2_35', 1, iocc)
             do j = 1, nbno
                 ino1 = zi(idconi+2* (j-1)+1)
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
@@ -468,7 +462,7 @@ subroutine caliag(fonrez, chargz)
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
                 valk(1) = nomno1
                 valk(2) = nomno2
-                call u2mesk('I','CHARGES2_36',2,valk)
+                call u2mesk('I', 'CHARGES2_36', 2, valk)
             enddo
         endif
 !
@@ -493,6 +487,6 @@ subroutine caliag(fonrez, chargz)
 !
     call aflrch(lisrel, charge)
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

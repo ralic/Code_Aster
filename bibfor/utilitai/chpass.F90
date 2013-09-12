@@ -1,13 +1,8 @@
 subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                   chou)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
@@ -22,6 +17,10 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -33,6 +32,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma, chou
     character(len=*) :: celmod
     character(len=4) :: tychr, tych2
@@ -132,8 +132,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
 !       2.1 VERIFICATION DES CARACTERISTIQUES DU CHAMP :
 !       ------------------------------------------------
-    call getvid('ASSE', 'CHAM_GD', iocc, iarg, 1,&
-                champ, ib)
+    call getvid('ASSE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=ib)
     zk24(lnom+iocc-1) = champ
     call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ib,&
                 tych2, ib)
@@ -203,36 +202,32 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !     -----------------------------------------------------
     nchg = 0
     do 20,iocc = 1,nbocc
-    call getvid('ASSE', 'CHAM_GD', iocc, iarg, 1,&
-                champ, ib)
+    call getvid('ASSE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=ib)
     call dismoi('F', 'TYPE_CHAMP', champ, 'CHAMP', ib,&
                 tych2, ib)
 !
     cumul = .false.
-    call getvtx('ASSE', 'CUMUL', iocc, iarg, 1,&
-                kbid, ib)
+    call getvtx('ASSE', 'CUMUL', iocc=iocc, scal=kbid, nbret=ib)
     if (kbid .eq. 'OUI') cumul = .true.
 !
 !       4.0 CALCUL DE LA LISTE DES CMPS ET DU BOOLEEN CHGCMP
 !        QUI INDIQUE QUE L'ON DOIT MODIFIER LES CMPS ET/OU LA GRANDEUR.
 !       ---------------------------------------------------------------
-    call getvtx('ASSE', 'NOM_CMP', iocc, iarg, 0,&
-                kbid, n1)
+    call getvtx('ASSE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=n1)
     chgcmp = .false.
     if (n1 .lt. 0) then
         ncmp = -n1
         call wkvect('&&CHPASS.LICMP', 'V V K8', ncmp, jlicmp)
-        call getvtx('ASSE', 'NOM_CMP', iocc, iarg, ncmp,&
-                    zk8(jlicmp), ib)
-        call getvtx('ASSE', 'NOM_CMP_RESU', iocc, iarg, 0,&
-                    kbid, n1)
+        call getvtx('ASSE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jlicmp),&
+                    nbret=ib)
+        call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .lt. 0) then
             chgcmp = .true.
             nchg = nchg + 1
             if (n1 .ne. -ncmp) call u2mess('F', 'UTILITAI_31')
             call wkvect('&&CHPASS.LICMP2', 'V V K8', ncmp, jlicm2)
-            call getvtx('ASSE', 'NOM_CMP_RESU', iocc, iarg, ncmp,&
-                        zk8(jlicm2), ib)
+            call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=ncmp, vect=zk8(jlicm2),&
+                        nbret=ib)
         endif
 !
     else
@@ -254,8 +249,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
     call dismoi('F', 'TYPE_SCA', nomgd2, 'GRANDEUR', ib,&
                 tsca, ib)
-    call getvc8('ASSE', 'COEF_C', iocc, iarg, 1,&
-                coefc, iret)
+    call getvc8('ASSE', 'COEF_C', iocc=iocc, scal=coefc, nbret=iret)
     if (iret .ne. 0) then
         if (tsca .ne. 'C') then
             call u2mess('F', 'UTILITAI_33')
@@ -264,8 +258,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
     else
         lcoc = .false.
-        call getvr8('ASSE', 'COEF_R', iocc, iarg, 1,&
-                    coefr, ib)
+        call getvr8('ASSE', 'COEF_R', iocc=iocc, scal=coefr, nbret=ib)
     endif
 !
 !       4.2 RECUPERATION DE LA LISTE DES NOEUDS OU MAILLES :

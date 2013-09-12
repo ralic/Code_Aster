@@ -23,17 +23,16 @@ subroutine op0027()
 !     SYMETRIQUES DEFINIES POSITIVES.
 !
 ! ----------------------------------------------------------------------
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/iniran.h"
 #include "asterfort/copisd.h"
 #include "asterfort/gematg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -45,6 +44,7 @@ subroutine op0027()
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iret, n1, n, i, m, iak, iadr, iadr1, iadr2
     integer :: idesc, ialime, iaconl, jrefa2, jrefa1
     integer :: jump, iret2
@@ -60,11 +60,9 @@ subroutine op0027()
     call getres(nomres, concep, nomcmd)
 !
 !
-    call getvid(' ', 'MATR_MOYEN', 1, iarg, 1,&
-                nommat, n1)
+    call getvid(' ', 'MATR_MOYEN', scal=nommat, nbret=n1)
 !
-    call getvis(' ', 'INIT_ALEA', 0, iarg, 1,&
-                jump, n1)
+    call getvis(' ', 'INIT_ALEA', scal=jump, nbret=n1)
     if (n1 .ne. 0) call iniran(jump)
 !
     if (concep .eq. 'MATR_ASSE_GENE_R') then
@@ -73,8 +71,7 @@ subroutine op0027()
 ! --- GENERATION D UNE MATRICE GENERALISEE ALEATOIRE
 !===================================================
 !
-        call getvr8(' ', 'COEF_VAR', 1, iarg, 1,&
-                    delta, n1)
+        call getvr8(' ', 'COEF_VAR', scal=delta, nbret=n1)
 !
         call jeveuo(nommat//'           .DESC', 'L', idesc)
 !
@@ -162,8 +159,7 @@ subroutine op0027()
         endif
 !
 ! -- RAIDEUR
-        call getvr8(' ', 'COEF_VAR_RIGI', 1, iarg, 1,&
-                    delta, n1)
+        call getvr8(' ', 'COEF_VAR_RIGI', scal=delta, nbret=n1)
         if (delta .gt. 0.d0) then
 ! GENRRATION RAIDEUR
 !
@@ -189,8 +185,7 @@ subroutine op0027()
         endif
 !
 ! -- MASSE
-        call getvr8(' ', 'COEF_VAR_MASS', 1, iarg, 1,&
-                    delta, n1)
+        call getvr8(' ', 'COEF_VAR_MASS', scal=delta, nbret=n1)
 !
         if (delta .gt. 0.d0) then
 ! GENRRATION MASSE
@@ -217,8 +212,7 @@ subroutine op0027()
         endif
 !
 ! -- AMORTISSEMNT
-        call getvr8(' ', 'COEF_VAR_AMOR', 1, iarg, 1,&
-                    delta, n1)
+        call getvr8(' ', 'COEF_VAR_AMOR', scal=delta, nbret=n1)
 !
         if (delta .gt. 0.d0) then
 ! GENRRATION AMORTISSEMENT

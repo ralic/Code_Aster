@@ -1,14 +1,9 @@
 subroutine charci(chcine, mfact, mo, type)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
 #include "asterc/gettco.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/chcsur.h"
@@ -18,6 +13,10 @@ subroutine charci(chcine, mfact, mo, type)
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -31,6 +30,7 @@ subroutine charci(chcine, mfact, mo, type)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chcine, mfact, mo
     character(len=1) :: type
 !-----------------------------------------------------------------------
@@ -122,11 +122,9 @@ subroutine charci(chcine, mfact, mo, type)
     evoim=' '
     if (noc .eq. 0) then
         ASSERT(mfac.eq.'MECA_IMPO'.or.mfac.eq.'THER_IMPO')
-        call getvid(' ', 'EVOL_IMPO', 1, iarg, 1,&
-                    evoim, n1)
+        call getvid(' ', 'EVOL_IMPO', scal=evoim, nbret=n1)
         ASSERT(n1.eq.1)
-        call getvtx(' ', 'NOM_CMP', 1, iarg, 20,&
-                    licmp, nlicmp)
+        call getvtx(' ', 'NOM_CMP', nbval=20, vect=licmp, nbret=nlicmp)
         ASSERT(nlicmp.ge.0)
 !
         call gettco(evoim, typco)
@@ -253,12 +251,15 @@ subroutine charci(chcine, mfact, mo, type)
                 endif
             endif
 !
-            if (type .eq. 'R') call getvr8(mfac, k16b, ioc, iarg, 1,&
-                                           zr(idvddl+nbddl), ila)
-            if (type .eq. 'C') call getvc8(mfac, k16b, ioc, iarg, 1,&
-                                           zc(idvddl+nbddl), ila)
-            if (type .eq. 'F') call getvid(mfac, k16b, ioc, iarg, 1,&
-                                           zk8(idvddl+nbddl), ila)
+            if (type .eq. 'R') then
+                call getvr8(mfac, k16b, iocc=ioc, scal=zr(idvddl+nbddl), nbret=ila)
+            endif
+            if (type .eq. 'C') then
+                call getvc8(mfac, k16b, iocc=ioc, scal=zc(idvddl+nbddl), nbret=ila)
+            endif
+            if (type .eq. 'F') then
+                call getvid(mfac, k16b, iocc=ioc, scal=zk8(idvddl+nbddl), nbret=ila)
+            endif
             nbddl = nbddl+1
 110      continue
 !

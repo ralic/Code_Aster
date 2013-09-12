@@ -17,8 +17,8 @@ subroutine nxdocn(parcri, parcrr)
 ! ======================================================================
     implicit none
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
     integer :: parcri(3)
     real(kind=8) :: parcrr(2)
 ! ----------------------------------------------------------------------
@@ -40,17 +40,14 @@ subroutine nxdocn(parcri, parcrr)
     nomcvg = 'CONVERGENCE'
     call getfac(nomcvg, iocc)
     if (iocc .eq. 1) then
-        call getvr8(nomcvg, 'RESI_GLOB_MAXI', 1, iarg, 1,&
-                    parcrr(1), parcri(1))
-        call getvr8(nomcvg, 'RESI_GLOB_RELA', 1, iarg, 1,&
-                    parcrr(2), parcri(2))
+        call getvr8(nomcvg, 'RESI_GLOB_MAXI', iocc=1, scal=parcrr(1), nbret=parcri(1))
+        call getvr8(nomcvg, 'RESI_GLOB_RELA', iocc=1, scal=parcrr(2), nbret=parcri(2))
         if (parcri(1)+parcri(2) .eq. 0) then
             parcri(2) = 1
             parcrr(2) = 1.d-6
         endif
 !
-        call getvis(nomcvg, 'ITER_GLOB_MAXI', 1, iarg, 1,&
-                    parcri(3), n1)
+        call getvis(nomcvg, 'ITER_GLOB_MAXI', iocc=1, scal=parcri(3), nbret=n1)
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

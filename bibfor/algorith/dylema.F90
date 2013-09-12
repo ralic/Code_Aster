@@ -41,11 +41,10 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -55,6 +54,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmat
     character(len=8) :: baseno
     character(len=19) :: masse, raide, amor, impe
@@ -113,14 +113,10 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 !
 !
 !  1.2.1    --- NOM DES MATRICES
-    call getvid(bl, 'MATR_MASS', 0, iarg, 1,&
-                masse, n1)
-    call getvid(bl, 'MATR_RIGI', 0, iarg, 1,&
-                raide, n1)
-    call getvid(bl, 'MATR_AMOR', 0, iarg, 1,&
-                amor, lamor)
-    call getvid(bl, 'MATR_IMPE_PHI', 0, iarg, 1,&
-                impe, limpe)
+    call getvid(bl, 'MATR_MASS', scal=masse, nbret=n1)
+    call getvid(bl, 'MATR_RIGI', scal=raide, nbret=n1)
+    call getvid(bl, 'MATR_AMOR', scal=amor, nbret=lamor)
+    call getvid(bl, 'MATR_IMPE_PHI', scal=impe, nbret=limpe)
 !
 !
 !===============
@@ -151,10 +147,8 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 !  3. RECUPERATION DE L AMORTISSEMENT
 !===============
 !
-    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, 0,&
-                r8bid, n1)
-    call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 0,&
-                k8bid, n2)
+    call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
+    call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
     if (n1 .ne. 0 .or. n2 .ne. 0) then
         call gettco(raide, typobj)
         if (typobj(1:14) .ne. 'MATR_ASSE_GENE') then
@@ -177,8 +171,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
         if (n1 .ne. 0) then
             nbamor = -n1
         else
-            call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 1,&
-                        listam, n)
+            call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=listam, nbret=n)
             call jelira(listam//'           .VALE', 'LONMAX', nbamor)
 !
 !
@@ -192,8 +185,8 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
                         vali, 0, 0.d0)
             call wkvect(baseno//'.AMORTI', 'V V R8', nbmode, jamog)
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbmode,&
-                            zr(jamog), n)
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbmode, vect=zr(jamog),&
+                            nbret=n)
             else
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do 201 iam = 1, nbmode
@@ -204,8 +197,8 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 !
             call wkvect(baseno//'.AMORTI', 'V V R8', nbamor, jamog)
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                            zr(jamog), n)
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamog),&
+                            nbret=n)
             else
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do 210 iam = 1, nbamor
@@ -229,8 +222,8 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
         else if (nbamor.eq.nbmode) then
             call wkvect(baseno//'.AMORTI', 'V V R8', nbamor, jamog)
             if (n1 .ne. 0) then
-                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', 1, iarg, nbamor,&
-                            zr(jamog), n)
+                call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamog),&
+                            nbret=n)
             else
                 call jeveuo(listam//'           .VALE', 'L', iamog)
                 do 220 iam = 1, nbamor

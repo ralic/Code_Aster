@@ -36,13 +36,12 @@ subroutine retrec(nomres, resgen, nomsst)
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/extrac.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -68,6 +67,7 @@ subroutine retrec(nomres, resgen, nomsst)
 #include "asterfort/wkvect.h"
 !
 !
+!
     real(kind=8) :: epsi
     character(len=8) :: chmp(3), k8rep, crit, interp, k8b, nomres, basmod
     character(len=8) :: mailla
@@ -84,8 +84,8 @@ subroutine retrec(nomres, resgen, nomsst)
     integer :: i, i1, iad, iarchi, ibid, ich, idinsg
     integer :: idresu, idvecg, ieq, ier, ire1, ire2, ire3
     integer :: iretou, j, jinst, jnume, k, k1, ldnew
-    integer :: linst,llchab,llnequ,llnueq,llors,llprs
-    integer :: llref2,lmapro,lmoet,lsilia,lsst
+    integer :: linst, llchab, llnequ, llnueq, llors, llprs
+    integer :: llref2, lmapro, lmoet, lsilia, lsst
     integer :: n1, nbcham, nbddg, nbinsg, nbinst, nbsst, neq
     integer :: neqet, neqgen, neqred, nusst, nutars
 !-----------------------------------------------------------------------
@@ -110,8 +110,7 @@ subroutine retrec(nomres, resgen, nomsst)
                     0, 0, 0.d0)
     endif
 !
-    call getvtx(' ', 'TOUT_CHAM', 0, iarg, 1,&
-                k8rep, n1)
+    call getvtx(' ', 'TOUT_CHAM', scal=k8rep, nbret=n1)
     if (k8rep(1:3) .eq. 'OUI') then
         if (ire1 .eq. 0) then
             call u2mess('F', 'ALGORITH10_44')
@@ -130,8 +129,7 @@ subroutine retrec(nomres, resgen, nomsst)
         call jeveuo(trange//'.VITE', 'L', itresu(2))
         call jeveuo(trange//'.ACCE', 'L', itresu(3))
     else
-        call getvtx(' ', 'NOM_CHAM', 0, iarg, 1,&
-                    k8rep, n1)
+        call getvtx(' ', 'NOM_CHAM', scal=k8rep, nbret=n1)
         if (k8rep(1:4) .eq. 'DEPL' .and. ire1 .eq. 0) then
             call u2mess('F', 'ALGORITH10_44')
         else if (k8rep(1:4).eq.'DEPL'.and.ire1.ne.0) then
@@ -155,7 +153,8 @@ subroutine retrec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
 !
-    call dismoi('F', 'NUME_DDL', trange, 'RESU_DYNA', ibid, numgen, iret)
+    call dismoi('F', 'NUME_DDL', trange, 'RESU_DYNA', ibid,&
+                numgen, iret)
     numgen(15:19) = '.NUME'
     call jeveuo(numgen//'.REFN', 'L', llref2)
     modgen = zk24(llref2)(1:8)
@@ -235,9 +234,10 @@ subroutine retrec(nomres, resgen, nomsst)
                     kbid, ier)
     endif
 !
-
+!
 ! -->AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lint, iret)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                lint, iret)
     call dismoi('F', 'NOM_MAILLA', lint, 'INTERF_DYNA', ibid,&
                 mailla, iret)
     call dismoi('F', 'NOM_NUME_DDL', lint, 'INTERF_DYNA', ibid,&
@@ -250,12 +250,9 @@ subroutine retrec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION DES INSTANTS
 !
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, n1)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n1)
-    call getvtx(' ', 'INTERPOL', 0, iarg, 1,&
-                interp, n1)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
+    call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
 !
     knume = '&&RETREC.NUM_RANG'
     kinst = '&&RETREC.INSTANT'
@@ -414,7 +411,7 @@ subroutine retrec(nomres, resgen, nomsst)
     endif
 !
 ! -->AAC-->NORMALEMENT CE .REFD EST INCOHERENT AVEC CELUI DE DYNA_GENE
-    call refdcp(basmod,nomres)
+    call refdcp(basmod, nomres)
 !
 ! --- MENAGE
     call jelibe(numgen//'.NUEQ')

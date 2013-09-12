@@ -1,14 +1,14 @@
 subroutine trchno(ific, nocc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvc8.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -85,8 +85,7 @@ subroutine trchno(ific, nocc)
         testok = 'NOOK'
         nonoeu = ' '
         noddl = ' '
-        call getvid('CHAM_NO', 'CHAM_GD', iocc, iarg, 1,&
-                    cham19, n1)
+        call getvid('CHAM_NO', 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
         lign1(1:21)='---- '//motcle(1:8)
         lign1(22:22)='.'
         lign2(1:21)='     '//cham19(1:8)
@@ -94,8 +93,7 @@ subroutine trchno(ific, nocc)
 !
         call utest3('CHAM_NO', iocc, tbtxt)
 !
-        call getvtx('CHAM_NO', 'NOM_CMP', iocc, iarg, 1,&
-                    noddl, n1)
+        call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
         if (n1 .ne. 0) then
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
@@ -104,8 +102,7 @@ subroutine trchno(ific, nocc)
             lign1(nl1+17:nl1+17)='.'
             lign2(nl2+17:nl2+17)='.'
         endif
-        call getvtx('CHAM_NO', 'VALE_ABS', iocc, iarg, 1,&
-                    ssigne, n1)
+        call getvtx('CHAM_NO', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
         if (ssigne .eq. 'OUI') then
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
@@ -114,78 +111,68 @@ subroutine trchno(ific, nocc)
             lign1(nl1+17:nl1+17)='.'
             lign2(nl2+17:nl2+17)='.'
         endif
-        call getvr8('CHAM_NO', 'TOLE_MACHINE', iocc, iarg, 1,&
-                    epsi, iret)
-        call getvtx('CHAM_NO', 'CRITERE', iocc, iarg, 1,&
-                    crit, iret)
+        call getvr8('CHAM_NO', 'TOLE_MACHINE', iocc=iocc, scal=epsi, nbret=iret)
+        call getvtx('CHAM_NO', 'CRITERE', iocc=iocc, scal=crit, nbret=iret)
 !
-        call getvr8('CHAM_NO', 'VALE_CALC', iocc, iarg, 0,&
-                    r8b, n1)
-        call getvis('CHAM_NO', 'VALE_CALC_I', iocc, iarg, 0,&
-                    ibid, n2)
-        call getvc8('CHAM_NO', 'VALE_CALC_C', iocc, iarg, 0,&
-                    c16b, n3)
+        call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)
+        call getvis('CHAM_NO', 'VALE_CALC_I', iocc=iocc, nbval=0, nbret=n2)
+        call getvc8('CHAM_NO', 'VALE_CALC_C', iocc=iocc, nbval=0, nbret=n3)
         if (n1 .ne. 0) then
             nref=-n1
             typres = 'R'
             call jedetr(travr)
             call wkvect(travr, 'V V R', nref, irefr)
-            call getvr8('CHAM_NO', 'VALE_CALC', iocc, iarg, nref,&
-                        zr( irefr), iret)
+            call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr( irefr),&
+                        nbret=iret)
         else if (n2 .ne. 0) then
             nref=-n2
             typres = 'I'
             call jedetr(travi)
             call wkvect(travi, 'V V I', nref, irefi)
-            call getvis('CHAM_NO', 'VALE_CALC_I', iocc, iarg, nref,&
-                        zi( irefi), iret)
+            call getvis('CHAM_NO', 'VALE_CALC_I', iocc=iocc, nbval=nref, vect=zi( irefi),&
+                        nbret=iret)
         else if (n3 .ne. 0) then
             nref=-n3
             typres = 'C'
             call jedetr(travc)
             call wkvect(travc, 'V V C', nref, irefc)
-            call getvc8('CHAM_NO', 'VALE_CALC_C', iocc, iarg, nref,&
-                        zc( irefc), iret)
+            call getvc8('CHAM_NO', 'VALE_CALC_C', iocc=iocc, nbval=nref, vect=zc( irefc),&
+                        nbret=iret)
         endif
 ! ----------------------------------------------------------------------
         lref=.false.
-        call getvr8('CHAM_NO', 'PRECISION', iocc, iarg, 1,&
-                    epsir, iret)
+        call getvr8('CHAM_NO', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then
             lref=.true.
-            call getvr8('CHAM_NO', 'VALE_REFE', iocc, iarg, 0,&
-                        r8b, n1r)
-            call getvis('CHAM_NO', 'VALE_REFE_I', iocc, iarg, 0,&
-                        ibid, n2r)
-            call getvc8('CHAM_NO', 'VALE_REFE_C', iocc, iarg, 0,&
-                        c16b, n3r)
+            call getvr8('CHAM_NO', 'VALE_REFE', iocc=iocc, nbval=0, nbret=n1r)
+            call getvis('CHAM_NO', 'VALE_REFE_I', iocc=iocc, nbval=0, nbret=n2r)
+            call getvc8('CHAM_NO', 'VALE_REFE_C', iocc=iocc, nbval=0, nbret=n3r)
             if (n1r .ne. 0) then
                 ASSERT((n1r.eq.n1))
                 nref=-n1r
                 call jedetr(travrr)
                 call wkvect(travrr, 'V V R', nref, irefrr)
-                call getvr8('CHAM_NO', 'VALE_REFE', iocc, iarg, nref,&
-                            zr(irefrr), iret)
+                call getvr8('CHAM_NO', 'VALE_REFE', iocc=iocc, nbval=nref, vect=zr(irefrr),&
+                            nbret=iret)
             else if (n2r.ne.0) then
                 ASSERT((n2r.eq.n2))
                 nref=-n2r
                 call jedetr(travir)
                 call wkvect(travir, 'V V I', nref, irefir)
-                call getvis('CHAM_NO', 'VALE_REFE_I', iocc, iarg, nref,&
-                            zi(irefir), iret)
+                call getvis('CHAM_NO', 'VALE_REFE_I', iocc=iocc, nbval=nref, vect=zi(irefir),&
+                            nbret=iret)
             else if (n3r.ne.0) then
                 ASSERT((n3r.eq.n3))
                 nref=-n3r
                 call jedetr(travcr)
                 call wkvect(travcr, 'V V C', nref, irefcr)
-                call getvc8('CHAM_NO', 'VALE_REFE_C', iocc, iarg, nref,&
-                            zc(irefcr), iret)
+                call getvc8('CHAM_NO', 'VALE_REFE_C', iocc=iocc, nbval=nref, vect=zc(irefcr),&
+                            nbret=iret)
             endif
         endif
 ! ----------------------------------------------------------------------
 !
-        call getvtx('CHAM_NO', 'TYPE_TEST', iocc, iarg, 1,&
-                    typtes, n1)
+        call getvtx('CHAM_NO', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
 !
         if (n1 .ne. 0) then
 !
@@ -196,8 +183,7 @@ subroutine trchno(ific, nocc)
             lign1(nl1+17:nl1+17)='.'
             lign2(nl2+17:nl2+17)='.'
 !
-            call getvtx('CHAM_NO', 'NOM_CMP', iocc, iarg, 0,&
-                        noddl, n4)
+            call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, nbval=0, nbret=n4)
             if (n4 .eq. 0) then
                 nl1 = lxlgut(lign1)
                 nl11 = lxlgut(lign1(1:nl1-1))
@@ -237,8 +223,8 @@ subroutine trchno(ific, nocc)
             else
                 nbcmp = -n4
                 call wkvect('&&TRCHNO.NOM_CMP', 'V V K8', nbcmp, jcmp)
-                call getvtx('CHAM_NO', 'NOM_CMP', iocc, iarg, nbcmp,&
-                            zk8(jcmp), n4)
+                call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                            nbret=n4)
                 if (lref) then
                     tbref(1)=tbtxt(1)
                     tbref(2)=tbtxt(2)
@@ -259,8 +245,7 @@ subroutine trchno(ific, nocc)
 !
         else
 !
-            call getvtx('CHAM_NO', 'NOM_CMP', iocc, iarg, 1,&
-                        noddl, n1)
+            call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
             call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
                         nomma, iret)
             call getvem(nomma, 'NOEUD', 'CHAM_NO', 'NOEUD', iocc,&

@@ -30,7 +30,7 @@ subroutine infmaj()
 !      UNITE     :UNITE LOGIQUE DU FICHIER MESSAGE
 !
 #include "asterc/getexm.h"
-#include "asterc/getvis.h"
+#include "asterfort/getvis.h"
 #include "asterfort/iunifi.h"
     integer :: nivuti, nivpgm, unite
     common / inf001 / nivuti , nivpgm , unite
@@ -44,8 +44,9 @@ subroutine infmaj()
 !
     linfo = getexm ( ' ' , 'INFO' )
 !
-    if (linfo .eq. 1) call getvis(' ', 'INFO', 0, iarg, 1,&
-                                  info, nbval)
+    if (linfo .eq. 1) then
+        call getvis(' ', 'INFO', scal=info, nbret=nbval)
+    endif
 !
     nivuti = info
     nivpgm = info

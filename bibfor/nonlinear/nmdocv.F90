@@ -1,9 +1,9 @@
 subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
     implicit none
 !
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/u2mesg.h"
@@ -57,11 +57,11 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
 !
 !     RECUP DES VALEURS
     if (nommc .eq. 'RESI_INTE_RELA') then
-        call getvr8(mcfact, nommc, iocc, iarg, 1,&
-                    valrmc, iret)
+        call getvr8(mcfact, nommc, iocc=iocc, scal=valrmc, nbret=iret,&
+                    isdefault=iarg)
     else if (nommc.eq.'ITER_INTE_MAXI') then
-        call getvis(mcfact, nommc, iocc, iarg, 1,&
-                    valimc, iret)
+        call getvis(mcfact, nommc, iocc=iocc, scal=valimc, nbret=iret,&
+                    isdefault=iarg)
         valrmc = valimc
     endif
 !

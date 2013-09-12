@@ -1,5 +1,5 @@
 subroutine rc36rm()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,12 @@ subroutine rc36rm()
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/celces.h"
 #include "asterfort/codent.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -63,19 +63,14 @@ subroutine rc36rm()
 !
     do 10, iocc = 1, nbresu, 1
 !
-    call getvis(motclf, 'NUME_CHAR', iocc, iarg, 1,&
-                zi(jnume+iocc-1), n1)
+    call getvis(motclf, 'NUME_CHAR', iocc=iocc, scal=zi(jnume+iocc-1), nbret=n1)
 !
 !
-    call getvid(motclf, 'RESULTAT', iocc, iarg, 1,&
-                resu, n1)
+    call getvid(motclf, 'RESULTAT', iocc=iocc, scal=resu, nbret=n1)
     if (n1 .ne. 0) then
-        call getvtx(motclf, 'NOM_CHAM', iocc, iarg, 1,&
-                    nomsym, n1)
-        call getvr8(motclf, 'PRECISION', iocc, iarg, 1,&
-                    prec, n1)
-        call getvtx(motclf, 'CRITERE', iocc, iarg, 1,&
-                    crit, n1)
+        call getvtx(motclf, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=n1)
+        call getvr8(motclf, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+        call getvtx(motclf, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
         call rsutnu(resu, motclf, iocc, knum, nbordr,&
                     prec, crit, iret)
         if (iret .ne. 0) then
@@ -98,8 +93,7 @@ subroutine rc36rm()
         call jedetr(knum)
 !
     else
-        call getvid(motclf, 'CHAM_GD', iocc, iarg, 1,&
-                    nomcha, n1)
+        call getvid(motclf, 'CHAM_GD', iocc=iocc, scal=nomcha, nbret=n1)
 !
     endif
 !

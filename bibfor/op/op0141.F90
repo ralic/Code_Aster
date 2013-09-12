@@ -22,15 +22,14 @@ subroutine op0141()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dcapno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/idensd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -56,6 +55,7 @@ subroutine op0141()
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/zcopy.h"
+!
     integer :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
     integer :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
     integer :: idvec1, iddeeq, idvec2, ifm, niv, llneq1, neq1, llneq2, iret
@@ -88,8 +88,7 @@ subroutine op0141()
     call infniv(ifm, niv)
 !
 ! RECUPERATION DE LA MATRICE ASSEMBLEE SI ELLE EXISTE
-    call getvid(' ', 'MATR_ASSE', 1, iarg, 1,&
-                matras, n1)
+    call getvid(' ', 'MATR_ASSE', scal=matras, nbret=n1)
     if (n1 .ne. 0) then
 ! COOL ELLE EXISTE
         call mtdscr(matras)
@@ -105,17 +104,14 @@ subroutine op0141()
     endif
 !
     ieri = .false.
-    call getvtx(' ', 'IERI', 1, iarg, 1,&
-                rep, n1)
+    call getvtx(' ', 'IERI', scal=rep, nbret=n1)
     if (n1 .eq. 1) then
         if (rep .eq. 'OUI') ieri = .true.
     endif
 !
 ! RECUPERATION DES BASES DE MODES
-    call getvid(' ', 'BASE_1', 1, iarg, 1,&
-                base1, n2)
-    call getvid(' ', 'BASE_2', 1, iarg, 1,&
-                base2, n3)
+    call getvid(' ', 'BASE_1', scal=base1, nbret=n2)
+    call getvid(' ', 'BASE_2', scal=base2, nbret=n3)
 !
     c1 = .false.
     c2 = .false.
@@ -146,19 +142,22 @@ subroutine op0141()
                 ibid)
 !
 ! RECUPERATION DE LA NUMEROTATION DES BASES
-
+!
     if ((typba1(1:9).eq.'MODE_MECA') .or. (typba1(1:9).eq.'MODE_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', base1, 'RESU_DYNA', ibid, matri1, ier)
+        call dismoi('F', 'REF_RIGI_PREM', base1, 'RESU_DYNA', ibid,&
+                    matri1, ier)
         call exisd('MATR_ASSE', matri1, iret)
         if (iret .ne. 0) then
             call dismoi('F', 'NOM_NUME_DDL', matri1, 'MATR_ASSE', ibid,&
                         numdd1, ier)
         else
-            call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid, numdd1, ier)
+            call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid,&
+                        numdd1, ier)
         endif
     else
 !       On passe par la numerotation du REFD
-        call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid, numdd1, ier)
+        call dismoi('F', 'NUME_DDL', base1, 'RESU_DYNA', ibid,&
+                    numdd1, ier)
     endif
     call exisd('NUME_DDL', numdd1, iret)
     if (iret .ne. 1) then
@@ -168,18 +167,21 @@ subroutine op0141()
     call jeveuo(numdd1//'.NUME.NEQU', 'L', llneq1)
     neq1 = zi(llneq1)
 !
-
+!
     if ((typba2(1:9).eq.'MODE_MECA') .or. (typba2(1:9).eq.'MODE_GENE')) then
-        call dismoi('F', 'REF_RIGI_PREM', base2, 'RESU_DYNA', ibid, matri2, ier)
+        call dismoi('F', 'REF_RIGI_PREM', base2, 'RESU_DYNA', ibid,&
+                    matri2, ier)
         call exisd('MATR_ASSE', matri2, iret)
         if (iret .ne. 0) then
             call dismoi('F', 'NOM_NUME_DDL', matri2, 'MATR_ASSE', ibid,&
                         numdd2, ier)
         else
-            call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid, numdd2, ier)
+            call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid,&
+                        numdd2, ier)
         endif
     else
-        call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid, numdd2, ier)
+        call dismoi('F', 'NUME_DDL', base2, 'RESU_DYNA', ibid,&
+                    numdd2, ier)
     endif
     call exisd('NUME_DDL', numdd2, iret)
     if (iret .ne. 1) then

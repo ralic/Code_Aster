@@ -18,13 +18,12 @@ subroutine rfinte(ispec)
 ! ----------------------------------------------------------------------
 !     OPERATEUR "RECU_FONCTION"   MOT CLE "INTE_SPEC"
 ! ----------------------------------------------------------------------
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -36,6 +35,7 @@ subroutine rfinte(ispec)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: ispec
     integer :: nbval
     integer :: lpro, i1, indi
@@ -61,8 +61,7 @@ subroutine rfinte(ispec)
     call getres(nomfon, typcon, nomcmd)
 !
 !
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 1,&
-                nocham, n4)
+    call getvtx(' ', 'NOM_CHAM', scal=nocham, nbret=n4)
 !
     nospec = ispec
     call jeveuo(nospec//'.REFE', 'L', lrefe)
@@ -80,33 +79,25 @@ subroutine rfinte(ispec)
     chfreq = nospec//'.FREQ'
     call jeveuo(chfreq, 'L', lfreq)
 !
-    call getvtx(' ', 'NOEUD_I', 1, iarg, 0,&
-                noei, n2)
-    call getvis(' ', 'NUME_ORDRE_I', 1, iarg, 0,&
-                numi, n3)
+    call getvtx(' ', 'NOEUD_I', nbval=0, nbret=n2)
+    call getvis(' ', 'NUME_ORDRE_I', nbval=0, nbret=n3)
 !
     indice = .false.
     indi = 0
     if (n2 .lt. 0) then
-        call getvtx(' ', 'NOEUD_I', 1, iarg, 1,&
-                    noei, n4)
-        call getvtx(' ', 'NOEUD_J', 1, iarg, 0,&
-                    noej, n4)
+        call getvtx(' ', 'NOEUD_I', scal=noei, nbret=n4)
+        call getvtx(' ', 'NOEUD_J', nbval=0, nbret=n4)
         if (n4 .eq. 0) then
             noej = noei
         else
-            call getvtx(' ', 'NOEUD_J', 1, iarg, 1,&
-                        noej, n4)
+            call getvtx(' ', 'NOEUD_J', scal=noej, nbret=n4)
         endif
-        call getvtx(' ', 'NOM_CMP_I', 1, iarg, 1,&
-                    cmpi, n4)
-        call getvtx(' ', 'NOM_CMP_J', 1, iarg, 0,&
-                    cmpj, n4)
+        call getvtx(' ', 'NOM_CMP_I', scal=cmpi, nbret=n4)
+        call getvtx(' ', 'NOM_CMP_J', nbval=0, nbret=n4)
         if (n4 .eq. 0) then
             cmpj = cmpi
         else
-            call getvtx(' ', 'NOM_CMP_J', 1, iarg, 1,&
-                        cmpj, n4)
+            call getvtx(' ', 'NOM_CMP_J', scal=cmpj, nbret=n4)
         endif
         chnoei = nospec//'.NOEI'
         chnoej = nospec//'.NOEJ'
@@ -125,15 +116,12 @@ subroutine rfinte(ispec)
             endif
 120      continue
     else if (n3 .lt. 0) then
-        call getvis(' ', 'NUME_ORDRE_I', 1, iarg, 1,&
-                    numi, n4)
-        call getvis(' ', 'NUME_ORDRE_J', 1, iarg, 0,&
-                    numj, n4)
+        call getvis(' ', 'NUME_ORDRE_I', scal=numi, nbret=n4)
+        call getvis(' ', 'NUME_ORDRE_J', nbval=0, nbret=n4)
         if (n4 .eq. 0) then
             numj = numi
         else
-            call getvis(' ', 'NUME_ORDRE_J', 1, iarg, 1,&
-                        numj, n4)
+            call getvis(' ', 'NUME_ORDRE_J', scal=numj, nbret=n4)
         endif
         chnumi = nospec//'.NUMI'
         chnumj = nospec//'.NUMJ'

@@ -69,7 +69,6 @@ subroutine conori(ma)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/chkmsg.h"
 #include "asterfort/conini.h"
 #include "asterfort/contac.h"
@@ -86,6 +85,7 @@ subroutine conori(ma)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: idum, ic, ifm, niv, ichk
     integer :: io8gco, nbgco, igco
     integer :: imigma, nbgma, igma

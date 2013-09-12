@@ -17,8 +17,8 @@ subroutine op0137()
 ! ======================================================================
     implicit none
 !     OPERATEUR :     DEBUG
-#include "asterc/getvtx.h"
 #include "asterc/jdcset.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
     integer :: lundef, idebug
@@ -33,8 +33,7 @@ subroutine op0137()
 !     SDVERI=OUI/NON :
 !     ----------------
     repons=' '
-    call getvtx(' ', 'SDVERI', 1, iarg, 1,&
-                repons, l)
+    call getvtx(' ', 'SDVERI', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
         call jdcset('sdveri', 1)
         call u2mess('I', 'SUPERVIS_24')
@@ -47,8 +46,7 @@ subroutine op0137()
 !     JEVEUX=OUI/NON :
 !     ----------------
     repons=' '
-    call getvtx(' ', 'JEVEUX', 1, iarg, 1,&
-                repons, l)
+    call getvtx(' ', 'JEVEUX', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
         idebug = 1
         call u2mesk('I', 'SUPERVIS_44', 1, 'JEVEUX')
@@ -63,8 +61,7 @@ subroutine op0137()
 !     JXVERI=OUI/NON :
 !     ----------------
     repons=' '
-    call getvtx(' ', 'JXVERI', 1, iarg, 1,&
-                repons, l)
+    call getvtx(' ', 'JXVERI', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
         call u2mess('I', 'SUPERVIS_23')
         call jdcset('jxveri', 1)
@@ -77,8 +74,7 @@ subroutine op0137()
 !     IMPR_MACRO=OUI/NON :
 !     ---------------------
     repons=' '
-    call getvtx(' ', 'IMPR_MACRO', 1, iarg, 1,&
-                repons, l)
+    call getvtx(' ', 'IMPR_MACRO', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
         call u2mesk('I', 'SUPERVIS_44', 1, 'IMPR_MACRO')
         call jdcset('impr_macro', 1)

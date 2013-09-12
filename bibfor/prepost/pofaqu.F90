@@ -1,5 +1,5 @@
 subroutine pofaqu()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,10 @@ subroutine pofaqu()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/fgdomm.h"
 #include "asterfort/fglema.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -60,23 +60,15 @@ subroutine pofaqu()
 !
 !     --- RECUPERATION DE LA FONCTION CHARGEMENT ---
 !
-    call getvid('HISTOIRE', 'SIGM_XX', 1, iarg, 1,&
-                nomten(1), n1)
-    call getvid('HISTOIRE', 'SIGM_YY', 1, iarg, 1,&
-                nomten(2), n2)
-    call getvid('HISTOIRE', 'SIGM_ZZ', 1, iarg, 1,&
-                nomten(3), n3)
-    call getvid('HISTOIRE', 'SIGM_XY', 1, iarg, 1,&
-                nomten(4), n4)
-    call getvid('HISTOIRE', 'SIGM_XZ', 1, iarg, 1,&
-                nomten(5), n5)
-    call getvid('HISTOIRE', 'SIGM_YZ', 1, iarg, 1,&
-                nomten(6), n6)
+    call getvid('HISTOIRE', 'SIGM_XX', iocc=1, scal=nomten(1), nbret=n1)
+    call getvid('HISTOIRE', 'SIGM_YY', iocc=1, scal=nomten(2), nbret=n2)
+    call getvid('HISTOIRE', 'SIGM_ZZ', iocc=1, scal=nomten(3), nbret=n3)
+    call getvid('HISTOIRE', 'SIGM_XY', iocc=1, scal=nomten(4), nbret=n4)
+    call getvid('HISTOIRE', 'SIGM_XZ', iocc=1, scal=nomten(5), nbret=n5)
+    call getvid('HISTOIRE', 'SIGM_YZ', iocc=1, scal=nomten(6), nbret=n6)
     nbf = n1 + n2 + n3 + n4 + n5 + n6
-    call getvid('HISTOIRE', 'EPSP', 1, iarg, 1,&
-                nomp, n1)
-    call getvid('HISTOIRE', 'TEMP', 1, iarg, 1,&
-                nomt, n1)
+    call getvid('HISTOIRE', 'EPSP', iocc=1, scal=nomp, nbret=n1)
+    call getvid('HISTOIRE', 'TEMP', iocc=1, scal=nomt, nbret=n1)
 !
 !     --- CHARGEMENT QUELCONQUE ---
 !
@@ -129,14 +121,12 @@ subroutine pofaqu()
     call tbcrsd(result, 'G')
     call tbajpa(result, nbpapf, nomppf, typppf)
 !
-    call getvid(' ', 'MATER', 1, iarg, 1,&
-                nommat, n1)
+    call getvid(' ', 'MATER', scal=nommat, nbret=n1)
 !
 !     --- CALCUL DU DOMMAGE ELEMENTAIRE ---
 !
     kdomm = ' '
-    call getvtx(' ', 'DOMMAGE', 1, iarg, 1,&
-                kdomm, n1)
+    call getvtx(' ', 'DOMMAGE', scal=kdomm, nbret=n1)
 !
     call wkvect('&&POFAQU.DOMM.ELEM', 'V V R', nbptot, ivdome)
 !
@@ -159,8 +149,7 @@ subroutine pofaqu()
 !     --- CALCUL DU DOMMAGE TOTAL ---
 !
     txcum = ' '
-    call getvtx(' ', 'CUMUL', 1, iarg, 1,&
-                txcum, n1)
+    call getvtx(' ', 'CUMUL', scal=txcum, nbret=n1)
     if (txcum .eq. 'LINEAIRE') then
 !
         call fgdomm(nbptot, zr(ivdome), rdomm)

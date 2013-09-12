@@ -1,12 +1,12 @@
 subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                   niord, nkcha, resu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -64,10 +64,8 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call getvid('RESU', 'CHAM_GD', 1, iarg, 0,&
-                k8b, n0)
-    call getvid('RESU', 'RESULTAT', 1, iarg, 0,&
-                k8b, n1)
+    call getvid('RESU', 'CHAM_GD', iocc=1, nbval=0, nbret=n0)
+    call getvid('RESU', 'RESULTAT', iocc=1, nbval=0, nbret=n1)
 !
 ! =============================================================
 ! -1- CAS: CHAM_GD
@@ -76,8 +74,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
     if (n0 .ne. 0) then
 !
         call wkvect(nkcha, 'V V K24', 1, jkcha)
-        call getvid('RESU', 'CHAM_GD', 1, iarg, 1,&
-                    zk24(jkcha), n0)
+        call getvid('RESU', 'CHAM_GD', iocc=1, scal=zk24(jkcha), nbret=n0)
         call wkvect(nrval, 'V V R', 1, jrval)
         zr(jrval) = 0.0d0
         call wkvect(nival, 'V V I', 1, jival)
@@ -102,31 +99,19 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 !         NRVAL = TABLEAU DES VALEURS D'ACCES (REELLES)
 !         NKCHA = TABLEAU DES NOMS DE CHAMP
 !
-        call getvid('RESU', 'RESULTAT', 1, iarg, 1,&
-                    resu, n1)
+        call getvid('RESU', 'RESULTAT', iocc=1, scal=resu, nbret=n1)
 !
-        call getvr8('RESU', 'PRECISION', 1, iarg, 1,&
-                    epsi, n1)
-        call getvtx('RESU', 'CRITERE', 1, iarg, 1,&
-                    crit, n1)
-        call getvtx('RESU', 'TOUT_ORDRE', 1, iarg, 0,&
-                    k8b, nbto)
-        call getvis('RESU', 'NUME_ORDRE', 1, iarg, 0,&
-                    ibid, nbno)
-        call getvid('RESU', 'LIST_ORDRE', 1, iarg, 0,&
-                    k8b, nblo)
-        call getvr8('RESU', 'INST', 1, iarg, 0,&
-                    r8b, nbni)
-        call getvid('RESU', 'LIST_INST', 1, iarg, 0,&
-                    k8b, nbli)
-        call getvis('RESU', 'MODE', 1, iarg, 0,&
-                    ibid, nbnm)
-        call getvid('RESU', 'LIST_MODE', 1, iarg, 0,&
-                    k8b, nblm)
-        call getvr8('RESU', 'FREQ', 1, iarg, 0,&
-                    r8b, nbnf)
-        call getvid('RESU', 'LIST_FREQ', 1, iarg, 0,&
-                    k8b, nblf)
+        call getvr8('RESU', 'PRECISION', iocc=1, scal=epsi, nbret=n1)
+        call getvtx('RESU', 'CRITERE', iocc=1, scal=crit, nbret=n1)
+        call getvtx('RESU', 'TOUT_ORDRE', iocc=1, nbval=0, nbret=nbto)
+        call getvis('RESU', 'NUME_ORDRE', iocc=1, nbval=0, nbret=nbno)
+        call getvid('RESU', 'LIST_ORDRE', iocc=1, nbval=0, nbret=nblo)
+        call getvr8('RESU', 'INST', iocc=1, nbval=0, nbret=nbni)
+        call getvid('RESU', 'LIST_INST', iocc=1, nbval=0, nbret=nbli)
+        call getvis('RESU', 'MODE', iocc=1, nbval=0, nbret=nbnm)
+        call getvid('RESU', 'LIST_MODE', iocc=1, nbval=0, nbret=nblm)
+        call getvr8('RESU', 'FREQ', iocc=1, nbval=0, nbret=nbnf)
+        call getvid('RESU', 'LIST_FREQ', iocc=1, nbval=0, nbret=nblf)
 !
         nbto=-nbto
         nbno=-nbno
@@ -149,25 +134,23 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                 typac = 'ORDRE'
                 nbval = nbno
                 call wkvect(nival, 'V V I', nbno, jival)
-                call getvis('RESU', 'NUME_ORDRE', 1, iarg, nbno,&
-                            zi(jival), n1)
+                call getvis('RESU', 'NUME_ORDRE', iocc=1, nbval=nbno, vect=zi(jival),&
+                            nbret=n1)
 !        -- MODE
             else if (nbnm .ne. 0) then
                 typac = 'MODE'
                 nbval = nbnm
                 call wkvect(nival, 'V V I', nbnm, jival)
-                call getvis('RESU', 'MODE', 1, iarg, nbnm,&
-                            zi(jival), n1)
+                call getvis('RESU', 'MODE', iocc=1, nbval=nbnm, vect=zi(jival),&
+                            nbret=n1)
 !        -- LIST_ORDRE, LIST_MODE
             else if (nblo .ne. 0) then
                 if (nblo .ne. 0) then
                     typac = 'ORDRE'
-                    call getvid('RESU', 'LIST_ORDRE', 1, iarg, 1,&
-                                nlist, n1)
+                    call getvid('RESU', 'LIST_ORDRE', iocc=1, scal=nlist, nbret=n1)
                 else
                     typac = 'MODE'
-                    call getvid('RESU', 'LIST_MODE', 1, iarg, 1,&
-                                nlist, n1)
+                    call getvid('RESU', 'LIST_MODE', iocc=1, scal=nlist, nbret=n1)
                 endif
                 nlist(20:24) = '.VALE'
                 call jelira(nlist, 'LONMAX', nbval)
@@ -187,24 +170,22 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                 typac = 'INST'
                 nbval = nbni
                 call wkvect(nrval, 'V V R', nbni, jrval)
-                call getvr8('RESU', 'INST', 1, iarg, nbni,&
-                            zr(jrval), n1)
+                call getvr8('RESU', 'INST', iocc=1, nbval=nbni, vect=zr(jrval),&
+                            nbret=n1)
 !        -- FREQ
             else if (nbnf .ne. 0) then
                 typac = 'FREQ'
                 nbval = nbnf
                 call wkvect(nrval, 'V V R', nbnf, jrval)
-                call getvr8('RESU', 'FREQ', 1, iarg, nbnf,&
-                            zr(jrval), n1)
+                call getvr8('RESU', 'FREQ', iocc=1, nbval=nbnf, vect=zr(jrval),&
+                            nbret=n1)
             else
                 if (nbli .ne. 0) then
                     typac = 'INST'
-                    call getvid('RESU', 'LIST_INST', 1, iarg, 1,&
-                                nlist, n1)
+                    call getvid('RESU', 'LIST_INST', iocc=1, scal=nlist, nbret=n1)
                 else
                     typac = 'FREQ'
-                    call getvid('RESU', 'LIST_FREQ', 1, iarg, 1,&
-                                nlist, n1)
+                    call getvid('RESU', 'LIST_FREQ', iocc=1, scal=nlist, nbret=n1)
                 endif
                 nlist(20:24) = '.VALE'
                 call jelira(nlist, 'LONMAX', nbval)
@@ -253,8 +234,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 !     ------------------
 !         NKCHA = TABLEAU DES NOMS DE CHAMP
 !
-        call getvtx('RESU', 'NOM_CHAM', 1, iarg, 1,&
-                    nsymb, n1)
+        call getvtx('RESU', 'NOM_CHAM', iocc=1, scal=nsymb, nbret=n1)
 !
         call wkvect(niord, 'V V I', nbval, jniord)
         zi(jniord)=-1

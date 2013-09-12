@@ -20,12 +20,12 @@ subroutine dfllad(sdlist)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfllvd.h"
 #include "asterfort/dinogd.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -143,8 +143,7 @@ subroutine dfllad(sdlist)
 !
 ! ----- EVENEMENT POUR L'ADAPTATION
 !
-        call getvtx(mcfact, 'EVENEMENT', iadapt, iarg, 1,&
-                    even, ibid)
+        call getvtx(mcfact, 'EVENEMENT', iocc=iadapt, scal=even, nbret=ibid)
         if (even .eq. 'AUCUN') then
             zr(jaevr-1+laevr*(iadapt-1)+1) = 0.d0
             call u2mess('A', 'DISCRETISATION_5')
@@ -159,23 +158,19 @@ subroutine dfllad(sdlist)
 ! ----- OPTIONS POUR L'ADAPTATION 'SEUIL'
 !
         if (even .eq. 'SEUIL') then
-            call getvis(mcfact, 'NB_INCR_SEUIL', iadapt, iarg, 1,&
-                        nbinse, ibid)
+            call getvis(mcfact, 'NB_INCR_SEUIL', iocc=iadapt, scal=nbinse, nbret=ibid)
             zr(jaevr-1+laevr*(iadapt-1)+2) = nbinse
-            call getvtx(mcfact, 'NOM_PARA', iadapt, iarg, 1,&
-                        nopara, ibid)
+            call getvtx(mcfact, 'NOM_PARA', iocc=iadapt, scal=nopara, nbret=ibid)
             if (nopara .eq. 'NB_ITER_NEWTON') then
                 zr(jaevr-1+laevr*(iadapt-1)+3) = 1.d0
                 valei = 0
-                call getvis(mcfact, 'VALE_I', iadapt, iarg, 1,&
-                            valei, ibid)
+                call getvis(mcfact, 'VALE_I', iocc=iadapt, scal=valei, nbret=ibid)
                 vale = valei
             else
                 ASSERT(.false.)
             endif
             zr(jaevr-1+laevr*(iadapt-1)+5) = vale
-            call getvtx(mcfact, 'CRIT_COMP', iadapt, iarg, 1,&
-                        cricom, ibid)
+            call getvtx(mcfact, 'CRIT_COMP', iocc=iadapt, scal=cricom, nbret=ibid)
             if (cricom .eq. 'LT') then
                 zr(jaevr-1+laevr*(iadapt-1)+4) = 1.d0
             else if (cricom.eq.'GT') then
@@ -191,8 +186,7 @@ subroutine dfllad(sdlist)
 !
 ! ----- DONNEES CONCERNANT LE MODE DE CALCUL DE T+
 !
-        call getvtx(mcfact, 'MODE_CALCUL_TPLUS', iadapt, iarg, 1,&
-                    modetp, ibid)
+        call getvtx(mcfact, 'MODE_CALCUL_TPLUS', iocc=iadapt, scal=modetp, nbret=ibid)
         if (modetp .eq. 'FIXE') then
             zr(jatpr-1+latpr*(iadapt-1)+1) = 1.d0
         else if (modetp.eq.'DELTA_GRANDEUR') then
@@ -211,23 +205,18 @@ subroutine dfllad(sdlist)
 ! ----- OPTIONS MODE DE CALCUL DE T+, FIXE
 !
         if (modetp .eq. 'FIXE') then
-            call getvr8(mcfact, 'PCENT_AUGM', iadapt, iarg, 1,&
-                        pcent, ibid)
+            call getvr8(mcfact, 'PCENT_AUGM', iocc=iadapt, scal=pcent, nbret=ibid)
             zr(jatpr-1+latpr*(iadapt-1)+2) = pcent
         endif
 !
 ! ----- OPTIONS MODE DE CALCUL DE T+, DELTA_GRANDEUR
 !
         if (modetp .eq. 'DELTA_GRANDEUR') then
-            call getvr8(mcfact, 'VALE_REF', iadapt, iarg, 1,&
-                        valere, ibid)
+            call getvr8(mcfact, 'VALE_REF', iocc=iadapt, scal=valere, nbret=ibid)
             zr(jatpr-1+latpr*(iadapt-1)+3) = valere
-            call getvtx(mcfact, 'NOM_PARA', iadapt, iarg, 1,&
-                        nopara, ibid)
-            call getvtx(mcfact, 'NOM_CHAM', iadapt, iarg, 1,&
-                        nocham, ibid)
-            call getvtx(mcfact, 'NOM_CMP', iadapt, iarg, 1,&
-                        nocmp, ibid)
+            call getvtx(mcfact, 'NOM_PARA', iocc=iadapt, scal=nopara, nbret=ibid)
+            call getvtx(mcfact, 'NOM_CHAM', iocc=iadapt, scal=nocham, nbret=ibid)
+            call getvtx(mcfact, 'NOM_CMP', iocc=iadapt, scal=nocmp, nbret=ibid)
             ASSERT(ibid.eq.1)
             nomgd = dinogd(nocham)
             call utcmp2(nomgd, mcfact, iadapt, 1, nocmp,&
@@ -241,8 +230,7 @@ subroutine dfllad(sdlist)
 ! ----- OPTIONS MODE DE CALCUL DE T+, ITER_NEWTON
 !
         if (modetp .eq. 'ITER_NEWTON') then
-            call getvis(mcfact, 'NB_ITER_NEWTON_REF', iadapt, iarg, 1,&
-                        nit, ibid)
+            call getvis(mcfact, 'NB_ITER_NEWTON_REF', iocc=iadapt, scal=nit, nbret=ibid)
             zr(jatpr-1+latpr*(iadapt-1)+5) = nit
         endif
 !

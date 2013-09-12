@@ -1,5 +1,5 @@
 subroutine op0104()
-    implicit   none
+    implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,14 +21,13 @@ subroutine op0104()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/detgnm.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -47,6 +46,7 @@ subroutine op0104()
 #include "asterfort/sscgno.h"
 #include "asterfort/u2mess.h"
 !
+!
     integer :: n1, n2, nbgrma, nbgmin, iret, nbgma, nbgrmn, i, j, nbma, jgg, jvg
     integer :: nbocc, nbgrno, iocc, nbgnin, nbgno, nbgrnn, nbno
     character(len=8) :: k8b, ma, ma2
@@ -58,10 +58,10 @@ subroutine op0104()
     call infmaj()
 !
     call getres(ma2, typcon, nomcmd)
-    call getvid(' ', 'MAILLAGE', 1, iarg, 1,&
-                ma, n1)
-    if (n1 .eq. 0) call getvid(' ', 'GRILLE', 1, iarg, 1,&
-                               ma, n1)
+    call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
+    if (n1 .eq. 0) then
+        call getvid(' ', 'GRILLE', scal=ma, nbret=n1)
+    endif
     if (ma .ne. ma2) then
         call u2mess('F', 'SOUSTRUC_15')
     endif
@@ -115,7 +115,7 @@ subroutine op0104()
             call jecroc(jexnom(grpmai, nomg))
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
             call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma,1))
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma, 1))
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
             do 102 j = 0, nbma-1
@@ -132,8 +132,7 @@ subroutine op0104()
     call getfac('CREA_GROUP_NO', nbocc)
     nbgrno = 0
     do 10 iocc = 1, nbocc
-        call getvtx('CREA_GROUP_NO', 'TOUT_GROUP_MA', iocc, iarg, 0,&
-                    k8b, n1)
+        call getvtx('CREA_GROUP_NO', 'TOUT_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call jelira(grpmai, 'NMAXOC', nbgma)
             nbgrno = nbgrno + nbgma
@@ -177,7 +176,7 @@ subroutine op0104()
             call jecroc(jexnom(grpnoe, nomg))
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
             call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno,1))
+            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno, 1))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 202 j = 0, nbno-1

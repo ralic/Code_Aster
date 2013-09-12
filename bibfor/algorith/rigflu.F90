@@ -2,8 +2,8 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
                   char, mate, solvez, ma, nu)
     implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/asmatr.h"
+#include "asterfort/getvid.h"
 #include "asterfort/mecact.h"
 #include "asterfort/merith.h"
 #include "asterfort/numero.h"
@@ -70,8 +70,7 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
     call merith(modele, nbchar, char, mate, ' ',&
                 time, mel, nh, 'V')
 !
-    call getvid(' ', 'CHARGE', 0, iarg, 1,&
-                char, nchar)
+    call getvid(' ', 'CHARGE', scal=char, nbret=nchar)
     call wkvect(infcha//'.LCHA', 'V V K24', nchar, ialich)
     call wkvect(infcha//'.INFC', 'V V IS', 4*nchar+5, jinf)
     zi(jinf) = nchar

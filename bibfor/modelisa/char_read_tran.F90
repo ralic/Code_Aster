@@ -1,13 +1,13 @@
-subroutine char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
+subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
                           l_cent, cent, l_angl_naut, angl_naut)
 !
     implicit none
 !
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
@@ -71,7 +71,7 @@ subroutine char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
     l_tran = .false.
     l_angl_naut = .false.
     l_cent = .false.
-    do i = 1,3
+    do i = 1, 3
         tran(i) = 0.d0
         cent(i) = 0.d0
         angl_naut(i) = 0.d0
@@ -85,55 +85,52 @@ subroutine char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
 ! - Translation
 !
     if (getexm(keywordfact,'TRAN') .eq. 1) then
-        call getvr8(keywordfact, 'TRAN', iocc, iarg, 0,&
-                    tran, ntran)
+        call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=0, nbret=ntran)
         ntran = -ntran
-        if (ntran.ne.0) then
+        if (ntran .ne. 0) then
             l_tran = .true.
-            if (ntran.ne.ndim) then
+            if (ntran .ne. ndim) then
                 vali(1) = ndim
                 vali(2) = ndim
-                call u2mesg('F', 'CHARGES2_42', 1, 'TRAN', 2, &
+                call u2mesg('F', 'CHARGES2_42', 1, 'TRAN', 2,&
                             vali, 0, r8bid)
             endif
-            call getvr8(keywordfact, 'TRAN', iocc, iarg, ntran ,&
-                        tran, ibid)
+            call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=ntran, vect=tran,&
+                        nbret=ibid)
         endif
     endif
 !
 ! - Rotation
 !
     if (getexm(keywordfact,'CENTRE') .eq. 1) then
-        call getvr8(keywordfact, 'CENTRE', iocc, iarg, 0,&
-                    cent, ncent)
+        call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=0, nbret=ncent)
         ncent = -ncent
-        if (ncent.ne.0) then
+        if (ncent .ne. 0) then
             l_cent = .true.
-            if (ncent.ne.ndim) then
+            if (ncent .ne. ndim) then
                 vali(1) = ndim
                 vali(2) = ndim
-                call u2mesg('F', 'CHARGES2_42', 1, 'CENTRE', 2, &
+                call u2mesg('F', 'CHARGES2_42', 1, 'CENTRE', 2,&
                             vali, 0, r8bid)
             endif
-            call getvr8(keywordfact, 'CENTRE', iocc, iarg, ncent ,&
-                        cent, ibid)
+            call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=ncent, vect=cent,&
+                        nbret=ibid)
         endif
     endif
 !
     if (getexm(keywordfact,'ANGL_NAUT') .eq. 1) then
-        call getvr8(keywordfact, 'ANGL_NAUT', iocc, iarg, 0,&
-                    angl_naut, nangl)
+        call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangl)
         nangl = -nangl
-        if (nangl.ne.0) then
+        if (nangl .ne. 0) then
             l_angl_naut = .true.
-            if (nangl.ne.nangmx) then
+            if (nangl .ne. nangmx) then
                 vali(1) = nangmx
                 vali(2) = ndim
-                call u2mesg('F', 'CHARGES2_42', 1, 'ANGL_NAUT', 2, &
+                call u2mesg('F', 'CHARGES2_42', 1, 'ANGL_NAUT', 2,&
                             vali, 0, r8bid)
             endif
-            call getvr8(keywordfact, 'ANGL_NAUT', iocc, iarg, nangmx ,&
-                        angl_naut, ibid)
+            call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=nangmx, vect=angl_naut,&
+                        nbret=ibid)
             do i = 1, 3
                 angl_naut(i) = angl_naut(i)*r8dgrd()
             end do

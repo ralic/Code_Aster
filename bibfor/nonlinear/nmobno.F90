@@ -18,10 +18,10 @@ subroutine nmobno(sdobse, motfac, nbocc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/impfoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -65,13 +65,12 @@ subroutine nmobno(sdobse, motfac, nbocc)
     do 10 iocc = 1, nbocc
         call impfoi(0, 1, iocc, chaine)
         titobs = 'OBSERVATION_'//chaine
-        call getvtx(motfac, 'TITRE', iocc, iarg, 0,&
-                    k16bid, nbtit)
+        call getvtx(motfac, 'TITRE', iocc=iocc, nbval=0, nbret=nbtit)
         nbtit = - nbtit
         ASSERT(nbtit.le.1)
         if (nbtit .ne. 0) then
-            call getvtx(motfac, 'TITRE', iocc, iarg, nbtit,&
-                        titobs, ibid)
+            call getvtx(motfac, 'TITRE', iocc=iocc, nbval=nbtit, vect=titobs,&
+                        nbret=ibid)
         endif
         zk80(jobsno+iocc-1) = titobs
 10  end do

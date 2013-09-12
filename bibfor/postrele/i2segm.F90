@@ -1,12 +1,11 @@
 subroutine i2segm(nomail, nbpars, nbpara)
 ! aslint: disable=W1501
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/i2cpcx.h"
 #include "asterfort/i2imac.h"
 #include "asterfort/i2imas.h"
@@ -27,6 +26,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
 #include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbpars, nbpara
     character(len=8) :: nomail
 ! ----------------------------------------------------------------------
@@ -81,8 +81,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
     call infniv(ifm, niv)
 !
     call getres(nomcrb, typcrb, opera)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, n2)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=n2)
 !
     conec = nomail//'.CONNEX         '
     coord = nomail//'.COORDO    .VALE'
@@ -93,10 +92,8 @@ subroutine i2segm(nomail, nbpars, nbpara)
 !     --- TRAITEMENT DES GROUP_MA ET MAILLE ---
 !
     lismai = '&&OP0050.NUME_MAIL'
-    call getvtx(' ', 'GROUP_MA', 0, iarg, 0,&
-                k8b, n1)
-    call getvtx(' ', 'MAILLE', 0, iarg, 0,&
-                k8b, n2)
+    call getvtx(' ', 'GROUP_MA', nbval=0, nbret=n1)
+    call getvtx(' ', 'MAILLE', nbval=0, nbret=n2)
     if ((n1+n2) .eq. 0) then
         call wkvect(lismai, 'V V I', nbmail, jnuma)
         do 10,i = 1,nbmail,1
@@ -229,15 +226,13 @@ subroutine i2segm(nomail, nbpars, nbpara)
             zr(acarc+2*occa) = xc
             zr(acarc+2*occa+1) = yc
 !
-            call getvr8('DEFI_ARC', 'RAYON', occa, iarg, 0,&
-                        point, n1)
+            call getvr8('DEFI_ARC', 'RAYON', iocc=occa, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvr8('DEFI_ARC', 'RAYON', occa, iarg, 1,&
-                            point, n1)
+                call getvr8('DEFI_ARC', 'RAYON', iocc=occa, scal=point(1), nbret=n1)
                 r = point(1)
                 if (r .le. 0.d0) call u2mess('F', 'INTEMAIL_5')
-                call getvr8('DEFI_ARC', 'SECTEUR', occa, iarg, 2,&
-                            point, n1)
+                call getvr8('DEFI_ARC', 'SECTEUR', iocc=occa, nbval=2, vect=point,&
+                            nbret=n1)
                 alfinf = point(1)*dgrd
                 alfsup = point(2)*dgrd
                 if (( -180.0d0 .ge. alfinf ) .or. ( alfinf .ge. alfsup ) .or.&
@@ -261,10 +256,8 @@ subroutine i2segm(nomail, nbpars, nbpara)
                 call utcono('DEFI_ARC', motcle, occa, nomail, ndim,&
                             poinb, n1)
 !
-                call getvtx('DEFI_ARC', 'CRITERE', occa, iarg, 1,&
-                            crit, n1)
-                call getvr8('DEFI_ARC', 'PRECISION', occa, iarg, 1,&
-                            epsi2, n1)
+                call getvtx('DEFI_ARC', 'CRITERE', iocc=occa, scal=crit, nbret=n1)
+                call getvr8('DEFI_ARC', 'PRECISION', iocc=occa, scal=epsi2, nbret=n1)
                 xrc1 = padist(2,poina,point)
                 xrc2 = padist(2,poinb,point)
                 if (crit(1:4) .eq. 'RELA') then

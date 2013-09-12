@@ -18,15 +18,15 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
-#include "asterc/getvis.h"
 #include "asterc/loisem.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -149,8 +149,7 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
         if (nbproc .gt. 1) then
 ! ON EST EN PARALLELE, L'UTILISATEUR A PEUT-ETRE EMIS UN SOUHAIT QUANT
 ! AU NBRE DE SD POUR LE PROCESSEUR MAITRE
-            call getvis(ach24(1:16), 'NB_SD_PROC0', 1, iarg, 1,&
-                        nbsdp0, ibid)
+            call getvis(ach24(1:16), 'NB_SD_PROC0', iocc=1, scal=nbsdp0, nbret=ibid)
             if ((nbsd-nbsdp0) .lt. (nbproc-1)) call u2mess('F', 'APPELMPI_3')
         else
             nbsdp0=0

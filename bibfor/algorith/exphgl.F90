@@ -44,10 +44,9 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
 #include "asterc/r8depi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -62,6 +61,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, modcyc, mailsk, k8b, modcys
     character(len=16) :: depl, typsd
     character(len=19) :: chamva, profno, chamno
@@ -138,8 +138,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !***********************************************************************
 !
-    call getvid('CYCLIQUE', 'RESULTAT2', 1, iarg, 1,&
-                modcys, ires2)
+    call getvid('CYCLIQUE', 'RESULTAT2', iocc=1, scal=modcys, nbret=ires2)
 !
     icomp = 0
 !

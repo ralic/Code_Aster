@@ -1,12 +1,12 @@
 subroutine rcmate(chmat, nomail, nomode)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -70,14 +70,12 @@ subroutine rcmate(chmat, nomail, nomode)
     mesmai = '&&RCMATE.MES_MAILLES'
 !
     do 10 i = 1, nocc
-        call getvid('AFFE', 'MATER', i, iarg, 1,&
-                    nommat, nm)
+        call getvid('AFFE', 'MATER', iocc=i, scal=nommat, nbret=nm)
         if (nm .lt. -1) nm = -nm
         ASSERT(nm.le.nbcmp)
-        call getvid('AFFE', 'MATER', i, iarg, nm,&
-                    zk8(jvalv), nm)
-        call getvtx('AFFE', 'TOUT', i, iarg, 1,&
-                    oui, nt)
+        call getvid('AFFE', 'MATER', iocc=i, nbval=nm, vect=zk8(jvalv),&
+                    nbret=nm)
+        call getvtx('AFFE', 'TOUT', iocc=i, scal=oui, nbret=nt)
         if (nt .ne. 0) then
             call nocart(chamat, 1, k8b, k8b, 0,&
                         k8b, ibid, ' ', nm)

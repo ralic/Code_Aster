@@ -26,11 +26,11 @@ subroutine op0179()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/irmifr.h"
 #include "asterfort/jedema.h"
@@ -71,24 +71,17 @@ subroutine op0179()
 !
 ! --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
 !
-    call getvis(' ', 'UNITE_RESU_FORC', 1, iarg, 1,&
-                ifmis, n1)
-    call getvtx(' ', 'NOM_CMP', 1, iarg, 1,&
-                nomcmp, nc)
+    call getvis(' ', 'UNITE_RESU_FORC', scal=ifmis, nbret=n1)
+    call getvtx(' ', 'NOM_CMP', scal=nomcmp, nbret=nc)
     if (nc .eq. 0) then
-        call getvis(' ', 'NUME_CHAR', 1, iarg, 1,&
-                    ic, n1)
+        call getvis(' ', 'NUME_CHAR', scal=ic, nbret=n1)
     endif
-    call getvtx(' ', 'NOM_CHAM', 1, iarg, 1,&
-                nomcha, ibid)
-    call getvr8(' ', 'FREQ_EXTR', 1, iarg, 1,&
-                freq, nfr)
+    call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=ibid)
+    call getvr8(' ', 'FREQ_EXTR', scal=freq, nbret=nfr)
     lissf = .false.
-    call getvtx(' ', 'ISSF', 1, iarg, 1,&
-                tissf, n2)
+    call getvtx(' ', 'ISSF', scal=tissf, nbret=n2)
     if (tissf(1:3) .eq. 'OUI') lissf = .true.
-    call getvtx(' ', 'NOM_RESU_FORC', 1, iarg, 1,&
-                fichi, nf)
+    call getvtx(' ', 'NOM_RESU_FORC', scal=fichi, nbret=nf)
     if (nf .eq. 0) then
         k16nom = ' '
         if (ulisop ( ifmis, k16nom ) .eq. 0) then
@@ -99,10 +92,8 @@ subroutine op0179()
     endif
     call irmifr(ifmis, freq, ifreq, nfreq, icf)
     write(6,*) 'FREQ NFREQ= ',freq,nfreq,' IFREQ= ',ifreq,' IF= ',icf
-    call getvid(' ', 'BASE', 1, iarg, 1,&
-                basemo, n4)
-    call getvid(' ', 'NUME_DDL_GENE', 1, iarg, 1,&
-                numgen, n2)
+    call getvid(' ', 'BASE', scal=basemo, nbret=n4)
+    call getvid(' ', 'NUME_DDL_GENE', scal=numgen, nbret=n2)
 !
     call gettco(basemo, typbas)
 !

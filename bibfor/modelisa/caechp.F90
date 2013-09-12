@@ -2,14 +2,13 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                   noma, fonree, ndim)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -24,6 +23,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 #include "asterfort/xtempc.h"
 #include "asterfort/xtmafi.h"
 #include "asterfort/xvelfm.h"
+!
     integer :: igrel, inema, ndim
     character(len=4) :: fonree
     character(len=8) :: char, noma
@@ -91,11 +91,9 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
     lcoefh=.false.
     do 100 iocc = 1, nechp
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'COEF_H', iocc, iarg, 1,&
-                        cechpr, nh)
+            call getvr8(motclf, 'COEF_H', iocc=iocc, scal=cechpr, nbret=nh)
         else if (fonree.eq.'FONC') then
-            call getvid(motclf, 'COEF_H', iocc, iarg, 1,&
-                        cechpf, nh)
+            call getvid(motclf, 'COEF_H', iocc=iocc, scal=cechpf, nbret=nh)
         endif
         if (nh .ne. 0) then
             lcoefh=.true.
@@ -128,21 +126,18 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !
 !       RECUPERATION DU COEFFICIENT D'ECHANGE
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'COEF_H', iocc, iarg, 1,&
-                        cechpr, nh)
+            call getvr8(motclf, 'COEF_H', iocc=iocc, scal=cechpr, nbret=nh)
         else if (fonree.eq.'FONC') then
-            call getvid(motclf, 'COEF_H', iocc, iarg, 1,&
-                        cechpf, nh)
+            call getvid(motclf, 'COEF_H', iocc=iocc, scal=cechpf, nbret=nh)
         endif
 !
 !       RECUPERATION DU VECTEUR DE TRANSLATION POUR PATRMA
         do 301 i = 1, 3
             t(i) = 0.0d0
 301      continue
-        call getvr8(motclf, 'TRAN', iocc, iarg, 3,&
-                    t, nt)
-        call getvid(motclf, 'FISSURE', iocc, iarg, 0,&
-                    k8b, nfiss)
+        call getvr8(motclf, 'TRAN', iocc=iocc, nbval=3, vect=t,&
+                    nbret=nt)
+        call getvid(motclf, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
 !
 ! ----------------------------------------------------------------------
 ! ----- CAS MOT-CLEF FISSURE (X-FEM)
@@ -151,15 +146,14 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !
 !         RECUPERATION DU NOM DES FISSURES
             nfiss = -nfiss
-            call getvid(motclf, 'FISSURE', iocc, iarg, nfiss,&
-                        fiss, ibid)
+            call getvid(motclf, 'FISSURE', iocc=iocc, nbval=nfiss, vect=fiss,&
+                        nbret=ibid)
 !         VERIFICATION DE LA COHERENCE ENTRE LES FISSURES ET LE MODELE
             call xvelfm(nfiss, fiss, ligrmo(1:8))
 !
 !         ON SCRUTE LE MC TEMP_CONTINUE
             ltcon=.false.
-            call getvtx(motclf, 'TEMP_CONTINUE', iocc, iarg, 1,&
-                        k8b, ntcon)
+            call getvtx(motclf, 'TEMP_CONTINUE', iocc=iocc, scal=k8b, nbret=ntcon)
 !         VERIF DE COHERENCE AVEC LE MC COEF_H
             if (ntcon .eq. 1) then
                 ASSERT(k8b(1:3).eq.'OUI'.and. nh.eq.0)

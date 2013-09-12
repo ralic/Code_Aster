@@ -24,11 +24,11 @@ subroutine op0155()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -63,18 +63,15 @@ subroutine op0155()
     call infniv(ifm, niv)
 !
     call getres(nomres, typesd, k16b)
-    call getvid(' ', 'RESULTAT', 1, iarg, 1,&
-                resu, n0)
+    call getvid(' ', 'RESULTAT', scal=resu, nbret=n0)
     resu19=resu
 !
 !     -- SELECTION DES NUMERO D'ORDRE :
 !     ---------------------------------
     prec=-1.d0
     crit=' '
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                prec, ie)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, ie)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=ie)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=ie)
     call rsutnu(resu19, ' ', 0, '&&OP0155.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
     ASSERT(iret.eq.0)
@@ -148,7 +145,7 @@ subroutine op0155()
 !
 !     -- 6. RECOPIE DE L'OBJET .REFD (SI NECESSAIRE) :
 !     --------------------------------------------------
-    call refdcp(resu19,nomr19)
+    call refdcp(resu19, nomr19)
 !
 !
 !

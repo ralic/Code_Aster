@@ -19,11 +19,10 @@ subroutine ssdmrm(mag)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -37,6 +36,7 @@ subroutine ssdmrm(mag)
 #include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -50,7 +50,7 @@ subroutine ssdmrm(mag)
 !
 ! ----------------------------------------------------------------------
 ! INSPI SSDMRM  SSDMRG
-    character(len=8) ::  crit, nomacr, mal, nosma
+    character(len=8) :: crit, nomacr, mal, nosma
     real(kind=8) :: prec, di, dj
     character(len=16) :: option
     character(len=24) :: valk(2), nognoi, nognoj
@@ -92,23 +92,20 @@ subroutine ssdmrm(mag)
 !
 !     -- ON RECUPERE LA LISTE DES MAILLES ET LA LISTE DES GROUP_NO:
 !     -------------------------------------------------------------
-    call getvtx('RECO_SUPER_MAILLE', 'SUPER_MAILLE', iocc, iarg, nbsma,&
-                zk8(ialikm), n1)
-    call getvtx('RECO_SUPER_MAILLE', 'GROUP_NO', iocc, iarg, nbsma,&
-                zk24(ialikg), n2)
+    call getvtx('RECO_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma, vect=zk8(ialikm),&
+                nbret=n1)
+    call getvtx('RECO_SUPER_MAILLE', 'GROUP_NO', iocc=iocc, nbval=nbsma, vect=zk24(ialikg),&
+                nbret=n2)
     if (n1 .lt. 0) call u2mess('F', 'SOUSTRUC_64')
     if (n1 .ne. n2) call u2mess('F', 'SOUSTRUC_65')
     if (n1 .lt. 2) call u2mess('F', 'SOUSTRUC_66')
 !
     nbsmar=n1
 !
-    call getvtx('RECO_SUPER_MAILLE', 'OPTION', iocc, iarg, 1,&
-                option, n1)
+    call getvtx('RECO_SUPER_MAILLE', 'OPTION', iocc=iocc, scal=option, nbret=n1)
     if (option(1:11) .eq. 'GEOMETRIQUE') then
-        call getvr8('RECO_SUPER_MAILLE', 'PRECISION', iocc, iarg, 1,&
-                    prec, n1)
-        call getvtx('RECO_SUPER_MAILLE', 'CRITERE', iocc, iarg, 1,&
-                    crit, n1)
+        call getvr8('RECO_SUPER_MAILLE', 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
+        call getvtx('RECO_SUPER_MAILLE', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
     endif
 !
     do 5, i=1,nbsmar

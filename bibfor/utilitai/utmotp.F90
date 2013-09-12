@@ -24,9 +24,9 @@ function utmotp(fonree, motfac, iocc, motcle)
 !
     implicit none
     integer :: utmotp
-#include "asterc/getvc8.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
+#include "asterfort/getvc8.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/u2mess.h"
     character(len=4) :: fonree
     character(len=*) :: motfac, motcle
@@ -38,14 +38,11 @@ function utmotp(fonree, motfac, iocc, motcle)
     real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     if (fonree .eq. 'REEL') then
-        call getvr8(motfac, motcle, iocc, iarg, 0,&
-                    rbid, utmotp)
+        call getvr8(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)
     else if (fonree.eq.'FONC') then
-        call getvid(motfac, motcle, iocc, iarg, 0,&
-                    kbid, utmotp)
+        call getvid(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)
     else if (fonree.eq.'COMP') then
-        call getvc8(motfac, motcle, iocc, iarg, 0,&
-                    cbid, utmotp)
+        call getvc8(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)
     else
         call u2mess('F', 'UTILITAI5_52')
     endif

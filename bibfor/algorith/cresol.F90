@@ -1,12 +1,8 @@
 subroutine cresol(solveu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/crsvfe.h"
 #include "asterfort/crsvgc.h"
@@ -15,6 +11,10 @@ subroutine cresol(solveu)
 #include "asterfort/crsvmu.h"
 #include "asterfort/crsvpe.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/sdsolv.h"
@@ -74,8 +74,7 @@ subroutine cresol(solveu)
 !
     call getfac(nomsol, nsolve)
     if (nsolve .eq. 0) goto 10
-    call getvtx(nomsol, 'METHODE', 1, iarg, 1,&
-                method, ibid)
+    call getvtx(nomsol, 'METHODE', iocc=1, scal=method, nbret=ibid)
 !
 ! ------------------------------------------------------
 ! --- LECTURE BLOC COMMUN A TOUS LES SOLVEURS LINEAIRES
@@ -86,13 +85,11 @@ subroutine cresol(solveu)
 ! ----- STOP SINGULIER/NPREC
     eximc=getexm(nomsol,'STOP_SINGULIER')
     if (eximc .eq. 1) then
-        call getvtx(nomsol, 'STOP_SINGULIER', 1, iarg, 1,&
-                    kstop, ibid)
+        call getvtx(nomsol, 'STOP_SINGULIER', iocc=1, scal=kstop, nbret=ibid)
     endif
     eximc=getexm(nomsol,'NPREC')
     if (eximc .eq. 1) then
-        call getvis(nomsol, 'NPREC', 1, iarg, 1,&
-                    nprec, ibid)
+        call getvis(nomsol, 'NPREC', iocc=1, scal=nprec, nbret=ibid)
         if (kstop .eq. 'OUI') then
             istop = 0
         else if (kstop.eq.'NON') then
@@ -103,31 +100,26 @@ subroutine cresol(solveu)
 ! ----- SYME
     eximc=getexm(nomsol,'SYME')
     if (eximc .eq. 1) then
-        call getvtx(nomsol, 'SYME', 1, iarg, 1,&
-                    syme, ibid)
+        call getvtx(nomsol, 'SYME', iocc=1, scal=syme, nbret=ibid)
     endif
 !
 ! ----- FILTRAGE_MATRICE
     eximc=getexm(nomsol,'FILTRAGE_MATRICE')
     if (eximc .eq. 1) then
-        call getvr8(nomsol, 'FILTRAGE_MATRICE', 1, iarg, 1,&
-                    epsmat, ibid)
+        call getvr8(nomsol, 'FILTRAGE_MATRICE', iocc=1, scal=epsmat, nbret=ibid)
     endif
 !
 ! ----- MIXER PRECISION
     eximc=getexm(nomsol,'MIXER_PRECISION')
     if (eximc .eq. 1) then
-        call getvtx(nomsol, 'MIXER_PRECISION', 1, iarg, 1,&
-                    mixpre, ibid)
+        call getvtx(nomsol, 'MIXER_PRECISION', iocc=1, scal=mixpre, nbret=ibid)
     endif
 !
 ! ------ MATR_DISTRIBUEE
     eximc=getexm(nomsol,'MATR_DISTRIBUEE')
     if (eximc .eq. 1) then
-        call getvtx(nomsol, 'MATR_DISTRIBUEE', 1, iarg, 1,&
-                    kmd, ibid)
-        call getvid(' ', 'MODELE', 1, iarg, 1,&
-                    modele, ibid)
+        call getvtx(nomsol, 'MATR_DISTRIBUEE', iocc=1, scal=kmd, nbret=ibid)
+        call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
         ligrmo=modele//'.MODELE'
         call dismoi('F', 'PARTITION', ligrmo, 'LIGREL', ibid,&
                     partit, ibid)

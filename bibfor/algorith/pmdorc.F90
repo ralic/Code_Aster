@@ -29,15 +29,15 @@ subroutine pmdorc(compor, carcri, nbvari, k)
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/lcalgo.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lctest.h"
 #include "asterc/zaswri.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/imvari.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -76,8 +76,7 @@ subroutine pmdorc(compor, carcri, nbvari, k)
     endif
 !     COMPORTEMENT
     iszmat = .false.
-    call getvtx(moclef(k), 'RELATION', 1, iarg, 1,&
-                comp, n1)
+    call getvtx(moclef(k), 'RELATION', iocc=1, scal=comp, nbret=n1)
     ncomel=1
     lcomel(ncomel)=comp
     txcp='ANALYTIQUE'
@@ -93,8 +92,7 @@ subroutine pmdorc(compor, carcri, nbvari, k)
     endif
     indimp=0
 !
-    call getvtx(moclef(k), 'DEFORMATION', 1, iarg, 1,&
-                defo, n1)
+    call getvtx(moclef(k), 'DEFORMATION', iocc=1, scal=defo, nbret=n1)
 !     VERIF QUE DEFO EST POSSIBLE POUR COMP
     call lctest(comcod, 'DEFORMATION', defo, iret)
     if (iret .eq. 0) then
@@ -107,15 +105,13 @@ subroutine pmdorc(compor, carcri, nbvari, k)
 !
 !     CAS PARTICULIER DU MONOCRISTAL
     if (comp(1:8) .eq. 'MONOCRIS') then
-        call getvid(moclef(k), 'COMPOR', 1, iarg, 1,&
-                    sdcomp, n1)
+        call getvid(moclef(k), 'COMPOR', iocc=1, scal=sdcomp, nbret=n1)
         call jeveuo(sdcomp//'.CPRI', 'L', icpri)
         nbvari=zi(icpri-1+3)
         compor(7) = sdcomp
         if (defo .eq. 'SIMO_MIEHE') nbvari=nbvari+9+9
     else if (comp(1:8).eq.'POLYCRIS') then
-        call getvid(moclef(k), 'COMPOR', 1, iarg, 1,&
-                    sdcomp, n1)
+        call getvid(moclef(k), 'COMPOR', iocc=1, scal=sdcomp, nbret=n1)
         call jeveuo(sdcomp//'.CPRI', 'L', icpri)
         nbvari=zi(icpri-1+3)
         compor(7) = sdcomp
@@ -123,21 +119,16 @@ subroutine pmdorc(compor, carcri, nbvari, k)
 !
     if (comp(1:4) .eq. 'ZMAT') then
         iszmat = .true.
-        call getvis(moclef(k), 'NB_VARI', 1, iarg, 1,&
-                    nbvari, n1)
-        call getvis(moclef(k), 'UNITE', 1, iarg, 1,&
-                    nunit, n1)
+        call getvis(moclef(k), 'NB_VARI', iocc=1, scal=nbvari, nbret=n1)
+        call getvis(moclef(k), 'UNITE', iocc=1, scal=nunit, nbret=n1)
         write (compor(7),'(I16)') nunit
     else if ((comp.eq.'UMAT').or.(comp.eq.'MFRONT')) then
-        call getvis(moclef(k), 'NB_VARI', 1, iarg, 1,&
-                    nbvari, n1)
+        call getvis(moclef(k), 'NB_VARI', iocc=1, scal=nbvari, nbret=n1)
 !       POUR LES COMPORTEMENTS UMAT
 !       ON STOCKE LA LIB DANS KIT1-KIT8 (128 CARACTERES)
 !       ET LA SUBROUTINE DANS KIT9
-        call getvtx(moclef, 'LIBRAIRIE', 1, iarg, 1,&
-                    nomlib, n1)
-        call getvtx(moclef, 'NOM_ROUTINE', 1, iarg, 1,&
-                    nomsub, n1)
+        call getvtx(moclef(k), 'LIBRAIRIE', iocc=1, scal=nomlib, nbret=n1)
+        call getvtx(moclef(k), 'NOM_ROUTINE', iocc=1, scal=nomsub, nbret=n1)
         do 30 ii = 1, dimaki-1
             compor(ii+7) = nomlib(16*(ii-1)+1:16*ii)
 30      continue
@@ -153,23 +144,19 @@ subroutine pmdorc(compor, carcri, nbvari, k)
     write (compor(6),'(I16)') numlc
 !
 !     ALGORITHME D'INTEGRATION
-    call getvtx(moclef(k), 'ALGO_INTE', 1, iarg, 1,&
-                algo, iret)
+    call getvtx(moclef(k), 'ALGO_INTE', iocc=1, scal=algo, nbret=iret)
     if (iret .eq. 0) then
 !        LOI DE COMPORTEMENT (1ERE VALEUR DE LA LISTE)
         call lcalgo(comcod, algo)
     endif
 !
 !     CRITERES DE CONVERGENCE
-    call getvr8(moclef(k), 'RESI_INTE_RELA', 1, iarg, 1,&
-                resi, iret)
-    call getvis(moclef(k), 'ITER_INTE_MAXI', 1, iarg, 1,&
-                iteint, iret)
+    call getvr8(moclef(k), 'RESI_INTE_RELA', iocc=1, scal=resi, nbret=iret)
+    call getvis(moclef(k), 'ITER_INTE_MAXI', iocc=1, scal=iteint, nbret=iret)
 !
     itepas = 0
     if (k .eq. 1) then
-        call getvis(moclef(k), 'ITER_INTE_PAS', 1, iarg, 1,&
-                    itepas, iret)
+        call getvis(moclef(k), 'ITER_INTE_PAS', iocc=1, scal=itepas, nbret=iret)
     endif
 !
 !     CPLAN DEBORST  ET COMP1D DEBORST INUTILES AVEC SUPPORT='POINT'
@@ -183,19 +170,16 @@ subroutine pmdorc(compor, carcri, nbvari, k)
         exits = getexm(moclef(k),'TYPE_MATR_TANG')
         if (exits .eq. 1) then
 !        dans ZR(JVALV+1) on stocke le type de matrice tgte
-            call getvtx(moclef(k), 'TYPE_MATR_TANG', 1, iarg, 1,&
-                        tymatg, iret)
+            call getvtx(moclef(k), 'TYPE_MATR_TANG', iocc=1, scal=tymatg, nbret=iret)
             if (iret .eq. 0) then
                 typtgt = 0
             else
                 if (tymatg .eq. 'PERTURBATION') then
                     typtgt = 1
-                    call getvr8(moclef(k), 'VALE_PERT_RELA', 1, iarg, 1,&
-                                pert, iret)
+                    call getvr8(moclef(k), 'VALE_PERT_RELA', iocc=1, scal=pert, nbret=iret)
                 else if (tymatg.eq.'VERIFICATION') then
                     typtgt = 2
-                    call getvr8(moclef(k), 'VALE_PERT_RELA', 1, iarg, 1,&
-                                pert, iret)
+                    call getvr8(moclef(k), 'VALE_PERT_RELA', iocc=1, scal=pert, nbret=iret)
                 endif
 !              Verif que TYMATG est possible pour COMP
                 call lctest(comcod, 'TYPE_MATR_TANG', tymatg, irett)
@@ -214,8 +198,7 @@ subroutine pmdorc(compor, carcri, nbvari, k)
 !     TOLERANCE POUR LE CRITERE DE RADIALITE
     if (moclef(k) .eq. 'COMP_INCR') then
         if (typtgt .eq. 0) then
-            call getvr8(moclef(k), 'RESI_RADI_RELA', 1, iarg, 1,&
-                        tolrad, iret)
+            call getvr8(moclef(k), 'RESI_RADI_RELA', iocc=1, scal=tolrad, nbret=iret)
             if (iret .ne. 0) then
                 tseuil=tolrad
             else
@@ -225,8 +208,7 @@ subroutine pmdorc(compor, carcri, nbvari, k)
     endif
 !
     if (k .eq. 1) then
-        call getvr8(moclef(k), 'PARM_THETA', 1, iarg, 1,&
-                    theta, iret)
+        call getvr8(moclef(k), 'PARM_THETA', iocc=1, scal=theta, nbret=iret)
     else
         theta=1.d0
     endif

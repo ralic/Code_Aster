@@ -38,11 +38,11 @@ subroutine phi152(model, option, mate, phibar, ma,&
 ! IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 !---------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getvid.h"
 #include "asterfort/cal2m.h"
 #include "asterfort/calflu.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupc.h"
@@ -79,14 +79,10 @@ subroutine phi152(model, option, mate, phibar, ma,&
     solveu = solvez
     criter = '&&RESGRA_GCPC'
     indice=0
-    call getvid(' ', 'MODE_MECA', 0, iarg, 1,&
-                modmec, n5)
-    call getvid(' ', 'MODELE_FLUIDE', 0, iarg, 1,&
-                moflui, n1)
-    call getvid(' ', 'MODELE_INTERFACE', 0, iarg, 1,&
-                moint, n2)
-    call getvid(' ', 'CHAM_NO', 0, iarg, 0,&
-                chamno, n6)
+    call getvid(' ', 'MODE_MECA', scal=modmec, nbret=n5)
+    call getvid(' ', 'MODELE_FLUIDE', scal=moflui, nbret=n1)
+    call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=n2)
+    call getvid(' ', 'CHAM_NO', nbval=0, nbret=n6)
 !
 ! TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 ! DES MAILLAGES COMMUNS
@@ -205,8 +201,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
             call wkvect('&&OP0152.PHI1', 'V V K24', n7, iphi1)
             call wkvect('&&OP0152.PHI2', 'V V K24', n7, iphi2)
             call wkvect('&&OP0152.VEC', 'V V K8', n7, ivalk)
-            call getvid(' ', 'CHAM_NO', 0, iarg, n7,&
-                        zk8(ivalk), n6)
+            call getvid(' ', 'CHAM_NO', nbval=n7, vect=zk8(ivalk), nbret=n6)
 !
             ilires = 0
             phib24=phibar

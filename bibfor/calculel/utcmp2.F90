@@ -1,11 +1,10 @@
 subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
                   numcmp, nbcmp)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -14,6 +13,7 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
 #include "asterfort/knincl.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/u2mesk.h"
+!
     integer :: iocc, dim, nbcmp, numcmp(*)
     character(len=*) :: nomgd, mcfac, nomcmp(*)
 ! ----------------------------------------------------------------------
@@ -57,13 +57,12 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
     call getres(k8b, k8b, nomcmd)
 !
 !
-    call getvtx(mcfac, 'NOM_CMP', iocc, iarg, 0,&
-                k8b, n2)
+    call getvtx(mcfac, 'NOM_CMP', iocc=iocc, nbval=0, nbret=n2)
     nbcmp=-n2
     ASSERT(dim.ge.nbcmp)
 !
-    call getvtx(mcfac, 'NOM_CMP', iocc, iarg, nbcmp,&
-                nomcmp, n2)
+    call getvtx(mcfac, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=nomcmp,&
+                nbret=n2)
 !
 !
     if (nomgd(1:6) .eq. 'VARI_R') then

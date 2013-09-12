@@ -19,10 +19,10 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -95,8 +95,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 ! ------ LE MODELE
 !
         if (modele .eq. ' ') then
-            call getvid(' ', 'MODELE', 1, iarg, 1,&
-                        nomo, n1)
+            call getvid(' ', 'MODELE', scal=nomo, nbret=n1)
             if (n1 .eq. 0) call u2mess('F', 'CALCULEL3_50')
             modele = nomo
         endif
@@ -113,8 +112,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 ! ------ LE MATERIAU
 !
         materi = ' '
-        call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
-                    materi, n1)
+        call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
         call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
                     repons, iret)
         if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_40')
@@ -128,8 +126,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
         cara = ' '
 !
-        call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
-                    cara, n1)
+        call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n1)
         call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
                     repons, iret)
         if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) then

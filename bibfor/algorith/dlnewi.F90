@@ -70,13 +70,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dlarch.h"
@@ -84,6 +80,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 #include "asterfort/dltcrr.h"
 #include "asterfort/dltins.h"
 #include "asterfort/dyarch.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -107,6 +106,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+!
     integer :: iinteg, neq, imat(3), nchar, nveca, liad(*), nume, nondp
     integer :: numrep
 !
@@ -277,12 +277,10 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     call wkvect('&&'//nompro//'.VITA1', 'V V R', neq, ivita1)
     call wkvect('&&'//nompro//'.ACCEA', 'V V R', neq, iaccea)
 !    Verification de presence des modes_statiques
-    call getvid(' ', 'MODE_STAT', 1, iarg, 1,&
-                modsta, nbv)
+    call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
     call getfac('EXCIT', nbexci)
     do 69 , iexci = 1,nbexci
-    call getvtx('EXCIT', 'MULT_APPUI', iexci, iarg, 1,&
-                k8b, nd)
+    call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
     if (k8b .eq. 'OUI' .and. nbv .eq. 0) then
         call u2mess('F', 'ALGORITH13_46')
     endif
@@ -307,16 +305,12 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         call wkvect('&&'//nompro//'.IPSD', 'V V R', nbexci*neq, jpsdel)
         do 108 , iexci = 1,nbexci
 !     --- CAS D'UN ACCELEROGRAMME
-        call getvtx('EXCIT', 'MULT_APPUI', iexci, iarg, 1,&
-                    k8b, nd)
+        call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
         if (k8b .eq. 'OUI') then
             zi(jmltap+iexci-1) = 1
-            call getvid('EXCIT', 'ACCE', iexci, iarg, 1,&
-                        zk8(jnoacc+ iexci-1), na)
-            call getvid('EXCIT', 'VITE', iexci, iarg, 1,&
-                        zk8(jnovit+ iexci-1), nv)
-            call getvid('EXCIT', 'DEPL', iexci, iarg, 1,&
-                        zk8(jnodep+ iexci-1), nd)
+            call getvid('EXCIT', 'ACCE', iocc=iexci, scal=zk8(jnoacc+ iexci-1), nbret=na)
+            call getvid('EXCIT', 'VITE', iocc=iexci, scal=zk8(jnovit+ iexci-1), nbret=nv)
+            call getvid('EXCIT', 'DEPL', iocc=iexci, scal=zk8(jnodep+ iexci-1), nbret=nd)
             call trmult(modsta, iexci, mailla, neq, iddeeq,&
                         zr(jpsdel+ (iexci-1)*neq))
 !     --- MISE A ZERO DES DDL DE LAGRANGE
@@ -356,10 +350,8 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 ! 1.10. ==> --- PARAMETRES D'INTEGRATION ---
 !
     if (iinteg .eq. 1) then
-        call getvr8('SCHEMA_TEMPS', 'BETA', 1, iarg, 1,&
-                    beta, n1)
-        call getvr8('SCHEMA_TEMPS', 'GAMMA', 1, iarg, 1,&
-                    gamma, n1)
+        call getvr8('SCHEMA_TEMPS', 'BETA', iocc=1, scal=beta, nbret=n1)
+        call getvr8('SCHEMA_TEMPS', 'GAMMA', iocc=1, scal=gamma, nbret=n1)
         res = 0.25d0* (0.5d0+gamma)* (0.5d0*gamma)
         tol = 1.d-8
         if (gamma .lt. (0.5d0-tol) .or. beta .lt. (res-tol)) then
@@ -370,8 +362,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
             call u2mess('F', 'ALGORITH9_2')
         endif
     else
-        call getvr8('SCHEMA_TEMPS', 'THETA', 1, iarg, 1,&
-                    theta, n1)
+        call getvr8('SCHEMA_TEMPS', 'THETA', iocc=1, scal=theta, nbret=n1)
     endif
 !
 ! 1.11. ==> --- LISTE DES INSTANTS DE CALCUL ET LES SORTIES ---

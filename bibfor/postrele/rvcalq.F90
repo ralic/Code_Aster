@@ -2,12 +2,11 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                   nomcp, nbcpnc, nbcpcd, option, quant,&
                   sdlieu, codir, valdir, sdcalq, courbe)
 ! aslint: disable=W1501
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvr8.h"
 #include "asterc/r8vide.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/jedema.h"
@@ -22,6 +21,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 #include "asterfort/rvpstd.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: sdeval, quant, sdlieu
     character(len=19) :: sdcalq
     character(len=16) :: option
@@ -117,8 +117,8 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     if (courbe .eq. ' ') then
         tridim = .false.
     else
-        call getvr8('ACTION', 'VECT_Y', iocc, iarg, 3,&
-                    vecty, ny)
+        call getvr8('ACTION', 'VECT_Y', iocc=iocc, nbval=3, vect=vecty,&
+                    nbret=ny)
         tridim = ny .ne. 0
     endif
     call infniv(ifm, niv)

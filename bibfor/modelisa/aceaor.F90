@@ -3,10 +3,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                   nbocc)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/aceatu.h"
@@ -15,6 +12,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 #include "asterfort/angvx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -29,6 +28,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmax, nbepo, nbedi, ntyele(*), ivr(*), nbocc(*)
     character(len=8) :: noma, nomo
     character(len=16) :: nomele(*)
@@ -179,10 +179,10 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                         iarg, lmax, zk24(jdls), nj)
             call getvem(noma, 'NOEUD', 'ORIENTATION', 'NOEUD', ioc,&
                         iarg, lmax, zk24(jdls), nn)
-            call getvtx('ORIENTATION', 'CARA', ioc, iarg, nbcar,&
-                        car, ncar)
-            call getvr8('ORIENTATION', 'VALE', ioc, iarg, nbval,&
-                        val, nval)
+            call getvtx('ORIENTATION', 'CARA', iocc=ioc, nbval=nbcar, vect=car,&
+                        nbret=ncar)
+            call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
+                        nbret=nval)
 !
 ! ---       "GROUP_MA" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DES
 !                                                    GROUPES DE MAILLES

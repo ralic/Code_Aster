@@ -67,15 +67,15 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/chpver.h"
 #include "asterfort/codent.h"
 #include "asterfort/cresol.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dltp0.h"
 #include "asterfort/focste.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
@@ -145,12 +145,9 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
     call wkvect(baseno//'.ENER      .VALE', 'V V R', 6, iener)
 !
 ! 2.4. ==> --- LES MATRICES ---
-    call getvid(' ', 'MATR_RIGI', 0, iarg, 1,&
-                rigid, nr)
-    call getvid(' ', 'MATR_MASS', 0, iarg, 1,&
-                masse, nm)
-    call getvid(' ', 'MATR_AMOR', 0, iarg, 1,&
-                amort, na)
+    call getvid(' ', 'MATR_RIGI', scal=rigid, nbret=nr)
+    call getvid(' ', 'MATR_MASS', scal=masse, nbret=nm)
+    call getvid(' ', 'MATR_AMOR', scal=amort, nbret=na)
     if (na .le. 0) then
         write(ifm,*)'PAS DE MATRICE D''AMORTISSEMENT'
         lamort = .false.
@@ -179,13 +176,11 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
         nveca = 0
         nchar = 0
         do 311 , ivec = 1 , nvect
-        call getvid('EXCIT', 'VECT_ASSE', ivec, iarg, 1,&
-                    channo, iaux)
+        call getvid('EXCIT', 'VECT_ASSE', iocc=ivec, scal=channo, nbret=iaux)
         if (iaux .eq. 1) then
             nveca = nveca + 1
         endif
-        call getvid('EXCIT', 'CHARGE', ivec, iarg, 1,&
-                    channo, iaux)
+        call getvid('EXCIT', 'CHARGE', iocc=ivec, scal=channo, nbret=iaux)
         if (iaux .eq. 1) then
             nchar = nchar + 1
         endif
@@ -202,23 +197,21 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
             do 312 ivec = 1, nveca
                 indic = indic + 1
 3121              continue
-                call getvid('EXCIT', 'VECT_ASSE', indic, iarg, 1,&
-                            channo, iaux)
+                call getvid('EXCIT', 'VECT_ASSE', iocc=indic, scal=channo, nbret=iaux)
                 if (iaux .eq. 0) then
                     indic = indic + 1
                     goto 3121
                 endif
                 call chpver('F', channo, 'NOEU', 'DEPL_R', ibid)
                 call jeveuo(channo//'.VALE', 'L', zi(iaadve+ivec-1))
-                call getvid('EXCIT', 'FONC_MULT', indic, iarg, 1,&
-                            zk24( ialifo+ivec-1), iaux)
+                call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=zk24( ialifo+ivec-1),&
+                            nbret=iaux)
                 if (iaux .eq. 0) then
-                    call getvid('EXCIT', 'ACCE', indic, iarg, 1,&
-                                zk24( ialifo+ivec-1), iaux)
+                    call getvid('EXCIT', 'ACCE', iocc=indic, scal=zk24( ialifo+ivec-1),&
+                                nbret=iaux)
                     if (iaux .eq. 0) then
                         rval = 1.d0
-                        call getvr8('EXCIT', 'COEF_MULT', indic, iarg, 1,&
-                                    rval, iaux)
+                        call getvr8('EXCIT', 'COEF_MULT', iocc=indic, scal=rval, nbret=iaux)
                         zk24(ialifo+ivec-1) = baseno//'.F_'
                         call codent(ivec, 'G', zk24(ialifo+ivec-1)(12: 19))
                         call focste(zk24(ialifo+ivec-1), 'INST', rval, 'V')
@@ -232,8 +225,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 ! 3.1.3. ==> LISTE DES CHARGES
 !
         if (nchar .ne. 0) then
-            call getvid(' ', 'MODELE', 0, iarg, 1,&
-                        k8b, iaux)
+            call getvid(' ', 'MODELE', scal=k8b, nbret=iaux)
             if (iaux .eq. 0) then
                 call u2mess('F', 'ALGORITH9_26')
             endif
@@ -311,8 +303,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 !
 ! 4.3. ==> TYPE D'INTEGRATION
 !
-    call getvtx('SCHEMA_TEMPS', 'SCHEMA', 1, iarg, 1,&
-                method, n1)
+    call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
 !
     if (method .eq. 'NEWMARK') then
         iinteg = 1

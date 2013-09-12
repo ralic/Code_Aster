@@ -23,8 +23,8 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -64,7 +64,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     integer :: scorar(narz), bestar, maxi, ir, t1(2*narz)
     integer :: mi, ma, npaq, t2(narz), nreleq, ip, dimeq, eq(narz), ie, ipaq
     integer :: liseqt(narz, 2), jlis1
-    integer ::  npil
+    integer :: npil
     integer :: ifm, niv
     real(kind=8) :: tabco(narz, ndim), tabcr(narz)
     integer :: nunoa, nunob
@@ -137,8 +137,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 !
 !     SI PILOTAGE, ON AFFECTE UN SCORE DE 1 AUX NOEUDS INTERSECTES
             if (getexm('PILOTAGE','DIRE_PILO') .eq. 1) then
-                call getvtx('PILOTAGE', 'DIRE_PILO', 1, iarg, 0,&
-                            k8bid, npil)
+                call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=0, nbret=npil)
                 npil=-npil
                 if (npil .ge. 1) then
                     pilo = .true.

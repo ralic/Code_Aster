@@ -28,16 +28,15 @@ subroutine op0150()
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/carcha.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -70,6 +69,7 @@ subroutine op0150()
 #include "asterfort/ulopen.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
+!
     character(len=6) :: nompro
     parameter (nompro='OP0150')
     integer :: ndim
@@ -129,28 +129,23 @@ subroutine op0150()
     modele = blan8
 !
     call getres(resu, concep, nomcmd)
-    call getvtx(' ', 'TYPE_RESU', 0, iarg, 1,&
-                typres, n1)
+    call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=n1)
     ASSERT(typres.eq.concep)
-    call getvtx(' ', 'NOM_FICHIER', 0, iarg, 1,&
-                fich, nfic)
+    call getvtx(' ', 'NOM_FICHIER', scal=fich, nbret=nfic)
 !
     call infmaj()
     call infniv(ifm, nivinf)
 !
 !     --- FORMAT ---
-    call getvtx(' ', 'FORMAT', 0, iarg, 1,&
-                form, nfor)
-    call getvis(' ', 'UNITE', 0, iarg, 1,&
-                mfich, n1)
+    call getvtx(' ', 'FORMAT', scal=form, nbret=nfor)
+    call getvis(' ', 'UNITE', scal=mfich, nbret=n1)
     if ((n1.gt.0) .and. (form.ne.'MED')) then
         k16nom = ' '
         if (ulisop(mfich,k16nom) .eq. 0) then
             call ulopen(mfich, ' ', ' ', 'NEW', 'O')
         endif
     endif
-    call getvtx(' ', 'NOM_FICHIER', 0, iarg, 1,&
-                fich, n1)
+    call getvtx(' ', 'NOM_FICHIER', scal=fich, nbret=n1)
 !
 !     ---  LISTE DES CHAMPS A LIRE ---
     call getfac('FORMAT_MED', n1)
@@ -160,27 +155,22 @@ subroutine op0150()
             nbnoch = -nbnoch
         else
             do 10,i = 1,nbnoch
-            call getvtx('FORMAT_MED', 'NOM_CHAM', i, iarg, 1,&
-                        linoch(i), n1)
+            call getvtx('FORMAT_MED', 'NOM_CHAM', iocc=i, scal=linoch(i), nbret=n1)
 10          continue
         endif
     else
-        call getvtx(' ', 'NOM_CHAM', 0, iarg, 100,&
-                    linoch, nbnoch)
+        call getvtx(' ', 'NOM_CHAM', nbval=100, vect=linoch, nbret=nbnoch)
     endif
     if (nbnoch .lt. 0) call u2mess('F', 'UTILITAI2_86')
 !
 !     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
-    call getvis(' ', 'NB_VARI', 0, iarg, 1,&
-                nbvari, nvar)
+    call getvis(' ', 'NB_VARI', scal=nbvari, nbret=nvar)
 !
 !     --- MAILLAGE ---
-    call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
-                noma, nbv)
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=nbv)
 !
 !     --- MODELE ---
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                nomo, nbv)
+    call getvid(' ', 'MODELE', scal=nomo, nbret=nbv)
     if (nbv .ne. 0) then
         ligrel = nomo//'.MODELE'
         call jeveuo(ligrel//'.LGRF', 'L', lnoma)
@@ -190,8 +180,7 @@ subroutine op0150()
 !     --- QUELS SONT LES INSTANTS A RELIRE ---
     nnu=0
     nis=0
-    call getvtx(' ', 'TOUT_ORDRE', 0, iarg, 1,&
-                k8bid, nto)
+    call getvtx(' ', 'TOUT_ORDRE', scal=k8bid, nbret=nto)
     if (nto .ne. 0) then
         acces = 'TOUT_ORDRE'
         nbordr = 100
@@ -199,15 +188,13 @@ subroutine op0150()
         goto 20
     endif
 !
-    call getvis(' ', 'NUME_ORDRE', 0, iarg, 0,&
-                ibid, nnu)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nnu)
     if (nnu .ne. 0) then
         acces = 'NUME_ORDRE'
         listis = '&&'//nompro
         nbordr = -nnu
         call wkvect(listis//'.VALE', 'V V I', nbordr, jnume)
-        call getvis(' ', 'NUME_ORDRE', 0, iarg, nbordr,&
-                    zi(jnume), n1)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbordr, vect=zi(jnume), nbret=n1)
 !       ICI ON TRIE POUR QUE LE .ORDR DE LA SD_RESULTAT
 !       PRODUITE SOIT STRICTEMENT CROISSANT
         call uttrii(zi(jnume), nbordr)
@@ -215,8 +202,7 @@ subroutine op0150()
         goto 20
     endif
 !
-    call getvid(' ', 'LIST_ORDRE', 0, iarg, 1,&
-                listis, nnu)
+    call getvid(' ', 'LIST_ORDRE', scal=listis, nbret=nnu)
     if (nnu .ne. 0) then
         acces = 'LIST_ORDRE'
         iinst=0
@@ -226,21 +212,18 @@ subroutine op0150()
         goto 20
     endif
 !
-    call getvr8(' ', 'INST', 0, iarg, 0,&
-                rbid, nis)
+    call getvr8(' ', 'INST', nbval=0, nbret=nis)
     if (nis .ne. 0) then
         acces = 'INST'
         listr8 = '&&'//nompro
         nbordr = -nis
         iinst=1
         call wkvect(listr8//'.VALE', 'V V R', nbordr, jlist)
-        call getvr8(' ', 'INST', 0, iarg, nbordr,&
-                    zr(jlist), n1)
+        call getvr8(' ', 'INST', nbval=nbordr, vect=zr(jlist), nbret=n1)
         goto 20
     endif
 !
-    call getvid(' ', 'LIST_INST', 0, iarg, 1,&
-                listr8, nis)
+    call getvid(' ', 'LIST_INST', scal=listr8, nbret=nis)
     if (nis .ne. 0) then
         acces = 'LIST_INST'
         iinst=1
@@ -249,21 +232,18 @@ subroutine op0150()
         goto 20
     endif
 !
-    call getvr8(' ', 'FREQ', 0, iarg, 0,&
-                rbid, nis)
+    call getvr8(' ', 'FREQ', nbval=0, nbret=nis)
     if (nis .ne. 0) then
         acces = 'FREQ'
         listr8 = '&&'//nompro
         nbordr = -nis
         iinst=1
         call wkvect(listr8//'.VALE', 'V V R', nbordr, jlist)
-        call getvr8(' ', 'FREQ', 0, iarg, nbordr,&
-                    zr(jlist), n1)
+        call getvr8(' ', 'FREQ', nbval=nbordr, vect=zr(jlist), nbret=n1)
         goto 20
     endif
 !
-    call getvid(' ', 'LIST_FREQ', 0, iarg, 1,&
-                listr8, nis)
+    call getvid(' ', 'LIST_FREQ', scal=listr8, nbret=nis)
     if (nis .ne. 0) then
         acces = 'LIST_FREQ'
         iinst=1
@@ -275,16 +255,13 @@ subroutine op0150()
 20  continue
 !
 !     --- LECTURE DE LA PRECISION ET DU CRITERE ---
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, np)
-    call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                crit, nc)
+    call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
     precis = 0
     if (np .ne. 0) precis = 1
 !
 !     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
-    call getvis(' ', 'NB_VARI', 0, iarg, 1,&
-                nbvari, nvar)
+    call getvis(' ', 'NB_VARI', scal=nbvari, nbret=nvar)
 !
 !     --- CREATION DE LA STRUCTURE DE DONNEES RESULTAT ---
     call rscrsd('G', resu, typres, nbordr)
@@ -345,8 +322,7 @@ subroutine op0150()
             call u2mess('F', 'UTILITAI2_89')
         endif
 !
-        call getvtx(' ', 'NOM_FICHIER', 0, iarg, 1,&
-                    fich, nfic)
+        call getvtx(' ', 'NOM_FICHIER', scal=fich, nbret=nfic)
         ll = len(fich)
         do 40 i = 1, ll
             if (fich(i:i) .ne. ' ') goto 40
@@ -367,8 +343,7 @@ subroutine op0150()
 !
 !       ON VERIFIE QUE LE PHENOMENE DU MODELE FOURNI EST COHERENT AVEC
 !       LA SD RESULTAT
-        call getvid(' ', 'MODELE', 0, iarg, 1,&
-                    nomo, nbv)
+        call getvid(' ', 'MODELE', scal=nomo, nbret=nbv)
         if (nbv .eq. 1) then
             call lrvemo(nomo)
         endif
@@ -383,20 +358,17 @@ subroutine op0150()
             option = ' '
             param = ' '
 !
-            call getvtx('FORMAT_MED', 'NOM_CHAM', i, iarg, 1,&
-                        noch, n1)
+            call getvtx('FORMAT_MED', 'NOM_CHAM', iocc=i, scal=noch, nbret=n1)
 !
             call carcha(noch, nomgd, typcha, option, param)
 !
 !         NOM DU CHAMP MED
-            call getvtx('FORMAT_MED', 'NOM_CHAM_MED', i, iarg, 1,&
-                        nochmd, n1)
+            call getvtx('FORMAT_MED', 'NOM_CHAM_MED', iocc=i, scal=nochmd, nbret=n1)
             if (n1 .eq. 0) then
 !                   12345678901234567890123456789012
                 nochmd='________________________________'//&
      &             '________________________________'
-                call getvtx('FORMAT_MED', 'NOM_RESU', i, iarg, 1,&
-                            noraci, n2)
+                call getvtx('FORMAT_MED', 'NOM_RESU', iocc=i, scal=noraci, nbret=n2)
                 nchar=lxlgut(noraci)
                 nochmd(1:nchar)=noraci(1:nchar)
                 nchar=lxlgut(noch)
@@ -416,15 +388,13 @@ subroutine op0150()
             ncmpvm = '&&'//nompro//'.'//lcmpvm
 !         NOM_CMP ASTER ?
             nbcmpv=0
-            call getvtx('FORMAT_MED', lcmpva, i, iarg, 0,&
-                        rep, iaux)
+            call getvtx('FORMAT_MED', lcmpva, iocc=i, nbval=0, nbret=iaux)
             if (iaux .lt. 0) then
                 nbcmpv = -iaux
             endif
 !
 !         NOM_CMP MED ?
-            call getvtx('FORMAT_MED', lcmpvm, i, iarg, 0,&
-                        rep, iaux)
+            call getvtx('FORMAT_MED', lcmpvm, iocc=i, nbval=0, nbret=iaux)
             if (-iaux .ne. nbcmpv) then
                 valk(1) = lcmpva
                 valk(2) = lcmpvm
@@ -432,16 +402,15 @@ subroutine op0150()
             endif
             if (nbcmpv .gt. 0) then
                 call wkvect(ncmpva, 'V V K8', nbcmpv, jcmpva)
-                call getvtx('FORMAT_MED', lcmpva, i, iarg, nbcmpv,&
-                            zk8(jcmpva), iaux)
+                call getvtx('FORMAT_MED', lcmpva, iocc=i, nbval=nbcmpv, vect=zk8(jcmpva),&
+                            nbret=iaux)
                 call wkvect(ncmpvm, 'V V K16', nbcmpv, jcmpvm)
-                call getvtx('FORMAT_MED', lcmpvm, i, iarg, nbcmpv,&
-                            zk16( jcmpvm), iaux)
+                call getvtx('FORMAT_MED', lcmpvm, iocc=i, nbval=nbcmpv, vect=zk16( jcmpvm),&
+                            nbret=iaux)
             endif
 !
 !         PROLONGEMENT PAR ZERO OU NOT A NUMBER
-            call getvtx(' ', 'PROL_ZERO', 0, iarg, 1,&
-                        prolz, iaux)
+            call getvtx(' ', 'PROL_ZERO', scal=prolz, nbret=iaux)
             if (prolz .ne. 'OUI') then
                 prolz = 'NAN'
             endif
@@ -460,12 +429,9 @@ subroutine op0150()
 !
 ! - STOCKAGE EVENTUEL : MODELE, CHAM_MATER, CARA_ELEM, EXCIT
 !   --------------------------------------------------------
-    call getvid(' ', 'CHAM_MATER', 0, iarg, 0,&
-                k8bid, n1)
-    call getvid(' ', 'CARA_ELEM', 0, iarg, 0,&
-                k8bid, n2)
-    call getvid(' ', 'MODELE', 0, iarg, 0,&
-                k8bid, n3)
+    call getvid(' ', 'CHAM_MATER', nbval=0, nbret=n1)
+    call getvid(' ', 'CARA_ELEM', nbval=0, nbret=n2)
+    call getvid(' ', 'MODELE', nbval=0, nbret=n3)
 !
     if (((n1.ne.0).or.(n2.ne.0).or.(n3.ne.0)) .and. ((typres.eq.'EVOL_CHAR'))) then
         if ((n3.ne.0) .and. (form.eq.'ENSIGHT')) then
@@ -477,12 +443,15 @@ subroutine op0150()
         endif
     endif
 !
-    if (n1 .ne. 0) call getvid(' ', 'CHAM_MATER', 0, iarg, 1,&
-                               chmat, iret)
-    if (n2 .ne. 0) call getvid(' ', 'CARA_ELEM', 0, iarg, 1,&
-                               carael, iret)
-    if (n3 .ne. 0) call getvid(' ', 'MODELE', 0, iarg, 1,&
-                               modele, iret)
+    if (n1 .ne. 0) then
+        call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=iret)
+    endif
+    if (n2 .ne. 0) then
+        call getvid(' ', 'CARA_ELEM', scal=carael, nbret=iret)
+    endif
+    if (n3 .ne. 0) then
+        call getvid(' ', 'MODELE', scal=modele, nbret=iret)
+    endif
 !
     call lrcomm(resu, typres, nbordr, chmat, carael,&
                 modele)
@@ -517,7 +486,8 @@ subroutine op0150()
     if (typres .eq. 'DYNA_TRANS' .or. typres .eq. 'DYNA_HARMO' .or. typres(1:9) .eq.&
         'MODE_MECA') then
         call jeexin(resu//'           .REFD', iret)
-        if (iret .eq. 0) call refdaj(' ', resu, -1, ' ', 'INIT', ' ' , iret)
+        if (iret .eq. 0) call refdaj(' ', resu, -1, ' ', 'INIT',&
+                                     ' ', iret)
     endif
 !
 !     -- SI NECESSAIRE, ON MET LES CHAMPS DE DEPL_R/C DANS

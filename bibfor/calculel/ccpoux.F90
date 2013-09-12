@@ -4,8 +4,6 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
@@ -13,6 +11,8 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 #include "asterfort/focste.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fozero.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
@@ -177,8 +177,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 !        LA CHARGE REPARTIE EST :
 !           SOUS EXIT DE LA COMMANDE
 !           DANS KCHARG
-        call getvid('EXCIT', 'CHARGE', ioccur, iarg, 1,&
-                    charge, n1)
+        call getvid('EXCIT', 'CHARGE', iocc=ioccur, scal=charge, nbret=n1)
         if (n1 .eq. 0) then
             call jeveuo(kcharg//'.LCHA', 'L', jlcha)
             call jeveuo(kcharg//'.FCHA', 'L', jfcha)
@@ -195,10 +194,8 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             l1 = 1
             l3 = 0
         else
-            call getvid('EXCIT', 'FONC_MULT', ioccur, iarg, 1,&
-                        fmult, l1)
-            call getvr8('EXCIT', 'COEF_MULT', ioccur, iarg, 1,&
-                        coeff, l3)
+            call getvid('EXCIT', 'FONC_MULT', iocc=ioccur, scal=fmult, nbret=l1)
+            call getvr8('EXCIT', 'COEF_MULT', iocc=ioccur, scal=coeff, nbret=l3)
             if (l1+l3 .ne. 0) then
                 if ((typesd.ne.'DYNA_HARMO') .and. ( typesd.ne.'DYNA_TRANS') .and.&
                     (typesd.ne.'EVOL_ELAS')) then

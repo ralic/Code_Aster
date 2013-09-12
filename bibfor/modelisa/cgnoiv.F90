@@ -1,21 +1,21 @@
 subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsred.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbno
     character(len=*) :: nomaz, lisnoz
 ! person_in_charge: jacques.pellet at edf.fr
@@ -64,12 +64,10 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     noma=nomaz
     nbno=0
 !
-    call getvid(motfac, 'CHAM_GD', iocc, iarg, 1,&
-                cham19, n1)
-    call getvtx(motfac, 'NOM_CMP', iocc, iarg, 1,&
-                nocmp, n1)
-    call getvr8(motfac, 'VALE', iocc, iarg, 2,&
-                valr(1), n1)
+    call getvid(motfac, 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
+    call getvtx(motfac, 'NOM_CMP', iocc=iocc, scal=nocmp, nbret=n1)
+    call getvr8(motfac, 'VALE', iocc=iocc, nbval=2, vect=valr(1),&
+                nbret=n1)
     ASSERT(n1.eq.2)
     vmin=valr(1)
     vmax=valr(2)

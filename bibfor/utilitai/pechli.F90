@@ -1,12 +1,12 @@
 subroutine pechli(resu, modele, mate)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8miem.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -76,16 +76,14 @@ subroutine pechli(resu, modele, mate)
 !
 ! -- VERIFICATIONS INITIALES
 !
-    call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                result, iret)
+    call getvid(' ', 'RESULTAT', scal=result, nbret=iret)
     call rsexpa(result, 2, 'ETA_PILOTAGE', iret)
 !
     if (iret .eq. 0) call u2mesk('F', 'POSTELEM_3', 1, result)
 !
 !
 ! -- EXISTENCE D'UN CHARGEMENT CONSTANT
-    call getvtx('CHAR_LIMITE', 'CHAR_CSTE', 1, iarg, 1,&
-                rep, iret)
+    call getvtx('CHAR_LIMITE', 'CHAR_CSTE', iocc=1, scal=rep, nbret=iret)
     chrcst = rep .eq. 'OUI'
 !
 !
@@ -119,10 +117,8 @@ subroutine pechli(resu, modele, mate)
 !
 ! -- EXTRACTION DES NUMEROS D'ORDRE DU CALCUL
 !
-    call getvr8(' ', 'PRECISION', 1, iarg, 1,&
-                prec, iret)
-    call getvtx(' ', 'CRITERE', 1, iarg, 1,&
-                crit, iret)
+    call getvr8(' ', 'PRECISION', scal=prec, nbret=iret)
+    call getvtx(' ', 'CRITERE', scal=crit, nbret=iret)
     call rsutnu(result, ' ', 0, lisord, nbord,&
                 prec, crit, iret)
     if (iret .ne. 0) call u2mesk('F', 'POSTELEM_1', 1, result)

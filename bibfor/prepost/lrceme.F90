@@ -57,12 +57,16 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
+#include "asterfort/as_mfdfdi.h"
+#include "asterfort/as_mfdnfc.h"
+#include "asterfort/as_mfdnfd.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -73,16 +77,12 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lrcame.h"
-#include "asterfort/as_mfdfdi.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfdnfd.h"
-#include "asterfort/as_mfdnfc.h"
-#include "asterfort/as_mfiope.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: chanom
     character(len=*) :: ncmpva, ncmpvm
     character(len=8) :: nommod, nomaas, nomgd
@@ -119,7 +119,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     parameter (edlect=0)
 !
     character(len=1) :: saux01
-    character(len=8) ::  saux08
+    character(len=8) :: saux08
     character(len=19) :: chames, ligrel
     character(len=64) :: nomcha
     character(len=200) :: nofimd
@@ -183,8 +183,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
     else
 !
-        call getvis(' ', 'UNITE', 0, iarg, 1,&
-                    unite, iaux)
+        call getvis(' ', 'UNITE', scal=unite, nbret=iaux)
         call ulisog(unite, kfic, saux01)
         if (kfic(1:1) .eq. ' ') then
             call codent(unite, 'G', saux08)
@@ -199,7 +198,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
             call wkvect('&&LRCEME.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&LRCEME.UNITCMP', 'V V K16', nbcmp, junit)
             call as_mfdfdi(idfimd, i, nomcha, tycha, zk16(jcmp),&
-                        zk16(junit), nseqca, iret)
+                           zk16(junit), nseqca, iret)
             if (nomcha .eq. nochmd) then
                 ncmprf=nbcmp
                 call wkvect('&&LRCEME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)

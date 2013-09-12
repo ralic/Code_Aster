@@ -20,9 +20,9 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterc/getvtx.h"
+    implicit none
 #include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/reliem.h"
 #include "asterfort/u2mesk.h"
     character(len=8) :: noma, nomo
@@ -90,26 +90,18 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 !
     valk(1) = nomcha
     if (typcha .eq. 'NOEU') then
-        call getvtx(motfac, 'NOEUD', iocc, iarg, 0,&
-                    k8bid, n1)
-        call getvtx(motfac, 'GROUP_NO', iocc, iarg, 0,&
-                    k8bid, n2)
-        call getvtx(motfac, 'MAILLE', iocc, iarg, 0,&
-                    k8bid, n3)
-        call getvtx(motfac, 'GROUP_MA', iocc, iarg, 0,&
-                    k8bid, n4)
-        call getvtx(motfac, 'TOUT', iocc, iarg, 1,&
-                    oui, n5)
+        call getvtx(motfac, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
+        call getvtx(motfac, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n2)
+        call getvtx(motfac, 'MAILLE', iocc=iocc, nbval=0, nbret=n3)
+        call getvtx(motfac, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n4)
+        call getvtx(motfac, 'TOUT', iocc=iocc, scal=oui, nbret=n5)
         if ((n1.eq.0) .and. (n2.eq.0) .and. (n3.eq.0) .and. (n4.eq.0) .and. (n5.eq.0)) then
             call u2mesk('F', 'EXTRACTION_1', 1, valk)
         endif
     else if (typcha.eq.'ELGA') then
-        call getvtx(motfac, 'MAILLE', iocc, iarg, 0,&
-                    k8bid, n3)
-        call getvtx(motfac, 'GROUP_MA', iocc, iarg, 0,&
-                    k8bid, n4)
-        call getvtx(motfac, 'TOUT', iocc, iarg, 1,&
-                    oui, n5)
+        call getvtx(motfac, 'MAILLE', iocc=iocc, nbval=0, nbret=n3)
+        call getvtx(motfac, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n4)
+        call getvtx(motfac, 'TOUT', iocc=iocc, scal=oui, nbret=n5)
         if ((n3.eq.0) .and. (n4.eq.0) .and. (n5.eq.0)) then
             call u2mesk('F', 'EXTRACTION_2', 1, valk)
         endif
@@ -119,8 +111,7 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 !
 ! --- TYPE D'EXTRACTION
 !
-    call getvtx(motfac, 'EVAL_CHAM', iocc, iarg, 1,&
-                extrch, n6)
+    call getvtx(motfac, 'EVAL_CHAM', iocc=iocc, scal=extrch, nbret=n6)
     if (n6 .eq. 0) then
         extrch = 'VALE'
         call u2mesk('A', 'EXTRACTION_5', 1, valk)

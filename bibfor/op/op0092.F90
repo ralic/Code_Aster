@@ -24,8 +24,8 @@ subroutine op0092()
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/simono.h"
 #include "asterfort/simult.h"
@@ -41,8 +41,7 @@ subroutine op0092()
 !-----------------------------------------------------------------------
     call infmaj()
 !
-    call getvr8(' ', 'DIRECTION', 0, iarg, 0,&
-                depl, nbd)
+    call getvr8(' ', 'DIRECTION', nbval=0, nbret=nbd)
     nbdir = -nbd
     if (nbdir .ne. 3 .and. nbdir .ne. 6) then
         call u2mess('F', 'ALGELINE2_76')
@@ -51,8 +50,7 @@ subroutine op0092()
 !     SEISME ????
 !
     monmot = ' '
-    call getvtx(' ', 'MONO_APPUI', 0, iarg, 1,&
-                monmot, nbv)
+    call getvtx(' ', 'MONO_APPUI', scal=monmot, nbret=nbv)
     if (monmot(1:3) .eq. 'OUI') then
 !
 !        --- SEISME MONO-APPUI ---

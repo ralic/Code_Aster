@@ -4,9 +4,8 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterc/r8miem.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -18,6 +17,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nommat
     character(len=16) :: nomsym
     character(len=19) :: nomsd, nomsd2
@@ -59,7 +59,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !       OUT    VDOMAG    VECTEUR DOMMAGE AUX POINTS
 !       ----------------------------------------------------------------
 !       ---------------------------------------------------------------
-    character(len=8) ::  nomrm(1), nompar, kcorre, nomfon
+    character(len=8) :: nomrm(1), nompar, kcorre, nomfon
     character(len=10) :: nomphe
     character(len=19) :: chequi, chequ2(nbordr)
     character(len=24) :: nomdmg
@@ -86,8 +86,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     nomdmg = '&&OP0151.EQUI_GD'
     call wkvect(nomdmg, 'V V R', 2, ivpt)
 !
-    call getvtx(' ', 'CORR_SIGM_MOYE', 1, iarg, 1,&
-                kcorre, ibid)
+    call getvtx(' ', 'CORR_SIGM_MOYE', scal=kcorre, nbret=ibid)
 !
 ! --    VECTEUR DES NUMORD NOMS DE CHAMPS POUR L OPTION NOMSYM
 !

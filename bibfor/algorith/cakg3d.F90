@@ -1,24 +1,23 @@
 subroutine cakg3d(option, result, modele, depla, thetai,&
-                  mate, compor, lischa, symech,chfond,&
-                  nnoff, basloc, courb, iord,ndeg,&
-                  thlagr, glagr, thlag2, pair,ndimte,&
-                  extim, time, nbprup, noprup,fiss,&
-                  lmelas, nomcas, lmoda, puls,milieu,&
+                  mate, compor, lischa, symech, chfond,&
+                  nnoff, basloc, courb, iord, ndeg,&
+                  thlagr, glagr, thlag2, pair, ndimte,&
+                  extim, time, nbprup, noprup, fiss,&
+                  lmelas, nomcas, lmoda, puls, milieu,&
                   connex)
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/gkmet1.h"
 #include "asterfort/gkmet3.h"
 #include "asterfort/gkmet4.h"
@@ -41,9 +40,10 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-    integer :: iord,  nbprup, ndimte
+!
+    integer :: iord, nbprup, ndimte
     real(kind=8) :: puls
-    character(len=8) :: modele, thetai,  fiss
+    character(len=8) :: modele, thetai, fiss
     character(len=8) :: result, symech
     character(len=16) :: option, noprup(*), nomcas
     character(len=19) :: lischa
@@ -144,8 +144,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     RECUPERATION DU COMPORTEMENT
     call getfac('COMP_INCR', incr)
     if (incr .ne. 0) then
-        call getvid(' ', 'RESULTAT', 0, iarg, 1,&
-                    resu, nres)
+        call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
         call dismoi('F', 'TYPE_RESU', resu, 'RESULTAT', ibid,&
                     type, ierd)
         if (type .ne. 'EVOL_NOLI') then
@@ -160,8 +159,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     endif
 !
 !     RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
-    call getvid('COMP_INCR', 'SIGM_INIT', 1, iarg, 1,&
-                chsigi, init)
+    call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_G'
         call u2mesk('F', 'RUPTURE1_13', 1, valk)
@@ -181,8 +179,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     chpesa = '&&CAKG3D.PESA'
     chrota = '&&CAKG3D.ROTA'
     call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
-                chpres, chepsi, chpesa, chrota, lfonc ,&
-                time  , iord)
+                chpres, chepsi, chpesa, chrota, lfonc,&
+                time, iord)
     if (lfonc) then
         pavolu = 'PFFVOLU'
         pa2d3d = 'PFF2D3D'
@@ -398,8 +396,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     endif
 !
 !     ECRITURE DE LA TABLE DE G(S), K1(S), K2(S) ET K3(S)
-    call getvis('THETA', 'NUME_FOND', 1, iarg, 1,&
-                numfon, ibid)
+    call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
     if (lmelas) then
         call tbajvi(result, nbprup, 'NUME_CAS', iord, livi)

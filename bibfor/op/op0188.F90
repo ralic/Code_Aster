@@ -20,15 +20,14 @@ subroutine op0188()
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -39,6 +38,7 @@ subroutine op0188()
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,12 +69,10 @@ subroutine op0188()
     call getres(chout, k16bid, k16bid)
 !
 !     NOM DU CONCEPT FISSURE
-    call getvid(' ', 'FISSURE', 1, iarg, 1,&
-                fiss, ibid)
+    call getvid(' ', 'FISSURE', scal=fiss, nbret=ibid)
 !
 !     RECUP DU RAYON DE LA ZONE
-    call getvr8(' ', 'RAYON', 1, iarg, 1,&
-                rayon, ibid)
+    call getvr8(' ', 'RAYON', scal=rayon, nbret=ibid)
 !
 !     TYPE DE SD_FISS_XFEM EN ENTREE (FISSURE/INTERFACE)
     call dismoi('F', 'TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', ibid,&

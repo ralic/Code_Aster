@@ -18,14 +18,13 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !
     implicit none
 #include "jeveux.h"
-!
-#include "asterc/getvis.h"
-#include "asterc/getvtx.h"
 #include "asterfort/cmfiss.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -44,6 +43,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbocc, numocc(nbocc)
     character(len=8) :: main, maout
     character(len=16) :: motfac(nbocc)
@@ -133,16 +133,11 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !
         if (motfac(i) .eq. 'CREA_FISS') then
 !
-            call getvtx(motfac(i), 'PREF_MAILLE', numocc(i), iarg, 1,&
-                        prefix, ib)
-            call getvis(motfac(i), 'PREF_NUME', numocc(i), iarg, 1,&
-                        numare, ib)
-            call getvtx(motfac(i), 'GROUP_NO_1', numocc(i), iarg, 1,&
-                        gno1, ib)
-            call getvtx(motfac(i), 'GROUP_NO_2', numocc(i), iarg, 1,&
-                        gno2, ib)
-            call getvtx(motfac(i), 'NOM', numocc(i), iarg, 1,&
-                        nomgma, ib)
+            call getvtx(motfac(i), 'PREF_MAILLE', iocc=numocc(i), scal=prefix, nbret=ib)
+            call getvis(motfac(i), 'PREF_NUME', iocc=numocc(i), scal=numare, nbret=ib)
+            call getvtx(motfac(i), 'GROUP_NO_1', iocc=numocc(i), scal=gno1, nbret=ib)
+            call getvtx(motfac(i), 'GROUP_NO_2', iocc=numocc(i), scal=gno2, nbret=ib)
+            call getvtx(motfac(i), 'NOM', iocc=numocc(i), scal=nomgma, nbret=ib)
 !
             call cmfiss(main, gno1, gno2, prefix, numare,&
                         nomgma, zk24(jlnoma-1+i), zk24(jlconn-1 + i), zk24(jltyma-1 + i),&

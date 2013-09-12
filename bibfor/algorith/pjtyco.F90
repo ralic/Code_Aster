@@ -22,15 +22,15 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 ! BUT : DETERMINER LES TYPES DE CHAMP A PROJETER
 !
 !
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
 !
 #include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -99,10 +99,8 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !       2- CAS SD_RESULTAT :
 !       =====================
     else
-        call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                    prec, ie)
-        call getvtx(' ', 'CRITERE', 0, iarg, 1,&
-                    crit, ie)
+        call getvr8(' ', 'PRECISION', scal=prec, nbret=ie)
+        call getvtx(' ', 'CRITERE', scal=crit, nbret=ie)
         call rsutnu(resuin, ' ', 0, '&&PJXXCO.NUME_ORDRE', nbordr,&
                     prec, crit, iret)
 !

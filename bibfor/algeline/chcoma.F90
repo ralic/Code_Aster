@@ -1,9 +1,9 @@
 subroutine chcoma(tablez, nomaou)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -88,12 +88,11 @@ subroutine chcoma(tablez, nomaou)
 !
 ! --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE GRAVITE :
 !     ---------------------------------------------------------------
-    call getvtx('REPERE', 'GROUP_MA', 1, iarg, 0,&
-                k8b, ngm)
+    call getvtx('REPERE', 'GROUP_MA', iocc=1, nbval=0, nbret=ngm)
     if (ngm .ne. 0) then
         ngm = 1
-        call getvtx('REPERE', 'GROUP_MA', 1, iarg, ngm,&
-                    nogrma, ngm)
+        call getvtx('REPERE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma,&
+                    nbret=ngm)
         noma=nogrma
         iret=0
     else

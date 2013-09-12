@@ -23,12 +23,11 @@ subroutine op0147()
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!-----------------------------------------------------------------------
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/calcsp.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -38,12 +37,13 @@ subroutine op0147()
 #include "asterfort/titre.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!-----------------------------------------------------------------------
     integer :: i, ibid, ifreq, im, imasg, imod1, inumo
     integer :: inuor, ivite, jnuor, nbm, nbmr
     integer :: nnn, npv, i1, i3, ivitef
 !-----------------------------------------------------------------------
     logical :: casint
-    character(len=8) ::  table, nomu, option
+    character(len=8) :: table, nomu, option
     character(len=16) :: concep, cmd
     character(len=19) :: base
     character(len=24) :: freq, masg, vite, numo, nomobj, chnumi
@@ -58,8 +58,7 @@ subroutine op0147()
 !
 ! --- 1.RECUPERATION DES OBJETS DE LA BASE MODALE PERTURBEE ---
 !
-    call getvid(' ', 'BASE_ELAS_FLUI', 0, iarg, 1,&
-                base, zi)
+    call getvid(' ', 'BASE_ELAS_FLUI', scal=base)
 !
     masg = base//'.MASG'
     vite = base//'.VITE'
@@ -70,10 +69,8 @@ subroutine op0147()
 !
     call jeveuo(vite, 'L', ivite)
     call jelira(vite, 'LONUTI', npv)
-    call getvr8(' ', 'VITE_FLUI', 0, iarg, 1,&
-                vitef, zi)
-    call getvr8(' ', 'PRECISION', 0, iarg, 1,&
-                epsi, zi)
+    call getvr8(' ', 'VITE_FLUI', scal=vitef)
+    call getvr8(' ', 'PRECISION', scal=epsi)
 !
     ivitef = 1
     do 300 i3 = 1, npv
@@ -91,8 +88,7 @@ subroutine op0147()
 !
 ! --- 2.RECUPERATION DU NOM DE LA TABLE ---
 !
-    call getvid('EXCIT ', 'INTE_SPEC_GENE', 1, iarg, 1,&
-                table, zi)
+    call getvid('EXCIT ', 'INTE_SPEC_GENE', iocc=1, scal=table)
 !
 !     VERIFICATION DES PARAMETRES DE LA TABLE
 !
@@ -127,8 +123,7 @@ subroutine op0147()
 ! --- 3.RECUPERATION DE L'OPTION DE CALCUL ---
 !
     casint = .true.
-    call getvtx(' ', 'OPTION', 0, iarg, 1,&
-                option, ibid)
+    call getvtx(' ', 'OPTION', scal=option)
     if (option(1:4) .eq. 'DIAG') casint = .false.
 !
     call jeveuo(table//'.REFE', 'L', lrefe)

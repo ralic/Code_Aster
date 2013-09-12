@@ -2,11 +2,11 @@ subroutine ibtcpu(ier)
     implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
 #include "asterc/gtoptr.h"
 #include "asterc/rdtmax.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
     integer :: ier
@@ -52,12 +52,9 @@ subroutine ibtcpu(ier)
 !
     call getfac('CODE', iret)
 !
-    call getvis('RESERVE_CPU', 'VALE', 1, iarg, 1,&
-                lcpu, l1)
-    call getvr8('RESERVE_CPU', 'POURCENTAGE', 1, iarg, 1,&
-                pccpu, l2)
-    call getvis('RESERVE_CPU', 'BORNE', 1, iarg, 1,&
-                iborne, l3)
+    call getvis('RESERVE_CPU', 'VALE', iocc=1, scal=lcpu, nbret=l1)
+    call getvr8('RESERVE_CPU', 'POURCENTAGE', iocc=1, scal=pccpu, nbret=l2)
+    call getvis('RESERVE_CPU', 'BORNE', iocc=1, scal=iborne, nbret=l3)
 !
 !     PERMET D'AFFECTER DES VALEURS PAR DEFAUT EN FONCTION DE LA
 !     PRESENCE DE CODE

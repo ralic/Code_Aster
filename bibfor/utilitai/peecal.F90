@@ -5,7 +5,6 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -13,6 +12,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -155,8 +155,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !
 ! --- POUR LES CHAM_ELEM / ELEM : MOT CLE DEJA_INTEGRE:
     if (tych .eq. 'ELEM') then
-        call getvtx('INTEGRALE', 'DEJA_INTEGRE', iocc, iarg, 1,&
-                    dejain, iret)
+        call getvtx('INTEGRALE', 'DEJA_INTEGRE', iocc=iocc, scal=dejain, nbret=iret)
         if (iret .eq. 0) call u2mesk('F', 'UTILITAI7_13', 1, valk)
     endif
 !

@@ -30,11 +30,10 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
     implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/crnslv.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -47,6 +46,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 #include "asterfort/vpcrea.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmode, nbsauv, ldlim, imode, ier, lvale, i, jrefa
     logical :: lrefe, zcmplx
     character(len=8) :: resu1, resu2, matgen, k8b, basemo, typ
@@ -81,8 +81,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
     zk24(ldlim)=nugene
 !
 ! recuperation des parametres a garder dans le modele gene
-    call getvtx(' ', 'NOM_PARA', 1, iarg, nbmax,&
-                kpar, ipar)
+    call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
 !
     do 100 imode = 1, nbsauv
 !        --- VECTEUR PROPRE ---

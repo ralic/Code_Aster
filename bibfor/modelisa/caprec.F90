@@ -4,9 +4,6 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
@@ -24,6 +21,9 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -58,10 +58,10 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,8 +99,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     integer :: nb_cabl, nb_anc1, nb_anc2
     integer :: jlicabl, jlianc1, jlianc2
     character(len=24) :: list_node
-    integer  :: nb_node, jlino
-    character(len=8)  :: cabl_prec
+    integer :: nb_node, jlino
+    character(len=8) :: cabl_prec
     character(len=19) :: cabl_sigm
     logical :: l_rota_2d, l_rota_3d
     integer :: i_cabl, i_ancr, i_no, nume_node
@@ -136,8 +136,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
     call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndimmo,&
                 k8bid, iret)
-    call dismoi('F','NB_MA_MAILLA',mesh,'MAILLAGE',nb_elem, &
-     &          k8bid, iret)
+    call dismoi('F', 'NB_MA_MAILLA', mesh, 'MAILLAGE', nb_elem,&
+                k8bid, iret)
     if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
 ! - Initializations of types
@@ -161,22 +161,22 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
-    cmp_name  = 'DX'
+    cmp_name = 'DX'
     cmp_index_dx = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dx.gt.0)
-    cmp_name  = 'DY'
+    cmp_name = 'DY'
     cmp_index_dy = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dy.gt.0)
-    cmp_name  = 'DZ'
+    cmp_name = 'DZ'
     cmp_index_dz = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dz.gt.0)
-    cmp_name  = 'DRX'
+    cmp_name = 'DRX'
     cmp_index_drx = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_drx.gt.0)
-    cmp_name  = 'DRY'
+    cmp_name = 'DRY'
     cmp_index_dry = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dry.gt.0)
-    cmp_name  = 'DRZ'
+    cmp_name = 'DRZ'
     cmp_index_drz = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_drz.gt.0)
 !
@@ -193,28 +193,25 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
 ! ----- Minimum distance
 !
-        call getvr8(keywordfact, 'DIST_MIN', iocc, iarg, 0,&
-                    dist_mini, n1)
+        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Options
 !
-        call getvtx(keywordfact, 'SIGM_BPEL', iocc, iarg, 1,&
-                    answer, ibid)
+        call getvtx(keywordfact, 'SIGM_BPEL', iocc=iocc, scal=answer, nbret=ibid)
         l_sigm_bpel = (answer.eq.'OUI')
-        call getvtx(keywordfact, 'RELA_CINE', iocc, iarg, 1,&
-                    answer, ibid)
+        call getvtx(keywordfact, 'RELA_CINE', iocc=iocc, scal=answer, nbret=ibid)
         l_rela_cine = (answer.eq.'OUI')
 !
         if (l_sigm_bpel .or. l_rela_cine) then
 !
-            call getvid(keywordfact, 'CABLE_BP', iocc, iarg, 1,&
-                        cabl_prec, ibid)
+            call getvid(keywordfact, 'CABLE_BP', iocc=iocc, scal=cabl_prec, nbret=ibid)
 !
 ! --------- Get and combine stresses
 !
             if (l_sigm_bpel) then
-                call char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll, jlr)
+                call char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
+                                    jlr)
             endif
 !
 ! --------- Linear relations
@@ -222,7 +219,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
             if (l_rela_cine) then
                 list_rela_old = cabl_prec//'.LIRELA'
                 call jeexin(list_rela_old//'.RLNR', iret)
-                if (iret.eq.0) call u2mesk('F','CHARGES2_48', 1, cabl_prec)
+                if (iret .eq. 0) call u2mesk('F', 'CHARGES2_48', 1, cabl_prec)
 !
 ! ------------- Get old linear relations
 !
@@ -236,7 +233,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
 ! ------------  Get information about cables
 !
-                call char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
+                call char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl,&
                                     nb_anc1, nb_anc2)
                 call jeveuo(list_cabl, 'L', jlicabl)
                 call jeveuo(list_anc1, 'L', jlianc1)
@@ -245,7 +242,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 ! ------------- Set linear relations for cables
 !
                 nume_cabl0 = 0
-                name_ancr  = ' '
+                name_ancr = ' '
                 do i_cabl = 1, nb_cabl
                     nume_cabl = zi(jlicabl-1+i_cabl)
                     name_anc1 = zk24(jlianc1-1+i_cabl)
@@ -276,13 +273,15 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                     l_rota_2d = .false.
                                     do i_no = 1, nb_node
                                         nume_node = zi(jlino+i_no-1)
-                                        if (exisdg(zi(jprnm-i_no+(nume_node-1)*nbec_depl+1), &
-                                                   cmp_index_drz)) then
+                                        if (exisdg(&
+                                            zi(jprnm-i_no+(nume_node-1)*nbec_depl+1),&
+                                            cmp_index_drz&
+                                            )) then
                                             l_rota_2d = .true.
                                             goto 110
                                         endif
                                     enddo
-110                                 continue
+110                                  continue
 !
 ! --------------------------------- Compute linear relations
 !
@@ -290,8 +289,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                         call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
                                                     cmp_index_drz, lagr_type, list_rela)
                                     else
-                                        call drz02d(mesh, vale_type, dist_mini, nb_node, list_node,&
-                                                    lagr_type, list_rela)
+                                        call drz02d(mesh, vale_type, dist_mini, nb_node,&
+                                                    list_node, lagr_type, list_rela)
                                     endif
 !
 ! ----------------------------- Set LIAISON_SOLIDE for ndim = 3
@@ -303,28 +302,36 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                     l_rota_3d = .false.
                                     do i_no = 1, nb_node
                                         nume_node = zi(jlino+i_no-1)
-                                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
-                                                   cmp_index_drx).and.&
-                                            exisdg(zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
-                                                   cmp_index_dry).and.&
-                                            exisdg(zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
-                                                   cmp_index_drz)) then
+                                        if (exisdg(&
+                                            zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
+                                            cmp_index_drx&
+                                            )&
+                                            .and.&
+                                            exisdg(&
+                                            zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
+                                            cmp_index_dry&
+                                            )&
+                                            .and.&
+                                            exisdg(&
+                                            zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
+                                            cmp_index_drz&
+                                            )) then
                                             l_rota_3d = .true.
                                             goto 120
                                         endif
                                     enddo
-120                                 continue
+120                                  continue
 !
 ! --------------------------------- Compute linear relations
 !
                                     if (l_rota_3d) then
-                                        call drz13d(mesh, ligrmo, vale_type, nb_node,  &
-                                                    list_node, cmp_index_dx, cmp_index_dy, &
-                                                    cmp_index_dz, cmp_index_drx, cmp_index_dry,&
-                                                    cmp_index_drz, lagr_type, list_rela)
-                                    else
-                                        call drz03d(mesh, vale_type, dist_mini, nb_node, list_node,&
+                                        call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
+                                                    cmp_index_dx, cmp_index_dy, cmp_index_dz,&
+                                                    cmp_index_drx, cmp_index_dry, cmp_index_drz,&
                                                     lagr_type, list_rela)
+                                    else
+                                        call drz03d(mesh, vale_type, dist_mini, nb_node,&
+                                                    list_node, lagr_type, list_rela)
                                     endif
                                 else
                                     ASSERT(.false.)
@@ -332,7 +339,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                 call jedetr(list_node)
                                 call aflrch(list_rela, load)
                             endif
-140                         continue
+140                          continue
                         enddo
                     endif
                 enddo
@@ -351,8 +358,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
         call cescar('&&CAPREC.CES', cabl_sigm, 'G')
     endif
 !
-    call jedetc('V','&&CAPREC.CES',1)
+    call jedetc('V', '&&CAPREC.CES', 1)
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

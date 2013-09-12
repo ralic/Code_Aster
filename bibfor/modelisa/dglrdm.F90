@@ -66,15 +66,15 @@ subroutine dglrdm()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/getvid.h"
-#include "asterc/getvis.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dgelas.h"
 #include "asterfort/dgendo.h"
 #include "asterfort/dgplas.h"
 #include "asterfort/dgseui.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -124,8 +124,7 @@ subroutine dglrdm()
 !
 ! - VARIABLE D IMPRESSION DES PARAMETRES GLRC_DM
     nimpr = 0
-    call getvis(' ', 'INFO', 1, iarg, 1,&
-                impr, ibid1)
+    call getvis(' ', 'INFO', scal=impr, nbret=ibid1)
     if (impr .eq. 2) then
         nimpr = 1
         ifr = 8
@@ -136,16 +135,14 @@ subroutine dglrdm()
     endif
 !
 ! - RELEVE DES CARACTERISTIQUES DU BETON
-    call getvid('BETON', 'MATER', 1, iarg, 1,&
-                mater, ibid)
+    call getvid('BETON', 'MATER', iocc=1, scal=mater, nbret=ibid)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
     nomres(4) = 'AMOR_ALP'
     nomres(5) = 'AMOR_BET'
     k8b = ' '
-    call getvr8('BETON', 'EPAIS', 1, iarg, 1,&
-                h, ibid)
+    call getvr8('BETON', 'EPAIS', iocc=1, scal=h, nbret=ibid)
     r8b = 0.d0
     call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
                 5, nomres, valres, icodr2, 0)
@@ -173,14 +170,11 @@ subroutine dglrdm()
     sytb = valres(1)
 !
 ! - RECUPERATION DU PARAMETRE DE COMPRESSION SAISI PAR L'UTILISATEUR
-    call getvtx(' ', 'COMPR', 1, iarg, 1,&
-                compr, ibid2)
+    call getvtx(' ', 'COMPR', scal=compr, nbret=ibid2)
     if (compr .eq. 'GAMMA') then
-        call getvr8(' ', 'GAMMA_C', 1, iarg, 1,&
-                    gc, ibid1)
+        call getvr8(' ', 'GAMMA_C', scal=gc, nbret=ibid1)
     else if (compr .eq. 'SEUIL') then
-        call getvr8(' ', 'NYC', 1, iarg, 1,&
-                    nyc, ibid1)
+        call getvr8(' ', 'NYC', scal=nyc, nbret=ibid1)
     endif
 !
 ! - CARACTERISATION DES PARAMETRES DE COMPRESSION ENTRES PAR
@@ -196,8 +190,7 @@ subroutine dglrdm()
 !      IF(NNAP .GT. 0) THEN
 !        DO 10, ILIT = 1,NNAP
     ilit = 1
-    call getvid('NAPPE', 'MATER', ilit, iarg, 1,&
-                mater, ibid)
+    call getvid('NAPPE', 'MATER', iocc=ilit, scal=mater, nbret=ibid)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
@@ -230,14 +223,10 @@ subroutine dglrdm()
         sya(ilit) = -1.d0
     endif
 !
-    call getvr8('NAPPE', 'OMX', ilit, iarg, 1,&
-                omx(ilit), ibid)
-    call getvr8('NAPPE', 'OMY', ilit, iarg, 1,&
-                omy(ilit), ibid)
-    call getvr8('NAPPE', 'RX', ilit, iarg, 1,&
-                rx(ilit), ibid)
-    call getvr8('NAPPE', 'RY', ilit, iarg, 1,&
-                ry(ilit), ibid)
+    call getvr8('NAPPE', 'OMX', iocc=ilit, scal=omx(ilit), nbret=ibid)
+    call getvr8('NAPPE', 'OMY', iocc=ilit, scal=omy(ilit), nbret=ibid)
+    call getvr8('NAPPE', 'RX', iocc=ilit, scal=rx(ilit), nbret=ibid)
+    call getvr8('NAPPE', 'RY', iocc=ilit, scal=ry(ilit), nbret=ibid)
     if ((omx(ilit) .ne. omy(ilit)) .or. (rx(ilit) .ne. ry(ilit))) then
         call u2mess('A', 'ALGORITH6_6')
     endif
@@ -261,33 +250,27 @@ subroutine dglrdm()
 ! D'AMORTISSEMENT DE RAYLEIGH
 !
 ! ATTENTION CA NE FONCTIONNE PAS SI ON A PLUSIEURS ARMATURES
-    call getvr8(' ', 'RHO', 1, iarg, 1,&
-                rho, iret)
+    call getvr8(' ', 'RHO', scal=rho, nbret=iret)
     if (iret .eq. 0) then
         rho=rhob + rhoa/h*2.d0*(omx(1)+omy(1))
     endif
-    call getvr8(' ', 'AMOR_ALPHA', 1, iarg, 1,&
-                alpha, ibid1)
+    call getvr8(' ', 'AMOR_ALPHA', scal=alpha, nbret=ibid1)
     if (ibid1 .eq. 0) then
         alpha=amora
     endif
-    call getvr8(' ', 'AMOR_BETA', 1, iarg, 1,&
-                beta, ibid1)
+    call getvr8(' ', 'AMOR_BETA', scal=beta, nbret=ibid1)
     if (ibid1 .eq. 0) then
         beta=amorb
     endif
 !
 ! RECUPERATION DES MOTS CLES "CISAIL", "METHODE_ENDO" et "PENTE"
-    call getvtx(' ', 'PENTE', 1, iarg, 1,&
-                pente, ibid1)
+    call getvtx(' ', 'PENTE', scal=pente, nbret=ibid1)
     if (pente .eq. 'UTIL') then
         ipente = 3
 ! - RECUPERATION DE LA DEFORMATION MAXIMALE EN MEMBRANE (EPSI_MAX_M)
 ! - RECUPERATION DE LA DEFORMATION MAXIMALE EN FLEXION (COUR_MAX_F)
-        call getvr8(' ', 'EPSI_MEMB', 1, iarg, 1,&
-                    emaxm, ibid1)
-        call getvr8(' ', 'KAPPA_FLEX', 1, iarg, 1,&
-                    emaxf, ibid1)
+        call getvr8(' ', 'EPSI_MEMB', scal=emaxm, nbret=ibid1)
+        call getvr8(' ', 'KAPPA_FLEX', scal=emaxf, nbret=ibid1)
     else if (pente .eq. 'PLAS_ACIER') then
         if (sya(ilit) .le. 0.d0) call u2mess('F', 'ALGORITH6_11')
         ipente = 2
@@ -295,16 +278,14 @@ subroutine dglrdm()
         ipente = 1
     endif
 !
-    call getvtx(' ', 'CISAIL', 1, iarg, 1,&
-                cisail, ibid2)
+    call getvtx(' ', 'CISAIL', scal=cisail, nbret=ibid2)
     if (cisail .eq. 'OUI') then
         icisai = 1
     else
         icisai = 0
     endif
 !
-    call getvtx(' ', 'METHODE_ENDO', 1, iarg, 1,&
-                mendom, ibid3)
+    call getvtx(' ', 'METHODE_ENDO', scal=mendom, nbret=ibid3)
     if (mendom(1:10) .eq. 'ENDO_NAISS') then
         iendo=1
     else if (mendom(1:8) .eq. 'ENDO_LIM') then
