@@ -20,7 +20,7 @@ def C_COMP_INCR(COMMAND=None) :  #COMMUN#
     if COMMAND !='CALC_EUROPLEXUS':
         mcfact = FACT(statut='f',min=1,max='**',
 
-           RELATION  =SIMP( statut='o',typ='TXM',defaut="ELAS",into=C_RELATION()),
+           RELATION  =SIMP( statut='o',typ='TXM',defaut="ELAS",into=C_RELATION('COMP_INCR')),
            b_monox     = BLOC(condition = "RELATION == 'MONOCRISTAL' ",
                                  fr="SD issue de DEFI_COMPOR",
                    COMPOR =SIMP(statut='o',typ=compor_sdaster,max=1),),

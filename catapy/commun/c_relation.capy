@@ -16,8 +16,11 @@
 # ======================================================================
 # person_in_charge: jean-michel.proix@edf.fr
 #
-def C_RELATION() : return (             "ELAS",            #COMMUN#
-
+def C_RELATION( COMMAND ) : 
+    assert COMMAND in ('COMP_INCR','DEFI_COMPOR')
+    
+    if COMMAND =='COMP_INCR' :
+                   return (             "ELAS",            #COMMUN#
                                         "ARME",
                                         "ASSE_CORN",
                                         "BARCELONE",
@@ -162,4 +165,23 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "ZMAT",
                                         "UMAT",
                                         "MFRONT",
+                                     )
+    elif COMMAND =='DEFI_COMPOR' :
+                   return (             "ELAS",  #uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
+                                        "BETON_UMLV_FP",
+                                        "BETON_DOUBLE_DP",
+                                        "CORR_ACIER",
+                                        "GRANGER_FP",
+                                        "GRANGER_FP_V",
+                                        "GRANGER_FP_INDT",
+                                        "GRAN_IRRA_LOG",
+                                        "LABORD_1D",
+                                        "MAZARS_GC",
+                                        "VISC_IRRA_LOG",
+                                        "VMIS_CINE_GC",
+                                        "VMIS_CINE_LINE",
+                                        "VMIS_ISOT_CINE",
+                                        "VMIS_ISOT_LINE",
+                                        "VMIS_ISOT_TRAC",
+                                        "VMIS_ISOT_PUIS",
                                      )
