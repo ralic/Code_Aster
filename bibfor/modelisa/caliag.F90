@@ -184,8 +184,7 @@ subroutine caliag(fonrez, chargz)
         call jeecra(jexnum(nomdd1, iocc), 'LONMAX', nddl1)
         call jeveuo(jexnum(nomdd1, iocc), 'E', iddl1)
         call jeecra(jexnum(nomdd1, iocc), 'LONUTI', nddl1)
-        call getvtx(motfac, 'DDL_1', iocc=iocc, nbval=nddl1, vect=zk8(iddl1),&
-                    nbret=nddl1)
+        call getvtx(motfac, 'DDL_1', iocc=iocc, nbval=nddl1, vect=zk8(iddl1))
         do k = 1, nddl1
             call lxcaps(zk8(iddl1-1+k))
             call lxcadr(zk8(iddl1-1+k))
@@ -194,8 +193,7 @@ subroutine caliag(fonrez, chargz)
         call jecroc(jexnum(coef1, iocc))
         call jeecra(jexnum(coef1, iocc), 'LONMAX', nddl1)
         call jeveuo(jexnum(coef1, iocc), 'E', imult1)
-        call getvr8(motfac, 'COEF_MULT_1', iocc=iocc, nbval=nddl1, vect=zr(imult1),&
-                    nbret=nddl1)
+        call getvr8(motfac, 'COEF_MULT_1', iocc=iocc, nbval=nddl1, vect=zr(imult1))
 !
 ! --- CAS DE DNOR : ON VA GENERE UNE LIAISON SUR DX,DY DZ POUR ---
 ! --- CHAQUE COUPLE DE LA LIST(UN GREL PAR COUPLE)             ---
@@ -224,8 +222,7 @@ subroutine caliag(fonrez, chargz)
         call jeecra(jexnum(nomdd2, iocc), 'LONMAX', nddl2)
         call jeveuo(jexnum(nomdd2, iocc), 'E', iddl2)
         call jeecra(jexnum(nomdd2, iocc), 'LONUTI', nddl2)
-        call getvtx(motfac, 'DDL_2', iocc=iocc, nbval=nddl2, vect=zk8(iddl2),&
-                    nbret=nddl2)
+        call getvtx(motfac, 'DDL_2', iocc=iocc, nbval=nddl2, vect=zk8(iddl2))
         do k = 1, nddl2
             call lxcaps(zk8(iddl2-1+k))
             call lxcadr(zk8(iddl2-1+k))
@@ -234,8 +231,7 @@ subroutine caliag(fonrez, chargz)
         call jecroc(jexnum(coef2, iocc))
         call jeecra(jexnum(coef2, iocc), 'LONMAX', nddl2)
         call jeveuo(jexnum(coef2, iocc), 'E', imult2)
-        call getvr8(motfac, 'COEF_MULT_2', iocc=iocc, nbval=nddl2, vect=zr(imult2),&
-                    nbret=nddl2)
+        call getvr8(motfac, 'COEF_MULT_2', iocc=iocc, nbval=nddl2, vect=zr(imult2))
         if ((nddl2.eq.1) .and. (zk8(iddl2).eq.'DNOR')) then
             if (.not.dnor) call u2mess('F', 'MODELISA2_94')
         endif

@@ -55,13 +55,13 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     character(len=24) :: temddl, temidc
     character(len=24) :: valk
     character(len=80) :: kar80
-    integer :: icod(nbec)
+    integer :: nbec, icod(nbec)
     logical :: ok, okg
     integer :: iarg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, iec, ioc, iopt, j, llncmp
-    integer :: ltddl, ltidec, nbcmp, nbec, nbval, numgd
+    integer :: ltddl, ltidec, nbcmp, nbval, numgd
 !-----------------------------------------------------------------------
     data okg/.false./
 !-----------------------------------------------------------------------

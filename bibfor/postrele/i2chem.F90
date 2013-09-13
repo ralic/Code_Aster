@@ -96,8 +96,7 @@ subroutine i2chem(nomail, nbparm)
     if (n1 .ne. 0) then
         n1 = -n1
         call wkvect('&&OP0050.MAILLE', 'V V K8', n1, jmail)
-        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail),&
-                    nbret=n1)
+        call getvtx('DEFI_CHEMIN', 'MAILLE', iocc=occ, nbval=n1, vect=zk8(jmail))
         do 10,im = 1,n1,1
         nomma = zk8(jmail+im-1)
         call jeexin(jexnom(nommai, nomma), existe)
@@ -127,8 +126,7 @@ subroutine i2chem(nomail, nbparm)
     if (n2 .ne. 0) then
         n2 = -n2
         call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
-        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24( jgrma),&
-                    nbret=n2)
+        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24(jgrma))
         do 30,ig = 1,n2,1
         nomgr = zk24(jgrma+ig-1)
         call jenonu(jexnom(grpmai, nomgr), existe)
@@ -180,8 +178,7 @@ subroutine i2chem(nomail, nbparm)
     else
         n2 = -n2
         call wkvect('&&OP0050.GROUP_MA', 'V V K24', n2, jgrma)
-        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24( jgrma),&
-                    nbret=n2)
+        call getvtx('DEFI_CHEMIN', 'GROUP_MA', iocc=occ, nbval=n2, vect=zk24(jgrma))
         do 70,ig = 1,n2,1
         nomgr = zk24(jgrma+ig-1)
         call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)

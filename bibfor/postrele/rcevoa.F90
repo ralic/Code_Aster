@@ -81,6 +81,7 @@ subroutine rcevoa(typtab, nommat)
     data typard / 'R', 'R' /
 ! DEB ------------------------------------------------------------------
     call jemarq()
+    r8b = 0.d0
 !
     motclf = 'TRANSITOIRE'
     call getfac(motclf, nbtran)

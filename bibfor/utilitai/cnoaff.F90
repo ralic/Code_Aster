@@ -119,8 +119,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
         nbcmp=-nbcmp
         ASSERT(nbcmp.gt.0)
         call wkvect('&&CNOAFF.LISTE_COMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
-                    nbret=nbcmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp))
         do 21 i = 1, nbcmp
             call vericp(zk8(jcmpmx), zk8(jcmp+i-1), ncmpmx, iret)
             if (iret .ne. 0) then
@@ -147,8 +146,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
         call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=ncmp)
         ncmp=-ncmp
         call wkvect('&&CNOAFF.TMP', 'V V K8', ncmp, jtmp)
-        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jtmp),&
-                    nbret=ncmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jtmp))
         if (iocc .eq. 1) then
             do 31 i = 1, ncmp
                 zk8(jcmpt+i-1)=zk8(jtmp+i-1)
@@ -221,8 +219,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
         ncmp=-ncmp
         call jedetr('&&CNOAFF.CMP_IOCC')
         call wkvect('&&CNOAFF.CMP_IOCC', 'V V K8', ncmp, jcmp)
-        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jcmp),&
-                    nbret=ncmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jcmp))
 !
 !  --    VALEURS
 !        -------
@@ -240,8 +237,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbvar=-nbvar
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V R', nbvar, jval)
-            call getvr8('AFFE', 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jval),&
-                        nbret=nbvar)
+            call getvr8('AFFE', 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jval))
             do 52 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
@@ -278,8 +274,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbvac=-nbvac
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V C', nbvac, jval)
-            call getvc8('AFFE', 'VALE_C', iocc=iocc, nbval=nbvac, vect=zc(jval),&
-                        nbret=nbvac)
+            call getvc8('AFFE', 'VALE_C', iocc=iocc, nbval=nbvac, vect=zc(jval))
             do 56 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)
@@ -297,8 +292,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
             nbvak=-nbvak
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V K8', nbvak, jval)
-            call getvid('AFFE', 'VALE_F', iocc=iocc, nbval=nbvak, vect=zk8(jval),&
-                        nbret=nbvak)
+            call getvid('AFFE', 'VALE_F', iocc=iocc, nbval=nbvak, vect=zk8(jval))
             do 58 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
                 ASSERT(icmp.gt.0)

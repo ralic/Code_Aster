@@ -222,10 +222,8 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 n2 = -n2
                 nbcmp = n1+n2
                 call wkvect('&&OP0051.NOMCMP.USER', 'V V K8', nbcmp, ancpu1)
-                call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=n1, vect=zk8(ancpu1),&
-                            nbret=n1)
-                call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=n2, vect=zk8( ancpu1+n1),&
-                            nbret=n2)
+                call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=n1, vect=zk8(ancpu1))
+                call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=n2, vect=zk8(ancpu1+n1))
             endif
             if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
                 call utcmp2(granch, 'ACTION', iocc, 50, nomcp,&

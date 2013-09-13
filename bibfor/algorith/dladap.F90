@@ -60,7 +60,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 !
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 #include "asterc/etausr.h"

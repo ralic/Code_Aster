@@ -74,8 +74,7 @@ subroutine op0094()
     do 110 i = 1, nbhist
         call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=0, nbret=nbval)
         nbval = -nbval
-        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=nbval, vect=zr(jvale),&
-                    nbret=nbval)
+        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=nbval, vect=zr(jvale))
         call tbajli(nomtrc, 8, noparr, ibid, zr(jvale),&
                     c16b, k8b, 0)
         xnbv = dble(( nbval - 8 ) / 4 )
@@ -86,8 +85,7 @@ subroutine op0094()
     do 120 i = 1, nbhist
         call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=0, nbret=nbval)
         nbval = -nbval
-        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=nbval, vect=zr(jvale),&
-                    nbret=nbval)
+        call getvr8('HIST_EXP', 'VALE', iocc=i, nbval=nbval, vect=zr(jvale))
         nbv = ( nbval - 8 ) / 4
         do 122 j = 1, nbv
             ind = jvale + 8 + 4*(j-1)

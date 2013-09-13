@@ -170,9 +170,9 @@ subroutine op0191()
                             exicoq, iret)
                 if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
                     ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
-                    ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) call u2mess(&
-                                                                               'F',&
-                                                                               'ALGORITH3_7')
+                    ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) then
+                    call u2mess('F', 'ALGORITH3_7')
+                endif
             endif
 !
 ! ----- RECUPERATION DE LA NATURE DES CHAMPS

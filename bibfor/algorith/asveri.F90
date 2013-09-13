@@ -16,7 +16,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 #include "asterfort/vrnoli.h"
 #include "asterfort/vrrefe.h"
     integer :: ndir(*), nordr(*), nsupp(*)
-    integer :: vali
+    integer :: vali, nbsup
     character(len=*) :: knomsy(*), meca, psmo, stat, nomsup(nbsup, *)
     logical :: tronc, monoap
 !     ------------------------------------------------------------------
@@ -64,7 +64,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 !-----------------------------------------------------------------------
     integer :: ib, ibid, id, ier, im, in, inum
     integer :: iordr, iret, irt, irt1, irt2, is, nbmode
-    integer :: nbopt, nbsup, nbtrou, ns
+    integer :: nbopt, nbtrou, ns
     real(kind=8) :: r8b, rb
 !-----------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /

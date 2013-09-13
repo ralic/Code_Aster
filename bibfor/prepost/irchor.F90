@@ -260,8 +260,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
         else if (nnpara.ne.0) then
             nparam = -nnpara
             call wkvect('&&IRCHOR.NOMUTI_PARA', 'V V K16', nparam, jpa)
-            call getvtx('RESU', 'NOM_PARA', iocc=ioccur, nbval=nparam, vect=zk16( jpa),&
-                        nbret=nparam)
+            call getvtx('RESU', 'NOM_PARA', iocc=ioccur, nbval=nparam, vect=zk16(jpa))
         endif
     endif
 !

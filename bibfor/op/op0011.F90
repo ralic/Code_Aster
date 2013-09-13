@@ -93,7 +93,7 @@ subroutine op0011()
 !
 !
     nbmat = -nbmat
-    call getvid(' ', 'MATR_RIGI', nbval=nbmat, vect=tlimat, nbret=nbmat)
+    call getvid(' ', 'MATR_RIGI', nbval=nbmat, vect=tlimat)
     call wkvect('&&OP001_LIST_MATEL', 'V V K24', nbmat, imatel)
     do 10 il = 1, nbmat
         zk24(imatel+il-1)=tlimat(il)

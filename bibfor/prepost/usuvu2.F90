@@ -41,6 +41,7 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
 #include "asterfort/usukwu.h"
 #include "asterfort/usupu2.h"
     real(kind=8) :: vusur(*), temps(*), para(7), fn(*), vg(*), coef(*), ang(*)
+    integer :: nbinst, nbpair
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
     real(kind=8) :: pus(*), pmoye, pourpu(*), poupre(*)
     character(len=8) :: k8b
@@ -49,7 +50,7 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ifires, iret, isupp, n1, n2
-    integer :: n3, n4, n5, n6, nbinst, nbpair, nbpt
+    integer :: n3, n4, n5, n6, nbpt
     integer :: nn
     real(kind=8) :: puusu2, puusur, t, v0, w, x1, xa
     real(kind=8) :: xb, xd, xn, xs

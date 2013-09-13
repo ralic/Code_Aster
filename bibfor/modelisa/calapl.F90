@@ -115,12 +115,10 @@ subroutine calapl(char, ligrmo, noma)
         ntra = -ntra
         nsym = -nsym
         if (ntra .ne. 0) then
-            call getvr8(motclf, 'TRANS', iocc=iocc, nbval=ntra, vect=zr(jtran),&
-                        nbret=ntra)
+            call getvr8(motclf, 'TRANS', iocc=iocc, nbval=ntra, vect=zr(jtran))
         endif
         if (nsym .ne. 0) then
-            call getvr8(motclf, 'SYME', iocc=iocc, nbval=nsym, vect=zr(jtran),&
-                        nbret=nsym)
+            call getvr8(motclf, 'SYME', iocc=iocc, nbval=nsym, vect=zr(jtran))
         endif
 !
 ! ------ GEOMETRIE DU CONDUCTEUR SECONDAIRE

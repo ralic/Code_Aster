@@ -12,6 +12,7 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nommat
+    integer :: neq
     integer :: hcol(*), adia(*), ablo(*)
     complex(kind=8) :: xsol (neq, *)
 !     ------------------------------------------------------------------
@@ -102,7 +103,7 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadia, ibloc, ide, iderbl, iequa, ilong
-    integer :: isol, ixx, ldiag, lmat, nbbloc, nbsol, neq
+    integer :: isol, ixx, ldiag, lmat, nbbloc, nbsol
 !
 !-----------------------------------------------------------------------
     data  ualf  /'                   .UALF'/

@@ -134,20 +134,15 @@ subroutine caraff(noma, gran, base, cartz)
         else
             nbcmp = -nbcmp
             nbvar = -nbvar
-            call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jncmp),&
-                        nbret=nbcmp)
+            call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jncmp))
             if (tsca .eq. 'R') then
-                call getvr8(motclf, 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jvalv),&
-                            nbret=nbvar)
+                call getvr8(motclf, 'VALE', iocc=iocc, nbval=nbvar, vect=zr(jvalv))
             else if (tsca.eq.'I') then
-                call getvis(motclf, 'VALE_I', iocc=iocc, nbval=nbvar, vect=zi( jvalv),&
-                            nbret=nbvar)
+                call getvis(motclf, 'VALE_I', iocc=iocc, nbval=nbvar, vect=zi(jvalv))
             else if (tsca.eq.'C') then
-                call getvc8(motclf, 'VALE_C', iocc=iocc, nbval=nbvar, vect=zc( jvalv),&
-                            nbret=nbvar)
+                call getvc8(motclf, 'VALE_C', iocc=iocc, nbval=nbvar, vect=zc(jvalv))
             else if (tsca.eq.'K8') then
-                call getvid(motclf, 'VALE_F', iocc=iocc, nbval=nbvar, vect=zk8( jvalv),&
-                            nbret=nbvar)
+                call getvid(motclf, 'VALE_F', iocc=iocc, nbval=nbvar, vect=zk8(jvalv))
             endif
         endif
 !

@@ -41,7 +41,7 @@ subroutine op0178()
     integer :: resume, sommi, lonuti, lonmax, ni
     real(kind=8) :: sommr
     character(len=3) :: type
-    character(len=8) :: kbid, format, typtes
+    character(len=8) :: kbid, form0, typtes
     character(len=10) :: formr, preci
     character(len=19) :: nomsd
     character(len=24) :: nomfi, obj
@@ -50,7 +50,7 @@ subroutine op0178()
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialico, ialiob, ibid, ico, ific, iret
+    integer :: i, ialico, ialiob, ico, ific, iret
     integer :: n1, nbobj, nbval, nco
 !-----------------------------------------------------------------------
     call jemarq()
@@ -67,22 +67,22 @@ subroutine op0178()
         call ulopen(ific, ' ', nomfi, 'NEW', 'O')
     endif
 !
-    format = 'ASTER'
-    call getvtx(' ', 'FORMAT', scal=format, nbret=ibid)
+    form0 = 'ASTER'
+    call getvtx(' ', 'FORMAT', scal=form0)
 !
-    call getvtx(' ', 'FORMAT_R', scal=formr, nbret=ibid)
-    call getvtx(' ', 'PREC_R', scal=preci, nbret=ibid)
-    call getvtx(' ', 'TYPE_TEST', scal=typtes, nbret=ibid)
+    call getvtx(' ', 'FORMAT_R', scal=formr)
+    call getvtx(' ', 'PREC_R', scal=preci)
+    call getvtx(' ', 'TYPE_TEST', scal=typtes)
 !
 ! ---- FORMAT TEST_RESU / STANDARD
 !
-    if (format .eq. 'ASTER') then
+    if (form0 .eq. 'ASTER') then
         call getvid(' ', 'CO', nbval=0, nbret=n1)
         nco =-n1
         call wkvect('&&OP0178.LCO', 'V V K8', nco, ialico)
-        call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico), nbret=ibid)
+        call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico))
 !
-        do 100 ico = 1, nco
+        do ico = 1, nco
             nomsd = zk8(ialico+ico-1)(1:8)//'           '
 !
             call exisd('RESULTAT', nomsd, iret)
@@ -108,12 +108,17 @@ subroutine op0178()
                 call engtcn(ific, nomsd, typtes, preci, formr)
                 goto 100
             endif
-100      continue
+100         continue
+        end do
         call jedetr('&&OP0178.LCO')
 !
 ! ---- FORMAT TEST_RESU / OBJET
 !
     else
+!
+        form1 = "('_F(NOM=''', A24, ''', VALE_CALC=', " //formr//&
+            ", ',TOLE_MACHINE="//preci(1:lxlgut(preci)) //"),')"
+902     format('_F(NOM=''',A24,''',VALE_CALC_I=',i15,',TOLE_MACHINE=0.,),')
 !
 !     -- CAS : TOUT:'OUI'
 !    -----------------------------------------
@@ -134,16 +139,9 @@ subroutine op0178()
                 if (iret .eq. 0) then
 !             -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
                     if ((type.eq.'R') .or. (type.eq.'C')) then
-                        form1 = '(&
-                                ''_F(&
-                                NOM='''''', A24, '''''', VALE_CALC='', '  //formr//', '',&
-                                TOLE_MACHINE=' //preci(1:lxlgut(preci)) //'&
-                                ),&
-                                ''&
-                                )'
                         write (ific,form1) obj,sommr
                     else if (type.eq.'I') then
-                        write (ific,1003) obj,sommi
+                        write (ific,902) obj,sommi
                     endif
                 endif
 10          continue
@@ -155,7 +153,7 @@ subroutine op0178()
         if (n1 .lt. 0) then
             nco = -n1
             call wkvect('&&OP0178.LCO', 'V V K8', nco, ialico)
-            call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico), nbret=ibid)
+            call getvid(' ', 'CO', nbval=nco, vect=zk8(ialico))
 !
             do 30 ico = 1, nco
                 call jelstc('G', zk8(ialico-1+ico), 1, 0, kbid,&
@@ -173,16 +171,9 @@ subroutine op0178()
                     if (iret .eq. 0) then
 !               -- TEST_RESU/VALE_CALC_I (OU VALE_CALC) :
                         if ((type.eq.'R') .or. (type.eq.'C')) then
-                            form1 = '(&
-                                    ''_F(&
-                                    NOM='''''', A24, '''''', VALE_CALC='', ' //formr// ', '',&
-                                    TOLE_MACHINE='//preci(1:lxlgut(preci)) //'&
-                                    ),&
-                                    ''&
-                                    )'
                             write (ific,form1) obj,sommr
                         else if (type.eq.'I') then
-                            write (ific,1003) obj,sommi
+                            write (ific,902) obj,sommi
                         endif
                     endif
 20              continue
@@ -193,8 +184,5 @@ subroutine op0178()
 !
 !
     call jedema()
-!
-    1003 format ('_F(NOM=''',A24,''',VALE_CALC_I=',i15,'&
-     &       ,TOLE_MACHINE=0.,),')
 !
 end subroutine

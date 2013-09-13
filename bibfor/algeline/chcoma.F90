@@ -91,8 +91,7 @@ subroutine chcoma(tablez, nomaou)
     call getvtx('REPERE', 'GROUP_MA', iocc=1, nbval=0, nbret=ngm)
     if (ngm .ne. 0) then
         ngm = 1
-        call getvtx('REPERE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma,&
-                    nbret=ngm)
+        call getvtx('REPERE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma)
         noma=nogrma
         iret=0
     else

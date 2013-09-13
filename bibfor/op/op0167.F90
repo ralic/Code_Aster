@@ -132,8 +132,7 @@ subroutine op0167()
         if (nch .lt. 0) then
             nch=-nch
             call wkvect('&&OP0167.NOMCHAMP', 'V V K16', nch, icham)
-            call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=nch, vect=zk16(icham),&
-                        nbret=nch)
+            call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=nch, vect=zk16(icham))
         else
             icham=1
         endif

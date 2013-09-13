@@ -60,7 +60,7 @@ subroutine op0013()
     call jecreo(vecas//'.LI2VECEL', 'V V K8 ')
     call jeecra(vecas//'.LI2VECEL', 'LONMAX', nbvec)
     call jeveuo(vecas//'.LI2VECEL', 'E', ilivec)
-    call getvid(' ', 'VECT_ELEM', nbval=nbvec, vect=zk8(ilivec), nbret=nbvec)
+    call getvid(' ', 'VECT_ELEM', nbval=nbvec, vect=zk8(ilivec))
     call gettco(zk8(ilivec), typv)
     if (typv(16:16) .eq. 'R') type=1
     if (typv(16:16) .eq. 'C') type=2

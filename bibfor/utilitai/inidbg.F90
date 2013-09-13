@@ -59,7 +59,7 @@ subroutine inidbg()
 !        -- ON IMPRIME UNIQUEMENT CE QUI EST DEMANDE --
         n=-n
         call wkvect('&&INIDBG', 'V V K16', n, jdbg)
-        call getvtx(' ', 'INFO_DBG', nbval=n, vect=zk16(jdbg), nbret=n)
+        call getvtx(' ', 'INFO_DBG', nbval=n, vect=zk16(jdbg))
         do 10 i = 1, n
             if (zk16(jdbg+i-1)(1:7) .eq. 'CONTACT') then
                 czcont='CONTACT'

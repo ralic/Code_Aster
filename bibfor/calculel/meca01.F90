@@ -44,7 +44,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !              2 : PROBLEMES DE RESULTATS
 ! ----------------------------------------------------------------------
 !
-! aslint: disable=W1501
     implicit none
 !
 !     --- ARGUMENTS ---

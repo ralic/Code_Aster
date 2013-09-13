@@ -115,8 +115,7 @@ subroutine asenap(masse)
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', nc)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
-            call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=nc, vect=zi(jcas),&
-                        nbret=nc)
+            call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=nc, vect=zi(jcas))
             ncas =ncas+nc
         endif
 10  end do

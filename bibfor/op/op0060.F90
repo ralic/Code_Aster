@@ -195,7 +195,7 @@ subroutine op0060()
         call getvr8(' ', 'FREQ', nbval=0, nbret=nbfreq)
         nbfreq = - nbfreq
         call wkvect(baseno//'.LISTE.FREQ', 'V V R', nbfreq, lfreq)
-        call getvr8(' ', 'FREQ', nbval=nbfreq, vect=zr(lfreq), nbret=nbfreq)
+        call getvr8(' ', 'FREQ', nbval=nbfreq, vect=zr(lfreq))
     endif
 !
 ! --- NOM DES CHAMPS CALCULES

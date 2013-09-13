@@ -109,8 +109,7 @@ subroutine pecapo(resu, modele, cara, nh)
         call getvtx('CARA_POUTRE', 'GROUP_MA', iocc=1, nbval=0, nbret=ngm)
         if (ngm .ne. 0) then
             ngm = 1
-            call getvtx('CARA_POUTRE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma,&
-                        nbret=ngm)
+            call getvtx('CARA_POUTRE', 'GROUP_MA', iocc=1, nbval=ngm, vect=nogrma)
             noma=nogrma
             call getvr8('CARA_POUTRE', 'LONGUEUR', iocc=1, scal=hh, nbret=n1)
             call getvtx('CARA_POUTRE', 'LIAISON', iocc=1, scal=ll, nbret=n1)

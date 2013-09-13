@@ -23,7 +23,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1306,W1504
+! aslint: disable=W1504
     implicit none
 !
 !-----------------------------------------------------------------------

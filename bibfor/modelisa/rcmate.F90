@@ -73,8 +73,7 @@ subroutine rcmate(chmat, nomail, nomode)
         call getvid('AFFE', 'MATER', iocc=i, scal=nommat, nbret=nm)
         if (nm .lt. -1) nm = -nm
         ASSERT(nm.le.nbcmp)
-        call getvid('AFFE', 'MATER', iocc=i, nbval=nm, vect=zk8(jvalv),&
-                    nbret=nm)
+        call getvid('AFFE', 'MATER', iocc=i, nbval=nm, vect=zk8(jvalv))
         call getvtx('AFFE', 'TOUT', iocc=i, scal=oui, nbret=nt)
         if (nt .ne. 0) then
             call nocart(chamat, 1, k8b, k8b, 0,&
