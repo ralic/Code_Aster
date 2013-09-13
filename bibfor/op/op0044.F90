@@ -67,8 +67,7 @@ subroutine op0044()
 #include "asterfort/mtdscr.h"
 #include "asterfort/omega2.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vp1pro.h"
 #include "asterfort/vpcntl.h"
 #include "asterfort/vpcrea.h"
@@ -236,7 +235,7 @@ subroutine op0044()
         if (nbmod .lt. 2) then
             valk(1) = optiof
             valk(2) = typevp
-            call u2mesk('E', 'ALGELINE2_52', 2, valk)
+            call utmess('E', 'ALGELINE2_52', nk=2, valk=valk)
         else
             call wkvect(cborne, 'V V R', nbmod, lborne)
             if (nfreq .ne. 0) then
@@ -254,14 +253,16 @@ subroutine op0044()
         call getvr8('CALC_'//typevp, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=na1)
     endif
     namorr = na1
-    if ((lamor.eq.0) .and. (namorr.ne.0)) call u2mess('E', 'ALGELINE2_55')
+    if ((lamor.eq.0) .and. (namorr.ne.0)) then
+        call utmess('E', 'ALGELINE2_55')
+    endif
     if ((lamor.ne.0) .and. (namorr.ne.0) .and. (optiof.ne.'PROCHE')) then
-        call u2mess('E', 'ALGELINE2_56')
+        call utmess('E', 'ALGELINE2_56')
     endif
     if (optiof .eq. 'PROCHE') then
         call getvr8('CALC_'//typevp, typevp, iocc=1, nbval=0, nbret=nfreqr)
         if ((namorr.ne.0) .and. (namorr.ne.nfreqr)) then
-            call u2mess('E', 'ALGELINE2_57')
+            call utmess('E', 'ALGELINE2_57')
         endif
     endif
 !
@@ -277,13 +278,13 @@ subroutine op0044()
     if (iret .gt. 0) then
         valk(1) = raide
         valk(2) = masse
-        call u2mesk('F', 'ALGELINE2_58', 2, valk)
+        call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
     endif
     if (lamor .ne. 0) call vrrefe(masse, amor, iret)
     if (iret .gt. 0) then
         valk(1) = amor
         valk(2) = masse
-        call u2mesk('F', 'ALGELINE2_58', 2, valk)
+        call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
     endif
 !
 !
@@ -302,7 +303,9 @@ subroutine op0044()
     call jeveuo(solveu//'.SLVI', 'L', islvi)
     metres=zk24(islvk)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
-        (metres(1:5).ne.'MUMPS')) call u2mess('F', 'ALGELINE5_71')
+        (metres(1:5).ne.'MUMPS')) then
+        call utmess('F', 'ALGELINE5_71')
+    endif
 !
 !     --- CREATION DE LA MATRICE DYNAMIQUE ---
     typer = 'R'
@@ -329,11 +332,11 @@ subroutine op0044()
 !     TEST DE STURM
     if ((zi(lmasse+3).ne.1) .or. (zi(lmasse+4).ne.1)) then
         valk(1)=masse
-        call u2mesk('F', 'ALGELINE3_48', 1, valk)
+        call utmess('F', 'ALGELINE3_48', sk=valk(1))
     endif
     if ((zi(lraide+3).ne.1) .or. (zi(lraide+4).ne.1)) then
         valk(1)=raide
-        call u2mesk('F', 'ALGELINE3_48', 1, valk)
+        call utmess('F', 'ALGELINE3_48', sk=valk(1))
     endif
 !     ------------------------------------------------------------------
 !
@@ -375,7 +378,7 @@ subroutine op0044()
             if (zr(lborne+ifreq) .lt. 0.d0) ierfr = ierfr + 1
  4      continue
         if (ierfr .gt. 0) then
-            call u2mesk('A', 'ALGELINE2_59', 1, typevp)
+            call utmess('A', 'ALGELINE2_59', sk=typevp)
         endif
 !
     endif
@@ -523,7 +526,7 @@ subroutine op0044()
 !
 !
         else
-            call u2mess('F', 'ALGELINE2_62')
+            call utmess('F', 'ALGELINE2_62')
         endif
 !
 !        --- CAS QUADRATIQUE ---

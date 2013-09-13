@@ -19,15 +19,15 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: numini, numfin, nbtemp
     logical :: linsti
@@ -112,7 +112,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
         if (instin .ge. zr(jtemps+1)) then
             valr(1) = instin
             valr(2) = zr(jtemps+1)
-            call u2mesr('F', 'DISCRETISATION_2', 2, valr)
+            call utmess('F', 'DISCRETISATION_2', nr=2, valr=valr)
         endif
     endif
 !

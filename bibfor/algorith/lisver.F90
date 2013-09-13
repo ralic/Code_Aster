@@ -17,7 +17,7 @@ subroutine lisver(lischa)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -27,7 +27,7 @@ subroutine lisver(lischa)
 #include "asterfort/lislco.h"
 #include "asterfort/lislta.h"
 #include "asterfort/lisnnb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------
@@ -86,13 +86,13 @@ subroutine lisver(lischa)
 !
         if (lelim) then
             if (typapp .eq. 'SUIV') then
-                call u2mesk('F', 'CHARGES5_7', 1, charge)
+                call utmess('F', 'CHARGES5_7', sk=charge)
             endif
             if (typapp .eq. 'DIDI') then
-                call u2mesk('F', 'CHARGES5_8', 1, charge)
+                call utmess('F', 'CHARGES5_8', sk=charge)
             endif
             if (typapp .eq. 'FIXE_PILO') then
-                call u2mesk('F', 'CHARGES5_9', 1, charge)
+                call utmess('F', 'CHARGES5_9', sk=charge)
             endif
         endif
 !
@@ -100,7 +100,7 @@ subroutine lisver(lischa)
 !
         if (ldual) then
             if (typapp .eq. 'SUIV') then
-                call u2mesk('F', 'CHARGES5_10', 1, charge)
+                call utmess('F', 'CHARGES5_10', sk=charge)
             endif
         endif
 !
@@ -108,7 +108,7 @@ subroutine lisver(lischa)
 !
         if (levoc) then
             if (typapp .eq. 'FIXE_PILO') then
-                call u2mesk('F', 'CHARGES5_11', 1, charge)
+                call utmess('F', 'CHARGES5_11', sk=charge)
             endif
         endif
 !
@@ -117,13 +117,13 @@ subroutine lisver(lischa)
         if (typapp .eq. 'FIXE_PILO') then
             lfont = liscft(lischa,ichar )
             if (lfont) then
-                call u2mesk('F', 'CHARGES5_12', 1, charge)
+                call utmess('F', 'CHARGES5_12', sk=charge)
             endif
         endif
 !
 10  continue
 !
-999 continue
+999  continue
 !
     call jedema()
 end subroutine

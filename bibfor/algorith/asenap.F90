@@ -21,8 +21,7 @@ subroutine asenap(masse)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: masse
@@ -60,7 +59,7 @@ subroutine asenap(masse)
     integer :: ncas, nocas, ns, nt, nucas, nx, ny, nz
     real(kind=8) :: dx, dy, dz, epsima
     character(len=4) :: ctyp
-    character(len=8) ::  resu, noma
+    character(len=8) :: resu, noma
     character(len=8) :: knum, kdir, stat, motcle(2), tymocl(2)
     character(len=15) :: motfac
     character(len=16) :: concep, nomcmd, mesnoe
@@ -96,7 +95,7 @@ subroutine asenap(masse)
         if (nt .ne. 0) then
             call getfac('DEPL_MULT_APPUI', ncas)
             if (ncas .lt. 2) then
-                call u2mess('F', 'SEISME_21')
+                call utmess('F', 'SEISME_21')
             endif
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
@@ -109,7 +108,7 @@ subroutine asenap(masse)
             call getvis(motfac, 'LIST_CAS', iocc=iocc, nbval=0, nbret=nc)
             nc=-nc
             if (nc .lt. 2) then
-                call u2mess('F', 'SEISME_22')
+                call utmess('F', 'SEISME_22')
             endif
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
             call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', nc)
@@ -195,7 +194,7 @@ subroutine asenap(masse)
                 ier = ier + 1
                 valk(1) = noref
                 valk(2) = noma
-                call u2mesk('E', 'SEISME_1', 2, valk)
+                call utmess('E', 'SEISME_1', nk=2, valk=valk)
                 goto 9999
             endif
 !
@@ -242,7 +241,9 @@ subroutine asenap(masse)
     call jedetr(mesnoe)
 !
 9999  continue
-    if (ier .ne. 0) call u2mess('F', 'SEISME_6')
+    if (ier .ne. 0) then
+        call utmess('F', 'SEISME_6')
+    endif
 !
     call jedema()
 end subroutine

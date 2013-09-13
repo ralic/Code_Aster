@@ -22,7 +22,7 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
 !
 #include "asterfort/getvr8.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: fn(*), vg(*), para(*)
 !
 !-----------------------------------------------------------------------
@@ -84,13 +84,13 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
 !
     ifn0 = nint ( fnm )
     if (ifn0 .eq. 0) then
-        call u2mess('A', 'ALGORITH11_5')
+        call utmess('A', 'ALGORITH11_5')
         iret = 10
         goto 9999
     endif
     ifn0 = ifn0 / 5
     if (ifn0 .eq. 0) then
-        call u2mess('A', 'ALGORITH11_5')
+        call utmess('A', 'ALGORITH11_5')
         iret = 10
         goto 9999
     endif
@@ -318,7 +318,7 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
     write(if,2070) w
     if (sphi .lt. spwi) then
         iret = 10
-        call u2mess('A', 'ALGORITH11_6')
+        call utmess('A', 'ALGORITH11_6')
     endif
 !
     1000 format(1p,1x,e12.5,' !',5(1x,e12.5))

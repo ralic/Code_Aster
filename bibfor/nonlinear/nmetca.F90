@@ -18,9 +18,8 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/cetule.h"
 #include "asterfort/dbgcal.h"
@@ -36,7 +35,8 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
 #include "asterfort/megeom.h"
 #include "asterfort/mesomm.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma
     character(len=24) :: modele, mate, sdcriq
     character(len=19) :: valinc(*)
@@ -184,7 +184,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
 !
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'CALCULEL2_88', 1, option)
+        call utmess('F', 'CALCULEL2_88', sk=option)
         goto 9999
     endif
 !

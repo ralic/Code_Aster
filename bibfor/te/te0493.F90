@@ -20,7 +20,7 @@ subroutine te0493(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !
@@ -77,7 +77,7 @@ subroutine te0493(option, nomte)
         valkm(1)=option
         valkm(2)=nomte
         valkm(3)='TE0493'
-        call u2mesk('F', 'CALCULEL7_2', 3, valkm)
+        call utmess('F', 'CALCULEL7_2', nk=3, valk=valkm)
     endif
 !
     if (tria) then

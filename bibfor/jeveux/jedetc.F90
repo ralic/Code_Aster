@@ -23,7 +23,7 @@ subroutine jedetc(clas, souch, ipos)
 #include "asterfort/jjlidy.h"
 #include "asterfort/jjmzat.h"
 #include "asterfort/jxlibd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: clas, souch
     integer :: ipos
 ! ----------------------------------------------------------------------
@@ -105,7 +105,7 @@ subroutine jedetc(clas, souch, ipos)
                             call jxlibd(0, idatos, ic, iaddi, lonoi)
                         endif
                         if (nivo .ge. 2) then
-                            call u2mesk('I', 'JEVEUX_7', 1, crnom(1:24))
+                            call utmess('I', 'JEVEUX_7', sk=crnom(1:24))
                         endif
                         call jjcren(crnom(1:24), -1, iret)
                         nomos = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
@@ -171,7 +171,7 @@ subroutine jedetc(clas, souch, ipos)
                             if (id(k) .gt. 0) then
                                 nom32 = rnom ( jrnom(ic) + id(k) )
                                 if (nivo .ge. 2) then
-                                    call u2mesk('I', 'JEVEUX_7', 1, nom32)
+                                    call utmess('I', 'JEVEUX_7', sk=nom32)
                                 endif
                                 call jjcren(nom32, -2, iret)
                                 call jjmzat(ic, id(k))
@@ -187,7 +187,7 @@ subroutine jedetc(clas, souch, ipos)
                             call jxlibd(0, idatco, ic, iaddi, lonoi)
                         endif
                         if (nivo .ge. 2) then
-                            call u2mesk('I', 'JEVEUX_7', 1, crnom(1:24))
+                            call utmess('I', 'JEVEUX_7', sk=crnom(1:24))
                         endif
                         call jjcren(crnom(1:24), -2, iret)
                         call jjmzat(ic, idatco)

@@ -30,7 +30,7 @@ subroutine projmd(testc, np1, nb1, nb2, mat,&
 ! ARGUMENTS
 ! ---------
 #include "asterfort/prmama.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: testc, np1, nb1, nb2
     real(kind=8) :: mat(np1, *), vg(np1, *), vd(np1, *), matpr(*), mtmp1(np1, *)
     real(kind=8) :: mtmp2(np1, *)
@@ -53,12 +53,16 @@ subroutine projmd(testc, np1, nb1, nb2, mat,&
         call prmama(iprod, mat, np1, nb1, nb1,&
                     vd, np1, nb1, nb2, mtmp1,&
                     np1, nb1, nb2, ier)
-        if (ier .ne. 0) call u2mess('F', 'ALGORITH10_2')
+        if (ier .ne. 0) then
+            call utmess('F', 'ALGORITH10_2')
+        endif
 !
         call prmama(iprod, vg, np1, nb2, nb1,&
                     mtmp1, np1, nb1, nb2, mtmp2,&
                     np1, nb2, nb2, ier)
-        if (ier .ne. 0) call u2mess('F', 'ALGORITH10_2')
+        if (ier .ne. 0) then
+            call utmess('F', 'ALGORITH10_2')
+        endif
 !
         do 10 i = 1, nb2
             matpr(i) = mtmp2(i,i)

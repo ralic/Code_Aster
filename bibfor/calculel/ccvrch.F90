@@ -2,11 +2,11 @@ subroutine ccvrch(resuin, numor0)
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-!
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: resuin
     integer :: numor0
 ! ======================================================================
@@ -42,9 +42,9 @@ subroutine ccvrch(resuin, numor0)
 !
     if (excisd .eq. ' ') then
         if (nchalu .eq. 0) then
-            call u2mesk('I', 'UTILITAI4_2', 1, resuin)
+            call utmess('I', 'UTILITAI4_2', sk=resuin)
         else
-            call u2mesk('I', 'UTILITAI4_1', 1, resuin)
+            call utmess('I', 'UTILITAI4_1', sk=resuin)
         endif
     endif
 !

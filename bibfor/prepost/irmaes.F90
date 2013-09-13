@@ -2,16 +2,17 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
                   modnum, nuanom, nomtyp, nnotyp, sdcarm)
     implicit none
 !
+#include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/as_mmhcyw.h"
+#include "asterfort/as_mmhraw.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/as_mmhcyw.h"
-#include "asterfort/as_mmhraw.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
@@ -59,7 +60,6 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !   SDCARM  K*   SD_CARA_ELEM EN CHAM_ELEM_S
 !
 !
-#include "jeveux.h"
 !
 !
     integer :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad
@@ -245,50 +245,45 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !          LA SUITE POUR UNE MAILLE DONNEE.
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
         call as_mmhcyw(idfimd, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
-                    nmatyp(ityp), edelst, nvtyge, ednoda, codret)
+                       nmatyp(ityp), edelst, nvtyge, ednoda, codret)
         if (codret .ne. 0) then
             saux08='mmhcyw'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 !         -- ATTRIBUTS VARIABLE, ICI L'EPAISSEUR
         if (nbcouc .ne. 0 .and. nbsect .eq. 0) then
             call as_mmhraw(idfimd, nomamd, nvtyge, atepai, nmatyp(ityp),&
-                        zr(jattma(ityp)), codret)
+                           zr(jattma(ityp)), codret)
             if (codret .ne. 0) then
                 saux08='mmhraw'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
         endif
 !
 !         -- ATTRIBUTS VARIABLE, ICI GAMMA
         if (nbfibr .ne. 0 .or. nbsect .ne. 0) then
             call as_mmhraw(idfimd, nomamd, nvtyge, atangv, nmatyp(ityp),&
-                        zr(jorima(ityp)), codret)
+                           zr(jorima(ityp)), codret)
             if (codret .ne. 0) then
                 saux08='mmhraw'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
         endif
 !
 !         -- ATTRIBUTS VARIABLE, ICI RMIN ET RMAX
         if (nbsect .ne. 0) then
             call as_mmhraw(idfimd, nomamd, nvtyge, atrmin, nmatyp(ityp),&
-                        zr(jrmin(ityp)), codret)
+                           zr(jrmin(ityp)), codret)
             if (codret .ne. 0) then
                 saux08='mmhraw'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
             call as_mmhraw(idfimd, nomamd, nvtyge, atrmax, nmatyp(ityp),&
-                        zr(jrmax(ityp)), codret)
+                           zr(jrmax(ityp)), codret)
             if (codret .ne. 0) then
                 saux08='mmhraw'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
         endif
 !

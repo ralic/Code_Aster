@@ -31,13 +31,12 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 ! 0.1. ==> ARGUMENTS
 !
 #include "asterc/gtoptk.h"
+#include "asterfort/as_mficow.h"
 #include "asterfort/enlird.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/as_mficow.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: idfimd
     integer :: infmed, nbtitr
 !
@@ -119,14 +118,13 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 ! 3.2. ==> ECRITURE
 !
     if (infmed .gt. 1) then
-        call u2mesk('I', 'MED_38', 1, descri)
+        call utmess('I', 'MED_38', sk=descri)
     endif
 !
     call as_mficow(idfimd, descri, codret)
     if (codret .ne. 0) then
         saux08='mficow'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====

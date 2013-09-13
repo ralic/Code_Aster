@@ -12,7 +12,7 @@ subroutine meimme(modele, nchar, lchar, mate, matel)
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nchar
     character(len=8) :: modele, lchar(*)
     character(len=19) :: matel
@@ -56,7 +56,9 @@ subroutine meimme(modele, nchar, lchar, mate, matel)
     integer :: ibid, icha, icode, ierd, ilires, iret
 !-----------------------------------------------------------------------
     call jemarq()
-    if (modele(1:1) .eq. ' ') call u2mess('F', 'CALCULEL2_82')
+    if (modele(1:1) .eq. ' ') then
+        call utmess('F', 'CALCULEL2_82')
+    endif
 !
     cara = ' '
     nh = 0

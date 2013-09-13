@@ -18,7 +18,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescre.h"
@@ -27,7 +27,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=19) :: chelex, chpmod
     integer :: nbma
     character(len=8) :: noma
@@ -91,8 +91,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
             vali(1) = 1
             valk(1) = chelex(1:19)
             valk(2) = 'ELEM'
-            call u2mesg('F', 'CATAELEM_20', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'CATAELEM_20', nk=2, valk=valk, si=vali(1))
         endif
         zl(jcesl-1-iad) = .true.
         zi(jcesv-1-iad) = zi(jcesd2-1+5+4*(ima-1)+2)
@@ -102,8 +101,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
             vali(1) = 1
             valk(1) = chelex(1:19)
             valk(2) = 'ELEM'
-            call u2mesg('F', 'CATAELEM_20', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'CATAELEM_20', nk=2, valk=valk, si=vali(1))
         endif
         zl(jcesl-1-iad) = .true.
         zi(jcesv-1-iad) = zi(jcesd2-1+5+4*(ima-1)+3)

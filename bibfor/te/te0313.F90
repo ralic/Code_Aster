@@ -12,7 +12,7 @@ subroutine te0313(option, nomte)
 #include "asterfort/poeihm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -114,7 +114,9 @@ subroutine te0313(option, nomte)
         (option(1:9).eq.'RAPH_MECA' ) .or. (option(1:9).eq.'FULL_MECA' )) then
 !
         call jevech('PCAMASS', 'L', icamas)
-        if (zr(icamas) .eq. -1.d0) call u2mess('F', 'ELEMENTS5_48')
+        if (zr(icamas) .eq. -1.d0) then
+            call utmess('F', 'ELEMENTS5_48')
+        endif
 !
 ! DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS
         call eiangl(ndim, nno2, zr(icamas+1), ang)

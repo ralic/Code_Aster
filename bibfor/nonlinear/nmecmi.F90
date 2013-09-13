@@ -22,7 +22,6 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/nmcri5.h"
 #include "asterfort/radial.h"
 #include "asterfort/rcfon2.h"
@@ -30,10 +29,10 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rctype.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
+!
     integer :: kpg, ksp, ndim, imate, iret, iret0, iret1, iret2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
@@ -118,7 +117,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
 !
     if (.not.( compor(1)(1:9) .eq. 'VMIS_ECMI' )) then
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
 !
 !
@@ -186,7 +185,9 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                     ksp, tm, iret2)
         call rctype(imate, 1, 'TEMP', tm, resu,&
                     type)
-        if ((type.eq.'TEMP') .and. (iret2.eq.1)) call u2mess('F', 'CALCULEL_31')
+        if ((type.eq.'TEMP') .and. (iret2.eq.1)) then
+            call utmess('F', 'CALCULEL_31')
+        endif
         call rctrac(imate, 1, 'SIGM', resu, jprolm,&
                     jvalem, nbvalm, em)
         deumum = em/(1.d0+num)
@@ -196,7 +197,9 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                     ksp, tp, iret1)
         call rctype(imate, 1, 'TEMP', tp, resu,&
                     type)
-        if ((type.eq.'TEMP') .and. (iret1.eq.1)) call u2mess('F', 'CALCULEL_31')
+        if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
+            call utmess('F', 'CALCULEL_31')
+        endif
         call rctrac(imate, 1, 'SIGM', resu, jprolp,&
                     jvalep, nbvalp, e)
         deuxmu = e/(1.d0+nu)

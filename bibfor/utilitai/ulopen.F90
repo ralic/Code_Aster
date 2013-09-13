@@ -1,11 +1,9 @@
 subroutine ulopen(unit, fichie, name, acces, autor)
 ! aslint: disable=
-    implicit   none
+    implicit none
 #include "asterfort/codent.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulposi.h"
+#include "asterfort/utmess.h"
     integer :: unit
     character(len=*) :: fichie, name, acces, autor
 !     ------------------------------------------------------------------
@@ -108,27 +106,27 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                                 valk(1) = k4b
                                 valk(2) = ddname(i)
                                 valk(3) = namefi(i)(1:80)
-                                call u2mesk('E', 'UTILITAI5_11', 3, valk)
-                                call u2mesk('F', 'UTILITAI5_12', 1, name16)
+                                call utmess('E', 'UTILITAI5_11', nk=3, valk=valk)
+                                call utmess('F', 'UTILITAI5_12', sk=name16)
                             else
                                 valk(1) = k4b
                                 valk(2) = accefi(i)
                                 valk(3) = namefi(i)(1:80)
-                                call u2mesk('E', 'UTILITAI5_13', 3, valk)
-                                call u2mess('F', 'UTILITAI5_14')
+                                call utmess('E', 'UTILITAI5_13', nk=3, valk=valk)
+                                call utmess('F', 'UTILITAI5_14')
                             endif
                         endif
                     else
                         valk(1) = k4b
                         valk(2) = namefi(i)(1:80)
-                        call u2mesk('E', 'UTILITAI5_15', 2, valk)
-                        call u2mess('F', 'UTILITAI5_16')
+                        call utmess('E', 'UTILITAI5_15', nk=2, valk=valk)
+                        call utmess('F', 'UTILITAI5_16')
                     endif
                 else
                     valk(1) = k4b
                     valk(2) = namefi(i)(1:80)
                     valk(3) = ddname(i)
-                    call u2mesk('F', 'UTILITAI5_17', 3, valk)
+                    call utmess('F', 'UTILITAI5_17', nk=3, valk=valk)
                 endif
             endif
 10      continue
@@ -145,7 +143,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
             if (.not.v11) then
                 valk(1)=namell(1:80)
                 valk(2)=k8b
-                call u2mesk('F', 'UTILITAI5_1', 2, valk)
+                call utmess('F', 'UTILITAI5_1', nk=2, valk=valk)
             endif
         endif
         inquire ( unit=unit, opened=v11, iostat=ier1)
@@ -155,15 +153,15 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                 if (ier2 .ne. 0) then
                     valk(1) = k4b
                     valk(2) = namell(1:80)
-                    call u2mesk('F', 'UTILITAI5_18', 2, valk)
+                    call utmess('F', 'UTILITAI5_18', nk=2, valk=valk)
                 endif
                 call ulposi(unit, k1acce, ierr)
                 if (ierr .gt. 0) then
-                    call u2mesk('F', 'UTILITAI5_19', 1, k4b)
+                    call utmess('F', 'UTILITAI5_19', sk=k4b)
                 endif
             endif
         else
-            call u2mesk('F', 'UTILITAI5_20', 1, k4b)
+            call utmess('F', 'UTILITAI5_20', sk=k4b)
         endif
 !
 !     --- ON STOCKE DANS LE COMMON ---
@@ -176,7 +174,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 15      continue
         nbfile = nbfile + 1
         if (nbfile .gt. mxf) then
-            call u2mesi('F', 'UTILITAI5_21', 1, mxf)
+            call utmess('F', 'UTILITAI5_21', si=mxf)
         endif
         ifile=nbfile
 16      continue
@@ -194,7 +192,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
             close (unit=unit, iostat=ierr)
             if (ierr .gt. 0) then
                 write(k4b,'(I4)') unit
-                call u2mesk('F', 'UTILITAI5_22', 1, k4b)
+                call utmess('F', 'UTILITAI5_22', sk=k4b)
             endif
         endif
 !
@@ -207,7 +205,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     if (etatfi(i) .eq. 'O') then
                         close (unit=-unit, iostat=ierr)
                         if (ierr .gt. 0) then
-                            call u2mesk('F', 'UTILITAI_77', 1, k4b)
+                            call utmess('F', 'UTILITAI_77', sk=k4b)
                         endif
                     endif
                     namefi(i) = ' '
@@ -219,7 +217,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
                     modifi(i) = ' '
                     goto 9999
                 else
-                    call u2mesk('F', 'UTILITAI5_23', 1, k4b)
+                    call utmess('F', 'UTILITAI5_23', sk=k4b)
                 endif
             endif
 20      continue

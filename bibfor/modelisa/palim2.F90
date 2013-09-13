@@ -16,8 +16,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
 #include "asterfort/jexnom.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: iocc, iadr
     character(len=*) :: mcfact, nomaz, nomvei, nomvek
@@ -49,7 +48,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
     parameter     ( nbmc = 3 )
     logical :: lnume, lmail
     integer :: lopt, lnom
-    character(len=8) ::  noma, option, oldtyp, prfm, nommai, knume
+    character(len=8) :: noma, option, oldtyp, prfm, nommai, knume
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
     character(len=24) :: nomama, nomaty, nomjv
     character(len=24) :: valk(2)
@@ -117,18 +116,22 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
             ier = ier + 1
             valk(1) = nommai
             valk(2) = noma
-            call u2mesk('E', 'MODELISA6_10', 2, valk)
+            call utmess('E', 'MODELISA6_10', nk=2, valk=valk)
         else
             if (lmail) then
                 if (lnume) then
                     call codent(nume, 'G', knume)
                     nume = nume + 1
                     lgm = lxlgut(knume)
-                    if (lgm+lgp .gt. 8) call u2mess('F', 'MODELISA6_11')
+                    if (lgm+lgp .gt. 8) then
+                        call utmess('F', 'MODELISA6_11')
+                    endif
                     nommai = prfm(1:lgp)//knume
                 else
                     lgm = lxlgut(nommai)
-                    if (lgm+lgp .gt. 8) call u2mess('F', 'MODELISA6_12')
+                    if (lgm+lgp .gt. 8) then
+                        call utmess('F', 'MODELISA6_12')
+                    endif
                     nommai = prfm(1:lgp)//nommai
                 endif
             endif

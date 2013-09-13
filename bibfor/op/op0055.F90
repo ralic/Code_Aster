@@ -47,7 +47,7 @@ subroutine op0055()
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iadr1, ifm, niv
@@ -55,8 +55,8 @@ subroutine op0055()
     integer :: ibas, ibid, iocc, idon, idonn, ifonoe, ndonn
     integer :: iret1, iret2, iret, irets
     integer :: n1, n2
-    character(len=6) ::  nompro
-    character(len=8) ::  resu, noma, typfon, confin
+    character(len=6) :: nompro
+    character(len=8) :: resu, noma, typfon, confin
     character(len=9) :: entit(8)
     character(len=13) :: motcl(8)
     character(len=16) :: typres, oper
@@ -145,7 +145,7 @@ subroutine op0055()
                     if (ibid .eq. 0) then
                         valk(1) = entnom
                         valk(2) = motcl(idonn)
-                        call u2mesk('F', 'RUPTURE0_7', 2, valk)
+                        call utmess('F', 'RUPTURE0_7', nk=2, valk=valk)
                     endif
 111              continue
             endif

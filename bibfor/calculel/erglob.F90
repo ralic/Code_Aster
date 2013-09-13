@@ -2,7 +2,6 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
                   resuco, resuc1)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/celver.h"
 #include "asterfort/digdel.h"
 #include "asterfort/erglhm.h"
@@ -12,7 +11,8 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nbgrel.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: iord
     character(len=*) :: resuco
     character(len=19) :: resuc1
@@ -89,7 +89,7 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
 !
     call jelira(chele2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
-        call u2mess('F', 'CALCULEL5_44')
+        call utmess('F', 'CALCULEL5_44')
     endif
 !
 ! 1.3. ON RETROUVE LE NOM DU LIGREL
@@ -114,7 +114,7 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
         first = .false.
     else
         if (longt .ne. long2) then
-            call u2mess('F', 'CALCULEL3_54')
+            call utmess('F', 'CALCULEL3_54')
         endif
     endif
     10 end do

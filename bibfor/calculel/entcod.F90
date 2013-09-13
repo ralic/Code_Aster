@@ -29,7 +29,7 @@ function entcod(admodl, lcmodl, nec, mode, k,&
 !-----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: admodl, lcmodl, mode, m1, m2, code, code1
     character(len=8) :: k8b1, k8b2, k8b3, k8b4
     character(len=24) :: valk(4)
@@ -53,7 +53,7 @@ function entcod(admodl, lcmodl, nec, mode, k,&
                 call codent(m2, 'D', k8b2)
                 valk(1) = k8b1
                 valk(2) = k8b2
-                call u2mesk('F', 'CALCULEL2_46', 2, valk)
+                call utmess('F', 'CALCULEL2_46', nk=2, valk=valk)
             endif
         endif
         iadm1 = admodl + zi(lcmodl+m1-1) - 1
@@ -67,7 +67,7 @@ function entcod(admodl, lcmodl, nec, mode, k,&
             valk(2) = k8b2
             valk(3) = k8b3
             valk(4) = k8b4
-            call u2mesk('F', 'CALCULEL2_47', 4, valk)
+            call utmess('F', 'CALCULEL2_47', nk=4, valk=valk)
         endif
     else
         iadm1 = iadm
@@ -84,7 +84,7 @@ function entcod(admodl, lcmodl, nec, mode, k,&
             valk(1) = k8b1
             valk(2) = k8b2
             valk(3) = k8b3
-            call u2mesk('F', 'CALCULEL2_48', 3, valk)
+            call utmess('F', 'CALCULEL2_48', nk=3, valk=valk)
         endif
         iad = 4 + nec* (k-1) + l
     else

@@ -1,7 +1,6 @@
 subroutine cnonor(nomo, gran, base, cno)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/afchno.h"
 #include "asterfort/affeno.h"
 #include "asterfort/canort.h"
@@ -17,9 +16,10 @@ subroutine cnonor(nomo, gran, base, cno)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbnlma.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vericp.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: base
     character(len=8) :: nomo, gran, cno
 ! ----------------------------------------------------------------------
@@ -58,8 +58,7 @@ subroutine cnonor(nomo, gran, base, cno)
     call jenonu(jexnom('&CATA.GD.NOMGD', gran), numgd)
     if (numgd .eq. 0) then
         valk (1) = gran
-        call u2mesg('F', 'UTILITAI6_1', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_1', sk=valk(1))
     endif
     call dismoi('F', 'NB_EC', gran, 'GRANDEUR', nec,&
                 k8b, ier)
@@ -110,8 +109,7 @@ subroutine cnonor(nomo, gran, base, cno)
         if (iret .ne. 0) then
             valk (1) = gran
             valk (2) = nocmp(i)
-            call u2mesg('F', 'UTILITAI6_11', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'UTILITAI6_11', nk=2, valk=valk)
         endif
     end do
 !
@@ -134,8 +132,8 @@ subroutine cnonor(nomo, gran, base, cno)
 !
 ! --- DETERMINATION DES NORMALES
 !
-    call canort(noma, nbma, zi(jlma), ndim,&
-                nbno, zi(jnunoe), 1)
+    call canort(noma, nbma, zi(jlma), ndim, nbno,&
+                zi(jnunoe), 1)
 !
     call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
 !
@@ -167,7 +165,7 @@ subroutine cnonor(nomo, gran, base, cno)
                     ncmpmx, valr, k8b, zi(jdesc), zr(jval),&
                     k8b, typval, nec)
 !
-     end do
+    end do
 !
 ! --- CALCUL DU NOMBRE TOTAL DE CMP AFFECTEES (SOMMEES SUR LES NOEUDS)
 !

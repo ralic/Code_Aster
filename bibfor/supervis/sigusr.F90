@@ -22,7 +22,7 @@ subroutine sigusr()
 !
     implicit none
 #include "asterc/clrusr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     call clrusr()
-    call u2mesk('S', 'SUPERVIS_39', 1, 'USR1')
+    call utmess('S', 'SUPERVIS_39', sk='USR1')
 end subroutine

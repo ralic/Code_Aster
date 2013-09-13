@@ -1,7 +1,6 @@
 subroutine asmasu(ma1, ma2, mag)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
@@ -18,8 +17,9 @@ subroutine asmasu(ma1, ma2, mag)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma1, ma2, mag
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,7 +227,7 @@ subroutine asmasu(ma1, ma2, mag)
         call jelira(jexnum(ma1//'.GROUPEMA', i), 'LONUTI', n)
         call jenuno(jexnum(ma1//'.GROUPEMA', i), nogma)
         call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPEMA', i), 'E', iagmax)
         do 711, ii=1,n
@@ -241,7 +241,7 @@ subroutine asmasu(ma1, ma2, mag)
         call jenuno(jexnum(ma2//'.GROUPEMA', i), nogma)
         call jeexin(jexnom(mag//'.GROUPEMA', nogma), iret)
         if (iret .gt. 0) then
-            call u2mesk('A', 'MODELISA2_21', 1, nogma)
+            call utmess('A', 'MODELISA2_21', sk=nogma)
             nogmab=nogma
             ii = lxlgut(nogmab(1:7))
             do 724,k=ii+1,7
@@ -261,7 +261,7 @@ subroutine asmasu(ma1, ma2, mag)
         icompt = icompt + 1
         i1 = nbgm1 + icompt
         call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPEMA', i1), 'E', iagmax)
         do 721, ii=1,n
@@ -290,7 +290,7 @@ subroutine asmasu(ma1, ma2, mag)
         call jelira(jexnum(ma1//'.GROUPENO', i), 'LONUTI', n)
         call jenuno(jexnum(ma1//'.GROUPENO', i), nogma)
         call jecroc(jexnom(mag//'.GROUPENO', nogma))
-        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPENO', i), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i), 'E', iagnox)
         do 811, ii=1,n
@@ -304,7 +304,7 @@ subroutine asmasu(ma1, ma2, mag)
         call jenuno(jexnum(ma2//'.GROUPENO', i), nogno)
         call jeexin(jexnom(mag//'.GROUPENO', nogno), iret)
         if (iret .gt. 0) then
-            call u2mesk('A', 'MODELISA2_22', 1, nogno)
+            call utmess('A', 'MODELISA2_22', sk=nogno)
             nognob=nogno
             ii = lxlgut(nognob(1:7))
             do 824,k=ii+1,7
@@ -324,7 +324,7 @@ subroutine asmasu(ma1, ma2, mag)
         icompt = icompt + 1
         i1 = nbgn1 + icompt
         call jecroc(jexnom(mag//'.GROUPENO', nogno))
-        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i1), 'E', iagnox)
         do 821, ii=1,n

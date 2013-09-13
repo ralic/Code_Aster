@@ -2,7 +2,7 @@ subroutine cgvemf(modele, typfis, nomfis)
     implicit none
 !
 #include "asterfort/exixfe.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xvfimo.h"
     character(len=8) :: modele, typfis, nomfis
 !
@@ -45,12 +45,12 @@ subroutine cgvemf(modele, typfis, nomfis)
 !
 !     ERREUR SI FOND_FISS EST DONNE AVEC UN MODELE X-FEM
     if (typfis .eq. 'FONDFISS' .and. ixfem .eq. 1) then
-        call u2mesk('F', 'RUPTURE0_95', 1, modele)
+        call utmess('F', 'RUPTURE0_95', sk=modele)
     endif
 !
 !     ERREUR SI FISSURE EST DONNE AVEC UN MODELE NON X-FEM
     if (typfis .eq. 'FISSURE' .and. ixfem .eq. 0) then
-        call u2mesk('F', 'RUPTURE0_96', 1, modele)
+        call utmess('F', 'RUPTURE0_96', sk=modele)
     endif
 !
 !     ERREUR SI FISSURE N'EST PAS ASSOCIEE AU MODELE X-FEM
@@ -59,7 +59,7 @@ subroutine cgvemf(modele, typfis, nomfis)
         if (.not.fiinmo) then
             valk(1)=nomfis
             valk(2)=modele
-            call u2mesk('F', 'RUPTURE0_97', 2, valk)
+            call utmess('F', 'RUPTURE0_97', nk=2, valk=valk)
         endif
     endif
 !

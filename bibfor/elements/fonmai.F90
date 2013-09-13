@@ -16,8 +16,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ornofd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 !
@@ -117,29 +116,29 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
                 call utnono(' ', nomail, 'MAILLE', nogrp, nomma,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'RUPTURE0_41', 1, nogrp)
+                    call utmess('F', 'RUPTURE0_41', sk=nogrp)
                 else if (iret .eq. 1) then
-                    call u2mesk('F', 'RUPTURE0_45', 1, ndorig)
+                    call utmess('F', 'RUPTURE0_45', sk=ndorig)
                 endif
                 call jenonu(jexnom(nommai, nomma), numma)
             endif
         endif
 !
         if (numma .eq. 0) then
-            call u2mess('F', 'RUPTURE0_42')
+            call utmess('F', 'RUPTURE0_42')
         else
             call jenonu(jexnom(nomnoe, ndorig), numno)
             call i2extf(numma, 1, conec(1:15), typp(1:16), nig,&
                         nid)
             if ((numno.ne.nig) .and. (numno.ne.nid)) then
-                call u2mess('F', 'RUPTURE0_43')
+                call utmess('F', 'RUPTURE0_43')
             endif
             trouv = 0
             do 545 im = 1, nbma
                 if (numma .eq. zi(jcour2-1 + im)) trouv = im
 545          continue
             if (trouv .eq. 0) then
-                call u2mesk('F', 'RUPTURE0_44', 1, nomma)
+                call utmess('F', 'RUPTURE0_44', sk=nomma)
             else
 !
 !     ON REMONTE LA MAILLE_ORIG EN TETE DE LISTE
@@ -196,7 +195,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
         if (typm .eq. zk8(jtyp)) then
             valk(1) = typm
             valk(2) = zk8(jtyp)
-            call u2mesk('F', 'RUPTURE0_68', 2, valk)
+            call utmess('F', 'RUPTURE0_68', nk=2, valk=valk)
         endif
     endif
 !

@@ -39,7 +39,6 @@ subroutine te0497(option, nomte)
 ! aslint: disable=W0104
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/caethm.h"
@@ -57,10 +56,10 @@ subroutine te0497(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/resrot.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/uthk.h"
 #include "asterfort/utjac.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !
 ! DECLARATION VARIABLES LOCALES
@@ -69,21 +68,21 @@ subroutine te0497(option, nomte)
     integer :: ibid, iaux, iret, itab(7)
     integer :: igeom
     integer :: ierr, ivois
-    integer :: ierrm,imate,ifovr, ifovf
-    integer :: ipes, irot,iref1, iref2,ndim
+    integer :: ierrm, imate, ifovr, ifovf
+    integer :: ipes, irot, iref1, iref2, ndim
     integer :: nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: ipoid2, ivf2, idfde2
-    integer :: nbcmp,ipg,ifa, tyv,nbs, kpg, spt
+    integer :: nbcmp, ipg, ifa, tyv, nbs, kpg, spt
     integer :: isienp, isienm, ideplp, ideplm, jkp, nbna
-    integer :: iagd, iatyma, typ,iacmp
+    integer :: iagd, iatyma, typ, iacmp
     integer :: iade2, iava2, iaptm2, igd2, ncmpm2
     integer :: iade3, iava3, iaptm3, igd3, ncmpm3
-    integer :: igrdca,dimdep, dimdef, dimcon
+    integer :: igrdca, dimdep, dimdef, dimcon
     integer :: nmec, npi, np1, np2, nnom, nddls, nddlm
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
-    integer :: adsip,yamec, addeme, adcome, yate, addete
+    integer :: adsip, yamec, addeme, adcome, yate, addete
     integer :: yap1, addep1, adcp11
-    integer :: yap2, addep2, ii , noe(9,6,4)
+    integer :: yap2, addep2, ii, noe(9, 6, 4)
 !
     real(kind=8) :: ovfl
     real(kind=8) :: r8bid3(2)
@@ -197,7 +196,7 @@ subroutine te0497(option, nomte)
             instpm(2) = instpm(1)-deltat
         endif
     else
-        call u2mess('F', 'INDICATEUR_11')
+        call utmess('F', 'INDICATEUR_11')
     endif
 !--------------------------------------------------------------------
 ! 2. RECUPERATION DE LA GEOMETRIE, DU MATERIAU ET DES CHAMPS LOCAUX
@@ -302,7 +301,7 @@ subroutine te0497(option, nomte)
             biot = sqrt(valr13(2)**2+valr13(4)**2)
         endif
     else
-        call u2mesk('F', 'ELEMENTS4_78', 1, nomre1(1)//nomre1(2))
+        call utmess('F', 'ELEMENTS4_78', sk=nomre1(1)//nomre1(2))
     endif
 !
 ! ON RECUPERE LA PERMEABILITE INTRINSEQUE
@@ -326,7 +325,7 @@ subroutine te0497(option, nomte)
             permin = sqrt(valr12(1)**2+valr12(3)**2)
         endif
     else
-        call u2mesk('F', 'ELEMENTS4_78', 1, nomr11(1))
+        call utmess('F', 'ELEMENTS4_78', sk=nomr11(1))
     endif
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
@@ -337,13 +336,13 @@ subroutine te0497(option, nomte)
         rholiq = valre2(1)
         viscli = valre2(2)
     else
-        call u2mesk('F', 'ELEMENTS4_69', 1, nomre2(1)//nomre2(2))
+        call utmess('F', 'ELEMENTS4_69', sk=nomre2(1)//nomre2(2))
     endif
 !
     if (permin .gt. ovfl) then
         unsurk = viscli/permin
     else
-        call u2mess('F', 'INDICATEUR_20')
+        call utmess('F', 'INDICATEUR_20')
     endif
 !
 !--------------------------------------------------------------------
@@ -363,7 +362,7 @@ subroutine te0497(option, nomte)
         if (codme3(1) .eq. 0) then
             porosi = valre3(1)
         else
-            call u2mesk('F', 'ELEMENTS4_70', 1, nomre3(1))
+            call utmess('F', 'ELEMENTS4_70', sk=nomre3(1))
         endif
 !
 ! 4.2. RECHERCHE DU COEFFICIENT DE POISSON ET DU MODULE DE YOUNG
@@ -395,7 +394,7 @@ subroutine te0497(option, nomte)
 !
             endif
         else
-            call u2mesk('F', 'ELEMENTS4_71', 1, nomre4(1)//nomre4(2))
+            call utmess('F', 'ELEMENTS4_71', sk=nomre4(1)//nomre4(2))
         endif
 !
 ! 4.4. ON CALCULE L'INVERSE DU MODULE DE BIOT
@@ -404,7 +403,7 @@ subroutine te0497(option, nomte)
             unsurm = 3.d0*(biot-porosi)*(1.d0-biot)*(1.d0-2*poisso)/ cyoung
 !
         else
-            call u2mess('F', 'ELEMENTS4_67')
+            call utmess('F', 'ELEMENTS4_67')
         endif
 !
     endif
@@ -426,7 +425,7 @@ subroutine te0497(option, nomte)
     endif
 !
     if (iaux .ne. 0) then
-        call u2mesk('F', 'INDICATEUR_21', 1, valk)
+        call utmess('F', 'INDICATEUR_21', sk=valk(1))
     endif
 !
 ! =====================================================================
@@ -460,7 +459,7 @@ subroutine te0497(option, nomte)
                     npg, frx, fry)
     else
 !
-        do ipg = 1 , npg
+        do ipg = 1, npg
             frx(ipg) = 0.d0
             fry(ipg) = 0.d0
         end do
@@ -479,7 +478,7 @@ subroutine te0497(option, nomte)
 !       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
 !       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
 !       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
-        do ibid = 1 , ndim
+        do ibid = 1, ndim
             if (zk8(ifovf+ibid-1)(1:7) .eq. '&FOZERO') then
                 fovo(ibid) = 0.d0
             else
@@ -605,7 +604,7 @@ subroutine te0497(option, nomte)
 ! ON INITIALISE LES TERMES DE SAUT ET LES TERMES PROVENANT DES
 ! CONDITIONS AUX LIMITES (HYDRAULIQUE + MECANIQUE)
 !
-    do ii = 1 , 3
+    do ii = 1, 3
         tm2h1b(ii) = 0.d0
         tm2h1s(ii) = 0.d0
     end do
@@ -618,69 +617,69 @@ subroutine te0497(option, nomte)
 ! . L'EVENTUEL NOEUD MILIEU EST LE 1ER NOEUD, DECALE DU NOMBRE DE NOEUDS
 !   SOMMETS : IFA + NBS
 !
-    do ifa = 1,nbs
+    do ifa = 1, nbs
 !
 ! ------TEST DU TYPE DE VOISIN -----------------------------------------
 !
-    tyv=zi(ivois+7+ifa)
+        tyv=zi(ivois+7+ifa)
 !
-    if (tyv .ne. 0) then
+        if (tyv .ne. 0) then
 !
 ! ------- RECUPERATION DU TYPE DE LA MAILLE VOISINE
 !
-        call jenuno(jexnum('&CATA.TM.NOMTM', tyv), typmav)
+            call jenuno(jexnum('&CATA.TM.NOMTM', tyv), typmav)
 !
 ! --- CALCUL DES NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 !
-        iaux = ifa
-        call calnor('2D', zr(igeom), iaux, nbs, nbna,&
-                    orien, ibid, ibid, noe, ibid,&
-                    ibid, ibid, jaco, nx, ny,&
-                    nz, tx, ty, hf)
+            iaux = ifa
+            call calnor('2D', zr(igeom), iaux, nbs, nbna,&
+                        orien, ibid, ibid, noe, ibid,&
+                        ibid, ibid, jaco, nx, ny,&
+                        nz, tx, ty, hf)
 !
 ! ------- SI L'ARRETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
 !         CALCUL DES TERMES DE SAUT A TRAVERS LES FACES INTERIEURES
 !         DE LA MAILLE
 !
-        if (typmav(1:4) .eq. 'TRIA' .or. typmav(1:4) .eq. 'QUAD') then
+            if (typmav(1:4) .eq. 'TRIA' .or. typmav(1:4) .eq. 'QUAD') then
 !
-            call erhms2(perman, ifa, nbs, theta, jaco,&
-                        nx, ny, zr(isienp), adsip, zr(isienm),&
-                        nbcmp, typmav, zi(iref1), zi(iref2), ivois,&
-                        tm2h1s)
+                call erhms2(perman, ifa, nbs, theta, jaco,&
+                            nx, ny, zr(isienp), adsip, zr(isienm),&
+                            nbcmp, typmav, zi(iref1), zi(iref2), ivois,&
+                            tm2h1s)
 !
 ! ------- SI L'ARRETE EST SUR LA FRONTIERE DE LA STRUCTURE...
 !         CALCUL DES TERMES DE VERIFICATION DES CONDITIONS DE BORD
 !
-        else if (typmav(1:2).eq.'SE') then
+            else if (typmav(1:2).eq.'SE') then
 !
-            call erhmb2(perman, ifa, nbs, ndim, theta,&
-                        instpm, jaco, nx, ny, tx,&
-                        ty, nbcmp, zr(igeom), ivois, zr(isienp),&
-                        zr(isienm), adsip, iagd, zi(iref2), iade2,&
-                        iava2, ncmpm2, iaptm2, iade3, iava3,&
-                        ncmpm3, iaptm3, tm2h1b)
+                call erhmb2(perman, ifa, nbs, ndim, theta,&
+                            instpm, jaco, nx, ny, tx,&
+                            ty, nbcmp, zr(igeom), ivois, zr(isienp),&
+                            zr(isienm), adsip, iagd, zi(iref2), iade2,&
+                            iava2, ncmpm2, iaptm2, iade3, iava3,&
+                            ncmpm3, iaptm3, tm2h1b)
 ! ----------------------------------------------------------------
 !
 ! ----------------------------------------------------------------------
 ! --------------- CURIEUX ----------------------------------------------
 ! ----------------------------------------------------------------------
 !
-        else
+            else
 !
-            valk(1)=typmav(1:4)
-            call u2mesk('F', 'INDICATEUR_10', 1, valk)
+                valk(1)=typmav(1:4)
+                call utmess('F', 'INDICATEUR_10', sk=valk(1))
+!
+            endif
+!
+            if (niv .ge. 2) then
+                write(ifm,103) ifa, zi(ivois+ifa), typmav
+                103 format (i2,'-EME FACE DE NUMERO',i10,' ==> TYPMAV = ', a)
+                write(ifm,100) 'TM2H1B', tm2h1b
+                write(ifm,100) 'TM2H1S', tm2h1s
+            endif
 !
         endif
-!
-        if (niv .ge. 2) then
-            write(ifm,103) ifa, zi(ivois+ifa), typmav
-            103 format (i2,'-EME FACE DE NUMERO',i10,' ==> TYPMAV = ', a)
-            write(ifm,100) 'TM2H1B', tm2h1b
-            write(ifm,100) 'TM2H1S', tm2h1s
-        endif
-!
-    endif
 !
     end do
 !

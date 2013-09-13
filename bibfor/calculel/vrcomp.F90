@@ -18,7 +18,6 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
@@ -33,10 +32,9 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcom2.h"
+!
     character(len=*) :: compop, varmoi, compom, ligrep
 ! ------------------------------------------------------------------
 ! BUT: VERIFIER LA COHERENCE DU CHAMP DE VARIABLES INTERNES "-" AVEC
@@ -123,7 +121,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     call dismoi('F', 'NOM_MAILLA', varmoi, 'CHAMP', ibid,&
                 nomma2, iret)
     if (nomma1 .ne. nomma2) then
-        call u2mess('F', 'MECANONLINE5_49')
+        call utmess('F', 'MECANONLINE5_49')
     endif
 !
     call carces(compop, 'ELEM', ' ', 'V', coto,&
@@ -230,7 +228,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
                     valk(1)=nomail
                     valk(2)=relcom
                     valk(3)=relcop
-                    call u2mesk('A', 'CALCULEL3_47', 3, valk)
+                    call utmess('A', 'CALCULEL3_47', nk=3, valk=valk)
                 endif
                 goto 10
             endif
@@ -301,8 +299,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
                         1, 1, iadm)
             ASSERT(iadm.gt.0)
             relcom=zk16(jcopmv-1+iadm)
-            if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS' .or. &
-                relcom .eq. 'KIT_CG') goto 30
+            if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS' .or. relcom .eq. 'KIT_CG') goto 30
         else
 !           CE N'EST PAS FACILE A VERIFIER SANS COMPOM !
 !           ON VERIFIE :  NCMPM=1 ET VARIM(*)=0.D0
@@ -329,8 +326,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
         vali(1)=ncmpm
         vali(2)=ncmpp
-        call u2mesg('A', 'CALCULEL3_48', 1, nomail, 2,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'CALCULEL3_48', sk=nomail, ni=2, vali=vali)
     endif
 40  continue
     goto 90
@@ -342,26 +338,24 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     vali(1)=nbspm
     vali(2)=nbspp
-    call u2mesg('F', 'CALCULEL6_52', 1, nomail, 2,&
-                vali, 0, 0.d0)
+    call utmess('F', 'CALCULEL6_52', sk=nomail, ni=2, vali=vali)
 !
 60  continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-    call u2mesk('F', 'CALCULEL5_41', 1, nomail)
+    call utmess('F', 'CALCULEL5_41', sk=nomail)
 !
 70  continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     vali(1)=ncmpm
     vali(2)=ncmpp
-    call u2mesg('F', 'CALCULEL3_49', 1, nomail, 2,&
-                vali, 0, 0.d0)
+    call utmess('F', 'CALCULEL3_49', sk=nomail, ni=2, vali=vali)
 !
 80  continue
     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
     valk(1)=relcom
     valk(2)=relcop
     valk(3)=nomail
-    call u2mesk('F', 'CALCULEL5_42', 3, valk)
+    call utmess('F', 'CALCULEL5_42', nk=3, valk=valk)
 !
 !
 90  continue

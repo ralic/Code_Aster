@@ -21,14 +21,14 @@ subroutine exchml(imodat, iparg)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/chloet.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jacopo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: iparg, imodat
 ! ----------------------------------------------------------------------
 !     ENTREES:
@@ -112,7 +112,9 @@ subroutine exchml(imodat, iparg)
 !     -- SI LE CHAMP N'A PAS LE MODE ATTENDU ...
 !     ----------------------------------------------------
     call chloet(iparg, etendu, jceld)
-    if (etendu) call u2mess('F', 'CALCULEL2_51')
+    if (etendu) then
+        call utmess('F', 'CALCULEL2_51')
+    endif
 !
 !
     modlo1=iamloc-1+zi(ilmloc-1+mode)

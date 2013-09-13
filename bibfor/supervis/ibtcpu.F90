@@ -7,8 +7,7 @@ subroutine ibtcpu(ier)
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ier
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -78,7 +77,7 @@ subroutine ibtcpu(ier)
     if (l1 .gt. 0) then
         if (lcpu .gt. tpmax) then
             call getres(cbid, cbid, nomcmd)
-            call u2mess('F', 'SUPERVIS_31')
+            call utmess('F', 'SUPERVIS_31')
             ier = 1
         endif
         ntmax = tpmax - lcpu
@@ -96,6 +95,6 @@ subroutine ibtcpu(ier)
     vali(1)=itpmax
     vali(2)=int(ntmax)
     vali(3)=int(itpmax-ntmax)
-    call u2mesi('I', 'SUPERVIS_64', 3, vali)
+    call utmess('I', 'SUPERVIS_64', ni=3, vali=vali)
 !
 end subroutine

@@ -30,7 +30,7 @@ subroutine cazocc(char, motfac, izone)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char
     character(len=16) :: motfac
     integer :: izone
@@ -151,7 +151,9 @@ subroutine cazocc(char, motfac, izone)
         else
             ASSERT(.false.)
         endif
-        if (algoc .ne. algof) call u2mess('F', 'CONTACT_89')
+        if (algoc .ne. algof) then
+            call utmess('F', 'CONTACT_89')
+        endif
     else
         coefaf = 0.d0
         algofr = 0.d0
@@ -159,9 +161,15 @@ subroutine cazocc(char, motfac, izone)
 !
 ! --- INCOMPATIBILITES
 !
-    if (lfrot .and. (algoc.ne.algof)) call u2mess('F', 'CONTACT_89')
-    if ((algoc.eq.'PENALISATION') .and. lnewtg) call u2mess('F', 'CONTACT_21')
-    if (lnewtg .and. (.not.lnewtc)) call u2mess('F', 'CONTACT_20')
+    if (lfrot .and. (algoc.ne.algof)) then
+        call utmess('F', 'CONTACT_89')
+    endif
+    if ((algoc.eq.'PENALISATION') .and. lnewtg) then
+        call utmess('F', 'CONTACT_21')
+    endif
+    if (lnewtg .and. (.not.lnewtc)) then
+        call utmess('F', 'CONTACT_20')
+    endif
 !
 ! --- CARACTERISTIQUES DU FROTTEMENT PAR ZONE
 !
@@ -194,10 +202,10 @@ subroutine cazocc(char, motfac, izone)
 !
     if (.not.lintno) then
         if (lsscon .or. lssfro) then
-            call u2mess('F', 'CONTACT_97')
+            call utmess('F', 'CONTACT_97')
         endif
         if (.not.mminfl(defico,'MAIT',izone )) then
-            call u2mess('F', 'CONTACT_98')
+            call utmess('F', 'CONTACT_98')
         endif
     endif
 !

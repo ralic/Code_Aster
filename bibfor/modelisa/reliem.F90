@@ -17,7 +17,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iocc, nbmocl, nbtrou
@@ -310,8 +310,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                     endif
                 endif
 150          continue
-            if (ier .ne. 0) call u2mesg('F', 'MODELISA6_96', 1, motfac, 1,&
-                                        ier, 0, r8bid)
+            if (ier .ne. 0) then
+                call utmess('F', 'MODELISA6_96', sk=motfac, si=ier)
+            endif
         endif
 !
 !
@@ -380,8 +381,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                     write (ifm,*) ' NOEUD : ',noent
                 endif
 191          continue
-            if (ier .ne. 0) call u2mesg('F', 'MODELISA6_13', 1, motfac, 1,&
-                                        ier, 0, r8bid)
+            if (ier .ne. 0) then
+                call utmess('F', 'MODELISA6_13', sk=motfac, si=ier)
+            endif
         endif
 !
     endif

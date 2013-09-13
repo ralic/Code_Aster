@@ -3,7 +3,7 @@ subroutine opsexe(nuoper)
 #include "asterfort/ops005.h"
 #include "asterfort/ops007.h"
 #include "asterfort/ops026.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nuoper
     integer :: vali
 !     ------------------------------------------------------------------
@@ -33,8 +33,7 @@ subroutine opsexe(nuoper)
         call ops026()
     else
         vali = -nuoper
-        call u2mesg('E', 'SUPERVIS_60', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('E', 'SUPERVIS_60', si=vali)
     endif
 !
 end subroutine

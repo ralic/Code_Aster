@@ -19,7 +19,7 @@ subroutine op0115()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -239,7 +239,9 @@ subroutine op0115()
         call getvr8(motfac(2), 'FREQ_MIN', iocc=ikt, scal=fmin, nbret=nbval)
         call getvr8(motfac(2), 'FREQ_MAX', iocc=ikt, scal=fmax, nbret=nbval)
         call getvr8(motfac(2), 'PAS', iocc=ikt, scal=pas, nbret=nbval)
-        if (fmax .lt. fmin) call u2mesk('F', 'SPECTRAL0_2', 1, motfac(2))
+        if (fmax .lt. fmin) then
+            call utmess('F', 'SPECTRAL0_2', sk=motfac(2))
+        endif
         nbfreq=int((fmax-fmin)/pas) + 1
         ifonc = iocpf + ikt
         call jecroc(jexnum(chvale, ifonc))
@@ -311,7 +313,9 @@ subroutine op0115()
         call getvr8(motfac(3), 'FREQ_MIN', iocc=ics, scal=fmin, nbret=nbval)
         call getvr8(motfac(3), 'FREQ_MAX', iocc=ics, scal=fmax, nbret=nbval)
         call getvr8(motfac(3), 'PAS', iocc=ics, scal=pas, nbret=nbval)
-        if (fmax .lt. fmin) call u2mesk('F', 'SPECTRAL0_2', 1, motfac(3))
+        if (fmax .lt. fmin) then
+            call utmess('F', 'SPECTRAL0_2', sk=motfac(3))
+        endif
         nbfreq=int((fmax-fmin)/pas) + 1
         diag = .false.
         if (n6 .lt. 0) then

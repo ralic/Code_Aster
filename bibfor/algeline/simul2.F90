@@ -2,7 +2,6 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                   dir, nomnoe, nbno)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -16,10 +15,10 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 #include "asterfort/rsorac.h"
 #include "asterfort/rsvpar.h"
 #include "asterfort/typddl.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbdir, nbno
     real(kind=8) :: dir(*)
     character(len=*) :: resu, nomcmd, masse, modsta, nomnoe(*)
@@ -103,8 +102,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     ier = ier + 1
                     valk (1) = acces(1:8)
                     valk (2) = acces(9:16)
-                    call u2mesg('E', 'ALGELINE5_41', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'ALGELINE5_41', nk=2, valk=valk)
                     goto 20
                 endif
                 call rsvpar(modsta, iordr, 'TYPE_DEFO', ibid, r8b,&
@@ -114,8 +112,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     valk (1) = 'MODE_MECA'
                     valk (2) = acces(1:8)
                     valk (3) = acces(9:16)
-                    call u2mesg('E', 'ALGELINE5_42', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'ALGELINE5_42', nk=3, valk=valk)
                     goto 20
                 endif
                 call rsexch(' ', modsta, 'DEPL', iordr, chamno,&
@@ -125,8 +122,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     valk (1) = chamno
                     valk (2) = acces(1:8)
                     valk (3) = acces(9:16)
-                    call u2mesg('E', 'ALGELINE5_43', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'ALGELINE5_43', nk=3, valk=valk)
                     goto 20
                 else
                     call jeveuo(chamno//'.VALE', 'L', idmst)
@@ -143,7 +139,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
         endif
 10  end do
     if (ier .ne. 0) then
-        call u2mess('F', 'ALGELINE5_40')
+        call utmess('F', 'ALGELINE5_40')
     endif
 !
     call wkvect('&&SIMUL2.DDL.BLOQUE', 'V V I', neq, iddl)

@@ -101,7 +101,7 @@ subroutine ex0100(nuoper)
 #include "asterfort/op0197.h"
 #include "asterfort/op0198.h"
 #include "asterfort/op0199.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nuoper
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -142,8 +142,7 @@ subroutine ex0100(nuoper)
      &       91, 92, 93, 94, 95, 96, 97, 98, 99 ,100 ) nuoper - 0100 + 1
 !     ------------------------------------------------------------------
     vali = nuoper
-    call u2mesg('E', 'SUPERVIS_50', 0, ' ', 1,&
-                vali, 0, 0.d0)
+    call utmess('E', 'SUPERVIS_50', si=vali)
     goto 9999
 !     ------------------------------------------------------------------
  1  continue

@@ -4,7 +4,7 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: niv, nomcon, nomcha
     integer :: nbtitr
@@ -155,7 +155,7 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
         call dismoi('C', 'TYPE_RESU', nomcon, 'RESULTAT', ibid,&
                     typesd, ierd)
         if (ierd .ne. 0) then
-            call u2mesk('F', 'UTILITAI4_99', 1, typesd)
+            call utmess('F', 'UTILITAI4_99', sk=typesd)
         else if (typesd .eq. 'CHAMP') then
             call dismoi('C', 'TYPE_CHAMP', nomcon, 'CHAMP', ibid,&
                         typesd, ierd)
@@ -169,7 +169,7 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
             else if (typesd(1:4) .eq. 'CART') then
                 ichoix = 9
             else
-                call u2mesk('F', 'UTILITAI4_99', 1, typesd)
+                call utmess('F', 'UTILITAI4_99', sk=typesd)
             endif
         else
             call dismoi('C', 'TYPE_CHAMP', nomcha, 'CHAMP', ibid,&
@@ -209,7 +209,7 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
                 defaut(7,ichoix)(10:28) = nomcon
                 defaut(7,ichoix)(32:50) = nomcha
             else
-                call u2mesk('F', 'UTILITAI4_99', 1, typesd)
+                call utmess('F', 'UTILITAI4_99', sk=typesd)
             endif
         endif
     endif

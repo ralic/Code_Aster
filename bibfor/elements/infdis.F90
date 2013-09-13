@@ -1,12 +1,12 @@
 subroutine infdis(quest, ivale, rvale, kvale)
-    implicit       none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=4) :: quest
     character(len=*) :: kvale
     integer :: ivale
@@ -102,18 +102,17 @@ subroutine infdis(quest, ivale, rvale, kvale)
         call tecael(iadzi, iazk24)
         nommai = zk24(iazk24-1+3)
         nbnoeu = zi(iadzi+1)
-        call u2mesg(kvale(1:1)//'+', 'DISCRETS_30', 1, nommai, 1,&
-                    nbnoeu, 0, r8bid)
+        call utmess(kvale(1:1)//'+', 'DISCRETS_30', sk=nommai, si=nbnoeu)
         mailla = zk24(iazk24)
         call jeveuo(mailla//'.COORDO    .VALE', 'L', icoord)
         do 10 jj = 1, nbnoeu
             ii = zi(iadzi+1+jj)
             if (jj .eq. nbnoeu) then
-                call u2mesg(kvale(1:1), 'DISCRETS_31', 1, zk24(iazk24-1+ 3+jj), 0,&
-                            nbnoeu, 3, zr(icoord+3*(ii-1)))
+                call utmess(kvale(1:1), 'DISCRETS_31', sk=zk24(iazk24-1+ 3+jj), nr=3,&
+                            valr=zr(icoord+3*(ii-1)))
             else
-                call u2mesg(kvale(1:1)//'+', 'DISCRETS_31', 1, zk24( iazk24-1+3+jj), 0,&
-                            nbnoeu, 3, zr(icoord+3*(ii-1)))
+                call utmess(kvale(1:1)//'+', 'DISCRETS_31', sk=zk24( iazk24-1+3+jj), nr=3,&
+                            valr=zr(icoord+3*(ii-1)))
             endif
 10      continue
         goto 9999

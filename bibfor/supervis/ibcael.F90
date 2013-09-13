@@ -3,7 +3,7 @@ subroutine ibcael(type)
 #include "asterfort/jedupc.h"
 #include "asterfort/jeinif.h"
 #include "asterfort/jelibf.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: type
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -36,13 +36,13 @@ subroutine ibcael(type)
         call jedupc('G', '&CATA', 1, 'C', '&BATA',&
                     .false.)
         call jelibf('SAUVE', 'C', info)
-        call u2mess('I', 'SUPERVIS_16')
+        call utmess('I', 'SUPERVIS_16')
     else
         call jeinif('POURSUITE', 'SAUVE', nomf, 'C', 300,&
                     512, 100)
         call jedupc('C', '&BATA', 1, 'G', '&CATA',&
                     .false.)
         call jelibf('SAUVE', 'C', info)
-        call u2mess('I', 'SUPERVIS_17')
+        call utmess('I', 'SUPERVIS_17')
     endif
 end subroutine

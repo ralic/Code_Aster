@@ -19,7 +19,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/diincl.h"
 #include "asterfort/exisd.h"
@@ -29,7 +29,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
 #include "asterfort/nmarcc.h"
 #include "asterfort/nmetnc.h"
 #include "asterfort/obgetb.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdieto, sdimpr
     character(len=19) :: sddisc
     character(len=8) :: result
@@ -100,8 +100,7 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
 !
     if (diincl(sddisc,nomchs,force ) .and. (iret.eq.1)) then
         if (lprint) then
-            call u2mesg('I', 'ARCHIVAGE_6', 1, nomchs, 1,&
-                        numarc, 1, instan)
+            call utmess('I', 'ARCHIVAGE_6', sk=nomchs, si=numarc, sr=instan)
         endif
         call nmarcc(result, numarc, nomchs, nomcha)
     endif

@@ -5,11 +5,11 @@ subroutine lisexp(list_char)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisnch.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,11 +76,13 @@ subroutine lisexp(list_char)
 !
     do ichar = 1, nb_char
         char_name = zk24(j_lich_char-1+ichar)(1:8)
-        if (zi(j_lich_info+nb_char+ichar).eq.5) then
+        if (zi(j_lich_info+nb_char+ichar) .eq. 5) then
             do iexcl = 1, nb_excl_char
                 lchin = char_name(1:8)//'.CHME.LIGRE'//ligr_excl_char(iexcl)
                 call jeexin(lchin, iret)
-                if (iret .ne. 0) call u2mesk('F','CHARGES_26', 1, char_name)
+                if (iret .ne. 0) then
+                    call utmess('F', 'CHARGES_26', sk=char_name)
+                endif
             enddo
         endif
     end do

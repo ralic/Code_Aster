@@ -1,5 +1,5 @@
 subroutine as_mfdfdi(fid, ind, cha, type, comp,&
-                  unit, nseqca, cret)
+                     unit, nseqca, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,8 +19,9 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfdfdi.h"
     character(len=*) :: cha, comp, unit
     aster_int :: fid, ind, type, cret, lmail, nseqca
@@ -30,9 +31,9 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
 !     UNITE DU PAS DE TEMPS EST UN GRANDEUR PAS UTILISEE DANS ASTER
 !     DE MEME QUE LE MAILLAGE QUI EST RELU AVANT LIRE_RESU
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, ind4, type4, cret4, nseqc4, lmai4
     fid4 = fid
@@ -48,6 +49,6 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
                 type, comp, unit, unidt, nseqca,&
                 cret)
 #endif
-
+!
 #endif
 end subroutine

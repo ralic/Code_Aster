@@ -78,8 +78,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/sinoz1.h"
 #include "asterfort/sinoz2.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbordr, nchar
@@ -277,7 +276,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
             call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&
                         chsig, option, iret)
             if (iret .gt. 0) then
-                call u2mesk('A', 'CALCULEL3_7', 1, option)
+                call utmess('A', 'CALCULEL3_7', sk=option)
                 call jedema()
                 goto 660
 !
@@ -326,17 +325,17 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
             call getvr8(' ', 'PREC_ERR', scal=prec, nbret=iret1)
             if (iret1 .ne. 1) then
-                call u2mess('F', 'CALCULEL3_12')
+                call utmess('F', 'CALCULEL3_12')
             else
                 if (prec .le. 0.d0) then
-                    call u2mess('F', 'CALCULEL3_13')
+                    call utmess('F', 'CALCULEL3_13')
                 endif
             endif
 !
             types=' '
             call getvtx(' ', 'TYPE_ESTI', scal=types, nbret=ireter)
             if (ireter .gt. 0) then
-                call u2mesk('I', 'CALCULEL3_24', 1, types)
+                call utmess('I', 'CALCULEL3_24', sk=types)
             endif
 !
 ! 1 - RECUPERATION DE :
@@ -392,7 +391,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                     if (iret5 .gt. 0) then
                         valkm(1)=types
                         valkm(2)=resuco
-                        call u2mesk('A', 'CALCULEL3_26', 2, valkm)
+                        call utmess('A', 'CALCULEL3_26', nk=2, valk=valkm)
                         iret=1
                     endif
 !
@@ -412,7 +411,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                                 iret3)
 !
                     if (iret1 .gt. 0 .and. iret2 .gt. 0 .and. iret3 .gt. 0) then
-                        call u2mess('A', 'CALCULEL3_14')
+                        call utmess('A', 'CALCULEL3_14')
                         iret=1
                     endif
 !
@@ -426,11 +425,11 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                                 iret4)
                 endif
                 if (iret4 .gt. 0) then
-                    call u2mess('A', 'CALCULEL3_29')
+                    call utmess('A', 'CALCULEL3_29')
                 endif
 !
                 if ((iret+iret4) .gt. 0) then
-                    call u2mess('A', 'CALCULEL3_36')
+                    call utmess('A', 'CALCULEL3_36')
                     goto 250
 !
                 endif
@@ -443,11 +442,13 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 else if (iret1.eq.0) then
                     call celces(cherr1(1:19), 'V', cherrs)
                     if ((iret2.eq.0) .or. (iret3.eq.0)) then
-                        call u2mess('A', 'CALCULEL3_15')
+                        call utmess('A', 'CALCULEL3_15')
                     endif
                 else if (iret3.eq.0) then
                     call celces(cherr3(1:19), 'V', cherrs)
-                    if (iret2 .eq. 0) call u2mess('A', 'CALCULEL3_16')
+                    if (iret2 .eq. 0) then
+                        call utmess('A', 'CALCULEL3_16')
+                    endif
                 else if (iret2.eq.0) then
                     call celces(cherr2(1:19), 'V', cherrs)
                 else
@@ -534,7 +535,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !      -----------------------------------------------------------------
 !
         else
-            call u2mesk('A', 'CALCULEL3_22', 1, option)
+            call utmess('A', 'CALCULEL3_22', sk=option)
         endif
 !
 660  end do

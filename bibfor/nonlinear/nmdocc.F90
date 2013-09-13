@@ -55,7 +55,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 #include "asterfort/nmdpmf.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: icmp, k, jma, nbma, iret, i, ibid, n1, jvalv, ncmpma, jncmp
     integer :: nbmo1, nbocc, dimaki, dimanv, nbkit, numlc, nbvari, icpri
     integer :: nbvarz, nunit, ii, inv, indimp
@@ -194,8 +194,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             if (iret .eq. 0) then
                 texte(1)=defo
                 texte(2)=comp
-                call u2mesg('F', 'COMPOR1_44', 2, texte, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'COMPOR1_44', nk=2, valk=texte)
             endif
 !
 ! ======================================================================

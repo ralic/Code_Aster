@@ -71,7 +71,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -247,12 +247,10 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     valr (1) = anorm/anorxx
     valr (2) = epsi
     if (precon .eq. 'LDLT_INC') then
-        call u2mesg('F', 'ALGELINE4_3', 0, ' ', 1,&
-                    vali, 2, valr)
+        call utmess('F', 'ALGELINE4_3', si=vali, nr=2, valr=valr)
     else if (precon.eq.'LDLT_SP') then
         if (istop .eq. 0) then
-            call u2mesg('F', 'ALGELINE4_6', 0, ' ', 1,&
-                        vali, 2, valr)
+            call utmess('F', 'ALGELINE4_6', si=vali, nr=2, valr=valr)
         else if (istop.eq.2) then
             iret = 1
         else

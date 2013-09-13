@@ -17,7 +17,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
 !
@@ -47,7 +47,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     character(len=8) :: k8b
     character(len=8) :: nomnoe
     character(len=24) :: nomgr, magrno, manono, magrma, manoma
-    real(kind=8) ::  zero, x(8), y(8), z(8), rigi(6)
+    real(kind=8) :: zero, x(8), y(8), z(8), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
     logical :: lfonc
     integer :: iarg
@@ -126,7 +126,9 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                     nbret=ncg)
     else
         call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=0, nbret=ncf)
-        if (ncf .eq. 0) call u2mess('F', 'MODELISA6_33')
+        if (ncf .eq. 0) then
+            call utmess('F', 'MODELISA6_33')
+        endif
         call wkvect('&&RAIRE2.FONGRO', 'V V K8', nbgr, ifongr)
         lfonc = .true.
         call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=nbgr, vect=zk8(ifongr),&
@@ -192,7 +194,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                 b(2) = y(4) - y(2)
                 b(3) = z(4) - z(2)
             else
-                call u2mess('F', 'MODELISA6_34')
+                call utmess('F', 'MODELISA6_34')
             endif
             call provec(a, b, c)
             surf=ddot(3,c,1,c,1)

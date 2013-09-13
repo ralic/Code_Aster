@@ -1,14 +1,13 @@
 subroutine dxeffi(option, nomte, pgl, cont, ind,&
                   effint)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dxdmul.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/elref5.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: pgl(3, 3), cont(*), effint(*)
     character(len=16) :: nomte
     character(len=*) :: option
@@ -64,13 +63,15 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
 !     --------------------------------------------------------
     if (nomte .ne. 'MEDKTR3 ' .and. nomte .ne. 'MEDSTR3 ' .and. nomte .ne. 'MEDKQU4 ' .and.&
         nomte .ne. 'MEDSQU4 ' .and. nomte .ne. 'MEQ4QU4 ' .and. nomte .ne. 'MET3TR3 ') then
-        call u2mesk('F', 'ELEMENTS_34', 1, nomte)
+        call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcon = 6
     nbcou = zi(jnbspi-1+1)
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_46')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_46')
+    endif
 !
 !
     multic = 0

@@ -46,7 +46,6 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 !
 #include "jeveux.h"
-!-----------------------------------------------------------------------
 #include "asterfort/convnu.h"
 #include "asterfort/copcvn.h"
 #include "asterfort/dismoi.h"
@@ -60,10 +59,10 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+!-----------------------------------------------------------------------
     integer :: i, iadval, ibid, ier, inord, irt, lmat
     integer :: ltcham, ltcvn, nbdef, nbfor, nbpabm, neq, neqr
 !
@@ -133,11 +132,11 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
         call rsexch(' ', nomres, depl, inord, chamno,&
                     ier)
         if (ier .eq. 0) then
-            call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+            call utmess('A', 'ALGORITH2_64', sk=chamno)
         else if (ier .eq. 100) then
             call vtcrea(chamno, crefe, 'G', 'R', neqr)
         else
-            call u2mess('F', 'ALGORITH2_65')
+            call utmess('F', 'ALGORITH2_65')
         endif
 !
 ! ----- INITIALISATION DU SECOND MEMBRE

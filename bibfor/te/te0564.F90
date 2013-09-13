@@ -47,14 +47,14 @@ subroutine te0564(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: elrefe
     character(len=16) :: nomte, option
     real(kind=8) :: jac, jacpoi, zero
@@ -130,7 +130,7 @@ subroutine te0564(option, nomte)
 !       --------
             jac = sqrt(dxdk*dxdk+dydk*dydk)
             if (jac .le. r8prem()) then
-                call u2mess('F', 'ELEMENTS4_34')
+                call utmess('F', 'ELEMENTS4_34')
             endif
             jacpoi = jac*zr(ipoids+ipg-1)
 !
@@ -204,7 +204,7 @@ subroutine te0564(option, nomte)
 !       --------
             jac = sqrt(dxdk*dxdk+dydk*dydk)
             if (jac .le. r8prem()) then
-                call u2mess('F', 'ELEMENTS4_34')
+                call utmess('F', 'ELEMENTS4_34')
             endif
             jacpoi = jac*zr(ipoids+ipg-1)
 !

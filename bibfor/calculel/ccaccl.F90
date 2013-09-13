@@ -4,7 +4,6 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -18,8 +17,8 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbpain, codret
     character(len=8) :: modele, resuin, mateco, carael
     character(len=8) :: lipain(*)
@@ -72,17 +71,17 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
     logical :: exicar
 !
     integer :: iret1, iret2, ibid, kparin
-    integer ::  ipara, inume, nbsp
+    integer :: ipara, inume, nbsp
 !
     real(kind=8) :: r8b
 !
     complex(kind=8) :: cbid
 !
-    character(len=2) ::  kbid
+    character(len=2) :: kbid
     character(len=8) :: k8b, noma, curpar, carae2, parain
-    character(len=16) ::  concep, nomcmd
-    character(len=19) ::  compor, compo2, canbva
-    character(len=24) ::  chnlin
+    character(len=16) :: concep, nomcmd
+    character(len=19) :: compor, compo2, canbva
+    character(len=24) :: chnlin
     character(len=24) :: chcara(18)
 !
     call jemarq()
@@ -104,7 +103,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 !
     if (option .eq. 'SIEQ_ELGA') then
         if (typesd .eq. 'FOURIER_ELAS') then
-            call u2mesk('F', 'CALCULEL6_83', 1, option)
+            call utmess('F', 'CALCULEL6_83', sk=option)
         endif
     endif
 !
@@ -134,7 +133,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 20      continue
         call exisd('CARTE', compor, iret2)
         if (iret2 .ne. 1) then
-            call u2mess('A', 'CALCULEL2_86')
+            call utmess('A', 'CALCULEL2_86')
             codret=1
             goto 30
 !

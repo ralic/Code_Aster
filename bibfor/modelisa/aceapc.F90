@@ -24,9 +24,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 #include "asterfort/orien2.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomu, noma
@@ -197,8 +196,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                         ier = ier + 1
                         vali = ioc
                         valk (1) = zk24(jdls)
-                        call u2mesg('E', 'MODELISA8_9', 2, valk, 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('E', 'MODELISA8_9', nk=2, valk=valk, si=vali)
                         xrc1 = zero
                     endif
                     phi = 2.d0*asin(dm/xrc1)
@@ -247,8 +245,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                         vali = ioc
                         valk (1) = zk24(jdls)
                         valk (2) = ' '
-                        call u2mesg('E', 'MODELISA8_10', 2, valk, 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('E', 'MODELISA8_10', nk=2, valk=valk, si=vali)
                     endif
                     phis2 = pi / 2.d0 - asin( dm / tx1 )
                     rr = dm / sin( phis2 )
@@ -334,8 +331,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                         vali = ioc
                         valk (1) = zk24(jdls)
                         valk (2) = ' '
-                        call u2mesg('E', 'MODELISA8_11', 2, valk, 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('E', 'MODELISA8_11', nk=2, valk=valk, si=vali)
                         xrc1 = zero
                     endif
                     phi = 2.d0*asin(dm/xrc1)
@@ -381,8 +377,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                         vali = ioc
                         valk (1) = zk24(jdls)
                         valk (2) = ' '
-                        call u2mesg('E', 'MODELISA8_10', 2, valk, 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('E', 'MODELISA8_10', nk=2, valk=valk, si=vali)
                     endif
                     phis2 = pi / 2.d0 - asin( dm / tx1 )
                     rr = dm / sin( phis2 )
@@ -435,7 +430,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
     call jedetr(tmpnar)
     call jedetr(tmpvar)
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA_13')
+        call utmess('F', 'MODELISA_13')
     endif
 !
     call jedema()

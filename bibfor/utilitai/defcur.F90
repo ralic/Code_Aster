@@ -29,7 +29,6 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 !     IN  : MONMAI : NOM DU MAILLAGE.
 !     IN  : NM     : NOMBRE DE MAILLES.
 #include "jeveux.h"
-!
 #include "asterfort/i2extf.h"
 #include "asterfort/i2sens.h"
 #include "asterfort/i2tgrm.h"
@@ -45,9 +44,10 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/prfcur.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vefcur.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ptch, pnoe, nb, nv
     real(kind=8) :: vecr1(nb), vecr2(nv)
     character(len=2) :: prolgd
@@ -80,7 +80,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 !
     call jeexin(cooabs, iexi)
     if (iexi .eq. 0) then
-        call u2mess('F', 'UTILITAI_46')
+        call utmess('F', 'UTILITAI_46')
     endif
 !     --- CREATION D OBJETS TEMPORAIRES ---
 !
@@ -114,7 +114,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
             nbpoi1=nbpoi1+1
             zi(ima1+nbpoi1-1)=im
         else
-            call u2mess('F', 'MODELISA_2')
+            call utmess('F', 'MODELISA_2')
         endif
 12  end do
     conseg='&&DEFOCU.CONNEX'

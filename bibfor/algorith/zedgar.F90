@@ -23,7 +23,7 @@ subroutine zedgar(matos, tm, tp, instp, dinst,&
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zevolu.h"
     integer :: matos
     real(kind=8) :: tm, tp, instp, dinst, vim(4), vip(4)
@@ -278,7 +278,7 @@ subroutine zedgar(matos, tm, tp, instp, dinst,&
             if (abs(g) .le. 1.d-06) goto 100
 !
             if (dg .eq. 0.d0) then
-                call u2mess('F', 'ALGORITH16_96')
+                call utmess('F', 'ALGORITH16_96')
             endif
             zp = zp - g/dg
             if (zp .le. zinf .or. zp .ge. zsup) zp=(zinf+zsup)/2.d0

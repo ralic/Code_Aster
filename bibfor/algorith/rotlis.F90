@@ -43,7 +43,6 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/exmali.h"
 #include "asterfort/intet0.h"
@@ -61,7 +60,8 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 #include "asterfort/mgutdm.h"
 #include "asterfort/pmppr.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
 !
 !
 !   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
@@ -89,7 +89,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 kbid, ierd)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
     ntail=nbcmpm**2

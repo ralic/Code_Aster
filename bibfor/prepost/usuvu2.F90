@@ -36,10 +36,10 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/usuban.h"
 #include "asterfort/usukwu.h"
 #include "asterfort/usupu2.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: vusur(*), temps(*), para(7), fn(*), vg(*), coef(*), ang(*)
     integer :: nbinst, nbpair
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
@@ -130,7 +130,7 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
         call usukwu(nbpt, fn, vg, para, w,&
                     iret)
         if (iret .eq. 10) then
-            call u2mess('F', 'PREPOST4_85')
+            call utmess('F', 'PREPOST4_85')
         endif
         do 20 i = 1, nbinst
             vusur(i) = para(1) * w * puusur * temps(i)
@@ -199,8 +199,8 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
         xd = xs / v0
         if (xd .gt. 1.d0) then
             iret = 10
-            call u2mess('I', 'PREPOST4_86')
-            call u2mess('I', 'PREPOST4_87')
+            call utmess('I', 'PREPOST4_86')
+            call utmess('I', 'PREPOST4_87')
             goto 9999
         endif
         x1 = ( 1.d0 - xd ) / xn

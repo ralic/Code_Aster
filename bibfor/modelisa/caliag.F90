@@ -45,9 +45,7 @@ subroutine caliag(fonrez, chargz)
 #include "asterfort/jexnum.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxcaps.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: fonrez, chargz
@@ -71,7 +69,7 @@ subroutine caliag(fonrez, chargz)
     integer :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
     parameter (nmocl=300)
-    real(kind=8) ::  beta
+    real(kind=8) :: beta
     complex(kind=8) :: betac
     logical :: dnor
     character(len=2) :: typlag
@@ -175,8 +173,7 @@ subroutine caliag(fonrez, chargz)
         if (nddl1 .ne. nmult1) then
             vali (1) = nddl1
             vali (2) = nmult1
-            call u2mesg('F', 'MODELISA8_43', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'MODELISA8_43', ni=2, vali=vali)
         endif
 !
         call jecroc(jexnum(nomdd1, iocc))
@@ -198,7 +195,9 @@ subroutine caliag(fonrez, chargz)
 ! --- CHAQUE COUPLE DE LA LIST(UN GREL PAR COUPLE)             ---
 !
         if ((nddl1.eq.1) .and. (zk8(iddl1).eq.'DNOR')) then
-            if (.not.dnor) call u2mess('F', 'MODELISA2_94')
+            if (.not.dnor) then
+                call utmess('F', 'MODELISA2_94')
+            endif
         endif
 !
 ! --- LECTURE DES DDLS IMPOSES SUR LA LISTE 2 ---
@@ -214,7 +213,7 @@ subroutine caliag(fonrez, chargz)
         if (nddl2 .ne. nmult2) then
             vali (1) = nddl2
             vali (2) = nmult2
-            call u2mesi('F', 'MODELISA8_44', 2, vali)
+            call utmess('F', 'MODELISA8_44', ni=2, vali=vali)
         endif
 !
         call jecroc(jexnum(nomdd2, iocc))
@@ -232,7 +231,9 @@ subroutine caliag(fonrez, chargz)
         call jeveuo(jexnum(coef2, iocc), 'E', imult2)
         call getvr8(motfac, 'COEF_MULT_2', iocc=iocc, nbval=nddl2, vect=zr(imult2))
         if ((nddl2.eq.1) .and. (zk8(iddl2).eq.'DNOR')) then
-            if (.not.dnor) call u2mess('F', 'MODELISA2_94')
+            if (.not.dnor) then
+                call utmess('F', 'MODELISA2_94')
+            endif
         endif
     end do
 !
@@ -259,8 +260,7 @@ subroutine caliag(fonrez, chargz)
     if (nddla .gt. nmocl) then
         vali (1) = nmocl
         vali (2) = nddla
-        call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
     endif
     do i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
@@ -357,7 +357,7 @@ subroutine caliag(fonrez, chargz)
 !
             if (iexcm1 .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
-                call u2mesk('F', 'CHARGES2_33', 1, nomno1)
+                call utmess('F', 'CHARGES2_33', sk=nomno1)
             endif
             zi(idnbn-1+2* (j-1)+1) = 3
             if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg1),icmpz))) then
@@ -366,7 +366,7 @@ subroutine caliag(fonrez, chargz)
 !
             if (iexcm2 .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
-                call u2mesk('F', 'CHARGES2_33', 1, nomno2)
+                call utmess('F', 'CHARGES2_33', sk=nomno2)
             endif
             zi(idnbn-1+2* (j-1)+2) = 3
             if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg2),icmpz))) then
@@ -449,7 +449,7 @@ subroutine caliag(fonrez, chargz)
 !
         call infniv(ifm, niv)
         if (niv .eq. 2) then
-            call u2mesi('I', 'CHARGES2_35', 1, iocc)
+            call utmess('I', 'CHARGES2_35', si=iocc)
             do j = 1, nbno
                 ino1 = zi(idconi+2* (j-1)+1)
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
@@ -457,7 +457,7 @@ subroutine caliag(fonrez, chargz)
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
                 valk(1) = nomno1
                 valk(2) = nomno2
-                call u2mesk('I', 'CHARGES2_36', 2, valk)
+                call utmess('I', 'CHARGES2_36', nk=2, valk=valk)
             enddo
         endif
 !

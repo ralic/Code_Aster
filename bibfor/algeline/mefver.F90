@@ -3,8 +3,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
     implicit none
 !
 #include "asterc/r8pi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim(14)
     real(kind=8) :: som(9), xint(*), yint(*), rint(*)
 ! ----------------------------------------------------------------------
@@ -84,7 +83,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
             norm = (ux(i)*ux(i)+uy(i)*uy(i)) * (ux(1)*ux(1)+uy(1)*uy( 1))
             norm = sqrt(norm)
             if (norm .eq. 0.d0) then
-                call u2mess('F', 'ALGELINE_88')
+                call utmess('F', 'ALGELINE_88')
             endif
             a(i-1) = acos((ux(i)*ux(1)+uy(i)*uy(1)) / norm)
             a1 = asin((ux(1)*uy(i)-uy(1)*ux(i)) / norm)
@@ -116,7 +115,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
             ind(2) = 3
             ind(3) = 2
         else
-            call u2mess('F', 'ALGELINE_89')
+            call utmess('F', 'ALGELINE_89')
         endif
 !
         do 30 i = 1, 3
@@ -146,11 +145,12 @@ subroutine mefver(ndim, som, xint, yint, rint)
         norm = (ux(2)*ux(2)+uy(2)*uy(2)) * (ux(1)*ux(1)+uy(1)*uy(1))
         norm = sqrt(norm)
         if (norm .eq. 0.d0) then
-            call u2mess('F', 'ALGELINE_88')
+            call utmess('F', 'ALGELINE_88')
         endif
         a(1) = acos((ux(2)*ux(1)+uy(2)*uy(1)) / norm)
-        if ((abs(a(1)-pis2)+abs(vect(1))+abs(vect(2))) .gt. epsit) call u2mess('F',&
-                                                                               'ALGELINE_89')
+        if ((abs(a(1)-pis2)+abs(vect(1))+abs(vect(2))) .gt. epsit) then
+            call utmess('F', 'ALGELINE_89')
+        endif
 !
 !
 ! ---    VERIFICATION DE L INCLUSION DES CYLINDRES DANS L ENCEINTE
@@ -168,7 +168,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
                 proj = ux(j)*(xint(i)-xsom(1)) + uy(j)*(yint(i)-ysom( 1))
                 if ((proj-rint(i)) .lt. 0.d0 .or. (proj+rint(i)) .gt. long(j)) then
                     write(note(1:3),'(I3.3)') i
-                    call u2mesk('F', 'ALGELINE_90', 1, note)
+                    call utmess('F', 'ALGELINE_90', sk=note)
 !
                 endif
 80          continue
@@ -185,7 +185,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
             diff = sqrt((xext-xint(i))**2 + (yext-yint(i))**2)
             if ((diff+rint(i)) .gt. rext) then
                 write(note(1:3),'(I3.3)') i
-                call u2mesk('F', 'ALGELINE_81', 1, note)
+                call utmess('F', 'ALGELINE_81', sk=note)
             endif
 100      continue
     endif

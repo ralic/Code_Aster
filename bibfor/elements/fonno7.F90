@@ -2,7 +2,6 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
                   hmax)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/conare.h"
@@ -13,8 +12,9 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
+!
     integer :: na, ndim
     real(kind=8) :: vecdir(3), hmax
     character(len=8) :: noma
@@ -135,7 +135,9 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
 !
 10  end do
 !
-    if (hmax .le. r8prem()) call u2mess('A', 'RUPTURE0_49')
+    if (hmax .le. r8prem()) then
+        call utmess('A', 'RUPTURE0_49')
+    endif
 !
     call jedema()
 end subroutine

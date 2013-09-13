@@ -22,7 +22,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 #include "asterfort/jemarq.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: imate
     real(kind=8) :: temp, c, diff
     character(len=16) :: comp
@@ -110,7 +110,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
         diff = valres(1)
 !
     else
-        call u2mesk('F', 'ALGORITH10_20', 1, comp)
+        call utmess('F', 'ALGORITH10_20', sk=comp)
     endif
 !
 !

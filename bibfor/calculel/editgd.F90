@@ -21,7 +21,6 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/jacopo.h"
 #include "asterfort/jedema.h"
@@ -29,8 +28,8 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: dg(*), ncmp, gd, nedit
     character(len=*) :: chinz
 ! ----------------------------------------------------------------------
@@ -95,19 +94,19 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
 100  end do
 !
     if (ico .ne. ncmp2) then
-        call u2mess('F+', 'CALCULEL6_68')
+        call utmess('F+', 'CALCULEL6_68')
         do 101 i = 1, ncmpmx
             nomcmp = zk8(nocmp-1+i)
             valk = nomcmp
-            call u2mesk('F+', 'CALCULEL6_69', 1, valk)
+            call utmess('F+', 'CALCULEL6_69', sk=valk)
 101      continue
-        call u2mess('F+', 'CALCULEL6_70')
+        call utmess('F+', 'CALCULEL6_70')
         do 102 i = 1, ncmp
             nomcmp = zk8(wnocmp-1+i)
             valk = nomcmp
-            call u2mesk('F+', 'CALCULEL6_71', 1, valk)
+            call utmess('F+', 'CALCULEL6_71', sk=valk)
 102      continue
-        call u2mess('F', 'VIDE_1')
+        call utmess('F', 'VIDE_1')
     endif
 !
     call jedema()

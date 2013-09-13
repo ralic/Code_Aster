@@ -25,7 +25,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 #include "asterfort/jeimpm.h"
 #include "asterfort/jjldyn.h"
 #include "asterfort/jxlocs.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: lonoi, lty, itab(*), jitab, iadmi, iadyn
     character(len=*) :: genri, typei, ci
 ! ----------------------------------------------------------------------
@@ -129,7 +129,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
             ival(3)=nint(mcdyn*lois)/unmega
             ival(4)=(ltot*lois)/unmega
             call jeimpm(6)
-            call u2mesi('F', 'JEVEUX_62', 4, ival)
+            call utmess('F', 'JEVEUX_62', ni=4, vali=ival)
         else
 !
 !  ON APPELLE JJLDYN AVEC L'ARGUMENT -2 POUR EVITER DE REACTUALISER
@@ -158,7 +158,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
             call jeimpm(6)
             ival(1)=lsic*lois
             ival(2)=ltot*lois
-            call u2mesi('F', 'JEVEUX_60', 2, ival)
+            call utmess('F', 'JEVEUX_60', ni=2, vali=ival)
         else
             call jjldyn(2, -2, ltot)
             if (mcdyn+lsic .gt. vmxdyn) then

@@ -40,6 +40,7 @@ subroutine op0023()
 #include "asterfort/trresu.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: tstnan, resnan
     integer :: ific, nocc, n
     logical :: nfac
@@ -70,7 +71,7 @@ subroutine op0023()
     if (nocc .ne. 0) then
         call trjeve(ific, nocc)
         if (nfac) then
-            call u2mess('F', 'CALCULEL6_96')
+            call utmess('F', 'CALCULEL6_96')
         else
             nfac=.true.
         endif
@@ -83,7 +84,7 @@ subroutine op0023()
     if (nocc .ne. 0) then
         call trchno(ific, nocc)
         if (nfac) then
-            call u2mess('F', 'CALCULEL6_96')
+            call utmess('F', 'CALCULEL6_96')
         else
             nfac=.true.
         endif
@@ -95,7 +96,7 @@ subroutine op0023()
     if (nocc .ne. 0) then
         call trchel(ific, nocc)
         if (nfac) then
-            call u2mess('F', 'CALCULEL6_96')
+            call utmess('F', 'CALCULEL6_96')
         else
             nfac=.true.
         endif
@@ -107,7 +108,7 @@ subroutine op0023()
     if (nocc .ne. 0) then
         call trcart(ific, nocc)
         if (nfac) then
-            call u2mess('F', 'CALCULEL6_96')
+            call utmess('F', 'CALCULEL6_96')
         else
             nfac=.true.
         endif
@@ -119,7 +120,7 @@ subroutine op0023()
     if (nocc .ne. 0) then
         call trresu(ific, nocc)
         if (nfac) then
-            call u2mess('F', 'CALCULEL6_96')
+            call utmess('F', 'CALCULEL6_96')
         else
             nfac=.true.
         endif
@@ -131,7 +132,7 @@ subroutine op0023()
     if (nocc .ne. 0) then
         call trgene(ific, nocc)
         if (nfac) then
-            call u2mess('F', 'CALCULEL6_96')
+            call utmess('F', 'CALCULEL6_96')
         else
             nfac=.true.
         endif

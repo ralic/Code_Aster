@@ -23,7 +23,7 @@ function armin(nomaz)
 #include "asterfort/jemarq.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomaz
 !
 ! ----------------------------------------------------------------------
@@ -68,10 +68,10 @@ function armin(nomaz)
         if (ier .eq. 0) then
             armin = arete
         else
-            call u2mess('F', 'MODELISA2_13')
+            call utmess('F', 'MODELISA2_13')
         endif
     else
-        call u2mess('F', 'MODELISA3_18')
+        call utmess('F', 'MODELISA3_18')
     endif
 !
     call jedema()

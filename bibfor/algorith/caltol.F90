@@ -28,7 +28,7 @@ subroutine caltol(np3, nbnl, typch, nbseg, rc,&
 ! ARGUMENTS
 ! ---------
 #include "asterc/r8pi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: np3, nbnl, typch(*), nbseg(*)
     real(kind=8) :: rc(np3, *), theta(np3, *), tol, tolc, toln, tolv
 !
@@ -69,7 +69,7 @@ subroutine caltol(np3, nbnl, typch, nbseg, rc,&
                     r = abs(r2*b1/sqrt(a1*a1+b1*b1))
                     if (r .lt. jeu) jeu = r
                 else
-                    call u2mess('F', 'ALGORITH_73')
+                    call utmess('F', 'ALGORITH_73')
                 endif
 20          continue
         endif

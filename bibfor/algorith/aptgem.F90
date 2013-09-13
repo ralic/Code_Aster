@@ -22,7 +22,6 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/apcoma.h"
 #include "asterfort/apcond.h"
@@ -39,7 +38,8 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mmctan.h"
 #include "asterfort/mmtann.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=24) :: defico
     character(len=19) :: sdappa, newgeo
     character(len=8) :: noma
@@ -188,7 +188,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
             call mmtann(ndimg, tau1, tau2, niverr)
 !
             if (niverr .eq. 1) then
-                call u2mesk('F', 'APPARIEMENT_14', 2, valk)
+                call utmess('F', 'APPARIEMENT_14', nk=2, valk=valk)
             endif
 !
 ! ------- STOCKAGE DES TANGENTES

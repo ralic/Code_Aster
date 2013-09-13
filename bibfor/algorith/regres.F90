@@ -1,7 +1,6 @@
 subroutine regres(nomres, mailsk, result, pfchn2)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -15,8 +14,9 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, mailsk, result
 !***********************************************************************
 ! ======================================================================
@@ -105,8 +105,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         call wkvect(objet, 'G V I', nddl, lnunew)
     else
         valk(1) = objet
-        call u2mesg('F', 'ALGORITH14_30', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_30', sk=valk(1))
     endif
 !
     objet = pfchn2//'.NEQU'
@@ -124,8 +123,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         call jeecra(jexnum(objet, 1), 'LONUTI', nnodes*ndi)
     else
         valk(1) = objet
-        call u2mesg('F', 'ALGORITH14_30', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_30', sk=valk(1))
     endif
 !
 !
@@ -181,8 +179,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         call wkvect(objet, 'G V I', nddl*2, ldeeq)
     else
         valk(1) = objet
-        call u2mesg('F', 'ALGORITH14_30', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_30', sk=valk(1))
     endif
     ndeeq = 0
     do 70 i = 1, nnodes

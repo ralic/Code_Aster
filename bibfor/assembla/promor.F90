@@ -22,7 +22,7 @@ subroutine promor(nuz, base)
 #include "asterfort/moinsr.h"
 #include "asterfort/nbec.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/voiuti.h"
 #include "asterfort/wkvect.h"
@@ -60,9 +60,9 @@ subroutine promor(nuz, base)
     character(len=14) :: nu
     logical :: lfeti, ldist, ldgrel, lmadis
     character(len=19) :: nomlig
-    integer ::  iconx1, iconx2, ili, iadlie, iel, iadnem
-    integer ::  idprn1
-    integer ::  idprn2, ifm, niv, iret, ibid, ier, nnoe, jnueq
+    integer :: iconx1, iconx2, ili, iadlie, iel, iadnem
+    integer :: idprn1
+    integer :: idprn2, ifm, niv, iret, ibid, ier, nnoe, jnueq
     integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1
     integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
     integer :: iasssa, ierd, iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
@@ -101,7 +101,7 @@ subroutine promor(nuz, base)
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
 #define zzliel(ili,igrel,j) zi(zi(iadlie+3*(ili-1)+1)-1+ \
-        zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
+    zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
@@ -112,13 +112,13 @@ subroutine promor(nuz, base)
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
 #define zznsup(ili,iel) zi(zi(iadnem+3*(ili-1)+2)+iel)- \
-        zi(zi(iadnem+3*(ili-1)+2)+iel-1)-1
+    zi(zi(iadnem+3*(ili-1)+2)+iel-1)-1
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE TEMP.
 !     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
 #define zznelg(ili,igrel) zi(zi(iadlie+3*(ili-1)+2)+igrel)- \
-        zi(zi(iadlie+3*(ili-1)+2)+igrel-1)-1
+    zi(zi(iadlie+3*(ili-1)+2)+igrel-1)-1
 !
 !---- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DU
 !     REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -128,7 +128,7 @@ subroutine promor(nuz, base)
 !     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 !
 #define zznema(ili,iel,j) zi(zi(iadnem+3*(ili-1)+1)-1+ \
-        zi(zi(iadnem+3*(ili-1)+2)+iel-1)+j-1)
+    zi(zi(iadnem+3*(ili-1)+2)+iel-1)+j-1)
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS NU.LILI DE LA S.D. NUME_DDL ET A LEURS ADRESSES
@@ -140,7 +140,7 @@ subroutine promor(nuz, base)
 !     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
 !
 #define zzprno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ \
-        (nunoel-1)*(nec+2)+l-1)
+    (nunoel-1)*(nec+2)+l-1)
 !----------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -487,8 +487,7 @@ subroutine promor(nuz, base)
     if ((neqx.ne.nequ) .and. (.not.lmadis)) then
         vali(1)=nequ
         vali(2)=neqx
-        call u2mesg('F', 'ASSEMBLA_65', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ASSEMBLA_65', ni=2, vali=vali)
     endif
 !
 !
@@ -523,8 +522,7 @@ subroutine promor(nuz, base)
         rcoef = ncoef
         requ = nequ
         valr(1) = (100.d0*(2.d0*rcoef-requ)) / (requ*requ)
-        call u2mesg('I', 'FACTOR_2', 0, ' ', 3,&
-                    vali, 1, valr)
+        call utmess('I', 'FACTOR_2', ni=3, vali=vali, sr=valr(1))
     endif
 !
     if (lfeti) call infbav()

@@ -2,8 +2,7 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
     implicit none
 #include "jeveux.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer, intent(in) :: iarret, nbres
     integer, intent(in) :: icodre(nbres)
     character(len=*), intent(in) :: nomres(nbres)
@@ -38,20 +37,18 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
                 ier = ier + 1
                 para = nomres(ires)
                 valk = para
-                call u2mesg('E+', 'MODELISA9_77', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E+', 'MODELISA9_77', sk=valk)
                 if (iarret .eq. 1) then
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3)(1:8)
                     valk = nomail
-                    call u2mesg('E+', 'MODELISA9_78', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('E+', 'MODELISA9_78', sk=valk)
                 endif
-                call u2mess('E', 'VIDE_1')
+                call utmess('E', 'VIDE_1')
             endif
 200      continue
         if (ier .ne. 0) then
-            call u2mess('F', 'MODELISA6_4')
+            call utmess('F', 'MODELISA6_4')
         endif
     endif
 !

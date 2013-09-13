@@ -41,8 +41,7 @@ subroutine op0003()
 #include "asterfort/lxlgut.h"
 #include "asterfort/ordonn.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: i, iret, ibid, ival, jval, jfon, ifm
     integer :: jpar, lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
@@ -83,11 +82,11 @@ subroutine op0003()
 !
     if (nbvc .ne. 0) then
         if (nbvc .lt. 3) then
-            call u2mess('F', 'UTILITAI2_66')
+            call utmess('F', 'UTILITAI2_66')
         endif
         nbcoup = nbvc / 3
         if (mod(nbvc,3) .ne. 0) then
-            call u2mess('F', 'UTILITAI2_67')
+            call utmess('F', 'UTILITAI2_67')
         endif
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvc, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
@@ -103,11 +102,11 @@ subroutine op0003()
         endif
     else if (nbvr.ne.0 .and. nbln.eq.0) then
         if (nbvr .lt. 2) then
-            call u2mess('F', 'UTILITAI2_66')
+            call utmess('F', 'UTILITAI2_66')
         endif
         nbcoup = nbvr / 2
         if (mod(nbvr,2) .ne. 0) then
-            call u2mess('F', 'UTILITAI2_68')
+            call utmess('F', 'UTILITAI2_68')
         endif
         call wkvect('&&OP0003.TEMP.PARA', 'V V R', nbvr, lpara)
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbcoup, lpar2)
@@ -123,12 +122,12 @@ subroutine op0003()
         endif
     else if (nbla.ne.0) then
         if (nbla .lt. 2) then
-            call u2mess('F', 'UTILITAI2_66')
+            call utmess('F', 'UTILITAI2_66')
         endif
         call getvr8(' ', 'ORDONNEE', nbval=0, nbret=nblo)
         nblo = abs(nblo)
         if (nblo .ne. nbla) then
-            call u2mess('F', 'UTILITAI2_77')
+            call utmess('F', 'UTILITAI2_77')
         endif
         call wkvect('&&OP0003.TEMP.PAR2', 'V V R', nbla, lpar2)
         call getvr8(' ', 'ABSCISSE', nbval=nbla, vect=zr(lpar2), nbret=l)
@@ -185,7 +184,7 @@ subroutine op0003()
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nblv, jval)
         call wkvect('&&OP0003.NOEUDS_LUES', 'V V K8', nbln, jnoe)
         if (nblv .ne. nbln) then
-            call u2mess('F', 'UTILITAI2_69')
+            call utmess('F', 'UTILITAI2_69')
         endif
         call getvr8(' ', 'VALE_Y', nbval=nblv, vect=zr(jval), nbret=n)
         call getvem(nommai, 'NOEUD', ' ', 'NOEUD_PARA', 0,&
@@ -237,12 +236,12 @@ subroutine op0003()
             if (nbcou2 .lt. nbcoup) then
                 valk(1) = listfo
                 valk(2) = listpa
-                call u2mesk('F', 'UTILITAI2_70', 2, valk)
+                call utmess('F', 'UTILITAI2_70', nk=2, valk=valk)
             endif
             if (nbcoup .lt. nbcou2) then
                 valk(1) = listpa
                 valk(2) = listfo
-                call u2mesk('F', 'UTILITAI2_70', 2, valk)
+                call utmess('F', 'UTILITAI2_70', nk=2, valk=valk)
             endif
         endif
         nbval = nbcoup * 2
@@ -267,10 +266,10 @@ subroutine op0003()
 !     JE NE VOIS PAS A QUOI CELA PEUT CORRESPONDRE SUR UNE FONCTION
 !     A VALEURS COMPLEXES, MAIS AUTANT LE LAISSER POSSIBLE
     if (interp(2) .eq. 'LOG' .and. (nbvc.ne.0)) then
-        call u2mess('F', 'UTILITAI5_92')
+        call utmess('F', 'UTILITAI5_92')
     endif
     if ((interp(1).eq.'LOG'.and.min1.le.0.d0) .or. (interp(2).eq.'LOG'.and.(min2.le.0.d0))) then
-        call u2mess('F', 'UTILITAI2_71')
+        call utmess('F', 'UTILITAI2_71')
     endif
 !
 !     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---

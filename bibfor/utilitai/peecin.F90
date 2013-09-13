@@ -35,8 +35,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -122,7 +121,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
         10).eq.'DYNA_TRANS') then
             noparr(2) = 'INST'
         else
-            call u2mess('F', 'UTILITAI3_68')
+            call utmess('F', 'UTILITAI3_68')
         endif
     endif
 !
@@ -144,9 +143,9 @@ subroutine peecin(resu, modele, mate, cara, nh,&
     if (nd .ne. 0) then
         if (nf .eq. 0) then
             xfreq = 1.d0
-            call u2mess('I', 'UTILITAI3_69')
+            call utmess('I', 'UTILITAI3_69')
         else
-            call u2mess('I', 'UTILITAI3_70')
+            call utmess('I', 'UTILITAI3_70')
             xfreq = (r8depi()*xfreq)**2
         endif
         nbordr = 1
@@ -172,7 +171,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
             call dismoi('C', 'SUR_OPTION', nommas, 'MATR_ASSE', ibid,&
                         opt, ie)
             if (ie .ne. 0) then
-                call u2mess('A', 'UTILITAI3_71')
+                call utmess('A', 'UTILITAI3_71')
             else
                 if (opt(1:14) .eq. 'MASS_MECA_DIAG') inume = 0
             endif
@@ -184,7 +183,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
         call getvtx(option(1:9), 'OPTION', iocc=1, scal=optmas, nbret=nt)
         if (optmas(1:14) .eq. 'MASS_MECA_DIAG') then
             inume = 0
-            call u2mess('I', 'UTILITAI3_72')
+            call utmess('I', 'UTILITAI3_72')
         endif
 !
         call wkvect(kins, 'V V R', nbordr, jins)
@@ -284,17 +283,17 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                 chamgd = ' '
                 chtemp = depla
             else
-                call u2mess('F', 'UTILITAI3_73')
+                call utmess('F', 'UTILITAI3_73')
             endif
         else if (typcha(1:9).eq.'CHAM_ELEM') then
             if (nomgd(1:4) .eq. 'ENER') then
                 chelem = depla
                 goto 30
             else
-                call u2mess('F', 'UTILITAI3_73')
+                call utmess('F', 'UTILITAI3_73')
             endif
         else
-            call u2mess('F', 'UTILITAI3_73')
+            call utmess('F', 'UTILITAI3_73')
         endif
         chelem = '&&PEECIN.CHAM_ELEM'
         ibid = 0
@@ -341,12 +340,12 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                     nomgrm = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_46', 1, nomgrm)
+                        call utmess('A', 'UTILITAI3_46', sk=nomgrm)
                         goto 40
                     endif
                     call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_47', 1, nomgrm)
+                        call utmess('A', 'UTILITAI3_47', sk=nomgrm)
                         goto 40
                     endif
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
@@ -374,7 +373,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_49', 1, nommai)
+                        call utmess('A', 'UTILITAI3_49', sk=nommai)
                         goto 50
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)

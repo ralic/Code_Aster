@@ -64,8 +64,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
@@ -84,7 +83,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod
     logical :: tousno, multap, leffor, prems
-    integer ::  iexi
+    integer :: iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadesc, iarchi, ibid, ich, id
@@ -126,7 +125,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 10      continue
         xnorm = sqrt(xnorm)
         if (xnorm .lt. r8prem()) then
-            call u2mess('F', 'ALGORITH9_81')
+            call utmess('F', 'ALGORITH9_81')
         endif
         do 12 id = 1, nbdir
             depl(id) = depl(id) / xnorm
@@ -293,7 +292,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     call rstran(interp, trange, ' ', 1, kinst,&
                 knume, nbinst, irou)
     if (irou .ne. 0) then
-        call u2mess('F', 'UTILITAI4_24')
+        call utmess('F', 'UTILITAI4_24')
     endif
     call jeexin(kinst, ir)
     if (ir .gt. 0) then
@@ -324,7 +323,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         (&
         foci .eq. 0 .and. focf .eq. 0 .and. fomi .eq. 0 .and. fomf .eq. 0 .and. fomo .eq. 0&
         )) then
-        call u2mess('F', 'ALGORITH10_95')
+        call utmess('F', 'ALGORITH10_95')
     endif
     call jeveuo(trange//'.DISC', 'L', idinsg)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
@@ -393,7 +392,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call rsexch(' ', nomres, type(ich), iarchi, chamno,&
                         ir)
             if (ir .eq. 0) then
-                call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                call utmess('A', 'ALGORITH2_64', sk=chamno)
             else if (ir .eq. 100) then
                 if (tousno) then
                     if (mode .eq. blanc) then

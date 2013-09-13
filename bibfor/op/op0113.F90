@@ -51,7 +51,7 @@ subroutine op0113()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcodec.h"
 #include "asterfort/xmolig.h"
@@ -167,7 +167,7 @@ subroutine op0113()
         endif
 230  end do
     if (nelt .eq. 0) then
-        call u2mess('F', 'XFEM2_51')
+        call utmess('F', 'XFEM2_51')
     endif
 !
 !-----------------------------------------------------------------------

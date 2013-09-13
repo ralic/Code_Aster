@@ -23,7 +23,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
 #include "asterfort/jxecrb.h"
 #include "asterfort/jxlirb.h"
 #include "asterfort/jxouvr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ic, iadmi, iaddi(2), lso, idco, idos
 ! ----------------------------------------------------------------------
 ! ECRITURE D'UN SEGMENT DE VALEUR
@@ -133,8 +133,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                     endif
                     goto 104
 101              continue
-                call u2mesg('F', 'JEVEUX_42', 1, nombas(ic), 1,&
-                            nblmax(ic), 0, r8bid)
+                call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax(ic))
 104              continue
                 iitecr(ic) = kd
                 iusadi(jusadi(ic)+ 3*iitecr(ic)-2) = 0
@@ -158,8 +157,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                         endif
                         goto 204
 201                  continue
-                    call u2mesg('F', 'JEVEUX_42', 1, nombas(ic), 1,&
-                                nblmax( ic), 0, r8bid)
+                    call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax( ic))
 204                  continue
                     iitecr(ic) = kd
                     iusadi(jusadi(ic)+ 3*iitecr(ic)-2) = 0
@@ -209,8 +207,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                 endif
                 goto 304
             endif
-            call u2mesg('F', 'JEVEUX_42', 1, nombas(ic), 1,&
-                        nblmax(ic), 0, r8bid)
+            call utmess('F', 'JEVEUX_42', sk=nombas(ic), si=nblmax(ic))
 304          continue
             call jxecrb(ic, kd, iadmo, lso2, idco,&
                         idos)

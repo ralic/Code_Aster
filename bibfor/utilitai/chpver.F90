@@ -34,7 +34,7 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ier, ie1, ie2
     character(len=1) :: arret
     character(len=*) :: nocham, locham, gdcham
@@ -65,8 +65,7 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
                 valk (1) = noch
                 valk (2) = loch
                 valk (3) = tych
-                call u2mesg('F', 'ELEMENTS_10', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ELEMENTS_10', nk=3, valk=valk)
             endif
         endif
     endif
@@ -82,8 +81,7 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
                 valk (1) = noch
                 valk (2) = gdch
                 valk (3) = nomgd
-                call u2mesg('F', 'ELEMENTS_37', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ELEMENTS_37', nk=3, valk=valk)
             endif
         endif
     endif

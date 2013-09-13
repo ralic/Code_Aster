@@ -23,7 +23,6 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/cfaddm.h"
 #include "asterfort/cfcoor.h"
@@ -38,7 +37,8 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo
@@ -122,7 +122,7 @@ subroutine cfapma(noma, newgeo, defico, resoco, lctfd,&
     call mmnorm(ndimg, tau1, tau2, norm, noor)
     if (noor .le. r8prem()) then
         call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
-        call u2mesk('F', 'CONTACT3_26', 1, nomnoe)
+        call utmess('F', 'CONTACT3_26', sk=nomnoe)
     endif
 !
 ! --- CALCUL DU JEU

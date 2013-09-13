@@ -1,7 +1,7 @@
 subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
                   isign, numddl, coef)
-    implicit   none
-#include "asterfort/u2mesg.h"
+    implicit none
+#include "asterfort/utmess.h"
     integer :: nbmode, neq, ddlexc(*), isign, numddl
     real(kind=8) :: vecpro(neq, *), coef(*)
     character(len=*) :: norm
@@ -70,8 +70,7 @@ subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
     else
 !
         valk = norm
-        call u2mesg('F', 'ALGELINE4_77', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_77', sk=valk)
 !
     endif
 !

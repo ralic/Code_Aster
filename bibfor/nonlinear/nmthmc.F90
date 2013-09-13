@@ -25,7 +25,6 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
 ! =====================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterfort/dismoi.h"
@@ -34,8 +33,8 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ncomel, k
     integer :: nbnvi(4)
     character(len=16) :: comp, moclef, comel(*)
@@ -164,7 +163,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
 !
                         valk(1) = comel(jj)
                         valk(2) = modeli
-                        call u2mesk('F', 'ALGORITH8_35', 2, valk)
+                        call utmess('F', 'ALGORITH8_35', nk=2, valk=valk)
                     endif
 !
                     elseif ((comel(jj)(1:13).eq.'LIQU_VAPE_GAZ').or.&
@@ -179,7 +178,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
 !
                         valk(1) = comel(jj)
                         valk(2) = modeli
-                        call u2mesk('F', 'ALGORITH8_35', 2, valk)
+                        call utmess('F', 'ALGORITH8_35', nk=2, valk=valk)
                     endif
                 else if (comel(jj)(1:9).eq.'LIQU_VAPE') then
 !
@@ -188,7 +187,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
 !
                         valk(1) = comel(jj)
                         valk(2) = modeli
-                        call u2mesk('F', 'ALGORITH8_35', 2, valk)
+                        call utmess('F', 'ALGORITH8_35', nk=2, valk=valk)
                     endif
                 else if (comel(jj)(1:16).eq.'LIQU_AD_GAZ_VAPE') then
 !
@@ -202,7 +201,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
                         .and. (modeli.ne.'#PLUSIEURS')) then
                         valk(1) = comel(jj)
                         valk(2) = modeli
-                        call u2mesk('F', 'ALGORITH8_35', 2, valk)
+                        call utmess('F', 'ALGORITH8_35', nk=2, valk=valk)
                     endif
                 endif
  5          continue
@@ -216,7 +215,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
             if (comel(jj) .eq. pothmc(ii)) then
                 thmc = comel(jj)
                 if (lthmc) then
-                    call u2mess('F', 'ALGORITH8_36')
+                    call utmess('F', 'ALGORITH8_36')
                 endif
                 lthmc = .true.
                 goto 10
@@ -229,7 +228,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
             if (comel(jj) .eq. pohydr(ii)) then
                 hydr = comel(jj)
                 if (lhydr) then
-                    call u2mess('F', 'ALGORITH8_37')
+                    call utmess('F', 'ALGORITH8_37')
                 endif
                 lhydr = .true.
                 goto 10
@@ -242,7 +241,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
             if (comel(jj) .eq. pomeca(ii)) then
                 meca = comel(jj)
                 if (lmeca) then
-                    call u2mess('F', 'ALGORITH8_38')
+                    call utmess('F', 'ALGORITH8_38')
                 endif
                 lmeca = .true.
                 goto 10
@@ -253,49 +252,49 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
 ! --- VERIFICATION DE LA COHERENCE AVEC LA RELATION DEMANDEE ----------
 ! =====================================================================
     if (.not.lthmc) then
-        call u2mess('F', 'ALGORITH8_39')
+        call utmess('F', 'ALGORITH8_39')
     endif
     if (.not.lhydr) then
-        call u2mess('F', 'ALGORITH8_40')
+        call utmess('F', 'ALGORITH8_40')
     endif
 ! =====================================================================
 ! --- PARTIE KIT_HM ---------------------------------------------------
 ! =====================================================================
     if (comp .eq. 'KIT_HM') then
         if (.not.lmeca) then
-            call u2mess('F', 'ALGORITH8_41')
+            call utmess('F', 'ALGORITH8_41')
         endif
         if (thmc .ne. 'LIQU_SATU' .and. thmc .ne. 'GAZ' .and. thmc .ne. 'LIQU_GAZ_ATM') then
             valk(1) = 'HM'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
         if (hydr .eq. 'HYDR_ENDO' .and.&
             ( meca.ne.'MAZARS' .and. meca.ne.'ENDO_ISOT_BETON' )) then
-            call u2mess('F', 'ALGORITH8_43')
+            call utmess('F', 'ALGORITH8_43')
         endif
         if (meca .eq. 'BARCELONE') then
             valk(1) = 'HM'
-            call u2mesk('F', 'ALGORITH8_44', 1, valk)
+            call utmess('F', 'ALGORITH8_44', sk=valk(1))
         endif
 ! =====================================================================
 ! --- PARTIE KIT_HHM --------------------------------------------------
 ! =====================================================================
     else if (comp.eq.'KIT_HHM') then
         if (.not.lmeca) then
-            call u2mess('F', 'ALGORITH8_41')
+            call utmess('F', 'ALGORITH8_41')
         endif
         if (thmc .ne. 'LIQU_GAZ' .and. thmc .ne. 'LIQU_VAPE_GAZ' .and. thmc .ne.&
             'LIQU_AD_GAZ_VAPE' .and. thmc .ne. 'LIQU_AD_GAZ') then
             valk(1) = 'HHM'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
         if (hydr .eq. 'HYDR_ENDO' .and.&
             ( meca.ne.'MAZARS' .and. meca.ne.'ENDO_ISOT_BETON' )) then
-            call u2mess('F', 'ALGORITH8_43')
+            call utmess('F', 'ALGORITH8_43')
         endif
         if (meca .eq. 'BARCELONE' .and. (thmc.ne.'LIQU_GAZ' .and. thmc.ne.'LIQU_VAPE_GAZ')) then
             valk(1) = 'HHM'
-            call u2mesk('F', 'ALGORITH8_44', 1, valk)
+            call utmess('F', 'ALGORITH8_44', sk=valk(1))
         endif
 ! =====================================================================
 ! --- PARTIE KIT_H ----------------------------------------------------
@@ -303,10 +302,10 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
     else if (comp.eq.'KIT_H') then
         if (lmeca) then
             valk(1) = 'H'
-            call u2mesk('F', 'ALGORITH8_46', 1, valk)
+            call utmess('F', 'ALGORITH8_46', sk=valk(1))
         endif
         if (thmc .ne. 'LIQU_SATU' .and. thmc .ne. 'GAZ') then
-            call u2mess('F', 'ALGORITH8_59')
+            call utmess('F', 'ALGORITH8_59')
         endif
 ! =====================================================================
 ! --- PARTIE KIT_THH --------------------------------------------------
@@ -315,12 +314,12 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
         ther = 'THER'
         if (lmeca) then
             valk(1) = 'THH'
-            call u2mesk('F', 'ALGORITH8_46', 1, valk)
+            call utmess('F', 'ALGORITH8_46', sk=valk(1))
         endif
         if (thmc .ne. 'LIQU_GAZ' .and. thmc .ne. 'LIQU_VAPE_GAZ' .and. thmc .ne.&
             'LIQU_AD_GAZ_VAPE' .and. thmc .ne. 'LIQU_AD_GAZ') then
             valk(1) = 'THH'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
 ! =====================================================================
 ! --- PARTIE KIT_HH --------------------------------------------------
@@ -328,12 +327,12 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
     else if (comp.eq.'KIT_HH') then
         if (lmeca) then
             valk(1) = 'HH'
-            call u2mesk('F', 'ALGORITH8_46', 1, valk)
+            call utmess('F', 'ALGORITH8_46', sk=valk(1))
         endif
         if (thmc .ne. 'LIQU_GAZ' .and. thmc .ne. 'LIQU_VAPE_GAZ' .and. thmc .ne.&
             'LIQU_AD_GAZ_VAPE' .and. thmc .ne. 'LIQU_AD_GAZ') then
             valk(1) = 'HH'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
 ! =====================================================================
 ! --- PARTIE KIT_THV --------------------------------------------------
@@ -342,11 +341,11 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
         ther = 'THER'
         if (lmeca) then
             valk(1) = 'THV'
-            call u2mesk('F', 'ALGORITH8_46', 1, valk)
+            call utmess('F', 'ALGORITH8_46', sk=valk(1))
         endif
         if (thmc .ne. 'LIQU_VAPE') then
             valk(1) = 'THV'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
 ! =====================================================================
 ! --- PARTIE KIT_THM --------------------------------------------------
@@ -354,19 +353,19 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
     else if (comp.eq.'KIT_THM') then
         ther = 'THER'
         if (.not.lmeca) then
-            call u2mess('F', 'ALGORITH8_41')
+            call utmess('F', 'ALGORITH8_41')
         endif
         if (thmc .ne. 'LIQU_SATU' .and. thmc .ne. 'LIQU_GAZ_ATM' .and. thmc .ne. 'GAZ') then
             valk(1) = 'THM'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
         if (hydr .eq. 'HYDR_ENDO' .and.&
             ( meca.ne.'MAZARS' .and. meca.ne.'ENDO_ISOT_BETON' )) then
-            call u2mess('F', 'ALGORITH8_43')
+            call utmess('F', 'ALGORITH8_43')
         endif
         if (meca .eq. 'BARCELONE') then
             valk(1) = 'THM'
-            call u2mesk('F', 'ALGORITH8_44', 1, valk)
+            call utmess('F', 'ALGORITH8_44', sk=valk(1))
         endif
 ! =====================================================================
 ! --- PARTIE KIT_THHM -------------------------------------------------
@@ -374,20 +373,20 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
     else if (comp.eq.'KIT_THHM') then
         ther = 'THER'
         if (.not.lmeca) then
-            call u2mess('F', 'ALGORITH8_41')
+            call utmess('F', 'ALGORITH8_41')
         endif
         if (thmc .ne. 'LIQU_VAPE_GAZ' .and. thmc .ne. 'LIQU_AD_GAZ_VAPE' .and. thmc .ne.&
             'LIQU_AD_GAZ' .and. thmc .ne. 'LIQU_GAZ') then
             valk(1) = 'THHM'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
         if (hydr .eq. 'HYDR_ENDO' .and.&
             ( meca.ne.'MAZARS' .and. meca.ne.'ENDO_ISOT_BETON' )) then
-            call u2mess('F', 'ALGORITH8_43')
+            call utmess('F', 'ALGORITH8_43')
         endif
         if (meca .eq. 'BARCELONE' .and. (thmc.ne.'LIQU_GAZ' .and. thmc.ne.'LIQU_VAPE_GAZ')) then
             valk(1) = 'THHM'
-            call u2mesk('F', 'ALGORITH8_42', 1, valk)
+            call utmess('F', 'ALGORITH8_42', sk=valk(1))
         endif
     endif
 ! =========================================================

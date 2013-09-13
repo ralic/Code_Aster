@@ -2,7 +2,6 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
                   nobj, nbel, versio)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irgmtb.h"
@@ -19,10 +18,9 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomain, nomaou
     integer :: nbmat, nummai(*), versio
     character(len=*) :: basz
@@ -143,7 +141,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
         if (numel .ne. 0) then
             nbel(numel)=nbel(numel)+nbcr
         else
-            call u2mesk('A', 'ALGELINE_64', 1, typm)
+            call utmess('A', 'ALGELINE_64', sk=typm)
         endif
 10  end do
 !
@@ -161,7 +159,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
                 nbp =typd(i,3)
                 if (nbel(i) .gt. 0) then
                     if (impr .eq. 0) then
-                        call u2mess('I', 'ALGELINE5_54')
+                        call utmess('I', 'ALGELINE5_54')
                         impr=1
                     endif
                     valk(1) = typm
@@ -169,8 +167,8 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
                     vali(1) = nbel(i)
                     vali(2) = nbcr
                     vali(3) = nbp
-                    call u2mesg('I', 'ALGELINE5_55', 2, valk, 3,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'ALGELINE5_55', nk=2, valk=valk, ni=3,&
+                                vali=vali)
                 endif
             endif
         endif
@@ -224,7 +222,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
             imav = imav + 1
             if (imav .gt. nbmmax) then
                 call codent(nbmmax, 'G', k8b)
-                call u2mesk('F', 'ALGELINE_65', 1, k8b)
+                call utmess('F', 'ALGELINE_65', sk=k8b)
             endif
             nomg = 'M       '
             call codent(imav, 'G', nomg(2:8))

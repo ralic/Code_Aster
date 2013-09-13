@@ -3,7 +3,7 @@ subroutine zzloca(modele, ligrel, matez, sigma, signo,&
     implicit none
 #include "asterfort/calcul.h"
 #include "asterfort/megeom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: modele, ligrel, matez, sigma, signo, chvarc, resu
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -54,7 +54,9 @@ subroutine zzloca(modele, ligrel, matez, sigma, signo,&
     mate = matez
     call megeom(modele, chgeom)
 !
-    if (mate .eq. ' ') call u2mess('F', 'CALCULEL4_66')
+    if (mate .eq. ' ') then
+        call utmess('F', 'CALCULEL4_66')
+    endif
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom

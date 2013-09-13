@@ -62,17 +62,17 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mfacre.h"
+#include "asterfort/as_mmhfnw.h"
 #include "asterfort/desgfa.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mdnofa.h"
-#include "asterfort/as_mfacre.h"
-#include "asterfort/as_mmhfnw.h"
 #include "asterfort/nomgfa.h"
 #include "asterfort/setgfa.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: fid
     integer :: typgeo(*), nmatyp(*)
     integer :: typent, nbrent, nbgrou
@@ -313,8 +313,7 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
                        nogrfa, codret)
         if (codret .ne. 0) then
             saux08='mfacre'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 23      continue
@@ -332,12 +331,11 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
     if (typent .eq. tygeno) then
 !
         call as_mmhfnw(fid, nomamd, nufaen, nbrent, ednoeu,&
-                    tygeno, codret)
+                       tygeno, codret)
 !
         if (codret .ne. 0) then
             saux08='mmhfnw'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 ! 3.2. ==> ECRITURE DANS LE CAS DES MAILLES : IL FAUT PASSER PAR LA
@@ -360,12 +358,11 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 321          continue
 !
             call as_mmhfnw(fid, nomamd, tabaux, nmatyp(ityp), edmail,&
-                        typgeo(ityp), codret)
+                           typgeo(ityp), codret)
 !
             if (codret .ne. 0) then
                 saux08='mmhfnw'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
 !
         endif

@@ -17,7 +17,6 @@ subroutine cmqlql(main, maout, nbma, lima)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cmqlma.h"
 #include "asterfort/cmqlnm.h"
@@ -31,8 +30,9 @@ subroutine cmqlql(main, maout, nbma, lima)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbma, lima(nbma)
     character(len=8) :: main, maout
 ! ----------------------------------------------------------------------
@@ -104,7 +104,9 @@ subroutine cmqlql(main, maout, nbma, lima)
 !
 !     NOMBRE DE MAILLES QUADRATIQUES :
     nbma = icount
-    if (nbma .eq. 0) call u2mess('F', 'MODELISA3_8')
+    if (nbma .eq. 0) then
+        call utmess('F', 'MODELISA3_8')
+    endif
 !
 !     ===============================
 !     RECUPERATION DES NOEUDS MILIEUX

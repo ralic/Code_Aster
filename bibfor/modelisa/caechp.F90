@@ -19,7 +19,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 #include "asterfort/paligi.h"
 #include "asterfort/palima.h"
 #include "asterfort/patrma.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xtempc.h"
 #include "asterfort/xtmafi.h"
 #include "asterfort/xvelfm.h"
@@ -109,7 +109,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
         else if (fonree.eq.'FONC') then
             call alcart('G', carte, noma, 'COEH_F')
         else
-            call u2mesk('F', 'MODELISA2_37', 1, fonree)
+            call utmess('F', 'MODELISA2_37', sk=fonree)
         endif
 !       NOM DE LA CMP DU COEFFICIENT D'ECHANGE DANS LA CARTE
         call jeveuo(carte//'.NCMP', 'E', jncmp)

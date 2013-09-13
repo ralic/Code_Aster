@@ -20,6 +20,7 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
 ! ======================================================================
 !------------------------------------------------------------
     implicit none
+#include "asterfort/utmess.h"
 !      CALCUL DES VOISINS DE TOUS LES NOEUDS ( VERSION ASTER )
 !      DONNEES
 !      -------
@@ -36,7 +37,6 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
 !             NNZ(1:N)
 ! ATTENTION : XADJ SERT DE TAB DE TRAVAIL DANS LA 1ERE PARTIE (DO 1 )
 !-----------
-#include "asterfort/u2mesg.h"
     integer :: lmat, n, col(lmat), diag(0:n), adjncy(*)
     integer :: xadj(n+1), nnz(n), suiv(*), tab(*)
     integer :: nrl
@@ -125,8 +125,7 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
 !       TEST D'ESPACE SUFFISANT DANS ADJNCY
             vali (1) = ladjn
             vali (2) = xadj(n+1)-1
-            call u2mesg('F', 'ALGELINE4_4', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_4', ni=2, vali=vali)
         endif
 !
         iad=0

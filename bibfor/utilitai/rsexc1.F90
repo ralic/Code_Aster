@@ -4,8 +4,7 @@ subroutine rsexc1(nomsd, nomsy, iordr, chextr)
 #include "asterc/gettco.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: iordr
     character(len=*) :: nomsd, nomsy, chextr
     character(len=16) :: nomcmd, option, tysd
@@ -57,14 +56,13 @@ subroutine rsexc1(nomsd, nomsy, iordr, chextr)
         call getres(concep, typcon, nomcmd)
         valk (1) = option
         vali = iordr
-        call u2mesg('A', 'UTILITAI8_31', 1, valk, 1,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'UTILITAI8_31', sk=valk(1), si=vali)
         call detrsd('CHAM_ELEM', chextr(1:19))
     else if (icode.gt.100) then
         call getres(concep, typcon, nomcmd)
         call gettco(nomsd, tysd)
         valk(1) = tysd
         valk(2) = option
-        call u2mesk('F', 'CALCULEL3_27', 2, valk)
+        call utmess('F', 'CALCULEL3_27', nk=2, valk=valk)
     endif
 end subroutine

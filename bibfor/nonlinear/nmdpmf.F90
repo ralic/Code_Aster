@@ -10,7 +10,7 @@ subroutine nmdpmf(compor)
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: compor
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -71,7 +71,9 @@ subroutine nmdpmf(compor)
 !
 !     VERIFICATION QU'UN COMPORTEMENT MULTI-FIBRES A ETE AFFECTE
     call exisd('CARTE', chmat//'.COMPOR', iret)
-    if (iret .eq. 0) call u2mess('F', 'COMPOR1_73')
+    if (iret .eq. 0) then
+        call utmess('F', 'COMPOR1_73')
+    endif
 !
     call carces(chmat//'.COMPOR', 'ELEM', ' ', 'V', chsx,&
                 'A', ibid)

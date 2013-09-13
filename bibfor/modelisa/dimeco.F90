@@ -19,7 +19,7 @@ subroutine dimeco(char, ndim, nzoco, nsuco, nmaco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfnben.h"
@@ -27,7 +27,7 @@ subroutine dimeco(char, ndim, nzoco, nsuco, nmaco,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char
     integer :: ndim
     integer :: nzoco
@@ -85,7 +85,7 @@ subroutine dimeco(char, ndim, nzoco, nsuco, nmaco,&
 ! --- DIMENSION DE L'ESPACE
 !
     if (ndim .gt. 3) then
-        call u2mess('A', 'CONTACT_84')
+        call utmess('A', 'CONTACT_84')
         if (ndim .eq. 1003) then
             ndim = 3
         else if (ndim.eq.1002) then

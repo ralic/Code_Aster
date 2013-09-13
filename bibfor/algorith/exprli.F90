@@ -46,7 +46,6 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/bmnoin.h"
 #include "asterfort/bmrdda.h"
 #include "asterfort/codent.h"
@@ -60,10 +59,11 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 !
-    integer :: idec(30),llint4,nbcmpm,nbec,ierd,nbcmp,nbddl,ordo
+!
+    integer :: idec(30), llint4, nbcmpm, nbec, ierd, nbcmp, nbddl, ordo
     integer :: ii, llact, iec, ldmap, numint, nbdef, ibid, nbnoe, icomp, i, j
     integer :: ier
     parameter   (nbcmpm=10)
@@ -87,7 +87,8 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     famprl = famprz
 !
     if (basmod .ne. blanc) then
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, lintf, ier)
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                    lintf, ier)
     endif
 !
 !-----RECUPERATION DU NOMBRE DU NOMBRE D'ENTIERS CODES ASSOCIE A DEPL_R
@@ -96,7 +97,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 kbid, ierd)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
 !

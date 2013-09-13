@@ -19,7 +19,6 @@ subroutine cm18nd(nbno, nbnomi, prefix, ndinit, nomipe,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -27,8 +26,8 @@ subroutine cm18nd(nbno, nbnomi, prefix, ndinit, nomipe,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbno, nbnomi, nomipe(8, nbnomi), ndinit
     real(kind=8) :: coor(3, *)
     character(len=8) :: prefix
@@ -64,7 +63,9 @@ subroutine cm18nd(nbno, nbnomi, prefix, ndinit, nomipe,&
 !      NOM DU NOEUD CREE
         call codent(ndinit-1+no, 'G', knume)
         lgnd = lxlgut(knume)
-        if (lgnd+lgpref .gt. 8) call u2mess('F', 'ALGELINE_16')
+        if (lgnd+lgpref .gt. 8) then
+            call utmess('F', 'ALGELINE_16')
+        endif
         nomnd = prefix(1:lgpref) // knume
 !
 !      DECLARATION DU NOEUD CREE
@@ -73,8 +74,7 @@ subroutine cm18nd(nbno, nbnomi, prefix, ndinit, nomipe,&
             call jecroc(jexnom(nomnoe, nomnd))
         else
             valk = nomnd
-            call u2mesg('F', 'ALGELINE4_5', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_5', sk=valk)
         endif
 !
 10  end do

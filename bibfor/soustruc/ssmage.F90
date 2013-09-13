@@ -31,8 +31,8 @@ subroutine ssmage(nomu, option)
 #include "asterfort/rcmfmc.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/ssmau2.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ualfcr.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomu
     character(len=9) :: option
 ! ----------------------------------------------------------------------
@@ -105,9 +105,11 @@ subroutine ssmage(nomu, option)
         call dismoi('F', 'NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', ibid,&
                     promes, ier)
 !     --  CAS MODIFICATION STRUCTURALE : CREATION MATRICE PAR SSMAU2
-        if (promes .eq. ' ') call u2mess('F', 'SOUSTRUC_69')
+        if (promes .eq. ' ') then
+            call utmess('F', 'SOUSTRUC_69')
+        endif
     else
-        call u2mess('F', 'SOUSTRUC_69')
+        call utmess('F', 'SOUSTRUC_69')
     endif
 !
 !        -- ASSEMBLAGE:
@@ -126,7 +128,7 @@ subroutine ssmage(nomu, option)
     else if (option.eq.'AMOR_MECA') then
         zk8(iarefm-1+8)='OUI_AMOR'
     else
-        call u2mess('F', 'SOUSTRUC_69')
+        call utmess('F', 'SOUSTRUC_69')
     endif
 !
     if (option .eq. 'MASS_MECA') then

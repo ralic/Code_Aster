@@ -17,8 +17,7 @@ subroutine rftabl(tabres)
 #include "asterfort/tbimfi.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: tabres
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -75,7 +74,9 @@ subroutine rftabl(tabres)
     if (nparfi .ne. 0) then
         newta1 = '&&OP0177.FILTRE '
         call tbimfi(nparfi, newtab, newta1, iret)
-        if (iret .ne. 0) call u2mess('F', 'UTILITAI7_11')
+        if (iret .ne. 0) then
+            call utmess('F', 'UTILITAI7_11')
+        endif
         newtab = newta1
     endif
 !     ------------------------------------------------------------------
@@ -94,12 +95,12 @@ subroutine rftabl(tabres)
         if (iret .ne. 0) then
             valk(1) = nopara
             valk(2)(1:19) = newtab
-            call u2mesk('F', 'MODELISA2_91', 2, valk)
+            call utmess('F', 'MODELISA2_91', nk=2, valk=valk)
         endif
         call copisd('FONCTION', 'G', nomf, nomfon)
 !
     else
-        call u2mess('F', 'UTILITAI4_27')
+        call utmess('F', 'UTILITAI4_27')
     endif
 !
 !

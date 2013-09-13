@@ -38,13 +38,14 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! aslint: disable=W1501
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterc/r4maem.h"
 #include "asterc/r4miem.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -56,9 +57,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/asmpi_comm_jev.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: kxmps, ifmump
     logical :: ldist, lmd, lpreco
@@ -85,8 +84,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     integer :: jnequ, kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
     integer :: nfilt3, isizemu, nsizemu, rang, esizemu
     mumps_int :: nbeq, nz2, iligg, jcolg
-    character(len=4) ::  etam
-    character(len=8) ::  k8bid
+    character(len=4) :: etam
+    character(len=8) :: k8bid
     character(len=14) :: nonu
     character(len=16) :: k16bid, nomcmd
     character(len=19) :: nomat, nosolv
@@ -160,7 +159,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         jnulogl=1
     endif
     if (ktypr(1:6) .eq. 'SYMDEF') then
-        if ((type.eq.'C') .or. (type.eq.'Z')) call u2mess('F', 'FACTOR_80')
+        if ((type.eq.'C') .or. (type.eq.'Z')) then
+            call utmess('F', 'FACTOR_80')
+        endif
         lspd=.true.
     else
         lspd=.false.
@@ -530,11 +531,15 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             vali(1)=nfilt3
             vali(2)=nfilt2
             do kterm = 1, nz
-                if (zi4(iok+kterm-1) .eq. -1) call u2mesi('F', 'FACTOR_78', 2, vali)
+                if (zi4(iok+kterm-1) .eq. -1) then
+                    call utmess('F', 'FACTOR_78', ni=2, vali=vali)
+                endif
             enddo
             if (sym .eq. 0) then
                 do kterm = 1, nz
-                    if (zi4(iok2+kterm-1) .eq. -1) call u2mesi('F', 'FACTOR_78', 2, vali)
+                    if (zi4(iok2+kterm-1) .eq. -1) then
+                        call utmess('F', 'FACTOR_78', ni=2, vali=vali)
+                    endif
                 enddo
             endif
         endif
@@ -643,7 +648,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                 endif
 ! --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
                 if ((lspd) .and. (kzero.eq.0)) then
-                    if ((iligg.eq.jcolg) .and. (raux.lt.epsmac)) call u2mess('F', 'FACTOR_84')
+                    if ((iligg.eq.jcolg) .and. (raux.lt.epsmac)) then
+                        call utmess('F', 'FACTOR_84')
+                    endif
                 endif
             endif
 !
@@ -729,8 +736,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                     endif
 ! --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
                     if ((lspd) .and. (kzero.eq.0)) then
-                        if ((iligg.eq.jcolg) .and. (raux.lt.epsmac)) call u2mess('F',&
-                                                                                 'FACTOR_84')
+                        if ((iligg.eq.jcolg) .and. (raux.lt.epsmac)) then
+                            call utmess('F', 'FACTOR_84')
+                        endif
                     endif
                 endif
             endif
@@ -775,7 +783,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             call jelibe(nonu//'.NUML.DELG')
         endif
 !
-        if (niv.ge.2) then
+        if (niv .ge. 2) then
 ! --- TEST POUR EVITER LE MONITORING DES CMDES ECLATEES ET DE LDLT_SP
 !     LES OBJETS TEMPORAIRES DE MONITORING SONT EFFACES A CHAQUE
 !     FIN DE COMMANDE (NUM_DDL/FACTORISER/RESOUDRE)
@@ -786,9 +794,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             else
                 lcmde=.false.
             endif
-            if ((.not.lcmde).and.(.not.lpreco)) then
+            if ((.not.lcmde) .and. (.not.lpreco)) then
                 call jeexin(kmonit(1), iret)
-                if (iret.ne.0) then
+                if (iret .ne. 0) then
 ! --- CAS CMDE STD AVEC MUMPS SOLVEUR DIRECT
                     call jeveuo(kmonit(1), 'E', ibid)
                     zi(ibid+rang)=nz2
@@ -798,7 +806,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                 endif
             endif
         endif
-
+!
 !
 !       ------------------------------------------------
 !       IMPRESSION DE LA MATRICE (SI DEMANDEE) :

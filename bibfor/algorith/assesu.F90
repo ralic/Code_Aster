@@ -19,8 +19,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 #include "asterfort/inices.h"
 #include "asterfort/nvithm.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vfcfks.h"
     integer :: maxfa
     parameter (maxfa=6)
@@ -300,11 +299,10 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     else if (typvf .eq.4) then
         ldcen=.false.
     else
-        call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                    typvf, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_9', si=typvf)
     endif
-    bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) &
-       .or.(option(1:9).eq.'FULL_MECA' )
+    bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
+           (option(1:9).eq.'FULL_MECA' )
     ASSERT(bool)
 !
 !
@@ -361,7 +359,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     if (thmc .ne. loi) then
         valk(1) = loi
         valk(2) = thmc
-        call u2mesk('F', 'ALGORITH_34', 2, valk)
+        call utmess('F', 'ALGORITH_34', nk=2, valk=valk)
     endif
 ! ====================================================================
 ! DECLARATION DE DEUX LOGIQUES POUR SAVOIR CE QUE L ON DOIT CALCULER
@@ -379,7 +377,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         cont = .true.
     else
         valk(1) = option
-        call u2mesk('F', 'VOLUFINI_11', 1, valk)
+        call utmess('F', 'VOLUFINI_11', sk=valk(1))
     endif
 ! ====================================================================
 ! --- INITIALISATION A ZERO MATUU ET VECTU
@@ -485,7 +483,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                 vintp(1, 1), dsde, pesa, retcom, 1,&
                 1, p10, p20, angbid)
     if (retcom .ne. 0) then
-        call u2mesk('F', 'COMPOR1_9', 0, ' ')
+        call utmess('F', 'COMPOR1_9')
     endif
     do 7 fa = 1, nface
         if (yap1 .eq. 1) then
@@ -504,8 +502,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 702              continue
             endif
         else
-            call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                        typvf, 0, 0.d0)
+            call utmess('F', 'VOLUFINI_9', si=typvf)
         endif
 ! ===============================================
 ! ==== INITIALISATION DE DSDE ================
@@ -525,7 +522,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                     vintp(1, fa+1), dsde, pesa, retcom, 1,&
                     1, p10, p20, angbid)
         if (retcom .ne. 0) then
-            call u2mesk('F', 'COMPOR1_9', 0, ' ')
+            call utmess('F', 'COMPOR1_9')
         endif
  7  end do
     if (cont) then

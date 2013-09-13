@@ -10,8 +10,8 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
     integer :: icou, npg, indith
     real(kind=8) :: pgl(3, 3), ordi, epi, epais, dm(3, 3)
 ! ----------------------------------------------------------------------
@@ -160,7 +160,7 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
         nomres(10) = 'CISA_T  '
         nomres(11) = 'ALPHA   '
     else
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
 !===============================================================
@@ -187,7 +187,7 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
             indith = -1
             goto 70
         else if ((iret.eq.1).and.(icodre(3).ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         endif
         young = valres(1)
         nu = valres(2)
@@ -219,7 +219,7 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
             indith = -1
             goto 70
         else if ((iret.eq.1).and.(icodre(11).ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         endif
         alphat = valres(11)
 !        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------

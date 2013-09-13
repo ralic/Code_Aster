@@ -25,7 +25,7 @@ subroutine jerazo(nomlu, ni, i1)
 #include "asterfort/jjcroc.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxlocs.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
     integer :: ni, i1
 ! ----------------------------------------------------------------------
@@ -71,15 +71,15 @@ subroutine jerazo(nomlu, ni, i1)
     call jjvern(noml32, icre, iret)
     inat = iret
     inatb = iret
-    if ( iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+    if (iret .eq. 0) then
+        call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
         goto 100
     else if (iret .eq. 1) then
         genri = genr( jgenr(iclaos) + idatos )
         typei = type( jtype(iclaos) + idatos )
         ltypi = ltyp( jltyp(iclaos) + idatos )
         if (genri .eq. 'N') then
-           call u2mesk('F', 'JEVEUX1_20', 1, noml32)
+            call utmess('F', 'JEVEUX1_20', sk=noml32)
         endif
         goto 100
     else if (iret .eq. 2) then
@@ -92,7 +92,8 @@ subroutine jerazo(nomlu, ni, i1)
             genri = genr ( jgenr(iclaco) + ixlono )
             ltypi = ltyp ( jltyp(iclaco) + ixlono )
             lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
-            call jxlocs(zi, genri, ltypi, lonoi, iblono, .false., jctab)
+            call jxlocs(zi, genri, ltypi, lonoi, iblono,&
+                        .false., jctab)
             goto 1000
         else
             if (noml8 .ne. '        ') then
@@ -103,7 +104,7 @@ subroutine jerazo(nomlu, ni, i1)
             else
                 if (ixiadd .ne. 0) then
 !            ----------- COLLECTION DISPERSEE
-                   call u2mesk('F', 'JEVEUX1_21', 1, noml32)
+                    call utmess('F', 'JEVEUX1_21', sk=noml32)
                 endif
             endif
             genri = genr( jgenr(iclaco) + ixdeso )
@@ -113,7 +114,7 @@ subroutine jerazo(nomlu, ni, i1)
     else
         ASSERT(.false.)
     endif
-100 continue
+100  continue
     call jjalty(typei, ltypi, 'E', inatb, jctab)
     if (inat .eq. 3 .and. ixiadd .eq. 0) then
         ixlono = iszon ( jiszon + ibacol + idlono )
@@ -123,7 +124,7 @@ subroutine jerazo(nomlu, ni, i1)
             if (lonoi .gt. 0) then
                 jctab = jctab + (iszon(jiszon+iblono-1+idatoc) - 1)
             else
-                call u2mesk('F', 'JEVEUX1_22', 1, noml32)
+                call utmess('F', 'JEVEUX1_22', sk=noml32)
             endif
         else
             jctab = jctab + long(jlong(iclaco)+ixdeso) * (idatoc-1)
@@ -135,12 +136,12 @@ subroutine jerazo(nomlu, ni, i1)
     j1 = 0
     j2 = ni - 1
     if (typei .eq. 'I') then
-        do  i = j1, j2
+        do i = j1, j2
             zi(jini+i) = 0
         end do
-    else if ( typei .eq. 'S' ) then
-        do  i = j1, j2
-             zi4(jini+i) = 0
+    else if (typei .eq. 'S') then
+        do i = j1, j2
+            zi4(jini+i) = 0
         end do
     else if (typei .eq. 'R') then
         do i = j1, j2

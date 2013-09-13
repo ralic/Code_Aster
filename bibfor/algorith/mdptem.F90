@@ -13,9 +13,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 #include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbchoc, nbpas, info, ier, nbmode
     real(kind=8) :: masgen(*), pulsat(*), parcho(nbchoc, *)
@@ -91,7 +89,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 !     (DEJA FAIT DANS MDVERI POUR ITMI)
     if ((method(1:5).eq.'ADAPT') .or. (method(1:5).eq.'RUNGE')) then
         call getvr8('INCREMENT', 'PAS', iocc=1, nbval=0, nbret=ibid)
-        if (ibid .eq. 0) call u2mess('F', 'ALGORITH3_11')
+        if (ibid .eq. 0) then
+            call utmess('F', 'ALGORITH3_11')
+        endif
     endif
 !
 !     RECUPERATION de TINIT
@@ -111,7 +111,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             do 100 i = 1, nbordr
                 if (zi(jordr+i-1) .eq. nume) goto 101
 100          continue
-            call u2mesk('F', 'ALGORITH3_36', 1, tran)
+            call utmess('F', 'ALGORITH3_36', sk=tran)
 101          continue
             call jeveuo(tran//'           .DISC', 'L', jinst)
             tinit = zr(jinst+i-1)
@@ -124,7 +124,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
         else
             call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=tinit, nbret=n2)
             if (n2 .eq. 0) then
-                call u2mess('I', 'ALGORITH5_62')
+                call utmess('I', 'ALGORITH5_62')
             endif
         endif
     endif
@@ -133,7 +133,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=li, nbret=nt)
     if (nt .ne. 0) then
         if (method(1:5) .eq. 'RUNGE') then
-            call u2mess('F', 'ALGORITH3_9')
+            call utmess('F', 'ALGORITH3_9')
         endif
         call jeveuo(li//'           .BINT', 'L', jbint)
         call jeveuo(li//'           .LPAS', 'L', jlpas)
@@ -153,7 +153,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 !              TEST PAS DE TEMPS CONSTANT SI PLUSIEURS INTERVALLES
             do 33 i = 1, nbgrpa-1
                 if ((abs(zr(jlpas+i)-dtu)) .ge. (1.d-6*dtu)) then
-                    call u2mess('F', 'ALGORITH3_18')
+                    call utmess('F', 'ALGORITH3_18')
                 endif
 33          continue
             tfin = zr (jbint+nbgrpa)
@@ -171,7 +171,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     else
         call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=n3)
         call getvr8('INCREMENT', 'PAS', iocc=1, scal=dtu, nbret=n4)
-        if (dtu .eq. 0.d0) call u2mess('F', 'ALGORITH3_12')
+        if (dtu .eq. 0.d0) then
+            call utmess('F', 'ALGORITH3_12')
+        endif
     endif
 99  continue
     call getvtx('INCREMENT', 'VERI_PAS', iocc=1, scal=veripa, nbret=n5)
@@ -192,8 +194,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             ic = 1
             ia = 0
 24          continue
-            if (info .eq. 2) call u2mesg('I', 'ALGORITH16_92', 1, noecho(i, ic), 0,&
-                                         0, 0, 0.d0)
+            if (info .eq. 2) then
+                call utmess('I', 'ALGORITH16_92', sk=noecho(i, ic))
+            endif
             do 22 j = 1, nbmode
                 if (pulsat(j) .eq. zero) goto 22
 !
@@ -246,8 +249,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
         if (method .eq. 'NEWMARK') then
             valr (1) = dtu
             valr (2) = dt
-            call u2mesg('A', 'ALGORITH16_14', 0, ' ', 0,&
-                        0, 2, valr)
+            call utmess('A', 'ALGORITH16_14', nr=2, valr=valr)
             dt = dtu
             nbpas = nint( ( tfin - tinit ) / dt )
         else if (iveri.eq.1 .and. method(1:5) .ne. 'ADAPT') then
@@ -255,17 +257,16 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             valr (1) = dtu
             valr (2) = dt
             vali = nbpas
-            call u2mesg('E', 'ALGORITH16_15', 0, ' ', 1,&
-                        vali, 2, valr)
+            call utmess('E', 'ALGORITH16_15', si=vali, nr=2, valr=valr)
         else
             valr (1) = dtu
             valr (2) = dt
-            call u2mesg('A+', 'ALGORITH16_16', 0, ' ', 0,&
-                        0, 2, valr)
-            if (iveri .ne. 1) call u2mess('A+', 'ALGORITH16_89')
+            call utmess('A+', 'ALGORITH16_16', nr=2, valr=valr)
+            if (iveri .ne. 1) then
+                call utmess('A+', 'ALGORITH16_89')
+            endif
             vali = nbpas
-            call u2mesg('A', 'ALGORITH16_17', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'ALGORITH16_17', si=vali)
             dt = dtu
             nbpas = nint( ( tfin - tinit ) / dt )
         endif
@@ -301,20 +302,19 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             if (dtmax .gt. (dts/20.d0)) then
                 valr (1) = dtmax
                 valr (2) = dt
-                call u2mesg('A', 'DYNAMIQUE_17', 0, ' ', 0,&
-                            0, 2, valr)
+                call utmess('A', 'DYNAMIQUE_17', nr=2, valr=valr)
             endif
             if (( dtmax .lt. dtu )) then
                 valr (1) = dtmax
                 valr (2) = dtu
-                call u2mesg('E', 'DYNAMIQUE_15', 0, ' ', 0,&
-                            0, 2, valr)
+                call utmess('E', 'DYNAMIQUE_15', nr=2, valr=valr)
             endif
 !
         else
             dtmax = dts / 20.d0
-            if (dts .ge. 1.d10) call u2mesg('A', 'DYNAMIQUE_16', 0, ' ', 0,&
-                                            0, 1, dtmax)
+            if (dts .ge. 1.d10) then
+                call utmess('A', 'DYNAMIQUE_16', sr=dtmax)
+            endif
         endif
     endif
 !

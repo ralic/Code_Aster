@@ -4,7 +4,6 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -21,8 +20,9 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbcmp, nuord
     character(len=8) :: nomcmp(nbcmp), modele, nomlie, lieu
     character(len=19) :: chpost, resu
@@ -90,7 +90,9 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
                 k8b, iret)
 !
-    if (lieu(1:4) .ne. 'TOUT') call u2mess('A', 'UTILITAI3_94')
+    if (lieu(1:4) .ne. 'TOUT') then
+        call utmess('A', 'UTILITAI3_94')
+    endif
 !
     nomnoe = noma//'.NOMNOE         '
     nompar(1)  ='CHAMP_GD'

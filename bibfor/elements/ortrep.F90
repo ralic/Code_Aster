@@ -47,7 +47,7 @@ subroutine ortrep(mater, ndim, coor, repere)
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utrcyl.h"
     real(kind=8) :: repere(7), coor(3)
     integer :: mater, ndim
@@ -148,7 +148,7 @@ subroutine ortrep(mater, ndim, coor, repere)
 !
                 else
                     repere(1)=1.d0
-                    call u2mess('F', 'ELEMENTS2_38')
+                    call utmess('F', 'ELEMENTS2_38')
                 endif
             endif
         endif

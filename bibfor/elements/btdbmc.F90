@@ -44,7 +44,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 ! -----  ARGUMENTS
 #include "asterfort/btdbpr.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: phenoz
     real(kind=8) :: b(nbsig, *), d(nbsig, *), jacob, btdb(81, 81)
 ! -----  VARIABLES LOCALES
@@ -223,7 +223,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
                     btdb)
 !
     else
-        call u2mesk('F', 'ELEMENTS_15', 1, phenom)
+        call utmess('F', 'ELEMENTS_15', sk=phenom)
     endif
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

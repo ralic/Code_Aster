@@ -4,7 +4,7 @@ subroutine matinv(stop, ndim, mat, inv, det)
 !
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,7 @@ subroutine matinv(stop, ndim, mat, inv, det)
 !
     if (abs(det) .le. 1.d0/r8gaem()) then
         if (stop .eq. 'S') then
-            call u2mess('F', 'ALGORITH5_19')
+            call utmess('F', 'ALGORITH5_19')
         else if (stop.eq.'C') then
             det = 0.d0
             goto 999
@@ -109,5 +109,5 @@ subroutine matinv(stop, ndim, mat, inv, det)
         enddo
     enddo
 !
-999 continue
+999  continue
 end subroutine

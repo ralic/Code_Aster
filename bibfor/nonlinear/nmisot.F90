@@ -35,9 +35,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/rupmat.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
     integer :: ndim, imate, kpg, ksp, iret
@@ -132,7 +130,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !
 !
     if (.not.( compor(1:9) .eq. 'VMIS_ISOT' )) then
-        call u2mesk('F', 'ALGORITH4_50', 1, compor)
+        call utmess('F', 'ALGORITH4_50', sk=compor)
     endif
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES
@@ -282,8 +280,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         if ((e-dsde) .lt. r8miem()) then
             valrm(1)=dsde
             valrm(2)=e
-            call u2mesg('F', 'COMPOR1_54', 0, ' ', 0,&
-                        ibid, 2, valrm)
+            call utmess('F', 'COMPOR1_54', nr=2, valr=valrm)
         else
             rprim = dsde*e/(e-dsde)
         endif
@@ -314,7 +311,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         call rctype(imate, 3, nompar, valpam, resu,&
                     type)
 !
-        if ((type.eq.'TEMP') .and. (iret3.eq.1)) call u2mess('F', 'CALCULEL_31')
+        if ((type.eq.'TEMP') .and. (iret3.eq.1)) then
+            call utmess('F', 'CALCULEL_31')
+        endif
         call rctrac(imate, 1, 'SIGM', tm, jprolm,&
                     jvalem, nbvalm, em)
 !
@@ -337,7 +336,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         valpap(3)=hydrp
         call rctype(imate, 3, nompar, valpap, resu,&
                     type)
-        if ((type.eq.'TEMP') .and. (iret4.eq.1)) call u2mess('F', 'CALCULEL_31')
+        if ((type.eq.'TEMP') .and. (iret4.eq.1)) then
+            call utmess('F', 'CALCULEL_31')
+        endif
         call rctrac(imate, 1, 'SIGM', resu, jprolp,&
                     jvalep, nbvalp, e)
 !        CRIT_RUPT VMIS_ISOT_TRAC

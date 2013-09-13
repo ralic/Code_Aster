@@ -1,5 +1,5 @@
 subroutine ddmpfn(zimat, nmnbn, nmddpl)
-    implicit  none
+    implicit none
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ subroutine ddmpfn(zimat, nmnbn, nmddpl)
 ! OUT NMDDPL : DERIVEES SECONDES DES MOMENTS LIMITES DE PLASTICITE
 !
 #include "asterfort/cdnfon.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: i, ier0, ier1, ier2, zimat
 !
     real(kind=8) :: nmnbn(6), nmddpl(2, 2)
@@ -63,7 +63,7 @@ subroutine ddmpfn(zimat, nmnbn, nmddpl)
                         ier2)
 !
             if (ier2 .eq. 3) then
-                call u2mess('F', 'ELEMENTS_24')
+                call utmess('F', 'ELEMENTS_24')
             endif
         endif
     endif
@@ -80,7 +80,7 @@ subroutine ddmpfn(zimat, nmnbn, nmddpl)
                         ier2)
 !
             if (ier2 .eq. 3) then
-                call u2mess('F', 'ELEMENTS_24')
+                call utmess('F', 'ELEMENTS_24')
             endif
         endif
     endif

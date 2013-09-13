@@ -55,7 +55,7 @@ subroutine pofaun()
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbocc, ifonc, nbpts, i, n1, nbpapf, ifm, niv, nbp
@@ -178,9 +178,11 @@ subroutine pofaun()
     else if (method.eq.'NATUREL') then
         call fgcota(nbpoin, zr(ivpoin), nbcycl, zr(ivmin), zr(ivmax))
     else
-        call u2mess('F', 'FATIGUE1_15')
+        call utmess('F', 'FATIGUE1_15')
     endif
-    if (nbcycl .eq. 0) call u2mess('F', 'FATIGUE1_16')
+    if (nbcycl .eq. 0) then
+        call utmess('F', 'FATIGUE1_16')
+    endif
 !
 !     --- CORRECTION ELASTO-PLASTIQUE ---
 !
@@ -228,7 +230,9 @@ subroutine pofaun()
 !
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'FATIGUE1_24')
+        endif
         cara = 'WOHLER'
         call rcpare(nommat, pheno, cara, icodwo)
         cara = 'A_BASQUI'
@@ -250,17 +254,19 @@ subroutine pofaun()
 !         ----------------------------------------------
     else if (kdomm.eq.'MANSON_COFFIN') then
         if (.not.fateps) then
-            call u2mess('F', 'FATIGUE1_17')
+            call utmess('F', 'FATIGUE1_17')
         endif
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'FATIGUE1_24')
+        endif
         cara = 'MANSON_C'
         call rcpare(nommat, pheno, cara, icodma)
         if (icodma .eq. 0) then
             call fgdoma(nommat, nbcycl, zr(ivmin), zr(ivmax), zr(ivdome))
         else
-            call u2mess('F', 'FATIGUE1_18')
+            call utmess('F', 'FATIGUE1_18')
         endif
 !
 !     --- CALCUL DU DOMMAGE ELEMENTAIRE DE TAHERI ---
@@ -269,12 +275,12 @@ subroutine pofaun()
         if (fateps) then
             call fgtahe(kdomm, nbcycl, zr(ivmin), zr(ivmax), zr(ivdome))
         else
-            call u2mess('F', 'FATIGUE1_19')
+            call utmess('F', 'FATIGUE1_19')
         endif
 !
     else if (kdomm.eq.' ') then
     else
-        call u2mess('F', 'FATIGUE1_20')
+        call utmess('F', 'FATIGUE1_20')
     endif
 !
 !     --- CREATION DE LA TABLE ---

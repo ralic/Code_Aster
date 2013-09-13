@@ -41,7 +41,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
 #include "asterfort/jjhrsv.h"
 #include "asterfort/jjlide.h"
 #include "asterfort/jjlihd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: id, ic, idfic, idts
     character(len=*) :: ngrp
 ! ----------------------------------------------------------------------
@@ -131,7 +131,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
             if (genri .ne. 'N') then
                 ida = hdfopd(idfic,ngrp,nomo)
                 if (ida .lt. 0) then
-                    call u2mesk('F', 'JEVEUX1_52', 1, nomo)
+                    call utmess('F', 'JEVEUX1_52', sk=nomo)
                 endif
                 iadmi = 0
                 if (k .eq. idiadm .or. k .eq. idmarq .or. k .eq. idiadd) then

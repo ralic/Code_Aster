@@ -123,8 +123,7 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, ndt, ndi, nvi, kpg, ksp, numlc
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !
@@ -235,12 +234,12 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
         goto 2
     else
         if ((typmod(2).eq.'GRADEPSI') .or. (typmod(2).eq.'GRADVARI')) then
-            call u2mesk('A', 'COMPOR2_10', 1, typmod(2))
+            call utmess('A', 'COMPOR2_10', sk=typmod(2))
         endif
     endif
 !
     if (icomp .gt. 3) then
-        call u2mess('A', 'ALGORITH10_35')
+        call utmess('A', 'ALGORITH10_35')
         goto 2
     endif
 !

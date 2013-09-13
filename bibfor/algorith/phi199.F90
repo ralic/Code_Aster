@@ -24,8 +24,7 @@ subroutine phi199(model, mate, ma, nu, num,&
 #include "asterfort/rsorac.h"
 #include "asterfort/rsvpar.h"
 #include "asterfort/tabcor.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
     integer :: nbmode, indice, tabad(*)
@@ -161,7 +160,7 @@ subroutine phi199(model, mate, ma, nu, num,&
 10      continue
         xnorm = sqrt(xnorm)
         if (xnorm .lt. 0.d0) then
-            call u2mess('F', 'ALGORITH9_81')
+            call utmess('F', 'ALGORITH9_81')
         endif
         do 12 i = 1, nbdir
             depl(i) = depl(i) / xnorm
@@ -208,8 +207,7 @@ subroutine phi199(model, mate, ma, nu, num,&
                         ier = ier + 1
                         valk (1) = acces(1:8)
                         valk (2) = acces(9:16)
-                        call u2mesg('E', 'ALGELINE4_61', 2, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E', 'ALGELINE4_61', nk=2, valk=valk)
                         goto 26
                     endif
                     call rsvpar(modsta, iordr, 'TYPE_DEFO', ibid, rbid,&
@@ -219,8 +217,7 @@ subroutine phi199(model, mate, ma, nu, num,&
                         valk (1) = 'DDL_IMPO'
                         valk (2) = acces(1:8)
                         valk (3) = acces(9:16)
-                        call u2mesg('E', 'ALGELINE4_62', 3, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E', 'ALGELINE4_62', nk=3, valk=valk)
                         goto 26
                     endif
                     call rsexch('F', modsta, 'DEPL', iordr, chamno,&
@@ -235,7 +232,7 @@ subroutine phi199(model, mate, ma, nu, num,&
             endif
 25      continue
         if (ier .ne. 0) then
-            call u2mess('F', 'ALGORITH5_24')
+            call utmess('F', 'ALGORITH5_24')
         endif
 !
         goto 42

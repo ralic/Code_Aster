@@ -35,7 +35,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 #include "asterfort/nmgpin.h"
 #include "asterfort/nmmalu.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -107,7 +107,9 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
     call r8inir(6, rbid, tbid, 1)
 !
     ASSERT(nno.le.27)
-    if (typmod(1) .eq. 'C_PLAN') call u2mess('F', 'ALGORITH8_1')
+    if (typmod(1) .eq. 'C_PLAN') then
+        call utmess('F', 'ALGORITH8_1')
+    endif
 !
     axi = typmod(1).eq.'AXIS'
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
@@ -186,7 +188,9 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 !
         if (cod(g) .eq. 1) then
             codret = 1
-            if (.not. resi) call u2mess('F', 'ALGORITH11_88')
+            if (.not. resi) then
+                call utmess('F', 'ALGORITH11_88')
+            endif
             goto 9999
         endif
 !

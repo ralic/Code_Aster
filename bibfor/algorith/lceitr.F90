@@ -23,7 +23,7 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option
     integer :: mat, kpg, ksp
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), r
@@ -78,7 +78,9 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
     coee = val(3)
     coep = val(4)
 !
-    if (coee .gt. coep) call u2mess('F', 'COMPOR1_67')
+    if (coee .gt. coep) then
+        call utmess('F', 'COMPOR1_67')
+    endif
 !
 ! EVALUATION DES SAUTS CRITIQUE, EXTRINSEQUE ET PLASTIQUE
     delc = 2*gc/(sc*(1-coee+coep))

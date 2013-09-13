@@ -2,7 +2,6 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                   noma2z, liso1z, liso2z, lonlis)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8gaem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -13,9 +12,9 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
 #include "asterfort/jexnom.h"
 #include "asterfort/pacoor.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: lisi1z, lisi2z, noma1z, noma2z, liso1z, liso2z
 !---------------------------------------------------------------------
 ! ======================================================================
@@ -145,7 +144,9 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 endif
 20          continue
 !
-            if (j2 .eq. 0) call u2mesk('F', 'MODELISA6_3', 1, nomno1)
+            if (j2 .eq. 0) then
+                call utmess('F', 'MODELISA6_3', sk=nomno1)
+            endif
 !
             if (zk8(idlinv+j2-1) .eq. m8blan) then
                 zk8(idlou1+i1-1) = nomno1
@@ -155,8 +156,7 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 valk (1) = nomno2
                 valk (2) = nomno1
                 valk (3) = zk8(idlinv+j2-1)
-                call u2mesg('F', 'MODELISA8_77', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
             endif
 10      continue
     else
@@ -180,7 +180,9 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 endif
 40          continue
 !
-            if (j1 .eq. 0) call u2mesk('F', 'MODELISA6_3', 1, nomno2)
+            if (j1 .eq. 0) then
+                call utmess('F', 'MODELISA6_3', sk=nomno2)
+            endif
 !
             if (zk8(idlinv+j1-1) .eq. m8blan) then
                 zk8(idlou1+i2-1) = nomno1
@@ -190,8 +192,7 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z,&
                 valk (1) = nomno2
                 valk (2) = nomno1
                 valk (3) = zk8(idlinv+j1-1)
-                call u2mesg('F', 'MODELISA8_77', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
             endif
 30      continue
     endif

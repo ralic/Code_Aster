@@ -31,9 +31,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 #include "asterfort/rsexpa.h"
 #include "asterfort/rsutc2.h"
 #include "asterfort/stock.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: typres, linoch(*), nomcmd
     character(len=8) :: resu
@@ -249,14 +247,18 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     ifield = zi(lfiloc-1+ (numch-1)*12+2)
     call decod2(rec, irec, ifield, 0, iord,&
                 rbid, trouve)
-    if (.not.trouve) call u2mess('F', 'PREPOST3_31')
+    if (.not.trouve) then
+        call utmess('F', 'PREPOST3_31')
+    endif
 !
     if (acces .eq. 'INST' .or. acces .eq. 'LIST_INST' .or. acce2 .eq. 'INST') then
         irec = zi(lfiloc-1+ (numch-1)*12+3)
         ifield = zi(lfiloc-1+ (numch-1)*12+4)
         call decod2(rec, irec, ifield, 1, ibid,&
                     iouf, trouve)
-        if (.not.trouve) call u2mess('F', 'PREPOST3_32')
+        if (.not.trouve) then
+            call utmess('F', 'PREPOST3_32')
+        endif
     endif
 !
     if (acces .eq. 'FREQ' .or. acces .eq. 'LIST_FREQ' .or. acce2 .eq. 'FREQ') then
@@ -265,7 +267,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
         call decod2(rec, irec, ifield, 1, ibid,&
                     iouf, trouve)
         if (.not.trouve) then
-            call u2mess('F', 'PREPOST3_33')
+            call utmess('F', 'PREPOST3_33')
         endif
     endif
 !---  ON RECUPERE NUME_MODE ET MASS_GENE S'ILS SONT PRESENTS:
@@ -306,7 +308,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
         call decod2(rec, irec, ifield, 0, ilu1,&
                     rbid, trouve)
         if (.not.trouve) then
-            call u2mess('F', 'PREPOST3_34')
+            call utmess('F', 'PREPOST3_34')
         endif
         if (ilu1 .eq. 1) then
             tychid = 'NOEU'
@@ -328,7 +330,9 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     endif
     call decod2(rec, irec, ifield, 0, nbcmid,&
                 rbid, trouve)
-    if (.not.trouve) call u2mess('F', 'PREPOST3_35')
+    if (.not.trouve) then
+        call utmess('F', 'PREPOST3_35')
+    endif
 !
 !- ON RECHERCHE DANS LE FICHIER UNV SI LA NATURE DU CHAMP
 !  DE DEPLACEMENT
@@ -338,7 +342,9 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     ifield = 5
     call decod2(rec, irec, ifield, 0, inatur,&
                 rbid, trouve)
-    if (.not.trouve) call u2mess('F', 'PREPOST3_36')
+    if (.not.trouve) then
+        call utmess('F', 'PREPOST3_36')
+    endif
     if (inatur .eq. 5 .or. inatur .eq. 6) zcmplx = .true.
 !
 !- ON RECHERCHE LE TYPE DE CHAMP DEMANDE PAR L'UTILISATEUR
@@ -348,7 +354,9 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
 !- VERIFICATION DE LA COMPATIBILITE DU CHAMP DEMANDE
 !  AVEC LE CHAMP IDEAS
-    if (tychid .ne. tychas) call u2mess('F', 'PREPOST3_37')
+    if (tychid .ne. tychas) then
+        call utmess('F', 'PREPOST3_37')
+    endif
 !
 !- VERIFICATION SI LE CHAMP IDEAS ET ASTER SONT DE MEME NATURE
 !  REEL OU COMPLEXE
@@ -356,7 +364,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     if (.not.zcmplx) then
         if (typres .eq. 'DYNA_HARM' .or. typres .eq. 'HARM_GENE' .or. typres .eq.&
             'MODE_MECA_C') then
-            call u2mess('F', 'PREPOST3_38')
+            call utmess('F', 'PREPOST3_38')
         endif
     endif
 !
@@ -382,7 +390,9 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
         else
 !
             call jeexin(ligrel//'.LGRF', iret)
-            if (iret .eq. 0) call u2mess('F', 'PREPOST3_39')
+            if (iret .eq. 0) then
+                call utmess('F', 'PREPOST3_39')
+            endif
             chs = '&&LRIDEA.CHES'
 !
             if (nomch(1:4) .eq. 'VARI') nbcmp1 = nbvari
@@ -400,7 +410,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
             call getvtx(' ', 'PROL_ZERO', scal=prolo, nbret=iret)
             if (prolo(1:3) .eq. 'OUI') then
-                call u2mesk('I', 'PREPOST_13', 1, nomch)
+                call utmess('I', 'PREPOST_13', sk=nomch)
                 call jelira(chs//'.CNSV', 'LONMAX', nbval)
                 if (zcmplx) then
                     do 85 iaux = 1, nbval
@@ -427,7 +437,9 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !  SI ON NE LE TROUVE PAS VIA NXXXX
             if (inoast .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', inoide), nomnob)
-                if (nomnob .ne. nomnoa) call u2mess('F', 'PREPOST3_40')
+                if (nomnob .ne. nomnoa) then
+                    call utmess('F', 'PREPOST3_40')
+                endif
                 inoast=inoide
             endif
             ASSERT(inoast.gt.0)
@@ -435,8 +447,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
             if (inoast .gt. nbnoeu) then
                 vali = inoast
-                call u2mesg('F', 'PREPOST5_45', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'PREPOST5_45', si=vali)
             endif
 !
             idecal = (inoast-1)*zi(jcnsd-1+2)
@@ -484,8 +495,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
             if (ielast .gt. nbelem) then
                 vali = ielast
-                call u2mesg('F', 'PREPOST5_46', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'PREPOST5_46', si=vali)
             endif
             itype=zi(jtypm-1+ielast)
 !
@@ -496,7 +506,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                     isup=zi(jperm-1+maxnod*(itype-1)+iast)
                     if (isup .eq. knoide) goto 142
 141              continue
-                call u2mess('F', 'PREPOST3_40')
+                call utmess('F', 'PREPOST3_40')
 142              continue
                 knoast=iast
 !
@@ -515,7 +525,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
             goto 120
         else if (tychid.eq.'ELGA') then
-            call u2mess('F', 'PREPOST3_41')
+            call utmess('F', 'PREPOST3_41')
         endif
 !
 150      continue
@@ -548,7 +558,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     goto 180
 160  continue
     call getres(resu, concep, nomcmd)
-    call u2mess('F', 'ALGORITH5_5')
+    call utmess('F', 'ALGORITH5_5')
 !
 170  continue
 !

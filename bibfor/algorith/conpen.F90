@@ -42,7 +42,7 @@ subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
 #include "asterfort/conech.h"
 #include "asterfort/conjac.h"
 #include "asterfort/conors.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbnoco
     integer :: nblir, nbcor
     integer :: nblic, nbcoc, nococ(6)
@@ -54,7 +54,7 @@ subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
     integer :: i1, i2, i3
 !-----------------------------------------------------------------------
 #define face(i1,i2,i3) nococ(1).eq.i1.and.nococ(2).eq.i2.and. \
-        nococ(3).eq.i3
+    nococ(3).eq.i3
 !
 !     ------------------------------------------------------------------
 !
@@ -115,8 +115,7 @@ subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
 !
     else if (nbnoco.gt.2) then
         vali = nbnoco
-        call u2mesg('E', 'ALGORITH12_59', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('E', 'ALGORITH12_59', si=vali)
     endif
 !
 end subroutine

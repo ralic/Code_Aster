@@ -44,7 +44,7 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
 #include "asterfort/subaco.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nno, i, n, gamma
     real(kind=8) :: geom(3, nno), dff(2, nno), vdirec(3), vortho(3)
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2), a(2, 2)
@@ -69,7 +69,7 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
 10  end do
 !
     if (abs( 1.d0 - projn*projn ) .le. r8prem()) then
-        call u2mess('F', 'ELEMENTS_3')
+        call utmess('F', 'ELEMENTS_3')
     endif
 !
     denomi = sqrt(1.d0 - projn*projn)

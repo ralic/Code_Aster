@@ -1,7 +1,6 @@
 subroutine asmael(ma1, ma2, mag)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -16,9 +15,9 @@ subroutine asmael(ma1, ma2, mag)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ssdmte.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma1, ma2, mag
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +73,9 @@ subroutine asmael(ma1, ma2, mag)
     do 11,i=1,5
     zi(iadime-1+i)=zi(iadim1-1+i)+zi(iadim2-1+i)
     11 end do
-    if (zi(iadim1-1+6) .ne. zi(iadim2-1+6)) call u2mess('A', 'SOUSTRUC_1')
+    if (zi(iadim1-1+6) .ne. zi(iadim2-1+6)) then
+        call utmess('A', 'SOUSTRUC_1')
+    endif
 !
     ncoor=zi(iadim1-1+6)
     zi(iadime-1+6)=ncoor
@@ -171,7 +172,9 @@ subroutine asmael(ma1, ma2, mag)
         call jelira(jexnum(ma2//'.SUPMAIL', i), 'LONMAX', n)
         call jenuno(jexnum(ma2//'.SUPMAIL', i), nosma)
         call jeexin(jexnom(mag//'.SUPMAIL', nosma), iret)
-        if (iret .gt. 0) call u2mesk('F', 'SOUSTRUC_2', 1, nosma)
+        if (iret .gt. 0) then
+            call utmess('F', 'SOUSTRUC_2', sk=nosma)
+        endif
         call jecroc(jexnom(mag//'.SUPMAIL', nosma))
         call jeecra(jexnum(mag//'.SUPMAIL', i1), 'LONMAX', n)
         call jeveuo(jexnum(mag//'.SUPMAIL', i1), 'E', iasupm)
@@ -204,7 +207,9 @@ subroutine asmael(ma1, ma2, mag)
         else
             call jenonu(jexnom(mag//'.NOMMAI', noma), iret)
         endif
-        if (iret .gt. 0) call u2mesk('F', 'SOUSTRUC_3', 1, noma)
+        if (iret .gt. 0) then
+            call utmess('F', 'SOUSTRUC_3', sk=noma)
+        endif
         call jecroc(jexnom(mag//'.NOMMAI', noma))
 22      continue
     endif
@@ -284,7 +289,7 @@ subroutine asmael(ma1, ma2, mag)
         call jelira(jexnum(ma1//'.GROUPEMA', i), 'LONUTI', n)
         call jenuno(jexnum(ma1//'.GROUPEMA', i), nogma)
         call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPEMA', i), 'E', iagmax)
         do 311, ii=1,n
@@ -298,13 +303,13 @@ subroutine asmael(ma1, ma2, mag)
         call jenuno(jexnum(ma2//'.GROUPEMA', i), nogma)
         call jeexin(jexnom(mag//'.GROUPEMA', nogma), iret)
         if (iret .gt. 0) then
-            call u2mesk('A', 'SOUSTRUC_4', 1, nogma)
+            call utmess('A', 'SOUSTRUC_4', sk=nogma)
             goto 32
         endif
         icompt = icompt + 1
         i1 = nbgm1 + icompt
         call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPEMA', i1), 'E', iagmax)
         do 321, ii=1,n
@@ -333,7 +338,7 @@ subroutine asmael(ma1, ma2, mag)
         call jelira(jexnum(ma1//'.GROUPENO', i), 'LONUTI', n)
         call jenuno(jexnum(ma1//'.GROUPENO', i), nogma)
         call jecroc(jexnom(mag//'.GROUPENO', nogma))
-        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPENO', i), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i), 'E', iagnox)
         do 331, ii=1,n
@@ -347,13 +352,13 @@ subroutine asmael(ma1, ma2, mag)
         call jenuno(jexnum(ma2//'.GROUPENO', i), nogno)
         call jeexin(jexnom(mag//'.GROUPENO', nogno), iret)
         if (iret .gt. 0) then
-            call u2mesk('A', 'SOUSTRUC_5', 1, nogno)
+            call utmess('A', 'SOUSTRUC_5', sk=nogno)
             goto 34
         endif
         icompt = icompt + 1
         i1 = nbgn1 + icompt
         call jecroc(jexnom(mag//'.GROUPENO', nogno))
-        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1, n))
         call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i1), 'E', iagnox)
         do 341, ii=1,n
@@ -417,7 +422,7 @@ subroutine asmael(ma1, ma2, mag)
             valk(1) = zk8(ianon2-1+i)
             valk(2) = ma1
             valk(3) = ma2
-            call u2mesk('A', 'SOUSTRUC_6', 3, valk)
+            call utmess('A', 'SOUSTRUC_6', nk=3, valk=valk)
         endif
     endif
     52 end do

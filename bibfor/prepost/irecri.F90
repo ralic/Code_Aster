@@ -27,7 +27,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsutrg.h"
 #include "asterfort/titre2.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomcon
     character(len=*) :: form, titre, cham(*), para(*)
@@ -200,7 +200,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                 if (iret .eq. 0) then
 !           - MESSAGE NUMERO D'ORDRE NON LICITE
                     call codent(ordr(iordr), 'G', chnumo)
-                    call u2mesk('A', 'PREPOST2_46', 1, chnumo)
+                    call utmess('A', 'PREPOST2_46', sk=chnumo)
                     goto 22
                 endif
                 lordr=.true.

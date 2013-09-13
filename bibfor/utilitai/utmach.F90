@@ -1,8 +1,7 @@
 subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                   nbtrou)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -18,10 +17,9 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbtrou, ncmp
     character(len=8) :: nocmp(*)
     character(len=*) :: champz, typemz, litroz
@@ -96,9 +94,11 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
             if (nocmp(icp) .eq. zk8(iad+icmp-1)) goto 2
  4      continue
         ier = ier + 1
-        call u2mesk('E', 'UTILITAI5_48', 1, nocmp(icp))
+        call utmess('E', 'UTILITAI5_48', sk=nocmp(icp))
  2  end do
-    if (ier .ne. 0) call u2mess('F', 'PREPOST_60')
+    if (ier .ne. 0) then
+        call utmess('F', 'PREPOST_60')
+    endif
 !
 !
     if (docu .eq. 'ELGA' .or. docu .eq. 'ELNO' .or. docu .eq. 'ELEM' .or. docu .eq. 'CART') then
@@ -162,7 +162,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 !
     else
 !
-        call u2mesk('F', 'UTILITAI5_49', 1, docu)
+        call utmess('F', 'UTILITAI5_49', sk=docu)
 !
     endif
 !
@@ -173,11 +173,9 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
         valk (4) = nocmp(3)
         valk (5) = nocmp(4)
         if (docu .eq. 'NOEU') then
-            call u2mesg('F', 'UTILITAI8_61', 5, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'UTILITAI8_61', nk=5, valk=valk)
         else
-            call u2mesg('F', 'UTILITAI8_62', 5, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'UTILITAI8_62', nk=5, valk=valk)
         endif
     endif
 !
@@ -209,7 +207,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 120      continue
 !
     else
-        call u2mesk('F', 'PREPOST3_6', 1, typem)
+        call utmess('F', 'PREPOST3_6', sk=typem)
     endif
 !
     call jedetr('&&UTMACH.LIST_ENT')

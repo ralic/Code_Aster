@@ -6,7 +6,7 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 #include "asterfort/mtcro1.h"
 #include "asterfort/mtcro2.h"
 #include "asterfort/mtcro3.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmax, n, nbsc, ier
     real(kind=8) :: a(nmax, n), b(nmax, nbsc), c(nmax, nbsc), wks(nmax)
 ! ----------------------------------------------------------------------
@@ -64,7 +64,7 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
 ! --- TEST DE VERIFICATION DES DIMENSIONS
 !
     if (nmax .lt. n) then
-        call u2mess('F', 'ALGELINE2_14')
+        call utmess('F', 'ALGELINE2_14')
     endif
 !
 !

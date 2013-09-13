@@ -52,16 +52,13 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterfort/freqom.h"
 #include "asterfort/infniv.h"
 #include "asterfort/omega2.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpfopr.h"
+!
     integer :: nfreq, ipos(*), lmat(3), ier, nblagr, nbrssa, ibid2(2)
     real(kind=8) :: vpinf, vpmax, omemin, omemax, seuil, precdc, omecor, charge(nfreq)
     real(kind=8) :: freq(nfreq), err(nfreq), precsh
@@ -81,7 +78,7 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
     call infniv(ifm, niv)
     if (niv .ge. 1) then
         write(ifm,1000)
-        call u2mess('I', 'ALGELINE6_22')
+        call utmess('I', 'ALGELINE6_22')
     endif
 !     ------------------------------------------------------------------
 !     ------------------ CONTROLE DES NORMES D'ERREURS -----------------
@@ -94,18 +91,17 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
                 ier = ier + 1
                 valk = mode
                 vali (1) = ipos(ifreq)
-                call u2mesg(cty//'+', 'ALGELINE5_15', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess(cty//'+', 'ALGELINE5_15', sk=valk, si=vali(1))
                 if (typres .eq. 'DYNAMIQUE') then
                     valr (1) = freq(ifreq)
-                    call u2mesr(cty//'+', 'ALGELINE5_16', 1, valr)
+                    call utmess(cty//'+', 'ALGELINE5_16', sr=valr(1))
                 else
                     valr (1) = charge(ifreq)
-                    call u2mesr(cty//'+', 'ALGELINE5_17', 1, valr)
+                    call utmess(cty//'+', 'ALGELINE5_17', sr=valr(1))
                 endif
                 valr (1) = err(ifreq)
                 valr (2) = seuil
-                call u2mesr(cty//'+', 'ALGELINE5_18', 2, valr)
+                call utmess(cty//'+', 'ALGELINE5_18', nr=2, valr=valr)
 !
                 call getres(k16b, k16b, nomcmd)
                 if (typres .eq. 'DYNAMIQUE') then
@@ -114,9 +110,9 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
                     valk = 'CHAR_CRIT'
                 endif
                 if (nomcmd(1:16) .eq. 'MODE_ITER_SIMULT') then
-                    call u2mesk(cty, 'ALGELINE5_77', 1, 'NMAX_'//valk)
+                    call utmess(cty, 'ALGELINE5_77', sk='NMAX_'//valk)
                 else
-                    call u2mesk(cty, 'ALGELINE5_78', 1, 'CALC_'//valk)
+                    call utmess(cty, 'ALGELINE5_78', sk='CALC_'//valk)
                 endif
 !
             endif
@@ -140,20 +136,19 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
                 ier = ier + 1
                 valk = mode
                 vali (1) = ipos(ifreq)
-                call u2mesg(cty//'+', 'ALGELINE5_15', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess(cty//'+', 'ALGELINE5_15', sk=valk, si=vali(1))
                 if (typres .eq. 'DYNAMIQUE') then
                     valr (1) = freq(ifreq)
-                    call u2mesr(cty//'+', 'ALGELINE5_16', 1, valr(1))
+                    call utmess(cty//'+', 'ALGELINE5_16', sr=valr(1))
                     valr (1) = freqom(omemin)
                     valr (2) = freqom(omemax)
-                    call u2mesr(cty, 'ALGELINE5_20', 2, valr)
+                    call utmess(cty, 'ALGELINE5_20', nr=2, valr=valr)
                 else
                     valr (1) = charge(ifreq)
-                    call u2mesr(cty//'+', 'ALGELINE5_17', 1, valr(1))
+                    call utmess(cty//'+', 'ALGELINE5_17', sr=valr(1))
                     valr (1) = omemin
                     valr (2) = omemax
-                    call u2mesr(cty, 'ALGELINE5_20', 2, valr)
+                    call utmess(cty, 'ALGELINE5_20', nr=2, valr=valr)
                 endif
             endif
 210      continue
@@ -179,35 +174,33 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
         if (nfreqt .ne. nfreq) then
             ier = ier + 1
             valk = mode
-            call u2mesk(cty//'+', 'ALGELINE5_23', 1, valk)
+            call utmess(cty//'+', 'ALGELINE5_23', sk=valk)
             if (typres .eq. 'DYNAMIQUE') then
                 valr (1) = freqom(vpinf)
                 valr (2) = freqom(vpmax)
                 vali (1) = nfreqt
                 vali (2) = nfreq
-                call u2mesg(cty//'+', 'ALGELINE5_24', 0, ' ', 2,&
-                            vali, 2, valr)
+                call utmess(cty//'+', 'ALGELINE5_24', ni=2, vali=vali, nr=2,&
+                            valr=valr)
             else
                 valr (1) = vpinf
                 valr (2) = vpmax
                 vali (1) = nfreqt
                 vali (2) = nfreq
-                call u2mesg(cty//'+', 'ALGELINE5_25', 0, ' ', 2,&
-                            vali, 2, valr)
+                call utmess(cty//'+', 'ALGELINE5_25', ni=2, vali=vali, nr=2,&
+                            valr=valr)
             endif
-            call u2mess(cty, 'ALGELINE5_26')
+            call utmess(cty, 'ALGELINE5_26')
         else
             if (niv .ge. 1) then
                 if (typres .eq. 'DYNAMIQUE') then
                     valr (1) = freqom(vpinf)
                     valr (2) = freqom(vpmax)
-                    call u2mesg('I', 'ALGELINE6_23', 0, ' ', 1,&
-                                nfreqt, 2, valr)
+                    call utmess('I', 'ALGELINE6_23', si=nfreqt, nr=2, valr=valr)
                 else
                     valr (1) = vpinf
                     valr (2) = vpmax
-                    call u2mesg('I', 'ALGELINE6_24', 0, ' ', 1,&
-                                nfreqt, 2, valr)
+                    call utmess('I', 'ALGELINE6_24', si=nfreqt, nr=2, valr=valr)
                 endif
             endif
         endif

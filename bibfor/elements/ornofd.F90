@@ -1,8 +1,7 @@
 subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
                   ndextr, base, vecori)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/jedema.h"
@@ -13,9 +12,10 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: nbma
     character(len=24) :: mafour
     character(len=8) :: nomail, ndorig, ndextr
@@ -199,7 +199,9 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !     ------------------------------------------------------------------
     if (ndextr .ne. ' ') then
         call jenuno(jexnum(nomnoe, zi(jnoe-1 + nbno)), noeud)
-        if (noeud .ne. ndextr) call u2mesk('F', 'ELEMENTS_77', 1, ndextr)
+        if (noeud .ne. ndextr) then
+            call utmess('F', 'ELEMENTS_77', sk=ndextr)
+        endif
     endif
 !
 !

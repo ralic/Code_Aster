@@ -48,8 +48,8 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: mofaz, nomaz, lisnoz
 !
@@ -105,7 +105,7 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
     endif
 !
     if (ndim .ne. 3) then
-        call u2mess('F', 'MODELISA3_84')
+        call utmess('F', 'MODELISA3_84')
     endif
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
@@ -124,11 +124,11 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ---------------------------------
     call getvr8(motfac, 'RAYON', iocc=iocc, nbval=0, nbret=nrayon)
     if (nrayon .eq. 0) then
-        call u2mess('F', 'MODELISA3_74')
+        call utmess('F', 'MODELISA3_74')
     else
         call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
-            call u2mess('F', 'MODELISA3_75')
+            call utmess('F', 'MODELISA3_75')
         endif
     endif
 !
@@ -138,11 +138,11 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
     if (nangle .eq. 0) then
         call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
-            call u2mess('F', 'MODELISA3_85')
+            call utmess('F', 'MODELISA3_85')
         else
             nvect = -nvect
             if (nvect .ne. 3) then
-                call u2mess('F', 'MODELISA3_86')
+                call utmess('F', 'MODELISA3_86')
             else
                 call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe,&
                             nbret=nv)
@@ -151,7 +151,7 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
     else
         nangle = -nangle
         if (nangle .ne. 2) then
-            call u2mess('F', 'MODELISA3_87')
+            call utmess('F', 'MODELISA3_87')
         endif
         call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
                     nbret=nv)
@@ -167,7 +167,7 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
     xnorm2 = axe(1)*axe(1) + axe(2)*axe(2) + axe(3)*axe(3)
 !
     if (xnorm2 .eq. zero) then
-        call u2mess('F', 'MODELISA3_79')
+        call utmess('F', 'MODELISA3_79')
     endif
 !
     xnorm = sqrt(xnorm2)
@@ -180,11 +180,11 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ------------------------------------------------
     call getvr8(motfac, 'PRECISION', iocc=iocc, nbval=0, nbret=nprec)
     if (nprec .eq. 0) then
-        call u2mess('F', 'MODELISA3_88')
+        call utmess('F', 'MODELISA3_88')
     else
         call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
-            call u2mess('F', 'MODELISA3_89')
+            call utmess('F', 'MODELISA3_89')
         endif
     endif
 !

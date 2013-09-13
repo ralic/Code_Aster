@@ -43,7 +43,7 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 #include "jeveux.h"
 #include "asterfort/matini.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ipg, idfde, niv, ifm, nno, ia1, ia2
     real(kind=8) :: jacob, geom(*)
     logical :: l2d
@@ -110,13 +110,11 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 !
 ! EN 2D ON NE TESTE PAS LE SIGNE DU JACOBIEN
     if (.not.l2d .and. (jacob.lt.0.d0)) then
-        call u2mesg('A+', 'CALCULEL6_73', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('A+', 'CALCULEL6_73')
         call tecael(ia1, ia2)
         vali = zi(ia1)
         valr = jacob
-        call u2mesg('A', 'CALCULEL6_74', 0, ' ', 1,&
-                    vali, 1, valr)
+        call utmess('A', 'CALCULEL6_74', si=vali, sr=valr)
     endif
 !
 ! CALCUL DU SIGNE DU JACOBIEN + AFFICHAGE SI NECESSAIRE

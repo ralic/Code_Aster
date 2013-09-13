@@ -20,7 +20,6 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -28,8 +27,8 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbno, nbgr, nbnot, nbnoe, indno(nbnoe)
     character(len=*) :: noma, nonoe(*), nogrn(*), numno, noltop
 ! ----------------------------------------------------------------------
@@ -71,14 +70,13 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
             call jenonu(jexnom(nomma//'.NOMNOE', nonoe(inoe)), ino)
             if (ino .eq. 0) then
                 valk (1) = nonoe(inoe)
-                call u2mesg('A', 'PREPOST5_38', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'PREPOST5_38', sk=valk(1))
                 nonoe(inoe) = ' '
             else
                 zi(jtopo-1+2) = zi(jtopo-1+2) + 1
                 nbnot = nbnot + 1
                 if (nbnot .gt. lnuno) then
-                    call u2mess('A', 'PREPOST3_4')
+                    call utmess('A', 'PREPOST3_4')
                     nbnot=nbnot-1
                     goto 9999
 !             LNUNO=2*LNUNO
@@ -97,16 +95,14 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
             call jeexin(jexnom(nomma//'.GROUPENO', nogrn(igr)), iret)
             if (iret .eq. 0) then
                 valk (1) = nogrn(igr)
-                call u2mesg('A', 'PREPOST5_31', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'PREPOST5_31', sk=valk(1))
                 nogrn(igr) = ' '
             else
                 call jelira(jexnom(nomma//'.GROUPENO', nogrn(igr)), 'LONMAX', nbn)
                 if (nbn .eq. 0) then
                     valk (1) = nogrn(igr)
                     valk (2) = ' '
-                    call u2mesg('A', 'PREPOST5_40', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'PREPOST5_40', nk=2, valk=valk)
                     nogrn(igr) = ' '
                 else
                     zi(jtopo-1+4) = zi(jtopo-1+4) + 1
@@ -114,7 +110,7 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
                     do 14 in = 1, nbn
                         nbnot=nbnot+1
                         if (nbnot .gt. lnuno) then
-                            call u2mess('A', 'PREPOST3_4')
+                            call utmess('A', 'PREPOST3_4')
                             nbnot=nbnot-1
                             goto 9999
 !                 LNUNO=2*LNUNO

@@ -2,14 +2,14 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
                   tbscmb, prodef, londef, deklag, lrev,&
                   k1a, k1b)
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: norev, nomdb
     real(kind=8) :: prodef, londef, deklag, lrev, k1a, k1b
     character(len=19) :: sigmrv, sigmdb, tbscrv, tbscmb
@@ -88,7 +88,7 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
 ! ======================================================================
     ldefo = zr(jabsrv+norev-1) + zr(jabsmb+nomdb-1)
     if (abs(ldefo - prodef) .gt. rtole) then
-        call u2mess('F', 'PREPOST_5')
+        call utmess('F', 'PREPOST_5')
     endif
 ! ======================================================================
 ! --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE REVETEMENT --

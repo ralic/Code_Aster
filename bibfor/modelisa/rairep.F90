@@ -20,7 +20,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
 !
@@ -50,7 +50,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     character(len=8) :: k8b
     character(len=8) :: nomnoe, typm
     character(len=24) :: nomgr, magrno, manono, magrma, manoma, matyma
-    real(kind=8) ::  zero, x(9), y(9), z(9), rigi(6)
+    real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
     logical :: lfonc, trans
     integer :: iarg, appui
@@ -161,10 +161,10 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 appui=ntopo
             else if ((appui.eq.1).or.(appui.eq.2)) then
                 if (appui .ne. ntopo) then
-                    call u2mess('F', 'MODELISA6_35')
+                    call utmess('F', 'MODELISA6_35')
                 endif
             else
-                call u2mess('F', 'MODELISA6_29')
+                call utmess('F', 'MODELISA6_29')
             endif
             do 24 nn = 1, nm
                 inoe = zi(ldnm+nn-1)

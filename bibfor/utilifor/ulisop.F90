@@ -1,8 +1,8 @@
 function ulisop(unit, name)
     implicit none
     integer :: ulisop
-#include "asterfort/u2mesk.h"
 #include "asterfort/ulinit.h"
+#include "asterfort/utmess.h"
     integer :: unit
     character(len=16) :: name
 !     ------------------------------------------------------------------
@@ -50,7 +50,7 @@ function ulisop(unit, name)
 !
     if (unit .lt. 0) then
         write(k8bid,'(I4)') unit
-        call u2mesk('F', 'UTILITAI5_9', 1, k8bid)
+        call utmess('F', 'UTILITAI5_9', sk=k8bid)
     endif
     name = '?'
     ival = 0

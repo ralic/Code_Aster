@@ -56,8 +56,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
@@ -77,7 +76,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
     logical :: tousno, leffor, prems
-    integer ::  inocmp, inoecp, inumno, inuddl
+    integer :: inocmp, inoecp, inumno, inuddl
     integer :: j, jc, i, ie, iadesc, iarchi, ich
     integer :: idbase, idvecg, iret, iretou, jfreq
     integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
@@ -236,7 +235,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     call getvr8(' ', 'PRECISION', scal=epsi, nbret=n1)
     call getvtx(' ', 'INTERPOL', scal=interp, nbret=n1)
 ! ON PLANTE LE CALCUL SI ON DEMANDE D'INTERPOLER EN FREQUENCIEL
-    if (interp(1:3) .ne. 'NON') call u2mess('F', 'ALGORITH3_86')
+    if (interp(1:3) .ne. 'NON') then
+        call utmess('F', 'ALGORITH3_86')
+    endif
 !
     knume = '&&HARM75.NUM_RANG'
     kfreq = '&&HARM75.FREQ'
@@ -245,7 +246,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                 knume, nbfreq, iretou)
 !
     if (iretou .ne. 0) then
-        call u2mess('F', 'UTILITAI4_24')
+        call utmess('F', 'UTILITAI4_24')
     endif
     call jeexin(kfreq, iret)
     if (iret .gt. 0) then
@@ -321,7 +322,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             call rsexch(' ', nomres, type(ich), iarchi, chamno,&
                         iret)
             if (iret .eq. 0) then
-                call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                call utmess('A', 'ALGORITH2_64', sk=chamno)
             else if (iret .eq. 100) then
                 if (tousno) then
                     if (mode .eq. blanc) then

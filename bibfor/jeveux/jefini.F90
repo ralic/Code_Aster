@@ -27,9 +27,9 @@ subroutine jefini(cond)
 #include "asterfort/jeimpr.h"
 #include "asterfort/jelibf.h"
 #include "asterfort/jjlidy.h"
-#include "asterfort/u2mesg.h"
 #include "asterfort/ulclos.h"
 #include "asterfort/utgtme.h"
+#include "asterfort/utmess.h"
     character(len=*) :: cond
 !     ==================================================================
 !-----------------------------------------------------------------------
@@ -80,11 +80,9 @@ subroutine jefini(cond)
     call utgtme(2, k8tab, rval, iret)
 !
     if (rval(2) .lt. rval(1)) then
-        call u2mesg('I', 'JEVEUX1_77', 0, ' ', 0,&
-                    ibid, 2, rval)
+        call utmess('I', 'JEVEUX1_77', nr=2, valr=rval)
     else if ((rval(2)-rval(1))/rval(1) .gt. 0.5d0) then
-        call u2mesg('I', 'JEVEUX1_78', 0, ' ', 0,&
-                    ibid, 2, rval)
+        call utmess('I', 'JEVEUX1_78', nr=2, valr=rval)
     endif
 !
 !     -------------  EDITION DES REPERTOIRES ---------------------------

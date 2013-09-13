@@ -62,9 +62,8 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 #include "asterfort/dismoi.h"
 #include "asterfort/irchml.h"
 #include "asterfort/irdepl.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcmp3.h"
+#include "asterfort/utmess.h"
     character(len=*) :: cham19, nomsd, nomsym
     character(len=*) :: form, formr, titre, nomcmp(*), partie
     real(kind=8) :: borsup, borinf
@@ -99,10 +98,10 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
         valk(1) = tych
         valk(2) = ch19
         if (tyres(1:9) .eq. 'MODE_GENE' .or. tyres(1:9) .eq. 'HARM_GENE') then
-            call u2mesk('A+', 'PREPOST_87', 2, valk)
-            call u2mess('A', 'PREPOST6_36')
+            call utmess('A+', 'PREPOST_87', nk=2, valk=valk)
+            call utmess('A', 'PREPOST6_36')
         else
-            call u2mesk('A', 'PREPOST_87', 2, valk)
+            call utmess('A', 'PREPOST_87', nk=2, valk=valk)
         endif
     endif
 !
@@ -142,7 +141,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
     if (ierd .ne. 0) then
         valk(1) = ch19
         valk(2) = form(1:7)
-        call u2mesk('A', 'PREPOST_90', 2, valk)
+        call utmess('A', 'PREPOST_90', nk=2, valk=valk)
     endif
 !
 end subroutine

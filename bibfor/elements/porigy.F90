@@ -2,12 +2,12 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
                   klv, nl)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/ptgy02.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: icdmat
     character(len=*) :: nomte
     real(kind=8) :: e, rho, xnu, klv(*)
@@ -76,7 +76,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
     if (nomte .eq. 'MECA_POU_D_E') then
@@ -102,7 +102,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
         xjx = 0.d0
     else
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
 !

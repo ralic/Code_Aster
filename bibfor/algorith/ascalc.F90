@@ -28,7 +28,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
 !
@@ -168,7 +168,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                             do 103 id = 1, 3
                                 if (nomsup((id-1)*nbsup+is) .eq. noeu) then
                                     if (nbdis(is) .ne. 0) then
-                                        call u2mess('F', 'SEISME_29')
+                                        call utmess('F', 'SEISME_29')
                                     endif
                                     nbdis(is) = ioc
                                 endif
@@ -204,7 +204,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                                     do 113 id = 1, 3
                                         if (nomsup((id-1)*nbsup+is) .eq. noeu) then
                                             if (nbdis(is) .ne. 0) then
-                                                call u2mess('F', 'SEISME_29')
+                                                call utmess('F', 'SEISME_29')
                                             endif
                                             nbdis(is) = ioc
                                         endif
@@ -222,7 +222,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                     ncompt = ncompt + nbdis(is)
 120              continue
                 if (ncompt .eq. nbsup) then
-                    call u2mess('F', 'SEISME_30')
+                    call utmess('F', 'SEISME_30')
                 endif
             endif
         endif

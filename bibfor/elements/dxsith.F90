@@ -1,11 +1,11 @@
 subroutine dxsith(nomte, mater, sigma)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dmatcp.h"
 #include "asterfort/elref5.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/verift.h"
     integer :: mater
@@ -92,7 +92,9 @@ subroutine dxsith(nomte, mater, sigma)
         call jevech('PNBSP_I', 'L', jnbspi)
         npgh = 3
         nbcou = zi(jnbspi-1+1)
-        if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_46')
+        if (nbcou .le. 0) then
+            call utmess('F', 'ELEMENTS_46')
+        endif
     endif
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:

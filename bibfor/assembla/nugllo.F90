@@ -34,7 +34,7 @@ subroutine nugllo(nu, base, solveu)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nupodd.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=14) :: nu
@@ -64,7 +64,7 @@ subroutine nugllo(nu, base, solveu)
     character(len=8) :: k8b, noma, partit, mo
     character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
-    integer ::  jprtk
+    integer :: jprtk
     logical :: ldgrel, ldist
     mpi_int :: mrank, msize
 !
@@ -80,12 +80,12 @@ subroutine nugllo(nu, base, solveu)
 !      IZZPRN(ILI,NUNOEL,L) = (IDPRN1-1+ZI(IDPRN2+ILI-1)+
 !     &                       (NUNOEL-1)* (NEC+2)+L-1)
 #define zzprno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ \
-        (nunoel-1)*(nec+2)+l-1)
+    (nunoel-1)*(nec+2)+l-1)
 !
 #define izzpr2(ili,nunoel,l) (idpr21-1+zi(idpr22+ili-1)+ \
-        (nunoel-1)*(nec+2)+l-1)
+    (nunoel-1)*(nec+2)+l-1)
 #define zzprn2(ili,nunoel,l) zi(idpr21-1+zi(idpr22+ili-1)+ \
-        (nunoel-1)*(nec+2)+l-1)
+    (nunoel-1)*(nec+2)+l-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
@@ -95,7 +95,7 @@ subroutine nugllo(nu, base, solveu)
 !     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
 #define zznelg(ili,igrel) zi(zi(jadli+3*(ili-1)+2)+igrel)- \
-        zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
+    zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -105,20 +105,20 @@ subroutine nugllo(nu, base, solveu)
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
 #define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \
-        zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
+    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
 #define zznsup(ili,iel) zi(zi(jadne+3*(ili-1)+2)+iel)- \
-        zi(zi(jadne+3*(ili-1)+2)+iel-1)-1
+    zi(zi(jadne+3*(ili-1)+2)+iel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 !
 #define zznema(ili,iel,j) zi(zi(jadne+3*(ili-1)+1)-1+ \
-        zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
+    zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
 !
 !----------------------------------------------------------------------
 !
@@ -288,7 +288,7 @@ subroutine nugllo(nu, base, solveu)
 !---- ON VERIFIE QUE CHAQUE PROC A AU MOINS UN DDL
     if (neql .eq. 0) then
         vali(1)=rang
-        call u2mesi('F', 'ASSEMBLA_4', 1, vali)
+        call utmess('F', 'ASSEMBLA_4', si=vali(1))
     endif
 !
 !---- CREATION DU .NUML.DELG

@@ -1,6 +1,6 @@
 subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
-                  profil, pflmod, typent, typgeo, numdt,&
-                  numo, cret)
+                     profil, pflmod, typent, typgeo, numdt,&
+                     numo, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -20,17 +20,18 @@ subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfdrpr.h"
     character(len=*) :: cha, profil
     aster_int :: fid, typent, typgeo, cret
     aster_int :: intlac, numco, numdt, numo, pflmod
     real(kind=8) :: val(*)
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, typen4, typge4, cret4
     med_int :: intla4, numco4, numdt4, numo4, pflmo4
@@ -51,6 +52,6 @@ subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
                 typgeo, pflmod, profil, intlac, numco,&
                 val, cret)
 #endif
-
+!
 #endif
 end subroutine

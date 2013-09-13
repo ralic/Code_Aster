@@ -24,7 +24,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
 #include "asterfort/jjimpo.h"
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: unit
     character(len=*) :: nomlu, cidatr, mess
 ! ----------------------------------------------------------------------
@@ -97,7 +97,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
     if (noml32(1:1) .eq. '$') then
         iclas = index ( classe , noml32(2:2) )
         if (iclas .eq. 0) then
-            call u2mesk('F', 'JEVEUX1_15', 1, noml32(2:2))
+            call utmess('F', 'JEVEUX1_15', sk=noml32(2:2))
         endif
         do 1 k = 1, lidbas
             if (nom .eq. cidbas(k)) then
@@ -113,7 +113,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
                 goto 10
             endif
  1      continue
-        call u2mesk('F', 'JEVEUX1_16', 1, nom)
+        call utmess('F', 'JEVEUX1_16', sk=nom)
 10      continue
 !
     else
@@ -128,11 +128,11 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
                     goto 20
                 endif
  2          continue
-            call u2mesk('F', 'JEVEUX1_17', 1, nom)
+            call utmess('F', 'JEVEUX1_17', sk=nom)
 20          continue
             call jjcren(noml32(1:24)//nom, 0, iret2)
             if (iret2 .eq. 0) then
-                call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+                call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
             endif
             iadmi = iadm ( jiadm(iclaos) + 2*idatos-1 )
             iadmex = iadmi
@@ -154,7 +154,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
         else if (iret .ne. 2) then
             valk(1) = nom
             valk(2) = noml32
-            call u2mesk('F', 'JEVEUX1_18', 2, valk)
+            call utmess('F', 'JEVEUX1_18', nk=2, valk=valk)
         else
             lcol = .true.
             call jjallc(iclaco, idatco, 'L', ibacol)
@@ -164,13 +164,13 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
                     goto 30
                 endif
  3          continue
-            call u2mesk('F', 'JEVEUX1_17', 1, nom)
+            call utmess('F', 'JEVEUX1_17', sk=nom)
 30          continue
             ixatr = iszon ( jiszon + ibacol + idatr )
             if (ixatr .gt. 0) then
                 ibatr = iadm( jiadm(iclaco) + 2*ixatr-1 )
                 if (ibatr .eq. 0) then
-                    call u2mesk('F', 'JEVEUX1_19', 1, nom)
+                    call utmess('F', 'JEVEUX1_19', sk=nom)
                 endif
                 ideci = 0
                 genri = genr( jgenr(iclaco) + ixatr )

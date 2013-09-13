@@ -10,7 +10,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nompar(*)
     character(len=*) :: cecr
@@ -116,7 +116,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     zk16(lk80pa+neck80) = nompar(ipa)
                     neck80 = neck80 + 1
                 else
-                    call u2mesk('A', 'PREPOST3_6', 1, ctype)
+                    call utmess('A', 'PREPOST3_6', sk=ctype)
                 endif
 120          continue
 !

@@ -16,7 +16,7 @@ subroutine rfnapp(nappe)
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=19) :: nappe
@@ -72,7 +72,7 @@ subroutine rfnapp(nappe)
             if (delta .le. prec) goto 20
         endif
 10  end do
-    call u2mess('F', 'UTILITAI5_90')
+    call utmess('F', 'UTILITAI5_90')
 20  continue
 !
 !     --- REMPLISSAGE DU .PROL ---

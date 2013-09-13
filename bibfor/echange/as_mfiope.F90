@@ -18,15 +18,16 @@ subroutine as_mfiope(fid, nom, acces, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfiope.h"
     character(len=*) :: nom
     aster_int :: acces, fid, cret
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: acces4, fid4, cret4
     acces4 = acces
@@ -36,6 +37,6 @@ subroutine as_mfiope(fid, nom, acces, cret)
 #else
     call mfiope(fid, nom, acces, cret)
 #endif
-
+!
 #endif
 end subroutine

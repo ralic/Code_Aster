@@ -24,9 +24,8 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/cfmmcv.h"
 #include "asterfort/dierre.h"
@@ -53,7 +52,8 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 #include "asterfort/nmnkft.h"
 #include "asterfort/nmresi.h"
 #include "asterfort/nmrvai.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: fonact(*)
     integer :: iterat, numins
     real(kind=8) :: eta, conv(*), parcri(*), parmet(*)
@@ -256,7 +256,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     call nmlecv(sderro, 'RESI', cvresi)
     call nmerge(sderro, 'DIVE_DEBO', dvdebo)
     if (cvresi .and. dvdebo) then
-        call u2mess('I', 'MECANONLINE2_3')
+        call utmess('I', 'MECANONLINE2_3')
     endif
 !
 ! --- EVALUATION DE LA CONVERGENCE DE L'ITERATION DE NEWTON

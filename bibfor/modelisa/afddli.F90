@@ -1,7 +1,7 @@
-subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
-                  prnm, repe_type, repe_defi, coef_type, cmp_nb, &
-                  cmp_name, cmp_acti, vale_type, vale_real, vale_func, &
-                  vale_cplx, cmp_count, list_rela, lxfem, jnoxfl, &
+subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
+                  prnm, repe_type, repe_defi, coef_type, cmp_nb,&
+                  cmp_name, cmp_acti, vale_type, vale_real, vale_func,&
+                  vale_cplx, cmp_count, list_rela, lxfem, jnoxfl,&
                   jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
 !
     implicit none
@@ -14,6 +14,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xddlim.h"
 !
 ! ======================================================================
@@ -49,7 +50,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
     character(len=4), intent(in) :: vale_type
     real(kind=8), intent(in) :: vale_real(cmp_nb)
     character(len=8), intent(in) :: vale_func(cmp_nb)
-    complex(kind=8), intent(in) ::  vale_cplx(cmp_nb)
+    complex(kind=8), intent(in) :: vale_cplx(cmp_nb)
     integer, intent(inout) :: cmp_count(cmp_nb)
     character(len=19), intent(in) :: list_rela
     logical, intent(in) :: lxfem
@@ -130,7 +131,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
         if (.not.exisdg(prnm,cmp_index)) then
             valkm(1)=cmp_name(i_cmp)
             valkm(2)=node_name
-            call u2mesk('A','CALCULEL3_18',2,valkm)
+            call utmess('A', 'CALCULEL3_18', nk=2, valk=valkm)
             goto 25
         endif
 !
@@ -139,11 +140,10 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
         if (lxfem) then
             ASSERT(coef_type.eq.'REEL')
             if (zl(jnoxfl-1+2*node_nume) .and. cmp_name(i_cmp)(1:1) .eq. 'D') then
-                call xddlim(model, cmp_name(i_cmp)(1:8), node_name, node_nume, &
-                            vale_real(i_cmp), vale_cplx(i_cmp), vale_func(i_cmp), &
-                            vale_type, cmp_count(i_cmp), list_rela,&
-                            ibid, rbid, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv)
+                call xddlim(model, cmp_name(i_cmp)(1:8), node_name, node_nume, vale_real(i_cmp),&
+                            vale_cplx(i_cmp), vale_func(i_cmp), vale_type, cmp_count(i_cmp),&
+                            list_rela, ibid, rbid, jnoxfv, ch_xfem_stat,&
+                            ch_xfem_lnno, ch_xfem_ltno, connex_inv)
                 goto 25
             endif
         endif
@@ -156,11 +156,11 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
 !
         ASSERT(cmp_acti(i_cmp).le.1)
         ASSERT(cmp_acti(i_cmp).ge.0)
-        if (cmp_acti(i_cmp).eq.1) then
-            call afrela(coef_real_unit, coef_cplx_unit, cmp_name(i_cmp)(1:8), node_name,  &
-                        repe_type, repe_defi, 1, &
-                        vale_real(i_cmp), vale_cplx(i_cmp), vale_func(i_cmp), &
-                        coef_type, vale_type, lagr_type, 0.d0, list_rela)
+        if (cmp_acti(i_cmp) .eq. 1) then
+            call afrela(coef_real_unit, coef_cplx_unit, cmp_name(i_cmp)(1:8), node_name,&
+                        repe_type, repe_defi, 1, vale_real(i_cmp), vale_cplx(i_cmp),&
+                        vale_func(i_cmp), coef_type, vale_type, lagr_type, 0.d0,&
+                        list_rela)
         endif
 !
 25      continue

@@ -18,8 +18,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 #include "asterfort/rsorac.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/rsutrg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbarch, nbchex, nbnosy
@@ -118,7 +117,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
                 endif
 80          continue
             if (iflag .eq. 0) then
-                call u2mesk('F', 'ALGORITH3_40', 1, zk16(jtrav+i-1))
+                call utmess('F', 'ALGORITH3_40', sk=zk16(jtrav+i-1))
             endif
 70      continue
 !
@@ -179,7 +178,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     call rsutnu(resu, motcle, iocc, knum, nbtrou,&
                 prec, crit, ier)
     if (ier .ne. 0) then
-        call u2mess('F', 'ALGORITH3_41')
+        call utmess('F', 'ALGORITH3_41')
     endif
     call jeveuo(knum, 'L', jordr)
     do 30 k = 1, nbtrou

@@ -23,7 +23,6 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 ! aslint: disable=W1501,W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/mgauss.h"
@@ -31,8 +30,8 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ndim, imate, retcom
     character(len=16) :: option
     real(kind=8) :: crit(*), tm, tp
@@ -181,7 +180,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
     poro2 = poro
     diff = poro1-poro2
     if (abs(diff) .gt. tol) then
-        call u2mess('F', 'ALGORITH6_60')
+        call utmess('F', 'ALGORITH6_60')
     else
         poro=poro1
     endif
@@ -235,7 +234,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 116  end do
     sigmmo = -sigmmo/3.d0
     if (sigmmo .le. (-0.99d0*kc*p1)) then
-        call u2mess('F', 'ALGORITH6_61')
+        call utmess('F', 'ALGORITH6_61')
     endif
 !
     sieleq = 0.d0
@@ -294,7 +293,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
         if ((e.le.zero) .or. (nu.le.zero) .or. (nu.gt.unsde)) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3) (1:8)
-            call u2mesk('A', 'COMPOR1_3', 1, nomail)
+            call utmess('A', 'COMPOR1_3', sk=nomail)
         endif
 ! ----------------------------------------------------------
 !
@@ -482,7 +481,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                         if ((signf0*sigfi0) .gt. zero) xinf0 = xb0
 !
 210                  end do
-                    call u2mess('F', 'ALGORITH6_62')
+                    call utmess('F', 'ALGORITH6_62')
 101                  continue
                     xb = xb0
                     xsup = xb
@@ -637,7 +636,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !
 !
 200                  end do
-                    call u2mess('F', 'ALGORITH3_55')
+                    call utmess('F', 'ALGORITH3_55')
 100                  continue
                     deppmo=v0
 !

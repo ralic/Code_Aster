@@ -18,7 +18,6 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -34,8 +33,9 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chno1, numdd2, base, chno2, tcorr(*)
     integer :: ncorr
 !
@@ -166,8 +166,12 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
                 tysca1, ierd)
     call dismoi('F', 'TYPE_SCA', gd2, 'GRANDEUR', ibid,&
                 tysca2, ierd)
-    if (tysca1 .ne. 'R') call u2mesk('F', 'CALCULEL_92', 1, cn1)
-    if (tysca2 .ne. 'R') call u2mesk('F', 'CALCULEL_93', 1, nu2)
+    if (tysca1 .ne. 'R') then
+        call utmess('F', 'CALCULEL_92', sk=cn1)
+    endif
+    if (tysca2 .ne. 'R') then
+        call utmess('F', 'CALCULEL_93', sk=nu2)
+    endif
 !
 !
     call dismoi('F', 'NB_EQUA', cn1, 'CHAM_NO', nval1,&

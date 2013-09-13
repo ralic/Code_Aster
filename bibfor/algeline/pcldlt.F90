@@ -17,7 +17,6 @@ subroutine pcldlt(matf, mat, niremp, bas)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/gnomsd.h"
@@ -36,9 +35,9 @@ subroutine pcldlt(matf, mat, niremp, bas)
 #include "asterfort/pccoef.h"
 #include "asterfort/pcfact.h"
 #include "asterfort/pcstru.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: matf, mat, bas
 !-----------------------------------------------------------------------
 !  FONCTION  :
@@ -101,7 +100,9 @@ subroutine pcldlt(matf, mat, niremp, bas)
     nu = zk24(jrefa-1+2)(1:14)
 !
     call jeexin(nu//'.SMOS.SMDI', iret)
-    if (iret .eq. 0) call u2mesk('F', 'ALGELINE3_21', 1, matas)
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGELINE3_21', sk=matas)
+    endif
 !
     call jeveuo(nu//'.SMOS.SMDI', 'L', jsmdi)
     call jeveuo(nu//'.SMOS.SMHC', 'L', jsmhc)
@@ -110,10 +111,14 @@ subroutine pcldlt(matf, mat, niremp, bas)
     ncoef = zi(jsmde-1+2)
 !
     nblc = zi(jsmde-1+3)
-    if (nblc .ne. 1) call u2mess('F', 'ALGELINE3_22')
+    if (nblc .ne. 1) then
+        call utmess('F', 'ALGELINE3_22')
+    endif
 !
-    call jelira(jexnum(matas//'.VALM', 1), 'TYPE',cval=tysca)
-    if (tysca .eq. 'C') call u2mess('F', 'ALGELINE3_23')
+    call jelira(jexnum(matas//'.VALM', 1), 'TYPE', cval=tysca)
+    if (tysca .eq. 'C') then
+        call utmess('F', 'ALGELINE3_23')
+    endif
 !
 !
 !
@@ -173,7 +178,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
     if (ier .eq. 0) goto 7779
     nzmax=ier
     7778 end do
-    call u2mess('F', 'ALGELINE3_24')
+    call utmess('F', 'ALGELINE3_24')
 7779  continue
 !
 !

@@ -1,6 +1,17 @@
 subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
                   nbimpr, caimpi, caimpk, sdcarm)
     implicit none
+#include "jeveux.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mmhcow.h"
+#include "asterfort/as_mmhcyw.h"
+#include "asterfort/as_msecre.h"
+#include "asterfort/as_msense.h"
+#include "asterfort/as_msesei.h"
+#include "asterfort/as_msevac.h"
+#include "asterfort/as_msmcre.h"
+#include "asterfort/as_msmsmi.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/irmaes.h"
@@ -10,18 +21,8 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/lrmtyp.h"
-#include "asterfort/as_mmhcyw.h"
-#include "asterfort/as_mmhcow.h"
-#include "asterfort/as_msevac.h"
-#include "asterfort/as_msecre.h"
-#include "asterfort/as_msesei.h"
-#include "asterfort/as_msense.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_msmcre.h"
-#include "asterfort/as_msmsmi.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
 #include "asterfort/uteref.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomaas, typech, sdcarm
     character(len=*) :: nofimd
@@ -62,7 +63,6 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !   CAIMPK  K80* CARACTERES POUR CHAQUE IMPRESSION
 !   SDCARM  K*   SD_CARA_ELEM EN CHAM_ELEM_S
 !
-#include "jeveux.h"
 !
 !
     integer :: inimpr, nbcouc, nbsect, nummai, lgmax, ntypef, codret
@@ -109,8 +109,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     call as_mfiope(idfimd, nofimd, edleaj, codret)
     if (codret .ne. 0) then
         saux08='mfiope'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !     -- RELECTURE DES ELEMENTS DE STRUCTURES DEJA PRESENTS
@@ -118,8 +117,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     call as_msense(idfimd, nbmasu, codret)
     if (codret .ne. 0) then
         saux08='msmnsm'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
     nbmsmx = nbmasu+10
     call wkvect('&&IRELST.MAIL_SUPP', 'V V K80', nbmsmx, jmasup)
@@ -127,21 +125,19 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     if (nbmasu .ne. 0) then
         do 40, imasup = 1, nbmasu
         call as_msmsmi(idfimd, imasup, nomasu, ndim, desmed,&
-                    edcar2, nocoo2, uncoo2, codret)
+                       edcar2, nocoo2, uncoo2, codret)
         if (codret .ne. 0) then
             saux08='msmsmi'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
         zk80(jmasup+imasup-1) = nomasu
 !
         call as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
-                    nomasu, medcel, nbnosu, nbmssu, tygems,&
-                    nbattc, prespr, nbattv, codret)
+                       nomasu, medcel, nbnosu, nbmssu, tygems,&
+                       nbattc, prespr, nbattv, codret)
         if (codret .ne. 0) then
             saux08='msesei'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
         zi(jnvtym+imasup-1) = nvtymd
 40      continue
@@ -206,20 +202,18 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !
 !       -- DEFINITION DU MAILLAGE SUPPORT MED
     call as_msmcre(idfimd, nomasu, ndim, desmed, edcart,&
-                nocoor, uncoor, codret)
+                   nocoor, uncoor, codret)
     if (codret .ne. 0) then
         saux08='msmcre'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !       -- DEFINITION DES NOEUDS DU MAILLAGE SUPPORT MED
     call as_mmhcow(idfimd, nomasu, refcoo, edfuin, nbnoto,&
-                codret)
+                   codret)
     if (codret .ne. 0) then
         saux08='mmhcow'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !       -- CREATION DE LA CONNECTIVITE
@@ -236,11 +230,10 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !
 !       -- DEFINITION DE LA MAILLE DU MAILLAGE SUPPORT
     call as_mmhcyw(idfimd, nomasu, connex, nbnoto, edfuin,&
-                1, edmail, tymamd, ednoda, codret)
+                   1, edmail, tymamd, ednoda, codret)
     if (codret .ne. 0) then
         saux08='mmhcyw'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !       -- SAUVEGARDE DE L'ELEMENT DE STRUCTURE
@@ -254,56 +247,50 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !
     nvtymd = -9999
     call as_msecre(idfimd, nomasu, ndim, nomasu, edmail,&
-                tymamd, nvtymd, codret)
+                   tymamd, nvtymd, codret)
     ASSERT(nvtymd.ne.-9999)
     if (codret .ne. 0) then
         saux08='msecre'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (nomasu(1:5) .eq. 'COQUE') then
 !         -- ATTRIBUT VARIABLE EPAISSEUR
         call as_msevac(idfimd, nomasu, atepai, edtyre, 1,&
-                    codret)
+                       codret)
         if (codret .ne. 0) then
             saux08='msevac'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
     else if (nomasu(1:5).eq.'TUYAU') then
 !         -- ATTRIBUT VARIABLE RAYON MIN
         call as_msevac(idfimd, nomasu, atrmin, edtyre, 1,&
-                    codret)
+                       codret)
         if (codret .ne. 0) then
             saux08='msevac'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !         -- ATTRIBUT VARIABLE RAYON MAX
         call as_msevac(idfimd, nomasu, atrmax, edtyre, 1,&
-                    codret)
+                       codret)
         if (codret .ne. 0) then
             saux08='msevac'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !         -- ATTRIBUT VARIABLE ANGLE DE VRILLE
         call as_msevac(idfimd, nomasu, atangv, edtyre, 1,&
-                    codret)
+                       codret)
         if (codret .ne. 0) then
             saux08='msevac'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
     else if (nomasu(1:3).eq.'PMF') then
 !         -- ATTRIBUT VARIABLE ANGLE DE VRILLE
         call as_msevac(idfimd, nomasu, atangv, edtyre, 1,&
-                    codret)
+                       codret)
         if (codret .ne. 0) then
             saux08='msevac'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
     else
         ASSERT(.false.)
@@ -327,8 +314,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
         saux08='mficlo'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     call jedetr('&&IRELST.MAIL_SUPP')

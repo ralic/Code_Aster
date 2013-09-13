@@ -4,7 +4,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
                   impr, ifm, dept, indtp, nbtp)
     implicit none
 #include "asterfort/ntweib.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nrupt, nt(*), nbres, nur(*), ir, indtp(*), nbtp, ifm
     real(kind=8) :: x(*), y(*), sigw(*), mk, sk(*), mkp, skp(*), prob(*)
     character(len=16) :: method
@@ -361,7 +361,7 @@ subroutine optimw(method, nrupt, x, y, prob,&
     endif
 !
     if (mkp .lt. 1.d0) then
-        call u2mess('F', 'UTILITAI3_36')
+        call utmess('F', 'UTILITAI3_36')
     endif
 !
 end subroutine

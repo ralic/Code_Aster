@@ -26,12 +26,11 @@ subroutine rsinfo(nomcon, ifi)
 ! IN  IFI    : UNITE LOGIQUE D'IMPRESSION
 !     ------------------------------------------------------------------
 ! aslint: disable=W1303
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -50,9 +49,9 @@ subroutine rsinfo(nomcon, ifi)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nomcon
 ! 0.2. ==> COMMUNS
 !
@@ -86,7 +85,7 @@ subroutine rsinfo(nomcon, ifi)
     nomd2 = nomcon
     call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) then
-        call u2mesk('A', 'UTILITAI4_34', 1, nomd2)
+        call utmess('A', 'UTILITAI4_34', sk=nomd2)
         goto 9999
     endif
 !
@@ -161,7 +160,7 @@ subroutine rsinfo(nomcon, ifi)
     form1 = '(1X,''!'',1X,A10,1X,'//nomb1//'(''!'',A16),''!'')'
     longt = 17 * inomsy
     if (longt .gt. 2000) then
-        call u2mess('A', 'UTILITAI4_36')
+        call utmess('A', 'UTILITAI4_36')
         goto 9999
     endif
     call codent(longt, 'G', nomb1)

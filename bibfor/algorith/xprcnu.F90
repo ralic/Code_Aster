@@ -3,7 +3,6 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -18,8 +17,9 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
     character(len=19) :: cnxinv
     character(len=24) :: vcn, grlr
@@ -168,7 +168,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
 !     CHECK IF A SUPPORTED ELEMENT HAS BEEN FOUND
     if (elmori .eq. 0) then
-        call u2mess('F', 'XFEM2_54')
+        call utmess('F', 'XFEM2_54')
     endif
 !
 !     RETRIEVE THE NODE CONNECTION OF ALL THE EDGES OF THE FIRST
@@ -240,13 +240,19 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !     CHECK IF THE LOCAL AXES ARE ORTHOGONAL EACH OTHER
 !     Xl - Yl
     modvec = locref(1,1)*locref(2,1)+locref(1,2)*locref(2,2)+ locref(1,3)*locref(2,3)
-    if (abs(modvec) .gt. partol) call u2mess('F', 'XFEM2_55')
+    if (abs(modvec) .gt. partol) then
+        call utmess('F', 'XFEM2_55')
+    endif
 !     Xl - Zl
     modvec = locref(1,1)*locref(3,1)+locref(1,2)*locref(3,2)+ locref(1,3)*locref(3,3)
-    if (abs(modvec) .gt. partol) call u2mess('F', 'XFEM2_55')
+    if (abs(modvec) .gt. partol) then
+        call utmess('F', 'XFEM2_55')
+    endif
 !     Yl - Zl
     modvec = locref(2,1)*locref(3,1)+locref(2,2)*locref(3,2)+ locref(2,3)*locref(3,3)
-    if (abs(modvec) .gt. partol) call u2mess('F', 'XFEM2_55')
+    if (abs(modvec) .gt. partol) then
+        call utmess('F', 'XFEM2_55')
+    endif
 !
 !     THE DIRECTIONS OF THE THREE AXES ARE CORRECT (ORTHOGONAL TO EACH
 !     OTHER) BUT THE SENSE COULD BE WRONG. THEREFORE THE Z-AXIS IS
@@ -413,7 +419,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
 !                    CHECK THAT THE VALUE OF DELTAX IS GREATER THAN ZERO
                         if (.not.(absxyz(1).gt.r8prem())) then
-                            call u2mess('F', 'XFEM2_57')
+                            call utmess('F', 'XFEM2_57')
                         endif
 !
 !                    CALCULATE THE SHORTEST EDGE IN THE GRID
@@ -444,7 +450,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !                           CHECK THAT THE VALUE OF DELTAY IS GREATER
 !                           THAN ZERO
                             if (.not.(absxyz(2).gt.r8prem())) then
-                                call u2mess('F', 'XFEM2_57')
+                                call utmess('F', 'XFEM2_57')
                             endif
 !
 !                           CALCULATE THE SHORTEST EDGE IN THE GRID
@@ -473,7 +479,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !                           CHECK THAT THE VALUE OF DELTAZ IS GREATER
 !                           THAN ZERO
                             if (.not.(absxyz(3).gt.r8prem())) then
-                                call u2mess('F', 'XFEM2_57')
+                                call utmess('F', 'XFEM2_57')
                             endif
 !
 !                           CALCULATE THE SHORTEST EDGE IN THE GRID
@@ -514,7 +520,9 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
 !     IF EDGES NOT PARALLEL TO THE LOCAL REFERENCE SYSTEM HAVE BEEN
 !     DETECTED, A FATAL ERROR IS ISSUED
-    if (notpar .gt. 0) call u2mess('F', 'XFEM2_55')
+    if (notpar .gt. 0) then
+        call utmess('F', 'XFEM2_55')
+    endif
 !
 !     ANALYSE EACH NODE IN THE MESH TO CHECK IF THERE ARE SOME NODES
 !     THAT DO NOT BELONG TO THE TYPE OF ELEMENT CONSIDERED FOR THE
@@ -552,15 +560,17 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !                ORPHAN NODES
         if ((dimuns.lt.ndim) .and. (orph.gt.0)) then
             if (ndim .eq. 3) then
-                call u2mess('F', 'XFEM2_52')
+                call utmess('F', 'XFEM2_52')
             else
-                call u2mess('F', 'XFEM2_50')
+                call utmess('F', 'XFEM2_50')
             endif
         endif
 !
 !        CASE 2: AT LEAST ONE OF THE UNSUPPORTED ELEMENTS HAS THE SAME
 !                DIMENSION OF THE PROBLEM
-        if (dimuns .ge. ndim) call u2mess('F', 'XFEM2_53')
+        if (dimuns .ge. ndim) then
+            call utmess('F', 'XFEM2_53')
+        endif
 !
     endif
 !

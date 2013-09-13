@@ -44,7 +44,6 @@ subroutine resfet(matas, chcine, chsecm, chsol, niter,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/alfeti.h"
 #include "asterfort/assde2.h"
 #include "asterfort/dismoi.h"
@@ -54,9 +53,10 @@ subroutine resfet(matas, chcine, chsecm, chsol, niter,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
+!
     real(kind=8) :: epsi, testco
     character(len=19) :: matas, chcine, chsecm, chsol
     character(len=19) :: criter
@@ -131,8 +131,7 @@ subroutine resfet(matas, chcine, chsecm, chsol, niter,&
             if (.not.idensd('PROF_CHNO',pchn1,pchn2)) then
                 valk(1)=arg1
                 valk(2)=arg2
-                call u2mesg('F', 'FACTOR_61', 2, valk, 1,&
-                            idd, 0, rbid)
+                call utmess('F', 'FACTOR_61', nk=2, valk=valk, si=idd)
             endif
         endif
 10  end do

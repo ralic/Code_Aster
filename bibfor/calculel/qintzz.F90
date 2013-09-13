@@ -4,7 +4,7 @@ subroutine qintzz(modele, ligrel, matez, sigmap, sigmad,&
 #include "asterfort/calcul.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: modele, ligrel, matez, sigmap, sigmad
     character(len=*) :: signop, signod, resu
     character(len=6) :: chtemp
@@ -73,7 +73,9 @@ subroutine qintzz(modele, ligrel, matez, sigmap, sigmad,&
     mate = matez
     call megeom(modele, chgeom)
 !
-    if (mate .eq. ' ') call u2mess('F', 'CALCULEL4_66')
+    if (mate .eq. ' ') then
+        call utmess('F', 'CALCULEL4_66')
+    endif
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom

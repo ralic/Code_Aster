@@ -35,7 +35,6 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 !       ----------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -46,7 +45,8 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
 #include "asterfort/lirtet.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: deblig
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm), nomn
@@ -103,7 +103,7 @@ subroutine stkcoo(ifl, icl, iv, rv, cv,&
     if (iret .eq. 0) then
         call jecroc(jexnom(nno, nomn))
     else
-        call u2mesk('F', 'MODELISA7_10', 1, nomn)
+        call utmess('F', 'MODELISA7_10', sk=nomn)
     endif
 !
 ! - INCREMENTATION NUMERO DU NOEUD

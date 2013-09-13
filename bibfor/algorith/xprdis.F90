@@ -11,7 +11,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: fisref, fisdis
     real(kind=8) :: dist, tol, lcmin
 !
@@ -198,7 +198,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
         write(ifm,*)
     else
 !        TEST FAILED.
-        call u2mess('A', 'XFEM2_91')
+        call utmess('A', 'XFEM2_91')
     endif
 !
     900 format('                     ERREUR = ',f6.1,'%')

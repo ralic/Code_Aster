@@ -1,8 +1,10 @@
-subroutine nifipd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
-                  vu, vg, vp, geomi, typmod, option, mate, compor, lgpg,&
-                  crit, instm, instp, ddlm, ddld, angmas,&
-                  sigm, vim, sigp, vip, resi, rigi,&
-                  vect, matr, codret)
+subroutine nifipd(ndim, nno1, nno2, nno3, npg,&
+                  iw, vff1, vff2, vff3, idff1,&
+                  vu, vg, vp, geomi, typmod,&
+                  option, mate, compor, lgpg, crit,&
+                  instm, instp, ddlm, ddld, angmas,&
+                  sigm, vim, sigp, vip, resi,&
+                  rigi, vect, matr, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +31,7 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 #include "asterfort/nmepsi.h"
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     logical :: resi, rigi
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1, lgpg
@@ -154,9 +156,13 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! - CALCUL DES DEFORMATIONS
         call r8inir(6, 0.d0, epsm, 1)
         call r8inir(6, 0.d0, deps, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplm, fm, epsm)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, depld, fm, deps)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplm, fm, epsm)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, depld, fm, deps)
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS
         gm = ddot(nno2,vff2(1,g),1,gonfm,1)
@@ -222,13 +228,18 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         end do
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
-        call nmcomp('RIGI', g, 1, ndim, typmod, mate, compor, crit, instm, instp,&
-                    6, epsm, deps, 6, sigmam, vim(1, g), option, angmas, 10, tampon,&
-                    sigma, vip(1, g), 36, dsidep, 1, rbid, cod(g))
+        call nmcomp('RIGI', g, 1, ndim, typmod,&
+                    mate, compor, crit, instm, instp,&
+                    6, epsm, deps, 6, sigmam,&
+                    vim(1, g), option, angmas, 10, tampon,&
+                    sigma, vip(1, g), 36, dsidep, 1,&
+                    rbid, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1
-            if (.not. resi) call u2mess('F', 'ALGORITH14_75')
+            if (.not. resi) then
+                call utmess('F', 'ALGORITH14_75')
+            endif
             goto 999
         endif
 !
@@ -412,5 +423,5 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 !
-999 continue
+999  continue
 end subroutine

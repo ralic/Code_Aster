@@ -43,8 +43,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 #include "asterfort/nmmein.h"
 #include "asterfort/nueqch.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: modelz
@@ -168,7 +167,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     zr(jplir) = coef
     zr(jplir+5) = coef
     if (abs(coef) .le. r8prem()) then
-        call u2mess('F', 'PILOTAGE_3')
+        call utmess('F', 'PILOTAGE_3')
     endif
 !
     call getvr8('PILOTAGE', 'ETA_PILO_R_MAX', iocc=1, scal=etrmax, nbret=n1)
@@ -183,7 +182,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     if (n1 .ne. 1) then
         etamax = r8vide()
     else
-        if (etamax .gt. zr(jplir+3)) call u2mess('F', 'PILOTAGE_48')
+        if (etamax .gt. zr(jplir+3)) then
+            call utmess('F', 'PILOTAGE_48')
+        endif
     endif
     zr(jplir+1) = etamax
 !
@@ -191,17 +192,21 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     if (n2 .ne. 1) then
         etamin = r8vide()
     else
-        if (etamin .lt. zr(jplir+4)) call u2mess('F', 'PILOTAGE_49')
+        if (etamin .lt. zr(jplir+4)) then
+            call utmess('F', 'PILOTAGE_49')
+        endif
     endif
     zr(jplir+2) = etamin
 !
     if (typpil .eq. 'SAUT_IMPO' .or. typpil .eq. 'SAUT_LONG_ARC') then
-        if (.not.isxfe) call u2mess('F', 'PILOTAGE_60')
+        if (.not.isxfe) then
+            call utmess('F', 'PILOTAGE_60')
+        endif
         call getvid('PILOTAGE', 'FISSURE', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call getvid('PILOTAGE', 'FISSURE', iocc=1, scal=fiss, nbret=n1)
         else
-            call u2mess('F', 'PILOTAGE_58')
+            call utmess('F', 'PILOTAGE_58')
         endif
     endif
 !
@@ -210,7 +215,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         if (n1 .ne. 0) then
             call getvid('PILOTAGE', 'FISSURE', iocc=1, scal=fiss, nbret=n1)
         else
-            call u2mess('F', 'PILOTAGE_59')
+            call utmess('F', 'PILOTAGE_59')
         endif
     endif
 ! ======================================================================
@@ -251,7 +256,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         call reliem(modele, noma, 'NU_NOEUD', 'PILOTAGE', 1,&
                     nbmocl, limocl, tymocl, lisnoe, nbno)
         if (typpil .eq. 'DDL_IMPO') then
-            if (nbno .ne. 1) call u2mess('F', 'PILOTAGE_50')
+            if (nbno .ne. 1) then
+                call utmess('F', 'PILOTAGE_50')
+            endif
             coef = 1.d0
         endif
 !
@@ -265,7 +272,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         call reliem(modele, noma, 'NU_NOEUD', 'PILOTAGE', 1,&
                     nbmocl, limocl, tymocl, lisnoe, nbno)
         if (typpil .eq. 'LONG_ARC') then
-            if (nbno .eq. 0) call u2mess('F', 'PILOTAGE_57')
+            if (nbno .eq. 0) then
+                call utmess('F', 'PILOTAGE_57')
+            endif
             coef = 1.d0 / nbno
         endif
     endif
@@ -287,11 +296,11 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         if (nddl .ne. 1 .and. typpil .eq. 'DDL_IMPO') then
             txt(1)='NOM_CMP'
             txt(2)=typpil
-            call u2mesk('F', 'PILOTAGE_56', 2, txt)
+            call utmess('F', 'PILOTAGE_56', nk=2, valk=txt)
         else if (nddl.eq.0.and.typpil.eq.'LONG_ARC') then
             txt(1)='NOM_CMP'
             txt(2)=typpil
-            call u2mesk('F', 'PILOTAGE_55', 2, txt)
+            call utmess('F', 'PILOTAGE_55', nk=2, valk=txt)
         endif
         if (nddl .gt. 0) then
             call wkvect(liscmp, 'V V K8', nddl, jlicmp)
@@ -309,13 +318,13 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         if (nddl .ne. 1 .and. typpil .eq. 'SAUT_IMPO') then
             txt(1)='DIRE_PILO'
             txt(2)=typpil
-            call u2mesk('F', 'PILOTAGE_56', 2, txt)
+            call utmess('F', 'PILOTAGE_56', nk=2, valk=txt)
         else if (nddl.eq.0.and.typpil.eq.'SAUT_LONG_ARC') then
             txt(1)='DIRE_PILO'
             txt(2)=typpil
-            call u2mesk('F', 'PILOTAGE_55', 2, txt)
+            call utmess('F', 'PILOTAGE_55', nk=2, valk=txt)
         else if (nddl.eq.0) then
-            call u2mesk('F', 'PILOTAGE_64', 1, typsel)
+            call utmess('F', 'PILOTAGE_64', sk=typsel)
         endif
         if (nddl .gt. 0) then
             call wkvect(liscmp, 'V V K8', nddl, jlicmp)
@@ -447,7 +456,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         relmet = method(7)
         if (typpil .ne. 'DDL_IMPO') then
             if (relmet .ne. 'PILOTAGE') then
-                call u2mess('F', 'PILOTAGE_4')
+                call utmess('F', 'PILOTAGE_4')
             endif
         endif
     endif

@@ -3,7 +3,6 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
                   exp, nbo, ioc, ier)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -11,8 +10,8 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     real(kind=8) :: val(*)
     character(len=6) :: ioc
     character(len=8) :: fcx, car(*), tab(*), exp(*)
@@ -80,13 +79,13 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
         if (iivar .ne. ivar) then
             valk(1) = ioc
             valk(2) = nom
-            call u2mesk('A', 'MODELISA_92', 2, valk)
+            call utmess('A', 'MODELISA_92', nk=2, valk=valk)
             ier = ier + 1
         endif
         if (iisec .ne. isec) then
             valk(1) = ioc
             valk(2) = nom
-            call u2mesk('A', 'MODELISA_93', 2, valk)
+            call utmess('A', 'MODELISA_93', nk=2, valk=valk)
             ier = ier + 1
         endif
 !
@@ -104,8 +103,7 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
             if (val(i) .lt. 1.0d0) then
                 valkm = car(i)
                 valrm = val(i)
-                call u2mesg('A', 'MODELISA_23', 1, valkm, 0,&
-                            valim, 1, valrm)
+                call utmess('A', 'MODELISA_23', sk=valkm, sr=valrm)
             endif
         endif
  7  end do

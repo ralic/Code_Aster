@@ -36,7 +36,7 @@ subroutine cbconv(char)
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char, vitess
     character(len=19) :: carte
 !
@@ -49,7 +49,7 @@ subroutine cbconv(char)
     vitess = '        '
     call getfac('CONVECTION', nconv)
     if (nconv .gt. 1) then
-        call u2mess('F', 'MODELISA3_60')
+        call utmess('F', 'MODELISA3_60')
     else if (nconv.eq.1) then
         carte = char//'.CHTH.CONVE'
         call jecreo(carte//'.VALE', 'G V K8')

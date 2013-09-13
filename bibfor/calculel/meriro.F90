@@ -22,7 +22,6 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
@@ -34,8 +33,9 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
+!
     character(len=8) :: modele, cara, lchar(*)
     character(len=19) :: matel
     character(len=24) :: mate, compor
@@ -83,7 +83,7 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
 !
     call jemarq()
     if (modele(1:1) .eq. ' ') then
-        call u2mess('F', 'CALCULEL3_50')
+        call utmess('F', 'CALCULEL3_50')
     endif
 !
     call megeom(modele, chgeom)
@@ -98,7 +98,7 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
 10  end do
 !
     if (nbro .ne. 1) then
-        call u2mess('F', 'CALCULEL3_71')
+        call utmess('F', 'CALCULEL3_71')
     endif
 !
     call vrcins(modele, mate, cara, time, chvarc,&

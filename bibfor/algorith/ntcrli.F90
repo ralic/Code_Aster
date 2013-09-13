@@ -34,8 +34,8 @@ subroutine ntcrli(instin, lisins, sddisc)
 #include "asterfort/nmcrls.h"
 #include "asterfort/nmdifi.h"
 #include "asterfort/nmdini.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: sddisc, lisins
     real(kind=8) :: instin
@@ -162,7 +162,7 @@ subroutine ntcrli(instin, lisins, sddisc)
 ! --- VERIFICATION SENS DE LA LISTE
 !
     if (numini .ge. numfin) then
-        call u2mess('F', 'DISCRETISATION_92')
+        call utmess('F', 'DISCRETISATION_92')
     endif
 !
 ! --- RETAILLAGE DE LA LISTE D'INSTANT PROVISOIRE

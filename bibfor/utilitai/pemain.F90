@@ -22,7 +22,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtgpld.h"
 #include "asterfort/wkvect.h"
 !
@@ -187,12 +187,12 @@ subroutine pemain(resu, modele, mate, cara, nh,&
             do 30 ig = 1, nbgrma
                 call jeexin(jexnom(mlggma, zk24(jgr+ig-1)), iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'UTILITAI3_46', 1, zk24(jgr+ig-1))
+                    call utmess('A', 'UTILITAI3_46', sk=zk24(jgr+ig-1))
                     goto 30
                 endif
                 call jelira(jexnom(mlggma, zk24(jgr+ig-1)), 'LONUTI', nbma)
                 if (nbma .eq. 0) then
-                    call u2mesk('A', 'UTILITAI3_47', 1, zk24(jgr+ig-1))
+                    call utmess('A', 'UTILITAI3_47', sk=zk24(jgr+ig-1))
                     goto 30
                 endif
                 call jeveuo(jexnom(noma//'.GROUPEMA', zk24(jgr+ig-1)), 'L', jad)
@@ -213,7 +213,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
             do 40 im = 1, nbmail
                 call jeexin(jexnom(mlgnma, zk8(jma+im-1)), iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'UTILITAI3_49', 1, zk8(jma+im-1))
+                    call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                     goto 40
                 endif
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)

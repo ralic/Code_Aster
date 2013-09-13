@@ -6,8 +6,7 @@ subroutine dxsit2(nomte, pgl, sigma)
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: nomte
     real(kind=8) :: pgl(3, 3), sigma(*)
 ! ----------------------------------------------------------------------
@@ -103,7 +102,9 @@ subroutine dxsit2(nomte, pgl, sigma)
         npgh = 3
         nbcou = zi(jnbspi-1+1)
         nbcmp = 6
-        if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_46')
+        if (nbcou .le. 0) then
+            call utmess('F', 'ELEMENTS_46')
+        endif
     endif
     imoy=(3*nbcou+1)/2
 !
@@ -132,7 +133,7 @@ subroutine dxsit2(nomte, pgl, sigma)
 ! --- CAS NON TRAITES PAR CETTE ROUTINE
     if ((phenom.eq.'ELAS') .or. (phenom.eq.'ELAS_ISTR') .or. (phenom.eq.'ELAS_ORTH') .or.&
         (phenom.eq.'ELAS_COQUE')) then
-        call u2mesk('A', 'ELEMENTS_52', 1, phenom(1:10))
+        call utmess('A', 'ELEMENTS_52', sk=phenom(1:10))
         goto 9999
     endif
 !
@@ -156,7 +157,7 @@ subroutine dxsit2(nomte, pgl, sigma)
 !
                 if (iret5 .eq. 0) then
                     if (iret1 .eq. 1) then
-                        call u2mess('F', 'CALCULEL_15')
+                        call utmess('F', 'CALCULEL_15')
                     else
 !
 !  --      LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON

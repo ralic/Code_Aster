@@ -16,7 +16,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 #include "asterfort/jeveuo.h"
 #include "asterfort/rscopi.h"
 #include "asterfort/tbcopi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: typesd, base, sd1, sd2
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -66,7 +66,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
     integer :: iret, i, nbtu, jltn1, jltn2, idd, nbsd, ilimpi
     character(len=1) :: bas2
-    character(len=8) ::  k81, k82
+    character(len=8) :: k81, k82
     character(len=12) :: k121, k122
     character(len=14) :: com1, com2, nu1, nu2
     character(len=16) :: typ2sd, corr1, corr2
@@ -313,7 +313,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         call exisd(typesd, sd1, iret)
         if (iret .eq. 0) then
             sdr1 = sd1
-            call u2mesk('F', 'UTILITAI_40', 1, sdr1)
+            call utmess('F', 'UTILITAI_40', sk=sdr1)
         endif
 !
         call tbcopi(base, sd1, sd2)
@@ -324,7 +324,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         call exisd(typesd, sd1, iret)
         if (iret .eq. 0) then
             sdr1 = sd1
-            call u2mesk('F', 'UTILITAI_40', 1, sdr1)
+            call utmess('F', 'UTILITAI_40', sk=sdr1)
         endif
 !
         call rscopi(base, sd1, sd2)
@@ -396,7 +396,7 @@ subroutine copisd(typesd, base, sd1, sd2)
                 if (iret .ne. 0) then
                     call tbcopi(bas2, k191, k192)
                 else
-                    call u2mesk('F', 'UTILITAI_41', 1, k191)
+                    call utmess('F', 'UTILITAI_41', sk=k191)
                 endif
                 zk24(jltn2+i-1) = k192
 10          continue
@@ -498,7 +498,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 ! ----------------------------------------------------------------------
     else
         typ2sd = typesd
-        call u2mesk('F', 'UTILITAI_42', 1, typ2sd)
+        call utmess('F', 'UTILITAI_42', sk=typ2sd)
     endif
 !
     call jedema()

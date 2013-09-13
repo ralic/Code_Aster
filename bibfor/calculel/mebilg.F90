@@ -17,7 +17,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajvi.h"
 #include "asterfort/tbajvr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 !
@@ -102,7 +102,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
     call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='G_BILI'
-        call u2mesk('F', 'RUPTURE1_13', 1, valk)
+        call utmess('F', 'RUPTURE1_13', sk=valk)
     endif
 !
 !- RECUPERATION (S'ILS EXISTENT) DES CHAMP

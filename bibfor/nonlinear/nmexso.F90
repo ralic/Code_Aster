@@ -20,7 +20,6 @@ subroutine nmexso(noma, result, sddyna, numedd)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -33,9 +32,9 @@ subroutine nmexso(noma, result, sddyna, numedd)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/ndynkk.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, result
     character(len=19) :: sddyna
     character(len=24) :: numedd
@@ -188,17 +187,22 @@ subroutine nmexso(noma, result, sddyna, numedd)
     endif
 !
     if (unifrq .eq. 0) ASSERT(.false.)
-    if (unifrq .eq. uniter) call u2mess('I', 'DYNAMIQUE_20')
-    if (unifrq .eq. unitem) call u2mess('I', 'DYNAMIQUE_21')
-    if (unifrq .eq. unitea) call u2mess('I', 'DYNAMIQUE_22')
+    if (unifrq .eq. uniter) then
+        call utmess('I', 'DYNAMIQUE_20')
+    endif
+    if (unifrq .eq. unitem) then
+        call utmess('I', 'DYNAMIQUE_21')
+    endif
+    if (unifrq .eq. unitea) then
+        call utmess('I', 'DYNAMIQUE_22')
+    endif
 !
 ! --- LECTURE DU PAS D'ACTUALISATION
 !
     rewind unifrq
     read(unifrq,*) ainst,pas
     nfreq = nint(ainst)
-    call u2mesg('I', 'DYNAMIQUE_23', 0, k8bid, 1,&
-                nfreq, 1, pas)
+    call utmess('I', 'DYNAMIQUE_23', si=nfreq, sr=pas)
 !
 ! --- TABLEAU DES FREQUENCES
 !
@@ -215,7 +219,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
             read(unitem,*) ainst,pasm
             nfreqm = int(ainst)
             if (nfreqm .ne. nfreq) then
-                call u2mess('F', 'DYNAMIQUE_30')
+                call utmess('F', 'DYNAMIQUE_30')
             endif
         endif
     endif
@@ -225,7 +229,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
             read(unitea,*) ainst,pasa
             nfreqa = int(ainst)
             if (nfreqa .ne. nfreq) then
-                call u2mess('F', 'DYNAMIQUE_31')
+                call utmess('F', 'DYNAMIQUE_31')
             endif
         endif
     endif

@@ -1,9 +1,8 @@
 subroutine lrensi(fich, long, linoch, ndim, nomo,&
                   noma, resu)
 ! aslint: disable=
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celver.h"
@@ -25,11 +24,11 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: long, ndim
     character(len=8) :: resu, noma, nomo
     character(len=16) :: fich, linoch(*)
@@ -165,8 +164,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
     ll = ncarlu
     if (nstar .ge. 8) then
         vali (1) = nstar
-        call u2mesg('F', 'UTILITAI8_25', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'UTILITAI8_25', si=vali(1))
     endif
 !
     chgeom = noma//'.COORDO'
@@ -265,7 +263,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
 !
 412                  continue
                 else
-                    call u2mesk('A', 'UTILITAI2_91', 1, nomte)
+                    call utmess('A', 'UTILITAI2_91', sk=nomte)
                 endif
 411          continue
         endif
@@ -325,8 +323,8 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
             valk (2) = nomch
             vali (1) = itps
             vali (2) = iret
-            call u2mesg('F', 'UTILITAI8_26', 2, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'UTILITAI8_26', nk=2, valk=valk, ni=2,&
+                        vali=vali)
         endif
         call copisd('CHAMP_GD', 'G', chpres, nomch)
         call rsnoch(resu, linoch(1), itps)
@@ -345,15 +343,12 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
 !     -- MESSAGE D'ERREUR DE LECTURE :
 !     --------------------------------------------
     if (io .lt. 0) then
-        call u2mesg('F+', 'UTILITAI8_28', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F+', 'UTILITAI8_28')
     else if (io.gt.0) then
-        call u2mesg('F+', 'UTILITAI8_29', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F+', 'UTILITAI8_29')
     endif
     valk (1) = fic80b(1:24)
-    call u2mesg('F', 'UTILITAI8_30', 1, valk, 0,&
-                0, 0, 0.d0)
+    call utmess('F', 'UTILITAI8_30', sk=valk(1))
 !
 60  continue
 !

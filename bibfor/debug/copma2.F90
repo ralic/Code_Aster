@@ -30,12 +30,12 @@ subroutine copma2(matr, mat1, mat2)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=19) :: matr
     real(kind=8) :: mat1(*), mat2(*)
 !
@@ -55,7 +55,7 @@ subroutine copma2(matr, mat1, mat2)
     numddl=zk24(jrefa-1+2)(1:14)
 !
     if (numddl(1:8) .eq. kbid) then
-        call u2mesk('F', 'UTILITAI_43', 1, matr)
+        call utmess('F', 'UTILITAI_43', sk=matr)
 !
     else
         call jeveuo(numddl(1:14)//'.SMOS.SMDE', 'L', jsmde)

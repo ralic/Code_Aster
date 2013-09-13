@@ -20,7 +20,6 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -28,7 +27,8 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -56,7 +56,9 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
     repi = 0
     ierd = 0
     call jenonu(jexnom('&CATA.TM.NOMTM', nomob), itm)
-    if (itm .eq. 0) call u2mess('F', 'UTILITAI_70')
+    if (itm .eq. 0) then
+        call utmess('F', 'UTILITAI_70')
+    endif
 !
 !
     if (questi .eq. 'NUM_TYPMAIL') then

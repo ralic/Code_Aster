@@ -22,7 +22,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 #include "asterfort/assert.h"
 #include "asterfort/diago2.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: alphap(2), seuil
     real(kind=8) :: s(2), q(2, 2)
     real(kind=8) :: sigmc, gc
@@ -116,9 +116,13 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !          --------------------------------------------
 !
 !     TESTS D'EXISTANCE ET D'UNICITE D'UNE SOLUTION
-    if (q(2,2) .gt. 0.d0) call u2mess('F', 'ALGORITH7_63')
+    if (q(2,2) .gt. 0.d0) then
+        call utmess('F', 'ALGORITH7_63')
+    endif
 !
-    if (abs(q(2,2)) .lt. (sigmc*sigmc/gc)) call u2mess('F', 'ALGORITH7_64')
+    if (abs(q(2,2)) .lt. (sigmc*sigmc/gc)) then
+        call utmess('F', 'ALGORITH7_64')
+    endif
 !
 !     CALCUL DE ALPHAP(2) PAR NEWTON
     if (s(2) .gt. sigmc) then
@@ -133,7 +137,9 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
         xp = x - fx/dfx
         k=k+1
 !
-        if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) call u2mess('F', 'ALGORITH7_65')
+        if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) then
+            call utmess('F', 'ALGORITH7_65')
+        endif
         if (abs(xp-x) .le. eta) goto 1000
         goto 2000
 1000      continue
@@ -150,7 +156,9 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
         xp = x - fx/dfx
         k=k+1
 !
-        if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) call u2mess('F', 'ALGORITH7_66')
+        if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) then
+            call utmess('F', 'ALGORITH7_66')
+        endif
 !
         if (abs(xp-x) .le. eta) goto 4000
         goto 3000
@@ -215,7 +223,9 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
     xp = x - fx/dfx
     k=k+1
 !
-    if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) call u2mess('F', 'ALGORITH7_67')
+    if ((abs(xp-x).ge.1.d10) .or. (k.gt.3000)) then
+        call utmess('F', 'ALGORITH7_67')
+    endif
 !
     if (abs(xp-x) .le. eta) goto 6000
     goto 5000
@@ -245,7 +255,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
     endif
 !
 !     ON EST PASSE DANS AUCUN TEST :
-    call u2mess('F', 'ALGORITH7_68')
+    call utmess('F', 'ALGORITH7_68')
 !
 999  continue
 !

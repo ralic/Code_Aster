@@ -17,12 +17,12 @@ subroutine rcvarp(arret, novrc, poum, valvrc, iret)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterc/iisnan.h"
 #include "asterc/indik8.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: novrc, poum
     character(len=1) :: arret
     integer :: iret
@@ -85,7 +85,7 @@ subroutine rcvarp(arret, novrc, poum, valvrc, iret)
             valk(1) = novr8
             valk(2) = zk8(jvcnom-1+kcvrc)
             valk(3) = poum
-            call u2mesk('F', 'CALCULEL4_69', 3, valk)
+            call utmess('F', 'CALCULEL4_69', nk=3, valk=valk)
         endif
     endif
 !
@@ -144,7 +144,7 @@ subroutine rcvarp(arret, novrc, poum, valvrc, iret)
         else
             valk(1) = novr8
             valk(2) = zk8(jvcnom-1+kcvrc)
-            call u2mesk('F', 'CALCULEL4_69', 2, valk)
+            call utmess('F', 'CALCULEL4_69', nk=2, valk=valk)
         endif
     endif
     goto 9999

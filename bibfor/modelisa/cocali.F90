@@ -7,7 +7,7 @@ subroutine cocali(lis1z, lis2z, typz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: lis1z, lis2z, typz
 ! ---------------------------------------------------------------------
@@ -64,7 +64,7 @@ subroutine cocali(lis1z, lis2z, typz)
     if (iret .eq. 0) then
         valk(1) = lis2
         valk(2) = lis1
-        call u2mesk('F', 'MODELISA4_25', 2, valk)
+        call utmess('F', 'MODELISA4_25', nk=2, valk=valk)
     else
         call jeveuo(lis2, 'L', idlis2)
         call jelira(lis2, 'LONMAX', lonli2)
@@ -75,7 +75,7 @@ subroutine cocali(lis1z, lis2z, typz)
         if (lonli2 .eq. 0) then
             valk(1) = lis2
             valk(2) = lis1
-            call u2mesk('F', 'MODELISA4_26', 2, valk)
+            call utmess('F', 'MODELISA4_26', nk=2, valk=valk)
         else
             if (type .eq. 'K8') then
                 call wkvect(lis1, 'V V K8', lonli2, idlis1)
@@ -87,7 +87,7 @@ subroutine cocali(lis1z, lis2z, typz)
                 call wkvect(lis1, 'V V I', lonli2, idlis1)
                 lonli1 = 0
             else
-                call u2mesk('F', 'MODELISA4_27', 1, type)
+                call utmess('F', 'MODELISA4_27', sk=type)
             endif
 !
         endif
@@ -111,7 +111,7 @@ subroutine cocali(lis1z, lis2z, typz)
             zi(idlis1+lonli1+i-1) = zi(idlis2+i-1)
 30      continue
     else
-        call u2mesk('F', 'MODELISA4_27', 1, type)
+        call utmess('F', 'MODELISA4_27', sk=type)
     endif
 !
 ! FIN -----------------------------------------------------------------

@@ -1,9 +1,9 @@
 function cosphi(coefb, gamcjs, type)
 !
-    implicit     none
+    implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: coefb, gamcjs, cosphi
     character(len=3) :: type
 ! ======================================================================
@@ -58,7 +58,7 @@ function cosphi(coefb, gamcjs, type)
 ! --- CALCUL DE FACT1 = 1/(2*(1+LAMBDA*GAMCJS)) ------------------------
 ! ======================================================================
         if ((un-gamcjs*gamcjs) .lt. epstol) then
-            call u2mess('F', 'ALGELINE_4')
+            call utmess('F', 'ALGELINE_4')
         endif
         fact1 = (gamcjs*gamcjs)/(quatre*(un-gamcjs*gamcjs))
 ! ======================================================================

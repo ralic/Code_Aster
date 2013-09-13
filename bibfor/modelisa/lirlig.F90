@@ -1,9 +1,7 @@
 subroutine lirlig(ifl, cnl, lig, ilec)
-    implicit   none
+    implicit none
 #include "asterfort/codent.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ifl, ilec
     character(len=14) :: cnl
     character(len=80) :: lig
@@ -45,7 +43,7 @@ subroutine lirlig(ifl, cnl, lig, ilec)
     do 10 i = 81, 255
         if (lirlg(i:i) .eq. '%') goto 12
         if (lirlg(i:i) .ne. ' ') then
-            call u2mesk('F', 'MODELISA4_92', 1, lirlg)
+            call utmess('F', 'MODELISA4_92', sk=lirlg)
         endif
 10  continue
 12  continue
@@ -66,9 +64,9 @@ subroutine lirlig(ifl, cnl, lig, ilec)
 !
 100  continue
     if (nl1 .eq. 0) then
-        call u2mess('F', 'MODELISA4_94')
+        call utmess('F', 'MODELISA4_94')
     else
-        call u2mesi('F', 'MODELISA4_93', 1, nl1)
+        call utmess('F', 'MODELISA4_93', si=nl1)
     endif
 !
     1   format(a80)

@@ -14,7 +14,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jeveuo.h"
 #include "asterfort/ornofd.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
     integer :: iocc, nbno
@@ -187,7 +187,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
         lc1c2 = c1c2(1)*c1c2(1) + c1c2(2)*c1c2(2) + c1c2(3)*c1c2(3)
         if (lc1c2 .eq. zero) then
-            call u2mess('F', 'MODELISA3_92')
+            call utmess('F', 'MODELISA3_92')
         endif
         l12 = sqrt(lc1c2)
         if ((lcumul+l12) .ge. lfut) then

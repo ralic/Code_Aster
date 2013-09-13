@@ -1,5 +1,6 @@
 subroutine cjsdtd(mod, q, dtddq)
     implicit none
+#include "asterfort/utmess.h"
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,6 @@ subroutine cjsdtd(mod, q, dtddq)
 !          DTDDQ(I,J) = D TD(I) / D Q(J)
 !     ------------------------------------------------------------------
 !
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi
     real(kind=8) :: q(6), dtddq(6, 6)
     real(kind=8) :: zero, deux, trois, quatre, rc2
@@ -142,7 +142,7 @@ subroutine cjsdtd(mod, q, dtddq)
 !
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
     endif
 !
 end subroutine

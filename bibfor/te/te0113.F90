@@ -28,8 +28,7 @@ subroutine te0113(option, nomte)
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -144,8 +143,7 @@ subroutine te0113(option, nomte)
                 nomail = zk24(iazk24-1+3) (1:8)
                 vali(1)=lgpg1
                 vali(2)=lgpg2
-                call u2mesg('A', 'CALCULEL6_64', 1, nomail, 2,&
-                            vali, 0, rbid)
+                call utmess('A', 'CALCULEL6_64', sk=nomail, ni=2, vali=vali)
             endif
         endif
         lgpg = lgpg1
@@ -187,7 +185,9 @@ subroutine te0113(option, nomte)
 !
 ! - HYPO-ELASTICITE
 !
-        if (zk16(icompo+2) .ne. 'PETIT') call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+        if (zk16(icompo+2) .ne. 'PETIT') then
+            call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
+        endif
 !
         call nmplge(ndim, nno, zr(ivf), idfde, nnob,&
                     zr(ivfb), idfdeb, npg, ipoids, zr(igeom),&

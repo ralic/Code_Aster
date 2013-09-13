@@ -18,8 +18,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
 #include "asterfort/pteddl.h"
 #include "asterfort/rgndas.h"
 #include "asterfort/typddl.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbind, ddlsta(*)
@@ -115,7 +114,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
         jind2 = lact
         texte = text1
     else
-        call u2mess('F', 'ALGELINE2_5')
+        call utmess('F', 'ALGELINE2_5')
     endif
 !
     do 10 i = 1, nbind
@@ -231,8 +230,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
                 valk (2) = motfac
                 valk (3) = nomnoe
                 valk (4) = nomcmp
-                call u2mesg('E', 'ALGELINE4_24', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGELINE4_24', nk=4, valk=valk)
                 imode = 0
             endif
             ddlsta(ii)= max(ddlsta(ii),imode)

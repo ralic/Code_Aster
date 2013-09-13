@@ -16,8 +16,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 #include "asterfort/rcevse.h"
 #include "asterfort/rcevsn.h"
 #include "asterfort/rcevsp.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbopt
     real(kind=8) :: symax
     character(len=8) :: nommat
@@ -123,8 +122,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 10  end do
 !
     if (lamorc .and. (lpmpb .or. lsn .or. lfatig)) then
-        call u2mesg('F', 'POSTRCCM_3', 0, k8b, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_3')
     endif
 !
     kemixt = .false.
@@ -177,7 +175,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
             endif
 !
             if (lrocht .and. symax .eq. r8vide()) then
-                call u2mess('A', 'POSTRCCM_4')
+                call utmess('A', 'POSTRCCM_4')
                 lrocht = .false.
             endif
 !

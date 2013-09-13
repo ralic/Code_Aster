@@ -202,7 +202,7 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: numpas, nbpal
     real(kind=8) :: force(nbpal, *), conv
 !
@@ -317,7 +317,9 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !         VERIFICATION DE LA CONVERGENCE
 !         ------------------------------
         conv = paramr(1)
-        if (conv .le. 0.d0) call u2mess('A', 'EDYOS_45')
+        if (conv .le. 0.d0) then
+            call utmess('A', 'EDYOS_45')
+        endif
 !
 !         AFFECTATION DES EFFORTS RECU D'EDYOS
 !         ------------------------------------

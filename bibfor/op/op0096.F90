@@ -56,10 +56,8 @@ subroutine op0096()
 #include "asterfort/ltnotb.h"
 #include "asterfort/reliem.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -170,7 +168,9 @@ subroutine op0096()
                     c16b, k8b, k8b, r8b, para,&
                     k8b, ibid, armin, c16b, k8b,&
                     iret)
-        if (iret .ne. 0) call u2mesk('F', 'INTEMAIL_32', 1, para)
+        if (iret .ne. 0) then
+            call utmess('F', 'INTEMAIL_32', sk=para)
+        endif
         prec = armin*1.d-06
     else
         prec = 1.d-10
@@ -200,8 +200,7 @@ subroutine op0096()
 10  continue
     if (norm .le. epsi*sgtu(k)) then
         valk(1) = 'DEFI_SEGMENT'
-        call u2mesg('F', 'INTEMAIL_27', 1, valk, 1,&
-                    isgt, 1, epsi)
+        call utmess('F', 'INTEMAIL_27', sk=valk(1), si=isgt, sr=epsi)
     endif
 !
     do 110, n = 1, nbnma, 1
@@ -332,8 +331,8 @@ subroutine op0096()
         valr (4) = sgtu(4)
         valr (5) = sgtu(5)
         valr (6) = sgtu(6)
-        call u2mesg('A', 'INTEMAIL_28', 2, valk, 0,&
-                    0, 6, valr)
+        call utmess('A', 'INTEMAIL_28', nk=2, valk=valk, nr=6,&
+                    valr=valr)
     else
         cpsgt = cpsgt + 1
         call codent(cpsgt, 'G', cnum)
@@ -467,11 +466,11 @@ subroutine op0096()
             if (absce .gt. absco) then
                 valk (1) = nomm2
                 valk (2) = nomm1
-                call u2mesk('A', 'INTEMAIL_29', 2, valk)
+                call utmess('A', 'INTEMAIL_29', nk=2, valk=valk)
             else
                 valk (1) = nomm2
                 valk (2) = nomm1
-                call u2mesk('A', 'INTEMAIL_30', 2, valk)
+                call utmess('A', 'INTEMAIL_30', nk=2, valk=valk)
             endif
         endif
         absce = zr(asds2+j-1)
@@ -516,7 +515,7 @@ subroutine op0096()
     100 end do
 !
     if (cpsgt .le. 0) then
-        call u2mess('F', 'INTEMAIL_11')
+        call utmess('F', 'INTEMAIL_11')
     else
         call wkvect(surfac//'.NSDS', 'G V K24', cpsgt, atmp1)
         do 300, isgt = 1, cpsgt, 1

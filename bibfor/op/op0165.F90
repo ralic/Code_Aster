@@ -35,12 +35,12 @@ subroutine op0165()
 #include "asterfort/rccome.h"
 #include "asterfort/rcevol.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: n1, nbopt, iopt, nbther
     real(kind=8) :: symax
     logical :: pmpb, sn, snet, fatigu, lrocht
     integer :: icodre
-    character(len=8) ::  nommat
+    character(len=8) :: nommat
     character(len=16) :: typtab, typmec, kopt(4), phenom
 ! DEB ------------------------------------------------------------------
 !
@@ -68,7 +68,9 @@ subroutine op0165()
         call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
 !
         call rccome(nommat, 'RCCM', phenom, icodre)
-        if (icodre .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
+        if (icodre .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='RCCM')
+        endif
 !
         call rcevol(typtab, nommat, symax, nbopt, kopt)
 !

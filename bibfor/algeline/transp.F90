@@ -28,14 +28,14 @@ subroutine transp(a, nlamax, dimal, dimac, b,&
 !    OUT : B(DIMAC,DIMAL): MATRICE TRANSPOSEE DE A
 ! ------------------------------------------------------------------
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: dimal, dimac
     real(kind=8) :: a(nlamax, *), b(nlbmax, *)
 !-----------------------------------------------------------------------
     integer :: icol, ilig, nlamax, nlbmax
 !-----------------------------------------------------------------------
     if (dimac .gt. nlbmax) then
-        call u2mess('F', 'ALGELINE3_51')
+        call utmess('F', 'ALGELINE3_51')
     endif
     do 10 ilig = 1, dimal
         do 5 icol = 1, dimac

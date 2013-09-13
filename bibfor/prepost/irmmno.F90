@@ -35,13 +35,13 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mmhcow.h"
+#include "asterfort/as_mmheaw.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/as_mmhcow.h"
-#include "asterfort/as_mmheaw.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: ndim, nbnoeu
@@ -101,7 +101,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
     if (ndim .eq. 3) then
 !
         call as_mmhcow(idfimd, nomamd, coordo, edfuin, nbnoeu,&
-                    codret)
+                       codret)
 !
     else
 !
@@ -123,7 +123,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
         endif
 !
         call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu,&
-                    codret)
+                       codret)
 !
         call jedetr('&&'//nompro//'.COORDO')
 !
@@ -131,8 +131,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     if (codret .ne. 0) then
         saux08='mmhcow'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====
@@ -147,12 +146,11 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
  3  end do
 !
     call as_mmheaw(idfimd, nomamd, zk16(adnomn), nbnoeu, ednoeu,&
-                tygeno, codret)
+                   tygeno, codret)
 !
     if (codret .ne. 0) then
         saux08='mmheaw'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====

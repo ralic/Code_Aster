@@ -10,7 +10,7 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc, nbordr
     character(len=*) :: resu, nomcha, motcle, objveu
@@ -63,7 +63,7 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
                 prec, crit, iret)
     if (iret .ne. 0) then
         k8b = resu
-        call u2mesk('F', 'UTILITAI4_49', 1, k8b)
+        call utmess('F', 'UTILITAI4_49', sk=k8b)
     endif
     call jeveuo(knume, 'L', lordr)
 !
@@ -77,7 +77,7 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
 10  end do
     if (ii .eq. 0) then
         k16b = nomcha
-        call u2mesk('F', 'UTILITAI4_52', 1, k16b)
+        call utmess('F', 'UTILITAI4_52', sk=k16b)
     endif
 !
 !     --- LISTE DES NUMEROS D'ORDRE ---

@@ -20,7 +20,6 @@ subroutine ssriu2(nomu)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/crmeri.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
@@ -36,8 +35,9 @@ subroutine ssriu2(nomu)
 #include "asterfort/mtdscr.h"
 #include "asterfort/rldlr8.h"
 #include "asterfort/tldlgg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomu
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -96,7 +96,9 @@ subroutine ssriu2(nomu)
     call jeveuo(matas(1:19)//'.&INT', 'E', lmat)
     call tldlgg(1, lmat, 1, nddli, 0,&
                 ndeci, isingu, npvneg, ier)
-    if (ier .gt. 0) call u2mess('F', 'ALGORITH5_19')
+    if (ier .gt. 0) then
+        call utmess('F', 'ALGORITH5_19')
+    endif
 !
 !
 !     -- ALLOCATION DE PHI_IE ET INITIALISATION PAR K_IE

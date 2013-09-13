@@ -50,8 +50,7 @@ subroutine caimch(chargz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -136,7 +135,7 @@ subroutine caimch(chargz)
 !       ----------------------
         call getvid(motfac, 'CHAM_NO', iocc=iocc, scal=chamno, nbret=nb)
         if (nb .eq. 0) then
-            call u2mess('F', 'MODELISA2_83')
+            call utmess('F', 'MODELISA2_83')
         endif
 !
         cham19(1:8) = chamno
@@ -145,7 +144,7 @@ subroutine caimch(chargz)
 !       -------------------------------------
         call jeexin(cham19//'.VALE', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'MODELISA2_84')
+            call utmess('F', 'MODELISA2_84')
         endif
 !
 ! ---   VERIFICATION DU TYPE DU CHAMP
@@ -154,7 +153,7 @@ subroutine caimch(chargz)
                     tych, ier)
 !
         if (tych .ne. 'NOEU') then
-            call u2mess('F', 'MODELISA2_85')
+            call utmess('F', 'MODELISA2_85')
         endif
 !
 ! ---   RECUPERATION DE LA VALEUR DU SECOND MEMBRE DE LA RELATION
@@ -162,7 +161,7 @@ subroutine caimch(chargz)
 !       --------
         call getvr8(motfac, 'COEF_MULT', iocc=iocc, scal=alpha, nbret=nb)
         if (nb .eq. 0) then
-            call u2mess('F', 'MODELISA2_86')
+            call utmess('F', 'MODELISA2_86')
         endif
 !
 ! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMNO :
@@ -176,7 +175,7 @@ subroutine caimch(chargz)
         call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
                     k8bid, ier)
         if (nbec .gt. 10) then
-            call u2mesk('F', 'MODELISA2_87', 1, nomgd)
+            call utmess('F', 'MODELISA2_87', sk=nomgd)
         endif
 !
 ! ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO

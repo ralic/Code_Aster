@@ -21,8 +21,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
     implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, kpg, ksp
     character(len=*) :: fami
     character(len=16) :: compor(*)
@@ -86,7 +85,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
     if ((iret1.eq.1) .and. (iret2.eq.1)) goto 9999
 !
     if (iret1 .ne. iret2) then
-        call u2mess('F', 'CHAINAGE_11')
+        call utmess('F', 'CHAINAGE_11')
     endif
 !
     if ((iret1.eq.0) .and. (iret2.eq.0)) then
@@ -96,9 +95,13 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
             if (compor(1) .eq. pomeca(ii)) lpomec = .true.
  1      continue
 !
-        if (.not.lpomec) call u2mesk('F', 'CHAINAGE_9', 1, compor(1))
+        if (.not.lpomec) then
+            call utmess('F', 'CHAINAGE_9', sk=compor(1))
+        endif
 !
-        if (compor(3) .ne. 'PETIT') call u2mess('F', 'CHAINAGE_8')
+        if (compor(3) .ne. 'PETIT') then
+            call utmess('F', 'CHAINAGE_8')
+        endif
 !
 !
 ! --- COEFFICIENT DE BIOT

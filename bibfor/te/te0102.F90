@@ -17,7 +17,6 @@ subroutine te0102(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm1d.h"
@@ -26,7 +25,8 @@ subroutine te0102(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -242,7 +242,7 @@ subroutine te0102(option, nomte)
         m(3,2) = m(2,3)
 !
     else
-        call u2mesk('F', 'ELEMENTS3_17', 1, phenom)
+        call utmess('F', 'ELEMENTS3_17', sk=phenom)
     endif
 !
 !

@@ -50,9 +50,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/ratu3d.h"
 #include "asterfort/reajre.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/veripl.h"
 #include "asterfort/wkvect.h"
 !
@@ -117,7 +115,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
     if ((option.ne.'3D_POU') .and. (option.ne.'3D_TUYAU') .and.&
         (option.ne.'PLAQ_POUT_ORTH')) then
-        call u2mesk('F', 'MODELISA6_39', 1, option)
+        call utmess('F', 'MODELISA6_39', sk=option)
     endif
 !
     call getfac(motfac, nliai)
@@ -219,8 +217,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     if (nddla .gt. nmocl) then
         vali (1) = nmocl
         vali (2) = nddla
-        call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
     endif
     do 20 i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
@@ -232,7 +229,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 ! --- ACCES A L'OBJET .PRNM
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     else
         call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     endif
@@ -289,14 +286,14 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
                     iarg, 0, k8bid, nbgno)
         if (nbgno .eq. 0) then
-            call u2mesk('F', 'MODELISA6_40', 1, motfac)
+            call utmess('F', 'MODELISA6_40', sk=motfac)
         endif
     endif
 !
     if (nbno .ne. 0) then
         nbno = -nbno
         if (nbno .ne. 1) then
-            call u2mess('F', 'MODELISA6_41')
+            call utmess('F', 'MODELISA6_41')
         endif
         call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
                     iarg, nbno, noepou, nno)
@@ -305,13 +302,13 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     if (nbgno .ne. 0) then
         nbgno = -nbgno
         if (nbgno .ne. 1) then
-            call u2mess('F', 'MODELISA6_42')
+            call utmess('F', 'MODELISA6_42')
         endif
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
                     iarg, nbgno, nogrno, nno)
         call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1)
         if (n1 .ne. 1) then
-            call u2mesk('F', 'MODELISA6_43', 1, nogrno)
+            call utmess('F', 'MODELISA6_43', sk=nogrno)
         else
             call jeveuo(jexnom(grnoma, nogrno), 'L', jgro)
             in = zi(jgro+1-1)
@@ -342,8 +339,8 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
                 valr(2) = ypou
                 valr(3) = zpou
                 vali(1) = iocc
-                call u2mesg('F', 'MODELISA6_28', 1, valk, 1,&
-                            vali, 3, valr)
+                call utmess('F', 'MODELISA6_28', sk=valk(1), si=vali(1), nr=3,&
+                            valr=valr)
             endif
             dg = zi(jprnm-1+ (ino-1)*nbec+1)
             do 42 j = 4, 6
@@ -351,7 +348,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
                 if (.not. exisdg(dg,icmp(j))) then
                     valk(1) = zk8(ilisno+i-1)
                     valk(2) = cmp(j)
-                    call u2mesk('F', 'MODELISA6_32', 2, valk)
+                    call utmess('F', 'MODELISA6_32', nk=2, valk=valk)
                 endif
 42          continue
 52      continue
@@ -365,7 +362,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
                 if (exisdg(dg,icmp(j))) then
                     valk(1) = zk8(ilisno+i-1)
                     valk(2) = cmp(j)
-                    call u2mesk('F', 'MODELISA6_44', 2, valk)
+                    call utmess('F', 'MODELISA6_44', nk=2, valk=valk)
                 endif
 40          continue
 50      continue
@@ -380,7 +377,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         if (.not.exisdg(dg,icmp(j))) then
             valk(1) = noepou
             valk(2) = cmp(j)
-            call u2mesk('F', 'MODELISA6_45', 2, valk)
+            call utmess('F', 'MODELISA6_45', nk=2, valk=valk)
         endif
 60  end do
 !
@@ -421,7 +418,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     ayz = zr(idiner+10-1)
 !
     if (abs(s) .lt. r8prem()) then
-        call u2mess('F', 'MODELISA6_46')
+        call utmess('F', 'MODELISA6_46')
     endif
     s1 = 1.0d0/s
 !
@@ -449,11 +446,11 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         valk(1) = option
         vali(1) = iocc
         if (vexcen) then
-            call u2mesg('A', 'CALCULEL3_80', 1, valk, 1,&
-                        vali, 9, valr)
+            call utmess('A', 'CALCULEL3_80', sk=valk(1), si=vali(1), nr=9,&
+                        valr=valr)
         else
-            call u2mesg('I', 'CALCULEL3_78', 1, valk, 1,&
-                        vali, 9, valr)
+            call utmess('I', 'CALCULEL3_78', sk=valk(1), si=vali(1), nr=9,&
+                        valr=valr)
         endif
     endif
 !
@@ -857,7 +854,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     if (option .eq. '3D_TUYAU') then
         call getvid(motfac, 'CARA_ELEM', iocc=iocc, scal=cara, nbret=ncara)
         if (ncara .eq. 0) then
-            call u2mess('F', 'MODELISA6_47')
+            call utmess('F', 'MODELISA6_47')
         endif
         call ratu3d(zi(iaprno), lonlis, zk8(ilisno), noepou, noma,&
                     ligrel, mod, cara, numddl, typlag,&

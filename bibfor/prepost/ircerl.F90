@@ -9,7 +9,6 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
 #include "asterfort/dgmode.h"
@@ -22,9 +21,9 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
 #include "asterfort/jexatr.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifi, nbel, ligrel(*), nbgrel, longr(*), ncmpmx, nbnot, nbcmpt
     integer :: nucmpu(*), celd(*), connex(*), point(*), numnoe(*), nbmat, ndim
     integer :: nummai(*), ncmpv, nucmp(*)
@@ -147,11 +146,11 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr,&
             else
                 call codent(nucmp(i), 'G', cbid)
                 nomcp = 'V'//cbid
-                call u2mesk('A', 'PREPOST_74', 1, nomcp)
+                call utmess('A', 'PREPOST_74', sk=nomcp)
             endif
 141      continue
         if (ncmp .eq. 0) then
-            call u2mess('A', 'PREPOST_75')
+            call utmess('A', 'PREPOST_75')
             goto 9999
         endif
         icomax = ncmp

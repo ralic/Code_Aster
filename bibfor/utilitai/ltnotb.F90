@@ -1,5 +1,5 @@
 subroutine ltnotb(litab, nomtab, nomsd)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/gnoms2.h"
 #include "asterfort/jedema.h"
@@ -9,7 +9,7 @@ subroutine ltnotb(litab, nomtab, nomsd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: litab, nomtab, nomsd
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -51,7 +51,7 @@ subroutine ltnotb(litab, nomtab, nomsd)
     if (iret .eq. 0) then
         valk(1) = nomtab
         valk(2) = litab
-        call u2mesk('F', 'TABLE0_37', 2, valk)
+        call utmess('F', 'TABLE0_37', nk=2, valk=valk)
     endif
 !
     nomsym = nomtab

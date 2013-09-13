@@ -1,7 +1,6 @@
 subroutine te0044(option, nomte)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
@@ -9,15 +8,16 @@ subroutine te0044(option, nomte)
 #include "asterfort/ptenci.h"
 #include "asterfort/ptenpo.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2mgl.h"
 #include "asterfort/ut2pgl.h"
 #include "asterfort/ut2vgl.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utppgl.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
 #include "asterfort/vecmap.h"
+!
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -65,7 +65,7 @@ subroutine te0044(option, nomte)
 !     LE CODE STOKE DANS LA CARTE
     call infdis('TYDI', infodi, r8bid, k8bid)
     if (infodi .ne. ibid) then
-        call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+        call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !
@@ -73,7 +73,7 @@ subroutine te0044(option, nomte)
 !        DISCRET DE TYPE RAIDEUR
         call infdis('DISK', infodi, r8bid, k8bid)
         if (infodi .eq. 0) then
-            call u2mesk('A+', 'DISCRETS_27', 1, nomte)
+            call utmess('A+', 'DISCRETS_27', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'A+')
         endif
         call infdis('SYMK', infodi, r8bid, k8bid)
@@ -81,12 +81,12 @@ subroutine te0044(option, nomte)
 !        DISCRET DE TYPE MASSE
         call infdis('DISM', infodi, r8bid, k8bid)
         if (infodi .eq. 0) then
-            call u2mesk('A+', 'DISCRETS_26', 1, nomte)
+            call utmess('A+', 'DISCRETS_26', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'A+')
         endif
         call infdis('SYMM', infodi, r8bid, k8bid)
     else
-        call u2mesk('F', 'ELEMENTS2_47', 1, option)
+        call utmess('F', 'ELEMENTS2_47', sk=option)
     endif
 !
 ! --- INFORMATIONS SUR LES DISCRETS :
@@ -136,7 +136,7 @@ subroutine te0044(option, nomte)
                     call ut2vgl(nno, nc, pgl, zr(ldepl), ul)
                 endif
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
     endif
@@ -227,6 +227,6 @@ subroutine te0044(option, nomte)
                     itype, kanl, iiff)
 !
     else
-        call u2mesk('F', 'ELEMENTS2_47', 1, option)
+        call utmess('F', 'ELEMENTS2_47', sk=option)
     endif
 end subroutine

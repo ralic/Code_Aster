@@ -48,7 +48,7 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=64) :: nomamd
     character(len=8) :: nomast
 !
@@ -93,7 +93,7 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
 !====
 !
     if (codret .ne. 0) then
-        call u2mess('E', 'MED_62')
+        call utmess('E', 'MED_62')
     endif
 !
 end subroutine

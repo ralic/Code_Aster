@@ -10,9 +10,9 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rk5adp.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2vlg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
@@ -84,13 +84,13 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
     real(kind=8) :: precis
     parameter (precis=1.0e-08)
 !
-
+!
 !   paramètres issus de DEFI_MATERIAU
-    integer ::  nbcar, ie1, ie2, ie3, in3, ia3, is1, is2, is3
+    integer :: nbcar, ie1, ie2, ie3, in3, ia3, is1, is2, is3
     parameter  (nbcar=8, ie1=1, ie2=2, ie3=3, in3=4, ia3=5, is1=6,is2=7, is3=8)
     character(len=8) :: nomcar(nbcar)
-    real(kind=8) ::      valcar(nbcar)
-    integer ::           codcar(nbcar)
+    real(kind=8) :: valcar(nbcar)
+    integer :: codcar(nbcar)
     data nomcar /'K1','K2','K3','C','PUIS_ALP','UNSUR_K1','UNSUR_K2','UNSUR_K3'/
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,7 +113,7 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
-        call u2mesk('I', 'DISCRETS_5', 5, messak)
+        call utmess('I', 'DISCRETS_5', nk=5, valk=messak)
     endif
 !   les caractéristiques sont toujours dans le repère local. on fait seulement une copie
     call dcopy(nbt, zr(jdc), 1, klv, 1)
@@ -170,10 +170,11 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !       ==> la récupération de la matrice tangente précédente a échouée
 !       ==> calcul d'une tangente pas trop mauvaise
     if (option .eq. 'RIGI_MECA_TANG') then
-        raidex = (1.0d0 + ldcpar(2)*ldcpar(3))/(ldcpar(1)+ldcpar(3)+ldcpar(2)*ldcpar(1)*ldcpar(3))
+        raidex = (1.0d0 + ldcpar(2)*ldcpar(3))/(ldcpar(1)+ldcpar(3)+ldcpar(2)*ldcpar(1)*ldcpar(3)&
+                 )
         goto 800
     endif
-
+!
 !   loi de comportement non-linéaire : récupération du temps + et - , calcul de dt
     call jevech('PINSTPR', 'L', jtp)
     call jevech('PINSTMR', 'L', jtm)
@@ -192,10 +193,10 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !       yy   : sigma , epsivisq, epsi,  puiss
 !       vari : sigma , epsivisq, puiss, tangente
     if (nno .eq. 1) then
-        y0(3)  = ulm(1)
+        y0(3) = ulm(1)
         dy0(3) = dul(1)/dtemps
     else
-        y0(3)  = ulm(1+nc) - ulm(1)
+        y0(3) = ulm(1+nc) - ulm(1)
         dy0(3) = (dul(1+nc) - dul(1))/dtemps
     endif
 !   récupération de l'effort précédent, suivant l'axe x local
@@ -216,38 +217,38 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
         raidex = resu(nbequa + 1)
     endif
 !   actualisation de la matrice quasi-tangente
-800 continue
+800  continue
     if (nomte .eq. 'MECA_DIS_TR_L') then
-        klv(1)  =  raidex
-        klv(28) =  raidex
+        klv(1) = raidex
+        klv(28) = raidex
         klv(22) = -raidex
-    elseif (nomte.eq.'MECA_DIS_TR_N') then
-        klv(1)  =  raidex
-    elseif (nomte.eq.'MECA_DIS_T_L') then
-        klv(1)  =  raidex
-        klv(10) =  raidex
-        klv(7)  = -raidex
-    elseif (nomte.eq.'MECA_DIS_T_N') then
-        klv(1)  =  raidex
-    elseif (nomte.eq.'MECA_2D_DIS_T_L') then
-        klv(1)  =  raidex
-        klv(6)  =  raidex
-        klv(4)  = -raidex
-    elseif (nomte.eq.'MECA_2D_DIS_T_N') then
-        klv(1)  =  raidex
-    elseif (nomte.eq.'MECA_2D_DIS_TR_L') then
-        klv(1)  =  raidex
-        klv(10) =  raidex
-        klv(7)  = -raidex
-    elseif (nomte.eq.'MECA_2D_DIS_TR_N') then
-        klv(1)  =  raidex
+    else if (nomte.eq.'MECA_DIS_TR_N') then
+        klv(1) = raidex
+    else if (nomte.eq.'MECA_DIS_T_L') then
+        klv(1) = raidex
+        klv(10) = raidex
+        klv(7) = -raidex
+    else if (nomte.eq.'MECA_DIS_T_N') then
+        klv(1) = raidex
+    else if (nomte.eq.'MECA_2D_DIS_T_L') then
+        klv(1) = raidex
+        klv(6) = raidex
+        klv(4) = -raidex
+    else if (nomte.eq.'MECA_2D_DIS_T_N') then
+        klv(1) = raidex
+    else if (nomte.eq.'MECA_2D_DIS_TR_L') then
+        klv(1) = raidex
+        klv(10) = raidex
+        klv(7) = -raidex
+    else if (nomte.eq.'MECA_2D_DIS_TR_N') then
+        klv(1) = raidex
     endif
 !   actualisation de la matrice quasi-tangente
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
         call jevech('PMATUUR', 'E', imat)
         if (ndim .eq. 3) then
             call utpslg(nno, nc, pgl, klv, zr(imat))
-        elseif (ndim.eq.2) then
+        else if (ndim.eq.2) then
             call ut2mlg(nno, nc, pgl, klv, zr(imat))
         endif
     endif
@@ -265,21 +266,21 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
         if (nno .eq. 1) then
             do ii = 1, nc
                 zr(icontp-1+ii) = fl(ii) + zr(icontm-1+ii)
-                fl(ii)          = fl(ii) + zr(icontm-1+ii)
+                fl(ii) = fl(ii) + zr(icontm-1+ii)
             enddo
             zr(icontp) = resu(1)
-            fl(1)      = resu(1)
-        elseif (nno.eq.2) then
+            fl(1) = resu(1)
+        else if (nno.eq.2) then
             do ii = 1, nc
-                zr(icontp-1+ii)    = -fl(ii)    + zr(icontm-1+ii)
-                zr(icontp-1+ii+nc) =  fl(ii+nc) + zr(icontm-1+ii+nc)
-                fl(ii)             =  fl(ii)    - zr(icontm-1+ii)
-                fl(ii+nc)          =  fl(ii+nc) + zr(icontm-1+ii+nc)
+                zr(icontp-1+ii) = -fl(ii) + zr(icontm-1+ii)
+                zr(icontp-1+ii+nc) = fl(ii+nc) + zr(icontm-1+ii+nc)
+                fl(ii) = fl(ii) - zr(icontm-1+ii)
+                fl(ii+nc) = fl(ii+nc) + zr(icontm-1+ii+nc)
             enddo
-            zr(icontp)    =  resu(1)
-            zr(icontp+nc) =  resu(1)
-            fl(1)         = -resu(1)
-            fl(1+nc)      =  resu(1)
+            zr(icontp) = resu(1)
+            zr(icontp+nc) = resu(1)
+            fl(1) = -resu(1)
+            fl(1+nc) = resu(1)
         endif
 !       forces nodales aux noeuds 1 et 2 (repère global)
         if (nc .ne. 2) then
@@ -289,16 +290,16 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
         endif
 !       mise à jour des variables internes : sigma  epsivis  puiss tangente
         call jevech('PVARIPR', 'E', ivarip)
-        zr(ivarip)   = resu(1)
+        zr(ivarip) = resu(1)
         zr(ivarip+1) = resu(2)
         zr(ivarip+2) = resu(4)
         zr(ivarip+3) = raidex
         if (nno .eq. 2) then
-            zr(ivarip+4)   = resu(1)
+            zr(ivarip+4) = resu(1)
             zr(ivarip+4+1) = resu(2)
             zr(ivarip+4+2) = resu(4)
             zr(ivarip+4+3) = raidex
         endif
     endif
-999 continue
+999  continue
 end subroutine

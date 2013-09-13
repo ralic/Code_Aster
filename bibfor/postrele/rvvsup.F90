@@ -31,10 +31,9 @@ subroutine rvvsup()
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: n1, n2, n3, n4, iocc, nbpost
-    character(len=8) ::  resu, nomres
+    character(len=8) :: resu, nomres
     character(len=24) :: valk(4)
     character(len=16) :: nomcmd, concep, typres
 !
@@ -59,12 +58,12 @@ subroutine rvvsup()
         n2 = -n2
         if (n2 .ne. 0) then
             if (((n1.ne.2).and.(n1.ne.3)) .or. (n1.ne.n2)) then
-                call u2mesi('F', 'POSTRELE_42', 1, iocc)
+                call utmess('F', 'POSTRELE_42', si=iocc)
             endif
             call getvr8('ACTION', 'POINT', iocc=iocc, nbval=0, nbret=n1)
             n1 = -n1
             if ((n1.ne.2) .and. (n1.ne.3)) then
-                call u2mesi('F', 'POSTRELE_43', 1, iocc)
+                call utmess('F', 'POSTRELE_43', si=iocc)
             endif
         endif
     endif
@@ -95,8 +94,7 @@ subroutine rvvsup()
                 valk (2) = typres
                 valk (3) = 'FREQ'
                 valk (4) = 'MODE'
-                call u2mesg('F', 'POSTRELE_44', 4, valk, 1,&
-                            iocc, 0, 0.d0)
+                call utmess('F', 'POSTRELE_44', nk=4, valk=valk, si=iocc)
             endif
             if ((n2 .ne. 0) .and.&
                 (&
@@ -106,8 +104,7 @@ subroutine rvvsup()
                 valk (1) = nomres
                 valk (2) = typres
                 valk (3) = 'INSTANT'
-                call u2mesg('F', 'POSTRELE_45', 3, valk, 1,&
-                            iocc, 0, 0.d0)
+                call utmess('F', 'POSTRELE_45', nk=3, valk=valk, si=iocc)
             endif
         endif
     endif

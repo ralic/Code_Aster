@@ -59,8 +59,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 #include "asterfort/recude.h"
 #include "asterfort/spect2.h"
 #include "asterfort/spect4.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     logical :: casint
@@ -76,7 +75,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     character(len=24) :: chvale
     character(len=3) :: tout
     real(kind=8) :: rbid, valx(3)
-    integer ::  mxval, lnumi, lnumj, num, ij
+    integer :: mxval, lnumi, lnumj, num, ij
 !-----------------------------------------------------------------------
     integer :: i, ic, icha, ide, ideb, idefm, idep
     integer :: ier, ifre, ifsic, ifsvi, ifsvk, ii, ik
@@ -111,7 +110,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     call jeveuo(fsic, 'L', ifsic)
     itypfl = zi(ifsic)
     if (itypfl .ne. 1) then
-        call u2mess('F', 'MODELISA7_4')
+        call utmess('F', 'MODELISA7_4')
     endif
 !
 ! --- 1.3.RECUPERATION DE NOMS DE CONCEPTS PAR INDIRECTION
@@ -265,8 +264,8 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
                     valx(1)=zr(ilc2+kk-1)
                     valx(2)=r1
                     valx(3)=err
-                    call u2mesg('A', 'MODELISA7_7', 0, ' ', 2,&
-                                vali, 3, valx)
+                    call utmess('A', 'MODELISA7_7', ni=2, vali=vali, nr=3,&
+                                valr=valx)
                 endif
 80          continue
 90      continue

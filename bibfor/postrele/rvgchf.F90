@@ -1,9 +1,8 @@
 subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
                   ival, rval, nbval, ncheff)
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -15,8 +14,9 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: criter
     character(len=16) :: chpsym, ncheff
     character(len=8) :: nomsd
@@ -120,8 +120,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
         if (n1 .ne. 0) then
             valk = chpsym
             vali = iordr
-            call u2mesg('I', 'POSTRELE_41', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'POSTRELE_41', sk=valk, si=vali)
             zk24(alschp + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
         endif
 100      continue
@@ -159,8 +158,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
             if (n2 .ne. 0) then
                 valk = chpsym
                 vali = zi(avalac + j-1)
-                call u2mesg('I', 'POSTRELE_41', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'POSTRELE_41', sk=valk, si=vali)
                 zk24(alschp + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
             endif
 410          continue
@@ -196,8 +194,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
                 if (n2 .ne. 0) then
                     valk = chpsym
                     vali = zi(aliste+j-1)
-                    call u2mesg('I', 'POSTRELE_41', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'POSTRELE_41', sk=valk, si=vali)
                     zk24(alschp + j-1) = '&&CHAMP_EFF_NON_EXISTANT'
                 endif
 810              continue
@@ -243,8 +240,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
                 if (n2 .ne. 0) then
                     valk = chpsym
                     vali = zi(aliste+j-1)
-                    call u2mesg('I', 'POSTRELE_41', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'POSTRELE_41', sk=valk, si=vali)
                     zk24(alschp + j-1) = '&&CHAMP_EFF_NON_EXISTANT'
                 endif
 610              continue

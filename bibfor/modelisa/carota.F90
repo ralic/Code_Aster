@@ -1,22 +1,22 @@
 subroutine carota(load, ligrmo, mesh, vale_type)
 !
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_crea_cart.h"
-#include "asterfort/getelem.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_read_vect.h"
+#include "asterfort/getelem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,10 +36,10 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,7 +78,7 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
     keywordfact = 'ROTATION'
     call getfac(keywordfact, nrota)
-    if (nrota.eq.0) goto 99
+    if (nrota .eq. 0) goto 99
 !
     ASSERT(nrota.eq.1)
 !
@@ -86,11 +86,11 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
     ASSERT(vale_type.eq.'REEL')
     list_elem = '&&CAROTA.LISTELEM'
-    suffix    = ' '
+    suffix = ' '
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo, &
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo,&
                         vale_type, nb_carte, carte)
     ASSERT(nb_carte.eq.1)
 !
@@ -100,13 +100,13 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
 ! ----- Elements
 !
-        call getelem(mesh, keywordfact, iocc, suffix, 'F', &
+        call getelem(mesh, keywordfact, iocc, suffix, 'F',&
                      list_elem, nb_elem)
         call jeveuo(list_elem, 'L', j_elem)
 !
 ! ----- Get speed
 !
-        call char_read_val(keywordfact, iocc, 'VITESSE', vale_type, val_nb, &
+        call char_read_val(keywordfact, iocc, 'VITESSE', vale_type, val_nb,&
                            rota_speed, k8dummy, c16dummy, k16dummy)
         ASSERT(val_nb.eq.1)
 !
@@ -114,7 +114,9 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
         call char_read_vect(keywordfact, iocc, 'AXE', rota_axis)
         call normev(rota_axis, norme)
-        if (norme .le. r8miem()) call u2mess('F', 'CHARGES2_53')
+        if (norme .le. r8miem()) then
+            call utmess('F', 'CHARGES2_53')
+        endif
 !
 ! ----- Get center
 !

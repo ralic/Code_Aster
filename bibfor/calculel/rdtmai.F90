@@ -24,7 +24,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: noma, nomare
@@ -390,7 +390,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             if (numgno .eq. 0) then
                 valk(1) = zk24(jnugn+ign-1)
                 valk(2) = noma
-                call u2mesk('F', 'CALCULEL6_82', 2, valk)
+                call utmess('F', 'CALCULEL6_82', nk=2, valk=valk)
             endif
             call jeveuo(jexnom(noma//'.GROUPENO', zk24(jnugn+ign-1)), 'L', jadin)
             call jelira(jexnom(noma//'.GROUPENO', zk24(jnugn+ign-1)), 'LONMAX', nbno)

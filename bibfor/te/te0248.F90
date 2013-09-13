@@ -12,8 +12,7 @@ subroutine te0248(optioz, nomtez)
 #include "asterfort/nmpime.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -140,7 +139,7 @@ subroutine te0248(optioz, nomtez)
     endif
 !
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call u2mess('F', 'ELEMENTS2_90')
+        call utmess('F', 'ELEMENTS2_90')
     endif
 !
 ! --- RECUPERATION DE LA SECTION DE LA BARRE
@@ -198,7 +197,7 @@ subroutine te0248(optioz, nomtez)
     xlong0 = sqrt(xlong0)
 !
     if (xlong0 .eq. 0.d0) then
-        call u2mess('F', 'ELEMENTS3_62')
+        call utmess('F', 'ELEMENTS3_62')
     endif
 !
 !
@@ -350,7 +349,7 @@ subroutine te0248(optioz, nomtez)
         if ((zk16(icompo-1+5)(1:7).ne.'DEBORST') .and. (zk16(icompo)(1: 4).ne.'SANS')) then
             valkm(1) = zk16(icompo)
             valkm(2) = 'COMP_INCR'
-            call u2mesk('F', 'ALGORITH6_81', 2, valkm)
+            call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
         else
 !
             sigx=effnom/a

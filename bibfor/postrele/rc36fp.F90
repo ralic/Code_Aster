@@ -1,6 +1,6 @@
 subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
                   nommat, ug, factus)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
@@ -14,7 +14,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
 #include "asterfort/rc36f5.h"
 #include "asterfort/rc36f6.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbsigr, nocc(*), situ(*), sigr(*)
     real(kind=8) :: saltij(*), ug, factus(*)
     character(len=*) :: nommat
@@ -111,8 +111,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
         if (nadm(1) .lt. 0) then
             vale(1) = saltm
             vale(2) = nadm(1)
-            call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
-                        0, 2, vale)
+            call utmess('A', 'POSTRCCM_32', nr=2, valr=vale)
         endif
         ukl = dble( n0 ) / nadm(1)
     endif

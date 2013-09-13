@@ -3,7 +3,6 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
                   nbtrou)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
@@ -15,8 +14,8 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
 #include "asterfort/jexnum.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/rsindi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbtrou, nutrou(*), ival, ndim
     real(kind=8) :: rval, epsi
     character(len=*) :: nomsd, acces, kval, crit
@@ -94,7 +93,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
                 nbtrou = -1
             endif
         else
-            call u2mess('F', 'UTILITAI4_46')
+            call utmess('F', 'UTILITAI4_46')
         endif
         goto 20
     endif
@@ -161,7 +160,9 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     endif
 !
     call jenonu(jexnom(noms2//'.NOVA', acce2), iacces)
-    if (iacces .eq. 0) call u2mesk('F', 'UTILITAI4_47', 1, acce2)
+    if (iacces .eq. 0) then
+        call utmess('F', 'UTILITAI4_47', sk=acce2)
+    endif
 !
     call jeveuo(jexnum(noms2//'.TAVA', iacces), 'L', iatava)
     nomobj = zk8(iatava-1+1)

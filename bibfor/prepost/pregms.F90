@@ -10,8 +10,7 @@ subroutine pregms(igmsh, imod)
 #include "asterfort/iunifi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jjmmaa.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: igmsh, imod
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -90,12 +89,12 @@ subroutine pregms(igmsh, imod)
             goto 20
         endif
     else
-        call u2mess('F', 'PREPOST6_38')
+        call utmess('F', 'PREPOST6_38')
     endif
 !
-    call u2mess('I', 'PREPOST6_39')
+    call utmess('I', 'PREPOST6_39')
     vali(1)=versio
-    call u2mesi('I', 'PREPOST6_40', 1, vali)
+    call utmess('I', 'PREPOST6_40', si=vali(1))
 !
 ! --- ECRITURE DU TITRE DANS LE FICHIER .MAIL :
 !     ---------------------------------------
@@ -121,7 +120,7 @@ subroutine pregms(igmsh, imod)
     read(igmsh,*) finnod
 !
     if ((finnod(1:7).ne.'$ENDNOD') .and. (finnod(1:9).ne.'$EndNodes')) then
-        call u2mess('F', 'PREPOST6_41')
+        call utmess('F', 'PREPOST6_41')
     endif
 !
 ! --- DEBUT DE LA LECTURE DES ELEMENTS DANS LE FICHIER .GMSH :
@@ -131,7 +130,7 @@ subroutine pregms(igmsh, imod)
     read(igmsh,*) debelm
 !
     if ((debelm(1:4).ne.'$ELM') .and. (debelm(1:9).ne.'$Elements')) then
-        call u2mess('F', 'PREPOST6_42')
+        call utmess('F', 'PREPOST6_42')
     endif
 !
 !

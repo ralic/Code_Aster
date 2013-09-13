@@ -30,8 +30,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: lmax, npoutr, nbocc, nbepo, ifm, jdlm
@@ -172,7 +171,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
             call jeveuo(tabcar//'.TBLP', 'L', itblp)
             typca=zk24(itblp+1)
             if (typca(1:2) .ne. 'K8' .and. typca(1:3) .ne. 'K24') then
-                call u2mesk('F', 'MODELISA8_17', 1, tabcar)
+                call utmess('F', 'MODELISA8_17', sk=tabcar)
             endif
             call jeveuo(zk24(itblp+2), 'L', itabl)
             nblign = zi(itbnp+1)
@@ -193,7 +192,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
             endif
             vmessk(1)=tabcar
             vmessk(2)=nomsec
-            call u2mesk('F', 'MODELISA8_18', 2, vmessk)
+            call utmess('F', 'MODELISA8_18', nk=2, valk=vmessk)
 97          continue
             jj=0
             do 96 i = 1, nbcolo-1
@@ -294,7 +293,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 44                  continue
                     vmessk(1) = mclf
                     vmessk(2) = nommai
-                    call u2mesk('F', 'MODELISA_8', 2, vmessk)
+                    call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
 42              continue
 40          continue
         endif
@@ -317,13 +316,13 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 52              continue
                 vmessk(1) = mclf
                 vmessk(2) = nommai
-                call u2mesk('F', 'MODELISA_8', 2, vmessk)
+                call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
 50          continue
         endif
 !
 10  end do
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA_14')
+        call utmess('F', 'MODELISA_14')
     endif
 !
     call jelira(tmpgen, 'NUTIOC', npoaff)
@@ -337,7 +336,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                     ier)
 60  end do
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA_15')
+        call utmess('F', 'MODELISA_15')
     endif
 !
 ! --- CALCUL DES DONNEES GENERALES A PARTIR DES DONNEES GEOMETRIQUES

@@ -1,5 +1,5 @@
 subroutine gnomsd(nomres, noojb, k1, k2)
-    implicit   none
+    implicit none
 !     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: iret, k1, k2, nmaxsd, ndigit, iessai, inum, n1, n2
     character(len=*) :: nomres
     character(len=8) :: nomu, nomre2
@@ -74,7 +74,9 @@ subroutine gnomsd(nomres, noojb, k1, k2)
     inum=nmaxsd-1
     call codent(inum, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
-    if (iret .gt. 0) call u2mesi('F', 'MODELISA4_69', 1, inum)
+    if (iret .gt. 0) then
+        call utmess('F', 'MODELISA4_69', si=inum)
+    endif
 !
 !
 !     -- ON CHERCHE UN INTERVALLE (N1,N2) CONTENANT LE NUMERO

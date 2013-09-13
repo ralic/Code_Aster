@@ -1,5 +1,6 @@
 subroutine axdipo(noma, caelem, modele, iaxe)
     implicit none
+#include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
@@ -15,9 +16,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/locglo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iaxe
     character(len=8) :: noma, caelem, modele
@@ -51,7 +50,6 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !       IAXE = 3 L'AXE DIRECTEUR EST L'AXE DES Z DU REPERE GLOBAL
 !
 !
-#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
     integer :: nbtel, nbtel1
@@ -103,14 +101,18 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     nbmtrd = 0
     call jeexin(modnem, ixnw)
     if (ixnw .ne. 0) call jelira(modnem, 'NMAXOC', nbmtrd)
-    if (nbmtrd .ne. 0) call u2mess('F', 'MODELISA2_23')
+    if (nbmtrd .ne. 0) then
+        call utmess('F', 'MODELISA2_23')
+    endif
 !
 !     RECUPERATION DE LA CARTE D'ORIENTATION DES ELEMENTS
     carte = caelem//'.CARORIEN  '
     cadesc = carte//'.DESC'
     cavale = carte//'.VALE'
     call jeexin(cadesc, iexcar)
-    if (iexcar .eq. 0) call u2mess('F', 'MODELISA2_24')
+    if (iexcar .eq. 0) then
+        call utmess('F', 'MODELISA2_24')
+    endif
 !
     call jeveuo(cadesc, 'L', idesc)
     call jeveuo(cavale, 'L', ivale)
@@ -129,7 +131,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     ibeta = indik8( zk8(icaori) , nomcmp(2) , 1 , ncmpor )
     igamma = indik8( zk8(icaori) , nomcmp(3) , 1 , ncmpor )
     ntrouv = (ialpha.eq.0).or.(ibeta.eq.0).or.(igamma.eq.0)
-    if (ntrouv) call u2mess('F', 'MODELISA2_25')
+    if (ntrouv) then
+        call utmess('F', 'MODELISA2_25')
+    endif
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('F', 'NB_EC', 'CAORIE', 'GRANDEUR', nbec,&
                 k8bid, iret)
@@ -138,7 +142,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !     VECTEURS D'ADRESSES DES CARACTERISTIQUES POINTES PAR LE NUMERO
 !     DE MAILLE
     call etenca(carte, ligrmo, iret)
-    if (iret .ne. 0) call u2mesk('F', 'MODELISA2_26', 1, carte)
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA2_26', sk=carte)
+    endif
 !
     captma = carte//'.PTMA'
     call jeveuo(captma, 'L', iptma)
@@ -167,12 +173,14 @@ subroutine axdipo(noma, caelem, modele, iaxe)
                 goto 32
             endif
 31      continue
-        call u2mess('F', 'MODELISA2_27')
+        call utmess('F', 'MODELISA2_27')
 32      continue
 !
         if (itelok .le. nbtel1) then
             ias = zi(iptma+nummai-1)
-            if (ias .eq. 0) call u2mesi('F', 'MODELISA2_28', 1, nummai)
+            if (ias .eq. 0) then
+                call utmess('F', 'MODELISA2_28', si=nummai)
+            endif
 !
             icode = zi(idesc-1+3+2*iasmax+nbec*(ias-1)+1)
             irana = 0
@@ -189,7 +197,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 43          continue
             ntrouv = (irana.eq.0).or.(iranb.eq.0).or.(irang.eq.0)
             if (ntrouv) then
-                call u2mesi('F', 'MODELISA2_29', 1, nummai)
+                call utmess('F', 'MODELISA2_29', si=nummai)
             else
                 pobali = pobali + 1
                 iaux1 = ivale+ncmpor*(ias-1)
@@ -200,7 +208,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
         endif
 !
 30  end do
-    if (pobali .eq. 0) call u2mess('F', 'MODELISA2_30')
+    if (pobali .eq. 0) then
+        call utmess('F', 'MODELISA2_30')
+    endif
 !
 !     DETERMINATION DE L'AXE DIRECTEUR DE LA POUTRE A L'AIDE DES
 !     ANGLES NAUTIQUES DU PREMIER ELEMENT ORIENTE : AFFECTATION DE IAXE
@@ -238,7 +248,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     then
         iaxe = 3
     endif
-    if (iaxe .eq. 0) call u2mess('F', 'MODELISA2_31')
+    if (iaxe .eq. 0) then
+        call utmess('F', 'MODELISA2_31')
+    endif
 !
 !     ON VERIFIE QUE LES ORIENTATIONS DES AUTRES ELEMENTS DEFINISSENT
 !     LE MEME AXE DIRECTEUR
@@ -275,7 +287,9 @@ subroutine axdipo(noma, caelem, modele, iaxe)
                 .lt.tol) then
                     iaxe2 = 3
                 endif
-                if (iaxe2 .ne. iaxe) call u2mess('F', 'MODELISA2_32')
+                if (iaxe2 .ne. iaxe) then
+                    call utmess('F', 'MODELISA2_32')
+                endif
             endif
 50      continue
     endif

@@ -18,7 +18,7 @@ subroutine ntetl3(result, sdieto, icham, tempct)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
@@ -26,9 +26,7 @@ subroutine ntetl3(result, sdieto, icham, tempct)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmetnc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdieto
     character(len=8) :: result
     integer :: icham
@@ -99,20 +97,20 @@ subroutine ntetl3(result, sdieto, icham, tempct)
 ! --- LE CHAMP N'A JAMAIS ETE LU
 !
     if (statut .eq. ' ') then
-        call u2mesk('F', 'ETATINIT_30', 1, nomchs)
+        call utmess('F', 'ETATINIT_30', sk=nomchs)
     else
         valk(1) = nomchs
         valk(2) = result(1:8)
         if (statut .eq. 'ZERO') then
-            call u2mesk('I', 'ETATINIT_31', 1, nomchs)
+            call utmess('I', 'ETATINIT_31', sk=nomchs)
         else if (statut.eq.'SDRESU') then
-            call u2mesk('I', 'ETATINIT_32', 2, valk)
+            call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
         else if (statut.eq.'CHAMP') then
-            call u2mesk('I', 'ETATINIT_33', 1, nomchs)
+            call utmess('I', 'ETATINIT_33', sk=nomchs)
         else if (statut.eq.'STATIONNAIRE') then
-            call u2mess('I', 'ETATINIT_34')
+            call utmess('I', 'ETATINIT_34')
         else if (statut.eq.'VALE') then
-            call u2mesr('I', 'ETATINIT_35', 1, tempct)
+            call utmess('I', 'ETATINIT_35', sr=tempct)
         else
             ASSERT(.false.)
         endif

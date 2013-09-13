@@ -7,7 +7,7 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
     implicit none
 #include "asterfort/nmtevp.h"
 #include "asterfort/rccoma.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, kpg, ksp, codret
     real(kind=8) :: crit(*), angmas(3)
     real(kind=8) :: instam, instap, tampon(*)
@@ -103,7 +103,7 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
                     deps, sigm, vim, option, sigp,&
                     vip, dsidep, r8bid, r8bid, codret)
     else
-        call u2mess('F', 'ALGORITH6_88')
+        call utmess('F', 'ALGORITH6_88')
     endif
 !
 end subroutine

@@ -1,8 +1,7 @@
 subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                   axez, nbnac, nnoeud)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/dgmode.h"
 #include "asterfort/digdel.h"
@@ -18,10 +17,9 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
+!
     integer :: nbel, numail(*), nbnac, nnoeud(*)
     character(len=*) :: chelez, nomjv
     real(kind=8) :: orig(3), axez(3)
@@ -55,7 +53,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     real(kind=8) :: sg(6), sl(6), pgl(3, 3), pscal
     real(kind=8) :: valr
     real(kind=8) :: xnormr, epsi, axer(3), axet(3)
-    character(len=8) ::  nomcmp, nomma, nonoeu, nomail
+    character(len=8) :: nomcmp, nomma, nonoeu, nomail
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
@@ -77,7 +75,9 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
 !
     nec = nbec( gd )
-    if (nec .gt. 10) call u2mess('F', 'POSTRELE_53')
+    if (nec .gt. 10) then
+        call utmess('F', 'POSTRELE_53')
+    endif
 !
     call dismoi('F', 'NOM_OPTION', chelez, 'CHAM_ELEM', ibid,&
                 option, ier)
@@ -93,7 +93,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     else
         valk (1) = chelm
         valk (2) = option
-        call u2mesk('F', 'POSTRELE_26', 2, valk)
+        call utmess('F', 'POSTRELE_26', nk=2, valk=valk)
     endif
 !
     call jedupo(chelm//'.CELV', 'V', nomjv, .false.)
@@ -122,7 +122,9 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
         call dgmode(mode, imodel, ilong, nec, tabec)
         nscal = digdel( mode )
         icoef=max(1,zi(jceld-1+4))
-        if (icoef .gt. 1) call u2mess('F', 'POSTRELE_15')
+        if (icoef .gt. 1) then
+            call utmess('F', 'POSTRELE_15')
+        endif
         nsca = nscal*icoef
         ipoin = zi(jlongr-1+igrel)
         iel = zi(jligr-1+ipoin+ielg-1)
@@ -170,8 +172,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     valk (1) = nomail
                     valk (2) = nonoeu
                     valr = zr(axyzm+3*(nunoe-1))
-                    call u2mesg('F', 'POSTRELE_27', 2, valk, 0,&
-                                0, 1, valr)
+                    call utmess('F', 'POSTRELE_27', nk=2, valk=valk, sr=valr)
                 endif
                 xnormr = 1.0d0 / sqrt( xnormr )
                 do 42 i = 1, 3
@@ -190,8 +191,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     valk (1) = nomail
                     valk (2) = nonoeu
                     valr = zr(axyzm+3*(nunoe-1))
-                    call u2mesg('F', 'POSTRELE_27', 2, valk, 0,&
-                                0, 1, valr)
+                    call utmess('F', 'POSTRELE_27', nk=2, valk=valk, sr=valr)
                 endif
                 do 46 i = 1, 3
                     pgl(1,i) = axer(i)

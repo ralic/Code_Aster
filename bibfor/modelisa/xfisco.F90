@@ -29,7 +29,7 @@ subroutine xfisco(noma, modelx)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma, modelx
 !
 ! CREATION D'UN CHAMP ÉLÉMENTAIRE DE CONNECTIVITÉ DES FISSURES BRANCHÉES
@@ -111,7 +111,7 @@ subroutine xfisco(noma, modelx)
                             if (ifis3 .gt. ifiss) then
                                 valk(1) = nomfis
                                 valk(2) = nomfi3
-                                call u2mesk('F', 'XFEM_46', 2, valk)
+                                call utmess('F', 'XFEM_46', nk=2, valk=valk)
                             endif
                             call cesexi('S', jcesd, jcesl, ima, 1,&
                                         ifiss, 1, iad)
@@ -123,7 +123,7 @@ subroutine xfisco(noma, modelx)
                                 else
                                     valk(1) = nomfis
                                     valk(3) = nomfi3
-                                    call u2mesk('F', 'XFEM_47', 3, valk)
+                                    call utmess('F', 'XFEM_47', nk=3, valk=valk)
                                 endif
                             endif
                             valk(2) = nomfi3

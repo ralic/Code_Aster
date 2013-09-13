@@ -75,8 +75,7 @@ subroutine pecap3(chgeoz, tempez, iomega)
 #include "asterfort/mesomm.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: chgeoz, tempez
     real(kind=8) :: iomega
 ! -----  VARIABLES LOCALES
@@ -114,7 +113,7 @@ subroutine pecap3(chgeoz, tempez, iomega)
     call dismoi('F', 'TYPE_RESU', temper, 'RESULTAT', ibid,&
                 typres, ierd)
     if (typres .ne. 'EVOL_THER') then
-        call u2mess('F', 'UTILITAI3_57')
+        call utmess('F', 'UTILITAI3_57')
     endif
 !
 ! --- RECUPERATION DU NOMBRE D'ORDRES DU RESULTAT :
@@ -122,7 +121,7 @@ subroutine pecap3(chgeoz, tempez, iomega)
     call rsutnu(temper, ' ', 0, knum, nbordr,&
                 prec, crit, iret)
     if (nbordr .ne. 1) then
-        call u2mesk('F', 'UTILITAI3_58', 1, temper)
+        call utmess('F', 'UTILITAI3_58', sk=temper)
     endif
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,TEMPER,1,' ')

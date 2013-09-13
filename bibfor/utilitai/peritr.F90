@@ -33,8 +33,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nh, nbocc
@@ -108,7 +107,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
             call getvtx('RICE_TRACEY', 'OPTION', iocc=i, scal=toptca(1), nbret=n1)
             call getvtx('RICE_TRACEY', 'LOCAL', iocc=i, scal=toptca(2), nbret=n2)
             if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
-                call u2mess('F', 'UTILITAI3_83')
+                call utmess('F', 'UTILITAI3_83')
             endif
 10      continue
     endif
@@ -140,7 +139,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     else
         call gettco(resul, typres)
         if (typres(1:9) .ne. 'EVOL_NOLI') then
-            call u2mess('F', 'UTILITAI3_84')
+            call utmess('F', 'UTILITAI3_84')
         endif
         call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
@@ -297,12 +296,12 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     nomma2 = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomma2), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_46', 1, nomma2)
+                        call utmess('A', 'UTILITAI3_46', sk=nomma2)
                         goto 50
                     endif
                     call jelira(jexnom(mlggma, nomma2), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_47', 1, nomma2)
+                        call utmess('A', 'UTILITAI3_47', sk=nomma2)
                         goto 50
                     endif
                     call jeveuo(jexnom(mlggma, nomma2), 'L', jad)
@@ -362,7 +361,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_49', 1, nommai)
+                        call utmess('A', 'UTILITAI3_49', sk=nommai)
                         goto 70
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)

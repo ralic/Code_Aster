@@ -18,7 +18,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
 ! aslint: disable=W1501
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/cer3pt.h"
@@ -28,7 +28,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: jvecpg, jdtau, jvecn, nbordr, nbvec
     character(len=16) :: nommet
@@ -487,7 +487,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
 110              continue
                 if (k .eq. 0) then
-                    call u2mess('F', 'PREPOST4_59')
+                    call utmess('F', 'PREPOST4_59')
                 endif
 !
                 if (cvon .lt. 0.0d0) then
@@ -579,7 +579,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
 120              continue
                 if (k .eq. 0) then
-                    call u2mess('F', 'PREPOST4_59')
+                    call utmess('F', 'PREPOST4_59')
                 endif
 !
                 if (cuon .lt. 0.0d0) then

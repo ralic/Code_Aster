@@ -32,16 +32,15 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     implicit none
 !
 !
+#include "asterc/r8prem.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
 #include "asterfort/equthp.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
-#include "asterc/r8prem.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: dimmat, npg, ipoid2, ivf2, idfde2, dimuel, nnom
     parameter    (dimmat=120)
     integer :: nno, nnos, npi, ipoids, ivf, idfde, imate, dimdef, dimcon
@@ -176,11 +175,11 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
 !......................................................................
 !
     if (nddls*nno .gt. dimmat) then
-        call u2mess('F', 'ALGORITH_33')
+        call utmess('F', 'ALGORITH_33')
     endif
 !
     if (dimuel .gt. dimmat) then
-        call u2mess('F', 'ALGORITH_33')
+        call utmess('F', 'ALGORITH_33')
     endif
 ! =====================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU -------------
@@ -277,7 +276,8 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
 ! ======================================================================
     loi = ' '
     call rcvala(imate, ' ', 'THM_INIT', 0, ' ',&
-                [0.d0], 1, 'COMP_THM', rthmc(1), codmes, 1)
+                [0.d0], 1, 'COMP_THM', rthmc(1), codmes,&
+                1)
     thmc = compor(8)
     if ((rthmc(1)-1.0d0) .lt. r8prem()) then
         loi = 'LIQU_SATU'
@@ -299,7 +299,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     if (thmc .ne. loi) then
         valk(1) = loi
         valk(2) = thmc
-        call u2mesk('F', 'ALGORITH_34', 2, valk)
+        call utmess('F', 'ALGORITH_34', nk=2, valk=valk)
     endif
 ! =====================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------

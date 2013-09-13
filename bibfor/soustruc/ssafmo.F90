@@ -29,8 +29,7 @@ subroutine ssafmo(mo)
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: mo
@@ -73,7 +72,7 @@ subroutine ssafmo(mo)
     call dismoi('F', 'NB_NL_MAILLA', ma, 'MAILLAGE', nl,&
                 kbid, ierd)
     if (nbsma .eq. 0) then
-        call u2mess('F', 'SOUSTRUC_30')
+        call utmess('F', 'SOUSTRUC_30')
     endif
 !
     ioc=1
@@ -103,7 +102,7 @@ subroutine ssafmo(mo)
     if (imas .eq. 0) then
         valk(1) = nosma
         valk(2) = ma
-        call u2mesk('F', 'SOUSTRUC_26', 2, valk)
+        call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
     else
         zi(iasssa-1+imas)=1
     endif

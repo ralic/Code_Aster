@@ -41,7 +41,7 @@ subroutine op0148()
 #include "asterfort/speph0.h"
 #include "asterfort/spephy.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
@@ -135,7 +135,7 @@ subroutine op0148()
         call jeveuo(fsvk, 'L', ifsvk)
         cmp1 = zk8(ifsvk+1)
         if (nomcmp(1:2) .ne. cmp1(1:2)) then
-            call u2mess('A', 'MODELISA5_80')
+            call utmess('A', 'MODELISA5_80')
         endif
     endif
 !
@@ -204,7 +204,7 @@ subroutine op0148()
             goto 31
         endif
 30  end do
-    call u2mess('F', 'MODELISA5_78')
+    call utmess('F', 'MODELISA5_78')
 31  continue
 !
     call jelira(chfreq, 'LONMAX', nbpf)

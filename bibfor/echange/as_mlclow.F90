@@ -1,6 +1,6 @@
 subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
-                  gscoo, wg, locname, ndim, nomasu,&
-                  cret)
+                     gscoo, wg, locname, ndim, nomasu,&
+                     cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -20,16 +20,17 @@ subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mlclow.h"
     aster_int :: fid, typgeo, modeco, ngauss, cret, ndim
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
     character(len=*) :: locname, nomasu
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, typge4, mode_4, ngaus4, cret4, ndim4
     fid4 = fid
@@ -46,6 +47,6 @@ subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
                 modeco, ngauss, gscoo, wg, '',&
                 nomasu, cret)
 #endif
-
+!
 #endif
 end subroutine

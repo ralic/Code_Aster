@@ -61,7 +61,7 @@ subroutine op0048()
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -265,7 +265,7 @@ subroutine op0048()
                 call jeveuo(charge, 'L', jchar)
                 call cochre(zk24(jchar), nchar, nbchre, iocc)
                 if (nbchre .gt. 1) then
-                    call u2mess('F', 'DYNAMIQUE_19')
+                    call utmess('F', 'DYNAMIQUE_19')
                 endif
                 if (iocc .gt. 0) then
                     call getvid('EXCIT', 'CHARGE', iocc=iocc, scal=charep, nbret=iret)

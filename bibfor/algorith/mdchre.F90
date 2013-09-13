@@ -8,7 +8,7 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/orient.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: ioc, iliai, nbnli
@@ -91,7 +91,7 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
             else
                 call jenonu(jexnom(mdssno, repere), iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH5_39')
+                    call utmess('F', 'ALGORITH5_39')
                 endif
                 call wkvect('&&MDCHOC.COORDO', 'V V R', 3, jcoord)
                 zr(jcoord) = tempo(1)

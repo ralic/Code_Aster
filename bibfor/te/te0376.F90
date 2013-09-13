@@ -1,6 +1,7 @@
-subroutine te0376(nomopt,nomte)
+subroutine te0376(nomopt, nomte)
 ! aslint: disable=W0104
     implicit none
+#include "asterfort/utmess.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,6 +20,6 @@ subroutine te0376(nomopt,nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-    character(len=16)  :: nomte,nomopt
-    call u2mess('F','FERMETUR_8')
+    character(len=16) :: nomte, nomopt
+    call utmess('F', 'FERMETUR_8')
 end subroutine

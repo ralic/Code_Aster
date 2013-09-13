@@ -35,7 +35,7 @@ subroutine merit3(modele, nchar, lchar, mate, cara,&
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: lchar(*), mate
     character(len=8) :: modele, cara
     character(len=19) :: matel, prefch
@@ -90,7 +90,7 @@ subroutine merit3(modele, nchar, lchar, mate, cara,&
 !-----------------------------------------------------------------------
     call jemarq()
     if (modele(1:1) .eq. ' ') then
-        call u2mess('F', 'CALCULEL3_50')
+        call utmess('F', 'CALCULEL3_50')
     endif
 !
     call megeom(modele, chgeom)
@@ -115,7 +115,9 @@ subroutine merit3(modele, nchar, lchar, mate, cara,&
             call jeexin(convch, iret)
             if (iret .gt. 0) then
                 iconv = iconv + 1
-                if (iconv .gt. 1) call u2mess('F', 'CALCULEL3_72')
+                if (iconv .gt. 1) then
+                    call utmess('F', 'CALCULEL3_72')
+                endif
 !
                 option = 'RIGI_THER_CONV_D'
                 call memare('V', matel, modele, mate, cara,&

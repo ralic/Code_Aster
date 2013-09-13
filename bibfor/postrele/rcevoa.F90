@@ -42,8 +42,7 @@ subroutine rcevoa(typtab, nommat)
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nommat
@@ -134,7 +133,7 @@ subroutine rcevoa(typtab, nommat)
     if (.not. exist) then
         valk(1) = table
         valk(2) = valek(1)
-        call u2mesk('F', 'POSTRCCM_1', 2, valk)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
     call tbexv1(table, valek(1), ktheta, 'V', nbteta,&
                 k8b)
@@ -144,7 +143,7 @@ subroutine rcevoa(typtab, nommat)
     if (.not. exist) then
         valk(1) = table
         valk(2) = valek(4)
-        call u2mesk('F', 'POSTRCCM_1', 2, valk)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
     call tbexv1(table, valek(4), abscur, 'V', nbabsc,&
                 k8b)
@@ -161,8 +160,7 @@ subroutine rcevoa(typtab, nommat)
         if (rapp .gt. 0.01d0) then
             vale(1) = rcal
             vale(2) = damorc
-            call u2mesg('A', 'POSTRCCM_33', 1, table, 0,&
-                        0, 2, vale)
+            call utmess('A', 'POSTRCCM_33', sk=table, nr=2, valr=vale)
         endif
 10  end do
 !
@@ -180,7 +178,7 @@ subroutine rcevoa(typtab, nommat)
             call tbexip(table, valek(i1), exist, k8b)
             if (.not. exist) then
                 valk(2) = valek(i1)
-                call u2mesk('F', 'POSTRCCM_1', 2, valk)
+                call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
             endif
 22      continue
 !
@@ -269,8 +267,8 @@ subroutine rcevoa(typtab, nommat)
                 valk(2) = valek(3)
                 valk(3) = valek(1)
                 valk(4) = valek(2)
-                call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                            0, 2, vale)
+                call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                            valr=vale)
             endif
             sitt1 = abs(sitt1)
 !
@@ -288,8 +286,8 @@ subroutine rcevoa(typtab, nommat)
                     valk(2) = valek(3)
                     valk(3) = valek(1)
                     valk(4) = valek(2)
-                    call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                                0, 2, vale)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                valr=vale)
                 endif
                 sitt2 = abs(sitt2)
 !

@@ -39,7 +39,7 @@ subroutine calcin(option, max, may, maz, model,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
     integer :: ipres, i, j
@@ -117,10 +117,10 @@ subroutine calcin(option, max, may, maz, model,&
     endif
 !
     if ((i.eq.j) .and. (mij.lt.0) .and. (option.eq.'MASS_AJOU')) then
-        call u2mess('A', 'ALGORITH_60')
+        call utmess('A', 'ALGORITH_60')
     endif
     if ((i.eq.j) .and. (mij.lt.0) .and. (option.eq.'AMOR_AJOU')) then
-        call u2mess('A', 'ALGORITH_61')
+        call utmess('A', 'ALGORITH_61')
     endif
 !
     call detrsd('CHAM_NO', veprj)

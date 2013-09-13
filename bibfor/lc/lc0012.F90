@@ -5,7 +5,7 @@ subroutine lc0012(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=8) :: typmod(*)
@@ -70,5 +70,5 @@ subroutine lc0012(fami, kpg, ksp, ndim, imate,&
 !               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 !               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 ! ======================================================================
-    call u2mess('F', 'ALGORITH4_50')
+    call utmess('F', 'ALGORITH4_50')
 end subroutine

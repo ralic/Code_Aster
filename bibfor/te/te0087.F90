@@ -1,7 +1,6 @@
 subroutine te0087(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
@@ -9,7 +8,8 @@ subroutine te0087(option, nomte)
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -120,7 +120,7 @@ subroutine te0087(option, nomte)
         if (icompo .ne. 0) then
             compor = zk16(icompo)
             if (compor .ne. 'ELAS' .and. compor .ne. '                ') then
-                call u2mess('A', 'ELEMENTS3_11')
+                call utmess('A', 'ELEMENTS3_11')
             endif
         endif
     endif

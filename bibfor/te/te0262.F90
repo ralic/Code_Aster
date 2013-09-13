@@ -20,13 +20,13 @@ subroutine te0262(option, nomte)
 ! ======================================================================
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/porigy.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpplg.h"
+!
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -63,7 +63,7 @@ subroutine te0262(option, nomte)
         'MECA_POU_D_EM') then
         nno = 2
     else
-        call u2mesk('F', 'ELEMENTS2_42', 1, nomte)
+        call utmess('F', 'ELEMENTS2_42', sk=nomte)
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---

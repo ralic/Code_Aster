@@ -36,7 +36,7 @@ subroutine calres(np3, ic, typch, nbseg, choc,&
 #include "asterfort/fortan.h"
 #include "asterfort/matini.h"
 #include "asterfort/prmave.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
     integer :: np3, ic, typch(*), nbseg(*)
     real(kind=8) :: choc(6, *), rc(np3, *), theta(np3, *), vloc(*), xloc(*)
@@ -129,12 +129,16 @@ subroutine calres(np3, ic, typch, nbseg, choc,&
         ier = 0
         call prmave(0, jacobc, 3, 3, 3,&
                     vlocj, 3, ytemp, 3, ier)
-        if (ier .ne. 0) call u2mess('F', 'ALGORITH_71')
+        if (ier .ne. 0) then
+            call utmess('F', 'ALGORITH_71')
+        endif
 !
         ier = 0
         call prmave(1, jacobk, 3, 3, 3,&
                     ulocj, 3, ytemp, 3, ier)
-        if (ier .ne. 0) call u2mess('F', 'ALGORITH_71')
+        if (ier .ne. 0) then
+            call utmess('F', 'ALGORITH_71')
+        endif
 !
         flres(1) = floc(1) - ytemp(1)
         flres(2) = floc(2) - ytemp(2)

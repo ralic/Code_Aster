@@ -2,13 +2,13 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: nomfor
     integer :: icodre
     real(kind=8) :: valgrd, nrupt
@@ -89,7 +89,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 !
 ! VERIFIER QUE LA FORMULE A LA VARIABLE NRUPT = N_F
         if ((nompfi.ne. 'NBRUP') .or. (np .ne. 1)) then
-            call u2mess('F', 'FATIGUE1_93')
+            call utmess('F', 'FATIGUE1_93')
         endif
 !
 ! VERIFIER QUE  VALGRD < GRDMAX
@@ -97,7 +97,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
                     grdmax, icodre)
 !
         if (valgrd .gt. grdmax) then
-            call u2mess('F', 'FATIGUE1_94')
+            call utmess('F', 'FATIGUE1_94')
         endif
 !
         do 10 i = 1, ndat

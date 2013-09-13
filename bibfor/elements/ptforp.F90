@@ -16,8 +16,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 #include "asterfort/ptfop1.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "blas/ddot.h"
     integer :: itype, ist, nno, nc
@@ -162,10 +161,12 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         else
             if (ist .eq. 1) then
                 call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ',&
-                            [r8bid], 1, 'RHO', rho(1), icodre,1)
+                            [r8bid], 1, 'RHO', rho(1), icodre,&
+                            1)
             else
                 call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ',&
-                            [r8bid], 1, 'RHO', rho(1), icodre,0)
+                            [r8bid], 1, 'RHO', rho(1), icodre,&
+                            0)
                 if (icodre(1) .ne. 0) rho(1) = zero
             endif
 !          ---A CAUSE DES CHARGEMENTS VARIABLE ---
@@ -250,7 +251,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
 !     --- CONTROLE DE VALIDITE DE FORCES VARIANT LINEAIREMENT ---
@@ -258,9 +259,9 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         do 342 i = 1, 6
             if (qq(i) .ne. qq(i+6)) then
                 if (itype .eq. 10) then
-                    call u2mess('F', 'ELEMENTS2_49')
+                    call utmess('F', 'ELEMENTS2_49')
                 else
-                    call u2mess('F', 'ELEMENTS2_50')
+                    call utmess('F', 'ELEMENTS2_50')
                 endif
             endif
 342      continue
@@ -406,13 +407,13 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     goto 1000
 !
 997  continue
-    call u2mess('F', 'ELEMENTS2_51')
+    call utmess('F', 'ELEMENTS2_51')
 !
 998  continue
-    call u2mess('F', 'ELEMENTS2_52')
+    call utmess('F', 'ELEMENTS2_52')
 !
 999  continue
-    call u2mess('F', 'ELEMENTS2_53')
+    call utmess('F', 'ELEMENTS2_53')
 !
 !
 1000  continue

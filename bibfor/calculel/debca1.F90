@@ -20,7 +20,6 @@ subroutine debca1(nomop, ligrel, nin)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/r8nnem.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
@@ -33,8 +32,9 @@ subroutine debca1(nomop, ligrel, nin)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mecoel.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: nomop
     character(len=19) :: ligrel
     integer :: nin
@@ -95,10 +95,14 @@ subroutine debca1(nomop, ligrel, nin)
 !
     call dismoi('F', 'EXI_ELEM', ligrel, 'LIGREL', ibid,&
                 exiele, ierd)
-    if (exiele .ne. 'OUI') call u2mesk('F', 'CALCULEL2_25', 1, ligrel)
+    if (exiele .ne. 'OUI') then
+        call utmess('F', 'CALCULEL2_25', sk=ligrel)
+    endif
 !
     call jenonu(jexnom('&CATA.OP.NOMOPT', nomop), opt)
-    if (opt .eq. 0) call u2mesk('F', 'CALCULEL2_26', 1, nomop)
+    if (opt .eq. 0) then
+        call utmess('F', 'CALCULEL2_26', sk=nomop)
+    endif
 !
 !
 !     INITIALISATION DU COMMON CAII02 :

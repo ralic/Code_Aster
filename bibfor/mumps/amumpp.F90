@@ -44,8 +44,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterc/r4maem.h"
 #include "asterc/r4miem.h"
 #include "asterc/r8maem.h"
@@ -63,8 +63,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/nudlg2.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
     integer :: option, nbsol, kxmps, ifmump
@@ -267,8 +266,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     else if (rtest.gt.rmax) then
                         valr(1)=rtest
                         valr(2)=rmax
-                        call u2mesg('F', 'FACTOR_79', 0, kbid, 1,&
-                                    i, 2, valr)
+                        call utmess('F', 'FACTOR_79', si=i, nr=2, valr=valr)
                     endif
                     dmpsk%rhs(i)=raux
                 enddo
@@ -281,8 +279,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     else if (rtest.gt.rmax) then
                         valr(1)=rtest
                         valr(2)=rmax
-                        call u2mesg('F', 'FACTOR_79', 0, kbid, 1,&
-                                    i, 2, valr)
+                        call utmess('F', 'FACTOR_79', si=i, nr=2, valr=valr)
                     endif
                     zmpsk%rhs(i)=caux
                 enddo
@@ -315,7 +312,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 endif
                 write(ifmump,*) 'MUMPS FIN RHS'
             endif
-            if (impr(1:11) .eq. 'OUI_NOSOLVE') call u2mesi('F', 'FACTOR_71', 1, ifmump)
+            if (impr(1:11) .eq. 'OUI_NOSOLVE') then
+                call utmess('F', 'FACTOR_71', si=ifmump)
+            endif
         endif
 !
 !

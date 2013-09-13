@@ -38,7 +38,7 @@ subroutine u195tb(chou)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tabchs.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: chou
 !
 ! 0.2. ==> COMMUNS
@@ -67,7 +67,9 @@ subroutine u195tb(chou)
 !     VERIFICATIONS
     if (typchs .eq. 'NOEU' .or. typchs .eq. 'CART') then
         call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
-        if (n1 .eq. 0) call u2mess('F', 'MODELISA7_61')
+        if (n1 .eq. 0) then
+            call utmess('F', 'MODELISA7_61')
+        endif
         option=' '
         mo=' '
     else if (typchs(1:2).eq.'EL') then
@@ -81,7 +83,9 @@ subroutine u195tb(chou)
             n2=-n2
             call getvtx(' ', 'OPTION', scal=option, nbret=n2)
         endif
-        if (n1 .eq. 0 .or. n2 .eq. 0) call u2mess('F', 'MODELISA7_62')
+        if (n1 .eq. 0 .or. n2 .eq. 0) then
+            call utmess('F', 'MODELISA7_62')
+        endif
         call jeveuo(mo//'.MODELE    .LGRF', 'L', jnoma)
         ma=zk8(jnoma)
     endif

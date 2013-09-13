@@ -4,8 +4,7 @@ subroutine vafcar(tpgz, mclfz, nmobjz, npo, ndi,&
                   ivr, kioc, ier)
     implicit none
 #include "asterc/getres.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ntyele(*), ivr(*)
     character(len=6) :: kioc
     character(len=8) :: tpg, nomobj, carz
@@ -64,7 +63,7 @@ subroutine vafcar(tpgz, mclfz, nmobjz, npo, ndi,&
             valk(1) = kioc
             valk(2) = mclf
             valk(3) = tpge
-            call u2mesk('A', 'MODELISA7_63', 3, valk)
+            call utmess('A', 'MODELISA7_63', nk=3, valk=valk)
             ier = ier + 1
         endif
         goto 9999
@@ -104,8 +103,7 @@ subroutine vafcar(tpgz, mclfz, nmobjz, npo, ndi,&
         npf = npo + ndi + nco + nca + nba + nma + ngb + nmb
     else
         valk(1) = mclf
-        call u2mesg('A', 'MODELISA9_11', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('A', 'MODELISA9_11', sk=valk(1))
     endif
 !
     do 10 i = npd, npf
@@ -115,7 +113,7 @@ subroutine vafcar(tpgz, mclfz, nmobjz, npo, ndi,&
         valk(1) = kioc
         valk(2) = mclf
         valk(3) = tpge
-        call u2mesk('A', 'MODELISA7_64', 3, valk)
+        call utmess('A', 'MODELISA7_64', nk=3, valk=valk)
         ier = ier + 1
     endif
     goto 9999
@@ -165,7 +163,7 @@ subroutine vafcar(tpgz, mclfz, nmobjz, npo, ndi,&
                     valk(2) = mclf
                     valk(3) = tpge
                     valk(4) = carz
-                    call u2mesk('A', 'MODELISA7_65', 4, valk)
+                    call utmess('A', 'MODELISA7_65', nk=4, valk=valk)
                     ier = ier + 1
                 endif
             endif

@@ -18,10 +18,10 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/rcvals.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: imat, nbres, jmat, nbmat
     character(len=*) :: phenom, nomres(nbres)
     integer :: iarret
@@ -70,7 +70,7 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
             goto 11
         endif
 10  end do
-    call u2mess('A', 'ELEMENTS2_63')
+    call utmess('A', 'ELEMENTS2_63')
     goto 9999
 11  continue
 !
@@ -95,7 +95,7 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
         do 170 ires = 1, nbres
             do 160 ik = 1, nbf
                 if (nomres(ires) .eq. zk8(ivalk+idf+ik-1)) then
-                    call u2mess('F', 'MODELISA6_93')
+                    call utmess('F', 'MODELISA6_93')
 !              CALL FOINTA (IFON,NBPAR,NOMPAR,VALPAR,VALRES(IRES))
                     icodre(ires) = 0
                 endif

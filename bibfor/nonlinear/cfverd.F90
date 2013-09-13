@@ -18,14 +18,14 @@ subroutine cfverd(noma, numedd, defico)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfnomm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/posddl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: defico
@@ -65,7 +65,7 @@ subroutine cfverd(noma, numedd, defico)
         call posddl('NUME_DDL', numedd, nomno, 'DZ', jbid,&
                     verdim)
         if (verdim .ne. 0) then
-            call u2mess('F', 'CONTACT_85')
+            call utmess('F', 'CONTACT_85')
         endif
 10  end do
 !

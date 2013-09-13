@@ -7,10 +7,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomfon, chprol(*)
     integer :: nbvar, nbres, ier
     real(kind=8) :: var(*), fon(*), varres(*), fonres(*)
@@ -67,7 +64,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
 !-----------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
-#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlin(x,x1,y1,x2,y2) y1+(x-x1)*(y2-y1)/(x2-x1)
 #define linlog(x,x1,y1,x2,y2) exp(log(y1)+(x-x1)*(log(y2)-log(y1))/(x2-x1))
 #define loglog(x,x1,y1,x2,y2) exp(log(y1)+(log(x)-log(x1))*(log(y2)-log(y1))/(log(x2)-log(x1)))
 #define loglin(x,x1,y1,x2,y2) y1+(log(x)-log(x1))*(y2-y1)/(log(x2)-log(x1))
@@ -88,7 +85,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
 !
         if (nbvar .eq. 1) then
             if (nbres .ne. 1 .and. chprol(5)(1:2) .ne. 'CC') then
-                call u2mess('F', 'FONCT0_22')
+                call utmess('F', 'FONCT0_22')
             endif
             if (chprol(5)(1:2) .eq. 'CC') then
                 do 10 i = 1, nbres
@@ -98,7 +95,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
                 if (varres(ires) .eq. var(ivar)) then
                     fonres(ires) = fon(ivar)
                 else
-                    call u2mess('F', 'FONCT0_23')
+                    call utmess('F', 'FONCT0_23')
                 endif
             endif
             goto 9999
@@ -140,10 +137,10 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
                 ier = ier + 1
                 valr(1)=varres(1)
                 valr(2)=var(1)
-                call u2mesk('F+', 'FONCT0_9', 1, nomf)
-                call u2mesr('F', 'FONCT0_19', 2, valr)
+                call utmess('F+', 'FONCT0_9', sk=nomf)
+                call utmess('F', 'FONCT0_19', nr=2, valr=valr)
             else
-                call u2mesk('F', 'FONCT0_21', 1, chprol(5)(1:1))
+                call utmess('F', 'FONCT0_21', sk=chprol(5)(1:1))
             endif
         endif
 !
@@ -171,7 +168,8 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
                         loglin(varres(ires), var(ivar), fon(ivar), var(ivar+1), fon(ivar+1))
                 else if (chprol(2)(1:3).eq.'INT') then
                     call jeveuo(nomf//'.NOVA', 'L', lnova)
-                    call fointe('F ', nomf, 1, zk8(lnova), varres(ires), fonres(ires), ier)
+                    call fointe('F ', nomf, 1, zk8(lnova), varres(ires),&
+                                fonres(ires), ier)
                 else if (chprol(2)(1:3).eq.'NON') then
                     if (varres(ires) .eq. var(ivar)) then
                         fonres(ires) = fon(ivar)
@@ -183,13 +181,13 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
                             valr (1) = varres(ires)
                             valr (2) = var(ivar)
                             valr (3) = var(ivar+1)
-                            call u2mesk('F+', 'FONCT0_11', 1, nomf)
-                            call u2mesr('F', 'FONCT0_26', 3, valr)
+                            call utmess('F+', 'FONCT0_11', sk=nomf)
+                            call utmess('F', 'FONCT0_26', nr=3, valr=valr)
                         endif
                     endif
                 else
                     ier = ier + 1
-                    call u2mesk('F', 'FONCT0_21', 1, chprol(2))
+                    call utmess('F', 'FONCT0_21', sk=chprol(2))
                 endif
                 ires = ires + 1
                 goto 200
@@ -218,7 +216,8 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
 !           --- EXTRAPOLATION INTERPRETEE ----
                 call jeveuo(nomf//'.NOVA', 'L', lnova)
                 do 330 jres = ires, nbres
-                    call fointe('F ', nomf, 1, zk8(lnova), varres(jres), fonres(jres), ier)
+                    call fointe('F ', nomf, 1, zk8(lnova), varres(jres),&
+                                fonres(jres), ier)
 330              continue
 !
             else if (chprol(5)(2:2) .eq. 'E') then
@@ -226,10 +225,10 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
                 ier = ier + 2
                 valr(1)=varres(nbres)
                 valr(2)=var(nbvar)
-                call u2mesk('F+', 'FONCT0_9', 1, nomf)
-                call u2mesr('F', 'FONCT0_20', 2, valr)
+                call utmess('F+', 'FONCT0_9', sk=nomf)
+                call utmess('F', 'FONCT0_20', nr=2, valr=valr)
             else
-                call u2mesk('F', 'FONCT0_21', 1, chprol(5)(2:2))
+                call utmess('F', 'FONCT0_21', sk=chprol(5)(2:2))
             endif
         endif
         goto 9999
@@ -241,8 +240,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
     else if (chprol(1) .eq.'INTERPRE') then
         call jelira(nomf//'.NOVA', 'LONUTI', lonuti)
         if (lonuti .ne. 1) then
-            call u2mesg('F', 'FONCT0_24', 1, nomf, 1,&
-                        lonuti, 0, 0.d0)
+            call utmess('F', 'FONCT0_24', sk=nomf, si=lonuti)
         endif
         call jeveuo(nomf//'.NOVA', 'L', lnova)
         do 1200 jres = 1, nbres
@@ -253,7 +251,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
         valk(1)=nomf
         valk(2)=chprol(1)
         valk(3)='FOINTR'
-        call u2mesk('F', 'FONCT0_25', 3, valk)
+        call utmess('F', 'FONCT0_25', nk=3, valk=valk)
     endif
 9999  continue
     call jedema()

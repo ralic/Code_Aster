@@ -11,8 +11,7 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: matopa, raide
     integer :: lmasse, lraide
@@ -79,8 +78,8 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
         ashift = 0.95d0
         valr (1) = 1.d0
         valr (2) = 0.95d0
-        call u2mess('I+', 'ALGELINE4_93')
-        call u2mesr('I', 'ALGELINE4_96', 2, valr)
+        call utmess('I+', 'ALGELINE4_93')
+        call utmess('I', 'ALGELINE4_96', nr=2, valr=valr)
     endif
 !
     ashift = (ashift*fshift) / 2.0d0

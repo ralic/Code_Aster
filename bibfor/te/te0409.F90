@@ -41,8 +41,7 @@ subroutine te0409(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/t3grig.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -96,7 +95,8 @@ subroutine te0409(option, nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+                npg, ipoids, ivf, idfdx, jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -110,13 +110,17 @@ subroutine te0409(option, nomte)
 !
     if (option .eq. 'EPOT_ELEM') then
         if (nomte .eq. 'MEDKTG3') then
-            call dktrig(nomte, xyzl, option, pgl, matloc, ener, multic)
+            call dktrig(nomte, xyzl, option, pgl, matloc,&
+                        ener, multic)
         else if (nomte.eq.'MEDKQG4') then
-            call dkqrig(nomte, xyzl, option, pgl, matloc, ener)
+            call dkqrig(nomte, xyzl, option, pgl, matloc,&
+                        ener)
         else if (nomte.eq.'MET3GG3') then
-            call t3grig(nomte, xyzl, option, pgl, matloc, ener)
+            call t3grig(nomte, xyzl, option, pgl, matloc,&
+                        ener)
         else if (nomte.eq.'MEQ4GG4') then
-            call q4grig(nomte, xyzl, option, pgl, matloc, ener)
+            call q4grig(nomte, xyzl, option, pgl, matloc,&
+                        ener)
         endif
 !
         call jevech('PENERDR', 'E', jener)
@@ -125,12 +129,13 @@ subroutine te0409(option, nomte)
             zr(jener-1+i) = ener(i)
         end do
 !
-    else if (option.eq.'MASS_MECA'       .or. option.eq.'MASS_MECA_DIAG'&
+        else if (option.eq.'MASS_MECA'       .or. option.eq.'MASS_MECA_DIAG'&
         .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA'&
         .or. option.eq.'ECIN_ELEM') then
 !
         if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
-            call dktmas(xyzl, option, pgl, matloc, ener, multic)
+            call dktmas(xyzl, option, pgl, matloc, ener,&
+                        multic)
         else if (nomte.eq.'MEDKQG4'.or. nomte.eq.'MEQ4GG4') then
             call dkqmas(xyzl, option, pgl, matloc, ener)
         endif
@@ -188,13 +193,14 @@ subroutine te0409(option, nomte)
         call dxroep(rho, epais)
 !
         if (rho .le. r8prem()) then
-            call u2mess('F', 'ELEMENTS5_45')
+            call utmess('F', 'ELEMENTS5_45')
         endif
 !
-        call dxiner(nno, zr(igeom), rho, epais, zr(imatuu), zr(imatuu+1), zr(imatuu+4))
+        call dxiner(nno, zr(igeom), rho, epais, zr(imatuu),&
+                    zr(imatuu+1), zr(imatuu+4))
 !
 !     -- OPTIONS NON-LINEAIRES
-    else if (option.eq.'FULL_MECA'      .or. option.eq.'RAPH_MECA' .or.&
+        else if (option.eq.'FULL_MECA'      .or. option.eq.'RAPH_MECA' .or.&
              option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
 !
         lrgm = option.eq.'RIGI_MECA       '
@@ -206,16 +212,18 @@ subroutine te0409(option, nomte)
             comp3 = zk16(icompo+3)
 !
             if (comp3 .eq. 'COMP_ELAS') then
-                call u2mess('F', 'ELEMENTS3_92')
+                call utmess('F', 'ELEMENTS3_92')
             endif
 !
             if (zk16(icompo+2)(6:10) .eq. '_REAC' .or. zk16(icompo+2) .eq. 'GROT_GDEP') then
-                if (zk16(icompo+2)(6:10) .eq. '_REAC') call u2mess('A', 'ELEMENTS2_72')
+                if (zk16(icompo+2)(6:10) .eq. '_REAC') then
+                    call utmess('A', 'ELEMENTS2_72')
+                endif
 !
                 do i = 1, nno
                     i1 = 3* (i-1)
                     i2 = 6* (i-1)
-                    zr(igeom+i1)   = zr(igeom+i1)   + zr(ideplm+i2)   + zr(ideplp+i2)
+                    zr(igeom+i1) = zr(igeom+i1) + zr(ideplm+i2) + zr(ideplp+i2)
                     zr(igeom+i1+1) = zr(igeom+i1+1) + zr(ideplm+i2+1) + zr(ideplp+i2+1)
                     zr(igeom+i1+2) = zr(igeom+i1+2) + zr(ideplm+i2+2) + zr(ideplp+i2+2)
                 end do
@@ -241,17 +249,19 @@ subroutine te0409(option, nomte)
             icarcr=1
         endif
 !
-        if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3'&
-       .or. nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEQ4GG4') then
+        if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3' .or. nomte .eq. 'MEDKQG4' .or.&
+            nomte .eq. 'MEQ4GG4') then
             if (lrgm) then
-                call dxglrc(nomte, option, compor, xyzl, uml, dul, vecloc, matloc, pgl,&
-                            zr(icarcr), codret)
+                call dxglrc(nomte, option, compor, xyzl, uml,&
+                            dul, vecloc, matloc, pgl, zr(icarcr),&
+                            codret)
             else
-                call dxglrc(nomte, option, zk16(icompo), xyzl, uml, dul, vecloc, matloc, pgl,&
-                            zr(icarcr), codret)
+                call dxglrc(nomte, option, zk16(icompo), xyzl, uml,&
+                            dul, vecloc, matloc, pgl, zr(icarcr),&
+                            codret)
             endif
         else
-            call u2mesk('F', 'ELEMENTS2_74', 1, nomte)
+            call utmess('F', 'ELEMENTS2_74', sk=nomte)
         endif
 !
         if (option .eq. 'FULL_MECA') then
@@ -267,7 +277,8 @@ subroutine te0409(option, nomte)
             call utpslg(nno, 6, pgl, matloc, zr(imatuu))
         endif
     else if (option.eq.'FORC_NODA') then
-        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo, iretc)
+        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
+                    iretc)
 !
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERES
 !
@@ -276,14 +287,16 @@ subroutine te0409(option, nomte)
 !
         call jevech('PCACOQU', 'L', jcara)
         alpha = zr(jcara+1) * r8dgrd()
-        beta  = zr(jcara+2) * r8dgrd()
-        call coqrep(pgl, alpha, beta, t2ev, t2ve, c, s)
+        beta = zr(jcara+2) * r8dgrd()
+        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+                    c, s)
 !
 ! --- VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL
-        call tecach('OON', 'PCONTMR', 'L', 7, jtab, iret)
+        call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
+                    iret)
 !
-        do ipg=1, npg
+        do ipg = 1, npg
             icontm=jtab(1)+8*(ipg-1)
             call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
         end do
@@ -292,7 +305,7 @@ subroutine te0409(option, nomte)
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
 !
         if (zk16(icompo)(1:7) .eq. 'GLRC_DM') then
-            do ipg=1, npg
+            do ipg = 1, npg
                 icontm=jtab(1)+8*(ipg-1)
                 call dcopy(8, zr(icontm), 1, effgt(8*(ipg-1)+1), 1)
             end do
@@ -302,7 +315,9 @@ subroutine te0409(option, nomte)
 !
         reactu = .false.
         if (iretc .eq. 0) then
-            if (zk16(icompo+2)(6:10) .eq. '_REAC') call u2mess('A', 'ELEMENTS2_72')
+            if (zk16(icompo+2)(6:10) .eq. '_REAC') then
+                call utmess('A', 'ELEMENTS2_72')
+            endif
             reactu = ( zk16(icompo+2) .eq. 'PETIT_REAC' .or. zk16(icompo+ 2) .eq. 'GROT_GDEP' )
         endif
 !

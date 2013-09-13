@@ -27,7 +27,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
 #include "asterfort/nmcomp.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verifg.h"
 #include "asterfort/verift.h"
     character(len=*) :: fami
@@ -123,7 +123,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
             else
                 valkm(1) = compor(1)
                 valkm(2) = 'COMP_INCR'
-                call u2mesk('F', 'ALGORITH6_81', 2, valkm)
+                call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
             endif
 !
         endif

@@ -34,8 +34,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
 #include "asterfort/nmarnr.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: sdlist
@@ -83,7 +82,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
     integer :: n1, n2, nval, i, iret, ibid, n3, j
     real(kind=8) :: pasmin, pasmax, pas0, dt
     integer :: nbpamx, nbdec
-    integer ::  numrep
+    integer :: numrep
     character(len=8) :: resu
     character(len=2) :: type
     logical :: exist
@@ -143,13 +142,13 @@ subroutine dfllty(sdlist, metlis, dtmin)
         call ltnotb(resu, 'PARA_CALC', tablpc)
         call tbexip(tablpc, 'INST', exist, type)
         if (.not.exist .or. type .ne. 'R') then
-            call u2mesk('F', 'DISCRETISATION_3', 1, resu)
+            call utmess('F', 'DISCRETISATION_3', sk=resu)
         endif
 !
         call nmarnr(resu, 'PARA_CALC', numrep)
 !
         if (numrep .gt. 1) then
-            call u2mesk('F', 'DISCRETISATION_4', 1, resu)
+            call utmess('F', 'DISCRETISATION_4', sk=resu)
         endif
 !
 !       EXTRACTION DE LA COLONNE 'INST' DANS UN OBJET TEMPORAIRE
@@ -204,7 +203,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
         call getfac('ADAPTATION', nadapt)
         call getvtx('ADAPTATION', 'MODE_CALCUL_TPLUS', iocc=nadapt, scal=modetp, nbret=ibid)
         if (nadapt .ne. 1 .and. modetp .eq. 'IMPLEX') then
-            call u2mess('F', 'DISCRETISATION_15')
+            call utmess('F', 'DISCRETISATION_15')
         endif
     endif
 !
@@ -228,7 +227,9 @@ subroutine dfllty(sdlist, metlis, dtmin)
         endif
 !
         call getvr8(motfac, 'PAS_MINI', iocc=1, scal=pasmin, nbret=iret)
-        if (pasmin .gt. dtmin) call u2mess('F', 'DISCRETISATION_1')
+        if (pasmin .gt. dtmin) then
+            call utmess('F', 'DISCRETISATION_1')
+        endif
 !
         call getvis(motfac, 'NB_PAS_MAXI', iocc=1, scal=nbpamx, nbret=iret)
 !

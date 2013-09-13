@@ -18,7 +18,7 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
@@ -27,9 +27,8 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 #include "asterfort/nmimen.h"
 #include "asterfort/nmimr0.h"
 #include "asterfort/obgetb.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     integer :: numins
     character(len=24) :: sdimpr
     character(len=19) :: sddisc
@@ -85,10 +84,9 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 !
     if (lprint) then
         if (lenivo .eq. 0) then
-            call u2mesr('I', 'MECANONLINE6_6', 1, instan)
+            call utmess('I', 'MECANONLINE6_6', sr=instan)
         else
-            call u2mesg('I', 'MECANONLINE6_1', 0, ' ', 1,&
-                        lenivo, 1, instan)
+            call utmess('I', 'MECANONLINE6_1', si=lenivo, sr=instan)
         endif
     endif
 !

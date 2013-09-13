@@ -8,8 +8,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbordr
     character(len=8) :: resuin
@@ -103,7 +102,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 valk(1) = 'MODELE'
                 valk(2) = modelr
                 valk(3) = modelu
-                call u2mesk('F', 'CALCULEL_33', 3, valk)
+                call utmess('F', 'CALCULEL_33', nk=3, valk=valk)
                 ASSERT(.false.)
             endif
         endif
@@ -117,7 +116,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 valk(1) = 'CARA_ELEM'
                 valk(2) = carelr
                 valk(3) = carelu
-                call u2mesk('F', 'CALCULEL_33', 3, valk)
+                call utmess('F', 'CALCULEL_33', nk=3, valk=valk)
                 ASSERT(.false.)
             endif
         endif
@@ -131,7 +130,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 valk(1) = 'CHAM_MATER'
                 valk(2) = chmatr
                 valk(3) = chmatu
-                call u2mesk('F', 'CALCULEL_33', 3, valk)
+                call utmess('F', 'CALCULEL_33', nk=3, valk=valk)
                 ASSERT(.false.)
             endif
         endif
@@ -149,14 +148,14 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 call jeveuo(excit//'.FCHA', 'L', jfcha)
                 nchasd = zi(jinfc)
                 if (nchasd .ne. nchalu) then
-                    call u2mess('F', 'CALCULEL_39')
+                    call utmess('F', 'CALCULEL_39')
                     ASSERT(.false.)
                 endif
                 do 40 ilu = 1, nchalu
                     do 50 isd = 1, nchasd
                         if (zk8(lchalu-1+ilu) .eq. zk24(jlcha-1+isd)( 1:8)) goto 30
 50                  continue
-                    call u2mess('F', 'CALCULEL_39')
+                    call utmess('F', 'CALCULEL_39')
 30                  continue
 40              continue
             endif

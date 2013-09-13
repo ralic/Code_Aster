@@ -63,8 +63,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mgauss.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: imod, nbm, icoq, nbno, numno(nbno), nunoe0, nbnoto, iaxe, kec
     integer :: iret
@@ -145,7 +144,7 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
         b = epais*epais*y/(12.d0*rayo4)
         z = long4*orcq4*(a-b)/rayo2
         if (z .le. 0.d0) then
-            call u2mess('F', 'ALGELINE_24')
+            call utmess('F', 'ALGELINE_24')
         else
             z = dble(sqrt(z))
             tcoef(1+itab,imod) = dble(sqrt(z))
@@ -184,7 +183,9 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
         endif
 20  end do
 !
-    if (nbnoge .lt. 4) call u2mess('F', 'ALGELINE_25')
+    if (nbnoge .lt. 4) then
+        call utmess('F', 'ALGELINE_25')
+    endif
 !
 !
 ! --- 4.CREATION D'UNE DISCRETISATION LE LONG DE LA GENERATRICE
@@ -291,7 +292,9 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
     endif
     drnoe0 = zr(ivecb) *dble(cos(zznoe0)) + zr(ivecb+1)*dble(sin(zznoe0)) + zr(ivecb+2)*dble(cosh&
              &(zznoe0)) + zr(ivecb+3)*dble(sinh(zznoe0))
-    if (dble(abs(drnoe0)) .lt. drmax*tole) call u2mess('F', 'ALGELINE_26')
+    if (dble(abs(drnoe0)) .lt. drmax*tole) then
+        call utmess('F', 'ALGELINE_26')
+    endif
     do 90 ib = 1, 4
         tcoef(1+itab+ib,imod) = zr(ivecb+ib-1)*drmax/drnoe0
 90  end do
@@ -299,9 +302,9 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
 !
 ! --- 6.IMPRESSION DES RESULTATS DANS LE FICHIER MESSAGE
 !
-    call u2mesr('I', 'ALGELINE_28', 1, err)
+    call utmess('I', 'ALGELINE_28', sr=err)
     if (err .gt. 1.d0) then
-        call u2mess('A', 'ALGELINE_29')
+        call utmess('A', 'ALGELINE_29')
     endif
 !
     call jedetr('&&COEDEF.TEMP.ZAXE')

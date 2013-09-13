@@ -30,7 +30,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
 #include "asterfort/ndynkk.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     character(len=19) :: sddyna
     character(len=8) :: result
@@ -118,7 +118,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
         trgene = zk24(jtrgen)
         call jeexin(trgene(1:18)//'D', iret)
         if (iret .eq. 0) then
-            call u2mess('A', 'MECANONLINE5_31')
+            call utmess('A', 'MECANONLINE5_31')
             linit = .true.
         else
             dgen = trgene(1:18)//'D'

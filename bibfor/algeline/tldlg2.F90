@@ -44,8 +44,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
 #include "asterfort/rgndas.h"
 #include "asterfort/rldlg3.h"
 #include "asterfort/rltfr8.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
     integer :: lmat, nprec, nmrig
@@ -154,7 +153,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
         if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE SYMETRIQUE'
     else
         if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE NON-SYMETRIQUE'
-        call u2mesk('F', 'ALGELINE3_46', 1, noma19)
+        call utmess('F', 'ALGELINE3_46', sk=noma19)
     endif
     ASSERT(typsym.eq.1)
 !
@@ -162,7 +161,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
         if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE REELLE'
     else
         if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE COMPLEXE'
-        call u2mesk('F', 'ALGELINE3_47', 1, noma19)
+        call utmess('F', 'ALGELINE3_47', sk=noma19)
     endif
     ASSERT(typvar.eq.1)
 !
@@ -304,7 +303,9 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
         write (ifm,*)'<TLDLG2> NB DE MODES DE CORPS RIGIDES'//&
         ' DETECTES: ',nmrig
     endif
-    if (nmrig .ge. 7) call u2mess('A', 'ALGELINE3_49')
+    if (nmrig .ge. 7) then
+        call utmess('A', 'ALGELINE3_49')
+    endif
 !
     if (lfeti) then
 !       SI FETI: COPIE DE LA FACTORISEE TEMPORAIRE NOMB19.VALF
@@ -313,7 +314,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
 !                   A.VALF N'EST PAS VRAIMENT LA FACTORISEE DE A
         call jeexin(noma19//'.VALF', ibid)
         if (ibid .gt. 0) then
-            call u2mesk('F', 'ALGELINE3_50', 1, noma19)
+            call utmess('F', 'ALGELINE3_50', sk=noma19)
         else
             call jedupo(nomb19//'.VALF', 'V', noma19//'.VALF', .false.)
         endif

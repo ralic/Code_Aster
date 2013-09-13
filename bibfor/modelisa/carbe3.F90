@@ -39,11 +39,8 @@ subroutine carbe3(charge)
 #include "asterfort/lxlgut.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/pmppr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: charge
@@ -136,7 +133,7 @@ subroutine carbe3(charge)
     end do
 !
     if (maxles .eq. 0) then
-        call u2mess('F', 'MODELISA10_7')
+        call utmess('F', 'MODELISA10_7')
     endif
     call wkvect('&&CARBE3.LISTESCL', 'V V K24', maxles, jlises)
 !
@@ -154,7 +151,7 @@ subroutine carbe3(charge)
             do idxgro = 1, nbgrou
                 call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbnoeu)
                 if (nbnoeu .eq. 0) then
-                    call u2mesk('F', 'MODELISA10_8', 1, zk24(jlises-1+ idxgro))
+                    call utmess('F', 'MODELISA10_8', sk=zk24(jlises-1+ idxgro))
                 endif
                 maxesc = max(maxesc, nbnoeu)
             enddo
@@ -207,8 +204,7 @@ subroutine carbe3(charge)
             call jeveuo(jexnom(grouno, gromai), 'L', jnogro)
             call jelira(jexnom(grouno, gromai), 'LONUTI', nbent)
             if (nbent .ne. 1) then
-                call u2mesg('F', 'MODELISA10_9', 1, gromai, 1,&
-                            nbent, 0, rbid)
+                call utmess('F', 'MODELISA10_9', sk=gromai, si=nbent)
             endif
             call jenuno(jexnum(noeuma, zi(jnogro-1+1)), noemai)
         endif
@@ -289,7 +285,7 @@ subroutine carbe3(charge)
         if (nbddl .ne. 1 .and. nbddl .ne. nbnoeu) then
             vali(1) = nbddl
             vali(2) = nbnoeu
-            call u2mesi('F', 'MODELISA10_10', 2, vali)
+            call utmess('F', 'MODELISA10_10', ni=2, vali=vali)
         endif
 !
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR EXTRAIRE LES DDLS
@@ -335,7 +331,7 @@ subroutine carbe3(charge)
                         else if (ddltrr(6).eq.ddlcod) then
                             ddlesc(6) = .true.
                         else
-                            call u2mesk('F', 'MODELISA10_11', 1, ddlcod)
+                            call utmess('F', 'MODELISA10_11', sk=ddlcod)
                         endif
                     endif
                 enddo
@@ -392,13 +388,13 @@ subroutine carbe3(charge)
         if (nbddl .ne. 1 .and. nbcfes .ne. 1 .and. nbddl .ne. nbcfes) then
             vali(1) = nbddl
             vali(2) = nbcfes
-            call u2mesi('F', 'MODELISA10_12', 2, vali)
+            call utmess('F', 'MODELISA10_12', ni=2, vali=vali)
         endif
 !
         if (nbcfes .ne. 1 .and. nbddl .ne. nbnoeu) then
             vali(1) = nbddl
             vali(2) = nbnoeu
-            call u2mesi('F', 'MODELISA10_13', 2, vali)
+            call utmess('F', 'MODELISA10_13', ni=2, vali=vali)
         endif
 !
         nbcol = 0

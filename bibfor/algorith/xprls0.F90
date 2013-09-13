@@ -3,7 +3,6 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                   poifi, trifi)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
@@ -20,10 +19,11 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xproj.h"
 #include "asterfort/xprpfi.h"
+!
     character(len=2) :: levset
     character(len=8) :: noma, fispre
     character(len=19) :: cnsln, cnslt, isozro, noesom, nodtor, eletor, poifi
@@ -479,7 +479,9 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     endif
 !  Arret fatal si on trouve au moins 3 points d'intersection sur
 ! une meme face
-                    if (nblsn0 .ge. 3) call u2mess('F', 'XFEM_61')
+                    if (nblsn0 .ge. 3) then
+                        call utmess('F', 'XFEM_61')
+                    endif
 610              continue
 !
 !

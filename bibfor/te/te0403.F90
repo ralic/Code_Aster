@@ -26,7 +26,7 @@ subroutine te0403(option, nomte)
 #include "asterfort/jevete.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trnflg.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
     character(len=16) :: option, nomte
 !
@@ -105,8 +105,7 @@ subroutine te0403(option, nomte)
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3)(1:8)
                 valk = nomail
-                call u2mesg('F', 'ELEMENTS4_92', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ELEMENTS4_92', sk=valk)
             endif
 222      continue
         goto 9999

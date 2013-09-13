@@ -15,9 +15,8 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -44,8 +43,9 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 #include "asterfort/juveca.h"
 #include "asterfort/manopg.h"
 #include "asterfort/rsinch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=2) :: codret
     character(len=8) :: modele, chmat, carele
     real(kind=8) :: inst
@@ -274,7 +274,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     if (ma2 .ne. mailla) then
         valk(1)=mailla
         valk(2)=ma2
-        call u2mesk('F', 'CALCULEL4_13', 2, valk)
+        call utmess('F', 'CALCULEL4_13', nk=2, valk=valk)
     endif
 !
 !         2.2 PASSAGE AUX POINTS DE GAUSS => CHS
@@ -289,7 +289,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         valk(1) = varc
         valk(2) = nomgd
         valk(3) = nomgd2
-        call u2mesk('F', 'CALCULEL5_39', 3, valk)
+        call utmess('F', 'CALCULEL5_39', nk=3, valk=valk)
     endif
     call dismoi('F', 'TYPE_CHAMP', nomch, 'CHAMP', ibid,&
                 tych, iret)
@@ -326,7 +326,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             valk(1)=nomch
             valk(2)=ligr1
             valk(3)=ligrmo
-            call u2mesk('F', 'CALCULEL4_25', 3, valk)
+            call utmess('F', 'CALCULEL4_25', nk=3, valk=valk)
         endif
 !
         call dismoi('F', 'NOM_OPTION', nomch, 'CHAM_ELEM', ibid,&
@@ -334,7 +334,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         if (optio1 .ne. 'INI_SP_MATER') then
             valk(1)=nomch
             valk(2)=optio1
-            call u2mesk('F', 'CALCULEL4_26', 2, valk)
+            call utmess('F', 'CALCULEL4_26', nk=2, valk=valk)
         endif
 !
         call jelira(nomch//'.CELV', 'LONMAX', nval2)

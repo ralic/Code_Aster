@@ -22,9 +22,8 @@ subroutine i2segm(nomail, nbpars, nbpara)
 #include "asterfort/jexnum.h"
 #include "asterfort/padist.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbpars, nbpara
@@ -64,7 +63,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
     real(kind=8) :: point(2), poina(2), poinb(2), dgrd
     real(kind=8) :: epsi, xa, xb, xc, ya, yb, yc, r, alfinf, alfsup
     real(kind=8) :: epsi2, tole, dm, xrc1, xrc2, xex, xor, yex, yor
-    character(len=8) ::  nomcrb, nomm1, nomm2, crit
+    character(len=8) :: nomcrb, nomm1, nomm2, crit
     character(len=16) :: opera, typcrb, motcle(3), typmcl(2)
     character(len=24) :: conec, coord, type, nommai, lismai
     character(len=24) :: norsgt, nexsgt, nparor, nparex, ncnxor, ncnxex
@@ -229,7 +228,9 @@ subroutine i2segm(nomail, nbpars, nbpara)
             if (n1 .ne. 0) then
                 call getvr8('DEFI_ARC', 'RAYON', iocc=occa, scal=point(1), nbret=n1)
                 r = point(1)
-                if (r .le. 0.d0) call u2mess('F', 'INTEMAIL_5')
+                if (r .le. 0.d0) then
+                    call utmess('F', 'INTEMAIL_5')
+                endif
                 call getvr8('DEFI_ARC', 'SECTEUR', iocc=occa, nbval=2, vect=point,&
                             nbret=n1)
                 alfinf = point(1)*dgrd
@@ -238,8 +239,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
                     ( alfsup .gt. 180.0d0 )) then
                     valk (1) = 'DEFI_ARC'
                     valk (2) = 'SECTEUR'
-                    call u2mesg('F', 'INTEMAIL_19', 2, valk, 1,&
-                                occa, 0, 0.d0)
+                    call utmess('F', 'INTEMAIL_19', nk=2, valk=valk, si=occa)
                 endif
             else
 !
@@ -268,8 +268,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
                 endif
                 if (abs(xrc1-xrc2) .gt. tole) then
                     valk (1) = 'DEFI_ARC'
-                    call u2mesg('F', 'INTEMAIL_20', 1, valk, 1,&
-                                occa, 0, 0.d0)
+                    call utmess('F', 'INTEMAIL_20', sk=valk(1), si=occa)
                 endif
                 r = xrc1
                 alfinf = atan2(poina(2)-point(2),poina(1)-point(1))
@@ -317,8 +316,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
                 nbsegm=nbsgt/10000+1
                 vali(1) = occ
                 vali(2) = nbsegm
-                call u2mesg('F', 'INTEMAIL_33', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'INTEMAIL_33', ni=2, vali=vali)
             endif
             do 50,i = 1,nbsgt,1
             zr(aorsgt+i-1) = zr(vorsgt+i-1)
@@ -359,8 +357,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
         else
             occ = occa + occs - 2
             valk (1) = nomcrb
-            call u2mesg('F', 'INTEMAIL_21', 1, valk, 1,&
-                        occ, 0, 0.d0)
+            call utmess('F', 'INTEMAIL_21', sk=valk(1), si=occ)
         endif
         goto 30
     endif

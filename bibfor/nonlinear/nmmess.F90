@@ -20,13 +20,13 @@ subroutine nmmess(code, dp0, dp1, dp, f,&
 !
 ! aslint: disable=
     implicit none
+#include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
     interface
-    function f(x)
-        real(kind=8) :: f, x
-    end function f
+        function f(x)
+            real(kind=8) :: f, x
+        end function f
     end interface
     integer :: nit, nitmax, iret
     real(kind=8) :: dp0, dp1, dp
@@ -67,51 +67,41 @@ subroutine nmmess(code, dp0, dp1, dp, f,&
 !
 !
     if (iret .eq. 1) then
-        call u2mesg(code//'+', 'ALGORITH15_45', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess(code//'+', 'ALGORITH15_45')
     else if (iret.eq.2) then
-        call u2mesg(code//'+', 'ALGORITH15_46', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess(code//'+', 'ALGORITH15_46')
     else if (iret.eq.3) then
-        call u2mesg(code//'+', 'ALGORITH15_47', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess(code//'+', 'ALGORITH15_47')
     endif
 !
     valk = nomail
     vali (1) = nit
     vali (2) = nitmax
-    call u2mesg(code//'+', 'ALGORITH15_48', 1, valk, 2,&
-                vali, 0, 0.d0)
+    call utmess(code//'+', 'ALGORITH15_48', sk=valk, ni=2, vali=vali)
     fp = f(dp)
     valr (1) = dp
     valr (2) = fp
-    call u2mesg(code//'+', 'ALGORITH15_49', 0, ' ', 0,&
-                0, 2, valr)
+    call utmess(code//'+', 'ALGORITH15_49', nr=2, valr=valr)
     f0 = f(dp0)
     valr (1) = dp0
     valr (2) = f0
-    call u2mesg(code//'+', 'ALGORITH15_50', 0, ' ', 0,&
-                0, 2, valr)
+    call utmess(code//'+', 'ALGORITH15_50', nr=2, valr=valr)
     f1 = f(dp1)
     valr (1) = dp1
     valr (2) = f1
-    call u2mesg(code//'+', 'ALGORITH15_51', 0, ' ', 0,&
-                0, 2, valr)
+    call utmess(code//'+', 'ALGORITH15_51', nr=2, valr=valr)
     nbp=100
 !
     vali (1) = nbp
-    call u2mesg(code//'+', 'ALGORITH15_52', 0, ' ', 1,&
-                vali, 0, 0.d0)
+    call utmess(code//'+', 'ALGORITH15_52', si=vali(1))
     do 10 i = 1, nbp
         dpi=dp0+i*(dp1-dp0)/nbp
         fi = f(dpi)
         valr (1) = dpi
         valr (2) = fi
-        call u2mesg(code//'+', 'ALGORITH15_53', 0, ' ', 0,&
-                    0, 2, valr)
+        call utmess(code//'+', 'ALGORITH15_53', nr=2, valr=valr)
 10  end do
 !
-    call u2mesg(code, 'VIDE_1', 0, ' ', 0,&
-                0, 0, 0.d0)
+    call utmess(code, 'VIDE_1')
 9999  continue
 end subroutine

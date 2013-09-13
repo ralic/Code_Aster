@@ -2,12 +2,12 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
                   sit2, saltij, ns, nscy, matse,&
                   mse, sn, nommat, c, k,&
                   cara, ug)
-    implicit   none
+    implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/limend.h"
 #include "asterfort/rc36sa.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbsig1, noc1(*), sit1(*), nbsig2, noc2(*), sit2(*), ns, nscy
     real(kind=8) :: saltij(*), matse(*), mse(*), sn(*), c(*), k(*), cara(*), ug
     character(len=8) :: nommat
@@ -111,8 +111,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
             if (nadm(1) .lt. 0) then
                 vale(1) = saltm
                 vale(2) = nadm(1)
-                call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
-                            0, 2, vale)
+                call utmess('A', 'POSTRCCM_32', nr=2, valr=vale)
             endif
             u1kl = 1.d0 / nadm(1)
         endif
@@ -132,8 +131,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2,&
             if (nadm(1) .lt. 0) then
                 vale(1) = saltkl
                 vale(2) = nadm(1)
-                call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
-                            0, 2, vale)
+                call utmess('A', 'POSTRCCM_32', nr=2, valr=vale)
             endif
             u2kl = dble( 2*nscy-1 ) / nadm(1)
         endif

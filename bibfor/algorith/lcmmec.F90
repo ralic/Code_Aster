@@ -21,7 +21,7 @@ subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci,&
 ! ======================================================================
 ! ======================================================================
 #include "asterc/r8miem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, ifa, nbcomm(nmat, 3), iret, itmax
     real(kind=8) :: coeft(nmat), dgamma, dalpha, toler
     character(len=16) :: necrci
@@ -77,7 +77,7 @@ subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci,&
             dalpha=dalpha-sgna*(cc/gm)**pm
         endif
     else
-        call u2mess('F', 'COMPOR1_19')
+        call utmess('F', 'COMPOR1_19')
     endif
 !
 end subroutine

@@ -21,7 +21,6 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 ! ======================================================================
 !
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
@@ -37,10 +36,10 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsinch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nomci, lchci(*), nomnu
     character(len=1) :: base
     real(kind=8) :: inst
@@ -200,9 +199,10 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                     valk(2)=nocmp
                     icmp1=indik8(zk8(jcn1c),nocmp,1,nbcmp1)
                     ASSERT(icmp1.gt.0)
-                    if (.not.zl(jcn1l-1+(ino-1)*nbcmp1+icmp1)) call u2mesg('F', 'CALCULEL_2', 2,&
-                                                                           valk, 1, vali, 1,&
-                                                                           valr)
+                    if (.not.zl(jcn1l-1+(ino-1)*nbcmp1+icmp1)) then
+                        call utmess('F', 'CALCULEL_2', nk=2, valk=valk, si=vali(1),&
+                                    sr=valr(1))
+                    endif
                     res = zr(jcn1v-1+(ino-1)*nbcmp1+icmp1)
                     zr(ivvale-1+nueq) = res
 !
@@ -229,7 +229,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                                 res, ier)
                     zr(ivvale-1+nueq) = res
                 else
-                    call u2mess('F', 'CALCULEL_37')
+                    call utmess('F', 'CALCULEL_37')
                 endif
 !
                 zi(jdlci-1+nueq) = 1

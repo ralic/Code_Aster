@@ -19,7 +19,6 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/csmbgg.h"
 #include "asterfort/gcpc.h"
 #include "asterfort/infniv.h"
@@ -32,9 +31,9 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: mat, matf, vcine
     integer :: niter, nsecm
     real(kind=8) :: epsi, rsolu(*)
@@ -68,7 +67,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     character(len=4) :: type
     character(len=24) :: precon
     integer :: ifm, niv, ier, idvalc, idin, idip, jsmde, neq, nblc, islvk
-    integer ::  idac, idinpc, idippc, idacpc, idw1, idw2, idw3
+    integer :: idac, idinpc, idippc, idacpc, idw1, idw2, idw3
     integer :: jrefa, jrefaf, k, lmat, kdeb, ieq, idw4, ismbr
 !
 !----------------------------------------------------------------------
@@ -98,7 +97,9 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     if (vcine .ne. ' ') then
         vcin19=vcine
         call jeexin(vcin19//'.VALE', ier)
-        if (ier .eq. 0) call u2mesk('F', 'ALGELINE3_34', 1, vcin19)
+        if (ier .eq. 0) then
+            call utmess('F', 'ALGELINE3_34', sk=vcin19)
+        endif
         call jeveuo(vcin19//'.VALE', 'L', idvalc)
         do 10,k=1,nsecm
         kdeb=(k-1)*neq+1
@@ -119,16 +120,22 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     call jeveuo(matas//'.REFA', 'L', jrefa)
     kstoc=zk24(jrefa-1+2)(1:14)//'.SMOS'
     call jeexin(kstoc//'.SMDI', ier)
-    if (ier .eq. 0) call u2mesk('F', 'ALGELINE3_21', 1, matas)
+    if (ier .eq. 0) then
+        call utmess('F', 'ALGELINE3_21', sk=matas)
+    endif
     call jeveuo(kstoc//'.SMDI', 'L', idin)
     call jeveuo(kstoc//'.SMHC', 'L', idip)
     call jeveuo(kstoc//'.SMDE', 'L', jsmde)
     neq=zi(jsmde-1+1)
     if (niter .eq. 0) niter=neq/2
     nblc=zi(jsmde-1+3)
-    if (nblc .ne. 1) call u2mess('F', 'ALGELINE3_22')
+    if (nblc .ne. 1) then
+        call utmess('F', 'ALGELINE3_22')
+    endif
     call jelira(jexnum(matas//'.VALM', 1), 'TYPE', cval=type)
-    if (type .ne. 'R') call u2mess('F', 'ALGELINE3_37')
+    if (type .ne. 'R') then
+        call utmess('F', 'ALGELINE3_37')
+    endif
 !
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', idac)
 !
@@ -137,7 +144,9 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !     -----------------------------------------------------
     if (precon(1:8) .eq. 'LDLT_INC') then
         call jeexin(matfac//'.REFA', ier)
-        if (ier .eq. 0) call u2mess('F', 'ALGELINE3_38')
+        if (ier .eq. 0) then
+            call utmess('F', 'ALGELINE3_38')
+        endif
 !
         call jeveuo(matfac//'.REFA', 'L', jrefaf)
         kstocf=zk24(jrefaf-1+2)(1:14)//'.SMOS'

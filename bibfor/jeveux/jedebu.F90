@@ -36,9 +36,8 @@ subroutine jedebu(nbfi, mxzon, idb)
 #include "asterfort/assert.h"
 #include "asterfort/jermxd.h"
 #include "asterfort/jxdate.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utgtme.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
     integer :: nbfi, mxzon, idb
 ! ----------------------------------------------------------------------
@@ -161,8 +160,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     else
         lrepgl=index(repglo,' ') - 1
         if (lrepgl .gt. 119) then
-            call u2mesg('F', 'JEVEUX1_69', 1, repglo, 1,&
-                        lrepgl, 0, r8bid)
+            call utmess('F', 'JEVEUX1_69', sk=repglo, si=lrepgl)
         endif
     endif
     call gtoptk('repvola', repvol, iret)
@@ -172,8 +170,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     else
         lrepvo=index(repvol,' ') - 1
         if (lrepvo .gt. 119) then
-            call u2mesg('F', 'JEVEUX1_70', 1, repvol, 1,&
-                        lrepvo, 0, r8bid)
+            call utmess('F', 'JEVEUX1_70', sk=repvol, si=lrepvo)
         endif
     endif
     lbis = lbisem()
@@ -216,8 +213,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     call utptme(1, 'MEM_MUMP', 0.d0, iret)
     call utgtme(1, 'VMPEAK  ', rval, iret)
     if (rval(1) .le. 0) then
-        call u2mesg('I', 'JEVEUX1_75', 0, ' ', 0,&
-                    ibid, 0, rval)
+        call utmess('I', 'JEVEUX1_75')
     endif
     k8tab(1) = 'LIMIT_JV'
     k8tab(2) = 'MEM_TOTA'
@@ -231,7 +227,7 @@ subroutine jedebu(nbfi, mxzon, idb)
 !
         call utptme(1, 'RLQ_MEM ', rval(3), iret)
         if (rval(1)-rval(3) .le. 0) then
-            call u2mesr('F', 'JEVEUX1_71', 3, rval)
+            call utmess('F', 'JEVEUX1_71', nr=3, valr=rval)
         endif
         call jermxd((rval(1)-rval(3))*1024*1024, iret)
     endif

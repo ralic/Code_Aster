@@ -26,7 +26,7 @@ subroutine jeveuo(nomlu, cel, jctab)
 #include "asterfort/jjcroc.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxlocs.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: jctab
     character(len=*) :: nomlu, cel
 !     ==================================================================
@@ -65,7 +65,7 @@ subroutine jeveuo(nomlu, cel, jctab)
     noml8 = noml32(25:32)
     kcel = cel
     if (kcel .ne. 'L' .and. kcel .ne. 'E') then
-        call u2mesk('F', 'JEVEUX1_27', 1, kcel)
+        call utmess('F', 'JEVEUX1_27', sk=kcel)
     endif
 !
     icre = 0
@@ -75,7 +75,7 @@ subroutine jeveuo(nomlu, cel, jctab)
     goto ( 10 , 20 , 30 ) ,iret+1
 10  continue
 ! ----   IRET = 0
-    call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+    call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
     goto 100
 20  continue
 ! ----   IRET = 1
@@ -83,7 +83,7 @@ subroutine jeveuo(nomlu, cel, jctab)
     typei = type( jtype(iclaos) + idatos )
     ltypi = ltyp( jltyp(iclaos) + idatos )
     if (genri .eq. 'N') then
-        call u2mesk('F', 'JEVEUX1_20', 1, noml32)
+        call utmess('F', 'JEVEUX1_20', sk=noml32)
     endif
     goto 100
 30  continue
@@ -109,7 +109,7 @@ subroutine jeveuo(nomlu, cel, jctab)
         else
             if (ixiadd .ne. 0) then
 !            ----------- COLLECTION DISPERSEE
-                call u2mesk('F', 'JEVEUX1_21', 1, noml32)
+                call utmess('F', 'JEVEUX1_21', sk=noml32)
             endif
         endif
         genri = genr( jgenr(iclaco) + ixdeso )
@@ -126,7 +126,7 @@ subroutine jeveuo(nomlu, cel, jctab)
             if (lonoi .gt. 0) then
                 jctab = jctab + (iszon(jiszon+iblono-1+idatoc) - 1)
             else
-                call u2mesk('F', 'JEVEUX1_22', 1, noml32)
+                call utmess('F', 'JEVEUX1_22', sk=noml32)
             endif
         else
             jctab = jctab + long(jlong(iclaco)+ixdeso) * (idatoc-1)

@@ -25,7 +25,7 @@ subroutine mmctan(nommai, alias, nno, ndim, coorma,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mmnewt.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nommai, alias
     integer :: itemax, ndim, nno
     real(kind=8) :: epsmax, coorno(3), coorma(27)
@@ -77,8 +77,7 @@ subroutine mmctan(nommai, alias, nno, ndim, coorma,&
 ! --- GESTION DES ERREURS LORS DU NEWTON LOCAL POUR LA PROJECTION
 !
     if (niverr .eq. 1) then
-        call u2mesg('F', 'APPARIEMENT_13', 1, nommai, 0,&
-                    0, 3, coorno)
+        call utmess('F', 'APPARIEMENT_13', sk=nommai, nr=3, valr=coorno)
     endif
 !
     call jedema()

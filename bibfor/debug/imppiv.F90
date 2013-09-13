@@ -1,7 +1,6 @@
 subroutine imppiv(nu, ieq)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -13,7 +12,8 @@ subroutine imppiv(nu, ieq)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: ieq
     character(len=*) :: nu
 ! ----------------------------------------------------------------------
@@ -90,7 +90,7 @@ subroutine imppiv(nu, ieq)
 !
     if (.not.trouve) then
         call codent(ieq, 'D', nomeq)
-        call u2mesk('F', 'UTILITAI2_31', 1, nomeq)
+        call utmess('F', 'UTILITAI2_31', sk=nomeq)
     endif
 !
     ASSERT(nuli .ne. 1)

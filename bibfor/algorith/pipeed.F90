@@ -28,7 +28,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     character(len=8) :: typmod(*)
@@ -378,7 +378,9 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
             a4 = r8vide()
         endif
 !
-        if (kont .ge. 3) call u2mess('F', 'PILOTAGE_85')
+        if (kont .ge. 3) then
+            call utmess('F', 'PILOTAGE_85')
+        endif
 !
 !****************************************************************
 ! CALCUL DES COPILO DANS LE CAS OU LE SEUIL EN SAUT EST NON NUL :
@@ -401,7 +403,9 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
         mat(2,1) = - q(2,1)
         det = mat(1,1)*mat(2,2) - mat(1,2)**2
 !
-        if (abs(det) .le. 1.d-12) call u2mess('F', 'PILOTAGE_86')
+        if (abs(det) .le. 1.d-12) then
+            call utmess('F', 'PILOTAGE_86')
+        endif
 !
         matinv(1,1) = mat(2,2)/det
         matinv(2,2) = mat(1,1)/det
@@ -482,7 +486,9 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
             endif
         else
 !       -----
-            if (kont .ne. 0) call u2mess('F', 'PILOTAGE_87')
+            if (kont .ne. 0) then
+                call utmess('F', 'PILOTAGE_87')
+            endif
 !
             a4 = - beta/alpha
             a0 = sqrt( alpha*a4*a4 + 2*beta*a4 + gamma + sm**2 ) - kappam
@@ -493,7 +499,9 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
         endif
 !       -----
 !
-        if (kont .ge. 3) call u2mess('F', 'PILOTAGE_85')
+        if (kont .ge. 3) then
+            call utmess('F', 'PILOTAGE_85')
+        endif
 !
     endif
 !

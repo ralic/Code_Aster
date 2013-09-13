@@ -28,7 +28,6 @@ subroutine strmag(nugene, typrof)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/crsmos.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -42,8 +41,9 @@ subroutine strmag(nugene, typrof)
 #include "asterfort/jexnum.h"
 #include "asterfort/slismo.h"
 #include "asterfort/smosli.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: valr(2)
 !
 !
@@ -203,8 +203,7 @@ subroutine strmag(nugene, typrof)
         ntbloc=lcolmx
         valr (1) = rtbloc
         valr (2) = lcolmx/1.d+3
-        call u2mesg('I', 'ALGORITH14_66', 0, ' ', 0,&
-                    0, 2, valr)
+        call utmess('I', 'ALGORITH14_66', nr=2, valr=valr)
     endif
 !
     write(ifimes,*)'+++ HAUTEUR MAXIMUM D''UNE COLONNE: ',lcolmx

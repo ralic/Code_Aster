@@ -67,10 +67,9 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttgel.h"
+!
     integer :: ndim, noe(9, 6, 4), nsomm, ifa, tymvol, niv, ifm
     character(len=16) :: nomte
     real(kind=8) :: hk, geom(*)
@@ -381,7 +380,7 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
     else
         valk(1) = nompro
         valk(2) = nomte2
-        call u2mesk('F', 'INDICATEUR_32', 2, valk)
+        call utmess('F', 'INDICATEUR_32', nk=2, valk=valk)
     endif
 !
 !====
@@ -392,8 +391,7 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
     hk = sqrt(hk)
 !
     if (niv .ge. 2) then
-        call u2mesg('I', 'INDICATEUR_33', 1, nomte2, 0,&
-                    0, 1, hk)
+        call utmess('I', 'INDICATEUR_33', sk=nomte2, sr=hk)
     endif
 !
 end subroutine

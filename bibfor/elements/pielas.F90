@@ -28,8 +28,7 @@ subroutine pielas(ndim, npg, kpg, compor, typmod,&
 #include "asterfort/pipeds.h"
 #include "asterfort/pipeef.h"
 #include "asterfort/pipepl.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
     integer :: ndim, kpg, npg
     integer :: mate
@@ -105,9 +104,9 @@ subroutine pielas(ndim, npg, kpg, compor, typmod,&
         call daxpy(ndimsi, 1.d0, epsm, 1, epsp,&
                    1)
 !
-        if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) call u2mesg('F', 'MECANONLINE_60',&
-                                                                         1, compor(1), 0, 0, 0,&
-                                                                         0.d0)
+        if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
+            call utmess('F', 'MECANONLINE_60', sk=compor(1))
+        endif
 !
         call pipeds(ndim, typmod, tau, mate, vim(1, kpg),&
                     epsm, epsp, epsd, etamin, etamax,&
@@ -118,9 +117,9 @@ subroutine pielas(ndim, npg, kpg, compor, typmod,&
         call daxpy(ndimsi, 1.d0, epsm, 1, epsp,&
                    1)
 !
-        if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) call u2mesg('F', 'MECANONLINE_60',&
-                                                                         1, compor(1), 0, 0, 0,&
-                                                                         0.d0)
+        if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
+            call utmess('F', 'MECANONLINE_60', sk=compor(1))
+        endif
 !
         call pipedo(ndim, typmod, tau, mate, vim(1, kpg),&
                     epsm, epsp, epsd, etamin, etamax,&
@@ -135,6 +134,6 @@ subroutine pielas(ndim, npg, kpg, compor, typmod,&
                     elgeom(1, kpg), copilo(1, kpg), copilo(2, kpg))
 !
     else
-        call u2mesk('F', 'PILOTAGE_88', 1, compor(1))
+        call utmess('F', 'PILOTAGE_88', sk=compor(1))
     endif
 end subroutine

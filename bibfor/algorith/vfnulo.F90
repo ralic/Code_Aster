@@ -36,7 +36,7 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: maxfa, maxar, ndim, nnos, nface
     integer :: nbnofa(1:nface)
     integer :: nosar(1:maxar, 2)
@@ -187,7 +187,7 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface,&
             narfa(4,2)=2
             narfa(4,3)=3
         else
-            call u2mesk('F', 'VOLUFINI_12', 1, elrefe)
+            call utmess('F', 'VOLUFINI_12', sk=elrefe)
         endif
     endif
 end subroutine

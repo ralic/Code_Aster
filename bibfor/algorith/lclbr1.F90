@@ -21,7 +21,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/diago2.h"
 #include "asterfort/lclbr2.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     character(len=*) :: fami
     character(len=8) :: typmod(2)
@@ -72,7 +72,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
     coup = (option(6:9).eq.'COUP')
     plan = ((typmod(1) .eq. 'C_PLAN').or.(typmod(1) .eq. 'D_PLAN'))
     if (.not.plan) then
-        call u2mess('F', 'ALGORITH4_62')
+        call utmess('F', 'ALGORITH4_62')
     endif
     if (coup) rigi=.true.
     ndimsi = 2*ndim

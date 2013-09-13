@@ -3,8 +3,7 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
                   rtsafe, impr, ifm, indtp, nbtp)
     implicit none
 #include "asterfort/fcweib.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp, ifm
     real(kind=8) :: sigw(*), x1, x2, xacc, rtsafe, sk(*)
     logical :: cals, impr
@@ -137,7 +136,7 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
             xh = rtsafe
         endif
 10  end do
-    call u2mess('F', 'UTILITAI2_53')
+    call utmess('F', 'UTILITAI2_53')
 9999  continue
     if (impr) then
         valr (1) = rtsafe
@@ -145,8 +144,7 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
         valr (3) = dx
         valr (4) = xacc
         vali = j
-        call u2mesg('I', 'UTILITAI6_48', 0, ' ', 1,&
-                    vali, 4, valr)
+        call utmess('I', 'UTILITAI6_48', si=vali, nr=4, valr=valr)
     endif
 !
 end subroutine

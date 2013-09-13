@@ -21,7 +21,7 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfdisr.h"
@@ -33,8 +33,7 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmevcv.h"
 #include "asterfort/nmlecv.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: fonact(*)
     real(kind=8) :: parcri(*)
     integer :: numins, iterat, relite
@@ -148,7 +147,7 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
             maxnod = .true.
             resid(1) = resid(4)
             resid(2) = resid(4)
-            call u2mess('I', 'MECANONLINE2_96')
+            call utmess('I', 'MECANONLINE2_96')
         endif
     endif
 !
@@ -165,7 +164,7 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
                 resid(2) = zr(jcrr+7-1)
                 valr(1) = detect
                 valr(2) = resid(2)
-                call u2mesr('I', 'MECANONLINE2_98', 2, valr)
+                call utmess('I', 'MECANONLINE2_98', nr=2, valr=valr)
             endif
             if ((parcri(7) .ne. r8vide()) .and. numins .eq. 1) then
                 lrela = .false.
@@ -173,7 +172,7 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
                 maxrel = .true.
                 valr(1) = detect
                 valr(2) = resid(2)
-                call u2mesr('I', 'MECANONLINE2_98', 2, valr)
+                call utmess('I', 'MECANONLINE2_98', nr=2, valr=valr)
             endif
         endif
     endif

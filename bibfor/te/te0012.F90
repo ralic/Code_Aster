@@ -1,5 +1,5 @@
 subroutine te0012(option, nomte)
-    implicit   none
+    implicit none
 !.......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,6 @@ subroutine te0012(option, nomte)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
@@ -43,9 +42,10 @@ subroutine te0012(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
 #include "blas/ddot.h"
+!
     integer :: icodre(1)
 !
     character(len=16) :: nomte, option, phenom
@@ -313,7 +313,7 @@ subroutine te0012(option, nomte)
                 call pmavec('ZERO', nddl, matp, zr(idepl), masdep)
                 zr(iecin) = .5d0*ddot(nddl,zr(idepl),1,masdep,1)*zr( ifreq)
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
 !

@@ -33,8 +33,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/liglma.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/w155m3.h"
     character(len=8) :: carele, nocmp, tymaxi
     character(len=16) :: nomsym
@@ -76,7 +75,9 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
                 kbid, iret)
     call dismoi('F', 'EXI_TUYAU', ligrel, 'LIGREL', ibid,&
                 exituy, iret)
-    if (nbspmx .le. 1) call u2mess('F', 'CALCULEL2_15')
+    if (nbspmx .le. 1) then
+        call utmess('F', 'CALCULEL2_15')
+    endif
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmat,&
                 kbid, iret)
     ASSERT(tsca.eq.'R')
@@ -141,7 +142,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     10 end do
     valk(1)=nocmp
     valk(2)=nomsym
-    call u2mesk('F', 'CALCULEL2_18', 2, valk)
+    call utmess('F', 'CALCULEL2_18', nk=2, valk=valk)
 !
 20  continue
     do 60,kma=1,nbma

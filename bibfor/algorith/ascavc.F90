@@ -21,7 +21,6 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 ! person_in_charge: jacques.pellet at edf.fr
 !
 #include "jeveux.h"
-!
 #include "asterfort/ascova.h"
 #include "asterfort/assert.h"
 #include "asterfort/calvci.h"
@@ -36,10 +35,10 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rgndas.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: lchar, infcha, fomult
     character(len=*) :: vci, numedd
     real(kind=8) :: inst
@@ -121,7 +120,9 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 !
 !     -- S'IL Y A DES CHARGES CINEMATIQUES :
     else
-        if (lfeti) call u2mess('F', 'ALGORITH_16')
+        if (lfeti) then
+            call utmess('F', 'ALGORITH_16')
+        endif
 !
         ichci = 0
         call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
@@ -167,7 +168,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
         ASSERT(tyddl.eq.'A')
         valk(1)=nomno
         valk(2)=nomcmp
-        call u2mesk('A', 'CALCULEL3_37', 2, valk)
+        call utmess('A', 'CALCULEL3_37', nk=2, valk=valk)
     endif
 !
 !

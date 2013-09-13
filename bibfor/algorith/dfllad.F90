@@ -29,8 +29,8 @@ subroutine dfllad(sdlist)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcmp2.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: sdlist
 !
@@ -145,7 +145,7 @@ subroutine dfllad(sdlist)
         call getvtx(mcfact, 'EVENEMENT', iocc=iadapt, scal=even, nbret=ibid)
         if (even .eq. 'AUCUN') then
             zr(jaevr-1+laevr*(iadapt-1)+1) = 0.d0
-            call u2mess('A', 'DISCRETISATION_5')
+            call utmess('A', 'DISCRETISATION_5')
         else if (even.eq.'TOUT_INST') then
             zr(jaevr-1+laevr*(iadapt-1)+1) = 1.d0
         else if (even.eq.'SEUIL') then
@@ -195,7 +195,7 @@ subroutine dfllad(sdlist)
         else if (modetp.eq.'IMPLEX') then
             zr(jatpr-1+latpr*(iadapt-1)+1) = 5.d0
             if (even .ne. 'TOUT_INST') then
-                call u2mess('F', 'DISCRETISATION_14')
+                call utmess('F', 'DISCRETISATION_14')
             endif
         else
             ASSERT(.false.)

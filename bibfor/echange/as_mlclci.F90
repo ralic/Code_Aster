@@ -1,5 +1,5 @@
 subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
-                  ndim, nomasu, cret)
+                     ndim, nomasu, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,16 +19,17 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mlclci.h"
     aster_int :: fid, nordr, ityp, nbn, cret, ndim, tymasu, nbmasu
     character(len=64) :: k64, giname
     character(len=*) :: nomasu
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, nordr4, ityp4, nbn4, cret4, ndim4, tymas4, nbmas4
     fid4 = fid
@@ -46,6 +47,6 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
                 nbn, giname, nomasu, nbmasu, tymasu,&
                 cret)
 #endif
-
+!
 #endif
 end subroutine

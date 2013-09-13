@@ -2,7 +2,7 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
                   numail, xc, yc, r, alfinf,&
                   alfsup, nbseg, sgtor, sgtex, mail1,&
                   mail2, facor, facex, paror, parex)
-    implicit  none
+    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,6 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !--------------ENTREES----------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/i2appm.h"
 #include "asterfort/i2fini.h"
@@ -42,7 +41,8 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbm, numail(*)
     real(kind=8) :: xc, yc, r, epsi, alfinf, alfsup
     character(len=24) :: conec, coord, typ
@@ -140,8 +140,12 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
     r1 = 0.0d0
     pi=r8pi()
 !
-    if (alfinf .ge. alfsup) call u2mess('F', 'INTEMAIL_3')
-    if (alfinf .lt. -pi .or. alfsup .gt. pi) call u2mess('F', 'INTEMAIL_4')
+    if (alfinf .ge. alfsup) then
+        call utmess('F', 'INTEMAIL_3')
+    endif
+    if (alfinf .lt. -pi .or. alfsup .gt. pi) then
+        call utmess('F', 'INTEMAIL_4')
+    endif
 !
     xa = xc + r*cos(alfinf)
     ya = yc + r*sin(alfinf)

@@ -22,7 +22,7 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 #include "asterfort/cesfus.h"
 #include "asterfort/cnsfus.h"
 #include "asterfort/exisd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbchs
     character(len=*) :: lichs(nbchs), chs3, base
     logical :: lcumul(nbchs), lcoc
@@ -70,7 +70,9 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     j1 = max(j1,i1)
     j2 = max(j2,i2)
     10 end do
-    if (j1*j2 .ne. 0) call u2mess('F', 'CALCULEL_99')
+    if (j1*j2 .ne. 0) then
+        call utmess('F', 'CALCULEL_99')
+    endif
 !
     if (j1 .gt. 0) call cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                                lcoc, base, chs3)

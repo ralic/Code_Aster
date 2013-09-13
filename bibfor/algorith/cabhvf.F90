@@ -50,14 +50,14 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/pdvc2d.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vfgefa.h"
 #include "asterfort/vfimat.h"
 #include "asterfort/vfnulo.h"
+!
     integer :: ndim, nno, nnos
     logical :: axi
     real(kind=8) :: geom(1:ndim, 1:nno)
@@ -103,8 +103,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
     aris(3,1)=2
     aris(3,2)=3
     if (uticer .and. nface .ne. 3) then
-        call u2mesg('F', 'VOLUFINI_14', 1, nomail, 1,&
-                    ifa, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_14', sk=nomail, si=ifa)
     endif
     call vfnulo(maxfa1, maxar, ndim, nnos, nface,&
                 nbnofa, nosar, nosfa, narfa)
@@ -236,8 +235,7 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
             if (iret .ne. 0) then
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3) (1:8)
-                call u2mesg('F', 'VOLUFINI_13', 1, nomail, 1,&
-                            ifa, 0, 0.d0)
+                call utmess('F', 'VOLUFINI_13', sk=nomail, si=ifa)
             endif
             vol=vol+dface(ifa)*mface(ifa)/3.d0
 20      continue

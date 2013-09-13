@@ -36,8 +36,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 #include "asterfort/nmetl2.h"
 #include "asterfort/nmetnc.h"
 #include "asterfort/ntetl3.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: modele
     logical :: lostat, lreuse
     character(len=24) :: numedd, sdieto
@@ -114,7 +113,9 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
     call dismoi('F', 'CALC_RIGI', modele, 'MODELE', ibid,&
                 calcri, ierd)
-    if (calcri .ne. 'OUI') call u2mesk('F', 'CALCULEL2_65', 1, modele)
+    if (calcri .ne. 'OUI') then
+        call utmess('F', 'CALCULEL2_65', sk=modele)
+    endif
 !
 ! --- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 !
@@ -127,9 +128,9 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
         endif
     else
         if (lreuse) then
-            call u2mess('A', 'ETATINIT_1')
+            call utmess('A', 'ETATINIT_1')
         else
-            call u2mess('I', 'ETATINIT_20')
+            call utmess('I', 'ETATINIT_20')
         endif
     endif
 !

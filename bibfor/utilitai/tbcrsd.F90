@@ -1,10 +1,10 @@
 subroutine tbcrsd(nomta, baseta)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomta, baseta
 !     ------------------------------------------------------------------
@@ -46,7 +46,9 @@ subroutine tbcrsd(nomta, baseta)
     call jemarq()
 !
     nomtab = nomta
-    if (nomtab(18:19) .ne. '  ') call u2mess('F', 'UTILITAI4_75')
+    if (nomtab(18:19) .ne. '  ') then
+        call utmess('F', 'UTILITAI4_75')
+    endif
 !
     base = baseta(1:1)
     ASSERT(base.eq.'V' .or. base.eq.'G')

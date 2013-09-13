@@ -1,7 +1,7 @@
 subroutine dimthm(nomte, ndlno, ndlnm, ndim)
     implicit none
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndlno, ndlnm, ndim
     integer :: iaux
     character(len=16) :: nomte
@@ -114,7 +114,7 @@ subroutine dimthm(nomte, ndlno, ndlnm, ndim)
         ndlno = ndim+2
         ndlnm = ndim
     else
-        call u2mess('F', 'ALGORITH3_8')
+        call utmess('F', 'ALGORITH3_8')
     endif
 ! =====================================================================
 end subroutine

@@ -51,7 +51,6 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"
@@ -64,7 +63,8 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rotlis.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: k8bid, nomres, matprj, ssta, sstb, intfa, intfb, nomg
     character(len=24) :: fmlia, toto, fpliao, fplibo, fplian, fplibn
     integer :: iada(3), iadb(3), numlis, zit(3), nbec, ierd, nbnoea, nbnoeb
@@ -85,7 +85,7 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ierd)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
     call jeveuo(matprj, 'L', itemcm)

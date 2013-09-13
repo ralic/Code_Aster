@@ -7,7 +7,7 @@ subroutine vrrefe(objet1, objet2, ier)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: objet1, objet2
     integer :: ier
 !     ------------------------------------------------------------------
@@ -77,7 +77,7 @@ subroutine vrrefe(objet1, objet2, ier)
                 refe2 = nom2//'.CELK'
                 celk=.true.
             else
-                call u2mess('F', 'ALGELINE3_90')
+                call utmess('F', 'ALGELINE3_90')
             endif
         endif
     endif

@@ -21,8 +21,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vericp.h"
 #include "asterfort/wkvect.h"
 !
@@ -81,8 +80,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), numgd)
     if (numgd .eq. 0) then
         valk (1) = nomgd
-        call u2mesg('F', 'UTILITAI6_1', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_1', sk=valk(1))
     else
         call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', jcmpmx)
         call jeveuo(jexatr('&CATA.GD.NOMCMP', 'LONCUM'), 'L', iav)
@@ -107,8 +105,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
         nbva=nbvar+nbvai+nbvac+nbvak
         if (nbcmp .ne. nbva) then
             vali = iocc
-            call u2mesg('F', 'UTILITAI6_3', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'UTILITAI6_3', si=vali)
         endif
 !
 !       => VERIF : COMPOSANTES FOURNIES INCLUSES DANS LA LISTE DES
@@ -123,8 +120,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
                 vali = iocc
                 valk (1) = nomgd
                 valk (2) = zk8(jcmp+i-1)
-                call u2mesg('F', 'UTILITAI6_4', 2, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'UTILITAI6_4', nk=2, valk=valk, si=vali)
             endif
 21      continue
         call jedetr('&&CNOAFF.LISTE_COMP')
@@ -230,7 +226,9 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
 !   -    TYPE "R" :
         if (nbvar .ne. 0) then
-            if (tsca .ne. 'R') call u2mess('F', 'UTILITAI6_2')
+            if (tsca .ne. 'R') then
+                call utmess('F', 'UTILITAI6_2')
+            endif
             nbvar=-nbvar
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V R', nbvar, jval)
@@ -248,7 +246,9 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
 !   -    TYPE "I" :
         else if (nbvai.ne.0) then
-            if (tsca .ne. 'I') call u2mess('F', 'UTILITAI6_2')
+            if (tsca .ne. 'I') then
+                call utmess('F', 'UTILITAI6_2')
+            endif
             nbvai=-nbvai
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V I', nbvai, jval)
@@ -267,7 +267,9 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
 !   -    TYPE "C" :
         else if (nbvac.ne.0) then
-            if (tsca .ne. 'C') call u2mess('F', 'UTILITAI6_2')
+            if (tsca .ne. 'C') then
+                call utmess('F', 'UTILITAI6_2')
+            endif
             nbvac=-nbvac
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V C', nbvac, jval)
@@ -285,7 +287,9 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
 !   -    TYPE "F" :
         else if (nbvak.ne.0) then
-            if (tsca .ne. 'K') call u2mess('F', 'UTILITAI6_2')
+            if (tsca .ne. 'K') then
+                call utmess('F', 'UTILITAI6_2')
+            endif
             nbvak=-nbvak
             call jedetr('&&CNOAFF.VAL_IOCC')
             call wkvect('&&CNOAFF.VAL_IOCC', 'V V K8', nbvak, jval)

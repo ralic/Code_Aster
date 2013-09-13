@@ -15,9 +15,7 @@ subroutine op5903(nbocci, compor)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nmdoki.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbocci
     character(len=8) :: compor
@@ -44,7 +42,7 @@ subroutine op5903(nbocci, compor)
 !     COMMANDE:  DEFI_COMPOR MOT-CLE MULTIFIBRE
 !
 !
-    integer ::  idbor, imi, imk, iocc, irett
+    integer :: idbor, imi, imk, iocc, irett
     integer :: ibid, nbg, nbgmax, img, ig, ig1, jnfg, iaff
     integer :: nbvf, nbv, icp, nbkit, nbnvi(2), ncomel, numlc
     character(len=8) :: materi, sdgf, mator
@@ -90,8 +88,7 @@ subroutine op5903(nbocci, compor)
         if (irett .eq. 0) then
             texte(1) = '1D'
             texte(2) = nomrel
-            call u2mesg('I', 'COMPOR1_48', 2, texte, 0,&
-                        0, 0, 0.d0)
+            call utmess('I', 'COMPOR1_48', nk=2, valk=texte)
             algo1d='DEBORST'
             idbor = idbor+1
         endif
@@ -108,7 +105,7 @@ subroutine op5903(nbocci, compor)
 !           NUMERO CORRESPONDANT AU NOM
             call jenonu(jexnom(rnomgf, zk24(img+ig-1)), ig1)
             if (ig1 .eq. 0) then
-                call u2mesk('F', 'MODELISA8_8', 1, zk24(img+ig-1))
+                call utmess('F', 'MODELISA8_8', sk=zk24(img+ig-1))
             endif
             icp=imk-1+(ig1-1)*6
             zk24(icp+1) = zk24(img+ig-1)
@@ -125,7 +122,9 @@ subroutine op5903(nbocci, compor)
 !
 !     VERIFICATION DE L'UTILISATION DE COMP_1D
     if (nbocci .gt. 1) then
-        if (idbor .ge. 1) call u2mess('F', 'COMPOR1_15')
+        if (idbor .ge. 1) then
+            call utmess('F', 'COMPOR1_15')
+        endif
     endif
 !     VERIF TOUT AFFECTE AU MOINS UNE FOIS
 !     ON MARQUE PAR VIDE LES GROUPES NON AFFECTES

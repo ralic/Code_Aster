@@ -35,7 +35,7 @@ subroutine ibdbgs()
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: lundef, idebug
     common /undfje/  lundef,idebug
     real(kind=8) :: tbloc, tgrel
@@ -60,7 +60,7 @@ subroutine ibdbgs()
     call getfac('CODE', ncode)
     call getfac('DEBUG', ndbg)
     if (ncode .gt. 0 .or. ndbg .gt. 0) then
-        call u2mess('I', 'SUPERVIS_22')
+        call utmess('I', 'SUPERVIS_22')
     endif
 !
 !     -- DEBUG / JXVERI :
@@ -68,7 +68,7 @@ subroutine ibdbgs()
     call getvtx('DEBUG', 'JXVERI', iocc=1, scal=repons, nbret=l)
     if (l .eq. 0) then
         if (repons .eq. 'OUI') then
-            call u2mess('I', 'SUPERVIS_23')
+            call utmess('I', 'SUPERVIS_23')
 !           LE "FLAG" JXVERI=OUI EST POSTIONNE DANS LE JDC
 !           VOIR ROUTINE EXPASS.F
         endif
@@ -88,7 +88,7 @@ subroutine ibdbgs()
 !
     if (repons .eq. 'OUI') then
         call jdcset('sdveri', 1)
-        call u2mess('I', 'SUPERVIS_24')
+        call utmess('I', 'SUPERVIS_24')
     else
         call jdcset('sdveri', 0)
     endif
@@ -100,7 +100,7 @@ subroutine ibdbgs()
     call getvtx('DEBUG', 'JEVEUX', iocc=1, scal=repons)
     ASSERT(repons.eq.'OUI' .or. repons.eq.'NON')
     if (repons .eq. 'OUI') then
-        call u2mess('I', 'SUPERVIS_12')
+        call utmess('I', 'SUPERVIS_12')
         idebug = 1
     endif
     call jdcset('jeveux', idebug)

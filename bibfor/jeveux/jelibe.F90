@@ -18,7 +18,7 @@ subroutine jelibe(nomlu)
     implicit none
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
 !     ==================================================================
     character(len=6) :: pgma
@@ -31,7 +31,7 @@ subroutine jelibe(nomlu)
 !-----------------------------------------------------------------------
     pgma = 'JELIBE'
     if (len(nomlu) .le. 0) then
-        call u2mesk('F', 'JEVEUX1_08', 1, nomlu)
+        call utmess('F', 'JEVEUX1_08', sk=nomlu)
     endif
     noml32 = nomlu(1:min(32,len(nomlu)))
 !
@@ -39,7 +39,7 @@ subroutine jelibe(nomlu)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+        call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
     else
         call jjlide('JELIBE', noml32, iret)
     endif

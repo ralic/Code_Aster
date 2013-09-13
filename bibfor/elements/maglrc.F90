@@ -19,13 +19,12 @@ subroutine maglrc(zimat, matr, delas, ecr)
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: i, jcoqu, icacoq, zimat
 !
     real(kind=8) :: matr(*), delas(6, 6), r8b
@@ -39,7 +38,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     call r8inir(6*6, 0.0d0, delas, 1)
     phenom = 'GLRC_DAMAGE'
     if (phenom .ne. 'GLRC_DAMAGE') then
-        call u2mesk('F', 'ELEMENTS2_32', 1, phenom)
+        call utmess('F', 'ELEMENTS2_32', sk=phenom)
     endif
 !
 !     EPAISSEUR
@@ -48,11 +47,11 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(1) = 'EPAIS'
     r8b = 0.d0
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 1, nomres, valres, codres,1)
+                [r8b], 1, nomres, valres, codres,&
+                1)
     if (valres(1) .ne. epais) then
         valres(2) = epais
-        call u2mesg('F', 'ELEMENTS5_42', 0, ' ', 0,&
-                    0, 2, valres)
+        call utmess('F', 'ELEMENTS5_42', nr=2, valr=valres)
     endif
 !
 !     ELAS
@@ -63,7 +62,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(2) = 'NU'
 !
     call rcvala(zimat, ' ', 'ELAS            ', 0, ' ',&
-                [r8b], 2, nomres, valres, codres,1)
+                [r8b], 2, nomres, valres, codres,&
+                1)
     matr(6) = valres(1)
     matr(7) = valres(2)
 !
@@ -83,7 +83,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(10) = 'BM33'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 10, nomres, valres, codres,1)
+                [r8b], 10, nomres, valres, codres,&
+                1)
 !
     matr(1) = 1.0d0
     matr(2) = valres(1)
@@ -107,7 +108,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(5) = 'GAMMA'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 5, nomres, valres, codres,1)
+                [r8b], 5, nomres, valres, codres,&
+                1)
 !
     matr(8) = valres(1)
     matr(9) = valres(2)
@@ -125,7 +127,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(6) = 'C2N3'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 6, nomres, valres, codres,1)
+                [r8b], 6, nomres, valres, codres,&
+                1)
 !
     matr(16) = valres(1)
     matr(17) = valres(2)
@@ -144,7 +147,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(6) = 'C2M3'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                [r8b], 6, nomres, valres, codres,1)
+                [r8b], 6, nomres, valres, codres,&
+                1)
 !
     matr(19) = valres(1)
     matr(20) = valres(2)

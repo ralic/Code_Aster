@@ -54,10 +54,7 @@ subroutine op0032()
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecint.h"
 #include "asterfort/vpddl.h"
 #include "asterfort/vpecst.h"
@@ -119,8 +116,9 @@ subroutine op0032()
     call getvis('PARALLELISME_MACRO', 'TYPE_COM', iocc=1, scal=typeco, nbret=l)
     valk(1)='TYPE_COM'
     vali(1)=typeco
-    if (l .ne. 1) call u2mesg('F', 'APPELMPI_6', 1, valk, 1,&
-                              vali, 0, rbid)
+    if (l .ne. 1) then
+        call utmess('F', 'APPELMPI_6', sk=valk(1), si=vali(1))
+    endif
     valk(2)='RANG'
     valk(3)='NBPROC'
     vali(2)=rang
@@ -128,8 +126,10 @@ subroutine op0032()
     if ((&
         ((typeco.ne.1).and.(typeco.ne.2).and.(typeco.ne.-999)) .or. (nbproc.lt.1) .or.&
         (rang.lt.0)&
-        )) call u2mesg('F', 'APPELMPI_8', 3, valk, 3,&
-                       vali, 0, rbid)
+        )) then
+        call utmess('F', 'APPELMPI_8', nk=3, valk=valk, ni=3,&
+                    vali=vali)
+    endif
     if (((typeco.eq.1).or.(typeco.eq.2)) .and. (nbproc.gt.1)) then
         lcomod=.true.
     else
@@ -186,7 +186,7 @@ subroutine op0032()
     if (iret .ne. 0) then
         valk(1) = raide
         valk(2) = masse
-        call u2mesk('F', 'ALGELINE2_58', 2, valk)
+        call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
     endif
     call mtdscr(masse)
     call jeveuo(masse//'.&INT', 'E', lmasse)
@@ -211,7 +211,9 @@ subroutine op0032()
     call jeveuo(solveu//'.SLVI', 'L', islvi)
     metres=zk24(islvk)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
-        (metres(1:5).ne.'MUMPS')) call u2mess('F', 'ALGELINE5_71')
+        (metres(1:5).ne.'MUMPS')) then
+        call utmess('F', 'ALGELINE5_71')
+    endif
 !
 !
 !     --- TYPE OF EIGENVALUE-COUNTING METHOD ---
@@ -225,7 +227,7 @@ subroutine op0032()
             typmet='STURM'
         endif
         valk(1)=typmet
-        call u2mesk('I', 'ALGELINE2_27', 1, valk)
+        call utmess('I', 'ALGELINE2_27', sk=valk(1))
     endif
 !     --- IF GENERAL: KIND OF COMPUTATION   ---
     if (typmod(1:7) .eq. 'GENERAL') then
@@ -235,17 +237,17 @@ subroutine op0032()
             typmod='MODE_FLAMB'
         endif
         valk(1)=typmod
-        call u2mesk('I', 'ALGELINE2_31', 1, valk)
+        call utmess('I', 'ALGELINE2_31', sk=valk(1))
     endif
 !
 !     --- TEMPORARY EXCLUSION RULES                             ---
 !     --- + DEFAULT VALUES                                      ---
     if ((typmod(1:13).eq.'MODE_COMPLEXE') .and. (typmet(1:3).ne.'APM')) then
-        call u2mess('I', 'ALGELINE4_20')
+        call utmess('I', 'ALGELINE4_20')
         typmet='APM'
     endif
     if ((typmod(1:13).ne.'MODE_COMPLEXE') .and. (typmet(1:5).ne.'STURM')) then
-        call u2mess('I', 'ALGELINE4_20')
+        call utmess('I', 'ALGELINE4_20')
         typmet='STURM'
     endif
 !
@@ -351,14 +353,16 @@ subroutine op0032()
 !
 !     --- EXCLUSION RULE IF NONSYMETRIC OR COMPLEXE GEP OR QEP  ---
     if ((zi(lmasse+3)*zi(lmasse+4)*zi(lraide+3)*zi(lraide+4).ne.1 .or.lc)) then
-        if (typmod(1:13) .ne. 'MODE_COMPLEXE') call u2mess('F', 'ALGELINE4_10')
+        if (typmod(1:13) .ne. 'MODE_COMPLEXE') then
+            call utmess('F', 'ALGELINE4_10')
+        endif
     endif
 !
 !     --- CURRENT SCOPE OF USE OF THE OPTION TYPCHA='ROMBOUT'   ---
     if ((typmet(1:3).eq.'APM') .and. (typcha(1:7).eq.'ROMBOUT')) then
         if (lc .or. (zk24(jrefa+9)(1:4).eq.'GENE') .or.&
             (zi(lmasse+3)*zi( lmasse+4)*zi(lraide+3)*zi(lraide+4).ne.1)) then
-            call u2mess('F', 'ALGELINE4_17')
+            call utmess('F', 'ALGELINE4_17')
         endif
     endif
 !
@@ -376,16 +380,14 @@ subroutine op0032()
         if ((typpar.eq.'PARTIEL') .and. (metres(1:5).ne.'MUMPS') .and. (nbproc.gt.1)) then
             vali(1)=nbproc
             valk(1)=metres
-            call u2mesg('F', 'MODAL_14', 1, valk, 1,&
-                        vali, 0, rbid)
+            call utmess('F', 'MODAL_14', sk=valk(1), si=vali(1))
         endif
         if ((nbproc.lt.(nbmod-1)) .or.&
             ((nbproc.gt.(nbmod-1)).and.( metres(1:5).ne.'MUMPS'))) then
             vali(1)=nbproc
             vali(2)=nbmod
             valk(1)=metres
-            call u2mesg('F', 'MODAL_10', 1, valk, 2,&
-                        vali, 0, rbid)
+            call utmess('F', 'MODAL_10', sk=valk(1), ni=2, vali=vali)
         endif
         l1=nbproc/(nbmod-1)
         l2=nbproc-(nbmod-1)*l1
@@ -393,8 +395,7 @@ subroutine op0032()
             vali(1)=nbmod-1
             vali(2)=l1
             vali(3)=l1+1
-            call u2mesg('I', 'MODAL_11', 0, kbid, 3,&
-                        vali, 0, rbid)
+            call utmess('I', 'MODAL_11', ni=3, vali=vali)
         endif
     endif
 !
@@ -492,8 +493,7 @@ subroutine op0032()
                 if (l11 .ne. l1) then
                     vali(1)=l11
                     vali(2)=l1
-                    call u2mesg('I', 'MODAL_13', 0, kbid, 2,&
-                                vali, 0, rbid)
+                    call utmess('I', 'MODAL_13', ni=2, vali=vali)
                 endif
             endif
 !         --- ULTIME VERIF VECTEUR COULEUR
@@ -697,8 +697,12 @@ subroutine op0032()
                 nbev1=nbev2
 !
 !   --- ERROR MESSAGES
-                if (nbtet2 .gt. miterc) call u2mesi('F', 'ALGELINE4_13', 1, miterc)
-                if (ii .eq. niterc) call u2mesi('F', 'ALGELINE4_14', 1, niterc)
+                if (nbtet2 .gt. miterc) then
+                    call utmess('F', 'ALGELINE4_13', si=miterc)
+                endif
+                if (ii .eq. niterc) then
+                    call utmess('F', 'ALGELINE4_14', si=niterc)
+                endif
 !
             else if (impr.eq.'NON') then
 !    --- THE HEURISTIC CONVERGES
@@ -712,7 +716,9 @@ subroutine op0032()
 30      continue
 31      continue
         if (typcha(1:7) .eq. 'ROMBOUT') call jedetr(k24rc)
-        if (pivot2 .lt. 0) call u2mess('F', 'ALGELINE4_22')
+        if (pivot2 .lt. 0) then
+            call utmess('F', 'ALGELINE4_22')
+        endif
 !
     else
 !   --- ILLEGAL OPTION ---

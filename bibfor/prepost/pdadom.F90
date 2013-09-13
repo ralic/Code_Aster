@@ -11,7 +11,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 #include "asterfort/rccome.h"
 #include "asterfort/rcpare.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: xm0, xm2, xm4, dom
 ! ======================================================================
@@ -63,7 +63,9 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
     pheno = 'FATIGUE'
     call rccome(nommat, pheno, phenom, icodre(1))
-    if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+    if (icodre(1) .eq. 1) then
+        call utmess('F', 'FATIGUE1_24')
+    endif
     cara = 'WOHLER'
     call rcpare(nommat, pheno, cara, icodwo)
     cara = 'A_BASQUI'
@@ -77,14 +79,14 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     else if (icodhs.eq.0) then
         ihosin = 1
     else
-        call u2mess('F', 'FATIGUE1_34')
+        call utmess('F', 'FATIGUE1_34')
     endif
 !
 !----  DEFINITION DES BORNES INTEGRATION
 !
     call getvtx(' ', 'COMPTAGE', scal=mecomp, nbret=nbval)
     if (mecomp .eq. 'PIC     ' .and. xm4 .eq. rundf) then
-        call u2mess('F', 'FATIGUE1_35')
+        call utmess('F', 'FATIGUE1_35')
     endif
     if (ihosin .ne. 0) then
         nomres(6) = 'SL'
@@ -100,7 +102,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     endif
     pas = (valmax-valmin)/300.d0
     if (pas .eq. 0.0d0) then
-        call u2mess('F', 'FATIGUE1_36')
+        call utmess('F', 'FATIGUE1_36')
     endif
     xnpoin = (valmax-valmin)/pas
     nbpoin = int(xnpoin) + 1
@@ -108,10 +110,10 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 !------- CALCUL DES POINTS INTEGRATION
 !
     if (xm2 .eq. 0.d0) then
-        call u2mess('F', 'FATIGUE1_37')
+        call utmess('F', 'FATIGUE1_37')
     endif
     if (mecomp .eq. 'PIC' .and. xm4 .eq. 0.d0) then
-        call u2mess('F', 'FATIGUE1_38')
+        call utmess('F', 'FATIGUE1_38')
     endif
     call wkvect('&&PDADOM.DISPICS', 'V V R8', 2*nbpoin, iapics)
     if (mecomp .eq. 'PIC     ') xireg = sqrt( xm2*xm2/xm0/xm4)

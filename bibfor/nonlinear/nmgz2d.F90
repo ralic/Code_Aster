@@ -31,7 +31,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 #include "asterfort/lcegeo.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nno, npg, imate, lgpg, codret, cod(9)
     integer :: ipoids, ivf, idfde, ivectu, ideplm, ideplp
     character(len=*) :: fami
@@ -95,7 +95,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
     data kron/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
 !
     if (compor(1)(1:4) .ne. 'ZMAT') then
-        call u2mess('F', 'ALGORITH7_96')
+        call utmess('F', 'ALGORITH7_96')
     endif
 !
 !

@@ -19,7 +19,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -32,8 +32,8 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 #include "asterfort/nmevdp.h"
 #include "asterfort/nmitsp.h"
 #include "asterfort/nmrepc.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sderro
     character(len=24) :: defico, resoco
     character(len=19) :: sddisc, solveu
@@ -101,11 +101,11 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 ! --- REALISATION DE L'ACTION
 !
     if (action .eq. 'ARRET') then
-        call u2mess('I', 'MECANONLINE10_30')
+        call utmess('I', 'MECANONLINE10_30')
         retact = 3
         trydec = .false.
     else if (action.eq.'REAC_PRECOND') then
-        call u2mess('I', 'MECANONLINE10_31')
+        call utmess('I', 'MECANONLINE10_31')
         call nmrepc(sddisc, solveu, ievdac, retrpc)
         if (retrpc .eq. 0) then
             trydec = .true.
@@ -117,7 +117,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
     else if (action.eq.'ITER_SUPPL') then
         ASSERT(iterat.ge.0)
         if (litmax) then
-            call u2mess('I', 'MECANONLINE10_32')
+            call utmess('I', 'MECANONLINE10_32')
             call nmitsp(sdimpr, sddisc, iterat, retsup)
         else
             retsup = 0
@@ -133,7 +133,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         trydec = .true.
     else if (action.eq.'AUTRE_PILOTAGE') then
         if (litmax) then
-            call u2mess('I', 'MECANONLINE10_34')
+            call utmess('I', 'MECANONLINE10_34')
             call nmevdp(sddisc, ievdac, retswa)
         else
             retswa = 0
@@ -146,7 +146,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
             ASSERT(.false.)
         endif
     else if (action.eq.'ADAPT_COEF_PENA') then
-        call u2mess('I', 'MECANONLINE10_35')
+        call utmess('I', 'MECANONLINE10_35')
         call nmadcp(sddisc, defico, resoco, ievdac, retpen)
         trydec = .false.
         if (retpen .eq. 0) then
@@ -165,7 +165,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 ! --- CAS DE LA DECOUPE
 !
     if (trydec) then
-        call u2mess('I', 'MECANONLINE10_33')
+        call utmess('I', 'MECANONLINE10_33')
         call nmdeco(sddisc, numins, iterat, ievdac, retdec)
         if (retdec .eq. 0) then
             retact = 3

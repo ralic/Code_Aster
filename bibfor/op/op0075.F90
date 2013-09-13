@@ -37,7 +37,7 @@ subroutine op0075()
 #include "asterfort/regene.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/tran75.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !     ------------------------------------------------------------------
     character(len=8) :: k8bid, nomres, resin, mode, blanc8, param(3)
@@ -60,18 +60,18 @@ subroutine op0075()
 !     --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
     call getvtx(' ', 'NOM_CHAM', nbval=4, vect=champ, nbret=nbcham)
     if (nbcham .lt. 0) then
-        call u2mess('E', 'ALGORITH9_44')
+        call utmess('E', 'ALGORITH9_44')
     else
         do 20 i = 1, nbcham
             do 10 j = i+1, nbcham
                 if (champ(i) .eq. champ(j)) then
-                    call u2mess('E', 'ALGORITH9_30')
+                    call utmess('E', 'ALGORITH9_30')
                 endif
 10          continue
             if (champ(i) .eq. 'ACCE_ABSOLU') then
                 call getvid(' ', 'ACCE_MONO_APPUI', scal=k8bid, nbret=n1)
                 if (n1 .eq. 0) then
-                    call u2mess('E', 'ALGORITH9_45')
+                    call utmess('E', 'ALGORITH9_45')
                 endif
             endif
 20      continue
@@ -127,7 +127,9 @@ subroutine op0075()
         else if (typrep(1:9).eq.'MODE_GENE') then
 !         --- RECUPERER LA BASE MODALE POUR DOUBLE RESTITUTION
             call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
-            if (ibid .eq. 0) call u2mess('F', 'ALGORITH9_48')
+            if (ibid .eq. 0) then
+                call utmess('F', 'ALGORITH9_48')
+            endif
 !
             call tran75(nomres, typres, resin, mode)
 !
@@ -152,7 +154,9 @@ subroutine op0075()
         else if (typrep(1:9).eq.'MODE_GENE') then
 !         --- AVEC SOUS STRUCTURATION, RECUPERER LA BASE MODALE
             call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
-            if (ibid .eq. 0) call u2mess('F', 'ALGORITH9_48')
+            if (ibid .eq. 0) then
+                call utmess('F', 'ALGORITH9_48')
+            endif
 !
             call harm75(nomres, typres, resin, nomcmd, mode)
 !

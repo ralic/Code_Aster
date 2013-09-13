@@ -19,7 +19,6 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -40,9 +39,9 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 #include "asterfort/nbec.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: igds, nec, nlili, nbelm, iadnem, iadlie, jligr2, k
     character(len=*) :: lligr
     character(len=24) :: lili
@@ -126,7 +125,9 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
     662 end do
     call jeecra(lligr2, 'LONUTI', nligr)
     nlili = nligr+1
-    if (nlili .eq. 1) call u2mess('F', 'ASSEMBLA_29')
+    if (nlili .eq. 1) then
+        call utmess('F', 'ASSEMBLA_29')
+    endif
 !
 !---- CREATION DU REPERTOIRE .LILI DE TOUS LES NOMS DE LIGRELS /=
 !
@@ -155,7 +156,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
         if (iligr .eq. 1) then
             pheno = phe
         else if (pheno.ne.phe) then
-            call u2mess('F', 'ASSEMBLA_30')
+            call utmess('F', 'ASSEMBLA_30')
         endif
         call jecroc(jexnom(lili, nomli))
 !
@@ -173,7 +174,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
             valk(4)=k19
             valk(5)=nomlig(1:8)
             valk(6)=k19(1:8)
-            call u2mesk('F', 'ASSEMBLA_66', 6, valk)
+            call utmess('F', 'ASSEMBLA_66', nk=6, valk=valk)
         endif
 !
 !

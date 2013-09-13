@@ -17,8 +17,6 @@ subroutine te0477(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
 #include "asterc/r8vide.h"
 #include "asterfort/elref4.h"
 #include "asterfort/idsshb.h"
@@ -45,7 +43,9 @@ subroutine te0477(option, nomte)
 #include "asterfort/sh8rig.h"
 #include "asterfort/shbpkc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
+!-----------------------------------------------------------------------
     integer :: i, icarcr, icompo, icontm, icontp, ideplm, ideplp
     integer :: idfde, igeom, imate, imatuu, ipg, ipoids, ivarim
     integer :: ivarip, ivectu, ivf, j, jcret, jgano, k
@@ -67,7 +67,7 @@ subroutine te0477(option, nomte)
     real(kind=8) :: nu, e, para(2), rbid
     real(kind=8) :: xidepp(60), re6(18, 18), re15(45, 45), re20(60, 60)
     real(kind=8) :: duddd(180)
-    real(kind=8) :: dsde(20,6,6)
+    real(kind=8) :: dsde(20, 6, 6)
     fami = 'RIGI'
     call elref4(' ', fami, ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -77,8 +77,8 @@ subroutine te0477(option, nomte)
     do 10 i = 1, 2
         para(i) = 0.d0
 10  continue
-    call r8inir(720,0.D0,dsde,1)
-
+    call r8inir(720, 0.D0, dsde, 1)
+!
 !  ###############################################################
 !  -- ELASTOPLASTICITE
 !  ###############################################################
@@ -133,8 +133,7 @@ subroutine te0477(option, nomte)
 !  =============================================
         if (zk16(icompo+2) .ne. 'PETIT') then
             if (zk16(icompo+2) .ne. 'GROT_GDEP') then
-                call u2mesg('F', 'COMPOR1_69', 1, zk16(icompo+2), 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'COMPOR1_69', sk=zk16(icompo+2))
             endif
         endif
         if (zk16(icompo+2) .eq. 'GROT_GDEP') then
@@ -148,22 +147,22 @@ subroutine te0477(option, nomte)
 !  =============================================
 !  -  CALCUL DES CONTRAINTES
 !  =============================================
-        if (option(1:9)  .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA'.or.  &
+        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or.&
             option(1:14) .eq. 'RIGI_MECA_TANG') then
-
+!
 ! ----   PARAMETRES MATERIAU
             d(1) = e
             d(2) = nu
             para(1) = e
             para(2) = nu
-
+!
             call r8inir(120, 0.d0, sigmm, 1)
             call r8inir(120, 0.d0, sigma, 1)
             call r8inir(120, 0.d0, epsloc, 1)
             call r8inir(120, 0.d0, depslo, 1)
             call r8inir(180, 0.d0, dusdx, 1)
             call r8inir(180, 0.d0, duddd, 1)
-
+!
             do 60 i = 1, npg
                 do 50 j = 1, 6
                     sigmm(6*(i-1)+j)=zr(icontm+18*(i-1)+j-1)
@@ -223,14 +222,14 @@ subroutine te0477(option, nomte)
                 sigma(6*(ipg-1)+4) = simp(4)/sqrt(2.d0)
                 sigma(6*(ipg-1)+5) = sigm(5) +g*depslo(6*(ipg-1)+5)
                 sigma(6*(ipg-1)+6) = sigm(6) +g*depslo(6*(ipg-1)+6)
-             do 90 i=1,6
-                do 95 j=1,6
-                   dsde(ipg,i,j)=dsidep(i,j)
-95               continue
-90            continue
-
+                do 90 i = 1, 6
+                    do 95 j = 1, 6
+                        dsde(ipg,i,j)=dsidep(i,j)
+95                  continue
+90              continue
+!
 80          continue
-
+!
             call r8inir(120, 0.d0, sigmp, 1)
             call shbpkc(sigma, sigmp, dusdx, npg)
         endif

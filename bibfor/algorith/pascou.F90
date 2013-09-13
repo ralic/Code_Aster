@@ -36,9 +36,8 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 #include "asterfort/megeom.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndynre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 !
     character(len=24) :: mate, carele
     character(len=19) :: sddyna, sddisc
@@ -154,7 +153,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 ! BOOPOS=TRUE SI L'ON A CALCULE DTCOU POUR AU MOINS UN ELEMENT
     if (boopos) then
         if (booneg) then
-            call u2mess('A', 'DYNAMIQUE_3')
+            call utmess('A', 'DYNAMIQUE_3')
         endif
 !
 !       VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
@@ -169,33 +168,31 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
         if (ndynlo(sddyna,'DIFF_CENT')) then
             dtcou = dtcou / (2.d0)
-            call u2mesg('I', 'DYNAMIQUE_5', 1, maicfl, 0,&
-                        0, 1, dtcou)
+            call utmess('I', 'DYNAMIQUE_5', sk=maicfl, sr=dtcou)
         else
             if (ndynlo(sddyna,'TCHAMWA')) then
                 phi=ndynre(sddyna,'PHI')
                 dtcou = dtcou/(phi*2.d0)
-                call u2mesg('I', 'DYNAMIQUE_6', 1, maicfl, 0,&
-                            0, 1, dtcou)
+                call utmess('I', 'DYNAMIQUE_6', sk=maicfl, sr=dtcou)
             else
-                call u2mess('F', 'DYNAMIQUE_1')
+                call utmess('F', 'DYNAMIQUE_1')
             endif
         endif
 !
         do 20 i = 1, nbinst-1
             if (zr(jinst-1+i+1)-zr(jinst-1+i) .gt. dtcou) then
                 if (stocfl(1:3) .eq. 'OUI') then
-                    call u2mess('F', 'DYNAMIQUE_2')
+                    call utmess('F', 'DYNAMIQUE_2')
                 else
-                    call u2mess('A', 'DYNAMIQUE_2')
+                    call utmess('A', 'DYNAMIQUE_2')
                 endif
             endif
 20      continue
 !
     else if (stocfl(1:3).eq.'OUI') then
-        call u2mess('F', 'DYNAMIQUE_4')
+        call utmess('F', 'DYNAMIQUE_4')
     else if (stocfl(1:3).eq.'NON') then
-        call u2mess('A', 'DYNAMIQUE_4')
+        call utmess('A', 'DYNAMIQUE_4')
     endif
 !
     call jedema()

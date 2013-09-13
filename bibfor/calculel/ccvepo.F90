@@ -17,8 +17,8 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utmamo.h"
+#include "asterfort/utmess.h"
     logical :: exipou
     integer :: nbchre, ioccur, nbchar
     character(len=8) :: modele, resuin
@@ -109,7 +109,8 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
             'DYNA_TRANS' .or. typesd .eq. 'MODE_ACOU' .or. typesd .eq. 'DYNA_HARMO') then
             refe=resuin
             suropt='MASS_MECA'
-            call dismoi('C', 'REF_MASS_PREM', refe, 'RESU_DYNA', ibid, masse, ierd)
+            call dismoi('C', 'REF_MASS_PREM', refe, 'RESU_DYNA', ibid,&
+                        masse, ierd)
             if (masse .ne. ' ') then
                 call dismoi('C', 'SUR_OPTION', masse, 'MATR_ASSE', ibid,&
                             suropt, ierd)
@@ -124,7 +125,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
         ioccur=0
         call cochre(zk8(jcha), nbchar, nbchre, ioccur)
         if (nbchre .gt. 1) then
-            call u2mess('F', 'CALCULEL2_92')
+            call utmess('F', 'CALCULEL2_92')
         endif
     endif
 !

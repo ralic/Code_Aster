@@ -1,6 +1,6 @@
 subroutine jermxd(rval, iret)
     implicit none
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: rval
     integer :: iret
 ! ======================================================================
@@ -43,8 +43,7 @@ subroutine jermxd(rval, iret)
     if (rval .le. 0) then
         rv(1)=mcdyn*lois/(1024*1024)
         rv(2)=rval/(1024*1024)
-        call u2mesg('F', 'JEVEUX1_72', 0, ' ', 0,&
-                    0, 2, rv)
+        call utmess('F', 'JEVEUX1_72', nr=2, valr=rv)
     endif
 ! ON EVALUE LA VALEUR PASSEE EN ARGUMENT PAR RAPPORT A L'OCCUPATION
 ! TOTALE COURANTE JEVEUX (OBJETS UTILISÉS)

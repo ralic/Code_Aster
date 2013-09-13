@@ -34,8 +34,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
 #include "asterfort/jxliro.h"
 #include "asterfort/jxouvr.h"
 #include "asterfort/lxmins.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nrep, nbloc, lbloc
     character(len=*) :: sti, sto, nomf, clas
 ! ----------------------------------------------------------------------
@@ -187,11 +186,9 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         nrhcod(ic) = jjprem(nremax(ic),irt)
         if (irt .eq. 1) then
             if (ic .eq. 1) then
-                call u2mesg('A', 'JEVEUX_64', 1, nombas(ic), 1,&
-                            nremax(ic), 0, valr)
+                call utmess('A', 'JEVEUX_64', sk=nombas(ic), si=nremax(ic))
             else
-                call u2mesg('A', 'JEVEUX_65', 1, nombas(ic), 1,&
-                            nremax(ic), 0, valr)
+                call utmess('A', 'JEVEUX_65', sk=nombas(ic), si=nremax(ic))
             endif
         endif
         nbluti(ic) = 0
@@ -459,7 +456,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             valk(1) = nombas(ic)
             valk(2) = cversb
             valk(3) = cversu
-            call u2mesk('A', 'JEVEUX_08', 3, valk)
+            call utmess('A', 'JEVEUX_08', nk=3, valk=valk)
         endif
 !
         if (nbloc .eq. 0) then
@@ -478,8 +475,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             vali(1) = nblmax(ic)
             vali(2) = nblma2
             valk(1) = nombas(ic)
-            call u2mesg('I', 'JEVEUX_36', 1, valk, 2,&
-                        vali, 0, valr)
+            call utmess('I', 'JEVEUX_36', sk=valk(1), ni=2, vali=vali)
             lenrg = .true.
         endif
 !
@@ -492,8 +488,8 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         vali(5)= nremax(ic)
         vali(6)= (nreuti(ic)*100)/nremax(ic)
 !
-        call u2mesg('I', 'JEVEUX_21', 2, valk, 6,&
-                    vali, 0, valr)
+        call utmess('I', 'JEVEUX_21', nk=2, valk=valk, ni=6,&
+                    vali=vali)
 !
         nblmax(ic)= nblma2
 !

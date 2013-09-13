@@ -23,7 +23,7 @@ subroutine regeec(nomres, resgen, nomsst)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
 !
@@ -104,8 +104,7 @@ subroutine regeec(nomres, resgen, nomsst)
     if (nusst .eq. 0) then
         valk (1) = modgen
         valk (2) = nomsst
-        call u2mesg('F', 'ALGORITH14_25', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_25', nk=2, valk=valk)
     endif
 !
 !
@@ -181,8 +180,7 @@ subroutine regeec(nomres, resgen, nomsst)
             valk (1) = basmod
             vali (1) = nbbas
             vali (2) = nbddg
-            call u2mesg('F', 'ALGORITH14_26', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH14_26', sk=valk(1), ni=2, vali=vali)
         endif
     endif
 !

@@ -28,7 +28,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 #include "asterfort/nm1dis.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: imate, neq, nbt, kpg, ksp, codret
     parameter (neq=6,nbt=21)
@@ -96,7 +96,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
             impl = .true.
         endif
         if (impl .and. (.not.isotli)) then
-            call u2mess('F', 'ELEMENTS5_50')
+            call utmess('F', 'ELEMENTS5_50')
         endif
     else if (compor(1).eq.'VMIS_CINE_LINE') then
         cine = .true.
@@ -156,7 +156,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
                     vim, option, compor, sigp, vip,&
                     dsde)
     else
-        call u2mess('F', 'ALGORITH6_87')
+        call utmess('F', 'ALGORITH6_87')
     endif
 !
 ! --- CALCUL DU COEFFICIENT NON NUL DE LA MATRICE TANGENTE
@@ -180,7 +180,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
     if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
         if ((.not.impl) .and. (.not.elas)) then
-            call u2mess('F', 'ELEMENTS5_49')
+            call utmess('F', 'ELEMENTS5_49')
         endif
         effnop = sigp*a
         fono(1) = -effnop

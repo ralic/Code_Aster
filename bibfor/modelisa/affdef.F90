@@ -1,14 +1,14 @@
 subroutine affdef(tmp, nom, nel, ntel, tab,&
                   ier)
-    implicit       none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: ntel(*)
     character(len=8) :: tab(*)
     character(len=24) :: nom, tmp
@@ -89,7 +89,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
             if (zr(jdge+ogen(j)-1) .eq. tst) then
                 valk(1) = nom
                 valk(2) = tab(ogen(j))
-                call u2mesk('A', 'MODELISA_77', 2, valk)
+                call utmess('A', 'MODELISA_77', nk=2, valk=valk)
                 ier = ier + 1
             endif
 20      continue
@@ -102,7 +102,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                 if (zr(jdge+otpe(j)-1) .eq. tst) then
                     valk(1) = nom
                     valk(2) = tab(otpe(j))
-                    call u2mesk('A', 'MODELISA_78', 2, valk)
+                    call utmess('A', 'MODELISA_78', nk=2, valk=valk)
                 endif
 50          continue
         endif
@@ -115,7 +115,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
             if (zr(jdge+orec(j)-1) .eq. tst) then
                 valk(1) = nom
                 valk(2) = tab(orec(j))
-                call u2mesk('A', 'MODELISA_79', 2, valk)
+                call utmess('A', 'MODELISA_79', nk=2, valk=valk)
                 ier = ier + 1
             endif
 30      continue
@@ -128,7 +128,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
             if (zr(jdge+ocer(j)-1) .eq. tst) then
                 valk(1) = nom
                 valk(2) = tab(ocer(j))
-                call u2mesk('A', 'MODELISA_80', 2, valk)
+                call utmess('A', 'MODELISA_80', nk=2, valk=valk)
                 ier = ier + 1
             endif
 40      continue
@@ -142,7 +142,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                 if (zr(jdge+pgen(j)-1) .le. 0.d0) then
                     valk(1) = nom
                     valk(2) = tab(pgen(j))
-                    call u2mesk('A', 'MODELISA_81', 2, valk)
+                    call utmess('A', 'MODELISA_81', nk=2, valk=valk)
                     ier = ier + 1
                 endif
             endif
@@ -157,7 +157,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                 if (zr(jdge+prec(j)-1) .le. 0.d0) then
                     valk(1) = nom
                     valk(2) = tab(prec(j))
-                    call u2mesk('A', 'MODELISA_82', 2, valk)
+                    call utmess('A', 'MODELISA_82', nk=2, valk=valk)
                     ier = ier + 1
                 endif
             endif
@@ -172,7 +172,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                 if (zr(jdge+pcer(j)-1) .le. 0.d0) then
                     valk(1) = nom
                     valk(2) = tab(pcer(j))
-                    call u2mesk('A', 'MODELISA_83', 2, valk)
+                    call utmess('A', 'MODELISA_83', nk=2, valk=valk)
                     ier = ier + 1
                 endif
             endif
@@ -211,7 +211,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                     valk(1) = nom
                     valk(2) = tab(drec(j))
                     valk(3) = tab(orec(j))
-                    call u2mesk('A', 'MODELISA_84', 3, valk)
+                    call utmess('A', 'MODELISA_84', nk=3, valk=valk)
                     ier = ier + 1
                 endif
             endif
@@ -229,7 +229,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                     valk(1) = nom
                     valk(2) = tab(dcer(j))
                     valk(3) = tab(ocer(j))
-                    call u2mesk('A', 'MODELISA_85', 3, valk)
+                    call utmess('A', 'MODELISA_85', nk=3, valk=valk)
                     ier = ier + 1
                 endif
             endif

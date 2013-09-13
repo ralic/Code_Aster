@@ -26,7 +26,7 @@ subroutine te0433(option, nomte)
 #include "asterfort/nmgrib.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -100,7 +100,7 @@ subroutine te0433(option, nomte)
                     ' ', 'ELAS', 0, ' ', 0.d0,&
                     1, 'RHO', rho, codres, 1)
         if (rho .le. r8prem()) then
-            call u2mess('F', 'ELEMENTS5_45')
+            call utmess('F', 'ELEMENTS5_45')
         endif
     endif
 !
@@ -178,7 +178,7 @@ subroutine te0433(option, nomte)
 !
 !         CALCUL DE LA CONTRAINTE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        materi,'ELAS', 1, epsthe, iret)
+                        materi, 'ELAS', 1, epsthe, iret)
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
                         ' ', 'ELAS', 0, ' ', 0.d0,&

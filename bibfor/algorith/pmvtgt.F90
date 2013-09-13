@@ -52,7 +52,7 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     character(len=16) :: option
@@ -100,7 +100,7 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
         pertu=carcri(7)
         epsilo=pertu*maxeps
         if (epsilo .lt. r8miem()) then
-            call u2mess('A', 'ALGORITH11_86')
+            call utmess('A', 'ALGORITH11_86')
             goto 9999
         endif
 !

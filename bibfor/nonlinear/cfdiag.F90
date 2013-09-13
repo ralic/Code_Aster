@@ -17,16 +17,16 @@ subroutine cfdiag(lmat, xmax)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mtdsc2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: lmat
     real(kind=8) :: xmax
 !
@@ -51,7 +51,9 @@ subroutine cfdiag(lmat, xmax)
     call mtdsc2(mat, 'SMDI', 'L', jsmdi)
     call dismoi('F', 'MPI_COMPLET', mat, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
-    if (kmpic .ne. 'OUI') call u2mess('F', 'CALCULEL6_54')
+    if (kmpic .ne. 'OUI') then
+        call utmess('F', 'CALCULEL6_54')
+    endif
     call jeveuo(jexnum(mat//'.VALM', 1), 'L', jvalm)
 !
     neq=zi(lmat+2)

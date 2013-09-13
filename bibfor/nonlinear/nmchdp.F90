@@ -72,8 +72,8 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
 !
 #include "asterfort/infniv.h"
 #include "asterfort/nmchcr.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utlcal.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerofr.h"
     integer :: ndimsi, nbvar, visc, memo, niter, i, iter, ifm, niv, nbp, iret
     integer :: idelta
@@ -137,7 +137,7 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
         dp = dpe
         goto 50
     else if (f0.gt.zero) then
-        call u2mess('A', 'ELEMENTS4_61')
+        call utmess('A', 'ELEMENTS4_61')
         goto 41
     else
 !
@@ -181,7 +181,7 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
                     dpmax = dpmax*dix
                 endif
 30          continue
-            call u2mess('A', 'ALGORITH6_79')
+            call utmess('A', 'ALGORITH6_79')
             goto 20
         endif
 !

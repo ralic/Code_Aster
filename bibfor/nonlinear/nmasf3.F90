@@ -31,7 +31,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nno, nbpg1, imate
     integer :: ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2
@@ -165,7 +165,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     if (codre .eq. 0) then
         nu = valres(2)
     else
-        call u2mess('F', 'ELEMENTS4_72')
+        call utmess('F', 'ELEMENTS4_72')
     endif
 !
     nub = nu/(1.d0-nu)

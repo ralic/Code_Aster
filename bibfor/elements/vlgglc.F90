@@ -1,6 +1,7 @@
 subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
                   pgl4, v, code, p, vtemp)
     implicit none
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +23,6 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
 ! OU INVERSEMENT. ON AGIT UNIQUEMENT SUR LES DDL DE POUTRE,
 ! LES DDL DE COQUE RESTENT INCHANGES.***ELEMENT COURBE***
 !
-#include "asterfort/u2mesk.h"
     integer :: i, j, l, nno, nbrddl, m
 !JMP      PARAMETER          (NBRDDL=63)
     real(kind=8) :: v(nbrddl), p(nbrddl, nbrddl)
@@ -120,7 +120,7 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
 100      continue
 !
     else
-        call u2mesk('F', 'ELEMENTS4_58', 1, code)
+        call utmess('F', 'ELEMENTS4_58', sk=code)
     endif
 !
 ! STOCKAGE DE VTEMP DANS V

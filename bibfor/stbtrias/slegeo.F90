@@ -47,7 +47,7 @@ subroutine slegeo(iunv, imod)
 #include "asterfort/iunifi.h"
 #include "asterfort/jjmmaa.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=1) :: prfnoe, prfmai
     character(len=80) :: cbuf
     character(len=4) :: ct(3)
@@ -151,7 +151,9 @@ subroutine slegeo(iunv, imod)
 !    ---> ON TROUVE UNE CURVE DECRITE PAR SES NOEUDS
 !
             ilong=lxlgut(nomc)
-            if (ilong .gt. 8) call u2mesk('A', 'STBTRIAS_5', 1, nomc)
+            if (ilong .gt. 8) then
+                call utmess('A', 'STBTRIAS_5', sk=nomc)
+            endif
             write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO','NOM=',&
             nomc(1:8),chenti,chlige,chlign
             write(imod,'(12X,2A,10X,A,A2,A,A2,A,A4)')'AUTEUR=',aut,&
@@ -162,7 +164,9 @@ subroutine slegeo(iunv, imod)
 !    ---> ON TROUVE UNE MESH AREA DECRITE PAR SES NOEUDS
 !
             ilong=lxlgut(noma)
-            if (ilong .gt. 8) call u2mesk('A', 'STBTRIAS_5', 1, noma)
+            if (ilong .gt. 8) then
+                call utmess('A', 'STBTRIAS_5', sk=noma)
+            endif
             write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO','NOM=',&
             noma(1:8),chenti,chlige,chlign
             write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
@@ -173,7 +177,9 @@ subroutine slegeo(iunv, imod)
 !    ---> ON TROUVE UN MESH VOLUME DECRIT PAR SES NOEUDS
 !
             ilong=lxlgut(nomv)
-            if (ilong .gt. 8) call u2mesk('A', 'STBTRIAS_5', 1, nomv)
+            if (ilong .gt. 8) then
+                call utmess('A', 'STBTRIAS_5', sk=nomv)
+            endif
             write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_NO','NOM=',&
             nomv(1:8),chenti,chlige,chlign
             write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
@@ -184,7 +190,9 @@ subroutine slegeo(iunv, imod)
 !    ---> ON TROUVE UNE CURVE DECRITE PAR SES ELEMENTS
 !
             ilong=lxlgut(nomc)
-            if (ilong .gt. 8) call u2mesk('A', 'STBTRIAS_5', 1, nomc)
+            if (ilong .gt. 8) then
+                call utmess('A', 'STBTRIAS_5', sk=nomc)
+            endif
             write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)')'GROUP_MA','NOM=',&
             nomc(1:8),chenti,chlige,chlign
             write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
@@ -195,7 +203,9 @@ subroutine slegeo(iunv, imod)
 !    ---> ON TROUVE UNE MESH AREA DECRITE PAR SES ELEMENTS
 !
             ilong=lxlgut(noma)
-            if (ilong .gt. 8) call u2mesk('A', 'STBTRIAS_5', 1, nomc)
+            if (ilong .gt. 8) then
+                call utmess('A', 'STBTRIAS_5', sk=nomc)
+            endif
             write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)')'GROUP_MA','NOM=',&
             noma(1:8),chenti,chlige,chlign
             write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&
@@ -206,7 +216,9 @@ subroutine slegeo(iunv, imod)
 !    ---> ON TROUVE UN MESH VOLUME DECRIT PAR DES ELEMENTS
 !
             ilong=lxlgut(nomv)
-            if (ilong .gt. 8) call u2mesk('A', 'STBTRIAS_5', 1, nomv)
+            if (ilong .gt. 8) then
+                call utmess('A', 'STBTRIAS_5', sk=nomv)
+            endif
             write(imod,'(A,4X,2A,2X,A,1X,A,1X,A)') 'GROUP_MA','NOM=',&
             nomv(1:8),chenti,chlige,chlign
             write(imod,'(12X,2A,10X,A,A2,A,A2,A,A2)') 'AUTEUR=',aut,&

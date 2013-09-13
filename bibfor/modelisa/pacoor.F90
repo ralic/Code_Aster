@@ -1,13 +1,13 @@
 subroutine pacoor(nomma, ima, nbno, coor)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: nomma
     integer :: ima, nbno
     real(kind=8) :: coor(*)
@@ -66,7 +66,9 @@ subroutine pacoor(nomma, ima, nbno, coor)
     if (nbno .gt. 0) then
         call jeveuo(jexnum(connex, ima), 'L', idconn)
         call jelira(jexnum(connex, ima), 'LONMAX', nbnomx)
-        if (nbno .gt. nbnomx) call u2mess('F', 'MODELISA6_5')
+        if (nbno .gt. nbnomx) then
+            call utmess('F', 'MODELISA6_5')
+        endif
         do 1 inoma = 1, nbno
             ino = zi(idconn-1+inoma)
             idino = idvale+ nbcmp*(ino-1)-1
@@ -84,7 +86,7 @@ subroutine pacoor(nomma, ima, nbno, coor)
             coor(icmp) = zr(idino+icmp)
  4      continue
     else
-        call u2mess('F', 'MODELISA6_6')
+        call utmess('F', 'MODELISA6_6')
     endif
     call jedema()
 end subroutine

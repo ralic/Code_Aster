@@ -53,9 +53,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/racotu.h"
 #include "asterfort/reajre.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iocc
@@ -119,7 +117,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     motfac = 'LIAISON_ELEM'
     call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
     if ((option.ne.'COQ_POU') .and. (option.ne.'COQ_TUYA')) then
-        call u2mesk('F', 'MODELISA6_39', 1, option)
+        call utmess('F', 'MODELISA6_39', sk=option)
     endif
 !
     call getfac(motfac, nliai)
@@ -215,8 +213,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     if (nddla .gt. nmocl) then
         vali (1) = nmocl
         vali (2) = nddla
-        call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'MODELISA8_29', ni=2, vali=vali)
     endif
     do 20 i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
@@ -228,7 +225,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- ACCES A L'OBJET .PRNM :
 !     ----------------------
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     else
         call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     endif
@@ -283,14 +280,14 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         if (nbgno .eq. 0) then
             valk(1) = motfac
             valk(2) = option
-            call u2mesk('F', 'MODELISA6_48', 2, valk)
+            call utmess('F', 'MODELISA6_48', nk=2, valk=valk)
         endif
     endif
 !
     if (nbno .ne. 0) then
         nbno = -nbno
         if (nbno .ne. 1) then
-            call u2mess('F', 'MODELISA6_49')
+            call utmess('F', 'MODELISA6_49')
         endif
         call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
                     iarg, nbno, noepou, nno)
@@ -299,13 +296,13 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     if (nbgno .ne. 0) then
         nbgno = -nbgno
         if (nbgno .ne. 1) then
-            call u2mess('F', 'MODELISA6_50')
+            call utmess('F', 'MODELISA6_50')
         endif
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
                     iarg, nbgno, nogrno, nno)
         call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1)
         if (n1 .ne. 1) then
-            call u2mesk('F', 'MODELISA6_43', 1, nogrno)
+            call utmess('F', 'MODELISA6_43', sk=nogrno)
         else
             call jeveuo(jexnom(grnoma, nogrno), 'L', jgro)
             in = zi(jgro+1-1)
@@ -319,13 +316,13 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     call getvr8(motfac, 'AXE_POUTRE', iocc=iocc, nbval=3, vect=axepou,&
                 nbret=naxe)
     if (naxe .eq. 0) then
-        call u2mess('F', 'MODELISA6_51')
+        call utmess('F', 'MODELISA6_51')
     endif
 !
     xnorm = sqrt(axepou(1)*axepou(1)+axepou(2)*axepou(2)+ axepou(3)*axepou(3))
 !
     if (xnorm .le. r8prem()) then
-        call u2mess('F', 'MODELISA6_52')
+        call utmess('F', 'MODELISA6_52')
     endif
 !
     axepou(1) = axepou(1)/xnorm
@@ -348,7 +345,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !     ----------------------------------------------
     call getvid(motfac, 'CARA_ELEM', iocc=iocc, scal=cara, nbret=ncara)
     if (ncara .eq. 0) then
-        call u2mess('F', 'MODELISA6_53')
+        call utmess('F', 'MODELISA6_53')
     endif
 !
 ! ---  NUMERO DU NOEUD POUTRE A LIER :
@@ -374,7 +371,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
             if (.not.exisdg(dg,icmp(j))) then
                 valk(1) = zk8(ilisno+i-1)
                 valk(2) = cmp(j)
-                call u2mesk('F', 'MODELISA6_54', 2, valk)
+                call utmess('F', 'MODELISA6_54', nk=2, valk=valk)
             endif
 40      continue
 50  end do
@@ -388,7 +385,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         if (.not.exisdg(dg,icmp(j))) then
             valk(1) = noepou
             valk(2) = cmp(j)
-            call u2mesk('F', 'MODELISA6_45', 2, valk)
+            call utmess('F', 'MODELISA6_45', nk=2, valk=valk)
         endif
 60  end do
 !
@@ -433,7 +430,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     ayz = zr(idiner+10-1)
 !
     if (abs(s) .lt. r8prem()) then
-        call u2mess('F', 'MODELISA6_55')
+        call utmess('F', 'MODELISA6_55')
     endif
     s1 = 1.0d0/s
 !
@@ -462,8 +459,8 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         valr(9) = dnorme
         valk(1) = option
         vali(1) = iocc
-        call u2mesg('A', 'CALCULEL3_80', 1, valk, 1,&
-                    vali, 9, valr)
+        call utmess('A', 'CALCULEL3_80', sk=valk(1), si=vali(1), nr=9,&
+                    valr=valr)
     endif
 !
 ! --- CALCUL DU TENSEUR D'INERTIE EN G, CE TENSEUR EST SYMETRIQUE :

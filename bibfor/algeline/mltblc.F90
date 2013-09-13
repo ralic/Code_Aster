@@ -29,8 +29,7 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
 !                                    FACTOR QUI CONTIENT LES BLOCS
 #include "asterc/ismaem.h"
 #include "asterc/lor8em.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: nbsn, seq(nbsn), debfsn(nbsn+1), mxbloc, nbloc, decal(nbsn)
     integer :: lgbloc(*), ncbloc(*)
     integer :: i, l, i0, long
@@ -50,8 +49,7 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
         vali (1) = mxbloc
         vali (2) = i
         vali (3) = long
-        call u2mesg('F', 'ALGELINE4_21', 0, ' ', 3,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_21', ni=3, vali=vali)
     endif
 !      DO WHILE (LONG.LE.MXBLOC)
 120  continue
@@ -64,8 +62,7 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
             vali (1) = mxbloc
             vali (2) = i
             vali (3) = l
-            call u2mesg('F', 'ALGELINE4_21', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_21', ni=3, vali=vali)
         endif
         long = long + l
         goto 120
@@ -88,7 +85,7 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
             vali(1)=ib
             vali(2)=lgbloc(ib)
             vali(3)=lm
-            call u2mesi('A', 'ALGELINE3_52', ni, vali)
+            call utmess('A', 'ALGELINE3_52', ni=ni, vali=vali)
 !
         endif
 140  end do

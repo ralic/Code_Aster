@@ -1,7 +1,6 @@
 subroutine mavegr(nomu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cpclma.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -16,7 +15,8 @@ subroutine mavegr(nomu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: nomu
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -65,7 +65,7 @@ subroutine mavegr(nomu)
             call jenuno(jexnum ( grpmai, i ), nomg)
             if (nomg .eq. blanc) then
                 nbgrmt = nbgrmt - 1
-                call u2mess('A', 'MODELISA5_36')
+                call utmess('A', 'MODELISA5_36')
             endif
 100      continue
         if (nbgrmt .eq. 0) then
@@ -86,7 +86,7 @@ subroutine mavegr(nomu)
                 call jecroc(jexnom ( grpmai, nomg ))
                 call jeveuo(jexnum(grpmav, i), 'L', jvg)
                 call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
-                call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1,nbma))
+                call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma))
                 call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
                 call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
                 do 112 j = 0, nbma-1
@@ -109,7 +109,7 @@ subroutine mavegr(nomu)
             call jenuno(jexnum ( grpnoe, i ), nomg)
             if (nomg .eq. blanc) then
                 nbgrnt = nbgrnt - 1
-                call u2mess('A', 'MODELISA5_37')
+                call utmess('A', 'MODELISA5_37')
             endif
 200      continue
         if (nbgrnt .eq. 0) then
@@ -130,7 +130,7 @@ subroutine mavegr(nomu)
                 call jecroc(jexnom ( grpnoe, nomg ))
                 call jeveuo(jexnum(grpnov, i), 'L', jvg)
                 call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
-                call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1,nbno))
+                call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno))
                 call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
                 call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
                 do 212 j = 0, nbno-1

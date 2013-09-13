@@ -32,10 +32,8 @@ subroutine pevolu(resu, modele, nbocc)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utflmd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbocc
@@ -73,7 +71,7 @@ subroutine pevolu(resu, modele, nbocc)
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
     character(len=8) :: typmcl(1), tout, nomcmp, infoma, ncpini
     character(len=8) :: nopar, norme
-    real(kind=8) ::  prec, inst, borne(2), voltot, seuil
+    real(kind=8) :: prec, inst, borne(2), voltot, seuil
     complex(kind=8) :: c16b
     character(len=19) :: knum, kins, lisins, cham, cham2, chamtm, celmod, ligrel
     character(len=19) :: tmpcha, cham3
@@ -254,7 +252,9 @@ subroutine pevolu(resu, modele, nbocc)
                                 iret)
                 endif
                 call getvtx('VOLUMOGRAMME', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
-                if (iret .eq. 0) call u2mess('F', 'POSTELEM_4')
+                if (iret .eq. 0) then
+                    call utmess('F', 'POSTELEM_4')
+                endif
 !
                 call rsexch(' ', resuco, nomcha, numo, cham2,&
                             iret)
@@ -313,7 +313,7 @@ subroutine pevolu(resu, modele, nbocc)
                     valk2(1)=ligrel
                     valk2(2)=nopar
                     valk2(3)=optio2
-                    call u2mesk('F', 'UTILITAI3_23', 3, valk2)
+                    call utmess('F', 'UTILITAI3_23', nk=3, valk=valk2)
                 endif
                 cham='&&CHPCHD.CHAM'
                 call chpchd(cham3, 'ELGA', celmod, 'OUI', 'V',&
@@ -449,8 +449,7 @@ subroutine pevolu(resu, modele, nbocc)
 !        BORNES SI CELLES-CI SONT RENSEIGNEES PAR L UTILISATEUR
             ivol(1)=iocc
             ivol(2)=inum
-            call u2mesg('I', 'UTILITAI7_14', 0, ' ', 2,&
-                        ivol, 1, voltot)
+            call utmess('I', 'UTILITAI7_14', ni=2, vali=ivol, sr=voltot)
 !
 !      -- 4.5 NETTOYAGE POUR L'OCCURRENCE SUIVANTE --
 !CC          CALL DETRSD('CHAMP',CHAM2)

@@ -18,7 +18,7 @@ subroutine apvepa(sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/appari.h"
@@ -26,7 +26,7 @@ subroutine apvepa(sdappa)
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sdappa
 !
 ! ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ subroutine apvepa(sdappa)
 10  end do
 !
     if (nonapp .eq. ip) then
-        call u2mess('A', 'APPARIEMENT_1')
+        call utmess('A', 'APPARIEMENT_1')
     endif
 !
     call jedema()

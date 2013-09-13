@@ -17,9 +17,8 @@ subroutine te0367(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrfvf.h"
@@ -28,7 +27,7 @@ subroutine te0367(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
 #include "asterfort/ttprsm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xlacti.h"
 #include "asterfort/xmelet.h"
@@ -45,6 +44,7 @@ subroutine te0367(option, nomte)
 #include "asterfort/xtedd2.h"
 #include "asterfort/xtform.h"
 #include "asterfort/xtlagm.h"
+!
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -281,7 +281,7 @@ subroutine te0367(option, nomte)
                             contac, nfhe, lmulti, zi(jheano), vtmp)
             endif
         else
-            call u2mess('F', 'ELEMENTS3_80')
+            call utmess('F', 'ELEMENTS3_80')
         endif
 !
     else if (option.eq.'CHAR_MECA_FROT') then

@@ -26,7 +26,6 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -35,7 +34,8 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
 !
 !
     character(len=8) :: nomno1, nomno2, sst1, sst2, ss1, ss2, macro1, macro2
@@ -50,7 +50,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iliai, inoeu, jlino1, jlino2, jnoeu1, jnoeu2
-    integer :: ir, ldefo1,ldefo2,lliai,llino1,llino2
+    integer :: ir, ldefo1, ldefo2, lliai, llino1, llino2
     integer :: llnom1, llnom2, lmacr1, lmacr2, lrefe1, lrefe2, nbliai
     integer :: nbnoeu
 !-----------------------------------------------------------------------
@@ -79,8 +79,10 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
             call jeveuo(macro2//'.MAEL_MASS_REFE', 'L', lmacr2)
             bamo1 = zk24(lmacr1)
             bamo2 = zk24(lmacr2)
-            call dismoi('F', 'REF_INTD_PREM', bamo1, 'RESU_DYNA', ibid, intf1, ir)
-            call dismoi('F', 'REF_INTD_PREM', bamo2, 'RESU_DYNA', ibid, intf2, ir)
+            call dismoi('F', 'REF_INTD_PREM', bamo1, 'RESU_DYNA', ibid,&
+                        intf1, ir)
+            call dismoi('F', 'REF_INTD_PREM', bamo2, 'RESU_DYNA', ibid,&
+                        intf2, ir)
             lino1 = intf1(1:8)//'.IDC_LINO'
             lino2 = intf2(1:8)//'.IDC_LINO'
             call jenonu(jexnom(lino1(1:13)//'NOMS', liai1), ibid)
@@ -120,8 +122,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
                     valk (2) = sst1
                     valk (3) = nomno2
                     valk (4) = sst2
-                    call u2mesg('F', 'ALGORITH14_69', 4, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGORITH14_69', nk=4, valk=valk)
 !
                 endif
 !

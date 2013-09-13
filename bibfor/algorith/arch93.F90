@@ -60,7 +60,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, neq, ifm, niv, lmoad, lmoda, vali, iret, nbmodi, lddld
@@ -142,8 +142,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 else
                     vali = ierd
                     valk = chamno
-                    call u2mesg('F', 'ALGELINE4_38', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_38', sk=valk, si=vali)
                 endif
                 vale(1:19) = chamno
                 vale(20:24) = '.VALE'
@@ -207,8 +206,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 else
                     vali = ierd
                     valk = chamno
-                    call u2mesg('F', 'ALGELINE4_38', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_38', sk=valk, si=vali)
                 endif
                 vale(1:19) = chamno
                 vale(20:24) = '.VALE'
@@ -273,8 +271,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 else
                     vali = ierd
                     valk = chamno
-                    call u2mesg('F', 'ALGELINE4_38', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_38', sk=valk, si=vali)
                 endif
                 vale(1:19) = chamno
                 vale(20:24) = '.VALE'
@@ -390,8 +387,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 else
                     vali = ierd
                     valk = chamno
-                    call u2mesg('F', 'ALGELINE4_38', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_38', sk=valk, si=vali)
                 endif
                 vale(1:19) = chamno
                 vale(20:24) = '.VALE'
@@ -476,8 +472,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
             else
                 vali = ierd
                 valk = chamno
-                call u2mesg('F', 'ALGELINE4_38', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_38', sk=valk, si=vali)
             endif
             vale(1:19) = chamno
             vale(20:24) = '.VALE'

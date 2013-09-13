@@ -23,8 +23,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcmp, nuord, iocc, ichagd
     character(len=8) :: nomcmp(nbcmp), nomcp2(nbcmp), modele, lieu
@@ -155,7 +154,9 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 ! --- POUR LES CHAM_ELEM / ELEM : MOT CLE DEJA_INTEGRE:
     if (tych .eq. 'ELEM') then
         call getvtx('INTEGRALE', 'DEJA_INTEGRE', iocc=iocc, scal=dejain, nbret=iret)
-        if (iret .eq. 0) call u2mesk('F', 'UTILITAI7_13', 1, valk)
+        if (iret .eq. 0) then
+            call utmess('F', 'UTILITAI7_13', sk=valk(1))
+        endif
     endif
 !
 !
@@ -209,7 +210,9 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
             if (zi(indma+ima-1) .ne. 1) goto 35
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
-            if (nbsp .gt. 1) call u2mess('F', 'UTILITAI8_60')
+            if (nbsp .gt. 1) then
+                call utmess('F', 'UTILITAI8_60')
+            endif
             do 40 ipt = 1, nbpt
                 call cesexi('C', jcesd, jcesl, ima, ipt,&
                             1, nucmp, iad)
@@ -236,7 +239,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 35      continue
         if (ico .eq. 0) then
             valk(3)=nomcmp(icmp)
-            call u2mesk('F', 'UTILITAI7_12', 3, valk)
+            call utmess('F', 'UTILITAI7_12', nk=3, valk=valk)
         endif
 !
         if (icmp .eq. 1) zr(jintr+icmp+ind2-1)=vol

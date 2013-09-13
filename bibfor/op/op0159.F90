@@ -39,7 +39,7 @@ subroutine op0159()
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: vci19, secm19, csol19, mat19
@@ -79,13 +79,15 @@ subroutine op0159()
     call dismoi('F', 'METH_RESO', matr, 'MATR_ASSE', ibid,&
                 metres, ibid)
     if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
-        call u2mess('F', 'ALGELINE4_1')
+        call utmess('F', 'ALGELINE4_1')
     endif
 !
     mat19=matr
     call mtdscr(mat19)
     call jeveuo(mat19//'.&INT', 'E', lmat)
-    if (lmat .eq. 0) call u2mess('F', 'ALGELINE3_40')
+    if (lmat .eq. 0) then
+        call utmess('F', 'ALGELINE3_40')
+    endif
 !
     if (zi(lmat+3) .eq. 1) then
         type='R'
@@ -97,14 +99,16 @@ subroutine op0159()
 !
     nimpo=zi(lmat+7)
     if (vci19 .eq. ' ') then
-        if (nimpo .ne. 0) call u2mess('F', 'ALGELINE3_41')
+        if (nimpo .ne. 0) then
+            call utmess('F', 'ALGELINE3_41')
+        endif
         idvalc=0
     else
         call jeveuo(vci19//'.VALE', 'L', idvalc)
         call jelira(vci19//'.VALE', 'TYPE', cval=type)
         if (((type.eq.'R').and.(zi(lmat+3).ne.1)) .or.&
             ((type.eq.'C') .and.(zi(lmat+3).ne.2))) then
-            call u2mess('F', 'ALGELINE3_42')
+            call utmess('F', 'ALGELINE3_42')
         endif
     endif
 !
@@ -125,9 +129,11 @@ subroutine op0159()
     call jelira(secm19//'.VALE', 'LONMAX', neq1)
     call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
     if ((neq1.ne.neq) .and. (imd.eq.0)) then
-        call u2mess('F', 'FACTOR_67')
+        call utmess('F', 'FACTOR_67')
     endif
-    if (typ1 .ne. type) call u2mess('F', 'FACTOR_68')
+    if (typ1 .ne. type) then
+        call utmess('F', 'FACTOR_68')
+    endif
     call jeveuo(secm19//'.VALE', 'L', jval2)
     if (imd .eq. 0) then
         call wkvect('&&APPLCINE.TRAV', 'V V '//type, neq, jtrav)

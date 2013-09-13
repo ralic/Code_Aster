@@ -34,8 +34,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomo
@@ -84,7 +83,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
                 k8bid, ierd)
 !
     if (nbssa .eq. 0) then
-        call u2mess('F', 'SOUSTRUC_24')
+        call utmess('F', 'SOUSTRUC_24')
     endif
 !
     call jeveuo(nomo//'.MODELE    .SSSA', 'L', iasssa)
@@ -122,7 +121,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
         call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n2)
         if (-n2 .gt. nbsma) then
-            call u2mess('F', 'SOUSTRUC_25')
+            call utmess('F', 'SOUSTRUC_25')
         else
             call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=zk8(ialmai),&
                         nbret=n2)
@@ -133,7 +132,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
             if (imas .eq. 0) then
                 valk(1) = nosma
                 valk(2) = noma
-                call u2mesk('F', 'SOUSTRUC_26', 2, valk)
+                call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
             else
                 zi(ialsch-1+imas)=1
             endif
@@ -146,7 +145,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
             if (zi(ialsch-1+i) .ne. 0) then
                 call jenuno(jexnum(noma//'.SUPMAIL', i), nosma)
                 if (zi(iasssa-1+i) .ne. 1) then
-                    call u2mesk('F', 'SOUSTRUC_27', 1, nosma)
+                    call utmess('F', 'SOUSTRUC_27', sk=nosma)
                 endif
 !
                 nomacr = zk8(iamacr-1+i)
@@ -155,14 +154,16 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
                     ier0 = 1
                     valk(1) = nosma
                     valk(2) = nomcas
-                    call u2mesk('E', 'SOUSTRUC_28', 2, valk)
+                    call utmess('E', 'SOUSTRUC_28', nk=2, valk=valk)
                 endif
             endif
  3      continue
 !
 10  end do
 !
-    if (ier0 .eq. 1) call u2mess('F', 'SOUSTRUC_29')
+    if (ier0 .eq. 1) then
+        call utmess('F', 'SOUSTRUC_29')
+    endif
 !
     call jedetr('&&SS2MME.LMAI')
 !

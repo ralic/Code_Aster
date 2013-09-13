@@ -50,9 +50,7 @@ subroutine crprol()
 #include "asterfort/tbexve.h"
 #include "asterfort/tbtrir.h"
 #include "asterfort/tbutnu.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
 !
@@ -80,7 +78,7 @@ subroutine crprol()
     motfac = 'PROL_RTZ'
     call getres(resu, typres, nomcmd)
     if (typres .ne. 'EVOL_THER') then
-        call u2mess('F', 'ALGORITH2_44')
+        call utmess('F', 'ALGORITH2_44')
     endif
 !
 ! --- RECUPERATION DES DONNEES UTILISATEUR :
@@ -103,8 +101,7 @@ subroutine crprol()
     if (k8b .eq. 'OUI') ndimf = 2
     if (ndimf .ne. 3) then
         valk(1) = nommaf
-        call u2mesg('F', 'ALGORITH12_68', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_68', sk=valk(1))
     endif
     call jeveuo(nommaf//'.COORDO    .VALE', 'L', axyzmf)
 !
@@ -145,11 +142,11 @@ subroutine crprol()
         if (iret .eq. 10) then
             valk(1) = 'INST'
             valk(2) = table
-            call u2mesk('F', 'UTILITAI7_1', 2, valk)
+            call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
         else if (iret .eq. 20) then
             valk(1) = table
             valk(2) = 'INST'
-            call u2mesk('F', 'UTILITAI7_3', 2, valk)
+            call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
         endif
 !
 ! ------ ON RECUPERE LES COORCONNEES DES NOEUDS POUR L'INSTANT COURANT
@@ -174,8 +171,7 @@ subroutine crprol()
             rmax = max(rval,rmax)
             rmin = min(rval,rmin)
             if (rmin .ne. 0.0d0) then
-                call u2mesg('F', 'ALGORITH12_69', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH12_69')
             endif
  2      continue
 !
@@ -232,8 +228,7 @@ subroutine crprol()
             goto 3
  5          continue
             if ((rmax-rmin) .eq. 0.0d0) then
-                call u2mesg('F', 'ALGORITH12_70', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH12_70')
             endif
             lambda = ( rval - rmin )/( rmax - rmin )
             zr(jcnsve-1+(inof-1)+1)=(1-lambda)*zr(jcnsvl-1+(imin-1)+1)&
@@ -247,8 +242,7 @@ subroutine crprol()
                 if (pgauch .eq. 'EXCLU') then
                     call jenuno(jexnum(nommaf//'.NOMNOE', ino), nom1)
                     valk(1) = nom1
-                    call u2mesg('F', 'ALGORITH12_71', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGORITH12_71', sk=valk(1))
                 else if (pgauch.eq.'CONSTANT') then
                     inomin = zi(jtbres)
                     zr(jcnsve-1+(ino-1)+1) = zr(jcnsvl-1+(inomin-1)+1)
@@ -271,8 +265,7 @@ subroutine crprol()
                 if (pdroit .eq. 'EXCLU') then
                     call jenuno(jexnum(nommaf//'.NOMNOE', ino), nom1)
                     valk(1) = nom1
-                    call u2mesg('F', 'ALGORITH12_72', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGORITH12_72', sk=valk(1))
                 else if (pdroit.eq.'CONSTANT') then
                     inomax = zi(jtbres-1+nbnoi)
                     zr(jcnsve-1+(ino-1)+1) = zr(jcnsvl-1+(inomax-1)+1)
@@ -299,8 +292,7 @@ subroutine crprol()
         if (ibid .ne. 100) then
             valk(1) = resu
             vali = iord
-            call u2mesg('F', 'ALGORITH12_73', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_73', sk=valk(1), si=vali)
         endif
         call cnscno(cnsinr, ' ', 'NON', 'G', cnoinr,&
                     'F', ibid)

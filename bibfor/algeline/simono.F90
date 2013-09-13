@@ -38,7 +38,7 @@ subroutine simono()
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/pteddl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
     integer :: lmat, neq, ibid
@@ -84,7 +84,7 @@ subroutine simono()
 10  end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
-        call u2mess('F', 'ALGORITH9_81')
+        call utmess('F', 'ALGORITH9_81')
     endif
     do 12 i = 1, nbdir
         depl(i) = depl(i) / xnorm

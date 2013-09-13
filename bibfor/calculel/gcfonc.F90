@@ -1,10 +1,11 @@
-subroutine gcfonc(ichar ,iord  ,cartei,lfchar,lfmult,&
-                  newfct,lformu)
+subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult,&
+                  newfct, lformu)
 !
     implicit none
 !
 #include "asterfort/codent.h"
 #include "asterfort/gverfo.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,11 +65,11 @@ subroutine gcfonc(ichar ,iord  ,cartei,lfchar,lfmult,&
     if (lfmult) then
         if (lfchar) then
             nomchf = '&FM00000'
-            if ((ichar.gt.9).or.(iord.gt.99)) then
-              call u2mess('F', 'RUPTURE2_1')
+            if ((ichar.gt.9) .or. (iord.gt.99)) then
+                call utmess('F', 'RUPTURE2_1')
             endif
             call codent(ichar*10+1, 'D0', nomchf(6:7))
-            call codent(iord      , 'D0', nomchf(4:5))
+            call codent(iord, 'D0', nomchf(4:5))
         endif
     endif
     newfct = nomchf

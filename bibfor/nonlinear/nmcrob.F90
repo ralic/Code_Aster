@@ -19,7 +19,7 @@ subroutine nmcrob(noma, nomo, result, numreo, sdieto,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -30,7 +30,7 @@ subroutine nmcrob(noma, nomo, result, numreo, sdieto,&
 #include "asterfort/nmcrot.h"
 #include "asterfort/nmextr.h"
 #include "asterfort/nmobno.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     character(len=8) :: result, noma, nomo
     integer :: numreo
     character(len=19) :: sdobse
@@ -87,7 +87,7 @@ subroutine nmcrob(noma, nomo, result, numreo, sdieto,&
 ! --- CONTROLE
 !
     if (ntobs .ne. 0) then
-        call u2mesi('I', 'OBSERVATION_3', 1, ntobs)
+        call utmess('I', 'OBSERVATION_3', si=ntobs)
     else
         goto 999
     endif

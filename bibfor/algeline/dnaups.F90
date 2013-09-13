@@ -442,7 +442,7 @@ subroutine dnaups(ido, bmat, n, which, nev,&
 #include "asterfort/dnaup3.h"
 #include "asterfort/dvout.h"
 #include "asterfort/ivout.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common /debug/&
      &  logfil, ndigit, mgetv0,&
@@ -670,7 +670,7 @@ subroutine dnaups(ido, bmat, n, which, nev,&
     vali(4) = nrorth
     vali(5) = nitref
     vali(6) = nrstrt
-    call u2mesi('I', 'ALGELINE6_27', 6, vali)
+    call utmess('I', 'ALGELINE6_27', ni=6, vali=vali)
 !
     mxiter=0
     nopx=0

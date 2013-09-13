@@ -60,7 +60,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nuord, np, nc, iexcit, jordr
@@ -206,7 +206,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         call dismoi('F', 'TYPE_CHARGE', nomcha, 'CHARGE', ibid,&
                     typch, ierd)
         if ((typch(1:5).ne.'THER_') .and. (typch(1:5).ne.'CITH_')) then
-            call u2mesk('E', 'ALGORITH9_5', 1, nomcha(1:8))
+            call utmess('E', 'ALGORITH9_5', sk=nomcha(1:8))
         endif
         ligrch = nomcha(1:8)//'.CHTH.LIGRE'
 !
@@ -283,7 +283,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         call exisd('CHAMP_GD', lchin, iret)
         if (iret .ne. 0) then
             if ((k.ge.7) .and. fmult) then
-                call u2mesk('F', 'ALGORITH9_7', 1, nomcha(1:8))
+                call utmess('F', 'ALGORITH9_7', sk=nomcha(1:8))
             endif
             if (typch(5:7) .eq. '_FO') then
                 zi(jinf+nchar+ich) = max(2,zi(jinf+nchar+ich))

@@ -44,8 +44,8 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 #include "asterfort/d1pa3d.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
     character(len=*) :: poum, fami
     integer :: kpg, ksp
     real(kind=8) :: repere(7), xyzgau(3), d1(6, 6), instan
@@ -253,7 +253,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
         endif
 !
     else
-        call u2mesk('F', 'ELEMENTS_15', 1, phenom)
+        call utmess('F', 'ELEMENTS_15', sk=phenom)
     endif
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

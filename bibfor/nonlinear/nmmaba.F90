@@ -3,7 +3,7 @@ subroutine nmmaba(icodma, compor, e, dsde, sigy,&
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: compor
     integer :: icodma
     integer :: ncstpm
@@ -85,7 +85,7 @@ subroutine nmmaba(icodma, compor, e, dsde, sigy,&
         (compor.ne.'VMIS_CINE_LINE') .and. (compor.ne.'VMIS_ASYM_LINE') .and.&
         (compor.ne.'PINTO_MENEGOTTO') .and. (compor.ne.'GRILLE_CINE_LINE') .and.&
         (compor.ne.'GRILLE_ISOT_LINE') .and. (compor.ne.'GRILLE_PINTO_MEN')) then
-        call u2mesk('F', 'ELEMENTS_32', 1, compor)
+        call utmess('F', 'ELEMENTS_32', sk=compor)
     endif
 !
 ! --- INITIALISATIONS

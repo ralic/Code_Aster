@@ -16,9 +16,8 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
@@ -29,9 +28,10 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcin1.h"
 #include "asterfort/vrcin2.h"
+!
     character(len=2) :: codret
     character(len=19) :: chvarc
     character(len=*) :: chmatz, carelz, modelz
@@ -58,7 +58,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     integer :: jcvvar, jce1d, jce1l, jce1v, jcesvi, nncp, n1, k
     real(kind=8) :: valeur, rundef
     character(len=19) :: chvars, ligrmo, chs
-    character(len=8) ::  valk(4)
+    character(len=8) :: valk(4)
     logical :: avrc, dbg
     integer :: ibid, nbcvrc
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2
@@ -155,7 +155,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
         valk(1) = nocmp1
         valk(2) = carele
         valk(3) = chmat
-        call u2mesk('F', 'CALCULEL6_57', 3, valk)
+        call utmess('F', 'CALCULEL6_57', nk=3, valk=valk)
     endif
 !
     call cesexi('C', jce1d, jce1l, ima, 1,&

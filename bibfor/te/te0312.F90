@@ -1,10 +1,10 @@
 subroutine te0312(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ subroutine te0312(option, nomte)
                 1, 'K_DESSIC', kdessi, icodre, 0)
 !
     if (icodre(1) .eq. 0) then
-        call u2mesk('F', 'ELEMENTS_2', 1, nomte)
+        call utmess('F', 'ELEMENTS_2', sk=nomte)
     else
 !       -- KDESSI ABSENT => CHARGEMENT NUL
     endif

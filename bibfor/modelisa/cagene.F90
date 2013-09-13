@@ -24,7 +24,7 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: ligrmz
     character(len=8) :: char, noma
@@ -76,11 +76,11 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
     valk(1) = oper
     valk(2) = phen
     if (oper(11:14) .eq. 'THER' .and. phen .ne. 'THERMIQUE') then
-        call u2mesk('F', 'CHARGES2_64', 2, valk)
+        call utmess('F', 'CHARGES2_64', nk=2, valk=valk)
     else if (oper(11:14) .eq. 'MECA' .and. phen .ne. 'MECANIQUE') then
-        call u2mesk('F', 'CHARGES2_64', 2, valk)
+        call utmess('F', 'CHARGES2_64', nk=2, valk=valk)
     else if (oper(11:14) .eq. 'ACOU' .and. phen .ne. 'ACOUSTIQUE') then
-        call u2mesk('F', 'CHARGES2_64', 2, valk)
+        call utmess('F', 'CHARGES2_64', nk=2, valk=valk)
     endif
 !
 ! --- RECUPERATION DE LA DIMENSION REELLE DU PROBLEME

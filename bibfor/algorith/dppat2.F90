@@ -1,8 +1,8 @@
 function dppat2(mater, pmoins, pplus, plas)
 !
-    implicit      none
+    implicit none
 #include "asterfort/betaps.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), pmoins, pplus, plas, dppat2
 ! ======================================================================
 ! ======================================================================
@@ -55,7 +55,7 @@ function dppat2(mater, pmoins, pplus, plas)
             dppat2 = trois*deuxmu/deux
         endif
     else if (plas.eq.2.0d0) then
-        call u2mess('F', 'ALGORITH3_43')
+        call utmess('F', 'ALGORITH3_43')
         if (pplus .lt. pult) then
             betam = betaps (beta, pmoins, pult)
             dppat2 = trois*troisk*alpha*betam - douze*c*cos(phi)/( trois-sin(phi))* (un-(un-alpha&

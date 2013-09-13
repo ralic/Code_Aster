@@ -16,9 +16,8 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! aslint: disable=W1303
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -26,9 +25,9 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifr, nparim
     character(len=*) :: table, formar, lipaim(*)
 ! ----------------------------------------------------------------------
@@ -111,14 +110,13 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 12      continue
         erreur = .true.
         valkk (1) = inpar
-        call u2mesg('A', 'UTILITAI6_89', 1, valkk, 0,&
-                    0, 0, 0.d0)
+        call utmess('A', 'UTILITAI6_89', sk=valkk(1))
 10  end do
     if (erreur) then
-        call u2mess('F', 'PREPOST_60')
+        call utmess('F', 'PREPOST_60')
     endif
     if (npara .ne. 3) then
-        call u2mess('F', 'UTILITAI4_86')
+        call utmess('F', 'UTILITAI4_86')
     endif
 !
     ipar = zi(jnpar+3-1)
@@ -464,8 +462,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
                 valkk (1) = inpar
                 valkk (2) = lipacr(1)
                 valkk (3) = lipacr(2)
-                call u2mesg('F', 'UTILITAI6_99', 3, valkk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'UTILITAI6_99', nk=3, valk=valkk)
             endif
 420      continue
 !
@@ -478,7 +475,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     write ( ifr , formd )
 !
     if (icf .ne. ic) then
-        call u2mess('A', 'UTILITAI4_84')
+        call utmess('A', 'UTILITAI4_84')
     endif
 !
     call jedetr('&&TBIMTA.NOM_PARA')

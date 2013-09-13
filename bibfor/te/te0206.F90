@@ -20,13 +20,13 @@ subroutine te0206(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/gedisc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmfi3d.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: nomte, option
 !
 ! ----------------------------------------------------------------------
@@ -58,8 +58,12 @@ subroutine te0206(option, nomte)
 !
     nddl = 6*nno
 !
-    if (nno .gt. 4) call u2mess('F', 'ELEMENTS5_22')
-    if (npg .gt. 4) call u2mess('F', 'ELEMENTS5_23')
+    if (nno .gt. 4) then
+        call utmess('F', 'ELEMENTS5_22')
+    endif
+    if (npg .gt. 4) then
+        call utmess('F', 'ELEMENTS5_23')
+    endif
 !
 ! - LECTURE DES PARAMETRES
     call jevech('PGEOMER', 'L', igeom)

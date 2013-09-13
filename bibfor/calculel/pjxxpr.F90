@@ -64,9 +64,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 #include "asterfort/rsorac.h"
 #include "asterfort/rsutc4.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
 !
@@ -141,7 +139,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                     c16b, r8b, kb, nbordr, 1,&
                     ibid)
         if (nbordr .eq. 0) then
-            call u2mesk('F', 'CALCULEL4_62', 1, resu1)
+            call utmess('F', 'CALCULEL4_62', sk=resu1)
         endif
 !
         call wkvect('&&PJXXPR.NUME_ORDRE', 'V V I', nbordr, jordr)
@@ -155,7 +153,9 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     else
         call jeveuo(corres//'.PJXX_K1', 'L', jxxk1)
         if (method .ne. 'SOUS_POINT') then
-            if (zk24(jxxk1-1+2) .ne. ma2) call u2mess('F', 'CALCULEL4_60')
+            if (zk24(jxxk1-1+2) .ne. ma2) then
+                call utmess('F', 'CALCULEL4_60')
+            endif
         endif
 !
 !
@@ -174,10 +174,10 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         call rsutnu(resu1, ' ', 0, '&&PJXXPR.NUME_ORDRE', nbordr,&
                     prec, crit, iret)
         if (iret .ne. 0) then
-            call u2mesk('F', 'CALCULEL4_61', 1, resu1)
+            call utmess('F', 'CALCULEL4_61', sk=resu1)
         endif
         if (nbordr .eq. 0) then
-            call u2mesk('F', 'CALCULEL4_62', 1, resu1)
+            call utmess('F', 'CALCULEL4_62', sk=resu1)
         endif
         call jeveuo('&&PJXXPR.NUME_ORDRE', 'L', jordr)
     endif
@@ -253,8 +253,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         valk(1) = nomsym(isym)
         valk(2) = resu1
         valk(3) = resu2
-        call u2mesg(typerr, 'CALCULEL4_63', 3, valk, 1,&
-                    iordr, 0, 0.d0)
+        call utmess(typerr, 'CALCULEL4_63', nk=3, valk=valk, si=iordr)
         goto 20
 !
     endif
@@ -347,7 +346,9 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 20  continue
 30  continue
 !
-    if (ico .eq. 0) call u2mess('F', 'CALCULEL4_64')
+    if (ico .eq. 0) then
+        call utmess('F', 'CALCULEL4_64')
+    endif
     call jedetr('&&PJXXPR.NUME_ORDRE')
 !
 !

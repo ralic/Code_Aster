@@ -66,7 +66,6 @@ subroutine te0118(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -77,7 +76,8 @@ subroutine te0118(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !
     integer :: iadzi, iazk24, igeom, ndim, nno, nnos, npg, ipoids, ivf, idfde
@@ -191,7 +191,7 @@ subroutine te0118(option, nomte)
             valk(1) = option
             valk(2) = nomail
             valk(3) = typma
-            call u2mesk('F', 'ELEMENTS3_19', 3, valk)
+            call utmess('F', 'ELEMENTS3_19', nk=3, valk=valk)
         endif
     endif
 !
@@ -336,7 +336,7 @@ subroutine te0118(option, nomte)
                     sigmni(i)=sigmni(i)+zr(ini-1+(ino-1)*3+i)
 130              continue
                 if (abs(sigmni(i)) .gt. toleni) then
-                    call u2mesk('F', 'ELEMENTS3_20', 1, nomail)
+                    call utmess('F', 'ELEMENTS3_20', sk=nomail)
                 endif
 120          continue
         endif

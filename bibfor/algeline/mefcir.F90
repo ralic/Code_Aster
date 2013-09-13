@@ -10,7 +10,7 @@ subroutine mefcir(ndim, nbcyl, nbgrp, numgrp, som,&
 #include "asterfort/jemarq.h"
 #include "asterfort/mefasc.h"
 #include "asterfort/mtcrog.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcyl, ndim(14), numgrp(*)
     real(kind=8) :: som(9), rint(*), dcent(*), ficent(*), d(*), fi(*)
@@ -128,7 +128,7 @@ subroutine mefcir(ndim, nbcyl, nbgrp, numgrp, som,&
                         zr(ix), zr(itrav), ier)
 !
             if (ier .eq. 1) then
-                call u2mess('F', 'ALGELINE_76')
+                call utmess('F', 'ALGELINE_76')
             endif
 !
             do 213 i = 1, nmax

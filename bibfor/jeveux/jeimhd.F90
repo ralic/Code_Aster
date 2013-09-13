@@ -31,8 +31,7 @@ subroutine jeimhd(fichdf, clas)
 #include "asterfort/jjalty.h"
 #include "asterfort/jjimhd.h"
 #include "asterfort/jjlide.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: fichdf, clas
 ! ----------------------------------------------------------------------
 ! IMPRESSION DE L'ENSEMBLE DES OBJETS JEVEUX AU FORMAT HDF
@@ -114,8 +113,7 @@ subroutine jeimhd(fichdf, clas)
     nhdf = fichdf
     idfic = hdfcrf (nhdf)
     if (idfic .lt. 0) then
-        call u2mesg('F', 'JEVEUX_66', 1, nhdf, 1,&
-                    idfic, 0, rbid)
+        call utmess('F', 'JEVEUX_66', sk=nhdf, si=idfic)
     endif
     ngrp ='/'
     idg = hdfopg (idfic,ngrp)
@@ -174,7 +172,7 @@ subroutine jeimhd(fichdf, clas)
                 if (iadmx .eq. 0) then
                     if (iaddi(1) .eq. 0 .or. lonoi .eq. 0) then
                         if (nivo .ge. 2) then
-                            call u2mesk('A', 'JEVEUX_27', 1, crnom)
+                            call utmess('A', 'JEVEUX_27', sk=crnom)
                         endif
                         goto 5
                     endif
@@ -227,7 +225,7 @@ subroutine jeimhd(fichdf, clas)
                     if (iadmx .eq. 0) then
                         if (iaddi(1) .eq. 0) then
                             if (nivo .ge. 2) then
-                                call u2mesk('A', 'JEVEUX_28', 1, nomcol( 1:24))
+                                call utmess('A', 'JEVEUX_28', sk=nomcol( 1:24))
                             endif
                             goto 5
                         endif
@@ -265,8 +263,7 @@ subroutine jeimhd(fichdf, clas)
                             iaddi(2) = iszon(jiszon + ibiadd - 1 + 2* k )
                             if (iaddi(1) .eq. 0) then
                                 if (nivo .ge. 2) then
-                                    call u2mesg('A', 'JEVEUX_29', 1, nomcol(1:24), 1,&
-                                                k, 0, rbid)
+                                    call utmess('A', 'JEVEUX_29', sk=nomcol(1:24), si=k)
                                 endif
                                 goto 10
                             endif
@@ -337,7 +334,7 @@ subroutine jeimhd(fichdf, clas)
     1001 format(i5,1x,a,'  -',2(a,'-'),i2,1x,i8,1x,i7,i7,i7,i9)
     iret = hdfclf (idfic)
     if (iret .ne. 0) then
-        call u2mesk('F', 'JEVEUX_55', 1, nhdf)
+        call utmess('F', 'JEVEUX_55', sk=nhdf)
     endif
     ipgc = ipgcex
 ! FIN ------------------------------------------------------------------

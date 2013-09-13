@@ -12,8 +12,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     integer :: nsst, int, ind, ier
@@ -82,7 +81,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         do 2 ichoc = 1, nbchoc
             if (zk8(jinti+ichoc-1) .eq. intitu) goto 4
  2      continue
-        call u2mesk('A', 'UTILITAI_86', 1, intitu)
+        call utmess('A', 'UTILITAI_86', sk=intitu)
         goto 9999
  4      continue
         if (nsst .eq. 0) then
@@ -90,17 +89,17 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
             ic = 2
             if (zk8(jncho+nbchoc+ichoc-1) .eq. noeud) goto 16
             lg = max(1,lxlgut(noeud))
-            call u2mesk('A', 'UTILITAI_87', 1, noeud(1:lg))
+            call utmess('A', 'UTILITAI_87', sk=noeud(1:lg))
             goto 9999
         else
             if (zk8(jsst+ichoc-1) .eq. sst) goto 116
             if (zk8(jsst+nbchoc+ichoc-1) .eq. sst) goto 116
-            call u2mess('A', 'UTILITAI_88')
+            call utmess('A', 'UTILITAI_88')
             goto 9999
 116          continue
             if (zk8(jncho+ichoc-1) .ne. noeud .and. zk8(jncho+nbchoc+ ichoc-1) .ne. noeud) then
                 lg = max(1,lxlgut(noeud))
-                call u2mesk('A', 'UTILITAI_89', 1, noeud(1:lg))
+                call utmess('A', 'UTILITAI_89', sk=noeud(1:lg))
                 goto 9999
             endif
             if (zk8(jncho+ichoc-1) .eq. noeud .and. zk8(jsst+ichoc-1) .eq. sst) goto 16
@@ -108,7 +107,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
             if (zk8(jncho+nbchoc+ichoc-1) .eq. noeud .and. zk8(jsst+ nbchoc+ichoc-1) .eq. sst) &
             goto 16
             lg = max(1,lxlgut(noeud))
-            call u2mesk('A', 'UTILITAI_90', 1, noeud(1:lg))
+            call utmess('A', 'UTILITAI_90', sk=noeud(1:lg))
             goto 9999
         endif
     endif
@@ -122,7 +121,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         if (zk8(jncho+nbchoc+ichoc-1) .eq. noeud) goto 16
 12  end do
     lg = max(1,lxlgut(noeud))
-    call u2mesk('A', 'UTILITAI_87', 1, noeud(1:lg))
+    call utmess('A', 'UTILITAI_87', sk=noeud(1:lg))
     goto 9999
 16  continue
 !
@@ -170,7 +169,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         endif
     else
         lg = max(1,lxlgut(parax(1:8)))
-        call u2mesk('A', 'UTILITAI_91', 1, parax(1:lg))
+        call utmess('A', 'UTILITAI_91', sk=parax(1:lg))
         goto 9999
     endif
     call wkvect('&&FOCRCH.PARAX', 'V V R', nbinst, jvalx)
@@ -221,7 +220,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         endif
     else
         lg = max(1,lxlgut(paray(1:8)))
-        call u2mesk('A', 'UTILITAI_91', 1, paray(1:lg))
+        call utmess('A', 'UTILITAI_91', sk=paray(1:lg))
         goto 9999
     endif
     call wkvect('&&FOCRCH.PARAY', 'V V R', nbinst, jvaly)

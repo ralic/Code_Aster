@@ -22,7 +22,7 @@ subroutine jxlir1(ic, caralu)
 #include "asterc/opendr.h"
 #include "asterc/readdr.h"
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ic, caralu(*)
 ! ----------------------------------------------------------------------
 ! RELECTURE DU PREMIER ENREGISTREMENT D UNE BASE JEVEUX
@@ -68,7 +68,7 @@ subroutine jxlir1(ic, caralu)
     endif
     inquire (file=nom128,exist=lexist)
     if (.not. lexist) then
-        call u2mesk('F', 'JEVEUX_12', 1, nombas(ic))
+        call utmess('F', 'JEVEUX_12', sk=nombas(ic))
     endif
     call opendr(nom128, index, lindex, 0, ierr)
 !
@@ -77,11 +77,11 @@ subroutine jxlir1(ic, caralu)
 !
     call readdr(nom128, tampon, np2*lois, 1, ierr)
     if (ierr .ne. 0) then
-        call u2mesk('F', 'JEVEUX_13', 1, nombas(ic))
+        call utmess('F', 'JEVEUX_13', sk=nombas(ic))
     endif
     call closdr(nom128, ierr)
     if (ierr .ne. 0) then
-        call u2mesk('F', 'JEVEUX_14', 1, nombas(ic))
+        call utmess('F', 'JEVEUX_14', sk=nombas(ic))
     endif
     do 1 k = 1, npar
         caralu(k) = tampon(k+3)

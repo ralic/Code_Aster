@@ -1,8 +1,8 @@
-subroutine calc_norm_coef(model       , name_gd     , nb_cmp_max  , nb_cmp_in, norm  , &
-                          calc_elem   , list_cmp    , nb_coef_user, coef_user, chcoef, &
-                          chcalc      , nb_cmp_act)
+subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
+                          calc_elem, list_cmp, nb_coef_user, coef_user, chcoef,&
+                          chcalc, nb_cmp_act)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -10,8 +10,8 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/u2mesk.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,8 +35,8 @@ implicit none
     character(len=8), intent(in) :: model
     integer, intent(in) :: nb_cmp_max
     integer, intent(in) :: nb_cmp_in
-    character(len=16) , intent(in) :: norm
-    character(len=4) , intent(in) :: calc_elem
+    character(len=16), intent(in) :: norm
+    character(len=4), intent(in) :: calc_elem
     integer, intent(in) :: nb_coef_user
     real(kind=8), intent(in) :: coef_user(*)
     character(len=24), intent(in) :: list_cmp
@@ -99,7 +99,7 @@ implicit none
     list_coe_act = '&&CALC_NORM_COEF.CO'
     list_cmp_act = '&&CALC_NORM_COEF.CM'
     if (nb_cmp_in .gt. nb_cmp_max) then
-        call u2mesk('F', 'CHAMPS_18', 1, name_gd)
+        call utmess('F', 'CHAMPS_18', sk=name_gd)
     endif
     call jeveuo(list_cmp, 'L', j_lcmp_act_in)
 !
@@ -108,9 +108,9 @@ implicit none
 !                       'TENS' : tensor product PROD = A x A = SIXY * SIXY
 !                       'CONT' : contracted product PROD = (A : A) = 2 * SIXY * SIXY
 !
-    if (norm.eq.'L2') then
+    if (norm .eq. 'L2') then
         prod_type = 'CONT'
-    elseif (norm.eq.'FROBENIUS') then
+    else if (norm.eq.'FROBENIUS') then
         prod_type = 'TENS'
     else
         write(6,*) 'NORM: ',norm
@@ -119,20 +119,20 @@ implicit none
 !
 ! - Create <CARTE>
 !
-    call wkvect(list_coe_act, 'V V R' , nb_cmp_max, j_lcoe_act)
+    call wkvect(list_coe_act, 'V V R', nb_cmp_max, j_lcoe_act)
     call wkvect(list_cmp_act, 'V V K8', nb_cmp_max, j_lcmp_act)
 !
 ! - User coefficients: only for NEUT_R
 !
     if ((nb_coef_user .ne. 0) .and. (name_gd(1:6).eq.'NEUT_R')) then
-        call u2mess('A','CHAMPS_16')
+        call utmess('A', 'CHAMPS_16')
     endif
 !
 ! - Coefficient for cross components
 !
     if (prod_type .eq. 'TENS') then
         coef_cross = 1.d0
-    elseif (prod_type .eq. 'CONT') then
+    else if (prod_type .eq. 'CONT') then
         coef_cross = 2.d0
     else
         ASSERT(.false.)
@@ -145,15 +145,15 @@ implicit none
     do icmp = 1, nb_cmp_max
         call codent(icmp, 'G', ki)
         zk8(j_lcmp_act-1+icmp) = 'X'//ki(1:len(ki))
-        zr(j_lcoe_act-1+icmp)  = coef_init
+        zr(j_lcoe_act-1+icmp) = coef_init
     enddo
 !
 ! - Set <CARTE>
 !
     if (name_gd(1:4) .eq. 'DEPL') then
-        do icmp = 1, nb_cmp_in 
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'DX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'DY' .or. &
-                zk8(j_lcmp_act_in-1+icmp) .eq. 'DZ') then
+        do icmp = 1, nb_cmp_in
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'DX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+                'DY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'DZ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
             else
@@ -171,21 +171,21 @@ implicit none
         enddo
     else if (name_gd(1:4).eq.'FLUX') then
         do icmp = 1, nb_cmp_in
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUY' &
-                .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUZ') then
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+                'FLUY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'FLUZ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
             else
                 zr(j_lcoe_act-1+icmp) = 0.d0
             endif
         enddo
-   else if (name_gd(1:4).eq.'EPSI') then
+    else if (name_gd(1:4).eq.'EPSI') then
         do icmp = 1, nb_cmp_in
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'EPXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'EPYY' &
-                .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'EPZZ    ') then
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'EPXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+                'EPYY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'EPZZ    ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
-            elseif (zk8(j_lcmp_act_in-1+icmp).eq.'EPXY'.or. zk8(j_lcmp_act_in-1+icmp).eq.'EPXZ'  &
+                elseif (zk8(j_lcmp_act_in-1+icmp).eq.'EPXY'.or. zk8(j_lcmp_act_in-1+icmp).eq.'EPXZ'  &
                     .or. zk8(j_lcmp_act_in-1+icmp).eq.'EPYZ')then
                 zr(j_lcoe_act-1+icmp) = coef_cross
                 nb_cmp_act = nb_cmp_act+1
@@ -195,11 +195,11 @@ implicit none
         enddo
     else if (name_gd(1:4).eq.'SIEF') then
         do icmp = 1, nb_cmp_in
-            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'SIXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'SIYY'&
-                .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'SIZZ') then
+            if (zk8(j_lcmp_act_in-1+icmp) .eq. 'SIXX' .or. zk8(j_lcmp_act_in-1+icmp) .eq.&
+                'SIYY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'SIZZ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
-            elseif(zk8(j_lcmp_act_in-1+icmp).eq.'SIXY' .or. zk8(j_lcmp_act_in-1+icmp).eq.'SIXZ'&
+                elseif(zk8(j_lcmp_act_in-1+icmp).eq.'SIXY' .or. zk8(j_lcmp_act_in-1+icmp).eq.'SIXZ'&
                    .or. zk8(j_lcmp_act_in-1+icmp).eq.'SIYZ') then
                 zr(j_lcoe_act-1+icmp) = coef_cross
                 nb_cmp_act = nb_cmp_act+1
@@ -220,9 +220,9 @@ implicit none
 !
 ! - Set calc_elem option
 !
-    if (calc_elem.eq.'NORM') then
+    if (calc_elem .eq. 'NORM') then
         i_calc_elem = 1
-    elseif (calc_elem.eq.'SQUA') then
+    else if (calc_elem.eq.'SQUA') then
         i_calc_elem = -1
     else
         ASSERT(.false.)

@@ -39,7 +39,7 @@ subroutine refe80(nomres)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomres, basmod, intf, mailla
@@ -73,8 +73,7 @@ subroutine refe80(nomres)
         valk (1) = basmod
         valk (2) = idesc
         valk (3) = typbas(1)
-        call u2mesg('F', 'ALGORITH14_13', 3, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_13', nk=3, valk=valk)
     endif
 !
 !--------------------RECUPERATION DES CONCEPTS AMONTS-------------------

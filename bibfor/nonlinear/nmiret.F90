@@ -28,7 +28,7 @@ subroutine nmiret(codret, tabret)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     logical :: tabret(0:10)
     character(len=19) :: codret
 !
@@ -107,8 +107,7 @@ subroutine nmiret(codret, tabret)
             tabret(iret) = .true.
         else
             vali = iret
-            call u2mesg('A', 'MECANONLINE2_67', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'MECANONLINE2_67', si=vali)
         endif
 !
 20  end do

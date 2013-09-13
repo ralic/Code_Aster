@@ -17,7 +17,6 @@ subroutine te0353(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -28,7 +27,8 @@ subroutine te0353(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -258,8 +258,9 @@ subroutine te0353(option, nomte)
                         do 90 i = 1, 5
                             call rctype(mater, 1, 'TEMP', tpg, resu,&
                                         type)
-                            if ((type.eq.'TEMP') .and. (iret1.eq.1)) call u2mess('F',&
-                                                                                 'CALCULEL_31')
+                            if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
+                                call utmess('F', 'CALCULEL_31')
+                            endif
                             call rctrac(mater, 2, nomcle(i), resu, jprol,&
                                         jvale, nbval, r8bid)
                             call rcfonc('V', 2, jprol, jvale, nbval,&
@@ -399,7 +400,9 @@ subroutine te0353(option, nomte)
                     do 120 i = 1, 3
                         call rctype(mater, 1, 'TEMP', tpg, resu,&
                                     type)
-                        if ((type.eq.'TEMP') .and. (iret1.eq.1)) call u2mess('F', 'CALCULEL_31')
+                        if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
+                            call utmess('F', 'CALCULEL_31')
+                        endif
                         call rctrac(mater, 3, nomcle(i), tpg, jprol,&
                                     jvale, nbval, r8bid)
                         call rcfonc('V', 3, jprol, jvale, nbval,&

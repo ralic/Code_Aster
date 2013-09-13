@@ -19,7 +19,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cfdisi.h"
@@ -57,7 +57,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 #include "asterfort/mmvalp.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtgpld.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
@@ -300,8 +300,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
                 call mmnorm(ndimg, tau1, tau2, norm, noor)
                 if (noor .le. r8prem()) then
                     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommai)
-                    call u2mesg('F', 'CONTACT3_23', 1, nommai, 0,&
-                                0, 3, geomp)
+                    call utmess('F', 'CONTACT3_23', sk=nommai, nr=3, valr=geomp)
                 endif
 !
 ! --------- STATUTS INITIAUX

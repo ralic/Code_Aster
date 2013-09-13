@@ -33,12 +33,10 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 ! ---- ARGUMENTS
 #include "asterc/r8prem.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: imate, nbvar, kpg, ksp, memo, visc, iret, idelta, nrad, ibid
-    character(len=16) :: compor(3),valk(2)
+    character(len=16) :: compor(3), valk(2)
     real(kind=8) :: mat(18), matel(4)
     character(len=*) :: fami
 ! ---- VARIABLES LOCALES
@@ -58,7 +56,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     else if (compor(1)(6:9) .eq. 'MEMO') then
         nbvar=2
     else
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
 !
     if (compor(1)(1:4) .eq. 'VMIS') then
@@ -66,7 +64,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     else if (compor(1)(1:4) .eq. 'VISC') then
         visc=1
     else
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
 !
     memo=0
@@ -155,17 +153,17 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     mat(6) = w
     mat(7) = gamma0
     mat(8) = ainf
-
+!
     if (b < 0.d0) then
         valk(1)=compor(1)
         valk(2)='b'
-        call u2mesg('A', 'COMPOR1_84', 2, valk, 0, ibid, 1, b)
+        call utmess('A', 'COMPOR1_84', nk=2, valk=valk, sr=b)
     endif
-
+!
     if (w < 0.d0) then
         valk(1)=compor(1)
         valk(2)='w'
-        call u2mesg('A', 'COMPOR1_84', 2, valk, 0, ibid, 1, w)
+        call utmess('A', 'COMPOR1_84', nk=2, valk=valk, sr=w)
     endif
 !
 !     IDELTA : TYPE DE NON PROPORTIONNALITE
@@ -194,10 +192,10 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
         endif
 !        UTILE POUR LE CAS DES FONCTIONS
         if ((delta1.gt.(1.d0+epsi)) .or. (delta1.lt.-epsi)) then
-            call u2mesr('F', 'COMPOR1_80', 1, delta1)
+            call utmess('F', 'COMPOR1_80', sr=delta1)
         endif
         if ((delta2.gt.(1.d0+epsi)) .or. (delta2.lt.-epsi)) then
-            call u2mesr('F', 'COMPOR1_81', 1, delta2)
+            call utmess('F', 'COMPOR1_81', sr=delta2)
         endif
     else
         delta1 = 1.d0
@@ -230,17 +228,17 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
             valden = valres(1)
             unskvi = valres(2)
             if (valden .le. 0.d0) then
-                call u2mess('F', 'ALGORITH6_67')
+                call utmess('F', 'ALGORITH6_67')
             endif
             if (unskvi .eq. 0.d0) then
-                call u2mess('F', 'ALGORITH6_68')
+                call utmess('F', 'ALGORITH6_68')
             endif
             kvi = un/unskvi
             if (valres(3) .ne. 0.d0) then
-                call u2mess('F', 'ALGORITH6_69')
+                call utmess('F', 'ALGORITH6_69')
             endif
         else
-            call u2mess('F', 'COMPOR1_32')
+            call utmess('F', 'COMPOR1_32')
         endif
     else
         valden = un

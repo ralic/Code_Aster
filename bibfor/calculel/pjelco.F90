@@ -1,5 +1,5 @@
 subroutine pjelco(moa1, moa2, cham1, corres, base)
-    implicit   none
+    implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
 #include "asterfort/pjefco.h"
 #include "asterfort/pjma1p.h"
 #include "asterfort/pjma2p.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     character(len=8) :: moa1, moa2
     character(len=16) :: corres
     character(len=19) :: cham1
@@ -48,7 +48,7 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
     ASSERT(ndim1.eq.ndim2)
     ndim=ndim1
     ASSERT(ndim.eq.2.or.ndim.eq.3)
-    call u2mesi('I', 'CALCULEL3_28', 1, ndim)
+    call utmess('I', 'CALCULEL3_28', si=ndim)
 !
 !
 !     CREATION DU MAILLAGE 1 PRIME (MA1P)

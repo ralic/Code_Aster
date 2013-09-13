@@ -1,4 +1,5 @@
-subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
+subroutine as_mmhmii(fid, indice, maa, dim, type,&
+                     desc, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -18,8 +19,9 @@ subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mmhmii.h"
     aster_int :: fid, dim, dimb, cret, indice, type, typtri, nbseq, typrep
     character(len=64) :: maa
@@ -27,9 +29,9 @@ subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
     character(len=16) :: descdt
     character(len=16) :: nom(3), unit(3)
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, dim4, cret4, indic4, type4, dimb4, typtr4
     med_int :: nbseq4, typre4
@@ -52,6 +54,6 @@ subroutine as_mmhmii(fid, indice, maa, dim, type, desc, cret)
                 type, desc, descdt, typtri, nbseq,&
                 typrep, nom, unit, cret)
 #endif
-
+!
 #endif
 end subroutine

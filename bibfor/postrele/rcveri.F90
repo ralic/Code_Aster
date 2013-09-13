@@ -16,9 +16,7 @@ subroutine rcveri(tablz)
 #include "asterfort/tbextb.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: tablz
 !
 ! ======================================================================
@@ -95,8 +93,7 @@ subroutine rcveri(tablz)
 !     VERIFICATION DU NOMBRE DE LIGAMENT DANS LE CAS UNITAIRE
     call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     if (typmec .eq. 'UNITAIRE' .and. nbinti .ne. 1) then
-        call u2mesg('F', 'POSTRCCM_40', 1, table, 1,&
-                    nbinti, 0, r8b)
+        call utmess('F', 'POSTRCCM_40', sk=table, si=nbinti)
     endif
 !
 !     VERIFICATION DE LA PRESENCE DES COORDONNEES DANS LA TABLE
@@ -104,7 +101,7 @@ subroutine rcveri(tablz)
     call tbexip(table, valek(3), exi2, k8b)
     call tbexip(table, valek(4), exi3, k8b)
     if (.not.exi1 .and. .not.exi2 .and. .not.exi3) then
-        call u2mesk('I', 'POSTRCCM_39', 1, table)
+        call utmess('I', 'POSTRCCM_39', sk=table)
         goto 999
     endif
 !
@@ -129,7 +126,7 @@ subroutine rcveri(tablz)
                             'EQ', ibid, r8b, cbid, zk16(jinti+inti-1),&
                             r8b, k8b, iret)
             else
-                call u2mess('F', 'DVP_1')
+                call utmess('F', 'DVP_1')
             endif
 !
 !         LECTURE DU PREMIER INSTANT
@@ -174,7 +171,7 @@ subroutine rcveri(tablz)
             call normev(mm, norme)
             call lcprsn(3, mm, ab, ps)
             if (ps .le. eps) then
-                call u2mesk('F', 'POSTRCCM_37', 1, table)
+                call utmess('F', 'POSTRCCM_37', sk=table)
             endif
 10      continue
 !
@@ -204,8 +201,8 @@ subroutine rcveri(tablz)
             valk(2)=titu(1:len(titu))
             valr(1)=maxdis*norab
             valr(2)=norab
-            call u2mesg('A', 'POSTRCCM_38', 2, valk, 0,&
-                        ibid, 2, valr)
+            call utmess('A', 'POSTRCCM_38', nk=2, valk=valk, nr=2,&
+                        valr=valr)
         endif
 !
         call jedetr(coorx)

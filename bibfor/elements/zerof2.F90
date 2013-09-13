@@ -17,14 +17,14 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
 !
 !     ARGUMENTS:
 !     ----------
-#include "asterfort/u2mesg.h"
     interface
-    function f(x)
-        real(kind=8) :: f, x
-    end function f
+        function f(x)
+            real(kind=8) :: f, x
+        end function f
     end interface
     real(kind=8) :: x0, xap, epsi, solu
     integer :: nitmax, iret
@@ -163,8 +163,7 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
         valr (24+k) = fdbg(k)
 30  end do
 !
-    call u2mesg('F', 'ELEMENTS5_39', 0, ' ', 1,&
-                vali, 44, valr)
+    call utmess('F', 'ELEMENTS5_39', si=vali, nr=44, valr=valr)
 !
 100  continue
     do 22 k = 1, 20
@@ -180,8 +179,7 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
         valr (4+k) = xdbg(k)
         valr (24+k) = fdbg(k)
 31  end do
-    call u2mesg('F', 'ELEMENTS5_40', 0, ' ', 1,&
-                vali, 44, valr)
+    call utmess('F', 'ELEMENTS5_40', si=vali, nr=44, valr=valr)
 !
 9999  continue
 end subroutine

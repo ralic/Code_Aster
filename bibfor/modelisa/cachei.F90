@@ -14,8 +14,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=4) :: fonree
     character(len=5) :: param
     character(len=8) :: char, noma
@@ -85,7 +84,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     else if (fonree.eq.'FONC') then
         call alcart('G', carte, noma, 'EPSI_F')
     else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree)
+        call utmess('F', 'MODELISA2_37', sk=fonree)
     endif
 !
     call jeveuo(carte//'.NCMP', 'E', jncmp)
@@ -170,7 +169,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             if (nkyy .ne. 0) zr(jvalv-1+14) = xkyy
             if (nkxy .ne. 0) zr(jvalv-1+15) = xkxy
             if ((nky.ne.0.or.nkz.ne.0) .and. (modeli.eq.'POU_C_T')) then
-                call u2mess('F', 'MODELISA2_38')
+                call utmess('F', 'MODELISA2_38')
             endif
         else
             call getvid(motclf, 'EPXX', iocc=iocc, scal=kepxx, nbret=nxx)

@@ -29,7 +29,7 @@ subroutine te0361(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/terefe.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  FORC_NODA ET REFE_FORC_NODA
@@ -65,7 +65,9 @@ subroutine te0361(option, nomte)
 !     RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
 !
     call jevech('PCAMASS', 'L', icamas)
-    if (zr(icamas) .eq. -1.d0) call u2mess('F', 'ELEMENTS5_47')
+    if (zr(icamas) .eq. -1.d0) then
+        call utmess('F', 'ELEMENTS5_47')
+    endif
 !
 !     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
 !

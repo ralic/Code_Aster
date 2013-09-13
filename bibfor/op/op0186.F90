@@ -57,10 +57,8 @@ subroutine op0186()
 #include "asterfort/rsinch.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
     logical :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
@@ -232,8 +230,7 @@ subroutine op0186()
     tpsthe(4) = khi
     tpsthe(5) = r8vide()
     tpsthe(6) = r8vide()
-    call u2mesg('I', 'MECANONLINE6_6', 0, ' ', 0,&
-                0, 1, instap)
+    call utmess('I', 'MECANONLINE6_6', sr=instap)
     write (ifm,fmt1)
     write (ifm,fmt2) '|','ITERATION','RESIDU','RESIDU',&
      &      'ITERATION','COEFFICIENT','ACTUALISATION','|'
@@ -265,17 +262,15 @@ subroutine op0186()
                 call rsinch(evolsc, 'TEMP', 'INST', timet, tmpchi,&
                             'CONSTANT', 'CONSTANT', 1, base, icoret)
                 if (icoret .ge. 10) then
-                    call u2mesg('F', 'ALGORITH8_94', 1, evolsc, 1,&
-                                icoret, 1, timet)
+                    call utmess('F', 'ALGORITH8_94', sk=evolsc, si=icoret, sr=timet)
                 endif
                 call rsinch(evolsc, 'TEMP', 'INST', timtdt, tmpchf,&
                             'CONSTANT', 'CONSTANT', 1, base, icoret)
                 if (icoret .ge. 10) then
-                    call u2mesg('F', 'ALGORITH8_94', 1, evolsc, 1,&
-                                icoret, 1, timtdt)
+                    call utmess('F', 'ALGORITH8_94', sk=evolsc, si=icoret, sr=timtdt)
                 endif
             else
-                call u2mesk('F', 'ALGORITH8_99', 1, evolsc)
+                call utmess('F', 'ALGORITH8_99', sk=evolsc)
             endif
         endif
     endif
@@ -392,7 +387,7 @@ subroutine op0186()
 !
     if (itemax .and. .not.conver) then
         write (ifm,fmt1)
-        call u2mess('I', 'MECANONLINE10_3')
+        call utmess('I', 'MECANONLINE10_3')
     endif
     call uttcpu('CPU.OP0186.2', 'FIN', ' ')
     call uttcpr('CPU.OP0186.2', 4, tps2)
@@ -491,7 +486,7 @@ subroutine op0186()
     call uttcpr('CPU.OP0186.1', 4, tps1)
     tconso=tps1(3) - tpex
     call impfot(tconso, tpscvt)
-    call u2mesk('I', 'MECANONLINE7_1', 1, tpscvt)
+    call utmess('I', 'MECANONLINE7_1', sk=tpscvt)
     write (ifm,'(/)')
     tpex = tps1(3)
     if (tps1(4) .gt. 0.48d0*tps1(1)) then

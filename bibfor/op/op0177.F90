@@ -45,12 +45,12 @@ subroutine op0177()
 #include "asterfort/lxlgut.h"
 #include "asterfort/tbimfi.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utest0.h"
 #include "asterfort/utest3.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter (nompro='OP0177')
@@ -198,7 +198,9 @@ subroutine op0177()
     if (nparfi .ne. 0) then
         newta1 = '&&'//nompro//'.FILTRE '
         call tbimfi(nparfi, newtab, newta1, iret)
-        if (iret .ne. 0) call u2mess('F', 'CALCULEL6_7')
+        if (iret .ne. 0) then
+            call utmess('F', 'CALCULEL6_7')
+        endif
         newtab = newta1
     endif
 !     ------------------------------------------------------------------
@@ -279,15 +281,17 @@ subroutine op0177()
 !
     if (iret .eq. 0) then
     else if (iret .eq. 1) then
-        call u2mess('F', 'CALCULEL6_3')
+        call utmess('F', 'CALCULEL6_3')
     else if (iret .eq. 2) then
-        call u2mess('F', 'CALCULEL6_4')
+        call utmess('F', 'CALCULEL6_4')
     else if (iret .eq. 3) then
-        call u2mess('F', 'CALCULEL6_5')
+        call utmess('F', 'CALCULEL6_5')
     else
-        call u2mess('F', 'CALCULEL6_6')
+        call utmess('F', 'CALCULEL6_6')
     endif
-    if (ctype(1:1) .ne. typr) call u2mess('F', 'CALCULEL6_8')
+    if (ctype(1:1) .ne. typr) then
+        call utmess('F', 'CALCULEL6_8')
+    endif
 !
     if (lref) then
         tbref(1)=tbtxt(1)

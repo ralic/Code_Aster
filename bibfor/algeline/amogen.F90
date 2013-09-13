@@ -28,8 +28,7 @@ subroutine amogen(mat19)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=19) :: mat19
@@ -39,7 +38,7 @@ subroutine amogen(mat19)
     integer :: vali(3)
     integer :: iamat, n, m, m2, i, iam, iak, j, nbamor, nlist
     integer :: iblo, idesc, ialime, iaconl, jrefa, jrefa2, iadesc, n2, n1
-    real(kind=8) ::  kmin, valmin, kmax, rk
+    real(kind=8) :: kmin, valmin, kmax, rk
 !
     call jemarq()
 !
@@ -55,8 +54,7 @@ subroutine amogen(mat19)
     if (m2 .ne. m) then
         vali (1) = m
         vali (2) = m2
-        call u2mesg('F', 'ALGELINE5_28', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGELINE5_28', ni=2, vali=vali)
     endif
 !
     if (n1 .ne. 0) then
@@ -71,8 +69,7 @@ subroutine amogen(mat19)
         vali (1) = n
         vali (2) = nbamor
         vali (3) = n
-        call u2mesg('A', 'ALGELINE5_29', 0, ' ', 3,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'ALGELINE5_29', ni=3, vali=vali)
         call wkvect('&&AMORMA.AMORTI', 'V V R8', n, jamog)
         if (n1 .ne. 0) then
             call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=n, vect=zr(jamog),&
@@ -103,8 +100,7 @@ subroutine amogen(mat19)
             vali (1) = idiff
             vali (2) = n
             vali (3) = idiff
-            call u2mesg('I', 'ALGELINE5_30', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGELINE5_30', ni=3, vali=vali)
         endif
     endif
     iblo=1
@@ -167,7 +163,7 @@ subroutine amogen(mat19)
 190  end do
     rk=kmin/kmax
     if (abs(rk) .ge. valmin) then
-        call u2mess('A', 'PREPOST4_20')
+        call utmess('A', 'PREPOST4_20')
 !         CALL U2MESS('F','PREPOST4_21')
     endif
     call jedetr('&&AMORMA.AMORTI')

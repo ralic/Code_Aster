@@ -22,7 +22,7 @@ subroutine utimos(unit, obin, lattr, lcont)
 #include "asterfort/jeexin.h"
 #include "asterfort/jeimpa.h"
 #include "asterfort/jeimpo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: obin
     integer :: unit
     logical :: lattr, lcont
@@ -48,7 +48,7 @@ subroutine utimos(unit, obin, lattr, lcont)
 !
     call jeexin(ob1, iret)
     if (iret .le. 0) then
-        call u2mesk('A', 'UTILITAI_99', 1, ob1)
+        call utmess('A', 'UTILITAI_99', sk=ob1)
         goto 9999
     endif
 !

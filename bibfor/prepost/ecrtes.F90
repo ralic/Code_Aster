@@ -16,7 +16,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexpa.h"
 #include "asterfort/rsnopa.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: numor, ityp
     character(len=*) :: nomsd, titre, nomgds
     character(len=*) :: fitype
@@ -219,7 +219,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
                             0, iad, k8bid)
             else
                 k8bid = nomsd(1:8)
-                call u2mesk('F', 'PREPOST_31', 1, k8bid)
+                call utmess('F', 'PREPOST_31', sk=k8bid)
             endif
         endif
         freq = zr(iad)

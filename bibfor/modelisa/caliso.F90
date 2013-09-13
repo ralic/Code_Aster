@@ -30,8 +30,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/jexnom.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,7 +122,9 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
                 k8bid, ier)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+        call utmess('F', 'CHARGES2_6')
+    endif
 !
 ! - Minimum distance
 !
@@ -200,7 +201,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! ----- Only one node: nothing to do
 !
         if (nb_node .eq. 1) then
-            call u2mess('I', 'CHARGES2_17')
+            call utmess('I', 'CHARGES2_17')
             goto 998
         endif
 !

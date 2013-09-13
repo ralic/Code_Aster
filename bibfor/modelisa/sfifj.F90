@@ -46,8 +46,7 @@ subroutine sfifj(nomres)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nfinit, nfin, nbm, nbpoin, nbid
@@ -104,21 +103,23 @@ subroutine sfifj(nomres)
     call getvr8(' ', 'FREQ_INIT', scal=finit, nbret=nfinit)
     call getvr8(' ', 'FREQ_FIN', scal=ffin, nbret=nfin)
     if ((ffin-finit) .lt. r8prem()) then
-        call u2mess('F', 'MODELISA6_97')
+        call utmess('F', 'MODELISA6_97')
     endif
 !
     if (nfinit .lt. 0) then
-        if (ncham .ne. 0) call u2mess('F', 'MODELISA6_98')
+        if (ncham .ne. 0) then
+            call utmess('F', 'MODELISA6_98')
+        endif
         valr = fmin
-        call u2mesg('I', 'MODELISA9_15', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('I', 'MODELISA9_15', sr=valr)
         finit=fmin
     endif
     if (nfin .lt. 0) then
-        if (ncham .ne. 0) call u2mess('F', 'MODELISA6_99')
+        if (ncham .ne. 0) then
+            call utmess('F', 'MODELISA6_99')
+        endif
         valr = fmax
-        call u2mesg('I', 'MODELISA9_16', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('I', 'MODELISA9_16', sr=valr)
         ffin=fmax
     endif
 !
@@ -128,7 +129,7 @@ subroutine sfifj(nomres)
 ! PAS FREQUENTIEL
     df = (ffin-finit) / (nbpoin-1)
     if (df .lt. r8prem()) then
-        call u2mess('F', 'MODELISA7_1')
+        call utmess('F', 'MODELISA7_1')
     endif
 !
 ! CALCUL DE L'ACCEPTANCE
@@ -161,23 +162,17 @@ subroutine sfifj(nomres)
         fmodel = 10.d0 * uflui / dhyd
         if (fcoupu .le. fmodel) then
             valr = fcoupu
-            call u2mesg('I', 'MODELISA9_17', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('I', 'MODELISA9_17', sr=valr)
             valr = fmodel
-            call u2mesg('I', 'MODELISA9_18', 0, ' ', 0,&
-                        0, 1, valr)
-            call u2mesg('I', 'MODELISA9_19', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('I', 'MODELISA9_18', sr=valr)
+            call utmess('I', 'MODELISA9_19')
             fcoup = fcoupu * dhyd / uflui
         else
             valr = fcoupu
-            call u2mesg('I', 'MODELISA9_20', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('I', 'MODELISA9_20', sr=valr)
             valr = fmodel
-            call u2mesg('I', 'MODELISA9_21', 0, ' ', 0,&
-                        0, 1, valr)
-            call u2mesg('I', 'MODELISA9_22', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('I', 'MODELISA9_21', sr=valr)
+            call utmess('I', 'MODELISA9_22')
             fcoup = 10.d0
         endif
 !
@@ -210,7 +205,9 @@ subroutine sfifj(nomres)
             call wkvect('&&SFIFJ.VECY', 'V V R', 3, ivecy)
             call getvr8(' ', 'VECT_Y', nbval=nvecy, vect=zr(ivecy), nbret=nbid)
         endif
-        if (nvecx .lt. 0 .or. nvecy .lt. 0) call u2mess('F', 'MODELISA7_2')
+        if (nvecx .lt. 0 .or. nvecy .lt. 0) then
+            call utmess('F', 'MODELISA7_2')
+        endif
 !
 ! VECTEUR Z LOCAL = VECT-X VECTORIEL VECT-Y
         call wkvect('&&SFIFJ.VECZ', 'V V R', 3, ivecz)
@@ -234,7 +231,9 @@ subroutine sfifj(nomres)
         if (nveco .gt. 0) then
             call getvr8(' ', 'ORIG_AXE', nbval=nveco, vect=dir(1, 2), nbret=nbid)
         endif
-        if (nvecx .lt. 0 .or. nveco .lt. 0) call u2mess('F', 'MODELISA7_3')
+        if (nvecx .lt. 0 .or. nveco .lt. 0) then
+            call utmess('F', 'MODELISA7_3')
+        endif
     endif
 !
 ! VALEURS NON DEPENDANTES DE LA FREQUENCE

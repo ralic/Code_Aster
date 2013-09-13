@@ -19,7 +19,7 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/jedupo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: clain, schin, claout, schout
     integer :: ipos
     logical :: dupcol
@@ -61,21 +61,21 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
 !
     l1 = len ( schin )
     if (ipos + l1 .gt. 25 .or. ipos .lt. 0 .or. l1 .eq. 0) then
-        call u2mesk('F', 'JEVEUX_92', 1, schin)
+        call utmess('F', 'JEVEUX_92', sk=schin)
     endif
     schin2=schin
     l2 = len ( schout)
     schou2=schout
 !
     if (l1 .ne. l2) then
-        call u2mesk('F', 'JEVEUX_93', 1, schou2//' '//schin2)
+        call utmess('F', 'JEVEUX_93', sk=schou2//' '//schin2)
     endif
 !
     if (ipos + l2 .gt. 25 .or. ipos .lt. 0 .or. l2 .eq. 0) then
-        call u2mesk('F', 'JEVEUX_92', 1, schout)
+        call utmess('F', 'JEVEUX_92', sk=schout)
     endif
     if (schin(1:l1) .eq. schout(1:l2)) then
-        call u2mesk('F', 'JEVEUX_94', 1, schin2//' : '//schou2)
+        call utmess('F', 'JEVEUX_94', sk=schin2//' : '//schou2)
     endif
 !
     kclas = clain (1:min(1,len(clain)))

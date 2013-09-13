@@ -29,7 +29,7 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
 #include "asterfort/moytem.h"
 #include "asterfort/nmcri4.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verifm.h"
 #include "asterfort/zerofr.h"
@@ -112,10 +112,10 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
     t2 = abs(theta-1.d0)
     prec = 0.01d0
     if ((t1.gt.prec) .and. (t2.gt.prec)) then
-        call u2mess('F', 'ALGORITH6_55')
+        call utmess('F', 'ALGORITH6_55')
     endif
     if (coeffl(1) .eq. 0.d0) then
-        call u2mess('F', 'ALGORITH7_79')
+        call utmess('F', 'ALGORITH7_79')
     endif
 !
     call r8inir(nbt, 0.d0, kls, 1)
@@ -135,13 +135,17 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
 !
     call moytem(fami, npg, 1, '+', tempp,&
                 iret)
-    if (iret .eq. 1) call u2mess('F', 'CALCULEL_31')
+    if (iret .eq. 1) then
+        call utmess('F', 'CALCULEL_31')
+    endif
     call matela(icodma, ' ', itemp, tempp, e,&
                 nu)
 !
     call moytem(fami, npg, 1, '-', tempm,&
                 iret)
-    if (iret .eq. 1) call u2mess('F', 'CALCULEL_31')
+    if (iret .eq. 1) then
+        call utmess('F', 'CALCULEL_31')
+    endif
     call matela(icodma, ' ', itemp, tempm, em,&
                 num)
     you = e
@@ -167,19 +171,19 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
     expon = exp(-1.d0*coeffl(4)/(tempp2+tabs))
     sdt = (irrap-irram)/(coeffl(6)*(tplus-tmoins))
     if (coeffl(6) .le. 0.d0) then
-        call u2mess('F', 'ALGORITH7_80')
+        call utmess('F', 'ALGORITH7_80')
     endif
     if (sdt .lt. 0.d0) then
-        call u2mess('F', 'ALGORITH6_57')
+        call utmess('F', 'ALGORITH6_57')
     endif
     sdt = sdt * coeffl(2) + coeffl(7)
     if (sdt .lt. 0.d0) then
-        call u2mess('F', 'ALGORITH7_81')
+        call utmess('F', 'ALGORITH7_81')
     endif
     if (sdt .eq. 0.d0) then
         if (coeffl(5) .eq. 0.d0) sdt=1.d0
         if (coeffl(5) .lt. 0.d0) then
-            call u2mess('F', 'ALGORITH7_82')
+            call utmess('F', 'ALGORITH7_82')
         endif
     endif
     if (sdt .gt. 0.d0) then

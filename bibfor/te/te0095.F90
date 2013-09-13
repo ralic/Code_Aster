@@ -44,7 +44,7 @@ subroutine te0095(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: icodre(3)
     integer :: icorsv(3)
     character(len=8) :: nomres(3), nompar(4)
@@ -272,7 +272,9 @@ subroutine te0095(option, nomte)
             call rcvarc(' ', 'TEMP', '+', 'NOEU', i,&
                         1, tgp, iret2)
             if ((iret1+iret2) .eq. 0) then
-                if (iret0 .eq. 1) call u2mess('F', 'CALCULEL_31')
+                if (iret0 .eq. 1) then
+                    call utmess('F', 'CALCULEL_31')
+                endif
                 tgu = tgu + tgm*der(4)
                 tgv = tgv + tgp*der(4)
                 do 75 j = 1, ndim
@@ -321,7 +323,7 @@ subroutine te0095(option, nomte)
                     valrsv, devrsv, icorsv)
         if (iret0 .eq. 0) then
             if ((icodre(3) .ne.0) .or. ((icorsv(3) .ne.0))) then
-                call u2mess('F', 'CALCULEL_31')
+                call utmess('F', 'CALCULEL_31')
             endif
         else
             valres(3) = 0.d0
@@ -331,7 +333,7 @@ subroutine te0095(option, nomte)
         endif
         if ((valres(1) .ne. valrsv(1)) .or. ((valres(2) .ne. valrsv(2))) .or.&
             (valres(3) .ne. valrsv(3))) then
-            call u2mess('F', 'ELEMENTS3_12')
+            call utmess('F', 'ELEMENTS3_12')
         endif
         e = valres(1)
         nu = valres(2)

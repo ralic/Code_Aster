@@ -1,6 +1,6 @@
 subroutine as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
-                  nomasu, medcel, nbnosu, nbmssu, tygems,&
-                  nbattc, prespr, nbattv, codret)
+                     nomasu, medcel, nbnosu, nbmssu, tygems,&
+                     nbattc, prespr, nbattv, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -20,16 +20,17 @@ subroutine as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/msesei.h"
     character(len=*) :: nomaes, nomasu
     aster_int :: idfimd, imasup, nvtymd, dimest, medcel, nbnosu
     aster_int :: nbmssu, tygems, nbattc, prespr, nbattv, codret
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: idfim4, imasu4, nvtym4, dimes4, medce4, nbnos4
     med_int :: nbmss4, tygem4, nbatc4, presp4, nbatv4, codre4
@@ -53,6 +54,6 @@ subroutine as_msesei(idfimd, imasup, nomaes, nvtymd, dimest,&
                 nomasu, medcel, nbnosu, nbmssu, tygems,&
                 nbattc, prespr, nbattv, codret)
 #endif
-
+!
 #endif
 end subroutine

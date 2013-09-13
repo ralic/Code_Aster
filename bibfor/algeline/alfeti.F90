@@ -51,7 +51,6 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/matfpe.h"
 #include "asterc/r8miem.h"
 #include "asterfort/detrsd.h"
@@ -88,14 +87,13 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
+!
     integer :: niter, nbreor, nbreoi, reacre
     real(kind=8) :: epsi, testco
     character(len=*) :: criter
@@ -181,7 +179,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
     else if (opt(1:10).eq.'RESOLUTION') then
 ! ON FAIT LA RESOLUTION STANDARD
     else
-        call u2mess('F', 'ALGELINE_1')
+        call utmess('F', 'ALGELINE_1')
     endif
 !----------------------------------------------------------------------
 !----  1. PREPARATION DES DONNEES
@@ -462,7 +460,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
             iaux3=iaux3+1
             call jelira(jexnom(sdfetg, nomsd), 'LONMAX', long)
             if (mod(long,2) .ne. 0) then
-                call u2mesk('F', 'ALGELINE_2', 1, sdfeti)
+                call utmess('F', 'ALGELINE_2', sk=sdfeti)
             else
                 zi(iaux3)=(long/2)-1
                 iaux3=iaux3+1
@@ -807,7 +805,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
             alphad=ddot(nbi,zr(irp),1,zr(irz),1)
             if (abs(alphad) .lt. rmin) then
                 alphad=rmin
-                call u2mess('A', 'ALGELINE_3')
+                call utmess('A', 'ALGELINE_3')
             endif
             alpha=alphan/alphad
 !  STOCKAGE ZK.PK SI REORTHO
@@ -1054,8 +1052,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
     if (rang .eq. 0) then
         valr (1) = anorm
         valr (2) = anorm/anorm0
-        call u2mesg('F', 'ALGELINE4_8', 0, ' ', 1,&
-                    iter, 2, valr)
+        call utmess('F', 'ALGELINE4_8', si=iter, nr=2, valr=valr)
     endif
 !
 !----  4.2 FORMAT AFFICHAGE

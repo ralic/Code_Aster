@@ -29,7 +29,7 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 ! - VARIABLES D'ENTREE
 !
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
     real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)
     character(len=8) :: nomail
@@ -76,8 +76,7 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
         if ((clo.gt.umc) .or. (clo.lt.-1.d-3)) then
             valr(1) = clo
             valr(2) = umc
-            call u2mesg('A', 'ALGORITH17_11', 1, nomail, 0,&
-                        ibid, 2, valr)
+            call utmess('A', 'ALGORITH17_11', sk=nomail, nr=2, valr=valr)
             retcom = 1
             goto 9000
         endif

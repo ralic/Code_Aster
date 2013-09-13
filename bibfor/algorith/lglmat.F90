@@ -2,12 +2,12 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
                   materf, matcst, ndt, ndi, nr,&
                   nvi)
 !
-    implicit     none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lglnvi.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nr, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=3) :: matcst
@@ -105,9 +105,11 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
     call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                [tempd], 3, nomc(1), materd(1, 1), cerr(1), 0)
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1),&
+                0)
     call rcvala(imat, ' ', 'LAIGLE', 1, 'TEMP',&
-                [tempd], 14, nomc(4), materd(1, 2), cerr(4), 0)
+                [tempd], 14, nomc(4), materd(1, 2), cerr(4),&
+                0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
@@ -121,7 +123,7 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
     gamma = materd(10,2)
     ksi = materd(11,2)
     if ((gamma/ksi) .gt. un) then
-        call u2mess('F', 'ALGORITH5_11')
+        call utmess('F', 'ALGORITH5_11')
     endif
 ! =================================================================
 ! --- STOCKAGE DES MODULES CALCULES COMME PARAMETRES MATERIAU -----
@@ -148,7 +150,7 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
     cohere =&
      &        abs(sigc/sigmp1*((mpic*sigmp1/sigc+1)**(apic/ae))-me)
     if (cohere .gt. 1.0d-2) then
-        call u2mess('F', 'ALGORITH5_12')
+        call utmess('F', 'ALGORITH5_12')
     endif
 ! =================================================================
 ! --- DEFINITION D'UN MATERIAU FINAL ------------------------------

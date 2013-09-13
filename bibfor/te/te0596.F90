@@ -18,7 +18,6 @@ subroutine te0596(option, nomte)
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elref4.h"
@@ -29,7 +28,8 @@ subroutine te0596(option, nomte)
 #include "asterfort/nufnlg.h"
 #include "asterfort/nufnpd.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION FORC_NODA POUR LES ELEMENTS
@@ -54,8 +54,10 @@ subroutine te0596(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
+                npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
+                npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
@@ -65,7 +67,7 @@ subroutine te0596(option, nomte)
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
-        call u2mesk('F', 'ELEMENTS_34', 1, nomte)
+        call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -88,37 +90,47 @@ subroutine te0596(option, nomte)
             endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
 !
-            call nufnpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1,&
-                        vu, vp, typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
+            call nufnpd(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
+                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
                         zr(iddlm), mini, zr(ivectu))
         else if (lteatt(' ','INCO','C2PDO')) then
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, nno2, vu, vg, vp,&
+                        vpi)
 !
-            call nofnpd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
-                        vu, vp, vpi, typmod, zi(imate), zk16(icompo), zr(igeom), nomte, zr(icontm),&
-                        zr(iddlm), zr(ivectu))
+            call nofnpd(ndim, nno1, nno2, nno2, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
+                        vu, vp, vpi, typmod, zi(imate),&
+                        zk16(icompo), zr(igeom), nomte, zr(icontm), zr(iddlm),&
+                        zr(ivectu))
         else
             valk = zk16(icompo+2)
-            call u2mesk('F', 'MODELISA10_17', 1, valk)
+            call utmess('F', 'MODELISA10_17', sk=valk)
         endif
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
         if (lteatt(' ','INCO','C2LG ')) then
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
 !
-            call nufnlg(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1,&
-                        vu, vp, typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
+            call nufnlg(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
+                        typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
                         zr(iddlm), zr(ivectu))
         else
             valk = zk16(icompo+2)
-            call u2mesk('F', 'MODELISA10_17', 1, valk)
+            call utmess('F', 'MODELISA10_17', sk=valk)
         endif
     else
-        call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+        call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
     endif
 !
 end subroutine

@@ -41,11 +41,11 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
 #include "asterfort/lirtet.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
     real(kind=8) :: rv
-    integer nbm
+    integer :: nbm
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig
     character(len=14) :: cnl
@@ -136,7 +136,7 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
     if ((nbtav-nbt(numtcl)) .eq. 0) then
         valk(1) = cnl
         valk(2) = nom
-        call u2mesk('F', 'MODELISA4_80', 2, valk)
+        call utmess('F', 'MODELISA4_80', nk=2, valk=valk)
 !         -- ON VA CREER UN GROUPE VIDE DE LONGUEUR 1 :
         dim(numtcl) = dim(numtcl) + 1
         nbt(numtcl) = nbt(numtcl) + 1

@@ -17,8 +17,7 @@ subroutine te0038(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vdiff.h"
@@ -92,7 +91,7 @@ subroutine te0038(option, nomte)
                         ' ', phenom, 0, ' ', r8b,&
                         1, 'RHO', rho, codres, 1)
         else
-            call u2mess('F', 'ELEMENTS_50')
+            call utmess('F', 'ELEMENTS_50')
         endif
     endif
 !
@@ -103,7 +102,7 @@ subroutine te0038(option, nomte)
     xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
     if (xl .eq. 0.d0) then
         ch16 = ' ?????????'
-        call u2mesk('F', 'ELEMENTS2_80', 1, ch16(:8))
+        call utmess('F', 'ELEMENTS2_80', sk=ch16(:8))
     endif
 !
 !
@@ -339,7 +338,7 @@ subroutine te0038(option, nomte)
         else if (itype.eq.1) then
             if ((abs(a1- (4.d0*ry1*rz1)).gt. (a1*prec)) .or.&
                 (abs(a2- (4.d0*ry2*rz2)).gt. (a2*prec))) then
-                call u2mess('F', 'ELEMENTS2_81')
+                call utmess('F', 'ELEMENTS2_81')
             endif
 !           -------- MASSE
             zr(lcastr) = rho*xl* (a1+a2)/2.d0
@@ -374,7 +373,7 @@ subroutine te0038(option, nomte)
 !        --- POUTRE A SECTION VARIABLE HOMOTHETIQUE ---
         else if (itype.eq.2) then
             if (a1 .eq. 0.d0) then
-                call u2mess('F', 'ELEMENTS2_82')
+                call utmess('F', 'ELEMENTS2_82')
             endif
 !           -------- MASSE
             zr(lcastr) = rho* (a1+a2+sqrt(a1*a2))*xl/3.d0
@@ -434,7 +433,7 @@ subroutine te0038(option, nomte)
 !
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_84', 1, ch16)
+        call utmess('F', 'ELEMENTS2_84', sk=ch16)
     endif
 !
 end subroutine

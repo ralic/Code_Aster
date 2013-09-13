@@ -25,8 +25,8 @@ subroutine matrc2(nbpar, nompar, valpar, kcis, matc,&
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
     integer :: nbpar
     real(kind=8) :: valpar(*), kcis, matc(5, 5), vectt(3, 3)
     character(len=8) :: nompar(*)
@@ -64,7 +64,7 @@ subroutine matrc2(nbpar, nompar, valpar, kcis, matc,&
         nomres(5)='G_TN'
         nbv = 5
     else
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
     if (phenom .eq. 'ELAS') then

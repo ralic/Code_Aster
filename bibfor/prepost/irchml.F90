@@ -36,9 +36,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxcaps.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: chamel, nomcmp(*), form, titre, loc, nomsd, nomsym
@@ -131,7 +129,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     else if (type(1:1).eq.'K') then
         itype = 4
     else
-        call u2mesk('A', 'PREPOST_97', 1, type(1:1))
+        call utmess('A', 'PREPOST_97', sk=type(1:1))
         goto 9999
     endif
 !
@@ -141,7 +139,9 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !     ----------------------------------------------------------
     call celver(chame, 'NBVARI_CST', 'COOL', kk)
     if (kk .eq. 1) then
-        if (iprem .eq. 1) call u2mess('I', 'PREPOST_2')
+        if (iprem .eq. 1) then
+            call utmess('I', 'PREPOST_2')
+        endif
         call celcel('NBVARI_CST', chame, 'V', '&&IRCHML.CHAMEL1')
         chame= '&&IRCHML.CHAMEL1'
     endif
@@ -159,13 +159,13 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
                             borinf, borsup)
             else
 !           SINON ON IMPRIME LE CHAMP TEL QUEL
-                call u2mesk('I', 'PREPOST_98', 1, nomsy2)
+                call utmess('I', 'PREPOST_98', sk=nomsy2)
                 call cesimp('&&IRCHML_CES', ifi, nbmat, nummai)
             endif
             call detrsd('CHAM_ELEM_S', chames)
             goto 9999
         else
-            call u2mesk('I', 'PREPOST_99', 1, nomsy2)
+            call utmess('I', 'PREPOST_99', sk=nomsy2)
         endif
         call celcel('PAS_DE_SP', chame, 'V', '&&IRCHML.CHAMEL2')
         chame= '&&IRCHML.CHAMEL2'
@@ -207,8 +207,8 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         vali(2) = nbgrel
         valk(1) = chame
         valk(2) = nolili
-        call u2mesg('F', 'CALCULEL_19', 2, valk, 2,&
-                    vali, 0, rbid)
+        call utmess('F', 'CALCULEL_19', nk=2, valk=valk, ni=2,&
+                    vali=vali)
     endif
 ! ---------------------------------------------------------------------
 !                    F O R M A T   R E S U L T A T
@@ -340,7 +340,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         do 200 imod = 1, nbmodl
             if (nolili .eq. zk24(jmode-1+imod)) goto 202
 200      continue
-        call u2mesk('A', 'PREPOST2_2', 1, chame)
+        call utmess('A', 'PREPOST2_2', sk=chame)
         goto 204
 202      continue
         if (itype .eq. 1) then
@@ -351,7 +351,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
                             zi( jtypm), nomsy2, nbmat, lresu, nbcmp,&
                             nomcmp, imod, ncmp, nucmp, nive)
             else if (loc.eq.'ELGA') then
-                call u2mess('A', 'PREPOST2_3')
+                call utmess('A', 'PREPOST2_3')
             endif
         else if (itype.eq.2) then
             call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
@@ -367,14 +367,14 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
                         zr(jvale-1+i)=dimag(zc(jcelv-1+i))
 190                  continue
                 else
-                    call u2mess('F', 'PREPOST2_4')
+                    call utmess('F', 'PREPOST2_4')
                 endif
                 call irceca(ifi, zi(jligr), nbgrel, zi(jlongr), ncmpmx,&
                             zr(jcelv), nomgd, zk8(iad), zi(jceld), zi(jnbnm),&
                             zi( jtypm), nomsy2, nbmat, lresu, nbcmp,&
                             nomcmp, imod, ncmp, nucmp, nive)
             else if (loc.eq.'ELGA') then
-                call u2mess('A', 'PREPOST2_3')
+                call utmess('A', 'PREPOST2_3')
             endif
         endif
     endif

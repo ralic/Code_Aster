@@ -18,15 +18,15 @@ subroutine nmttch(result, inst, nume)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rslipa.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utacli.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: inst
     integer :: nume
     character(len=8) :: result
@@ -92,7 +92,7 @@ subroutine nmttch(result, inst, nume)
     endif
 !
     if (nume .lt. 0) then
-        call u2mess('F', 'DISCRETISATION_89')
+        call utmess('F', 'DISCRETISATION_89')
     endif
 !
     call jedetr(nomobj)

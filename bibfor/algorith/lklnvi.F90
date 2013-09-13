@@ -1,7 +1,7 @@
 subroutine lklnvi(mod, ndt, ndi, nvi)
 !
-    implicit     none
-#include "asterfort/u2mess.h"
+    implicit none
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi
     character(len=8) :: mod
 ! =================================================================
@@ -61,12 +61,12 @@ subroutine lklnvi(mod, ndt, ndi, nvi)
 ! =================================================================
 ! - MODELISATION DE TYPE 1D NON AUTORISEE -------------------------
 ! =================================================================
-        call u2mess('F', 'ALGORITH4_45')
+        call utmess('F', 'ALGORITH4_45')
     else
 ! =================================================================
 ! - MODELISATION INCONNUE -----------------------------------------
 ! =================================================================
-        call u2mess('F', 'ALGORITH2_20')
+        call utmess('F', 'ALGORITH2_20')
     endif
 ! =================================================================
 ! - NOMBRE DE VARIABLES INTERNES

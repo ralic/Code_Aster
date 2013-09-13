@@ -25,8 +25,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 #include "asterfort/nocart.h"
 #include "asterfort/noligr.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=4) :: fonree
@@ -145,7 +144,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     call dismoi('F', 'NB_EC', 'FORC_R', 'GRANDEUR', nbecf,&
                 k8bid, ierd)
     if (nbecf .gt. 10) then
-        call u2mess('F', 'MODELISA2_65')
+        call utmess('F', 'MODELISA2_65')
     else
         ligrmo = ligrmz
         call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
@@ -154,7 +153,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
                 k8bid, ierd)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
     call jeveuo(ligrch//'.NBNO', 'E', jnbno)
@@ -245,7 +244,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
             endif
         endif
         if (nangl .lt. 0) then
-            call u2mess('A', 'MODELISA2_66')
+            call utmess('A', 'MODELISA2_66')
         endif
 !
 !       ---------------------------

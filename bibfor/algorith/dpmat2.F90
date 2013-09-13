@@ -19,7 +19,7 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    implicit      none
+    implicit none
 #include "asterfort/betaps.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
@@ -29,7 +29,7 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), dp, beta, se(6), seq, dsde(6, 6)
     real(kind=8) :: plas, alpha, pplus, dpdeno
     character(len=8) :: mod
@@ -143,7 +143,7 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
                 call lcsoma(bidon, pmat3, pmat1)
                 call lcsoma(pmat1, pmat4, dsde)
             else if (plas.eq.2.0d0) then
-                call u2mess('F', 'ALGORITH3_43')
+                call utmess('F', 'ALGORITH3_43')
 ! =====================================================================
 ! --- CAS DE LA PROJECTION AU SOMMET ----------------------------------
 ! =====================================================================

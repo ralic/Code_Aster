@@ -1,12 +1,12 @@
 subroutine gematg(n, delta, matmoy, mat, mat1,&
                   mat2)
-    implicit   none
+    implicit none
 #include "asterc/getres.h"
 #include "asterfort/gamdev.h"
 #include "asterfort/gasdev.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: n
     real(kind=8) :: delta, matmoy(*), mat(*), mat1(*), mat2(*)
 ! ----------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine gematg(n, delta, matmoy, mat, mat1,&
 ! --- VERIFICATION BORNE SUR DELTA
     borne=sqrt(dble(n+1)/dble(n+5))
     if (delta .gt. borne) then
-        call u2mess('F', 'ALGORITH3_81')
+        call utmess('F', 'ALGORITH3_81')
     endif
 !
 ! --- CALCUL DES PARAMETRES P ET SIGMA ET
@@ -106,7 +106,7 @@ subroutine gematg(n, delta, matmoy, mat, mat1,&
 111          continue
             if (i .eq. j) then
                 if (sum .le. 0.d0) then
-                    call u2mess('F', 'ALGORITH3_82')
+                    call utmess('F', 'ALGORITH3_82')
                 endif
                 tlii = sqrt(sum)
                 mat2(iind+i) = tlii

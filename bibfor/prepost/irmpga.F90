@@ -57,7 +57,6 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/utflsh.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -65,8 +64,9 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
 #include "asterfort/irmpg1.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/uteref.h"
+#include "asterfort/utmess.h"
+!
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -120,7 +120,7 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
 !
     if (nivinf .gt. 1) then
         write (ifm,1001) 'DEBUT DE '//nompro
-        call u2mess('I', 'MED_74')
+        call utmess('I', 'MED_74')
         call utflsh(codret)
     endif
     1001 format(/,4x,10('='),a,10('='),/)

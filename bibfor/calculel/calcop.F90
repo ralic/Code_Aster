@@ -33,8 +33,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/srmedo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbordr, ncharg, codret
@@ -162,7 +161,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     call rsadpa(resuin, 'L', 1, 'MODELE', minord,&
                 0, jpara, k8b)
     if (zk8(jpara) .ne. modele) then
-        call u2mess('A', 'CALCULEL_24')
+        call utmess('A', 'CALCULEL_24')
     endif
 !
     call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
@@ -250,7 +249,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
         endif
 !
         if (optdem .and. (nbordl.eq.0)) then
-            call u2mesk('A', 'CALCCHAMP_1', 1, optio2)
+            call utmess('A', 'CALCCHAMP_1', sk=optio2)
         endif
 !
         codre2 = 0
@@ -299,7 +298,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
             if (basopt .eq. 'G') then
                 if (iret .eq. 0) then
                     codret = 1
-                    call u2mesk('A', 'CALCULEL2_89', 1, optio2)
+                    call utmess('A', 'CALCULEL2_89', sk=optio2)
                 else
                     call rsnoch(resuou, optio2, numord)
                 endif

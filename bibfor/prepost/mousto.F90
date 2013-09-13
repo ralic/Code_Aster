@@ -2,7 +2,7 @@ subroutine mousto(guidag, dimtub, voltub, tubuse, dimobs,&
                   volobs, obsuse, rcray, rcarte, sect,&
                   arete, arete2, ns, obcont, epais,&
                   ecray, resu, denc, perce)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
@@ -12,10 +12,10 @@ subroutine mousto(guidag, dimtub, voltub, tubuse, dimobs,&
 #include "asterfort/lunule.h"
 #include "asterfort/mouveo.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/usobce.h"
 #include "asterfort/usoben.h"
 #include "asterfort/ustuen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/veobst.h"
 #include "asterfort/vetube.h"
     integer :: dimtub, dimobs, ns
@@ -322,7 +322,7 @@ subroutine mousto(guidag, dimtub, voltub, tubuse, dimobs,&
         proftu = abs( tubuse(2*i) - rcray )
         if (proftu .gt. ecray*perce) then
             call getres(k8b, concep, nomcmd)
-            call u2mess('A', 'PREPOST3_64')
+            call utmess('A', 'PREPOST3_64')
             goto 202
         endif
 !

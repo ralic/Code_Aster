@@ -22,7 +22,6 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -37,7 +36,8 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: fonact(*)
     character(len=19) :: sddyna, lischa
     character(len=24) :: sdstat, sdtime
@@ -172,7 +172,7 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! --- LA MATRICE PEUT ETRE QUASI-SINGULIERE PAR EXEMPLE POUR LES DKT
 !
     if (faccvg .eq. 1) then
-        call u2mess('A', 'MECANONLINE_78')
+        call utmess('A', 'MECANONLINE_78')
     endif
 !
     call jedema()

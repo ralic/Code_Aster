@@ -1,13 +1,12 @@
 subroutine cgvefo(option, typfis, nomfis)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: typfis, nomfis
     character(len=16) :: option
 !
@@ -49,7 +48,9 @@ subroutine cgvefo(option, typfis, nomfis)
 !     LE CAS DES FONDS DOUBLES N'EST PAS TRAITE DANS CALC_G
     if (typfis .eq. 'FONDFISS') then
         call jeexin(nomfis//'.FOND.NOEU', ier)
-        if (ier .eq. 0) call u2mess('F', 'RUPTURE1_4')
+        if (ier .eq. 0) then
+            call utmess('F', 'RUPTURE1_4')
+        endif
     endif
 !
 !     COMPATIBILITE ENTRE OPTION ET "ENTAILLE"
@@ -68,14 +69,16 @@ subroutine cgvefo(option, typfis, nomfis)
             'CALC_K_MAX'&
             )&
             .and. (conf.eq.'DECOLLEE')) then
-            call u2mesk('F', 'RUPTURE0_29', 1, option)
+            call utmess('F', 'RUPTURE0_29', sk=option)
         endif
 !
     endif
 !
 !     CERTAINES OPTIONS NE SONT PAS ENCORE PROGRAMMEES POUR X-FEM
     if (option .eq. 'G_MAX' .or. option .eq. 'G_BILI') then
-        if (typfis .eq. 'FISSURE') call u2mesk('F', 'RUPTURE0_48', 1, option)
+        if (typfis .eq. 'FISSURE') then
+            call utmess('F', 'RUPTURE0_48', sk=option)
+        endif
     endif
 !
 !

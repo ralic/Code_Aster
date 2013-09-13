@@ -18,7 +18,6 @@ subroutine te0442(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
@@ -29,7 +28,8 @@ subroutine te0442(option, nomte)
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !......................................................................
 !
@@ -138,7 +138,7 @@ subroutine te0442(option, nomte)
                 iret2)
     nbsp = itab(7)
     if ((nbsp.ne.1) .and. (mod(nbsp,3).ne.0)) then
-        call u2mesi('F', 'ELEMENTS5_54', 1, nbsp)
+        call utmess('F', 'ELEMENTS5_54', si=nbsp)
     endif
 !
     if (nno .eq. 3) then
@@ -150,7 +150,9 @@ subroutine te0442(option, nomte)
     ASSERT(np.le.nptmax)
     vali(1)=nspmax
     vali(2)=nbsp
-    if (nbsp .gt. nspmax) call u2mesi('F', 'ELEMENTS5_4', 2, vali)
+    if (nbsp .gt. nspmax) then
+        call utmess('F', 'ELEMENTS5_4', ni=2, vali=vali)
+    endif
 !
 !     LE TABLEAU CONIN A ETE ALLOUE DE FACON STATIQUE POUR
 !     OPTIMISER LE CPU CAR LES APPELS A WKVECT DANS LES TE SONT COUTEUX.

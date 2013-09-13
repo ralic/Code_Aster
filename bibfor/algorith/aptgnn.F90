@@ -21,7 +21,6 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/apatta.h"
 #include "asterfort/apninv.h"
@@ -39,8 +38,9 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 #include "asterfort/mmtann.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     character(len=19) :: sdappa
     character(len=8) :: noma
     character(len=24) :: defico
@@ -174,7 +174,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
             call mmnorm(ndimg, tau1, tau2, vnorm, noor)
             if (noor .le. r8prem()) then
-                call u2mesk('F', 'APPARIEMENT_15', 2, valk)
+                call utmess('F', 'APPARIEMENT_15', nk=2, valk=valk)
             endif
 !
 ! ------- NORMALE RESULTANTE
@@ -194,7 +194,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
         call normev(normal, normn)
         if (normn .le. r8prem()) then
-            call u2mesk('F', 'APPARIEMENT_16', 1, nomnoe)
+            call utmess('F', 'APPARIEMENT_16', sk=nomnoe)
         endif
 !
 ! ----- RE-CONSTRUCTION DES VECTEURS TANGENTS APRES LISSAGE
@@ -212,7 +212,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
         call mmtann(ndimg, taund1, taund2, niverr)
         if (niverr .eq. 1) then
-            call u2mesk('F', 'APPARIEMENT_17', 1, nomnoe)
+            call utmess('F', 'APPARIEMENT_17', sk=nomnoe)
         endif
 !
 ! ----- STOCKAGE DES VECTEURS TANGENTS EXTERIEURS SUR LE NOEUD

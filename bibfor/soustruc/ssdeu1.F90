@@ -28,7 +28,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: motcle
@@ -92,7 +92,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
                 if (iliste(i) .eq. 0) then
                     valk(1) = zk8(iawk1-1+i)
                     valk(2) = noma
-                    call u2mesk('F', 'SOUSTRUC_48', 2, valk)
+                    call utmess('F', 'SOUSTRUC_48', nk=2, valk=valk)
                 endif
 100          continue
         endif
@@ -115,7 +115,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
             if (iret .eq. 0) then
                 valk(1) = zk24(iawk1-1+i)
                 valk(2) = noma
-                call u2mesk('F', 'SOUSTRUC_49', 2, valk)
+                call utmess('F', 'SOUSTRUC_49', nk=2, valk=valk)
             endif
             call jelira(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), 'LONMAX', n4)
             nbno= nbno+n4

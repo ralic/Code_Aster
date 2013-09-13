@@ -39,8 +39,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
 #include "asterc/r8prem.h"
 #include "asterfort/freqom.h"
 #include "asterfort/infniv.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbmode, nbvect, nvpro
     real(kind=8) :: precdc, omecor, vpinf, vpmax
     complex(kind=8) :: valpro(nvpro), omeshi
@@ -81,11 +80,11 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
         if (typres .eq. 'DYNAMIQUE') then
             valr(1) = freqom(vpinf)
             valr(2) = freqom(vpmax)
-            call u2mesr('I', 'ALGELINE6_16', 2, valr)
+            call utmess('I', 'ALGELINE6_16', nr=2, valr=valr)
         else
             valr(1) = vpinf
             valr(2) = vpmax
-            call u2mesr('I', 'ALGELINE6_17', 2, valr)
+            call utmess('I', 'ALGELINE6_17', nr=2, valr=valr)
         endif
     endif
 !
@@ -128,17 +127,17 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
                 if (vpinf .gt. r8prem()) then
                     tole=(abs(vpinf2-vpinf)/vpinf)
                     if (tole .lt. precdc) then
-                        call u2mess('A', 'ALGELINE3_58')
+                        call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpinf2)
-                        call u2mesr('A', 'ALGELINE4_66', 1, valr)
+                        call utmess('A', 'ALGELINE4_66', sr=valr(1))
                         vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
                     endif
                 else
                     tole=abs(vpinf2-vpinf)
                     if (tole .lt. precdc) then
-                        call u2mess('A', 'ALGELINE3_58')
+                        call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpinf2)
-                        call u2mesr('A', 'ALGELINE4_66', 1, valr)
+                        call utmess('A', 'ALGELINE4_66', sr=valr(1))
                         vpinf = vpinf * (1.d0 - sign(precdc,vpinf))
                     endif
                 endif
@@ -157,17 +156,17 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
                 if (vpinf .gt. r8prem()) then
                     tole=(abs(vpmax2-vpmax)/vpmax)
                     if (tole .lt. precdc) then
-                        call u2mess('A', 'ALGELINE3_58')
+                        call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpmax2)
-                        call u2mesr('A', 'ALGELINE4_66', 1, valr)
+                        call utmess('A', 'ALGELINE4_66', sr=valr(1))
                         vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
                     endif
                 else
                     tole=abs(vpmax2-vpmax)
                     if (tole .lt. precdc) then
-                        call u2mess('A', 'ALGELINE3_58')
+                        call utmess('A', 'ALGELINE3_58')
                         valr(1) = freqom(vpmax2)
-                        call u2mesr('A', 'ALGELINE4_66', 1, valr)
+                        call utmess('A', 'ALGELINE4_66', sr=valr(1))
                         vpmax = vpmax * (1.d0 + sign(precdc,vpmax))
                     endif
                 endif
@@ -194,9 +193,9 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
     if (loginf) then
         if (niv .ge. 1) then
             if (typres .eq. 'DYNAMIQUE') then
-                call u2mesr('I', 'ALGELINE6_18', 1, freqom(vpinf2))
+                call utmess('I', 'ALGELINE6_18', sr=freqom(vpinf2))
             else
-                call u2mesr('I', 'ALGELINE6_20', 1, vpinf2)
+                call utmess('I', 'ALGELINE6_20', sr=vpinf2)
             endif
         endif
 !
@@ -204,9 +203,9 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
     if (logmax) then
         if (niv .ge. 1) then
             if (typres .eq. 'DYNAMIQUE') then
-                call u2mesr('I', 'ALGELINE6_19', 1, freqom(vpmax2))
+                call utmess('I', 'ALGELINE6_19', sr=freqom(vpmax2))
             else
-                call u2mesr('I', 'ALGELINE6_21', 1, vpmax2)
+                call utmess('I', 'ALGELINE6_21', sr=vpmax2)
             endif
         endif
     endif

@@ -9,8 +9,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
 #include "asterfort/i3pdm2.h"
 #include "asterfort/i3ptrv.h"
 #include "asterfort/i3sl33.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink
@@ -96,7 +95,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
     if ((c.le.abs(cs(1,1))*epsi) .or. (t.le.abs(cs(1,1))*epsi)) then
         vali(1) = k
         vali(2) = f
-        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
     else
         c = un/c
         t = un/t
@@ -115,7 +114,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
         if (c .le. abs(e1(1))*epsi) then
             vali(1) = k
             vali(2) = f
-            call u2mesi('F', 'INTEMAIL_24', 2, vali)
+            call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
         else
             c = un/c
             e3(1) = e3(1)*c
@@ -216,7 +215,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
                 if (iret .ne. 0) then
                     vali(1) = k
                     vali(2) = f
-                    call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                    call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                 endif
                 zr(lstpt(1)) = zero
                 zi(lstpt(2)) = f
@@ -227,7 +226,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
                 if (iret .ne. 0) then
                     vali(1) = k
                     vali(2) = f
-                    call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                    call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                 endif
                 zr(lstpt(1)+1) = un
                 zi(lstpt(2)+1) = f
@@ -256,7 +255,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
                     if (iret .eq. -1) then
                         vali(1) = k
                         vali(2) = f
-                        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                     endif
                     zr(lstpt(1)+1) = t
                     zi(lstpt(2)+1) = f
@@ -273,7 +272,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
                     if (iret .eq. -1) then
                         vali(1) = k
                         vali(2) = f
-                        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                     endif
                     zr(lstpt(1)+1) = zero
                     zi(lstpt(2)+1) = f
@@ -289,7 +288,7 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
                         if (iret .eq. -1) then
                             vali(1) = k
                             vali(2) = f
-                            call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                            call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                         endif
                         zr(lstpt(1)+1) = un
                         zi(lstpt(2)+1) = f
@@ -314,10 +313,10 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
             vali(1) = k
             vali(2) = f
             vali(3) = nbpt
-            call u2mesi('F', 'INTEMAIL_25', 2, vali)
+            call utmess('F', 'INTEMAIL_25', ni=2, vali=vali)
         else
         endif
     else
-        call u2mesk('F', 'INTEMAIL_8', 1, typsl)
+        call utmess('F', 'INTEMAIL_8', sk=typsl)
     endif
 end subroutine

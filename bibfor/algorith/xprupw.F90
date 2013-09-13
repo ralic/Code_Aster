@@ -20,7 +20,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeundf.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprls0.h"
 #include "asterfort/xprpfi.h"
@@ -553,7 +553,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
         else
             restor = 0
 !            THE VALUE OF THE RADIUS IS TOO LOW. AN ALARM IS ISSUED.
-            call u2mess('F', 'XFEM2_56')
+            call utmess('F', 'XFEM2_56')
         endif
 !
 !        PRINT INFORMATION ABOUT THE RESIDUALS
@@ -600,7 +600,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
             write(ifm,*)'    RESIDU LOCAL  = ',restor
             write(ifm,*)'    RESIDU GLOBAL = ',resglo(i-1)
         endif
-        call u2mess('F', 'XFEM2_65')
+        call utmess('F', 'XFEM2_65')
     endif
 !
 !     DESTROY THE TEMPORARY JEVEUX OBJECTS

@@ -28,7 +28,6 @@ subroutine te0078(option, nomte)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
@@ -39,7 +38,8 @@ subroutine te0078(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbres
     parameter     (nbres=3)
     integer :: icodre(nbres)
@@ -110,7 +110,7 @@ subroutine te0078(option, nomte)
         lambor(2) = valres(2)
         cp = valres(3)
     else
-        call u2mess('F', 'ELEMENTS2_63')
+        call utmess('F', 'ELEMENTS2_63')
     endif
 !====
 ! 1.4 PREALABLES LIES A L'ANISOTROPIE
@@ -228,7 +228,7 @@ subroutine te0078(option, nomte)
             if (lteatt(' ','AXIS','OUI')) then
                 poids = poids*r
                 if (r .eq. 0.d0) then
-                    call u2mess('F', 'ELEMENTS3_10')
+                    call utmess('F', 'ELEMENTS3_10')
                 endif
             endif
 !

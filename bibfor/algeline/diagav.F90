@@ -26,7 +26,6 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
 !                    FACTORISATION SERA CONSIDERE COMME NUL
 !     ------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/r8gaem.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -40,8 +39,9 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: noma19
     character(len=14) :: nu
     character(len=1) :: base
@@ -57,7 +57,9 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
 !
     call dismoi('F', 'MPI_COMPLET', noma19, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
-    if (kmpic .ne. 'OUI') call u2mess('F', 'CALCULEL6_54')
+    if (kmpic .ne. 'OUI') then
+        call utmess('F', 'CALCULEL6_54')
+    endif
     call jeveuo(noma19//'.REFA', 'L', jrefa)
     call jelira(noma19//'.REFA', 'CLAS', cval=base)
     ASSERT(zk24(jrefa-1+3).ne.'ELIML')

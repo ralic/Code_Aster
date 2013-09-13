@@ -20,11 +20,11 @@ subroutine ptgy01(sk, nl, xnu, rho, a,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     real(kind=8) :: sk(*)
     real(kind=8) :: xnu, rho, a, xl, xiy, xiz, ey, ez
     integer :: nl, ist
@@ -84,7 +84,7 @@ subroutine ptgy01(sk, nl, xnu, rho, a,&
     if (abs(xl) .lt. r8prem()) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
     ip = (xiy+xiz)
     phi = 12.d0*ip*alfinv*(1.d0+xnu)/(a*xl*xl)

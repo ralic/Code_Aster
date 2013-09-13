@@ -50,7 +50,7 @@ subroutine op0107()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: nh, iret, jordr, n1, n2, nbocc, nbordr, nc, np, nr, ier
     real(kind=8) :: prec
@@ -104,7 +104,9 @@ subroutine op0107()
                 call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
                 call rsutnu(resuco, ' ', 0, knum, nbordr,&
                             prec, crit, iret)
-                if (nbordr .ne. 1) call u2mess('F', 'POSTELEM_10')
+                if (nbordr .ne. 1) then
+                    call utmess('F', 'POSTELEM_10')
+                endif
                 if (iret .ne. 0) goto 999
                 call jeveuo(knum, 'L', jordr)
                 call rsexch('F', resuco, 'DEPL', zi(jordr), chdef,&

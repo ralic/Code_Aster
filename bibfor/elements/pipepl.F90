@@ -24,7 +24,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerop2.h"
 #include "blas/ddot.h"
     character(len=8) :: typmod(*)
@@ -86,7 +86,9 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     ndimsi = 2*ndim
     cplan = (typmod(1).eq.'C_PLAN  ')
 !
-    if (cplan) call u2mess('F', 'PILOTAGE_1')
+    if (cplan) then
+        call utmess('F', 'PILOTAGE_1')
+    endif
 !
 ! -- LECTURE DES CARACTERISTIQUES
 !

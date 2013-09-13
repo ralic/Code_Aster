@@ -36,7 +36,7 @@ subroutine pewext(resu)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: resu
 ! ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine pewext(resu)
     character(len=19) :: depla1, force1
     character(len=19) :: depls0, depls1, forcs0, forcs1
     character(len=24) :: lisord
-    integer ::  ier
+    integer :: ier
 !
 !-----------------------------------------------------------------------
 !
@@ -84,7 +84,9 @@ subroutine pewext(resu)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=iret)
     call rsutnu(result, ' ', 0, lisord, nbord,&
                 prec, crit, iret)
-    if (iret .ne. 0) call u2mesk('F', 'POSTELEM_11', 1, result)
+    if (iret .ne. 0) then
+        call utmess('F', 'POSTELEM_11', sk=result)
+    endif
     call jeveuo(lisord, 'L', jord)
 !
 !

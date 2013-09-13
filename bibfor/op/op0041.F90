@@ -80,8 +80,7 @@ subroutine op0041()
 #include "asterfort/jeveuo.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xbaslo.h"
 #include "asterfort/xenrch.h"
@@ -151,12 +150,16 @@ subroutine op0041()
 !
 !        CHECK IF THE MESH ASSOCIATED TO THE MODEL IS A SD_GRILLE
         call jeexin(maiaux//'.GRLI', ibid)
-        if (ibid .eq. 0) call u2mesk('F', 'XFEM2_95', 1, maiaux)
+        if (ibid .eq. 0) then
+            call utmess('F', 'XFEM2_95', sk=maiaux)
+        endif
 !
 !        THE GRID AND MODEL DIMENSIONS MUST BE THE SAME
         call dismoi('F', 'DIM_GEOM', maiaux, 'MAILLAGE', ibid,&
                     kbid, iret)
-        if (ibid .ne. ndim) call u2mess('F', 'XFEM2_58')
+        if (ibid .ne. ndim) then
+            call utmess('F', 'XFEM2_58')
+        endif
 !
 !        STORE THE AUXILIARY GRID MODEL ON WHICH THE CRACK WILL BE
 !        DEFINED
@@ -173,7 +176,9 @@ subroutine op0041()
 !        YES, THE GRID INFOS ARE DUPLICATED FOR THE NEW CRACK.
 !        CHECK IF A GRID IS ASSOCIATED TO THE GIVEN CRACK.
         call jeexin(fisgri//'.GRI.MODELE', ibid)
-        if (ibid .eq. 0) call u2mess('F', 'XFEM_68')
+        if (ibid .eq. 0) then
+            call utmess('F', 'XFEM_68')
+        endif
 !
         call jedupo(fisgri//'.GRI.MODELE', 'G', fiss(1:8)// '.GRI.MODELE', .false.)
         call copisd('CHAMP', 'G', fisgri//'.GRI.LNNO', fiss(1:8)// '.GRI.LNNO')
@@ -216,18 +221,21 @@ subroutine op0041()
 !
     call getvid('DEFI_FISS', 'FONC_LT', iocc=1, scal=nfonf, nbret=ibid)
     call getvid('DEFI_FISS', 'FONC_LN', iocc=1, scal=nfong, nbret=me1)
-    if (me1 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') call u2mesk('F', 'XFEM_24', 1,&
-                                                                              'FONC_LT')
-    if (me1 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') call u2mesk('A', 'XFEM_25',&
-                                                                                1, 'FONC_LT')
+    if (me1 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') then
+        call utmess('F', 'XFEM_24', sk='FONC_LT')
+    endif
+    if (me1 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') then
+        call utmess('A', 'XFEM_25', sk='FONC_LT')
+    endif
 !
     call getvtx('DEFI_FISS', 'GROUP_MA_FISS', iocc=1, scal=mafis, nbret=me2)
     call getvtx('DEFI_FISS', 'GROUP_MA_FOND', iocc=1, scal=fonfis, nbret=ibid)
-    if (me2 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') call u2mesk('F', 'XFEM_24', 1,&
-                                                                              'GROUP_MA_FOND')
-    if (me2 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') call u2mesk('A', 'XFEM_25',&
-                                                                                1,&
-                                                                                'GROUP_MA_FOND')
+    if (me2 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') then
+        call utmess('F', 'XFEM_24', sk='GROUP_MA_FOND')
+    endif
+    if (me2 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') then
+        call utmess('A', 'XFEM_25', sk='GROUP_MA_FOND')
+    endif
 !
     mxval = 0
     call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, nbval=mxval, vect=geofis,&
@@ -235,10 +243,12 @@ subroutine op0041()
 !
     call getvid('DEFI_FISS', 'CHAM_NO_LSN', iocc=1, scal=ncham, nbret=me4)
     call getvid('DEFI_FISS', 'CHAM_NO_LST', iocc=1, scal=ncham, nbret=ibid)
-    if (me4 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') call u2mesk('F', 'XFEM_24', 1,&
-                                                                              'CHAM_NO_LST')
-    if (me4 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') call u2mesk('A', 'XFEM_25',&
-                                                                                1, 'CHAM_NO_LST')
+    if (me4 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') then
+        call utmess('F', 'XFEM_24', sk='CHAM_NO_LST')
+    endif
+    if (me4 .eq. 1 .and. ibid .eq. 1 .and. typdis .eq. 'INTERFACE') then
+        call utmess('A', 'XFEM_25', sk='CHAM_NO_LST')
+    endif
 !
     if (me3 .eq. -1) then
         call getvtx('DEFI_FISS', 'FORM_FISS', iocc=1, scal=geofis, nbret=me3)
@@ -508,7 +518,9 @@ subroutine op0041()
     cnslj = '&&OP0041.CNSLJ'
     call getvid('JONCTION', 'FISSURE', iocc=1, nbval=0, nbret=me1)
     if (me1 .lt. 0) then
-        if (pheno .eq. 'THERMIQUE') call u2mesk('F', 'XFEM_71', 1, nomo)
+        if (pheno .eq. 'THERMIQUE') then
+            call utmess('F', 'XFEM_71', sk=nomo)
+        endif
         call xinlsj(noma, ndim, fiss, me1, cnslj)
     endif
     cnsen = '&&OP0041.CNSEN'

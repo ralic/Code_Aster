@@ -5,7 +5,7 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
 #include "asterfort/lcmmsg.h"
 #include "asterfort/matrot.h"
 #include "asterfort/promat.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nbcomm(nmat, 3), nfs, nbphas, nsg
     real(kind=8) :: pgl(3, 3), toutms(nbphas, nfs, nsg, 7), coeft(nmat)
     real(kind=8) :: q(3, 3)
@@ -64,14 +64,16 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
         nbfsys=nbcomm(indpha,1)
         indcp=nbcomm(1+iphas,2)
         if (nbfsys .gt. nfs) then
-            call u2mess('F', 'ALGORITH_69')
+            call utmess('F', 'ALGORITH_69')
         endif
 !        Nombre de variables internes de la phase (=monocristal)
         do 2 ifa = 1, nbfsys
             nomfam=cpmono(indcp+5*(ifa-1)+1)
             call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                         ng, lg, ir, q)
-            if (nbsys .eq. 0) call u2mess('F', 'ALGORITH_70')
+            if (nbsys .eq. 0) then
+                call utmess('F', 'ALGORITH_70')
+            endif
 !           indice de la famille IFA
 !            INDFA=INDPHA+IFA
 !

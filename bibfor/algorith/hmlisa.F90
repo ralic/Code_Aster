@@ -61,8 +61,8 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 #include "asterfort/netbis.h"
 #include "asterfort/sigmap.h"
 #include "asterfort/thmrcp.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/unsmfi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/viemma.h"
 #include "asterfort/viporo.h"
 #include "asterfort/virhol.h"
@@ -156,7 +156,9 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
         emmag = .true.
     endif
 !
-    if (emmag .and. yachai) call u2mess('F', 'CHAINAGE_5')
+    if (emmag .and. yachai) then
+        call utmess('F', 'CHAINAGE_5')
+    endif
 !
     call inithm(imate, yachai, yamec, phi0, em,&
                 cs, tbiot, t, epsv, depsv,&
@@ -333,7 +335,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
             dsde(adcote,addete)=dsde(adcote,addete)+dqdt(coeps)
             dsde(adcote,addep1)=dsde(adcote,addep1)+dqdp(signe,alp11,&
             t)
-
+!
 ! ======================================================================
 ! --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
@@ -342,10 +344,10 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                 call dqdeps(mdal, t, dqeps)
                 do 20 i = 1, 6
                     dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
-
+!
 20              continue
             endif
-
+!
         endif
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------

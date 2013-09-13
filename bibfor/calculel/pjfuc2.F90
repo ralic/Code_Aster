@@ -23,7 +23,7 @@ subroutine pjfuc2(c1, c2, base, c3)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=16) :: c1, c2, c3
     character(len=1) :: base
@@ -64,7 +64,7 @@ subroutine pjfuc2(c1, c2, base, c3)
         if (ma1 .ne. ma2) then
             valk(1) = ma1
             valk(2) = ma2
-            call u2mesk('F', 'CALCULEL4_65', 2, valk)
+            call utmess('F', 'CALCULEL4_65', nk=2, valk=valk)
         endif
 10  end do
     call jedupo(c1//'.PJXX_K1', base, c3//'.PJXX_K1', .false.)

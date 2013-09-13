@@ -21,7 +21,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
 ! ======================================================================
 !
 #include "asterfort/exisdg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: prnm(1), nbcomp, desc, ino, nsurch, forimp(nbcomp)
     real(kind=8) :: valr(1), valfor(nbcomp)
     logical :: verif
@@ -84,7 +84,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
                     else
                         valkk (1) = motcle(j)
                         valkk (2) = nomn
-                        call u2mesk('F', 'MODELISA8_27', 2, valkk)
+                        call utmess('F', 'MODELISA8_27', nk=2, valk=valkk)
                     endif
                 else
                     desc = ior(desc,2**(j-1))
@@ -93,7 +93,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
                 if (nsurc0 .eq. nsurch) nsurch = nsurch + 1
                 valkk (1) = motcle(j)
                 valkk (2) = nomn
-                call u2mesk('I', 'MODELISA8_28', 2, valkk)
+                call utmess('I', 'MODELISA8_28', nk=2, valk=valkk)
             endif
             if (fonree .eq. 'REEL') then
                 valr(nbcomp*(ino-1)+j) = valfor(j)

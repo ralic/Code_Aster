@@ -36,10 +36,10 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=24) :: valk(3)
     character(len=8) :: nomnoe, mailla, typl, typb
     integer :: nol(nbl), nob(nbb)
@@ -66,8 +66,7 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
                 valk(1) = nomnoe
                 valk(2) = typl
                 valk(3) = typb
-                call u2mesg('E', 'ALGORITH13_69', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH13_69', nk=3, valk=valk)
             endif
 !
             goto 20

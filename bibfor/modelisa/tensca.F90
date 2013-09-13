@@ -96,7 +96,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 #include "asterfort/tbexve.h"
 #include "asterfort/tensk1.h"
 #include "asterfort/tensk2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: tablca
     character(len=4) :: regl
@@ -199,7 +199,9 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 ! --- RELAXATION DE L'ACIER
 !
     if (typrel .ne. 'SANS') then
-        if (rh1000 .le. r8prem()) call u2mess('A', 'MODELISA2_70')
+        if (rh1000 .le. r8prem()) then
+            call utmess('A', 'MODELISA2_70')
+        endif
     endif
     if (typrel .eq. 'BPEL') then
 !----------------------------------
@@ -229,7 +231,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !----------------------------------
         call getvid('DEFI_CABLE', 'TENSION_CT', iocc=icabl, scal=ntable, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('F', 'MODELISA2_56')
+            call utmess('F', 'MODELISA2_56')
         endif
 !
         newtab=ntable
@@ -238,14 +240,14 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
         call jeexin(newtab//'.TBBA', irt)
         if (irt .eq. 0) then
-            call u2mess('F', 'UTILITAI4_64')
+            call utmess('F', 'UTILITAI4_64')
         endif
 !     VERIFICATION DE LA PRESENCE DES BONS PARAMETRES
         call tbexip(newtab, 'ABSC_CURV', exi1, k8b)
         call tbexip(newtab, 'N', exi2, k8b)
 !
         if (.not.exi1 .and. .not.exi2) then
-            call u2mess('F', 'MODELISA2_67')
+            call utmess('F', 'MODELISA2_67')
         endif
 !
         call tbexve(newtab, 'ABSC_CURV', tabx, 'V', nbval,&
@@ -255,13 +257,13 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
                     k8b)
         call jeveuo(taby, 'L', jtaby)
         if (nbval .ne. nbnoca) then
-            call u2mess('F', 'MODELISA2_68')
+            call utmess('F', 'MODELISA2_68')
         endif
 !     ON VERIFIE A MINIMA QUE LES ABSCISSES CURVILIGNES SONT IDENTIQUES
 !     (MAIS PAS LES COORDONNES EXACTES)
         do 50 ino = 1, nbnoca
             if (zr(jtabx+ino-1)-zr(jabsc+ino-1) .ge. r8prem()) then
-                call u2mess('F', 'MODELISA2_69')
+                call utmess('F', 'MODELISA2_69')
             endif
 50      continue
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

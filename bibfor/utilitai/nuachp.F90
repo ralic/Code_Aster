@@ -2,7 +2,7 @@ subroutine nuachp(nuage, lno, chpt)
     implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/nuacno.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nuage, lno, chpt
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -39,7 +39,7 @@ subroutine nuachp(nuage, lno, chpt)
     if (type .eq. 'NOEU') then
         call nuacno(nuage, lno, chpt)
     else
-        call u2mess('F', 'CALCULEL_17')
+        call utmess('F', 'CALCULEL_17')
     endif
 !
 end subroutine

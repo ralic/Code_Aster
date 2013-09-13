@@ -67,8 +67,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ordcoq.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: base, mater1, mater2, noma
     integer :: nbm, nuor(nbm), iaxe, kec, vicoq(nbm)
@@ -85,7 +84,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !-----------------------------------------------------------------------
     integer :: ibi, icoor, icoq, idec, idecm, idecmn, idefm
     integer :: ifm, ifreba, imod, inmaxe, inmaxi, ino, inunoe
-    integer :: inunoi,iok1,iok2,iok3,ipara,iret
+    integer :: inunoi, iok1, iok2, iok3, ipara, iret
     integer :: ivalk, ivalr, nbeq, nbnoex, nbnoin, nbnoto
     integer :: nbpara, numnoe, numod, nunoe0
     real(kind=8) :: dpmaxe, dpmaxi, dpnorm, drmax, dx1, dx2, fremod
@@ -134,7 +133,9 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     rcvalk = nomrc//'.VALK'
     rcvalr = nomrc//'.VALR'
     call jeexin(rcvalk, iret)
-    if (iret .eq. 0) call u2mess('F', 'ALGELINE_92')
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGELINE_92')
+    endif
     call jeveuo(rcvalk, 'L', ivalk)
     call jeveuo(rcvalr, 'L', ivalr)
 !
@@ -155,9 +156,9 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         endif
 10  continue
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
-        call u2mess('F', 'ALGELINE_93')
+        call utmess('F', 'ALGELINE_93')
     else if (young1.eq.0.d0) then
-        call u2mess('F', 'ALGELINE_94')
+        call utmess('F', 'ALGELINE_94')
     endif
 !
 ! --- 2.2.MATERIAU CONSTITUTIF DE LA COQUE EXTERNE
@@ -166,7 +167,9 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     rcvalk = nomrc//'.VALK'
     rcvalr = nomrc//'.VALR'
     call jeexin(rcvalk, iret)
-    if (iret .eq. 0) call u2mess('F', 'ALGELINE_95')
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGELINE_95')
+    endif
     call jeveuo(rcvalk, 'L', ivalk)
     call jeveuo(rcvalr, 'L', ivalr)
 !
@@ -187,16 +190,17 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         endif
 20  continue
     if (iok1 .eq. 0 .or. iok2 .eq. 0 .or. iok3 .eq. 0) then
-        call u2mess('F', 'ALGELINE_96')
+        call utmess('F', 'ALGELINE_96')
     else if (young2.eq.0.d0) then
-        call u2mess('F', 'ALGELINE_97')
+        call utmess('F', 'ALGELINE_97')
     endif
 !
 !
 ! --- 3.EXTRACTION DES DEFORMEES MODALES DANS LES DEUX DIRECTIONS DU
 ! ---   PLAN ORTHOGONAL A L'AXE DE REVOLUTION DES COQUES
 !
-    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi, matria, iret)
+    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi,&
+                matria, iret)
 !
     call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
                 numddl, iret)
@@ -342,7 +346,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
         else
 !
             write(kmod,'(I3)') imod
-            call u2mesk('A', 'ALGELINE_98', 1, kmod)
+            call utmess('A', 'ALGELINE_98', sk=kmod)
 !
             write(ifm,510)
             write(ifm,*)

@@ -19,7 +19,6 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 ! ======================================================================
 !
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/crelil.h"
@@ -43,12 +42,12 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/ssvalv.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: vec, vecpro, base, nu
     character(len=19) :: vecel
     character(len=4) :: motcle
@@ -129,7 +128,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     else if (motcle(1:4).eq.'CUMU') then
 !
     else
-        call u2mesk('F', 'ASSEMBLA_8', 1, motcle)
+        call utmess('F', 'ASSEMBLA_8', sk=motcle)
     endif
 !
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
@@ -244,13 +243,19 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 !
     call jeexin(ma//'.NOMACR', iret)
     if (iret .gt. 0) then
-        if (lfeti) call u2mesk('F', 'ASSEMBLA_12', 1, ma(1:8))
+        if (lfeti) then
+            call utmess('F', 'ASSEMBLA_12', sk=ma(1:8))
+        endif
         call jeveuo(ma//'.NOMACR', 'L', ianmcr)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
         icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
-        if (icmp .eq. 0) call u2mess('F', 'ASSEMBLA_9')
-        if (icmp .gt. 30) call u2mess('F', 'ASSEMBLA_10')
+        if (icmp .eq. 0) then
+            call utmess('F', 'ASSEMBLA_9')
+        endif
+        if (icmp .gt. 30) then
+            call utmess('F', 'ASSEMBLA_10')
+        endif
 !       -- ICODLA EST L'ENTIER CODE CORRESPONDANT A LA CMP "LAGR"
         jec=(icmp-1)/30+1
         icodla(jec)=2**icmp
@@ -369,7 +374,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
             else if (type.eq.2) then
                 call jecreo(kvale, bas//' V C16')
             else
-                call u2mess('F', 'ASSEMBLA_11')
+                call utmess('F', 'ASSEMBLA_11')
             endif
             call jeecra(kvale, 'LONMAX', nequa)
             call jeveuo(kvale, 'E', iadval)
@@ -382,7 +387,9 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 !==========================
             call dismoi('F', 'NOM_MODELE', vecel, 'VECT_ELEM', ibid,&
                         mo2, ierd)
-            if (mo2 .ne. mo) call u2mess('F', 'ASSEMBLA_5')
+            if (mo2 .ne. mo) then
+                call utmess('F', 'ASSEMBLA_5')
+            endif
 !
 !       -- TRAITEMENT DES SOUS-STRUCTURES (JUSQU A FIN BOUCLE 738)
 !       ----------------------------------------------------------

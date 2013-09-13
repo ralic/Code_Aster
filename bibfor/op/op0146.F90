@@ -45,14 +45,13 @@ subroutine op0146()
 #include "asterfort/specff.h"
 #include "asterfort/spect1.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: lvmoy, n1, n2, nb, nbm
     integer :: dim, ij, nbabs
 !-----------------------------------------------------------------------
-    integer ::  ideb, idisc, ifreq, ik, im1, im2
+    integer :: ideb, idisc, ifreq, ik, im1, im2
     integer :: inumo, ipf, ipv, is, ispect, iv, ivali
     integer :: ivate, ivite, iz, js, jvavf, lbaref, lfsvi
     integer :: lfsvk, linds, lnoe, lnozo, lpasf, lspec
@@ -65,14 +64,14 @@ subroutine op0146()
     integer :: i3, ivitef, lfreq, lnumi, lnumj, lrefe
     real(kind=8) :: val, vitef
     logical :: casint
-    character(len=8) ::  nomu, option, nomzon, nompro
+    character(len=8) :: nomu, option, nomzon, nompro
     character(len=16) :: concep, cmd
     character(len=19) :: base, spectr, typflu
     character(len=24) :: vali, vite, freq, numo
     character(len=24) :: fsvi, fsvk, basref, pvite
     character(len=24) :: valk(3)
     character(len=24) :: chnumi, chnumj, chfreq, chvale
-    integer ::  mxval
+    integer :: mxval
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -97,17 +96,17 @@ subroutine op0146()
 !
     if (npoi .ne. 0) then
         if (freqf .lt. freqi) then
-            call u2mess('F', 'MODELISA5_70')
+            call utmess('F', 'MODELISA5_70')
         endif
         if (freqf .le. 0.d0 .or. freqi .le. 0.d0) then
-            call u2mess('F', 'MODELISA5_71')
+            call utmess('F', 'MODELISA5_71')
         endif
         pui2 = log(dble(nbpf))/log(2.d0)
         pui = aint(pui2)
         pui2d = abs(pui2-pui)
         pui3d = abs(1.d0-pui2d)
         if (pui2d .ge. 1.d-06 .and. pui3d .ge. 1.d-06) then
-            call u2mess('F', 'MODELISA5_72')
+            call utmess('F', 'MODELISA5_72')
         endif
     endif
 !
@@ -138,7 +137,7 @@ subroutine op0146()
             if (zi(linds+is-1) .lt. 10) nspelo = nspelo + 1
 20      continue
         if (nspelo .gt. 0 .and. nspelo .lt. nbspec) then
-            call u2mess('F', 'MODELISA5_73')
+            call utmess('F', 'MODELISA5_73')
         endif
     endif
 !
@@ -225,11 +224,11 @@ subroutine op0146()
                 valk(1) = zk8(lspec+is-1)
                 valk(2) = nomzon
                 valk(3) = typflu
-                call u2mesk('F', 'MODELISA5_74', 3, valk)
+                call utmess('F', 'MODELISA5_74', nk=3, valk=valk)
 31              continue
                 valk(1) = zk8(lspec+is-1)
                 valk(2) = zk8(lfsvk+iz+3)
-                call u2mesk('I', 'MODELISA5_75', 2, valk)
+                call utmess('I', 'MODELISA5_75', nk=2, valk=valk)
 40          continue
 !
 ! --- 2.2.ON VERIFIE QUE TOUS LES SPECTRES SONT ASSOCIES A DES ZONES ---
@@ -238,7 +237,7 @@ subroutine op0146()
             do 50 is = 1, nbspec-1
                 do 60 js = is+1, nbspec
                     if (zk8(lspec+is-1) .eq. zk8(lspec+js-1)) then
-                        call u2mess('F', 'MODELISA5_76')
+                        call utmess('F', 'MODELISA5_76')
                     endif
                     nompro = zk16(lnozo+is-1)(1:8)
                     nomzon = zk16(lnozo+js-1)(1:8)
@@ -246,7 +245,7 @@ subroutine op0146()
                         valk(1) = zk8(lspec+is-1)
                         valk(2) = zk8(lspec+js-1)
                         valk(3) = nomzon
-                        call u2mesk('F', 'MODELISA5_77', 3, valk)
+                        call utmess('F', 'MODELISA5_77', nk=3, valk=valk)
                     endif
 60              continue
 50          continue

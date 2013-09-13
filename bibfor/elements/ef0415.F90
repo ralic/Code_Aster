@@ -19,18 +19,18 @@ subroutine ef0415(nomte)
 !     ------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cosiro.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/pk2cau.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdefgn.h"
 #include "asterfort/vdefro.h"
 #include "asterfort/vdrepe.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
+!
     character(len=16) :: nomte
 !
 !-----------------------------------------------------------------------
@@ -82,8 +82,12 @@ subroutine ef0415(nomte)
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
 !
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-    if (nbcou .gt. 10) call u2mess('F', 'ELEMENTS_13')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+    if (nbcou .gt. 10) then
+        call utmess('F', 'ELEMENTS_13')
+    endif
     epais=zr(jcara)
     zmin=-epais/2.d0
     hic=epais/nbcou

@@ -37,7 +37,7 @@ subroutine x195cb(tychr, nomgd, chou)
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: chou
     character(len=4) :: tychr, tych1
     integer :: ib, nbocc, iocc, k, jvale1, jvale2, n1, n2
@@ -79,22 +79,30 @@ subroutine x195cb(tychr, nomgd, chou)
 !       -- QUELQUES VERIFICATIONS DE COHERENCE :
     call dismoi('F', 'TYPE_CHAMP', ch1, 'CHAMP', ib,&
                 tych1, ib)
-    if (tych1 .ne. 'NOEU') call u2mess('F', 'MODELISA5_10')
+    if (tych1 .ne. 'NOEU') then
+        call utmess('F', 'MODELISA5_10')
+    endif
 !
     call dismoi('F', 'NOM_MAILLA', ch1, 'CHAMP', ib,&
                 ma1, ib)
-    if (ma1 .ne. ma2) call u2mess('F', 'MODELISA5_13')
+    if (ma1 .ne. ma2) then
+        call utmess('F', 'MODELISA5_13')
+    endif
 !
     call dismoi('F', 'PROF_CHNO', ch1, 'CHAM_NO', ib,&
                 pfcn1, ib)
-    if (.not.idensd('PROF_CHNO',pfcn1,pfcn2)) call u2mess('F', 'MODELISA5_12')
+    if (.not.idensd('PROF_CHNO',pfcn1,pfcn2)) then
+        call utmess('F', 'MODELISA5_12')
+    endif
 !
     call jelira(ch1//'.VALE', 'LONMAX', n2)
     if (n2 .ne. n1) ASSERT(.false.)
 !
     call dismoi('F', 'NOM_GD', ch1, 'CHAMP', ib,&
                 nomgd1, ib)
-    if (nomgd1 .ne. nomgd) call u2mess('F', 'MODELISA5_11')
+    if (nomgd1 .ne. nomgd) then
+        call utmess('F', 'MODELISA5_11')
+    endif
 !
     call dismoi('F', 'TYPE_SCA', nomgd1, 'GRANDEUR', ib,&
                 tsca, ib)

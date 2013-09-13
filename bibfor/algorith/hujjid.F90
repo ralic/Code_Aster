@@ -63,7 +63,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 #include "asterfort/lcprmv.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod, i, j, k, kk, l
     integer :: indi(7), nbmeca, iret, iadzi, iazk24
     integer :: ifm, niv, nbmect
@@ -229,7 +229,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
             goto 5
 !
         else
-            call u2mess('F', 'COMPOR1_8')
+            call utmess('F', 'COMPOR1_8')
         endif
 !
  5  continue
@@ -297,7 +297,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
             hook(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_38')
+            call utmess('F', 'COMPOR1_38')
         endif
 !
 !
@@ -305,7 +305,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 ! --- CP/1D -----------------------------------------------------------
 ! =====================================================================
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
     endif
 !
 !

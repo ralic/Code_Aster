@@ -18,7 +18,7 @@ subroutine cresol(solveu)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/sdsolv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: solveu
 ! ----------------------------------------------------------------------
@@ -124,7 +124,7 @@ subroutine cresol(solveu)
                     partit, ibid)
         if ((partit.eq.' ') .and. (kmd.eq.'OUI')) then
             kmd='NON'
-            call u2mess('I', 'ASSEMBLA_3')
+            call utmess('I', 'ASSEMBLA_3')
         endif
     endif
 !

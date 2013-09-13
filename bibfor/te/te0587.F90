@@ -1,14 +1,12 @@
 subroutine te0587(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/carcou.h"
 #include "asterfort/elref5.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,17 +67,15 @@ subroutine te0587(option, nomte)
     nbcou=zi(jnbspi-1+1)
     nbsec=zi(jnbspi-1+2)
     if (nbcou*nbsec .le. 0) then
-        call u2mess('F', 'ELEMENTS4_46')
+        call utmess('F', 'ELEMENTS4_46')
     endif
     if (nbcou .gt. nbcoum) then
         vali=nbcoum
-        call u2mesg('F', 'ELEMENTS5_2', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ELEMENTS5_2', si=vali)
     endif
     if (nbsec .gt. nbsecm) then
         vali=nbsecm
-        call u2mesg('F', 'ELEMENTS5_3', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ELEMENTS5_3', si=vali)
     endif
 !
 !
@@ -180,7 +176,7 @@ subroutine te0587(option, nomte)
 190          continue
 200      continue
     else
-        call u2mesk('F', 'ELEMENTS4_49', 1, option)
+        call utmess('F', 'ELEMENTS4_49', sk=option)
     endif
 !
 end subroutine

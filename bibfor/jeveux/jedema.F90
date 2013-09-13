@@ -23,7 +23,7 @@ subroutine jedema()
 ! ----------------------------------------------------------------------
 #include "jeveux_private.h"
 #include "asterfort/jjlide.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !-----------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine jedema()
     data             d24 /'$$$$$$$$$$$$$$$$$$$$$$$$'/
 ! DEB ------------------------------------------------------------------
     if (ipgc .eq. 0) then
-        call u2mess('F', 'JEVEUX_06')
+        call utmess('F', 'JEVEUX_06')
     else
         ideb = iszon(jiszon+kposma(1)+ipgc-1)
     endif

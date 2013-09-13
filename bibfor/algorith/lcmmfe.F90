@@ -9,7 +9,7 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat,&
 #include "asterfort/lcddcc.h"
 #include "asterfort/lcmmdd.h"
 #include "asterfort/lcmmkr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), iret
     integer :: ifl, is, nbsys, nuecou, nfs, nsg
     real(kind=8) :: taus, coeft(nmat), alphap, dgamma, dp, dt
@@ -163,7 +163,7 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat,&
 !
 !
     else
-        call u2mess('F', 'COMPOR1_20')
+        call utmess('F', 'COMPOR1_20')
     endif
 9999  continue
 end subroutine

@@ -1,6 +1,7 @@
 subroutine estivd(nbm, dt, vitg, depg, accg0,&
                   vitg0, depg0, tetaes, maxvit, inewto)
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +29,6 @@ subroutine estivd(nbm, dt, vitg, depg, accg0,&
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mess.h"
     integer :: nbm
     real(kind=8) :: dt, vitg(*), depg(*), accg0(*), vitg0(*), depg0(*), tetaes
     real(kind=8) :: maxvit
@@ -62,7 +62,7 @@ subroutine estivd(nbm, dt, vitg, depg, accg0,&
                     do 21 j = 1, nbm
                         vitg(j) = vitg0(j)
 21                  continue
-                    call u2mess('I', 'ALGORITH3_58')
+                    call utmess('I', 'ALGORITH3_58')
                     goto 22
                 endif
             endif

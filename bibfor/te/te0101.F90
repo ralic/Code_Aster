@@ -17,7 +17,6 @@ subroutine te0101(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm1d.h"
@@ -29,7 +28,8 @@ subroutine te0101(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/reflth.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -433,7 +433,7 @@ subroutine te0101(option, nomte)
         b(3,2) = b(2,3)
 !
     else
-        call u2mesk('F', 'ELEMENTS3_17', 1, phenom)
+        call utmess('F', 'ELEMENTS3_17', sk=phenom)
     endif
 !
 !======================================

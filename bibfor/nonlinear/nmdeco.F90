@@ -18,7 +18,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
@@ -32,8 +32,8 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 #include "asterfort/nmdeca.h"
 #include "asterfort/nmdecm.h"
 #include "asterfort/nmdecv.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     integer :: ievdac
     integer :: numins, iterat
     character(len=19) :: sddisc
@@ -99,11 +99,11 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! --- TYPE DE SUBDIVISION
 !
     if (submet .eq. 'MANUEL') then
-        call u2mess('I', 'SUBDIVISE_1')
+        call utmess('I', 'SUBDIVISE_1')
     else if (submet.eq.'AUTO') then
-        call u2mess('I', 'SUBDIVISE_2')
+        call utmess('I', 'SUBDIVISE_2')
     else if (submet .eq. 'AUCUNE') then
-        call u2mess('I', 'SUBDIVISE_3')
+        call utmess('I', 'SUBDIVISE_3')
         retdec = 0
         goto 999
     else
@@ -173,11 +173,11 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! --- AFFICHAGE
 !
     if (retdec .eq. 0) then
-        call u2mess('I', 'SUBDIVISE_50')
+        call utmess('I', 'SUBDIVISE_50')
     else if (retdec.eq.1) then
-        call u2mess('I', 'SUBDIVISE_51')
+        call utmess('I', 'SUBDIVISE_51')
     else if (retdec.eq.2) then
-        call u2mess('I', 'SUBDIVISE_52')
+        call utmess('I', 'SUBDIVISE_52')
     endif
 !
     call jedetr(nomlis)

@@ -19,14 +19,14 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: typel, kstop, noattr, vattr
     integer :: iret
 !---------------------------------------------------------------------
@@ -99,7 +99,7 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
     if (kstop .eq. 'S') then
         valk(1) = noatt2
         valk(2) = nomt2
-        call u2mesk('F', 'CALCULEL4_94', 2, valk)
+        call utmess('F', 'CALCULEL4_94', nk=2, valk=valk)
     endif
     ASSERT(kstop.eq.'C')
     goto 3

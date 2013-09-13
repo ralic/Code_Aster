@@ -36,7 +36,8 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mmhcor.h"
+#include "asterfort/as_mmhear.h"
 #include "asterfort/codent.h"
 #include "asterfort/codlet.h"
 #include "asterfort/jecreo.h"
@@ -47,10 +48,9 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/as_mmhcor.h"
-#include "asterfort/as_mmhear.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: fid
     integer :: ndim, nbnoeu
     integer :: ifm, infmed
@@ -108,7 +108,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
     call wkvect('&&'//nompro//'.NOMNOE', 'V V K16', nbnoeu, jnomno)
     call as_mmhear(fid, nomamd, zk16(jnomno), ednoeu, typnoe,&
-                codret)
+                   codret)
 !
     if (codret .ne. 0) then
         if (nbnoeu .ge. 10000000) then
@@ -161,8 +161,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
         call as_mmhcor(fid, nomamd, zr(jcoord), edfuin, codret)
         if (codret .ne. 0) then
             saux08='mmhcor'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 ! 2.2. ==> AUTRES DIMENSIONS : ON CREE UN TABLEAU COMPACT DANS LEQUEL
@@ -176,8 +175,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
         call as_mmhcor(fid, nomamd, zr(jcoorl), edfuin, codret)
         if (codret .ne. 0) then
             saux08='mmhcor'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
         if (ndim .eq. 2) then

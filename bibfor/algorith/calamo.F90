@@ -41,7 +41,7 @@ subroutine calamo(nomres, classe, basmod)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: vali(3)
 !
@@ -57,7 +57,7 @@ subroutine calamo(nomres, classe, basmod)
     integer :: i, iad, iam, idiff, ier, ioc, lamo2
     integer :: lamor, lddes, ldref, ldres, lfreq, lmgen, nbamor
     integer :: nbdef, nbmod, ntail
-    real(kind=8) ::  coeff
+    real(kind=8) :: coeff
 !-----------------------------------------------------------------------
     data blanc /'        '/
 !-----------------------------------------------------------------------
@@ -102,8 +102,7 @@ subroutine calamo(nomres, classe, basmod)
         vali (1) = nbmod
         vali (2) = nbamor
         vali (3) = nbmod
-        call u2mesg('A', 'ALGORITH15_90', 0, ' ', 3,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'ALGORITH15_90', ni=3, vali=vali)
         call wkvect('&&CALAMO.COEFF', 'V V R', nbmod, lamor)
         call getvr8(blanc, 'AMOR_REDUIT', iocc=1, nbval=nbmod, vect=zr(lamor),&
                     nbret=ioc)
@@ -116,8 +115,7 @@ subroutine calamo(nomres, classe, basmod)
         vali (1) = idiff
         vali (2) = nbmod
         vali (3) = idiff
-        call u2mesg('A', 'ALGORITH15_91', 0, ' ', 3,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'ALGORITH15_91', ni=3, vali=vali)
         call wkvect('&&CALAMO.COEFF2', 'V V R', nbmod, lamo2)
         do 20 iam = 1, nbamor
             zr(lamo2+iam-1) = zr(lamor+iam-1)

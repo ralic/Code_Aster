@@ -22,7 +22,7 @@ subroutine carapo(sect, geom, orien, xl, pgl,&
 !
     implicit none
 #include "asterfort/matrot.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itype
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2, xjx2, xl
@@ -62,7 +62,7 @@ subroutine carapo(sect, geom, orien, xl, pgl,&
 !
     xl = sqrt( (geom(4)-geom(1))**2 + (geom(5)-geom(2))**2 + (geom(6)-geom(3))**2)
     if (xl .eq. 0.d0) then
-        call u2mess('F', 'ELEMENTS_17')
+        call utmess('F', 'ELEMENTS_17')
     endif
 !
     call matrot(orien, pgl)

@@ -24,7 +24,7 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: mcfact, even
     integer :: iechec
     real(kind=8) :: pasmin, dtmin, subins, subdur
@@ -77,7 +77,9 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
 ! --- OPTIONS
 !
     call getvr8(mcfact, 'SUBD_PAS_MINI', iocc=iechec, scal=pasmin, nbret=iret)
-    if (pasmin .gt. dtmin) call u2mess('F', 'DISCRETISATION_2')
+    if (pasmin .gt. dtmin) then
+        call utmess('F', 'DISCRETISATION_2')
+    endif
     if (submet .eq. 'MANUEL') then
         call getvis(mcfact, 'SUBD_NIVEAU', iocc=iechec, scal=niveau, nbret=iret)
         call getvis(mcfact, 'SUBD_PAS', iocc=iechec, scal=nbrpas, nbret=iret)

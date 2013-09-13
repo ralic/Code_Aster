@@ -2,7 +2,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                   jconx2, clsm)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/conare.h"
 #include "asterfort/dismoi.h"
@@ -12,7 +11,8 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbma, jconx1, jconx2, clsm
     character(len=8) :: noma
     character(len=19) :: cnslt, cnsln
@@ -185,7 +185,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         zr(jlnsv-1+(nunom-1)+1)=0.d0
                         clsm=clsm+1
                     else
-                        call u2mess('A', 'XFEM_63')
+                        call utmess('A', 'XFEM_63')
                     endif
                 endif
                 if (zr(jltsv-1+(nunoa-1)+1) .eq. 0.d0 .and. zr(jltsv-1+( nunob-1)+1) .eq.&
@@ -199,7 +199,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         zr(jltsv-1+(nunom-1)+1)=0.d0
                         clsm=clsm+1
                     else
-                        call u2mess('A', 'XFEM_63')
+                        call utmess('A', 'XFEM_63')
                     endif
                 endif
             endif

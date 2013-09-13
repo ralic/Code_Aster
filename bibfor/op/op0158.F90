@@ -34,7 +34,7 @@ subroutine op0158()
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtmchc.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: mass
     character(len=16) :: concep, nomcmd
     character(len=8) :: matass, matfac
@@ -57,7 +57,7 @@ subroutine op0158()
                 metres, ibid)
 !
     if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
-        call u2mess('F', 'ALGELINE4_1')
+        call utmess('F', 'ALGELINE4_1')
     endif
 !
     call jeveuo(mass//'.REFA', 'L', jrefa)

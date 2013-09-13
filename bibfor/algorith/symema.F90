@@ -1,5 +1,5 @@
 subroutine symema(geomi, perp, pt)
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ subroutine symema(geomi, perp, pt)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
     character(len=24) :: coorjv
@@ -60,7 +60,7 @@ subroutine symema(geomi, perp, pt)
     prec=1.d-14
     norm = dnrm2(3,perp,1)
     if (norm .lt. prec) then
-        call u2mess('F', 'ALGORITH10_87')
+        call utmess('F', 'ALGORITH10_87')
     endif
     perp(1) = perp(1)/norm
     perp(2) = perp(2)/norm

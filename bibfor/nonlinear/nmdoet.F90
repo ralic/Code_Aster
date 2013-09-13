@@ -41,8 +41,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 #include "asterfort/nmetl3.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
     real(kind=8) :: instin
     character(len=24) :: modele, compor, sdcriq
@@ -118,7 +117,9 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 !
     call dismoi('F', 'CALC_RIGI', modele, 'MODELE', ibid,&
                 calcri, iret)
-    if (calcri .ne. 'OUI') call u2mesk('F', 'CALCULEL2_65', 1, modele)
+    if (calcri .ne. 'OUI') then
+        call utmess('F', 'CALCULEL2_65', sk=modele)
+    endif
 !
 ! --- ACCES SD IN ET OUT
 !
@@ -163,18 +164,18 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     ASSERT(nocc.le.1)
     leinit = nocc.gt.0
     if (leinit) then
-        call u2mess('I', 'ETATINIT_10')
+        call utmess('I', 'ETATINIT_10')
         if (lener) then
-            call u2mess('I', 'ETATINIT_5')
+            call utmess('I', 'ETATINIT_5')
         endif
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> LECTURE ETAT INITIAL'
         endif
     else
         if (lreuse) then
-            call u2mess('A', 'ETATINIT_1')
+            call utmess('A', 'ETATINIT_1')
         else
-            call u2mess('I', 'ETATINIT_20')
+            call utmess('I', 'ETATINIT_20')
         endif
     endif
 !
@@ -189,11 +190,11 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     if (lctcc) then
         if (lreuse) then
             if (.not.isfonc(fonact,'CONTACT_INIT')) then
-                call u2mess('A', 'MECANONLINE4_14')
+                call utmess('A', 'MECANONLINE4_14')
             endif
         else if (evonol) then
             if (.not.isfonc(fonact,'CONTACT_INIT')) then
-                call u2mess('A', 'MECANONLINE4_15')
+                call utmess('A', 'MECANONLINE4_15')
             endif
         endif
     endif
@@ -240,7 +241,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         call rsexch(' ', result, 'DEPL', numein-1, champ2,&
                     iret)
         if (iret .ne. 0) then
-            call u2mesk('F', 'MECANONLINE4_47', 1, evol)
+            call utmess('F', 'MECANONLINE4_47', sk=evol)
         endif
         call vtcopy(champ1, dep1, 'F', iret)
         call vtcopy(champ2, dep2, 'F', iret)
@@ -280,12 +281,12 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         lzero = zk24(jiolch+zioch*(icham-1)+4-1).eq.'ZERO'
         if (nomchs .eq. 'VITE') then
             if (lzero) then
-                call u2mess('I', 'MECANONLINE4_22')
+                call utmess('I', 'MECANONLINE4_22')
             endif
         endif
         if (nomchs .eq. 'ACCE') then
             if (lzero) then
-                call u2mess('I', 'MECANONLINE4_23')
+                call utmess('I', 'MECANONLINE4_23')
                 lacc0 = .true.
             endif
         endif

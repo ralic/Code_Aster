@@ -33,9 +33,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 #include "asterfort/jexnum.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/posddl.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: noma
@@ -118,7 +116,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
     if ((nbcmp.lt.1) .or. (nbcmp.gt.nparx)) then
         vali(1) = nparx
         vali(2) = nbcmp
-        call u2mesi('F', 'EXTRACTION_12', 2, vali)
+        call utmess('F', 'EXTRACTION_12', ni=2, vali=vali)
     endif
 !
 ! --- LECTURE EFFECTIVE DES NOMS DE COMPOSANTES
@@ -141,7 +139,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
                 if ((nuno.eq.0) .or. (nuddl.eq.0)) then
                     valk(1) = nomnoe
                     valk(2) = nomcmp
-                    call u2mesk('F', 'EXTRACTION_20', 2, valk)
+                    call utmess('F', 'EXTRACTION_20', nk=2, valk=valk)
                 endif
 21          continue
 20      continue
@@ -200,8 +198,8 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
                             valk(2) = nomcmp
                             vali(1) = num
                             vali(2) = snum
-                            call u2mesg('F', 'EXTRACTION_21', 2, valk, 2,&
-                                        vali, 0, 0.d0)
+                            call utmess('F', 'EXTRACTION_21', nk=2, valk=valk, ni=2,&
+                                        vali=vali)
                         endif
 46                  continue
 45              continue

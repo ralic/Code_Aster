@@ -32,9 +32,9 @@ subroutine op0049()
 #include "asterfort/giecas.h"
 #include "asterfort/gilir2.h"
 #include "asterfort/infmaj.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
     character(len=6) :: kbid6
     character(len=8) :: kbid1
     character(len=9) :: kbid9
@@ -61,7 +61,7 @@ subroutine op0049()
     read (nfigi,1001,end=100) kbid14
     read (nfigi,1002) kbid1,kbid9,kbid4
     if ((kbid1.eq.'MAILLAGE') .and. (kbid9.eq.'PROVENANT') .and. (kbid4.eq.'GIBI')) then
-        call u2mess('F', 'PREPOST3_75')
+        call utmess('F', 'PREPOST3_75')
         goto 99999
     else if (kbid14.eq.'ENREGISTREMENT') then
         rewind(nfigi)
@@ -70,12 +70,12 @@ subroutine op0049()
         if (kbid6 .eq. 'NIVEAU' .and. ibid .ne. 3 .and. ibid .ne. 4 .and. ibid .ne. 5 .and.&
             ibid .ne. 6 .and. ibid .ne. 8 .and. ibid .ne. 9 .and. ibid .ne. 10 .and. ibid&
             .ne. 11 .and. ibid .ne. 13) then
-            call u2mess('A', 'PREPOST3_76')
+            call utmess('A', 'PREPOST3_76')
         endif
         rewind( nfigi )
         call gilir2(nfigi, ibid, ndim, nbobj)
     else
-        call u2mess('F', 'PREPOST3_77')
+        call utmess('F', 'PREPOST3_77')
     endif
 !
     call giecas(nfias, ndim, nbobj)
@@ -87,7 +87,7 @@ subroutine op0049()
     goto 99999
 !
 100  continue
-    call u2mess('F', 'PREPOST3_78')
+    call utmess('F', 'PREPOST3_78')
 99999  continue
 !
     1001 format(1x,a14)

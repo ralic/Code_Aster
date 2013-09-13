@@ -15,7 +15,7 @@ subroutine te0161(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit       none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/biline.h"
@@ -27,8 +27,7 @@ subroutine te0161(option, nomte)
 #include "asterfort/pscvec.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! --- ------------------------------------------------------------------
@@ -148,7 +147,7 @@ subroutine te0161(option, nomte)
 !        PAS DE MOMENT REPARTIS
         r8bid = sqrt(ddot(3,zr(iforc+3),1,zr(iforc+3),1))
         if (r8bid .gt. r8min) then
-            call u2mesk('F', 'ELEMENTS3_1', 1, nomte)
+            call utmess('F', 'ELEMENTS3_1', sk=nomte)
         endif
 !
         c2(1) = zr(iforc)
@@ -180,7 +179,7 @@ subroutine te0161(option, nomte)
             fozero = (zk8(iforc+3).ne.'&FOZERO') .or. (zk8(iforc+4) .ne.'&FOZERO') .or.&
                      (zk8(iforc+5).ne.'&FOZERO')
             if (fozero) then
-                call u2mesk('F', 'ELEMENTS3_1', 1, nomte)
+                call utmess('F', 'ELEMENTS3_1', sk=nomte)
             endif
 !
             do 40 ic = 1, 3
@@ -232,10 +231,10 @@ subroutine te0161(option, nomte)
                     call tecach('ONN', 'PVENTCX', 'L', 1, ifcx,&
                                 iret)
                     if (iret .ne. 0) then
-                        call u2mess('F', 'ELEMENTS3_39')
+                        call utmess('F', 'ELEMENTS3_39')
                     endif
                     if (zk8(ifcx)(1:1) .eq. '.') then
-                        call u2mess('F', 'ELEMENTS3_39')
+                        call utmess('F', 'ELEMENTS3_39')
                     endif
                     call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
                                 fcx, iret)

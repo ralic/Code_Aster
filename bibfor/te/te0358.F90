@@ -17,7 +17,6 @@ subroutine te0358(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -26,7 +25,8 @@ subroutine te0358(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -274,7 +274,9 @@ subroutine te0358(option, nomte)
                     vi(4) = zr(ivari+ (kp-1)*lgpg+3)
                     vi(5) = zr(ivari+ (kp-1)*lgpg+4)
 !
-                    if (iret1 .eq. 1) call u2mess('F', 'CALCULEL_31')
+                    if (iret1 .eq. 1) then
+                        call utmess('F', 'CALCULEL_31')
+                    endif
                     do 70 i = 1, 5
                         call rctrac(mater, 2, nomcle(i), tpg, jprol,&
                                     jvale, nbval, r8bid)

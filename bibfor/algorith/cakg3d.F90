@@ -35,8 +35,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 #include "asterfort/tbajvi.h"
 #include "asterfort/tbajvk.h"
 #include "asterfort/tbajvr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -147,7 +146,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call dismoi('F', 'TYPE_RESU', resu, 'RESULTAT', ibid,&
                     type, ierd)
         if (type .ne. 'EVOL_NOLI') then
-            call u2mess('F', 'RUPTURE1_15')
+            call utmess('F', 'RUPTURE1_15')
         endif
         call rsexch('F', resu, 'SIEF_ELGA', iord, chsig,&
                     iret)
@@ -161,7 +160,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_G'
-        call u2mesk('F', 'RUPTURE1_13', 1, valk)
+        call utmess('F', 'RUPTURE1_13', sk=valk)
     endif
 !
 !     RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
@@ -379,7 +378,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     else if (thlagr) then
         if (.not.glagr) then
             num = 2
-            call u2mess('F', 'RUPTURE1_17')
+            call utmess('F', 'RUPTURE1_17')
         else
             num = 3
             call gkmet3(nnoff, chfond, iadrgk, milieu, connex,&

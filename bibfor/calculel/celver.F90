@@ -27,7 +27,7 @@ subroutine celver(celz, typver, arret, iret)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: celz, typver, arret
     integer :: iret
 ! ------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine celver(celz, typver, arret, iret)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=8) ::  tsca, nomgd
+    character(len=8) :: tsca, nomgd
     character(len=3) :: knan
     character(len=19) :: cel
     integer :: jceld, kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
@@ -65,7 +65,9 @@ subroutine celver(celz, typver, arret, iret)
     iret = 0
 !
     call jeexin(cel//'.CELD', kk)
-    if (kk .eq. 0) call u2mesk('F', 'CALCULEL_47', 1, cel)
+    if (kk .eq. 0) then
+        call utmess('F', 'CALCULEL_47', sk=cel)
+    endif
 !
     call jeveuo(cel//'.CELD', 'L', jceld)
 !
@@ -86,7 +88,7 @@ subroutine celver(celz, typver, arret, iret)
         else
             if (ncdyn .ne. ncdyn1) then
                 if (arret .ne. 'COOL') then
-                    call u2mesk('F', 'CALCULEL_48', 1, cel)
+                    call utmess('F', 'CALCULEL_48', sk=cel)
                 else
                     iret = 1
                 endif
@@ -101,7 +103,7 @@ subroutine celver(celz, typver, arret, iret)
         mxspt = zi(jceld-1+3)
         if (mxspt .gt. 1) then
             if (arret .ne. 'COOL') then
-                call u2mesk('F', 'CALCULEL_49', 1, cel)
+                call utmess('F', 'CALCULEL_49', sk=cel)
             else
                 iret = 1
             endif
@@ -146,7 +148,7 @@ subroutine celver(celz, typver, arret, iret)
 !
         if (lnan) then
             if (arret .ne. 'COOL') then
-                call u2mesk('F', 'CALCULEL4_1', 1, cel)
+                call utmess('F', 'CALCULEL4_1', sk=cel)
             else
                 iret = 1
             endif

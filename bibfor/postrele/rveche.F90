@@ -2,7 +2,6 @@ subroutine rveche(ssch19, sdlieu, sdeval)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -16,8 +15,9 @@ subroutine rveche(ssch19, sdlieu, sdeval)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tremno.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ssch19, sdlieu, sdeval
 !
 !     ------------------------------------------------------------------
@@ -181,8 +181,7 @@ subroutine rveche(ssch19, sdlieu, sdeval)
         if (.not. trouve) then
             vali = n
             valk = zk8(adesc+i-1)
-            call u2mesg('F', 'POSTRELE_40', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'POSTRELE_40', sk=valk, si=vali)
         endif
         call jeveuo(jexnum(sdemno//'.NUMA', pt-1), 'L', anuma)
         nsp = zi(aipnsp + zi(anuma)-1)

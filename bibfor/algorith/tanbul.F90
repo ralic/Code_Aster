@@ -19,13 +19,13 @@ subroutine tanbul(option, ndim, g, mate, compor,&
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8miem.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     logical :: resi, mini
     integer :: ndim, g, mate
     real(kind=8) :: alpha, dsbdep(2*ndim, 2*ndim), trepst
@@ -68,7 +68,7 @@ subroutine tanbul(option, ndim, g, mate, compor,&
 ! - POUR L INSTANT.
 ! - POUR L ANISOTROPIE IL FAUDRAIT CALCULER XYZGAU ET REPERE
     if (.not.( compor(1:4) .eq. 'ELAS'.or. compor(1:9) .eq. 'VMIS_ISOT' )) then
-        call u2mesk('F', 'ALGORITH4_50', 1, compor)
+        call utmess('F', 'ALGORITH4_50', sk=compor)
     endif
 !
 ! - RECUPERATION DE L INSTANT

@@ -46,7 +46,7 @@ subroutine arg126(nomres)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 !
     integer :: vali(3)
 !
@@ -57,7 +57,7 @@ subroutine arg126(nomres)
     character(len=24) :: repsst, nommcl, rotsst, famli, trasst
     character(len=24) :: valk(3)
     integer :: nbsst, i, j, ioc, ibid, ldnmcl, ldrot, nblia, ldlid, iret, ldtra
-    real(kind=8) ::  pi
+    real(kind=8) :: pi
 !
 !-----------------------------------------------------------------------
     data clesst,clenom /'SOUS_STRUC','NOM'/
@@ -77,8 +77,7 @@ subroutine arg126(nomres)
     if (nbsst .lt. 2) then
         vali (1) = 2
         vali (2) = nbsst
-        call u2mesg('F', 'ALGORITH11_92', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH11_92', ni=2, vali=vali)
     endif
 !
     repsst=nomres//'      .MODG.SSNO'
@@ -112,8 +111,7 @@ subroutine arg126(nomres)
         if (ioc .ne. 1) then
             vali (1) = 1
             vali (2) = ioc
-            call u2mesg('F', 'ALGORITH11_93', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_93', ni=2, vali=vali)
         else
             call getvtx(clesst, clenom, iocc=i, scal=nomsst, nbret=ibid)
         endif
@@ -125,8 +123,7 @@ subroutine arg126(nomres)
             valk (1) = nomsst
             vali (1) = ioc
             vali (2) = 1
-            call u2mesg('F', 'ALGORITH11_94', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_94', sk=valk(1), ni=2, vali=vali)
         else
             call getvid(clesst, clemcl, iocc=i, scal=mclcou, nbret=ibid)
         endif
@@ -154,8 +151,7 @@ subroutine arg126(nomres)
             valk (1) = nomsst
             vali (1) = ioc
             vali (2) = 3
-            call u2mesg('F', 'ALGORITH11_95', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_95', sk=valk(1), ni=2, vali=vali)
         endif
 !
 !  TRAITEMENT DES TRANSLATIONS SI INTRODUIT PAR L'UTILISATEUR
@@ -176,8 +172,7 @@ subroutine arg126(nomres)
             valk (1) = nomsst
             vali (1) = ioc
             vali (2) = 3
-            call u2mesg('F', 'ALGORITH11_96', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_96', sk=valk(1), ni=2, vali=vali)
         endif
 !
 !
@@ -189,8 +184,7 @@ subroutine arg126(nomres)
     if (nblia .eq. 0) then
         vali (1) = nblia
         vali (2) = 1
-        call u2mesg('F', 'ALGORITH11_97', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH11_97', ni=2, vali=vali)
     endif
 !
     famli=nomres//'      .MODG.LIDF'
@@ -214,8 +208,7 @@ subroutine arg126(nomres)
                 vali (2) = ioc
                 vali (3) = 1
                 valk (1) = clel(j)
-                call u2mesg('F', 'ALGORITH11_98', 1, valk, 3,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGORITH11_98', sk=valk(1), ni=3, vali=vali)
             else
                 call getvtx(clelia, clel(j), iocc=i, scal=nomcou, nbret=ibid)
 !
@@ -225,8 +218,7 @@ subroutine arg126(nomres)
                 if (iret .eq. 0) then
                     vali (1) = i
                     valk (1) = nomcou
-                    call u2mesg('F', 'ALGORITH11_99', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGORITH11_99', sk=valk(1), si=vali(1))
                 endif
                 zk8(ldlid+(j-1)*2)=nomcou
             endif
@@ -242,8 +234,7 @@ subroutine arg126(nomres)
                 vali (2) = ioc
                 vali (3) = 1
                 valk (1) = clel(j)
-                call u2mesg('F', 'ALGORITH11_98', 1, valk, 3,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGORITH11_98', sk=valk(1), ni=3, vali=vali)
             else
                 call getvtx(clelia, clel(j), iocc=i, scal=nomcou, nbret=ibid)
             endif
@@ -254,8 +245,7 @@ subroutine arg126(nomres)
             call mgutdm(nomres, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         lintf)
             if (lintf(1:2) .eq. ' ') then
-                call u2mesg('F', 'ALGORITH12_3', 1, nomsst, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH12_3', sk=nomsst)
             endif
             call jenonu(jexnom(lintf//'.IDC_NOMS', nomcou), iret)
             if (iret .eq. 0) then
@@ -263,8 +253,7 @@ subroutine arg126(nomres)
                 valk (1) = nomsst
                 valk (2) = '   '
                 valk (3) = nomcou
-                call u2mesg('F', 'ALGORITH12_2', 3, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGORITH12_2', nk=3, valk=valk, si=vali(1))
             endif
             zk8(ldlid+(j-3)*2+1)=nomcou
 160      continue

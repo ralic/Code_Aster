@@ -19,7 +19,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit      none
+    implicit none
 #include "asterc/r8pi.h"
 #include "asterfort/calcvh.h"
 #include "asterfort/hbcalc.h"
@@ -29,7 +29,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
 #include "asterfort/hbvaec.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     integer :: itmax, nbmat, nr, nvi, icomp, irtet
     real(kind=8) :: toler, materf(nbmat, 2), depsm(6), sigm(6)
@@ -91,7 +91,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
 ! ======================================================================
     gm = vim(1)
     if (gm .lt. 0.0d0) then
-        call u2mess('F', 'ALGORITH3_88')
+        call utmess('F', 'ALGORITH3_88')
     endif
     irtet = 0
     iteri = 0
@@ -142,11 +142,11 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
 ! ======================================================================
     if (dgnp .lt. 0.d0) then
         if ((icomp.eq.0) .or. (icomp.eq.1)) then
-            call u2mess('I', 'ALGORITH4_57')
+            call utmess('I', 'ALGORITH4_57')
             iteri = 1
             goto 100
         else
-            call u2mess('I', 'ALGORITH4_60')
+            call utmess('I', 'ALGORITH4_60')
             goto 100
         endif
     endif
@@ -163,7 +163,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
 ! ======================================================================
         aux = sigeqe*(etanp+1.0d0)/(trois*materf(4,1))
         if (dgnp .gt. aux) then
-            call u2mess('I', 'ALGORITH4_58')
+            call utmess('I', 'ALGORITH4_58')
             iteri = 1
             goto 100
         endif
@@ -191,11 +191,11 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
 ! --------- ON ESSAIE DE DECOUPER LE PAS DE TEMPS ----------------------
 ! ======================================================================
         if ((icomp.eq.0) .or. (icomp.eq.1)) then
-            call u2mess('I', 'ALGORITH4_59')
+            call utmess('I', 'ALGORITH4_59')
             iteri = 1
             goto 100
         else
-            call u2mess('F', 'ALGORITH4_61')
+            call utmess('F', 'ALGORITH4_61')
         endif
     endif
 100  continue

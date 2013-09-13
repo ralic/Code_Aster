@@ -20,7 +20,7 @@ subroutine jjvern(noml32, icre, iret)
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/jjcren.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=32) :: noml32
     integer :: icre, iret
 !     ------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine jjvern(noml32, icre, iret)
     noml24 = noml32(1:24)
     if (noml8 .ne. '        ') then
         if (noml8 .ne. nome .and. noml8 .ne. nume .and. noml8 .ne. nomatr) then
-            call u2mesk('F', 'JEVEUX1_56', 1, noml8)
+            call utmess('F', 'JEVEUX1_56', sk=noml8)
         endif
     endif
     if (noml24 .eq. nomos(1:24) .and. nomos(25:32) .eq. '        ') then
@@ -68,18 +68,18 @@ subroutine jjvern(noml32, icre, iret)
 !
         if (iret .ne. 0 .and. icre .ne. 0) then
             if (index ( noml24 , '$' ) .ne. 0) then
-                call u2mesk('F', 'JEVEUX1_57', 1, noml24)
+                call utmess('F', 'JEVEUX1_57', sk=noml24)
             endif
             do 10 k = 1, 32
                 if (jclass(ichar( nom32(k:k) )) .eq. illici) then
-                    call u2mesk('F', 'JEVEUX1_58', 1, nom32(k:k))
+                    call utmess('F', 'JEVEUX1_58', sk=nom32(k:k))
                 endif
 10          continue
         endif
         if (noml8 .ne. '        ') then
             if (iret .eq. 1) then
                 if (genr(jgenr(iclaos)+idatos) .ne. 'N') then
-                    call u2mesk('F', 'JEVEUX1_68', 1, noml24)
+                    call utmess('F', 'JEVEUX1_68', sk=noml24)
                 endif
             endif
         endif

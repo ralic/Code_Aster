@@ -1,6 +1,6 @@
 subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
-    implicit   none
-#include "asterfort/u2mess.h"
+    implicit none
+#include "asterfort/utmess.h"
     character(len=2) :: dimens
     character(len=16) :: compor
     integer :: ipop1, ipop2, nbvari
@@ -65,7 +65,7 @@ subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
         ipop2 = nbvari
     else
 !
-        call u2mess('F', 'ELEMENTS2_45')
+        call utmess('F', 'ELEMENTS2_45')
 !
     endif
 !

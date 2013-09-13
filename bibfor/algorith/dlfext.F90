@@ -16,7 +16,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vechme.h"
 #include "asterfort/vedime.h"
 #include "blas/dcopy.h"
@@ -141,7 +141,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
             if (abs(zr(if2+ieq-1)) .gt. r8prem()) iret = 1
         enddo
         if ((iret.eq.1) .and. (method.ne.'NEWMARK')) then
-            call u2mess('F', 'ALGORITH3_20')
+            call utmess('F', 'ALGORITH3_20')
         endif
 !
         do ieq = 1, lonch

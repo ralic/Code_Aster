@@ -1,5 +1,5 @@
 subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
-                  cret)
+                     cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,15 +19,16 @@ subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/msevac.h"
     character(len=*) :: nomest, nomatt
     aster_int :: fid, tyatmd, nbrcmp, cret
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, tyatm4, nbrcm4, cret4
     fid4 = fid
@@ -40,6 +41,6 @@ subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
     call msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
                 cret)
 #endif
-
+!
 #endif
 end subroutine

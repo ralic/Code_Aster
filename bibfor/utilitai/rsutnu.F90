@@ -22,8 +22,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc, nbordr, ier
     real(kind=8) :: prec
@@ -203,104 +202,85 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                         call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                     else if (nbtrou.gt.1) then
                         valk (1) = resu
-                        call u2mesg('A+', 'UTILITAI8_38', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('A+', 'UTILITAI8_38', sk=valk(1))
                         lg = max(1,lxlgut(zk16(jpara-1+iacc)))
                         if (ctyp(1:1) .eq. 'I') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             vali (1) = zi(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_39', 1, valk, 1,&
-                                        vali, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_39', sk=valk(1), si=vali(1))
                         else if (ctyp(1:1).eq.'R') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valr = zr(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_40', 1, valk, 0,&
-                                        0, 1, valr)
+                            call utmess('A+', 'UTILITAI8_40', sk=valk(1), sr=valr)
                         else if (ctyp(1:2).eq.'K8') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk8(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
                         else if (ctyp(1:3).eq.'K16') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk16(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
                         else if (ctyp(1:3).eq.'K24') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk24(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
                         else if (ctyp(1:3).eq.'K32') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk32(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
                         else if (ctyp(1:3).eq.'K80') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk80(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', nk=2, valk=valk)
                         endif
                         vali (1) = nbtrou
                         vali (2) = zi(jord2)
                         vali (3) = zi(jord2+1)
                         vali (4) = zi(jord2+2)
                         if (nbtrou .eq. 2) then
-                            call u2mesg('A', 'UTILITAI8_46', 0, ' ', 3,&
-                                        vali, 0, 0.d0)
+                            call utmess('A', 'UTILITAI8_46', ni=3, vali=vali)
                         else
-                            call u2mesg('A', 'UTILITAI8_48', 0, ' ', 4,&
-                                        vali, 0, 0.d0)
+                            call utmess('A', 'UTILITAI8_48', ni=4, vali=vali)
                         endif
 !
                         call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                     else if (nbtrou.eq.0) then
                         valk (1) = resu
-                        call u2mesg('A+', 'UTILITAI8_47', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('A+', 'UTILITAI8_47', sk=valk(1))
                         lg = max(1,lxlgut(zk16(jpara-1+iacc)))
                         if (ctyp(1:1) .eq. 'I') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             vali (1) = zi(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_39', 0, ' ', 1,&
-                                        vali, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_39', si=vali(1))
                         else if (ctyp(1:1).eq.'R') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valr = zr(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_40', 0, ' ', 0,&
-                                        0, 1, valr)
+                            call utmess('A+', 'UTILITAI8_40', sr=valr)
                         else if (ctyp(1:2).eq.'K8') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk8(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 1, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', sk=valk(1))
                         else if (ctyp(1:3).eq.'K16') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk16(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 1, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', sk=valk(1))
                         else if (ctyp(1:3).eq.'K24') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk24(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 1, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', sk=valk(1))
                         else if (ctyp(1:3).eq.'K32') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk32(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 1, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', sk=valk(1))
                         else if (ctyp(1:1).eq.'K80') then
                             valk (1) = zk16(jpara-1+iacc) (1:lg)
                             valk (2) = zk80(jval-1+ival)
-                            call u2mesg('A+', 'UTILITAI8_41', 1, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('A+', 'UTILITAI8_41', sk=valk(1))
                         endif
-                        call u2mesg('A', 'VIDE_1', 0, ' ', 0,&
-                                    0, 0, 0.d0)
+                        call utmess('A', 'VIDE_1')
                         ier = ier + 10
                     else if (nbtrou.lt.0) then
-                        call u2mess('F', 'DVP_1')
+                        call utmess('F', 'DVP_1')
                     endif
 20              continue
                 nbordr = nbordr - 1
@@ -338,17 +318,15 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     ier = ier + 1
                     valk (1)= nomacc
                     valr = zr(laccr+iord)
-                    call u2mesg('A', 'UTILITAI8_56', 1, valk, 0,&
-                                0, 1, valr)
+                    call utmess('A', 'UTILITAI8_56', sk=valk(1), sr=valr)
                 else if (nbtrou.lt.0) then
-                    call u2mess('F', 'DVP_1')
+                    call utmess('F', 'DVP_1')
                 else
                     if (nbtrou .gt. 1) then
                         valk (1) = resu
                         valr = zr(laccr+iord)
                         vali (1) = nbtrou
-                        call u2mesg('A', 'UTILITAI8_57', 1, valk, 1,&
-                                    vali, 1, valr)
+                        call utmess('A', 'UTILITAI8_57', sk=valk(1), si=vali(1), sr=valr)
                     endif
                     call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                 endif
@@ -387,17 +365,15 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     ier = ier + 1
                     valk (1) = nomacc
                     valr = zr(laccr+iord)
-                    call u2mesg('A', 'UTILITAI8_58', 1, valk, 0,&
-                                0, 1, valr)
+                    call utmess('A', 'UTILITAI8_58', sk=valk(1), sr=valr)
                 else if (nbtrou.lt.0) then
-                    call u2mess('F', 'DVP_1')
+                    call utmess('F', 'DVP_1')
                 else
                     if (nbtrou .gt. 1) then
                         valk (1) = resu
                         valr = zr(laccr+iord)
                         vali (1) = nbtrou
-                        call u2mesg('A', 'UTILITAI8_59', 1, valk, 1,&
-                                    vali, 1, valr)
+                        call utmess('A', 'UTILITAI8_59', sk=valk(1), si=vali(1), sr=valr)
                     endif
                     call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
                 endif
@@ -460,7 +436,9 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
         if (nbtrop .gt. 0) then
             knum2='&&RSUTNU.KNUM2'
-            if ((nbordr-nbtrop) .eq. 0) call u2mess('F', 'UTILITAI4_53')
+            if ((nbordr-nbtrop) .eq. 0) then
+                call utmess('F', 'UTILITAI4_53')
+            endif
             call wkvect(knum2, 'V V I', nbordr-nbtrop, jordr3)
             indi=0
             do 778,i=1,nbordr

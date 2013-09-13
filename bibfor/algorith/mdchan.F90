@@ -10,7 +10,7 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
 #include "asterfort/normev.h"
 #include "asterfort/orient.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ioc, iliai, nbnli
     real(kind=8) :: xjeu, parcho(nbnli, *)
@@ -163,7 +163,7 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
             endif
 !
         else
-            call u2mess('I', 'ALGORITH5_25')
+            call utmess('I', 'ALGORITH5_25')
             angl = 0.d0
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then
                 call angvx(txloc, alpha, beta)
@@ -201,7 +201,7 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
         tyloc(3) = (parcho(iliai,13) - parcho(iliai,10))
         call normev(tyloc, rnorm)
         if (rnorm .eq. 0.0d0) then
-            call u2mess('F', 'ALGORITH5_26')
+            call utmess('F', 'ALGORITH5_26')
         endif
 !
 ! --- DETERMINATION DES AXES LOCAUX

@@ -1,6 +1,6 @@
 subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                   lonmin, nch, lisch)
-    implicit   none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,6 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
@@ -72,15 +71,15 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     integer :: k, te, tabno(27), iret1, jobj, numa, nch
     integer :: igr, iel, iacoor, iamaco, ilmaco, ialiel, illiel
     integer :: dimgeo, iacose, ibid, ino, ino1, ino2
-    integer ::  nbmail, nbnoeu, nbcoor, iadime, kse
+    integer :: nbmail, nbnoeu, nbcoor, iadime, kse
     integer :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
     integer :: npg1, nbpi, iagepi, iagese, nno2, nuse, nse1
     integer :: ima, nbelgr, nupoin, npoini, iterm, ipoini
@@ -175,7 +174,9 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
         call dismoi('F', 'NOM_LIGREL', mo, 'MODELE', ibid,&
                     ligrmo, ibid)
         do 30, ich=1,nch2
-        if (lisch(ich)(6:9) .ne. 'ELGA') call u2mess('F', 'CALCULEL2_41')
+        if (lisch(ich)(6:9) .ne. 'ELGA') then
+            call utmess('F', 'CALCULEL2_41')
+        endif
         call jenonu(jexnom('&CATA.OP.NOMOPT', lisch(ich)), opt)
         if (opt .eq. 0) goto 30
 !
@@ -194,7 +195,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
         if (iret .eq. 1) then
             valk(1) = mo
             valk(2) = lisch(ich)
-            call u2mesk('F', 'CALCULEL2_33', 2, valk)
+            call utmess('F', 'CALCULEL2_33', nk=2, valk=valk)
         endif
         call jeveuo(nomobj, 'L', jobj)
 30      continue
@@ -253,13 +254,17 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !        .NBNO2    : NOMBRE DE NOEUDS DES SOUS-ELEMENTS
 !        .TYPMAIL  : TYPE_MAILLE DES SOUS-ELEMENTS
 !     ---------------------------------------------------------------
-    if (nbpi .eq. 0) call u2mess('F', 'CALCULEL2_35')
+    if (nbpi .eq. 0) then
+        call utmess('F', 'CALCULEL2_35')
+    endif
     call wkvect('&&ECLPGM.GEOPOINI', 'V V R', nbpi*dimgeo, iagepi)
     call wkvect('&&ECLPGM.CONNEXSE', 'V V I', nbno2t, iacose)
     call wkvect('&&ECLPGM.GEOSE', 'V V R', nbno2t*dimgeo, iagese)
     call wkvect('&&ECLPGM.NBNO2', 'V V I', nbse, ianno2)
 !
-    if (nbse .eq. 0) call u2mess('F', 'CALCULEL2_36')
+    if (nbse .eq. 0) then
+        call utmess('F', 'CALCULEL2_36')
+    endif
     call wkvect(ma2//'.TYPMAIL', 'G V I', nbse, iatypm)
 !
 !

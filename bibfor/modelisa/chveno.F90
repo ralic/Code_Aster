@@ -19,9 +19,8 @@ subroutine chveno(fonree, noma, nomo)
 #include "asterfort/jexnum.h"
 #include "asterfort/orilma.h"
 #include "asterfort/ornorm.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utmamo.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utmotp.h"
 #include "asterfort/wkvect.h"
 !
@@ -271,8 +270,7 @@ subroutine chveno(fonree, noma, nomo)
                             ier = ier + 1
                             valk(1) = nogr
                             vali = norien
-                            call u2mesg('E', 'MODELISA8_56', 1, valk, 1,&
-                                        vali, 0, 0.d0)
+                            call utmess('E', 'MODELISA8_56', sk=valk(1), si=vali)
                         endif
 212                  continue
 !
@@ -357,8 +355,7 @@ subroutine chveno(fonree, noma, nomo)
                     if (norien .ne. 0) then
                         ier = ier + 1
                         valk(1) = nomail
-                        call u2mesg('E', 'MODELISA8_57', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E', 'MODELISA8_57', sk=valk(1))
                     endif
                 endif
 211              continue
@@ -368,6 +365,8 @@ subroutine chveno(fonree, noma, nomo)
 200      continue
 100  end do
 !
-    if (ier .ne. 0) call u2mess('F', 'MODELISA4_24')
+    if (ier .ne. 0) then
+        call utmess('F', 'MODELISA4_24')
+    endif
 !
 end subroutine

@@ -20,7 +20,7 @@ subroutine jecroc(nomlu)
 #include "asterfort/jjcroc.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
 !     ------------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
@@ -36,7 +36,7 @@ subroutine jecroc(nomlu)
 ! DEB ------------------------------------------------------------------
     l = len(nomlu)
     if (l .ne. 32) then
-        call u2mesk('F', 'JEVEUX_95', 0, nomlu)
+        call utmess('F', 'JEVEUX_95')
     endif
 !
     icre = 3
@@ -44,12 +44,12 @@ subroutine jecroc(nomlu)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_25', 1, noml32(1:24))
+        call utmess('F', 'JEVEUX_25', sk=noml32(1:24))
     else
         if (iret .eq. 1) then
 !         ----- OBJET DE TYPE REPERTOIRE
             if (nomlu(25:32) .eq. nume) then
-                call u2mesk('F', 'JEVEUX_96', 1, noml32)
+                call utmess('F', 'JEVEUX_96', sk=noml32)
             endif
             call jxveuo('E', itab, 1, jctab)
             call jjcroc('        ', icre)
@@ -58,7 +58,7 @@ subroutine jecroc(nomlu)
             call jjallc(iclaco, idatco, 'E', ibacol)
             call jjcroc(nomlu(25:32), icre)
         else
-            call u2mesk('F', 'JEVEUX_97', 1, noml32)
+            call utmess('F', 'JEVEUX_97', sk=noml32)
         endif
     endif
 ! FIN ------------------------------------------------------------------

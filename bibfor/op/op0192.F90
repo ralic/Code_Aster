@@ -49,9 +49,8 @@ subroutine op0192()
 #include "asterfort/lrchme.h"
 #include "asterfort/lrvema.h"
 #include "asterfort/lrvemo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter ( nompro = 'OP0192' )
@@ -123,10 +122,10 @@ subroutine op0192()
     if (format .eq. 'MED') then
         call getvtx(' ', 'NOM_MED', scal=nochmd, nbret=iaux)
         if (iaux .eq. 0) then
-            call u2mess('F', 'MED_96')
+            call utmess('F', 'MED_96')
         endif
     else
-        call u2mesk('F', 'UTILITAI3_17', 1, format)
+        call utmess('F', 'UTILITAI3_17', sk=format)
     endif
 !
 ! 2.2. ==> TYPE DE CHAMP A LIRE
@@ -151,7 +150,7 @@ subroutine op0192()
         param = 'PSOUR_R'
     else if (tych(1:4).eq.'ELGA') then
 !        AUTRES CHAMPS ELGA : NON PREVU
-        call u2mesk('F', 'UTILITAI2_94', 1, tych)
+        call utmess('F', 'UTILITAI2_94', sk=tych)
     else
 !        CHAMPS ELNO OU AUTRES :
         option=' '
@@ -179,7 +178,7 @@ subroutine op0192()
         if (rep .eq. 'OUI') then
             nbcmpv = 0
         else
-            call u2mesk('F', 'UTILITAI3_18', 1, rep)
+            call utmess('F', 'UTILITAI3_18', sk=rep)
         endif
 !
     else
@@ -195,7 +194,7 @@ subroutine op0192()
         if (-iaux .ne. nbcmpv) then
             valk(1) = lcmpva
             valk(2) = lcmpvm
-            call u2mesk('F', 'UTILITAI2_95', 2, valk)
+            call utmess('F', 'UTILITAI2_95', nk=2, valk=valk)
         endif
 !
         if (nbcmpv .gt. 0) then
@@ -227,7 +226,7 @@ subroutine op0192()
         call dismoi('F', 'NOM_MAILLA', nomo, 'MODELE', iaux,&
                     nomaas, codret)
         if (codret .ne. 0) then
-            call u2mess('F', 'UTILITAI3_19')
+            call utmess('F', 'UTILITAI3_19')
         endif
     endif
 !
@@ -310,7 +309,7 @@ subroutine op0192()
             iver= imaj*100 + imin*10 + irel
             if (iver .lt. 233) then
                 typent=edmail
-                call u2mesk('A', 'MED_53', 1, nochmd)
+                call utmess('A', 'MED_53', sk=nochmd)
             else
                 typent=ednoma
             endif

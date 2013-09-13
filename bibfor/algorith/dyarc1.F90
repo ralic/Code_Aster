@@ -1,9 +1,8 @@
 subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
                   epsi, crit)
-    implicit   none
+    implicit none
 #include "asterc/getres.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbpas, nbinst, arch(*)
     real(kind=8) :: epsi, instc(*), insta(*)
     character(len=8) :: crit
@@ -78,7 +77,7 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
                     trouve = .false.
                 endif
             else
-                call u2mesk('F', 'ALGORITH3_42', 1, crit)
+                call utmess('F', 'ALGORITH3_42', sk=crit)
             endif
             if (trouve) then
                 nbtrou = nbtrou + 1
@@ -88,12 +87,10 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
 20      continue
         if (nbtrou .eq. 0) then
             valr = rval
-            call u2mesg('F', 'ALGORITH12_97', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('F', 'ALGORITH12_97', sr=valr)
         else if (nbtrou .ne. 1) then
             valr = rval
-            call u2mesg('F', 'ALGORITH12_98', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('F', 'ALGORITH12_98', sr=valr)
         endif
 10  end do
 !

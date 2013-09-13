@@ -8,7 +8,6 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -19,10 +18,11 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 #include "asterfort/jeveut.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/refdaj.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer          :: nbrede, nbrevi, nbchoc
+!
+    integer :: nbrede, nbrevi, nbchoc
     character(len=*) :: basemo, masgen, riggen, amogen
     character(len=8) :: nomres, intitu(*)
     character(len=8) :: noecho(nbchoc, *), fonred(nbrede, *), fonrev(nbrevi, *)
@@ -74,7 +74,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     character(len=3) :: typsau
     character(len=12) :: bl11pt
     character(len=24) :: matric(3)
-
+!
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     logical :: entvid
@@ -112,16 +112,17 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !
     call jeexin(nomres//'           .REFD', iret)
     entvid = .false.
-    if (      (riggen .eq. ' ') .and. (masgen .eq. ' ') &
-        .and. (amogen .eq. ' ')) entvid = .true.
+    if ((riggen .eq. ' ') .and. (masgen .eq. ' ') .and. (amogen .eq. ' ')) entvid = .true.
 !
     if (iret .eq. 0) then
         if (entvid) then
             if (basemo .ne. blanc) then
                 matric(1) = basemo
-                call refdaj('F', nomres, nbsauv, ' ', 'MESURE', matric, iret)
+                call refdaj('F', nomres, nbsauv, ' ', 'MESURE',&
+                            matric, iret)
             else
-                call refdaj(' ', nomres, nbsauv, ' ', 'INIT', ' ' , iret)
+                call refdaj(' ', nomres, nbsauv, ' ', 'INIT',&
+                            ' ', iret)
             endif
         else
 !           On recupere la numerotation generalisee
@@ -135,7 +136,8 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
             matric(1) = riggen(1:8)
             matric(2) = masgen(1:8)
             matric(3) = amogen(1:8)
-            call refdaj ('F', nomres, nbsauv, numgen(1:8), 'DYNAMIQUE', matric, iret)
+            call refdaj('F', nomres, nbsauv, numgen(1:8), 'DYNAMIQUE',&
+                        matric, iret)
         endif
     endif
 !
@@ -151,12 +153,12 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !
 !          -- BLINDAGE : VERIFICATION DE NBSYM ET NOMSYM
             if ((nbsym.le.0) .or. (nbsym.ge.4)) then
-                call u2mess('F', 'ALGORITH17_29')
+                call utmess('F', 'ALGORITH17_29')
             endif
             do 50, inom = 1,nbsym
             if ((nomsym(inom)(1:4).ne.'DEPL') .and. (nomsym(inom)( 1:4).ne.'VITE') .and.&
                 (nomsym(inom)(1:4).ne.'ACCE')) then
-                call u2mess('F', 'ALGORITH17_29')
+                call utmess('F', 'ALGORITH17_29')
             endif
 50          continue
         else if (typcal.eq.'TRAN') then

@@ -20,7 +20,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbordr, nbropt
     character(len=8) :: resuou, resuin
     character(len=19) :: lisord, lisopt
@@ -87,7 +87,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     if (iret .eq. 0) newcal = .true.
 !
     if ((resuin.ne.resuou) .and. (.not.newcal)) then
-        call u2mess('F', 'CALCULEL_18')
+        call utmess('F', 'CALCULEL_18')
     endif
 !
     call jeveuo(lisord, 'L', jordr)
@@ -96,7 +96,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     call medom1(modele, chmate, carael, lischa, nbchar,&
                 typcha, resuin, nuord)
     if (modele .eq. ' ') then
-        call u2mess('F', 'CALCULEL2_44')
+        call utmess('F', 'CALCULEL2_44')
     endif
 !
 !     RECUPERATION DE LA LISTE DE NUMEROS D'ORDRE
@@ -118,7 +118,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     if (k8b(1:3) .eq. 'OUI') exipla=.true.
 !
     if (exipla .and. carael .eq. ' ') then
-        call u2mess('A', 'CALCULEL2_94')
+        call utmess('A', 'CALCULEL2_94')
         goto 30
     endif
 !

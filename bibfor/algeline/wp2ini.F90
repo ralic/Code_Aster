@@ -15,7 +15,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/mrmult.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/wp2ayl.h"
 #include "asterfort/wp2biy.h"
@@ -306,8 +306,7 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                     vali (3) = j
                     vali (4) = i
                     valk = '"ENNUI" POSSIBLE'
-                    call u2mesg('I', 'ALGELINE4_86', 1, valk, 4,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'ALGELINE4_86', sk=valk, ni=4, vali=vali)
                     oc = .true.
                 else
                     a = b

@@ -32,7 +32,7 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 #include "asterfort/ntarch.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsrusd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: para(*)
     logical :: lnonl, lostat, lreuse, levol
     character(len=19) :: sddisc, sdcrit
@@ -108,7 +108,7 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 ! --- ARCHIVAGE ETAT INITIAL
 !
     if ((.not.lreuse) .and. (.not.lostat) .and. levol) then
-        call u2mess('I', 'ARCHIVAGE_4')
+        call utmess('I', 'ARCHIVAGE_4')
         call ntarch(numins, modele, mate, carele, lnonl,&
                     para, sddisc, sdcrit, sdieto, lisch2,&
                     force)

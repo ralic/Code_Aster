@@ -21,7 +21,6 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
@@ -31,9 +30,9 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nfic, nbele, nbno, icoma, ibid
     character(len=8) :: tymail, nomobj
     logical :: trouve, ecrma(*)
@@ -81,14 +80,16 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
 !
     call jemarq()
-    if (nbno .gt. 27) call u2mess('F', 'PREPOST_54')
+    if (nbno .gt. 27) then
+        call utmess('F', 'PREPOST_54')
+    endif
 !
     call jeveuo('&&GILIRE'//nomobj//'.CONNEX', 'L', iacnex)
     call jeveuo('&&GILIRE.NUMANEW', 'E', ianema)
     call jelira('&&GILIRE.NUMANEW', 'LONUTI', nmtot)
     call jeexin('&&GILIRE.INDIRECT', ibid)
     if (ibid .eq. 0) then
-        call u2mess('F', 'PREPOST_55')
+        call utmess('F', 'PREPOST_55')
     endif
     call jeveuo('&&GILIRE.INDIRECT', 'L', iaptin)
 !
@@ -112,7 +113,9 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
     call jeveuo(jexnom('&&GILIRE.CORR_GIBI_ASTER', tymail), 'L', iacorr)
     itymai = indik8(tymagi(1),tymail,1,nbelem)
-    if (itymai .eq. 0) call u2mesk('F', 'PREPOST_56', 1, tymail)
+    if (itymai .eq. 0) then
+        call utmess('F', 'PREPOST_56', sk=tymail)
+    endif
 !
     write (nfic,*) tymaas(itymai)
 !

@@ -60,7 +60,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 #include "asterc/r8prem.h"
 #include "asterfort/burnvi.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, imat, nmat, ndt, ndi, nr, nvi
     integer :: cerr(14), ii
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -118,7 +118,9 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS', 0, ' ', 0.d0,&
                 1, nomc(6), materd(6, 1), cerr(6), 0)
-    if (cerr(6) .ne. 0) call u2mess('F', 'ALGORITH4_94')
+    if (cerr(6) .ne. 0) then
+        call utmess('F', 'ALGORITH4_94')
+    endif
 !
 ! === ===========
 !     INSTANT T+
@@ -127,7 +129,9 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     call rcvalb(fami, kpg, ksp, '+', imat,&
                 ' ', 'ELAS', 0, ' ', 0.d0,&
                 1, nomc(6), materf(6, 1), cerr(6), 0)
-    if (cerr(6) .ne. 0) call u2mess('F', 'ALGORITH4_94')
+    if (cerr(6) .ne. 0) then
+        call utmess('F', 'ALGORITH4_94')
+    endif
 !
 ! === ===============================================
 !

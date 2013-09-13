@@ -1,7 +1,7 @@
 subroutine dxmat1(fami, epais, df, dm, dmf,&
                   pgl, indith, t2iu, t2ui, t1ve,&
                   npg)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
@@ -10,7 +10,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: indith, npg
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
@@ -41,7 +41,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
 !     CONTRAINTES THERMIQUES
 !     ------------------------------------------------------------------
     integer :: jcoqu, jmate, iret
-    integer ::  nbpar
+    integer :: nbpar
     real(kind=8) :: cdf, cdm, valres(56)
     real(kind=8) :: young, nu, epais, valpar
     real(kind=8) :: xab1(3, 3), dh(3, 3)
@@ -84,14 +84,14 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
 !
     if (phenom .eq. 'ELAS') then
         if (norm .le. r8prem()) then
-            call u2mess('A', 'ELEMENTS_40')
+            call utmess('A', 'ELEMENTS_40')
         endif
         nomres(1) = 'E'
         nomres(2) = 'NU'
         nomres(3) = 'ALPHA'
 !
     else
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
 !===============================================================

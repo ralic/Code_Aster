@@ -51,7 +51,11 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     implicit none
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mfdfin.h"
+#include "asterfort/as_mfdncn.h"
+#include "asterfort/as_mfdonv.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mlcnlc.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -66,17 +70,12 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lrvcpg.h"
-#include "asterfort/as_mfdncn.h"
-#include "asterfort/as_mlcnlc.h"
-#include "asterfort/as_mfdonv.h"
-#include "asterfort/as_mfdfin.h"
-#include "asterfort/as_mfiope.h"
 #include "asterfort/modat2.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nrofic, nbma, ntypel, npgmax, numpt, numord
     integer :: pgmail(nbma), pgmmil(nbma), indpg(ntypel, npgmax)
     character(len=8) :: param
@@ -187,13 +186,13 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     call wkvect('&&LRMPGA.CNAME', 'V V K16', ncmp, jcomp)
     call wkvect('&&LRMPGA.CUNIT', 'V V K16', ncmp, junit)
     call as_mfdfin(idfimd, nochmd, nomam2, npdt, zk16(junit),&
-                zk16(jcomp), iret)
+                   zk16(jcomp), iret)
     if (npdt .gt. 0) then
 !
         do 13 , ityg=1,ntygeo
         call as_mfdonv(idfimd, nochmd, edmail, tygeo(ityg), nomam2,&
-                    numpt, numord, 1, nomprf, edcomp,&
-                    npr, nomloc, ngaulu, n, iret)
+                       numpt, numord, 1, nomprf, edcomp,&
+                       npr, nomloc, ngaulu, n, iret)
         ASSERT(iret.eq.0)
         if (n .gt. 0) then
             nbtyel=nbtyel+1
@@ -223,8 +222,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     call jedetr('&&LRMPGA.CUNIT')
 !
     if (nbtyel .eq. 0) then
-        call u2mesg('F', 'MED_77', 1, nochmd, 1,&
-                    nrofic, 0, rbid)
+        call utmess('F', 'MED_77', sk=nochmd, si=nrofic)
     endif
 !
 !
@@ -239,7 +237,9 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
     call dismoi('F', 'DIM_GEOM', ligrel(1:8), 'MODELE', dime,&
                 k8b, iret)
-    if (.not.(dime.eq.2.or.dime.eq.3)) call u2mess('F', 'MODELISA2_6')
+    if (.not.(dime.eq.2.or.dime.eq.3)) then
+        call utmess('F', 'MODELISA2_6')
+    endif
     liel=ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', nbgrel)
 !

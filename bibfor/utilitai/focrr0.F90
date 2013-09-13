@@ -17,9 +17,8 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnopa.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utch19.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbordr, lordr(*), npoint, ivari
     character(len=1) :: base
@@ -124,13 +123,13 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                     iddl)
         if (inoeud .eq. 0) then
             lg1 = lxlgut(noeud)
-            call u2mesk('F', 'UTILITAI_92', 1, noeud(1:lg1))
+            call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
         else if (iddl.eq.0) then
             lg1 = lxlgut(noeud)
             lg2 = lxlgut(cmp)
             valk(1) = cmp(1:lg2)
             valk(2) = noeud(1:lg1)
-            call u2mesk('F', 'UTILITAI_93', 2, valk)
+            call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
         endif
         ii = 0
         do 10 iordr = 1, nbordr
@@ -148,13 +147,13 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                                 iddl)
                     if (inoeud .eq. 0) then
                         lg1 = lxlgut(noeud)
-                        call u2mesk('F', 'UTILITAI_92', 1, noeud(1:lg1))
+                        call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
                     else if (iddl.eq.0) then
                         lg1 = lxlgut(noeud)
                         lg2 = lxlgut(cmp)
                         valk(1) = cmp(1:lg2)
                         valk(2) = noeud(1:lg1)
-                        call u2mesk('F', 'UTILITAI_93', 2, valk)
+                        call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
                     endif
                 endif
                 call rsadpa(resu, 'L', 1, nomacc, lordr(iordr),&
@@ -188,13 +187,18 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
             npoinz = 1
             nuspz = 1
             noeuz = ' '
-            if (maille .eq. ' ') call u2mess('F', 'CHAMPS_11')
+            if (maille .eq. ' ') then
+                call utmess('F', 'CHAMPS_11')
+            endif
         else if (typch2.eq.'ELNO') then
             nuspz = 1
-            if (maille .eq. ' ' .or. (noeud.eq.' ' .and. npoint.eq.0)) call u2mess('F',&
-                                                                                   'CHAMPS_12')
+            if (maille .eq. ' ' .or. (noeud.eq.' ' .and. npoint.eq.0)) then
+                call utmess('F', 'CHAMPS_12')
+            endif
         else
-            if (maille .eq. ' ' .or. npoint .eq. 0) call u2mess('F', 'CHAMPS_13')
+            if (maille .eq. ' ' .or. npoint .eq. 0) then
+                call utmess('F', 'CHAMPS_13')
+            endif
         endif
         call dismoi('F', 'NOM_MAILLA', cham19, 'CHAM_ELEM', ibid,&
                     noma, ie)
@@ -230,7 +234,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
             call jedema()
 20      continue
     else
-        call u2mesk('F', 'UTILITAI_94', 1, typcha)
+        call utmess('F', 'UTILITAI_94', sk=typcha)
     endif
     call jedetr('&&FOCRR0.VAR.ACCES')
 !

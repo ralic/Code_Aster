@@ -28,8 +28,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
 #include "asterfort/jjlide.h"
 #include "asterfort/jxdeps.h"
 #include "asterfort/jxliro.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: schin, claout, schout
     logical :: dupcol
 ! ----------------------------------------------------------------------
@@ -149,7 +148,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
         else if (iaddi(1) .gt. 0) then
             call jxliro(icin, iadout, iaddi, lonoi*ltypi)
         else
-            call u2mesk('F', 'JEVEUX1_66', 1, nomin)
+            call utmess('F', 'JEVEUX1_66', sk=nomin)
         endif
         docu(jdocu(icout)+idout) = docu(jdocu(icin)+idin)
         luti(jluti(icout)+idout) = luti(jluti(icin)+idin)
@@ -302,8 +301,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
                 else if (iaddi(1) .gt. 0) then
                     call jxliro(icin, iadout, iaddi, nbl)
                 else
-                    call u2mesg('F', 'JEVEUX1_65', 1, nomin, 1,&
-                                k, 0, val)
+                    call utmess('F', 'JEVEUX1_65', sk=nomin, si=k)
                 endif
                 call jjlide('JELIBE', nomout(1:24)//'$$XNUM  ', 2)
  2          continue

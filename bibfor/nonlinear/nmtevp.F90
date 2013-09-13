@@ -26,8 +26,8 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/nmcri9.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utlcal.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
     integer :: ndim, imate, kpg, ksp, iret
@@ -90,7 +90,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !
     integer :: codret(8), iter
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(8),materi
+    character(len=8) :: nomres(8), materi
     character(len=16) :: meth
 !
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -345,7 +345,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
                         dpmax = dpmax*coef1
                     endif
 32              continue
-                call u2mess('A', 'ALGORITH6_79')
+                call utmess('A', 'ALGORITH6_79')
                 goto 21
             endif
 !

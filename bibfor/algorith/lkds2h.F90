@@ -1,7 +1,7 @@
 subroutine lkds2h(nbmat, mater, invar, s, dhds,&
                   ds2hds, retcom)
 !
-    implicit      none
+    implicit none
 #include "asterc/r8miem.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lcprmv.h"
@@ -9,7 +9,7 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
 #include "asterfort/lctrma.h"
 #include "asterfort/lkhtet.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbmat, retcom
     real(kind=8) :: invar, mater(nbmat, 2), s(6), dhds(6), ds2hds(6)
 ! =================================================================
@@ -78,7 +78,7 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
     call lcprsc(s, s, sii)
     sii = sqrt (sii)
     if (sii .lt. ptit) then
-        call u2mess('A', 'COMPOR1_30')
+        call utmess('A', 'COMPOR1_30')
         retcom = 1
         goto 1000
     endif

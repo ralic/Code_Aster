@@ -21,7 +21,6 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -31,9 +30,9 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mo, ma
     character(len=14) :: nu
     integer :: nlili, nm, nl, nbntt
@@ -118,7 +117,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
         goto 42
     endif
     41 end do
-    call u2mesk('F', 'ASSEMBLA_35', 1, nu)
+    call utmess('F', 'ASSEMBLA_35', sk=nu)
 !
 42  continue
     call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&
@@ -176,7 +175,9 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
         call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
         do 23, i=1,nbnm
         ino=zi(iamail-1+i)
-        if (ino .eq. 0) call u2mess('F', 'ASSEMBLA_36')
+        if (ino .eq. 0) then
+            call utmess('F', 'ASSEMBLA_36')
+        endif
         do 24, j=i+1,nbnm
         jno=zi(iamail-1+j)
         zi(iaexi1+ino)=zi(iaexi1+ino) +1
@@ -226,7 +227,9 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !
     do 34, i=1,nbnm
     ino=zi(iamail-1+i)
-    if (ino .eq. 0) call u2mess('F', 'ASSEMBLA_36')
+    if (ino .eq. 0) then
+        call utmess('F', 'ASSEMBLA_36')
+    endif
     iino=ino
     if (ino .lt. 0) iino=nbnom+nbnot-ino
     if (nbnm .eq. 1) zi(iaexi1+iino)=zi(iaexi1+iino) +1

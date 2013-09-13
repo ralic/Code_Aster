@@ -10,8 +10,7 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbsect
     real(kind=8) :: dinst, voltub(*), volobs(*), sect(*)
     character(len=*) :: tabpus
@@ -76,7 +75,7 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
     call jeveuo('&&MOREVU.SECT', 'L', jsect)
     nbsect = zi(jsect+nbvpu-1)
     if (nbsect .ne. 10 .and. nbsect .ne. 12) then
-        call u2mess('F', 'PREPOST3_63')
+        call utmess('F', 'PREPOST3_63')
     endif
     nbss2 = nbsect / 2
 !
@@ -94,8 +93,7 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
             valr = dinst
             valk = 'V_USUR_TUBE_CUMU'
             vali = i
-            call u2mesg('F', 'PREPOST5_54', 1, valk, 1,&
-                        vali, 1, valr)
+            call utmess('F', 'PREPOST5_54', sk=valk, si=vali, sr=valr)
         endif
 !
         call tbliva(nomta, 2, valek, i, dinst,&
@@ -107,8 +105,7 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
             valr = dinst
             valk = 'V_USUR_OBST_CUMU'
             vali = i
-            call u2mesg('F', 'PREPOST5_54', 1, valk, 1,&
-                        vali, 1, valr)
+            call utmess('F', 'PREPOST5_54', sk=valk, si=vali, sr=valr)
         endif
 !
         call tbliva(nomta, 2, valek, i, dinst,&
@@ -120,8 +117,7 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
             valr = dinst
             valk = 'ANGLE_DEBUT'
             vali = i
-            call u2mesg('F', 'PREPOST5_54', 1, valk, 1,&
-                        vali, 1, valr)
+            call utmess('F', 'PREPOST5_54', sk=valk, si=vali, sr=valr)
         endif
 !
 10  end do

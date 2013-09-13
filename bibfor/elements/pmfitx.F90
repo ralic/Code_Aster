@@ -18,14 +18,14 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: icdmat, isw
     real(kind=8) :: casect(6), gto
 !     ------------------------------------------------------------------
@@ -87,20 +87,22 @@ subroutine pmfitx(icdmat, isw, casect, gto)
             endif
         else if (isw.eq.2) then
             call rcvala(icdmat, materi, 'ELAS', 0, ' ',&
-                        [zero], 1, 'RHO', val, codres,0)
+                        [zero], 1, 'RHO', val, codres,&
+                        0)
             if (codres(1) .eq. 1) then
                 call jevech('PCAGEPO', 'L', lcage)
                 call jevech('PABSCUR', 'L', labsc)
                 absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/deux
                 call rcvala(icdmat, materi, 'ELAS_FLUI', 1, 'ABSC',&
-                            [absmoy], 4, nomre4, valres, codres,1)
+                            [absmoy], 4, nomre4, valres, codres,&
+                            1)
                 rhos = valres(1)
                 rhofi = valres(2)
                 rhofe = valres(3)
                 cm = valres(4)
                 phie = zr(lcage-1+1)*deux
                 if (phie .eq. 0.d0) then
-                    call u2mess('F', 'ELEMENTS3_26')
+                    call utmess('F', 'ELEMENTS3_26')
                 endif
                 phii = (phie-deux*zr(lcage-1+2))
                 call rhoequ(rho, rhos, rhofi, rhofe, cm,&
@@ -109,7 +111,8 @@ subroutine pmfitx(icdmat, isw, casect, gto)
             endif
         else if (isw.eq.3) then
             call rcvala(icdmat, materi, 'ELAS', 0, ' ',&
-                        [zero], 1, 'RHO', val, codres,0)
+                        [zero], 1, 'RHO', val, codres,&
+                        0)
             if (codres(1) .ne. 0) val(1) = zero
         endif
         do 20 i = 1, 6

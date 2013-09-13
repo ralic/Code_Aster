@@ -21,8 +21,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomres, noma, basmod
@@ -134,7 +133,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     if (nbmdyn .lt. 0) ASSERT(.false.)
 !
     if (nbmtot .ne. zi(iadesc+1)) then
-        call u2mess('I', 'ALGORITH_52')
+        call utmess('I', 'ALGORITH_52')
     endif
 !
 ! **********************
@@ -188,7 +187,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     nbndyn=nbmdyn/ncmpmx
     rbndyn=dble(nbmdyn)/dble(ncmpmx)
     if (abs(rbndyn-dble(nbndyn)) .gt. 0.d0) then
-        call u2mesi('I', 'ALGORITH_53', 1, ncmpmx)
+        call utmess('I', 'ALGORITH_53', si=ncmpmx)
     endif
     if (nbndyn .eq. 0) then
         call wkvect(nomres//'.NEUBID', 'V V I', 1, inebid)
@@ -221,7 +220,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
         nbndef=nbmdef/ncmpmx
         rbndef=dble(nbmdef)/dble(ncmpmx)
         if (abs(rbndef-dble(nbndef)) .gt. 0.d0) then
-            call u2mesi('I', 'ALGORITH_54', 1, ncmpmx)
+            call utmess('I', 'ALGORITH_54', si=ncmpmx)
         endif
         if (nbndyn .ne. 0) then
             nbnot = nbno2 + nbndyn

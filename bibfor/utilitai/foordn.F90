@@ -5,7 +5,7 @@ subroutine foordn(vecpar, vecnom, ne, ns, ier)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ne, ns, ier
     real(kind=8) :: vecpar(ne)
     character(len=*) :: vecnom(ne)
@@ -92,8 +92,7 @@ subroutine foordn(vecpar, vecnom, ne, ns, ier)
     if (ne .ne. ns) then
         k = ne - ns
         vali = k
-        call u2mesg('F', 'UTILITAI6_38', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_38', si=vali)
     endif
 !
     call jedema()

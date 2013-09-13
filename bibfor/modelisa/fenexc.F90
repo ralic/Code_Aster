@@ -49,7 +49,6 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -58,8 +57,9 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lexseg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, nomnoa
     integer :: nbn, nuno(*), nbnfen, noefen(*)
     real(kind=8) :: long, diax(*), disfen(*)
@@ -82,7 +82,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
     nnoema = noma//'.NOMNOE'
     call jenonu(jexnom(nnoema, nomnoa), nunoap)
     if (nunoap .eq. 0) then
-        call u2mess('F', 'MODELISA4_53')
+        call utmess('F', 'MODELISA4_53')
     endif
 !
 ! --- 2.DETERMINATION DU RANG DU NOEUD D'APPLICATION DANS LA LISTE
@@ -103,7 +103,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 ! ---   DU MAILLAGE
 !
     if (indap .eq. 1 .or. indap .eq. nbn) then
-        call u2mess('F', 'MODELISA4_54')
+        call utmess('F', 'MODELISA4_54')
     endif
 !
     x1 = xap - long/2.d0
@@ -111,7 +111,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
     difx1 = diax(1) - x1
     difx2 = x2 - diax(nbn)
     if (difx1 .gt. tol .or. difx2 .gt. tol) then
-        call u2mess('F', 'MODELISA4_55')
+        call utmess('F', 'MODELISA4_55')
     endif
 !
 !.....DEDUCTION DE XDECAL UTILE PLUS LOIN POUR TRANSLATION DE
@@ -190,12 +190,12 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
 21  continue
     if (nbnop .eq. 1) then
-        call u2mess('F', 'MODELISA4_56')
+        call utmess('F', 'MODELISA4_56')
     endif
 !
     difx1 = zr(idiscp+lp-nbnop) - x1
     if (difx1 .gt. tol) then
-        call u2mess('F', 'MODELISA4_57')
+        call utmess('F', 'MODELISA4_57')
     endif
 !
 ! --- 6.DETERMINATION DE L'ENSEMBLE DES NOEUDS APPARTENANT A LA
@@ -217,7 +217,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
         if (lexseg(connex,typmai,nbrma,nunog,nunod)) then
             isenss = 1
             if (isenss .ne. isensp) then
-                call u2mess('F', 'MODELISA4_58')
+                call utmess('F', 'MODELISA4_58')
             endif
             nbnos = nbnos + 1
             zi(inunos+nbnos-1) = nunod
@@ -227,7 +227,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
         else if (lexseg(connex,typmai,nbrma,nunod,nunog)) then
             isenss = -1
             if (isenss .ne. isensp) then
-                call u2mess('F', 'MODELISA4_58')
+                call utmess('F', 'MODELISA4_58')
             endif
             nbnos = nbnos + 1
             zi(inunos+nbnos-1) = nunod
@@ -258,12 +258,12 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
 !
 31  continue
     if (nbnos .eq. 1) then
-        call u2mess('F', 'MODELISA4_59')
+        call utmess('F', 'MODELISA4_59')
     endif
 !
     difx2 = x2 - zr(idiscs+nbnos-1)
     if (difx2 .gt. tol) then
-        call u2mess('F', 'MODELISA4_60')
+        call utmess('F', 'MODELISA4_60')
     endif
 !
 ! --- 7.AFFECTATION DES RESULTATS

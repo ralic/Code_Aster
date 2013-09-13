@@ -29,7 +29,7 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=16) :: motfac
     character(len=24) :: nomcha, nomchs
@@ -71,7 +71,7 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 !
     integer :: jpi, jspi
     integer :: ipi, ispi
-    integer ::  n1, n2, n3, iret
+    integer :: n1, n2, n3, iret
     integer :: ntpt, ntspt
     character(len=16) :: valk(2)
     integer :: jcesd
@@ -99,7 +99,7 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
     call getvtx(motfac, 'EVAL_ELGA', iocc=iocc, scal=extrga, nbret=n1)
     if (n1 .eq. 0) then
         extrga = 'VALE'
-        call u2mesk('A', 'EXTRACTION_6', 1, nomcha)
+        call utmess('A', 'EXTRACTION_6', sk=nomcha)
     endif
 !
 ! --- MAX. DE POINTS/SOUS-POINTS SUR LE CHAMP
@@ -113,7 +113,7 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
         call getvis(motfac, 'POINT', iocc=iocc, nbval=0, nbret=n2)
         call getvis(motfac, 'SOUS_POINT', iocc=iocc, nbval=0, nbret=n3)
         if (n2 .eq. 0) then
-            call u2mesk('F', 'EXTRACTION_7', 2, valk)
+            call utmess('F', 'EXTRACTION_7', nk=2, valk=valk)
         endif
         nbpi = -n2
         if ((n2.ne.0) .and. (n3.eq.0)) then

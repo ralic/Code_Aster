@@ -25,7 +25,7 @@ subroutine dfllli(lisins, dtmin, nbinst)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: lisins
     real(kind=8) :: dtmin
     integer :: nbinst
@@ -65,7 +65,9 @@ subroutine dfllli(lisins, dtmin, nbinst)
 !
 ! --- VERIFICATION IL Y A AU MOINS UN INSTANT DE CALCUL
 !
-    if (nbinst .lt. 2) call u2mess('F', 'DISCRETISATION_86')
+    if (nbinst .lt. 2) then
+        call utmess('F', 'DISCRETISATION_86')
+    endif
 !
 ! --- INTERVALLE DE TEMPS MINIMAL : DTMIN
 !
@@ -76,7 +78,9 @@ subroutine dfllli(lisins, dtmin, nbinst)
 !
 ! --- VERIFICATION DE LA STRICTE CROISSANCE DE LA LISTE D'INSTANTS
 !
-    if (dtmin .le. 0.d0) call u2mess('F', 'DISCRETISATION_87')
+    if (dtmin .le. 0.d0) then
+        call utmess('F', 'DISCRETISATION_87')
+    endif
 !
     call jedema()
 end subroutine

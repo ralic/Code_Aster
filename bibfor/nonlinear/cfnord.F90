@@ -21,7 +21,6 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -30,8 +29,9 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     character(len=8) :: noma
     character(len=4) :: typent
     integer :: nument
@@ -111,9 +111,9 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
         call normev(tau2, noor)
         if (noor .le. r8prem()) then
             if (typent .eq. 'MAIL') then
-                call u2mesk('F', 'CONTACT_14', 1, noment)
+                call utmess('F', 'CONTACT_14', sk=noment)
             else if (typent.eq.'NOEU') then
-                call u2mesk('F', 'CONTACT_13', 1, noment)
+                call utmess('F', 'CONTACT_13', sk=noment)
             else
                 ASSERT(.false.)
             endif
@@ -133,9 +133,9 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
             call normev(norm, noor2)
             if (noor2 .le. r8prem()) then
                 if (typent .eq. 'MAIL') then
-                    call u2mesk('F', 'CONTACT3_27', 1, noment)
+                    call utmess('F', 'CONTACT3_27', sk=noment)
                 else if (typent.eq.'NOEU') then
-                    call u2mesk('F', 'CONTACT3_26', 1, noment)
+                    call utmess('F', 'CONTACT3_26', sk=noment)
                 else
                     ASSERT(.false.)
                 endif
@@ -146,9 +146,9 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
             call normev(norm, noor2)
             if (noor2 .le. r8prem()) then
                 if (typent .eq. 'MAIL') then
-                    call u2mesk('F', 'CONTACT3_27', 1, noment)
+                    call utmess('F', 'CONTACT3_27', sk=noment)
                 else if (typent.eq.'NOEU') then
-                    call u2mesk('F', 'CONTACT3_26', 1, noment)
+                    call utmess('F', 'CONTACT3_26', sk=noment)
                 else
                     ASSERT(.false.)
                 endif

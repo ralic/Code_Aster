@@ -2,7 +2,6 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
                   eg1, eg2, eg3, typrac, rayon)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/carcou.h"
 #include "asterfort/dismoi.h"
@@ -20,10 +19,10 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mecact.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vdiff.h"
+!
     integer :: info, ifm
     character(len=8) :: noepou, noma, cara
     character(len=19) :: ligrel
@@ -79,7 +78,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
                     inopo1=zi(iconex)
                     inopo2=zi(iconex+1)
                 else
-                    call u2mesk('F', 'MODELISA6_36', 1, noepou)
+                    call utmess('F', 'MODELISA6_36', sk=noepou)
                 endif
             endif
 56      continue
@@ -96,7 +95,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     else if (nutyma.eq.ntseg4) then
         nno=4
     else
-        call u2mesk('F', 'MODELISA6_37', 1, noepou)
+        call utmess('F', 'MODELISA6_37', sk=noepou)
     endif
 !
 !     RECUPERATION DES ANGLES NAUTIQUES DANS LA CARTE ORIENTATION
@@ -132,7 +131,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
                     pgl1, pgl2, pgl3, pgl4, nno,&
                     omega, icoude)
     else
-        call u2mess('F', 'MODELISA6_38')
+        call utmess('F', 'MODELISA6_38')
     endif
 !
 !     CALCUL DU VECTEUR E1 ORIENTANT LA MAILLE TUYAU

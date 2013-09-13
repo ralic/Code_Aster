@@ -1,12 +1,12 @@
 subroutine canorm(coor, normal, ndim, ityp, inorm)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ndim, ityp, inorm
     real(kind=8) :: coor(*), normal(3)
 ! ======================================================================
@@ -62,7 +62,7 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
             if (inorm .eq. 1) then
                 call normev(normal, norme)
             else
-                call u2mess('F', 'MODELISA3_20')
+                call utmess('F', 'MODELISA3_20')
             endif
 !          ELSE
 !            NORMAL(1) = COOR(5) - COOR(2)
@@ -86,7 +86,7 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
 !
     else if (nomtm(1:4).eq.'TRIA') then
         if (ndim .eq. 2) then
-            call u2mess('F', 'MODELISA3_21')
+            call utmess('F', 'MODELISA3_21')
 !
         else
             do 10 j = 1, 3
@@ -105,7 +105,7 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
 !
     else if (nomtm(1:4).eq.'QUAD') then
         if (ndim .eq. 2) then
-            call u2mess('F', 'MODELISA3_22')
+            call utmess('F', 'MODELISA3_22')
 !
         else
 !

@@ -14,7 +14,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbval
     character(len=24) :: nival, nrval, niord, nkcha
@@ -248,8 +248,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                 if (n1 .ne. 0) then
                     valk = nsymb
                     vali = zi(jival+i-1)
-                    call u2mesg('I', 'TABLE0_38', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'TABLE0_38', sk=valk, si=vali)
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                 endif
 30          continue
@@ -265,8 +264,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                     valk = typac
                     vali = zi(jival+i-1)
                     zi(jniord+i-1)=-1
-                    call u2mesg('I', 'TABLE0_39', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'TABLE0_39', sk=valk, si=vali)
                     goto 40
                 endif
                 n1=-n1
@@ -279,8 +277,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                     valk = nsymb
                     vali = zi(jival+i-1)
                     zi(jniord+i-1)=-1
-                    call u2mesg('I', 'TABLE0_38', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'TABLE0_38', sk=valk, si=vali)
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                 endif
 40          continue
@@ -296,15 +293,13 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                     valk = typac
                     valr = zr(jrval+i-1)
                     zi(jniord+i-1)=-1
-                    call u2mesg('I', 'TABLE0_40', 1, valk, 0,&
-                                ibid, 1, valr)
+                    call utmess('I', 'TABLE0_40', sk=valk, sr=valr)
                     goto 50
                 endif
                 n1=-n1
                 if (n1 .gt. 1) then
                     valk = typac
-                    call u2mesg('F', 'TABLE0_46', 1, valk, 0,&
-                                ibid, 1, zr( jrval+i-1))
+                    call utmess('F', 'TABLE0_46', sk=valk, sr=zr( jrval+i-1))
                 endif
                 call rsorac(resu, typac, 0, zr(jrval+i-1), k8b,&
                             cbid, epsi, crit, zi(jniord+i-1), n1,&
@@ -314,8 +309,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                 if (n2 .ne. 0) then
                     valk = nsymb
                     vali = zi(jniord+i-1)
-                    call u2mesg('I', 'TABLE0_38', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'TABLE0_38', sk=valk, si=vali)
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                 endif
 50          continue

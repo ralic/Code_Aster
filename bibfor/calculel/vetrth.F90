@@ -32,7 +32,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: modele, charge, infcha, carele, inst, chtn, chti
     character(len=24) :: chlapm, chlapp, veres, mate
 ! ----------------------------------------------------------------------
@@ -111,12 +111,16 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
         call jeexin(convch, iret)
         if (iret .gt. 0) then
             iconv = iconv + 1
-            if (iconv .gt. 1) call u2mess('F', 'CALCULEL3_72')
+            if (iconv .gt. 1) then
+                call utmess('F', 'CALCULEL3_72')
+            endif
             call jeveuo(convch, 'L', jvites)
             chvite = zk8(jvites)
         endif
 10  end do
-    if (iconv .eq. 0) call u2mess('F', 'CALCULEL5_38')
+    if (iconv .eq. 0) then
+        call utmess('F', 'CALCULEL5_38')
+    endif
     lchin(7) = chvite
 !
     call gcnco2(newnom)

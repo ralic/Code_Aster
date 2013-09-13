@@ -27,8 +27,8 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utacli.h"
+#include "asterfort/utmess.h"
     character(len=16) :: motfac
     character(len=19) :: provli
     real(kind=8) :: tole, instin
@@ -119,7 +119,7 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
 !
         call utacli(inst, zr(jinst), nbinst, tole, numini)
         if (numini .lt. 0) then
-            call u2mesr('F', 'DISCRETISATION_89', 1, inst)
+            call utmess('F', 'DISCRETISATION_89', sr=inst)
         endif
     endif
 !

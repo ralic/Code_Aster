@@ -1,5 +1,5 @@
 subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
-                  dt, cret)
+                     dt, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,16 +19,17 @@ subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfdcsi.h"
     aster_int :: fid, ind, numdt, numo, cret
     character(len=*) :: cha
     real(kind=8) :: dt
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, ind4, numdt4, numo4, cret4
     fid4 = fid
@@ -42,6 +43,6 @@ subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
     call mfdcsi(fid, cha, ind, numdt, numo,&
                 dt, cret)
 #endif
-
+!
 #endif
 end subroutine

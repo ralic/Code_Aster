@@ -33,8 +33,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/tbexlr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
@@ -44,7 +43,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
     character(len=19) :: listr
     real(kind=8) :: ms(6), ng(3), q(3, 3), lg(3), pgl(3, 3)
     complex(kind=8) :: cbid
-    integer ::  ifm, niv, nbtbsg, nums(2), indvar
+    integer :: ifm, niv, nbtbsg, nums(2), indvar
     integer :: iocc, nbmat, nbecou, nbecro, nbcine, nbelas, nbfasy
     integer :: i, j, nbela1, nbsys, nvi, imk, imi, ipr, itab, itsg, irra, irr2
     integer :: ncprr, ir, irota, iadlr, decal, nbrota, nbsyst, tabdes(13)
@@ -107,7 +106,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
             if (nbelas .eq. 0) then
                 nbelas=1
             else
-                call u2mess('F', 'MODELISA5_64')
+                call utmess('F', 'MODELISA5_64')
             endif
         endif
 !        CAS DES LOIS DD
@@ -144,8 +143,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
             nbsys=nint(zr(iadlr+2))
 !           VERIF QUE LA MATRICE EST CARREE
             if (6 .ne. zr(iadlr+1)) then
-                call u2mesg('F', 'COMPOR2_19', 0, ' ', 0,&
-                            0, 1, zr(iadlr+1))
+                call utmess('F', 'COMPOR2_19', sr=zr(iadlr+1))
             endif
             zr(ipr+2+2*(nbtbsg-1)) =nbsys
             zr(ipr+2+2*(nbtbsg-1)+1)=decal+1
@@ -211,8 +209,8 @@ subroutine op5901(nboccm, ifm, niv, compor)
     noms(2)=ecoule
     nums(1)=nboccm
     nums(2)=nvi
-    call u2mesg('I', 'COMPOR2_23', 2, noms, 2,&
-                nums, 0, 0.d0)
+    call utmess('I', 'COMPOR2_23', nk=2, valk=noms, ni=2,&
+                vali=nums)
 !
     nomvar(1)='EPSPXX'
     nomvar(2)='EPSPYY'
@@ -265,8 +263,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
     nomvar(nvi)='NBITER'
 !
     do 555 i = 1, nvi
-        call u2mesg('I', 'COMPOR2_24', 1, nomvar(i), 1,&
-                    i, 0, 0.d0)
+        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=i)
 555  end do
 !
 !
@@ -278,20 +275,18 @@ subroutine op5901(nboccm, ifm, niv, compor)
         call jeveuo(listr//'.VALE', 'L', iadlr)
 !        VERIF QUE LA MATRICE EST CARREE
         if (zr(iadlr+1) .ne. zr(iadlr+2)) then
-            call u2mesg('F', 'COMPOR2_15', 0, ' ', 0,&
-                        0, 2, zr(iadlr+1))
+            call utmess('F', 'COMPOR2_15', nr=2, valr=zr(iadlr+1))
         endif
 !        VERIF QUE LE NB DE SYST EST OK
         if (zr(iadlr+1) .ne. nbsyst) then
-            call u2mesg('F', 'COMPOR2_17', 0, ' ', 1,&
-                        nbsyst, 0, 0.d0)
+            call utmess('F', 'COMPOR2_17', si=nbsyst)
         endif
         call dcopy(nbsyst*nbsyst, zr(iadlr+3), 1, zr(ipr+decal), 1)
 !        VERIF QUE LA MATRICE EST SYMETRIQUE
         do 5 i = 1, nbsyst
             do 5 j = 1, nbsyst
                 if (zr(ipr-1+decal+nbsyst*(i-1)+j) .ne. zr(ipr-1+decal+ nbsyst*(j-1)+i)) then
-                    call u2mess('F', 'COMPOR2_18')
+                    call utmess('F', 'COMPOR2_18')
                 endif
  5          continue
         call jedetc('V', listr, 1)
@@ -305,8 +300,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
         endif
     else
         if (nboccm .gt. 1) then
-            call u2mesg('F', 'COMPOR2_20', 0, ' ', 1,&
-                        nbsyst, 0, 0.d0)
+            call utmess('F', 'COMPOR2_20', si=nbsyst)
         endif
     endif
     tabdes(1)=1

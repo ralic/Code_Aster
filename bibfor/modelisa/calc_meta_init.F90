@@ -1,4 +1,4 @@
-subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin, &
+subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin,&
                           chmate)
 !
     implicit none
@@ -7,12 +7,12 @@ subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin, &
 #include "asterfort/assert.h"
 #include "asterfort/calc_meta_field.h"
 #include "asterfort/copisd.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/rsadpa.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin, &
 !
     character(len=19) :: meta_out
     integer :: iret, iainst
-    character(len=8)  :: k8_dummy
+    character(len=8) :: k8_dummy
     character(len=24) :: tempe, sd_field
     real(kind=8) :: time
 !
@@ -76,27 +76,26 @@ subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin, &
                 iret)
 !
 ! - Current time
-
+!
     call rsadpa(sd_temp, 'L', 1, 'INST', temp_nume,&
                 0, iainst, k8_dummy)
     time = zr(iainst)
 !
 ! - Computation of metallurgical field
 !
-    call calc_meta_field(ligrmo, chmate, tempe, compor, phasin, &
+    call calc_meta_field(ligrmo, chmate, tempe, compor, phasin,&
                          meta_out)
 !
 ! - Save in result datastructure
 !
     call rsexch(' ', sd_temp, 'META_ELNO', temp_nume, sd_field,&
-                 iret)
+                iret)
     call copisd('CHAMP_GD', 'G', meta_out, sd_field)
     call rsnoch(sd_temp, 'META_ELNO', temp_nume)
 !
 ! - Print
 !
-    call u2mesg('I', 'ARCHIVAGE_6', 1, 'META_ELNO', 1, &
-                 temp_nume, 1, time)
+    call utmess('I', 'ARCHIVAGE_6', sk='META_ELNO', si=temp_nume, sr=time)
 !
     call jedema()
 end subroutine

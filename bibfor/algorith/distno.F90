@@ -9,7 +9,7 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: xlocal(6), signe(*)
     character(len=8) :: typeob
 !---------------------------------------------------------------------
@@ -104,7 +104,9 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
 !        COST  = -SIGN(UN,(XLOCAL(5)-XLOCAL(2)))
         cos2 = -sign(un,(xlocal(5)-xlocal(2)))
         cost = -signe(1)
-        if (cos2 .ne. cost) call u2mess('A', 'ALGORITH3_10')
+        if (cos2 .ne. cost) then
+            call utmess('A', 'ALGORITH3_10')
+        endif
 !
 !     --- OBSTACLE PLAN PARALLELE A ZLOCAL ---
     else if (typeob .eq. 'PLAN_Z  ') then
@@ -119,7 +121,9 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
 !        SINT  = -SIGN(UN,(XLOCAL(6)-XLOCAL(3)))
         sin2 = -sign(un,(xlocal(6)-xlocal(3)))
         sint = -signe(2)
-        if (sin2 .ne. sint) call u2mess('A', 'ALGORITH3_10')
+        if (sin2 .ne. sint) then
+            call utmess('A', 'ALGORITH3_10')
+        endif
 !
 !     --- OBSTACLE DISCRETISE ---
     else

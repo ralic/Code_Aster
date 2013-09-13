@@ -3,7 +3,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/lxliis.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: iocc
     character(len=8) :: nomgd, nomcmp
     character(len=*) :: mcfac
@@ -56,8 +56,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
         if ((nomcmp(1:1).ne.'V') .or. (iret.ne.0)) then
             valk (1) = nomcmp
             valk (2) = 'VARI_R'
-            call u2mesg('F', 'CALCULEL6_49', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
         endif
 !
 !     -- SI GRANDEUR /= VARI_R :

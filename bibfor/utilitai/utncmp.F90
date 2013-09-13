@@ -1,7 +1,6 @@
 subroutine utncmp(cham19, ncmp, nomobj)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dgmode.h"
 #include "asterfort/dismoi.h"
@@ -14,9 +13,9 @@ subroutine utncmp(cham19, ncmp, nomobj)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ncmp
     character(len=*) :: cham19, nomobj
 !     ------------------------------------------------------------------
@@ -146,10 +145,12 @@ subroutine utncmp(cham19, ncmp, nomobj)
     else
         valk(1) = tych
         valk(2) = ch19
-        call u2mesk('F', 'ALGORITH9_69', 2, valk)
+        call utmess('F', 'ALGORITH9_69', nk=2, valk=valk)
     endif
 !
-    if (ncmp .eq. 0) call u2mess('F', 'UTILITAI5_53')
+    if (ncmp .eq. 0) then
+        call utmess('F', 'UTILITAI5_53')
+    endif
 !
     call wkvect(nomobj, 'V V K8', ncmp, kcmp)
     do 30 icmp = 1, ncmp

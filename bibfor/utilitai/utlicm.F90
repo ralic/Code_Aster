@@ -44,7 +44,7 @@ subroutine utlicm(nbcmpv, nomcmp, nomgd, ncmprf, nomcmr,&
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irccmp.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ncmprf, nbcmpv, ncmpve
 !
@@ -82,7 +82,7 @@ subroutine utlicm(nbcmpv, nomcmp, nomgd, ncmprf, nomcmr,&
     else if (nbcmpv.gt.0) then
         ncmpve = nbcmpv
     else
-        call u2mesk('F', 'UTILITAI5_45', 1, nomgd)
+        call utmess('F', 'UTILITAI5_45', sk=nomgd)
     endif
 !
     if (nivinf .gt. 1) then
@@ -110,7 +110,7 @@ subroutine utlicm(nbcmpv, nomcmp, nomgd, ncmprf, nomcmr,&
         call irccmp('A', nomgd, ncmprf, nomcmr, nbcmpv,&
                     nomcmp, iaux, adnucm)
         if (iaux .ne. nbcmpv) then
-            call u2mesk('F', 'UTILITAI5_46', 1, nomgd)
+            call utmess('F', 'UTILITAI5_46', sk=nomgd)
         endif
 !
     endif

@@ -77,7 +77,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! IN ICSCAL/IVSCAL: IS :ADRESSE JEVEUX VECTEURS AUX POUR QZ_EQUI
 ! IN IISCAL: IS : ADR. JEVEUX VECTEURS AUX POUR QZ_EQUI
 ! INOUT bwork: L4 : vecteur de travail de type logical*4
-
+!
 ! OUT FLAGE  : LO : FLAG PERMETTANT DE GERER LES IMPRESSIONS
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -86,7 +86,6 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/matfpe.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8maem.h"
@@ -104,10 +103,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mcmult.h"
 #include "asterfort/mrmult.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpgskp.h"
 #include "asterfort/vpordc.h"
 #include "asterfort/vpordo.h"
@@ -123,6 +119,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 #include "blas/zcopy.h"
 #include "blas/zggev.h"
 #include "blas/zggevx.h"
+!
     integer :: qrn, iqrn, lqrn, qrar, qrai, icscal, ivscal, iiscal, qrba
     integer :: qrvl, lvec, kqrn, lvalpr, nconv, kqrnr, neqact, ilscal, irscal
     integer :: ddlexc(*), nfreq, lmasse, lraide, lamor
@@ -133,11 +130,12 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     complex(kind=8) :: sigma
     logical :: flage
     logical(kind=4) :: bwork(:)
-
+!
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret, ivalr
+    integer :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret
+    integer :: ivalr
     integer :: ivalm, iadia, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
     integer :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
     integer :: j2m1, iaux21, ics1
@@ -386,7 +384,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             valr(2)=bnorm
             valr(3)=cnorm
             valr(4)=coefn
-            call u2mesr('I', 'ALGELINE6_25', 4, valr)
+            call utmess('I', 'ALGELINE6_25', nr=4, valr=valr)
         endif
 ! ---- ON PASSE EN COMPLEXE MEME SI K EST REELLE, POUR PLUS DE
 !      ROBUSTESSE. ON PROPOSE DEUX TYPES DE LINEARISATION. ON PREND LA
@@ -587,7 +585,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         valr(2)=bnorm
         valr(3)=anorm1
         valr(4)=bnorm1
-        call u2mesr('I', 'ALGELINE6_26', 4, valr)
+        call utmess('I', 'ALGELINE6_26', nr=4, valr=valr)
     endif
 !
 ! --- POUR SORTIE FICHIER FORT.17
@@ -752,7 +750,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ------------------------------------
 !-------------------------------------
     vali(1)=qrinfo
-    if (vali(1) .ne. 0) call u2mesi('F', 'ALGELINE5_68', 1, vali)
+    if (vali(1) .ne. 0) then
+        call utmess('F', 'ALGELINE5_68', si=vali(1))
+    endif
     call jeexin('&&VPQZLA.QR.WORK', iret)
     if (iret .ne. 0) call jedetr('&&VPQZLA.QR.WORK')
 !
@@ -777,7 +777,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 f1=freqom(f1)
                 f2=freqom(f2)
                 if (i .eq. 1) write(ifm,*)'I / (ALPHAR,ALPHAI) / BETA / (FREQR,FREQI)'
-                if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr(icscal+ im1))
+                if (lqze) then
+                    call utmess('I', 'ALGELINE7_13', sr=zr(icscal+ im1))
+                endif
                 write(ifm,910)i,zr(qrar+im1),zr(qrai+im1),zr(qrba+im1)&
                 ,f1,f2
             else
@@ -796,7 +798,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
      &                      '(FREQR, FREQI/(2*FREQR))'
                     endif
                 endif
-                if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr(icscal+ im1))
+                if (lqze) then
+                    call utmess('I', 'ALGELINE7_13', sr=zr(icscal+ im1))
+                endif
                 if (lc) then
                     write(ifm,912)i,dble(zc(qrar+im1)),dimag(zc(qrar+&
                     im1)), dble(zc(qrba+im1)),dimag(zc(qrba+im1)),&
@@ -831,16 +835,14 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 valr(1)=zr(qrar+im1)
                 valr(2)=zr(qrai+im1)
                 kmsg='A'
-                call u2mesg(kmsg, 'ALGELINE5_51', 0, ' ', 1,&
-                            vali, 2, valr)
+                call utmess(kmsg, 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
             endif
             if ((raux.ne.0.d0) .and. (niv.ge.2)) then
                 vali(1)=i
                 valr(1)=zr(qrar+im1)
                 valr(2)=zr(qrai+im1)
                 kmsg='I'
-                call u2mesg(kmsg, 'ALGELINE5_51', 0, ' ', 1,&
-                            vali, 2, valr)
+                call utmess(kmsg, 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
             endif
 50      continue
     endif
@@ -865,8 +867,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     valr(3)=rauxi
                     valr(4)=bnorm
                     kmsg='A'
-                    call u2mesg(kmsg, 'ALGELINE5_61', 0, ' ', 1,&
-                                vali, 4, valr)
+                    call utmess(kmsg, 'ALGELINE5_61', si=vali(1), nr=4, valr=valr)
                 endif
                 zr(lvalpr+im1-decal) = zr(qrar+im1)/zr(qrba+im1)
                 call dcopy(qrn, zr(lvec3+im1*qrn), 1, zr(lvec+(im1- decal)*qrn), 1)
@@ -874,12 +875,14 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             else
                 decal = decal+1
                 if (niv .ge. 2) then
-                    call u2mesi('I', 'ALGELINE7_11', 1, i)
+                    call utmess('I', 'ALGELINE7_11', si=i)
                     valr(1)=zr(qrar+im1)
                     valr(2)=zr(qrba+im1)
-                    call u2mesr('I', 'ALGELINE7_12', 2, valr)
-                    if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr( icscal+im1))
-                    call u2mess('I', 'ALGELINE7_14')
+                    call utmess('I', 'ALGELINE7_12', nr=2, valr=valr)
+                    if (lqze) then
+                        call utmess('I', 'ALGELINE7_13', sr=zr( icscal+im1))
+                    endif
+                    call utmess('I', 'ALGELINE7_14')
                 endif
             endif
 55      continue
@@ -900,8 +903,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     valr(3)=rauxi
                     valr(4)=bnorm
                     kmsg='A'
-                    call u2mesg(kmsg, 'ALGELINE5_61', 0, ' ', 1,&
-                                vali, 4, valr)
+                    call utmess(kmsg, 'ALGELINE5_61', si=vali(1), nr=4, valr=valr)
                 endif
                 zc(lvalpr+im1-decal) = zc(qrar+im1)/zc(qrba+im1)
                 if (lc) then
@@ -918,7 +920,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     else
                         freq=1.d+70*cun
                     endif
-                    call u2mesi('I', 'ALGELINE7_11', 1, i)
+                    call utmess('I', 'ALGELINE7_11', si=i)
                     if (abs(freq) .gt. prec) then
                         valr(1)=dimag(freq)/depi
                         valr(2)=-dble(freq)/abs(freq)
@@ -926,9 +928,11 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                         valr(1)=0.d0
                         valr(2)=1.d0
                     endif
-                    call u2mesr('I', 'ALGELINE7_15', 2, valr)
-                    if (lqze) call u2mesr('I', 'ALGELINE7_13', 1, zr( icscal+im1))
-                    call u2mess('I', 'ALGELINE7_14')
+                    call utmess('I', 'ALGELINE7_15', nr=2, valr=valr)
+                    if (lqze) then
+                        call utmess('I', 'ALGELINE7_13', sr=zr( icscal+im1))
+                    endif
+                    call utmess('I', 'ALGELINE7_14')
                 endif
             endif
 155      continue
@@ -941,9 +945,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             if ((zr(lvalpr+im1).lt.prec3) .or. (zr(lvalpr+im1).gt.prec2)) then
                 decal = decal+1
                 if (niv .ge. 2) then
-                    call u2mesi('I', 'ALGELINE7_11', 1, i)
-                    call u2mesr('I', 'ALGELINE7_16', 1, zr(lvalpr+im1))
-                    call u2mess('I', 'ALGELINE7_14')
+                    call utmess('I', 'ALGELINE7_11', si=i)
+                    call utmess('I', 'ALGELINE7_16', sr=zr(lvalpr+im1))
+                    call utmess('I', 'ALGELINE7_14')
                 endif
             else
                 zr(lvalpr+im1-decal) = zr(lvalpr+im1)
@@ -981,8 +985,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         else
             kmsg='I'
         endif
-        call u2mesg(kmsg, 'ALGELINE5_62', 0, valk, 2,&
-                    vali, 0, valr)
+        call utmess(kmsg, 'ALGELINE5_62', ni=2, vali=vali)
     endif
 !
 !------------------------------------------------------------------
@@ -1023,8 +1026,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 vali(2)=nfreq
                 kmsg='E'
                 flage=.true.
-                call u2mesg(kmsg, 'ALGELINE5_63', 0, ' ', 2,&
-                            vali, 0, valr)
+                call utmess(kmsg, 'ALGELINE5_63', ni=2, vali=vali)
             endif
             do 81 i = 1, nconv
                 zr(lvalpr-1+i) = zr(lvalpr-1+i) - omeshi
@@ -1044,8 +1046,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 vali(2)=nconv
                 kmsg='E'
                 flage=.true.
-                call u2mesg(kmsg, 'ALGELINE5_66', 0, ' ', 2,&
-                            vali, 0, valr)
+                call utmess(kmsg, 'ALGELINE5_66', ni=2, vali=vali)
             endif
         endif
         call vpgskp(qrn, nconv, zr(lvec), alpha, lmasse,&
@@ -1069,8 +1070,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 kmsg='I'
                 nfreq=nconv
             endif
-            call u2mesg(kmsg, 'ALGELINE5_66', 0, ' ', 2,&
-                        vali, 0, valr)
+            call utmess(kmsg, 'ALGELINE5_66', ni=2, vali=vali)
         endif
 !
         do 83 i = 1, nconv

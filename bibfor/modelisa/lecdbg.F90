@@ -39,7 +39,7 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
 #include "asterfort/liritm.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), deblig
@@ -86,9 +86,9 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
 !
     if (numtcl .eq. 1) then
         if (icl .ne. 4 .and. icl .ne. 3) then
-            call u2mesk('F', 'MODELISA4_78', 1, mcl(1))
+            call utmess('F', 'MODELISA4_78', sk=mcl(1))
         else if (iv.gt.24) then
-            call u2mesk('F', 'MODELISA4_79', 1, mcl(1))
+            call utmess('F', 'MODELISA4_79', sk=mcl(1))
         endif
         dim(1) = dim(1) + 1
         mtc = b24
@@ -101,7 +101,7 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
 !
     if (numtcl .eq. 2) then
         if (icl .ne. 1 .and. icl .ne. 2) then
-            call u2mesk('F', 'MODELISA4_78', 1, mcl(2))
+            call utmess('F', 'MODELISA4_78', sk=mcl(2))
         endif
         if(icl.eq.1)nbg = iv
         if(icl.eq.2)nbg = nint(rv)

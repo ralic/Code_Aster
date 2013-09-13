@@ -18,10 +18,10 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit     none
+    implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, imat, typedp
     real(kind=8) :: materf(5, 2), ltyped(1)
     character(len=8) :: mod
@@ -55,9 +55,11 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! ======================================================================
     materf(3,1) = 0.0d0
     call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomc(1), materf(1, 1), icodre, 1)
+                [0.d0], 2, nomc(1), materf(1, 1), icodre,&
+                1)
     call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 1, nomc(3), materf(3, 1), icodre, 0)
+                [0.d0], 1, nomc(3), materf(3, 1), icodre,&
+                0)
 ! ======================================================================
 ! --- DEFINITION PARAMETRES MATERIAU DRUCKER ---------------------------
 ! ======================================================================
@@ -69,7 +71,8 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! ======================================================================
     typed = r8vide()
     call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                [0.d0], 1, 'TYPE_DP', ltyped(1), icodre, 0)
+                [0.d0], 1, 'TYPE_DP', ltyped(1), icodre,&
+                0)
     typed=ltyped(1)
     if (typed .eq. 1.0d0) then
 ! ======================================================================
@@ -78,7 +81,8 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         typedp = 1
         nomc(7) = 'H'
         call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    [0.d0], 4, nomc(4), tabtmp(1), icodre, 1)
+                    [0.d0], 4, nomc(4), tabtmp(1), icodre,&
+                    1)
 ! ======================================================================
 ! --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
 ! --- MATERIAU DE LA FACON SUIVANTE ------------------------------------
@@ -90,7 +94,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         coe = materf(2,2) + trois * materf(1,1) * ( un/deux/(un+ materf(2,1)) + materf(3,2)*mater&
               &f(3,2)/(un-deux*materf(2,1)))
         if (coe .le. 0.0d0) then
-            call u2mess('F', 'ALGORITH3_37')
+            call utmess('F', 'ALGORITH3_37')
         endif
     else if (typed.eq.2.0d0) then
 ! ======================================================================
@@ -99,7 +103,8 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         typedp = 2
         nomc(7) = 'SY_ULTM'
         call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    [0.d0], 4, nomc(4), tabtmp(1), icodre, 1)
+                    [0.d0], 4, nomc(4), tabtmp(1), icodre,&
+                    1)
 ! ======================================================================
 ! --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
 ! --- MATERIAU DE LA FACON SUIVANTE ------------------------------------
@@ -117,7 +122,8 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         materf(4,2) = tabtmp(3)
         nomc(8) = 'DILAT'
         call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    [0.d0], 1, nomc(8), dilat(1), icodre, 1)
+                    [0.d0], 1, nomc(8), dilat(1), icodre,&
+                    1)
         psi=atan2((trois*dilat(1) / deux / sqrt(( deux*dilat(1) + 1.0d0 )*(1.0d0-dilat(1)))),1.0d0)
         materf(5,2) = psi
     endif

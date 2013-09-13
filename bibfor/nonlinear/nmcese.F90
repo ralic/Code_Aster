@@ -37,8 +37,8 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 #include "asterfort/nmcere.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmrcyc.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     integer :: fonact(*)
     integer :: iterat
     real(kind=8) :: rho, offset, eta(2)
@@ -149,7 +149,9 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
     if (mixte) then
         call utdidt('L', sddisc, 'ECHE', 0, 'CHOIX_SOLU_PILO',&
                     r8bid, ibid, choix)
-        if (choix .eq. 'AUTRE') call u2mess('F', 'MECANONLINE_62')
+        if (choix .eq. 'AUTRE') then
+            call utmess('F', 'MECANONLINE_62')
+        endif
     endif
 !
 ! --- STRATEGIE BASEE SUR LES TECHNIQUES EVENT-DRIVEN 'AUTRE_PILOTAGE'

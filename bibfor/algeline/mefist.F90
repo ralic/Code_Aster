@@ -39,7 +39,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
     integer :: ndim(14), numgrp(*), nuor(*)
@@ -298,7 +298,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
                     zi(isgn), zi(iorig), zr(ibeta))
 ! ---
     else
-        call u2mess('F', 'ALGELINE_85')
+        call utmess('F', 'ALGELINE_85')
     endif
 !
 ! --- CALCUL DES COEFFICIENTS INTERVENANT DANS L EXPRESSION DES

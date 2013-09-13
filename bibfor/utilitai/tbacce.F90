@@ -1,15 +1,13 @@
 subroutine tbacce(nomta, numeli, para, mode, vi,&
                   vr, vc, vk)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: numeli, vi
     real(kind=8) :: vr
     complex(kind=8) :: vc
@@ -60,26 +58,26 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
     if (modacc .eq. 'L') then
     else if (modacc .eq. 'E') then
     else
-        call u2mesk('F', 'UTILITAI4_63', 1, modacc)
+        call utmess('F', 'UTILITAI4_63', sk=modacc)
     endif
 !
     nomtab = nomta
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nblign .eq. 0) then
-        call u2mess('F', 'UTILITAI4_66')
+        call utmess('F', 'UTILITAI4_66')
     endif
     if (numeli .gt. nblign) then
-        call u2mess('F', 'UTILITAI4_67')
+        call utmess('F', 'UTILITAI4_67')
     endif
 !
     call jeveuo(nomtab//'.TBLP', 'L', jtblp)
@@ -91,8 +89,7 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
         if (inpar .eq. zk24(jtblp+4*(j-1))) goto 12
 10  end do
     valk = inpar
-    call u2mesg('F', 'UTILITAI6_89', 1, valk, 0,&
-                0, 0, 0.d0)
+    call utmess('F', 'UTILITAI6_89', sk=valk)
 12  continue
 !
     type = zk24(jtblp+4*(j-1)+1)

@@ -33,8 +33,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -227,7 +226,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     call getvid(' ', 'RESULTAT', scal=resul, nbret=nr)
 !
     if (nr .eq. 0) then
-        call u2mess('F', 'UTILITAI3_76')
+        call utmess('F', 'UTILITAI3_76')
     endif
 !
 ! --- ON VERIFIE QUE LE  RESULTAT A TRAITER EST DE TYPE EVOL_NOLI :
@@ -235,7 +234,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     call gettco(resul, typres)
     evol=(typres(1:9).eq.'EVOL_NOLI').or.(typres(1:9).eq.'EVOL_ELAS')
     if (.not.evol) then
-        call u2mess('F', 'UTILITAI3_77')
+        call utmess('F', 'UTILITAI3_77')
     endif
 !
 ! --- RECUPERATION DE LA PRECISION POUR LE TRAITEMENT DES NUMEROS
@@ -325,7 +324,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
             call etenca(compor, ligrmo, iret)
             if (iret .ne. 0) then
-                call u2mess('F', 'UTILITAI2_62')
+                call utmess('F', 'UTILITAI2_62')
             endif
 ! ---    RECUPERATION DE LA GRANDEUR (ICI COMPOR)  ---
 ! ---    REFERENCEE PAR LA CARTE COMPO             ---
@@ -339,7 +338,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         k8b, iret)
 !
             if (nec .gt. 1) then
-                call u2mess('F', 'UTILITAI2_61')
+                call utmess('F', 'UTILITAI2_61')
             endif
 !
 !
@@ -374,7 +373,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---        QUI EST RELCOM A BIEN ETE AFFECTEE
 !
                     if (.not.exisdg(dg,1)) then
-                        call u2mess('F', 'UTILITAI2_63')
+                        call utmess('F', 'UTILITAI2_63')
                     endif
 ! ---        RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
                     compt = zk16(ivale+idebgd+1-1)
@@ -417,7 +416,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                 if (motfac .ne. 'ENER_ELAS') then
                     vk24(1) = resul
                     vk24(2) = kiord
-                    call u2mesk('F', 'UTILITAI3_79', 2, vk24)
+                    call utmess('F', 'UTILITAI3_79', nk=2, valk=vk24)
                 else
 ! CREATION D'UN CHAMP DE VARIABLES INTERNES NUL
                     ivari=0
@@ -538,7 +537,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     endif
 !
                     if (volume .le. r8prem()) then
-                        call u2mess('F', 'UTILITAI3_80')
+                        call utmess('F', 'UTILITAI3_80')
                     endif
 !
                     valr(2) = indic1/volume
@@ -610,11 +609,11 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     nomgrm = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('F', 'UTILITAI3_46', 1, nomgrm)
+                        call utmess('F', 'UTILITAI3_46', sk=nomgrm)
                     endif
                     call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
-                        call u2mesk('F', 'UTILITAI3_47', 1, nomgrm)
+                        call utmess('F', 'UTILITAI3_47', sk=nomgrm)
                     endif
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
 !
@@ -639,7 +638,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         endif
 !
                         if (volume .le. r8prem()) then
-                            call u2mesk('F', 'UTILITAI3_81', 1, nomgrm)
+                            call utmess('F', 'UTILITAI3_81', sk=nomgrm)
                         endif
 !
                         valr(2) = indic1/volume
@@ -720,7 +719,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('F', 'UTILITAI3_49', 1, nommai)
+                        call utmess('F', 'UTILITAI3_49', sk=nommai)
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)
 !
@@ -744,7 +743,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         endif
 !
                         if (volume .le. r8prem()) then
-                            call u2mesk('F', 'UTILITAI3_82', 1, nommai)
+                            call utmess('F', 'UTILITAI3_82', sk=nommai)
                         endif
 !
                         valr(2) = indic1/volume

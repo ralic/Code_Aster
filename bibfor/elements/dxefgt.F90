@@ -7,7 +7,7 @@ subroutine dxefgt(pgl, sigt)
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: pgl(3, 3), sigt(1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -106,7 +106,7 @@ subroutine dxefgt(pgl, sigt)
         somire = iret2+iret3+iret4
         if (somire .eq. 0) then
             if (iret1 .eq. 1) then
-                call u2mess('F', 'CALCULEL_31')
+                call utmess('F', 'CALCULEL_31')
             else
 !
 !  --      LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON

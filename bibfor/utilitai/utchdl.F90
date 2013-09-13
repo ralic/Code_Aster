@@ -2,7 +2,6 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
                   nusp, ivari, nocmp1, iddl)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -20,11 +19,9 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/numel2.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nupo, ivari, iddl, nusp
     character(len=*) :: cham19, nomma, nomail, nonoeu, nocmp1
 ! ----------------------------------------------------------------------
@@ -127,7 +124,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     if (icmp .eq. 0) then
         valk(1) = nocmp
         valk(2) = nomgd
-        call u2mesk(aof, 'UTILITAI5_30', 2, valk)
+        call utmess(aof, 'UTILITAI5_30', nk=2, valk=valk)
         iddl=0
         goto 9999
     endif
@@ -139,7 +136,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     if (ima .le. 0) then
         valk(1) = nomaiz
         valk(2) = nommaz
-        call u2mesk(aof, 'UTILITAI5_31', 2, valk)
+        call utmess(aof, 'UTILITAI5_31', nk=2, valk=valk)
         iddl=0
         goto 9999
     endif
@@ -151,13 +148,13 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         call dismoi('C', 'TYPE_CHAMP', chm19z, 'CHAMP', ibid,&
                     k8b, ibid)
         if (k8b(1:4) .ne. 'ELNO') then
-            call u2mesk(aof, 'UTILITAI5_32', 1, chm19z)
+            call utmess(aof, 'UTILITAI5_32', sk=chm19z)
         endif
         call jenonu(jexnom(nommaz//'.NOMNOE', nonoez), ino)
         if (ino .le. 0) then
             valk(1) = nonoez
             valk(2) = nommaz
-            call u2mesk(aof, 'ALGORITH_21', 2, valk)
+            call utmess(aof, 'ALGORITH_21', nk=2, valk=valk)
         endif
 !        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         call jeveuo(jexnum(nommaz//'.CONNEX', ima), 'L', iaconx)
@@ -166,7 +163,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         if (ipo .le. 0) then
             valk(1) = nonoez
             valk(2) = nomaiz
-            call u2mesk(aof, 'SOUSTRUC_59', 2, valk)
+            call utmess(aof, 'SOUSTRUC_59', nk=2, valk=valk)
         endif
         nupo2 = ipo
     else
@@ -180,7 +177,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     if ((igr.le.0) .or. (iel.le.0)) then
         valk(1) = nomaiz
         valk(2) = noligr
-        call u2mesk(aof, 'UTILITAI5_34', 2, valk)
+        call utmess(aof, 'UTILITAI5_34', nk=2, valk=valk)
     endif
     nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
     adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
@@ -192,7 +189,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !     ------------------------------------------
     imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
     if (imolo .le. 0) then
-        call u2mesk(aof, 'UTILITAI5_35', 1, nomaiz)
+        call utmess(aof, 'UTILITAI5_35', sk=nomaiz)
     endif
     call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
 !
@@ -205,12 +202,12 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         ispt = nusp
     endif
     if (ispt .gt. nbspt) then
-        call u2mess(aof, 'UTILITAI5_36')
+        call utmess(aof, 'UTILITAI5_36')
         iddl=0
         goto 9999
     endif
     if ((nusp.eq.0) .and. (nbspt.gt.1)) then
-        call u2mesi(aof, 'CALCULEL_1', 1, nbspt)
+        call utmess(aof, 'CALCULEL_1', si=nbspt)
         iddl=0
         goto 9999
     endif
@@ -229,7 +226,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         if (nupo2 .gt. nbpt) then
             vali(1)=nupo2
             vali(2)=nbpt
-            call u2mesi(aof, 'UTILITAI5_37', 2, vali)
+            call utmess(aof, 'UTILITAI5_37', ni=2, vali=vali)
             iddl=0
             goto 9999
         endif
@@ -253,7 +250,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         zi(jlpt-1+ipt) = ico
 20      continue
         if ((.not.trouve) .and. (.not.nogran)) then
-            call u2mesk(aof, 'UTILITAI5_38', 1, nocmp)
+            call utmess(aof, 'UTILITAI5_38', sk=nocmp)
         endif
 !
 !
@@ -303,8 +300,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
             valk(1) = nomaiz
             vali (1) = ncdyn
             vali (2) = icmp
-            call u2mesg(aof, 'UTILITAI7_5', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess(aof, 'UTILITAI7_5', sk=valk(1), ni=2, vali=vali)
             iddl=0
             goto 9999
         else

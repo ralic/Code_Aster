@@ -39,7 +39,7 @@ subroutine desccy(nomres)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: vali(3)
@@ -97,8 +97,7 @@ subroutine desccy(nomres)
     if (nbg .ne. nbd) then
         vali (1) = nbd
         vali (2) = nbg
-        call u2mesg('F', 'ALGORITH12_79', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_79', ni=2, vali=vali)
     endif
 !
 !------COMPTAGE DEFORMEES STATIQUES INTERFACE DROITE GAUCHE-------------
@@ -114,8 +113,7 @@ subroutine desccy(nomres)
     if (nbdd .ne. nbdg) then
         vali (1) = nbdd
         vali (2) = nbdg
-        call u2mesg('F', 'ALGORITH12_80', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_80', ni=2, vali=vali)
     endif
 !
 !-----COMPTAGE NOMBRE DEFORMEES STATIQUE SUR EVENTUELLE INTERFACE AXE---
@@ -142,8 +140,7 @@ subroutine desccy(nomres)
 !  TEST
 !
     if (nbmod2 .eq. 0) then
-        call u2mesg('F', 'ALGORITH12_81', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_81')
     endif
     nbmod=min(nbmod1,nbmod2)
 !
@@ -162,8 +159,7 @@ subroutine desccy(nomres)
         vali (1) = nbmcal
         vali (2) = nbmod
         vali (3) = nbtemp
-        call u2mesg('A', 'ALGORITH12_82', 0, ' ', 3,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'ALGORITH12_82', ni=3, vali=vali)
     endif
 !
 !----------------ALLOCATION DE L'OBJET .DESC----------------------------

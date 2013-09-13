@@ -19,8 +19,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/matfpe.h"
@@ -44,9 +44,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: action
     integer :: kptsc
     real(kind=8) :: rsolu(*)
@@ -216,7 +214,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
 !        ARRET ANORMAL DU KSP
         if (ierr .gt. 0) then
-            call u2mess('F', 'PETSC_13')
+            call utmess('F', 'PETSC_13')
         endif
 !
 !        ANALYSE DE LA CONVERGENCE DU KSP
@@ -236,7 +234,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !              NOMBRE MAX D'ITERATIONS
                 if ((istop.eq.0) .or. (precon.ne.'LDLT_SP')) then
                     nmaxit=maxits
-                    call u2mesi('F', 'PETSC_5', 1, nmaxit)
+                    call utmess('F', 'PETSC_5', si=nmaxit)
                 else
                     iret = 1
                     goto 999
@@ -244,26 +242,26 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             else if (indic.eq.KSP_DIVERGED_DTOL) then
 !              DIVERGENCE
                 divtol = dtol
-                call u2mesr('F', 'PETSC_6', 1, divtol)
+                call utmess('F', 'PETSC_6', sr=divtol)
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN) then
 !              BREAKDOWN
-                call u2mess('F', 'PETSC_7')
+                call utmess('F', 'PETSC_7')
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN_BICG) then
 !              BREAKDOWN BiCG
-                call u2mess('F', 'PETSC_8')
+                call utmess('F', 'PETSC_8')
             else if (indic.eq.KSP_DIVERGED_NONSYMMETRIC) then
 !              MATRICE NON SYMETRIQUE
-                call u2mess('F', 'PETSC_9')
+                call utmess('F', 'PETSC_9')
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
-                call u2mess('F', 'PETSC_10')
+                call utmess('F', 'PETSC_10')
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_MAT) then
 !              MATRICE NON DEFINIE
-                call u2mess('F', 'PETSC_11')
+                call utmess('F', 'PETSC_11')
             else
 !              AUTRE ERREUR
                 ptserr = indic
-                call u2mesi('F', 'PETSC_12', 1, ptserr)
+                call utmess('F', 'PETSC_12', si=ptserr)
             endif
         endif
 !
@@ -298,7 +296,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             ASSERT(ierr.eq.0)
 !
             if (fres .gt. sqrt(rtol)*ires) then
-                call u2mess('F', 'PETSC_16')
+                call utmess('F', 'PETSC_16')
             endif
         endif
 !

@@ -19,7 +19,7 @@ subroutine te0589(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elref5.h"
 #include "asterfort/tutemp.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !
@@ -53,22 +53,22 @@ subroutine te0589(option, nomte)
 !     VERIFS PRAGMATIQUES
 !
     if (nbrddl .gt. nbrddm) then
-        call u2mess('F', 'ELEMENTS4_40')
+        call utmess('F', 'ELEMENTS4_40')
     endif
     if (nomte .eq. 'MET3SEG3') then
         if (nbrddl .ne. 63) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else if (nomte.eq.'MET6SEG3') then
         if (nbrddl .ne. 117) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else if (nomte.eq.'MET3SEG4') then
         if (nbrddl .ne. 84) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else
-        call u2mess('F', 'ELEMENTS4_42')
+        call utmess('F', 'ELEMENTS4_42')
     endif
 !
     call tutemp(option, nomte, nbrddl, f, b,&

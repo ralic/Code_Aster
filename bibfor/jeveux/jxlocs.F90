@@ -21,7 +21,7 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/jxdeps.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itab(*), lty1, lon1, jadm, jitab
     logical :: ldeps
     character(len=*) :: gen1
@@ -70,7 +70,7 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
             if (ldeps) then
                 call jxdeps((kadm-1)*lois + ladm + 1, (kadm-1)* lois + ir + 1, lon1)
             else
-                call u2mess('F', 'JEVEUX1_60')
+                call utmess('F', 'JEVEUX1_60')
             endif
         endif
     endif

@@ -25,7 +25,7 @@ subroutine nmetdo(sdcriq)
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdcriq
 !
 ! ----------------------------------------------------------------------
@@ -67,7 +67,7 @@ subroutine nmetdo(sdcriq)
     call getfac('COMP_INCR', nbocc)
 !
     if (nbocc .eq. 0) then
-        call u2mess('F', 'INDICATEUR_25')
+        call utmess('F', 'INDICATEUR_25')
     else
         do 10 iocc = 1, nbocc
             call getvtx('COMP_INCR', 'RELATION', iocc=iocc, scal=comp1, nbret=n1)
@@ -98,7 +98,7 @@ subroutine nmetdo(sdcriq)
     endif
 !
     if (.not.ellisq) then
-        call u2mess('F', 'INDICATEUR_23')
+        call utmess('F', 'INDICATEUR_23')
     endif
 !
 999  continue

@@ -6,10 +6,8 @@ subroutine ibcata(ier)
 #include "asterfort/getvtx.h"
 #include "asterfort/ibcatc.h"
 #include "asterfort/lxcadr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/uldefi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utremt.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -55,7 +53,7 @@ subroutine ibcata(ier)
     character(len=32) :: dfnom(mxdfca), nom (mxcata)
     character(len=24) :: valk
     integer :: dfunit(mxdfca), unite(mxcata)
-    integer ::  i
+    integer :: i
 !     ------------------------------------------------------------------
 !     OPTIONS PAR DEFAUT :
 !
@@ -81,7 +79,7 @@ subroutine ibcata(ier)
 !
     if (nbocc .gt. mxcata) then
         ier = ier + 1
-        call u2mess('F', 'SUPERVIS_18')
+        call utmess('F', 'SUPERVIS_18')
         nbocc = mxcata
     endif
 !
@@ -100,7 +98,7 @@ subroutine ibcata(ier)
 !
 !     --- CATALOGUE DES ELEMENTS ---
     nbcata = 0
-    call u2mess('I', 'SUPERVIS_19')
+    call utmess('I', 'SUPERVIS_19')
     call uttcpu('CPU.IBCATA', 'INIT', ' ')
     call uttcpu('CPU.IBCATA', 'DEBUT', ' ')
     do 300 icata = 1, nbocc
@@ -121,17 +119,18 @@ subroutine ibcata(ier)
     call uttcpr('CPU.IBCATA', 6, temps)
     valr = temps(5)
     valk = ' '
-    call u2mesg('I', 'SUPERVIS_52', 1, valk, 0,&
-                0, 1, valr)
+    call utmess('I', 'SUPERVIS_52', sk=valk, sr=valr)
 !
 !     --- VERIFICATION DE LA COMPLETUDE DE L'EXECUTION ---
     do 900 icata = 1, nbocc
         if (nom(icata) .ne. ' ') then
-            call u2mesk('F', 'SUPERVIS_20', 1, nom(icata))
+            call utmess('F', 'SUPERVIS_20', sk=nom(icata))
             ier = ier + 1
         endif
 900  end do
 !
-    if (ier .gt. 0) call u2mess('F', 'SUPERVIS_21')
+    if (ier .gt. 0) then
+        call utmess('F', 'SUPERVIS_21')
+    endif
 !
 end subroutine

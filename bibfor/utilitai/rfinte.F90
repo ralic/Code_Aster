@@ -32,8 +32,7 @@ subroutine rfinte(ispec)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: ispec
@@ -70,7 +69,7 @@ subroutine rfinte(ispec)
         paray = 'DSP'
     else
         if (nocham .ne. noch) then
-            call u2mesk('F', 'UTILITAI_55', 1, nocham)
+            call utmess('F', 'UTILITAI_55', sk=nocham)
         else
             paray = noch
         endif
@@ -137,7 +136,7 @@ subroutine rfinte(ispec)
     endif
 !
     if (.not. indice) then
-        call u2mess('F', 'UTILITAI4_53')
+        call utmess('F', 'UTILITAI4_53')
     endif
 !
     chfreq = nospec//'.FREQ'

@@ -36,7 +36,7 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/rstran.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/vtcreb.h"
@@ -190,7 +190,7 @@ subroutine bamo78(nomres, trange, typres)
             endif
             call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
         else
-            call u2mess('A', 'ALGORITH10_93')
+            call utmess('A', 'ALGORITH10_93')
             goto 9999
         endif
     endif
@@ -202,7 +202,7 @@ subroutine bamo78(nomres, trange, typres)
     call rstran('NON', trange, ' ', 1, kinst,&
                 knume, nbinst, iretou)
     if (iretou .ne. 0) then
-        call u2mess('F', 'UTILITAI4_24')
+        call utmess('F', 'UTILITAI4_24')
     endif
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
@@ -253,13 +253,13 @@ subroutine bamo78(nomres, trange, typres)
             else if (champ(icham) .eq. 'ACCE') then
                 chgene = trgene(1:18)//'A'
             else
-                call u2mess('A', 'ALGORITH10_94')
+                call utmess('A', 'ALGORITH10_94')
                 goto 300
             endif
 !
             call jeexin(chgene, iret)
             if (iret .eq. 0) then
-                call u2mess('F', 'MECANONLINE5_32')
+                call utmess('F', 'MECANONLINE5_32')
             else
                 call jeveuo(chgene, 'L', jrestr)
             endif

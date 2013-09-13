@@ -20,7 +20,6 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/cheksd.h"
 #include "asterc/indik8.h"
 #include "asterc/isnnem.h"
@@ -45,9 +44,9 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nopar2.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cesz, celz, basez, ligrez, optini, nompaz, prolz
     character(len=1) :: kstop
     integer :: nncp, iret
@@ -119,7 +118,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     character(len=3) :: prol0
     real(kind=8) :: rnan
 !
-#define numail(igr,iel)   zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -671,21 +670,21 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
 !
     if (messag .eq. 'CALCULEL_52') then
-        call u2mesk(kstop, 'CALCULEL_52', 4, valk)
+        call utmess(kstop, 'CALCULEL_52', nk=4, valk=valk)
     else if (messag.eq.'CALCULEL_53') then
-        call u2mesk(kstop, 'CALCULEL_53', 4, valk)
+        call utmess(kstop, 'CALCULEL_53', nk=4, valk=valk)
     else if (messag.eq.'CALCULEL_54') then
-        call u2mesk(kstop, 'CALCULEL_54', 4, valk)
+        call utmess(kstop, 'CALCULEL_54', nk=4, valk=valk)
     else if (messag.eq.'CALCULEL_55') then
         valk(1) = nomcmp
-        call u2mesk(kstop, 'CALCULEL_55', 4, valk)
+        call utmess(kstop, 'CALCULEL_55', nk=4, valk=valk)
     else if (messag.eq.'CALCULEL_56') then
-        call u2mesk(kstop, 'CALCULEL_56', 4, valk)
+        call utmess(kstop, 'CALCULEL_56', nk=4, valk=valk)
     else if (messag.eq.'CALCULEL_57') then
-        call u2mesg(kstop, 'CALCULEL_57', 5, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess(kstop, 'CALCULEL_57', nk=5, valk=valk, ni=2,&
+                    vali=vali)
     else if (messag.eq.'CALCULEL_58') then
-        call u2mesk(kstop, 'CALCULEL_58', 4, valk)
+        call utmess(kstop, 'CALCULEL_58', nk=4, valk=valk)
     else
         ASSERT(.false.)
     endif

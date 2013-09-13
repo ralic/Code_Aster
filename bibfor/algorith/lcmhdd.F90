@@ -28,7 +28,7 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
 !     ----------------------------------------------------------------
 #include "asterfort/lcicma.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbcoef, nbsys, i, j, nn(12), idbg, nsg
     real(kind=8) :: coefh(6), hsr(nsg, nsg), hgm(12, 12)
     real(kind=8) :: a1(3, 3), a2(3, 3), a3(3, 3), a4(3, 3), a0(3, 3), a5(3, 3)
@@ -43,7 +43,9 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
 !
 !  MATRICE D INTERACTION (12*12): 5 COEFFICIENTS DD_CFC
 !  DEFINITION SELON G.MONET
-        if (nbsys .ne. 12) call u2mess('F', 'COMPOR1_24')
+        if (nbsys .ne. 12) then
+            call utmess('F', 'COMPOR1_24')
+        endif
         aetoil=coefh(1)
         acolin=coefh(2)
         agliss=coefh(3)
@@ -140,7 +142,9 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
 !
 !  MATRICE D INTERACTION (12*12): 5 COEFFICIENTS DD_CFC
 !  DEFINITION SELON G.MONET
-        if (nbsys .ne. 12) call u2mess('F', 'COMPOR1_24')
+        if (nbsys .ne. 12) then
+            call utmess('F', 'COMPOR1_24')
+        endif
         c0=coefh(1)
         c1=coefh(2)
         c2=coefh(3)

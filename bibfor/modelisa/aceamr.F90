@@ -25,8 +25,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 #include "asterfort/masrep.h"
 #include "asterfort/nocart.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: ifm, lmax, noemaf, nbocc, ivr(*)
@@ -221,8 +220,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                 if (nma .ne. nbno) then
                     vali(1) = nbno
                     vali(2) = nma
-                    call u2mesg('F', 'MODELISA2_10', 1, nogp, 2,&
-                                vali, 0, r8bid)
+                    call utmess('F', 'MODELISA2_10', sk=nogp, ni=2, vali=vali)
                 endif
 !
 !
@@ -233,7 +231,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                     call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
 !                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
                     if (nbnma .ne. nbnoeu) then
-                        call u2mesk('F', 'MODELISA_20', 1, nommai)
+                        call utmess('F', 'MODELISA_20', sk=nommai)
                     endif
                     do 25 inbn = 1, nbnma
                         inoe = zi(ldnm+inbn-1)
@@ -250,7 +248,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !                 A LA SURFACE, ET CE N'EST PAS NORMAL
                     write(ifm,*)'GROUP_MA :', (' '//zk24(jdls+ii-1),&
                     ii=1,ng)
-                    call u2mesk('F', 'MODELISA_21', 1, nomnoe)
+                    call utmess('F', 'MODELISA_21', sk=nomnoe)
 22              continue
 !              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
                 lorep = 5
@@ -263,7 +261,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                     do 227 ino = 1, nbno
                         if (zk8(itbmp + ino - 1) .eq. ' ') then
                             call jenuno(jexnum(mlgnno, ino), nomnoe)
-                            call u2mesk('F', 'MODELISA2_8', 1, nomnoe)
+                            call utmess('F', 'MODELISA2_8', sk=nomnoe)
                         endif
 227                  continue
                 endif

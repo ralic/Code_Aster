@@ -59,8 +59,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: trav0, trav1, trav2, trav3, chfond, absgam, taillr
     character(len=8) :: config, nompar(1), rinff, rsupf
@@ -99,13 +98,15 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
     call getvr8('THETA', 'R_INF', iocc=1, scal=rinf, nbret=nr)
     call getvr8('THETA', 'R_SUP', iocc=1, scal=rsup, nbret=nr)
     if (nr .ne. 0 .and. rsup .le. rinf) then
-        call u2mess('F', 'RUPTURE1_6')
+        call utmess('F', 'RUPTURE1_6')
     endif
     call getvid('THETA', 'R_INF_FO', iocc=1, scal=rinff, nbret=nrf)
     call getvid('THETA', 'R_SUP_FO', iocc=1, scal=rsupf, nbret=nrf)
 !     RECUPERATION DE RINF ET DE RSUP DANS LA SD FOND_FISS
     if (nr .eq. 0 .and. nrf .eq. 0) then
-        if (config .eq. 'DECOLLEE') call u2mess('F', 'RUPTURE1_7')
+        if (config .eq. 'DECOLLEE') then
+            call utmess('F', 'RUPTURE1_7')
+        endif
         call jeveuo(taillr, 'L', iatmno)
         maxtai = 0.d0
         mintai = zr(iatmno)
@@ -117,10 +118,12 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
         rsup = 4*maxtai
         valr(1) = rinf
         valr(2) = rsup
-        call u2mesr('I', 'RUPTURE1_5', 2, valr)
+        call utmess('I', 'RUPTURE1_5', nr=2, valr=valr)
         valr(1) = mintai
         valr(2) = maxtai
-        if (maxtai .gt. 2*mintai) call u2mesr('A', 'RUPTURE1_16', 2, valr)
+        if (maxtai .gt. 2*mintai) then
+            call utmess('A', 'RUPTURE1_16', nr=2, valr=valr)
+        endif
     endif
 !
     call jeveuo(chfond, 'L', ifon)
@@ -148,7 +151,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
                             valres, ier)
                 zr(iadrt2 + j - 1) = valres
                 if (zr(iadrt2 + j - 1) .le. zr(iadrt1 + j - 1)) then
-                    call u2mess('F', 'RUPTURE1_6')
+                    call utmess('F', 'RUPTURE1_6')
                 endif
             else
                 zr(iadrt1 + j - 1) = rinf
@@ -175,7 +178,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
                             valres, ier)
                 zr(iadrt2 + j - 1) = valres
                 if (zr(iadrt2 + j - 1) .le. zr(iadrt1 + j - 1)) then
-                    call u2mess('F', 'RUPTURE1_6')
+                    call utmess('F', 'RUPTURE1_6')
                 endif
             else
                 zr(iadrt1 + j - 1) = rinf

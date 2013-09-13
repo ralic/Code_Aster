@@ -29,9 +29,8 @@ subroutine pascom(meca, sddyna, sddisc)
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndynre.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     character(len=8) :: meca
     character(len=19) :: sddyna, sddisc
 !
@@ -105,23 +104,23 @@ subroutine pascom(meca, sddyna, sddisc)
 !
     if (ndynlo(sddyna,'DIFF_CENT')) then
         dtcou =dtcou/(2.d0)
-        call u2mesr('I', 'DYNAMIQUE_7', 1, dtcou)
+        call utmess('I', 'DYNAMIQUE_7', sr=dtcou)
     else
         if (ndynlo(sddyna,'TCHAMWA')) then
             phi=ndynre(sddyna,'PHI')
             dtcou = dtcou/(phi*2.d0)
-            call u2mesr('I', 'DYNAMIQUE_8', 1, dtcou)
+            call utmess('I', 'DYNAMIQUE_8', sr=dtcou)
         else
-            call u2mess('F', 'DYNAMIQUE_1')
+            call utmess('F', 'DYNAMIQUE_1')
         endif
     endif
 !
     do 20 i = 1, nbinst-1
         if (zr(jinst-1+i+1)-zr(jinst-1+i) .gt. dtcou) then
             if (stocfl(1:3) .eq. 'OUI') then
-                call u2mess('F', 'DYNAMIQUE_2')
+                call utmess('F', 'DYNAMIQUE_2')
             else
-                call u2mess('A', 'DYNAMIQUE_2')
+                call utmess('A', 'DYNAMIQUE_2')
             endif
         endif
 20  end do

@@ -20,7 +20,6 @@ subroutine te0359(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/eiangl.h"
 #include "asterfort/eiinit.h"
 #include "asterfort/elref2.h"
@@ -29,7 +28,8 @@ subroutine te0359(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/pipeei.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -67,7 +67,9 @@ subroutine te0359(option, nomte)
 !     RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
 !
     call jevech('PCAMASS', 'L', icamas)
-    if (zr(icamas) .eq. -1.d0) call u2mess('F', 'ELEMENTS5_47')
+    if (zr(icamas) .eq. -1.d0) then
+        call utmess('F', 'ELEMENTS5_47')
+    endif
 !
 !     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
 !

@@ -21,17 +21,16 @@ subroutine entete()
 ! ----------------------------------------------------------------------
 !     ECRITURE DE L'ENTETE
 ! ----------------------------------------------------------------------
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
 #include "asterc/lihdfv.h"
 #include "asterc/limedv.h"
 #include "asterc/liscov.h"
 #include "asterc/mlnbpr.h"
 #include "asterc/prhead.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/utmess.h"
     mpi_int :: rank, size
     integer :: vali(3)
 !
@@ -46,42 +45,42 @@ subroutine entete()
 #ifdef _USE_MPI
     vali(1) = to_aster_int(rank)
     vali(2) = to_aster_int(size)
-    call u2mesi('I', 'SUPERVIS2_11', 2, vali)
+    call utmess('I', 'SUPERVIS2_11', ni=2, vali=vali)
 #else
-    call u2mess('I', 'SUPERVIS2_12')
+    call utmess('I', 'SUPERVIS2_12')
 #endif
 ! --- CONFIGURATION OPENMP
 #ifdef _USE_OPENMP
     nbth = mlnbpr()
-    call u2mesi('I', 'SUPERVIS2_13', 1, nbth)
+    call utmess('I', 'SUPERVIS2_13', si=nbth)
 #endif
 ! --- LIBRARIES HDF5 ET MED
 #ifndef _DISABLE_HDF5
     call lihdfv(vali(1), vali(2), vali(3))
-    call u2mesi('I', 'SUPERVIS2_14', 3, vali)
+    call utmess('I', 'SUPERVIS2_14', ni=3, vali=vali)
 #else
-    call u2mess('I', 'SUPERVIS2_15')
+    call utmess('I', 'SUPERVIS2_15')
 #endif
 #ifndef _DISABLE_MED
     call limedv(vali(1), vali(2), vali(3))
-    call u2mesi('I', 'SUPERVIS2_16', 3, vali)
+    call utmess('I', 'SUPERVIS2_16', ni=3, vali=vali)
 #else
-    call u2mess('I', 'SUPERVIS2_17')
+    call utmess('I', 'SUPERVIS2_17')
 #endif
 ! --- LIBRARIES SOLVEURS
 #ifdef _HAVE_MUMPS
 !   to avoid C1510
-#   define vers MUMPS_VERSION
-    call u2mesk('I', 'SUPERVIS2_18', 1, vers)
+# define vers MUMPS_VERSION
+    call utmess('I', 'SUPERVIS2_18', sk=vers)
 #else
-    call u2mess('I', 'SUPERVIS2_19')
+    call utmess('I', 'SUPERVIS2_19')
 #endif
 #ifndef _DISABLE_SCOTCH
     call liscov(vali(1), vali(2), vali(3))
-    call u2mesi('I', 'SUPERVIS2_20', 3, vali)
+    call utmess('I', 'SUPERVIS2_20', ni=3, vali=vali)
 #else
-    call u2mess('I', 'SUPERVIS2_21')
+    call utmess('I', 'SUPERVIS2_21')
 #endif
 !     SAUT DE LIGNE
-    call u2mess('I', 'VIDE_1')
+    call utmess('I', 'VIDE_1')
 end subroutine

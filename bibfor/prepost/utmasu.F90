@@ -3,7 +3,6 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/indiis.h"
@@ -16,10 +15,10 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/oriem0.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utmavo.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lima(*), nlima, nbmavo, mailvo(*)
     real(kind=8) :: coor(*)
     character(len=2) :: kdim
@@ -152,22 +151,22 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !                -- SI IPOS=0, LES 2 MAILLES SONT DU MEME COTE, ON PEUT
 !                   CONSERVER LA 1ERE.
                 else
-                    if (indmai.lt.0) then
-                       ASSERT(indmai.eq.-1 .or. indmai.eq.-2)
-                       if (indmai.eq.-1) then
-                          call jenuno(jexnum(mail//'.NOMMAI', im1), valk( 1))
-                       else
-                          call jenuno(jexnum(mail//'.NOMMAI', im2), valk( 1))
-                       endif
-                       call u2mesk('F','CALCULEL2_32', 1,valk)
+                    if (indmai .lt. 0) then
+                        ASSERT(indmai.eq.-1 .or. indmai.eq.-2)
+                        if (indmai .eq. -1) then
+                            call jenuno(jexnum(mail//'.NOMMAI', im1), valk( 1))
+                        else
+                            call jenuno(jexnum(mail//'.NOMMAI', im2), valk( 1))
+                        endif
+                        call utmess('F', 'CALCULEL2_32', sk=valk(1))
                     endif
-
+!
 !                -- SINON, IM2 ET IM1 SONT DE PART ET D'AUTRE DE NUMA
                     if (.not.coince) then
                         call jenuno(jexnum(mail//'.NOMMAI', numa), valk( 1))
                         call jenuno(jexnum(mail//'.NOMMAI', im1), valk( 2))
                         call jenuno(jexnum(mail//'.NOMMAI', im2), valk( 3))
-                        call u2mesk('F', 'PREPOST4_97', 3, valk)
+                        call utmess('F', 'PREPOST4_97', nk=3, valk=valk)
                     else
                         zi(jm3d+ima-1) = im2
                     endif
@@ -180,11 +179,10 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
             call jenuno(jexnum(mail//'.NOMMAI', numa), nomail)
             if (first) then
                 valk(1)=nomail
-                call u2mesk('A+', 'PREPOST6_29', 1, valk)
+                call utmess('A+', 'PREPOST6_29', sk=valk(1))
             else
                 valk (1)= nomail
-                call u2mesg('A+', 'PREPOST6_30', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A+', 'PREPOST6_30', sk=valk(1))
             endif
             first = .true.
         endif

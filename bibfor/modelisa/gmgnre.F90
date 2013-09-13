@@ -21,14 +21,14 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma
     character(len=*) :: selez
     character(len=16) :: selec
@@ -53,7 +53,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) ::  typm, notyma(19)
+    character(len=8) :: typm, notyma(19)
     integer :: posini, posfin, jtypm, sel, nutyma
     integer :: pini(3, 19), pfin(3, 19)
 !
@@ -147,7 +147,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
                     goto 20
                 endif
 10          continue
-            call u2mesk('F', 'MODELISA4_68', 1, typm)
+            call utmess('F', 'MODELISA4_68', sk=typm)
 20          continue
             if (posfin .eq. 0) goto 2
         endif

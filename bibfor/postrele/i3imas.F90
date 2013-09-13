@@ -4,7 +4,6 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/i3crk3.h"
 #include "asterfort/i3fmvn.h"
 #include "asterfort/i3idks.h"
@@ -24,8 +23,9 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
 #include "asterfort/jeveut.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nil, tete, queue, succ(*), prec(*), desc(*), desctm(*)
     integer :: conex(*), vlc(*), nbsgte
     real(kind=8) :: coordo(*), sgt(*), epsi
@@ -321,11 +321,11 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
 ! REPERABLES PAR DES NUMEROS DE FACE NON NULS)
 ! ON EMET UNE ALARME DANS CE CAS
         if (f1 .eq. 0) then
-            call u2mess('A', 'PREPOST6_44')
+            call utmess('A', 'PREPOST6_44')
             goto 100
         endif
         if (f2 .eq. 0) then
-            call u2mess('A', 'PREPOST6_45')
+            call utmess('A', 'PREPOST6_45')
             goto 100
         endif
 !

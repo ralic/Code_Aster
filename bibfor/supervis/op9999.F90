@@ -41,10 +41,10 @@ subroutine op9999()
 #include "asterfort/jxcopy.h"
 #include "asterfort/jxveri.h"
 #include "asterfort/rsinfo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/uimpba.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: info, nbenre, nboct
     integer :: ifm, iunerr, iunres, iunmes
@@ -107,7 +107,7 @@ subroutine op9999()
     if (nfhdf .gt. 0) then
         if (fhdf .eq. 'OUI') then
             if (ouinon .eq. 'OUI') then
-                call u2mess('A', 'SUPERVIS2_8')
+                call utmess('A', 'SUPERVIS2_8')
             endif
             fich = 'bhdf.1'
             call jeimhd(fich, 'G')
@@ -145,7 +145,7 @@ subroutine op9999()
 !
 ! --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX )
 !
-    call u2mess('I', 'SUPERVIS2_97')
+    call utmess('I', 'SUPERVIS2_97')
     if (iunerr .gt. 0) write(iunerr, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
     if (iunres .gt. 0) write(iunres, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
 !

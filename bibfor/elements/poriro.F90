@@ -5,7 +5,7 @@ subroutine poriro(itype, m, rho, omega, e,&
     implicit none
 #include "asterc/r8gaem.h"
 #include "asterfort/fun1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itype
     real(kind=8) :: e, rho, a1, a2, xl, xiy1, xiy2, xiz1, xiz2, g
     real(kind=8) :: m(*), alfay1, alfay2, alfaz1, alfaz2
@@ -81,7 +81,7 @@ subroutine poriro(itype, m, rho, omega, e,&
         if (abs(e) .lt. 1.0d0/r8gaem()) then
             g = 1.0d0
         else
-            call u2mess('F', 'ELEMENTS2_54')
+            call utmess('F', 'ELEMENTS2_54')
         endif
     endif
 !

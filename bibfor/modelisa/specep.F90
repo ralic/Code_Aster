@@ -40,7 +40,6 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/axdipo.h"
@@ -57,8 +56,9 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 #include "asterfort/jexnum.h"
 #include "asterfort/scalep.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     logical :: casint
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ij, nbval
     character(len=8) :: nomu
@@ -115,7 +115,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
     call jeveuo(fsic, 'L', ifsic)
     itypfl = zi(ifsic)
     if (itypfl .ne. 2) then
-        call u2mess('F', 'MODELISA7_4')
+        call utmess('F', 'MODELISA7_4')
     endif
 !
 !
@@ -150,7 +150,9 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                     c16b, k8b, k8b, r8b, 'DIMENSION',&
                     k8b, nbexcp, r8b, c16b, k8b,&
                     iret)
-        if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+        if (iret .ne. 0) then
+            call utmess('F', 'MODELISA2_89')
+        endif
 !
     else
 !
@@ -170,13 +172,15 @@ subroutine specep(casint, nomu, spectr, base, vite,&
         call jelira(mlgnma, 'NOMMAX', nbma)
         call wkvect('&&SPECEP.TEMP.MAIL', 'V V I', nbma, imail)
         call exmano(noma, numno0, zi(imail), nbmano)
-        if (nbmano .ne. 2) call u2mess('F', 'ALGELINE_70')
+        if (nbmano .ne. 2) then
+            call utmess('F', 'ALGELINE_70')
+        endif
         call deelpo(caelem, noma, zi(imail), phi1)
         call deelpo(caelem, noma, zi(imail+1), phi2)
         tolr = r8prem()
         difphi = dble(abs(phi1-phi2))
         if (difphi .gt. phi1*tolr) then
-            call u2mess('F', 'ALGELINE_71')
+            call utmess('F', 'ALGELINE_71')
         else
             phie = phi1
         endif
@@ -238,7 +242,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                     call fointc('E', nomfon, 0, k8b, ptf,&
                                 resure, resuim, ier)
                     if (ier .ne. 0) then
-                        call u2mess('F', 'MODELISA7_5')
+                        call utmess('F', 'MODELISA7_5')
                     endif
                     idec = 2*nbpf*(iex-1)+2*(il-1)
                     zr(iinte+idec) = resure

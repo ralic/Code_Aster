@@ -17,8 +17,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomf, fonins
     integer :: impr, iul, ind
@@ -58,7 +57,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
     call jemarq()
     if (impr .le. 0) goto 9999
     if (iul .le. 0) then
-        call u2mess('A', 'UTILITAI2_7')
+        call utmess('A', 'UTILITAI2_7')
         goto 9999
     endif
     listr = fonins
@@ -88,7 +87,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         call jeveuo(nomfon//'.NOVA', 'L', lnova)
         call jelira(nomfon//'.NOVA', 'LONUTI', nbnova)
         if (nbnova .ne. 1) then
-            call u2mess('A', 'UTILITAI2_8')
+            call utmess('A', 'UTILITAI2_8')
             goto 9999
         endif
         call jeveuo(listr//'.VALE', 'L', jval)
@@ -216,10 +215,10 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         endif
 !
     else if (zk24(lprol).eq.'INTERPRE') then
-        call u2mesk('A', 'UTILITAI2_10', 1, zk24(lprol))
+        call utmess('A', 'UTILITAI2_10', sk=zk24(lprol))
 !
     else
-        call u2mesk('A', 'UTILITAI2_11', 1, zk24(lprol))
+        call utmess('A', 'UTILITAI2_11', sk=zk24(lprol))
 !
     endif
 9999  continue

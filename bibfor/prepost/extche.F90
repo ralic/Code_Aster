@@ -28,8 +28,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 #include "asterfort/rvche1.h"
 #include "asterfort/rvche2.h"
 #include "asterfort/rvrecu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbm, nbc, nummai(*), iocc, nbnac, nnoeud(*)
@@ -237,7 +236,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     if (kk .eq. 1) then
         call dismoi('F', 'NOM_GD', nchmel, 'CHAMP', ibid,&
                     nomgd, ie)
-        call u2mesk('I', 'PREPOST_36', 1, nomgd)
+        call utmess('I', 'PREPOST_36', sk=nomgd)
         call celcel('PAS_DE_SP', nchmel, 'V', '&&EXTCHE.CHAMEL2')
         nchmel= '&&EXTCHE.CHAMEL2'
     endif
@@ -305,7 +304,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
                 xnormz = xnormz + axez(i)*axez(i)
 20          continue
             if (xnormz .lt. epsi) then
-                call u2mess('F', 'PREPOST_38')
+                call utmess('F', 'PREPOST_38')
             endif
             xnormz = 1.0d0/sqrt(xnormz)
             do 30 i = 1, 3

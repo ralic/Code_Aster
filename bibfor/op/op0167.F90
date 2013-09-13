@@ -73,9 +73,7 @@ subroutine op0167()
 #include "asterfort/rdtmai.h"
 #include "asterfort/reliem.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, nbmst, iqtr, nbvolu
@@ -84,7 +82,7 @@ subroutine op0167()
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
-    character(len=8) ::  nomain, nomaou, newmai, prefix, mo, geofi
+    character(len=8) :: nomain, nomaou, newmai, prefix, mo, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
     character(len=16) :: typcon, nomcmd, option
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
@@ -155,7 +153,9 @@ subroutine op0167()
 !
 !
     call getvid(' ', 'MAILLAGE', scal=nomain, nbret=nn1)
-    if (nn1 .eq. 0) call u2mess('F', 'CALCULEL5_10')
+    if (nn1 .eq. 0) then
+        call utmess('F', 'CALCULEL5_10')
+    endif
 !
 ! ----------------------------------------------------------------------
 !          TRAITEMENT DU MOT CLE "CREA_FISS"
@@ -163,7 +163,7 @@ subroutine op0167()
     call getfac('CREA_FISS', nbjoin)
     if (nbjoin .ne. 0) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE2_89')
+            call utmess('F', 'ALGELINE2_89')
         endif
         call wkvect('&&OP0167.NOMMC', 'V V K16', nbjoin, jnommc)
         call wkvect('&&OP0167.OCCMC', 'V V I', nbjoin, joccmc)
@@ -185,14 +185,18 @@ subroutine op0167()
     call getfac('LINE_QUAD', nbmoma)
     if (nbmoma .gt. 0) then
         ASSERT(nbmoma.eq.1)
-        if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_90')
+        if (nn1 .eq. 0) then
+            call utmess('F', 'ALGELINE2_90')
+        endif
 !
         call getvtx('LINE_QUAD', 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
         call getvis('LINE_QUAD', 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
 !
         call getvtx('LINE_QUAD', 'MAILLE', iocc=1, nbval=0, nbret=n1a)
         call getvtx('LINE_QUAD', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-        if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, 'LINE_QUAD')
+        if (n1a+n1b .lt. 0) then
+            call utmess('A', 'MODELISA4_1', sk='LINE_QUAD')
+        endif
 !
         motcle(1)='MAILLE'
         motcle(2)='GROUP_MA'
@@ -202,9 +206,13 @@ subroutine op0167()
                     3, motcle, motcle, nomjv, nbma)
         call jeveuo(nomjv, 'L', jlima)
         call jeexin(nomain//'.NOMACR', iret)
-        if (iret .ne. 0) call u2mess('F', 'ALGELINE2_91')
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGELINE2_91')
+        endif
         call jeexin(nomain//'.ABS_CURV', iret)
-        if (iret .ne. 0) call u2mess('F', 'ALGELINE2_92')
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGELINE2_92')
+        endif
 !
         call cmlqlq(nomain, nomaou, nbma, zi(jlima), prefix,&
                     ndinit)
@@ -222,11 +230,15 @@ subroutine op0167()
     if (k .eq. 2) motfac='PENTA15_18'
     call getfac(motfac, nbmoma)
     if (nbmoma .gt. 0) then
-        if (nn1 .eq. 0) call u2mesk('F', 'MAIL0_14', 1, motfac)
+        if (nn1 .eq. 0) then
+            call utmess('F', 'MAIL0_14', sk=motfac)
+        endif
 !
         call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=n1a)
         call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-        if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, motfac)
+        if (n1a+n1b .lt. 0) then
+            call utmess('A', 'MODELISA4_1', sk=motfac)
+        endif
 !
         lpb=.false.
         if (motfac .eq. 'HEXA20_27') then
@@ -244,7 +256,9 @@ subroutine op0167()
                         repk, ierd)
             if (repk .eq. 'OUI') lpb=.true.
         endif
-        if (lpb) call u2mesk('A', 'MODELISA4_11', 1, motfac)
+        if (lpb) then
+            call utmess('A', 'MODELISA4_11', sk=motfac)
+        endif
 !
         call getvtx(motfac, 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
         call getvis(motfac, 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
@@ -275,11 +289,15 @@ subroutine op0167()
     call getfac('QUAD_LINE', nbmoma)
     if (nbmoma .gt. 0) then
         ASSERT(nbmoma.eq.1)
-        if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_93')
+        if (nn1 .eq. 0) then
+            call utmess('F', 'ALGELINE2_93')
+        endif
 !
         call getvtx('QUAD_LINE', 'MAILLE', iocc=1, nbval=0, nbret=n1a)
         call getvtx('QUAD_LINE', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-        if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, 'QUAD_LINE')
+        if (n1a+n1b .lt. 0) then
+            call utmess('A', 'MODELISA4_1', sk='QUAD_LINE')
+        endif
 !
         motcle(1)='MAILLE'
         motcle(2)='GROUP_MA'
@@ -289,9 +307,13 @@ subroutine op0167()
                     3, motcle, motcle, nomjv, nbma)
         call jeveuo(nomjv, 'L', jlima)
         call jeexin(nomain//'.NOMACR', iret)
-        if (iret .ne. 0) call u2mess('F', 'ALGELINE2_94')
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGELINE2_94')
+        endif
         call jeexin(nomain//'.ABS_CURV', iret)
-        if (iret .ne. 0) call u2mess('F', 'ALGELINE2_95')
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGELINE2_95')
+        endif
 !
         call cmqlql(nomain, nomaou, nbma, zi(jlima))
 !
@@ -305,7 +327,9 @@ subroutine op0167()
 !
     call getfac('MODI_MAILLE', nbmoma)
     if (nbmoma .gt. 0) then
-        if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_96')
+        if (nn1 .eq. 0) then
+            call utmess('F', 'ALGELINE2_96')
+        endif
 !
         iqtr=0
         do 20 iocc = 1, nbmoma
@@ -319,14 +343,18 @@ subroutine op0167()
         if (iqtr .eq. 0) then
             goto 30
         else if (iqtr.gt.1) then
-            call u2mess('F', 'ALGELINE2_97')
+            call utmess('F', 'ALGELINE2_97')
         else
             call getvtx('MODI_MAILLE', 'MAILLE', iocc=iocct, nbval=0, nbret=n1a)
             call getvtx('MODI_MAILLE', 'GROUP_MA', iocc=iocct, nbval=0, nbret=n1b)
-            if (n1a+n1b .lt. 0) call u2mesk('A', 'MODELISA4_1', 1, 'QUAD_TRIA3')
+            if (n1a+n1b .lt. 0) then
+                call utmess('A', 'MODELISA4_1', sk='QUAD_TRIA3')
+            endif
             call dismoi('F', 'EXI_TRIA6', nomain, 'MAILLAGE', ibid,&
                         repk, ierd)
-            if (repk .eq. 'OUI') call u2mess('A', 'MODELISA4_2')
+            if (repk .eq. 'OUI') then
+                call utmess('A', 'MODELISA4_2')
+            endif
         endif
 !
         call getvtx('MODI_MAILLE', 'PREF_MAILLE', iocc=1, scal=prefix, nbret=n1)
@@ -355,7 +383,7 @@ subroutine op0167()
     call getfac('COQU_VOLU', nbvolu)
     if (nbvolu .ne. 0) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE2_98')
+            call utmess('F', 'ALGELINE2_98')
         endif
 !
         call getvr8('COQU_VOLU', 'EPAIS', iocc=1, scal=epais, nbret=n1)
@@ -388,7 +416,7 @@ subroutine op0167()
     call getfac('RESTREINT', nbrest)
     if (nbrest .ne. 0) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE2_98')
+            call utmess('F', 'ALGELINE2_98')
         endif
         call rdtmai(nomain, nomaou, 'G', nomaou//'.CRNO', nomaou// '.CRMA',&
                     'G', 0, 0)
@@ -453,7 +481,9 @@ subroutine op0167()
     nbnoaj=0
 !
     if (nbmoma .ne. 0) then
-        if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_96')
+        if (nn1 .eq. 0) then
+            call utmess('F', 'ALGELINE2_96')
+        endif
         momanu='&&OP0167.MO_MA.NUM'
         momano='&&OP0167.MO_MA.NOM'
 !
@@ -496,8 +526,7 @@ subroutine op0167()
             call palim2('MODI_MAILLE', iocc, nomain, momanu, momano,&
                         zi(jiad+iocc-1))
             if (zi(jiad+iocc-1)-1 .le. 0) then
-                call u2mesg('A', 'MODELISA3_32', 1, option, 1,&
-                            iocc, 0, 0.d0)
+                call utmess('A', 'MODELISA3_32', sk=option, si=iocc)
                 goto 60
             endif
 !
@@ -542,7 +571,9 @@ subroutine op0167()
         call jeveuo(momuto, 'L', jmomtu)
         call jeveuo(momoto, 'L', jmomto)
         nbnoaj=iad-1
-        if (nbnoaj .eq. 0) call u2mess('F', 'ALGELINE2_99')
+        if (nbnoaj .eq. 0) then
+            call utmess('F', 'ALGELINE2_99')
+        endif
     endif
 !
 ! ----------------------------------------------------------------------
@@ -553,7 +584,7 @@ subroutine op0167()
     nbmaj1=0
     if (nbcrma .ne. 0) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE3_1')
+            call utmess('F', 'ALGELINE3_1')
         endif
         crmanu='&&OP0167.CR_MA.NUM'
         crmano='&&OP0167.CR_MA.NOM'
@@ -581,7 +612,7 @@ subroutine op0167()
     nbmaj2=0
     if (nbgrma .ne. 0) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE3_2')
+            call utmess('F', 'ALGELINE3_2')
         endif
         crgrnu='&&OP0167.CR_GR.NUM'
         crgrno='&&OP0167.CR_GR.NOM'
@@ -604,7 +635,7 @@ subroutine op0167()
     nbmaj3=0
     if (nbcrp1 .ne. 0) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE3_3')
+            call utmess('F', 'ALGELINE3_3')
         endif
         call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntpoi)
 !
@@ -646,8 +677,7 @@ subroutine op0167()
             else
                 valk(1)=newmai
                 valk(2)=newmai
-                call u2mesg('A', 'ALGELINE4_43', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'ALGELINE4_43', nk=2, valk=valk)
             endif
 110      continue
     endif
@@ -669,8 +699,7 @@ subroutine op0167()
                 call jecroc(jexnom(nomnoe, nomg))
             else
                 valk(1)=nomg
-                call u2mesg('F', 'ALGELINE4_5', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_5', sk=valk(1))
             endif
 120      continue
         do 130 ino = nbnoev+1, nbnot
@@ -687,15 +716,16 @@ subroutine op0167()
             lgnu=lxlgut(knume)
             prfn1=zk8(jpr2+ino-nbnoev-1)
             lgno=lxlgut(prfn1)
-            if (lgnu+lgno .gt. 8) call u2mess('F', 'ALGELINE_16')
+            if (lgnu+lgno .gt. 8) then
+                call utmess('F', 'ALGELINE_16')
+            endif
             nomg=prfn1(1:lgno)//knume
             call jeexin(jexnom(nomnoe, nomg), iret)
             if (iret .eq. 0) then
                 call jecroc(jexnom(nomnoe, nomg))
             else
                 valk(1)=nomg
-                call u2mesg('F', 'ALGELINE4_5', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_5', sk=valk(1))
             endif
 130      continue
 !
@@ -734,7 +764,7 @@ subroutine op0167()
     call getfac('REPERE', nrep)
     if (nrep .ne. 0) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE3_4')
+            call utmess('F', 'ALGELINE3_4')
         endif
         call getvid('REPERE', 'TABLE', iocc=1, nbval=0, nbret=ntab)
         if (ntab .ne. 0) then
@@ -747,7 +777,7 @@ subroutine op0167()
                 else if (nomori.eq.'TORSION') then
                     call chcomb(table, nomaou)
                 else
-                    call u2mess('F', 'ALGELINE3_5')
+                    call utmess('F', 'ALGELINE3_5')
                 endif
             endif
         endif
@@ -781,8 +811,7 @@ subroutine op0167()
             call jecroc(jexnom(nommai, nomg))
         else
             valk(1)=nomg
-            call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_7', sk=valk(1))
         endif
 !
         call jenonu(jexnom(nommav, nomg), ibid)
@@ -820,14 +849,13 @@ subroutine op0167()
             call jecroc(jexnom(nommai, newmai))
         else
             valk(1)=newmai
-            call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_7', sk=valk(1))
         endif
 !
         jtom=jtypmv-1+inumol
         call jenonu(jexnom(nommai, newmai), ibid)
         if (ibid .eq. 0) then
-            call u2mesk('F', 'ALGELINE3_6', 1, newmai)
+            call utmess('F', 'ALGELINE3_6', sk=newmai)
         endif
         zi(iatyma-1+ibid)=zi(jtom)
 !
@@ -849,14 +877,13 @@ subroutine op0167()
             call jecroc(jexnom(nommai, newmai))
         else
             valk(1)=newmai
-            call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_7', sk=valk(1))
         endif
 !
         jtom=jtypmv-1+inumol
         call jenonu(jexnom(nommai, newmai), ibid)
         if (ibid .eq. 0) then
-            call u2mesk('F', 'ALGELINE3_6', 1, newmai)
+            call utmess('F', 'ALGELINE3_6', sk=newmai)
         endif
         zi(iatyma-1+ibid)=zi(jtom)
 !
@@ -919,13 +946,12 @@ subroutine op0167()
             call jecroc(jexnom(nommai, newmai))
         else
             valk(1)=newmai
-            call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_7', sk=valk(1))
         endif
 !
         call jenonu(jexnom(nommai, newmai), ibid)
         if (ibid .eq. 0) then
-            call u2mesk('F', 'ALGELINE3_6', 1, newmai)
+            call utmess('F', 'ALGELINE3_6', sk=newmai)
         endif
         zi(iatyma-1+ibid)=ntpoi
 !
@@ -958,8 +984,7 @@ subroutine op0167()
                 call jecroc(jexnom(grpmai, nomg))
             else
                 valk(1)=nomg
-                call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_9', sk=valk(1))
             endif
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
             call jelira(jexnum(grpmav, i), 'LONMAX', nbma)
@@ -979,8 +1004,7 @@ subroutine op0167()
                 call jecroc(jexnom(grpmai, nomg))
             else
                 valk(1)=nomg
-                call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_9', sk=valk(1))
             endif
             nbmaj2=0
             call palim3('CREA_GROUP_MA', i, nomain, crgrnu, crgrno,&
@@ -1015,8 +1039,7 @@ subroutine op0167()
                 call jecroc(jexnom(grpnoe, nomg))
             else
                 valk(1)=nomg
-                call u2mesg('F', 'ALGELINE4_11', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_11', sk=valk(1))
             endif
             call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno, 1))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
@@ -1065,8 +1088,7 @@ subroutine op0167()
                         call jecroc(jexnom(grpmai, nomg))
                     else
                         valk(1)=nomg
-                        call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('F', 'ALGELINE4_9', sk=valk(1))
                     endif
                     call jeveuo(jexnum(grpmav, i), 'L', jvg)
                     call jelira(jexnum(grpmav, i), 'LONMAX', nbma)
@@ -1084,7 +1106,9 @@ subroutine op0167()
                 if (n1 .ne. 0) then
                     call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, scal=nogma, nbret=n1)
                     call jenonu(jexnom(grpmai, nogma), ibid)
-                    if (ibid .gt. 0) call u2mesk('F', 'ALGELINE3_7', 1, nogma)
+                    if (ibid .gt. 0) then
+                        call utmess('F', 'ALGELINE3_7', sk=nogma)
+                    endif
                     call reliem(' ', nomain, 'NO_NOEUD', motfac, iocc,&
                                 nbmc, motcle, tymocl, nomjv, nbma)
                     call jeveuo(nomjv, 'L', jmail)
@@ -1094,8 +1118,7 @@ subroutine op0167()
                         call jecroc(jexnom(grpmai, nogma))
                     else
                         valk(1)=nogma
-                        call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('F', 'ALGELINE4_9', sk=valk(1))
                     endif
                     call jeecra(jexnom(grpmai, nogma), 'LONMAX', max(nbma, 1))
                     call jeecra(jexnom(grpmai, nogma), 'LONUTI', nbma)
@@ -1118,7 +1141,7 @@ subroutine op0167()
     call getfac('DETR_GROUP_MA', nbdgma)
     if (nbdgma .eq. 1) then
         if (nn1 .eq. 0) then
-            call u2mess('F', 'ALGELINE3_8')
+            call utmess('F', 'ALGELINE3_8')
         endif
         call cmdgma(nomaou)
     endif

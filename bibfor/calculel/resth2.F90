@@ -65,8 +65,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
 #include "asterfort/resvoi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nchar
     character(len=8) :: modele, lchar(1), ma, psourc
     character(len=19) :: cartef, carteh, cartet, cartes, nomgdf, nomgdh, nomgdt
@@ -151,7 +150,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         call exisd('CHAMP_GD', carts, irets)
         call exisd('CHAMP_GD', cartep, iretep)
         if (iretep .ne. 0) then
-            call u2mess('A', 'CALCULEL6_42')
+            call utmess('A', 'CALCULEL6_42')
         endif
         if (((ireth.eq.0).and.(irett.ne.0)) .or. ((irett.eq.0).and.( ireth.ne.0))) ASSERT(.false.)
 !
@@ -168,7 +167,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (cartef .ne. ' ') then
-                call u2mesk('I', 'CALCULEL6_43', 1, 'FLUX LINEAIRE')
+                call utmess('I', 'CALCULEL6_43', sk='FLUX LINEAIRE')
                 call jedetr(cartef//'.PTMA')
                 call jedetr(cartef//'.PTMS')
             endif
@@ -190,7 +189,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (carteh .ne. ' ') then
-                call u2mesk('I', 'CALCULEL6_43', 1, 'ECHANGE')
+                call utmess('I', 'CALCULEL6_43', sk='ECHANGE')
                 call jedetr(carteh//'.PTMA')
                 call jedetr(carteh//'.PTMS')
                 call jedetr(cartet//'.PTMA')
@@ -207,7 +206,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
                         nomgds, ier)
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (cartes .ne. ' ') then
-                call u2mesk('A', 'CALCULEL6_43', 1, 'SOURCE')
+                call utmess('A', 'CALCULEL6_43', sk='SOURCE')
             endif
 ! OPTION DE CALCUL POUR SOURCE VARIABLE
             if (nomgds(1:6) .eq. 'SOUR_F') psourc='PSOURCF'

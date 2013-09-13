@@ -48,8 +48,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdchgd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcmb
     real(kind=8) :: const(*)
@@ -110,7 +109,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         desc='.CELD'
         vale='.CELV'
     else
-        call u2mess('F', 'UTILITAI_21')
+        call utmess('F', 'UTILITAI_21')
     endif
 !
     if (docu .eq. 'CHNO') then
@@ -150,7 +149,9 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
                 call jeveuo(k24b, 'L', irefe)
                 metho1=zk24(irefe+2)
                 sdfet1=zk24(irefe+3)
-                if ((metho1.ne.method) .or. (sdfet1.ne. sdfeti)) call u2mess('F', 'ALGELINE3_92')
+                if ((metho1.ne.method) .or. (sdfet1.ne. sdfeti)) then
+                    call utmess('F', 'ALGELINE3_92')
+                endif
             endif
 10      continue
     endif
@@ -301,7 +302,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 70                          continue
                         else
                             type=typcst(icmb)(1:1)
-                            call u2mesk('F', 'PREPOST3_6', 1, type)
+                            call utmess('F', 'PREPOST3_6', sk=type)
                         endif
                     endif
                 else

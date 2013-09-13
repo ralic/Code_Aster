@@ -51,7 +51,7 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdchgd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: chpout, chpin, base, typc
 !
 ! DECLARATION VARIABLES LOCALES
@@ -85,7 +85,7 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
         vale(20:24)='.CELV'
         tamp = celk
     else
-        call u2mess('F', 'UTILITAI_21')
+        call utmess('F', 'UTILITAI_21')
     endif
 !
 !     --------------------------- REFE --------------------------------

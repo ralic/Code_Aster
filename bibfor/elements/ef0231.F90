@@ -10,7 +10,7 @@ subroutine ef0231(nomte)
 #include "asterfort/ppgan2.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: nomte
 ! ......................................................................
 ! ======================================================================
@@ -135,7 +135,7 @@ subroutine ef0231(nomte)
             nu=valres(2)
             if (iret4 .eq. 0) then
                 if ((icodre(3).ne.0) .or. (iret.eq.1)) then
-                    call u2mess('F', 'CALCULEL_15')
+                    call utmess('F', 'CALCULEL_15')
                 else
                     epsthe=(tpg-tref)*valres(3)*e/(1.d0-nu)
                 endif

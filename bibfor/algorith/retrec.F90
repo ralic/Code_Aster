@@ -60,9 +60,7 @@ subroutine retrec(nomres, resgen, nomsst)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
 !
@@ -105,20 +103,19 @@ subroutine retrec(nomres, resgen, nomsst)
 !
     if (ire1 .eq. 0 .and. ire2 .eq. 0 .and. ire3 .eq. 0) then
         valk (1) = resgen
-        call u2mesg('F', 'ALGORITH14_35', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_35', sk=valk(1))
     endif
 !
     call getvtx(' ', 'TOUT_CHAM', scal=k8rep, nbret=n1)
     if (k8rep(1:3) .eq. 'OUI') then
         if (ire1 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_44')
+            call utmess('F', 'ALGORITH10_44')
         endif
         if (ire2 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_45')
+            call utmess('F', 'ALGORITH10_45')
         endif
         if (ire3 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_46')
+            call utmess('F', 'ALGORITH10_46')
         endif
         nbcham = 3
         chmp(1) = 'DEPL'
@@ -130,19 +127,19 @@ subroutine retrec(nomres, resgen, nomsst)
     else
         call getvtx(' ', 'NOM_CHAM', scal=k8rep, nbret=n1)
         if (k8rep(1:4) .eq. 'DEPL' .and. ire1 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_44')
+            call utmess('F', 'ALGORITH10_44')
         else if (k8rep(1:4).eq.'DEPL'.and.ire1.ne.0) then
             nbcham = 1
             chmp(1) = 'DEPL'
             call jeveuo(trange//'.DEPL', 'L', itresu(1))
         else if (k8rep(1:4).eq.'VITE'.and.ire2.eq.0) then
-            call u2mess('F', 'ALGORITH10_45')
+            call utmess('F', 'ALGORITH10_45')
         else if (k8rep(1:4).eq.'VITE'.and.ire2.ne.0) then
             nbcham = 1
             chmp(1) = 'VITE'
             call jeveuo(trange//'.VITE', 'L', itresu(1))
         else if (k8rep(1:4).eq.'ACCE'.and.ire3.eq.0) then
-            call u2mess('F', 'ALGORITH10_46')
+            call utmess('F', 'ALGORITH10_46')
         else if (k8rep(1:4).eq.'ACCE'.and.ire3.ne.0) then
             nbcham = 1
             chmp(1) = 'ACCE'
@@ -169,8 +166,7 @@ subroutine retrec(nomres, resgen, nomsst)
     if (nusst .eq. 0) then
         valk (1) = modgen
         valk (2) = nomsst
-        call u2mesg('F', 'ALGORITH14_25', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_25', nk=2, valk=valk)
     endif
 !
 !
@@ -258,7 +254,7 @@ subroutine retrec(nomres, resgen, nomsst)
     call rstran(interp, trange, ' ', 1, kinst,&
                 knume, nbinst, iretou)
     if (iretou .ne. 0) then
-        call u2mess('F', 'ALGORITH10_47')
+        call utmess('F', 'ALGORITH10_47')
     endif
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
@@ -295,7 +291,7 @@ subroutine retrec(nomres, resgen, nomsst)
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                    call utmess('A', 'ALGORITH2_64', sk=chamno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else
@@ -369,7 +365,7 @@ subroutine retrec(nomres, resgen, nomsst)
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                    call utmess('A', 'ALGORITH2_64', sk=chamno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else

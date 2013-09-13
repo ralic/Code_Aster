@@ -20,7 +20,6 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -30,8 +29,9 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: noma, nomai(*), nogrm(*), nummai, noltop
     integer :: nbma, nbgr, nbmat
 ! ----------------------------------------------------------------------
@@ -69,8 +69,7 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
             call jenonu(jexnom(nomma//'.NOMMAI', nomai(imai)), ima)
             if (ima .eq. 0) then
                 valk (1) = nomai(imai)
-                call u2mesg('A', 'PREPOST5_30', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'PREPOST5_30', sk=valk(1))
                 nomai(imai) = ' '
             else
                 zi(jtopo-1+6) = zi(jtopo-1+6) + 1
@@ -94,16 +93,14 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
             call jeexin(jexnom(nomma//'.GROUPEMA', nogrm(igr)), iret)
             if (iret .eq. 0) then
                 valk (1) = nogrm(igr)
-                call u2mesg('A', 'PREPOST5_31', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'PREPOST5_31', sk=valk(1))
                 nogrm(igr) = ' '
             else
                 call jelira(jexnom(nomma//'.GROUPEMA', nogrm(igr)), 'LONMAX', nbn)
                 if (nbn .eq. 0) then
                     valk (1) = nogrm(igr)
                     valk (2) = ' '
-                    call u2mesg('A', 'PREPOST5_32', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'PREPOST5_32', nk=2, valk=valk)
                     nogrm(igr) = ' '
                 else
                     zi(jtopo-1+8) = zi(jtopo-1+8) + 1

@@ -11,9 +11,7 @@ subroutine dltp0(t0, nume)
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: t0
     integer :: nume
@@ -67,7 +65,7 @@ subroutine dltp0(t0, nume)
                             c16b, prec, crit, nume, 1,&
                             nbtrou)
                 if (nbtrou .ne. 1) then
-                    call u2mess('F', 'ALGORITH3_24')
+                    call utmess('F', 'ALGORITH3_24')
                 endif
             else
                 call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
@@ -79,13 +77,11 @@ subroutine dltp0(t0, nume)
                     valk = dyna
                     valr = temps
                     vali = -nbtrou
-                    call u2mesg('F', 'ALGORITH12_83', 1, valk, 1,&
-                                vali, 1, valr)
+                    call utmess('F', 'ALGORITH12_83', sk=valk, si=vali, sr=valr)
                 else if (nbtrou.eq.0) then
                     valk = dyna
                     valr = temps
-                    call u2mesg('F', 'ALGORITH12_84', 1, valk, 0,&
-                                0, 1, valr)
+                    call utmess('F', 'ALGORITH12_84', sk=valk, sr=valr)
                 endif
             endif
         else
@@ -100,7 +96,7 @@ subroutine dltp0(t0, nume)
             do 10 i = 1, nbordr
                 if (zi(jordr+i-1) .eq. nume) goto 12
 10          continue
-            call u2mesk('F', 'ALGORITH3_36', 1, dyna)
+            call utmess('F', 'ALGORITH3_36', sk=dyna)
 12          continue
         endif
 !
@@ -123,7 +119,9 @@ subroutine dltp0(t0, nume)
 !
             t0 = 0.d0
             call getvr8('INCREMENT', 'INST_INIT', iocc=1, scal=t0, nbret=np)
-            if (np .eq. 0) call u2mess('I', 'ALGORITH5_62')
+            if (np .eq. 0) then
+                call utmess('I', 'ALGORITH5_62')
+            endif
         endif
     endif
 !

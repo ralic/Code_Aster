@@ -624,7 +624,7 @@ subroutine te0000(numc, opt, te)
 #include "asterfort/te0598.h"
 #include "asterfort/te0599.h"
 #include "asterfort/te0600.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
     integer :: numc, opt, te
 ! ----------------------------------------------------------------------
@@ -2598,7 +2598,7 @@ subroutine te0000(numc, opt, te)
 !
 9998  continue
     call codent(numc, 'D', k8bid)
-    call u2mesk('F', 'CALCULEL4_91', 1, k8bid)
+    call utmess('F', 'CALCULEL4_91', sk=k8bid)
 9999  continue
     call uttcpu('CPU.CALC.3', 'FIN', ' ')
 end subroutine

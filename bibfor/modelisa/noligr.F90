@@ -3,7 +3,6 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
                   typlaz)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -13,7 +12,8 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/poslag.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: ligrz, lk(*), typlaz
     character(len=8) :: typlag
     character(len=19) :: ligr
@@ -104,8 +104,7 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
     else
         vali = code
         valk = 'EST INCONNU '
-        call u2mesg('F', 'MODELISA8_69', 1, valk, 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'MODELISA8_69', sk=valk, si=vali)
     endif
     lonigr = absnb*irepe + 1
     call jecroc(jexnum(liel, igrel))

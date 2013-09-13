@@ -35,7 +35,7 @@ subroutine fetrex(option, idd, ni, vi, no,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: option, idd, ni, no, irex
     real(kind=8) :: vi(ni), vo(no)
 !
@@ -118,7 +118,7 @@ subroutine fetrex(option, idd, ni, vi, no,&
 !
 20      continue
     else
-        call u2mess('F', 'ALGORITH3_61')
+        call utmess('F', 'ALGORITH3_61')
     endif
 !
 end subroutine

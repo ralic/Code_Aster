@@ -19,7 +19,7 @@ subroutine cfleq8(noma, defico, nzoco, nsuco, nnoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfleqa.h"
@@ -29,7 +29,7 @@ subroutine cfleq8(noma, defico, nzoco, nsuco, nnoco,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: noma
     integer :: nnoco0, nsuco, nnoco, nzoco
@@ -91,7 +91,7 @@ subroutine cfleq8(noma, defico, nzoco, nsuco, nnoco,&
     if (nnoqua .eq. 0) then
         goto 999
     else
-        call u2mess('A', 'CONTACT_8')
+        call utmess('A', 'CONTACT_8')
     endif
 !
 ! --- ECRITURE LISTE DES NOEUDS QUADRATIQUES

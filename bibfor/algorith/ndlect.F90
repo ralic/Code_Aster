@@ -42,7 +42,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 #include "asterfort/nmmoam.h"
 #include "asterfort/nmmuap.h"
 #include "asterfort/nmondp.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sddyna
     character(len=24) :: modele, mate, carele
     character(len=19) :: lischa
@@ -205,7 +205,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     lamra = lamor
 !
     if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI')) then
-        call u2mess('I', 'MECANONLINE5_7')
+        call utmess('I', 'MECANONLINE5_7')
     endif
     if (.not.lamor) call nmamab(modele, carele, lamor)
     zl(jlosd+1-1) = lamor
@@ -308,20 +308,20 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     if ((ndynlo(sddyna,'NEWMARK')) .or. (ndynlo(sddyna,'HHT_COMPLET')) .or.&
         (ndynlo(sddyna,'HHT'))) then
         if (beta .eq. 0.d0) then
-            call u2mess('F', 'MECANONLINE5_9')
+            call utmess('F', 'MECANONLINE5_9')
         endif
         if (iform .eq. 2) then
-            call u2mess('F', 'MECANONLINE5_11')
+            call utmess('F', 'MECANONLINE5_11')
         endif
     endif
     if (ndynlo(sddyna,'THETA_METHODE')) then
         if (iform .eq. 3) then
-            call u2mess('F', 'MECANONLINE5_12')
+            call utmess('F', 'MECANONLINE5_12')
         endif
     endif
     if (lexpl) then
         if (iform .ne. 3) then
-            call u2mess('F', 'MECANONLINE5_10')
+            call utmess('F', 'MECANONLINE5_10')
         endif
     endif
 !
@@ -365,7 +365,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
             if (lexpl) then
                 zl(jlosd+4-1) = .true.
             else
-                call u2mess('F', 'MECANONLINE5_13')
+                call utmess('F', 'MECANONLINE5_13')
             endif
         endif
     endif

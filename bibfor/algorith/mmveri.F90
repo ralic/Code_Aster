@@ -21,7 +21,6 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/apcopt.h"
@@ -49,7 +48,8 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/mmnumn.h"
 #include "asterfort/mmpnoe.h"
 #include "asterfort/mmtanr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo
@@ -220,7 +220,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
                 call mmnorm(ndimg, tau1, tau2, norm, noor)
                 if (noor .le. r8prem()) then
                     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
-                    call u2mesk('F', 'CONTACT3_24', 1, nommam)
+                    call utmess('F', 'CONTACT3_24', sk=nommam)
                 endif
 !
 ! --------- CALCUL DU JEU ACTUALISE AU POINT DE CONTACT

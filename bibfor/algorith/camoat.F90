@@ -39,7 +39,6 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/cheddl.h"
 #include "asterfort/defsta.h"
 #include "asterfort/dismoi.h"
@@ -53,8 +52,9 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier, ik, ino, inord, iret
     integer :: j, lldeeq, lldes, llncmp, llnoin, lltyp, ltddl
@@ -164,8 +164,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
         raildl='&&'//pgc//'.RAID.LDLT'
         call facmtr(raid, raildl, ier)
         if (ier .eq. -2) then
-            call u2mesg('F', 'ALGORITH12_40', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_40')
         endif
     endif
 !

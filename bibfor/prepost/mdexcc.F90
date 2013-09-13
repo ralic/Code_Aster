@@ -50,21 +50,20 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mfdfdi.h"
+#include "asterfort/as_mfdnfc.h"
+#include "asterfort/as_mfdnfd.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/as_mfdfdi.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfdnfd.h"
-#include "asterfort/as_mfdnfc.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nofimd, nochmd
     character(len=*) :: nomcmc, nmcmfi
 !
@@ -137,8 +136,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
         call as_mfdnfd(idfimd, nbcham, codret)
         if (codret .ne. 0) then
             saux08='mfdnfd'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
         if (nbcham .le. 0) goto 30
 !
@@ -180,8 +178,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
             call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
             if (codret .ne. 0) then
                 saux08='mfdnfc'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
 !
             call codent(iaux, 'G', saux08)
@@ -192,19 +189,17 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 ! 1.5.1 ==> LECTURE DU NOM DU CHAMP MED ET DE SES COMPOSANTES
 !
             call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
-                        zk16(aducmp), nseqca, codret)
+                           zk16(aducmp), nseqca, codret)
             if (codret .ne. 0 .or. jaux .ne. mfloat) then
                 vali (1) = iaux
                 if (codret .ne. 0) then
                     saux08='mfdfdi'
-                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                                codret, 0, 0.d0)
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
                 if (jaux .ne. mfloat) then
                     vali (1) = jaux
-                    call u2mesg('A+', 'MED_84', 0, ' ', 1,&
-                                vali, 0, 0.d0)
-                    call u2mess('F', 'MED_75')
+                    call utmess('A+', 'MED_84', si=vali(1))
+                    call utmess('F', 'MED_75')
                 endif
             endif
 !
@@ -312,8 +307,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
             call as_mficlo(idfimd, codret)
             if (codret .ne. 0) then
                 saux08='mficlo'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
             idfimd = 0
         endif

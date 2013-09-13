@@ -60,7 +60,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 #include "asterfort/mgutdm.h"
 #include "asterfort/pmppr.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -178,8 +178,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         if (option(1:6) .eq. 'REDUIT') then
             nliais=0
         else
-            call u2mesg('F', 'ALGORITH16_44', 4, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH16_44', nk=4, valk=valk)
         endif
         goto 9999
     endif
@@ -308,8 +307,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             valk (2) = nomnop
             valk (3) = nomnoi
 !
-            call u2mesg('F', 'ALGORITH16_45', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH16_45', nk=3, valk=valk)
             goto 9999
         endif
         zi(llistb-1+jnode) = i
@@ -329,8 +327,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             valk (2) = intf1
             valk (3) = sst2
             valk (4) = intf2
-            call u2mesg('F', 'ALGORITH16_46', 4, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH16_46', nk=4, valk=valk)
             goto 9999
         endif
         dxrm=dxrm/lcaram
@@ -343,8 +340,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         if (option(1:6) .eq. 'REDUIT') then
             nliais=0
         else
-            call u2mesg('F', 'ALGORITH16_47', 4, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH16_47', nk=4, valk=valk)
         endif
         goto 9999
     endif
@@ -362,8 +358,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
                 if (option(1:6) .eq. 'REDUIT') then
                     nliais=0
                 else
-                    call u2mesg('F', 'ALGORITH16_48', 4, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGORITH16_48', nk=4, valk=valk)
                 endif
                 goto 9999
             endif

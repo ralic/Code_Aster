@@ -59,7 +59,6 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterc/utflsh.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irceme.h"
@@ -70,9 +69,8 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noresu, typech, sdcarm
     character(len=16) :: nomsym
     character(len=19) :: chanom
@@ -115,7 +113,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
     if (nivinf .gt. 1) then
         call utflsh(codret)
         write (ifm,10000)
-        call u2mesk('I', 'MED_90', 1, chanom)
+        call utmess('I', 'MED_90', sk=chanom)
     endif
 !
 ! 1.1. ==> NOM DU CHAMP DANS LE FICHIER MED
@@ -132,9 +130,9 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
             write (ifm,11004) nochmd
         endif
     else
-        call u2mess('A', 'MED_91')
-        call u2mesk('A', 'MED_44', 1, chanom)
-        call u2mesk('A', 'MED_45', 1, noresu)
+        call utmess('A', 'MED_91')
+        call utmess('A', 'MED_44', sk=chanom)
+        call utmess('A', 'MED_45', sk=noresu)
     endif
 !
     11000 format(1x,'RESULTAT           : ',a8)
@@ -202,8 +200,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
             endif
             if (iret .eq. 0) then
                 valk (1) = chanom
-                call u2mesg('F', 'MED_82', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'MED_82', sk=valk(1))
             endif
         endif
 !
@@ -247,7 +244,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
                         codret)
         else
             codret = 1
-            call u2mesk('A', 'MED_92', 1, typech(1:4))
+            call utmess('A', 'MED_92', sk=typech(1:4))
         endif
 !
     endif
@@ -257,11 +254,11 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !====
 !
     if (codret .ne. 0 .and. codret .ne. 100) then
-        call u2mesk('A', 'MED_89', 1, chanom)
+        call utmess('A', 'MED_89', sk=chanom)
     endif
 !
     if (nivinf .gt. 1) then
-        call u2mesk('I', 'MED_93', 1, chanom)
+        call utmess('I', 'MED_93', sk=chanom)
         write (ifm,10000)
         call utflsh(codret)
         write (ifm,10001)

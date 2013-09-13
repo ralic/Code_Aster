@@ -14,7 +14,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nbelem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcmb, nuharm(*)
     character(len=*) :: nomch(*), basz, tyharm(*), chpres
@@ -82,7 +82,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
         refe = '.CELK'
         vale = '.CELV'
     else
-        call u2mess('F', 'UTILITAI_21')
+        call utmess('F', 'UTILITAI_21')
     endif
 !
     lmeca = .false.
@@ -244,7 +244,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                 nbscal = digdel(mode)
                 icoef=max(1,zi(jceld-1+4))
                 if (icoef .ne. 1) then
-                    call u2mess('F', 'ALGELINE3_33')
+                    call utmess('F', 'ALGELINE3_33')
                 endif
                 nbelgr = nbelem(ligrel,igrel)
                 idecgr=zi(jceld-1+zi(jceld-1+4+igrel)+8)

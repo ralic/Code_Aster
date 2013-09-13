@@ -28,6 +28,7 @@ subroutine charme(load, vale_type)
 #include "asterfort/calyrc.h"
 #include "asterfort/caprec.h"
 #include "asterfort/carbe3.h"
+#include "asterfort/carota.h"
 #include "asterfort/caveas.h"
 #include "asterfort/caveis.h"
 #include "asterfort/cbchei.h"
@@ -39,19 +40,17 @@ subroutine charme(load, vale_type)
 #include "asterfort/cbpesa.h"
 #include "asterfort/cbprca.h"
 #include "asterfort/cbpres.h"
-#include "asterfort/carota.h"
 #include "asterfort/cbsint.h"
 #include "asterfort/cbvitn.h"
-#include "asterfort/chveno.h"
 #include "asterfort/char_crea_neum.h"
+#include "asterfort/chveno.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/initel.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +87,7 @@ subroutine charme(load, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ndim, iret, ibid, jlgrf
+    integer :: ndim, iret, ibid, jlgrf
     character(len=8) :: mesh, model
     character(len=16) :: keywordfact, command
     character(len=19) :: ligrch, ligrmo
@@ -101,7 +100,9 @@ subroutine charme(load, vale_type)
     command = 'AFFE_CHAR_MECA'
     call cagene(load, command, ligrmo, mesh, ndim)
     model = ligrmo(1:8)
-    if (ndim .gt. 3) call u2mess('A', 'CHARGES2_4')
+    if (ndim .gt. 3) then
+        call utmess('A', 'CHARGES2_4')
+    endif
 !
 ! - Ligrel for loads
 !
@@ -142,12 +143,12 @@ subroutine charme(load, vale_type)
 ! ----- FORCE_SOL
 !
         call caveis(load)
-
+!
 ! --------------------------------------------------------------------------------------------------
-    elseif (vale_type .eq. 'COMP') then
-
+    else if (vale_type .eq. 'COMP') then
+!
 ! --------------------------------------------------------------------------------------------------
-    elseif (vale_type .eq. 'FONC') then
+    else if (vale_type .eq. 'FONC') then
 !
 ! ----- IMPE_FACE
 !
@@ -224,16 +225,16 @@ subroutine charme(load, vale_type)
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
 !
         call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
-
+!
 ! --------------------------------------------------------------------------------------------------
-    elseif (vale_type .eq. 'COMP') then
+    else if (vale_type .eq. 'COMP') then
 !
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
 !
         call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
-
+!
 ! --------------------------------------------------------------------------------------------------
-    elseif (vale_type .eq. 'FONC') then
+    else if (vale_type .eq. 'FONC') then
 !
 ! ----- PRES_REP/FORCE_TUYAU
 !
@@ -336,7 +337,7 @@ subroutine charme(load, vale_type)
 !
         call calicp(load, mesh, ligrmo, vale_type)
 ! --------------------------------------------------------------------------------------------------
-    elseif (vale_type .eq. 'COMP') then
+    else if (vale_type .eq. 'COMP') then
 !
 ! ----- DDL_IMPO
 !
@@ -347,7 +348,7 @@ subroutine charme(load, vale_type)
 !
         call caliai(vale_type, load)
 ! --------------------------------------------------------------------------------------------------
-    elseif (vale_type .eq. 'FONC') then
+    else if (vale_type .eq. 'FONC') then
 !
 ! ----- DDL_IMPO
 !

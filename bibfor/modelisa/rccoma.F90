@@ -2,8 +2,8 @@ subroutine rccoma(jmat, pheno, iarret, phenom, icodre)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
-    integer, intent(in)  :: jmat, iarret 
+#include "asterfort/utmess.h"
+    integer, intent(in) :: jmat, iarret
     integer, intent(out) :: icodre
     character(len=*), intent(out) :: phenom
     character(len=*), intent(in) :: pheno
@@ -76,7 +76,7 @@ subroutine rccoma(jmat, pheno, iarret, phenom, icodre)
                     icodre = 0
                 else
                     if (iarret .eq. 1) then
-                        call u2mesk('F', 'MODELISA6_56', 1, feno)
+                        call utmess('F', 'MODELISA6_56', sk=feno)
                     else
                         icodre = 2
                     endif
@@ -85,7 +85,7 @@ subroutine rccoma(jmat, pheno, iarret, phenom, icodre)
 10      continue
 20  end do
     if (( icodre .eq. 1 ) .and. ( iarret .eq. 1 )) then
-        call u2mesk('F', 'MODELISA6_57', 1, feno)
+        call utmess('F', 'MODELISA6_57', sk=feno)
     endif
 !
 end subroutine

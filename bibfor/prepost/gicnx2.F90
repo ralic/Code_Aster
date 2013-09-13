@@ -30,7 +30,6 @@ subroutine gicnx2()
 !     ------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -40,8 +39,9 @@ subroutine gicnx2()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
-    character(len=8) ::  nomobj
+#include "asterfort/utmess.h"
+!
+    character(len=8) :: nomobj
 !
 !-----------------------------------------------------------------------
     integer :: i, iacnex, iacnx2, iadesc, ianoob, ima, imat
@@ -50,7 +50,9 @@ subroutine gicnx2()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeexin('&&GILIRE.NOMOBJ', iret)
-    if (iret .eq. 0) call u2mess('F', 'PREPOST_46')
+    if (iret .eq. 0) then
+        call utmess('F', 'PREPOST_46')
+    endif
     call jeveuo('&&GILIRE.NOMOBJ', 'L', ianoob)
 !
 !     -- RECUPERATION DU NOMBRE D'OBJETS LUS:

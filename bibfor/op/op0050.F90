@@ -27,7 +27,7 @@ subroutine op0050()
 #include "asterfort/i2chem.h"
 #include "asterfort/i2segm.h"
 #include "asterfort/infmaj.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ibid, nbparm, nbpars, nbpara, n1
     character(len=8) :: k8b, nomail
 !----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine op0050()
     call dismoi('F', 'Z_CST', nomail, 'MAILLAGE', ibid,&
                 k8b, ibid)
     if (k8b(1:3) .eq. 'NON') then
-        call u2mess('F', 'INTEMAIL_10')
+        call utmess('F', 'INTEMAIL_10')
     endif
 !----------------------------------------------------------------------
 !

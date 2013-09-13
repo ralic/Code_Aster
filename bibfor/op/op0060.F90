@@ -72,11 +72,9 @@ subroutine op0060()
 #include "asterfort/rsorac.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcrre.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcrem.h"
@@ -163,10 +161,10 @@ subroutine op0060()
             if (tysd .eq. typcon) then
                 newcal = .false.
                 if (result .ne. resuco) then
-                    call u2mess('F', 'ALGORITH9_28')
+                    call utmess('F', 'ALGORITH9_28')
                 endif
             else
-                call u2mess('F', 'ALGORITH9_29')
+                call utmess('F', 'ALGORITH9_29')
             endif
         endif
     endif
@@ -245,7 +243,7 @@ subroutine op0060()
     endif
 !
     if ((numdl1.ne.numdl2) .or. (numdl1.ne.numdl3) .or. (numdl2.ne.numdl3)) then
-        call u2mess('F', 'ALGORITH9_34')
+        call utmess('F', 'ALGORITH9_34')
     else
         numddl = numdl2
     endif
@@ -432,7 +430,7 @@ subroutine op0060()
         call preres(solveu, 'V', icode, maprec, dynam,&
                     ibid, -9999)
         if ((icode.eq.1) .or. (icode.eq.2)) then
-            call u2mesr('I', 'DYNAMIQUE_14', 1, freq)
+            call utmess('I', 'DYNAMIQUE_14', sr=freq)
         endif
 !
 ! ----- RESOLUTION DU SYSTEME, CELUI DU CHARGEMENT STANDARD
@@ -462,7 +460,7 @@ subroutine op0060()
                 if (ier .eq. 0) then
 !           --- LE CHAMPS EXISTE DEJA ALORS IL Y A UN PBLM, MESSAGE
 !             - D'ALARME
-                    call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                    call utmess('A', 'ALGORITH2_64', sk=chamno)
 !
                 else if (ier .eq. 100) then
 !           --- LE CHAMPS N'EXISTE PAS ET IL EST POSSIBLE DE LE CREER
@@ -472,7 +470,7 @@ subroutine op0060()
 !
                 else
 !           --- SI IL N'EST PAS POSSIBLE DE CREER LE CHAMP, ERR. FATALE
-                    call u2mess('F', 'ALGORITH2_65')
+                    call utmess('F', 'ALGORITH2_65')
                 endif
 !
 !           --- RECOPIE DANS L'OBJET RESULTAT

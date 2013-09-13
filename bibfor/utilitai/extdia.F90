@@ -37,7 +37,6 @@ subroutine extdia(matr, numddl, icode, diag)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -45,8 +44,9 @@ subroutine extdia(matr, numddl, icode, diag)
 #include "asterfort/jexnum.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/typddl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: numddl
     character(len=8) :: matr
     real(kind=8) :: diag(*)
@@ -71,7 +71,7 @@ subroutine extdia(matr, numddl, icode, diag)
                 nbbloq, nblagr, nbliai)
     if (icode .eq. 2) then
         if (nbliai .gt. 0) then
-            call u2mess('F', 'UTILITAI_76')
+            call utmess('F', 'UTILITAI_76')
         endif
     endif
 !

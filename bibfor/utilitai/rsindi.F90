@@ -3,7 +3,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                   nbordr, nbtrou, nutrou, ndim)
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbordr, nbtrou, nutrou(*), ndim, ival, paobj
     real(kind=8) :: rval, epsi
     character(len=4) :: tysca
@@ -77,7 +77,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     trouve = .false.
                 endif
             else
-                call u2mesk('F', 'ALGORITH3_42', 1, crit2)
+                call utmess('F', 'ALGORITH3_42', sk=crit2)
             endif
             if (trouve) then
                 nbtrou = nbtrou + 1
@@ -169,7 +169,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                     trouve = .false.
                 endif
             else
-                call u2mesk('F', 'ALGORITH3_42', 1, crit2)
+                call utmess('F', 'ALGORITH3_42', sk=crit2)
             endif
             if (trouve) then
                 nbtrou = nbtrou + 1
@@ -181,7 +181,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
             endif
 80      continue
     else
-        call u2mesk('F', 'UTILITAI4_33', 1, tysca)
+        call utmess('F', 'UTILITAI4_33', sk=tysca)
     endif
 !
 !

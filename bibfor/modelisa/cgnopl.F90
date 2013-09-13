@@ -48,8 +48,8 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: mofaz, nomaz, lisnoz
 !
@@ -111,13 +111,13 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
     if (nangle .eq. 0) then
         call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
-            call u2mess('F', 'MODELISA3_93')
+            call utmess('F', 'MODELISA3_93')
         else
             nvect = -nvect
             if (ndim .eq. 3 .and. nvect .ne. 3) then
-                call u2mess('F', 'MODELISA3_94')
+                call utmess('F', 'MODELISA3_94')
             else if (ndim.eq.2.and.nvect.ne.2) then
-                call u2mess('F', 'MODELISA3_95')
+                call utmess('F', 'MODELISA3_95')
             else
                 call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
                             nbret=nv)
@@ -149,7 +149,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
     xnorm2 = vecnor(1)*vecnor(1) + vecnor(2)*vecnor(2) + vecnor(3)*vecnor(3)
 !
     if (xnorm2 .eq. zero) then
-        call u2mess('F', 'MODELISA3_96')
+        call utmess('F', 'MODELISA3_96')
     endif
 !
     xnorm = sqrt(xnorm2)
@@ -162,11 +162,11 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ----------------------------
     call getvr8(motfac, 'PRECISION', iocc=iocc, nbval=0, nbret=nprec)
     if (nprec .eq. 0) then
-        call u2mess('F', 'MODELISA3_97')
+        call utmess('F', 'MODELISA3_97')
     else
         call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
-            call u2mess('F', 'MODELISA3_98')
+            call utmess('F', 'MODELISA3_98')
         endif
     endif
 !

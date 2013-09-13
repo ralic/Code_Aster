@@ -1,5 +1,5 @@
 subroutine motubn(tabpus, dinst, nbsect)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -7,7 +7,7 @@ subroutine motubn(tabpus, dinst, nbsect)
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/tbnuli.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbsect
     real(kind=8) :: dinst
     character(len=*) :: tabpus
@@ -81,8 +81,7 @@ subroutine motubn(tabpus, dinst, nbsect)
     if (iret .ne. 0) then
         valr = dinst
         valk = valek(2)
-        call u2mesg('F', 'PREPOST5_57', 1, valk, 0,&
-                    0, 1, valr)
+        call utmess('F', 'PREPOST5_57', sk=valk, sr=valr)
     endif
 !
     call tbnuli(nomta, 2, valek, ibid, acces,&
@@ -90,8 +89,7 @@ subroutine motubn(tabpus, dinst, nbsect)
     if (numeli .le. 0) then
         valr = dinst
         valk = valek(2)
-        call u2mesg('F', 'PREPOST5_58', 1, valk, 0,&
-                    0, 1, valr)
+        call utmess('F', 'PREPOST5_58', sk=valk, sr=valr)
     endif
 !
     call tbacce(nomta, numeli, valek(2), 'E', ibid,&
@@ -110,8 +108,7 @@ subroutine motubn(tabpus, dinst, nbsect)
         if (numeli .le. 0) then
             valr = dinst
             vali = i
-            call u2mesg('F', 'PREPOST5_59', 0, ' ', 1,&
-                        vali, 1, valr)
+            call utmess('F', 'PREPOST5_59', si=vali, sr=valr)
         endif
 !
         call tbacce(nomta, numeli, 'V_USUR_TUBE_SECT', 'E', ibid,&

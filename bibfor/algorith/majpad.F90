@@ -5,7 +5,7 @@ subroutine majpad(p2, pvp, r, t, kh,&
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: p2, pvp, r, t, kh, dp2, pvpm, dt, padp, padm, dpad
 ! ======================================================================
 ! ======================================================================
@@ -42,7 +42,7 @@ subroutine majpad(p2, pvp, r, t, kh,&
         if (niv .eq. 2) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3) (1:8)
-            call u2mesk('I', 'COMPOR1_65', 1, nomail)
+            call utmess('I', 'COMPOR1_65', sk=nomail)
         endif
     endif
 end subroutine

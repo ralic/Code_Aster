@@ -5,7 +5,7 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
 #include "asterfort/copisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim
     character(len=4) :: fonree
     character(len=8) :: char, noma
@@ -47,7 +47,7 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
             nbcalc = nbcalc + icalc
 10      continue
         if (nbcalc .gt. 1) then
-            call u2mess('F', 'MODELISA3_64')
+            call utmess('F', 'MODELISA3_64')
         else if (nbcalc.eq.1) then
             call copisd('CHAMP_GD', 'G', chsour(1:19), carte(1:19))
         endif

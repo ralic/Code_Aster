@@ -20,7 +20,6 @@ subroutine xmacon(char, noma, nomo)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cfdisi.h"
@@ -37,9 +36,10 @@ subroutine xmacon(char, noma, nomo)
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmelin.h"
+!
     character(len=8) :: char, noma, nomo
 !
 ! ----------------------------------------------------------------------
@@ -224,7 +224,9 @@ subroutine xmacon(char, noma, nomo)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
             lmalin = ismali(typma)
             if (.not.lmalin) then
-                if (statut .gt. 1) call u2mess('F', 'XFEM_38')
+                if (statut .gt. 1) then
+                    call utmess('F', 'XFEM_38')
+                endif
             endif
 !
             posmae = posmae+1

@@ -44,8 +44,7 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
 !       ----------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: un, zero, d13, deux
     parameter       ( un    = 1.d0   )
     parameter       ( deux  = 2.d0   )
@@ -108,11 +107,11 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
             lc0 = (6.d0 * e * gc) / (fcp * fcp * (11.d0 - 4.d0 * celas * (un + celas)))
             if (lc .gt. lc0) then
                 if (materf(9,2) .lt. zero) then
-                    call u2mess('A', 'ALGORITH_44')
+                    call utmess('A', 'ALGORITH_44')
                 else
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3)(1:8)
-                    call u2mesk('A', 'ALGORITH_45', 1, nomail)
+                    call utmess('A', 'ALGORITH_45', sk=nomail)
                 endif
             endif
             if (pc .lt. ke) then
@@ -137,11 +136,11 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
             lc0 = (1.5d0 * e * gc) / (fcp * fcp * (4.d0 - celas * (un + celas)))
             if (lc .gt. lc0) then
                 if (materf(9,2) .lt. zero) then
-                    call u2mess('A', 'ALGORITH_44')
+                    call utmess('A', 'ALGORITH_44')
                 else
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3)(1:8)
-                    call u2mesk('A', 'ALGORITH_45', 1, nomail)
+                    call utmess('A', 'ALGORITH_45', sk=nomail)
                 endif
             endif
             if (pc .lt. ke) then
@@ -170,11 +169,11 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
             lc0 = (deux * e * gt) / (ftp * ftp)
             if (lc .gt. lc0) then
                 if (materf(9,2) .lt. zero) then
-                    call u2mess('A', 'ALGORITH_46')
+                    call utmess('A', 'ALGORITH_46')
                 else
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3)(1:8)
-                    call u2mesk('A', 'ALGORITH_47', 1, nomail)
+                    call utmess('A', 'ALGORITH_47', sk=nomail)
                 endif
             endif
             if (pt .lt. ku) then
@@ -192,11 +191,11 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
             lc0 = (e * gt) / (ftp * ftp)
             if (lc .gt. lc0) then
                 if (materf(9,2) .lt. zero) then
-                    call u2mess('A', 'ALGORITH_46')
+                    call utmess('A', 'ALGORITH_46')
                 else
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3)(1:8)
-                    call u2mesk('A', 'ALGORITH_47', 1, nomail)
+                    call utmess('A', 'ALGORITH_47', sk=nomail)
                 endif
             endif
             ft = ftp * exp( - lc * ftp * pt / gt)

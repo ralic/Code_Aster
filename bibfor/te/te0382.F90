@@ -33,7 +33,6 @@ subroutine te0382(option, nomte)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -56,11 +55,12 @@ subroutine te0382(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/uthk.h"
 #include "asterfort/utjac.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xrmes2.h"
 #include "asterfort/xrmev2.h"
+!
     character(len=16) :: option, nomte
 !
 !
@@ -72,16 +72,16 @@ subroutine te0382(option, nomte)
 !     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
     parameter (nbnamx=3)
 !
-    integer :: ifm, niv,iadzi, iazk24
+    integer :: ifm, niv, iadzi, iazk24
     integer :: ibid, iaux, iret, itab(7), itabid(9, 6, 4)
-    integer :: igeom, jtime,ierr, ivois
-    integer :: imate,iref1, iref2,ndim
-    integer :: nno, npg, idfde, jgano,nbcmp,tyv
-    integer :: npgp, nnop, nnosp, ipoidp, ivfp,isigno
-    integer :: nbs, idfse,inp,ino, nbnapa
+    integer :: igeom, jtime, ierr, ivois
+    integer :: imate, iref1, iref2, ndim
+    integer :: nno, npg, idfde, jgano, nbcmp, tyv
+    integer :: npgp, nnop, nnosp, ipoidp, ivfp, isigno
+    integer :: nbs, idfse, inp, ino, nbnapa
     integer :: jpintt, jcnset, jlonch, jvoxse, jsigse, jpmilt
-    integer :: nse, ise, in, j, ipg,levois
-    integer :: irese, kpg, spt, noe(9,6,4)
+    integer :: nse, ise, in, j, ipg, levois
+    integer :: irese, kpg, spt, noe(9, 6, 4)
 !
     real(kind=8) :: r8bid
     real(kind=8) :: dfdxp(9), dfdyp(9), poidp, he, hse, hf, coeff
@@ -333,7 +333,7 @@ subroutine te0382(option, nomte)
         else
 !
             valk(1)=typmav(1:4)
-            call u2mesk('F', 'INDICATEUR_10', 1, valk)
+            call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !
         endif
 !

@@ -19,7 +19,7 @@ function lcroy2(ymin)
     real(kind=8) :: lcroy2
 #include "asterfort/lcrofg.h"
 #include "asterfort/lcroty.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: ymin
 !
 ! *********************************************************************
@@ -86,7 +86,7 @@ function lcroy2(ymin)
         if (y .le. yinf .or. y .ge. ysup) y=(yinf+ysup)/2
 !
 10  end do
-    call u2mess('F', 'ALGORITH3_55')
+    call utmess('F', 'ALGORITH3_55')
 !
 100  continue
     lcroy2 = y

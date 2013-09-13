@@ -41,10 +41,8 @@ subroutine ritz99(nomres)
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     complex(kind=8) :: cbid
@@ -123,7 +121,7 @@ subroutine ritz99(nomres)
 !
         nbtot=nbmod1+nbmodb
         if (nbtot .le. 0) then
-            call u2mess('F', 'ALGORITH14_50')
+            call utmess('F', 'ALGORITH14_50')
         endif
 !
 ! --- ALLOCATION DE LA STRUCTURE DE DONNEES BASE_MODALE
@@ -137,7 +135,9 @@ subroutine ritz99(nomres)
             if (nbtot .gt. nbold) call rsagsd(nomres, nbtot)
 !
             call getvid('    ', 'NUME_REF', iocc=1, scal=numref, nbret=ibid)
-            if (ibid .eq. 0) call u2mess('E', 'ALGORITH17_9')
+            if (ibid .eq. 0) then
+                call utmess('E', 'ALGORITH17_9')
+            endif
             numref(15:19)='.NUME'
 !
             intf = ' '
@@ -177,7 +177,7 @@ subroutine ritz99(nomres)
     call getvid('RITZ', 'MODE_MECA', iocc=1, nbval=0, nbret=nbgl)
     nbgl = -nbgl
     if (nbgl .eq. 0) then
-        call u2mess('F', 'ALGORITH14_51')
+        call utmess('F', 'ALGORITH14_51')
     endif
     if (nbgl .eq. 1) then
         call getvid('RITZ', 'MODE_MECA', iocc=1, scal=resul1, nbret=ibid)
@@ -191,7 +191,7 @@ subroutine ritz99(nomres)
         if ((nbli.ne.0) .and. (nbli.ne.nbgl)) then
             vali(1)=nbgl
             vali(2)=nbli
-            call u2mesi('F', 'ALGORITH14_31', 2, vali)
+            call utmess('F', 'ALGORITH14_31', ni=2, vali=vali)
         endif
         call getvid('RITZ', 'MODE_MECA', iocc=1, nbval=nbgl, vect=zk8(idgl),&
                     nbret=nbg)
@@ -279,8 +279,7 @@ subroutine ritz99(nomres)
             vali (2) = nbamor
             vali (3) = nbmoda
             valk (1) = 'PREMIERS COEFFICIENTS'
-            call u2mesg('A', 'ALGORITH16_18', 1, valk, 3,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'ALGORITH16_18', sk=valk(1), ni=3, vali=vali)
             call wkvect('&&RITZ99.AMORTI', 'V V R8', nbmoda, jamog)
 !
             call jeveuo(listam//'           .VALE', 'L', iamog)
@@ -297,7 +296,7 @@ subroutine ritz99(nomres)
             vali (1) = idiff
             vali (2) = nbmoda
             vali (3) = idiff
-            call u2mesi('I', 'ALGORITH16_19', 3, vali)
+            call utmess('I', 'ALGORITH16_19', ni=3, vali=vali)
             call wkvect('&&RITZ99.AMORTI2', 'V V R8', nbmoda, jamo2)
             do 51 iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamog+iam-1)
@@ -331,8 +330,7 @@ subroutine ritz99(nomres)
 !
         call rscrsd('G', nomres, 'MODE_MECA', nbtot)
     else
-        call u2mesg('F', 'ALGORITH14_50', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_50')
     endif
 !
 ! --- COPIE DES MODES DYNAMIQUES

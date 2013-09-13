@@ -13,8 +13,7 @@ subroutine refe99(nomres)
 #include "asterfort/refdaj.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomres
@@ -120,7 +119,7 @@ subroutine refe99(nomres)
 !           Incoherence in the input data
             vali(1) = nbmome
             vali(2) = nbli
-            call u2mesi('F', 'ALGORITH14_31', 2, vali)
+            call utmess('F', 'ALGORITH14_31', ni=2, vali=vali)
         endif
 !
         do 10 i = 1, nbmome
@@ -139,7 +138,7 @@ subroutine refe99(nomres)
                 valk (2) = numbis(1:8)
                 valk (3) = intf
                 valk (4) = numddl(1:8)
-                call u2mesk('F', 'ALGORITH14_24', 4, valk)
+                call utmess('F', 'ALGORITH14_24', nk=4, valk=valk)
             endif
 !           Determine the real number of modes to recuperate from each base
             call rsorac(momeca, 'LONUTI', ibid, rbid, kbid,&
@@ -147,13 +146,11 @@ subroutine refe99(nomres)
                         ibid)
             nbmout = zi(ltnbmax+i-1)
             if (nbmodo .lt. nbmout) then
-                call u2mess('I', 'ALGORITH15_92')
+                call utmess('I', 'ALGORITH15_92')
                 valk = momeca
-                call u2mesg('I', 'ALGORITH15_93', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('I', 'ALGORITH15_93', sk=valk(1))
                 vali = nbmodo
-                call u2mesg('I', 'ALGORITH15_94', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'ALGORITH15_94', si=vali(1))
             else
                 nbmodo = nbmout
             endif
@@ -183,7 +180,9 @@ subroutine refe99(nomres)
 !
 !       Reference numbering is required in case more than one modal base is given
         call getvid('    ', 'NUME_REF', iocc=1, scal=numddl, nbret=ier)
-        if ((ier.eq.0) .and. noseul) call u2mess('E', 'ALGORITH17_9')
+        if ((ier.eq.0) .and. noseul) then
+            call utmess('E', 'ALGORITH17_9')
+        endif
 !
         intf = ' '
         call getvid('  ', 'INTERF_DYNA', iocc=1, nbval=0, nbret=ier)
@@ -232,7 +231,7 @@ subroutine refe99(nomres)
 !               Incoherence in the input data
                 vali(1) = nbmome
                 vali(2) = nbli
-                call u2mesi('F', 'ALGORITH14_31', 2, vali)
+                call utmess('F', 'ALGORITH14_31', ni=2, vali=vali)
             endif
 !
             nbmod1 = 0
@@ -253,13 +252,11 @@ subroutine refe99(nomres)
                             ibid)
                 nbmout = zi(ltnbmax+i-1)
                 if (nbmodo .lt. nbmout) then
-                    call u2mess('I', 'ALGORITH15_92')
+                    call utmess('I', 'ALGORITH15_92')
                     valk = momeca
-                    call u2mesg('I', 'ALGORITH15_93', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('I', 'ALGORITH15_93', sk=valk(1))
                     vali = nbmodo
-                    call u2mesg('I', 'ALGORITH15_94', 0, ' ', 1,&
-                                vali, 0, 0.d0)
+                    call utmess('I', 'ALGORITH15_94', si=vali(1))
                 else
                     nbmodo = nbmout
                 endif
@@ -296,7 +293,7 @@ subroutine refe99(nomres)
 !
         nbtot = nbmod1 + nbmod2
         if (nbtot .le. 0) then
-            call u2mess('F', 'ALGORITH14_50')
+            call utmess('F', 'ALGORITH14_50')
         endif
 !
         call dismoi('C', 'REF_INTD_DERN', nomres, 'RESU_DYNA', ibid,&

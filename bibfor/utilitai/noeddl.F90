@@ -1,7 +1,6 @@
 subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -10,7 +9,8 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbnoe, neq, ivec(neq)
     character(len=14) :: nume
     character(len=*) :: lnonoe(nbnoe)
@@ -80,8 +80,7 @@ subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
         if (nunoe .eq. 0) then
             valk (1) = nomno
             valk (2) = nomma
-            call u2mesg('E', 'UTILITAI6_47', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'UTILITAI6_47', nk=2, valk=valk)
         endif
         ieq = zi(iaprno-1+(nec+2)*(nunoe-1)+1)
         nbcmp = zi(iaprno-1+(nec+2)*(nunoe-1)+2)

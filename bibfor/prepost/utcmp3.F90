@@ -1,7 +1,7 @@
 subroutine utcmp3(nbcmp, nomcmp, numcmp)
-    implicit   none
+    implicit none
 #include "asterfort/lxliis.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbcmp, numcmp(*)
     character(len=*) :: nomcmp(*)
 ! ----------------------------------------------------------------------
@@ -45,8 +45,7 @@ subroutine utcmp3(nbcmp, nomcmp, numcmp)
         if (iret .ne. 0) then
             valk (1) = nom
             valk (2) = 'VARI_R'
-            call u2mesg('F', 'CALCULEL6_49', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
         endif
 10  end do
 !

@@ -17,9 +17,8 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cfcrma.h"
 #include "asterfort/cudisi.h"
@@ -35,8 +34,9 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/posddl.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: deficu, resocu
@@ -144,8 +144,7 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
             if (cddl .eq. 0) then
                 valk (1) = nomno
                 valk (2) = cmp
-                call u2mesg('F', 'UNILATER_75', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'UNILATER_75', nk=2, valk=valk)
             else
                 zk8(jnomno+iddl-1) = nomno
                 zk8(jnomcm+iddl-1) = cmp

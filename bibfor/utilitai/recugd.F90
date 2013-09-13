@@ -2,6 +2,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
                   iassmx)
     implicit none
 !
+#include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -10,7 +11,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbgd, iassef, iassmx
     real(kind=8) :: valres(nbgd*iassef)
     character(len=8) :: nomcmp(nbgd)
@@ -46,7 +47,6 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
 ! OUT : VALRES : VALEURS DES COMPOSANTES.
 !-----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
     integer :: icard, icarv, icmp, icode, nbec, ier
     integer :: ii, irang, iranv, jj, ll, nbcmp
@@ -74,7 +74,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
     do 200 jj = 1, nbgd
         irang = indik8( zk8(icmp) , nomcmp(jj) , 1 , nbcmp )
         if (irang .eq. 0) then
-            call u2mesk('E', 'UTILITAI4_8', 1, nomcmp(jj))
+            call utmess('E', 'UTILITAI4_8', sk=nomcmp(jj))
         endif
 200  continue
 !

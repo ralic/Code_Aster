@@ -18,7 +18,6 @@ subroutine te0543(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -27,7 +26,8 @@ subroutine te0543(option, nomte)
 #include "asterfort/pipeed.h"
 #include "asterfort/pipepe.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES COEFFICIENTS A0 ET A1
@@ -79,8 +79,12 @@ subroutine te0543(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    if (nno .gt. 27) call u2mess('F', 'ELEMENTS4_31')
-    if (npg .gt. 27) call u2mess('F', 'ELEMENTS4_31')
+    if (nno .gt. 27) then
+        call utmess('F', 'ELEMENTS4_31')
+    endif
+    if (npg .gt. 27) then
+        call utmess('F', 'ELEMENTS4_31')
+    endif
 !
 ! - PARAMETRES EN ENTREE
 !

@@ -19,7 +19,6 @@ subroutine celces(celz, basez, cesz)
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -36,8 +35,9 @@ subroutine celces(celz, basez, cesz)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/sdmpic.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: celz, cesz, basez
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_ELEM (CELZ) EN CHAM_ELEM_S (CESZ)
@@ -67,7 +67,7 @@ subroutine celces(celz, basez, cesz)
     character(len=24) :: valk(2)
     real(kind=8) :: rbid
 !
-#define numail(igr,iel)   zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -126,8 +126,8 @@ subroutine celces(celz, basez, cesz)
         valk(2)=ligrel
         vali(1)=nbgr
         vali(2)=nbgr2
-        call u2mesg('F', 'CALCULEL_19', 2, valk, 2,&
-                    vali, 0, rbid)
+        call utmess('F', 'CALCULEL_19', nk=2, valk=valk, ni=2,&
+                    vali=vali)
     endif
 !
 !

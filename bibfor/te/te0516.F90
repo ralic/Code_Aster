@@ -23,9 +23,8 @@ subroutine te0516(option, nomte)
 #include "asterfort/pouex7.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -200,17 +199,17 @@ subroutine te0516(option, nomte)
     call r8inir(6, 0.d0, defap, 1)
 !
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call u2mess('F', 'ELEMENTS2_90')
+        call utmess('F', 'ELEMENTS2_90')
         else if ( (zk16(icompo+2) .ne. 'PETIT') .and. (zk16(icompo+2)&
     .ne. 'GROT_GDEP') ) then
         valk(1) = zk16(icompo+2)
         valk(2) = nomte
-        call u2mesk('F', 'ELEMENTS3_40', 2, valk)
+        call utmess('F', 'ELEMENTS3_40', nk=2, valk=valk)
     endif
 ! --- VERIFICATION QUE C'EST BIEN DES MULTIFIBRES
     call jeexin(zk16(icompo-1+7), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'ELEMENTS4_14', 1, nomte)
+        call utmess('F', 'ELEMENTS4_14', sk=nomte)
     endif
 !
 ! --- GEOMETRIE EVENTUELLEMENT REACTUALISEE :
@@ -369,10 +368,10 @@ subroutine te0516(option, nomte)
 !
 ! ---   MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
         call pmfmcf(kp, nbgf, nbfib, zi(inbfib+2), zk24(isdcom),&
-                    zr( icarcr), option, zr(iinstm), zr(iinstp),&
-                    zi(imate), nbvalc, defam, defap, zr(ivarim),&
-                    zr(ivarmp), zr(icontm), zr(jdefm), zr( jdefp), epsm,&
-                    zr(jmodfb), zr(jsigfb), zr(jvarfb), isecan, codrep)
+                    zr( icarcr), option, zr(iinstm), zr(iinstp), zi(imate),&
+                    nbvalc, defam, defap, zr(ivarim), zr(ivarmp),&
+                    zr(icontm), zr(jdefm), zr( jdefp), epsm, zr(jmodfb),&
+                    zr(jsigfb), zr(jvarfb), isecan, codrep)
 !
         if (codrep .ne. 0) then
             codret=codrep

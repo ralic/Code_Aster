@@ -20,7 +20,7 @@ subroutine ptka21(sk, e, a, xl, xiy,&
     implicit none
 #include "asterc/r8gaem.h"
 #include "asterfort/pouex7.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: sk(*)
     real(kind=8) :: e, a, xl, xiy, xiz, xjx, xig, g, alfay, alfaz, ey, ez
 !    -------------------------------------------------------------------
@@ -87,7 +87,7 @@ subroutine ptka21(sk, e, a, xl, xiy,&
 !     -- SI G  ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
         if (abs(e) .lt. 1.d0/r8gaem()) goto 9999
-        call u2mess('F', 'ELEMENTS2_54')
+        call utmess('F', 'ELEMENTS2_54')
     endif
 !
 !     1/ TRACTION - COMPRESSION

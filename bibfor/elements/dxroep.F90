@@ -1,13 +1,12 @@
 subroutine dxroep(rho, epais)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: rho, epais
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -47,7 +46,8 @@ subroutine dxroep(rho, epais)
         nomres(2) = 'HOM_20'
         nbv = 2
         call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                    [r8bid], nbv, nomres, valres, icodre,1)
+                    [r8bid], nbv, nomres, valres, icodre,&
+                    1)
         epais = valres(1)
         rho = valres(2)
         if (rho .eq. r8maem()) then
@@ -55,8 +55,7 @@ subroutine dxroep(rho, epais)
             nomail = zk24(iazk24-1+3)(1:8)
             valk (1) = 'RHO'
             valk (2) = nomail
-            call u2mesg('F', 'ELEMENTS4_81', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ELEMENTS4_81', nk=2, valk=valk)
         endif
 !
         elseif ( phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_COQUE' .or.&
@@ -64,13 +63,14 @@ subroutine dxroep(rho, epais)
         nomres(1) = 'RHO'
         nbv = 1
         call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                    [r8bid], nbv, nomres, valres, icodre,1)
+                    [r8bid], nbv, nomres, valres, icodre,&
+                    1)
         rho = valres(1)
         call jevech('PCACOQU', 'L', jcoqu)
         epais = zr(jcoqu)
 !
     else
-        call u2mess('F', 'ELEMENTS_50')
+        call utmess('F', 'ELEMENTS_50')
     endif
 !
 end subroutine

@@ -17,7 +17,7 @@ subroutine lisccp(phenom, lischa)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -27,7 +27,7 @@ subroutine lisccp(phenom, lischa)
 #include "asterfort/lislch.h"
 #include "asterfort/lislco.h"
 #include "asterfort/lisnnb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: phenom
     character(len=19) :: lischa
 !
@@ -100,11 +100,11 @@ subroutine lisccp(phenom, lischa)
         endif
 !
         if (.not.lok) then
-            call u2mesk('F', 'CHARGES5_4', 1, charge)
+            call utmess('F', 'CHARGES5_4', sk=charge)
         endif
 10  continue
 !
-999 continue
+999  continue
 !
     call jedema()
 end subroutine

@@ -3,7 +3,6 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
                   lc, impr, ifapm, ind)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8miem.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
@@ -15,7 +14,8 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 #include "asterfort/mtdete.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
+!
     integer :: nk, lraide, lmasse, ldynam, lamor, ifapm, ind
     logical :: lc
     real(kind=8) :: theta
@@ -163,7 +163,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
         if (iret .ge. 1) then
 !   --- ERROR CASE: LAMBDA IS CLOSE TO AN EIGENVALUE              ---
 !   --- OR THE LINEAR SOLVER FAILED                               ---
-            call u2mesr('F', 'ALGELINE4_15', 2, valr)
+            call utmess('F', 'ALGELINE4_15', nr=2, valr=valr)
         else
 !
 !   --- STEP 3: COMPUTATION OF THE NORMALIZED CHARAC. POLYNOMIAL  ---

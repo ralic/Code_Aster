@@ -31,10 +31,7 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 #include "asterfort/nmrvai.h"
 #include "asterfort/nmtimr.h"
 #include "asterfort/obgetb.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=1) :: phase
     character(len=24) :: sdtime, sdstat, sdimpr
     character(len=24) :: defico
@@ -232,61 +229,50 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     if ((phase.eq.'P') .and. lprint) then
         tpsmoy = tps/nbiter
         call impfot(tps, tpscvt)
-        call u2mesk('I', 'MECANONLINE7_1', 1, tpscvt)
+        call utmess('I', 'MECANONLINE7_1', sk=tpscvt)
         call impfot(tpsmoy, tpscvt)
-        call u2mesg('I', 'MECANONLINE7_2', 1, tpscvt, 1,&
-                    nbiter, 0, 0.d0)
+        call utmess('I', 'MECANONLINE7_2', sk=tpscvt, si=nbiter)
         call impfot(tpsint, tpscvt)
-        call u2mesg('I', 'MECANONLINE7_4', 1, tpscvt, 1,&
-                    nbrint, 0, 0.d0)
+        call utmess('I', 'MECANONLINE7_4', sk=tpscvt, si=nbrint)
         call impfot(tpsasm, tpscvt)
-        call u2mesk('I', 'MECANONLINE7_13', 1, tpscvt)
+        call utmess('I', 'MECANONLINE7_13', sk=tpscvt)
         call impfot(tpsfac, tpscvt)
-        call u2mesg('I', 'MECANONLINE7_3', 1, tpscvt, 1,&
-                    nbrfac, 0, 0.d0)
+        call utmess('I', 'MECANONLINE7_3', sk=tpscvt, si=nbrfac)
         call impfot(tps2mb, tpscvt)
-        call u2mesk('I', 'MECANONLINE7_12', 1, tpscvt)
+        call utmess('I', 'MECANONLINE7_12', sk=tpscvt)
         call impfot(tpssol, tpscvt)
-        call u2mesg('I', 'MECANONLINE7_5', 1, tpscvt, 1,&
-                    nbrsol, 0, 0.d0)
+        call utmess('I', 'MECANONLINE7_5', sk=tpscvt, si=nbrsol)
 !
 ! ----- CONTACT - BOUCLE GEOMETRIQUE
 !
         if ((lctcg.and.(.not.lallv)) .or. lnewtg) then
             call impfot(tpscog, tpscvt)
-            call u2mesg('I', 'MECANONLINE7_11', 1, tpscvt, 1,&
-                        ctgeom, 0, 0.d0)
+            call utmess('I', 'MECANONLINE7_11', sk=tpscvt, si=ctgeom)
         endif
 !
 ! ----- CONTACT DISCRET
 !
         if (lctcd .and. (.not.lallv)) then
             call impfot(tpscda, tpscvt)
-            call u2mesg('I', 'MECANONLINE7_10', 1, tpscvt, 1,&
-                        ctiter, 0, 0.d0)
+            call utmess('I', 'MECANONLINE7_10', sk=tpscvt, si=ctiter)
         endif
 !
 ! ----- CONTACT CONTINU
 !
         if (lctcc .and. (.not.lallv)) then
             call impfot(tpsccp, tpscvt)
-            call u2mesg('I', 'MECANONLINE7_24', 1, tpscvt, 1,&
-                        ctccpr, 0, 0.d0)
+            call utmess('I', 'MECANONLINE7_24', sk=tpscvt, si=ctccpr)
             call impfot(tpsccm, tpscvt)
-            call u2mesg('I', 'MECANONLINE7_20', 1, tpscvt, 1,&
-                        ctcmat, 0, 0.d0)
+            call utmess('I', 'MECANONLINE7_20', sk=tpscvt, si=ctcmat)
             call impfot(tpsccv, tpscvt)
-            call u2mesg('I', 'MECANONLINE7_25', 1, tpscvt, 1,&
-                        ctcvec, 0, 0.d0)
+            call utmess('I', 'MECANONLINE7_25', sk=tpscvt, si=ctcvec)
             if (lboucc) then
                 call impfot(tpsccc, tpscvt)
-                call u2mesg('I', 'MECANONLINE7_23', 1, tpscvt, 1,&
-                            ctiter, 0, 0.d0)
+                call utmess('I', 'MECANONLINE7_23', sk=tpscvt, si=ctiter)
             endif
             if (lboucf) then
                 call impfot(tpsccf, tpscvt)
-                call u2mesg('I', 'MECANONLINE7_22', 1, tpscvt, 1,&
-                            ctcfro, 0, 0.d0)
+                call utmess('I', 'MECANONLINE7_22', sk=tpscvt, si=ctcfro)
             endif
         endif
 !
@@ -294,30 +280,30 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 !
         if (lpost) then
             call impfot(tpspst, tpscvt)
-            call u2mesk('I', 'MECANONLINE7_7', 1, tpscvt)
+            call utmess('I', 'MECANONLINE7_7', sk=tpscvt)
         endif
 !
 ! ----- TEMPS RESTANT
 !
         call impfot(tpsrst, tpscvt)
-        call u2mesk('I', 'MECANONLINE7_6', 1, tpscvt)
+        call utmess('I', 'MECANONLINE7_6', sk=tpscvt)
 !
 ! ----- STATISTIQUES RECHERCHE LINEAIRE + FETI
 !
         if (nbrrel .ne. 0) then
-            call u2mesi('I', 'MECANONLINE7_8', 1, nbrrel)
+            call utmess('I', 'MECANONLINE7_8', si=nbrrel)
         endif
         if (nbrfet .ne. 0) then
-            call u2mesi('I', 'MECANONLINE7_9', 1, nbrfet)
+            call utmess('I', 'MECANONLINE7_9', si=nbrfet)
         endif
 !
 ! ----- STATISTIQUES SUR LE CONTACT
 !
         if (lcont .and. (.not.lallv)) then
-            call u2mess('I', 'MECANONLINE7_30')
-            call u2mesi('I', 'MECANONLINE7_31', 1, nbliac)
+            call utmess('I', 'MECANONLINE7_30')
+            call utmess('I', 'MECANONLINE7_31', si=nbliac)
             if (lfrot) then
-                call u2mesi('I', 'MECANONLINE7_32', 1, nbliaf)
+                call utmess('I', 'MECANONLINE7_32', si=nbliaf)
             endif
         endif
 !
@@ -334,99 +320,98 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         vali(3) = nbrint
         vali(4) = nbrfac
         vali(5) = nbrsol
-        call u2mesi('I', 'MECANONLINE8_1', 5, vali)
+        call utmess('I', 'MECANONLINE8_1', ni=5, vali=vali)
 !
 ! ----- STATISTIQUES RECHERCHE LINEAIRE + FETI
 !
         if (nbrrel .ne. 0) then
-            call u2mesi('I', 'MECANONLINE8_2', 1, nbrrel)
+            call utmess('I', 'MECANONLINE8_2', si=nbrrel)
         endif
         if (nbrfet .ne. 0) then
-            call u2mesi('I', 'MECANONLINE8_3', 1, nbrfet)
+            call utmess('I', 'MECANONLINE8_3', si=nbrfet)
         endif
 !
 ! ----- STATISTIQUES SUR LE CONTACT
 !
         if (lcont .and. (.not.lallv)) then
             if (lctcd .or. lboucc .or. lboucf .or. lctcg .or. lnewtg) then
-                call u2mess('I', 'MECANONLINE8_30')
+                call utmess('I', 'MECANONLINE8_30')
             endif
         endif
 !
 ! ----- CONTACT - BOUCLE GEOMETRIQUE
 !
         if ((lctcg.and.(.not.lallv)) .or. lnewtg) then
-            call u2mesi('I', 'MECANONLINE8_11', 1, ctgeom)
+            call utmess('I', 'MECANONLINE8_11', si=ctgeom)
         endif
 !
 ! ----- CONTACT DISCRET
 !
         if (lctcd .and. (.not.lallv)) then
-            call u2mesi('I', 'MECANONLINE8_10', 1, ctiter)
+            call utmess('I', 'MECANONLINE8_10', si=ctiter)
         endif
 !
 ! ----- CONTACT CONTINU
 !
         if (lctcc .and. (.not.lallv)) then
             if (lboucf) then
-                call u2mesi('I', 'MECANONLINE8_22', 1, ctcfro)
+                call utmess('I', 'MECANONLINE8_22', si=ctcfro)
             endif
             if (lboucc) then
-                call u2mesi('I', 'MECANONLINE8_23', 1, ctiter)
+                call utmess('I', 'MECANONLINE8_23', si=ctiter)
             endif
         endif
 !
 ! ----- TEMPS PASSE
 !
         call impfot(tps, tpscvt)
-        call u2mesk('I', 'MECANONLINE8_50', 1, tpscvt)
+        call utmess('I', 'MECANONLINE8_50', sk=tpscvt)
         if (tpslst .ne. 0.d0) then
             call impfot(tpslst, tpscvt)
             effica = 100.d0*(tps-tpslst)/tps
-            call u2mesg('I', 'MECANONLINE8_70', 1, tpscvt, 0,&
-                        ibid, 1, effica)
+            call utmess('I', 'MECANONLINE8_70', sk=tpscvt, sr=effica)
         endif
         call impfot(tpsint, tpscvt)
-        call u2mesk('I', 'MECANONLINE8_54', 1, tpscvt)
+        call utmess('I', 'MECANONLINE8_54', sk=tpscvt)
         call impfot(tpsasm, tpscvt)
-        call u2mesk('I', 'MECANONLINE8_51', 1, tpscvt)
+        call utmess('I', 'MECANONLINE8_51', sk=tpscvt)
         call impfot(tpsfac, tpscvt)
-        call u2mesk('I', 'MECANONLINE8_53', 1, tpscvt)
+        call utmess('I', 'MECANONLINE8_53', sk=tpscvt)
         call impfot(tps2mb, tpscvt)
-        call u2mesk('I', 'MECANONLINE8_52', 1, tpscvt)
+        call utmess('I', 'MECANONLINE8_52', sk=tpscvt)
         call impfot(tpssol, tpscvt)
-        call u2mesk('I', 'MECANONLINE8_55', 1, tpscvt)
+        call utmess('I', 'MECANONLINE8_55', sk=tpscvt)
 !
 ! ----- CONTACT - BOUCLE GEOMETRIQUE
 !
         if ((lctcg.and.(.not.lallv)) .or. lnewtg) then
             call impfot(tpscog, tpscvt)
-            call u2mesk('I', 'MECANONLINE8_61', 1, tpscvt)
+            call utmess('I', 'MECANONLINE8_61', sk=tpscvt)
         endif
 !
 ! ----- CONTACT DISCRET
 !
         if (lctcd .and. (.not.lallv)) then
             call impfot(tpscda, tpscvt)
-            call u2mesk('I', 'MECANONLINE8_56', 1, tpscvt)
+            call utmess('I', 'MECANONLINE8_56', sk=tpscvt)
         endif
 !
 ! ----- CONTACT CONTINU
 !
         if (lctcc .and. (.not.lallv)) then
             call impfot(tpsccp, tpscvt)
-            call u2mesk('I', 'MECANONLINE8_58', 1, tpscvt)
+            call utmess('I', 'MECANONLINE8_58', sk=tpscvt)
             call impfot(tpsccm, tpscvt)
-            call u2mesk('I', 'MECANONLINE8_57', 1, tpscvt)
+            call utmess('I', 'MECANONLINE8_57', sk=tpscvt)
             call impfot(tpsccv, tpscvt)
-            call u2mesk('I', 'MECANONLINE8_64', 1, tpscvt)
+            call utmess('I', 'MECANONLINE8_64', sk=tpscvt)
             if (lboucc) then
                 call impfot(tpsccc, tpscvt)
-                call u2mesk('I', 'MECANONLINE8_60', 1, tpscvt)
+                call utmess('I', 'MECANONLINE8_60', sk=tpscvt)
             endif
             if (lboucf) then
                 call impfot(tpsccf, tpscvt)
-                call u2mesk('I', 'MECANONLINE8_59', 1, tpscvt)
+                call utmess('I', 'MECANONLINE8_59', sk=tpscvt)
             endif
         endif
 !
@@ -434,13 +419,13 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 !
         if (lpost) then
             call impfot(tpspst, tpscvt)
-            call u2mesk('I', 'MECANONLINE8_62', 1, tpscvt)
+            call utmess('I', 'MECANONLINE8_62', sk=tpscvt)
         endif
 !
 ! ----- TEMPS RESTANT
 !
         call impfot(tpsrst, tpscvt)
-        call u2mesk('I', 'MECANONLINE8_63', 1, tpscvt)
+        call utmess('I', 'MECANONLINE8_63', sk=tpscvt)
 !
     endif
 !

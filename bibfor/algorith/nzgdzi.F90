@@ -28,7 +28,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
 #include "asterfort/rctrac.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"
     integer :: ndim, imat, iret, kpg, ksp
@@ -97,7 +97,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(12), test
-    character(len=8) :: nomres(12), nomcle(3), zirc(2),materi
+    character(len=8) :: nomres(12), nomcle(3), zirc(2), materi
 !
     logical :: resi, rigi
 !
@@ -444,7 +444,9 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
             nomcle(2)='SIGM_F2'
             nomcle(3)='SIGM_C'
 !
-            if (iret1 .eq. 1) call u2mess('F', 'CALCULEL_31')
+            if (iret1 .eq. 1) then
+                call utmess('F', 'CALCULEL_31')
+            endif
             do 75 k = 1, nz
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                             jvale, nbval( k), rbid)

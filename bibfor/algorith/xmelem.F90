@@ -18,14 +18,13 @@ subroutine xmelem(noma, modele, defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xmele1.h"
 #include "asterfort/xmele2.h"
     character(len=8) :: modele, noma
@@ -75,10 +74,10 @@ subroutine xmelem(noma, modele, defico, resoco)
     call jeveuo(modele//'.NFIS', 'L', jnfis)
     nfiss = zi(jnfis)
     if (nfiss .gt. nfismx) then
-        call u2mesi('F', 'XFEM_2', 1, nfismx)
+        call utmess('F', 'XFEM_2', si=nfismx)
     endif
     if (nfiss .le. 0) then
-        call u2mess('F', 'XFEM_3')
+        call utmess('F', 'XFEM_3')
     endif
 !
 !

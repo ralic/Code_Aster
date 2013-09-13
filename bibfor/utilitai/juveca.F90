@@ -9,7 +9,7 @@ subroutine juveca(nom, long)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nom
     integer :: long
@@ -113,12 +113,12 @@ subroutine juveca(nom, long)
         else
             valk(1)=nom
             valk(2)=type
-            call u2mesk('F', 'JEVEUX_31', 2, valk)
+            call utmess('F', 'JEVEUX_31', nk=2, valk=valk)
         endif
     else
         valk(1)=nom
         valk(2)=type
-        call u2mesk('F', 'JEVEUX_31', 2, valk)
+        call utmess('F', 'JEVEUX_31', nk=2, valk=valk)
     endif
 !
 !     --- DESTRUCTION DU VIEUX ET CREATION DU NEUF ---

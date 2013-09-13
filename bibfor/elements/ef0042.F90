@@ -1,21 +1,21 @@
 subroutine ef0042(nomte)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmavec.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2mgl.h"
 #include "asterfort/ut2pgl.h"
 #include "asterfort/ut2vgl.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utppgl.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
 #include "asterfort/vecmap.h"
+!
     character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -50,13 +50,13 @@ subroutine ef0042(nomte)
 !     LE CODE STOKE DANS LA CARTE
     call infdis('TYDI', infodi, r8bid, k8bid)
     if (infodi .ne. ibid) then
-        call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+        call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !     DISCRET DE TYPE RAIDEUR
     call infdis('DISK', infodi, r8bid, k8bid)
     if (infodi .eq. 0) then
-        call u2mesk('A+', 'DISCRETS_27', 1, nomte)
+        call utmess('A+', 'DISCRETS_27', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
     endif
 !

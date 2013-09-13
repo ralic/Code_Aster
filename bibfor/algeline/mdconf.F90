@@ -46,7 +46,6 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
 ! -------------------------
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/axdipo.h"
 #include "asterfort/deelpo.h"
@@ -65,10 +64,9 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 #include "asterfort/recude.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: valk(4)
 !
 ! ARGUMENTS
@@ -101,7 +99,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
     integer :: ifsvi, ifsvk, igrap, ik, imail, imod, ipas
     integer :: ipm, ipv, ire, ireszo, iret, irhoe, irhoi
     integer :: irota1, irota2, itran1, itran2, itypfl, ivale, izone
-    integer :: j,lfsvk,lfsvr,lmasg,lmasse,n1
+    integer :: j, lfsvk, lfsvr, lmasg, lmasse, n1
     integer :: n2, nbma, nbmano, neq, numno0, numod, nuzo
     integer :: nzex
     real(kind=8) :: aire, alonto, cm1, cm2, cocaj, cokaj, comaj
@@ -221,7 +219,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             zi(izone + 2*(nuzo-1)-1+2) = n1
             zi(izone + 2*(nuzo-1)-1+3) = n2
             if (n1 .eq. n2) then
-                call u2mesk('F', 'ALGELINE_68', 1, zk8(ifsvk+3+nuzo))
+                call utmess('F', 'ALGELINE_68', sk=zk8(ifsvk+3+nuzo))
             endif
 !
             aire = 0.d0
@@ -238,7 +236,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             alonto = alonto + (x2-x1)
             do 50 ik = n1, n2
                 if (veci1(ik) .ne. 0) then
-                    call u2mesk('F', 'ALGELINE_69', 1, zk8(ifsvk+3+nuzo))
+                    call utmess('F', 'ALGELINE_69', sk=zk8(ifsvk+3+nuzo))
                 endif
                 vecr1(ik+lnoe) = vmoy
                 veci1(ik) = ireszo
@@ -268,7 +266,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
 ! ---       DEFORMEES MODALES
 !
-            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
+            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
+                        masse, ire)
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
             call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
@@ -292,15 +291,14 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             valk (1) = base
             valk (2) = caelem(1:8)
             valr (1) = phie
-            call u2mesg('I', 'ALGELINE5_10', 2, valk, 2,&
-                        vali, 1, valr)
+            call utmess('I', 'ALGELINE5_10', nk=2, valk=valk, ni=2,&
+                        vali=vali, sr=valr(1))
             do 170 nuzo = 1, nzex
                 valk (1) = zk8(ifsvk+nuzo+3)
                 vali (1) = zi(ifsvi+nuzo+1)
-                call u2mesg('I', 'ALGELINE5_11', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'ALGELINE5_11', sk=valk(1), si=vali(1))
 170          continue
-            call u2mess('I', 'VIDE_1')
+            call utmess('I', 'VIDE_1')
         endif
 !
 ! --- 3.CONFIGURATION DE TYPE "GRAPPE DE COMMANDE"  ---
@@ -342,13 +340,15 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! ---    3.3.DIAMETRE EXTERIEUR DU TUBE         --> VECTEUR VECR4  ---
 !
             call exmano(noma, numno0, zi(imail), nbmano)
-            if (nbmano .ne. 2) call u2mess('F', 'ALGELINE_70')
+            if (nbmano .ne. 2) then
+                call utmess('F', 'ALGELINE_70')
+            endif
 !
             call deelpo(caelem(1:8), noma, zi(imail), phi1)
             call deelpo(caelem(1:8), noma, zi(imail+1), phi2)
             difphi = dble(abs(phi1-phi2))
             if (difphi .gt. phi1*tolr) then
-                call u2mess('F', 'ALGELINE_71')
+                call utmess('F', 'ALGELINE_71')
             else
                 phie = phi1
             endif
@@ -397,7 +397,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !------- 3.5.PONDERATIONS DUES AUX DEFORMEES MODALES
 !                                                --> VECTEUR VECR3  ---
 !            MASSES MODALES EN EAU               --> VECTEUR VECR1  ---
-
+!
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
             call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
@@ -465,8 +465,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 valr (1) = phie
                 valr (2) = cm1
                 valr (3) = rhof
-                call u2mesg('I', 'ALGELINE5_13', 4, valk, 0,&
-                            0, 3, valr)
+                call utmess('I', 'ALGELINE5_13', nk=4, valk=valk, nr=3,&
+                            valr=valr)
             endif
 !
             call jedetr('&&MDCONF.TEMP.MAIL')
@@ -475,8 +475,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! ---  PAS DE COUPLAGE
 !
             if (iimpr .eq. 1) then
-                call u2mesg('I', 'ALGELINE5_14', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('I', 'ALGELINE5_14')
             endif
 !
         endif
@@ -485,7 +484,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !
     else
 !
-        call u2mess('F', 'ALGELINE_72')
+        call utmess('F', 'ALGELINE_72')
 !
     endif
 !

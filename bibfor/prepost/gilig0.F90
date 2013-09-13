@@ -1,10 +1,10 @@
 subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/gilio2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nfic, nboblu, nbobno, nbobo, niv
 ! ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
     endif
     nbobo = nboblu
     if (nbobo .gt. 99999) then
-        call u2mess('F', 'PREPOST_57')
+        call utmess('F', 'PREPOST_57')
     endif
 !
 !     --- ON LIT LES OBJETS NOMMES:

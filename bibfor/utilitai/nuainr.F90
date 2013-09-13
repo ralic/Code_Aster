@@ -19,7 +19,7 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "asterfort/mgauss.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: method
     integer :: nx1, np1, ic1, nc1
     real(kind=8) :: nuax1(*), nuav1(*), x2(nx1), dref, dref2, val2
@@ -218,7 +218,7 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
 !
     else
         meth2 = method
-        call u2mesk('F', 'UTILITAI2_60', 1, meth2)
+        call utmess('F', 'UTILITAI2_60', sk=meth2)
     endif
 !
 !

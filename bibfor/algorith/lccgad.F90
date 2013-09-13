@@ -21,8 +21,7 @@ subroutine lccgad(fami, kpg, ksp, mat, option,&
 !
     implicit none
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesr.h"
-
+!
     integer :: mat, kpg, ksp
     real(kind=8) :: mu, su, glis, dde(2)
     real(kind=8) :: vim(*), vip(*), wkin(2)
@@ -118,7 +117,7 @@ subroutine lccgad(fami, kpg, ksp, mat, option,&
             glis=0.d0
         else
 !             if (n.lt.0.d0)call u2mesr('A','MODELISA2_11',1,n)
-            if (n.lt.0.d0) n = 0.d0
+            if (n .lt. 0.d0) n = 0.d0
             if (abs(mu+r*sut) .le. (frot*n)) then
                 glis = vip(1)
             else

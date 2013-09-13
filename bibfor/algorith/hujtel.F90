@@ -1,5 +1,6 @@
 subroutine hujtel(mod, mater, sig, hook)
     implicit none
+#include "asterfort/utmess.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +24,6 @@ subroutine hujtel(mod, mater, sig, hook)
 !       SIG   :  CONTRAINTES
 !  OUT  HOOK  :  OPERATEUR RIGIDITE ELASTIQUE
 !  ---------------------------------------------------------------
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi, i, j
     real(kind=8) :: sig(6), hook(6, 6), mater(22, 2), i1, coef
     real(kind=8) :: e, nu, al, demu, la
@@ -108,12 +108,12 @@ subroutine hujtel(mod, mater, sig, hook)
             hook(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_36')
+            call utmess('F', 'COMPOR1_36')
         endif
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 !
     endif
 !

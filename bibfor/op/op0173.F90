@@ -33,8 +33,7 @@ subroutine op0173()
 #include "asterfort/tbimfi.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ibid, n1, iret, nparfi, vali
     real(kind=8) :: r8b, valr
     complex(kind=8) :: cbid, valc
@@ -60,7 +59,9 @@ subroutine op0173()
     if (nparfi .ne. 0) then
         newta1 = '&&OP0173.FILTRE '
         call tbimfi(nparfi, newtab, newta1, iret)
-        if (iret .ne. 0) call u2mess('F', 'UTILITAI7_11')
+        if (iret .ne. 0) then
+            call utmess('F', 'UTILITAI7_11')
+        endif
         newtab = newta1
     endif
 !
@@ -70,13 +71,13 @@ subroutine op0173()
                 iret)
     if (iret .eq. 0) then
     else if (iret .eq. 1) then
-        call u2mess('F', 'CALCULEL4_43')
+        call utmess('F', 'CALCULEL4_43')
     else if (iret .eq. 2) then
-        call u2mess('F', 'CALCULEL4_44')
+        call utmess('F', 'CALCULEL4_44')
     else if (iret .eq. 3) then
-        call u2mess('F', 'CALCULEL4_45')
+        call utmess('F', 'CALCULEL4_45')
     else
-        call u2mess('F', 'CALCULEL4_46')
+        call utmess('F', 'CALCULEL4_46')
     endif
 !
     if (typesd .eq. 'MATR_ASSE_GENE_R') then
@@ -113,7 +114,7 @@ subroutine op0173()
         call putvrr(valr)
 !
     else
-        call u2mesk('F', 'CALCULEL4_47', 1, typesd)
+        call utmess('F', 'CALCULEL4_47', sk=typesd)
     endif
 !
     if (typesd .eq. 'REEL' .and. typesd .eq. 'ENTIER') then

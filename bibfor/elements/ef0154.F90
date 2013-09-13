@@ -1,17 +1,17 @@
 subroutine ef0154(nomte)
 ! ======================================================================
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verift.h"
+!
     character(len=16) :: nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -53,7 +53,7 @@ subroutine ef0154(nomte)
 !
     if ((nomte.ne.'MECA_BARRE') .and. (nomte.ne.'MECA_2D_BARRE')) then
         ch16=nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -80,7 +80,7 @@ subroutine ef0154(nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail=zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

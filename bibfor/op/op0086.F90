@@ -30,8 +30,7 @@ subroutine op0086()
 #include "asterfort/ssdege.h"
 #include "asterfort/ssmage.h"
 #include "asterfort/ssrige.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomu
     character(len=16) :: kbi1, kbi2
 !
@@ -51,7 +50,7 @@ subroutine op0086()
     if (nocc .eq. 1) then
         call jeexin(nomu//'.REFM', iret)
         if (iret .gt. 0) then
-            call u2mesk('F', 'SOUSTRUC_9', 1, nomu)
+            call utmess('F', 'SOUSTRUC_9', sk=nomu)
         else
             call ssdege(nomu)
         endif
@@ -64,11 +63,11 @@ subroutine op0086()
     if (nocc .eq. 1) then
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'SOUSTRUC_10')
+            call utmess('F', 'SOUSTRUC_10')
         endif
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+6) .eq. 'OUI_RIGI') then
-            call u2mesk('F', 'SOUSTRUC_11', 1, nomu)
+            call utmess('F', 'SOUSTRUC_11', sk=nomu)
         else
             call ssrige(nomu)
         endif
@@ -81,14 +80,14 @@ subroutine op0086()
     if (nocc .eq. 1) then
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'SOUSTRUC_12')
+            call utmess('F', 'SOUSTRUC_12')
         endif
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+6) .ne. 'OUI_RIGI') then
-            call u2mess('F', 'SOUSTRUC_12')
+            call utmess('F', 'SOUSTRUC_12')
         endif
         if (zk8(iarefm-1+7) .eq. 'OUI_MASS') then
-            call u2mess('F', 'SOUSTRUC_13')
+            call utmess('F', 'SOUSTRUC_13')
         else
             call ssmage(nomu, 'MASS_MECA')
         endif
@@ -101,11 +100,11 @@ subroutine op0086()
     if (nocc .eq. 1) then
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'SOUSTRUC2_4')
+            call utmess('F', 'SOUSTRUC2_4')
         endif
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+8) .eq. 'OUI_AMOR') then
-            call u2mesk('F', 'SOUSTRUC2_5', 1, nomu)
+            call utmess('F', 'SOUSTRUC2_5', sk=nomu)
         else
             call ssmage(nomu, 'AMOR_MECA')
         endif
@@ -118,11 +117,11 @@ subroutine op0086()
     if (nocc .gt. 0) then
         call jeexin(nomu//'.REFM', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'SOUSTRUC_14')
+            call utmess('F', 'SOUSTRUC_14')
         endif
         call jeveuo(nomu//'.REFM', 'L', iarefm)
         if (zk8(iarefm-1+6) .ne. 'OUI_RIGI') then
-            call u2mess('F', 'SOUSTRUC_14')
+            call utmess('F', 'SOUSTRUC_14')
         endif
         call sschge(nomu)
     endif

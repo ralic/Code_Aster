@@ -25,7 +25,7 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -100,7 +100,7 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
         iphen = 1
         suf = 'CHME'
     else
-        call u2mess('F', 'UTILITAI_52')
+        call utmess('F', 'UTILITAI_52')
     endif
 !
     if ((suf(1:2).eq.'CH') .and. (ktyp(1:3).ne.'ME ')) then

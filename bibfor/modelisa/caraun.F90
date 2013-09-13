@@ -25,7 +25,7 @@ subroutine caraun(char, motfac, nzocu, nbgdcu, coefcu,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: char
     character(len=16) :: motfac
@@ -130,13 +130,13 @@ subroutine caraun(char, motfac, nzocu, nbgdcu, coefcu,&
         call getvtx(motfac, 'NOM_CMP', iocc=izone, scal=k8bid, nbret=nbcmp)
         call getvid(motfac, 'COEF_MULT', iocc=izone, scal=k8bid, nbret=nbcmul)
         if (nbcmp .ne. nbcmul) then
-            call u2mess('F', 'UNILATER_42')
+            call utmess('F', 'UNILATER_42')
         endif
         nbcmp = abs(nbcmp)
         nbcmul = abs(nbcmul)
         ntcmp = ntcmp + nbcmp
         if (ntcmp .gt. zmax) then
-            call u2mess('F', 'UNILATER_43')
+            call utmess('F', 'UNILATER_43')
         endif
         zi(jnbgd+izone) = zi(jnbgd+izone-1) + nbcmp
 1002  end do

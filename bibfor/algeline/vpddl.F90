@@ -19,7 +19,6 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -30,8 +29,8 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 #include "asterfort/jexnom.h"
 #include "asterfort/pteddl.h"
 #include "asterfort/typddl.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=19) :: masse, raide
     integer :: neq, nblagr, nbcine, neqact, dlagr(neq), dbloq(neq), ier
 !
@@ -121,7 +120,9 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !     ----------------- CALCUL DU NOMBRE DE DDL ACTIFS -----------------
     neqact = neq - 3* (nblagr/2) - nbcine
-    if (neqact .le. 0) call u2mess('F', 'ALGELINE3_63')
+    if (neqact .le. 0) then
+        call utmess('F', 'ALGELINE3_63')
+    endif
 !
 !    -----IMPRESSION DES DDL -----
 !
@@ -131,11 +132,11 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
         vali(2) = nblagr
         if (nbcine .eq. 0) then
             vali(3) = neqact
-            call u2mesi('I', 'ALGELINE7_17', 3, vali)
+            call utmess('I', 'ALGELINE7_17', ni=3, vali=vali)
         else
             vali(3) = nbcine
             vali(4) = neqact
-            call u2mesi('I', 'ALGELINE7_18', 4, vali)
+            call utmess('I', 'ALGELINE7_18', ni=4, vali=vali)
         endif
         write (ifm,9010)
     endif

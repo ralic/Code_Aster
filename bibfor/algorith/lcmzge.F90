@@ -25,7 +25,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     character(len=16) :: option
@@ -164,7 +164,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
                 1, nomres(3), valres(3), icodre(3), 0)
     if ((iret2+iret3) .eq. 0) then
         if ((iret1.ne.0) .or. (icodre(3).ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         else
             epsthe = valres(3) * (temp - tref)
         endif
@@ -212,7 +212,7 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
                     1, nomres(7), valres(7), icodre(7), 1)
         chi = valres(7)
         if (chi .eq. 0.d0) then
-            call u2mess('I', 'COMPOR1_59')
+            call utmess('I', 'COMPOR1_59')
         endif
     endif
 ! -- SEPARATION DE EPSM/EPSRM, DEPS/DEPSR DANS EPSTM, DEPST

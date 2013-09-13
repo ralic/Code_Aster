@@ -38,7 +38,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 #include "asterfort/tecach.h"
 #include "asterfort/trndgl.h"
 #include "asterfort/trnflg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vexpan.h"
 #include "blas/dcopy.h"
@@ -121,8 +121,12 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     call jevech('PVARIMP', 'L', ivarix)
 !
     nbcou=zi(jnbspi-1+1)
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-    if (nbcou .gt. 10) call u2mess('F', 'ELEMENTS_13')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+    if (nbcou .gt. 10) then
+        call utmess('F', 'ELEMENTS_13')
+    endif
     read (zk16(icompo-1+2),'(I16)') nbvari
     call tecach('OON', 'PVARIMR', 'L', 7, itab,&
                 iret)
@@ -165,7 +169,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
     call rccoma(zi(imate), 'ELAS', 1, phenom, valret(1))
 !
     if (phenom .ne. 'ELAS') then
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
 !===============================================================
@@ -279,7 +283,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
                     nomres(1) = 'E'
                     nomres(2) = 'NU'
                 else
-                    call u2mess('F', 'ELEMENTS_42')
+                    call utmess('F', 'ELEMENTS_42')
                 endif
 !
                 call rcvalb('MASS', intsn, ksp, '+', zi(imate),&

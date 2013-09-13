@@ -21,7 +21,7 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
 #include "asterc/r8gaem.h"
 #include "asterfort/matini.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ipg, ipoids, idfde, nno
     real(kind=8) :: coor(1), dfdx(1), dfdy(1), dfdz(1), jac
 ! ......................................................................
@@ -78,7 +78,7 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
         nomail= zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ALGORITH2_59', 1, nomail)
+        call utmess('F', 'ALGORITH2_59', sk=nomail)
     endif
 !
     do 200 i = 1, nno

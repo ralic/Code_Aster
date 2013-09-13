@@ -18,7 +18,6 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -26,7 +25,8 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: intf, nomint, basmod
     character(len=*) :: intfz, nmintz, basmdz
 !
@@ -74,19 +74,18 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
     basmod = basmdz
 !
     if (basmod(1:1) .ne. ' ') then
-
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, ir)
+!
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                    intf, ir)
         if (intf .eq. '        ') then
             valk (1) = basmod
-            call u2mesg('F', 'ALGORITH12_30', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_30', sk=valk(1))
         endif
     else
         if (intf(1:1) .eq. ' ') then
             valk (1) = basmod
             valk (2) = intf
-            call u2mesg('F', 'ALGORITH12_31', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_31', nk=2, valk=valk)
         endif
     endif
 !

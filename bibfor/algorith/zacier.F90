@@ -53,7 +53,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
 !
 #include "asterfort/rcvalb.h"
 #include "asterfort/smcarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: metapg(7), tamp(7), tempo(7)
     integer :: matos, nbhist, nbtrc
     real(kind=8) :: ftrc((3*nbhist), 3), trc((3*nbhist), 5), fmod(*)
@@ -119,7 +119,9 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
     qsrk = ctes(9)
     d10 = ctes(10)
     wsrk = ctes(11)
-    if ((icodre(8) .eq.0) .and. (icodre(10) .eq.1)) call u2mess('F', 'ALGORITH11_73')
+    if ((icodre(8) .eq.0) .and. (icodre(10) .eq.1)) then
+        call utmess('F', 'ALGORITH11_73')
+    endif
 !
     metapg(6) = tpg2
     metapg(7) = tamp(7)

@@ -5,7 +5,7 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: vmin(*), cmp, cpmin, dtmin, dtmax, dti, cdp
     real(kind=8) :: valr(4)
     character(len=8) :: vvar
@@ -87,6 +87,6 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
     valr (3) = dtmin
     valr (4) = dtmax
     valk = vvar
-    call u2mesg('I', 'ALGORITH15_68', 1, valk, 2,&
-                vali, 4, valr)
+    call utmess('I', 'ALGORITH15_68', sk=valk, ni=2, vali=vali,&
+                nr=4, valr=valr)
 end subroutine

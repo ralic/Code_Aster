@@ -2,6 +2,11 @@ subroutine lrvema(nomail, mfich, nochmd)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/as_mfdfin.h"
+#include "asterfort/as_mfdncn.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mmhnme.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -9,15 +14,8 @@ subroutine lrvema(nomail, mfich, nochmd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfdncn.h"
-#include "asterfort/as_mmhnme.h"
-#include "asterfort/as_mfdfin.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: mfich
     character(len=8) :: nomail
@@ -133,18 +131,18 @@ subroutine lrvema(nomail, mfich, nochmd)
     call as_mfiope(idfimd, nofimd, edlect, iaux)
     if (iaux .ne. 0) then
         lnomam = lxlgut(saux08)
-        call u2mesk('F', 'MED_78', 1, saux08(1:lnomam))
+        call utmess('F', 'MED_78', sk=saux08(1:lnomam))
     endif
 !
     call as_mfdncn(idfimd, nochmd, ncmp, codret)
     if (codret .ne. 0) then
-        call u2mesk('F', 'MED_32', 1, nochmd)
+        call utmess('F', 'MED_32', sk=nochmd)
     endif
     call wkvect('&&LRVEMA.CNAME', 'V V K16', ncmp, jcmp)
     call wkvect('&&LRVEMA.CUNIT', 'V V K16', ncmp, junit)
 !
     call as_mfdfin(idfimd, nochmd, nomamd, nbtv, zk16(junit),&
-                zk16(jcmp), codret)
+                   zk16(jcmp), codret)
 !
     call wkvect('&&LRVERIMO_NBETYP1', 'V V I', ntymax, jnbtyp)
     call wkvect('&&LRVERIMO_NBETYP2', 'V V I', ntymax, jnbty2)
@@ -152,7 +150,7 @@ subroutine lrvema(nomail, mfich, nochmd)
         zi(jnbtyp+i-1)=0
         if (nummed(i) .ne. 0) then
             call as_mmhnme(idfimd, nomamd, edconn, edmail, nummed(i),&
-                        ednoda, nmatyp, iret)
+                           ednoda, nmatyp, iret)
             zi(jnbtyp+i-1)=nmatyp
         endif
 10  end do
@@ -188,17 +186,15 @@ subroutine lrvema(nomail, mfich, nochmd)
         if (nummed(i) .ne. 0) then
             if (zi(jnbtyp+i-1) .ne. zi(jnbty2+i-1) .and. lfirst) then
                 lfirst=.false.
-                call u2mess('A+', 'MED_54')
+                call utmess('A+', 'MED_54')
                 if (zi(jnbtyp+i-1) .lt. zi(jnbty2+i-1)) then
                     vali(1)=zi(jnbtyp+i-1)
                     vali(2)=zi(jnbty2+i-1)
-                    call u2mesg('A', 'MED_59', 1, nomast(i), 2,&
-                                vali, 0, r8b)
+                    call utmess('A', 'MED_59', sk=nomast(i), ni=2, vali=vali)
                 else
                     vali(1)=zi(jnbtyp+i-1)
                     vali(2)=zi(jnbty2+i-1)
-                    call u2mesg('A', 'MED_61', 1, nomast(i), 2,&
-                                vali, 0, r8b)
+                    call utmess('A', 'MED_61', sk=nomast(i), ni=2, vali=vali)
                 endif
 !
             endif

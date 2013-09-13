@@ -17,7 +17,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbordr
@@ -83,7 +83,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
     call rsutnu(nomsd, ' ', 0, knum, nbordr,&
                 epsi, crit, iret)
     if (nbordr .eq. 0) then
-        call u2mess('F', 'UTILITAI_23')
+        call utmess('F', 'UTILITAI_23')
     endif
     call jeveuo(knum, 'L', jordr)
 !
@@ -271,7 +271,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
             call dismoi('F', 'PROF_CHNO', chextr, 'CHAM_NO', ib,&
                         prn2, ie)
             if (prn2 .ne. prno) then
-                call u2mess('F', 'UTILITAI_26')
+                call utmess('F', 'UTILITAI_26')
             endif
             call jeveuo(chextr//'.VALE', 'L', ivale)
 !

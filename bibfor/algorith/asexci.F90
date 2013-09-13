@@ -12,7 +12,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/typddl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbmode, impr, ndir(*), nbsup, nsupp(*)
@@ -96,25 +96,31 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
         if (nn .ne. 0 .and. monoap) then
             ier = ier + 1
-            call u2mess('E', 'SEISME_8')
+            call utmess('E', 'SEISME_8')
         endif
 !
         call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=ng)
         if (ng .ne. 0 .and. monoap) then
             ier = ier + 1
-            call u2mess('E', 'SEISME_8')
+            call utmess('E', 'SEISME_8')
         endif
 10  end do
 !
-    if (ier .ne. 0) call u2mess('F', 'SEISME_6')
-    if (im1 .ne. 0 .and. im2 .ne. 0) call u2mess('F', 'SEISME_8')
+    if (ier .ne. 0) then
+        call utmess('F', 'SEISME_6')
+    endif
+    if (im1 .ne. 0 .and. im2 .ne. 0) then
+        call utmess('F', 'SEISME_8')
+    endif
 !
 !
 ! SI DECORRELE LA SOMME INTERGROUPE DOIT ETRE QUADRATIQUE
 !
     if ((.not.monoap) .and. (.not.muapde)) then
         call getfac('GROUP_APPUI', noc)
-        if (noc .ne. 0) call u2mess('F', 'SEISME_29')
+        if (noc .ne. 0) then
+            call utmess('F', 'SEISME_29')
+        endif
     endif
 !
     if (monoap) then
@@ -133,7 +139,9 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         call wkvect('&&ASEXCI.POSITION.DDL1', 'V V I', neq, jddl1)
         call typddl('BLOQ', nume, neq, zi(jddl1), nba,&
                     nbbloq, nbl, nbliai)
-        if (nbbloq .eq. 0) call u2mess('F', 'SEISME_34')
+        if (nbbloq .eq. 0) then
+            call utmess('F', 'SEISME_34')
+        endif
         call wkvect('&&ASEXCI.NOM_NOEUD', 'V V K8', 3*nbbloq, jnno)
         call wkvect('&&ASEXCI.NOM_SPECTRE', 'V V K8', 3*nbbloq, jnsp)
         call wkvect('&&ASEXCI.DIR_SPECTRE', 'V V R', 3*nbbloq, jdsp)

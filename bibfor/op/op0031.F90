@@ -41,7 +41,7 @@ subroutine op0031()
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: typres, base
@@ -183,7 +183,7 @@ subroutine op0031()
         if (iret .ne. 0) then
             valk(1)=zk8(lnom+iocc)
             valk(2)=zk8(lnom+iocc+1)
-            call u2mesk('F', 'ALGELINE2_28', 2, valk)
+            call utmess('F', 'ALGELINE2_28', nk=2, valk=valk)
         endif
 30  end do
 !

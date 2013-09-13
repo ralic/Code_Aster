@@ -39,8 +39,7 @@ subroutine eclpgr()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: noojb
 !
 ! ---------------------------------------------------------------------
@@ -63,7 +62,9 @@ subroutine eclpgr()
     call getres(resu, typre2, nomcmd)
     call getvid('ECLA_PG', 'RESU_INIT', iocc=1, scal=evo1, nbret=ibid)
     call gettco(evo1, typres)
-    if (typres .ne. typre2) call u2mess('F', 'CALCULEL2_37')
+    if (typres .ne. typre2) then
+        call utmess('F', 'CALCULEL2_37')
+    endif
 !
     call getvid('ECLA_PG', 'MAILLAGE', iocc=1, scal=ma2, nbret=ibid)
     call getvid('ECLA_PG', 'MODELE_INIT', iocc=1, scal=mo1, nbret=ibid)
@@ -83,7 +84,9 @@ subroutine eclpgr()
     call getvtx('ECLA_PG', 'CRITERE', iocc=1, scal=crit, nbret=nc)
     call rsutnu(evo1, 'ECLA_PG', 1, '&&ECLPGR.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
-    if (nbordr .eq. 0) call u2mess('F', 'CALCULEL2_38')
+    if (nbordr .eq. 0) then
+        call utmess('F', 'CALCULEL2_38')
+    endif
     call jeveuo('&&ECLPGR.NUME_ORDRE', 'L', jordr)
 !
     if (resu .ne. evo1) call rscrsd('G', resu, typres, nbordr)
@@ -100,7 +103,9 @@ subroutine eclpgr()
         prchno=noojb(1:19)
 !
         nomsy1=licham(isy)
-        if (nomsy1(6:9) .ne. 'ELGA') call u2mess('F', 'CALCULEL2_41')
+        if (nomsy1(6:9) .ne. 'ELGA') then
+            call utmess('F', 'CALCULEL2_41')
+        endif
         nomsy2 = nomsy1
 !
         do 10 i = 1, nbordr
@@ -120,7 +125,7 @@ subroutine eclpgr()
                 if (iret2 .eq. 1) then
                     valk(1)=mo1
                     valk(2)=licham(1)
-                    call u2mesk('I', 'CALCULEL2_33', 2, valk)
+                    call utmess('I', 'CALCULEL2_33', nk=2, valk=valk)
                 endif
             endif
 !

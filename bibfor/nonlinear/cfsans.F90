@@ -18,7 +18,7 @@ subroutine cfsans(defico, npt, jeux, enti, zone)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/cfdisl.h"
@@ -27,7 +27,7 @@ subroutine cfsans(defico, npt, jeux, enti, zone)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: defico
     integer :: npt
     character(len=24) :: jeux, enti, zone
@@ -109,9 +109,9 @@ subroutine cfsans(defico, npt, jeux, enti, zone)
             write (ifm,3000) interp,jeuref
         endif
         if (lstop) then
-            call u2mess('F', 'CONTACT_93')
+            call utmess('F', 'CONTACT_93')
         else
-            call u2mess('A', 'CONTACT_93')
+            call utmess('A', 'CONTACT_93')
         endif
     endif
 !

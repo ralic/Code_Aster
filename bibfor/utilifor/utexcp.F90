@@ -24,7 +24,7 @@ subroutine utexcp(num, idmess)
     implicit none
 #include "asterc/isnnem.h"
 #include "asterc/r8nnem.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: num
     character(len=*) :: idmess
 !     ------------------------------------------------------------------
@@ -42,7 +42,7 @@ subroutine utexcp(num, idmess)
     valk(1) = ' '
     vali(1) = isnnem()
     valr(1) = r8nnem()
-    call u2mesg('Z', idmess, nk, valk, ni,&
-                vali, nr, valr)
+    call utmess('Z', idmess, nk=nk, valk=valk, ni=ni,&
+                vali=vali, nr=nr, valr=valr)
 !     ------------------------------------------------------------------
 end subroutine

@@ -19,7 +19,7 @@ subroutine irccmp(typ, gd, ncmpmx, nomcgd, nbcmp,&
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=*) :: gd, nomcgd(*), nomcmp(*), typ
     integer :: ncmpmx, nbcmp, nbcmpt, jcmp
 ! ----------------------------------------------------------------------
@@ -54,8 +54,7 @@ subroutine irccmp(typ, gd, ncmpmx, nomcgd, nbcmp,&
         if (typ(1:1) .ne. ' ') then
             valk (1) = nomcmp(icm)
             valk (2) = gd
-            call u2mesg(typ, 'PREPOST5_25', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess(typ, 'PREPOST5_25', nk=2, valk=valk)
         endif
 10  end do
 !

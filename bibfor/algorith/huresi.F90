@@ -46,7 +46,7 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: mod
     real(kind=8) :: mater(nmat, 2), deps(6), yd(nr), yf(nr), vind(nvi), r(*)
     integer :: indi(7), nr, nvi, iret, nmat
@@ -181,10 +181,10 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
             hook(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_38')
+            call utmess('F', 'COMPOR1_38')
         endif
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
     endif
 ! ====================================================================
 ! --- OPERATEUR ELASTICITE NON LINEAIRE ------------------------------
@@ -277,7 +277,7 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
             goto 100
 !
         else
-            call u2mess('F', 'COMPOR1_8')
+            call utmess('F', 'COMPOR1_8')
         endif
 !
 100  end do

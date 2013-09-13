@@ -74,7 +74,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
 #include "blas/dgeev.h"
@@ -141,7 +141,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
     if (iret .eq. 2) then
         valk = imped
-        call u2mesk('F', 'ALGELINE4_37', 1, valk)
+        call utmess('F', 'ALGELINE4_37', sk=valk)
     endif
 !
 !-------------------------------------------------------------------C

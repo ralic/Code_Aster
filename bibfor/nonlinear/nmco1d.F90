@@ -26,7 +26,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 #include "asterfort/nmmaba.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/vmci1d.h"
     integer :: imate, codret, kpg, ksp
@@ -101,7 +101,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
         if ((compor(5)(1:7).ne.'DEBORST') .and. (compor(1)(1:4) .ne.'SANS')) then
             valkm(1) = compor(1)
             valkm(2) = 'COMP_INCR'
-            call u2mesk('F', 'ALGORITH6_81', 2, valkm)
+            call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
         endif
     endif
 !
@@ -145,7 +145,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
             valkm(1)='VMIS_CINE_GC'
             valkm(2)=ecroli(3)
             valkm(3)=ecroli(4)
-            call u2mesk('F', 'COMPOR1_76', 3, valkm)
+            call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
         endif
         call vmci1d('RIGI', kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&

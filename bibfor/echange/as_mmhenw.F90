@@ -1,5 +1,5 @@
 subroutine as_mmhenw(fid, maa, num, n, typent,&
-                  typgeo, cret)
+                     typgeo, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,18 +19,19 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterfort/conv_int.h"
+#include "asterfort/utmess.h"
 #include "med/mmhenw.h"
     character(len=*) :: maa
     aster_int :: num(*)
     aster_int :: fid, typent, typgeo, cret
     aster_int :: n, mdnont, mdnoit
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int, allocatable :: num4(:)
     med_int :: fid4, typen4, typge4, cret4
@@ -55,6 +56,6 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
     call mmhenw(fid, maa, mdnont, mdnoit, typent,&
                 typgeo, n, num, cret)
 #endif
-
+!
 #endif
 end subroutine

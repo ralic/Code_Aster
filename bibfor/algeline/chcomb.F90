@@ -1,5 +1,5 @@
 subroutine chcomb(tablez, nomaou)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -7,7 +7,7 @@ subroutine chcomb(tablez, nomaou)
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomaou
     character(len=*) :: tablez
 !.======================================================================
@@ -92,12 +92,16 @@ subroutine chcomb(tablez, nomaou)
                 c16b, noma, k8b, r8b, 'EY',&
                 k8b, ibid, xt, c16b, k8b,&
                 iret)
-    if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA2_89')
+    endif
     call tbliva(table, 1, 'LIEU', ibid, r8b,&
                 c16b, noma, k8b, r8b, 'EZ',&
                 k8b, ibid, yt, c16b, k8b,&
                 iret)
-    if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA2_89')
+    endif
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE :
 !     ----------------------------------------

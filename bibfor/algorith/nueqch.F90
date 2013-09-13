@@ -19,9 +19,8 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -30,7 +29,8 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=19) :: chamno
     character(len=8) :: nomcmp(*), noma
     character(len=1) :: erreur
@@ -102,13 +102,13 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
                 else
                     itrou = 0
                     if (erreur .ne. ' ') then
-                        call u2mesk(erreur, 'MECANONLINE5_50', 1, nom)
+                        call utmess(erreur, 'MECANONLINE5_50', sk=nom)
                     endif
                 endif
             endif
 100      continue
         if (erreur .ne. ' ') then
-            call u2mesk(erreur, 'MECANONLINE5_50', 1, nom)
+            call utmess(erreur, 'MECANONLINE5_50', sk=nom)
         endif
 101      continue
         if (itrou .eq. 0) then

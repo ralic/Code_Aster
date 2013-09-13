@@ -44,7 +44,7 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf,&
 !
 #include "asterfort/codent.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: numfam, typent, nbgf, nbaf
     integer :: valatt(nbaf)
     integer :: nbnofa, nbelfa
@@ -154,7 +154,7 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf,&
 !
         codret = 1
         call codent(typent, 'G', noment(3))
-        call u2mesk('A', 'MED_42', 1, noment(3))
+        call utmess('A', 'MED_42', sk=noment(3))
 !
     endif
 !

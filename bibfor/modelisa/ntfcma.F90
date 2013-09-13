@@ -19,7 +19,7 @@ subroutine ntfcma(jmat, ifon)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, ifon(3)
 ! ----------------------------------------------------------------------
 !     OBTENTION DES ADRESSES DES FONCTIONS BETA ET LAMBDA DANS LE
@@ -63,7 +63,7 @@ subroutine ntfcma(jmat, ifon)
             goto 25
         endif
 20  end do
-    call u2mess('F', 'MODELISA5_44')
+    call utmess('F', 'MODELISA5_44')
 25  continue
     do 30 k = 1, zi(ipi+2)
         if ('LAMBDA  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
@@ -71,7 +71,7 @@ subroutine ntfcma(jmat, ifon)
             goto 75
         endif
 30  end do
-    call u2mess('F', 'MODELISA5_45')
+    call utmess('F', 'MODELISA5_45')
 35  continue
     do 40 k = 1, zi(imate+1)
         if ('THER_HYDR ' .eq. zk16(zi(imate)+k-1)(1:9)) then
@@ -79,7 +79,7 @@ subroutine ntfcma(jmat, ifon)
             goto 41
         endif
 40  end do
-    call u2mess('F', 'ELEMENTS2_63')
+    call utmess('F', 'ELEMENTS2_63')
 41  continue
     idf = zi(ipi)+zi(ipi+1)
     do 50 k = 1, zi(ipi+2)
@@ -88,7 +88,7 @@ subroutine ntfcma(jmat, ifon)
             goto 55
         endif
 50  end do
-    call u2mess('F', 'MODELISA5_44')
+    call utmess('F', 'MODELISA5_44')
 55  continue
     do 60 k = 1, zi(ipi+2)
         if ('LAMBDA  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
@@ -96,7 +96,7 @@ subroutine ntfcma(jmat, ifon)
             goto 65
         endif
 60  end do
-    call u2mess('F', 'MODELISA5_45')
+    call utmess('F', 'MODELISA5_45')
 65  continue
     do 70 k = 1, zi(ipi+2)
         if ('AFFINITE  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
@@ -104,7 +104,7 @@ subroutine ntfcma(jmat, ifon)
             goto 75
         endif
 70  end do
-    call u2mess('F', 'MODELISA5_47')
+    call utmess('F', 'MODELISA5_47')
 75  continue
 !
 ! FIN ------------------------------------------------------------------

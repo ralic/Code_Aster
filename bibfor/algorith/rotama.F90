@@ -1,5 +1,5 @@
 subroutine rotama(geomi, pt, d, angl, bidim)
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
     logical :: bidim
@@ -72,7 +72,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
 10      continue
     else
         if (dnrm2(3,d,1) .lt. prec) then
-            call u2mess('F', 'ALGORITH10_48')
+            call utmess('F', 'ALGORITH10_48')
         else
             p1m=dnrm2(3,d,1)
             d(1)=d(1)/p1m

@@ -23,8 +23,7 @@ subroutine ntdcom(evolsc)
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: evolsc
 !
 ! ----------------------------------------------------------------------
@@ -58,14 +57,14 @@ subroutine ntdcom(evolsc)
 100      end do
 !
         if (lsech .and. lrela) then
-            call u2mess('F', 'ALGORITH8_96')
+            call utmess('F', 'ALGORITH8_96')
         endif
 !
         evolsc = ' '
         if (lsech) then
             call getvid(' ', 'EVOL_THER_SECH', nbval=0, nbret=n1)
             if (n1 .eq. 0) then
-                call u2mess('F', 'ALGORITH8_97')
+                call utmess('F', 'ALGORITH8_97')
             else
                 call getvid(' ', 'EVOL_THER_SECH', scal=evolsc, nbret=n1)
 !
@@ -73,12 +72,12 @@ subroutine ntdcom(evolsc)
 !
                 call gettco(evolsc, tysd)
                 if (tysd(1:9) .ne. 'EVOL_THER') then
-                    call u2mesk('F', 'ALGORITH8_98', 1, evolsc)
+                    call utmess('F', 'ALGORITH8_98', sk=evolsc)
                 else
                     call dismoi('F', 'NB_CHAMP_UTI', evolsc, 'RESULTAT', nbcham,&
                                 k8b, ierd)
                     if (nbcham .le. 0) then
-                        call u2mesk('F', 'ALGORITH8_99', 1, evolsc)
+                        call utmess('F', 'ALGORITH8_99', sk=evolsc)
                     endif
                 endif
             endif

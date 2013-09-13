@@ -1,6 +1,6 @@
 subroutine conare(typma, ar, nbar)
     implicit none
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ar(12, 3), nbar
     character(len=8) :: typma
 ! ----------------------------------------------------------------------
@@ -300,7 +300,7 @@ subroutine conare(typma, ar, nbar)
     else if (typma.eq.'POI1') then
         nbar=0
     else
-        call u2mesk('F', 'ALGORITH2_23', 1, typma)
+        call utmess('F', 'ALGORITH2_23', sk=typma)
     endif
 !
 end subroutine

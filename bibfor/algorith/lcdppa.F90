@@ -19,7 +19,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    implicit      none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/betaps.h"
 #include "asterfort/dpmat2.h"
@@ -36,7 +36,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 #include "asterfort/redpna.h"
 #include "asterfort/resdp2.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     integer :: iret, nvi
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
@@ -123,7 +123,7 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
             call redpna(materf, seq, i1e, pmoins, dp,&
                         plas, iret)
             if (iret .ne. 0) then
-                call u2mess('A', 'ALGORITH4_36')
+                call utmess('A', 'ALGORITH4_36')
                 goto 999
             endif
         endif

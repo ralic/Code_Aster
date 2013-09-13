@@ -30,10 +30,10 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 #include "asterc/r8dgrd.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/usubis.h"
 #include "asterfort/usufon.h"
 #include "asterfort/usunew.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: lsup, vusurt(*), vusuro(*), prust(*), para(7)
     character(len=4) :: crit
     character(len=24) :: type, typ1, typ2
@@ -103,7 +103,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
                     para(4) = vusurt(i)*rapp
                     para(5) = vusuro(i)*rapp
                     if (prust(i) .ge. x2) then
-                        call u2mess('A', 'PREPOST4_83')
+                        call utmess('A', 'PREPOST4_83')
                         prust(i) = 9999.d0
                         goto 12
                     endif
@@ -145,7 +145,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
                                 x2, resu, iret)
                     if (iret .eq. 0) then
                         if (resu .ge. x2) then
-                            call u2mess('A', 'PREPOST4_83')
+                            call utmess('A', 'PREPOST4_83')
                             prust(i) = 9999.d0
                             goto 22
                         endif
@@ -215,7 +215,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
                             x2, resu, iret)
                 if (iret .eq. 0) then
                     if (resu .ge. x2) then
-                        call u2mess('A', 'PREPOST4_83')
+                        call utmess('A', 'PREPOST4_83')
                         prust(i) = 9999.d0
                         goto 30
                     endif
@@ -287,7 +287,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
                         x2, resu, iret)
             if (iret .eq. 0) then
                 if (resu .ge. x2) then
-                    call u2mess('A', 'PREPOST4_83')
+                    call utmess('A', 'PREPOST4_83')
                     goto 50
                 endif
                 prust(i) = resu
@@ -320,7 +320,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
                         x2, resu, iret)
             if (iret .eq. 0) then
                 if (resu .ge. x2) then
-                    call u2mess('A', 'PREPOST4_83')
+                    call utmess('A', 'PREPOST4_83')
                     goto 62
                 endif
                 prust(i) = resu

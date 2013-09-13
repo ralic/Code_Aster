@@ -23,7 +23,7 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
 #include "asterfort/assert.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, imat, nbres, jmat
     character(len=*) :: fami, poum
     integer :: icodre(nbres)
@@ -76,7 +76,7 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
             goto 888
         endif
 40  end do
-    call u2mess('F', 'ELEMENTS2_63')
+    call utmess('F', 'ELEMENTS2_63')
     goto 999
 888  continue
 !

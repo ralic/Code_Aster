@@ -22,9 +22,7 @@ subroutine i2chem(nomail, nbparm)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 !
@@ -103,8 +101,7 @@ subroutine i2chem(nomail, nbparm)
             ier = ier + 1
             valk (1) = 'DEFI_CHEMIN'
             valk (2) = nomma
-            call u2mesg('E', 'INTEMAIL_12', 2, valk, 1,&
-                        occ, 0, 0.d0)
+            call utmess('E', 'INTEMAIL_12', nk=2, valk=valk, si=occ)
         else
             call jenonu(jexnom(nomail//'.NOMMAI', nomma), ibid)
             call jeveuo(type, 'L', iatyma)
@@ -114,8 +111,7 @@ subroutine i2chem(nomail, nbparm)
                 ier = ier + 1
                 valk (1) = 'DEFI_CHEMIN'
                 valk (2) = nomma
-                call u2mesg('E', 'INTEMAIL_15', 2, valk, 1,&
-                            occ, 0, 0.d0)
+                call utmess('E', 'INTEMAIL_15', nk=2, valk=valk, si=occ)
             endif
         endif
 10      continue
@@ -133,8 +129,7 @@ subroutine i2chem(nomail, nbparm)
             ier = ier + 1
             valk (1) = 'DEFI_CHEMIN'
             valk (2) = nomgr
-            call u2mesg('E', 'INTEMAIL_16', 2, valk, 1,&
-                        occ, 0, 0.d0)
+            call utmess('E', 'INTEMAIL_16', nk=2, valk=valk, si=occ)
         else
             call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
             call jeveuo(jexnom(grpmai, nomgr), 'L', jgrm1)
@@ -146,8 +141,7 @@ subroutine i2chem(nomail, nbparm)
                 ier = ier + 1
                 valk (1) = 'DEFI_CHEMIN'
                 valk (2) = nomgr
-                call u2mesg('E', 'INTEMAIL_13', 2, valk, 1,&
-                            occ, 0, 0.d0)
+                call utmess('E', 'INTEMAIL_13', nk=2, valk=valk, si=occ)
             endif
 20          continue
             nbtm = nbtm + nbm
@@ -157,7 +151,9 @@ subroutine i2chem(nomail, nbparm)
     endif
     40 end do
 !
-    if (ier .gt. 0) call u2mess('F', 'INTEMAIL_14')
+    if (ier .gt. 0) then
+        call utmess('F', 'INTEMAIL_14')
+    endif
 !
     call wkvect('&INTLISTOTAL', 'V V I', nbtm, alstot)
     libr1 = 1
@@ -211,8 +207,7 @@ subroutine i2chem(nomail, nbparm)
             call jenuno(jexnum(nomnoe, in), nomse)
             valk (1) = nomse
             vali (1) = zi(jnoe+in-1)
-            call u2mesg('F', 'INTEMAIL_17', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'INTEMAIL_17', sk=valk(1), si=vali(1))
         endif
 110  end do
     call jedetr('&&OP0050.VERI_MAIL')
@@ -231,11 +226,11 @@ subroutine i2chem(nomail, nbparm)
             call utnono(' ', nomail, 'NOEUD', noeud, k8b,&
                         iret)
             if (iret .eq. 10) then
-                call u2mesk('F', 'INTEMAIL_31', 1, noeud)
+                call utmess('F', 'INTEMAIL_31', sk=noeud)
             else if (iret.eq.1) then
                 valk (1) = noeud
                 valk (2) = k8b
-                call u2mesk('A', 'INTEMAIL_18', 2, valk)
+                call utmess('A', 'INTEMAIL_18', nk=2, valk=valk)
             endif
             call jenonu(jexnom(nomnoe, k8b), numno)
         endif
@@ -257,10 +252,10 @@ subroutine i2chem(nomail, nbparm)
             endif
 120      continue
         if (ouvert .and. trouve .ne. 1) then
-            call u2mess('F', 'INTEMAIL_1')
+            call utmess('F', 'INTEMAIL_1')
         endif
         if (trouve .eq. 0) then
-            call u2mess('F', 'INTEMAIL_2')
+            call utmess('F', 'INTEMAIL_2')
         endif
         call wkvect('&&OP0050.VERI_MAIL', 'V V I', nbtm, jnoe)
         mi = 0

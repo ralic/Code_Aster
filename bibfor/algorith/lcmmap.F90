@@ -128,8 +128,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     integer :: nfs, nsg, kpg, ksp, nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3)
     integer :: nhsr
@@ -443,7 +442,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
         if (cerr(2) .ne. 0) materf(74,1) = 0.d0
         if (cerr(3) .ne. 0) materf(75,1) = 0.d0
     else
-        call u2mesk('F', 'ALGORITH4_65', 1, phenom)
+        call utmess('F', 'ALGORITH4_65', sk=phenom)
     endif
 !
 !     Remplissage de NBCOMM : Boucle sur le nombre de phases
@@ -497,10 +496,10 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 115  end do
 !     Nombre total de COEF
     if (nbcoef .gt. nmat) then
-        call u2mess('F', 'COMPOR2_6')
+        call utmess('F', 'COMPOR2_6')
     endif
     if (nbphas .gt. nmat) then
-        call u2mess('F', 'COMPOR2_6')
+        call utmess('F', 'COMPOR2_6')
     endif
     nbcomm(nmat,3)=nbcoef
 !
@@ -516,7 +515,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
     do 40 i = 1, nmat
         if (abs(materd(i,2)-materf(i,2) ) .gt. epsi*materd(i,2)) then
             matcst = 'NON'
-            call u2mess('F', 'COMPOR1_28')
+            call utmess('F', 'COMPOR1_28')
             goto 9999
         endif
 40  end do

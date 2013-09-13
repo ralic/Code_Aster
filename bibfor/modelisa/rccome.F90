@@ -19,7 +19,7 @@ subroutine rccome(nommat, pheno, phenom, icodre)
 #include "jeveux.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*), intent(in) :: nommat, pheno
     character(len=*), intent(out) :: phenom
     integer, intent(out) :: icodre
@@ -53,7 +53,7 @@ subroutine rccome(nommat, pheno, phenom, icodre)
         endif
 10  end do
     icodre = 1
-    call u2mess('A', 'ELEMENTS2_63')
+    call utmess('A', 'ELEMENTS2_63')
     goto 999
 !
 999  continue

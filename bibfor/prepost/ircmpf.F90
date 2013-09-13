@@ -34,16 +34,16 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mpfnpf.h"
+#include "asterfort/as_mpfpfi.h"
+#include "asterfort/as_mpfprr.h"
+#include "asterfort/as_mpfprw.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mpfnpf.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/as_mpfprw.h"
-#include "asterfort/as_mpfprr.h"
-#include "asterfort/as_mpfpfi.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nvalty, profil(nvalty)
 !
@@ -101,8 +101,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
     call as_mfiope(idfimd, nofimd, edlect, codret)
     if (codret .ne. 0) then
         saux08='mfiope'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====
@@ -113,8 +112,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
     call as_mpfnpf(idfimd, nbprof, codret)
     if (codret .ne. 0) then
         saux08='mpfnpf'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !
@@ -138,8 +136,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
     noprof = nopr64
     if (codret .ne. 0) then
         saux08='mpfpfi'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (nivinf .gt. 1) then
@@ -163,8 +160,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
         call as_mpfprr(idfimd, zi(adprof), lgprof, noprof, codret)
         if (codret .ne. 0) then
             saux08='mpfprr'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
         if (nivinf .gt. 1) then
@@ -211,8 +207,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
         saux08='mficlo'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====
@@ -228,8 +223,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
         call as_mfiope(idfimd, nofimd, edleaj, codret)
         if (codret .ne. 0) then
             saux08='mfiope'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 ! 6.2. ==> ELABORATION D'UN NOM DE PROFIL
@@ -273,8 +267,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
         call as_mpfprw(idfimd, profil, nvalty, noprof, codret)
         if (codret .ne. 0) then
             saux08='mpfprw'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 ! 6.4. ==> FERMETURE FICHIER MED
@@ -282,8 +275,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
         call as_mficlo(idfimd, codret)
         if (codret .ne. 0) then
             saux08='mficlo'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
     endif

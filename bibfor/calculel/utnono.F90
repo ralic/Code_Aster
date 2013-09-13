@@ -1,8 +1,7 @@
 subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
                   iret)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
@@ -13,7 +12,8 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: nomma, nomobj
     character(len=24) :: nomgrp
     character(len=*) :: mess, type
@@ -56,7 +56,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
 !
     integer :: iret1, nbno, iad
     character(len=1) :: typm
-    character(len=8) ::  knbno
+    character(len=8) :: knbno
     character(len=16) :: typgrp, nom
 !
     call jemarq()
@@ -83,9 +83,9 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
     if (nbno .eq. 0) then
         if (typm .eq. ' ') goto 9999
         if (type(1:5) .eq. 'NOEUD') then
-            call u2mesk(typm, 'ELEMENTS_67', 1, nomgrp)
+            call utmess(typm, 'ELEMENTS_67', sk=nomgrp)
         else
-            call u2mesk(typm, 'ELEMENTS_73', 1, nomgrp)
+            call utmess(typm, 'ELEMENTS_73', sk=nomgrp)
         endif
         goto 9999
     endif
@@ -99,11 +99,11 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
             if (type(1:5) .eq. 'NOEUD') then
                 valk(1) = nomgrp
                 valk(2) = knbno
-                call u2mesk(typm, 'CALCULEL5_20', 2, valk)
+                call utmess(typm, 'CALCULEL5_20', nk=2, valk=valk)
             else
                 valk(1) = nomgrp
                 valk(2) = knbno
-                call u2mesk(typm, 'CALCULEL5_21', 2, valk)
+                call utmess(typm, 'CALCULEL5_21', nk=2, valk=valk)
             endif
             goto 9999
         endif

@@ -165,8 +165,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/lcplbe.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imat, ndt, ndi, nr, nvi
     integer :: itmax, icomp
     integer :: nmat, irtet, irteti, nseui4
@@ -232,11 +231,11 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 ! --    C'EST INTERDIT DE MELANGER DEUX MODELISATIONS AVEC OU SANS
 ! --      DEPENDENCE DES PARAMETRES DE LA TEMPERATURE
     if ((iisnan(tempd).eq.0) .and. (iisnan(tempf).eq.1)) then
-        call u2mess('F', 'ALGORITH9_100')
+        call utmess('F', 'ALGORITH9_100')
     else if ((iisnan(tempd).eq.1).and.(iisnan(tempf).eq.0)) then
-        call u2mess('F', 'ALGORITH9_100')
+        call utmess('F', 'ALGORITH9_100')
     else if ((vind(3).eq.tneg).and.(iisnan(tempf).eq.0)) then
-        call u2mess('F', 'ALGORITH9_100')
+        call utmess('F', 'ALGORITH9_100')
     else
         istemp = iisnan(tempd).eq.0 .and. iisnan(tempf).eq.0
     endif
@@ -346,12 +345,12 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
             if (nseui2 .gt. 0) then
                 if (nseui2 .eq. 44) then
-                    call u2mess('A', 'ALGORITH9_93')
+                    call utmess('A', 'ALGORITH9_93')
                     goto 1
                 endif
                 if (nseui2 .eq. 4) then
                     call codent(nseui1, 'G', cnseui)
-                    call u2mesk('A', 'ALGORITH9_94', 1, cnseui)
+                    call utmess('A', 'ALGORITH9_94', sk=cnseui)
                     goto 1
                 endif
                 if (nseui2 .eq. nseui1) then
@@ -375,12 +374,12 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
             if (nseui3 .gt. 0) then
                 if (nseui3 .eq. 44) then
-                    call u2mess('A', 'ALGORITH9_93')
+                    call utmess('A', 'ALGORITH9_93')
                     goto 1
                 endif
                 if (nseui3 .eq. 4) then
                     call codent(nseui2, 'G', cnseui)
-                    call u2mesk('A', 'ALGORITH9_94', 1, cnseui)
+                    call utmess('A', 'ALGORITH9_94', sk=cnseui)
                     goto 1
                 endif
                 if (nseui3 .eq. nseui1 .or. nseui3 .eq. nseui2) then
@@ -400,12 +399,12 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
             if (nseui4 .gt. 0) then
                 if (nseui4 .eq. 44) then
-                    call u2mess('A', 'ALGORITH9_93')
+                    call utmess('A', 'ALGORITH9_93')
                     goto 1
                 endif
                 if (nseui4 .eq. 4) then
                     call codent(nseui3, 'G', cnseui)
-                    call u2mesk('A', 'ALGORITH9_94', 1, cnseui)
+                    call utmess('A', 'ALGORITH9_94', sk=cnseui)
                     goto 1
                 endif
                 nseuil = 22
@@ -422,7 +421,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
             if (nseuil .ge. 0) then
                 call codent(nseui4, 'G', cnseui)
-                call u2mesk('A', 'ALGORITH9_94', 1, cnseui)
+                call utmess('A', 'ALGORITH9_94', sk=cnseui)
                 goto 1
             endif
 !
@@ -492,7 +491,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
     call tecael(iadzi, iazk24)
     nomail = zk24(iazk24-1+3)(1:8)
-    call u2mesk('A', 'ALGORITH9_95', 1, nomail)
+    call utmess('A', 'ALGORITH9_95', sk=nomail)
 !
     goto 9999
 !

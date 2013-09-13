@@ -1,6 +1,6 @@
 subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
-                  numdt, numo, pit, nompro, stm,&
-                  npr, nomloc, nip, n, cret)
+                     numdt, numo, pit, nompro, stm,&
+                     npr, nomloc, nip, n, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -20,15 +20,16 @@ subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfdonv.h"
     aster_int :: fid, typent, typgeo, stm, npr, nip, n, cret, numdt, numo, pit
     character(len=*) :: cha, nompro, nomloc, noma
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, typen4, typge4, stm4, npr4, nip4, n4, cret4
     med_int :: numdt4, numo4, pit4
@@ -51,6 +52,6 @@ subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
                 typgeo, noma, pit, stm, nompro,&
                 npr, nomloc, nip, n, cret)
 #endif
-
+!
 #endif
 end subroutine

@@ -46,7 +46,7 @@ subroutine op0112()
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -100,7 +100,7 @@ subroutine op0112()
     call getvtx(' ', 'NOM_CMP_IFS', nbval=3, vect=nomcmp, nbret=ibid)
     call getfac('VIS_A_VIS', nbocc)
     if (nbocc .lt. 1) then
-        call u2mess('F', 'COUPLAGEIFS_5')
+        call utmess('F', 'COUPLAGEIFS_5')
     endif
     ncmpgd(1) = 'FX'
     ncmpgd(2) = 'FY'
@@ -151,7 +151,9 @@ subroutine op0112()
 !     ! ======================== !
 !     ! VERIFICATION ELEMENTAIRE !
 !     ! ======================== !
-    if (ma .ne. ma1) call u2mess('F', 'COUPLAGEIFS_6')
+    if (ma .ne. ma1) then
+        call utmess('F', 'COUPLAGEIFS_6')
+    endif
 !
 !     ! ======================================= !
 !     ! RECUPERATIONS DES DONNEES DU MAILLAGE 1 !
@@ -245,7 +247,9 @@ subroutine op0112()
     carte = charg//'.CHME.FORNO'
     liel = charg//'.CHME.LIGRE.LIEL'
     call jelira(liel, 'NUTIOC', nbval)
-    if (nbval .ne. 1) call u2mess('F', 'COUPLAGEIFS_7')
+    if (nbval .ne. 1) then
+        call utmess('F', 'COUPLAGEIFS_7')
+    endif
     call detrsd('CARTE', carte)
     call alcart('G', carte, ma, 'FORC_R')
     call jeveuo(carte//'.NCMP', 'E', jncmp)

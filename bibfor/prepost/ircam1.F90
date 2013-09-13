@@ -71,18 +71,16 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 !
 #include "jeveux.h"
 #include "asterc/utflsh.h"
+#include "asterfort/as_mfdfin.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircmcc.h"
 #include "asterfort/ircmec.h"
 #include "asterfort/ircmva.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfdfin.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
@@ -195,8 +193,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
     endif
     if (codret .ne. 0) then
         saux08='mfiope'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====
@@ -211,9 +208,9 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
     nomam2 = ' '
     iret=0
     call as_mfdfin(idfimd, nochmd, nomam2, nbpt, zk16(junit),&
-                zk16(jcomp), iret)
+                   zk16(jcomp), iret)
     if (iret .eq. 0 .and. nbpt .ne. 0 .and. nomam2 .ne. nomamd) then
-        call u2mess('F', 'MED_94')
+        call utmess('F', 'MED_94')
     endif
 !
 ! 3.2. ==> CREATION DU CHAMP DANS LE FICHIER
@@ -283,7 +280,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
                 if ((nbpg.eq.18) .and. (typech.eq.'ELNO    ')) then
                     nompb(1) = nochmd(9:22)
                     nompb(2) = 'PENTA18'
-                    call u2mesk('A', 'PREPOST2_84', 2, nompb(1))
+                    call utmess('A', 'PREPOST2_84', nk=2, valk=nompb(1))
                     goto 41
                 endif
                 if (nivinf .gt. 1) then
@@ -355,8 +352,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
         saux08='mficlo'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
     if (retsav .eq. 100) codret=100
 !

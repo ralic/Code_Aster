@@ -11,7 +11,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jexnom.h"
 #include "asterfort/oreino.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utreno.h"
 !
     integer :: iocc, nbno
@@ -79,7 +79,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
     call reliem(' ', noma, 'NU_NOEUD', motfac, iocc,&
                 2, motcle, typmcl, lisnoe, nbno)
     if (nbno .le. 0) then
-        call u2mess('F', 'MODELISA3_99')
+        call utmess('F', 'MODELISA3_99')
     endif
     call jeveuo(lisnoe, 'E', jnoeu)
 !

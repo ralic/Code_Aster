@@ -35,7 +35,7 @@ subroutine op0073()
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomres
     integer :: nbpara, nbinfo
@@ -65,7 +65,7 @@ subroutine op0073()
     call getvr8(' ', 'VALE', nbval=0, nbret=nbval)
     nbval = -nbval
     if ((nbval/2)*2 .ne. nbval) then
-        call u2mess('F', 'ALGORITH9_43')
+        call utmess('F', 'ALGORITH9_43')
     endif
 !
 ! --- CREATION DE LA TABLE

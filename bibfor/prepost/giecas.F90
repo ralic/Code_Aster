@@ -30,8 +30,7 @@ subroutine giecas(nfic, ndim, nbobj)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
     integer :: nfic, ndim, nbobj
@@ -73,7 +72,9 @@ subroutine giecas(nfic, ndim, nbobj)
     call jelira('&&GILIRE.COORDO   ', 'LONMAX', ncoo)
 !
     call jeexin('&&GILIRE.NOMOBJ', iret)
-    if (iret .eq. 0) call u2mess('F', 'PREPOST_46')
+    if (iret .eq. 0) then
+        call utmess('F', 'PREPOST_46')
+    endif
     call jeveuo('&&GILIRE.NOMOBJ', 'L', ianoob)
     call jeveuo('&&GILIRE.DESCOBJ', 'L', iadsob)
     call jeveuo('&&GILIRE.CUMUL_ELE', 'L', iacuel)
@@ -102,7 +103,7 @@ subroutine giecas(nfic, ndim, nbobj)
     else if (ndim.eq.1) then
         write(nfic,*) 'COOR_1D'
     else
-        call u2mess('F', 'PREPOST_53')
+        call utmess('F', 'PREPOST_53')
     endif
     indir =.false.
     call jeexin('&&GILIRE.INDIRECT', iret)
@@ -116,8 +117,7 @@ subroutine giecas(nfic, ndim, nbobj)
         nbelim = (ncoo/ndim)-nbnoto
         if (nbelim .gt. 0) then
             vali = nbelim
-            call u2mesg('I', 'PREPOST5_19', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'PREPOST5_19', si=vali)
         endif
     else
         nbnoto=ncoo/ndim
@@ -222,14 +222,12 @@ subroutine giecas(nfic, ndim, nbobj)
     2 end do
     if (nbelc .gt. 9999999) then
         vali = nbelc
-        call u2mesg('F', 'PREPOST6_2', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST6_2', si=vali)
     endif
     nmelim = nbelt - nbelc
     if (nmelim .gt. 0) then
         vali = nmelim
-        call u2mesg('I', 'PREPOST5_20', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'PREPOST5_20', si=vali)
     endif
 !
 !     -----------------------------------------------------------------

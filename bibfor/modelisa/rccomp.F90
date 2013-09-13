@@ -15,7 +15,7 @@ subroutine rccomp(chmat, nomail, nomode)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: chmat, nomail, nomode
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -93,7 +93,7 @@ subroutine rccomp(chmat, nomail, nomode)
             icp=icprk-1+6*(j-1)
             if (zk24(icp+2) .ne. 'VIDE') goto 25
 20      continue
-        call u2mess('F', 'MODELISA7_99')
+        call utmess('F', 'MODELISA7_99')
 25      continue
 !---- REMPLISSAGE DE LA CARTE
         zk16(jvalv-1+1) = zk24(icp+3)

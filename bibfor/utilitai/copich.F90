@@ -33,7 +33,7 @@ subroutine copich(base, ch1z, ch2z)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=*) :: ch1z, ch2z
@@ -180,7 +180,7 @@ subroutine copich(base, ch1z, ch2z)
 !
 !
     else
-        call u2mess('F', 'CALCULEL_17')
+        call utmess('F', 'CALCULEL_17')
     endif
 !
 9999  continue

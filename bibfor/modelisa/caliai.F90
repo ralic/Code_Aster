@@ -22,9 +22,7 @@ subroutine caliai(fonree, charge)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=4) :: fonree
@@ -60,7 +58,7 @@ subroutine caliai(fonree, charge)
     character(len=4) :: typcoe, typval, typco2
     character(len=7) :: typcha
     character(len=8) :: betaf
-    character(len=8) ::  motcle, mogrou, mod, noma, nomnoe, char
+    character(len=8) :: motcle, mogrou, mod, noma, nomnoe, char
     character(len=16) :: motfac, concep, oper
     character(len=19) :: lisrel
     character(len=24) :: trav, grouno, noeuma
@@ -135,7 +133,7 @@ subroutine caliai(fonree, charge)
             if (iret .eq. 0) then
                 valk(1) = zk24(jjj+igr-1)
                 valk(2) = noma
-                call u2mesk('F', 'MODELISA2_95', 2, valk)
+                call utmess('F', 'MODELISA2_95', nk=2, valk=valk)
             else
                 call jelira(jexnom(grouno, zk24(jjj+igr-1)), 'LONUTI', n1)
                 nbgt = nbgt + n1
@@ -150,7 +148,7 @@ subroutine caliai(fonree, charge)
                 valk(1) = motcle
                 valk(2) = zk24(jjj+ino-1)
                 valk(3) = noma
-                call u2mesk('F', 'MODELISA2_96', 3, valk)
+                call utmess('F', 'MODELISA2_96', nk=3, valk=valk)
             endif
 30      continue
 40  end do
@@ -197,8 +195,7 @@ subroutine caliai(fonree, charge)
         if (n1 .ne. (n2+n3)) then
             vali (1) = abs(n1)
             vali (2) = abs(n2+n3)
-            call u2mesg('F', 'MODELISA8_46', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'MODELISA8_46', ni=2, vali=vali)
         endif
 !
 !
@@ -214,7 +211,7 @@ subroutine caliai(fonree, charge)
             call getvc8(motfac, 'COEF_IMPO', iocc=i, scal=betac, nbret=nb)
             typval = 'COMP'
         else
-            call u2mess('F', 'DVP_1')
+            call utmess('F', 'DVP_1')
         endif
 !
 !
@@ -253,8 +250,7 @@ subroutine caliai(fonree, charge)
             if (n1 .ne. indnoe) then
                 vali (1) = abs(n1)
                 vali (2) = indnoe
-                call u2mesg('F', 'MODELISA8_47', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'MODELISA8_47', ni=2, vali=vali)
             endif
 !
 !           AFFECTATION A LA LISTE DE RELATIONS
@@ -292,8 +288,7 @@ subroutine caliai(fonree, charge)
             if (n1 .ne. nbno) then
                 vali (1) = abs(n1)
                 vali (2) = nbno
-                call u2mesg('F', 'MODELISA8_47', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'MODELISA8_47', ni=2, vali=vali)
             endif
             call afrela(zr(jcmur), zc(jcmuc), zk8(jddl), zk8(jlist2), zi(jdime),&
                         zr(jdirec), nbno, beta, betac, betaf,&

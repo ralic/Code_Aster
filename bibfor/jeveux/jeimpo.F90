@@ -31,8 +31,7 @@ subroutine jeimpo(unit, nomlu, mess)
 #include "asterfort/jjimpo.h"
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: unit
     character(len=*) :: nomlu, mess
 !     ------------------------------------------------------------------
@@ -83,7 +82,7 @@ subroutine jeimpo(unit, nomlu, mess)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('A', 'JEVEUX_26', 1, noml32(1:24))
+        call utmess('A', 'JEVEUX_26', sk=noml32(1:24))
         goto 9999
     else if (iret .eq. 1) then
 !
@@ -100,7 +99,7 @@ subroutine jeimpo(unit, nomlu, mess)
             iaddi(1) = iadd ( jiadd(iclaos) + 2*idatos-1 )
             iaddi(2) = iadd ( jiadd(iclaos) + 2*idatos )
             if (iaddi(1) .eq. 0) then
-                call u2mesk('A', 'JEVEUX_27', 1, noml32(1:24))
+                call utmess('A', 'JEVEUX_27', sk=noml32(1:24))
                 goto 9999
             endif
             call jjalty(typei, ltypi, 'L', 1, jctab)
@@ -145,7 +144,7 @@ subroutine jeimpo(unit, nomlu, mess)
             iadmex = iadmi
             if (iadmex .eq. 0) then
                 if (iaddi(1) .eq. 0) then
-                    call u2mesk('A', 'JEVEUX_28', 1, noml32(1:24))
+                    call utmess('A', 'JEVEUX_28', sk=noml32(1:24))
                     goto 9999
                 endif
                 call jjalty(typei, ltypi, 'L', 2, jctab)
@@ -207,8 +206,7 @@ subroutine jeimpo(unit, nomlu, mess)
             iadmex = ibdeso
             if (iadmex .eq. 0) then
                 if (iaddi(1) .eq. 0) then
-                    call u2mesg('A', 'JEVEUX_29', 1, noml32(1:24), 1,&
-                                idatoc, 0, rb)
+                    call utmess('A', 'JEVEUX_29', sk=noml32(1:24), si=idatoc)
                     goto 9999
                 endif
                 call jjalty(typei, ltypi, 'L', 2, jctab)
@@ -244,8 +242,7 @@ subroutine jeimpo(unit, nomlu, mess)
                 iaddi(1) = iszon(jiszon + ibiadd - 1 + 2*idatoc-1 )
                 iaddi(2) = iszon(jiszon + ibiadd - 1 + 2*idatoc )
                 if (iaddi(1) .eq. 0) then
-                    call u2mesg('A', 'JEVEUX_29', 1, noml32(1:24), 1,&
-                                idatoc, 0, rb)
+                    call utmess('A', 'JEVEUX_29', sk=noml32(1:24), si=idatoc)
                     goto 9999
                 endif
                 call jjalty(typei, ltypi, 'L', inat, jctab)

@@ -19,7 +19,6 @@ subroutine te0390(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/gddyng.h"
@@ -36,8 +35,8 @@ subroutine te0390(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - ELEMENT:  MECA_POU_D_T_GD
@@ -110,13 +109,13 @@ subroutine te0390(option, nomte)
 ! PARAMETRES EN ENTREE
     call jevech('PCOMPOR', 'L', icompo)
     if (zk16(icompo+3) (1:9) .eq. 'COMP_INCR') then
-        call u2mess('F', 'ELEMENTS3_36')
+        call utmess('F', 'ELEMENTS3_36')
     endif
     if (zk16(icompo) (1:4) .ne. 'ELAS') then
-        call u2mesk('F', 'ELEMENTS3_85', 1, zk16(icompo))
+        call utmess('F', 'ELEMENTS3_85', sk=zk16(icompo))
     endif
     if (zk16(icompo+2) .ne. 'GROT_GDEP') then
-        call u2mesk('F', 'ELEMENTS3_86', 1, zk16(icompo+2))
+        call utmess('F', 'ELEMENTS3_86', sk=zk16(icompo+2))
     endif
     call jevech('PMATERC', 'L', imate)
     nomres(1) = 'E'
@@ -131,7 +130,7 @@ subroutine te0390(option, nomte)
                 1, nomres(3), valres(3), icodre(3), 0)
     if (icodre(3) .ne. 0) then
         if (stoudy .gt. demi) then
-            call u2mess('F', 'ELEMENTS3_87')
+            call utmess('F', 'ELEMENTS3_87')
         else
             valres(3) = zero
         endif

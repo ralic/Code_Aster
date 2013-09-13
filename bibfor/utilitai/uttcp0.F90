@@ -19,8 +19,7 @@ subroutine uttcp0(indi, para, nbv, temps)
 ! person_in_charge: jacques.pellet at edf.fr
 #include "asterc/uttcsm.h"
 #include "asterc/uttrst.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: indi, nbv
     real(kind=8) :: temps(nbv)
     character(len=*) :: para
@@ -69,7 +68,7 @@ subroutine uttcp0(indi, para, nbv, temps)
 !     VERIFS ET INITIALISATIONS
 !
     if (indi .lt. nb1 .or. indi .gt. nb2) then
-        call u2mess('F', 'UTILITAI5_54')
+        call utmess('F', 'UTILITAI5_54')
     endif
 !
     do 1 k = 1, 7
@@ -111,7 +110,7 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     else if (kpara .eq. 'DEBUT') then
         if (parini(indi) .ne. 'FIN' .and. parini(indi) .ne. 'INIT') then
-            call u2mess('F', 'UTILITAI5_55')
+            call utmess('F', 'UTILITAI5_55')
         endif
         parini(indi) = 'DEBUT'
         uscpui(indi) = tcsm(1)
@@ -122,7 +121,7 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     else if (kpara .eq. 'FIN') then
         if (parini(indi) .ne. 'DEBUT') then
-            call u2mess('F', 'UTILITAI5_56')
+            call utmess('F', 'UTILITAI5_56')
         endif
         parini(indi) = 'FIN'
         nbappe(indi) = nbappe(indi) + 1
@@ -137,7 +136,7 @@ subroutine uttcp0(indi, para, nbv, temps)
         t(7) = elaps(indi)
 !
     else
-        call u2mesk('F', 'UTILITAI5_57', 1, kpara)
+        call utmess('F', 'UTILITAI5_57', sk=kpara)
     endif
 !
 9999  continue

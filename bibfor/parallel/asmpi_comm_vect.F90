@@ -47,18 +47,18 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !----------------------------------------------------------------------
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
+#include "asterfort/asmpi_check.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/asmpi_check.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
     character(len=*), intent(in) :: optmpi
@@ -110,7 +110,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     iret=1
     call asmpi_check(nbpro4, iret)
     if (iret .ne. 0) then
-        call u2mesk('I', 'APPELMPI_83', 1, optmpi)
+        call utmess('I', 'APPELMPI_83', sk=optmpi)
         goto 999
     endif
 !
@@ -348,7 +348,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
     if (optmpi .ne. 'BCAST' .and. nbv .gt. 1000) call jedetr('&&MPICM1.TRAV')
 !
-999 continue
+999  continue
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
     call jedema()
@@ -358,7 +358,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
     real(kind=8) :: rdummy
     complex(kind=8) :: cdummy
 !
-    if (present(nbval) .and. present(vi) .and. present(vr) .and. present(vc) .and. &
+    if (present(nbval) .and. present(vi) .and. present(vr) .and. present(vc) .and.&
         present(bcrank) .and. present(sci) .and. present(scr) .and. present(scc)) then
         kdummy = optmpi(1:1)
         kdummy = typsca(1:1)

@@ -31,7 +31,7 @@ subroutine jelgdq(nomlu, rlong, nbsv)
 #include "asterfort/jjallc.h"
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
     real(kind=8) :: rlong
     integer :: nbsv
@@ -71,7 +71,7 @@ subroutine jelgdq(nomlu, rlong, nbsv)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+        call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
 !
     else if (iret .eq. 1) then
         ic = iclaos

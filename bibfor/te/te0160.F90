@@ -18,16 +18,15 @@ subroutine te0160(option, nomte)
 ! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/biline.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/matvec.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - ELEMENT:  MECABL2
@@ -65,13 +64,13 @@ subroutine te0160(option, nomte)
 ! --- PARAMETRES EN ENTREE
     call jevech('PCOMPOR', 'L', icompo)
     if (zk16(icompo+3) (1:9) .eq. 'COMP_INCR') then
-        call u2mess('F', 'ELEMENTS3_36')
+        call utmess('F', 'ELEMENTS3_36')
     endif
     if (zk16(icompo) (1:5) .ne. 'CABLE') then
-        call u2mesk('F', 'ELEMENTS3_37', 1, zk16(icompo))
+        call utmess('F', 'ELEMENTS3_37', sk=zk16(icompo))
     endif
     if (zk16(icompo+1) .ne. 'GROT_GDEP') then
-        call u2mesk('F', 'ELEMENTS3_38', 1, zk16(icompo+1))
+        call utmess('F', 'ELEMENTS3_38', sk=zk16(icompo+1))
     endif
 !
     call jevech('PGEOMER', 'L', igeom)

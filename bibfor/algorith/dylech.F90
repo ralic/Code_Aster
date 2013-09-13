@@ -28,7 +28,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 #include "asterfort/lislec.h"
 #include "asterfort/lisnbg.h"
 #include "asterfort/lisnnb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomo
     character(len=19) :: lischa
@@ -99,7 +99,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
     call lisnnb(lischa, nbchar)
     if (nbveat .ne. 0) then
         if (nbveat .ne. nbchar) then
-            call u2mess('F', 'CHARGES5_1')
+            call utmess('F', 'CHARGES5_1')
         endif
     endif
 !

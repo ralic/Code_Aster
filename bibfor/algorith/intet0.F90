@@ -21,6 +21,7 @@ subroutine intet0(angle, tet0, iax)
 !  BUT:  CALCULER LA MATRICE 6X6 DE CHANGEMENT DE REPERE PERMETTANT
 !    D'EFFECTUER UNE ROTATION D'AXE OZ SUR LES DDL SUIVANTS:
     implicit none
+#include "asterfort/utmess.h"
 !
 !                 DX  DY  DZ  DRX  DRY  DRZ  ? ? PRES PHI
 !
@@ -32,7 +33,6 @@ subroutine intet0(angle, tet0, iax)
 !
 !-----------------------------------------------------------------------
 !
-#include "asterfort/u2mesg.h"
     real(kind=8) :: tet0(10, 10)
     integer :: i, iax, j, jj
     real(kind=8) :: a, angle, b
@@ -87,8 +87,7 @@ subroutine intet0(angle, tet0, iax)
         tet0(9,9)=1.d0
         tet0(10,10)=1.d0
     else
-        call u2mesg('F', 'ALGORITH13_28', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_28')
     endif
 !
 !

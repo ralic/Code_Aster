@@ -37,7 +37,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/pmimpr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
     integer :: ind, indimp(6), i, itmax, iter, irela
@@ -119,7 +119,7 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
 ! -      NB ITERATION MAXIMUM ATTEINT SANS CONVERGENCE
         conver=.false.
         itemax=.true.
-        call u2mess('I', 'COMPOR2_5')
+        call utmess('I', 'COMPOR2_5')
     endif
 9999  continue
 !

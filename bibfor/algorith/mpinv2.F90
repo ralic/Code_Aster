@@ -47,7 +47,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 #include "asterfort/jemarq.h"
 #include "asterfort/mtcrog.h"
 #include "asterfort/rslsvd.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbmesu, nbmode, nbabs
     integer :: vali
@@ -171,8 +171,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 !         -> ON VERIFIE QUE ALPHA > 0, SINON ARRET
             if (alpha .lt. 0.d0) then
                 vali = iabs
-                call u2mesg('F', 'ALGORITH15_24', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGORITH15_24', si=vali)
             else if (alpha .gt. r8prem()) then
                 nul=.false.
             endif
@@ -212,13 +211,11 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 !
 !       -> ALARME SI ALPHA NUL ET NBMESU<NBMODE : MOINDRE NORME
         if ((nbmesu .lt. nbmode) .and. (nul)) then
-            call u2mesg('A', 'ALGORITH15_25', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('A', 'ALGORITH15_25')
 !
             if (regul .eq. 'NON') then
 ! CALCUL MOINDRE NORME
-                call u2mesg('A', 'ALGORITH15_26', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'ALGORITH15_26')
                 do 82 imes = 1, nbmesu
                     zr(lscdmb-1 +imes) = rmesu(imes,iabs)
                     do 81 jmes = 1, nbmesu
@@ -240,8 +237,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
                     if (ierr .ne. 0) then
                         vali = iabs
                         valr = xabs ( iabs )
-                        call u2mesg('F', 'ALGORITH15_27', 0, ' ', 1,&
-                                    vali, 1, valr)
+                        call utmess('F', 'ALGORITH15_27', si=vali, sr=valr)
                     endif
 !
                 else
@@ -251,8 +247,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
                     if (ierr .ne. 0) then
                         vali = iabs
                         valr = xabs ( iabs )
-                        call u2mesg('F', 'ALGORITH15_28', 0, ' ', 1,&
-                                    vali, 1, valr)
+                        call utmess('F', 'ALGORITH15_28', si=vali, sr=valr)
                     endif
                 endif
 !
@@ -283,8 +278,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
             if (ierr .ne. 0) then
                 vali = iabs
                 valr = xabs ( iabs )
-                call u2mesg('F', 'ALGORITH15_27', 0, ' ', 1,&
-                            vali, 1, valr)
+                call utmess('F', 'ALGORITH15_27', si=vali, sr=valr)
             endif
 !
         else
@@ -295,8 +289,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
             if (ierr .ne. 0) then
                 vali = iabs
                 valr = xabs ( iabs )
-                call u2mesg('F', 'ALGORITH15_28', 0, ' ', 1,&
-                            vali, 1, valr)
+                call utmess('F', 'ALGORITH15_28', si=vali, sr=valr)
             endif
         endif
 !

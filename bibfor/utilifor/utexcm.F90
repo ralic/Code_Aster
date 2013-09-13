@@ -31,7 +31,7 @@ subroutine utexcm(num, idmess, nk, valk, ni,&
 !        TEXTE  = MESSAGE EXPLIQUANT POURQUOI L'EXCEPTION EST LEVEE.
 !     ------------------------------------------------------------------
     implicit none
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: num
     character(len=*) :: idmess, valk(*)
     integer :: nk, ni, vali(*), nr
@@ -40,6 +40,6 @@ subroutine utexcm(num, idmess, nk, valk, ni,&
     common /utexc /  nexcep
 !
     nexcep = num
-    call u2mesg('Z', idmess, nk, valk, ni,&
-                vali, nr, valr)
+    call utmess('Z', idmess, nk=nk, valk=valk, ni=ni,&
+                vali=vali, nr=nr, valr=valr)
 end subroutine

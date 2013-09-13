@@ -17,7 +17,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -30,8 +30,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 #include "asterfort/lisnnl.h"
 #include "asterfort/lissav.h"
 #include "asterfort/rsinch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: fnocal, nomo
     real(kind=8) :: instan
     character(len=19) :: lisch2
@@ -86,12 +85,12 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 !
     call gettco(fnocal, typsd)
     if (typsd .ne. 'EVOL_CHAR') then
-        call u2mesk('F', 'ALGORITH7_15', 1, fnocal)
+        call utmess('F', 'ALGORITH7_15', sk=fnocal)
     endif
     call dismoi('F', 'NB_CHAMP_UTI', fnocal, 'RESULTAT', nbcham,&
                 k8bid, ier)
     if (nbcham .le. 0) then
-        call u2mesk('F', 'ALGORITH7_16', 1, fnocal)
+        call utmess('F', 'ALGORITH7_16', sk=fnocal)
     endif
 !
 ! --- EFFORTS VOLUMIQUES
@@ -107,8 +106,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         valk(1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_56', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_56', sk=valk(1), si=vali, sr=valr)
     endif
 !
     call rsinch(fnocal, 'FVOL_2D', 'INST', instan, chfnoe,&
@@ -122,8 +120,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         valk(1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_57', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_57', sk=valk(1), si=vali, sr=valr)
     endif
 !
 ! --- EFFORTS SURFACIQUES
@@ -136,8 +133,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         if (l2d) then
             valk(1) = fnocal
             valr = instan
-            call u2mesg('F', 'ALGORITH13_58', 1, valk, 0,&
-                        0, 1, valr)
+            call utmess('F', 'ALGORITH13_58', sk=valk(1), sr=valr)
         endif
         nbchar = nbchar + 1
         evolch(nbchar) = chfnoe
@@ -146,8 +142,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         valk(1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_59', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_59', sk=valk(1), si=vali, sr=valr)
     endif
 !
     call rsinch(fnocal, 'FSUR_2D', 'INST', instan, chfnoe,&
@@ -156,8 +151,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         if (l3d) then
             valk(1) = fnocal
             valr = instan
-            call u2mesg('F', 'ALGORITH13_60', 1, valk, 0,&
-                        0, 1, valr)
+            call utmess('F', 'ALGORITH13_60', sk=valk(1), sr=valr)
         endif
         nbchar = nbchar + 1
         evolch(nbchar) = chfnoe
@@ -166,8 +160,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         valk(1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_61', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_61', sk=valk(1), si=vali, sr=valr)
     endif
 !
 ! --- PRESSIONS
@@ -185,15 +178,14 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         valk(3) = ' '
         valk(4) = ' '
         valr = instan
-        call u2mesg('F', 'ALGORITH13_62', 4, valk, 0,&
-                    0, 1, valr)
+        call utmess('F', 'ALGORITH13_62', nk=4, valk=valk, sr=valr)
     else if (ier.eq.20) then
         valk(1) = fnocal
         valk(2) = ' '
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_63', 2, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_63', nk=2, valk=valk, si=vali,&
+                    sr=valr)
     endif
 !
     ASSERT(nbchar.le.nmxech)
@@ -234,10 +226,10 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
         motclc(1) = 0
         motclc(2) = 0
         call lissav(lisch2, ichar, charge, typech, genrec(1),&
-                    motclc, prefob, typapp, nomfct, typfct, &
+                    motclc, prefob, typapp, nomfct, typfct,&
                     r8bid, ibid)
 !
-100 continue
+100  continue
 !
 ! --- VERIFICATION DE LA LISTE DES CHARGES
 !

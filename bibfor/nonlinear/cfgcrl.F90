@@ -18,7 +18,7 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calatm.h"
 #include "asterfort/infdbg.h"
@@ -27,7 +27,7 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     character(len=24) :: resoco
     integer :: neq, nbliai
@@ -127,7 +127,7 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
     denom = ddot(neq,zr(jddelt),1,zr(jsecmb),1)
 !
     if (denom .lt. 0.d0) then
-        call u2mess('A', 'CONTACT_7')
+        call utmess('A', 'CONTACT_7')
     endif
 !
 ! --- COEFFICIENT DE RECHERCHE LINEAIRE

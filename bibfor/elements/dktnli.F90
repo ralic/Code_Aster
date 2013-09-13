@@ -1,8 +1,7 @@
 subroutine dktnli(nomte, opt, xyzl, ul, dul,&
                   btsig, ktan, codret)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dkqbf.h"
@@ -20,11 +19,11 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 #include "asterfort/pmrvec.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     integer :: codret
     real(kind=8) :: xyzl(3, *), ul(6, *), dul(6, *)
     real(kind=8) :: ktan(*), btsig(6, *)
@@ -177,7 +176,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     else if (nomte.eq.'MEDKQU4 ') then
         dkq = .true.
     else
-        call u2mesk('F', 'ELEMENTS_34', 1, nomte)
+        call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
     call jevech('PMATERC', 'L', imate)
@@ -200,7 +199,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !
     leul = zk16(icompo+2).eq.'GROT_GDEP'
     if (leul .and. zk16(icompo)(1:4) .ne. 'ELAS') then
-        call u2mess('F', 'ELEMENTS2_73')
+        call utmess('F', 'ELEMENTS2_73')
     endif
 !
     if (vecteu) then
@@ -266,7 +265,9 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     nbcou=zi(jnbspi-1+1)
     call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
                 iret)
-    if (nbcou .le. 0) call u2mesk('F', 'ELEMENTS_36', 1, zk16(icompo-1+6))
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_36', sk=zk16(icompo-1+6))
+    endif
 !
     hic = h/nbcou
     zmin = -h/deux + distn

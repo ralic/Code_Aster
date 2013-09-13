@@ -1,9 +1,9 @@
 subroutine dxtpif(temp, ltemp)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     real(kind=8) :: temp(3)
     logical :: ltemp(3)
 !     ------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine dxtpif(temp, ltemp)
     if (.not.ltemp(1)) then
         call tecael(iadzi, iazk24)
         nomail=zk24(iazk24-1+3)
-        call u2mesk('F', 'ELEMENTS_53', 1, nomail)
+        call utmess('F', 'ELEMENTS_53', sk=nomail)
     endif
 !
     if (.not.ltemp(2)) temp(2)=temp(1)

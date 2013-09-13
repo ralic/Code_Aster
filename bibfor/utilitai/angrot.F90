@@ -29,7 +29,7 @@ subroutine angrot(v1, v2, axe, angle)
 #include "asterfort/angvec.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: v1(3), v2(3), angle, v1v2(3), nv3
     real(kind=8) :: verif(3), pscal, axe(3), axe2(3)
     real(kind=8) :: epsi
@@ -48,13 +48,13 @@ subroutine angrot(v1, v2, axe, angle)
 10  end do
     call normev(axe2, nv3)
     if (nv3 .lt. epsi) then
-        call u2mess('F', 'UTILITAI_5')
+        call utmess('F', 'UTILITAI_5')
     endif
     call provec(v1, v2, v1v2)
     call provec(v1v2, axe2, verif)
     call normev(verif, nv3)
     if (nv3 .gt. epsi) then
-        call u2mess('F', 'UTILITAI_6')
+        call utmess('F', 'UTILITAI_6')
     endif
     call normev(v1v2, nv3)
     if (nv3 .lt. epsi) then
@@ -73,7 +73,7 @@ subroutine angrot(v1, v2, axe, angle)
             pscal = pscal + axe2(i)*v1v2(i)
 20      continue
         if (abs(abs(pscal)-1.d0) .gt. epsi) then
-            call u2mess('F', 'UTILITAI_7')
+            call utmess('F', 'UTILITAI_7')
         endif
         angle= angle*pscal
     endif

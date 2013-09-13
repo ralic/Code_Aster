@@ -22,7 +22,7 @@ subroutine jereou(clas, pcent)
 #include "asterfort/jeinif.h"
 #include "asterfort/jelibf.h"
 #include "asterfort/lxmins.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=*) :: clas
     real(kind=8) :: pcent
 ! ----------------------------------------------------------------------
@@ -79,8 +79,8 @@ subroutine jereou(clas, pcent)
         vali (1) = nbluti(ic)
         vali (2) = nint(nbluti(ic)*longbl(ic)*lois/1024.d0)
         vali (3) = nblmax(ic)
-        call u2mesg('I', 'JEVEUX_63', 1, nombas(ic), 3,&
-                    vali, 2, valr)
+        call utmess('I', 'JEVEUX_63', sk=nombas(ic), ni=3, vali=vali,&
+                    nr=2, valr=valr)
         info = 0
         call jelibf('DETRUIT', klas, info)
         call lxmins(nom)

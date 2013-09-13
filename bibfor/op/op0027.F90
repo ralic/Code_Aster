@@ -42,7 +42,7 @@ subroutine op0027()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iret, n1, n, i, m, iak, iadr, iadr1, iadr2
@@ -76,7 +76,7 @@ subroutine op0027()
 !
 ! --- VERIF PROFIL=PLEIN
         if (zi(idesc+2) .ne. 2) then
-            call u2mess('F', 'ALGORITH9_18')
+            call utmess('F', 'ALGORITH9_18')
         endif
 !
         n = zi(idesc+1)
@@ -217,7 +217,7 @@ subroutine op0027()
 ! GENRRATION AMORTISSEMENT
             call jeexin(nommat//'.MAEL_AMOR_VALE', iret)
             if (iret .eq. 0) then
-                call u2mess('A', 'ALGORITH9_19')
+                call utmess('A', 'ALGORITH9_19')
             else
 !
                 call jeveuo(nommat//'.MAEL_AMOR_VALE', 'L', iak)

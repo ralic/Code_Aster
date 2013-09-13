@@ -8,7 +8,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: cmpg(*)
     character(len=*) :: genein
     logical :: lhist
@@ -63,7 +63,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 !
 !        --- CALCUL PAR SOUS-STRUCTURATION ---
 !
-    if ( (mode .eq. blan) .or. (typrem .eq. 'MODELE_GENE') ) then
+    if ((mode .eq. blan) .or. (typrem .eq. 'MODELE_GENE')) then
         nugene = zk24(jrefe+1)(1:14)
         call jeveuo(nugene//'.NUME.REFN', 'L', jnume)
         mogene = zk24(jnume)(1:8)
@@ -137,7 +137,8 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 !      --- CALCUL TRADITIONNEL ---
 !
 !---------ON RECUPERE LE TYPE DE BASE MODALE S'IL S'AGIT D'UNE BASE
-        call dismoi('C', 'TYPE_BASE', mode, 'RESU_DYNA', ib, typeba, ir)
+        call dismoi('C', 'TYPE_BASE', mode, 'RESU_DYNA', ib,&
+                    typeba, ir)
 !---------ON RECUPERE LE TYPE DE MODES STAT/DYN
         call rsadpa(mode, 'L', 1, 'TYPE_MODE', 1,&
                     0, iad, k8b)
@@ -163,7 +164,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             lbase = .false.
             call jelira(gene//'.VALE', 'LONMAX', nbmode)
         else
-            call u2mesk('A', 'PREPOST3_9', 1, typrem)
+            call utmess('A', 'PREPOST3_9', sk=typrem)
             typmod = '  PROPRE'
             noeu = ' '
             cmp = ' '

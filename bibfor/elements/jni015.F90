@@ -23,7 +23,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 #include "asterfort/gausch.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: elrefe
     integer :: nmaxob, nbobj
@@ -99,7 +99,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
         npg2(2,2) = 3
 !
     else
-        call u2mess('F', 'ELEMENTS2_29')
+        call utmess('F', 'ELEMENTS2_29')
     endif
 !
     call jeexin(carac, iret)

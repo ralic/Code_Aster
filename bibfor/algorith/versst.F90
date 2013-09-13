@@ -31,7 +31,6 @@ subroutine versst(nomres)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -39,8 +38,9 @@ subroutine versst(nomres)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: vali(2)
 !
 !
@@ -92,14 +92,13 @@ subroutine versst(nomres)
             valk (4) = nmmcl
             vali (1) = numgdr
             vali (2) = numgd
-            call u2mesg('E', 'ALGORITH14_73', 4, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'ALGORITH14_73', nk=4, valk=valk, ni=2,&
+                        vali=vali)
         endif
 10  end do
 !
     if (pblog) then
-        call u2mesg('F', 'ALGORITH14_74', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_74')
     endif
 !
     call wkvect(nomres//'      .MODG.DESC', 'G V I', 3, lddesc)

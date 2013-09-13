@@ -29,7 +29,6 @@ subroutine gverlc(resuco, compor, iord)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cesred.h"
@@ -40,8 +39,8 @@ subroutine gverlc(resuco, compor, iord)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: iord
     character(len=8) :: resuco
     character(len=24) :: compor
@@ -103,7 +102,7 @@ subroutine gverlc(resuco, compor, iord)
                 valk(1)='ELAS'
                 valk(2)=zk16(jcalv+iadc-1)
                 valk(3)=nomail
-                call u2mesk('A', 'RUPTURE1_42', 3, valk)
+                call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
                 goto 9999
             endif
         endif
@@ -136,10 +135,10 @@ subroutine gverlc(resuco, compor, iord)
         if (iadr .gt. 0) then
             if (zk16(jresv+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
                 if (zk16(jresv+iadr-1)(1:4) .eq. 'VMIS') then
-                    call u2mess('A', 'RUPTURE1_47')
+                    call utmess('A', 'RUPTURE1_47')
                 else
                     if (zk16(jresv+iadr-1)(1:4) .ne. 'ELAS') then
-                        call u2mess('F', 'RUPTURE1_47')
+                        call utmess('F', 'RUPTURE1_47')
                     endif
                 endif
             endif
@@ -157,7 +156,7 @@ subroutine gverlc(resuco, compor, iord)
                     valk(1)=zk16(jresv+iadr-1+1)
                     valk(2)=zk16(jcalv+iadc-1+1)
                     valk(3)=nomail
-                    call u2mesk('A', 'RUPTURE1_45', 3, valk)
+                    call utmess('A', 'RUPTURE1_45', nk=3, valk=valk)
                     goto 9999
                 endif
 !
@@ -166,7 +165,7 @@ subroutine gverlc(resuco, compor, iord)
                 valk(1)=zk16(jresv+iadr-1)
                 valk(2)=zk16(jcalv+iadc-1)
                 valk(3)=nomail
-                call u2mesk('A', 'RUPTURE1_42', 3, valk)
+                call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
                 goto 9999
             endif
 !

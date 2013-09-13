@@ -32,7 +32,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: indice, imodeg
     integer :: jrefa, i, iscbl, iaconl
@@ -68,11 +68,11 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 ! LIGNE DE CIEL PLEIN ON PLANTE
 !
         if (nueq .ne. nhmax) then
-            call u2mess('A', 'ALGORITH5_16')
+            call utmess('A', 'ALGORITH5_16')
         endif
 !
         if ((nueq* (nueq+1)/2) .gt. (nbloc*ntbloc)) then
-            call u2mess('F', 'ALGORITH5_17')
+            call utmess('F', 'ALGORITH5_17')
         endif
 !
 ! CALCUL DU NOMBRE DE TERME PAR BLOC ET TOTAL
@@ -99,7 +99,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
         write (6,*) 'SOMME=',somme
         if ((nueq* (nueq+1)/2) .ne. somme) then
-            call u2mess('F', 'ALGORITH5_18')
+            call utmess('F', 'ALGORITH5_18')
         endif
 !
 !

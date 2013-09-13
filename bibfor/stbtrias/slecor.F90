@@ -31,7 +31,7 @@ subroutine slecor(iunv, datset)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     logical :: first
     character(len=6) :: moins1
@@ -51,9 +51,9 @@ subroutine slecor(iunv, datset)
     if (iret .ne. 0) then
         call jedetr('&&IDEAS.SYST')
         if (datset .eq. 2420) then
-            call u2mess('A', 'STBTRIAS_3')
+            call utmess('A', 'STBTRIAS_3')
         else if (datset.eq.18) then
-            call u2mess('A', 'STBTRIAS_4')
+            call utmess('A', 'STBTRIAS_4')
         endif
     endif
     call wkvect('&&IDEAS.SYST', 'V V I', inus, jsys)

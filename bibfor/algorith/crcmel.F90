@@ -45,7 +45,7 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iret, nbmo1, i, nt, n1, ncmpma, ibid, irepe
     integer :: jncmp, jvalv, icmp, iexi
     character(len=16) :: moclef(2)
@@ -121,7 +121,9 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
 !         -- SI LE CHAMP EST VIDE, C'EST QU'AUCUN ELEMENT DU MODELE
 !            NE SAIT CALCULER FULL_MECA :
         call exisd('CHAMP', cel1, iexi)
-        if (iexi .eq. 0) call u2mess('F', 'CALCULEL5_5')
+        if (iexi .eq. 0) then
+            call utmess('F', 'CALCULEL5_5')
+        endif
         call celces(cel1, 'V', ces2)
         call detrsd('CHAMP', ces1)
         call detrsd('CHAMP', cel1)

@@ -36,8 +36,8 @@ subroutine debut()
 #include "asterfort/ibfhdf.h"
 #include "asterfort/ibtcpu.h"
 #include "asterfort/onerrf.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
     character(len=8) :: k8b, repons
     character(len=16) :: nomcmd, k16b, cmpdef, cmput, cmpout
     character(len=80) :: fichdf
@@ -68,7 +68,7 @@ subroutine debut()
 ! --- ALARME GENERIQUE
     call getvtx(' ', 'PAR_LOT', scal=repons, nbret=n)
     if (repons .eq. 'NON') then
-        call u2mess('A', 'SUPERVIS_1')
+        call utmess('A', 'SUPERVIS_1')
     endif
 !
 ! --- LECTURE DU MOT CLEF TEMPS_CPU

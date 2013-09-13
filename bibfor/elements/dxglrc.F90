@@ -1,4 +1,6 @@
-subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, codret)
+subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
+                  dul, btsig, ktan, pgl, crit,&
+                  codret)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -71,11 +73,11 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 !            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 !            NC :    NOMBRE DE COTES DE L'ELEMENT
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/crgdm.h"
+#include "asterfort/dhrc_lc.h"
 #include "asterfort/dhrc_recup_mate.h"
 #include "asterfort/dkqbf.h"
 #include "asterfort/dktbf.h"
@@ -94,7 +96,6 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
 #include "asterfort/lcgldm.h"
-#include "asterfort/dhrc_lc.h"
 #include "asterfort/maglrc.h"
 #include "asterfort/nmcoup.h"
 #include "asterfort/pmrvec.h"
@@ -102,10 +103,10 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 #include "asterfort/r8inir.h"
 #include "asterfort/t3gbc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
+#include "asterfort/utmess.h"
+!
     real(kind=8) :: poids
 !            POIDS:  POIDS DE GAUSS (Y COMPRIS LE JACOBIEN)
 !            AIRE:   SURFACE DE L'ELEMENT
@@ -195,7 +196,9 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
     character(len=16) :: opt, nomte, compor(*)
     character(len=24) :: valk
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnos,&
+                npg, ipoids, icoopg, ivf, idfdx,&
+                idfd2, jgano)
     codret = 0
 !
     nbsig = 6
@@ -216,7 +219,8 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
     leul = .false.
 !
     if (.not. lrgm) then
-        call tecach('OON', 'PCONTMR', 'L', 7, jtab, iret)
+        call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
+                    iret)
         icontm=jtab(1)
         ASSERT(npg.eq.jtab(3))
         call jevech('PVARIMR', 'L', ivarim)
@@ -359,13 +363,19 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
             poids = carat3(8)
         endif
 !
-        call pmrvec('ZERO', 3, 2*nno, bm, um, eps)
-        call pmrvec('ZERO', 3, 2*nno, bm, dum, deps)
-        call pmrvec('ZERO', 3, 3*nno, bf, uf, khi)
-        call pmrvec('ZERO', 3, 3*nno, bf, duf, dkhi)
+        call pmrvec('ZERO', 3, 2*nno, bm, um,&
+                    eps)
+        call pmrvec('ZERO', 3, 2*nno, bm, dum,&
+                    deps)
+        call pmrvec('ZERO', 3, 3*nno, bf, uf,&
+                    khi)
+        call pmrvec('ZERO', 3, 3*nno, bf, duf,&
+                    dkhi)
         if (q4gg) then
-            call pmrvec('ZERO', 2, 3*nno, bc, uf, gam)
-            call pmrvec('ZERO', 2, 3*nno, bc, duf, dgam)
+            call pmrvec('ZERO', 2, 3*nno, bc, uf,&
+                        gam)
+            call pmrvec('ZERO', 2, 3*nno, bc, duf,&
+                        dgam)
         endif
 !
         call jevech('PCACOQU', 'L', icara)
@@ -500,10 +510,10 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
             endif
 !
             call crgdm(zi(imate), compor(1), lambda, deuxmu, lamf,&
-                      deumuf, gt, gc, gf, seuil,&
-                      alphaf, alfmc, ep, lrgm, ipg,&
-                      ther, tref, dtmoy, dtgra, tmoy,&
-                      tgra, alphat)
+                       deumuf, gt, gc, gf, seuil,&
+                       alphaf, alfmc, ep, lrgm, ipg,&
+                       ther, tref, dtmoy, dtgra, tmoy,&
+                       tgra, alphat)
 !
 !     CALCUL DE LA DEFORMATION THERMIQUE
             if (ther) then
@@ -524,36 +534,36 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 !
 !     ENDOMMAGEMENT SEULEMENT
 !
-        call r8inir(36, 0.d0, dsidep, 1)
-        call lcgldm(epsm, deps, ecr, opt, sig,&
-                    ecrp, dsidep, lambda, deuxmu, lamf,&
-                    deumuf, gt, gc, gf, seuil,&
-                    alphaf, alfmc, crit, codret)
+            call r8inir(36, 0.d0, dsidep, 1)
+            call lcgldm(epsm, deps, ecr, opt, sig,&
+                        ecrp, dsidep, lambda, deuxmu, lamf,&
+                        deumuf, gt, gc, gf, seuil,&
+                        alphaf, alfmc, crit, codret)
 !
-    else if (compor(1)(1:4).eq. 'DHRC') then
+        else if (compor(1)(1:4).eq. 'DHRC') then
 !
 !     LECTURE PARAMETRES MATERIAU
 !
-        if (.not. lrgm) then
-            do i = 1,nbvar
-                ecr(i) = zr(ivarim-1 + icpv + i)
-            end do
-        endif
+            if (.not. lrgm) then
+                do i = 1, nbvar
+                    ecr(i) = zr(ivarim-1 + icpv + i)
+                end do
+            endif
 !
-        call dhrc_recup_mate(zi(imate), compor(1), ep, a0, b0, c0,&
-                   aa_t, ga_t, ab_, gb_, ac_,&
-                   gc_, aa_c, ga_c, cstseu)
+            call dhrc_recup_mate(zi(imate), compor(1), ep, a0, b0,&
+                                 c0, aa_t, ga_t, ab_, gb_,&
+                                 ac_, gc_, aa_c, ga_c, cstseu)
 !
 !     ENDOMMAGEMENT COUPLÉ PLASTICITÉ
 !
-        call r8inir(36, 0.d0, dsidep, 1)
-        call dhrc_lc(epsm, deps, ecr, pgl, opt,&
-                    sig, ecrp, a0, b0, c0,&
-                    aa_t, ga_t, ab_, gb_, ac_,&
-                    gc_, aa_c, ga_c, cstseu, crit,&
-                    codret, dsidep)
+            call r8inir(36, 0.d0, dsidep, 1)
+            call dhrc_lc(epsm, deps, ecr, pgl, opt,&
+                         sig, ecrp, a0, b0, c0,&
+                         aa_t, ga_t, ab_, gb_, ac_,&
+                         gc_, aa_c, ga_c, cstseu, crit,&
+                         codret, dsidep)
 !
-    else if (compor(1)(1:7).eq. 'KIT_DDI') then
+        else if (compor(1)(1:7).eq. 'KIT_DDI') then
 !     ENDOMMAGEMENT PLUS PLASTICITE
 !
             if (.not. lrgm) then
@@ -570,8 +580,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
                         r8bid, codret)
         else
             valk = compor(1)
-            call u2mesg('F', 'ELEMENTS4_79', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ELEMENTS4_79', sk=valk)
         endif
 !
         if (.not. lrgm) then
@@ -653,17 +662,21 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, cod
 !                   + BCT*DC*BC
         if (matric) then
 !     MEMBRANE :
-            call utbtab('CUMU', 3, 2*nno, dm, bm, work, memb)
+            call utbtab('CUMU', 3, 2*nno, dm, bm,&
+                        work, memb)
 !
 !     FLEXION :
-            call utbtab('CUMUL', 3, 3*nno, df, bf, work, flex)
+            call utbtab('CUMUL', 3, 3*nno, df, bf,&
+                        work, flex)
 !
 !     CISAILLEMENT:
             if (q4gg) then
-                call utbtab('CUMUL', 2, 3*nno, dc, bc, work, flex)
+                call utbtab('CUMUL', 2, 3*nno, dc, bc,&
+                            work, flex)
             endif
 !     COUPLAGE:
-            call utctab('CUMUL', 3, 3*nno, 2*nno, dmf, bf, bm, work, mefl)
+            call utctab('CUMUL', 3, 3*nno, 2*nno, dmf,&
+                        bf, bm, work, mefl)
         endif
 !
 !     FIN BOUCLE SUR LES POINTS DE GAUSS

@@ -20,8 +20,7 @@ subroutine jjcroc(knat, icre)
 #include "jeveux_private.h"
 #include "asterfort/jjcodn.h"
 #include "asterfort/jjprem.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: icre
     character(len=8) :: knat
 ! ----------------------------------------------------------------------
@@ -134,25 +133,25 @@ subroutine jjcroc(knat, icre)
                 nuti = iszon(jiszon+ibnum+1)
             else if (ixnom .ne. 0) then
                 if (icre .gt. 0) then
-                    call u2mess('F', 'JEVEUX1_44')
+                    call utmess('F', 'JEVEUX1_44')
                 endif
                 nmax = long ( jlong(ic) + ixnom )
                 nuti = luti ( jluti(ic) + ixnom )
             endif
             if (numec .le. 0 .or. numec .gt. nmax) then
-                call u2mesi('F', 'JEVEUX_38', 1, numec)
+                call utmess('F', 'JEVEUX_38', si=numec)
             endif
             nutiex = nuti
             idatoc = 0
             if (icre .gt. 0) then
                 if (numec .le. nutiex) then
-                    call u2mesi('F', 'JEVEUX1_45', 1, numec)
+                    call utmess('F', 'JEVEUX1_45', si=numec)
                 else
                     if (nutiex .lt. nmax) then
                         nuti = nuti + 1
                         iszon(jiszon+ibnum+1) = nuti
                     else
-                        call u2mess('F', 'JEVEUX1_46')
+                        call utmess('F', 'JEVEUX1_46')
                     endif
                 endif
             endif
@@ -163,7 +162,7 @@ subroutine jjcroc(knat, icre)
 !
             ixnom = iszon(jiszon+ibacol+idnom )
             if (ixnom .eq. 0) then
-                call u2mess('F', 'JEVEUX1_47')
+                call utmess('F', 'JEVEUX1_47')
             else
                 nmax = long (jlong(ic)+ixnom )
                 nuti = luti (jluti(ic)+ixnom )

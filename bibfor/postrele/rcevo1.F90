@@ -1,10 +1,10 @@
 subroutine rcevo1(nommat, fatizh, sm, para, symax)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: sm, para(*), symax
     logical :: fatizh
     character(len=8) :: nommat
@@ -51,9 +51,13 @@ subroutine rcevo1(nommat, fatizh, sm, para, symax)
     para(3) = r8vide()
     if (fatizh) then
         call rccome(nommat, 'FATIGUE', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'FATIGUE')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
+        endif
         call rccome(nommat, 'ELAS', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'ELAS')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='ELAS')
+        endif
 !
         nomval(1) = 'M_KE'
         nomval(2) = 'N_KE'

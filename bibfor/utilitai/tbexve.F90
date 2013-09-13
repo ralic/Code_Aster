@@ -1,17 +1,16 @@
 subroutine tbexve(nomta, para, nomobj, basobj, nbval,&
                   typval)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbval
     character(len=*) :: nomta, para, nomobj, basobj, typval
 ! ----------------------------------------------------------------------
@@ -64,17 +63,17 @@ subroutine tbexve(nomta, para, nomobj, basobj, nbval,&
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nblign .eq. 0) then
-        call u2mess('F', 'UTILITAI4_76')
+        call utmess('F', 'UTILITAI4_76')
     endif
 !
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
@@ -85,8 +84,7 @@ subroutine tbexve(nomta, para, nomobj, basobj, nbval,&
         if (inpar .eq. jnpar) goto 12
 10  continue
     valk = inpar
-    call u2mesg('F', 'UTILITAI6_89', 1, valk, 0,&
-                0, 0, 0.d0)
+    call utmess('F', 'UTILITAI6_89', sk=valk)
 12  continue
 !
     type = zk24(jtblp+4*(ipar-1)+1)

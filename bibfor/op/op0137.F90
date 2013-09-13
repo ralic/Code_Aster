@@ -19,8 +19,7 @@ subroutine op0137()
 !     OPERATEUR :     DEBUG
 #include "asterc/jdcset.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: lundef, idebug
     common /undfje/  lundef,idebug
 ! ----------------------------------------------------------------------
@@ -35,10 +34,10 @@ subroutine op0137()
     call getvtx(' ', 'SDVERI', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
         call jdcset('sdveri', 1)
-        call u2mess('I', 'SUPERVIS_24')
+        call utmess('I', 'SUPERVIS_24')
     else if (repons .eq. 'NON') then
         call jdcset('sdveri', 0)
-        call u2mesk('I', 'SUPERVIS_43', 1, 'SDVERI')
+        call utmess('I', 'SUPERVIS_43', sk='SDVERI')
     endif
 !
 !
@@ -48,11 +47,11 @@ subroutine op0137()
     call getvtx(' ', 'JEVEUX', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
         idebug = 1
-        call u2mesk('I', 'SUPERVIS_44', 1, 'JEVEUX')
+        call utmess('I', 'SUPERVIS_44', sk='JEVEUX')
         call jdcset('jeveux', 1)
     else if (repons .eq. 'NON') then
         idebug = 0
-        call u2mesk('I', 'SUPERVIS_43', 1, 'JEVEUX')
+        call utmess('I', 'SUPERVIS_43', sk='JEVEUX')
         call jdcset('jeveux', 0)
     endif
 !
@@ -62,10 +61,10 @@ subroutine op0137()
     repons=' '
     call getvtx(' ', 'JXVERI', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
-        call u2mess('I', 'SUPERVIS_23')
+        call utmess('I', 'SUPERVIS_23')
         call jdcset('jxveri', 1)
     else if (repons .eq. 'NON') then
-        call u2mesk('I', 'SUPERVIS_43', 1, 'JXVERI')
+        call utmess('I', 'SUPERVIS_43', sk='JXVERI')
         call jdcset('jxveri', 0)
     endif
 !
@@ -75,10 +74,10 @@ subroutine op0137()
     repons=' '
     call getvtx(' ', 'IMPR_MACRO', scal=repons, nbret=l)
     if (repons .eq. 'OUI') then
-        call u2mesk('I', 'SUPERVIS_44', 1, 'IMPR_MACRO')
+        call utmess('I', 'SUPERVIS_44', sk='IMPR_MACRO')
         call jdcset('impr_macro', 1)
     else if (repons .eq. 'NON') then
-        call u2mesk('I', 'SUPERVIS_43', 1, 'IMPR_MACRO')
+        call utmess('I', 'SUPERVIS_43', sk='IMPR_MACRO')
         call jdcset('impr_macro', 0)
     endif
 !

@@ -78,7 +78,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 #include "asterfort/jexnom.h"
 #include "asterfort/lcprsn.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
@@ -171,7 +171,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !     ON AVERTIT L'UTILISATEUR PAR UNE ALARME SI LA DIRECTION N'EST PAS
 !     FOURNIE
     if (.not.direc .and. ienorm .ne. 0) then
-        call u2mess('A', 'RUPTURE0_91')
+        call utmess('A', 'RUPTURE0_91')
     endif
 !     ON VERIFIE QUE LA DIRECTION FOURNIE EST ORTHOGONALE A LA NORMALE
 !
@@ -181,7 +181,9 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
         call normev(dir, norme)
         call normev(tmpv, norme)
         call lcprsn(3, dir, tmpv, psca)
-        if (abs(psca) .gt. 0.1d0) call u2mess('F', 'RUPTURE0_94')
+        if (abs(psca) .gt. 0.1d0) then
+            call utmess('F', 'RUPTURE0_94')
+        endif
     endif
     call getvid(motfac, 'DIRE_THETA', iocc=iocc, scal=dirth, nbret=nbdir)
 !

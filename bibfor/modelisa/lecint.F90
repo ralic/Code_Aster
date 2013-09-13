@@ -38,7 +38,7 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
 #include "asterfort/liritm.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: deblig
@@ -71,7 +71,7 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
     if(icl.eq.3.or.icl.eq.4)nom = cv(1:iv)
     valk(1) = cnl
     valk(2) = nom
-    call u2mesk('E', 'MODELISA4_81', 2, valk)
+    call utmess('E', 'MODELISA4_81', nk=2, valk=valk)
     ier = 1
     goto 5
 !
@@ -82,7 +82,7 @@ subroutine lecint(ifl, icl, iv, rv, cv,&
     nom = cv(1:iv)
     valk(1) = cnl
     valk(2) = nom
-    call u2mesk('I', 'MODELISA4_82', 2, valk)
+    call utmess('I', 'MODELISA4_82', nk=2, valk=valk)
 !
  5  continue
     deblig = -1

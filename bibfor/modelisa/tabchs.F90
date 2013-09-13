@@ -30,14 +30,13 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !     IN : MA     : NOM DU MAILLAGE
 !     IN/JXOUT : CHS: NOM DU CHAMP SIMPLE A CREER
 !
-    implicit   none
+    implicit none
 !
 !     ------------------------------------------------------------------
 ! 0.1. ==> ARGUMENT
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -53,11 +52,11 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 #include "asterfort/jexnom.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verigd.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: base
     character(len=8) :: nomgd, ma
     character(len=16) :: typchs
@@ -110,28 +109,42 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     valk(2)=typchs
 !
 !     PRESENCE DU PARAMETRE MAILLE
-    if (typchs .eq. 'EL' .and. .not.lmail) call u2mesk('F', 'MODELISA9_1', 2, valk)
+    if (typchs .eq. 'EL' .and. .not.lmail) then
+        call utmess('F', 'MODELISA9_1', nk=2, valk=valk)
+    endif
 !
 !     PRESENCE/ABSENCE POUR CHAMPS NOEU :
     if (typchs .eq. 'NOEU') then
-        if (.not.lnoeu) call u2mesk('F', 'MODELISA9_1', 2, valk)
-        if (lmail .or. lpoin .or. lspoin) call u2mesk('F', 'MODELISA9_1', 2, valk)
+        if (.not.lnoeu) then
+            call utmess('F', 'MODELISA9_1', nk=2, valk=valk)
+        endif
+        if (lmail .or. lpoin .or. lspoin) then
+            call utmess('F', 'MODELISA9_1', nk=2, valk=valk)
+        endif
     endif
 !
 !     PRESENCE/ABSENCE POUR CHAMPS ELGA :
     if (typchs .eq. 'ELGA') then
-        if (.not.lpoin .or. lnoeu) call u2mesk('F', 'MODELISA9_1', 2, valk)
+        if (.not.lpoin .or. lnoeu) then
+            call utmess('F', 'MODELISA9_1', nk=2, valk=valk)
+        endif
     endif
 !
 !     PRESENCE/ABSENCE POUR CHAMPS ELNO :
     if (typchs .eq. 'ELNO') then
-        if (.not.lpoin .and. .not.lnoeu) call u2mesk('F', 'MODELISA9_1', 2, valk)
-        if (lpoin .and. lnoeu) call u2mesk('F', 'MODELISA9_1', 2, valk)
+        if (.not.lpoin .and. .not.lnoeu) then
+            call utmess('F', 'MODELISA9_1', nk=2, valk=valk)
+        endif
+        if (lpoin .and. lnoeu) then
+            call utmess('F', 'MODELISA9_1', nk=2, valk=valk)
+        endif
     endif
 !
 !     PRESENCE/ABSENCE POUR CHAMPS ELEM :
     if (typchs .eq. 'ELEM') then
-        if (lpoin .or. lnoeu) call u2mesk('F', 'MODELISA9_1', 2, valk)
+        if (lpoin .or. lnoeu) then
+            call utmess('F', 'MODELISA9_1', nk=2, valk=valk)
+        endif
     endif
 !
 !
@@ -194,7 +207,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !        DE LA TABLE CORRESPONDENT A LA GRANDEUR LUE
     call verigd(nomgd, zk24(jcmp), ncmp, iret)
     if (iret .ne. 0) then
-        call u2mesk('F', 'MODELISA9_2', ncmp, zk24(jcmp))
+        call utmess('F', 'MODELISA9_2', nk=ncmp, valk=zk24(jcmp))
     endif
 !
 !
@@ -259,8 +272,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     valk(3)=nono
                     vali(1)=ipt
                     vali(2)=nbno
-                    call u2mesg('F', 'MODELISA9_5', 3, valk, 2,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'MODELISA9_5', nk=3, valk=valk, ni=2,&
+                                vali=vali)
                 endif
 40          continue
         endif
@@ -361,8 +374,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     valk(3)=nono
                     vali(1)=ipt
                     vali(2)=isp
-                    call u2mesg('F', 'MODELISA9_6', 3, valk, 2,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'MODELISA9_6', nk=3, valk=valk, ni=2,&
+                                vali=vali)
                 endif
                 zr(jcesv+iad-1)=zr(jobj3+ili-1)
                 zl(jcesl+iad-1)=.true.

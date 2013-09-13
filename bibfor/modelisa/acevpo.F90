@@ -7,8 +7,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -36,7 +35,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
     logical :: bon
-    character(len=8) ::  nomu, cara(100), kioc
+    character(len=8) :: nomu, cara(100), kioc
     character(len=16) :: sec, vsec, concep, cmd
     integer :: vali(3)
 !     ------------------------------------------------------------------
@@ -67,8 +66,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
             vali (1) = ioc
             vali (2) = ncar
             vali (3) = nval
-            call u2mesg('E', 'MODELISA9_31', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'MODELISA9_31', ni=3, vali=vali)
             ier = ier + 1
         endif
 !
@@ -83,7 +81,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
                     if (cara(i) .eq. 'R') bon = .true.
 20              continue
                 if (.not. bon) then
-                    call u2mesk('E', 'MODELISA_66', 1, kioc)
+                    call utmess('E', 'MODELISA_66', sk=kioc)
                     ier = ier + 1
                 endif
             endif

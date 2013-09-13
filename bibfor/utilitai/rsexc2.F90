@@ -5,8 +5,7 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: i1, i2, icode, iret, j, nmax
 !-----------------------------------------------------------------------
     parameter (nmax=10)
@@ -85,19 +84,16 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
         call getres(concep, typcon, nomcmd)
         valk(1) = nomsd
         valk(2) = noms(1)
-        call u2mesg('A+', 'UTILITAI8_13', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('A+', 'UTILITAI8_13', nk=2, valk=valk)
         do 10 j = 2, i2
             valk(1) = noms(j)
-            call u2mesg('A+', 'UTILITAI8_14', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('A+', 'UTILITAI8_14', sk=valk(1))
 10      continue
-        call u2mess('A+', 'UTILITAI8_15')
+        call utmess('A+', 'UTILITAI8_15')
         vali = iordr
         valk(1) = option
         valk(2) = nomsd
-        call u2mesg('A', 'UTILITAI8_16', 2, valk, 1,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'UTILITAI8_16', nk=2, valk=valk, si=vali)
     endif
     iretg=min(icode,iretg)
 20  continue

@@ -42,8 +42,8 @@ subroutine pmdorc(compor, carcri, nbvari, k)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
 #include "asterfort/utlcal.h"
+#include "asterfort/utmess.h"
     integer :: iret, n1, nbvari, k, icpri, typtgt, exits
     integer :: ncomel, numlc, iteint, itepas, itdebo, nbocc, irett
     integer :: nunit, indimp, ncmpma, dimaki, dimanv, ii
@@ -98,8 +98,7 @@ subroutine pmdorc(compor, carcri, nbvari, k)
     if (iret .eq. 0) then
         texte(1)=defo
         texte(2)=comp
-        call u2mesg('F', 'COMPOR1_44', 2, texte, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'COMPOR1_44', nk=2, valk=texte)
     endif
     if (defo .eq. 'SIMO_MIEHE') nbvari=nbvari+6
 !
@@ -186,8 +185,7 @@ subroutine pmdorc(compor, carcri, nbvari, k)
                 if (irett .eq. 0) then
                     texte(1)=tymatg
                     texte(2)=comp
-                    call u2mesg('F', 'COMPOR1_46', 2, texte, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'COMPOR1_46', nk=2, valk=texte)
                 endif
             endif
         endif

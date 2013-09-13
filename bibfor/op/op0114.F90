@@ -36,7 +36,7 @@ subroutine op0114()
 #include "asterfort/jeveuo.h"
 #include "asterfort/liimpr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ifm, niv, nbvale, ndim, jpas, jnbp, jbor, jval, i
     character(len=19) :: resu
@@ -74,7 +74,7 @@ subroutine op0114()
         valk(1) = 'OP0114'
         valk(2) = 'DONNEES'
         valk(3) = option
-        call u2mesk('I+', 'COUPLAGEIFS_11', 3, valk)
+        call utmess('I+', 'COUPLAGEIFS_11', nk=3, valk=valk)
     endif
 !
     nbvale = 7

@@ -19,7 +19,7 @@ subroutine jxferm(iclas)
     implicit none
 #include "asterc/closdr.h"
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: iclas
 !     ------------------------------------------------------------------
     integer :: n
@@ -58,7 +58,7 @@ subroutine jxferm(iclas)
         endif
         call closdr(nom128, ier)
         if (ier .ne. 0) then
-            call u2mesk('F', 'JEVEUX_11', 1, nombas(iclas))
+            call utmess('F', 'JEVEUX_11', sk=nombas(iclas))
         endif
  1  end do
 !

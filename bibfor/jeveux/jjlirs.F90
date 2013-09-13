@@ -18,7 +18,7 @@ subroutine jjlirs(jadm, iclas, idos, ius, ist)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "jeveux_private.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: jadm, iclas, ius, ist
 ! ----------------------------------------------------------------------
 !     RELIT LES ENTIERS ENCADRANT UN SEGMENT DE VALEURS
@@ -42,22 +42,22 @@ subroutine jjlirs(jadm, iclas, idos, ius, ist)
     ista1 = iszon(jiszon+jadm-1)
     idatoc = iszon(jiszon+jadm-2)
     if (idatoc .ne. idos) then
-        call u2mesi('F', 'JEVEUX1_54', 1, jadm)
+        call utmess('F', 'JEVEUX1_54', si=jadm)
     endif
 !
     if (ista1 .ne. istat(1) .and. ista1 .ne. istat(2)) then
-        call u2mesi('F', 'JEVEUX1_54', 1, jadm)
+        call utmess('F', 'JEVEUX1_54', si=jadm)
     endif
 !
     is = jiszon+iszon(jiszon+jadm-4)
     ista2 = iszon(is-4)
     icla2 = iszon(is-2)
     if (icla2 .ne. iclas) then
-        call u2mesi('F', 'JEVEUX1_55', 1, jadm)
+        call utmess('F', 'JEVEUX1_55', si=jadm)
     endif
 !
     if (ista2 .ne. istat(3) .and. ista2 .ne. istat(4)) then
-        call u2mesi('F', 'JEVEUX1_55', 1, jadm)
+        call utmess('F', 'JEVEUX1_55', si=jadm)
     endif
 !
     ius = ista1

@@ -42,7 +42,7 @@ subroutine argu80(nomres)
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verecy.h"
 #include "asterfort/wkvect.h"
 !
@@ -96,8 +96,7 @@ subroutine argu80(nomres)
     call jenonu(jexnom(intf//'.IDC_NOMS', droite), numd)
     if (numd .eq. 0) then
         valk = droite
-        call u2mesg('F', 'ALGORITH15_85', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH15_85', sk=valk)
     endif
 !
 !   INTERFACE DE GAUCHE OBLIGATOIRE
@@ -105,8 +104,7 @@ subroutine argu80(nomres)
     call jenonu(jexnom(intf//'.IDC_NOMS', gauche), numg)
     if (numg .eq. 0) then
         valk = gauche
-        call u2mesg('F', 'ALGORITH15_86', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH15_86', sk=valk)
     endif
 !
 !   INTERFACE AXE FACULTATIVE
@@ -115,8 +113,7 @@ subroutine argu80(nomres)
         call jenonu(jexnom(intf//'.IDC_NOMS', axe), numa)
         if (numa .eq. 0) then
             valk = axe
-            call u2mesg('F', 'ALGORITH15_87', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_87', sk=valk)
         endif
     else
         numa=0
@@ -140,15 +137,13 @@ subroutine argu80(nomres)
 !  VERIFICATIONS SUR LES TYPES INTERFACES
 !
     if (typg .ne. typd .or. typa .ne. typd) then
-        call u2mesg('F', 'ALGORITH15_88', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH15_88')
     endif
 !
     if (typd .ne. 'MNEAL   ' .and. typd .ne. 'CRAIGB  ') then
         if (typd .ne. 'AUCUN   ' .and. typd .ne. 'CB_HARMO') then
             valk = typd
-            call u2mesg('F', 'ALGORITH15_89', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_89', sk=valk)
         endif
     endif
 !
@@ -161,8 +156,7 @@ subroutine argu80(nomres)
     call getvis(blanc, 'NB_SECTEUR', iocc=1, scal=nbsec, nbret=ibid)
     if (nbsec .lt. 2) then
         vali = nbsec
-        call u2mesg('F', 'ALGORITH15_59', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH15_59', si=vali)
     endif
 !
     zi(lddnbs)=nbsec

@@ -27,7 +27,7 @@ subroutine cescar(cesz, cartz, basz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: cartz, cesz, basz
 ! ------------------------------------------------------------------
@@ -107,8 +107,8 @@ subroutine cescar(cesz, cartz, basz)
         vali(1)=nbpt
         vali(2)=nbsp
         vali(3)=ima
-        call u2mesg('F', 'MODELISA9_8', 2, valk, 3,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'MODELISA9_8', nk=2, valk=valk, ni=3,&
+                    vali=vali)
     endif
     if (nbpt*nbsp .eq. 0) goto 80
 !

@@ -32,7 +32,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
     character(len=24) :: sdieto
     integer :: numins
@@ -105,7 +105,7 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
 !
 ! ----- AFFICHAGE
 !
-        call u2mess('I', 'ARCHIVAGE_5')
+        call utmess('I', 'ARCHIVAGE_5')
 !
 ! ----- EXTENSION DE RESULT SI TROP PETIT (DOUBLEMENT)
 !

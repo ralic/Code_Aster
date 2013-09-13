@@ -37,8 +37,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/statpu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     character(len=8) :: noeu
@@ -80,7 +79,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
                 if (zk8(jncho+ichoc-1) .eq. noeu) goto 12
 10          continue
             lg = max(1,lxlgut(noeu))
-            call u2mesk('F', 'UTILITAI_87', 1, noeu(1:lg))
+            call utmess('F', 'UTILITAI_87', sk=noeu(1:lg))
             goto 9999
 12          continue
 !
@@ -99,7 +98,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
                 if (tfin .gt. tmax) tfin = tmax
             endif
             if (tdebut .ge. tfin) then
-                call u2mess('F', 'PREPOST4_47')
+                call utmess('F', 'PREPOST4_47')
             endif
             do 14 j = 1, nbpt
                 if (zr(jinst+j-1) .ge. tdebut) then
@@ -145,7 +144,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             call jedetr('&&USURPU.WK3')
             call jedetr('&&USURPU.IWK4')
         else
-            call u2mess('F', 'PREPOST4_84')
+            call utmess('F', 'PREPOST4_84')
         endif
     endif
 !

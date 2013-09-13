@@ -43,7 +43,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: sigm(6), deps(6), vim(*)
     real(kind=8) :: sigp(6), vip(*), dsidep(6, 6), crildc(3)
     character(len=16) :: option
@@ -196,7 +196,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
                 if (.not. pconv) then
                     iter = iter + 1
                     if (iter .eq. itemax) then
-                        call u2mess('A', 'MODELISA5_42')
+                        call utmess('A', 'MODELISA5_42')
                         codret=1
                         do 157 i = 1, ndimsi
                             sigp(i)=0.d0

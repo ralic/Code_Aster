@@ -39,8 +39,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/prmadj.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: neq, diag(0:neq), lgind, lgadjn
     integer :: col(*), xadj(neq+1), adjncy(lgadjn)
@@ -126,7 +125,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !          EN CAS DE LIAISON DANS UNE MATRICE GENERALISEE
 !          LES DDL SONT CORRECTEMENT ORDONNES A PRIORI
 !          ON NE FAIT PAS DE RENUMEROTATION
-            call u2mess('I', 'ALGELINE3_35')
+            call utmess('I', 'ALGELINE3_35')
             renum=3
         endif
     else
@@ -211,8 +210,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !     TEST D'ESPACE SUFFISANT DANS ADJNCY
         vali (1) = lgadjn
         vali (2) = xadj(neq+1)-1
-        call u2mesg('F', 'ALGELINE4_4', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_4', ni=2, vali=vali)
     endif
 !
     do 350 j = 1, neq
@@ -353,8 +351,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
     if (niv .eq. 2 .and. ind .ne. n2) then
         vali (1) = n2
         vali (2) = ind
-        call u2mesg('F', 'ALGELINE4_60', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_60', ni=2, vali=vali)
     endif
     do 406 iddl = 1, n2
         invp(perm(iddl)) = iddl
@@ -409,7 +406,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
                     goto 446
                 endif
 445          continue
-            call u2mess('A', 'ALGELINE3_26')
+            call utmess('A', 'ALGELINE3_26')
 446          continue
         endif
         call jeveuo('&FETI.INFO.STOCKAGE.FVAL', 'E', ifet3)

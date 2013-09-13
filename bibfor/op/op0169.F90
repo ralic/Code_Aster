@@ -35,7 +35,7 @@ subroutine op0169()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: typfon
     character(len=16) :: cmd
@@ -55,7 +55,7 @@ subroutine op0169()
     fsic = typflu//'.FSIC'
     call jeveuo(fsic, 'L', lfsic)
     if (zi(lfsic) .ne. 1) then
-        call u2mess('F', 'UTILITAI3_2')
+        call utmess('F', 'UTILITAI3_2')
     endif
 !
 ! --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL

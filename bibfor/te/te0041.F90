@@ -1,5 +1,5 @@
 subroutine te0041(option, nomte)
-    implicit          none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdis.h"
@@ -12,9 +12,9 @@ subroutine te0041(option, nomte)
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2plg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpplg.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpslg.h"
@@ -90,7 +90,7 @@ subroutine te0041(option, nomte)
 !     LE CODE STOKE DANS LA CARTE
     call infdis('TYDI', infodi, r8bid, k8bid)
     if (infodi .ne. ibid) then
-        call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+        call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !
@@ -109,10 +109,10 @@ subroutine te0041(option, nomte)
     else
 !       -- POUR LES AUTRES OPTIONS C'EST SYMETRIQUE
         call infdis('SKMA', ibid, r8bid, k8bid)
-        if (ibid.ne.3) then
-           valk(1)=option
-           valk(2)=nomte
-           call u2mesk('F','DISCRETS_32',2,valk)
+        if (ibid .ne. 3) then
+            valk(1)=option
+            valk(2)=nomte
+            call utmess('F', 'DISCRETS_32', nk=2, valk=valk)
         endif
     endif
 !
@@ -152,7 +152,7 @@ subroutine te0041(option, nomte)
 !           DISCRET DE TYPE RAIDEUR
             call infdis('DISK', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then
-                call u2mesk('A+', 'DISCRETS_27', 1, nomte)
+                call utmess('A+', 'DISCRETS_27', sk=nomte)
                 call infdis('DUMP', ibid, r8bid, 'A+')
             endif
             call jevech('PCADISK', 'L', jdc)
@@ -165,7 +165,7 @@ subroutine te0041(option, nomte)
 !           DISCRET DE TYPE MASSE
             call infdis('DISM', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then
-                call u2mesk('A+', 'DISCRETS_26', 1, nomte)
+                call utmess('A+', 'DISCRETS_26', sk=nomte)
                 call infdis('DUMP', ibid, r8bid, 'A+')
             endif
             call jevech('PCADISM', 'L', jdc)
@@ -175,7 +175,7 @@ subroutine te0041(option, nomte)
 !           DISCRET DE TYPE AMORTISSEMENT
             call infdis('DISA', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then
-                call u2mesk('A+', 'DISCRETS_28', 1, nomte)
+                call utmess('A+', 'DISCRETS_28', sk=nomte)
                 call infdis('DUMP', ibid, r8bid, 'A+')
             endif
             call jevech('PCADISA', 'L', jdc)
@@ -196,7 +196,8 @@ subroutine te0041(option, nomte)
             valres(3) = zero
             call utpsgl(nno, nc, pgl, zr(jdr), matv1)
             call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ',&
-                        [valpar], 3, nomres, valres, icodre,0)
+                        [valpar], 3, nomres, valres, icodre,&
+                        0)
             if (icodre(1) .eq. 0 .and. valres(1) .ne. zero) then
                 if (icodre(2) .eq. 0) then
                     mata1(1)=matv1(1)*valres(2)/valres(1)
@@ -226,7 +227,7 @@ subroutine te0041(option, nomte)
 !           DISCRET DE TYPE MASSE
             call infdis('DISM', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then
-                call u2mesk('A+', 'DISCRETS_26', 1, nomte)
+                call utmess('A+', 'DISCRETS_26', sk=nomte)
                 call infdis('DUMP', ibid, r8bid, 'A+')
             endif
             call jevech('PCADISM', 'L', jdc)
@@ -309,7 +310,7 @@ subroutine te0041(option, nomte)
 !           DISCRET DE TYPE RAIDEUR
             call infdis('DISK', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then
-                call u2mesk('A+', 'DISCRETS_27', 1, nomte)
+                call utmess('A+', 'DISCRETS_27', sk=nomte)
                 call infdis('DUMP', ibid, r8bid, 'A+')
             endif
             call jevech('PCADISK', 'L', jdc)
@@ -320,7 +321,7 @@ subroutine te0041(option, nomte)
 !           DISCRET DE TYPE MASSE
             call infdis('DISM', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then
-                call u2mesk('A+', 'DISCRETS_26', 1, nomte)
+                call utmess('A+', 'DISCRETS_26', sk=nomte)
                 call infdis('DUMP', ibid, r8bid, 'A+')
             endif
             call jevech('PCADISM', 'L', jdc)
@@ -330,7 +331,7 @@ subroutine te0041(option, nomte)
 !           DISCRET DE TYPE AMORTISSEMENT
             call infdis('DISA', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then
-                call u2mesk('A+', 'DISCRETS_28', 1, nomte)
+                call utmess('A+', 'DISCRETS_28', sk=nomte)
                 call infdis('DUMP', ibid, r8bid, 'A+')
             endif
             call jevech('PCADISA', 'L', jdc)
@@ -436,7 +437,7 @@ subroutine te0041(option, nomte)
 27      continue
     endif
 !
-999   continue
+999  continue
 !
     call jedema()
 end subroutine

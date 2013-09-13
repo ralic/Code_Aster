@@ -1,7 +1,6 @@
 subroutine ajlagr(rigid, masse, masinv)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
@@ -15,9 +14,9 @@ subroutine ajlagr(rigid, masse, masinv)
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/pteddl.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: rigid, masse, masinv
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -74,7 +73,7 @@ subroutine ajlagr(rigid, masse, masinv)
     else if (zi(imatr+3) .eq. 2) then
         typmat = 'C'
     else
-        call u2mess('F', 'ALGORITH_3')
+        call utmess('F', 'ALGORITH_3')
     endif
     call jeveuo(raid//'           .REFA', 'L', jrefa1)
     numddl = zk24(jrefa1-1+2)(1:14)
@@ -89,7 +88,7 @@ subroutine ajlagr(rigid, masse, masinv)
     else if (zi(imatm+3) .eq. 2) then
         typma2 = 'C'
     else
-        call u2mess('F', 'ALGORITH_3')
+        call utmess('F', 'ALGORITH_3')
     endif
     call jeveuo(mass//'           .REFA', 'L', jrefa2)
     nu2ddl = zk24(jrefa2-1+2)(1:14)
@@ -97,14 +96,12 @@ subroutine ajlagr(rigid, masse, masinv)
     if (typma2 .ne. typmat) then
         valk (1) = typmat
         valk (2) = typma2
-        call u2mesg('F', 'ALGORITH14_77', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_77', nk=2, valk=valk)
     endif
     if (nu2ddl .ne. numddl) then
         valk (1) = numddl
         valk (2) = nu2ddl
-        call u2mesg('F', 'ALGORITH14_78', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_78', nk=2, valk=valk)
     endif
 !
 !

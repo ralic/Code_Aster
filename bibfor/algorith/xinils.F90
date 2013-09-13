@@ -36,7 +36,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xajuls.h"
 #include "asterfort/xcatls.h"
@@ -280,7 +280,9 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
                     jconx2, clsm)
     endif
 !
-    if (niv .ge. 2) call u2mesi('I', 'XFEM_37', 1, clsm)
+    if (niv .ge. 2) then
+        call utmess('I', 'XFEM_37', si=clsm)
+    endif
 !
 !-----------------------------------------------------------------------
 !     FIN

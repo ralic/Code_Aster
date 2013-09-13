@@ -66,8 +66,7 @@ subroutine op0180()
 #include "asterfort/tomabe.h"
 #include "asterfort/topoca.h"
 #include "asterfort/trajca.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/voisca.h"
 #include "asterfort/wkvect.h"
 !
@@ -145,7 +144,9 @@ subroutine op0180()
     valr(2)=delta
     valk(7)= adher
 !
-    if (adher .eq. 'NON') call u2mess('I', 'MODELISA3_39')
+    if (adher .eq. 'NON') then
+        call utmess('I', 'MODELISA3_39')
+    endif
 !
     call getvtx(' ', 'TYPE_RELAX', scal=typrel, nbret=ibid)
     if (typrel .eq. 'BPEL') then
@@ -180,9 +181,9 @@ subroutine op0180()
         if (abs(nbancr) .ne. 2) then
             write(k3b,'(I3)') icabl
             if (n1 .ne. 0) then
-                call u2mesk('F', 'MODELISA5_83', 1, k3b)
+                call utmess('F', 'MODELISA5_83', sk=k3b)
             else
-                call u2mesk('F', 'MODELISA5_84', 1, k3b)
+                call utmess('F', 'MODELISA5_84', sk=k3b)
             endif
         else
             if (n1 .ne. 0) then
@@ -190,7 +191,7 @@ subroutine op0180()
                             nbret=ibid)
                 if (noancr(1) .eq. noancr(2)) then
                     write(k3b,'(I3)') icabl
-                    call u2mesk('F', 'MODELISA5_85', 1, k3b)
+                    call utmess('F', 'MODELISA5_85', sk=k3b)
                 endif
                 valk(2) = 'NOEUD'
                 valk(5) = 'NOEUD'
@@ -201,7 +202,7 @@ subroutine op0180()
                             vect=noancr(1), nbret=ibid)
                 if (noancr(1) .eq. noancr(2)) then
                     write(k3b,'(I3)') icabl
-                    call u2mesk('F', 'MODELISA5_86', 1, k3b)
+                    call utmess('F', 'MODELISA5_86', sk=k3b)
                 endif
                 valk(2) = 'GROUP_NO'
                 valk(5) = 'GROUP_NO'
@@ -229,10 +230,10 @@ subroutine op0180()
             write(k3b,'(I3)') icabl
 !    SI LA TENSION EST NULLE : SIMPLE ALARME
             if (f0 .eq. 0.d0) then
-                call u2mesk('A', 'MODELISA5_87', 1, k3b)
+                call utmess('A', 'MODELISA5_87', sk=k3b)
 !    SI LA TENSION EST NON-NULLE : ARRET FATAL
             else
-                call u2mesk('F', 'MODELISA5_88', 1, k3b)
+                call utmess('F', 'MODELISA5_88', sk=k3b)
 !
             endif
         endif
@@ -297,16 +298,24 @@ subroutine op0180()
     carte = chmat//'.CHAMP_MAT '
     cadesc = carte//'.DESC'
     call jeexin(cadesc, iret)
-    if (iret .eq. 0) call u2mess('F', 'MODELISA5_89')
+    if (iret .eq. 0) then
+        call utmess('F', 'MODELISA5_89')
+    endif
     call etenca(carte, ligrmo, iret)
-    if (iret .ne. 0) call u2mesk('F', 'MODELISA3_37', 1, carte)
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA3_37', sk=carte)
+    endif
 !
     carte = caelem//'.CARGENBA  '
     cadesc = carte//'.DESC'
     call jeexin(cadesc, iret)
-    if (iret .eq. 0) call u2mess('F', 'MODELISA5_90')
+    if (iret .eq. 0) then
+        call utmess('F', 'MODELISA5_90')
+    endif
     call etenca(carte, ligrmo, iret)
-    if (iret .ne. 0) call u2mesk('F', 'MODELISA3_37', 1, carte)
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA3_37', sk=carte)
+    endif
 !
 !.... DETERMINATION DU RANG DE LA COMPOSANTE <A1>
 !.... DE LA GRANDEUR <CAGNBA>
@@ -321,7 +330,9 @@ subroutine op0180()
         endif
     end do
 21  continue
-    if (irana1 .eq. 0) call u2mess('F', 'MODELISA5_91')
+    if (irana1 .eq. 0) then
+        call utmess('F', 'MODELISA5_91')
+    endif
 !
 ! 4.4 CREATION DE LA SD TABLE RESULTAT
 ! ---

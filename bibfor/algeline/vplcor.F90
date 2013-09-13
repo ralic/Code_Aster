@@ -3,7 +3,7 @@ subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/mrmult.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: ldynam, neq, nborto, nbvect, ivecp
     real(kind=8) :: prorto
     real(kind=8) :: signes(nbvect), vect(neq, nbvect), pkx(neq, nbvect)
@@ -90,7 +90,7 @@ subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
 60                  continue
                     xjkxi = xjkxis
                 else
-                    call u2mesi('A', 'ALGELINE4_76', 1, iortho)
+                    call utmess('A', 'ALGELINE4_76', si=iortho)
                     goto 100
                 endif
 !

@@ -30,7 +30,7 @@ subroutine nmetl2(motfac, sdieto, icham)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmetcv.h"
 #include "asterfort/nmetnc.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
     character(len=24) :: sdieto
     character(len=16) :: motfac
@@ -136,7 +136,7 @@ subroutine nmetl2(motfac, sdieto, icham)
             if (iret .ne. 0) then
                 valk(1) = champ1
                 valk(2) = nomcha
-                call u2mesk('A', 'MECANONLINE_2', 2, valk)
+                call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
             endif
         else if ((loccha.eq.'ELGA').or.(loccha.eq.'ELEM')) then
             call copisd('CHAMP_GD', 'V', champ2, nomcha)

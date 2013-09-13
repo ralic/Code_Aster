@@ -21,7 +21,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, numlc
     real(kind=8) :: crit(*)
     real(kind=8) :: instam, instap, tampon(*)
@@ -38,5 +38,5 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
 !       CALL NMCOUP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CP,
 !C     &              CRIT,INSTAM, INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,
 !C     &              TAMPON,NUMLC,SIGP,VIP,DSIDEP,CODRET)
-    call u2mess('F', 'FERMETUR_11')
+    call utmess('F', 'FERMETUR_11')
 end subroutine

@@ -12,7 +12,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomcom, chacc(*), chamca(*)
     integer :: nbordr, ifi, iocc, ordr(*), nbacc, nbchca
@@ -88,7 +88,9 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
     do 34 i = 1, nbacc
         toto = chacc(i)
         il = lxlgut(toto)
-        if (nbcara+il .gt. maxlen) call u2mess('F', 'PREPOST3_5')
+        if (nbcara+il .gt. maxlen) then
+            call utmess('F', 'PREPOST3_5')
+        endif
         chaine(nbcara+1:nbcara+il) = toto(1:il)
         nbcara = nbcara + il
         iob = iob + 1
@@ -120,7 +122,9 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
         endif
         toto = chamca(i)
         il = lxlgut(toto)
-        if (nbcara+il .gt. maxlen) call u2mess('F', 'PREPOST3_5')
+        if (nbcara+il .gt. maxlen) then
+            call utmess('F', 'PREPOST3_5')
+        endif
         chaine(nbcara+1:nbcara+il) = toto(1:il)
         nbcara = nbcara + il
         iob = iob + 1

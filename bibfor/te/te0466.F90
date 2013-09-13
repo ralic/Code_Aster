@@ -1,13 +1,13 @@
 subroutine te0466(option, nomte)
 ! aslint: disable=W1501
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dimthm.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 ! =====================================================================
@@ -74,7 +74,7 @@ subroutine te0466(option, nomte)
         elref2 = 'QU4'
 !            WRITE(6,*)'ELREFE2',ELREF2
     else
-        call u2mesk('F', 'DVP_4', 1, elrefe)
+        call utmess('F', 'DVP_4', sk=elrefe)
     endif
 ! FONCTIONS DE FORMES QUADRATIQUES
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&

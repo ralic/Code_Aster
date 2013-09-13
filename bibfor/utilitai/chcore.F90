@@ -36,8 +36,7 @@ subroutine chcore(chou)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdchgd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iret, ibid, jvale, nbval, jvalin, i
     real(kind=8) :: zero
     parameter(zero=0.d0)
@@ -56,7 +55,9 @@ subroutine chcore(chou)
                 nomgd, ibid)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    if (tsca .ne. 'R') call u2mesk('F', 'UTILITAI_20', 1, chin)
+    if (tsca .ne. 'R') then
+        call utmess('F', 'UTILITAI_20', sk=chin)
+    endif
 !
 !     COPIE CHIN --> CHOU
     call copisd('CHAMP', 'G', chin, chou)
@@ -84,7 +85,7 @@ subroutine chcore(chou)
     else if (docu.eq.'CHML') then
         vale(20:24)='.CELV'
     else
-        call u2mess('F', 'UTILITAI_21')
+        call utmess('F', 'UTILITAI_21')
     endif
 !
     call jelira(vale, 'LONMAX', nbval)

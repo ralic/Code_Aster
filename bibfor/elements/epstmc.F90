@@ -43,7 +43,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utrcyl.h"
 #include "asterfort/verift.h"
@@ -126,7 +126,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !
             else
 !
-                call u2mesk('I', 'ELEMENTS_58', 1, phenom)
+                call utmess('I', 'ELEMENTS_58', sk=phenom)
 !
             endif
         endif
@@ -331,7 +331,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             if (ndim .eq. 2) epsth(3)=epsthl(3)
         else if (phenom.eq.'ELAS_HYPER') then
         else
-            call u2mesk('F', 'ELEMENTS_15', 1, phenom)
+            call utmess('F', 'ELEMENTS_15', sk=phenom)
         endif
     endif
 !

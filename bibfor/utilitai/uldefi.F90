@@ -19,9 +19,9 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ulinit.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
     integer :: unit
     character(len=*) :: ficnom, ddnom, typf, acces, autor
 !     ------------------------------------------------------------------
@@ -89,13 +89,13 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
     else
 !       --- INSERTION DEMANDEE ---
         if (k1typ .ne. 'A' .and. k1typ .ne. 'B' .and. k1typ .ne. 'L') then
-            call u2mesk('F', 'UTILITAI5_4', 1, k1typ)
+            call utmess('F', 'UTILITAI5_4', sk=k1typ)
         endif
         if (k1acc .ne. 'O' .and. k1acc .ne. 'N' .and. k1acc .ne. 'A') then
-            call u2mesk('F', 'UTILITAI5_5', 1, k1acc)
+            call utmess('F', 'UTILITAI5_5', sk=k1acc)
         endif
         if (k1aut .ne. 'O' .and. k1aut .ne. 'N') then
-            call u2mesk('F', 'UTILITAI5_6', 1, k1aut)
+            call utmess('F', 'UTILITAI5_6', sk=k1aut)
         endif
         if (k1typ .eq. 'A') then
 !
@@ -114,7 +114,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
                         else if ( unitfi(ifile) .ne. unit .and. unitfi(&
                     ifile).gt.0 ) then
                         write(k8b,'(I4)') unit
-                        call u2mesk('F', 'UTILITAI5_7', 1, k8b)
+                        call utmess('F', 'UTILITAI5_7', sk=k8b)
                     endif
                     goto 21
                     else if (ddname(ifile) .eq. ' ' .and. namefi(ifile)&
@@ -127,7 +127,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
                 nbfile = nbfile + 1
                 if (nbfile .gt. mxf) then
                     write(k8b,'(I4)') mxf
-                    call u2mesk('F', 'UTILITAI5_8', 1, k8b)
+                    call utmess('F', 'UTILITAI5_8', sk=k8b)
                 endif
                 ilibre = nbfile
             endif

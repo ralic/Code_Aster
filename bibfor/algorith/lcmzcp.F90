@@ -25,8 +25,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option
     character(len=*) :: fami
     integer :: ndim, imate, kpg, ksp
@@ -151,7 +150,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
                 1, nomres(3), valres(3), icodre(3), 0)
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
         if ((iisnan(tref).ne.0) .or. (icodre(3).ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         else
             epsthe = valres(3)*(temp-tref)
         endif
@@ -166,7 +165,8 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     nomres(1)='B_ENDOGE'
     nomres(2)='K_DESSIC'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                [0.0d0], 2, nomres, valres, icodre, 0)
+                [0.0d0], 2, nomres, valres, icodre,&
+                0)
     if (icodre(1) .ne. 0) valres(1) = 0.0d0
     if (icodre(2) .ne. 0) valres(2) = 0.0d0
     bendo = valres(1)
@@ -183,7 +183,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
         valkm(1)='MAZARS_GC'
         valkm(2)=mazars(7)
         valkm(3)=mazars(8)
-        call u2mesk('F', 'COMPOR1_76', 3, valkm)
+        call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
     endif
 ! --- AJOUT DE NU DANS VALRES
     valres(nbval+1) = nu

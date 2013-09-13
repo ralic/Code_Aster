@@ -46,8 +46,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -124,7 +123,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 !         LA LIRE DANS LA SD MAILLAGE (VOIR COMMANDE LIRE_MAILLAGE).
 !         ELLE EST POUR L'INSTANT OBLIGATOIRE A LA PREMIERE OCCURENCE
 !         DE RECO_GLOBAL
-            call u2mess('F', 'ALGORITH10_21')
+            call utmess('F', 'ALGORITH10_21')
         endif
         incr = 0
         nbfuse = 0
@@ -141,24 +140,20 @@ subroutine rec110(nomres, nomsqu, modgen)
             do 10 in = 1, nbni
                 numero = zi(lintd-1+in)
                 if (zi(lsk-1+numero+incr) .ne. istac) then
-                    call u2mesg('E+', 'ALGORITH15_55', 0, ' ', 0,&
-                                0, 0, 0.d0)
+                    call utmess('E+', 'ALGORITH15_55')
                     call jenuno(jexnum(nomsqu//'.NOMNOE', numero), k8bid)
                     valk (1) = k8bid
                     valk (2) = lintf
                     valk (3) = nomsst
-                    call u2mesg('E', 'ALGORITH15_56', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'ALGORITH15_56', nk=3, valk=valk)
                 endif
                 if (zi(lsk2-1+numero+incr) .ne. numero) then
-                    call u2mesg('E+', 'ALGORITH15_55', 0, ' ', 0,&
-                                0, 0, 0.d0)
+                    call utmess('E+', 'ALGORITH15_55')
                     call jenuno(jexnum(nomsqu//'.NOMNOE', numero), k8bid)
                     valk (1) = k8bid
                     valk (2) = lintf
                     valk (3) = nomsqu
-                    call u2mesg('E', 'ALGORITH15_58', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'ALGORITH15_58', nk=3, valk=valk)
 !
                 endif
                 zi(ltabi-1+in) = numero + incr
@@ -184,24 +179,20 @@ subroutine rec110(nomres, nomsqu, modgen)
                 do 30 jn = 1, nbnj
                     numero = zi(ljntd-1+jn)
                     if (zi(lsk-1+numero+jncr) .ne. jstac) then
-                        call u2mesg('E+', 'ALGORITH15_55', 0, ' ', 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E+', 'ALGORITH15_55')
                         call jenuno(jexnum(nomsqu//'.NOMNOE', numero), k8bid)
                         valk (1) = k8bid
                         valk (2) = ljntf
                         valk (3) = nomsst
-                        call u2mesg('E', 'ALGORITH15_60', 3, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E', 'ALGORITH15_60', nk=3, valk=valk)
                     endif
                     if (zi(lsk2-1+numero+jncr) .ne. numero) then
-                        call u2mesg('E+', 'ALGORITH15_55', 0, ' ', 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E+', 'ALGORITH15_55')
                         call jenuno(jexnum(nomsqu//'.NOMNOE', numero), k8bid)
                         valk (1) = k8bid
                         valk (2) = ljntf
                         valk (3) = nomsqu
-                        call u2mesg('E', 'ALGORITH15_62', 3, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E', 'ALGORITH15_62', nk=3, valk=valk)
                     endif
                     zi(ltabj-1+jn) = numero + jncr
 30              continue
@@ -254,8 +245,7 @@ subroutine rec110(nomres, nomsqu, modgen)
         do 170 ireco = 1, nbreco
             call getvtx('RECO_GLOBAL', 'GROUP_NO_1', iocc=ireco, nbval=0, nbret=nr)
             if (nr .eq. 0) then
-                call u2mesg('F+', 'ALGORITH15_63', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('F+', 'ALGORITH15_63')
             endif
 !        --- LECTURE DE LA PRECISION
             call getvr8('RECO_GLOBAL', 'PRECISION', iocc=ireco, scal=prec, nbret=ibid)
@@ -276,8 +266,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             endif
             if (istac .gt. nbstac) then
                 valk (1) = nomsst
-                call u2mesg('F', 'ALGORITH15_64', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH15_64', sk=valk(1))
             endif
             call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         lintf)
@@ -288,8 +277,7 @@ subroutine rec110(nomres, nomsqu, modgen)
                 valk (2) = nomsst
                 valk (3) = k8bid
                 valk (4) = nomnoe
-                call u2mesg('E', 'ALGORITH15_65', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH15_65', nk=4, valk=valk)
             endif
             call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes)
             call dismoi('F', 'NB_EC', lintf, 'INTERF_DYNA', nbec,&
@@ -317,8 +305,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             endif
             if (jstac .gt. nbstac) then
                 valk (1) = nomsst
-                call u2mesg('F', 'ALGORITH15_66', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH15_66', sk=valk(1))
             endif
             call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         ljntf)
@@ -329,8 +316,7 @@ subroutine rec110(nomres, nomsqu, modgen)
                 valk (2) = nomsst
                 valk (3) = k8bid
                 valk (4) = nomnoe
-                call u2mesg('E', 'ALGORITH15_67', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH15_67', nk=4, valk=valk)
             endif
             call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes)
             call dismoi('F', 'NB_EC', ljntf, 'INTERF_DYNA', nbec,&

@@ -2,7 +2,6 @@ subroutine xmolig(liel1, trav)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -11,10 +10,11 @@ subroutine xmolig(liel1, trav)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xmoajo.h"
 #include "asterfort/xmoimp.h"
 #include "asterfort/xmoini.h"
+!
     character(len=24) :: liel1, trav
 !
 ! ======================================================================
@@ -429,8 +429,10 @@ subroutine xmolig(liel1, trav)
         do 210 iel = 1, nbelt
             ima=zi(j1-1+iel)
 ! SI LE MAILLE TARDIVE QUAND AFFE_MODELE AVEC GROUP_NO
-            if (ima .lt. 0) call u2mess('F', 'XFEM_77')
-
+            if (ima .lt. 0) then
+                call utmess('F', 'XFEM_77')
+            endif
+!
             jj=jtab-1+5*(ima-1)
             nfiss = zi(jnbsp-1+ima)
             if (zi(jj+4) .eq. 0) then
@@ -566,7 +568,9 @@ subroutine xmolig(liel1, trav)
 !             RQ: POUR LA THERMIQUE, LE PROBLEME NE SE POSE PAS CAR
 !             --  EN FEM 3D, IL N'EXISTE PAS D'ELEMENTS DE DIMENSION 1
 !
-            if (notype(1:10) .eq. 'MECA_ARETE' .and. zi(jj+4) .eq. 0) call u2mess('F', 'XFEM_13')
+            if (notype(1:10) .eq. 'MECA_ARETE' .and. zi(jj+4) .eq. 0) then
+                call utmess('F', 'XFEM_13')
+            endif
 !
 210      continue
 200  end do

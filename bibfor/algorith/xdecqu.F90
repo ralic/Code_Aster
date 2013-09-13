@@ -15,7 +15,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/loncar.h"
 #include "asterfort/ndcent.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xajpmi.h"
@@ -196,7 +196,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
 !     BLINDAGE PARTIEL : FISSURE RENTRANTE SUR UNE ARETE
         if (lsna*lsnm .lt. 0 .and. lsnb*lsnm .lt. 0) then
-            call u2mess('F', 'XFEM_63')
+            call utmess('F', 'XFEM_63')
         endif
 !
 !       LONGUEUR DE L'ARETE

@@ -3,7 +3,6 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
                   typlag, lisrel)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/imprel.h"
@@ -13,8 +12,9 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lonlis, iprno(*), idec, nbcoef
     real(kind=8) :: coef(nbcoef)
     character(len=2) :: typlag
@@ -60,7 +60,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
     call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
                 k8bid, ier)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 ! --- CREATION DES TABLEAUX DE TRAVAIL NECESSAIRES A L'AFFECTATION

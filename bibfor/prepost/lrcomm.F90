@@ -1,6 +1,6 @@
 subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
                   modele)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/copisd.h"
@@ -15,8 +15,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbordr
     character(len=8) :: resu, chmat, carael, modele
@@ -89,7 +88,9 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     call rsorac(resu, 'LONUTI', ibid, rbid, k8bid,&
                 cbid, epsi, crit, nbordr, 1,&
                 nbtrou)
-    if (nbordr .le. 0) call u2mess('F', 'UTILITAI2_97')
+    if (nbordr .le. 0) then
+        call utmess('F', 'UTILITAI2_97')
+    endif
     call wkvect('&&'//nompro//'.NUME_ORDR', 'V V I', nbordr, lordr)
     call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8bid,&
                 cbid, epsi, crit, zi(lordr), nbordr,&
@@ -136,7 +137,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     call getfac('EXCIT', nexci)
     if (nexci .gt. 0) then
         if (typres(1:4) .eq. 'DYNA' .or. typres(1:4) .eq. 'MODE') then
-            call u2mesk('A', 'UTILITAI5_94', 1, typres)
+            call utmess('A', 'UTILITAI5_94', sk=typres)
             goto 60
         endif
         noobj ='12345678'//'.1234'//'.EXCIT.INFC'

@@ -21,12 +21,12 @@ subroutine asmpi_warn(iexc)
 #include "aster_types.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
-#include "asterfort/asmpi_info.h"
-#include "asterfort/gtstat.h"
 #include "asterfort/asmpi_check.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/asmpi_status.h"
+#include "asterfort/gtstat.h"
 #include "asterfort/ststat.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer, intent(in) :: iexc
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI COMM WARN
@@ -64,9 +64,9 @@ subroutine asmpi_warn(iexc)
     if (rank .ne. 0) then
         call ststat(ST_ER_OTH)
         if (iexc .eq. 0) then
-            call u2mess('I', 'APPELMPI_82')
+            call utmess('I', 'APPELMPI_82')
         else
-            call u2mess('I', 'APPELMPI_92')
+            call utmess('I', 'APPELMPI_92')
             call ststat(ST_EXCEPT)
         endif
         call asmpi_status(ST_ER, iret)
@@ -81,7 +81,7 @@ subroutine asmpi_warn(iexc)
     endif
 !     INUTILE DE TESTER IRET, ON SAIT QU'IL Y A UNE ERREUR
 !
-999 continue
+999  continue
 #else
     integer :: idummy
     idummy = iexc

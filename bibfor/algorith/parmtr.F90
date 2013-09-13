@@ -2,6 +2,7 @@ subroutine parmtr(np4, nfour, nbm, ttrans, amor,&
                   puls, pulsd, s0, z0, omegaf,&
                   za4, za5)
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +30,6 @@ subroutine parmtr(np4, nfour, nbm, ttrans, amor,&
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mess.h"
     integer :: np4, nfour, nbm
     real(kind=8) :: ttrans, amor(*), puls(*), pulsd(*)
     complex(kind=8) :: s0(*), z0(*)
@@ -56,10 +56,10 @@ subroutine parmtr(np4, nfour, nbm, ttrans, amor,&
         ksi0 = amor(i)/(2.0d0*puls(i))
         if (ksi0 .ge. 1.0d0) then
             ksi0 = 0.99d0
-            call u2mess('A', 'ALGORITH9_74')
+            call utmess('A', 'ALGORITH9_74')
         else if (ksi0.le.-1.0d0) then
             ksi0 = -0.99d0
-            call u2mess('A', 'ALGORITH9_75')
+            call utmess('A', 'ALGORITH9_75')
         endif
         pulsd(i) = puls(i) * sqrt( 1.0d0 - ksi0*ksi0 )
         s0(i) = dcmplx( -ksi0*puls(i), pulsd(i) )

@@ -83,11 +83,8 @@ subroutine op0045()
 #include "asterfort/sspace.h"
 #include "asterfort/titre.h"
 #include "asterfort/tldlg2.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcp.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vecink.h"
@@ -241,16 +238,20 @@ subroutine op0045()
     vali(3)=icom2
     vali(4)=rang
     vali(5)=nbproc
-    if (l1*l2*l3 .ne. 1) call u2mesg('F', 'APPELMPI_6', 3, valk, 3,&
-                                     vali, 0, rbid)
+    if (l1*l2*l3 .ne. 1) then
+        call utmess('F', 'APPELMPI_6', nk=3, valk=valk, ni=3,&
+                    vali=vali)
+    endif
 !
     if ((&
         ((typeco.ne.1).and.(typeco.ne.-999)) .or.&
         ((icom1.ne.-999).and.((icom1.lt.1).or.(icom1.gt.nbproc))) .or.&
-        ((icom2.ne.-999).and.((icom2.lt.1).or.(icom2.gt.nbproc))) .or. (icom1.gt.icom2) .or.&
-        (nbproc.lt.1) .or. (rang.lt.0)&
-        )) call u2mesg('F', 'APPELMPI_8', 5, valk, 5,&
-                       vali, 0, rbid)
+        ((icom2.ne.-999).and.((icom2.lt.1).or.(icom2.gt.nbproc))) .or. (icom1.gt.icom2)&
+        .or. (nbproc.lt.1) .or. (rang.lt.0)&
+        )) then
+        call utmess('F', 'APPELMPI_8', nk=5, valk=valk, ni=5,&
+                    vali=vali)
+    endif
 !
     if ((typeco.eq.1) .and. (nbproc.gt.1)) then
         lcomod=.true.
@@ -397,7 +398,9 @@ subroutine op0045()
         call getvr8(' ', 'PREC_SOREN', scal=tolsor, nbret=l)
         call getvis(' ', 'NMAX_ITER_SOREN', scal=maxitr, nbret=l)
         call getvr8(' ', 'PARA_ORTHO_SOREN', scal=alpha, nbret=l)
-        if ((alpha.lt.1.2d0*eps) .or. (alpha.gt.0.83d0-eps)) call u2mess('E', 'ALGELINE2_64')
+        if ((alpha.lt.1.2d0*eps) .or. (alpha.gt.0.83d0-eps)) then
+            call utmess('E', 'ALGELINE2_64')
+        endif
 !     --- RECUPERATION PARAM QZ ---
     else if (lqz) then
         call getvtx(' ', 'TYPE_QZ', scal=typeqz, nbret=l)
@@ -430,31 +433,55 @@ subroutine op0045()
 !     --------------------  REGLES D'EXCLUSION   -----------------------
 !     ------------------------------------------------------------------
 !     --- MODES RIGIDES---
-    if ((modrig.eq.'MODE_RIGIDE') .and. (method.ne.'TRI_DIAG')) call u2mess('F', 'ALGELINE2_65')
+    if ((modrig.eq.'MODE_RIGIDE') .and. (method.ne.'TRI_DIAG')) then
+        call utmess('F', 'ALGELINE2_65')
+    endif
 !
     if (lc) then
         valk(1) = matra
         valk(2) = matrc
-        if (lpg) call u2mess('F', 'ALGELINE5_82')
-        if (optiof .eq. 'BANDE') call u2mesk('F', 'ALGELINE2_66', 2, valk)
-        if (((appr.eq.'I').or.(appr.eq.'C')) .and. (zr(lborvp).eq.0.d0)) then
-            call u2mess('F', 'ALGELINE2_67')
+        if (lpg) then
+            call utmess('F', 'ALGELINE5_82')
         endif
-        if (modrig .eq. 'MODE_RIGIDE') call u2mesk('F', 'ALGELINE2_68', 2, valk)
-        if ((method.eq.'SORENSEN') .and. (zr(lborvp).eq.0.d0)) call u2mess('F', 'ALGELINE2_71')
-        if (method(1:6) .eq. 'JACOBI') call u2mesk('F', 'ALGELINE5_64', 1, matrc)
+        if (optiof .eq. 'BANDE') then
+            call utmess('F', 'ALGELINE2_66', nk=2, valk=valk)
+        endif
+        if (((appr.eq.'I').or.(appr.eq.'C')) .and. (zr(lborvp).eq.0.d0)) then
+            call utmess('F', 'ALGELINE2_67')
+        endif
+        if (modrig .eq. 'MODE_RIGIDE') then
+            call utmess('F', 'ALGELINE2_68', nk=2, valk=valk)
+        endif
+        if ((method.eq.'SORENSEN') .and. (zr(lborvp).eq.0.d0)) then
+            call utmess('F', 'ALGELINE2_71')
+        endif
+        if (method(1:6) .eq. 'JACOBI') then
+            call utmess('F', 'ALGELINE5_64', sk=matrc)
+        endif
     endif
 !
 !     --- MATRICE K COMPLEXE ---
     if (.not.lkr) then
         valk(1) = matra
         valk(2) = matrc
-        if (lpg) call u2mess('F', 'ALGELINE5_82')
-        if ((method.ne.'SORENSEN') .and. (.not.lqz)) call u2mess('F', 'ALGELINE2_69')
-        if (optiof .eq. 'BANDE') call u2mesk('F', 'ALGELINE2_66', 2, valk)
-        if (zr(lborvp) .eq. 0.d0) call u2mess('F', 'ALGELINE2_70')
-        if (modrig .eq. 'MODE_RIGIDE') call u2mesk('F', 'ALGELINE2_68', 2, valk)
-        if (typres .eq. 'MODE_FLAMB') call u2mesk('F', 'ALGELINE2_46', 1, matra)
+        if (lpg) then
+            call utmess('F', 'ALGELINE5_82')
+        endif
+        if ((method.ne.'SORENSEN') .and. (.not.lqz)) then
+            call utmess('F', 'ALGELINE2_69')
+        endif
+        if (optiof .eq. 'BANDE') then
+            call utmess('F', 'ALGELINE2_66', nk=2, valk=valk)
+        endif
+        if (zr(lborvp) .eq. 0.d0) then
+            call utmess('F', 'ALGELINE2_70')
+        endif
+        if (modrig .eq. 'MODE_RIGIDE') then
+            call utmess('F', 'ALGELINE2_68', nk=2, valk=valk)
+        endif
+        if (typres .eq. 'MODE_FLAMB') then
+            call utmess('F', 'ALGELINE2_46', sk=matra)
+        endif
     endif
 !
 !     --- METHODE QZ ---
@@ -463,10 +490,12 @@ subroutine op0045()
             ((typres(1:10) .eq.'FLAMBEMENT') .or.lc.or.(.not.lkr))) then
             valk(1) = matra
             valk(2) = matrc
-            call u2mesk('F', 'ALGELINE5_60', 2, valk)
+            call utmess('F', 'ALGELINE5_60', nk=2, valk=valk)
         endif
     endif
-    if ((optiof.eq.'TOUT') .and. (.not.lqz)) call u2mesk('F', 'ALGELINE5_65', 1, 'CALC_'//typevp)
+    if ((optiof.eq.'TOUT') .and. (.not.lqz)) then
+        call utmess('F', 'ALGELINE5_65', sk='CALC_'//typevp)
+    endif
 !
 !     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
     call exisd('MATR_ASSE', raide, ibid)
@@ -491,14 +520,14 @@ subroutine op0045()
     if (iret .gt. 0) then
         valk(1) = raide
         valk(2) = masse
-        call u2mesk('F', 'ALGELINE2_58', 2, valk)
+        call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
     endif
     if (lc) then
         call vrrefe(raide, amor, iret)
         if (iret .gt. 0) then
             valk(1) = raide
             valk(2) = amor
-            call u2mesk('F', 'ALGELINE2_58', 2, valk)
+            call utmess('F', 'ALGELINE2_58', nk=2, valk=valk)
         endif
     endif
 !
@@ -523,12 +552,24 @@ subroutine op0045()
 !     --- MATRICE K ET/OU M ET OU C NON SYMETRIQUE(S)
     if (lnsc .or. lnsk .or. lnsm) then
         lns=.true.
-        if (lpg) call u2mess('F', 'ALGELINE5_82')
-        if ((.not.lqz) .and. (method.ne.'SORENSEN')) call u2mess('F', 'ALGELINE5_69')
-        if (.not.lkr) call u2mesk('F', 'ALGELINE5_70', 1, matra)
-        if (optiof .eq. 'BANDE') call u2mess('F', 'ALGELINE4_39')
-        if (modrig .eq. 'MODE_RIGIDE') call u2mess('F', 'ALGELINE4_40')
-        if (typres .eq. 'MODE_FLAMB') call u2mess('F', 'ALGELINE4_41')
+        if (lpg) then
+            call utmess('F', 'ALGELINE5_82')
+        endif
+        if ((.not.lqz) .and. (method.ne.'SORENSEN')) then
+            call utmess('F', 'ALGELINE5_69')
+        endif
+        if (.not.lkr) then
+            call utmess('F', 'ALGELINE5_70', sk=matra)
+        endif
+        if (optiof .eq. 'BANDE') then
+            call utmess('F', 'ALGELINE4_39')
+        endif
+        if (modrig .eq. 'MODE_RIGIDE') then
+            call utmess('F', 'ALGELINE4_40')
+        endif
+        if (typres .eq. 'MODE_FLAMB') then
+            call utmess('F', 'ALGELINE4_41')
+        endif
     else
         lns=.false.
     endif
@@ -551,7 +592,7 @@ subroutine op0045()
         if ((typeqz(1:5).eq.'QZ_QR') .and. ((nblagr.ne.0).or.lns)) then
             valk(1) = matra
             valk(2) = matrc
-            call u2mesk('F', 'ALGELINE5_60', 2, valk)
+            call utmess('F', 'ALGELINE5_60', nk=2, valk=valk)
         endif
     endif
 !
@@ -571,7 +612,9 @@ subroutine op0045()
     nprec=zi(islvi)
     metres=zk24(islvk)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
-        (metres(1:5).ne.'MUMPS')) call u2mess('F', 'ALGELINE5_71')
+        (metres(1:5).ne.'MUMPS')) then
+        call utmess('F', 'ALGELINE5_71')
+    endif
 !
     nprec=zi(islvi)
     metres=zk24(islvk)
@@ -588,7 +631,9 @@ subroutine op0045()
         if (nnvalp .gt. 1) fmax = zr(lborvp+1)
         if (lc .and. (fmin.lt.0.d0)) then
             fmin = -fmin
-            if (niv .ge. 1) call u2mess('I', 'ALGELINE6_10')
+            if (niv .ge. 1) then
+                call utmess('I', 'ALGELINE6_10')
+            endif
         endif
         omemin = omega2(fmin)
         omemax = omega2(fmax)
@@ -653,7 +698,7 @@ subroutine op0045()
             rtest=abs(fmax-effmax)+abs(fmin-effmin)
             if (rtest .gt. eps) then
                 valk(1)=tabmod
-                call u2mesk('A', 'ALGELINE2_26', 1, valk)
+                call utmess('A', 'ALGELINE2_26', sk=valk(1))
                 fmin=effmin
                 fmax=effmax
                 if (typres .eq. 'DYNAMIQUE') then
@@ -764,17 +809,23 @@ subroutine op0045()
 !     ----  DETERMINATION DE LA DIMENSION DU SOUS ESPACE NBVECT   ------
 !     ------------------------------------------------------------------
 !
-    if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_11', 1, nfreq)
+    if (niv .ge. 1) then
+        call utmess('I', 'ALGELINE6_11', si=nfreq)
+    endif
 !
 !     --- CORRECTION DU NOMBRE DE FREQUENCES DEMANDEES
     if (nfreq .gt. neqact) then
         nfreq = neqact
-        if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_12', 1, nfreq)
+        if (niv .ge. 1) then
+            call utmess('I', 'ALGELINE6_12', si=nfreq)
+        endif
     endif
 !
 !     --- DETERMINATION DE NBVECT (DIMENSION DU SOUS ESPACE) ---
     if (.not.lqz) then
-        if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_13', 1, nbvect)
+        if (niv .ge. 1) then
+            call utmess('I', 'ALGELINE6_13', si=nbvect)
+        endif
         if (nbvec2 .ne. 0) then
             icoef = nbvec2
         else
@@ -794,11 +845,15 @@ subroutine op0045()
             else if (method.eq.'SORENSEN') then
                 nbvect = min(max(3+nfreq,icoef*nfreq),neqact)
             endif
-            if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_14', 1, nbvect)
+            if (niv .ge. 1) then
+                call utmess('I', 'ALGELINE6_14', si=nbvect)
+            endif
         else
             if (nbvect .gt. neqact) then
                 nbvect = neqact
-                if (niv .ge. 1) call u2mesi('I', 'ALGELINE6_15', 1, nbvect)
+                if (niv .ge. 1) then
+                    call utmess('I', 'ALGELINE6_15', si=nbvect)
+                endif
             endif
         endif
     endif
@@ -822,7 +877,7 @@ subroutine op0045()
     if (lc) then
         nbvect = 2*nbvect
         nfreq = 2*nfreq
-        call u2mess('I', 'ALGELINE2_75')
+        call utmess('I', 'ALGELINE2_75')
     endif
 !
 !
@@ -1204,7 +1259,9 @@ subroutine op0045()
 !     -------  LANCZOS PB GENERALISE REEL   --------
 !     ------------------------------------------------------------------
             if ((.not.lkr) .or. lns) ASSERT(.false.)
-            if (nstoc .ge. nbvect) call u2mess('A', 'ALGELINE2_72')
+            if (nstoc .ge. nbvect) then
+                call utmess('A', 'ALGELINE2_72')
+            endif
             if (nstoc .ne. 0) then
                 do 26 i = 1, neq * nstoc
                     zr(lvec + i - 1) = zr(lxrig + i -1)
@@ -1374,7 +1431,9 @@ subroutine op0045()
             if (zr(lresur+mxresf+ifreq) .gt. omemax .or. zr(lresur+ mxresf+ifreq) .lt. omemin) &
             nconv = nconv - 1
 110      continue
-        if (mfreq .ne. nconv) call u2mess('I', 'ALGELINE2_17')
+        if (mfreq .ne. nconv) then
+            call utmess('I', 'ALGELINE2_17')
+        endif
     endif
 !
 !
@@ -1449,7 +1508,7 @@ subroutine op0045()
             optiov = ' '
             valk(1) = matra
             valk(2) = matrc
-            call u2mesk('I', 'ALGELINE2_73', 2, valk)
+            call utmess('I', 'ALGELINE2_73', nk=2, valk=valk)
         endif
     endif
 !
@@ -1486,9 +1545,13 @@ subroutine op0045()
                 nbrss, precsh)
     call getvtx('VERI_MODE', 'STOP_ERREUR', iocc=1, scal=optiov, nbret=lmf)
 !
-    if ((optiov.eq.'OUI') .and. (ierx.ne.0)) call u2mess('F', 'ALGELINE2_74')
+    if ((optiov.eq.'OUI') .and. (ierx.ne.0)) then
+        call utmess('F', 'ALGELINE2_74')
+    endif
 !
-    if (flage) call u2mess('F', 'ALGELINE5_75')
+    if (flage) then
+        call utmess('F', 'ALGELINE5_75')
+    endif
 999  continue
 !
 !

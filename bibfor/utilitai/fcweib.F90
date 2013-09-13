@@ -3,7 +3,7 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                   fc, dfc)
     implicit none
 #include "asterc/r8maem.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp
     real(kind=8) :: sigw(*), m, fc, dfc, s1, s2, sk(*)
     logical :: cals
@@ -64,13 +64,11 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
     maxm = log (maxr) / log ( nrupt*sigw(nrupt) )
     if (m .ge. maxm) then
         valr = maxm
-        call u2mesg('F', 'UTILITAI8_22', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('F', 'UTILITAI8_22', sr=valr)
     endif
     if (m .le. 0.d0) then
         valr = m
-        call u2mesg('F', 'UTILITAI8_23', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('F', 'UTILITAI8_23', sr=valr)
     endif
 !
     do 10 i = 1, nrupt

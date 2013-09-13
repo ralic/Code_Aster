@@ -51,7 +51,7 @@ subroutine op0142()
 #include "asterfort/ordonn.h"
 #include "asterfort/prvite.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: pnoe, ptch, ier
@@ -110,12 +110,12 @@ subroutine op0142()
     endif
 !
     if (ier .ne. 0) then
-        call u2mess('F', 'UTILITAI2_83')
+        call utmess('F', 'UTILITAI2_83')
     endif
 !
     call jeexin(cooabs, iexi)
     if (iexi .eq. 0) then
-        call u2mess('F', 'UTILITAI2_84')
+        call utmess('F', 'UTILITAI2_84')
     endif
 !
     call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n3)
@@ -173,7 +173,7 @@ subroutine op0142()
             nbpoi1=nbpoi1+1
             zi(ima1+nbpoi1-1)=im
         else
-            call u2mess('F', 'MODELISA_2')
+            call utmess('F', 'MODELISA_2')
         endif
 12  end do
     conseg='&&OP0142.CONNEX'
@@ -238,7 +238,7 @@ subroutine op0142()
         endif
 30  end do
     if (iplac1 .ge. iplac2) then
-        call u2mess('F', 'UTILITAI2_85')
+        call utmess('F', 'UTILITAI2_85')
     endif
 !
 !     --- CREATION DE L OBJET .VALE SUR LA GLOBALE ---

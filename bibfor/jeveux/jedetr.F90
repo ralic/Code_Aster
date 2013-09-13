@@ -25,7 +25,7 @@ subroutine jedetr(nomlu)
 #include "asterfort/jjmzat.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxlibd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
 ! ----------------------------------------------------------------------
 ! DESTRUCTION D'UN OBJET JEVEUX
@@ -84,7 +84,7 @@ subroutine jedetr(nomlu)
             call jxlibd(0, idatos, ic, iaddi, lonoi)
         endif
         if (nivo .ge. 2) then
-            call u2mesk('I', 'JEVEUX_07', 1, noml32)
+            call utmess('I', 'JEVEUX_07', sk=noml32)
         endif
         call jjcren(noml32, -1, iret)
         nomos = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
@@ -152,7 +152,7 @@ subroutine jedetr(nomlu)
                 if (id(k) .gt. 0) then
                     nom32 = rnom ( jrnom(ic) + id(k) )
                     if (nivo .ge. 2) then
-                        call u2mesk('I', 'JEVEUX_07', 1, noml32(1:24))
+                        call utmess('I', 'JEVEUX_07', sk=noml32(1:24))
                     endif
                     call jjcren(nom32, -2, iret)
                     call jjmzat(ic, id(k))
@@ -167,7 +167,7 @@ subroutine jedetr(nomlu)
                 call jxlibd(0, idatco, ic, iaddi, lonoi)
             endif
             if (nivo .ge. 2) then
-                call u2mesk('I', 'JEVEUX_07', 1, noml32(1:24))
+                call utmess('I', 'JEVEUX_07', sk=noml32(1:24))
             endif
             call jjcren(noml32(1:24), -2, iret)
             call jjmzat(ic, idatco)
@@ -216,7 +216,7 @@ subroutine jedetr(nomlu)
                 iszon ( jiszon + iblong + idatoc - 1 ) = 0
             endif
             if (nivo .ge. 2) then
-                call u2mesk('I', 'JEVEUX_07', 1, noml32)
+                call utmess('I', 'JEVEUX_07', sk=noml32)
             endif
             call jjcroc(nomlu(25:32), -3)
             nomoc = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'

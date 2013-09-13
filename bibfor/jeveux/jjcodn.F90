@@ -19,7 +19,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "asterfort/jxhcod.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomrep, nomec, crep(*)
     integer :: icre, irep(*), nmax, nuti
 ! ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
     if (irep(idehco+i) .eq. 0 .and. .not. rinser) then
         if (icre .eq. 3) then
             if (nuti .ge. nmax) then
-                call u2mesk('F', 'JEVEUX1_33', 1, valk(2))
+                call utmess('F', 'JEVEUX1_33', sk=valk(2))
             else
                 j = nuti + 1
                 do 12 k = 1, ll
@@ -66,7 +66,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
             if (icre .eq. 0) then
                 iret = 0
             else
-                call u2mesk('F', 'JEVEUX1_34', 2, valk)
+                call utmess('F', 'JEVEUX1_34', nk=2, valk=valk)
             endif
         endif
     else
@@ -79,7 +79,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
 16      continue
         if (cle .eq. nom) then
             if (icre .eq. 3) then
-                call u2mesk('F', 'JEVEUX1_35', 2, valk)
+                call utmess('F', 'JEVEUX1_35', nk=2, valk=valk)
             else if (icre .eq. 0) then
                 iret = j
             else if (icre .eq. -3) then
@@ -104,7 +104,7 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
                 goto 5
             else
                 if (icre .eq. 3) then
-                    call u2mesk('F', 'JEVEUX1_36', 2, valk)
+                    call utmess('F', 'JEVEUX1_36', nk=2, valk=valk)
                 else if (icre .eq. 0) then
                     iret = 0
                 endif

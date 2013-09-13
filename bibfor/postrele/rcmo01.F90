@@ -1,10 +1,10 @@
 subroutine rcmo01(chmome, ima, ipt, vale)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ima, ipt
     real(kind=8) :: vale(*)
     character(len=24) :: chmome
@@ -60,8 +60,7 @@ subroutine rcmo01(chmome, ima, ipt, vale)
             vali (1) = ima
             vali (2) = ipt
             valk = 'MOMENT'
-            call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
         endif
         vale(icmp) = zr(jcesv-1+iad)
 10  end do

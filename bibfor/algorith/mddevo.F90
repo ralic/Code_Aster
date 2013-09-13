@@ -27,8 +27,8 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 #include "asterfort/r8inir.h"
 #include "asterfort/resu74.h"
 #include "asterfort/sigusr.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -422,7 +422,9 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
         call jedetr('&&MDDEVO.SREDR')
         call jedetr('&&MDDEVO.SREDI')
     endif
-    if (iret .ne. 0) call u2mess('F', 'ALGORITH5_24')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGORITH5_24')
+    endif
 !
     call jedema()
 end subroutine

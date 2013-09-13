@@ -40,7 +40,6 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/amppr.h"
 #include "asterfort/bmnodi.h"
@@ -53,12 +52,12 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, ibid, icomp, ier, iloci, ilocj, inod
     integer :: inog, iret, j, k, lldesc, llnod, llnog
-    integer ::nbcmp,nbcpmx,nbdcou,nbddr,nbdga,nbec
+    integer :: nbcmp, nbcpmx, nbdcou, nbddr, nbdga, nbec
     integer :: nbnod, nbnog, nbnot, nbsec, nbtet, noer, numd
     integer :: numg
     real(kind=8) :: angle, pi, x
@@ -85,9 +84,10 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !-----------------RECUPERATION DES CONCEPTS AMONT-----------------------
 !
-
-
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+!
+!
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                intf, iret)
     call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
                 mailla, iret)
 !
@@ -98,7 +98,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
                 kbid, ier)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 !
@@ -127,8 +127,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     if (nbnod .ne. nbnog) then
         vali (1) = nbnod
         vali (2) = nbnog
-        call u2mesg('F', 'ALGORITH14_99', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_99', ni=2, vali=vali)
     endif
 !
 !
@@ -143,16 +142,14 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     if (nbdga .ne. nbddr) then
         vali (1) = nbddr
         vali (2) = nbdga
-        call u2mesg('F', 'ALGORITH15_1', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH15_1', ni=2, vali=vali)
     endif
 !
 !
     if (nbddr .ne. nbtet) then
         vali (1) = nbddr
         vali (2) = nbtet
-        call u2mesg('F', 'ALGORITH15_2', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH15_2', ni=2, vali=vali)
     endif
 !
 !----------------------CALCUL DU TETA ELEMENTAIRE-----------------------
@@ -203,32 +200,27 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
                 noer=zi(lldesc+inog-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
                 tyd=typddl(j)
-                call u2mesg('E', 'ALGORITH15_3', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH15_3')
                 valk (1) = tyd
                 valk (2) = nomnoe
-                call u2mesg('E', 'ALGORITH15_4', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH15_4', nk=2, valk=valk)
                 nook=.true.
             endif
             if (xtg(j) .gt. 0.d0 .and. xd(j) .eq. 0.d0) then
                 noer=zi(lldesc+inod-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
                 tyd=typddl(j)
-                call u2mesg('E', 'ALGORITH15_3', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH15_3')
                 valk (1) = tyd
                 valk (2) = nomnoe
-                call u2mesg('E', 'ALGORITH15_6', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH15_6', nk=2, valk=valk)
                 nook=.true.
             endif
 !
 50      continue
 !
         if (nook) then
-            call u2mesg('F', 'ALGORITH15_7', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_7')
         endif
 !
         iloci=0

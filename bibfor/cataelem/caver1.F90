@@ -28,7 +28,6 @@ subroutine caver1()
 !     VARIABLES LOCALES:
 !     ------------------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -38,14 +37,14 @@ subroutine caver1()
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/kndoub.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: opt, te
     logical :: error
     character(len=8) :: para, typmai
     character(len=16) :: nomopt, nomte
     character(len=24) :: valk(4)
-    character(len=8) ::  gd1, gd2, tgd1(10), tgd2(10), typout, typou2
+    character(len=8) :: gd1, gd2, tgd1(10), tgd2(10), typout, typou2
 !
 !
 !
@@ -77,7 +76,7 @@ subroutine caver1()
     nbout = zi(iadesc-1+3)
     nbvol = zi(iadesc-1+4)
     if (nbvol .ne. 0) then
-        call u2mesk('E', 'CATAELEM_1', 1, nomopt)
+        call utmess('E', 'CATAELEM_1', sk=nomopt)
         ier = ier + 1
     endif
 !
@@ -86,7 +85,9 @@ subroutine caver1()
 !          DE MEME NOM
 !          -------------------------------------------------
     call kndoub(8, zk8(iapara), nbin+nbout, iret)
-    if (iret .gt. 0) call u2mesk('E', 'CATAELEM_2', 1, nomopt)
+    if (iret .gt. 0) then
+        call utmess('E', 'CATAELEM_2', sk=nomopt)
+    endif
 !
 !
     do 30,te = 1,nbte
@@ -111,7 +112,7 @@ subroutine caver1()
         valk(1) = para
         valk(2) = nomopt
         valk(3) = nomte
-        call u2mesk('E', 'CATAELEM_3', 3, valk)
+        call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
         ier = ier + 1
         goto 10
     endif
@@ -125,14 +126,14 @@ subroutine caver1()
             valk(1) = para
             valk(2) = nomopt
             valk(3) = nomte
-            call u2mesk('E', 'CATAELEM_4', 3, valk)
+            call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
             ier = ier + 1
         endif
         if (igdop .ne. igd) then
             valk(1) = para
             valk(2) = nomopt
             valk(3) = nomte
-            call u2mesk('E', 'CATAELEM_5', 3, valk)
+            call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
             ier = ier + 1
         endif
     endif
@@ -156,7 +157,7 @@ subroutine caver1()
             valk(1) = para
             valk(2) = nomopt
             valk(3) = nomte
-            call u2mesk('E', 'CATAELEM_6', 3, valk)
+            call utmess('E', 'CATAELEM_6', nk=3, valk=valk)
             ier = ier + 1
         endif
     endif
@@ -175,7 +176,7 @@ subroutine caver1()
         valk(1) = para
         valk(2) = nomopt
         valk(3) = nomte
-        call u2mesk('E', 'CATAELEM_3', 3, valk)
+        call utmess('E', 'CATAELEM_3', nk=3, valk=valk)
         ier = ier + 1
         goto 20
     endif
@@ -188,14 +189,14 @@ subroutine caver1()
             valk(1) = para
             valk(2) = nomopt
             valk(3) = nomte
-            call u2mesk('E', 'CATAELEM_4', 3, valk)
+            call utmess('E', 'CATAELEM_4', nk=3, valk=valk)
             ier = ier + 1
         endif
         if (igdop .ne. igd) then
             valk(1) = para
             valk(2) = nomopt
             valk(3) = nomte
-            call u2mesk('E', 'CATAELEM_5', 3, valk)
+            call utmess('E', 'CATAELEM_5', nk=3, valk=valk)
             ier = ier + 1
         endif
     endif
@@ -221,7 +222,7 @@ subroutine caver1()
         valk(2) = nomopt
         valk(3) = nomte
         valk(4) = typou2
-        call u2mesk('E', 'CATAELEM_7', 4, valk)
+        call utmess('E', 'CATAELEM_7', nk=4, valk=valk)
 !             IER = IER + 1
     endif
 20  continue
@@ -256,14 +257,14 @@ subroutine caver1()
     if (error) then
         valk(1) = gd1
         valk(2) = gd2
-        call u2mesk('E', 'CATAELEM_8', 2, valk)
+        call utmess('E', 'CATAELEM_8', nk=2, valk=valk)
         ier = ier + 1
     endif
     90 end do
 !
 !
     if (ier .gt. 0) then
-        call u2mess('F', 'CATAELEM_9')
+        call utmess('F', 'CATAELEM_9')
     endif
 !
     call jedema()

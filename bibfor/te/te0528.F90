@@ -1,7 +1,6 @@
 subroutine te0528(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/burftm.h"
 #include "asterfort/calcgr.h"
 #include "asterfort/elref4.h"
@@ -11,7 +10,8 @@ subroutine te0528(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -85,7 +85,7 @@ subroutine te0528(option, nomte)
     if (.not.lflu) then
         valk(1)=option
         valk(2) = compo1
-        call u2mesk('A', 'ELEMENTS4_63', 2, valk)
+        call utmess('A', 'ELEMENTS4_63', nk=2, valk=valk)
         goto 999
     endif
 !

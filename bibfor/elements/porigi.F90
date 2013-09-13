@@ -7,7 +7,7 @@ subroutine porigi(nomte, e, xnu, klv)
 #include "asterfort/ptka02.h"
 #include "asterfort/ptka10.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomte
     real(kind=8) :: e, xnu, klv(*)
 !     ------------------------------------------------------------------
@@ -84,7 +84,7 @@ subroutine porigi(nomte, e, xnu, klv)
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
     if (nomte(1:12) .eq. 'MECA_POU_D_E') then
@@ -118,7 +118,7 @@ subroutine porigi(nomte, e, xnu, klv)
         xiz2 = xiz2/xflz
     else
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
 !     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE

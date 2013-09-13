@@ -21,8 +21,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 #include "asterfort/tbexve.h"
 #include "asterfort/tbfutb.h"
 #include "asterfort/tbtrtb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nborn, lonvec, nnoff
@@ -88,7 +87,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_G_MAX'
-        call u2mesk('F', 'RUPTURE1_13', 1, valk)
+        call utmess('F', 'RUPTURE1_13', sk=valk)
     endif
 !
     nbprup = lonvec+5
@@ -119,7 +118,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     call tbajpa('T4', nbprup, zk16(inopr), zk8(itypr))
 !
     if (nborn .ne. (2.d0*lonvec)) then
-        call u2mess('F', 'RUPTURE1_14')
+        call utmess('F', 'RUPTURE1_14')
 !
     endif
     collec = '&&MMAXGL.BORNES_Q'

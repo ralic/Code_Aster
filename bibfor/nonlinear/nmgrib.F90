@@ -26,7 +26,7 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
 #include "asterfort/subaco.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: lexc
     integer :: nno
     real(kind=8) :: geom(3, nno), dff(2, nno), dir11(3)
@@ -54,7 +54,7 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
 !
     denomi = (1.d0 - projn*projn)
     if (abs( denomi ) .le. r8prem()) then
-        call u2mess('F', 'ELEMENTS_3')
+        call utmess('F', 'ELEMENTS_3')
     endif
 !
     do 10 i = 1, 3

@@ -18,18 +18,18 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbvec, nbordr, npoin(nbvec), jvalor
     integer :: npic(nbvec), jordpi
     integer :: jitrv
-
+!
     character(len=8) :: method
-    integer ::jrtrv, jvalpo, jpic
+    integer :: jrtrv, jvalpo, jpic
 ! ----------------------------------------------------------------------
 ! BUT: EXTRACTION DES PICS POUR RAINFLOW <=> REARANGEMENT DES PICS,
 !      PIC LE PLUS GRAND AU DEBUT ET A LA FIN.
@@ -70,7 +70,7 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
 !
     if (method .ne. 'RAINFLOW') then
         k8b = method(1:8)
-        call u2mesk('F', 'PREPOST_4', 1, k8b)
+        call utmess('F', 'PREPOST_4', sk=k8b)
     endif
 !
     do 10 ivect = 1, nbvec
@@ -89,9 +89,8 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
         pmax = abs(zr(jvalpo + (ivect-1)*nbordr + 1))
         nmax = 1
         do 20 i = 2, npoin(ivect)
-            if (abs(zr(jvalpo + (ivect-1)*nbordr + i)) .gt. &
-                    pmax*(1.0d0+ epsilo)) then
-
+            if (abs(zr(jvalpo + (ivect-1)*nbordr + i)) .gt. pmax*(1.0d0+ epsilo)) then
+!
                 pmax = abs(zr(jvalpo + (ivect-1)*nbordr + i))
                 nmax = i
             endif

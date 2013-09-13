@@ -12,7 +12,7 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: motfaz, base, modelz, ligrel
     integer :: iocc
 !     -----------------------------------------------------------------
@@ -56,7 +56,9 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 !
     motfac = motfaz
     modele = modelz
-    if (modele .eq. ' ') call u2mess('F', 'UTILITAI8_10')
+    if (modele .eq. ' ') then
+        call utmess('F', 'UTILITAI8_10')
+    endif
 !
     call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ib,&
                 ligrmo, ib)

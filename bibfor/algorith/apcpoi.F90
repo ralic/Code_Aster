@@ -29,8 +29,7 @@ subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
 #include "asterfort/jemarq.h"
 #include "asterfort/mmmron.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sdappa
     character(len=8) :: nommai
     character(len=4) :: typzon
@@ -67,7 +66,7 @@ subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
 ! --- MAILLE POI1 SEULEMENT ESCLAVE
 !
     if (typzon .eq. 'MAIT') then
-        call u2mess('F', 'APPARIEMENT_75')
+        call utmess('F', 'APPARIEMENT_75')
     endif
 !
 ! --- CHOIX DE LA NORMALE SUIVANT UTILISATEUR
@@ -81,10 +80,10 @@ subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
 ! --- CONSTRUCTION BASE TANGENTE NULLE
 !
     if (itype .eq. 0) then
-        call u2mesk('F', 'APPARIEMENT_62', 1, nommai)
+        call utmess('F', 'APPARIEMENT_62', sk=nommai)
     else if (itype.eq.1) then
         if (norme .le. r8prem()) then
-            call u2mesk('F', 'APPARIEMENT_63', 1, nommai)
+            call utmess('F', 'APPARIEMENT_63', sk=nommai)
         else
             normal(1) = -normal(1)
             normal(2) = -normal(2)
@@ -92,7 +91,7 @@ subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
             call mmmron(ndimg, normal, tau1, tau2)
         endif
     else if (itype.eq.2) then
-        call u2mesk('F', 'APPARIEMENT_62', 1, nommai)
+        call utmess('F', 'APPARIEMENT_62', sk=nommai)
     else
         ASSERT(.false.)
     endif

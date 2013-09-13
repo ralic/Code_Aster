@@ -11,7 +11,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: resu
@@ -105,7 +105,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
             if (nbtrou .eq. 0) then
                 valk(1)=nomcas
                 valk(2)=resu
-                call u2mesk('F', 'RUPTURE0_28', 2, valk)
+                call utmess('F', 'RUPTURE0_28', nk=2, valk=valk)
             else
                 iind=indiis(zi(ivec),nutrou,1,nbord)
                 zl(jnord+iind-1)=.true.

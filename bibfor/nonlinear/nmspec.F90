@@ -24,7 +24,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/affich.h"
 #include "asterfort/assert.h"
@@ -36,7 +36,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 #include "asterfort/nmflam.h"
 #include "asterfort/nmimpx.h"
 #include "asterfort/nmlesd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: numins
     real(kind=8) :: parmet(*)
     character(len=19) :: meelem(*)
@@ -131,9 +131,9 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !
             call nmimpx(sdimpr)
             if (option .eq. 'FLAMBSTA') then
-                call u2mess('I', 'MECANONLINE6_2')
+                call utmess('I', 'MECANONLINE6_2')
             else if (option.eq.'FLAMBDYN') then
-                call u2mess('I', 'MECANONLINE6_2')
+                call utmess('I', 'MECANONLINE6_2')
             else
                 ASSERT(.false.)
             endif
@@ -160,7 +160,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 ! ------- IMPRESSION EN-TETE
 !
             call nmimpx(sdimpr)
-            call u2mess('I', 'MECANONLINE6_3')
+            call utmess('I', 'MECANONLINE6_3')
             call affich('MESSAGE', ' ')
 !
 ! ------- CALCUL EFFECTIF

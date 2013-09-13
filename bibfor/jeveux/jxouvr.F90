@@ -19,7 +19,7 @@ subroutine jxouvr(iclas, idn)
     implicit none
 #include "asterc/opendr.h"
 #include "asterfort/codent.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: iclas, idn
 !     ==================================================================
     character(len=2) :: dn2
@@ -58,8 +58,7 @@ subroutine jxouvr(iclas, idn)
         endif
         call opendr(nom128, indx, nbl, 0, ierr)
         if (ierr .ne. 0) then
-            call u2mesg('F', 'JEVEUX_43', 1, nombas(iclas), 1,&
-                        ierr, 0, r8bid)
+            call utmess('F', 'JEVEUX_43', sk=nombas(iclas), si=ierr)
         endif
     endif
 end subroutine

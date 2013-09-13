@@ -20,11 +20,11 @@ subroutine te0207(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmfifn.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: nomte, option
 !
 ! ----------------------------------------------------------------------
@@ -46,8 +46,12 @@ subroutine te0207(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    if (nno .gt. 4) call u2mess('F', 'ELEMENTS5_22')
-    if (npg .gt. 4) call u2mess('F', 'ELEMENTS5_23')
+    if (nno .gt. 4) then
+        call utmess('F', 'ELEMENTS5_22')
+    endif
+    if (npg .gt. 4) then
+        call utmess('F', 'ELEMENTS5_23')
+    endif
 !
     nddl = 6*nno
 !

@@ -1,5 +1,5 @@
 subroutine as_mmhcow(fid, maa, coo, modcoo, n,&
-                  cret)
+                     cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,8 +19,9 @@ subroutine as_mmhcow(fid, maa, coo, modcoo, n,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mmhcow.h"
     character(len=*) :: maa
     real(kind=8) :: coo(*)
@@ -28,9 +29,9 @@ subroutine as_mmhcow(fid, maa, coo, modcoo, n,&
     aster_int :: n, cret, modcoo, mdnont, mdnoit
     real(kind=8) :: mdnodt
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4
     med_int :: n4, cret4, modco4, mdnoi4, mdnon4
@@ -52,6 +53,6 @@ subroutine as_mmhcow(fid, maa, coo, modcoo, n,&
     call mmhcow(fid, maa, mdnont, mdnoit, mdnodt,&
                 modcoo, n, coo, cret)
 #endif
-
+!
 #endif
 end subroutine

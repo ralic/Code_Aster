@@ -3,7 +3,6 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                   nbmat, nummai, versio, lgmsh, tycha)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/irgmce.h"
@@ -20,9 +19,9 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 #include "asterfort/jexnom.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifi, nbcham, nbordr, nbcmp, ordr(*), nbmat, nummai(*), versio
     logical :: lresu, lgmsh
     character(len=*) :: nomcon
@@ -94,7 +93,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                 if (iret .eq. 0) goto 34
 32          continue
 30      continue
-        call u2mess('A', 'PREPOST2_59')
+        call utmess('A', 'PREPOST2_59')
         goto 9999
 34      continue
     else
@@ -208,7 +207,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             if (tycha(1:4) .eq. 'VECT') then
                 valk(1)=tycha
                 valk(2)=tych(1:4)
-                call u2mesk('A', 'PREPOST6_35', 2, valk)
+                call utmess('A', 'PREPOST6_35', nk=2, valk=valk)
                 tycha='SCALAIRE'
             endif
             call irgmce(cham(ich), partie, ifi, nomcon, ordr,&
@@ -223,7 +222,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             if (tycha(1:4) .eq. 'VECT' .or. tycha(1:4) .eq. 'TENS') then
                 valk(1)=tycha
                 valk(2)=tych(1:4)
-                call u2mesk('A', 'PREPOST6_35', 2, valk)
+                call utmess('A', 'PREPOST6_35', nk=2, valk=valk)
             endif
             call irgmcg(cham(ich), partie, ifi, nomcon, ordr,&
                         nbordr, zr(jcoor), zi(jconx), zi(jpoin), nobj,&
@@ -235,7 +234,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
         else
             valk2(1) = cham(ich)
             valk2(2) = tych
-            call u2mesk('I', 'PREPOST2_60', 2, valk2)
+            call utmess('I', 'PREPOST2_60', nk=2, valk=valk2)
         endif
 10  end do
 !

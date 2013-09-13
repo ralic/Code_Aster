@@ -28,9 +28,9 @@ subroutine dlidef()
 #include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer ::  idebut, irest, iii, ipdt
+    integer :: idebut, irest, iii, ipdt
     integer :: vali(2)
     character(len=8) :: resu
     character(len=16) :: nomcmd, concep
@@ -57,8 +57,7 @@ subroutine dlidef()
             if (iii .le. 0) then
                 vali(1) = zi(jbor+iocc-1)
                 vali(2) = zi(jbor+iocc)
-                call u2mesg('F', 'ALGORITH13_78', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGORITH13_78', ni=2, vali=vali)
             endif
             call getvis('INTERVALLE', 'PAS', iocc=iocc, nbval=0, nbret=np)
             if (np .ne. 0) then
@@ -68,8 +67,7 @@ subroutine dlidef()
                 if (irest .ne. 0) then
                     vali(1) = jpas
                     vali(2) = iocc
-                    call u2mesg('F', 'ALGORITH13_79', 0, ' ', 2,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGORITH13_79', ni=2, vali=vali)
                 endif
 !
             else
@@ -80,8 +78,7 @@ subroutine dlidef()
                     if (irest .ne. 0) then
                         vali(1) = jnbp
                         vali(2) = iocc
-                        call u2mesg('F', 'ALGORITH13_80', 0, ' ', 2,&
-                                    vali, 0, 0.d0)
+                        call utmess('F', 'ALGORITH13_80', ni=2, vali=vali)
                     endif
                 endif
             endif
@@ -102,8 +99,7 @@ subroutine dlidef()
             if (zi(kval+i-1) .ge. zi(kval+i)) then
                 vali(1) = zi(kval+i-1)
                 vali(2) = zi(kval+i)
-                call u2mesg('F', 'ALGORITH13_81', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGORITH13_81', ni=2, vali=vali)
             endif
             zi(jpas+i-1) = zi(kval+i) - zi(kval+i-1)
             zi(jnbp+i-1) = 1

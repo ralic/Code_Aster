@@ -14,7 +14,7 @@ subroutine varaff(noma, gran, base, ceselz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=8) :: noma, gran
@@ -47,14 +47,16 @@ subroutine varaff(noma, gran, base, ceselz)
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: ceselm
     character(len=24) :: mesmai
-    integer ::  nvarmx, jcesd, jcesl, jcesv, jlnova, jlnovx, jlvavx
+    integer :: nvarmx, jcesd, jcesl, jcesv, jlnova, jlnovx, jlvavx
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter  (nvarmx=10000)
     logical :: ltou
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    if (noma .eq. ' ') call u2mess('F', 'UTILITAI_10')
+    if (noma .eq. ' ') then
+        call utmess('F', 'UTILITAI_10')
+    endif
     call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmato,&
                 kbid, ibid)
 !
@@ -110,9 +112,13 @@ subroutine varaff(noma, gran, base, ceselz)
     do 30 iocc = 1, nocc
 !
         call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) call u2mess('F', 'UTILITAI_12')
+        if (n1 .ne. 0) then
+            call utmess('F', 'UTILITAI_12')
+        endif
         call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) call u2mess('F', 'UTILITAI_13')
+        if (n1 .ne. 0) then
+            call utmess('F', 'UTILITAI_13')
+        endif
 !
         call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=zk8(jlnovx),&
                     nbret=n1)

@@ -3,7 +3,6 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     implicit none
 !     IN
 #include "jeveux.h"
-!
 #include "asterc/ismaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -36,11 +35,11 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 #include "asterfort/stkmai.h"
 #include "asterfort/stktit.h"
 #include "asterfort/tesfin.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifm, ifl
     character(len=24) :: cooval, coodsc, cooref, grpnoe, grpmai, connex
     character(len=24) :: titre, nommai, nomnoe, typmai
@@ -271,7 +270,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai)
     if (nbmmai .gt. nbmmax) then
-        call u2mess('F', 'MODELISA5_1')
+        call utmess('F', 'MODELISA5_1')
     endif
     do 7 i = 1, nbmmai
         call jenuno(jexnum('&CATA.TM.NOMTM', i), mclmai(i))
@@ -400,16 +399,16 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 ! -   FIN  DE LECTURE DU FICHIER
 !
     if (nbnoeu .eq. 0) then
-        call u2mess('F', 'MODELISA5_2')
+        call utmess('F', 'MODELISA5_2')
         ier = 1
     endif
     if (nbmail .eq. 0) then
-        call u2mess('F', 'MODELISA5_3')
+        call utmess('F', 'MODELISA5_3')
         ier = 1
     endif
 !
     if (ier .eq. 1) then
-        call u2mess('F', 'MODELISA4_94')
+        call utmess('F', 'MODELISA4_94')
     endif
 !
 !
@@ -622,7 +621,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
             if (num .eq. 0) then
                 valk(1) = nom
                 valk(2) = nomn
-                call u2mesk('F', 'MODELISA5_4', 2, valk)
+                call utmess('F', 'MODELISA5_4', nk=2, valk=valk)
                 ier = 1
             endif
 550      continue
@@ -654,21 +653,21 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                     ier = ier + 1
                     valk(1) = nom1
                     valk(2) = nomg
-                    call u2mesk('F', 'MODELISA5_5', 2, valk)
+                    call utmess('F', 'MODELISA5_5', nk=2, valk=valk)
                     goto 610
                 endif
                 zi(jnoeu2-1+num)=zi(jnoeu2-1+num)+1
                 if (zi(jnoeu2-1+num) .ge. 2) then
                     valk(1) = nom1
                     valk(2) = nomg
-                    call u2mesk('A', 'MODELISA5_6', 2, valk)
+                    call utmess('A', 'MODELISA5_6', nk=2, valk=valk)
                     goto 610
                 endif
                 nbno1 = nbno1 + 1
                 zi(jnoeu+nbno1-1) = num
 610          continue
             call jecroc(jexnom(grpnoe, nomg))
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno1,1))
+            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno1, 1))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno1)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             zi(jgg)=-ismaem()
@@ -704,21 +703,21 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                     ier = ier + 1
                     valk(1) = nom1
                     valk(2) = nomg
-                    call u2mesk('F', 'MODELISA5_7', 2, valk)
+                    call utmess('F', 'MODELISA5_7', nk=2, valk=valk)
                     goto 710
                 endif
                 zi(jmail2-1+num)=zi(jmail2-1+num)+1
                 if (zi(jmail2-1+num) .ge. 2) then
                     valk(1) = nom1
                     valk(2) = nomg
-                    call u2mesk('A', 'MODELISA5_8', 2, valk)
+                    call utmess('A', 'MODELISA5_8', nk=2, valk=valk)
                     goto 710
                 endif
                 nbma1 = nbma1 + 1
                 zi(jmail+nbma1-1) = num
 710          continue
             call jecroc(jexnom(grpmai, nomg))
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma1,1))
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma1, 1))
             call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma1)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
             zi(jgg)=-ismaem()
@@ -732,7 +731,9 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
 ! -     FIN DE TRANSCODAGE
 !
-    if (ier .ne. 0) call u2mess('F', 'MODELISA5_9')
+    if (ier .ne. 0) then
+        call utmess('F', 'MODELISA5_9')
+    endif
 !
 ! -     DUMP DES OBJETS DEMANDES
 !

@@ -30,7 +30,7 @@ subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
 #include "asterfort/lcicma.h"
 #include "asterfort/lcmhdd.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbcoef, nbsys, ir, is, i, j, nsg
     real(kind=8) :: coefh(6), hsr(nsg, nsg), h
     real(kind=8) :: a1(3, 3), a2(3, 3), a3(3, 3), a4(3, 3)
@@ -61,7 +61,9 @@ subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
 !
 !  MATRICE D INTERACTION (24*24): 4 COEFFICIENTS (BCC24)
 !
-        if (nbsys .ne. 24) call u2mess('F', 'COMPOR1_23')
+        if (nbsys .ne. 24) then
+            call utmess('F', 'COMPOR1_23')
+        endif
 !
 !
         call r8inir(3*3, coefh(1), a1, 1)
@@ -195,7 +197,9 @@ subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
 !
 !  MATRICE D INTERACTION (12*12): 6 COEFFICIENTS CF ZMAT
 !
-        if (nbsys .ne. 12) call u2mess('F', 'COMPOR1_24')
+        if (nbsys .ne. 12) then
+            call utmess('F', 'COMPOR1_24')
+        endif
 !
         do 10 i = 1, 12
             hsr(i,i)=coefh(1)
@@ -268,7 +272,7 @@ subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
         hsr(12,11)=coefh(2)
 !
     else
-        call u2mess('F', 'COMPOR1_25')
+        call utmess('F', 'COMPOR1_25')
     endif
 !
     do 1 i = 1, nbsys

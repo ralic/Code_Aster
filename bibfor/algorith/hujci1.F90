@@ -40,7 +40,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
 !                 IRET=1 => ECHEC
 ! -----------------------------------------------------------------
 #include "asterfort/infniv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
     integer :: ndt, ndi, iret, ifm, niv
     real(kind=8) :: mater(22, 2), crit(*), deps(6), sigd(6), i1d, i1f
@@ -120,7 +120,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
 !
     if (i1d .ge. zero) then
         i1d = 1.d-6 * pa
-        call u2mess('A', 'COMPOR1_18')
+        call utmess('A', 'COMPOR1_18')
     endif
     if (trdeps .eq. zero) then
         i1f = i1d
@@ -170,7 +170,9 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
             icmpt= icmpt+1
             goto 45
         else if (y(2) .le. zero) then
-            if (debug) call u2mess('A', 'COMPOR1_17')
+            if (debug) then
+                call utmess('A', 'COMPOR1_17')
+            endif
             x(4) = zero
             theta = zero
             goto 50
@@ -188,7 +190,7 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
 !
 ! ---> COEF = 0 => LA SOLUTION N'EXISTE PAS :: ERREUR FATALE!
     else
-        call u2mess('F', 'COMPOR1_12')
+        call utmess('F', 'COMPOR1_12')
     endif
 !
 !

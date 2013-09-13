@@ -57,7 +57,7 @@ subroutine callis(nomres)
 #include "asterfort/prjlis.h"
 #include "asterfort/rotlir.h"
 #include "asterfort/rotlis.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecomo.h"
 #include "asterfort/verili.h"
 #include "asterfort/wkvect.h"
@@ -263,8 +263,7 @@ subroutine callis(nomres)
             if (iinc .eq. 0) then
                 call verili(nomres, i, fpli1o, fpli2o, iret)
                 if (iret .gt. 0) then
-                    call u2mesg('F', 'ALGORITH12_38', 0, ' ', 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGORITH12_38')
                 endif
 !
                 iad=ldpmli+(i-1)*9

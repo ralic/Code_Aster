@@ -26,7 +26,7 @@ function xxconi(defico, nomfis, typmai)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomfis
     character(len=4) :: typmai
     character(len=24) :: defico
@@ -88,7 +88,7 @@ function xxconi(defico, nomfis, typmai)
 11  continue
 !
     if (iret .le. 0) then
-        call u2mess('F', 'XFEM_4')
+        call utmess('F', 'XFEM_4')
     else
         xxconi = iret
     endif

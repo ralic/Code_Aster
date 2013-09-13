@@ -6,8 +6,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc
     character(len=*) :: mcf, champ, nomvec
@@ -47,7 +46,9 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     nch19 = champ
     vecteu = nomvec
     call jelira(nch19//'.VALE', 'TYPE', cval=type)
-    if (type .ne. 'C') call u2mess('F', 'POSTRELE_11')
+    if (type .ne. 'C') then
+        call utmess('F', 'POSTRELE_11')
+    endif
     call jelira(nch19//'.VALE', 'LONMAX', neq)
     call jeveuo(nch19//'.VALE', 'L', jval)
     call wkvect(vecteu, 'V V R', neq, kval)
@@ -72,7 +73,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
 30      continue
 !
     else
-        call u2mesk('F', 'POSTRELE_52', 1, form)
+        call utmess('F', 'POSTRELE_52', sk=form)
     endif
 !
     call jedema()

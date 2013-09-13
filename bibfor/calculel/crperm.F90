@@ -46,7 +46,7 @@ subroutine crperm()
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -86,12 +86,10 @@ subroutine crperm()
         if (nbtrou .eq. 0) then
             valr = inst1
             valk (1) = resu1
-            call u2mesg('F', 'CALCULEL5_70', 1, valk, 0,&
-                        0, 1, valr)
+            call utmess('F', 'CALCULEL5_70', sk=valk(1), sr=valr)
         else if (nbtrou .ne. 1) then
             valr = inst1
-            call u2mesg('F', 'CALCULEL5_71', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('F', 'CALCULEL5_71', sr=valr)
         endif
     endif
     call getvid(' ', 'MAILLAGE_INIT', scal=ma1, nbret=n1)
@@ -119,16 +117,14 @@ subroutine crperm()
     if (resu2 .ne. resu3) then
         valk (1) = resu3
         valk (2) = resu2
-        call u2mesg('F', 'CALCULEL5_72', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'CALCULEL5_72', nk=2, valk=valk)
     endif
 !
     call jelira(resu2//'           .ORDR', 'LONUTI', ibid)
     if (ibid .ne. 1) then
         valk (1) = resu2
         valk (2) = k8b
-        call u2mesg('F', 'CALCULEL5_73', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'CALCULEL5_73', nk=2, valk=valk)
     endif
 !
     do 100 ic = 1, nbcham

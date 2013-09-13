@@ -42,7 +42,7 @@ subroutine crasse()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsmena.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
 !
 !
 !
@@ -52,7 +52,7 @@ subroutine crasse()
     character(len=8) :: k8b, resu2, resu1
     character(len=16) :: type, oper, chter
     character(len=19) :: nomch, cham1, resu19
-    integer ::  nbcham, kch
+    integer :: nbcham, kch
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -112,10 +112,10 @@ subroutine crasse()
         if (inst2 .lt. tprev) then
             valr(1)=tprev
             valr(2)=inst2
-            call u2mesr('F', 'CALCULEL4_21', 2, valr)
+            call utmess('F', 'CALCULEL4_21', nr=2, valr=valr)
         else if (inst2.eq.tprev) then
 !           -- SI UN INSTANT EST TROUVE PLUSIEURS FOIS, ON ECRASE :
-            call u2mesr('I', 'CALCULEL4_22', 1, inst2)
+            call utmess('I', 'CALCULEL4_22', sr=inst2)
             iord2=iord2-1
         endif
         tprev=inst2

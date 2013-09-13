@@ -77,10 +77,7 @@ subroutine op0151()
 #include "asterfort/paqnoe.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcpare.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !       ---------------------------------------------------------------
@@ -296,11 +293,13 @@ subroutine op0151()
 !
         if (mdomag .eq. 'WOHLER') then
             if (nomopt(11:14) .ne. 'SIGM') then
-                call u2mesk('F', 'FATIGUE1_29', 1, nomopt)
+                call utmess('F', 'FATIGUE1_29', sk=nomopt)
             endif
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, phenom, icodre)
-            if (icodre .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            if (icodre .eq. 1) then
+                call utmess('F', 'FATIGUE1_24')
+            endif
             cara = 'WOHLER'
             call rcpare(nommat, pheno, cara, icodwo)
             cara = 'A_BASQUI'
@@ -308,49 +307,61 @@ subroutine op0151()
             cara = 'A0'
             call rcpare(nommat, pheno, cara, icodhs)
             if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
-                call u2mess('F', 'FATIGUE1_30')
+                call utmess('F', 'FATIGUE1_30')
             endif
 !
         else if (mdomag.eq.'MANSON_COFFIN') then
             if (nomopt(11:14) .ne. 'EPSI' .and. nomopt(11:14) .ne. 'EPME') then
-                call u2mesk('F', 'FATIGUE1_31', 1, nomopt)
+                call utmess('F', 'FATIGUE1_31', sk=nomopt)
             endif
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, phenom, icodre)
-            if (icodre .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            if (icodre .eq. 1) then
+                call utmess('F', 'FATIGUE1_24')
+            endif
             cara = 'MANSON_C'
             call rcpare(nommat, pheno, cara, icodma)
-            if (icodma .ne. 0) call u2mess('F', 'FATIGUE1_32')
+            if (icodma .ne. 0) then
+                call utmess('F', 'FATIGUE1_32')
+            endif
 !
         else if (mdomag.eq.'TAHERI_MANSON') then
             if (nomopt(11:14) .ne. 'EPSI' .and. nomopt(11:14) .ne. 'EPME') then
-                call u2mesk('F', 'FATIGUE1_25', 1, nomopt)
+                call utmess('F', 'FATIGUE1_25', sk=nomopt)
             endif
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, phenom, icodre)
-            if (icodre .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            if (icodre .eq. 1) then
+                call utmess('F', 'FATIGUE1_24')
+            endif
             cara = 'MANSON_C'
             call rcpare(nommat, pheno, cara, icodma)
-            if (icodma .ne. 0) call u2mess('F', 'FATIGUE1_32')
+            if (icodma .ne. 0) then
+                call utmess('F', 'FATIGUE1_32')
+            endif
             call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nval)
             if (nval .eq. 0) then
-                call u2mess('F', 'FATIGUE1_26')
+                call utmess('F', 'FATIGUE1_26')
             endif
             call getvid(' ', 'TAHERI_FONC', scal=nomfon, nbret=nval)
             if (nval .eq. 0) then
-                call u2mess('F', 'FATIGUE1_27')
+                call utmess('F', 'FATIGUE1_27')
             endif
 !
         else if (mdomag.eq.'TAHERI_MIXTE') then
             if (nomopt(11:14) .ne. 'EPSI' .and. nomopt(11:14) .ne. 'EPME') then
-                call u2mesk('F', 'FATIGUE1_28', 1, nomopt)
+                call utmess('F', 'FATIGUE1_28', sk=nomopt)
             endif
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, phenom, icodre)
-            if (icodre .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            if (icodre .eq. 1) then
+                call utmess('F', 'FATIGUE1_24')
+            endif
             cara = 'MANSON_C'
             call rcpare(nommat, pheno, cara, icodma)
-            if (icodma .ne. 0) call u2mess('F', 'FATIGUE1_32')
+            if (icodma .ne. 0) then
+                call utmess('F', 'FATIGUE1_32')
+            endif
             cara = 'WOHLER'
             call rcpare(nommat, pheno, cara, icodwo)
             cara = 'A_BASQUI'
@@ -358,11 +369,11 @@ subroutine op0151()
             cara = 'A0'
             call rcpare(nommat, pheno, cara, icodhs)
             if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
-                call u2mess('F', 'FATIGUE1_30')
+                call utmess('F', 'FATIGUE1_30')
             endif
             call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nval)
             if (nval .eq. 0) then
-                call u2mess('F', 'FATIGUE1_26')
+                call utmess('F', 'FATIGUE1_26')
             endif
 !
         endif
@@ -370,14 +381,14 @@ subroutine op0151()
 ! --- VERIFICATION DU NOMBRE DE PAS DE TEMPS
         call jelira(nomsd//'.ORDR', 'LONUTI', nbord)
         if (nbord .lt. 2) then
-            call u2mesi('F', 'FATIGUE1_76', 1, nbord)
+            call utmess('F', 'FATIGUE1_76', si=nbord)
         endif
 !
         call jenonu(jexnom(nomsd//'.DESC', nomsym), numsym)
         if (numsym .eq. 0) then
             valk(1) = nomsym
             valk(2) = nomsd
-            call u2mesk('F', 'PREPOST4_5', 2, valk)
+            call utmess('F', 'PREPOST4_5', nk=2, valk=valk)
         endif
         call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
         chelrs = zk24(ivch)(1:19)
@@ -385,7 +396,7 @@ subroutine op0151()
             valk(1) = chelrs
             valk(2) = nomsym
             valk(3) = nomsd
-            call u2mesk('F', 'PREPOST4_6', 3, valk)
+            call utmess('F', 'PREPOST4_6', nk=3, valk=valk)
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
         ligrel=zk24(jcelk-1+1)(1:19)
@@ -397,8 +408,7 @@ subroutine op0151()
         if (impr .ge. 2) then
             vali (1) = nbord
             vali (2) = nbpt
-            call u2mesg('I', 'PREPOST6_27', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'PREPOST6_27', ni=2, vali=vali)
         endif
 !
 ! ----- CALCUL DU VECTEUR DOMMAGE EN CHAQUE NOEUD/PG
@@ -423,8 +433,7 @@ subroutine op0151()
             valk (4) = mexpic
             valk (5) = mcompt
             valk (6) = mdomag
-            call u2mesg('I', 'PREPOST6_28', 6, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('I', 'PREPOST6_28', nk=6, valk=valk)
         endif
 !
         call fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
@@ -449,27 +458,31 @@ subroutine op0151()
 !
         if (mdomag .eq. 'WOHLER') then
             if (nomopt(11:14) .ne. 'SIGM') then
-                call u2mesk('F', 'FATIGUE1_29', 1, nomopt)
+                call utmess('F', 'FATIGUE1_29', sk=nomopt)
             endif
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, phenom, icodre)
-            if (icodre .eq. 1) call u2mesk('F', 'FATIGUE1_88', 1, 'WOHLER')
+            if (icodre .eq. 1) then
+                call utmess('F', 'FATIGUE1_88', sk='WOHLER')
+            endif
             call rcpare(nommat, pheno, 'WOHLER', icodre)
-            if (icodre .eq. 1) call u2mesk('F', 'FATIGUE1_88', 1, 'WOHLER')
+            if (icodre .eq. 1) then
+                call utmess('F', 'FATIGUE1_88', sk='WOHLER')
+            endif
         endif
 !
 ! --- CONTRAINTE STATIQUE
 !
         call jelira(nomsd//'.ORDR', 'LONUTI', nbord)
         if (nbord .gt. 1) then
-            call u2mesi('F', 'FATIGUE1_84', 1, nbord)
+            call utmess('F', 'FATIGUE1_84', si=nbord)
         endif
 !
         call jenonu(jexnom(nomsd//'.DESC', nomsym), numsym)
         if (numsym .eq. 0) then
             valk(1) = nomsym
             valk(2) = nomsd
-            call u2mesk('F', 'PREPOST4_5', 2, valk)
+            call utmess('F', 'PREPOST4_5', nk=2, valk=valk)
         endif
         call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
         chelrs = zk24(ivch)(1:19)
@@ -477,7 +490,7 @@ subroutine op0151()
             valk(1) = chelrs
             valk(2) = nomsym
             valk(3) = nomsd
-            call u2mesk('F', 'PREPOST4_6', 3, valk)
+            call utmess('F', 'PREPOST4_6', nk=3, valk=valk)
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
         ligrel=zk24(jcelk-1+1)(1:19)
@@ -492,7 +505,7 @@ subroutine op0151()
         if (numsym .eq. 0) then
             valk(1) = nomsym
             valk(2) = nomsd2
-            call u2mesk('F', 'PREPOST4_5', 2, valk)
+            call utmess('F', 'PREPOST4_5', nk=2, valk=valk)
         endif
         call jeveuo(jexnum(nomsd2//'.TACH', numsym), 'L', ivch)
         chelrs = zk24(ivch)(1:19)
@@ -500,7 +513,7 @@ subroutine op0151()
             valk(1) = chelrs
             valk(2) = nomsym
             valk(3) = nomsd2
-            call u2mesk('F', 'PREPOST4_6', 3, valk)
+            call utmess('F', 'PREPOST4_6', nk=3, valk=valk)
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
         ligrel=zk24(jcelk-1+1)(1:19)
@@ -512,7 +525,7 @@ subroutine op0151()
         if (nbpt .ne. nbpt2) then
             vali (1) = nbpt
             vali (2) = nbpt2
-            call u2mesi('F', 'FATIGUE1_85', 2, vali)
+            call utmess('F', 'FATIGUE1_85', ni=2, vali=vali)
         endif
 !
 !-- NOMBRE ET NUMERO D ORDRE
@@ -520,7 +533,7 @@ subroutine op0151()
         call getvr8('HISTOIRE', 'FACT_PARTICI', iocc=1, nbval=0, nbret=nbord2)
 !
         if (nbord .ne. nbord2) then
-            call u2mess('F', 'FATIGUE1_86')
+            call utmess('F', 'FATIGUE1_86')
         endif
 !
         nbord = -nbord
@@ -541,8 +554,8 @@ subroutine op0151()
             valk (3) = typeq
             vali (1) = nbpt
             vali (2) = nbord
-            call u2mesg('I', 'FATIGUE1_81', 3, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'FATIGUE1_81', nk=3, valk=valk, ni=2,&
+                        vali=vali)
         endif
 !
         call wkvect('&&OP0151.DOMMAGE', 'V V R', nbpt, ivdmg)

@@ -1,7 +1,6 @@
 subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/adalig.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
@@ -17,8 +16,9 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lismai(*), nbmail
     character(len=*) :: modelz, basez, ligrez
 !     ------------------------------------------------------------------
@@ -99,7 +99,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
         igrel = zi(jrepe+2*(numail-1))
         if (igrel .eq. 0) then
             call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
-            call u2mesk('F', 'MODELISA4_50', 1, nomail)
+            call utmess('F', 'MODELISA4_50', sk=nomail)
         endif
         iadm = zi(lcliel+igrel)
         typele = zi(adliel-1+iadm-1)

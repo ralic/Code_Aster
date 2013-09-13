@@ -45,6 +45,13 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mfdcsi.h"
+#include "asterfort/as_mfdfdi.h"
+#include "asterfort/as_mfdfin.h"
+#include "asterfort/as_mfdncn.h"
+#include "asterfort/as_mfdnfc.h"
+#include "asterfort/as_mfdnfd.h"
+#include "asterfort/as_mfdonp.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
@@ -54,16 +61,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/as_mfdfdi.h"
-#include "asterfort/as_mfdnfd.h"
-#include "asterfort/as_mfdncn.h"
-#include "asterfort/as_mfdnfc.h"
-#include "asterfort/as_mfdfin.h"
-#include "asterfort/as_mfdcsi.h"
-#include "asterfort/as_mfdonp.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: nbtv
@@ -114,8 +112,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     call as_mfdnfd(idfimd, nbcham, codret)
     if (codret .ne. 0) then
         saux08='mfdnfd'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 ! 1.2. ==> RECHERCHE DU CHAMP VOULU
@@ -133,8 +130,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     call as_mfdnfc(idfimd, iaux, nbcmfi, codret)
     if (codret .ne. 0) then
         saux08='mfdnfc'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 ! 1.2.2. ==> POUR LE CHAMP NUMERO IAUX, ON RECUPERE :
@@ -148,19 +144,17 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !                 12345678901234567890123456789012
     saux64 = '                                        '//'                      '
     call as_mfdfdi(idfimd, iaux, saux64, jaux, zk16(adncmp),&
-                zk16(aducmp), nseqca, codret)
+                   zk16(aducmp), nseqca, codret)
     if (codret .ne. 0 .or. jaux .ne. mfloat) then
         if (codret .ne. 0) then
             saux08='mfdfdi'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !         TYPE INCORRECT
         if (jaux .ne. mfloat) then
             vali (1) = jaux
-            call u2mesg('A+', 'MED_84', 0, ' ', 1,&
-                        vali, 0, 0.d0)
-            call u2mess('F', 'MED_75')
+            call utmess('A+', 'MED_84', si=vali(1))
+            call utmess('F', 'MED_75')
         endif
     endif
 !
@@ -180,18 +174,18 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !
     if (existc .ne. 1) then
         call as_mfdnfd(idfimd, nchmed, codret)
-        call u2mesk('F+', 'MED_57', 1, nochmd(1:lnochm))
+        call utmess('F+', 'MED_57', sk=nochmd(1:lnochm))
         do 50, iaux = 1, nchmed
         call as_mfdnfc(idfimd, iaux, nbcmp, codret)
         call wkvect('&&MDCHII.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
         call wkvect('&&MDCHII.UNITCMP', 'V V K16', nbcmp, junit)
         call as_mfdfdi(idfimd, iaux, nomcha, typech, zk16(jcmp),&
-                    zk16(junit), nseqca, codret)
-        call u2mesk('F+', 'MED2_2', 1, nomcha)
+                       zk16(junit), nseqca, codret)
+        call utmess('F+', 'MED2_2', sk=nomcha)
         call jedetr('&&MDCHII.NOMCMP_K16')
         call jedetr('&&MDCHII.UNITCMP')
 50      continue
-        call u2mess('F', 'VIDE_1')
+        call utmess('F', 'VIDE_1')
     endif
 !
 !====
@@ -203,12 +197,11 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     call wkvect('&&MDCHII.CUNIT', 'V V K16', ncmp, junit)
 !
     call as_mfdfin(idfimd, nochmd, nomam2, nbtv, zk16(junit),&
-                zk16(jcmp), codret)
+                   zk16(jcmp), codret)
 !
     if (codret .ne. 0) then
         saux08='mfdfin'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     call jedetr('&&MDCHII.CNAME')
@@ -246,12 +239,11 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !    . NUMERO D'ORDRE : FINUNO
 !
         call as_mfdcsi(idfimd, nochmd, iaux, finupt, finuno,&
-                    fiinst, codret)
+                       fiinst, codret)
 !
         if (codret .ne. 0) then
             saux08='mfdcsi'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
         zi(jnptno+iaux*2-2) = finupt
         zi(jnptno+iaux*2-1) = finuno
@@ -270,15 +262,15 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     fiinst = zr(jpasdt+iaux-1)
 !
     if (.not. ilocal) then
-        call u2mess('F', 'MED_60')
+        call utmess('F', 'MED_60')
     endif
 !
 !       ON REGARDE DANS LE FICHIER MED SI DES VALEURS SONT REFERENCEES
 !       POUR TYPENT ET TYPGEO, SI CE N'EST PAS LE CAS, ON RETIRE
 !       CET INSTANT DE LA LISTE
     call as_mfdonp(idfimd, nochmd, finupt, finuno, typent,&
-                typgeo, iterma, nomamd, nomprf, nomloc,&
-                npro, codret)
+                   typgeo, iterma, nomamd, nomprf, nomloc,&
+                   npro, codret)
 !
     if (npro .eq. 0) then
         nbtv2 = nbtv2 - 1

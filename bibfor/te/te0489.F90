@@ -1,7 +1,6 @@
 subroutine te0489(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dchapg.h"
@@ -16,7 +15,8 @@ subroutine te0489(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -376,7 +376,9 @@ subroutine te0489(option, nomte)
                                         1, tp, iret)
                             call rctype(zi(imate), 1, 'TEMP', tp, resu,&
                                         type)
-                            if (type .eq. 'TEMP') call u2mess('F', 'CALCULEL_31')
+                            if (type .eq. 'TEMP') then
+                                call utmess('F', 'CALCULEL_31')
+                            endif
                             call rctrac(zi(imate), 1, 'SIGM', resu, jprolp,&
                                         jvalep, nbvalp, e)
                             call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
@@ -386,7 +388,7 @@ subroutine te0489(option, nomte)
                                         rbid, rbid, rbid, pm, rp,&
                                         rbid, rbid, rbid, rbid)
                         else
-                            call u2mess('F', 'ELEMENTS_32')
+                            call utmess('F', 'ELEMENTS_32')
                         endif
 ! --- CALCUL DE X
                         cst1 = (rp-rp0)/rp
@@ -438,7 +440,9 @@ subroutine te0489(option, nomte)
                                         1, tp, iret)
                             call rctype(zi(imate), 1, 'TEMP', tp, resu,&
                                         type)
-                            if (type .eq. 'TEMP') call u2mess('F', 'CALCULEL_31')
+                            if (type .eq. 'TEMP') then
+                                call utmess('F', 'CALCULEL_31')
+                            endif
                             call rctrac(zi(imate), 1, 'SIGM', resu, jprolp,&
                                         jvalep, nbvalp, e)
                             call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
@@ -448,7 +452,7 @@ subroutine te0489(option, nomte)
                                         rbid, rbid, rbid, pm, rp,&
                                         rbid, rbid, rbid, rbid)
                         else
-                            call u2mess('F', 'ELEMENTS_32')
+                            call utmess('F', 'ELEMENTS_32')
                         endif
                         if (sigeqn .le. rp0) then
                             dchax(igau) = -1.d0

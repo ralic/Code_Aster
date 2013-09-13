@@ -1,5 +1,6 @@
 subroutine cjstis(mod, mater, sig, vin, dsde)
     implicit none
+#include "asterfort/utmess.h"
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,6 @@ subroutine cjstis(mod, mater, sig, vin, dsde)
 !     OUT  DSDE    :  MATRICE TANGENTE
 !       ----------------------------------------------------------------
 !
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi
 !
     real(kind=8) :: sig(6), dsde(6, 6), mater(14, 2), vin(*), i1
@@ -94,7 +94,7 @@ subroutine cjstis(mod, mater, sig, vin, dsde)
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
     endif
 !
 end subroutine

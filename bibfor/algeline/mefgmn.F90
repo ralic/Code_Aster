@@ -2,7 +2,6 @@ subroutine mefgmn(noma, nbgma, ligrma)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gmgnre.h"
@@ -13,9 +12,9 @@ subroutine mefgmn(noma, nbgma, ligrma)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
     character(len=24) :: ligrma(*)
     integer :: nbgma
@@ -60,7 +59,9 @@ subroutine mefgmn(noma, nbgma, ligrma)
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoto,&
                 k8b, ierd)
     if (nbnoto .eq. 0) goto 9999
-    if (nbgma .eq. 0) call u2mess('F', 'ALGELINE_82')
+    if (nbgma .eq. 0) then
+        call utmess('F', 'ALGELINE_82')
+    endif
 !
 !
 ! --- TABLEAUX DE TRAVAIL
@@ -76,7 +77,7 @@ subroutine mefgmn(noma, nbgma, ligrma)
         nomgma = ligrma(i)
         call jeexin(jexnom(grpma, nomgma), iret)
         if (iret .eq. 0) then
-            call u2mesk('F', 'ELEMENTS_62', 1, nomgma)
+            call utmess('F', 'ELEMENTS_62', sk=nomgma)
         endif
         call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)

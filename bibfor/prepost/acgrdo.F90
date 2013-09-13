@@ -24,7 +24,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 #include "asterfort/rcvale.h"
 #include "asterfort/renrfa.h"
 #include "asterfort/teneps.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jdtaum, jresun
@@ -677,7 +677,9 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
 !        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
             call rccome(nommat, 'FATIGUE', phenom, icodre(1))
-            if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'FATIGUE1_24')
+            endif
 !        POUR CRITERE= DANG_VAN OU MATAKE
 !
 !
@@ -755,7 +757,9 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
 !        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
             call rccome(nommat, 'FATIGUE', phenom, icodre(1))
-            if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'FATIGUE1_24')
+            endif
 !
 !        POUR CRITERE= FORMULE
 !

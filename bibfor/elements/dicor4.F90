@@ -8,7 +8,7 @@ subroutine dicor4(k0, sim, sip, pi, ui,&
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/dicor3.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: k0(78), sim(12), sip(12), pi, ui, ti, dxu1, dxu2, dryu1
     real(kind=8) :: dryu2
     real(kind=8) :: nu1, nu2, mu1, mu2, feq1, c1, dbar2, uu, tt, dur, dryr
@@ -72,7 +72,7 @@ subroutine dicor4(k0, sim, sip, pi, ui,&
 !
 !************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 !
-    call u2mess('I', 'ELEMENTS_25')
+    call utmess('I', 'ELEMENTS_25')
 ! ICI UI=UI-VARIM4 ET TI=TI-VARIM5
 !C ON REMPLACE APRES UI PAR UU-DUR ET TI PAR TT-DRYR
     if (pi .ne. 0.d0) then

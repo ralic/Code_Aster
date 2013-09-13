@@ -54,7 +54,6 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/geolis.h"
 #include "asterfort/infniv.h"
@@ -71,8 +70,9 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
     character(len=4) :: zcst
     character(len=8) :: k8bid, linta, lintb, moda, modb, maa, mab, intfa, intfb
@@ -230,7 +230,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ierd)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
     call jeveuo(jexnum(fpliao, numlis), 'L', llplia)

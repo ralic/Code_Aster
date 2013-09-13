@@ -5,7 +5,6 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -13,8 +12,9 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=80) :: titre(*)
     character(len=8) :: nomai(*), nonoe(*), noma
     character(len=16) :: formar
@@ -97,7 +97,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
     else if (ndim.eq.1) then
         write (ifc,*) 'COOR_1D'
     else
-        call u2mess('F', 'PREPOST2_77')
+        call utmess('F', 'PREPOST2_77')
     endif
     do 1 ino = 1, nno
         write (ifc,fmt) nonoe(ino),(coordo(3*(ino-1)+j),j=1,ndim)

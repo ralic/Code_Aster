@@ -17,7 +17,7 @@ subroutine ef0344(nomte)
 ! ======================================================================
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
@@ -28,7 +28,7 @@ subroutine ef0344(nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
 #include "asterfort/verift.h"
@@ -64,7 +64,7 @@ subroutine ef0344(nomte)
 !     UN SEUL MATERIAU
     if (nbmat .ne. 1) then
         messk(1)='EFGE_ELNO'
-        call u2mesk('F', 'ELEMENTS4_59', 1, messk)
+        call utmess('F', 'ELEMENTS4_59', sk=messk(1))
     endif
 !     LE 1ER MATERIAU
     imat=jmat+zi(jmat+nbmat+1)
@@ -72,7 +72,7 @@ subroutine ef0344(nomte)
     do 10 icomp = 1, zi(imat+1)
         if (zk16(zi(imat)+icomp-1)(1:4) .ne. 'ELAS') then
             messk(2)=zk16(zi(imat)+icomp-1)(1:10)
-            call u2mesk('F', 'ELEMENTS4_64', 2, messk)
+            call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
         endif
 10  end do
 ! --- ------------------------------------------------------------------
@@ -134,7 +134,7 @@ subroutine ef0344(nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail=zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA

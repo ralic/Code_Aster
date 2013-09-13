@@ -17,8 +17,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: champ
     integer :: long, vi(*), nbmail, numail(*)
@@ -87,7 +86,9 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !
     call jeexin(champ2//'.CELD', ier1)
     call jeexin(champ2//'.RESL', ier2)
-    if (ier1+ier2 .eq. 0) call u2mesk('F', 'CALCULEL3_73', 1, champ2)
+    if (ier1+ier2 .eq. 0) then
+        call utmess('F', 'CALCULEL3_73', sk=champ2)
+    endif
 !
 !
     if (ier1 .gt. 0) then
@@ -122,7 +123,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
         longt = ncmpel
     else
         if (longt .ne. ncmpel) then
-            call u2mess('F', 'CALCULEL3_54')
+            call utmess('F', 'CALCULEL3_54')
         endif
     endif
     first = .false.
@@ -140,7 +141,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     else if (scal(1:1).eq.'C') then
         vc(i) = dcmplx(rzero,rzero)
     else
-        call u2mesk('F', 'CALCULEL3_74', 1, scal)
+        call utmess('F', 'CALCULEL3_74', sk=scal)
     endif
     20 end do
 !

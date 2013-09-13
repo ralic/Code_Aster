@@ -1,6 +1,6 @@
-subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
+subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                   carteo)
-
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,11 +28,11 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     logical :: lfchar
-    character(len=8) :: nomfct,newfct
+    character(len=8) :: nomfct, newfct
     real(kind=8) :: time
-    character(len=19) :: cartei,carteo
+    character(len=19) :: cartei, carteo
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,7 +105,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
 30                  continue
                     zk8(jvalou+in-1) = newfct
                 else
-                    call u2mesk('A', 'RUPTURE2_4', 1, charge)
+                    call utmess('A', 'RUPTURE2_4', sk=charge)
                     call jedupo(cartei//'.VALE', 'V', carteo//'.VALE', .false.)
                     goto 999
                 endif
@@ -113,7 +113,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
 20      continue
     endif
 !
-999 continue
+999  continue
     call jedema()
 !
 end subroutine

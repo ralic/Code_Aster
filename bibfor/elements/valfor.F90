@@ -31,8 +31,8 @@ subroutine valfor(indn, lt1, lt2, l1, l2,&
 !
 !
     implicit none
+#include "asterfort/utmess.h"
 !
-#include "asterfort/u2mess.h"
     integer :: indn
 !
     integer :: lt1, lt2
@@ -89,7 +89,7 @@ subroutine valfor(indn, lt1, lt2, l1, l2,&
 !
     else
 !
-        call u2mess('F', 'ELEMENTS4_57')
+        call utmess('F', 'ELEMENTS4_57')
 !
     endif
 !

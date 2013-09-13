@@ -27,7 +27,7 @@ subroutine nmdomt(method, parmet)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: method(*)
     real(kind=8) :: parmet(*)
 !
@@ -66,7 +66,7 @@ subroutine nmdomt(method, parmet)
     real(kind=8) :: pasmin, relirl
     real(kind=8) :: rhomin, rhomax, rhoexc
     integer :: ifm, niv
-    integer ::  ibid, iret, nocc
+    integer :: ibid, iret, nocc
     character(len=16) :: relmet
 !
 ! ----------------------------------------------------------------------
@@ -124,7 +124,9 @@ subroutine nmdomt(method, parmet)
 !
         if (method(5) .eq. 'DEPL_CALCULE') then
             call getvid('NEWTON', 'EVOL_NOLI', iocc=1, scal=method(6), nbret=iret)
-            if (iret .le. 0) call u2mess('F', 'MECANONLINE5_45')
+            if (iret .le. 0) then
+                call utmess('F', 'MECANONLINE5_45')
+            endif
         endif
 !
     else if (method(1) .eq. 'IMPLEX') then
@@ -154,22 +156,22 @@ subroutine nmdomt(method, parmet)
         call getvr8('RECH_LINEAIRE', 'RHO_EXCL', iocc=1, scal=rhoexc, nbret=iret)
 !
         if (rhomin .ge. -rhoexc .and. rhomin .le. rhoexc) then
-            call u2mess('A', 'MECANONLINE5_46')
+            call utmess('A', 'MECANONLINE5_46')
             rhomin = +rhoexc
         endif
         if (rhomax .ge. -rhoexc .and. rhomax .le. rhoexc) then
-            call u2mess('A', 'MECANONLINE5_47')
+            call utmess('A', 'MECANONLINE5_47')
             rhomax = -rhoexc
         endif
 !
         if (rhomax .lt. rhomin) then
-            call u2mess('A', 'MECANONLINE5_44')
+            call utmess('A', 'MECANONLINE5_44')
             call getvr8('RECH_LINEAIRE', 'RHO_MIN', iocc=1, scal=rhomax, nbret=iret)
             call getvr8('RECH_LINEAIRE', 'RHO_MAX', iocc=1, scal=rhomin, nbret=iret)
         endif
 !
         if (abs(rhomax-rhomin) .le. r8prem()) then
-            call u2mess('F', 'MECANONLINE5_43')
+            call utmess('F', 'MECANONLINE5_43')
         endif
 !
     endif

@@ -21,7 +21,6 @@ subroutine jevech(nmparz, louez, itab)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/chloet.h"
@@ -31,7 +30,8 @@ subroutine jevech(nmparz, louez, itab)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: nmparz, louez
     character(len=8) :: nompar, nommai
     character(len=1) :: loue
@@ -94,7 +94,7 @@ subroutine jevech(nmparz, louez, itab)
     if (iparg .eq. 0) then
         valk(1) = nompar
         valk(2) = option
-        call u2mesk('E', 'CALCULEL2_69', 2, valk)
+        call utmess('E', 'CALCULEL2_69', nk=2, valk=valk)
         call contex(option, ' ')
     endif
 !
@@ -129,7 +129,7 @@ subroutine jevech(nmparz, louez, itab)
         valk(1) = nompar
         valk(2) = option
         valk(3) = nomte
-        call u2mesk('E', 'CALCULEL2_70', 3, valk)
+        call utmess('E', 'CALCULEL2_70', nk=3, valk=valk)
         call contex(option, nompar)
     endif
 !
@@ -150,17 +150,17 @@ subroutine jevech(nmparz, louez, itab)
         valk(1) = option
 !        ON PEUT TROUVER D'OU VIENT LE PROBLEME DANS 3 CAS
         if (zk24(iaoplo+3*ipara-3) .eq. 'CARA') then
-            call u2mesk('E', 'CALCULEL2_53', 1, valk)
+            call utmess('E', 'CALCULEL2_53', sk=valk(1))
         else if (zk24(iaoplo+3*ipara-3).eq.'CHMA') then
-            call u2mesk('E', 'CALCULEL2_54', 1, valk)
+            call utmess('E', 'CALCULEL2_54', sk=valk(1))
         else if (zk24(iaoplo+3*ipara-3).eq.'MODL') then
-            call u2mesk('E', 'CALCULEL2_55', 1, valk)
+            call utmess('E', 'CALCULEL2_55', sk=valk(1))
         endif
 40      continue
         valk(1) = nompar
         valk(2) = option
         valk(3) = nomte
-        call u2mesk('E', 'CALCULEL2_71', 3, valk)
+        call utmess('E', 'CALCULEL2_71', nk=3, valk=valk)
         call contex(option, nompar)
 !
     endif
@@ -206,16 +206,16 @@ subroutine jevech(nmparz, louez, itab)
 !           -- POUR CERTAINS PARAMETRES "COURANTS" ON EMET
 !              UN MESSAGE PLUS CLAIR :
             if (nompar .eq. 'PMATERC') then
-                call u2mesk('F', 'CALCULEL2_74', 4, valk)
+                call utmess('F', 'CALCULEL2_74', nk=4, valk=valk)
             else if (nompar.eq.'PCACOQU') then
-                call u2mesk('F', 'CALCULEL2_75', 4, valk)
+                call utmess('F', 'CALCULEL2_75', nk=4, valk=valk)
             else if (nompar.eq.'PCAGNPO') then
-                call u2mesk('F', 'CALCULEL2_76', 4, valk)
+                call utmess('F', 'CALCULEL2_76', nk=4, valk=valk)
             else if (nompar.eq.'PCAORIE') then
-                call u2mesk('F', 'CALCULEL2_77', 4, valk)
+                call utmess('F', 'CALCULEL2_77', nk=4, valk=valk)
 !
             else
-                call u2mesk('E', 'CALCULEL2_73', 4, valk)
+                call utmess('E', 'CALCULEL2_73', nk=4, valk=valk)
 !
                 write (6,*) 'ERREUR JEVECH ZL :',nompar, (zl(&
                     ilchlo+debugr-1+decael-1+kk),kk=1,lonchl)

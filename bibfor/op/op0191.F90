@@ -55,8 +55,7 @@ subroutine op0191()
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: n0, nbordr, iret, nocc, i, j, np, iordr
     integer :: n1, nbcmp, iord, ioc, ibid, nc
@@ -126,10 +125,10 @@ subroutine op0191()
     call rsutnu(resuin, ' ', 1, knum, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
-        call u2mesk('F', 'CALCULEL4_8', 1, resuin)
+        call utmess('F', 'CALCULEL4_8', sk=resuin)
     endif
     if (iret .ne. 0) then
-        call u2mess('F', 'ALGORITH3_41')
+        call utmess('F', 'ALGORITH3_41')
     endif
     call jeveuo(knum, 'L', jordr)
 !
@@ -170,7 +169,7 @@ subroutine op0191()
                 if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
                     ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
                     ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) then
-                    call u2mess('F', 'ALGORITH3_7')
+                    call utmess('F', 'ALGORITH3_7')
                 endif
             endif
 !
@@ -185,7 +184,7 @@ subroutine op0191()
             else
                 valk(1) = tych
                 valk(2) = champ1
-                call u2mesk('A', 'ALGORITH9_69', 2, valk)
+                call utmess('A', 'ALGORITH9_69', nk=2, valk=valk)
             endif
 !
             call rsnoch(resuou, option, iordr)

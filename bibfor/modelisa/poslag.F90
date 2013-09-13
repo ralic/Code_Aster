@@ -1,6 +1,6 @@
 subroutine poslag(typlaz, ilag1, ilag2)
     implicit none
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: typlaz
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -54,13 +54,13 @@ subroutine poslag(typlaz, ilag1, ilag2)
     else if (typlag(1:1).eq.'2') then
         ilag1 = -1
     else
-        call u2mesk('F', 'MODELISA6_30', 1, typlag)
+        call utmess('F', 'MODELISA6_30', sk=typlag)
     endif
 !
     if (typlag(2:2) .eq. '2') then
         ilag2 = -2
     else
-        call u2mesk('F', 'MODELISA6_30', 1, typlag)
+        call utmess('F', 'MODELISA6_30', sk=typlag)
     endif
 !
 end subroutine

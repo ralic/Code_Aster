@@ -3,7 +3,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                   seuil, icomp, sigf, vinf, devg,&
                   devgii, irtet)
 !
-    implicit      none
+    implicit none
 #include "asterfort/calcpj.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
@@ -20,7 +20,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 #include "asterfort/lglite.h"
 #include "asterfort/prjsom.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     integer :: itmax, nbmat, nr, nvi, icomp, irtet
     real(kind=8) :: toler, mater(nbmat, 2), deps(6), sigd(6)
@@ -165,11 +165,11 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                 call codree(toler, 'E', ctol)
                 valk(1) = citer
                 valk(2) = ctol
-                call u2mesk('I', 'ALGORITH2_57', 2, valk)
+                call utmess('I', 'ALGORITH2_57', nk=2, valk=valk)
                 irteti = 3
                 goto 100
             else
-                call u2mesk('I', 'ALGELINE5_52', 0, ' ')
+                call utmess('I', 'ALGELINE5_52')
 !               CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
                 codret = 2
             endif
@@ -241,11 +241,11 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                         call codree(toler, 'E', ctol)
                         valk(1) = citer
                         valk(2) = ctol
-                        call u2mesk('I', 'ALGORITH2_57', 2, valk)
+                        call utmess('I', 'ALGORITH2_57', nk=2, valk=valk)
                         irteti = 3
                         goto 100
                     else
-                        call u2mesk('I', 'ALGELINE5_52', 0, ' ')
+                        call utmess('I', 'ALGELINE5_52')
 !                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
                         codret = 2
                     endif
@@ -281,11 +281,11 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                         call codree(toler, 'E', ctol)
                         valk(1) = citer
                         valk(2) = ctol
-                        call u2mesk('I', 'ALGORITH2_57', 2, valk)
+                        call utmess('I', 'ALGORITH2_57', nk=2, valk=valk)
                         irteti = 3
                         goto 100
                     else
-                        call u2mesk('I', 'ALGELINE5_52', 0, ' ')
+                        call utmess('I', 'ALGELINE5_52')
 !                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
                         codret = 2
                     endif

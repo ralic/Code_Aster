@@ -51,8 +51,6 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 ! VECTT  --> VECTEUR ELEMENTAIRE
 !.......................................................................
 #include "jeveux.h"
-!-----------------------------------------------------------------------
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -61,10 +59,12 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/reeret.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+!-----------------------------------------------------------------------
+!
     character(len=8) :: elrefp
     integer :: ndim, nnop, imate, itps, igeom, nfh, nfe, jpintt
     integer :: lonch(10), cnset(4*32), heavt(36)
@@ -116,7 +116,9 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !
 !     POUR PREPARER L'APPEL A RCVALB
     call rccoma(zi(imate), 'THER', 1, phenom, codret)
-    if (codret .ne. 0) call u2mess('F', 'ELEMENTS2_63')
+    if (codret .ne. 0) then
+        call utmess('F', 'ELEMENTS2_63')
+    endif
 !     POUR L'INSTANT ON NE TRAITE PAS 'THER_ORTH'
     ASSERT(phenom.eq.'THER')
     valpar(1) = zr(itps-1+1)

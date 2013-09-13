@@ -31,7 +31,7 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
 #include "asterfort/nmacva.h"
 #include "asterfort/nmbudi.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtaxpy.h"
     integer :: fonact(*)
     character(len=19) :: sddyna, lischa
@@ -89,7 +89,7 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
     londe = ndynlo(sddyna,'ONDE_PLANE')
     llapl = isfonc(fonact,'LAPLACE')
     if (londe .or. llapl) then
-        call u2mess('A', 'MECANONLINE_23')
+        call utmess('A', 'MECANONLINE_23')
     endif
 !
 ! --- INITIALISATIONS

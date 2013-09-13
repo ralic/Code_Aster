@@ -44,7 +44,7 @@ subroutine op0104()
 #include "asterfort/jexnum.h"
 #include "asterfort/sscgma.h"
 #include "asterfort/sscgno.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 !
     integer :: n1, n2, nbgrma, nbgmin, iret, nbgma, nbgrmn, i, j, nbma, jgg, jvg
@@ -63,7 +63,7 @@ subroutine op0104()
         call getvid(' ', 'GRILLE', scal=ma, nbret=n1)
     endif
     if (ma .ne. ma2) then
-        call u2mess('F', 'SOUSTRUC_15')
+        call utmess('F', 'SOUSTRUC_15')
     endif
     grpmai = ma//'.GROUPEMA'
     grpnoe = ma//'.GROUPENO'

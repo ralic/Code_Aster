@@ -30,7 +30,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtmchc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     character(len=*) :: action, solvez, matasz, vcinez
@@ -110,7 +110,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !     --------------------
         call PetscInitialize(PETSC_NULL_CHARACTER, ierr)
         if (ierr .ne. 0) then
-            call u2mess('F', 'PETSC_1')
+            call utmess('F', 'PETSC_1')
         endif
         do k = 1, nmxins
             ap(k) = 0
@@ -134,7 +134,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !     1. INFORMATIONS SUR LA MATRICE :
 !     --------------------------------
     if (rouc .ne. 'R') then
-        call u2mess('F', 'PETSC_2')
+        call utmess('F', 'PETSC_2')
     endif
 !
 !     2. ON CHERCHE UNE PLACE EN MEMOIRE :
@@ -173,7 +173,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         endif
     end do
 !
-    call u2mess('F', 'PETSC_3')
+    call utmess('F', 'PETSC_3')
 !
  1  continue
 !
@@ -195,7 +195,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         call jeveuo(matas//'.REFA', 'E', jrefa)
         etamat = zk24(jrefa-1+8)
         if (etamat .eq. 'DECT') then
-            call u2mess('A', 'PETSC_4')
+            call utmess('A', 'PETSC_4')
             goto 9999
         else
             zk24(jrefa-1+8) = 'DECT'
@@ -239,7 +239,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 #else
 !
-    call u2mess('F', 'FERMETUR_10')
+    call utmess('F', 'FERMETUR_10')
 !
 #endif
 !

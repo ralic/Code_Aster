@@ -50,8 +50,7 @@ subroutine te0500(option, nomte)
 #include "asterfort/lxlgut.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 !
 !
@@ -131,7 +130,7 @@ subroutine te0500(option, nomte)
     if (iret .eq. 0) then
         time = zr(itab(1))
     else
-        call u2mess('F', 'INDICATEUR_11')
+        call utmess('F', 'INDICATEUR_11')
     endif
 ! =====================================================================
 ! 3. INITIALISATIONS/RECUPERATION DE LA GEOMETRIE ET DES CHAMPS LOCAUX
@@ -196,7 +195,7 @@ subroutine te0500(option, nomte)
             endif
         endif
     else
-        call u2mesk('F', 'ELEMENTS4_78', 1, nomre1(1))
+        call utmess('F', 'ELEMENTS4_78', sk=nomre1(1))
     endif
 !
 ! --- C. MASSE VOLUMIQUE DU LIQUIDE
@@ -210,7 +209,7 @@ subroutine te0500(option, nomte)
         rholiq = valre2(1)
         viscli = valre2(2)
     else
-        call u2mesk('F', 'ELEMENTS4_69', 1, nomre2(1)//nomre2(2))
+        call utmess('F', 'ELEMENTS4_69', sk=nomre2(1)//nomre2(2))
     endif
 !
 ! --- D. MODULE DE YOUNG
@@ -236,7 +235,7 @@ subroutine te0500(option, nomte)
             endif
         endif
     else
-        call u2mesk('F', 'ELEMENTS4_71', 1, nomre3(1))
+        call utmess('F', 'ELEMENTS4_71', sk=nomre3(1))
     endif
 !
 ! 3.5 CALCUL DU COEFFICIENT D'ADIMENSIONNEMENT
@@ -254,18 +253,18 @@ subroutine te0500(option, nomte)
                     raux = raux/permin
 !
                 else
-                    call u2mess('F', 'INDICATEUR_20')
+                    call utmess('F', 'INDICATEUR_20')
                 endif
             else
                 valk = 'pression'
-                call u2mesk('F', 'INDICATEUR_21', 1, valk)
+                call utmess('F', 'INDICATEUR_21', sk=valk)
             endif
         else
-            call u2mess('F', 'INDICATEUR_22')
+            call utmess('F', 'INDICATEUR_22')
         endif
     else
         valk = 'longueur'
-        call u2mesk('F', 'INDICATEUR_21', 1, valk)
+        call utmess('F', 'INDICATEUR_21', sk=valk)
     endif
 !
 ! =====================================================================
@@ -305,7 +304,7 @@ subroutine te0500(option, nomte)
         tertps = tertps + raux*poids2*((fluhpx-fluhmx)**2+(fluhpy- fluhmy)**2)
     else
         iaux = lxlgut(option)
-        call u2mesk('F', 'INDICATEUR_92', 1, option(1:iaux))
+        call utmess('F', 'INDICATEUR_92', sk=option(1:iaux))
     endif
 !
     10 end do

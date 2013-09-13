@@ -25,7 +25,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/vpagm1.h"
 #include "asterfort/zerofr.h"
@@ -91,7 +91,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: coef1, coef2, deltev
     integer :: icodre(5)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(5), nompar(2),materi
+    character(len=8) :: nomres(5), nompar(2), materi
 ! RMS
     real(kind=8) :: grain, tk, xr, xq1, xq2, dporo, poro, xm1, xm2, xe01, xe02
     real(kind=8) :: fdevpkk, grain0
@@ -117,11 +117,11 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     t2 = abs(theta-1.d0)
     prec = 0.01d0
     if ((t1.gt.prec) .and. (t2.gt.prec)) then
-        call u2mess('F', 'ALGORITH6_55')
+        call utmess('F', 'ALGORITH6_55')
     endif
 !
     if (typmod(1) .eq. 'C_PLAN') then
-        call u2mess('F', 'ALGORITH6_92')
+        call utmess('F', 'ALGORITH6_92')
         goto 299
     endif
     do 90 k = 1, 6
@@ -191,7 +191,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     if (porom .eq. 0.d0) then
         porom = valres(2)
         if ((vim(1).ne.0.d0) .or. (valres(2).eq.0.d0)) then
-            call u2mess('F', 'ALGORITH8_86')
+            call utmess('F', 'ALGORITH8_86')
         endif
     endif
 !

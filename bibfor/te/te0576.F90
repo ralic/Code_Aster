@@ -1,7 +1,6 @@
 subroutine te0576(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/enelpg.h"
@@ -11,7 +10,8 @@ subroutine te0576(option, nomte)
 #include "asterfort/nmgeom.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -169,8 +169,7 @@ subroutine te0576(option, nomte)
     if (option(1:4) .eq. 'ETOT') then
 !
         if (grand) then
-            call u2mesg('F', 'COMPOR1_79', 1, compor(3), 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'COMPOR1_79', sk=compor(3))
         endif
 !
 ! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :

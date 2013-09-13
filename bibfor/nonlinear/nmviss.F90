@@ -33,7 +33,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: sddyna
     character(len=24) :: numedd
@@ -139,7 +139,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
                     c16bid, prec, criter, nume, 1,&
                     nbtro2)
         if ((abs(nbtro1).ne.1) .or. (abs(nbtro2).ne.1)) then
-            call u2mess('F', 'DYNAMIQUE_25')
+            call utmess('F', 'DYNAMIQUE_25')
         endif
     endif
 !

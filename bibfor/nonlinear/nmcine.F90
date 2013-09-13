@@ -23,7 +23,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/matini.h"
 #include "asterfort/radial.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami
@@ -118,8 +118,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     if ((em-dsdem) .lt. r8miem()) then
         valrm(1)=dsdem
         valrm(2)=em
-        call u2mesg('F', 'COMPOR1_54', 0, ' ', 0,&
-                    ibid, 2, valrm)
+        call utmess('F', 'COMPOR1_54', nr=2, valr=valrm)
     else
         cm = 2.d0/3.d0*dsdem/(1.d0-dsdem/em)
     endif
@@ -134,8 +133,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     if ((e-dsde) .lt. r8miem()) then
         valrm(1)=dsde
         valrm(2)=e
-        call u2mesg('F', 'COMPOR1_54', 0, ' ', 0,&
-                    ibid, 2, valrm)
+        call utmess('F', 'COMPOR1_54', nr=2, valr=valrm)
     else
         c = 2.d0/3.d0*dsde/(1.d0-dsde/e)
     endif

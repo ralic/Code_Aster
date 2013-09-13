@@ -36,7 +36,7 @@ subroutine pofaqu()
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, j, ibid, iordo
     integer :: ifonc1, ifonc, nbpapf, idefp, itemp, ivdome
@@ -77,7 +77,9 @@ subroutine pofaqu()
     do 20 i = 2, nbf
         fvale(i) = nomten(i)//'           .VALE'
         call jelira(fvale(i), 'LONMAX', nbpts)
-        if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
+        if (nbpts .ne. nbptot) then
+            call utmess('F', 'FATIGUE1_21')
+        endif
 20  end do
     call wkvect('&&POFAQU.ORDO', 'V V R', nbptot/2*nbf, iordo)
     call jeveuo(fvale(1), 'L', ifonc1)
@@ -85,7 +87,7 @@ subroutine pofaqu()
         call jeveuo(fvale(i), 'L', ifonc)
         do 35 j = 1, nbptot/2
             if (zr(ifonc+j-1) .ne. zr(ifonc1+j-1)) then
-                call u2mess('F', 'FATIGUE1_21')
+                call utmess('F', 'FATIGUE1_21')
             endif
             zr(iordo+(j-1)*nbf+i-1) = zr(ifonc+nbptot/2+j-1)
 35      continue
@@ -97,21 +99,29 @@ subroutine pofaqu()
 !
     fvale(1) = nomp//'           .VALE'
     call jelira(fvale(1), 'LONMAX', nbpts)
-    if (nbpts .ne. nbptot*2) call u2mess('F', 'FATIGUE1_22')
+    if (nbpts .ne. nbptot*2) then
+        call utmess('F', 'FATIGUE1_22')
+    endif
     call wkvect('&&POFAQU.DEFPLA', 'V V R', nbptot, idefp)
     call jeveuo(fvale(1), 'L', ifonc)
     do 45 j = 0, nbptot-1
-        if (zr(ifonc+j) .ne. zr(ifonc1+j)) call u2mess('F', 'FATIGUE1_22')
+        if (zr(ifonc+j) .ne. zr(ifonc1+j)) then
+            call utmess('F', 'FATIGUE1_22')
+        endif
         zr(idefp+j) = zr(ifonc+nbptot+j)
 45  end do
 !
     fvale(1) = nomt//'           .VALE'
     call jelira(fvale(1), 'LONMAX', nbpts)
-    if (nbpts .ne. nbptot*2) call u2mess('F', 'FATIGUE1_23')
+    if (nbpts .ne. nbptot*2) then
+        call utmess('F', 'FATIGUE1_23')
+    endif
     call wkvect('&&POFAQU.TEMP', 'V V R', nbptot, itemp)
     call jeveuo(fvale(1), 'L', ifonc)
     do 46 j = 0, nbptot-1
-        if (zr(ifonc+j) .ne. zr(ifonc1+j)) call u2mess('F', 'FATIGUE1_23')
+        if (zr(ifonc+j) .ne. zr(ifonc1+j)) then
+            call utmess('F', 'FATIGUE1_23')
+        endif
         zr(itemp+j) = zr(ifonc+nbptot+j)
 46  end do
 !
@@ -135,7 +145,7 @@ subroutine pofaqu()
         call fglema(nbf, nbptot, zr(iordo), zr(idefp), zr(itemp),&
                     nommat, zr(ivdome))
     else
-        call u2mess('F', 'FATIGUE1_20')
+        call utmess('F', 'FATIGUE1_20')
     endif
 !
     do 50 i = 1, nbptot

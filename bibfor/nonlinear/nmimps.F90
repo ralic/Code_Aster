@@ -18,7 +18,7 @@ subroutine nmimps(sdimpr, sdconv, sderro)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -26,8 +26,7 @@ subroutine nmimps(sdimpr, sdconv, sderro)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmerge.h"
 #include "asterfort/obgetb.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdconv, sdimpr, sderro
 !
 ! ----------------------------------------------------------------------
@@ -80,9 +79,13 @@ subroutine nmimps(sdimpr, sdconv, sderro)
 !
 ! --- AFFICHAGE ENTETE ARCHIVAGE
 !
-    call u2mess('I', 'MECANONLINE6_60')
-    if (maxnod) call u2mess('I', 'MECANONLINE6_61')
-    if (maxrel) call u2mess('I', 'MECANONLINE6_62')
+    call utmess('I', 'MECANONLINE6_60')
+    if (maxnod) then
+        call utmess('I', 'MECANONLINE6_61')
+    endif
+    if (maxrel) then
+        call utmess('I', 'MECANONLINE6_62')
+    endif
 !
 ! --- AFFICHAGE
 !
@@ -93,8 +96,7 @@ subroutine nmimps(sdimpr, sdconv, sderro)
             valk(1) = zk16(jcnvty-1+iresi)
             valk(2) = zk16(jcnvli-1+iresi)
             valr(1) = zr(jcnvva-1+iresi)
-            call u2mesg('I', 'MECANONLINE6_70', 2, valk, 0,&
-                        ibid, 1, valr)
+            call utmess('I', 'MECANONLINE6_70', nk=2, valk=valk, sr=valr(1))
         endif
 20  end do
 !

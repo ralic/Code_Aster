@@ -5,12 +5,11 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
                   ivf, idfde, ipoid2, ivf2, idfde2,&
                   npi2, jgano)
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     logical :: vf
     integer :: typvf
     integer :: mecani(5), press1(7), press2(7), tempe(5)
@@ -80,7 +79,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
         else if (elrefe.eq.'T10') then
             elref2 = 'TE4'
         else
-            call u2mesk('F', 'DVP_9', 1, elrefe)
+            call utmess('F', 'DVP_9', sk=elrefe)
         endif
     else
         if (elrefe .eq. 'TR7') then
@@ -90,7 +89,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
         else if (elrefe.eq.'H27') then
             elref2 = 'HE8'
         else
-            call u2mesk('F', 'DVP_9', 1, elrefe)
+            call utmess('F', 'DVP_9', sk=elrefe)
         endif
     endif
 ! ======================================================================
@@ -116,7 +115,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
             else if (elrefe.eq.'T9') then
                 nface = 4
             else
-                call u2mesk('F', 'VOLUFINI_12', 1, elrefe)
+                call utmess('F', 'VOLUFINI_12', sk=elrefe)
             endif
         endif
     endif
@@ -137,8 +136,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
             nddlfa = press1(1) + press2(1) + tempe(1)
             nddlk = press1(1) + press2(1) + tempe(1)
         else
-            call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                        typvf, 0, 0.d0)
+            call utmess('F', 'VOLUFINI_9', si=typvf)
 !--      POUR UN SCHEMA A DEUX POINTS  ( TYPVF.EQ.1) ON AURAIT EU
 !        NPG    = NPI
 !        NDDLS  = 0

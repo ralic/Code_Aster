@@ -70,9 +70,7 @@ subroutine mdtr74(nomres)
 #include "asterfort/mdruku.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=1) :: niv
@@ -210,8 +208,7 @@ subroutine mdtr74(nomres)
             call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid,&
                         bamo2, iret)
             if (bamo1 .ne. bamo2) then
-                call u2mesg('F', 'ALGORITH17_18', 0, k8b, 1,&
-                            i, 0, r8b)
+                call utmess('F', 'ALGORITH17_18', si=i)
             endif
 11      continue
     endif
@@ -299,7 +296,7 @@ subroutine mdtr74(nomres)
         neq = zi(llnequ)
         nbmod2 = nbmode
     else
-        call u2mess('F', 'ALGORITH5_65')
+        call utmess('F', 'ALGORITH5_65')
     endif
 !
 !     --- RECOPIE DES MATRICES DANS DES VECTEURS DE TRAVAIL ---
@@ -349,8 +346,7 @@ subroutine mdtr74(nomres)
                 vali (2) = nbamor
                 vali (3) = nbmode
                 valk (1) = 'PREMIERS COEFFICIENTS'
-                call u2mesg('A', 'ALGORITH16_18', 1, valk, 3,&
-                            vali, 0, 0.d0)
+                call utmess('A', 'ALGORITH16_18', sk=valk(1), ni=3, vali=vali)
                 call wkvect('&&MDTR74.AMORTI', 'V V R8', nbmode, jamog)
                 if (n1 .ne. 0) then
                     call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbmode,&
@@ -377,7 +373,7 @@ subroutine mdtr74(nomres)
                 vali (1) = idiff
                 vali (2) = nbmode
                 vali (3) = idiff
-                call u2mesi('I', 'ALGORITH16_19', 3, vali)
+                call utmess('I', 'ALGORITH16_19', ni=3, vali=vali)
                 call wkvect('&&MDTR74.AMORTI2', 'V V R8', nbmode, jamo2)
                 do 50 iam = 1, nbamor
                     zr(jamo2+iam-1) = zr(jamog+iam-1)
@@ -434,8 +430,8 @@ subroutine mdtr74(nomres)
                 valr (1) = agene
                 valr (2) = acrit
                 valk (1) = ' '
-                call u2mesg('A', 'ALGORITH16_20', 1, valk, 1,&
-                            vali, 2, valr)
+                call utmess('A', 'ALGORITH16_20', sk=valk(1), si=vali(1), nr=2,&
+                            valr=valr)
             endif
 90      continue
 !        PROBLEME POSSIBLE DU JEVEUO SUR UNE COLLECTION
@@ -598,7 +594,7 @@ subroutine mdtr74(nomres)
             endif
             call getvr8('COUPLAGE_EDYOS', 'PAS_TPS_EDYOS', iocc=1, scal=dtsto, nbret=n1)
         else
-            call u2mess('F', 'EDYOS_48')
+            call utmess('F', 'EDYOS_48')
         endif
 !  Recuperation du nombre de paliers
         npal='N_PAL'
@@ -614,7 +610,9 @@ subroutine mdtr74(nomres)
     angini = 0.d0
     call getfac('ROTOR_FISS', nbrfis)
     if (nbrfis .ne. 0) then
-        if (method .ne. 'EULER') call u2mess('F', 'ALGORITH5_80')
+        if (method .ne. 'EULER') then
+            call utmess('F', 'ALGORITH5_80')
+        endif
         nbnli = nbnli + nbrfis
         call wkvect('&&MDTR74.FK', 'V V K8', 2*nbrfis, jfk)
         call wkvect('&&MDTR74.DFK', 'V V K8', 2*nbrfis, jdfk)
@@ -682,9 +680,8 @@ subroutine mdtr74(nomres)
                 call getvtx('VERI_CHOC', 'STOP_CRITERE', iocc=1, scal=k8b, nbret=n1)
                 if (k8b .eq. 'OUI') niv = 'F'
                 valr (1) = seuil
-                call u2mesg('I', 'ALGORITH16_21', 0, ' ', 0,&
-                            0, 1, valr)
-                call u2mess(niv, 'ALGORITH5_66')
+                call utmess('I', 'ALGORITH16_21', sr=valr(1))
+                call utmess(niv, 'ALGORITH5_66')
             endif
         endif
     endif
@@ -791,13 +788,12 @@ subroutine mdtr74(nomres)
         valk (3) = basemo
         vali (1) = neq
         vali (2) = nbmode
-        call u2mesg('I', 'ALGORITH16_22', 3, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGORITH16_22', nk=3, valk=valk, ni=2,&
+                    vali=vali)
         if (method(1:5) .eq. 'ADAPT') then
             valr (1) = dt
             vali (1) = nbsauv
-            call u2mesg('I', 'ALGORITH16_23', 0, ' ', 1,&
-                        vali, 1, valr)
+            call utmess('I', 'ALGORITH16_23', si=vali(1), sr=valr(1))
         else if (method.eq.'ITMI') then
             vali (1) = numvif
             vali (2) = nbmode
@@ -805,52 +801,43 @@ subroutine mdtr74(nomres)
             valr (1) = vgap
             valr (2) = dt
             valr (3) = tfexm
-            call u2mesg('I', 'ALGORITH16_24', 0, ' ', 3,&
-                        vali, 3, valr)
+            call utmess('I', 'ALGORITH16_24', ni=3, vali=vali, nr=3,&
+                        valr=valr)
             if (itrans .ne. 0) then
                 valr(1) = eps
-                call u2mesg('I', 'ALGORITH16_78', 0, ' ', 0,&
-                            0, 1, valr)
+                call utmess('I', 'ALGORITH16_78', sr=valr(1))
             endif
             if (icoupl .ne. 0) then
                 vali (1) = nbmp
-                call u2mesg('I', 'ALGORITH16_79', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'ALGORITH16_79', si=vali(1))
             endif
             vali (1) = iparch
-            call u2mesg('I', 'ALGORITH16_25', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_25', si=vali(1))
         else
             valr (1) = dt
             vali (1) = nbpas
             vali (2) = nbsauv
-            call u2mesg('I', 'ALGORITH16_26', 0, ' ', 2,&
-                        vali, 1, valr)
+            call utmess('I', 'ALGORITH16_26', ni=2, vali=vali, sr=valr(1))
         endif
         if (nbchoc .ne. 0) then
             vali (1) = nbchoc
-            call u2mesg('I', 'ALGORITH16_80', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_80', si=vali(1))
         endif
         if (nbsism .ne. 0) then
             vali (1) = nbsism
-            call u2mesg('I', 'ALGORITH16_81', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_81', si=vali(1))
         endif
         if (nbflam .ne. 0) then
             vali (1) = nbflam
-            call u2mesg('I', 'ALGORITH16_82', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_82', si=vali(1))
         endif
         if (nbrede .ne. 0) then
             vali (1) = nbrede
-            call u2mesg('I', 'ALGORITH16_83', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_83', si=vali(1))
         endif
         if (nbrevi .ne. 0) then
             vali (1) = nbrevi
-            call u2mesg('I', 'ALGORITH16_84', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_84', si=vali(1))
         endif
     endif
 !
@@ -964,7 +951,9 @@ subroutine mdtr74(nomres)
 !
 120  continue
 !      CALL JEDETC('V','&&',1)
-    if (iret .ne. 0) call u2mess('F', 'ALGORITH5_24')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGORITH5_24')
+    endif
 !
     call jedema()
 end subroutine

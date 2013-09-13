@@ -12,8 +12,8 @@ subroutine dismoi(arret, questi, nomob, typeco, repi,&
 #include "asterfort/dismcp.h"
 #include "asterfort/dismcr.h"
 #include "asterfort/dismct.h"
-#include "asterfort/dismes.h"
 #include "asterfort/dismdy.h"
+#include "asterfort/dismes.h"
 #include "asterfort/dismff.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/dismic.h"
@@ -35,7 +35,7 @@ subroutine dismoi(arret, questi, nomob, typeco, repi,&
 #include "asterfort/dismte.h"
 #include "asterfort/dismtm.h"
 #include "asterfort/dismxf.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: repi, ierd
     character(len=*) :: arret, questi, nomob, typeco, repk
 !     ------------------------------------------------------------------
@@ -164,7 +164,7 @@ subroutine dismoi(arret, questi, nomob, typeco, repi,&
     else
         if (arret2 .eq. 'F') then
             repk1 = typeco
-            call u2mesk('F', 'UTILITAI_65', 1, repk1)
+            call utmess('F', 'UTILITAI_65', sk=repk1)
         endif
     endif
 !

@@ -1,8 +1,7 @@
 subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                   prefix, ndinit)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -25,9 +24,9 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbma, nummai(*), ndinit
     character(len=8) :: nomain, nomaou, prefix
     character(len=*) :: basz
@@ -58,7 +57,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     logical :: logic
     character(len=1) :: k1b, base
     character(len=24) :: valk
-    character(len=8) ::  typm, nima
+    character(len=8) :: typm, nima
     character(len=16) :: knume
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, grpnoe, cooval
     character(len=24) :: coodsc, cooref, grpmai, nomg
@@ -274,8 +273,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 call jecroc(jexnom(nommai, nima))
             else
                 valk = nima
-                call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_7', sk=valk)
             endif
 !
 ! 5.2.1. ==> TYPE DE MAILLE ET CONNECTIVITE
@@ -313,15 +311,16 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 imav = imav + 1
                 call codent(imav, 'G', knume)
                 lgnd = lxlgut(knume)
-                if (lgnd+lgpref .gt. 8) call u2mess('F', 'ALGELINE_17')
+                if (lgnd+lgpref .gt. 8) then
+                    call utmess('F', 'ALGELINE_17')
+                endif
                 nomg = prefix(1:lgpref)//knume
                 call jeexin(jexnom(nommai, nomg), iret)
                 if (iret .eq. 0) then
                     call jecroc(jexnom(nommai, nomg))
                 else
                     valk = nomg
-                    call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_7', sk=valk)
                 endif
 !
                 call jenonu(jexnom(nommai, nomg), ima2)
@@ -377,8 +376,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             else
 !           --- NE DEVRAIT PAS ARRIVER !
                 valk = nomg
-                call u2mesg('F', 'ALGELINE4_11', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_11', sk=valk)
             endif
             call jeecra(jexnom(grpnoe, nomg), 'LONMAX', ival=max(1, nbno))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', ival=nbno)

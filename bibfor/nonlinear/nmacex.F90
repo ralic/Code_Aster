@@ -18,7 +18,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -28,7 +28,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 #include "asterfort/nmdcrg.h"
 #include "asterfort/nmlere.h"
 #include "asterfort/nmlerr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     integer :: iterat
@@ -79,7 +79,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 !
 ! --- AFFICHAGE
 !
-    call u2mess('I', 'EXTRAPOLATION_1')
+    call utmess('I', 'EXTRAPOLATION_1')
 !
 ! --- LECTURE DES INFOS SUR LES CONVERGENCES
 !
@@ -115,7 +115,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 ! --- STAT_NON_LINE -> NI GLOB_RELA, NI GLOB_MAXI !
 !
     if (regres .eq. 0) then
-        call u2mess('A', 'EXTRAPOLATION_2')
+        call utmess('A', 'EXTRAPOLATION_2')
         lextra = .false.
         goto 999
     endif
@@ -130,7 +130,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
         depart = nbigno
     else
         lextra = .false.
-        call u2mess('I', 'EXTRAPOLATION_3')
+        call utmess('I', 'EXTRAPOLATION_3')
         goto 999
     endif
 !
@@ -156,7 +156,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 ! --- EXTRAPOLATION REUSSIE ?
 !
     if (xdet .le. r8prem()) then
-        call u2mess('I', 'EXTRAPOLATION_10')
+        call utmess('I', 'EXTRAPOLATION_10')
         lextra = .false.
     else
         valext(1) = xa0

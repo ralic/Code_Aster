@@ -22,7 +22,7 @@ subroutine xvermo(nfiss, fiss, mod)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nfiss
     character(len=8) :: fiss(nfiss), mod
 !
@@ -60,7 +60,7 @@ subroutine xvermo(nfiss, fiss, mod)
             valk(1)=fiss(ifiss)
             valk(2)=modf
             valk(3)=mod
-            call u2mesk('F', 'XFEM_39', 3, valk)
+            call utmess('F', 'XFEM_39', nk=3, valk=valk)
         endif
 !
 10  end do

@@ -27,7 +27,7 @@ subroutine jecreo(nomlu, listat)
 #include "jeveux_private.h"
 #include "asterfort/jjanal.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu, listat
 !     ==================================================================
 !-----------------------------------------------------------------------
@@ -62,44 +62,44 @@ subroutine jecreo(nomlu, listat)
     character(len=4) :: ifmt
 !     ------------------------------------------------------------------
     if (len(nomlu) .gt. 24) then
-        call u2mesk('F', 'JEVEUX_84', 1, nomlu)
+        call utmess('F', 'JEVEUX_84', sk=nomlu)
     endif
     noml32 = nomlu(1:min(24,len(nomlu)))
 !
     call jjanal(listat, nv, nv, lval, cval)
     iclas = index ( classe , cval(1)(1:1) )
     if (iclas .eq. 0) then
-        call u2mesk('F', 'JEVEUX_68', 1, cval(1))
+        call utmess('F', 'JEVEUX_68', sk=cval(1))
     endif
 !
     icre = 1
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 2) then
-        call u2mesk('F', 'JEVEUX_85', 1, noml32)
+        call utmess('F', 'JEVEUX_85', sk=noml32)
     else
         genr(jgenr(iclaos)+idatos) = cval(2)(1:1)
         type(jtype(iclaos)+idatos) = cval(3)(1:1)
         if (cval(3)(1:1) .eq. 'K' .and. lval(3) .eq. 1) then
-            call u2mesk('F', 'JEVEUX_86', 1, noml32)
+            call utmess('F', 'JEVEUX_86', sk=noml32)
         else
             genri = genr ( jgenr(iclaos) + idatos )
             typei = type ( jtype(iclaos) + idatos )
             if (genri .eq. 'N' .and. typei .ne. 'K') then
-                call u2mesk('F', 'JEVEUX_87', 1, noml32)
+                call utmess('F', 'JEVEUX_87', sk=noml32)
             endif
             if (typei .eq. 'K') then
                 write(ifmt,'(''(I'',I1,'')'')') lval(3) - 1
                 read ( cval(3)(2:lval(3)) , ifmt ) iv
                 if (iv .le. 0 .or. iv .gt. 512) then
-                    call u2mesk('F', 'JEVEUX_88', 1, cval(3))
+                    call utmess('F', 'JEVEUX_88', sk=cval(3))
                 endif
                 if (genri .eq. 'N') then
                     if (mod ( iv , lois ) .ne. 0) then
-                        call u2mesk('F', 'JEVEUX_89', 1, noml32)
+                        call utmess('F', 'JEVEUX_89', sk=noml32)
                     endif
                     if (iv .gt. 24) then
-                        call u2mesk('F', 'JEVEUX_90', 1, noml32)
+                        call utmess('F', 'JEVEUX_90', sk=noml32)
                     endif
                 endif
             else if (typei .eq. 'I') then
@@ -113,7 +113,7 @@ subroutine jecreo(nomlu, listat)
             else if (typei .eq. 'S') then
                 iv = lor8/2
             else
-                call u2mesk('F', 'JEVEUX_91', 1, cval(3))
+                call utmess('F', 'JEVEUX_91', sk=cval(3))
             endif
             ltyp ( jltyp(iclaos) + idatos ) = iv
         endif

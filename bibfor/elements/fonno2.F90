@@ -2,7 +2,6 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
                   nbmax, noeu, tablev)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -10,7 +9,8 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma, noeu
     character(len=19) :: macofo
     integer :: nbmac, nbnoff, nbnose, nbmax, tablev(2)
@@ -114,7 +114,7 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
 !     SI AUCUNE MAILLE DE CE TYPE N'EST TROUVE
     if (comp4 .eq. 0) then
         valk(1) = noeu
-        call u2mesk('F', 'RUPTURE0_31', 1, valk(1))
+        call utmess('F', 'RUPTURE0_31', sk=valk(1))
     endif
     call jedema()
 end subroutine

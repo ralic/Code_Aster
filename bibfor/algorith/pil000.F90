@@ -24,8 +24,7 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
 #include "asterfort/pidegv.h"
 #include "asterfort/pieigv.h"
 #include "asterfort/piesgv.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), typilo
     integer :: neps, mat
@@ -60,10 +59,9 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
 !
 !      PILOTAGE 'PRED_ELAS'
         else
-            if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) call u2mesg('F',&
-                                                                             'MECANONLINE_60', 1,&
-                                                                             compor, 0, 0, 0,&
-                                                                             0.d0)
+            if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
+                call utmess('F', 'MECANONLINE_60', sk=compor(1))
+            endif
 !
             if (compor(1) .eq. 'ENDO_SCALAIRE') then
                 call piesgv(neps, tau, mat, vim, epsm,&
@@ -76,13 +74,12 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
                             copilo)
 !
             else
-                call u2mess('F', 'MECANONLINE_59')
+                call utmess('F', 'MECANONLINE_59')
             endif
 !
         endif
     else
-        call u2mesg('F', 'MECANONLINE_61', 1, typmod(2), 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'MECANONLINE_61', sk=typmod(2))
     endif
 !
 end subroutine

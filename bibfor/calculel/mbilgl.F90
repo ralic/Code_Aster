@@ -29,7 +29,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 #include "asterfort/tbajvi.h"
 #include "asterfort/tbajvk.h"
 #include "asterfort/tbajvr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -159,7 +159,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='G_BILI'
-        call u2mesk('F', 'RUPTURE1_13', 1, valk)
+        call utmess('F', 'RUPTURE1_13', sk=valk)
     endif
 !
     call vrcref(modele, mate(1:8), '        ', chvref(1:19))

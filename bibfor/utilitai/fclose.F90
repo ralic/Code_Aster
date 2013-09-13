@@ -1,7 +1,7 @@
 subroutine fclose(unit)
 ! aslint: disable=
-    implicit   none
-#include "asterfort/u2mesk.h"
+    implicit none
+#include "asterfort/utmess.h"
     integer :: unit
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ subroutine fclose(unit)
     close (unit=unit, iostat=ierr)
     if (ierr .gt. 0) then
         write(k4b,'(I3)') unit
-        call u2mesk('F', 'UTILITAI_77', 1, k4b)
+        call utmess('F', 'UTILITAI_77', sk=k4b)
     endif
 !
 end subroutine

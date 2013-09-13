@@ -49,7 +49,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 #include "asterfort/mtdscr.h"
 #include "asterfort/mtexis.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/ddot.h"
@@ -92,8 +92,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
     call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typ1)
     if (typ1 .eq. 'C') then
         valk = basmod
-        call u2mesg('F', 'ALGORITH12_16', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_16', sk=valk)
     endif
 !
 ! --- ALLOCATION DE LA MATRICE RESULTAT
@@ -106,8 +105,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
     call mtexis(nommat(1:8), ier)
     if (ier .eq. 0) then
         valk = nommat(1:8)
-        call u2mesg('E', 'ALGORITH12_39', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('E', 'ALGORITH12_39', sk=valk)
     endif
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE

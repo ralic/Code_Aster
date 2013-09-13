@@ -26,7 +26,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 #include "asterfort/diago3.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerod2.h"
 #include "asterfort/zerog2.h"
     character(len=8) :: typmod(*)
@@ -533,7 +533,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                         lambda, mu, alpha, ecrob, ecrod,&
                         seuil, y(3), z(3))
 200      continue
-        call u2mess('F', 'UTILITAI2_53')
+        call utmess('F', 'UTILITAI2_53')
 201      continue
 !        write (6,*) 'ITER-3 = ',ITER
         eta=x(3)
@@ -556,7 +556,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !     &                     ' ; CRITP1',CRITP1
 !            write (6,*) 'ETA2 = ',ETA2,' ; CRIT2 = ',CRIT2,
 !     &                     ' ; CRITP2',CRITP2
-            call u2mess('F', 'PILOTAGE_83')
+            call utmess('F', 'PILOTAGE_83')
         endif
         if ((abs(critp1*(eta2-eta1)).lt.epstol*seuila*tau) .and.&
             (abs(critp2*(eta2-eta1)).lt.epstol*seuila*tau)) then
@@ -588,7 +588,9 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
             critp1=critp
         endif
 !     TEST D'ARRET DE PRECISION NUMERIQUE
-        if (eta2 .eq. eta1) call u2mess('F', 'PILOTAGE_84')
+        if (eta2 .eq. eta1) then
+            call utmess('F', 'PILOTAGE_84')
+        endif
         goto 250
 !
 ! -- SI MINIMUM SOUS 0 : 2 SOLUTIONS, SINON : 0 SOLUTION
@@ -622,7 +624,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
                             lambda, mu, alpha, ecrob, ecrod,&
                             seuil, y(3), z(3))
 400          continue
-            call u2mess('F', 'PILOTAGE_83')
+            call utmess('F', 'PILOTAGE_83')
 401          continue
 !          write (6,*) 'ITER-5 = ',ITER
             eta1=x(3)
@@ -654,7 +656,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !          WRITE(6,*) 'ETA=',X(3)
 !          WRITE(6,*) 'CRITERE=',Y(3)
 !          WRITE(6,*) 'DCRIT=',Z(3)
-            call u2mess('F', 'PILOTAGE_83')
+            call utmess('F', 'PILOTAGE_83')
 501          continue
 !          write (6,*) 'ITER-5b = ',ITER
             eta2=x(3)

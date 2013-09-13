@@ -24,8 +24,7 @@ subroutine pecage(resu, modele, nbocc)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbocc
@@ -130,7 +129,7 @@ subroutine pecage(resu, modele, nbocc)
         call tbcrsd(resu, 'G')
         call tbajpa(resu, nbparr, noparr, typarr)
     else
-        call u2mess('F', 'UTILITAI3_48')
+        call utmess('F', 'UTILITAI3_48')
     endif
     nbparc = nbparr - 1
     call tbajli(resu, 1, noparr(nbparr), ibid, r8b,&
@@ -171,12 +170,12 @@ subroutine pecage(resu, modele, nbocc)
             do 20 ig = 1, nbgrma
                 call jeexin(jexnom(mlggma, zk24(jgr+ig-1)), iret)
                 if (iret .eq. 0) then
-                    call u2mesk('F', 'UTILITAI3_46', 1, zk24(jgr+ig-1))
+                    call utmess('F', 'UTILITAI3_46', sk=zk24(jgr+ig-1))
                     goto 20
                 endif
                 call jelira(jexnom(mlggma, zk24(jgr+ig-1)), 'LONUTI', nbma)
                 if (nbma .eq. 0) then
-                    call u2mesk('A', 'UTILITAI3_47', 1, zk24(jgr+ig-1))
+                    call utmess('A', 'UTILITAI3_47', sk=zk24(jgr+ig-1))
                     goto 20
                 endif
                 call jeveuo(jexnom(noma//'.GROUPEMA', zk24(jgr+ig-1)), 'L', jad)
@@ -202,7 +201,7 @@ subroutine pecage(resu, modele, nbocc)
             do 30 im = 1, nbmail
                 call jeexin(jexnom(mlgnma, zk8(jma+im-1)), iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'UTILITAI3_49', 1, zk8(jma+im-1))
+                    call utmess('A', 'UTILITAI3_49', sk=zk8(jma+im-1))
                     goto 30
                 endif
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)

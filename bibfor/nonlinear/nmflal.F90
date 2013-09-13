@@ -27,7 +27,7 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmlesd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: compor, ddlexc, ddlsta
     character(len=16) :: optmod, option
     character(len=4) :: mod45
@@ -142,7 +142,7 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
                     optrig)
         if (optrig .eq. 'RIGI_GEOM_NON') then
             defo = 1
-            call u2mess('I', 'MECANONLINE4_3')
+            call utmess('I', 'MECANONLINE4_3')
         endif
 !
         if (defo .eq. 0) then

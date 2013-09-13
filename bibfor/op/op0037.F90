@@ -49,9 +49,7 @@ subroutine op0037()
 #include "asterfort/rsorac.h"
 #include "asterfort/rsvpar.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/vpddl.h"
@@ -130,7 +128,7 @@ subroutine op0037()
         if (modeou .ne. modein) then
             valk (1) = modeou
             valk (2) = modein
-            call u2mesk('F', 'ALGELINE4_33', 2, valk)
+            call utmess('F', 'ALGELINE4_33', nk=2, valk=valk)
         endif
     endif
 !
@@ -177,7 +175,7 @@ subroutine op0037()
             nopara(i) = noparf(i)
  3      continue
     else
-        call u2mesk('F', 'ALGELINE2_33', 1, typcon)
+        call utmess('F', 'ALGELINE2_33', sk=typcon)
     endif
 !
 !
@@ -191,8 +189,8 @@ subroutine op0037()
 !  => DIRECT A LA FIN APRES UN PETIT MESSAGE D'INFO
     if (iret .eq. 0) then
         if (niv .ge. 1) then
-            call u2mesk('I', 'ALGELINE7_5', 1, modein)
-            call u2mess('I', 'ALGELINE7_6')
+            call utmess('I', 'ALGELINE7_5', sk=modein)
+            call utmess('I', 'ALGELINE7_6')
         endif
         goto 9999
     endif
@@ -214,7 +212,7 @@ subroutine op0037()
         if (iret .ne. 0) then
             call jelira(k19b//'.PAPA', 'LONUTI', ival)
             if (ival .ne. 0) then
-                call u2mess('F', 'ALGELINE2_34')
+                call utmess('F', 'ALGELINE2_34')
             endif
         endif
 !
@@ -259,7 +257,9 @@ subroutine op0037()
                         mat3, iret)
             if (iret .eq. 0) l3 = 1
         endif
-        if ((l1*l2) .eq. 0) call u2mess('F', 'ALGELINE_6')
+        if ((l1*l2) .eq. 0) then
+            call utmess('F', 'ALGELINE_6')
+        endif
         masse = mat2
         raide = mat1
         amor = ' '
@@ -315,7 +315,7 @@ subroutine op0037()
     call vpmain(modele, mate, cara, xmastr, nbpara)
     if (xmastr .le. r8prem()) then
         lmasin = .false.
-        call u2mess('I', 'ALGELINE5_58')
+        call utmess('I', 'ALGELINE5_58')
         xmastr = 1.d0
     endif
 !
@@ -327,9 +327,11 @@ subroutine op0037()
     if (l .ne. 0) then
         if (norm .eq. 'MASS_GENE') then
 !        --- CALCUL DE LA MASSE DU MODELE
-            if (.not.lrefe) call u2mess('F', 'ALGELINE2_35')
+            if (.not.lrefe) then
+                call utmess('F', 'ALGELINE2_35')
+            endif
             if (lbasm .and. lcmplx .and. (amor.eq.' ')) then
-                call u2mess('F', 'ALGELINE_8')
+                call utmess('F', 'ALGELINE_8')
             endif
             method(1:9) = 'MASS_GENE'
             call mtdscr(masse)
@@ -339,9 +341,11 @@ subroutine op0037()
                 call jeveuo(amor(1:19)//'.&INT', 'E', lmat(2))
             endif
         else if (norm .eq. 'RIGI_GENE') then
-            if (.not.lrefe) call u2mess('F', 'ALGELINE2_35')
+            if (.not.lrefe) then
+                call utmess('F', 'ALGELINE2_35')
+            endif
             if (lbasm .and. lcmplx .and. (amor.eq.' ')) then
-                call u2mess('F', 'ALGELINE_8')
+                call utmess('F', 'ALGELINE_8')
             endif
             method(1:9) = 'RAID_GENE'
             call mtdscr(raide)
@@ -392,8 +396,7 @@ subroutine op0037()
         else
             valk (1) = norm
             vali = ibid
-            call u2mesg('F', 'ALGELINE4_36', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_36', sk=valk(1), si=vali)
         endif
     endif
 !
@@ -405,11 +408,11 @@ subroutine op0037()
         call utnono(' ', noma, 'NOEUD', nomgrn, noeud,&
                     l)
         if (l .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nomgrn)
+            call utmess('F', 'ELEMENTS_67', sk=nomgrn)
         else if (l.eq.1) then
             valk(1) = nomgrn
             valk(2) = noeud
-            call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
     endif
 !
@@ -431,10 +434,10 @@ subroutine op0037()
                         numddl)
         endif
         if (numnoe .eq. 0) then
-            call u2mess('F', 'ALGELINE2_36')
+            call utmess('F', 'ALGELINE2_36')
         endif
         if (numddl .eq. 0) then
-            call u2mess('F', 'ALGELINE2_37')
+            call utmess('F', 'ALGELINE2_37')
         endif
         ideb = ifin + 1
         do 50 ic = 1, ncmp
@@ -493,25 +496,23 @@ subroutine op0037()
     endif
 !
     if (niv .ge. 1) then
-        call u2mesk('I', 'ALGELINE7_5', 1, modein)
+        call utmess('I', 'ALGELINE7_5', sk=modein)
         if (lbasm) then
-            call u2mess('I', 'ALGELINE7_7')
+            call utmess('I', 'ALGELINE7_7')
             do 79 im = 1, nbmod
                 valk(1) = method
                 vali = zi(lnumor+im-1)
-                call u2mesg('I', 'ALGELINE7_8', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'ALGELINE7_8', sk=valk(1), si=vali)
 79          continue
         else
-            call u2mess('I', 'ALGELINE7_9')
+            call utmess('I', 'ALGELINE7_9')
             do 78 im = 1, nbmod
                 call rsadpa(modein, 'L', 1, 'NORME', zi(lnumor+im-1),&
                             0, ladpa, k8b)
                 valk(1) = zk24(ladpa)
                 valk(2) = method
                 vali = zi(lnumor+im-1)
-                call u2mesg('I', 'ALGELINE7_10', 2, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'ALGELINE7_10', nk=2, valk=valk, si=vali)
 78          continue
         endif
     endif
@@ -525,13 +526,13 @@ subroutine op0037()
 !
     if (.not.lbasm) then
         if (npari .ne. nbpari) then
-            call u2mess('F', 'ALGELINE2_38')
+            call utmess('F', 'ALGELINE2_38')
         endif
         if (nparr .ne. nbparr) then
-            call u2mess('F', 'ALGELINE2_39')
+            call utmess('F', 'ALGELINE2_39')
         endif
         if (npark .ne. nbpark) then
-            call u2mess('F', 'ALGELINE2_40')
+            call utmess('F', 'ALGELINE2_40')
         endif
     endif
 !
@@ -571,7 +572,7 @@ subroutine op0037()
             ncmpac = ncmpac + zi(lddl+ieq)
 120      continue
         if (ncmpac .lt. 1) then
-            call u2mess('F', 'ALGELINE2_41')
+            call utmess('F', 'ALGELINE2_41')
         endif
     endif
 !
@@ -586,11 +587,11 @@ subroutine op0037()
             call utnono(' ', noma, 'NOEUD', nomgrn, noeud,&
                         l)
             if (l .eq. 10) then
-                call u2mesk('F', 'ELEMENTS_67', 1, nomgrn)
+                call utmess('F', 'ELEMENTS_67', sk=nomgrn)
             else if (l.eq.1) then
                 valk(1) = nomgrn
                 valk(2) = noeud
-                call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
             endif
         endif
         call getvtx('MODE_SIGNE', 'NOM_CMP', iocc=1, scal=cmp, nbret=l)
@@ -602,17 +603,17 @@ subroutine op0037()
                         numddl)
         endif
         if (numnoe .eq. 0) then
-            call u2mess('F', 'ALGELINE2_36')
+            call utmess('F', 'ALGELINE2_36')
         endif
         if (numddl .eq. 0) then
-            call u2mess('F', 'ALGELINE2_37')
+            call utmess('F', 'ALGELINE2_37')
         endif
         isign = 1
         call getvtx('MODE_SIGNE', 'SIGNE', iocc=1, scal=k8b, nbret=l)
         if (k8b(1:7) .eq. 'NEGATIF') isign = -1
         if (typmod .eq. 'C') then
             isign = 0
-            call u2mess('A', 'ALGELINE2_43')
+            call utmess('A', 'ALGELINE2_43')
         endif
     endif
 !
@@ -698,7 +699,7 @@ subroutine op0037()
                     zk24(lvalk), iprec)
 !
     else
-        call u2mesk('F', 'ALGELINE2_44', 1, typmod)
+        call utmess('F', 'ALGELINE2_44', sk=typmod)
     endif
 !
     do 60 im = 1, nbmode

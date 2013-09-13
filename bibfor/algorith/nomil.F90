@@ -20,7 +20,7 @@ function nomil(typma, ia)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: typma
     integer :: nomil, ia
 !
@@ -96,7 +96,7 @@ function nomil(typma, ia)
         tab(2)=5
         tab(3)=6
     else
-        call u2mesk('F', 'ALGORITH8_92', 1, typma)
+        call utmess('F', 'ALGORITH8_92', sk=typma)
     endif
 !
     nomil=tab(ia)

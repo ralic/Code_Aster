@@ -32,8 +32,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/vpalem.h"
 #include "asterfort/zerofr.h"
@@ -155,13 +154,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     t2 = abs(theta-1.d0)
     prec = 0.01d0
     if ((t1.gt.prec) .and. (t2.gt.prec)) then
-        call u2mess('F', 'ALGORITH6_55')
+        call utmess('F', 'ALGORITH6_55')
     endif
     if (compor(1)(5:10) .eq. '_IRRA_') theta=1.d0
 !
     if (typmod(1) .eq. 'C_PLAN') then
         iulmes = iunifi('MESSAGE')
-        call u2mess('F', 'ALGORITH6_92')
+        call utmess('F', 'ALGORITH6_92')
         goto 299
     endif
     tabs = r8t0()
@@ -173,7 +172,9 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     dpc = vim(1)
 ! INCREMENT DE TEMPS
     deltat = instap - instam
-    if (deltat .eq. 0.d0) call u2mess('F', 'ALGORITH8_87')
+    if (deltat .eq. 0.d0) then
+        call utmess('F', 'ALGORITH8_87')
+    endif
 !
     call matini(6, 6, 0.d0, dsidep)
 !
@@ -256,20 +257,20 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !         PARAMETRES DE LA LOI DE FLUAGE
         valden = coelem(1)
         if (coelem(6) .le. 0.d0) then
-            call u2mess('F', 'ALGORITH7_80')
+            call utmess('F', 'ALGORITH7_80')
         endif
         if (fluphi .lt. 0.d0) then
-            call u2mess('F', 'ALGORITH6_57')
+            call utmess('F', 'ALGORITH6_57')
         endif
         xnumer = exp(-1.d0*coelem(4)/(valden*(tschem+tabs)))
         unsurk = coelem(2)*fluphi/coelem(6) + coelem(7)
         if (unsurk .lt. 0.d0) then
-            call u2mess('F', 'ALGORITH7_81')
+            call utmess('F', 'ALGORITH7_81')
         endif
         if (unsurk .eq. 0.d0) then
             if (coelem(5) .eq. 0.d0) unsurk=1.d0
             if (coelem(5) .lt. 0.d0) then
-                call u2mess('F', 'ALGORITH7_82')
+                call utmess('F', 'ALGORITH7_82')
             endif
         endif
         if (unsurk .gt. 0.d0) then
@@ -296,7 +297,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
             irram = vim(2)
         endif
         if (irrap .lt. irram) then
-            call u2mess('F', 'ALGORITH8_88')
+            call utmess('F', 'ALGORITH8_88')
         endif
 !
     else if (compor(1)(1:10).eq.'GRAN_IRRA_') then
@@ -313,7 +314,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
             irram = vim(2)
         endif
         if (irrap .lt. irram) then
-            call u2mess('F', 'ALGORITH8_88')
+            call utmess('F', 'ALGORITH8_88')
         endif
         a = coevil(1)
         b = coevil(2)
@@ -329,11 +330,11 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         fluphi=(irrap-irram)/deltat
         unsurk = (coeint(1)*fluphi*2.d0)/sqrt(3.d0)
         if (unsurk .lt. 0.d0) then
-            call u2mess('F', 'ALGORITH8_89')
+            call utmess('F', 'ALGORITH8_89')
         endif
 !
     else if (compor(1)(1:10).eq.'LMARC_IRRA') then
-        call u2mess('F', 'ALGORITH8_90')
+        call utmess('F', 'ALGORITH8_90')
 !
     endif
 !
@@ -347,7 +348,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     if (compor(1)(1:13) .eq. 'LEMAITRE_IRRA' .or. compor(1)(1:13) .eq. 'GRAN_IRRA_LOG') then
         if (ndim .eq. 2) then
             if (angmas(2) .ne. 0.d0) then
-                call u2mesr('F', 'ALGORITH11_82', 2, angmas(2))
+                call utmess('F', 'ALGORITH11_82', nr=2, valr=angmas(2))
             endif
         endif
         alpha = angmas(1)

@@ -8,7 +8,7 @@ subroutine te0040(option, nomte)
 #include "asterfort/jevete.h"
 #include "asterfort/pk2cau.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdrepe.h"
 #include "asterfort/vdsiro.h"
 #include "asterfort/vectan.h"
@@ -110,8 +110,12 @@ subroutine te0040(option, nomte)
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
 !
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-    if (nbcou .gt. 10) call u2mess('F', 'ELEMENTS_13')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+    if (nbcou .gt. 10) then
+        call utmess('F', 'ELEMENTS_13')
+    endif
 !
     epais=zr(jcara)
 !

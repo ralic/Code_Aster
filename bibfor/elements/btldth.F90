@@ -25,7 +25,7 @@ subroutine btldth(fami, xi3, nb1, kpg, btild,&
 #include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nb1, kpg
     real(kind=8) :: wgt, young, nu, alpha, xi3
     real(kind=8) :: btild(5, 42), forthi(1), vecthr(2)
@@ -63,7 +63,7 @@ subroutine btldth(fami, xi3, nb1, kpg, btild,&
             nommai=zk24(iazk24-1+3)(1:8)
             valk(1)=nommai
             valk(2)='TEMP_REF'
-            call u2mesk('F', 'CALCULEL_32', 2, valk)
+            call utmess('F', 'CALCULEL_32', nk=2, valk=valk)
         else
             temper=(tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3)-tref
         endif

@@ -18,7 +18,7 @@ subroutine nminim(sdsuiv, sdimpr)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/impfoi.h"
@@ -38,8 +38,8 @@ subroutine nminim(sdsuiv, sdimpr)
 #include "asterfort/obseti.h"
 #include "asterfort/obseto.h"
 #include "asterfort/obtran.h"
-#include "asterfort/u2mesi.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sdsuiv
 !
 ! ----------------------------------------------------------------------
@@ -191,7 +191,9 @@ subroutine nminim(sdsuiv, sdimpr)
     suiinf = sdsuiv(1:14)//'     .INFO'
     call jeveuo(suiinf, 'L', jsuiin)
     nbsuiv = zi(jsuiin+2-1)
-    if (nbsuiv .gt. 9) call u2mesi('F', 'IMPRESSION_3', 1, nbsuiv)
+    if (nbsuiv .gt. 9) then
+        call utmess('F', 'IMPRESSION_3', si=nbsuiv)
+    endif
 !
 ! --- TITRE DES COLONNES POUR LES SUIVIS EN TEMPS REEL
 !

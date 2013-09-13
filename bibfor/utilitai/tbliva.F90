@@ -2,17 +2,17 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
                   vc, vk, crit, prec, para,&
                   ctype, vali, valr, valc, valk,&
                   ier)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: npacri, vi(*), vali, ier
     real(kind=8) :: vr(*), valr, prec(*)
     complex(kind=8) :: vc(*), valc
@@ -81,17 +81,17 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
     nomtab = nomta
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nblign .eq. 0) then
-        call u2mess('F', 'UTILITAI4_66')
+        call utmess('F', 'UTILITAI4_66')
     endif
 !
     call jeveuo(nomtab//'.TBLP', 'L', jtblp)

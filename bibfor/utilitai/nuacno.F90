@@ -1,7 +1,6 @@
 subroutine nuacno(nuage, lno, chno)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -14,8 +13,9 @@ subroutine nuacno(nuage, lno, chno)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nuage, lno, chno
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -91,7 +91,7 @@ subroutine nuacno(nuage, lno, chno)
     else if (type(1:1) .eq. 'C') then
         itype = 2
     else
-        call u2mess('F', 'UTILITAI_36')
+        call utmess('F', 'UTILITAI_36')
     endif
 !
     call jeveuo(knuage//'.NUAV', 'L', jnuav)

@@ -4,7 +4,6 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -16,8 +15,9 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/pjnout.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=2) :: dim
     character(len=8) :: moa1, moa2, ma1, ma2
     character(len=*) :: mocle
@@ -288,7 +288,9 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     do 150,k=1,nno2
     if (zi(ialin2-1+k) .gt. 0) kk=kk+1
     150 end do
-    if (kk .eq. 0) call u2mess('F', 'CALCULEL4_54')
+    if (kk .eq. 0) then
+        call utmess('F', 'CALCULEL4_54')
+    endif
 !
     call jedema()
 end subroutine

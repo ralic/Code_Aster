@@ -5,7 +5,7 @@ subroutine digric(option, nomte, ndim, nbt, nno,&
 #include "asterfort/dicrgr.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 !
     character(len=*) :: option, nomte
@@ -58,7 +58,7 @@ subroutine digric(option, nomte, ndim, nbt, nno,&
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
-        call u2mesk('F', 'DISCRETS_11', 5, messak)
+        call utmess('F', 'DISCRETS_11', nk=5, valk=messak)
     endif
 !   paramètres en entrée
     call jevech('PMATERC', 'L', imat)

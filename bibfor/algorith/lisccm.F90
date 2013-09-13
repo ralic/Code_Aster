@@ -17,7 +17,7 @@ subroutine lisccm(nomcmd, codarr, lischa)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -25,7 +25,7 @@ subroutine lisccm(nomcmd, codarr, lischa)
 #include "asterfort/lislch.h"
 #include "asterfort/lislco.h"
 #include "asterfort/lisnnb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: nomcmd
     character(len=1) :: codarr
     character(len=19) :: lischa
@@ -79,12 +79,12 @@ subroutine lisccm(nomcmd, codarr, lischa)
         if (nbnaut .ne. 0) then
             valk(1) = charge
             valk(2) = nomcmd
-            call u2mesk(codarr, 'CHARGES5_3', 2, valk)
+            call utmess(codarr, 'CHARGES5_3', nk=2, valk=valk)
         endif
 !
 10  continue
 !
-999 continue
+999  continue
 !
     call jedema()
 end subroutine

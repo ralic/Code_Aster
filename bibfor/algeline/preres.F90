@@ -53,7 +53,6 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/cheksd.h"
 #include "asterfort/alfeti.h"
 #include "asterfort/apetsc.h"
@@ -70,9 +69,10 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 #include "asterfort/pcmump.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/tldlg3.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
+!
     integer :: npvneg, istop, iret
     character(len=1) :: base
     character(len=*) :: matass, matpre, solvez
@@ -216,8 +216,12 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !             MULTIFRONTALE OU LDLT OU MUMPS               C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS') then
-                if (lfeti .and. (metres.eq.'LDLT')) call u2mess('F', 'ALGELINE3_27')
-                if (lfeti .and. (metres.eq.'MUMPS')) call u2mess('F', 'ALGELINE3_28')
+                if (lfeti .and. (metres.eq.'LDLT')) then
+                    call utmess('F', 'ALGELINE3_27')
+                endif
+                if (lfeti .and. (metres.eq.'MUMPS')) then
+                    call utmess('F', 'ALGELINE3_28')
+                endif
                 nprec = zi(islvi-1+1)
                 if (istopz .eq. -9999) istopz = zi(islvi-1+3)
                 if (lfeti) then
@@ -227,8 +231,9 @@ subroutine preres(solvez, base, iret, matpre, matass,&
                 else
                     renum=' '
                     if (metres(1:10) .eq. 'MULT_FRONT') renum=zk24( islvk-1+4)
-                    if ((metres(1:5).eq.'MUMPS') .and. (istopz.eq.2) .and. (nprec.lt.0)) &
-                    call u2mess('F', 'ALGELINE5_74')
+                    if ((metres(1:5).eq.'MUMPS') .and. (istopz.eq.2) .and. (nprec.lt.0)) then
+                        call utmess('F', 'ALGELINE5_74')
+                    endif
                     call tldlg3(metres, renum, istopz, lmat, 1,&
                                 0, nprec, ndeci, isingu, npvneg,&
                                 iret, solveu)
@@ -240,7 +245,9 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !                         PETSC                            C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             else if (metres.eq.'PETSC') then
-                if (lfeti) call u2mess('F', 'ALGELINE4_2')
+                if (lfeti) then
+                    call utmess('F', 'ALGELINE4_2')
+                endif
                 call apetsc('DETR_MAT', ' ', matas, rbid, ' ',&
                             0, ibid, iret)
                 call apetsc('PRERES', solveu, matas, rbid, ' ',&
@@ -250,7 +257,9 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !                         GCPC                             C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             else if (metres.eq.'GCPC') then
-                if (lfeti) call u2mess('F', 'ALGELINE3_29')
+                if (lfeti) then
+                    call utmess('F', 'ALGELINE3_29')
+                endif
 !
                 call jeveuo(solveu//'.SLVK', 'L', islvk)
                 call jeveuo(solveu//'.SLVI', 'E', islvi)
@@ -262,7 +271,7 @@ subroutine preres(solvez, base, iret, matpre, matass,&
                 else if (precon.eq.'LDLT_SP') then
                     call pcmump(matas, solveu, iretgc)
                     if (iretgc .ne. 0) then
-                        call u2mess('F', 'ALGELINE5_76')
+                        call utmess('F', 'ALGELINE5_76')
                     endif
                 endif
                 iret=0

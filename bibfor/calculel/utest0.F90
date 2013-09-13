@@ -1,7 +1,7 @@
 subroutine utest0(nomta, para, typtes, typres, tbtxt,&
                   refi, refr, refc, epsi, crit,&
                   ific, llab, ssigne)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
@@ -9,9 +9,8 @@ subroutine utest0(nomta, para, typtes, typres, tbtxt,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
     integer :: refi, ific
     real(kind=8) :: refr, epsi
     character(len=8) :: typtes
@@ -71,14 +70,14 @@ subroutine utest0(nomta, para, typtes, typres, tbtxt,&
 !
     if (.not. exist) then
         valk(1) = para
-        call u2mesk('F', 'CALCULEL6_85', 1, valk)
+        call utmess('F', 'CALCULEL6_85', sk=valk(1))
     endif
 !
     if (type(1:1) .ne. typrez) then
         write(ific,*) 'NOOK '
         valk(1) = type
         valk(2) = typrez
-        call u2mesk('A', 'CALCULEL5_11', 2, valk)
+        call utmess('A', 'CALCULEL5_11', nk=2, valk=valk)
         goto 9999
     endif
 !
@@ -117,7 +116,7 @@ subroutine utest0(nomta, para, typtes, typres, tbtxt,&
 106          continue
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
     else if (type .eq. 'R') then
@@ -143,7 +142,7 @@ subroutine utest0(nomta, para, typtes, typres, tbtxt,&
 206          continue
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
     else if (type .eq. 'C') then
@@ -158,7 +157,7 @@ subroutine utest0(nomta, para, typtes, typres, tbtxt,&
 302          continue
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
     endif

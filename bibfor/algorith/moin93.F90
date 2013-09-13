@@ -34,7 +34,6 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/conint.h"
 #include "asterfort/ddllag.h"
 #include "asterfort/detrsd.h"
@@ -47,8 +46,9 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 #include "asterfort/jexnum.h"
 #include "asterfort/modint.h"
 #include "asterfort/mstget.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ibid, ierd, neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
     integer :: linddl, lddld, nbnoeu, lprno, nnoint, ipos1, ipos2, numno, nbcmpm
     integer :: nbec, nddlin, lnoint, connec, lconnc, sizeco, lintrf, linlag
@@ -142,7 +142,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
                                 zi(linlag+(m1-1)*2+1))
                     rbid=(zi(linlag+(m1-1)*2)*zi(linlag+(m1-1)*2+1))
                     if (rbid .eq. 0) then
-                        call u2mess('F', 'ALGELINE2_4')
+                        call utmess('F', 'ALGELINE2_4')
                     endif
 !
 !-- RECHERCHE DES TYPES DES DDLS ACTIFS

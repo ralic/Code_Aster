@@ -23,7 +23,7 @@ subroutine pechli(resu, modele, mate)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele
     character(len=24) :: mate
     character(len=*) :: resu
@@ -78,7 +78,9 @@ subroutine pechli(resu, modele, mate)
     call getvid(' ', 'RESULTAT', scal=result, nbret=iret)
     call rsexpa(result, 2, 'ETA_PILOTAGE', iret)
 !
-    if (iret .eq. 0) call u2mesk('F', 'POSTELEM_3', 1, result)
+    if (iret .eq. 0) then
+        call utmess('F', 'POSTELEM_3', sk=result)
+    endif
 !
 !
 ! -- EXISTENCE D'UN CHARGEMENT CONSTANT
@@ -120,7 +122,9 @@ subroutine pechli(resu, modele, mate)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=iret)
     call rsutnu(result, ' ', 0, lisord, nbord,&
                 prec, crit, iret)
-    if (iret .ne. 0) call u2mesk('F', 'POSTELEM_1', 1, result)
+    if (iret .ne. 0) then
+        call utmess('F', 'POSTELEM_1', sk=result)
+    endif
     call jeveuo(lisord, 'L', jord)
 !
 !

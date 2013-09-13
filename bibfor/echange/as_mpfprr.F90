@@ -19,17 +19,18 @@ subroutine as_mpfprr(fid, pflval, n, pro, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
-#include "med/mpfprr.h"
+#include "asterf.h"
 #include "asterfort/conv_int.h"
+#include "asterfort/utmess.h"
+#include "med/mpfprr.h"
     aster_int :: fid, n, cret
     aster_int :: pflval(*)
     character(len=*) :: pro
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, cret4
     med_int, allocatable :: pflva4(:)
@@ -42,6 +43,6 @@ subroutine as_mpfprr(fid, pflval, n, pro, cret)
 #else
     call mpfprr(fid, pro, pflval, cret)
 #endif
-
+!
 #endif
 end subroutine

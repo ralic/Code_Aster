@@ -2,16 +2,16 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                   deklag, prodef, oridef, kal, kbl,&
                   dkma, dkmb, k1acp, k1bcp)
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     real(kind=8) :: tempa, kal, kbl, k1a, k1b, lrev, deklag
     real(kind=8) :: dkma, dkmb, k1acp, k1bcp, prodef
     character(len=8) :: matrev, oridef
@@ -103,7 +103,7 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                         if (tempa .lt. zr(ineut3)) then
                             prolg = zk24(ineut4+4)
                             if (prolg(1:1) .eq. 'E') then
-                                call u2mess('F', 'PREPOST_8')
+                                call utmess('F', 'PREPOST_8')
                             else if (prolg(1:1).eq.'C') then
                                 sigma = zr(ineut3+ldim)
                             else if (prolg(1:1).eq.'L') then
@@ -118,7 +118,7 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                         else if (tempa.gt.zr(ineut3+ldim-1)) then
                             prolg = zk24(ineut4+4)
                             if (prolg(2:2) .eq. 'E') then
-                                call u2mess('F', 'PREPOST_9')
+                                call utmess('F', 'PREPOST_9')
                             else if (prolg(2:2).eq.'C') then
                                 sigma = zr(ineut3+2*ldim-1)
                             else if (prolg(1:1).eq.'L') then
@@ -172,7 +172,7 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
 21          continue
             if (valp .eq. 1) then
                 if (proln(1:1) .eq. 'E') then
-                    call u2mess('F', 'PREPOST_8')
+                    call utmess('F', 'PREPOST_8')
                 else if (proln(1:1).eq.'C') then
                     call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, valp ), 'L', itot1)
@@ -192,7 +192,7 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                 endif
             else if (valp.eq.0) then
                 if (proln(2:2) .eq. 'E') then
-                    call u2mess('F', 'PREPOST_9')
+                    call utmess('F', 'PREPOST_9')
                 else if (proln(2:2).eq.'C') then
                     call jelira(jexnum(natnom, npara), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, npara), 'L', itot2)
@@ -227,7 +227,7 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
             goto 30
         endif
  3  end do
-    call u2mess('F', 'PREPOST_10')
+    call utmess('F', 'PREPOST_10')
 30  continue
     rya = (k1a * k1a)/(6 * pi * sigma * sigma)
     if (oridef .eq. 'LONGI') then

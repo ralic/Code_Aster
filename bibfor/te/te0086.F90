@@ -1,5 +1,6 @@
 subroutine te0086(option, nomte)
     implicit none
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +20,8 @@ subroutine te0086(option, nomte)
 ! ======================================================================
 ! aslint: disable=W0104
 !
-#include "asterfort/u2mess.h"
 !
 ! ----------------------------------------------------------------------
 !
-    call u2mess('F','FERMETUR_8')
+    call utmess('F', 'FERMETUR_8')
 end subroutine

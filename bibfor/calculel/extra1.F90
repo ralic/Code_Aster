@@ -28,7 +28,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
 #include "asterfort/exresl.h"
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nin, opt, nute
     character(len=*) :: lchin(*)
     character(len=8) :: lpain(*)
@@ -79,7 +79,9 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
 !
         ASSERT(iparin.ne.0)
         chin=lchin(iparin)
-        if (chin(1:1) .eq. ' ') call u2mesk('E', 'CALCULEL2_56', 1, nompar)
+        if (chin(1:1) .eq. ' ') then
+            call utmess('E', 'CALCULEL2_56', sk=nompar)
+        endif
 !
 !
 !

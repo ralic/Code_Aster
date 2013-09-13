@@ -1,7 +1,7 @@
 subroutine zxtrac(interp, prec, crit, nbinst, ti,&
                   temps, y, neq, xtract, ier)
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/zcopy.h"
     integer :: nbinst, neq, ier
     real(kind=8) :: prec, ti(*)
@@ -81,7 +81,7 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti,&
         ier = ier + 1
     else
 !        ON INTERDIT L'INTERPOLATION POUR LES COMPLEXES
-        call u2mess('E', 'ALGORITH11_79')
+        call utmess('E', 'ALGORITH11_79')
     endif
 !
 9999  continue

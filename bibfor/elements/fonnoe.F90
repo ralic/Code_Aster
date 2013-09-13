@@ -1,8 +1,7 @@
 subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
                   nbnoff)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -16,9 +15,9 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=6) :: nomobj
     character(len=8) :: resu, noma, typfon
     character(len=19) :: cnxinv
@@ -63,7 +62,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
     integer :: jjj, ino, it, nbnoff, nbma, nbmb, na, nb, adra, adrb
     integer :: iret
     character(len=6) :: nompro
-    character(len=8) ::  noeud, type, motcle(2), typmcl(2), typmp, valk(8)
+    character(len=8) :: noeud, type, motcle(2), typmcl(2), typmp, valk(8)
     character(len=8) :: typm
     character(len=24) :: noeord, trav
     character(len=24) :: entree, obtrav
@@ -144,7 +143,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
 !           RECUPERATION DE LA K IEME MAILLE RELATIVE AU NOEUD INO+1
                 if (type(1:3) .eq. 'SEG ') then
                     if ((it.gt.1) .and. (type.ne.typmp)) then
-                        call u2mess('F', 'RUPTURE0_60')
+                        call utmess('F', 'RUPTURE0_60')
                     endif
                     typmp = type
                     it = it + 1
@@ -157,7 +156,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
                 if (.not.lfon .and. numa .eq. numb) goto 216
 214          continue
 212      continue
-        call u2mess('F', 'RUPTURE0_66')
+        call utmess('F', 'RUPTURE0_66')
 216      continue
         if (typmp .eq. '        ') then
             numa = zi(jcncin-1 + adra)
@@ -206,7 +205,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
         if (typmp .ne. typm) then
             valk(1) = typmp
             valk(2) = typm
-            call u2mesk('F', 'RUPTURE0_68', 2, valk)
+            call utmess('F', 'RUPTURE0_68', nk=2, valk=valk)
         endif
     endif
     call jelira(noeord, 'LONUTI', nbnoff)

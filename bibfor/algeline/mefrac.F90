@@ -2,14 +2,13 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbgrmx, nbgrma
     character(len=8) :: mailla
     character(len=24) :: nomcyl(*), nomrac
@@ -78,7 +77,7 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
 20  continue
 !
     if (isuf .eq. 0 .and. ipre .eq. 0) then
-        call u2mesk('F', 'ALGELINE_86', 1, nomrac)
+        call utmess('F', 'ALGELINE_86', sk=nomrac)
     endif
 !
     if (ipre .eq. 0) then
@@ -127,7 +126,7 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
 100      continue
     endif
     if (nbgrma .eq. 0) then
-        call u2mess('F', 'ALGELINE_87')
+        call utmess('F', 'ALGELINE_87')
     endif
 !
     ifm = iunifi('MESSAGE')

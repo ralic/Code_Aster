@@ -37,9 +37,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 #include "asterfort/resu74.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trlds.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -233,7 +232,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
         call dcopy(neqgen*neqgen, masgen, 1, zr(jmass), 1)
         call trlds(zr(jmass), neqgen, neqgen, iret)
         if (iret .ne. 0) then
-            call u2mess('F', 'ALGORITH5_22')
+            call utmess('F', 'ALGORITH5_22')
         endif
         call dcopy(neqgen*neqgen, masgen, 1, zr(jmass), 1)
     else if (typbas.eq.'MODELE_GENE     ') then
@@ -342,7 +341,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                     dtsto, vrotat, typal, finpal, cnpal,&
                     prdeff, conv, fsauv)
         if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-            call u2mess('F', 'EDYOS_46')
+            call utmess('F', 'EDYOS_46')
         else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
             nbconv = nbconv + 1
         endif
@@ -388,7 +387,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                     prdeff, conv, fsauv)
 !
         if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-            call u2mess('F', 'EDYOS_46')
+            call utmess('F', 'EDYOS_46')
         else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
             nbconv = nbconv + 1
         endif
@@ -508,7 +507,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                             prdeff, conv, fsauv)
 !
                 if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-                    call u2mess('F', 'EDYOS_46')
+                    call utmess('F', 'EDYOS_46')
                 else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
                     nbconv = nbconv + 1
                 endif
@@ -533,8 +532,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
             vali (1) = itemax
             valr (1) = xnorm/xref
-            call u2mesg('F', 'ALGORITH16_11', 0, ' ', 1,&
-                        vali, 1, valr)
+            call utmess('F', 'ALGORITH16_11', si=vali(1), sr=valr(1))
 !
 25          continue
         else
@@ -556,7 +554,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                         prdeff, conv, fsauv)
 !
             if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-                call u2mess('F', 'EDYOS_46')
+                call utmess('F', 'EDYOS_46')
             else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
                 nbconv = nbconv + 1
             endif
@@ -645,7 +643,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
         call jedetr('&&MDEUL1.SREVR')
         call jedetr('&&MDEUL1.SREVI')
     endif
-    if (iret .ne. 0) call u2mess('F', 'ALGORITH5_24')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGORITH5_24')
+    endif
 !
     call jedema()
 end subroutine

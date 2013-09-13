@@ -9,7 +9,7 @@ subroutine fonvec(resu, noma, cnxinv)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
 !
@@ -156,7 +156,7 @@ subroutine fonvec(resu, noma, cnxinv)
             valr(4) = zr(jorig)
             valr(5) = zr(jorig+1)
             valr(6) = zr(jorig+2)
-            call u2mesr('F', 'RUPTURE0_78', 6, valr)
+            call utmess('F', 'RUPTURE0_78', nr=6, valr=valr)
         endif
         if (abs(ps2) .gt. zero) then
             valr(1) = zr(jnorm)
@@ -165,7 +165,7 @@ subroutine fonvec(resu, noma, cnxinv)
             valr(4) = zr(jextr)
             valr(5) = zr(jextr+1)
             valr(6) = zr(jextr+2)
-            call u2mesr('F', 'RUPTURE0_79', 6, valr)
+            call utmess('F', 'RUPTURE0_79', nr=6, valr=valr)
         endif
     endif
 !

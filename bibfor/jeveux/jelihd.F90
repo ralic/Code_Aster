@@ -49,8 +49,7 @@ subroutine jelihd(nomf, fichdf, clas)
 #include "asterfort/jxecro.h"
 #include "asterfort/jxouvr.h"
 #include "asterfort/lxmins.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomf, fichdf, clas
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'OUVERTURE D'UNE BASE AVEC LECTURE SUR
@@ -201,7 +200,7 @@ subroutine jelihd(nomf, fichdf, clas)
     nhdf = fichdf
     idfic = hdfopf (nhdf)
     if (idfic .lt. 0) then
-        call u2mesk('F', 'JEVEUX_54', 1, nhdf)
+        call utmess('F', 'JEVEUX_54', sk=nhdf)
     endif
     ngrp ='/'
     idg = hdfopg (idfic,ngrp)
@@ -241,7 +240,7 @@ subroutine jelihd(nomf, fichdf, clas)
         valk(1) = nombas(ic)
         valk(2) = cversb
         valk(3) = cversu
-        call u2mesk('A', 'JEVEUX_08', 3, valk)
+        call utmess('A', 'JEVEUX_08', nk=3, valk=valk)
     endif
 !
 ! --- LORSQUE LE NOMBRE D'ENREGISTREMENTS MAXIMUM EST MODIFIE
@@ -253,8 +252,7 @@ subroutine jelihd(nomf, fichdf, clas)
         vali(1) = nblmax(ic)
         vali(2) = nblma2
         valk(1) = nombas(ic)
-        call u2mesg('I', 'JEVEUX_36', 1, valk, 2,&
-                    vali, 0, valr)
+        call utmess('I', 'JEVEUX_36', sk=valk(1), ni=2, vali=vali)
     endif
 !
     nblmax(ic)= nblma2
@@ -629,9 +627,9 @@ subroutine jelihd(nomf, fichdf, clas)
 201  end do
     iret1 = hdfclf (idfic)
     if (iret1 .ne. 0) then
-        call u2mesk('F', 'JEVEUX_55', 1, nhdf)
+        call utmess('F', 'JEVEUX_55', sk=nhdf)
     else
-        call u2mesk('I', 'JEVEUX_56', 1, nhdf)
+        call utmess('I', 'JEVEUX_56', sk=nhdf)
     endif
     call jjlidy(idyn32, ktemp1)
     call jjlidy(idyn8, ktemp2)

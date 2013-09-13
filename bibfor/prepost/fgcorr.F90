@@ -2,7 +2,7 @@ subroutine fgcorr(nbcycl, sigmin, sigmax, method, su,&
                   rcorr)
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: method
     real(kind=8) :: sigmin(*), sigmax(*), su, rcorr(*)
     integer :: nbcycl
@@ -45,13 +45,13 @@ subroutine fgcorr(nbcycl, sigmin, sigmax, method, su,&
             if (valmoy .lt. su) then
                 rcorr(i) = 1.d0 - (valmoy/su)
             else
-                call u2mess('F', 'FATIGUE1_4')
+                call utmess('F', 'FATIGUE1_4')
             endif
         else if (method.eq.'GERBER') then
             if (valmoy .lt. su) then
                 rcorr(i) = 1.d0 - (valmoy/su)**2
             else
-                call u2mess('F', 'FATIGUE1_5')
+                call utmess('F', 'FATIGUE1_5')
             endif
         endif
 10  end do

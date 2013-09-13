@@ -34,7 +34,6 @@ subroutine crevge(ligrel, bas1)
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/adlivo.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/crvloc.h"
@@ -50,8 +49,9 @@ subroutine crevge(ligrel, bas1)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbsomm.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ligrel
     character(len=1) :: bas1
     character(len=12) :: vge
@@ -104,8 +104,7 @@ subroutine crevge(ligrel, bas1)
         dim=2
     endif
     if (nbma .lt. 1) then
-        call u2mesg('F', 'VOLUFINI_5', 0, ' ', 1,&
-                    nbma, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_5', si=nbma)
     endif
 !
 ! --------- CREATION DU POINTEUR DE LONGUEUR DE CONINV ----------------

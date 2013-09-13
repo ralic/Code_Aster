@@ -21,7 +21,7 @@ subroutine nmedco(compor, option, imate, npg, lgpg,&
     implicit none
 !
 #include "asterfort/lcedex.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: imate, npg, lgpg
     real(kind=8) :: s(2), q(2, 2), alphap(2), dalfs(2, 2)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
@@ -61,7 +61,7 @@ subroutine nmedco(compor, option, imate, npg, lgpg,&
 !
     else
 !
-        call u2mesk('F', 'ALGORITH7_69', 1, compor(1))
+        call utmess('F', 'ALGORITH7_69', sk=compor(1))
     endif
 !
 end subroutine

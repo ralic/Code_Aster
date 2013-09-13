@@ -11,7 +11,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: lmat, expo, option
     real(kind=8) :: mantis
     complex(kind=8) :: cmod
@@ -81,7 +81,9 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
         nomdia(1:19) = zk24(zi(lmat+1))
         neq = zi(lmat+2 )
         call jeexin(nomdia, iret)
-        if (iret .eq. 0) call u2mesk('F', 'MODELISA2_9', 1, nomdia)
+        if (iret .eq. 0) then
+            call utmess('F', 'MODELISA2_9', sk=nomdia)
+        endif
         call jeveuo(nomdia, 'L', ldiag)
         ldiag=ldiag+neq
 !

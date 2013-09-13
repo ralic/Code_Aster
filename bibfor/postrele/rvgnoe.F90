@@ -14,7 +14,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/oreino.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iocc, nbtrou, linoeu(*)
@@ -138,7 +138,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     endif
 !
     if (nbtnd .eq. 0) then
-        call u2mess('F', 'POSTRELE_64')
+        call utmess('F', 'POSTRELE_64')
     endif
     call wkvect(nlstnd, 'V V I', nbtnd, alstnd)
     nbtnd = libre - 1
@@ -180,10 +180,12 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
             if (nbrgpn .eq. 1) then
                 nomgrn = zk24(agrpn + 1-1)
                 call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
-                if (nbn .lt. 2) call u2mess('F', 'POSTRELE_21')
+                if (nbn .lt. 2) then
+                    call utmess('F', 'POSTRELE_21')
+                endif
             endif
         else
-            call u2mess('F', 'POSTRELE_22')
+            call utmess('F', 'POSTRELE_22')
         endif
         call jeexin('&&YAPAS '//'S1   '//'.DESC', n1)
         if (n1 .ne. 0) call jedetr('&&YAPAS '//'S1   '//'.DESC')
@@ -200,7 +202,9 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 !       VERIFICATION QUE LES POINTS SONT ALIGNES
         call oreino(nmaila, zi(alstnd), libre-1, i1, i2,&
                     zr(jvale), crit, tole, iera, iret)
-        if (iret .ne. 0) call u2mess('F', 'POSTRELE_60')
+        if (iret .ne. 0) then
+            call utmess('F', 'POSTRELE_60')
+        endif
         zr(asgtu-1+1)=zr(jvale-1+3*(i1-1)+1)
         zr(asgtu-1+2)=zr(jvale-1+3*(i1-1)+2)
         zr(asgtu-1+3)=zr(jvale-1+3*(i1-1)+3)

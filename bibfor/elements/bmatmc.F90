@@ -46,7 +46,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 #include "asterfort/dfdm3d.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matini.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: xyz(1), nharm, jacob, b(nbsig, 1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), b3j(9), nharay
@@ -207,7 +207,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !
 90      continue
     else
-        call u2mess('F', 'ELEMENTS_11')
+        call utmess('F', 'ELEMENTS_11')
     endif
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

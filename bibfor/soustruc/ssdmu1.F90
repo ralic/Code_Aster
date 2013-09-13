@@ -17,9 +17,9 @@ subroutine ssdmu1(dref, crit, prec, geo1, geo2,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
 !     ARGUMENTS:
 !     ----------
-#include "asterfort/u2mesk.h"
     character(len=*) :: crit
     real(kind=8) :: prec, geo1(3), geo2(3), dref
     character(len=8) :: crit2
@@ -56,7 +56,7 @@ subroutine ssdmu1(dref, crit, prec, geo1, geo2,&
     else if (crit2(1:7).eq.'RELATIF') then
         if (dist .le. prec*dref) iconf=0
     else
-        call u2mesk('F', 'ALGORITH3_42', 1, crit2)
+        call utmess('F', 'ALGORITH3_42', sk=crit2)
     endif
 !
 end subroutine

@@ -1,5 +1,6 @@
 subroutine deelpo(caelem, noma, numail, phie)
     implicit none
+#include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
@@ -12,8 +13,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: numail
     real(kind=8) :: phie
     character(len=8) :: caelem, noma
@@ -43,7 +43,6 @@ subroutine deelpo(caelem, noma, numail, phie)
 !  OUT: PHIE   : DIAMETRE EXTERIEUR SUR L'ELEMENT
 !-----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
     integer :: ias, iasbon, iasedi, iasmax, icad, icav, icmp, ier
     integer :: icode, iglma, igrand, ima, inomcp, irang1
@@ -71,7 +70,9 @@ subroutine deelpo(caelem, noma, numail, phie)
     cavale = carte//'.VALE'
     calima = carte//'.LIMA'
     call jeexin(cadesc, iret)
-    if (iret .eq. 0) call u2mess('F', 'ALGELINE_33')
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGELINE_33')
+    endif
     call jeveuo(cadesc, 'L', icad)
     call jeveuo(cavale, 'L', icav)
 !
@@ -106,7 +107,7 @@ subroutine deelpo(caelem, noma, numail, phie)
     if (iasbon .eq. 0) then
         nomama = noma//'.NOMMAI'
         call jenuno(jexnum(nomama, numail), nomail)
-        call u2mesk('F', 'ALGELINE_34', 1, nomail)
+        call utmess('F', 'ALGELINE_34', sk=nomail)
     endif
 !
 40  continue
@@ -123,7 +124,9 @@ subroutine deelpo(caelem, noma, numail, phie)
                 k8bid, ier)
     irang1 = indik8( zk8(inomcp) , nomcmp(1) , 1 , nbcmp )
     irang2 = indik8( zk8(inomcp) , nomcmp(2) , 1 , nbcmp )
-    if (irang1 .eq. 0 .or. irang2 .eq. 0) call u2mess('F', 'ALGELINE_35')
+    if (irang1 .eq. 0 .or. irang2 .eq. 0) then
+        call utmess('F', 'ALGELINE_35')
+    endif
     icode = zi(icad-1+3+2*iasmax+nbec*(iasbon-1)+1)
     iranv1 = 0
     do 61 icmp = 1, irang1
@@ -133,14 +136,20 @@ subroutine deelpo(caelem, noma, numail, phie)
     do 62 icmp = 1, irang2
         if (exisdg(icode,icmp)) iranv2 = iranv2 + 1
 62  end do
-    if (iranv1 .eq. 0 .or. iranv2 .eq. 0) call u2mess('F', 'ALGELINE_36')
+    if (iranv1 .eq. 0 .or. iranv2 .eq. 0) then
+        call utmess('F', 'ALGELINE_36')
+    endif
 !
     r1 = zr(icav+nbcmp*(iasbon-1)+iranv1-1)
     r2 = zr(icav+nbcmp*(iasbon-1)+iranv2-1)
-    if (r1 .eq. 0.d0 .or. r2 .eq. 0.d0) call u2mess('F', 'ALGELINE_37')
+    if (r1 .eq. 0.d0 .or. r2 .eq. 0.d0) then
+        call utmess('F', 'ALGELINE_37')
+    endif
     tolr = r8prem()
     difr = dble(abs(r1-r2))
-    if (difr .gt. r1*tolr) call u2mess('F', 'ALGELINE_38')
+    if (difr .gt. r1*tolr) then
+        call utmess('F', 'ALGELINE_38')
+    endif
 !
     phie = 2.d0*r1
 !

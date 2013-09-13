@@ -10,8 +10,8 @@ subroutine digouj(option, compor, nno, nbt, neq,&
 #include "asterfort/rctrac.h"
 #include "asterfort/rctype.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2vlg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
     integer :: nbt, neq, icodma, nc
@@ -78,7 +78,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     if (nc .ne. 2) then
         valk(1) = nomte
         valk(2) = compor(1)
-        call u2mesk('F', 'ELEMENTS_31', 2, valk)
+        call utmess('F', 'ELEMENTS_31', nk=2, valk=valk)
     endif
 !
 ! --- CALCUL ELASTIQUE
@@ -93,7 +93,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     dut = dul(2+nc)-dul(2)
 !
     if ((compor(1)(1:10).ne.'DIS_GOUJ2E')) then
-        call u2mesk('F', 'ELEMENTS_32', 1, compor(1))
+        call utmess('F', 'ELEMENTS_32', sk=compor(1))
     endif
 !
     call rctype(icodma, 0, nompar, valpap, resu,&

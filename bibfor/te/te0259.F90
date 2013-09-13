@@ -20,14 +20,14 @@ subroutine te0259(option, nomte)
 ! ======================================================================
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pogyro.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/upletr.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpalg.h"
+!
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -69,7 +69,7 @@ subroutine te0259(option, nomte)
         nno = 2
         nc = 7
     else
-        call u2mesk('F', 'ELEMENTS2_42', 1, nomte)
+        call utmess('F', 'ELEMENTS2_42', sk=nomte)
     endif
 !
     nddl = nc*nno

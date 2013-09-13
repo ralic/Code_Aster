@@ -45,11 +45,9 @@ subroutine op0024()
 #include "asterfort/jemarq.h"
 #include "asterfort/liimpr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    real(kind=8) ::  debut, fin, pas, xxx, xpdt, toler, derpas
+    real(kind=8) :: debut, fin, pas, xxx, xpdt, toler, derpas
     real(kind=8) :: valr(3)
     integer :: ifm, niv, nv, nbvale, ndim, jpas, jnbp, jbor, jval, kval, i
     integer :: vali
@@ -104,17 +102,21 @@ subroutine op0024()
             call getvr8('INTERVALLE', 'JUSQU_A', iocc=iocc, scal=fin, nbret=n1)
             call getvr8('INTERVALLE', 'PAS', iocc=iocc, scal=pas, nbret=np)
             if (np .eq. 1) then
-                if (pas .eq. 0.d0) call u2mess('F', 'ALGORITH9_16')
+                if (pas .eq. 0.d0) then
+                    call utmess('F', 'ALGORITH9_16')
+                endif
 !
                 xpdt = (fin-debut)/pas
                 if (xpdt .le. (1.d0-toler)) then
                     valr(1) = debut
                     valr(2) = fin
                     valr(3) = pas
-                    call u2mesr('F', 'ALGORITH9_15', 3, valr)
+                    call utmess('F', 'ALGORITH9_15', nr=3, valr=valr)
                 endif
                 nbpas = nint(xpdt)
-                if (nbpas .le. 0) call u2mess('F', 'ALGORITH9_17')
+                if (nbpas .le. 0) then
+                    call utmess('F', 'ALGORITH9_17')
+                endif
 !
                 derpas = fin - (debut+ (nbpas-1)*pas)
                 if (abs((derpas-pas)/pas) .gt. toler) nsup = nsup + 1
@@ -159,8 +161,7 @@ subroutine op0024()
 !
                     valr(1) = pas
                     vali = iocc
-                    call u2mesg('A', 'ALGORITH13_82', 0, ' ', 1,&
-                                vali, 1, valr)
+                    call utmess('A', 'ALGORITH13_82', si=vali, sr=valr(1))
 !
 !
 !
@@ -173,7 +174,9 @@ subroutine op0024()
 !
             else
                 call getvis('INTERVALLE', 'NOMBRE', iocc=iocc, scal=nbpas, nbret=n1)
-                if (nbpas .le. 0) call u2mess('F', 'ALGORITH9_17')
+                if (nbpas .le. 0) then
+                    call utmess('F', 'ALGORITH9_17')
+                endif
                 zi(jnbp-1+iinter) = nbpas
                 zr(jpas-1+iinter) = xxx/nbpas
                 zr(jbor-1+iinter+1) = fin

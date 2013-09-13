@@ -14,8 +14,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vetyma.h"
 #include "asterfort/xtmafi.h"
 #include "asterfort/xvelfm.h"
@@ -113,7 +112,9 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
             call getvid(motclf, 'PRES', iocc=iocc, scal=zk8(jvalv), nbret=np)
             call getvid(motclf, 'CISA_2D', iocc=iocc, scal=zk8(jvalv+1), nbret=nc)
         endif
-        if (nc .ne. 0 .and. ndim .eq. 3) call u2mess('F', 'MODELISA9_94')
+        if (nc .ne. 0 .and. ndim .eq. 3) then
+            call utmess('F', 'MODELISA9_94')
+        endif
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         call getvid(motclf, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
@@ -121,7 +122,9 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
         if (nfiss .ne. 0) then
 !
 !           PAS DE CISA_2D SUR LES LÈVRES DES FISSURES X-FEM
-            if (nc .ne. 0) call u2mess('F', 'XFEM_14')
+            if (nc .ne. 0) then
+                call utmess('F', 'XFEM_14')
+            endif
 !
             nfiss = -nfiss
             call getvid(motclf, 'FISSURE', iocc=iocc, nbval=nfiss, vect=fiss,&

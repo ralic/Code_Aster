@@ -21,7 +21,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! ======================================================================
 ! ======================================================================
 ! ======================================================================
-    implicit      none
+    implicit none
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcvh.h"
@@ -44,7 +44,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sigp(6), dsidep(6, 6)
     real(kind=8) :: sigm(6), td, tf, tr, dsidp1(6), dsidp2(6), epsm(6)
@@ -137,7 +137,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! ======================================================================
     gm = vim(1)
     if (gm .lt. 0.0d0) then
-        call u2mess('F', 'ALGORITH3_88')
+        call utmess('F', 'ALGORITH3_88')
     endif
     iret = 0
     iteri = 0
@@ -219,7 +219,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! -- ON OBTIENT DGAMMA_P NEGATIF : ON ESSAIE DE DECOUPER LE PAS DE TEMPS
 ! ======================================================================
             if (dgnp .lt. 0.d0) then
-                call u2mess('I', 'ALGORITH4_57')
+                call utmess('I', 'ALGORITH4_57')
                 iteri = 1
                 goto 100
             endif
@@ -236,7 +236,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! ======================================================================
                 aux = sigeqe*(etanp+un)/(trois*materf(4,1))
                 if (dgnp .gt. aux) then
-                    call u2mess('I', 'ALGORITH4_58')
+                    call utmess('I', 'ALGORITH4_58')
                     iteri = 1
                     goto 100
                 endif
@@ -263,7 +263,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! ======================================================================
 ! --------- ON ESSAIE DE DECOUPER LE PAS DE TEMPS ----------------------
 ! ======================================================================
-                call u2mess('I', 'ALGORITH4_59')
+                call utmess('I', 'ALGORITH4_59')
                 iteri = 1
                 goto 100
             endif

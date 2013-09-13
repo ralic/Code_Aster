@@ -28,10 +28,10 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
 ! =====================================================================
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: maxfa
     parameter   (maxfa=6)
     integer :: dimcon, dimuel
@@ -132,8 +132,7 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
 ! TERMES DE FLUX
 !
     if (.not. ((typvf .eq.3 ) .or.(typvf .eq.4))) then
-        call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                    typvf, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_9', si=typvf)
     endif
     do 2 ifa = 1, nface
         vectu(adcf1(ifa))=congem(adcp11+1,ifa+1)

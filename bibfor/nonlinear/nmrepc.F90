@@ -16,14 +16,14 @@ subroutine nmrepc(sddisc, solveu, ievdac, retrpc)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sddisc, solveu
     integer :: ievdac, retrpc
 !
@@ -70,7 +70,7 @@ subroutine nmrepc(sddisc, solveu, ievdac, retrpc)
 !
         ireapc = 1
         retrpc = 0
-        call u2mess('I', 'MECANONLINE10_40')
+        call utmess('I', 'MECANONLINE10_40')
     else if (ireapc.eq.0) then
 !
 ! ----- ON RETENTE EN REACTUALISANT LE PRECONDITIONNEUR
@@ -79,7 +79,7 @@ subroutine nmrepc(sddisc, solveu, ievdac, retrpc)
         call jeveuo(solveu//'.SLVI', 'E', jslvi)
         zi(jslvi-1+5) = 0
         retrpc = 1
-        call u2mess('I', 'MECANONLINE10_41')
+        call utmess('I', 'MECANONLINE10_41')
     else
         ASSERT(.false.)
     endif

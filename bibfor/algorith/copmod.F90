@@ -51,13 +51,6 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !   ___________________________________________________________________
 !
 #include "jeveux.h"
-!   ___________________________________________________________________
-!
-!  - 0 - INITIALISATIONS DIVERSES
-!   ___________________________________________________________________
-!
-!     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
-!
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -66,13 +59,19 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
+!   ___________________________________________________________________
+!
+!  - 0 - INITIALISATIONS DIVERSES
+!   ___________________________________________________________________
+!
+!     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
+!
     character(len=1) :: typc
     character(len=8) :: basemo
     character(len=*) :: numer
@@ -159,8 +158,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
                 valk (2) = maill2
                 valk (3) = numer1
                 valk (4) = maill1
-                call u2mesg('F', 'ALGORITH12_62', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
             endif
         endif
         if ((numer2.ne.numer1) .and. (iret.eq.0)) then
@@ -199,7 +197,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
                 valk(1) = nomcha
                 valk(2) = tmpcha
                 valk(3) = crefe(2)(1:8)
-                call u2mesk('A', 'UTILITAI_24', 3, valk)
+                call utmess('A', 'UTILITAI_24', nk=3, valk=valk)
             endif
             nomcha = tmpcha
         endif
@@ -231,11 +229,11 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !       3.1.6 - ANNULER LES DDL DE LAGRANGE S'IL S'AGIT DES CHAMPS DE
 !               DEPLACEMENTS
         if (champ .eq. 'DEPL') then
-           if (typc .ne. 'C') then
-              call zerlag(neq, zi(jdeeq), vectr=bmodr((i-1)*neq+1))
-           else
-              call zerlag(neq, zi(jdeeq), vectz=bmodz((i-1)*neq+1))
-           endif
+            if (typc .ne. 'C') then
+                call zerlag(neq, zi(jdeeq), vectr=bmodr((i-1)*neq+1))
+            else
+                call zerlag(neq, zi(jdeeq), vectz=bmodz((i-1)*neq+1))
+            endif
         endif
 !
 10  end do

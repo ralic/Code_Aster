@@ -67,8 +67,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbordr, nchar
@@ -245,13 +244,13 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
             call jenonu(jexnom(resuco//'           .NOVA', 'PARM_THETA'), iad)
             if (iad .eq. 0) then
                 valthe=0.57d0
-                call u2mesk('A', 'CALCULEL4_98', 1, resuco)
+                call utmess('A', 'CALCULEL4_98', sk=resuco)
             else
                 call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr,&
                             0, iad, k8b)
                 valthe=zr(iad)
                 if ((valthe.gt.1.d0) .or. (valthe.lt.0.d0)) then
-                    call u2mesk('F', 'INDICATEUR_5', 1, resuco)
+                    call utmess('F', 'INDICATEUR_5', sk=resuco)
                 endif
             endif
             if (niv .ge. 1) then
@@ -281,15 +280,13 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                         chtemp, option, iret)
             if (iret .gt. 0) then
                 vali=iordr
-                call u2mesg('F', 'CALCULEL6_46', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'CALCULEL6_46', si=vali)
             endif
             call rsexc2(1, 1, resuco, 'FLUX_ELNO', iordr,&
                         chflup, option, iret)
             if (iret .gt. 0) then
                 vali=iordr
-                call u2mesg('F', 'CALCULEL6_47', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'CALCULEL6_47', si=vali)
             endif
 !
 ! RECUPERATION DE L'INSTANT CORRESPONDANT A IORDR
@@ -363,7 +360,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 !
 !    ------------------------------------------------------------------
         else
-            call u2mesk('A', 'CALCULEL3_22', 1, option)
+            call utmess('A', 'CALCULEL3_22', sk=option)
         endif
 !
 120  end do

@@ -77,10 +77,8 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lrcame.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=19) :: chanom
@@ -144,7 +142,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
     call jenonu(jexnom ( '&CATA.GD.NOMGD', nomgd ), iaux)
     if (iaux .eq. 0) then
-        call u2mess('F', 'MED_65')
+        call utmess('F', 'MED_65')
     endif
     call jeveuo(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'L', jnocmp)
     call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf)
@@ -173,11 +171,11 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
                     endif
 30              continue
                 if (.not.ttt) then
-                    call u2mess('F', 'MED_66')
+                    call utmess('F', 'MED_66')
                 endif
 20          continue
         else
-            call u2mess('F', 'MED_70')
+            call utmess('F', 'MED_70')
         endif
 !
     else
@@ -248,8 +246,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 40      continue
         vali (1) = iaux
         vali (2) = nncp
-        call u2mesg('A', 'MED_83', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'MED_83', ni=2, vali=vali)
     endif
 !
     call detrsd('CHAM_ELEM_S', chames)
@@ -259,7 +256,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !====
 !
     if (codret .ne. 0) then
-        call u2mesk('A', 'MED_55', 1, chanom)
+        call utmess('A', 'MED_55', sk=chanom)
     endif
 !
 !      IF(TYPECH(1:4).EQ.'ELGA')THEN

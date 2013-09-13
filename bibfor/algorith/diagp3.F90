@@ -21,7 +21,7 @@ subroutine diagp3(tens, vecp, valp)
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerop3.h"
     real(kind=8) :: tens(6), valp(3), vecp(3, 3)
 !
@@ -87,7 +87,7 @@ subroutine diagp3(tens, vecp, valp)
                 valp(2)=0.d0
                 valp(3)=0.d0
             else
-                call u2mess('F', 'ALGORITH2_79')
+                call utmess('F', 'ALGORITH2_79')
             endif
         endif
         if (valp(2) .gt. valp(1)) then

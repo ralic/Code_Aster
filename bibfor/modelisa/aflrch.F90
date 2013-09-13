@@ -18,7 +18,6 @@ subroutine aflrch(lisrez, chargz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cragch.h"
@@ -39,9 +38,8 @@ subroutine aflrch(lisrez, chargz)
 #include "asterfort/nocart.h"
 #include "asterfort/noligr.h"
 #include "asterfort/ordlrl.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=19) :: lisrel
     character(len=8) :: charge
     character(len=*) :: lisrez, chargz
@@ -194,7 +192,7 @@ subroutine aflrch(lisrez, chargz)
 ! --- CREEES AU PREALABLE
     call jeexin(ca1//'.DESC', iret)
     ASSERT(iret.gt.0)
-
+!
     call jeveuo(ca1//'.NCMP', 'E', jncmp1)
     call jeveuo(ca1//'.VALV', 'E', jvalv1)
     call jeveuo(ca1//'.VALE', 'E', jvale1)
@@ -255,7 +253,7 @@ subroutine aflrch(lisrez, chargz)
             if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
                 valk(1)=cmp
                 valk(2)=nomnoe
-                call u2mesk('F', 'CHARGES2_31', 2, valk)
+                call utmess('F', 'CHARGES2_31', nk=2, valk=valk)
             else
                 do kddl = 1, nbcmp
                     if (cmp .eq. nomcmp(kddl)) then
@@ -272,7 +270,7 @@ subroutine aflrch(lisrez, chargz)
                             '        ', 3, 1, inema, zi(jnbno),&
                             zk8(jrlla+irela-1))
             else
-                call u2mesk('F', 'CHARGES2_33', 1, nomnoe)
+                call utmess('F', 'CHARGES2_33', sk=nomnoe)
             endif
         enddo
 !
@@ -323,11 +321,11 @@ subroutine aflrch(lisrez, chargz)
 !
 !     -- IMPRESSION DES RELATIONS REDONDANTES ET DONC SUPPRIMEES :
 !     ------------------------------------------------------------
-998 continue
+998  continue
     if ((nbsurc.gt.0) .and. (niv.ge.2)) then
-
-        call u2mess('I','CHARGES2_34')
-
+!
+        call utmess('I', 'CHARGES2_34')
+!
         do irela = 1, nbrela
             indsur=zi(jrlsu+irela-1)
             if (indsur .eq. 1) then
@@ -347,8 +345,8 @@ subroutine aflrch(lisrez, chargz)
                 idnoeu=jrlno+idecal
                 iddl=jrldd+idecal
                 call impre2(lisrel//'.RLCO', lisrel//'.RLDD', lisrel// '.RLNO', lisrel//'.RLBE',&
-                            zi(jrlsu+irela-1),zi(jrlpo+ irela-1),zi(jrlnt+irela-1), typcoe,typval,&
-                            irela)
+                            zi(jrlsu+irela-1), zi(jrlpo+ irela-1), zi(jrlnt+irela-1), typcoe,&
+                            typval, irela)
             endif
         enddo
     endif
@@ -365,6 +363,6 @@ subroutine aflrch(lisrez, chargz)
     call jedetr(lisrel//'.RLTV')
     call jedetr(lisrel//'.RLLA')
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

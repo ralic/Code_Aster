@@ -29,10 +29,10 @@ subroutine dinter(coorc, ray, coor1, coor2, coorin)
 ! OUT COORIN(2) : COORDONNEES DE L INTERSECTION
 !
     implicit none
+#include "asterfort/utmess.h"
 !
 ! DECLARATION GLOBALE
 !
-#include "asterfort/u2mess.h"
     real(kind=8) :: coorc(2), ray, coor1(2), coor2(2), coorin(2)
 !
 ! DECLARATION LOCALE
@@ -67,7 +67,7 @@ subroutine dinter(coorc, ray, coor1, coor2, coorin)
                     coorin(2) = yi
                     coorin(1) = x1 + m *(yi-y1)
                 else
-                    call u2mess('F', 'PREPOST_21')
+                    call utmess('F', 'PREPOST_21')
                 endif
             endif
         else
@@ -90,11 +90,11 @@ subroutine dinter(coorc, ray, coor1, coor2, coorin)
                     coorin(1) = xi
                     coorin(2) = y1
                 else
-                    call u2mess('F', 'PREPOST_21')
+                    call utmess('F', 'PREPOST_21')
                 endif
             endif
         else
-            call u2mess('F', 'PREPOST_21')
+            call utmess('F', 'PREPOST_21')
         endif
     endif
 end subroutine

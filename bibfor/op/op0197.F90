@@ -60,8 +60,7 @@ subroutine op0197()
 #include "asterfort/tbfutb.h"
 #include "asterfort/tbimpr.h"
 #include "asterfort/tbtrtb.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrir.h"
 #include "asterfort/wkvect.h"
 !
@@ -198,13 +197,13 @@ subroutine op0197()
         nbold = nbins
         call uttrir(nbins, zr(iinst), 0.d0)
         if (nbins .ne. nbold) then
-            call u2mess('F', 'UTILITAI3_28')
+            call utmess('F', 'UTILITAI3_28')
         endif
         zi(irent+iresu-1) = nbins
         nrupt = nrupt + nbins
         call jeecra(jexnum(collec, iresu), 'LONUTI', nbins)
         if (nbins .le. 1) then
-            call u2mess('F', 'UTILITAI3_29')
+            call utmess('F', 'UTILITAI3_29')
         endif
 !
 !       ON TESTE SI LES INSTANTS DE RUPTURE MIN ET MAX SONT
@@ -226,14 +225,12 @@ subroutine op0197()
         if (zr(iinst) .lt. tpsmin) then
             valrr (1) = zr(iinst)
             valrr (2) = tpsmin
-            call u2mesg('F', 'UTILITAI6_53', 0, ' ', 0,&
-                        0, 2, valrr)
+            call utmess('F', 'UTILITAI6_53', nr=2, valr=valrr)
         endif
         if (zr(iinst+nbins-1) .gt. tpsmax) then
             valrr (1) = zr(iinst+nbins-1)
             valrr (2) = tpsmax
-            call u2mesg('F', 'UTILITAI6_54', 0, ' ', 0,&
-                        0, 2, valrr)
+            call utmess('F', 'UTILITAI6_54', nr=2, valr=valrr)
         endif
 !
 100  end do
@@ -244,7 +241,7 @@ subroutine op0197()
     if (ntemp .gt. 0) then
 !
         if (ntemp .ne. nbresu) then
-            call u2mess('F', 'UTILITAI3_30')
+            call utmess('F', 'UTILITAI3_30')
         else
             if (nbresu .gt. 1) then
                 dept = .false.
@@ -327,10 +324,10 @@ subroutine op0197()
 !
         if (iresu .gt. 1) then
             if (mini .ne. minip) then
-                call u2mess('F', 'UTILITAI3_31')
+                call utmess('F', 'UTILITAI3_31')
             endif
             if (zr(isigi-1+iresu) .ne. zr(isigi-2+iresu)) then
-                call u2mess('F', 'UTILITAI3_32')
+                call utmess('F', 'UTILITAI3_32')
             endif
         endif
         minip = mini
@@ -339,8 +336,7 @@ subroutine op0197()
     valrr (1) = mini
     valrr (2) = vini
     valrr (3) = zr(isigi)
-    call u2mesg('I', 'UTILITAI6_55', 0, ' ', 0,&
-                0, 3, valrr)
+    call utmess('I', 'UTILITAI6_55', nr=3, valr=valrr)
 !
     call wkvect('&&OP0197.NOM_TABLPE', 'V V K16', nbresu, itabw)
     call wkvect('&&OP0197.NOM_TABLIN', 'V V K16', nbresu, itabr)
@@ -629,13 +625,12 @@ subroutine op0197()
 !
     if (((.not.calm).or.(.not.cals)) .and. nbite .lt. nitmax) goto 200
     if (nbite .eq. nitmax) then
-        call u2mess('F', 'UTILITAI2_53')
+        call utmess('F', 'UTILITAI2_53')
     endif
 !
     valii = nbite
     valrr (1) = test
-    call u2mesg('I', 'UTILITAI6_56', 0, ' ', 1,&
-                valii, 1, valrr)
+    call utmess('I', 'UTILITAI6_56', si=valii, sr=valrr(1))
 !
     call tbimpr(tapait, 'EXCEL', ifm, ntpsi+2, zk16(inopa),&
                 0, '1PE12.5')

@@ -2,11 +2,11 @@ subroutine focoat(nomfon, nbfon, nopara, noresu, interp,&
                   prolgd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbfon
     character(len=*) :: nomfon(*)
     character(len=16) :: nopara, noresu, interp, prolgd
@@ -84,7 +84,7 @@ subroutine focoat(nomfon, nbfon, nopara, noresu, interp,&
     .not.intlog ) ) then
         interp = 'LOG LIN '
     else
-        call u2mess('A', 'UTILITAI_83')
+        call utmess('A', 'UTILITAI_83')
         interp = 'LIN LIN '
     endif
 !

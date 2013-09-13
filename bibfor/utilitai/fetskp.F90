@@ -56,10 +56,9 @@ subroutine fetskp()
 #include "asterfort/jexnum.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/verico.h"
@@ -97,12 +96,12 @@ subroutine fetskp()
 !
     call getvid(' ', 'MAILLAGE', scal=ma, nbret=err)
     if (err .eq. 0) then
-        call u2mess('F', 'UTILITAI_78')
+        call utmess('F', 'UTILITAI_78')
     endif
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmato,&
                 k8bid, err)
     if (err .ne. 0) then
-        call u2mess('F', 'UTILITAI_79')
+        call utmess('F', 'UTILITAI_79')
     endif
     call wkvect('&&FETSKP.RENUM1', 'V V I', nbmato, renum1)
     call getvid(' ', 'MODELE', scal=mod, nbret=err)
@@ -131,7 +130,7 @@ subroutine fetskp()
 ! --------- ON VERIFIE QUE LE MODELE NE CONTIENT PAS DE MAILLES TARDIVES
 ! --------- QUI SONT ESSENTIELLEMENT DES NOEUDS A CE STADE
                 if (zi(idma-1+ima) .lt. 0) then
-                    call u2mess('F', 'FETI0_3')
+                    call utmess('F', 'FETI0_3')
                 endif
                 zi(renum1-1+zi(idma-1+ima))=id
                 id=id+1
@@ -182,7 +181,7 @@ subroutine fetskp()
             endif
 118      continue
         if (nbma .eq. 0) then
-            call u2mess('F', 'UTILITAI_80')
+            call utmess('F', 'UTILITAI_80')
         endif
         write(ifm,*)'  - GROUPAGE  :',grpema
         write(ifm,*)' '
@@ -213,7 +212,7 @@ subroutine fetskp()
             endif
 207      continue
         if (nbma .eq. 0) then
-            call u2mess('F', 'UTILITAI_80')
+            call utmess('F', 'UTILITAI_80')
         endif
         call getvis('POIDS_MAILLES', 'POIDS', iocc=iocc, scal=poids, nbret=err)
         write(ifm,*)'  - POIDS_MAILLES :',grpema
@@ -229,7 +228,9 @@ subroutine fetskp()
 !
     if ((meth(1:6).ne.'SCOTCH') .and. (rang.eq.0)) then
         iulm1 = ulnume ()
-        if (iulm1 .eq. -1) call u2mess('F', 'UTILITAI_81')
+        if (iulm1 .eq. -1) then
+            call utmess('F', 'UTILITAI_81')
+        endif
         call ulopen(iulm1, ' ', ' ', 'NEW', 'O')
         write(iulm1,'(I12,I12,I3)')nbmato,nblien/2,11
 !
@@ -336,7 +337,9 @@ subroutine fetskp()
             write(ifm,*) ' '
         endif
         write(ifm,*) '********** FIN SCOTCH ',kersco,' *********'
-        if (ier .ne. 0) call u2mesi('F', 'UTILITAI_56', 1, ier)
+        if (ier .ne. 0) then
+            call utmess('F', 'UTILITAI_56', si=ier)
+        endif
         write(ifm,*) ' '
 !      ENDIF
 !
@@ -354,7 +357,7 @@ subroutine fetskp()
             call gtoptk('repout', rep, iret)
             if (iret .ne. 0) then
                 vali(1) = len(rep)
-                call u2mesi('F', 'EXECLOGICIEL0_24', 1, vali)
+                call utmess('F', 'EXECLOGICIEL0_24', si=vali(1))
             endif
             lrep = lxlgut(rep)
             if (meth .eq. 'PMETIS  ') then
@@ -396,7 +399,9 @@ subroutine fetskp()
     if (meth(1:6) .ne. 'SCOTCH') then
         if (rang .eq. 0) then
             iulm2 = ulnume ()
-            if (iulm2 .eq. -1) call u2mess('F', 'UTILITAI_81')
+            if (iulm2 .eq. -1) then
+                call utmess('F', 'UTILITAI_81')
+            endif
             lrep=0
             do 177 i = 1, len(ktmp2)
                 if (ktmp2(i:i) .ne. ' ') lrep=lrep+1

@@ -7,7 +7,6 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/imprsd.h"
@@ -33,9 +32,9 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 #include "asterfort/lxcaps.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chamno, form, titre, nomsd, nomsym
     character(len=*) :: nomcmp(*), formr, partie
     integer :: nbnot, ifi, numnoe(*), nbcmp, nive
@@ -88,7 +87,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !        NIVE   : NIVEAU IMPRESSION CASTEM 3 OU 10
 !     ------------------------------------------------------------------
 !
-    character(len=1) ::  type
+    character(len=1) :: type
     integer :: gd, lgconc, lgch16
     integer :: jvale, nuti
     logical :: lmasu
@@ -130,7 +129,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         itype = 4
     else
         call getres(cbid, cbid, nomcmd)
-        call u2mesk('A', 'PREPOST_97', 1, type(1:1))
+        call utmess('A', 'PREPOST_97', sk=type(1:1))
         goto 9999
     endif
 !
@@ -222,7 +221,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
                         zi(jncmp), lsup, borsup, linf, borinf,&
                         lmax, lmin, formr)
         else if (itype.eq.2.and.num.lt.0) then
-            call u2mesk('E', 'PREPOST2_35', 1, forma)
+            call utmess('E', 'PREPOST2_35', sk=forma)
         else if ((itype.eq.3).or.(itype.eq.4)) then
             call imprsd('CHAMP', chamno, ifi, nomsd)
         endif
@@ -255,7 +254,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
                     zr(jvale-1+i)=dimag(zc(iavale-1+i))
 20              continue
             else
-                call u2mess('F', 'PREPOST2_4')
+                call utmess('F', 'PREPOST2_4')
             endif
             call irdeca(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
                         zi(iaec), ncmpmx, zr(jvale), nomgd, zk8(iad),&
@@ -264,7 +263,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         else
             valk(1) = chamn
             valk(2) = forma
-            call u2mesk('E', 'PREPOST2_36', 2, valk)
+            call utmess('E', 'PREPOST2_36', nk=2, valk=valk)
         endif
 !
     else if (form(1:5).eq.'IDEAS') then
@@ -298,7 +297,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
                         zk8(jno), nomsd, nomsym, numord, zi(jnu),&
                         lmasu)
         else if (itype.eq.2.and.num.lt.0) then
-            call u2mesk('E', 'PREPOST2_35', 1, forma)
+            call utmess('E', 'PREPOST2_35', sk=forma)
         endif
 !
     endif
@@ -308,14 +307,14 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     if (.not.lresu) then
         valk(1) = nosy16(1:lgch16)
         valk(2) = nomgd
-        call u2mesk('A', 'PREPOST2_40', 2, valk)
+        call utmess('A', 'PREPOST2_40', nk=2, valk=valk)
     else
         nomsdr=nomsd
         lgconc=lxlgut(nomsdr)
         valk(1) = nosy16(1:lgch16)
         valk(2) = nomsdr(1:lgconc)
         valk(3) = nomgd
-        call u2mesk('A', 'PREPOST2_41', 3, valk)
+        call utmess('A', 'PREPOST2_41', nk=3, valk=valk)
     endif
 9998  continue
     call jedetr('&&IRDEPL.ENT_COD')

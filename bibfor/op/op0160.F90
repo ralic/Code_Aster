@@ -29,13 +29,13 @@ subroutine op0160()
 #include "asterfort/iredsu.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
     integer :: versio, n1, ific, vali(2)
     character(len=8) :: format, macrel, basemo, k8b
     character(len=16) :: fichie
-    integer ::  jrefe, nbmodt, nbvect, jdesm
+    integer :: jrefe, nbmodt, nbvect, jdesm
 !     ------------------------------------------------------------------
     call infmaj()
 !
@@ -59,7 +59,7 @@ subroutine op0160()
     if (nbvect .ne. nbmodt) then
         vali(1) = nbvect
         vali(2) = nbmodt
-        call u2mesi('F', 'UTILITAI8_66', 2, vali)
+        call utmess('F', 'UTILITAI8_66', ni=2, vali=vali)
     endif
 !     ------------------------------------------------------------------
 !

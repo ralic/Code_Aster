@@ -31,7 +31,7 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 #include "asterfort/jemarq.h"
 #include "asterfort/mavec.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     logical :: matsym
@@ -128,15 +128,15 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
             epsilo=pertu*maxgeo
         endif
         if (epsilo .lt. r8miem()) then
-            call u2mess('F', 'ALGORITH11_86')
+            call utmess('F', 'ALGORITH11_86')
         endif
         epsilp=pertu*maxpre
         if (epsilp .lt. r8miem()) then
-            call u2mess('F', 'ALGORITH11_86')
+            call utmess('F', 'ALGORITH11_86')
         endif
         epsilg=pertu*maxgon
         if (epsilg .lt. r8miem()) then
-            call u2mess('F', 'ALGORITH11_86')
+            call utmess('F', 'ALGORITH11_86')
         endif
 !      ARCHIVAGE DES VALEURS DE REFERENCE
 !

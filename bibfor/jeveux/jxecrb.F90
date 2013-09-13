@@ -22,7 +22,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
 #include "jeveux_private.h"
 #include "asterc/writdr.h"
 #include "asterfort/codent.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ic, iaddi, iadmo, lso, idco, idos
 ! ----------------------------------------------------------------------
 ! ECRITURE DISQUE D'UN OU PLUSIEURS ENREGISTREMENTS SUR LE FICHIER
@@ -102,8 +102,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
                 vali(1) = iaddi+i-1
                 vali(2) = numext
                 vali(3) = ierr
-                call u2mesg('F', 'JEVEUX_40', 1, nombas(ic), 3,&
-                            vali, 0, r8bid)
+                call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
             endif
             nbacce(2*ic) = nbacce(2*ic) + 1
             iusadi(jusadi(ic)+3*(iaddi+i-1)-2) = idco
@@ -131,8 +130,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
                 vali(1) = iaddi+i-1
                 vali(2) = numext
                 vali(3) = ierr
-                call u2mesg('F', 'JEVEUX_40', 1, nombas(ic), 3,&
-                            vali, 0, r8bid)
+                call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
             endif
             nbacce(2*ic) = nbacce(2*ic) + 1
             iusadi(jusadi(ic)+3*(iaddi+nblent)-2) = idco

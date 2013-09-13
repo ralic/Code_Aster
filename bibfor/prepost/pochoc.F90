@@ -9,7 +9,7 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/statch.h"
 #include "asterfort/statim.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: trange, nomres
 ! ----------------------------------------------------------------------
@@ -61,7 +61,9 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
     tmin = zr(idinst)
     if (tfin .gt. tmax) tfin = tmax
     if (tdebut .lt. tmin) tdebut = tmin
-    if (tdebut .ge. tfin) call u2mess('F', 'PREPOST4_47')
+    if (tdebut .ge. tfin) then
+        call utmess('F', 'PREPOST4_47')
+    endif
 !
     call jeveuo(nomk19//'.FCHO', 'L', idfcho)
     call jeveuo(nomk19//'.DLOC', 'L', iddloc)

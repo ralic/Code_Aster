@@ -23,7 +23,7 @@ subroutine cjsncv(roucjs, nitimp, iter, ndt, nvi,&
 !  DUMP EN CAS NON CONVERGENCE ITE INTERNES CJS
 !
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: roucjs
     integer :: nitimp, iter, ndt, nvi, umess
     real(kind=8) :: erimp(nitimp, 3)
@@ -40,7 +40,7 @@ subroutine cjsncv(roucjs, nitimp, iter, ndt, nvi,&
     1000   format(&
      &       t3,i4,t10,e12.5,&
      &       t30,e12.5,t50,e12.5)
-    call u2mess('F', 'ALGORITH2_18')
+    call utmess('F', 'ALGORITH2_18')
     write(6,1002) (i,epsd(i),i = 1 , ndt)
     write(umess,*) ' DEPS '
     write(6,1002) (i,deps(i),i = 1 , ndt)

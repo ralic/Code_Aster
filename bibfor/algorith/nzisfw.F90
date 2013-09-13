@@ -29,7 +29,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 #include "asterfort/rctrac.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: ndim, imat, iret, kpg, ksp
     character(len=16) :: compor(*), option
@@ -462,7 +462,9 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
             nomcle(4)='SIGM_F4'
             nomcle(5)='SIGM_C'
 !
-            if (iret1 .eq. 1) call u2mess('F', 'CALCULEL_31')
+            if (iret1 .eq. 1) then
+                call utmess('F', 'CALCULEL_31')
+            endif
             do 75 k = 1, nz
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                             jvale, nbval( k), rbid)

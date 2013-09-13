@@ -4,7 +4,6 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -19,10 +18,9 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: itopo, ngroup
     character(len=8) :: noche8, nochs8, nocmp, ktype
     character(len=8) :: group(ngroup)
@@ -122,8 +120,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 call jeexin(jexnom(nomma//'.GROUPEMA', group(igr)), iret)
                 if (iret .eq. 0) then
                     valk = group(igr)
-                    call u2mesg('A', 'PREPOST5_31', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'PREPOST5_31', sk=valk)
                 else
                     call jelira(jexnom(nomma//'.GROUPEMA', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPEMA', group(igr)), 'L', iad)
@@ -139,7 +136,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 if (zi(itrma-1+ima) .ne. 0) nbtrou = nbtrou + 1
 100          continue
             if (nbtrou .eq. 0) then
-                call u2mess('F', 'CHAMPS_4')
+                call utmess('F', 'CHAMPS_4')
             endif
 !
 !
@@ -197,7 +194,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 !
         if (nbval .eq. 0) then
-            call u2mess('F', 'CHAMPS_1')
+            call utmess('F', 'CHAMPS_1')
         endif
         if (tsca .eq. 'R') then
             call wkvect(cesz // '.V', 'G V R', nbval, jval)
@@ -269,8 +266,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 call jeexin(jexnom(nomma//'.GROUPENO', group(igr)), iret)
                 if (iret .eq. 0) then
                     valk = group(igr)
-                    call u2mesg('A', 'PREPOST5_31', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'PREPOST5_31', sk=valk)
                 else
                     call jelira(jexnom(nomma//'.GROUPENO', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPENO', group(igr)), 'L', iad)
@@ -286,7 +282,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 if (zi(itrno-1+ino) .ne. 0) nbtrou = nbtrou + 1
 1000          continue
             if (nbtrou .eq. 0) then
-                call u2mess('F', 'CHAMPS_5')
+                call utmess('F', 'CHAMPS_5')
             endif
 !
 !
@@ -325,7 +321,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 50      continue
 !
 !       SI LA COMPOSANTE DEMANDEE N EXISTE PAS, ERREUR FATALE
-        call u2mesk('F', 'CHAMPS_3', 1, nocmp)
+        call utmess('F', 'CHAMPS_3', sk=nocmp)
 !
 60      continue
 !
@@ -352,7 +348,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 !
         if (nbval .eq. 0) then
-            call u2mess('F', 'CHAMPS_1')
+            call utmess('F', 'CHAMPS_1')
         endif
 !
         if (tsca .eq. 'R') then

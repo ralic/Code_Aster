@@ -3,16 +3,15 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
                   calfac)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/freqom.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdete.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpshif.h"
+!
     real(kind=8) :: valshi, mantis
     integer :: lmatk, lmatm, lmatsh, expo, pivot, ier
     character(len=19) :: solveu
@@ -106,7 +105,7 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
     if (iret .ge. 1) ier = 1
     if (iret .gt. 1) then
         valr = freqom(valshi)
-        call u2mesr('A', 'ALGELINE5_27', 1, valr)
+        call utmess('A', 'ALGELINE5_27', sr=valr)
     endif
     pivot = - npvneg
 !
@@ -115,7 +114,7 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
     if (caldet) then
         if ((metres(1:10).ne.'MULT_FRONT') .and. (metres(1:4) .ne.'LDLT') .and.&
             (metres(1:5).ne.'MUMPS')) then
-            call u2mess('F', 'ALGELINE5_73')
+            call utmess('F', 'ALGELINE5_73')
         else
             call mtdete(1, metres, lmatsh, mantis, expo,&
                         cbid)

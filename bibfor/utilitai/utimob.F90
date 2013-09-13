@@ -20,9 +20,9 @@ subroutine utimob(unit, obin, nivo, lattr, lcont,&
 !     --
 !     ARGUMENTS:
 !     ----------
-#include "asterfort/u2mesk.h"
 #include "asterfort/utimco.h"
 #include "asterfort/utimos.h"
+#include "asterfort/utmess.h"
     character(len=*) :: obin, xous
     integer :: nivo, unit
     logical :: lattr, lcont
@@ -58,7 +58,7 @@ subroutine utimob(unit, obin, nivo, lattr, lcont,&
         call utimos(unit, ob1, lattr, lcont)
     else
 !
-        call u2mesk('F', 'UTILITAI5_41', 1, xous2)
+        call utmess('F', 'UTILITAI5_41', sk=xous2)
     endif
 !
 end subroutine

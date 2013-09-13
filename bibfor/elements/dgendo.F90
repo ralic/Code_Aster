@@ -3,10 +3,10 @@ subroutine dgendo(em, ef, h, syt, syc,&
                   pelasf, iendo, icisai, icompr, gt,&
                   gf, gc, ipente, np, dxp)
 !
-    implicit   none
+    implicit none
 !
 ! PARAMETRES ENTRANTS
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerop3.h"
     integer :: iendo, icompr, icisai, ipente
     real(kind=8) :: em, ef, h, syt, syc, num, nuf, np, dxp
@@ -332,13 +332,13 @@ subroutine dgendo(em, ef, h, syt, syc,&
     endif
 !
     if (gt .lt. 0.d0) then
-        call u2mesk('A', 'ALGORITH6_4', 1, 'GAMMAT')
+        call utmess('A', 'ALGORITH6_4', sk='GAMMAT')
     endif
     if (gc .lt. 0.d0) then
-        call u2mesk('A', 'ALGORITH6_4', 1, 'GAMMAC')
+        call utmess('A', 'ALGORITH6_4', sk='GAMMAC')
     endif
     if (gf .lt. 0.d0) then
-        call u2mesk('A', 'ALGORITH6_4', 1, 'GAMMAF')
+        call utmess('A', 'ALGORITH6_4', sk='GAMMAF')
     endif
 !
 end subroutine

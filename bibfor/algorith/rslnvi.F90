@@ -1,5 +1,6 @@
 subroutine rslnvi(mod, ndt, ndi, nr, nvi)
     implicit none
+#include "asterfort/utmess.h"
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,6 @@ subroutine rslnvi(mod, ndt, ndi, nr, nvi)
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nr, nvi
     character(len=8) :: mod
 !       ----------------------------------------------------------------
@@ -47,7 +47,7 @@ subroutine rslnvi(mod, ndt, ndi, nr, nvi)
         ndt = 4
         ndi = 3
         nr = ndt+3
-        call u2mess('F', 'ALGORITH10_51')
+        call utmess('F', 'ALGORITH10_51')
     else if (mod(1:2) .eq. '1D') then
         ndt = 3
         ndi = 3

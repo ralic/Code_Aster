@@ -40,7 +40,7 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
 !
 !     ------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-    implicit   none
+    implicit none
 ! DECLARATION PARAMETRES D'APPELS
 !
 #include "jeveux.h"
@@ -51,7 +51,7 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
     integer :: neq, istoc, iarchi, alarm, ifm
     integer :: nbtyar
@@ -107,7 +107,7 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
                     iaux)
         if (iaux .eq. 0) then
             if (alarm .gt. 0) then
-                call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                call utmess('A', 'ALGORITH2_64', sk=chamno)
             endif
             goto 21
         else if (iaux.eq.100) then

@@ -29,9 +29,7 @@ subroutine calirc(chargz)
 #include "asterfort/pj3dco.h"
 #include "asterfort/pj4dco.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: chargz
@@ -130,7 +128,9 @@ subroutine calirc(chargz)
 !
     call dismoi('F', 'DIM_GEOM', mo, 'MODELE', igeom,&
                 kbid, ier)
-    if (.not.(igeom.eq.2.or.igeom.eq.3)) call u2mess('F', 'MODELISA2_6')
+    if (.not.(igeom.eq.2.or.igeom.eq.3)) then
+        call utmess('F', 'MODELISA2_6')
+    endif
     if (igeom .eq. 2) then
         ndim=2
     else
@@ -237,8 +237,7 @@ subroutine calirc(chargz)
             if (nbma2 .eq. 0) then
                 valk(1)=motcle(1)
                 valk(2)=motcle(2)
-                call u2mesg('F', 'MODELISA8_49', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'MODELISA8_49', nk=2, valk=valk)
             endif
             call jeveuo('&&CALIRC.LIMANU2', 'L', idmai2)
 !
@@ -412,7 +411,7 @@ subroutine calirc(chargz)
 !               SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
                     if (nuno1 .eq. nuno2) then
                         if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
-                            call u2mesk('A', 'CALCULEL5_49', 1, nono1)
+                            call utmess('A', 'CALCULEL5_49', sk=nono1)
                             goto 130
 !
                         endif
@@ -616,7 +615,7 @@ subroutine calirc(chargz)
 !             SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
                 if (nuno1 .eq. nuno2) then
                     if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
-                        call u2mesk('A', 'CALCULEL5_49', 1, nono1)
+                        call utmess('A', 'CALCULEL5_49', sk=nono1)
                         goto 290
 !
                     endif

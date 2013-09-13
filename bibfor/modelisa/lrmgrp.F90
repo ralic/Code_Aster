@@ -56,7 +56,6 @@ subroutine lrmgrp(grpnoe, gpptnn, nbgrno, jnogno, jlggno,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -67,8 +66,9 @@ subroutine lrmgrp(grpnoe, gpptnn, nbgrno, jnogno, jlggno,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jucroc.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbgrno, jnogno, jlggno
     integer :: nbgrma, jnogma, jlggma
     integer :: nbfam
@@ -231,7 +231,7 @@ subroutine lrmgrp(grpnoe, gpptnn, nbgrno, jnogno, jlggno,&
         endif
 322      continue
 !
-        call u2mesk('F', 'MED_20', 1, nomgrp)
+        call utmess('F', 'MED_20', sk=nomgrp)
 !
 3221      continue
 !

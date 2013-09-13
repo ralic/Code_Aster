@@ -21,7 +21,7 @@ subroutine cfbord(char, noma)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char
     character(len=8) :: noma
 !
@@ -79,7 +79,7 @@ subroutine cfbord(char, noma)
         if (ndimma .gt. (ndimg-1)) then
             vali(1) = ndimma
             vali(2) = ndimg
-            call u2mesi('F', 'CONTACT2_11', 2, vali)
+            call utmess('F', 'CONTACT2_11', ni=2, vali=vali)
         endif
 10  end do
 !

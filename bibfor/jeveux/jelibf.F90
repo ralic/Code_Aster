@@ -39,7 +39,7 @@ subroutine jelibf(cond, clas, info)
 #include "asterfort/jxecro.h"
 #include "asterfort/jxferm.h"
 #include "asterfort/lxmins.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=*) :: cond, clas
     integer :: info
 ! ----------------------------------------------------------------------
@@ -111,10 +111,8 @@ subroutine jelibf(cond, clas, info)
     ic = index ( classe , kclas )
     iclaos = ic
     ASSERT(ic .ne. 0)
-    bool = kcond .eq. '        ' .or. kcond&
-                .eq. 'SAUVE   ' .or. kcond .eq.&
-                'ERREUR  ' .or. kcond .eq. 'DETRUIT '&
-                .or. kcond .eq. 'LIBERE  '
+    bool = kcond .eq. '        ' .or. kcond .eq. 'SAUVE   ' .or. kcond .eq. 'ERREUR  ' .or. kcond&
+           .eq. 'DETRUIT ' .or. kcond .eq. 'LIBERE  '
     ASSERT(bool)
     if (kcond .eq. '        ') then
         kcond = kstout(ic)
@@ -291,8 +289,8 @@ subroutine jelibf(cond, clas, info)
     vali(8)= (nreuti(ic)*100)/nremax(ic)
 !
     if (info .ge. 1) then
-        call u2mesg('I', 'JEVEUX_22', 1, valk, 8,&
-                    vali, 2, valr)
+        call utmess('I', 'JEVEUX_22', sk=valk(1), ni=8, vali=vali,&
+                    nr=2, valr=valr)
     endif
 !
     if (kcond .ne. 'LIBERE  ') then

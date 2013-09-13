@@ -25,8 +25,8 @@ function ulnume()
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
-#include "asterfort/u2mess.h"
 #include "asterfort/ulinit.h"
+#include "asterfort/utmess.h"
     integer :: mxf
     parameter       (mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
@@ -50,7 +50,7 @@ function ulnume()
         ival = i
         goto 2
  1  end do
-    call u2mess('A', 'UTILITAI5_10')
+    call utmess('A', 'UTILITAI5_10')
  2  continue
     ulnume = ival
 end function

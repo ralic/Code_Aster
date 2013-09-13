@@ -33,7 +33,6 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -42,7 +41,8 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbimex.h"
 #include "asterfort/tbimta.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nparim, nparpg, ifr
     character(len=*) :: table
     character(len=*) :: formaz, lipaim(*)
@@ -55,7 +55,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 !
     integer :: iret, jtbnp, nbpara, nblign
     integer :: ltitr, lonmax, ititr
-    character(len=8) ::  format
+    character(len=8) :: format
     character(len=19) :: nomtab
 !     ------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 !
     call exisd('TABLE', nomtab, iret)
     if (iret .eq. 0) then
-        call u2mess('A', 'UTILITAI4_64')
+        call utmess('A', 'UTILITAI4_64')
         goto 9999
     endif
 !
@@ -82,11 +82,11 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('A', 'UTILITAI4_65')
+        call utmess('A', 'UTILITAI4_65')
         goto 9999
     endif
     if (nblign .eq. 0) then
-        call u2mess('A', 'UTILITAI4_76')
+        call utmess('A', 'UTILITAI4_76')
         goto 9999
     endif
 !SV
@@ -125,7 +125,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
         endif
     else
 !               --- TRAITEMENT DE LA "PAGINATION" ---
-        call u2mess('F', 'UTILITAI4_85')
+        call utmess('F', 'UTILITAI4_85')
 !
     endif
 !

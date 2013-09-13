@@ -43,7 +43,7 @@ subroutine op0143()
 #include "asterfort/jeveuo.h"
 #include "asterfort/tfimpr.h"
 #include "asterfort/tfveri.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: ocvect, ocprho, ocpvis, ocpesa, ocrugo, occapa, ocgril, iret, ifm
@@ -221,7 +221,7 @@ subroutine op0143()
         do 50 i = 1, nzex-1
             do 50 j = i+1, nzex
                 if (zk8(lfsvk+i+3) .eq. zk8(lfsvk+j+3)) then
-                    call u2mess('F', 'MODELISA5_65')
+                    call utmess('F', 'MODELISA5_65')
                 endif
 50          continue
 !-----------------------------------------------------------------------

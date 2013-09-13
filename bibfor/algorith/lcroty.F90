@@ -16,8 +16,8 @@ function lcroty(t, prec, itemax)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
     real(kind=8) :: lcroty
-#include "asterfort/u2mess.h"
     integer :: itemax
     real(kind=8) :: t, prec
 !
@@ -61,7 +61,7 @@ function lcroty(t, prec, itemax)
 20      continue
     endif
 !
-    call u2mess('F', 'ALGORITH3_55')
+    call utmess('F', 'ALGORITH3_55')
 !
 !
 100  continue

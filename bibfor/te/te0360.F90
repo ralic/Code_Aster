@@ -29,9 +29,7 @@ subroutine te0360(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -98,7 +96,9 @@ subroutine te0360(option, nomte)
 !     RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
 !
     call jevech('PCAMASS', 'L', icamas)
-    if (zr(icamas) .eq. -1.d0) call u2mess('F', 'ELEMENTS5_47')
+    if (zr(icamas) .eq. -1.d0) then
+        call utmess('F', 'ELEMENTS5_47')
+    endif
 !
 !     DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS : ANG
 !
@@ -121,8 +121,7 @@ subroutine te0360(option, nomte)
             nomail = zk24(iazk24-1+3) (1:8)
             vali(1)=lgpg1
             vali(2)=lgpg2
-            call u2mesg('A', 'CALCULEL6_64', 1, nomail, 2,&
-                        vali, 0, rbid)
+            call utmess('A', 'CALCULEL6_64', sk=nomail, ni=2, vali=vali)
         endif
     endif
     lgpg = lgpg1
@@ -169,7 +168,7 @@ subroutine te0360(option, nomte)
                     zr(ivarip), zr(imatuu), zr(ivectu), codret)
 !
     else
-        call u2mesk('F', 'ALGORITH17_2', 1, zk16(icompo+2))
+        call utmess('F', 'ALGORITH17_2', sk=zk16(icompo+2))
     endif
 !
     if (option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH') then

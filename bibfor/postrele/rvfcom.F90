@@ -20,7 +20,7 @@ subroutine rvfcom(nmaila, m1, f1, m2, f2)
 !
 #include "jeveux.h"
 #include "asterfort/i2extf.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nmaila
     integer :: m1, m2, f1, f2
 !
@@ -88,7 +88,9 @@ subroutine rvfcom(nmaila, m1, f1, m2, f2)
 !
         f2 = f2 + 1
 !
-        if (f2 .gt. 12) call u2mess('F', 'POSTRELE_19')
+        if (f2 .gt. 12) then
+            call utmess('F', 'POSTRELE_19')
+        endif
 !
         call i2extf(m2, f2, nconec, ntype, n2g,&
                     n2d)

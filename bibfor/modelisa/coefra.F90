@@ -39,7 +39,7 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ipas, ires
     integer :: jborne, jcoeff, jvired
     real(kind=8) :: ck, xsi0
@@ -106,7 +106,7 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
         endif
     endif
     if (ipas1 .ne. ipas .or. ires1 .ne. ires) then
-        call u2mess('F', 'MODELISA4_31')
+        call utmess('F', 'MODELISA4_31')
     endif
 !
 ! **********************************************************************
@@ -429,7 +429,7 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
 !
         else
 !
-            call u2mess('F', 'MODELISA4_32')
+            call utmess('F', 'MODELISA4_32')
 !
         endif
 !

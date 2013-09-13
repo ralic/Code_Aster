@@ -19,7 +19,7 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
 ! ======================================================================
 #include "asterfort/cdnfo2.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: kfonc1, kfonc2, mater, k8b
     real(kind=8) :: normf, x0
     real(kind=8) :: xrac
@@ -52,7 +52,7 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
     dfx=dfx1-dfx2
 !
     if ((abs(dfx) .lt. 1.d-12) .or. (ier1 .gt. 0) .or. (ier2 .gt. 0)) then
-        call u2mess('F', 'ELEMENTS2_27')
+        call utmess('F', 'ELEMENTS2_27')
     endif
 !
     xrac=xrac-fx/dfx
@@ -63,7 +63,7 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
     fx=fx1(1)-fx2(1)
     err=abs(fx)
  9  continue
-    call u2mess('F', 'ELEMENTS2_27')
+    call utmess('F', 'ELEMENTS2_27')
 !
 10  continue
 !

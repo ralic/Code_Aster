@@ -22,7 +22,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 #include "asterfort/mecact.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbpain, nordre, nbchre, ioccur, iret
     character(len=8) :: resuin, lipain(*)
     character(len=16) :: typesd
@@ -135,7 +135,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 30          continue
             call jelibe(chacce//'.VALE')
         else
-            call u2mess('A', 'CALCULEL3_1')
+            call utmess('A', 'CALCULEL3_1')
             do 40 ii = 0, neq - 1
                 zr(lvale+ii) = zero
 40          continue
@@ -152,7 +152,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 50          continue
             call jelibe(chacce//'.VALE')
         else
-            call u2mess('A', 'CALCULEL3_1')
+            call utmess('A', 'CALCULEL3_1')
             do 60 ii = 0, neq - 1
                 zc(lvale+ii) = czero
 60          continue
@@ -198,7 +198,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             if (l1+l3 .ne. 0) then
                 if ((typesd.ne.'DYNA_HARMO') .and. ( typesd.ne.'DYNA_TRANS') .and.&
                     (typesd.ne.'EVOL_ELAS')) then
-                    call u2mess('A', 'CALCULEL3_4')
+                    call utmess('A', 'CALCULEL3_4')
                     iret = 1
                     goto 9999
                 endif
@@ -229,7 +229,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 else if (l3.ne.0) then
                     alpha = coeff
                 else
-                    call u2mess('A', 'CALCULEL3_2')
+                    call utmess('A', 'CALCULEL3_2')
                     iret = 1
                     goto 9999
                 endif
@@ -239,7 +239,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     call fointe('F ', fmult, 1, 'INST', inst,&
                                 alpha, ier)
                 else
-                    call u2mess('A', 'CALCULEL3_3')
+                    call utmess('A', 'CALCULEL3_3')
                     iret = 1
                     goto 9999
                 endif

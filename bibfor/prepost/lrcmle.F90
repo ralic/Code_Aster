@@ -43,11 +43,11 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-#include "asterfort/infniv.h"
-#include "asterfort/as_mfdrpr.h"
-#include "asterfort/as_mfdonv.h"
 #include "asterfort/as_mfdonp.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/as_mfdonv.h"
+#include "asterfort/as_mfdrpr.h"
+#include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: nbcmfi, nbvato, numpt, numord
@@ -96,12 +96,12 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
 !====
 !
     call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
-                typgeo, iterma, nomamd, nomprf, nomloc,&
-                nbprof, codret)
+                   typgeo, iterma, nomamd, nomprf, nomloc,&
+                   nbprof, codret)
     do 10, iprof = 1, nbprof
     call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
-                numpt, numord, iprof, nomprf, edcomp,&
-                taipro, nomloc, nip, n, codret)
+                   numpt, numord, iprof, nomprf, edcomp,&
+                   taipro, nomloc, nip, n, codret)
     10 end do
 !
 !====
@@ -111,13 +111,12 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
     call wkvect(ntvale, 'V V R', nbcmfi*nbvato, advale)
 !
     call as_mfdrpr(idfimd, nochmd, zr(advale), edfuin, edall,&
-                nomprf, edcomp, typent, typgeo, numpt,&
-                numord, codret)
+                   nomprf, edcomp, typent, typgeo, numpt,&
+                   numord, codret)
 !
     if (codret .ne. 0) then
         saux08='mfdrpr'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 end subroutine

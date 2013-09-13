@@ -5,7 +5,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                   neq, nexcit, info, lflu, monmot,&
                   ier)
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/gloloc.h"
@@ -16,8 +16,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 #include "asterfort/mdchge.h"
 #include "asterfort/mdchst.h"
 #include "asterfort/resmod.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbnli, nbchoc, nbflam, nbsism, nbmode, neq
     integer :: nbrfis, nbpal
@@ -168,7 +167,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     call gettco(numddl, typnum)
     if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
         if (nbsism .gt. 0 .or. nbflam .gt. 0) then
-            call u2mess('F', 'ALGORITH5_36')
+            call utmess('F', 'ALGORITH5_36')
         endif
     endif
 !
@@ -240,32 +239,26 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         if (info .eq. 2) then
             vali = i
             valk = noecho(i,1)
-            call u2mesg('I', 'ALGORITH16_2', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_2', sk=valk, si=vali)
             if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
                 valk = noecho(i,2)
-                call u2mesg('I', 'ALGORITH16_3', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('I', 'ALGORITH16_3', sk=valk)
             endif
             valr (1) = parcho(i,8)
             valr (2) = parcho(i,9)
             valr (3) = parcho(i,10)
-            call u2mesg('I', 'ALGORITH16_4', 0, ' ', 0,&
-                        0, 3, valr)
+            call utmess('I', 'ALGORITH16_4', nr=3, valr=valr)
             if (noecho(i,9)(1:2) .eq. 'BI') then
                 valk = noecho(i,5)
-                call u2mesg('I', 'ALGORITH16_5', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('I', 'ALGORITH16_5', sk=valk)
                 if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
                     valk = noecho(i,6)
-                    call u2mesg('I', 'ALGORITH16_3', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('I', 'ALGORITH16_3', sk=valk)
                 endif
                 valr (1) = parcho(i,11)
                 valr (2) = parcho(i,12)
                 valr (3) = parcho(i,13)
-                call u2mesg('I', 'ALGORITH16_4', 0, ' ', 0,&
-                            0, 3, valr)
+                call utmess('I', 'ALGORITH16_4', nr=3, valr=valr)
             endif
             valr (1) = ctang
             valr (2) = parcho(i,14)
@@ -277,8 +270,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
             valr (8) = parcho(i,20)
             valr (9) = parcho(i,21)
             valr (10)= parcho(i,22)
-            call u2mesg('I', 'ALGORITH16_8', 0, ' ', 0,&
-                        0, 10, valr)
+            call utmess('I', 'ALGORITH16_8', nr=10, valr=valr)
             if (noecho(i,9)(1:2) .eq. 'BI') then
                 xjeu = (&
                        parcho(i,11)-parcho(i,8))**2 + (parcho(i,12)- parcho(i,9))**2 + (parcho(i,&
@@ -290,11 +282,9 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                     xjeu = sqrt(xjeu)
                 endif
                 valr (1) = xjeu
-                call u2mesg('I', 'ALGORITH16_9', 0, ' ', 0,&
-                            0, 1, valr)
+                call utmess('I', 'ALGORITH16_9', sr=valr(1))
             endif
-            call u2mesg('I', 'VIDE_1', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('I', 'VIDE_1')
         endif
 !
 !       POSITION INITIALE DU NOEUD 1 DANS LE REPERE GLOBAL
@@ -444,7 +434,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 300          continue
         else if (typnum(1:13).eq.'NUME_DDL_GENE') then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_37')
+            call utmess('E', 'ALGORITH5_37')
         endif
     endif
 !
@@ -458,7 +448,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
             if (j .le. nbnli) then
                 if (noecho(i,1) .ne. noecho(j,1)) goto 130
                 if (noecho(i,5) .ne. noecho(j,5)) goto 130
-                call u2mess('A', 'ALGORITH5_38')
+                call utmess('A', 'ALGORITH5_38')
                 parcho(i,2) = 0.d0
                 parcho(i,4) = 0.d0
             endif

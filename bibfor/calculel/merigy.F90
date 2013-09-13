@@ -28,7 +28,7 @@ subroutine merigy(modele, mate, cara, compor, matel)
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele, cara
     character(len=19) :: matel
     character(len=24) :: mate
@@ -72,7 +72,9 @@ subroutine merigy(modele, mate, cara, compor, matel)
 !
 !    CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     call mecara(cara, exicar, chcara)
-    if (.not.exicar) call u2mess('F', 'CALCULEL2_94')
+    if (.not.exicar) then
+        call utmess('F', 'CALCULEL2_94')
+    endif
 !
 !
     lpaout(1) = 'PMATUNS'

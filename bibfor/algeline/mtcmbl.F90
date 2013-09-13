@@ -21,8 +21,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/mtmchc.h"
 #include "asterfort/prosmo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcomb
     character(len=*) :: typcst(nbcomb), ddlexc
@@ -90,7 +89,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !---------------------------------------------------------------------
 !     -----------------------------------------------------------------
     character(len=1) :: base, bas2, typres
-    character(len=8) ::  typmat, kmpic, kmpic1, kmatd
+    character(len=8) :: typmat, kmpic, kmpic1, kmatd
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
 !     -----------------------------------------------------------------
@@ -180,7 +179,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         if (kmpic .ne. kmpic1) then
             valk(1)=mat1
             valk(2)=mati
-            call u2mesk('F', 'CALCULEL6_55', 2, valk)
+            call utmess('F', 'CALCULEL6_55', nk=2, valk=valk)
         endif
         call dismoi('F', 'MATR_DISTR', mati, 'MATR_ASSE', ibid,&
                     kmatd, ibid)
@@ -205,13 +204,13 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         if (zk24(jrefa1-1+2) .ne. zk24(jrefai-1+2)) ier1 = 1
         if (zk24(jrefa1-1+2) .ne. zk24(jrefai-1+2)) ier1 = 1
         if (zk24(jrefa1-1+1) .ne. zk24(jrefai-1+1)) then
-            call u2mess('F', 'ALGELINE2_9')
+            call utmess('F', 'ALGELINE2_9')
         endif
         if (elim .eq. 'ELIM=') then
             if (.not.idenob(mat1//'.CCID',mati//'.CCID')) then
                 valk(1)=mat1
                 valk(2)=mati
-                call u2mesk('F', 'ALGELINE2_10', 2, valk)
+                call utmess('F', 'ALGELINE2_10', nk=2, valk=valk)
             endif
         endif
 20  end do
@@ -235,7 +234,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !       SI LES MATRICES SONT DISTRIBUEE MAIS N'ONT PAS LE MEME
 !       PROFIL, ON PLANTE !
         if (matd) then
-            call u2mess('F', 'ALGELINE5_1')
+            call utmess('F', 'ALGELINE5_1')
         endif
         call prosmo(matemp, limat, nbcomb, base, numedd,&
                     symr, typres)

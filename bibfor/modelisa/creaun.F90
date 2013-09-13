@@ -19,9 +19,8 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/exiscp.h"
 #include "asterfort/infniv.h"
@@ -31,8 +30,9 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: char
     character(len=8) :: noma
     character(len=8) :: nomo
@@ -160,7 +160,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
                         call jenuno(jexnum(noeuma, numnd), nomno)
                         valk (1) = nomno
                         valk (2) = cmp
-                        call u2mesk('I', 'UNILATER_58', 2, valk)
+                        call utmess('I', 'UNILATER_58', nk=2, valk=valk)
                     endif
                     zk8(jcompg-1+ncmpg) = cmp
                     zk8(jcoeg-1+ncmpg) = zk8(jmult-1+jdebcp+icmp-1)
@@ -170,7 +170,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
                     call jenuno(jexnum(noeuma, numnd), nomno)
                     valk (1) = nomno
                     valk (2) = cmp
-                    call u2mesk('I', 'UNILATER_75', 2, valk)
+                    call utmess('I', 'UNILATER_75', nk=2, valk=valk)
                 endif
 !
 3000          continue

@@ -37,7 +37,7 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 !-----------------------------------------------------------------------
 !
 #include "asterfort/cvnorm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zconju.h"
     complex(kind=8) :: ca(*)
     complex(kind=8) :: cbas(ndimax, nbbas)
@@ -58,7 +58,9 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 !   NORMALISATION
 !
         call cvnorm(ca, cvec, ndim, iretou)
-        if (iretou .eq. 1) call u2mess('F', 'ALGORITH2_22')
+        if (iretou .eq. 1) then
+            call utmess('F', 'ALGORITH2_22')
+        endif
 !
         goto 9999
     endif
@@ -103,7 +105,9 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 10  end do
 !
     call cvnorm(ca, cvec, ndim, iretou)
-    if (iretou .eq. 1) call u2mess('F', 'ALGORITH2_22')
+    if (iretou .eq. 1) then
+        call utmess('F', 'ALGORITH2_22')
+    endif
 !
 !
 !

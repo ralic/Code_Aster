@@ -20,7 +20,6 @@ subroutine sdchgd(champ, tysca)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -29,7 +28,8 @@ subroutine sdchgd(champ, tysca)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: champ, tysca
 ! ----------------------------------------------------------------------
 !     BUT: CHANGER LA GRANDEUR ASSOCIEE A UN CHAM_NO/_ELEM
@@ -73,7 +73,9 @@ subroutine sdchgd(champ, tysca)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     nomgd2= nomgd(1:5)//tysca2(1:1)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd2), igd2)
-    if (igd2 .eq. 0) call u2mesk('F', 'CALCULEL4_79', 1, nomgd2)
+    if (igd2 .eq. 0) then
+        call utmess('F', 'CALCULEL4_79', sk=nomgd2)
+    endif
     zi(iadesc-1+1)= igd2
 !
 !

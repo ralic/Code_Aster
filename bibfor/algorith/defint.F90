@@ -50,7 +50,7 @@ subroutine defint(mailla, nomres)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/recuno.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -102,8 +102,7 @@ subroutine defint(mailla, nomres)
     call getfac(int, ioc)
 !
     if (ioc .eq. 0) then
-        call u2mesg('A', 'ALGORITH12_77', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('A', 'ALGORITH12_77')
     endif
 !
     nbint=0
@@ -160,8 +159,7 @@ subroutine defint(mailla, nomres)
             if (iret .ne. 0) then
                 vali = i
                 valk = nomcou
-                call u2mesg('F', 'ALGORITH12_78', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGORITH12_78', sk=valk, si=vali)
             endif
             call getvtx(int, no, iocc=i, nbval=0, nbret=nbvan)
             call getvtx(int, grno, iocc=i, nbval=0, nbret=nbvag)

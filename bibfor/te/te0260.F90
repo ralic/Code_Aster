@@ -21,7 +21,7 @@ subroutine te0260(option, nomte)
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -51,7 +51,7 @@ subroutine te0260(option, nomte)
     call jevech('PHARMON', 'L', iharm)
     nh = zi(iharm)
     if (nh .eq. -1) then
-        call u2mess('F', 'ELEMENTS3_63')
+        call utmess('F', 'ELEMENTS3_63')
     endif
     xh = dble(nh)
     xh2 = xh*xh

@@ -32,7 +32,6 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
 #include "asterfort/jedema.h"
@@ -40,9 +39,9 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: imod, nbtyma, nbmail, nbnoma(15), nuconn(15, 32)
     character(len=8) :: nomail(*)
 ! -----  VARIABLES LOCALES
@@ -165,10 +164,7 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !MH
         if (numgro .ge. 1000000) then
             ier = ier + 1
-            vali(1) = numgro
-            vali(2) = 1000000
-            call u2mesg('E', 'PREPOST5_21', 0, ' ', 0,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'PREPOST5_21', ni=2, vali=vali)
             goto 60
         endif
         call codent(numgro, 'G', chgrou(3:8))
@@ -192,7 +188,7 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 !
     if (ier .ne. 0) then
-        call u2mess('F', 'PREPOST_60')
+        call utmess('F', 'PREPOST_60')
     endif
 !
     call jedema()

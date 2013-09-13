@@ -1,7 +1,7 @@
 subroutine carcha(noch, nomgd, typcha, option, param)
     implicit none
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomgd, typcha, param
     character(len=16) :: noch
     character(len=24) :: option
@@ -144,10 +144,10 @@ subroutine carcha(noch, nomgd, typcha, option, param)
         option = 'EPSP_ELNO'
         param = 'PDEFOPL'
     else if (noch.eq.'EPSP_ELGA') then
-         nomgd  = 'EPSI_R'
-         typcha = 'ELGA'
-         option = 'EPSP_ELGA'
-         param  = 'PDEFOPG'
+        nomgd = 'EPSI_R'
+        typcha = 'ELGA'
+        option = 'EPSP_ELGA'
+        param = 'PDEFOPG'
     else if (noch.eq.'EPSI_NOEU') then
         nomgd = 'EPSI_R'
         typcha = 'NOEU'
@@ -187,7 +187,7 @@ subroutine carcha(noch, nomgd, typcha, option, param)
 !
 !     ERREUR
     else
-        call u2mesk('F', 'UTILITAI2_94', 1, noch)
+        call utmess('F', 'UTILITAI2_94', sk=noch)
     endif
 !
 !     VERIFICATION DE LA PRESENCE DE 'PARAM' ET 'OPTION'

@@ -1,6 +1,6 @@
 subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
                   sig, vin, seuil)
-    implicit  none
+    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     character(len=*) :: fami
     integer :: kpg, ksp, nmat
     real(kind=8) :: mater(nmat, 2), sig(6), vin(*), seuil
@@ -70,7 +70,7 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
     else if (irrad .gt. irraf*1.00001d0) then
         valrm(1) = irrad
         valrm(2) = irraf
-        call u2mesr('I', 'COMPOR1_56', 2, valrm)
+        call utmess('I', 'COMPOR1_56', nr=2, valr=valrm)
     else
         call lcdevi(sig, dev)
         if (p .lt. pk) then

@@ -1,13 +1,13 @@
 subroutine dxbmat(nomte, cara, xyzl, pgl, igau,&
                   jacgau, bmat)
-    implicit  none
+    implicit none
 #include "asterfort/dkqb.h"
 #include "asterfort/dktb.h"
 #include "asterfort/dsqb.h"
 #include "asterfort/dstb.h"
 #include "asterfort/q4gb.h"
 #include "asterfort/t3gb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: igau
     real(kind=8) :: xyzl(3, *), pgl(3, *), bmat(8, *), jacgau, cara(*)
     character(len=16) :: nomte
@@ -66,7 +66,7 @@ subroutine dxbmat(nomte, cara, xyzl, pgl, igau,&
         jacgau = cara(8)
 !
     else
-        call u2mesk('F', 'ELEMENTS_14', 1, nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
     endif
 !
 end subroutine

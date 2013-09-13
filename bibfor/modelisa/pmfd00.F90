@@ -27,9 +27,7 @@ subroutine pmfd00()
 #include "asterfort/pmfitg.h"
 #include "asterfort/reliem.h"
 #include "asterfort/rgcmpg.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -188,7 +186,7 @@ subroutine pmfd00()
         call getvtx('MULTIFIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=0, nbret=ngf)
         ngf=-ngf
         if (ngf .gt. ngmxel) then
-            call u2mesk('F', 'MODELISA8_7', 1, kngmx)
+            call utmess('F', 'MODELISA8_7', sk=kngmx)
         endif
 ! ---    NOMS DES GROUPES A AFFECTER
         call getvtx('MULTIFIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=ngf, vect=zk24( jngf),&
@@ -264,7 +262,7 @@ subroutine pmfd00()
 155          continue
             if (iasbon .eq. 0) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
-                call u2mesk('F', 'ALGELINE_34', 1, valmk(1))
+                call utmess('F', 'ALGELINE_34', sk=valmk(1))
             endif
 160          continue
 !           RANG DES COMPOSANTES A1, IY1, IZ1 DANS LA CARTE
@@ -273,7 +271,7 @@ subroutine pmfd00()
             iriz1 = indik8( zk8(inomcp), 'IZ1', 1, nbcmp )
             if (ira1 .eq. 0 .or. iriy1 .eq. 0 .or. iriy1 .eq. 0) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
-                call u2mesk('F', 'MODELISA8_3', 1, valmk)
+                call utmess('F', 'MODELISA8_3', sk=valmk(1))
             endif
 !           ENTIER CODE DE LA ZONE
             icode = zi(idesc+3+2*iasmax+nbec*(iasbon-1))
@@ -283,7 +281,7 @@ subroutine pmfd00()
             irviz1 = rgcmpg(icode,iriz1)
             if (irva1 .eq. 0 .or. irviy1 .eq. 0 .or. irviz1 .eq. 0) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
-                call u2mesk('F', 'MODELISA8_3', 1, valmk)
+                call utmess('F', 'MODELISA8_3', sk=valmk(1))
             endif
 !           ON RECUPERE LES COMPOSANTES : A1, IY1, IZ1 DE CETTE ZONE
             call jeveuo(carele//'.CARGENPO  .VALE', 'L', ivale)
@@ -292,17 +290,17 @@ subroutine pmfd00()
             moinoz=zr(ivale+(iasbon-1)*nbcmp + irviz1 - 1)
             if (airpou .eq. zero) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
-                call u2mesk('F', 'MODELISA8_1', 1, valmk)
+                call utmess('F', 'MODELISA8_1', sk=valmk(1))
             endif
             if (moinoy .eq. zero) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 valmk(2) = 'IY'
-                call u2mesk('F', 'MODELISA8_2', 2, valmk)
+                call utmess('F', 'MODELISA8_2', nk=2, valk=valmk)
             endif
             if (moinoz .eq. zero) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 valmk(2) = 'IZ'
-                call u2mesk('F', 'MODELISA8_2', 2, valmk)
+                call utmess('F', 'MODELISA8_2', nk=2, valk=valmk)
             endif
 !           COMPARAISON DE LA SOMME DES AIRES DES FIBRES
             call getvr8('MULTIFIBRE', 'PREC_AIRE', iocc=ioc, scal=precai, nbret=iret)
@@ -314,8 +312,8 @@ subroutine pmfd00()
                 valmr(2) = casect(1)
                 valmr(3) = erre
                 valmr(4) = precai
-                call u2mesg('E', 'MODELISA8_4', 1, valmk, 1,&
-                            valmi, 4, valmr)
+                call utmess('E', 'MODELISA8_4', sk=valmk(1), si=valmi, nr=4,&
+                            valr=valmr)
             endif
 !           COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
             call getvr8('MULTIFIBRE', 'PREC_INERTIE', iocc=ioc, scal=precai, nbret=iret)
@@ -328,8 +326,8 @@ subroutine pmfd00()
                 valmr(2) = casect(5)
                 valmr(3) = erre
                 valmr(4) = precai
-                call u2mesg('E', 'MODELISA8_5', 2, valmk, 1,&
-                            valmi, 4, valmr)
+                call utmess('E', 'MODELISA8_5', nk=2, valk=valmk, si=valmi,&
+                            nr=4, valr=valmr)
             endif
             erre=abs(moinoz-casect(4))/moinoz
             if (erre .gt. precai) then
@@ -340,13 +338,13 @@ subroutine pmfd00()
                 valmr(2) = casect(4)
                 valmr(3) = erre
                 valmr(4) = precai
-                call u2mesg('E', 'MODELISA8_5', 2, valmk, 1,&
-                            valmi, 4, valmr)
+                call utmess('E', 'MODELISA8_5', nk=2, valk=valmk, si=valmi,&
+                            nr=4, valr=valmr)
             endif
 150      continue
 100  end do
     if (valmi .ne. 0) then
-        call u2mess('F', 'MODELISA8_6')
+        call utmess('F', 'MODELISA8_6')
     endif
 !
 !

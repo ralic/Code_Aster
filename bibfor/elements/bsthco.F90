@@ -1,5 +1,5 @@
 subroutine bsthco(nomte, bsigth, indith)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/btdfn.h"
 #include "asterfort/btdmsn.h"
@@ -16,7 +16,7 @@ subroutine bsthco(nomte, bsigth, indith)
 #include "asterfort/promat.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/verifm.h"
 #include "asterfort/vexpan.h"
@@ -133,11 +133,11 @@ subroutine bsthco(nomte, bsigth, indith)
         read (zk16(icompo+6-1),'(I3)') nbcou
 !
         if (nbcou .le. 0) then
-            call u2mess('F', 'ELEMENTS_12')
+            call utmess('F', 'ELEMENTS_12')
         endif
 !
         if (nbcou .gt. 10) then
-            call u2mess('F', 'ELEMENTS_13')
+            call utmess('F', 'ELEMENTS_13')
         endif
     endif
 !

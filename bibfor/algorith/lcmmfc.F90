@@ -22,7 +22,7 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
 ! ======================================================================
 #include "asterc/r8miem.h"
 #include "asterfort/lcine2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
     integer :: nmat, ifa, nbcomm(nmat, 3), iret, itmax
     real(kind=8) :: coeft(nmat), dgamma, dalpha, toler
@@ -140,7 +140,7 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
 50          continue
         endif
     else
-        call u2mess('F', 'COMPOR1_19')
+        call utmess('F', 'COMPOR1_19')
     endif
 !
 end subroutine

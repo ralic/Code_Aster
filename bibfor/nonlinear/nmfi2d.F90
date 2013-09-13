@@ -32,7 +32,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmfisa.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: mate, npg, lgpg, codret
     real(kind=8) :: geom(2, 4), deplm(8), ddepl(8), tm, tp
     real(kind=8) :: fint(8), ktan(8, 8), sigmo(6, npg), sigma(6, npg)
@@ -80,7 +80,9 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 ! --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
     call r8inir(3, r8vide(), angmas, 1)
 !
-    if (.not. resi .and. .not. rigi) call u2mesk('F', 'ALGORITH7_61', 1, option)
+    if (.not. resi .and. .not. rigi) then
+        call utmess('F', 'ALGORITH7_61', sk=option)
+    endif
 !
     if (resi) call r8inir(8, 0.d0, fint, 1)
     if (rigi) call r8inir(64, 0.d0, ktan, 1)

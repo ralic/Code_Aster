@@ -8,7 +8,7 @@ subroutine ptmtfv(m, rho, e, rof, ce,&
 #include "asterc/r8gaem.h"
 #include "asterc/r8pi.h"
 #include "asterfort/fun1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itype, isect
     real(kind=8) :: m(*)
     real(kind=8) :: rho, e, rof, ce, a1, ai1, a2, ai2, xl, xiy1, xiy2, xiz1
@@ -135,12 +135,12 @@ subroutine ptmtfv(m, rho, e, rof, ce,&
         if (abs(e) .lt. 1.d0/r8gaem()) then
             g=1.d0
         else
-            call u2mess('F', 'ELEMENTS2_54')
+            call utmess('F', 'ELEMENTS2_54')
         endif
     endif
 !
     if (isect .ne. 2) then
-        call u2mess('F', 'ELEMENTS2_55')
+        call utmess('F', 'ELEMENTS2_55')
     endif
     if (itype .eq. 2) then
         as = ( a1 + a2 + sqrt(a1*a2) ) / c3

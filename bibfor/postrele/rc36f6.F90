@@ -1,11 +1,11 @@
 subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
                   nbsg2, nbsg3, sigr, nocc, saltij)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rc36f4.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbp12, nbp23, nbp13, nbsigr, nocc(*), nbsg1, nbsg2, nbsg3
     integer :: sigr(*)
     real(kind=8) :: saltij(*)
@@ -49,7 +49,7 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
                 goto 14
             endif
 12      continue
-        call u2mess('F', 'POSTRCCM_36')
+        call utmess('F', 'POSTRCCM_36')
 14      continue
         if (nocc(2*(ioc1-1)+1) .ne. 0 .or. nocc(2*(ioc1-1)+2) .ne. 0) goto 9999
 10  end do
@@ -70,7 +70,7 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
                 goto 24
             endif
 22      continue
-        call u2mess('F', 'POSTRCCM_36')
+        call utmess('F', 'POSTRCCM_36')
 24      continue
         if (nocc(2*(ioc1-1)+1) .ne. 0 .or. nocc(2*(ioc1-1)+2) .ne. 0) goto 9997
 20  end do
@@ -91,7 +91,7 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
                 goto 34
             endif
 32      continue
-        call u2mess('F', 'POSTRCCM_36')
+        call utmess('F', 'POSTRCCM_36')
 34      continue
         if (nocc(2*(ioc1-1)+1) .ne. 0 .or. nocc(2*(ioc1-1)+2) .ne. 0) goto 9995
 30  end do

@@ -39,7 +39,6 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"
@@ -56,8 +55,9 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !-----------------------------------------------------------------------
@@ -89,7 +89,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
     call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
                 k8bid, iret)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 !-----RECUPERATION DU NOMBRE DE SOUS-STRUCTURES-------------------------

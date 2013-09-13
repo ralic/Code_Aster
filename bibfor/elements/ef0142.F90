@@ -8,7 +8,7 @@ subroutine ef0142(nomte)
 #include "asterfort/porigi.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
     character(len=16) :: nomte
 !     ------------------------------------------------------------------
@@ -76,7 +76,7 @@ subroutine ef0142(nomte)
         cm=valref(6)
         phie=zr(lcage-1+1)*2.d0
         if (phie .eq. 0.d0) then
-            call u2mess('F', 'ELEMENTS3_26')
+            call utmess('F', 'ELEMENTS3_26')
         endif
         phii=(phie-2.d0*zr(lcage-1+2))
         call rhoequ(rho, rhos, rhofi, rhofe, cm,&

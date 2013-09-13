@@ -7,7 +7,7 @@ subroutine csmbc8(nommat, ccll, ccii, neq, vcine,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nommat
     complex(kind=8) :: vsmb(*), vcine(*)
     integer :: ccll(*), ccii(*), neq
@@ -111,7 +111,9 @@ subroutine csmbc8(nommat, ccll, ccii, neq, vcine,&
         if (zi(jccid-1+ieq) .eq. 1) then
             vsmb(ieq) = vcine(ieq)
         else
-            if (vcine(ieq) .ne. dcmplx(0.d0,0.d0)) call u2mess('F', 'ALGELINE_32')
+            if (vcine(ieq) .ne. dcmplx(0.d0,0.d0)) then
+                call utmess('F', 'ALGELINE_32')
+            endif
         endif
 !
 30  end do

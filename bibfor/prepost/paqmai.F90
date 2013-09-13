@@ -19,7 +19,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
 ! aslint: disable=W1501
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
@@ -45,9 +45,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vampli.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
@@ -110,7 +108,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     call dismoi('F', 'TYPE_RESU', nomsd, 'RESULTAT', ibid,&
                 typres, ierd)
     if ((typres(1:9) .ne. 'EVOL_ELAS') .and. (typres(1:9) .ne. 'EVOL_NOLI')) then
-        call u2mess('F', 'PREPOST4_26')
+        call utmess('F', 'PREPOST4_26')
     endif
 !
 ! CONSTRUCTION DU CHAMP SIMPLE DESTINE A RECEVOIR LES RESULTATS :
@@ -126,7 +124,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     call alchml(ligre, 'TOU_INI_ELGA', 'PFACY_R', 'V', celbid,&
                 ierd, ' ')
     if (ierd .ne. 0) then
-        call u2mess('A', 'FATIGUE1_1')
+        call utmess('A', 'FATIGUE1_1')
     endif
     call celces(celbid, 'V', cesr)
 !
@@ -148,7 +146,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 c16b, r8b, k8b, zi(jordr), ndim,&
                 nbordr)
     if (zi(jordr) .eq. 0) then
-        call u2mess('A', 'PREPOST4_27')
+        call utmess('A', 'PREPOST4_27')
         nbordr = nbordr - 1
     endif
 !
@@ -176,7 +174,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 410  continue
 !
     if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
-        call u2mess('A', 'PREPOST4_48')
+        call utmess('A', 'PREPOST4_48')
     endif
 !
 !  INITIALISER
@@ -193,11 +191,11 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     creppe = .false.
     if (crepse) then
         if (.not. crepst) then
-            call u2mess('A', 'PREPOST4_45')
+            call utmess('A', 'PREPOST4_45')
             crepst = .true.
         endif
         if (( .not. crepsp )) then
-            call u2mess('A', 'PREPOST4_46')
+            call utmess('A', 'PREPOST4_46')
             creppe = .true.
         endif
 !
@@ -333,8 +331,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         else if (( tpaq .ge. tdisp(1) ) .and. (ima .lt. 3)) then
             vali (1) = tdisp(1)
             vali (2) = tpaq
-            call u2mesg('F', 'PREPOST5_67', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'PREPOST5_67', ni=2, vali=vali)
 !
 ! 2/ STOCKAGE DES NUMEROS DES PAQUETS, DE LA TAILLE DES PAQUETS,
 !    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
@@ -372,8 +369,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     if (nbpaq .gt. nbpmax) then
         vali (1) = nbpmax
         vali (2) = nbpaq
-        call u2mesg('F', 'PREPOST5_68', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST5_68', ni=2, vali=vali)
     endif
 !
 ! TRAITEMENT DES PAQUETS DE MAILLES.
@@ -417,7 +413,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                             'V', ces2)
                 call jeexin(ces2(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'PREPOST4_29')
+                    call utmess('F', 'PREPOST4_29')
                 endif
                 call jeveuo(ces2(1:19)//'.CESD', 'L', jsigd)
                 call jeveuo(ces2(1:19)//'.CESL', 'L', jsigl)
@@ -437,7 +433,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                             'V', ces4)
                 call jeexin(ces4(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'PREPOST4_34')
+                    call utmess('F', 'PREPOST4_34')
                 endif
                 call jeveuo(ces4(1:19)//'.CESD', 'L', jepsd)
                 call jeveuo(ces4(1:19)//'.CESL', 'L', jepsl)
@@ -457,7 +453,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                             'V', ces6)
                 call jeexin(ces5(1:19)//'.CESV', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'PREPOST4_37')
+                    call utmess('F', 'PREPOST4_37')
                 endif
                 call jeveuo(ces6(1:19)//'.CESD', 'L', jepspd)
                 call jeveuo(ces6(1:19)//'.CESL', 'L', jepspl)
@@ -470,7 +466,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 call rsexch(' ', nomsd, 'EPSP_ELGA', iordr, cheppe,&
                             valep)
                 if (valep .ne. 0) then
-                    call u2mess('A', 'PREPOST4_46')
+                    call utmess('A', 'PREPOST4_46')
                 endif
                 if (valep .eq. 0) then
                     ces7 = '&&PAQMAI.EPSPE_S3'
@@ -480,7 +476,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                 'V', ces8)
                     call jeexin(ces7(1:19)//'.CESV', iret)
                     if (iret .eq. 0) then
-                        call u2mess('F', 'PREPOST4_37')
+                        call utmess('F', 'PREPOST4_37')
                     endif
                     call jeveuo(ces8(1:19)//'.CESD', 'L', jepped)
                     call jeveuo(ces8(1:19)//'.CESL', 'L', jeppel)
@@ -528,9 +524,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                             1, icmp, jad)
                                 if (jad .le. 0) then
                                     if (icmp .eq. 5) then
-                                        call u2mesi('F', 'FATIGUE1_2', 1, icmp)
+                                        call utmess('F', 'FATIGUE1_2', si=icmp)
                                     else
-                                        call u2mess('F', 'PREPOST4_30')
+                                        call utmess('F', 'PREPOST4_30')
                                     endif
                                 else
                                     zr( jrwork + (icmp-1) + (ipg-1)*&
@@ -548,9 +544,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                             1, icmp, jad)
                                 if (jad .le. 0) then
                                     if (icmp .eq. 5) then
-                                        call u2mesi('F', 'FATIGUE1_3', 1, icmp)
+                                        call utmess('F', 'FATIGUE1_3', si=icmp)
                                     else
-                                        call u2mess('F', 'PREPOST4_35')
+                                        call utmess('F', 'PREPOST4_35')
                                     endif
                                 else
                                     zr( jrwork + (icmp+6-1) + (ipg-1)*&
@@ -568,9 +564,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                             1, icmp, jad)
                                 if (jad .le. 0) then
                                     if (icmp .eq. 5) then
-                                        call u2mesi('F', 'FATIGUE1_3', 1, icmp)
+                                        call utmess('F', 'FATIGUE1_3', si=icmp)
                                     else
-                                        call u2mess('F', 'PREPOST4_35')
+                                        call utmess('F', 'PREPOST4_35')
                                     endif
                                 else
                                     zr( jrwork + (icmp+6+6-1) + (ipg-&
@@ -589,9 +585,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                                                 1, icmp, jad)
                                     if (jad .le. 0) then
                                         if (icmp .eq. 5) then
-                                            call u2mesi('F', 'FATIGUE1_3', 1, icmp)
+                                            call utmess('F', 'FATIGUE1_3', si=icmp)
                                         else
-                                            call u2mess('F', 'PREPOST4_35')
+                                            call utmess('F', 'PREPOST4_35')
                                         endif
                                     else
                                         zr(jrwork + (icmp+6+6-1)+(ipg-&

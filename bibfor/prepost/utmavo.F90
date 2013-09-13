@@ -2,7 +2,6 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                   nomz, nbmavo, mailvo)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/jecrec.h"
@@ -16,8 +15,9 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lima(*), nlima, nbmavo, mailvo(*)
     character(len=1) :: base
     character(len=2) :: kdim
@@ -148,7 +148,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                 else if (type(1:3).eq.'POI') then
                     if (kdim .ne. '  ') goto 120
                 else
-                    call u2mesk('F', 'PREPOST4_89', 1, type)
+                    call utmess('F', 'PREPOST4_89', sk=type)
                 endif
                 do 122 k = 1, nbmat
                     if (jtr1(k) .eq. ima) goto 120
@@ -225,7 +225,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                 else if (type(1:3).eq.'POI') then
                     if (kdim .ne. '  ') goto 220
                 else
-                    call u2mesk('F', 'PREPOST4_89', 1, type)
+                    call utmess('F', 'PREPOST4_89', sk=type)
                 endif
                 do 222 k = 1, nbmat
                     if (zi(jmail-1+k) .eq. ima) goto 220

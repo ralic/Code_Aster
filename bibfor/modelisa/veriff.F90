@@ -51,8 +51,7 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbfonc, nbp1, nbp2
     character(len=8) :: nomfon(nbfonc)
@@ -88,13 +87,13 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 !         - VALIDE
         vali(1) = ifo
         if ((zi(itbnp).ne.1) .and. (zi(itbnp+1).ne.2)) then
-            call u2mesi('F', 'MODELISA7_67', 1, vali)
+            call utmess('F', 'MODELISA7_67', si=vali(1))
         endif
 !
         tblp = tbfonc//'.TBLP'
         call jeveuo(tblp, 'L', itblp)
         if (zk24(itblp)(1:8) .ne. 'FONCTION') then
-            call u2mesi('F', 'MODELISA7_68', 1, vali)
+            call utmess('F', 'MODELISA7_68', si=vali(1))
         endif
 !
         lstfon = zk24(itblp+2)
@@ -118,7 +117,7 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 !-------ON VERIFIE QUE L'ON A AU MOINS 2 VALEURS DANS CHAQUE FONCTION
 !
         if ((nbp1.lt.2) .or. (nbp2.lt.2)) then
-            call u2mesi('F', 'MODELISA7_67', 1, vali)
+            call utmess('F', 'MODELISA7_67', si=vali(1))
         endif
 !
         call jeveuo(vale1, 'L', ivale1)
@@ -127,14 +126,14 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 !-------ON VERIFIE QUE LA PREMIERE VALEUR DU PARAMETRE EST 0
 !
         if ((zr(ivale1).ne.0.d0) .or. (zr(ivale1).ne.0.d0)) then
-            call u2mesi('F', 'MODELISA7_69', 1, vali)
+            call utmess('F', 'MODELISA7_69', si=vali(1))
         endif
 !
 !       --- ON VERIFIE QUE LE PARAMETRE L EST LE MEME DS LES 2 FONCTIONS
         l1 = zr(ivale1+nbp1-1)
         l2 = zr(ivale2+nbp2-1)
         if (l1 .ne. l2) then
-            call u2mesi('F', 'MODELISA7_70', 1, vali)
+            call utmess('F', 'MODELISA7_70', si=vali(1))
         else
             zi(inbp1+ifo-1) = nbp1
             zi(inbp2+ifo-1) = nbp2
@@ -154,10 +153,10 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
     if (nbfonc .gt. 1) then
         do 30 ifo = 1, nbfonc-1
             if (zr(ilexc+ifo-1) .ne. zr(ilexc+ifo)) then
-                call u2mess('F', 'MODELISA7_71')
+                call utmess('F', 'MODELISA7_71')
             endif
             if (zi(inbp1+ifo-1) .ne. zi(inbp1+ifo) .or. zi(inbp2+ifo-1) .ne. zi(inbp2+ifo)) then
-                call u2mess('F', 'MODELISA7_72')
+                call utmess('F', 'MODELISA7_72')
             endif
 30      continue
     endif

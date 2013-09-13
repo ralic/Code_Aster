@@ -39,7 +39,7 @@ subroutine sschge(nomacr)
 #include "asterfort/rcmfmc.h"
 #include "asterfort/ss2mm2.h"
 #include "asterfort/ssvau1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=8) :: nomacr
 ! ----------------------------------------------------------------------
@@ -118,7 +118,9 @@ subroutine sschge(nomacr)
         zk8(ialich-1+1)= 'NON_SUIV'
     endif
     call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
-    if (-n1 .gt. nch) call u2mess('F', 'SOUSTRUC_40')
+    if (-n1 .gt. nch) then
+        call utmess('F', 'SOUSTRUC_40')
+    endif
     call getvid('CAS_CHARGE', 'CHARGE', iocc=iocc, nbval=-n1, vect=zk8(ialich+1),&
                 nbret=n2)
 !

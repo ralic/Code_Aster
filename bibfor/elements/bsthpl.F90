@@ -1,12 +1,12 @@
 subroutine bsthpl(nomte, bsigth, indith)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dxbsig.h"
 #include "asterfort/dxefgt.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: bsigth(24)
     logical :: indith
@@ -70,7 +70,7 @@ subroutine bsthpl(nomte, bsigth, indith)
         nno = 4
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
     else
-        call u2mesk('F', 'ELEMENTS_14', 1, nomte)
+        call utmess('F', 'ELEMENTS_14', sk=nomte)
     endif
 !
 ! --- DETERMINATION DES COORDONNEES LOCALES XYZL DES NOEUDS

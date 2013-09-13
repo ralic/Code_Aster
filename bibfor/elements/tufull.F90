@@ -1,7 +1,7 @@
 subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                   b, ktild, effint, pass, vtemp,&
                   codret)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/bcoudc.h"
@@ -20,8 +20,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vlggl.h"
 #include "asterfort/vlgglc.h"
 #include "blas/dcopy.h"
@@ -107,24 +106,22 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 !
     call jevech('PCOMPOR', 'L', icompo)
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call u2mess('F', 'ELEMENTS2_90')
+        call utmess('F', 'ELEMENTS2_90')
     endif
 !
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
     nbsec = zi(jnbspi-1+2)
     if (nbcou*nbsec .le. 0) then
-        call u2mess('F', 'ELEMENTS4_46')
+        call utmess('F', 'ELEMENTS4_46')
     endif
     if (nbcou .gt. nbcoum) then
         vali = nbcoum
-        call u2mesg('F', 'ELEMENTS5_2', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ELEMENTS5_2', si=vali)
     endif
     if (nbsec .gt. nbsecm) then
         vali = nbsecm
-        call u2mesg('F', 'ELEMENTS5_3', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ELEMENTS5_3', si=vali)
     endif
 !
     read (zk16(icompo-1+2),'(I16)') nbvari
@@ -176,7 +173,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
         icoude = icoud2 - 10
         mmt = 0
         if (h/a .gt. (0.25d0)) then
-            call u2mess('A', 'ELEMENTS4_53')
+            call utmess('A', 'ELEMENTS4_53')
         endif
     else
         icoude = icoud2
@@ -324,7 +321,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                     nomres(1) = 'E'
                     nomres(2) = 'NU'
                 else
-                    call u2mess('F', 'ELEMENTS_42')
+                    call utmess('F', 'ELEMENTS_42')
                 endif
 !
                 call rcvalb('RIGI', igau, ksp, '+', zi(imate),&

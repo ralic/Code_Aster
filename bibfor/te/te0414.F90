@@ -7,8 +7,7 @@ subroutine te0414(optioz, nomtz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/matpgl.h"
 #include "asterfort/tranlg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdgnlr.h"
 #include "asterfort/vdpnlr.h"
 #include "asterfort/vdxnlr.h"
@@ -68,7 +67,7 @@ subroutine te0414(optioz, nomtz)
 !          ------------------------------------
 !       SEULE RELATION ADMISE : ELAS
         if (zk16(icompo)(1:5) .ne. 'ELAS ') then
-            call u2mesk('F', 'ELEMENTS5_46', 1, zk16(icompo))
+            call utmess('F', 'ELEMENTS5_46', sk=zk16(icompo))
         endif
 !
 !
@@ -86,7 +85,7 @@ subroutine te0414(optioz, nomtz)
 !
 ! --------- AUTRES MESURES DE DEFORMATIONS
 !
-            call u2mesk('F', 'ELEMENTS3_93', 1, zk16(icompo+2))
+            call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
 !
         endif
 !
@@ -103,7 +102,7 @@ subroutine te0414(optioz, nomtz)
 !
         else if (zk16(icompo+2)(6:10) .eq. '_REAC') then
 !
-            call u2mess('A', 'ELEMENTS3_94')
+            call utmess('A', 'ELEMENTS3_94')
 !
             do 90 i = 1, nb2-1
                 i1=3*(i-1)

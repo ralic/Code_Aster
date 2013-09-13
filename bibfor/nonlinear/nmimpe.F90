@@ -19,14 +19,14 @@ subroutine nmimpe(modele, limped)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=24) :: modele
     logical :: limped
 !
@@ -65,6 +65,8 @@ subroutine nmimpe(modele, limped)
     endif
 !
 20  continue
-    if (limped) call u2mess('I', 'ALGORITH3_23')
+    if (limped) then
+        call utmess('I', 'ALGORITH3_23')
+    endif
     call jedema()
 end subroutine

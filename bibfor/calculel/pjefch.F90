@@ -27,7 +27,6 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
 !                = 10   : ON NE SAIT PAS ENCORE FAIRE
 !-------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -40,7 +39,8 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=19) :: ch1, ch2, ch0s, ch1s, ch2s, ch3s, prfchn, ligrel
     character(len=16) :: option, corres
     character(len=4) :: tych, tychv
@@ -119,7 +119,9 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
     else if ((tych.eq.'ELEM') .or. (tych.eq.'ELNO')) then
         call jeveuo(ch1//'.CELK', 'L', jcelk)
         option = zk24(jcelk-1+2)
-        if (ligrel .eq. ' ') call u2mess('F', 'CALCULEL4_73')
+        if (ligrel .eq. ' ') then
+            call utmess('F', 'CALCULEL4_73')
+        endif
         call cescel(ch2s, ligrel, option, ' ', prol0,&
                     nncp, base, ch2, 'A', iret)
     endif

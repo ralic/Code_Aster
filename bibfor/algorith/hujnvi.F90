@@ -1,5 +1,6 @@
 subroutine hujnvi(mod, ndt, ndi, nvi)
     implicit none
+#include "asterfort/utmess.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +28,6 @@ subroutine hujnvi(mod, ndt, ndi, nvi)
 !      NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 !      NVI    :  NB DE VARIABLES INTERNES
 !  ----------------------------------------------------------------
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi
 !
 !
@@ -53,15 +53,15 @@ subroutine hujnvi(mod, ndt, ndi, nvi)
 !
 ! - C_PLAN
     else if (mod(1:6).eq.'C_PLAN') then
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 !
 !
 ! - 1D
     else if (mod(1:2).eq.'1D') then
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 ! - 1D
     else
-        call u2mess('F', 'COMPOR1_11')
+        call utmess('F', 'COMPOR1_11')
     endif
 !af 02/05/07 debut
     nvi=50

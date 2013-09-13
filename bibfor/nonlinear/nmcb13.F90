@@ -18,8 +18,8 @@ subroutine nmcb13(eps, sig, esec, e, dd,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
 ! --- CALCUL DE SIGMA DANS LE CAS 1 & 3 PAR DICHOTOMIE
-#include "asterfort/u2mess.h"
     real(kind=8) :: eps, sig, esec, e, dd, d, beta, a, b, y, y00, z, crit(*)
     real(kind=8) :: xg, xd, fctd, erreur, tol
     integer :: nmaxit, iterat
@@ -35,7 +35,7 @@ subroutine nmcb13(eps, sig, esec, e, dd,&
     presq1=un-tol
 !     L'ENDOMMAGEMENT NE PEUT PAS ETRE SUPERIEUR A 1
     if (dd .gt. un) then
-        call u2mess('F', 'ELEMENTS2_37')
+        call utmess('F', 'ELEMENTS2_37')
     endif
 !
 ! --- VERIFICATION DE DEPASSEMENT DU SEUIL

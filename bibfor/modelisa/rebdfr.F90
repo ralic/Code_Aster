@@ -45,7 +45,7 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
 !
 #include "jeveux.h"
 #include "asterc/r8maem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nfi, nff, nmodi, nmodf
     real(kind=8) :: freqi, freqf, freq(2, nbm, npv)
 !
@@ -123,7 +123,7 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
     if (nmodf .eq. 0) nmodi = nbm
 !
     if (nmodf .lt. nmodi) then
-        call u2mess('F', 'MODELISA6_95')
+        call utmess('F', 'MODELISA6_95')
     endif
 !
 end subroutine

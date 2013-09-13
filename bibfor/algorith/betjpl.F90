@@ -46,7 +46,7 @@ subroutine betjpl(mod, nmat, mater, sig, vin,&
 #include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nseuil
     real(kind=8) :: un, zero, rac2, deux, trois
     parameter       ( deux = 2.d0   )
@@ -100,7 +100,7 @@ subroutine betjpl(mod, nmat, mater, sig, vin,&
     if (sigeq .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('A', 'ALGORITH_48', 1, nomail)
+        call utmess('A', 'ALGORITH_48', sk=nomail)
         sigeq = 1.d0
     endif
 !

@@ -22,8 +22,7 @@ subroutine asmaco(ma1, ma2, mag)
 #include "asterfort/lxlgut.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/tri.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: ma1, ma2, mag
@@ -87,12 +86,16 @@ subroutine asmaco(ma1, ma2, mag)
                     c16b, k8b, k8b, r8b, para,&
                     k8b, ibid, armin, c16b, k8b,&
                     iret)
-        if (iret .ne. 0) call u2mess('F', 'MODELISA2_13')
+        if (iret .ne. 0) then
+            call utmess('F', 'MODELISA2_13')
+        endif
         prec1 = armin*1.d-06
     else
         prec1 = 1.d-10
     endif
-    if (prec1 .le. 0.d0) call u2mess('F', 'MODELISA2_14')
+    if (prec1 .le. 0.d0) then
+        call utmess('F', 'MODELISA2_14')
+    endif
 !CC   ------------------------------------------------------------------
     call jeexin(ma2//'           .LTNT', iret)
     if (iret .ne. 0) then
@@ -103,12 +106,16 @@ subroutine asmaco(ma1, ma2, mag)
                     c16b, k8b, k8b, r8b, para,&
                     k8b, ibid, armin, c16b, k8b,&
                     iret)
-        if (iret .ne. 0) call u2mess('F', 'MODELISA2_13')
+        if (iret .ne. 0) then
+            call utmess('F', 'MODELISA2_13')
+        endif
         prec2 = armin*1.d-06
     else
         prec2 = 1.d-10
     endif
-    if (prec2 .le. 0.d0) call u2mess('F', 'MODELISA2_14')
+    if (prec2 .le. 0.d0) then
+        call utmess('F', 'MODELISA2_14')
+    endif
     prec=min(prec1,prec2)
 !CC   ------------------------------------------------------------------
 !CC RECUPERATION DES 2 GROUP_MA A COLLER
@@ -120,13 +127,13 @@ subroutine asmaco(ma1, ma2, mag)
     if (iret1 .eq. 0) then
         valk(1) = cgpm1
         valk(2) = ma1
-        call u2mesk('F', 'MODELISA2_15', 2, valk)
+        call utmess('F', 'MODELISA2_15', nk=2, valk=valk)
     endif
     call jeexin(jexnom(ma2//'.GROUPEMA', cgpm2), iret2)
     if (iret2 .eq. 0) then
         valk(1) = cgpm2
         valk(2) = ma2
-        call u2mesk('F', 'MODELISA2_16', 2, valk)
+        call utmess('F', 'MODELISA2_16', nk=2, valk=valk)
     endif
 !CC   ------------------------------------------------------------------
 !CC VERIFICATION QUE LES 2 GROUP_MA A COLLER ONT LE MM NOMBRE DE MAILLES
@@ -137,7 +144,7 @@ subroutine asmaco(ma1, ma2, mag)
     if (nbngm1 .ne. nbngm2) then
         valk(1) = cgpm1
         valk(2) = cgpm2
-        call u2mesk('F', 'MODELISA2_17', 2, valk)
+        call utmess('F', 'MODELISA2_17', nk=2, valk=valk)
     endif
     call jeveuo(jexnom(ma1//'.GROUPEMA', cgpm1), 'L', iagma1)
     call jeveuo(jexnom(ma2//'.GROUPEMA', cgpm2), 'L', iagma2)
@@ -154,7 +161,9 @@ subroutine asmaco(ma1, ma2, mag)
         nno1=nno1+ii
         nno2=nno2+jj
 1000  end do
-    if (nno1 .ne. nno2) call u2mess('F', 'MODELISA2_18')
+    if (nno1 .ne. nno2) then
+        call utmess('F', 'MODELISA2_18')
+    endif
     call wkvect('&&ASMACO'//'.NODE', 'V V I', nno1*2, ianode)
     nno1=0
     do 1010 i = 1, nbngm
@@ -198,7 +207,7 @@ subroutine asmaco(ma1, ma2, mag)
             zi1=zr(iacoo1+3*(zi(ianode+nno1+i-1)-1)-1+3)
             dist=(x1-xi1)**2+(y1-yi1)**2+(z1-zi1)**2
             if (dist .le. prec) then
-                call u2mess('F', 'MODELISA2_97')
+                call utmess('F', 'MODELISA2_97')
             endif
 1031      continue
 !
@@ -218,7 +227,9 @@ subroutine asmaco(ma1, ma2, mag)
                 endif
 1040          continue
 1030      continue
-        if (.not.match) call u2mess('F', 'MODELISA2_19')
+        if (.not.match) then
+            call utmess('F', 'MODELISA2_19')
+        endif
 1060      continue
         zi(ianode+k-1)=zi(iagno2+j-1)
 1050  end do
@@ -502,7 +513,7 @@ subroutine asmaco(ma1, ma2, mag)
             else
                 valk(1) = nogma
                 valk(2) = ma1
-                call u2mesk('A', 'MODELISA7_97', 2, valk)
+                call utmess('A', 'MODELISA7_97', nk=2, valk=valk)
             endif
         endif
 71      continue
@@ -514,7 +525,7 @@ subroutine asmaco(ma1, ma2, mag)
             call jeexin(jexnom(mag//'.GROUPEMA', nogma), iret)
 !
             if (iret .gt. 0) then
-                call u2mesk('A', 'MODELISA2_21', 1, nogma)
+                call utmess('A', 'MODELISA2_21', sk=nogma)
                 nogmab=nogma
                 ii = lxlgut(nogmab(1:7))
                 do 724,k=ii+1,7
@@ -556,7 +567,7 @@ subroutine asmaco(ma1, ma2, mag)
             else
                 valk(1) = nogma
                 valk(2) = ma2
-                call u2mesk('A', 'MODELISA7_97', 2, valk)
+                call utmess('A', 'MODELISA7_97', nk=2, valk=valk)
             endif
         endif
 72      continue
@@ -600,7 +611,7 @@ subroutine asmaco(ma1, ma2, mag)
         call jenuno(jexnum(ma2//'.GROUPENO', i), nogno)
         call jeexin(jexnom(mag//'.GROUPENO', nogno), iret)
         if (iret .gt. 0) then
-            call u2mesk('A', 'MODELISA2_22', 1, nogno)
+            call utmess('A', 'MODELISA2_22', sk=nogno)
             nognob=nogno
             ii = lxlgut(nognob(1:7))
             do 821,k=ii+1,7

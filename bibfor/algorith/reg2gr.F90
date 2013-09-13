@@ -22,9 +22,9 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
 ! ---       SECOND GRADIENT --------------------------------------------
 ! ======================================================================
 ! aslint: disable=W1306
-    implicit      none
+    implicit none
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, dimdef, regula(6)
     real(kind=8) :: sigp(ndim*ndim*ndim), defgep(dimdef)
     real(kind=8) :: dsde2g(ndim*ndim*ndim, ndim*ndim*ndim)
@@ -95,7 +95,7 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
 120          continue
 110      continue
     else
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
 ! ======================================================================
 end subroutine

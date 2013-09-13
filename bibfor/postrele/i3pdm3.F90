@@ -5,7 +5,7 @@ subroutine i3pdm3(epsi, k, desc, desctm, conexk,&
 #include "asterfort/i3afk2.h"
 #include "asterfort/i3tstf.h"
 #include "asterfort/mgauss.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*)
     real(kind=8) :: epsi, pt(*), coordo(*)
     logical :: dedans
@@ -185,6 +185,6 @@ subroutine i3pdm3(epsi, k, desc, desctm, conexk,&
     if (iret .eq. -1) then
         vali (1) = k
         vali (2) = f
-        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
     endif
 end subroutine

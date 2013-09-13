@@ -88,9 +88,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 #include "asterfort/recpar.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
@@ -198,8 +197,12 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
     call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=ibid)
     call getvr8('INCREMENT', 'PAS', iocc=1, scal=dti, nbret=ibid)
-    if (ibid .eq. 0) call u2mess('F', 'ALGORITH3_11')
-    if (dti .eq. 0.d0) call u2mess('F', 'ALGORITH3_12')
+    if (ibid .eq. 0) then
+        call utmess('F', 'ALGORITH3_11')
+    endif
+    if (dti .eq. 0.d0) then
+        call utmess('F', 'ALGORITH3_12')
+    endif
     dtmax = 0.d0
     call recpar(neq, dti, dtmax, zr(jvmin), vvar,&
                 cmp, cdp, dtmin, nper, nrmax)
@@ -213,7 +216,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     if (sop .eq. 'MASS_MECA_DIAG') then
         call extdia(masse, numedd, 2, zr(iwk1))
     else
-        call u2mess('F', 'ALGORITH3_13')
+        call utmess('F', 'ALGORITH3_13')
     endif
 !
     do 15 ieq = 1, neq
@@ -292,7 +295,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     endif
 !
     if (nbexcl .eq. nbtyar) then
-        call u2mess('F', 'ALGORITH3_14')
+        call utmess('F', 'ALGORITH3_14')
     endif
     do 17 , iexcl = 1,nbexcl
     if (typ1(iexcl) .eq. 'DEPL') then
@@ -432,7 +435,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !       --- REDUCTION DU PAS DE TEMPS ---
             if (err .gt. 1.d0) dt2 = dt2/cdp
             if (dt2 .le. dtmin .and. abs(tfin-(temps+dt2)) .gt. epsi) then
-                call u2mess('F', 'ALGORITH3_17')
+                call utmess('F', 'ALGORITH3_17')
             endif
             nr = nr + 1
 !       LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
@@ -442,8 +445,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             valr(1) = temps+dt2
             valr(2) = err
             valr(3) = dt2
-            call u2mesg('A', 'ALGORITH3_16', 0, ' ', 1,&
-                        nrmax, 3, valr)
+            call utmess('A', 'ALGORITH3_16', si=nrmax, nr=3, valr=valr)
         endif
 !
         dt1 = dt2
@@ -575,8 +577,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
     vali(1) = ipas
     vali(2) = nbiter
-    call u2mesg('I', 'ALGORITH3_21', 0, ' ', 2,&
-                vali, 8, valr)
+    call utmess('I', 'ALGORITH3_21', ni=2, vali=vali, nr=8,&
+                valr=valr)
 !
 !     --- DESTRUCTION DES OBJETS DE TRAVAIL ---
 !

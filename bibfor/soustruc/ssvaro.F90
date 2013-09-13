@@ -21,7 +21,6 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -32,9 +31,9 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomacr
     character(len=*) :: sens
     logical :: matrix
@@ -105,11 +104,11 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
 !     FONCTIONS FORMULES:
 !     -------------------
-#define m1(i,j)    iadm1-1+(j-1)*(j)/2+i
-#define m2(i,j)    iadm2-1+(j-1)*(j)/2+i
-#define m1t(i,j)   iadm1-1+(i-1)*(i)/2+j
-#define v1(i)      iadm1-1+i
-#define v2(i)      iadm2-1+i
+#define m1(i,j) iadm1-1+(j-1)*(j)/2+i
+#define m2(i,j) iadm2-1+(j-1)*(j)/2+i
+#define m1t(i,j) iadm1-1+(i-1)*(i)/2+j
+#define v1(i) iadm1-1+i
+#define v2(i) iadm2-1+i
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -127,12 +126,12 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
     if (indik8(zk8(iacagd),'DRY',1,5) .ne. 5) ier=ier+1
     if (indik8(zk8(iacagd),'DRZ',1,6) .ne. 6) ier=ier+1
     if (ier .gt. 0) then
-        call u2mess('F', 'SOUSTRUC_73')
+        call utmess('F', 'SOUSTRUC_73')
     endif
     call dismoi('F', 'NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', nulag,&
                 kbid, ied)
     if (nulag .eq. 0) then
-        call u2mess('F', 'SOUSTRUC_74')
+        call utmess('F', 'SOUSTRUC_74')
     endif
 !
 !
@@ -149,7 +148,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
         l2(i,j)=l(j,i)
 88      continue
     else
-        call u2mesk('F', 'SOUSTRUC_75', 1, sens2)
+        call utmess('F', 'SOUSTRUC_75', sk=sens2)
     endif
 !
 !
@@ -223,7 +222,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
         icumul=1
 !       --ICUMUL COMPTE LA SOMME DES COMPOSANTES PRESENTES SUR LE NOEUD
     else
-        call u2mess('F', 'SOUSTRUC_76')
+        call utmess('F', 'SOUSTRUC_76')
     endif
 !
     dmi=0
@@ -237,14 +236,18 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !             3 = DX + DY
     if (icmpp .eq. 2) then
         dmi=2
-        if (icumul .ne. 3) call u2mess('F', 'SOUSTRUC_77')
+        if (icumul .ne. 3) then
+            call utmess('F', 'SOUSTRUC_77')
+        endif
     endif
 !
 !         -- CAS "3D"
 !             6 = DX + DY + DZ
     if (icmpp .eq. 3) then
         dmi=3
-        if (icumul .ne. 6) call u2mess('F', 'SOUSTRUC_77')
+        if (icumul .ne. 6) then
+            call utmess('F', 'SOUSTRUC_77')
+        endif
     endif
 !
 !         -- CAS "POUTRE/COQUE 3D"
@@ -258,7 +261,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
         else if (icumul.eq.9) then
             dmi=2
         else
-            call u2mess('F', 'SOUSTRUC_77')
+            call utmess('F', 'SOUSTRUC_77')
         endif
     endif
 21  continue

@@ -20,7 +20,6 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/iisnan.h"
 #include "asterc/r8maem.h"
 #include "asterfort/celces.h"
@@ -33,8 +32,8 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nmvcex.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=24) :: mate, comref
     character(len=19) :: comval
     character(len=8) :: mailla
@@ -84,7 +83,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     call celces(vrcplu, 'V', chscom)
     call celces(vrcref, 'V', chsref)
 !
-    call u2mess('A+', 'MECANONLINE2_97')
+    call utmess('A+', 'MECANONLINE2_97')
 !
 !     CALCUL DU MIN / MAX
 !
@@ -163,15 +162,15 @@ subroutine nmvcmx(mate, mailla, comref, comval)
         call jenuno(jexnum(mailla//'.NOMMAI', imamin), valk(4))
         if (iref .eq. 1) then
             valk(5)=valk(1)
-            call u2mesg('A+', 'MECANONLINE2_95', 5, valk, 0,&
-                        vali, 2, valr)
+            call utmess('A+', 'MECANONLINE2_95', nk=5, valk=valk, nr=2,&
+                        valr=valr)
         else
-            call u2mesg('A+', 'MECANONLINE2_94', 4, valk, 0,&
-                        vali, 2, valr)
+            call utmess('A+', 'MECANONLINE2_94', nk=4, valk=valk, nr=2,&
+                        valr=valr)
         endif
     endif
     10 end do
-    call u2mess('A', 'MECANONLINE2_93')
+    call utmess('A', 'MECANONLINE2_93')
 !
     call jedetr(chscom)
     call jedetr(chsref)

@@ -45,8 +45,8 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
 #include "asterfort/matini.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
     character(len=*) :: fami, poum
     integer :: mater, igau, isgau
     real(kind=8) :: repere(7), xyzgau(3), d(6, 6), instan
@@ -291,7 +291,7 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
         endif
 !
     else
-        call u2mesk('F', 'ELEMENTS_15', 1, phenom)
+        call utmess('F', 'ELEMENTS_15', sk=phenom)
     endif
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

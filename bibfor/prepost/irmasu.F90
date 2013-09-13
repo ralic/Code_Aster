@@ -51,7 +51,6 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !          NBGRM: NOMBRE DE GROUPES DE MAILLES
 !          NOGM : NOM DES GROUPES DE MAILLES
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -64,8 +63,9 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxliis.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
 !     ------------------------------------------------------------------
     character(len=8) :: nomai(*), nonoe(*), nomtm
@@ -202,23 +202,33 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !CC
         call jenuno(jexnum('&CATA.TM.NOMTM', itype), nomtm)
         if (nomtm .eq. 'HEXA27') then
-            if (ihex27 .eq. 0) call u2mess('I', 'PREPOST2_78')
+            if (ihex27 .eq. 0) then
+                call utmess('I', 'PREPOST2_78')
+            endif
             ihex27 = 1
             nnoe = nnoe - 7
         else if (nomtm .eq. 'TRIA7') then
-            if (itri7 .eq. 0) call u2mess('I', 'PREPOST2_79')
+            if (itri7 .eq. 0) then
+                call utmess('I', 'PREPOST2_79')
+            endif
             itri7 = 1
             nnoe = nnoe - 1
         else if (nomtm .eq. 'PENTA18') then
-            if (ipen18 .eq. 0) call u2mess('I', 'PREPOST2_85')
+            if (ipen18 .eq. 0) then
+                call utmess('I', 'PREPOST2_85')
+            endif
             ipen18 = 1
             nnoe = nnoe - 3
         else if (nomtm .eq. 'QUAD9') then
-            if (iqua9 .eq. 0) call u2mess('I', 'PREPOST2_80')
+            if (iqua9 .eq. 0) then
+                call utmess('I', 'PREPOST2_80')
+            endif
             iqua9 = 1
             nnoe = nnoe - 1
         else if (nomtm .eq. 'SEG4') then
-            if (iseg4 .eq. 0) call u2mess('I', 'PREPOST2_81')
+            if (iseg4 .eq. 0) then
+                call utmess('I', 'PREPOST2_81')
+            endif
             iseg4 = 1
             nnoe = nnoe - 2
 !JMP
@@ -252,9 +262,9 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !
 !       - ELEMENTS NON DISPONIBLES DANS IDEAS
         if (codphd(typma(ima)) .eq. 6000) then
-            call u2mess('A', 'PREPOST2_82')
+            call utmess('A', 'PREPOST2_82')
         else if (codphd(typma(ima)).eq.6001) then
-            call u2mess('A', 'PREPOST2_83')
+            call utmess('A', 'PREPOST2_83')
         endif
         ASSERT((icod2.le.10000).and.(icod2.ge.0))
         if (icod1 .ne. 0 .and. icod2 .ne. 0) then

@@ -1,14 +1,14 @@
 subroutine tbexlr(nomta, listr, basout)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nomta, listr, basout
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -51,10 +51,10 @@ subroutine tbexlr(nomta, listr, basout)
     nomtab = nomta
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
     if (nomtab(18:19) .ne. '  ') then
-        call u2mess('F', 'UTILITAI4_68')
+        call utmess('F', 'UTILITAI4_68')
     endif
     base = basout(1:1)
 !
@@ -62,10 +62,10 @@ subroutine tbexlr(nomta, listr, basout)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nblign .eq. 0) then
-        call u2mess('F', 'UTILITAI4_76')
+        call utmess('F', 'UTILITAI4_76')
     endif
 !
     call jeveuo(nomtab//'.TBLP', 'L', jtblp)
@@ -85,7 +85,7 @@ subroutine tbexlr(nomta, listr, basout)
         endif
 10  end do
     if (nbpr .eq. 0) then
-        call u2mess('F', 'UTILITAI4_81')
+        call utmess('F', 'UTILITAI4_81')
     endif
 !
 !     --- ON NE RETIENT QUE LES LIGNES NON VIDES ---
@@ -106,7 +106,7 @@ subroutine tbexlr(nomta, listr, basout)
         endif
 20  end do
     if (nblg .eq. 0) then
-        call u2mess('F', 'UTILITAI4_82')
+        call utmess('F', 'UTILITAI4_82')
     endif
 !
 !     --- RECHERCHE DE BLOCS ---
@@ -135,7 +135,7 @@ subroutine tbexlr(nomta, listr, basout)
                 if (ideb1 .eq. 0) ideb1 = ipar
                 kcol1 = kcol1 + 1
                 if (ivide .eq. 1) then
-                    call u2mess('F', 'UTILITAI4_83')
+                    call utmess('F', 'UTILITAI4_83')
                 endif
                 if (type(1:1) .eq. 'I') then
                     k1 = k1 + 1

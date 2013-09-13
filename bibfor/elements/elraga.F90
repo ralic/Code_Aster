@@ -1,10 +1,10 @@
 subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
                   poipg)
-    implicit  none
+    implicit none
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbpg, ndim
     real(kind=8) :: coopg(*), poipg(*)
     character(len=*) :: elrefz, fapz
@@ -54,7 +54,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
     real(kind=8) :: pxg5(20), xa, xb
     real(kind=8) :: zero, unquar, undemi, un, deux, xno(3*27), vol, a2, b2
 ! -----  FONCTIONS FORMULES
-#define t(u)   2.0d0*(u) - 1.0d0
+#define t(u) 2.0d0*(u) - 1.0d0
 ! DEB ------------------------------------------------------------------
 !
     elrefa = elrefz
@@ -74,7 +74,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
     if (ifam .le. 0) then
         valk (1) = elrefa
         valk (2) = fapg
-        call u2mesk('F', 'ELEMENTS4_84', 2, valk)
+        call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
     endif
     nbpg = nbpg1(ifam)
     ASSERT((ndim.ge.0).and.(ndim.le.3))
@@ -241,7 +241,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         else
             valk (1) = elrefa
             valk (2) = fapg
-            call u2mesk('F', 'ELEMENTS4_84', 2, valk)
+            call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
         endif
 !
 !       TRAITEMENT POUR FAPG NON SHB
@@ -453,7 +453,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         else
             valk (1) = elrefa
             valk (2) = fapg
-            call u2mesk('F', 'ELEMENTS4_84', 2, valk)
+            call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
         endif
 !
 !       TRAITEMENT POUR LES FAPG NON SHB
@@ -854,7 +854,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         else
             valk (1) = elrefa
             valk (2) = fapg
-            call u2mesk('F', 'ELEMENTS4_84', 2, valk)
+            call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
         endif
 !
 !     ------------------------------------------------------------------
@@ -1138,7 +1138,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         else
             valk (1) = elrefa
             valk (2) = fapg
-            call u2mesk('F', 'ELEMENTS4_84', 2, valk)
+            call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
         endif
 !
 !     ------------------------------------------------------------------
@@ -1210,18 +1210,18 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
             hpg(9) = 64.d0/81.0d0
             xpg(1) = -0.774596669241483d0
             ypg(1) = -0.774596669241483d0
-            xpg(3) =  0.774596669241483d0
+            xpg(3) = 0.774596669241483d0
             ypg(3) = -0.774596669241483d0
-            xpg(5) =  0.774596669241483d0
-            ypg(5) =  0.774596669241483d0
+            xpg(5) = 0.774596669241483d0
+            ypg(5) = 0.774596669241483d0
             xpg(7) = -0.774596669241483d0
-            ypg(7) =  0.774596669241483d0
+            ypg(7) = 0.774596669241483d0
             xpg(2) = zero
             ypg(2) = -0.774596669241483d0
-            xpg(4) =  0.774596669241483d0
+            xpg(4) = 0.774596669241483d0
             ypg(4) = zero
             xpg(6) = zero
-            ypg(6) =  0.774596669241483d0
+            ypg(6) = 0.774596669241483d0
             xpg(8) = -0.774596669241483d0
             ypg(8) = zero
             xpg(9) = zero
@@ -1272,7 +1272,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         else
             valk (1) = elrefa
             valk (2) = fapg
-            call u2mesk('F', 'ELEMENTS4_84', 2, valk)
+            call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
         endif
 !
 !     ------------------------------------------------------------------
@@ -1394,7 +1394,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         else
             valk (1) = elrefa
             valk (2) = fapg
-            call u2mesk('F', 'ELEMENTS4_84', 2, valk)
+            call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
         endif
 !
 !     ------------------------------------------------------------------
@@ -1404,7 +1404,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
 !
 !     ------------------------------------------------------------------
     else
-        call u2mesk('F', 'ELEMENTS4_88', 1, elrefa)
+        call utmess('F', 'ELEMENTS4_88', sk=elrefa)
     endif
 !
 170  continue

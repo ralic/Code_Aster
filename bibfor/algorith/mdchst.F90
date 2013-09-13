@@ -26,9 +26,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 #include "asterfort/mdchre.h"
 #include "asterfort/posddl.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 !
@@ -156,8 +154,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     if (nbnma .ne. 2) then
                         valk (1) = mamai
                         valk (2) = 'SEG2'
-                        call u2mesg('F', 'ALGORITH13_39', 2, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('F', 'ALGORITH13_39', nk=2, valk=valk)
                     endif
                     iliai = iliai + 1
                     call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama)), noecho(iliai, 1))
@@ -190,8 +187,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             call jenuno(jexnum(mailla//'.NOMMAI', numai), kbid)
                             valk (1) = kbid
                             valk (2) = 'SEG2'
-                            call u2mesg('F', 'ALGORITH13_39', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('F', 'ALGORITH13_39', nk=2, valk=valk)
                         endif
                         iliai = iliai + 1
                         call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama) ), noecho(iliai, 1))
@@ -221,12 +217,11 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     call utnono(' ', mailla, 'NOEUD', nomgr2, nomno2,&
                                 iret)
                     if (iret .eq. 10) then
-                        call u2mesk('F', 'ELEMENTS_67', 1, nomgr2)
+                        call utmess('F', 'ELEMENTS_67', sk=nomgr2)
                     else if (iret.eq.1) then
                         valk (1) = nomgr2
                         valk (2) = nomno2
-                        call u2mesg('A', 'ALGORITH13_41', 2, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
                     endif
                     noecho(iliai,5) = nomno2
                     lnoue2 = .true.
@@ -244,12 +239,11 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
         call utnono(' ', mailla, 'NOEUD', nomgr1, nomno1,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nomgr1)
+            call utmess('F', 'ELEMENTS_67', sk=nomgr1)
         else if (iret.eq.1) then
             valk (1) = nomgr1
             valk (2) = nomno1
-            call u2mesg('A', 'ALGORITH13_41', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
         endif
         iliai = iliai + 1
         noecho(iliai,1) = nomno1
@@ -264,12 +258,11 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 call utnono(' ', mailla, 'NOEUD', nomgr2, nomno2,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'ELEMENTS_67', 1, nomgr2)
+                    call utmess('F', 'ELEMENTS_67', sk=nomgr2)
                 else if (iret.eq.1) then
                     valk (1) = nomgr2
                     valk (2) = nomno2
-                    call u2mesg('A', 'ALGORITH13_41', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
                 endif
                 noecho(iliai,5) = nomno2
                 lnoue2 = .true.
@@ -339,7 +332,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 endif
                 if (noecho(iliai,9) .eq. 'BI_CERCI' .and. parcho(iliai, 31) .lt.&
                     parcho(iliai,30)) then
-                    call u2mess('F', 'ALGORITH5_35')
+                    call utmess('F', 'ALGORITH5_35')
                 endif
             else if (motfac.eq.'FLAMBAGE') then
                 intitu(i) = noecho(iliai,1)
@@ -353,11 +346,13 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             nbret=n1)
                 logcho(iliai,5) = 1
                 if (parcho(iliai,2 ) .le. 0.d0 .or. parcho(iliai,52) .le. 0.d0) then
-                    call u2mess('F', 'ALGORITH5_40')
+                    call utmess('F', 'ALGORITH5_40')
                 else
                     rap=parcho(iliai,50)/parcho(iliai,2)-parcho(iliai,&
                     51)/ parcho(iliai,52)
-                    if (rap .lt. 0.d0) call u2mess('F', 'ALGORITH5_41')
+                    if (rap .lt. 0.d0) then
+                        call utmess('F', 'ALGORITH5_41')
+                    endif
                 endif
                 call getvid(motfac, 'OBSTACLE', iocc=ioc, scal=noecho( iliai, 9), nbret=n1)
                 call tbliva(noecho(iliai, 9), 1, 'LIEU', ibid, r8bid,&
@@ -376,7 +371,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 endif
                 if (noecho(iliai,9) .eq. 'BI_CERCI' .and. parcho(iliai, 31) .lt.&
                     parcho(iliai,30)) then
-                    call u2mess('F', 'ALGORITH5_35')
+                    call utmess('F', 'ALGORITH5_35')
                 endif
 !
             else if (motfac.eq.'ANTI_SISM') then
@@ -395,8 +390,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 k = pulsat(imode)**2 * masgen(imode)
                 ctang = 2.d0*sqrt(&
                         masgen(imode)*(k+ktang) ) - 2.d0* amogen(iamor)*sqrt( k*masgen(imode))
-                call u2mesg('I', 'ALGORITH16_10', 0, ' ', 1,&
-                            i, 1, ctang)
+                call utmess('I', 'ALGORITH16_10', si=i, sr=ctang)
             endif
             parcho(iliai,4) = ktang
             parcho(iliai,5) = ctang
@@ -441,8 +435,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             else if (iret.eq.1) then
                 valk (1) = cnpal(ipal)
                 valk (2) = nomno1
-                call u2mesg('A', 'ALGORITH13_41', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
             endif
             do 23 ipat = 1, 6
                 call posddl('NUME_DDL', numddl, nomno1, comp(ipat), nno,&
@@ -473,12 +466,11 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 call utnono(' ', mailla, 'NOEUD', nomgr1, nomno1,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'ELEMENTS_67', 1, nomgr1)
+                    call utmess('F', 'ELEMENTS_67', sk=nomgr1)
                 else if (iret.eq.1) then
                     valk (1) = nomgr1
                     valk (2) = nomno1
-                    call u2mesg('A', 'ALGORITH13_41', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
                 endif
             endif
 !
@@ -488,12 +480,11 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 call utnono(' ', mailla, 'NOEUD', nomgr2, nomno2,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'ELEMENTS_67', 1, nomgr2)
+                    call utmess('F', 'ELEMENTS_67', sk=nomgr2)
                 else if (iret.eq.1) then
                     valk (1) = nomgr2
                     valk (2) = nomno2
-                    call u2mesg('A', 'ALGORITH13_41', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'ALGORITH13_41', nk=2, valk=valk)
                 endif
             endif
 !

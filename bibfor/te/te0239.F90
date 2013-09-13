@@ -40,7 +40,7 @@ subroutine te0239(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     integer :: icompo, nbcou, npge, icontm, ideplm, ivectu, icou, inte, icontp
     integer :: kpki, k1, k2, kompt, ivarim, ivarip, iinstm, iinstp, lgpg, ideplp
@@ -116,11 +116,11 @@ subroutine te0239(option, nomte)
     call jevech('PCARCRI', 'L', icarcr)
 !
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call u2mess('F', 'ELEMENTS2_90')
+        call utmess('F', 'ELEMENTS2_90')
     endif
 !
     if (zk16(icompo+2) (6:10) .eq. '_REAC') then
-        call u2mess('A', 'ELEMENTS3_54')
+        call utmess('A', 'ELEMENTS3_54')
     endif
 !
 !--- LECTURE DU NBRE DE VAR. INTERNES, DE COUCHES ET LONG. MAX DU
@@ -137,8 +137,12 @@ subroutine te0239(option, nomte)
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
 !---- MESSAGES LIMITATION NBRE DE COUCHES
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-    if (nbcou .gt. 10) call u2mess('F', 'ELEMENTS3_55')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+    if (nbcou .gt. 10) then
+        call utmess('F', 'ELEMENTS3_55')
+    endif
 !---- EPAISSEUR DE CHAQUE COUCHE
     hic = h/nbcou
     if (vecteu) then

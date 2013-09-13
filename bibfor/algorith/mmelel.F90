@@ -21,14 +21,14 @@ subroutine mmelel(ndim, ntyma1, ntyma2, iordr, nndel,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/mmeltm.h"
 #include "asterfort/mmeltn.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: ndim
     character(len=8) :: ntyma1, ntyma2
     integer :: nndel
@@ -105,7 +105,7 @@ subroutine mmelel(ndim, ntyma1, ntyma2, iordr, nndel,&
     if (iordr .eq. 0) then
         valk(1) = ntyma1
         valk(2) = ntyma2
-        call u2mesk('F', 'CONTACT_96', 2, valk)
+        call utmess('F', 'CONTACT_96', nk=2, valk=valk)
     else
         nomtm = mmeltm(iordr)
         call jenonu(jexnom('&CATA.TM.NOMTM', nomtm), numtyp)

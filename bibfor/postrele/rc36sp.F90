@@ -4,9 +4,9 @@ subroutine rc36sp(nbm, ima, ipt, c, k,&
                   ioc1, ioc2, spij, typeke, spmeca,&
                   spther)
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 #include "asterfort/rcsp01.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbm, ima(*), ipt, nbthp, nbthq
     real(kind=8) :: c(*), k(*), cara(*), mati(*), matj(*), pi, mi(*), pj, mj(*)
     real(kind=8) :: mse(*), spij, typeke, spmeca, spther
@@ -151,7 +151,7 @@ subroutine rc36sp(nbm, ima, ipt, c, k,&
         spther = max(spther,spq)
 !
     else
-        call u2mess('F', 'POSTRCCM_31')
+        call utmess('F', 'POSTRCCM_31')
 !
     endif
 !

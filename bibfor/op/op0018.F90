@@ -63,9 +63,7 @@ subroutine op0018()
 #include "asterfort/modexi.h"
 #include "asterfort/ssafmo.h"
 #include "asterfort/taxis.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/w18imp.h"
 #include "asterfort/wkvect.h"
 !
@@ -259,7 +257,9 @@ subroutine op0018()
             if (d2 .eq. -99) then
                 d2=d1
             else
-                if (d2 .ne. d1) call u2mess('F', 'MODELISA5_51')
+                if (d2 .ne. d1) then
+                    call utmess('F', 'MODELISA5_51')
+                endif
             endif
 !
             if (modeli(1:4) .eq. 'AXIS' .or. modeli .eq. 'COQUE_AXIS') laxis=.true.
@@ -345,8 +345,7 @@ subroutine op0018()
             vali(1)=ioc
             vali(2)=ico
             vali(3)=d2
-            call u2mesg('A', 'MODELISA8_70', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'MODELISA8_70', ni=3, vali=vali)
         endif
 110  end do
 !
@@ -412,7 +411,7 @@ subroutine op0018()
     endif
 !
     if (nbmaaf .eq. 0) then
-        call u2mesk('F', 'MODELISA5_52', 1, noma)
+        call utmess('F', 'MODELISA5_52', sk=noma)
     endif
 !
     nutype=0
@@ -562,7 +561,7 @@ subroutine op0018()
                 k8b, ibid)
     if (idim .gt. 3) then
         idim2=0
-        call u2mess('A', 'MODELISA4_4')
+        call utmess('A', 'MODELISA4_4')
     else
         idim2=3
         idim3=3
@@ -579,11 +578,11 @@ subroutine op0018()
 !         -- LES ELEMENTS DE COQUE PEUVENT EXISTER DAS LE PLAN Z=CSTE :
         else if ((idim.eq.2) .and. (idim2.eq.3)) then
 !         -- DANGER : MODELE 2D SUR UN MAILLAGE COOR_3D
-            call u2mess('A', 'MODELISA5_53')
+            call utmess('A', 'MODELISA5_53')
             elseif ((idim.eq.2) .and. (idim2.eq.2).and. (idim3.eq.3))&
         then
 !         -- BIZARRE : MODELE 2D SUR UN MAILLAGE Z=CSTE /= 0.
-            call u2mess('A', 'MODELISA5_58')
+            call utmess('A', 'MODELISA5_58')
         endif
     endif
 !
@@ -594,7 +593,7 @@ subroutine op0018()
     call modexi(nomu, 'DIS_', i3d)
     call modexi(nomu, '2D_DIS_', i2d)
     if (idim2 .eq. 2 .and. i3d .eq. 1 .and. i2d .eq. 1) then
-        call u2mess('F', 'MODELISA5_54')
+        call utmess('F', 'MODELISA5_54')
     endif
 !
 !

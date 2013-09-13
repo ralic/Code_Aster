@@ -56,7 +56,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
 #include "asterfort/fetmpi.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
@@ -271,7 +271,7 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
             betad=alphan
             if (abs(betad) .lt. rmin) then
                 betad=rmin
-                call u2mess('A', 'ALGORITH3_67')
+                call utmess('A', 'ALGORITH3_67')
             endif
             beta=betan/betad
             alphan=betan

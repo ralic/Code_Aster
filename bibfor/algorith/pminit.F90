@@ -80,7 +80,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcinp.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -289,8 +289,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
         if (n1 .ne. nbvari) then
             imes(1)=n1
             imes(2)=nbvari
-            call u2mesg('F', 'COMPOR1_72', 0, ' ', 2,&
-                        imes, 0, 0.d0)
+            call utmess('F', 'COMPOR1_72', ni=2, vali=imes)
         endif
     endif
     kpg=1

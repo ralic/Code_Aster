@@ -10,8 +10,7 @@ subroutine rcver1(phenoz, tablz, tably)
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: tablz, tably, phenoz
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +77,7 @@ subroutine rcver1(phenoz, tablz, tably)
     call tbexip(tabcom, valek(2), exi2, k8b)
     call tbexip(tabcom, valek(3), exi3, k8b)
     if (.not.exi1 .and. .not.exi2 .and. .not.exi3) then
-        call u2mesk('I', 'POSTRCCM_39', 1, tabcom)
+        call utmess('I', 'POSTRCCM_39', sk=tabcom)
         goto 999
     endif
 !
@@ -99,8 +98,8 @@ subroutine rcver1(phenoz, tablz, tably)
                     valk(3)=valek(j)(1:8)
                     valr(1)=zr(jordo1+i-1)
                     valr(2)=zr(jordo2+i-1)
-                    call u2mesg('F', 'POSTRCCM_41', 3, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('F', 'POSTRCCM_41', nk=3, valk=valk, nr=2,&
+                                valr=valr)
                 endif
 20          continue
 !       ON COMPARE LES COORDONNEES DES NOEUDS EXTREMITES
@@ -115,8 +114,8 @@ subroutine rcver1(phenoz, tablz, tably)
                     valk(3)=valek(j)(1:8)
                     valr(1)=v1
                     valr(2)=v2
-                    call u2mesg('F', 'POSTRCCM_41', 3, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('F', 'POSTRCCM_41', nk=3, valk=valk, nr=2,&
+                                valr=valr)
                 endif
 40          continue
         endif
@@ -133,8 +132,7 @@ subroutine rcver1(phenoz, tablz, tably)
                 tyva)
 !     CAS UNITAIRE: 1 SEUL LIGAMENT
     if (typmec .eq. 'UNITAIRE' .and. nbint2 .ne. 1) then
-        call u2mesg('F', 'POSTRCCM_40', 1, tabcom, 1,&
-                    nbint2, 0, r8b)
+        call utmess('F', 'POSTRCCM_40', sk=tabcom, si=nbint2)
 !     CAS EVOLUTION: MEME NOMBRE DE LIGAMENTS
     else if (typmec.eq.'EVOLUTION') then
         call tbexv1(tabref, valek(4), intit1, 'V', nbint1,&
@@ -144,8 +142,8 @@ subroutine rcver1(phenoz, tablz, tably)
             valk(2)=tabcom(1:8)
             vali(1)=nbint1
             vali(2)=nbint2
-            call u2mesg('F', 'POSTRCCM_42', 2, valk, 2,&
-                        vali, 0, r8b)
+            call utmess('F', 'POSTRCCM_42', nk=2, valk=valk, ni=2,&
+                        vali=vali)
         endif
         call jedetr(intit1)
     endif
@@ -169,8 +167,8 @@ subroutine rcver1(phenoz, tablz, tably)
                 valk(2)=tabcom(1:8)
                 valr(1)=zr(jinst1+i-1)
                 valr(2)=zr(jinst2+i-1)
-                call u2mesg('F', 'POSTRCCM_43', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('F', 'POSTRCCM_43', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
 30      continue
         call jedetr(inst1)

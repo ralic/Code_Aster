@@ -1,7 +1,7 @@
 subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
                   norev, sigmrv, nomdb, sigmdb)
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
@@ -10,7 +10,7 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ndim, norev, nomdb
     real(kind=8) :: temps
@@ -84,11 +84,11 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabrev
-        call u2mesk('F', 'UTILITAI7_1', 2, valk)
+        call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
     else if (iret .eq. 20) then
         valk(1) = tabrev
         valk(2) = 'INST'
-        call u2mesk('F', 'UTILITAI7_3', 2, valk)
+        call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
     endif
     call tbextb(tabmdb, 'V', tmpmdb, 1, 'INST',&
                 'EQ', ibid, temps, cbid, k8b,&
@@ -96,11 +96,11 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabmdb
-        call u2mesk('F', 'UTILITAI7_1', 2, valk)
+        call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
     else if (iret .eq. 20) then
         valk(1) = tabmdb
         valk(2) = 'INST'
-        call u2mesk('F', 'UTILITAI7_3', 2, valk)
+        call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
     endif
 ! ======================================================================
 ! --- PROBLEME EN DIMENSION 2 ------------------------------------------

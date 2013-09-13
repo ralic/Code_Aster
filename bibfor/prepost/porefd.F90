@@ -1,5 +1,5 @@
 subroutine porefd(trange, noeu, cmp, nomrez)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/foc1ma.h"
 #include "asterfort/jedema.h"
@@ -10,7 +10,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: trange, noeu, cmp, nomrez
 ! ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     parameter    ( nbpara = 8 )
     real(kind=8) :: para(nbpara), xmax, temd, temf, temm
     complex(kind=8) :: c16b
-    character(len=8) ::  nomres, typara(nbpara), valek(3)
+    character(len=8) :: nomres, typara(nbpara), valek(3)
     character(len=16) :: nopara(nbpara)
     character(len=19) :: nomk19
     character(len=24) :: nomk24
@@ -72,7 +72,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     do 10 inume = 0, nbred-1
         if (zk24(jredn+inume)(1:16) .eq. nomk24) goto 12
 10  end do
-    call u2mess('F', 'PREPOST4_57')
+    call utmess('F', 'PREPOST4_57')
 !
 12  continue
     valek(1) = zk24(jredn+inume)(17:24)

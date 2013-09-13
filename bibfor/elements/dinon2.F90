@@ -4,7 +4,7 @@ subroutine dinon2(neq, ul, dul, utl, nno,&
 ! ----------------------------------------------------------------------
     implicit none
 #include "asterc/r8miem.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     integer :: neq, nbcomp, nno, nbpar
     real(kind=8) :: ul(neq), dul(neq), utl(neq), dt
     real(kind=8) :: varimo(nbcomp*2), varipl(nbcomp*2)
@@ -70,7 +70,7 @@ subroutine dinon2(neq, ul, dul, utl, nno,&
     zero = 0.0d0
 !
     if (dt .lt. r8min) then
-        call u2mesr('F', 'DISCRETS_4', 1, dt)
+        call utmess('F', 'DISCRETS_4', sr=dt)
     endif
 !
     do 20, ii=1,nbcomp

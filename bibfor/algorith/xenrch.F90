@@ -32,8 +32,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xlmail.h"
 #include "asterfort/xmafis.h"
@@ -142,11 +141,15 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
 !     FISSURE OU INTERFACE EN DEHORS DE LA STRUCTURE OU
 !     COINCIDANT AVEC UN BORD DE LA STRUCTURE
-    if (nmafis .eq. 0) call u2mess('F', 'XFEM_57')
+    if (nmafis .eq. 0) then
+        call utmess('F', 'XFEM_57')
+    endif
 !
-    if (niv .ge. 2) call u2mesi('I', 'XFEM_19', 1, nmafis)
+    if (niv .ge. 2) then
+        call utmess('I', 'XFEM_19', si=nmafis)
+    endif
     if (niv .ge. 3) then
-        call u2mess('I', 'XFEM_26')
+        call utmess('I', 'XFEM_26')
         do 110 imae = 1, nmafis
             write(ifm,*)' ',zi(jmafis-1+imae)
 110      continue
@@ -229,9 +232,11 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
         goto 800
 !     DE MEME POUR UNE FISSURE DONT LE FOND SE SITUE EN DEHORS DE LA
 !     MATIERE (EX: FISSURE QUI DEBOUCHE EN FIN DE PROPAGATION)
-    elseif (nmafon.eq.0) then
-        call u2mess('A', 'XFEM_58')
-        if (rayon .gt. 0.d0) call u2mess('A', 'XFEM_59')
+    else if (nmafon.eq.0) then
+        call utmess('A', 'XFEM_58')
+        if (rayon .gt. 0.d0) then
+            call utmess('A', 'XFEM_59')
+        endif
         ASSERT(nmaen2+nmaen3.eq.0)
         nfon = 0
         nbfond = 0
@@ -263,9 +268,9 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     ASSERT(nfon.gt.0)
 !
     if (.not.goinop) then
-        call u2mesi('I', 'XFEM_33', 1, nfon)
+        call utmess('I', 'XFEM_33', si=nfon)
     else
-        call u2mesi('I', 'XFEM_74', 1, nfon)
+        call utmess('I', 'XFEM_74', si=nfon)
     endif
 !
     if (.not.orient) then
@@ -306,7 +311,9 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !       IL Y A DONC AUTANT DE FONDS MULTIPLES QUE DE POINTS (1 OU 2)
 !       LES POINTS DE DEPART ET D'ARRIVEES SONT LES MEMES
     if (ndim .eq. 2) then
-        if (nfon .gt. 2) call u2mess('F', 'XFEM_11')
+        if (nfon .gt. 2) then
+            call utmess('F', 'XFEM_11')
+        endif
         nbfond = nfon
         do 999 i = 1, nfon
             do 11 k = 1, 2
@@ -322,9 +329,9 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
 !     IMPRESSION DES POINTS DE FOND DE FISSURE (2D/3D)
     if (.not.goinop) then
-        call u2mess('I', 'XFEM_35')
+        call utmess('I', 'XFEM_35')
     else
-        call u2mess('I', 'XFEM_75')
+        call utmess('I', 'XFEM_75')
     endif
 !
     numfon=1
@@ -337,7 +344,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
             q(4)=zr(jfon-1+4*(i-1)+4)
         endif
         if (zi(jfonmu-1+2*(numfon-1)+1) .eq. i) then
-            call u2mesi('I', 'XFEM_36', 1, numfon)
+            call utmess('I', 'XFEM_36', si=numfon)
             if (ndim .eq. 3) write(ifm,797)
             if (ndim .eq. 2) write(ifm,7970)
         endif

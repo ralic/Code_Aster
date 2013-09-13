@@ -34,7 +34,7 @@ subroutine op0105()
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: mag, dm(2)
     character(len=16) :: kbi1, kbi2
@@ -67,7 +67,7 @@ subroutine op0105()
         call jeveuo(dm(1)//'.DIME', 'L', iadim1)
         call jeveuo(dm(2)//'.DIME', 'L', iadim2)
         if ((zi(iadim1-1+4).ne.0) .or. (zi(iadim2-1+4).ne.0)) then
-            call u2mess('F', 'SOUSTRUC_16')
+            call utmess('F', 'SOUSTRUC_16')
         endif
         if (oper(1:7) .eq. 'COLLAGE') then
             call asmaco(dm(1), dm(2), mag)

@@ -36,8 +36,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomres, resu
     integer :: nbordr, liordr(nbordr)
 !
@@ -49,7 +48,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     character(len=16) :: motfac, nomsym
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(2), lchout(1)
     character(len=19) :: excit
-    integer ::  vali(2), iexi
+    integer :: vali(2), iexi
     logical :: lreel, lnoeu, ldetli, lvide
 !     ------------------------------------------------------------------
 !
@@ -150,7 +149,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
         if (iexi .eq. 0) then
             vali(1)=iocc
             vali(2)=nuordr
-            call u2mesi('A', 'CALCULEL2_19', 2, vali)
+            call utmess('A', 'CALCULEL2_19', ni=2, vali=vali)
         else
             ldetli=.false.
             lvide=.false.
@@ -161,7 +160,9 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     20 end do
 !
     if (ldetli) call detrsd('LIGREL', ligrel)
-    if (lvide) call u2mess('F', 'CALCULEL2_20')
+    if (lvide) then
+        call utmess('F', 'CALCULEL2_20')
+    endif
 !
 !
 30  continue

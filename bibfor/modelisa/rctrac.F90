@@ -21,8 +21,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, jprol, jvale, nbvale, jmat, nbmat
     real(kind=8) :: temp, e
     integer :: ktrac
@@ -81,7 +80,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 goto 20
             endif
 10      continue
-        call u2mess('F', 'MODELISA6_80')
+        call utmess('F', 'MODELISA6_80')
 20      continue
         idf=zi(ipi)+zi(ipi+1)
         nbf=zi(ipi+2)
@@ -92,7 +91,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 goto 40
             endif
 30      continue
-        call u2mess('F', 'MODELISA6_81')
+        call utmess('F', 'MODELISA6_81')
 40      continue
     endif
 !
@@ -105,7 +104,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 goto 60
             endif
 50      continue
-        call u2mess('F', 'MODELISA6_82')
+        call utmess('F', 'MODELISA6_82')
 60      continue
 !
         idf=zi(ipi)+zi(ipi+1)
@@ -119,7 +118,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     goto 80
                 endif
 70          continue
-            call u2mess('F', 'MODELISA6_83')
+            call utmess('F', 'MODELISA6_83')
 80          continue
         endif
 !
@@ -130,7 +129,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     goto 100
                 endif
 90          continue
-            call u2mess('F', 'MODELISA6_84')
+            call utmess('F', 'MODELISA6_84')
 100          continue
         endif
 !
@@ -141,7 +140,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     goto 120
                 endif
 110          continue
-            call u2mess('F', 'MODELISA6_85')
+            call utmess('F', 'MODELISA6_85')
 120          continue
         endif
 !
@@ -152,7 +151,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     goto 140
                 endif
 130          continue
-            call u2mess('F', 'MODELISA6_86')
+            call utmess('F', 'MODELISA6_86')
 140          continue
         endif
 !
@@ -163,7 +162,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                     goto 160
                 endif
 150          continue
-            call u2mess('F', 'MODELISA6_87')
+            call utmess('F', 'MODELISA6_87')
 160          continue
         endif
     endif
@@ -182,7 +181,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
 ! ----- FONCTION CONSTANTE - IMPOSSIBLE
 !
-        call u2mesk('F', 'MODELISA6_88', 1, nomcl)
+        call utmess('F', 'MODELISA6_88', sk=nomcl)
     else if (zk24(jpro)(1:1).eq.'F') then
 !
 ! ----- FONCTION D'UNE SEULE VARIABLE
@@ -214,7 +213,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
             else if (zk24(jpro+4)(1:1).eq.'L') then
                 i=1
             else if (zk24(jpro+4)(1:1).eq.'E') then
-                call u2mesk('F', 'MODELISA6_89', 1, nomcl)
+                call utmess('F', 'MODELISA6_89', sk=nomcl)
             endif
         else if (temp.gt.zr(jvaln+nbvn-1)) then
             if (zk24(jpro+4)(2:2) .eq. 'C') then
@@ -223,7 +222,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
             else if (zk24(jpro+4)(2:2).eq.'L') then
                 i=nbvn-1
             else if (zk24(jpro+4)(2:2).eq.'E') then
-                call u2mesk('F', 'MODELISA6_90', 1, nomcl)
+                call utmess('F', 'MODELISA6_90', sk=nomcl)
             endif
         else
             do 180 j = 1, nbvn-1
@@ -450,7 +449,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
     else
         valk(1)=zk24(jpro)
         valk(2)=nomcl
-        call u2mesk('F', 'MODELISA6_91', 2, valk)
+        call utmess('F', 'MODELISA6_91', nk=2, valk=valk)
     endif
 !
 ! --- CONSTRUCTION DE LA COURBE R(P) POUR TRACTION

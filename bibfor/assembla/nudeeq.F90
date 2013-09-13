@@ -20,7 +20,6 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -32,9 +31,9 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=14) :: nu14
     character(len=2) :: base
     integer :: neq, gds, iddlag
@@ -125,8 +124,12 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx)
     nec = nbec(gds)
-    if (ncmpmx .eq. 0) call u2mess('F', 'ASSEMBLA_24')
-    if (nec .eq. 0) call u2mess('F', 'ASSEMBLA_25')
+    if (ncmpmx .eq. 0) then
+        call utmess('F', 'ASSEMBLA_24')
+    endif
+    if (nec .eq. 0) then
+        call utmess('F', 'ASSEMBLA_25')
+    endif
     nblag = 0
 !
 !
@@ -138,7 +141,9 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !---- NBNO : SI I=1 --> NOMBRE DE NOEUDS DU MAILLAGE
 !            SI I>1 --> NOMBRE DE NOEUDS SUPPLEMENTAIRES DU LIGREL I
             nbno = l/ (nec+2)
-            if ((i.eq.1) .and. (nbno.ne. (nbnm+nbnl))) call u2mess('F', 'CALCULEL_2')
+            if ((i.eq.1) .and. (nbno.ne. (nbnm+nbnl))) then
+                call utmess('F', 'CALCULEL_2')
+            endif
 !
             do 20 j = 1, nbno
 !--- J : SI I=1 --> NUMERO DU NOEUD DU MAILLAGE
@@ -196,7 +201,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
         nocmp = zk8(jncmp-1+nucmp)
         valk(1) = nono
         valk(2) = nocmp
-        call u2mesk('E', 'ASSEMBLA_26', 2, valk)
+        call utmess('E', 'ASSEMBLA_26', nk=2, valk=valk)
     endif
 50  continue
     60 end do

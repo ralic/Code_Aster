@@ -23,8 +23,7 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
 #include "asterfort/jjcren.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu, listat, accelu, stoclu, longlu
     integer :: nmax
 !     ------------------------------------------------------------------
@@ -71,13 +70,13 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
     ipgcex = ipgc
     nom24l = nomlu
     if (nmax .le. 0) then
-        call u2mesk('F', 'JEVEUX_67', 1, nom24l)
+        call utmess('F', 'JEVEUX_67', sk=nom24l)
     endif
 !
     call jjanal(listat, 3, 3, lval, cval)
     iclas = index ( classe , cval(1)(1:1) )
     if (iclas .eq. 0) then
-        call u2mesk('F', 'JEVEUX_68', 1, cval(1)(1:1))
+        call utmess('F', 'JEVEUX_68', sk=cval(1)(1:1))
     endif
 !
     icre = 2
@@ -85,21 +84,21 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
     icre = 1
 !
     if (iretc .eq. 1) then
-        call u2mesk('F', 'JEVEUX_69', 1, nom24l)
+        call utmess('F', 'JEVEUX_69', sk=nom24l)
     else
         stocka = stoclu
         if (lval(3) .eq. 2) read ( cval(3)(2:lval(3)) , '(I1)' ) lenk
         if (lval(3) .eq. 3) read ( cval(3)(2:lval(3)) , '(I2)' ) lenk
         if (lval(3) .gt. 3) lenk = 512
         if (stocka .ne. 'CONTIG  ' .and. stocka .ne. 'DISPERSE') then
-            call u2mesk('F', 'JEVEUX_70', 1, stocka)
+            call utmess('F', 'JEVEUX_70', sk=stocka)
             else if (longlu .ne. 'CONSTANT'.and. cval(2)(1:1) .eq. 'E')&
         then
-            call u2mesk('F', 'JEVEUX_71', 1, nom24l)
+            call utmess('F', 'JEVEUX_71', sk=nom24l)
             else if ( stocka .eq. 'CONTIG  ' .and. longlu .ne. 'CONSTANT'&
      &            .and. cval(3)(1:1) .eq. 'K' .and. lenk .ne. 8&
      &            .and. lenk .ne. 16          .and. lenk .ne.24 ) then
-            call u2mesk('F', 'JEVEUX_72', 1, nom24l)
+            call utmess('F', 'JEVEUX_72', sk=nom24l)
         endif
 !
         call jjcrec(iclaco, idatco, 'X', 'I', idnum+1,&
@@ -143,10 +142,10 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
 !     ------------------------------------------------------------------
         nompar = nom24l//'$$'
         if ((longlu .ne. 'CONSTANT' .and. longlu .ne. 'VARIABLE') .or. len(longlu) .ne. 8) then
-            call u2mess('F', 'JEVEUX_02')
+            call utmess('F', 'JEVEUX_02')
             icl = iclaco
             if (len(longlu) .gt. 24) then
-                call u2mesk('F', 'JEVEUX_73', 1, longlu)
+                call utmess('F', 'JEVEUX_73', sk=longlu)
             endif
             noml32 = longlu
             nompar = noml32(1:24)//'&&'
@@ -157,16 +156,16 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
                 call jjcrec(iclaos, idatos, 'V', 'I', nmax,&
                             ibid)
             else if (iret.ne.1) then
-                call u2mesk('F', 'JEVEUX_73', 1, noml32)
+                call utmess('F', 'JEVEUX_73', sk=noml32)
             else
                 if (icl .ne. iclaos) then
-                    call u2mesk('F', 'JEVEUX_74', 1, noml32)
+                    call utmess('F', 'JEVEUX_74', sk=noml32)
                 endif
                 nbl = long (jlong(iclaos) + idatos)
                 if (nbl .lt. nmax) then
-                    call u2mesk('F', 'JEVEUX_75', 1, noml32)
+                    call utmess('F', 'JEVEUX_75', sk=noml32)
                 else if (type(jtype(iclaos)+idatos) .ne. 'I') then
-                    call u2mesk('F', 'JEVEUX_76', 1, noml32)
+                    call utmess('F', 'JEVEUX_76', sk=noml32)
                 endif
                 ipgc = -1
                 call jxveuo('E', ilongu, 1, jlongu)
@@ -223,15 +222,15 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
 !     ------------------------------------------------------------------
         ta = accelu(1:2)
         if (index('NO $NU $',ta//' $') .eq. 0) then
-            call u2mesk('F', 'JEVEUX_81', 1, ta)
+            call utmess('F', 'JEVEUX_81', sk=ta)
         else
             la = len(accelu)
             if (la .gt. 3) then
                 if (accelu(3:3) .ne. ' ') then
-                    call u2mesk('F', 'JEVEUX_82', 1, accelu)
+                    call utmess('F', 'JEVEUX_82', sk=accelu)
                 endif
                 if (la .gt. 28) then
-                    call u2mesk('F', 'JEVEUX_83', 1, accelu)
+                    call utmess('F', 'JEVEUX_83', sk=accelu)
                 endif
                 noml32 = accelu(4:min(la,len(noml32)))
             else
@@ -247,16 +246,16 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
                 call jjcrec(iclaos, idatos, 'N', 'K8', nmax,&
                             ibid)
             else if (iret.ne.1) then
-                call u2mesk('F', 'JEVEUX_77', 1, noml32)
+                call utmess('F', 'JEVEUX_77', sk=noml32)
             else
                 if (icl .ne. iclaos) then
-                    call u2mesk('F', 'JEVEUX_78', 1, noml32)
+                    call utmess('F', 'JEVEUX_78', sk=noml32)
                 endif
                 nbl = long (jlong ( iclaos) + idatos )
                 if (nbl .lt. nmax) then
-                    call u2mesk('F', 'JEVEUX_79', 1, noml32)
+                    call utmess('F', 'JEVEUX_79', sk=noml32)
                 else if (genr(jgenr(iclaos)+idatos) .ne. 'N') then
-                    call u2mesk('F', 'JEVEUX_80', 1, noml32)
+                    call utmess('F', 'JEVEUX_80', sk=noml32)
                 endif
                 ipgc = -1
                 call jxveuo('E', knom, 1, jnom)

@@ -37,7 +37,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 #include "asterfort/nmprac.h"
 #include "asterfort/nmreso.h"
 #include "asterfort/nulvec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtzero.h"
     character(len=19) :: solveu, maprec, lischa
     character(len=19) :: sddyna
@@ -98,7 +98,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
         write (ifm,*) '<MECANONLINE> ... CALCUL DE L''ACCELERATION '//&
         'INITIALE'
     endif
-    call u2mess('I', 'MECANONLINE_24')
+    call utmess('I', 'MECANONLINE_24')
 !
 ! --- INITIALISATIONS
 !
@@ -123,7 +123,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
                 meelem, measse, maprec, matass, faccvg)
     if (faccvg .eq. 2) then
         call nulvec(accmoi)
-        call u2mess('A', 'MECANONLINE_69')
+        call utmess('A', 'MECANONLINE_69')
         goto 9999
     endif
 !
@@ -143,7 +143,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
                 maprec, matass, depso1, depso2, rescvg)
     if (rescvg .eq. 1) then
         call nulvec(accmoi)
-        call u2mess('A', 'MECANONLINE_70')
+        call utmess('A', 'MECANONLINE_70')
         goto 9999
     endif
 !

@@ -45,7 +45,6 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -56,7 +55,8 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
 !
 !
     character(len=24) :: valk(4)
@@ -97,8 +97,7 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
             if (leng1+leng2 .gt. 8) then
                 valk (1) = nomgr
                 valk (2) = nomsst
-                call u2mesg('A', 'SOUSTRUC2_10', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'SOUSTRUC2_10', nk=2, valk=valk)
             endif
             leng2 = min(8-leng1,leng2)
             if (leng2 .gt. 0) then
@@ -114,12 +113,11 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
                 valk (2) = nomsst
                 valk (3) = nomgr
                 valk (4) = k8bid
-                call u2mesg('F', 'ALGORITH13_26', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH13_26', nk=4, valk=valk)
             endif
 20      continue
         call jecroc(jexnom(nomres//'.GROUPEMA', nomut))
-        call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONMAX', max(1,nbgrma))
+        call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONMAX', max(1, nbgrma))
         call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONUTI', nbgrma)
         call jeveuo(jexnom(nomres//'.GROUPEMA', nomut), 'E', ilstno)
         nbtgrm = nbtgrm+1
@@ -152,8 +150,7 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
                     valk (1) = nomut
                     valk (2) = k8bid
                     valk (3) = nomsst
-                    call u2mesg('F', 'ALGORITH13_27', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGORITH13_27', nk=3, valk=valk)
                 endif
             endif
 70      continue

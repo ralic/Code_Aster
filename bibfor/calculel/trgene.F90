@@ -22,10 +22,9 @@ subroutine trgene(ific, nocc)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/trprec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utest3.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
     integer :: ific, nocc
@@ -174,7 +173,7 @@ subroutine trgene(ific, nocc)
                     im = im + 1
                     if (im .eq. ncmp) goto 114
 110              continue
-                call u2mess('F', 'CALCULEL6_98')
+                call utmess('F', 'CALCULEL6_98')
 114              continue
                 im = i
             else
@@ -182,7 +181,7 @@ subroutine trgene(ific, nocc)
             endif
 !
             if (k16b(1:1) .ne. typres) then
-                call u2mess('F', 'CALCULEL6_95')
+                call utmess('F', 'CALCULEL6_95')
             else if (typres.eq.'R') then
                 valr = zr(jlue+im-1)
             else if (typres.eq.'I') then
@@ -250,7 +249,9 @@ subroutine trgene(ific, nocc)
             knum = '&&TRGENE.NUME_ORDRE'
             call rsutnu(resu19, 'GENE', iocc, knum, nbordr,&
                         prec, crit2, iret)
-            if (iret .ne. 0) call u2mesk('F', 'CALCULEL6_99', 1, resu19)
+            if (iret .ne. 0) then
+                call utmess('F', 'CALCULEL6_99', sk=resu19)
+            endif
 !
             call jeveuo(knum, 'L', jordr)
             numord = zi(jordr)
@@ -260,7 +261,7 @@ subroutine trgene(ific, nocc)
                 call rsadpa(resu19, 'L', 1, nopara, numord,&
                             1, jlue, k16b)
                 if (k16b(1:1) .ne. typres) then
-                    call u2mess('F', 'CALCULEL6_95')
+                    call utmess('F', 'CALCULEL6_95')
                 else if (typres.eq.'R') then
                     valr = zr(jlue)
                 else if (typres.eq.'I') then
@@ -343,7 +344,7 @@ subroutine trgene(ific, nocc)
                     im = im + 1
                     if (im .eq. ncmp) goto 124
 120              continue
-                call u2mess('F', 'CALCULEL6_98')
+                call utmess('F', 'CALCULEL6_98')
                 goto 100
 124              continue
                 im = i
@@ -352,7 +353,7 @@ subroutine trgene(ific, nocc)
             endif
 !
             if (k16b(1:1) .ne. typres) then
-                call u2mess('F', 'CALCULEL6_95')
+                call utmess('F', 'CALCULEL6_95')
             else if (typres.eq.'R') then
                 valr = zr(jlue+im-1)
             else if (typres.eq.'I') then
@@ -435,14 +436,18 @@ subroutine trgene(ific, nocc)
             endif
 !
             call jeexin(resu19//'.'//nsym(1:4), iret)
-            if (iret .eq. 0) call u2mesk('F', 'CALCULEL6_99', 1, resu19)
+            if (iret .eq. 0) then
+                call utmess('F', 'CALCULEL6_99', sk=resu19)
+            endif
             call jeveuo(resu19//'.'//nsym(1:4), 'L', jcham)
             call jeveuo(resu19//'.DESC', 'L', jdesc)
             nbmode = zi(jdesc+2-1)
             call wkvect('&&TRGENE.CHAMP', 'V V C', nbmode, jvecg)
             call zxtrac(interp, prec, crit2, nbfreq, zr(jfreq),&
                         freq, zc(jcham), nbmode, zc(jvecg), iret)
-            if (iret .ne. 0) call u2mesk('F', 'CALCULEL6_2', 1, resu19)
+            if (iret .ne. 0) then
+                call utmess('F', 'CALCULEL6_2', sk=resu19)
+            endif
             valc = zc(jvecg+ncmp-1)
 !
             lign1(1:21)='---- '//motcle(1:9)
@@ -520,14 +525,18 @@ subroutine trgene(ific, nocc)
             endif
 !
             call jeexin(resu19//'.'//nsym(1:4), iret)
-            if (iret .eq. 0) call u2mesk('F', 'CALCULEL6_99', 1, resu19)
+            if (iret .eq. 0) then
+                call utmess('F', 'CALCULEL6_99', sk=resu19)
+            endif
             call jeveuo(resu19//'.'//nsym(1:4), 'L', jcham)
             call jeveuo(resu19//'.DESC', 'L', jdesc)
             nbmode = zi(jdesc+2-1)
             call wkvect('&&TRGENE.CHAMP', 'V V R', nbmode, jvecg)
             call extrac(interp, prec, crit2, nbinst, zr(jinst),&
                         temps, zr(jcham), nbmode, zr(jvecg), iret)
-            if (iret .ne. 0) call u2mesk('F', 'CALCULEL6_2', 1, resu19)
+            if (iret .ne. 0) then
+                call utmess('F', 'CALCULEL6_2', sk=resu19)
+            endif
             valr = zr(jvecg+ncmp-1)
 !
             lign1(1:21)='---- '//motcle(1:9)

@@ -24,7 +24,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: motfac
     integer :: nzoco
     character(len=*) :: nommcz
@@ -132,7 +132,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
 20  continue
 !
     if (error) then
-        call u2mesk('F', 'CONTACT3_4', 1, nommc)
+        call utmess('F', 'CONTACT3_4', sk=nommc)
     endif
 !
 !

@@ -45,8 +45,8 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: mofaz, nomaz, lisnoz
 !
@@ -111,11 +111,11 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ----------------------------------
     call getvr8(motfac, 'RAYON', iocc=iocc, nbval=0, nbret=nrayon)
     if (nrayon .eq. 0) then
-        call u2mess('F', 'MODELISA3_82')
+        call utmess('F', 'MODELISA3_82')
     else
         call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
-            call u2mess('F', 'MODELISA3_83')
+            call utmess('F', 'MODELISA3_83')
         endif
     endif
 !
@@ -123,11 +123,11 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ------------------------------------------------
     call getvr8(motfac, 'PRECISION', iocc=iocc, nbval=0, nbret=nprec)
     if (nprec .eq. 0) then
-        call u2mess('F', 'MODELISA3_90')
+        call utmess('F', 'MODELISA3_90')
     else
         call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=nb)
         if (prec .le. zero) then
-            call u2mess('F', 'MODELISA3_91')
+            call utmess('F', 'MODELISA3_91')
         endif
     endif
 !

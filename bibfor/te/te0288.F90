@@ -10,7 +10,7 @@ subroutine te0288(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xcgfvo.h"
 #include "asterfort/xgelem.h"
 #include "asterfort/xsifle.h"
@@ -112,8 +112,12 @@ subroutine te0288(option, nomte)
     incr = compor(4).eq.'COMP_INCR'
     grand = compor(3).eq.'GROT_GDEP'
 !
-    if (incr) call u2mess('F', 'XFEM_48')
-    if (grand) call u2mess('F', 'XFEM_49')
+    if (incr) then
+        call utmess('F', 'XFEM_48')
+    endif
+    if (grand) then
+        call utmess('F', 'XFEM_49')
+    endif
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G SUR L'ELEMENT MASSIF
@@ -234,7 +238,7 @@ subroutine te0288(option, nomte)
                 'ELAS', 3, nomres, valres, devres,&
                 icodre)
     if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
-        call u2mess('F', 'RUPTURE1_25')
+        call utmess('F', 'RUPTURE1_25')
     endif
     if (icodre(3) .ne. 0) then
         valres(3) = 0.d0

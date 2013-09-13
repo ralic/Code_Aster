@@ -114,8 +114,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 #include "asterfort/dnaups.h"
 #include "asterfort/dneupd.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpgskp.h"
 #include "asterfort/vpordo.h"
 !
@@ -207,18 +206,18 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
         write(ifm,*)' NMAX_ITER_SOREN = ',maxitr,' A ETE ATTEINT !'
         write(ifm,*)
     else if (info.eq.2) then
-        call u2mess('F', 'ALGELINE3_72')
+        call utmess('F', 'ALGELINE3_72')
     else if ((info.eq.3).and.(niv.ge.1)) then
         write(ifm,*)
         write(ifm,*)'<VPSORN/DNAUPD 3> AUCUN SHIFT NE PEUT ETRE'//&
         ' APPLIQUE'
         write(ifm,*)
     else if (info.eq.-7) then
-        call u2mess('F', 'ALGELINE3_73')
+        call utmess('F', 'ALGELINE3_73')
     else if (info.eq.-8) then
-        call u2mess('F', 'ALGELINE3_74')
+        call utmess('F', 'ALGELINE3_74')
     else if (info.eq.-9) then
-        call u2mess('F', 'ALGELINE3_75')
+        call utmess('F', 'ALGELINE3_75')
     else if ((info.eq.-9999).and.(niv.ge.1)) then
         write(ifm,*)
         write(ifm,*)'<VPSORN/DNAUPD -9999> PROBLEME FACTORISATION'//&
@@ -226,8 +225,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
         write(ifm,*)
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesg('F', 'ALGELINE5_48', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGELINE5_48', si=vali(1))
     endif
 !
 ! GESTION DES MODES CONVERGES
@@ -238,8 +236,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
         vali (4) = nbvect
         vali (5) = maxitr
         valr (1) = tolsor
-        call u2mesg('E', 'ALGELINE5_49', 0, ' ', 5,&
-                    vali, 1, valr)
+        call utmess('E', 'ALGELINE5_49', ni=5, vali=vali, sr=valr(1))
         flage = .true.
     endif
 !
@@ -327,19 +324,18 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !
 ! GESTION DES FLAGS D'ERREURS
     if (info .eq. 1) then
-        call u2mess('F', 'ALGELINE3_74')
+        call utmess('F', 'ALGELINE3_74')
     else if (info.eq.-7) then
-        call u2mess('F', 'ALGELINE3_73')
+        call utmess('F', 'ALGELINE3_73')
     else if (info.eq.-8) then
-        call u2mess('F', 'ALGELINE3_76')
+        call utmess('F', 'ALGELINE3_76')
     else if (info.eq.-9) then
-        call u2mess('F', 'ALGELINE3_77')
+        call utmess('F', 'ALGELINE3_77')
     else if (info.eq.-14) then
-        call u2mess('F', 'ALGELINE3_78')
+        call utmess('F', 'ALGELINE3_78')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesg('F', 'ALGELINE5_48', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGELINE5_48', si=vali(1))
     endif
 !--------------------------------------------------------------------
 ! TESTS ET POST-TRAITEMENTS
@@ -361,8 +357,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
             vali (1) = j
             valr (1) = dsor(j,1)
             valr (2) = dsor(j,2)
-            call u2mesg('A', 'ALGELINE5_51', 0, ' ', 1,&
-                        vali, 2, valr)
+            call utmess('A', 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
         else if ((varaux.ne.0.d0).and.(niv.ge.1)) then
             write(ifm,*)'<VPSORN/DNEUPD 0> LA VALEUR PROPRE NUMERO ',&
             j

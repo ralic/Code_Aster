@@ -18,6 +18,7 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 ! ======================================================================
 ! aslint: disable=W1304
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 !  FONCTION  :  CREATION D'UNE MATRICE DE PRECONDITIONNEMENT PRC
 !     PAR LDLT INCOMPLET SUR LA MATRICE MAT STOCKEE SOUS FORME MORSE
@@ -28,7 +29,6 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 !
 !  REMARQUE: A L'APPEL AC ET PRC PEUVENT ETRE CONFONDUS
 !-----------------------------------------------------------------------
-#include "asterfort/u2mesg.h"
     real(kind=8) :: ac(*), prc(*), vect(nequ)
     character(len=19) :: matas
     integer :: in(nequ)
@@ -91,8 +91,7 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 !        ---- TEST DE SINGULARITE
             if (abs(cumul) .lt. epsi) then
                 vali = i
-                call u2mesg('F', 'ALGELINE4_58', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_58', si=vali)
             endif
             prc(jfin) = 1.d0/cumul
         endif

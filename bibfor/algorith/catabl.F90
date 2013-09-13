@@ -1,5 +1,5 @@
-subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
-                  newobj, newsd )
+subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
+                  newobj, newsd)
 !
     implicit none
 !
@@ -15,9 +15,7 @@ subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,13 +35,13 @@ subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) ::  newtab
-    character(len=8), intent(in) ::  oldtab
-    real(kind=8), intent(in) ::  inst
-    integer, intent(in) ::  numins
-    integer, intent(in) ::  nbnobj
-    character(len=16), intent(in) ::  newobj(nbnobj)
-    character(len=24), intent(in) ::  newsd(nbnobj)
+    character(len=8), intent(in) :: newtab
+    character(len=8), intent(in) :: oldtab
+    real(kind=8), intent(in) :: inst
+    integer, intent(in) :: numins
+    integer, intent(in) :: nbnobj
+    character(len=16), intent(in) :: newobj(nbnobj)
+    character(len=24), intent(in) :: newsd(nbnobj)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,21 +61,21 @@ subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  nbpara
+    integer :: nbpara
     parameter       (nbpara=5)
-    character(len=19) :: nompar(nbpara),typpar(nbpara)
-    integer ::  prepar(nbpara)
+    character(len=19) :: nompar(nbpara), typpar(nbpara)
+    integer :: prepar(nbpara)
 !
-    integer ::  nbobje
+    integer :: nbobje
     parameter       (nbobje=7)
-    character(len=16) :: nomobj(nbobje),typobj(nbobje)
+    character(len=16) :: nomobj(nbobje), typobj(nbobje)
 !
     character(len=19) :: nomtab
-    logical ::  l_new_table, l_copy_table, l_repl_object
-    integer ::  i_repl_object
-    integer ::  jtbnp, jtblp, jnobj, jnosd, jnuor, jtobj, jrins, jlins
-    integer ::  nboldp,nblign
-    integer ::  ipara,ilign,iobje,iobja,ibid
+    logical :: l_new_table, l_copy_table, l_repl_object
+    integer :: i_repl_object
+    integer :: jtbnp, jtblp, jnobj, jnosd, jnuor, jtobj, jrins, jlins
+    integer :: nboldp, nblign
+    integer :: ipara, ilign, iobje, iobja, ibid
     character(len=24) :: vk(3)
     character(len=16) :: k16bid, oldobj, newtyp
     real(kind=8) :: r8bid, oldins
@@ -106,56 +104,58 @@ subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
     nomtab = newtab
     nboldp = 0
     nblign = 0
-    l_new_table  = .false.
+    l_new_table = .false.
     l_copy_table = .false.
-    do ipara = 1,nbpara
+    do ipara = 1, nbpara
         prepar(ipara) = 0
     enddo
-    call detrsd('TABLE_CONTAINER',newtab)
+    call detrsd('TABLE_CONTAINER', newtab)
 !
 ! - New table or not ?
 !
-    if (oldtab.eq.' ') then
-      l_new_table = .true.
+    if (oldtab .eq. ' ') then
+        l_new_table = .true.
     else
-      l_new_table = .false.
+        l_new_table = .false.
     endif
 !
 ! - Copying old table in the new one ?
 !
     if (.not.l_new_table) then
-        if (oldtab.eq.newtab) l_copy_table = .true.
+        if (oldtab .eq. newtab) l_copy_table = .true.
     endif
 !
 ! - Create new table
 !
     if (l_new_table) then
-        call tbcrsd(newtab,'G')
+        call tbcrsd(newtab, 'G')
         call tbajpa(newtab, nbpara, nompar, typpar)
     endif
 !
 ! - Copy table
 !
     if (l_copy_table) then
-      call copisd('TABLE','G',oldtab,newtab)
+        call copisd('TABLE', 'G', oldtab, newtab)
     endif
 !
 ! - Check old table
 !
     if (.not.l_new_table) then
-        call jeveuo(nomtab//'.tbnp','L',jtbnp)
-        call jeveuo(nomtab//'.tblp','L',jtblp)
+        call jeveuo(nomtab//'.tbnp', 'L', jtbnp)
+        call jeveuo(nomtab//'.tblp', 'L', jtblp)
         nboldp = zi(jtbnp-1+1)
-        if (nboldp.ne.nbpara) call u2mess('F','CALCUL1_1')
+        if (nboldp .ne. nbpara) then
+            call utmess('F', 'CALCUL1_1')
+        endif
         nblign = zi(jtbnp-1+2)
-        do ipara=1,nbpara
-            if (zk24(jtblp+(ipara-1)*4).eq.nompar(ipara)) then
+        do ipara = 1, nbpara
+            if (zk24(jtblp+(ipara-1)*4) .eq. nompar(ipara)) then
                 prepar(ipara) = ipara
             endif
         enddo
-        do ipara=1,nbpara
-            if (prepar(ipara).eq.0) then
-                call u2mess('F','CALCUL1_2')
+        do ipara = 1, nbpara
+            if (prepar(ipara) .eq. 0) then
+                call utmess('F', 'CALCUL1_2')
             endif
         enddo
     endif
@@ -163,17 +163,17 @@ subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
 ! - Memory pointer on old table
 !
     if (.not.l_new_table) then
-        call jeveuo(zk24(jtblp+(prepar(5)-1)*4+3),'L',jlins)
-        call jeveuo(zk24(jtblp+(prepar(1)-1)*4+2),'L',jnobj)
-        call jeveuo(zk24(jtblp+(prepar(2)-1)*4+2),'L',jtobj)
-        call jeveuo(zk24(jtblp+(prepar(3)-1)*4+2),'E',jnosd)
-        call jeveuo(zk24(jtblp+(prepar(4)-1)*4+2),'E',jnuor)
-        call jeveuo(zk24(jtblp+(prepar(5)-1)*4+2),'E',jrins)
+        call jeveuo(zk24(jtblp+(prepar(5)-1)*4+3), 'L', jlins)
+        call jeveuo(zk24(jtblp+(prepar(1)-1)*4+2), 'L', jnobj)
+        call jeveuo(zk24(jtblp+(prepar(2)-1)*4+2), 'L', jtobj)
+        call jeveuo(zk24(jtblp+(prepar(3)-1)*4+2), 'E', jnosd)
+        call jeveuo(zk24(jtblp+(prepar(4)-1)*4+2), 'E', jnuor)
+        call jeveuo(zk24(jtblp+(prepar(5)-1)*4+2), 'E', jrins)
     endif
 !
 ! - Loop on objects to add new one or replace old one
 !
-    do iobja = 1,nbnobj
+    do iobja = 1, nbnobj
         l_repl_object = .false.
         i_repl_object = 0
         if (l_new_table) then
@@ -181,19 +181,19 @@ subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
             i_repl_object = 0
         else
 ! --------- Loop on lines in table
-            do ilign = 1,nblign
-                if (zi(jlins+ilign-1).eq.1)then
+            do ilign = 1, nblign
+                if (zi(jlins+ilign-1) .eq. 1) then
 ! ----------------- Time
-                    call tbacce(nomtab,ilign ,'INST'      ,'L',ibid,&
-                                oldins,c16bid,k16bid)
+                    call tbacce(nomtab, ilign, 'INST', 'L', ibid,&
+                                oldins, c16bid, k16bid)
 ! ----------------- Current object name
-                    call tbacce(nomtab,ilign ,'NOM_OBJET' ,'L',ibid,&
-                                r8bid ,c16bid,oldobj)
+                    call tbacce(nomtab, ilign, 'NOM_OBJET', 'L', ibid,&
+                                r8bid, c16bid, oldobj)
 ! ----------------- New object or replace old one ?
-                    if (oldobj.eq.newobj(iobja)) then
-                        if (inst.eq.oldins) then
-                            if (i_repl_object.ne.0) then
-                                call u2mesr('F','CALCUL1_3',1,inst)
+                    if (oldobj .eq. newobj(iobja)) then
+                        if (inst .eq. oldins) then
+                            if (i_repl_object .ne. 0) then
+                                call utmess('F', 'CALCUL1_3', sr=inst)
                             endif
                             l_repl_object = .true.
                             i_repl_object = ilign
@@ -209,30 +209,31 @@ subroutine catabl(newtab, oldtab, inst , numins, nbnobj, &
 ! ----- Object type
 !
         newtyp = ' '
-        do iobje = 1,nbobje
-            if (nomobj(iobje).eq.newobj(iobja)) then
+        do iobje = 1, nbobje
+            if (nomobj(iobje) .eq. newobj(iobja)) then
                 newtyp = typobj(iobje)
             endif
         enddo
-        if (newtyp.eq.' ') ASSERT(.false.)
+        if (newtyp .eq. ' ') ASSERT(.false.)
 !
 ! ----- Add object (new line) or replace old one ?
 !
-        if ( l_repl_object) then
+        if (l_repl_object) then
             ASSERT(i_repl_object.ne.0)
             vk(1) = newobj(iobja)
             vk(2) = oldtab
-            call u2mesg('A','CALCUL1_4',2,vk,0,ibid,1,inst)
+            call utmess('A', 'CALCUL1_4', nk=2, valk=vk, sr=inst)
             call jedetr(zk24(jnosd+i_repl_object-1))
             zk24(jnosd+i_repl_object-1) = newobj(iobja)
-            zi(jnuor+i_repl_object-1)   = numins
-            zr(jrins+i_repl_object-1)   = inst
+            zi(jnuor+i_repl_object-1) = numins
+            zr(jrins+i_repl_object-1) = inst
         else
             ASSERT(i_repl_object.eq.0)
             vk(1) = newobj(iobja)
             vk(2) = newtyp
             vk(3) = newsd(iobja)
-            call tbajli(nomtab,nbpara,nompar,numins,inst,c16bid,vk,0)
+            call tbajli(nomtab, nbpara, nompar, numins, inst,&
+                        c16bid, vk, 0)
         endif
     enddo
 !

@@ -55,7 +55,6 @@ subroutine te0003(option, nomte)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -80,8 +79,6 @@ subroutine te0003(option, nomte)
 #include "asterfort/rcvala.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/uterec.h"
 #include "asterfort/uterfl.h"
 #include "asterfort/utersa.h"
@@ -89,10 +86,12 @@ subroutine te0003(option, nomte)
 #include "asterfort/utin3d.h"
 #include "asterfort/utintc.h"
 #include "asterfort/utjac.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnbnv.h"
 #include "asterfort/utno3d.h"
 #include "asterfort/utnorm.h"
 #include "asterfort/utvois.h"
+!
     character(len=16) :: option, nomte
 !
 !
@@ -502,14 +501,17 @@ subroutine te0003(option, nomte)
     if ((phenom.eq.'THER') .or. (phenom.eq.'THER_ORTH')) then
         lnonli = .false.
         call rcvala(zi(imate), ' ', phenom, 1, 'INST',&
-                    [inst], 1, 'RHO_CP', rhocp(1), icodre,1)
-        if (icodre(1) .ne. 0) call u2mess('F', 'ELEMENTS2_62')
+                    [inst], 1, 'RHO_CP', rhocp(1), icodre,&
+                    1)
+        if (icodre(1) .ne. 0) then
+            call utmess('F', 'ELEMENTS2_62')
+        endif
     else if (phenom.eq.'THER_NL') then
         lnonli = .true.
         call ntfcma(zi(imate), ifon)
-        call u2mess('A', 'ELEMENTS4_91')
+        call utmess('A', 'ELEMENTS4_91')
     else
-        call u2mess('F', 'ELEMENTS2_63')
+        call utmess('F', 'ELEMENTS2_63')
     endif
     if (tabniv(4) .eq. 2) then
         write (ifm,*) 'PHENOM =',phenom
@@ -1121,7 +1123,7 @@ subroutine te0003(option, nomte)
         else
 !
             valk(1)=typmav(1:4)
-            call u2mesk('F', 'INDICATEUR_10', 1, valk)
+            call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !---------------------------------
 ! FIN IF FORMV                    --------------------------------
 !---------------------------------

@@ -33,7 +33,7 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ier, nbtyp
     character(len=*) :: tabtyp(nbtyp), nomch
 !
@@ -82,8 +82,7 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
 !
     if (ier .ne. 0) then
         valk = loch//'_'//gdch
-        call u2mesg('F', 'UTILITAI5_97', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI5_97', sk=valk)
     endif
 !
     call jedema()

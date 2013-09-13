@@ -18,7 +18,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !       ----------------------------------------------------------------
 !       RECUPERATION DU MATERIAU A TEMPF ET AJUSTEMENT SEUILS
 !       IN  MOD    :  TYPE DE MODELISATION
@@ -47,7 +47,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 #include "asterfort/hujmat.h"
 #include "asterfort/hujori.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: mod
     character(len=3) :: matcst
     integer :: imat, nmat, ndt, ndi, nvi, nr
@@ -96,7 +96,9 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 ! --- CONTROLE DES EQUILIBRES DE SEUILS PLASTIQUES
 ! ----------------------------------------------------------------------
 ! --- 1 ORIENTATION DES CONTRAINTES SELON ANGMAS VERS REPERE LOCAL
-    if (angmas(1) .eq. r8vide()) call u2mess('F', 'ALGORITH8_20')
+    if (angmas(1) .eq. r8vide()) then
+        call utmess('F', 'ALGORITH8_20')
+    endif
     reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero)&
      &         .or. (angmas(3).ne.zero)
     call hujori('LOCAL', 1, reorie, angmas, sigd,&
@@ -150,7 +152,7 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
             pc0 = materf(7,2)
             vind(4) = piso/(d*pc0)
             if (vind(4) .gt. 1.d0) then
-                call u2mess('F', 'COMPOR1_83')
+                call utmess('F', 'COMPOR1_83')
             endif
             vind(27)= un
         endif

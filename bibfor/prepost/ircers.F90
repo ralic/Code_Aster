@@ -8,7 +8,6 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dgmode.h"
@@ -28,8 +27,9 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), ncmpu
     integer :: nucmp(*), nbnoma(*), typma(*), permut(maxnod, *), nbmat
     integer :: nummai(*), nbcmp, ncmps(*)
@@ -279,7 +279,9 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !             NOMBRE DE COMPOSANTES SELECTIONNEES PRESENTES
 !             DANS LE GREL
                 zi(inbcg+igrel-1)=ncmpg
-                if (igrel .eq. nbgrel .and. k .lt. nbcmp) call u2mess('F', 'PREPOST_83')
+                if (igrel .eq. nbgrel .and. k .lt. nbcmp) then
+                    call utmess('F', 'PREPOST_83')
+                endif
                 ncmpp=0
                 do 906 i = 1, ncmpmx
                     if (exisdg(zi(iaec),i)) then
@@ -446,9 +448,9 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     itype = typma(iel)
                     call jenuno(jexnum('&CATA.TM.NOMTM', itype), ktype)
                     if (ktype .eq. 'PYRAM5') then
-                        call u2mess('A', 'PREPOST_84')
+                        call utmess('A', 'PREPOST_84')
                     else if (ktype .eq. 'PYRAM13') then
-                        call u2mess('A', 'PREPOST_85')
+                        call utmess('A', 'PREPOST_85')
                     else
 !
 !    --- CHAMELEM AUX NOEUDS ---
@@ -734,7 +736,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 10  end do
 !
     if (lnocen) then
-        call u2mess('A', 'PREPOST_86')
+        call utmess('A', 'PREPOST_86')
     endif
 !
     call jedetr('&&IRCERS.VALNOE')

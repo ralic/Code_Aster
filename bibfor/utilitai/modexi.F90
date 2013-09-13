@@ -31,7 +31,6 @@ subroutine modexi(modelz, nomodz, iexi)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -40,7 +39,8 @@ subroutine modexi(modelz, nomodz, iexi)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: modelz, nomodz
 ! -----  VARIABLES LOCALES
     integer :: repi
@@ -68,7 +68,7 @@ subroutine modexi(modelz, nomodz, iexi)
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
         if (nbgrel .le. 0) then
-            call u2mess('F', 'UTILITAI_1')
+            call utmess('F', 'UTILITAI_1')
         endif
         nomodl=' '
         do 10 igrel = 1, nbgrel

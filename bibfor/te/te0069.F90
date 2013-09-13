@@ -1,5 +1,6 @@
 subroutine te0069(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -7,7 +8,7 @@ subroutine te0069(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -34,7 +35,6 @@ subroutine te0069(option, nomte)
 !
 ! ---------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
 !
     integer :: icodre(2)
@@ -107,7 +107,7 @@ subroutine te0069(option, nomte)
         aniso = .false.
 !
     else
-        call u2mess('F', 'ELEMENTS2_63')
+        call utmess('F', 'ELEMENTS2_63')
     endif
 !
 !====

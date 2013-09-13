@@ -3,7 +3,6 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
                   crit, ific, llab, ssigne)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -16,9 +15,9 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
+!
     character(len=19) :: cham19
     character(len=33) :: nonoeu
     character(len=8) :: nocmp
@@ -94,10 +93,10 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
         valk(1) = cham19
         valk(2) = type
         valk(3) = typres
-        call u2mesk('F', 'CALCULEL6_89', 3, valk)
+        call utmess('F', 'CALCULEL6_89', nk=3, valk=valk)
     else if (type.ne.'R' .and. type.ne.'C') then
         valk(1) = type
-        call u2mesk('F', 'CALCULEL6_90', 1, valk)
+        call utmess('F', 'CALCULEL6_90', sk=valk(1))
     endif
     call jeveuo(cham19//'.VALE', 'L', iavale)
 !
@@ -113,14 +112,14 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
     if (icmp .eq. 0) then
         valk(1) = nocmp
         valk(2) = nogd
-        call u2mesk('F', 'CALCULEL6_91', 2, valk)
+        call utmess('F', 'CALCULEL6_91', nk=2, valk=valk)
     endif
 !
 !        -- RECUPERATION DU NUMERO DU NOEUD:
     call jenonu(jexnom(nomma//'.NOMNOE', nonoeu(1:8)), ino)
     if (ino .eq. 0) then
         valk(1) =nonoeu(1:8)
-        call u2mesk('F', 'CALCULEL6_92', 1, valk)
+        call utmess('F', 'CALCULEL6_92', sk=valk(1))
     endif
 !
 !     --SI LE CHAMP EST A REPRESENTATION CONSTANTE:
@@ -146,7 +145,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
                         refr, refc, vali, valr, valc,&
                         epsi, crit, ific, llab, ssigne)
         else
-            call u2mess('F', 'CALCULEL6_93')
+            call utmess('F', 'CALCULEL6_93')
         endif
     else
 !        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
@@ -189,7 +188,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
                         refr, refc, vali, valr, valc,&
                         epsi, crit, ific, llab, ssigne)
         else
-            call u2mess('F', 'CALCULEL6_93')
+            call utmess('F', 'CALCULEL6_93')
         endif
     endif
 9999  continue

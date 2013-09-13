@@ -1,7 +1,7 @@
 subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: ext(*), sigmin(*), sigmax(*)
     integer :: nbextr, ncyc
 !     ------------------------------------------------------------------
@@ -57,7 +57,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
         sigmin(1) = ext(1)
         ncyc = 1
 !
-        call u2mess('A', 'FATIGUE1_39')
+        call utmess('A', 'FATIGUE1_39')
 !
         goto 999
     endif

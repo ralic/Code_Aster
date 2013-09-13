@@ -20,7 +20,7 @@ subroutine crsvit(solveu)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=19) :: solveu
 !
 ! ----------------------------------------------------------------------
@@ -53,10 +53,10 @@ subroutine crsvit(solveu)
         if (nompre .eq. 'LDLT_SP') then
             zi(islvi-1+8) = 2
         else
-            call u2mesk('I', 'DISCRETISATION_41', 1, nompre)
+            call utmess('I', 'DISCRETISATION_41', sk=nompre)
         endif
     else
-        call u2mesk('I', 'DISCRETISATION_42', 1, nomslv)
+        call utmess('I', 'DISCRETISATION_42', sk=nomslv)
     endif
 !
     call jedema()

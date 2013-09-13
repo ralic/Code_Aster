@@ -19,7 +19,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 #include "asterfort/numek8.h"
 #include "asterfort/rvinvt.h"
 #include "asterfort/rvpstd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: sdeval, quant, sdlieu
@@ -101,10 +101,10 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     integer :: tcoe, tcoq, tnde, tndq
 !
     integer :: asgtu
-#define sgtu(i)   zr(asgtu+i-1)
+#define sgtu(i) zr(asgtu+i-1)
 !     FORME BILINEAIRE ASSOCIEE AU TENSEUR
-#define vtv(vax,vay,vaz,vbx,vby,vbz)   (vax) * ((vbx)*txx+(vby)*txy+(vbz)*txz) + \
-        (vay) * ((vbx)*txy+(vby)*tyy+(vbz)*tyz) + (vaz) * ((vbx)*txz+(vby)*tyz+(vbz)*tzz)
+#define vtv(vax,vay,vaz,vbx,vby,vbz) (vax) * ((vbx)*txx+(vby)*txy+(vbz)*txz) + \
+    (vay) * ((vbx)*txy+(vby)*tyy+(vbz)*tyz) + (vaz) * ((vbx)*txz+(vby)*tyz+(vbz)*tzz)
 !
 !======================================================================
 !
@@ -919,7 +919,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             zr(avaleq+il-1) = zr(avalee+il-1)
 362          continue
         else
-            call u2mesk('F', 'POSTRELE_14', 1, k4)
+            call utmess('F', 'POSTRELE_14', sk=k4)
         endif
 370      continue
 380      continue

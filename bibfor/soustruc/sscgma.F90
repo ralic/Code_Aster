@@ -53,9 +53,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -105,7 +104,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
     call jenonu(jexnom(ma//'.GROUPEMA', nogma), ibid)
     if (ibid .gt. 0) then
-        call u2mesk('F', 'ALGELINE3_7', 1, nogma)
+        call utmess('F', 'ALGELINE3_7', sk=nogma)
     endif
 !
     call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc,&
@@ -155,14 +154,14 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             call jenonu(jexnom(ma//'.NOMMAI', nom1), num)
             if (num .eq. 0) then
                 ier = ier + 1
-                call u2mesk('E', 'SOUSTRUC_31', 1, nom1)
+                call utmess('E', 'SOUSTRUC_31', sk=nom1)
                 goto 20
             endif
             zi(jmail2-1+num) = zi(jmail2-1+num) + 1
             if (zi(jmail2-1+num) .eq. 2) then
                 valk(1) = nom1
                 valk(2) = nogma
-                call u2mesk('A', 'SOUSTRUC_32', 2, valk)
+                call utmess('A', 'SOUSTRUC_32', nk=2, valk=valk)
                 goto 20
             endif
             nbma = nbma + 1
@@ -196,8 +195,12 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             if (n6a .eq. 0) ind1 = 1
             call getvis('CREA_GROUP_MA', 'NUME_FIN', iocc=iocc, scal=ind2, nbret=n6a)
             if (n6a .eq. 0) ind2 = ili2
-            if (ind2 .lt. ind1) call u2mess('F', 'SOUSTRUC_33')
-            if (ili2 .lt. ind2) call u2mess('F', 'SOUSTRUC_34')
+            if (ind2 .lt. ind1) then
+                call utmess('F', 'SOUSTRUC_33')
+            endif
+            if (ili2 .lt. ind2) then
+                call utmess('F', 'SOUSTRUC_34')
+            endif
             n6a = ind2 - ind1 + 1
         else
             n6a = 1
@@ -232,7 +235,9 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                     nbret=nbid)
         do 50,igm = 1,n3
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
-        if (igm2 .eq. 0) call u2mesk('F', 'SOUSTRUC_35', 1, zk24(ialik8-1+igm))
+        if (igm2 .eq. 0) then
+            call utmess('F', 'SOUSTRUC_35', sk=zk24(ialik8-1+igm))
+        endif
 50      continue
 !
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
@@ -264,7 +269,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
-                call u2mesk('A', 'SOUSTRUC_36', 1, nogma)
+                call utmess('A', 'SOUSTRUC_36', sk=nogma)
             endif
         else
             call wkvect(lisma, 'V V I', n, jlisma)
@@ -284,7 +289,9 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                     nbret=nbid)
         do 100,igm = 1,n4
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
-        if (igm2 .eq. 0) call u2mesk('F', 'SOUSTRUC_35', 1, zk24(ialik8-1+igm))
+        if (igm2 .eq. 0) then
+            call utmess('F', 'SOUSTRUC_35', sk=zk24(ialik8-1+igm))
+        endif
 100      continue
 !
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
@@ -326,7 +333,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
-                call u2mesk('A', 'SOUSTRUC_36', 1, nogma)
+                call utmess('A', 'SOUSTRUC_36', sk=nogma)
             endif
         else
             call wkvect(lisma, 'V V I', n, jlisma)
@@ -346,7 +353,9 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                     nbret=nbid)
         do 150,igm = 1,n5
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
-        if (igm2 .eq. 0) call u2mesk('F', 'SOUSTRUC_35', 1, zk24(ialik8-1+igm))
+        if (igm2 .eq. 0) then
+            call utmess('F', 'SOUSTRUC_35', sk=zk24(ialik8-1+igm))
+        endif
 150      continue
 !
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
@@ -378,7 +387,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
-                call u2mesk('A', 'SOUSTRUC_36', 1, nogma)
+                call utmess('A', 'SOUSTRUC_36', sk=nogma)
             endif
         else
             call wkvect(lisma, 'V V I', n, jlisma)
@@ -420,7 +429,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !            -- TRAITEMENT DE L'OPTION APPUI_LACHE :
 !               ----------------------------------
         else if (option(1:11).eq.'APPUI_LACHE') then
-            call u2mess('A', 'SOUSTRUC2_6')
+            call utmess('A', 'SOUSTRUC2_6')
             call cgmaal('CREA_GROUP_MA', iocc, ma, lisma, nbma)
 !
 !            -- TRAITEMENT DE L'OPTION APPUI_STRICT :
@@ -445,7 +454,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
         if (tyma(1:4) .ne. 'TOUT') then
             call cgmftm(tyma, ma, lisma, nbma, ierr)
             if (ierr .ne. 0) then
-                call u2mesk('F', 'SOUSTRUC2_7', 1, nogma)
+                call utmess('F', 'SOUSTRUC2_7', sk=nogma)
             endif
         endif
     endif
@@ -454,7 +463,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       ----------------------------------
     if (nbma .eq. 0) then
         if (alarm .eq. 'OUI') then
-            call u2mesk('A', 'SOUSTRUC_36', 1, nogma)
+            call utmess('A', 'SOUSTRUC_36', sk=nogma)
         endif
     else
         call jeveuo(lisma, 'L', idlima)

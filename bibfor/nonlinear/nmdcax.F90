@@ -18,7 +18,7 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -27,7 +27,7 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sddisc
     integer :: numins
     real(kind=8) :: durdec, insref, deltac
@@ -120,7 +120,7 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 !
     valr(1) = insref
     valr(2) = durdec
-    call u2mesr('I', 'SUBDIVISE_18', 2, valr)
+    call utmess('I', 'SUBDIVISE_18', nr=2, valr=valr)
 !
     call jedema()
 end subroutine

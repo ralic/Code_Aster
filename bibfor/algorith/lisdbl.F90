@@ -17,13 +17,13 @@ subroutine lisdbl(lischa)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lislch.h"
 #include "asterfort/lisnnb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------
@@ -59,7 +59,7 @@ subroutine lisdbl(lischa)
             if (ichar1 .ne. ichar2) then
                 call lislch(lischa, ichar2, charg2)
                 if (charg1 .eq. charg2) then
-                    call u2mesk('F', 'CHARGES5_2', 1, charg1)
+                    call utmess('F', 'CHARGES5_2', sk=charg1)
                 endif
             endif
 20      continue

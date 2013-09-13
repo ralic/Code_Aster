@@ -11,9 +11,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nuord, iexcit
     character(len=8) :: result, modele, carele, materi
@@ -114,7 +112,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         else if (nomsd.eq.nomlu) then
             modele = nomlu
         else
-            call u2mess('A', 'UTILITAI4_37')
+            call utmess('A', 'UTILITAI4_37')
             modele = nomlu
         endif
     else
@@ -155,7 +153,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         else if (nomsd.eq.nomlu) then
             carele = nomlu
         else
-            call u2mess('A', 'UTILITAI4_38')
+            call utmess('A', 'UTILITAI4_38')
             carele = nomlu
         endif
     else
@@ -198,7 +196,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         else if (nomsd.eq.nomlu) then
             materi = nomlu
         else
-            call u2mess('A', 'UTILITAI4_39')
+            call utmess('A', 'UTILITAI4_39')
             materi = nomlu
         endif
     else
@@ -295,7 +293,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         if (nchalu .ne. nchasd) then
             vali(1)=nchalu
             vali(2)=nchasd
-            call u2mesi('A', 'CALCULEL6_65', 2, vali)
+            call utmess('A', 'CALCULEL6_65', ni=2, vali=vali)
         endif
 !
 !--- VERIFICATIONS DU NOM DES CHARGEMENTS
@@ -304,7 +302,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
             do 20 isd = 1, nchasd
                 if (zk8(lchalu-1+ilu) .eq. zk24(jlcha-1+isd)(1:8)) goto 30
 20          continue
-            call u2mess('A', 'UTILITAI4_40')
+            call utmess('A', 'UTILITAI4_40')
 30          continue
 40      continue
 !
@@ -317,7 +315,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
                     if (foncsd(1:2) .eq. '&&') foncsd = ' '
                     if (zk8(fchalu-1+ilu) .eq. foncsd) goto 60
 50              continue
-                call u2mess('A', 'UTILITAI4_41')
+                call utmess('A', 'UTILITAI4_41')
 60              continue
 70          continue
         endif
@@ -336,7 +334,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
                         valk(2)=zk8(fchalu-1+ilu)
                         valk(3)=zk24(jlcha-1+isd)(1:8)
                         valk(4)=foncsd
-                        call u2mesk('A', 'CALCULEL6_66', 4, valk)
+                        call utmess('A', 'CALCULEL6_66', nk=4, valk=valk)
                     endif
 90              continue
 95              continue

@@ -5,7 +5,7 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: retcom
     real(kind=8) :: rho0, rho11, rho12, rho21, rho22, sat, phi, csigm, dalal, t
     real(kind=8) :: cp11, cp12, cp21, cp22, coeps
@@ -41,7 +41,7 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
     if (umprhs .le. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        call u2mesk('A', 'ALGORITH17_39', 1, nomail)
+        call utmess('A', 'ALGORITH17_39', sk=nomail)
         retcom = 1
         goto 30
     endif
@@ -54,7 +54,7 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
     if (coeps .le. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        call u2mesk('A', 'ALGORITH17_40', 1, nomail)
+        call utmess('A', 'ALGORITH17_40', sk=nomail)
         retcom = 1
         goto 30
     endif

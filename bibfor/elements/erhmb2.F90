@@ -95,7 +95,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 #include "jeveux.h"
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     logical :: perman
     integer :: ino, nbs, ndim
     real(kind=8) :: jac(3), nx(3), ny(3), tx(3), ty(3)
@@ -284,13 +284,13 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 ! 2.2.3. ERREUR
 !
             else
-                call u2mesk('F', 'INDICATEUR_90', 1, nomgd2)
+                call utmess('F', 'INDICATEUR_90', sk=nomgd2)
             endif
 !
 ! 2.2.4. ERREUR
 !
         else
-            call u2mesk('F', 'INDICATEUR_91', 1, nomgd2)
+            call utmess('F', 'INDICATEUR_91', sk=nomgd2)
         endif
 !
     endif
@@ -513,13 +513,13 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 ! 3.2.3. ERREUR
 !
             else
-                call u2mesk('F', 'INDICATEUR_90', 1, nomgd3)
+                call utmess('F', 'INDICATEUR_90', sk=nomgd3)
             endif
 !
 ! 3.2.4. ERREUR
 !
         else
-            call u2mesk('F', 'INDICATEUR_91', 1, nomgd3)
+            call utmess('F', 'INDICATEUR_91', sk=nomgd3)
         endif
 !
     endif

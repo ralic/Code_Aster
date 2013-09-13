@@ -50,7 +50,6 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -65,8 +64,8 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: chmatz, nommaz, noparz
     character(len=19) :: ch19
 ! -----  VARIABLES LOCALES
@@ -112,7 +111,9 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     do 777, kk=1,30
     if (exisdg(ec1,kk)) k=k+1
     777 end do
-    if (zk8(jvale+ncmp*(imate-1)+k-2) .ne. 'TREF=>') call u2mesk('F', 'CALCULEL6_56', 1, chmat)
+    if (zk8(jvale+ncmp*(imate-1)+k-2) .ne. 'TREF=>') then
+        call utmess('F', 'CALCULEL6_56', sk=chmat)
+    endif
     ktref = zk8(jvale+ncmp*(imate-1)+k-1)
     if (ktref .eq. 'NAN') goto 9998
 !
@@ -135,7 +136,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 ! --- SUR LA VOLATILE :
     call gettco(ch19, typres)
     if (typres .eq. 'FORMULE') then
-        call u2mess('F', 'MODELISA2_1')
+        call utmess('F', 'MODELISA2_1')
     endif
     call copisd('FONCTION', 'V', ch19, chwork)
 !
@@ -156,7 +157,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
             goto 9999
 !        -- SINON ON ARRETE TOUT :
         else
-            call u2mesk('F', 'MODELISA2_42', 1, ch19(1:8))
+            call utmess('F', 'MODELISA2_42', sk=ch19(1:8))
         endif
     endif
 !
@@ -197,10 +198,14 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
                 tip1 = zr(idvale+i+1-1)
                 alfim1 = zr(idvale+i+nbpts-1-1)
                 alfip1 = zr(idvale+i+nbpts+1-1)
-                if (tip1 .eq. tref) call u2mess('F', 'MODELISA2_2')
-                if (tim1 .eq. tref) call u2mess('F', 'MODELISA2_2')
+                if (tip1 .eq. tref) then
+                    call utmess('F', 'MODELISA2_2')
+                endif
+                if (tim1 .eq. tref) then
+                    call utmess('F', 'MODELISA2_2')
+                endif
 !
-                dalref = undemi*( (alfip1-alfref(1))/(tip1-tref) +(alfref(1)- alfim1)/(tref-tim1) )
+                dalref = undemi*((alfip1-alfref(1))/(tip1-tref) +(alfref(1)- alfim1)/(tref-tim1))
 !
 ! ---   DANS LE CAS OU I = NBPTS :
 ! ---   D(ALPHA)/DT( TREF) = (ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1) :
@@ -208,7 +213,9 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !
                 tim1 = zr(idvale+i-1-1)
                 alfim1 = zr(idvale+i+nbpts-1-1)
-                if (tim1 .eq. tref) call u2mess('F', 'MODELISA2_2')
+                if (tim1 .eq. tref) then
+                    call utmess('F', 'MODELISA2_2')
+                endif
 !
                 dalref = (alfref(1)-alfim1)/(tref-tim1)
 !
@@ -218,7 +225,9 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !
                 tip1 = zr(idvale+i+1-1)
                 alfip1 = zr(idvale+i+nbpts+1-1)
-                if (tip1 .eq. tref) call u2mess('F', 'MODELISA2_2')
+                if (tip1 .eq. tref) then
+                    call utmess('F', 'MODELISA2_2')
+                endif
 !
                 dalref = (alfip1-alfref(1))/(tip1-tref)
 !
@@ -241,7 +250,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 9998  continue
     valk(1)=chmat
     valk(2)=nommat
-    call u2mesk('F', 'CALCULEL6_1', 2, valk)
+    call utmess('F', 'CALCULEL6_1', nk=2, valk=valk)
 !
 9999  continue
 end subroutine

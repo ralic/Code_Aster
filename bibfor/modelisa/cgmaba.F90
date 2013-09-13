@@ -53,9 +53,8 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -141,11 +140,11 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !     -------------------------------------------
     call getvr8(motfac, 'DIST', iocc=iocc, nbval=0, nbret=ndist)
     if (ndist .eq. 0) then
-        call u2mess('F', 'MODELISA3_67')
+        call utmess('F', 'MODELISA3_67')
     else
         call getvr8(motfac, 'DIST', iocc=iocc, scal=dist, nbret=nb)
         if (dist .le. zero) then
-            call u2mess('F', 'MODELISA3_68')
+            call utmess('F', 'MODELISA3_68')
         endif
     endif
 !
@@ -156,13 +155,13 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
     if (nangle .eq. 0) then
         call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
-            call u2mess('F', 'MODELISA3_69')
+            call utmess('F', 'MODELISA3_69')
         else
             nvect = -nvect
             if (ndim .eq. 3 .and. nvect .ne. 3) then
-                call u2mess('F', 'MODELISA3_70')
+                call utmess('F', 'MODELISA3_70')
             else if (ndim.eq.2.and.nvect.ne.2) then
-                call u2mess('F', 'MODELISA3_71')
+                call utmess('F', 'MODELISA3_71')
             else
                 call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=vecnor,&
                             nbret=nv)
@@ -177,17 +176,15 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
         if (abs(nv) .ne. ndim1) then
             valk = motfac
             vali (1) = iocc
-            call u2mesg('F+', 'MODELISA9_32', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F+', 'MODELISA9_32', sk=valk, si=vali(1))
             if (ndim .eq. 2) then
-                call u2mess('F+', 'MODELISA9_24')
+                call utmess('F+', 'MODELISA9_24')
             else
-                call u2mess('F+', 'MODELISA9_25')
+                call utmess('F+', 'MODELISA9_25')
             endif
             vali (1) = abs(nv)
             vali (2) = ndim1
-            call u2mesg('F', 'MODELISA9_35', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'MODELISA9_35', ni=2, vali=vali)
         endif
 !
         if (ndim .eq. 2) then
@@ -209,7 +206,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
     xnorm2 = vecnor(1)*vecnor(1) + vecnor(2)*vecnor(2) + vecnor(3)*vecnor(3)
 !
     if (xnorm2 .eq. zero) then
-        call u2mess('F', 'MODELISA3_72')
+        call utmess('F', 'MODELISA3_72')
     endif
 !
     xnorm = sqrt(xnorm2)

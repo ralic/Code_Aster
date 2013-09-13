@@ -18,7 +18,7 @@ subroutine obtcla(sdtabl)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -27,7 +27,7 @@ subroutine obtcla(sdtabl)
 #include "asterfort/oblgai.h"
 #include "asterfort/oblgoi.h"
 #include "asterfort/obseti.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdtabl
 !
 ! ----------------------------------------------------------------------
@@ -63,7 +63,9 @@ subroutine obtcla(sdtabl)
 ! --- NOMBRE DE COLONNES ACTIVES
 !
     call obgeti(slcolo, 'NBRE_ACTI', nbacti)
-    if (nbacti .ge. 15) call u2mesi('F', 'IMPRESSION_1', 1, nbacti)
+    if (nbacti .ge. 15) then
+        call utmess('F', 'IMPRESSION_1', si=nbacti)
+    endif
 !
 ! --- NOMBRE DE COLONNES TOTAL
 !
@@ -84,7 +86,9 @@ subroutine obtcla(sdtabl)
 ! --- SAUVEGARDE LARGEUR LIGNE
 !
     call obseti(sdtabl, 'LARGEUR_LIGNE', larlig)
-    if (larlig .gt. 255) call u2mesi('F', 'IMPRESSION_2', 1, larlig)
+    if (larlig .gt. 255) then
+        call utmess('F', 'IMPRESSION_2', si=larlig)
+    endif
 !
     call jedema()
 end subroutine

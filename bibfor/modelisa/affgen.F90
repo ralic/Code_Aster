@@ -2,7 +2,6 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
                   foncis)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
@@ -10,7 +9,8 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ntel(*)
     character(len=19) :: napcis, foncis
     character(len=24) :: tmp, nom
@@ -65,7 +65,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
         ntel(13) .or. nel .eq. ntel(9) .or. nel .eq. ntel(10) .or. nel .eq. ntel(11) .or.&
         nel .eq. ntel(7) .or. nel .eq. ntel(8)&
         )) then
-        call u2mess('F', 'MODELISA_86')
+        call utmess('F', 'MODELISA_86')
     endif
 !
 !
@@ -163,7 +163,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
                 beta = (hz - 2.d0 * epz ) / hz
                 ASSERT((alpha.ge.0.d0) .or. (beta.ge.0.d0))
                 if (alpha .gt. 0.95d0 .or. beta .gt. 0.95d0) then
-                    call u2mess('F', 'MODELISA10_15')
+                    call utmess('F', 'MODELISA10_15')
                 endif
                 nompa(1)= 'ALPHA'
                 nompa(2)= 'BETA'

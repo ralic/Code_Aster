@@ -31,7 +31,7 @@ subroutine appcrs(kptsc, lmd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kptsc
     logical :: lmd
 !----------------------------------------------------------------
@@ -170,7 +170,7 @@ subroutine appcrs(kptsc, lmd)
     if ((precon.eq.'LDLT_INC') .or. (precon.eq.'SOR')) then
         call PCSetUp(pc, ierr)
         if (ierr .ne. 0) then
-            call u2mess('F', 'PETSC_14')
+            call utmess('F', 'PETSC_14')
         endif
     endif
 !

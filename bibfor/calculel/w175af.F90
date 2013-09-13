@@ -17,8 +17,7 @@ subroutine w175af(modele, chfer1)
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele
     character(len=19) :: chfer1
 !-----------------------------------------------------------------------
@@ -106,13 +105,19 @@ subroutine w175af(modele, chfer1)
         call getvr8('AFFE', 'ES', iocc=iocc, scal=zr(jvalv-1+8), nbret=n7)
 !
         if (typcb .eq. 'ELU') then
-            if (n5 .eq. 0 .or. n6 .eq. 0) call u2mess('F', 'CALCULEL_73')
-            if (n7 .eq. 0) call u2mess('F', 'CALCULEL_73')
+            if (n5 .eq. 0 .or. n6 .eq. 0) then
+                call utmess('F', 'CALCULEL_73')
+            endif
+            if (n7 .eq. 0) then
+                call utmess('F', 'CALCULEL_73')
+            endif
             if (zr(jvalv-1+8) .le. 0) then
-                call u2mesr('F', 'CALCULEL_74', 1, zr(jvalv-1+8))
+                call utmess('F', 'CALCULEL_74', sr=zr(jvalv-1+8))
             endif
         else
-            if (n2 .eq. 0) call u2mess('F', 'CALCULEL_73')
+            if (n2 .eq. 0) then
+                call utmess('F', 'CALCULEL_73')
+            endif
         endif
 !
         call getvtx('AFFE', 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)

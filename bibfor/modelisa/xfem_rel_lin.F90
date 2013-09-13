@@ -26,9 +26,7 @@ subroutine xfem_rel_lin(char, noma, nomo)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xrelco.h"
     character(len=8), intent(in) :: char
     character(len=8), intent(in) :: noma
@@ -73,12 +71,12 @@ subroutine xfem_rel_lin(char, noma, nomo)
 !
     call exixfe(nomo, ier)
     if (ier .eq. 0) then
-        call u2mesk('F', 'XFEM2_8', 1, nomo)
+        call utmess('F', 'XFEM2_8', sk=nomo)
     endif
     call jeveuo(nomo(1:8)//'.NFIS', 'L', jnfis)
     nfiss = zi(jnfis)
     if (nfiss .gt. nfismx) then
-        call u2mesi('F', 'XFEM_2', 1, nfismx)
+        call utmess('F', 'XFEM_2', si=nfismx)
     endif
 !
 ! - Contact data structure access

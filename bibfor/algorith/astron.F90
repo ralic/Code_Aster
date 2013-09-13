@@ -2,9 +2,8 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                   nsupp, neq, nbmode, id, vecmod,&
                   parmod, spectr, nomsup, reasup, recmor,&
                   recmop)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -12,8 +11,9 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbsup, nsupp(*), neq, nbmode, id
     real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), spectr(*)
     real(kind=8) :: reasup(nbsup, nbmode, *), recmop(nbsup, neq, *)
@@ -77,7 +77,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
     un = 1.d0
     if (nomsy(1:4) .ne. 'ACCE') then
         if (nomsy(1:4) .eq. 'VITE') then
-            call u2mesk('A', 'SEISME_10', 1, nomsy)
+            call utmess('A', 'SEISME_10', sk=nomsy)
             goto 9999
         endif
         if (monoap) then

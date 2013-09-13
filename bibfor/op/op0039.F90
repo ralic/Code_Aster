@@ -44,11 +44,10 @@ subroutine op0039()
 #include "asterfort/rdtmai.h"
 #include "asterfort/rdtres.h"
 #include "asterfort/rscrmo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulisog.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/w039ca.h"
 #include "asterfort/wkvect.h"
     integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive, ier
@@ -59,7 +58,7 @@ subroutine op0039()
 !
     character(len=1) :: k1occ, saux01
     character(len=8) :: modele, noma, noma2, form, nomare, nomsq
-    character(len=8) ::  resu, nomab, resure(9), resur(9), saux08
+    character(len=8) :: resu, nomab, resure(9), resur(9), saux08
     character(len=16) :: fich, formr
     character(len=24) :: nomjv, valk(6), corrn, corrm
     character(len=200) :: nofimd
@@ -81,7 +80,7 @@ subroutine op0039()
         if (nmo .ne. 0) then
             nn = nmo / 2
             if (2*nn .ne. nmo) then
-                call u2mess('F', 'PREPOST3_65')
+                call utmess('F', 'PREPOST3_65')
             endif
         endif
 100  end do
@@ -115,7 +114,9 @@ subroutine op0039()
         ASSERT(nocc.le.9)
         do 74,iocc=1,nocc
         call getvid('RESU', 'RESULTAT', iocc=iocc, scal=resur(iocc), nbret=nresu)
-        if (nresu .eq. 0) call u2mess('F', 'CALCULEL4_5')
+        if (nresu .eq. 0) then
+            call utmess('F', 'CALCULEL4_5')
+        endif
 74      continue
 !
 !       -- ON VERIFIE QUE TOUS LES RESUR ONT LE MEME MAILLAGE
@@ -130,7 +131,7 @@ subroutine op0039()
             valk(2)=resur(iocc)
             valk(3)=noma
             valk(4)=noma2
-            call u2mesk('F', 'CALCULEL4_2', 4, valk)
+            call utmess('F', 'CALCULEL4_2', nk=4, valk=valk)
         endif
 76      continue
 !
@@ -157,7 +158,9 @@ subroutine op0039()
 !
 !     --- FORMAT ---
     call getvtx(' ', 'FORMAT', scal=form, nbret=nforma)
-    if (lrest .and. form .ne. 'MED') call u2mess('F', 'CALCULEL4_3')
+    if (lrest .and. form .ne. 'MED') then
+        call utmess('F', 'CALCULEL4_3')
+    endif
 !
 !     --- VERIFICATION DE LA COHERENCE ENTRE LE MAILLAGE ---
 !     --- PORTANT LE RESULTAT ET LE MAILLAGE DONNE PAR   ---
@@ -173,7 +176,7 @@ subroutine op0039()
                 valk(1)=noma
                 valk(2)=nomsq
                 valk(3)=resu
-                call u2mesk('A', 'PREPOST3_74', 3, valk)
+                call utmess('A', 'PREPOST3_74', nk=3, valk=valk)
             endif
         endif
     endif
@@ -222,7 +225,9 @@ subroutine op0039()
         ifimed = 0
         call mdexma(nofimd, ifimed, nomare, 0, existm,&
                     ndim, codret)
-        if (existm) call u2mess('F', 'MED2_8')
+        if (existm) then
+            call utmess('F', 'MED2_8')
+        endif
     endif
 !
 !     -- FORMAT CASTEM : IMPRESSION DU MAILLAGE :
@@ -254,7 +259,9 @@ subroutine op0039()
                 if (lmod) then
                     call dismoi('C', 'NOM_MAILLA', modele, 'MODELE', ibid,&
                                 nomab, iret)
-                    if (noma .ne. nomab) call u2mess('F', 'PREPOST3_66')
+                    if (noma .ne. nomab) then
+                        call utmess('F', 'PREPOST3_66')
+                    endif
                 endif
                 call irmail(form, ifi, versio, noma, lmod,&
                             modele, nive, infmai, formr)
@@ -262,7 +269,9 @@ subroutine op0039()
             endif
 200      continue
 !
-        if (numemo .le. 1) call u2mess('F', 'PREPOST3_67')
+        if (numemo .le. 1) then
+            call utmess('F', 'PREPOST3_67')
+        endif
 !
         call jeexin('&&OP0039.LAST', iret)
         if (iret .eq. 0) call wkvect('&&OP0039.LAST', 'V V I', 8, jlast)
@@ -283,7 +292,7 @@ subroutine op0039()
             if (nmail .ne. 0) lmail=.true.
 220      continue
         if (lmail .and. lresu) then
-            call u2mess('A', 'PREPOST3_68')
+            call utmess('A', 'PREPOST3_68')
             goto 9999
         endif
     endif

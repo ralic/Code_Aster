@@ -2,7 +2,7 @@ subroutine chpnua(nx, chpt, lno, nuage)
     implicit none
 #include "asterfort/cnonua.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nx
     character(len=*) :: chpt, lno, nuage
 !     ------------------------------------------------------------------
@@ -39,9 +39,9 @@ subroutine chpnua(nx, chpt, lno, nuage)
     if (type .eq. 'NOEU') then
         call cnonua(nx, chpt, lno, nuage)
     else if (type(1:2) .eq. 'EL') then
-        call u2mess('F', 'UTILITAI_34')
+        call utmess('F', 'UTILITAI_34')
     else
-        call u2mess('F', 'CALCULEL_17')
+        call utmess('F', 'CALCULEL_17')
     endif
 !
 end subroutine

@@ -47,7 +47,7 @@ subroutine te0299(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 !
     integer :: icodre(3)
@@ -168,7 +168,7 @@ subroutine te0299(option, nomte)
 !
     if ((compor(1).ne.'ELAS' ) .or. (compor(3).eq.'GROT_GDEP') .or.&
         (compor(4).eq.'COMP_INCR')) then
-        call u2mess('F', 'RUPTURE1_24')
+        call utmess('F', 'RUPTURE1_24')
     endif
 !
 ! --- RECUPERATION DE LA PULSATION
@@ -265,7 +265,7 @@ subroutine te0299(option, nomte)
                 dtdm(i,j) = 0.d0
                 dfdm(i,j) = 0.d0
             end do
-         end do
+        end do
 !
 ! ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
 !       EN UN PT DE GAUSS
@@ -301,7 +301,9 @@ subroutine te0299(option, nomte)
         end do
 !
         if (axi) then
-            if (ray .lt. r8prem()) call u2mess('F', 'RUPTURE0_56')
+            if (ray .lt. r8prem()) then
+                call utmess('F', 'RUPTURE0_56')
+            endif
             dudm(3,3)= dudm(1,4)/ray
             dtdm(3,3)= dtdm(1,4)/ray
             dfdm(3,3)= dfdm(1,4)/ray
@@ -324,7 +326,7 @@ subroutine te0299(option, nomte)
                     1, 'RHO', rho, codrho, 0)
 !
         if ((codrho.ne.0) .and. lmoda) then
-            call u2mess('F', 'RUPTURE1_26')
+            call utmess('F', 'RUPTURE1_26')
         endif
 !
         e = valres(1)
@@ -468,7 +470,7 @@ subroutine te0299(option, nomte)
     zr(ificg+3) = k1
     zr(ificg+4) = k2
 !
-999 continue
+999  continue
 !
     call jedema()
 !

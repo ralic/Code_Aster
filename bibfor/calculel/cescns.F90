@@ -19,7 +19,6 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesces.h"
 #include "asterfort/cesexi.h"
@@ -33,8 +32,9 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cnsz, cesz, base, celfpz
     character(len=1) :: comp
     integer :: cret
@@ -129,7 +129,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 !     LES MAILLES CONTENANT DES SOUS-POINTS
     if (zi(jcesd-1+4) .gt. 1) then
         if (comp .ne. ' ') then
-            call u2mess(comp, 'UTILITAI_3')
+            call utmess(comp, 'UTILITAI_3')
         else
             cret = 100
         endif

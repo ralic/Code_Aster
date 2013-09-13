@@ -1,8 +1,7 @@
 subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                   vc, vk, nume)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/ismaem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/jedema.h"
@@ -12,8 +11,8 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbpar, vi(*), nume
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
@@ -62,23 +61,23 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
     nomtab = nomta
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
     if (nomtab(18:19) .ne. '  ') then
-        call u2mess('F', 'UTILITAI4_68')
+        call utmess('F', 'UTILITAI4_68')
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nume .lt. 0) then
-        call u2mess('F', 'UTILITAI4_70')
+        call utmess('F', 'UTILITAI4_70')
     endif
     if (nume .gt. nblign) then
-        call u2mess('F', 'UTILITAI4_74')
+        call utmess('F', 'UTILITAI4_74')
     endif
 !
     call jeveuo(nomtab//'.TBLP', 'L', jtblp)
@@ -188,7 +187,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                     goto 34
                 endif
 32          continue
-            call u2mesk('F', 'TABLE0_1', 1, jnpar)
+            call utmess('F', 'TABLE0_1', sk=jnpar)
 34          continue
 30      continue
 !
@@ -275,7 +274,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                     goto 44
                 endif
 42          continue
-            call u2mesk('F', 'TABLE0_1', 1, jnpar)
+            call utmess('F', 'TABLE0_1', sk=jnpar)
 44          continue
 40      continue
 !

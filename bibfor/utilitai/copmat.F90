@@ -34,14 +34,14 @@ subroutine copmat(matr, numddl, mat)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: kbid, matr
     character(len=14) :: numddl
     real(kind=8) :: mat(*), pij
@@ -60,7 +60,7 @@ subroutine copmat(matr, numddl, mat)
     call jemarq()
     if (numddl(1:8) .eq. kbid) then
 !
-        call u2mesk('F', 'UTILITAI_43', 1, matr)
+        call utmess('F', 'UTILITAI_43', sk=matr)
 !
     else
         call jeveuo(numddl(1:8)//'      .SLCS.SCDE', 'L', jscde)

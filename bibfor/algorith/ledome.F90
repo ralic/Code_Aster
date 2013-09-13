@@ -22,7 +22,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/rcmfmc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomo
     character(len=24) :: mate, carele
     character(len=8) :: materi
@@ -43,7 +43,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  n, ibid, iret
+    integer :: n, ibid, iret
     character(len=8) :: repons
 !
 ! ----------------------------------------------------------------------
@@ -63,7 +63,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
         call dismoi('F', 'BESOIN_MATER', nomo, 'MODELE', ibid,&
                     repons, iret)
         if ((n.eq.0) .and. (repons(1:3).eq.'OUI') .and. (option(1:1) .eq.'O')) then
-            call u2mess('A', 'CALCULEL3_40')
+            call utmess('A', 'CALCULEL3_40')
         endif
     endif
 !
@@ -82,7 +82,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
         call dismoi('F', 'EXI_RDM', nomo, 'MODELE', ibid,&
                     repons, iret)
         if ((n.eq.0) .and. (repons(1:3).eq.'OUI') .and. (option(1:1) .eq.'O')) then
-            call u2mess('A', 'CALCULEL3_39')
+            call utmess('A', 'CALCULEL3_39')
         endif
     endif
 !

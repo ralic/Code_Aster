@@ -1,7 +1,6 @@
 subroutine te0047(optioz, nomtez)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/diarm0.h"
 #include "asterfort/dibili.h"
 #include "asterfort/dicho0.h"
@@ -17,11 +16,11 @@ subroutine te0047(optioz, nomtez)
 #include "asterfort/matrot.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ut2vgl.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "blas/dcopy.h"
+!
     character(len=16) :: option, nomte
     character(len=*) :: optioz, nomtez
 !
@@ -94,19 +93,19 @@ subroutine te0047(optioz, nomtez)
 !   le code stocké dans la carte
     call infdis('TYDI', infodi, r8bid, k8bid)
     if (infodi .ne. ibid) then
-        call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+        call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !   discret de type raideur
     call infdis('DISK', infodi, r8bid, k8bid)
     if (infodi .eq. 0) then
-        call u2mesk('A+', 'DISCRETS_27', 1, nomte)
+        call utmess('A+', 'DISCRETS_27', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
     endif
 !   les discrets sont obligatoirement symétriques
     call infdis('SYMK', infodi, r8bid, k8bid)
     if (infodi .ne. 1) then
-        call u2mess('F', 'DISCRETS_40')
+        call utmess('F', 'DISCRETS_40')
     endif
 !   informations sur les discrets :
 !       nbt   = nombre de coefficients dans k
@@ -127,7 +126,9 @@ subroutine te0047(optioz, nomtez)
 !       zk16(icompo+2)    petit   PETIT_REAC  GROT_GDEP
 !       zk16(icompo+3)    COMP_ELAS   COMP_INCR
     call jevech('PCOMPOR', 'L', icompo)
-    if (zk16(icompo+2) .ne. 'PETIT') call u2mess('A', 'DISCRETS_18')
+    if (zk16(icompo+2) .ne. 'PETIT') then
+        call utmess('A', 'DISCRETS_18')
+    endif
 !   si COMP_ELAS alors comportement elas
     if ((zk16(icompo+3).eq.'COMP_ELAS') .and. (zk16(icompo).ne.'ELAS')) then
         messak(1) = nomte
@@ -136,7 +137,7 @@ subroutine te0047(optioz, nomtez)
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
-        call u2mesk('F', 'DISCRETS_8', 5, messak)
+        call utmess('F', 'DISCRETS_8', nk=5, valk=messak)
     endif
 !   dans les cas *_ELAS, les comportements qui ont une matrice de
 !   décharge sont : elas DIS_GRICRA. pour tous les autres cas : <f>
@@ -148,7 +149,7 @@ subroutine te0047(optioz, nomtez)
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
-        call u2mesk('F', 'DISCRETS_10', 5, messak)
+        call utmess('F', 'DISCRETS_10', nk=5, valk=messak)
     endif
 !
 !   récupération des orientations (angles nautiques -> vecteur ang)
@@ -162,7 +163,7 @@ subroutine te0047(optioz, nomtez)
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
-        call u2mesk('F', 'DISCRETS_6', 5, messak)
+        call utmess('F', 'DISCRETS_6', nk=5, valk=messak)
     endif
     call dcopy(3, zr(lorien), 1, ang, 1)
 !   déplacements dans le repère global :
@@ -181,7 +182,7 @@ subroutine te0047(optioz, nomtez)
     if (ndim .eq. 3) then
         call utpvgl(nno, nc, pgl, ugm, ulm)
         call utpvgl(nno, nc, pgl, dug, dul)
-    elseif (ndim.eq.2) then
+    else if (ndim.eq.2) then
         call ut2vgl(nno, nc, pgl, ugm, ulm)
         call ut2vgl(nno, nc, pgl, dug, dul)
     endif
@@ -191,35 +192,35 @@ subroutine te0047(optioz, nomtez)
 !       comportement élastique
         call dielas(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo).eq.'DIS_VISC') then
+    else if (zk16(icompo).eq.'DIS_VISC') then
 !       comportement DIS_ZENER
         call dizeng(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo)(1:10).eq.'DIS_GOUJ2E') then
+    else if (zk16(icompo)(1:10).eq.'DIS_GOUJ2E') then
 !       comportement DIS_GOUJON : application : gouj2ech
         call digou2(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo).eq.'ARME') then
+    else if (zk16(icompo).eq.'ARME') then
 !       comportement armement
         call diarm0(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo).eq.'ASSE_CORN') then
+    else if (zk16(icompo).eq.'ASSE_CORN') then
 !       comportement CORNIÈRE
         call dicora(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo).eq.'DIS_GRICRA') then
+    else if (zk16(icompo).eq.'DIS_GRICRA') then
 !       comportement DIS_GRICRA : liaison grille-crayon combu
         call digric(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo).eq.'DIS_CHOC') then
+    else if (zk16(icompo).eq.'DIS_CHOC') then
 !       comportement choc
         call dicho0(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo).eq.'DIS_ECRO_CINE') then
+    else if (zk16(icompo).eq.'DIS_ECRO_CINE') then
 !       comportement DIS_ECRO_CINE : DISCRET_NON_LINE
         call diecci(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
-    elseif (zk16(icompo).eq.'DIS_BILI_ELAS') then
+    else if (zk16(icompo).eq.'DIS_BILI_ELAS') then
 !       comportement DIS_BILI_ELAS : DISCRET_NON_LINE
         call dibili(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
@@ -231,7 +232,7 @@ subroutine te0047(optioz, nomtez)
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
-        call u2mesk('F', 'DISCRETS_7', 5, messak)
+        call utmess('F', 'DISCRETS_7', nk=5, valk=messak)
     endif
 !
 !   les comportements valident passe par ici

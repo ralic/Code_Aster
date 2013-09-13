@@ -7,8 +7,8 @@ subroutine char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/codent.h"
-#include "asterfort/jedetc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
@@ -16,7 +16,7 @@ subroutine char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,11 +36,11 @@ subroutine char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
 ! ======================================================================
 !
     character(len=8), intent(in) :: cabl_prec
-    integer, intent(in)    :: iocc
+    integer, intent(in) :: iocc
     integer, intent(inout) :: nbchs
-    integer, intent(in)    :: jlces
-    integer, intent(in)    :: jll
-    integer, intent(in)    :: jlr
+    integer, intent(in) :: jlces
+    integer, intent(in) :: jll
+    integer, intent(in) :: jlr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +56,8 @@ subroutine char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4)  :: chen
-    character(len=8)  :: k8bid
+    character(len=4) :: chen
+    character(len=8) :: k8bid
     character(len=19) :: cabl_sigm_read, tabl2, lisnom
     integer :: iret
     integer :: nbnom, jlsnom
@@ -73,15 +73,19 @@ subroutine char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
     call tbexve(tabl2, 'ADHERENT', lisnom, 'V', nbnom,&
                 k8bid)
     call jeveuo(lisnom, 'L', jlsnom)
-    if (zk8(jlsnom)(1:3).eq.'NON') call u2mess('F','MODELISA3_38')
+    if (zk8(jlsnom)(1:3) .eq. 'NON') then
+        call utmess('F', 'MODELISA3_38')
+    endif
     call jedetr(lisnom)
 !
 ! - Transformation de la carte en champ
 !
     cabl_sigm_read = cabl_prec//'.CHME.SIGIN'
     call jeexin(cabl_sigm_read//'.DESC', iret)
-    if (iret.eq.0) call u2mesk('F','CHARGES2_49', 1, cabl_prec)
-
+    if (iret .eq. 0) then
+        call utmess('F', 'CHARGES2_49', sk=cabl_prec)
+    endif
+!
     ASSERT(nbchs.lt.10000)
     call codent(nbchs, 'D0', chen)
     call carces(cabl_sigm_read, 'ELEM', ' ', 'V', '&&CAPREC.CES'// chen,&

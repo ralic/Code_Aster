@@ -39,8 +39,7 @@ subroutine op0174()
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iret, lonord, iord, ipara, i, n, numord, ibid
     integer :: nbpara, inom, ityp, ilong, itabi, itabr, itabc
@@ -104,7 +103,9 @@ subroutine op0174()
     call getltx(' ', 'NOM_PARA', 1, 16, nbpara,&
                 zi(ilong), ibid)
     do 10 i = 1, nbpara
-        if (zi(ilong-1+i) .gt. 16) call u2mess('F', 'UTILITAI3_4')
+        if (zi(ilong-1+i) .gt. 16) then
+            call utmess('F', 'UTILITAI3_4')
+        endif
 10  end do
 !
     zk16(inom) = 'NUME_ORDRE'
@@ -113,7 +114,9 @@ subroutine op0174()
     do 20 i = 1, nbpara
         nom = zk16(inom + i)
         call rsexpa(concpt, 2, nom, iret)
-        if (iret .eq. 0) call u2mesk('F', 'UTILITAI3_5', 1, nom)
+        if (iret .eq. 0) then
+            call utmess('F', 'UTILITAI3_5', sk=nom)
+        endif
 20  continue
 !
 !
@@ -127,7 +130,7 @@ subroutine op0174()
         call rsadpa(concpt, 'L', 1, nom, numord,&
                     1, ipara, typ)
         if (typ(1:1) .ne. 'R' .and. typ(1:1) .ne. 'I' .and. typ(1:1) .ne. 'C') then
-            call u2mess('F', 'UTILITAI3_6')
+            call utmess('F', 'UTILITAI3_6')
         endif
         zk8(ityp+i) = typ(1:1)
 30  end do
@@ -170,7 +173,7 @@ subroutine op0174()
                 zc(itabc+pc) = zc(ipara)
                 pc = pc+1
             else
-                call u2mess('F', 'UTILITAI3_7')
+                call utmess('F', 'UTILITAI3_7')
             endif
 50      continue
 !

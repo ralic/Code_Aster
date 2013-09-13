@@ -42,7 +42,6 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !   SOUS-JACENTE TRAITES
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/isgeco.h"
@@ -51,8 +50,8 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, idim1, idim2, ierd, ii, iret, j
     integer :: lldesc, lllia, llncmp, llpl1, llpl2, nbcmpm, nbec
@@ -81,7 +80,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 kbid, ierd)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 !----RECUPERATION DES NOM DE MACR_ELEM ET INTERFACE MIS EN JEU----------
@@ -106,8 +105,8 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
         valk (4) = intf2
         vali (1) = nbnoe1
         vali (2) = nbnoe2
-        call u2mesg('E', 'ALGORITH14_70', 4, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('E', 'ALGORITH14_70', nk=4, valk=valk, ni=2,&
+                    vali=vali)
         iret=1
         goto 9999
     endif
@@ -139,8 +138,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
                 valk (4) = sst2
                 valk (5) = intf2
                 valk (6) = blanc
-                call u2mesg('F', 'ALGORITH14_71', 6, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH14_71', nk=6, valk=valk)
                 iret=iret+1
             endif
             if (idecm(j) .ne. 0) then
@@ -150,8 +148,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
                 valk (4) = sst1
                 valk (5) = intf1
                 valk (6) = blanc
-                call u2mesg('F', 'ALGORITH14_72', 6, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH14_72', nk=6, valk=valk)
                 iret=iret+1
             endif
 20      continue

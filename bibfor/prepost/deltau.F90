@@ -37,8 +37,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rcpare.h"
 #include "asterfort/rnomat.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
     integer :: jrwork, jnbpg, nbpgt, nbordr, nmaini, numpaq, nbmap
@@ -148,8 +147,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     if (tdisp(1) .lt. tneces) then
         vali (1) = tdisp(1)
         vali (2) = tneces
-        call u2mesg('F', 'PREPOST5_8', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
     else
         call wkvect('&&DELTAU.VECTPG', 'V V R', tneces, jvecpg)
         call jerazo('&&DELTAU.VECTPG', tneces, 1)
@@ -207,7 +205,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
         call rcpare(nommat, 'FATIGUE', 'WOHLER', icodwo)
         if (icodwo .eq. 1) then
-            call u2mesk('F', 'FATIGUE1_90', 1, nomcri(1:16))
+            call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
         endif
 !
 !

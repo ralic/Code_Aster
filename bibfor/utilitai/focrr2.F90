@@ -24,10 +24,8 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rslipa.h"
 #include "asterfort/rsutro.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utch19.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=1) :: base
@@ -102,7 +100,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     if (typres(1:10) .eq. 'DYNA_HARMO') then
         nomacc = 'FREQ'
         if (n1+n2 .ne. 0) then
-            call u2mess('F', 'UTILITAI_95')
+            call utmess('F', 'UTILITAI_95')
         endif
         if (n3+n4 .eq. 0) then
             call focrrs(nomfon, resu, base, nomcha, maille,&
@@ -122,7 +120,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     else
         nomacc = 'INST'
         if (n3+n4 .ne. 0) then
-            call u2mess('F', 'UTILITAI_96')
+            call utmess('F', 'UTILITAI_96')
         endif
         if (n1+n2 .eq. 0) then
             call focrrs(nomfon, resu, base, nomcha, maille,&
@@ -201,13 +199,13 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                     iddl1)
         if (inoeud .eq. 0) then
             lg1 = lxlgut(noeud)
-            call u2mesk('F', 'UTILITAI_92', 1, noeud(1:lg1))
+            call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
         else if (iddl1.eq.0) then
             lg1 = lxlgut(noeud)
             lg2 = lxlgut(cmp)
             valk(1) = cmp(1:lg2)
             valk(2) = noeud(1:lg1)
-            call u2mesk('F', 'UTILITAI_93', 2, valk)
+            call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
         endif
         iddl2 = iddl1
         do 20 iordr = 0, nbinst - 1
@@ -218,24 +216,21 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                         i1, i2, iposit)
             if (iposit .eq. -2) then
                 valr (1) = rval
-                call u2mesg('F', 'UTILITAI6_16', 0, ' ', 0,&
-                            0, 1, valr)
+                call utmess('F', 'UTILITAI6_16', sr=valr(1))
 !
 !           -- PROLONGEMENT A GAUCHE:
 !           -------------------------
             else if (iposit.eq.-1) then
                 valr (1) = rval
                 valr (2) = zr(jlir8)
-                call u2mesg('F', 'UTILITAI6_17', 0, ' ', 0,&
-                            0, 2, valr)
+                call utmess('F', 'UTILITAI6_17', nr=2, valr=valr)
 !
 !           -- PROLONGEMENT A DROITE:
 !           -------------------------
             else if (iposit.eq.1) then
                 valr (1) = rval
                 valr (2) = zr(jlir8+nbordr-1)
-                call u2mesg('F', 'UTILITAI6_18', 0, ' ', 0,&
-                            0, 2, valr)
+                call utmess('F', 'UTILITAI6_18', nr=2, valr=valr)
             endif
 !
             call rsutro(resu, i1, ip1, ierr1)
@@ -256,13 +251,13 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                             iddl1)
                 if (inoeud .eq. 0) then
                     lg1 = lxlgut(noeud)
-                    call u2mesk('F', 'UTILITAI_92', 1, noeud(1:lg1))
+                    call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
                 else if (iddl1.eq.0) then
                     lg1 = lxlgut(noeud)
                     lg2 = lxlgut(cmp)
                     valk(1) = cmp(1:lg2)
                     valk(2) = noeud(1:lg1)
-                    call u2mesk('F', 'UTILITAI_93', 2, valk)
+                    call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
                 endif
                 iddl2 = iddl1
             endif
@@ -284,13 +279,13 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                             iddl2)
                 if (inoeud .eq. 0) then
                     lg1 = lxlgut(noeud)
-                    call u2mesk('F', 'UTILITAI_92', 1, noeud(1:lg1))
+                    call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
                 else if (iddl2.eq.0) then
                     lg1 = lxlgut(noeud)
                     lg2 = lxlgut(cmp)
                     valk(1) = cmp(1:lg2)
                     valk(2) = noeud(1:lg1)
-                    call u2mesk('F', 'UTILITAI_93', 2, valk)
+                    call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
                 endif
             endif
 !
@@ -319,13 +314,18 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             npoinz = 1
             nuspz = 1
             noeuz = ' '
-            if (maille .eq. ' ') call u2mess('F', 'CHAMPS_11')
+            if (maille .eq. ' ') then
+                call utmess('F', 'CHAMPS_11')
+            endif
         else if (typch2.eq.'ELNO') then
             nuspz = 1
-            if (maille .eq. ' ' .or. (noeud.eq.' ' .and. npoint.eq.0)) call u2mess('F',&
-                                                                                   'CHAMPS_12')
+            if (maille .eq. ' ' .or. (noeud.eq.' ' .and. npoint.eq.0)) then
+                call utmess('F', 'CHAMPS_12')
+            endif
         else
-            if (maille .eq. ' ' .or. npoint .eq. 0) call u2mess('F', 'CHAMPS_13')
+            if (maille .eq. ' ' .or. npoint .eq. 0) then
+                call utmess('F', 'CHAMPS_13')
+            endif
         endif
         call dismoi('F', 'NOM_MAILLA', ch1, 'CHAM_ELEM', ibid,&
                     noma, ie)
@@ -343,24 +343,21 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                         i1, i2, iposit)
             if (iposit .eq. -2) then
                 valr (1) = rval
-                call u2mesg('F', 'UTILITAI6_16', 0, ' ', 0,&
-                            0, 1, valr)
+                call utmess('F', 'UTILITAI6_16', sr=valr(1))
 !
 !           -- PROLONGEMENT A GAUCHE:
 !           -------------------------
             else if (iposit.eq.-1) then
                 valr (1) = rval
                 valr (2) = zr(jlir8)
-                call u2mesg('F', 'UTILITAI6_17', 0, ' ', 0,&
-                            0, 2, valr)
+                call utmess('F', 'UTILITAI6_17', nr=2, valr=valr)
 !
 !           -- PROLONGEMENT A DROITE:
 !           -------------------------
             else if (iposit.eq.1) then
                 valr (1) = rval
                 valr (2) = zr(jlir8+nbordr-1)
-                call u2mesg('F', 'UTILITAI6_18', 0, ' ', 0,&
-                            0, 2, valr)
+                call utmess('F', 'UTILITAI6_18', nr=2, valr=valr)
             endif
 !
             call rsutro(resu, i1, ip1, ierr1)

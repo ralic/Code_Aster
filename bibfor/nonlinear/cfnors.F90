@@ -23,7 +23,6 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cfnord.h"
 #include "asterfort/copnor.h"
@@ -31,7 +30,8 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: posmai
     character(len=24) :: defico, resoco
     real(kind=8) :: ksi1, ksi2
@@ -107,9 +107,9 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
     if (lpoutr) then
         if (.not.lnfixe) then
             if (typent .eq. 'MAIL') then
-                call u2mesk('F', 'CONTACT_60', 1, noment)
+                call utmess('F', 'CONTACT_60', sk=noment)
             else if (typent.eq.'NOEU') then
-                call u2mesk('F', 'CONTACT_61', 1, noment)
+                call utmess('F', 'CONTACT_61', sk=noment)
             else
                 ASSERT(.false.)
             endif
@@ -120,7 +120,7 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
 !
     if (lpoint) then
         if (.not.lnfixe) then
-            call u2mesk('F', 'CONTACT3_60', 1, noment)
+            call utmess('F', 'CONTACT3_60', sk=noment)
         endif
     endif
 !

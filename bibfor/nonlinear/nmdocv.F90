@@ -6,8 +6,7 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=14) :: nommc
     character(len=16) :: mcfact, algo
     integer :: iocc
@@ -75,15 +74,16 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
             valk(1)=nommc
             valk(2)=mcfact
             vali=iocc
-            call u2mesg('A', 'COMPOR1_70', 2, valk, 1,&
-                        vali, 0, rbid)
+            call utmess('A', 'COMPOR1_70', nk=2, valk=valk, si=vali)
 !          ON MET LA VALEUR A -999 (ON POURRAIT METTRE R8VIDE)
             valrmc = -999.d0
         endif
     endif
 !
     if (nommc .eq. 'RESI_INTE_RELA') then
-        if (valrmc .gt. 1.0001d-6) call u2mess('A', 'ALGORITH7_60')
+        if (valrmc .gt. 1.0001d-6) then
+            call utmess('A', 'ALGORITH7_60')
+        endif
     endif
 !
     call jedema()

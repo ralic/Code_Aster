@@ -16,7 +16,7 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit  none
+    implicit none
 ! person_in_charge: alexandre.foucault at edf.fr
 ! ----------------------------------------------------------------------
 ! --- BUT : CONVEXE ELASTO-VISCO-PLASTIQUE DE LETK A T+DT --------------
@@ -37,7 +37,7 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lkcrip.h"
 #include "asterfort/lkcriv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nvi
     real(kind=8) :: mater(nmat, 2), seuil
     real(kind=8) :: sigd(6), sigf(6), vind(nvi), vinf(nvi)
@@ -72,7 +72,7 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
         call lkcrip(i1, devsig, vind, nmat, mater,&
                     ubid, seuilp)
         if (seuilp/mater(4,1) .gt. 1.0d-6) then
-            call u2mess('F', 'ALGORITH2_2')
+            call utmess('F', 'ALGORITH2_2')
         endif
     endif
 !

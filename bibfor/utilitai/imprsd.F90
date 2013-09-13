@@ -1,7 +1,6 @@
 subroutine imprsd(typesd, nomsd, ific, titre)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
@@ -16,8 +15,9 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 #include "asterfort/jeveuo.h"
 #include "asterfort/matimp.h"
 #include "asterfort/tbimpr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: typesd, nomsd, titre
     integer :: ific
 ! ----------------------------------------------------------------------
@@ -137,7 +137,7 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 !
     else
 !     --------------------------------------
-        call u2mesk('F', 'UTILITAI_47', 1, typ2sd)
+        call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
     call jedema()

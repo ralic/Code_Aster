@@ -3,9 +3,8 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
                   connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                   nbsel, corsel)
 ! aslint: disable=W1501
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/eclac1.h"
 #include "asterfort/eclaco.h"
 #include "asterfort/eclan1.h"
@@ -13,7 +12,8 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
     integer :: npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
     integer :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)
@@ -941,7 +941,7 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
             valk (1) = nomte
             valk (2) = elrefa
             valk (3) = fapg
-            call u2mesk('F', 'CALCULEL5_76', 3, valk)
+            call utmess('F', 'CALCULEL5_76', nk=3, valk=valk)
 !
         endif
 !
@@ -1533,7 +1533,7 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
             valk (1) = nomte
             valk (2) = elrefa
             valk (3) = fapg
-            call u2mesk('F', 'CALCULEL5_76', 3, valk)
+            call utmess('F', 'CALCULEL5_76', nk=3, valk=valk)
         endif
 !
 !     -----------------------------------------------------------------
@@ -2142,7 +2142,7 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
             valk (1) = nomte
             valk (2) = elrefa
             valk (3) = fapg
-            call u2mesk('F', 'CALCULEL5_76', 3, valk)
+            call utmess('F', 'CALCULEL5_76', nk=3, valk=valk)
         endif
 !
 !     -----------------------------------------------------------------
@@ -2385,13 +2385,13 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
             valk (1) = nomte
             valk (2) = elrefa
             valk (3) = fapg
-            call u2mesk('F', 'CALCULEL5_76', 3, valk)
+            call utmess('F', 'CALCULEL5_76', nk=3, valk=valk)
         endif
 !
     else
         valk (1) = nomte
         valk (2) = elrefa
-        call u2mesk('F', 'CALCULEL5_78', 2, valk)
+        call utmess('F', 'CALCULEL5_78', nk=2, valk=valk)
     endif
 !
 !

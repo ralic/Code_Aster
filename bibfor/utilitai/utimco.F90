@@ -20,14 +20,14 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/jeexin.h"
 #include "asterfort/jeimpa.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeprat.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: obin
     integer :: nivo, unit
     logical :: lattr, lcont
@@ -48,13 +48,13 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer ::  ioc, iret, nmaxoc
+    integer :: ioc, iret, nmaxoc
 !-----------------------------------------------------------------------
     ob1 = obin
 !
     call jeexin(ob1, iret)
     if (iret .le. 0) then
-        call u2mesk('A', 'UTILITAI_99', 1, ob1)
+        call utmess('A', 'UTILITAI_99', sk=ob1)
         goto 999
     endif
 !
@@ -65,12 +65,12 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !
     if (lattr) call jeimpa(unit, ob1, ' ')
     if ((lcont) .and. (acces(1:2).eq.'NO')) call jeprat(unit, ob1, '$$NOM',&
-                                                        'REPERTOIRE DE NOMS' //&
-                                                       &' DE LA COLLECTION :'//ob1)
+                                                        'REPERTOIRE DE NOMS' //' DE LA COLLECTIO&
+                                                        &N :'//ob1)
 !
 !     -- BOUCLE SUR LES ELEMENTS DE LA COLLECTION :
 !     ---------------------------------------------
-    do ioc=1,nmaxoc
+    do ioc = 1, nmaxoc
         if ((nivo.eq.1) .and. (ioc.gt.10)) goto 999
         call jeexin(jexnum(ob1, ioc), iret)
         if (iret .eq. 0) goto 1
@@ -80,8 +80,8 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
         if (lcont) then
             call jeimpo(unit, jexnum(ob1, ioc), ' ')
         endif
-  1     continue
+ 1      continue
     end do
 !
-999 continue
+999  continue
 end subroutine

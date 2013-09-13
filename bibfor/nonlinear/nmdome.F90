@@ -29,8 +29,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 #include "asterfort/nmdoch.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rslesd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nuord
     character(len=8) :: result
     character(len=19) :: lischa
@@ -95,7 +94,9 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
         if (modele .eq. ' ') then
             call getvid(' ', 'MODELE', scal=nomo, nbret=n1)
-            if (n1 .eq. 0) call u2mess('F', 'CALCULEL3_50')
+            if (n1 .eq. 0) then
+                call utmess('F', 'CALCULEL3_50')
+            endif
             modele = nomo
         endif
 !
@@ -104,7 +105,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
         call jeexin(modele(1:8)//'.MODELE    .NEMA', iret)
         if (iret .gt. 0) then
             if ((nomcmd.eq.'STAT_NON_LINE') .or. ( nomcmd.eq.'DYNA_NON_LINE')) then
-                call u2mesk('F', 'CALCULEL3_51', 1, nomcmd)
+                call utmess('F', 'CALCULEL3_51', sk=nomcmd)
             endif
         endif
 !
@@ -114,7 +115,9 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
         call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
                     repons, iret)
-        if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_40')
+        if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) then
+            call utmess('A', 'CALCULEL3_40')
+        endif
         if (n1 .ne. 0) then
             call rcmfmc(materi, mate)
         else
@@ -129,7 +132,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
         call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
                     repons, iret)
         if ((n1.eq.0) .and. (repons(1:3).eq.'OUI')) then
-            call u2mess('A', 'CALCULEL3_39')
+            call utmess('A', 'CALCULEL3_39')
         endif
 !
         carele = cara

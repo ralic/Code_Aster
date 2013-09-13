@@ -3,8 +3,8 @@ subroutine utesto(nomobj, type, tbtxt, refi, refr,&
     implicit none
 #include "asterfort/jeexin.h"
 #include "asterfort/tstobj.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
     character(len=24) :: nomobj
     real(kind=8) :: refr, epsi
     character(len=*) :: crit, type, ssigne
@@ -71,9 +71,9 @@ subroutine utesto(nomobj, type, tbtxt, refi, refr,&
     else
         call jeexin(nomobj, iret2)
         if (iret2 .le. 0) then
-            call u2mesk('F', 'CALCULEL6_86', 1, nomobj)
+            call utmess('F', 'CALCULEL6_86', sk=nomobj)
         else
-            call u2mesk('F', 'CALCULEL6_87', 1, nomobj)
+            call utmess('F', 'CALCULEL6_87', sk=nomobj)
         endif
     endif
 !

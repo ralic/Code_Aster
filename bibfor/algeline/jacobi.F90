@@ -3,7 +3,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                   type, iordre)
     implicit none
 #include "asterfort/matini.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpordo.h"
     integer :: nbvec, nperm, nitjac, type, iordre
     real(kind=8) :: ar(*), br(*), vecpro(nbvec, nbvec), valpro(nbvec)
@@ -75,7 +75,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
     ii = 1
     do 10 i = 1, nbvec
         if (br(ii) .eq. 0.0d0) then
-            call u2mess('F', 'ALGELINE4_19')
+            call utmess('F', 'ALGELINE4_19')
         endif
         valaux(i) = ar(ii) / br(ii)
         valpro(i) = valaux(i)
@@ -216,7 +216,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
     ii = 1
     do 60 i = 1, nbvec
         if (br(ii) .eq. 0.0d0) then
-            call u2mess('F', 'ALGELINE4_19')
+            call utmess('F', 'ALGELINE4_19')
         endif
         valpro(i) = ar(ii) / br(ii)
         ii = ii + nbvec + 1 - i

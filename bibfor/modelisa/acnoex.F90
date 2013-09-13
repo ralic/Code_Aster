@@ -2,7 +2,6 @@ subroutine acnoex(noma, type, liste, nb, no1,&
                   no2)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -12,8 +11,9 @@ subroutine acnoex(noma, type, liste, nb, no1,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma
     character(len=24) :: liste(*)
     character(len=4) :: type
@@ -108,8 +108,7 @@ subroutine acnoex(noma, type, liste, nb, no1,&
                 no2 = in
             else
                 valk = ' '
-                call u2mesg('E', 'MODELISA8_25', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'MODELISA8_25', sk=valk)
             endif
         endif
 56  end do
@@ -119,8 +118,7 @@ subroutine acnoex(noma, type, liste, nb, no1,&
 !
     if (no1 .eq. no2) then
         valk = ' '
-        call u2mesg('E', 'MODELISA8_26', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('E', 'MODELISA8_26', sk=valk)
     endif
     call jedetr('&&ACNOEX')
     call jedema()

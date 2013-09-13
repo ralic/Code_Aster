@@ -13,7 +13,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: nbocc, nbmode, ndir(*)
     real(kind=8) :: parmod(nbmode, *), amort(*), valspe(3, *), asyspe(*)
@@ -101,7 +101,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
 12          continue
             if (xnorm .lt. epsi) then
                 ier = ier + 1
-                call u2mess('E', 'SEISME_4')
+                call utmess('E', 'SEISME_4')
                 goto 10
             endif
             xnorm = un / sqrt(xnorm)
@@ -151,7 +151,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
             if (abs(dirspe(id)) .gt. epsi) then
                 if (ndir(id) .ne. 0) then
                     ier = ier + 1
-                    call u2mess('E', 'SEISME_5')
+                    call utmess('E', 'SEISME_5')
                     goto 10
                 else
                     ndir(id) = 1
@@ -162,7 +162,9 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
 !
 10  end do
 !
-    if (ier .ne. 0) call u2mess('F', 'SEISME_6')
+    if (ier .ne. 0) then
+        call utmess('F', 'SEISME_6')
+    endif
 !
 !     --- INTERPOLATION DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then

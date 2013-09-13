@@ -19,8 +19,7 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=1) :: quest
     integer :: jprol, jvale, nbvale
     real(kind=8) :: e, nu, sigy, p, sieleq, rp, rprim, c, dp
@@ -73,7 +72,9 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 !
 !
 ! - INITIALISATION
-    if (p .lt. 0) call u2mess('F', 'MODELISA6_59')
+    if (p .lt. 0) then
+        call utmess('F', 'MODELISA6_59')
+    endif
     tessup = .false.
 !
 ! - PARCOURS JUSQU'A P
@@ -85,8 +86,7 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 10  end do
     tessup = .true.
     if (pro .eq. 'E') then
-        call u2mesg('F', 'MODELISA6_60', 1, nom, 0,&
-                    0, 1, p)
+        call utmess('F', 'MODELISA6_60', sk=nom, sr=p)
     endif
     i0=nbvale-1
 20  continue
@@ -123,8 +123,7 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 30  end do
     tessup = .true.
     if (pro .eq. 'E') then
-        call u2mesg('F', 'MODELISA6_60', 1, nom, 0,&
-                    0, 1, p)
+        call utmess('F', 'MODELISA6_60', sk=nom, sr=p)
     endif
     i0 = nbvale-1
 40  continue

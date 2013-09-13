@@ -48,10 +48,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 #include "asterfort/mdconf.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: typflu, nombm
     integer :: icoupl, nbm0, nbmode, nbmd, jpuls, jmasg, jamo1, jlocf, itypfl
@@ -117,9 +114,13 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
     itypfl = zi(kfsic)
     icoupl = zi(kfsic+1)
 !
-    if ((itypfl.ne.1) .and. (itypfl.ne.2)) call u2mess('F', 'ALGORITH5_54')
+    if ((itypfl.ne.1) .and. (itypfl.ne.2)) then
+        call utmess('F', 'ALGORITH5_54')
+    endif
 !
-    if (icoupl .ne. 1) call u2mess('A', 'ALGORITH5_55')
+    if (icoupl .ne. 1) then
+        call utmess('A', 'ALGORITH5_55')
+    endif
 !
 !
 ! 3.  RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
@@ -161,7 +162,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
         valk(1) = nombm
         valk(2) = k4b
         valk(3) = nombm
-        call u2mesk('A', 'ALGORITH5_56', 3, valk)
+        call utmess('A', 'ALGORITH5_56', nk=3, valk=valk)
     endif
 !
     nbmd = nbmode
@@ -207,8 +208,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             vali (2) = nbamor
             vali (3) = nbmode
             valk (1) = 'PREMIERS COEFFICIENTS'
-            call u2mesg('A', 'ALGORITH16_12', 1, valk, 3,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'ALGORITH16_12', sk=valk(1), ni=3, vali=vali)
         endif
         if (nbamor .ge. nbmode) then
             if (n1 .ne. 0) then
@@ -225,7 +225,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             vali (1) = idiff
             vali (2) = nbmode
             vali (3) = idiff
-            call u2mesi('I', 'ALGORITH16_13', 3, vali)
+            call utmess('I', 'ALGORITH16_13', ni=3, vali=vali)
             if (n1 .ne. 0) then
                 call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbamor, vect=zr(jamog),&
                             nbret=ib)
@@ -269,7 +269,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                 write(k3im,'(I3)') im
                 valk(1) = k3im
                 valk(2) = k3iv
-                call u2mesk('F', 'ALGORITH5_58', 2, valk)
+                call utmess('F', 'ALGORITH5_58', nk=2, valk=valk)
             else
                 zr(jpuls+im-1) = deuxpi * zr( kfreq+2*(j-1) +2*nbmcfc*( numvif-1))
             endif
@@ -347,7 +347,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             write(k4b,'(I4)') nbmp
             valk(1) = k4b
             valk(2) = basefl(1:8)
-            call u2mesk('A', 'ALGORITH5_59', 2, valk)
+            call utmess('A', 'ALGORITH5_59', nk=2, valk=valk)
         endif
     else if (nbmp.gt.nbmcfc) then
         nbmp = nbmcfc
@@ -355,7 +355,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
             write(k4b,'(I4)') nbmp
             valk(1) = basefl(1:8)
             valk(2) = k4b
-            call u2mesk('A', 'ALGORITH5_60', 2, valk)
+            call utmess('A', 'ALGORITH5_60', nk=2, valk=valk)
         endif
     endif
 !

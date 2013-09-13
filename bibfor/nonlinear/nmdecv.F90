@@ -18,15 +18,14 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dinins.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sddisc
     integer :: numins, ievdac, retdec
     real(kind=8) :: dtmin
@@ -79,7 +78,7 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
 !
     if ((dtmin .lt. pasmin) .or. (dtmin.le.r8prem())) then
         retdec = 0
-        call u2mesr('I', 'SUBDIVISE_16', 1, pasmin)
+        call utmess('I', 'SUBDIVISE_16', sr=pasmin)
         goto 999
     else
         retdec = 1
@@ -88,7 +87,7 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
 ! --- NIVEAU MAXIMUM DE REDECOUPAGE ATTEINT
 !
     if (( nbnivo .gt. 1 ) .and. (lenivo.eq.nbnivo)) then
-        call u2mesi('I', 'SUBDIVISE_17', 1, lenivo)
+        call utmess('I', 'SUBDIVISE_17', si=lenivo)
         retdec = 0
     else
         retdec = 1

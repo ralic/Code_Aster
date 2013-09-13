@@ -4,7 +4,6 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
                   nbpark)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/irparb.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -16,9 +15,9 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: modes, nomsy, nomvec, typmod, nopara
     character(len=*) :: nomvai, nomvar, nomvak
     integer :: nbvect, lposi(*), neq, nbmode, nbpara
@@ -150,8 +149,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         call wkvect(nomvec, 'V V C', neq*nbmode, lmode)
     else
         valk (1) = typmod(1:1)
-        call u2mesg('F', 'ALGELINE4_80', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_80', sk=valk(1))
     endif
 !
 !        --- VECTEUR PROPRE ---
@@ -170,7 +168,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         call jelira(vale, 'LONMAX', neq1)
         call jelira(vale, 'TYPE', cval=k8b)
         if (typmod(1:1) .ne. k8b(1:1)) then
-            call u2mess('F', 'ALGELINE3_70')
+            call utmess('F', 'ALGELINE3_70')
         else if (neq .eq. neq1) then
             if (typmod(1:1) .eq. 'R') then
                 do 22 ieq = 0, neq-1
@@ -183,7 +181,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
             endif
             call jelibe(vale)
         else
-            call u2mess('F', 'ALGELINE3_71')
+            call utmess('F', 'ALGELINE3_71')
         endif
 20  end do
 100  continue

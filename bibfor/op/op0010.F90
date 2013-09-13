@@ -51,9 +51,7 @@ subroutine op0010()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xajuls.h"
 #include "asterfort/xbaslo.h"
@@ -141,7 +139,9 @@ subroutine op0010()
 !     VERIFICATION QUE L'ON TRAITE UNE FISSURE ET NON UNE INTERFACE
     call dismoi('F', 'TYPE_DISCONTINUITE', fispre, 'FISS_XFEM', ibid,&
                 typdis, iret)
-    if (typdis .ne. 'FISSURE') call u2mess('F', 'XFEM2_1')
+    if (typdis .ne. 'FISSURE') then
+        call utmess('F', 'XFEM2_1')
+    endif
 !
 !
 ! --- NOM DU MODELE
@@ -152,7 +152,9 @@ subroutine op0010()
 !     AND RETRIEVE THE NUMBER OF CRACKS IN THE MODEL
     call dismoi('F', 'NB_FISS_XFEM', nomo, 'MODELE', nfiss,&
                 k8bid, iret)
-    if (nfiss .eq. 0) call u2mesk('F', 'XFEM2_93', 1, nomo)
+    if (nfiss .eq. 0) then
+        call utmess('F', 'XFEM2_93', sk=nomo)
+    endif
 !
 !     RETRIEVE THE NAME OF THE DATA STRUCTURE CONTAINING EACH CRACK
     call jeveuo(nomo//'.FISS', 'L', jfiss)
@@ -169,7 +171,7 @@ subroutine op0010()
     if (numfis .eq. 0) then
         msgout(1) = fispre
         msgout(2) = nomo
-        call u2mesk('F', 'XFEM2_89', 2, msgout)
+        call utmess('F', 'XFEM2_89', nk=2, valk=msgout)
     endif
 !
 ! --- RETRIEVE THE NAME OF THE MODEL THAT SHOULD BE USED AS AN AUXILIARY
@@ -192,7 +194,9 @@ subroutine op0010()
     call jeexin(fispre//'.CHAMPS.LVS', ibid)
     if ((ibid.gt.0) .and. (.not.grille)) then
         call jeveuo(fispre//'.CHAMPS.LVS', 'L', ibid)
-        if (zl(ibid)) call u2mess('A', 'XFEM_69')
+        if (zl(ibid)) then
+            call utmess('A', 'XFEM_69')
+        endif
     endif
 !
 !     CHECK IF THE LOCALIZATION OF THE DOMAIN SHOULD BE ACTIVATED
@@ -226,7 +230,7 @@ subroutine op0010()
     call dismoi('F', 'DIM_GEOM', noma, 'MAILLAGE', ndim,&
                 k8bid, iret)
     if ((ndim.lt.2) .or. (ndim.gt.3)) then
-        call u2mess('F', 'XFEM_18')
+        call utmess('F', 'XFEM_18')
     endif
 !
     call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbma,&
@@ -248,7 +252,9 @@ subroutine op0010()
 !
 !     ISSUE AN ALARM FOR THE USER
     if (test(1:3) .eq. 'OUI') then
-        if (ndim .eq. 2) call u2mess('F', 'XFEM2_87')
+        if (ndim .eq. 2) then
+            call utmess('F', 'XFEM2_87')
+        endif
     endif
 !
 !     RECUPERATION DES VITESSES DE PROPAGATION, DES ANGLES
@@ -385,7 +391,7 @@ subroutine op0010()
                 meserr(1)=damax
                 meserr(2)=dafiss
                 meserr(3)=rayon/cos(bmax)*damax/dafiss
-                call u2mesr('A', 'XFEM2_94', 3, meserr)
+                call utmess('A', 'XFEM2_94', nr=3, valr=meserr)
             endif
         endif
     endif
@@ -399,7 +405,9 @@ subroutine op0010()
 !
 !     IF THE DOMAIN LOCALISATION HAS BEEN USED PREVIOUSLY, IT MUST BE
 !     USED ALSO IN THIS STEP
-    if (ldpre .and. (.not.locdom)) call u2mess('F', 'XFEM2_97')
+    if (ldpre .and. (.not.locdom)) then
+        call utmess('F', 'XFEM2_97')
+    endif
 !
 !     IF AN AUXILIARY GRID IS USED IN THIS STEP, STORE ITS NAME FOR THE
 !     NEW CRACK
@@ -589,7 +597,7 @@ subroutine op0010()
         if (radlim .lt. radtor) then
             meserr(1)=sqrt(radtor)
             meserr(2)=sqrt(radlim)
-            call u2mesr('A', 'XFEM2_88', 2, meserr)
+            call utmess('A', 'XFEM2_88', nr=2, valr=meserr)
         endif
 !
     endif
@@ -621,7 +629,7 @@ subroutine op0010()
     if (rayon .lt. lcmin) then
         meserr(1)=rayon
         meserr(2)=lcmin
-        call u2mesr('F', 'XFEM2_64', 2, meserr)
+        call utmess('F', 'XFEM2_64', nr=2, valr=meserr)
     endif
 !
 !     THE VALUE OF DAMAX SHOULD BE GREATER THAN THE SHORTEST EDGE IN THE
@@ -631,7 +639,7 @@ subroutine op0010()
     if (lcmin .gt. damax) then
         meserr(1)=damax
         meserr(2)=lcmin
-        call u2mesr('A', 'XFEM2_63', 2, meserr)
+        call utmess('A', 'XFEM2_63', nr=2, valr=meserr)
     endif
 !
 !-----------------------------------------------------------------------

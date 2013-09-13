@@ -25,7 +25,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 #include "asterfort/rvchn1.h"
 #include "asterfort/rvchn2.h"
 #include "asterfort/rvrecu.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbn, nbc, numnd(*), iocc
@@ -233,7 +233,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
                 xnormz = xnormz + axez(i)*axez(i)
 30          continue
             if (xnormz .lt. epsi) then
-                call u2mess('F', 'PREPOST_38')
+                call utmess('F', 'PREPOST_38')
             endif
             xnormz = 1.0d0 / sqrt( xnormz )
             do 32 i = 1, 3

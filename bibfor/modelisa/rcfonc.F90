@@ -19,8 +19,7 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=1) :: quest
     integer :: jprol, jvale, nbvale
     real(kind=8) :: e, nu, sigy, p, sieleq, rp, rprim, airerp, dp
@@ -76,12 +75,14 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
             sigy = zr(jr)
             goto 9999
         else
-            call u2mess('F', 'MODELISA6_62')
+            call utmess('F', 'MODELISA6_62')
         endif
     endif
 !
 ! - INITIALISATION
-    if (p .lt. 0) call u2mess('F', 'MODELISA6_59')
+    if (p .lt. 0) then
+        call utmess('F', 'MODELISA6_59')
+    endif
 !
 ! DISTINCTION ENTRE TRACTION ET META_TRACTION CAR
 ! POUR TRACTION:C EST LA COURBE SIGMA(P)
@@ -103,8 +104,7 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
 10      continue
         tessup = .true.
         if (pro .eq. 'E') then
-            call u2mesg('F', 'MODELISA6_60', 1, nom, 0,&
-                        0, 1, zr(jp-1+nbvale))
+            call utmess('F', 'MODELISA6_60', sk=nom, sr=zr(jp-1+nbvale))
         endif
         i0=nbvale-1
 20      continue
@@ -142,8 +142,7 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
 11      continue
         tessup = .true.
         if (pro .eq. 'E') then
-            call u2mesg('F', 'MODELISA6_60', 1, nom, 0,&
-                        0, 1, zr(jp-1+nbvale))
+            call utmess('F', 'MODELISA6_60', sk=nom, sr=zr(jp-1+nbvale))
         endif
         i0=nbvale-1
 21      continue
@@ -187,8 +186,7 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
 30  end do
     tessup = .true.
     if (pro .eq. 'E') then
-        call u2mesg('F', 'MODELISA6_60', 1, nom, 0,&
-                    0, 1, zr(jp-1+nbvale))
+        call utmess('F', 'MODELISA6_60', sk=nom, sr=zr(jp-1+nbvale))
     endif
     i0 = nbvale-1
 40  continue

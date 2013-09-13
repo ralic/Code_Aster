@@ -52,7 +52,7 @@ subroutine op0119()
 #include "asterfort/jexnum.h"
 #include "asterfort/pmfsce.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -164,7 +164,7 @@ subroutine op0119()
                     valk(1)=nomas
                     valk(2)=knumai
                     valk(3)=ktyma
-                    call u2mesk('F', 'MODELISA6_27', 3, valk)
+                    call utmess('F', 'MODELISA6_27', nk=3, valk=valk)
                 endif
             else
 ! ---          ON DEDUIT LES SEG2 DU NB DE FIBRES
@@ -188,7 +188,7 @@ subroutine op0119()
             call codent(nbv, 'G', knbv)
             valk(1)=nomgf
             valk(2)=knbv
-            call u2mesk('F', 'MODELISA6_26', 2, valk)
+            call utmess('F', 'MODELISA6_26', nk=2, valk=valk)
         else
             nbfib = nbfib + nbv/itrois
             nbnoeu = nbnoeu + nbv/itrois

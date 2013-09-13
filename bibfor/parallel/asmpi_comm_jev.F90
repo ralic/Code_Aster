@@ -33,12 +33,12 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
-!
-#include "asterc/loisem.h"
 #include "asterc/asmpi_comm.h"
+#include "asterc/loisem.h"
+#include "asterfort/asmpi_check.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -49,12 +49,12 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/asmpi_check.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
+!
     character(len=*) :: optmpi
     character(len=24) :: nomjev
 !
@@ -98,7 +98,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
     iret=1
     call asmpi_check(nbpro4, iret)
     if (iret .ne. 0) then
-        call u2mesk('I', 'APPELMPI_83', 1, optmpi)
+        call utmess('I', 'APPELMPI_83', sk=optmpi)
         goto 999
     endif
 !

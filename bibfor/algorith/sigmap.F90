@@ -2,7 +2,7 @@ subroutine sigmap(net, bishop, sat, signe, tbiot,&
                   dp2, dp1, sigmp)
 !
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: i
     real(kind=8) :: signe, sat, tbiot(6), dp2, dp1, sigmp(6)
     logical :: net, bishop
@@ -33,7 +33,7 @@ subroutine sigmap(net, bishop, sat, signe, tbiot,&
         else if (net) then
             sigmp(i) = - tbiot(i)*dp2
         else
-            call u2mess('F', 'ALGORITH17_4')
+            call utmess('F', 'ALGORITH17_4')
         endif
 10  end do
 ! ======================================================================

@@ -1,8 +1,7 @@
 subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
                   resure, resuim, ier)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/fiintfc.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -11,8 +10,8 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbpu, ier
     real(kind=8) :: valpu(*), resure, resuim
     character(len=*) :: codmes, nomf, nompu(*)
@@ -69,13 +68,13 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 !     ------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
-#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlin(x,x1,y1,x2,y2) y1+(x-x1)*(y2-y1)/(x2-x1)
 #define linlog(x,x1,y1,x2,y2) exp(log(y1)+(x-x1)*(log(y2)-log(y1)) \
-        /(x2-x1))
+    /(x2-x1))
 #define loglog(x,x1,y1,x2,y2) exp(log(y1)+(log(x)-log(x1))*(log(y2) \
-        -log(y1))/(log(x2)-log(x1)))
+    -log(y1))/(log(x2)-log(x1)))
 #define loglin(x,x1,y1,x2,y2) y1+(log(x)-log(x1))*(y2-y1) \
-        /(log(x2)-log(x1))
+    /(log(x2)-log(x1))
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -157,7 +156,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
                 resuim = zr(lfonc+i2+1)
             else
                 ier = 200
-                call u2mess('A', 'UTILITAI2_16')
+                call utmess('A', 'UTILITAI2_16')
                 goto 999
             endif
         else if (interp.eq.'LIN LIN ') then
@@ -182,7 +181,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
             resuim = loglin( valr, zr(lvale+i-1), zr(lfonc+i1+1), zr(lvale+i), zr(lfonc+i2+1) )
         else
             ier = 230
-            call u2mesk('A', 'UTILITAI2_17', 1, interp)
+            call utmess('A', 'UTILITAI2_17', sk=interp)
             goto 999
         endif
 !
@@ -194,13 +193,13 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 !
     else
         ier = 240
-        call u2mesk('A', 'PREPOST3_6', 1, coli)
+        call utmess('A', 'PREPOST3_6', sk=coli)
     endif
 !
-999 continue
+999  continue
 !
     if (ier .ne. 0 .and. codmes .ne. ' ') then
-        call u2mesk(codmes, 'FONCT0_9', 1, nomf)
+        call utmess(codmes, 'FONCT0_9', sk=nomf)
     endif
 !
     call jedema()

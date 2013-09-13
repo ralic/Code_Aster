@@ -39,6 +39,11 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 !     IN
 !
 #include "asterc/utflsh.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mficom.h"
+#include "asterfort/as_mfinvr.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mlbnuv.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -52,17 +57,9 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 #include "asterfort/lrmtyp.h"
 #include "asterfort/mdexma.h"
 #include "asterfort/mdexpm.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mficom.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/as_mlbnuv.h"
-#include "asterfort/as_mfinvr.h"
 #include "asterfort/sdmail.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
     integer :: ifm, nivinf
     integer :: nrofic, infmed, nbcgrm
     character(len=*) :: nomamd
@@ -153,44 +150,43 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
         valk (1) = nofimd(1:32)
         valk (2) = nomamd
         vali (1) = codret
-        call u2mesg('A', 'MODELISA9_44', 2, valk, 1,&
-                    vali, 0, 0.d0)
-        call u2mess('F', 'PREPOST3_10')
+        call utmess('A', 'MODELISA9_44', nk=2, valk=valk, si=vali(1))
+        call utmess('F', 'PREPOST3_10')
     endif
 !
 ! 1.2.2. ==> VERIFICATION DE LA VERSION MED
 !
     if (medok .eq. 0) then
         vali (1) = codret
-        call u2mesi('A+', 'MED_24', 1, vali)
+        call utmess('A+', 'MED_24', si=vali(1))
         call as_mlbnuv(vlib(1), vlib(2), vlib(3), iret)
         if (iret .eq. 0) then
             vali (1) = vlib(1)
             vali (2) = vlib(2)
             vali (3) = vlib(3)
-            call u2mesi('A+', 'MED_25', 3, vali)
+            call utmess('A+', 'MED_25', ni=3, vali=vali)
         endif
         call as_mfiope(fid, nofimd, edlect, codret)
         call as_mfinvr(fid, vfic(1), vfic(2), vfic(3), iret)
         if (iret .eq. 0) then
             if (vfic(2) .eq. -1 .or. vfic(3) .eq. -1) then
-                call u2mess('A+', 'MED_26')
+                call utmess('A+', 'MED_26')
             else
                 vali (1) = vfic(1)
                 vali (2) = vfic(2)
                 vali (3) = vfic(3)
-                call u2mesi('A+', 'MED_27', 3, vali)
+                call utmess('A+', 'MED_27', ni=3, vali=vali)
             endif
             if (vfic(1) .lt. vlib(1) .or. ( vfic(1).eq.vlib(1) .and. vfic(2).lt.vlib(2) )&
                 .or.&
                 (&
                 vfic(1) .eq. vlib(1) .and. vfic( 2) .eq. vlib(2) .and. vfic(3) .eq. vlib(3)&
                 )) then
-                call u2mess('A+', 'MED_28')
+                call utmess('A+', 'MED_28')
             endif
         endif
         call as_mficlo(fid, codret)
-        call u2mess('A', 'MED_41')
+        call utmess('A', 'MED_41')
     endif
 !
 ! 1.3. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE A LIRE
@@ -204,7 +200,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
         call mdexpm(nofimd, ifimed, nomamd, existm, ndim,&
                     codret)
         if (.not.existm) then
-            call u2mesk('F', 'MED_50', 1, nofimd)
+            call utmess('F', 'MED_50', sk=nofimd)
         endif
 !
 ! 1.3.2. ==> C'EST UN MAILLAGE DESIGNE PAR UN NOM
@@ -219,7 +215,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
         if (.not.existm) then
             valk(1) = nomamd
             valk(2) = nofimd(1:32)
-            call u2mesk('F', 'MED_51', 2, valk)
+            call utmess('F', 'MED_51', nk=2, valk=valk)
         endif
 !
     endif
@@ -238,9 +234,8 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
         valk (1) = nofimd(1:32)
         valk (2) = nomamd
         vali (1) = codret
-        call u2mesg('A', 'MODELISA9_51', 2, valk, 1,&
-                    vali, 0, 0.d0)
-        call u2mess('F', 'PREPOST_69')
+        call utmess('A', 'MODELISA9_51', nk=2, valk=valk, si=vali(1))
+        call utmess('F', 'PREPOST_69')
     endif
 !
 !
@@ -313,9 +308,8 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
         valk (1) = nofimd(1:32)
         valk (2) = nomamd
         vali (1) = codret
-        call u2mesg('A', 'MODELISA9_52', 2, valk, 1,&
-                    vali, 0, 0.d0)
-        call u2mess('F', 'PREPOST_70')
+        call utmess('A', 'MODELISA9_52', nk=2, valk=valk, si=vali(1))
+        call utmess('F', 'PREPOST_70')
     endif
 !
 ! 9.2. ==> MENAGE

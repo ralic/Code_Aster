@@ -12,9 +12,7 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/rsutrg.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc, nbordr
     character(len=16) :: nopara
@@ -53,7 +51,7 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
     character(len=8) :: k8b, crit
     character(len=24) :: knume
     character(len=24) :: valk(2)
-    integer ::  nrang
+    integer :: nrang
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -69,7 +67,7 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
                 prec, crit, iret)
     if (iret .ne. 0) then
         k8b = resu
-        call u2mesk('F', 'UTILITAI4_49', 1, k8b)
+        call utmess('F', 'UTILITAI4_49', sk=k8b)
     endif
     call jeveuo(knume, 'L', lordr)
 !
@@ -85,11 +83,10 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
         k8b = resu
         valk (1) = nopara
         valk (2) = k8b
-        call u2mesg('F', 'UTILITAI6_84', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_84', nk=2, valk=valk)
 12      continue
     else
-        call u2mess('F', 'UTILITAI4_50')
+        call utmess('F', 'UTILITAI4_50')
     endif
     call jedetr('&&RSUTN1.PARA.ACCES')
 !
@@ -100,7 +97,7 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
         ii = ii + 1
 20  end do
     if (ii .eq. 0) then
-        call u2mesk('F', 'UTILITAI4_51', 1, nopara)
+        call utmess('F', 'UTILITAI4_51', sk=nopara)
     endif
 !
 !     --- LISTE DES NUMEROS D'ORDRE ---

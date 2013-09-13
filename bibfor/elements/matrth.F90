@@ -26,7 +26,7 @@ subroutine matrth(fami, npg, young, nu, alpha,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iret
 !
     real(kind=8) :: valres(26), valpar
@@ -60,7 +60,8 @@ subroutine matrth(fami, npg, young, nu, alpha,&
         call moytem(fami, npg, 3*zi(jcou), '+', temp,&
                     iret)
         call rcvala(zi(jmate), ' ', phenom, 1, 'TEMP',&
-                    [temp], 3, nomres, valres, icodre,1)
+                    [temp], 3, nomres, valres, icodre,&
+                    1)
         if (icodre(3) .ne. 0) then
             indith = -1
             goto 9999
@@ -86,11 +87,11 @@ subroutine matrth(fami, npg, young, nu, alpha,&
                 indith = -1
                 goto 9999
             else
-                call u2mess('F', 'ELEMENTS2_33')
+                call utmess('F', 'ELEMENTS2_33')
             endif
         endif
     else
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
 !

@@ -16,8 +16,7 @@ subroutine te0141(option, nomte)
 #include "asterfort/rhoequ.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecma.h"
     character(len=*) :: option, nomte
@@ -137,7 +136,7 @@ subroutine te0141(option, nomte)
         phie = zr(lcage-1+1)*deux
         g = e / ( deux * ( un + xnu ) )
         if (phie .eq. 0.d0) then
-            call u2mess('F', 'ELEMENTS3_26')
+            call utmess('F', 'ELEMENTS3_26')
         endif
         phii = (phie-deux*zr(lcage-1+2))
         call rhoequ(rho, rhos, rhofi, rhofe, cm,&
@@ -156,7 +155,7 @@ subroutine te0141(option, nomte)
         endif
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !     --- CARACTERISTIQUES GENERALES DES SECTIONS ---
     if (nomte .eq. 'MECA_POU_D_TG') then
@@ -177,7 +176,7 @@ subroutine te0141(option, nomte)
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
@@ -219,7 +218,7 @@ subroutine te0141(option, nomte)
 !
         else
             ch16 = nomte
-            call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+            call utmess('F', 'ELEMENTS2_42', sk=ch16)
         endif
         call vecma(matv, nbv, matp, ntc)
         call pmavec('ZERO', ntc, matp, zr(iacce), zr(ivect))
@@ -239,7 +238,7 @@ subroutine te0141(option, nomte)
             call chgrep('LG', pgl1, pgl2, mlv, zr(lmat))
         else
             ch16 = nomte
-            call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+            call utmess('F', 'ELEMENTS2_42', sk=ch16)
         endif
     endif
 !

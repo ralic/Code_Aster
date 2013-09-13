@@ -24,7 +24,6 @@ subroutine te0350(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -32,9 +31,9 @@ subroutine te0350(option, nomte)
 #include "asterfort/nmas2d.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     character(len=16) :: option, nomte
 !
     character(len=8) :: typmod(2)
@@ -137,7 +136,7 @@ subroutine te0350(option, nomte)
 !
     if (zk16(icompo+3) (1:9) .eq. 'COMP_ELAS') then
 !
-        call u2mess('F', 'ALGORITH10_88')
+        call utmess('F', 'ALGORITH10_88')
 !
     else
 !
@@ -161,7 +160,7 @@ subroutine te0350(option, nomte)
                         zr(ivectu), codret)
 !
         else
-            call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+            call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif
 !
     endif

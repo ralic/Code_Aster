@@ -18,7 +18,6 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
@@ -45,8 +44,9 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 #include "asterfort/nbelem.h"
 #include "asterfort/nbptca.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: ligrez, mnogaz, optioz, paramz
 ! ------------------------------------------------------------------
 ! BUT: CREER LE CHAM_ELEM_S MNOGAZ QUI CONTIENDRA LA MATRICE
@@ -239,7 +239,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     if (iret .ne. 0) then
         valk(1) = param
         valk(2) = option
-        call u2mesk('F', 'CALCULEL7_7', 2, valk)
+        call utmess('F', 'CALCULEL7_7', nk=2, valk=valk)
     endif
     call jeveuo(celmod//'.CELD', 'L', jceld)
 !

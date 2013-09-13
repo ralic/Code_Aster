@@ -8,7 +8,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim, nk1d
     real(kind=8) :: lrev, deklag, prodef, londef
     character(len=8) :: noma, matrev, oridef
@@ -72,7 +72,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 ! ======================================================================
     call getvr8('FISSURE', 'DECALAGE', iocc=1, scal=deklag, nbret=ibid)
     if (deklag .gt. 0.0d0) then
-        call u2mess('F', 'PREPOST4_60')
+        call utmess('F', 'PREPOST4_60')
     endif
     call getvr8('FISSURE', 'PROFONDEUR', iocc=1, scal=prodef, nbret=ibid)
     call getvr8('FISSURE', 'LONGUEUR', iocc=1, scal=londef, nbret=ibid)

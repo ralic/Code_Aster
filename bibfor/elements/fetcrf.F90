@@ -69,10 +69,8 @@ subroutine fetcrf(sdfet1)
 #include "asterfort/jexnum.h"
 #include "asterfort/jxveri.h"
 #include "asterfort/lxcadr.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: sdfet1
@@ -197,7 +195,7 @@ subroutine fetcrf(sdfet1)
         call getvtx('DEFI', 'GROUP_MA', iocc=i, scal=zk24(lstgma-1+i), nbret=zi(ngma-1+i))
         if (zi(ngma-1+i) .ne. 1) then
             vali(1)=i
-            call u2mesi('F', 'ELEMENTS5_25', 1, vali)
+            call utmess('F', 'ELEMENTS5_25', si=vali(1))
         endif
         call getvtx('DEFI', 'GROUP_MA_BORD', iocc=i, scal=zk24(lstbrd-1+i), nbret=zi(nbrd-1+i))
  1  end do
@@ -225,7 +223,7 @@ subroutine fetcrf(sdfet1)
         call jeexin(jexnom(grpma, nomgma), iret)
         if (iret .eq. 0) then
             ier = ier + 1
-            call u2mesk('E', 'ELEMENTS_62', 1, nomgma)
+            call utmess('E', 'ELEMENTS_62', sk=nomgma)
         endif
 21  end do
     ASSERT(ier.eq.0)
@@ -403,9 +401,11 @@ subroutine fetcrf(sdfet1)
     if (nbmama .ne. nbmato) then
         vali(1)=nbmama
         vali(2)=nbmato
-        call u2mesi('F', 'ELEMENTS5_24', 2, vali)
+        call utmess('F', 'ELEMENTS5_24', ni=2, vali=vali)
     endif
-    if (nber .gt. 0) call u2mesi('F', 'ELEMENTS5_28', 1, nber)
+    if (nber .gt. 0) then
+        call utmess('F', 'ELEMENTS5_28', si=nber)
+    endif
     nber=0
     do 94 i = 1, nbmato
 !       MAILLE DANS UN SD
@@ -414,7 +414,9 @@ subroutine fetcrf(sdfet1)
             if (zi(ial+i-1) .eq. 0) nber=nber+1
         endif
 94  end do
-    if (nber .gt. 0) call u2mesi('F', 'ELEMENTS5_29', 1, nber)
+    if (nber .gt. 0) then
+        call utmess('F', 'ELEMENTS5_29', si=nber)
+    endif
     call jedetr('&&FETCRF.TESTMA ')
     if (niv .ge. 3) call jxveri()
     if (niv .ge. 4) call utimsd(ifm, 2, .false., .true., nomsda,&
@@ -838,7 +840,7 @@ subroutine fetcrf(sdfet1)
                     if (iform .eq. 2) then
                         lcfc1=.true.
                     else
-                        call u2mess('F', 'ELEMENTS5_32')
+                        call utmess('F', 'ELEMENTS5_32')
                     endif
 805              continue
             endif
@@ -851,7 +853,9 @@ subroutine fetcrf(sdfet1)
 !         AINSI EVITER LES NOEUDS COMPTES 2 FOIS AVEC LIAISON_DDL....
                 inbno=zi(iadr)
                 if (inbno .ne. 0) then
-                    if (lcfc1) call u2mess('F', 'ELEMENTS5_33')
+                    if (lcfc1) then
+                        call utmess('F', 'ELEMENTS5_33')
+                    endif
 !             VECTEUR DES NOEUDS TARDIFS DEJA COMPTES
                     call wkvect('&&FETCRF.LIAISON', 'V V I', inbno, iliais)
                     iaux1=3*inbno
@@ -866,7 +870,9 @@ subroutine fetcrf(sdfet1)
 ! **** 9.2 SI ON TROUVE DES MAILLES TARDIVES DANS LA CHARGE
             call jeexin(ligrch//'.NEMA', n2)
             if (n2 .ne. 0) then
-                if (lcfc1) call u2mess('F', 'ELEMENTS5_33')
+                if (lcfc1) then
+                    call utmess('F', 'ELEMENTS5_33')
+                endif
 !           NB MAILLES TARDIVES
                 call jelira(ligrch//'.NEMA', 'NUTIOC', nbobj1)
 !           LONGUEUR TOTALE DE LA COLLECTION
@@ -923,7 +929,7 @@ subroutine fetcrf(sdfet1)
                                             valk(1)=zk8(nomcha-1+ich)
                                             valk(2)=nomn
                                             valk(3)=nomn1
-                                            call u2mesk('F', 'ELEMENTS_64', 3, valk)
+                                            call utmess('F', 'ELEMENTS_64', nk=3, valk=valk)
                                         endif
                                         if (zi(iaux2+2) .lt. 2) then
                                             zi(iaux2)=ndtar
@@ -958,7 +964,7 @@ subroutine fetcrf(sdfet1)
                                         call jenuno(jexnum(nomnoe, zi( iaux0)), nomn)
                                         valk(1)=zk8(nomcha-1+ich)
                                         valk(2)=nomn
-                                        call u2mesk('F', 'ELEMENTS_65', 2, valk)
+                                        call utmess('F', 'ELEMENTS_65', nk=2, valk=valk)
                                     endif
                                     goto 206
                                 endif
@@ -1385,7 +1391,7 @@ subroutine fetcrf(sdfet1)
                                             vali(3)=ich
                                             vali(4)=idd
                                             vali(5)=cfsd
-                                            call u2mesi('F', 'ELEMENTS5_34', 5, vali)
+                                            call utmess('F', 'ELEMENTS5_34', ni=5, vali=vali)
                                         endif
                                         cfsd=idd
                                         goto 952
@@ -1409,7 +1415,7 @@ subroutine fetcrf(sdfet1)
                         vali(1)=isurf
                         vali(2)=izone
                         vali(3)=ich
-                        call u2mesi('F', 'ELEMENTS5_35', 3, vali)
+                        call utmess('F', 'ELEMENTS5_35', ni=3, vali=vali)
                     endif
 ! FIN BOUCLE SUR LES SURFACES
 949              continue
@@ -1535,7 +1541,7 @@ subroutine fetcrf(sdfet1)
                                         if (zi(jadri+4*(j-1)) .eq. jj) then
                                             vali(1)=jj
                                             vali(2)=izone
-                                            call u2mesi('F', 'ELEMENTS5_38', 2, vali)
+                                            call utmess('F', 'ELEMENTS5_38', ni=2, vali=vali)
                                         endif
 369                                  continue
                                     do 469 j = 0, j2
@@ -1545,12 +1551,12 @@ subroutine fetcrf(sdfet1)
                                             vali(2)=izone
                                             if (j .ge. inddz) then
 ! DANS LA MEME ZONE, ON NE VA PAS LE COMPTER
-                                                call u2mesi('A', 'ELEMENTS5_36', 2, vali)
+                                                call utmess('A', 'ELEMENTS5_36', ni=2, vali=vali)
                                                 goto 869
                                             else
 ! ENTRE ZONES, ON LE COMPTE MAIS CELA VA SANS DOUTE POSER PB A L'ALGO
 ! DE CONTACT
-                                                call u2mesi('A', 'ELEMENTS5_37', 1, vali)
+                                                call utmess('A', 'ELEMENTS5_37', si=vali(1))
                                             endif
                                         endif
 469                                  continue

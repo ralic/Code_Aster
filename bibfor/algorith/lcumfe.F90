@@ -32,10 +32,10 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/sigela.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim, imate, kpg, ksp
     character(len=8) :: typmod(*)
-    character(len=16) :: option(2),option2
+    character(len=16) :: option(2), option2
     character(len=*) :: fami
     real(kind=8) :: tinstm, tinstp, epstm(12), depst(12)
     real(kind=8) :: sigm(6), sigp(6), vim(25), vip(25)
@@ -307,7 +307,7 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 1, 'TEMP', tmaxp,&
                 1, nomres(4), valres(4), icodre(4), 0)
-    call u2mess('I', 'COMPOR1_61')
+    call utmess('I', 'COMPOR1_61')
 !
 !      ELSE
 !     IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
@@ -323,7 +323,7 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !      IF ((OPTION(2).EQ.'MAZARS') .OR.
 !     &    (OPTION(2).EQ.'ENDO_ISOT_BETON')) THEN
     if ((iisnan(tref).eq.1) .or. (icodre(3).ne.0) .or. (icodre(4).ne.0)) then
-        call u2mess('F', 'CALCULEL_15')
+        call utmess('F', 'CALCULEL_15')
     else
         if (iisnan(tm) .eq. 0) then
             epsthm = valres(3) * (tm - tref)
@@ -404,14 +404,14 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
                 ' ', 'ELAS', 0, ' ', rbid,&
                 1, nomres(1), valres(1), icodre(1), 2)
     if (icodre(1) .ne. 0) then
-        call u2mess('F', 'ALGORITH4_94')
+        call utmess('F', 'ALGORITH4_94')
     endif
     hygrm=valres(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 0, ' ', rbid,&
                 1, nomres(1), valres(1), icodre(1), 2)
     if (icodre(1) .ne. 0) then
-        call u2mess('F', 'ALGORITH4_94')
+        call utmess('F', 'ALGORITH4_94')
     endif
     hygrp=valres(1)
 !

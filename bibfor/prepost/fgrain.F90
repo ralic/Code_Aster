@@ -30,7 +30,7 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
 !
     implicit none
 #include "asterfort/infniv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: pic(*), x, y, e1, e2, e3, sigmax(*), sigmin(*)
     real(kind=8) :: r1, r2, rd, rad
     integer :: npic, ncyc, itrv(*), npicb
@@ -63,7 +63,7 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin,&
         sigmin(1) = pic(1)
         ncyc = 1
 !
-        call u2mess('A', 'FATIGUE1_39')
+        call utmess('A', 'FATIGUE1_39')
 !
         goto 999
     endif

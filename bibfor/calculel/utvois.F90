@@ -48,7 +48,7 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbf, nsomf, ndegre
     real(kind=8) :: poinc1, poinc2
     logical :: lmaj
@@ -93,5 +93,7 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
 !
 !
 ! MAUVAIS CALCUL EN P1 SI FORCE VOLUMIQUE NON NULLE
-    if ((ndegre.eq.1) .and. lmaj) call u2mess('A', 'CALCULEL5_34')
+    if ((ndegre.eq.1) .and. lmaj) then
+        call utmess('A', 'CALCULEL5_34')
+    endif
 end subroutine

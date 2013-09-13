@@ -24,9 +24,8 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 ! aslint: disable=W1504
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -44,7 +43,8 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 #include "asterfort/nmop45.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: numins
     real(kind=8) :: parmet(*)
     character(len=16) :: option
@@ -232,14 +232,11 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 ! --- AFFICHAGE DES MODES
 !
     if (mod45 .eq. 'VIBR') then
-        call u2mesg('I', 'MECANONLINE6_10', 0, ' ', 1,&
-                    numord, 1, freqr)
+        call utmess('I', 'MECANONLINE6_10', si=numord, sr=freqr)
     else if (mod45 .eq. 'FLAM') then
-        call u2mesg('I', 'MECANONLINE6_11', 0, ' ', 1,&
-                    numord, 1, freqr)
+        call utmess('I', 'MECANONLINE6_11', si=numord, sr=freqr)
         if (nsta .ne. 0) then
-            call u2mesg('I', 'MECANONLINE6_12', 0, ' ', 1,&
-                        1, 1, csta)
+            call utmess('I', 'MECANONLINE6_12', si=1, sr=csta)
         endif
     else
         ASSERT(.false.)

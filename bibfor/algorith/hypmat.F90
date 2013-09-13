@@ -23,7 +23,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp, imate
     real(kind=8) :: c10, c01, c20
@@ -85,7 +85,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
         nu = valres(1)
         denom = 3.d0*(1.d0-2.d0*nu)
         if (denom .le. r8prem()) then
-            call u2mess('F', 'ELASHYPER_98')
+            call utmess('F', 'ELASHYPER_98')
         endif
         cmpk = .true.
     endif

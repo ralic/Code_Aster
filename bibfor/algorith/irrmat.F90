@@ -24,8 +24,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
 #include "asterfort/irrnvi.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     character(len=8) :: model
     character(len=3) :: matcst
     character(len=*) :: fami
@@ -230,8 +229,8 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
             valrm(10) = 1.0d0 - coeffa*exp(pe-eu)
             valrm(11) = 1.0d0 - coeffa
             valrm(12) = fe
-            call u2mesg('F', 'COMPOR1_55', 1, valkm, 1,&
-                        valim, 12, valrm)
+            call utmess('F', 'COMPOR1_55', sk=valkm(1), si=valim(1), nr=12,&
+                        valr=valrm)
         endif
         if (f1*f0 .gt. 0.0d0) then
             f0 = f1
@@ -319,10 +318,10 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
     if (irrad .gt. irraf*1.00001d0) then
         valrm(1) = tempd
         valrm(2) = tempf
-        call u2mesr('I', 'COMPOR1_57', 2, valrm)
+        call utmess('I', 'COMPOR1_57', nr=2, valr=valrm)
         valrm(1) = irrad
         valrm(2) = irraf
-        call u2mesr('I', 'COMPOR1_56', 2, valrm)
+        call utmess('I', 'COMPOR1_56', nr=2, valr=valrm)
     endif
     if (irrad .gt. irraf) then
         irraf = irrad
@@ -421,8 +420,8 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
             valrm(10) = 1.0d0 - coeffa*exp(pe-eu)
             valrm(11) = 1.0d0 - coeffa
             valrm(12) = fe
-            call u2mesg('F', 'COMPOR1_55', 1, valkm, 1,&
-                        valim, 12, valrm)
+            call utmess('F', 'COMPOR1_55', sk=valkm(1), si=valim(1), nr=12,&
+                        valr=valrm)
         endif
         if (f1*f0 .gt. 0.0d0) then
             f0 = f1

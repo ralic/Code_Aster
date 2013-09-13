@@ -18,15 +18,16 @@ subroutine as_mfinvr(fid, maj, mini, rel, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfinvr.h"
     aster_int :: fid, maj, mini, rel
     aster_int :: cret
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, maj4, min4, rel4
     med_int :: cret4
@@ -39,6 +40,6 @@ subroutine as_mfinvr(fid, maj, mini, rel, cret)
 #else
     call mfinvr(fid, maj, mini, rel, cret)
 #endif
-
+!
 #endif
 end subroutine

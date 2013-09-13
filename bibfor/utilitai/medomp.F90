@@ -17,7 +17,7 @@ subroutine medomp(result, modele, mate, carele, nh)
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ subroutine medomp(result, modele, mate, carele, nh)
     character(len=19) :: knum, k19bid
     character(len=8) :: crit
     logical :: lrdm, lmater
-    integer ::  lfour
+    integer :: lfour
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +87,9 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! ----- RECUPERATION DU MODELE DANS LA COMMANDE
 !
         call getvid(' ', 'MODELE', scal=modele, nbret=n1)
-        if (n1 .eq. 0) call u2mess('F', 'POSTELEM_20')
+        if (n1 .eq. 0) then
+            call utmess('F', 'POSTELEM_20')
+        endif
         call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
                     repons, iret)
         lrdm = repons.eq.'OUI'
@@ -98,12 +100,16 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! ----- RECUPERATION DU CARA_ELEM DANS LA COMMANDE
 !
         call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n2)
-        if ((n2.eq.0) .and. lrdm) call u2mess('A', 'CALCULEL3_39')
+        if ((n2.eq.0) .and. lrdm) then
+            call utmess('A', 'CALCULEL3_39')
+        endif
 !
 ! ----- RECUPERATION DU CHAM_MATER DANS LA COMMANDE
 !
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
-        if ((n3.eq.0) .and. lmater) call u2mess('A', 'CALCULEL3_40')
+        if ((n3.eq.0) .and. lmater) then
+            call utmess('A', 'CALCULEL3_40')
+        endif
 !
     else
 !
@@ -131,7 +137,9 @@ subroutine medomp(result, modele, mate, carele, nh)
             numord = zi(jordr+iordr-1)
             call rslesd(result, numord, modnew, materi, carele,&
                         k19bid, iexcit)
-            if (modnew .ne. modele) call u2mess('F', 'POSTELEM_23')
+            if (modnew .ne. modele) then
+                call utmess('F', 'POSTELEM_23')
+            endif
 99      continue
         call jedetr(knum)
 !

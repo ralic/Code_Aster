@@ -45,7 +45,6 @@ subroutine assgen(nomres, option, nugene)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/asgnbc.h"
 #include "asterfort/asgnbn.h"
 #include "asterfort/jecrec.h"
@@ -65,10 +64,10 @@ subroutine assgen(nomres, option, nugene)
 #include "asterfort/jexnum.h"
 #include "asterfort/prasml.h"
 #include "asterfort/prasmp.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ualfva.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     character(len=8) :: nomres, modgen, nomprn
@@ -125,7 +124,7 @@ subroutine assgen(nomres, option, nugene)
 !
     call jeexin(modgen//'      .MODG.SSNO', ibid)
     if (ibid .eq. 0) then
-        call u2mess('F', 'MATRICE0_13')
+        call utmess('F', 'MATRICE0_13')
     endif
 !
 !
@@ -147,7 +146,7 @@ subroutine assgen(nomres, option, nugene)
     call jenonu(jexnom(prgene//'.LILI', lsst), ibid)
     call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nblia)
     if (nblia .eq. 1) then
-        call u2mess('F', 'ALGORITH_32')
+        call utmess('F', 'ALGORITH_32')
     endif
 !
 !
@@ -333,8 +332,7 @@ subroutine assgen(nomres, option, nugene)
     endif
 !
     valr = ssconl
-    call u2mesg('I', 'ALGORITH14_79', 0, ' ', 0,&
-                0, 1, valr)
+    call utmess('I', 'ALGORITH14_79', sr=valr)
 !
     do 70 i = 1, nbblel
         if (zr(ltconl+i-1) .ne. zero) then

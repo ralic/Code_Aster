@@ -48,7 +48,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, elas, jj, iret
     integer :: i, indi(7), j, mono(7), hist(4, 2)
     real(kind=8) :: tole1, sigd(6), sige(6)
@@ -185,12 +185,12 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
             hooknl(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_37')
+            call utmess('F', 'COMPOR1_37')
         endif
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 !
     endif
 !

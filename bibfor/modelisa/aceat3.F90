@@ -4,7 +4,6 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                   crit, nno, nmmt)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/angco4.h"
 #include "asterfort/angcou.h"
 #include "asterfort/jedema.h"
@@ -15,8 +14,8 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma, nomu, crit
     integer :: nbpart, nbtuy, nbmap(nbpart), elpar(nbpart, nbtuy), ivr(3)
     integer :: nopar(nbpart, nno, nbtuy), nbzk, nozk(nbzk), isens(nbpart), ifm
@@ -121,7 +120,7 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                 if (isens(ipa) .eq. 0) then
                     isens(ipa)=izk
                 else
-                    call u2mess('F', 'MODELISA_24')
+                    call utmess('F', 'MODELISA_24')
                 endif
             endif
             if (nozk(izk) .eq. (nopar(ipa,2,imfin))) then
@@ -129,12 +128,12 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                 if (isens(ipa) .eq. 0) then
                     isens(ipa)=-izk
                 else
-                    call u2mess('F', 'MODELISA_24')
+                    call utmess('F', 'MODELISA_24')
                 endif
             endif
 61      continue
         if ((iok1+iok2) .ne. 1) then
-            call u2mess('F', 'MODELISA_25')
+            call utmess('F', 'MODELISA_25')
         endif
 60  end do
 !
@@ -237,7 +236,7 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                 icoud2=icoude
             else
                 call jenuno(jexnum(mlgnma, nummai), nommai)
-                call u2mesk('F', 'MODELISA_26', 1, nommai)
+                call utmess('F', 'MODELISA_26', sk=nommai)
             endif
 !
             zr(jdvlvo-1+icmp+1) = icoud2

@@ -22,8 +22,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: n1, diag(0:*), col(*)
     integer :: delg(*), prno(*), deeq(*), nec, lbd1(n1), lbd2(n1)
     integer :: rl(4, *), rl1(*), rl2(*)
@@ -67,8 +66,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
                     vali (1) = iddl
                     vali (2) = ino
                     vali (3) = num
-                    call u2mesg('F', 'ALGELINE5_31', 0, ' ', 3,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGELINE5_31', ni=3, vali=vali)
                 endif
                 nobl = prno((nec+2)* (ino-1)+1)
 !     RECHERCHE DE NOBL : NUMERO DU DDL BLOQUE
@@ -88,13 +86,11 @@ subroutine preml0(n1, n2, diag, col, delg,&
                     lbd2(nobl) = iddl
                 else
                     vali (1) = delg(iddl)
-                    call u2mesg('F', 'ALGELINE5_32', 0, ' ', 1,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGELINE5_32', si=vali(1))
                 endif
                 if (nfois .gt. 0) then
                     vali (1) = nobl
-                    call u2mesg('F', 'ALGELINE5_33', 0, ' ', 1,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ALGELINE5_33', si=vali(1))
                 endif
             else
 !     IDDL EST UN LAGRANGE DE RELATION LINEAIRE
@@ -161,7 +157,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
             endif
 80      end do
         if (iconne .gt. 0) then
-            call u2mess('A', 'ALGELINE5_53')
+            call utmess('A', 'ALGELINE5_53')
             write(ifm,*) 2*iconne ,' TERMES SUPPLEMENTAIRES DANS'&
      &'    LA MATRICE INITIALE'
         endif
@@ -183,8 +179,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
                 vali (1) = i
                 vali (2) = lbd1(i)
                 vali (3) = lbd1(i)
-                call u2mesg('F', 'ALGELINE5_34', 0, ' ', 3,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'ALGELINE5_34', ni=3, vali=vali)
             endif
 !
 90      continue

@@ -56,7 +56,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -86,7 +86,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
     call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbnoto,&
                 k8bid, err)
     if (err .ne. 0) then
-        call u2mess('F', 'UTILITAI_44')
+        call utmess('F', 'UTILITAI_44')
     endif
 !
     write(ifm,*)' -- NOMBRE DE MAILLES : ',nbmato

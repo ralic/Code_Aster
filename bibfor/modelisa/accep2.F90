@@ -50,7 +50,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
 #include "asterfort/manopg.h"
 #include "asterfort/megeom.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iret, idm, ibid, nbm, inocha, isncha, nbchin, nbchou
@@ -72,7 +72,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
 ! RECUPERE LE MODELE ASSOCIE A LA BASE
     call getvid(' ', 'MODELE_INTERFACE', scal=moint, nbret=ibid)
     if (ibid .eq. 0) then
-        call u2mess('F', 'MODELISA10_14')
+        call utmess('F', 'MODELISA10_14')
     endif
 !
 ! NOMS DE CHAMPS PROVISOIRES

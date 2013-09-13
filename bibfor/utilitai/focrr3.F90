@@ -1,5 +1,5 @@
 subroutine focrr3(nomfon, resu, nopara, base, ier)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -11,7 +11,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsutn1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ier
     character(len=1) :: base
@@ -68,7 +68,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
         call jeveuo('&&FOCRR3.VAR.ACCES', 'L', lacce)
         nomacc = zk16(lacce)
     else
-        call u2mess('F', 'UTILITAI2_4')
+        call utmess('F', 'UTILITAI2_4')
     endif
     call jedetr('&&FOCRR3.VAR.ACCES')
 !
@@ -95,7 +95,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
         if (type(1:1) .eq. 'R') then
             zr(lvar+iordr-1) = zr(iad1)
         else
-            call u2mess('F', 'UTILITAI2_5')
+            call utmess('F', 'UTILITAI2_5')
         endif
 !
         call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1),&
@@ -103,7 +103,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
         if (type(1:1) .eq. 'R') then
             zr(lfon+iordr-1) = zr(iad2)
         else
-            call u2mess('F', 'UTILITAI2_6')
+            call utmess('F', 'UTILITAI2_6')
         endif
 !
 20  end do

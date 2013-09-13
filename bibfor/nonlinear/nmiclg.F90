@@ -28,7 +28,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
 #include "asterfort/nm1dpm.h"
 #include "asterfort/nmmaba.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: imate, kpg, ksp, codret
 !
@@ -67,7 +67,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
 !
     integer :: ncstpm
     parameter (ncstpm=13)
-    character(len=8) :: nomasl(4),materi
+    character(len=8) :: nomasl(4), materi
     real(kind=8) :: cstpm(ncstpm)
     integer :: iret
     real(kind=8) :: depsth, depsm, tmoins, tplus
@@ -100,7 +100,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
             impl = .true.
         endif
         if (impl .and. (.not.isotli)) then
-            call u2mess('F', 'ELEMENTS5_50')
+            call utmess('F', 'ELEMENTS5_50')
         endif
     else if (compor(1).eq.'VMIS_CINE_LINE') then
         cine = .true.
@@ -197,7 +197,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
         sigp=0.d0
         dsde=0.d0
     else
-        call u2mess('F', 'ALGORITH6_87')
+        call utmess('F', 'ALGORITH6_87')
     endif
 !
 !

@@ -24,7 +24,7 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma, nomo
     character(len=16) :: motfac
     integer :: iocc
@@ -65,7 +65,7 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=8) ::  oui
+    character(len=8) :: oui
     integer :: n1, n2, n3, n4, n5, n6
     character(len=16) :: valk(1)
     integer :: nbmocl
@@ -95,14 +95,14 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
         call getvtx(motfac, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n4)
         call getvtx(motfac, 'TOUT', iocc=iocc, scal=oui, nbret=n5)
         if ((n1.eq.0) .and. (n2.eq.0) .and. (n3.eq.0) .and. (n4.eq.0) .and. (n5.eq.0)) then
-            call u2mesk('F', 'EXTRACTION_1', 1, valk)
+            call utmess('F', 'EXTRACTION_1', sk=valk(1))
         endif
     else if (typcha.eq.'ELGA') then
         call getvtx(motfac, 'MAILLE', iocc=iocc, nbval=0, nbret=n3)
         call getvtx(motfac, 'GROUP_MA', iocc=iocc, nbval=0, nbret=n4)
         call getvtx(motfac, 'TOUT', iocc=iocc, scal=oui, nbret=n5)
         if ((n3.eq.0) .and. (n4.eq.0) .and. (n5.eq.0)) then
-            call u2mesk('F', 'EXTRACTION_2', 1, valk)
+            call utmess('F', 'EXTRACTION_2', sk=valk(1))
         endif
     else
         ASSERT(.false.)
@@ -113,7 +113,7 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
     call getvtx(motfac, 'EVAL_CHAM', iocc=iocc, scal=extrch, nbret=n6)
     if (n6 .eq. 0) then
         extrch = 'VALE'
-        call u2mesk('A', 'EXTRACTION_5', 1, valk)
+        call utmess('A', 'EXTRACTION_5', sk=valk(1))
     endif
 !
 ! --- EXTRACTION DES NOEUDS - ILS DOIVENT APPARTENIR AU MODELE -
@@ -133,7 +133,7 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
         call reliem(nomo, noma, 'NU_NOEUD', motfac, iocc,&
                     nbmocl, limocl, tymocl, listno, nbno)
         if (nbno .eq. 0) then
-            call u2mesk('F', 'EXTRACTION_3', 1, valk)
+            call utmess('F', 'EXTRACTION_3', sk=valk(1))
         endif
     endif
 !
@@ -150,7 +150,7 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
         call reliem(nomo, noma, 'NU_MAILLE', motfac, iocc,&
                     nbmocl, limocl, tymocl, listma, nbma)
         if (nbma .eq. 0) then
-            call u2mesk('F', 'EXTRACTION_4', 1, valk)
+            call utmess('F', 'EXTRACTION_4', sk=valk(1))
         endif
     endif
 !

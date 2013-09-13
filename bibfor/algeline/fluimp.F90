@@ -42,7 +42,6 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/irdepl.h"
@@ -53,8 +52,9 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: itypfl, nivpar, nivdef, nbm, npv, nuor(nbm), jvcn, jven
     integer :: nive, nbval, lfsvi, pas, jconn, jrap
     character(len=19) :: melflu
@@ -131,7 +131,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
             vrmin2 = zr(jvit2-1+1)
             vrmax2 = zr(jvit2-1+2)
             if ((abs(vrmin1-vrmin2)) .gt. 1.0d-04 .or. (abs(vrmax1- vrmax2)) .gt. 1.0d-04) then
-                call u2mess('F', 'ALGELINE_42')
+                call utmess('F', 'ALGELINE_42')
             endif
         endif
 !

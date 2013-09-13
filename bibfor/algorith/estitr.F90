@@ -1,6 +1,7 @@
 subroutine estitr(nbm, amori, masgi, eps, ttrans,&
                   npf, npfmax, text, ier)
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,6 @@ subroutine estitr(nbm, amori, masgi, eps, ttrans,&
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mess.h"
     integer :: nbm
     real(kind=8) :: amori(*), masgi(*), eps, ttrans
     integer :: npf, npfmax
@@ -79,11 +79,13 @@ subroutine estitr(nbm, amori, masgi, eps, ttrans,&
 !
     npf = i - 1
     ttrans = ttemp
-    if (i .eq. 16) call u2mess('A', 'ALGORITH3_56')
+    if (i .eq. 16) then
+        call utmess('A', 'ALGORITH3_56')
+    endif
 !
     if (ttrans .gt. text(npfmax)) then
         ier = 1
-        call u2mess('A', 'ALGORITH3_57')
+        call utmess('A', 'ALGORITH3_57')
     endif
 !
 ! --- FIN DE ESTITR.

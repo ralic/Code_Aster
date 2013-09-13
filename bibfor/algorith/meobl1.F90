@@ -28,7 +28,7 @@ subroutine meobl1(eps, b, d, deltab, deltad,&
 #include "asterfort/dfddd.h"
 #include "asterfort/dfdde.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: eps(6), b(6), d, dsidep(6, 6)
     real(kind=8) :: deltab(6), deltad, mult
     real(kind=8) :: lambda, mu, alpha, k1, k2, ecrob, ecrod
@@ -138,7 +138,7 @@ subroutine meobl1(eps, b, d, deltab, deltad,&
         if (ksi .ne. 0.d0) then
             iksi=un/ksi
         else
-            call u2mess('F', 'ALGORITH4_54')
+            call utmess('F', 'ALGORITH4_54')
         endif
 !
 !-- ! ksi n est plus disponible
@@ -170,7 +170,7 @@ subroutine meobl1(eps, b, d, deltab, deltad,&
         if (ksi .ne. 0.d0) then
             iksi=un/ksi
         else
-            call u2mess('F', 'ALGORITH5_79')
+            call utmess('F', 'ALGORITH5_79')
         endif
 !
         call r8inir(6, 0.d0, matb, 1)

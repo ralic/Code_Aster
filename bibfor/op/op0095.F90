@@ -1,5 +1,6 @@
-subroutine op0095( )
+subroutine op0095()
     implicit none
+#include "asterfort/utmess.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,5 +19,5 @@ subroutine op0095( )
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-    call u2mess('F','FERMETUR_5')
+    call utmess('F', 'FERMETUR_5')
 end subroutine

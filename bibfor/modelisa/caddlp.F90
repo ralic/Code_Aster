@@ -24,8 +24,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 #include "asterfort/jexnum.h"
 #include "asterfort/matloc.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
 !
@@ -195,7 +194,9 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
         do i_keyword = 1, 6
             keyword = cmp_name_glo(i_keyword)
             if (cmp_acti_glo(i_keyword) .eq. 1) then
-                if (zi(jcompt-1+i_keyword) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1, keyword)
+                if (zi(jcompt-1+i_keyword) .eq. 0) then
+                    call utmess('F', 'CHARGES2_45', sk=keyword)
+                endif
             endif
         enddo
         call jedetr('&&CADDLP.ICOMPT')

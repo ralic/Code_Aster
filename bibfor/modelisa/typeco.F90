@@ -18,9 +18,8 @@ subroutine typeco(char, noma)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
@@ -33,8 +32,9 @@ subroutine typeco(char, noma)
 #include "asterfort/mmelty.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mmssfr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, char
 !
 ! ----------------------------------------------------------------------
@@ -136,7 +136,7 @@ subroutine typeco(char, noma)
                 call mmelty(noma, nummam, alias, ibid, ibid)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
-                    call u2mesk('F', 'CONTACT3_2', 1, nommam)
+                    call utmess('F', 'CONTACT3_2', sk=nommam)
                 endif
             endif
 160      continue
@@ -151,7 +151,7 @@ subroutine typeco(char, noma)
                 call mmelty(noma, nummae, alias, ibid, ibid)
                 if (alias .eq. 'PO1') then
                     call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
-                    call u2mesk('F', 'CONTACT3_2', 1, nommae)
+                    call utmess('F', 'CONTACT3_2', sk=nommae)
                 endif
             endif
 161      continue

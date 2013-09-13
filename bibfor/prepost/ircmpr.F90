@@ -65,7 +65,6 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterc/utflsh.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -77,8 +76,9 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbvato, ncmprf, ncmpve
     integer :: nbenec, adtyp2
     integer :: lienec(*)
@@ -110,7 +110,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     integer :: adnucm
     integer :: adauxi
 !
-    character(len=8) ::  k8b
+    character(len=8) :: k8b
     character(len=24) :: ntprom, exicmp, ntpror
     character(len=24) :: ntauxi
 !
@@ -207,7 +207,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 !
     else
 !
-        call u2mesk('F', 'MED_46', 1, typech)
+        call utmess('F', 'MED_46', sk=typech)
 !
     endif
 !

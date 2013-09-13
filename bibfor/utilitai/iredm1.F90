@@ -21,8 +21,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
@@ -190,7 +190,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         do 72 in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
-                call u2mess('F', 'UTILITAI2_36')
+                call utmess('F', 'UTILITAI2_36')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do 74 nn = 1, nm
@@ -206,7 +206,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         do 82 in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
-                call u2mess('F', 'UTILITAI2_37')
+                call utmess('F', 'UTILITAI2_37')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do 84 nn = 1, nm
@@ -222,7 +222,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         do 92 in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
-                call u2mess('F', 'UTILITAI2_38')
+                call utmess('F', 'UTILITAI2_38')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do 94 nn = 1, nm
@@ -238,7 +238,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         do 102 in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             if (nm .ne. 3 .and. nm .ne. 4 .and. nm .ne. 6 .and. nm .ne. 8) then
-                call u2mess('F', 'UTILITAI2_39')
+                call utmess('F', 'UTILITAI2_39')
             endif
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do 104 nn = 1, nm

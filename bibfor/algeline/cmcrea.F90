@@ -40,8 +40,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbocc, numocc(nbocc)
@@ -143,7 +142,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
                         zk24(jlngma-1 + i), zk24(jlgpma-1 + i))
         else
 !
-            call u2mesk('F', 'ALGELINE_18', 1, motfac(i))
+            call utmess('F', 'ALGELINE_18', sk=motfac(i))
         endif
 !
 20  end do
@@ -285,8 +284,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
                     call jecroc(jexnom(nmaout, nomma))
                 else
                     valk = nomma
-                    call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_7', sk=valk)
                 endif
 !
 !          INSERTION DANS LE .TYPMAIL
@@ -319,8 +317,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
                     call jecroc(jexnom(gmaout, nomgma))
                 else
                     valk = nomgma
-                    call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_9', sk=valk)
                 endif
 !
                 nbma = zi(jgpma)

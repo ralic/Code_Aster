@@ -47,7 +47,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
@@ -159,8 +159,9 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     call jevech('PCOMPOR', 'L', icomp)
 !
 !     VÉRIFICATION DU CADRE THÉORIQUE DU CALCUL
-    if (zk16(icomp-1+1) .ne. 'ELAS' .or. zk16(icomp-1+3) .ne. 'PETIT') call u2mess('F',&
-                                                                                   'RUPTURE1_24')
+    if (zk16(icomp-1+1) .ne. 'ELAS' .or. zk16(icomp-1+3) .ne. 'PETIT') then
+        call utmess('F', 'RUPTURE1_24')
+    endif
 !
 !     SOUS-ELEMENT DE REFERENCE
     call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
@@ -233,7 +234,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                     1, 'RHO', rho, codrho, 0)
 !
         if ((codrho.ne.0) .and. lmoda) then
-            call u2mess('F', 'RUPTURE1_26')
+            call utmess('F', 'RUPTURE1_26')
         endif
 !
         if (ndim .eq. 3 .or. (ndim.eq.2.and.lteatt(' ','D_PLAN','OUI')) .or. axi) then

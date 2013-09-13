@@ -46,7 +46,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 #include "asterfort/nmchex.h"
 #include "asterfort/nmcmat.h"
 #include "asterfort/nmxmat.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: typmat, modrig
     character(len=4) :: mod45
     integer :: defo
@@ -340,11 +340,13 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
         call dismoi('F', 'TYPE_MATRICE', matass, 'MATR_ASSE', ibid,&
                     syme, iret)
         if (syme .eq. 'NON_SYM') then
-            call u2mess('F', 'MECANONLINE5_56')
+            call utmess('F', 'MECANONLINE5_56')
         else
             call dismoi('F', 'TYPE_MATRICE', matgeo, 'MATR_ASSE', ibid,&
                         syme, iret)
-            if (syme .eq. 'NON_SYM') call u2mess('F', 'MECANONLINE5_56')
+            if (syme .eq. 'NON_SYM') then
+                call utmess('F', 'MECANONLINE5_56')
+            endif
         endif
     endif
 !

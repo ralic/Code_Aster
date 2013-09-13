@@ -6,7 +6,7 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mcmult.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: lmasse, lraide, nbprop, excl(*)
     complex(kind=8) :: vecp(*)
@@ -82,7 +82,7 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
         if (abs(ami) .eq. 1.d0) then
             ernorm(i)= 1.d+70
             valr = 1.0d70
-            call u2mesr('A', 'ALGELINE4_74', 1, valr)
+            call utmess('A', 'ALGELINE4_74', sr=valr)
         else
             freq2=dcmplx(fri,ami*fri*2.d0)
             call mcmult('ZERO', lraide, vecp(ivec), zc(iaux1), 1,&

@@ -63,9 +63,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
 !
@@ -105,8 +103,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     call jeexin(mailsk//'.INV.SKELETON', iret)
     if (iret .eq. 0) then
         valk = mailsk
-        call u2mesg('F', 'ALGORITH14_27', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_27', sk=valk)
     endif
     call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
 !
@@ -117,20 +114,19 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     call jeexin(resgen//'           .ACCE', ire3)
     if (ire1 .eq. 0 .and. ire2 .eq. 0 .and. ire3 .eq. 0.d0) then
         valk = resgen
-        call u2mesg('F', 'ALGORITH14_35', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_35', sk=valk)
     endif
 !
     call getvtx(' ', 'TOUT_CHAM', scal=k8rep, nbret=n1)
     if (k8rep(1:3) .eq. 'OUI') then
         if (ire1 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_44')
+            call utmess('F', 'ALGORITH10_44')
         endif
         if (ire2 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_45')
+            call utmess('F', 'ALGORITH10_45')
         endif
         if (ire3 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_46')
+            call utmess('F', 'ALGORITH10_46')
         endif
         nbcham = 3
         chmp(1) = 'DEPL'
@@ -142,19 +138,19 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     else
         call getvtx(' ', 'NOM_CHAM', scal=k8rep, nbret=n1)
         if (k8rep(1:4) .eq. 'DEPL' .and. ire1 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_44')
+            call utmess('F', 'ALGORITH10_44')
         else if (k8rep(1:4).eq.'DEPL'.and.ire1.ne.0) then
             nbcham = 1
             chmp(1) = 'DEPL'
             call jeveuo(trange//'.DEPL', 'L', itresu(1))
         else if (k8rep(1:4).eq.'VITE'.and.ire2.eq.0) then
-            call u2mess('F', 'ALGORITH10_45')
+            call utmess('F', 'ALGORITH10_45')
         else if (k8rep(1:4).eq.'VITE'.and.ire2.ne.0) then
             nbcham = 1
             chmp(1) = 'VITE'
             call jeveuo(trange//'.VITE', 'L', itresu(1))
         else if (k8rep(1:4).eq.'ACCE'.and.ire3.eq.0) then
-            call u2mess('F', 'ALGORITH10_46')
+            call utmess('F', 'ALGORITH10_46')
         else if (k8rep(1:4).eq.'ACCE'.and.ire3.ne.0) then
             nbcham = 1
             chmp(1) = 'ACCE'
@@ -211,7 +207,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     call rstran(interp, trange, ' ', 1, kinst,&
                 knume, nbinst, iretou)
     if (iretou .ne. 0) then
-        call u2mess('F', 'ALGORITH10_47')
+        call utmess('F', 'ALGORITH10_47')
     endif
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
@@ -275,7 +271,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                    call utmess('A', 'ALGORITH2_64', sk=chamno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else
@@ -410,7 +406,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                    call utmess('A', 'ALGORITH2_64', sk=chamno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else

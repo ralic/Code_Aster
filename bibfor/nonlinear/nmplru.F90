@@ -21,12 +21,12 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)
@@ -95,7 +95,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !
     if (iret1 .eq. 0) then
         if ((iret2.ge.1) .or. (icodre(3).ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         else
             alpha = valres(3)
             dalpha = devres(3)
@@ -138,8 +138,12 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
         call rcvad2(fami, kpg, ksp, poum, imate,&
                     'ECRO_LINE', 2, nomres, valres, devres,&
                     icodre)
-        if (icodre(1) .ne. 0) call u2mess('F', 'ALGORITH7_74')
-        if (icodre(2) .ne. 0) call u2mess('F', 'ALGORITH7_75')
+        if (icodre(1) .ne. 0) then
+            call utmess('F', 'ALGORITH7_74')
+        endif
+        if (icodre(2) .ne. 0) then
+            call utmess('F', 'ALGORITH7_75')
+        endif
         dsde = valres(1)
         sigy = valres(2)
         dsdedt= devres(1)

@@ -10,7 +10,7 @@ subroutine te0237(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -66,8 +66,12 @@ subroutine te0237(option, nomte)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-    if (nbcou .gt. 30) call u2mess('F', 'ELEMENTS3_50')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+    if (nbcou .gt. 30) then
+        call utmess('F', 'ELEMENTS3_50')
+    endif
 !
     if (option .eq. 'EPSI_ELGA') then
         call tecach('OOO', 'PDEFOPG', 'E', 7, itab,&
@@ -196,7 +200,7 @@ subroutine te0237(option, nomte)
                     nu=valres(2)
                     if (iret4 .eq. 0) then
                         if ((icodre(3).ne.0) .or. (iret.eq.1)) then
-                            call u2mess('F', 'CALCULEL_15')
+                            call utmess('F', 'CALCULEL_15')
                         else
                             epsthe=(tpg-tref)*valres(3)*e/(1.d0-nu)
                         endif

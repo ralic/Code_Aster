@@ -66,12 +66,11 @@ subroutine op0056()
 #include "asterfort/jeveuo.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ifr, nbcou, icou, n, iadr, jepor, jrela, k, lonobj, jmate, jobme
     integer :: jobmc, i, nimpr, impr, nbres, j, nobj, jobth, jobtc, nbad, iret
@@ -128,16 +127,14 @@ subroutine op0056()
                 ther = .true.
             else
                 valk (1) = mater
-                call u2mesg('F', 'MODELISA8_71', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'MODELISA8_71', sk=valk(1))
             endif
 10      continue
 20  end do
     if (ther .and. elas) then
         valk (1) = 'MECANIQUE'
         valk (2) = 'THERMIQUE'
-        call u2mesg('F', 'MODELISA8_72', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'MODELISA8_72', nk=2, valk=valk)
     endif
 !
     nimpr = 0
@@ -454,7 +451,7 @@ subroutine op0056()
 70      continue
         if (iret .eq. 0) then
         else if (iret.ne.nbcou) then
-            call u2mess('F', 'MODELISA5_63')
+            call utmess('F', 'MODELISA5_63')
         endif
         qm(19) = eptot
         if (iret .eq. nbcou) then

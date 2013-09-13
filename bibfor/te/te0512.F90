@@ -1,7 +1,6 @@
 subroutine te0512(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
@@ -9,7 +8,8 @@ subroutine te0512(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -145,11 +145,15 @@ subroutine te0512(option, nomte)
 ! ---    EVALUATION DES DONNEES MATERIAUX
     pheno = 'ELAS'
     call rccoma(zi(imate), pheno, 1, phenom, codres(1))
-    if (codres(1) .eq. 1) call u2mess('F', 'FATIGUE1_7')
+    if (codres(1) .eq. 1) then
+        call utmess('F', 'FATIGUE1_7')
+    endif
 !
     pheno2 = 'DOMMA_LEMAITRE'
     call rccoma(zi(imate), pheno2, 1, phenm2, codres(1))
-    if (codres(1) .eq. 1) call u2mess('F', 'FATIGUE1_6')
+    if (codres(1) .eq. 1) then
+        call utmess('F', 'FATIGUE1_6')
+    endif
 !
 ! ----------------------------------------------------------------------
 ! --- 1. PREALABLES

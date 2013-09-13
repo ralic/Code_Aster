@@ -1,11 +1,11 @@
 subroutine verima(nomz, limanz, lonlim, typz)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jeexin.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: lonlim
     character(len=*) :: nomz, limanz(lonlim), typz
 ! ----------------------------------------------------------------------
@@ -61,7 +61,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
         if ((lonlim.ne.0) .and. (iret.eq.0)) then
             valk(1) = type
             valk(2) = noma
-            call u2mesk('F', 'MODELISA7_12', 2, valk)
+            call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
         endif
         do 10 igr = 1, lonlim
             limano = limanz(igr)
@@ -69,7 +69,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
             if (iret .eq. 0) then
                 valk(1) = limano
                 valk(2) = noma
-                call u2mesk('F', 'MODELISA7_75', 2, valk)
+                call utmess('F', 'MODELISA7_75', nk=2, valk=valk)
             endif
 10      continue
 !
@@ -82,7 +82,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
         if ((lonlim.ne.0) .and. (iret.eq.0)) then
             valk(1) = type
             valk(2) = noma
-            call u2mesk('F', 'MODELISA7_12', 2, valk)
+            call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
         endif
         do 20 ino = 1, lonlim
             limano = limanz(ino)
@@ -90,7 +90,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
             if (iret .eq. 0) then
                 valk(1) = limano
                 valk(2) = noma
-                call u2mesk('F', 'MODELISA7_76', 2, valk)
+                call utmess('F', 'MODELISA7_76', nk=2, valk=valk)
             endif
 20      continue
 !
@@ -103,7 +103,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
         if ((lonlim.ne.0) .and. (iret.eq.0)) then
             valk(1) = type
             valk(2) = noma
-            call u2mesk('F', 'MODELISA7_12', 2, valk)
+            call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
         endif
         do 30 igr = 1, lonlim
             limano = limanz(igr)
@@ -111,7 +111,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
             if (iret .eq. 0) then
                 valk(1) = limano
                 valk(2) = noma
-                call u2mesk('F', 'MODELISA7_77', 2, valk)
+                call utmess('F', 'MODELISA7_77', nk=2, valk=valk)
             endif
 30      continue
 !
@@ -124,7 +124,7 @@ subroutine verima(nomz, limanz, lonlim, typz)
         if ((lonlim.ne.0) .and. (iret.eq.0)) then
             valk(1) = type
             valk(2) = noma
-            call u2mesk('F', 'MODELISA7_12', 2, valk)
+            call utmess('F', 'MODELISA7_12', nk=2, valk=valk)
         endif
         do 40 ima = 1, lonlim
             limano = limanz(ima)
@@ -132,11 +132,11 @@ subroutine verima(nomz, limanz, lonlim, typz)
             if (iret .eq. 0) then
                 valk(1) = limano
                 valk(2) = noma
-                call u2mesk('F', 'MODELISA6_10', 2, valk)
+                call utmess('F', 'MODELISA6_10', nk=2, valk=valk)
             endif
 40      continue
 !
     else
-        call u2mesk('F', 'MODELISA7_79', 1, type)
+        call utmess('F', 'MODELISA7_79', sk=type)
     endif
 end subroutine

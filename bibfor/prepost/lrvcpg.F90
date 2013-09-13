@@ -51,7 +51,8 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     implicit none
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mlclci.h"
+#include "asterfort/as_mlclor.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
 #include "asterfort/infniv.h"
@@ -60,13 +61,9 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/as_mlclci.h"
-#include "asterfort/as_mlclor.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: tygeos, nbpgm, nbpga, nloc, nutyma, idfimd
     integer :: permu(nbpgm), codret
     character(len=8) :: elrefa, elrefm, fapg, nomtm
@@ -110,7 +107,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     if (nbpgm .gt. nbpga) then
         vali(1)=nbpgm
         vali(2)=nbpga
-        call u2mesi('A', 'MED_2', 2, vali)
+        call utmess('A', 'MED_2', ni=2, vali=vali)
         codret = 4
         goto 9999
     endif
@@ -128,12 +125,14 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 !
     do 130 iloc = 1, nloc
         call as_mlclci(idfimd, iloc, locnam, typgeo, ibid,&
-                    ndim, nomasu, iret)
+                       ndim, nomasu, iret)
         if (tygeos .eq. typgeo) goto 140
 130  end do
 !     SI ON EST ICI, CELA SIGNIFIE QU'AUCUNE LOCALISATION
 !     N'A ETE IDENTIFIEE POUR L'ELEMENT DE REFERENCE EN COURS
-    if (nbpga .ne. 1 .or. nbpgm .ne. 1) call u2mesk('A', 'MED_1', 1, elrefa)
+    if (nbpga .ne. 1 .or. nbpgm .ne. 1) then
+        call utmess('A', 'MED_1', sk=elrefa)
+    endif
     codret=2
     goto 9999
 140  continue
@@ -151,7 +150,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     call wkvect('&&LRVCPG_COORD_PG_MED', 'V V R', npgref, jgscoo)
     call wkvect('&&LRVCPG_POIDS_PG_MED', 'V V R', nbpgm, jwg)
     call as_mlclor(idfimd, zr(jrefco), zr(jgscoo), zr(jwg), edfuin,&
-                locnam, iret)
+                   locnam, iret)
     ASSERT(typgeo/100.eq.dime)
 !
 !     COMPARAISON DES COORD DES PG ENTRE ASTER ET MED
@@ -216,15 +215,14 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 !                 --> INCOMPATIBILITE DES PG, RISQUE DE RESULTATS FAUX
                     if (ipga .eq. nbpgm) then
                         do 190 im = 1, nbpgm
-                            call u2mesi('A+', 'MED_4', 1, im)
+                            call utmess('A+', 'MED_4', si=im)
                             do 191 idim = 1, dime
                                 valr(1)=zr(jgscoo+dime*(im-1)+idim-1)
                                 valr(2)=zr(jcopga+dime*(im-1)+idim-1)
-                                call u2mesg('A+', 'MED_5', 1, valk(idim), 0,&
-                                            ibid, 2, valr)
+                                call utmess('A+', 'MED_5', sk=valk(idim), nr=2, valr=valr)
 191                          continue
 190                      continue
-                        call u2mess('A', 'MED_3')
+                        call utmess('A', 'MED_3')
                         codret=2
                         goto 9999
                     endif
@@ -237,15 +235,14 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 !        AFFICHAGE DES COORD DES PG MED/ASTER POUR
 !        METTRE EN EVIDENCE LES PERMUTATIONS
         do 211 im = 1, nbpgm
-            call u2mesi('A+', 'MED_4', 1, im)
+            call utmess('A+', 'MED_4', si=im)
             do 212 idim = 1, dime
                 valr(1)=zr(jgscoo+dime*(im-1)+idim-1)
                 valr(2)=zr(jcopga+dime*(im-1)+idim-1)
-                call u2mesg('A+', 'MED_5', 1, valk(idim), 0,&
-                            ibid, 2, valr)
+                call utmess('A+', 'MED_5', sk=valk(idim), nr=2, valr=valr)
 212          continue
 211      continue
-        call u2mess('A', 'MED_6')
+        call utmess('A', 'MED_6')
     endif
 !
 9999  continue

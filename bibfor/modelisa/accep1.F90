@@ -43,8 +43,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbm, i
@@ -101,7 +100,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !
     call dismoi('F', 'PARTITION', ligrmo, 'LIGREL', ibid,&
                 partit, ibid)
-    if (partit .ne. ' ') call u2mesk('F', 'CALCULEL_25', 1, ligrmo)
+    if (partit .ne. ' ') then
+        call utmess('F', 'CALCULEL_25', sk=ligrmo)
+    endif
 !
 ! CALCULS ELEMENTAIRES
     call jeveuo(ligrmo(1:19)//'.LGRF', 'L', jlgrf)
@@ -200,7 +201,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                             ii = ii + 1
                             rayon2 = w1*w1 + w2*w2 + w3*w3
                             if (rayon2 .le. 0.d0) then
-                                call u2mess('F', 'MODELISA_6')
+                                call utmess('F', 'MODELISA_6')
                             endif
                             if (ii .eq. 6) then
                                 refer = rayon2
@@ -213,7 +214,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                                 ii = 7
                             else
                                 if (abs(rayon2-refer) .gt. 1.d-3) then
-                                    call u2mess('F', 'MODELISA_6')
+                                    call utmess('F', 'MODELISA_6')
                                 endif
                                 rap1 = (ref2*w3-ref3*w2)*dir(1,1) + (ref3*w1-ref1*w3)*dir(2,1) + &
                                        &(ref1*w2- ref2*w1)*dir(3,1)

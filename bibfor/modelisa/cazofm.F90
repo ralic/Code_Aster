@@ -27,8 +27,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char
     integer :: nzoco, iform
     character(len=16) :: motfac
@@ -124,7 +123,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
                     icont = 5
 !
                 else
-                    call u2mesk('F', 'CONTACT3_3', 3, valk)
+                    call utmess('F', 'CONTACT3_3', nk=3, valk=valk)
                 endif
 !
             else if (algof(1:10) .eq. 'LAGRANGIEN') then
@@ -134,7 +133,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
                     icont = 5
 !
                 else
-                    call u2mesk('F', 'CONTACT3_3', 3, valk)
+                    call utmess('F', 'CONTACT3_3', nk=3, valk=valk)
                 endif
             else
                 ASSERT(.false.)
@@ -172,7 +171,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
                 lmunul = lmunul.or.(coefff.ne.0.d0)
 10          continue
             if (.not.lmunul) then
-                call u2mess('A', 'CONTACT3_1')
+                call utmess('A', 'CONTACT3_1')
                 lfrot = .false.
             endif
         endif

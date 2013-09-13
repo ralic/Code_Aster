@@ -21,7 +21,7 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
 #include "asterfort/jxdeps.h"
 #include "asterfort/jxecrb.h"
 #include "asterfort/jxlirb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ic, iadmi, iaddi(2), lso
 ! ----------------------------------------------------------------------
 ! LECTURE D'UN SEGMENT DE VALEUR
@@ -69,7 +69,7 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
     lpetit = ( lso .lt. lgbl-nde*lois )
 !
     if (iaddi(1) .eq. 0) then
-        call u2mess('F', 'JEVEUX1_59')
+        call utmess('F', 'JEVEUX1_59')
     else
 !
 ! ----- RECHARGEMENTS ULTERIEURS

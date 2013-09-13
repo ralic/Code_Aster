@@ -17,12 +17,12 @@ subroutine te0290(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -82,7 +82,7 @@ subroutine te0290(option, nomte)
 !
     sens = dy(1)*dx(nsom)-dx(1)*dy(nsom)
     if (sens .eq. 0.d0) then
-        call u2mess('F', 'ELEMENTS3_67')
+        call utmess('F', 'ELEMENTS3_67')
     else if (sens.lt.0.d0) then
         do 7 i = 1, nno
             nx(i) = -nx(i)

@@ -18,7 +18,6 @@ subroutine mltpre(mat19, renumz)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -38,9 +37,10 @@ subroutine mltpre(mat19, renumz)
 #include "asterfort/premlc.h"
 #include "asterfort/premld.h"
 #include "asterfort/prnchk.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: renumz
     character(len=1) :: base
     character(len=19) :: mat19, solv19
@@ -323,7 +323,7 @@ subroutine mltpre(mat19, renumz)
     else if (renum.eq.'METIS') then
         optnum = 2
     else
-        call u2mesk('F', 'ALGELINE_91', 1, renum)
+        call utmess('F', 'ALGELINE_91', sk=renum)
     endif
     if (optnum .eq. 1) then
 !     POUR AMDBAR ON AUGMENTE LA LONGUEUR DE ADJNC2

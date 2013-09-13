@@ -45,7 +45,7 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
 #include "asterfort/lcmmfi.h"
 #include "asterfort/lcmmsg.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
     integer :: nmat, nvi, nsfa, nsfv, iexp, nfs, nsg
@@ -82,7 +82,9 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
         call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                     ng, lg, 0, q)
 !
-        if (nbsys .eq. 0) call u2mess('F', 'ALGORITH_70')
+        if (nbsys .eq. 0) then
+            call utmess('F', 'ALGORITH_70')
+        endif
 !
         do 7 is = 1, nbsys
 !

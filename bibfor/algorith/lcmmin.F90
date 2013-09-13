@@ -60,7 +60,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "blas/dcopy.h"
     integer :: ndt, ndi, typess, nmat, nr, nvi, types0, nfs, nsg
@@ -158,7 +158,9 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 !       RECUPERATION DU NOMBRE DE SYSTEME DE GLISSEMENT NBSYS
             call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                         ng, lg, 0, q)
-            if (nbsys .eq. 0) call u2mess('F', 'ALGORITH_70')
+            if (nbsys .eq. 0) then
+                call utmess('F', 'ALGORITH_70')
+            endif
 !
             call r8inir(6, 0.d0, evp, 1)
 !

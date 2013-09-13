@@ -19,6 +19,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 !     APPELANT : FLUST3
 !     VERIFICATION DE LA REPARTITION GEOMETRIQUE DES GRILLES
@@ -32,7 +33,6 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
 !  IN   : ZMIN   : COTE MIN DU FAISCEAU DE TUBES
 !  IN   : ZMAX   : COTE MAX DU FAISCEAU DE TUBES
 !-----------------------------------------------------------------------
-#include "asterfort/u2mesk.h"
     integer :: ntypg, nbgtot, itypg(nbgtot)
     real(kind=8) :: zg(nbgtot), hg(ntypg), zmin, zmax
 !
@@ -50,7 +50,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
         z2 = zg(ig) + hg(itypg(ig))/2.0d0
         if ((z1.lt.zmin) .or. (z2.gt.zmax)) then
             write(k3ig,'(I3.3)') ig
-            call u2mesk('F', 'ALGELINE_83', 1, k3ig)
+            call utmess('F', 'ALGELINE_83', sk=k3ig)
         endif
 10  end do
 !
@@ -67,7 +67,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
                     write(k3jg,'(I3.3)') jg
                     valk(1) = k3ig
                     valk(2) = k3jg
-                    call u2mesk('F', 'ALGELINE_84', 2, valk)
+                    call utmess('F', 'ALGELINE_84', nk=2, valk=valk)
                 endif
 21          continue
 20      continue

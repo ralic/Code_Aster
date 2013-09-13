@@ -117,8 +117,7 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
 #include "asterfort/mesomm.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: chgeoz, temp1z, temp2z
     real(kind=8) :: iy, iz
 ! -----  VARIABLES LOCALES
@@ -160,13 +159,13 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
     call dismoi('F', 'TYPE_RESU', tempe1, 'RESULTAT', ibid,&
                 typre1, ierd)
     if (typre1 .ne. 'EVOL_THER') then
-        call u2mess('F', 'UTILITAI3_54')
+        call utmess('F', 'UTILITAI3_54')
     endif
 !
     call dismoi('F', 'TYPE_RESU', tempe2, 'RESULTAT', ibid,&
                 typre2, ierd)
     if (typre2 .ne. 'EVOL_THER') then
-        call u2mess('F', 'UTILITAI3_55')
+        call utmess('F', 'UTILITAI3_55')
     endif
 !
 ! --- RECUPERATION DU NOMBRE D'ORDRES DES RESULTATS :
@@ -174,13 +173,13 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha,&
     call rsutnu(tempe1, ' ', 0, knum1, nbordr,&
                 prec, crit, iret)
     if (nbordr .ne. 1) then
-        call u2mesk('F', 'UTILITAI3_56', 1, tempe1)
+        call utmess('F', 'UTILITAI3_56', sk=tempe1)
     endif
 !
     call rsutnu(tempe2, ' ', 0, knum2, nbordr,&
                 prec, crit, iret)
     if (nbordr .ne. 1) then
-        call u2mesk('F', 'UTILITAI3_56', 1, tempe2)
+        call utmess('F', 'UTILITAI3_56', sk=tempe2)
     endif
 !
 ! --- RECUPERATION DES CHAMPS DE TEMPERATURES DES RESULTATS :

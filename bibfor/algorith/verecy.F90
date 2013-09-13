@@ -37,7 +37,6 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/bmnoin.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -46,9 +45,9 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: vali(2)
 !
 !
@@ -92,8 +91,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     if (nbg .ne. nbd) then
         vali (1) = nbd
         vali (2) = nbg
-        call u2mesg('E', 'ALGORITH16_50', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('E', 'ALGORITH16_50', ni=2, vali=vali)
     endif
 !
 !
@@ -181,8 +179,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
             valk (1) = nomnj
             valk (2) = nomnod
             valk (3) = nomnog
-            call u2mesg('F', 'ALGORITH16_51', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH16_51', nk=3, valk=valk)
         endif
         zi(llistb-1+jnode) = i
 !       SI JNODE EST DIFFERENT DE I, C'EST QUE LES NOEUDS D'INTERFACE
@@ -208,8 +205,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
             vali (1) = i
             valk (1) = nomnod
             valk (2) = nomnog
-            call u2mesg('E', 'ALGORITH16_52', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'ALGORITH16_52', nk=2, valk=valk, si=vali(1))
         endif
 !
 !      VERIFICATION RAYON
@@ -230,8 +226,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
             vali (1) = i
             valk (1) = nomnod
             valk (2) = nomnog
-            call u2mesg('E', 'ALGORITH16_53', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'ALGORITH16_53', nk=2, valk=valk, si=vali(1))
         endif
 !
 !  VERIFICATION SENS ANGLE
@@ -242,8 +237,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
             vali (1) = i
             valk (1) = nomnod
             valk (2) = nomnog
-            call u2mesg('E', 'ALGORITH16_54', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'ALGORITH16_54', nk=2, valk=valk, si=vali(1))
         endif
 !
 ! VERIFICATION VALEUR ANGLE
@@ -256,8 +250,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
             vali (1) = i
             valk (1) = nomnod
             valk (2) = nomnog
-            call u2mesg('E', 'ALGORITH16_55', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'ALGORITH16_55', nk=2, valk=valk, si=vali(1))
         endif
 !
 20  end do
@@ -266,8 +259,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     nbpbto=nbpbax+nbpbr+nbpbse+nbpbvt
 !
     if (nbpbto .eq. 0) then
-        call u2mesg('I', 'ALGORITH16_56', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('I', 'ALGORITH16_56')
         diag = ' '
     else if (nbpbax.eq.nbd) then
         diag=' AXE DE REPETITIVITE DIFFERENT DE 0Z      '
@@ -292,7 +284,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 30      continue
 40      continue
 !
-        call u2mess('A', 'ALGORITH16_57')
+        call utmess('A', 'ALGORITH16_57')
         call jeveuo(jexnum(intf//'.IDC_LINO', numg), 'E', llintg)
 !    --- ON ORDONNE LES NOEUDS DE LLINTG SUIVANT LLISTA
         do 50 i = 1, nbd
@@ -313,8 +305,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 !
     if (diag .ne. ' ') then
         valk (1) = diag
-        call u2mesg('F', 'ALGORITH16_58', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH16_58', sk=valk(1))
     endif
 !
     call jedema()

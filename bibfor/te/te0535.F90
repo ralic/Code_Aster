@@ -15,9 +15,8 @@ subroutine te0535(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -38,13 +37,13 @@ subroutine te0535(option, nomte)
 #include "asterfort/porea1.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
-
+!
+!
     character(len=16) :: option, nomte
 ! --- ------------------------------------------------------------------
 !
@@ -63,7 +62,7 @@ subroutine te0535(option, nomte)
     parameter  (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
     integer :: lx
-    real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk),rgeom(nk)
+    real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk), rgeom(nk)
     real(kind=8) :: deplm(12), deplp(12), matsec(6), dege(6)
     real(kind=8) :: zero, deux
     integer :: jdefm, jdefp, jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
@@ -74,8 +73,8 @@ subroutine te0535(option, nomte)
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
     real(kind=8) :: alicom, dalico, ss1, hv, he, minus, xls2
-    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3),sign, my, mz
-    real(kind=8) :: gamma, angp(3), sigma(nd),cars1(6)
+    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3), sign, my, mz
+    real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
     logical :: vecteu, matric, reactu
     character(len=8) :: mator
@@ -85,7 +84,7 @@ subroutine te0535(option, nomte)
 ! --- ------------------------------------------------------------------
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
     ncomp = 18
-
+!
     call jevech('PNBSP_I', 'L', inbf)
 !     NOMBRE DE FIBRES TOTAL DE L'ELEMENT
     nbfib = zi(inbf)
@@ -163,7 +162,7 @@ subroutine te0535(option, nomte)
 ! --- VERIFICATION QUE C'EST BIEN DES MULTIFIBRES
     call jeexin(zk16(icompo-1+7), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'ELEMENTS4_14', 1, nomte)
+        call utmess('F', 'ELEMENTS4_14', sk=nomte)
     endif
 !
 ! --- RECUPERATION DE LA SD_COMPOR OU LE COMPORTEMENT DES GROUPES DE
@@ -178,19 +177,19 @@ subroutine te0535(option, nomte)
     call wkvect('&&TE0535.DEFPFIB', 'V V R8', nbfib, jdefp)
     call wkvect('&&TE0535.MODUFIB', 'V V R8', (nbfib*2), jmodfb)
     call wkvect('&&TE0535.SIGFIB', 'V V R8', (nbfib*2), jsigfb)
-
-
+!
+!
 ! --- LONGUEUR DE L'ELEMENT
     lx = igeom - 1
     xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
     if (xl .eq. zero) then
-        call u2mess('F', 'ELEMENTS_17')
+        call utmess('F', 'ELEMENTS_17')
     endif
 !
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
         valk(2) = nomte
-        call u2mesk('F', 'ELEMENTS3_40', 2, valk)
+        call utmess('F', 'ELEMENTS3_40', nk=2, valk=valk)
     endif
     reactu = zk16(icompo+2) .eq. 'GROT_GDEP'
 !
@@ -227,7 +226,7 @@ subroutine te0535(option, nomte)
 ! --- TORSION A PART
     xjx = zr(isect+7)
     gxjx = g*xjx
-
+!
 ! --- DEPLACEMENTS DANS LE REPERE LOCAL
     call utpvgl(nno, nc, pgl, zr(ideplm), deplm)
     call utpvgl(nno, nc, pgl, zr(ideplp), deplp)
@@ -266,10 +265,10 @@ subroutine te0535(option, nomte)
             ipomod=jmodfb + nbfib*(ip-1)
 ! ---       MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
             call pmfmcf(ip, nbgf, nbfib, zi(inbf+2), zk24(isdcom),&
-                        zr(icarcr), option, zr(iinstm), zr(iinstp),&
-                        zi(imate), nbvalc, defam, defap, zr(ivarim),&
-                        zr(ivarmp), zr(icontm), zr( jdefm), zr(jdefp), epsm,&
-                        zr(ipomod), zr(iposig), zr(ivarip), isecan, codrep)
+                        zr(icarcr), option, zr(iinstm), zr(iinstp), zi(imate),&
+                        nbvalc, defam, defap, zr(ivarim), zr(ivarmp),&
+                        zr(icontm), zr( jdefm), zr(jdefp), epsm, zr(ipomod),&
+                        zr(iposig), zr(ivarip), isecan, codrep)
 !
             if (codrep .ne. 0) then
                 codret = codrep
@@ -288,7 +287,7 @@ subroutine te0535(option, nomte)
 ! ---    FIN BOUCLE POINTS DE GAUSS
 ! ---    ENCORE UN PEU DE MODE INCOMPATIBLE
         if (abs(hv) .le. r8prem()) then
-            call u2mess('F', 'ELEMENTS_8')
+            call utmess('F', 'ELEMENTS_8')
         endif
         dalico = dalico-he/hv
         if (ico .eq. 1) then
@@ -303,7 +302,7 @@ subroutine te0535(option, nomte)
         endif
     end do
 ! --- FIN BOUCLE CALCUL ALICO
-710 continue
+710  continue
 !
 ! --- QUAND ON A CONVERGE SUR ALICO, ON PEUT INTEGRER SUR L'ELEMENT
     do ip = 1, npg
@@ -350,12 +349,12 @@ subroutine te0535(option, nomte)
 ! --- TORSION A PART POUR LES FORCES INTERNE
     fl(10) = gxjx*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
     fl(4) = -fl(10)
-
+!
 !   STOCKAGE DES EFFORTS GENERALISES ET PASSAGE DES FORCES EN REP LOCAL
     if (vecteu) then
-         xls2 = xl/2.d0
-         my = (fl(11)-fl(5))/deux
-         mz = (fl(12)-fl(6))/deux
+        xls2 = xl/2.d0
+        my = (fl(11)-fl(5))/deux
+        mz = (fl(12)-fl(6))/deux
 ! ---    ON SORT LES CONTRAINTES SUR CHAQUE FIBRE
         do 310 ip = 1, 2
             iposcp=icontp + nbfib*(ip-1)
@@ -383,7 +382,7 @@ subroutine te0535(option, nomte)
 !
 !   CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE
     if (matric .and. reactu) then
-
+!
         do 15 i = 1, nc
             sigma(i) = - zr(istrxp+i-1)
             sigma(i+nc) = zr(istrxp+ncomp+i-1)
@@ -406,7 +405,7 @@ subroutine te0535(option, nomte)
 ! ---    ON SORT LA MATRICE DE RIGIDITE TANGENTE
         call utpslg(nno, nc, pgl, klv, zr(imatuu))
     endif
-
+!
 !
 900  continue
 ! --- SORTIE PROPRE: CODE RETOUR ET LIBERATION DES RESSOURCES

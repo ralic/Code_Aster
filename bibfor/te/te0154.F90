@@ -15,7 +15,7 @@ subroutine te0154(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -28,7 +28,7 @@ subroutine te0154(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verift.h"
     character(len=*) :: option, nomte
@@ -72,7 +72,7 @@ subroutine te0154(option, nomte)
 !
     if ((nomte .ne. 'MECA_BARRE') .and. (nomte .ne. 'MECA_2D_BARRE')) then
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -102,7 +102,7 @@ subroutine te0154(option, nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -178,7 +178,7 @@ subroutine te0154(option, nomte)
                     ugr(5) = zr(jdepl+4-1)
                 endif
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
 !
         endif

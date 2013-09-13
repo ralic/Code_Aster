@@ -1,11 +1,11 @@
 subroutine mouveo(arete, rcarte, angdeb, angfin, angare,&
                   angmax, profon, volume, epais)
 ! aslint: disable=
-    implicit   none
+    implicit none
 #include "asterc/r8dgrd.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/infniv.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: arete, rcarte, angdeb, angfin, angare, angmax, profon
     real(kind=8) :: volume, epais
 !-----------------------------------------------------------------------
@@ -124,8 +124,7 @@ subroutine mouveo(arete, rcarte, angdeb, angfin, angare,&
         vali = i
         valr (1) = surfac*epais
         valr (2) = surf*epais
-        call u2mesg('A', 'PREPOST6_3', 0, ' ', 1,&
-                    vali, 2, valr)
+        call utmess('A', 'PREPOST6_3', si=vali, nr=2, valr=valr)
         goto 70
     endif
     goto 50

@@ -20,7 +20,7 @@ subroutine nmtama(fami, kpg, ksp, imate, instam,&
     implicit none
 !
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, imate
     character(len=*) :: fami
     real(kind=8) :: instam, instap, matm(3), mat(14)
@@ -102,10 +102,14 @@ subroutine nmtama(fami, kpg, ksp, imate, instam,&
     visco = ok(12).eq.0
 !
     if (visco) then
-        if (mat(12) .eq. 0.d0) call u2mess('F', 'ALGORITH8_32')
+        if (mat(12) .eq. 0.d0) then
+            call utmess('F', 'ALGORITH8_32')
+        endif
         mat(12) = 1.d0 / mat(12)
 !
-        if (mat(13) .eq. 0.d0) call u2mess('F', 'ALGORITH8_33')
+        if (mat(13) .eq. 0.d0) then
+            call utmess('F', 'ALGORITH8_33')
+        endif
         mat(13) = 1.d0 / mat(13) / (instap-instam)**mat(12)
 !
         if (ok(14) .ne. 0) mat(14) = 0.d0

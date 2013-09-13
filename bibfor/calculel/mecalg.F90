@@ -67,7 +67,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 #include "asterfort/tbajvi.h"
 #include "asterfort/tbajvk.h"
 #include "asterfort/tbajvr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 !
@@ -161,7 +161,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
             call chpver('C', chsigi(1:19), 'NOEU', 'SIEF_R', ino2)
             call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
             if ((ino1.eq.1) .and. (ino2.eq.1) .and. (inga.eq.1)) then
-                call u2mess('F', 'RUPTURE1_12')
+                call utmess('F', 'RUPTURE1_12')
             else if (inga.eq.0) then
                 ligrmo = modele//'.MODELE'
                 call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&

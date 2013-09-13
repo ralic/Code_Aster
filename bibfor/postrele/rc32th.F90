@@ -45,7 +45,7 @@ subroutine rc32th()
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: ibid, n1, iocc, nbther, nume, nbinst, jinst, i, j, k, l, ndim
@@ -113,8 +113,7 @@ subroutine rc32th()
     if (.not. exist) then
         valk (1) = table
         valk (2) = valek(1)
-        call u2mesg('F', 'POSTRCCM_1', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
     instan = '&&RC32TH.INSTANT'
     call tbexv1(table, valek(1), instan, 'V', nbinst,&
@@ -127,8 +126,7 @@ subroutine rc32th()
     if (.not. exist) then
         valk (1) = table
         valk (2) = valek(2)
-        call u2mesg('F', 'POSTRCCM_1', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
     abscur = '&&RC32TH.ABSC_CURV'
     call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
@@ -179,8 +177,8 @@ subroutine rc32th()
                     valk (2) = nocmp(j)
                     valk (3) = valek(1)
                     valk (4) = valek(2)
-                    call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                                0, 2, vale)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                valr=vale)
                 endif
                 sigth((k-1)*ncmp+j) = zr(jcont+k-1)
                 if (j .eq. ncmp) then

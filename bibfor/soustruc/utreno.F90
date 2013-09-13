@@ -2,7 +2,7 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud)
     implicit none
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
     integer :: iocc
     character(len=8) :: ma, noeud
@@ -60,11 +60,11 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud)
         call utnono(' ', ma, 'NOEUD', nogno, noeud,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogno)
+            call utmess('F', 'ELEMENTS_67', sk=nogno)
         else if (iret .eq. 1) then
             valk(1) = nogno
             valk(2) = noeud
-            call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
     endif
 !

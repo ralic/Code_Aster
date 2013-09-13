@@ -25,7 +25,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 #include "asterfort/infniv.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerod2.h"
 #include "blas/ddot.h"
     character(len=8) :: typmod(2)
@@ -102,7 +102,9 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
 ! -- CAS DE L'ENDOMMAGEMENT SATURE, on ne pilote pas
     if ((nint(vim(2)) .eq. 2)) then
-        if (niv .eq. 2) call u2mess('I', 'PILOTAGE_2')
+        if (niv .eq. 2) then
+            call utmess('I', 'PILOTAGE_2')
+        endif
         goto 666
     endif
 !
@@ -121,7 +123,8 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !    LECTURE DES CARACTERISTIQUES DE REGULARISATION
     nomres(1) = 'PENA_LAGR'
     call rcvala(imate, ' ', 'NON_LOCAL', 0, ' ',&
-                [0.d0], 1, nomres, valres, icodre, 1)
+                [0.d0], 1, nomres, valres, icodre,&
+                1)
     r=valres(1)
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
@@ -136,7 +139,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
      &               *(1.d0+nu-2.d0*nu**2)/(1.d0+nu)
     if (nu .eq. 0) then
         if (icodre(3) .eq. 0) then
-            call u2mess('F', 'ALGORITH4_52')
+            call utmess('F', 'ALGORITH4_52')
         else
             seuil=k0
         endif
@@ -146,7 +149,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             seuil=k0
         else
             if (valres(3) .lt. sicr) then
-                call u2mess('F', 'ALGORITH4_53')
+                call utmess('F', 'ALGORITH4_53')
             else
                 k1=valres(3)*(1.d0+gamma)*nu**2/(1.d0+nu)/(1.d0-2.d0*&
                 nu) -k0*e/(1.d0-2.d0*nu)/valres(3)
@@ -176,7 +179,9 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
 ! -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS
     if (d .gt. 1.d0) then
-        if (niv .eq. 2) call u2mess('I', 'PILOTAGE_2')
+        if (niv .eq. 2) then
+            call utmess('I', 'PILOTAGE_2')
+        endif
         goto 666
     endif
 !
@@ -362,7 +367,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                         fpd, seuil, r*d, y(3), z(3))
 !
 200      continue
-        call u2mess('F', 'PILOTAGE_87')
+        call utmess('F', 'PILOTAGE_87')
 201      continue
 !
         copilo(2,1) =z(3)/epsnor
@@ -399,7 +404,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
             call critev(epsp, epsd, x(3), lambda, deuxmu,&
                         fpd, seuil, r*d, y(3), z(3))
 202      continue
-        call u2mess('F', 'PILOTAGE_87')
+        call utmess('F', 'PILOTAGE_87')
 203      continue
 !
         copilo(2,1) =z(3)/epsnor
@@ -503,7 +508,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                         fpd, seuil, r*d, y(3), z(3))
 !
 204      continue
-        call u2mess('F', 'PILOTAGE_87')
+        call utmess('F', 'PILOTAGE_87')
 205      continue
 !
         copilo(2,1) =z(3)/epsnor
@@ -535,7 +540,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
                         fpd, seuil, r*d, y(3), z(3))
 !
 206      continue
-        call u2mess('F', 'PILOTAGE_87')
+        call utmess('F', 'PILOTAGE_87')
 207      continue
 !
         copilo(2,2) =z(3)/epsnor

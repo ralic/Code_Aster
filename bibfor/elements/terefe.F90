@@ -18,13 +18,13 @@ subroutine terefe(nomref, typele, valref)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomref, typele
     real(kind=8) :: valref
 !
@@ -154,7 +154,7 @@ subroutine terefe(nomref, typele, valref)
             kmess(2) = nomref
         endif
         kmess(1) = typele
-        call u2mesk('F', 'MECANONLINE5_55', 2, kmess)
+        call utmess('F', 'MECANONLINE5_55', nk=2, valk=kmess)
     else
         valref = val
     endif

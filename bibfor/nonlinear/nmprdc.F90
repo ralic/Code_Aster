@@ -29,7 +29,7 @@ subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsinch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -92,8 +92,7 @@ subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
     call rsinch(method(6)(1:8), 'DEPL', 'INST', instan, deplu,&
                 'EXCLU', 'EXCLU', 0, 'V', iret)
     if (iret .gt. 0) then
-        call u2mesg('F', 'MECANONLINE2_27', 1, method(6)(1:8), 1,&
-                    ibid, 1, instan)
+        call utmess('F', 'MECANONLINE2_27', sk=method(6)(1:8), si=ibid, sr=instan)
     endif
 !
 ! --- COPIE DU DEPLACEMENT ESTIME

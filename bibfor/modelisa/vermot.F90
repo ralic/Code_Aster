@@ -1,6 +1,7 @@
 subroutine vermot(icl, iv, cv, cnl, ier,&
                   irteti)
     implicit none
+#include "asterfort/utmess.h"
 !       ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +30,6 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
 !       OUT     IER     =       0       > VRAI  ( RETURN )
 !                       =       1       > FAUX  ( RETURN 1 )
 !       ----------------------------------------------------------------
-#include "asterfort/u2mesk.h"
     integer :: icl, iv, ier
     character(len=14) :: cnl
     character(len=16) :: cmd, nom
@@ -48,14 +48,14 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
         nom = cv(1:jv)
         valk(1) = cnl
         valk(2) = nom(1:jv)
-        call u2mesk('E', 'MODELISA7_81', 2, valk)
+        call utmess('E', 'MODELISA7_81', nk=2, valk=valk)
         ier = 1
         irteti = 1
         goto 9999
     endif
 !
     if (iv .gt. 24) then
-        call u2mesk('F', 'MODELISA7_82', 1, cnl)
+        call utmess('F', 'MODELISA7_82', sk=cnl)
         ier = 1
         irteti = 1
         goto 9999
@@ -64,13 +64,13 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
     mcl = '        '
     mcl(1:iv) = cv(1:iv)
     if (mcl .eq. 'FIN     ') then
-        call u2mesk('E', 'MODELISA7_83', 1, cnl)
+        call utmess('E', 'MODELISA7_83', sk=cnl)
         ier = 1
         irteti = 1
         goto 9999
     endif
     if (mcl .eq. 'FINSF   ') then
-        call u2mesk('E', 'MODELISA7_84', 1, cnl)
+        call utmess('E', 'MODELISA7_84', sk=cnl)
         ier = 1
         irteti = 1
         goto 9999

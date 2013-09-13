@@ -24,7 +24,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
 #include "asterfort/assert.h"
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: alias
     integer :: jgeom
     real(kind=8) :: ff(9), dff(2, 9)
@@ -93,7 +93,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
 80          continue
             if (r .eq. 0.d0) then
                 r=1.d-7
-                call u2mess('A', 'CONTACT2_14')
+                call utmess('A', 'CONTACT2_14')
             endif
             jacobi = jacobi*abs(r)
         endif

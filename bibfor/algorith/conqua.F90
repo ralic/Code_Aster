@@ -43,7 +43,7 @@ subroutine conqua(macor, nbcor, macoc, nbcoc, lface,&
 #include "asterfort/conjac.h"
 #include "asterfort/conors.h"
 #include "asterfort/conper.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbnoco
     integer :: nblir, nbcor
     integer :: nblic, nbcoc, nococ(4)
@@ -109,8 +109,7 @@ subroutine conqua(macor, nbcor, macoc, nbcoc, lface,&
 !
     else if (nbnoco.gt.1) then
         vali = nbnoco
-        call u2mesg('E', 'ALGORITH12_59', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('E', 'ALGORITH12_59', si=vali)
     endif
 !
 end subroutine

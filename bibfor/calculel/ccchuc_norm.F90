@@ -1,7 +1,7 @@
-subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in, &
+subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
                        field_out)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -12,10 +12,11 @@ implicit none
 #include "asterfort/chsut1.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
-#include "asterfort/nopar2.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/megeom.h"
+#include "asterfort/nopar2.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +35,7 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=16) , intent(in) :: norm
+    character(len=16), intent(in) :: norm
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: name_gd
     character(len=19), intent(in) :: field_in
@@ -77,22 +78,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrel         = model//'.MODELE'
-    field_in_s     = '&&CCCHUC_NORM.FIELS'
-    field_neut_s   = '&&CCCHUC_NORM.NEUTS'
-    field_neut     = '&&CCCHUC_NORM.NEUTR'
+    ligrel = model//'.MODELE'
+    field_in_s = '&&CCCHUC_NORM.FIELS'
+    field_neut_s = '&&CCCHUC_NORM.NEUTS'
+    field_neut = '&&CCCHUC_NORM.NEUTR'
     field_neut_mod = '&&CCCHUC_NORM.NEUTM'
-    chcoef         = '&&CCCHUC_NORM.CHCOEF'
-    chgaus         = '&&CCCHUC_NORM.CHGAUS'
-    chcalc         = '&&CCCHUC_NORM.CHCALC'
-    list_cmp_neut  = '&&CCCHUC_NORM.CMPN'
+    chcoef = '&&CCCHUC_NORM.CHCOEF'
+    chgaus = '&&CCCHUC_NORM.CHGAUS'
+    chcalc = '&&CCCHUC_NORM.CHCALC'
+    list_cmp_neut = '&&CCCHUC_NORM.CMPN'
     nb_coef_user = 0
     coef_user(1) = 0.d0
 !
 ! - Compute <CARTE> with informations on Gauss points 
 !
     call exisd('CHAMP', chgaus, iexist)
-    if (iexist.eq.0) then
+    if (iexist .eq. 0) then
         call megeom(model, chgeom)
         call calc_coor_elga(ligrel, chgeom, chgaus)
     endif
@@ -103,7 +104,7 @@ implicit none
     call jeveuo(field_in_s//'.CESD', 'L', jchsd)
     call jeveuo(field_in_s//'.CESC', 'L', jchsc)
     nb_elem = zi(jchsd-1+1)
-    nb_cmp  = zi(jchsd-1+2)
+    nb_cmp = zi(jchsd-1+2)
     list_cmp = field_in_s//'.CESC'
 !
 ! - <NEUT_R> components
@@ -116,9 +117,9 @@ implicit none
 !
 ! - Construction of <CARTE> of <NEUT_R> by selection of components
 !
-    call calc_norm_coef(model   , name_gd     , nb_cmp_max  , nb_cmp,    norm  , &
-                        'NORM'  , list_cmp    , nb_coef_user, coef_user, chcoef, &
-                        chcalc  , nb_cmp_act)
+    call calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp, norm,&
+                        'NORM', list_cmp, nb_coef_user, coef_user, chcoef,&
+                        chcalc, nb_cmp_act)
 !
 ! - Transform input field in NEUT_R
 !
@@ -135,16 +136,16 @@ implicit none
     else
         ASSERT(.false.)
     endif
-    nopar  = nopar2(option,'NEUT_R','OUT')
+    nopar = nopar2(option,'NEUT_R','OUT')
     call cescel(field_neut_s, ligrel, option, nopar, 'OUI',&
                 nncp, 'V', field_neut, 'F', iret)
-    ASSERT(iret.eq.0)    
+    ASSERT(iret.eq.0) 
 !
 ! - Change type of field
 !
-    if (norm.eq.'L2') then
+    if (norm .eq. 'L2') then
         option = 'NORME_L2'
-    elseif (norm.eq.'FROBENIUS') then
+    else if (norm.eq.'FROBENIUS') then
         option = 'NORME_FROB'
     else
         ASSERT(.false.)
@@ -152,7 +153,7 @@ implicit none
     if (type_field_in .eq. 'ELGA') then
         field_neut_mod = field_neut
     else
-        nopar  = 'PCHAMPG'
+        nopar = 'PCHAMPG'
         celmod = '&&PENORM.CELMOD'
         call alchml(ligrel, option, nopar, 'V', celmod,&
                     ibid, ' ')
@@ -160,7 +161,7 @@ implicit none
             valk(1) = ligrel
             valk(2) = nopar
             valk(3) = option
-            call u2mesk('F', 'UTILITAI3_23', 3, valk)
+            call utmess('F', 'UTILITAI3_23', nk=3, valk=valk)
         endif
         call chpchd(field_neut, 'ELGA', celmod, 'OUI', 'V',&
                     field_neut_mod)
@@ -169,7 +170,7 @@ implicit none
 !
 ! - Compute Norm (integration on finite element)
 !
-    call calc_norm_elem(norm, ligrel, chcoef, chgaus, chcalc, &
+    call calc_norm_elem(norm, ligrel, chcoef, chgaus, chcalc,&
                         field_neut_mod, field_out)
 !
     call jedetr(chcoef)

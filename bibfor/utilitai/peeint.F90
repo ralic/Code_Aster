@@ -32,8 +32,7 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbocc
@@ -65,7 +64,7 @@ subroutine peeint(resu, modele, nbocc)
     integer :: nbgma, jgma, nma, jma, igm, nbpa1, nbpa2, nn, inum, nli, nlo
     integer :: nd, ib, jlicmp, jlicm2, jlicm1, nucmp, jcpini
     parameter(nzero=0,nbpa1=4,nbpa2=2)
-    real(kind=8) ::  prec, inst
+    real(kind=8) :: prec, inst
     complex(kind=8) :: cbid
     character(len=8) :: k8b, kbid, mailla, resuco, crit, nopar
     character(len=4) :: tych, ki, exirdm
@@ -172,7 +171,7 @@ subroutine peeint(resu, modele, nbocc)
         call exlima('INTEGRALE', iocc, 'V', modele, ligtmp)
         call dismlg('EXI_RDM', ligtmp, ibid, exirdm, iret)
         if (exirdm .eq. 'OUI') then
-            call u2mess('F', 'UTILITAI8_60')
+            call utmess('F', 'UTILITAI8_60')
         endif
 !
 !
@@ -198,7 +197,9 @@ subroutine peeint(resu, modele, nbocc)
 !
 !         --- CHAMP DU POST-TRAITEMENT
                 call getvtx('INTEGRALE', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
-                if (iret .eq. 0) call u2mess('F', 'POSTELEM_4')
+                if (iret .eq. 0) then
+                    call utmess('F', 'POSTELEM_4')
+                endif
 !
                 call rsexch('F', resuco, nomcha, numo, cham2,&
                             iret)
@@ -257,7 +258,7 @@ subroutine peeint(resu, modele, nbocc)
                     valk2(1)=ligrel
                     valk2(2)=nopar
                     valk2(3)=optio2
-                    call u2mesk('F', 'UTILITAI3_23', 3, valk2)
+                    call utmess('F', 'UTILITAI3_23', nk=3, valk=valk2)
                 endif
                 cham='&&CHPCHD.CHAM'
                 call chpchd(cham3, 'ELGA', celmod, 'OUI', 'V',&

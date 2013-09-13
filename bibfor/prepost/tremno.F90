@@ -1,7 +1,6 @@
 subroutine tremno(ncmp, nssche, nomsd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/i2trgi.h"
 #include "asterfort/jecrec.h"
@@ -16,8 +15,9 @@ subroutine tremno(ncmp, nssche, nomsd)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/numek8.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ncmp, cbid
     character(len=19) :: nssche, nomsd
 !*********************************************************************
@@ -262,8 +262,7 @@ subroutine tremno(ncmp, nssche, nomsd)
     if (lngm .eq. 0) then
 !
         vali = n
-        call u2mesg('F', 'PREPOST5_76', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST5_76', si=vali)
 !
     endif
 !

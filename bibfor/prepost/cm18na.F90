@@ -19,15 +19,15 @@ subroutine cm18na(main, nbma, nbno, lima, typema,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
+!
     integer :: nfmax
     parameter  ( nfmax = 24 )
     integer :: nbma, nbno, lima(*), mxnofa, typema(*), nbtri
@@ -129,8 +129,7 @@ subroutine cm18na(main, nbma, nbno, lima, typema,&
 30          continue
 !           PLUS DE NFMAX FACES TOUCHENT NO1 ?
             call jenuno(jexnum(main//'.NOMNOE', no1), nomnoe)
-            call u2mesg('F', 'MAIL0_11', 1, nomnoe, 1,&
-                        nfmax, 0, rbid)
+            call utmess('F', 'MAIL0_11', sk=nomnoe, si=nfmax)
 31          continue
             nomima(face,m) = nomi
             nomipe(1,nomi) = zi(jnoma-1 + deffac(1,face,tyma))

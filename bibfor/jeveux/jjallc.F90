@@ -20,7 +20,7 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
 #include "asterfort/jjalls.h"
 #include "asterfort/jjecrs.h"
 #include "asterfort/jxliro.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: iclasi, idatci, ibacol
     character(len=*) :: cel
 ! ----------------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
                 call jjalls(lonoi, ic, genri, typei, ltypi,&
                             'INIT', col, jcol, iadml, iadyn)
             else
-                call u2mesk('F', 'JEVEUX_18', 1, rnom(jrnom(ic)+id))
+                call utmess('F', 'JEVEUX_18', sk=rnom(jrnom(ic)+id))
             endif
         else
             call jjalls(lonoi, ic, genri, typei, ltypi,&
@@ -108,7 +108,7 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
             ltypi = ltyp ( jltyp(ic) + ix )
             lonoi = lono ( jlono(ic) + ix ) * ltypi
             if (lonoi .eq. 0) then
-                call u2mesk('F', 'JEVEUX_26', 1, rnom(jrnom(ic)+ix))
+                call utmess('F', 'JEVEUX_26', sk=rnom(jrnom(ic)+ix))
             endif
             iadmi = iadm ( jiadm(ic) + 2*ix-1 )
             iadyn = iadm ( jiadm(ic) + 2*ix )
@@ -125,7 +125,7 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
                         call jjalls(lonoi, ic, genri, typei, ltypi,&
                                     'INIT', col, jcol, iadml, iadyn)
                     else
-                        call u2mesk('F', 'JEVEUX_18', 1, rnom(jrnom(ic)+ ix))
+                        call utmess('F', 'JEVEUX_18', sk=rnom(jrnom(ic)+ ix))
                     endif
                 else
                     call jjalls(lonoi, ic, genri, typei, ltypi,&

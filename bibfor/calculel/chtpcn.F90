@@ -19,7 +19,6 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterfort/antece.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
@@ -31,8 +30,8 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: chno1, base, chno2
     real(kind=8) :: tgeom(6), tmin, epsi, tailmi, val
 !
@@ -150,7 +149,7 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
     if (nbante .gt. 1) then
 !
-        call u2mess('F', 'CALCULEL2_7')
+        call utmess('F', 'CALCULEL2_7')
 !
     else
 !
@@ -193,12 +192,12 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
         valk(1) = diff
         valk(2) = chnaff
-        call u2mesk('A', 'CALCULEL2_8', 2, valk)
+        call utmess('A', 'CALCULEL2_8', nk=2, valk=valk)
 !
     else
         if (nbnrcp .lt. (nbnaff/2)) then
 !
-            call u2mess('A', 'CALCULEL2_9')
+            call utmess('A', 'CALCULEL2_9')
         endif
 !
     endif
@@ -206,7 +205,7 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
     if (nbnrcp .gt. nbnaff) then
 !
-        call u2mess('F', 'CALCULEL2_10')
+        call utmess('F', 'CALCULEL2_10')
 !
     endif
 !

@@ -49,9 +49,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
 #include "asterfort/parti0.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: vec, tlivec(*), vecpro, base
@@ -130,7 +128,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     else if (motcle(1:4).eq.'CUMU') then
 !
     else
-        call u2mesk('F', 'ASSEMBLA_8', 1, motcle)
+        call utmess('F', 'ASSEMBLA_8', sk=motcle)
     endif
 !
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
@@ -307,7 +305,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
         call dismoi('F', 'NOM_MODELE', vecel, 'VECT_ELEM', ibid,&
                     mo2, ierd)
-        if (mo2 .ne. mo) call u2mess('F', 'ASSEMBLA_5')
+        if (mo2 .ne. mo) then
+            call utmess('F', 'ASSEMBLA_5')
+        endif
 !
         call jeexin(vecel//'.RELR', iret)
         if (iret .eq. 0) goto 90
@@ -364,8 +364,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                     valk(1)=resu
                                     valk(2)=vecel
                                     valk(3)=nudev
-                                    call u2mesg('F', 'ASSEMBLA_41', 3, valk, 1,&
-                                                vali, 0, 0.d0)
+                                    call utmess('F', 'ASSEMBLA_41', nk=3, valk=valk, si=vali(1))
                                 endif
 !
                                 if (iad1 .gt. nequa) then
@@ -374,15 +373,14 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                     vali(3)=nequa
                                     valk(1)=resu
                                     valk(2)=vecel
-                                    call u2mesg('F', 'ASSEMBLA_42', 2, valk, 3,&
-                                                vali, 0, 0.d0)
+                                    call utmess('F', 'ASSEMBLA_42', nk=2, valk=valk, ni=3,&
+                                                vali=vali)
                                 endif
 !
                                 if (nddl1 .gt. 100) then
                                     vali(1)=nddl1
                                     vali(2)=100
-                                    call u2mesg('F', 'ASSEMBLA_43', 0, ' ', 2,&
-                                                vali, 0, 0.d0)
+                                    call utmess('F', 'ASSEMBLA_43', ni=2, vali=vali)
                                 endif
 !
                                 if (type .eq. 1) then

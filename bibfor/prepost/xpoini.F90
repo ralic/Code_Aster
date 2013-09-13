@@ -32,7 +32,7 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem, modele, malini, resuco, resux, modvis
@@ -78,7 +78,9 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
 !       MODELE ENRICHI : MODELE
         call getvid(' ', 'MODELE', scal=modele, nbret=iret)
         call exixfe(modele, iret)
-        if (iret .eq. 0) call u2mesk('F', 'XFEM_3', 1, modele)
+        if (iret .eq. 0) then
+            call utmess('F', 'XFEM_3', sk=modele)
+        endif
 !
 !
 !       PREFERENCES POUR LE NOMAGE DES NOUVELLES ENTITES

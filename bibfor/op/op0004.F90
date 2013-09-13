@@ -42,8 +42,7 @@ subroutine op0004()
 #include "asterfort/lxlgut.h"
 #include "asterfort/ordon1.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrif.h"
 #include "asterfort/wkvect.h"
     character(len=4) :: interp(2)
@@ -82,8 +81,7 @@ subroutine op0004()
     if (nbpara .ne. nbfonc) then
         vali (1) = nbpara
         vali (2) = nbfonc
-        call u2mesg('F', 'UTILITAI8_3', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'UTILITAI8_3', ni=2, vali=vali)
     endif
 !
 !     --- VERIFICATION DE LA CROISSANCE DES PARAMETRES ---
@@ -94,7 +92,7 @@ subroutine op0004()
         iret=2
         call foverf(zr(lparc), nbpara, iret)
         if (iret .ne. 2) then
-            call u2mess('F', 'UTILITAI2_72')
+            call utmess('F', 'UTILITAI2_72')
         endif
         call jedetr('&&OP0004.TEMP.PARA')
     endif
@@ -105,8 +103,7 @@ subroutine op0004()
             nv = -nv
             if (mod(nv,2) .ne. 0) then
                 vali (1) = iocc
-                call u2mesg('F', 'UTILITAI8_4', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'UTILITAI8_4', si=vali(1))
             endif
             if (verif .eq. 'CROISSANT') then
                 nbcoup = nv / 2
@@ -121,7 +118,7 @@ subroutine op0004()
                 iret=2
                 call foverf(zr(lpar2), nbcoup, iret)
                 if (iret .ne. 2) then
-                    call u2mess('F', 'UTILITAI2_72')
+                    call utmess('F', 'UTILITAI2_72')
                 endif
                 call jedetr('&&OP0004.TEMP.PARA')
                 call jedetr('&&OP0004.TEMP.PAR2')
@@ -186,13 +183,11 @@ subroutine op0004()
                     typfon='FONCTION'
                     call uttrif(zr(lval), nbcoup, typfon)
                     valk = nomfon
-                    call u2mesg('A', 'UTILITAI8_5', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'UTILITAI8_5', sk=valk)
                 else if (iret2.lt.0) then
                     call ordon1(zr(lval), nbcoup)
                     vali (1) = ifonc
-                    call u2mesg('A', 'UTILITAI8_6', 0, ' ', 1,&
-                                vali, 0, 0.d0)
+                    call utmess('A', 'UTILITAI8_6', si=vali(1))
                 endif
             endif
 !
@@ -215,7 +210,7 @@ subroutine op0004()
         iret=0
         call foordn(zr(lpar), zk24(lnomf), nbpara, nbfonc, iret)
         if (iret .ne. 0) then
-            call u2mess('F', 'UTILITAI2_73')
+            call utmess('F', 'UTILITAI2_73')
         endif
     endif
 !

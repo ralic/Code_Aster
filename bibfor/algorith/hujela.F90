@@ -34,7 +34,7 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsove.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, iret, i, j
     real(kind=8) :: coef, e, nu, al, demu, i1, n, pref
     real(kind=8) :: deps(6), dsig(6), sigd(6), sigf(6)
@@ -93,7 +93,7 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
             i1 = i1e + d13*i1
 !
         else
-            call u2mess('F', 'COMPOR1_40')
+            call utmess('F', 'COMPOR1_40')
         endif
 !
         if ((i1 -piso)/pref .lt. tole) then
@@ -141,7 +141,7 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
         i1e = i1e + d13*coef
 !
     else
-        call u2mess('F', 'COMPOR1_40')
+        call utmess('F', 'COMPOR1_40')
     endif
 !
     if ((i1 -piso)/pref .lt. tole) tract=.true.
@@ -216,12 +216,12 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
             hook(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_40')
+            call utmess('F', 'COMPOR1_40')
         endif
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 !
     endif
 !

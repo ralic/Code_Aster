@@ -22,8 +22,7 @@ subroutine crsvsi(solveu)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: solveu
 !
 ! ----------------------------------------------------------------------
@@ -56,10 +55,10 @@ subroutine crsvsi(solveu)
         if (nprec .gt. 0) then
             zi(islvi-1+3) = 2
         else
-            call u2mess('I', 'DISCRETISATION_43')
+            call utmess('I', 'DISCRETISATION_43')
         endif
     else
-        call u2mesk('I', 'DISCRETISATION_40', 1, nomslv)
+        call utmess('I', 'DISCRETISATION_40', sk=nomslv)
     endif
 !
     call jedema()

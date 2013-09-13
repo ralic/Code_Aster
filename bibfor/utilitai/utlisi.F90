@@ -21,7 +21,7 @@ subroutine utlisi(motcle, a, na, b, nb,&
 !     ARGUMENTS:
 !     ----------
 #include "asterfort/indiis.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: motcle
     integer :: a(*), b(*), c(*), na, nb, nc, ntrou
 ! ----------------------------------------------------------------------
@@ -137,7 +137,7 @@ subroutine utlisi(motcle, a, na, b, nb,&
 !
     else
 !     -----
-        call u2mesk('F', 'UTILITAI5_47', 1, motcl2)
+        call utmess('F', 'UTILITAI5_47', sk=motcl2)
     endif
 !
 end subroutine

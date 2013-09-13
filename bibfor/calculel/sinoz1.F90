@@ -32,7 +32,6 @@ subroutine sinoz1(modele, sigma, signo)
 ! ----------------------- DECLARATIONS --------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/asasve.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/assert.h"
@@ -51,7 +50,8 @@ subroutine sinoz1(modele, sigma, signo)
 #include "asterfort/numoch.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=1) :: typres, k1bid
     character(len=8) :: modele
     character(len=14) :: nupgm
@@ -78,8 +78,12 @@ subroutine sinoz1(modele, sigma, signo)
                 kbid, ibid)
 !
     if ((repdim.ne.2) .or. (repdim.ne.3)) then
-        if (repdim .eq. 1) call u2mess('F', 'CALCULEL_75')
-        if (repdim .gt. 3) call u2mess('F', 'CALCULEL_76')
+        if (repdim .eq. 1) then
+            call utmess('F', 'CALCULEL_75')
+        endif
+        if (repdim .gt. 3) then
+            call utmess('F', 'CALCULEL_76')
+        endif
     endif
 !
     if (repdim .eq. 2) then

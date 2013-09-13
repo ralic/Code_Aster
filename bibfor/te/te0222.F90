@@ -30,10 +30,9 @@ subroutine te0222(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
     real(kind=8) :: undemi
     integer :: itab1(3), itab2(3)
@@ -55,7 +54,7 @@ subroutine te0222(option, nomte)
 !            DANS CE CAS, IL N'Y A RIEN A FAIRE
             goto 9999
         else
-            call u2mesk('F', 'ELEMENTS3_46', 1, nomte)
+            call utmess('F', 'ELEMENTS3_46', sk=nomte)
         endif
     endif
     call tecach('OON', 'PSYM', 'E', 3, itab2,&
@@ -67,11 +66,11 @@ subroutine te0222(option, nomte)
     nddl = nint(sqrt(dble(itab1(2))))
 !
     if (itab1(2) .ne. (nddl*nddl)) then
-        call u2mess('F', 'ELEMENTS3_47')
+        call utmess('F', 'ELEMENTS3_47')
     endif
 !
     if (2*itab2(2) .ne. (nddl*(nddl+1))) then
-        call u2mess('F', 'ELEMENTS3_48')
+        call utmess('F', 'ELEMENTS3_48')
     endif
 !
     ij = 0

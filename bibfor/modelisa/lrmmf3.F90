@@ -81,6 +81,11 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
 !
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/as_mfafai.h"
+#include "asterfort/as_mfanfg.h"
+#include "asterfort/as_mfaofi.h"
+#include "asterfort/as_mfaona.h"
+#include "asterfort/as_mfinvr.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/desgfa.h"
@@ -91,14 +96,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
 #include "asterfort/juveca.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxnoac.h"
-#include "asterfort/as_mfafai.h"
-#include "asterfort/as_mfaofi.h"
-#include "asterfort/as_mfaona.h"
-#include "asterfort/as_mfanfg.h"
-#include "asterfort/as_mfinvr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -173,18 +171,17 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
     call as_mfinvr(fid, major, minor, rel, cret)
     if (major .eq. 3) then
         call as_mfafai(fid, nomamd, rangfa, nomfam, numfam,&
-                    nogrfa, codret)
+                       nogrfa, codret)
         nbattr = 0
     else
         call as_mfaona(fid, nomamd, rangfa, nbattr, codre2)
         call as_mfaofi(fid, nomamd, rangfa, nomfam, numfam,&
-                    idatfa, vaatfa, descat, nbattr, nogrfa,&
-                    codret)
+                       idatfa, vaatfa, descat, nbattr, nogrfa,&
+                       codret)
     endif
     if (codret .ne. 0) then
         saux08='mfaofi'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
     call as_mfanfg(fid, nomamd, rangfa, nbgrou, codret)
 !
@@ -213,8 +210,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
     if (numfam .ne. 0) then
 !
         if (infmed .ge. 2) then
-            call u2mesg('I', 'MED_14', 1, nomfam, 1,&
-                        numfam, 0, mr)
+            call utmess('I', 'MED_14', sk=nomfam, si=numfam)
         endif
 !
 ! 2.0. ==> CONTROLE DE LA LONGUEUR DES NOMS DES GROUPES
@@ -237,8 +233,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                         valk(1) = nogrfa(iaux)
                         valk(2) = kbid(1:ilnew)
                         if (infmed .ge. 2) then
-                            call u2mesg('I', 'MED_16', 2, valk, 1,&
-                                        iaux, 0, mr)
+                            call utmess('I', 'MED_16', nk=2, valk=valk, si=iaux)
                         endif
                         newgrm = kbid(1:ilnew)
                     endif
@@ -250,20 +245,19 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                         errgm = .true.
                         valk(1) = zk80(ivgrm-1+i*2-1)
                         valk(2) = kbid(1:ilnew)
-                        call u2mesk('E', 'MED_9', 2, valk)
+                        call utmess('E', 'MED_9', nk=2, valk=valk)
                     endif
 910              continue
             endif
             if (.not. renomm) then
                 if (infmed .ge. 2) then
-                    call u2mesg('I', 'MED_15', 1, nogrfa(iaux), 1,&
-                                iaux, 0, mr)
+                    call utmess('I', 'MED_15', sk=nogrfa(iaux), si=iaux)
                 endif
             else
                 nogrfa(iaux) = newgrm
             endif
             if (errgm) then
-                call u2mess('F', 'MED_18')
+                call utmess('F', 'MED_18')
             endif
 !
 !   2.0.2. --- SUPPRESSION DES CARACTERES INTERDITS (ACCENTS...)
@@ -274,8 +268,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                 valk(1) = nomfam(1:jau2)
                 valk(2) = nogrfa(iaux)
                 valk(3) = newgrm(1:24)
-                call u2mesg('A', 'MED_10', 3, valk, 1,&
-                            mi, 0, mr)
+                call utmess('A', 'MED_10', nk=3, valk=valk, si=mi(1))
                 nogrfa(iaux) = newgrm(1:24)
             endif
 !
@@ -287,16 +280,14 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                 valk(1) = nomfam(1:jau2)
                 valk(2) = nogrfa(iaux)
                 valk(3) = nogrfa(iaux)(1:24)
-                call u2mesg('A', 'MED_7', 3, valk, 1,&
-                            mi, 0, mr)
+                call utmess('A', 'MED_7', nk=3, valk=valk, si=mi(1))
 !
 !   2.0.3. --- CONTROLE QUE LE NOM EST NON VIDE
             else if (jaux.eq.0) then
                 jau2 = lxlgut(nomfam)
                 mi(1) = iaux
                 valk(1) = nomfam(1:jau2)
-                call u2mesg('F', 'MED_11', 1, valk, 1,&
-                            mi, 0, mr)
+                call utmess('F', 'MED_11', sk=valk(1), si=mi(1))
             endif
 20          continue
 !
@@ -305,7 +296,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
 ! 2.1. ==> IL FAUT AU MOINS UN GROUPE OU UN ATTRIBUT
 !
         if (nbgrou .eq. 0 .and. nbattr .eq. 0) then
-            call u2mesk('A', 'MED_13', 1, nomfam)
+            call utmess('A', 'MED_13', sk=nomfam)
         endif
 !
 ! 2.2. ==> COHERENCE DES NOMBRES DE GROUPES OU D'ATTRIBUTS
@@ -322,8 +313,8 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
             valk(2) = 'attributs'
         endif
         if (( nbgrou.ne.carafa(1,rangfa) ) .or. ( nbattr.ne.carafa(2, rangfa) )) then
-            call u2mesg('F', 'MED_8', 2, valk, 2,&
-                        mi, 0, mr)
+            call utmess('F', 'MED_8', nk=2, valk=valk, ni=2,&
+                        vali=mi)
         endif
 !
 ! 2.3. ==> CREATION :
@@ -454,8 +445,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
                     itmp = lxlgut(nogrfa(inom))
                     valk (3) = nogrfa(inom)(1:itmp)
                     valk (4) = k24b
-                    call u2mesg('E', 'MED_22', 4, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('E', 'MED_22', nk=4, valk=valk, si=vali)
                 endif
                 zk24(adnomg-1+iaux) = k24b
                 zi(adnumg-1+iaux) = jaux

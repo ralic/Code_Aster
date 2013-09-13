@@ -32,8 +32,7 @@ subroutine op5902(nboccp, compor)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: compor, mono, chaine
@@ -100,8 +99,7 @@ subroutine op5902(nboccp, compor)
 13  end do
     ncprk=ncprk+1
     if (nbmono .gt. 5) then
-        call u2mesg('F', 'COMPOR2_16', 0, ' ', 1,&
-                    itbint, 0, 0.d0)
+        call utmess('F', 'COMPOR2_16', si=itbint)
     else
         zi(ipi-1+4)=nbmono
     endif
@@ -181,7 +179,7 @@ subroutine op5902(nboccp, compor)
 16  end do
 !
     if (abs(fvolt-1.d0) .gt. 1.d-3) then
-        call u2mesr('F', 'COMPOR2_8', 1, fvolt)
+        call utmess('F', 'COMPOR2_8', sr=fvolt)
     endif
 !
     zr(ipr-1+jcprr+1)=dl
@@ -202,8 +200,8 @@ subroutine op5902(nboccp, compor)
     nums(1)=nboccp
     nums(2)=nbmono
     nums(3)=nvit
-    call u2mesg('I', 'COMPOR2_27', 2, noms, 3,&
-                nums, 0, 0.d0)
+    call utmess('I', 'COMPOR2_27', nk=2, valk=noms, ni=3,&
+                vali=nums)
 !
     nomvar(1)='EPSPXX'
     nomvar(2)='EPSPYY'
@@ -213,12 +211,10 @@ subroutine op5902(nboccp, compor)
     nomvar(6)='EPSPYZ'
     nomvar(7)='EPSPEQ'
     do 558 i = 1, 7
-        call u2mesg('I', 'COMPOR2_24', 1, nomvar(i), 1,&
-                    i, 0, 0.d0)
+        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=i)
 558  end do
     indvar=indvar+7
-    call u2mesg('I', 'COMPOR2_28', 0, ' ', 1,&
-                indvar+1, 0, 0.d0)
+    call utmess('I', 'COMPOR2_28', si=indvar+1)
     nomvar(1)='EPSPXX(GRAIN_I)'
     nomvar(2)='EPSPYY(GRAIN_I)'
     nomvar(3)='EPSPZZ(GRAIN_I)'
@@ -226,15 +222,12 @@ subroutine op5902(nboccp, compor)
     nomvar(5)='EPSPXZ(GRAIN_I)'
     nomvar(6)='EPSPYZ(GRAIN_I)'
     do 559 i = 1, 6
-        call u2mesg('I', 'COMPOR2_24', 1, nomvar(i), 1,&
-                    indvar+i, 0, 0.d0)
+        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
 559  end do
     indvar=indvar+6*nboccp
-    call u2mesg('I', 'COMPOR2_30', 0, ' ', 1,&
-                indvar, 0, 0.d0)
+    call utmess('I', 'COMPOR2_30', si=indvar)
 !
-    call u2mesg('I', 'COMPOR2_28', 0, ' ', 1,&
-                indvar+1, 0, 0.d0)
+    call utmess('I', 'COMPOR2_28', si=indvar+1)
 !
     do 554 i = 1, nbsysm
         call codent(i, 'G', chaine)
@@ -243,34 +236,28 @@ subroutine op5902(nboccp, compor)
         nomvar(3*i )='P'//chaine
 554  end do
     do 556 i = 1, 3*nbsysm
-        call u2mesg('I', 'COMPOR2_24', 1, nomvar(i), 1,&
-                    indvar+i, 0, 0.d0)
+        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
 556  end do
 !
     indvar=indvar+3*nbsyst
 !
-    call u2mesg('I', 'COMPOR2_30', 0, ' ', 1,&
-                indvar, 0, 0.d0)
+    call utmess('I', 'COMPOR2_30', si=indvar)
 !
     if (irra .eq. 1) then
-        call u2mesg('I', 'COMPOR2_28', 0, ' ', 1,&
-                    indvar+1, 0, 0.d0)
+        call utmess('I', 'COMPOR2_28', si=indvar+1)
         do 557 i = 1, 12
             call codent(i, 'G', chaine)
             nomvar(i)='RHO_IRRA_'//chaine
 557      continue
         do 560 i = 1, 12
-            call u2mesg('I', 'COMPOR2_24', 1, nomvar(i), 1,&
-                        indvar+i, 0, 0.d0)
+            call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
 560      continue
         indvar=indvar+12*nboccp
-        call u2mesg('I', 'COMPOR2_30', 0, ' ', 1,&
-                    indvar, 0, 0.d0)
+        call utmess('I', 'COMPOR2_30', si=indvar)
     endif
 !
     if (irra .eq. 2) then
-        call u2mesg('I', 'COMPOR2_28', 0, ' ', 1,&
-                    indvar+1, 0, 0.d0)
+        call utmess('I', 'COMPOR2_28', si=indvar+1)
         do 571 i = 1, 12
             call codent(i, 'G', chaine)
             nomvar(i)='RHO_LOOPS_'//chaine
@@ -280,16 +267,13 @@ subroutine op5902(nboccp, compor)
             nomvar(12+i)='PHI_VOIDS_'//chaine
 572      continue
         do 573 i = 1, 24
-            call u2mesg('I', 'COMPOR2_24', 1, nomvar(i), 1,&
-                        indvar+i, 0, 0.d0)
+            call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
 573      continue
         indvar=indvar+24*nboccp
-        call u2mesg('I', 'COMPOR2_30', 0, ' ', 1,&
-                    indvar, 0, 0.d0)
+        call utmess('I', 'COMPOR2_30', si=indvar)
     endif
 !
-    call u2mesg('I', 'COMPOR2_28', 0, ' ', 1,&
-                indvar+1, 0, 0.d0)
+    call utmess('I', 'COMPOR2_28', si=indvar+1)
 !
     do 555 i = 1, 6
         nomvar(1)='SIGMAXX(GRAIN_I)'
@@ -300,16 +284,13 @@ subroutine op5902(nboccp, compor)
         nomvar(6)='SIGMAYZ(GRAIN_I)'
 555  end do
     do 561 i = 1, 6
-        call u2mesg('I', 'COMPOR2_24', 1, nomvar(i), 1,&
-                    indvar+i, 0, 0.d0)
+        call utmess('I', 'COMPOR2_24', sk=nomvar(i), si=indvar+i)
 561  end do
     indvar=indvar+6*nboccp
-    call u2mesg('I', 'COMPOR2_30', 0, ' ', 1,&
-                indvar, 0, 0.d0)
+    call utmess('I', 'COMPOR2_30', si=indvar)
     indvar=indvar+1
     nomvar(1)='INDIPLAS'
-    call u2mesg('I', 'COMPOR2_29', 1, nomvar(1), 1,&
-                nvit, 0, 0.d0)
+    call utmess('I', 'COMPOR2_29', sk=nomvar(1), si=nvit)
     ASSERT(indvar.eq.nvit)
 ! FIN ------------------------------------------------------------------
     call jedema()

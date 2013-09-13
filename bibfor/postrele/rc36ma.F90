@@ -17,8 +17,7 @@ subroutine rc36ma(nommat, noma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nommat, noma
 !     ------------------------------------------------------------------
@@ -114,7 +113,9 @@ subroutine rc36ma(nommat, noma)
     k8b = ' '
     call carces(chnmat, 'ELEM', k8b, 'V', chsmat,&
                 'A', ier)
-    if (ier .ne. 0) call u2mess('F', 'POSTRCCM_13')
+    if (ier .ne. 0) then
+        call utmess('F', 'POSTRCCM_13')
+    endif
 !     -- ON NE GARDE DANS LE CHAMP DE MATERIAU QUE LES CMPS
 !      X1 : NOM DU MATERIAU
 !      X30: TEMP_REF
@@ -128,7 +129,9 @@ subroutine rc36ma(nommat, noma)
     call jeveuo(chsma2//'.CESD', 'L', jcesdm)
     call jeveuo(chsma2//'.CESL', 'L', jceslm)
 !
-    if (ier .ne. 0) call u2mess('F', 'POSTRCCM_14')
+    if (ier .ne. 0) then
+        call utmess('F', 'POSTRCCM_14')
+    endif
 !
 !
 ! --- E_AMBI, NU, ALPHA : A LA TEMPERATURE DE REFERENCE
@@ -194,7 +197,7 @@ subroutine rc36ma(nommat, noma)
             mater = zk8(jcesvm-1+iad)
         else
             call codent(im, 'D', k8b)
-            call u2mesk('F', 'POSTRCCM_10', 1, k8b)
+            call utmess('F', 'POSTRCCM_10', sk=k8b)
         endif
 !
 ! --------- LA TEPERATURE DE REFERENCE :
@@ -217,13 +220,19 @@ subroutine rc36ma(nommat, noma)
 !
         zk8(jmater+im-1) = mater
         call rccome(mater, 'ELAS', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'ELAS')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='ELAS')
+        endif
 !
         call rccome(mater, 'FATIGUE', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'FATIGUE')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
+        endif
 !
         call rccome(mater, 'RCCM', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='RCCM')
+        endif
 !
 !   INTERPOLATION POUR TEMP_A
         call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&
@@ -340,7 +349,7 @@ subroutine rc36ma(nommat, noma)
             mater = zk8(jcesvm-1+iad)
         else
             call codent(im, 'D', k8b)
-            call u2mesk('F', 'POSTRCCM_10', 1, k8b)
+            call utmess('F', 'POSTRCCM_10', sk=k8b)
         endif
 !
 ! --------- LA TEPERATURE DE REFERENCE :
@@ -363,13 +372,19 @@ subroutine rc36ma(nommat, noma)
 !
         zk8(jmater+im-1) = mater
         call rccome(mater, 'ELAS', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'ELAS')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='ELAS')
+        endif
 !
         call rccome(mater, 'FATIGUE', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'FATIGUE')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
+        endif
 !
         call rccome(mater, 'RCCM', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'POSTRCCM_7', sk='RCCM')
+        endif
 !
 !   INTERPOLATION POUR TEMP_A
         call rcvale(mater, 'ELAS', nbpa, nopa, [tempa],&

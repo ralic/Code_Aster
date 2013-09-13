@@ -17,7 +17,6 @@ subroutine te0077(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -27,7 +26,8 @@ subroutine te0077(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -81,7 +81,7 @@ subroutine te0077(option, nomte)
                     ' ', phenom, 1, 'INST', zr(itemps),&
                     1, 'RHO_CP', cp, icodre(1), 1)
     else
-        call u2mess('F', 'ELEMENTS2_63')
+        call utmess('F', 'ELEMENTS2_63')
     endif
 !
 !
@@ -137,7 +137,7 @@ subroutine te0077(option, nomte)
 !
                     poids = poids*r
                     if (r .eq. 0.d0) then
-                        call u2mess('F', 'ELEMENTS3_10')
+                        call utmess('F', 'ELEMENTS3_10')
                     endif
                 endif
 !

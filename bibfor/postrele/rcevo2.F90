@@ -20,8 +20,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 #include "asterfort/tbextb.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbinti
@@ -127,11 +126,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
                     valk(2) = tabl0
-                    call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                    call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
                 else if (iret .eq. 20) then
                     valk(1) = tabl0
                     valk(2) = 'INTITULE'
-                    call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                    call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
                 endif
                 if (flexio) then
                     call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
@@ -140,11 +139,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                     if (iret .eq. 10) then
                         valk(1) = 'INTITULE'
                         valk(2) = tabfl0
-                        call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                        call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
                     else if (iret .eq. 20) then
                         valk(1) = tabfl0
                         valk(2) = 'INTITULE'
-                        call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                        call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
                     endif
                 endif
                 if (lrocht) then
@@ -154,11 +153,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                     if (iret .eq. 10) then
                         valk(1) = 'INTITULE'
                         valk(2) = tabpr0
-                        call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                        call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
                     else if (iret .eq. 20) then
                         valk(1) = tabpr0
                         valk(2) = 'INTITULE'
-                        call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                        call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
                     endif
                 endif
             endif
@@ -168,8 +167,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 valk (2) = 'INTITULE'
                 valk (3) = kinti
                 valk (4) = valek(1)
-                call u2mesg('F', 'POSTRCCM_17', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
             endif
             call tbexv1(table, valek(1), instan, 'V', nbins0,&
                         k8b)
@@ -198,11 +196,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
                 valk(2) = tabl0
-                call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
             else if (iret .eq. 20) then
                 valk(1) = tabl0
                 valk(2) = 'INTITULE'
-                call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
             endif
             if (flexio) then
                 call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
@@ -211,11 +209,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
                     valk(2) = tabfl0
-                    call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                    call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
                 else if (iret .eq. 20) then
                     valk(1) = tabfl0
                     valk(2) = 'INTITULE'
-                    call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                    call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
                 endif
             endif
             if (lrocht) then
@@ -225,11 +223,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 if (iret .eq. 10) then
                     valk(1) = 'INTITULE'
                     valk(2) = tabpr0
-                    call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                    call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
                 else if (iret .eq. 20) then
                     valk(1) = tabpr0
                     valk(2) = 'INTITULE'
-                    call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                    call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
                 endif
             endif
         endif
@@ -243,8 +241,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             valk (2) = 'INTITULE'
             valk (3) = kinti
             valk (4) = nocmp(i)
-            call u2mesg('F', 'POSTRCCM_17', 4, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
         endif
         if (flexio) then
             call tbexip(tabfle, nocmp(i), exist, k8b)
@@ -253,8 +250,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 valk (2) = 'INTITULE'
                 valk (3) = kinti
                 valk (4) = nocmp(i)
-                call u2mesg('F', 'POSTRCCM_17', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
             endif
         endif
         if (lrocht) then
@@ -264,8 +260,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 valk (2) = 'INTITULE'
                 valk (3) = kinti
                 valk (4) = nocmp(i)
-                call u2mesg('F', 'POSTRCCM_17', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
             endif
         endif
 12  continue
@@ -280,8 +275,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         valk (2) = 'INTITULE'
         valk (3) = kinti
         valk (4) = valek(2)
-        call u2mesg('F', 'POSTRCCM_17', 4, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
     endif
     call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
                 k8b)
@@ -352,11 +346,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         if (iret .eq. 10) then
             valk(1) = 'INTITULE'
             valk(2) = tabl0
-            call u2mesk('F', 'UTILITAI7_1', 2, valk)
+            call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
         else if (iret .eq. 20) then
             valk(1) = tabl0
             valk(2) = 'INTITULE'
-            call u2mesk('F', 'UTILITAI7_3', 2, valk)
+            call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
         endif
         if (flexii) then
             call tbextb(tabfl0, 'V', tabfle, 1, 'INTITULE',&
@@ -365,11 +359,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
                 valk(2) = tabfl0
-                call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
             else if (iret .eq. 20) then
                 valk(1) = tabfl0
                 valk(2) = 'INTITULE'
-                call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
             endif
         endif
         if (lrocht) then
@@ -379,11 +373,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             if (iret .eq. 10) then
                 valk(1) = 'INTITULE'
                 valk(2) = tabpr0
-                call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
             else if (iret .eq. 20) then
                 valk(1) = tabpr0
                 valk(2) = 'INTITULE'
-                call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
             endif
         endif
     endif
@@ -414,8 +408,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 valk (2) = 'INTITULE'
                 valk (3) = kinti
                 valk (4) = valek(1)
-                call u2mesg('F', 'POSTRCCM_17', 4, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'POSTRCCM_17', nk=4, valk=valk)
             endif
             call tbexv1(table, valek(1), instan, 'V', nbins0,&
                         k8b)
@@ -446,8 +439,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                     valk (2) = nocmp(j)
                     valk (3) = valek(1)
                     valk (4) = valek(2)
-                    call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                                0, 2, vale)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                valr=vale)
                 endif
 !
                 if (flexii) then
@@ -460,8 +453,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                         valk (2) = nocmp(j)
                         valk (3) = valek(1)
                         valk (4) = valek(2)
-                        call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                                    0, 2, vale)
+                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                    valr=vale)
                     endif
                 endif
 !
@@ -475,8 +468,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                         valk (2) = nocmp(j)
                         valk (3) = valek(1)
                         valk (4) = valek(2)
-                        call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                                    0, 2, vale)
+                        call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                    valr=vale)
                     endif
                 endif
 !

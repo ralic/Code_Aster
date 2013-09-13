@@ -29,7 +29,7 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: lisifr, lisevr, lisevk, lisesu
     integer :: isauve
     real(kind=8) :: pasmin, pcplus, penmax
@@ -97,7 +97,9 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
 ! --- ALARME SI LE RE-DECOUPAGE EN CAS D'ERREUR EST DEBRAYE
 !
     if (even .eq. 'ERRE') then
-        if (action .eq. 'ARRET') call u2mess('I', 'DISCRETISATION_9')
+        if (action .eq. 'ARRET') then
+            call utmess('I', 'DISCRETISATION_9')
+        endif
     endif
 !
 ! --- AU MOINS UNE ACTION DE SOUS-DECOUPAGE A ETE DEFINIE

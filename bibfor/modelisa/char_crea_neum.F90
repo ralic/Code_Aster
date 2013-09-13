@@ -7,7 +7,7 @@ subroutine char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/cachre.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,11 +27,11 @@ subroutine char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
-    integer, intent(in)  :: ndim
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: ndim
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer max_load_type
+    integer :: max_load_type
     parameter (max_load_type = 6)
     integer :: nbocc(max_load_type)
     character(len=5) :: param(max_load_type)
@@ -64,7 +64,7 @@ subroutine char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+!
 !
 ! - Number of factor keywords
 !
@@ -77,12 +77,12 @@ subroutine char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
 !
 ! - Some checks: FORCE_FACE and FORCE_POUTRE prohibited en 2D
 !
-    if (ndim.eq.2) then
+    if (ndim .eq. 2) then
         if (nbocc(4) .ne. 0) then
-            call u2mesk('F', 'CHARGES2_5', 1,keywordfact(4))
+            call utmess('F', 'CHARGES2_5', sk=keywordfact(4))
         endif
         if (nbocc(5) .ne. 0) then
-            call u2mesk('F', 'CHARGES2_5', 1,keywordfact(5))
+            call utmess('F', 'CHARGES2_5', sk=keywordfact(5))
         endif
     endif
 !
@@ -96,13 +96,13 @@ subroutine char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
 ! --------- FORCE_INTERNE#3D
             if (keywordfact(i) .eq. 'FORCE_INTERNE' .and. ndim .eq. 3) curr_para = 'F3D3D'
 ! --------- FORCE_COQUE#2D
-            if (keywordfact(i) .eq. 'FORCE_COQUE'   .and. ndim .eq. 2) curr_para = 'FCO2D'
+            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. ndim .eq. 2) curr_para = 'FCO2D'
 ! --------- FORCE_COQUE#3D
-            if (keywordfact(i) .eq. 'FORCE_COQUE'   .and. ndim .eq. 3) curr_para = 'FCO3D'
+            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. ndim .eq. 3) curr_para = 'FCO3D'
 !
             call cachre(load, ligrmo, mesh, ndim, vale_type,&
                         curr_para, keywordfact(i))
         endif
     end do
-
+!
 end subroutine

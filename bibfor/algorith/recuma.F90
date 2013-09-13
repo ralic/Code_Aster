@@ -37,18 +37,18 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbma, nbgr, nbto, numnot(nbto)
     character(len=8) :: mailla, nomma(nbma)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
-
+!
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -86,8 +86,7 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
             if (numa .eq. 0) then
                 valk (1) = mailla
                 valk (2) = nomcou
-                call u2mesg('E', 'ALGORITH14_10', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH14_10', nk=2, valk=valk)
             endif
 !
             icomp=icomp+1

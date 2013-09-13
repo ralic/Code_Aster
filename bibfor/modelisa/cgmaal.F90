@@ -1,7 +1,6 @@
 subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -12,8 +11,9 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 ! ======================================================================
@@ -112,7 +112,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
         if (zi(idlima+i-1) .eq. 1) nbma = nbma + 1
 30  end do
     if (nbma .eq. 0) then
-        call u2mess('F', 'MODELISA3_66')
+        call utmess('F', 'MODELISA3_66')
     endif
 !
 ! --- ALLOCATION DU VECTEUR DES NOMS DES MAILLES CONTENANT

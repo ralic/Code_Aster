@@ -30,7 +30,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char, nomo
     character(len=16) :: motfac
     integer :: izone
@@ -106,12 +106,12 @@ subroutine cazocx(char, nomo, motfac, izone)
 !
     if (iret .eq. 0) then
         valk(1) = nomo
-        call u2mesk('F', 'XFEM2_8', 1, valk)
+        call utmess('F', 'XFEM2_8', sk=valk(1))
     else
         call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
         if (zi(jxc) .eq. 0) then
             valk(1) = nomo
-            call u2mesk('F', 'XFEM2_9', 1, valk)
+            call utmess('F', 'XFEM2_9', sk=valk(1))
         endif
     endif
 !

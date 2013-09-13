@@ -15,8 +15,7 @@ subroutine rc36si(noma, nbma, listma)
 #include "asterfort/ordis.h"
 #include "asterfort/rc36cm.h"
 #include "asterfort/rc36th.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbma, listma(*)
@@ -118,7 +117,9 @@ subroutine rc36si(noma, nbma, listma)
                     nbret=n1)
         do 26 ing = 1, nbvg
             numgr = zi(jnbvg+ing-1)
-            if (numgr .le. 0) call u2mess('F', 'POSTRCCM_12')
+            if (numgr .le. 0) then
+                call utmess('F', 'POSTRCCM_12')
+            endif
             do 20 ig = 1, nbgr
                 if (zi(jnbgr+ig-1) .eq. numgr) goto 21
 20          continue
@@ -142,10 +143,18 @@ subroutine rc36si(noma, nbma, listma)
     if (n1 .ne. 0) then
         call getvis(motcl1, 'NUME_PASSAGE', iocc=iocc, nbval=2, vect=numpas,&
                     nbret=n1)
-        if (numpas(1) .le. 0) call u2mess('F', 'POSTRCCM_12')
-        if (numpas(2) .le. 0) call u2mess('F', 'POSTRCCM_12')
-        if (numpas(1) .gt. 3) call u2mess('F', 'POSTRCCM_12')
-        if (numpas(2) .gt. 3) call u2mess('F', 'POSTRCCM_12')
+        if (numpas(1) .le. 0) then
+            call utmess('F', 'POSTRCCM_12')
+        endif
+        if (numpas(2) .le. 0) then
+            call utmess('F', 'POSTRCCM_12')
+        endif
+        if (numpas(1) .gt. 3) then
+            call utmess('F', 'POSTRCCM_12')
+        endif
+        if (numpas(2) .gt. 3) then
+            call utmess('F', 'POSTRCCM_12')
+        endif
         yapass = .true.
         zi(jsigr+2*iocc-2) = min ( numpas(1), numpas(2) )
         zi(jsigr+2*iocc-1) = max ( numpas(1), numpas(2) )
@@ -274,7 +283,9 @@ subroutine rc36si(noma, nbma, listma)
 !
     call ordis(zi(jnbgr), nbgr)
 !
-    if (nbgr .gt. 3 .and. yapass) call u2mess('F', 'POSTRCCM_34')
+    if (nbgr .gt. 3 .and. yapass) then
+        call utmess('F', 'POSTRCCM_34')
+    endif
 !
 !     ------------------------------------------------------------------
 ! --- ON AJOUTE 1 GROUPE POUR LES SITUATIONS DE PASSAGE
@@ -370,7 +381,7 @@ subroutine rc36si(noma, nbma, listma)
                 vali(1) = numgr
                 vali(2) = iocc
                 vali(3) = zi(jseigr+ig-1)
-                call u2mesi('F', 'POSTRCCM_26', 3, vali)
+                call utmess('F', 'POSTRCCM_26', ni=3, vali=vali)
             endif
             zi(jseigr+ig-1) = iocc
         endif

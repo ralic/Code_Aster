@@ -61,7 +61,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomres, nombas, nommes
@@ -106,7 +106,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     if (nbcham .ne. 0) then
         nbcham = -nbcham
     else
-        call u2mess('A', 'ALGORITH10_93')
+        call utmess('A', 'ALGORITH10_93')
     endif
 !
     call wkvect('&&LISTE_CH', 'V V K16', nbcham, lch)
@@ -223,7 +223,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! CAS DE REGULARISATION SOUS FORME DE LISTE DE REELS
             lfonct = .false.
             if (-ncoef .gt. nbmode) then
-                call u2mess('F', 'ALGORITH6_27')
+                call utmess('F', 'ALGORITH6_27')
             endif
             if (-ncoef .gt. 0) then
                 call wkvect(nomcmd//'.PONDER', 'V V R', nbmode, lcoef)
@@ -231,7 +231,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
                             nbret=ncoef)
             endif
             if (ncoef .lt. nbmode) then
-                call u2mess('I', 'ALGORITH6_28')
+                call utmess('I', 'ALGORITH6_28')
                 do 10 i = ncoef + 1, nbmode
                     zr(lcoef-1 + i) = zr(lcoef-1 + ncoef)
 10              continue
@@ -240,14 +240,16 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! CAS DE REGULARISATION SOUS FORME DE LISTE DE FONCTIONS
             lfonct = .true.
             call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=0, nbret=nfonc)
-            if (-nfonc .gt. nbmode) call u2mess('F', 'ALGORITH6_29')
+            if (-nfonc .gt. nbmode) then
+                call utmess('F', 'ALGORITH6_29')
+            endif
             if (-nfonc .gt. 0) then
                 call wkvect(nomcmd//'.FONC', 'V V K8', nbmode, lfonc)
                 call getvid('RESOLUTION', 'COEF_PONDER_F', iocc=1, nbval=- nfonc,&
                             vect=zk8(lfonc), nbret=nfonc)
             endif
             if (nfonc .gt. 0 .and. nfonc .lt. nbmode) then
-                call u2mess('I', 'ALGORITH6_30')
+                call utmess('I', 'ALGORITH6_30')
                 do 200 i = nfonc + 1, nbmode
                     zk8(lfonc-1 + i) = zk8(lfonc-1 + nfonc)
 200              continue
@@ -255,7 +257,9 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             call wkvect(nomcmd//'.PONDER', 'V V R', nbmode*nbabs, lcoef)
             do 210 i = 1, nbmode
                 call jelira(zk8(lfonc-1 + i)//'           .VALE', 'LONMAX', lonmax)
-                if (lonmax .ne. 2*nbabs) call u2mess('F', 'ALGORITH6_31')
+                if (lonmax .ne. 2*nbabs) then
+                    call utmess('F', 'ALGORITH6_31')
+                endif
 !
                 call jeveuo(zk8(lfonc-1 + i)//'           .VALE', 'L', lvale)
                 do 220 j = 1, nbabs
@@ -265,7 +269,9 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
                     else
                         pas = zr(labs-1 + j) - zr(labs-1 + j - 1)
                     endif
-                    if (abs(diff) .gt. pas*1.d-4) call u2mess('F', 'ALGORITH6_32')
+                    if (abs(diff) .gt. pas*1.d-4) then
+                        call utmess('F', 'ALGORITH6_32')
+                    endif
 !
                     zr(lcoef-1 + (j - 1)*nbmode + i) = zr( lvale-1 + (lonmax/2) + j )
 220              continue
@@ -290,7 +296,9 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
     if (.not. zcmplx) then
 ! SECOND MEMBRE REEL
-        if (typres(1:9) .eq. 'HARM_GENE') call u2mess('F', 'ALGORITH6_33')
+        if (typres(1:9) .eq. 'HARM_GENE') then
+            call utmess('F', 'ALGORITH6_33')
+        endif
         if (typres(1:9) .eq. 'TRAN_GENE') then
 ! ALLOCATION
             call mdallo(nomres, nombas, k8b, k8b, k8b,&
@@ -353,7 +361,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             call mdallr(nommes, nomres, nombas, nbmode, nbabs,&
                         rbid, zc(jdep), zcmplx)
         else
-            call u2mess('F', 'ALGORITH6_33')
+            call utmess('F', 'ALGORITH6_33')
         endif
 !
     endif

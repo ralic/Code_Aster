@@ -1,7 +1,6 @@
 subroutine cnonua(nx, chno, lno, nuage)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/crenua.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -15,8 +14,9 @@ subroutine cnonua(nx, chno, lno, nuage)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nx
     character(len=*) :: chno, lno, nuage
 !     ------------------------------------------------------------------
@@ -93,7 +93,7 @@ subroutine cnonua(nx, chno, lno, nuage)
     else if (type(1:1) .eq. 'C') then
         itype = 2
     else
-        call u2mess('F', 'UTILITAI_36')
+        call utmess('F', 'UTILITAI_36')
     endif
 !
 !

@@ -5,7 +5,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecreo.h"
@@ -23,8 +22,9 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbcmp.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmat, ilimat, gd, nec, ilimo, nlili, iconx1, iconx2, nbelm
     integer :: iadnem, iadlie
     character(len=*) :: lili, nomma, pref, mailla
@@ -140,7 +140,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !        LE TEST SUIVANT PLANTE LA THERMIQUE OU ON ASSEMBLE
 !        LA RIGIDITE AVEC LA MASSE !!
 !    +    .OR.((SUROPT.NE.SUROPS).AND.(SUROPS.NE.' '))) THEN
-            call u2mess('F', 'ASSEMBLA_18')
+            call utmess('F', 'ASSEMBLA_18')
         endif
         models= modele
         surops= suropt
@@ -160,7 +160,9 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
             if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', idlres)
             idimli = idimli + nbresu
         else
-            if (exiss1(1:3) .eq. 'NON') call u2mess('F', 'ASSEMBLA_19')
+            if (exiss1(1:3) .eq. 'NON') then
+                call utmess('F', 'ASSEMBLA_19')
+            endif
         endif
 100  end do
 !
@@ -248,7 +250,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
             goto 9999
         else
             ASSERT(kstop.eq.'F')
-            call u2mess('F', 'ASSEMBLA_20')
+            call utmess('F', 'ASSEMBLA_20')
         endif
     endif
 !
@@ -282,7 +284,9 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         if (nomli(9:15) .eq. '.MODELE') then
             nbmo = nbmo + 1
             if (nbmo .eq. 1) ilimo=ili
-            if (nbmo .gt. 1) call u2mess('F', 'ASSEMBLA_21')
+            if (nbmo .gt. 1) then
+                call utmess('F', 'ASSEMBLA_21')
+            endif
         endif
         call jeexin(nomli(1:19)//'.NEMA', iret)
         if (iret .ne. 0) then

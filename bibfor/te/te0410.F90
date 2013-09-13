@@ -17,17 +17,16 @@ subroutine te0410(optioz, nomtz)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdefro.h"
 #include "asterfort/vdrepe.h"
 #include "asterfort/vdsiro.h"
 #include "asterfort/vdxedg.h"
 #include "asterfort/vdxsig.h"
+!
     character(len=*) :: optioz, nomtz
 !
     character(len=16) :: option, nomte
@@ -62,10 +61,11 @@ subroutine te0410(optioz, nomtz)
     nbcou=zi(jcou)
     vali(1)=ncoumx
     vali(2)=nbcou
-    if (nbcou .gt. ncoumx) call u2mesi('F', 'CALCULEL7_4', 2, vali)
+    if (nbcou .gt. ncoumx) then
+        call utmess('F', 'CALCULEL7_4', ni=2, vali=vali)
+    endif
     if (option(1:9) .eq. '         ') then
-        call u2mesg('F', 'CALCULEL7_5', 1, option, 1,&
-                    nbcou, 0, r8bid)
+        call utmess('F', 'CALCULEL7_5', sk=option, si=nbcou)
     endif
 !     LE TABLEAU SIGPG A ETE ALLOUE DE FACON STATIQUE POUR OPTIMISER
 !     LE CPU CAR LES APPELS A WKVECT DANS LES TE SONT COUTEUX.

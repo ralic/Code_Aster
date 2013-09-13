@@ -35,11 +35,11 @@ subroutine op0145()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, dim, mxval
     character(len=1) :: typspe
-    character(len=8) ::  intspe, caelem, modele, nomzon
+    character(len=8) :: intspe, caelem, modele, nomzon
     character(len=16) :: concep, cmd, nommcf, mcfac(9)
     character(len=19) :: nomu
     character(len=24) :: vain, vare, vate, nnoe, chnumi
@@ -93,12 +93,12 @@ subroutine op0145()
             call getvr8(nommcf, 'ANGLE', iocc=1, nbval=0, nbret=iangl)
             call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
             if (inatur .ne. iangl .or. inatur .ne. inoeud .or. inoeud .ne. iangl) then
-                call u2mess('F', 'MODELISA5_66')
+                call utmess('F', 'MODELISA5_66')
             endif
         else
             call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
             if (abs(inoeud) .ne. 1) then
-                call u2mess('F', 'MODELISA5_67')
+                call utmess('F', 'MODELISA5_67')
             endif
         endif
     endif
@@ -120,14 +120,14 @@ subroutine op0145()
                 dim = abs(ifonct)
                 dim = dim*(dim+1)/2
                 if (dim .ne. mxval) then
-                    call u2mess('F', 'MODELISA5_68')
+                    call utmess('F', 'MODELISA5_68')
                 endif
             else
                 call getvtx(nommcf, 'NOEUD', iocc=1, nbval=0, nbret=inoeud)
                 dim = abs(inoeud)
                 dim = dim*(dim+1)/2
                 if (dim .ne. mxval) then
-                    call u2mess('F', 'MODELISA5_69')
+                    call utmess('F', 'MODELISA5_69')
                 endif
             endif
         endif

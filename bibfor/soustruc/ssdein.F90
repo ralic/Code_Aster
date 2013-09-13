@@ -30,7 +30,6 @@ subroutine ssdein(ul, ug, mail, nocas)
 !                   (EVENTUELLEMENT : ' ')
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -48,9 +47,9 @@ subroutine ssdein(ul, ug, mail, nocas)
 #include "asterfort/ssrone.h"
 #include "asterfort/ssvaro.h"
 #include "asterfort/ssvau1.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ul, ug, mail, nocas, mag, mal, nomgd, kbid, nomacr
     character(len=14) :: nul
     character(len=19) :: nug2, nul2
@@ -81,7 +80,9 @@ subroutine ssdein(ul, ug, mail, nocas)
     nug2=zk24(iavalt+1)(1:19)
     call dismoi('F', 'NOM_GD', ug, 'CHAM_NO', ibi,&
                 nomgd, ier)
-    if (nomgd(1:6) .ne. 'DEPL_R') call u2mesk('F', 'SOUSTRUC_43', 1, nomgd)
+    if (nomgd(1:6) .ne. 'DEPL_R') then
+        call utmess('F', 'SOUSTRUC_43', sk=nomgd)
+    endif
 !
 !
 !     1- RECUPERATION DU NOM DU MACR_ELEM:
@@ -91,7 +92,7 @@ subroutine ssdein(ul, ug, mail, nocas)
     if (isma .le. 0) then
         ch8(1)=mail
         ch8(2)=mag
-        call u2mesk('F', 'SOUSTRUC_44', 2, ch8)
+        call utmess('F', 'SOUSTRUC_44', nk=2, valk=ch8)
     endif
     call jeveuo(jexnom(mag//'.SUPMAIL', mail), 'L', iasupm)
     nomacr= zk8(iamacr-1+isma)
@@ -150,7 +151,9 @@ subroutine ssdein(ul, ug, mail, nocas)
     nueql = zi(iaprnl-1+ (inol-1)* (nec+2)+1)
     iadgl = iaprnl - 1 + (inol-1)* (nec+2)+3
     ieql=zi(ianuel-1+nueql)
-    if (ieql .le. nddli) call u2mess('F', 'SOUSTRUC_45')
+    if (ieql .le. nddli) then
+        call utmess('F', 'SOUSTRUC_45')
+    endif
 !
     nueqg = zi(iaprng-1+ (inog-1)* (nec+2)+1)
     iadgg = iaprng - 1 + (inog-1)* (nec+2)+3
@@ -206,7 +209,7 @@ subroutine ssdein(ul, ug, mail, nocas)
         if (iret .eq. 0) then
             valk(1) = nocas
             valk(2) = nomacr
-            call u2mesk('A', 'SOUSTRUC_46', 2, valk)
+            call utmess('A', 'SOUSTRUC_46', nk=2, valk=valk)
         else
             call jeveuo(jexnom(nomacr//'.LICA', nocas), 'L', ialica)
             call jeveuo(jexnom(nomacr//'.LICH', nocas), 'L', ialich)
@@ -234,7 +237,7 @@ subroutine ssdein(ul, ug, mail, nocas)
                 zr(iavall-1+i)=zr(ialica-1+nddlt+i)
  7              continue
             else
-                call u2mess('F', 'SOUSTRUC_47')
+                call utmess('F', 'SOUSTRUC_47')
             endif
         endif
     endif

@@ -1,14 +1,14 @@
 subroutine te0339(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: option, nomte
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -87,7 +87,7 @@ subroutine te0339(option, nomte)
         (zk16(icompo).eq.'VISC_CIN2_CHAB')) then
         ipopp = 1
     else
-        call u2mesk('F', 'ELEMENTS3_74', 1, zk16(icompo))
+        call utmess('F', 'ELEMENTS3_74', sk=zk16(icompo))
     endif
 !   /* ========================================================= */
 !   /* PVARIMR = DEF PLAST EQ A L'INSTANT PRECEDENT              */

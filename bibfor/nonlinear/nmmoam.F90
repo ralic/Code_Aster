@@ -34,8 +34,7 @@ subroutine nmmoam(sdammz, nbmoda)
 #include "asterfort/mtdscr.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
@@ -94,7 +93,7 @@ subroutine nmmoam(sdammz, nbmoda)
 !
     call getvid('AMOR_MODAL', 'MODE_MECA', iocc=1, scal=modmec, nbret=nbmd)
     if (nbmd .eq. 0) then
-        call u2mess('F', 'ALGORITH17_20')
+        call utmess('F', 'ALGORITH17_20')
     endif
 !
 ! --- INFORMATIONS SUR MATRICE DES MODES MECANIQUES
@@ -117,8 +116,7 @@ subroutine nmmoam(sdammz, nbmoda)
         vali(1) = nbmoda
         vali(2) = nbmax
         vali(3) = min(nbmoda,nbmax)
-        call u2mesg('I', 'MECANONLINE5_30', 0, k8bid, 3,&
-                    vali, 0, r8bid)
+        call utmess('I', 'MECANONLINE5_30', ni=3, vali=vali)
         nbmoda = min(nbmoda,nbmax)
     endif
 !
@@ -136,7 +134,7 @@ subroutine nmmoam(sdammz, nbmoda)
 !
 !     VERIFICATION QU'UNE LISTE D'AMORTISSEMENTS EST FOURNIE
     if (na .eq. 0 .and. nb .eq. 0) then
-        call u2mess('F', 'ALGORITH17_21')
+        call utmess('F', 'ALGORITH17_21')
     endif
 !
     if (na .ne. 0 .or. nb .ne. 0) then
@@ -154,7 +152,7 @@ subroutine nmmoam(sdammz, nbmoda)
         endif
 !
         if (nbamor .gt. nbmoda) then
-            call u2mess('A', 'MECANONLINE5_19')
+            call utmess('A', 'MECANONLINE5_19')
         endif
         if (nbamor .lt. nbmoda) then
             call wkvect('&&NMMOAM.AMORTISSEMEN2', 'V V R', nbmoda, jamo2)

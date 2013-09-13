@@ -1,12 +1,12 @@
 function bprime(nbmat, mater, parame, invar1, s,&
                 epssig)
 !
-    implicit  none
+    implicit none
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lglord.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), invar1, s(6), epssig, bprime
@@ -90,7 +90,7 @@ function bprime(nbmat, mater, parame, invar1, s,&
     fact1 = sgamp**(agamp-un)
     fact2 = un+agamp*mgamp*fact1
     if (fact2 .lt. epstol) then
-        call u2mess('F', 'ALGELINE_4')
+        call utmess('F', 'ALGELINE_4')
     endif
     fact2 = sqrt(fact2)
     phi0 = deux*atan2(fact2,un) - r8pi()/deux
@@ -102,7 +102,7 @@ function bprime(nbmat, mater, parame, invar1, s,&
 ! --- CALCUL DE SIGT0 = 2*C0*RAC((1-SIN(PHI0))/(1+SIN(PHI0)) -----------
 ! ======================================================================
     if ((un+sin(phi0)) .lt. epstol) then
-        call u2mess('F', 'ALGELINE_4')
+        call utmess('F', 'ALGELINE_4')
     endif
     sigt0 = deux*c0*sqrt((un-sin(phi0))/(un+sin(phi0)))
 10  continue

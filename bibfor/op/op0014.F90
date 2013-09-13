@@ -51,8 +51,7 @@ subroutine op0014()
 #include "asterfort/pcmump.h"
 #include "asterfort/titre.h"
 #include "asterfort/tldlgg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vrrefe.h"
     character(len=3) :: kstop
@@ -92,11 +91,11 @@ subroutine op0014()
 !        VERIFICATION : CONCEPT REENTRANT INTERDIT
         call exisd('MATR_ASSE', matfac, iret)
         if (iret .eq. 1) then
-            call u2mess('F', 'ALGELINE5_56')
+            call utmess('F', 'ALGELINE5_56')
         endif
 !        VERIFICATION : MATR_ASSE A VALEURS COMPLEXES INTERDIT
         if (concep(16:16) .eq. 'C') then
-            call u2mess('F', 'ALGELINE5_57')
+            call utmess('F', 'ALGELINE5_57')
         endif
 !
         call getvtx(' ', 'PRE_COND', scal=precon, nbret=ibid)
@@ -138,7 +137,7 @@ subroutine op0014()
 !      --- APPEL A LA CONSTRUCTION DU PRECONDITIONNEUR
             call pcmump(mfac, solveu, iretgc)
             if (iretgc .ne. 0) then
-                call u2mess('F', 'ALGELINE5_76')
+                call utmess('F', 'ALGELINE5_76')
             endif
         endif
 !
@@ -260,7 +259,7 @@ subroutine op0014()
             if (ier1 .ne. 0) then
                 valk(1) = matass
                 valk(2) = matfac
-                call u2mesk('F', 'ALGELINE2_18', 2, valk)
+                call utmess('F', 'ALGELINE2_18', nk=2, valk=valk)
             else if (mfac.ne.mass) then
                 if (ildeb .eq. 1 .and. ibdeb .eq. 1) then
                     call mtcopy(mass, mfac, iret)
@@ -279,7 +278,7 @@ subroutine op0014()
     call mtdscr(mfac)
     call jeveuo(mfac(1:19)//'.&INT', 'E', iatfac)
     if (iatfac .eq. 0) then
-        call u2mesk('F', 'ALGELINE2_19', 1, matfac)
+        call utmess('F', 'ALGELINE2_19', sk=matfac)
     endif
     call mtdsc2(zk24(zi(iatfac+1)), 'SXDI', 'L', jadia)
 !
@@ -295,18 +294,18 @@ subroutine op0014()
 !     --- 2) AVEC BLOC_XXX
         if (ldtblo .ne. 0) then
             if (ibdeb .lt. 1) then
-                call u2mess('A', 'ALGELINE2_1')
+                call utmess('A', 'ALGELINE2_1')
                 ibdeb = 1
             else if (ibdeb.gt.zi(iatfac+13)) then
-                call u2mess('F', 'ALGELINE2_20')
+                call utmess('F', 'ALGELINE2_20')
             endif
             ildeb = zi(jadia+ibdeb-2) + 1
         endif
         if (lfnblo .ne. 0) then
             if (ibfin .lt. 1) then
-                call u2mess('F', 'ALGELINE2_21')
+                call utmess('F', 'ALGELINE2_21')
             else if (ibdeb.gt.zi(iatfac+13)) then
-                call u2mess('A', 'ALGELINE2_8')
+                call utmess('A', 'ALGELINE2_8')
                 ibfin = zi(iatfac+13)
             endif
             ilfin = zi(jadia+ibfin-1)

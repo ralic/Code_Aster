@@ -1,5 +1,5 @@
 subroutine detrsd(typesd, nomsd)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/amumph.h"
 #include "asterfort/apetsc.h"
@@ -14,7 +14,7 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: typesd, nomsd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -714,7 +714,7 @@ subroutine detrsd(typesd, nomsd)
 !
 !     ------------------------------------------------------------------
     else
-        call u2mesk('F', 'UTILITAI_47', 1, typ2sd)
+        call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
 70  continue

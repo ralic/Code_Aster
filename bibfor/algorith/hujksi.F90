@@ -31,7 +31,7 @@ subroutine hujksi(carac, mater, r, ksi, iret)
 !     --------------------------------------------------------
 !
 #include "asterfort/infniv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ifm, niv, iret
     real(kind=8) :: mater(22, 2), r, ksi, rhys, rmob, xm, xm1
     real(kind=8) :: zero, un
@@ -91,7 +91,7 @@ subroutine hujksi(carac, mater, r, ksi, iret)
         endif
 !
     else
-        call u2mess('F', 'COMPOR1_10')
+        call utmess('F', 'COMPOR1_10')
     endif
 !
 end subroutine

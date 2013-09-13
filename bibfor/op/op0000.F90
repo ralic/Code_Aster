@@ -21,11 +21,11 @@ subroutine op0000()
 !     D'EXECUTION
 !     ------------------------------------------------------------------
 #include "asterc/getres.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: nomcmd, concep
     character(len=8) :: nomres
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call getres(nomres, concep, nomcmd)
-    call u2mesk('F', 'SUPERVIS_32', 1, nomcmd)
+    call utmess('F', 'SUPERVIS_32', sk=nomcmd)
 end subroutine

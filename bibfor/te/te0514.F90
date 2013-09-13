@@ -1,7 +1,6 @@
 subroutine te0514(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
@@ -16,13 +15,13 @@ subroutine te0514(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xdecou.h"
 #include "asterfort/xdecov.h"
 #include "asterfort/xdecqu.h"
 #include "asterfort/xdecqv.h"
 #include "asterfort/xdivte.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -116,7 +115,7 @@ subroutine te0514(option, nomte)
 !
 !     MODELISATION AXISYMETRIQUE AVEC ELEMENTS QUADRATIQUES INTERDITE
     if (nomte(3:4) .eq. 'AX' .and. .not.iselli(elp)) then
-        call u2mess('F', 'XFEM_76')
+        call utmess('F', 'XFEM_76')
     endif
 !
     if ((ibid.eq.0) .and. (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
@@ -164,7 +163,9 @@ subroutine te0514(option, nomte)
 !
     vali(1)=nfimax
     vali(2)=nfiss
-    if (nfiss .gt. nfimax) call u2mesi('F', 'XFEM2_6', 2, vali)
+    if (nfiss .gt. nfimax) then
+        call utmess('F', 'XFEM2_6', ni=2, vali=vali)
+    endif
 !
 !     BOUCLE SUR LES FISSURES
 !

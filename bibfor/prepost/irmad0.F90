@@ -1,7 +1,6 @@
 subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/irmad1.h"
@@ -16,9 +15,9 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: versio, nstat
     character(len=*) :: chamno(*), nomsym
 !--------------------------------------------------------------------
@@ -44,7 +43,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !C
 !     ------------------------------------------------------------------
 !
-    character(len=1) ::  type, typi
+    character(len=1) :: type, typi
     integer :: gd, num, gdi, numi
     character(len=8) :: k8b, nomma, nomgd
     character(len=16) :: nomcmd
@@ -75,7 +74,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         itype = 2
     else
         call getres(k8b, k8b, nomcmd)
-        call u2mesk('A', 'PREPOST_97', 1, type(1:1))
+        call utmess('A', 'PREPOST_97', sk=type(1:1))
         goto 9999
     endif
 !
@@ -91,10 +90,16 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         call jeveuo(chamn//'.DESC', 'L', iadesc)
         gdi = zi(iadesc-1+1)
         numi = zi(iadesc-1+2)
-        if (gdi .ne. gd) call u2mess('F', 'PREPOST2_67')
-        if (numi .ne. num) call u2mess('F', 'PREPOST2_68')
+        if (gdi .ne. gd) then
+            call utmess('F', 'PREPOST2_67')
+        endif
+        if (numi .ne. num) then
+            call utmess('F', 'PREPOST2_68')
+        endif
         call jelira(chamn//'.VALE', 'TYPE', cval=typi)
-        if (typi .ne. type) call u2mess('F', 'PREPOST2_69')
+        if (typi .ne. type) then
+            call utmess('F', 'PREPOST2_69')
+        endif
 10  end do
 !
 !     --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR NOMGD
@@ -133,7 +138,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
                     chamno, zk8(iad), nomsym, zi(jnu))
     else
         call getres(k8b, k8b, nomcmd)
-        call u2mess('E', 'PREPOST2_70')
+        call utmess('E', 'PREPOST2_70')
     endif
 !
 ! --- MENAGE

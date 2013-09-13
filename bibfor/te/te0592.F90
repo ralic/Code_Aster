@@ -18,7 +18,6 @@ subroutine te0592(option, nomte)
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elref4.h"
@@ -26,7 +25,8 @@ subroutine te0592(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/niinit.h"
 #include "asterfort/nirmtd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE LA RIGIDITE MECANIQUE POUR LES ELEMENTS
@@ -48,9 +48,12 @@ subroutine te0592(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.3)
-    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos, npg, iw, ivf3, idf3, jgn)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos,&
+                npg, iw, ivf3, idf3, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
+                npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
+                npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
@@ -60,19 +63,23 @@ subroutine te0592(option, nomte)
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
-        call u2mesk('F', 'ELEMENTS_34', 1, nomte)
+        call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
     typmod(2) = '        '
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, nno2, nno3, 0, vu, vg, vp, vpi)
+    call niinit(nomte, typmod, ndim, nno1, nno2,&
+                nno3, 0, vu, vg, vp,&
+                vpi)
 !
 ! - PARAMETRES EN ENTREE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATUUR', 'E', imatuu)
 !
-    call nirmtd(ndim, nno1, nno2, nno3, npg, iw, zr(ivf2), zr(ivf3), ivf1, idf1,&
-                vu, vg, vp, igeom, zi(imate), zr(imatuu))
+    call nirmtd(ndim, nno1, nno2, nno3, npg,&
+                iw, zr(ivf2), zr(ivf3), ivf1, idf1,&
+                vu, vg, vp, igeom, zi(imate),&
+                zr(imatuu))
 !
 end subroutine

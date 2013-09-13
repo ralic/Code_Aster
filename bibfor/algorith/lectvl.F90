@@ -36,7 +36,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: zcmplx
     integer :: itype, nbabs, inatur, ideas, nbmesu, labs, lvalc, lvalr
     real(kind=8) :: amin, apas
@@ -288,7 +288,7 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 !
 160  continue
 ! EN CAS D ERREUR DE LECTURE DU FICHIER UNV
-    call u2mess('F', 'ALGORITH5_5')
+    call utmess('F', 'ALGORITH5_5')
 !
 9999  continue
 !

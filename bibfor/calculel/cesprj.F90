@@ -18,7 +18,6 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesces.h"
 #include "asterfort/cescre.h"
@@ -34,8 +33,9 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: ces1z, correz, basez, ces2z
     integer :: iret
 ! ------------------------------------------------------------------
@@ -157,7 +157,9 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     ASSERT(zk24(jxxk1-1+1).eq.ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
-    if (gd .eq. 0) call u2mesk('F', 'CALCULEL_67', 1, nomgd)
+    if (gd .eq. 0) then
+        call utmess('F', 'CALCULEL_67', sk=nomgd)
+    endif
 !
 !
 !------------------------------------------------------------------

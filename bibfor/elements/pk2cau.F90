@@ -46,8 +46,8 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 #include "asterfort/jm1dn1.h"
 #include "asterfort/promat.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
 #include "asterfort/vectpe.h"
@@ -132,11 +132,11 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
     nbcou=zi(jnbspi-1+1)
 !
     if (nbcou .le. 0) then
-        call u2mess('F', 'ELEMENTS_12')
+        call utmess('F', 'ELEMENTS_12')
     endif
 !
     if (nbcou .gt. 10) then
-        call u2mess('F', 'ELEMENTS_13')
+        call utmess('F', 'ELEMENTS_13')
     endif
 !
 ! --- EPAISSEUR D'UNE COUCHE :

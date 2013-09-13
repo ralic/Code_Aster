@@ -10,7 +10,7 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
 #include "asterfort/jemarq.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iord0
     character(len=8) :: resu, modele, typfis
     character(len=24) :: compor
@@ -124,7 +124,9 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
     if (nbcomp .ne. 0) call gverlc(resu, compor, iord0)
 !
 !     X-FEM N'EST PAS ENCORE DEVELOPPE POUR GTP (G EN INCREMENTAL)
-    if (incr .and. typfis .eq. 'FISSURE') call u2mess('F', 'RUPTURE1_43')
+    if (incr .and. typfis .eq. 'FISSURE') then
+        call utmess('F', 'RUPTURE1_43')
+    endif
 !
     call jedema()
 !

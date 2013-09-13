@@ -41,7 +41,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/rvpara.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: mcf
     character(len=8) :: nomtab
@@ -70,7 +70,9 @@ subroutine rvpar0(nomtab, mcf, nbpost)
     call infmaj()
     call infniv(ifm, niv)
 !
-    if (niv .ge. 2) call u2mesk('I', 'POSTRELE_8', 1, nomtab)
+    if (niv .ge. 2) then
+        call utmess('I', 'POSTRELE_8', sk=nomtab)
+    endif
 !
     nomstr = '&&'//nompro//'.NOMPARAMS'
 !

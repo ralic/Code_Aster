@@ -25,8 +25,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
     real(kind=8) :: coor(9), rayon, theta, epsi, t1(3), t2(3), coo1(3), coo2(3)
@@ -94,7 +93,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 !     VERIF QUE LE NOEUD MILIEU EST BIEN LE TROISIEME
     psca=ddot(3,t2,1,t1,1)
     if (psca .le. 0.d0) then
-        call u2mess('F', 'ELEMENTS_5')
+        call utmess('F', 'ELEMENTS_5')
     endif
 !
 !     EPSI EST CELUI DONNE PAR LE MOT CLE PRECISION
@@ -128,7 +127,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
         test = epsi2*dn1n2*norme3
 !
         if (norme1 .le. test) then
-            call u2mess('F', 'ELEMENTS_6')
+            call utmess('F', 'ELEMENTS_6')
         endif
 !
         call provec(a, x1, zk1)
@@ -155,7 +154,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
         if (theta .gt. themax) then
             valr(1) = theta
             valr(2) = themax
-            call u2mesr('A', 'ELEMENTS_7', 2, valr)
+            call utmess('A', 'ELEMENTS_7', nr=2, valr=valr)
         endif
         rayon = dn1n2/2.d0/normez
 !        CALCUL DES REPERES LOCAUX EN CHAQUE NOEUD
@@ -212,7 +211,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 !
         test = epsi2*dn1n2*norme2
         if (norme1 .le. test) then
-            call u2mess('F', 'ELEMENTS_6')
+            call utmess('F', 'ELEMENTS_6')
         endif
 !
         call provec(axe, zk1, zzk1)
@@ -268,7 +267,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
         if (abs(omega2-omega) .gt. test) then
             valr(1)=omega
             valr(2)=omega2
-            call u2mesr('F', 'ELEMENTS_1', 2, valr)
+            call utmess('F', 'ELEMENTS_1', nr=2, valr=valr)
         endif
     endif
 end subroutine

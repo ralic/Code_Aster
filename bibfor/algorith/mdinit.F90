@@ -10,7 +10,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbmode, ier
     real(kind=8) :: depgen(*), vitgen(*), vint(*)
     character(len=8) :: basemo
@@ -65,12 +65,12 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         call jeveuo(nomdep//'.REFE', 'L', jrefe)
         if (zk24(jrefe)(1:8) .ne. basemo) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_42')
+            call utmess('E', 'ALGORITH5_42')
         endif
         call jeveuo(nomdep//'.DESC', 'L', jdesc)
         if (zi(jdesc+1) .ne. nbmode) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_43')
+            call utmess('E', 'ALGORITH5_43')
         endif
         do 10 im = 1, nbmode
             depgen(im) = zr(jdepi+im-1)
@@ -86,12 +86,12 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         call jeveuo(nomvit//'.REFE', 'L', jrefe)
         if (zk24(jrefe)(1:8) .ne. basemo) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_42')
+            call utmess('E', 'ALGORITH5_42')
         endif
         call jeveuo(nomvit//'.DESC', 'L', jdesc)
         if (zi(jdesc+1) .ne. nbmode) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_43')
+            call utmess('E', 'ALGORITH5_43')
         endif
         do 20 im = 1, nbmode
             vitgen(im) = zr(jviti+im-1)
@@ -113,14 +113,14 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         call extrac(inter, prec, crit, nbinst, zr(jinst),&
                     tinit, zr(jdeplt), nbmode, depgen, ier)
         if (ier .ne. 0) then
-            call u2mess('F', 'ALGORITH5_46')
+            call utmess('F', 'ALGORITH5_46')
         endif
         call jeveuo(tran//'           .VITE', 'E', jvitet)
         inter = 'NON'
         call extrac(inter, prec, crit, nbinst, zr(jinst),&
                     tinit, zr(jvitet), nbmode, vitgen, ier)
         if (ier .ne. 0) then
-            call u2mess('F', 'ALGORITH5_47')
+            call utmess('F', 'ALGORITH5_47')
         endif
         if (nbchoc .gt. 0) then
             call jeveuo(tran//'           .VINT', 'E', jvint)
@@ -128,7 +128,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             call extrac(inter, prec, crit, nbinst, zr(jinst),&
                         tinit, zr(jvint), nbchoc, vint, ier)
             if (ier .ne. 0) then
-                call u2mess('F', 'ALGORITH5_48')
+                call utmess('F', 'ALGORITH5_48')
             endif
         endif
     endif

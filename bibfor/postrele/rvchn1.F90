@@ -1,7 +1,6 @@
 subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -13,8 +12,9 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
+!
     integer :: nbno, numnd(*)
     character(len=*) :: deplaz, nomjv
     real(kind=8) :: pgl(3, 3)
@@ -55,14 +55,18 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
                 k8b, ier)
     call dismoi('F', 'NOM_GD', deplaz, 'CHAM_NO', ibid,&
                 k8b, ier)
-    if (k8b(1:6) .ne. 'DEPL_R') call u2mess('F', 'POSTRELE_17')
+    if (k8b(1:6) .ne. 'DEPL_R') then
+        call utmess('F', 'POSTRELE_17')
+    endif
 !
     call jenonu(jexnom(prno//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(prno//'.PRNO', ibid), 'L', jprno)
     call jeveuo(prno//'.NUEQ', 'L', jnueq)
 !
     nec = nbec( gd )
-    if (nec .gt. 10) call u2mess('F', 'POSTRELE_53')
+    if (nec .gt. 10) then
+        call utmess('F', 'POSTRELE_53')
+    endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !

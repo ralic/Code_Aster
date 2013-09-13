@@ -31,7 +31,6 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
 !
 ! ARGUMENTS
 #include "jeveux.h"
-!
 #include "asterfort/disbut.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gloloc.h"
@@ -41,7 +40,8 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/projmg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: np1, np2, np3
     integer :: nbm, nbmcd
     integer :: nbnl, typch(*), nbseg(*)
@@ -117,7 +117,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
             write(inum,'(I3.3)') ic
             valk(1) = inum
             valk(2) = nomnoe
-            call u2mesk('A', 'ALGELINE_9', 2, valk)
+            call utmess('A', 'ALGELINE_9', nk=2, valk=valk)
         endif
 !
 !        TEST DE LA POSITION INITIALES ET DE L'ORIGINE DANS LES
@@ -129,7 +129,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
                 write(inum,'(I3.3)') ic
                 valk(1) = inum
                 valk(2) = nomnoe
-                call u2mesk('A', 'ALGELINE_10', 2, valk)
+                call utmess('A', 'ALGELINE_10', nk=2, valk=valk)
             endif
 !
 !     --- OBSTACLE PLAN PARALLELE A ZLOCAL ---
@@ -140,7 +140,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
                 write(inum,'(I3.3)') ic
                 valk(1) = inum
                 valk(2) = nomnoe
-                call u2mesk('A', 'ALGELINE_10', 2, valk)
+                call utmess('A', 'ALGELINE_10', nk=2, valk=valk)
             endif
 !
 !     --- OBSTACLE CIRCULAIRE OU DISCRETISE---
@@ -151,7 +151,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
                 write(inum,'(I3.3)') ic
                 valk(1) = inum
                 valk(2) = nomnoe
-                call u2mesk('A', 'ALGELINE_10', 2, valk)
+                call utmess('A', 'ALGELINE_10', nk=2, valk=valk)
             endif
 !
         endif
@@ -185,15 +185,15 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
                     cosb, sing, cosg, xloc)
         if (dble(abs(xloc(1))) .lt. epsi) then
             write(inum,'(I3.3)') ic
-            call u2mesk('A', 'ALGELINE_11', 1, inum)
+            call utmess('A', 'ALGELINE_11', sk=inum)
 !
         else if (dble(abs(xloc(1))).lt.0.17364818d0) then
             write(inum,'(I3.3)') ic
-            call u2mesk('A', 'ALGELINE_12', 1, inum)
+            call utmess('A', 'ALGELINE_12', sk=inum)
 !
         else if (dble(abs(xloc(1))).lt.0.70710678d0) then
             write(inum,'(I3.3)') ic
-            call u2mesk('A', 'ALGELINE_13', 1, inum)
+            call utmess('A', 'ALGELINE_13', sk=inum)
         endif
 !
 20  end do

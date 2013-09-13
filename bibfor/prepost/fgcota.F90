@@ -26,7 +26,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
 !          SIGMIN  CONTRAINTES MINIMALES DES CYCLES
 !       ----------------------------------------------------------------
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: pic(*), e1, e2, sigmax(*), sigmin(*)
     integer :: npic, ncyc, k
     logical :: cyczer
@@ -50,7 +50,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
         sigmin(1) = pic(1)
         ncyc = 1
 !
-        call u2mess('A', 'FATIGUE1_39')
+        call utmess('A', 'FATIGUE1_39')
 !
         goto 999
     endif

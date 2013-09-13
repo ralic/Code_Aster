@@ -58,7 +58,6 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
 !---------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/alimrs.h"
 #include "asterfort/calflu.h"
@@ -80,9 +79,10 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 #include "asterfort/prstoc.h"
 #include "asterfort/resoud.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
+!
     logical :: test1, test2, test3
     integer :: nbvale, nbrefe, nbdesc, ibid, isst, iadrp
     integer :: i, iad(2), iad3d(3), icor(2), ndble
@@ -121,7 +121,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
     call jemarq()
     if (model .eq. 'AX') then
-        call u2mess('F', 'ALGORITH10_99')
+        call utmess('F', 'ALGORITH10_99')
     endif
 !
     ca(1)=cos(tgeom(4))

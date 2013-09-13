@@ -11,7 +11,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pj3dco.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: mo
     character(len=16) :: corre1, corre2
     character(len=24) :: geom2
@@ -66,7 +66,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     nuno2=lino2(ino2)
     do 10,k=1,3
     if (.not.zl(jcnsl-1+3*(nuno2-1)+k)) then
-        call u2mesk('F', 'CHAMPS_2', 1, chnorm)
+        call utmess('F', 'CHAMPS_2', sk=chnorm)
     endif
     ASSERT(zl(jcnsl-1+3*(nuno2-1)+k))
     zr(jlisv1-1+3*(nuno2-1)+k)=zr(jcnsv-1+3*(nuno2-1)+k)*&

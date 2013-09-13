@@ -7,7 +7,7 @@ subroutine xnewto(elp, name, num, nno, ndim,&
 #include "asterc/r8gaem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdelt1.h"
 #include "asterfort/xdelt2.h"
@@ -133,7 +133,7 @@ subroutine xnewto(elp, name, num, nno, ndim,&
     if ((test.gt.eps) .and. (iter.lt.itemax)) then
         goto 20
     else if ((iter.ge.itemax).and.(test.gt.eps)) then
-        call u2mess('F', 'XFEM_67')
+        call utmess('F', 'XFEM_67')
         do 80 i = 1, ndim
             ksi(i) = ksim(i)
 80      end do

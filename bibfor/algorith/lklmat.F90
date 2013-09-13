@@ -2,11 +2,11 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
                   materf, matcst, ndt, ndi, nvi,&
                   indal)
 !
-    implicit     none
+    implicit none
 #include "asterfort/lklnvi.h"
 #include "asterfort/matini.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=3) :: matcst
@@ -115,12 +115,14 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
     call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                [tempd], 3, nomc(1), materd(1, 1), cerr(1), 0)
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1),&
+                0)
     indal=1
     if (cerr(3) .ne. 0) indal=0
 !
     call rcvala(imat, ' ', 'LETK', 1, 'TEMP',&
-                [tempd], 27, nomc(4), materd(1, 2), cerr(4), 0)
+                [tempd], 27, nomc(4), materd(1, 2), cerr(4),&
+                0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
@@ -140,14 +142,18 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
     xi0v = materd(25,2)
     s0 = materd(11,2)
     a0 = materd(8,2)
-    if (s0 .eq. zero) call u2mess('F', 'COMPOR1_26')
-    if (mu0v .eq. xi0v) call u2mess('F', 'COMPOR1_26')
+    if (s0 .eq. zero) then
+        call utmess('F', 'COMPOR1_26')
+    endif
+    if (mu0v .eq. xi0v) then
+        call utmess('F', 'COMPOR1_26')
+    endif
 !
     var1 = un/(s0**a0)
     var2 = (un+mu0v)/(mu0v-xi0v)
 !
     if ((mu0v.gt.xi0v) .and. (var1) .gt. (var2)) then
-        call u2mess('F', 'COMPOR1_26')
+        call utmess('F', 'COMPOR1_26')
     endif
 ! =================================================================
 ! --- VERIFICATION DE LA COHERENCE DES PARAMETRES : ---------------
@@ -162,7 +168,7 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
     cohere =&
      &        abs(sigc/sigmp1*((mpic*sigmp1/sigc+1)**(apic/ae))-me)
     if (cohere .gt. 1.0d-2) then
-        call u2mess('F', 'ALGORITH5_12')
+        call utmess('F', 'ALGORITH5_12')
     endif
 ! =================================================================
 ! --- DEFINITION D'UN MATERIAU FINAL ------------------------------

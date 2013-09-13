@@ -60,9 +60,7 @@ subroutine crtype()
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/rssepa.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
@@ -151,7 +149,7 @@ subroutine crtype()
             if (noma .ne. noma2) then
                 valkk(1)=noma
                 valkk(2)=noma2
-                call u2mesk('F', 'ALGORITH2_1', 2, valkk)
+                call utmess('F', 'ALGORITH2_1', nk=2, valk=valkk)
             endif
         endif
         call dismoi('F', 'NOM_GD', champ, 'CHAMP', ibid,&
@@ -160,7 +158,7 @@ subroutine crtype()
             valkk(1)=champ
             valkk(2)='NEUT_R'
             valkk(3)='EVOL_CHAR'
-            call u2mesk('F', 'ALGORITH2_80', 3, valkk)
+            call utmess('F', 'ALGORITH2_80', nk=3, valk=valkk)
         endif
 !
         call dismoi('F', 'TYPE_SUPERVIS', champ, 'CHAMP', ibid,&
@@ -172,7 +170,9 @@ subroutine crtype()
         do 10 i = 24, 1, -1
             if (k24(i:i) .eq. ' ') goto 10
             if (k24(i-1:i) .eq. '_F') then
-                if (k24(1:7) .ne. 'CHAM_NO') call u2mesk('F', 'ALGORITH2_45', 1, k24)
+                if (k24(1:7) .ne. 'CHAM_NO') then
+                    call utmess('F', 'ALGORITH2_45', sk=k24)
+                endif
                 lfonc = .true.
                 typegd = k24(i-5:i-2)//'_R'
             else if (k24(i-1:i).eq.'_R') then
@@ -180,7 +180,7 @@ subroutine crtype()
             else if (k24(i-1:i).eq.'_C') then
                 typegd = k24(i-5:i)
             else
-                call u2mesk('F', 'ALGORITH2_46', 1, k24)
+                call utmess('F', 'ALGORITH2_46', sk=k24)
             endif
             goto 20
 10      continue
@@ -238,8 +238,7 @@ subroutine crtype()
             if (iret .eq. 0) then
                 valkk(1) = champ(1:8)
                 valii(1) = numini
-                call u2mesg('A', 'ALGORITH12_74', 1, valkk, 1,&
-                            valii, 0, 0.d0)
+                call utmess('A', 'ALGORITH12_74', sk=valkk(1), si=valii(1))
             else if (iret.eq.110) then
                 call rsagsd(resu, 0)
                 call rsexch(' ', resu, nsymb, numini, nomch,&
@@ -247,7 +246,7 @@ subroutine crtype()
             else if (iret.eq.100) then
 !              ON NE FAIT RIEN
             else
-                call u2mesk('F', 'ALGORITH2_47', 1, nsymb)
+                call utmess('F', 'ALGORITH2_47', sk=nsymb)
             endif
 !
             call copisd('CHAMP_GD', 'G', champ, nomch)
@@ -331,7 +330,7 @@ subroutine crtype()
                     nbr = 0
                 endif
                 if (nbr .lt. 0) then
-                    call u2mess('F', 'ALGORITH2_48')
+                    call utmess('F', 'ALGORITH2_48')
                 else if (nbr.eq.0) then
                     zi(jcpt+k-1) = ivmx + 1
                     ivmx = ivmx + 1
@@ -364,7 +363,7 @@ subroutine crtype()
             if (numfin .gt. nbval) numfin = nbval
             if (n2 .ne. 0 .and. n3 .ne. 0) then
                 if (numfin .lt. numini) then
-                    call u2mess('F', 'ALGORITH2_49')
+                    call utmess('F', 'ALGORITH2_49')
                 endif
                 nbinst = numfin - numini + 1
 !
@@ -398,7 +397,7 @@ subroutine crtype()
                     nbr = 0
                 endif
                 if (nbr .lt. 0) then
-                    call u2mess('F', 'ALGORITH2_48')
+                    call utmess('F', 'ALGORITH2_48')
                 else if (nbr.eq.0) then
                     zi(jcpt+j-1) = ivmx + 1
                     ivmx = ivmx + 1
@@ -420,14 +419,14 @@ subroutine crtype()
                 if (nsymb(1:4) .ne. nogdsi(1:4)) then
                     valkk(1) = nsymb(1:4)
                     valkk(2) = nogdsi(1:4)
-                    call u2mesk('F', 'CALCULEL2_79', 2, valkk)
+                    call utmess('F', 'CALCULEL2_79', nk=2, valk=valkk)
                 endif
             endif
 !           DANS TOUS LES AUTRES CAS, MEME GRANDEUR XXXX = YYYY
             if (typegd(1:4) .ne. nogdsi(1:4)) then
                 valkk(1) = typegd(1:4)
                 valkk(2) = nogdsi(1:4)
-                call u2mesk('F', 'CALCULEL2_90', 2, valkk)
+                call utmess('F', 'CALCULEL2_90', nk=2, valk=valkk)
             endif
 !           NOMBRE D'ENTIER CODE
             call dismoi('F', 'NB_EC', typegd, 'GRANDEUR', nbecd,&
@@ -439,8 +438,8 @@ subroutine crtype()
                 valkk(2) = nogdsi
                 valii(1) = nbecd
                 valii(2) = nbeci
-                call u2mesg('F', 'CALCULEL2_80', 2, valkk, 2,&
-                            valii, 0, rbid)
+                call utmess('F', 'CALCULEL2_80', nk=2, valk=valkk, ni=2,&
+                            vali=valii)
             endif
 !           NOM DES COMPOSANTES DU MEME RANG IDENTIQUE
             kjexn = jexnom('&CATA.GD.NOMCMP',typegd)
@@ -456,7 +455,7 @@ subroutine crtype()
                     valkk(2) = nogdsi
                     valkk(3) = zk8(icmpd+j-1)
                     valkk(4) = zk8(icmpi+j-1)
-                    call u2mesk('F', 'CALCULEL2_5', 4, valkk)
+                    call utmess('F', 'CALCULEL2_5', nk=4, valk=valkk)
                 endif
 300          continue
         endif
@@ -476,8 +475,8 @@ subroutine crtype()
                 valrr(1) = zr(iad)
                 valrr(2) = tps
                 valrr(3) = prec
-                call u2mesg('A', 'ALGORITH11_87', 2, valkk, 0,&
-                            0, 3, valrr)
+                call utmess('A', 'ALGORITH11_87', nk=2, valk=valkk, nr=3,&
+                            valr=valrr)
             else if (iret.eq.110) then
                 call rsagsd(resu, 0)
                 call rsexch(' ', resu, nsymb, icompt, nomch,&
@@ -534,7 +533,7 @@ subroutine crtype()
                         else if (nomp(ip).eq.'Z') then
                             valpu(ip) = zr(jcoor-1+3* (ino-1)+3)
                         else
-                            call u2mess('F', 'ALGORITH2_50')
+                            call utmess('F', 'ALGORITH2_50')
                         endif
 50                  continue
                     call fointe('F', nomf, nbpf, nomp, valpu,&

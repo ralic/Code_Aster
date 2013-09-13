@@ -18,17 +18,18 @@ subroutine as_mmhcor(fid, maa, coo, modcoo, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mmhcor.h"
     character(len=*) :: maa
     aster_int :: fid, modcoo, cret
     aster_int :: mdnont, mdnoit
     real(kind=8) :: coo(*)
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, modco4, cret4
     med_int :: mdnon4, mdnoi4
@@ -47,6 +48,6 @@ subroutine as_mmhcor(fid, maa, coo, modcoo, cret)
     call mmhcor(fid, maa, mdnont, mdnoit, modcoo,&
                 coo, cret)
 #endif
-
+!
 #endif
 end subroutine

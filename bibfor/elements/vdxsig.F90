@@ -14,7 +14,7 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
 #include "asterfort/matrth.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/trndgl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdefge.h"
 #include "asterfort/vdesga.h"
 #include "asterfort/vectan.h"
@@ -179,7 +179,7 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                     p2xi3=-xi3*(1-xi3)/2.d0
                     p3xi3= xi3*(1+xi3)/2.d0
                     if (iret .eq. 1) then
-                        call u2mess('F', 'CALCULEL_15')
+                        call utmess('F', 'CALCULEL_15')
                     else
                         tem(kwgt)=tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3
                         tem(kwgt)=tem(kwgt)-tref
@@ -265,7 +265,7 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                 p2xi3=-xi3*(1-xi3)/2.d0
                 p3xi3= xi3*(1+xi3)/2.d0
                 if (iret .eq. 1) then
-                    call u2mess('F', 'CALCULEL_15')
+                    call utmess('F', 'CALCULEL_15')
                 else
                     tempga(kwgt)=tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3
                     tempga(kwgt)=tempga(kwgt)-tref

@@ -25,7 +25,7 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmvcd2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcref.h"
     character(len=*) :: modelz, matz, carelz, comrez
 ! ----------------------------------------------------------------------
@@ -59,7 +59,9 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
     call exisd('CHAMP_GD', champ, iret)
 !
     call nmvcd2('SECH', mate, exi, exiref)
-    if (exi .and. .not.exiref) call u2mess('F', 'ALGORITH8_61')
+    if (exi .and. .not.exiref) then
+        call utmess('F', 'ALGORITH8_61')
+    endif
 !
     call jedema()
 !

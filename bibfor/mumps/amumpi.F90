@@ -28,8 +28,8 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/r4maem.h"
 #include "asterfort/amumpu.h"
@@ -38,7 +38,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: kxmps, option
     logical :: lquali, ldist
     character(len=1) :: type
@@ -148,7 +148,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             isym=isymv
         else
             if (isymm .eq. 0) then
-                call u2mesk('F', 'FACTOR_56', 1, zk24(jslvk-1+3))
+                call utmess('F', 'FACTOR_56', sk=zk24(jslvk-1+3))
             else
                 isym=isymv
             endif
@@ -417,8 +417,8 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             else if (zk24(jslvk-1+11).eq.'FORCE') then
                 icntl(10)=10
                 cntl(2)=10.d-50
-                if (type .eq. 'S' .or. type.eq.'C') then
-                   cntl(2)=1.d-38
+                if (type .eq. 'S' .or. type .eq. 'C') then
+                    cntl(2)=1.d-38
                 endif
             endif
             icntl(11)=1

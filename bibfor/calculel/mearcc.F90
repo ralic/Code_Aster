@@ -1,7 +1,6 @@
 subroutine mearcc(option, mo, chin, chout)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -19,8 +18,9 @@ subroutine mearcc(option, mo, chin, chout)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/srlima.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mo
     character(len=16) :: option
     character(len=24) :: chin, chout
@@ -153,7 +153,7 @@ subroutine mearcc(option, mo, chin, chout)
                     call jenuno(jexnum(ma//'.NOMMAI', numavo), nomavo)
                     valk(1)=nomavo
                     valk(2)=nomasu
-                    call u2mesk('F', 'CALCULEL5_52', 2, valk)
+                    call utmess('F', 'CALCULEL5_52', nk=2, valk=valk)
                 endif
                 call cesexi('S', jcesd2, jcesl2, zi(jma2d+ima-1), ipt,&
                             1, nucmp, iad2)

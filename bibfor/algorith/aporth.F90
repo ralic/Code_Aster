@@ -19,7 +19,7 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/apnndm.h"
@@ -30,8 +30,7 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sdappa
     character(len=8) :: noma
     character(len=24) :: defico
@@ -92,16 +91,14 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
     if (lpoutr) then
         call normev(tau1m, noor)
         if (noor .le. r8prem()) then
-            call u2mesk('F', 'APPARIEMENT_38', 1, nommam)
+            call utmess('F', 'APPARIEMENT_38', sk=nommam)
         endif
     else
         call cforth(ndimg, tau1m, tau2m, niverr)
         if (niverr .eq. 1) then
-            call u2mesg('F', 'APPARIEMENT_14', 1, nommam, 0,&
-                        0, 3, coorpt)
+            call utmess('F', 'APPARIEMENT_14', sk=nommam, nr=3, valr=coorpt)
         else if (niverr.eq.2) then
-            call u2mesg('F', 'APPARIEMENT_34', 1, nommam, 0,&
-                        0, 3, coorpt)
+            call utmess('F', 'APPARIEMENT_34', sk=nommam, nr=3, valr=coorpt)
         endif
     endif
 !

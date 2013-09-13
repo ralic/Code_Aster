@@ -1,10 +1,10 @@
 subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
                   alphaa, alphab, nbth, iocs, sn6)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbm, adrm(*), ipt, nbth, iocs
     real(kind=8) :: sn3, sn4, alphaa, alphab, sn6
 !     ------------------------------------------------------------------
@@ -57,8 +57,7 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
     if (.not.zl(jcesl-1+iad)) then
         vali(1) = iocs
         vali(2) = adrm(1)
-        call u2mesg('F', 'POSTRCCM_15', 1, 'RESU_THER', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_15', sk='RESU_THER', ni=2, vali=vali)
     endif
     call jeveuo(zk24(jcesv-1+iad), 'L', jmoye)
     call jelira(zk24(jcesv-1+iad), 'LONMAX', nbinst)
@@ -71,8 +70,7 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
         if (.not.zl(jcesl-1+iad)) then
             vali(1) = iocs
             vali(2) = adrm(2)
-            call u2mesg('F', 'POSTRCCM_15', 1, 'RESU_THER_MOYE', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'POSTRCCM_15', sk='RESU_THER_MOYE', ni=2, vali=vali)
         endif
         call jeveuo(zk24(jcesv-1+iad), 'L', jmoy2)
     endif

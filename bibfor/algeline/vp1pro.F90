@@ -38,7 +38,7 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
 #include "asterfort/jemarq.h"
 #include "asterfort/omega2.h"
 #include "asterfort/rectfr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vp1ite.h"
 #include "asterfort/vpstur.h"
 #include "asterfort/wkvect.h"
@@ -117,7 +117,7 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
         if (abs(valeur) .le. omega2(fcorig)) then
             ifreq = ifreq + 1
             if (ifreq .gt. nfreq) then
-                call u2mess('A', 'ALGELINE3_53')
+                call utmess('A', 'ALGELINE3_53')
             else
                 goto 30
             endif
@@ -137,7 +137,7 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
         if (ier .ne. 0) then
             nbessa = nbessa + 1
             if (nbessa .gt. nbrssa) then
-                call u2mess('F', 'ALGELINE3_54')
+                call utmess('F', 'ALGELINE3_54')
             else
                 if (valeur .ge. 0.d0) then
                     valeur = 0.95d0 * valeur

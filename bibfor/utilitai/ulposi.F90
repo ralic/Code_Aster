@@ -16,8 +16,8 @@ subroutine ulposi(unit, posi, ierr)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
-    implicit   none
-#include "asterfort/u2mesk.h"
+    implicit none
+#include "asterfort/utmess.h"
     character(len=*) :: posi
     integer :: unit, ierr
 !     ------------------------------------------------------------------
@@ -50,16 +50,16 @@ subroutine ulposi(unit, posi, ierr)
             ierr=101
             valk(1) = kacc
             valk(2) = k4b
-            call u2mesk('E', 'UTILITAI5_24', 2, valk)
+            call utmess('E', 'UTILITAI5_24', nk=2, valk=valk)
         else
             if (.not. lnom) then
                 ierr=102
-                call u2mesk('E', 'UTILITAI5_25', 1, k4b)
+                call utmess('E', 'UTILITAI5_25', sk=k4b)
             endif
         endif
     else
         ierr=103
-        call u2mesk('E', 'UTILITAI5_26', 1, k4b)
+        call utmess('E', 'UTILITAI5_26', sk=k4b)
     endif
 !
     if (posi .eq. 'N') then
@@ -68,7 +68,7 @@ subroutine ulposi(unit, posi, ierr)
             ierr = 0
         else
             ierr = 104
-            call u2mesk('E', 'UTILITAI5_27', 1, k4b)
+            call utmess('E', 'UTILITAI5_27', sk=k4b)
         endif
     else if (posi .eq. 'O') then
         ierr = 0
@@ -88,7 +88,7 @@ subroutine ulposi(unit, posi, ierr)
         ierr = 105
         valk(1) = k1
         valk(2) = k4b
-        call u2mesk('E', 'UTILITAI5_28', 2, valk)
+        call utmess('E', 'UTILITAI5_28', nk=2, valk=valk)
     endif
 !
 end subroutine

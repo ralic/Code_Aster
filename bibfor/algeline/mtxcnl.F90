@@ -2,7 +2,7 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
                   typres, lres, neq)
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: lmat, lres
     character(len=*) :: cumul, typcst
     character(len=1) :: typmat, typres
@@ -72,8 +72,7 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
                 valk (1) = typres
                 valk (2) = typmat
                 valk (3) = typcst(1:1)
-                call u2mesg('F', 'ALGELINE4_25', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
             endif
         else if (typmat .eq. 'C') then
             if (typcst(1:1) .eq. 'R') then
@@ -93,14 +92,12 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
                 valk (1) = typres
                 valk (2) = typmat
                 valk (3) = typcst(1:1)
-                call u2mesg('F', 'ALGELINE4_25', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
             endif
         else
             valk (1) = typres
             valk (2) = typmat
-            call u2mesg('F', 'ALGELINE4_27', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_27', nk=2, valk=valk)
         endif
 !
 ! --- MATRICE COMPLEXE EN RESULTAT
@@ -124,8 +121,7 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
                 valk (1) = typres
                 valk (2) = typmat
                 valk (3) = typcst(1:1)
-                call u2mesg('F', 'ALGELINE4_25', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
             endif
         else if (typmat .eq. 'R') then
             if (typcst(1:1) .eq. 'R') then
@@ -145,19 +141,16 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
                 valk (1) = typres
                 valk (2) = typmat
                 valk (3) = typcst(1:1)
-                call u2mesg('F', 'ALGELINE4_25', 3, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_25', nk=3, valk=valk)
             endif
         else
             valk (1) = typres
             valk (2) = typmat
-            call u2mesg('F', 'ALGELINE4_27', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_27', nk=2, valk=valk)
         endif
     else
         valk (1) = typres
-        call u2mesg('F', 'ALGELINE4_31', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_31', sk=valk(1))
 !
     endif
 !

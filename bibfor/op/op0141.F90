@@ -47,8 +47,7 @@ subroutine op0141()
 #include "asterfort/tbimex.h"
 #include "asterfort/tbimpr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
@@ -127,7 +126,9 @@ subroutine op0141()
         zcmplx = .true.
     else
         zcmplx = .false.
-        if (c1 .or. c2) call u2mess('F', 'ALGELINE5_71')
+        if (c1 .or. c2) then
+            call utmess('F', 'ALGELINE5_71')
+        endif
     endif
 !
 ! RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
@@ -160,7 +161,7 @@ subroutine op0141()
     endif
     call exisd('NUME_DDL', numdd1, iret)
     if (iret .ne. 1) then
-        call u2mesk('F', 'CALCESSAI0_14', 1, base1)
+        call utmess('F', 'CALCESSAI0_14', sk=base1)
     endif
 !
     call jeveuo(numdd1//'.NUME.NEQU', 'L', llneq1)
@@ -184,7 +185,7 @@ subroutine op0141()
     endif
     call exisd('NUME_DDL', numdd2, iret)
     if (iret .ne. 1) then
-        call u2mesk('F', 'CALCESSAI0_14', 1, base2)
+        call utmess('F', 'CALCESSAI0_14', sk=base2)
     endif
     call jeveuo(numdd2//'.NUME.NEQU', 'L', llneq2)
 !
@@ -192,14 +193,14 @@ subroutine op0141()
     pronu1=(numdd1//'.NUME')
     pronu2=(numdd2//'.NUME')
     if (.not.idensd('PROF_CHNO',pronu1,pronu2)) then
-        call u2mess('F', 'ALGELINE2_80')
+        call utmess('F', 'ALGELINE2_80')
     endif
 !
 ! --- Verification : le nume_ddl doit etre celui de la MATR_ASSE
     if (matr .ne. ' ') then
         pronua=(numdda//'.NUME')
         if (.not.idensd('PROF_CHNO',pronu1,pronua)) then
-            call u2mess('F', 'ALGELINE2_81')
+            call utmess('F', 'ALGELINE2_81')
         endif
         nu = numdda(1:14)
         call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)

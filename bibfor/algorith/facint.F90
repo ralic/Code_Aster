@@ -32,7 +32,7 @@ subroutine facint(nbpas, dim, longh, vec1, vec2,&
 !             D  : VECTEUR DE TRAVAIL
 #include "jeveux.h"
 #include "asterfort/diaghr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: dim
     complex(kind=8) :: s(dim, dim), r(dim, dim), u(*), w(*)
     real(kind=8) :: d(dim), vec1(long), vec2(longh), v(*)
@@ -69,7 +69,7 @@ subroutine facint(nbpas, dim, longh, vec1, vec2,&
                     sr = dble(s(i,j))
                     si = dimag(s(i,j))
                     if (sr .ne. 0.d0 .or. si .ne. 0.d0) then
-                        call u2mess('F', 'ALGORITH3_60')
+                        call utmess('F', 'ALGORITH3_60')
                     endif
                     r(i,j) = s(i,j)
 40              continue

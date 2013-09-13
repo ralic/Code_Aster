@@ -27,7 +27,7 @@ subroutine renuno(nu, renum)
 #include "asterfort/reexi1.h"
 #include "asterfort/relagm.h"
 #include "asterfort/rercmk.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=*) :: renum
@@ -150,7 +150,7 @@ subroutine renuno(nu, renum)
         endif
 10      continue
     else
-        call u2mesk('F', 'ASSEMBLA_37', 1, renum(1:4))
+        call utmess('F', 'ASSEMBLA_37', sk=renum(1:4))
     endif
 !
 !

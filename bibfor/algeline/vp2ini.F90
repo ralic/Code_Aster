@@ -4,7 +4,6 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
                   omeshi, solveu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/ggubs.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -15,9 +14,10 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdsc2.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vplcor.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ldynam, lmasse, ldynfa, neq, nbvect, nborto, ddlexc(*), ddllag(*)
     integer :: nstoc
     real(kind=8) :: prsudg, prorto, omeshi
@@ -287,8 +287,7 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
             ivecd = ivecp1
             valr (1) = beta(ivecp1)
             valr (2) = alpha(ivecp1)
-            call u2mesg('I', 'ALGELINE4_64', 0, ' ', 0,&
-                        0, 2, valr)
+            call utmess('I', 'ALGELINE4_64', nr=2, valr=valr)
             goto 60
         endif
 !

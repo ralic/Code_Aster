@@ -54,7 +54,11 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mfdfdi.h"
+#include "asterfort/as_mfdnfc.h"
+#include "asterfort/as_mfdnfd.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
@@ -67,15 +71,10 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lrcame.h"
-#include "asterfort/as_mfdfdi.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfdnfd.h"
-#include "asterfort/as_mfdnfc.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: chanom
     character(len=*) :: ncmpva, ncmpvm
     character(len=8) :: nomaas, nomgd
@@ -106,7 +105,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     parameter (edlect=0)
 !
     character(len=1) :: saux01
-    character(len=8) ::  saux08, parbid
+    character(len=8) :: saux08, parbid
     character(len=19) :: chamn
     character(len=19) :: chamns, ligbid
     character(len=24) :: optbid
@@ -124,7 +123,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 !
     call jenonu(jexnom ( '&CATA.GD.NOMGD', nomgd ), iaux)
     if (iaux .eq. 0) then
-        call u2mess('F', 'MED_65')
+        call utmess('F', 'MED_65')
     endif
     call jeveuo(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'L', jnocmp)
     call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf)
@@ -146,11 +145,11 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
                     if (zk8(jcmpva+i-1) .eq. zk8(jnocmp+j-1)) ttt= .true.
 30              continue
                 if (.not.ttt) then
-                    call u2mess('F', 'MED_66')
+                    call utmess('F', 'MED_66')
                 endif
 20          continue
         else
-            call u2mess('F', 'MED_70')
+            call utmess('F', 'MED_70')
         endif
 !
     else
@@ -168,7 +167,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
             call wkvect('&&LRCNME.NOMCMP_K16', 'V V K16', nbcmp, jcmp)
             call wkvect('&&LRCNME.UNITCMP', 'V V K16', nbcmp, junit)
             call as_mfdfdi(idfimd, i, nomcha, tycha, zk16(jcmp),&
-                        zk16(junit), nseqca, iret)
+                           zk16(junit), nseqca, iret)
             if (nomcha .eq. nochmd) then
                 ncmprf=nbcmp
                 call wkvect('&&LRCNME.NOMCMP_K8', 'V V K8', nbcmp, jnocmp)
@@ -215,7 +214,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 !====
 !
     if (codret .ne. 0) then
-        call u2mesk('A', 'MED_55', 1, chamn)
+        call utmess('A', 'MED_55', sk=chamn)
     endif
     call jedetr('&&LRCNME.NOMCMP_K8')
     call jedema()

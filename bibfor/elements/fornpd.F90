@@ -17,7 +17,7 @@ subroutine fornpd(option, nomte)
 #include "asterfort/terefe.h"
 #include "asterfort/trndgl.h"
 #include "asterfort/trnflg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vexpan.h"
 #include "blas/daxpy.h"
@@ -80,8 +80,12 @@ subroutine fornpd(option, nomte)
 !
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-    if (nbcou .gt. 10) call u2mess('F', 'ELEMENTS_13')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+    if (nbcou .gt. 10) then
+        call utmess('F', 'ELEMENTS_13')
+    endif
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcara)
     epais = zr(jcara)
@@ -95,7 +99,9 @@ subroutine fornpd(option, nomte)
                     iret)
         icontm=itab(1)
         nbsp=itab(7)
-        if (nbsp .ne. npge*nbcou) call u2mess('F', 'ELEMENTS_4')
+        if (nbsp .ne. npge*nbcou) then
+            call utmess('F', 'ELEMENTS_4')
+        endif
     else if (option.eq.'REFE_FORC_NODA') then
         call terefe('SIGM_REFE', 'MECA_COQUE3D', sigref)
     endif
@@ -104,7 +110,7 @@ subroutine fornpd(option, nomte)
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .ne. 'ELAS') then
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
     call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&

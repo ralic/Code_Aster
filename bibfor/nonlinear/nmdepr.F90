@@ -19,7 +19,6 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -31,8 +30,8 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/rsinch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: modele, carele, resufv(3), ligrel, charge
     real(kind=8) :: instan
     integer :: icha
@@ -83,7 +82,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
     call gettco(fnocal, tysd)
 !
     if (tysd .ne. 'EVOL_CHAR') then
-        call u2mesk('F', 'ALGORITH7_15', 1, fnocal)
+        call utmess('F', 'ALGORITH7_15', sk=fnocal)
         goto 40
     endif
 !
@@ -92,7 +91,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
                 k8bid, ier)
 !
     if (nbcham .le. 0) then
-        call u2mesk('F', 'ALGORITH7_16', 1, fnocal)
+        call utmess('F', 'ALGORITH7_16', sk=fnocal)
         goto 40
     endif
 !
@@ -109,8 +108,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         valk (1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_56', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_56', sk=valk(1), si=vali, sr=valr)
     endif
 !
     call rsinch(fnocal, 'FVOL_2D', 'INST', instan, chfnoe,&
@@ -122,8 +120,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         valk (1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_57', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_57', sk=valk(1), si=vali, sr=valr)
     endif
 !
 !     CALCUL DES OPTIONS : CHAR_MECA_FR2D2D OU CHAR_MECA_FR3D3D
@@ -154,8 +151,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         if (option .eq. 'CHAR_MECA_FR2D2D') then
             valk (1) = fnocal
             valr = instan
-            call u2mesg('F', 'ALGORITH13_58', 1, valk, 0,&
-                        0, 1, valr)
+            call utmess('F', 'ALGORITH13_58', sk=valk(1), sr=valr)
         endif
         option = 'CHAR_MECA_FR2D3D'
         goto 20
@@ -163,8 +159,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         valk (1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_59', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_59', sk=valk(1), si=vali, sr=valr)
     endif
 !
     call rsinch(fnocal, 'FSUR_2D', 'INST', instan, chfnoe,&
@@ -173,8 +168,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         if (option .eq. 'CHAR_MECA_FR3D3D') then
             valk (1) = fnocal
             valr = instan
-            call u2mesg('F', 'ALGORITH13_60', 1, valk, 0,&
-                        0, 1, valr)
+            call utmess('F', 'ALGORITH13_60', sk=valk(1), sr=valr)
         endif
         option = 'CHAR_MECA_FR1D2D'
         goto 20
@@ -182,8 +176,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         valk (1) = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_61', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_61', sk=valk(1), si=vali, sr=valr)
     endif
 !
 !     CALCUL DES OPTIONS : CHAR_MECA_FR2D3D OU CHAR_MECA_FR1D2D
@@ -219,15 +212,14 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         valk (3) = ' '
         valk (4) = ' '
         valr = instan
-        call u2mesg('F', 'ALGORITH13_62', 4, valk, 0,&
-                    0, 1, valr)
+        call utmess('F', 'ALGORITH13_62', nk=4, valk=valk, sr=valr)
     else if (ier.eq.20) then
         valk (1) = fnocal
         valk (2) = ' '
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_63', 2, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_63', nk=2, valk=valk, si=vali,&
+                    sr=valr)
     endif
 !
 !     CALCUL DE L'OPTION : CHAR_MECA_PRES_R

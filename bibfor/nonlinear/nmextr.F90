@@ -34,7 +34,7 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
 #include "asterfort/nmextn.h"
 #include "asterfort/nmextp.h"
 #include "asterfort/nmextt.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: noma, nomo
     character(len=*) :: sdextz
@@ -167,7 +167,7 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
         nomchs = zk24(jextch+2*(icham-1)+2-1)
         if (nomcha .eq. 'NONE') then
             call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomchx, nbret=ibid)
-            call u2mesk('A', 'EXTRACTION_99', 1, nomchx)
+            call utmess('A', 'EXTRACTION_99', sk=nomchx)
             goto 999
         endif
 !

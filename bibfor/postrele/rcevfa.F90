@@ -1,7 +1,7 @@
 subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                   csne, cspo, cspe, kemixt, cspto,&
                   cspte, cspmo, cspme, cfao, cfae)
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
@@ -11,7 +11,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 #include "asterfort/limend.h"
 #include "asterfort/prccm3.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: para(3), sm
     character(len=8) :: nommat
@@ -147,8 +147,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                     if (nadmo(1) .lt. 0) then
                         valr (1) = salto
                         valr (2) = nadmo(1)
-                        call u2mesg('A', 'POSTRELE_61', 0, ' ', 0,&
-                                    0, 2, valr)
+                        call utmess('A', 'POSTRELE_61', nr=2, valr=valr)
                     endif
                 endif
 !
@@ -161,8 +160,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                     if (nadmo(1) .lt. 0) then
                         valr (1) = salte
                         valr (2) = nadme(1)
-                        call u2mesg('A', 'POSTRELE_61', 0, ' ', 0,&
-                                    0, 2, valr)
+                        call utmess('A', 'POSTRELE_61', nr=2, valr=valr)
                     endif
                 endif
 !

@@ -25,7 +25,7 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
 #include "asterfort/granac.h"
 #include "asterfort/nmcri3.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verifm.h"
 #include "asterfort/zeroco.h"
@@ -166,7 +166,7 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
             endif
 10      continue
 11      continue
-        call u2mess('A', 'ALGORITH8_12')
+        call utmess('A', 'ALGORITH8_12')
         goto 40
     else
         x(2) = ba
@@ -185,16 +185,16 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
             endif
 20      continue
 21      continue
-        call u2mess('A', 'ALGORITH8_13')
+        call utmess('A', 'ALGORITH8_13')
         goto 40
     endif
 40  continue
     nchan = nchan + 1
     if (nchan .gt. 1) then
-        call u2mess('F', 'ALGORITH8_14')
+        call utmess('F', 'ALGORITH8_14')
     else
         sigsig = -sigsig
-        call u2mess('A', 'ALGORITH8_15')
+        call utmess('A', 'ALGORITH8_15')
         goto 50
     endif
 30  continue
@@ -212,7 +212,7 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
         xi = x(4)
         y(4) = nmcri3(xi)
 100  end do
-    call u2mess('F', 'ALGORITH8_16')
+    call utmess('F', 'ALGORITH8_16')
 110  continue
 !
 200  continue

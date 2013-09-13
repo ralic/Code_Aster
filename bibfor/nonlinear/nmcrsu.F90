@@ -34,8 +34,8 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 #include "asterfort/jemarq.h"
 #include "asterfort/nmcerr.h"
 #include "asterfort/nmcrld.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: sddisc, lisins, solveu
     character(len=24) :: defico
@@ -175,7 +175,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     if (iret .ne. 0) then
         if (pred .eq. 'DEPL_CALCULE') then
             if (ldeco) then
-                call u2mess('F', 'SUBDIVISE_99')
+                call utmess('F', 'SUBDIVISE_99')
             endif
         endif
     endif
@@ -237,7 +237,9 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
             call utdidt('L', sddisc, 'ADAP', iadapt, 'METHODE',&
                         r8bid, ibid, modetp)
             if (modetp .eq. 'IMPLEX') then
-                if (.not.limpex) call u2mess('F', 'MECANONLINE6_4')
+                if (.not.limpex) then
+                    call utmess('F', 'MECANONLINE6_4')
+                endif
             endif
 27      continue
     endif

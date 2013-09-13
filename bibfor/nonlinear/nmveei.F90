@@ -35,8 +35,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/nmveso.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim, imate, iret, kpg, ksp
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
@@ -190,7 +189,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
                 ksp, tref, iret4)
     if (((iret2+iret3).eq.0) .and. (iret4.eq.1)) then
-        call u2mess('F', 'CALCULEL_31')
+        call utmess('F', 'CALCULEL_31')
     endif
 !
     call lcmate(fami, kpg, ksp, compor, mod,&
@@ -215,7 +214,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 !
     if (.not.(loi(1:4) .eq. 'ELAS' .or. loi .eq. 'VENDOCHAB' .or. loi .eq. 'VISC_ENDO_LEMA'&
         )) then
-        call u2mesk('F', 'ALGORITH4_50', 1, loi)
+        call utmess('F', 'ALGORITH4_50', sk=loi)
     endif
 !
 !-- 1.4. DEFORMATIONS TOTALES, THERMIQUES ET VISCOPLASTIQUES
@@ -362,7 +361,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 !
 230      continue
         if (etatf(2) .eq. 'TANGENT') then
-            call u2mess('A', 'ALGORITH8_66')
+            call utmess('A', 'ALGORITH8_66')
         endif
 !-- STOCKAGE DANS L'INDICATEUR DU NOMBRE D'ITERATIONS
         vip(nb+4) = max(vip(nb+4),dble(iter))
@@ -375,7 +374,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
                     se)
 !
         if (etatf(3) .eq. 'DAMMAXO') then
-            call u2mess('A', 'ALGORITH8_67')
+            call utmess('A', 'ALGORITH8_67')
             vip(nb+3) = dammax
             vip(nb+1) = vim(nb+1) + dt * p(1)/(un-dammax)
             do 240 i = 1, nb

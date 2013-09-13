@@ -2,7 +2,6 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                   solveu, nequa)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/creprn.h"
@@ -27,10 +26,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 #include "asterfort/nulili.h"
 #include "asterfort/nuno1.h"
 #include "asterfort/renuno.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: solveu
     integer :: nequa
     character(len=*) :: lligr, nuz, renum
@@ -134,17 +132,17 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
-#define zzliel(ili,igrel,j)   zi(zi(iadlie+3*(ili-1)+1)-1+ zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
+#define zzliel(ili,igrel,j) zi(zi(iadlie+3*(ili-1)+1)-1+ zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
-#define zzngel(ili)   zi(iadlie+3* (ili-1))
+#define zzngel(ili) zi(iadlie+3* (ili-1))
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
-#define zznsup(ili,iel)   zi(zi(iadnem+3* (ili-1)+2)+iel) - zi(zi(iadnem+3*(ili-1)+2)+iel-1 ) - 1
+#define zznsup(ili,iel) zi(zi(iadnem+3* (ili-1)+2)+iel) - zi(zi(iadnem+3*(ili-1)+2)+iel-1 ) - 1
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
@@ -153,7 +151,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
 !---- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DE .LILI
 !
-#define zznels(ili)   zi(iadnem+3* (ili-1))
+#define zznels(ili) zi(iadnem+3* (ili-1))
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL
@@ -165,7 +163,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     ZZNEMA(ILI,IEL,ZZNELS(ILI)+1)=NUMERO DU TYPE_MAILLE DE LA MAILLE
 !                                   IEL DU LIGREL ILI
 !
-#define zznema(ili,iel,j)   zi( zi( iadnem+3* (ili-1)+1)-1+ zi(zi(iadnem+3* (ili-1)+2)+iel-1 )+j-1 )
+#define zznema(ili,iel,j) zi( zi( iadnem+3* (ili-1)+1)-1+ zi(zi(iadnem+3* (ili-1)+2)+iel-1 )+j-1 )
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
@@ -176,8 +174,8 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
 !     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
 !
-#define izzprn(ili,nunoel,l)   (idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
-#define zzprno(ili,nunoel,l)   zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define izzprn(ili,nunoel,l) (idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+#define zzprno(ili,nunoel,l) zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES OBJETS VSUIV ET PSUIV DE LA
 !     BASE VOLATILE
@@ -193,9 +191,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     RELATION AVEC NI+1 + NBRE DE "LAGR2" EN RELATION AVEC NI
 !     SUIVDI(I,J)= NUMERO DU JEME NOEUD SUP SI IL EST A NUMEROTE APRES
 !     LE NOEUD NI, -1 "SINON" (NI/= NIMAX DU BLOCAGE RELATIF A J)
-#define suivdi(i)   zi(ipsuiv+i) - zi(ipsuiv+i-1)
-#define idsuiv(i,j)   ivsuiv + (zi(ipsuiv+i-1)+j-1) - 1
-#define suiv(i,j)   zi(ivsuiv+ (zi(ipsuiv+i-1)+j-1)-1)
+#define suivdi(i) zi(ipsuiv+i) - zi(ipsuiv+i-1)
+#define idsuiv(i,j) ivsuiv + (zi(ipsuiv+i-1)+j-1) - 1
+#define suiv(i,j) zi(ivsuiv+ (zi(ipsuiv+i-1)+j-1)-1)
 !----------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -397,7 +395,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                         else if (zi(idlgns+n21-1).eq.-1) then
                             n1m1re = n1re
                         else
-                            call u2mess('F', 'ASSEMBLA_27')
+                            call utmess('F', 'ASSEMBLA_27')
                         endif
                     endif
 !
@@ -504,7 +502,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                         else if (zi(idlgns+n21-1).eq.-1) then
                             jnulag = 1
                         else
-                            call u2mess('F', 'ASSEMBLA_27')
+                            call utmess('F', 'ASSEMBLA_27')
                         endif
                     endif
 !
@@ -595,8 +593,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                                         if (icer1 .ne. 0) then
                                             vali (1) = n2
                                             vali (2) = n1
-                                            call u2mesg('F', 'ASSEMBLA_63', 0, ' ', 2,&
-                                                        vali, 0, 0.d0)
+                                            call utmess('F', 'ASSEMBLA_63', ni=2, vali=vali)
                                         endif
                                         icer1 = icer1 + 1
                                         zi(idsuiv(n0re+1,j)) = -1
@@ -609,8 +606,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                                     if (icer2 .ne. 0) then
                                         vali (1) = n3
                                         vali (2) = n1
-                                        call u2mesg('F', 'ASSEMBLA_64', 0, ' ', 2,&
-                                                    vali, 0, 0.d0)
+                                        call utmess('F', 'ASSEMBLA_64', ni=2, vali=vali)
                                     endif
                                     icer2 = icer2 + 1
                                     zi(idsuiv(n0re+1,j)) = -1
@@ -807,7 +803,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
         endif
 110  end do
 !
-    if (nbnonu .ne. (nbnore+nlag)) call u2mess('F', 'ASSEMBLA_28')
+    if (nbnonu .ne. (nbnore+nlag)) then
+        call utmess('F', 'ASSEMBLA_28')
+    endif
 !
 !
 !
@@ -958,7 +956,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
         vali(3) = nlag
         vali(4) = nequa
 !
-        call u2mesi('I', 'FACTOR_1', 4, vali)
+        call utmess('I', 'FACTOR_1', ni=4, vali=vali)
 !        WRITE (IFM,*) '--- NOMBRE TOTAL DE NOEUDS : ',NMA + NLAG,
 !     &    ' DONT : ',NLAG,' NOEUDS "LAGRANGE"'
 !        WRITE (IFM,*) '--- NOMBRE TOTAL D''EQUATIONS : ',NEQUA

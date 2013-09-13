@@ -1,10 +1,10 @@
 subroutine prccm3(nommat, para, sm, sn, sp,&
                   ke, salt, nadm)
-    implicit   none
+    implicit none
 #include "asterc/r8maem.h"
 #include "asterfort/limend.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: para(*), sm, sn, sp, ke, salt, nadm
     character(len=*) :: nommat
 !     ------------------------------------------------------------------
@@ -81,8 +81,7 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
         if (nadm .lt. 0) then
             valr (1) = salt
             valr (2) = nadm
-            call u2mesg('A', 'POSTRELE_61', 0, ' ', 0,&
-                        0, 2, valr)
+            call utmess('A', 'POSTRELE_61', nr=2, valr=valr)
         endif
     endif
 !

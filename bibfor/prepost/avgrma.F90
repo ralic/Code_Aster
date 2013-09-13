@@ -37,7 +37,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rnomat.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
     integer :: tdisp, nbmap, vnbpg(nbmap), nbpgt, nbordr, nmaini
@@ -149,8 +149,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     if (tdisp2(1) .lt. tneces) then
         vali (1) = tdisp2(1)
         vali (2) = tneces
-        call u2mesg('F', 'PREPOST5_8', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
     else
         call wkvect('&&AVGRMA.VECTPG', 'V V R', tneces, jvecpg)
     endif

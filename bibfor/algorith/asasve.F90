@@ -1,7 +1,6 @@
 subroutine asasve(vechar, numedd, typres, vachar)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
 #include "asterfort/corich.h"
@@ -16,10 +15,11 @@ subroutine asasve(vechar, numedd, typres, vachar)
 #include "asterfort/jeveuo.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: numedd, typres, vechar
     character(len=24) :: vachar
 ! ----------------------------------------------------------------------
@@ -78,7 +78,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     integer :: n1, jvacha
     logical :: bidon
     character(len=4) :: tych
-    character(len=8) ::  modele, newnom, vacha8
+    character(len=8) :: modele, newnom, vacha8
     character(len=19) :: chamno, resuel, vecele
 !
 ! DEB ------------------------------------------------------------------
@@ -93,7 +93,9 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !     1. SI LE VECT_ELEM N'EXISTE PAS : ERREUR FATALE
 !     --------------------------------------------------------
     call jeexin(vecele//'.RELR', iret)
-    if (iret .eq. 0) call u2mesk('F', 'ALGORITH_13', 1, vecele)
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGORITH_13', sk=vecele)
+    endif
     call jelira(vecele//'.RELR', 'LONUTI', nbvec)
     call jeveuo(vecele//'.RELR', 'E', jvec)
 !

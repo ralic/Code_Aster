@@ -35,8 +35,8 @@ subroutine coefal(nom1, nom2, nom3, ncdmax, ipas,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ipas, ires, ncdmax, nborcd
     real(kind=8) :: borncd(20), coefcd(20, 11)
@@ -129,7 +129,7 @@ subroutine coefal(nom1, nom2, nom3, ncdmax, ipas,&
         endif
 30  end do
     if (ipas1 .ne. ipas .or. ires1 .ne. ires) then
-        call u2mess('F', 'MODELISA4_28')
+        call utmess('F', 'MODELISA4_28')
     endif
 !
 120  continue

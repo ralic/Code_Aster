@@ -15,7 +15,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 #include "asterfort/rsexis.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtdefs.h"
     integer :: neq, ndir(*)
     real(kind=8) :: repdir(neq, *)
@@ -110,7 +110,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                 valk(1) = nomsy
                 valk(2) = comp(id)
                 valk(3) = champ
-                call u2mesk('F', 'SEISME_26', 3, valk)
+                call utmess('F', 'SEISME_26', nk=3, valk=valk)
             endif
             vale(1:19) = champ
             call jeexin(vale(1:19)//'.VALE', ibid)
@@ -152,7 +152,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
             valk(1) = nomsy
             valk(2) = comp(id)
             valk(3) = champ
-            call u2mesk('F', 'SEISME_26', 3, valk)
+            call utmess('F', 'SEISME_26', nk=3, valk=valk)
         endif
         vale(1:19) = champ
         call jeexin(vale(1:19)//'.VALE', ibid)

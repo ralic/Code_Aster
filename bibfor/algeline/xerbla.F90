@@ -52,9 +52,9 @@ subroutine xerbla(srname, info)
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
     implicit none
+#include "asterfort/utmess.h"
 !
 !     .. SCALAR ARGUMENTS ..
-#include "asterfort/u2mesg.h"
     character(len=6) :: srname
     character(len=24) :: valk
     integer :: info
@@ -65,8 +65,7 @@ subroutine xerbla(srname, info)
     valk = srname
     vali (1) = info
     vali (2) = info
-    call u2mesg('F', 'ALGELINE5_4', 1, valk, 2,&
-                vali, 0, 0.d0)
+    call utmess('F', 'ALGELINE5_4', sk=valk, ni=2, vali=vali)
 !
 !     END OF XERBLA
 !

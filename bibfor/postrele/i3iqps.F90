@@ -11,8 +11,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
 #include "asterfort/i3rpqp.h"
 #include "asterfort/i3sl33.h"
 #include "asterfort/i3sl3r.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink
@@ -119,7 +118,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
     if ((c.le.epsi) .or. (t.le.epsi)) then
         vali(1) = k
         vali(2) = f
-        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
     endif
     do 16, i = 1, 3, 1
     e1(i) = e1(i)/c
@@ -136,7 +135,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
     if (c .le. epsi) then
         vali(1) = k
         vali(2) = f
-        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
     endif
     e3(1) = e3(1)/c
     e3(2) = e3(2)/c
@@ -323,7 +322,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                 if (iret .eq. -1) then
                     vali(1) = k
                     vali(2) = f
-                    call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                    call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                 else
                     r = x(1)
                     s = x(2)
@@ -383,7 +382,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                 if (iret .eq. -1) then
                     vali(1) = k
                     vali(2) = f
-                    call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                    call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                 endif
                 zr(lstpt(1)) = zero
                 zi(lstpt(2)) = f
@@ -397,7 +396,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                 if (iret .eq. -1) then
                     vali(1) = k
                     vali(2) = f
-                    call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                    call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                 endif
                 zr(lstpt(1)+1) = un
                 zi(lstpt(2)+1) = f
@@ -438,7 +437,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                     if (iret .eq. -1) then
                         vali(1) = k
                         vali(2) = f
-                        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                     endif
                     r = a(1,2)
                     s = a(2,2)
@@ -447,7 +446,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                     if (iret .eq. -1) then
                         vali(1) = k
                         vali(2) = f
-                        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                     endif
                     zr(lstpt(1)+1) = t
                     zi(lstpt(2)+1) = f
@@ -476,7 +475,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                     if (iret .eq. -1) then
                         vali(1) = k
                         vali(2) = f
-                        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                     endif
                     zr(lstpt(1)+1) = zero
                     zi(lstpt(2)+1) = f
@@ -504,7 +503,7 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                         if (iret .eq. -1) then
                             vali(1) = k
                             vali(2) = f
-                            call u2mesi('F', 'INTEMAIL_24', 2, vali)
+                            call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
                         endif
                         zr(lstpt(1)+1) = un
                         zi(lstpt(2)+1) = f
@@ -524,11 +523,11 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
             vali(1) = k
             vali(2) = f
             vali(3) = nbpt
-            call u2mesi('F', 'INTEMAIL_26', 3, vali)
+            call utmess('F', 'INTEMAIL_26', ni=3, vali=vali)
         endif
 !
     else
-        call u2mesk('F', 'INTEMAIL_8', 1, typsl)
+        call utmess('F', 'INTEMAIL_8', sk=typsl)
     endif
 !
 end subroutine

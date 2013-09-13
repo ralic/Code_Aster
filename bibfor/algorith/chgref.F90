@@ -1,5 +1,5 @@
 subroutine chgref(geomi, x, y, bidim)
-    implicit   none
+    implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ subroutine chgref(geomi, x, y, bidim)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
@@ -74,7 +74,7 @@ subroutine chgref(geomi, x, y, bidim)
                 zr(iadcoo+3*(i-1)+2)=ddot(2,y,1,p,1)
 10          continue
         else
-            call u2mess('F', 'ALGORITH_96')
+            call utmess('F', 'ALGORITH_96')
         endif
     else
         r1=dnrm2(3,x,1)
@@ -96,7 +96,7 @@ subroutine chgref(geomi, x, y, bidim)
                 zr(iadcoo+3*(i-1)+3)=ddot(3,z,1,p,1)
 20          continue
         else
-            call u2mess('F', 'ALGORITH_97')
+            call utmess('F', 'ALGORITH_97')
         endif
     endif
     call jedema()

@@ -27,8 +27,8 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 #include "asterfort/rrlds.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trlds.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -124,7 +124,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
      &      'CAS CONDITIONNELLEMENT STABLE.'
     endif
     if (beta .eq. 0) then
-        call u2mess('F', 'ALGORITH9_2')
+        call utmess('F', 'ALGORITH9_2')
     endif
 !
     a0 = 1.d0/beta/dt2
@@ -191,7 +191,9 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 110          continue
 !           --- FACTORISATION DE LA MATRICE KTILDA ---
             call trlds(zr(jtra3), nbmode, nbmode, iret)
-            if (iret .ne. 0) call u2mess('F', 'ALGORITH5_61')
+            if (iret .ne. 0) then
+                call utmess('F', 'ALGORITH5_61')
+            endif
         endif
     else
         if (lamor) then
@@ -253,10 +255,14 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
         call dcopy(nbmode*nbmode, masgen, 1, zr(jmass), 1)
         call trlds(zr(jmass), nbmode, nbmode, iret)
 !         CALL TRLDS(MASGEN,NBMODE,NBMODE,IRET)
-        if (iret .ne. 0) call u2mess('F', 'ALGORITH5_22')
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGORITH5_22')
+        endif
 !        --- FACTORISATION DE LA MATRICE KTILDA ---
         call trlds(zr(jtra3), nbmode, nbmode, iret)
-        if (iret .ne. 0) call u2mess('F', 'ALGORITH5_61')
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGORITH5_61')
+        endif
     endif
 !
 !     --- CONDITIONS INITIALES ---
@@ -451,7 +457,9 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     call jedetr('&&MDNEWM.AMOGYR')
     call jedetr('&&MDNEWM.RIGGYR')
     call jedetr('&&MDNEWM.FEXT')
-    if (iret .ne. 0) call u2mess('F', 'ALGORITH5_24')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGORITH5_24')
+    endif
 !
     call jedema()
 end subroutine

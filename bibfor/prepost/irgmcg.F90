@@ -18,8 +18,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
     character(len=8) :: nomaou
@@ -134,12 +133,12 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
         call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                     tsca, ibid)
         if (tsca .ne. 'R') then
-            call u2mess('F', 'ALGORITH2_63')
+            call utmess('F', 'ALGORITH2_63')
         endif
 !
         type = zk8(jcesk-1+3)
         if (type(1:4) .ne. 'ELGA' .and. type(1:4) .ne. 'ELEM') then
-            call u2mess('F', 'PREPOST2_56')
+            call utmess('F', 'PREPOST2_56')
         endif
 !
         if (ior .eq. 1) then
@@ -169,7 +168,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
 50          continue
         else
             if (zi(zi(jtabd+ior-1)-1+2) .ne. nbcmp) then
-                call u2mess('F', 'PREPOST2_53')
+                call utmess('F', 'PREPOST2_53')
             endif
         endif
 !
@@ -202,7 +201,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
                 endif
 70          continue
             k8b = nomcmp(k)
-            call u2mesk('F', 'PREPOST2_54', 1, k8b)
+            call utmess('F', 'PREPOST2_54', sk=k8b)
 80          continue
         else
             icmp = k

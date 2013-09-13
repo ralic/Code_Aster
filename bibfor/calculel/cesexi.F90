@@ -21,7 +21,7 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=1) :: stop
     integer :: jcesd, jcesl, ima, ipt, ispt, icmp, iad
 ! ------------------------------------------------------------------
@@ -92,25 +92,25 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
 !
 !
 20      continue
-        call u2mesk('F', 'CALCULEL_68', 1, k8mail)
+        call utmess('F', 'CALCULEL_68', sk=k8mail)
 !
 30      continue
         valk(1) = k8pt
         valk(2) = k8mail
-        call u2mesk('F', 'CALCULEL_69', 2, valk)
+        call utmess('F', 'CALCULEL_69', nk=2, valk=valk)
 !
 40      continue
         valk(1) = k8spt
         valk(2) = k8mail
         valk(3) = k8pt
-        call u2mesk('F', 'CALCULEL_70', 3, valk)
+        call utmess('F', 'CALCULEL_70', nk=3, valk=valk)
 !
 50      continue
         valk(1) = k8cmp
         valk(2) = k8mail
         valk(3) = k8pt
         valk(4) = k8spt
-        call u2mesk('F', 'CALCULEL_71', 4, valk)
+        call utmess('F', 'CALCULEL_71', nk=4, valk=valk)
 !
 !
     else

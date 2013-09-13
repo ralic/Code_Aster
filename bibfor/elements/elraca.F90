@@ -2,7 +2,7 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
                   fapg, nbpg, x, vol)
 ! aslint: disable=W1501
     implicit none
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbfamx
     parameter (nbfamx=20)
     integer :: ndim, nno, nnos, nbfpg, nbpg(nbfamx)
@@ -1001,7 +1001,7 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
 !
 !     ------------------------------------------------------------------
     else
-        call u2mesk('F', 'ELEMENTS_55', 1, elrefa)
+        call utmess('F', 'ELEMENTS_55', sk=elrefa)
     endif
 !
     do 200 i = 0, nno - 1

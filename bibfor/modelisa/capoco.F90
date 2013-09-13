@@ -32,7 +32,7 @@ subroutine capoco(char, motfac)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: char
     character(len=16) :: motfac
@@ -154,7 +154,7 @@ subroutine capoco(char, motfac)
                     isec = 0
                 endif
                 if (isec .ne. 2) then
-                    call u2mess('F', 'CONTACT3_32')
+                    call utmess('F', 'CONTACT3_32')
                 endif
 !
 ! --- RECUPERATION RAYON
@@ -177,7 +177,7 @@ subroutine capoco(char, motfac)
                 endif
 !
                 if (r1 .ne. r2) then
-                    call u2mess('I', 'CONTACT3_37')
+                    call utmess('I', 'CONTACT3_37')
                 endif
 !
                 rayon = (r1+r2)/2.d0

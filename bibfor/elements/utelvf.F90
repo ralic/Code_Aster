@@ -5,7 +5,7 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
 #include "asterfort/elraca.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: npg, nno
     character(len=8) :: elrefa, famil
@@ -58,7 +58,7 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
     do 10,ifam = 1,nbfpg
     if (nofpg(ifam) .eq. famil) goto 12
     10 end do
-    call u2mesk('F', 'ELEMENTS4_56', 1, famil)
+    call utmess('F', 'ELEMENTS4_56', sk=famil)
 12  continue
 !
     npg = nbpg(ifam)

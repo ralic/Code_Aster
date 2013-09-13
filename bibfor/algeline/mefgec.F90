@@ -4,7 +4,7 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
     implicit none
 !
 #include "asterc/r8pi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ndim(14), nbcyl
     real(kind=8) :: som(9), xint(*), yint(*), rint(*), dcent(*), ficent(*)
     real(kind=8) :: d(nbcyl, nbcyl), fi(nbcyl, nbcyl)
@@ -95,7 +95,7 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
                     write(not2(1:3),'(I3.3)') j
                     valk(1) = note
                     valk(2) = not2
-                    call u2mesk('F', 'ALGELINE_80', 2, valk)
+                    call utmess('F', 'ALGELINE_80', nk=2, valk=valk)
                 endif
             endif
 !
@@ -119,7 +119,7 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
         delta = sqrt((xint(i)-xext)**2+(yint(i)*yext)**2)
         if (delta .ge. (rext-rint(i))) then
             write(note(1:3),'(I3.3)') i
-            call u2mesk('F', 'ALGELINE_81', 1, note)
+            call utmess('F', 'ALGELINE_81', sk=note)
         endif
 40  end do
 !

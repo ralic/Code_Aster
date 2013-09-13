@@ -31,7 +31,7 @@ subroutine ssdmrg(mag)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ssdmu1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: mag
@@ -89,7 +89,9 @@ subroutine ssdmrg(mag)
     else
         call getvem(mag, 'MAILLE', 'RECO_GLOBAL', 'SUPER_MAILLE', iocc,&
                     iarg, nbsma, zk8(ialik8), n1)
-        if (n1 .lt. 0) call u2mess('F', 'SOUSTRUC_63')
+        if (n1 .lt. 0) then
+            call utmess('F', 'SOUSTRUC_63')
+        endif
         nbsmar= n1
         do 4, i=1,nbsmar
         call jenonu(jexnom(mag//'.SUPMAIL', zk8(ialik8-1+i)), isma)

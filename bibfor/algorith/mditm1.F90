@@ -48,8 +48,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mditm2.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbm, nbmcd, nbmp, nbnl, indic, nbf, impr, itrans
     real(kind=8) :: epst
@@ -104,7 +103,9 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
 !
     call jemarq()
 !
-    if ((nexcit.eq.0) .or. (nbf.eq.0)) call u2mess('F', 'ALGORITH5_49')
+    if ((nexcit.eq.0) .or. (nbf.eq.0)) then
+        call utmess('F', 'ALGORITH5_49')
+    endif
 !
     n2 = nbm + 2
     dttr = 0.0d0
@@ -172,7 +173,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
     if (nbnl .eq. 0) then
 !
 !
-        call u2mess('F', 'ALGORITH5_50')
+        call utmess('F', 'ALGORITH5_50')
 !
 !-----------------------------------------------------------------------
 !     EN PRESENCE DE NON-LINEARITES DE CHOC :
@@ -311,7 +312,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
             .eq.'BI_PLANY' .or. noecho(ic,9).eq.'BI_PLANZ' ) then
                 valk(1) = noecho(ic,9)
                 valk(2) = noecho(ic,1)
-                call u2mesk('F', 'ALGORITH5_51', 2, valk)
+                call utmess('F', 'ALGORITH5_51', nk=2, valk=valk)
             else
                 zi(jtypch+ic-1) = 3
                 nomobj = noecho(ic,9)

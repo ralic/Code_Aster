@@ -39,8 +39,7 @@ subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
 #include "asterc/r8pi.h"
 #include "asterfort/dcabs2.h"
 #include "asterfort/dcargu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: umoy, hmoy, rmoy, cf0, mcf0, rkip, s1, s2
     complex(kind=8) :: lambda(3)
 !
@@ -66,7 +65,7 @@ subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
     r = (q/2.d0)**2 + (p/3.d0)**3
     r = r**0.5d0
     if (dcabs2(r) .lt. eps) then
-        call u2mess('A', 'ALGELINE3_19')
+        call utmess('A', 'ALGELINE3_19')
     endif
 !
     delta = ((3.d0*q/p)**2) + 4.d0*p/3.d0
@@ -90,7 +89,7 @@ subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
     do 10 i = 1, 3
         if (dcabs2(lambda(i)) .lt. eps) then
             write(k1bid,'(I1)') i
-            call u2mesk('A', 'ALGELINE3_20', 1, k1bid)
+            call utmess('A', 'ALGELINE3_20', sk=k1bid)
         endif
 10  end do
 !

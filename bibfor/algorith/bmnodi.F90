@@ -48,7 +48,6 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
@@ -58,7 +57,8 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
 !
 !
     character(len=8) :: basmod, nomint, intf, blanc, intfb
@@ -88,8 +88,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
     if (basmod .eq. blanc .and. intf .eq. blanc) then
         valk (1) = basmod
         valk (2) = intf
-        call u2mesg('F', 'ALGORITH12_26', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_26', nk=2, valk=valk)
     endif
 !
     nbdif=nbdef
@@ -99,24 +98,24 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !-------------RECUPERATION DU TYPE DE BASE ET INTERF_DYNA------------
 !
     if (basmod .ne. blanc) then
-        call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid, idesc, ier)
+        call dismoi('C', 'TYPE_BASE', basmod, 'RESU_DYNA', ibid,&
+                    idesc, ier)
         call dismoi('F', 'NB_MODES_DYN', basmod, 'RESULTAT', nbmod,&
                     k8bid, ier)
         if (idesc(1:9) .ne. 'CLASSIQUE') then
             valk (1) = basmod
             valk (2) = idesc
             valk (3) = typbas(1)
-            call u2mesg('F', 'ALGORITH12_27', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_27', nk=3, valk=valk)
         endif
 !
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intfb, ier)
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                    intfb, ier)
         if (intf .ne. blanc .and. intf .ne. intfb) then
             valk (1) = basmod
             valk (2) = intfb
             valk (3) = intf
-            call u2mesg('F', 'ALGORITH12_28', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_28', nk=3, valk=valk)
         else
             intf=intfb
         endif
@@ -138,8 +137,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
         if (nomint .eq. '          ') then
             valk (1) = nomint
             vali = numint
-            call u2mesg('F', 'ALGORITH12_29', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_29', sk=valk(1), si=vali)
         else
             call jenonu(jexnom(intf//'.IDC_NOMS', nomint), numint)
         endif

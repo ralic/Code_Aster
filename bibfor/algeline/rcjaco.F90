@@ -1,6 +1,6 @@
 subroutine rcjaco(ar, br, valpro)
-    implicit   none
-#include "asterfort/u2mess.h"
+    implicit none
+#include "asterfort/utmess.h"
     real(kind=8) :: ar(*), br(*), valpro(3)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ subroutine rcjaco(ar, br, valpro)
     ii = 1
     do 10 i = 1, 3
         if (br(ii) .eq. 0.0d0) then
-            call u2mess('F', 'ALGELINE4_19')
+            call utmess('F', 'ALGELINE4_19')
         endif
         valaux(i) = ar(ii) / br(ii)
         valpro(i) = valaux(i)
@@ -159,7 +159,7 @@ subroutine rcjaco(ar, br, valpro)
     ii = 1
     do 60 i = 1, 3
         if (br(ii) .eq. 0.0d0) then
-            call u2mess('F', 'ALGELINE4_19')
+            call utmess('F', 'ALGELINE4_19')
         endif
         valpro(i) = ar(ii) / br(ii)
         ii = ii + 3 + 1 - i

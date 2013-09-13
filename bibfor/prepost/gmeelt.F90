@@ -2,7 +2,6 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
                   nbmail)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
 #include "asterfort/jedema.h"
@@ -10,9 +9,9 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: imod, nbtyma, nbmail, nbnoma(19), nuconn(19, 32)
     character(len=8) :: nomail(*)
 ! ----------------------------------------------------------------------
@@ -100,8 +99,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
         if (nbmail .ge. 10000000) then
             vali (1) = nbmail
-            call u2mesg('E', 'PREPOST6_43', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'PREPOST6_43', si=vali(1))
         endif
 !
 ! ---   BOUCLE SUR LES MAILLES :
@@ -176,8 +174,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
                 ier = ier + 1
                 vali (1) = numgro
                 vali (2) = 1000000
-                call u2mesg('E', 'PREPOST5_21', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'PREPOST5_21', ni=2, vali=vali)
                 goto 60
             endif
             call codent(numgro, 'G', chgrou(3:8))
@@ -230,7 +227,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
     endif
 !
     if (ier .ne. 0) then
-        call u2mess('F', 'PREPOST_60')
+        call utmess('F', 'PREPOST_60')
     endif
 !
     call jedema()

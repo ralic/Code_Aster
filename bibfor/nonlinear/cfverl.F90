@@ -18,7 +18,7 @@ subroutine cfverl(defico, resoco)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/jedema.h"
@@ -26,7 +26,7 @@ subroutine cfverl(defico, resoco)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     character(len=24) :: resoco, defico
 !
 ! ----------------------------------------------------------------------
@@ -73,7 +73,7 @@ subroutine cfverl(defico, resoco)
     call jelira(apverk, 'LONMAX', ival=nbno)
     if ((nnoeu.eq.0) .or. (lliss)) goto 999
 !
-    call u2mesi('I', 'CONTACT3_19', 1, nnoeu)
+    call utmess('I', 'CONTACT3_19', si=nnoeu)
 !
     do 10 ino = 1, nbno
         nomnoe = zk8(jlistn+ino-1)

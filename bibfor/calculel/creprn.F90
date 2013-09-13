@@ -43,7 +43,6 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !   (CE VECTEUR N'EST CREE QUI SI LIGREL CONTIENT DES NOEUDS TARDIFS)
 !-----------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -63,8 +62,9 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 #include "asterfort/nbgrel.h"
 #include "asterfort/nbno.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! -----  VARIABLES LOCALES
     character(len=*) :: ligrez, molocz, basez, prnmz, prnsz
@@ -85,13 +85,13 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
 ! -----  FONCTIONS FORMULES
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-#define numail(igr,iel)   zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-#define numglm(ima,ino)   zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+#define numglm(ima,ino) zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
 !     NUMGLS(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE SUPPLEMENTAIRE DU LIGREL
-#define numgls(ima,ino)   zi(iamsco-1+zi(ilmsco+ima-1)+ino-1)
+#define numgls(ima,ino) zi(iamsco-1+zi(ilmsco+ima-1)+ino-1)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -289,10 +289,10 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', lgncmp)
         icmp = indik8(zk8(iancmp),'LAGR',1,lgncmp)
         if (icmp .eq. 0) then
-            call u2mess('F', 'ASSEMBLA_9')
+            call utmess('F', 'ASSEMBLA_9')
         endif
         if (icmp .gt. 30) then
-            call u2mess('F', 'ASSEMBLA_10')
+            call utmess('F', 'ASSEMBLA_10')
         endif
 !
         icodla = lshift(1,icmp)
@@ -326,7 +326,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                                                 )
 100              continue
             else
-                call u2mess('F', 'CALCULEL2_24')
+                call utmess('F', 'CALCULEL2_24')
             endif
 110          continue
         endif

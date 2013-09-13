@@ -18,7 +18,7 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/echmat.h"
@@ -26,7 +26,7 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmlesd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sdpost
     character(len=19) :: matass
     logical :: linsta
@@ -79,7 +79,9 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 !
     if (optrig .eq. 'RIGI_GEOM_NON') then
         call jeveuo(matass//'.REFA', 'L', jrefa)
-        if (zk24(jrefa-1+11)(1:11) .ne. 'MPI_COMPLET') call u2mess('F', 'MECANONLINE6_13')
+        if (zk24(jrefa-1+11)(1:11) .ne. 'MPI_COMPLET') then
+            call utmess('F', 'MECANONLINE6_13')
+        endif
         ldist = .false.
         call echmat(matass, ldist, minmat, maxmat)
         if (((freqr0*freqr).lt.0.d0) .or. (abs(freqr).lt.(prec*minmat))) then

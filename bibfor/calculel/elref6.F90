@@ -3,7 +3,6 @@ subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
                   idfde, jdfd2, jgano)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
@@ -11,7 +10,8 @@ subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: elrz, nomtz, famiz
     integer :: ndim, nno, nnos, npg, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
 ! ======================================================================
@@ -113,9 +113,13 @@ subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
 !     -- CALCUL DE NUFPG :
 !     --------------------
     nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
-    if (nuflpg .eq. 0) call u2mesk('F', 'DVP_5', 1, noflpg)
+    if (nuflpg .eq. 0) then
+        call utmess('F', 'DVP_5', sk=noflpg)
+    endif
     nufgpg = zi(jnolfp-1+nuflpg)
-    if (nufgpg .eq. 0) call u2mesk('F', 'CALCULEL2_45', 1, noflpg)
+    if (nufgpg .eq. 0) then
+        call utmess('F', 'CALCULEL2_45', sk=noflpg)
+    endif
     call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofgpg)
     ASSERT(nofgpg(1:8).eq.elrf)
     call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&

@@ -29,7 +29,7 @@ subroutine projvd(testc, np1, nb1, nb2, mat,&
 ! ARGUMENTS
 ! ---------
 #include "asterfort/prmave.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: testc, np1, nb1, nb2
     real(kind=8) :: mat(np1, *), u(*), v(*)
 !
@@ -45,7 +45,7 @@ subroutine projvd(testc, np1, nb1, nb2, mat,&
         call prmave(0, mat, np1, nb1, nb2,&
                     u, nb2, v, nb1, ier)
         if (ier .ne. 0) then
-            call u2mess('F', 'ALGORITH10_10')
+            call utmess('F', 'ALGORITH10_10')
         endif
 !
     else

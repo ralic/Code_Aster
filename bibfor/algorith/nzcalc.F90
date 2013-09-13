@@ -19,7 +19,7 @@ subroutine nzcalc(crit, phasp, nz, fmel, seuil,&
 ! ======================================================================
     implicit none
 #include "asterfort/nzfpri.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
     integer :: nz, iret
     real(kind=8) :: seuil, dt, trans, rprim, deuxmu, crit(3), phasp(5), fmel
@@ -123,7 +123,9 @@ subroutine nzcalc(crit, phasp, nz, fmel, seuil,&
                 nz, fmel, eta, unsurn, dt,&
                 dp, fplas, fp, fd, fprim,&
                 fdevi)
-    if (fprim .lt. 0.d0) call u2mess('F', 'ALGORITH9_12')
+    if (fprim .lt. 0.d0) then
+        call utmess('F', 'ALGORITH9_12')
+    endif
     x(2) = dp
     y(2) = fprim
 !

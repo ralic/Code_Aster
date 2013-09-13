@@ -1,5 +1,6 @@
 subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     implicit none
+#include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
@@ -11,7 +12,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma, caelem
     character(len=24) :: nomgrp(*)
     integer :: iaxe
@@ -62,7 +63,6 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 !       GEOM(9)= REXT  RAYON DE LA COQUE EXTERNE
 !-----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
     integer :: ias, iascqi, iascqx, iasedi, iasmax, icmp, icode
     integer :: icoor, idesc, idir1, idir2, idir3, ier
@@ -114,7 +114,9 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 !
     grpno='&&MEFGMN.00000001       '
     call jelira(grpno, 'LONMAX', nbnoin)
-    if (nbnoin .lt. 4) call u2mess('F', 'ALGELINE_49')
+    if (nbnoin .lt. 4) then
+        call utmess('F', 'ALGELINE_49')
+    endif
     call jeveuo(grpno, 'L', inunoi)
     nunoi = zi(inunoi)
     z0int = zr(icoor+3*(nunoi-1)+idir1-1)
@@ -126,13 +128,17 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
         if (zno .gt. z1int) z1int = zno
 10  end do
     difz = dble(abs(z1int-z0int))
-    if (difz .lt. tole) call u2mess('F', 'ALGELINE_50')
+    if (difz .lt. tole) then
+        call utmess('F', 'ALGELINE_50')
+    endif
 !
 ! --- 2.2.BORNE INF ET BORNE SUP ASSOCIEES A LA COQUE EXTERNE
 !
     grpno='&&MEFGMN.00000002       '
     call jelira(grpno, 'LONMAX', nbnoex)
-    if (nbnoex .lt. 4) call u2mess('F', 'ALGELINE_51')
+    if (nbnoex .lt. 4) then
+        call utmess('F', 'ALGELINE_51')
+    endif
     call jeveuo(grpno, 'L', inunoe)
     nunoe = zi(inunoe)
     z0ext = zr(icoor+3*(nunoe-1)+idir1-1)
@@ -144,15 +150,18 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
         if (zno .gt. z1ext) z1ext = zno
 20  end do
     difz = dble(abs(z1ext-z0ext))
-    if (difz .lt. tole) call u2mess('F', 'ALGELINE_52')
+    if (difz .lt. tole) then
+        call utmess('F', 'ALGELINE_52')
+    endif
 !
 ! --- 2.3.SORTIE EN ERREUR SI NON RECOUVREMENT DES DOMAINES ASSOCIES
 !         AUX DEUX COQUES
 !
     difz1 = dble(abs(z1int-z0ext))
     difz2 = dble(abs(z1ext-z0int))
-    if (z1int .lt. z0ext .or. z1ext .lt. z0int .or. difz1 .lt. tole .or. difz2 .lt. tole) &
-    call u2mess('F', 'ALGELINE_53')
+    if (z1int .lt. z0ext .or. z1ext .lt. z0int .or. difz1 .lt. tole .or. difz2 .lt. tole) then
+        call utmess('F', 'ALGELINE_53')
+    endif
 !
 ! --- 2.4.DEDUCTION DES BORNES DU DOMAINE DE RECOUVREMENT
 !         ET DE LA LONGUEUR DU DOMAINE
@@ -175,7 +184,9 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     cadesc = carte(1:19)//'.DESC'
     cavale = carte(1:19)//'.VALE'
     call jeexin(cadesc, iret)
-    if (iret .eq. 0) call u2mess('F', 'ALGELINE_54')
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGELINE_54')
+    endif
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('F', 'NB_EC', 'CACOQU', 'GRANDEUR', nbec,&
                 k8bid, ier)
@@ -197,7 +208,9 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
             if (nuenti .eq. nucoqx) iascqx = ias
         endif
 30  end do
-    if (iascqi .eq. 0 .or. iascqx .eq. 0) call u2mess('F', 'ALGELINE_56')
+    if (iascqi .eq. 0 .or. iascqx .eq. 0) then
+        call utmess('F', 'ALGELINE_56')
+    endif
 !
 ! --- 3.3. RANG DE LA COMPOSANTE <EP> DANS LA GRANDEUR
     kjexn = jexnom('&CATA.GD.NOMCMP','CACOQU')
@@ -205,7 +218,9 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     call jeveuo(kjexn, 'L', inomcp)
     nomcmp = 'EP'
     irang = indik8( zk8(inomcp) , nomcmp , 1 , nbcmp )
-    if (irang .eq. 0) call u2mess('F', 'ALGELINE_57')
+    if (irang .eq. 0) then
+        call utmess('F', 'ALGELINE_57')
+    endif
 !
 ! --- 3.4. VALEUR DE L'EPAISSEUR DE LA COQUE INTERNE
     icode = zi(idesc-1+3+2*iasmax+nbec*(iascqi-1)+1)
@@ -213,9 +228,13 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     do 50 icmp = 1, irang
         if (exisdg(icode,icmp)) iranv = iranv + 1
 50  end do
-    if (iranv .eq. 0) call u2mess('F', 'ALGELINE_58')
+    if (iranv .eq. 0) then
+        call utmess('F', 'ALGELINE_58')
+    endif
     epint = zr(ivale-1+nbcmp*(iascqi-1)+iranv)
-    if (epint .eq. 0.d0) call u2mess('F', 'ALGELINE_59')
+    if (epint .eq. 0.d0) then
+        call utmess('F', 'ALGELINE_59')
+    endif
     geom(6) = epint
 !
 ! --- 3.5. VALEUR DE L'EPAISSEUR DE LA COQUE EXTERNE
@@ -224,9 +243,13 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     do 51 icmp = 1, irang
         if (exisdg(icode,icmp)) iranv = iranv + 1
 51  end do
-    if (iranv .eq. 0) call u2mess('F', 'ALGELINE_60')
+    if (iranv .eq. 0) then
+        call utmess('F', 'ALGELINE_60')
+    endif
     epext = zr(ivale-1+nbcmp*(iascqx-1)+iranv)
-    if (epext .eq. 0.d0) call u2mess('F', 'ALGELINE_61')
+    if (epext .eq. 0.d0) then
+        call utmess('F', 'ALGELINE_61')
+    endif
     geom(7) = epext
 !
 ! --- 4.DETERMINATION DE RINT, REXT, RMOY ET HMOY
@@ -240,14 +263,18 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     x3 = zr(icoor+3*(nunoex-1)+idir3-1)
     rext = dble(sqrt(x2*x2 + x3*x3))
 !
-    if (rint .eq. 0.d0 .or. rext .eq. 0.d0) call u2mess('F', 'ALGELINE_62')
+    if (rint .eq. 0.d0 .or. rext .eq. 0.d0) then
+        call utmess('F', 'ALGELINE_62')
+    endif
 !
     geom(8) = rint
     geom(9) = rext
 !
     rmoy = ((rint+epint/2.d0)+(rext-epext/2.d0))/2.d0
     hmoy = (rext-epext/2.d0) - (rint+epint/2.d0)
-    if (hmoy .le. 0.d0) call u2mess('F', 'ALGELINE_63')
+    if (hmoy .le. 0.d0) then
+        call utmess('F', 'ALGELINE_63')
+    endif
 !
     geom(1) = hmoy
     geom(2) = rmoy

@@ -19,16 +19,15 @@ subroutine asmpi_status(istat, resp0)
 !
     implicit none
 !     ARGUMENTS          IN     OUT
-#include "asterf.h"
-#include "aster_types.h"
 #include "aster_constant.h"
+#include "aster_types.h"
+#include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/uttrst.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/mpistp.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: istat, resp0
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI SEND STAT
@@ -64,8 +63,8 @@ subroutine asmpi_status(istat, resp0)
 !       TIMOUT
     tf = MPI_WTIME()
     if ((tf - t0) .gt. timout) then
-        call u2mesi('E+', 'APPELMPI_96', 1, 0)
-        call u2mesk('E', 'APPELMPI_83', 1, 'MPI_ISEND')
+        call utmess('E+', 'APPELMPI_96', si=0)
+        call utmess('E', 'APPELMPI_83', sk='MPI_ISEND')
         call mpistp(1)
         goto 999
     endif
@@ -83,8 +82,8 @@ subroutine asmpi_status(istat, resp0)
 !       TIMOUT
     tf = MPI_WTIME()
     if ((tf - t0) .gt. timout * 1.2) then
-        call u2mesi('E+', 'APPELMPI_96', 1, 0)
-        call u2mesk('E', 'APPELMPI_83', 1, 'MPI_IRECV')
+        call utmess('E+', 'APPELMPI_96', si=0)
+        call utmess('E', 'APPELMPI_83', sk='MPI_IRECV')
         call mpistp(1)
         goto 999
     endif
@@ -93,7 +92,7 @@ subroutine asmpi_status(istat, resp0)
 !
     resp0 = irp0
 !
-999 continue
+999  continue
 #else
     resp0 = istat
 #endif

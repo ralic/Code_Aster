@@ -1,13 +1,13 @@
 subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: jgano, nbsp, ncmp
     real(kind=8) :: vno(*), vpg(*)
 ! ----------------------------------------------------------------------
@@ -65,8 +65,8 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
         valk (2) = typema
         vali (1) = nno2
         vali (2) = nno
-        call u2mesg('F', 'ELEMENTS4_90', 2, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ELEMENTS4_90', nk=2, valk=valk, ni=2,&
+                    vali=vali)
     endif
 !
 ! --- PASSAGE DES POINTS DE GAUSS AUX NOEUDS SOMMETS PAR MATRICE

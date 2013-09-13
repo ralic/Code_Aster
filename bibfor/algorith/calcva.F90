@@ -27,12 +27,11 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
 ! --- CALCUL DE VARIABLES (MECANIQUES, HYDRAULIQUES, THERMIQUES) -------
 ! ======================================================================
 ! aslint: disable=W1504
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpi, yamec, yate, yap1, yap2
     logical :: yachai
     integer :: addeme, addep1, addep2, addete, ndim, retcom
@@ -61,9 +60,9 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
 ! REMARQUE : YAMEC PEUT ETRE EGAL A 2
 !            (ELEMENTS DE JOINTS HM)
     if ((yamec.ne.0) .and. yachai) then
-        call u2mess('F', 'CHAINAGE_1')
+        call utmess('F', 'CHAINAGE_1')
     else if (iret1.ne.iret2) then
-        call u2mess('F', 'CHAINAGE_2')
+        call utmess('F', 'CHAINAGE_2')
     endif
 !
 ! 1ER CAS : ON A DE LA MECANIQUE ET ON EST EN TOTALEMENT COUPLE
@@ -120,7 +119,7 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
         if (t .le. 0.d0) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3) (1:8)
-            call u2mesk('A', 'ELEMENTS5_41', 1, nomail)
+            call utmess('A', 'ELEMENTS5_41', sk=nomail)
             retcom = 1
         endif
     endif

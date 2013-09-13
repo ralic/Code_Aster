@@ -20,7 +20,7 @@ subroutine lchbvp(sigd, vp, vecp)
 #include "asterfort/codree.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: sigd(6), vp(3), vecp(3, 3)
 ! =====================================================================
 ! --- HOEK-BROWN : VALEURS ET VECTEURS PROPRES DU DEVIATEUR DE SIGD ---
@@ -72,7 +72,7 @@ subroutine lchbvp(sigd, vp, vecp)
         valk(1) = cvp1
         valk(2) = cvp2
         valk(3) = cvp3
-        call u2mesk('F', 'ALGORITH3_89', 3, valk)
+        call utmess('F', 'ALGORITH3_89', nk=3, valk=valk)
     endif
 ! ======================================================================
 end subroutine

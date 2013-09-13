@@ -12,8 +12,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx, numnoe(*)
     integer :: nbcput, nive
@@ -114,7 +113,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
                     if ((ncmput(icm)(1:1).ne.'V') .or. (iret.ne.0)) then
                         valk (1) = ncmput(icm)
                         valk (2) = 'VARI_R'
-                        call u2mesk('F', 'CALCULEL6_49', 2, valk)
+                        call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
                     endif
                     zl(iltabl+ivari-1)= .true.
                     goto 30
@@ -128,8 +127,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
                 endif
                 valk (1) = ncmput(icm)
                 valk (2) = nomgd
-                call u2mesg('A', 'PREPOST5_25', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'PREPOST5_25', nk=2, valk=valk)
 30          continue
         else
             do 4 icmp = 1, ncmpmx

@@ -2,7 +2,6 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
                   proldr, prolga, istop, base, ier)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/barych.h"
 #include "asterfort/codent.h"
@@ -20,10 +19,9 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rslipa.h"
 #include "asterfort/rsutro.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: istop, ier
     real(kind=8) :: rval
     character(len=*) :: nomsd, nomch, acces, chextr, proldr, prolga
@@ -195,7 +193,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
                 prold2 = 'CONSTANT'
                 prolg2 = 'CONSTANT'
                 if (rval .ne. zr(iaobj-1+i1)) then
-                    call u2mesk('A', 'CALCULEL_28', 1, nomsd)
+                    call utmess('A', 'CALCULEL_28', sk=nomsd)
                 endif
             endif
         endif
@@ -255,21 +253,18 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 !
 !
     if (ier .eq. 11) then
-        call u2mess(stp//'+', 'UTILITAI8_32')
+        call utmess(stp//'+', 'UTILITAI8_32')
     else if (ier.eq.12) then
-        call u2mess(stp//'+', 'UTILITAI8_33')
+        call utmess(stp//'+', 'UTILITAI8_33')
     else if (ier.eq.10) then
         valk (1)= nomc2
-        call u2mesg(stp//'+', 'UTILITAI8_34', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess(stp//'+', 'UTILITAI8_34', sk=valk(1))
     else if (ier.eq.20) then
         valk (1)= acce2
-        call u2mesg(stp//'+', 'UTILITAI8_35', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess(stp//'+', 'UTILITAI8_35', sk=valk(1))
     else if (ier.eq.21) then
         valk (1)= nomc2
-        call u2mesg(stp//'+', 'UTILITAI8_36', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess(stp//'+', 'UTILITAI8_36', sk=valk(1))
     endif
 !
     if (ier .ge. 10) then
@@ -277,8 +272,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         valk (2) = nomch
         valk (3) = acces
         valr = rval
-        call u2mesg(stp, 'UTILITAI8_37', 3, valk, 0,&
-                    0, 1, valr)
+        call utmess(stp, 'UTILITAI8_37', nk=3, valk=valk, sr=valr)
     endif
 !
 !

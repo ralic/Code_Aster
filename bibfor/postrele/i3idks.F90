@@ -6,7 +6,7 @@ subroutine i3idks(epsi, k, desc, desctm, sgt,&
 #include "asterfort/i3ctpv.h"
 #include "asterfort/i3ifqs.h"
 #include "asterfort/i3ifts.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*)
     real(kind=8) :: epsi, sgt(*), coordo(*)
 !
@@ -91,7 +91,7 @@ subroutine i3idks(epsi, k, desc, desctm, sgt,&
             else
                 vali (1) = face
                 vali (2) = k
-                call u2mesi('F', 'INTEMAIL_23', 2, vali)
+                call utmess('F', 'INTEMAIL_23', ni=2, vali=vali)
             endif
         endif
         fink = ( fink .or. (face .eq. nbf) )

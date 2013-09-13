@@ -1,5 +1,5 @@
 subroutine modopt(resuco, modele, lesopt, nbopt)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/exithm.h"
@@ -11,7 +11,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rschex.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbopt
     character(len=8) :: resuco, modele
@@ -87,7 +87,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
 !
     iqiren = indk16( zk16(jopt), 'QIRE_NOEU', 1, nbopt )
 !
-    if (ierz1+ierz2+inoz1+inoz2+ierth+ierto+iertno+ierme+iermo+iermno+iqirel+iqiren.eq. 0) then
+    if (ierz1+ierz2+inoz1+inoz2+ierth+ierto+iertno+ierme+iermo+iermno+iqirel+iqiren .eq. 0) then
         goto 999
     endif
 !
@@ -153,7 +153,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
         if (tysd .eq. 'EVOL_ELAS') then
             call rschex(resuco, 'SIEF_ELGA', iret)
             if (iret .eq. 0) then
-                call u2mess('A', 'UTILITAI2_52')
+                call utmess('A', 'UTILITAI2_52')
                 zk16(jopt+nbopt2-1) = 'SIEF_ELGA'
                 nbopt2 = nbopt2 + 1
             endif
@@ -236,6 +236,6 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
     nbopt = nbopt2
     call jedetr(lesop2)
 !
-999 continue
+999  continue
     call jedema()
 end subroutine

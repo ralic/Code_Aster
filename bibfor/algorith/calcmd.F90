@@ -37,7 +37,7 @@ subroutine calcmd(np1, a, a0, n, m,&
 #include "asterfort/prmama.h"
 #include "asterfort/trvpmd.h"
 #include "asterfort/tstjac.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpzbaa.h"
 #include "asterfort/vpzbab.h"
 #include "asterfort/vpzhea.h"
@@ -148,7 +148,9 @@ subroutine calcmd(np1, a, a0, n, m,&
 !............. CALCUL DES VALEURS PROPRES DE LA MATRICE MTMP2
                 call vpzvph(n, eps, prerel, mtmp2, np1,&
                             rr, ri, intge2, ifail)
-                if (ifail .ne. 0) call u2mess('F', 'ALGORITH_62')
+                if (ifail .ne. 0) then
+                    call utmess('F', 'ALGORITH_62')
+                endif
 !
 !............. VERIFICATION DES VALEURS PROPRES DE LA MATRICE MTMP2
 !............. (VALEURS PROPRES REELLES)
@@ -162,9 +164,13 @@ subroutine calcmd(np1, a, a0, n, m,&
 !
                 if (ier .ne. 0) then
 !
-                    if (iima .eq. 1) call u2mess('A', 'ALGORITH_63')
+                    if (iima .eq. 1) then
+                        call utmess('A', 'ALGORITH_63')
+                    endif
 !
-                    if (ineg .eq. 1) call u2mess('A', 'ALGORITH_64')
+                    if (ineg .eq. 1) then
+                        call utmess('A', 'ALGORITH_64')
+                    endif
 !
                     goto 999
 !
@@ -185,7 +191,9 @@ subroutine calcmd(np1, a, a0, n, m,&
                 call vpzqrs(n, m, mtmp1, np1, loc,&
                             ri, rr, vd, np1, ttr,&
                             n2, u, w, eps, ifail)
-                if (ifail .ne. 0) call u2mess('F', 'ALGORITH_65')
+                if (ifail .ne. 0) then
+                    call utmess('F', 'ALGORITH_65')
+                endif
 !
 !............. RETOUR AUX M PREMIERS VECTEURS PROPRES
 !............. DE LA MATRICE CONDITIONNEE
@@ -254,7 +262,9 @@ subroutine calcmd(np1, a, a0, n, m,&
 !............. CALCUL DES VALEURS PROPRES DE LA MATRICE MTMP2
                 call vpzvph(n, eps, prerel, mtmp2, np1,&
                             rr, ri, intge2, ifail)
-                if (ifail .ne. 0) call u2mess('F', 'ALGORITH_62')
+                if (ifail .ne. 0) then
+                    call utmess('F', 'ALGORITH_62')
+                endif
 !
 !............. VERIFICATION DES VALEURS PROPRES DE LA MATRICE MTMP2
 !............. (VALEURS PROPRES REELLES)
@@ -271,9 +281,13 @@ subroutine calcmd(np1, a, a0, n, m,&
 !
                 if (ier .ne. 0) then
 !
-                    if (iima .eq. 1) call u2mess('A', 'ALGORITH_63')
+                    if (iima .eq. 1) then
+                        call utmess('A', 'ALGORITH_63')
+                    endif
 !
-                    if (ineg .eq. 1) call u2mess('A', 'ALGORITH_64')
+                    if (ineg .eq. 1) then
+                        call utmess('A', 'ALGORITH_64')
+                    endif
 !
                     goto 999
 !
@@ -294,7 +308,9 @@ subroutine calcmd(np1, a, a0, n, m,&
                 call vpzqrs(n, m, mtmp1, np1, loc,&
                             ri, rr, vg, np1, ttr,&
                             n2, u, w, eps, ifail)
-                if (ifail .ne. 0) call u2mess('F', 'ALGORITH_65')
+                if (ifail .ne. 0) then
+                    call utmess('F', 'ALGORITH_65')
+                endif
 !
 !............. RETOUR AUX M PREMIERS VECTEURS PROPRES
 !............. DE LA MATRICE CONDITIONNEE
@@ -334,7 +350,9 @@ subroutine calcmd(np1, a, a0, n, m,&
                 call prmama(iprod, mtmp2, np1, n, n,&
                             vd, np1, n, n, mtmp1,&
                             np1, n, n, ier)
-                if (ier .ne. 0) call u2mess('F', 'ALGORITH_66')
+                if (ier .ne. 0) then
+                    call utmess('F', 'ALGORITH_66')
+                endif
 !
 !............. NORMALISATION DES VECTEURS PROPRES VD ET VG
                 do 33 j = 1, m

@@ -23,7 +23,7 @@ subroutine cjsncn(roucjs, essmax, ndt, nvi, umess,&
 !  DUMP EN CAS NON CNVERGENCE RELAXATGION NORMALES CJS
 !
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: roucjs
     integer :: essmax, ndt, nvi, umess
     real(kind=8) :: relax(essmax), rotagd(essmax)
@@ -38,7 +38,7 @@ subroutine cjsncn(roucjs, essmax, ndt, nvi, umess,&
 400  continue
     3002     format(&
      &       t3,i4,t10,e12.5,t30,e12.5)
-    call u2mess('F', 'ALGORITH2_17')
+    call utmess('F', 'ALGORITH2_17')
     write(umess,*) ' EPSD '
     write(6,1002) (i,epsd(i),i = 1 , ndt)
     write(umess,*) ' DEPS '

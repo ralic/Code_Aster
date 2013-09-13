@@ -27,8 +27,7 @@ subroutine calyrc(chargz)
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -131,7 +130,9 @@ subroutine calyrc(chargz)
 !
     call dismoi('F', 'DIM_GEOM', mo, 'MODELE', ndim,&
                 k8b, ier)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'MODELISA2_6')
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+        call utmess('F', 'MODELISA2_6')
+    endif
 !
     if (ndim .eq. 2) then
         nbtyp = 3
@@ -225,8 +226,7 @@ subroutine calyrc(chargz)
             if (nbma3 .eq. 0) then
                 valk(1) = motcle(1)
                 valk(2) = motcle(2)
-                call u2mesg('F', 'MODELISA8_49', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'MODELISA8_49', nk=2, valk=valk)
             endif
             call jeveuo('&&CALYRC.LIMANU3', 'L', idmai3)
 !
@@ -234,7 +234,7 @@ subroutine calyrc(chargz)
             call orilma(noma, ndim, zi(idmai3), nbma3, norien,&
                         ntrait, lreori, nul, ibid)
             if (norien .ne. 0) then
-                call u2mess('F', 'MODELISA3_19')
+                call utmess('F', 'MODELISA3_19')
             endif
 !
 ! ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'

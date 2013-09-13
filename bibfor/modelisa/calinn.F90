@@ -35,9 +35,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 #include "asterfort/jexnum.h"
 #include "asterfort/pacoap.h"
 #include "asterfort/pacoje.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: motfaz, prefiz, nomaz, lisi1z, lisi2z, modz
     integer :: iocc
@@ -112,7 +110,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     noeuma = noma//'.NOMNOE'
 !
     if (motfac .ne. 'LIAISON_GROUP') then
-        call u2mess('F', 'MODELISA2_62')
+        call utmess('F', 'MODELISA2_62')
     endif
 !
     call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_1', iocc,&
@@ -151,19 +149,19 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     call getvr8(motfac, 'TRAN', iocc=iocc, nbval=3, vect=t,&
                 nbret=nt)
     if (nt .lt. 0) then
-        call u2mesk('F', 'MODELISA3_9', 1, motfac)
+        call utmess('F', 'MODELISA3_9', sk=motfac)
     endif
 !
     call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=3, vect=theta,&
                 nbret=nr)
     if (nr .lt. 0) then
-        call u2mesk('F', 'MODELISA3_10', 1, motfac)
+        call utmess('F', 'MODELISA3_10', sk=motfac)
     endif
 !
     call getvr8(motfac, 'CENTRE', iocc=iocc, nbval=3, vect=centre,&
                 nbret=no)
     if (no .lt. 0) then
-        call u2mesk('F', 'MODELISA3_11', 1, motfac)
+        call utmess('F', 'MODELISA3_11', sk=motfac)
     endif
 !
     lisou1 = '&&CALINN.LISOU1'
@@ -202,8 +200,8 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
 !
         vali(1)= lonli1
         vali(2)= lonli2
-        call u2mesg('F', 'MODELISA3_12', 2, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'MODELISA3_12', nk=2, valk=valk, ni=2,&
+                    vali=vali)
 !
     endif
 !

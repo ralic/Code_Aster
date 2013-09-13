@@ -23,7 +23,6 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 ! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/iisnan.h"
 #include "asterc/r8miem.h"
 #include "asterfort/matini.h"
@@ -32,9 +31,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ndim, imate, retcom
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -149,7 +147,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !
         if ((iisnan(tp).eq.0) .and. (iisnan(tm).gt.0)) then
             if ((iisnan(tref).gt.0) .or. (icodre(1) .ne.0)) then
-                call u2mess('F', 'CALCULEL_31')
+                call utmess('F', 'CALCULEL_31')
             else
                 coef = valres(1)*(tp-tref) - valres(1)*(tm-tref)
             endif
@@ -202,7 +200,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
         poro2 = poro
         diff = poro1-poro2
         if (abs(diff) .gt. tol) then
-            call u2mess('F', 'ALGORITH6_60')
+            call utmess('F', 'ALGORITH6_60')
         else
             poro=poro1
         endif
@@ -212,13 +210,13 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     xk0 = (1.d0+e0)/kapa
     xk = (1.d0+e0)/(lambda-kapa)
     if ((kcam.ne.zero) .and. (kcam.le.(-xk0*ptrac))) then
-        call u2mess('F', 'COMPOR1_42')
+        call utmess('F', 'COMPOR1_42')
     endif
 !
 !     -- 3 CALCUL DE DEPSMO ET DEPSDV :
 !     --------------------------------
     if (cplan) then
-        call u2mess('F', 'ALGORITH6_63')
+        call utmess('F', 'ALGORITH6_63')
     endif
     depsmo = 0.d0
     do 110 k = 1, ndimsi
@@ -241,7 +239,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 116  end do
     sigmmo = -sigmmo /3.d0
     if (sigmmo .lt. ptrac) then
-        call u2mess('F', 'ALGORITH6_64')
+        call utmess('F', 'ALGORITH6_64')
     endif
     sieleq = 0.d0
     sieqm = 0.d0
@@ -263,8 +261,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
         valrm(2) = (xk0*depsmo)
         valkm(3) ='EXP(XK*DEPSMO)'
         valrm(3) = (xk*depsmo)
-        call u2mesg('A', 'COMPOR1_41', 3, valkm, 0,&
-                    valim, 3, valrm)
+        call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
+                    valr=valrm)
         retcom = 1
         goto 30
     endif
@@ -290,7 +288,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
         if ((young.le.zero) .or. (nu.le.zero) .or. (nu.gt.unsde)) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3) (1:8)
-            call u2mesk('F', 'COMPOR1_3', 1, nomail)
+            call utmess('F', 'COMPOR1_3', sk=nomail)
         endif
 !
     endif
@@ -382,8 +380,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                 valrm(2) = (-xk0*v0)
                 valkm(3) ='EXP(XK*V0)'
                 valrm(3) = (xk*v0)
-                call u2mesg('A', 'COMPOR1_41', 3, valkm, 0,&
-                            valim, 3, valrm)
+                call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
+                            valr=valrm)
                 retcom = 1
                 goto 30
             endif
@@ -430,8 +428,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                     valrm(2) = (-xk0*v0)
                     valkm(3) ='EXP(XK*V0)'
                     valrm(3) = (xk*v0)
-                    call u2mesg('A', 'COMPOR1_41', 3, valkm, 0,&
-                                valim, 3, valrm)
+                    call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
+                                valr=valrm)
                     retcom = 1
                     goto 30
                 endif
@@ -464,8 +462,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                     valrm(2) = (-xk0*xinf)
                     valkm(3) ='EXP(XK*XINF)'
                     valrm(3) = (xk*xinf)
-                    call u2mesg('A', 'COMPOR1_41', 3, valkm, 0,&
-                                valim, 3, valrm)
+                    call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
+                                valr=valrm)
                     retcom = 1
                     goto 30
                 endif
@@ -500,8 +498,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                 valrm(2) = (xk*deppmo)
                 valkm(3) ='EXP(XK0*(DEPSMO-DEPPMO))'
                 valrm(3) = (xk0*(depsmo-deppmo))
-                call u2mesg('A', 'COMPOR1_41', 3, valkm, 0,&
-                            valim, 3, valrm)
+                call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
+                            valr=valrm)
                 retcom = 1
                 goto 30
             endif

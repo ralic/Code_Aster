@@ -1,8 +1,8 @@
 subroutine ptfop1(itype, coef1, coef2, xl, rad,&
                   angs2, global, qq, fe)
-    implicit  none
+    implicit none
 #include "asterfort/assert.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itype
     real(kind=8) :: coef1, coef2, xl, rad, angs2, fe(12), qq(12)
     logical :: global
@@ -36,7 +36,7 @@ subroutine ptfop1(itype, coef1, coef2, xl, rad,&
     if (itype .eq. 1 .or. itype .eq. 2 .or. itype .eq. 10) then
         if (qq(4) .ne. 0.d0 .or. qq(10) .ne. 0.d0 .or. qq(5) .ne. 0.d0 .or. qq(11) .ne.&
             0.d0 .or. qq(6) .ne. 0.d0 .or. qq(12) .ne. 0.d0) then
-            call u2mess('F', 'ELEMENTS2_59')
+            call utmess('F', 'ELEMENTS2_59')
         endif
     endif
 !
@@ -135,7 +135,7 @@ subroutine ptfop1(itype, coef1, coef2, xl, rad,&
             fe(12) = -qq(8) * xx2
         endif
     else
-        call u2mess('F', 'ELEMENTS2_48')
+        call utmess('F', 'ELEMENTS2_48')
     endif
 !
 end subroutine

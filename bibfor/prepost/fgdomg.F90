@@ -12,7 +12,7 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 #include "asterfort/fgtaes.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/rcpare.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: method
     character(len=8) :: nommat, nomnap, nomfon
@@ -94,7 +94,7 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
                     zr(ivdome))
     else
         k16b = method(1:16)
-        call u2mesk('F', 'PREPOST_4', 1, k16b)
+        call utmess('F', 'PREPOST_4', sk=k16b)
     endif
 !
     do 100 i = 1, ncyc

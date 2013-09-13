@@ -38,7 +38,7 @@ subroutine calcyc(nomres)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/shiftc.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zconju.h"
@@ -140,21 +140,18 @@ subroutine calcyc(nomres)
             icomp=icomp+1
         else
             vali (1) = idia
-            call u2mesg('I', 'ALGORITH14_82', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH14_82', si=vali(1))
         endif
 30  end do
 !
     if (icomp .lt. nbdia) then
         vali (1) = maxdia
-        call u2mesg('I', 'ALGORITH14_83', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGORITH14_83', si=vali(1))
     endif
 !
     nbdia=icomp
     if (nbdia .eq. 0) then
-        call u2mesg('F', 'ALGORITH14_84', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_84')
     endif
 !
 !---------ALLOCATION DU VECTEUR DES NOMBRES DE DIAMETRES MODAUX---------
@@ -182,8 +179,7 @@ subroutine calcyc(nomres)
         if (nblif .gt. 1) then
             vali (1) = nblif
             valk = option
-            call u2mesg('F', 'ALGORITH14_85', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH14_85', sk=valk, si=vali(1))
         else if (nblif.eq.1) then
             call getvr8('CALCUL', 'FREQ', iocc=1, nbval=nblif, vect=rlome2,&
                         nbret=ibid)
@@ -196,8 +192,7 @@ subroutine calcyc(nomres)
         if (nblif .ne. 2) then
             vali (1) = nblif
             valk = option
-            call u2mesg('F', 'ALGORITH14_85', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH14_85', sk=valk, si=vali(1))
         else
             call getvr8('CALCUL', 'FREQ', iocc=1, nbval=nblif, vect=rlome2,&
                         nbret=ibid)
@@ -278,18 +273,15 @@ subroutine calcyc(nomres)
 !
     vali (1) = nbmos
     vali (2) = nbddr
-    call u2mesg('I', 'ALGORITH14_87', 0, ' ', 2,&
-                vali, 0, 0.d0)
+    call utmess('I', 'ALGORITH14_87', ni=2, vali=vali)
     if (nbdax .gt. 0) then
         vali (1) = nbdax
         vali (2) = nbdax0
         vali (3) = nbdax1
-        call u2mesg('I', 'ALGORITH14_88', 0, ' ', 3,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGORITH14_88', ni=3, vali=vali)
     endif
     vali (1) = nbddg
-    call u2mesg('I', 'ALGORITH14_89', 0, ' ', 1,&
-                vali, 0, 0.d0)
+    call utmess('I', 'ALGORITH14_89', si=vali(1))
 !
 !
 !---------------------------CALCUL DES MODES PROPRES--------------------

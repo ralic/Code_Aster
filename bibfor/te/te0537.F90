@@ -18,7 +18,6 @@ subroutine te0537(option, nomte)
 ! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/matela.h"
@@ -30,8 +29,9 @@ subroutine te0537(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
+!
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 !     POU_D_EM : POUTRE MULTIFIBRE EULER BERNOULLI
@@ -69,10 +69,10 @@ subroutine te0537(option, nomte)
     nbgf=zi(ifb+1)
     call jevech('PFIBRES', 'L', jacf)
     ncarfi = 3
-
+!
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
     ncomp = 18
-
+!
     npg = 2
 !
     if (option .eq. 'EPSI_ELGA') then
@@ -89,7 +89,7 @@ subroutine te0537(option, nomte)
         call jevech('PSTRXRR', 'E', istrxr)
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
     call jevech('PGEOMER', 'L', lx)
     call jevech('PCAORIE', 'L', lorien)
@@ -102,7 +102,7 @@ subroutine te0537(option, nomte)
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
@@ -239,7 +239,7 @@ subroutine te0537(option, nomte)
         mx = gxjx* (ul(10)-ul(4))/xl
 !
         do ip = 1, npg
-            if (ip .eq. 1 ) then
+            if (ip .eq. 1) then
                 sign = -1.d0
             else
                 sign = 1.d0
@@ -250,8 +250,8 @@ subroutine te0537(option, nomte)
             zr(istrxr-1+ncomp*(ip-1)+4)= sign * mx
             zr(istrxr-1+ncomp*(ip-1)+5)= sign * my + tz*xl2
             zr(istrxr-1+ncomp*(ip-1)+6)= sign * mz - ty*xl2
-
+!
         end do
-
+!
     endif
 end subroutine

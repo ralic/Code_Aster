@@ -19,7 +19,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbepo, ntyele(*), nbocc(*), ivr(3), ifm
@@ -157,7 +157,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 !
     if (nbtuy4 .ne. 0) then
         if (nbtuy .ne. 0) then
-            call u2mess('F', 'MODELISA_27')
+            call utmess('F', 'MODELISA_27')
         else
             nbtuy = nbtuy4
         endif
@@ -194,7 +194,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 40  end do
 !      ASSERT(NBEXT1.EQ.NBEXT2)
     if (nbext1 .ne. nbext2) then
-        call u2mess('F', 'MODELISA10_4')
+        call utmess('F', 'MODELISA10_4')
     endif
     nbpart=nbext1
     if (ivr(3) .eq. 1) then
@@ -296,7 +296,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 !
 9998  continue
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA_28')
+        call utmess('F', 'MODELISA_28')
     endif
 !
 !

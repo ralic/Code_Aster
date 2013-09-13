@@ -56,7 +56,7 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
     implicit none
 !
 #include "asterfort/infniv.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: neq, invp(neq), pe(neq+1), nv(neq)
     integer :: nbnd, nbsn, lgind, fctnzs
     real(kind=8) :: fctops
@@ -114,8 +114,7 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
         i= fin
 128      continue
         if (i .lt. deb) then
-            call u2mesg('F', 'ALGELINE5_6', 0, ' ', 1,&
-                        snj, 0, 0.d0)
+            call utmess('F', 'ALGELINE5_6', si=snj)
         endif
         if (nnv(i) .ne. 0) goto 129
         i= i-1
@@ -151,8 +150,7 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
         ndi= fin
 175      continue
         if (ndi .lt. deb) then
-            call u2mesg('F', 'ALGELINE5_6', 0, ' ', 1,&
-                        snj, 0, 0.d0)
+            call utmess('F', 'ALGELINE5_6', si=snj)
         endif
         if (nnv(ndi) .ne. 0) goto 177
         ndi= ndi-1

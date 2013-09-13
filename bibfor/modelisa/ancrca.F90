@@ -62,7 +62,7 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wdefca.h"
     integer :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, d, f(*)
@@ -89,7 +89,7 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
     if (wcr .lt. wdef) then
 !
         write(k3b,'(I3)') icabl
-        call u2mesk('A', 'MODELISA2_3', 1, k3b)
+        call utmess('A', 'MODELISA2_3', sk=k3b)
 !
         d = s(nbno)
         if (wcr/wdef .lt. epsw) then
@@ -109,7 +109,7 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
     else if (wcr.eq.wdef) then
 !
         write(k3b,'(I3)') icabl
-        call u2mesk('A', 'MODELISA2_4', 1, k3b)
+        call utmess('A', 'MODELISA2_4', sk=k3b)
 !
         d = s(nbno)
         f2 = f(nbno)

@@ -38,9 +38,8 @@ subroutine rfresu()
 #include "asterfort/ordonn.h"
 #include "asterfort/rsutnc.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcmp1.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
     integer :: nbtrou, numer1, l, n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn, npr, ngn, ibid, ie
@@ -91,7 +90,9 @@ subroutine rfresu()
     if (nres .ne. 0) then
         call getvtx(' ', 'NOM_PARA_RESU', scal=npresu, nbret=npr)
         if (npr .ne. 0) then
-            if (intres(1:3) .ne. 'NON') call u2mess('F', 'UTILITAI4_21')
+            if (intres(1:3) .ne. 'NON') then
+                call utmess('F', 'UTILITAI4_21')
+            endif
             call focrr3(nomfon, resu, npresu, 'G', iret)
             goto 10
         endif
@@ -99,7 +100,9 @@ subroutine rfresu()
         call getvtx(' ', 'NOM_CHAM', scal=nomcha, nbret=l)
         call rsutnc(resu, nomcha, 1, cham19, numer1,&
                     nbtrou)
-        if (nbtrou .eq. 0) call u2mesk('F', 'UTILITAI4_22', 1, nomcha)
+        if (nbtrou .eq. 0) then
+            call utmess('F', 'UTILITAI4_22', sk=nomcha)
+        endif
         call dismoi('F', 'NOM_MAILLA', cham19, 'CHAMP', ibid,&
                     noma, ie)
         call dismoi('F', 'NOM_GD', cham19, 'CHAMP', ibid,&
@@ -108,21 +111,21 @@ subroutine rfresu()
             call utnono(' ', noma, 'NOEUD', nogno, noeud,&
                         iret)
             if (iret .eq. 10) then
-                call u2mesk('F', 'ELEMENTS_67', 1, nogno)
+                call utmess('F', 'ELEMENTS_67', sk=nogno)
             else if (iret.eq.1) then
                 valk(1) = nogno
                 valk(2) = noeud
-                call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
             endif
         endif
         if (ngm .ne. 0) then
             call utnono(' ', noma, 'MAILLE', nogma, maille,&
                         iret)
             if (iret .eq. 10) then
-                call u2mesk('F', 'ELEMENTS_73', 1, nogma)
+                call utmess('F', 'ELEMENTS_73', sk=nogma)
             else if (iret.eq.1) then
                 valk(1) = maille
-                call u2mesk('A', 'UTILITAI6_72', 1, valk)
+                call utmess('A', 'UTILITAI6_72', sk=valk(1))
             endif
         endif
         call utcmp1(nomgd, ' ', 1, cmp, ivari)

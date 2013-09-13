@@ -28,7 +28,7 @@ subroutine sommve(np, vec1, n1, vec2, n2,&
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
     integer :: np, n1, n2
     real(kind=8) :: vec1(*), vec2(*), vecres(*)
@@ -44,7 +44,7 @@ subroutine sommve(np, vec1, n1, vec2, n2,&
 !
     if (n1 .gt. np .or. n2 .gt. np .or. n1 .ne. n2) then
         ier = 1
-        call u2mess('F', 'ALGORITH10_60')
+        call utmess('F', 'ALGORITH10_60')
     endif
 !
     if (ier .eq. 0) then

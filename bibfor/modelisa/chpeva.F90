@@ -41,11 +41,11 @@ subroutine chpeva(chou)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: n1, ib, jpara1, npara, jpara2, k, nncp, ibid
     character(len=4) :: typ1, typ2, knum
-    character(len=8) ::  chin, chou, nomgd
+    character(len=8) :: chin, chou, nomgd
     character(len=19) :: ligrel, chs1, chs2, chins
 !     -----------------------------------------------------------------
 !
@@ -66,7 +66,9 @@ subroutine chpeva(chou)
 !
     call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
                 nomgd, ib)
-    if (nomgd .ne. 'NEUT_F') call u2mess('F', 'MODELISA4_13')
+    if (nomgd .ne. 'NEUT_F') then
+        call utmess('F', 'MODELISA4_13')
+    endif
 !
     call getvid(' ', 'CHAM_PARA', nbval=0, nbret=n1)
     npara = -n1
@@ -84,7 +86,9 @@ subroutine chpeva(chou)
     do 10,k = 1,npara
     call dismoi('F', 'TYPE_CHAMP', zk8(jpara1-1+k), 'CHAMP', ib,&
                 typ2, ib)
-    if (typ1 .ne. typ2) call u2mess('F', 'MODELISA4_14')
+    if (typ1 .ne. typ2) then
+        call utmess('F', 'MODELISA4_14')
+    endif
 !
     call codent(k, 'G', knum)
     chs1 = '&&CHPEVA.'//knum

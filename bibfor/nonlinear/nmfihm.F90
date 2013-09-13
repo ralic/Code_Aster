@@ -29,7 +29,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 #include "asterfort/gedisc.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
     integer :: ip(4)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), dffr2(ndim-1, nno2, npg)
@@ -96,7 +96,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
     if (typmod(2) .eq. 'EJ_HYME') ifhyme=.true.
     if (typmod(2) .eq. 'ELEMJOIN') ifhyme=.false.
 !
-    if (.not. resi .and. .not. rigi) call u2mesk('F', 'ALGORITH7_61', 1, option)
+    if (.not. resi .and. .not. rigi) then
+        call utmess('F', 'ALGORITH7_61', sk=option)
+    endif
 !
 !     INITIALISATIONS :
     if (resi) call r8inir(nddl, 0.d0, vect, 1)

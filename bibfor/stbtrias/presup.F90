@@ -13,7 +13,7 @@ subroutine presup(iunv, imod, lgrcou)
 #include "asterfort/slegro.h"
 #include "asterfort/sleneu.h"
 #include "asterfort/snecol.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: lgrcou
 ! ======================================================================
 ! ======================================================================
@@ -197,7 +197,7 @@ subroutine presup(iunv, imod, lgrcou)
     goto 1
 9999  continue
     if (larret) then
-        call u2mess('F', 'STBTRIAS_1')
+        call utmess('F', 'STBTRIAS_1')
     endif
 !
     call jedetr('&&PRESUP.INFO.NOEUDS')

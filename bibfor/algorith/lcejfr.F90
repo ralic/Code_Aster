@@ -26,7 +26,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 #include "asterfort/pmavec.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     integer :: mate, ndim, kpg, ksp
@@ -185,12 +185,18 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !
     if (ifhyme) then
 !       POUR LE CALCUL HYDRO => PAS DE PRES_FLUIDE
-        if ((cod(6).eq.0)) call u2mess('F', 'ALGORITH17_14')
+        if ((cod(6).eq.0)) then
+            call utmess('F', 'ALGORITH17_14')
+        endif
 !       POUR LE CALCUL HYDRO => PRESENCE DE PARA HYDRO
-        if (.not.ifpahm) call u2mess('F', 'ALGORITH17_15')
+        if (.not.ifpahm) then
+            call utmess('F', 'ALGORITH17_15')
+        endif
     else
 !       POUR LE CALCUL MECA => PAS DE PARAMETRE HYDRO
-        if (ifpahm) call u2mess('F', 'ALGORITH17_16')
+        if (ifpahm) then
+            call utmess('F', 'ALGORITH17_16')
+        endif
     endif
 !
 !

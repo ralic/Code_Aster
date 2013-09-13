@@ -63,10 +63,8 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/sdmpic.h"
 #include "asterfort/te0000.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vrcdec.h"
@@ -185,7 +183,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                 exiele, ibid)
     if (exiele .ne. 'OUI') then
         if (stop .eq. 'S') then
-            call u2mesk('F', 'CALCULEL2_25', 1, ligrel)
+            call utmess('F', 'CALCULEL2_25', sk=ligrel)
         else
             goto 120
         endif
@@ -267,8 +265,9 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 20                  continue
                 endif
             endif
-            if ((lfetmo.and.lfetts) .or. (lfetmo.and.lfettd) .or. (lfetts.and.lfettd)) &
-            call u2mess('F', 'CALCULEL6_75')
+            if ((lfetmo.and.lfetts) .or. (lfetmo.and.lfettd) .or. (lfetts.and.lfettd)) then
+                call utmess('F', 'CALCULEL6_75')
+            endif
         endif
 !
 !       -- MONITORING FETI :
@@ -312,7 +311,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         if (zi(jprti) .ne. nbproc) then
             vali(1)=zi(jprti)
             vali(2)=nbproc
-            call u2mesi('F', 'CALCULEL_13', 2, vali)
+            call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
         endif
 !
         call jeveuo(partit//'.PRTK', 'L', jprtk)
@@ -342,7 +341,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         valk(1)=nomte
         valk(2)=option
         if (numc .eq. -1) then
-            call u2mesk('F', 'CALCULEL_30', 2, valk)
+            call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
         else
             ASSERT(.false.)
         endif
@@ -353,7 +352,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     ASSERT(ier.le.0)
     if (afaire .eq. 0) then
         if (stop .eq. 'S') then
-            call u2mesk('F', 'CALCULEL_34', 1, option)
+            call utmess('F', 'CALCULEL_34', sk=option)
         else
             goto 120
 !
@@ -478,10 +477,14 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                     if (lfetmo) then
 !               - LIGREL DE MODELE, ON TAG EN SE BASANT SUR
 !                '&FETI.MAILLE.NUMSD'
-                        if (ima .le. 0) call u2mess('F', 'CALCULEL6_76')
+                        if (ima .le. 0) then
+                            call utmess('F', 'CALCULEL6_76')
+                        endif
                         if (zi(ifeti1+ima) .gt. 0) zl(jparal-1+iel)= .true.
                     else if (lfettd) then
-                        if (ima .ge. 0) call u2mess('F', 'CALCULEL6_76')
+                        if (ima .ge. 0) then
+                            call utmess('F', 'CALCULEL6_76')
+                        endif
                         idd=zi(ifel2+2*(-ima-1)+1)
 !               - MAILLE TARDIVES, ON TAG EN SE BASANT SUR .FEL2
 !                 (VOIR NUMERO.F)

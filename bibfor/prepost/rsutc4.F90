@@ -8,7 +8,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iocc, dimlis, nbch
@@ -77,7 +77,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
         do 20,k = 1,n2
         kk = indk16(zk16(jl1),zk16(jl2-1+k),1,nbnosy)
         if (kk .eq. 0) then
-            call u2mesk('F', 'PREPOST4_77', 1, zk16(jl2-1+k))
+            call utmess('F', 'PREPOST4_77', sk=zk16(jl2-1+k))
         endif
 20      continue
         nbch = n2

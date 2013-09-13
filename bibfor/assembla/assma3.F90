@@ -39,7 +39,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 #include "asterfort/asretm.h"
 #include "asterfort/assert.h"
 #include "asterfort/corddl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/voiuti.h"
     logical :: lmasym, lmesym
     character(len=19) :: ligre1, ligre2
@@ -70,16 +70,16 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
-    integer ::  ellagr
+    integer :: ellagr
     integer :: nnov, igr2, mode2, numav, kvois
 !
 #define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
 #define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \
-        zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
+    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
 #define zznema(ili,iel,j) zi(zi(jadne+3*(ili-1)+1)-1+ \
-        zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
+    zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
 #define zzprno(ili,nunoel,l) zi(jprn1-1+zi(jprn2+ili-1)+ \
-        (nunoel-1)*(nec+2)+l-1)
+    (nunoel-1)*(nec+2)+l-1)
 !
 #define numlo1(kno,k) zi(jnulo1-1+2*(kno-1)+k)
 #define numlo2(kno,k) zi(jnulo2-1+2*(kno-1)+k)
@@ -118,12 +118,16 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !       ON SE POSE LA QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA
 !       AU SOUS-DOMAINE IDD
         if (numa .gt. 0) then
-            if (llich) call u2mess('F', 'ASSEMBLA_6')
+            if (llich) then
+                call utmess('F', 'ASSEMBLA_6')
+            endif
 !         ELLE APPARTIENT AU GREL IGR DU LIGREL PHYSIQUE ILIMA
             if (zi(jfnusd-1+numa) .ne. idd) goto 110
         else
 !         ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
-            if (llimo) call u2mess('F', 'ASSEMBLA_7')
+            if (llimo) then
+                call utmess('F', 'ASSEMBLA_7')
+            endif
         endif
     endif
 !

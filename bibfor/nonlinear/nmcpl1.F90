@@ -17,6 +17,7 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
 ! ----------------------------------------------------------------------
 !     CONTRAINTES PLANES PAR LA METHODE DE BORST / CONDENSATION STATIQUE
 !     POUR LES COMPORTEMENTS QUI N'INTEGRENT PAS LES CONTRAINTES PLANES
@@ -39,7 +40,6 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
 ! OUT NVV     : NOMBRE DE VRAIES VARIABLES INTERNES
 ! ----------------------------------------------------------------------
 !
-#include "asterfort/u2mess.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option, optio2
     character(len=16) :: compor(*)
@@ -56,7 +56,7 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
     if (typmod(1) .eq. 'C_PLAN') then
         if (compor(5)(1:7) .eq. 'DEBORST') then
             if (compor(3) .eq. 'SIMO_MIEHE') then
-                call u2mess('F', 'ALGORITH7_9')
+                call utmess('F', 'ALGORITH7_9')
             endif
             read (compor(2),'(I16)') nbvari
             nvv=nbvari-4
@@ -67,7 +67,7 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
 !
     if (typmod(1) .eq. 'COMP1D') then
         if (compor(3) .eq. 'SIMO_MIEHE') then
-            call u2mess('F', 'ALGORITH7_10')
+            call utmess('F', 'ALGORITH7_10')
         endif
         read (compor(2),'(I16)') nbvari
         nvv=nbvari-4

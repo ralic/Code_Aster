@@ -1,7 +1,6 @@
 subroutine te0065(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref2.h"
@@ -9,7 +8,8 @@ subroutine te0065(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -66,7 +66,7 @@ subroutine te0065(option, nomte)
             nomres(1) = 'RHO'
             nbv = 1
         else
-            call u2mess('F', 'ELEMENTS3_98')
+            call utmess('F', 'ELEMENTS3_98')
         endif
         tpg = 0.d0
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
@@ -80,7 +80,7 @@ subroutine te0065(option, nomte)
             nomres(1) = 'RHO'
             nbv = 1
         else
-            call u2mess('F', 'ELEMENTS3_98')
+            call utmess('F', 'ELEMENTS3_98')
         endif
         tpg = 0.d0
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
@@ -112,10 +112,10 @@ subroutine te0065(option, nomte)
                         ' ', phenom, 0, ' ', r8b,&
                         1, 'RHO', rho, icodre, 1)
             if (rho .le. r8prem()) then
-                call u2mess('F', 'ELEMENTS5_45')
+                call utmess('F', 'ELEMENTS5_45')
             endif
         else
-            call u2mess('F', 'ELEMENTS_50')
+            call utmess('F', 'ELEMENTS_50')
         endif
     endif
 !

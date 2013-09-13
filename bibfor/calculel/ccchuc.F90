@@ -1,5 +1,5 @@
-subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, &
-                  crit, norm, nb_form, name_form, list_ordr, &
+subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
+                  crit, norm, nb_form, name_form, list_ordr,&
                   nb_ordr)
 !
     implicit none
@@ -9,8 +9,8 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 #include "asterfort/ccchci.h"
 #include "asterfort/ccchuc_chamel.h"
 #include "asterfort/ccchuc_chamno.h"
-#include "asterfort/ccchuc_norm.h"
 #include "asterfort/ccchuc_ligr.h"
+#include "asterfort/ccchuc_norm.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cescrm.h"
@@ -29,10 +29,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -61,9 +58,9 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
     character(len=16), intent(in) :: norm
     integer, intent(in) :: nb_form
     character(len=8), intent(in) :: name_form(nb_form)
-    integer , intent(in) :: nume_field_out
+    integer, intent(in) :: nume_field_out
     character(len=19), intent(in) :: list_ordr
-    integer , intent(in) :: nb_ordr
+    integer, intent(in) :: nb_ordr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,21 +110,22 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 !
 ! - Initializations
 !
-    type_field_in  = ' '
+    type_field_in = ' '
     type_field_out = ' '
-    nomgd  = ' '
-    field_in_s  = '&&CCCHUC.CHSIN'
+    nomgd = ' '
+    field_in_s = '&&CCCHUC.CHSIN'
     field_out_s = '&&CCCHUC.CHSOUT'
-    field_out   = '&&CCCHUC.CHOUT'
-    wkcmp  = '&&CCCHUC.CMPS'
+    field_out = '&&CCCHUC.CHOUT'
+    wkcmp = '&&CCCHUC.CMPS'
     work_out_val = '&&CCCHUC.VAL'
-    list_elem_new   = '&&CCCHUC.LIST_NEW'
-    list_elem_stor  = '&&CCCHUC.LIST_STO'
-    ligrel_old      = 'NOT_INIT'
+    list_elem_new = '&&CCCHUC.LIST_NEW'
+    list_elem_stor = '&&CCCHUC.LIST_STO'
+    ligrel_old = 'NOT_INIT'
 !
 ! - Size of output field
 !
-    call ccchci('NBCMP', type_comp, crit, norm, nb_form, nb_cmp_resu)
+    call ccchci('NBCMP', type_comp, crit, norm, nb_form,&
+                nb_cmp_resu)
     call wkvect(work_out_val, 'V V R', nb_cmp_resu, j_resu)
 !
 ! - Access to result
@@ -146,8 +144,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
                 valk(1) = field_type
                 valk(2) = sdresu_in
                 vali(1) = numord
-                call u2mesg('F', 'CHAMPS_6', 2, valk, 1,&
-                            vali, 0, rbid)
+                call utmess('F', 'CHAMPS_6', nk=2, valk=valk, si=vali(1))
             else
                 call rsexch(' ', sdresu_out, field_type, numord, field_in,&
                             iret)
@@ -156,8 +153,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
                     valk(2) = sdresu_in
                     valk(3) = sdresu_out
                     vali(1) = numord
-                    call u2mesg('F', 'CHAMPS_9', 3, valk, 1,&
-                                vali, 0, rbid)
+                    call utmess('F', 'CHAMPS_9', nk=3, valk=valk, si=vali(1))
                 endif
             endif
         endif
@@ -169,7 +165,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
                         nomgd, iret)
             call dismoi('F', 'TYPE_CHAMP', field_in, 'CHAMP', ibid,&
                         type_field_in, iret)
-            if (type_field_in.ne.'NOEU') then
+            if (type_field_in .ne. 'NOEU') then
                 call dismoi('F', 'NOM_LIGREL', field_in, 'CHAMP', ibid,&
                             ligrel_old, iret)
                 call dismoi('F', 'NOM_MODELE', field_in, 'CHAMP', ibid,&
@@ -187,7 +183,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
         type_field_out = type_field_in
         if (type_comp .eq. 'NORME') then
             if (type_field_in .eq. 'NOEU') then
-                call u2mess('F','CHAMPS_17')
+                call utmess('F', 'CHAMPS_17')
             endif
             ASSERT(type_field_in(1:2) .eq. 'EL')
             type_field_out = 'ELEM'
@@ -205,7 +201,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
             call cnocns(field_in, 'V', field_in_s)
             call jeveuo(field_in_s//'.CNSD', 'L', jchsd)
             nb_node = zi(jchsd-1+1)
-            nb_cmp  = zi(jchsd-1+2)
+            nb_cmp = zi(jchsd-1+2)
 !
 ! --------- Create output field
 !
@@ -220,26 +216,26 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 !
 ! --------- Compute on <CHAM_NO>
 !
-            call ccchuc_chamno(field_in_s, field_out_s, nb_node, nb_cmp, type_comp, &
-                               crit, nb_form, name_form, nomgd, nb_cmp_resu, work_out_val, &
-                               nb_node_new, ichk)
+            call ccchuc_chamno(field_in_s, field_out_s, nb_node, nb_cmp, type_comp,&
+                               crit, nb_form, name_form, nomgd, nb_cmp_resu,&
+                               work_out_val, nb_node_new, ichk)
 !
 ! --------- Print
 !
-            if (ichk.eq.0) then
+            if (ichk .eq. 0) then
                 vali(1) = numord
                 vali(2) = nb_node_new
                 vali(3) = nb_node
-                call u2mesi('I', 'CHAMPS_10', 3, vali)
+                call utmess('I', 'CHAMPS_10', ni=3, vali=vali)
             else
-                call u2mesi('A', 'CHAMPS_15', 1, numord)
+                call utmess('A', 'CHAMPS_15', si=numord)
             endif
 !
         else
 !
             typs = 'CHAM_ELEM_S'
             if (type_comp .eq. 'NORME') then
-                call ccchuc_norm(norm, model, nomgd, field_in, type_field_in, &
+                call ccchuc_norm(norm, model, nomgd, field_in, type_field_in,&
                                  field_out)
             else
 !
@@ -248,7 +244,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
                 call celces(field_in, 'V', field_in_s)
                 call jeveuo(field_in_s//'.CESD', 'L', jchsd)
                 nb_elem = zi(jchsd-1+1)
-                nb_cmp  = zi(jchsd-1+2)
+                nb_cmp = zi(jchsd-1+2)
 !
 ! ------------- Work vector for element in output field
 !
@@ -261,39 +257,39 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 !
 ! ------------- Compute on <CHAM_ELEM>
 !
-                call ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp, &
-                                   crit, nb_form, name_form, nomgd, nb_cmp_resu, work_out_val,&
-                                   list_elem_new, nb_elem_new, ichk)
+                call ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp,&
+                                   crit, nb_form, name_form, nomgd, nb_cmp_resu,&
+                                   work_out_val, list_elem_new, nb_elem_new, ichk)
 !
 ! ------------- Print
 !
-                if (ichk.eq.0) then
+                if (ichk .eq. 0) then
                     vali(1) = numord
                     vali(2) = nb_elem_new
                     vali(3) = nb_elem
-                    call u2mesi('I', 'CHAMPS_8', 3, vali)
+                    call utmess('I', 'CHAMPS_8', ni=3, vali=vali)
                 else
-                    call u2mesi('A', 'CHAMPS_15', 1, numord)
+                    call utmess('A', 'CHAMPS_15', si=numord)
                 endif
 !
 ! ------------- Manage <LIGREL> - Create new if necessary 
 !
-                call ccchuc_ligr(list_elem_stor, nb_elem, nb_elem_new, list_elem_new, &
-                                 ligrel_old, ligrel_new)
-            endif       
+                call ccchuc_ligr(list_elem_stor, nb_elem, nb_elem_new, list_elem_new, ligrel_old,&
+                                 ligrel_new)
+            endif 
         endif
 !
 ! ----- Save in result
 !
-        call rsexch(' ', sdresu_out, name_field_out, numord, field_out_sd, &
+        call rsexch(' ', sdresu_out, name_field_out, numord, field_out_sd,&
                     iret)
         if (iret .ne. 100) then
             valk(1) = name_field_out
             valk(2) = sdresu_out
-            call u2mesk('F', 'CHAMPS_14', 2, valk)
+            call utmess('F', 'CHAMPS_14', nk=2, valk=valk)
         endif
         if (type_field_in .eq. 'NOEU') then
-            call cnscno(field_out_s, ' ', 'UNUSED', 'G', field_out_sd, &
+            call cnscno(field_out_s, ' ', 'UNUSED', 'G', field_out_sd,&
                         'F', iret)
         else
             if (type_comp .eq. 'NORME') then

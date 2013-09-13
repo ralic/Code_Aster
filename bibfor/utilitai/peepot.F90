@@ -33,8 +33,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -120,7 +119,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
         9).eq.'EVOL_NOLI' .or. typres(1:10).eq.'DYNA_TRANS') then
             noparr(2) = 'INST'
         else
-            call u2mess('F', 'UTILITAI3_75')
+            call utmess('F', 'UTILITAI3_75')
         endif
     endif
 !
@@ -224,17 +223,17 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                 chamgd = ' '
                 chtemp = depla
             else
-                call u2mess('F', 'UTILITAI3_73')
+                call utmess('F', 'UTILITAI3_73')
             endif
         else if (typcha(1:9).eq.'CHAM_ELEM') then
             if (nomgd(1:4) .eq. 'ENER') then
                 chelem = depla
                 goto 30
             else
-                call u2mess('F', 'UTILITAI3_73')
+                call utmess('F', 'UTILITAI3_73')
             endif
         else
-            call u2mess('F', 'UTILITAI3_73')
+            call utmess('F', 'UTILITAI3_73')
         endif
         icheml = 1
         chelem = '&&PEEPOT.CHAM_ELEM'
@@ -283,12 +282,12 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                     nomgrm = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_46', 1, nomgrm)
+                        call utmess('A', 'UTILITAI3_46', sk=nomgrm)
                         goto 40
                     endif
                     call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_47', 1, nomgrm)
+                        call utmess('A', 'UTILITAI3_47', sk=nomgrm)
                         goto 40
                     endif
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
@@ -316,7 +315,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_49', 1, nommai)
+                        call utmess('A', 'UTILITAI3_49', sk=nommai)
                         goto 50
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)

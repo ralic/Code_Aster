@@ -18,9 +18,8 @@ subroutine chckco(char, noma, ndimg)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cfcald.h"
 #include "asterfort/cfdisi.h"
@@ -36,7 +35,8 @@ subroutine chckco(char, noma, ndimg)
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mmtypm.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: char, noma
     integer :: ndimg
 !
@@ -140,13 +140,13 @@ subroutine chckco(char, noma, ndimg)
 ! --------- MAILLE POI1 SEULEMENT ESCLAVE
 !
                 if (typma .eq. 'MAIT') then
-                    call u2mesk('F', 'CONTACT3_75', 1, nomma)
+                    call utmess('F', 'CONTACT3_75', sk=nomma)
                 endif
 !
 ! -------- CHOIX DE LA NORMALE SUIVANT UTILISATEUR
 !
                 if ((itype.eq.0) .or. (itype.eq.2)) then
-                    call u2mesk('F', 'CONTACT3_60', 1, nomma)
+                    call utmess('F', 'CONTACT3_60', sk=nomma)
                 endif
                 goto 15
             endif
@@ -155,7 +155,7 @@ subroutine chckco(char, noma, ndimg)
 !
             if (lpoutr) then
                 if (itype .eq. 0) then
-                    call u2mesk('F', 'CONTACT3_61', 1, nomma)
+                    call utmess('F', 'CONTACT3_61', sk=nomma)
                 endif
                 goto 15
             endif

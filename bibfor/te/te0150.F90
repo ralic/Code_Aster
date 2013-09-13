@@ -23,7 +23,7 @@ subroutine te0150(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/verifm.h"
     character(len=*) :: option, nomte
@@ -208,7 +208,7 @@ subroutine te0150(option, nomte)
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
@@ -291,7 +291,7 @@ subroutine te0150(option, nomte)
 !
     else
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
 !     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
@@ -475,7 +475,7 @@ subroutine te0150(option, nomte)
             f = -kendog*hydr
         else
             ch16 = option
-            call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+            call utmess('F', 'ELEMENTS2_47', sk=ch16)
         endif
 !
         if (itype .eq. 10) then

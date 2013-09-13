@@ -27,8 +27,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
 #include "asterfort/infniv.h"
 #include "asterfort/lceqmn.h"
 #include "asterfort/mgausw.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dgesv.h"
 #include "blas/dgesvx.h"
     character(len=*) :: cara
@@ -240,17 +239,17 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         if (lstop) then
             if (cara2(3:3) .eq. 'S') then
                 if (iret .eq. n+1) then
-                    call u2mess('F', 'CALCULEL3_79')
+                    call utmess('F', 'CALCULEL3_79')
                 else
                     vali (1) = iret
                     vali (2) = iret
                     valk (1) = ' '
                     valk (2) = ' '
-                    call u2mesg('F', 'CALCULEL6_15', 2, valk, 2,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'CALCULEL6_15', nk=2, valk=valk, ni=2,&
+                                vali=vali)
                 endif
             else
-                call u2mess('F', 'CALCULEL3_79')
+                call utmess('F', 'CALCULEL3_79')
             endif
         else
 !         -- ON CONTINUE

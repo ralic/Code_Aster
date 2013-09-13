@@ -1,14 +1,14 @@
 subroutine te0225(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref5.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -115,7 +115,7 @@ subroutine te0225(option, nomte)
                             ' ', 'ELAS', 1, 'TEMP', tpg,&
                             1, nomres(3), valres(3), icodre(3), 0)
                 if (((iret1+iret2+iret3+iret4).ge.1) .and. (icodre(3) .eq.0)) then
-                    call u2mess('F', 'CALCULEL_15')
+                    call utmess('F', 'CALCULEL_15')
                 else if (icodre(3).ne.0) then
                     epsthe = 0.d0
                 else
@@ -136,6 +136,6 @@ subroutine te0225(option, nomte)
 40      continue
     else
 !  ==== CALCUL ANISOTROPE  =====
-        call u2mess('F', 'ELEMENTS3_49')
+        call utmess('F', 'ELEMENTS3_49')
     endif
 end subroutine

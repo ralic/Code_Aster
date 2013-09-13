@@ -17,14 +17,14 @@ subroutine satura(hydr, p1, sat, dsatp1)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
 !
-#include "asterfort/u2mess.h"
     real(kind=8) :: p1, sat, dsatp1
     character(len=16) :: hydr
 !
     if (hydr .eq. 'HYDR') then
 !
-        call u2mess('F', 'ALGORITH9_80')
+        call utmess('F', 'ALGORITH9_80')
 !
         if (p1 .gt. 0) then
             sat = (1.d0+(2.907d-8*p1)**(1.388d0))**(-.963d0)

@@ -1,7 +1,6 @@
 subroutine te0311(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -14,7 +13,8 @@ subroutine te0311(option, nomte)
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/rcvad2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -296,7 +296,7 @@ subroutine te0311(option, nomte)
                     'ELAS', 3, nomres, valres, devres,&
                     icodre)
         if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
-            call u2mess('F', 'RUPTURE1_25')
+            call utmess('F', 'RUPTURE1_25')
         endif
         if (icodre(3) .ne. 0) then
             valres(3) = 0.d0

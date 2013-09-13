@@ -11,8 +11,7 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: champa, champb
     integer :: ncpa, ncpb, nbmail, numail(*)
     real(kind=8) :: vr(2)
@@ -70,7 +69,7 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     champ2 = champb
     rzero = 0.0d0
     if ((ncpa.le.0) .or. (ncpb.le.0)) then
-        call u2mess('F', 'CALCULEL3_57')
+        call utmess('F', 'CALCULEL3_57')
     endif
 !
 !     -- ON RETROUVE LE NOM DU LIGREL:
@@ -82,12 +81,14 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     ligre2 = zk24(iacelk-1+1)(1:19)
 !
     if (ligre1 .ne. ligre2) then
-        call u2mess('F', 'CALCULEL3_58')
+        call utmess('F', 'CALCULEL3_58')
     endif
     ligrel = ligre1
 !
     call jeexin(champ1//'.CELD', ibid)
-    if (ibid .eq. 0) call u2mesk('F', 'CALCULEL3_59', 1, champ1)
+    if (ibid .eq. 0) then
+        call utmess('F', 'CALCULEL3_59', sk=champ1)
+    endif
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(champ1, 'NBVARI_CST', 'STOP', ibid)
@@ -97,11 +98,13 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     igd1 = zi(jceld1-1+1)
     scal1 = scalai(igd1)
     if (scal1(1:1) .ne. 'R') then
-        call u2mess('F', 'CALCULEL3_53')
+        call utmess('F', 'CALCULEL3_53')
     endif
 !
     call jeexin(champ2//'.CELD', ibid)
-    if (ibid .eq. 0) call u2mesk('F', 'CALCULEL3_59', 1, champ2)
+    if (ibid .eq. 0) then
+        call utmess('F', 'CALCULEL3_59', sk=champ2)
+    endif
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
@@ -111,7 +114,7 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     igd2 = zi(jceld2-1+1)
     scal2 = scalai(igd2)
     if (scal2(1:1) .ne. 'R') then
-        call u2mess('F', 'CALCULEL3_53')
+        call utmess('F', 'CALCULEL3_53')
     endif
 !
 !     -- ON VERIFIE LES LONGUEURS DE CHAQUE CHAMP:
@@ -128,7 +131,7 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
         longt1 = ncmpel
     else
         if (longt1 .ne. ncmpel) then
-            call u2mess('F', 'CALCULEL3_60')
+            call utmess('F', 'CALCULEL3_60')
         endif
     endif
     first = .false.
@@ -146,14 +149,14 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
         longt2 = ncmpel
     else
         if (longt2 .ne. ncmpel) then
-            call u2mess('F', 'CALCULEL3_61')
+            call utmess('F', 'CALCULEL3_61')
         endif
     endif
     first = .false.
     100 end do
 !
     if ((ncpa.gt.longt1) .or. (ncpb.gt.longt2)) then
-        call u2mess('F', 'CALCULEL3_62')
+        call utmess('F', 'CALCULEL3_62')
     endif
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":

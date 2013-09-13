@@ -14,7 +14,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verdis.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
@@ -132,7 +132,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                     valk(2) = type
                     valk(3) = typel
                     valk(4) = cara
-                    call u2mesk('F', 'MODELISA_56', 4, valk)
+                    call utmess('F', 'MODELISA_56', nk=4, valk=valk)
                 endif
 12          continue
             call jedetr('&&ACEVDI.MAILLE')
@@ -158,7 +158,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                         valk(2) = type
                         valk(3) = typel
                         valk(4) = cara
-                        call u2mesk('F', 'MODELISA_56', 4, valk)
+                        call utmess('F', 'MODELISA_56', nk=4, valk=valk)
                     endif
 16              continue
 14          continue

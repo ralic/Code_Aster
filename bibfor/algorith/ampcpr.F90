@@ -18,6 +18,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
 !
 !***********************************************************************
 !    P. RICHARD     DATE 12/03/91
@@ -41,7 +42,6 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !
 !-----------------------------------------------------------------------
 !
-#include "asterfort/u2mesg.h"
     real(kind=8) :: bmat(n1, n2)
     complex(kind=8) :: cmat(*)
 !
@@ -61,8 +61,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
         jdeb=j
         jfin=min(j+n2-1,nb2)
         if ((j+n2-1) .gt. nb2) then
-            call u2mesg('F', 'ALGORITH11_88', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_88')
         endif
         if (jfin .lt. jdeb) goto 9999
         jjdeb=jdeb-j+1
@@ -70,8 +69,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !
         ideb=i
         if ((i+n1-1) .gt. nb1) then
-            call u2mesg('F', 'ALGORITH11_88', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_88')
         endif
         ifin=min(i+n1-1,nb1)
         if (ifin .lt. ideb) goto 9999
@@ -121,8 +119,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
         jdeb=j
         jfin=min(j+n1-1,nb2)
         if ((j+n1-1) .gt. nb2) then
-            call u2mesg('F', 'ALGORITH11_90', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_90')
         endif
         if (jfin .lt. jdeb) goto 9999
         jjdeb=jdeb-j+1
@@ -131,8 +128,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
         ideb=i
         ifin=min(i+n2-1,nb1)
         if ((i+n2-1) .gt. nb1) then
-            call u2mesg('F', 'ALGORITH11_88', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH11_88')
         endif
         if (ifin .lt. ideb) goto 9999
         iideb=ideb-i+1

@@ -42,7 +42,7 @@ subroutine facmtr(matin, matout, ier)
 #include "asterfort/mtdscr.h"
 #include "asterfort/mtexis.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=19) :: matin, matout, matpre, solveu
     character(len=24) :: valk
     logical :: hplog
@@ -64,8 +64,7 @@ subroutine facmtr(matin, matout, ier)
     call mtexis(matin, ier)
     if (ier .eq. 0) then
         valk = matin
-        call u2mesg('F', 'ALGORITH12_39', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_39', sk=valk)
     endif
 !
 !
@@ -76,8 +75,7 @@ subroutine facmtr(matin, matout, ier)
         call mtcopy(matin, matout, ier)
         if (ier .gt. 0) then
             valk = matin
-            call u2mesg('F', 'ALGORITH13_10', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH13_10', sk=valk)
         endif
         call mtdscr(matout)
     endif
@@ -92,8 +90,7 @@ subroutine facmtr(matin, matout, ier)
 !
 !
     if (ire .gt. 1) then
-        call u2mesg('F', 'ALGORITH13_11', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_11')
         ier=-1
     else if (ire.eq.1) then
         ier=-2

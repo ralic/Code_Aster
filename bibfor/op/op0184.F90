@@ -55,10 +55,9 @@ subroutine op0184()
 #include "asterfort/rsorac.h"
 #include "asterfort/titre.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -127,7 +126,7 @@ subroutine op0184()
             else if (nutyel.eq.ntseg) then
                 goto 20
             else
-                call u2mess('F', 'UTILITAI3_9')
+                call utmess('F', 'UTILITAI3_9')
             endif
 20          continue
             call jeveuo(jexnum(mlgcnx, imp), 'L', jdno)
@@ -147,7 +146,9 @@ subroutine op0184()
         zi(jnoma-1+ino) = imamin
 50  end do
 ! TEST SUR LA PRESENCE DE MAILLE PONCTUELLE
-    if (itest .ne. 0) call u2mess('I', 'UTILITAI3_10')
+    if (itest .ne. 0) then
+        call utmess('I', 'UTILITAI3_10')
+    endif
 !
 !     --- QUELS SONT LES INSTANTS A RELIRE ---
 !
@@ -191,20 +192,20 @@ subroutine op0184()
     call getvtx(' ', 'FORMAT', scal=form, nbret=nfor)
 !
     if (form .ne. 'IDEAS') then
-        call u2mess('F', 'UTILITAI3_11')
+        call utmess('F', 'UTILITAI3_11')
     endif
     call jeexin(nomapl//'           .TITR', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI3_12')
+        call utmess('F', 'UTILITAI3_12')
     else
         call jeveuo(nomapl//'           .TITR', 'L', jtitr)
         call jelira(nomapl//'           .TITR', 'LONMAX', nbtitr)
         if (nbtitr .ge. 1) then
             if (zk80(jtitr) (10:31) .ne. 'AUTEUR=INTERFACE_IDEAS') then
-                call u2mess('F', 'UTILITAI3_12')
+                call utmess('F', 'UTILITAI3_12')
             endif
         else
-            call u2mess('A', 'UTILITAI3_13')
+            call utmess('A', 'UTILITAI3_13')
         endif
     endif
 !
@@ -319,7 +320,7 @@ subroutine op0184()
     else
         if (nbordr .ne. 0) then
             if (kar .eq. '  2414') then
-                call u2mess('F', 'UTILITAI3_14')
+                call utmess('F', 'UTILITAI3_14')
             endif
             do 70 iord = 1, nbordr
                 if (zi(jnume+iord-1) .eq. numpas) goto 90
@@ -396,8 +397,7 @@ subroutine op0184()
     else
         vali (1) = ipas
         vali (2) = iret
-        call u2mesg('F', 'UTILITAI8_7', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'UTILITAI8_7', ni=2, vali=vali)
     endif
     call copisd('CHAMP_GD', 'G', chpres, nomch)
     call rsnoch(resu, nsymb, ipas)
@@ -412,13 +412,12 @@ subroutine op0184()
 !
 160  continue
 !
-    call u2mesg('I', 'UTILITAI8_8', 0, ' ', 0,&
-                0, 0, 0.d0)
+    call utmess('I', 'UTILITAI8_8')
     call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
                 cbid, epsi, crit, nbordr, 1,&
                 nbtrou)
     if (nbordr .le. 0) then
-        call u2mess('F', 'UTILITAI2_97')
+        call utmess('F', 'UTILITAI2_97')
     endif
     call wkvect('&&OP0184.NUME_ORDR', 'V V I', nbordr, lordr)
     call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8b,&
@@ -429,11 +428,9 @@ subroutine op0184()
                     0, jinst, k8b)
         vali (1) = zi(lordr+iord-1)
         valr = zr(jinst)
-        call u2mesg('I', 'UTILITAI8_9', 0, ' ', 1,&
-                    vali, 1, valr)
+        call utmess('I', 'UTILITAI8_9', si=vali(1), sr=valr)
 170  end do
-    call u2mesg('I', 'VIDE_1', 0, ' ', 0,&
-                0, 0, 0.d0)
+    call utmess('I', 'VIDE_1')
 !
     call titre()
 !
@@ -443,7 +440,7 @@ subroutine op0184()
     goto 190
 !
 180  continue
-    call u2mess('F', 'UTILITAI3_15')
+    call utmess('F', 'UTILITAI3_15')
 !
 190  continue
     call jedema()

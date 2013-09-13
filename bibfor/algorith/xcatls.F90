@@ -32,7 +32,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ndim, jltsv, jltsl, jlnsv, jlnsl
     character(len=8) :: noma, cote
     character(len=16) :: geofis
@@ -83,14 +83,14 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             valk(1) = 'INTERFACE'
             valk(2) = geofis
             valk(3) = 'FISSURE'
-            call u2mesk('F', 'XFEM_23', 3, valk)
+            call utmess('F', 'XFEM_23', nk=3, valk=valk)
         endif
     else if (callst) then
         if (geofis .eq. 'DROITE' .or. geofis .eq. 'ENTAILLE') then
             valk(1) = 'FISSURE'
             valk(2) = geofis
             valk(3) = 'INTERFACE'
-            call u2mesk('F', 'XFEM_23', 3, valk)
+            call utmess('F', 'XFEM_23', nk=3, valk=valk)
         endif
     endif
 !

@@ -13,8 +13,7 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
 #include "asterfort/q4gniw.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), mas(*), ener(*)
@@ -89,7 +88,7 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
 ! --- DE PLAQUE EXCENTRE, ON S'ARRETE EN ERREUR FATALE :
 !     ------------------------------------------------
     if (excent .ne. zero) then
-        call u2mess('F', 'ELEMENTS2_56')
+        call utmess('F', 'ELEMENTS2_56')
     endif
 !
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
@@ -168,7 +167,7 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
                 call dxqloe(flex, memb, mefl, ctor, .false.,&
                             vite, ener)
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
     endif

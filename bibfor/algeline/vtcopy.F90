@@ -6,7 +6,7 @@ subroutine vtcopy(chin, chout, kstop, codret)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcop1.h"
     character(len=*) :: chin, chout
     character(len=1) :: kstop
@@ -66,7 +66,7 @@ subroutine vtcopy(chin, chout, kstop, codret)
         call jeexin(ch2(1:19)//'.FETC', iret1)
 ! --- SI LE CHAM_NO CHOUT N'EST PAS FETI, ON S'ARRETE EN ERREUR FATALE
         if (iret1 .eq. 0) then
-            call u2mess('F', 'ALGELINE3_96')
+            call utmess('F', 'ALGELINE3_96')
         else
             call jeveuo(ch2(1:19)//'.FETC', 'L', ifetc2)
         endif

@@ -4,7 +4,7 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
                   rp)
     implicit none
 #include "asterfort/lcmmdc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), nbsys, is, iexp, nfs, nsg, nsfv
     real(kind=8) :: coeft(nmat), dy(*), vind(*), hsr(nsg, nsg), sq, expbp(*)
     character(len=16) :: necris
@@ -179,7 +179,7 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
         rp=coeft(iei+1)
 !
     else
-        call u2mess('F', 'COMPOR1_21')
+        call utmess('F', 'COMPOR1_21')
     endif
 !
 !

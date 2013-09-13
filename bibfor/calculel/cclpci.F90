@@ -4,7 +4,6 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -15,7 +14,8 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbpain, numord, codret
     character(len=8) :: modele, resuin, resuou, mateco, carael
     character(len=8) :: lipain(*)
@@ -118,7 +118,7 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
                         call alchml(ligrel, optio2, lipain(nbpain), 'V', nochin,&
                                     ierd, ' ')
                         if (ierd .gt. 0) then
-                            call u2mesk('A', 'CALCULEL3_19', 1, option)
+                            call utmess('A', 'CALCULEL3_19', sk=option)
                             goto 10
                         endif
                     else
@@ -127,7 +127,7 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
                         call alchml(ligrel, optio2, lipain(nbpain), 'G', nochin,&
                                     ierd, ' ')
                         if (ierd .gt. 0) then
-                            call u2mesk('A', 'CALCULEL3_19', 1, option)
+                            call utmess('A', 'CALCULEL3_19', sk=option)
                             goto 10
                         endif
                         call rsnoch(resuou, optio2, numord+decal)

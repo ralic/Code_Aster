@@ -22,8 +22,8 @@ subroutine impmem()
 ! ======================================================================
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utgtme.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: rval(4)
     character(len=8) :: k8tab(4)
     integer :: iret
@@ -36,9 +36,9 @@ subroutine impmem()
     call utgtme(4, k8tab, rval, iret)
     if (iret .eq. 0) then
         if (rval(1) .gt. 0.d0) then
-            call u2mesr('I', 'SUPERVIS2_77', 4, rval)
+            call utmess('I', 'SUPERVIS2_77', nr=4, valr=rval)
         else
-            call u2mesr('I', 'SUPERVIS2_78', 4, rval)
+            call utmess('I', 'SUPERVIS2_78', nr=4, valr=rval)
         endif
     else
         ASSERT(.false.)

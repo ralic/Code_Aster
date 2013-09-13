@@ -39,8 +39,7 @@ subroutine op0156()
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
     integer :: ibid, n1, iret, neq, ier
@@ -69,7 +68,7 @@ subroutine op0156()
     else if (zi(lmat+3).eq.2) then
         typmat='C'
     else
-        call u2mess('F', 'ALGELINE2_86')
+        call utmess('F', 'ALGELINE2_86')
     endif
     call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
                 numem, iret)
@@ -85,7 +84,7 @@ subroutine op0156()
     if (typmat .ne. typres) then
         valk(1)=typmat
         valk(2)=typres
-        call u2mesk('F', 'ALGELINE4_42', 2, valk)
+        call utmess('F', 'ALGELINE4_42', nk=2, valk=valk)
     endif
 !
     call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
@@ -96,7 +95,7 @@ subroutine op0156()
     if (.not.idensd('PROF_CHNO',pfchn1,pfchn2)) then
         valk(1)=pfchn1
         valk(2)=pfchn2
-        call u2mesk('A', 'CALCULEL3_46', 2, valk)
+        call utmess('A', 'CALCULEL3_46', nk=2, valk=valk)
         chamn2='&&OP0156.CHAM_NO'
         call vtcreb(chamn2, numem, 'V', typres, neq)
         call vtcopy(chamno, chamn2, 'F', ier)
@@ -109,7 +108,7 @@ subroutine op0156()
 !     ----------------------------------
     call jeexin(resu//'.VALE', iret)
     if (iret .ne. 0) then
-        call u2mesk('F', 'ALGELINE2_87', 1, resu(1:8))
+        call utmess('F', 'ALGELINE2_87', sk=resu(1:8))
     endif
     call vtcreb(resu, numem, 'G', typres, neq)
     call jeveuo(resu//'.VALE', 'E', jchout)

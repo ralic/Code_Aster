@@ -20,7 +20,6 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -31,7 +30,8 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=24) :: questl
@@ -93,7 +93,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
             igdli=zi(iadgd-1+4)
             igdco=zi(iadgd-1+5)
             if (igdli .ne. igdco) then
-                call u2mess('F', 'UTILITAI_57')
+                call utmess('F', 'UTILITAI_57')
                 ierd=1
                 goto 9999
             else
@@ -108,7 +108,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
             igdli=zi(iadgd-1+4)
             igdco=zi(iadgd-1+5)
             if (igdli .ne. igdco) then
-                call u2mess('F', 'UTILITAI_59')
+                call utmess('F', 'UTILITAI_59')
                 ierd=1
                 goto 9999
             else
@@ -124,7 +124,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'NB_EC') then
         if (icode .ge. 3) then
-            call u2mess('F', 'UTILITAI_60')
+            call utmess('F', 'UTILITAI_60')
             ierd=1
             goto 9999
         endif
@@ -133,7 +133,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
         else if ((questi.eq.'NB_CMP_MAX') .or.(questi.eq.'NU_CMP_LAGR'))&
     then
         if (icode .ge. 3) then
-            call u2mess('F', 'UTILITAI_60')
+            call utmess('F', 'UTILITAI_60')
             ierd=1
             goto 9999
         endif

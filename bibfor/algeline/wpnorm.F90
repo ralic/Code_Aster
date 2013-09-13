@@ -1,8 +1,7 @@
 subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
                   ddlexc, vecpro, resufr, coef)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -12,8 +11,9 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr(*), ddlexc(*)
     complex(kind=8) :: vecpro(neq, *)
@@ -167,8 +167,7 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
     else
 !
         valk = norm
-        call u2mesg('F', 'ALGELINE4_77', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_77', sk=valk)
 !
     endif
 !

@@ -32,7 +32,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, ndec, iret, indi(7), nbmeca, ni
     real(kind=8) :: di1d, i1d, n, pref, k0
     real(kind=8) :: deps(6), sigd(6), sigf(6)
@@ -114,7 +114,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
         di1d = d13*di1d
 !
     else
-        call u2mess('F', 'COMPOR1_35')
+        call utmess('F', 'COMPOR1_35')
     endif
 !
     if ((i1d/pref) .gt. tol) then
@@ -192,12 +192,12 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
             hooknl(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_35')
+            call utmess('F', 'COMPOR1_35')
         endif
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 !
     endif
 !

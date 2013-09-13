@@ -21,7 +21,6 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/digde2.h"
 #include "asterfort/digde3.h"
@@ -43,8 +42,9 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 #include "asterfort/scalai.h"
 #include "asterfort/teattr.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: opt
     character(len=19) :: ligrel, nochou
     character(len=8) :: nompar
@@ -113,7 +113,9 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
             lmatvf=.false.
         else
             lmatvf=.true.
-            if (tymat .ne. 'NON_SYM') call u2mess('F', 'CALCULEL4_12')
+            if (tymat .ne. 'NON_SYM') then
+                call utmess('F', 'CALCULEL4_12')
+            endif
         endif
     endif
 !

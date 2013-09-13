@@ -1,5 +1,5 @@
 subroutine te0082(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -11,7 +11,7 @@ subroutine te0082(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
 #include "blas/ddot.h"
     character(len=16) :: option, nomte
@@ -209,7 +209,7 @@ subroutine te0082(option, nomte)
                 call pmavec('ZERO', nddl, matp, zr(idepl), masdep)
                 zr(iecin) = .5d0*ddot(nddl,zr(idepl),1,masdep,1)*zr( ifreq)
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
 !

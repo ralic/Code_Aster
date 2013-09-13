@@ -1,5 +1,6 @@
 subroutine te0295(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/chauxi.h"
@@ -16,7 +17,7 @@ subroutine te0295(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -48,7 +49,6 @@ subroutine te0295(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
     integer :: icodre(3)
     integer :: codrho
@@ -175,7 +175,7 @@ subroutine te0295(option, nomte)
 !
     if ((compor(1).ne.'ELAS' ) .or. (compor(3).eq.'GROT_GDEP') .or.&
         (compor(4).eq.'COMP_INCR')) then
-        call u2mess('F', 'RUPTURE1_24')
+        call utmess('F', 'RUPTURE1_24')
     endif
 !
 ! --- RECUPERATION DE LA PULSATION
@@ -352,7 +352,7 @@ subroutine te0295(option, nomte)
                     1, 'RHO', rho, codrho, 0)
 !
         if ((codrho.ne.0) .and. lmoda) then
-            call u2mess('F', 'RUPTURE1_26')
+            call utmess('F', 'RUPTURE1_26')
         endif
 !
         e = valres(1)

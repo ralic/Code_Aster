@@ -21,7 +21,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 #include "jeveux_private.h"
 #include "asterc/readdr.h"
 #include "asterfort/codent.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ic, iaddi, iadmo, lso
 ! ----------------------------------------------------------------------
 ! LECTURE D'UN BLOC DU FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE
@@ -95,8 +95,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
                 vali(1) = iaddi+i-1
                 vali(2) = numext
                 vali(3) = ierr
-                call u2mesg('F', 'JEVEUX_41', 1, nombas(ic), 3,&
-                            vali, 0, r8bid)
+                call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
             endif
             nbacce(2*ic-1) = nbacce(2*ic-1) + 1
 10      continue
@@ -121,8 +120,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
                 vali(1) = iaddi+i-1
                 vali(2) = numext
                 vali(3) = ierr
-                call u2mesg('F', 'JEVEUX_41', 1, nombas(ic), 3,&
-                            vali, 0, r8bid)
+                call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
             endif
             nbacce(2*ic-1) = nbacce(2*ic-1) + 1
         endif

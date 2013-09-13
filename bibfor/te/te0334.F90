@@ -1,7 +1,6 @@
 subroutine te0334(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcgr.h"
 #include "asterfort/elref4.h"
 #include "asterfort/epsvmc.h"
@@ -12,7 +11,8 @@ subroutine te0334(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -112,7 +112,7 @@ subroutine te0334(option, nomte)
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
     if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
-        call u2mesk('F', 'ELEMENTS3_75', 1, phenom(1:12))
+        call utmess('F', 'ELEMENTS3_75', sk=phenom(1:12))
     endif
 !
 ! ---    RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES
@@ -125,7 +125,7 @@ subroutine te0334(option, nomte)
             compor = zk16(icompo)
             if (compor .ne. 'VMIS_ISOT_LINE' .and. compor(1:4) .ne. 'ELAS' .and. compor&
                 .ne. 'VMIS_ISOT_TRAC') then
-                call u2mesk('A', 'ELEMENTS3_77', 1, compor)
+                call utmess('A', 'ELEMENTS3_77', sk=compor)
             endif
         endif
     endif

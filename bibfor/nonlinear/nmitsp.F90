@@ -18,7 +18,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/affich.h"
 #include "asterfort/assert.h"
@@ -27,8 +27,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 #include "asterfort/nmacex.h"
 #include "asterfort/nmimpx.h"
 #include "asterfort/nmlerr.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdimpr
     character(len=19) :: sddisc
     integer :: iterat, retsup
@@ -76,7 +75,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 !
     if (iterat .ge. nbiter) then
         retsup = 0
-        call u2mesi('I', 'ITERSUPP_2', 1, nbiter)
+        call utmess('I', 'ITERSUPP_2', si=nbiter)
         goto 999
     endif
 !
@@ -88,10 +87,10 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 !
     if (lextra) then
         ciblen = (valext(1) + valext(2)*log(valext(4)) )/valext(3)
-        call u2mess('I', 'EXTRAPOLATION_11')
+        call utmess('I', 'EXTRAPOLATION_11')
     else
         ciblen = 0.d0
-        call u2mess('I', 'EXTRAPOLATION_10')
+        call utmess('I', 'EXTRAPOLATION_10')
         retsup = 0
         goto 999
     endif
@@ -102,13 +101,13 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 !
 ! --- AFFICHAGE
 !
-    call u2mesi('I', 'ITERSUPP_3', 1, nbitaj)
+    call utmess('I', 'ITERSUPP_3', si=nbitaj)
 !
 ! --- L'EXTRAPOLATION DONNE UN NOMBRE D'ITERATION < LIMITE ITERATION
 !
     if ((ciblen*1.20d0) .lt. mniter) then
         retsup = 0
-        call u2mess('I', 'ITERSUPP_4')
+        call utmess('I', 'ITERSUPP_4')
         goto 999
     endif
 !
@@ -118,18 +117,18 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
         retsup = 0
         vali(1) = nbitaj
         vali(2) = nbiter
-        call u2mesi('I', 'ITERSUPP_5', 2, vali)
+        call utmess('I', 'ITERSUPP_5', ni=2, vali=vali)
     endif
 !
 999  continue
 !
     if (retsup .eq. 1) then
-        call u2mess('I', 'ITERSUPP_7')
+        call utmess('I', 'ITERSUPP_7')
         call affich('MESSAGE', ' ')
         call nmimpx(sdimpr)
         itesup = 1
     else if (retsup.eq.0) then
-        call u2mess('I', 'ITERSUPP_6')
+        call utmess('I', 'ITERSUPP_6')
         itesup = 0
     else
         ASSERT(.false.)

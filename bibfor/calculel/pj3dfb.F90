@@ -9,8 +9,8 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: geom1(*), geom2(*)
     character(len=14) :: boite
@@ -73,7 +73,9 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     call jeveuo(maille, 'L', iatr3)
     ntr3 = zi(iatr3-1+1)
     rbig = r8maem()
-    if (ntr3 .eq. 0) call u2mess('F', 'CALCULEL4_57')
+    if (ntr3 .eq. 0) then
+        call utmess('F', 'CALCULEL4_57')
+    endif
 !
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
     call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
@@ -110,7 +112,9 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !
 !
     stotal = max((xmax-xmin), (ymax-ymin), (zmax-zmin))
-    if (stotal .eq. 0.d0) call u2mess('F', 'CALCULEL4_58')
+    if (stotal .eq. 0.d0) then
+        call utmess('F', 'CALCULEL4_58')
+    endif
     dx = 2.d0*stotal/(dble(ntr3)** (1.d0/3.d0))
 !
     dy = dx

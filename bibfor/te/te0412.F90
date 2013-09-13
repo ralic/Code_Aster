@@ -27,7 +27,7 @@ subroutine te0412(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/t3gedg.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 !
@@ -107,7 +107,7 @@ subroutine te0412(option, nomte)
         dkq = .true.
         dkg = .true.
         nbsig = 8
-        elseif (nomte.eq.'MEDKTR3 ' .or. nomte.eq.'MEDSTR3 ' .or. nomte .eq.'MET3TR3 ') then
+    else if (nomte.eq.'MEDKTR3 ' .or. nomte.eq.'MEDSTR3 ' .or. nomte .eq.'MET3TR3 ') then
         dkq = .false.
         dkg = .false.
     else if (nomte.eq.'MEDKTG3 ' .or. nomte.eq.'MET3GG3 ') then
@@ -115,10 +115,12 @@ subroutine te0412(option, nomte)
         dkg = .true.
         nbsig = 8
     else
-        call u2mesk('F', 'ELEMENTS_34', 1, nomte)
+        call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnoel,&
+                npg, ipoids, icoopg, ivf, idfdx,&
+                idfd2, jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
 !
@@ -151,7 +153,8 @@ subroutine te0412(option, nomte)
 !
 ! - ON REGARDE SI ON EST EN LINEAIRE OU ENN NON-LINEAIRE
 !
-    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo, iret)
+    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo,&
+                iret)
 !
     if (iret .eq. 0) then
 !
@@ -167,7 +170,8 @@ subroutine te0412(option, nomte)
                 call jevech('PDEPLAR', 'L', jdepm)
                 if (.not.dkg) then
 ! ---     PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-                    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', icontp, 'S')
+                    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
+                                icontp, 'S')
                 else
                     call jevech('PCONTRR', 'L', icontp)
                 endif
@@ -175,7 +179,8 @@ subroutine te0412(option, nomte)
                 call jevech('PDEPLR', 'L', jdepm)
                 if (.not.dkg) then
 ! ---     PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-                    call cosiro(nomte, 'PCONTPR', 'L', 'UI', 'G', icontp, 'S')
+                    call cosiro(nomte, 'PCONTPR', 'L', 'UI', 'G',&
+                                icontp, 'S')
                 else
                     call jevech('PCONTPR', 'L', icontp)
                 endif
@@ -183,7 +188,10 @@ subroutine te0412(option, nomte)
 !
 !
             if (dkg .and.&
-         (lkit .or. zk16(icompo)(1:11) .eq. 'GLRC_DAMAGE' .or. zk16(icompo)(1:4) .eq. 'ELAS')) then
+                (&
+                lkit .or. zk16(icompo)(1:11) .eq. 'GLRC_DAMAGE' .or. zk16(icompo)(1:4) .eq.&
+                'ELAS'&
+                )) then
                 if (option .eq. 'ENEL_ELGA') then
                     call jevech('PVARIGR', 'L', jvari)
                 else if (option.eq.'ENEL_ELEM') then
@@ -228,7 +236,8 @@ subroutine te0412(option, nomte)
 !
                 call dxefro(npg, t2ui, effort, effint)
             else
-                call dxeffi(option, nomte, pgl, zr(icontp), nbsig, effint)
+                call dxeffi(option, nomte, pgl, zr(icontp), nbsig,&
+                            effint)
             endif
 !
 ! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
@@ -323,7 +332,8 @@ subroutine te0412(option, nomte)
 !     -----------------------------------------------------------
         optio2='DEGE_ELGA'
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
-            call dktedg(xyzl, optio2, pgl, ul, degpg, multic)
+            call dktedg(xyzl, optio2, pgl, ul, degpg,&
+                        multic)
         else if (nomte.eq.'MEDSTR3') then
             call dstedg(xyzl, optio2, pgl, ul, degpg)
         else if (nomte.eq.'MEDKQU4' .or. nomte.eq.'MEDKQG4') then
@@ -369,9 +379,12 @@ subroutine te0412(option, nomte)
                 eps(3) = eps(3)*2.d0
                 khi(3) = khi(3)*2.d0
 !
-                call pmrvec('ZERO', 3, 3, dm, eps, dmeps)
-                call pmrvec('ZERO', 3, 3, df, khi, dfkhi)
-                call pmrvec('ZERO', 2, 2, dc, gam, dcgam)
+                call pmrvec('ZERO', 3, 3, dm, eps,&
+                            dmeps)
+                call pmrvec('ZERO', 3, 3, df, khi,&
+                            dfkhi)
+                call pmrvec('ZERO', 2, 2, dc, gam,&
+                            dcgam)
 !
                 do isig = 1, nbsm
                     enelm(ipg) = enelm(ipg) + 0.5d0*eps(isig)*dmeps( isig)
@@ -384,8 +397,10 @@ subroutine te0412(option, nomte)
 ! --- COUPLAGE MEMBRANE - FLEXION (ELAS_COQUE)
 !
                 if (coupmf) then
-                    call pmrvec('ZERO', 3, 3, dmf, eps, dmeps)
-                    call pmrvec('ZERO', 3, 3, dmf, khi, dfkhi)
+                    call pmrvec('ZERO', 3, 3, dmf, eps,&
+                                dmeps)
+                    call pmrvec('ZERO', 3, 3, dmf, khi,&
+                                dfkhi)
 !
                     do isig = 1, nbsm
                         enemf(ipg)= enemf(ipg)+0.5d0*(eps(isig)*dfkhi(isig)+ khi(isig)*dmeps(isig))
@@ -437,7 +452,7 @@ subroutine te0412(option, nomte)
         valk(1) = option
         valk(2) = nomte
         valk(3) = zk16(icompo)
-        call u2mesk('F', 'ELEMENTS_88', 3, valk)
+        call utmess('F', 'ELEMENTS_88', nk=3, valk=valk)
     endif
 !
 end subroutine

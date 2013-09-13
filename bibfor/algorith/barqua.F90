@@ -1,7 +1,7 @@
 subroutine barqua(i1, i2, coor, poin)
-    implicit   none
+    implicit none
 #include "asterfort/barso1.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: i1, i2, poin(*)
     real(kind=8) :: coor(*)
 !-----------------------------------------------------------------------
@@ -143,7 +143,7 @@ subroutine barqua(i1, i2, coor, poin)
 240      continue
 !
     else
-        call u2mesk('F', 'ALGORITH_36', 1, 'QUAD')
+        call utmess('F', 'ALGORITH_36', sk='QUAD')
 !
     endif
 !

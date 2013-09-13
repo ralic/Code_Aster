@@ -23,6 +23,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cordd2.h"
@@ -50,16 +51,12 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
 #include "asterfort/parti0.h"
 #include "asterfort/ssvalv.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcopy.h"
@@ -99,7 +96,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     integer :: nbecmx
     parameter(nbecmx=10)
 !
-    character(len=1) ::  bas, ktyp
+    character(len=1) :: bas, ktyp
     character(len=8) :: nomsd, kbid, ma, mo, mo2, nogdsi, nogdco, nomcas, partit
     character(len=11) :: k11b
     character(len=14) :: k14b, nudev
@@ -285,7 +282,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         if (zi(jprti) .ne. nbproc) then
             vali(1)=zi(jprti)
             vali(2)=nbproc
-            call u2mesi('F', 'CALCULEL_13', 2, vali)
+            call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
         endif
 !
         call jeveuo(partit//'.PRTK', 'L', jprtk)
@@ -333,13 +330,19 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
     call jeexin(ma//'.NOMACR', iret)
     if (iret .gt. 0) then
-        if (lfeti) call u2mesk('F', 'ASSEMBLA_12', 1, ma(1:8))
+        if (lfeti) then
+            call utmess('F', 'ASSEMBLA_12', sk=ma(1:8))
+        endif
         call jeveuo(ma//'.NOMACR', 'L', ianmcr)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
         icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
-        if (icmp .eq. 0) call u2mess('F', 'ASSEMBLA_9')
-        if (icmp .gt. 30) call u2mess('F', 'ASSEMBLA_10')
+        if (icmp .eq. 0) then
+            call utmess('F', 'ASSEMBLA_9')
+        endif
+        if (icmp .gt. 30) then
+            call utmess('F', 'ASSEMBLA_10')
+        endif
 !       -- ICODLA EST L'ENTIER CODE CORRESPONDANT A LA CMP "LAGR"
         jec=(icmp-1)/30+1
         icodla(jec)=lshift(1,icmp)
@@ -454,7 +457,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
             else if (type.eq.2) then
                 call jecreo(kvale, bas//' V C16')
             else
-                call u2mess('F', 'ASSEMBLA_11')
+                call utmess('F', 'ASSEMBLA_11')
             endif
             call jeecra(kvale, 'LONMAX', nequa)
             call jeveuo(kvale, 'E', jvale)
@@ -476,7 +479,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 vecel=zk24(ilivec+imat-1)(1:19)
                 call dismoi('F', 'NOM_MODELE', vecel, 'VECT_ELEM', ibid,&
                             mo2, ierd)
-                if (mo2 .ne. mo) call u2mess('F', 'ASSEMBLA_5')
+                if (mo2 .ne. mo) then
+                    call utmess('F', 'ASSEMBLA_5')
+                endif
 !
 !         -- TRAITEMENT DES SOUS-STRUCTURES :
 !         -----------------------------------
@@ -705,7 +710,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 ! SI ON EST DANS UN CALCUL FETI SUR UN SOUS-DOMAINE, ON SE POSE LA
 ! QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA AU SOUS-DOMAINE IDD
                                         if (numa .gt. 0) then
-                                            if (llich) call u2mess('F', 'ASSEMBLA_6')
+                                            if (llich) then
+                                                call utmess('F', 'ASSEMBLA_6')
+                                            endif
 ! ELLE APPARTIENT AU GREL IGR DU LIGREL PHYSIQUE ILIMA
                                             if (idd .ne. 0) then
 ! CHAQUE PROC ASSEMBLE LA PARTIE PHYSIQUE DES SECONDS MEMBRES FETI LE
@@ -720,7 +727,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                             endif
                                         else
 ! ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
-                                            if (llimo) call u2mess('F', 'ASSEMBLA_7')
+                                            if (llimo) then
+                                                call utmess('F', 'ASSEMBLA_7')
+                                            endif
                                         endif
                                     endif
 !
@@ -749,8 +758,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                                 valk(1)=resu
                                                 valk(2)=vecel
                                                 valk(3)=nudev
-                                                call u2mesg('F', 'ASSEMBLA_41', 3, valk, 1,&
-                                                            vali, 0, 0.d0)
+                                                call utmess('F', 'ASSEMBLA_41', nk=3, valk=valk,&
+                                                            si=vali(1))
                                             endif
 !
                                             if (iad1 .gt. nequa) then
@@ -759,15 +768,14 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                                 vali(3)=nequa
                                                 valk(1)=resu
                                                 valk(2)=vecel
-                                                call u2mesg('F', 'ASSEMBLA_42', 2, valk, 3,&
-                                                            vali, 0, 0.d0)
+                                                call utmess('F', 'ASSEMBLA_42', nk=2, valk=valk,&
+                                                            ni=3, vali=vali)
                                             endif
 !
                                             if (nddl1 .gt. 100) then
                                                 vali(1)=nddl1
                                                 vali(2)=100
-                                                call u2mesg('F', 'ASSEMBLA_43', 0, ' ', 2,&
-                                                            vali, 0, 0.d0)
+                                                call utmess('F', 'ASSEMBLA_43', ni=2, vali=vali)
                                             endif
 !
                                             if (type .eq. 1) then
@@ -856,8 +864,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                             vali(2)=numa
                                             vali(3)=n1
                                             vali(4)=nnoe
-                                            call u2mesg('F', 'ASSEMBLA_44', 3, valk, 4,&
-                                                        vali, 0, 0.d0)
+                                            call utmess('F', 'ASSEMBLA_44', nk=3, valk=valk,&
+                                                        ni=4, vali=vali)
                                         endif
                                         il=0
                                         do 200 k1 = 1, nnoe
@@ -903,8 +911,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                                     valk(5)=nomli(1:8)
                                                     vali(1)=n1
                                                     vali(2)=numa
-                                                    call u2mesg('F', 'ASSEMBLA_45', 5, valk, 2,&
-                                                                vali, 0, 0.d0)
+                                                    call utmess('F', 'ASSEMBLA_45', nk=5,&
+                                                                valk=valk, ni=2, vali=vali)
                                                 endif
 !
 !                         -- NUMERO D'EQUATION DU PREMIER DDL DE N1
@@ -916,8 +924,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                                 if (nddl1 .gt. 100) then
                                                     vali(1)=nddl1
                                                     vali(2)=100
-                                                    call u2mesg('F', 'ASSEMBLA_46', 0, ' ', 2,&
-                                                                vali, 0, 0.d0)
+                                                    call utmess('F', 'ASSEMBLA_46', ni=2,&
+                                                                vali=vali)
                                                 endif
                                             else
 ! NOEUD PHYSIQUE
@@ -930,8 +938,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                                 if (nddl1 .gt. 100) then
                                                     vali(1)=nddl1
                                                     vali(2)=100
-                                                    call u2mesg('F', 'ASSEMBLA_47', 0, ' ', 2,&
-                                                                vali, 0, 0.d0)
+                                                    call utmess('F', 'ASSEMBLA_47', ni=2,&
+                                                                vali=vali)
                                                 endif
                                             endif
                                             if (iad1 .eq. 0) then
@@ -939,8 +947,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                                 valk(1)=resu
                                                 valk(2)=vecel
                                                 valk(3)=nudev
-                                                call u2mesg('F', 'ASSEMBLA_48', 3, valk, 1,&
-                                                            vali, 0, 0.d0)
+                                                call utmess('F', 'ASSEMBLA_48', nk=3, valk=valk,&
+                                                            si=vali(1))
                                             endif
                                             if (iad1 .gt. nequa) then
                                                 vali(1)=n1
@@ -948,8 +956,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                                 vali(3)=nequa
                                                 valk(1)=resu
                                                 valk(2)=vecel
-                                                call u2mesg('F', 'ASSEMBLA_49', 2, valk, 3,&
-                                                            vali, 0, 0.d0)
+                                                call utmess('F', 'ASSEMBLA_49', nk=2, valk=valk,&
+                                                            ni=3, vali=vali)
                                             endif
                                             if (type .eq. 1) then
                                                 do 180 i1 = 1, nddl1

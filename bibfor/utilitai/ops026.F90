@@ -26,13 +26,12 @@ subroutine ops026()
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/uldefi.h"
 #include "asterfort/ulimpr.h"
 #include "asterfort/ulnomf.h"
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
     integer :: unite, ifm, niv, n1, nf, nu
     logical :: sortie
     character(len=1) :: kacc, ktyp
@@ -66,7 +65,7 @@ subroutine ops026()
 !           SA PRESENCE DANS LA STRUCTURE DE DONNEES
             unite = ulnomf ( fichie, kacc, ktyp )
             if (unite .lt. 0) then
-                call u2mesk('A', 'UTILITAI3_33', 1, fichie)
+                call utmess('A', 'UTILITAI3_33', sk=fichie)
                 goto 999
             endif
         endif
@@ -79,13 +78,13 @@ subroutine ops026()
             sortie = .true.
             unite = ulnume()
             if (unite .lt. 0) then
-                call u2mess('F', 'UTILITAI3_34')
+                call utmess('F', 'UTILITAI3_34')
             endif
         endif
 !
     else
 !
-        call u2mesk('F', 'UTILITAI3_35', 1, action)
+        call utmess('F', 'UTILITAI3_35', sk=action)
 !
     endif
 !

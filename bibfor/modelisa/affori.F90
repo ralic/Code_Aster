@@ -1,14 +1,13 @@
 subroutine affori(typ, nomt, cara, val, jad,&
                   jdno, jdco, ivr, nutyma, ntseg,&
                   carori, nco, ier)
-    implicit    none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/angvxy.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
     integer :: nco, ivr(*), nutyma, ntseg, jad, jdno, jdco, ier
     character(len=*) :: typ, nomt, cara, carori(nco)
@@ -94,7 +93,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call u2mesk('A', 'MODELISA_87', 2, valk)
+                    call utmess('A', 'MODELISA_87', nk=2, valk=valk)
                     ier = ier + 1
                 endif
                 goto 999
@@ -104,7 +103,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call u2mesk('A', 'MODELISA_88', 2, valk)
+                    call utmess('A', 'MODELISA_88', nk=2, valk=valk)
                     ier = ier + 1
                 endif
                 goto 999
@@ -115,8 +114,8 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 valk(2) = nom
                 valr(1) = zr(jad+2)
                 valr(2) = gamma
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
 !       si maille=seg2, longueur<>0 : affectation de gamma seul
             zr(jad+2) = gamma
@@ -126,7 +125,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
             if (locvr(2) .eq. 1) then
                 valk(1) = car
                 valk(2) = nom
-                call u2mesk('A', 'MODELISA_89', 2, valk)
+                call utmess('A', 'MODELISA_89', nk=2, valk=valk)
                 ier = ier + 1
             endif
             goto 999
@@ -143,7 +142,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call u2mesk('A', 'MODELISA_90', 2, valk)
+                    call utmess('A', 'MODELISA_90', nk=2, valk=valk)
                     ier = ier + 1
                 endif
                 goto 999
@@ -154,24 +153,24 @@ subroutine affori(typ, nomt, cara, val, jad,&
                     valk(2) = nom
                     valr(1) = zr(jad)
                     valr(2) = alpha
-                    call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                                valr=valr)
                 endif
                 if (abs(zr(jad+1)) .gt. r8prem()) then
                     valk(1) = car
                     valk(2) = nom
                     valr(1) = zr(jad+1)
                     valr(2) = beta
-                    call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                                valr=valr)
                 endif
                 if (abs(zr(jad+2)) .gt. r8prem()) then
                     valk(1) = car
                     valk(2) = nom
                     valr(1) = zr(jad+2)
                     valr(2) = gamma
-                    call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                                valr=valr)
                 endif
 !           si maille seg2 (longueur=0) ou poi1 : 3 angles
                 zr(jad) = alpha
@@ -186,24 +185,24 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 valk(2) = nom
                 valr(1) = zr(jad)
                 valr(2) = alpha
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
             if (abs(zr(jad+1)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
                 valr(1) = zr(jad+1)
                 valr(2) = beta
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
             if (abs(zr(jad+2)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
                 valr(1) = zr(jad+2)
                 valr(2) = gamma
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
             zr(jad) = alpha
             zr(jad+1) = beta
@@ -220,7 +219,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call u2mesk('A', 'MODELISA_90', 2, valk)
+                    call utmess('A', 'MODELISA_90', nk=2, valk=valk)
                     ier = ier + 1
                 endif
                 goto 999
@@ -236,24 +235,24 @@ subroutine affori(typ, nomt, cara, val, jad,&
                     valk(2) = nom
                     valr(1) = zr(jad)
                     valr(2) = alpha
-                    call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                                valr=valr)
                 endif
                 if (abs(zr(jad+1)) .gt. r8prem()) then
                     valk(1) = car
                     valk(2) = nom
                     valr(1) = zr(jad+1)
                     valr(2) = beta
-                    call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                                valr=valr)
                 endif
                 if (abs(zr(jad+2)) .gt. r8prem()) then
                     valk(1) = car
                     valk(2) = nom
                     valr(1) = zr(jad+2)
                     valr(2) = gamma
-                    call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                                ibid, 2, valr)
+                    call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                                valr=valr)
                 endif
                 zr(jad) = alpha
                 zr(jad+1) = beta
@@ -272,24 +271,24 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 valk(2) = nom
                 valr(1) = zr(jad)
                 valr(2) = alpha
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
             if (abs(zr(jad+1)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
                 valr(1) = zr(jad+1)
                 valr(2) = beta
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
             if (abs(zr(jad+2)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
                 valr(1) = zr(jad+2)
                 valr(2) = gamma
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
             zr(jad) = alpha
             zr(jad+1) = beta
@@ -305,7 +304,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call u2mesk('A', 'MODELISA_91', 2, valk)
+                    call utmess('A', 'MODELISA_91', nk=2, valk=valk)
                     ier = ier + 1
                 endif
                 goto 999
@@ -315,7 +314,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
-                    call u2mesk('A', 'MODELISA_88', 2, valk)
+                    call utmess('A', 'MODELISA_88', nk=2, valk=valk)
                     ier = ier + 1
                 endif
                 goto 999
@@ -331,8 +330,8 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 valk(2) = nom
                 valr(1) = zr(jad+2)
                 valr(2) = gamma
-                call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
-                            ibid, 2, valr)
+                call utmess('A', 'MODELISA2_7', nk=2, valk=valk, nr=2,&
+                            valr=valr)
             endif
             zr(jad+2) = gamma
             goto 999
@@ -341,7 +340,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
             if (locvr(2) .eq. 1) then
                 valk(1) = car
                 valk(2) = nom
-                call u2mesk('A', 'MODELISA_89', 2, valk)
+                call utmess('A', 'MODELISA_89', nk=2, valk=valk)
                 ier = ier + 1
             endif
             goto 999

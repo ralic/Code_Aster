@@ -54,7 +54,7 @@ subroutine op0077()
 #include "asterfort/retrgl.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/tran77.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -89,12 +89,12 @@ subroutine op0077()
 ! --- PHASE DE TEST SUR LES CHAMPS A RESTITUER
     call getvtx(' ', 'NOM_CHAM', nbval=4, vect=champ, nbret=nbcham)
     if (nbcham .lt. 0) then
-        call u2mess('E', 'ALGORITH9_44')
+        call utmess('E', 'ALGORITH9_44')
     else
         do 20 i = 1, nbcham
             do 10 j = i+1, nbcham
                 if (champ(i) .eq. champ(j)) then
-                    call u2mess('E', 'ALGORITH9_30')
+                    call utmess('E', 'ALGORITH9_30')
                 endif
 10          continue
 20      continue
@@ -149,7 +149,7 @@ subroutine op0077()
                 goto 30
 !
             else
-                call u2mess('E', 'ALGORITH9_46')
+                call utmess('E', 'ALGORITH9_46')
             endif
         endif
     endif
@@ -200,11 +200,11 @@ subroutine op0077()
             call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=n1)
             call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=n2)
             if ((n1.ne.0.and.n2.ne.0)) then
-                call u2mess('F', 'ALGORITH9_47')
+                call utmess('F', 'ALGORITH9_47')
             endif
             call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) then
-                call u2mess('F', 'ALGORITH9_48')
+                call utmess('F', 'ALGORITH9_48')
             endif
             call tran77(nomres, typres, resin, mode)
         endif
@@ -273,11 +273,11 @@ subroutine op0077()
             call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=n1)
             call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=n2)
             if ((n1.ne.0.and.n2.ne.0)) then
-                call u2mess('F', 'ALGORITH9_47')
+                call utmess('F', 'ALGORITH9_47')
             endif
             call getvid(' ', 'MODE_MECA', scal=mode, nbret=ibid)
             if (ibid .eq. 0) then
-                call u2mess('F', 'ALGORITH9_48')
+                call utmess('F', 'ALGORITH9_48')
             endif
             call harm75(nomres, typres, resin, nomcmd, mode)
         endif

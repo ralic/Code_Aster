@@ -49,7 +49,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=8) :: maiin, maiout
@@ -86,8 +86,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
         valk (2) = maiin
         valk (3) = numout
         valk (4) = maiout
-        call u2mesg('F', 'ALGORITH12_62', 4, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
     endif
 !
 !
@@ -121,8 +120,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
                 erreur=.true.
                 vali (1) = nuno
                 vali (2) = ityp
-                call u2mesg('A', 'ALGORITH12_63', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('A', 'ALGORITH12_63', ni=2, vali=vali)
             else
                 zi(ldcvn+i-1)=iran
             endif
@@ -133,8 +131,7 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !--------------------------TRAITEMENT ERREUR EVENTUELLE----------------
 !
     if (erreur) then
-        call u2mesg('F', 'ALGORITH12_64', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_64')
     endif
 !
 !------------------------LIBERATION DES OBJETS -------------------------

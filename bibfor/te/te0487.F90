@@ -1,14 +1,14 @@
 subroutine te0487(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -83,8 +83,7 @@ subroutine te0487(option, nomte)
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3)(1:8)
             valk = nomail
-            call u2mesg('F', 'ELEMENTS4_92', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ELEMENTS4_92', sk=valk)
         endif
 10  end do
 !

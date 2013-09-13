@@ -1,5 +1,6 @@
 subroutine irrnvi(model, ndt, ndi, nr, nvi)
     implicit none
+#include "asterfort/utmess.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +30,6 @@ subroutine irrnvi(model, ndt, ndi, nr, nvi)
 !              IL FAUT AJOUTER UN TERME POUR LES C_PLAN
 !     NVI   :  NB DE VARIABLES INTERNES
 ! ----------------------------------------------------------------
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nr, nvi, nvint
     character(len=8) :: model
 !
@@ -58,11 +58,11 @@ subroutine irrnvi(model, ndt, ndi, nr, nvi)
     else if (model(1:2).eq.'1D') then
 ! === =================================================================
 !        MODELISATION DE TYPE 1D NON AUTORISEE
-        call u2mess('F', 'ALGORITH4_45')
+        call utmess('F', 'ALGORITH4_45')
     else
 ! === ==============================================================
 !        MODELISATION INCONNUE
-        call u2mess('F', 'ALGORITH2_20')
+        call utmess('F', 'ALGORITH2_20')
     endif
 !
 end subroutine

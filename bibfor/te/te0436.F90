@@ -18,7 +18,6 @@ subroutine te0436(option, nomte)
 ! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elref4.h"
@@ -27,8 +26,9 @@ subroutine te0436(option, nomte)
 #include "asterfort/mbrigi.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT :
@@ -106,7 +106,7 @@ subroutine te0436(option, nomte)
                     ' ', 'ELAS_MEMBRANE', 0, ' ', 0.d0,&
                     1, 'RHO', rho, codres, 1)
         if (rho .le. r8prem()) then
-            call u2mess('F', 'ELEMENTS5_45')
+            call utmess('F', 'ELEMENTS5_45')
         endif
     endif
 !

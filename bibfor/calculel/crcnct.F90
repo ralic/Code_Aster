@@ -21,7 +21,6 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -32,8 +31,9 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbcmp
     character(len=*) :: base, nomch, mailla, gd
     character(len=*) :: licmp(nbcmp)
@@ -83,7 +83,9 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
 !     VERIFICATION DES ARGUMENTS D'APPEL :
 !     ------------------------------------
     call jenonu(jexnom('&CATA.GD.NOMGD', gd2), igd)
-    if (igd .eq. 0) call u2mesk('F', 'CALCULEL2_21', 1, gd2)
+    if (igd .eq. 0) then
+        call utmess('F', 'CALCULEL2_21', sk=gd2)
+    endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iancmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', nbcmp2)
     do 1, icmp=1,nbcmp
@@ -92,14 +94,16 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     if (itrou .eq. 0) then
         valk(1) = nocmp
         valk(2) = gd2
-        call u2mesk('F', 'CALCULEL2_22', 2, valk)
+        call utmess('F', 'CALCULEL2_22', nk=2, valk=valk)
     endif
     1 end do
     call dismoi('F', 'NB_EC', gd2, 'GRANDEUR', nec,&
                 kbid, ied)
     call dismoi('F', 'TYPE_SCA', gd2, 'GRANDEUR', ibid,&
                 tysca, ied)
-    if (tysca(1:1) .ne. 'R') call u2mesk('F', 'CALCULEL2_23', 1, gd2)
+    if (tysca(1:1) .ne. 'R') then
+        call utmess('F', 'CALCULEL2_23', sk=gd2)
+    endif
 !
 !
 !     ALLOCATION DU CHAM_NO :

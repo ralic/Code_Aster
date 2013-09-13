@@ -25,7 +25,6 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -37,7 +36,8 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
 #include "asterfort/mmpnoe.h"
 #include "asterfort/mmsauv.h"
 #include "asterfort/mmtanr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma
     character(len=8) :: aliase
     character(len=24) :: defico, resoco
@@ -118,7 +118,7 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
     call mmnorm(ndimg, tau1, tau2, norm, noor)
     if (noor .le. r8prem()) then
         call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
-        call u2mesk('F', 'CONTACT3_24', 1, nommam)
+        call utmess('F', 'CONTACT3_24', sk=nommam)
     endif
 !
 ! --- POIDS ET COORDONNEES DU POINT DE CONTACT

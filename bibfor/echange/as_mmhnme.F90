@@ -1,5 +1,5 @@
 subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
-                  typcon, n, cret)
+                     typcon, n, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,16 +19,17 @@ subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mmhnme.h"
     character(len=*) :: maa
     aster_int :: fid, typent, typgeo, cret, typcon, n, quoi, mdnont, mdnoit
     aster_int :: chtseq, chttra
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, typen4, typge4, cret4, typco4, n4, quoi4
     med_int :: mdnon4, mdnoi4, chtse4, chttr4
@@ -53,6 +54,6 @@ subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
                 typgeo, quoi, typcon, chtseq, chttra,&
                 n, cret)
 #endif
-
+!
 #endif
 end subroutine

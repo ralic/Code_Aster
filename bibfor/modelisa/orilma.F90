@@ -2,7 +2,6 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
                   ntrait, reorie, nbmavo, mailvo)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -13,10 +12,10 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/oriema.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utmasu.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ndim, listma(*), nbmail, norien, ntrait, nbmavo, mailvo(*)
     character(len=8) :: noma
     logical :: reorie
@@ -130,9 +129,11 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
         else
             valk(1) = nomail
             valk(2) = tpmail
-            call u2mesk('F', 'MODELISA5_94', 2, valk)
+            call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
         endif
-        if (dime1 .and. dime2) call u2mess('F', 'MODELISA5_98')
+        if (dime1 .and. dime2) then
+            call utmess('F', 'MODELISA5_98')
+        endif
 !
 10  end do
 !

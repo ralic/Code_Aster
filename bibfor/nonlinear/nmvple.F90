@@ -26,7 +26,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/vpalem.h"
 #include "asterfort/zerofr.h"
@@ -103,11 +103,11 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     t2 = abs(theta-1.d0)
     prec = 0.01d0
     if ((t1.gt.prec) .and. (t2.gt.prec)) then
-        call u2mess('F', 'ALGORITH6_55')
+        call utmess('F', 'ALGORITH6_55')
     endif
 !
     if (typmod(1) .eq. 'C_PLAN') then
-        call u2mess('F', 'ALGORITH6_92')
+        call utmess('F', 'ALGORITH6_92')
         goto 299
     endif
 !

@@ -14,8 +14,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nommat
@@ -93,7 +92,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     if (numsym .eq. 0) then
         valk(1) = nomsym
         valk(2) = nomsd
-        call u2mesk('F', 'PREPOST_51', 2, valk)
+        call utmess('F', 'PREPOST_51', nk=2, valk=valk)
     endif
     call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
 !
@@ -101,7 +100,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     if (numsym .eq. 0) then
         valk(1) = nomsym
         valk(2) = nomsd2
-        call u2mesk('F', 'PREPOST_51', 2, valk)
+        call utmess('F', 'PREPOST_51', nk=2, valk=valk)
     endif
     call jeveuo(jexnum(nomsd2//'.TACH', numsym), 'L', ivch2)
 !
@@ -113,7 +112,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
                 1, nomrm, val, icodre(1), 2)
     if (icodre(1) .ne. 0) then
         valk(1) = 'SU'
-        call u2mesk('F', 'FATIGUE1_88', 1, valk)
+        call utmess('F', 'FATIGUE1_88', sk=valk(1))
     endif
     su = val(1)
 !
@@ -133,8 +132,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !
     valr(1) = su
     valr(2) = salt0
-    call u2mesg('I', 'FATIGUE1_87', 0, ' ', 0,&
-                0, 2, valr)
+    call utmess('I', 'FATIGUE1_87', nr=2, valr=valr)
 !
     icmp = 1
     dmin = 1.d10
@@ -149,7 +147,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
         valk(1) = chequi
         valk(2) = nomsym
         valk(3) = nomsd
-        call u2mesk('F', 'PREPOST_52', 3, valk)
+        call utmess('F', 'PREPOST_52', nk=3, valk=valk)
     endif
     call jeveuo(chequi//'.CELV', 'L', ivord)
 !
@@ -160,7 +158,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
             valk(1) = chequ2(iord)
             valk(2) = nomsym
             valk(3) = nomsd2
-            call u2mesk('F', 'PREPOST_52', 3, valk)
+            call utmess('F', 'PREPOST_52', nk=3, valk=valk)
         endif
         call jeveuo(chequ2(iord)//'.CELV', 'L', ivord2(iord))
 11  continue
@@ -177,8 +175,9 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 12      continue
 !
         if (zr(ivpt) .gt. su) then
-            if (impr .ge. 2) call u2mesg('I', 'FATIGUE1_80', 0, ' ', 0,&
-                                         0, 0, valr)
+            if (impr .ge. 2) then
+                call utmess('I', 'FATIGUE1_80')
+            endif
             saltm = 0.d0
             crit = .true.
             smax = max(zr(ivpt) , smax)
@@ -204,8 +203,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
             valr (1) = zr(ivpt)
             valr (2) = zr(ivpt+1)
             valr (3) = dmax
-            call u2mesg('I', 'FATIGUE1_79', 0, ' ', 1,&
-                        ipt, 3, valr)
+            call utmess('I', 'FATIGUE1_79', si=ipt, nr=3, valr=valr)
         endif
 !
 10  continue
@@ -213,11 +211,9 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     if (crit) then
         valr (1) = smax
         valr (2) = su
-        call u2mesg('A', 'FATIGUE1_83', 0, ' ', 0,&
-                    0, 2, valr)
+        call utmess('A', 'FATIGUE1_83', nr=2, valr=valr)
     endif
-    call u2mesg('I', 'FATIGUE1_82', 0, ' ', 0,&
-                0, 1, dmin)
+    call utmess('I', 'FATIGUE1_82', sr=dmin)
 !
 !
     call jedema()

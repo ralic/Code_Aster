@@ -24,12 +24,12 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/granac.h"
 #include "asterfort/nmasse.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: icdmat, kpg, ksp, iret, nbvalc
     real(kind=8) :: crit(*)
     real(kind=8) :: instam, instap
@@ -105,7 +105,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
     t2 = abs(theta-1.d0)
     prec = 0.000001d0
     if ((t1.gt.prec) .and. (t2.gt.prec)) then
-        call u2mess('F', 'ALGORITH6_55')
+        call utmess('F', 'ALGORITH6_55')
     endif
 !
 ! TEMPERATURE AU MILIEU DU PAS DE TEMPS  (DANS COMMON / NMPAVP /)
@@ -150,13 +150,13 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
         ener = coegil(4)
 !
         if (coegil(5) .ne. 1.d0) then
-            call u2mess('A', 'ALGORITH6_56')
+            call utmess('A', 'ALGORITH6_56')
         endif
         if (fluphi .lt. -prec) then
-            call u2mess('F', 'ALGORITH6_57')
+            call utmess('F', 'ALGORITH6_57')
         endif
     else
-        call u2mess('F', 'ALGORITH6_58')
+        call utmess('F', 'ALGORITH6_58')
     endif
 !
 !     CALCUL DE LA DEFORMATION DE GRANDISSEMENT
@@ -171,7 +171,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
 ! --- RECUPERATION DU REPERE POUR LE GRANDISSEMENT
             alpha = angmas(1)
             if (angmas(2) .ne. 0.d0) then
-                call u2mess('F', 'ALGORITH6_59')
+                call utmess('F', 'ALGORITH6_59')
             endif
 !
 !        INCREMENT DEFORMATION DE GRANDISSEMENT DANS LE REPERE

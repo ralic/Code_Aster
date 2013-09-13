@@ -37,7 +37,6 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 !       ----------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -49,7 +48,8 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 #include "asterfort/lirtet.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     real(kind=8) :: rv
     integer :: nbm
     character(len=8) :: mcl(nbm), noma, b8
@@ -113,7 +113,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
         call jecroc(jexnom(cnx, noma))
         call jeecra(jexnom(cnx, noma), 'LONMAX', fmt(numtcl))
     else
-        call u2mesk('F', 'MODELISA7_10', 1, noma)
+        call utmess('F', 'MODELISA7_10', sk=noma)
     endif
 !
 ! - STOCKAGE DES NOMS DES NOEUDS DE LA MAILLE ET DU TYPE DE MAILLE

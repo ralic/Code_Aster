@@ -50,10 +50,10 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterfort/mdchii.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/mdchii.h"
+#include "asterfort/utmess.h"
     integer :: nbtv
     integer :: typent, typgeo
     integer :: codret
@@ -84,8 +84,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
     endif
     if (codret .ne. 0) then
         saux08='mfiope'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====
@@ -103,8 +102,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo,&
         call as_mficlo(idfimd, codret)
         if (codret .ne. 0) then
             saux08='mficlo'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
         idfimd = 0
     endif

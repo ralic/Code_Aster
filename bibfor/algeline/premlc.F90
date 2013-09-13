@@ -30,7 +30,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
 #include "asterfort/infmue.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: n1, diag(0:*), col(*), lgind, ddlmoy
     integer :: parent(*)
     integer :: nbsn, parend(*)
@@ -88,8 +88,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
         iddl1 = col(diag(iddl2-1)+1)
         if ((diag(iddl2)-diag(iddl2-1)) .le. 2) then
             vali (1) = iddl2
-            call u2mesg('F', 'ALGELINE5_35', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGELINE5_35', si=vali(1))
         endif
         rl(1,i) = iddl1
         j1 = diag(iddl2-1) + 2
@@ -213,8 +212,7 @@ subroutine premlc(n1, diag, col, parent, parend,&
     if (num .ne. n1) then
         vali (1) = num
         vali (2) = n1
-        call u2mesg('F+', 'ALGELINE5_36', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F+', 'ALGELINE5_36', ni=2, vali=vali)
         do 350 i = 1, n1
             if (lbd1(i) .ne. 0) then
                 write(ifm,*)'LE DDL BLOQUE: ',i,' A POUR LAMBDA1: ',&
@@ -229,18 +227,15 @@ subroutine premlc(n1, diag, col, parent, parend,&
                 vali (1) = i
                 vali (2) = lbd1(i)
                 vali (3) = lbd2(i)
-                call u2mesg('F+', 'ALGELINE5_37', 0, ' ', 3,&
-                            vali, 0, 0.d0)
+                call utmess('F+', 'ALGELINE5_37', ni=3, vali=vali)
             endif
 350      end do
         vali (1) = nrl
-        call u2mesg('F+', 'ALGELINE5_38', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F+', 'ALGELINE5_38', si=vali(1))
         do 360 i = 1, nrl
             vali (1) = rl(1,i)
             vali (2) = rl(2,i)
-            call u2mesg('F+', 'ALGELINE5_39', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F+', 'ALGELINE5_39', ni=2, vali=vali)
 360      continue
     endif
 !----------------------    CALCUL DU NOUVEAU PARENT

@@ -36,7 +36,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: lchar, mate
     character(len=24) :: modele, cara, metrnl, time, chtni
 ! ----------------------------------------------------------------------
@@ -81,7 +81,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
     call jemarq()
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
     if (modele(1:1) .eq. ' ') then
-        call u2mess('F', 'CALCULEL3_50')
+        call utmess('F', 'CALCULEL3_50')
     endif
 !
     call jeexin(lchar, iret)
@@ -116,7 +116,9 @@ subroutine metnth(modele, lchar, cara, mate, time,&
         call jeexin(convch, iret)
         if (iret .gt. 0) then
             iconv = iconv + 1
-            if (iconv .gt. 1) call u2mess('F', 'CALCULEL3_72')
+            if (iconv .gt. 1) then
+                call utmess('F', 'CALCULEL3_72')
+            endif
 !
             decent = 'OUI'
             option = 'RIGI_THER_CONV'

@@ -9,7 +9,7 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
     integer :: ia, ndim
     character(len=8) :: elp
@@ -145,7 +145,7 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
             endif
         else if (d.lt.-r8prem()) then
 !       LE POLYNOME N'A PAS DE SOLUTION
-            call u2mess('F', 'XFEM_65')
+            call utmess('F', 'XFEM_65')
         endif
     endif
 !

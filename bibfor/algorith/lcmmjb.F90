@@ -55,7 +55,7 @@ subroutine lcmmjb(taur, materf, cpmono, ifa, nmat,&
 #include "asterfort/lcmmj1.h"
 #include "asterfort/lcmmj2.h"
 #include "asterfort/lcmmjd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nbcomm(nmat, 3), ifa, nbsys, is, iret, nfs, nsg
     integer :: ir, nsfa, nsfv, nuecou, itmax, iexp
     real(kind=8) :: dgsdts, dksdts, dgrdbs, dkrdbs, vind(*), hsr(nsg, nsg)
@@ -91,7 +91,7 @@ subroutine lcmmjb(taur, materf, cpmono, ifa, nmat,&
         dkrdbs=dprdas*hr+dpr*dhrdas
     else if (nuecou.eq.6) then
 !        DD-FAT
-        call u2mess('F', 'COMPOR2_21')
+        call utmess('F', 'COMPOR2_21')
     else if (nuecou.ge.7) then
 !        DD-CC
 !        matrice tangente pas encore programmee

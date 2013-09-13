@@ -83,7 +83,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 #include "asterfort/nmcrpc.h"
 #include "asterfort/nmdome.h"
 #include "asterfort/rcmfmc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: imat(3)
     integer :: nveca, nchar
@@ -226,7 +226,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
         if (nchar .ne. 0) then
             call getvid(' ', 'MODELE', scal=k8b, nbret=iaux)
             if (iaux .eq. 0) then
-                call u2mess('F', 'ALGORITH9_26')
+                call utmess('F', 'ALGORITH9_26')
             endif
             call nmdome(modele, mate, carele, lischa, blan8,&
                         ibid)
@@ -257,7 +257,7 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 !
     if (nveca .ne. 0 .and. nchar .ne. 0) then
         if (nchar .ne. nondp) then
-            call u2mess('F', 'ALGORITH9_27')
+            call utmess('F', 'ALGORITH9_27')
         endif
     endif
 !

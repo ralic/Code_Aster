@@ -1,7 +1,6 @@
 subroutine rsnoch(nomsd, nomsy, iordr)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -15,8 +14,8 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutrg.h"
 #include "asterfort/sdmpic.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: iordr
     character(len=*) :: nomsd, nomsy
 ! ----------------------------------------------------------------------
@@ -69,7 +68,9 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     call rsutrg(nomd2, iordr, iretou, nordr)
     if (iretou .eq. 0) then
         irang = nordr + 1
-        if (irang .gt. normax) call u2mess('F', 'UTILITAI4_42')
+        if (irang .gt. normax) then
+            call utmess('F', 'UTILITAI4_42')
+        endif
         call jeecra(nomd2//'.ORDR', 'LONUTI', irang)
         call jeveuo(nomd2//'.ORDR', 'E', jordr)
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST SUPERIEUR
@@ -89,7 +90,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     if (iret .eq. 0) then
         valk(1) = noms2
         valk(2) = nomd2
-        call u2mesk('F', 'UTILITAI4_43', 2, valk)
+        call utmess('F', 'UTILITAI4_43', nk=2, valk=valk)
     endif
 !
 !
@@ -101,7 +102,9 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !
 !     -- ON VERIFIE L'EXISTENCE DE CHNOTE :
 !     -------------------------------------------
-    if (iret .eq. 100) call u2mesk('F', 'UTILITAI_55', 1, chnote)
+    if (iret .eq. 100) then
+        call utmess('F', 'UTILITAI_55', sk=chnote)
+    endif
     ASSERT(iret.eq.0)
 !
 !

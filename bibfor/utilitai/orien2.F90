@@ -3,7 +3,7 @@ subroutine orien2(xp, xq, xr, angl)
 #include "asterfort/matrot.h"
 #include "asterfort/orien1.h"
 #include "asterfort/pmavec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: xp(*), xq(*), xr(*), angl(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -44,8 +44,12 @@ subroutine orien2(xp, xq, xr, angl)
         xpr(i) = xr(i) - xp(i)
         s = s + xpr(i)*xpr(i)
 10  end do
-    if (r .eq. zero) call u2mess('F', 'UTILITAI3_39')
-    if (s .eq. zero) call u2mess('F', 'UTILITAI3_39')
+    if (r .eq. zero) then
+        call utmess('F', 'UTILITAI3_39')
+    endif
+    if (s .eq. zero) then
+        call utmess('F', 'UTILITAI3_39')
+    endif
     r = sqrt( r )
     s = sqrt( s )
     call orien1(xp, xq, angl)

@@ -6,7 +6,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: numold(*), tabd(*), tabl(*), tabv(*), jtype
     integer :: icmp, ifi, ima, nbord2, iadmax, nbno
     logical :: iwri
@@ -70,7 +70,7 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
         nbpt = zi(jcesd-1+5+4*(imaold-1)+1)
         nbsp = zi(jcesd-1+5+4*(imaold-1)+2)
         if (nbsp .ne. 1) then
-            call u2mess('F', 'PREPOST2_57')
+            call utmess('F', 'PREPOST2_57')
         endif
         vale = 0.d0
         if (zk8(jtype-1+ior) .eq. 'R') then

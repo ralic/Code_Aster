@@ -1,5 +1,5 @@
 subroutine te0158(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jpd1ff.h"
@@ -10,7 +10,7 @@ subroutine te0158(option, nomte)
 #include "asterfort/pmfdge.h"
 #include "asterfort/pmfpti.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verifm.h"
     character(len=*) :: option, nomte
@@ -76,7 +76,7 @@ subroutine te0158(option, nomte)
         call jevech('PDEFOPG', 'E', jeffg)
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
@@ -86,7 +86,7 @@ subroutine te0158(option, nomte)
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
@@ -147,7 +147,7 @@ subroutine te0158(option, nomte)
             phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*a)
         else
             ch16 = nomte
-            call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+            call utmess('F', 'ELEMENTS2_42', sk=ch16)
         endif
 !
 !        --- PASSAGE DES DEPLACEMENTS DANS LE REPERE LOCAL ---

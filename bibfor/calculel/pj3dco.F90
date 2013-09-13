@@ -3,7 +3,6 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
                   ldmax, distma)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -20,10 +19,10 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 #include "asterfort/pj3dfb.h"
 #include "asterfort/pj3dtr.h"
 #include "asterfort/pjxxut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres
     character(len=*) :: geom1, geom2
     character(len=8) :: moa1, moa2
@@ -152,7 +151,9 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     51 end do
     call wkvect('&&PJXXCO.TETR4', 'V V I', 1+6*ico, iatr3)
     zi(iatr3-1+1)=ico
-    if (ico .eq. 0) call u2mess('F', 'CALCULEL4_55')
+    if (ico .eq. 0) then
+        call utmess('F', 'CALCULEL4_55')
+    endif
 !
     call jeveuo(m1//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
@@ -365,7 +366,7 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     endif
     if (nbtrou .eq. 0) then
         call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
-        call u2mesk('F', 'CALCULEL4_56', 1, nono2)
+        call utmess('F', 'CALCULEL4_56', sk=nono2)
     endif
 !
     zi(iaconb-1+ino2)=4

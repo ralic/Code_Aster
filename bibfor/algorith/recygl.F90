@@ -50,7 +50,7 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 #include "asterfort/remngl.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=6) :: pgc
     character(len=*) :: nmresz, mdcycz, typsdz, maillz
     character(len=8) :: nomres, mailla, modcyc, typint
@@ -83,8 +83,7 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !
     call jeexin(mailla//'.INV.SKELETON', iret)
     if (iret .eq. 0) then
-        call u2mesg('F', 'ALGORITH13_8', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_8')
     endif
 !
 !

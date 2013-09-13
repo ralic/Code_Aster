@@ -45,7 +45,7 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 #include "asterfort/infniv.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, k, mod, kk, nbmect
     integer :: ind(7), nbmeca, iret, iadzi, iazk24
     integer :: ifm, niv
@@ -254,7 +254,9 @@ subroutine hujddd(carac, k, mater, ind, yf,&
         exptol = log(r8maem())
         exptol = min(exptol, d40)
         aexp = -beta*epsvpd
-        if (aexp .ge. exptol) call u2mess('F', 'COMPOR1_7')
+        if (aexp .ge. exptol) then
+            call utmess('F', 'COMPOR1_7')
+        endif
         p = (sigf(1)+sigf(2)+sigf(3))*d13
     endif
     if (k .eq. 4) p = (sigf(1)+sigf(2)+sigf(3))*d13
@@ -268,7 +270,9 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 ! ON NE CALCULE PAS POUR LE CAS ISOTROPE (K=4) CAR DPSIDS = [ 0 ]
     if (carac(1:6) .eq. 'DPSIDS') then
 !
-        if (k .eq. 4) call u2mess('F', 'COMPOR1_2')
+        if (k .eq. 4) then
+            call utmess('F', 'COMPOR1_2')
+        endif
 !
         call lcinma(zero, mat)
         if (consol) goto 600

@@ -15,7 +15,7 @@ subroutine cagrou(load, mesh, vale_type)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -67,10 +67,10 @@ subroutine cagrou(load, mesh, vale_type)
 !
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
-    character(len=8) ::  list_suffix
+    character(len=8) :: list_suffix
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
-    integer ::  ibid
+    integer :: ibid
     integer :: nliai
     real(kind=8) :: vale_real_zero
     character(len=8) :: vale_func_zero
@@ -126,7 +126,9 @@ subroutine cagrou(load, mesh, vale_type)
         list_node = '&&CAGROU.LIST_NODE'
         call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
                      list_node, nb_node)
-        if (nb_node .lt. 2) call u2mess('F', 'CHARGES2_82')
+        if (nb_node .lt. 2) then
+            call utmess('F', 'CHARGES2_82')
+        endif
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Get dof

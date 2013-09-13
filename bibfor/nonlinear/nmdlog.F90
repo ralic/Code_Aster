@@ -67,7 +67,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     logical :: grand, axi, resi, rigi, matsym, cplan, lintbo
@@ -92,7 +92,9 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !
 !     TEST SUR LE NOMBRE DE NOEUDS SI TEST NON VERIFIE MESSAGE ERREUR
     ASSERT(nno.le.27)
-    if (compor(5)(1:7) .eq. 'DEBORST') call u2mess('F', 'ALGORITH7_9')
+    if (compor(5)(1:7) .eq. 'DEBORST') then
+        call utmess('F', 'ALGORITH7_9')
+    endif
 !
 ! -----------------------------DECLARATION-----------------------------
     nddl = ndim*nno

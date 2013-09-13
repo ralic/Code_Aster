@@ -1,5 +1,5 @@
 subroutine as_mfdfin(fid, cha, ma, n, cunit,&
-                  cname, cret)
+                     cname, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,8 +19,9 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfdfin.h"
     aster_int :: fid, n, cret, lmesh, typen
     character(len=*) :: cha
@@ -28,9 +29,9 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
     character(len=*) :: ma
     character(len=80) :: dtunit
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, n4, cret4, lmesh4, typen4
     fid4 = fid
@@ -42,6 +43,6 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
     call mfdfin(fid, cha, ma, lmesh, typen,&
                 cunit, cname, dtunit, n, cret)
 #endif
-
+!
 #endif
 end subroutine

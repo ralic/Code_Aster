@@ -31,8 +31,8 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 #include "asterfort/nmfend.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utlcal.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerofr.h"
     integer :: kpg, ksp, nmat, np, nb, ier, ndim
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -150,7 +150,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
                 ksp, tp, iret3)
     iret=iret1+iret2+iret3
     if ((iret.eq.0) .and. ((alphap+alpham).eq.0.d0)) then
-        call u2mess('F', 'CALCULEL_31')
+        call utmess('F', 'CALCULEL_31')
     else if (((alphap+alpham).eq.0.d0).or.(iret.ge.1)) then
         coef = 0.d0
     else

@@ -17,7 +17,6 @@ subroutine te0342(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jsd1ff.h"
@@ -26,8 +25,9 @@ subroutine te0342(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
+!
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 !     CALCUL
@@ -128,7 +128,7 @@ subroutine te0342(option, nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
     xl2 = xl*xl

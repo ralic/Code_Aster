@@ -9,7 +9,7 @@ subroutine lc0008(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/lcmzcp.h"
 #include "asterfort/lcmzge.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, kpg, ksp
     integer :: icomp, nvi
     integer :: codret
@@ -112,7 +112,9 @@ subroutine lc0008(fami, kpg, ksp, ndim, imate,&
         if (cplane) then
 !           PAS DE COUPLAGE UMLV EN CP
             coup = (option(6:9).eq.'COUP')
-            if (coup) call u2mesk('F', 'ALGORITH4_10', 1, compor(1))
+            if (coup) then
+                call utmess('F', 'ALGORITH4_10', sk=compor(1))
+            endif
             call lcmzcp(fami, kpg, ksp, ndim, imate,&
                         epsm, deps, vim, tm, tp,&
                         tref, option, sigp, vip, dsidep)

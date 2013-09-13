@@ -29,7 +29,7 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
 #include "asterfort/carand.h"
 #include "asterfort/casurf.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim, nno, npg, lgpg, imate, zz, zzz, zzzz, nono, nitert, ntirmx
     real(kind=8) :: geom(1:ndim, 1:nno)
     real(kind=8) :: vim(1:lgpg, 1:npg), gr
@@ -128,7 +128,7 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
     if ((nono .eq. 1) .and. (nitert.lt.ntirmx)) then
         goto 567
     else if ((nono .eq. 1).and.(nitert.ge.ntirmx)) then
-        call u2mess('F', 'COMPOR2_14')
+        call utmess('F', 'COMPOR2_14')
     endif
 !
 end subroutine

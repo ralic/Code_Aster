@@ -15,7 +15,7 @@ subroutine rfmge1(modgen)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: modgen
 !     ------------------------------------------------------------------
@@ -65,7 +65,7 @@ subroutine rfmge1(modgen)
     call rsutnu(modgen, ' ', 1, knume, nbordr,&
                 epsi, crit, iret)
     if (iret .ne. 0) then
-        call u2mess('F', 'UTILITAI4_11')
+        call utmess('F', 'UTILITAI4_11')
     endif
     call jeveuo(knume, 'L', jordr)
 !
@@ -112,7 +112,7 @@ subroutine rfmge1(modgen)
         call jeveuo(noch19//'.VALE', 'L', jvale)
         call jelira(noch19//'.VALE', 'TYPE', cval=k16b)
         if (k16b(1:1) .ne. 'R') then
-            call u2mess('F', 'UTILITAI4_17')
+            call utmess('F', 'UTILITAI4_17')
         endif
 !
         call jeveuo(noch19//'.REFE', 'L', jrefe)
@@ -129,7 +129,7 @@ subroutine rfmge1(modgen)
                 im = im + 1
                 if (im .eq. ncmp) goto 114
 110          continue
-            call u2mess('F', 'UTILITAI4_14')
+            call utmess('F', 'UTILITAI4_14')
 114          continue
             im = i
         else

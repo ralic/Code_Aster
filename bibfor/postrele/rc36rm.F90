@@ -40,7 +40,7 @@ subroutine rc36rm()
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: n1, iocc, iret, jord, jnume, nbordr, jcham, nbresu
     real(kind=8) :: prec
@@ -76,15 +76,13 @@ subroutine rc36rm()
             vali (1) = iocc
             valk (1) = nomsym
             valk (2) = resu
-            call u2mesg('F', 'POSTRCCM_20', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'POSTRCCM_20', nk=2, valk=valk, si=vali(1))
         endif
         if (nbordr .ne. 1) then
             vali (1) = iocc
             valk (1) = nomsym
             valk (2) = resu
-            call u2mesg('F', 'POSTRCCM_21', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'POSTRCCM_21', nk=2, valk=valk, si=vali(1))
         endif
         call jeveuo(knum, 'L', jord)
         call rsexch('F', resu, nomsym, zi(jord), nomcha,&

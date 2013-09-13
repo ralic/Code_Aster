@@ -14,7 +14,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ioccur, nbnoto, nbmato, ifichi, codret
     character(len=8) :: formaf, leresu
@@ -96,7 +96,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     call getvtx('RESU', 'GROUP_MA', iocc=ioccur, nbval=0, nbret=nbgmfa)
     if ((nbnofa.ne.0.or.nbgnfa.ne.0.or.nbmafa.ne.0.or.nbgmfa.ne.0) .and.&
         (formaf(1:6).eq.'CASTEM')) then
-        call u2mess('A', 'PREPOST3_73')
+        call utmess('A', 'PREPOST3_73')
     endif
 !
 !     *** ON S'ALLOUE UN TABLEAU DE 8 ENTIERS POUR LA TOPOLOGIE
@@ -220,7 +220,9 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           DES NOEUDS SOMMETS DE CES MAILLES
 !          (NBNOS = NOMBRE DE NOEUDS SOMMETS DE CETTE LISTE)
             call irmano(nomma, nbmato, zi(jnuma), nbnos, zi(jnunos))
-            if (nbnos .eq. 0) call u2mess('F', 'PREPOST5_4')
+            if (nbnos .eq. 0) then
+                call utmess('F', 'PREPOST5_4')
+            endif
             call wkvect('&&IRTOPO.FILTRE_NO', 'V V I', nbnos, jnofi)
             ii=0
             do 490 ino = 1, nbnos

@@ -14,7 +14,7 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nh8(14), nh20(7), np6(14), np15(7), np5(14), np13(7)
     integer :: nt4(14), nt10(7)
     integer :: ncpq4(14), ncpq8(7), ncpt3(14), ncpt6(7), ndpq4(14)
@@ -160,7 +160,9 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
             &) + nf6(7) + nth8(7) + ntp6(7) + ntp5(7) + ntt4(7) + ntpq4(7) + ntpt3(7) + ntaq4(7) &
             &+ ntat3(7) + ntf4(7) + ntf3(7) + ntpf2(7) + ntax2(7)
 !
-    if (nbelx .eq. 0) call u2mess('F', 'XFEM_16')
+    if (nbelx .eq. 0) then
+        call utmess('F', 'XFEM_16')
+    endif
 !
     807 format (5x,a19,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,&
      &        2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6)

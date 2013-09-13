@@ -38,14 +38,14 @@ subroutine recuno(mailla, nbno, nbgr, nomno, nomgr,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbno, nbgr, nbto, numnot(nbto)
     character(len=8) :: mailla, nomno(nbno)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
@@ -86,8 +86,7 @@ subroutine recuno(mailla, nbno, nbgr, nomno, nomgr,&
             if (nuno .eq. 0) then
                 valk (1) = mailla
                 valk (2) = nomcou
-                call u2mesg('F', 'ALGORITH14_11', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH14_11', nk=2, valk=valk)
             endif
 !
             icomp=icomp+1

@@ -35,8 +35,7 @@ subroutine rc32mu()
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
     integer :: jcont, ncmp, jcorp
@@ -135,7 +134,7 @@ subroutine rc32mu()
     if (.not. exist) then
         valk (1) = tbsig(4)
         valk (2) = valek
-        call u2mesk('F', 'POSTRCCM_1', 2, valk)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
     abscur = '&&RC32MU.ABSC_CURV'
     call tbexv1(tbsig(4), valek, abscur, 'V', nbabsc,&
@@ -166,7 +165,7 @@ subroutine rc32mu()
         if (.not. exist) then
             valk (1) = tbsig(i)
             valk (2) = valek
-            call u2mesk('F', 'POSTRCCM_1', 2, valk)
+            call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
         endif
         do 12 j = 1, ncmp
 !
@@ -179,8 +178,7 @@ subroutine rc32mu()
                     valk (1) = tbsig(i)
                     valk (2) = nocmp(j)
                     valk (3) = valek
-                    call u2mesg('F', 'POSTRCCM_44', 3, valk, 0,&
-                                0, 1, zr( jabsc+k-1))
+                    call utmess('F', 'POSTRCCM_44', nk=3, valk=valk, sr=zr( jabsc+k-1))
                 endif
 14          continue
 !

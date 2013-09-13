@@ -44,7 +44,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: valk(2), typbas
@@ -76,8 +76,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_RIGI', scal=raid, nbret=iret)
     else
-        call u2mesg('F', 'ALGORITH14_14', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_14')
     endif
 !
 ! --- RECUPERATION MATRICE MASSE EN ARGUMENT
@@ -91,8 +90,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_MASS', scal=mass, nbret=iret)
     else
-        call u2mesg('F', 'ALGORITH14_15', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_15')
     endif
 !
 ! --- RECUPERATION MATRICE AMORTISSEMENT EN ARGUMENT
@@ -106,8 +104,7 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     else if (ioc .eq. 1) then
         call getvid(' ', 'MATR_AMOR', scal=amor, nbret=iret)
     else
-        call u2mesg('F', 'ALGORITH14_16', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_16')
     endif
 !
     call dismoi('C', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
@@ -150,24 +147,21 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
     if (numddl .ne. numbis) then
         valk(1) = mass
         valk(2) = raid
-        call u2mesg('F', 'ALGORITH14_21', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_21', nk=2, valk=valk)
     endif
 !
     if (amor .ne. bl8) then
         if (numddl .ne. numter) then
             valk(1) = amor
             valk(2) = raid
-            call u2mesg('F', 'ALGORITH14_22', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH14_22', nk=2, valk=valk)
         endif
     endif
 !
     if (mailla .ne. maillb) then
         valk(1) = maillb
         valk(2) = mailla
-        call u2mesg('F', 'ALGORITH14_23', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_23', nk=2, valk=valk)
     endif
 !
 10  continue

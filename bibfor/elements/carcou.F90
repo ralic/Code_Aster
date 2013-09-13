@@ -19,7 +19,7 @@ subroutine carcou(orien, l, pgl, rayon, theta,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "asterfort/matrot.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: icoude
     real(kind=8) :: orien(17), angl1(3), angl2(3), angl3(3), angl4(3)
     real(kind=8) :: pgl4(3, 3)
@@ -60,7 +60,7 @@ subroutine carcou(orien, l, pgl, rayon, theta,&
 64      continue
         icmp=12
     else if (nno.ne.3) then
-        call u2mess('F', 'ELEMENTS_18')
+        call utmess('F', 'ELEMENTS_18')
     endif
 !
     icoude = nint(orien(icmp+1))

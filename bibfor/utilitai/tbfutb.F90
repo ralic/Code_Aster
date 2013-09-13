@@ -1,8 +1,7 @@
 subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                   typpar, vi, vr, vc, vk)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -12,9 +11,9 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ntab, vi(*)
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
@@ -78,7 +77,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
         nomtab = ltabin(i)
         call jeexin(nomtab//'.TBBA', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'UTILITAI4_64')
+            call utmess('F', 'UTILITAI4_64')
         endif
 !
         call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
@@ -87,10 +86,10 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
         nbpart = nbpart + nbpara
         nbpu = max ( nbpu , nblign )
         if (nbpara .eq. 0) then
-            call u2mess('F', 'UTILITAI4_65')
+            call utmess('F', 'UTILITAI4_65')
         endif
         if (nblign .eq. 0) then
-            call u2mess('F', 'UTILITAI4_66')
+            call utmess('F', 'UTILITAI4_66')
         endif
 !
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
@@ -99,8 +98,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
             if (inpar .eq. jnpar) then
                 valk (1) = jnpar
                 valk (2) = nomtab
-                call u2mesg('F', 'UTILITAI8_20', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'UTILITAI8_20', nk=2, valk=valk)
             endif
 12      continue
 !
@@ -135,8 +133,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
                         valk (1) = jnpar
                         valk (2) = jnpar
                         valk (3) = knpar
-                        call u2mesg('F', 'UTILITAI8_21', 3, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('F', 'UTILITAI8_21', nk=3, valk=valk)
                     endif
                     goto 22
                 endif

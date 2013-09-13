@@ -82,8 +82,7 @@ subroutine conori(ma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: idum, ic, ifm, niv, ichk
@@ -202,7 +201,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     TRAITEMENT DU CAS DE NON-EXISTENCE
 !     ------------------------------------------------------------------
-                call u2mesk('I', 'ALGORITH2_26', 1, zk24(io8gco+igco-1))
+                call utmess('I', 'ALGORITH2_26', sk=zk24(io8gco+igco-1))
 !
             else
 !     ------------------------------------------------------------------
@@ -351,21 +350,25 @@ subroutine conori(ma)
                                 endif
                                 write (ifm,*)
                             endif
-                            if (nbmac .eq. 3) call u2mess('F', 'ALGORITH2_30')
+                            if (nbmac .eq. 3) then
+                                call utmess('F', 'ALGORITH2_30')
+                            endif
                             if (nbmac .eq. 2 .and. (lface0.eqv. lface)) then
-                                call u2mess('F', 'ALGORITH2_30')
+                                call utmess('F', 'ALGORITH2_30')
                             endif
                             lface=lface0
                             if (lomod0) lomodi=.true.
                             if (loreo0) loreor=.true.
                             if (nbmac .eq. 2 .and. (lomod0.or.loreo0)) then
-                                call u2mess('F', 'ALGORITH2_30')
+                                call utmess('F', 'ALGORITH2_30')
                             endif
                         endif
 !
 !     ==================================================================
 60                  continue
-                    if (nbmac .eq. 0) call u2mess('F', 'ALGORITH2_30')
+                    if (nbmac .eq. 0) then
+                        call utmess('F', 'ALGORITH2_30')
+                    endif
 !
                     if (lomodi .or. loreor) then
 !     ------------------------------------------------------------------

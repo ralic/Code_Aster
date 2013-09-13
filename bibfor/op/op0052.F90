@@ -37,8 +37,7 @@ subroutine op0052()
 #include "asterfort/onerrf.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=6) :: nompro
     parameter  (nompro='OP0052')
 !
@@ -73,11 +72,11 @@ subroutine op0052()
     call rsutnu(resuco, ' ', 0, lisord, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
-        call u2mesk('A', 'CALCULEL4_8', 1, resuco)
+        call utmess('A', 'CALCULEL4_8', sk=resuco)
         goto 9999
     endif
     if (iret .ne. 0) then
-        call u2mess('A', 'ALGORITH3_41')
+        call utmess('A', 'ALGORITH3_41')
         goto 9999
     endif
 !

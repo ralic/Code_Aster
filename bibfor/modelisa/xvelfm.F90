@@ -22,7 +22,7 @@ subroutine xvelfm(nfiss, fiss, modx)
 #include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xvfimo.h"
     integer :: nfiss
     character(len=8) :: fiss(nfiss), modx
@@ -57,7 +57,7 @@ subroutine xvelfm(nfiss, fiss, modx)
     call exixfe(modx, iret)
     if (iret .eq. 0) then
         valk(1)=modx
-        call u2mesk('F', 'XFEM_72', 1, valk)
+        call utmess('F', 'XFEM_72', sk=valk(1))
     endif
 !
 !     BOUCLE SUR LES FISSURES IN
@@ -69,7 +69,7 @@ subroutine xvelfm(nfiss, fiss, modx)
         if (.not.ltrouv) then
             valk(1)=fiss(ifiss)
             valk(2)=modx
-            call u2mesk('F', 'XFEM_73', 2, valk)
+            call utmess('F', 'XFEM_73', nk=2, valk=valk)
         endif
 !
 100  end do

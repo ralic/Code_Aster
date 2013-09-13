@@ -42,14 +42,14 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
 #include "asterfort/rctype.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: kpg, ksp, imate
     real(kind=8) :: epseq, p, divu, ener(2)
     character(len=*) :: fami, poum
@@ -131,8 +131,12 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
             call rcvad2(fami, kpg, ksp, poum, imate,&
                         'ECRO_LINE', 2, nomres, valres, devres,&
                         icodre)
-            if (icodre(1) .ne. 0) call u2mess('F', 'ALGORITH7_74')
-            if (icodre(2) .ne. 0) call u2mess('F', 'ALGORITH7_75')
+            if (icodre(1) .ne. 0) then
+                call utmess('F', 'ALGORITH7_74')
+            endif
+            if (icodre(2) .ne. 0) then
+                call utmess('F', 'ALGORITH7_75')
+            endif
 !
             dsde = valres(1)
             sigy = valres(2)
@@ -155,7 +159,9 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
             sieleq = demu * epseq
             call rctype(imate, 1, 'TEMP', temp, resu,&
                         type)
-            if ((type.eq.'TEMP') .and. (iret1.eq.1)) call u2mess('F', 'CALCULEL_31')
+            if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
+                call utmess('F', 'CALCULEL_31')
+            endif
             call rctrac(imate, 1, 'SIGM', resu, jprol,&
                         jvale, nbvale, e)
             call rcfonc('S', 1, jprol, jvale, nbvale,&
@@ -191,7 +197,7 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
     nrj = 0.5d0*k*divu*divu
     if (iret1 .eq. 0) then
         if (iret2 .eq. 1) then
-            call u2mess('F', 'CALCULEL_31')
+            call utmess('F', 'CALCULEL_31')
         else
             dnrj = 0.5d0*dk*divu*divu-k3*divu*(alpha+dalpha*(temp- tref))
         endif

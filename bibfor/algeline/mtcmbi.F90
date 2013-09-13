@@ -1,7 +1,6 @@
 subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -13,9 +12,9 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 #include "asterfort/mtconl.h"
 #include "asterfort/mtdsc2.h"
 #include "asterfort/pteddl.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lmat, lres
     character(len=*) :: typmat
     complex(kind=8) :: ccoef
@@ -67,13 +66,13 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 !
     if (typmat(1:1) .ne. 'R' .and. typmat(1:1) .ne. 'C') then
         ch1 = typmat(1:1)
-        call u2mesk('F', 'ALGELINE2_6', 1, ch1)
+        call utmess('F', 'ALGELINE2_6', sk=ch1)
     endif
 !
 !     --- AFFE_CHAR_CINE ? ---
 !
     if (zi(lmat+7) .ne. 0) then
-        call u2mess('F', 'ALGELINE2_7')
+        call utmess('F', 'ALGELINE2_7')
     endif
 !
     zero = 0.d0

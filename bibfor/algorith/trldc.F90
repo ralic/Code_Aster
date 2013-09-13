@@ -35,7 +35,7 @@ subroutine trldc(a, nordre, ierr)
 !-----------------------------------------------------------------------
 !
 #include "asterc/r8gaem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     complex(kind=8) :: a(*), r8val
     real(kind=8) :: epsi, xmod, xmax, zero
 !
@@ -86,7 +86,7 @@ subroutine trldc(a, nordre, ierr)
         xmod=dble(r8val)**2+dimag(r8val)**2
         if (xmod .gt. xmax) xmax=xmod
         if ((xmod/xmax) .lt. epsi) then
-            call u2mess('I', 'ALGORITH10_98')
+            call utmess('I', 'ALGORITH10_98')
             ierr = in
             goto 9999
         endif

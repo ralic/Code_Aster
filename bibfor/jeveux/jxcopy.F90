@@ -30,7 +30,7 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 #include "asterfort/jxferm.h"
 #include "asterfort/jxouvr.h"
 #include "asterfort/lxmins.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: clsinz, nominz, clsouz, nmoutz
     character(len=1) :: clasin, clasou
     character(len=8) :: nomin, nomout
@@ -153,13 +153,13 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
         call codent(numext+1, 'G', noml1(l1+6:l1+7))
         call readdr(noml1, iszon(jiszon+iaditp), lgbl1, iadloc, ierr)
         if (ierr .ne. 0) then
-            call u2mess('F', 'JEVEUX_47')
+            call utmess('F', 'JEVEUX_47')
         endif
         call codent(numext+1, 'G', noml2(l2+6:l2+7))
         call writdr(noml2, iszon(jiszon + iaditp), lgbl2, iadloc, - 1,&
                     ib, ierr)
         if (ierr .ne. 0) then
-            call u2mess('F', 'JEVEUX_48')
+            call utmess('F', 'JEVEUX_48')
         endif
 100  end do
     nbext = numext+1
@@ -172,8 +172,8 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 ! Destruction de tous les receptacles avant recopie.
 !
     noml1(l2+6:l2+7)='.*'
-    call rmfile (noml1, info)
-
+    call rmfile(noml1, info)
+!
     do 300 k = 1, nbext
         call codent(k, 'G', noml2(l2+6:l2+7))
         call codent(k, 'G', noml1(l1+6:l1+7))

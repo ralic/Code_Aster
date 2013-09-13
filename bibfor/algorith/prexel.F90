@@ -17,7 +17,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: ioc, ispmax, ispmin, isamax, isamin
@@ -54,7 +54,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     integer :: imamax, iptmax, imamin, iptmin, jcone
     integer :: imaaax, ipamax, imaain, ipamin, ier1, ier2
     real(kind=8) :: x
-    character(len=8) ::  nocmp, ma
+    character(len=8) :: nocmp, ma
     character(len=16) :: motcle(2), typmcl(2)
     character(len=19) :: chams1
     character(len=24) :: mesmai
@@ -89,7 +89,9 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 !
     call getvtx('ACTION', 'NOEUD', iocc=ioc, nbval=0, nbret=ier1)
     call getvtx('ACTION', 'GROUP_NO', iocc=ioc, nbval=0, nbret=ier2)
-    if (ier1 .ne. 0 .or. ier2 .ne. 0) call u2mess('F', 'POSTRELE_66')
+    if (ier1 .ne. 0 .or. ier2 .ne. 0) then
+        call utmess('F', 'POSTRELE_66')
+    endif
 !
     call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then

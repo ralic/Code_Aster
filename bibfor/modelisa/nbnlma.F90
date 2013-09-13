@@ -1,8 +1,7 @@
 subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
                   nbn)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -15,8 +14,9 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: limanu(*), nbm, nbn, nbtyp
     character(len=8) :: lityp(*), noma
 !-----------------------------------------------------------------------
@@ -84,8 +84,7 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
             if (nn .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMMAI', mi), mk)
                 valk = mk
-                call u2mesg('F', 'MODELISA8_68', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'MODELISA8_68', sk=valk)
             else
                 nbnm = nbnm + nn
             endif

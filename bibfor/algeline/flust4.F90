@@ -65,7 +65,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 #include "asterfort/poibij.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rslipa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbm, npv, nivpar, nivdef, nuor(*)
     real(kind=8) :: amor(*), freq(*), masg(*), vite(*), fact(*)
@@ -107,7 +107,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
         endif
 10  end do
     if (vneg .and. vpos) then
-        call u2mess('F', 'ALGELINE_48')
+        call utmess('F', 'ALGELINE_48')
     else if (vneg) then
         kec = -1
     else

@@ -22,7 +22,7 @@ subroutine asecon(nomsy, neq, mome, resu)
 #include "asterfort/rsexis.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
 !
@@ -125,8 +125,7 @@ subroutine asecon(nomsy, neq, mome, resu)
         else
             valk (1) = nomsy
             valk (2) = champ
-            call u2mesg('F', 'SEISME_25', 2, valk, 1,&
-                        iocc, 0, 0.d0)
+            call utmess('F', 'SEISME_25', nk=2, valk=valk, si=iocc)
         endif
         vale(1:19) = champ
         call jeexin(vale(1:19)//'.VALE', ibid)
@@ -239,8 +238,7 @@ subroutine asecon(nomsy, neq, mome, resu)
     else
         valk(1) = nomsy
         valk(2) = champ
-        call u2mesg('F', 'SEISME_25', 2, valk, 1,&
-                    iordr, 0, 0.d0)
+        call utmess('F', 'SEISME_25', nk=2, valk=valk, si=iordr)
     endif
     vale(1:19) = champ
     call jeexin(vale(1:19)//'.VALE', ibid)

@@ -2,7 +2,6 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
                   lres, ddlexc)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -14,8 +13,9 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 #include "asterfort/jexnum.h"
 #include "asterfort/pteddl.h"
 #include "asterfort/rrssm2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbcomb, lmat(*), lres
     character(len=*) :: typres, ddlexc, typcst(*)
     real(kind=8) :: const(*)
@@ -104,7 +104,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         endif
 !
     else
-        call u2mess('F', 'ALGELINE_5')
+        call utmess('F', 'ALGELINE_5')
     endif
 !
 !

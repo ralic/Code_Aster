@@ -26,7 +26,7 @@ subroutine caralv(char, nzoco, iform)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char
     integer :: nzoco, iform
 !
@@ -99,13 +99,13 @@ subroutine caralv(char, nzoco, iform)
             if (lnewtg) then
                 zi(jparci+1-1) = 0
                 zi(jparci+9-1) = 0
-                call u2mess('I', 'CONTACT2_3')
-                call u2mess('I', 'CONTACT2_4')
+                call utmess('I', 'CONTACT2_3')
+                call utmess('I', 'CONTACT2_4')
             else
                 lsans = cfdisl(defico,'REAC_GEOM_SANS')
                 if (.not. lsans) then
                     zi(jparci+1-1) = 0
-                    call u2mess('I', 'CONTACT2_3')
+                    call utmess('I', 'CONTACT2_3')
                 endif
             endif
         endif

@@ -24,7 +24,7 @@ subroutine nmerim(sderro)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sderro
 !
 ! ----------------------------------------------------------------------
@@ -75,33 +75,33 @@ subroutine nmerim(sderro)
         if ((teven(1:3).eq.'ERR') .and. (icode.eq.1)) then
             if (meven .eq. ' ') ASSERT(.false.)
             if (meven .eq. 'MECANONLINE10_1') then
-                call u2mess('I', 'MECANONLINE10_1')
+                call utmess('I', 'MECANONLINE10_1')
             else if (meven.eq.'MECANONLINE10_2') then
-                call u2mess('I', 'MECANONLINE10_2')
+                call utmess('I', 'MECANONLINE10_2')
             else if (meven.eq.'MECANONLINE10_3') then
-                call u2mess('I', 'MECANONLINE10_3')
+                call utmess('I', 'MECANONLINE10_3')
             else if (meven.eq.'MECANONLINE10_4') then
-                call u2mess('I', 'MECANONLINE10_4')
+                call utmess('I', 'MECANONLINE10_4')
             else if (meven.eq.'MECANONLINE10_5') then
-                call u2mess('I', 'MECANONLINE10_5')
+                call utmess('I', 'MECANONLINE10_5')
             else if (meven.eq.'MECANONLINE10_6') then
-                call u2mess('I', 'MECANONLINE10_6')
+                call utmess('I', 'MECANONLINE10_6')
             else if (meven.eq.'MECANONLINE10_7') then
-                call u2mess('I', 'MECANONLINE10_7')
+                call utmess('I', 'MECANONLINE10_7')
             else if (meven.eq.'MECANONLINE10_8') then
-                call u2mess('I', 'MECANONLINE10_8')
+                call utmess('I', 'MECANONLINE10_8')
             else if (meven.eq.'MECANONLINE10_9') then
-                call u2mess('I', 'MECANONLINE10_9')
+                call utmess('I', 'MECANONLINE10_9')
             else if (meven.eq.'MECANONLINE10_10') then
-                call u2mess('I', 'MECANONLINE10_10')
+                call utmess('I', 'MECANONLINE10_10')
             else if (meven.eq.'MECANONLINE10_11') then
-                call u2mess('I', 'MECANONLINE10_11')
+                call utmess('I', 'MECANONLINE10_11')
             else if (meven.eq.'MECANONLINE10_12') then
-                call u2mess('I', 'MECANONLINE10_12')
+                call utmess('I', 'MECANONLINE10_12')
             else if (meven.eq.'MECANONLINE10_20') then
-                call u2mess('I', 'MECANONLINE10_20')
+                call utmess('I', 'MECANONLINE10_20')
             else if (meven.eq.'MECANONLINE10_24') then
-                call u2mess('I', 'MECANONLINE10_24')
+                call utmess('I', 'MECANONLINE10_24')
             else
                 ASSERT(.false.)
             endif

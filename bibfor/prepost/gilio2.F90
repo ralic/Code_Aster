@@ -25,8 +25,7 @@ subroutine gilio2(nfic, iobj, nbele, niv)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nfic, iobj, nbele, niv
 ! ----------------------------------------------------------------------
@@ -63,11 +62,13 @@ subroutine gilio2(nfic, iobj, nbele, niv)
     endif
 !
     if ((itypel.eq.0) .and. (nbsoob.eq.0)) then
-        call u2mess('F', 'PREPOST4_95')
+        call utmess('F', 'PREPOST4_95')
     endif
 ! ---------------------------------
     call jeexin('&&GILIRE.NOMOBJ', iret)
-    if (iret .eq. 0) call u2mess('F', 'PREPOST_46')
+    if (iret .eq. 0) then
+        call utmess('F', 'PREPOST_46')
+    endif
     call jeveuo('&&GILIRE.NOMOBJ', 'E', ianoob)
     call jeveuo('&&GILIRE.DESCOBJ', 'E', iadsob)
     call codent(iobj, 'D', k5bid)
@@ -135,7 +136,7 @@ subroutine gilio2(nfic, iobj, nbele, niv)
         vali(3) = nbref
         vali(4) = nbno
         vali(5) = nbele
-        call u2mesi('F', 'PREPOST4_94', 5, vali)
+        call utmess('F', 'PREPOST4_94', ni=5, vali=vali)
     endif
 !
     zk8(ianoob-1+2* (iobj-1)+2) = typmai

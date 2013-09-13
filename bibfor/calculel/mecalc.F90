@@ -66,9 +66,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
 #include "asterfort/mecact.h"
 #include "asterfort/meceuc.h"
 #include "asterfort/mechpo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: option, modele, chdepl, chdynr, suropt, chelem, compor
     character(len=*) :: chgeom, chmate, chcara(*), chfreq, chmass, chsig, chtemp
     character(len=*) :: chtref, chtime, chnumc, chharm, charge, cheps, chmeta
@@ -125,7 +123,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
         if (optio2 .eq. 'VARI_ELNO') then
             call exisd('CARTE', compor, iret2)
             if (iret2 .ne. 1) then
-                call u2mess('A', 'CALCULEL2_86')
+                call utmess('A', 'CALCULEL2_86')
                 goto 40
             endif
             canbva = '&&'//nompro//'.NBVAR'
@@ -301,8 +299,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                     endif
                 else
                     valk = optio2
-                    call u2mesg('F', 'CALCULEL6_10', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'CALCULEL6_10', sk=valk)
                 endif
             endif
         endif
@@ -431,7 +428,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
         call exisd('CHAMP_GD', lchout(1), iret)
         if (iret .eq. 0) then
             codret = 1
-            call u2mesk('A', 'CALCULEL2_89', 1, optio2)
+            call utmess('A', 'CALCULEL2_89', sk=optio2)
         endif
 !     POUR 'SIEF_ELNO' CAS X-FEM, ON VERIFIE LA PRESENCE DU CHAMP
 !     SUPPLEMENTAIRE "DE CONTRAINTES AUX NOEUDS PAR SOUS ELEMENTS"
@@ -439,7 +436,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
             call exisd('CHAMP_GD', lchout(2), iret)
             if (iret .eq. 0) then
                 codret = 1
-                call u2mesk('A', 'CALCULEL6_79', 1, optio2)
+                call utmess('A', 'CALCULEL6_79', sk=optio2)
             endif
         endif
 !

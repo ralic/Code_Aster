@@ -17,7 +17,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/titre2.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: cmpg(*), ordr(*), nume(*)
     real(kind=8) :: disc(*)
@@ -140,13 +140,15 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 !
         zi(kdesc+1) = nbmode
 !
-        call dismoi('F', 'NUME_DDL', gene(1:8), 'RESU_DYNA', ibid, nuddl, iret)
-        call jeexin(nuddl(1:14)//'.NUME.DESC',iret)
-        call dismoi('C', 'BASE_MODALE', gene(1:8), 'RESU_DYNA', ibid, basemo, ibid)
+        call dismoi('F', 'NUME_DDL', gene(1:8), 'RESU_DYNA', ibid,&
+                    nuddl, iret)
+        call jeexin(nuddl(1:14)//'.NUME.DESC', iret)
+        call dismoi('C', 'BASE_MODALE', gene(1:8), 'RESU_DYNA', ibid,&
+                    basemo, ibid)
 !
 !       -- TEST POUR LE CAS DE LA SOUS-STRUCTURATION : EXISTENCE DE NUME_DDL_GENE  --
-        if ((iret .eq. 0) ) nuddl = ' '
-        zk24(krefe)   = basemo
+        if ((iret .eq. 0)) nuddl = ' '
+        zk24(krefe) = basemo
         zk24(krefe+1) = nuddl
 !
         do 200 i = 1, nbdisc
@@ -180,13 +182,13 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 220              continue
                 call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
 210          continue
-200     continue
+200      continue
         call jedetr(noch19//'.DESC')
         call jedetr(noch19//'.REFE')
         call jedetr(noch19//'.VALE')
 !
     else
-        call u2mesk('F', 'PREPOST2_51', 1, typcon)
+        call utmess('F', 'PREPOST2_51', sk=typcon)
     endif
 !
 !

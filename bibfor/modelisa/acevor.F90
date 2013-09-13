@@ -5,8 +5,7 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
 #include "asterfort/codent.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbocc, nlm, nlg, nln, nlj, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -41,9 +40,9 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
     integer :: nval
 !-----------------------------------------------------------------------
     parameter ( nbcar = 100 , nbval = 1000 , nco = 4 )
-    real(kind=8) ::  val(nbval)
+    real(kind=8) :: val(nbval)
     character(len=6) :: kioc
-    character(len=8) ::  car(nbcar), nomu, carori(nco)
+    character(len=8) :: car(nbcar), nomu, carori(nco)
     character(len=16) :: cmd, concep
     character(len=24) :: valk(2)
     data carori  /'VECT_Y  ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
@@ -71,11 +70,11 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
 ! -- IOC = 1
         if (ioc .eq. 1) then
             if (nv .eq. 0) then
-                call u2mess('E', 'MODELISA_57')
+                call utmess('E', 'MODELISA_57')
                 ier = ier + 1
             endif
             if (nc .eq. 0) then
-                call u2mess('E', 'MODELISA_58')
+                call utmess('E', 'MODELISA_58')
                 ier = ier + 1
             endif
         endif
@@ -84,7 +83,7 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
         if (ncar .gt. 0) then
 !-DEL       NCARAC = NCAR
             if (nval .eq. 0) then
-                call u2mesk('E', 'MODELISA_59', 1, kioc)
+                call utmess('E', 'MODELISA_59', sk=kioc)
                 ier = ier + 1
             endif
             k = 0
@@ -99,7 +98,7 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
                 (k.eq.3.and.nval.ne.3) .or. (k.eq.4.and.nval.ne.1)) then
                 valk(1) = kioc
                 valk(2) = carori(k)
-                call u2mesk('E', 'MODELISA_60', 2, valk)
+                call utmess('E', 'MODELISA_60', nk=2, valk=valk)
                 ier = ier + 1
             endif
         endif

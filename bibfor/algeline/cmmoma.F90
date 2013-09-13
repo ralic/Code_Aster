@@ -1,7 +1,6 @@
 subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -13,9 +12,10 @@ subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
+!
     integer :: nbno, nbnoaj
     character(len=*) :: mailla, momanu
 !     ------------------------------------------------------------------
@@ -185,8 +185,8 @@ subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
                 valk(2) = nono1
                 valk(3) = nono2
                 valk(4) = nomail
-                call u2mesg('F', 'ALGELINE_23', 4, valk, 0,&
-                            0, 3, valr)
+                call utmess('F', 'ALGELINE_23', nk=4, valk=valk, nr=3,&
+                            valr=valr)
             endif
 !
             if (normen .le. epsi) then

@@ -14,8 +14,7 @@ subroutine te0143(option, nomte)
 #include "asterfort/ptkg20.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
@@ -115,7 +114,7 @@ subroutine te0143(option, nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
     if (nomte .eq. 'MECA_POU_D_E') then
@@ -132,7 +131,7 @@ subroutine te0143(option, nomte)
         nno = 2
         nc = 6
 !        --- POUTRE COURBE DE TIMOSHENKO A 6 DDL ---
-        call u2mess('F', 'ELEMENTS3_28')
+        call utmess('F', 'ELEMENTS3_28')
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angarc = zr(lrcou+1)
@@ -159,7 +158,7 @@ subroutine te0143(option, nomte)
         call matrot(zr(lorien), pgl)
     else
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
     do 10 i = 1, 105
@@ -194,7 +193,7 @@ subroutine te0143(option, nomte)
                             xiy, xiy2, xl, ey, ez,&
                             mat)
             else
-                call u2mess('A', 'ELEMENTS3_28')
+                call utmess('A', 'ELEMENTS3_28')
             endif
 !
         else if (nomte.eq.'MECA_POU_D_TG') then
@@ -250,7 +249,7 @@ subroutine te0143(option, nomte)
 !
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
 end subroutine

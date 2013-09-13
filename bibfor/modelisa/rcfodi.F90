@@ -17,7 +17,7 @@ subroutine rcfodi(ifon, beta, f, df)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ifon
     real(kind=8) :: beta, f, df
 ! ......................................................................
@@ -56,7 +56,7 @@ subroutine rcfodi(ifon, beta, f, df)
 !
 !---- NAPPE - IMPOSSIBLE
 !
-        call u2mess('F', 'MODELISA6_58')
+        call utmess('F', 'MODELISA6_58')
     endif
 !
     deja = beta.ge.zr(jvalf+isave+nbvf-1) .and. beta.le.zr(jvalf+isave+nbvf)
@@ -115,7 +115,7 @@ subroutine rcfodi(ifon, beta, f, df)
             df = (zr(jp+1)-zr(jp))/(zr(jv+1)-zr(jv))
             f = df*(beta-zr(jv))+zr(jp)
         else if (zk24(jpro+4)(1:1).eq.'E') then
-            call u2mess('F', 'MODELISA4_63')
+            call utmess('F', 'MODELISA4_63')
         endif
         isave = 1
     else if (tessup) then
@@ -128,7 +128,7 @@ subroutine rcfodi(ifon, beta, f, df)
             df = (zr(jp)-zr(jp-1))/(zr(jv)-zr(jv-1))
             f = df*(beta-zr(jv-1))+zr(jp-1)
         else if (zk24(jpro+4)(2:2).eq.'E') then
-            call u2mess('F', 'MODELISA4_65')
+            call utmess('F', 'MODELISA4_65')
         endif
         isave = nbvf - 1
     endif

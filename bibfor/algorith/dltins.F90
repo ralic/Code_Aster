@@ -10,8 +10,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: lispas, libint, linbpa, lisins
 !
@@ -85,8 +84,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
 100          continue
             valr (1) = tinit
             valr (2) = zr(jbint+nbgrpa)
-            call u2mesg('F', 'ALGORITH12_89', 0, ' ', 0,&
-                        0, 2, valr)
+            call utmess('F', 'ALGORITH12_89', nr=2, valr=valr)
 102          continue
             eps = zr(jlpas+iint-1) / 10.d0
             if (abs(zr(jbint+iint)-tinit) .lt. eps) iint = iint + 1
@@ -125,8 +123,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
             valr (2) = zr(jlpas+iint-1)
             valr (3) = zr(jbint+iint-1)
             valr (4) = zr(jbint+iint)
-            call u2mesg('F', 'ALGORITH12_90', 0, ' ', 0,&
-                        0, 4, valr)
+            call utmess('F', 'ALGORITH12_90', nr=4, valr=valr)
 122          continue
             zi(jnbp2) = nbpf - iv
             zr(jlpa2) = zr(jlpas+iint-1)
@@ -171,8 +168,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
         if (tfin .lt. zr(jbint)) then
             valr (1) = tfin
             valr (2) = zr(jbint)
-            call u2mesg('F', 'ALGORITH12_91', 0, ' ', 0,&
-                        0, 2, valr)
+            call utmess('F', 'ALGORITH12_91', nr=2, valr=valr)
         else if (tfin.ge.zr(jbint+nbgrpa)) then
             goto 9999
         endif
@@ -208,8 +204,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
         valr (2) = zr(jlpas+iint-1)
         valr (3) = zr(jbint+iint-1)
         valr (4) = zr(jbint+iint)
-        call u2mesg('F', 'ALGORITH12_92', 0, ' ', 0,&
-                    0, 4, valr)
+        call utmess('F', 'ALGORITH12_92', nr=4, valr=valr)
 232      continue
         zi(jnbp2+iint-1) = iv - nbpd
         lispas = '&&OP0048.LI_LPASF'
@@ -246,7 +241,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
     call getvr8('INCREMENT', 'INST_FIN', iocc=1, scal=tfin, nbret=ibid)
     call getvr8('INCREMENT', 'PAS', iocc=1, scal=dt, nbret=ibid)
     if (dt .eq. 0.d0) then
-        call u2mess('F', 'ALGORITH3_12')
+        call utmess('F', 'ALGORITH3_12')
     endif
     call wkvect('&&OP0048.LI_BINT', 'V V R', 2, jbin2)
     call wkvect('&&OP0048.LI_LPAS', 'V V R', 1, jlpa2)

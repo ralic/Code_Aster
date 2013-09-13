@@ -22,7 +22,6 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elraca.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/jeexin.h"
@@ -33,8 +32,9 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 #include "asterfort/jexnum.h"
 #include "asterfort/pj3da3.h"
 #include "asterfort/pj3da4.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: ma1, ma2
     character(len=16) :: nomgma, nomgno, corres
 ! ======================================================================
@@ -58,7 +58,9 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !     ============================
     grpma = ma1//'.GROUPEMA'
     call jeexin(jexnom(grpma, nomgma), iret)
-    if (iret .eq. 0) call u2mesk('F', 'ELEMENTS_62', 1, nomgma)
+    if (iret .eq. 0) then
+        call utmess('F', 'ELEMENTS_62', sk=nomgma)
+    endif
     call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1)
     call jeveuo(jexnom(grpma, nomgma), 'L', ialim1)
 !
@@ -67,7 +69,9 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !     ===========================
     grpno = ma2//'.GROUPENO'
     call jeexin(jexnom(grpno, nomgno), iret)
-    if (iret .eq. 0) call u2mesk('F', 'ELEMENTS_62', 1, nomgno)
+    if (iret .eq. 0) then
+        call utmess('F', 'ELEMENTS_62', sk=nomgno)
+    endif
     call jelira(jexnom(grpno, nomgno), 'LONMAX', nbnog2)
     call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
 !
@@ -221,7 +225,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
                 endif
             else
 !            WRITE (6,*) 'TYPE DE MAILLE NON RECONNUE : ',NTYPMA
-                call u2mesk('F', 'COUPLAGEIFS_9', 1, ntypma)
+                call utmess('F', 'COUPLAGEIFS_9', sk=ntypma)
             endif
 !
 !   SI LE POINT EST DANS LA MAILLE

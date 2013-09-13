@@ -23,7 +23,7 @@ subroutine afvarc(chmat, nomail, nomode)
 #include "asterfort/mecact.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: chmat, nomail, nomode
 ! ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine afvarc(chmat, nomail, nomode)
     integer :: ifac, nbfac, nmxfac, nmxcmp, ibid, nbvarc, nbtou, jma
     integer :: iocc, jncmp1, jncmp2, jvalv1, jvalv2, kvarc, nbcvrc
     integer :: jcvnom, jcvvar, jcvcmp, jcvgd, itrou, nbm1, nbgm1, ier
-    integer ::  nref, nbdetr, nbgdut, nbgdmx, ico, jadetr
+    integer :: nref, nbdetr, nbgdut, nbgdmx, ico, jadetr
     integer :: jvale, jdesc
 !
     character(len=8) :: k8b, typmcl(2), nomgd, kbid
@@ -207,7 +207,9 @@ subroutine afvarc(chmat, nomail, nomode)
         evouch='EVOL'
     else
         evouch='VIDE'
-        if (novarc .ne. 'TEMP') call u2mesk('F', 'CALCULEL4_11', 1, novarc)
+        if (novarc .ne. 'TEMP') then
+            call utmess('F', 'CALCULEL4_11', sk=novarc)
+        endif
 !           -- POUR LA THM, ON PEUT UTILISER VALE_REF SANS DONNER
 !              CHAM_GD NI EVOL :
         ASSERT(nref.eq.1)
@@ -252,7 +254,7 @@ subroutine afvarc(chmat, nomail, nomode)
         valk(1) = mofac
         valk(2) = nomgd
         valk(3) = nomgd2
-        call u2mesk('A', 'MODELISA5_50', 3, valk)
+        call utmess('A', 'MODELISA5_50', nk=3, valk=valk)
     endif
 !
 !         2.4 ECRITURE DANS LES CARTES :

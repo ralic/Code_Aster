@@ -44,7 +44,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
@@ -55,13 +55,13 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !-----------------------------------------------------------------------
     integer :: ibid, iret
     character(len=4) :: excmod
-    character(len=8) ::  intexc
+    character(len=8) :: intexc
     character(len=16) :: graexc
     character(len=24) :: chnumi, chnumj, chnoei, chnoej, chcmpi, chcmpj, chvale
     character(len=24) :: chfreq
 !
     logical :: lindi, exiind
-    integer ::  lnumi, lnumj, mxval, num, lcmpi, lcmpj
+    integer :: lnumi, lnumj, mxval, num, lcmpi, lcmpj
     integer :: nbfreq, ifreq
 !
     call getvid('EXCIT', 'INTE_SPEC', iocc=1, scal=intexc, nbret=ibid)
@@ -157,7 +157,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     endif
 !
     if (.not. exiind) then
-        call u2mess('F', 'UTILITAI4_53')
+        call utmess('F', 'UTILITAI4_53')
     endif
 !
 !----TYPE MODAL ('NON' PAR DEFAUT)

@@ -20,8 +20,8 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
 ! person_in_charge: gerald.nicolas at edf.fr
 !
     implicit none
+#include "asterfort/utmess.h"
 !
-#include "asterfort/u2mesk.h"
     character(len=8) :: elrefv
     integer :: tymvol, ndegre
     integer :: nbf
@@ -190,7 +190,7 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
     else
 !
         valk(1) = elrefv(1:3)
-        call u2mesk('F', 'INDICATEUR_10', 1, valk)
+        call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !
     endif
 !

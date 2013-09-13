@@ -22,7 +22,6 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cengra.h"
 #include "asterfort/cnocns.h"
@@ -38,13 +37,13 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xextre.h"
 #include "asterfort/xfabor.h"
 #include "asterfort/xnorme.h"
 #include "asterfort/xtailm.h"
+!
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
     character(len=19) :: cnslt, cnsln, cnxinv, listpt
@@ -85,7 +84,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nunopa, nunopb, nunopc, nunopd
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
     real(kind=8) :: m(3), p(3), gln(3), glt(3), coorg(3), vectn(12)
-    real(kind=8) ::  normi
+    real(kind=8) :: normi
     character(len=8) :: typma, k8b, nommai, alias
     character(len=19) :: grlt, chgrt, grln, chgrn
     logical :: fabord, indic
@@ -356,8 +355,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !             IMPRESSION DES POINTS DU FOND APPARTENANT A LA MAILLE
                     if (ifq .eq. nbf) then
                         call jenuno(jexnum(noma//'.NOMMAI', nmaabs), nommai)
-                        call u2mesg('I', 'XFEM_51', 1, nommai, 1,&
-                                    nbptma, 0, 0.d0)
+                        call utmess('I', 'XFEM_51', sk=nommai, si=nbptma)
 !
                         write(ifm,797)
                         797           format(7x,'X',13x,'Y',13x,'Z')
@@ -407,8 +405,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !     IMPRESSION DE TOUS LES POINTS DE FOND DE FISSURE
 !     DANS LE CAS OU IL N'EST PAS POSSIBLE DE LES ORDONNER
     if (.not.orient) then
-        call u2mess('A', 'XFEM_52')
-        call u2mess('I', 'XFEM_35')
+        call utmess('A', 'XFEM_52')
+        call utmess('I', 'XFEM_35')
         write(ifm,897)
         897   format(7x,'X',13x,'Y',13x,'Z')
         do 600 i = 1, nfon

@@ -19,7 +19,6 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 ! person_in_charge: jean-luc.flejou at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
 #include "asterfort/barych.h"
 #include "asterfort/calcul.h"
@@ -41,10 +40,9 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 #include "asterfort/nuachp.h"
 #include "asterfort/pronua.h"
 #include "asterfort/rsinch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtgpld.h"
+!
     character(len=*) :: modele, carele, resufv(1), ligrel, charge
     character(len=*) :: depmoi, depdel, vites
     real(kind=8) :: instan
@@ -105,7 +103,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
     call gettco(fnocal, tysd)
 !
     if (tysd .ne. 'EVOL_CHAR') then
-        call u2mesk('F', 'ALGORITH7_15', 1, fnocal)
+        call utmess('F', 'ALGORITH7_15', sk=fnocal)
     endif
 !
 !     ----------------------------------
@@ -113,7 +111,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
                 k8bid, ier)
 !
     if (nbcham .le. 0) then
-        call u2mesk('F', 'ALGORITH7_16', 1, fnocal)
+        call utmess('F', 'ALGORITH7_16', sk=fnocal)
     endif
 !
 !
@@ -130,8 +128,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
         valk = fnocal
         valr = instan
         vali = ier
-        call u2mesg('F', 'ALGORITH13_68', 1, valk, 1,&
-                    vali, 1, valr)
+        call utmess('F', 'ALGORITH13_68', sk=valk, si=vali, sr=valr)
     endif
 !
     goto 10
@@ -160,7 +157,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
         nbno = zi(kvale)
         dime = zi(kvale+5)
         if (nbno * dime .ne. nbequa) then
-            call u2mess('F', 'ALGORITH8_77')
+            call utmess('F', 'ALGORITH8_77')
         endif
 !
 !       NOM DE CONCEPT MAILLAGE GEOMETRIE DEFORMEE UNIQUE

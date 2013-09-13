@@ -24,14 +24,14 @@ function nbcmp(gd)
 !     _ELEMENTAIRE
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: gd, code
     character(len=8) :: nomgd, nomgd1, nomgd2
 !     INCLUDE($FUNJEV)
@@ -67,8 +67,7 @@ function nbcmp(gd)
             valk (1) = 'GRANDEUR LIGNE REFERENCEE PAR'
             valk (2) = nomgd//' NULLE'
             vali (1) = gd
-            call u2mesg('F', 'CALCULEL6_17', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'CALCULEL6_17', nk=2, valk=valk, si=vali(1))
         endif
     else if ((code.eq.4) .or. (code.eq.5)) then
         igd1 = zi(iddgd+3)
@@ -77,8 +76,7 @@ function nbcmp(gd)
             valk (1) = 'GRANDEUR LIGNE REFERENCEE PAR'
             valk (2) = nomgd//' NULLE'
             vali (1) = gd
-            call u2mesg('F', 'CALCULEL6_17', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'CALCULEL6_17', nk=2, valk=valk, si=vali(1))
         endif
         igd2 = zi(iddgd+4)
         if (igd2 .eq. 0) then
@@ -86,8 +84,7 @@ function nbcmp(gd)
             valk (1) = 'GRANDEUR COLONNE REFERENCEE PAR'
             valk (2) = nomgd//' NULLE'
             vali (1) = gd
-            call u2mesg('F', 'CALCULEL6_17', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'CALCULEL6_17', nk=2, valk=valk, si=vali(1))
         endif
         if (igd1 .ne. igd2) then
             call jenuno(jexnum('&CATA.GD.DESCRIGD', gd), nomgd)
@@ -99,16 +96,15 @@ function nbcmp(gd)
             valk (1) = nomgd1//' /= '
             valk (2) = nomgd2
             valk (3) = nomgd
-            call u2mesg('F', 'CALCULEL6_20', 3, valk, 3,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'CALCULEL6_20', nk=3, valk=valk, ni=3,&
+                        vali=vali)
         endif
         call jelira(jexnum('&CATA.GD.NOMCMP', igd1), 'LONMAX', nbcmp)
         goto 9999
     else
         vali (1) = gd
         vali (2) = code
-        call u2mesg('F', 'CALCULEL6_21', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'CALCULEL6_21', ni=2, vali=vali)
     endif
 9999  continue
     call jedema()

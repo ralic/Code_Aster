@@ -20,9 +20,7 @@ subroutine ajlipa(modelz, base)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/sdpart.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: modelz
@@ -130,7 +128,7 @@ subroutine ajlipa(modelz, base)
     call dismoi('F', 'NB_SM_MAILLA', ma, 'MAILLAGE', nbsma,&
                 kbid, ierd)
     if (nbsma .gt. 0) then
-        call u2mess('F', 'ALGORITH16_91')
+        call utmess('F', 'ALGORITH16_91')
     endif
 !
 ! ----------------------------------------------------------------------
@@ -186,7 +184,7 @@ subroutine ajlipa(modelz, base)
             valk(1) = sdfeti(1:8)
             valk(2) = modele
             valk(3) = mopart
-            call u2mesk('F', 'ALGORITH17_17', 3, valk)
+            call utmess('F', 'ALGORITH17_17', nk=3, valk=valk)
         endif
     endif
 !
@@ -198,26 +196,26 @@ subroutine ajlipa(modelz, base)
         nbsd = zi(jfdim-1+1)
 !       IL FAUT AU MOINS UN SD PAR PROC HORS PROC0
         if (((nbsd-dist0).lt.(nbproc-1)) .and. (dist0.gt.0)) then
-            call u2mess('F', 'ALGORITH16_99')
+            call utmess('F', 'ALGORITH16_99')
         endif
         if ((nbsd.lt.nbproc) .and. (dist0.eq.0)) then
             vali(1) = nbsd
             vali(2) = nbproc
-            call u2mesi('F', 'ALGORITH17_1', 2, vali)
+            call utmess('F', 'ALGORITH17_1', ni=2, vali=vali)
         endif
     else if (kdis(1:4).eq.'MAIL') then
 !       IL FAUT AU MOINS UNE MAILLE PAR PROC
         if (nbmamo .lt. nbproc) then
             vali(1) = nbmamo
             vali(2) = nbproc
-            call u2mesi('F', 'ALGORITH16_93', 2, vali)
+            call utmess('F', 'ALGORITH16_93', ni=2, vali=vali)
         endif
     else if (kdis.eq.'GROUP_ELEM') then
 !       IL FAUT AU MOINS UN GREL PAR PROC
         if (nbgrel .lt. nbproc) then
             vali(1) = nbgrel
             vali(2) = nbproc
-            call u2mesi('F', 'ALGORITH16_97', 2, vali)
+            call utmess('F', 'ALGORITH16_97', ni=2, vali=vali)
         endif
     else
         ASSERT(.false.)
@@ -243,7 +241,7 @@ subroutine ajlipa(modelz, base)
                     if (zi(jnumsd-1+i2) .ne. -999) then
 !               -- MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
                         vali(1) = i2
-                        call u2mesi('F', 'ALGORITH16_98', 1, vali)
+                        call utmess('F', 'ALGORITH16_98', si=vali(1))
                     else
                         zi(jnumsd-1+i2) = rang
                     endif

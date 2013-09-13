@@ -20,7 +20,6 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismcp.h"
 #include "asterfort/dismrc.h"
@@ -35,8 +34,8 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/rsdocu.h"
 #include "asterfort/rslipa.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
@@ -91,7 +90,7 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
             if (iret .ne. 0) then
                 valk(1) = docu
                 valk(2) = nomob
-                call u2mesk('F', 'UTILITAI_68', 2, valk)
+                call utmess('F', 'UTILITAI_68', nk=2, valk=valk)
                 ierd=1
                 goto 9999
             endif
@@ -162,7 +161,7 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
         endif
  3      continue
  2      continue
-        call u2mess('F', 'UTILITAI_69')
+        call utmess('F', 'UTILITAI_69')
         ierd=1
 !
 !

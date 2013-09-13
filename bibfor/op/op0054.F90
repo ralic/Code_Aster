@@ -43,17 +43,16 @@ subroutine op0054()
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 !
     real(kind=8) :: module
 !
     integer :: nbv, nbr8, nbno, nocc2d, nocc3d, iadrt1
     integer :: iadrno, impr, iadrco, iadrma, iadrt2, iadrt3, iadrt4, iadrt5
     integer :: icode, ific, n1, ibid, ier
-    real(kind=8) ::  dir(3), rinf, rsup
+    real(kind=8) :: dir(3), rinf, rsup
     logical :: ldirec
     character(len=8) :: noma, modele, fond, resu, noeud, format, config
     character(len=16) :: type, oper, fichie, valk(2)
@@ -102,7 +101,7 @@ subroutine op0054()
     if (icode .eq. 0) then
         valk(1)='THETA'
         valk(2)=resu
-        call u2mesk('F', 'RUPTURE1_28', 2, valk)
+        call utmess('F', 'RUPTURE1_28', nk=2, valk=valk)
     endif
 !
 ! --- CREATION DU NOM DU CHAMP CORRESPONDANT AU NOM SYMBOLIQUE
@@ -116,7 +115,7 @@ subroutine op0054()
     if (icode .eq. 0) then
         valk(1)='GRAD_NOEU_THETA'
         valk(2)=resu
-        call u2mesk('F', 'RUPTURE1_28', 2, valk)
+        call utmess('F', 'RUPTURE1_28', nk=2, valk=valk)
     endif
 !
     obj1 = modele//'.MODELE    .LGRF'
@@ -139,7 +138,7 @@ subroutine op0054()
         if (nbr8 .ne. 0) then
             nbr8 = -nbr8
             if (nbr8 .ne. 3) then
-                call u2mess('F', 'RUPTURE1_30')
+                call utmess('F', 'RUPTURE1_30')
             else
                 call getvr8(' ', 'DIRECTION', nbval=3, vect=dir, nbret=nbr8)
                 ldirec = .true.
@@ -191,13 +190,13 @@ subroutine op0054()
         if (nbr8 .ne. 0) then
             nbr8 = -nbr8
             if (nbr8 .ne. 3) then
-                call u2mess('F', 'RUPTURE1_30')
+                call utmess('F', 'RUPTURE1_30')
             else
                 call getvr8(' ', 'DIRECTION', nbval=3, vect=dir, nbret=nbr8)
                 ldirec = .true.
             endif
         else
-            call u2mess('F', 'RUPTURE0_81')
+            call utmess('F', 'RUPTURE0_81')
         endif
 !
         call gver2d(noma, nocc2d, 'THETA_2D', nomno, noeud,&

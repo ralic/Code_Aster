@@ -16,7 +16,7 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jevtbl.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: istop, nprec
@@ -161,7 +161,9 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
 !
 !     LECTURE NOMBRE DE SOUS-DOMAINES:NBSD
     call jelira(sdfeti(1:19)//'.FETA', 'NUTIOC', nbsd)
-    if (nbsd .le. 1) call u2mess('F', 'ALGORITH2_40')
+    if (nbsd .le. 1) then
+        call utmess('F', 'ALGORITH2_40')
+    endif
 !     CONSTITUTION DE L'OBJET SOLVEUR.FETS
     call wkvect(solveu(1:19)//'.FETS', 'V V K24', nbsd, ifets)
 !     LECTURE NOMBRE TOTAL DE MAILLE:NBMA
@@ -228,9 +230,13 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
         zr(ibid6+i-1)=0.d0
 40  end do
 !
-    if (nbproc .gt. nbsd) call u2mess('F', 'ALGORITH2_41')
+    if (nbproc .gt. nbsd) then
+        call utmess('F', 'ALGORITH2_41')
+    endif
 !     VOIR FETGGT.F POUR EXPLICATION DE CETTE CONTRAINTE
-    if ((nbproc.gt.1) .and. (stogi(1:3).ne.'OUI')) call u2mess('F', 'ALGORITH2_42')
+    if ((nbproc.gt.1) .and. (stogi(1:3).ne.'OUI')) then
+        call utmess('F', 'ALGORITH2_42')
+    endif
     if (nbproc .eq. 1) then
         testok=.true.
     else

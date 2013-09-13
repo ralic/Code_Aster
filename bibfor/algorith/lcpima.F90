@@ -42,8 +42,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/rupmat.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: mate, kpg, ksp
     character(len=16) :: compor
@@ -87,7 +86,9 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     if (compor(6:14) .eq. 'ISOT_TRAC') then
         call rctype(mate, 1, 'TEMP', temp, resu,&
                     type)
-        if ((type.eq.'TEMP') .and. (iret1.eq.1)) call u2mess('F', 'CALCULEL_31')
+        if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
+            call utmess('F', 'CALCULEL_31')
+        endif
         call rctrac(mate, 1, 'SIGM', resu, jprol,&
                     jvale, nbval, young)
     else
@@ -134,8 +135,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
         if ((young-dsde) .lt. r8miem()) then
             valrm(1)=dsde
             valrm(2)=young
-            call u2mesg('F', 'COMPOR1_54', 0, ' ', 0,&
-                        ibid, 2, valrm)
+            call utmess('F', 'COMPOR1_54', nr=2, valr=valrm)
         else
             pente=dsde*young/(young-dsde)
         endif

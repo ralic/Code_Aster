@@ -1,5 +1,5 @@
 subroutine as_mmhraw(ifichi, nomail, typgeo, nomatt, nbrval,&
-                  tabval, codret)
+                     tabval, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,8 +19,9 @@ subroutine as_mmhraw(ifichi, nomail, typgeo, nomatt, nbrval,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mmhraw.h"
     character(len=*) :: nomail, nomatt
     aster_int :: ifichi, typgeo, nbrval, codret
@@ -29,9 +30,9 @@ subroutine as_mmhraw(ifichi, nomail, typgeo, nomatt, nbrval,&
     parameter    (numdt = -1)
     parameter    (numit = -1)
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: ifich4, typge4, nbrva4, codre4, numdt4, numit4
     ifich4 = ifichi
@@ -46,6 +47,6 @@ subroutine as_mmhraw(ifichi, nomail, typgeo, nomatt, nbrval,&
     call mmhraw(ifichi, nomail, numdt, numit, typgeo,&
                 nomatt, nbrval, tabval, codret)
 #endif
-
+!
 #endif
 end subroutine

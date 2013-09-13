@@ -19,7 +19,6 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -30,8 +29,8 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 #include "asterfort/kndoub.h"
 #include "asterfort/knincl.h"
 #include "asterfort/lxliis.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ncmp, iret
     character(len=*) :: nomgdz, lcmp(ncmp)
 ! ---------------------------------------------------------------------
@@ -53,7 +52,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
     integer :: gd, jcmpgd, ncmpmx, i1, k, ibid
-    character(len=8) ::  lcmp2(3000), nomgd
+    character(len=8) :: lcmp2(3000), nomgd
 ! DEB
     call jemarq()
     iret = 0
@@ -64,7 +63,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 !     -----------------------------------------
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
-        call u2mesk('A', 'POSTRELE_57', 1, nomgd)
+        call utmess('A', 'POSTRELE_57', sk=nomgd)
         iret = 1
         goto 30
     endif
@@ -74,7 +73,9 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 !
 !     2. ON RECOPIE LCMP DANS LCMP2 (K8) :
 !     -------------------------------------------
-    if (ncmp .gt. 3000) call u2mess('F', 'POSTRELE_13')
+    if (ncmp .gt. 3000) then
+        call utmess('F', 'POSTRELE_13')
+    endif
     do 10,k = 1,ncmp
     lcmp2(k) = lcmp(k)
     10 end do
@@ -84,7 +85,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 !     -----------------------------
     call kndoub(8, lcmp2, ncmp, i1)
     if (i1 .gt. 0) then
-        call u2mesk('A', 'POSTRELE_55', 1, lcmp2(i1))
+        call utmess('A', 'POSTRELE_55', sk=lcmp2(i1))
         iret = 2
         goto 30
     endif
@@ -98,7 +99,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
         if (i1 .gt. 0) then
             valk(1) = lcmp2(i1)
             valk(2) = nomgd
-            call u2mesk('A', 'POSTRELE_56', 2, valk)
+            call utmess('A', 'POSTRELE_56', nk=2, valk=valk)
             iret = 3
             goto 30
         endif
@@ -109,7 +110,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
         if ((lcmp2(k) (1:1).ne.'V') .or. (i1.gt.0)) then
             valk(1) = lcmp2(k)
             valk(2) = nomgd
-            call u2mesk('A', 'POSTRELE_56', 2, valk)
+            call utmess('A', 'POSTRELE_56', nk=2, valk=valk)
             iret = 3
             goto 30
         endif

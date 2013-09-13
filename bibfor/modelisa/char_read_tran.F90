@@ -10,6 +10,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +59,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  ibid, nangmx, i
+    integer :: ibid, nangmx, i
     integer :: ntran, ncent, nangl, vali(2)
     real(kind=8) :: r8bid
 !
@@ -92,8 +93,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
             if (ntran .ne. ndim) then
                 vali(1) = ndim
                 vali(2) = ndim
-                call u2mesg('F', 'CHARGES2_42', 1, 'TRAN', 2,&
-                            vali, 0, r8bid)
+                call utmess('F', 'CHARGES2_42', sk='TRAN', ni=2, vali=vali)
             endif
             call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=ntran, vect=tran,&
                         nbret=ibid)
@@ -110,8 +110,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
             if (ncent .ne. ndim) then
                 vali(1) = ndim
                 vali(2) = ndim
-                call u2mesg('F', 'CHARGES2_42', 1, 'CENTRE', 2,&
-                            vali, 0, r8bid)
+                call utmess('F', 'CHARGES2_42', sk='CENTRE', ni=2, vali=vali)
             endif
             call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=ncent, vect=cent,&
                         nbret=ibid)
@@ -126,8 +125,7 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
             if (nangl .ne. nangmx) then
                 vali(1) = nangmx
                 vali(2) = ndim
-                call u2mesg('F', 'CHARGES2_42', 1, 'ANGL_NAUT', 2,&
-                            vali, 0, r8bid)
+                call utmess('F', 'CHARGES2_42', sk='ANGL_NAUT', ni=2, vali=vali)
             endif
             call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=nangmx, vect=angl_naut,&
                         nbret=ibid)

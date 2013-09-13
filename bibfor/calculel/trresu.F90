@@ -19,8 +19,6 @@ subroutine trresu(ific, nocc)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/trprec.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcmp1.h"
 #include "asterfort/utest1.h"
 #include "asterfort/utest2.h"
@@ -28,6 +26,7 @@ subroutine trresu(ific, nocc)
 #include "asterfort/utest4.h"
 #include "asterfort/utestr.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
     integer :: ific, nocc
@@ -171,7 +170,9 @@ subroutine trresu(ific, nocc)
         knum = '&&TRRESU.NUME_ORDRE'
         call rsutnu(leresu, 'RESU', iocc, knum, nbordr,&
                     prec, crit2, iret)
-        if (iret .ne. 0) call u2mess('F', 'CALCULEL6_94')
+        if (iret .ne. 0) then
+            call utmess('F', 'CALCULEL6_94')
+        endif
 !
         call jeveuo(knum, 'L', jordr)
         numord = zi(jordr)
@@ -205,7 +206,7 @@ subroutine trresu(ific, nocc)
             call rsadpa(leresu, 'L', 1, nopara, numord,&
                         1, jlue, k16b)
             if (k16b(1:1) .ne. typres) then
-                call u2mess('F', 'CALCULEL6_95')
+                call utmess('F', 'CALCULEL6_95')
             else if (typres.eq.'R') then
                 valr = zr(jlue)
             else if (typres.eq.'I') then
@@ -402,8 +403,7 @@ subroutine trresu(ific, nocc)
                         valk(1) = noresu
                         valk(2) = nopara
                         valk(3) = titres
-                        call u2mesg('F', 'CALCULEL6_97', 3, valk, 1,&
-                                    numord, 0, 0.d0)
+                        call utmess('F', 'CALCULEL6_97', nk=3, valk=valk, si=numord)
                     endif
 !
                     nl1 = lxlgut(lign1)
@@ -445,7 +445,7 @@ subroutine trresu(ific, nocc)
                     call getvem(nomma, 'MAILLE', 'RESU', 'MAILLE', iocc,&
                                 iarg, 1, nomail, n1)
                     if (n1 .eq. 0) then
-                        call u2mess('F', 'CALCULEL5_8')
+                        call utmess('F', 'CALCULEL5_8')
                     endif
 !
                     nl1 = lxlgut(lign1)

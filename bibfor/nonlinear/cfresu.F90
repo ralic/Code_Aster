@@ -20,7 +20,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
@@ -37,7 +37,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmnorm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: numins
     real(kind=8) :: inst(*)
     character(len=8) :: noma
@@ -482,7 +482,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! --- ALARME SI CONTACT AFFLEURANT EN MODE DETECTION COLLISION
 !
     if (laffle .and. lcolli) then
-        call u2mess('A', 'CONTACT3_98')
+        call utmess('A', 'CONTACT3_98')
     endif
 !
     call jedema()

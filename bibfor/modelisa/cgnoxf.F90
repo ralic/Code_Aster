@@ -14,8 +14,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iocc, nbno
@@ -181,7 +180,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             call jeexin(stnot, ibid)
             if ((ibid.gt.0) .and. (typgrp.eq.'TORE')) then
                 typgrp='ZONE_MAJ'
-                call u2mesk('A', 'XFEM2_92', 1, fiss)
+                call utmess('A', 'XFEM2_92', sk=fiss)
             endif
 !
             if (typgrp .eq. 'TORE') then
@@ -211,14 +210,18 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                         stnot = nomogr//'.MODELE    .LGRF'
                         call jeveuo(stnot, 'L', ibid)
                         nomagr = zk8(ibid)
-                        if (nomagr .ne. ma) call u2mess('F', 'XFEM2_86')
+                        if (nomagr .ne. ma) then
+                            call utmess('F', 'XFEM2_86')
+                        endif
                     else
-                        call u2mess('F', 'XFEM2_86')
+                        call utmess('F', 'XFEM2_86')
                     endif
                     call cnocns(fiss//'.GRI.LTNO', 'V', cnslt)
                     call cnocns(fiss//'.GRI.LNNO', 'V', cnsln)
                 else
-                    if (nomafi .ne. ma) call u2mess('F', 'XFEM2_86')
+                    if (nomafi .ne. ma) then
+                        call utmess('F', 'XFEM2_86')
+                    endif
                     call cnocns(fiss//'.LTNO', 'V', cnslt)
                     call cnocns(fiss//'.LNNO', 'V', cnsln)
                 endif
@@ -281,7 +284,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     else
                         valk(2) = 'AUCUN'
                     endif
-                    call u2mesk('F', 'XFEM2_96', 2, valk)
+                    call utmess('F', 'XFEM2_96', nk=2, valk=valk)
                 endif
 !
                 call jeexin(stnot, ibid)

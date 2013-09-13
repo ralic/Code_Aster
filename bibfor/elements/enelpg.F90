@@ -53,7 +53,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 #include "asterfort/nrsmtt.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"
 #include "blas/dcopy.h"
@@ -224,8 +224,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 80      continue
 !
     else
-        call u2mesg('F', 'COMPOR1_77', 1, compor(3), 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'COMPOR1_77', sk=compor(3))
     endif
 !
 end subroutine

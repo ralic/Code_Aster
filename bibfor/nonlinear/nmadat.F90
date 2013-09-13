@@ -34,11 +34,8 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 #include "asterfort/nmcadt.h"
 #include "asterfort/nmdcei.h"
 #include "asterfort/nmjalo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: valinc(*)
     character(len=19) :: sddisc
@@ -147,7 +144,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !    CALCUL DU PAS DE TEMPS
 ! ----------------------------------------------------------------------
 !
-    call u2mess('I', 'ADAPTATION_1')
+    call utmess('I', 'ADAPTATION_1')
 !
     do 100 iadapt = 1, nadapt
 !
@@ -167,10 +164,9 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! ----- AFFICHAGE
 !
         if (newdt .ne. r8vide()) then
-            call u2mesg('I', 'ADAPTATION_2', 1, modetp, 0,&
-                        0, 1, newdt)
+            call utmess('I', 'ADAPTATION_2', sk=modetp, sr=newdt)
         else
-            call u2mesk('I', 'ADAPTATION_3', 1, modetp)
+            call utmess('I', 'ADAPTATION_3', sk=modetp)
         endif
 100  end do
 !
@@ -189,10 +185,10 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 200  end do
 !
     if (uncrok) then
-        call u2mesr('I', 'ADAPTATION_5', 1, dt)
+        call utmess('I', 'ADAPTATION_5', sr=dt)
     else
         dt = dtm
-        call u2mesr('I', 'ADAPTATION_4', 1, dt)
+        call utmess('I', 'ADAPTATION_4', sr=dt)
     endif
 !
 ! --- PROJECTION SUR LA BORNE SUP (POUR TOUTES LES METHODES)
@@ -202,7 +198,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
         if (modetp(1:6) .ne. 'IMPLEX') then
             valr(1) = dt
             valr(2) = pasmax
-            call u2mesr('I', 'ADAPTATION_12', 2, valr)
+            call utmess('I', 'ADAPTATION_12', nr=2, valr=valr)
         endif
         dt = pasmax
     endif
@@ -224,7 +220,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     if (insref .ne. r8vide()) then
         if (inst .le. insfin) then
             dt = deltac
-            call u2mesr('I', 'ADAPTATION_10', 1, dt)
+            call utmess('I', 'ADAPTATION_10', sr=dt)
         else
             zr(jtpsex-1+1) = r8vide()
         endif
@@ -249,14 +245,18 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
                     dt, ibid, k8bid)
     endif
 !
-    call u2mesr('I', 'ADAPTATION_6', 1, dt)
+    call utmess('I', 'ADAPTATION_6', sr=dt)
 !
 ! --- ON VERIFIE LES GARDE FOUS
 !
     if (modetp(1:6) .ne. 'IMPLEX') then
-        if (dt .lt. pasmin) call u2mesr('F', 'ADAPTATION_11', 1, dt)
+        if (dt .lt. pasmin) then
+            call utmess('F', 'ADAPTATION_11', sr=dt)
+        endif
     endif
-    if (numins .gt. nmax) call u2mess('F', 'ADAPTATION_13')
+    if (numins .gt. nmax) then
+        call utmess('F', 'ADAPTATION_13')
+    endif
 !
 ! --- INSERTION DU NOUVEL INSTANT
 !

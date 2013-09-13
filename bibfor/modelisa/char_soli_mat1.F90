@@ -3,6 +3,7 @@ subroutine char_soli_mat1(ab, ac, matr_inve_1, matr_2)
     implicit none
 !
 #include "asterfort/provec.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,8 +80,10 @@ subroutine char_soli_mat1(ab, ac, matr_inve_1, matr_2)
     matr_1(3,2) = norm_abc(2)
     matr_1(3,3) = norm_abc(3)
     call matinv('C', 3, matr_1, matr_inve_1, det)
-    if (det.eq.0.d0) call u2mess('F','CHARGES2_47')
-
+    if (det .eq. 0.d0) then
+        call utmess('F', 'CHARGES2_47')
+    endif
+!
 !
 ! - Matrix [matr_2]
 !

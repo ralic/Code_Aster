@@ -15,7 +15,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -33,7 +33,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juvinn.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele, chmat, carele
     character(len=19) :: chvref
 ! ======================================================================
@@ -52,7 +52,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
     integer :: k, k2, nbma, ncmp, icmp, jcesl1, jcesv1, jcesd1
     integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, jcvvar, ibid
     integer :: jdcld, jdcll, jdclv, nncp, iret, jcvrc
-    character(len=8) ::  varc, noma1, noma2
+    character(len=8) :: varc, noma1, noma2
     character(len=19) :: dceli, celmod, cart1, ces1, ligrmo, csvref
     character(len=24) :: valk(4)
     real(kind=8) :: valref
@@ -129,7 +129,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
     if (noma1 .ne. noma2) then
         valk(1)=noma1
         valk(2)=noma2
-        call u2mesk('F', 'CALCULEL4_23', 2, valk)
+        call utmess('F', 'CALCULEL4_23', nk=2, valk=valk)
     endif
 !
 !

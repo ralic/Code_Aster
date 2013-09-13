@@ -7,7 +7,7 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: mxpf, nbpf
     character(len=*) :: nomf, vec(*), typfon, nompf(*)
 !     ------------------------------------------------------------------
@@ -82,8 +82,7 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
         valk = nomfon
         vali (1) = nbpf
         vali (2) = mxpf
-        call u2mesg('F', 'UTILITAI6_37', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_37', sk=valk, ni=2, vali=vali)
     endif
 !
     call jedema()

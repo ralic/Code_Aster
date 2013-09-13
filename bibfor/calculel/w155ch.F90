@@ -35,7 +35,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/liglma.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/w155ma.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: carele
@@ -80,7 +80,9 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
                 tsca, iret)
     call dismoi('F', 'MXNBSP', chin, 'CHAM_ELEM', nbspmx,&
                 kbid, iret)
-    if (nbspmx .le. 1) call u2mess('F', 'CALCULEL2_15')
+    if (nbspmx .le. 1) then
+        call utmess('F', 'CALCULEL2_15')
+    endif
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmat,&
                 kbid, iret)
 !

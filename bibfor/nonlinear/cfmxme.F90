@@ -28,7 +28,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: numedd
@@ -136,7 +136,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 !
     lnoeu = cfdisl(defico,'ALL_INTEG_NOEUD')
     if (.not.lnoeu) then
-        call u2mess('A', 'CONTACT3_16')
+        call utmess('A', 'CONTACT3_16')
     endif
 !
     call jedema()

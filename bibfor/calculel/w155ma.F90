@@ -25,7 +25,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: numa, nucou, nangl, nufib, ksp1, ksp2
     integer :: jce2l, jce2d, jce2v, iret, jce5l, jce5d, jce5v
     real(kind=8) :: c1, c2
@@ -81,7 +81,9 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
             nbcou=zi(jce2v-1+iad2a)
             npgh=3
         endif
-        if (nucou .gt. nbcou) call u2mess('F', 'CALCULEL2_14')
+        if (nucou .gt. nbcou) then
+            call utmess('F', 'CALCULEL2_14')
+        endif
 !
         ksp1=((nucou-1)*npgh)+iposi
         ksp2=ksp1
@@ -100,7 +102,9 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
             goto 9999
         endif
         nbfib=zi(jce2v-1+iad2)
-        if (nufib .gt. nbfib) call u2mess('F', 'CALCULEL2_16')
+        if (nufib .gt. nbfib) then
+            call utmess('F', 'CALCULEL2_16')
+        endif
         ksp1=nufib
         ksp2=ksp1
         c1=1.d0
@@ -118,13 +122,17 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
             goto 9999
         endif
         nbcou=zi(jce2v-1+iad2)
-        if (nucou .gt. nbcou) call u2mess('F', 'CALCULEL2_14')
+        if (nucou .gt. nbcou) then
+            call utmess('F', 'CALCULEL2_14')
+        endif
 !       -- CMP3 = TUY_NSEC
         call cesexi('C', jce2d, jce2l, numa, 1,&
                     1, 3, iad2)
         ASSERT(iad2.gt.0)
         nbsec=zi(jce2v-1+iad2)
-        if (nucou .gt. nbcou) call u2mess('F', 'CALCULEL2_14')
+        if (nucou .gt. nbcou) then
+            call utmess('F', 'CALCULEL2_14')
+        endif
         icou=2*(nucou-1)+iposi
 !
 !       -- CMP1 = ANGZZK
@@ -142,7 +150,9 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
         poi(2)=1.d0-(isect-(omega+angle)/dxa)
         if (isect .gt. (2*nbsec)) isect=isect-2*nbsec
         if (isect .lt. 1) isect=isect+2*nbsec
-        if (isect .le. 0 .or. isect .gt. (2*nbsec)) call u2mess('F', 'ELEMENTS4_51')
+        if (isect .le. 0 .or. isect .gt. (2*nbsec)) then
+            call utmess('F', 'ELEMENTS4_51')
+        endif
 !       -- FIN MORCEAU TE0597
         ksp1=(2*nbsec+1)*(icou-1)+isect
         ksp2=ksp1+1

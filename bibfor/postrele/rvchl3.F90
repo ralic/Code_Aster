@@ -6,7 +6,7 @@ subroutine rvchl3(vale, padr, pnsp, pnbn, ma,&
 !
 #include "asterc/r8vide.h"
 #include "asterfort/i3nloc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: padr(*), pnbn(*), pnsp(*)
     integer :: ma(*), face(*), conec(*), vlccnc(*), nbndf(6, *)
     integer :: nbco, nbsp, nbpt, nbma, nbcp, ptadr, itypm, clocf(6, 4, *)
@@ -95,7 +95,9 @@ subroutine rvchl3(vale, padr, pnsp, pnbn, ma,&
     do 101, i = 1, nbnf, 1
     dec1 = dec1 + max(0,min(1,ndloc(i)))
 101  continue
-    if (dec1 .lt. 2) call u2mess('F', 'POSTRELE_16')
+    if (dec1 .lt. 2) then
+        call utmess('F', 'POSTRELE_16')
+    endif
     do 110, i = 1, nbnf, 1
     nloc = ndloc(i)
     if (nloc .gt. 0) then

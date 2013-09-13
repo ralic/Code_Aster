@@ -25,7 +25,7 @@ subroutine nmdidi(modele, lischa, depmoi, vedidi)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecdid.h"
     character(len=19) :: lischa, vedidi
     character(len=24) :: modele
@@ -64,7 +64,9 @@ subroutine nmdidi(modele, lischa, depmoi, vedidi)
     if ((n1.gt.0) .and. (nevo.gt.0)) then
         call rsexch(' ', evol, 'DEPL', numref, depdid,&
                     iret)
-        if (iret .ne. 0) call u2mesk('F', 'ALGORITH7_20', 1, evol)
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGORITH7_20', sk=evol)
+        endif
     endif
 !
 ! --- CALCUL DES VECT_ELEM

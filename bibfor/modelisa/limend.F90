@@ -25,7 +25,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: limit
     character(len=*) :: nommaz, nomres, forvie
     real(kind=8) :: salt
@@ -103,7 +103,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 goto 20
             endif
 10      continue
-        call u2mess('F', 'MODELISA4_89')
+        call utmess('F', 'MODELISA4_89')
 20      continue
 !
     else if (nomres(1:8) .eq. 'MANSON_C') then
@@ -145,7 +145,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 goto 40
             endif
 30      continue
-        call u2mess('F', 'MODELISA4_91')
+        call utmess('F', 'MODELISA4_91')
 40      continue
 !
     else if (nomres(1:8) .eq. 'FORM_VIE') then
@@ -182,7 +182,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 endif
                 goto 60
 50          continue
-            call u2mess('F', 'MODELISA4_91')
+            call utmess('F', 'MODELISA4_91')
 60          continue
 !
         else
@@ -190,7 +190,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
 ! VERIFIER QUE LA FORMULE A LA VARIABLE NRUPT = N_F
             if ((nompf.ne. 'NBRUP') .or. (np .ne. 1)) then
-                call u2mess('F', 'FATIGUE1_93')
+                call utmess('F', 'FATIGUE1_93')
             endif
 !
             call fointe('F', forvie, np, nompf, nlimim,&

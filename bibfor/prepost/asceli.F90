@@ -1,7 +1,6 @@
 subroutine asceli(mailla)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/copich.h"
 #include "asterfort/cpclma.h"
@@ -22,8 +21,9 @@ subroutine asceli(mailla)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/pacoa1.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mailla
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -53,7 +53,7 @@ subroutine asceli(mailla)
     integer :: inuma, nbpt, jpoin, ino, inov, nbmat, ifm, jpoin2
     integer :: nbno, jgrn1, jgrn2, jvi1, jvi2, iret, igr, k, jind2
     integer :: idime, nbnot, nbgrno, jcoor, i, jind, nbno2, jcor, kk
-    character(len=8) ::  tmp, nomno
+    character(len=8) :: tmp, nomno
     character(len=24) :: grpnoe, connex, liso1, liso2, nogrn1, nogrn2, nomgrn
 !     ------------------------------------------------------------------
 !
@@ -68,11 +68,11 @@ subroutine asceli(mailla)
     nogrn2 = 'BORD2'
     call jeexin(jexnom(grpnoe, nogrn1), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'PREPOST_1', 1, nogrn1)
+        call utmess('F', 'PREPOST_1', sk=nogrn1)
     endif
     call jeexin(jexnom(grpnoe, nogrn2), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'PREPOST_1', 1, nogrn2)
+        call utmess('F', 'PREPOST_1', sk=nogrn2)
     endif
     call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbno)
     call jeveuo(jexnom(grpnoe, nogrn1), 'L', jgrn1)

@@ -35,8 +35,7 @@ subroutine rfrgen(trange)
 #include "asterfort/rfmge1.h"
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
 !
@@ -128,7 +127,7 @@ subroutine rfrgen(trange)
 !
     call jeexin(resu//'.'//nomcha(1:4), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'UTILITAI4_23', 1, nomcha)
+        call utmess('F', 'UTILITAI4_23', sk=nomcha)
     endif
     call jeveuo(resu//'.'//nomcha(1:4), 'L', itresu)
 !
@@ -138,7 +137,7 @@ subroutine rfrgen(trange)
     call rstran(intres, resu, ' ', 1, kinst,&
                 knume, nbordr, ie)
     if (ie .ne. 0) then
-        call u2mess('F', 'UTILITAI4_24')
+        call utmess('F', 'UTILITAI4_24')
     endif
     call jeexin(kinst, iret)
     if (iret .gt. 0) then
@@ -201,7 +200,9 @@ subroutine rfrgen(trange)
         nbmode = zi(ldesc+1)
         call getvis(' ', 'NUME_CMP_GENE', scal=numcmp, nbret=n1)
         if (n1 .ne. 0) then
-            if (numcmp .gt. nbmode) call u2mess('F', 'UTILITAI4_14')
+            if (numcmp .gt. nbmode) then
+                call utmess('F', 'UTILITAI4_14')
+            endif
             call wkvect(nomfon//'.VALE', 'G V R', 2*nbordr, lvar)
             lfon = lvar + nbordr
             if (intres(1:3) .ne. 'NON') then
@@ -236,7 +237,7 @@ subroutine rfrgen(trange)
                             nbpark)
                 call jeveuo('&&RFRGEN.VECT.PROPRE', 'L', idbase)
                 if (type .ne. 'R') then
-                    call u2mesk('F', 'UTILITAI4_16', 1, type)
+                    call utmess('F', 'UTILITAI4_16', sk=type)
                 endif
 !
                 call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
@@ -258,7 +259,9 @@ subroutine rfrgen(trange)
             call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
             if (ngn .ne. 0) then
                 call jenonu(jexnom(noma//'.GROUPENO', nogno), ign2)
-                if (ign2 .le. 0) call u2mesk('F', 'ELEMENTS_67', 1, nogno)
+                if (ign2 .le. 0) then
+                    call utmess('F', 'ELEMENTS_67', sk=nogno)
+                endif
                 call jeveuo(jexnum(noma//'.GROUPENO', ign2), 'L', iagno)
 !
                 ino = zi(iagno)
@@ -268,13 +271,13 @@ subroutine rfrgen(trange)
                         iddl)
             if (inoeud .eq. 0) then
                 lg1 = lxlgut(noeud)
-                call u2mesk('F', 'UTILITAI_92', 1, noeud(1:lg1))
+                call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
             else if (iddl .eq. 0) then
                 lg1 = lxlgut(noeud)
                 lg2 = lxlgut(cmp)
                 valk(1) = cmp(1:lg2)
                 valk(2) = noeud(1:lg1)
-                call u2mesk('F', 'UTILITAI_93', 2, valk)
+                call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
             endif
 !
 !        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
@@ -283,7 +286,7 @@ subroutine rfrgen(trange)
             if (nfonct .ne. 0) then
                 if (nomcha(1:4) .ne. 'ACCE') then
 !           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
-                    call u2mess('F', 'UTILITAI4_26')
+                    call utmess('F', 'UTILITAI4_26')
                     goto 9999
                 endif
                 zk24(lpro+3)(5:8) = '_ABS'

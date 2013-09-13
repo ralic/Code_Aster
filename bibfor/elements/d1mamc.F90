@@ -41,7 +41,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 #include "asterfort/d1macp.h"
 #include "asterfort/d1madp.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp
     real(kind=8) :: repere(7), xyzgau(1), d1(nbsig, 1), instan
@@ -77,7 +77,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
                     ksp, repere, d1)
 !
     else
-        call u2mess('F', 'ELEMENTS_11')
+        call utmess('F', 'ELEMENTS_11')
     endif
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

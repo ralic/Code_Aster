@@ -19,13 +19,13 @@ function nopar2(nomopt, nomgd, statut)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: nomopt, nomgd, statut
 ! ----------------------------------------------------------------------
 !     ENTREES:
@@ -126,13 +126,13 @@ function nopar2(nomopt, nomgd, statut)
         valk(1) = statu2
         valk(2) = nomgd2
         valk(3) = nomop2
-        call u2mesk('F', 'CALCULEL3_84', 3, valk)
+        call utmess('F', 'CALCULEL3_84', nk=3, valk=valk)
     endif
     if (nbtrou .gt. 1) then
         valk(1) = statu2
         valk(2) = nomgd2
         valk(3) = nomop2
-        call u2mesk('F', 'CALCULEL3_85', 3, valk)
+        call utmess('F', 'CALCULEL3_85', nk=3, valk=valk)
     endif
     if (outrou .eq. 'OUT') then
         nopar2=zk8(iaoppa-1+nbin+itrou)

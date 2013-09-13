@@ -63,7 +63,6 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -76,8 +75,8 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 #include "asterfort/jexnom.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ncharp, nchard
     integer :: tabido(5)
     character(len=8) :: modele, lcharp(1), lchard(1)
@@ -152,7 +151,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                         nomgp1, ier)
             call etenca(cartp1, ligrel, iret)
             if (iret .ne. 0) then
-                call u2mess('F', 'CALCULEL4_67')
+                call utmess('F', 'CALCULEL4_67')
             endif
         else if (iret2.ne.0) then
             cartp1 = lcharp(i)//'.CHME.F2D3D'
@@ -160,7 +159,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                         nomgp1, ier)
             call etenca(cartp1, ligrel, iret)
             if (iret .ne. 0) then
-                call u2mess('F', 'CALCULEL4_67')
+                call utmess('F', 'CALCULEL4_67')
             endif
         endif
         if (iret3 .ne. 0) then
@@ -169,7 +168,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                         nomgp2, ier)
             call etenca(cartp2, ligrel, iret)
             if (iret .ne. 0) then
-                call u2mess('F', 'CALCULEL4_67')
+                call utmess('F', 'CALCULEL4_67')
             endif
         endif
 10  end do
@@ -198,7 +197,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                         nomgd1, ier)
             call etenca(cartd1, ligrel, iret)
             if (iret .ne. 0) then
-                call u2mess('F', 'CALCULEL4_68')
+                call utmess('F', 'CALCULEL4_68')
             endif
         else if (iret5.ne.0) then
             cartd1 = lchard(i)//'.CHME.F2D3D'
@@ -206,7 +205,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                         nomgd1, ier)
             call etenca(cartd1, ligrel, iret)
             if (iret .ne. 0) then
-                call u2mess('F', 'CALCULEL4_68')
+                call utmess('F', 'CALCULEL4_68')
             endif
         endif
         if (iret6 .ne. 0) then
@@ -215,7 +214,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                         nomgd2, ier)
             call etenca(cartd2, ligrel, iret)
             if (iret .ne. 0) then
-                call u2mess('F', 'CALCULEL4_68')
+                call utmess('F', 'CALCULEL4_68')
             endif
         endif
 11  end do
@@ -558,7 +557,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
                 'OUI')
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'CALCULEL2_88', 1, option)
+        call utmess('F', 'CALCULEL2_88', sk=option)
     endif
 !
 !====

@@ -22,7 +22,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: grand, axi
     integer :: ndim, nno
     real(kind=8) :: dfdi(nno, ndim), b(6, 3, nno)
@@ -43,8 +43,12 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
 ! ----------------------------------------------------------------------
 !
 !
-    if (grand) call u2mess('F', 'ALGORITH7_76')
-    if (axi) call u2mess('F', 'ALGORITH7_76')
+    if (grand) then
+        call utmess('F', 'ALGORITH7_76')
+    endif
+    if (axi) then
+        call utmess('F', 'ALGORITH7_76')
+    endif
 !
     call r8inir(18*nno, 0.d0, b, 1)
     r2 = sqrt(2.d0)/2.d0

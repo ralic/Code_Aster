@@ -9,7 +9,7 @@ subroutine te0197(option, nomte)
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ subroutine te0197(option, nomte)
     call jevech('PGEOMER', 'L', j_geom)
     call jevech('PMATERC', 'L', j_mate)
     call jevech('PROTATR', 'L', j_rota)
-    rota_speed   = zr(j_rota-1+1)
+    rota_speed = zr(j_rota-1+1)
     rota_axis(1) = zr(j_rota-1+2)
     rota_axis(2) = zr(j_rota-1+3)
     rota_axis(3) = zr(j_rota-1+4)
@@ -81,14 +81,14 @@ subroutine te0197(option, nomte)
 ! - Checking
 !
     if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
-        call u2mess('F', 'CHARGES2_65')
+        call utmess('F', 'CHARGES2_65')
     endif
     if (abs(rota_axis(2)) .le. r8miem()) then
-        call u2mess('F', 'CHARGES2_65')
+        call utmess('F', 'CHARGES2_65')
     endif
-    if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem().or. &
+    if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or.&
         abs(rota_cent(3)) .gt. r8miem()) then
-        call u2mess('F', 'CHARGES2_66')
+        call utmess('F', 'CHARGES2_66')
     endif
 !
 ! - Material
@@ -115,8 +115,8 @@ subroutine te0197(option, nomte)
         r = r - rota_cent(1)
         do i = 1, nno
             k=(kp-1)*nno
-            zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + &
-                               poids * (rota_speed*rota_axis(2))**2 * r * zr(ivf+k+i-1)
+            zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids * (rota_speed*rota_axis(2))**2 * r * zr(i&
+                               &vf+k+i-1)
         end do
     end do
 end subroutine

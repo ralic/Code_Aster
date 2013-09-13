@@ -25,7 +25,7 @@ subroutine hujcri(mater, sig, vin, seuili)
 !       OUT SEUILI :  SEUIL DU MECANISME MONOTONE DE CONSOLIDATION
 !       ---------------------------------------------------------------
 #include "asterc/r8maem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, i
     real(kind=8) :: mater(22, 2), r4, i1, sig(6), vin(*)
     real(kind=8) :: d, pco, beta, seuili, pc, epsvpm
@@ -45,7 +45,9 @@ subroutine hujcri(mater, sig, vin, seuili)
 !
     exptol = min(exptol, 40.d0)
     aexp = -beta*epsvpm
-    if (aexp .ge. exptol) call u2mess('F', 'COMPOR1_7')
+    if (aexp .ge. exptol) then
+        call utmess('F', 'COMPOR1_7')
+    endif
 !
     pc = pco*exp(-beta*epsvpm)
 !

@@ -3,7 +3,6 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                   ntcmp, nbcmp, numcmp, impr, vdomag)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/fgcota.h"
 #include "asterfort/fgdomg.h"
@@ -16,10 +15,9 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nommat, nomnap, nomfon
     character(len=16) :: nomsym
     character(len=19) :: nomsd
@@ -79,7 +77,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 !                        POUR CHAQUE COMPOSANTE ET ON 'NORME'
 !       ----------------------------------------------------------------
 !       ---------------------------------------------------------------
-    character(len=8) ::  kcmp
+    character(len=8) :: kcmp
     character(len=19) :: chequi
     character(len=24) :: nomdmg, nompic
     character(len=24) :: nomitv, nomrtv
@@ -116,7 +114,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
     if (numsym .eq. 0) then
         valk(1) = nomsym
         valk(2) = nomsd
-        call u2mesk('F', 'PREPOST_51', 2, valk)
+        call utmess('F', 'PREPOST_51', nk=2, valk=valk)
     endif
     call jeveuo(jexnum(nomsd//'.TACH', numsym), 'L', ivch)
 !
@@ -131,8 +129,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
             if (impr .ge. 2) then
                 valk (1) = kcmp
                 vali = ipt
-                call u2mesg('I', 'PREPOST6_6', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'PREPOST6_6', sk=valk(1), si=vali)
             endif
 !
 ! ---       CALCUL DU VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
@@ -145,7 +142,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                     valk(1) = chequi
                     valk(2) = nomsym
                     valk(3) = nomsd
-                    call u2mesk('F', 'PREPOST_52', 3, valk)
+                    call utmess('F', 'PREPOST_52', nk=3, valk=valk)
                 endif
 !
                 if ((icmp .eq. 1) .and. (ipt .eq. 1)) then
@@ -154,8 +151,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                     if (ibid .ne. (nbpt*ntcmp)) then
                         valk(2) = nomsym
                         vali = ntcmp
-                        call u2mesg('F', 'FATIGUE1_78', 1, valk(2), 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('F', 'FATIGUE1_78', sk=valk(2), si=vali)
                     endif
                 endif
 !
@@ -182,31 +178,27 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                 call fgcota(nbord, zr(ivpt), ncyc, zr(ivmin), zr(ivmax))
             endif
             if (ncyc .eq. 0) then
-                call u2mesi('F', 'FATIGUE1_77', 1, ncyc)
+                call utmess('F', 'FATIGUE1_77', si=ncyc)
             endif
 !
             if (impr .ge. 2) then
                 vali = nbord
                 valr (1) = zr(ivpt)
                 valr (2) = zr(ivpt+1)
-                call u2mesg('I', 'PREPOST6_7', 0, ' ', 1,&
-                            vali, 2, valr)
+                call utmess('I', 'PREPOST6_7', si=vali, nr=2, valr=valr)
                 if (mcompt .eq. 'RAINFLOW') then
                     vali = npic
                     valr (1) = zr(ivpic)
                     valr (2) = zr(ivpic+1)
-                    call u2mesg('I', 'PREPOST6_8', 0, ' ', 1,&
-                                vali, 2, valr)
+                    call utmess('I', 'PREPOST6_8', si=vali, nr=2, valr=valr)
                 endif
                 vali = ncyc
-                call u2mesg('I', 'PREPOST6_9', 0, ' ', 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'PREPOST6_9', si=vali)
                 do 223 j = 1, ncyc
                     vali = j
                     valr (1) = zr(ivmax+j-1)
                     valr (2) = zr(ivmin+j-1)
-                    call u2mesg('I', 'PREPOST6_10', 0, ' ', 1,&
-                                vali, 2, valr)
+                    call utmess('I', 'PREPOST6_10', si=vali, nr=2, valr=valr)
 223              continue
             endif
 !
@@ -218,8 +210,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
             vdomag(ipt) = dommag
             if (impr .ge. 2) then
                 valr (1) = dommag
-                call u2mesg('I', 'PREPOST6_11', 0, ' ', 0,&
-                            0, 1, valr)
+                call utmess('I', 'PREPOST6_11', sr=valr(1))
             endif
 !
 10      continue

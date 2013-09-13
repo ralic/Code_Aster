@@ -19,8 +19,7 @@ subroutine jjcren(nomlu, icre, iret)
 #include "jeveux_private.h"
 #include "asterfort/jjarep.h"
 #include "asterfort/jxhcod.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
     integer :: icre, iret
 !     ------------------------------------------------------------------
@@ -56,7 +55,9 @@ subroutine jjcren(nomlu, icre, iret)
     data             d32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 ! DEB ------------------------------------------------------------------
     if (icre .ne. 0) then
-        if (nomlu(1:1) .eq. ' ') call u2mess('F', 'JEVEUX_19')
+        if (nomlu(1:1) .eq. ' ') then
+            call utmess('F', 'JEVEUX_19')
+        endif
     endif
 500  continue
     iclasi = iclas
@@ -103,7 +104,7 @@ subroutine jjcren(nomlu, icre, iret)
                     if (icre .eq. 1 .or. icre .eq. 2) then
                         valk(1)=clel
                         valk(2)=nomfic(icla)
-                        call u2mesk('F', 'JEVEUX_10', 2, valk)
+                        call utmess('F', 'JEVEUX_10', nk=2, valk=valk)
                     else
                         if (icre .eq. -1 .or. icre .eq. -2) then
                             hcod(jhcod(icla) + i ) = -j

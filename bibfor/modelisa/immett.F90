@@ -57,7 +57,7 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
 #include "asterc/r8prem.h"
 #include "asterfort/cotfac.h"
 #include "asterfort/tstbar.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbcnx, itetra, immer
     real(kind=8) :: xyzma(3, *), x3dca(*), xbar(*)
 !
@@ -141,7 +141,7 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
             if (immer .ge. 0) goto 9999
 !
             if (immer .lt. 0) then
-                call u2mess('F', 'MODELISA4_72')
+                call utmess('F', 'MODELISA4_72')
             endif
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

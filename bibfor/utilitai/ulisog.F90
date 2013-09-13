@@ -1,7 +1,7 @@
 subroutine ulisog(unit, fname, etat)
     implicit none
-#include "asterfort/u2mesk.h"
 #include "asterfort/ulinit.h"
+#include "asterfort/utmess.h"
     integer :: unit
     character(len=255) :: fname
     character(len=1) :: etat
@@ -47,7 +47,7 @@ subroutine ulisog(unit, fname, etat)
 !
     if (unit .lt. 0) then
         write(k8bid,'(I4)') -unit
-        call u2mesk('F', 'UTILITAI5_9', 1, k8bid)
+        call utmess('F', 'UTILITAI5_9', sk=k8bid)
     endif
     fname = ' '
     etat = 'F'

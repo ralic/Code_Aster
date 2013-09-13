@@ -1,9 +1,9 @@
 subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
                   ncmpmx, val, kval, desc, valglo,&
                   kvalgl, type, nec)
-    implicit  none
+    implicit none
 #include "asterc/indik8.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ino, nbcmp, ncmpmx, nec, desc(*), ioc
     real(kind=8) :: valglo(*), val(*)
     character(len=*) :: type
@@ -59,8 +59,7 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
             desc((ino-1)*nec+iec) = ior(desc((ino-1)*nec+iec),2**jj)
         else
             valk = nocmp(icmp)
-            call u2mesg('F', 'CALCULEL5_65', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'CALCULEL5_65', sk=valk)
         endif
         nocoaf = nocoaf + 1
         ind = j + (ino-1)*ncmpmx
@@ -75,8 +74,7 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
         vali (1) = ioc
         vali (2) = nocoaf
         vali (3) = nbcmp
-        call u2mesg('F', 'CALCULEL5_66', 0, ' ', 3,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'CALCULEL5_66', ni=3, vali=vali)
     endif
 !
 end subroutine

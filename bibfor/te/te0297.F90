@@ -13,7 +13,7 @@ subroutine te0297(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xcgfvo.h"
 #include "asterfort/xsifel.h"
 #include "asterfort/xsifle.h"
@@ -141,7 +141,7 @@ subroutine te0297(option, nomte)
                 1, 'RHO', rho, codrho, 0)
 !
     if ((codrho.ne.0) .and. lmoda) then
-        call u2mess('F', 'RUPTURE1_26')
+        call utmess('F', 'RUPTURE1_26')
     endif
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
@@ -247,7 +247,7 @@ subroutine te0297(option, nomte)
                 'ELAS', 3, nomres, valres, devres,&
                 icodre)
     if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
-        call u2mess('F', 'RUPTURE1_25')
+        call utmess('F', 'RUPTURE1_25')
     endif
     if (icodre(3) .ne. 0) then
         valres(3) = 0.d0

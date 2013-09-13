@@ -60,7 +60,7 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
 #include "asterfort/jemarq.h"
 #include "asterfort/matmul.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: i, zimat, kpg, spt
     integer :: codret
 !
@@ -150,7 +150,7 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
         minmp(i) = valres(2)
 !
         if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or. (maxmp(i)- minmp(i) .le. 0.d0)) then
-            call u2mess('F', 'ELEMENTS_87')
+            call utmess('F', 'ELEMENTS_87')
         endif
 50      continue
     endif

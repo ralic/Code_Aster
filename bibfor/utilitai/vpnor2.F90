@@ -1,7 +1,6 @@
 subroutine vpnor2(nomcon, nbmode, numord, coef)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -11,8 +10,8 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
 #include "asterfort/jexnum.h"
 #include "asterfort/peenc2.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbmode, numord(*)
     real(kind=8) :: coef(*)
     character(len=*) :: nomcon
@@ -44,7 +43,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
 !     ------------------------------------------------------------------
     integer :: ibid, nbnosy, isy, im, iordr, iret, lvale, neq, ieq
     real(kind=8) :: rcoef
-    character(len=8) ::  typmod
+    character(len=8) :: typmod
     character(len=16) :: nomsym
     character(len=19) :: nomd2
     character(len=24) :: vale
@@ -79,7 +78,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
                     .or. nomsym( 1:4) .eq. 'REAC' .or. nomsym(1:4) .eq. 'DEGE') then
                     rcoef = coef(im)
                 else if (nomsym(1:4) .eq. 'EQUI') then
-                    call u2mesk('A', 'UTILITAI5_88', 1, nomsym)
+                    call utmess('A', 'UTILITAI5_88', sk=nomsym)
                     goto 12
                     elseif ( nomsym(1:4) .eq. 'EPOT' .or. nomsym(1:4)&
                 .eq. 'ECIN' ) then
@@ -87,7 +86,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
                     if (typmod(1:1) .eq. 'R') then
                         call peenc2(vale(1:19), rcoef)
                     else
-                        call u2mess('F', 'UTILITAI5_89')
+                        call utmess('F', 'UTILITAI5_89')
                     endif
                     goto 12
                 else
@@ -100,7 +99,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
                         zr(lvale+ieq) = zr(lvale+ieq) * rcoef
 20                  continue
                 else
-                    call u2mess('F', 'UTILITAI5_89')
+                    call utmess('F', 'UTILITAI5_89')
                 endif
             endif
 12      continue

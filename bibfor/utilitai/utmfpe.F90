@@ -21,6 +21,6 @@ subroutine utmfpe()
 ! ARRET DU CODE AVEC UNE ERREUR FATALE
 !
     implicit none
-#include "asterfort/u2mess.h"
-    call u2mess('F', 'DVP_2')
+#include "asterfort/utmess.h"
+    call utmess('F', 'DVP_2')
 end subroutine

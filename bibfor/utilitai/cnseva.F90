@@ -19,7 +19,6 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/dismoi.h"
@@ -30,9 +29,9 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: npara
     character(len=*) :: cnsf, lpara(npara), cnsr
 ! ---------------------------------------------------------------------
@@ -87,7 +86,9 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !
     call dismoi('F', 'TYPE_SCA', nomgdf, 'GRANDEUR', ib,&
                 tsca, ib)
-    if (tsca .ne. 'K8') call u2mess('F', 'UTILITAI_16')
+    if (tsca .ne. 'K8') then
+        call utmess('F', 'UTILITAI_16')
+    endif
 !
 !
 !     2- ALLOCATION DU CHAM_NO_S RESULTAT ET RECUPERATION
@@ -119,8 +120,12 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !
     call dismoi('F', 'TYPE_SCA', nomgd2, 'GRANDEUR', ib,&
                 tsca, ib)
-    if (tsca .ne. 'R') call u2mess('F', 'UTILITAI_17')
-    if (ma2 .ne. ma) call u2mess('F', 'UTILITAI_18')
+    if (tsca .ne. 'R') then
+        call utmess('F', 'UTILITAI_17')
+    endif
+    if (ma2 .ne. ma) then
+        call utmess('F', 'UTILITAI_18')
+    endif
     zi(jad1-1+4* (ipara-1)+1) = jpc
     zi(jad1-1+4* (ipara-1)+2) = jpd
     zi(jad1-1+4* (ipara-1)+3) = jpl
@@ -153,12 +158,16 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
         do 20,k2 = 1,ncmp2
         if (zl(jpl-1+ (ino-1)*ncmp2+k2)) then
             nbpu = nbpu + 1
-            if (nbpu .gt. nbpumx) call u2mess('F', 'CALCULEL2_66')
+            if (nbpu .gt. nbpumx) then
+                call utmess('F', 'CALCULEL2_66')
+            endif
 !
 !                 -- ON VERIFIE QU'UN MEME PARAMETRE N'EST PAS AJOUTE
 !                    PLUSIEURS FOIS:
             ibid=indik8(nompu,zk8(jpc-1+k2),1,nbpu-1)
-            if (ibid .gt. 0) call u2mesk('F', 'CALCULEL2_78', 1, zk8(jpc-1+k2))
+            if (ibid .gt. 0) then
+                call utmess('F', 'CALCULEL2_78', sk=zk8(jpc-1+k2))
+            endif
 !
             nompu(nbpu) = zk8(jpc-1+k2)
             valpu(nbpu) = zr(jpv-1+ (ino-1)*ncmp2+k2)
@@ -172,9 +181,9 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
         call fointe('E', fo, nbpu, nompu, valpu,&
                     x, ier)
         if (ier .ne. 0) then
-            call u2mesk('F+', 'FONCT0_9', 1, fo)
+            call utmess('F+', 'FONCT0_9', sk=fo)
             call jenuno(jexnum(ma//'.NOMNOE', ino), valk)
-            call u2mesk('F', 'FONCT0_53', 1, valk)
+            call utmess('F', 'FONCT0_53', sk=valk)
         endif
 !
 !           4.3 STOCKAGE DU RESULTAT :

@@ -22,7 +22,6 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -30,9 +29,9 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: mainit
     character(len=8) :: main, prefix
     character(len=24) :: noma, connec, tyma, ngma, gpma, gno1, gno2, nomgma
@@ -70,15 +69,23 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 ! - VERIFICATIONS DES GROUP_NO
 !
     call jeexin(jexnom(main//'.GROUPENO', gno1), iret)
-    if (iret .eq. 0) call u2mesk('F', 'ALGELINE_19', 1, gno1)
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGELINE_19', sk=gno1)
+    endif
     call jeexin(jexnom(main//'.GROUPENO', gno2), iret)
-    if (iret .eq. 0) call u2mesk('F', 'ALGELINE_19', 1, gno2)
+    if (iret .eq. 0) then
+        call utmess('F', 'ALGELINE_19', sk=gno2)
+    endif
 !
     call jelira(jexnom(main//'.GROUPENO', gno1), 'LONUTI', nb1)
     call jelira(jexnom(main//'.GROUPENO', gno2), 'LONUTI', nb2)
 !
-    if (nb1 .ne. nb2) call u2mess('F', 'ALGELINE_20')
-    if (nb1 .le. 1) call u2mess('F', 'ALGELINE_21')
+    if (nb1 .ne. nb2) then
+        call utmess('F', 'ALGELINE_20')
+    endif
+    if (nb1 .le. 1) then
+        call utmess('F', 'ALGELINE_21')
+    endif
 !
 !
 ! - INITIALISATION
@@ -113,7 +120,9 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 !      NOM DE LA MAILLE CREEE
         call codent(mainit-1+ma, 'G', knume)
         lgma = lxlgut(knume)
-        if (lgma+lgpref .gt. 8) call u2mess('F', 'ALGELINE_17')
+        if (lgma+lgpref .gt. 8) then
+            call utmess('F', 'ALGELINE_17')
+        endif
         zk8(inoma-1 + ma) = prefix(1:lgpref) // knume
 !
 !      TYPE DE LA NOUVELLE MAILLE : QUAD4
@@ -141,8 +150,10 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
 ! LES NOEUDS TOPOLOGIQUEMENT CONFONDUS NE SERONT PAS BIEN TRAITES
 ! PAR CALCUL LORS DE LA PHASE DE RESOLUTION NON LINEAIRE
 ! ON ARRETE DONC DES CE STADE
-        if (n1 .eq. n2 .or. n1 .eq. n3 .or. n1 .eq. n4 .or. n2 .eq. n3 .or. n2 .eq. n4 .or. n3&
-            .eq. n4) call u2mess('F', 'ALGELINE_22')
+        if (n1 .eq. n2 .or. n1 .eq. n3 .or. n1 .eq. n4 .or. n2 .eq. n3 .or. n2 .eq. n4 .or.&
+            n3 .eq. n4) then
+            call utmess('F', 'ALGELINE_22')
+        endif
 !      INSERTION DE LA MAILLE DANS LE NOUVEAU GROUP_MA
         zi(igpma + ma) = - ma
 !

@@ -1,7 +1,6 @@
 subroutine cmtref(chmat, nomail)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
@@ -22,9 +21,10 @@ subroutine cmtref(chmat, nomail)
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
-#include "asterfort/u2mesg.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: chmat, nomail
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -153,8 +153,9 @@ subroutine cmtref(chmat, nomail)
     else
         valr(1) = -275.d0
         valr(2) = 4000.d0
-        if (tref .le. valr(1) .and. tref .ge. valr(2)) call u2mesg('F', 'MODELISA_22', 0, ' ', 0,&
-                                                                   0, 2, valr)
+        if (tref .le. valr(1) .and. tref .ge. valr(2)) then
+            call utmess('F', 'MODELISA_22', nr=2, valr=valr)
+        endif
         write (ktref,'(F8.2)') tref
     endif
     zk8(jvalv-1+nm+2) = ktref

@@ -5,7 +5,7 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbmode, nexcit, jvec, ier
     character(len=8) :: basemo, masgen, riggen, amogen
     character(len=14) :: numgen
@@ -67,11 +67,11 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
         base2 = zk24(jref2)(1:8)
         if (base1 .ne. basemo) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_42')
+            call utmess('E', 'ALGORITH5_42')
         endif
         if (base2 .ne. basemo) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_42')
+            call utmess('E', 'ALGORITH5_42')
         endif
 !
         call jeveuo(masgen//'           .DESC', 'L', jdes1)
@@ -80,11 +80,11 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
         nvec2 = zi(jdes2+1)
         if (nvec1 .ne. nbmode) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_43')
+            call utmess('E', 'ALGORITH5_43')
         endif
         if (nvec2 .ne. nbmode) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_43')
+            call utmess('E', 'ALGORITH5_43')
         endif
 !
         if (amogen .ne. k8b) then
@@ -92,13 +92,13 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
             base1 = zk24(jref1)(1:8)
             if (base1 .ne. basemo) then
                 ier = ier + 1
-                call u2mess('E', 'ALGORITH5_42')
+                call utmess('E', 'ALGORITH5_42')
             endif
             call jeveuo(amogen//'           .DESC', 'L', jdes1)
             nvec1 = zi(jdes1+1)
             if (nvec1 .ne. nbmode) then
                 ier = ier + 1
-                call u2mess('E', 'ALGORITH5_43')
+                call utmess('E', 'ALGORITH5_43')
             endif
         endif
 !
@@ -112,11 +112,11 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
         nu2gen = zk24(jref2+1)(1:14)
         if (nu1gen .ne. numgen) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_44')
+            call utmess('E', 'ALGORITH5_44')
         endif
         if (nu2gen .ne. numgen) then
             ier = ier + 1
-            call u2mess('E', 'ALGORITH5_44')
+            call utmess('E', 'ALGORITH5_44')
         endif
 !
         if (amogen .ne. k8b) then
@@ -124,7 +124,7 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
             nu3gen = zk24(jref1+1)(1:14)
             if (nu3gen .ne. numgen) then
                 ier = ier + 1
-                call u2mess('E', 'ALGORITH5_44')
+                call utmess('E', 'ALGORITH5_44')
             endif
         endif
 !
@@ -135,7 +135,7 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
                 nu4gen = zk24(jref1+1)(1:14)
                 if (nu4gen .ne. numgen) then
                     ier = ier + 1
-                    call u2mess('E', 'ALGORITH5_45')
+                    call utmess('E', 'ALGORITH5_45')
                 endif
 10          continue
         endif

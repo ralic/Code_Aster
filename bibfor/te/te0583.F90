@@ -27,8 +27,7 @@ subroutine te0583(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vlggl.h"
 #include "asterfort/vlgglc.h"
@@ -103,22 +102,22 @@ subroutine te0583(option, nomte)
 30  end do
     nbrddl = nno* (6+3+6* (m-1))
     if (nbrddl .gt. nbrddm) then
-        call u2mess('F', 'ELEMENTS4_40')
+        call utmess('F', 'ELEMENTS4_40')
     endif
     if (nomte .eq. 'MET3SEG3') then
         if (nbrddl .ne. 63) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else if (nomte.eq.'MET6SEG3') then
         if (nbrddl .ne. 117) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else if (nomte.eq.'MET3SEG4') then
         if (nbrddl .ne. 84) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else
-        call u2mess('F', 'ELEMENTS4_42')
+        call utmess('F', 'ELEMENTS4_42')
     endif
     call jevech('PCAORIE', 'L', lorien)
     call carcou(zr(lorien), l, pgl, rayon, theta,&
@@ -245,7 +244,7 @@ subroutine te0583(option, nomte)
                                 ' ', phenom, 0, ' ', r8b,&
                                 1, 'RHO', rho, codres, 1)
                 else
-                    call u2mess('F', 'ELEMENTS4_43')
+                    call utmess('F', 'ELEMENTS4_43')
                 endif
                 call jevech('PPESANR', 'L', jpesa)
                 pesan = zr(jpesa)
@@ -367,10 +366,10 @@ subroutine te0583(option, nomte)
         normal = zk8(lforc+6) .eq. 'VENT'
         global = zk8(lforc+6) .eq. 'GLOBAL'
         if (normal) then
-            call u2mesk('F', 'ELEMENTS4_44', 1, option)
+            call utmess('F', 'ELEMENTS4_44', sk=option)
         endif
         if (.not.global) then
-            call u2mesk('F', 'ELEMENTS4_45', 1, option)
+            call utmess('F', 'ELEMENTS4_45', sk=option)
         endif
         nompar(4) = 'INST'
         nompar(1) = 'X'

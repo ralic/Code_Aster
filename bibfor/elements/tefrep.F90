@@ -1,11 +1,11 @@
 subroutine tefrep(option, nomte, param, iforc)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
     character(len=*) :: param
 !
@@ -80,7 +80,7 @@ subroutine tefrep(option, nomte, param, iforc)
         valk(2) = option
         valk(3) = nomte
         valk(4) = nommai
-        call u2mesk('F', 'CALCULEL2_72', 4, valk)
+        call utmess('F', 'CALCULEL2_72', nk=4, valk=valk)
     endif
 !
 9999  continue

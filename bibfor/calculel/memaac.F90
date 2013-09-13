@@ -11,7 +11,7 @@ subroutine memaac(modele, mate, matel)
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele
     character(len=19) :: matel
     character(len=*) :: mate
@@ -67,7 +67,7 @@ subroutine memaac(modele, mate, matel)
 !-----------------------------------------------------------------------
     call jemarq()
     if (modele(1:1) .eq. ' ') then
-        call u2mess('F', 'CALCULEL3_50')
+        call utmess('F', 'CALCULEL3_50')
     endif
 !
     call megeom(modele, chgeom)

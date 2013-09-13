@@ -37,14 +37,14 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ntymax
     parameter (ntymax = 69)
     integer :: nnomax
@@ -116,7 +116,7 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', iaux)
     if (ntymax .ne. iaux) then
-        call u2mess('F', 'MED_38')
+        call utmess('F', 'MED_38')
     endif
 !
 !     NOM / NBNO PAR TYPE DE MAILLE
@@ -124,7 +124,7 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
     do 1 ityp = 1, ntymax
         call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nomtyp(ityp))
         if (nomast(ityp) .ne. nomtyp(ityp)) then
-            call u2mess('F', 'MED_39')
+            call utmess('F', 'MED_39')
         endif
         call jeveuo(jexnum('&CATA.TM.NBNO' , ityp), 'L', jaux)
         nnotyp(ityp) = zi(jaux)

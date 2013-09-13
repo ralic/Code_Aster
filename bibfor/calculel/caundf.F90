@@ -20,7 +20,6 @@ subroutine caundf(code, opt, te)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/iisnan.h"
 #include "asterc/indik8.h"
 #include "asterc/isnnem.h"
@@ -30,7 +29,8 @@ subroutine caundf(code, opt, te)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: opt, te
     character(len=5) :: code
 ! ----------------------------------------------------------------------
@@ -145,7 +145,7 @@ subroutine caundf(code, opt, te)
                 valk(1) = nomte
                 valk(2) = nomopt
                 valk(3) = nompar
-                call u2mesk('E', 'CALCULEL_42', 3, valk)
+                call utmess('E', 'CALCULEL_42', nk=3, valk=valk)
             endif
 !
 30      continue

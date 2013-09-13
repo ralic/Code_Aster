@@ -20,10 +20,9 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
 ! ----------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: imate, nbpu, jmat
     real(kind=8) :: valpu(*), resu
     character(len=*) :: nompu(*), type
@@ -63,7 +62,7 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
             goto 11
         endif
 10  end do
-    call u2mess('F', 'ELEMENTS2_63')
+    call utmess('F', 'ELEMENTS2_63')
 11  continue
     idf = zi(ipi)+zi(ipi+1)
     nbf = zi(ipi+2)
@@ -74,7 +73,7 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
             goto 21
         endif
 20  end do
-    call u2mess('F', 'MODELISA6_81')
+    call utmess('F', 'MODELISA6_81')
 21  continue
 !
     jpro = zi(ipif+1)
@@ -92,8 +91,7 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
             goto 9999
         else
             valk = zk24(jpro)
-            call u2mesg('F', 'MODELISA9_73', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'MODELISA9_73', sk=valk)
         endif
     endif
 !
@@ -109,7 +107,7 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
         endif
 30  end do
 !
-    call u2mess('F', 'MODELISA9_83')
+    call utmess('F', 'MODELISA9_83')
 !
 9999  continue
 !

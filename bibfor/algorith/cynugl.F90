@@ -43,7 +43,6 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"
@@ -58,14 +57,15 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, iec, ieq, ipoint
     integer :: iret, j, lddeeq, ldnueq, ldprno, linueq, llinsk
-    integer :: llnoms,llnueq,llprno,llref1,ltinse,lttds
+    integer :: llnoms, llnueq, llprno, llref1, ltinse, lttds
     integer :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
     integer :: neqsec, nsecpr, ntail, numnos, numsec
 !-----------------------------------------------------------------------
@@ -92,11 +92,13 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !----------------RECUPERATION DU NUMDDLET DE L'INTERF_DYNA--------------
 !
 !
-
-
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
-
+!
+!
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                intf, iret)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                numddl, iret)
+!
 !
 !---------------RECUPERATION DU NOMBRE DE COMPOSANTES-------------------
 !
@@ -105,7 +107,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
     call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
                 k8bid, iret)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 !---------------RECUPERATION DU NOMBRE DE SECTEURS----------------------

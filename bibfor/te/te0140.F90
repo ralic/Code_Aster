@@ -31,7 +31,7 @@ subroutine te0140(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
@@ -167,7 +167,7 @@ subroutine te0140(option, nomte)
         if (xl .eq. zero) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3)(1:8)
-            call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+            call utmess('F', 'ELEMENTS2_43', sk=nomail)
         endif
 !     --- CALCUL DES MATRICES ELEMENTAIRES ----
         if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'RIGI_FLUI') then
@@ -179,7 +179,7 @@ subroutine te0140(option, nomte)
         call matrot(zr(lorien), pgl)
         call utpslg(nno, nc, pgl, klv, zr(lmat))
     else
-        call u2mesk('F', 'ELEMENTS2_42', 1, nomte)
+        call utmess('F', 'ELEMENTS2_42', sk=nomte)
     endif
 !
 end subroutine

@@ -17,11 +17,11 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: cupn0, cvpn0, cupn1, cvpn1, cupn2, cvpn2
     real(kind=8) :: cuon, cvon, rayon
 ! ---------------------------------------------------------------------
@@ -221,8 +221,7 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
         valr (15) = (rayon - raymin)
         valr (16) = ((rayon-raymin)/raymin)
         vali = flag
-        call u2mesg('F', 'PREPOST5_78', 0, ' ', 1,&
-                    vali, 16, valr)
+        call utmess('F', 'PREPOST5_78', si=vali, nr=16, valr=valr)
     else
         cuon = cuon1
         cvon = cvon1

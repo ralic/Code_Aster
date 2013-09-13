@@ -1,16 +1,15 @@
 subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
                   refi, refr, refc, epsi, crit,&
                   ific, llab, ssigne)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
     integer :: nbref, refi(nbref), ific
     real(kind=8) :: refr(nbref), epsi
     character(len=8) :: typtes
@@ -87,7 +86,7 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
         valk(1) = cham19
         valk(2) = type
         valk(3) = typrez
-        call u2mesk('A', 'CALCULEL5_13', 3, valk)
+        call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
         goto 9999
     endif
 !
@@ -118,7 +117,7 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
 106          continue
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
 !
@@ -146,7 +145,7 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
 206          continue
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
 !
@@ -164,7 +163,7 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
 302          continue
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
     endif

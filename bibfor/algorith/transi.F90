@@ -47,8 +47,7 @@ subroutine transi(np1, np2, np3, np4, nbm,&
 #include "asterfort/defttr.h"
 #include "asterfort/estitr.h"
 #include "asterfort/inialg.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: np1, np2, np3, np4, nbm, nbnl, npfmax, npfts
     real(kind=8) :: dttr, ttrans, eps, fext(np4, *), text(*), fextts(np4, *)
     real(kind=8) :: textts(*), fexttr(*), fextt0(*), masgi(*), amori(*)
@@ -86,8 +85,7 @@ subroutine transi(np1, np2, np3, np4, nbm,&
                 npf, npfmax, text, ier)
     if (ier .ne. 0) then
         valr = ttrans
-        call u2mesg('F', 'ALGORITH14_68', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('F', 'ALGORITH14_68', sr=valr)
     endif
 !
 ! 2.  REPETER JUSQU'A VALIDATION DE LA DUREE DU REGIME TRANSITOIRE
@@ -101,7 +99,9 @@ subroutine transi(np1, np2, np3, np4, nbm,&
 ! 2.1 SORTIE EN ERREUR FATALE SI DEPASSEMENT DU NOMBRE D'ITERATIONS
 !     MAXIMAL
 !
-    if (ntrans .ge. ntramx) call u2mess('F', 'ALGORITH10_96')
+    if (ntrans .ge. ntramx) then
+        call utmess('F', 'ALGORITH10_96')
+    endif
 !
 ! 2.2 CARACTERISATION DE L'ECHANTILLON TEMPOREL CONSIDERE
 !     (AJUSTEMENT DE LA DUREE DU REGIME TRANSITOIRE)
@@ -110,7 +110,9 @@ subroutine transi(np1, np2, np3, np4, nbm,&
     call defttr(np1, np4, nbm, npf, nttr,&
                 ntrans, ttran0, ttrans, text, fext,&
                 fextt0, fexttr, dttr)
-    if (nttr .gt. npfmax) call u2mess('F', 'ALGORITH10_97')
+    if (nttr .gt. npfmax) then
+        call utmess('F', 'ALGORITH10_97')
+    endif
 !
 ! 2.3 A LA PREMIERE ESTIMATION DE LA DUREE DU REGIME TRANSITOIRE,
 !     CALCUL DES COEFFICIENTS DE FOURIER SUR L'ECHANTILLON TEMPOREL

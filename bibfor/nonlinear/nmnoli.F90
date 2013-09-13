@@ -21,7 +21,7 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/gnomsd.h"
@@ -34,7 +34,7 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 #include "asterfort/nmetpl.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsrusd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sddisc, sdcrit, lisch2, sddyna, sdpost, sdpilo, sdener
     character(len=24) :: sderro, carcri
     character(len=24) :: modele, mate, carele
@@ -131,7 +131,7 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 ! --- ARCHIVAGE ETAT INITIAL
 !
     if (.not.lreuse) then
-        call u2mess('I', 'ARCHIVAGE_4')
+        call utmess('I', 'ARCHIVAGE_4')
         call nmarch(result, numins, modele, mate, carele,&
                     fonact, carcri, sdimpr, sddisc, sdpost,&
                     sdcrit, sdtime, sderro, sddyna, sdpilo,&

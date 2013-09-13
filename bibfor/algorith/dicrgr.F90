@@ -8,7 +8,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
     integer :: neq, icodma, nc
     real(kind=8) :: ulm(neq), dul(neq), sim(neq), sip(neq), varim(6)
@@ -138,7 +138,9 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
                     iretp)
         call moytem(fami, npg, 1, '-', tempm,&
                     iretm)
-        if ((iretp+iretm) .ge. 1) call u2mess('F', 'CALCULEL_31')
+        if ((iretp+iretm) .ge. 1) then
+            call utmess('F', 'CALCULEL_31')
+        endif
         temp = (tempp+tempm)/2.d0
 !
         nbpar=2
@@ -171,7 +173,9 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
                     iretp)
         call moytem(fami, npg, 1, '-', tempm,&
                     iretm)
-        if ((iretp+iretm) .ge. 1) call u2mess('F', 'CALCULEL_31')
+        if ((iretp+iretm) .ge. 1) then
+            call utmess('F', 'CALCULEL_31')
+        endif
         temp = (tempp + tempm)/2.d0
         nbpar=2
         nompar(2)='IRRA'

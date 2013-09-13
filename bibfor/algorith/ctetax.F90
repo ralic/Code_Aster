@@ -44,7 +44,6 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/amppr.h"
 #include "asterfort/bmnodi.h"
@@ -57,8 +56,8 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, ibid, icomp, ier, iloci, ilocj, inoa
     integer :: iret, j, k, lldesc, llnoa, nbcmp
@@ -87,7 +86,8 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !-------------------RECUPERATION DU MAILLAGE----------------------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                intf, iret)
     call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
                 mailla, iret)
 !
@@ -98,7 +98,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
                 kbid, ier)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 !-------------------REQUETTE DESCRIPTEUR DES DEFORMEES STATIQUES--------
@@ -126,8 +126,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     if (nbdax .ne. nbtet) then
         vali (1) = nbdax
         vali (2) = nbtet
-        call u2mesg('F', 'ALGORITH14_93', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_93', ni=2, vali=vali)
     endif
 !
 !
@@ -169,12 +168,10 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
                 noer=zi(lldesc+inoa-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
                 tyd=typddl(j)
-                call u2mesg('E', 'ALGORITH14_94', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH14_94')
                 valk (1) = tyd
                 valk (2) = nomnoe
-                call u2mesg('E', 'ALGORITH14_95', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH14_95', nk=2, valk=valk)
                 nook=.true.
             endif
 !
@@ -182,20 +179,17 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
                 noer=zi(lldesc+inoa-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
                 tyd=typddl(j)
-                call u2mesg('E', 'ALGORITH14_94', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH14_94')
                 valk (1) = tyd
                 valk (2) = nomnoe
-                call u2mesg('E', 'ALGORITH14_95', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH14_95', nk=2, valk=valk)
                 nook=.true.
             endif
 !
 50      continue
 !
         if (nook) then
-            call u2mesg('F', 'ALGORITH14_94', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH14_94')
         endif
 !
         nbdcou=0

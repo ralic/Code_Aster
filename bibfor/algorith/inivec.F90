@@ -21,6 +21,7 @@ subroutine inivec(vec, neq, id, nbcp)
 !  BUT:  INITIALISER TOUTES LES COMPOSANTES D'UN VECTEUR A ZERO SAUF
 !   CELLES D'UNE LISTE EGALES A UN
     implicit none
+#include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
 !
@@ -31,7 +32,6 @@ subroutine inivec(vec, neq, id, nbcp)
 !
 !-----------------------------------------------------------------------
 !
-#include "asterfort/u2mess.h"
     integer :: i, j, nbcp, id(nbcp), neq
     real(kind=8) :: vec(neq)
 !
@@ -43,7 +43,7 @@ subroutine inivec(vec, neq, id, nbcp)
 !
     do 20 j = 1, nbcp
         if (id(j) .gt. neq) then
-            call u2mess('A', 'ALGORITH4_35')
+            call utmess('A', 'ALGORITH4_35')
         else
             vec(id(j))=1.d0
         endif

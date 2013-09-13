@@ -47,7 +47,6 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/amppr.h"
 #include "asterfort/bmnodi.h"
 #include "asterfort/ctetax.h"
@@ -71,11 +70,12 @@ subroutine prcycb(nomres, soumat, repmat)
 #include "asterfort/mtdscr.h"
 #include "asterfort/mtexis.h"
 #include "asterfort/pmppr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
+!
 !
 !
     character(len=6) :: pgc
@@ -111,8 +111,10 @@ subroutine prcycb(nomres, soumat, repmat)
     intf  =zk24(llref1+1)
     basmod=zk24(llref1+2)
     call jelibe(nomres//'.CYCL_REFE')
-    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid, raid, iret)
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, mass, iret)
+    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid,&
+                raid, iret)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
+                mass, iret)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
@@ -347,7 +349,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call dcopy(neq, zr(llcham), 1, zr(ltveca+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltveca+(i-1)*neq))
-666 continue
+666  continue
     do 667 i = 1, nbddr
         iord=zi(ltord+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
@@ -355,7 +357,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call dcopy(neq, zr(llcham), 1, zr(ltvecb+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvecb+(i-1)*neq))
-667 continue
+667  continue
     do 668 i = 1, nbddr
         iord=zi(ltorg+i-1)
         call dcapno(basmod, 'DEPL    ', iord, chamva)
@@ -363,7 +365,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call dcopy(neq, zr(llcham), 1, zr(ltvecc+(i-1)*neq), 1)
         call jelibe(chamva)
         call zerlag(neq, zi(iddeeq), vectr=zr(ltvecc+(i-1)*neq))
-668 continue
+668  continue
     if (nbdax .gt. 0) then
         do 669 i = 1, nbdax
             iord=zi(ltora+i-1)
@@ -390,12 +392,10 @@ subroutine prcycb(nomres, soumat, repmat)
     call mtexis(mass, ier2)
     if (ier1 .eq. 0) then
         valk = raid
-        call u2mesg('E', 'ALGORITH12_39', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('E', 'ALGORITH12_39', sk=valk)
     else if (ier2.eq.0) then
         valk = mass
-        call u2mesg('E', 'ALGORITH12_39', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('E', 'ALGORITH12_39', sk=valk)
     endif
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE
@@ -490,8 +490,8 @@ subroutine prcycb(nomres, soumat, repmat)
                     .false.)
         call mrmult('ZERO', lmatm, zr(ltvecb+(i-1)*neq), zr(ltvec3), 1,&
                     .false.)
-        call zerlag( neq, zi(iddeeq), vectr=zr(ltvec1))
-        call zerlag( neq, zi(iddeeq), vectr=zr(ltvec3))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
 !
 ! ----- CALCUL TERME DIAGONAL
 !
@@ -763,8 +763,8 @@ subroutine prcycb(nomres, soumat, repmat)
                         .false.)
             call mrmult('ZERO', lmatm, zr(ltvecd+(i-1)*neq), zr(ltvec3), 1,&
                         .false.)
-            call zerlag( neq, zi(iddeeq), vectr=zr(ltvec1))
-            call zerlag( neq, zi(iddeeq), vectr=zr(ltvec3))
+            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
+            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
 !
 ! ------- MULTIPLICATION PAR MODES PROPRES
 !

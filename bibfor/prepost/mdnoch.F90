@@ -67,7 +67,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=64) :: nochmd
     character(len=16) :: nomsym
     character(len=8) :: noresu
@@ -132,7 +132,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !====
 !
     if (codret .ne. 0) then
-        call u2mess('F', 'MED_91')
+        call utmess('F', 'MED_91')
     endif
 !
 end subroutine

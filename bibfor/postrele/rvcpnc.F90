@@ -20,9 +20,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 #include "asterfort/num2k8.h"
 #include "asterfort/numek8.h"
 #include "asterfort/rvopti.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
 !
@@ -137,7 +135,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                     mailla, ier)
         call dismoi('F', 'Z_CST', mailla, 'MAILLAGE', ibid,&
                     k8b, ier)
-        if (k8b(1:3) .eq. 'NON') call u2mess('F', 'POSTRELE_32')
+        if (k8b(1:3) .eq. 'NON') then
+            call utmess('F', 'POSTRELE_32')
+        endif
         quant = 'TRACE_NORMALE'
         repere = 'LOCAL'
     else if ((ntd1 .ne. 0) .or. (ntd2 .ne. 0)) then
@@ -159,7 +159,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     if (ntc .ne. 0) then
         nomob1 = '&&OP0051.NOMCMP.USER'
         call utncmp(nch19, nbc, nomob1)
-        if (nbc .eq. 0) call u2mesi('F', 'POSTRELE_54', 1, iocc)
+        if (nbc .eq. 0) then
+            call utmess('F', 'POSTRELE_54', si=iocc)
+        endif
         call jeveuo(nomob1, 'L', ancpu)
         call wkvect(nomojb, 'V V K8', nbc, avk8)
         do 10, i = 1, nbc, 1
@@ -213,8 +215,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             valk (18) = 'EPSI_NOEU_ELGA'
             valk (19) = 'DEGE_NOEU'
             valk (20) = 'EFGE_NOEU'
-            call u2mesg('F', 'POSTRELE_33', 20, valk, 1,&
-                        iocc, 0, 0.d0)
+            call utmess('F', 'POSTRELE_33', nk=20, valk=valk, si=iocc)
         endif
 !
     else if ((ntn1 .ne. 0) .or. (ntn2 .ne. 0)) then
@@ -275,8 +276,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             valk (18) = 'EFGE_NOEU'
             valk (19) = ' '
             valk (20) = 'FLUX_R'
-            call u2mesg('F', 'POSTRELE_34', 20, valk, 1,&
-                        iocc, 0, 0.d0)
+            call utmess('F', 'POSTRELE_34', nk=20, valk=valk, si=iocc)
         endif
 !
     else if ((ntd1 .ne. 0) .or. (ntd2 .ne. 0)) then
@@ -429,8 +429,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             valk (21) = ' '
             valk (22) = 'DEPL_R'
             valk (23) = 'FORC_R'
-            call u2mesg('F', 'POSTRELE_35', 23, valk, 1,&
-                        iocc, 0, 0.d0)
+            call utmess('F', 'POSTRELE_35', nk=23, valk=valk, si=iocc)
         endif
         if (iret .ne. 0) then
             pt = pt - 1
@@ -441,7 +440,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 50              continue
             else if (iret .ne. 0) then
                 iret = 0
-                call u2mesi('F', 'POSTRELE_36', 1, iocc)
+                call utmess('F', 'POSTRELE_36', si=iocc)
             else
             endif
         endif
@@ -535,7 +534,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 48                  continue
                     call jedetr('&&RVCPNC.TABIS.1')
                     call jedetr('&&RVCPNC.TABIS.2')
-                    call u2mesi('I', 'POSTRELE_37', 1, iocc)
+                    call utmess('I', 'POSTRELE_37', si=iocc)
                 else
                     if ((n2 + n3) .ne. 0) then
                         if (nomgd .eq. 'SIEF_R') then
@@ -559,8 +558,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 100                      continue
                     else
                         iret = 0
-                        call u2mesg('F', 'POSTRELE_38', 0, ' ', 1,&
-                                    iocc, 0, 0.d0)
+                        call utmess('F', 'POSTRELE_38', si=iocc)
                     endif
                 endif
                 else if ( (nomgd(1:6) .eq. 'DEPL_R') .or. (nomgd(1:6)&
@@ -623,7 +621,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                     endif
                 else
                     iret = 0
-                    call u2mesi('F', 'POSTRELE_38', 1, iocc)
+                    call utmess('F', 'POSTRELE_38', si=iocc)
                 endif
             else if (nomgd(1:6) .eq. 'FLUX_R') then
                 call numek8(zk8(alscpc), zk8(acpgd), nbcpc, nbcpgd, zi( alsi))
@@ -667,7 +665,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                     endif
                 else
                     iret = 0
-                    call u2mesi('F', 'POSTRELE_38', 1, iocc)
+                    call utmess('F', 'POSTRELE_38', si=iocc)
                 endif
             else if (nomgd(1:6) .eq. 'TEMP_R') then
                 call wkvect(nomojb, 'V V K8', 1, avk8)
@@ -683,8 +681,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
                 valk (6) = 'DEGE_ELNO'
                 valk (7) = 'DEPL_R'
                 valk (8) = 'FORC_R'
-                call u2mesg('F', 'POSTRELE_39', 8, valk, 1,&
-                            iocc, 0, 0.d0)
+                call utmess('F', 'POSTRELE_39', nk=8, valk=valk, si=iocc)
             endif
             call jedetr('&&RVCPNC.LISTE.IS')
         endif

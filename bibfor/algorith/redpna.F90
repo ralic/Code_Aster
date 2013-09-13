@@ -18,10 +18,10 @@ subroutine redpna(materf, seq, i1e, pmoins, dp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit      none
+    implicit none
 #include "asterfort/betaps.h"
 #include "asterfort/schdp2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iret
     real(kind=8) :: materf(5, 2), pmoins, dp, seq, i1e, plas
 ! =====================================================================
@@ -79,7 +79,7 @@ subroutine redpna(materf, seq, i1e, pmoins, dp,&
             delta = b1*b1 - quatre*a1*fcrit
             if (a1 .eq. 0.0d0) then
                 iret = 1
-                call u2mess('F', 'ALGORITH10_43')
+                call utmess('F', 'ALGORITH10_43')
             else if (a1.lt.0.0d0) then
                 dp = - (b1 + sqrt(delta))/deux/a1
             else
@@ -92,7 +92,7 @@ subroutine redpna(materf, seq, i1e, pmoins, dp,&
                         dp = - (b1 + sqrt(delta))/deux/a1
                     else
                         iret = 1
-                        call u2mess('F', 'ALGORITH10_43')
+                        call utmess('F', 'ALGORITH10_43')
                     endif
                 endif
             endif
@@ -102,14 +102,14 @@ subroutine redpna(materf, seq, i1e, pmoins, dp,&
                 fcrit = schdp2(seq,i1e,phi,alpha1,c,pult,pult)
                 b2 = trois*deuxmu/deux
                 if (b2 .eq. 0.0d0) then
-                    call u2mess('F', 'ALGORITH10_42')
+                    call utmess('F', 'ALGORITH10_42')
                 endif
                 dp = fcrit / b2
             endif
         else
             b2 = trois*deuxmu/deux
             if (b2 .eq. 0.0d0) then
-                call u2mess('F', 'ALGORITH10_42')
+                call utmess('F', 'ALGORITH10_42')
             endif
             dp = fcrit / b2
         endif

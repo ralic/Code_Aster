@@ -22,7 +22,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: nuag1, nuag2
     integer :: ic1, ic2
@@ -370,24 +370,24 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !
 !
     else
-        call u2mess('F', 'UTILITAI2_54')
+        call utmess('F', 'UTILITAI2_54')
     endif
 !
 9994  continue
-    call u2mess('F', 'UTILITAI2_55')
+    call utmess('F', 'UTILITAI2_55')
 !
 9995  continue
-    call u2mess('F', 'UTILITAI2_56')
+    call utmess('F', 'UTILITAI2_56')
 !
 9996  continue
-    call u2mess('F', 'UTILITAI2_57')
+    call utmess('F', 'UTILITAI2_57')
 !
 9997  continue
-    call u2mess('F', 'UTILITAI2_58')
+    call utmess('F', 'UTILITAI2_58')
 !
 !
 9998  continue
-    call u2mess('F', 'UTILITAI2_59')
+    call utmess('F', 'UTILITAI2_59')
 !
 !
 9999  continue

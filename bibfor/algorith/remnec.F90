@@ -36,7 +36,6 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8depi.h"
 #include "asterfort/bmnodi.h"
 #include "asterfort/ctetgd.h"
@@ -56,10 +55,11 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
+!
     character(len=8) :: nomres, basmod, modcyc, kbid, k8b
     character(len=16) :: depl, typesd, typsup(1)
     character(len=19) :: chamva, numddl, matrix, mass
@@ -94,8 +94,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
     if (typesd .ne. typsup(1)) then
         valk (1) = typesd
         valk (2) = typsup(1)
-        call u2mesg('F', 'ALGORITH14_4', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_4', nk=2, valk=valk)
     endif
 !
 !--------------------------RECUPERATION DU .DESC------------------------
@@ -119,9 +118,12 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !-----------------RECUPERATION DU NOMBRE DE DDL PHYSIQUES---------------
 !
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, ier)
-    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid, matrix, ier)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq, k8b, ier)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                numddl, ier)
+    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid,&
+                matrix, ier)
+    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
+                k8b, ier)
 !
 !-------------RECUPERATION DES FREQUENCES ------------------------------
 !
@@ -129,12 +131,12 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !----------------RECUPERATION MATRICE DE MASSE--------------------------
 !
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, mass, ier)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
+                mass, ier)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
-        call u2mesg('F', 'ALGORITH12_39', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_39', sk=valk(1))
     endif
     call mtdscr(mass)
     call jeveuo(mass(1:19)//'.&INT', 'E', lmass)

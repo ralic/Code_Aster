@@ -3,7 +3,6 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infniv.h"
@@ -20,9 +19,9 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 #include "asterfort/jexnum.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/nutygm.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, nonoe(*)
     integer :: ifc, versio
     logical :: lgmsh
@@ -182,7 +181,9 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
         endif
 20  end do
 !
-    if (nbgrm .gt. 0) call u2mess('I', 'PREPOST6_31')
+    if (nbgrm .gt. 0) then
+        call utmess('I', 'PREPOST6_31')
+    endif
 !
     do 30 igm = 1, nbgrm
         call jenuno(jexnum(noma//'.GROUPEMA', igm), nomgrm)
@@ -256,14 +257,12 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 60  end do
 !
     if (nbtyp(1) .ne. 0 .and. niv .ge. 1) then
-        call u2mesg('I', 'PREPOST6_32', 0, ' ', 1,&
-                    nbelgm, 0, 0.d0)
+        call utmess('I', 'PREPOST6_32', si=nbelgm)
         do 95 i = 1, ntyele
             if (nmtyp(i) .ne. blanc8) then
                 valk = nmtyp(i)
                 vali = nbtyp(i)
-                call u2mesg('I', 'PREPOST6_33', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('I', 'PREPOST6_33', sk=valk, si=vali)
             endif
 95      continue
     endif

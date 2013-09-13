@@ -1,12 +1,12 @@
 subroutine coeihm(option, perman, resi, rigi, imate,&
                   compor, crit, instam, instap, nomail,&
                   ndim, dimdef, dimcon, nbvari, yamec,&
-                  yap1, yap2, yate, &
-                  addeme, adcome, addep1, adcp11, adcp12,&
-                  addlh1, adcop1, addep2, adcp21, adcp22,&
-                  addete, adcote, defgem, defgep,&
-                  kpi, npg, npi, sigm, sigp,&
-                  varim, varip, res, drde, retcom)
+                  yap1, yap2, yate, addeme, adcome,&
+                  addep1, adcp11, adcp12, addlh1, adcop1,&
+                  addep2, adcp21, adcp22, addete, adcote,&
+                  defgem, defgep, kpi, npg, npi,&
+                  sigm, sigp, varim, varip, res,&
+                  drde, retcom)
 !
     implicit none
 ! ======================================================================
@@ -37,7 +37,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 #include "asterfort/kitdec.h"
 #include "asterfort/nvithm.h"
 #include "asterfort/thmlec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: dimdef, dimcon, npg, kpi, npi, ndim
     integer :: nbvari, yamec, yate, yap1, yap2, imate
     integer :: addeme, addep1, addep2, addete, adcop1, addlh1
@@ -187,7 +187,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 !
     if ((meca.ne.'JOINT_BANDIS') .and. (meca.ne.'CZM_LIN_REG') .and.&
         (meca.ne.'CZM_EXP_REG')) then
-        call u2mesk('F', 'ALGORITH17_10', 1, meca)
+        call utmess('F', 'ALGORITH17_10', sk=meca)
     endif
 ! ======================================================================
 ! --- CALCULS MECA -----------------------------------------------------

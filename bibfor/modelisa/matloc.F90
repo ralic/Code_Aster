@@ -15,7 +15,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,15 +95,19 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
         elem_nume = zi(jadrm)
         call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
     else
-        if (nb_repe_elem .eq. 0) call u2mesk('F', 'CHARGES2_37', 1, node_name)
-        if (nb_repe_elem .ne. 1) call u2mesk('F', 'CHARGES2_38', 1, node_name)
+        if (nb_repe_elem .eq. 0) then
+            call utmess('F', 'CHARGES2_37', sk=node_name)
+        endif
+        if (nb_repe_elem .ne. 1) then
+            call utmess('F', 'CHARGES2_38', sk=node_name)
+        endif
         do i = 1, nb_repe_elem
             elem_nume = list_repe_elem(i)
             do j = 1, nb_conn_elem
                 if (zi(jadrm+j-1) .eq. elem_nume) goto 24
             enddo
         enddo
-        call u2mesk('F', 'CHARGES2_39', 1, node_name)
+        call utmess('F', 'CHARGES2_39', sk=node_name)
 24      continue
     endif
 !
@@ -113,7 +117,9 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
     call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
     valk(2) = node_name
     valk(1) = elem_name
-    if (type_elem(1:3) .ne. 'SEG') call u2mesk('F', 'CHARGES2_40', 2, valk)
+    if (type_elem(1:3) .ne. 'SEG') then
+        call utmess('F', 'CHARGES2_40', nk=2, valk=valk)
+    endif
 !
 ! - Get nodes of element connected
 !
@@ -134,7 +140,9 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
     vxn = sqrt( vx(1)**2 + vx(2)**2 + vx(3)**2 )
     valk(2) = node_name
     valk(1) = elem_name
-    if (vxn .le. r8prem()) call u2mesk('F', 'CHARGES2_41', 2, valk)
+    if (vxn .le. r8prem()) then
+        call utmess('F', 'CHARGES2_41', nk=2, valk=valk)
+    endif
     vx(1) = vx(1) / vxn
     vx(2) = vx(2) / vxn
     vx(3) = vx(3) / vxn

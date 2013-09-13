@@ -18,8 +18,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: resu, noma
@@ -128,13 +127,17 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
 !       ANGLE DOIT ETRE EGAL A 180+-2,5 DEGRES, SINON CA VEUT DIRE
 !       QUE L'HYPOTHESE DE LEVRES COLLEES EST FAUSSE : ON PLANTE
-        if (abs(alpha-180.d0) .gt. angmax) call u2mess('F', 'RUPTURE0_34')
+        if (abs(alpha-180.d0) .gt. angmax) then
+            call utmess('F', 'RUPTURE0_34')
+        endif
 !
     else if (syme.eq.'NON') then
 !
 !       ANGLE DOIT ETRE EGAL A 0+-5 DEGRES, SINON CA VEUT DIRE
 !       QUE L'HYPOTHESE DE LEVRES COLLEES EST FAUSSE : ON PLANTE
-        if (abs(alpha) .gt. 2.d0*angmax) call u2mess('F', 'RUPTURE0_34')
+        if (abs(alpha) .gt. 2.d0*angmax) then
+            call utmess('F', 'RUPTURE0_34')
+        endif
 !
     endif
 !
@@ -193,7 +196,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
 !       SINON, ON PLANTE CAR ON NE SAIT PAS QUELLE DIRECTION CHOISIR
         else
-            call u2mess('F', 'RUPTURE0_8')
+            call utmess('F', 'RUPTURE0_8')
         endif
 !
     endif
@@ -291,7 +294,9 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !     SI DTAN_ORIG EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
     if (itano .ne. 0 .and. iseg .eq. 1) then
         s = ddot(ndim,zr(jtano),1,vecdir,1)
-        if (s .le. 0.d0) call u2mesr('A', 'RUPTURE0_35', 3, vecdir)
+        if (s .le. 0.d0) then
+            call utmess('A', 'RUPTURE0_35', nr=3, valr=vecdir)
+        endif
         do 410 i = 1, ndim
             vecdir(i) = zr(jtano-1+i)
 410      continue
@@ -300,7 +305,9 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !     SI DTAN_EXTR EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
     if (itane .ne. 0 .and. iseg .eq. nseg) then
         s = ddot(ndim,zr(jtane),1,vecdir,1)
-        if (s .le. 0.d0) call u2mesr('A', 'RUPTURE0_36', 3, vecdir)
+        if (s .le. 0.d0) then
+            call utmess('A', 'RUPTURE0_36', nr=3, valr=vecdir)
+        endif
         do 420 i = 1, ndim
             vecdir(i) = zr(jtane-1+i)
 420      continue
@@ -327,7 +334,9 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 610      continue
         s = ddot(ndim,vecnor,1,vnprec,1)
         beta = trigom('ACOS',s)*180.d0/r8pi()
-        if (abs(beta) .gt. 10.d0) call u2mess('A', 'RUPTURE0_61')
+        if (abs(beta) .gt. 10.d0) then
+            call utmess('A', 'RUPTURE0_61')
+        endif
     endif
 !
     call jedema()

@@ -1,7 +1,6 @@
 subroutine w18imp(ligrel, noma, nomo)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -12,8 +11,9 @@ subroutine w18imp(ligrel, noma, nomo)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ligrel
     character(len=8) :: noma, nomo
 ! person_in_charge: jacques.pellet at edf.fr
@@ -94,7 +94,9 @@ subroutine w18imp(ligrel, noma, nomo)
             endif
             call jenuno(jexnum('&CATA.TM.NOMTM', nutypm), typema)
 !
-            if (typele .eq. 'MECA_HEXS8') call u2mess('A', 'ELEMENTS4_74')
+            if (typele .eq. 'MECA_HEXS8') then
+                call utmess('A', 'ELEMENTS4_74')
+            endif
             call dismoi('F', 'PHEN_MODE', typele, 'TYPE_ELEM', ibid,&
                         phemod, ibid)
             typemo=phemod(17:32)
@@ -140,7 +142,9 @@ subroutine w18imp(ligrel, noma, nomo)
             nutype=zi(jdli+numvec+nmgrel-2)
             call jenuno(jexnum('&CATA.TM.NOMTM', nutypm), typema)
             call jenuno(jexnum('&CATA.TE.NOMTE', nutype), typele)
-            if (typele .eq. 'MECA_HEXS8') call u2mess('A', 'ELEMENTS4_74')
+            if (typele .eq. 'MECA_HEXS8') then
+                call utmess('A', 'ELEMENTS4_74')
+            endif
 !
             call dismoi('F', 'PHEN_MODE', typele, 'TYPE_ELEM', ibid,&
                         phemod, ibid)

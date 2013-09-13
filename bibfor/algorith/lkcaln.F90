@@ -1,9 +1,9 @@
 subroutine lkcaln(s, b, vecn, retcom)
 !
-    implicit      none
+    implicit none
 #include "asterc/r8miem.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: retcom
     real(kind=8) :: b, s(6), vecn(6)
 ! =================================================================
@@ -52,7 +52,7 @@ subroutine lkcaln(s, b, vecn, retcom)
     call lcprsc(s, s, sii)
     sii = sqrt (sii)
     if (sii .lt. ptit) then
-        call u2mess('A', 'COMPOR1_31')
+        call utmess('A', 'COMPOR1_31')
         retcom = 1
         goto 1000
     endif

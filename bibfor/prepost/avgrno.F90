@@ -40,7 +40,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 #include "asterfort/jexnum.h"
 #include "asterfort/recofa.h"
 #include "asterfort/rnomat.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
 !
@@ -157,8 +157,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     if (tdisp2(1) .lt. tneces) then
         vali (1) = tdisp2(1)
         vali (2) = tneces
-        call u2mesg('F', 'PREPOST5_8', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
     else
         call wkvect('&&AVGRNO.VECTNO', 'V V R', tneces, jvecno)
     endif
@@ -251,8 +250,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
             if (k .eq. 0) then
                 vali (1) = nunoe
                 vali (2) = nbma
-                call u2mesg('A', 'PREPOST5_10', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('A', 'PREPOST5_10', ni=2, vali=vali)
             endif
 !
         endif

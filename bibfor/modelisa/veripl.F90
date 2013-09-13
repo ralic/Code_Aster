@@ -17,14 +17,14 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: ma
     integer :: nbma, jcoor, jconx, ima, k, iprem, numai1, numail, linuma(nbma)
     real(kind=8) :: n1(3), n(3), ab(3), ac(3), nn, n1n, n1n1
@@ -103,7 +103,7 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
         call jenuno(jexnum(ma2//'.NOMMAI', numai1), nomai1)
         valk(1) = nomai1
         valk(2) = nomail
-        call u2mesk(typerr, 'MODELISA7_80', 2, valk)
+        call utmess(typerr, 'MODELISA7_80', nk=2, valk=valk)
     endif
 !
     20 end do

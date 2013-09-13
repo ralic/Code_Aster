@@ -29,8 +29,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 #include "asterfort/tbajvi.h"
 #include "asterfort/tbajvk.h"
 #include "asterfort/tbajvr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -145,7 +144,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_G'
-        call u2mesk('F', 'RUPTURE1_13', 1, valk)
+        call utmess('F', 'RUPTURE1_13', sk=valk)
     endif
 !
 !
@@ -211,7 +210,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         obj2 = fond//'.FOND.NOEU'
         call jelira(obj2, 'LONMAX', lobj2)
         if (lobj2 .ne. 1) then
-            call u2mess('F', 'RUPTURE1_10')
+            call utmess('F', 'RUPTURE1_10')
         endif
         call jeveuo(obj2, 'L', iadrno)
         call jenonu(jexnom(nomno, zk8(iadrno)), nunoff)

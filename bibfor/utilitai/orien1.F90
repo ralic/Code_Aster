@@ -1,7 +1,7 @@
 subroutine orien1(xp, xq, angl)
     implicit none
 #include "asterc/r8pi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: xp(*), xq(*), angl(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -46,7 +46,7 @@ subroutine orien1(xp, xq, angl)
     else
         angl(1) = zero
         if (t .eq. zero) then
-            call u2mess('F', 'UTILITAI3_39')
+            call utmess('F', 'UTILITAI3_39')
         else if (t .lt. zero) then
             angl(2) = pi / 2.d0
         else

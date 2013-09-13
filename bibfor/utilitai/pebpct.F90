@@ -16,7 +16,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: dim, nbma, bfix
     real(kind=8) :: borpct(dim), borne(2), seuil, voltot
@@ -148,7 +148,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
         ima=zi(jnuma+i-1)
         nbpt=zi(jcesd-1+5+4*(ima-1)+1)
         nbsp=zi(jcesd-1+5+4*(ima-1)+2)
-        if (nbsp .gt. 1) call u2mess('F', 'UTILITAI8_60')
+        if (nbsp .gt. 1) then
+            call utmess('F', 'UTILITAI8_60')
+        endif
 !
         do 40 ipt = 1, nbpt
 !

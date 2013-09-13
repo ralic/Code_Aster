@@ -31,7 +31,7 @@ subroutine promat(a, nlamax, dimal, dimac, b,&
 !    OUT : RES(DIMAL,DIMBC): MATRICE PRODUIT DE A*B
 ! ------------------------------------------------------------------
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: dimac, dimal, dimbc, dimbl
     real(kind=8) :: a(nlamax, *), b(nlbmax, *), res(nlamax, *)
 !-----------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine promat(a, nlamax, dimal, dimac, b,&
     real(kind=8) :: xaux
 !-----------------------------------------------------------------------
     if (dimac .ne. dimbl) then
-        call u2mess('F', 'ALGELINE3_30')
+        call utmess('F', 'ALGELINE3_30')
     endif
     do 10 ilig = 1, dimal
         do 10 icol = 1, dimbc

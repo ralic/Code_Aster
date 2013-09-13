@@ -36,7 +36,6 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
 !       ----------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -49,7 +48,8 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
 #include "asterfort/lirtet.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     real(kind=8) :: rv
     integer :: deblig, nbm
     character(len=8) :: mcl(nbm), nom, b8
@@ -163,10 +163,10 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     call jeexin(jexnom(grp, nomg), iret)
     if (iret .eq. 0) then
         call jecroc(jexnom(grp, nomg))
-        call jeecra(jexnom(grp, nomg), 'LONMAX', max(nbitem,1))
+        call jeecra(jexnom(grp, nomg), 'LONMAX', max(nbitem, 1))
         call jeecra(jexnom(grp, nomg), 'LONUTI', nbitem)
     else
-        call u2mesk('F', 'MODELISA7_11', 1, nomg)
+        call utmess('F', 'MODELISA7_11', sk=nomg)
     endif
 !
     if (ifn .eq. 0) goto 1

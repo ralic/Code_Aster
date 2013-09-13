@@ -31,7 +31,7 @@ subroutine cazocm(char, motfac, izone)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char
     character(len=16) :: motfac
     integer :: izone
@@ -154,10 +154,10 @@ subroutine cazocm(char, motfac, izone)
         zi(jmeth+zmeth*(izone-1)+5-1) = 0
     else if (typnor.eq.'FIXE') then
         if (zi(jmeth+zmeth*(izone-1)+4-1) .ne. 0) then
-            call u2mess('F', 'CONTACT3_50')
+            call utmess('F', 'CONTACT3_50')
         endif
         if (lliss) then
-            call u2mess('F', 'CONTACT3_54')
+            call utmess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+5-1) = 1
         call getvr8(motfac, 'MAIT_FIXE', iocc=izone, nbval=3, vect=dir,&
@@ -167,17 +167,17 @@ subroutine cazocm(char, motfac, izone)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
-            call u2mess('F', 'CONTACT_15')
+            call utmess('F', 'CONTACT_15')
         endif
         zr(jdirno+zdirn*(izone-1)) = dir(1)
         zr(jdirno+zdirn*(izone-1)+1) = dir(2)
         zr(jdirno+zdirn*(izone-1)+2) = dir(3)
     else if (typnor.eq.'VECT_Y') then
         if (zi(jmeth+zmeth*(izone-1)+4-1) .ne. 0) then
-            call u2mess('F', 'CONTACT3_51')
+            call utmess('F', 'CONTACT3_51')
         endif
         if (lliss) then
-            call u2mess('F', 'CONTACT3_54')
+            call utmess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+5-1) = 2
         call getvr8(motfac, 'MAIT_VECT_Y', iocc=izone, nbval=3, vect=dir,&
@@ -187,7 +187,7 @@ subroutine cazocm(char, motfac, izone)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
-            call u2mess('F', 'CONTACT_16')
+            call utmess('F', 'CONTACT_16')
         endif
         zr(jdirno+zdirn*(izone-1)) = dir(1)
         zr(jdirno+zdirn*(izone-1)+1) = dir(2)
@@ -204,10 +204,10 @@ subroutine cazocm(char, motfac, izone)
         zi(jmeth+zmeth*(izone-1)+6-1) = 0
     else if (typnor.eq.'FIXE') then
         if (zi(jmeth+zmeth*(izone-1)+4-1) .ne. 2) then
-            call u2mess('F', 'CONTACT3_52')
+            call utmess('F', 'CONTACT3_52')
         endif
         if (lliss) then
-            call u2mess('F', 'CONTACT3_54')
+            call utmess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+6-1) = 1
         call getvr8(motfac, 'ESCL_FIXE', iocc=izone, nbval=3, vect=dir,&
@@ -217,17 +217,17 @@ subroutine cazocm(char, motfac, izone)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
-            call u2mess('F', 'CONTACT_15')
+            call utmess('F', 'CONTACT_15')
         endif
         zr(jdirno+zdirn*(izone-1)+3) = dir(1)
         zr(jdirno+zdirn*(izone-1)+4) = dir(2)
         zr(jdirno+zdirn*(izone-1)+5) = dir(3)
     else if (typnor.eq.'VECT_Y') then
         if (zi(jmeth+zmeth*(izone-1)+4-1) .ne. 2) then
-            call u2mess('F', 'CONTACT3_53')
+            call utmess('F', 'CONTACT3_53')
         endif
         if (lliss) then
-            call u2mess('F', 'CONTACT3_54')
+            call utmess('F', 'CONTACT3_54')
         endif
         zi(jmeth+zmeth*(izone-1)+6-1) = 2
         call getvr8(motfac, 'ESCL_VECT_Y', iocc=izone, nbval=3, vect=dir,&
@@ -237,7 +237,7 @@ subroutine cazocm(char, motfac, izone)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
-            call u2mess('F', 'CONTACT_16')
+            call utmess('F', 'CONTACT_16')
         endif
         zr(jdirno+zdirn*(izone-1)+3) = dir(1)
         zr(jdirno+zdirn*(izone-1)+4) = dir(2)
@@ -257,7 +257,7 @@ subroutine cazocm(char, motfac, izone)
                     nbret=noc)
         call normev(dir, noor)
         if (noor .le. r8prem()) then
-            call u2mess('F', 'CONTACT3_15')
+            call utmess('F', 'CONTACT3_15')
         endif
         zr(jdirap+3*(izone-1)) = dir(1)
         zr(jdirap+3*(izone-1)+1) = dir(2)

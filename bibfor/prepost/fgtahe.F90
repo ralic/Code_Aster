@@ -8,7 +8,7 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 #include "asterfort/jemarq.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcpare.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: kdomm
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)
@@ -54,19 +54,27 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 !
     if (kdomm(1:13) .eq. 'TAHERI_MANSON') then
         call getvid(' ', 'MATER', nbval=0, nbret=nbval)
-        if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_8')
+        if (nbval .eq. 0) then
+            call utmess('F', 'FATIGUE1_8')
+        endif
         call getvid(' ', 'TAHERI_FONC', nbval=0, nbret=nbval)
-        if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_9')
+        if (nbval .eq. 0) then
+            call utmess('F', 'FATIGUE1_9')
+        endif
         call getvid(' ', 'TAHERI_NAPPE', nbval=0, nbret=nbval)
-        if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_10')
+        if (nbval .eq. 0) then
+            call utmess('F', 'FATIGUE1_10')
+        endif
         call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'FATIGUE1_24')
+        endif
         cara = 'MANSON_C'
         call rcpare(nommat, pheno, cara, icodma)
         if (icodma .ne. 0) then
-            call u2mess('F', 'FATIGUE1_11')
+            call utmess('F', 'FATIGUE1_11')
         endif
         call getvid(' ', 'TAHERI_FONC', scal=nomfo1, nbret=nbval)
         call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nbval)
@@ -78,13 +86,19 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 !
     if (kdomm(1:14) .eq. 'TAHERI_MIXTE') then
         call getvid(' ', 'MATER', nbval=0, nbret=nbval)
-        if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_12')
+        if (nbval .eq. 0) then
+            call utmess('F', 'FATIGUE1_12')
+        endif
         call getvid(' ', 'TAHERI_NAPPE', nbval=0, nbret=nbval)
-        if (nbval .eq. 0) call u2mess('F', 'FATIGUE1_10')
+        if (nbval .eq. 0) then
+            call utmess('F', 'FATIGUE1_10')
+        endif
         call getvid(' ', 'MATER', scal=nommat, nbret=nbval)
         pheno = 'FATIGUE'
         call rccome(nommat, pheno, phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'FATIGUE1_24')
+        endif
         cara = 'MANSON_C'
         call rcpare(nommat, pheno, cara, icodma)
         cara = 'WOHLER'
@@ -94,10 +108,10 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         cara = 'A0'
         call rcpare(nommat, pheno, cara, icodhs)
         if (icodma .ne. 0) then
-            call u2mess('F', 'FATIGUE1_13')
+            call utmess('F', 'FATIGUE1_13')
         endif
         if (icodwo .ne. 0 .and. icodba .ne. 0 .and. icodhs .ne. 0) then
-            call u2mess('F', 'FATIGUE1_14')
+            call utmess('F', 'FATIGUE1_14')
         endif
         call getvid(' ', 'TAHERI_NAPPE', scal=nomnap, nbret=nbval)
         call fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&

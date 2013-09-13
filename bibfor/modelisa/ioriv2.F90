@@ -17,6 +17,7 @@ function ioriv2(num, n, noeud, vect, coor)
 ! ======================================================================
 !.======================================================================
     implicit none
+#include "asterfort/utmess.h"
 !
 !     IORIV2  --  ORIENTATION D'UNE MAILLE PAR RAPPORT A UN VECTEUR
 !
@@ -27,7 +28,6 @@ function ioriv2(num, n, noeud, vect, coor)
 !   CODE RETOUR IORIV2 : 0 SI LA MAILLE NE CONTIENT PAS LE NOEUD
 !                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 !                                      FALLU REORIENTER)
-#include "asterfort/u2mess.h"
     integer :: n, num(n)
     real(kind=8) :: vect(3), coor(3, *)
 !
@@ -87,7 +87,7 @@ function ioriv2(num, n, noeud, vect, coor)
             else if (scal.gt.0) then
                 ioriv2=-1
             else
-                call u2mess('F', 'MODELISA4_76')
+                call utmess('F', 'MODELISA4_76')
             endif
         endif
 10  end do

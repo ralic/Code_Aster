@@ -10,7 +10,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
 #include "asterfort/mrmult.h"
 #include "asterfort/pteddl.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: lmatm, iddl(*), neq, nbmode
     real(kind=8) :: coef(*), zrmod(neq, *)
@@ -104,7 +104,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
                 if (motcle(1:4) .eq. 'DEPL') then
                     call ddllag(nume, ie, neq, ila1, ila2)
                     if (ila1 .eq. 0 .or. ila2 .eq. 0) then
-                        call u2mess('F', 'ALGELINE2_4')
+                        call utmess('F', 'ALGELINE2_4')
                     endif
                     zrmod(ila1,imod) = un
                     zrmod(ila2,imod) = un
@@ -114,7 +114,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
                     call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq, jddr)
                     call ddllag(nume, ie, neq, ila1, ila2)
                     if (ila1 .eq. 0 .or. ila2 .eq. 0) then
-                        call u2mess('F', 'ALGELINE2_4')
+                        call utmess('F', 'ALGELINE2_4')
                     endif
                     zr(jddr+ila1-1) = un
                     zr(jddr+ila2-1) = un

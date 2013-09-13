@@ -10,9 +10,7 @@ subroutine ibbase(ier, fichdf)
 #include "asterfort/jeinif.h"
 #include "asterfort/jelibf.h"
 #include "asterfort/jelihd.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utremt.h"
     integer :: ier
     character(len=*) :: fichdf
@@ -125,12 +123,11 @@ subroutine ibbase(ier, fichdf)
             valk (1) = nom
             valk (2) = nomba(1)
             valk (3) = nomba(2)
-            call u2mesg('E', 'SUPERVIS_81', 3, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'SUPERVIS_81', nk=3, valk=valk, si=vali(1))
         else
             if (presba(indbas) .ne. 0) then
                 ier = ier + 1
-                call u2mesk('E', 'SUPERVIS_13', 1, nom)
+                call utmess('E', 'SUPERVIS_13', sk=nom)
             else
                 presba(indbas) = 1
             endif
@@ -148,8 +145,7 @@ subroutine ibbase(ier, fichdf)
                 valk (1) = cas
                 valk (2) = casca(1)
                 valk (3) = casca(2)
-                call u2mesg('E', 'SUPERVIS_82', 3, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'SUPERVIS_82', nk=3, valk=valk, si=vali(1))
             endif
         endif
 !
@@ -166,8 +162,7 @@ subroutine ibbase(ier, fichdf)
             ier = ier + 1
             vali (1) = ltt
             vali (2) = mofiem()
-            call u2mesg('E', 'SUPERVIS_83', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('E', 'SUPERVIS_83', ni=2, vali=vali)
         endif
 !
 !        --- MOT CLE "LONG_REPE" ---------------------------------------
@@ -186,7 +181,7 @@ subroutine ibbase(ier, fichdf)
         if (indbas .gt. 0) then
             if (stin(indbas) .ne. 'POURSUITE') then
                 ier = ier + 1
-                call u2mesk('E', 'SUPERVIS_14', 1, stin(indbas))
+                call utmess('E', 'SUPERVIS_14', sk=stin(indbas))
             endif
         endif
     endif
@@ -218,7 +213,7 @@ subroutine ibbase(ier, fichdf)
 300      continue
     else
 !
-        call u2mess('E', 'SUPERVIS_15')
+        call utmess('E', 'SUPERVIS_15')
     endif
 !
 end subroutine

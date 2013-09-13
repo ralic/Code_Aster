@@ -63,7 +63,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
     integer :: nbvale, nbrefe, nbdesc, ibid, nbid, nbmode, ilires
@@ -187,8 +187,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
             if (zi(idsel+jj-1) .eq. zi(jpara)) goto 100
 200      continue
         vali = zi(idsel+jj-1)
-        call u2mesg('F', 'ALGORITH13_35', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_35', si=vali)
 100  continue
 !
 !

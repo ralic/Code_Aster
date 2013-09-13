@@ -41,7 +41,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 #include "asterfort/lcprsc.h"
 #include "asterfort/matini.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, i, j, codret
     real(kind=8) :: mater(14, 2), vin(*), sig(6), dsde(6, 6)
     real(kind=8) :: hook(6, 6), i1, s(6), sii, hts, siic, norm(6)
@@ -135,7 +135,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! --- CP/1D ------------------------------------------------------------
 ! ======================================================================
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
     endif
 ! ======================================================================
 ! --- LOIS D'ECOUISSAGE DES VARIABLES INTERNES R ET X ------------------

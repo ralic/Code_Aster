@@ -116,7 +116,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imat, ndt, ndi, nvi, iret, iret1
     integer :: i, inc, incmax, ndtt, limsup
     real(kind=8) :: crit(*), vind(50), vinf(50), vind0(50)
@@ -166,7 +166,9 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 !
 ! --- REORIENTATION DES PLANS DE GLISSEMENT SUR LES AXES DU
 !     REPERE LOCAL DONNE PAR LES ANGLES NAUTIQUES (ANGMAS)
-    if (angmas(1) .eq. r8vide()) call u2mess('F', 'ALGORITH8_20')
+    if (angmas(1) .eq. r8vide()) then
+        call utmess('F', 'ALGORITH8_20')
+    endif
     reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero)&
      &         .or. (angmas(3).ne.zero)
     call hujori('LOCAL', 1, reorie, angmas, sigd,&
@@ -191,8 +193,9 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 ! ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
     if (materf(17,1) .eq. un) then
 !
-        if (((iisnan(tempm).gt.0) .or. (iisnan(tref).gt.0)) .and. ( materf(3,1).ne.zero)) &
-        call u2mess('F', 'CALCULEL_15')
+        if (((iisnan(tempm).gt.0) .or. (iisnan(tref).gt.0)) .and. ( materf(3,1).ne.zero)) then
+            call utmess('F', 'CALCULEL_15')
+        endif
 !
         alpha(1) = materf(3,1)
         alpha(2) = materf(3,1)
@@ -205,11 +208,11 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
         alpha(3) = materf(12,1)
         if (((iisnan(tempm).gt.0) .or. (iisnan(tref).gt.0)) .and.&
             ( (alpha(1).ne.zero) .or. (alpha(2).ne.zero) .or. (alpha(3) .ne.zero) )) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         endif
 !
     else
-        call u2mess('F', 'COMPOR1_33')
+        call utmess('F', 'COMPOR1_33')
     endif
 !
     if ((iisnan(tempm).gt.0) .or. (iisnan(tempf).gt.0) .or. (iisnan(tref) .gt.0)) then
@@ -288,7 +291,7 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
             pc0 = materf(7,2)
             vind(4) = piso/(d*pc0)
             if (vind(4) .gt. 1.d0) then
-                call u2mess('F', 'COMPOR1_83')
+                call utmess('F', 'COMPOR1_83')
             endif
             vind(27)= un
         endif

@@ -2,18 +2,18 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
                   dt, dtsto, lflu, nbexci, idescf,&
                   nomfon, coefm, liad, inumor, nbchoc,&
                   logcho, dplmod, parcho, noecho, saucho,&
-                  nbrede, dplred, fonred, saured,saredi,& 
-                  nbrevi, dplrev, fonrev, saurev, sarevi, &
-                  nofdep, nofvit, nofacc, psidel, monmot, nbrfis,&
-                  fk, dfk, angini, foncp, nbpal,&
-                  vrotat, typal, finpal, cnpal, prdeff,&
-                  conv, fsauv, typbas, pulsa2, masgen,&
-                  descmm, riggen, descmr, lamor, descma,&
-                  work1, temps, tol, depli, vitei,&
-                  erde, ervi, kde, kvi, fonca,&
-                  foncv, istep, rigy, amgy, nbconv,&
-                  nbmxcv, vitvar, gyogen, rgygen, amogen,&
-                  errt)
+                  nbrede, dplred, fonred, saured, saredi,&
+                  nbrevi, dplrev, fonrev, saurev, sarevi,&
+                  nofdep, nofvit, nofacc, psidel, monmot,&
+                  nbrfis, fk, dfk, angini, foncp,&
+                  nbpal, vrotat, typal, finpal, cnpal,&
+                  prdeff, conv, fsauv, typbas, pulsa2,&
+                  masgen, descmm, riggen, descmr, lamor,&
+                  descma, work1, temps, tol, depli,&
+                  vitei, erde, ervi, kde, kvi,&
+                  fonca, foncv, istep, rigy, amgy,&
+                  nbconv, nbmxcv, vitvar, gyogen, rgygen,&
+                  amogen, errt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,14 +33,14 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/fointe.h"
 #include "asterfort/mdacce.h"
 #include "asterfort/mdfext.h"
 #include "asterfort/mdfnli.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     character(len=16) :: typbas
     integer :: ee, ss, nbconv, nbmxcv, descmm, descmr, descma, palmax, im, iff
     integer :: nbrede, nbrevi, nbrfis, saredi(*), sarevi(*), netag, neqgen, nbexci
@@ -147,7 +147,7 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
         endif
 !
         if (lflu) then
-            call u2mess('F', 'ALGORITH5_21')
+            call utmess('F', 'ALGORITH5_21')
         else
 !
 !        CALCUL CLASSIQUE FORCES NON-LINEAIRES ET ACCELERATIONS
@@ -156,15 +156,15 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
             call mdfnli(neqgen, depl, vite, acce, fext,&
                         r8b, r8b, r8b, r8b, nbchoc,&
                         logcho, dplmod, parcho, noecho, saucho,&
-                        nbrede, dplred, fonred, saured,saredi,&
+                        nbrede, dplred, fonred, saured, saredi,&
                         nbrevi, dplrev, fonrev, saurev, sarevi,&
-                        teval,  nofdep, nofvit, nofacc, nbexci, psidel,&
-                        monmot, nbrfis, fk, dfk, angini,&
-                        foncp, (istep+1), nbpal, dt, dtsto,&
-                        vrotat, typal, finpal, cnpal, prdeff,&
-                        conv, fsauv)
+                        teval, nofdep, nofvit, nofacc, nbexci,&
+                        psidel, monmot, nbrfis, fk, dfk,&
+                        angini, foncp, (istep+1), nbpal, dt,&
+                        dtsto, vrotat, typal, finpal, cnpal,&
+                        prdeff, conv, fsauv)
             if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-                call u2mess('F', 'EDYOS_46')
+                call utmess('F', 'EDYOS_46')
             else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
                 nbconv = nbconv + 1
             endif

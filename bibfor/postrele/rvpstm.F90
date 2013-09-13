@@ -19,7 +19,6 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 ! ======================================================================
 !
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -31,9 +30,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: sdeval
     character(len=24) :: sdmoye, sdlieu
 !
@@ -84,7 +83,7 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     integer :: l1, l2, l3, l5, l6, l7, ioc, ico, isgt, isp, k, i, n, inoe
     real(kind=8) :: m1, m2, ma, mi, s1, s2, t1, t2, s12, xl, t12, smil
     logical :: deja
-    character(len=1) ::  bl
+    character(len=1) :: bl
     character(len=4) :: docul, docu
     character(len=24) :: nvale, npnbn, npadr, nabsc, nnocp, ntab
 !
@@ -109,7 +108,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     call jelira(nvale, 'DOCU', cval=docu)
     call jelira(nabsc, 'NMAXOC', nboc)
     call jeexin(nnocp, iret)
-    if (iret .eq. 0) call u2mess('F', 'POSTRELE_5')
+    if (iret .eq. 0) then
+        call utmess('F', 'POSTRELE_5')
+    endif
     call jelira(nnocp, 'LONMAX', nbcp)
     call jecrec(sdmoye, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 nboc)
@@ -130,7 +131,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     l1 = nbco*l2
     l3 = 2*l1
 !
-    if (l2 .gt. 6) call u2mess('F', 'POSTRELE_7')
+    if (l2 .gt. 6) then
+        call utmess('F', 'POSTRELE_7')
+    endif
     lmoye = 6*nbcp*nbco*nbsp
     fin = 0
 !
@@ -144,7 +147,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     deja = .false.
 !
     nbsgt = nbsgt - 1
-    if (nbsgt .eq. 0) call u2mess('F', 'POSTRELE_6')
+    if (nbsgt .eq. 0) then
+        call utmess('F', 'POSTRELE_6')
+    endif
     deb = fin + 1
     fin = deb + nbsgt
 !
@@ -272,9 +277,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     if (inoe .ne. 0) then
         if (.not. deja) then
             if (inoe .eq. 1) then
-                call u2mesi('A', 'POSTRELE_62', 1, inoe)
+                call utmess('A', 'POSTRELE_62', si=inoe)
             else
-                call u2mesi('A', 'POSTRELE_63', 1, inoe)
+                call utmess('A', 'POSTRELE_63', si=inoe)
             endif
             deja = .true.
         endif

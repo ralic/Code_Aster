@@ -43,8 +43,8 @@ subroutine d1macp(fami, mater, instan, poum, kpg,&
 #include "asterfort/d1pa2d.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp
     real(kind=8) :: repere(7), d1(4, *), instan
@@ -185,7 +185,7 @@ subroutine d1macp(fami, mater, instan, poum, kpg,&
         d1(4,4) = deux*(un+nu)/e
 !
     else
-        call u2mesk('F', 'ELEMENTS_15', 1, phenom)
+        call utmess('F', 'ELEMENTS_15', sk=phenom)
     endif
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

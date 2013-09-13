@@ -5,9 +5,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   sigpm, resuas, resuss, resuca, resucs,&
                   factus, pmmax, pbmax, pmbmax)
 ! aslint: disable=W1501,W1501,W1504
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
@@ -31,9 +30,9 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/rcma02.h"
 #include "asterfort/rcmo02.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ig, iocs, npass
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm
     real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*), pmmax
@@ -88,7 +87,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: spmecs(2), spthes(2), spthem, spmecm, simpij, kemeca, kether
     real(kind=8) :: kemecs, kethes, pm, pb, pmpb, pms, pbs, pmpbs, spmec2(2)
     real(kind=8) :: spmecp, spmecq(2), spthe2(2), spthep(2), sptheq(2)
-    character(len=8) ::  knumes, kbid
+    character(len=8) :: knumes, kbid
 !CC
     integer :: icodre(1)
     logical :: endur, cmax, meca
@@ -142,7 +141,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             ioc1 = zi(jnsg+is1-1)-nbsitu
             if (ioc1 .eq. iocs) goto 18
 16      continue
-        call u2mess('F', 'POSTRCCM_30')
+        call utmess('F', 'POSTRCCM_30')
 18      continue
         ns = zi(jnbocc+2*(nbsitu+iocs)-2)
         nscy = zi(jnbocc+2*(nbsitu+iocs)-1)
@@ -398,8 +397,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             if (nadm(1) .lt. 0) then
                 vale(1) = saltij(1)
                 vale(2) = nadm(1)
-                call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
-                            0, 2, vale)
+                call utmess('A', 'POSTRCCM_32', nr=2, valr=vale)
             endif
             ug = dble( nocc ) / nadm(1)
         endif

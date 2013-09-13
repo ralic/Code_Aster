@@ -99,7 +99,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/brfluo.h"
 #include "asterfort/brseff.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     integer :: ndim, imate
     character(len=16) :: compor(3), option
     character(len=8) :: typmod(*)
@@ -416,7 +416,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         valr(2) = sechm
         valr(3) = sechp
         valr(4) = w0
-        call u2mesr('A', 'COMPOR1_63', 4, valr)
+        call utmess('A', 'COMPOR1_63', nr=4, valr=valr)
         sr = 1.d0
     endif
     if (sr .lt. 0.0d0) then
@@ -424,7 +424,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         valr(2) = sechm
         valr(3) = sechp
         valr(4) = w0
-        call u2mesr('A', 'COMPOR1_64', 4, valr)
+        call utmess('A', 'COMPOR1_64', nr=4, valr=valr)
         sr = 0.d0
     endif
 !

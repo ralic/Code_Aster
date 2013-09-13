@@ -14,7 +14,7 @@ subroutine peaire(resu, modele, nbocc)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbocc
@@ -80,12 +80,12 @@ subroutine peaire(resu, modele, nbocc)
             do 40 igb = 1, ngb
                 call jeexin(jexnom(grpma, zk24(jgb+igb-1)), iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'UTILITAI3_46', 1, zk24(jgb+igb-1))
+                    call utmess('A', 'UTILITAI3_46', sk=zk24(jgb+igb-1))
                     goto 40
                 endif
                 call jelira(jexnom(grpma, zk24(jgb+igb-1)), 'LONMAX', nbb)
                 if (nbb .eq. 0) then
-                    call u2mesk('A', 'UTILITAI3_47', 1, zk24(jgb+igb-1))
+                    call utmess('A', 'UTILITAI3_47', sk=zk24(jgb+igb-1))
                     goto 40
                 endif
                 call jeveuo(jexnom(grpma, zk24(jgb+igb-1)), 'L', iadgma)

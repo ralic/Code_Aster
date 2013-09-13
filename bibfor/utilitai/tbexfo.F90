@@ -1,17 +1,16 @@
 subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
                   prolgd, basfon)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nomta, parax, paray, nomfo, basfon, interp, prolgd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -64,17 +63,17 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nblign .eq. 0) then
-        call u2mess('F', 'UTILITAI4_76')
+        call utmess('F', 'UTILITAI4_76')
     endif
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
@@ -86,8 +85,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
         if (inpar .eq. jnpar) goto 12
 10  continue
     valk = inpar
-    call u2mesg('F', 'UTILITAI6_89', 1, valk, 0,&
-                0, 0, 0.d0)
+    call utmess('F', 'UTILITAI6_89', sk=valk)
 12  continue
     inpar = paray
     do 14 ipary = 1, nbpara
@@ -95,8 +93,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
         if (inpar .eq. jnpar) goto 16
 14  continue
     valk = inpar
-    call u2mesg('F', 'UTILITAI6_89', 1, valk, 0,&
-                0, 0, 0.d0)
+    call utmess('F', 'UTILITAI6_89', sk=valk)
 16  continue
 !
     typex = zk24(jtblp+4*(iparx-1)+1)
@@ -109,7 +106,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     if (typex .ne. typey) then
         if ((typex(1:1).eq.'I' .and. typey(1:1).eq.'R') .or.&
             (typex( 1:1).eq.'R' .and. typey(1:1).eq.'I')) goto 17
-        call u2mess('F', 'UTILITAI4_77')
+        call utmess('F', 'UTILITAI4_77')
     endif
 17  continue
 !
@@ -124,7 +121,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
 !
 !     VERIF QU'ON A TROUVE QUELQUE CHOSE
     if (nbval .eq. 0) then
-        call u2mess('F', 'UTILITAI4_78')
+        call utmess('F', 'UTILITAI4_78')
     endif
 !
     ASSERT(lxlgut(nomfon).le.24)

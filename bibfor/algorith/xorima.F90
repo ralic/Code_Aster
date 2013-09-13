@@ -4,7 +4,6 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/cncinv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -15,9 +14,10 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     character(len=8) :: noma
     character(len=19) :: sens
     integer :: nbmaf, jdlima, jconx1, jconx2, jcoor
@@ -235,7 +235,9 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
 !     LOOP ON THE ELEMENT LIST TO CHECK THAT EACH ELEMENT HAS BEEN
 !     PROCESSED
     do 100 i = 1, nbmaf
-        if (zi(nlayer-1+i) .eq. 0) call u2mess('F', 'XFEM_9')
+        if (zi(nlayer-1+i) .eq. 0) then
+            call utmess('F', 'XFEM_9')
+        endif
 100  end do
 !
 !     CLEAN THE TEMPORARY JEVEUX OBJECTS

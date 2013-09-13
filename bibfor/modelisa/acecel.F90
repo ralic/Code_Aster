@@ -16,7 +16,7 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbocc(*), nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbemb, nbthm1, nbthm2
     integer :: ntyele(*), npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill, ngribt, nmembr
 !
@@ -109,13 +109,11 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
         do 48 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbepo+nbedi+ nbeco+nbeca+nbeba+nbema+nbegb
             if(nutyel.eq.ntyele(i))ngribt = ngribt + 1
 48      continue
-        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1,&
-                   nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb
+        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1, nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb
             if(nutyel.eq.ntyele(i))nmembr = nmembr + 1
 49      continue
 !
-        do 60 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+1,&
-                  nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+nbthm1
+        do 60 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+1, nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+nbthm1
             if(nutyel.eq.ntyele(i))nmassi = nmassi + 1
 60      continue
         do 61 i= nbepo+nbedi+nbeco+nbeca+nbeba+nbema+ nbegb+nbemb+&
@@ -157,43 +155,43 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 ! --- VERIFICATION DE LA COHERENCE DES  AFFECTATIONS
 !     ----------------------------------------------
     if (nbocc(1) .ne. 0 .and. npoutr .eq. 0) then
-        call u2mesk('E', 'MODELISA_29', 1, nomo)
+        call utmess('E', 'MODELISA_29', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(2) .ne. 0 .and. ncoque .eq. 0) then
-        call u2mesk('E', 'MODELISA_30', 1, nomo)
+        call utmess('E', 'MODELISA_30', sk=nomo)
         ier = ier + 1
     endif
     if ((nbocc(3).ne.0 .or. nbocc(13).ne.0) .and. ndiscr .eq. 0) then
-        call u2mesk('E', 'MODELISA_31', 1, nomo)
+        call utmess('E', 'MODELISA_31', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(4) .ne. 0 .and. npoutr .eq. 0 .and. ndiscr .eq. 0 .and. nbarre .eq. 0) then
-        call u2mesk('E', 'MODELISA_32', 1, nomo)
+        call utmess('E', 'MODELISA_32', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(5) .ne. 0 .and. npoutr .eq. 0) then
-        call u2mesk('E', 'MODELISA_29', 1, nomo)
+        call utmess('E', 'MODELISA_29', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(6) .ne. 0 .and. ncable .eq. 0) then
-        call u2mesk('E', 'MODELISA_33', 1, nomo)
+        call utmess('E', 'MODELISA_33', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(7) .ne. 0 .and. nbarre .eq. 0) then
-        call u2mesk('E', 'MODELISA_34', 1, nomo)
+        call utmess('E', 'MODELISA_34', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(8) .ne. 0 .and. nmassi .eq. 0) then
-        call u2mesk('E', 'MODELISA_35', 1, nomo)
+        call utmess('E', 'MODELISA_35', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(11) .ne. 0 .and. ngribt .eq. 0) then
-        call u2mesk('E', 'MODELISA_36', 1, nomo)
+        call utmess('E', 'MODELISA_36', sk=nomo)
         ier = ier + 1
     endif
     if (nbocc(14) .ne. 0 .and. nmembr .eq. 0) then
-        call u2mesk('E', 'MODELISA_55', 1, nomo)
+        call utmess('E', 'MODELISA_55', sk=nomo)
         ier = ier + 1
     endif
 !

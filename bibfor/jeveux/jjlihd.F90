@@ -1,4 +1,5 @@
-subroutine jjlihd(idts, nbval, lonoi, genri, typei,ltypi, ic, ido, idc, jmarq,&
+subroutine jjlihd(idts, nbval, lonoi, genri, typei,&
+                  ltypi, ic, ido, idc, jmarq,&
                   iadmi, iadyn)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
@@ -26,7 +27,7 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei,ltypi, ic, ido, idc, jmarq,&
 #include "asterfort/jjalls.h"
 #include "asterfort/jjecrs.h"
 #include "asterfort/jjlidy.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: idts, nbval, lonoi, ltypi, ic, ido, idc, iadmi, jmarq(2)
     character(len=*) :: genri, typei
 ! ----------------------------------------------------------------------
@@ -75,36 +76,48 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei,ltypi, ic, ido, idc, jmarq,&
     lv = 0
     nbv = nbval
     if (typei .eq. 'I') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', zi, jadr, iadmi, iadyn)
+        call jjalls(lonoi, ic, genri, typei, ltypi,&
+                    'INIT', zi, jadr, iadmi, iadyn)
     else if (typei .eq. 'S') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izi4, jadr, iadmi, iadyn)
+        call jjalls(lonoi, ic, genri, typei, ltypi,&
+                    'INIT', izi4, jadr, iadmi, iadyn)
     else if (typei .eq. 'R') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izr, jadr, iadmi, iadyn)
+        call jjalls(lonoi, ic, genri, typei, ltypi,&
+                    'INIT', izr, jadr, iadmi, iadyn)
     else if (typei .eq. 'C') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izc, jadr, iadmi, iadyn)
+        call jjalls(lonoi, ic, genri, typei, ltypi,&
+                    'INIT', izc, jadr, iadmi, iadyn)
         nbv = 2*nbval
     else if (typei .eq. 'K') then
         if (ltypi .eq. 8) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izk8, jadr, iadmi, iadyn)
+            call jjalls(lonoi, ic, genri, typei, ltypi,&
+                        'INIT', izk8, jadr, iadmi, iadyn)
         else if (ltypi .eq. 16) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izk16, jadr, iadmi, iadyn)
+            call jjalls(lonoi, ic, genri, typei, ltypi,&
+                        'INIT', izk16, jadr, iadmi, iadyn)
         else if (ltypi .eq. 24) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izk24, jadr, iadmi, iadyn)
+            call jjalls(lonoi, ic, genri, typei, ltypi,&
+                        'INIT', izk24, jadr, iadmi, iadyn)
         else if (ltypi .eq. 32) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izk32, jadr, iadmi, iadyn)
+            call jjalls(lonoi, ic, genri, typei, ltypi,&
+                        'INIT', izk32, jadr, iadmi, iadyn)
         else if (ltypi .eq. 80) then
-            call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izk80, jadr, iadmi, iadyn)
+            call jjalls(lonoi, ic, genri, typei, ltypi,&
+                        'INIT', izk80, jadr, iadmi, iadyn)
         endif
     else if (typei .eq. 'L') then
-        call jjalls(lonoi, ic, genri, typei, ltypi,'INIT', izl, jadr, iadmi, iadyn)
+        call jjalls(lonoi, ic, genri, typei, ltypi,&
+                    'INIT', izl, jadr, iadmi, iadyn)
     endif
-    call jjecrs(iadmi, ic, ido, idc, 'E',jmarq)
+    call jjecrs(iadmi, ic, ido, idc, 'E',&
+                jmarq)
     if (typei .eq. 'I') then
         iconv = 1
         iret = hdftsd(idts,typeb,ltypb,lv)
         if (lois .lt. ltypb) then
             lon = nbval*ltypb
-            call jjalls(lon, ic, 'V', typei, lois,'INIT', zi, jadr, kadm, kdyn)
+            call jjalls(lon, ic, 'V', typei, lois,&
+                        'INIT', zi, jadr, kadm, kdyn)
             iszon(jiszon+kadm-1) = istat(2)
             iszon(jiszon+iszon(jiszon+kadm-4)-4) = istat(4)
             svuse = svuse + (iszon(jiszon+kadm-4) - kadm + 4)
@@ -131,7 +144,7 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei,ltypi, ic, ido, idc, jmarq,&
         iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
     endif
     if (iret .ne. 0) then
-        call u2mess('F', 'JEVEUX_51')
+        call utmess('F', 'JEVEUX_51')
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

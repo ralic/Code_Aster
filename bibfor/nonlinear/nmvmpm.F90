@@ -20,8 +20,7 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
 !
     implicit none
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: icodma, itemp
     real(kind=8) :: temp, loi346(21)
     character(len=16) :: compor(*)
@@ -113,8 +112,8 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
             valkm(4) = 'ECRO_LINE'
             valrm(1) = ep
             valrm(2) = e
-            call u2mesg('F', 'ALGORITH8_80', 4, valkm, 0,&
-                        valim, 2, valrm)
+            call utmess('F', 'ALGORITH8_80', nk=4, valk=valkm, nr=2,&
+                        valr=valrm)
         endif
 !
     else if (compor(1) .eq. 'VMIS_POU_FLEJOU') then
@@ -134,8 +133,8 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
             valkm(4) = 'ECRO_FLEJOU'
             valrm(1) = sy
             valrm(2) = su
-            call u2mesg('F', 'ALGORITH8_80', 4, valkm, 0,&
-                        valim, 2, valrm)
+            call utmess('F', 'ALGORITH8_80', nk=4, valk=valkm, nr=2,&
+                        valr=valrm)
         endif
         if (ep .ge. e) then
             valkm(1) = 'EP'
@@ -144,8 +143,8 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
             valkm(4) = 'ECRO_FLEJOU'
             valrm(1) = ep
             valrm(2) = e
-            call u2mesg('F', 'ALGORITH8_80', 4, valkm, 0,&
-                        valim, 2, valrm)
+            call utmess('F', 'ALGORITH8_80', nk=4, valk=valkm, nr=2,&
+                        valr=valrm)
         endif
     endif
     if (numloi .eq. 0) then
@@ -154,7 +153,7 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
         valkm(3) = 'VMIS_POU_FLEJOU'
         valkm(4) = 'ECRO_FLEJOU'
         valkm(5) = 'VMIS_POUTRE'
-        call u2mesk('F', 'ALGORITH8_81', 5, valkm)
+        call utmess('F', 'ALGORITH8_81', nk=5, valk=valkm)
     endif
 !
 !     CALCUL DU EP : MODULE PLASTIQUE TANGENT
@@ -186,8 +185,8 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
         valkm(4) = 'VMIS_POUTRE'
         valrm(1) = xmey
         valrm(2) = xmpy
-        call u2mesg('F', 'ALGORITH8_80', 4, valkm, 0,&
-                    valim, 2, valrm)
+        call utmess('F', 'ALGORITH8_80', nk=4, valk=valkm, nr=2,&
+                    valr=valrm)
     endif
     if (xmez .gt. xmpz) then
         valkm(1) = 'MEZ'
@@ -200,8 +199,8 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
         valkm(4) = 'VMIS_POUTRE'
         valrm(1) = xmez
         valrm(2) = xmpz
-        call u2mesg('F', 'ALGORITH8_80', 4, valkm, 0,&
-                    valim, 2, valrm)
+        call utmess('F', 'ALGORITH8_80', nk=4, valk=valkm, nr=2,&
+                    valr=valrm)
     endif
 !     VARIABLES NECESSAIRES A LA LOI DE COMPORTEMENT PLASTIQUE
 !     XNP,XMPY,XMEY,XAY,XBY,XMPZ,XMEZ,XMPX,XAZ,XBZ,

@@ -20,7 +20,6 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/digdel.h"
@@ -40,8 +39,9 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 #include "asterfort/nopar2.h"
 #include "asterfort/scalai.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: ligrez, dcelz, celz, basz, optioz, nompaz
     character(len=19) :: ligrel, cel, dcel
     character(len=16) :: option
@@ -165,7 +165,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
         if (ma2 .ne. ma) then
             valk(1) = ma2
             valk(2) = ma
-            call u2mesk('F', 'CALCULEL_4', 2, valk)
+            call utmess('F', 'CALCULEL_4', nk=2, valk=valk)
         endif
         ASSERT(zi(jdcesd-1+2).eq.2)
         ASSERT(zi(jdcesd-1+3).eq.1)
@@ -220,12 +220,12 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
             ityplo = zi(iamolo-1+1)
             if (ityplo .gt. 3) then
                 call jenuno(jexnum('&CATA.TE.NOMMOLOC', mode), nomolo)
-                call u2mesk('F', 'CALCULEL_11', 1, nomolo)
+                call utmess('F', 'CALCULEL_11', sk=nomolo)
             else
                 nbpoin = zi(iamolo-1+4)
                 if ((ityplo.eq.2) .and. (nbpoin.gt.10000)) then
                     call jenuno(jexnum('&CATA.TE.NOMMOLOC', mode), nomolo)
-                    call u2mesk('F', 'CALCULEL_12', 1, nomolo)
+                    call utmess('F', 'CALCULEL_12', sk=nomolo)
                 endif
             endif
 !
@@ -344,7 +344,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     valk(1) = option
     valk(2) = nomte1
     valk(3) = nomte
-    call u2mesk('F', 'CALCULEL_14', 3, valk)
+    call utmess('F', 'CALCULEL_14', nk=3, valk=valk)
 !
 !
 !     8- FIN NORMALE:

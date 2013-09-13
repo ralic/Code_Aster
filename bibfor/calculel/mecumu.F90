@@ -29,7 +29,7 @@ subroutine mecumu(scal, ncmp, iad1, iad2, nec,&
 !     ----------
 #include "jeveux.h"
 #include "asterfort/exisdg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: scal
     integer :: ncmp, iad1, iad2, nec, dg1(nec), dg2(nec)
 ! ----------------------------------------------------------------------
@@ -120,7 +120,7 @@ subroutine mecumu(scal, ncmp, iad1, iad2, nec,&
         endif
  6      continue
     else
-        call u2mesk('F', 'CALCULEL3_38', 1, scal(1:4))
+        call utmess('F', 'CALCULEL3_38', sk=scal(1:4))
     endif
 !
     do 10,i = 1,nec

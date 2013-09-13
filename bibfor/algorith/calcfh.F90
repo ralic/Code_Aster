@@ -54,10 +54,10 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !          =>DES VALEURS AU CENTRE
 !
 ! aslint: disable=W1501,W1504
-   implicit none
+    implicit none
 !
 #include "asterfort/hmderp.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: valcen(14, 6)
     integer :: maxfa
     parameter    (maxfa=6)
@@ -1020,8 +1020,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                 valcen(ddifp1,airdis)=0.d0
                 valcen(ddifp2,airdis)=0.d0
             else
-                call u2mesg('F', 'VOLUFINI_8', 1, thmc, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'VOLUFINI_8', sk=thmc)
             endif
 !
         else
@@ -1154,8 +1153,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                 valfac(ifa,ddifp2,airdis)=0.d0
 !
             else
-                call u2mesg('F', 'VOLUFINI_8', 1, thmc, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'VOLUFINI_8', sk=thmc)
             endif
         endif
 !===========================

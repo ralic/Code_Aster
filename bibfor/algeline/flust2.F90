@@ -65,7 +65,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 #include "asterfort/pacouc.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rslipa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: melflu
     character(len=8) :: typflu, base, noma
@@ -121,7 +121,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 10      continue
 11      continue
         if (lnul .or. lneg) then
-            call u2mess('F', 'ALGELINE_43')
+            call utmess('F', 'ALGELINE_43')
         endif
     endif
 !

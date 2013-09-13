@@ -10,7 +10,7 @@ subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
 #include "asterfort/jemarq.h"
 #include "asterfort/mefasr.h"
 #include "asterfort/mtcrog.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcyl, ndim(14), numgrp(*), sgn(*), orig(*)
     real(kind=8) :: rint(*), xint(*), yint(*), beta(*)
@@ -131,7 +131,7 @@ subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
             call mtcrog(zr(ia), zr(ib), nmax, nmax, 1,&
                         zr(ix), zr(itrav), ier)
             if (ier .eq. 1) then
-                call u2mess('F', 'ALGELINE_76')
+                call utmess('F', 'ALGELINE_76')
             endif
 !
             do 213 i = 1, nmax

@@ -42,7 +42,7 @@ subroutine mpjeft(corres)
 #include "asterfort/pj4dco.h"
 #include "asterfort/pj5dco.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=16) :: corres
@@ -176,7 +176,7 @@ subroutine mpjeft(corres)
         call pj5dco(model1, model2, corres)
     else
 !
-        call u2mess('A', 'ALGORITH6_19')
+        call utmess('A', 'ALGORITH6_19')
 !
 !     CREATION DE LA SD CORRESP_2_MAILLA : CORRES (PROCHE)
 !     ---------------------------------------------------
@@ -233,7 +233,7 @@ subroutine mpjeft(corres)
         call jeveuo(lisou2, 'L', llou2)
 !
         if (nbnlis .ne. nbnmes) then
-            call u2mess('F', 'ALGORITH6_20')
+            call utmess('F', 'ALGORITH6_20')
         endif
 !
         do 62 ino = 1, nbnmes
@@ -264,7 +264,7 @@ subroutine mpjeft(corres)
             call reliem(' ', noma1, 'NU_NOEUD', 'CORR_MANU', iocc,&
                         1, motcle, tymocl, '&&PJEFTE.LINONU1', nbno1)
             if (nbno1 .eq. 0) then
-                call u2mess('F', 'ALGORITH6_21')
+                call utmess('F', 'ALGORITH6_21')
             endif
             call jeveuo('&&PJEFTE.LINONU1', 'L', iagno1)
 !
@@ -276,17 +276,17 @@ subroutine mpjeft(corres)
             call reliem(' ', noma2, 'NU_NOEUD', 'CORR_MANU', iocc,&
                         1, motcle, tymocl, '&&PJEFTE.LINONU2', nbno2)
             if (nbno2 .eq. 0) then
-                call u2mess('F', 'ALGORITH6_22')
+                call utmess('F', 'ALGORITH6_22')
             endif
             call jeveuo('&&PJEFTE.LINONU2', 'L', iagno2)
 !
 !        -- REACTUALISATION DU CORRESP_2_MAILLA POUR IOCC
 !        ----------------------------------------------
             if (nbno1 .ne. nbno2) then
-                call u2mess('F', 'ALGORITH6_23')
+                call utmess('F', 'ALGORITH6_23')
             endif
             if (nbno1 .gt. 1) then
-                call u2mess('F', 'ALGORITH6_24')
+                call utmess('F', 'ALGORITH6_24')
             endif
 !        -- RECUPERATION DES NUMEROS DES NOEUDS
             nuno1 = zi(iagno1)

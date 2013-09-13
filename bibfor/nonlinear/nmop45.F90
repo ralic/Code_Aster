@@ -37,8 +37,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/omega2.h"
 #include "asterfort/rectfr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpbost.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/vpddl.h"
@@ -200,7 +199,9 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     call jeveuo(solveu//'.SLVK', 'L', islvk)
     metres = zk24(islvk)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
-        (metres(1:5).ne.'MUMPS')) call u2mess('F', 'ALGELINE5_71')
+        (metres(1:5).ne.'MUMPS')) then
+        call utmess('F', 'ALGELINE5_71')
+    endif
 !
 !     --- CREATION / AFFECTATION DES MATRICES DYNAMIQUES  ---
 !
@@ -219,11 +220,11 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                     det, idet)
         npivot=npiv2(1)
         if (nfreq .le. 0) then
-            call u2mess('I', 'ALGELINE2_15')
+            call utmess('I', 'ALGELINE2_15')
             goto 80
         else
             call codent(nfreq, 'G', chaine)
-            call u2mesk('I', 'ALGELINE2_16', 1, chaine)
+            call utmess('I', 'ALGELINE2_16', sk=chaine)
         endif
     else
         omeshi = 0.d0
@@ -457,7 +458,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
             endif
 110      continue
         if (mfreq .ne. nconv) then
-            call u2mess('I', 'ALGELINE2_17')
+            call utmess('I', 'ALGELINE2_17')
         endif
     endif
 !

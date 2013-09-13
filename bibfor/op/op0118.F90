@@ -39,7 +39,7 @@ subroutine op0118()
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: npfft, dim, dim2, l, nbtir
     integer :: ifm, niv, nbpar, nbval, lvale, ldesc, nbfreq, k
@@ -105,7 +105,7 @@ subroutine op0118()
 !                        => NBFC = (DIM*(DIM+1))/2
     long = nbfreq + nbfc*2*nbfreq
     if (long .ne. nbval) then
-        call u2mess('F', 'ALGORITH9_55')
+        call utmess('F', 'ALGORITH9_55')
     endif
 !
 !===============

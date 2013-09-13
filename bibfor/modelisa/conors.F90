@@ -50,13 +50,13 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: i1, i2, i3
     character(len=8) :: mailla
     integer :: nbcoc
@@ -151,7 +151,9 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
 !
     scal=vnx*vrx+vny*vry+vnz*vrz
 !
-    if (scal .eq. 0) call u2mesk('E', 'MODELISA4_36', 1, macoc(1))
+    if (scal .eq. 0) then
+        call utmess('E', 'MODELISA4_36', sk=macoc(1))
+    endif
 !
     loreor=scal.gt.0
 !

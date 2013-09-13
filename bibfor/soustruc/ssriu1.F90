@@ -20,7 +20,6 @@ subroutine ssriu1(nomu)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
@@ -32,8 +31,9 @@ subroutine ssriu1(nomu)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomu
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -113,7 +113,9 @@ subroutine ssriu1(nomu)
 !
     call dismoi('F', 'NOM_GD', nu(1:14), 'NUME_DDL', ibid,&
                 nogdsi, ierd)
-    if (nogdsi .ne. 'DEPL_R') call u2mess('F', 'SOUSTRUC_70')
+    if (nogdsi .ne. 'DEPL_R') then
+        call utmess('F', 'SOUSTRUC_70')
+    endif
     call dismoi('F', 'NU_CMP_LAGR', 'DEPL_R', 'GRANDEUR', nulag,&
                 kbid, ied)
     call dismoi('F', 'NB_EC', nogdsi, 'GRANDEUR', nec,&
@@ -189,7 +191,9 @@ subroutine ssriu1(nomu)
     10 end do
 !
     ASSERT(nbnoe.eq.icoe)
-    if (icoi .eq. 0) call u2mess('F', 'SOUSTRUC_71')
+    if (icoi .eq. 0) then
+        call utmess('F', 'SOUSTRUC_71')
+    endif
     zi(iadesm-1+3) = icoi
     nddle = nddlt - nddli
     zi(iadesm-1+4) = nddle

@@ -1,9 +1,8 @@
 subroutine tbajco(nomta, para, type, nbval, vi,&
                   vr, vc, vk, action, llign)
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -11,8 +10,9 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbajpa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbval, vi(*), llign(*)
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
@@ -72,10 +72,10 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
     if (nomtab(18:19) .ne. '  ') then
-        call u2mess('F', 'UTILITAI4_68')
+        call utmess('F', 'UTILITAI4_68')
     endif
 !
     if (actioz .eq. 'A') then
@@ -88,21 +88,21 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
     nbpara=zi(jtbnp)
     nblign=zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
 !
     if (nbval .gt. nblign) then
-        call u2mess('F', 'UTILITAI4_69')
+        call utmess('F', 'UTILITAI4_69')
     endif
 !
     if (llign(1) .ne. -1) then
         do 10 i = 1, nbval
             zi(iind+i-1)=llign(i)
             if (llign(i) .le. 0) then
-                call u2mess('F', 'UTILITAI4_70')
+                call utmess('F', 'UTILITAI4_70')
             endif
             if (llign(i) .gt. nblign) then
-                call u2mess('F', 'UTILITAI4_71')
+                call utmess('F', 'UTILITAI4_71')
             endif
 10      continue
     else
@@ -123,11 +123,11 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
 40  end do
 !
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_72')
+        call utmess('F', 'UTILITAI4_72')
     endif
 !
     if (typev .ne. typez) then
-        call u2mess('F', 'UTILITAI4_73')
+        call utmess('F', 'UTILITAI4_73')
     endif
 !
     call jeecra(nomjv, 'LONUTI', nblign)

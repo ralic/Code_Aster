@@ -24,7 +24,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
 !
@@ -105,8 +105,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     call jeexin(mailsk//'.INV.SKELETON', iret)
     if (iret .eq. 0) then
         valk = mailsk
-        call u2mesg('F', 'ALGORITH14_27', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_27', sk=valk)
     endif
     call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
 !
@@ -291,8 +290,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 if (zk8(ltype) .eq. 'AUCUN') then
                     vali (1) = k
                     vali (2) = k
-                    call u2mesg('A', 'ALGORITH14_28', 0, ' ', 2,&
-                                vali, 0, 0.d0)
+                    call utmess('A', 'ALGORITH14_28', ni=2, vali=vali)
                 endif
                 call mgutdm(modgen, kbid, k, 'NOM_MACR_ELEM', ibid,&
                             macrel)

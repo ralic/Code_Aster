@@ -22,14 +22,13 @@ subroutine te0340(option, nomte)
 #include "asterfort/cgfint.h"
 #include "asterfort/cginit.h"
 #include "asterfort/cgtang.h"
-#include "blas/dcopy.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
@@ -97,11 +96,13 @@ subroutine te0340(option, nomte)
 !
 ! - ON VERIFIE QUE PVARIMR ET PVARIPR ONT LE MEME NOMBRE DE V.I. :
 !
-    call tecach('OON', 'PVARIMR','L',7, jtab, iret)
+    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
+                iret)
     lgpg1 = max(jtab(6),1)*jtab(7)
 !
     if ((option(1:4).eq.'RAPH') .or. (option(1:4).eq.'FULL')) then
-        call tecach('OON', 'PVARIPR','E', 7, jtab, iret)
+        call tecach('OON', 'PVARIPR', 'E', 7, jtab,&
+                    iret)
         lgpg2 = max(jtab(6),1)*jtab(7)
 !
         if (lgpg1 .ne. lgpg2) then
@@ -109,8 +110,7 @@ subroutine te0340(option, nomte)
             nomail = zk24(iazk24-1+3) (1:8)
             vali(1)=lgpg1
             vali(2)=lgpg2
-            call u2mesg('A', 'CALCULEL6_64', 1, nomail, 2,&
-                        vali, 0, rbid)
+            call utmess('A', 'CALCULEL6_64', sk=nomail, ni=2, vali=vali)
         endif
     endif
     lgpg = lgpg1
@@ -158,7 +158,7 @@ subroutine te0340(option, nomte)
                     codret)
 !
     else
-        call u2mesk('F', 'ALGORITH17_2', 1, zk16(icompo+2))
+        call utmess('F', 'ALGORITH17_2', sk=zk16(icompo+2))
     endif
 !
     if (option(1:4) .eq. 'FULL' .or. option(1:4) .eq. 'RAPH') then

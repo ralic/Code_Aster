@@ -17,7 +17,7 @@ subroutine cfnodb(char)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -27,8 +27,8 @@ subroutine cfnodb(char)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
-#include "asterfort/u2mesi.h"
 #include "asterfort/utlisi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: char
 !
@@ -115,7 +115,7 @@ subroutine cfnodb(char)
                 if (nvdbl .ne. 0) then
                     vali(1) = izone
                     vali(2) = abs(nvdbl)
-                    call u2mesi('F', 'CONTACT2_13', 2, vali)
+                    call utmess('F', 'CONTACT2_13', ni=2, vali=vali)
                 endif
             else
                 ASSERT(.false.)
@@ -162,7 +162,7 @@ subroutine cfnodb(char)
                                     vali(1) = izonea
                                     vali(2) = izoneb
                                     vali(3) = abs(nvdbb)
-                                    call u2mesi('A', 'CONTACT2_15', 3, vali)
+                                    call utmess('A', 'CONTACT2_15', ni=3, vali=vali)
                                 endif
                             else
                                 ASSERT(.false.)
@@ -172,7 +172,7 @@ subroutine cfnodb(char)
                         vali(1) = izonea
                         vali(2) = izoneb
                         vali(3) = abs(ndoubl)
-                        call u2mesi('F', 'CONTACT2_16', 3, vali)
+                        call utmess('F', 'CONTACT2_16', ni=3, vali=vali)
                     else
                         ASSERT(.false.)
                     endif

@@ -54,7 +54,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: basemo, nommes
@@ -94,7 +94,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     if (nbcham .ne. 0) then
         nbcham = -nbcham
     else
-        call u2mess('A', 'ALGORITH10_93')
+        call utmess('A', 'ALGORITH10_93')
     endif
     call wkvect('&&LISTE_CHAM', 'V V K16', nbcham, lch)
     call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch),&
@@ -413,7 +413,9 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
     zk16(lref-1 +1) = modmes
 ! PAS DE CALCUL DE MODIF STRUCTURALE POUR LES SDMIXTES
-    if (nbcham .gt. 1) call u2mess('A', 'SOUSTRUC2_11')
+    if (nbcham .gt. 1) then
+        call utmess('A', 'SOUSTRUC2_11')
+    endif
     zk16(lref-1 +2) = nomcha
     zk16(lref-1 +3) = basemo
 !

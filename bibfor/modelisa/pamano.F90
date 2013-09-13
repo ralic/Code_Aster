@@ -16,7 +16,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: motfaz, moclez, nomaz, listyz, lisnoz
@@ -66,7 +66,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !          : LONLIS : <0 SI CONTACT ET POI1
 ! ----------------------------------------------------------------------
 !
-    character(len=8) ::  noma, nomnoe, nomail
+    character(len=8) :: noma, nomnoe, nomail
     character(len=16) :: motfac, motcle
     character(len=16) :: mgrma1, mgrma2, mgrno1, mgrno2
     character(len=16) :: mmail1, mmail2, mnoeu1, mnoeu2
@@ -167,7 +167,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                             valk(1) = nomail
                             valk(2) = zk24(jjj+igr-1)
                             valk(3) = motcle
-                            call u2mesk('F', 'MODELISA6_17', 3, valk)
+                            call utmess('F', 'MODELISA6_17', nk=3, valk=valk)
                         endif
                     endif
                     call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
@@ -209,7 +209,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                     if (indic .eq. 0) then
                         valk(1) = zk8(jjj+ima-1)
                         valk(2) = motcle
-                        call u2mesk('F', 'MODELISA6_18', 2, valk)
+                        call utmess('F', 'MODELISA6_18', nk=2, valk=valk)
                     endif
                 endif
                 call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj+ima-1)), ibid)

@@ -1,12 +1,11 @@
 subroutine smevol(temper, modelz, mate, compor, option,&
                   phasin, numpha)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
-#include "asterfort/calcul.h"
 #include "asterfort/calc_meta_init.h"
+#include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -26,8 +25,9 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: numpha
     character(len=8) :: temper
     character(len=16) :: option
@@ -142,13 +142,13 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 ! --- ET STOCKAGE DU CHAMP INITIAL DANS LA S D EVOL_THER (PAS 0 ET 1)
 !
     if (numpha .eq. 0) then
-
+!
         numphi=1
         num0 = zi(jordr)
-        call calc_meta_init(temper, num0, ligrmo, compor, phasin, &
+        call calc_meta_init(temper, num0, ligrmo, compor, phasin,&
                             chmate)
         num1 = zi(jordr+1)
-        call calc_meta_init(temper, num1, ligrmo, compor, phasin, &
+        call calc_meta_init(temper, num1, ligrmo, compor, phasin,&
                             chmate)
 !
     else
@@ -205,8 +205,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
                     valii = num3
                     valr (1) = dt3
                     valr (2) = time(3)
-                    call u2mesg('A', 'ALGORITH14_61', 0, ' ', 1,&
-                                valii, 2, valr)
+                    call utmess('A', 'ALGORITH14_61', si=valii, nr=2, valr=valr)
                 endif
             endif
         endif
@@ -251,8 +250,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
         call copisd('CHAMP_GD', 'G', '&&SMEVOL.PHAS_META3', nomch(1:19))
         call rsnoch(temper, 'META_ELNO', num3)
 !        write(ifm,1010) 'META_ELNO', num3, inst2
-        call u2mesg('I', 'ARCHIVAGE_6', 1, 'META_ELNO', 1,&
-                   num3, 1, inst2)
+        call utmess('I', 'ARCHIVAGE_6', sk='META_ELNO', si=num3, sr=inst2)
 !
 19      continue
     end do

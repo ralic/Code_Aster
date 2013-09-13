@@ -15,7 +15,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -28,7 +28,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: modele, chmat, carele
     character(len=19) :: chvars
@@ -57,7 +57,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, jcvvar
     integer :: jdcld, jdcll, jdclv, jcesk, jcesk2
     character(len=16) :: tysd1, tysd2, nosd1, nosd2, nosy1, nosy2
-    character(len=8) ::  varc
+    character(len=8) :: varc
     character(len=19) :: dceli, celmod, cart2, ces2, ligrmo
     character(len=24) :: valk(5)
 ! ----------------------------------------------------------------------
@@ -143,7 +143,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     if (zk8(jcesk) .ne. zk8(jcesk2)) then
         valk(1)=zk8(jcesk)
         valk(2)=zk8(jcesk2)
-        call u2mesk('F', 'CALCULEL2_11', 2, valk)
+        call utmess('F', 'CALCULEL2_11', nk=2, valk=valk)
     endif
     nbma = zi(jcesd-1+1)
     ASSERT(nbma.eq.zi(jcesd2-1+1))

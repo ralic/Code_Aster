@@ -19,7 +19,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -42,7 +42,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 #include "asterfort/mmmred.h"
 #include "asterfort/mmmreg.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     real(kind=8) :: inst(*)
     character(len=19) :: cnsinr, cnsper, sddisc
@@ -531,7 +531,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! --- ALARME SI CONTACT AFFLEURANT EN MODE DETECTION COLLISION
 !
     if (laffle .and. lcolli) then
-        call u2mess('A', 'CONTACT3_98')
+        call utmess('A', 'CONTACT3_98')
     endif
 !
 999  continue

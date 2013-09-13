@@ -64,7 +64,7 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcresi.h"
 #include "asterfort/lcsovn.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nbcomm(nmat, 3), nr, impr, vali(2), nfs, nsg
     integer :: imat, i, j, itmax, iret, kpg, ksp, nvi, verjac, indi(7)
 !
@@ -191,8 +191,8 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
                             valr(2) = err
                             valr(3) = drdyb(i,j)
                             valr(4) = drdy(i,j)
-                            call u2mesg('I', 'DEBUG_1', 0, ' ', 2,&
-                                        vali, 4, valr)
+                            call utmess('I', 'DEBUG_1', ni=2, vali=vali, nr=4,&
+                                        valr=valr)
                             maxerr=max(maxerr,abs(err))
                             impr=1
                         endif

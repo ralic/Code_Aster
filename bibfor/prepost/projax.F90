@@ -17,7 +17,7 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -25,10 +25,10 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
 #include "asterfort/jerazo.h"
 #include "asterfort/proax0.h"
 #include "asterfort/raxini.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbvec, nbordr, iflag(nbvec),jvecpg, jraxe
-    real(kind=8) ::  rmima(4*nbvec)
+    integer :: nbvec, nbordr, iflag(nbvec), jvecpg, jraxe
+    real(kind=8) :: rmima(4*nbvec)
     character(len=16) :: proaxe
 ! ----------------------------------------------------------------------
 ! BUT: PROJETER SUR UN OU DEUX AXES LES POINTS REPRESANTANT LE
@@ -212,7 +212,7 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                             nbordr, umin, umax, vmin, vmax,&
                             axeini)
             else
-                call u2mess('F', 'PREPOST4_58')
+                call utmess('F', 'PREPOST4_58')
             endif
 !
 ! 3. CALCUL DES CONSTANTES NECESSAIRES A LA PROJECTION SUR UN OU DEUX

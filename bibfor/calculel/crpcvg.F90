@@ -1,8 +1,7 @@
 subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
                   prec, lima1, lima2, linoeu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -11,8 +10,9 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     real(kind=8) :: tran(3), prec
     integer :: linoeu(*)
     character(len=8) :: ma1, ma2
@@ -45,21 +45,21 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !
     integer :: nbma1, nbma2, jtyma1, jtyma2, jgma1, jgma2, ima, ima1, ima2, ino
     integer :: ino1, ino2, nutyp1, iamac1, ilmac1, nutyp2
-    integer ::  iamac2, ilmac2, jcoor1, jcoor2, jnum1, jnum2, jma
+    integer :: iamac2, ilmac2, jcoor1, jcoor2, jnum1, jnum2, jma
     real(kind=8) :: x1, y1, z1, x2, y2, z2, v1, v2, v3
     real(kind=8) :: valr(3)
     logical :: erreur
-    character(len=8) ::  noma1, noma2
+    character(len=8) :: noma1, noma2
     character(len=24) :: valk(4)
     character(len=24) :: grpma1, grpma2, coova1, coova2, typma1, typma2, conne1
     character(len=24) :: conne2
 !
 !     NBNOMA(IMA) = NOMBRE DE NOEUDS DE LA MAILLE IMA
-#define nbnoma(ima)   zi(ilmac1-1+ima+1) - zi(ilmac1-1+ima)
+#define nbnoma(ima) zi(ilmac1-1+ima+1) - zi(ilmac1-1+ima)
 !
 !     NUMGLM(IMA,INO) = NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
-#define numgl1(ima,ino)   zi(iamac1-1+zi(ilmac1+ima-1)+ino-1)
-#define numgl2(ima,ino)   zi(iamac2-1+zi(ilmac2+ima-1)+ino-1)
+#define numgl1(ima,ino) zi(iamac1-1+zi(ilmac1+ima-1)+ino-1)
+#define numgl2(ima,ino) zi(iamac2-1+zi(ilmac2+ima-1)+ino-1)
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -89,8 +89,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
     if (nbma1 .ne. nbma2) then
         valk (1) = gma1
         valk (2) = gma2
-        call u2mesg('F', 'CALCULEL5_67', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'CALCULEL5_67', nk=2, valk=valk)
     endif
 !
     call jeveuo(jexnom(grpma1, gma1), 'L', jgma1)
@@ -134,8 +133,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
             if (nutyp1 .ne. nutyp2) then
                 valk (1) = gma1
                 valk (2) = gma2
-                call u2mesg('F', 'CALCULEL5_68', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'CALCULEL5_68', nk=2, valk=valk)
             endif
 !
             zi(jnum1+ima-1) = ima1
@@ -152,8 +150,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
         valr(1) = tran(1)
         valr(2) = tran(2)
         valr(3) = tran(3)
-        call u2mesg('F', 'CALCULEL5_69', 4, valk, 0,&
-                    0, 1, valr)
+        call utmess('F', 'CALCULEL5_69', nk=4, valk=valk, sr=valr(1))
 10  end do
 !
     call jedema()

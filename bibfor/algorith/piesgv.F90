@@ -24,7 +24,7 @@ subroutine piesgv(neps, tau, mat, vim, epsm,&
 #include "asterfort/lcervf.h"
 #include "asterfort/lcesvf.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     character(len=8) :: typmod
     integer :: neps, mat
@@ -203,7 +203,7 @@ subroutine piesgv(neps, tau, mat, vim, epsm,&
 100      continue
 !
 !      ECHEC DE LA RESOLUTION AVEC LE NOMBRE D'ITERATIONS REQUIS
-        call u2mess('F', 'PILOTAGE_83')
+        call utmess('F', 'PILOTAGE_83')
 !
 !      POST-TRAITEMENT DES SOLUTIONS
 150      continue
@@ -249,7 +249,7 @@ subroutine piesgv(neps, tau, mat, vim, epsm,&
 200  end do
 !
 !    ECHEC DE LA RESOLUTION AVEC LE NOMBRE D'ITERATIONS REQUIS
-    call u2mess('F', 'PILOTAGE_83')
+    call utmess('F', 'PILOTAGE_83')
 !
 !    POST-TRAITEMENT DES SOLUTIONS
 250  continue

@@ -11,7 +11,7 @@ subroutine te0084(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ subroutine te0084(option, nomte)
     call jevech('PGEOMER', 'L', j_geom)
     call jevech('PMATERC', 'L', j_mate)
     call jevech('PROTATR', 'L', j_rota)
-    rota_speed   = zr(j_rota-1+1)
+    rota_speed = zr(j_rota-1+1)
     rota_axis(1) = zr(j_rota-1+2)
     rota_axis(2) = zr(j_rota-1+3)
     rota_axis(3) = zr(j_rota-1+4)
@@ -83,22 +83,22 @@ subroutine te0084(option, nomte)
     if (nomte(3:4) .eq. 'DP' .or. nomte(3:4) .eq. 'CP') then
 ! AXE=direction Oz
         if (abs(rota_axis(3)) .le. r8miem()) then
-            call u2mess('F', 'CHARGES2_67')
+            call utmess('F', 'CHARGES2_67')
         endif
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(2)) .gt. r8miem()) then
-            call u2mess('F', 'CHARGES2_67')
+            call utmess('F', 'CHARGES2_67')
         endif
     else if (nomte(3:4).eq.'AX') then
 ! AXE=Oy et CENTRE=ORIGINE
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
-            call u2mess('F', 'CHARGES2_65')
+            call utmess('F', 'CHARGES2_65')
         endif
         if (abs(rota_axis(2)) .le. r8miem()) then
-            call u2mess('F', 'CHARGES2_65')
+            call utmess('F', 'CHARGES2_65')
         endif
-        if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or. &
+        if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or.&
             abs(rota_cent(3)) .gt. r8miem()) then
-            call u2mess('F', 'CHARGES2_66')
+            call utmess('F', 'CHARGES2_66')
         endif
     endif
 !

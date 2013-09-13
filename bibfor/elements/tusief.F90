@@ -31,7 +31,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verifg.h"
 #include "asterfort/vlggl.h"
 #include "asterfort/vlgglc.h"
@@ -177,7 +177,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
         call jevech('PCONTRR', 'E', jout)
 !
     else
-        call u2mesk('F', 'ELEMENTS4_49', 1, option)
+        call utmess('F', 'ELEMENTS4_49', sk=option)
 !
     endif
 !

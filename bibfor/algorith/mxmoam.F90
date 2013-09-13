@@ -33,7 +33,7 @@ subroutine mxmoam(sddyna, nbmodp)
 #include "asterfort/ndynkk.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
@@ -136,8 +136,7 @@ subroutine mxmoam(sddyna, nbmodp)
         vali(1) = nbmodp
         vali(2) = nbmax
         vali(3) = min(nbmodp,nbmax)
-        call u2mesg('I', 'MECANONLINE5_29', 0, k8bid, 3,&
-                    vali, 0, r8bid)
+        call utmess('I', 'MECANONLINE5_29', ni=3, vali=vali)
         nbmodp = min(nbmodp,nbmax)
     endif
 !

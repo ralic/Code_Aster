@@ -4,7 +4,6 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-!
 #include "asterfort/ccvrrl.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescns.h"
@@ -21,8 +20,8 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexc1.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: numord, codret
     character(len=1) :: basopt
     character(len=8) :: resuin, resuou, nomail, modele, carael
@@ -111,8 +110,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
         valk(2)=option
         valk(3)=resuin
         valk(4)=resuou
-        call u2mesg('A', 'CALCCHAMP_2', 4, valk, 1,&
-                    numord, 0, valr)
+        call utmess('A', 'CALCCHAMP_2', nk=4, valk=valk, si=numord)
         goto 9999
     endif
     call celces(chelem, 'V', chams0)
@@ -164,7 +162,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     if ((nbsp.gt.1) .and. (iret.eq.1)) then
         valk(1)=optele
         valk(2)=option
-        call u2mesk('F', 'CALCULEL4_16', 2, valk)
+        call utmess('F', 'CALCULEL4_16', nk=2, valk=valk)
     endif
 !
     call detrsd('CHAM_ELEM_S', chams0)

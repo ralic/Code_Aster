@@ -1,7 +1,7 @@
 subroutine caelca(modele, chmat, caelem, irana1, icabl,&
-                  nbnoca, numaca, quad, regl, relax, &
-                  ea,  rh1000, prelax, fprg, frco, &
-                  frli,  sa)
+                  nbnoca, numaca, quad, regl, relax,&
+                  ea, rh1000, prelax, fprg, frco,&
+                  frli, sa)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -76,7 +76,6 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -88,7 +87,8 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: modele, chmat, caelem
     integer :: irana1, icabl, nbnoca(*)
     character(len=19) :: numaca
@@ -136,24 +136,23 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     else
         nbma = nbno-1
     endif
-
+!
 !
     call jelira(numaca, 'LONUTI', lonuti)
     idecma = lonuti - nbma
     call jeveuo(numaca, 'L', jnumac)
 !
-    do 5 i=1,2
-        call jenonu(jexnom('&CATA.TE.NOMTE',nomele(i)),ntyele(i))
-5   continue
+    do 5 i = 1, 2
+        call jenonu(jexnom('&CATA.TE.NOMTE', nomele(i)), ntyele(i))
+ 5  continue
     modmai = modele//'.MAILLE'
     call jeveuo(modmai, 'L', jmodma)
 !
     do imail = 1, nbma
         numail = zi(jnumac+idecma+imail-1)
-        if ((zi(jmodma+numail-1).ne.ntyele(1)).and. &
-            (zi(jmodma+numail-1).ne.ntyele(2))) then
+        if ((zi(jmodma+numail-1).ne.ntyele(1)) .and. (zi(jmodma+numail-1).ne.ntyele(2))) then
             write(k3cab,'(I3)') icabl
-            call u2mesk('F', 'MODELISA2_48', 1, k3cab)
+            call utmess('F', 'MODELISA2_48', sk=k3cab)
         endif
     end do
 !
@@ -176,7 +175,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         write(k3cab,'(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
-        call u2mesk('F', 'MODELISA2_49', 2, valk)
+        call utmess('F', 'MODELISA2_49', nk=2, valk=valk)
     endif
 !
     call dismoi('F', 'NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', nbcmp,&
@@ -197,14 +196,14 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             write(k3cab,'(I3)') icabl
             valk(1) = k3mai
             valk(2) = k3cab
-            call u2mesk('F', 'MODELISA2_49', 2, valk)
+            call utmess('F', 'MODELISA2_49', nk=2, valk=valk)
         endif
         idebgd=nbcmp*(ias-1)+1
         k8b = zk8(jvalk+idebgd-1)
 !C         K8B = ZK8(JVALK+IAS-1)
         if (k8b .ne. acier) then
             write(k3cab,'(I3)') icabl
-            call u2mesk('F', 'MODELISA2_50', 1, k3cab)
+            call utmess('F', 'MODELISA2_50', sk=k3cab)
         endif
     end do
 !
@@ -215,7 +214,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         write(k3cab,'(I3)') icabl
-        call u2mesk('F', 'MODELISA2_51', 1, k3cab)
+        call utmess('F', 'MODELISA2_51', sk=k3cab)
     endif
     rcvalr = nomrc//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
@@ -234,11 +233,11 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 31  continue
     if (.not. trouv1) then
         write(k3cab,'(I3)') icabl
-        call u2mesk('F', 'MODELISA2_52', 1, k3cab)
+        call utmess('F', 'MODELISA2_52', sk=k3cab)
     endif
     if (ea .le. 0.0d0) then
         write(k3cab,'(I3)') icabl
-        call u2mesk('F', 'MODELISA2_53', 1, k3cab)
+        call utmess('F', 'MODELISA2_53', sk=k3cab)
     endif
 !
 ! 2.3 RELATION DE COMPORTEMENT <BPEL_ACIER> OU <ETCC_ACIER>
@@ -254,7 +253,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         write(k3cab,'(I3)') icabl
-        call u2mesk('F', 'MODELISA2_54', 1, k3cab)
+        call utmess('F', 'MODELISA2_54', sk=k3cab)
     endif
     rcvalr = nomrc//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
@@ -334,7 +333,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     endif
     if (relax .and. fprg .le. 0.0d0) then
         write(k3cab,'(I3)') icabl
-        call u2mesk('F', 'MODELISA2_55', 1, k3cab)
+        call utmess('F', 'MODELISA2_55', sk=k3cab)
     endif
 !
 !
@@ -365,7 +364,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         write(k3cab,'(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
-        call u2mesk('F', 'MODELISA2_57', 2, valk)
+        call utmess('F', 'MODELISA2_57', nk=2, valk=valk)
     endif
 !
     icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
@@ -378,7 +377,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         write(k3cab,'(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
-        call u2mesk('F', 'MODELISA2_58', 2, valk)
+        call utmess('F', 'MODELISA2_58', nk=2, valk=valk)
     endif
 !
     sa = zr(jvalr+ncaba*(ias-1)+iranv-1)
@@ -387,7 +386,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         write(k3cab,'(I3)') icabl
         valk(1) = k3mai
         valk(2) = k3cab
-        call u2mesk('F', 'MODELISA2_59', 2, valk)
+        call utmess('F', 'MODELISA2_59', nk=2, valk=valk)
     endif
 !
 !     ON VERIFIE QUE LA MEME AIRE DE SECTION DROITE A ETE AFFECTEE
@@ -403,7 +402,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             write(k3cab,'(I3)') icabl
             valk(1) = k3mai
             valk(2) = k3cab
-            call u2mesk('F', 'MODELISA2_57', 2, valk)
+            call utmess('F', 'MODELISA2_57', nk=2, valk=valk)
         endif
 !
         icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
@@ -416,12 +415,12 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             write(k3cab,'(I3)') icabl
             valk(1) = k3mai
             valk(2) = k3cab
-            call u2mesk('F', 'MODELISA2_58', 2, valk)
+            call utmess('F', 'MODELISA2_58', nk=2, valk=valk)
         endif
         rbid = zr(jvalr+ncaba*(ias-1)+iranv-1)
         if (dble(abs(rbid-sa))/sa .gt. eps) then
             write(k3cab,'(I3)') icabl
-            call u2mesk('F', 'MODELISA2_60', 1, k3cab)
+            call utmess('F', 'MODELISA2_60', sk=k3cab)
         endif
 !
     end do

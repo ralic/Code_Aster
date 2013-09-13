@@ -1,7 +1,6 @@
 subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
@@ -13,8 +12,9 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
 #include "asterfort/jexnum.h"
 #include "asterfort/megeom.h"
 #include "asterfort/resvoi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: tabido(5)
     character(len=8) :: modele
     character(len=24) :: chvois
@@ -108,7 +108,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
                 'OUI')
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'CALCULEL2_88', 1, opt)
+        call utmess('F', 'CALCULEL2_88', sk=opt)
     endif
 !
     call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
@@ -141,7 +141,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
         call exisd('CHAMP_GD', lchout(1), iret)
 !
         if (iret .eq. 0) then
-            call u2mesk('F', 'CALCULEL2_88', 1, opt)
+            call utmess('F', 'CALCULEL2_88', sk=opt)
         endif
 !
     endif

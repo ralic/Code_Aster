@@ -23,7 +23,6 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -31,7 +30,8 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem
     integer :: jdirno, nnn, inn, inntot, nbnoc, ino
@@ -118,7 +118,9 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     endif
 !
 !     COMPTEUR DES NOMS DES NOEUDS
-    if (inntot .ge. 999999) call u2mesk('F', 'XFEM_8', 1, valk)
+    if (inntot .ge. 999999) then
+        call utmess('F', 'XFEM_8', sk=valk(1))
+    endif
     inn = inn + 1
     inntot= inntot +1
     ASSERT(inn.le.nnn)

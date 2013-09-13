@@ -7,7 +7,6 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dgmode.h"
@@ -27,8 +26,9 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), nbnoma(*)
     integer :: permut(maxnod, *), typma(*), nbmat, nummai(*), ncmpu, nucmp(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
@@ -458,7 +458,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
 11      end do
 10  end do
     if (lnocen) then
-        call u2mess('A', 'PREPOST_80')
+        call utmess('A', 'PREPOST_80')
     endif
 !
     call jedetr('&&IRCECS.VRNOE')

@@ -18,7 +18,6 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/lctest.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
@@ -29,7 +28,8 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=24) :: modele, mesmai
     character(len=16) :: defo, comcod
 !
@@ -111,8 +111,7 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
                 texte(1)=notype
                 texte(2)=noma
                 texte(3)=defo
-                call u2mesg('F', 'COMPOR1_52', 3, texte, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
             endif
         else if (typmod(1:6).eq.'COMP1D') then
             if (typmo2 .eq. 'PMF') then
@@ -121,8 +120,7 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
                     texte(1)=notype
                     texte(2)=noma
                     texte(3)=defo
-                    call u2mesg('F', 'COMPOR1_52', 3, texte, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
                 endif
             else
                 call lctest(comcod, 'MODELISATION', '1D', irett)
@@ -130,8 +128,7 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
                     texte(1)=notype
                     texte(2)=noma
                     texte(3)=defo
-                    call u2mesg('F', 'COMPOR1_52', 3, texte, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
                 endif
             endif
         else
@@ -140,8 +137,7 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
                 texte(1)=notype
                 texte(2)=noma
                 texte(3)=defo
-                call u2mesg('F', 'COMPOR1_52', 3, texte, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'COMPOR1_52', nk=3, valk=texte)
             endif
         endif
 !

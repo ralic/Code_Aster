@@ -7,15 +7,15 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
                   nmec, np1, np2, ndim, axi)
 !
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
 #include "asterc/r8miem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "blas/daxpy.h"
 #include "asterfort/fnothm.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/terefe.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+#include "blas/daxpy.h"
     logical :: fnoevo, perman, axi
     integer :: nno, nnos, npi, ipoids, ipoid2, ivf, ivf2, nnom
     integer :: idfde, idfde2, imate, dimdef, dimcon, dimuel, npg
@@ -151,7 +151,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 !
     do 230 k = 1, dimuel
         if (abs(vectu(k)) .lt. r8miem()) then
-            call u2mess('F', 'ALGORITH10_40')
+            call utmess('F', 'ALGORITH10_40')
         endif
 230  continue
 !

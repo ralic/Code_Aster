@@ -6,7 +6,7 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
 #include "asterfort/i3crad.h"
 #include "asterfort/i3crqp.h"
 #include "asterfort/i3pdm2.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: k, f, nbpt
     real(kind=8) :: epsi, sgt(*), coorsm(3, *), res(3, *)
 !
@@ -90,7 +90,7 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
             vali (1) = k
             vali (2) = f
             vali (3) = arete
-            call u2mesi('F', 'INTEMAIL_26', 3, vali)
+            call utmess('F', 'INTEMAIL_26', ni=3, vali=vali)
         else
             r1 = max(abs(a11),abs(a12))
             if (abs(r1) .gt. epsi) then
@@ -306,6 +306,6 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
     if (pb) then
         vali (1) = k
         vali (2) = f
-        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
     endif
 end subroutine

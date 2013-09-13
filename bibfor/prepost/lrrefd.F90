@@ -6,8 +6,7 @@ subroutine lrrefd(resu, prchnd)
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: resu
     character(len=19) :: prchnd
@@ -78,7 +77,7 @@ subroutine lrrefd(resu, prchnd)
     call getvid(' ', 'MATR_MASS', scal=matmas, nbret=iret2)
 !
     if (iret1 .eq. 1) then
-        call u2mesk('I', 'PREPOST_14', 1, matrig)
+        call utmess('I', 'PREPOST_14', sk=matrig)
         call dismoi('F', 'NOM_NUME_DDL', matrig, 'MATR_ASSE', ibid,&
                     nuddlr, iret)
         call dismoi('F', 'PROF_CHNO', nuddlr, 'NUME_DDL', ibid,&
@@ -93,7 +92,7 @@ subroutine lrrefd(resu, prchnd)
             pronur=(nuddlr//'.NUME')
             pronum=(nuddlm//'.NUME')
             if (.not.idensd('PROF_CHNO',pronur,pronum)) then
-                call u2mess('F', 'ALGELINE2_79')
+                call utmess('F', 'ALGELINE2_79')
             endif
         endif
     endif

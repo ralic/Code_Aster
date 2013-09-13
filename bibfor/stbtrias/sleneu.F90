@@ -82,7 +82,7 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbnode, mix, man, ites, datset
     real(kind=8) :: ama, bma, cma, ami, bmi, cmi
@@ -122,7 +122,7 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
 !
     call jeexin('&&IDEAS.SYST', iret)
     if (iret .eq. 0) then
-        call u2mess('I', 'STBTRIAS_9')
+        call utmess('I', 'STBTRIAS_9')
 !     Il n'y a pas de sys de coord defini dans le fichier, pour ne pas
 !     planter on en cree un bidon ici qu'on declare comme cartesien
         isyst = 0
@@ -157,14 +157,14 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
 !        On ne teste ici que si le systeme de coordonnne est cartesien,
 !        cylindrique ou autre
         if (isyst .ne. 0) then
-            call u2mess('F', 'STBTRIAS_10')
+            call utmess('F', 'STBTRIAS_10')
         endif
 !        On ne teste ici que si les noeuds font reference a plusieurs
 !        systeme de coordonnne
 !        On ne teste pas si ces systemes sont identiques juste si leur
 !        label est different
         if ((i.ne.itmp) .and. (itmp.ne.-6)) then
-            call u2mess('A', 'STBTRIAS_11')
+            call utmess('A', 'STBTRIAS_11')
         endif
 !
 !

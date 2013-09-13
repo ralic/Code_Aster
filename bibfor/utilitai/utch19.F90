@@ -11,8 +11,8 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utchdl.h"
+#include "asterfort/utmess.h"
     integer :: nupo, ivari, ier, nusp, vali
     real(kind=8) :: valr
     complex(kind=8) :: valc
@@ -72,8 +72,9 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
                 kmpic, ibid)
     ASSERT(kmpic.eq.'OUI'.or.kmpic.eq.'NON')
 !
-    if (type .ne. 'R' .and. type .ne. 'C' .and. type .ne. 'I') call u2mesk('E', 'UTILITAI5_29',&
-                                                                           1, type)
+    if (type .ne. 'R' .and. type .ne. 'C' .and. type .ne. 'I') then
+        call utmess('E', 'UTILITAI5_29', sk=type)
+    endif
 !
     call utchdl(cham19, nomma, nomail, nonoeu, nupo,&
                 nusp, ivari, nocmp, icmp)

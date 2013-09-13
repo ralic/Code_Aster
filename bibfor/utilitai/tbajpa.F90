@@ -1,5 +1,5 @@
 subroutine tbajpa(nomta, nbpar, nompar, typpar)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/jecreo.h"
@@ -10,7 +10,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbpar
     character(len=*) :: nomta, nompar(*), typpar(*)
 ! ----------------------------------------------------------------------
@@ -53,10 +53,10 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
     nomtab = nomta
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
     if (nomtab(18:19) .ne. '  ') then
-        call u2mess('F', 'UTILITAI4_68')
+        call utmess('F', 'UTILITAI4_68')
     endif
 !
     call jeveuo(nomtab//'.TBBA', 'L', jtbba)

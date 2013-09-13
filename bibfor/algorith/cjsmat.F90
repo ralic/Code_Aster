@@ -43,7 +43,7 @@ subroutine cjsmat(mod, imat, tempf, materf, ndt,&
 !       ----------------------------------------------------------------
 #include "asterfort/cjsnvi.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, imat
     real(kind=8) :: materf(14, 2), tempf
     character(len=8) :: mod, nomc(17)
@@ -80,12 +80,15 @@ subroutine cjsmat(mod, imat, tempf, materf, ndt,&
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
     call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                [tempf], 3, nomc(1), materf(1, 1), cerr(1), 0)
+                [tempf], 3, nomc(1), materf(1, 1), cerr(1),&
+                0)
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
     call rcvala(imat, ' ', 'CJS', 1, 'TEMP',&
-                [tempf], 12, nomc(4), materf(1, 2), cerr(4), 2)
+                [tempf], 12, nomc(4), materf(1, 2), cerr(4),&
+                2)
     call rcvala(imat, ' ', 'CJS', 1, 'TEMP',&
-                [tempf], 2, nomc(16), materf(13, 2), cerr(16), 0)
+                [tempf], 2, nomc(16), materf(13, 2), cerr(16),&
+                0)
     if (cerr(16) .eq. 1) then
         materf(13,2) = 0.d0
     endif
@@ -111,7 +114,7 @@ subroutine cjsmat(mod, imat, tempf, materf, ndt,&
         nivcjs='CJS3'
 !
     else
-        call u2mess('F', 'ALGORITH2_16')
+        call utmess('F', 'ALGORITH2_16')
     endif
 !
 end subroutine

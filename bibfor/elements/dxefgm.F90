@@ -1,13 +1,13 @@
 subroutine dxefgm(nomte, option, xyzl, pgl, depl,&
                   effg)
-    implicit  none
+    implicit none
 #include "asterfort/dkqedg.h"
 #include "asterfort/dktedg.h"
 #include "asterfort/dsqedg.h"
 #include "asterfort/dstedg.h"
 #include "asterfort/q4gedg.h"
 #include "asterfort/t3gedg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: xyzl(3, 1), pgl(3, 1), depl(1), effg(1)
     character(len=16) :: nomte, option
 ! ======================================================================
@@ -64,7 +64,7 @@ subroutine dxefgm(nomte, option, xyzl, pgl, depl,&
         call t3gedg(xyzl, option, pgl, depl, effg)
 !
     else
-        call u2mesk('F', 'ELEMENTS_14', 1, nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
     endif
 !
 end subroutine

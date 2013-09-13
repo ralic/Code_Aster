@@ -18,7 +18,7 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
-    implicit   none
+    implicit none
 !       ----------------------------------------------------------------
 !       INTEGRATION ELASTIQUE SUR DT
 !       IN  ETATD  :  ETAT MATERIAU A T (ELASTIC OU PLASTIC)
@@ -39,7 +39,7 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
 #include "asterfort/hujori.h"
 #include "asterfort/hujpre.h"
 #include "asterfort/lceqvn.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nvi, imat, iret, nmat
     real(kind=8) :: materf(nmat, 2), sigd(6), sigf(6), angmas(3)
     real(kind=8) :: vind(*), vinf(*), deps(6), crit(*)
@@ -69,7 +69,9 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
     endif
 !
 ! --- ORIENTATION DES CONTRAINTES SELON ANGMAS VERS REPERE LOCAL
-    if (angmas(1) .eq. r8vide()) call u2mess('F', 'ALGORITH8_20')
+    if (angmas(1) .eq. r8vide()) then
+        call utmess('F', 'ALGORITH8_20')
+    endif
     reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero)&
      &          .or. (angmas(3).ne.zero)
     call hujori('LOCAL', 1, reorie, angmas, sigd,&

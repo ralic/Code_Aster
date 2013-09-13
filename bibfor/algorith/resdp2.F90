@@ -18,9 +18,9 @@ subroutine resdp2(materf, seq, i1e, pmoins, dp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    implicit      none
+    implicit none
 #include "asterfort/schdp2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: materf(5, 2), pmoins, dp, seq, i1e, plas
 ! =====================================================================
 ! --- RESOLUTION NUMERIQUE --------------------------------------------
@@ -69,7 +69,7 @@ subroutine resdp2(materf, seq, i1e, pmoins, dp,&
                  )
             delta = b1*b1 - quatre*a1*fcrit
             if (a1 .eq. 0.0d0) then
-                call u2mess('F', 'ALGORITH10_43')
+                call utmess('F', 'ALGORITH10_43')
             endif
             dp = - (b1 + sqrt(delta))/deux/a1
             valcoe = sqrt(deux/trois)*(gamarp-gamapm)
@@ -77,14 +77,14 @@ subroutine resdp2(materf, seq, i1e, pmoins, dp,&
                 fcrit = schdp2(seq,i1e,phi,alpha1,c,pult,pult)
                 b2 = - ( trois*deuxmu/deux + trois*troisk*alpha*alpha )
                 if (b2 .eq. 0.0d0) then
-                    call u2mess('F', 'ALGORITH10_42')
+                    call utmess('F', 'ALGORITH10_42')
                 endif
                 dp = - fcrit / b2
             endif
         else
             b2 = - ( trois*deuxmu/deux + trois*troisk*alpha*alpha )
             if (b2 .eq. 0.0d0) then
-                call u2mess('F', 'ALGORITH10_42')
+                call utmess('F', 'ALGORITH10_42')
             endif
             dp = - fcrit / b2
         endif

@@ -31,7 +31,6 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jecroc.h"
@@ -41,10 +40,11 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xpoajd.h"
 #include "asterfort/xpoajn.h"
 #include "asterfort/xpolsn.h"
+!
     integer :: nfiss, nnn, inn, inntot, ndim, jconx1, jconx2
     integer :: jconq1, jconq2, iacoo1, iacoo2, jcnsl2
     integer :: nbnoc, nbnofi, inofi
@@ -135,7 +135,9 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 !
     call jemarq()
 !
-    if (inmtot .ge. 999999) call u2mesk('F', 'XFEM_8', 1, valk)
+    if (inmtot .ge. 999999) then
+        call utmess('F', 'XFEM_8', sk=valk(1))
+    endif
 !
     if (opmail) then
         inm = inm + 1

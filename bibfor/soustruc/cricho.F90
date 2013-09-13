@@ -47,10 +47,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 #include "asterfort/posddl.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
     integer :: nbchoc, info, nbmode, irigi, indic(nbmode), ibid
@@ -113,13 +110,13 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 ct=0.d0
                 cef=0.d0
                 ic=4*jj-3
-                call u2mess('I', 'VIDE_1')
+                call utmess('I', 'VIDE_1')
                 if (info .ge. 2) then
                     valk = noecho(i,ic)
-                    call u2mesk('I', 'SOUSTRUC_85', 1, valk)
+                    call utmess('I', 'SOUSTRUC_85', sk=valk)
                 endif
 !     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
-                call u2mess('I', 'VIDE_1')
+                call utmess('I', 'VIDE_1')
                 do 11 k = 1, neq
                     fimpo(k)=0.d0
 11              continue
@@ -153,10 +150,10 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !             -- ON RETABLIT ISTOP
                     zi(jslvi-1+3)=istoav
                     if (iret .eq. 2) then
-                        call u2mess('A', 'SOUSTRUC_7')
+                        call utmess('A', 'SOUSTRUC_7')
                         goto 9999
                     else if (iret.eq.1) then
-                        call u2mess('A', 'SOUSTRUC_8')
+                        call utmess('A', 'SOUSTRUC_8')
                         goto 9999
                     endif
                     ifac=1
@@ -227,28 +224,26 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                         valr (1) = trloc(indic(j))
                         valr (2) = soupl(indic(j))
                         valr (3) = zr(jefloc-1+indic(j))
-                        call u2mesg('I', 'SOUSTRUC_93', 0, ' ', 1,&
-                                    vali, 3, valr)
+                        call utmess('I', 'SOUSTRUC_93', si=vali, nr=3, valr=valr)
 32                  continue
                 endif
                 valk = noecho(i,ic)
                 valr (1) = ct
                 valr (2) = cef
-                call u2mesg('I', 'SOUSTRUC_94', 1, valk, 0,&
-                            0, 2, valr)
+                call utmess('I', 'SOUSTRUC_94', sk=valk, nr=2, valr=valr)
                 tx = soup*parcho(i,2)*(1.d0-ct)
                 valr (1) = tx
-                call u2mesr('I', 'SOUSTRUC_95', 1, valr)
+                call utmess('I', 'SOUSTRUC_95', sr=valr(1))
                 seuil=max(seuil,tx)
                 tx = soup*ct*parcho(i,2)
                 valr (1) = tx
-                call u2mesr('I', 'SOUSTRUC_96', 1, valr)
+                call utmess('I', 'SOUSTRUC_96', sr=valr(1))
 21          continue
 !
 20      continue
 !
         if (info .ge. 2) then
-            call u2mess('I', 'VIDE_1')
+            call utmess('I', 'VIDE_1')
             matuv = .false.
             nm = nblig
             m = neq
@@ -279,13 +274,13 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
             if (mmin .le. eps) then
                 valr (1) = mmin
                 valr (2) = eps
-                call u2mesr('I', 'SOUSTRUC_98', 2, valr)
+                call utmess('I', 'SOUSTRUC_98', nr=2, valr=valr)
                 mmin = eps
             endif
             scond = mmax/mmin
 !
             valr (1) = scond
-            call u2mesr('I', 'SOUSTRUC_99', 1, valr)
+            call utmess('I', 'SOUSTRUC_99', sr=valr(1))
             do 51 jj = 1, nbmode
                 zr(jnormy-1+jj)=ddot(neq,bmodal(1,jj),1,bmodal(1,jj),&
                 1)
@@ -321,8 +316,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                     vali = j
                     valr (1) = mmin
                     valr (2) = eps
-                    call u2mesg('I', 'SOUSTRUC2_1', 0, ' ', 1,&
-                                vali, 2, valr)
+                    call utmess('I', 'SOUSTRUC2_1', si=vali, nr=2, valr=valr)
                     mmin = eps
                 endif
                 zr(jefloc-1+j) = mmax/mmin
@@ -338,11 +332,10 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
             do 72 j = 1, nbmode
                 vali = indic(j)
                 valr (1) = zr(jefloc-1+indic(j))
-                call u2mesg('I', 'SOUSTRUC2_2', 0, ' ', 1,&
-                            vali, 1, valr)
+                call utmess('I', 'SOUSTRUC2_2', si=vali, sr=valr(1))
 72          continue
 !
-            call u2mess('I', 'VIDE_1')
+            call utmess('I', 'VIDE_1')
         endif
 !
 !

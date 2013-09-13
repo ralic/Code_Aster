@@ -1,8 +1,7 @@
 subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                   listma, chresu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -19,9 +18,9 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 #include "asterfort/rcma01.h"
 #include "asterfort/rcmo01.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbma, listma(*)
     character(len=8) :: noma
     character(len=24) :: ncncin, chindi, chcara, chresu
@@ -197,7 +196,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     else
                         valk(3) = 'C3'
                     endif
-                    call u2mesk('F', 'POSTRCCM_9', 3, valk)
+                    call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
                 endif
                 c(icmp) = zr(jcinv-1+iad)
                 iad = decin + (ipt-1)*nbcin + icmp + 3
@@ -211,7 +210,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     else
                         valk(3) = 'K3'
                     endif
-                    call u2mesk('F', 'POSTRCCM_9', 3, valk)
+                    call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
                 endif
                 k(icmp) = zr(jcinv-1+iad)
 202          continue
@@ -223,7 +222,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                 if (.not. zl(jccal-1+iad)) then
                     call jenuno(jexnum(nomnoe, ino), valk(1))
                     call jenuno(jexnum(nommai, ima), valk(2))
-                    call u2mesk('F', 'POSTRCCM_8', 2, valk)
+                    call utmess('F', 'POSTRCCM_8', nk=2, valk=valk)
                 endif
                 cara(icmp-1) = zr(jccav-1+iad)
 204          continue
@@ -376,8 +375,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                         if (nadm(1) .lt. 0) then
                             vale(1) = saltij
                             vale(2) = nadm(1)
-                            call u2mesg('A', 'POSTRCCM_32', 0, ' ', 0,&
-                                        0, 2, vale)
+                            call utmess('A', 'POSTRCCM_32', nr=2, valr=vale)
                         endif
                         ug = dble( nocc ) / nadm(1)
                     endif

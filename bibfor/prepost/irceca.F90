@@ -5,7 +5,6 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dgmode.h"
@@ -24,10 +23,9 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*)
     integer :: nbnoma(*), typma(*), nbmat, nbcput, imodl
     integer :: ncmpv, nucmpv(*), nive
@@ -138,16 +136,18 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 else
                     call codent(nucmpv(i), 'G', k8b)
                     nomco = 'V'//k8b
-                    call u2mesk('A', 'PREPOST_74', 1, nomco)
+                    call utmess('A', 'PREPOST_74', sk=nomco)
                 endif
 14          continue
             if (ncmp .eq. 0) then
-                call u2mess('A', 'PREPOST_75')
+                call utmess('A', 'PREPOST_75')
                 goto 9999
             endif
             icomax = ncmp
         endif
-        if (icomax .gt. 999) call u2mess('F', 'PREPOST_76')
+        if (icomax .gt. 999) then
+            call utmess('F', 'PREPOST_76')
+        endif
         do 16 igr = 1, nbgr
             igre = zi(jli+(iso-1)*(4+nbgrel)+4+igr)
             icoef=max(1,celd(4))
@@ -155,7 +155,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
             if (mode .eq. 0) goto 16
             modsav = mode
             if (mode .ne. modsav .and. mode .ne. 0) then
-                call u2mess('A', 'PREPOST_77')
+                call utmess('A', 'PREPOST_77')
                 goto 10
             endif
             lmode = .true.
@@ -170,7 +170,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         if ((ncmput(icm)(1:1).ne.'V') .or. (iret.ne.0)) then
                             valk (1) = ncmput(icm)
                             valk (2) = 'VARI_R'
-                            call u2mesk('F', 'CALCULEL6_49', 2, valk)
+                            call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
                         endif
                         zl(jlog-1+(iso-1)*ncmpmx+ivari) = .true.
                         nbvar = nbvar + 1
@@ -186,8 +186,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                     endif
                     valk (1) = ncmput(icm)
                     valk (2) = nomgd
-                    call u2mesg('A', 'PREPOST5_25', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'PREPOST5_25', nk=2, valk=valk)
 18              continue
             else
                 do 22 i = 1, ncmpmx
@@ -198,7 +197,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 22              continue
             endif
             if (nbvar .eq. 0) then
-                call u2mess('A', 'PREPOST_75')
+                call utmess('A', 'PREPOST_75')
                 goto 9999
             endif
 16      continue
@@ -432,7 +431,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         lnocen=.true.
                     endif
                     if (npcalc .ne. nnoe) then
-                        call u2mess('F', 'PREPOST_79')
+                        call utmess('F', 'PREPOST_79')
                     endif
                     itype = typma(iel)
                     do 214 inos = 1, nnoe
@@ -495,7 +494,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
         endif
 200  end do
     if (lnocen) then
-        call u2mess('A', 'PREPOST_80')
+        call utmess('A', 'PREPOST_80')
     endif
 !     ------------------------------------------------------------------
 9999  continue

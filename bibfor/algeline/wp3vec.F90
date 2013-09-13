@@ -7,9 +7,7 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/wpordo.h"
 #include "asterfort/wptest.h"
@@ -163,14 +161,14 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
         vali (1) = nbreel
         vali (2) = nbcmpc
         vali (3) = nbcmpp
-        call u2mesi('A', 'ALGELINE4_87', 3, vali)
+        call utmess('A', 'ALGELINE4_87', ni=3, vali=vali)
     endif
 !
     if (nbreel .gt. 0) then
         vali (1) = nbreel
         vali (2) = nbcmpc
         vali (3) = nbcmpp
-        call u2mesi('I', 'ALGELINE4_88', 3, vali)
+        call utmess('I', 'ALGELINE4_88', ni=3, vali=vali)
     endif
 !
 ! --- 1.2. DETERMINATION DE NB FREQUENCES GARDEES
@@ -304,10 +302,11 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
         call getvtx(' ', 'TYPE_RESU', scal=typres, nbret=ibid)
         valk='FREQ'
         if (typres .ne. 'DYNAMIQUE') valk='CHAR_CRIT'
-        call u2mesg(kmsg//'+', 'ALGELINE5_79', 1, valk, 2,&
-                    vali, 0, 0.d0)
-        if (kmsg .eq. 'A') call u2mesk(kmsg//'+', 'ALGELINE5_80', 1, valk)
-        call u2mesk(kmsg, 'ALGELINE5_81', 1, valk)
+        call utmess(kmsg//'+', 'ALGELINE5_79', sk=valk, ni=2, vali=vali)
+        if (kmsg .eq. 'A') then
+            call utmess(kmsg//'+', 'ALGELINE5_80', sk=valk)
+        endif
+        call utmess(kmsg, 'ALGELINE5_81', sk=valk)
     endif
 !
 ! --- 5. TRI (DANS LE SPECTRE ET DE PRESENTATION) DES VALEURS PROPRES-

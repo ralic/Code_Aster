@@ -32,7 +32,7 @@ subroutine ssdege(nomu)
 #include "asterfort/jevtbl.h"
 #include "asterfort/ssdeu1.h"
 #include "asterfort/ssdeu2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomu
 ! ----------------------------------------------------------------------
@@ -146,7 +146,7 @@ subroutine ssdege(nomu)
 12  continue
     11 end do
     if (lmess) then
-        call u2mess('A', 'SOUSTRUC_41')
+        call utmess('A', 'SOUSTRUC_41')
     endif
 !
 !
@@ -154,7 +154,7 @@ subroutine ssdege(nomu)
 !     ----------------------------------------------
     call ssdeu2(nbnoto, zi(iaexte), nvalap)
     if (nvalap .ne. nbnoto) then
-        call u2mess('A', 'SOUSTRUC_42')
+        call utmess('A', 'SOUSTRUC_42')
     endif
 !
 !

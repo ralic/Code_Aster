@@ -3,13 +3,13 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                   listno, nbcmp, ifi, iadmax)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
     integer :: listno(*), nbcmp, ifi, ima, nbord2, iadmax, jtype
     character(len=24) :: connex
@@ -77,7 +77,7 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
         nbpt = zi(jcesd-1+5+4*(imaold-1)+1)
         nbsp = zi(jcesd-1+5+4*(imaold-1)+2)
         if (nbsp .ne. 1) then
-            call u2mess('F', 'PREPOST2_57')
+            call utmess('F', 'PREPOST2_57')
         endif
 !
         itrou=0
@@ -108,7 +108,7 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                     goto 15
 13              continue
                 if (itrou .eq. 0) then
-                    call u2mess('F', 'PREPOST2_58')
+                    call utmess('F', 'PREPOST2_58')
                 endif
 15              continue
 14          continue
@@ -143,7 +143,7 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                     goto 25
 23              continue
                 if (itrou .eq. 0) then
-                    call u2mess('F', 'PREPOST2_58')
+                    call utmess('F', 'PREPOST2_58')
                 endif
 25              continue
 24          continue

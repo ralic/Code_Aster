@@ -6,7 +6,7 @@ subroutine te0416(option, nomte)
 #include "asterfort/fornpd.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ subroutine te0416(option, nomte)
 !
 !----------- AUTRES MESURES DE DEFORMATIONS
 !
-                call u2mesk('F', 'ELEMENTS3_93', 1, zk16(icompo+2))
+                call utmess('F', 'ELEMENTS3_93', sk=zk16(icompo+2))
 !
             endif
 !

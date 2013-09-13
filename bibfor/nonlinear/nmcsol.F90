@@ -17,13 +17,13 @@ subroutine nmcsol(lischa, sddyna, lviss)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynkk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     logical :: lviss
     character(len=19) :: lischa, sddyna
@@ -88,7 +88,7 @@ subroutine nmcsol(lischa, sddyna, lviss)
     else if (nfsol.eq.1) then
         lviss = .true.
     else
-        call u2mess('F', 'DYNAMIQUE_9')
+        call utmess('F', 'DYNAMIQUE_9')
     endif
 !
 ! --- NOM DE _LA_CHARGE

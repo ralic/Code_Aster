@@ -76,7 +76,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nmatyp, nbnoma, lgproa, ntypel, npgmax
     integer :: ncmprf, nbcmpv, jnumma, nbma
@@ -198,7 +198,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
         if (lxlgut(zk16(adncfi-1+iaux)) .gt. 8) then
             valk(1) = zk16(adncfi-1+iaux)
             valk(2) = saux08
-            call u2mesk('A', 'MED_72', 2, valk)
+            call utmess('A', 'MED_72', nk=2, valk=valk)
         endif
         nrcmp = indik8 ( nomcmr, saux08, 1, ncmprf )
 !
@@ -209,7 +209,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 12  continue
 !
     if (nrcmp .eq. 0) then
-        call u2mesk('F', 'MED_73', 1, zk16(adncfi-1+iaux))
+        call utmess('F', 'MED_73', sk=zk16(adncfi-1+iaux))
     endif
 !
 ! 1.3. ==> TRANSFERT DES VALEURS DANS LA COMPOSANTE NRCMP

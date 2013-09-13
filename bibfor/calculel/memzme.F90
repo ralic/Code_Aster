@@ -33,7 +33,7 @@ subroutine memzme(modele, matel)
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: matel
     character(len=8) :: lpain(1), lpaout(1), modele
     character(len=24) :: ligrmo, lchin(1), lchout(1), option, chgeom
@@ -42,7 +42,9 @@ subroutine memzme(modele, matel)
     integer :: iarefe
 !-----------------------------------------------------------------------
     call jemarq()
-    if (modele(1:1) .eq. ' ') call u2mess('F', 'CALCULEL2_82')
+    if (modele(1:1) .eq. ' ') then
+        call utmess('F', 'CALCULEL2_82')
+    endif
 !
     call megeom(modele, chgeom)
 !

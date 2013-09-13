@@ -1,5 +1,6 @@
 subroutine te0109(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm2d.h"
@@ -7,7 +8,7 @@ subroutine te0109(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -34,7 +35,6 @@ subroutine te0109(option, nomte)
 !
 ! ---------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
 !
     integer :: nbres
@@ -97,7 +97,7 @@ subroutine te0109(option, nomte)
         ord = 0.d0
         ep = 2.d0*h
     else
-        call u2mesk('F', 'ELEMENTS3_18', 1, phenom)
+        call utmess('F', 'ELEMENTS3_18', sk=phenom)
     endif
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&

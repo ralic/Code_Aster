@@ -201,7 +201,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/lc0098.h"
 #include "asterfort/lc0099.h"
 #include "asterfort/lc0100.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
     integer :: imate, ndim, nvi, kpg, ksp
     integer :: neps, nsig, nwkin, nwkout, ndsde
@@ -1007,8 +1007,7 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                 nvi, dsidep, codret)
     goto 9992
 9991  continue
-    call u2mesg('F', 'COMPOR1_43', 0, ' ', 1,&
-                numlc, 0, 0.d0)
+    call utmess('F', 'COMPOR1_43', si=numlc)
 !
 9992  continue
 end subroutine

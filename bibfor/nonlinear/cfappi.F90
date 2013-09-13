@@ -18,12 +18,12 @@ subroutine cfappi(noma, defico, nomnoe, typapp, posapp)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cfnomm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=24) :: defico
     integer :: posapp
@@ -61,11 +61,11 @@ subroutine cfappi(noma, defico, nomnoe, typapp, posapp)
     if (typapp .eq. -3) then
         call cfnomm(noma, defico, 'MAIL', posapp, nomapp)
         valk(2) = nomapp
-        call u2mesk('I', 'CONTACTDEBG_11', 2, valk)
+        call utmess('I', 'CONTACTDEBG_11', nk=2, valk=valk)
     else if (typapp.eq.-2) then
-        call u2mesk('I', 'CONTACTDEBG_12', 1, valk)
+        call utmess('I', 'CONTACTDEBG_12', sk=valk(1))
     else if (typapp.eq.-1) then
-        call u2mesk('I', 'CONTACTDEBG_13', 1, valk)
+        call utmess('I', 'CONTACTDEBG_13', sk=valk(1))
     endif
 !
     call jedema()

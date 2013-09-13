@@ -1,9 +1,9 @@
 subroutine tbexp2(nomta, para)
-    implicit   none
+    implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomta, para
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,8 +39,7 @@ subroutine tbexp2(nomta, para)
     if (.not.exist) then
         valk (1) = para
         valk (2) = nomta
-        call u2mesg('F', 'UTILITAI6_93', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_93', nk=2, valk=valk)
     endif
 !
     call jedema()

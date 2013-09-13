@@ -38,9 +38,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 #include "asterfort/resu74.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trlds.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -214,7 +213,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         call dcopy(neqgen*neqgen, masgen, 1, zr(jmass), 1)
         call trlds(zr(jmass), neqgen, neqgen, iret)
         if (iret .ne. 0) then
-            call u2mess('F', 'ALGORITH5_22')
+            call utmess('F', 'ALGORITH5_22')
         endif
         call dcopy(neqgen*neqgen, masgen, 1, zr(jmass), 1)
     else if (typbas.eq.'MODELE_GENE     ') then
@@ -372,7 +371,9 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                     dtsto, vrotat, typal, finpal, cnpal,&
                     prdeff, conv, fsauv)
 !
-        if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
+        if (conv .le. 0.d0) then
+            call utmess('I', 'EDYOS_47')
+        endif
 !
 !     --- ACCELERATIONS GENERALISEES INITIALES ---
 !
@@ -394,7 +395,9 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                     dtsto, vrotat, typal, finpal, cnpal,&
                     prdeff, conv, fsauv)
 !
-        if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
+        if (conv .le. 0.d0) then
+            call utmess('I', 'EDYOS_47')
+        endif
 !
 !
 !     --- ACCELERATIONS GENERALISEES INITIALES ---
@@ -512,7 +515,9 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                                 dtsto, vrotat, typal, finpal, cnpal,&
                                 prdeff, conv, fsauv)
 !
-                    if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
+                    if (conv .le. 0.d0) then
+                        call utmess('I', 'EDYOS_47')
+                    endif
 !
 !
 !           --- ACCELERATIONS GENERALISEES ---
@@ -536,8 +541,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                 vali (1) = itemax
                 valr (1) = xnorm/xref
                 valr (2) = temps
-                call u2mesg('F', 'ALGORITH15_99', 0, ' ', 1,&
-                            vali, 2, valr)
+                call utmess('F', 'ALGORITH15_99', si=vali(1), nr=2, valr=valr)
 !
 25              continue
                 call dcopy(neqgen, zr(jacgi2), 1, zr(jacc2), 1)
@@ -562,7 +566,9 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                             dtsto, vrotat, typal, finpal, cnpal,&
                             prdeff, conv, fsauv)
 !
-                if (conv .le. 0.d0) call u2mess('I', 'EDYOS_47')
+                if (conv .le. 0.d0) then
+                    call utmess('I', 'EDYOS_47')
+                endif
 !
 !
 !             --- ACCELERATIONS GENERALISEES ---
@@ -592,7 +598,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                 prdeff = .true.
             endif
             if (dt2 .le. dtmin .and. abs(tfin-(temps+dt2)) .gt. epsi) then
-                call u2mess('F', 'ALGORITH5_23')
+                call utmess('F', 'ALGORITH5_23')
             endif
 !
             nr = nr + 1
@@ -603,8 +609,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         if (err .gt. 1.d0 .and. nr .eq. nrmax) then
             valr2(1) = temps
             valr2(2) = dt2
-            call u2mesg('A', 'DYNAMIQUE_18', 0, ' ', 1,&
-                        nr, 2, valr2)
+            call utmess('A', 'DYNAMIQUE_18', si=nr, nr=2, valr=valr2)
         endif
 !
         dt1 = dt2
@@ -736,8 +741,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
     vali (1) = ipas
     vali (2) = nbacc
-    call u2mesg('I', 'ALGORITH16_1', 0, ' ', 2,&
-                vali, 0, 0.d0)
+    call utmess('I', 'ALGORITH16_1', ni=2, vali=vali)
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
@@ -791,7 +795,9 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         call jedetr('&&MDADAP.SREDR')
         call jedetr('&&MDADAP.SREDI')
     endif
-    if (iret .ne. 0) call u2mess('F', 'ALGORITH5_24')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGORITH5_24')
+    endif
 !
     call jedema()
 end subroutine

@@ -1,6 +1,7 @@
 subroutine tstpar(itest, nbm, amor, amor0, puls,&
                   puls0, dt, dt0)
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +29,6 @@ subroutine tstpar(itest, nbm, amor, amor0, puls,&
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mess.h"
     integer :: itest, nbm
     real(kind=8) :: amor(*), amor0(*), puls(*), puls0(*), dt, dt0
 !
@@ -59,7 +59,7 @@ subroutine tstpar(itest, nbm, amor, amor0, puls,&
 !
     do 10 i = 1, nbm
         if (amor(i) .eq. 0.0d0) then
-            call u2mess('I', 'ALGORITH11_3')
+            call utmess('I', 'ALGORITH11_3')
             temp = abs((amor(i) - amor0(i)) / amor0(i))
         else
             temp = abs((amor(i) - amor0(i)) / amor(i))

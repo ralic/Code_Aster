@@ -6,7 +6,6 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
@@ -19,10 +18,11 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "asterfort/padist.h"
 #include "asterfort/panbno.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xorima.h"
 #include "blas/ddot.h"
+!
     character(len=8) :: noma
     integer :: jltsv, jltsl, jlnsv, jlnsl, nbno, jcoor, jcoorg
     logical :: callst, grille
@@ -319,7 +319,9 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 31          continue
 !
-            if (.not.ma2ff) call u2mess('F', 'XFEM2_17')
+            if (.not.ma2ff) then
+                call utmess('F', 'XFEM2_17')
+            endif
  3      continue
 !
 888      continue

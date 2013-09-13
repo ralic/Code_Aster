@@ -74,7 +74,7 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: imodi, nbmr, nbm, nuor(nbm)
     integer :: iaxe, nbnfen, nofe(nbnfen), nbp1, nbp2
@@ -161,7 +161,7 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
         call fointr(' ', zk24(iprol), nbnfen, zr(ifen2), zr(ivale2),&
                     nbp2, discff(nbp1+1), defm(nbp1+1, imr), ier2)
         if (ier1 .ne. 0 .or. ier2 .ne. 0) then
-            call u2mess('F', 'MODELISA4_39')
+            call utmess('F', 'MODELISA4_39')
         endif
 !
 20  end do

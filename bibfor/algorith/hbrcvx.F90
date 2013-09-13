@@ -17,14 +17,13 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    implicit      none
+    implicit none
 #include "asterfort/codree.h"
 #include "asterfort/hbvaec.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat
     real(kind=8) :: sig(6), vid(3), materf(nmat, 2), seuil, vp(3), vecp(3, 3)
 ! =====================================================================
@@ -63,7 +62,7 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
 ! ======================================================================
     gamma = vid(1)
     if (gamma .lt. 0.0d0) then
-        call u2mess('F', 'ALGORITH3_88')
+        call utmess('F', 'ALGORITH3_88')
     endif
     call hbvaec(gamma, nmat, materf, parame)
 ! ======================================================================
@@ -99,7 +98,7 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
         valk(1) = cvp1
         valk(2) = cvp2
         valk(3) = cvp3
-        call u2mesk('F', 'ALGORITH3_89', 3, valk)
+        call utmess('F', 'ALGORITH3_89', nk=3, valk=valk)
     endif
     difsig = vp(3)-vp(1)
     sig3 = vp(3)+i1e/3.0d0

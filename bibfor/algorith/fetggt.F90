@@ -49,7 +49,6 @@ subroutine fetggt(nbsd, matas, vsdf, vddl, lrigid,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/fetmpi.h"
 #include "asterfort/fetrex.h"
 #include "asterfort/jedema.h"
@@ -60,9 +59,10 @@ subroutine fetggt(nbsd, matas, vsdf, vddl, lrigid,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: nbsd, vsdf(nbsd), vddl(nbsd), nbi, dimgi, mamoy, irex, ifm, rang
     integer :: nbproc, itps
     character(len=19) :: matas, sdfeti
@@ -129,7 +129,7 @@ subroutine fetggt(nbsd, matas, vsdf, vddl, lrigid,&
                 lstogi=.false.
             endif
         else
-            call u2mess('F', 'ALGORITH3_64')
+            call utmess('F', 'ALGORITH3_64')
         endif
 ! EN PARALLELE
 ! ATTENTION, POUR NE PAS AVOIR A TRANSFERER LES MATAS.FETH + COLAUI
@@ -139,7 +139,9 @@ subroutine fetggt(nbsd, matas, vsdf, vddl, lrigid,&
 ! IL N'EST PAS CHOQUANT QUE CETTE FACILITE D'ECONOMIE DE STOCKAGE NE
 ! RESERVER QU'AU SEQUENTIEL. EN PARALLELE ON PEUT DISTRIBUER AUTREMENT
 ! LES PROCESSUS POUR LIMITER DE CHARGER LE PROCESSUS MAITRE EN MEMOIRE
-        if ((lpara) .and. (.not.lstogi)) call u2mess('F', 'ALGORITH3_65')
+        if ((lpara) .and. (.not.lstogi)) then
+            call utmess('F', 'ALGORITH3_65')
+        endif
 !
 ! MONITORING
         if ((infofe(1:1).eq.'T') .and. (itps.eq.1)) then

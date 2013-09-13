@@ -33,8 +33,7 @@ subroutine op0089()
 #include "asterfort/jexnom.h"
 #include "asterfort/pjxxpr.h"
 #include "asterfort/ssdein.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=8) :: ul, ug, mail, nocas
     character(len=16) :: kbi1, kbi2, corres, tysd
@@ -65,13 +64,17 @@ subroutine op0089()
 !
         affick(1) = mail
         affick(2) = noma
-        if (isma .le. 0) call u2mesk('F', 'SOUSTRUC_26', 2, affick)
+        if (isma .le. 0) then
+            call utmess('F', 'SOUSTRUC_26', nk=2, valk=affick)
+        endif
 !
         macrel= zk8(iamacr-1+isma)
 !
         call dismoi('F', 'NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', ibid,&
                     promes, ie)
-        if (promes .eq. ' ') call u2mess('F', 'SOUSTRUC_79')
+        if (promes .eq. ' ') then
+            call utmess('F', 'SOUSTRUC_79')
+        endif
 !
         vref = macrel//'.PROJM    .PJMRF'
         call jeveuo(vref, 'L', lref)
@@ -83,10 +86,14 @@ subroutine op0089()
         call jeveuo(macrel//'.REFM', 'L', iarefm)
 !
         ouiri = zk8(iarefm-1+6)
-        if (ouiri .ne. 'OUI_RIGI') call u2mess('F', 'SOUSTRUC_80')
+        if (ouiri .ne. 'OUI_RIGI') then
+            call utmess('F', 'SOUSTRUC_80')
+        endif
 !
         ouima = zk8(iarefm-1+7)
-        if (ouima .ne. 'OUI_MASS') call u2mess('F', 'SOUSTRUC_81')
+        if (ouima .ne. 'OUI_MASS') then
+            call utmess('F', 'SOUSTRUC_81')
+        endif
 !
         corres = ' '
         noca = ' '

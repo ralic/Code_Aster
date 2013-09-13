@@ -27,13 +27,11 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     logical :: lrgm, ther
     character(len=16) :: compor, phenom
     integer :: imate, ipg
@@ -72,14 +70,14 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
 !
     ther=.false.
     if ((.not.( compor(1:7) .eq. 'GLRC_DM'))) then
-        call u2mesk('F', 'ELEMENTS4_65', 1, compor)
+        call utmess('F', 'ELEMENTS4_65', sk=compor)
     endif
 !
     call r8inir(6*6, 0.0d0, delas, 1)
     call r8inir(7, 0.0d0, valres, 1)
     phenom = 'GLRC_DM         '
     if (phenom .ne. 'GLRC_DM         ') then
-        call u2mesk('F', 'ELEMENTS2_32', 1, phenom)
+        call utmess('F', 'ELEMENTS2_32', sk=phenom)
     endif
 !
     fami='RIGI'
@@ -120,7 +118,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
             dtmoy=tmoyp-tmoym
             dtgra=tgrap-tgram
         else
-            call u2mess('F', 'ALGORITH17_30')
+            call utmess('F', 'ALGORITH17_30')
         endif
     endif
 !
@@ -131,12 +129,14 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     if (iret .eq. 0) then
         nomres(3) = 'ALPHA'
         call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                    [tmoyp], 3, nomres, valres, icodre, 1)
+                    [tmoyp], 3, nomres, valres, icodre,&
+                    1)
         alph = valres(3)
 !
     else
         call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                    [0.d0], 2, nomres, valres, icodre, 1)
+                    [0.d0], 2, nomres, valres, icodre,&
+                    1)
 !
     endif
     e = valres(1)
@@ -148,7 +148,8 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     nomres(2) = 'NUF'
 !
     call rcvala(imate, ' ', 'GLRC_DM   ', 0, ' ',&
-                [0.d0], 2, nomres, valres, icodre, 0)
+                [0.d0], 2, nomres, valres, icodre,&
+                0)
 !
     if (icodre(1) .eq. 0) then
         ef = valres(1)
@@ -174,7 +175,8 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     nomres(6) = 'MYF'
     nomres(7) = 'ALPHA_C'
     call rcvala(imate, ' ', 'GLRC_DM', 0, ' ',&
-                [0.d0], 7, nomres, valres, icodre, 0)
+                [0.d0], 7, nomres, valres, icodre,&
+                0)
 !
     gt = valres(1)
     gf = valres(3)
@@ -191,7 +193,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
         gc = valres(2)
 !
         if (gc .eq. 1.d0 .and. gt .eq. 1.d0) then
-            call u2mess('F', 'ALGORITH6_1')
+            call utmess('F', 'ALGORITH6_1')
         endif
 !
         nyc = (1.d0-nu)*(1.d0+2.d0*nu)*(1.d0-gt)+nu**2*(1.d0-gc)
@@ -205,7 +207,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
         if (valres(5) .gt. nycmax) then
             rmesg(1) = nyc
             rmesg(2) = nycmax
-            call u2mesr('F', 'ALGORITH6_2', 2, rmesg)
+            call utmess('F', 'ALGORITH6_2', nr=2, valr=rmesg)
         endif
 !
         gc = (1.d0-gt)*(nyt**2*(1.d0-nu)*(1.d0+2.d0*nu)-nyc**2*nu**2)
@@ -216,7 +218,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     endif
 !
     if (gc .eq. 1.d0 .and. gt .eq. 1.d0) then
-        call u2mess('F', 'ALGORITH6_1')
+        call utmess('F', 'ALGORITH6_1')
     endif
 !
     if (icodre(7) .eq. 0 .and. gc .ne. 1.d0) then
@@ -248,7 +250,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
             alpha = alpha/(2.0d0*(lamf*(1.0d0-nuf) + deumuf)**2)
             alpha = alpha*(1.0d0 - gf)*myf**2/seuil
         else
-            call u2mess('F', 'ALGORITH6_3')
+            call utmess('F', 'ALGORITH6_3')
         endif
     endif
 !

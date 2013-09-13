@@ -17,12 +17,12 @@ subroutine te0166(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL FORCE DE PESANTEUR POUR MEPOULI
@@ -59,7 +59,9 @@ subroutine te0166(option, nomte)
 !
     call tecach('ONO', 'PDEPLMR', 'L', 1, idepla,&
                 iret)
-    if (iret .ne. 0) call u2mess('F', 'CALCULEL6_78')
+    if (iret .ne. 0) then
+        call utmess('F', 'CALCULEL6_78')
+    endif
     call jevech('PDEPLPR', 'L', ideplp)
 !
     do 10 i = 1, 9

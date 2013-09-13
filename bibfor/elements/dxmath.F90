@@ -1,7 +1,7 @@
 subroutine dxmath(fami, epais, df, dm, dmf,&
                   pgl, multic, indith, t2iu, t2ui,&
                   t1ve, npg)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/codent.h"
@@ -11,8 +11,8 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
     integer :: multic, indith, npg, npgh
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
@@ -136,7 +136,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
                         ' ', phenom, 0, ' ', 0.0d0,&
                         1, 'M_LLLL  ', valres(1), icodre, 0)
             if (icodre(1) .eq. 1) then
-                call u2mess('F', 'ELEMENTS_41')
+                call utmess('F', 'ELEMENTS_41')
             else
                 elasco = 2
             endif
@@ -195,7 +195,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
             nomres(34) = 'ALPHA   '
         endif
     else
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
 !===============================================================

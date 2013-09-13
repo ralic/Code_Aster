@@ -8,9 +8,9 @@ subroutine lecdon(ficext, unitpa, prdeff)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: unitpa
     logical :: prdeff, ficext
@@ -169,7 +169,9 @@ subroutine lecdon(ficext, unitpa, prdeff)
         endif
         read(unitpa,*)nbpal
         if (niv .ge. 2) write(ifm, *)'ASTEREDYOS: ', nomprg, ' ON A LU NBPAL =', nbpal
-        if (nbpal .gt. palmax) call u2mess('F', 'EDYOS_43')
+        if (nbpal .gt. palmax) then
+            call utmess('F', 'EDYOS_43')
+        endif
 !
 !     REMPLISSAGE "COMMON" ASTER POUR LE NOMBRE DE PALIERS
 !     ----------------------------------------------------
@@ -228,14 +230,16 @@ subroutine lecdon(ficext, unitpa, prdeff)
 !   LECTURE DES INFOS DEPUIS LE FICHIER DE COMMANDE
 !   --------------------------------------------------------------------
         call getfac('PALIER_EDYOS', nbpal)
-        if (nbpal .gt. palmax) call u2mess('F', 'EDYOS_43')
+        if (nbpal .gt. palmax) then
+            call utmess('F', 'EDYOS_43')
+        endif
         zi(znpal)=nbpal
         do 201 ipal = 1, nbpal
             call getvtx('PALIER_EDYOS', 'GROUP_NO', iocc=ipal, nbval=0, nbret=n2)
             if (abs(n2) .eq. 0) then
                 call getvtx('PALIER_EDYOS', 'NOEUD', iocc=ipal, nbval=0, nbret=n2)
                 if (abs(n2) .eq. 0) then
-                    call u2mess('F', 'EDYOS_49')
+                    call utmess('F', 'EDYOS_49')
                 else
                     ngr = -n2
                     ngr = 1

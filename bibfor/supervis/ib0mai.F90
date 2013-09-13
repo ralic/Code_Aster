@@ -30,9 +30,8 @@ subroutine ib0mai()
 #include "asterfort/jedebu.h"
 #include "asterfort/jeinif.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utgtme.h"
+#include "asterfort/utmess.h"
     integer :: lfic, mfic
     common /fenvje/  lfic,mfic
 !
@@ -68,7 +67,7 @@ subroutine ib0mai()
     if (moctet .gt. ismaem()) then
         valr(1) = moctet
         valr(2) = ismaem()
-        call u2mesr('F', 'JEVEUX_1', 2, valr)
+        call utmess('F', 'JEVEUX_1', nr=2, valr=valr)
     endif
     mxdyn = int(moctet)
 !
@@ -85,12 +84,12 @@ subroutine ib0mai()
     k8tab(3) = 'MEM_INIT'
     k8tab(4) = 'MEM_JDC'
     call utgtme(4, k8tab, valr, iret)
-    call u2mesr('I', 'SUPERVIS2_22', 4, valr)
+    call utmess('I', 'SUPERVIS2_22', nr=4, valr=valr)
 !
     sizf = mfic/(1024*1024.0d0)
-    call u2mesr('I', 'SUPERVIS2_24', 1, sizf)
+    call utmess('I', 'SUPERVIS2_24', sr=sizf)
 !
     if (idebug .eq. 1) then
-        call u2mess('I', 'SUPERVIS_12')
+        call utmess('I', 'SUPERVIS_12')
     endif
 end subroutine

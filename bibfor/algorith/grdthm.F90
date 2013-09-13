@@ -1,8 +1,8 @@
 subroutine grdthm(nomte, perman, vf, ndim, mecani,&
                   press1, press2, tempe, dimdep, dimdef,&
                   dimcon, nmec, np1, np2)
-    implicit     none
-#include "asterfort/u2mesg.h"
+    implicit none
+#include "asterfort/utmess.h"
     logical :: perman, vf
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: dimdep, dimdef, dimcon
@@ -114,8 +114,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
             dimdef = press1(6) + press2(6)
             dimcon = 8
         else
-            call u2mesg('F', 'VOLUFINI_10', 1, nomte, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'VOLUFINI_10', sk=nomte)
         endif
     else
 !

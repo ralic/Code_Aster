@@ -34,8 +34,7 @@ subroutine orilgm(noma)
 #include "asterfort/ornorm.h"
 #include "asterfort/orvlma.h"
 #include "asterfort/orvlse.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 !
@@ -106,10 +105,10 @@ subroutine orilgm(noma)
 ! --- COMPATIBILITE DU PROBLEME AVEC LES MOTS CLES FACTEUR :
 !     ----------------------------------------------------
     if (( nbf1 .gt. 0 ) .and. ( ndim .eq. 3 )) then
-        call u2mess('F', 'MODELISA5_95')
+        call utmess('F', 'MODELISA5_95')
     endif
     if (( nbf2 .gt. 0 ) .and. ( ndim .eq. 2 )) then
-        call u2mess('F', 'MODELISA5_96')
+        call utmess('F', 'MODELISA5_96')
     endif
 !
 ! --- TRAITEMENT DE 'ORIE_PEAU_2D' :
@@ -266,17 +265,19 @@ subroutine orilgm(noma)
             if (n2 .ne. 0) then
                 call getvtx(mofb3d, 'NOEUD', iocc=iocc, scal=nnoeud, nbret=n2)
                 call jenonu(jexnom(nomnoe, nnoeud), noeud)
-                if (noeud .eq. 0) call u2mesk('F', 'MODELISA5_97', 1, nnoeud)
+                if (noeud .eq. 0) then
+                    call utmess('F', 'MODELISA5_97', sk=nnoeud)
+                endif
             else
                 call getvtx(mofb3d, 'GROUP_NO', iocc=iocc, scal=nnoeud, nbret=n3)
                 call utnono(' ', noma, 'NOEUD', nnoeud, k8b,&
                             ier)
                 if (ier .eq. 10) then
-                    call u2mesk('F', 'MODELISA8_75', 1, nnoeud)
+                    call utmess('F', 'MODELISA8_75', sk=nnoeud)
                 else if (ier .eq. 1) then
                     valk(1) = nnoeud
                     valk(2) = k8b
-                    call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                    call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
                 endif
                 call jenonu(jexnom(nomnoe, k8b), noeud)
             endif
@@ -328,17 +329,19 @@ subroutine orilgm(noma)
             if (n2 .ne. 0) then
                 call getvtx(mofc3d, 'NOEUD', iocc=iocc, scal=nnoeud, nbret=n2)
                 call jenonu(jexnom(nomnoe, nnoeud), noeud)
-                if (noeud .eq. 0) call u2mesk('F', 'MODELISA5_97', 1, nnoeud)
+                if (noeud .eq. 0) then
+                    call utmess('F', 'MODELISA5_97', sk=nnoeud)
+                endif
             else
                 call getvtx(mofc3d, 'GROUP_NO', iocc=iocc, scal=nnoeud, nbret=n3)
                 call utnono(' ', noma, 'NOEUD', nnoeud, k8b,&
                             ier)
                 if (ier .eq. 10) then
-                    call u2mesk('F', 'MODELISA8_75', 1, nnoeud)
+                    call utmess('F', 'MODELISA8_75', sk=nnoeud)
                 else if (ier .eq. 1) then
                     valk(1) = nnoeud
                     valk(2) = k8b
-                    call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                    call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
                 endif
                 call jenonu(jexnom(nomnoe, k8b), noeud)
             endif

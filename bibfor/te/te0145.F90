@@ -2,11 +2,10 @@ subroutine te0145(option, nomte)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -68,10 +67,10 @@ subroutine te0145(option, nomte)
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
     if (nomte .eq. 'MECA_POU_C_T') then
-        call u2mess('F', 'ELEMENTS3_29')
+        call utmess('F', 'ELEMENTS3_29')
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angs2 = asin( xl / ( deux * rad ) )

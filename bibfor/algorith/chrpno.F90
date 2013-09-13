@@ -38,9 +38,8 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ut2vgl.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/wkvect.h"
@@ -95,7 +94,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
         call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=zk8(jcmp),&
                     nbret=ibid)
     else
-        call u2mess('F', 'ALGORITH2_6')
+        call utmess('F', 'ALGORITH2_6')
     endif
 !
 ! ----- DEFINITION ET CREATION DU CHAM_NO SIMPLE CHAMS1
@@ -183,7 +182,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
             call getvr8('AFFE', 'VECT_Y', iocc=1, nbval=3, vect=vecty,&
                         nbret=ibid)
             if (ndim .ne. 3) then
-                call u2mess('F', 'ALGORITH2_4')
+                call utmess('F', 'ALGORITH2_4')
             endif
             call angvxy(vectx, vecty, angnot)
         else
@@ -191,14 +190,13 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 call getvr8('AFFE', 'ANGL_NAUT', iocc=1, nbval=3, vect=angnot,&
                             nbret=ibid)
                 if (ibid .ne. 3) then
-                    call u2mess('F', 'ALGORITH2_7')
+                    call utmess('F', 'ALGORITH2_7')
                 endif
             else
                 call getvr8('AFFE', 'ANGL_NAUT', iocc=1, scal=angnot(1), nbret=ibid)
                 if (ibid .ne. 1) then
                     valr = angnot(1)
-                    call u2mesg('A', 'ALGORITH12_43', 0, ' ', 0,&
-                                0, 1, valr)
+                    call utmess('A', 'ALGORITH12_43', sr=valr)
                 endif
             endif
             angnot(1) = angnot(1)*r8dgrd()
@@ -318,29 +316,29 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 13          continue
         endif
     else if (repere(1:5).eq.'COQUE') then
-        call u2mess('F', 'ALGORITH2_3')
+        call utmess('F', 'ALGORITH2_3')
     else
 ! REPERE CYLINDRIQUE
         if (ndim .eq. 3) then
             call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=3, vect=orig,&
                         nbret=ibid)
             if (ibid .ne. 3) then
-                call u2mess('F', 'ALGORITH2_8')
+                call utmess('F', 'ALGORITH2_8')
             endif
             call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=3, vect=axez,&
                         nbret=ibid)
             if (ibid .eq. 0) then
-                call u2mess('F', 'ALGORITH2_9')
+                call utmess('F', 'ALGORITH2_9')
             endif
         else
             call getvr8('AFFE', 'ORIGINE', iocc=1, nbval=2, vect=orig,&
                         nbret=ibid)
             if (ibid .ne. 2) then
-                call u2mess('A', 'ALGORITH2_10')
+                call utmess('A', 'ALGORITH2_10')
             endif
             call getvr8('AFFE', 'AXE_Z', iocc=1, nbval=0, nbret=ibid)
             if (ibid .ne. 0) then
-                call u2mess('A', 'ALGORITH2_11')
+                call utmess('A', 'ALGORITH2_11')
             endif
             axez(1) = 0.0d0
             axez(2) = 0.0d0
@@ -382,7 +380,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 call normev(axer, xnormr)
                 if (xnormr .lt. epsi) then
                     call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
-                    call u2mess('A', 'ALGORITH2_13')
+                    call utmess('A', 'ALGORITH2_13')
                     call jeveuo(ma//'.CONNEX', 'L', jconx1)
                     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
                     ipt2=0
@@ -434,8 +432,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     if (xnormr .lt. epsi) then
                         call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
                         valk = k8b
-                        call u2mesg('F', 'ALGORITH14_91', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('F', 'ALGORITH14_91', sk=valk)
                     endif
                 endif
                 call provec(axez, axer, axet)
@@ -540,7 +537,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 call normev(axer, xnormr)
                 if (xnormr .lt. epsi) then
                     call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
-                    call u2mess('A', 'ALGORITH2_13')
+                    call utmess('A', 'ALGORITH2_13')
                     call jeveuo(ma//'.CONNEX', 'L', jconx1)
                     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
                     ipt2=0
@@ -590,8 +587,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                     if (xnormr .lt. epsi) then
                         call jenuno(jexnum(ma//'.NOMNOE', inoe), k8b)
                         valk = k8b
-                        call u2mesg('F', 'ALGORITH14_91', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('F', 'ALGORITH14_91', sk=valk)
                     endif
                 endif
                 call provec(axez, axer, axet)

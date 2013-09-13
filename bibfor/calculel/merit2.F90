@@ -33,7 +33,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele, cara
     character(len=19) :: matel, prefch
     character(len=*) :: lchar(*)
@@ -95,7 +95,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
     call jemarq()
     if (modele(1:1) .ne. ' ') then
     else
-        call u2mess('F', 'CALCULEL3_50')
+        call utmess('F', 'CALCULEL3_50')
     endif
 !
     call megeom(modele, chgeom)

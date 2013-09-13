@@ -16,8 +16,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: xdicmp, xdncmp, vcheff
@@ -86,8 +85,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         valk(1) = nchsym
         valk(2) = nresu
         valk(3) = tresu
-        call u2mesg('F', 'POSTRELE_46', 3, valk, 1,&
-                    i, 0, 0.d0)
+        call utmess('F', 'POSTRELE_46', nk=3, valk=valk, si=i)
 !
     else
 !
@@ -119,7 +117,9 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 endif
                 goto 10
             endif
-            if (.not. chelok) call u2mesi('F', 'POSTRELE_47', 1, i)
+            if (.not. chelok) then
+                call utmess('F', 'POSTRELE_47', si=i)
+            endif
         endif
 !
 !        --- VERIFICATION SUR LES CMPS ---
@@ -129,8 +129,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         if (zi(anumcp + j-1) .eq. 0) then
             call jeveuo(jexnum(xdncmp, i), 'L', anomcp)
             nomcmp = zk8(anomcp + j-1)
-            call u2mesg('F', 'POSTRELE_48', 1, nomcmp, 1,&
-                        i, 0, 0.d0)
+            call utmess('F', 'POSTRELE_48', sk=nomcmp, si=i)
         endif
 110      continue
 !
@@ -152,8 +151,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             if (nmaich .ne. nmaili) then
                 valk(1) = nmaili
                 valk(2) = nmaich
-                call u2mesg('F', 'POSTRELE_49', 2, valk, 1,&
-                            i, 0, 0.d0)
+                call utmess('F', 'POSTRELE_49', nk=2, valk=valk, si=i)
             endif
         else
 !           /* LE LIEU DU POST TRAITEMENT EST UN ENSMBLE DE NOEUDS */
@@ -172,8 +170,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 nomgrn = zk24(agrpnd + k-1)
                 call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
                 if (n1 .eq. 0) then
-                    call u2mesg('F', 'POSTRELE_50', 1, nomgrn, 1,&
-                                i, 0, 0.d0)
+                    call utmess('F', 'POSTRELE_50', sk=nomgrn, si=i)
                 endif
 120              continue
                 call jedetr('&&OP0051.NOM.GRPN')
@@ -187,8 +184,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
                 nomnd = zk8(alneud + k-1)
                 call jenonu(jexnom(nrepnd, nomnd), n1)
                 if (n1 .eq. 0) then
-                    call u2mesg('F', 'POSTRELE_51', 1, nomnd, 1,&
-                                i, 0, 0.d0)
+                    call utmess('F', 'POSTRELE_51', sk=nomnd, si=i)
                 endif
 130              continue
                 call jedetr('&&OP0051.NOM.NEUD')

@@ -23,7 +23,7 @@ subroutine te0443(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdefro.h"
 #include "asterfort/vdrep2.h"
 #include "asterfort/vdrepe.h"
@@ -143,7 +143,7 @@ subroutine te0443(option, nomte)
                 iret2)
     nbsp = itab(7)
     if ((nbsp.ne.1) .and. (mod(nbsp,3).ne.0)) then
-        call u2mesi('F', 'ELEMENTS5_54', 1, nbsp)
+        call utmess('F', 'ELEMENTS5_54', si=nbsp)
     endif
 !
     alpha = zr(jang)
@@ -180,7 +180,9 @@ subroutine te0443(option, nomte)
     ASSERT(np.le.nptmax)
     vali(1)=nspmax
     vali(2)=nbsp
-    if (nbsp .gt. nspmax) call u2mesi('F', 'ELEMENTS5_4', 2, vali)
+    if (nbsp .gt. nspmax) then
+        call utmess('F', 'ELEMENTS5_4', ni=2, vali=vali)
+    endif
 !
 !     LE TABLEAU CONIN A ETE ALLOUE DE FACON STATIQUE POUR
 !     OPTIMISER LE CPU CAR LES APPELS A WKVECT DANS LES TE SONT COUTEUX.

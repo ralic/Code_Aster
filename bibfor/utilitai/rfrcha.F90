@@ -38,11 +38,9 @@ subroutine rfrcha()
 #include "asterfort/ordonn.h"
 #include "asterfort/posddl.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utch19.h"
 #include "asterfort/utcmp1.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
     integer :: lvale, lg1, lg2, iddl, inoeud, nch
     integer :: n1, iret, ivari
@@ -58,7 +56,7 @@ subroutine rfrcha()
     character(len=16) :: nomcmd, typcon, typcha
     character(len=19) :: nomfon, cham19
     character(len=24) :: nogno, nogma
-    integer ::  vali
+    integer :: vali
 !     ------------------------------------------------------------------
     call jemarq()
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -101,11 +99,11 @@ subroutine rfrcha()
                 call utnono(' ', noma, 'NOEUD', nogno, noeud,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'ELEMENTS_67', 1, nogno)
+                    call utmess('F', 'ELEMENTS_67', sk=nogno)
                 else if (iret.eq.1) then
                     valk (1) = nogno
                     valk (2) = noeud
-                    call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                    call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
                 endif
             endif
             call getvtx(' ', 'NOM_CMP', scal=cmp, nbret=nc)
@@ -113,13 +111,13 @@ subroutine rfrcha()
                         iddl)
             if (inoeud .eq. 0) then
                 lg1 = lxlgut(noeud)
-                call u2mesk('F', 'UTILITAI_92', 1, noeud(1:lg1))
+                call utmess('F', 'UTILITAI_92', sk=noeud(1:lg1))
             else if (iddl.eq.0) then
                 lg1 = lxlgut(noeud)
                 lg2 = lxlgut(cmp)
                 valk(1) = cmp(1:lg2)
                 valk(2) = noeud(1:lg1)
-                call u2mesk('F', 'UTILITAI_93', 2, valk)
+                call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
             endif
             call jeveuo(cham19//'.VALE', 'L', lvale)
             call focste(nomfon, cmp, zr(lvale+iddl-1), 'G')
@@ -132,22 +130,21 @@ subroutine rfrcha()
                 call utnono(' ', noma, 'MAILLE', nogma, maille,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'ELEMENTS_73', 1, nogma)
+                    call utmess('F', 'ELEMENTS_73', sk=nogma)
                 else if (iret.eq.1) then
                     valk (1) = maille
-                    call u2mesg('A', 'UTILITAI6_72', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'UTILITAI6_72', sk=valk(1))
                 endif
             endif
             if (ngn .ne. 0) then
                 call utnono(' ', noma, 'NOEUD', nogno, noeud,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'ELEMENTS_67', 1, nogno)
+                    call utmess('F', 'ELEMENTS_67', sk=nogno)
                 else if (iret.eq.1) then
                     valk (1) = nogno
                     valk (2) = noeud
-                    call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                    call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
                 endif
             endif
             call dismoi('F', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
@@ -156,20 +153,25 @@ subroutine rfrcha()
                 npoint = 1
                 nusp = 1
                 noeud = ' '
-                if (maille .eq. ' ') call u2mess('F', 'CHAMPS_11')
+                if (maille .eq. ' ') then
+                    call utmess('F', 'CHAMPS_11')
+                endif
             else if (typch2.eq.'ELNO') then
                 nusp = 1
-                if (maille .eq. ' ' .or. (noeud.eq.' ' .and. npoint.eq.0)) call u2mess(&
-                                                                           'F', 'CHAMPS_12')
+                if (maille .eq. ' ' .or. (noeud.eq.' ' .and. npoint.eq.0)) then
+                    call utmess('F', 'CHAMPS_12')
+                endif
             else
-                if (maille .eq. ' ' .or. npoint .eq. 0) call u2mess('F', 'CHAMPS_13')
+                if (maille .eq. ' ' .or. npoint .eq. 0) then
+                    call utmess('F', 'CHAMPS_13')
+                endif
             endif
             call dismoi('F', 'NOM_GD', cham19, 'CHAM_ELEM', ibid,&
                         nomgd, ie)
             call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                         type, ie)
             if (type .ne. 'R') then
-                call u2mess('F', 'UTILITAI4_19')
+                call utmess('F', 'UTILITAI4_19')
             endif
             call utcmp1(nomgd, ' ', 1, cmp, ivari)
             call utch19(cham19, noma, maille, noeud, npoint,&
@@ -180,7 +182,7 @@ subroutine rfrcha()
             endif
             goto 10
         else
-            call u2mesk('F', 'UTILITAI4_20', 1, typcha)
+            call utmess('F', 'UTILITAI4_20', sk=typcha)
         endif
     endif
 !

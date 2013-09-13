@@ -2,7 +2,6 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
                   noeud)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iorim1.h"
@@ -14,10 +13,10 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utmavo.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: listma(*), nbmail, noeud, norien
     character(len=8) :: noma
     real(kind=8) :: vect(*)
@@ -59,13 +58,13 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, jcoor
     integer :: nbmaor, ii, kdeb
-    logical ::  reorie
+    logical :: reorie
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
     character(len=24) :: valk(2)
 !
-#define pasori(ima)   zi(lori-1+ima).eq.0
+#define pasori(ima) zi(lori-1+ima).eq.0
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -115,7 +114,7 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
             call jenuno(jexnum(mailma, numa), nomail)
             valk(1) = nomail
             valk(2) = typel
-            call u2mesk('F', 'MODELISA5_94', 2, valk)
+            call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
         endif
 10  end do
 !ok --- on teste le type de maille de la liste
@@ -145,7 +144,9 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
                     endif
 13              continue
 12          continue
-            if (norieg .ge. 3) call u2mess('F', 'MODELISA4_84')
+            if (norieg .ge. 3) then
+                call utmess('F', 'MODELISA4_84')
+            endif
         endif
 11  continue
 !
@@ -191,7 +192,9 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
         endif
 !
 20  end do
-    if (nbmaor .eq. 0) call u2mess('F', 'MODELISA6_1')
+    if (nbmaor .eq. 0) then
+        call utmess('F', 'MODELISA6_1')
+    endif
 !
     do 300 ii = 1, nbmaor
         lliste = 0
@@ -242,7 +245,9 @@ subroutine orvlse(noma, listma, nbmail, norien, vect,&
 ! --- ON VERIFIE QU'ON A BIEN TRAITE TOUTES LES MAILLES
 !
     do 100 ima = 1, nbmail
-        if (pasori(ima)) call u2mess('F', 'MODELISA6_2')
+        if (pasori(ima)) then
+            call utmess('F', 'MODELISA6_2')
+        endif
 100  end do
 !
     norien = norien + norieg

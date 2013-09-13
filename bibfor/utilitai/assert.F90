@@ -1,10 +1,10 @@
 subroutine assert(cond, str_cond, fname, line)
-    implicit   none
+    implicit none
+#include "asterfort/utmess.h"
     logical :: cond
     character(len=*) :: str_cond
     character(len=*) :: fname
     integer :: line
-#include "asterfort/u2mesg.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ subroutine assert(cond, str_cond, fname, line)
         valk(1) = str_cond
         valk(2) = fname
         vali(1) = line
-        call u2mesg('F', 'DVP_1', 2, valk, 1, vali, 1, rbid)
+        call utmess('F', 'DVP_1', nk=2, valk=valk, si=vali(1),&
+                    sr=rbid(1))
     endif
 end subroutine

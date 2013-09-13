@@ -11,7 +11,7 @@ subroutine te0234(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -76,8 +76,12 @@ subroutine te0234(option, nomte)
 !-- LECTURE DU COMPORTEMENT
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-    if (nbcou .gt. 30) call u2mess('F', 'ELEMENTS3_50')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+    if (nbcou .gt. 30) then
+        call utmess('F', 'ELEMENTS3_50')
+    endif
 !
     npge = 3
 !
@@ -101,7 +105,9 @@ subroutine te0234(option, nomte)
                 iret)
     icontm=itab(1)
     nbsp=itab(7)
-    if (nbsp .ne. npge*nbcou) call u2mess('F', 'ELEMENTS_4')
+    if (nbsp .ne. npge*nbcou) then
+        call utmess('F', 'ELEMENTS_4')
+    endif
 !
     call jevech('PDEPLMR', 'L', ideplm)
 !---- INITIALISATION DU VECTEUR FORCE INTERNE
@@ -129,7 +135,8 @@ subroutine te0234(option, nomte)
 20      continue
 !
         call rcvala(zi(imate), ' ', 'ELAS', 1, 'TEMP',&
-                    [tpg], 2, nomres, valres, icodre,1)
+                    [tpg], 2, nomres, valres, icodre,&
+                    1)
         nu = valres(2)
         cisail = valres(1)/ (un+nu)
         if (nomte .eq. 'MECXSE3') jacp = jacp*r

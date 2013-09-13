@@ -26,7 +26,7 @@ subroutine posvar(compor, ndim, vari, nume)
     implicit none
 !
 #include "asterfort/nvithm.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: compor(*)
     character(len=24) :: vari
     character(len=24) :: valk(2)
@@ -52,7 +52,7 @@ subroutine posvar(compor, ndim, vari, nume)
             goto 9999
         else if (vari(1:6).eq.'SATLIQ') then
             nume=0
-            call u2mesk('A', 'ALGORITH9_96', 1, thmc)
+            call utmess('A', 'ALGORITH9_96', sk=thmc)
             goto 9999
         endif
         else if ( ( thmc .eq. 'LIQU_VAPE' ) .or. ( thmc .eq.&
@@ -103,11 +103,11 @@ subroutine posvar(compor, ndim, vari, nume)
             nume=advihy
             goto 9999
         else if (vari(1:6).eq.'DPVP') then
-            call u2mesk('A', 'ALGORITH9_97', 1, thmc)
+            call utmess('A', 'ALGORITH9_97', sk=thmc)
             nume=0
             goto 9999
         else if (vari(1:6).eq.'SATLIQ') then
-            call u2mesk('A', 'ALGORITH9_96', 1, thmc)
+            call utmess('A', 'ALGORITH9_96', sk=thmc)
             nume=0
             goto 9999
         endif
@@ -335,7 +335,7 @@ subroutine posvar(compor, ndim, vari, nume)
                 nume=advime+6
                 goto 9999
             else
-                call u2mesk('A', 'ALGORITH9_99', 1, vari)
+                call utmess('A', 'ALGORITH9_99', sk=vari)
                 nume=0
             endif
         else if (vari(1:3).eq.'X23') then
@@ -344,7 +344,7 @@ subroutine posvar(compor, ndim, vari, nume)
                 goto 9999
             else
                 nume=0
-                call u2mesk('A', 'ALGORITH9_99', 1, vari)
+                call utmess('A', 'ALGORITH9_99', sk=vari)
             endif
 !----- DISTANCE NORMALISEE AU SEUIL DEVIATOIRE
         else if (vari(1:8).eq.'DIST_DEV') then
@@ -436,6 +436,6 @@ subroutine posvar(compor, ndim, vari, nume)
     if (nume .eq. -1) then
         valk(1) = vari
         valk(2) = meca
-        call u2mesk('A', 'ALGORITH10_1', 2, valk)
+        call utmess('A', 'ALGORITH10_1', nk=2, valk=valk)
     endif
 end subroutine

@@ -14,7 +14,7 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rslesd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ncha, nuord
     character(len=4) :: ctyp
@@ -93,12 +93,16 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
         call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n2)
         call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
                     k8b, ie)
-        if ((n2.eq.0) .and. (k8b(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_39')
+        if ((n2.eq.0) .and. (k8b(1:3).eq.'OUI')) then
+            call utmess('A', 'CALCULEL3_39')
+        endif
 !
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
         call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
                     k8b, ie)
-        if ((n3.eq.0) .and. (k8b(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_40')
+        if ((n3.eq.0) .and. (k8b(1:3).eq.'OUI')) then
+            call utmess('A', 'CALCULEL3_40')
+        endif
 !
         if (n3 .ne. 0) then
             call rcmfmc(materi, mate)
@@ -151,12 +155,12 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
                 call dismoi('F', 'NOM_MODELE', zk8(icha-1+i), 'CHARGE', ibid,&
                             k8b, ie)
                 if (k8b .ne. nomo) then
-                    call u2mess('F', 'CALCULEL3_41')
+                    call utmess('F', 'CALCULEL3_41')
                 endif
 30          continue
 !           VERIFICATION QUE LES CHARGES PORTENT SUR LE MODELE
             if (n1 .ne. 0 .and. modele .ne. nomo) then
-                call u2mess('F', 'CALCULEL3_42')
+                call utmess('F', 'CALCULEL3_42')
             endif
         endif
 !

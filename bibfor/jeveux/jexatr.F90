@@ -21,8 +21,7 @@ function jexatr(nomc, noma)
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomc, noma
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
@@ -51,36 +50,36 @@ function jexatr(nomc, noma)
     nom24 = nomc
     nomalu = noma
     if (nomalu .ne. 'LONCUM' .and. nomalu .ne. 'LONMAX' .and. nomalu .ne. 'LONUTI') then
-        call u2mesk('F', 'JEVEUX1_28', 1, nomalu)
+        call utmess('F', 'JEVEUX1_28', sk=nomalu)
     endif
     icre = 0
     call jjvern(nom24//'        ', icre, iret)
     if (iret .ne. 2) then
-        call u2mess('F', 'JEVEUX1_29')
+        call utmess('F', 'JEVEUX1_29')
     else
         call jjallc(iclaco, idatco, 'L', ibacol)
         if (nomalu .eq. 'LONCUM') then
             ixiadd = iszon ( jiszon + ibacol + idiadd )
             if (ixiadd .ne. 0) then
-                call u2mess('F', 'JEVEUX1_30')
+                call utmess('F', 'JEVEUX1_30')
             endif
             ixlono = iszon ( jiszon + ibacol + idlono )
             if (ixlono .eq. 0) then
-                call u2mesk('F', 'JEVEUX1_63', 1, 'LONCUM')
+                call utmess('F', 'JEVEUX1_63', sk='LONCUM')
             endif
             jexatr = nom24//ch8
             numatr = ixlono
         else if (nomalu .eq. 'LONMAX') then
             ixlong = iszon ( jiszon + ibacol + idlong )
             if (ixlong .eq. 0) then
-                call u2mesk('F', 'JEVEUX1_63', 1, 'LONMAX')
+                call utmess('F', 'JEVEUX1_63', sk='LONMAX')
             endif
             jexatr = nom24//ch8
             numatr = ixlong
         else if (nomalu .eq. 'LONUTI') then
             ixluti = iszon ( jiszon + ibacol + idluti )
             if (ixluti .eq. 0) then
-                call u2mesk('F', 'JEVEUX1_63', 1, 'LONUTI')
+                call utmess('F', 'JEVEUX1_63', sk='LONUTI')
             endif
             jexatr = nom24//ch8
             numatr = ixluti

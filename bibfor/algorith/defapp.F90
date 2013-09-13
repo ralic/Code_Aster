@@ -13,7 +13,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     real(kind=8) :: alpha
@@ -66,7 +66,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
     call getvem(ma, 'GROUP_NO', 'DEFORME', 'GROUP_NO_APPUI', 1,&
                 iarg, 0, k8b, ngap)
     if (ngst .ne. ngap) then
-        call u2mess('F', 'ALGORITH2_61')
+        call utmess('F', 'ALGORITH2_61')
     endif
 !
 ! TRAITEMENT DU GROUP_NO_STRUC
@@ -132,7 +132,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 80      continue
     endif
     if (nbno1 .ne. nbno2) then
-        call u2mess('F', 'ALGORITH2_62')
+        call utmess('F', 'ALGORITH2_62')
     endif
 !
     nbno = nbno1
@@ -153,7 +153,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
     if (tsca .ne. 'R') then
-        call u2mess('F', 'ALGORITH2_63')
+        call utmess('F', 'ALGORITH2_63')
     endif
     do 200 ino = 1, nbno
         noap = zi(jnoap-1+ino)

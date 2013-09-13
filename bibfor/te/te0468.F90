@@ -20,7 +20,7 @@ subroutine te0468(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vff2dn.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -70,7 +70,7 @@ subroutine te0468(option, nomte)
         valkm(1)=option
         valkm(2)=nomte
         valkm(3)='TE0468'
-        call u2mesk('F', 'CALCULEL7_2', 3, valkm)
+        call utmess('F', 'CALCULEL7_2', nk=3, valk=valkm)
     endif
 !    BOUCLE SUR LES CMP
     do 100 ifl = 1, nbflux

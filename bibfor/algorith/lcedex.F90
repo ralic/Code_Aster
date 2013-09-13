@@ -23,7 +23,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 #include "asterfort/nmedal.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, npg, lgpg
     real(kind=8) :: s(2), q(2, 2), dalfs(2, 2), alphap(2)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
@@ -200,7 +200,9 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
             det = h(1,1)*h(2,2) - h(1,2)**2
 !
-            if (abs(det) .le. 1.d-16) call u2mess('F', 'ALGORITH4_48')
+            if (abs(det) .le. 1.d-16) then
+                call utmess('F', 'ALGORITH4_48')
+            endif
 !
             dalfs(1,1) = h(2,2)/det
             dalfs(2,2) = h(1,1)/det

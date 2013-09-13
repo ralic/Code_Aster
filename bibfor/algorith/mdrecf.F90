@@ -20,8 +20,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 #include "asterfort/jeveut.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/trmult.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
     integer :: nexci, nexcir, neq, nbmode
@@ -82,7 +81,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     character(len=19) :: veasge, fonct, facce
     character(len=19) :: chamno, chamn2, nofk19, resu
     character(len=24) :: deeq, typeba
-    integer ::  jpsdel, npsdel, iipsdl
+    integer :: jpsdel, npsdel, iipsdl
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ib, ibid, iddeeq, ieq, ii, iinst, imod
@@ -144,7 +143,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
             else
 !           CAS D'UN NUME_ORDRE
 !           VERIF : LE NUME_ORDRE EST INFERIEUR AU NUME_ORDRE MAX
-                if (inum .gt. neq) call u2mess('F', 'ALGORITH5_76')
+                if (inum .gt. neq) then
+                    call utmess('F', 'ALGORITH5_76')
+                endif
                 inumor(i)=inum
                 idescf(i)=2
             endif
@@ -158,7 +159,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 idescf(i)=3
             else
 !           CAS D'UN NUME_ORDRE
-                if (inum .gt. neq) call u2mess('F', 'ALGORITH5_76')
+                if (inum .gt. neq) then
+                    call utmess('F', 'ALGORITH5_76')
+                endif
                 inumor(i)=inum
                 idescf(i)=4
             endif
@@ -176,7 +179,9 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 idescf(i)=1
             else
 !           CAS D'UN NUME_ORDRE
-                if (inum .gt. neq) call u2mess('F', 'ALGORITH5_76')
+                if (inum .gt. neq) then
+                    call utmess('F', 'ALGORITH5_76')
+                endif
                 inumor(i)=inum
                 idescf(i)=2
             endif
@@ -194,8 +199,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
                 if (nbv .eq. 0) then
                     ier =ier+1
-                    call u2mesg('E', 'ALGORITH13_46', 0, ' ', 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'ALGORITH13_46')
                     goto 10
                 endif
                 call trmult(modsta, i, mailla, neq, iddeeq,&
@@ -224,8 +228,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call getvid(' ', 'MODE_CORR', scal=modcor, nbret=nbv)
                 if (nbv .eq. 0) then
                     ier =ier+1
-                    call u2mesg('E', 'ALGORITH13_47', 0, ' ', 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'ALGORITH13_47')
                     goto 10
                 endif
                 call getvid('EXCIT', 'D_FONC_DT', iocc=i, scal=fonvit(i), nbret=n4)

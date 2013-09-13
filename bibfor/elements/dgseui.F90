@@ -4,9 +4,9 @@ subroutine dgseui(em, num, ef, nuf, eb,&
                   pelasf, icompr)
 !
     implicit none
+#include "asterfort/utmess.h"
 !
 ! PARAMETRES ENTRANTS
-#include "asterfort/u2mesr.h"
     integer :: icompr, icisai
     real(kind=8) :: em, num, ef, nuf, h
     real(kind=8) :: eb, nub, sytb, syc
@@ -64,7 +64,7 @@ subroutine dgseui(em, num, ef, nuf, eb,&
     if ((abs(syc) .gt. sycmax) .and. (icompr .eq. 1)) then
         rmesg(1) = syc
         rmesg(2) = sycmax
-        call u2mesr('F', 'ALGORITH6_2', 2, rmesg)
+        call utmess('F', 'ALGORITH6_2', nr=2, valr=rmesg)
     endif
 !
 ! - DEPLACEMENT A L'APPARITION DE L'ENDOMMAGEMENT

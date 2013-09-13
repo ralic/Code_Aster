@@ -79,9 +79,9 @@ subroutine dglrdm()
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: na
@@ -118,7 +118,7 @@ subroutine dglrdm()
 ! - DEFINITION DU NOMBRE DE NAPPE DANS L'EPAISSEUR
     call getfac('NAPPE', nnap)
     if (nnap .ne. 1) then
-        call u2mess('A', 'ALGORITH6_7')
+        call utmess('A', 'ALGORITH6_7')
     endif
 !
 ! - VARIABLE D IMPRESSION DES PARAMETRES GLRC_DM
@@ -145,7 +145,9 @@ subroutine dglrdm()
     r8b = 0.d0
     call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
                 5, nomres, valres, icodr2, 0)
-    if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) call u2mess('A', 'ALGORITH6_8')
+    if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
+        call utmess('A', 'ALGORITH6_8')
+    endif
 !
     eb = valres(1)
     nub = valres(2)
@@ -165,7 +167,9 @@ subroutine dglrdm()
     nomres(1) = 'SYT'
     call rcvale(mater, 'BETON_ECRO_LINE ', 0, k8b, [r8b],&
                 1, nomres, valres, icodr2, 0)
-    if (icodr2(1) .ne. 0) call u2mess('A', 'ALGORITH6_9')
+    if (icodr2(1) .ne. 0) then
+        call utmess('A', 'ALGORITH6_9')
+    endif
     sytb = valres(1)
 !
 ! - RECUPERATION DU PARAMETRE DE COMPRESSION SAISI PAR L'UTILISATEUR
@@ -198,7 +202,9 @@ subroutine dglrdm()
     call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
                 3, nomres, valres, icodr2, 0)
 !
-    if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) call u2mess('A', 'ALGORITH6_10')
+    if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) then
+        call utmess('A', 'ALGORITH6_10')
+    endif
     ea(ilit) = valres(1)
 !         NUA(ILIT)=VALRES(2) ON NE PREND PAS EN COMPTE L EFFET DE
 !         POISSON SUR LES ARMATURES
@@ -227,7 +233,7 @@ subroutine dglrdm()
     call getvr8('NAPPE', 'RX', iocc=ilit, scal=rx(ilit), nbret=ibid)
     call getvr8('NAPPE', 'RY', iocc=ilit, scal=ry(ilit), nbret=ibid)
     if ((omx(ilit) .ne. omy(ilit)) .or. (rx(ilit) .ne. ry(ilit))) then
-        call u2mess('A', 'ALGORITH6_6')
+        call utmess('A', 'ALGORITH6_6')
     endif
 ! Mise en coh�rence avec GLRC_DAMAGE
 ! D�veloppement fait pour -0.5<RX<0.5
@@ -271,7 +277,9 @@ subroutine dglrdm()
         call getvr8(' ', 'EPSI_MEMB', scal=emaxm, nbret=ibid1)
         call getvr8(' ', 'KAPPA_FLEX', scal=emaxf, nbret=ibid1)
     else if (pente .eq. 'PLAS_ACIER') then
-        if (sya(ilit) .le. 0.d0) call u2mess('F', 'ALGORITH6_11')
+        if (sya(ilit) .le. 0.d0) then
+            call utmess('F', 'ALGORITH6_11')
+        endif
         ipente = 2
     else if (pente .eq. 'RIGI_ACIER') then
         ipente = 1

@@ -2,7 +2,7 @@ function nbsigm()
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbsigm
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -29,7 +29,9 @@ function nbsigm()
     integer :: iret
 !
     call teattr(' ', 'C', 'NBSIGM', nbsig, iret)
-    if (iret .ne. 0) call u2mess('F', 'ELEMENTS_90')
+    if (iret .ne. 0) then
+        call utmess('F', 'ELEMENTS_90')
+    endif
 !
 !
     if (nbsig .eq. 'X4') then

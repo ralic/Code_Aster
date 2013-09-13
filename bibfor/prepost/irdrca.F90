@@ -10,7 +10,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ifi, nbno, desc(*), nec, dg(*), ncmpmx, numnoe(*), nbcput, nive
     real(kind=8) :: vale(*)
@@ -95,8 +95,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 32          continue
             valk (1) = ncmput(icm)
             valk (2) = nomgd
-            call u2mesg('A', 'PREPOST5_25', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('A', 'PREPOST5_25', nk=2, valk=valk)
 30      continue
     else
         do 2 icmp = 1, ncmpmx

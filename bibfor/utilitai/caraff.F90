@@ -21,9 +21,7 @@ subroutine caraff(noma, gran, base, cartz)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/tecart.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=1) :: base
     character(len=8) :: noma, gran
@@ -52,7 +50,7 @@ subroutine caraff(noma, gran, base, cartz)
 !-----------------------------------------------------------------------
     integer :: gd, ibid, ied, nocc, ncmpmx, nbtou, n1, vali(2)
     integer :: iad, jncmp, jvalv, jmail, nbcmp, k, iocc, nbmail, nbvar
-    real(kind=8) ::  rvid
+    real(kind=8) :: rvid
     character(len=8) :: k8b, tsca, typmcl(2)
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: carte
@@ -60,9 +58,13 @@ subroutine caraff(noma, gran, base, cartz)
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    if (noma .eq. ' ') call u2mess('F', 'UTILITAI_10')
+    if (noma .eq. ' ') then
+        call utmess('F', 'UTILITAI_10')
+    endif
 !
-    if (gran .eq. 'VARI_R') call u2mess('F', 'UTILITAI_11')
+    if (gran .eq. 'VARI_R') then
+        call utmess('F', 'UTILITAI_11')
+    endif
 !
     call dismoi('F', 'TYPE_SCA', gran, 'GRANDEUR', ibid,&
                 tsca, ied)
@@ -103,10 +105,14 @@ subroutine caraff(noma, gran, base, cartz)
     do 30 iocc = 1, nocc
 !
         call getvtx(motclf, 'NOEUD', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) call u2mess('F', 'UTILITAI_12')
+        if (n1 .ne. 0) then
+            call utmess('F', 'UTILITAI_12')
+        endif
 !
         call getvtx(motclf, 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .ne. 0) call u2mess('F', 'UTILITAI_13')
+        if (n1 .ne. 0) then
+            call utmess('F', 'UTILITAI_13')
+        endif
 !
         call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbcmp)
 !
@@ -119,16 +125,16 @@ subroutine caraff(noma, gran, base, cartz)
         else if (tsca.eq.'K8') then
             call getvid(motclf, 'VALE_F', iocc=iocc, nbval=0, nbret=nbvar)
         else
-            call u2mesk('F', 'UTILITAI_14', 1, tsca)
+            call utmess('F', 'UTILITAI_14', sk=tsca)
         endif
 !
 !       TEST SUR LES DONNEES INTRODUITES
         if (nbvar .ne. nbcmp) then
-            call u2mess('F', 'UTILITAI_15')
+            call utmess('F', 'UTILITAI_15')
         else if (-nbvar.gt.ncmpmx) then
             vali(1)=-nbvar
             vali(2)=ncmpmx
-            call u2mesi('F', 'UTILITAI_8', 2, vali)
+            call utmess('F', 'UTILITAI_8', ni=2, vali=vali)
         else
             nbcmp = -nbcmp
             nbvar = -nbvar

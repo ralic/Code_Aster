@@ -28,7 +28,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
 #include "asterfort/assert.h"
 #include "asterfort/chloet.h"
 #include "asterfort/contex.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: stopz, nmparz, louez
     character(len=8) :: nompar, stop8
     character(len=1) :: loue
@@ -164,7 +164,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
         if (stpcat) then
             valk(1) = nompar
             valk(2) = option
-            call u2mesk('E', 'CALCULEL2_69', 2, valk)
+            call utmess('E', 'CALCULEL2_69', nk=2, valk=valk)
             call contex(option, ' ')
         endif
         iret = 1
@@ -215,9 +215,9 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
             valk(2) = option
             valk(3) = nomte
             if (nompar(1:5) .eq. 'PVARC') then
-                call u2mesk('F', 'CALCULEL4_10', 3, valk)
+                call utmess('F', 'CALCULEL4_10', nk=3, valk=valk)
             else
-                call u2mesk('E', 'CALCULEL4_95', 3, valk)
+                call utmess('E', 'CALCULEL4_95', nk=3, valk=valk)
                 call contex(option, nompar)
             endif
 !
@@ -228,7 +228,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
                 valk(1) = nompar
                 valk(2) = option
                 valk(3) = nomte
-                call u2mesk('E', 'CALCULEL2_70', 3, valk)
+                call utmess('E', 'CALCULEL2_70', nk=3, valk=valk)
                 call contex(option, nompar)
             endif
         endif
@@ -238,7 +238,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
                 valk(1) = nompar
                 valk(2) = option
                 valk(3) = nomte
-                call u2mesk('E', 'CALCULEL2_70', 3, valk)
+                call utmess('E', 'CALCULEL2_70', nk=3, valk=valk)
                 call contex(option, nompar)
             endif
         else
@@ -294,7 +294,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
                 valk(1) = nompar
                 valk(2) = option
                 valk(3) = nomte
-                call u2mesk('E', 'CALCULEL4_96', 3, valk)
+                call utmess('E', 'CALCULEL4_96', nk=3, valk=valk)
                 call contex(option, nompar)
             else
                 iret = 3

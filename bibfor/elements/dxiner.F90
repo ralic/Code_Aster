@@ -6,7 +6,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elref4.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
     integer :: nnoe
@@ -213,7 +213,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
 90  end do
 !
     if (abs(aire) .lt. r8prem()) then
-        call u2mess('F', 'ELEMENTS_48')
+        call utmess('F', 'ELEMENTS_48')
     endif
 !
     s1 = un/aire

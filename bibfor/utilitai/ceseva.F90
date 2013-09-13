@@ -19,7 +19,6 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
@@ -34,9 +33,9 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: npara
     character(len=*) :: cesf, lpara(npara), cesr
 ! ---------------------------------------------------------------------
@@ -98,7 +97,9 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !
     call dismoi('F', 'TYPE_SCA', nomgdf, 'GRANDEUR', ib,&
                 tsca, ib)
-    if (tsca .ne. 'K8') call u2mess('F', 'UTILITAI_16')
+    if (tsca .ne. 'K8') then
+        call utmess('F', 'UTILITAI_16')
+    endif
 !
 !     2- ALLOCATION DU CHAM_ELEM_S RESULTAT ET RECUPERATION
 !        DES ADRESSES DE SES OBJETS   :
@@ -129,8 +130,12 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !
     call dismoi('F', 'TYPE_SCA', nomgd2, 'GRANDEUR', ib,&
                 tsca, ib)
-    if (tsca .ne. 'R') call u2mess('F', 'UTILITAI_17')
-    if (ma2 .ne. ma) call u2mess('F', 'UTILITAI_18')
+    if (tsca .ne. 'R') then
+        call utmess('F', 'UTILITAI_17')
+    endif
+    if (ma2 .ne. ma) then
+        call utmess('F', 'UTILITAI_18')
+    endif
     zi(jad1-1+4* (ipara-1)+1) = jpc
     zi(jad1-1+4* (ipara-1)+2) = jpd
     zi(jad1-1+4* (ipara-1)+3) = jpl
@@ -189,7 +194,9 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !                    PLUSIEURS FOIS:
     ibid=indik8(zk8(jnompu),zk8(jpc-1+k2),1,&
                             nbpu-1)
-    if (ibid .gt. 0) call u2mesk('F', 'CALCULEL2_78', 1, zk8(jpc-1+k2))
+    if (ibid .gt. 0) then
+        call utmess('F', 'CALCULEL2_78', sk=zk8(jpc-1+k2))
+    endif
 !
     zk8(jnompu-1+nbpu) = zk8(jpc-1+k2)
     zr(jvalpu-1+nbpu) = zr(jpv-1+iadp)
@@ -202,9 +209,9 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     call fointe('E', fo, nbpu, zk8(jnompu), zr(jvalpu),&
                 x, ier)
     if (ier .ne. 0) then
-        call u2mesk('F+', 'FONCT0_9', 1, fo)
+        call utmess('F+', 'FONCT0_9', sk=fo)
         call jenuno(jexnum(ma//'.NOMMAI', ima), valk)
-        call u2mesk('F', 'FONCT0_10', 1, valk)
+        call utmess('F', 'FONCT0_10', sk=valk)
     endif
 !
 !           4.3 STOCKAGE DU RESULTAT :

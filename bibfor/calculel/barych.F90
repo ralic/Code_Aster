@@ -25,7 +25,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/vtcopy.h"
     character(len=*) :: ch1z, ch2z, chz
@@ -132,7 +132,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
  6              continue
             endif
         else
-            call u2mess('F', 'CALCULEL_27')
+            call utmess('F', 'CALCULEL_27')
         endif
     endif
 !

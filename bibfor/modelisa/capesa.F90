@@ -37,7 +37,7 @@ subroutine capesa(char, noma, ipesa, ndim)
 #include "asterfort/mecact.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vetyma.h"
     real(kind=8) :: pesa(4), norme, pes(3)
     complex(kind=8) :: cbid
@@ -65,7 +65,7 @@ subroutine capesa(char, noma, ipesa, ndim)
             pesa(3)=pes(2)/norme
             pesa(4)=pes(3)/norme
         else
-            call u2mess('F', 'CHARGES2_53')
+            call utmess('F', 'CHARGES2_53')
         endif
 !
         call getvtx('PESANTEUR', 'MAILLE', iocc=iocc, scal=k8b, nbret=nbmail)

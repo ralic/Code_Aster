@@ -35,7 +35,7 @@ subroutine rfnoch()
 #include "asterfort/jeveuo.h"
 #include "asterfort/ordonn.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
     integer :: ifm, niv
     integer :: ibid, n, nc, ng, int, ind, nsst, iret
@@ -77,11 +77,11 @@ subroutine rfnoch()
         call utnono(' ', noma, 'NOEUD', nogno, noeud,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogno)
+            call utmess('F', 'ELEMENTS_67', sk=nogno)
         else if (iret.eq.1) then
             valk(1) = nogno
             valk(2) = noeud
-            call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
 !
         call focrch(nomfon, resu, noeud, parax, paray,&

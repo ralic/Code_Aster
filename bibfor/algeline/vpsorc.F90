@@ -103,9 +103,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 #include "jeveux.h"
 #include "asterfort/mcmult.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpordc.h"
 #include "asterfort/znaupd.h"
 #include "asterfort/zneupd.h"
@@ -188,22 +186,22 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! GESTION DES FLAGS D'ERREURS
     if ((info.eq.1) .and. (niv.ge.1)) then
         vali (1) = maxitr
-        call u2mesi('I', 'ALGELINE6_89', 1, vali)
+        call utmess('I', 'ALGELINE6_89', si=vali(1))
     else if (info.eq.2) then
-        call u2mess('F', 'ALGELINE3_72')
+        call utmess('F', 'ALGELINE3_72')
     else if ((info.eq.3).and.(niv.ge.1)) then
-        call u2mess('I', 'ALGELINE6_90')
+        call utmess('I', 'ALGELINE6_90')
     else if (info.eq.-7) then
-        call u2mess('F', 'ALGELINE3_73')
+        call utmess('F', 'ALGELINE3_73')
     else if (info.eq.-8) then
-        call u2mess('F', 'ALGELINE3_74')
+        call utmess('F', 'ALGELINE3_74')
     else if (info.eq.-9) then
-        call u2mess('F', 'ALGELINE3_75')
+        call utmess('F', 'ALGELINE3_75')
     else if ((info.eq.-9999).and.(niv.ge.1)) then
-        call u2mess('I', 'ALGELINE6_91')
+        call utmess('I', 'ALGELINE6_91')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesi('F', 'ALGELINE4_82', 1, vali)
+        call utmess('F', 'ALGELINE4_82', si=vali(1))
     endif
 !
 ! GESTION DES MODES CONVERGES
@@ -214,8 +212,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         vali (4) = nbvect
         vali (5) = maxitr
         valr = tolsor
-        call u2mesg('E', 'ALGELINE5_49', 0, ' ', 5,&
-                    vali, 1, valr)
+        call utmess('E', 'ALGELINE5_49', ni=5, vali=vali, sr=valr)
         flage = .true.
     endif
 !
@@ -292,18 +289,18 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! GESTION DES FLAGS D'ERREURS
     if (info .eq. 1) then
-        call u2mess('F', 'ALGELINE3_74')
+        call utmess('F', 'ALGELINE3_74')
     else if (info.eq.-7) then
-        call u2mess('F', 'ALGELINE3_73')
+        call utmess('F', 'ALGELINE3_73')
     else if (info.eq.-8) then
-        call u2mess('F', 'ALGELINE3_76')
+        call utmess('F', 'ALGELINE3_76')
     else if (info.eq.-9) then
-        call u2mess('F', 'ALGELINE3_77')
+        call utmess('F', 'ALGELINE3_77')
     else if (info.eq.-14) then
-        call u2mess('F', 'ALGELINE3_78')
+        call utmess('F', 'ALGELINE3_78')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesi('F', 'ALGELINE4_82', 1, vali)
+        call utmess('F', 'ALGELINE4_82', si=vali(1))
     endif
 !--------------------------------------------------------------------
 ! TESTS ET POST-TRAITEMENTS

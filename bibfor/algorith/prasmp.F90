@@ -59,7 +59,6 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -74,7 +73,8 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 #include "asterfort/maxblc.h"
 #include "asterfort/maxblo.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
 !
 !
     character(len=8) :: modgen, nomprn, nommcl, kbid
@@ -166,8 +166,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
             call jeexin(knombl(ibl1), iret)
             if (iret .eq. 0) then
                 valk = nommcl
-                call u2mesg('F', 'ALGORITH13_99', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH13_99', sk=valk)
             endif
         endif
 !

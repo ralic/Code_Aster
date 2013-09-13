@@ -87,9 +87,8 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 #include "asterfort/tldlr8.h"
 #include "asterfort/tlduc8.h"
 #include "asterfort/tldur8.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ualfcr.h"
+#include "asterfort/utmess.h"
     character(len=1) :: codmes
     character(len=19) :: noma19, ligrel, stolci, solvop
     character(len=14) :: nu
@@ -120,7 +119,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !
 !
     if (metres .ne. 'LDLT' .and. metres .ne. 'MULT_FRONT' .and. metres .ne. 'MUMPS') then
-        call u2mess('F', 'ALGELINE4_1')
+        call utmess('F', 'ALGELINE4_1')
     endif
 !
 !     -- DDLS ELIMINES :
@@ -408,8 +407,8 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
             ASSERT(.false.)
         endif
     endif
-    call u2mesg(codmes, 'FACTOR_10', 7, valk, 2,&
-                vali, 0, 0.d0)
+    call utmess(codmes, 'FACTOR_10', nk=7, valk=valk, ni=2,&
+                vali=vali)
 !
 !
 20  continue

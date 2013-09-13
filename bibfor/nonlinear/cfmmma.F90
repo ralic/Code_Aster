@@ -25,7 +25,7 @@ subroutine cfmmma(defico, resoco)
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: defico, resoco
 !
@@ -86,7 +86,7 @@ subroutine cfmmma(defico, resoco)
 !
 ! --- AFFICHAGE
 !
-    call u2mesi('I', 'MECANONLINE6_5', 1, ntnoec)
+    call utmess('I', 'MECANONLINE6_5', si=ntnoec)
 !
     call jedema()
 end subroutine

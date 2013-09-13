@@ -2,7 +2,6 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
@@ -20,9 +19,9 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/nopar2.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: base
     character(len=8) :: carael
     character(len=19) :: chreel, chimag
@@ -74,7 +73,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         if (ier .ne. 0) then
             typch='CHML'
         else
-            call u2mess('F', 'CALCULEL_17')
+            call utmess('F', 'CALCULEL_17')
         endif
     endif
 !
@@ -89,7 +88,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     endif
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     if ((nomgd(7:7).ne.' ') .or. (nomgd(5:6).ne.'_C')) then
-        call u2mesk('F', 'CALCULEL4_80', 1, nomgd)
+        call utmess('F', 'CALCULEL4_80', sk=nomgd)
     endif
     nomre=nomgd(1:4)//'_R'
     call jenonu(jexnom('&CATA.GD.NOMGD', nomre), gdre)
@@ -100,7 +99,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     if (nmax1 .ne. nmax2) then
         valk(1) = nomgd
         valk(2) = nomre
-        call u2mesk('F', 'CALCULEL4_81', 2, valk)
+        call utmess('F', 'CALCULEL4_81', nk=2, valk=valk)
     endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gdre), 'L', jncmpr)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jncmpc)
@@ -115,7 +114,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     if (ier .ne. 0) then
         valk(1) = nomgd
         valk(2) = nomre
-        call u2mesk('F', 'CALCULEL4_82', 2, valk)
+        call utmess('F', 'CALCULEL4_82', nk=2, valk=valk)
     endif
 !
 !     -- CHAM_NO :

@@ -31,7 +31,7 @@ subroutine hypinc(fami, kpg, ksp, poum, ndim,&
 #include "asterfort/hypcpd.h"
 #include "asterfort/hypmat.h"
 #include "asterfort/matini.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/dscal.h"
     integer :: kpg, ksp, ndim
     character(len=*) :: fami, poum
@@ -222,7 +222,7 @@ subroutine hypinc(fami, kpg, ksp, poum, ndim,&
 60          continue
 70      continue
     else
-        call u2mesk('F', 'ELASHYPER_97', 1, typmod(1))
+        call utmess('F', 'ELASHYPER_97', sk=typmod(1))
     endif
 !
 ! --- POST-TRAITEMENT DES CONTRAINTES (PAS DE NOTATION DE VOIGT)

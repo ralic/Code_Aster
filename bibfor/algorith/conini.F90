@@ -69,7 +69,6 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
@@ -77,8 +76,8 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: io8gco, nbgco, igco
     integer :: imigma, igma
     integer :: nbmag, imag
@@ -106,9 +105,9 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !-----------------------------------------------------------------------
 !     TYPES VALIDES POUR LES MAILLES DE REFERENCE
 #define valid() (cas2d .and. (ktyr(:4).eq.'TRIA'.or.ktyc(: \
-        4).eq.'QUAD')) .or. (cas3d .and. \
-        (ktyr(:5).eq.'PENTA'.or.ktyr(:4).eq.'HEXA'.or.ktyr(: \
-        5).eq.'PYRAM'.or.ktyr(:5).eq.'TETRA'))
+    4).eq.'QUAD')) .or. (cas3d .and. \
+    (ktyr(:5).eq.'PENTA'.or.ktyr(:4).eq.'HEXA'.or.ktyr(: \
+    5).eq.'PYRAM'.or.ktyr(:5).eq.'TETRA'))
 !
 !
     inval=.false.
@@ -144,7 +143,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     TRAITEMENT DU CAS DE NON-EXISTENCE
 !     ------------------------------------------------------------------
-            call u2mesk('I', 'ALGORITH2_26', 1, zk24(io8gco+igco-1))
+            call utmess('I', 'ALGORITH2_26', sk=zk24(io8gco+igco-1))
 !
         else
 !     ------------------------------------------------------------------
@@ -191,7 +190,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
                     inval=.true.
                     valk(1)=kmac
                     valk(2)=ktyc
-                    call u2mesk('E', 'ALGORITH2_27', 2, valk)
+                    call utmess('E', 'ALGORITH2_27', nk=2, valk=valk)
                 endif
 !
 !     ------------------------------------------------------------------
@@ -215,7 +214,9 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
         endif
 !     ------------------------------------------------------------------
 60  end do
-    if (inval) call u2mess('F', 'ALGORITH2_28')
+    if (inval) then
+        call utmess('F', 'ALGORITH2_28')
+    endif
 !
     if (cas2d .and. cas3d) then
         if (ierr .eq. 0) then
@@ -224,7 +225,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
             goto 30
 !
         else
-            call u2mess('F', 'ALGORITH2_29')
+            call utmess('F', 'ALGORITH2_29')
         endif
     endif
     if (cas2d) itest=2

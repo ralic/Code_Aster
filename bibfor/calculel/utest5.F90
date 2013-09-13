@@ -3,9 +3,9 @@ subroutine utest5(cham19, nomail, nocmp, tbtxt, refi,&
                   ific, llab)
     implicit none
 #include "asterfort/dismoi.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utchca.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
     integer :: refi, ific
     real(kind=8) :: refr, epsi
     character(len=*) :: cham19, nomail, typres, nocmp, crit
@@ -53,7 +53,9 @@ subroutine utest5(cham19, nomail, nocmp, tbtxt, refi,&
 !     ------------------------------------------------------------------
     call dismoi('F', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
                 tych, ie)
-    if (tych .ne. 'CART') call u2mesk('F', 'CALCULEL3_90', 1, cham19)
+    if (tych .ne. 'CART') then
+        call utmess('F', 'CALCULEL3_90', sk=cham19)
+    endif
 !
     call dismoi('F', 'NOM_MAILLA', cham19, 'CARTE', ibid,&
                 nomma, ie)

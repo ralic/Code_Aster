@@ -28,8 +28,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxcaps.h"
 #include "asterfort/matrot.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -140,7 +139,9 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
     call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
                 k8bid, ier)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+        call utmess('F', 'CHARGES2_6')
+    endif
 !
 ! - Loop on factor keyword
 !

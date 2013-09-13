@@ -30,7 +30,7 @@ subroutine op0092()
 #include "asterfort/simono.h"
 #include "asterfort/simult.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: monmot
 !     ------------------------------------------------------------------
 !
@@ -42,7 +42,7 @@ subroutine op0092()
     call getvr8(' ', 'DIRECTION', nbval=0, nbret=nbd)
     nbdir = -nbd
     if (nbdir .ne. 3 .and. nbdir .ne. 6) then
-        call u2mess('F', 'ALGELINE2_76')
+        call utmess('F', 'ALGELINE2_76')
     endif
 !
 !     SEISME ????

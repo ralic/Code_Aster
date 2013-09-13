@@ -17,7 +17,7 @@ subroutine ntdomt(parmer)
 ! ======================================================================
     implicit none
 #include "asterfort/getvr8.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: parmer(1)
 ! ----------------------------------------------------------------------
 ! SAISIE DES PARAMETRES DE LA METHODE DE RESOLUTION
@@ -33,7 +33,7 @@ subroutine ntdomt(parmer)
 !-----------------------------------------------------------------------
     call getvr8(' ', 'PARM_THETA', scal=theta, nbret=n1)
     if ((theta.lt.0.0d0) .or. (theta.gt.1.0d0)) then
-        call u2mess('F', 'ALGORITH9_4')
+        call utmess('F', 'ALGORITH9_4')
     endif
     parmer(1) = theta
 !

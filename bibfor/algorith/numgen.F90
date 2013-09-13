@@ -32,7 +32,6 @@ subroutine numgen(nugene, modgen)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/iunifi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -48,8 +47,9 @@ subroutine numgen(nugene, modgen)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
     integer :: lddelg
@@ -218,8 +218,7 @@ subroutine numgen(nugene, modgen)
             pbcone=.true.
             call jenuno(jexnum(nomsst, nusst), sst1)
             valk=sst1
-            call u2mesg('E', 'ALGORITH13_75', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'ALGORITH13_75', sk=valk)
         endif
         call jecroc(jexnum('&&'//pgc//'.SST.LIA', i))
         call jeveuo(jexnum('&&'//pgc//'.SST.LIA', i), 'E', ltsst)
@@ -232,8 +231,7 @@ subroutine numgen(nugene, modgen)
 50  end do
 !
     if (pbcone) then
-        call u2mesg('F', 'ALGORITH13_76', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_76')
     endif
 !
     call jedetr('&&'//pgc//'.LIA.SST')

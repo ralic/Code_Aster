@@ -9,8 +9,7 @@ subroutine te0539(option, nomte)
 #include "asterfort/rcangm.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xnmel.h"
 #include "asterfort/xnmgr.h"
 #include "asterfort/xnmpl.h"
@@ -234,7 +233,7 @@ subroutine te0539(option, nomte)
 !      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
         if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
             if (zk16(icompo+2) (6:10) .eq. '_REAC') then
-                call u2mess('F', 'XFEM_50')
+                call utmess('F', 'XFEM_50')
 !            DO 20 I = 1,3*NNO
 ! --- ATTENTION, UTILISER PETIT_REAC EST FAUX CAR IL FAUT AUSSI
 ! --- REACTUALISER LA GEOMETRIE DES POINTS D'INTERSECTION ZR(JPINTT)
@@ -267,7 +266,7 @@ subroutine te0539(option, nomte)
                        ivectu, codret, jpmilt)
 !
         else
-            call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+            call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif
 !
 !       ELSE

@@ -18,7 +18,6 @@ subroutine te0595(option, nomte)
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elref4.h"
@@ -32,7 +31,8 @@ subroutine te0595(option, nomte)
 #include "asterfort/rcangm.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DES FORCES INTERNES POUR LES ELEMENTS
@@ -64,8 +64,10 @@ subroutine te0595(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
+                npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
+                npg, iw, ivf1, idf1, jgn)
     matsym = .true.
 !
 ! - TYPE DE MODELISATION
@@ -76,7 +78,7 @@ subroutine te0595(option, nomte)
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
     else
-        call u2mesk('F', 'ELEMENTS_34', 1, nomte)
+        call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
     typmod(2) = '        '
     codret = 0
@@ -144,27 +146,35 @@ subroutine te0595(option, nomte)
             endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
             nddl = nno1*ndim + nno2
 !
-            call nufipd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1,&
-                        vu, vp, zr(igeom), typmod, option, zi(imate), zk16(icompo), lgpg,&
-                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angmas,&
-                        zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), resi, rigi, mini,&
-                        zr(ivectu), zr(imatuu), codret)
+            call nufipd(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
+                        zr(igeom), typmod, option, zi(imate), zk16(icompo),&
+                        lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
+                        zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
+                        zr(ivarip), resi, rigi, mini, zr(ivectu),&
+                        zr(imatuu), codret)
         else if (lteatt(' ','INCO','C2PDO')) then
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, nno2, vu, vg, vp,&
+                        vpi)
             nddl = nno1*ndim + nno2 + nno2*ndim
 !
-            call nofipd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
-                      vu, vp, vpi, zr(igeom), typmod, option, nomte, zi(imate), zk16(icompo), lgpg,&
-                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angmas,&
-                        zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), resi, rigi,&
-                        zr(ivectu), zr(imatuu), codret)
+            call nofipd(ndim, nno1, nno2, nno2, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
+                        vu, vp, vpi, zr(igeom), typmod,&
+                        option, nomte, zi(imate), zk16(icompo), lgpg,&
+                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
+                        angmas, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip),&
+                        resi, rigi, zr(ivectu), zr(imatuu), codret)
         else
             valk = zk16(icompo+2)
-            call u2mesk('F', 'MODELISA10_17', 1, valk)
+            call utmess('F', 'MODELISA10_17', sk=valk)
         endif
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
 ! - PARAMETRES EN SORTIE
@@ -177,21 +187,25 @@ subroutine te0595(option, nomte)
         if (lteatt(' ','INCO','C2LG ')) then
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0,&
+                        nno2, 0, vu, vg, vp,&
+                        vpi)
             nddl = nno1*ndim + nno2
 !
-            call nufilg(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1,&
-                        vu, vp, zr(igeom), typmod, option, zi(imate), zk16(icompo), lgpg,&
-                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angmas,&
-                        zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), resi, rigi,&
-                        zr(ivectu), zr(imatuu), matsym, codret)
+            call nufilg(ndim, nno1, nno2, npg, iw,&
+                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
+                        zr(igeom), typmod, option, zi(imate), zk16(icompo),&
+                        lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
+                        zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
+                        zr(ivarip), resi, rigi, zr(ivectu), zr(imatuu),&
+                        matsym, codret)
 !
         else
             valk = zk16(icompo+2)
-            call u2mesk('F', 'MODELISA10_17', 1, valk)
+            call utmess('F', 'MODELISA10_17', sk=valk)
         endif
     else
-        call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+        call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
     endif
 !
     if (resi) then

@@ -18,8 +18,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/megeom.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: modele
     character(len=19) :: chin, cesout, cespoi
@@ -68,7 +67,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
     character(len=19) :: chins
     character(len=24) :: ligrel, chgeom, lchin(nbchin), lchout(2), vefch1
     character(len=24) :: vefch2
-    logical :: peecal,ltest
+    logical :: peecal, ltest
 !
     call jemarq()
 !
@@ -121,18 +120,17 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                 if (zk16(jch1+ima-1) .eq. ' ') goto 5
 !           -- IL NE FAUT VERIFIER QUE LES MAILLES POSTRAITEES:
                 ltest = .false.
-                if (peecal)then
-                    if (zi(indma+ima-1).eq.1) ltest=.true.
+                if (peecal) then
+                    if (zi(indma+ima-1) .eq. 1) ltest=.true.
                 endif
-                if((.not.peecal) .or. ltest) then
+                if ((.not.peecal) .or. ltest) then
 !           -- SI LE CHAMP COOR_ELGA N'EST PAS CALCULE ON S'ARRETE:
                     if (zk16(jch2+ima-1) .eq. ' ') then
                         valk=zk16(jch1+ima-1)(1:8)
-                        call u2mesg('F', 'UTILITAI8_63', 1, valk, 1,&
-                                    ima, 0, 0.d0)
+                        call utmess('F', 'UTILITAI8_63', sk=valk, si=ima)
                     endif
                     if (zk16(jch1+ima-1) .ne. zk16(jch2+ima-1)) then
-                        call u2mesk('F', 'CALCULEL2_4', 1, zk16(jch1+ima- 1))
+                        call utmess('F', 'CALCULEL2_4', sk=zk16(jch1+ima- 1))
                     endif
                 endif
  5          continue
@@ -176,9 +174,9 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
             do 11 ima = 1, nbma
                 ltest = .false.
                 if (peecal) then
-                    if (zi(indma+ima-1).eq.1) ltest=.true.
+                    if (zi(indma+ima-1) .eq. 1) ltest=.true.
                 endif
-                if((.not.peecal) .or. ltest)then
+                if ((.not.peecal) .or. ltest) then
                     nbpt=zi(jpoid-1+5+4*(ima-1)+1)
                     do 21 ipt = 1, nbpt
                         call cesexi('C', jpoid, jpoil, ima, ipt,&

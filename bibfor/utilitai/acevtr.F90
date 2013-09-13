@@ -20,7 +20,6 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -32,7 +31,8 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/testli.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=24) :: noms(*)
     character(len=8) :: nomo, noma
     integer :: ityp, nn, idim, itab(*)
@@ -66,7 +66,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
         if (nbgrel .le. 0) then
-            call u2mess('F', 'UTILITAI_1')
+            call utmess('F', 'UTILITAI_1')
         endif
         nomodl=' '
         ierr=0
@@ -100,6 +100,8 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
 20  continue
 !     IF (IERR.EQ.1)  WRITE(*,*) 'KMAI',KMAI,'IGREL',IGREL,
 !    .       'NOMODL',NOMODL,'CHAINE',CHAINE
-    if (ierr .eq. 1) call u2mess('F', 'UTILITAI_2')
+    if (ierr .eq. 1) then
+        call utmess('F', 'UTILITAI_2')
+    endif
     call jedema()
 end subroutine

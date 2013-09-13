@@ -11,8 +11,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/meharm.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iret, nh
     character(len=*) :: option, modele, cara
     character(len=*) :: chgeoz, chcara(*), chharz
@@ -84,11 +83,13 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                     call jeexin(nomacr//'.MAEL_MASS_VALE', iexi)
                     if (iexi .eq. 0) then
                         ier=ier+1
-                        call u2mesk('E', 'CALCULEL3_31', 1, nomacr)
+                        call utmess('E', 'CALCULEL3_31', sk=nomacr)
                     endif
                 endif
 10          continue
-            if (ier .gt. 0) call u2mess('F', 'CALCULEL3_32')
+            if (ier .gt. 0) then
+                call utmess('F', 'CALCULEL3_32')
+            endif
         else if (option(1:9).eq.'RIGI_MECA') then
             do 20 ima = 1, nbsma
                 if (zi(iasssa-1+ima) .eq. 1) then
@@ -96,12 +97,12 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                     call jeexin(nomacr//'.MAEL_RAID_VALE', iexi)
                     if (iexi .eq. 0) then
                         ier=ier+1
-                        call u2mesk('E', 'CALCULEL3_33', 1, nomacr)
+                        call utmess('E', 'CALCULEL3_33', sk=nomacr)
                     endif
                 endif
 20          continue
             if (ier .gt. 0) then
-                call u2mess('F', 'CALCULEL3_34')
+                call utmess('F', 'CALCULEL3_34')
             endif
         else if (option(1:9).eq.'AMOR_MECA') then
             do 30 ima = 1, nbsma
@@ -110,11 +111,13 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
                     call jeexin(nomacr//'.MAEL_AMOR_VALE', iexi)
                     if (iexi .eq. 0) then
                         ier=ier+1
-                        call u2mesk('E', 'CALCULEL6_80', 1, nomacr)
+                        call utmess('E', 'CALCULEL6_80', sk=nomacr)
                     endif
                 endif
 30          continue
-            if (ier .gt. 0) call u2mess('F', 'CALCULEL6_81')
+            if (ier .gt. 0) then
+                call utmess('F', 'CALCULEL6_81')
+            endif
         endif
     endif
 !
@@ -126,7 +129,9 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
     else
         iret=1
     endif
-    if (iret .eq. 1 .and. nbss .eq. 0) call u2mess('F', 'CALCULEL3_35')
+    if (iret .eq. 1 .and. nbss .eq. 0) then
+        call utmess('F', 'CALCULEL3_35')
+    endif
 !
 !     --- SI IL N'Y A PAS D'ELEMENTS, ON SORT :
     if (iret .eq. 1) goto 40

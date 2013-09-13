@@ -42,11 +42,9 @@ subroutine execop()
 #include "asterfort/op9999.h"
 #include "asterfort/opsexe.h"
 #include "asterfort/sigusr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utexcm.h"
 #include "asterfort/utgtme.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
 #include "asterfort/uttcpg.h"
     mpi_int :: mpicow, mpicou
@@ -107,7 +105,7 @@ subroutine execop()
                 k8tab(1) = 'RLQ_MEM'
                 k8tab(2) = 'LIMIT_JV'
                 call utgtme(2, k8tab, rval, iret2)
-                call u2mesr('I', 'JEVEUX1_74', 2, rval)
+                call utmess('I', 'JEVEUX1_74', nr=2, valr=rval)
             endif
         endif
     endif
@@ -127,8 +125,7 @@ subroutine execop()
     else if (nuoper.lt. 200) then
         call ex0100(nuoper)
     else if (nuoper.ne.9999) then
-        call u2mesg('E', 'SUPERVIS_61', 0, ' ', 1,&
-                    nuoper, 0, 0.d0)
+        call utmess('E', 'SUPERVIS_61', si=nuoper)
     endif
 !
     call asmpi_comm('GET_WORLD', mpicow)
@@ -150,7 +147,7 @@ subroutine execop()
 !     -- CONTROLE DE L'APPARIEMMENT DES JEMARQ/JEDEMA
     call jevema(imaap)
     if (imaav .ne. imaap) then
-        call u2mesk('F', 'SUPERVIS_3', 1, 'JEMARQ/JEDEMA')
+        call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
     endif
 !
 !     -- DESTRUCTION DES MATRICES DE LA BASE VOLATILE

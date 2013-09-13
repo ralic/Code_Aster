@@ -51,14 +51,14 @@ subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mfacre.h"
 #include "asterfort/desgfa.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irmmf1.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/as_mfacre.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: fid
     integer :: typgeo(*), nmatyp(*)
@@ -184,11 +184,10 @@ subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
 ! 4.3. ==> ECRITURE
 !
     call as_mfacre(fid, nomamd, nomfam, numfam, 0,&
-                saux80, codret)
+                   saux80, codret)
     if (codret .ne. 0) then
         saux08='mfacre'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====

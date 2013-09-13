@@ -2,7 +2,6 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
                   llistt, ntypm)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -18,9 +17,9 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
 #include "asterfort/padtma.h"
 #include "asterfort/panbno.h"
 #include "asterfort/parotr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: llist1, llist2, llistt
     character(len=8) :: nomma
     real(kind=8) :: t(3)
@@ -113,7 +112,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
     if (nbma1 .ne. nbma2) then
         valk(1) = l1
         valk(2) = l2
-        call u2mesk('F', 'MODELISA6_22', 2, valk)
+        call utmess('F', 'MODELISA6_22', nk=2, valk=valk)
     endif
     nbma = nbma1
     call wkvect(biject, 'V V I', nbma, idbij)
@@ -188,8 +187,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
  2      continue
         if (idtyp .eq. nbma+1) then
             vali = ityp
-            call u2mesg('F', 'MODELISA8_89', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'MODELISA8_89', si=vali)
         endif
 21      continue
         ima = ima+1
@@ -220,8 +218,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
             valk (1) = nomma1
             valk (2) = nomma3
             valk (3) = nomma2
-            call u2mesg('F', 'MODELISA8_90', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'MODELISA8_90', nk=3, valk=valk)
         endif
         call jeveuo(jexnum(connex, numa1), 'L', idno1)
         call jeveuo(jexnum(connex, numa2), 'L', idno2)

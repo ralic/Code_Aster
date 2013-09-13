@@ -28,7 +28,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
 #include "asterfort/jemarq.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=24) :: evol
     logical :: evonol
     integer :: numein
@@ -86,7 +86,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
                         c16bid, r8bid, k8bid, dernie, 1,&
                         n3)
             if (n3 .eq. 0) then
-                call u2mesk('F', 'ETATINIT_2', 1, evol)
+                call utmess('F', 'ETATINIT_2', sk=evol)
             else
                 numein = dernie
                 call rsadpa(evol, 'L', 1, 'INST', numein,&
@@ -104,8 +104,12 @@ subroutine nmdoin(evol, evonol, instin, numein)
             call rsorac(evol, 'INST', ibid, instin, k8bid,&
                         c16bid, prec, criter, numein, 1,&
                         n3)
-            if (n3 .eq. 0) call u2mesk('F', 'ETATINIT_3', 1, evol)
-            if (n3 .lt. 0) call u2mesk('F', 'ETATINIT_4', 1, evol)
+            if (n3 .eq. 0) then
+                call utmess('F', 'ETATINIT_3', sk=evol)
+            endif
+            if (n3 .lt. 0) then
+                call utmess('F', 'ETATINIT_4', sk=evol)
+            endif
         endif
 !
 ! ----- ACCES PAR NUMERO D'ORDRE

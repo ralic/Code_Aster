@@ -17,11 +17,11 @@ subroutine te0415(optioz, nomtz)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: optioz, nomtz
     character(len=16) :: option, nomte
 !     ----------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine te0415(optioz, nomtz)
 !-----------------------------------------------------------------------
     parameter (npge=3)
     parameter (npgt=10)
-    integer ::  icou, jmat, jnbspi
+    integer :: icou, jmat, jnbspi
     integer :: nb2, npgsn, jtab(7)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
@@ -71,8 +71,12 @@ subroutine te0415(optioz, nomtz)
         lgpg = max(jtab(6),1)*jtab(7)
         call jevech('PNBSP_I', 'L', jnbspi)
         nbcou=zi(jnbspi-1+1)
-        if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
-        if (nbcou .gt. 10) call u2mess('F', 'ELEMENTS_13')
+        if (nbcou .le. 0) then
+            call utmess('F', 'ELEMENTS_12')
+        endif
+        if (nbcou .gt. 10) then
+            call utmess('F', 'ELEMENTS_13')
+        endif
 !
 ! -- RECUPERATION DES VARIABLES INTERNES
 ! -- NBVARI = NOMBRES DE VARIABLES INTERNES

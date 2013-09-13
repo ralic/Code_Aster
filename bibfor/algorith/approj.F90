@@ -21,7 +21,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/apatta.h"
@@ -36,8 +36,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mmproj.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sdappa, newgeo
     character(len=8) :: noma
     character(len=24) :: defico
@@ -158,7 +157,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 !
         lpoint = aliasm.eq.'PO1'
         if (lpoint) then
-            call u2mesk('F', 'APPARIEMENT_36', 1, nommal)
+            call utmess('F', 'APPARIEMENT_36', sk=nommal)
         endif
 !
 ! ----- CALCUL DE LA PROJECTION DU POINT SUR LA MAILLE MAITRE
@@ -171,8 +170,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 ! ----- GESTION DES ERREURS LORS DU NEWTON LOCAL POUR LA PROJECTION
 !
         if (niverr .eq. 1) then
-            call u2mesg('F', 'APPARIEMENT_13', 1, nommal, 0,&
-                        0, 3, coorpt)
+            call utmess('F', 'APPARIEMENT_13', sk=nommal, nr=3, valr=coorpt)
         endif
 !
 ! ----- CALCUL DE LA DISTANCE

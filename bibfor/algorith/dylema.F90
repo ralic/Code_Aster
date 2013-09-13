@@ -52,7 +52,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbmat
@@ -151,8 +151,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
         call gettco(raide, typobj)
         if (typobj(1:14) .ne. 'MATR_ASSE_GENE') then
             valk (1) = typobj
-            call u2mesg('F', 'ALGORITH15_95', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_95', sk=valk(1))
         endif
         nbmode = neq
         nbmod2 = neq*(neq+1)/2
@@ -179,8 +178,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
             vali (1) = nbmode
             vali (2) = nbamor
             vali (3) = nbmode
-            call u2mesg('A', 'ALGORITH15_96', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'ALGORITH15_96', ni=3, vali=vali)
             call wkvect(baseno//'.AMORTI', 'V V R8', nbmode, jamog)
             if (n1 .ne. 0) then
                 call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=nbmode, vect=zr(jamog),&
@@ -207,8 +205,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
             vali (1) = idiff
             vali (2) = nbmode
             vali (3) = idiff
-            call u2mesg('I', 'ALGORITH15_97', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH15_97', ni=3, vali=vali)
             call wkvect(baseno//'.AMORTI2', 'V V R8', nbmode, jamo2)
             do 20 iam = 1, nbamor
                 zr(jamo2+iam-1) = zr(jamog+iam-1)

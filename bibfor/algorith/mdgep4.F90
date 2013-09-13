@@ -2,7 +2,7 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
                   iddl, rep)
     implicit none
 #include "asterfort/fointe.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: psidel(neq, *), temps, rep
     character(len=8) :: nomfon(*)
 ! ======================================================================
@@ -47,8 +47,7 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
     do 10 iex = 1, nbexci
         if (nomfon(iex) .eq. blanc) then
             valk = 'CHARGE EN MONO APPUI'
-            call u2mesg('A', 'ALGORITH13_44', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('A', 'ALGORITH13_44', sk=valk)
             goto 10
         endif
         call fointe('F ', nomfon(iex), 1, nompar, temps,&

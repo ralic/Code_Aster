@@ -96,7 +96,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/redece.h"
 #include "asterfort/rslnvi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !
@@ -149,11 +149,11 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     mod = typmod(1)
 !
     if (cmp3(1)(1:8) .ne. '        ') then
-        call u2mess('F', 'ALGORITH7_1')
+        call utmess('F', 'ALGORITH7_1')
     endif
 !
     if (cmp1(1)(1:10) .ne. 'GRANGER_FP') then
-        call u2mess('F', 'ALGORITH7_11')
+        call utmess('F', 'ALGORITH7_11')
     endif
 !
 !     TABLEAU DES VARIABLES INTERNES DIMENSIONNE AUX MAX I.E. 3D
@@ -178,7 +178,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
         if (cmp2(1)(1:15) .eq. 'BETON_DOUBLE_DP') call betnvi(mod3d, ibid, ibid2, ibid3, nvi2)
 !
     else
-        call u2mess('F', 'ALGORITH7_3')
+        call utmess('F', 'ALGORITH7_3')
     endif
 !
     write (cmp2(2),'(I16)') nvi2
@@ -186,7 +186,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     write (cveri,'(I16)') (nvi1 + nvi2)
 !
     if (cveri(1:16) .ne. comp(2)(1:16)) then
-        call u2mess('F', 'ALGORITH7_12')
+        call utmess('F', 'ALGORITH7_12')
     endif
 !
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
@@ -323,7 +323,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
                     sigf, vinf(nn), ndsde, dsde, nwkout,&
                     wkout, retcom)
     else
-        call u2mess('F', 'ALGORITH7_3')
+        call utmess('F', 'ALGORITH7_3')
     endif
 !
     if (optflu .eq. 'RAPH_MECA') then

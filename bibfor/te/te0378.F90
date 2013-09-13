@@ -32,7 +32,6 @@ subroutine te0378(option, nomte)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -54,9 +53,10 @@ subroutine te0378(option, nomte)
 #include "asterfort/resrot.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/uthk.h"
 #include "asterfort/utjac.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !
 !
@@ -83,7 +83,7 @@ subroutine te0378(option, nomte)
     integer :: nbcmp
     integer :: ipg, in
     integer :: nbf
-    integer :: tymvol, ndegre, ifa, tyv, noe(9,6,4)
+    integer :: tymvol, ndegre, ifa, tyv, noe(9, 6, 4)
 !
     real(kind=8) :: r8bid, r8bid3(2), r8bid4(2)
     real(kind=8) :: dfdx(9), dfdy(9), hk, poids
@@ -568,7 +568,7 @@ subroutine te0378(option, nomte)
 ! ------- CALCUL DU TERME D'ERREUR -------------------------------------
 !
             if ((intpl.lt.0.d0) .or. (intmo.lt.0.d0)) then
-                call u2mesk('A', 'INDICATEUR_9', 2, valk)
+                call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
                 goto 9999
             endif
 !
@@ -634,7 +634,7 @@ subroutine te0378(option, nomte)
 ! ------- CALCUL DU TERME D'ERREUR -------------------------------------
 !
             if ((intpl.lt.0.d0) .or. (intmo.lt.0.d0)) then
-                call u2mesk('A', 'INDICATEUR_9', 2, valk)
+                call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
                 goto 9999
             endif
 !
@@ -654,7 +654,7 @@ subroutine te0378(option, nomte)
         else
 !
             valk(1)=typmav(1:4)
-            call u2mesk('F', 'INDICATEUR_10', 1, valk)
+            call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !
         endif
 !

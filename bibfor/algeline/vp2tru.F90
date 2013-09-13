@@ -3,8 +3,7 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
                   mxiter, ier, nitqr)
     implicit none
 #include "asterfort/matini.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vphqrp.h"
     character(len=1) :: ty
     character(len=8) :: method
@@ -73,7 +72,7 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
                 z, nbvect, wk, mxiter, ier,&
                 nitqr)
     if (ier .ne. 0) then
-        call u2mess('F', 'ALGELINE3_57')
+        call utmess('F', 'ALGELINE3_57')
     endif
 !
     if (ty .eq. 'G') then
@@ -84,8 +83,7 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
                 vali = i
                 valr (1) = w(2*i-1)
                 valr (2) = ww
-                call u2mesg('I', 'ALGELINE4_65', 0, ' ', 1,&
-                            vali, 2, valr)
+                call utmess('I', 'ALGELINE4_65', si=vali, nr=2, valr=valr)
             endif
             beta(i) = 0.d0
             do 30 j = 1, nbvect

@@ -28,13 +28,13 @@ subroutine te0170(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
+!-----------------------------------------------------------------------
     integer :: icompo, ideplm, ideplp, ivectu, k, l, n1
     integer :: n2, nbres, ndim, nn, nno2, nnos, nt2
 !
@@ -56,7 +56,7 @@ subroutine te0170(option, nomte)
         'RIGI_MECA_TANG') then
         call jevech('PCOMPOR', 'L', icompo)
         if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-            call u2mess('F', 'ELEMENTS2_90')
+            call utmess('F', 'ELEMENTS2_90')
         endif
     endif
 !

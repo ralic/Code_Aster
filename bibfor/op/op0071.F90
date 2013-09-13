@@ -35,8 +35,7 @@ subroutine op0071()
 #include "asterfort/projmc.h"
 #include "asterfort/projmr.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ibid, n1, n2, n3, n4, ier, nbmode, neq, jsmde, iret
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
@@ -92,7 +91,7 @@ subroutine op0071()
                     numdd2, iret)
     endif
     if (numdd1 .ne. numdd2) then
-        call u2mess('I', 'ALGORITH9_39')
+        call utmess('I', 'ALGORITH9_39')
     endif
     nu = numdd1(1:14)
     call dismoi('F', 'NB_EQUA', matras, 'MATR_ASSE', neq,&
@@ -105,7 +104,7 @@ subroutine op0071()
         call projmc(matras, nomres, basemo, nugene, nu,&
                     neq, nbmode)
     else
-        call u2mesk('F', 'ALGORITH9_40', 1, typmat)
+        call utmess('F', 'ALGORITH9_40', sk=typmat)
     endif
 !
 !

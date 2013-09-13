@@ -18,17 +18,18 @@ subroutine as_mmhnmh(fid, n, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mmhnmh.h"
-
-aster_int :: fid, n, cret
-med_int :: nm,cretm
-
+!
+    aster_int :: fid, n, cret
+    med_int :: nm, cretm
+!
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-    call mmhnmh(to_med_int(fid),nm,cretm)
+    call mmhnmh(to_med_int(fid), nm, cretm)
     n=to_aster_int(nm)
     cret=to_aster_int(cretm)
 #endif

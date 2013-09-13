@@ -69,8 +69,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
 #include "asterfort/projvd.h"
 #include "asterfort/sommma.h"
 #include "asterfort/testch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
     integer :: np1, np2, np3, np4, nbm, n2, nbmcd, icoupl
     real(kind=8) :: tc, dt, dtc, vecdt(*)
@@ -303,14 +302,16 @@ subroutine newton(np1, np2, np3, np4, nbm,&
                 ier, testc, premac, prerel, mtmp1,&
                 mtmp2, ttr, u, w, dd,&
                 intge1, intge2, indx, indxf, loc)
-    if (ier .ne. 0) call u2mess('F', 'ALGORITH_10')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGORITH_10')
+    endif
     do 110 i = 1, nbm
         puls(i) = rr(i)
 110  end do
     do 120 i = 1, nbm
         if ((puls(i).eq.0.0d0) .and. (i.le.nbmcd)) then
             puls(i) = puls0(i)
-            call u2mess('I', 'ALGORITH_11')
+            call utmess('I', 'ALGORITH_11')
         endif
 120  end do
 !
@@ -383,7 +384,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
     endif
     if (ilast .eq. 1) then
         if (iconfa .eq. 1) goto 999
-        call u2mess('F', 'ALGORITH6_52')
+        call utmess('F', 'ALGORITH6_52')
     endif
 !
 ! 3.8 AJUSTEMENT DU PAS DE TEMPS ET DE L'INSTANT N+1 SI LE CHANGEMENT
@@ -402,7 +403,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
             write(kb10,'(1PD11.4)') tc
             valk(1) = kb3
             valk(2) = kb10
-            call u2mesk('F', 'ALGORITH6_53', 2, valk)
+            call utmess('F', 'ALGORITH6_53', nk=2, valk=valk)
         endif
 !
 ! ------ AJUSTEMENT DU PAS DE TEMPS ET DE L'INSTANT N+1
@@ -454,7 +455,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
             write(kb10,'(1PD11.4)') tc
             valk(1) = kb3
             valk(2) = kb10
-            call u2mesk('F', 'ALGORITH6_53', 2, valk)
+            call utmess('F', 'ALGORITH6_53', nk=2, valk=valk)
         endif
 !
 ! ------ ON SE PLACE A L'INSTANT N+1 SI LA VITESSE NE CHANGE PAS DE SENS
@@ -587,7 +588,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
             write(kb10,'(1PD11.4)') tc
             valk(1) = kb3
             valk(2) = kb10
-            call u2mesk('F', 'ALGORITH6_53', 2, valk)
+            call utmess('F', 'ALGORITH6_53', nk=2, valk=valk)
         endif
 !
 ! ------ ON SE PLACE A L'INSTANT N+1

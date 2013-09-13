@@ -7,7 +7,7 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nbfonc, ier
     character(len=*) :: vecnom(nbfonc), vecpro(*)
 !     ------------------------------------------------------------------
@@ -64,8 +64,7 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
         endif
  1  end do
     vali = nbfonc
-    call u2mesg('E', 'UTILITAI8_1', 0, ' ', 1,&
-                vali, 0, 0.d0)
+    call utmess('E', 'UTILITAI8_1', si=vali)
     ier=ier+1
  2  continue
     do 3 i = 1, nbfonc
@@ -79,8 +78,7 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
             valk (1) = vecnom(i)
             valk (2) = nompf(1)
             valk (3) = vecpro(7)
-            call u2mesg('E', 'UTILITAI8_2', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'UTILITAI8_2', nk=3, valk=valk)
             ier=ier+1
         endif
         vecpro(7+2*i-1) = interp

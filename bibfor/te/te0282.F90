@@ -43,7 +43,7 @@ subroutine te0282(option, nomte)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 !
 !
@@ -246,7 +246,7 @@ subroutine te0282(option, nomte)
             if (chargn) then
                 goto 799
             else if (chelem .eq. 'AX') then
-                call u2mess('F', 'RUPTURE1_23')
+                call utmess('F', 'RUPTURE1_23')
             endif
         else
 !

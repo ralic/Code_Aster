@@ -1,7 +1,6 @@
 subroutine te0163(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jedema.h"
@@ -10,8 +9,9 @@ subroutine te0163(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vff3d.h"
+!
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -76,7 +76,7 @@ subroutine te0163(option, nomte)
     if (xl .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     ------------------- CALCUL DES VECTEURS ELEMENTAIRES ------------

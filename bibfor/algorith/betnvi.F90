@@ -1,5 +1,6 @@
 subroutine betnvi(mod, ndt, ndi, nr, nvi)
     implicit none
+#include "asterfort/utmess.h"
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +28,6 @@ subroutine betnvi(mod, ndt, ndi, nr, nvi)
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nr, nvi
     character(len=8) :: mod
 !       ----------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine betnvi(mod, ndt, ndi, nr, nvi)
         ndi = 3
         nr = ndt+2
         nvi = 4
-        call u2mess('F', 'ALGORITH_51')
+        call utmess('F', 'ALGORITH_51')
 ! - 1D
     else if (mod(1:2).eq.'1D') then
         ndt = 3

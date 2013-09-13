@@ -39,7 +39,6 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 !     ----------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -50,8 +49,9 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     logical :: casint
     character(len=8) :: nomu, table
     integer :: nbm, nbmr, imod1, nuor(*), ivite
@@ -123,7 +123,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
         if (fri .lt. 0.d0) then
             vali(1) = iv
             vali(2) = nuor(im)
-            call u2mesi('A', 'MODELISA2_90', 2, vali)
+            call utmess('A', 'MODELISA2_90', ni=2, vali=vali)
             goto 20
         endif
 25  continue

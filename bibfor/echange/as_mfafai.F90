@@ -1,5 +1,5 @@
 subroutine as_mfafai(fid, maa, ind, fam, num,&
-                  gro, cret)
+                     gro, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,15 +19,16 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfafai.h"
     aster_int :: fid, num, cret, ind
     character(len=*) :: maa, fam, gro(*)
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, num4
     med_int :: cret4, ind4
@@ -44,6 +45,6 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
     call mfafai(fid, maa, ind, fam, num,&
                 gro, cret)
 #endif
-
+!
 #endif
 end subroutine

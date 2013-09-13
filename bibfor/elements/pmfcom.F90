@@ -1,7 +1,7 @@
-subroutine pmfcom(kpg, debsp, option, compor, crit, &
-                  nf,instam, instap, icdmat,nbvalc, &
-                  defam, defap, varim, varimp,contm, &
-                  defm, ddefp, epsm, modf,sigf, &
+subroutine pmfcom(kpg, debsp, option, compor, crit,&
+                  nf, instam, instap, icdmat, nbvalc,&
+                  defam, defap, varim, varimp, contm,&
+                  defm, ddefp, epsm, modf, sigf,&
                   varip, isecan, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,12 +30,11 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 #include "asterfort/nm1tra.h"
 #include "asterfort/nm1vil.h"
 #include "asterfort/nmcb1d.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/paeldt.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verifm.h"
 #include "asterfort/verift.h"
 #include "asterfort/vmci1d.h"
@@ -115,8 +114,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
                 1, tref, iret1)
 !
     ltemp=.true.
-    if (iret1.eq.1) ltemp=.false.
-    if (.not.ltemp)then
+    if (iret1 .eq. 1) ltemp=.false.
+    if (.not.ltemp) then
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb(fami, 1, 1, '+', icdmat,&
@@ -126,8 +125,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
         nu = valres(2)
         em=ep
         depsth=0.d0
-     endif
-
+    endif
+!
 !     EVALUATION DU MODULE SECANT
     isecan = 0
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
@@ -139,12 +138,12 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
         do 100 i = 1, nf
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
             endif
             modf(i) = ep
             sigf(i) = ep*(contm(i)/em + ddefp(i) - depsth)
-100    continue
+100      continue
 !
     else if (compo.eq.'LABORD_1D') then
         depsth = 0.d0
@@ -158,7 +157,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
             endif
             epsm = defm(i) - depsth
@@ -178,7 +177,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             valkm(1)='MAZARS_GC'
             valkm(2)=mazars(7)
             valkm(3)=mazars(8)
-            call u2mesk('F', 'COMPOR1_76', 3, valkm)
+            call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
         endif
 ! ---    AJOUT DE NU DANS VALRES
         valres(9) = nu
@@ -187,7 +186,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
                 valres(9) = nu
             endif
@@ -206,14 +205,14 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             valkm(1)='VMIS_CINE_GC'
             valkm(2)=ecroli(3)
             valkm(3)=ecroli(4)
-            call u2mesk('F', 'COMPOR1_76', 3, valkm)
+            call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
         endif
 ! ---    BOUCLE SUR CHAQUE FIBRE
         do 200 i = 1, nf
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
@@ -237,7 +236,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
                 cstpm(1) = ep
             endif
@@ -252,7 +251,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
@@ -266,7 +265,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
@@ -280,7 +279,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
             endif
             call nm1dco('RIGI', kpg, i, option, icdmat,&
@@ -295,7 +294,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                call paeldt(kpg, ksp, fami, icdmat, materi,&
                             em, ep, nu, depsth)
             endif
 !           NM1TRA NE FONCTIONNE QUE POUR 1 MATERIAU PAR MAILLE
@@ -311,11 +310,13 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
                 ivari = nbvalc* (i-1) + 1
                 if (ltemp) then
                     ksp=debsp-1+i
-                    call paeldt(kpg, ksp, fami, icdmat, materi, &
+                    call paeldt(kpg, ksp, fami, icdmat, materi,&
                                 em, ep, nu, depsth)
                 endif
                 depsm = ddefp(i)-depsth
-                if ((iret1+iret2+iret3) .ge. 1) call u2mess('F', 'CALCULEL_31')
+                if ((iret1+iret2+iret3) .ge. 1) then
+                    call utmess('F', 'CALCULEL_31')
+                endif
                 call nm1vil('RIGI', kpg, i, icdmat, materi,&
                             crit, instam, instap, tempm, tempp,&
                             tref, depsm, contm(i), varim(ivari), option,&
@@ -349,14 +350,14 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
         endif
 !
     else if (compo.eq.'LEMA_SEUIL') then
-        call u2mess('F', 'ELEMENTS2_39')
+        call utmess('F', 'ELEMENTS2_39')
     else
 !        APPEL A COMP1D POUR BENEFICIER DE TOUS LES COMPORTEMENTS AXIS
 !        PAR UNE EXTENSION DE LA METHODE DE DEBORST
         if ((algo(1:7).ne.'DEBORST') .and. (compo(1:4).ne.'SANS')) then
             valkm(1) = compo
             valkm(2) = 'DEFI_COMPOR/MULTIFIBRE'
-            call u2mesk('F', 'ALGORITH6_81', 2, valkm)
+            call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
         else
             if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9) .eq.'RAPH_MECA')) then
                 nbvari = nbvalc*nf

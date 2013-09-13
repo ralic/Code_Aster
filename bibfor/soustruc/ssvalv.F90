@@ -23,7 +23,6 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
@@ -34,8 +33,9 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 #include "asterfort/ssrone.h"
 #include "asterfort/ssvaro.h"
 #include "asterfort/ssvau1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mo, ma
     character(len=*) :: statut
     character(len=8) :: nomcas
@@ -183,7 +183,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
                 call ssvaro(lambda, 'LG', .false., 'EXTE', nomacr,&
                             ialica+nddlt, idresl)
             else
-                call u2mess('F', 'SOUSTRUC_47')
+                call utmess('F', 'SOUSTRUC_47')
             endif
 !
         else

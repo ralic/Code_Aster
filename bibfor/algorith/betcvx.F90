@@ -48,7 +48,7 @@ subroutine betcvx(nmat, mater, sig, vind, vinf,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nvi, nmat, nseuil
     real(kind=8) :: pc, pt, sig(6), dev(6), vind(*), vinf(*)
     real(kind=8) :: mater(nmat, 2), elgeom(*)
@@ -140,7 +140,7 @@ subroutine betcvx(nmat, mater, sig, vind, vinf,&
     if (lasts .gt. 0) then
         if (lasts .eq. 1 .and. dlambc .lt. zero) then
             if (ftrac .le. zero) then
-                call u2mess('A', 'ALGORITH_42')
+                call utmess('A', 'ALGORITH_42')
                 nseuil = 4
                 goto 9999
             else
@@ -150,7 +150,7 @@ subroutine betcvx(nmat, mater, sig, vind, vinf,&
         endif
         if (lasts .eq. 2 .and. dlambt .lt. zero) then
             if (fcomp .le. zero) then
-                call u2mess('A', 'ALGORITH_43')
+                call utmess('A', 'ALGORITH_43')
                 nseuil = 4
                 goto 9999
             else

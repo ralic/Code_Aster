@@ -1,6 +1,6 @@
 subroutine porea1(nno, nc, deplm, deplp, geom,&
                   gamma, vecteu, pgl, xl, angp)
-    implicit    none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/angvx.h"
@@ -8,7 +8,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
 #include "asterfort/gareac.h"
 #include "asterfort/matrot.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
     integer :: nno, nc
@@ -94,16 +94,14 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
         valkm(1) = zk24(iazk24+3-1)
         valkm(2) = 'ALPHA'
         valrm = (alfa0 - alfa1)*r8rddg()
-        call u2mesg('A', 'ELEMENTS_38', 2, valkm, 0,&
-                    ibid, 1, valrm)
+        call utmess('A', 'ELEMENTS_38', nk=2, valk=valkm, sr=valrm)
     endif
     if (abs(beta0 - beta1) .gt. 0.3927d+00) then
         call tecael(iadzi, iazk24)
         valkm(1) = zk24(iazk24+3-1)
         valkm(2) = 'BETA'
         valrm = (beta0 - beta1)*r8rddg()
-        call u2mesg('A', 'ELEMENTS_38', 2, valkm, 0,&
-                    ibid, 1, valrm)
+        call utmess('A', 'ELEMENTS_38', nk=2, valk=valkm, sr=valrm)
     endif
 !
 !     LONGUEUR DE L'ELEMENT AU TEMPS T+
@@ -124,8 +122,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
             valkm(1) = zk24(iazk24+3-1)
             valkm(2) = 'GAMMA'
             valrm = dgamma*r8rddg()
-            call u2mesg('A', 'ELEMENTS_38', 2, valkm, 0,&
-                        ibid, 1, valrm)
+            call utmess('A', 'ELEMENTS_38', nk=2, valk=valkm, sr=valrm)
         endif
     else
         dgamma = 0.d0

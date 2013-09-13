@@ -23,15 +23,14 @@ subroutine asmpi_checkalarm()
 !       EN FIN D'EXECUTION, LE PROCESSEUR #0 DONNE A L'UTILISATEUR
 !       LA LISTE DES ALARMES QUI ONT ETE EMISES PAR PROCESSEUR.
 !-----------------------------------------------------------------------
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
 #include "asterc/gtalrm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/gtstat.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #ifdef _USE_MPI
 !
 #include "mpif.h"
@@ -51,7 +50,7 @@ subroutine asmpi_checkalarm()
 !
     if (.not. gtstat(ST_OK)) then
         if (rank .eq. 0) then
-            call u2mess('I', 'CATAMESS_88')
+            call utmess('I', 'CATAMESS_88')
         endif
         goto 9999
     endif
@@ -80,14 +79,14 @@ subroutine asmpi_checkalarm()
                 vali(1) = i
                 vali(2) = ival
                 if (ival .eq. 1) then
-                    call u2mesi('A+', 'APPELMPI_1', 2, vali)
+                    call utmess('A+', 'APPELMPI_1', ni=2, vali=vali)
                 else
-                    call u2mesi('A+', 'APPELMPI_2', 2, vali)
+                    call utmess('A+', 'APPELMPI_2', ni=2, vali=vali)
                 endif
             endif
 10      continue
         if (vu) then
-            call u2mess('A', 'VIDE_1')
+            call utmess('A', 'VIDE_1')
         endif
 !
     endif

@@ -25,7 +25,6 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
 ! OUT NBVARI  : NOMBRE DE VARIABLE INTERNES
 ! OUT k       : =1 si COMP_INCR, =2 si COMP_ELAS
 #include "jeveux.h"
-!
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcvari.h"
@@ -33,9 +32,9 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbvari, ncomel, iocc, ii, nums(2), lvari, icom, icomm
     integer :: nbvarm, nbvarl, numlc, numv
     character(len=16) :: comcod, lcomel(5), noms(2), moclef, comcom
@@ -45,8 +44,8 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
     call jemarq()
 ! exceptions
     if ((lcomel(1)(5:11).eq.'CRISTAL') .and. (lcomel(2).eq.'SIMO_MIEHE')) then
-        call u2mess('I', 'COMPOR2_25')
-        call u2mess('I', 'COMPOR2_26')
+        call utmess('I', 'COMPOR2_25')
+        call utmess('I', 'COMPOR2_26')
 !
         elseif ((lcomel(2).eq.'SIMO_MIEHE').and. (lcomel(1)(1:4)&
     .eq.'META')) then
@@ -60,8 +59,8 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
         noms(2)=lcomel(1)
         nums(1)=iocc
         nums(2)=nbvari
-        call u2mesg('I', 'COMPOR2_23', 2, noms, 2,&
-                    nums, 0, 0.d0)
+        call utmess('I', 'COMPOR2_23', nk=2, valk=noms, ni=2,&
+                    vali=nums)
         icomm=0
         do 555 icom = 1, ncomel
 !           RECHERCHE DU COMPORTEMENT MECANIQUE
@@ -75,8 +74,7 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
         call lcinfo(comcom, numlc, nbvarm)
         call lcvari(comcom, nbvarm, zk16(lvari))
         do 556 ii = 1, nbvarm
-            call u2mesg('I', 'COMPOR2_24', 1, zk16(lvari-1+ii), 1,&
-                        ii, 0, 0.d0)
+            call utmess('I', 'COMPOR2_24', sk=zk16(lvari-1+ii), si=ii)
 556      continue
 !
         numv=nbvarm
@@ -88,8 +86,7 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
             call lcvari(comcom, nbvarl, zk16(lvari))
             do 557 ii = 1, nbvarl
                 numv=numv+ii
-                call u2mesg('I', 'COMPOR2_24', 1, zk16(lvari-1+ii), 1,&
-                            numv, 0, 0.d0)
+                call utmess('I', 'COMPOR2_24', sk=zk16(lvari-1+ii), si=numv)
 557          continue
 558      continue
 !
@@ -105,12 +102,11 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
         noms(2)=lcomel(1)
         nums(1)=iocc
         nums(2)=nbvari
-        call u2mesg('I', 'COMPOR2_23', 2, noms, 2,&
-                    nums, 0, 0.d0)
+        call utmess('I', 'COMPOR2_23', nk=2, valk=noms, ni=2,&
+                    vali=nums)
 !
         do 554 ii = 1, nbvari
-            call u2mesg('I', 'COMPOR2_24', 1, zk16(lvari-1+ii), 1,&
-                        ii, 0, 0.d0)
+            call utmess('I', 'COMPOR2_24', sk=zk16(lvari-1+ii), si=ii)
 554      continue
 !
         call jedetr('&&PMDORC.LVARI')

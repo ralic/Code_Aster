@@ -10,7 +10,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/titreb.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: st
     character(len=*) :: nomobj, base, titdon(*), formr
@@ -59,7 +59,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
     if (nbtitr .gt. mxligs) then
         vali(1) = mxligs
         vali(2) = nbtitr
-        call u2mesi('A', 'UTILITAI4_89', 2, vali)
+        call utmess('A', 'UTILITAI4_89', ni=2, vali=vali)
         nbtitr = mxligs
     endif
 1000  continue

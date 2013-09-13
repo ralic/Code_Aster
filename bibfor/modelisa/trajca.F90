@@ -63,7 +63,6 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -77,9 +76,9 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 #include "asterfort/spline.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mailla
     character(len=19) :: xnoca, ynoca, znoca, tablca
     character(len=24) :: comima, gromai
@@ -205,7 +204,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         du = dble ( sqrt ( dx * dx + dy * dy + dz * dz ) )
         if (du .eq. 0.0d0) then
             write(k3b,'(I3)') icabl
-            call u2mesk('F', 'MODELISA7_59', 1, k3b)
+            call utmess('F', 'MODELISA7_59', sk=k3b)
         endif
         zr(jcord+ino-1) = zr(jcord+ino-2) + du
 !
@@ -291,7 +290,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         vali(1) = icabl
         vali(2) = nbvar2
         vali(3) = nbvar
-        call u2mesi('I', 'MODELISA7_13', 3, vali)
+        call utmess('I', 'MODELISA7_13', ni=3, vali=vali)
         lsplin = .false.
         goto 888
     endif
@@ -325,7 +324,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         vali(1) = icabl
         vali(2) = nbvar2
         vali(3) = nbvar
-        call u2mesi('I', 'MODELISA7_13', 3, vali)
+        call utmess('I', 'MODELISA7_13', ni=3, vali=vali)
         lsplin = .false.
         goto 888
     endif
@@ -359,7 +358,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         vali(1) = icabl
         vali(2) = nbvar2
         vali(3) = nbvar
-        call u2mesi('I', 'MODELISA7_13', 3, vali)
+        call utmess('I', 'MODELISA7_13', ni=3, vali=vali)
         lsplin = .false.
         goto 888
     endif
@@ -394,7 +393,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         normv2 = d1x * d1x + d1y * d1y + d1z * d1z
         if (normv2 .eq. 0.0d0) then
             write(k3b,'(I3)') icabl
-            call u2mesk('F', 'MODELISA7_60', 1, k3b)
+            call utmess('F', 'MODELISA7_60', sk=k3b)
         endif
         absc = dble ( sqrt ( normv2 ) ) / 2.0d0
         det1 = d1y * d2z - d1z * d2y
@@ -421,7 +420,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
             normv2 = d1x * d1x + d1y * d1y + d1z * d1z
             if (normv2 .eq. 0.0d0) then
                 write(k3b,'(I3)') icabl
-                call u2mesk('F', 'MODELISA7_60', 1, k3b)
+                call utmess('F', 'MODELISA7_60', sk=k3b)
             endif
             absc = absc + dble ( sqrt ( normv2 ) )
             det1 = d1y * d2z - d1z * d2y
@@ -448,7 +447,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
         normv2 = d1x * d1x + d1y * d1y + d1z * d1z
         if (normv2 .eq. 0.0d0) then
             write(k3b,'(I3)') icabl
-            call u2mesk('F', 'MODELISA7_60', 1, k3b)
+            call utmess('F', 'MODELISA7_60', sk=k3b)
         endif
         absc = absc + dble ( sqrt ( normv2 ) ) / 2.0d0
         det1 = d1y * d2z - d1z * d2y

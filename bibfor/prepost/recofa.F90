@@ -15,13 +15,13 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: vala, valb, coefpa
     character(len=8) :: nommat
     character(len=16) :: nomcri
@@ -69,7 +69,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !
     call rccome(nommat, 'CISA_PLAN_CRIT', phenom, icodre(1))
     if (icodre(1) .eq. 1) then
-        call u2mess('F', 'FATIGUE1_63')
+        call utmess('F', 'FATIGUE1_63')
     endif
 !
 ! 2.1 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE MATAKE POUR
@@ -80,20 +80,20 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
                     1, 'MATAKE_A', v(1), icodre(1), 0)
         vala=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_64')
+            call utmess('F', 'FATIGUE1_64')
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_B', v(1), icodre(1), 0)
         valb=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_65')
+            call utmess('F', 'FATIGUE1_65')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_FLE', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_66')
+            call utmess('F', 'FATIGUE1_66')
         endif
 !
 ! 2.2 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE DANG VAN POUR
@@ -104,21 +104,21 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
                     1, 'D_VAN_A ', v(1), icodre(1), 0)
         vala=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_67')
+            call utmess('F', 'FATIGUE1_67')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_B ', v(1), icodre(1), 0)
         valb=v(1) 
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_68')
+            call utmess('F', 'FATIGUE1_68')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_CIS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_69')
+            call utmess('F', 'FATIGUE1_69')
         endif
     endif
 !
@@ -130,20 +130,20 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
                     1, 'MATAKE_A', v(1), icodre(1), 0)
         vala=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_70')
+            call utmess('F', 'FATIGUE1_70')
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_B', v(1), icodre(1), 0)
         valb=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_71')
+            call utmess('F', 'FATIGUE1_71')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_FLE', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_72')
+            call utmess('F', 'FATIGUE1_72')
         endif
     endif
 !
@@ -155,20 +155,20 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
                     1, 'D_VAN_A ', v(1), icodre(1), 0)
         vala=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_73')
+            call utmess('F', 'FATIGUE1_73')
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_B ', v(1), icodre(1), 0)
         valb=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_74')
+            call utmess('F', 'FATIGUE1_74')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_CIS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_72')
+            call utmess('F', 'FATIGUE1_72')
         endif
     endif
 !
@@ -180,7 +180,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
                     1, 'FATSOC_A', v(1), icodre(1), 0)
         vala=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_75')
+            call utmess('F', 'FATIGUE1_75')
         endif
 !
         valb = 1.0d0
@@ -189,7 +189,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
                     1, 'COEF_CIS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_72')
+            call utmess('F', 'FATIGUE1_72')
         endif
 !
     endif

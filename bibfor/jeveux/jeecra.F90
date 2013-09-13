@@ -24,8 +24,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
 #include "asterfort/jjecrs.h"
 #include "asterfort/jjprem.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu, catr
     character(len=*), intent(in), optional :: cval
     integer, intent(in), optional :: ival
@@ -87,7 +86,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+        call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
     else if (iret .eq. 1) then
         ic = iclaos
         id = idatos
@@ -119,7 +118,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
     typei = type ( jtype(ic) + id )
     if (catrlu .eq. 'LONT    ') then
         if (.not. lconti) then
-            call u2mesk('F', 'JEVEUX_98', 1, catrlu)
+            call utmess('F', 'JEVEUX_98', sk=catrlu)
         else
             llong = .false.
             lluti = .false.
@@ -131,7 +130,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
             (genri .eq. 'N' .and. catrlu(1:4).eq. 'NOMU') .or.&
             (genri .ne. 'V' .and. catrlu(1:4).eq. 'LONM') .or.&
             (genri .ne. 'V' .and. catrlu(1:4).eq. 'LONU')) then
-            call u2mesk('F', 'JEVEUX_99', 1, genri)
+            call utmess('F', 'JEVEUX_99', sk=genri)
         endif
     endif
 !
@@ -149,16 +148,15 @@ subroutine jeecra(nomlu, catr, ival, cval)
                 longi = long ( jlong(ic) + id )
                 longj = ival
                 if (ival .le. 0) then
-                    call u2mesg('F', 'JEVEUX1_67', 1, catrlu, 1,&
-                                ival, 0, r8bid)
+                    call utmess('F', 'JEVEUX1_67', sk=catrlu, si=ival)
                 endif
             endif
             if (longi .ne. 0) then
-                call u2mesk('F', 'JEVEUX1_01', 1, catrlu)
+                call utmess('F', 'JEVEUX1_01', sk=catrlu)
             else
                 long ( jlong(ic) + id ) = longj
                 if (lonoi .ne. 0 .and. iret .eq. 1) then
-                    call u2mesk('F', 'JEVEUX1_02', 1, catrlu)
+                    call utmess('F', 'JEVEUX1_02', sk=catrlu)
                 else
                     if (genri .eq. 'V') then
                         lono ( jlono(ic) + id ) = longj
@@ -192,7 +190,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
                     endif
                     if (lconti) then
                         if (lonoi .ne. 0 .and. lonoi .lt. nmaxi*lono(jlono( ic)+id)) then
-                            call u2mesk('F', 'JEVEUX1_03', 1, catrlu)
+                            call utmess('F', 'JEVEUX1_03', sk=catrlu)
                         else
                             lono (jlono(ic)+id) = nmaxi * lono (&
                             jlono(ic) + id )
@@ -205,7 +203,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
                 luti ( jluti(ic) + id ) = ival
             endif
         else
-            call u2mesk('F', 'JEVEUX1_04', 1, catrlu)
+            call utmess('F', 'JEVEUX1_04', sk=catrlu)
         endif
     else if (iret .eq. 3) then
         if (llong .and. .not. lconst) then
@@ -220,7 +218,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
                 il1 = jiszon + iblono - 1 + idatoc + 1
                 il0 = jiszon + iblono - 1 + idatoc
                 if (iszon(il0) .eq. 0) then
-                    call u2mesk('F', 'JEVEUX1_05', 1, catrlu)
+                    call utmess('F', 'JEVEUX1_05', sk=catrlu)
                 else
                     lonti = iszon(il0)
                     lonoi = 0
@@ -233,7 +231,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
                 lonoi = iszon ( jiszon + iblono - 1 + idatoc )
             endif
             if (lonoi .ne. 0) then
-                call u2mesk('F', 'JEVEUX1_06', 1, catrlu)
+                call utmess('F', 'JEVEUX1_06', sk=catrlu)
             endif
             if (catrlu .eq. 'LONMAX  ') then
                 longi = iszon ( jiszon + iblong - 1 + idatoc )
@@ -241,12 +239,12 @@ subroutine jeecra(nomlu, catr, ival, cval)
                 lonoj = longj
             endif
             if (longi .ne. 0) then
-                call u2mesk('F', 'JEVEUX1_01', 1, catrlu)
+                call utmess('F', 'JEVEUX1_01', sk=catrlu)
             else
                 if (lconti) then
                     lont=lono( jlono(ic) + id )
                     if (lont .ne. 0 .and. lonti -1 + lonoj .gt. lont) then
-                        call u2mesk('F', 'JEVEUX1_07', 1, catrlu)
+                        call utmess('F', 'JEVEUX1_07', sk=catrlu)
                     else
                         iszon(jiszon+iblono-1+idatoc+1) = lonti + lonoj
                     endif
@@ -264,7 +262,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
             endif
         endif
     else
-        call u2mesk('F', 'JEVEUX1_04', 1, catrlu)
+        call utmess('F', 'JEVEUX1_04', sk=catrlu)
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -1,8 +1,7 @@
 subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                   materi, codi)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/isnnem.h"
 #include "asterfort/alfint.h"
 #include "asterfort/codent.h"
@@ -16,8 +15,9 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 #include "asterfort/jeveut.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/tbexlr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: chmat, materi
     character(len=19) :: codi
     integer :: indmat, nbmat, imate, igrp
@@ -96,7 +96,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
     character(len=4) :: knuma1
     character(len=3) :: knuma2
     character(len=3) :: knuma3
-    character(len=8) ::  nopara, nommat
+    character(len=8) :: nopara, nommat
     character(len=19) :: ch19, chma, listr
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
@@ -127,7 +127,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
         nommat=zk8(igrp+indmat+l-1)
         call jeexin(nommat//'.MATERIAU.NOMRC', iret)
         if (iret .eq. 0) then
-            call u2mesk('F', 'MODELISA6_63', 1, nommat)
+            call utmess('F', 'MODELISA6_63', sk=nommat)
         endif
         call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', zi(jnbcm+l-1))
         call jeveut(nommat//'.MATERIAU.NOMRC', 'L', zi(jnomr+l-1))
@@ -273,7 +273,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                         call jelira(ch19//'.PARA', 'LONUTI', zi(ipif+ 5))
                     else if (zk24(zi(ipif+1))(1:1) .eq. 'I') then
                     else
-                        call u2mesk('F', 'MODELISA6_64', 1, zk24(zi(ipif+ 1)))
+                        call utmess('F', 'MODELISA6_64', sk=zk24(zi(ipif+ 1)))
                     endif
                 else if (irett .eq. 1) then
                     listr = '&&'//ch19(1:8)//'_LR8'
@@ -285,7 +285,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                     zi(ipif+1) = 0
                     zi(ipif+2) = 0
                 else
-                    call u2mesk('F', 'MODELISA6_64', 1, ch19(1:8))
+                    call utmess('F', 'MODELISA6_64', sk=ch19(1:8))
                 endif
 !
                 if (zi(kk+6) .eq. 1) then

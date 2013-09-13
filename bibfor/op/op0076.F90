@@ -33,7 +33,7 @@ subroutine op0076()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
 !
@@ -93,7 +93,9 @@ subroutine op0076()
     if (zi(iadesc) .ne. 4) then
 !
 !       ---  ON PLANTE SI LE MOT CLE DEMANDE EST FREQ POUR UN TRAN_GENE
-        if (nf .ne. 0) call u2mess('E', 'ALGORITH9_51')
+        if (nf .ne. 0) then
+            call utmess('E', 'ALGORITH9_51')
+        endif
 !
 !       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
         call wkvect(nomres//'           .VALE', 'G V R', nbmode, idvecg)
@@ -103,14 +105,16 @@ subroutine op0076()
                     temps, zr( idcham), nbmode, zr(idvecg), ierd)
 !
         if (ierd .ne. 0) then
-            call u2mess('E', 'ALGORITH9_49')
+            call utmess('E', 'ALGORITH9_49')
         endif
 !
 ! --- CAS DU HARM_GENE
 !
     else
 !       ---  ON PLANTE SI LE MOT CLE DEMANDE EST INST POUR UN HARM_GENE
-        if (nt .ne. 0) call u2mess('E', 'ALGORITH9_52')
+        if (nt .ne. 0) then
+            call utmess('E', 'ALGORITH9_52')
+        endif
 !
 !       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
         call wkvect(nomres//'           .VALE', 'G V C', nbmode, idvecg)
@@ -120,7 +124,7 @@ subroutine op0076()
                     freq, zc(idcham), nbmode, zc(idvecg), ierd)
 !
         if (ierd .ne. 0) then
-            call u2mess('E', 'ALGORITH9_50')
+            call utmess('E', 'ALGORITH9_50')
         endif
 !
     endif

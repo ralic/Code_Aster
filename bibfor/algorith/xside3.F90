@@ -16,7 +16,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/nbsigm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/reeref.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalfe.h"
     integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, ddls, nfe
@@ -113,7 +113,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
     grdepl = compor(3) .eq. 'GROT_GDEP'
     if (grdepl) then
-        call u2mess('F', 'XFEM2_2')
+        call utmess('F', 'XFEM2_2')
     endif
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT

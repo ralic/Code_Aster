@@ -29,7 +29,7 @@ subroutine jevecd(nompar, jad, valdef)
 #include "asterfort/assert.h"
 #include "asterfort/contex.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itab(8), jad, lonel, k, iret
     character(len=*) :: nompar
     real(kind=8) :: valdef
@@ -47,7 +47,7 @@ subroutine jevecd(nompar, jad, valdef)
         lonel=itab(2)*max(1,itab(6))*max(1,itab(7))
         do 1, k = 1,lonel
         if (zl(itab(8)-1+k)) then
-            call u2mess('E', 'ELEMENT_68')
+            call utmess('E', 'ELEMENT_68')
             call contex(option, nompar)
         endif
         zr(jad-1+k)=valdef

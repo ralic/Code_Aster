@@ -1,10 +1,10 @@
 subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
                   lnm3d, ndim, coor, reorie, norien,&
                   ifm, niv)
-    implicit   none
+    implicit none
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
     integer :: nbnmai, lnmail(*), lnm3d(*), ndim, norien, ifm, niv
@@ -101,7 +101,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
     else
         valk(1) = nomail
         valk(2) = tpmail
-        call u2mesk('F', 'MODELISA5_94', 2, valk)
+        call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
     endif
 !
 ! --- CENTRE DE GRAVITE DE LA MAILLE DE PEAU

@@ -111,7 +111,6 @@ subroutine te0491(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!-----------------------------------------------------------------------
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
@@ -128,8 +127,8 @@ subroutine te0491(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!-----------------------------------------------------------------------
     integer :: idconm, idene1, idene2, idepl, ideplm, idepmm
     integer :: idfde, idsig, idsigm, idvari, igau, igeom, imate, icodre(5)
     integer :: ipoids, ivf, jgano, jprol, jvale, mxcmel, nbsgm, itemps
@@ -249,8 +248,7 @@ subroutine te0491(option, nomte)
 !
     if (option .eq. 'ENER_TOTALE') then
         if (grand) then
-            call u2mesg('F', 'COMPOR1_78', 1, compor(3), 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'COMPOR1_78', sk=compor(3))
         endif
         call tecach('NNN', 'PDEPLM', 'L', 1, ideplm,&
                     iret)
@@ -431,7 +429,9 @@ subroutine te0491(option, nomte)
                             1, tempg, iret1)
                 call rctype(zi(imate), 1, 'TEMP', tempg, resu,&
                             type)
-                if ((type(1:4).eq.'TEMP') .and. (iret1.eq.1)) call u2mess('F', 'CALCULEL_31')
+                if ((type(1:4).eq.'TEMP') .and. (iret1.eq.1)) then
+                    call utmess('F', 'CALCULEL_31')
+                endif
                 call rctrac(zi(imate), 1, 'SIGM', tempg, jprol,&
                             jvale, nbval, e)
 !
@@ -638,7 +638,7 @@ subroutine te0491(option, nomte)
 !
                 eplast = airep
             else
-                call u2mess('F', 'ELEMENTS4_2')
+                call utmess('F', 'ELEMENTS4_2')
             endif
 !
 ! --- PARTIE DEVIATORIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE
@@ -842,7 +842,7 @@ subroutine te0491(option, nomte)
 !
                 eplaeq = rp*p
             else
-                call u2mess('F', 'ELEMENTS4_3')
+                call utmess('F', 'ELEMENTS4_3')
             endif
 !
 ! ---      CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :

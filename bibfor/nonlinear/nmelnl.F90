@@ -55,8 +55,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
     integer :: kpg, ksp, ndim, imate, iret, isec, ihyd
@@ -107,7 +106,9 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
     energi(2) = 0.d0
     materi = ' '
 !
-    if (.not.(elas .or. vmis)) call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+    if (.not.(elas .or. vmis)) then
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
+    endif
     ndimsi = 2*ndim
 !====================================================================
 ! - LECTURE DES CARACTERISTIQUES ELASTIQUES
@@ -195,7 +196,8 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
         nomres(2)='A_PUIS'
         nomres(3)='N_PUIS'
         call rcvala(imate, ' ', 'ECRO_PUIS', 1, 'TEMP',&
-                    [temp], 3, nomres, valres, icodre,2)
+                    [temp], 3, nomres, valres, icodre,&
+                    2)
         sigy = valres(1)
         alfafa = valres(2)
         coco = e/alfafa/sigy
@@ -282,7 +284,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
                 rprim = e*dsde/(e-dsde)
                 lin = 1.d0
             else if (puis) then
-                call u2mess('F', 'ALGORITH_1')
+                call utmess('F', 'ALGORITH_1')
             else
                 jprol2 = jprol
                 jvale2 = jvale
@@ -298,12 +300,14 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
             niter = int(crit(1))
             call zerofr(0, 'DEKKER', nmcri1, 0.d0, approx,&
                         prec, niter, p, iret, ibid)
-            if (iret .ne. 0) call u2mess('F', 'ALGORITH8_65')
+            if (iret .ne. 0) then
+                call utmess('F', 'ALGORITH8_65')
+            endif
             if (line) then
                 rp = sigy +rprim*p
                 airerp = 0.5d0*(sigy+rp)*p
             else if (puis) then
-                call u2mess('F', 'ALGORITH_1')
+                call utmess('F', 'ALGORITH_1')
             else
                 call rcfonc('V', 1, jprol, jvale, nbvale,&
                             dum, e, nu, p, rp,&
@@ -339,7 +343,9 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
                 niter = nint(crit(1))
                 call zerofr(0, 'DEKKER', nmcri2, 0.d0, xap,&
                             precr, niter, p, iret, ibid)
-                if (iret .ne. 0) call u2mess('F', 'ALGORITH8_65')
+                if (iret .ne. 0) then
+                    call utmess('F', 'ALGORITH8_65')
+                endif
                 call ecpuis(e, sigy, alfafa, unsurn, pm,&
                             p, rp, rprim)
             else

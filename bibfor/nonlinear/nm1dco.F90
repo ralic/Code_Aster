@@ -49,7 +49,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
 !     ------------------------------------------------------------------
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: sigm, deps, pm, vim(*), vip(*), epspm, corrm
     real(kind=8) :: sigp, dsde, resi, crildc(*)
     character(len=16) :: option
@@ -158,7 +158,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
 40                  continue
 141                  continue
                     if (j .ge. itemax) then
-                        call u2mess('I', 'MODELISA5_40')
+                        call utmess('I', 'MODELISA5_40')
                         codret=1
                         goto 9999
                     endif
@@ -191,7 +191,7 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
 142      continue
 !
         if (i .ge. itemax) then
-            call u2mess('I', 'MODELISA5_41')
+            call utmess('I', 'MODELISA5_41')
             codret=1
             goto 9999
         endif

@@ -26,8 +26,8 @@ subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utacli.h"
+#include "asterfort/utmess.h"
     character(len=16) :: motfac
     character(len=19) :: provli
     real(kind=8) :: tole
@@ -87,7 +87,7 @@ subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
 ! --- VERIFICATIONS
 !
     if (numfin .lt. 0 .or. numfin .gt. (nbinst-1)) then
-        call u2mess('F', 'DISCRETISATION_94')
+        call utmess('F', 'DISCRETISATION_94')
         numfin = nbinst - 1
     endif
 !

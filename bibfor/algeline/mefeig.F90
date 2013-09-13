@@ -6,8 +6,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 #include "asterc/r8pi.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/mtcrog.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vphqrp.h"
     integer :: nbmod, ndim(14), ind(2*nbmod)
     real(kind=8) :: matm(nbmod, nbmod), matr(nbmod, nbmod)
@@ -105,7 +104,9 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
     ier = 1
     call mtcrog(mat1, mavi, 2*nbmod, nbmod, nbmod,&
                 mavr, alfr, ier)
-    if (ier .ne. 0) call u2mess('F', 'ALGELINE_77')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGELINE_77')
+    endif
 !
 !
 ! --- CALCUL DU PRODUIT DE L INVERSE DE LA MATRICE DE MASSE PAR LES
@@ -136,7 +137,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
                 nitqr)
 !
     if (ier .eq. 1) then
-        call u2mess('F', 'ALGELINE_78')
+        call utmess('F', 'ALGELINE_78')
     endif
 !
 ! --- ALFR: PARTIES REELLES DES VALEURS PROPRES
@@ -285,7 +286,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
 !
     if (n .ne. nbmod) then
         write(note(1:3),'(I3.3)') n
-        call u2mesk('F', 'ALGELINE_79', 1, note)
+        call utmess('F', 'ALGELINE_79', sk=note)
     endif
 !
 ! --- FREQUENCE ET AMORTISSEMENT REELS

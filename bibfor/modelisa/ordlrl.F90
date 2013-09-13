@@ -20,8 +20,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/ordrel.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -181,7 +180,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
             do ino = 1, nbterm
                 zc(jrlcoc+ino-1)=zc(jrlcof+ino-1)
             enddo
-        elseif (typcoe .eq. 'REEL') then
+        else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
                 zr(jrlcor+ino-1)=zr(jrlcof+ino-1)
             enddo
@@ -198,7 +197,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
             if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
                 valk(1)=cmp
                 valk(2)=nomnoe
-                call u2mesk('F', 'CHARGES2_31', 2, valk)
+                call utmess('F', 'CHARGES2_31', nk=2, valk=valk)
             endif
         enddo
 !
@@ -212,7 +211,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
             do ino = 1, nbterm
                 zc(jrlcof+ino-1)=zc(jrlcoc+ino-1)
             enddo
-        elseif (typcoe .eq. 'REEL') then
+        else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
                 zr(jrlcof+ino-1)=zr(jrlcor+ino-1)
             enddo
@@ -228,7 +227,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
                     indmax=ino
                 endif
             enddo
-        elseif (typcoe .eq. 'REEL') then
+        else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
                 if (abs(zr(jrlcor+ino-1)) .gt. coemax) then
                     coemax=abs(zr(jrlcor+ino-1))
@@ -282,11 +281,11 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
         if (typcoe .eq. 'COMP') then
             if (abs(zc(jrlco1+indmax-1)) .lt. eps2) then
-                call u2mess('F', 'CHARGES2_32')
+                call utmess('F', 'CHARGES2_32')
             endif
-        elseif (typcoe .eq. 'REEL') then
+        else if (typcoe .eq. 'REEL') then
             if (abs(zr(jrlco1+indmax-1)) .lt. eps2) then
-                call u2mess('F', 'CHARGES2_32')
+                call utmess('F', 'CHARGES2_32')
             endif
         else
             ASSERT(.false.)
@@ -324,9 +323,9 @@ subroutine ordlrl(charge, lisrel, nomgd)
                             icomp=1
                             goto 120
                         endif
-110                     continue
+110                      continue
                     enddo
-120                 continue
+120                  continue
                     if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
                 endif
             enddo
@@ -334,7 +333,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !       --  CAS DES COEF. REEL
 !       -----------------------------------
-        elseif (typcoe .eq. 'REEL') then
+        else if (typcoe .eq. 'REEL') then
             do irela2 = 1, irela1-1
                 nbter2=zi(jrlnt+irela2-1)
                 ipntr2=zi(jrlpo+irela2-1)
@@ -363,16 +362,16 @@ subroutine ordlrl(charge, lisrel, nomgd)
                             icomp=1
                             goto 150
                         endif
-140                     continue
+140                      continue
                     enddo
-150                 continue
+150                  continue
                     if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
                 endif
             enddo
         else
             ASSERT(.false.)
         endif
-170     continue
+170      continue
     end do
 !
 !

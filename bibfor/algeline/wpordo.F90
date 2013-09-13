@@ -1,7 +1,7 @@
 subroutine wpordo(type, shift, vpr, vpi, x,&
                   m, neq)
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: type, neq, m
     real(kind=8) :: vpr(*), vpi(*)
     complex(kind=8) :: x(neq, m), shift
@@ -94,6 +94,6 @@ subroutine wpordo(type, shift, vpr, vpi, x,&
         endif
 200      continue
     else
-        call u2mess('F', 'ALGELINE3_97')
+        call utmess('F', 'ALGELINE3_97')
     endif
 end subroutine

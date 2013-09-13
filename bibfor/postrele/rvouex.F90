@@ -25,8 +25,8 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 #include "asterfort/reliem.h"
 #include "asterfort/rvfmai.h"
 #include "asterfort/rvgnoe.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utmach.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
 !
@@ -122,7 +122,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
             if (kk .eq. 1) then
                 call dismoi('F', 'NOM_GD', nchp19, 'CHAMP', ibid,&
                             nomgd, ie)
-                call u2mesk('I', 'PREPOST_36', 1, nomgd)
+                call utmess('I', 'PREPOST_36', sk=nomgd)
                 call celcel('PAS_DE_SP', nchp19, 'V', '&&RVOUEX.CHAMEL2')
                 nchp19= '&&RVOUEX.CHAMEL2'
             endif
@@ -172,7 +172,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                     valk(1) = zk8(jcmp-1+i)
                     valk(2) = nchsym
                     valk(3) = resuco
-                    call u2mesk('F', 'POSTRELE_65', 3, valk)
+                    call utmess('F', 'POSTRELE_65', nk=3, valk=valk)
 102              continue
             endif
 !

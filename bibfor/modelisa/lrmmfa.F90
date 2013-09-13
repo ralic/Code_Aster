@@ -46,6 +46,8 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/as_mfanfa.h"
+#include "asterfort/as_mmhfnr.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
@@ -54,10 +56,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/lrmmf1.h"
 #include "asterfort/lrmmf4.h"
-#include "asterfort/as_mmhfnr.h"
-#include "asterfort/as_mfanfa.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
@@ -130,8 +129,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
     call as_mfanfa(fid, nomamd, nbrfam, codret)
     if (codret .ne. 0) then
         saux08='mfanfa'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !
@@ -146,7 +144,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 !          C'EST QUAND MEME BIZARRE, ALORS ON EMET UNE ALARME
 !
     if (nbrfam .eq. 0) then
-        call u2mess('A', 'MED_17')
+        call utmess('A', 'MED_17')
     else
 !
 !====
@@ -160,7 +158,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
         call wkvect(famnoe, 'V V I', nbnoeu, adfano)
 !
         call as_mmhfnr(fid, nomamd, zi(adfano), nbnoeu, ednoeu,&
-                    typnoe, codret)
+                       typnoe, codret)
 !      DANS MED3.0, LE CODE RETOUR PEUT ETRE NEGATIF SANS POUR
 !      AUTANT QU'IL Y AIT UN PROBLEME...
 !      IF ( CODRET.NE.0 ) THEN
@@ -179,7 +177,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
             call wkvect('&&'//nompro//'.FAMMA.'//nomtyp(ityp), 'V V I', nmatyp(ityp),&
                         jfamma(ityp))
             call as_mmhfnr(fid, nomamd, zi(jfamma(ityp)), nmatyp( ityp), edmail,&
-                        typgeo(ityp), codret)
+                           typgeo(ityp), codret)
 !         DANS MED3.0, LE CODE RETOUR PEUT ETRE NEGATIF SANS POUR
 !         AUTANT QU'IL Y AIT UN PROBLEME...
 !          IF ( CODRET.NE.0 ) THEN

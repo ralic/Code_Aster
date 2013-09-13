@@ -1,7 +1,6 @@
 subroutine rsagsd(nomsd, ilong)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -16,9 +15,9 @@ subroutine rsagsd(nomsd, ilong)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ilong
     character(len=*) :: nomsd
 ! ----------------------------------------------------------------------
@@ -60,9 +59,13 @@ subroutine rsagsd(nomsd, ilong)
     rundef = r8vide()
     iundef = isnnem()
 !
-    if (ilong .lt. 0) call u2mess('F', 'UTILITAI4_29')
+    if (ilong .lt. 0) then
+        call utmess('F', 'UTILITAI4_29')
+    endif
     call jeexin(nomd2//'.DESC', iret)
-    if (iret .eq. 0) call u2mesk('F', 'UTILITAI_40', 1, nomd2)
+    if (iret .eq. 0) then
+        call utmess('F', 'UTILITAI_40', sk=nomd2)
+    endif
 !
     call jelira(nomd2//'.DESC', 'NOMMAX', nbcham)
     call jelira(nomd2//'.ORDR', 'LONMAX', nbordr)

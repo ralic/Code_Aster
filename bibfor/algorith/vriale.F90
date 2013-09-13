@@ -29,12 +29,12 @@ subroutine vriale()
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ibid, nbamor, nbmode, nindex, nbindi, nbindj, nbcmpi, nbcmpj
     integer :: nnoeex, nvasex, ncmpex, nmost1, napexc
-    real(kind=8) ::  fremin, fremax
+    real(kind=8) :: fremin, fremax
     character(len=4) :: excmod
-    character(len=8) ::  intrep
+    character(len=8) :: intrep
     character(len=16) :: tyconc, nomcmd, graexc
 !     ------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine vriale()
     nbamor = -nbamor
     nbmode = -nbmode
     if (nbamor .ne. 0 .and. nbamor .ne. nbmode) then
-        call u2mess('E', 'ALGORITH11_29')
+        call utmess('E', 'ALGORITH11_29')
     endif
 !
     call getvtx('EXCIT', 'MODAL', iocc=1, scal=excmod, nbret=ibid)
@@ -61,7 +61,7 @@ subroutine vriale()
 !
     nindex = -nindex
     if (excmod .eq. 'OUI' .and. nbmode .ne. nindex) then
-        call u2mess('A', 'ALGORITH11_30')
+        call utmess('A', 'ALGORITH11_30')
     endif
 !
 !---NNOEEX=NINDEX OU NNOEEX=2*NINDEX
@@ -72,14 +72,14 @@ subroutine vriale()
         call getvtx('EXCIT', 'NOM_CMP_I', iocc=1, nbval=0, nbret=nbcmpi)
         call getvtx('EXCIT', 'NOM_CMP_J', iocc=1, nbval=0, nbret=nbcmpj)
         if (nbcmpi .ne. nbcmpj) then
-            call u2mess('E', 'PREPOST3_84')
+            call utmess('E', 'PREPOST3_84')
         endif
         if (nbcmpi .ne. nbindi) then
-            call u2mess('E', 'PREPOST3_85')
+            call utmess('E', 'PREPOST3_85')
         endif
     endif
     if (nbindj .ne. nbindi) then
-        call u2mess('E', 'ALGORITH11_31')
+        call utmess('E', 'ALGORITH11_31')
     endif
     nindex = -nbindi
 !
@@ -100,10 +100,10 @@ subroutine vriale()
 !
     if ((graexc.eq.'SOUR_PRESS') .or. (graexc.eq.'SOUR_FORCE')) then
         if (nnoeex .ne. 2*nindex) then
-            call u2mess('E', 'ALGORITH11_32')
+            call utmess('E', 'ALGORITH11_32')
         endif
     else if ((napexc.ne.nindex).and.(excmod.eq.'NON')) then
-        call u2mess('E', 'ALGORITH11_33')
+        call utmess('E', 'ALGORITH11_33')
     endif
 !
 !------NNOEEX=NCMPEX
@@ -111,16 +111,16 @@ subroutine vriale()
     call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=0, nbret=ncmpex)
     ncmpex = -ncmpex
     if (nnoeex .ne. ncmpex) then
-        call u2mess('E', 'ALGORITH11_34')
+        call utmess('E', 'ALGORITH11_34')
     endif
 !
 !---PRESENCE DE MODE STATIQUE QUAND ON EST EN DEPL IMPOSE
 !
     call getvid(' ', 'MODE_STAT', nbval=0, nbret=nmost1)
     if ((graexc.eq.'DEPL_R') .and. (nmost1.eq.0) .and. (nvasex.eq.0)) then
-        call u2mess('E', 'ALGORITH11_35')
+        call utmess('E', 'ALGORITH11_35')
     else if ((graexc.ne.'DEPL_R').and.(nmost1.ne.0)) then
-        call u2mess('E', 'ALGORITH11_36')
+        call utmess('E', 'ALGORITH11_36')
     endif
 !
 !---FREMIN < FREMAX
@@ -133,7 +133,7 @@ subroutine vriale()
     if (ibid .ne. 0) then
         call getvr8('REPONSE', 'FREQ_MAX', iocc=1, scal=fremax, nbret=ibid)
         if (fremin .ge. fremax) then
-            call u2mess('E', 'ALGORITH11_37')
+            call utmess('E', 'ALGORITH11_37')
         endif
     endif
 !

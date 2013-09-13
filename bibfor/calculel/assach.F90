@@ -1,7 +1,6 @@
 subroutine assach(preel2, pimag2, base2, chout2)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -16,9 +15,9 @@ subroutine assach(preel2, pimag2, base2, chout2)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nopar2.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
+!
     character(len=*) :: chout2, preel2, pimag2, base2
     character(len=19) :: chout, preel, pimag
     character(len=1) :: base
@@ -73,7 +72,7 @@ subroutine assach(preel2, pimag2, base2, chout2)
     gdr=zi(jceldr)
     call jenuno(jexnum('&CATA.GD.NOMGD', gdr), nomgdr)
     if ((nomgdr(7:7).ne.' ') .or. (nomgdr(5:6).ne.'_R')) then
-        call u2mesk('F', 'CALCULEL_20', 1, nomgdr)
+        call utmess('F', 'CALCULEL_20', sk=nomgdr)
     endif
 !
     call jeveuo(pimag//'.CELD', 'L', jceldi)
@@ -81,11 +80,11 @@ subroutine assach(preel2, pimag2, base2, chout2)
     call jenuno(jexnum('&CATA.GD.NOMGD', gdi), nomgdi)
 !
     if ((nomgdi(7:7).ne.' ') .or. (nomgdi(5:6).ne.'_R')) then
-        call u2mesk('F', 'CALCULEL_20', 1, nomgdi)
+        call utmess('F', 'CALCULEL_20', sk=nomgdi)
     endif
 !
     if (nomgdr .ne. nomgdi) then
-        call u2mess('F', 'CALCULEL_21')
+        call utmess('F', 'CALCULEL_21')
     endif
 !
     nomcpx=nomgdr(1:4)//'_C'
@@ -98,7 +97,7 @@ subroutine assach(preel2, pimag2, base2, chout2)
     if (nmax1 .ne. nmax2) then
         valk(1)=nomgdr
         valk(2)=nomcpx
-        call u2mesk('F', 'CALCULEL_22', 2, valk)
+        call utmess('F', 'CALCULEL_22', nk=2, valk=valk)
     endif
 !
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gdr), 'L', jncmpr)
@@ -112,7 +111,7 @@ subroutine assach(preel2, pimag2, base2, chout2)
     if (ier .ne. 0) then
         valk(1)=nomgdr
         valk(2)=nomcpx
-        call u2mesk('F', 'CALCULEL_23', 2, valk)
+        call utmess('F', 'CALCULEL_23', nk=2, valk=valk)
     endif
 !
     call jeveuo(preel//'.CELK', 'L', jcelkr)

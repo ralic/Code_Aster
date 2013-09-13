@@ -9,8 +9,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xrell2.h"
     integer :: nbarvz, nno, ndim, nbno
@@ -87,7 +86,9 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
         do 20 i = 1, nno
             tabut(1,i)=zi(jgro-1+i)
 20      continue
-        if (nno .gt. nbarvi) call u2mess('F', 'PILOTAGE_62')
+        if (nno .gt. nbarvi) then
+            call utmess('F', 'PILOTAGE_62')
+        endif
         do 40 j = 1, nno
             noeuad=.false.
             do 41 i = 1, nbarvi
@@ -97,7 +98,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                         if ((l.ne.j) .and. (tabut(1,l).eq.tabnoz(2,i))) then
                             vali(1)=tabut(1,j)
                             vali(2)=tabut(1,l)
-                            call u2mesi('F', 'PILOTAGE_63', 2, vali)
+                            call utmess('F', 'PILOTAGE_63', ni=2, vali=vali)
                         endif
 42                  continue
                     tabut(2,j)=tabnoz(2,i)
@@ -108,7 +109,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                         if ((l.ne.j) .and. (tabut(1,l).eq.tabnoz(1,i))) then
                             vali(1)=tabut(1,j)
                             vali(2)=tabut(1,l)
-                            call u2mesi('F', 'PILOTAGE_63', 2, vali)
+                            call utmess('F', 'PILOTAGE_63', ni=2, vali=vali)
                         endif
 43                  continue
                     tabut(2,j)=tabnoz(1,i)
@@ -116,7 +117,9 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
                     noeuad=.true.
                 endif
 41          continue
-            if (.not.noeuad) call u2mesi('A', 'PILOTAGE_61', 1, tabut(1, j))
+            if (.not.noeuad) then
+                call utmess('A', 'PILOTAGE_61', si=tabut(1, j))
+            endif
 40      continue
         do 50 i = 1, nno
             do 51 j = 1, 3

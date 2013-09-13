@@ -50,8 +50,7 @@ subroutine op0154()
 #include "asterfort/rotama.h"
 #include "asterfort/symema.h"
 #include "asterfort/tranma.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vtgpld.h"
@@ -73,7 +72,9 @@ subroutine op0154()
 !
     call getres(ma2, kbi1, kbi2)
 !
-    if (ma .ne. ma2) call u2mess('F', 'SOUSTRUC_15')
+    if (ma .ne. ma2) then
+        call utmess('F', 'SOUSTRUC_15')
+    endif
 !
 !
 !     --- TRAITEMENT DU MOT CLEF  "ORIE_FISSURE" :
@@ -106,7 +107,7 @@ subroutine op0154()
         if (mab .ne. ma) then
             valk(1)=ma
             valk(2)=mab
-            call u2mesk('F', 'CALCULEL5_1', 2, valk)
+            call utmess('F', 'CALCULEL5_1', nk=2, valk=valk)
         endif
         call chpver('F', depla, 'NOEU', 'DEPL_R', ier)
         geomi = ma//'.COORDO'
@@ -217,10 +218,10 @@ subroutine op0154()
 !           EN 3D : DIM=N1=N2=3
             if (dim .eq. -2) then
                 if (n1 .ne. dim) then
-                    call u2mess('F', 'ALGORITH9_62')
+                    call utmess('F', 'ALGORITH9_62')
                 endif
                 if (n2 .ne. 0) then
-                    call u2mess('A', 'ALGORITH9_63')
+                    call utmess('A', 'ALGORITH9_63')
                 endif
                 call getvr8('SYMETRIE', 'POINT', iocc=i, nbval=2, vect=pt,&
                             nbret=dim)
@@ -232,10 +233,10 @@ subroutine op0154()
                 perp(3) = 0.0d0
             else
                 if (n1 .ne. dim) then
-                    call u2mess('F', 'ALGORITH9_62')
+                    call utmess('F', 'ALGORITH9_62')
                 endif
                 if (n2 .ne. dim) then
-                    call u2mess('F', 'ALGORITH9_64')
+                    call utmess('F', 'ALGORITH9_64')
                 endif
                 call getvr8('SYMETRIE', 'POINT', iocc=i, nbval=3, vect=pt,&
                             nbret=dim)

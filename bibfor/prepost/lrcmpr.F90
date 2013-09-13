@@ -35,11 +35,11 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mpfprr.h"
+#include "asterfort/as_mpfpsn.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/as_mpfpsn.h"
-#include "asterfort/as_mpfprr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: idfimd
     integer :: lgproa
@@ -88,8 +88,7 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
     call as_mpfpsn(idfimd, nomprf, lgprom, codret)
     if (codret .ne. 0) then
         saux08='mpfpsn'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (nivinf .gt. 1) then
@@ -107,8 +106,7 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
     call as_mpfprr(idfimd, zi(adprom), lgprom, nomprf, codret)
     if (codret .ne. 0) then
         saux08='mpfprr'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (nivinf .gt. 1) then

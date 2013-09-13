@@ -1,5 +1,5 @@
 subroutine as_mlclor(fid, tr1, tr2, tr3, nbt,&
-                  k64, cret)
+                     k64, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,16 +19,17 @@ subroutine as_mlclor(fid, tr1, tr2, tr3, nbt,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mlclor.h"
     real(kind=8) :: tr1(*), tr2(*), tr3(*)
     aster_int :: fid, nbt, cret
     character(len=64) :: k64
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, nbt4, cret4
     fid4 = fid
@@ -40,6 +41,6 @@ subroutine as_mlclor(fid, tr1, tr2, tr3, nbt,&
     call mlclor(fid, k64, nbt, tr1, tr2,&
                 tr3, cret)
 #endif
-
+!
 #endif
 end subroutine

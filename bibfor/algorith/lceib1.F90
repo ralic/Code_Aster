@@ -21,8 +21,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     character(len=16) :: compor(*)
     character(len=*) :: fami
@@ -51,7 +50,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
 ! ----------------------------------------------------------------------
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3),materi
+    character(len=8) :: nomres(3), materi
     integer :: i, k, ndimsi
     real(kind=8) :: valres(3), e, nu
     real(kind=8) :: sref, sechm, hydrm
@@ -78,7 +77,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
         (.not.( compor(1)(1:7) .eq. 'KIT_THM')) .and.&
         (.not.( compor(1)(1:8) .eq. 'KIT_THHM')) .and.&
         (.not.( compor(1)(1:7) .eq. 'KIT_DDI'))) then
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
 !    LECTURE DES CARACTERISTIQUES DU MATERIAU
     nomres(1) = 'E'
@@ -127,14 +126,14 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                     ' ', 'BETON_ECRO_LINE', 0, ' ', 0.d0,&
                     3, nomres, valres, icodre, 0)
         if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
-            call u2mess('F', 'ALGORITH4_51')
+            call utmess('F', 'ALGORITH4_51')
         endif
         gamma = - e/valres(1)
         k0=valres(2)**2 *(1.d0+gamma)/(2.d0*e) *(1.d0+nu-2.d0*nu**2)/(&
         1.d0+nu)
         if (nu .eq. 0) then
             if (icodre(3) .eq. 0) then
-                call u2mess('F', 'ALGORITH4_52')
+                call utmess('F', 'ALGORITH4_52')
             else
                 seuil=k0
             endif
@@ -144,7 +143,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                 seuil=k0
             else
                 if (valres(3) .lt. sicr) then
-                    call u2mess('F', 'ALGORITH4_53')
+                    call utmess('F', 'ALGORITH4_53')
                 else
                     k1=valres(3)*(1.d0+gamma)*nu**2/(1.d0+nu)/(1.d0-&
                     2.d0*nu) -k0*e/(1.d0-2.d0*nu)/valres(3)

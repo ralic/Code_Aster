@@ -2,7 +2,6 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                   rc, xcen, tole, v1, ispv)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -13,8 +12,9 @@ subroutine acnoce(noma, type, liste, nb, coor,&
 #include "asterfort/jexnum.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
+!
     real(kind=8) :: coor(*), xcen(3), rc, tole, v1(3)
     character(len=8) :: noma
     character(len=24) :: liste(*)
@@ -87,8 +87,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
             if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
                 vali = im
                 valk = ' '
-                call u2mesg('E', 'MODELISA8_13', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'MODELISA8_13', sk=valk, si=vali)
             endif
             call provec(xc1, xc2, pvec)
             ps=ddot(3,pvec,1,v1,1)
@@ -98,8 +97,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 else if (ispv.ne.1) then
                     vali = im
                     valk = ' '
-                    call u2mesg('E', 'MODELISA8_14', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('E', 'MODELISA8_14', sk=valk, si=vali)
                 endif
             else if (ps.lt.0.d0) then
                 if (ispv .eq. 0) then
@@ -107,14 +105,12 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 else if (ispv.ne.-1) then
                     vali = im
                     valk = ' '
-                    call u2mesg('E', 'MODELISA8_14', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('E', 'MODELISA8_14', sk=valk, si=vali)
                 endif
             else
                 vali = im
                 valk = ' '
-                call u2mesg('E', 'MODELISA8_16', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
             endif
 52      continue
     else if (type.eq.'GRMA') then
@@ -137,8 +133,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
                     vali = im
                     valk = ' '
-                    call u2mesg('E', 'MODELISA8_13', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('E', 'MODELISA8_13', sk=valk, si=vali)
                 endif
                 call provec(xc1, xc2, pvec)
                 ps=ddot(3,pvec,1,v1,1)
@@ -148,8 +143,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                     else if (ispv.ne.1) then
                         vali = im
                         valk = ' '
-                        call u2mesg('E', 'MODELISA8_14', 1, valk, 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('E', 'MODELISA8_14', sk=valk, si=vali)
                     endif
                 else if (ps.lt.0.d0) then
                     if (ispv .eq. 0) then
@@ -157,14 +151,12 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                     else if (ispv.ne.-1) then
                         vali = im
                         valk = ' '
-                        call u2mesg('E', 'MODELISA8_14', 1, valk, 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('E', 'MODELISA8_14', sk=valk, si=vali)
                     endif
                 else
                     vali = im
                     valk = ' '
-                    call u2mesg('E', 'MODELISA8_16', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
                 endif
 54          continue
 53      continue
@@ -185,8 +177,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
             if ((abs(xrc1-rc).gt.tole) .or. (abs(xrc2-rc).gt.tole)) then
                 vali = im
                 valk = ' '
-                call u2mesg('E', 'MODELISA8_13', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'MODELISA8_13', sk=valk, si=vali)
             endif
             call provec(xc1, xc2, pvec)
             ps=ddot(3,pvec,1,v1,1)
@@ -196,8 +187,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 else if (ispv.ne.1) then
                     vali = im
                     valk = ' '
-                    call u2mesg('E', 'MODELISA8_14', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('E', 'MODELISA8_14', sk=valk, si=vali)
                 endif
             else if (ps.lt.0.d0) then
                 if (ispv .eq. 0) then
@@ -205,14 +195,12 @@ subroutine acnoce(noma, type, liste, nb, coor,&
                 else if (ispv.ne.-1) then
                     vali = im
                     valk = ' '
-                    call u2mesg('E', 'MODELISA8_14', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('E', 'MODELISA8_14', sk=valk, si=vali)
                 endif
             else
                 vali = im
                 valk = ' '
-                call u2mesg('E', 'MODELISA8_16', 1, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'MODELISA8_16', sk=valk, si=vali)
             endif
 55      continue
     endif

@@ -16,8 +16,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
     integer :: ialloc
     character(len=4) :: fonree
@@ -123,8 +122,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
                     call jenuno(jexnum(noma//'.NOMMAI', ima), maille)
                     valk(1) = maille
                     valk(2) = motclf
-                    call u2mesg('A', 'MODELISA9_81', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A', 'MODELISA9_81', nk=2, valk=valk)
                 endif
             enddo
             call nocart(carte, 1, ' ', 'NOM', 0,&
@@ -143,8 +141,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
                         call jenuno(jexnum(noma//'.NOMMAI', ima), maille)
                         valk(1) = maille
                         valk(2) = motclf
-                        call u2mesg('A', 'MODELISA9_81', 2, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('A', 'MODELISA9_81', nk=2, valk=valk)
                     endif
                 enddo
                 call nocart(carte, 3, k8b, 'NUM', nbma,&

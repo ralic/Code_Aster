@@ -25,7 +25,7 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
 #include "asterfort/subac1.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: laxi
     integer :: mode, nno, npg
     real(kind=8) :: poidsg(npg), vff(nno, npg), dff(nno, npg)
@@ -63,7 +63,9 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
     do 100 kpg = 1, npg
 !
 !      ON NE SAIT PAS TRAITER LE CISAILLEMENT SUIVEUR
-        if (p(2,kpg) .ne. 0.d0) call u2mess('F', 'ALGORITH8_24')
+        if (p(2,kpg) .ne. 0.d0) then
+            call utmess('F', 'ALGORITH8_24')
+        endif
 !
 !      VERIFICATION QUE L'ELEMENT N'EST PAS CONFONDU AVEC L'AXE
         if (laxi) then
@@ -72,7 +74,9 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
                 r = r + vff(n,kpg)*geom(1,n)
  2          continue
             if (r .eq. 0.d0) then
-                if (p(1,kpg) .ne. 0.d0) call u2mess('F', 'ALGORITH8_25')
+                if (p(1,kpg) .ne. 0.d0) then
+                    call utmess('F', 'ALGORITH8_25')
+                endif
                 goto 100
             endif
         endif

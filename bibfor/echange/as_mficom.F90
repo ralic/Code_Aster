@@ -17,16 +17,17 @@ subroutine as_mficom(nom, hdfok, medok, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
-! person_in_charge: nicolas.sellenet at edf.fr
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mficom.h"
+! person_in_charge: nicolas.sellenet at edf.fr
     aster_int :: cret, hdfok, medok
     character(len=*) :: nom
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: cret4, hdfok4, medok4
     call mficom(nom, hdfok4, medok4, cret4)
@@ -36,6 +37,6 @@ subroutine as_mficom(nom, hdfok, medok, cret)
 #else
     call mficom(nom, hdfok, medok, cret)
 #endif
-
+!
 #endif
 end subroutine

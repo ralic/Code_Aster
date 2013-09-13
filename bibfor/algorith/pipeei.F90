@@ -29,7 +29,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 #include "asterfort/pipeou.h"
 #include "asterfort/pipetc.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: axi
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 18), im(3, 9)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
@@ -97,7 +97,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
             call pipeou(mat, sup, sud, mup, mud,&
                         vim(1, g), dtau, copilo(1, g))
         else
-            call u2mess('F', 'MECANONLINE_59')
+            call utmess('F', 'MECANONLINE_59')
         endif
 !
 10  end do

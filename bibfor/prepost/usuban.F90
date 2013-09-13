@@ -2,7 +2,7 @@ subroutine usuban(mater, isupp, para, ier)
     implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: para(*)
     character(len=*) :: mater
 !-----------------------------------------------------------------------
@@ -249,8 +249,7 @@ subroutine usuban(mater, isupp, para, ier)
             valk (1) = type(1:lt)
             valk (2) = mate(1:lk)
             valk (3) = ' '
-            call u2mesg('E', 'PREPOST5_77', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'PREPOST5_77', nk=3, valk=valk)
         endif
 !
 ! **********************************************************************
@@ -288,8 +287,7 @@ subroutine usuban(mater, isupp, para, ier)
             valk (1) = type(1:lt)
             valk (2) = mate(1:lk)
             valk (3) = ' '
-            call u2mesg('E', 'PREPOST5_77', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'PREPOST5_77', nk=3, valk=valk)
         endif
 !
 ! **********************************************************************
@@ -324,8 +322,7 @@ subroutine usuban(mater, isupp, para, ier)
             valk (1) = type(1:lt)
             valk (2) = mate(1:lk)
             valk (3) = ' '
-            call u2mesg('E', 'PREPOST5_77', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'PREPOST5_77', nk=3, valk=valk)
         endif
 !
     endif

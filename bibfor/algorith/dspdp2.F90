@@ -1,6 +1,6 @@
 subroutine dspdp2(net, bishop, tbiot, dsdp2)
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: i
     real(kind=8) :: tbiot(6), dsdp2(6)
     logical :: net, bishop
@@ -32,7 +32,7 @@ subroutine dspdp2(net, bishop, tbiot, dsdp2)
         else if (net) then
             dsdp2(i) = - tbiot(i)
         else
-            call u2mess('F', 'ALGORITH17_4')
+            call utmess('F', 'ALGORITH17_4')
         endif
 10  end do
 ! ======================================================================

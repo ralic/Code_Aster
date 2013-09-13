@@ -26,7 +26,7 @@ subroutine hujcic(mater, sig, vin, seuil)
 !       OUT SEUIL  :  SEUIL DU MECANISME CYCLIQUE DE CONSOLIDATION
 !       ---------------------------------------------------------------
 #include "asterc/r8maem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, i
     real(kind=8) :: mater(22, 2), r4c, i1, sig(6), vin(*)
     real(kind=8) :: d, pco, beta, seuil, pc, epsvpm
@@ -46,7 +46,9 @@ subroutine hujcic(mater, sig, vin, seuil)
     exptol = log(r8maem())
     exptol = min(exptol, 40.d0)
     aexp = -beta*epsvpm
-    if (aexp .ge. exptol) call u2mess('F', 'COMPOR1_7')
+    if (aexp .ge. exptol) then
+        call utmess('F', 'COMPOR1_7')
+    endif
 !
     pc = pco*exp(-beta*epsvpm)
 !

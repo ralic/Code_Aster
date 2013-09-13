@@ -25,13 +25,13 @@ subroutine te0328(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2j.h"
 #include "asterfort/dfdm3j.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: nomte, option
 !
     logical :: posi, nega
@@ -68,7 +68,7 @@ subroutine te0328(option, nomte)
         nno=zi(iadzi-1+2)
         valk(1)=zk24(iazk24-1+3)
         valk(2)=zk24(iazk24-1+3+nno+1)
-        call u2mesk('A', 'CALCULEL_7', 2, valk)
+        call utmess('A', 'CALCULEL_7', nk=2, valk=valk)
         codret=1
     endif
 !

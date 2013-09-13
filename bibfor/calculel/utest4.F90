@@ -2,7 +2,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                   refi, refr, refc, epsi, lign1,&
                   lign2, crit, ific, nbcmp, nocmp,&
                   llab, ssigne)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -15,9 +15,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utites.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbref, refi(nbref), ific, nbcmp
     real(kind=8) :: refr(nbref), epsi
@@ -103,7 +102,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     goto 10
                 endif
 12          continue
-            call u2mesk('F', 'CALCULEL6_88', 1, noddl)
+            call utmess('F', 'CALCULEL6_88', sk=noddl)
 10      continue
         call jelira(cnsinr//'.CNSV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CNSV', 'LONMAX', neq)
@@ -113,7 +112,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
             valk(1) = cham19
             valk(2) = type
             valk(3) = typrez
-            call u2mesk('A', 'CALCULEL5_13', 3, valk)
+            call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
             goto 9999
         endif
 !
@@ -134,7 +133,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
                     goto 20
                 endif
 22          continue
-            call u2mesk('F', 'CALCULEL6_88', 1, noddl)
+            call utmess('F', 'CALCULEL6_88', sk=noddl)
 20      continue
         call jelira(cnsinr//'.CESV', 'TYPE', cval=type)
         call jelira(cnsinr//'.CESV', 'LONMAX', neq)
@@ -144,12 +143,12 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
             valk(1) = cham19
             valk(2) = type
             valk(3) = typrez
-            call u2mesk('A', 'CALCULEL5_13', 3, valk)
+            call utmess('A', 'CALCULEL5_13', nk=3, valk=valk)
             goto 9999
         endif
     else
         write(ific,*) 'NOOK '
-        call u2mesk('A', 'CALCULEL5_14', 1, cham19)
+        call utmess('A', 'CALCULEL5_14', sk=cham19)
     endif
 !
     nl1 = lxlgut(lign1)
@@ -253,7 +252,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
             lign2(nl2+17:nl2+17)='.'
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
 !
@@ -351,7 +350,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
             lign2(nl2+17:nl2+17)='.'
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
 !
@@ -386,7 +385,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
             lign2(nl2+17:nl2+17)='.'
         else
             write(ific,*) 'NOOK '
-            call u2mess('A', 'CALCULEL5_12')
+            call utmess('A', 'CALCULEL5_12')
             goto 9999
         endif
     endif

@@ -12,8 +12,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,11 +118,21 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! --- FETI
 !
     if (lfeti) then
-        if (lmacr) call u2mess('F', 'MECANONLINE3_70')
-        if (londe) call u2mess('F', 'MECANONLINE3_71')
-        if (ldyna) call u2mess('F', 'MECANONLINE3_73')
-        if (lctcd) call u2mess('F', 'MECANONLINE3_78')
-        if (lctcc) call u2mess('F', 'MECANONLINE3_79')
+        if (lmacr) then
+            call utmess('F', 'MECANONLINE3_70')
+        endif
+        if (londe) then
+            call utmess('F', 'MECANONLINE3_71')
+        endif
+        if (ldyna) then
+            call utmess('F', 'MECANONLINE3_73')
+        endif
+        if (lctcd) then
+            call utmess('F', 'MECANONLINE3_78')
+        endif
+        if (lctcc) then
+            call utmess('F', 'MECANONLINE3_79')
+        endif
     endif
 !
 ! --- CONTACT DISCRET
@@ -134,31 +143,31 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
         lpena = cfdisl(defico,'CONT_PENA')
         lctgcp = cfdisl(defico,'CONT_GCP')
         if (lpilo) then
-            call u2mess('F', 'MECANONLINE_43')
+            call utmess('F', 'MECANONLINE_43')
         endif
         if (lreli .and. (.not.lallv)) then
-            call u2mess('A', 'MECANONLINE3_89')
+            call utmess('A', 'MECANONLINE3_89')
         endif
         if (lgcpc .or. lpetsc) then
             if (.not.(lallv.or.lpena.or.lctgcp)) then
-                call u2mesk('F', 'MECANONLINE3_90', 1, metres)
+                call utmess('F', 'MECANONLINE3_90', sk=metres)
             endif
             if (lctgcp .and. .not.lldsp) then
-                call u2mess('F', 'MECANONLINE3_88')
+                call utmess('F', 'MECANONLINE3_88')
             endif
         endif
         if (reincr .eq. 0) then
             if (lmodim) then
-                call u2mess('F', 'CONTACT_88')
+                call utmess('F', 'CONTACT_88')
             endif
         endif
 !       ON FORCE SYME='OUI' AVEC LE CONTACT DISCRET
         if (.not.(lsyme.or.lallv)) then
             zk24(jslvk+4) = 'OUI'
-            call u2mess('A', 'CONTACT_1')
+            call utmess('A', 'CONTACT_1')
         endif
         if ((lmvib.or.lflam) .and. lmodim) then
-            call u2mess('F', 'MECANONLINE5_14')
+            call utmess('F', 'MECANONLINE5_14')
         endif
     endif
 !
@@ -167,52 +176,86 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     if (lctcc) then
         if (lpilo .and. (.not.lxfem)) then
 !         LEVEE D INTERDICTION TEMPORAIRE POUR X-FEM
-            call u2mess('F', 'MECANONLINE3_92')
+            call utmess('F', 'MECANONLINE3_92')
         endif
-        if (lreli) call u2mess('F', 'MECANONLINE3_91')
-        if (lrcmk) call u2mesk('F', 'MECANONLINE3_93', 1, zk24(jslvk))
-        if (lamg) call u2mesk('F', 'MECANONLINE3_97', 1, zk24(jslvk-1+2))
-        if (lpetsc .and. lmatdi) call u2mess('F', 'MECANONLINE3_98')
+        if (lreli) then
+            call utmess('F', 'MECANONLINE3_91')
+        endif
+        if (lrcmk) then
+            call utmess('F', 'MECANONLINE3_93', sk=zk24(jslvk))
+        endif
+        if (lamg) then
+            call utmess('F', 'MECANONLINE3_97', sk=zk24(jslvk-1+2))
+        endif
+        if (lpetsc .and. lmatdi) then
+            call utmess('F', 'MECANONLINE3_98')
+        endif
     endif
 !
 ! --- LIAISON UNILATERALE
 !
     if (lunil) then
-        if (lpilo) call u2mess('F', 'MECANONLINE3_94')
-        if (lreli) call u2mess('A', 'MECANONLINE3_95')
-        if (lgcpc .or. lpetsc) call u2mesk('F', 'MECANONLINE3_96', 1, zk24(jslvk))
+        if (lpilo) then
+            call utmess('F', 'MECANONLINE3_94')
+        endif
+        if (lreli) then
+            call utmess('A', 'MECANONLINE3_95')
+        endif
+        if (lgcpc .or. lpetsc) then
+            call utmess('F', 'MECANONLINE3_96', sk=zk24(jslvk))
+        endif
 !       ON FORCE SYME='OUI' AVEC LIAISON_UNILATER
         if (.not.lsyme) then
             zk24(jslvk+4)='OUI'
-            call u2mess('A', 'UNILATER_1')
+            call utmess('A', 'UNILATER_1')
         endif
     endif
 !
 ! --- CALCUL DE MODES/FLAMBEMENT: PAS GCPC/PETSC
 !
     if (lmvib .or. lflam) then
-        if (lgcpc .or. lpetsc) call u2mesk('F', 'FACTOR_52', 1, zk24(jslvk))
-        if (leltc) call u2mess('F', 'MECANONLINE5_3')
+        if (lgcpc .or. lpetsc) then
+            call utmess('F', 'FACTOR_52', sk=zk24(jslvk))
+        endif
+        if (leltc) then
+            call utmess('F', 'MECANONLINE5_3')
+        endif
     endif
 !
 ! --- EXPLICITE
 !
     if (lexpl) then
-        if (lcont) call u2mess('F', 'MECANONLINE5_22')
-        if (lunil) call u2mess('F', 'MECANONLINE5_23')
-        if (lgrot) call u2mess('A', 'MECANONLINE5_24')
+        if (lcont) then
+            call utmess('F', 'MECANONLINE5_22')
+        endif
+        if (lunil) then
+            call utmess('F', 'MECANONLINE5_23')
+        endif
+        if (lgrot) then
+            call utmess('A', 'MECANONLINE5_24')
+        endif
     endif
 !
 ! --- DYNAMIQUE
 !
     if (ldyna) then
-        if (lcomp) call u2mess('F', 'MECANONLINE5_53')
-        if (lpilo) call u2mess('F', 'MECANONLINE5_25')
-        if (ltheta) then
-            if (lgrot) call u2mess('F', 'MECANONLINE5_27')
+        if (lcomp) then
+            call utmess('F', 'MECANONLINE5_53')
         endif
-        if (lxfem) call u2mess('F', 'MECANONLINE5_28')
-        if (limpex) call u2mess('F', 'MECANONLINE5_33')
+        if (lpilo) then
+            call utmess('F', 'MECANONLINE5_25')
+        endif
+        if (ltheta) then
+            if (lgrot) then
+                call utmess('F', 'MECANONLINE5_27')
+            endif
+        endif
+        if (lxfem) then
+            call utmess('F', 'MECANONLINE5_28')
+        endif
+        if (limpex) then
+            call utmess('F', 'MECANONLINE5_33')
+        endif
     endif
 !
 ! --- PILOTAGE
@@ -221,35 +264,43 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
         call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=typilo, nbret=n1)
         if (lreli) then
             if (typilo .eq. 'DDL_IMPO') then
-                call u2mess('F', 'MECANONLINE5_34')
+                call utmess('F', 'MECANONLINE5_34')
             endif
         endif
         if ((method(5).eq.'DEPL_CALCULE') .or. (method(5) .eq.'EXTRAPOLE')) then
-            call u2mess('F', 'MECANONLINE5_36')
+            call utmess('F', 'MECANONLINE5_36')
         endif
     endif
     if (lreli) then
         call getvtx('RECH_LINEAIRE', 'METHODE', iocc=1, scal=typrel, nbret=n1)
         if ((typrel.eq.'PILOTAGE') .and. (.not.lpilo)) then
-            call u2mess('F', 'MECANONLINE5_35')
+            call utmess('F', 'MECANONLINE5_35')
         endif
     endif
 !
 ! --- NEWTON_KRYLOV
 !
     if (lnkry) then
-        if (lpilo) call u2mess('F', 'MECANONLINE5_48')
+        if (lpilo) then
+            call utmess('F', 'MECANONLINE5_48')
+        endif
         if ((.not.lgcpc) .and. (.not.lpetsc)) then
-            call u2mess('F', 'MECANONLINE5_51')
+            call utmess('F', 'MECANONLINE5_51')
         endif
     endif
 !
 ! --- ENERGIES
 !
     if (lener) then
-        if (lfeti) call u2mess('F', 'MECANONLINE5_2')
-        if (lproj) call u2mess('F', 'MECANONLINE5_6')
-        if (lmatdi) call u2mess('F', 'MECANONLINE5_8')
+        if (lfeti) then
+            call utmess('F', 'MECANONLINE5_2')
+        endif
+        if (lproj) then
+            call utmess('F', 'MECANONLINE5_6')
+        endif
+        if (lmatdi) then
+            call utmess('F', 'MECANONLINE5_8')
+        endif
     endif
 !
     call jedema()

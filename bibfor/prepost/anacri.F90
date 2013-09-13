@@ -17,14 +17,13 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/fonbpa.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=3) :: impgrd
     character(len=16) :: nomcri, nomfor, typcha
     integer :: paract (30)
@@ -132,21 +131,21 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                     endif
 40              continue
                 if (.not. grdexi) then
-                    call u2mesk('F', 'FATIGUE1_91', 1, nompf(id))
+                    call utmess('F', 'FATIGUE1_91', sk=nompf(id))
                 endif
 !
                 if (nompf(id)(1:3) .eq. 'EPS') then
                     fordef = .true.
                     do 20 ip = 1, np
                         if (nompf(ip)(1:3) .eq. 'TAU') then
-                            call u2mess('F', 'FATIGUE1_92')
+                            call utmess('F', 'FATIGUE1_92')
                         endif
 20                  continue
                 endif
                 if (nompf(id)(1:3) .eq. 'TAU') then
                     do 30 ip = 1, np
                         if (nompf(ip)(1:3) .eq. 'EPS') then
-                            call u2mess('F', 'FATIGUE1_92')
+                            call utmess('F', 'FATIGUE1_92')
                         endif
 30                  continue
                 endif
@@ -164,7 +163,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 50              continue
 !
                 if (.not. grdexi) then
-                    call u2mesk('F', 'FATIGUE1_91', 1, nompf(id))
+                    call utmess('F', 'FATIGUE1_91', sk=nompf(id))
                 endif
 !
 60          continue

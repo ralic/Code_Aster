@@ -1,16 +1,16 @@
 subroutine te0045(option, nomte)
-    implicit          none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2plg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpplg.h"
 #include "asterfort/utpslg.h"
+!
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -52,7 +52,7 @@ subroutine te0045(option, nomte)
     call infdis('SYMM', infodi, r8bid, k8bid)
     if (option .ne. 'MASS_INER') then
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
 !     ON VERIFIE QUE LES CARACTERISTIQUES ONT ETE AFFECTEES
@@ -61,13 +61,13 @@ subroutine te0045(option, nomte)
 !     LE CODE STOKE DANS LA CARTE
     call infdis('TYDI', infodi, r8bid, k8bid)
     if (infodi .ne. ibid) then
-        call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+        call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !     DISCRET DE TYPE MASSE
     call infdis('DISM', infodi, r8bid, k8bid)
     if (infodi .eq. 0) then
-        call u2mesk('A+', 'DISCRETS_26', 1, nomte)
+        call utmess('A+', 'DISCRETS_26', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
     endif
 !

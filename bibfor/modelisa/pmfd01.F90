@@ -42,7 +42,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: noma, carele, modele
     character(len=24) :: vnbfib, vpoint, vcarfi, vnbfig
@@ -80,7 +80,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
         call cescel(cesdec, ligrmo, 'TOU_INI_ELEM', ' ', 'NON',&
                     nncp, 'G', cel, 'A', iret)
         if (iret .eq. 0) goto 50
-        call u2mesk('F', 'CALCULEL_6', 1, modele)
+        call utmess('F', 'CALCULEL_6', sk=modele)
 !
     endif
 !

@@ -59,7 +59,7 @@ subroutine lrmmf1(fid, nomamd, nbrfam, carafa, nbnoeu,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/lrmmf2.h"
 #include "asterfort/lrmmf3.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
@@ -155,7 +155,7 @@ subroutine lrmmf1(fid, nomamd, nbrfam, carafa, nbnoeu,&
             mk(1) = zk80(jnogrl-1+iaux)
             mk(2) = zk80(jnogrl-1+jaux)
             mk(3) = zk24(jnogrc-1+iaux)
-            call u2mesk('F', 'MED2_1', 3, mk)
+            call utmess('F', 'MED2_1', nk=3, valk=mk)
         endif
  5      continue
     endif

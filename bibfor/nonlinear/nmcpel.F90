@@ -7,7 +7,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
 #include "asterfort/nmelnl.h"
 #include "asterfort/nmorth.h"
 #include "asterfort/rccoma.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, ndim, imate, codret
     real(kind=8) :: angmas(3), crit(3), eps(6), sig(6), vi(*), dsidep(6, 6)
     character(len=*) :: fami, poum
@@ -80,7 +80,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
                         imate, poum, eps, sigm, option,&
                         angmas, sig, r8bid, dsidep)
         else
-            call u2mess('F', 'ALGORITH7_7')
+            call utmess('F', 'ALGORITH7_7')
         endif
 !
 !   ELASTICITE NON LINEAIRE ISOTROPE
@@ -94,13 +94,13 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
 !    LOI ELASTIQUE POUR MODELE SIGNORINI
     else if (compor(1)(1:10).eq. 'ELAS_HYPER') then
         if (compor(3) .ne. 'GROT_GDEP') then
-            call u2mess('F', 'ALGORITH6_96')
+            call utmess('F', 'ALGORITH6_96')
         endif
         call hypela(fami, kpg, ksp, poum, ndim,&
                     typmod, imate, compor, crit, eps,&
                     sig, dsidep, codret)
 !
     else
-        call u2mess('F', 'ALGORITH7_8')
+        call utmess('F', 'ALGORITH7_8')
     endif
 end subroutine

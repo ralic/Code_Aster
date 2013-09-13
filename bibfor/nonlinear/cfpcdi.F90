@@ -18,7 +18,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/caladu.h"
 #include "asterfort/calatm.h"
@@ -28,8 +28,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
@@ -222,7 +221,9 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
     denom = ddot(neq,zr(jddelt),1,zr(jsecmb),1)
     alpha = numer/denom
 !
-    if (alpha .lt. 0.d0) call u2mess('F', 'CONTACT_7')
+    if (alpha .lt. 0.d0) then
+        call utmess('F', 'CONTACT_7')
+    endif
 !
 ! --- ACTUALISATION DU SOUS GRADIENT ET DU DEPLACEMENT
 !
@@ -248,7 +249,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 !     ON A DEPASSE LE NOMBRE D'ITERATIONS MAX
     if (niv .ge. 2) then
         write (ifm,9000) iterat,conver
-        call u2mesi('I', 'CONTACT_3', 1, premax)
+        call utmess('I', 'CONTACT_3', si=premax)
     endif
 !
 !

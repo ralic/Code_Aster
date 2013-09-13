@@ -1,7 +1,6 @@
 subroutine pj5dco(mo1, mo2, corres)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exmano.h"
@@ -16,8 +15,9 @@ subroutine pj5dco(mo1, mo2, corres)
 #include "asterfort/jexnum.h"
 #include "asterfort/pacoa2.h"
 #include "asterfort/pj3da4.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres
     character(len=8) :: mo1, mo2
 ! ----------------------------------------------------------------------
@@ -82,7 +82,9 @@ subroutine pj5dco(mo1, mo2, corres)
     call dismoi('F', 'NB_NO_MAILLA', m2, 'MAILLAGE', nno2,&
                 kb, ie)
 !
-    if (nno2 .eq. 0) call u2mess('F', 'CALCULEL4_54')
+    if (nno2 .eq. 0) then
+        call utmess('F', 'CALCULEL4_54')
+    endif
 !
 !     DETERMINATION DE LA DIMENSION DE L'ESPACE :
 !     --------------------------------------------------------
@@ -122,7 +124,9 @@ subroutine pj5dco(mo1, mo2, corres)
 !
     call pacoa2(lisin1, lisin2, nno1, nno2, m1,&
                 m2, lisou1, lisou2, nbtr)
-    if (nbtr .ne. nno2) call u2mess('F', 'ALGORITH9_91')
+    if (nbtr .ne. nno2) then
+        call utmess('F', 'ALGORITH9_91')
+    endif
 !
     noeud1 = 'NOEUD_DEBUT'
     call wkvect(noeud1, 'V V I', nbtr, lno1)
@@ -152,7 +156,9 @@ subroutine pj5dco(mo1, mo2, corres)
 !
         call jenonu(jexnom(m1//'.NOMNOE', zk8(out1-1+inode)), numnoe)
         call exmano(m1, numnoe, numano, nbmano)
-        if (nbmano .eq. 0) call u2mess('F', 'ALGORITH9_92')
+        if (nbmano .eq. 0) then
+            call utmess('F', 'ALGORITH9_92')
+        endif
         dpmin = r8maem()
         do 63 ima = 1, nbmano
             imail = numano(ima)

@@ -25,7 +25,7 @@ subroutine exchno(imodat, iparg)
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/trigd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imodat, iparg
 ! ----------------------------------------------------------------------
 !     ENTREES:
@@ -211,7 +211,7 @@ subroutine exchno(imodat, iparg)
 !                 ON VERIFIE QUE LE MODLOC AFFIRME NCMP=0:
                     do 70,iec=1,nec
                     if (zi(modloc-1+idg2-1+iec) .ne. 0) then
-                        call u2mess('F', 'CALCULEL2_52')
+                        call utmess('F', 'CALCULEL2_52')
                     endif
 70                  continue
                 endif

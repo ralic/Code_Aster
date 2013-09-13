@@ -26,7 +26,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rcvals.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer, intent(in) :: nbpar, nbres
     character(len=*), intent(in) :: phenom
     integer, intent(in) :: iarret
@@ -94,7 +94,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 ! --- TESTS: CELA A-T-IL CHANGE ?
     change = .false.
     if (nbres .gt. nbmx) then
-        call u2mesk('F', 'MODELISA6_94', 1, nommat)
+        call utmess('F', 'MODELISA6_94', sk=nommat)
     endif
     if (nommat .ne. matpre) change = .true.
     if (phen .ne. phepre) change = .true.

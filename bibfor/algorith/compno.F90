@@ -35,12 +35,12 @@ subroutine compno(mailla, nbgr, nomgr, nbto)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbgr
     character(len=8) :: mailla
     character(len=24) :: valk(2), nomcou, nomgr(nbgr)
@@ -61,8 +61,7 @@ subroutine compno(mailla, nbgr, nomgr, nbto)
     call jeexin(mailla//'.GROUPENO', ier)
     if (ier .eq. 0) then
         valk (1) = mailla
-        call u2mesg('F', 'ALGORITH12_57', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_57', sk=valk(1))
     endif
 !
 !-------COMPTAGE DES NOEUD DEFINIS PAR GROUPES--------------------------
@@ -76,8 +75,7 @@ subroutine compno(mailla, nbgr, nomgr, nbto)
         if (num .eq. 0) then
             valk (1) = mailla
             valk (2) = nomcou
-            call u2mesg('F', 'ALGORITH12_58', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_58', nk=2, valk=valk)
         endif
 !
         call jelira(jexnom(mailla//'.GROUPENO', nomcou), 'LONUTI', nb)

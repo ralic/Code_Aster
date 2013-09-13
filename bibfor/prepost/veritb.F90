@@ -7,7 +7,7 @@ subroutine veritb(nk1d, ndim, oridef)
 #include "asterfort/jemarq.h"
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbexv1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verinr.h"
     integer :: nk1d, ndim
     character(len=8) :: oridef
@@ -73,11 +73,11 @@ subroutine veritb(nk1d, ndim, oridef)
     call tbexv1(tabmdb, 'INST', tbins2, 'V', nbval2,&
                 k8b)
     if (nbval1 .ne. nbval2) then
-        call u2mess('F', 'PREPOST4_90')
+        call utmess('F', 'PREPOST4_90')
     endif
     teste = verinr ( nbval1, tbins1, tbins2 )
     if (teste) then
-        call u2mess('F', 'PREPOST4_91')
+        call utmess('F', 'PREPOST4_91')
     endif
 ! ======================================================================
 ! --- DESTRUCTIONS DES VECTEURS INUTILES -------------------------------
@@ -109,21 +109,21 @@ subroutine veritb(nk1d, ndim, oridef)
         call tbexv1(tabrev, 'INST', tbins2, 'V', nbval2,&
                     k8b)
         if (nbval1 .ne. nbval2) then
-            call u2mess('F', 'PREPOST4_92')
+            call utmess('F', 'PREPOST4_92')
         endif
         teste = verinr ( nbval1, tbins1, tbins2)
         if (teste) then
-            call u2mess('F', 'PREPOST4_91')
+            call utmess('F', 'PREPOST4_91')
         endif
         call jedetr(tbins2)
         call tbexv1(tabmdb, 'INST', tbins2, 'V', nbval2,&
                     k8b)
         if (nbval1 .ne. nbval2) then
-            call u2mess('F', 'PREPOST4_92')
+            call utmess('F', 'PREPOST4_92')
         endif
         teste = verinr ( nbval1, tbins1, tbins2)
         if (teste) then
-            call u2mess('F', 'PREPOST4_91')
+            call utmess('F', 'PREPOST4_91')
         endif
         call jedetr(tbins2)
         call jedetr(tabrev)

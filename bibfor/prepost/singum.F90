@@ -3,7 +3,6 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 ! aslint: disable=W1306,W1501
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cncinv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -12,8 +11,9 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ndim, nnoem, nelem, itype(nelem)
     real(kind=8) :: xy(3, nnoem)
     character(len=8) :: nomail
@@ -134,7 +134,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
         call jenuno(jexnum('&CATA.TM.NOMTM', itype(inel)), typema(inel))
         if (typema(inel)(1:4) .eq. 'HEXA' .or. typema(inel)(1:5) .eq. 'PENTA' .or.&
             typema(inel)(1:5) .eq. 'PYRAM') then
-            call u2mess('F', 'CALCULEL3_98')
+            call utmess('F', 'CALCULEL3_98')
         endif
 !
 ! OBJETS '&&SINGUM.CONN'

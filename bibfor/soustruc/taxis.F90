@@ -20,7 +20,6 @@ subroutine taxis(noma, indic, nbma)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -30,8 +29,8 @@ subroutine taxis(noma, indic, nbma)
 #include "asterfort/jexnum.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma
     integer :: indic(*)
     integer :: nbma
@@ -81,20 +80,19 @@ subroutine taxis(noma, indic, nbma)
                     call jenuno(jexnum(noma//'.NOMNOE', numno+1), k8b)
                     call jenuno(jexnum(noma//'.NOMMAI', ima ), k8a)
                     if (ier .eq. 0) then
-                        call u2mess('F+', 'SOUSTRUC_88')
+                        call utmess('F+', 'SOUSTRUC_88')
                     endif
                     valk (1) = k8b
                     valk (2) = k8a
                     valr (1) = zr(jvale+3*numno)
-                    call u2mesg('F+', 'SOUSTRUC_89', 2, valk, 0,&
-                                0, 1, valr)
+                    call utmess('F+', 'SOUSTRUC_89', nk=2, valk=valk, sr=valr(1))
                     ier = ier + 1
                 endif
  3          continue
         endif
  2  end do
     if (ier .ne. 0) then
-        call u2mess('F', 'SOUSTRUC_90')
+        call utmess('F', 'SOUSTRUC_90')
     endif
 !
     call jedema()

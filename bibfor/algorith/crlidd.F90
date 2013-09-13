@@ -47,7 +47,6 @@ subroutine crlidd(nomres, mailla)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/cheris.h"
 #include "asterfort/copvis.h"
 #include "asterfort/dismoi.h"
@@ -59,9 +58,10 @@ subroutine crlidd(nomres, mailla)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nodoub.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomres, mailla, cb, mn, ha, au, nomtyp
     character(len=8) :: k8bid
     character(len=24) :: temmn, temcb, temha, temau, temmas
@@ -245,8 +245,7 @@ subroutine crlidd(nomres, mailla)
     call nodoub(nbha, nbcb, zi(ltha), zi(ltcb), ha,&
                 cb, mailla, doubok)
     if (doubok) then
-        call u2mesg('F', 'ALGORITH12_67', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_67')
     endif
 !
 !-----------ALLOCATION TABLEAU DESCRIPTION DEFORMEES CALCULEES----------

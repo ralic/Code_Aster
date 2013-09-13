@@ -63,8 +63,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/lceqvn.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nseuil
 !
     integer :: itmax, nprojs, nessai, osci
@@ -189,7 +188,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                 e = materf(1,1)
                 delta = jac(2,2)
                 if (abs(delta/e) .lt. epsi) then
-                    call u2mess('F', 'ALGORITH4_72')
+                    call utmess('F', 'ALGORITH4_72')
                 else
                     mdelta = -1.d0 / delta
                 endif
@@ -254,7 +253,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                             valk(1) = citer
                             valk(2) = cerr
                             valk(3) = ctol
-                            call u2mesk('A', 'ALGORITH4_73', 3, valk)
+                            call utmess('A', 'ALGORITH4_73', nk=3, valk=valk)
                         endif
                     else
 !     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -265,7 +264,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                         valk(1) = citer
                         valk(2) = cerr
                         valk(3) = ctol
-                        call u2mesk('A', 'ALGORITH4_74', 3, valk)
+                        call utmess('A', 'ALGORITH4_74', nk=3, valk=valk)
                     endif
                 else
 !     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -281,11 +280,11 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 ! --        VERIFICATION DE LA SOLUTION
 !
             if ((ftrac3/ftp) .gt. epsi2 .and. dpt .gt. zero) then
-                call u2mess('A', 'ALGORITH4_75')
+                call utmess('A', 'ALGORITH4_75')
                 conver = .false.
             endif
             if ((fcomp3/fcp) .gt. epsi2) then
-                call u2mess('A', 'ALGORITH4_76')
+                call utmess('A', 'ALGORITH4_76')
                 conver = .false.
             endif
 !
@@ -366,7 +365,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 !               RESOUDRE SONT IDENTIQUES --> ON PASSE DIRECTEMENT A LA
 !               PROJECTION AU SOMMET DU CONE DE COMPRESSION SEUL.
                 if ((vind(1) + dpc) .lt. kuc .or. (vind(2) + dpt) .lt. kut) then
-                    call u2mess('F', 'ALGORITH4_77')
+                    call utmess('F', 'ALGORITH4_77')
                 else
                     ddpc = zero
                     ddpt = zero
@@ -419,7 +418,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                             valk(1) = citer
                             valk(2) = cerr
                             valk(3) = ctol
-                            call u2mesk('A', 'ALGORITH4_73', 3, valk)
+                            call utmess('A', 'ALGORITH4_73', nk=3, valk=valk)
                         endif
                     else
 !     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -430,7 +429,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                         valk(1) = citer
                         valk(2) = cerr
                         valk(3) = ctol
-                        call u2mesk('A', 'ALGORITH4_74', 3, valk)
+                        call utmess('A', 'ALGORITH4_74', nk=3, valk=valk)
                     endif
                 else
 !     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -446,11 +445,11 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 ! --        VERIFICATION DE LA SOLUTION
 !
             if ((ftrac3/ftp) .gt. epsi2 .and. dpt .gt. zero .and. conver) then
-                call u2mess('A', 'ALGORITH4_78')
+                call utmess('A', 'ALGORITH4_78')
                 conver = .false.
             endif
             if ((fcomp3/fcp) .gt. epsi2 .and. dpc .gt. zero .and. conver) then
-                call u2mess('A', 'ALGORITH4_79')
+                call utmess('A', 'ALGORITH4_79')
                 conver = .false.
             endif
 !
@@ -524,7 +523,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                 e = materf(1,1)
                 delta = jac(1,1)
                 if (abs(delta/e) .lt. epsi) then
-                    call u2mess('F', 'ALGORITH4_80')
+                    call utmess('F', 'ALGORITH4_80')
                 else
                     mdelta = -1.d0 / delta
                 endif
@@ -590,7 +589,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                             valk(1) = citer
                             valk(2) = cerr
                             valk(3) = ctol
-                            call u2mesk('A', 'ALGORITH4_73', 3, valk)
+                            call utmess('A', 'ALGORITH4_73', nk=3, valk=valk)
                         endif
                     else
 !     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -601,7 +600,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                         valk(1) = citer
                         valk(2) = cerr
                         valk(3) = ctol
-                        call u2mesk('A', 'ALGORITH4_74', 3, valk)
+                        call utmess('A', 'ALGORITH4_74', nk=3, valk=valk)
                     endif
                 else
 !     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -617,12 +616,12 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 ! --        VERIFICATION DE LA SOLUTION
 !
             if ((fcomp3/fcp) .gt. epsi2 .and. dpc .gt. zero) then
-                call u2mess('A', 'ALGORITH4_81')
+                call utmess('A', 'ALGORITH4_81')
                 conver = .false.
             endif
 !
             if ((ftrac3/ftp) .gt. epsi2) then
-                call u2mess('A', 'ALGORITH4_82')
+                call utmess('A', 'ALGORITH4_82')
                 conver = .false.
             endif
 !
@@ -695,7 +694,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
             if (nseuil .eq. 1) then
                 delta = jac(1,1)
                 if (abs(delta/e) .lt. epsi) then
-                    call u2mess('F', 'ALGORITH4_83')
+                    call utmess('F', 'ALGORITH4_83')
                 else
                     mdelta = -1.d0 / delta
                 endif
@@ -704,7 +703,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
             else if (nseuil.eq.2) then
                 delta = jac(2,2)
                 if (abs(delta/e) .lt. epsi) then
-                    call u2mess('F', 'ALGORITH4_83')
+                    call utmess('F', 'ALGORITH4_83')
                 else
                     mdelta = -1.d0 / delta
                 endif
@@ -713,14 +712,14 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
             else if (nseuil.eq.3) then
                 delta = (jac(1,1) * jac(2,2) - jac(1,2) * jac(2,1))
                 if (abs(delta/e) .lt. epsi) then
-                    call u2mess('F', 'ALGORITH4_83')
+                    call utmess('F', 'ALGORITH4_83')
                 else
                     mdelta = -1.d0 / delta
                 endif
                 ddpc = (jac(2,2) * fcomp - jac(1,2) * ftrac) * mdelta
                 ddpt = (jac(1,1) * ftrac - jac(2,1) * fcomp) * mdelta
             else
-                call u2mess('A', 'ALGORITH4_84')
+                call utmess('A', 'ALGORITH4_84')
                 goto 5
             endif
 !
@@ -794,7 +793,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
             err = abs(fcomp/fcp)
             if (abs(ddpc/dpc) .lt. precm) iter4 = itmax+osci
         else
-            call u2mess('F', 'ALGORITH4_85')
+            call utmess('F', 'ALGORITH4_85')
         endif
 !
 !
@@ -826,7 +825,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                             valk(1) = citer
                             valk(2) = cerr
                             valk(3) = ctol
-                            call u2mesk('A', 'ALGORITH4_73', 3, valk)
+                            call utmess('A', 'ALGORITH4_73', nk=3, valk=valk)
                         endif
                     else
 !     -->>         NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -836,7 +835,7 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
                         valk(1) = citer
                         valk(2) = cerr
                         valk(3) = ctol
-                        call u2mesk('A', 'ALGORITH4_74', 3, valk)
+                        call utmess('A', 'ALGORITH4_74', nk=3, valk=valk)
                         nseuil = 4
                         goto 5
                     endif
@@ -857,18 +856,18 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
         if (nseuil .eq. 3) then
             if ((fcomp3/fcp) .gt. epsi2 .and. (ftrac3/ftp) .gt. epsi2) then
                 if (dpt .gt. zero .and. dpc .gt. zero) then
-                    call u2mess('A', 'ALGORITH4_86')
+                    call utmess('A', 'ALGORITH4_86')
                     goto 5
                 endif
             else
                 if ((fcomp3/fcp) .gt. epsi2) then
                     if (dpt .gt. zero .and. dpc .gt. zero) then
-                        call u2mess('A', 'ALGORITH4_87')
+                        call utmess('A', 'ALGORITH4_87')
                         goto 5
                     endif
                 else if ((ftrac3/ftp).gt.epsi2) then
                     if (dpt .gt. zero .and. dpc .gt. zero) then
-                        call u2mess('A', 'ALGORITH4_88')
+                        call utmess('A', 'ALGORITH4_88')
                         goto 5
                     endif
                 endif
@@ -876,12 +875,12 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 !
         else if (nseuil.eq.2) then
             if ((ftrac3/ftp) .gt. epsi2 .and. dpt .gt. zero) then
-                call u2mess('A', 'ALGORITH4_89')
+                call utmess('A', 'ALGORITH4_89')
                 goto 5
             endif
         else if (nseuil.eq.1) then
             if ((fcomp3/fcp) .gt. epsi2 .and. dpc .gt. zero) then
-                call u2mess('A', 'ALGORITH4_90')
+                call utmess('A', 'ALGORITH4_90')
                 goto 5
             endif
         endif

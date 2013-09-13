@@ -35,8 +35,7 @@ subroutine te0151(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
 #include "asterfort/verifm.h"
@@ -165,7 +164,7 @@ subroutine te0151(option, nomte)
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
         if (xl .eq. zero) then
-            call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+            call utmess('F', 'ELEMENTS2_43', sk=nomail)
         endif
 !
     endif
@@ -225,7 +224,7 @@ subroutine te0151(option, nomte)
         call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
     else
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
     nklv = 2*nc*(2*nc+1)/2
@@ -254,7 +253,7 @@ subroutine te0151(option, nomte)
                     ug(i) = zr(jdepl+i-1)
 22              continue
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
     endif
@@ -344,12 +343,12 @@ subroutine te0151(option, nomte)
                         itype, kanl, if)
 !
         else if (codres(3).ne.0) then
-            call u2mess('F', 'ELEMENTS3_31')
+            call utmess('F', 'ELEMENTS3_31')
         endif
 !
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
 end subroutine

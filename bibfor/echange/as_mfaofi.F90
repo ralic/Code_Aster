@@ -1,6 +1,6 @@
 subroutine as_mfaofi(fid, maa, ind, fam, num,&
-                  attid, attval, attdes, natt, gro,&
-                  cret)
+                     attid, attval, attdes, natt, gro,&
+                     cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     l'argument natt est en "plus"
 !     il sert a dimensionner attid4(*) et attva4(*)
@@ -22,38 +22,39 @@ subroutine as_mfaofi(fid, maa, ind, fam, num,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
-#include "med/mfaofi.h"
+#include "asterf.h"
 #include "asterfort/conv_int.h"
-
-aster_int :: fid, num, attid(*), attval(*), natt, cret, ind
-character(len=*) :: maa, fam, attdes(*) , gro(*)
-
+#include "asterfort/utmess.h"
+#include "med/mfaofi.h"
+!
+    aster_int :: fid, num, attid(*), attval(*), natt, cret, ind
+    character(len=*) :: maa, fam, attdes(*), gro(*)
+!
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int, allocatable :: attid4(:), attva4(:)
-    med_int :: cret4,num4
-
+    med_int :: cret4, num4
+!
     allocate ( attid4(natt) )
     allocate ( attva4(natt) )
-
+!
     call mfaofi(to_med_int(fid), maa, to_med_int(ind), fam, attid4,&
                 attva4, attdes, num4, gro, cret4)
-    num  = to_aster_int(num4)
+    num = to_aster_int(num4)
     cret = to_aster_int(cret4)
     call conv_int('med->ast', natt, vi_ast=attid, vi_med=attid4)
     call conv_int('med->ast', natt, vi_ast=attval, vi_med=attva4)
-
+!
     deallocate (attid4)
     deallocate (attva4)
 #else
     call mfaofi(fid, maa, ind, fam, attid,&
                 attval, attdes, num, gro, cret)
 #endif
-
+!
 #endif
 end subroutine

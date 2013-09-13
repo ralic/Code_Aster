@@ -16,7 +16,7 @@ function jjprem(nombre, iret)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: jjprem, nombre, iret
 !     ==================================================================
     integer :: npre
@@ -106,7 +106,7 @@ function jjprem(nombre, iret)
     if (fact * nombre .gt. ipr4(npr4)) then
         vali(1) = nint(ipr4(npr4)/fact)
         vali(2) = nombre
-        call u2mesi('F', 'JEVEUX_39', 2, vali)
+        call utmess('F', 'JEVEUX_39', ni=2, vali=vali)
     endif
     if (ipas .eq. 0) then
         do 1 i = 1, npr1

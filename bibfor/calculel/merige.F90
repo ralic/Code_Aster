@@ -9,7 +9,7 @@ subroutine merige(modele, cara, sigg, strx, matel,&
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nh
     character(len=1) :: base
     character(len=8) :: modele, cara
@@ -54,7 +54,9 @@ subroutine merige(modele, cara, sigg, strx, matel,&
     integer :: icode, ier
 !-----------------------------------------------------------------------
     call jemarq()
-    if (modele(1:1) .eq. ' ') call u2mess('F', 'CALCULEL2_82')
+    if (modele(1:1) .eq. ' ') then
+        call utmess('F', 'CALCULEL2_82')
+    endif
 !
     option = 'RIGI_GEOM'
     call mecham(option, modele, cara, nh, chgeom,&

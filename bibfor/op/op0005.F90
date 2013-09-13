@@ -46,7 +46,7 @@ subroutine op0005()
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/rcstoc.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nmocl
     parameter         (nmocl=200)
@@ -70,7 +70,7 @@ subroutine op0005()
     call getmat(nbrcme, motcle)
 !
     if (nbrcme .le. 0) then
-        call u2mesk('F', 'MODELISA10_16', 0, valk)
+        call utmess('F', 'MODELISA10_16')
     endif
 !
     matin = ' '
@@ -88,7 +88,7 @@ subroutine op0005()
             if (ind .ne. 0) then
                 valk(1)=matin
                 valk(2)=nomrc
-                call u2mesk('F', 'MODELISA9_9', 2, valk)
+                call utmess('F', 'MODELISA9_9', nk=2, valk=valk)
             endif
 10      continue
 !
@@ -140,7 +140,7 @@ subroutine op0005()
                     nbobm)
         nbobm = - nbobm
         if (nbobm .eq. 0) then
-            call u2mesk('F', 'MODELISA9_80', 1, nomrc)
+            call utmess('F', 'MODELISA9_80', sk=nomrc)
         endif
 !
         if (nomrc .eq. 'THER_NL') nbobm = nbobm + 1

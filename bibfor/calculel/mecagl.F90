@@ -37,7 +37,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 #include "asterfort/tbajvi.h"
 #include "asterfort/tbajvk.h"
 #include "asterfort/tbajvr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
@@ -151,7 +151,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     call getfac('COMP_INCR', incr)
 !
     if (incr .ne. 0 .and. lxfem) then
-        call u2mess('F', 'RUPTURE1_43')
+        call utmess('F', 'RUPTURE1_43')
     endif
 !
     if (incr .ne. 0) then
@@ -159,7 +159,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         call dismoi('F', 'TYPE_RESU', resu, 'RESULTAT', ibid,&
                     type, ierd)
         if (type .ne. 'EVOL_NOLI') then
-            call u2mess('F', 'RUPTURE1_15')
+            call utmess('F', 'RUPTURE1_15')
         endif
         call rsexch('F', resu, 'SIEF_ELGA', iord, chsig,&
                     iret)
@@ -178,7 +178,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             call chpver('C', chsigi, 'NOEU', 'SIEF_R', ino2)
             call chpver('C', chsigi, 'ELGA', 'SIEF_R', inga)
             if ((ino1.eq.1) .and. (ino2.eq.1) .and. (inga.eq.1)) then
-                call u2mess('F', 'RUPTURE1_12')
+                call utmess('F', 'RUPTURE1_12')
             else if (inga.eq.0) then
                 ligrmo = modele//'.MODELE'
                 call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&

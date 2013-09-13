@@ -2,7 +2,6 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
                   icode)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
@@ -14,7 +13,8 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rsutch.h"
 #include "asterfort/rsutrg.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: iordr, icode
     character(len=*) :: kstop, nomsd, nomsy, chextr
 ! ----------------------------------------------------------------------
@@ -135,11 +135,9 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
         valk(1)=nomsd
         valk(2)=nomsy
         if (icode .eq. 100) then
-            call u2mesg('F', 'CALCULEL_29', 2, valk, 1,&
-                        iordr, 0, rbid)
+            call utmess('F', 'CALCULEL_29', nk=2, valk=valk, si=iordr)
         else
-            call u2mesg('F', 'CALCULEL_29', 2, valk, 1,&
-                        iordr, 0, rbid)
+            call utmess('F', 'CALCULEL_29', nk=2, valk=valk, si=iordr)
         endif
     endif
 !

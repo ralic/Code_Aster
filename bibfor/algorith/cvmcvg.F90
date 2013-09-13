@@ -47,8 +47,8 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/lcverr.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
     integer :: typess, itmax, iter, intg, nr, icomp
     real(kind=8) :: toler, essai, ddy(*), dy(*)
 !       ----------------------------------------------------------------
@@ -101,7 +101,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !
         if (abs(dp) .lt. dplim .and. err(1) .lt. toler) then
             call codree(abs(dp), 'E', cdp)
-            call u2mesk('A', 'ALGORITH2_54', 1, cdp)
+            call utmess('A', 'ALGORITH2_54', sk=cdp)
             irteti = 0
             goto 9999
         endif
@@ -154,7 +154,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                     call codree(abs(dp), 'E', cdp)
                     valk(1) = cintg
                     valk(2) = cdp
-                    call u2mesk('I', 'ALGORITH2_55', 2, valk)
+                    call utmess('I', 'ALGORITH2_55', nk=2, valk=valk)
                     irteti = 3
                     goto 9999
                 else
@@ -247,7 +247,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                                 call codree(toler, 'E', ctol)
                                 valk(1) = citer
                                 valk(2) = ctol
-                                call u2mesk('I', 'ALGORITH2_56', 2, valk)
+                                call utmess('I', 'ALGORITH2_56', nk=2, valk=valk)
                                 irteti = 3
                                 goto 9999
                             else
@@ -261,7 +261,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                             call codree(toler, 'E', ctol)
                             valk(1) = citer
                             valk(2) = ctol
-                            call u2mesk('I', 'ALGORITH2_57', 2, valk)
+                            call utmess('I', 'ALGORITH2_57', nk=2, valk=valk)
                             irteti = 3
                             goto 9999
                         else
@@ -278,7 +278,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                         call codree(toler, 'E', ctol)
                         valk(1) = citer
                         valk(2) = ctol
-                        call u2mesk('I', 'ALGORITH2_58', 2, valk)
+                        call utmess('I', 'ALGORITH2_58', nk=2, valk=valk)
                         irteti = 3
                         goto 9999
                     else

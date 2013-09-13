@@ -22,7 +22,7 @@ subroutine jeimpa(unit, nomlu, com)
 #include "asterfort/jjcroc.h"
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: unit
     character(len=*) :: nomlu, com
 !
@@ -123,7 +123,7 @@ subroutine jeimpa(unit, nomlu, com)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+        call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
     else if (iret .eq. 1) then
         lcol = .false.
         ic = iclaos

@@ -16,9 +16,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
 #include "asterfort/juveca.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: iocc, nbmst
     character(len=*) :: mcfact, nomaz, nomvei, nomvek
@@ -100,13 +98,15 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
             ier = ier + 1
             valk(1) = nommai
             valk(2) = noma
-            call u2mesk('E', 'MODELISA6_10', 2, valk)
+            call utmess('E', 'MODELISA6_10', nk=2, valk=valk)
         else
             if (lnume) then
                 call codent(nume, 'G', knume)
                 nume = nume + 1
                 lgm = lxlgut(knume)
-                if (lgm+lgp .gt. 8) call u2mess('F', 'MODELISA6_11')
+                if (lgm+lgp .gt. 8) then
+                    call utmess('F', 'MODELISA6_11')
+                endif
                 nommai = prfm(1:lgp)//knume
             else
                 lgm = lxlgut(nommai)
@@ -114,22 +114,19 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                     valk (1) = prfm(1:lgp)//nommai
                     valk (2) = nommai
                     valk (3) = prfm
-                    call u2mesg('F+', 'MODELISA9_53', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F+', 'MODELISA9_53', nk=3, valk=valk)
                     if (lgrpma) then
                         valk(1) = grpma
-                        call u2mesg('F+', 'MODELISA9_82', 1, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('F+', 'MODELISA9_82', sk=valk(1))
                     endif
-                    call u2mesg('F', 'MODELISA9_54', 0, ' ', 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA9_54')
                 endif
                 nommai = prfm(1:lgp)//nommai
             endif
             do 32 i = 1, nbmst
                 if (zk8(klist+i-1) .eq. nommai) then
                     if (mcfact .eq. 'CREA_GROUP_MA') then
-                        call u2mesk('F', 'MODELISA9_57', 1, nommai)
+                        call utmess('F', 'MODELISA9_57', sk=nommai)
                     else
                         goto 34
                     endif

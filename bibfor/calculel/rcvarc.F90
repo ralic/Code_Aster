@@ -19,7 +19,6 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterc/iisnan.h"
 #include "asterc/indik8.h"
 #include "asterc/r8nnem.h"
@@ -27,8 +26,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 #include "asterfort/rcvarp.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: novrc, poum, fami
     character(len=1) :: arret
     integer :: iret, kpg, ksp
@@ -112,7 +111,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
             valk(2)=fami
             valk(3)=option
             valk(4)=nomte
-            call u2mesk('F', 'CALCULEL6_58', 4, valk)
+            call utmess('F', 'CALCULEL6_58', nk=4, valk=valk)
         endif
     endif
     kpgmat=decala(k)+kpg
@@ -136,7 +135,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
             valk(1) = novr8
             valk(2) = nomail
             valk(3) = poum
-            call u2mesk('F', 'CALCULEL4_69', 3, valk)
+            call utmess('F', 'CALCULEL4_69', nk=3, valk=valk)
         endif
     endif
 !
@@ -275,7 +274,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
             nomail=zk24(iazk24-1+3)(1:8)
             valk(1) = novr8
             valk(2) = nomail
-            call u2mesk('F', 'CALCULEL4_69', 2, valk)
+            call utmess('F', 'CALCULEL4_69', nk=2, valk=valk)
         endif
     endif
     goto 9999
@@ -293,8 +292,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     vali(1)=nb2vrc
     vali(2)=nbcvrc
     valk(1)=zk24(iazk24-1+3)
-    call u2mesg('F', 'CALCULEL6_67', 1, valk, 2,&
-                vali, 0, valr)
+    call utmess('F', 'CALCULEL6_67', sk=valk(1), ni=2, vali=vali)
 !
 !
 9999  continue

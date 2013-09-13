@@ -38,8 +38,7 @@ subroutine op0134()
 #include "asterfort/jeveuo.h"
 #include "asterfort/ordonn.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, lnova, nbnova, lprol
     logical :: compl
@@ -125,7 +124,7 @@ subroutine op0134()
                 call jeveuo(listf//'.VALE', 'L', lvalf)
                 call jelira(listf//'.VALE', 'LONUTI', nbvalf)
             else
-                call u2mess('F', 'FONCT0_49')
+                call utmess('F', 'FONCT0_49')
             endif
         endif
 !
@@ -137,9 +136,9 @@ subroutine op0134()
             valk(2) = noparp
             valk(3) = nopn
             if (typco(1:7) .eq. 'FORMULE') then
-                call u2mesk('F', 'FONCT0_58', 3, valk)
+                call utmess('F', 'FONCT0_58', nk=3, valk=valk)
             else
-                call u2mesk('F', 'FONCT0_59', 3, valk)
+                call utmess('F', 'FONCT0_59', nk=3, valk=valk)
             endif
         endif
 !
@@ -151,9 +150,9 @@ subroutine op0134()
             valk(2) = noparf
             valk(3) = nopf
             if (typco(1:7) .eq. 'FORMULE') then
-                call u2mesk('F', 'FONCT0_60', 3, valk)
+                call utmess('F', 'FONCT0_60', nk=3, valk=valk)
             else
-                call u2mesk('F', 'FONCT0_61', 3, valk)
+                call utmess('F', 'FONCT0_61', nk=3, valk=valk)
             endif
         endif
 !
@@ -162,7 +161,7 @@ subroutine op0134()
 !
     else
 !
-        call u2mess('F', 'FONCT0_48')
+        call utmess('F', 'FONCT0_48')
 !
     endif
 !

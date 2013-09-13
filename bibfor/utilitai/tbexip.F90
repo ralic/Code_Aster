@@ -1,11 +1,11 @@
 subroutine tbexip(nomta, para, exist, typpar)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomta, para, typpar
     logical :: exist
 ! ----------------------------------------------------------------------
@@ -49,13 +49,13 @@ subroutine tbexip(nomta, para, exist, typpar)
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'UTILITAI4_79', 1, nomtab)
+        call utmess('F', 'UTILITAI4_79', sk=nomtab)
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
     nbpara = zi(jtbnp )
     if (nbpara .eq. 0) then
-        call u2mesk('F', 'UTILITAI4_80', 1, nomtab)
+        call utmess('F', 'UTILITAI4_80', sk=nomtab)
     endif
 !
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---

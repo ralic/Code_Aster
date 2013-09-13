@@ -1,7 +1,6 @@
 subroutine rcmaco(chmat, indmat, nbmat, imate)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -10,7 +9,8 @@ subroutine rcmaco(chmat, indmat, nbmat, imate)
 #include "asterfort/jeveut.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/matcod.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: chmat
     integer :: indmat, nbmat, imate
 ! ----------------------------------------------------------------------
@@ -52,7 +52,9 @@ subroutine rcmaco(chmat, indmat, nbmat, imate)
     call jenuno(jexnum('&CATA.GD.NOMCMP', zi(jdesc)), nomgd)
     call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmp,&
                 k8b, ier)
-    if (imate .gt. 9999) call u2mess('F', 'CALCULEL6_11')
+    if (imate .gt. 9999) then
+        call utmess('F', 'CALCULEL6_11')
+    endif
 !
     call matcod(chmat, indmat, nbmat, imate, igrp,&
                 nommat, codi)

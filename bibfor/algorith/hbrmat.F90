@@ -18,9 +18,9 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit     none
+    implicit none
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, nr, imat, nbmat
     real(kind=8) :: materf(nbmat, 2), materd(nbmat, 2), tempd
     character(len=3) :: matcst
@@ -93,13 +93,17 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
     materf(3,1) = 0.0d0
     materf(11,2) = 0.0d0
     call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 2, nomc(1), materf(1, 1), cerr(1), 1)
+                [0.d0], 2, nomc(1), materf(1, 1), cerr(1),&
+                1)
     call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                [0.d0], 1, nomc(3), materf(3, 1), cerr(3), 0)
+                [0.d0], 1, nomc(3), materf(3, 1), cerr(3),&
+                0)
     call rcvala(imat, ' ', 'HOEK_BROWN', 0, ' ',&
-                [0.d0], 10, nomc(4), materf(1, 2), cerr(4), 1)
+                [0.d0], 10, nomc(4), materf(1, 2), cerr(4),&
+                1)
     call rcvala(imat, ' ', 'HOEK_BROWN', 0, ' ',&
-                [0.d0], 1, nomc(14), materf(11, 2), cerr(14), 0)
+                [0.d0], 1, nomc(14), materf(11, 2), cerr(14),&
+                0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================
@@ -128,11 +132,11 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
     cp = bres*grup*(grup-deux*gres) / (grup - gres)**2
     cohere = ap*grup**2+dp*grup+cp
     if (abs(cohere) .gt. eps) then
-        call u2mess('F', 'ALGORITH3_90')
+        call utmess('F', 'ALGORITH3_90')
     endif
     cohere = ap*gres**2+dp*gres+cp
     if (abs(cohere-bres) .gt. eps) then
-        call u2mess('F', 'ALGORITH3_90')
+        call utmess('F', 'ALGORITH3_90')
     endif
     sigbd = ( (mrup) +sqrt((mrup)**2 + 4.0d0*((un-alpha)**2)*srup)) / (deux*(un-alpha)**2 )
 !  =================================================================
@@ -158,9 +162,9 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
         ndt = 4
         ndi = 3
     else if ((mod(1:6).eq.'C_PLAN') .or. (mod(1:2).eq.'1D')) then
-        call u2mess('F', 'ALGORITH3_92')
+        call utmess('F', 'ALGORITH3_92')
     else
-        call u2mess('F', 'ALGORITH2_20')
+        call utmess('F', 'ALGORITH2_20')
     endif
 ! ======================================================================
 ! --- NOMBRE DE VARIABLES INTERNES -------------------------------------

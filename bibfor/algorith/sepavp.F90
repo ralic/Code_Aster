@@ -42,7 +42,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/nbval.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: ndim, nbmod
     complex(kind=8) :: ck(*), cm(*), cmat(*)
     real(kind=8) :: alpha(ndim+1), beta(ndim+1)
@@ -69,8 +69,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
     beta(nbmod)=lambd2
     valr(1)=lambd1
     valr(2)=lambd2
-    call u2mesg('I', 'ALGELINE6_9', 0, ' ', 1,&
-                nbmod, 2, valr)
+    call utmess('I', 'ALGELINE6_9', si=nbmod, nr=2, valr=valr)
     do 20 i = 1, nbmod
         if (alpha(i) .ge. 0.d0) then
             a=alpha(i)

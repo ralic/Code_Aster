@@ -21,8 +21,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbocc, nbmode, ndir(*), nature(3, *), nsupp(*)
@@ -131,7 +130,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 12          continue
             if (xnorm .lt. epsi) then
                 ier = ier + 1
-                call u2mess('E', 'SEISME_4')
+                call utmess('E', 'SEISME_4')
                 goto 10
             endif
             xnorm = un / sqrt(xnorm)
@@ -198,13 +197,13 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             ier = ier + 1
                             valk(1) = noeu
                             valk(2) = noma
-                            call u2mesk('E', 'SEISME_1', 2, valk)
+                            call utmess('E', 'SEISME_1', nk=2, valk=valk)
                             goto 20
                         endif
                         do 22 is = 1, nsupp(id)
                             if (nomsup(id,is) .eq. noeu) then
                                 ier = ier + 1
-                                call u2mesk('E', 'SEISME_7', 1, noeu)
+                                call utmess('E', 'SEISME_7', sk=noeu)
                                 goto 20
                             endif
 22                      continue
@@ -231,7 +230,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             ier = ier + 1
                             valk(1) = grnoeu
                             valk(2) = noma
-                            call u2mesk('E', 'SEISME_2', 2, valk)
+                            call utmess('E', 'SEISME_2', nk=2, valk=valk)
                             goto 30
                         endif
                         call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
@@ -241,7 +240,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             do 34 is = 1, nsupp(id)
                                 if (nomsup(id,is) .eq. noeu) then
                                     ier = ier + 1
-                                    call u2mesk('E', 'SEISME_7', 1, noeu)
+                                    call utmess('E', 'SEISME_7', sk=noeu)
                                     goto 32
                                 endif
 34                          continue
@@ -260,7 +259,9 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 10  end do
 !
-    if (ier .ne. 0) call u2mess('F', 'SEISME_6')
+    if (ier .ne. 0) then
+        call utmess('F', 'SEISME_6')
+    endif
 !
 !     --- NOM DES SUPPORTS PAR DIRECTION ---
     nbsupm = max(nsupp(1),nsupp(2),nsupp(3))

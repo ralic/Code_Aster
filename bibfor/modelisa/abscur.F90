@@ -19,7 +19,6 @@ subroutine abscur(nomu, it)
 !-----------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/alcart.h"
 #include "asterfort/i2extf.h"
 #include "asterfort/i2sens.h"
@@ -36,8 +35,9 @@ subroutine abscur(nomu, it)
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/sdmail.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomu
 !-----------------------------------------------------------------------
 !     CALCUL D'UNE ABSCISSE CURVILIGNE POUR UN GROUPE DE MAILLES
@@ -86,7 +86,7 @@ subroutine abscur(nomu, it)
             zi(iagm+ij-1) = ij
 11      continue
     else
-        call u2mess('F', 'MODELISA_1')
+        call utmess('F', 'MODELISA_1')
     endif
 !
     nbrma2 = 2*nbrma
@@ -120,7 +120,7 @@ subroutine abscur(nomu, it)
             nbpoi1=nbpoi1+1
             zi(ima1+nbpoi1-1)=im
         else
-            call u2mess('F', 'MODELISA_2')
+            call utmess('F', 'MODELISA_2')
         endif
 12  end do
     conseg='&&ABSCUR.CONNEX'
@@ -168,7 +168,7 @@ subroutine abscur(nomu, it)
                 goto 15
             endif
 16      continue
-        call u2mess('F', 'MODELISA_3')
+        call utmess('F', 'MODELISA_3')
 15  continue
 !
 !
@@ -178,7 +178,7 @@ subroutine abscur(nomu, it)
                 nbchm)
 !
     if (nbchm .gt. 1) then
-        call u2mess('F', 'MODELISA_4')
+        call utmess('F', 'MODELISA_4')
     endif
 !
     call i2sens(zi(iach), 2*nbseg2, zi(iagm), nbseg2, conseg,&

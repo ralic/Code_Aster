@@ -27,16 +27,14 @@ subroutine imbamo(nomres)
 !
 !
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
+!-----------------------------------------------------------------------
     integer :: i, ibid, iret, nbdef, nbmod, nbpabm, nbtot
 !
     real(kind=8) :: freq, genek, genem
@@ -66,23 +64,31 @@ subroutine imbamo(nomres)
 !
 !------------------RECUPERATION DES CONCEPT AMONT-----------------------
 !
-    call dismoi('C', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid, raid, ier)
-    call dismoi('C', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid, mass, ier)
-    call dismoi('C', 'NUME_DDL', nomres, 'RESU_DYNA', ibid, numref, ier)
-    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid, intf, ier)
-    call dismoi('C', 'TYPE_BASE', nomres, 'RESU_DYNA', ibid, typeba, ier)
+    call dismoi('C', 'REF_RIGI_PREM', nomres, 'RESU_DYNA', ibid,&
+                raid, ier)
+    call dismoi('C', 'REF_MASS_PREM', nomres, 'RESU_DYNA', ibid,&
+                mass, ier)
+    call dismoi('C', 'NUME_DDL', nomres, 'RESU_DYNA', ibid,&
+                numref, ier)
+    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid,&
+                intf, ier)
+    call dismoi('C', 'TYPE_BASE', nomres, 'RESU_DYNA', ibid,&
+                typeba, ier)
 !
 !--------------------------------ECRITURES------------------------------
 !
-    call u2mesk('I', 'ALGELINE6_1', 1, nomres)
-    call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot, k8bid, ier)
+    call utmess('I', 'ALGELINE6_1', sk=nomres)
+    call dismoi('F', 'NB_MODES_TOT', nomres, 'RESULTAT', nbtot,&
+                k8bid, ier)
 !
 !    CAS D'UNE BASE DE TYPE CONNUE
 !
     if (typeba(1:9) .eq. 'CLASSIQUE') then
 !
-        call dismoi('F', 'NB_MODES_STA', nomres, 'RESULTAT', nbdef, k8bid, ier)
-        call dismoi('F', 'NB_MODES_DYN', nomres, 'RESULTAT', nbmod, k8bid, ier)
+        call dismoi('F', 'NB_MODES_STA', nomres, 'RESULTAT', nbdef,&
+                    k8bid, ier)
+        call dismoi('F', 'NB_MODES_DYN', nomres, 'RESULTAT', nbmod,&
+                    k8bid, ier)
 !
         valk(1)=intf
         valk(2)=numref
@@ -90,19 +96,20 @@ subroutine imbamo(nomres)
         valk(4)=mass
         vali(1)=nbmod
         vali(2)=nbdef
-        call u2mesg('I', 'ALGELINE6_2', 4, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGELINE6_2', nk=4, valk=valk, ni=2,&
+                    vali=vali)
 !
     endif
 !
 !   CAS D'UNE BASE DE TYPE CYCLIQUE
 !
     if (typeba(1:8) .eq. 'CYCLIQUE') then
-        call dismoi('F', 'NOM_MODE_CYCL', intf, 'INTERF_DYNA', ibid, rescyc, iret)
+        call dismoi('F', 'NOM_MODE_CYCL', intf, 'INTERF_DYNA', ibid,&
+                    rescyc, iret)
 !
         valk(1)=intf
         valk(2)=numref
-        call u2mesk('I', 'ALGELINE6_3', 2, valk)
+        call utmess('I', 'ALGELINE6_3', nk=2, valk=valk)
 !
     endif
 !
@@ -112,16 +119,16 @@ subroutine imbamo(nomres)
 !
         valk(1)=numref
         vali(1)=nbtot
-        call u2mesg('I', 'ALGELINE6_4', 1, valk, 1,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGELINE6_4', sk=valk(1), si=vali(1))
 !
     endif
 !
-    call u2mess('I', 'ALGELINE6_5')
+    call utmess('I', 'ALGELINE6_5')
 !
     do 10 i = 1, nbtot
 !
-        call rsadpa(nomres, 'L', nbpabm, bmpara, i, 0, ldpar, k8bid)
+        call rsadpa(nomres, 'L', nbpabm, bmpara, i,&
+                    0, ldpar, k8bid)
 !
         typdef=zk16(ldpar(5))
 !
@@ -134,7 +141,7 @@ subroutine imbamo(nomres)
             valr(1)=freq
             valr(2)=genem
             valr(3)=genek
-            call u2mesg('I', 'ALGELINE6_6', 0, ' ', 1, vali, 3, valr)
+            call utmess('I', 'ALGELINE6_6', si=vali(1), nr=3, valr=valr)
 !
         else
 !
@@ -143,7 +150,7 @@ subroutine imbamo(nomres)
             valk(1)=typdef
             valk(2)=nomnoe
             valk(3)=nomcmp
-            call u2mesg('I', 'ALGELINE6_7', 3, valk, 1, vali, 0, 0.d0)
+            call utmess('I', 'ALGELINE6_7', nk=3, valk=valk, si=vali(1))
 !
         endif
 10  continue

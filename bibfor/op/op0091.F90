@@ -65,7 +65,7 @@ subroutine op0091()
 #include "asterfort/titre.h"
 #include "asterfort/traint.h"
 #include "asterfort/trasst.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecind.h"
 #include "asterfort/vecomo.h"
 #include "asterfort/vpcrea.h"
@@ -363,7 +363,9 @@ subroutine op0091()
         call jeveuo(imped(1:19)//'.&INT', 'E', limped)
         call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
                     ibid, -9999)
-        if (iret .eq. 2) call u2mesk('F', 'ALGELINE4_37', 1, imped)
+        if (iret .eq. 2) then
+            call utmess('F', 'ALGELINE4_37', sk=imped)
+        endif
 !-- CALCUL DE LA REPONSE AUX EFFORTS D'INTERFACE
         call resoud(imped, ' ', solveu, ' ', nbmod,&
                     ' ', ' ', ' ', zr(lsecme+nbeq1*nbmod), cbid,&

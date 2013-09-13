@@ -1,7 +1,6 @@
 subroutine ordonn(nomfon, iret)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/foverf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -11,9 +10,9 @@ subroutine ordonn(nomfon, iret)
 #include "asterfort/ordon1.h"
 #include "asterfort/ordon2.h"
 #include "asterfort/ordonp.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrif.h"
+!
     character(len=19) :: nomfon
     integer :: iret
 ! ----------------------------------------------------------------------
@@ -128,7 +127,7 @@ subroutine ordonn(nomfon, iret)
         if (ier .le. 0) then
 !           LES PARAMETRES NE SONT PAS CROISSANTS (SENS LARGE)
             call ordonp(nomfon)
-            call u2mess('A', 'UTILITAI3_37')
+            call utmess('A', 'UTILITAI3_37')
         endif
 !        VERIFIER CHAQUE FONCTION COMME CI-DESSUS
         typfon='FONCTION'
@@ -159,23 +158,23 @@ subroutine ordonn(nomfon, iret)
 100      continue
 !     --------------------------------------------
     else
-        call u2mess('F', 'UTILITAI3_38')
+        call utmess('F', 'UTILITAI3_38')
     endif
 !
 999  continue
 !
     if (codmes .ne. ' ') then
         if (.not. isnap) then
-            call u2mesk(codmes//'+', 'FONCT0_62', 1, nomfon)
+            call utmess(codmes//'+', 'FONCT0_62', sk=nomfon)
         else
-            call u2mesk(codmes//'+', 'FONCT0_63', 1, nomfon)
+            call utmess(codmes//'+', 'FONCT0_63', sk=nomfon)
         endif
         if (codmes .eq. 'F') then
-            call u2mess(codmes, 'FONCT0_64')
+            call utmess(codmes, 'FONCT0_64')
         else if (codmes .eq. 'A' .and. .not. inv) then
-            call u2mess(codmes, 'FONCT0_65')
+            call utmess(codmes, 'FONCT0_65')
         else if (codmes .eq. 'A' .and. inv) then
-            call u2mess(codmes, 'FONCT0_66')
+            call utmess(codmes, 'FONCT0_66')
         endif
     endif
     call jedema()

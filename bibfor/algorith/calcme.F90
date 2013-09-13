@@ -3,9 +3,9 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                   ndim, dimdef, dimcon, nvimec, yate,&
                   addeme, adcome, addete, defgem, congem,&
                   congep, vintm, vintp, addep1, addep2,&
-                  dsde, deps, p1, p2,&
-                  t, dt, retcom, dp1, dp2,&
-                  sat, tbiot, ang2, aniso, phenom)
+                  dsde, deps, p1, p2, t,&
+                  dt, retcom, dp1, dp2, sat,&
+                  tbiot, ang2, aniso, phenom)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! ======================================================================
@@ -46,7 +46,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !                OUT RETCOM
 ! ======================================================================
 ! aslint: disable=W1504
-    implicit      none
+    implicit none
 #include "asterfort/calela.h"
 #include "asterfort/dpvplc.h"
 #include "asterfort/dsipdp.h"
@@ -61,7 +61,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/redece.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: mectru, pre2tr
     integer :: ndim, dimdef, dimcon, nvimec, addeme, addete, addep1
     integer :: addep2, adcome, imate, yate, retcom
@@ -81,7 +81,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     real(kind=8) :: elas(nelas)
     character(len=8) :: ncra1(nelas), fami, poum
     integer :: icodre(nresma)
-    real(kind=8) :: dsdeme(6, 6),dsdeme12 (6,12)
+    real(kind=8) :: dsdeme(6, 6), dsdeme12 (6, 12)
     real(kind=8) :: r8bid, angma1(3), angmas(7), ang2(3), depstr(6)
     real(kind=8) :: d(6, 6), mdal(6), dalal
     character(len=16) :: complg(3)
@@ -114,7 +114,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         (meca.eq.'LAIGLE') .or. (meca.eq.'HOEK_BROWN_EFF') .or. (meca.eq.'HOEK_BROWN_TOT')&
         .or. (meca.eq.'MAZARS') .or. (meca.eq.'ENDO_ISOT_BETON')) then
         if (option(10:14) .eq. '_ELAS') then
-            call u2mess('F', 'ALGORITH_67')
+            call utmess('F', 'ALGORITH_67')
         endif
     endif
     call rcvalb(fami, kpg, spt, poum, imate,&
@@ -529,9 +529,9 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ======================================================================
     if (meca .eq. 'ENDO_ISOT_BETON') then
         tini = t - dt
-        if (option(6:9).eq.'COUP') then
+        if (option(6:9) .eq. 'COUP') then
 !           on interdit le couplage fluage-eib car dans ce cas dsdeme(6,12)
-            call u2mess('F', 'ALGORITH_74')
+            call utmess('F', 'ALGORITH_74')
         endif
 !       dsdeme12(i,j) ne sert qu'a la compatibilite de l'interface
 !       tous les termess i,6+j doive,t etre nuls

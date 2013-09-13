@@ -1,6 +1,6 @@
 subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
                   lichar, chmome)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/cesfus.h"
 #include "asterfort/cesqua.h"
@@ -11,7 +11,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc, nbma, listma(*), nbchar, lichar(*)
     character(len=1) :: etat
@@ -51,7 +51,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     integer :: jnume, jcham, nbresu, nbcmp, icha, ir, jlich, jlicm, jlicr
     integer :: vali(2)
     logical :: seisme, autre
-    character(len=8) ::  nocmp(3)
+    character(len=8) :: nocmp(3)
     character(len=24) :: chams0
     complex(kind=8) :: cbid
 ! DEB ------------------------------------------------------------------
@@ -79,7 +79,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 112  continue
     vali (1) = iocc
     vali (2) = lichar(icha)
-    call u2mesi('F', 'POSTRCCM_28', 2, vali)
+    call utmess('F', 'POSTRCCM_28', ni=2, vali=vali)
 114  continue
     if (etat .eq. 'S') then
         seisme = .true.
@@ -92,7 +92,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     110 end do
 !
     if (seisme .and. autre) then
-        call u2mesi('F', 'POSTRCCM_29', 1, iocc)
+        call utmess('F', 'POSTRCCM_29', si=iocc)
     endif
 !
     if (nbchar .eq. 1) then

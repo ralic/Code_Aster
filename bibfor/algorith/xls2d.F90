@@ -10,7 +10,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
     integer :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
@@ -253,7 +253,9 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 31          continue
 !
-            if (.not.ma2ff) call u2mess('F', 'XFEM2_15')
+            if (.not.ma2ff) then
+                call utmess('F', 'XFEM2_15')
+            endif
  3      continue
 !
 888      continue

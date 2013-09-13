@@ -6,7 +6,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
 #include "asterfort/fointa.h"
 #include "asterfort/rcvals.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer, intent(in) :: jmat, nbpar, nbres, iarret
     real(kind=8), intent(in) :: valpar(nbpar)
     real(kind=8), intent(out) :: valres(nbres)
@@ -83,7 +83,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
                 goto 9
             endif
  5      continue
-        call u2mesk('F', 'MODELISA6_92', 1, nomat)
+        call utmess('F', 'MODELISA6_92', sk=nomat)
     else
         imat = jmat+zi(jmat+nbmat+1)
     endif
@@ -109,9 +109,9 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3)(1:8)
             valk(2) = nomail
-            call u2mesk('F', 'MODELISA9_75', 2, valk)
+            call utmess('F', 'MODELISA9_75', nk=2, valk=valk)
         else
-            call u2mesk('F', 'MODELISA9_74', 1, valk)
+            call utmess('F', 'MODELISA9_74', sk=valk(1))
         endif
     endif
     goto 999

@@ -5,7 +5,6 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -17,8 +16,8 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: iequiv, nbcyl, numnog(*), nbnog(*), nummag(*)
     integer :: numgrp(*), irot(3), nbgrp, nbz
     real(kind=8) :: xint(nbcyl), yint(nbcyl), zint(nbz, nbgrp), coor(*)
@@ -107,7 +106,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
                     abs( coor( (numno1-1)*3 + irot(2)) - coor((numno2-1)*3 + irot(2) ) )&
                     .gt. epsit) then
                     write(note(1:3),'(I3.3)') i
-                    call u2mesk('F', 'ALGELINE_73', 1, note)
+                    call utmess('F', 'ALGELINE_73', sk=note)
                 endif
                 zint(j,numgrp(i)) = coor((numno2-1)*3 + irot(3))
 10          continue
@@ -178,7 +177,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
                 rint(i)=zr(icesv-1+abs(iad))
 !
             else
-                call u2mess('F', 'ALGELINE_75')
+                call utmess('F', 'ALGELINE_75')
             endif
 160      continue
     endif

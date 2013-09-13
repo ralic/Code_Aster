@@ -27,7 +27,7 @@ function utmotp(fonree, motfac, iocc, motcle)
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=4) :: fonree
     character(len=*) :: motfac, motcle
 !-----------------------------------------------------------------------
@@ -40,6 +40,6 @@ function utmotp(fonree, motfac, iocc, motcle)
     else if (fonree.eq.'COMP') then
         call getvc8(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)
     else
-        call u2mess('F', 'UTILITAI5_52')
+        call utmess('F', 'UTILITAI5_52')
     endif
 end function

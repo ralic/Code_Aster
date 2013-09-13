@@ -41,9 +41,8 @@ subroutine penorm(resu, modele)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utflmd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: modele
     character(len=19) :: resu
@@ -79,7 +78,7 @@ subroutine penorm(resu, modele)
     integer :: nn
     integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
     integer :: nb_cmp_act
-    real(kind=8) ::  prec, inst, vnorm(1)
+    real(kind=8) :: prec, inst, vnorm(1)
     complex(kind=8) :: c16b
     logical :: exiord
     character(len=4) :: tych, ki, exirdm
@@ -267,7 +266,7 @@ subroutine penorm(resu, modele)
         call dismoi('C', 'NOM_GD', tmpcha, 'CHAMP', ibid,&
                     nomgd, iret)
         if (nomgd(1:6) .ne. 'NEUT_R') then
-            call u2mess('F', 'POSTELEM_2')
+            call utmess('F', 'POSTELEM_2')
         endif
     endif
 !
@@ -293,7 +292,9 @@ subroutine penorm(resu, modele)
                             iret)
             endif
             call getvtx('NORME', 'NOM_CHAM', iocc=1, scal=nomcha, nbret=iret)
-            if (iret .eq. 0) call u2mess('F', 'POSTELEM_4')
+            if (iret .eq. 0) then
+                call utmess('F', 'POSTELEM_4')
+            endif
             call rsexch(' ', tmpres, nomcha, numo, cham2,&
                         iret)
 !
@@ -356,7 +357,7 @@ subroutine penorm(resu, modele)
 !       - VERIFICATION SI ON VA TRAITER DES ELEMENTS DE STRUCTURE
         call dismlg('EXI_RDM', mesmai, ibid, exirdm, iret)
         if (exirdm .eq. 'OUI') then
-            call u2mess('F', 'UTILITAI8_60')
+            call utmess('F', 'UTILITAI8_60')
         endif
 !
 ! ----- Convert CHAMNO/CHAMELEM input field to CHAMNO_S/CHAMELEM_S field
@@ -438,7 +439,7 @@ subroutine penorm(resu, modele)
                 valk2(1)=ligrel
                 valk2(2)=nopar
                 valk2(3)=optio2
-                call u2mesk('F', 'UTILITAI3_23', 3, valk2)
+                call utmess('F', 'UTILITAI3_23', nk=3, valk=valk2)
             endif
             call chpchd(cham2, 'ELGA', celmod, 'OUI', 'V',&
                         cham1)

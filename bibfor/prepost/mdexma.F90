@@ -45,14 +45,12 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterfort/lxlgut.h"
 #include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/as_mmhmii.h"
 #include "asterfort/as_mmhnmh.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nofimd, nomamd
 !
     logical :: existm, ficexi, dejouv
@@ -115,8 +113,7 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
             call as_mmhnmh(idfimd, nbmaie, codret)
             if (codret .ne. 0) then
                 saux08='mmhnmh'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
 !
 ! 2.2. ==> RECHERCHE DU NUMERO ET DE LA DIMENSION DU MAILLAGE VOULU
@@ -126,16 +123,16 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
             lnomam = lxlgut(nomamd)
             noma64(1:lnomam) = nomamd(1:lnomam)
 !
-            do iaux = 1 , nbmaie
+            do iaux = 1, nbmaie
                 saux64 = ' '
-                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux, daux, codret)
+                call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
+                               daux, codret)
                 if (codret .ne. 0) then
                     saux08='mmhmii'
-                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                                codret, 0, 0.d0)
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
                 if (tyaux .ne. ednstr) then
-                    call u2mess('A', 'MED_79')
+                    call utmess('A', 'MED_79')
                 endif
                 jaux = lxlgut(saux64)
                 if (jaux .eq. lnomam) then
@@ -155,20 +152,19 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
 !
                 valk = nofimd
                 vali (1) = nbmaie
-                call u2mesg('A+', 'MED_88', 1, valk, 1,&
-                            vali, 0, 0.d0)
-                do iaux = 1 , nbmaie
+                call utmess('A+', 'MED_88', sk=valk, si=vali(1))
+                do iaux = 1, nbmaie
                     saux64 = ' '
-                    call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux, daux, codret)
+                    call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
+                                   daux, codret)
                     jaux = lxlgut(saux64)
                     valk = saux64(1:jaux)
-                    call u2mesg('A+', 'MED_85', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('A+', 'MED_85', sk=valk)
                     if (tyaux .ne. ednstr) then
-                        call u2mess('A', 'MED_79')
+                        call utmess('A', 'MED_79')
                     endif
                 end do
-                call u2mesk('A', 'MED_80', 1, noma64(1:lnomam))
+                call utmess('A', 'MED_80', sk=noma64(1:lnomam))
 !
             endif
 !
@@ -180,8 +176,7 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm,&
                 call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
                     saux08='mficlo'
-                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                                codret, 0, 0.d0)
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
                 idfimd = 0
             endif

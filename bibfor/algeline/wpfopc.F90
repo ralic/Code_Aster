@@ -11,8 +11,7 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: matopa, raide
     character(len=19) :: solveu
@@ -81,8 +80,8 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
         ashift = 0.95d0
         valr (1) = 1.d0
         valr (2) = 0.95d0
-        call u2mess('I+', 'ALGELINE4_94')
-        call u2mesr('I', 'ALGELINE4_96', 2, valr)
+        call utmess('I+', 'ALGELINE4_94')
+        call utmess('I', 'ALGELINE4_96', nr=2, valr=valr)
     endif
 !
     ashift = - (ashift*fshift)/sqrt(1.d0-ashift*ashift)

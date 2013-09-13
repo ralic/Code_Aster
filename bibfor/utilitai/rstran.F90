@@ -16,8 +16,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsindi.h"
 #include "asterfort/rslipa.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: interp, motcle
     character(len=19) :: resu, kdisc, krang
@@ -96,7 +95,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
     call jeexin(resu//'.ORDR', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'ALGORITH17_26')
+        call utmess('F', 'ALGORITH17_26')
 !        CALL WKVECT('&&RSTRAN.ORDR','V V I',NBI,JORDR)
 !        DO 10 I = 1,NBI
 !          ZI(JORDR+I-1) = I
@@ -104,7 +103,9 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     else
         call jeveuo(resu//'.ORDR', 'L', jordr)
         call jelira(resu//'.ORDR', 'LONUTI', nbi2)
-        if (nbi .ne. nbi2) call u2mess('F', 'ALGORITH17_27')
+        if (nbi .ne. nbi2) then
+            call utmess('F', 'ALGORITH17_27')
+        endif
     endif
 !
 !     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
@@ -123,8 +124,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 20          continue
             ier = ier + 110
             vali = zi(jbid+i)
-            call u2mesg('A', 'UTILITAI8_17', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'UTILITAI8_17', si=vali)
             goto 40
 30          continue
             zi(jrang+i) = iord + 1
@@ -165,15 +165,13 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         if (nbtrou .eq. 0) then
             ier = ier + 110
             valr = tusr
-            call u2mesg('A', 'UTILITAI8_18', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('A', 'UTILITAI8_18', sr=valr)
             goto 70
         else if (nbtrou.ne.1) then
             ier = ier + 100
             valr = tusr
             vali = -nbtrou
-            call u2mesg('F', 'UTILITAI8_19', 0, ' ', 1,&
-                        vali, 1, valr)
+            call utmess('F', 'UTILITAI8_19', si=vali, sr=valr)
             goto 70
         endif
         do 50 iord = 0, nbi - 1
@@ -216,15 +214,13 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
             if (nbtrou .eq. 0) then
                 ier = ier + 110
                 valr = tusr
-                call u2mesg('A', 'UTILITAI8_18', 0, ' ', 0,&
-                            0, 1, valr)
+                call utmess('A', 'UTILITAI8_18', sr=valr)
                 goto 71
             else if (nbtrou.ne.1) then
                 ier = ier + 100
                 valr = tusr
                 vali = -nbtrou
-                call u2mesg('F', 'UTILITAI8_19', 0, ' ', 1,&
-                            vali, 1, valr)
+                call utmess('F', 'UTILITAI8_19', si=vali, sr=valr)
                 goto 71
             endif
             do 51 iord = 0, nbi - 1

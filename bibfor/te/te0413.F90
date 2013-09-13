@@ -11,7 +11,7 @@ subroutine te0413(option, nomte)
 #include "asterfort/jquad4.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 !
@@ -67,7 +67,7 @@ subroutine te0413(option, nomte)
     else if (nomte(1:8).eq.'MEDKTG3 ') then
         dkq = .false.
     else
-        call u2mesk('F', 'ELEMENTS_34', 1, nomte)
+        call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
     call elref5(' ', 'RIGI', ndim, nno, nnoel,&
@@ -172,7 +172,7 @@ subroutine te0413(option, nomte)
 !      RELATION NON PROGRAMMEE
         valk(1) = option
         valk(2) = zk16(icompo)(1:7)
-        call u2mesk('A', 'ELEMENTS4_63', 2, valk)
+        call utmess('A', 'ELEMENTS4_63', nk=2, valk=valk)
     endif
 !
 end subroutine

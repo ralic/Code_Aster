@@ -20,7 +20,7 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
 #include "asterfort/mltasa.h"
 #include "asterfort/mltfc1.h"
 #include "asterfort/mltpre.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -157,7 +157,7 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
         ni=2
         vali(1)=lgpile
         vali(2)=lm
-        call u2mesi('A', 'ALGELINE3_43', ni, vali)
+        call utmess('A', 'ALGELINE3_43', ni=ni, vali=vali)
     endif
 !
     lonmat = zi(desc+4)

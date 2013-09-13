@@ -18,14 +18,14 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmacto.h"
 #include "asterfort/nmevac.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sddisc
     character(len=24) :: sderro
     real(kind=8) :: parcri(*)
@@ -91,9 +91,9 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 ! --- AFFICHAGE
 !
     if (ldccvg .eq. 1) then
-        call u2mess('I', 'COMPOR1_9')
+        call utmess('I', 'COMPOR1_9')
     else if (faccvg.eq.1) then
-        call u2mess('I', 'COMPOR2_4')
+        call utmess('I', 'COMPOR2_4')
     endif
 !
 ! --- BOUCLE TEMPS SUIVANTE
@@ -146,20 +146,20 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 ! ----- ON ARRETE TOUT
 !
         action = 0
-        call u2mess('F', 'MECANONLINE9_7')
+        call utmess('F', 'MECANONLINE9_7')
 !
     else if ((retact.eq.4).and.(.not.arret).and.itemax) then
 !
 ! ----- CONVERGENCE FORCEE: ON VA AU PAS DE TEMPS SUIVANT
 !
-        call u2mess('A', 'MECANONLINE2_37')
+        call utmess('A', 'MECANONLINE2_37')
         action = 3
 !
     else if ((retact.eq.4).and.(.not.arret)) then
 !
 ! ----- CONVERGENCE FORCEE: ON VA AU PAS DE TEMPS SUIVANT
 !
-        call u2mess('A', 'MECANONLINE2_37')
+        call utmess('A', 'MECANONLINE2_37')
         action = 3
 !
     else
@@ -167,7 +167,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 ! ----- ARRET DU CALCUL
 !
         action = 0
-        call u2mess('A', 'MECANONLINE9_7')
+        call utmess('A', 'MECANONLINE9_7')
     endif
 !
 999  continue

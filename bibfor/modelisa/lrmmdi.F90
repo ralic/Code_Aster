@@ -44,13 +44,12 @@ subroutine lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mmhnme.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/as_mmhnme.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: fid
     integer :: nbnoeu, nbmail, nbnoma
@@ -98,13 +97,13 @@ subroutine lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp,&
 ! 1.1. ==> NOMBRE DE NOEUDS
 !
     call as_mmhnme(fid, nomamd, edcoor, ednoeu, typnoe,&
-                iaux, nbnoeu, codret)
+                   iaux, nbnoeu, codret)
     if (codret .ne. 0) then
         call codent(codret, 'G', saux08)
-        call u2mesk('F', 'MED_12', 1, saux08)
+        call utmess('F', 'MED_12', sk=saux08)
     endif
     if (nbnoeu .eq. 0) then
-        call u2mess('F', 'MED_21')
+        call utmess('F', 'MED_21')
     endif
 !
 ! 1.2. ==> NOMBRE DE MAILLES PAR TYPE ET LONGUEUR TOTALE DU TABLEAU
@@ -118,11 +117,11 @@ subroutine lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp,&
     if (typgeo(ityp) .ne. 0) then
 !
         call as_mmhnme(fid, nomamd, edconn, edmail, typgeo(ityp),&
-                    ednoda, nmatyp(ityp), codret)
+                       ednoda, nmatyp(ityp), codret)
         if (codret .ne. 0) then
-            call u2mesk('A', 'MED_23', 1, nomtyp(ityp))
+            call utmess('A', 'MED_23', sk=nomtyp(ityp))
             call codent(codret, 'G', saux08)
-            call u2mesk('F', 'MED_12', 1, saux08)
+            call utmess('F', 'MED_12', sk=saux08)
         endif
 !
         nbmail = nbmail + nmatyp(ityp)
@@ -137,7 +136,7 @@ subroutine lrmmdi(fid, nomamd, typgeo, nomtyp, nnotyp,&
     12 end do
 !
     if (nbmail .eq. 0) then
-        call u2mess('F', 'MED_29')
+        call utmess('F', 'MED_29')
     endif
 !
 !====

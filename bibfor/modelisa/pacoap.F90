@@ -2,7 +2,6 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
                   t, nomaz, liso1z, liso2z)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/jedema.h"
@@ -15,10 +14,9 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 #include "asterfort/matrot.h"
 #include "asterfort/padist.h"
 #include "asterfort/parotr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lonlis
     character(len=*) :: lisi1z, lisi2z, nomaz, liso1z, liso2z
     real(kind=8) :: centre(3), theta(3), t(3)
@@ -163,7 +161,9 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             endif
 20      continue
 !
-        if (j2 .eq. 0) call u2mesk('F', 'MODELISA6_3', 1, nomno1)
+        if (j2 .eq. 0) then
+            call utmess('F', 'MODELISA6_3', sk=nomno1)
+        endif
 !
         if (zk8(idlinv+j2-1) .eq. m8blan) then
             zk8(idlou1+i1-1) = nomno1
@@ -174,14 +174,13 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             valk (1) = nomno2
             valk (2) = nomno1
             valk (3) = zk8(idlinv+j2-1)
-            call u2mesg('E', 'MODELISA8_77', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'MODELISA8_77', nk=3, valk=valk)
         endif
 !
 10  end do
 !
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA6_4')
+        call utmess('F', 'MODELISA6_4')
     endif
 !
     do 30 i = 1, lonlis
@@ -216,7 +215,9 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             endif
 50      continue
 !
-        if (j1 .eq. 0) call u2mesk('F', 'MODELISA6_3', 1, nomno2)
+        if (j1 .eq. 0) then
+            call utmess('F', 'MODELISA6_3', sk=nomno2)
+        endif
 !
         if (zk8(idlinv+j1-1) .eq. m8blan) then
             zk8(idlou3+i2-1) = nomno1
@@ -227,14 +228,13 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             valk (1) = nomno1
             valk (2) = nomno2
             valk (3) = zk8(idlinv+j1-1)
-            call u2mesg('E', 'MODELISA8_77', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'MODELISA8_77', nk=3, valk=valk)
         endif
 !
 40  end do
 !
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA6_4')
+        call utmess('F', 'MODELISA6_4')
     endif
 !
 ! --- VERIFICATION DE LA COHERENCE DES COUPLES FORMES D'UNE PART
@@ -253,8 +253,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
                     valk (3) = zk8(idlou1+i-1)
                     valk (4) = zk8(idlou2+i-1)
                     valk (5) = zk8(idlou4+j-1)
-                    call u2mesg('E', 'MODELISA8_87', 5, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('E', 'MODELISA8_87', nk=5, valk=valk)
                 endif
             endif
 70      continue
@@ -266,14 +265,13 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
             valk (3) = zk8(idlou1+i-1)
             valk (4) = ' '
             valk (5) = ' '
-            call u2mesg('E', 'MODELISA8_88', 5, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'MODELISA8_88', nk=5, valk=valk)
         endif
 !
 60  end do
 !
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA6_4')
+        call utmess('F', 'MODELISA6_4')
     endif
 !
 ! --- MENAGE

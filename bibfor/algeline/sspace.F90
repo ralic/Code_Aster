@@ -4,7 +4,6 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
                   solveu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/ggubs.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/jedema.h"
@@ -17,10 +16,11 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 #include "asterfort/mtdsc2.h"
 #include "asterfort/resoud.h"
 #include "asterfort/sstriv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpordi.h"
 #include "asterfort/vpreco.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lraid, lmatra, lmass, neq, nbvec, nfreq
     integer :: lprod(neq), itemax, nperm, nitjac, nitbat
     real(kind=8) :: tol, toldyn, valpro(nbvec), vect(neq, nbvec)
@@ -278,7 +278,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     call vpordi(1, 0, nbvec, valpro, vect,&
                 neq, zi(ifpos))
     if (.not.iconvf) then
-        call u2mess('A', 'ALGELINE3_45')
+        call utmess('A', 'ALGELINE3_45')
     endif
 !
 !     ------------------------------------------------------------------

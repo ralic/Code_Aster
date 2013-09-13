@@ -29,8 +29,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecgme.h"
 #include "asterfort/vechme.h"
 #include "asterfort/vefnme.h"
@@ -111,7 +110,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'MODE_MECA' .or. typesd.eq.'DYNA_TRANS') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid, masse, iret)
+            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid,&
+                        masse, iret)
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
@@ -121,7 +121,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'DYNA_HARMO') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid, masse, iret)
+            call dismoi('F', 'REF_MASS_PREM', resuin, 'RESU_DYNA', ibid,&
+                        masse, iret)
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
@@ -130,7 +131,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     endif
     if (typesd .eq. 'MODE_MECA' .or. typesd .eq. 'DYNA_TRANS') then
         numref=' '
-        call dismoi('F', 'REF_RIGI_PREM', resuin, 'RESU_DYNA', ibid, raide, iret)
+        call dismoi('F', 'REF_RIGI_PREM', resuin, 'RESU_DYNA', ibid,&
+                    raide, iret)
         if (raide .ne. ' ') then
             call dismoi('F', 'NOM_NUME_DDL', raide, 'MATR_ASSE', ibid,&
                         numref, iret)
@@ -149,7 +151,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                     nuord)
     endif
     if (modele(1:2) .eq. '&&') then
-        call u2mess('F', 'CALCULEL3_50')
+        call utmess('F', 'CALCULEL3_50')
     endif
 !
     fomult=infcha//'.FCHA'
@@ -237,7 +239,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call codent(iordr, 'G', kiord)
             valk(1)=kiord
             valk(2)=option
-            call u2mesk('A', 'PREPOST5_3', 2, valk)
+            call utmess('A', 'PREPOST5_3', nk=2, valk=valk)
             goto 280
 !
         else
@@ -303,7 +305,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call codent(iordr, 'G', kiord)
             valk(1)=option
             valk(2)=kiord
-            call u2mesk('A', 'PREPOST5_1', 2, valk)
+            call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
         endif
         call vtcreb(chamno, nume, 'G', 'R', neq)
@@ -389,7 +391,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call jeveuo(chdepl(1:19)//'.VALE', 'L', ldepl)
             call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
             call wkvect('&&'//nompro//'.TRAV', 'V V R', lonc2, ltrav)
-            if (lmat .eq. 0) call u2mess('F', 'PREPOST3_81')
+            if (lmat .eq. 0) then
+                call utmess('F', 'PREPOST3_81')
+            endif
             call mrmult('ZERO', lmat, zr(ldepl), zr(ltrav), 1,&
                         .true.)
             do 200 j = 0, lonch-1
@@ -429,7 +433,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 210                  continue
 220              continue
                 call wkvect('&&'//nompro//'.TRAV', 'V V R', lonc2, ltrav)
-                if (lmat .eq. 0) call u2mess('F', 'PREPOST3_81')
+                if (lmat .eq. 0) then
+                    call utmess('F', 'PREPOST3_81')
+                endif
                 call mrmult('ZERO', lmat, zr(jddr), zr(ltrav), 1,&
                             .true.)
                 do 230 j = 0, lonch-1
@@ -447,7 +453,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             if (iret .eq. 0) then
                 call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
                 call wkvect('&&'//nompro//'.TRAV', 'V V R', lonch, ltrav)
-                if (lmat .eq. 0) call u2mess('F', 'PREPOST3_81')
+                if (lmat .eq. 0) then
+                    call utmess('F', 'PREPOST3_81')
+                endif
                 call mrmult('ZERO', lmat, zr(lacce), zr(ltrav), 1,&
                             .true.)
                 do 240 j = 0, lonch-1
@@ -455,7 +463,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 240              continue
                 call jedetr('&&'//nompro//'.TRAV')
             else
-                call u2mess('A', 'CALCULEL3_1')
+                call utmess('A', 'CALCULEL3_1')
             endif
 !
 !       --- TRAITEMENT DE DYNA_HARMO ---
@@ -465,7 +473,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             if (iret .eq. 0) then
                 call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
                 call wkvect('&&'//nompro//'.TRAV', 'V V C', lonch, ltrav)
-                if (lmat .eq. 0) call u2mess('F', 'PREPOST3_81')
+                if (lmat .eq. 0) then
+                    call utmess('F', 'PREPOST3_81')
+                endif
                 call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1,&
                             .true.)
                 do 250 j = 0, lonch-1
@@ -473,7 +483,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 250              continue
                 call jedetr('&&'//nompro//'.TRAV')
             else
-                call u2mess('A', 'CALCULEL3_1')
+                call utmess('A', 'CALCULEL3_1')
             endif
 !
 !       --- TRAITEMENT DE EVOL_NOLI ---
@@ -535,7 +545,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call jedetr(vachmp(1:8)//'.ASCOVA')
         call jedetr(vacgmp(1:8)//'.ASCOVA')
         call jedetr(vafpip(1:8)//'.ASCOVA')
-280     continue
+280      continue
         call jedema()
     end do
     call detrsd('CHAMP_GD', bidon)

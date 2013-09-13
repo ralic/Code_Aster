@@ -1,8 +1,10 @@
-subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
-                  vu, vg, vp, geomi, typmod, option, mate, compor, lgpg,&
-                  crit, instm, instp, ddlm, ddld, angmas,&
-                  sigm, vim, sigp, vip, resi, rigi,&
-                  vect, matr, matsym, codret)
+subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
+                  iw, vff1, vff2, vff3, idff1,&
+                  vu, vg, vp, geomi, typmod,&
+                  option, mate, compor, lgpg, crit,&
+                  instm, instp, ddlm, ddld, angmas,&
+                  sigm, vim, sigp, vip, resi,&
+                  rigi, vect, matr, matsym, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +27,8 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
-#include "asterfort/nirela.h"
 #include "asterfort/dsde2d.h"
+#include "asterfort/nirela.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmmalu.h"
@@ -34,7 +36,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
@@ -178,19 +180,24 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     do g = 1, npg
 !
 ! - CALCUL DES DEFORMATIONS
-        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplm, fm, epsm)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplp, fp, epsp)
-        call dfdmip(ndim, nno1, axi, geomp, g, iw, vff1(1,g), idff1, r, wp, dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g,&
+                    iw, vff1(1, g), idff1, r, w,&
+                    dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplm, fm, epsm)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
+                    r, dff1, deplp, fp, epsp)
+        call dfdmip(ndim, nno1, axi, geomp, g,&
+                    iw, vff1(1, g), idff1, r, wp,&
+                    dff1)
 !
-        call nmmalu(nno1, axi, r, vff1(1,g), dff1, lij)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
+                    lij)
 !
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
-           - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
-           + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
-        jp = fp(1,1)*(fp(2,2)*fp(3,3)-fp(2,3)*fp(3,2))&
-           - fp(2,1)*(fp(1,2)*fp(3,3)-fp(1,3)*fp(3,2))&
-           + fp(3,1)*(fp(1,2)*fp(2,3)-fp(1,3)*fp(2,2))
+        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2)&
+             &) + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+        jp = fp(1,1)*(fp(2,2)*fp(3,3)-fp(2,3)*fp(3,2)) - fp(2,1)*(fp(1,2)*fp(3,3)-fp(1,3)*fp(3,2)&
+             &) + fp(3,1)*(fp(1,2)*fp(2,3)-fp(1,3)*fp(2,2))
 !
         if (jp .le. 0.d0) then
             codret = 1
@@ -207,7 +214,9 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         pp = pm+pd
 !
 ! - CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
-        call nirela(2, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa)
+        call nirela(2, jp, gm, gp, am,&
+                    ap, bp, boa, aa, bb,&
+                    daa, dbb, dboa, d2boa)
 !
 ! - CALCUL DES DEFORMATIONS ENRICHIES
         corm = (am/jm)**(1.d0/3.d0)
@@ -224,28 +233,37 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         call r8inir(6, 0.d0, tp, 1)
         call r8inir(6, 0.d0, taup, 1)
 !
-        call prelog(ndim, lgpg, vim(1, g), gn, lamb, logl, ftm, ftp, epsml, deps, tn, resi, cod(g))
+        call prelog(ndim, lgpg, vim(1, g), gn, lamb,&
+                    logl, ftm, ftp, epsml, deps,&
+                    tn, resi, cod(g))
 !
-        call nmcomp('RIGI', g, 1, ndim, typmod, mate, compor, crit, instm, instp,&
-                    6, epsml, deps, 6, tn, vim(1, g), option, angmas, 10, tampon,&
-                    tp, vip(1, g), 36, dtde, 1, rbid, cod(g))
+        call nmcomp('RIGI', g, 1, ndim, typmod,&
+                    mate, compor, crit, instm, instp,&
+                    6, epsml, deps, 6, tn,&
+                    vim(1, g), option, angmas, 10, tampon,&
+                    tp, vip(1, g), 36, dtde, 1,&
+                    rbid, cod(g))
 !
 ! - DSIDEP = 2dS/dC = dS/dE_GL
-        call poslog(resi, rigi, tn, tp, ftm, lgpg, vip(1, g), ndim, ftp, g,&
-                    dtde, sigm(1, g), .false., 'RIGI', mate, instp, angmas, gn, lamb, logl,&
+        call poslog(resi, rigi, tn, tp, ftm,&
+                    lgpg, vip(1, g), ndim, ftp, g,&
+                    dtde, sigm(1, g), .false., 'RIGI', mate,&
+                    instp, angmas, gn, lamb, logl,&
                     sigp( 1, g), dsidep, pk2m, pk2, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1
-            if (.not. resi) call u2mess('F', 'ALGORITH14_75')
+            if (.not. resi) then
+                call utmess('F', 'ALGORITH14_75')
+            endif
             goto 999
         endif
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
         if (resi) then
-            call dscal(2*ndim, exp(gp), sigp(1,g), 1)
-            call dcopy(2*ndim, sigp(1,g), 1, taup, 1)
-            call dscal(2*ndim, 1.d0/jp, sigp(1,g), 1)
+            call dscal(2*ndim, exp(gp), sigp(1, g), 1)
+            call dcopy(2*ndim, sigp(1, g), 1, taup, 1)
+            call dscal(2*ndim, 1.d0/jp, sigp(1, g), 1)
 !
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0
@@ -288,7 +306,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
             if (resi) then
                 call dcopy(9, ftp, 1, ftr, 1)
             else
-                call dcopy(2*ndim, sigm(1,g), 1, taup, 1)
+                call dcopy(2*ndim, sigm(1, g), 1, taup, 1)
                 call dscal(2*ndim, jm, taup, 1)
                 call dcopy(9, ftm, 1, ftr, 1)
             endif
@@ -346,8 +364,10 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 ! - RIGIDITE GEOMETRIQUE
                                     do jb = 1, ndu
-                                        t1 = t1 - dff1(na,lij(ia,ib))*dff1(nb,lij(ib,jb))&
-                                                 *tauldc(vij(ia,jb))
+                                        t1 = t1 - dff1(&
+                                             na, lij(ia, ib))*dff1(nb,&
+                                             lij(ib, jb)) *tauldc(vij(ia, jb)&
+                                             )
                                     end do
                                     matr(kk) = matr(kk) + w*t1
                                 endif
@@ -479,8 +499,8 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 ! - RIGIDITE GEOMETRIQUE
                                 do jb = 1, ndu
-                                    t1 = t1 - dff1(na,lij(ia,ib))*dff1(nb,lij(ib,jb))&
-                                            * tauldc(vij(ia,jb))
+                                    t1 = t1 - dff1(&
+                                         na,lij(ia,ib))*dff1(nb,lij(ib,jb)) * tauldc(vij(ia,jb))
                                 end do
                                 matr(kk) = matr(kk) + w*t1
                             end do
@@ -573,5 +593,5 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 !
-999 continue
+999  continue
 end subroutine

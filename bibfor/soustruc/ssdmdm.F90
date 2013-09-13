@@ -36,8 +36,7 @@ subroutine ssdmdm(mag)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ssdmge.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: mag
@@ -52,7 +51,7 @@ subroutine ssdmdm(mag)
 !     IN:
 !        MAG : NOM DU MAILLAGE QUE L'ON DEFINIT.
 !
-    character(len=8) ::  nomacr, nomail, kbid, ma
+    character(len=8) :: nomacr, nomail, kbid, ma
     real(kind=8) :: lisr8(9), dist, a1, a2, a3, dmin, dmax, r1
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -105,8 +104,12 @@ subroutine ssdmdm(mag)
                 nbret=n1)
     call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma, vect=zk8(ialk82),&
                 nbret=n2)
-    if (n2 .lt. 0) call u2mess('F', 'SOUSTRUC_50')
-    if ((n2.gt.0) .and. (n2.ne.n1)) call u2mess('F', 'SOUSTRUC_51')
+    if (n2 .lt. 0) then
+        call utmess('F', 'SOUSTRUC_50')
+    endif
+    if ((n2.gt.0) .and. (n2.ne.n1)) then
+        call utmess('F', 'SOUSTRUC_51')
+    endif
 !
     do 3 ,k=1,9
     lisr8(k)=0.0d0
@@ -117,9 +120,15 @@ subroutine ssdmdm(mag)
                 nbret=n4)
     call getvr8('DEFI_SUPER_MAILLE', 'CENTRE', iocc=iocc, nbval=3, vect=lisr8(7),&
                 nbret=n5)
-    if (n3 .lt. 0) call u2mess('F', 'SOUSTRUC_52')
-    if (n4 .lt. 0) call u2mess('F', 'SOUSTRUC_53')
-    if (n5 .lt. 0) call u2mess('F', 'SOUSTRUC_54')
+    if (n3 .lt. 0) then
+        call utmess('F', 'SOUSTRUC_52')
+    endif
+    if (n4 .lt. 0) then
+        call utmess('F', 'SOUSTRUC_53')
+    endif
+    if (n5 .lt. 0) then
+        call utmess('F', 'SOUSTRUC_54')
+    endif
 !
     do 4,i=1,n1
     isma=isma+1
@@ -134,7 +143,9 @@ subroutine ssdmdm(mag)
         idimto=idim
         zi(iadime-1+6)=idimto
     else
-        if (idim .ne. idimto) call u2mess('A', 'SOUSTRUC_55')
+        if (idim .ne. idimto) then
+            call utmess('A', 'SOUSTRUC_55')
+        endif
     endif
 !
     nomail=nomacr
@@ -142,7 +153,9 @@ subroutine ssdmdm(mag)
 !
     call jecroc(jexnom(mag//'.SUPMAIL', nomail))
     call jeexin(nomacr//'.DESM', iret)
-    if (iret .eq. 0) call u2mesk('F', 'SOUSTRUC_56', 1, nomacr)
+    if (iret .eq. 0) then
+        call utmess('F', 'SOUSTRUC_56', sk=nomacr)
+    endif
     call jeveuo(nomacr//'.DESM', 'L', iadesm)
     nbnoe=zi(iadesm-1+2)
     nbnol=zi(iadesm-1+8)+zi(iadesm-1+9)

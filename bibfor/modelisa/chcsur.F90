@@ -1,7 +1,6 @@
 subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -12,8 +11,9 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: type
     character(len=8) :: nomgd
     character(len=*) :: chcine, cnsz, mo
@@ -137,7 +137,9 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 122      continue
 120  end do
 !
-    if (ibloc .eq. 0) call u2mess('F', 'CALCULEL_9')
+    if (ibloc .eq. 0) then
+        call utmess('F', 'CALCULEL_9')
+    endif
     zi(jafci) = ibloc
 !
     call jedetr('&&CHCSUR.CORRES')

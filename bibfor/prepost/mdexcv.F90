@@ -44,11 +44,11 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfdonv.h"
-#include "asterfort/as_mfiope.h"
 #include "asterfort/as_mfdonp.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/as_mfdonv.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nofimd, nochmd
 !
     integer :: numpt, numord, typent, typgeo, nbval
@@ -105,12 +105,12 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 !====
 !
             call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
-                        typgeo, iterma, nomamd, nompro, nomloc,&
-                        nbprof, codret)
+                           typgeo, iterma, nomamd, nompro, nomloc,&
+                           nbprof, codret)
             do 10, iprof = 1, nbprof
             call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
-                        numpt, numord, iprof, nompro, edcomp,&
-                        npr, nomloc, nip, ntmp, codret)
+                           numpt, numord, iprof, nompro, edcomp,&
+                           npr, nomloc, nip, ntmp, codret)
             if (codret .eq. 0) then
                 nbval = nbval + nip*ntmp
             endif
@@ -124,8 +124,7 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
                 call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
                     saux08='mficlo'
-                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                                codret, 0, 0.d0)
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
                 idfimd = 0
             endif

@@ -6,13 +6,13 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: numel, nbel, ifi, nbordr, nbcmp
     integer :: connex(*), point(*), cnsc(*), cnsl(*), cnsv(*), cnsd(*), jtype
     real(kind=8) :: coord(*)
@@ -54,13 +54,17 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
 !
 ! --- VERIF QU'ON N'EST PAS HORS SCOPE D'UTILISATION
 !     (CHAMP SCALAIRE OU VECTEUR)
-    if (nbcmp .ne. 1 .and. nbcmp .ne. 3) call u2mess('F', 'PREPOST2_61')
+    if (nbcmp .ne. 1 .and. nbcmp .ne. 3) then
+        call utmess('F', 'PREPOST2_61')
+    endif
 !
     call jeveuo(nobj, 'L', jel)
     call jeveuo(jexnum('&CATA.TM.NBNO', numel), 'L', jno)
     nbno=zi(jno)
 !
-    if (nbno .gt. 99) call u2mess('F', 'PREPOST2_62')
+    if (nbno .gt. 99) then
+        call utmess('F', 'PREPOST2_62')
+    endif
 !
 !     BOUCLE SUR LES ELEMENTS
     do 10 iel = 1, nbel
@@ -127,7 +131,7 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
                                     else if (partie.eq.'IMAG') then
                                         val(l) = dimag( zc( jcnsv-1+ (listno(inoe)-1 )*ncmp+k ) )
                                     else
-                                        call u2mess('F', 'PREPOST2_63')
+                                        call utmess('F', 'PREPOST2_63')
                                     endif
                                     if (abs(val(l)) .le. 1.d-99) val(l)= 0.d0
                                 endif

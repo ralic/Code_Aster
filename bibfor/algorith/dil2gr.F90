@@ -21,9 +21,9 @@ subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
 ! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT ELASTIQUE POUR LA PARTIE --
 ! ---       SECOND GRADIENT --------------------------------------------
 ! ======================================================================
-    implicit      none
+    implicit none
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, dimdef, regula(6)
     real(kind=8) :: sigp(ndim), dsde2g(ndim, ndim), defgep(dimdef)
     character(len=16) :: compor(*)
@@ -66,7 +66,7 @@ subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
 50          continue
 40      continue
     else
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
 ! ======================================================================
 end subroutine

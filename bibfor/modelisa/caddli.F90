@@ -31,8 +31,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -268,7 +267,9 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
                             ch_xfem_ltno, connex_inv)
             enddo
             do icmp = 1, cmp_nb
-                if (zi(jcompt-1+icmp) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1, cmp_name(icmp))
+                if (zi(jcompt-1+icmp) .eq. 0) then
+                    call utmess('F', 'CHARGES2_45', sk=cmp_name(icmp))
+                endif
             enddo
         endif
 !

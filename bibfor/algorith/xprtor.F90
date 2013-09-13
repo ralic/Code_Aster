@@ -7,7 +7,6 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -27,8 +26,9 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: method, model, noma, fispre, fiss
     character(len=19) :: cnsln, grln, cnslt, grlt, nodcal, elecal, cnsdis, disfr
     character(len=19) :: cnsbl, cnxinv, liggrd
@@ -378,7 +378,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
             meserr(1) = sqrt(radimp)
             meserr(2) = sqrt(rdnew)
-            call u2mesr('F', 'XFEM2_99', 2, meserr)
+            call utmess('F', 'XFEM2_99', nr=2, valr=meserr)
 !
         endif
 !

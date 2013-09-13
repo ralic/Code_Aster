@@ -49,7 +49,7 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/rslnvi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: i, imat, nmat, ndt, ndi, nr, nvi
     integer :: jprol, jvale, nbvale, kpg, ksp, iret
 !
@@ -112,7 +112,9 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
                 ksp, tempd, iret)
     call rctype(imat, 1, 'TEMP', tempd, resu,&
                 type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) call u2mess('F', 'CALCULEL_31')
+    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'CALCULEL_31')
+    endif
     call rctrac(imat, 1, 'SIGM', resu, jprol,&
                 jvale, nbvale, materd(1, 1))
 !
@@ -139,7 +141,9 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
                 ksp, tempf, iret)
     call rctype(imat, 1, 'TEMP', tempf, resu,&
                 type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) call u2mess('F', 'CALCULEL_31')
+    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'CALCULEL_31')
+    endif
     call rctrac(imat, 1, 'SIGM', resu, jprol,&
                 jvale, nbvale, materf(1, 1))
 !
@@ -166,9 +170,9 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
         f0 = materf(3,2)
         vind(2) = f0
         if (f0 .lt. 0.d0) then
-            call u2mess('F', 'ALGORITH10_52')
+            call utmess('F', 'ALGORITH10_52')
         else if (f0.ge.1.d0) then
-            call u2mess('F', 'ALGORITH10_50')
+            call utmess('F', 'ALGORITH10_50')
         endif
     endif
 !

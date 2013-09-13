@@ -1,7 +1,6 @@
 subroutine te0300(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
@@ -12,7 +11,8 @@ subroutine te0300(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvad2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -202,7 +202,7 @@ subroutine te0300(option, nomte)
                     'ELAS', 3, nomres, valres, devres,&
                     icodre)
         if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
-            call u2mess('F', 'RUPTURE1_25')
+            call utmess('F', 'RUPTURE1_25')
         endif
         if (icodre(3) .ne. 0) then
             valres(3) = 0.d0
@@ -231,7 +231,9 @@ subroutine te0300(option, nomte)
         xga = xg - xa
         yga = yg - ya
         xxg = xg
-        if (axi .and. (xxg .lt. r8prem())) call u2mess('F', 'RUPTURE0_56')
+        if (axi .and. (xxg .lt. r8prem())) then
+            call utmess('F', 'RUPTURE0_56')
+        endif
         xg = (ynorm*xga-xnorm*yga)/norm
         yg = (xnorm*xga+ynorm*yga)/norm
 !

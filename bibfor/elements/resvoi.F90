@@ -4,7 +4,6 @@ subroutine resvoi(moz, maz, chvoiz)
 ! DECLARATION PARAMETRES D'APPEL
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celver.h"
 #include "asterfort/cncinv.h"
@@ -16,7 +15,8 @@ subroutine resvoi(moz, maz, chvoiz)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: moz, maz, chvoiz
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -321,8 +321,7 @@ subroutine resvoi(moz, maz, chvoiz)
             valk(1)=nomma
             vali(1)=ifa
             vali(2)=nbvois
-            call u2mesg('F', 'INDICATEUR_12', 1, valk, 2,&
-                        vali, 0, r8bidt(1))
+            call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, vali=vali)
             ASSERT(.false.)
         endif
 802      continue
@@ -417,8 +416,7 @@ subroutine resvoi(moz, maz, chvoiz)
                     valk(1)=nomma
                     vali(1)=ino
                     vali(2)=nbvois
-                    call u2mesg('F', 'INDICATEUR_12', 1, valk, 2,&
-                                vali, 0, r8bidt(1))
+                    call utmess('F', 'INDICATEUR_12', sk=valk(1), ni=2, vali=vali)
                     ASSERT(.false.)
                 endif
 602          continue

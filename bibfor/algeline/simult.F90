@@ -42,7 +42,7 @@ subroutine simult()
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/simul2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: ibid
@@ -86,7 +86,7 @@ subroutine simult()
 10  end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
-        call u2mess('F', 'ALGORITH9_81')
+        call utmess('F', 'ALGORITH9_81')
     endif
     do 12 i = 1, nbdir
         depl(i) = depl(i) / xnorm

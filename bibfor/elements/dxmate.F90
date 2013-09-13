@@ -1,7 +1,7 @@
 subroutine dxmate(fami, df, dm, dmf, dc,&
                   dci, dmc, dfc, nno, pgl,&
                   multic, coupmf, t2iu, t2ui, t1ve)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
@@ -17,10 +17,9 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utdtab.h"
+#include "asterfort/utmess.h"
     integer :: nno, multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
@@ -150,12 +149,14 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
         t1ve(9) = t1ve(1) - t1ve(4)
 !
         call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                    [zero], 1, 'MEMB_L  ', valres(1), icodre, 0)
+                    [zero], 1, 'MEMB_L  ', valres(1), icodre,&
+                    0)
         if (icodre(1) .eq. 1) then
             call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                        [zero], 1, 'M_LLLL  ', valres(1), icodre, 0)
+                        [zero], 1, 'M_LLLL  ', valres(1), icodre,&
+                        0)
             if (icodre(1) .eq. 1) then
-                call u2mess('F', 'ELEMENTS_41')
+                call utmess('F', 'ELEMENTS_41')
             else
                 elasco = 2
             endif
@@ -212,7 +213,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
             nomres(33) = 'C_TZTZ  '
         endif
     else
-        call u2mesk('F', 'ELEMENTS_42', 1, phenom)
+        call utmess('F', 'ELEMENTS_42', sk=phenom)
     endif
 !
     if (nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEDKTG3') then
@@ -389,7 +390,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
                 dci(2,1) = -dc(2,1)/det
                 dci(2,2) = dc(1,1)/det
             else
-                call u2mess('F', 'ELEMENTS_43')
+                call utmess('F', 'ELEMENTS_43')
             endif
         endif
 !        --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------

@@ -20,8 +20,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsexis.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/vtcrem.h"
 #include "blas/dcopy.h"
@@ -136,14 +135,14 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     do 20 imode = 1, nbmode
         jmode = resufi(imode,1)
         if (jmode .lt. 1 .and. ineg .gt. 0) then
-            call u2mess('A', 'ALGELINE3_79')
+            call utmess('A', 'ALGELINE3_79')
         endif
 20  continue
 !
 !     --- STOCKAGE DES MODES ---
     call rsexis(modes, ier)
     if (ier .eq. 0) then
-        call u2mess('F', 'ALGELINE3_80')
+        call utmess('F', 'ALGELINE3_80')
     endif
 !
     nmin = resufi(1,1)
@@ -280,8 +279,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
             vali (2) = jmode
             vali (3) = ier
             valk = chamno
-            call u2mesg('F', 'ALGELINE4_85', 1, valk, 3,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_85', sk=valk, ni=3, vali=vali)
         endif
         if (typcon .eq. 'MODE_GENE' .or. typcon .eq. 'HARM_GENE') then
             call jeecra(chamno//'.DESC', 'DOCU', iarg, 'VGEN')

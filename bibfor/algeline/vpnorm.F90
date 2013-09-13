@@ -3,13 +3,13 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                   isign, numddl, coef)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mrmult.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr, ddlexc(*)
     real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), xmastr, coef(*)
@@ -158,8 +158,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
     else
 !
         valk = norm
-        call u2mesg('F', 'ALGELINE4_77', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGELINE4_77', sk=valk)
 !
     endif
     if (lmasin) then

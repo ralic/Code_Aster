@@ -60,7 +60,6 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/copisd.h"
@@ -74,9 +73,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! ARGUMENTS
 ! ---------
@@ -175,7 +174,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
 ! 1.4 SORTIE EN ERREUR FATALE SI REPRESENTATION NON ACCEPTABLE
 ! ---
-    if ((.not.mail2d) .and. (.not.mail3d)) call u2mess('F', 'MODELISA7_46')
+    if ((.not.mail2d) .and. (.not.mail3d)) then
+        call utmess('F', 'MODELISA7_46')
+    endif
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   DETERMINATION DES NOEUDS APPARTENANT A LA STRUCTURE BETON
@@ -231,7 +232,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     ias = zi(jptma+numail-1)
     if (ias .eq. 0) then
         write(k3mai,'(I3)') numail
-        call u2mesk('F', 'MODELISA7_47', 1, k3mai)
+        call utmess('F', 'MODELISA7_47', sk=k3mai)
     endif
 !
 !
@@ -277,7 +278,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         nomrc = beton//'.ETCC_BETON'
         rcvalk = nomrc//'.VALK'
         call jeexin(rcvalk, iret)
-        if (iret .eq. 0) call u2mess('F', 'MODELISA7_48')
+        if (iret .eq. 0) then
+            call utmess('F', 'MODELISA7_48')
+        endif
     endif
 !
 !     RECUPERATION DES PERTES PAR FLUAGE OU RETRAIT POUR BPEL_BETON
@@ -325,7 +328,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 ias = zi(jptma+numail-1)
                 if (ias .eq. 0) then
                     write(k3mai,'(I3)') numail
-                    call u2mesk('F', 'MODELISA7_47', 1, k3mai)
+                    call utmess('F', 'MODELISA7_47', sk=k3mai)
                 endif
 !
                 do 250 icste = 1, nbcste
@@ -333,21 +336,21 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                     if (zk8(jvalk+icste-1) .eq. bpelb(1)) then
                         if (abs(xflu) .lt. crite) then
                             if (abs(xflu-zr(jvalr+icste-1)) .gt. crite) then
-                                call u2mess('F', 'MODELISA7_49')
+                                call utmess('F', 'MODELISA7_49')
                             endif
                         else
                             if (abs((xflu-zr(jvalr+icste-1))/xflu) .gt. crite) then
-                                call u2mess('F', 'MODELISA7_49')
+                                call utmess('F', 'MODELISA7_49')
                             endif
                         endif
                     else if (zk8(jvalk+icste-1).eq.bpelb(2)) then
                         if (abs(xret) .lt. crite) then
                             if (abs(xret-zr(jvalr+icste-1)) .gt. crite) then
-                                call u2mess('F', 'MODELISA7_51')
+                                call utmess('F', 'MODELISA7_51')
                             endif
                         else
                             if (abs((xret-zr(jvalr+icste-1))/xret) .gt. crite) then
-                                call u2mess('F', 'MODELISA7_51')
+                                call utmess('F', 'MODELISA7_51')
                             endif
                         endif
                     endif
@@ -355,9 +358,11 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 200          continue
         endif
 !
-        if (.not. ( trouv1 .and. trouv2 )) call u2mess('F', 'MODELISA7_52')
+        if (.not. ( trouv1 .and. trouv2 )) then
+            call utmess('F', 'MODELISA7_52')
+        endif
         if (( xflu.lt.0.0d0 ) .or. ( xret.lt.0.0d0 ) .or. ( xflu+ xret.gt.1.0d0 )) then
-            call u2mess('F', 'MODELISA7_53')
+            call utmess('F', 'MODELISA7_53')
         endif
 !
 !        CALL JELIRA(RCVALR,'LONMAX',NBCSTE,K1B)

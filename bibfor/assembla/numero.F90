@@ -35,7 +35,6 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
@@ -54,12 +53,12 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/numer2.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: modelz, solveu, infchz
     character(len=*) :: nu, nuposs
     character(len=2) :: base
@@ -209,7 +208,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
         endif
         if (nbpb .ne. 0) then
             vali(1)=nbpb
-            call u2mesi(k1, 'ASSEMBLA_68', 1, vali)
+            call utmess(k1, 'ASSEMBLA_68', si=vali(1))
         endif
 ! RECHERCHE DU PHENOMENE POUR LES NOUVEAUX LIGRELS DE SOUS-DOMAINE
 ! CF DISMPH.F
@@ -223,7 +222,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
         else if (pheno(1:9).eq.'ACOUSTIQU') then
             moloc='DDL_ACOU'
         else
-            call u2mess('F', 'ASSEMBLA_32')
+            call utmess('F', 'ASSEMBLA_32')
         endif
         if (infofe(1:1) .eq. 'T') then
             write(ifm,*)
@@ -405,7 +404,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
             if (ibid .ne. i) then
                 vali(1)=i
                 vali(2)=ibid
-                call u2mesi('F', 'ASSEMBLA_67', 2, vali)
+                call utmess('F', 'ASSEMBLA_67', ni=2, vali=vali)
             endif
 40      continue
     endif

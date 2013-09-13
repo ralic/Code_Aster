@@ -53,8 +53,8 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcono.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -127,7 +127,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
     endif
 !
     if (ndim .ne. 3) then
-        call u2mess('F', 'MODELISA3_73')
+        call utmess('F', 'MODELISA3_73')
     endif
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
@@ -146,11 +146,11 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !     ---------------------------------
     call getvr8(motfac, 'RAYON', iocc=iocc, nbval=0, nbret=nrayon)
     if (nrayon .eq. 0) then
-        call u2mess('F', 'MODELISA3_74')
+        call utmess('F', 'MODELISA3_74')
     else
         call getvr8(motfac, 'RAYON', iocc=iocc, scal=rayon, nbret=nb)
         if (rayon .le. zero) then
-            call u2mess('F', 'MODELISA3_75')
+            call utmess('F', 'MODELISA3_75')
         endif
     endif
 !
@@ -160,11 +160,11 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
     if (nangle .eq. 0) then
         call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=0, nbret=nvect)
         if (nvect .eq. 0) then
-            call u2mess('F', 'MODELISA3_76')
+            call utmess('F', 'MODELISA3_76')
         else
             nvect = -nvect
             if (nvect .ne. 3) then
-                call u2mess('F', 'MODELISA3_77')
+                call utmess('F', 'MODELISA3_77')
             else
                 call getvr8(motfac, 'VECT_NORMALE', iocc=iocc, nbval=nvect, vect=axe,&
                             nbret=nv)
@@ -173,7 +173,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
     else
         nangle = -nangle
         if (nangle .ne. 2) then
-            call u2mess('F', 'MODELISA3_78')
+            call utmess('F', 'MODELISA3_78')
         endif
         call getvr8(motfac, 'ANGL_NAUT', iocc=iocc, nbval=nangle, vect=angle,&
                     nbret=nv)
@@ -189,7 +189,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
     xnorm2 = axe(1)*axe(1) + axe(2)*axe(2) + axe(3)*axe(3)
 !
     if (xnorm2 .eq. zero) then
-        call u2mess('F', 'MODELISA3_79')
+        call utmess('F', 'MODELISA3_79')
     endif
 !
     xnorm = sqrt(xnorm2)

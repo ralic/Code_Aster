@@ -26,7 +26,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 #include "asterfort/rsutor.h"
 #include "asterfort/sndbg.h"
 #include "asterfort/titrec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utremt.h"
     character(len=*) :: donnee(*), sortie(*), formr
     integer :: iligd, icold, nbtitr, iligs, icols
@@ -559,7 +559,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !     ------------------------------------------------------------------
 9001  continue
     ilg = lxlgut(para(1))
-    call u2mesk('A', 'UTILITAI_99', 1, para(1)(1:ilg))
+    call utmess('A', 'UTILITAI_99', sk=para(1)(1:ilg))
 9999  continue
     call jedema()
 end subroutine

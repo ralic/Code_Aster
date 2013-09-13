@@ -2,15 +2,15 @@ subroutine rvnchm(mailla, tm, nbm, numnd, nomnd)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: numnd, nomnd
     character(len=8) :: mailla
     integer :: tm(*), nbm
@@ -78,7 +78,7 @@ subroutine rvnchm(mailla, tm, nbm, numnd, nomnd)
     call wkvect(nomnd, 'V V K8', nbpt, anomnd)
     call jeveuo(jexnum(connex, tm(1)), 'L', aconec)
     if (nbm .le. 0) then
-        call u2mess('F', 'POSTRELE_24')
+        call utmess('F', 'POSTRELE_24')
     else if (nbm .eq. 1) then
         nder = zi(aconec + 1-1)
     else
@@ -90,7 +90,7 @@ subroutine rvnchm(mailla, tm, nbm, numnd, nomnd)
         else if ((n2.eq.zi(aconec)).or.(n2.eq.zi(aconec+1))) then
             nder = n1
         else
-            call u2mess('F', 'POSTRELE_25')
+            call utmess('F', 'POSTRELE_25')
         endif
     endif
     zi(anumnd + pt-1) = nder

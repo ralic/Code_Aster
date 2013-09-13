@@ -3,7 +3,7 @@ subroutine acevpc(nbocc, nlm, nlg, ier)
 #include "asterc/getres.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -55,27 +55,27 @@ subroutine acevpc(nbocc, nlm, nlg, ier)
 !
         if (nr .ne. 0) then
             if (xrc .le. 0.d0) then
-                call u2mess('E', 'MODELISA_61')
+                call utmess('E', 'MODELISA_61')
                 ier = ier + 1
             endif
         endif
         if (nc .ne. 0 .and. nc .ne. -3) then
-            call u2mess('E', 'MODELISA_62')
+            call utmess('E', 'MODELISA_62')
             ier = ier + 1
         endif
         if (np .ne. 0 .and. np .ne. -3) then
-            call u2mess('E', 'MODELISA_63')
+            call utmess('E', 'MODELISA_63')
             ier = ier + 1
         endif
         if (nf .ne. 0) then
             if (xfl .le. 0.d0) then
-                call u2mess('E', 'MODELISA_64')
+                call utmess('E', 'MODELISA_64')
                 ier = ier + 1
             endif
         endif
         if (ns .ne. 0) then
             if (xsi .le. 0.d0) then
-                call u2mess('E', 'MODELISA_65')
+                call utmess('E', 'MODELISA_65')
                 ier = ier + 1
             endif
         endif

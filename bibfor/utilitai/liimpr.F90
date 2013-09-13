@@ -9,7 +9,7 @@ subroutine liimpr(noml, impr, fichie)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: noml, fichie
     integer :: impr
 !     ------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine liimpr(noml, impr, fichie)
     if (iul .le. 0) then
         call getres(k8bid, k8bid, nomcmd)
         lg = max(1,lxlgut(file))
-        call u2mesk('A', 'UTILITAI2_47', 1, file(1:lg))
+        call utmess('A', 'UTILITAI2_47', sk=file(1:lg))
         goto 9999
     endif
 !

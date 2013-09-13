@@ -17,7 +17,7 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: mv, is, nvtot
     integer :: nvoima, nscoma
     integer :: touvoi(1:nvoima, 1:nscoma+2)
@@ -54,8 +54,7 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
             if (.not.trso) then
                 nsco=nsco+1
                 if (nsco .gt. nscoma) then
-                    call u2mesg('F', 'VOLUFINI_4', 0, ' ', 1,&
-                                nsco, 0, 0.d0)
+                    call utmess('F', 'VOLUFINI_4', si=nsco)
                 endif
                 touvoi(iv,2)=nsco
                 touvoi(iv,2+nsco)=is
@@ -68,8 +67,7 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
     if (.not.trma) then
         nvtot=nvtot+1
         if (nvtot .gt. nvoima) then
-            call u2mesg('F', 'VOLUFINI_3', 0, ' ', 1,&
-                        nvtot, 0, 0.d0)
+            call utmess('F', 'VOLUFINI_3', si=nvtot)
         endif
         touvoi(nvtot,1)=mv
         touvoi(nvtot,2)=1

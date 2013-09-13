@@ -30,8 +30,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
     character(len=*) :: fami
@@ -105,7 +104,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         (.not.( compor(1)(1:7) .eq. 'KIT_THM')) .and.&
         (.not.( compor(1)(1:7) .eq. 'KIT_DDI')) .and.&
         (.not.( compor(1)(1:8) .eq. 'KIT_THHM'))) then
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
     rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
     resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
@@ -172,7 +171,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                 1, nomres(3), valres(3), icodre(3), 0)
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
         if ((iisnan(tref).ne.0) .or. (icodre(3).ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         else
             epsthe = valres(3)*(temp-tref)
         endif
@@ -190,11 +189,13 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         nomres(1)='B_ENDOGE'
         nomres(2)='K_DESSIC'
         call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                    [0.d0], 1, nomres(1), valres(1), icodre(1), 0)
+                    [0.d0], 1, nomres(1), valres(1), icodre(1),&
+                    0)
         if (icodre(1) .ne. 0) valres(1) = 0.d0
         bendo = valres(1)
         call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                    [0.d0], 1, nomres(2), valres(2), icodre(2), 0)
+                    [0.d0], 1, nomres(2), valres(2), icodre(2),&
+                    0)
         if (icodre(2) .ne. 0) valres(2) = 0.d0
         kdess = valres(2)
     else
@@ -225,7 +226,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                     1, nomres(7), valres(7), icodre(7), 1)
         chi = valres(7)
         if (chi .eq. 0.d0) then
-            call u2mess('I', 'COMPOR1_59')
+            call utmess('I', 'COMPOR1_59')
         endif
     endif
 ! ======================================================================

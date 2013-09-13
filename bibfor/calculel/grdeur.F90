@@ -23,7 +23,7 @@ function grdeur(nompar)
 !     ----------
 #include "jeveux.h"
 #include "asterc/indik8.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nompar
 ! ----------------------------------------------------------------------
 !     ENTREES:
@@ -50,7 +50,7 @@ function grdeur(nompar)
     nbpar = zi(iaopds-1+2) + zi(iaopds-1+3) + zi(iaopds-1+4)
     jpar = indik8(zk8(iaoppa),nompar,1,nbpar)
     if (jpar .eq. 0) then
-        call u2mesk('F', 'CALCULEL2_61', 1, nompar)
+        call utmess('F', 'CALCULEL2_61', sk=nompar)
     endif
     grdeur = zi(iaopds-1+4+jpar)
 end function

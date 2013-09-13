@@ -1,7 +1,6 @@
 subroutine focain(method, nomfon, cste, sortie, base)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/foc2in.h"
@@ -10,9 +9,9 @@ subroutine focain(method, nomfon, cste, sortie, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: method, nomfon, sortie
     character(len=1) :: base
     real(kind=8) :: cste
@@ -66,7 +65,7 @@ subroutine focain(method, nomfon, cste, sortie, base)
 !     ---  NOMBRE DE POINTS ----
     call gettco(nomfi, typres)
     if (typres .eq. 'FORMULE') then
-        call u2mesk('F', 'MODELISA2_5', 1, nomfi)
+        call utmess('F', 'MODELISA2_5', sk=nomfi)
     endif
     vale = nomfi//'.VALE'
     call jelira(vale, 'LONUTI', nbval)
@@ -93,7 +92,7 @@ subroutine focain(method, nomfon, cste, sortie, base)
             call foc2in(method, nbpts, zr(lvar), zr(lfon), cste,&
                         zr(lres))
         else
-            call u2mess('F', 'UTILITAI_82')
+            call utmess('F', 'UTILITAI_82')
         endif
     else if (nbpts.eq.1) then
 !

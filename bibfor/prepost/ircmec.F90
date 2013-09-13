@@ -47,10 +47,9 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-#include "asterfort/infniv.h"
 #include "asterfort/as_mfdrpw.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nochmd, nomprf, nolopg
 !
     integer :: idfimd
@@ -108,7 +107,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
     if (nivinf .gt. 1) then
         write (ifm,1001) 'DEBUT DE '//nompro
         1001 format(/,4x,10('='),a,10('='),/)
-        call u2mess('I', 'MED_49')
+        call utmess('I', 'MED_49')
         write (ifm,13001) nbrepg, typent, typgeo
         do 13 , iaux = 1 , ncmpve
         write (ifm,13002)&
@@ -187,13 +186,12 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 ! 2.3. ==> ECRITURE VRAIE
 !
     call as_mfdrpw(idfimd, nochmd, val, edfuin, iaux,&
-                nolopg, edall, nomprf, edcomp, typent,&
-                typgeo, numpt, instan, numord, codret)
+                   nolopg, edall, nomprf, edcomp, typent,&
+                   typgeo, numpt, instan, numord, codret)
 !
     if (codret .ne. 0) then
         saux08='mfdrpw'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (nivinf .gt. 1) then

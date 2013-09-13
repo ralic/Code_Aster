@@ -16,7 +16,7 @@ subroutine te0039(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit       none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dichoc.h"
@@ -37,9 +37,9 @@ subroutine te0039(option, nomte)
 #include "asterfort/tecael.h"
 #include "asterfort/terefe.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2vgl.h"
 #include "asterfort/ut2vlg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -108,13 +108,13 @@ subroutine te0039(option, nomte)
 !        LE CODE STOKE DANS LA CARTE
         call infdis('TYDI', infodi, r8bid, k8bid)
         if (infodi .ne. ibid) then
-            call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+            call utmess('F+', 'DISCRETS_25', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'F+')
         endif
 !        DISCRET DE TYPE RAIDEUR
         call infdis('DISK', infodi, r8bid, k8bid)
         if (infodi .eq. 0) then
-            call u2mesk('A+', 'DISCRETS_27', 1, nomte)
+            call utmess('A+', 'DISCRETS_27', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'A+')
         endif
 !        MATRICE DE RAIDEUR SYMETRIQUE OU PAS, POUR LES DISCRETS
@@ -173,7 +173,7 @@ subroutine te0039(option, nomte)
             kmess(1) = option
             kmess(2) = nomte
             kmess(3) = 'TE0039'
-            call u2mesk('F', 'DISCRETS_15', 2, kmess)
+            call utmess('F', 'DISCRETS_15', nk=2, valk=kmess)
         endif
 ! --- ------------------------------------------------------------------
     else if (option.eq.'SIEF_ELNO') then
@@ -219,7 +219,7 @@ subroutine te0039(option, nomte)
                 kmess(2) = nomte
                 kmess(3) = 'TE0039'
                 kmess(4) = ' '
-                call u2mesk('F', 'DISCRETS_12', 4, kmess)
+                call utmess('F', 'DISCRETS_12', nk=4, valk=kmess)
             endif
 !
             call jevech('PCADISK', 'L', jdc)
@@ -412,7 +412,7 @@ subroutine te0039(option, nomte)
                 if (xl .eq. zero) then
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3)(1:8)
-                    call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+                    call utmess('F', 'ELEMENTS2_43', sk=nomail)
                 endif
                 call jevech('PCAARPO', 'L', lrcou)
                 rad = zr(lrcou)
@@ -464,7 +464,7 @@ subroutine te0039(option, nomte)
             endif
         else
             ch16 = option
-            call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+            call utmess('F', 'ELEMENTS2_47', sk=ch16)
         endif
 !        RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA
         call jevech('PCAORIE', 'L', lorien)
@@ -477,7 +477,7 @@ subroutine te0039(option, nomte)
                  )
             if (xl .eq. zero) then
                 ch16 = ' ?????????'
-                call u2mesk('F', 'ELEMENTS2_43', 1, ch16(:8))
+                call utmess('F', 'ELEMENTS2_43', sk=ch16(:8))
             endif
             call jevech('PCAARPO', 'L', lrcou)
             rad = zr(lrcou)

@@ -8,8 +8,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
 #include "asterfort/pscvec.h"
 #include "asterfort/ptfop1.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "blas/ddot.h"
     integer :: itype
@@ -85,7 +84,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
             qi(i+6) = qi(i)
             xxx = abs( dble( zc(lforc-1+3+i) ) )
             if (xxx .gt. 1.d-20) then
-                call u2mess('F', 'ELEMENTS2_46')
+                call utmess('F', 'ELEMENTS2_46')
             endif
 30      continue
 !
@@ -156,7 +155,7 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
 !
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 ! *********************************************************************
 !

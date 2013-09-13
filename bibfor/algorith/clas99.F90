@@ -37,8 +37,7 @@ subroutine clas99(nomres)
 #include "asterfort/moco99.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: vali
@@ -99,13 +98,11 @@ subroutine clas99(nomres)
                     nbid)
 !
         if (nbmodo .lt. nbmout) then
-            call u2mess('I', 'ALGORITH15_92')
+            call utmess('I', 'ALGORITH15_92')
             valk = zk8(ltmome-1+i)
-            call u2mesg('I', 'ALGORITH15_93', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('I', 'ALGORITH15_93', sk=valk)
             vali = nbmodo
-            call u2mesg('I', 'ALGORITH15_94', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH15_94', si=vali)
         else
             nbmodo=nbmout
         endif

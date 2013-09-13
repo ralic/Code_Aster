@@ -37,8 +37,7 @@ subroutine pmfite(nf, ncf, vf, ve, vs)
 !          VS(6) : INT(E.Y.Z.DS)
 ! -----------------------------------------------------------
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nf, ncf, i
     real(kind=8) :: vf(ncf, nf), ve(nf), vs(6), zero, esf
 !-----------------------------------------------------------------------
@@ -63,11 +62,11 @@ subroutine pmfite(nf, ncf, vf, ve, vs)
 20      continue
     else if (ncf.eq.6) then
 ! --- ON A 6 CARACTERISTIQUES PAR FIBRE : Y, Z, S, IZ, IY ET IYZ
-        call u2mess('F', 'ELEMENTS2_41')
+        call utmess('F', 'ELEMENTS2_41')
     else
 ! --- ERREUR SUR NCARFI
         call codent(ncf, 'G', kncf)
-        call u2mesk('F', 'ELEMENTS2_40', 1, kncf)
+        call utmess('F', 'ELEMENTS2_40', sk=kncf)
     endif
 !
 end subroutine

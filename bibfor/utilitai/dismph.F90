@@ -22,7 +22,7 @@ subroutine dismph(questi, nomobz, repi, repkz, ierd)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismgd.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
@@ -57,7 +57,7 @@ subroutine dismph(questi, nomobz, repi, repkz, ierd)
     else if (nomob(1:9).eq.'NON_LOCAL') then
         repk = 'VANL_R'
     else
-        call u2mesk('F', 'UTILITAI_66', 1, nomob)
+        call utmess('F', 'UTILITAI_66', sk=nomob)
         ierd = 1
         goto 10
     endif

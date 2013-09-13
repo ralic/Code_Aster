@@ -28,10 +28,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 #include "asterfort/nocart.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rairep.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: ifm, lmax, noemaf, nbocc, ivr(*)
@@ -231,7 +228,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
             lbid = ( k8bid(1:3) .eq. 'OUI' )
         endif
         if (lbid .neqv. eurplx) then
-            call u2mesi('F', 'MODELISA9_93', 1, ioc)
+            call utmess('F', 'MODELISA9_93', si=ioc)
         endif
 !        UNITE POUR IMPRIMER LES VALEUR DES DISCRETS
         call getvis('RIGI_PARASOL', 'UNITE', iocc=ioc, scal=ibid, nbret=ier)
@@ -250,7 +247,9 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !
         ii = 0
         do 34 nc = 1, ncarac
-            if ((nc.eq.2) .and. (car(1)(1:1).eq.car(2)(1:1))) call u2mess('F', 'MODELISA_16')
+            if ((nc.eq.2) .and. (car(1)(1:1).eq.car(2)(1:1))) then
+                call utmess('F', 'MODELISA_16')
+            endif
 !           DISCRETS SEULEMENT EN TRANSLATION
             transl = (car(nc)(1:7) .eq. 'K_T_D_N') .or. (car(nc)(1:7) .eq. 'K_T_D_L') .or.&
                      (car(nc)(1:7) .eq. 'A_T_D_N') .or. (car(nc)(1:7) .eq. 'A_T_D_L')
@@ -258,11 +257,15 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
             trarot = (car(nc)(1:8) .eq. 'K_TR_D_N') .or. (car(nc)(1:8) .eq. 'K_TR_D_L') .or.&
                      (car(nc)(1:8) .eq. 'A_TR_D_N') .or. (car(nc)(1:8) .eq. 'A_TR_D_L')
 !
-            if (transl .eqv. trarot) call u2mesk('F', 'MODELISA_17', 1, car(nc))
+            if (transl .eqv. trarot) then
+                call utmess('F', 'MODELISA_17', sk=car(nc))
+            endif
 !
             if (transl) then
                 lamass = 'M'//car(nc)(2:7)
-                if (ii+3 .gt. nval) call u2mess('F', 'DISCRETS_21')
+                if (ii+3 .gt. nval) then
+                    call utmess('F', 'DISCRETS_21')
+                endif
                 do 132 j = 1, 3
                     vale(j) = val(ii+j)
 132              continue
@@ -272,7 +275,9 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 ii = ii + 3
             else if (trarot) then
                 lamass = 'M'//car(nc)(2:8)
-                if (ii+6 .gt. nval) call u2mess('F', 'DISCRETS_21')
+                if (ii+6 .gt. nval) then
+                    call utmess('F', 'DISCRETS_21')
+                endif
                 do 131 j = 1, 6
                     vale(j) = val(ii+j)
 131              continue
@@ -302,11 +307,11 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 100                  continue
 101                  continue
                     if (itrou .eq. 0) then
-                        call u2mesk('F', 'MODELISA_18', 1, zk8(itbno+i-1))
+                        call utmess('F', 'MODELISA_18', sk=zk8(itbno+i-1))
                     endif
 39              continue
             else if (ixnw.eq.0.and.ngp.eq.0) then
-                call u2mess('F', 'MODELISA_19')
+                call utmess('F', 'MODELISA_19')
             endif
             if (ngp .ne. 0) then
                 nbnoeu = 0
@@ -323,8 +328,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 if (nma .ne. nbno) then
                     vali(1) = nbno
                     vali(2) = nma
-                    call u2mesg('F', 'MODELISA2_10', 1, nogp, 2,&
-                                vali, 0, r8bid)
+                    call utmess('F', 'MODELISA2_10', sk=nogp, ni=2, vali=vali)
                 endif
 !
 !
@@ -335,7 +339,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                     call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
 !                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
                     if (nbnma .ne. nbnoeu) then
-                        call u2mesk('F', 'MODELISA_20', 1, nommai)
+                        call utmess('F', 'MODELISA_20', sk=nommai)
                     endif
                     do 25 inbn = 1, nbnma
                         inoe = zi(ldnm+inbn-1)
@@ -352,7 +356,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !                 A LA SURFACE, ET CE N'EST PAS NORMAL
                     write(ifm,*)'GROUP_MA :', (' '//zk24(jdls+ii-1),&
                     ii=1,ng)
-                    call u2mesk('F', 'MODELISA_21', 1, nomnoe)
+                    call utmess('F', 'MODELISA_21', sk=nomnoe)
 22              continue
 !              PREPARATION DES IMPRESSIONS DANS LE FICHIER MESSAGE
 !              IFR = IUNIFI('RESULTAT')
@@ -373,7 +377,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                     do 227 ino = 1, nbno
                         if (zk8(itbmp + ino - 1) .eq. ' ') then
                             call jenuno(jexnum(mlgnno, ino), nomnoe)
-                            call u2mesk('F', 'MODELISA2_8', 1, nomnoe)
+                            call utmess('F', 'MODELISA2_8', sk=nomnoe)
                         endif
 227                  continue
                 endif
@@ -448,7 +452,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                             endif
 !
                         else
-                            call u2mesk('A', 'MODELISA9_96', 1, zk8(jd))
+                            call utmess('A', 'MODELISA9_96', sk=zk8(jd))
                         endif
                     endif
 !                 AFFECTATION DES VALEURS REPARTIES
@@ -527,7 +531,9 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 36              continue
             endif
 34      continue
-        if (ii .ne. nval) call u2mess('F', 'DISCRETS_21')
+        if (ii .ne. nval) then
+            call utmess('F', 'DISCRETS_21')
+        endif
 30  end do
 !
     if (ixnw .ne. 0) call jedetr(tmpdis)

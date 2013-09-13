@@ -13,8 +13,7 @@ subroutine te0155(option, nomte)
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/verift.h"
@@ -134,7 +133,7 @@ subroutine te0155(option, nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- INITIALISATION DE FL ---
@@ -626,10 +625,10 @@ subroutine te0155(option, nomte)
 !
     goto 1000
 998  continue
-    call u2mess('F', 'ELEMENTS3_34')
+    call utmess('F', 'ELEMENTS3_34')
 !
 999  continue
-    call u2mess('F', 'ELEMENTS3_35')
+    call utmess('F', 'ELEMENTS3_35')
 !
 1000  continue
 end subroutine

@@ -10,8 +10,7 @@ subroutine te0346(option, nomte)
 #include "asterfort/pouex7.h"
 #include "asterfort/ptkg20.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -79,13 +78,13 @@ subroutine te0346(option, nomte)
 !
 !     SEULEMENT EN COMP_INCR
     if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-        call u2mess('F', 'ELEMENTS2_90')
+        call utmess('F', 'ELEMENTS2_90')
     endif
 !
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
         valk(2) = nomte
-        call u2mesk('F', 'ELEMENTS3_40', 2, valk)
+        call utmess('F', 'ELEMENTS3_40', nk=2, valk=valk)
     endif
 !
     npg = 3

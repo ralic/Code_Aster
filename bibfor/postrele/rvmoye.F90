@@ -39,8 +39,7 @@ subroutine rvmoye(nomres, iocc)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: iocc
     character(len=*) :: nomres
@@ -97,10 +96,10 @@ subroutine rvmoye(nomres, iocc)
 10          continue
 !
         else if (tych(1:2).eq.'EL') then
-            call u2mess('F', 'ALGORITH17_5')
+            call utmess('F', 'ALGORITH17_5')
 !
         else
-            call u2mesk('F', 'ALGORITH10_56', 1, tych)
+            call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
         goto 9999
     endif
@@ -117,10 +116,10 @@ subroutine rvmoye(nomres, iocc)
     call rsutnu(resu, 'ACTION', iocc, knum, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
-        call u2mesk('F', 'CALCULEL4_8', 1, resu)
+        call utmess('F', 'CALCULEL4_8', sk=resu)
     endif
     if (iret .ne. 0) then
-        call u2mess('F', 'ALGORITH3_41')
+        call utmess('F', 'ALGORITH3_41')
     endif
     call jeveuo(knum, 'L', jordr)
 !
@@ -205,9 +204,9 @@ subroutine rvmoye(nomres, iocc)
 11          continue
 !
         else if (tych(1:2).eq.'EL') then
-            call u2mess('F', 'ALGORITH17_5')
+            call utmess('F', 'ALGORITH17_5')
         else
-            call u2mesk('F', 'ALGORITH10_56', 1, tych)
+            call utmess('F', 'ALGORITH10_56', sk=tych)
         endif
 !
 101  end do

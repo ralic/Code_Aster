@@ -36,7 +36,6 @@ subroutine te0096(option, nomte)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
@@ -52,7 +51,8 @@ subroutine te0096(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 !
 !
@@ -214,7 +214,7 @@ subroutine te0096(option, nomte)
 !
 ! ON NE PEUT AVOIR SIMULTANEMENT PRE-DEFORMATIONS ET CONTRAINTES INIT.
     if ((isigi.ne.0) .and. epsini) then
-        call u2mess('F', 'RUPTURE1_20')
+        call utmess('F', 'RUPTURE1_20')
     endif
 !
 ! =====================================================================
@@ -569,9 +569,11 @@ subroutine te0096(option, nomte)
 ! CALCUL DE LA DEFORMATION DE REFERENCE
             call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        [rbid], 1, 'NU', nu(1), icodre(1), 1)
+                        [rbid], 1, 'NU', nu(1), icodre(1),&
+                        1)
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        [rbid], 1, 'E', e(1), icodre(1), 1)
+                        [rbid], 1, 'E', e(1), icodre(1),&
+                        1)
 !
             mu = e(1)/(2.d0*(1.d0+nu(1)))
 !

@@ -1,13 +1,13 @@
 subroutine te0146(option, nomte)
     implicit none
 #include "jeveux.h"
-! aslint: disable=W0104
 #include "asterfort/assert.h"
 #include "asterfort/clcplq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
+! aslint: disable=W0104
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -119,7 +119,9 @@ subroutine te0146(option, nomte)
     call clcplq(ht, enrobg, typcmb, piva, pivb,&
                 ea, cequi, sigaci, sigbet, effrts,&
                 dnsits, sigmbe, epsibe, ierr)
-    if (ierr .gt. 0) call u2mesi('F', 'CALCULEL_72', 1, ierr)
+    if (ierr .gt. 0) then
+        call utmess('F', 'CALCULEL_72', si=ierr)
+    endif
 !
 !
 !       -- stockage des resultats :

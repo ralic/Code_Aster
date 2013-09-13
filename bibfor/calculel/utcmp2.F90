@@ -12,7 +12,7 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
 #include "asterfort/jexnom.h"
 #include "asterfort/knincl.h"
 #include "asterfort/lxliis.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
     integer :: iocc, dim, nbcmp, numcmp(*)
     character(len=*) :: nomgd, mcfac, nomcmp(*)
@@ -82,7 +82,9 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
         call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', lgncmp)
         call knincl(8, nomcmp, nbcmp, zk8(jnocmp), lgncmp,&
                     iret)
-        if (iret .ne. 0) call u2mesk('F', 'CALCULEL5_6', 1, nomgd)
+        if (iret .ne. 0) then
+            call utmess('F', 'CALCULEL5_6', sk=nomgd)
+        endif
     endif
 !
 !

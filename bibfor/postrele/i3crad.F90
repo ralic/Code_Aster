@@ -1,8 +1,8 @@
 subroutine i3crad(k, f, a, nba, t,&
                   r1, r2)
     implicit none
+#include "asterfort/utmess.h"
 !
-#include "asterfort/u2mesi.h"
     integer :: k, f, nba, a
     real(kind=8) :: r1, r2, t
 !
@@ -73,6 +73,6 @@ subroutine i3crad(k, f, a, nba, t,&
     else
         vali (1) = k
         vali (2) = f
-        call u2mesi('F', 'INTEMAIL_22', 2, vali)
+        call utmess('F', 'INTEMAIL_22', ni=2, vali=vali)
     endif
 end subroutine

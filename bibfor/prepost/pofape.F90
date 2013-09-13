@@ -25,7 +25,7 @@ subroutine pofape()
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/tbnuli.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -192,7 +192,7 @@ subroutine pofape()
 !C  CONTRUIRE TABLEAU CONTRAINTE
     if (nbf .eq. 0) then
         if (crsigm) then
-            call u2mess('F', 'FATIGUE1_97')
+            call utmess('F', 'FATIGUE1_97')
         endif
         call wkvect('&&POFAPE.ORDO', 'V V R', nbpts/2*6, iordo)
     else
@@ -201,7 +201,9 @@ subroutine pofape()
         do 20 i = 2, nbf
             fvale(i) = nomten(i)//'           .VALE'
             call jelira(fvale(i), 'LONMAX', nbpts)
-            if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
+            if (nbpts .ne. nbptot) then
+                call utmess('F', 'FATIGUE1_21')
+            endif
 20      continue
         call wkvect('&&POFAPE.ORDO', 'V V R', nbptot/2*nbf, iordo)
         call jeveuo(fvale(1), 'L', ifonc1)
@@ -209,7 +211,7 @@ subroutine pofape()
             call jeveuo(fvale(i), 'L', ifonc)
             do 35 j = 1, nbptot/2
                 if (zr(ifonc+j-1) .ne. zr(ifonc1+j-1)) then
-                    call u2mess('F', 'FATIGUE1_21')
+                    call utmess('F', 'FATIGUE1_21')
                 endif
                 zr(iordo+(j-1)*nbf+i-1) = zr(ifonc+nbptot/2+j-1)
 35          continue
@@ -225,7 +227,7 @@ subroutine pofape()
 !C  CONTRUIRE TABLEAU DEFORMATION TOTALE
     if (nbeps .eq. 0) then
         if (crepst) then
-            call u2mess('F', 'FATIGUE1_98')
+            call utmess('F', 'FATIGUE1_98')
         endif
         call wkvect('&&POFAPE.ORDOE', 'V V R', nbpts/2*6, iordoe)
     else
@@ -234,7 +236,9 @@ subroutine pofape()
         do 21 i = 2, nbeps
             etvale(i) = nomeps(i)//'           .VALE'
             call jelira(etvale(i), 'LONMAX', nbpts)
-            if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
+            if (nbpts .ne. nbptot) then
+                call utmess('F', 'FATIGUE1_21')
+            endif
 21      continue
         call wkvect('&&POFAPE.ORDOE', 'V V R', nbptot*nbeps/2, iordoe)
         call jeveuo(etvale(1), 'L', ifonc2)
@@ -242,7 +246,7 @@ subroutine pofape()
             call jeveuo(etvale(i), 'L', ifonce)
             do 36 j = 1, nbptot/2
                 if (zr(ifonce+j-1) .ne. zr(ifonc2+j-1)) then
-                    call u2mess('F', 'FATIGUE1_21')
+                    call utmess('F', 'FATIGUE1_21')
                 endif
                 zr(iordoe+(j-1)*nbeps+i-1) = zr(ifonce+nbptot/2+j-1)
 36          continue
@@ -258,7 +262,7 @@ subroutine pofape()
 !
     if (nbepsp .eq. 0) then
         if (crepsp) then
-            call u2mess('F', 'FATIGUE1_99')
+            call utmess('F', 'FATIGUE1_99')
         endif
         call wkvect('&&POFAPE.ORDOP', 'V V R', nbpts/2*6, iordop)
     else
@@ -267,7 +271,9 @@ subroutine pofape()
         do 22 i = 2, nbepsp
             ptvale(i) = nomepp(i)//'           .VALE'
             call jelira(ptvale(i), 'LONMAX', nbpts)
-            if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
+            if (nbpts .ne. nbptot) then
+                call utmess('F', 'FATIGUE1_21')
+            endif
 22      continue
         call wkvect('&&POFAPE.ORDOP', 'V V R', nbptot*nbepsp/2, iordop)
         call jeveuo(ptvale(1), 'L', ifonc3)
@@ -275,7 +281,7 @@ subroutine pofape()
             call jeveuo(ptvale(i), 'L', ifoncp)
             do 37 j = 1, nbptot/2
                 if (zr(ifoncp+j-1) .ne. zr(ifonc3+j-1)) then
-                    call u2mess('F', 'FATIGUE1_21')
+                    call utmess('F', 'FATIGUE1_21')
                 endif
                 zr(iordop+(j-1)*nbeps+i-1) = zr(ifoncp+nbptot/2+j-1)
 37          continue
@@ -293,10 +299,10 @@ subroutine pofape()
 !
     if (crepse) then
         if ((nbeps + nbepsp) .eq. 0) then
-            call u2mess('F', 'FATIGUE1_95')
+            call utmess('F', 'FATIGUE1_95')
         endif
         if ((nbeps + nbepsp) .gt. 0) then
-            call u2mess('A', 'FATIGUE1_96')
+            call utmess('A', 'FATIGUE1_96')
         endif
     endif
 !
@@ -493,7 +499,9 @@ subroutine pofape()
         if (kdomm .eq. 'WOHLER') then
             pheno = 'FATIGUE'
             call rccome(nommat, pheno, phenom, icodre(1))
-            if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+            if (icodre(1) .eq. 1) then
+                call utmess('F', 'FATIGUE1_24')
+            endif
             cara = 'WOHLER'
             call rcpare(nommat, pheno, cara, icodwo)
             cara = 'A_BASQUI'
@@ -516,7 +524,7 @@ subroutine pofape()
 !
         else if (kdomm .eq. ' ') then
         else
-            call u2mess('F', 'FATIGUE1_20')
+            call utmess('F', 'FATIGUE1_20')
         endif
 !
     endif

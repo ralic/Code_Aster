@@ -28,10 +28,10 @@ function dvolu3(coord, norm, coord1)
 ! OUT  DVOLU3 : VOLUME DE L INTERSECTION
 !
     implicit none
+#include "asterfort/utmess.h"
 !
 ! DECLARATION GLOBALE
 !
-#include "asterfort/u2mess.h"
     integer :: norm(2, 4)
     real(kind=8) :: coord(3, 12), coord1(3), dvolu3
 !
@@ -228,7 +228,7 @@ function dvolu3(coord, norm, coord1)
     dvolu3 = vol3 + vol4
     dvolu3 = dvolu3 / 6.d0
     if (dvolu3 .gt. 1.d+6) then
-        call u2mess('A', 'PREPOST_28')
+        call utmess('A', 'PREPOST_28')
     endif
 !
 end function

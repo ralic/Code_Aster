@@ -1,5 +1,5 @@
 subroutine rc32r8(nomres, mater, symax)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/jeveuo.h"
@@ -7,7 +7,7 @@ subroutine rc32r8(nomres, mater, symax)
 #include "asterfort/rcvale.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: symax
     character(len=8) :: nomres, mater
 !     ------------------------------------------------------------------
@@ -59,7 +59,7 @@ subroutine rc32r8(nomres, mater, symax)
         if (icodre(1) .eq. 0) then
             symax = valres(1)
         else
-            call u2mess('A', 'POSTRCCM_4')
+            call utmess('A', 'POSTRCCM_4')
             goto 9999
         endif
     endif

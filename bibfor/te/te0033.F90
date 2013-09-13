@@ -1,5 +1,5 @@
 subroutine te0033(option, nomte)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
@@ -29,8 +29,7 @@ subroutine te0033(option, nomte)
 #include "asterfort/t3gedg.h"
 #include "asterfort/t3gsie.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -146,14 +145,12 @@ subroutine te0033(option, nomte)
                 if ((icou-1) .ne. nbcou) then
                     vali(1) = icou-1
                     vali(2) = nbcou
-                    call u2mesg('F', 'ELEMENTS3_51', 0, ' ', 2,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ELEMENTS3_51', ni=2, vali=vali)
                 endif
                 if (abs(epais-eptot)/epais .gt. 1.d-2) then
                     valr(1) = eptot
                     valr(2) = epais
-                    call u2mesg('F', 'ELEMENTS3_52', 0, ' ', 0,&
-                                0, 2, valr)
+                    call utmess('F', 'ELEMENTS3_52', nr=2, valr=valr)
                 endif
             endif
         endif
@@ -191,7 +188,9 @@ subroutine te0033(option, nomte)
         else
             call jevech('PNBSP_I', 'L', jnbspi)
             nbcou = zi(jnbspi)
-            if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_46')
+            if (nbcou .le. 0) then
+                call utmess('F', 'ELEMENTS_46')
+            endif
         endif
 !
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
@@ -233,7 +232,9 @@ subroutine te0033(option, nomte)
         else
             call jevech('PNBSP_I', 'L', jnbspi)
             nbcou = zi(jnbspi)
-            if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_46')
+            if (nbcou .le. 0) then
+                call utmess('F', 'ELEMENTS_46')
+            endif
         endif
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKTG3') then
             call dktsie(option, fami, xyzl, pgl, depl,&

@@ -45,7 +45,7 @@ subroutine vdpnlr(option, nomte, codret)
 #include "asterfort/tecach.h"
 #include "asterfort/tilbar.h"
 #include "asterfort/transp.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
 #include "asterfort/vectpe.h"
@@ -227,9 +227,13 @@ subroutine vdpnlr(option, nomte, codret)
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
 !
-    if (nbcou .le. 0) call u2mess('F', 'ELEMENTS_12')
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
 !
-    if (nbcou .gt. 10) call u2mess('F', 'ELEMENTS_13')
+    if (nbcou .gt. 10) then
+        call utmess('F', 'ELEMENTS_13')
+    endif
 !
     read (zk16(icompo-1+2),'(I16)') nbvari
     call tecach('OON', 'PVARIMR', 'L', 7, itab,&
@@ -248,7 +252,7 @@ subroutine vdpnlr(option, nomte, codret)
         nomres(1) = 'E'
         nomres(2) = 'NU'
     else
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !______________________________________________________________________
 !
@@ -731,7 +735,7 @@ subroutine vdpnlr(option, nomte, codret)
                     nomres(1) = 'E'
                     nomres(2) = 'NU'
                 else
-                    call u2mess('F', 'ELEMENTS_42')
+                    call utmess('F', 'ELEMENTS_42')
                 endif
 !
                 call rcvalb('MASS', intsn, ksp, '+', zi(imate),&

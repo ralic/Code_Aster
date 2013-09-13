@@ -37,7 +37,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, nmat, imat, nbval, nbcoef, itbint, nfs, nsg
     integer :: iret2, nbsys
     real(kind=8) :: valres(nmat), hsri(nsg, nsg), h, e, nu, mu
@@ -182,8 +182,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvarc('F', 'TEMP', poum, fami, kpg,&
                     ksp, tempf, iret2)
         if (iret2 .ne. 0) then
-            call u2mesg('F', 'COMPOR1_82', 1, necoul, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'COMPOR1_82', sk=necoul)
         endif
 !
         nbval=nbval+1
@@ -234,8 +233,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvarc('F', 'TEMP', poum, fami, kpg,&
                     ksp, tempf, iret2)
         if (iret2 .ne. 0) then
-            call u2mesg('F', 'COMPOR1_82', 1, necoul, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'COMPOR1_82', sk=necoul)
         endif
         nbval=nbval+1
         valres(nbval)=tempf

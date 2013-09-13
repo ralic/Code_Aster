@@ -1,11 +1,11 @@
 subroutine te0119(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,7 @@ subroutine te0119(option, nomte)
         if (excent .ne. 0.d0) then
             call tecael(iadzi, iazk24)
             valk(1)=zk24(iazk24-1+3)(1:8)
-            call u2mesk('F', 'CALCULEL2_31', 1, valk)
+            call utmess('F', 'CALCULEL2_31', sk=valk(1))
         endif
     endif
 !

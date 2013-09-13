@@ -4,9 +4,7 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
 !
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: lnoff, ndeg
     character(len=8) :: typfis
     character(len=16) :: option, cas
@@ -68,12 +66,16 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
 !       L'UTILISATEUR NE DOIT PAS AVOIR RENSEIGNE LISSAGE_G
         call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ier,&
                     isdefault=iarg)
-        if (iarg .eq. 0) call u2mess('A', 'RUPTURE0_67')
+        if (iarg .eq. 0) then
+            call utmess('A', 'RUPTURE0_67')
+        endif
 !
 !       L'UTILISATEUR NE DOIT PAS AVOIR RENSEIGNE LISSAGE_THETA
         call getvtx('LISSAGE', 'LISSAGE_THETA', iocc=1, scal=lissth, nbret=ier,&
                     isdefault=iarg)
-        if (iarg .eq. 0) call u2mess('A', 'RUPTURE0_67')
+        if (iarg .eq. 0) then
+            call utmess('A', 'RUPTURE0_67')
+        endif
 !
     else if (cas.eq.'3D_LOCAL') then
 !
@@ -95,18 +97,18 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
      &          lissth.eq.'LAGRANGE_REGU') then
             liss='LAGRANGE_REGU'
         else
-            call u2mess('F', 'RUPTURE0_86')
+            call utmess('F', 'RUPTURE0_86')
         endif
 !
 !       COMPATIBILITE ENTRE LISSAGE ET TYPFIS
         if (typfis .eq. 'FISSURE' .and. liss .eq. 'MIXTE') then
-            call u2mess('F', 'RUPTURE0_76')
+            call utmess('F', 'RUPTURE0_76')
         endif
 !
 !       COMPATIBILITE ENTRE LISSAGE ET OPTION
         if (liss .eq. 'MIXTE') then
             if (option .eq. 'G_MAX' .or. option .eq. 'G_BILI') then
-                call u2mesk('F', 'RUPTURE0_83', 1, option)
+                call utmess('F', 'RUPTURE0_83', sk=option)
             endif
         endif
 !
@@ -117,7 +119,7 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
 !       COMPATIBILITE DES DIMENSIONS DES ESPACES EN LISSAGE MIXTE
         if (liss .eq. 'MIXTE') then
             if (ndeg .ge. lnoff) then
-                call u2mesi('F', 'RUPTURE0_84', 1, lnoff)
+                call utmess('F', 'RUPTURE0_84', si=lnoff)
             endif
         endif
 !

@@ -19,7 +19,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: lmax, nbocc
@@ -222,7 +222,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !
             call normev(axey, xnorm)
             if (xnorm .lt. epsi) then
-                call u2mess('F', 'MODELISA_10')
+                call utmess('F', 'MODELISA_10')
             endif
             do 200 ima = 1, nbmat
                 numa = zi(jnuma+ima-1)
@@ -249,7 +249,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                 axex(3) = axey(1)*vecnor(2) - axey(2)*vecnor(1)
                 call normev(axex, xnorm)
                 if (xnorm .lt. epsi) then
-                    call u2mess('F', 'MODELISA_11')
+                    call utmess('F', 'MODELISA_11')
                 endif
                 call angvx(axex, ang(1), ang(2))
 !

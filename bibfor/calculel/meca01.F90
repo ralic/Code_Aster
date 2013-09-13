@@ -82,8 +82,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 #include "asterfort/rsexc2.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 !
     integer :: nbordr, jordr, nchar, jcha
@@ -153,7 +152,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
     iaux = lxlgut(optio0)
     if (iaux .gt. 16) then
-        call u2mesk('F', 'INDICATEUR_98', 1, optio0(1:iaux))
+        call utmess('F', 'INDICATEUR_98', sk=optio0(1:iaux))
     else
 !                 1234567890123456
         option = '                '
@@ -238,7 +237,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
             ibid = iordr+1-jaux
 !
             if (ibid .lt. 0) then
-                call u2mesk('I', 'INDICATEUR_3', 1, nompro)
+                call utmess('I', 'INDICATEUR_3', sk=nompro)
                 goto 2299
             endif
 !
@@ -256,13 +255,13 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                 call jenonu(jexnom(resuco//'           .NOVA', 'PARM_THETA'), iad)
                 if (iad .eq. 0) then
                     theta = 0.57d0
-                    call u2mesk('A', 'INDICATEUR_4', 1, resuco)
+                    call utmess('A', 'INDICATEUR_4', sk=resuco)
                 else
                     call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr,&
                                 0, iad, k8b)
                     theta = zr(iad)
                     if ((theta.gt.1.d0) .or. (theta.lt.0.d0)) then
-                        call u2mesk('F', 'INDICATEUR_5', 1, resuco)
+                        call utmess('F', 'INDICATEUR_5', sk=resuco)
                     endif
                 endif
 ! - --
@@ -296,7 +295,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
             call codent(ibid, 'G', k8b)
             valk(1) = option
             valk(2) = k8b
-            call u2mesk('A', 'INDICATEUR_2', 2, valk)
+            call utmess('A', 'INDICATEUR_2', nk=2, valk=valk)
             goto 2299
         endif
 !--- ARCHIVAGE DU NOM DU CHAMP DE CONTRAINTES
@@ -331,7 +330,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                 call codent(ibid, 'G', k8b)
                 valk(1) = resuco
                 valk(2) = k8b
-                call u2mesk('A', 'CALCULEL3_11', 2, valk)
+                call utmess('A', 'CALCULEL3_11', nk=2, valk=valk)
                 goto 2299
             endif
             if (jaux .eq. 1) then
@@ -347,7 +346,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
             longc = tbgrca(1)
             presc = tbgrca(2)
             if (longc .le. 0.d0 .or. presc .le. 0.d0) then
-                call u2mess('F', 'INDICATEUR_28')
+                call utmess('F', 'INDICATEUR_28')
             endif
 ! -----------------------------
 ! 2.2.4.1. LE CHAMP D'ESTIMATEURS A L'INSTANT PRECEDENT
@@ -363,7 +362,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                     call alchml(ligrmo, option, 'PERREM', 'V', cherrm,&
                                 iret, ' ')
                     if (iret .ne. 0) then
-                        call u2mess('A', 'CALCULEL5_4')
+                        call utmess('A', 'CALCULEL5_4')
                         goto 2299
                     endif
 !
@@ -376,7 +375,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                         call codent(ibid, 'G', k8b)
                         valk(1) = resuco
                         valk(2) = k8b
-                        call u2mesk('F', 'INDICATEUR_24', 2, valk)
+                        call utmess('F', 'INDICATEUR_24', nk=2, valk=valk)
                         goto 2299
                     endif
                     cherrm = k24b
@@ -540,7 +539,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
             call codent(iordr, 'G', k8b)
             valk(1)=option
             valk(2)=k8b
-            call u2mesk('A', 'INDICATEUR_2', 2, valk)
+            call utmess('A', 'INDICATEUR_2', nk=2, valk=valk)
             goto 4299
         endif
 !
@@ -717,7 +716,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&
                     chsig, option, iret)
         if (iret .gt. 0) then
-            call u2mesk('A', 'CALCULEL3_7', 1, option)
+            call utmess('A', 'CALCULEL3_7', sk=option)
             codret = 2
             goto 9999
         endif
@@ -756,7 +755,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !                 123456   890123456789
         valk(1) = nompro//'            '
         valk(2) = option// '   '
-        call u2mesk('F', 'INDICATEUR_99', 2, valk)
+        call utmess('F', 'INDICATEUR_99', nk=2, valk=valk)
 !
     endif
 !

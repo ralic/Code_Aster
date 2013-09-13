@@ -9,9 +9,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 #include "asterfort/rsorac.h"
 #include "asterfort/rsutnc.h"
 #include "asterfort/rsvpar.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrdesc.h"
 #include "asterfort/vrnoli.h"
 #include "asterfort/vrrefe.h"
@@ -87,8 +85,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                         ier = ier + 1
                         valk (1) = psmo
                         valk (2) = acces(id)
-                        call u2mesg('E', 'ALGORITH12_12', 2, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E', 'ALGORITH12_12', nk=2, valk=valk)
                         goto 10
                     endif
                     monpar = 'ACCE_IMPO'
@@ -99,8 +96,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                         valk (1) = psmo
                         valk (2) = acces(id)
                         valk (3) = monpar
-                        call u2mesg('E', 'ALGORITH12_13', 3, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('E', 'ALGORITH12_13', nk=3, valk=valk)
                     endif
                 endif
 10          continue
@@ -120,8 +116,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             ier = ier + 1
                             valk (1) = stat
                             valk (2) = monacc
-                            call u2mesg('E', 'ALGORITH12_14', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('E', 'ALGORITH12_14', nk=2, valk=valk)
                             goto 16
                         endif
                         monpar = 'DEPL_IMPO'
@@ -132,8 +127,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             valk (1) = stat
                             valk (2) = monacc
                             valk (3) = monpar
-                            call u2mesg('E', 'ALGORITH12_15', 3, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('E', 'ALGORITH12_15', nk=3, valk=valk)
                         endif
 16                      continue
                     endif
@@ -145,8 +139,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             ier = ier + 1
                             valk (1) = psmo
                             valk (2) = monacc
-                            call u2mesg('E', 'ALGORITH12_12', 2, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('E', 'ALGORITH12_12', nk=2, valk=valk)
                             goto 14
                         endif
                         monpar = 'ACCE_DDL_IMPO'
@@ -157,8 +150,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             valk (1) = psmo
                             valk (2) = monacc
                             valk (3) = monpar
-                            call u2mesg('E', 'ALGORITH12_13', 3, valk, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('E', 'ALGORITH12_13', nk=3, valk=valk)
                         endif
                     endif
 14              continue
@@ -171,8 +163,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
         nomsy = knomsy(in)
         if (nomsy(1:4) .eq. 'VITE' .and. .not.monoap) then
             valk (1) = nomsy
-            call u2mesg('E', 'ALGORITH12_18', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'ALGORITH12_18', sk=valk(1))
             ier = ier + 1
         endif
         if (nomsy(1:4) .eq. 'VITE') goto 20
@@ -183,8 +174,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
             ier = ier + 1
             valk (1) = meca
             valk (2) = nomsy
-            call u2mesg('E', 'ALGORITH12_7', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'ALGORITH12_7', nk=2, valk=valk)
             goto 20
         endif
         do 22 im = 1, nbmode
@@ -196,8 +186,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                 valk (1) = meca
                 valk (2) = nomsy
                 vali = inum
-                call u2mesg('E', 'ALGORITH12_20', 2, valk, 1,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'ALGORITH12_20', nk=2, valk=valk, si=vali)
             endif
 22      continue
         if (tronc) then
@@ -207,8 +196,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                 ier = ier + 1
                 valk (1) = psmo
                 valk (2) = nomsy
-                call u2mesg('E', 'ALGORITH12_21', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH12_21', nk=2, valk=valk)
             endif
         endif
         if (( .not.monoap ) .and. (ns.ne.0)) then
@@ -218,8 +206,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                 ier = ier + 1
                 valk (1) = stat
                 valk (2) = nomsy
-                call u2mesg('E', 'ALGORITH12_22', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E', 'ALGORITH12_22', nk=2, valk=valk)
             endif
         endif
 20  end do
@@ -251,7 +238,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                 ier = ier + 1
                 valk(1) = chextr
                 valk(2) = chext2
-                call u2mesk('E', 'ALGORITH_35', 2, valk)
+                call utmess('E', 'ALGORITH_35', nk=2, valk=valk)
             endif
 32      continue
         if (monoap) then
@@ -275,7 +262,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                                 ier = ier + 1
                                 valk(1) = chextr
                                 valk(2) = chext2
-                                call u2mesk('E', 'ALGORITH_35', 2, valk)
+                                call utmess('E', 'ALGORITH_35', nk=2, valk=valk)
                             endif
                         endif
                     endif
@@ -307,7 +294,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                                     ier = ier + 1
                                     valk(1) = chextr
                                     valk(2) = chext2
-                                    call u2mesk('E', 'ALGORITH_35', 2, valk)
+                                    call utmess('E', 'ALGORITH_35', nk=2, valk=valk)
                                 endif
                             endif
                         endif
@@ -329,7 +316,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                                     ier = ier + 1
                                     valk(1) = chextr
                                     valk(2) = chext2
-                                    call u2mesk('E', 'ALGORITH_35', 2, valk)
+                                    call utmess('E', 'ALGORITH_35', nk=2, valk=valk)
                                 endif
                             endif
                         endif
@@ -339,6 +326,8 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
         endif
 30  end do
 !
-    if (ier .ne. 0) call u2mess('F', 'ALGORITH_25')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGORITH_25')
+    endif
 !
 end subroutine

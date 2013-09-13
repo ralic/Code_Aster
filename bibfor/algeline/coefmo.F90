@@ -37,7 +37,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/kajgr2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: typflu
     real(kind=8) :: xsi0, vgap, x(2), pulsc, xmf, xcf, rkf
@@ -173,7 +173,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                     call jeexin(nom5, iret)
                     if (iret .eq. 0) then
                         call wkvect(nom5, 'V V I', 1, jalarm)
-                        call u2mess('A', 'ALGELINE_27')
+                        call utmess('A', 'ALGELINE_27')
                     endif
 !
 ! ---         INCREMENTATION DES NOMBRES DE NOEUDS HORS PLAGE :

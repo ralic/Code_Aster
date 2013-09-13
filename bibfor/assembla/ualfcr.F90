@@ -1,7 +1,6 @@
 subroutine ualfcr(mataz, basz)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
@@ -17,7 +16,8 @@ subroutine ualfcr(mataz, basz)
 #include "asterfort/jevtbl.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/smosli.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: mataz, basz
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -65,7 +65,9 @@ subroutine ualfcr(mataz, basz)
     base=basz
     call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
-    if (kmpic .ne. 'OUI') call u2mess('F', 'CALCULEL6_54')
+    if (kmpic .ne. 'OUI') then
+        call utmess('F', 'CALCULEL6_54')
+    endif
     if (base .eq. ' ') call jelira(matas//'.VALM', 'CLAS', cval=base)
 !
 !     -- ON DETRUIT .UALF S'IL EXISTE DEJA :

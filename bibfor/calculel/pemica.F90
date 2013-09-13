@@ -2,7 +2,6 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
                   orig, iorig, icage)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8rddg.h"
 #include "asterfort/assert.h"
 #include "asterfort/celver.h"
@@ -17,8 +16,8 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
 #include "asterfort/nbgrel.h"
 #include "asterfort/orien2.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: champ
     integer :: long, nbmail, nummai(*), iorig
     real(kind=8) :: vr(*), orig(3)
@@ -79,7 +78,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
 !
     call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
-        call u2mess('F', 'CALCULEL3_52')
+        call utmess('F', 'CALCULEL3_52')
     endif
     call jeveuo(champ2//'.CELK', 'L', lcelk)
     ligrel = zk24(lcelk)(1:19)
@@ -102,7 +101,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         if (first) then
             longt=long2
         else if (longt.ne.long2) then
-            call u2mess('F', 'CALCULEL4_53')
+            call utmess('F', 'CALCULEL4_53')
         endif
         first = .false.
     endif
@@ -115,7 +114,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         vr(i) = 0.d0
 20      continue
     else
-        call u2mesk('F', 'CALCULEL3_74', 1, scal)
+        call utmess('F', 'CALCULEL3_74', sk=scal)
     endif
 !
     call jeveuo(champ2//'.CELV', 'L', lvale)

@@ -57,8 +57,7 @@ subroutine ssdt74(nomres, nomcmd)
 #include "asterfort/mgutdm.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: descr, descm, desca
     integer :: vali(3)
@@ -174,8 +173,7 @@ subroutine ssdt74(nomres, nomcmd)
             call dismoi('F', 'BASE_MODALE', resgen, 'RESU_DYNA', ibid,&
                         bamo2, ier)
             if (bamo1 .ne. bamo2) then
-                call u2mesg('F', 'ALGORITH17_18', 0, ' ', 1,&
-                            i, 0, 0.d0)
+                call utmess('F', 'ALGORITH17_18', si=i)
             endif
 11      continue
     endif
@@ -248,8 +246,8 @@ subroutine ssdt74(nomres, nomcmd)
                     valr (1) = agene
                     valr (2) = acrit
                     valk (1) = ' '
-                    call u2mesg('A', 'ALGORITH16_38', 1, valk, 1,&
-                                vali, 2, valr)
+                    call utmess('A', 'ALGORITH16_38', sk=valk(1), si=vali(1), nr=2,&
+                                valr=valr)
                 endif
             endif
 40      continue
@@ -375,35 +373,29 @@ subroutine ssdt74(nomres, nomcmd)
         vali (1) = neqgen
         vali (2) = nbmody
         vali (3) = nbmost
-        call u2mesg('I', 'ALGORITH16_39', 2, valk, 3,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGORITH16_39', nk=2, valk=valk, ni=3,&
+                    vali=vali)
         if (method(1:5) .eq. 'ADAPT') then
             valr (1) = dt
-            call u2mesg('I', 'ALGORITH16_40', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('I', 'ALGORITH16_40', sr=valr(1))
         else
             valr (1) = dt
             vali (1) = nbpas
-            call u2mesg('I', 'ALGORITH16_41', 0, ' ', 1,&
-                        vali, 1, valr)
+            call utmess('I', 'ALGORITH16_41', si=vali(1), sr=valr(1))
         endif
         vali (1) = nbsauv
-        call u2mesg('I', 'ALGORITH16_42', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGORITH16_42', si=vali(1))
         if (nbchoc .ne. 0) then
             vali(1) = nbchoc
-            call u2mesg('I', 'ALGORITH16_80', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_80', si=vali(1))
         endif
         if (nbrede .ne. 0) then
             vali(1) = nbrede
-            call u2mesg('I', 'ALGORITH16_83', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_83', si=vali(1))
         endif
         if (nbrevi .ne. 0) then
             vali(1) = nbrevi
-            call u2mesg('I', 'ALGORITH16_84', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('I', 'ALGORITH16_84', si=vali(1))
         endif
     endif
 !
@@ -469,7 +461,9 @@ subroutine ssdt74(nomres, nomcmd)
 !
 60  continue
     call jedetc('V', '&&SSDT74', 1)
-    if (iret .ne. 0) call u2mess('F', 'ALGORITH5_24')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGORITH5_24')
+    endif
 !
     if (namor .ne. 0) then
         call jedetr(amotem//'           .UALF')

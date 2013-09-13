@@ -22,7 +22,6 @@ subroutine ordgmn(noma, nomgrp)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -30,7 +29,8 @@ subroutine ordgmn(noma, nomgrp)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma, nomgrp
 ! ----------------------------------------------------------------------
 !     BUT: ORDONNER LA LISTE DE NOEUDS SELON LA LISTE DE MAILLES
@@ -60,13 +60,13 @@ subroutine ordgmn(noma, nomgrp)
 !
     call jeexin(jexnom(grpno, nomgrp), iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'SOUSTRUC_17')
+        call utmess('F', 'SOUSTRUC_17')
     endif
     call jelira(jexnom(grpno, nomgrp), 'LONUTI', nbno)
     call jeveuo(jexnom(grpno, nomgrp), 'E', ialino)
 !
     if (nbma .ne. nbno) then
-        call u2mess('F', 'SOUSTRUC_18')
+        call utmess('F', 'SOUSTRUC_18')
     endif
 !
     do 10 i = 1, nbma
@@ -74,7 +74,7 @@ subroutine ordgmn(noma, nomgrp)
         call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iacnex)
         call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
         if (nbnoma .ne. 1) then
-            call u2mess('F', 'SOUSTRUC_19')
+            call utmess('F', 'SOUSTRUC_19')
         endif
         numno=zi(iacnex)
         zi(ialino+i-1)=numno

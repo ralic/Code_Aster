@@ -24,14 +24,14 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/codere.h"
 #include "asterfort/nmedco.h"
 #include "asterfort/nmedel.h"
 #include "asterfort/nmedsq.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: nno, npg, imate, lgpg, codret, cod(9)
     integer :: ipoids, ivf, idfde, ivectu, ideplm, iddepl
     character(len=8) :: typmod(*)
@@ -93,7 +93,9 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
     resi = option.eq.'RAPH_MECA' .or. option.eq.'FULL_MECA'
     rigi = option.eq.'FULL_MECA' .or. option.eq.'RIGI_MECA_TANG'
 !
-    if (.not. resi .and. .not. rigi) call u2mesk('F', 'ALGORITH7_61', 1, option)
+    if (.not. resi .and. .not. rigi) then
+        call utmess('F', 'ALGORITH7_61', sk=option)
+    endif
 !
     call r8inir(2, 0.d0, s, 1)
     call r8inir(4, 0.d0, q, 1)

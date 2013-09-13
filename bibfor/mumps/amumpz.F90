@@ -63,10 +63,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "mumps/zmumps.h"
     character(len=*) :: action
     character(len=14) :: impr
@@ -82,7 +79,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
     type (zmumps_struc) , pointer :: zmpsk
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
-    character(len=1) ::  rouc, type, prec
+    character(len=1) :: rouc, type, prec
     character(len=4) :: etam, klag2
     character(len=8) :: ktypr, k8bid
     character(len=12) :: usersm, k12bid
@@ -142,7 +139,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !
 ! --- TYPE DE RESOLUTION
     ktypr=zk24(jslvk-1+3)
-    if (ktypr(1:6) .eq. 'SYMDEF') call u2mess('F', 'FACTOR_80')
+    if (ktypr(1:6) .eq. 'SYMDEF') then
+        call utmess('F', 'FACTOR_80')
+    endif
 !
 ! --- PARAMETRE NPREC
     call jeveuo(nosolv//'.SLVI', 'E', jslvi)
@@ -208,13 +207,15 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
             case('4.10.0')
 ! --- ON DEBRANCHE ELIM_LAGR2='NON' CAR CELA FAUSSE LA VALEUR DU DETER
 ! --- MINANT PAR RAPPORT AUX AUTRES SOLVEURS DIRECTS
-            if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) call u2mess('I', 'FACTOR_88')
+            if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
+                call utmess('I', 'FACTOR_88')
+            endif
             zk24(jslvk-1+6)='NON'
             klag2='NON'
             lbis=.false.
             ldet=.true.
             case('4.9.2')
-            call u2mesk('F', 'FACTOR_87', 1, kvers)
+            call utmess('F', 'FACTOR_87', sk=kvers)
             end select
         endif
 !
@@ -236,7 +237,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
             case('4.10.0')
             zmpsk%icntl(31)=1
             case('4.9.2')
-            if ((niv.ge.2) .and. (.not.lpreco)) call u2mesk('I', 'FACTOR_86', 1, kvers)
+            if ((niv.ge.2) .and. (.not.lpreco)) then
+                call utmess('I', 'FACTOR_86', sk=kvers)
+            endif
             end select
         endif
 !
@@ -251,7 +254,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
         else
             ifactm=1
         endif
-
+!
 10      continue
         call amumpt(2, kmonit, temps, rang, nbproc,&
                     kxmps, lquali, type, ietdeb, ietrat,&
@@ -269,26 +272,31 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !              -- C'EST OK
             else if ((zmpsk%infog(1).eq.-5).or.(zmpsk%infog(1).eq.-7))&
         then
-            call u2mess('F', 'FACTOR_64')
+            call utmess('F', 'FACTOR_64')
         else if (zmpsk%infog(1).eq.-6) then
             iret=2
             goto 99
         else
             iaux=zmpsk%infog(1)
             if (iaux .lt. 0) then
-                call u2mesi('F', 'FACTOR_55', 1, iaux)
+                call utmess('F', 'FACTOR_55', si=iaux)
             else
-                if (.not.lpreco) call u2mesi('A', 'FACTOR_55', 1, iaux)
+                if (.not.lpreco) then
+                    call utmess('A', 'FACTOR_55', si=iaux)
+                endif
             endif
         endif
         if (zk24(jslvk-1+4) .ne. 'AUTO' .and. zmpsk%icntl(7) .ne. zmpsk% infog(7) .and.&
-            (.not.lpreco)) call u2mesk('A', 'FACTOR_50', 1, zk24(jslvk-1+4))
+            (.not.lpreco)) then
+            call utmess('A', 'FACTOR_50', sk=zk24(jslvk-1+4))
+        endif
 !
 !       -----------------------------------------------------
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
-         if (.not.lpb13) call amumpu(1, 'Z', kxmps, usersm, ibid,lbid, k12bid)
-
+        if (.not.lpb13) call amumpu(1, 'Z', kxmps, usersm, ibid,&
+                                    lbid, k12bid)
+!
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 ! ---   ASSOCIEE
         if (usersm(1:4) .eq. 'EVAL') goto 99
@@ -322,8 +330,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                 iaux1=zmpsk%icntl(23)
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(14)
-                if ((iaux.eq.-8) .or. ((iaux.eq.-9).and.(iaux1.eq.0)) .or. (iaux.eq.-14) .or. &
-                    (iaux.eq.-15).or. (iaux.eq.-17) .or. (iaux.eq.-20)) then
+                if ((iaux.eq.-8) .or. ((iaux.eq.-9).and.(iaux1.eq.0)) .or. (iaux.eq.-14)&
+                    .or. (iaux.eq.-15) .or. (iaux.eq.-17) .or. (iaux.eq.-20)) then
                     if (ifact .eq. ifactm) then
 ! ---  ICNTL(14): PLUS DE NOUVELLE TENTATIVE POSSIBLE
                         if (lpreco) then
@@ -335,7 +343,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                             vali(1)=ifactm
                             vali(2)=pcpi
                             vali(3)=zmpsk%icntl(14)
-                            call u2mesi('F', 'FACTOR_53', 3, vali)
+                            call utmess('F', 'FACTOR_53', ni=3, vali=vali)
                         endif
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
@@ -346,7 +354,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                             vali(2)=zmpsk%icntl(14)
                             vali(3)=ifact
                             vali(4)=ifactm
-                            call u2mesi('I', 'FACTOR_58', 4, vali)
+                            call utmess('I', 'FACTOR_58', ni=4, vali=vali)
                         endif
                         ifactm=max(ifactm-ifact,1)
                         goto 10
@@ -358,7 +366,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 ! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
                     if ((niv.ge.2) .and. (.not.lpreco)) then
                         vali(1)=zmpsk%icntl(23)
-                        call u2mesi('I', 'FACTOR_85', 1, vali)
+                        call utmess('I', 'FACTOR_85', si=vali(1))
                     endif
                     lpb13=.true.
                     zmpsk%icntl(23)=0
@@ -389,7 +397,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
         valr(1)=(zmpsk%infog(13)*100.d0)/zmpsk%n
         valr(2)=zmpsk%icntl(14)*1.d0
         if ((valr(1).ge.valr(2)) .and. (.not.lpreco)) then
-            if (niv .ge. 2) call u2mesr('I', 'FACTOR_73', 2, valr)
+            if (niv .ge. 2) then
+                call utmess('I', 'FACTOR_73', nr=2, valr=valr)
+            endif
         endif
         if (zmpsk%infog(1) .eq. 0) then
 !              -- C'EST OK
@@ -397,17 +407,19 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
             iret=2
             goto 99
         else if (zmpsk%infog(1).eq.-13) then
-            call u2mess('F', 'FACTOR_54')
+            call utmess('F', 'FACTOR_54')
         else if (zmpsk%infog(1).eq.-37) then
-            call u2mess('F', 'FACTOR_65')
+            call utmess('F', 'FACTOR_65')
         else if (zmpsk%infog(1).eq.-90) then
-            call u2mess('F', 'FACTOR_66')
+            call utmess('F', 'FACTOR_66')
         else
             iaux=zmpsk%infog(1)
             if (iaux .lt. 0) then
-                call u2mesi('F', 'FACTOR_55', 1, iaux)
+                call utmess('F', 'FACTOR_55', si=iaux)
             else
-                if (.not.lpreco) call u2mesi('A', 'FACTOR_55', 1, iaux)
+                if (.not.lpreco) then
+                    call utmess('A', 'FACTOR_55', si=iaux)
+                endif
             endif
         endif
 !
@@ -479,24 +491,28 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !              -- C'EST OK
         else if ((zmpsk%infog(1).eq.8).and.(lquali)) then
             iaux=zmpsk%icntl(10)
-            if (.not.lpreco) call u2mesi('A', 'FACTOR_62', 1, iaux)
+            if (.not.lpreco) then
+                call utmess('A', 'FACTOR_62', si=iaux)
+            endif
         else if (zmpsk%infog(1).lt.0) then
             iaux=zmpsk%icntl(1)
-            call u2mesi('F', 'FACTOR_55', 1, iaux)
+            call utmess('F', 'FACTOR_55', si=iaux)
         else if (zmpsk%infog(1).eq.4) then
 !          -- PERMUTATION DE COLONNES, ZMPSK%JCN MODIFIE VOLONTAIREMENT
 !          -- PAR MUMPS. IL NE FAUT DONC PAS LE MANIPULER TEL QUE
 !          -- PAS GRAVE POUR ASTER.
         else
             iaux=zmpsk%infog(1)
-            if (.not.lpreco) call u2mesi('A', 'FACTOR_55', 1, iaux)
+            if (.not.lpreco) then
+                call utmess('A', 'FACTOR_55', si=iaux)
+            endif
         endif
 ! --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
         if (lquali) then
             if (zmpsk%rinfog(9) .gt. epsmax) then
                 valr(1)=zmpsk%rinfog(9)
                 valr(2)=epsmax
-                call u2mesr('F', 'FACTOR_57', 2, valr)
+                call utmess('F', 'FACTOR_57', nr=2, valr=valr)
             endif
         endif
 !

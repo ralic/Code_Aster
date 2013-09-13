@@ -18,7 +18,6 @@ subroutine cesver(cesz)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -26,7 +25,8 @@ subroutine cesver(cesz)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: cesz
 ! ---------------------------------------------------------------------
 ! BUT: FAIRE DES VERIFICATIONS SUR UN CHAM_ELEM_S
@@ -144,8 +144,8 @@ subroutine cesver(cesz)
         valk(1)=nomma
         valk(2)=zk8(jcesc-1+icmp)
         valk(3)=nomgd
-        call u2mesg('A', 'CALCULEL_26', 3, valk, 0,&
-                    0, 3, valr)
+        call utmess('A', 'CALCULEL_26', nk=3, valk=valk, nr=3,&
+                    valr=valr)
     endif
 !
     80 end do

@@ -3,7 +3,6 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
                  prchno)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8depi.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
@@ -14,7 +13,8 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsexpa.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: numord, numode
     real(kind=8) :: iouf, masgen, amrge
     character(len=*) :: resu, chs, nocham, ligrel, tychas
@@ -76,8 +76,8 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
         valk (2) = nomch
         vali (1) = numord
         vali (2) = iret
-        call u2mesg('F', 'PREPOST5_73', 2, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST5_73', nk=2, valk=valk, ni=2,&
+                    vali=vali)
     endif
 !
 ! - TRANSFERT DU CHAMP SIMPLE VERS LE CHAMP VRAI

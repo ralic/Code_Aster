@@ -3,7 +3,7 @@ subroutine foverf(v, nc, ier)
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nc, ier, i, isens, ilarge, niv, ifm
     real(kind=8) :: v(nc)
     character(len=16) :: nomcmd, typfon
@@ -104,16 +104,16 @@ subroutine foverf(v, nc, ier)
             call getres(nomfon, typfon, nomcmd)
             if (ier .eq. 2) then
 !            PARAMETRES NON STRICTEMENT CROISSANTS
-                call u2mesk('F', 'FONCT0_44', 1, nomfon)
+                call utmess('F', 'FONCT0_44', sk=nomfon)
             else if (ier.eq.1) then
 !           PARAMETRES NON CROISSANTS
-                call u2mesk('F', 'FONCT0_45', 1, nomfon)
+                call utmess('F', 'FONCT0_45', sk=nomfon)
             else if (ier.eq.-1) then
 !           PARAMETRES NON DECROISSANTS
-                call u2mesk('F', 'FONCT0_46', 1, nomfon)
+                call utmess('F', 'FONCT0_46', sk=nomfon)
             else if (ier.eq.-2) then
 !           PARAMETRES NON STRICTEMENT DECROISSANTS
-                call u2mesk('F', 'FONCT0_47', 1, nomfon)
+                call utmess('F', 'FONCT0_47', sk=nomfon)
             endif
             ASSERT(.false.)
         endif

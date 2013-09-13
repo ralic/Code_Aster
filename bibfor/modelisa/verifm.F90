@@ -23,7 +23,7 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: fami, poum, compor
     real(kind=8) :: epsth(*)
     integer :: npg, nspg, ndim, iret, imate
@@ -88,7 +88,7 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
             if (iret1 .eq. 1) then
                 call tecael(iadzi, iazk24)
                 valek(1) = zk24(iazk24-1+3) (1:8)
-                call u2mesk('F', 'CALCULEL_8', 1, valek)
+                call utmess('F', 'CALCULEL_8', sk=valek(1))
             endif
 !
             do 5 ind = 1, ndim
@@ -96,7 +96,7 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
-                    call u2mesk('F', 'CALCULEL_32', 2, valek)
+                    call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
                 endif
  5          continue
 !
@@ -126,14 +126,14 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
             if (iret1 .eq. 1) then
                 call tecael(iadzi, iazk24)
                 valek(1) = zk24(iazk24-1+3) (1:8)
-                call u2mesk('F', 'CALCULEL_8', 1, valek)
+                call utmess('F', 'CALCULEL_8', sk=valek(1))
             endif
             do 35 ind = 1, ndim
                 if (codrem(ind) .ne. 0) then
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
-                    call u2mesk('F', 'CALCULEL_32', 2, valek)
+                    call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
                 endif
 35          continue
             do 30 ind = 1, ndim

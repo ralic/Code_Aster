@@ -56,7 +56,7 @@ subroutine resyme(resu1z, basez, resu2z)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: resu1z, basez, resu2z
 ! -----  VARIABLES LOCALES
@@ -87,7 +87,7 @@ subroutine resyme(resu1z, basez, resu2z)
     else if (phenom.eq.'THERMIQUE') then
         option = 'SYME_MTNS_R'
     else
-        call u2mesk('F', 'ASSEMBLA_39', 1, phenom)
+        call utmess('F', 'ASSEMBLA_39', sk=phenom)
     endif
 !
 !

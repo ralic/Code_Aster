@@ -32,9 +32,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/wkvect.h"
 !
@@ -144,7 +142,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
             call getvtx(motcl1, 'OPTION', iocc=i, scal=toptca(1), nbret=n1)
             call getvtx(motcl1, 'CORR_PLAST', iocc=i, scal=toptca(2), nbret=n2)
             if ((toptca(1).ne.optcal(1)) .or. (toptca(2).ne.optcal(2))) then
-                call u2mess('F', 'UTILITAI3_83')
+                call utmess('F', 'UTILITAI3_83')
             endif
 10      continue
     endif
@@ -177,7 +175,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     else
         call gettco(resul, typres)
         if (typres(1:9) .ne. 'EVOL_NOLI') then
-            call u2mess('F', 'UTILITAI3_84')
+            call utmess('F', 'UTILITAI3_84')
         endif
 !
         np = 0
@@ -228,8 +226,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         vali = nbmtrc
         valk (1) = k8b
         valk (2) = k8b
-        call u2mesg('A', 'UTILITAI6_60', 2, valk, 1,&
-                    vali, 0, 0.d0)
+        call utmess('A', 'UTILITAI6_60', nk=2, valk=valk, si=vali)
     endif
 !
 !     --- RECUPERATION DES PARAMETRES DE LA RC WEIBULL ---
@@ -254,15 +251,13 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         valr (1) = mref
         valr (2) = vref
         valr (3) = sref
-        call u2mesg('I', 'UTILITAI6_61', 0, ' ', 0,&
-                    0, 3, valr)
+        call utmess('I', 'UTILITAI6_61', nr=3, valr=valr)
 ! CAS WEIBULL
     else
         valr (1) = mref
         valr (2) = vref
         valr (3) = sref
-        call u2mesg('I', 'UTILITAI6_62', 0, ' ', 0,&
-                    0, 3, valr)
+        call utmess('I', 'UTILITAI6_62', nr=3, valr=valr)
     endif
 !
     call wkvect('&&PEWEIB.TRAV1', 'V V R', mxvale, lvale)
@@ -388,12 +383,12 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                     nomgrm = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomgrm), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_46', 1, nomgrm)
+                        call utmess('A', 'UTILITAI3_46', sk=nomgrm)
                         goto 50
                     endif
                     call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_47', 1, nomgrm)
+                        call utmess('A', 'UTILITAI3_47', sk=nomgrm)
                         goto 50
                     endif
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
@@ -430,7 +425,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)
                     if (iret .eq. 0) then
-                        call u2mesk('A', 'UTILITAI3_49', 1, nommai)
+                        call utmess('A', 'UTILITAI3_49', sk=nommai)
                         goto 60
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)

@@ -46,8 +46,7 @@ subroutine op0072()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/trlds.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
@@ -127,7 +126,7 @@ subroutine op0072()
         endif
 !
         if (proch1 .ne. proch2) then
-            call u2mess('I', 'ALGORITH9_41')
+            call utmess('I', 'ALGORITH9_41')
         endif
 !
     else if (typbas(1:9).eq.'MODE_GENE') then
@@ -139,7 +138,7 @@ subroutine op0072()
         call jeveuo(matri2//'   .REFA', 'L', jrefa)
         numdd2=zk24(jrefa-1+2)
         if (numdd1 .ne. numdd2) then
-            call u2mess('I', 'ALGORITH9_41')
+            call utmess('I', 'ALGORITH9_41')
         endif
     endif
 !
@@ -201,8 +200,7 @@ subroutine op0072()
             valk (2) = maill2
             valk (3) = proch1
             valk (4) = maill1
-            call u2mesg('F', 'ALGORITH12_62', 4, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
         endif
     endif
 !
@@ -306,7 +304,7 @@ subroutine op0072()
 !
         call trlds(zr(iamatr), nbmode, nbmode, icod)
         if (icod .ne. 0) then
-            call u2mess('F', 'ALGORITH9_42')
+            call utmess('F', 'ALGORITH9_42')
         endif
         if (typvec .eq. 'R') then
             call rrlds(zr(iamatr), nbmode, nbmode, zr(idvec2), 1)

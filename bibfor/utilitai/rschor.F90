@@ -36,15 +36,15 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbordr
 !
     character(len=*) :: noresz, nomsyz, tabord
@@ -122,7 +122,7 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
     if (codret .gt. 0) then
         valk(1) = noresu
         valk(2) = nomsym
-        call u2mesk('A', 'UTILITAI4_30', 2, valk)
+        call utmess('A', 'UTILITAI4_30', nk=2, valk=valk)
     endif
 !
 end subroutine

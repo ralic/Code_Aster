@@ -1,8 +1,7 @@
 subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
                   liso2z)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8gaem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -14,9 +13,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lonlis, noeud1(*), noeud2(*)
     character(len=*) :: nomaz, liso1z, liso2z
 !-----------------------------------------------------------------------
@@ -170,7 +169,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
             endif
 20      continue
 !
-        if (j2 .eq. 0) call u2mesk('F', 'MODELISA6_3', 1, nomno1)
+        if (j2 .eq. 0) then
+            call utmess('F', 'MODELISA6_3', sk=nomno1)
+        endif
 !
         if (zi(idlinv+j2-1) .eq. 0) then
             zi(idlou1+i1-1) = nuno1
@@ -183,8 +184,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
             valk (1) = nomno2
             valk (2) = nomno1
             valk (3) = nomno3
-            call u2mesg('F', 'MODELISA8_77', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
         endif
 !
 10  end do
@@ -253,7 +253,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
             endif
 50      continue
 !
-        if (j1 .eq. 0) call u2mesk('F', 'MODELISA6_3', 1, nomno2)
+        if (j1 .eq. 0) then
+            call utmess('F', 'MODELISA6_3', sk=nomno2)
+        endif
 !
         if (zi(idlinv+j1-1) .eq. 0) then
             zi(idlou3+i2-1) = nuno1
@@ -266,8 +268,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
             valk (1) = nomno1
             valk (2) = nomno2
             valk (3) = nomno3
-            call u2mesg('F', 'MODELISA8_77', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
         endif
 !
 40  end do
@@ -288,8 +289,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
                     valk (1) = nomno1
                     valk (2) = nomno2
                     valk (3) = nomno3
-                    call u2mesg('F', 'MODELISA8_79', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_79', nk=3, valk=valk)
                 endif
             endif
 70      continue
@@ -299,8 +299,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
             valk (1) = nomno1
             valk (2) = ' '
             valk (3) = ' '
-            call u2mesg('F', 'MODELISA8_80', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'MODELISA8_80', nk=3, valk=valk)
         endif
 !
 60  end do

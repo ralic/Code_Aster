@@ -58,7 +58,7 @@ subroutine op0046()
 #include "asterfort/rsnoch.h"
 #include "asterfort/rssepa.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
     character(len=6) :: nompro
@@ -170,7 +170,7 @@ subroutine op0046()
                 k8bla, iret)
 !   On interdit provisoirement les POU_D_EM avec les VARC
     if ((k8bla(1:3).eq.'OUI') .and. (kstr(1:3).eq.'OUI')) then
-        call u2mess('F', 'MECASTATIQUE_1')
+        call utmess('F', 'MECASTATIQUE_1')
     endif
 !
     exipou = .false.
@@ -185,7 +185,7 @@ subroutine op0046()
         call jeveuo(charge, 'L', jchar)
         call cochre(zk24(jchar), nchar, nbchre, iocc)
         if (nbchre .gt. 1) then
-            call u2mess('F', 'MECASTATIQUE_25')
+            call utmess('F', 'MECASTATIQUE_25')
         endif
 !
         typcoe = 'R'

@@ -1,17 +1,17 @@
 subroutine te0043(option, nomte)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2plg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpplg.h"
 #include "asterfort/utpslg.h"
+!
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -59,7 +59,7 @@ subroutine te0043(option, nomte)
         kmess(1) = option
         kmess(2) = nomte
         kmess(3) = 'TE0043'
-        call u2mesk('F', 'DISCRETS_14', 3, kmess)
+        call utmess('F', 'DISCRETS_14', nk=3, valk=kmess)
     endif
 !
 !
@@ -69,13 +69,13 @@ subroutine te0043(option, nomte)
 !     LE CODE STOKE DANS LA CARTE
     call infdis('TYDI', infodi, r8bid, k8bid)
     if (infodi .ne. ibid) then
-        call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+        call utmess('F+', 'DISCRETS_25', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'F+')
     endif
 !     DISCRET DE TYPE MASSE
     call infdis('DISM', infodi, r8bid, k8bid)
     if (infodi .eq. 0) then
-        call u2mesk('A+', 'DISCRETS_26', 1, nomte)
+        call utmess('A+', 'DISCRETS_26', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
     endif
 !
@@ -223,7 +223,7 @@ subroutine te0043(option, nomte)
             kmess(1) = option
             kmess(2) = nomte
             kmess(3) = 'TE0043'
-            call u2mesk('F', 'DISCRETS_15', 3, kmess)
+            call utmess('F', 'DISCRETS_15', nk=3, valk=kmess)
         endif
     endif
 !
@@ -240,7 +240,7 @@ subroutine te0043(option, nomte)
             if (abs(omega) .ge. r8prem()) then
                 kmess(1) = nomte
                 kmess(2) = option
-                call u2mesk('F', 'CALCULEL_30', 2, kmess)
+                call utmess('F', 'CALCULEL_30', nk=2, valk=kmess)
             endif
         endif
         call jevech('PVECTUR', 'E', lvectu)

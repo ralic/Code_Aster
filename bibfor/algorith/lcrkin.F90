@@ -40,7 +40,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
 #include "asterfort/assert.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), icp, ndim, iret, ifl
@@ -74,7 +74,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
     if (loi(1:9) .eq. 'VENDOCHAB') then
 !
         if (opt .eq. 'RIGI_MECA_TANG') then
-            call u2mess('F', 'ALGORITH8_91')
+            call utmess('F', 'ALGORITH8_91')
         endif
         if (vind(9) .ge. maxdom) then
 !
@@ -121,7 +121,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
     if (loi(1:8) .eq. 'MONOCRIS') then
         if (gdef .eq. 1) then
             if (opt .ne. 'RAPH_MECA') then
-                call u2mess('F', 'ALGORITH8_91')
+                call utmess('F', 'ALGORITH8_91')
             endif
             call dcopy(9, vind(nvi-3-18+1), 1, fp, 1)
             call daxpy(9, 1.d0, id, 1, fp,&

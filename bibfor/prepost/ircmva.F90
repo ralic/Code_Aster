@@ -59,8 +59,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -117,7 +116,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
     else
         valk(1) = gd
         valk(2) = 'IRCMVA'
-        call u2mesk('F', 'DVP_3', 2, valk)
+        call utmess('F', 'DVP_3', nk=2, valk=valk)
     endif
 !
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
@@ -127,7 +126,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
 ! 1.2. ==> INFORMATION
 !
     if (nivinf .gt. 1) then
-        call u2mess('I', 'MED_47')
+        call utmess('I', 'MED_47')
         write (ifm,13001) nvalec, ncmpve, nbpg, nbsp, typech
     endif
     13001 format('  NVALEC =',i8,', NCMPVE =',i8,&
@@ -216,7 +215,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
         if (logaux) then
             if (nbsp .gt. 1) then
                 write (ifm,13001) nvalec, ncmpve, nbpg, nbsp
-                call u2mess('F', 'MED_48')
+                call utmess('F', 'MED_48')
             endif
         endif
 !

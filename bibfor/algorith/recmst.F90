@@ -50,7 +50,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: kbid, modsta
@@ -100,7 +100,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     i2=zi(ilorms+i1-1)
     if (i2 .eq. 0) then
         print*,'NOEUD-CMP : ',zk8(ilnoex+i1-1),zk8(ilcpex+i1-1)
-        call u2mess('F', 'ALGORITH10_33')
+        call utmess('F', 'ALGORITH10_33')
     endif
     k24bd1=modsta//'           .TACH'
     call jenonu(jexnom(k24bd1(1:19)//'.DESC', 'DEPL'), ibid)

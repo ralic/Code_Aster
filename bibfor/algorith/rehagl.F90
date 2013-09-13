@@ -59,9 +59,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
 !
@@ -103,8 +101,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call jeexin(mailsk//'.INV.SKELETON', iret)
     if (iret .eq. 0) then
         valk = mailsk
-        call u2mesg('F', 'ALGORITH14_27', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_27', sk=valk)
     endif
     call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
 !
@@ -120,8 +117,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
     if (ire1 .eq. 0 .and. ire2 .eq. 0 .and. ire3 .eq. 0) then
         valk = resgen
-        call u2mesg('F', 'ALGORITH14_35', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_35', sk=valk)
     endif
 !
     call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n1)
@@ -132,13 +128,13 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     endif
     if (k8rep(1:3) .eq. 'OUI') then
         if (ire1 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_44')
+            call utmess('F', 'ALGORITH10_44')
         endif
         if (ire2 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_45')
+            call utmess('F', 'ALGORITH10_45')
         endif
         if (ire3 .eq. 0) then
-            call u2mess('F', 'ALGORITH10_46')
+            call utmess('F', 'ALGORITH10_46')
         endif
         nbcham = 3
         chmp(1) = 'DEPL'
@@ -159,7 +155,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                 chmp(i) = 'DEPL'
                 call jeexin(harmge//'.DEPL', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_11')
+                    call utmess('F', 'ALGORITH10_11')
                 else
                     call jeveuo(harmge//'.DEPL', 'L', itresu(i))
                 endif
@@ -167,7 +163,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                 chmp(i) = 'VITE'
                 call jeexin(harmge//'.VITE', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_12')
+                    call utmess('F', 'ALGORITH10_12')
                 else
                     call jeveuo(harmge//'.VITE', 'L', itresu(i))
                 endif
@@ -175,13 +171,13 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                 chmp(i) = 'ACCE'
                 call jeexin(harmge//'.ACCE', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_13')
+                    call utmess('F', 'ALGORITH10_13')
                 else
                     call jeveuo(harmge//'.ACCE', 'L', itresu(i))
                 endif
             else
 ! ----        SI LE CHAMP N'EST PAS DEPL,VITE OU ACCE ON PLANTE
-                call u2mess('F', 'ALGORITH10_16')
+                call utmess('F', 'ALGORITH10_16')
             endif
 69      continue
     endif
@@ -190,8 +186,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
     if (nbcham .eq. 0) then
         valk = resgen
-        call u2mesg('F', 'ALGORITH14_35', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_35', sk=valk)
     endif
 !
 ! --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
@@ -242,7 +237,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call rstran(interp, harmge, ' ', 1, kfreq,&
                 knume, nbfreq, iretou)
     if (iretou .ne. 0) then
-        call u2mess('F', 'ALGORITH10_47')
+        call utmess('F', 'ALGORITH10_47')
     endif
     call jeexin(kfreq, iret)
     if (iret .gt. 0) then
@@ -288,7 +283,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     iarchi = 0
 !
     if (interp(1:3) .ne. 'NON') then
-        call u2mess('F', 'ALGORITH3_86')
+        call utmess('F', 'ALGORITH3_86')
     else
 !
 !        CALL JEEXIN(HARMGE//'.ORDR',IRET)
@@ -313,7 +308,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                 call rsexch(' ', nomres, chmp(ich), iarchi, chamno,&
                             iret)
                 if (iret .eq. 0) then
-                    call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                    call utmess('A', 'ALGORITH2_64', sk=chamno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'C', neq)
                 else

@@ -1,7 +1,7 @@
 subroutine uttrif(vale, nb, typfon)
     implicit none
 #include "asterc/getres.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nb
     real(kind=8) :: vale(*)
     character(len=*) :: typfon
@@ -113,7 +113,7 @@ subroutine uttrif(vale, nb, typfon)
         endif
     else
         call getres(k16b1, k16b2, nomcmd)
-        call u2mess('F', 'UTILITAI5_58')
+        call utmess('F', 'UTILITAI5_58')
     endif
 !
 end subroutine

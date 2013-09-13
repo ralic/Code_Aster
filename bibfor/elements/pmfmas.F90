@@ -26,7 +26,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 #include "asterfort/pmfm01.h"
 #include "asterfort/ptma01.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomte, option
     real(kind=8) :: mlv(*), rhoflu
     integer :: kanl, icdmat
@@ -53,7 +53,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
     if ((nomte .ne. 'MECA_POU_D_EM') .and. (nomte .ne. 'MECA_POU_D_TGM')) then
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
@@ -63,7 +63,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
     if (xl .le. r8prem()) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- APPEL INTEGRATION SUR SECTION

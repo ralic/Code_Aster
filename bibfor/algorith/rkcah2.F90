@@ -26,7 +26,7 @@ subroutine rkcah2(comp, y, pas, nvi, w,&
 !     OUT H       :  PAS DE TEMPS
 !
 #include "asterc/r8prem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ne, ny, na, nvi, iret
     character(len=16) :: loi, comp(*)
     real(kind=8) :: y(*), h, w, dmg0, dmg1, maxout, maxdom, wk(*), eps
@@ -69,7 +69,7 @@ subroutine rkcah2(comp, y, pas, nvi, w,&
     endif
 !
     if ((h/pas) .lt. prec) then
-        call u2mess('I', 'ALGORITH3_83')
+        call utmess('I', 'ALGORITH3_83')
         iret=1
     endif
 !

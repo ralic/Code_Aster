@@ -21,7 +21,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -33,7 +32,8 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: nomcmp
     character(len=8) :: char
     character(len=8) :: modele
@@ -97,7 +97,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
     call jeexin(jexnom('&CATA.GD.NOMCMP', nomgd), jexis)
     if (jexis .eq. 0) then
-        call u2mess('F', 'UTILITAI_73')
+        call utmess('F', 'UTILITAI_73')
     endif
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
@@ -123,7 +123,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 ! --- DDL INEXISTANT POUR CETTE GRANDEUR
 !
     if (icmp .eq. 0) then
-        call u2mess('F', 'UTILITAI_74')
+        call utmess('F', 'UTILITAI_74')
     endif
 !
 ! --- NOM DU MODELE

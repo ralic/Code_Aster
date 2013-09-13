@@ -25,8 +25,7 @@ subroutine xlorie(fiss)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: fiss
 !
@@ -72,12 +71,18 @@ subroutine xlorie(fiss)
         call getvis(' ', 'NB_COUCHES', scal=ncouch, nbret=in)
         if (ir .eq. 0) then
             rayon = 0.d0
-            if (ncouch .gt. 7) call u2mesi('A', 'XFEM_5', 1, ncouch)
+            if (ncouch .gt. 7) then
+                call utmess('A', 'XFEM_5', si=ncouch)
+            endif
         else if (ir.eq.1) then
 !         ON NE PEUT PAS DEFINIR DE REGLE "EXCLUS" DANS LE CAPY
 !         SINON, DANS LE CAS OU ON NE RENSEIGNE RIEN, IL Y A ERREUR
-            if (in .eq. 1) call u2mess('F', 'XFEM_17')
-            if (rayon .le. 0.d0) call u2mess('F', 'XFEM_6')
+            if (in .eq. 1) then
+                call utmess('F', 'XFEM_17')
+            endif
+            if (rayon .le. 0.d0) then
+                call utmess('F', 'XFEM_6')
+            endif
             ncouch = 0
         endif
     endif

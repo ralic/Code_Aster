@@ -14,7 +14,7 @@ subroutine iredmi(macr)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rslipa.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: macr
@@ -184,8 +184,7 @@ subroutine iredmi(macr)
         if (nbamor .gt. nbmode) then
             vali (1) = nbamor
             vali (2) = nbmode
-            call u2mesg('F', 'UTILITAI6_44', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'UTILITAI6_44', ni=2, vali=vali)
         endif
         if (nbamor .lt. nbmode) then
             call wkvect('&&IREDMI.AMORTISSEMEN2', 'V V R', nbmode, jamo2)

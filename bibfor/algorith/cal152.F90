@@ -29,7 +29,7 @@ subroutine cal152(option, max, may, maz, model,&
 #include "jeveux.h"
 #include "asterfort/calamr.h"
 #include "asterfort/calmaj.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     logical :: vrai
     integer :: i, j
     integer :: imade
@@ -58,8 +58,7 @@ subroutine cal152(option, max, may, maz, model,&
         cij=cij1+cij2
         valr (1) = cij1
         valr (2) = cij2
-        call u2mesg('I', 'ALGORITH14_80', 0, ' ', 0,&
-                    0, 2, valr)
+        call utmess('I', 'ALGORITH14_80', nr=2, valr=valr)
     endif
 !
     if (option .eq. 'RIGI_AJOU') then

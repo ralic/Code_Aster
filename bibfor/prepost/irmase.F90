@@ -2,18 +2,19 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
                   sdcarm, nomase)
     implicit none
 !
+#include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mmhcow.h"
+#include "asterfort/as_msmcre.h"
+#include "asterfort/as_msmnsm.h"
+#include "asterfort/as_msmsmi.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/as_mmhcow.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_msmcre.h"
-#include "asterfort/as_msmsmi.h"
-#include "asterfort/as_msmnsm.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: sdcarm
     character(len=*) :: nofimd, typsec, nomase
@@ -49,7 +50,6 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 !   SDCARM  K8   CARA_ELEM CONVERTIT EN CHAM_ELEM_S
 !   NOMASE  K*   NOM MED DU MAILLAGE SECTION
 !
-#include "jeveux.h"
 !
     integer :: idfimd, nbpoin, ipoint, jcoopt, nbrayo, icouch, irayon
     integer :: edleaj, postmp, codret, edcart, jmasup, jcesc, jcesd
@@ -81,8 +81,7 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     call as_mfiope(idfimd, nofimd, edleaj, codret)
     if (codret .ne. 0) then
         saux08='mfiope'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !     -- RELECTURE DES ELEMENTS DE STRUCTURES DEJA PRESENTS
@@ -90,19 +89,17 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     call as_msmnsm(idfimd, nbmasu, codret)
     if (codret .ne. 0) then
         saux08='msmnsm'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
     lmstro = .false.
     if (nbmasu .ne. 0) then
         call wkvect('&&IRMASE.MAIL_SUPP', 'V V K80', nbmasu, jmasup)
         do 40, imasup = 1, nbmasu
         call as_msmsmi(idfimd, imasup, nomasu, ndim, desmed,&
-                    edcar2, nocoo2, uncoo2, codret)
+                       edcar2, nocoo2, uncoo2, codret)
         if (codret .ne. 0) then
             saux08='msmsmi'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
         if (nomasu .eq. nomase) lmstro = .true.
 40      continue
@@ -188,27 +185,24 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 !
 !     -- DEFINITION DU MAILLAGE SUPPORT MED
     call as_msmcre(idfimd, nomase, ndim, desmed, edcart,&
-                nocoor, uncoor, codret)
+                   nocoor, uncoor, codret)
     if (codret .ne. 0) then
         saux08='msmcre'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !     -- DEFINITION DES NOEUDS DU MAILLAGE SUPPORT MED
     call as_mmhcow(idfimd, nomase, zr(jcoopt), edfuin, nbpoin,&
-                codret)
+                   codret)
     if (codret .ne. 0) then
         saux08='mmhcow'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
         saux08='mficlo'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     call jedetr('&&IRMASE.COOR_PTS')

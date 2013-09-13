@@ -1,7 +1,6 @@
 subroutine te0510(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/dismoi.h"
@@ -17,13 +16,13 @@ subroutine te0510(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcface.h"
 #include "asterfort/xcfaq2.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -139,7 +138,9 @@ subroutine te0510(option, nomte)
     nfiss = jtab(7)
     vali(1)=nfimax
     vali(2)=nfiss
-    if (nfiss .gt. nfimax) call u2mesi('F', 'XFEM2_6', 2, vali)
+    if (nfiss .gt. nfimax) then
+        call utmess('F', 'XFEM2_6', ni=2, vali=vali)
+    endif
     do 70 i = 1, 2*nfimax
         fisco(i)=0
         fisc(i)=0
@@ -381,7 +382,7 @@ subroutine te0510(option, nomte)
                     = hmait
 122              continue
                 if (elim2) then
-                    call u2mesk('A', 'XFEM_45', 1, nomte)
+                    call utmess('A', 'XFEM_45', sk=nomte)
                     goto 998
                 endif
             endif

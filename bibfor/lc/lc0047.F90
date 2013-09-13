@@ -48,7 +48,7 @@ subroutine lc0047(fami, kpg, ksp, ndim, imate,&
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/lcbrgm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, ksp, kpg
     integer :: icomp, nvi
     integer :: codret
@@ -72,7 +72,7 @@ subroutine lc0047(fami, kpg, ksp, ndim, imate,&
 !
         else if ((typmod(2).eq.'GRADVARI').or. (typmod(2).eq.'GRADEPSI'))&
     then
-        call u2mess('F', 'COMPOR2_12')
+        call utmess('F', 'COMPOR2_12')
 !
     endif
 !

@@ -75,9 +75,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: chfond, grpno, nomno, coorn, taillr
@@ -181,7 +179,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
         call getvr8(motfac(1:l), 'R_INF', iocc=iocc, scal=rinf, nbret=nbm)
         call getvr8(motfac(1:l), 'R_SUP', iocc=iocc, scal=rsup, nbret=nbm)
         if (nbm .ne. 0 .and. rsup .le. rinf) then
-            call u2mess('F', 'RUPTURE1_6')
+            call utmess('F', 'RUPTURE1_6')
         endif
         call getvid(motfac(1:l), 'MODULE_FO', iocc=iocc, scal=thetf, nbret=nbmof)
         call getvid(motfac(1:l), 'R_INF_FO', iocc=iocc, scal=rinff, nbret=nbmf)
@@ -190,7 +188,9 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 !       RECUPERATION DE RINF ET DE RSUP DANS LA SD FOND_FISS
         if (nbm .eq. 0 .and. nbmf .eq. 0) then
 !
-            if (config .eq. 'DECOLLEE') call u2mess('F', 'RUPTURE1_7')
+            if (config .eq. 'DECOLLEE') then
+                call utmess('F', 'RUPTURE1_7')
+            endif
             call jeveuo(taillr, 'L', iatmno)
             maxtai = 0.d0
             mintai = zr(iatmno)
@@ -202,10 +202,12 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
             rsup = 4*maxtai
             valr(1) = rinf
             valr(2) = rsup
-            call u2mesr('I', 'RUPTURE1_5', 2, valr)
+            call utmess('I', 'RUPTURE1_5', nr=2, valr=valr)
             valr(1) = mintai
             valr(2) = maxtai
-            if (maxtai .gt. 2*mintai) call u2mesr('A', 'RUPTURE1_16', 2, valr)
+            if (maxtai .gt. 2*mintai) then
+                call utmess('A', 'RUPTURE1_16', nr=2, valr=valr)
+            endif
         endif
 !
 !
@@ -232,7 +234,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                                 valres, ier)
                     zr(iadrt2 + j - 1) = valres
                     if (zr(iadrt2 + j - 1) .le. zr(iadrt1 + j - 1)) then
-                        call u2mess('F', 'RUPTURE1_6')
+                        call utmess('F', 'RUPTURE1_6')
                     endif
                     if (nbmof .ne. 0) then
                         call fointe('FM', thetf, nbpar, nompar, valpar,&
@@ -265,7 +267,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
             if (iret .eq. 0) then
                 valk(1) = zk24(jjj2+igr-1)
                 valk(2) = noma
-                call u2mesk('F', 'RUPTURE1_8', 2, valk)
+                call utmess('F', 'RUPTURE1_8', nk=2, valk=valk)
             else
 ! LES NOEUDS DE CE GROUP_NO DOIVENT APPARTENIR A GAMMO
 !
@@ -289,7 +291,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                                             valres, ier)
                                 zr(iadrt2 + i - 1) = valres
                                 if (zr(iadrt2 + j - 1) .le. zr(iadrt1 + j - 1)) then
-                                    call u2mess('F', 'RUPTURE1_6')
+                                    call utmess('F', 'RUPTURE1_6')
                                 endif
                                 call fointe('FM', thetf, nbpar, nompar, valpar,&
                                             valres, ier)
@@ -302,7 +304,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                         endif
  5                  continue
                     if (canoeu .eq. 0) then
-                        call u2mesk('F', 'RUPTURE0_15', 1, noeud1)
+                        call utmess('F', 'RUPTURE0_15', sk=noeud1)
                     endif
  4              continue
             endif
@@ -318,7 +320,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
             if (iret .eq. 0) then
                 valk(1) = zk8(jjj+i-1)
                 valk(2) = noma
-                call u2mesk('F', 'RUPTURE0_14', 2, valk)
+                call utmess('F', 'RUPTURE0_14', nk=2, valk=valk)
             else
 ! LES NOEUDS DOIVENT APPARTENIR A GAMMO
                 call jenuno(jexnum(nomno, iret), noeud1)
@@ -338,7 +340,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                                         valres, ier)
                             zr(iadrt2 + j - 1) = valres
                             if (zr(iadrt2 + j - 1) .le. zr(iadrt1 + j - 1)) then
-                                call u2mess('F', 'RUPTURE1_6')
+                                call utmess('F', 'RUPTURE1_6')
                             endif
                             call fointe('FM', thetf, nbpar, nompar, valpar,&
                                         valres, ier)
@@ -351,7 +353,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
                     endif
  7              continue
                 if (canoeu .eq. 0) then
-                    call u2mesk('F', 'RUPTURE0_15', 1, zk8(iadrno+j-1))
+                    call utmess('F', 'RUPTURE0_15', sk=zk8(iadrno+j-1))
                 endif
             endif
  6      continue
@@ -362,7 +364,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 !
     do 8 i = 1, lobj2
         if (zk8(iadrno+ i -1) .ne. zk8(iadrt0+i-1)) then
-            call u2mess('F', 'RUPTURE1_9')
+            call utmess('F', 'RUPTURE1_9')
         endif
  8  end do
 !

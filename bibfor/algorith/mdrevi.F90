@@ -14,8 +14,7 @@ subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
 #include "asterfort/mgutdm.h"
 #include "asterfort/posddl.h"
 #include "asterfort/resmod.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbrevi, nbmode, neq, ier
@@ -102,11 +101,11 @@ subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
 ! ----- CALCUL PAR SOUS-STRUCTURATION
         else if (typnum(1:13).eq.'NUME_DDL_GENE') then
             if (ns .eq. 0) then
-                call u2mess('F', 'ALGORITH5_63')
+                call utmess('F', 'ALGORITH5_63')
             endif
             call jenonu(jexnom(mdssno, sst), iret)
             if (iret .eq. 0) then
-                call u2mess('F', 'ALGORITH5_64')
+                call utmess('F', 'ALGORITH5_64')
             endif
             call mgutdm(mdgene, sst, ibid, 'NOM_NUME_DDL', ibid,&
                         nume)
@@ -116,16 +115,13 @@ subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
 !
         if (nuddl .eq. 0) then
             valk = noeu
-            call u2mesg('E+', 'ALGORITH15_16', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E+', 'ALGORITH15_16', sk=valk)
             if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
                 valk = sst
-                call u2mesg('E+', 'ALGORITH15_17', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('E+', 'ALGORITH15_17', sk=valk)
             endif
             valk = comp
-            call u2mesg('E', 'ALGORITH15_18', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('E', 'ALGORITH15_18', sk=valk)
             ier = ier + 1
             goto 10
         endif

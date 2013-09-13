@@ -10,7 +10,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
 #include "asterfort/mcmult.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/mtexis.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zeclag.h"
     character(len=24) :: nomres
@@ -85,8 +85,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
     call mtexis(nommat(1:8), ier)
     if (ier .eq. 0) then
         valk = nommat(1:8)
-        call u2mesg('E', 'ALGORITH12_39', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('E', 'ALGORITH12_39', sk=valk)
     endif
 !
 ! --- ALLOCATION DESCRIPTEUR DE LA MATRICE

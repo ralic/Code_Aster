@@ -17,7 +17,7 @@ subroutine zerog2(x, y, z, i)
 ! ======================================================================
 !
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerop2.h"
     real(kind=8) :: x(3), y(3), z(3)
 ! ----------------------------------------------------------------------
@@ -35,7 +35,9 @@ subroutine zerog2(x, y, z, i)
     real(kind=8) :: rac(2), a, b, c, x0, y0, z0, x1, y1
 !
 !    TEST DES PRE-CONDITIONS
-    if (y(1) .gt. 0 .or. y(2) .lt. 0) call u2mess('F', 'ELEMENTS4_61')
+    if (y(1) .gt. 0 .or. y(2) .lt. 0) then
+        call utmess('F', 'ELEMENTS4_61')
+    endif
 !
     if (y(3) .lt. 0.d0) then
         x(1)=x(3)
@@ -48,7 +50,9 @@ subroutine zerog2(x, y, z, i)
     endif
 !
 !    CONSTRUCTION D'UN NOUVEL ESTIME
-    if (x(1) .eq. x(2)) call u2mess('F', 'ALGORITH9_84')
+    if (x(1) .eq. x(2)) then
+        call utmess('F', 'ALGORITH9_84')
+    endif
     if (mod(i,2) .eq. 0) then
         x0=x(1)
         x1=x(2)
@@ -73,7 +77,7 @@ subroutine zerog2(x, y, z, i)
             x(3)=-c/b
             goto 9999
         else
-            call u2mess('F', 'ALGORITH9_84')
+            call utmess('F', 'ALGORITH9_84')
         endif
     endif
 !

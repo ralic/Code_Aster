@@ -19,8 +19,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
 ! ======================================================================
     implicit none
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=3) :: typma
     character(len=8) :: knumai
     real(kind=8) :: coor(3, *), dfonc(*), a, b, c, prec
@@ -88,7 +87,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                 b=b/norme
                 c=c/norme
             else
-                call u2mesk('F', 'CHARGES2_26', 1, knumai)
+                call utmess('F', 'CHARGES2_26', sk=knumai)
             endif
 !     ON EST SUR UN NOEUD MILIEUX : ON CALCULE SA NORMALE EN FAISANT
 !     LA MOYENNE DES DEUX NOEUDS DE SON ARETE
@@ -129,7 +128,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                 b=b/norme
                 c=c/norme
             else
-                call u2mesk('F', 'CHARGES2_26', 1, knumai)
+                call utmess('F', 'CHARGES2_26', sk=knumai)
             endif
         endif
 !     ON EST EN 2D
@@ -149,7 +148,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                     a=eks1x/norme
                     b=eks1y/norme
                 else
-                    call u2mesk('F', 'CHARGES2_23', 1, knumai)
+                    call utmess('F', 'CHARGES2_23', sk=knumai)
                 endif
 !         ON S INTERESSE AU VECTEUR NORMAL
             else if (l.eq.1) then
@@ -158,7 +157,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                     a=eks1y/norme
                     b=-eks1x/norme
                 else
-                    call u2mesk('F', 'CHARGES2_24', 1, knumai)
+                    call utmess('F', 'CHARGES2_24', sk=knumai)
                 endif
             endif
 !     ON EST SUR UN NOEUD MILIEUX : ON CALCULE SA NORMALE EN FAISANT
@@ -183,7 +182,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                     a=eks1x/norme
                     b=eks1y/norme
                 else
-                    call u2mesk('F', 'CHARGES2_23', 1, knumai)
+                    call utmess('F', 'CHARGES2_23', sk=knumai)
                 endif
 !         ON S INTERESSE AU VECTEUR NORMAL
             else if (l.eq.1) then
@@ -192,7 +191,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
                     a=eks1y/norme
                     b=-eks1x/norme
                 else
-                    call u2mesk('F', 'CHARGES2_24', 1, knumai)
+                    call utmess('F', 'CHARGES2_24', sk=knumai)
                 endif
             endif
         endif

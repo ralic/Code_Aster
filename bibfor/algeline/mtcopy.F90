@@ -7,7 +7,7 @@ subroutine mtcopy(matin, matout, ier)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
     character(len=*) :: matin, matout
     integer :: ier
@@ -64,7 +64,7 @@ subroutine mtcopy(matin, matout, ier)
     if (ier .ne. 0) then
         valk(1) = mati19
         valk(2) = mato19
-        call u2mesk('F', 'ALGELINE2_11', 2, valk)
+        call utmess('F', 'ALGELINE2_11', nk=2, valk=valk)
 !
     else
 !        --- TYPE DES VALEURS, NOMBRE DE BLOCS, LONGUEUR D'UN BLOC ---

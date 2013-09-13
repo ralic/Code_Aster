@@ -1,8 +1,7 @@
 subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                   lcrit, prec, crit)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jecreo.h"
@@ -13,9 +12,9 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbtr01.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: npara
     real(kind=8) :: prec
     character(len=8) :: crit
@@ -77,17 +76,17 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nblign .eq. 0) then
-        call u2mess('F', 'UTILITAI4_66')
+        call utmess('F', 'UTILITAI4_66')
     endif
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
@@ -101,15 +100,13 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                 type = zk24(jtblp+4*(j-1)+1)
                 if (type(1:1) .eq. 'C') then
                     valk = inpar
-                    call u2mesg('F', 'UTILITAI7_2', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'UTILITAI7_2', sk=valk)
                 endif
                 goto 10
             endif
 12      continue
         valk = inpar
-        call u2mesg('F', 'UTILITAI6_89', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_89', sk=valk)
 10  end do
 !
     call wkvect('&&TBTRTB.TRI', 'V V I', nblign, jnume)
@@ -133,7 +130,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
         goto 104
     else if (npara .eq. 2) then
     else if (npara .gt. 2) then
-        call u2mess('F', 'UTILITAI4_87')
+        call utmess('F', 'UTILITAI4_87')
     endif
     i = 1
     inpar = lipara(i)

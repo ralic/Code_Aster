@@ -18,7 +18,6 @@ subroutine te0471(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/chmalg.h"
 #include "asterfort/dpfch3.h"
 #include "asterfort/dsfch3.h"
@@ -27,8 +26,9 @@ subroutine te0471(option, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
+!
     character(len=16) :: option, nomte, phenom
 ! .....................................................................C
 ! .....................................................................C
@@ -132,7 +132,7 @@ subroutine te0471(option, nomte)
         nomres(3) = 'RHO'
         nbv = 3
     else
-        call u2mess('F', 'ELEMENTS3_98')
+        call utmess('F', 'ELEMENTS3_98')
     endif
     tpg = 0.d0
     fami='FPG1'
@@ -149,7 +149,7 @@ subroutine te0471(option, nomte)
         nomres(1) = 'RHO'
         nbv = 1
     else
-        call u2mess('F', 'ELEMENTS3_98')
+        call utmess('F', 'ELEMENTS3_98')
     endif
     tpg = 0.d0
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
@@ -168,7 +168,7 @@ subroutine te0471(option, nomte)
     xjx = zr(lsect+8)
 !
     if (itype .gt. 0) then
-        call u2mess('F', 'ELEMENTS3_99')
+        call utmess('F', 'ELEMENTS3_99')
     endif
 !     -------------------------------------------
 !     --- RECUPERATION DES TERMES CORRECTEURS ---

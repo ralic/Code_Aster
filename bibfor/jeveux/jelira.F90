@@ -1,4 +1,4 @@
-subroutine jelira (nomlu, catr, ival, cval)
+subroutine jelira(nomlu, catr, ival, cval)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ subroutine jelira (nomlu, catr, ival, cval)
 #include "asterfort/jjlide.h"
 #include "asterfort/jjlirs.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu, catr
     character(len=*), intent(out), optional :: cval
     integer, intent(out), optional :: ival
@@ -88,7 +88,7 @@ subroutine jelira (nomlu, catr, ival, cval)
 !
     ic = iclas
     if (iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_26', 1, noml32(1:24))
+        call utmess('F', 'JEVEUX_26', sk=noml32(1:24))
     else if (iret .eq. 1) then
         lcol = .false.
         ic = iclaos
@@ -96,7 +96,7 @@ subroutine jelira (nomlu, catr, ival, cval)
         lconst = .true.
         lconti = .true.
         if (noml32(25:32) .ne. '        ') then
-            call u2mesk('F', 'JEVEUX1_09', 1, noml32(1:24))
+            call utmess('F', 'JEVEUX1_09', sk=noml32(1:24))
         endif
     else
         lcol = .true.
@@ -107,7 +107,7 @@ subroutine jelira (nomlu, catr, ival, cval)
             iret = 3
             call jjcroc(noml32(25:32), icre)
             if (idatoc .eq. 0) then
-                call u2mesk('F', 'JEVEUX_30', 1, noml32(1:24))
+                call utmess('F', 'JEVEUX_30', sk=noml32(1:24))
             endif
         endif
         ixdeso = iszon ( jiszon + ibacol + iddeso )
@@ -188,7 +188,7 @@ subroutine jelira (nomlu, catr, ival, cval)
         (genri .ne. 'R' .and. catrlu(1:3).eq. 'NOC') .or.&
         (index('EV' ,genri).eq.0 .and. catrlu(1:4).eq. 'LONM') .or.&
         (index('EV' ,genri).eq.0 .and. catrlu(1:4).eq. 'LONU')) then
-        call u2mesk('F', 'JEVEUX1_10', 1, genri)
+        call utmess('F', 'JEVEUX1_10', sk=genri)
     endif
 !
     if (catrlu .eq. 'CLAS    ') then
@@ -294,7 +294,7 @@ subroutine jelira (nomlu, catr, ival, cval)
                 endif
             endif
         else
-            call u2mesk('F', 'JEVEUX1_04', 1, catrlu)
+            call utmess('F', 'JEVEUX1_04', sk=catrlu)
         endif
     endif
 100  continue
@@ -303,7 +303,7 @@ subroutine jelira (nomlu, catr, ival, cval)
             cval = cva(1:lcv)
         endif
     else
-       if (present(ival)) then
+        if (present(ival)) then
             ival = iva
         endif
     endif

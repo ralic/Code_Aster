@@ -69,7 +69,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 #include "asterfort/pmavec.h"
 #include "asterfort/prmama.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vphqrp.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
@@ -91,7 +91,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !-----------------------------------------------------------------------
     integer :: ibid, icalc, idec1, idec2, idpla, idple, ier
     integer :: ifact, ifr, imat1, imat2, imata, imatm, imatz
-    integer :: imax,imod,ire,ivale,ivapr
+    integer :: imax, imod, ire, ivale, ivapr
     integer :: ivec, ivecw, iwrk2, jmod, k, kmod, lfacx
     integer :: lmasg, nbm2, nbnoe, neq, nitqr, numod
     real(kind=8) :: cf0, ck, fi, fim, fk, fre, omegai
@@ -203,12 +203,16 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
     call vphqrp(zr(imata), nbm, nbm, icalc, zr(ivecw),&
                 zr(imatz), nbm, zr(iwrk2), 30, ier,&
                 nitqr)
-    if (ier .ne. 0) call u2mess('F', 'ALGELINE_99')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGELINE_99')
+    endif
 !
     do 30 imod = 1, nbm
         fre = dble(abs(zr(ivecw+2*(imod-1))))
         fim = dble(abs(zr(ivecw+2*(imod-1)+1)))
-        if (fim .gt. (tole*fre)) call u2mess('F', 'ALGELINE2_2')
+        if (fim .gt. (tole*fre)) then
+            call utmess('F', 'ALGELINE2_2')
+        endif
         zr(ivapr+imod-1) = zr(ivecw+2*(imod-1))
         do 31 jmod = 1, nbm
             vecpr(imod,jmod) = zr(imatz+2*nbm*(jmod-1)+2*(imod-1))
@@ -233,7 +237,9 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 41          continue
             zr(ivapr+imax-1) = zr(ivapr+imod-1)
             zr(ivapr+imod-1) = rmax
-            if (rmax .eq. 0.d0) call u2mess('F', 'ALGELINE2_3')
+            if (rmax .eq. 0.d0) then
+                call utmess('F', 'ALGELINE2_3')
+            endif
             do 42 kmod = 1, nbm
                 rtamp = vecpr(kmod,imax)
                 vecpr(kmod,imax) = vecpr(kmod,imod)
@@ -247,7 +253,8 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !-----7.DECOMPOSITION DES DEFORMEES MODALES EN EAU AU REPOS SUR LA
 !       BASE PHYSIQUE
 !
-    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibid, matria, ire)
+    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibid,&
+                matria, ire)
     call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibid,&
                 numddl, ire)
     call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', neq,&

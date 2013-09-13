@@ -63,8 +63,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
 #include "asterfort/rsagsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     logical :: astock
@@ -171,7 +170,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
             ficab = .true.
         else
             if (nbabs .ne. nbabs1) then
-                call u2mess('F', 'ALGORITH4_98')
+                call utmess('F', 'ALGORITH4_98')
             endif
         endif
 !
@@ -185,18 +184,22 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
             inatu1 = inatur
         else
             if (inatur .ne. inatu1) then
-                call u2mess('F', 'ALGORITH4_99')
+                call utmess('F', 'ALGORITH4_99')
             endif
         endif
         if (inatur .eq. 5 .or. inatur .eq. 6) then
-            if (typres(1:6) .eq. 'DYNA_T') call u2mess('F', 'ALGORITH5_1')
+            if (typres(1:6) .eq. 'DYNA_T') then
+                call utmess('F', 'ALGORITH5_1')
+            endif
             zcmplx = .true.
             if (.not. ficva) then
                 call wkvect(valmes, 'V V C', nbabs*nbnmes*3, lvalc)
                 ficva = .true.
             endif
         else
-            if (typres(1:6) .eq. 'DYNA_H') call u2mess('F', 'ALGORITH5_2')
+            if (typres(1:6) .eq. 'DYNA_H') then
+                call utmess('F', 'ALGORITH5_2')
+            endif
             zcmplx = .false.
             if (.not. ficva) then
                 call wkvect(valmes, 'V V R', nbabs*nbnmes*3, lvalr)
@@ -252,7 +255,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                 licmp(5) = 'EPXZ'
                 licmp(6) = 'EPYZ'
                 if (zcmplx) then
-                    call u2mess('F', 'ALGORITH5_3')
+                    call utmess('F', 'ALGORITH5_3')
                 else
                     nomgd = 'EPSI_R'
                 endif
@@ -284,7 +287,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
         nbmesu = nbmesu + 1
 !
         if (nbmesu .gt. nbnmes*6) then
-            call u2mess('F', 'ALGORITH5_4')
+            call utmess('F', 'ALGORITH5_4')
         endif
 !
 ! LECTURE DU NUMERO DU NOEUD
@@ -319,15 +322,14 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
         read (ideas, 1000, end = 170) ligne
         if (ligne .ne. repem1) then
             vali = nbmesu
-            call u2mesg('F', 'ALGORITH15_98', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_98', si=vali)
         endif
 !
         goto 10
 !
 160      continue
 ! EN CAS D ERREUR DE LECTURE DU FICHIER UNV
-        call u2mess('F', 'ALGORITH5_5')
+        call utmess('F', 'ALGORITH5_5')
 !
 11      continue
 ! POSITIONNEMENT A LA FIN DU DATASET
@@ -344,14 +346,18 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
         if (nbmesu .eq. 0) then
             write(ifres,1002) nomsym
             1002  format('AUCUN CHAMP ',a16,' TROUVE')
-            call u2mess('A', 'ALGORITH5_6')
+            call utmess('A', 'ALGORITH5_6')
             goto 9999
         endif
 !
 ! CREATION DE SD_RESULTAT DYNA_TRANS / DYNA_HARMO / HARM_GENE : TYPRES
-        if ((zcmplx) .and. (typres(1:6) .eq. 'DYNA_T')) call u2mess('F', 'ALGORITH5_1')
+        if ((zcmplx) .and. (typres(1:6) .eq. 'DYNA_T')) then
+            call utmess('F', 'ALGORITH5_1')
+        endif
 !
-        if ((.not.zcmplx) .and. (typres(1:6) .ne. 'DYNA_T')) call u2mess('F', 'ALGORITH5_2')
+        if ((.not.zcmplx) .and. (typres(1:6) .ne. 'DYNA_T')) then
+            call utmess('F', 'ALGORITH5_2')
+        endif
 !
         if (inoch .eq. 1) call rsagsd(nomres, nbabs)
         noojb='12345678.00000.NUME.PRNO'
@@ -444,7 +450,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                     if (nomgd(1:4) .eq. 'SIEF') then
                         call getfac('REDEFI_ORIENT', nbocc)
                         if ((nbocc.gt.0) .and. (.not. vucont)) then
-                            call u2mess('A', 'ALGORITH5_9')
+                            call utmess('A', 'ALGORITH5_9')
                             vucont = .true.
                         endif
                         if (zcmplx) then
@@ -458,7 +464,7 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                     if (nomgd(1:4) .eq. 'EPSI') then
                         call getfac('REDEFI_ORIENT', nbocc)
                         if ((nbocc.gt.0) .and. (.not. vudef)) then
-                            call u2mess('A', 'ALGORITH5_10')
+                            call utmess('A', 'ALGORITH5_10')
                             vudef = .true.
                         endif
                         zr(jcnsv-1 + (ino-1)*ncmp+icmp) = rval

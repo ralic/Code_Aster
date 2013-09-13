@@ -58,8 +58,7 @@ subroutine op0051()
 #include "asterfort/rvpar0.h"
 #include "asterfort/rvpost.h"
 #include "asterfort/rvvsup.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=6) :: nompro
@@ -110,7 +109,9 @@ subroutine op0051()
 ! 2.2. ==> LE CONCEPT DE SORTIE, SON TYPE, LA COMMANDE
 !
     call getres(latabl, concep, nomcmd)
-    if (niv .ge. 2) call u2mesk('I', 'POSTRELE_1', 1, latabl)
+    if (niv .ge. 2) then
+        call utmess('I', 'POSTRELE_1', sk=latabl)
+    endif
 !
 ! 2.3. ==> PHASE DE VERIFICATIONS SUPPLEMENTAIRES
 !
@@ -274,7 +275,7 @@ subroutine op0051()
         endif
 !
         if (.not. trouve) then
-            call u2mesi('F', 'POSTRELE_2', 1, iocc)
+            call utmess('F', 'POSTRELE_2', si=iocc)
         else
 !
 !           --- SAISIE DU LIEU DU POST-TRAITEMENT DE L' OCCURENCE ---
@@ -283,7 +284,7 @@ subroutine op0051()
                         nlsnac, iret)
 !
             if (iret .eq. 0) then
-                call u2mesi('F', 'POSTRELE_3', 1, iocc)
+                call utmess('F', 'POSTRELE_3', si=iocc)
 !
             else
 !

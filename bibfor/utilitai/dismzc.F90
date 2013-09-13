@@ -1,7 +1,6 @@
 subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -13,8 +12,9 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 ! ----------------------------------------------------------------------
@@ -105,7 +105,9 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 !
             if (numail .lt. 0) then
 ! --------- MAILLE TARDIVE: ON RECUPERE NEMA
-                if (ier .eq. 0) call u2mess('F', 'UTILITAI_71')
+                if (ier .eq. 0) then
+                    call utmess('F', 'UTILITAI_71')
+                endif
                 ima = -numail
                 call jeveuo(jexnum(nema, ima), 'L', idnema)
                 call jelira(jexnum(nema, ima), 'LONMAX', nbnot)
@@ -114,7 +116,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
                 do 22 ino = 1, nbnot
                     nunota = zi(idnema+ino-1)
                     if (nunota .lt. 0) then
-                        call u2mess('F', 'UTILITAI_72')
+                        call utmess('F', 'UTILITAI_72')
                     endif
                     zi(jnbno+nunota-1) = 1
 22              continue

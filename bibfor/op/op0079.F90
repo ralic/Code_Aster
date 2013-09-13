@@ -45,8 +45,7 @@ subroutine op0079()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/trlds.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
@@ -139,7 +138,9 @@ subroutine op0079()
                             nu, iret)
                 numdd1=nu
             endif
-            if (iret .eq. 0) call u2mesk('F', 'ALGORITH17_8', 1, res)
+            if (iret .eq. 0) then
+                call utmess('F', 'ALGORITH17_8', sk=res)
+            endif
         endif
         call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
                     nu, iret)
@@ -154,7 +155,9 @@ subroutine op0079()
                             nu, iret)
                 numdd2=nu
             endif
-            if (iret .eq. 0) call u2mesk('F', 'ALGORITH17_8', 1, basemo)
+            if (iret .eq. 0) then
+                call utmess('F', 'ALGORITH17_8', sk=basemo)
+            endif
         endif
 !
     else if (typbas(1:9).eq.'MODE_GENE') then
@@ -168,7 +171,7 @@ subroutine op0079()
     endif
 !
     if (numdd1 .ne. numdd2) then
-        call u2mess('I', 'ALGORITH9_41')
+        call utmess('I', 'ALGORITH9_41')
     endif
 !
 ! --- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
@@ -213,7 +216,7 @@ subroutine op0079()
             call jelira(nochno//'.VALE', 'TYPE', cval=typvec)
 ! --- LE CAS COMPLEXE (SD HARMONIQUES) N'EST PAS TRAITE
             if (typvec .eq. 'C') then
-                call u2mess('F', 'ALGORITH17_19')
+                call utmess('F', 'ALGORITH17_19')
             endif
 !
 ! --- INDICE DE STOCKAGE
@@ -304,7 +307,7 @@ subroutine op0079()
                 ind = ii-1+(iord-1)*nbmode+imod
                 call trlds(zr(iamatr), nbmode, nbmode, icod)
                 if (icod .ne. 0) then
-                    call u2mess('F', 'ALGORITH9_42')
+                    call utmess('F', 'ALGORITH9_42')
                 endif
                 call rrlds(zr(iamatr), nbmode, nbmode, zr(idvec2), 1)
                 call dcopy(nbmode, zr(idvec2), 1, zr(ind), 1)

@@ -3,7 +3,6 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 ! aslint: disable=W1304
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/aptest.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
@@ -16,9 +15,10 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 #include "asterfort/jexnum.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/zgehrd.h"
+!
     integer :: nk, lraide, lmasse, itest
     real(kind=8) :: rayonc
     complex(kind=8) :: centrc
@@ -60,7 +60,7 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
 !
 !
     integer :: ilo, ihi
-    integer(kind=4) ::  info4
+    integer(kind=4) :: info4
     integer :: ifm, niv, imata, nk2, nkm1, i, ivect, iwork, vali, ideeq, iret, j
     integer :: imatb, imatc, nkj, lwork, k, ideb, ifin, jm1, im1, iauxh, iauxh1
     integer :: ivalr, ivalm, ihcol, iadia, ibid, idelg, imult, ifin1, imata0
@@ -205,7 +205,9 @@ subroutine apm012(nk, k24rc, ltest, itest, rayonc,&
                     zc(ivect), zc(iwork), lwork, info4)
     endif
     vali=info4
-    if (vali .ne. 0) call u2mesi('F', 'ALGELINE4_12', 1, vali)
+    if (vali .ne. 0) then
+        call utmess('F', 'ALGELINE4_12', si=vali)
+    endif
     call jeexin('&&APM012.ZGEHRD.WORK', iret)
     if (iret .ne. 0) then
         call jedetr('&&APM012.ZGEHRD.TAU')

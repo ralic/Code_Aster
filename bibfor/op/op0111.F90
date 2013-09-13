@@ -43,8 +43,7 @@ subroutine op0111()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -103,8 +102,12 @@ subroutine op0111()
     call getfac('VIS_A_VIS', nbocc)
     call getfac('RESULTAT', iresu)
     call getfac('ETAT_INIT', ietin)
-    if (iresu+ietin .gt. 1) call u2mess('F', 'COUPLAGEIFS_1')
-    if (nbocc .lt. 1) call u2mess('F', 'COUPLAGEIFS_2')
+    if (iresu+ietin .gt. 1) then
+        call utmess('F', 'COUPLAGEIFS_1')
+    endif
+    if (nbocc .lt. 1) then
+        call utmess('F', 'COUPLAGEIFS_2')
+    endif
     idepl = 0
     ivite = 0
     iacce = 0
@@ -114,8 +117,7 @@ subroutine op0111()
         if (niv .eq. 2) then
             valk(1) = 'OP0111'
             valk(2) = 'NUME_ORDRE'
-            call u2mesg('I+', 'COUPLAGEIFS_8', 2, valk, 1,&
-                        nordre, 0, 0.d0)
+            call utmess('I+', 'COUPLAGEIFS_8', nk=2, valk=valk, si=nordre)
         endif
         call rsexch(' ', resu, 'DEPL', nordre, chdepl,&
                     icode)
@@ -131,7 +133,7 @@ subroutine op0111()
         call getvid('ETAT_INIT', 'VITE', iocc=1, scal=chvite, nbret=ivite)
         call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=chacce, nbret=iacce)
         if (idepl .gt. 1 .or. ivite .gt. 1 .or. iacce .gt. 1) then
-            call u2mess('F', 'COUPLAGEIFS_3')
+            call utmess('F', 'COUPLAGEIFS_3')
         endif
     endif
 !     ! ================================================ !
@@ -189,7 +191,9 @@ subroutine op0111()
     ma1 = zk24(jacono-1+1)(1:8)
     ma2 = zk24(jacono-1+2)(1:8)
     if (nbno1 .gt. 0) then
-        if (ma .ne. ma1) call u2mess('F', 'COUPLAGEIFS_4')
+        if (ma .ne. ma1) then
+            call utmess('F', 'COUPLAGEIFS_4')
+        endif
     endif
 !     ! ======================================= !
 !     ! RECUPERATIONS DES DONNEES DU MAILLAGE 1 !

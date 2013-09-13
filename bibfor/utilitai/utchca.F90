@@ -1,8 +1,7 @@
 subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
                   valr, vali, valc, ier)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -13,7 +12,8 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: vali, ier
     real(kind=8) :: valr
     complex(kind=8) :: valc
@@ -53,7 +53,7 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
 !             ELLE NE DOIT ETRE APPELEE QUE DANS TEST_RESU
 ! ----------------------------------------------------------------------
 !
-    integer ::  iret, numa, iad1, jcesc, jcesd, jcesl
+    integer :: iret, numa, iad1, jcesc, jcesd, jcesl
     integer :: jcesv, kcmp, nbcmp
     character(len=1) :: typsca
     character(len=4) :: type
@@ -69,8 +69,9 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
     typsca = typrez
 !
     call jelira(cart19//'.VALE', 'TYPE', cval=type)
-    if (type .ne. 'R' .and. type .ne. 'I' .and. type .ne. 'C') call u2mesk('E', 'UTILITAI5_29',&
-                                                                           1, type)
+    if (type .ne. 'R' .and. type .ne. 'I' .and. type .ne. 'C') then
+        call utmess('E', 'UTILITAI5_29', sk=type)
+    endif
     ASSERT(type.eq.typsca)
 !
     call jenonu(jexnom(ma//'.NOMMAI', nomail), numa)
@@ -89,11 +90,15 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
 !
     call jelira(ces//'.CESC', 'LONMAX', nbcmp)
     kcmp = indik8(zk8(jcesc),nocmp,1,nbcmp)
-    if (kcmp .eq. 0) call u2mesk('F', 'CALCULEL3_5', 1, nocmp)
+    if (kcmp .eq. 0) then
+        call utmess('F', 'CALCULEL3_5', sk=nocmp)
+    endif
 !
     call cesexi('C', jcesd, jcesl, numa, 1,&
                 1, kcmp, iad1)
-    if (iad1 .le. 0) call u2mesk('F', 'CALCULEL3_6', 1, nocmp)
+    if (iad1 .le. 0) then
+        call utmess('F', 'CALCULEL3_6', sk=nocmp)
+    endif
 !
     if (typsca .eq. 'R') then
         valr=zr(jcesv-1+iad1)

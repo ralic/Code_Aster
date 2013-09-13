@@ -32,7 +32,7 @@ function lcroyi()
 !
 #include "asterfort/lcrofs.h"
 #include "asterfort/rcfonc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi
@@ -88,7 +88,7 @@ function lcroyi()
         if (s .le. 0) yinf = y
         if (s .ge. 0) ysup = y
 10  end do
-    call u2mess('F', 'ALGORITH3_55')
+    call utmess('F', 'ALGORITH3_55')
 !
 !
 100  continue

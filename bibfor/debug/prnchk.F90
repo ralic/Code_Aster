@@ -2,6 +2,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
                   lgsn, lfront, invsup, seq)
 ! aslint: disable=W1304
     implicit none
+#include "asterfort/utmess.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +19,6 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "asterfort/u2mesg.h"
     integer(kind=4) :: global(*)
     integer :: adress(*), fils(*), frere(*), lgsn(*), lfront(*)
     integer :: invsup(*), seq(*), nbsn
@@ -44,8 +44,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
             if (.not.trouv) then
                 vali(1)=sni
                 vali(2)=sn0
-                call u2mesg('A', 'ALGELINE5_59', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('A', 'ALGELINE5_59', ni=2, vali=vali)
             endif
         endif
  1  end do

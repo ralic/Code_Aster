@@ -1,5 +1,6 @@
 subroutine te0062(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
@@ -7,7 +8,7 @@ subroutine te0062(option, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/utrcyl.h"
@@ -37,7 +38,6 @@ subroutine te0062(option, nomte)
 !
 ! ---------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
 !
     integer :: icodre(3)
@@ -100,7 +100,7 @@ subroutine te0062(option, nomte)
     else if (phenom.eq.'THER_NL') then
         aniso = .false.
     else
-        call u2mess('F', 'ELEMENTS2_63')
+        call utmess('F', 'ELEMENTS2_63')
     endif
 !
 !====

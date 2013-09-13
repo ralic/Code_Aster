@@ -1,5 +1,5 @@
-subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
-                   list_elem, nb_elem , model)
+subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
+                   list_elem, nb_elem, model)
 !
     implicit none
 !
@@ -11,7 +11,7 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -33,7 +33,7 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
 !
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in)  :: iocc
+    integer, intent(in) :: iocc
     character(len=8), intent(in) :: suffix
     character(len=1), intent(in) :: stop_void
     integer, intent(out) :: nb_elem
@@ -75,7 +75,7 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
     character(len=16) :: typmcl(5)
     character(len=24) :: list_lect, list_excl
     character(len=24) :: keyword
-    character(len=8)  :: model_name
+    character(len=8) :: model_name
     integer :: nb_mocl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: num_lect, num_excl
@@ -101,23 +101,23 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
     nb_mocl = 0
     if (getexm(keywordfact,'TOUT') .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'TOUT'
+        moclm(nb_mocl) = 'TOUT'
         typmcl(nb_mocl) = 'TOUT'
     endif
     keyword = 'GROUP_MA'//suffix
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = keyword
+        moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
     endif
     keyword = 'MAILLE'//suffix
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = keyword
+        moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'MAILLE'
     endif
-    if (nb_mocl.ne.0) then
-        call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc ,&
+    if (nb_mocl .ne. 0) then
+        call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc,&
                     nb_mocl, moclm, typmcl, list_lect, nb_lect)
     endif
 !
@@ -127,31 +127,31 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
     keyword = 'SANS_GROUP_MA'//suffix
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = keyword
+        moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
     endif
     keyword = 'SANS_MAILLE'//suffix
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = keyword
+        moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'MAILLE'
     endif
-    if (nb_mocl.ne.0) then
-        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc ,&
+    if (nb_mocl .ne. 0) then
+        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)
     endif
 !
 ! - Exclusion of elements in initial list
 !
     nb_elim = 0
-    if (nb_lect.ne.0) call jeveuo(list_lect,'E',jlect)
-    if (nb_excl.ne.0) then
-        call jeveuo(list_excl,'L',jexcl)
+    if (nb_lect .ne. 0) call jeveuo(list_lect, 'E', jlect)
+    if (nb_excl .ne. 0) then
+        call jeveuo(list_excl, 'L', jexcl)
         do i_excl = 1, nb_excl
             num_excl = zi(jexcl-1+i_excl)
             do i_lect = 1, nb_lect
                 num_lect = zi(jlect-1+i_lect)
-                if (num_excl.eq.num_lect) then
+                if (num_excl .eq. num_lect) then
                     nb_elim = nb_elim + 1
                     zi(jlect-1+i_lect) = 0
                 endif
@@ -163,11 +163,11 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
 ! - Final list of elements
 !
     i_elem = 0
-    if ((nb_elem.ne.0).and.(nb_lect.ne.0)) then
-        call wkvect(list_elem,'V V I',nb_elem,jelem)
+    if ((nb_elem.ne.0) .and. (nb_lect.ne.0)) then
+        call wkvect(list_elem, 'V V I', nb_elem, jelem)
         do i_lect = 1, nb_lect
             num_lect = zi(jlect-1+i_lect)
-            if (num_lect.ne.0) then
+            if (num_lect .ne. 0) then
                 i_elem= i_elem + 1
                 zi(jelem-1+i_elem) = num_lect
             endif
@@ -177,12 +177,12 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void, &
 !
 ! - If no elements
 !
-    if (stop_void.ne.' ' .and. nb_elem .eq. 0) then
-        call u2mesk(stop_void,'UTILITY_3', 1, keywordfact)
+    if (stop_void .ne. ' ' .and. nb_elem .eq. 0) then
+        call utmess(stop_void, 'UTILITY_3', sk=keywordfact)
     endif
 !
     call jedetr(list_lect)
     call jedetr(list_excl)
-
+!
     call jedema()
 end subroutine

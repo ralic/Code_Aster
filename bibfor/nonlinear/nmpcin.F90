@@ -25,7 +25,7 @@ subroutine nmpcin(matass)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=19) :: matass
 !
 ! ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine nmpcin(matass)
 !
     call jeexin(matass(1:19)//'.REFA', jrefa)
     if (jrefa .eq. 0) then
-        call u2mesk('F', 'ALGELINE2_88', 1, matass)
+        call utmess('F', 'ALGELINE2_88', sk=matass)
     endif
 !
 ! --- ACCES POINTEUR

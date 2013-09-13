@@ -1,5 +1,5 @@
 subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
-                  n, typent, typgeo, typcon, cret)
+                     n, typent, typgeo, typcon, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     L'ARGUMENT CSIZE N'EST PAS DANS L'API MED
 !
@@ -20,18 +20,19 @@ subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
-#include "med/mmhcyw.h"
+#include "asterf.h"
 #include "asterfort/conv_int.h"
+#include "asterfort/utmess.h"
+#include "med/mmhcyw.h"
     character(len=*) :: maa
     aster_int :: fid, conn(*), csize, typent, typgeo, typcon, cret
     aster_int :: n, switch, mdnont, mdnoit
     real(kind=8) :: mdnodt
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int, allocatable :: conn4(:)
     med_int :: fid4, typen4, typge4, typco4, cret4
@@ -63,6 +64,6 @@ subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
                 typent, typgeo, typcon, switch, n,&
                 conn, cret)
 #endif
-
+!
 #endif
 end subroutine

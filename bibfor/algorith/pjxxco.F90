@@ -33,7 +33,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !  LE CAS DE LA METHODE 'NUAGE_DEG' EST PLUS PARTICULIER :
 !    ON FAIT DONC UN TEST A PART
 !
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
@@ -50,7 +50,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 #include "asterfort/pjngco.h"
 #include "asterfort/pjspco.h"
 #include "asterfort/pjtyco.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     logical :: isole
     character(len=4) :: typcal
     character(len=8) :: resuin
@@ -118,11 +118,11 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
             if ((method.eq.'ECLA_PG') .and. (.not.lelga)) then
                 valk(1) = method
                 if (lnoeu) then
-                    call u2mesk('F', 'CALCULEL5_32', 1, valk)
+                    call utmess('F', 'CALCULEL5_32', sk=valk(1))
                 else
                     if (lelno) valk(2) = 'ELNO'
                     if (lelem) valk(2) = 'ELEM'
-                    call u2mesk('F', 'CALCULEL5_33', 2, valk)
+                    call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
                 endif
             endif
 !
@@ -131,14 +131,14 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
                 ASSERT(lelga)
                 valk(1) = method
                 valk(2) = 'ELGA'
-                call u2mesk('F', 'CALCULEL5_33', 2, valk)
+                call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
             endif
 !
             if ((method.eq.'SOUS_POINT') .and. (.not.lnoeu) .and. ( .not.lelno)) then
                 ASSERT(lelga .or. lelem)
                 valk(1) = method
                 valk(2) = 'ELGA ET ELEM'
-                call u2mesk('F', 'CALCULEL5_33', 2, valk)
+                call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
             endif
 !
 !         -- ON UTILISE LCORRE(1) OU LCORRE(2) SUIVANT LE TYPE DE CHAMP

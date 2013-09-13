@@ -10,7 +10,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
 !     NSECBA : NOMBRE DE SECTIONS PAR BARRE
 !     NTYPSE : NOMBRE DE TYPE DE SECTION
 ! ----------------------------------------------------------------------
-    real(kind=8) ::  tst
+    real(kind=8) :: tst
     character(len=8) :: k8b, kioc, ki, nomu
     character(len=24) :: valk(3)
     character(len=16) :: k16b, sec, concep, cmd
@@ -106,14 +106,14 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                         valk(1) = kioc
                         valk(2) = ki
                         valk(3) = zk16(jsect+l-1)
-                        call u2mesk('E', 'MODELISA_44', 3, valk)
+                        call utmess('E', 'MODELISA_44', nk=3, valk=valk)
                         ier = ier + 1
                     endif
                     if (l .eq. 2) then
                         if (ncar .gt. 4) then
                             valk(1) = kioc
                             valk(2) = zk16(jsect+l-1)
-                            call u2mesk('E', 'MODELISA_45', 2, valk)
+                            call utmess('E', 'MODELISA_45', nk=2, valk=valk)
                             ier = ier + 1
                         endif
                         irech = 0
@@ -123,7 +123,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                                 if (irech .eq. 2) then
                                     valk(1) = kioc
                                     valk(2) = zk16(jsect+l-1)
-                                    call u2mesk('E', 'MODELISA_46', 2, valk)
+                                    call utmess('E', 'MODELISA_46', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
                                 irech = 1
@@ -133,7 +133,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                                 if (irech .eq. 1) then
                                     valk(1) = kioc
                                     valk(2) = zk16(jsect+l-1)
-                                    call u2mesk('E', 'MODELISA_47', 2, valk)
+                                    call utmess('E', 'MODELISA_47', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
                                 irech = 2
@@ -142,7 +142,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                                 if (irece .eq. 1) then
                                     valk(1) = kioc
                                     valk(2) = zk16(jsect+l-1)
-                                    call u2mesk('E', 'MODELISA_48', 2, valk)
+                                    call utmess('E', 'MODELISA_48', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
                                 irece = 2
@@ -152,7 +152,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                                 if (irece .eq. 2) then
                                     valk(1) = kioc
                                     valk(2) = zk16(jsect+l-1)
-                                    call u2mesk('E', 'MODELISA_49', 2, valk)
+                                    call utmess('E', 'MODELISA_49', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
                                 irece = 1
@@ -169,7 +169,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                 call codent(ncara, 'G', ki)
                 valk(1) = kioc
                 valk(2) = ki
-                call u2mesk('E', 'MODELISA_50', 2, valk)
+                call utmess('E', 'MODELISA_50', nk=2, valk=valk)
                 ier = ier + 1
             else
                 do 70 i = 1, nval
@@ -178,7 +178,7 @@ subroutine acevba(nbocc, nlm, nlg, ier)
                         valk(1) = kioc
                         valk(2) = zk16(jsect+l-1)
                         valk(3) = ki
-                        call u2mesk('E', 'MODELISA_51', 3, valk)
+                        call utmess('E', 'MODELISA_51', nk=3, valk=valk)
                         ier = ier + 1
                     endif
 70              continue

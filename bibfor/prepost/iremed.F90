@@ -4,7 +4,6 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
 #include "asterfort/codent.h"
@@ -22,10 +21,10 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 #include "asterfort/mdnoch.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutrg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcmp3.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: carael
     character(len=*) :: nomcon, novcmp, nocham, liordr, nomcmp, partie
     integer :: ifichi, nbnoec, linoec(*), nbmaec, limaec(*)
@@ -124,7 +123,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             if (carel2 .ne. carael) then
                 valk2(1) = carael
                 valk2(2) = carel2
-                call u2mesk('F', 'MED_64', 1, valk2)
+                call utmess('F', 'MED_64', sk=valk2(1))
             endif
         endif
         sdcarm = '&&IREMED'
@@ -172,7 +171,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !             - MESSAGE NUMERO D'ORDRE NON LICITE
                     if (lfirst) then
                         call codent(zi(jliord+iordr-1), 'G', chnumo)
-                        call u2mesk('A', 'PREPOST2_46', 1, chnumo)
+                        call utmess('A', 'PREPOST2_46', sk=chnumo)
                     endif
                     goto 22
                 endif
@@ -216,10 +215,10 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                 valk(1) = typech
                 valk(2) = cham19
                 if (tyres(1:9) .eq. 'MODE_GENE' .or. tyres(1:9) .eq. 'HARM_GENE') then
-                    call u2mesk('A+', 'PREPOST_87', 2, valk)
-                    call u2mess('A', 'PREPOST6_36')
+                    call utmess('A+', 'PREPOST_87', nk=2, valk=valk)
+                    call utmess('A', 'PREPOST6_36')
                 else
-                    call u2mesk('A', 'PREPOST_87', 2, valk)
+                    call utmess('A', 'PREPOST_87', nk=2, valk=valk)
                 endif
             endif
 !
@@ -256,7 +255,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             if (typech .eq. 'ELGA') then
                 call jeveuo(cham19//'.CELK', 'L', jcelk)
                 if (zk24(jcelk+1) .eq. 'INI_SP_MATER') then
-                    call u2mesk('A', 'MED2_9', 1, nosy16)
+                    call utmess('A', 'MED2_9', sk=nosy16)
                     codret = 0
                     goto 9999
                 endif
@@ -276,7 +275,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             if (codret .ne. 0 .and. codret .ne. 100) then
                 valk(1) = cham19
                 valk(2) = 'MED'
-                call u2mesk('A', 'PREPOST_90', 2, valk)
+                call utmess('A', 'PREPOST_90', nk=2, valk=valk)
             endif
             if (codret .eq. 100 .or. codret .eq. 200) cresav=codret
 !
@@ -285,10 +284,10 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 21      continue
         if (cresav .eq. 100) then
             valk(1) = nosy16
-            call u2mesk('I', 'MED_30', 1, valk)
+            call utmess('I', 'MED_30', sk=valk(1))
         else if (cresav.eq.200) then
             valk(1) = nosy16
-            call u2mesk('A', 'MED2_7', 1, valk)
+            call utmess('A', 'MED2_7', sk=valk(1))
         endif
         lfirst=.false.
 !

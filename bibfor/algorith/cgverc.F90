@@ -4,7 +4,7 @@ subroutine cgverc(resu, nexci)
 #include "asterc/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nexci
     character(len=8) :: resu
 !
@@ -46,13 +46,17 @@ subroutine cgverc(resu, nexci)
 !
 !       LES RESULTATS DE TYPE DYNA_TRANS NE CONTIENNENT PAS DE CHARGES
 !       LE MOT-CLE EXCIT EST DONC OBLIGATOIRE
-        if (nexci .eq. 0) call u2mess('F', 'RUPTURE0_9')
+        if (nexci .eq. 0) then
+            call utmess('F', 'RUPTURE0_9')
+        endif
 !
     else
 !
 !       POUR LES AUTRES TYPE DE RESULTAT, EXCIT N'EST PAS CONSEILLE
 !       (SAUF SI LE RESU PROVIENT DE CREA_RESU, VOIR TEXTE ALARME)
-        if (nexci .ne. 0) call u2mess('A', 'RUPTURE0_55')
+        if (nexci .ne. 0) then
+            call utmess('A', 'RUPTURE0_55')
+        endif
 !
     endif
 !

@@ -1,7 +1,6 @@
 subroutine fointa(ipif, nbpu, nompu, valpu, resu)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/fiintf.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -9,9 +8,8 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 #include "asterfort/fointn.h"
 #include "asterfort/folocx.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ipif, nbpu
     real(kind=8) :: valpu(*), resu
     character(len=*) :: nompu(*)
@@ -59,13 +57,13 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 ! ----------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
-#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlin(x,x1,y1,x2,y2) y1+(x-x1)*(y2-y1)/(x2-x1)
 #define linlog(x,x1,y1,x2,y2) exp(log(y1)+(x-x1)*(log(y2)-log(y1)) \
-        /(x2-x1))
+    /(x2-x1))
 #define loglog(x,x1,y1,x2,y2) exp(log(y1)+(log(x)-log(x1))*(log(y2) \
-        -log(y1))/(log(x2)-log(x1)))
+    -log(y1))/(log(x2)-log(x1)))
 #define loglin(x,x1,y1,x2,y2) y1+(log(x)-log(x1))*(y2-y1) \
-        /(log(x2)-log(x1))
+    /(log(x2)-log(x1))
 !     ------------------------------------------------------------------
     npar(1) = 0
     npar(2) = 0
@@ -94,8 +92,8 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
                     'E', resu)
         if (iret .ne. 0) then
             call tecael(iadzi, iazk24)
-            call u2mesk('F+', 'FONCT0_9', 1, nomf)
-            call u2mesk('F', 'FONCT0_10', 1, zk24(iazk24-1+3))
+            call utmess('F+', 'FONCT0_9', sk=nomf)
+            call utmess('F', 'FONCT0_10', sk=zk24(iazk24-1+3))
         endif
         goto 999
 !
@@ -113,7 +111,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
         nomf = zk24(jpro+5)(1:19)
 !
     else
-        call u2mesk('F', 'CALCULEL6_61', 1, zk24(jpro))
+        call utmess('F', 'CALCULEL6_61', sk=zk24(jpro))
     endif
 !
     do 20 i = 1, nbpara
@@ -129,7 +127,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
             valk(2)=nompf(i)
             call tecael(iadzi, iazk24)
             valk(3) = zk24(iazk24-1+3)
-            call u2mesk('F', 'CALCULEL6_62', 3, valk)
+            call utmess('F', 'CALCULEL6_62', nk=3, valk=valk)
         endif
 20  end do
 !
@@ -169,7 +167,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 !
         else if (coli.eq.'I') then
             if (zk24(jpro+1)(1:3) .eq. 'NON') then
-                call u2mess('F', 'UTILITAI2_12')
+                call utmess('F', 'UTILITAI2_12')
             endif
             call fointn(ipif, nomf, rvar, inume, epsi,&
                         tab(3), ier)
@@ -204,17 +202,16 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
             resu = linlin(rpar,tab(1),tab(3),tab(2),tab(4))
 !
         else
-            call u2mesk('F', 'UTILITAI2_13', 1, coli)
+            call utmess('F', 'UTILITAI2_13', sk=coli)
         endif
 !
     else
-        call u2mesk('F', 'UTILITAI2_14', 1, zk24(jpro))
+        call utmess('F', 'UTILITAI2_14', sk=zk24(jpro))
     endif
 !
 999  continue
     if (ier .ne. 0) then
-        call u2mesg('F', 'CALCULEL6_63', 1, nomf, 1,&
-                    ier, 0, valr)
+        call utmess('F', 'CALCULEL6_63', sk=nomf, si=ier)
     endif
 !
 !

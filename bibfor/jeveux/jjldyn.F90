@@ -24,8 +24,8 @@ subroutine jjldyn(imode, lmin, ltot)
 #include "asterfort/jermxd.h"
 #include "asterfort/jxecro.h"
 #include "asterfort/random.h"
-#include "asterfort/u2mesr.h"
 #include "asterfort/utgtme.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
 #include "asterfort/uttcpu.h"
     integer :: imode, lmin, ltot
@@ -215,7 +215,7 @@ subroutine jjldyn(imode, lmin, ltot)
                                 endif
                             endif
                         endif
-210                     continue
+210                      continue
                     end do
                 endif
                 goto 205
@@ -268,15 +268,15 @@ subroutine jjldyn(imode, lmin, ltot)
                     endif
                 endif
             endif
-205         continue
+205          continue
         end do
 !
         lgio(1)=lgio(1)+1024*longbl(ic)*lois*(nbacce(2*ic-1)-nbioav(1)&
         )
         lgio(2)=lgio(2)+1024*longbl(ic)*lois*(nbacce(2*ic )-nbioav(2))
-200     continue
+200      continue
     end do
-300 continue
+300  continue
     mxltot=mxltot+(ltot*lois)/(1024*1024)
 !
     if (lmin .ne. -2) then
@@ -303,7 +303,7 @@ subroutine jjldyn(imode, lmin, ltot)
                     if (abs(valp(5)-v0) .gt. v0*0.1d0) then
                         vx(1)=valp(2)
                         vx(2)=valp(5)
-                        call u2mesr('I', 'JEVEUX1_74', 2, vx)
+                        call utmess('I', 'JEVEUX1_74', nr=2, valr=vx)
                     endif
                 endif
             endif

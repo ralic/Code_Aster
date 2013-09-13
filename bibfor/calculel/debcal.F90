@@ -23,7 +23,6 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterc/isnnem.h"
 #include "asterfort/assert.h"
@@ -43,8 +42,9 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 #include "asterfort/mecoel.h"
 #include "asterfort/nbec.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: nomop
     character(len=19) :: ligrel
     integer :: nin, nout
@@ -142,7 +142,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
         valk(2)=ligrel
         valk(3)=ma2
         valk(4)=ma
-        call u2mesk('F', 'CALCULEL2_27', 4, valk)
+        call utmess('F', 'CALCULEL2_27', nk=4, valk=valk)
     endif
     30 end do
 !
@@ -155,7 +155,9 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     do 40,j=1,nin
     chin=lchin(j)
     if (.not.zl(iachix-1+j)) goto 40
-    if (chin .eq. chou) call u2mesk('F', 'CALCULEL2_28', 1, chou)
+    if (chin .eq. chou) then
+        call utmess('F', 'CALCULEL2_28', sk=chou)
+    endif
 40  continue
     50 end do
 !
@@ -255,7 +257,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
         valk(3)=nompar
         valk(4)=k8bi1
         valk(5)=nomop
-        call u2mesk('F', 'CALCULEL2_29', 5, valk)
+        call utmess('F', 'CALCULEL2_29', nk=5, valk=valk)
     endif
 !
     call jeexin(chin//'.VALE', iret)
@@ -324,7 +326,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 !     -- SORTIE ERREUR:
 70  continue
     chin=lchin(i)
-    call u2mesk('F', 'CALCULEL2_30', 1, chin)
+    call utmess('F', 'CALCULEL2_30', sk=chin)
 !
 !     -- SORTIE NORMALE:
 80  continue

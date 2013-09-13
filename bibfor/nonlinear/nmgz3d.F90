@@ -31,7 +31,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 #include "asterfort/lcegeo.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
 !
     character(len=8) :: typmod(*)
@@ -95,7 +95,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 !
 !
     if (compor(1)(1:4) .ne. 'ZMAT') then
-        call u2mess('F', 'ALGORITH7_96')
+        call utmess('F', 'ALGORITH7_96')
     endif
 !
 ! 1 - INITIALISATION

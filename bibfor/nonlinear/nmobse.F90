@@ -18,7 +18,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/impfoi.h"
@@ -32,8 +32,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
 #include "asterfort/nmextd.h"
 #include "asterfort/nmextt.h"
 #include "asterfort/nmobs2.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=19) :: sdobse
     character(len=24) :: sdieto
@@ -208,11 +207,11 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
 ! --- AFFICHAGE
 !
     if (nobsef .eq. 0) then
-        call u2mess('I', 'OBSERVATION_39')
+        call utmess('I', 'OBSERVATION_39')
     else if (nobsef.eq.1) then
-        call u2mess('I', 'OBSERVATION_38')
+        call utmess('I', 'OBSERVATION_38')
     else
-        call u2mesi('I', 'OBSERVATION_37', 1, nobsef)
+        call utmess('I', 'OBSERVATION_37', si=nobsef)
     endif
 !
 ! --- DESTRUCTION DES CHAM_ELEM_S

@@ -1,8 +1,8 @@
 subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                   ier)
-    implicit  none
+    implicit none
 #include "asterfort/posddl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbnli, iliai, ddlcho(*), ier
     logical :: lnoue2
     character(len=8) :: noecho(nbnli, *)
@@ -50,11 +50,11 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
         ier = ier + 1
         valk(1) = noeu1
         valk(2) = noecho(iliai,4)
-        call u2mesk('E', 'ALGORITH5_27', 2, valk)
+        call utmess('E', 'ALGORITH5_27', nk=2, valk=valk)
     endif
     if (nuddl .eq. 0) then
         ier = ier + 1
-        call u2mesk('E', 'ALGORITH5_28', 1, noeu1)
+        call utmess('E', 'ALGORITH5_28', sk=noeu1)
     endif
     ddlcho(6*(iliai-1)+1) = nuddl
 !
@@ -62,7 +62,7 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                 nuddl)
     if (nuddl .eq. 0) then
         ier = ier + 1
-        call u2mesk('E', 'ALGORITH5_29', 1, noeu1)
+        call utmess('E', 'ALGORITH5_29', sk=noeu1)
     endif
     ddlcho(6*(iliai-1)+2) = nuddl
 !
@@ -70,7 +70,7 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                 nuddl)
     if (nuddl .eq. 0) then
         ier = ier + 1
-        call u2mesk('E', 'ALGORITH5_30', 1, noeu1)
+        call utmess('E', 'ALGORITH5_30', sk=noeu1)
     endif
     ddlcho(6*(iliai-1)+3) = nuddl
 !
@@ -81,11 +81,11 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
             ier = ier + 1
             valk(1) = noeu2
             valk(2) = noecho(iliai,8)
-            call u2mesk('E', 'ALGORITH5_27', 2, valk)
+            call utmess('E', 'ALGORITH5_27', nk=2, valk=valk)
         endif
         if (nuddl .eq. 0) then
             ier = ier + 1
-            call u2mesk('E', 'ALGORITH5_28', 1, noeu2)
+            call utmess('E', 'ALGORITH5_28', sk=noeu2)
         endif
         ddlcho(6*(iliai-1)+4) = nuddl
 !
@@ -93,7 +93,7 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                     nuddl)
         if (nuddl .eq. 0) then
             ier = ier + 1
-            call u2mesk('E', 'ALGORITH5_29', 1, noeu2)
+            call utmess('E', 'ALGORITH5_29', sk=noeu2)
         endif
         ddlcho(6*(iliai-1)+5) = nuddl
 !
@@ -101,7 +101,7 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                     nuddl)
         if (nuddl .eq. 0) then
             ier = ier + 1
-            call u2mesk('E', 'ALGORITH5_30', 1, noeu2)
+            call utmess('E', 'ALGORITH5_30', sk=noeu2)
         endif
         ddlcho(6*(iliai-1)+6) = nuddl
     else

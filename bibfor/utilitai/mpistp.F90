@@ -19,13 +19,13 @@ subroutine mpistp(imode)
 !
     implicit none
 !     ARGUMENT IN
+#include "asterfort/utmess.h"
 #include "asterf.h"
 #include "asterfort/assert.h"
 #include "asterfort/gtstat.h"
 #include "asterfort/jefini.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/ststat.h"
-#include "asterfort/u2mess.h"
     integer :: imode
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI COMM STOP
@@ -60,13 +60,13 @@ subroutine mpistp(imode)
 !
     if (imod2 .eq. 1) then
 #ifdef _USE_MPI
-        call u2mess('D', 'APPELMPI_99')
+        call utmess('D', 'APPELMPI_99')
 #endif
         call jefini('ERREUR')
 !
     else if (imod2 .eq. 2) then
         if (labort) then
-            call u2mess('M', 'APPELMPI_95')
+            call utmess('M', 'APPELMPI_95')
         endif
 !
     else

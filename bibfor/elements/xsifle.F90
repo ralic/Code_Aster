@@ -25,7 +25,6 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 ! aslint: disable=W1306,W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/chauxi.h"
@@ -40,11 +39,12 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xxmmvd.h"
+!
     character(len=8) :: nompar(4)
     character(len=16) :: option
     integer :: ndim, ifa, cface(5, 3), jaint, igeom, nfh, singu, jlst, ipres
@@ -69,7 +69,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     integer :: ipgf, ier, ilev, k, j, zxain
     integer :: indi, ddld, ddls, nnops
     real(kind=8) :: mult, xg(4), jac, ff(27), nd(3), lst, lsn, rr(2), rb9(3, 3)
-    real(kind=8) :: rb(3,3,3)
+    real(kind=8) :: rb(3, 3, 3)
     real(kind=8) :: forrep(3, 2), pres, cisa, depla(3), angl(2), r3bid(3)
     real(kind=8) :: e, nu, mu, ka, coeff, coeff3, r27bid(27)
     real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3)
@@ -266,7 +266,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
             endif
 !
         else
-            call u2mess('F', 'XFEM_15')
+            call utmess('F', 'XFEM_15')
         endif
 !
 !       -----------------------------------

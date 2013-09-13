@@ -11,9 +11,9 @@ subroutine dibili(option, nomte, ndim, nbt, nno,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2vlg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
@@ -103,7 +103,7 @@ subroutine dibili(option, nomte, ndim, nbt, nno,&
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
-        call u2mesk('F', 'DISCRETS_5', 5, messak)
+        call utmess('F', 'DISCRETS_5', nk=5, valk=messak)
     endif
 !   récupère tous les paramètres
 !   température : si 2 noeuds ==> moyenne
@@ -141,7 +141,7 @@ subroutine dibili(option, nomte, ndim, nbt, nno,&
         call jevech('PMATUUR', 'E', imat)
         if (ndim .eq. 3) then
             call utpslg(nno, nc, pgl, klv, zr(imat))
-        elseif (ndim.eq.2) then
+        else if (ndim.eq.2) then
             call ut2mlg(nno, nc, pgl, klv, zr(imat))
         endif
     endif
@@ -160,7 +160,7 @@ subroutine dibili(option, nomte, ndim, nbt, nno,&
                 zr(icontp-1+ii) = fl(ii) + zr(icontm-1+ii)
                 fl(ii) = fl(ii) + zr(icontm-1+ii)
             enddo
-        elseif (nno.eq.2) then
+        else if (nno.eq.2) then
             do ii = 1, nc
                 zr(icontp-1+ii) = -fl(ii) + zr(icontm-1+ii)
                 zr(icontp-1+ii+nc) = fl(ii+nc) + zr(icontm-1+ii+nc)

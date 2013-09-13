@@ -17,7 +17,7 @@ subroutine rfbefl(base)
 #include "asterfort/lxlgut.h"
 #include "asterfort/ordonn.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: base
 !     ------------------------------------------------------------------
@@ -108,7 +108,7 @@ subroutine rfbefl(base)
             if (id .gt. 0) min = zi(inumeo + i - 1)
 10      continue
         if (min .gt. npv) then
-            call u2mess('F', 'UTILITAI4_9')
+            call utmess('F', 'UTILITAI4_9')
         endif
     endif
 !
@@ -118,7 +118,7 @@ subroutine rfbefl(base)
         id = nummod - zi(lnumo + imod - 1)
         if (id .eq. 0) goto 30
 20  end do
-    call u2mess('F', 'UTILITAI4_10')
+    call utmess('F', 'UTILITAI4_10')
 30  continue
 !
 !     --- CAS 1 : REMPLISSAGE POUR TOUS LES NUMEROS D'ORDRE ---

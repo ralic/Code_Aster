@@ -17,7 +17,7 @@ subroutine matvec(nordre, amat, nombv, v1, v2,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: amat(*), v1(*), v2(*), vecres(*)
     real(kind=8) :: vsom(9)
 ! ---------------------------------------------
@@ -48,7 +48,7 @@ subroutine matvec(nordre, amat, nombv, v1, v2,&
             vsom(i) = v1(i) + v2(i)
  2      continue
     else
-        call u2mess('F', 'ELEMENTS2_34')
+        call utmess('F', 'ELEMENTS2_34')
     endif
     k = 0
     do 12 i = 1, nordre

@@ -67,6 +67,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !-----------------------------------------------------------------------
     implicit none
 !
+#include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterfort/amumph.h"
 #include "asterfort/apetsc.h"
@@ -86,8 +87,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 #include "asterfort/resfet.h"
 #include "asterfort/resgra.h"
 #include "asterfort/resldl.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
@@ -100,7 +100,6 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     logical :: prepos
     integer :: istop, iret
 !-----------------------------------------------------------------------
-#include "jeveux.h"
 !
     integer :: ibid, ifm, niv
     character(len=3) :: kmpic, type, typ1
@@ -162,7 +161,9 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
         neq=zi(lmat+2)
         type=ftype(zi(lmat+3))
     else
-        if (nsecm .ge. 1) call u2mess('F', 'FACTOR_13')
+        if (nsecm .ge. 1) then
+            call utmess('F', 'FACTOR_13')
+        endif
     endif
 !
     ASSERT(nsecm.ge.0)
@@ -183,9 +184,11 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
             call jelira(secm19//'.VALE', 'LONMAX', neq1)
             call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
             if ((neq1.ne.neq) .and. (imd.eq.0)) then
-                call u2mess('F', 'FACTOR_67')
+                call utmess('F', 'FACTOR_67')
             endif
-            if (typ1 .ne. type) call u2mess('F', 'FACTOR_68')
+            if (typ1 .ne. type) then
+                call utmess('F', 'FACTOR_68')
+            endif
 !
             call jeveuo(secm19//'.VALE', 'L', jval2)
             if (imd .eq. 0) then
@@ -294,7 +297,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
         endif
 !
     else
-        call u2mesk('F', 'ALGELINE3_44', 1, metres)
+        call utmess('F', 'ALGELINE3_44', sk=metres)
     endif
 !
 !

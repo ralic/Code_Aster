@@ -20,7 +20,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -66,7 +66,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     character(len=2) :: type_lagr
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
-    integer ::  iocc, i_error, icoupl, ier
+    integer :: iocc, i_error, icoupl, ier
     integer :: ndim, nliai, n1, nbec
     character(len=8) :: cmp_name, nomg
     integer :: jnom, jprnm, nb_cmp
@@ -110,7 +110,9 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
                 k8dummy, ier)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+        call utmess('F', 'CHARGES2_6')
+    endif
 !
 ! - Information about <GRANDEUR>
 !
@@ -172,7 +174,9 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
         call getnode(mesh, keywordfact, iocc, suffix, 'F',&
                      list_node_i2, nb_node_2)
 !
-        if (nb_node_1 .ne. nb_node_2) call u2mess('F', 'CHARGES2_8')
+        if (nb_node_1 .ne. nb_node_2) then
+            call utmess('F', 'CHARGES2_8')
+        endif
         nb_node = nb_node_1
 !
 ! ----- Create output lists
@@ -189,7 +193,9 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
         call char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
                             list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
-        if (i_error .ne. 0) call u2mess('F', 'CHARGES2_9')
+        if (i_error .ne. 0) then
+            call utmess('F', 'CHARGES2_9')
+        endif
 !
 ! ----- Compute linear relations
 !

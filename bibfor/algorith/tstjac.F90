@@ -1,5 +1,6 @@
 subroutine tstjac(np1, n, typj, kmod, kmod0)
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +27,6 @@ subroutine tstjac(np1, n, typj, kmod, kmod0)
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mess.h"
     integer :: np1, n, typj
     real(kind=8) :: kmod(np1, *), kmod0(np1, *)
 !
@@ -56,7 +56,7 @@ subroutine tstjac(np1, n, typj, kmod, kmod0)
 !
 !
     if (sup .eq. 0.d0) then
-        call u2mess('I', 'ALGORITH11_1')
+        call utmess('I', 'ALGORITH11_1')
         do 20 j = 1, n
             do 21 i = 1, n
                 sup1 = abs(kmod(i,j))
@@ -66,7 +66,9 @@ subroutine tstjac(np1, n, typj, kmod, kmod0)
     endif
 !
 !
-    if (sup .eq. 0.d0) call u2mess('F', 'ALGORITH11_2')
+    if (sup .eq. 0.d0) then
+        call utmess('F', 'ALGORITH11_2')
+    endif
 !
 !
     do 30 j = 1, n

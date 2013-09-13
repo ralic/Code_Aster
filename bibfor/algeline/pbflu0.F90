@@ -1,6 +1,7 @@
 subroutine pbflu0(rhof, hmoy, rmoy, long, icoq,&
                   imod, nbm, rkip, tcoef, d)
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +42,6 @@ subroutine pbflu0(rhof, hmoy, rmoy, long, icoq,&
 !                LORSQUE UMOY = 0
 !-----------------------------------------------------------------------
 !
-#include "asterfort/u2mess.h"
     real(kind=8) :: rhof, hmoy, rmoy, long
     integer :: icoq, imod, nbm
     real(kind=8) :: rkip, tcoef(10, nbm), d(6)
@@ -85,7 +85,9 @@ subroutine pbflu0(rhof, hmoy, rmoy, long, icoq,&
     d(2) = u*c2/v
 !
     v = -1.d0*(ln/long)**2 + (rkip/rmoy)**2
-    if (dble(abs(v)) .lt. tole) call u2mess('F', 'ALGELINE3_18')
+    if (dble(abs(v)) .lt. tole) then
+        call utmess('F', 'ALGELINE3_18')
+    endif
     d(3) = u*c3/v
     d(4) = u*c4/v
 !

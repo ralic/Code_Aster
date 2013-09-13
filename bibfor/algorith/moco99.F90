@@ -2,7 +2,6 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                   seul)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
@@ -14,7 +13,8 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbmod, lrang(nbmod), iorne
     character(len=8) :: nomres, resul
     logical :: seul
@@ -100,8 +100,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
     if (nbmod .gt. nbold) then
         vali = nbold
-        call u2mesg('I', 'ALGORITH13_48', 0, ' ', 1,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'ALGORITH13_48', si=vali)
         nbmod=nbold
     endif
     nbmod=min(nbmod,nbold)
@@ -109,7 +108,8 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     if (nbmod .eq. 0) goto 9999
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid, interf, ire)
+    call dismoi('C', 'REF_INTD_PREM', nomres, 'RESU_DYNA', ibid,&
+                interf, ire)
     if (interf .ne. ' ') then
         type = interf//'.IDC_TYPE'
         call jeveuo(type, 'L', jtyp)
@@ -123,7 +123,8 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
     typeba=' '
     if (typres .ne. 'MULT_ELAS') then
-        call dismoi('C', 'TYPE_BASE', resul, 'RESU_DYNA', ibid, typeba, ire)
+        call dismoi('C', 'TYPE_BASE', resul, 'RESU_DYNA', ibid,&
+                    typeba, ire)
     endif
 !
     typmo=' '

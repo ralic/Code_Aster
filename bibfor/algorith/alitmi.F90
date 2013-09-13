@@ -67,7 +67,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
 #include "asterfort/projvd.h"
 #include "asterfort/sommma.h"
 #include "asterfort/testch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "blas/dcopy.h"
     integer :: np1, np2, np3, np4, n2, nbm, nbmcd, icoupl
@@ -239,7 +239,9 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
                 mtmp2, ttr, u, w, dd,&
                 intge1, intge2, indx, indxf, loc)
 !
-    if (ier .ne. 0) call u2mess('F', 'ALGORITH_10')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGORITH_10')
+    endif
 !
     do 20 i = 1, nbm
         puls(i) = rr(i)
@@ -247,7 +249,7 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
     do 30 i = 1, nbm
         if ((puls(i).eq.0.0d0) .and. (i.le.nbmcd)) then
             puls(i) = puls0(i)
-            call u2mess('I', 'ALGORITH_11')
+            call utmess('I', 'ALGORITH_11')
         endif
 30  end do
 !

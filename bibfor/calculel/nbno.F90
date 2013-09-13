@@ -28,12 +28,12 @@ function nbno(mode)
 !
 ! ---------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: mode, m1, m2, n1, n2
 !
 !     FONCTIONS JEVEUX
@@ -55,7 +55,7 @@ function nbno(mode)
     else if (zi(iadm).eq.2) then
         ischn = 1
     else
-        call u2mess('F', 'CALCULEL3_81')
+        call utmess('F', 'CALCULEL3_81')
     endif
 !
     if (ischn .eq. 1) then
@@ -81,7 +81,7 @@ function nbno(mode)
             n2 = n2 - 10000
         endif
         if (n1 .ne. n2) then
-            call u2mess('F', 'CALCULEL3_82')
+            call utmess('F', 'CALCULEL3_82')
         endif
     endif
     nbno = n1

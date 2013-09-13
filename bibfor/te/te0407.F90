@@ -18,15 +18,14 @@ subroutine te0407(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmas3d.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
@@ -115,7 +114,7 @@ subroutine te0407(option, nomte)
 ! - LOIS DE COMPORTEMENT ECRITES EN CONFIGURATION DE REFERENCE
 !                          COMP_ELAS
 !
-        call u2mess('F', 'ELEMENTS4_73')
+        call utmess('F', 'ELEMENTS4_73')
 !
     else
 !
@@ -137,7 +136,7 @@ subroutine te0407(option, nomte)
 !
 !
         else
-            call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+            call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif
     endif
 !

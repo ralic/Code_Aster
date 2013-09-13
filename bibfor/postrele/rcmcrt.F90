@@ -1,7 +1,7 @@
 subroutine rcmcrt(symax, sigm, stlin, stpar)
-    implicit   none
+    implicit none
 #include "asterc/r8vide.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: symax, sigm, stlin, stpar
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -33,9 +33,9 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
 !             D'ORIGINE THERMIQUE (VARIATION DE TEMPERATURE PARABOLIQUE)
 !     ------------------------------------------------------------------
 !
-    real(kind=8) ::  x, yprim, valer(3)
+    real(kind=8) :: x, yprim, valer(3)
 !
-#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlin(x,x1,y1,x2,y2) y1+(x-x1)*(y2-y1)/(x2-x1)
 ! DEB ------------------------------------------------------------------
 !
     x = sigm / symax
@@ -57,7 +57,7 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
         valer(1) = x
         valer(2) = sigm
         valer(3) = symax
-        call u2mesr('I', 'POSTRCCM_5', 3, valer)
+        call utmess('I', 'POSTRCCM_5', nr=3, valr=valer)
         goto 9998
     endif
     stlin = yprim * symax
@@ -87,7 +87,7 @@ subroutine rcmcrt(symax, sigm, stlin, stpar)
         valer(1) = x
         valer(2) = sigm
         valer(3) = symax
-        call u2mesr('I', 'POSTRCCM_6', 3, valer)
+        call utmess('I', 'POSTRCCM_6', nr=3, valr=valer)
         goto 9999
     endif
     stpar = yprim * symax

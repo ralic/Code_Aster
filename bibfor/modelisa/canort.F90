@@ -25,8 +25,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 #include "asterfort/norlin.h"
 #include "asterfort/provec.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -79,7 +78,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !
     integer :: dimcoo, i, ifonc, ibid, iret, jnorm, isom, in
     integer :: idobj2, jcoor, iatyma, jcoode, ij, ino
-    integer :: n, nocc, nno, nnos,  nnn
+    integer :: n, nocc, nno, nnos, nnn
     integer :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
     real(kind=8) :: coor(3, 9), a, b, c, pvec(3), norme
     character(len=8) :: kangl, knumai
@@ -120,7 +119,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
-
+!
     prec = armin(noma)*1.d-06
     ASSERT(abs(nbma).gt.0)
 !
@@ -174,7 +173,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                         b=eksiy/norme
                     else
                         call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                        call u2mesk('F', 'CHARGES2_23', 1, knumai)
+                        call utmess('F', 'CHARGES2_23', sk=knumai)
                     endif
                 else if (type_calc .eq.1) then
                     norme=sqrt(eksix**2+eksiy**2)
@@ -183,7 +182,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                         b=-eksix/norme
                     else
                         call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                        call u2mesk('F', 'CHARGES2_24', 1, knumai)
+                        call utmess('F', 'CHARGES2_24', sk=knumai)
                     endif
                 endif
                 zr(jnorm-1+2*(ino-1)+1)=zr(jnorm-1+2*(ino-1)+1)&
@@ -239,7 +238,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                 zr(idobj2-1+2*(ij-1)+1) = a
                 zr(idobj2-1+2*(ij-1)+2) = b
             else if (ndim.eq.3.and.nomtyp(1:3).eq.'SEG') then
-                call u2mess('F', 'CHARGES2_25')
+                call utmess('F', 'CHARGES2_25')
 !
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD4') then
                 do i = 1, nn
@@ -281,7 +280,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
+                    call utmess('F', 'CHARGES2_26', sk=knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -390,7 +389,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
+                    call utmess('F', 'CHARGES2_26', sk=knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -444,7 +443,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
+                    call utmess('F', 'CHARGES2_26', sk=knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -552,7 +551,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
+                    call utmess('F', 'CHARGES2_26', sk=knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -587,7 +586,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             vnorm = sqrt(vnorm)
             if (vnorm .lt. 1.0d-2) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
-                call u2mesk('F', 'CHARGES2_30', 1, nomnoe)
+                call utmess('F', 'CHARGES2_30', sk=nomnoe)
             endif
             zr(jnorm-1+2*(n-1)+1)=zr(jnorm-1+2*(n-1)+1)/vnorm
             zr(jnorm-1+2*(n-1)+2)=zr(jnorm-1+2*(n-1)+2)/vnorm
@@ -607,7 +606,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                     call codree(abs(angl), 'G', kangl)
                     valk(1) = nomnoe
                     valk(2) = kangl
-                    call u2mesk('A', 'CHARGES2_29', 2, valk)
+                    call utmess('A', 'CHARGES2_29', nk=2, valk=valk)
                 endif
             enddo
         else if (ndim.eq.3) then
@@ -618,7 +617,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             vnorm = sqrt(vnorm)
             if (vnorm .lt. 1.0d-2) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
-                call u2mesk('F', 'CHARGES2_30', 1, nomnoe)
+                call utmess('F', 'CHARGES2_30', sk=nomnoe)
             endif
             zr(jnorm-1+3*(n-1)+1)=zr(jnorm-1+3*(n-1)+1)/vnorm
             zr(jnorm-1+3*(n-1)+2)=zr(jnorm-1+3*(n-1)+2)/vnorm
@@ -638,7 +637,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                     call codree(abs(angl), 'G', kangl)
                     valk(1) = nomnoe
                     valk(2) = kangl
-                    call u2mesk('A', 'CHARGES2_29', 2, valk)
+                    call utmess('A', 'CHARGES2_29', nk=2, valk=valk)
                 endif
             enddo
         endif

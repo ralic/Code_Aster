@@ -11,7 +11,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 #include "asterfort/mcmmvr.h"
 #include "asterfort/mtdsc2.h"
 #include "asterfort/mtmchc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: cumul
     integer :: lmat, nbvect
@@ -65,7 +65,9 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !
     call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
-    if (kmpic .ne. 'OUI') call u2mess('F', 'CALCULEL6_54')
+    if (kmpic .ne. 'OUI') then
+        call utmess('F', 'CALCULEL6_54')
+    endif
 !
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
     neq=zi(lmat+2)
@@ -75,7 +77,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !     SELON REEL OU COMPLEXE :
     goto (10,20)zi(lmat+3)
 !
-    call u2mess('F', 'ALGELINE_66')
+    call utmess('F', 'ALGELINE_66')
 !
 !
 10  continue

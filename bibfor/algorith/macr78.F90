@@ -26,7 +26,7 @@ subroutine macr78(nomres, trange, typres)
 #include "asterfort/rsorac.h"
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
@@ -193,7 +193,7 @@ subroutine macr78(nomres, trange, typres)
             nbcham = -n1
             call getvtx(' ', 'NOM_CHAM', nbval=nbcham, vect=champ, nbret=n1)
         else
-            call u2mess('A', 'ALGORITH10_93')
+            call utmess('A', 'ALGORITH10_93')
             goto 9999
         endif
     endif
@@ -202,7 +202,7 @@ subroutine macr78(nomres, trange, typres)
     call rstran('NON', trange, ' ', 1, kinst,&
                 knume, nbinst, iretou)
     if (iretou .ne. 0) then
-        call u2mess('F', 'UTILITAI4_24')
+        call utmess('F', 'UTILITAI4_24')
     endif
     call jeexin(kinst, iret)
     if (iret .gt. 0) then

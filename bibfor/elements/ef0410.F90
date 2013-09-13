@@ -19,13 +19,13 @@ subroutine ef0410(nomte)
 !     ------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdefro.h"
 #include "asterfort/vdrepe.h"
 #include "asterfort/vdxsig.h"
+!
     character(len=16) :: nomte
 !
     integer :: npgt, ncoumx, vali(2)
@@ -48,7 +48,9 @@ subroutine ef0410(nomte)
     nbcou=zi(jcou)
     vali(1)=ncoumx
     vali(2)=nbcou
-    if (nbcou .gt. ncoumx) call u2mesi('F', 'CALCULEL7_4', 2, vali)
+    if (nbcou .gt. ncoumx) then
+        call utmess('F', 'CALCULEL7_4', ni=2, vali=vali)
+    endif
 !
 !     LE TABLEAU SIGPG A ETE ALLOUE DE FACON STATIQUE POUR OPTIMISER
 !     LE CPU CAR LES APPELS A WKVECT DANS LES TE SONT COUTEUX.

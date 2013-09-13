@@ -20,7 +20,6 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -36,9 +35,10 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verigd.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: maz, nomgdz, cesz, basez, typcez
     integer :: npg(*), nspt(*), ncmp(*)
     character(len=*) :: licmp(*)
@@ -106,7 +106,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !
 !     FONCTION FORMULE:
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
-#define nbnoma(ima)   zi(jlconx-1+ima+1) - zi(jlconx-1+ima)
+#define nbnoma(ima) zi(jlconx-1+ima+1) - zi(jlconx-1+ima)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -138,7 +138,9 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     endif
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
-    if (gd .eq. 0) call u2mesk('F', 'CALCULEL_67', 1, nomgd)
+    if (gd .eq. 0) then
+        call utmess('F', 'CALCULEL_67', sk=nomgd)
+    endif
 !
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
@@ -189,7 +191,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     if (jcmp .eq. 0) then
         valk(1) = zk8(jlicmp-1+icmp)
         valk(2) = nomgd
-        call u2mesk('F', 'CALCULEL_52', 2, valk)
+        call utmess('F', 'CALCULEL_52', nk=2, valk=valk)
     endif
     40 end do
 !

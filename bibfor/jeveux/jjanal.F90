@@ -17,7 +17,7 @@ subroutine jjanal(condlu, nval, nvalo, lval, cval)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: condlu, cval(*)
     integer :: nval, nvalo, lval(*)
 !
@@ -29,7 +29,7 @@ subroutine jjanal(condlu, nval, nvalo, lval, cval)
 20  end do
     long = len(condlu)
     if (long .eq. 0 .and. nvalo .gt. 0) then
-        call u2mess('F', 'JEVEUX1_31')
+        call utmess('F', 'JEVEUX1_31')
     endif
     nbsc = 0
     i = 1
@@ -37,7 +37,7 @@ subroutine jjanal(condlu, nval, nvalo, lval, cval)
  1  continue
     if (i .gt. long) then
         if (nbsc .lt. nvalo) then
-            call u2mess('F', 'JEVEUX1_31')
+            call utmess('F', 'JEVEUX1_31')
         else
             goto 100
         endif
@@ -62,12 +62,12 @@ subroutine jjanal(condlu, nval, nvalo, lval, cval)
         i = j + 1
         goto 1
     else if (nbsc .lt. nvalo .and. j.eq. long+1) then
-        call u2mess('F', 'JEVEUX1_31')
+        call utmess('F', 'JEVEUX1_31')
     endif
 100  continue
     do 10 i = j, long
         if (condlu(i:i) .ne. ' ') then
-            call u2mess('F', 'JEVEUX1_32')
+            call utmess('F', 'JEVEUX1_32')
         endif
 10  end do
 !

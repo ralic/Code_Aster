@@ -29,7 +29,7 @@ subroutine te0560(option, nomte)
 #include "asterfort/nmtstm.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -187,7 +187,9 @@ subroutine te0560(option, nomte)
 !
     endif
 !
-    if (zk16(icompo+2) .ne. 'PETIT') call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+    if (zk16(icompo+2) .ne. 'PETIT') then
+        call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
+    endif
 !
 !
 !

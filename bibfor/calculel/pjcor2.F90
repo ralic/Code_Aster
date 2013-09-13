@@ -20,7 +20,6 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -31,7 +30,8 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: cns1z, ces2z
     character(len=8) :: noca, nompaz
     character(len=16) :: corres, option
@@ -117,7 +117,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
         valk(2) = option
         valk(3) = ligrel
         valk(4) = cel2
-        call u2mesk('F', 'CALCULEL_50', 4, valk)
+        call utmess('F', 'CALCULEL_50', nk=4, valk=valk)
     endif
 !
     call celces(cel2, 'V', ces2)

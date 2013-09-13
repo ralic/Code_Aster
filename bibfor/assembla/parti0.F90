@@ -20,7 +20,7 @@ subroutine parti0(nbvec, tlivec, partit)
 ! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterfort/dismoi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: tlivec(*), partit
     integer :: nbvec
 ! ----------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine parti0(nbvec, tlivec, partit)
         if (partit .ne. ' ' .and. partit .ne. part1) then
             valk(1)=partit
             valk(2)=part1
-            call u2mesk('F', 'CALCULEL_10', 2, valk)
+            call utmess('F', 'CALCULEL_10', nk=2, valk=valk)
         endif
 10  end do
 end subroutine

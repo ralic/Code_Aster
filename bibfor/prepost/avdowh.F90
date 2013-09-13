@@ -18,7 +18,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
@@ -28,8 +28,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 #include "asterfort/rcpare.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/renrfa.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbvec, nbordr, ncycl(nbvec)
 !    real(kind=8) :: gdeq(nbvec*nbordr)
 !    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)
@@ -78,13 +77,15 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !
     if (.not. post) then
         call rccome(nommat, 'FATIGUE', phenom, icodre(1))
-        if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_24')
+        if (icodre(1) .eq. 1) then
+            call utmess('F', 'FATIGUE1_24')
+        endif
     endif
 !
     if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
         call rcpare(nommat, 'FATIGUE', 'MANSON_C', icodre(1))
         if (icodre(1) .eq. 1) then
-            call u2mesk('F', 'FATIGUE1_89', 1, nomcri(1:16))
+            call utmess('F', 'FATIGUE1_89', sk=nomcri(1:16))
         endif
 !
         do 10 ivect = 1, nbvec
@@ -98,8 +99,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 if (limit) then
                     zr(jnrupt+adrs)=r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', &
-                      zr(jgdeq+adrs), 1, 'MANSON_C', zr(jnrupt+adrs), icodre(1), 1)
+                    call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs),&
+                                1, 'MANSON_C', zr(jnrupt+adrs), icodre(1), 1)
                 endif
 !
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
@@ -112,7 +113,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
     .eq. 'DANG_VAN_MODI_AV' )) then
         call rcpare(nommat, 'FATIGUE', 'WOHLER', icodre(1))
         if (icodre(1) .eq. 1) then
-            call u2mesk('F', 'FATIGUE1_90', 1, nomcri(1:16))
+            call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
         endif
 !
         do 30 ivect = 1, nbvec
@@ -123,8 +124,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 if (limit) then
                     zr(jnrupt+adrs)=r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', &
-                     zr(jgdeq+adrs), 1, 'WOHLER  ', zr(jnrupt+adrs), icodre(1), 1)
+                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', zr(jgdeq+adrs),&
+                                1, 'WOHLER  ', zr(jnrupt+adrs), icodre(1), 1)
                 endif
 !
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
@@ -149,20 +150,19 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                         nomgrd = 'SIGM    '
                         grdvie(7:8) = '  '
 !
-                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, &
-                          zr(jgdeq+adrs),1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
+                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs),&
+                                    1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
                     endif
 !
                     if (grdvie(1:8) .eq. 'MANSON_C') then
                         nomgrd = 'EPSI    '
-                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, &
-                        zr(jgdeq+adrs), 1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
+                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs),&
+                                    1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
 !
                     endif
 !
                     if (grdvie(1:8) .eq. 'FORM_VIE') then
-                        call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs),&
-                                   icodre(1))
+                        call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs), icodre(1))
                     endif
 !
                     zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)

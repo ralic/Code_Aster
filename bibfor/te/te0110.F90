@@ -2,7 +2,6 @@ subroutine te0110(option, nomte)
 ! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm2d.h"
@@ -17,7 +16,8 @@ subroutine te0110(option, nomte)
 #include "asterfort/reflth.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -576,7 +576,7 @@ subroutine te0110(option, nomte)
             m(3,2) = m(2,3)
 !
         else
-            call u2mesk('F', 'ELEMENTS3_17', 1, phenom)
+            call utmess('F', 'ELEMENTS3_17', sk=phenom)
         endif
 !
 ! --- PRISE EN COMPTE DANS LE TENSEUR DE CONDUCTIVITE TRANSVERSE DES

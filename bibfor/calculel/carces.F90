@@ -20,7 +20,6 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -35,8 +34,9 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cartz, cesz, base, cesmoz, typces
     character(len=1) :: kstop
 ! ------------------------------------------------------------------
@@ -139,7 +139,9 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !     3- ON ETEND LA CARTE POUR CREER L'OBJET .PTMA :
 !     -----------------------------------------------------------
     call etenc2(cart, iret)
-    if (iret .eq. 1 .and. kstop .eq. 'A') call u2mess('A', 'CALCULEL_38')
+    if (iret .eq. 1 .and. kstop .eq. 'A') then
+        call utmess('A', 'CALCULEL_38')
+    endif
     call jeveuo(cart//'.PTMA', 'L', jptma)
 !
 !

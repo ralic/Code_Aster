@@ -1,6 +1,6 @@
-subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
-                 aa_t, ga_t, ab, gb, ac,&
-                 gc, aa_c, ga_c, cstseu)
+subroutine dhrc_recup_mate(imate, compor, h, a0, b0,&
+                           c0, aa_t, ga_t, ab, gb,&
+                           ac, gc, aa_c, ga_c, cstseu)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +21,10 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: compor
     integer :: imate
     real(kind=8) :: a0(6, 6), b0(6, 2), c0(2, 2, 2), h
@@ -65,7 +65,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     character(len=8) :: nomres(24)
 !
     if ((.not.( compor(1:4) .eq. 'DHRC'))) then
-        call u2mesk('F', 'ELEMENTS4_65', 1, compor)
+        call utmess('F', 'ELEMENTS4_65', sk=compor)
     endif
 !
     call r8inir(24, 0.0d0, valres, 1)
@@ -98,7 +98,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'A066'
 !
     call rcvala(imate, ' ', 'DHRC_SEUILS', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -141,7 +142,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAC661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -184,7 +186,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAC662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -227,7 +230,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAT661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -270,7 +274,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAT662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -313,7 +318,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAC661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -356,7 +362,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAC662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -399,7 +406,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAT661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -442,7 +450,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAT662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 21, nomres, valres, icodre,1)
+                [0.0d0], 21, nomres, valres, icodre,&
+                1)
 !
     l=0
     do i = 1, 6
@@ -505,7 +514,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(24) = 'AB622'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 24, nomres, ab, icodre,1)
+                [0.0d0], 24, nomres, ab, icodre,&
+                1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE GB(6,2,2)
@@ -537,7 +547,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(24) = 'GB622'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 24, nomres, gb, icodre,1)
+                [0.0d0], 24, nomres, gb, icodre,&
+                1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE C0(2,2,2)
@@ -553,7 +564,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(8) = 'C0222'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 8, nomres, c0, icodre,1)
+                [0.0d0], 8, nomres, c0, icodre,&
+                1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE AC(2,2,2)
@@ -569,7 +581,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(8) = 'AC222'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 8, nomres, ac, icodre,1)
+                [0.0d0], 8, nomres, ac, icodre,&
+                1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE GC(2,2,2)
@@ -585,7 +598,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(8) = 'GC222'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                [0.0d0], 8, nomres, gc, icodre,1)
+                [0.0d0], 8, nomres, gc, icodre,&
+                1)
 !
 !     -----------------------------------------------------------------
 !     SEUILS CSTSEU
@@ -596,7 +610,8 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(3) = 'K0MICR'
 !
     call rcvala(imate, ' ', 'DHRC_SEUILS', 0, '',&
-                [0.0d0], 3, nomres, valres, icodre,1)
+                [0.0d0], 3, nomres, valres, icodre,&
+                1)
 !
     cstseu(1)=valres(1)**2*valres(3)*h
 !

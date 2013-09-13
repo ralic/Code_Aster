@@ -28,7 +28,6 @@ subroutine colneu(nbnode, typema)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
-!
 #include "asterc/cpldb.h"
 #include "asterc/cplen.h"
 #include "asterfort/infniv.h"
@@ -36,10 +35,9 @@ subroutine colneu(nbnode, typema)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbnode
 ! -----  VARIABLES LOCALES
 !
@@ -98,7 +96,7 @@ subroutine colneu(nbnode, typema)
     if (nbnode .gt. nbnmax) then
         vali(1) = nbnode
         vali(2) = nbnmax
-        call u2mesi('F', 'COUPLAGEIFS_12', 2, vali)
+        call utmess('F', 'COUPLAGEIFS_12', ni=2, vali=vali)
     endif
 !
 ! --- CREATION DE VECTEURS DE TRAVAIL :
@@ -120,16 +118,15 @@ subroutine colneu(nbnode, typema)
         valk(1) = 'COLNEU'
         valk(2) = 'NOMVAR'
         valk(3) = nomvar(1:8)
-        call u2mesk('I+', 'COUPLAGEIFS_11', 3, valk)
+        call utmess('I+', 'COUPLAGEIFS_11', nk=3, valk=valk)
     endif
-    call cpldb(icompo, cpiter, 0.d0, 0.d0, int(0,4),&
-               nomvar, int(3*nbnod4,4), taille, zr(jcoor), ibid4)
+    call cpldb(icompo, cpiter, 0.d0, 0.d0, int(0, 4),&
+               nomvar, int(3*nbnod4, 4), taille, zr(jcoor), ibid4)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'IBID'
         ibid = ibid4
-        call u2mesg('I+', 'COUPLAGEIFS_10', 2, valk, 1,&
-                    ibid, 0, 0.d0)
+        call utmess('I+', 'COUPLAGEIFS_10', nk=2, valk=valk, si=ibid)
     endif
 !
     if (typema(1:7) .eq. 'SOMMET') nomvar = 'COLNOD'
@@ -138,7 +135,7 @@ subroutine colneu(nbnode, typema)
         valk(1) = 'COLNEU'
         valk(2) = 'NOMVAR'
         valk(3) = nomvar(1:8)
-        call u2mesk('I+', 'COUPLAGEIFS_11', 3, valk)
+        call utmess('I+', 'COUPLAGEIFS_11', nk=3, valk=valk)
     endif
     call cplen(icompo, cpiter, tr4, tr4, i4,&
                nomvar, nbnod4, taille, int4(1), ibid4)
@@ -146,8 +143,7 @@ subroutine colneu(nbnode, typema)
         valk(1) = 'COLNEU'
         valk(2) = 'IBID'
         ibid = ibid4
-        call u2mesg('I+', 'COUPLAGEIFS_10', 2, valk, 1,&
-                    ibid, 0, 0.d0)
+        call utmess('I+', 'COUPLAGEIFS_10', nk=2, valk=valk, si=ibid)
     endif
     do inode = 1, nbnode
         zi(jgroma-1+inode) = int4(inode)
@@ -155,8 +151,7 @@ subroutine colneu(nbnode, typema)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'NBNODE'
-        call u2mesg('I+', 'COUPLAGEIFS_10', 2, valk, 1,&
-                    nbnode, 0, 0.d0)
+        call utmess('I+', 'COUPLAGEIFS_10', nk=2, valk=valk, si=nbnode)
     endif
 !
     ndmax = nbnode

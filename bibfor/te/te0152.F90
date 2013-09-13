@@ -1,13 +1,13 @@
 subroutine te0152(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -62,7 +62,7 @@ subroutine te0152(option, nomte)
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     if (rho .le. r8prem()) then
-        call u2mess('F', 'ELEMENTS5_45')
+        call utmess('F', 'ELEMENTS5_45')
     endif
 !
     do 20 i = 1, nno

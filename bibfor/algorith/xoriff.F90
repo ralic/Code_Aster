@@ -28,8 +28,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xffcr.h"
 #include "asterfort/xffext.h"
@@ -157,7 +156,9 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
         if (zi(jtabpt-1+ipt+1) .eq. 0) then
 !
 !         PRESENCE DE PLUSIEURS FONDS FERMES INTERDIT
-            if (typfon .eq. 'FERME') call u2mess('F', 'XFEM_20')
+            if (typfon .eq. 'FERME') then
+                call utmess('F', 'XFEM_20')
+            endif
 !
             indice = 0
 !
@@ -192,7 +193,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 14          continue
 !
 !         PRESENCE DE FONDS OUVERTS ET DE FONDS FERMES INTERDIT
-            call u2mess('F', 'XFEM_21')
+            call utmess('F', 'XFEM_21')
 !
         endif
 15      continue
@@ -200,7 +201,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
     zi(jfonmu-1+2*(nbfond-1)+2) = nfon
 !
-    call u2mesi('I', 'XFEM_34', 1, nbfond)
+    call utmess('I', 'XFEM_34', si=nbfond)
 !
 !     ORDONNANCEMENT DE FONDFISS, DE BASEFOND ET DE FOND.TAILLE_R
     call xffcr(nfon, jfono, jbaso, jtailo, jtabpt,&

@@ -29,8 +29,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: ma, chou
@@ -95,10 +94,14 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
 !     ------------------------------------------------------------------
 !
-    if (ma .eq. ' ') call u2mess('F', 'UTILITAI_27')
+    if (ma .eq. ' ') then
+        call utmess('F', 'UTILITAI_27')
+    endif
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
-    if (gd .eq. 0) call u2mesk('F', 'CALCULEL_67', 1, nomgd)
+    if (gd .eq. 0) then
+        call utmess('F', 'CALCULEL_67', sk=nomgd)
+    endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
 !
     if (tychr(1:2) .eq. 'EL') then
@@ -141,29 +144,36 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         valk(1)=champ
         valk(2)=ma2
         valk(3)=ma
-        call u2mesk('F', 'CALCULEL2_17', 3, valk)
+        call utmess('F', 'CALCULEL2_17', nk=3, valk=valk)
     endif
 !
 !
     valk(1)=champ
     valk(2)=tychr
     if (tychr .eq. 'NOEU') then
-        if (tych2 .ne. 'NOEU') call u2mesk('F', 'UTILITAI_28', 2, valk)
+        if (tych2 .ne. 'NOEU') then
+            call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
+        endif
 !
     else if (tychr.eq.'ELGA') then
-        if ((tych2.ne.'CART') .and. (tych2.ne.'ELEM') .and. (tych2.ne.'ELGA')) call u2mesk(&
-                                                                               'F',&
-                                                                               'UTILITAI_28', 2,&
-                                                                               valk)
+        if ((tych2.ne.'CART') .and. (tych2.ne.'ELEM') .and. (tych2.ne.'ELGA')) then
+            call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
+        endif
 !
     else if (tychr.eq.'ELNO') then
-        if ((tych2.ne.'CART') .and. (tych2.ne. 'ELNO')) call u2mesk('F', 'UTILITAI_28', 2, valk)
+        if ((tych2.ne.'CART') .and. (tych2.ne. 'ELNO')) then
+            call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
+        endif
 !
     else if (tychr.eq.'ELEM') then
-        if ((tych2.ne.'CART') .and. (tych2.ne. 'ELEM')) call u2mesk('F', 'UTILITAI_28', 2, valk)
+        if ((tych2.ne.'CART') .and. (tych2.ne. 'ELEM')) then
+            call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
+        endif
 !
     else if (tychr.eq.'CART') then
-        if ((tych2.ne.'CART') .and. (tych2.ne. 'ELEM')) call u2mesk('F', 'UTILITAI_28', 2, valk)
+        if ((tych2.ne.'CART') .and. (tych2.ne. 'ELEM')) then
+            call utmess('F', 'UTILITAI_28', nk=2, valk=valk)
+        endif
 !
     else
         ASSERT(.false.)
@@ -223,7 +233,9 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         if (n1 .lt. 0) then
             chgcmp = .true.
             nchg = nchg + 1
-            if (n1 .ne. -ncmp) call u2mess('F', 'UTILITAI_31')
+            if (n1 .ne. -ncmp) then
+                call utmess('F', 'UTILITAI_31')
+            endif
             call wkvect('&&CHPASS.LICMP2', 'V V K8', ncmp, jlicm2)
             call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=ncmp, vect=zk8(jlicm2),&
                         nbret=ib)
@@ -242,7 +254,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         valk(1)=champ
         valk(2)=nomgd
         valk(3)=nomgd2
-        call u2mesk('F', 'UTILITAI_32', 3, valk)
+        call utmess('F', 'UTILITAI_32', nk=3, valk=valk)
     endif
 !
 !
@@ -251,7 +263,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     call getvc8('ASSE', 'COEF_C', iocc=iocc, scal=coefc, nbret=iret)
     if (iret .ne. 0) then
         if (tsca .ne. 'C') then
-            call u2mess('F', 'UTILITAI_33')
+            call utmess('F', 'UTILITAI_33')
         endif
         lcoc = .true.
 !

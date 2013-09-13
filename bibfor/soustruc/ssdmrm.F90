@@ -32,9 +32,8 @@ subroutine ssdmrm(mag)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/ssdmu1.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: mag
@@ -95,9 +94,15 @@ subroutine ssdmrm(mag)
                 nbret=n1)
     call getvtx('RECO_SUPER_MAILLE', 'GROUP_NO', iocc=iocc, nbval=nbsma, vect=zk24(ialikg),&
                 nbret=n2)
-    if (n1 .lt. 0) call u2mess('F', 'SOUSTRUC_64')
-    if (n1 .ne. n2) call u2mess('F', 'SOUSTRUC_65')
-    if (n1 .lt. 2) call u2mess('F', 'SOUSTRUC_66')
+    if (n1 .lt. 0) then
+        call utmess('F', 'SOUSTRUC_64')
+    endif
+    if (n1 .ne. n2) then
+        call utmess('F', 'SOUSTRUC_65')
+    endif
+    if (n1 .lt. 2) then
+        call utmess('F', 'SOUSTRUC_66')
+    endif
 !
     nbsmar=n1
 !
@@ -158,7 +163,7 @@ subroutine ssdmrm(mag)
     if (nbnori .ne. nbnorj) then
         valk(1) = nognoi
         valk(2) = nognoj
-        call u2mesk('A', 'SOUSTRUC_67', 2, valk)
+        call utmess('A', 'SOUSTRUC_67', nk=2, valk=valk)
     endif
     nbnore= min(nbnori,nbnorj)
 !
@@ -231,7 +236,7 @@ subroutine ssdmrm(mag)
         if (nbnore .ne. ico) then
             valk(1) = nognoi
             valk(2) = nognoj
-            call u2mesk('A', 'SOUSTRUC_68', 2, valk)
+            call utmess('A', 'SOUSTRUC_68', nk=2, valk=valk)
         endif
 !
     endif

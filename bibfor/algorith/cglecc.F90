@@ -9,8 +9,7 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     character(len=8) :: typfis, resu, calsig
     character(len=19) :: vecord
@@ -65,7 +64,9 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 !
 !     CALSIG='NON' N'EST PAS COMPATIBLE AVEC X-FEM
     if (calsig .eq. 'NON') then
-        if (typfis .eq. 'FISSURE') call u2mess('F', 'RUPTURE1_39')
+        if (typfis .eq. 'FISSURE') then
+            call utmess('F', 'RUPTURE1_39')
+        endif
     endif
 !
 !     LES AUTRES VERIF SONF FAITES DANS LE CAPY (OPTION...)
@@ -84,7 +85,7 @@ subroutine cglecc(typfis, resu, vecord, calsig)
             if (ier .ne. 0) then
 !           PROBLEME DANS LA RECUP DE SIEF_ELGA POUR CE NUME_ORDRE
                 vali=iord
-                call u2mesi('F', 'RUPTURE0_93', 1, vali)
+                call utmess('F', 'RUPTURE0_93', si=vali)
             endif
 10      continue
     endif

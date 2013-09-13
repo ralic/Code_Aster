@@ -21,7 +21,7 @@ subroutine nmtadp(ndimsi, crit, mat, sigel, vim,&
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/nmtacr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
     integer :: ndimsi, iret
     real(kind=8) :: crit(3), mat(14), sigel(*), vim(9), epm(*), sp, xi
@@ -74,7 +74,9 @@ subroutine nmtadp(ndimsi, crit, mat, sigel, vim,&
                 epm, dp, sp, xi, f,&
                 g, fds, gds, fdp, gdp,&
                 fdx, gdx, dpmax, sig, tang)
-    if (f .gt. 0.d0) call u2mess('F', 'ALGORITH8_31')
+    if (f .gt. 0.d0) then
+        call utmess('F', 'ALGORITH8_31')
+    endif
     x(1) = dp
     y(1) = f
     gg(1) = g

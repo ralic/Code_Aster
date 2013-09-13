@@ -1,5 +1,5 @@
 subroutine te0586(option, nomte)
-    implicit   none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,11 +17,11 @@ subroutine te0586(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterfort/elref5.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tufull.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !
@@ -63,22 +63,22 @@ subroutine te0586(option, nomte)
 !     VERIFS PRAGMATIQUES
 !
     if (nbrddl .gt. nbrddm) then
-        call u2mess('F', 'ELEMENTS4_40')
+        call utmess('F', 'ELEMENTS4_40')
     endif
     if (nomte .eq. 'MET3SEG3') then
         if (nbrddl .ne. 63) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else if (nomte.eq.'MET6SEG3') then
         if (nbrddl .ne. 117) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else if (nomte.eq.'MET3SEG4') then
         if (nbrddl .ne. 84) then
-            call u2mess('F', 'ELEMENTS4_41')
+            call utmess('F', 'ELEMENTS4_41')
         endif
     else
-        call u2mess('F', 'ELEMENTS4_42')
+        call utmess('F', 'ELEMENTS4_42')
     endif
     call tufull(option, nomte, nbrddl, deplm, deplp,&
                 b, ktild, effint, pass, vtemp,&

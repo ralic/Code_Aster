@@ -28,7 +28,7 @@ subroutine te0430(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
 #include "asterfort/terefe.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -161,7 +161,7 @@ subroutine te0430(option, nomte)
                             materi, 'ELAS', 1, epsthe, iret)
                 if (iret .ne. 0) then
                     call tecael(iadzi, iazk24)
-                    call u2mesk('F', 'CALCULEL2_81', 1, zk24(iazk24-1+3))
+                    call utmess('F', 'CALCULEL2_81', sk=zk24(iazk24-1+3))
                 endif
                 nomres(1) = 'E'
                 call rcvalb(fami, kpg, 1, '+', zi(imate),&

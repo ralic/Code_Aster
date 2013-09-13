@@ -1,12 +1,11 @@
 subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
                   vale)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ima, ipt, nbm, adrm(*)
     real(kind=8) :: vale(*)
     character(len=24) :: chmate
@@ -75,8 +74,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'E CALCUL'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     ec = zr(jcesv-1+iad)
 !
@@ -88,8 +86,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'E AMBIANT'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     e = zr(jcesv-1+iad)
 !
@@ -101,8 +98,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'NU'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     nu = zr(jcesv-1+iad)
 !
@@ -114,8 +110,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'ALPHA'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     alpha = zr(jcesv-1+iad)
 !
@@ -140,7 +135,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
                 goto 106
             endif
 104      continue
-        call u2mess('F', 'POSTRCCM_19')
+        call utmess('F', 'POSTRCCM_19')
 106      continue
         decmb = zi(jcesd-1+5+4*(imb-1)+4)
         icmp = 2
@@ -149,8 +144,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
             vali (1) = imb
             vali (2) = ipt
             valk = 'E_B'
-            call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
         endif
         eb = zr(jcesv-1+iad)
         icmp = 4
@@ -159,8 +153,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
             vali (1) = imb
             vali (2) = ipt
             valk = 'ALPHA_B'
-            call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
         endif
         alphab = zr(jcesv-1+iad)
     endif
@@ -183,8 +176,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'E_REFE'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     vale(10) = zr(jcesv-1+iad)
 !
@@ -196,8 +188,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'SM'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     vale(11) = zr(jcesv-1+iad)
 !
@@ -209,8 +200,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'M'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     vale(12) = zr(jcesv-1+iad)
 !
@@ -222,8 +212,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'N'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     vale(13) = zr(jcesv-1+iad)
 !
@@ -236,8 +225,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         vali (1) = ima
         vali (2) = ipt
         valk = 'TYPEKE'
-        call u2mesg('F', 'POSTRCCM_18', 1, valk, 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
     vale(14) = zr(jcesv-1+iad)
 !

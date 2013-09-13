@@ -28,7 +28,7 @@ subroutine te0432(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
 #include "blas/ddot.h"
     character(len=16) :: option, nomte
@@ -94,7 +94,7 @@ subroutine te0432(option, nomte)
             if (iretd .eq. 0) then
                 call jevech('POMEGA2', 'L', ifreq)
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
     endif

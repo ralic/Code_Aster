@@ -54,20 +54,18 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
     implicit none
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mmhcyw.h"
+#include "asterfort/as_mmheaw.h"
+#include "asterfort/as_mmhenw.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/as_mmhcyw.h"
-#include "asterfort/as_mmheaw.h"
-#include "asterfort/as_mmhenw.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -145,7 +143,7 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
         lnocen=.true.
     endif
     if (lnocen) then
-        call u2mess('A', 'PREPOST_86')
+        call utmess('A', 'PREPOST_86')
     endif
 !
 ! 2.2. ==> ON VERIFIE QUE L'ON SAIT ECRIRE LES MAILLES PRESENTES DANS
@@ -155,7 +153,7 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !
     if (nmatyp(ityp) .ne. 0) then
         if (typgeo(ityp) .eq. 0) then
-            call u2mesk('F', 'PREPOST2_93', 1, nomtyp(ityp))
+            call utmess('F', 'PREPOST2_93', sk=nomtyp(ityp))
         endif
     endif
 !
@@ -256,31 +254,28 @@ subroutine irmmma(fid, nomamd, nbmail, connex, point,&
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !
         call as_mmhcyw(fid, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
-                    nmatyp(ityp), edmail, typgeo(ityp), ednoda, codret)
+                       nmatyp(ityp), edmail, typgeo(ityp), ednoda, codret)
         if (codret .ne. 0) then
             saux08='mmhcyw'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 ! 3.2. ==> LE NOM DES MAILLES
 !
         call as_mmheaw(fid, nomamd, zk16(jnomma(ityp)), nmatyp( ityp), edmail,&
-                    typgeo(ityp), codret)
+                       typgeo(ityp), codret)
         if (codret .ne. 0) then
             saux08='mmheaw'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 ! 3.3. ==> LE NUMERO DES MAILLES
 !
         call as_mmhenw(fid, nomamd, zi(jnumma(ityp)), nmatyp(ityp), edmail,&
-                    typgeo(ityp), codret)
+                       typgeo(ityp), codret)
         if (codret .ne. 0) then
             saux08='mmhenw'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
     endif

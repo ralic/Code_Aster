@@ -47,7 +47,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomcou
@@ -122,17 +122,14 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
         if (ok) then
             okg = .true.
             valk = nomcou
-            call u2mesg('E+', 'ALGORITH15_8', 1, valk, 0,&
-                        0, 0, 0.d0)
-            call u2mesg('E', 'VIDE_1', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('E+', 'ALGORITH15_8', sk=valk)
+            call utmess('E', 'VIDE_1')
         endif
 !
 10  end do
 !
     if (okg) then
-        call u2mesg('F', 'ALGORITH15_10', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH15_10')
     endif
 !
     call iscode(zi(ltidec), icod, nbcmp)

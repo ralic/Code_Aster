@@ -1,6 +1,6 @@
 subroutine chpchd(chin, type, celmod, prol0, base,&
                   chou)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
@@ -17,7 +17,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/manopg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: chin, chou, base, celmod, type
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -103,8 +103,8 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
                 tychi, ib)
     call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
                 nomgd, ib)
-    bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' &
-        .or. tychi .eq. 'ELGA' .or. tychi .eq. 'CESE'
+    bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' .or. tychi .eq. 'ELGA'&
+           .or. tychi .eq. 'CESE'
     ASSERT(bool)
 !
 !
@@ -128,7 +128,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
             valk(2) = moin
             valk(3) = ma
             valk(4) = ma2
-            call u2mesk('F', 'CALCULEL4_59', 4, valk)
+            call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
         endif
         call celces(celmod, 'V', cesmod)
     endif
@@ -261,7 +261,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
                 valk(1) = chou(1:8)
                 valk(2) = option
                 valk(3) = param
-                call u2mesk('A', 'CALCULEL6_77', 3, valk)
+                call utmess('A', 'CALCULEL6_77', nk=3, valk=valk)
             endif
         endif
 !
@@ -282,7 +282,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
                 valk(1) = chou(1:8)
                 valk(2) = option
                 valk(3) = param
-                call u2mesk('A', 'CALCULEL6_77', 3, valk)
+                call utmess('A', 'CALCULEL6_77', nk=3, valk=valk)
             endif
         endif
 !
@@ -322,7 +322,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else
 !       CAS NON ENCORE PROGRAMME
-        call u2mesk('F', 'CALCULEL_5', 1, cas)
+        call utmess('F', 'CALCULEL_5', sk=cas)
     endif
 !
 !

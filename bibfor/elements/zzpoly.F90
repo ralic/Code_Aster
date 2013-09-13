@@ -17,6 +17,7 @@ subroutine zzpoly(nno, ino, xino, yino, sig,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/utmess.h"
 !
 !    ESTIMATEUR ZZ2 (VERSION 92)
 !
@@ -31,7 +32,6 @@ subroutine zzpoly(nno, ino, xino, yino, sig,&
 !  SORTIE :
 !       SIG   :  CONTRAINTES LISSEES
 !
-#include "asterfort/u2mess.h"
     real(kind=8) :: xino, yino, sig(1), b(9, 4)
 !-----------------------------------------------------------------------
     integer :: ic, ino, nno
@@ -70,6 +70,6 @@ subroutine zzpoly(nno, ino, xino, yino, sig,&
                                 )*xino*xino*yino*yino
  7      continue
     else
-        call u2mess('F', 'ELEMENTS4_62')
+        call utmess('F', 'ELEMENTS4_62')
     endif
 end subroutine

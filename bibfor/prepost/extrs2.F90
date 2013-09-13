@@ -1,9 +1,8 @@
 subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                   modele, nbordr, nuordr, nbacc, nomacc,&
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
@@ -19,7 +18,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbordr, nuordr(*), nbarch, nbacc, nuarch(*), nbexcl, nbnosy
     character(len=16) :: nomacc(*), chexcl(*)
     character(len=*) :: resu0, resu1
@@ -119,8 +119,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                 vali (1) = nuordr(j)
                 vali (2) = ire2
                 valk = chamou
-                call u2mesg('F', 'PREPOST5_16', 1, valk, 2,&
-                            vali, 0, 0.d0)
+                call utmess('F', 'PREPOST5_16', sk=valk, ni=2, vali=vali)
             endif
             if (lrest) then
                 call dismoi('F', 'NOM_MAILLA', chamin, 'CHAMP', ibid,&

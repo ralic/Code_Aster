@@ -25,7 +25,7 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nno
     real(kind=8) :: poids, sdfrde(4, 4), sdfrdk(4, 4)
     real(kind=8) :: geom(2, 4), jac
@@ -59,7 +59,7 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        call u2mesk('F', 'ALGORITH2_59', 1, nomail)
+        call utmess('F', 'ALGORITH2_59', sk=nomail)
     endif
 !
     do 20 i = 1, nno

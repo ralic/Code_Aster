@@ -55,7 +55,6 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -71,8 +70,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsutor.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: tyelas
     integer :: nnos, nno, nbpg, ndim
 !
@@ -111,7 +110,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
     call infniv(ifm, nivinf)
     if (nivinf .gt. 1) then
-        call u2mess('I', 'UTILITAI5_39')
+        call utmess('I', 'UTILITAI5_39')
         write (ifm,10001) tyelas, nomte
         10001 format('ELEMENT FINI NUMERO',i6,', DE NOM : ',a16)
     endif
@@ -208,7 +207,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
             endif
             valk(1) = nomsym
             valk(2) = famil
-            call u2mesk('F', 'MED2_5', 2, valk)
+            call utmess('F', 'MED2_5', nk=2, valk=valk)
         endif
 !
         call elraga(elrefe, famil, ndim, nbpg, gscoo,&

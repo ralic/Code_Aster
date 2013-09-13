@@ -6,7 +6,7 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
 #include "asterfort/assert.h"
 #include "asterfort/lciv2e.h"
 #include "asterfort/lciv2s.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,8 +72,8 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
     ichk = 1
     rac2 = sqrt(2.d0)
 ! - COMMON LCIV2S/LCIV2E
-    nt   = nb_val_in
-    nd   = 3
+    nt = nb_val_in
+    nd = 3
 !
 ! - Checking
 !
@@ -86,7 +86,7 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
         else
             valk(1) = crit
             valk(2) = name_gd
-            call u2mesk('F', 'CHAMPS_7', 2, valk)
+            call utmess('F', 'CHAMPS_7', nk=2, valk=valk)
         endif
 !       CELCES ASSURE QUE LES COMPOSANTES SONT DANS L'ORDRE DU CATALOGUE
 !       LE MEME QUE CELUI DE CMPSIG/CMPEPS
@@ -108,7 +108,7 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
         if (name_gd .ne. 'SIEF_R') then
             valk(1) = crit
             valk(2) = name_gd
-            call u2mesk('F', 'CHAMPS_7', 2, valk)
+            call utmess('F', 'CHAMPS_7', nk=2, valk=valk)
         endif
         do i = 1, nd
             vale(i) = val_in(i)
@@ -124,7 +124,7 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
         if (name_gd .ne. 'EPSI_R') then
             valk(1) = crit
             valk(2) = name_gd
-            call u2mesk('F', 'CHAMPS_7', 2, valk)
+            call utmess('F', 'CHAMPS_7', nk=2, valk=valk)
         endif
         do i = 1, nd
             vale(i) = val_in(i)
@@ -144,6 +144,6 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in,&
         ASSERT(.false.)
     endif
 !
-999 continue
+999  continue
 !
 end subroutine

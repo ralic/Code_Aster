@@ -51,7 +51,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerlag.h"
 #include "blas/daxpy.h"
 #include "blas/ddot.h"
@@ -113,7 +113,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     call preres(solveu, 'V', iret, '&&OP0091.MATPRE', imped,&
                 ibid, -9999)
     if (iret .eq. 2) then
-        call u2mesk('F', 'ALGELINE4_37', 1, imped)
+        call utmess('F', 'ALGELINE4_37', sk=imped)
     endif
 !
     rest1='&&91'//k4bid

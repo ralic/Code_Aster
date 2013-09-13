@@ -39,7 +39,7 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     integer :: nbi, nbi2, ifeti, ifm
     real(kind=8) :: vi(nbi), vo(nbi)
@@ -81,7 +81,7 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
 ! MULTIPLICITE DU IEME NOEUD D'INTERFACE
             imult=zi(iaux)
             if (imult .eq. 0) then
-                call u2mess('F', 'ALGORITH3_72')
+                call utmess('F', 'ALGORITH3_72')
             else
 ! NOMBRE DE DDLS CUMULES AVANT LE IEME NOEUD D'INTERFACE (NBDDLC)
 ! NOMBRE DE DDLS DU IEME NOEUD D'INTERFACE (NBDDL)

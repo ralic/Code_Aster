@@ -1,12 +1,11 @@
 subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
                   iarret)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvals.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: phenom, nomres
     integer :: iarret
     integer :: icodre
@@ -68,16 +67,14 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
 !     -- SELON LA VALEUR DE IARRET ON ARRETE OU NON :
     if (iarret .ge. 1) then
         valk = nomphe
-        call u2mesg('F+', 'MODELISA9_55', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F+', 'MODELISA9_55', sk=valk)
         if (iarret .eq. 1) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3)(1:8)
             valk = nomail
-            call u2mesg('F+', 'MODELISA9_56', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F+', 'MODELISA9_56', sk=valk)
         endif
-        call u2mess('F', 'VIDE_1')
+        call utmess('F', 'VIDE_1')
     endif
     goto 9999
 !

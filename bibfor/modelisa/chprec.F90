@@ -46,9 +46,7 @@ subroutine chprec(chou)
 #include "asterfort/rsinch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: chou
 !
 ! 0.2. ==> COMMUNS
@@ -81,7 +79,9 @@ subroutine chprec(chou)
     noch19 = chou
 !
     call getvtx(' ', 'NOEUD_CMP', nbval=0, nbret=n1)
-    if (n1 .ne. 0 .and. n1 .ne. -2) call u2mess('F', 'MODELISA4_16')
+    if (n1 .ne. 0 .and. n1 .ne. -2) then
+        call utmess('F', 'MODELISA4_16')
+    endif
     nomch=' '
     call getvtx(' ', 'NOM_CHAM', scal=nomch, nbret=n2)
     tychlu=' '
@@ -92,7 +92,9 @@ subroutine chprec(chou)
 !     ==============================================================
     if (nomch .eq. 'GEOMETRIE') then
         call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
-        if (n1 .eq. 0) call u2mess('F', 'MODELISA4_17')
+        if (n1 .eq. 0) then
+            call utmess('F', 'MODELISA4_17')
+        endif
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
@@ -105,7 +107,7 @@ subroutine chprec(chou)
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
-            call u2mesk('F', 'MODELISA4_18', 3, valk)
+            call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
         endif
         call copisd('CHAMP_GD', 'G', ma//'.COORDO', noch19)
         goto 20
@@ -151,7 +153,7 @@ subroutine chprec(chou)
                     chextr = fis//'.GRI.GRLTNO'
                 endif
             else
-                call u2mess('F', 'XFEM2_98')
+                call utmess('F', 'XFEM2_98')
             endif
         endif
 !
@@ -166,7 +168,7 @@ subroutine chprec(chou)
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
-            call u2mesk('F', 'MODELISA4_18', 3, valk)
+            call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
         endif
         call copisd('CHAMP_GD', 'G', chextr, noch19)
         goto 20
@@ -181,7 +183,9 @@ subroutine chprec(chou)
         ASSERT(nomch(1:1).eq.'.')
         chextr = cara//nomch
         call exisd('CHAMP', chextr, iexi)
-        if (iexi .eq. 0) call u2mesk('F', 'CALCULEL3_17', 1, chextr)
+        if (iexi .eq. 0) then
+            call utmess('F', 'CALCULEL3_17', sk=chextr)
+        endif
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
@@ -194,7 +198,7 @@ subroutine chprec(chou)
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
-            call u2mesk('F', 'MODELISA4_18', 3, valk)
+            call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
         endif
         call copisd('CHAMP_GD', 'G', chextr, noch19)
         goto 20
@@ -209,7 +213,9 @@ subroutine chprec(chou)
         ASSERT(nomch(1:1).eq.'.')
         chextr = charme//nomch
         call exisd('CHAMP', chextr, iexi)
-        if (iexi .eq. 0) call u2mesk('F', 'CALCULEL3_17', 1, chextr)
+        if (iexi .eq. 0) then
+            call utmess('F', 'CALCULEL3_17', sk=chextr)
+        endif
 !
 !       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 !       TYPE DU CHAMP EXTRAIT.
@@ -222,7 +228,7 @@ subroutine chprec(chou)
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
-            call u2mesk('F', 'MODELISA4_18', 3, valk)
+            call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
         endif
         call copisd('CHAMP_GD', 'G', chextr, noch19)
         goto 20
@@ -262,7 +268,7 @@ subroutine chprec(chou)
                             epsi, crit, iret)
                 if ((iret.ne.0) .or. (nbordr.gt.1)) goto 10
                 if (nbordr .eq. 0) then
-                    call u2mess('F', 'UTILITAI_23')
+                    call utmess('F', 'UTILITAI_23')
                 endif
                 call jeveuo(knum, 'L', jordr)
                 call rsexch('F', resuco, nomch, zi(jordr), chextr,&
@@ -281,7 +287,7 @@ subroutine chprec(chou)
                     valk(1) = tychlu
                     valk(2) = tych(1:4)
                     valk(3) = nomgd
-                    call u2mesk('F', 'MODELISA4_18', 3, valk)
+                    call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
                 endif
                 call copisd('CHAMP_GD', 'G', chextr, noch19)
                 call jedetr(knum)
@@ -293,8 +299,7 @@ subroutine chprec(chou)
     else
         if (interp(1:3) .eq. 'LIN') then
             valk(1) = tysd
-            call u2mesg('F', 'MODELISA8_55', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'MODELISA8_55', sk=valk(1))
         else
             knum = '&&'//nompro//'.NUME_ORDRE'
             call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
@@ -303,7 +308,7 @@ subroutine chprec(chou)
                         epsi, crit, iret)
             if ((iret.ne.0) .or. (nbordr.gt.1)) goto 10
             if (nbordr .eq. 0) then
-                call u2mess('F', 'UTILITAI_23')
+                call utmess('F', 'UTILITAI_23')
             endif
             call jeveuo(knum, 'L', jordr)
             call rsexch('F', resuco, nomch, zi(jordr), chextr,&
@@ -317,7 +322,7 @@ subroutine chprec(chou)
                 valk(1) = tychlu
                 valk(2) = tych(1:4)
                 valk(3) = nomgd
-                call u2mesk('F', 'MODELISA4_18', 3, valk)
+                call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
             endif
 !
             call copisd('CHAMP_GD', 'G', chextr, noch19)
@@ -328,7 +333,7 @@ subroutine chprec(chou)
 !
     goto 20
 10  continue
-    call u2mess('F', 'MODELISA4_19')
+    call utmess('F', 'MODELISA4_19')
 !
 20  continue
     call titre()

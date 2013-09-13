@@ -110,10 +110,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecint.h"
 #include "asterfort/vpecst.h"
 #include "asterfort/vpstur.h"
@@ -175,9 +172,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     endif
     if (option(1:5) .ne. 'STURM') then
         if (option(1:5) .eq. 'BANDE') then
-            call u2mesk('I', 'ALGELINE6_41', 1, 'BANDE')
+            call utmess('I', 'ALGELINE6_41', sk='BANDE')
         else
-            call u2mesk('I', 'ALGELINE6_41', 1, option)
+            call utmess('I', 'ALGELINE6_41', sk=option)
         endif
     endif
 !     ------------------------------------------------------------------
@@ -204,7 +201,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     else
                         valr(1)=omgshi
                     endif
-                    if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_44', 1, valr)
+                    if (niv .ge. 1) then
+                        call utmess('I', 'ALGELINE6_44', sr=valr(1))
+                    endif
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                     nbessa=nbrssa
                 else
@@ -217,7 +216,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     endif
                     if (niv .ge. 1) then
                         valr(2)=prec*100.d0
-                        call u2mesr('I', 'ALGELINE6_45', 2, valr)
+                        call utmess('I', 'ALGELINE6_45', nr=2, valr=valr)
                     endif
                     prec=2.d0*prec
                 endif
@@ -228,17 +227,16 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                 else
                     valr(1)=omgshi
                 endif
-                call u2mesg('F', 'ALGELINE3_81', 3, valk, 0,&
-                            0, 1, valr)
+                call utmess('F', 'ALGELINE3_81', nk=3, valk=valk, sr=valr(1))
             endif
 !
         endif
         omeshi=omgshi
         if (niv .ge. 1) then
             if (ldyna) then
-                call u2mesr('I', 'ALGELINE6_42', 1, freqom(omeshi))
+                call utmess('I', 'ALGELINE6_42', sr=freqom(omeshi))
             else
-                call u2mesr('I', 'ALGELINE6_43', 1, omeshi)
+                call utmess('I', 'ALGELINE6_43', sr=omeshi)
             endif
         endif
 !
@@ -272,7 +270,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                         else
                             valr(1)=omgmin
                         endif
-                        if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_46', 1, valr)
+                        if (niv .ge. 1) then
+                            call utmess('I', 'ALGELINE6_46', sr=valr(1))
+                        endif
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                         nbessa=nbrssa
                     else
@@ -285,19 +285,21 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                         endif
                         if (niv .ge. 1) then
                             valr(2)=prec*100.d0
-                            call u2mesr('I', 'ALGELINE6_47', 2, valr)
+                            call utmess('I', 'ALGELINE6_47', nr=2, valr=valr)
                         endif
                         prec=2.d0*prec
                     endif
                     goto 21
                 else
-                    call u2mess('A+', 'ALGELINE3_82')
-                    call u2mesk('A', 'ALGELINE3_84', 1, valk(2))
+                    call utmess('A+', 'ALGELINE3_82')
+                    call utmess('A', 'ALGELINE3_84', sk=valk(2))
                 endif
             endif
         endif
         omemin=omgmin
-        if (omemin .ge. omemax) call u2mess('F', 'ALGELINE3_85')
+        if (omemin .ge. omemax) then
+            call utmess('F', 'ALGELINE3_85')
+        endif
 !
         omgmax=omemax
         if ((option.ne.'BANDEA') .and. (option.ne.'STURML10')) then
@@ -319,7 +321,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                         else
                             valr(1)=omgmax
                         endif
-                        if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_48', 1, valr)
+                        if (niv .ge. 1) then
+                            call utmess('I', 'ALGELINE6_48', sr=valr(1))
+                        endif
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                         nbessa=nbrssa
                     else
@@ -332,14 +336,14 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                         endif
                         if (niv .ge. 1) then
                             valr(2)=prec*100.d0
-                            call u2mesr('I', 'ALGELINE6_49', 2, valr)
+                            call utmess('I', 'ALGELINE6_49', nr=2, valr=valr)
                         endif
                         prec=2.d0*prec
                     endif
                     goto 22
                 else
-                    call u2mess('A+', 'ALGELINE3_83')
-                    call u2mesk('A', 'ALGELINE3_84', 1, valk(2))
+                    call utmess('A+', 'ALGELINE3_83')
+                    call utmess('A', 'ALGELINE3_84', sk=valk(2))
                 endif
             endif
         endif
@@ -454,7 +458,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                         else
                             valr(1)=omgshi
                         endif
-                        if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_44', 1, valr)
+                        if (niv .ge. 1) then
+                            call utmess('I', 'ALGELINE6_44', sr=valr(1))
+                        endif
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                         nbessa=nbrssa
                     else
@@ -467,7 +473,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                         endif
                         if (niv .ge. 1) then
                             valr(2)=prec*100.d0
-                            call u2mesr('I', 'ALGELINE6_92', 2, valr)
+                            call utmess('I', 'ALGELINE6_92', nr=2, valr=valr)
                         endif
                         prec=2.d0*prec
                     endif
@@ -478,8 +484,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     else
                         valr(1)=omgshi
                     endif
-                    call u2mesg('F', 'ALGELINE3_81', 3, valk, 0,&
-                                0, 1, valr)
+                    call utmess('F', 'ALGELINE3_81', nk=3, valk=valk, sr=valr(1))
                 endif
             endif
         endif
@@ -490,13 +495,17 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
             if (ldyna) then
                 valr(1)=freqom(omgmin)
                 valr(2)=freqom(omgmax)
-                call u2mesr('I', 'ALGELINE6_93', 2, valr)
-                if (option(1:5) .eq. 'BANDE') call u2mesr('I', 'ALGELINE6_42', 1, freqom(omeshi))
+                call utmess('I', 'ALGELINE6_93', nr=2, valr=valr)
+                if (option(1:5) .eq. 'BANDE') then
+                    call utmess('I', 'ALGELINE6_42', sr=freqom(omeshi))
+                endif
             else
                 valr(1)=omgmin
                 valr(2)=omgmax
-                call u2mesr('I', 'ALGELINE6_94', 2, valr)
-                if (option(1:5) .eq. 'BANDE') call u2mesr('I', 'ALGELINE6_43', 1, omeshi)
+                call utmess('I', 'ALGELINE6_94', nr=2, valr=valr)
+                if (option(1:5) .eq. 'BANDE') then
+                    call utmess('I', 'ALGELINE6_43', sr=omeshi)
+                endif
             endif
         endif
 !
@@ -525,7 +534,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     else
                         valr(1)=omgshi
                     endif
-                    if (niv .ge. 1) call u2mesr('I', 'ALGELINE6_48', 1, valr)
+                    if (niv .ge. 1) then
+                        call utmess('I', 'ALGELINE6_48', sr=valr(1))
+                    endif
 ! --- CE N'EST PLUS LA PEINE DE DECALER, C'EST INUTILE
                     nbessa=nbrssa
                 else
@@ -538,7 +549,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     endif
                     if (niv .ge. 1) then
                         valr(2)=prec*100.d0
-                        call u2mesr('I', 'ALGELINE6_92', 2, valr)
+                        call utmess('I', 'ALGELINE6_92', nr=2, valr=valr)
                     endif
                     prec=2.d0*prec
                 endif
@@ -549,16 +560,15 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                 else
                     valr(1)=omgshi
                 endif
-                call u2mesg('F', 'ALGELINE3_81', 3, valk, 0,&
-                            0, 1, valr)
+                call utmess('F', 'ALGELINE3_81', nk=3, valk=valk, sr=valr(1))
             endif
         endif
         omeshi=omgshi
         if (niv .ge. 1) then
             if (ldyna) then
-                call u2mesr('I', 'ALGELINE6_42', 1, freqom(omeshi))
+                call utmess('I', 'ALGELINE6_42', sr=freqom(omeshi))
             else
-                call u2mesr('I', 'ALGELINE6_43', 1, omeshi)
+                call utmess('I', 'ALGELINE6_43', sr=omeshi)
             endif
         endif
 !
@@ -568,7 +578,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 !
     else
         ch16=option
-        call u2mesk('F', 'ALGELINE3_69', 1, ch16)
+        call utmess('F', 'ALGELINE3_69', sk=ch16)
     endif
 !
     if ((niv.ge.1) .and. (option(1:5).ne.'STURM')) write(ifm,1200)

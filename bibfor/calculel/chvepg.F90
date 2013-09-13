@@ -31,7 +31,7 @@ subroutine chvepg(chel1, chel2)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=19) :: chel1, chel2
 !
 ! ----------------------------------------------------------------------
@@ -87,7 +87,7 @@ subroutine chvepg(chel1, chel2)
             valk(1) = noma
             valk(2) = fpg1
             valk(3) = fpg2
-            call u2mesk('F', 'CALCULEL_91', 3, valk)
+            call utmess('F', 'CALCULEL_91', nk=3, valk=valk)
         endif
 10  end do
 !

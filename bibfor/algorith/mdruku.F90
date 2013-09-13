@@ -54,7 +54,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 #include "asterfort/r8inir.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trlds.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
@@ -134,7 +134,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     nbmxcv = 10
 !     PAS DE LAME FLUIDE POUR LE SCHEMA RUNGE-KUTTA
     if (lflu) then
-        call u2mess('F', 'ALGORITH5_21')
+        call utmess('F', 'ALGORITH5_21')
     endif
 !
     do 111 iapp = 1, palmax
@@ -189,7 +189,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
         call dcopy(neqgen*neqgen, masgen, 1, zr(jmass), 1)
         call trlds(zr(jmass), neqgen, neqgen, iret)
         if (iret .ne. 0) then
-            call u2mess('F', 'ALGORITH5_22')
+            call utmess('F', 'ALGORITH5_22')
         endif
         call dcopy(neqgen*neqgen, masgen, 1, zr(jmass), 1)
     else if (typbas.eq.'MODELE_GENE     ') then
@@ -296,7 +296,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                 dtsto, vrotat, typal, finpal, cnpal,&
                 prdeff, conv, fsauv)
     if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
-        call u2mess('F', 'EDYOS_46')
+        call utmess('F', 'EDYOS_46')
     else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
         nbconv = nbconv + 1
     endif
@@ -457,7 +457,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
             endif
 !
             if ((dt.le.dtmin) .and. (abs(tfin-(temps+dt)).gt.epsi)) then
-                call u2mess('F', 'ALGORITH5_23')
+                call utmess('F', 'ALGORITH5_23')
             endif
         endif
 !      BLOCAGE DE DT A DTMAX SI DEMANDE PAR L'UTILISATEUR

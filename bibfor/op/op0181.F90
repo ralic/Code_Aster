@@ -31,14 +31,14 @@ subroutine op0181()
 #include "asterfort/jemarq.h"
 #include "asterfort/prefft.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbva, nval, nsens, ngrand, i, ier, ngran0
     character(len=4) :: grand(3), grand0(3), cham
     character(len=16) :: type, cmd, symetr, method
     character(len=19) :: resin, resou, vectot, k19bid
     character(len=24) :: typres
     character(len=12) :: bl11pt
-    integer ::  iret, igrand
+    integer :: iret, igrand
 !     ------------------------------------------------------------------
     call jemarq()
     call getres(resou, type, cmd)
@@ -105,7 +105,9 @@ subroutine op0181()
     5 end do
 !
 !     --- SI AUCUN CHAMP DEMANDE NE PEUT ETRE TRAITE => ERREUR
-    if (ngrand .eq. 0) call u2mess('F', 'ALGORITH17_28')
+    if (ngrand .eq. 0) then
+        call utmess('F', 'ALGORITH17_28')
+    endif
 !
     vectot = '&&OP0181.VECTOT'
 !

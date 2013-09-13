@@ -46,7 +46,7 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !                  (IMA,IS,2) EN NUMEROTATION LOCALE MAILLE VOISINE
 #include "jeveux.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: numa, nvoima, nscoma, iarepe, iaddvo, iadvoi, nbvois
 !     PARAMETER(NVOIMA=100,NSCOMA=4)
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
@@ -135,8 +135,7 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
     ntyvo=0
     lcod=lxlgut(codvoi)
     if (lcod .gt. 2*ntymax) then
-        call u2mesg('F', 'VOLUFINI_7', 1, codvoi, 1,&
-                    lcod, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_7', sk=codvoi, si=lcod)
     endif
     do 30 icode = 1, lcod/2
         ideb=2*(icode-1)+1
@@ -149,8 +148,7 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !
             endif
 10      continue
-        call u2mesg('F', 'VOLUFINI_6', 1, codvoi(ideb:ifin), 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_6', sk=codvoi(ideb:ifin))
 20      continue
 30  end do
     if (ntyvo .eq. 0) then

@@ -34,8 +34,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/pjecou.h"
 #include "asterfort/pjfuc2.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: ma1, ma2
     character(len=16) :: resuou
     character(len=1) :: base
@@ -67,7 +66,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
     if (nbgno2 .ne. nbocc) then
         vali(1) = nbgno2
         vali(2) = nbocc
-        call u2mesi('F', 'COUPLAGEIFS_8', 2, vali)
+        call utmess('F', 'COUPLAGEIFS_8', ni=2, vali=vali)
     endif
 !
 !     PROJECTION ENTRE GROUP_MAILLE ET GROUP_NOEUDS
@@ -100,7 +99,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
         call copisd('CORRESP_2_MAILLA', 'G', corre2, resuou)
         call detrsd('CORRESP_2_MAILLA', corre2)
     else
-        call u2mess('F', 'COUPLAGEIFS_2')
+        call utmess('F', 'COUPLAGEIFS_2')
     endif
 !
     call jedema()

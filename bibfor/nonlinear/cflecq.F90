@@ -19,9 +19,8 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/iscoqu.h"
@@ -31,8 +30,9 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomo, noma
     integer :: iform, nsuco
     integer :: nnoco0, nnoco
@@ -156,7 +156,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 ! --- COQUE_3D NON UTILISABLE EN FORMULATION CONTINUE
 !
     if ((iform.eq.2) .and. (elimno.gt.0)) then
-        call u2mess('F', 'CONTACT_94')
+        call utmess('F', 'CONTACT_94')
     endif
 !
 ! --- RECOPIE DES NOEUDS NON ELIMINES DANS TABLEAU DE TRAVAIL

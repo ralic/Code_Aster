@@ -1,5 +1,5 @@
 subroutine te0486(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/antisy.h"
 #include "asterfort/b1tdb2.h"
@@ -13,8 +13,7 @@ subroutine te0486(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -88,8 +87,7 @@ subroutine te0486(option, nomte)
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3)(1:8)
                 valk = nomail
-                call u2mesg('F', 'ELEMENTS4_92', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ELEMENTS4_92', sk=valk)
             endif
 10      continue
 !
@@ -173,7 +171,9 @@ subroutine te0486(option, nomte)
                     call fointe('FM', zk8 ( ifco3d + 2 ), 4, nompar, valpar,&
                                 pr, ierz)
                     presno ( in+1 ) = pr
-                    if (ierz .ne. 0) call u2mess('F', 'ELEMENTS4_1')
+                    if (ierz .ne. 0) then
+                        call utmess('F', 'ELEMENTS4_1')
+                    endif
 !
 50              continue
 !

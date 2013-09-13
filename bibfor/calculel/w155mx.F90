@@ -36,7 +36,7 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/w155m2.h"
     character(len=8) :: nomres, resu
     integer :: nbordr, liordr(nbordr)
@@ -120,7 +120,9 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
         call rsnoch(nomres, nomsy2, nuordr)
     endif
 10  continue
-    if (ico .eq. 0) call u2mesk('F', 'CALCULEL2_62', 1, nomsym)
+    if (ico .eq. 0) then
+        call utmess('F', 'CALCULEL2_62', sk=nomsym)
+    endif
     20 end do
 !
 !

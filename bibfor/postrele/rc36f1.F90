@@ -1,11 +1,11 @@
 subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                   nk, nl, n0, nbp12, nbp23,&
                   nbp13, sigr, yapass, typass, nsitup)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbsigr, nocc(*), isk, isl, nk, nl, n0, nsitup, nbp12, nbp23
     integer :: nbp13, sigr(*)
     real(kind=8) :: saltij(*)
@@ -139,7 +139,7 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                 goto 14
             endif
 12      continue
-        call u2mess('F', 'POSTRCCM_36')
+        call utmess('F', 'POSTRCCM_36')
 14      continue
         npass = max(nocc(2*(ioc1-1)+1),nocc(2*(ioc1-1)+2))
         if (npass .eq. 0) goto 10

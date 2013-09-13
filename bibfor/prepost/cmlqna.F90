@@ -21,13 +21,13 @@ subroutine cmlqna(nbma, nbno, lima, connez, typema,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbma, nbno, lima(*), mxar, mxnomi, typema(*)
     integer :: milieu(2, mxar, nbno), nomima(12, nbma), nomipe(2, *), nbtyma
     integer :: defare(2, 0:12, nbtyma)
@@ -120,7 +120,9 @@ subroutine cmlqna(nbma, nbno, lima, connez, typema,&
 20      continue
 10  end do
 !
-    if (mxnomi .eq. 0) call u2mess('A', 'MODELISA3_44')
+    if (mxnomi .eq. 0) then
+        call utmess('A', 'MODELISA3_44')
+    endif
 !
     call jedema()
 end subroutine

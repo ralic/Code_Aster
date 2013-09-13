@@ -61,8 +61,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
 #include "asterfort/getvid.h"
 #include "asterfort/lrceme.h"
 #include "asterfort/lrcnme.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: chanom
     character(len=*) :: ncmpva, ncmpvm
     character(len=8) :: nomaas
@@ -102,7 +101,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
     else if (typech(1:2).eq.'EL'.or.typech(1:2).eq.'CA') then
         call getvid(' ', 'MODELE', scal=nommod, nbret=iaux)
         if (iaux .eq. 0 .and. typech(1:4) .ne. 'CART') then
-            call u2mess('F', 'MED_71')
+            call utmess('F', 'MED_71')
         endif
         if (iaux .eq. 0) nommod = ' '
         call lrceme(chanom, nochmd, typech(1:4), nomamd, nomaas,&
@@ -112,7 +111,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
                     param, nbpgma, nbpgmm, codret)
     else
         codret = 1
-        call u2mesk('A', 'MED_92', 1, typech(1:4))
+        call utmess('A', 'MED_92', sk=typech(1:4))
     endif
 !
 !====
@@ -120,7 +119,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
 !====
 !
     if (codret .ne. 0) then
-        call u2mesk('A', 'MED_55', 1, chanom)
+        call utmess('A', 'MED_55', sk=chanom)
     endif
 !
 end subroutine

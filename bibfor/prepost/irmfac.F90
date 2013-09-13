@@ -17,7 +17,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ioccur, ifichi, versio, niveau
     character(len=8) :: formaf, resure, modele, nomare, nomail
     logical :: lgmsh
@@ -143,7 +143,9 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
         if (tyres(1:10) .eq. 'DYNA_HARMO' .or. tyres(1:10) .eq. 'ACOU_HARMO') then
             if (formaf(1:4) .eq. 'GMSH' .or. formaf(1:6) .eq. 'CASTEM' .or. formaf(1:3)&
                 .eq. 'MED') then
-                if (npart .eq. 0) call u2mess('F', 'PREPOST3_69')
+                if (npart .eq. 0) then
+                    call utmess('F', 'PREPOST3_69')
+                endif
             endif
         endif
     endif
@@ -155,7 +157,9 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
                     nomgd, ier)
         if (nomgd(6:6) .eq. 'C') then
             if (formaf(1:4) .eq. 'GMSH' .or. formaf(1:6) .eq. 'CASTEM') then
-                if (npart .eq. 0) call u2mess('F', 'PREPOST3_69')
+                if (npart .eq. 0) then
+                    call utmess('F', 'PREPOST3_69')
+                endif
             endif
         endif
     endif
@@ -168,7 +172,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
         if (saux03 .eq. 'OUI' .and. formaf .eq. 'MED') then
             infmai = 2
         else if (saux03.eq.'OUI'.and.formaf.ne.'MED') then
-            call u2mess('A', 'MED_63')
+            call utmess('A', 'MED_63')
         endif
     endif
 !
@@ -180,7 +184,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     nomab = ' '
     call getvid('RESU', 'MAILLAGE', iocc=ioccur, scal=nomail, nbret=nmail)
     if ((formaf.eq.'ASTER') .and. (nomail.eq.' ')) then
-        call u2mess('A', 'PREPOST3_70')
+        call utmess('A', 'PREPOST3_70')
     endif
     if (lrestr) then
         if (ioccur .eq. 1) then
@@ -197,7 +201,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
         call dismoi('C', 'NOM_MAILLA', modele, 'MODELE', ibid,&
                     nomab, iret)
         if (nomail .ne. nomab) then
-            call u2mess('F', 'PREPOST3_66')
+            call utmess('F', 'PREPOST3_66')
         endif
     endif
 !

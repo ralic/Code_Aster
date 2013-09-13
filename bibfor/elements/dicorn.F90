@@ -14,7 +14,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 #include "asterfort/pmavec.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
     integer :: irmetg, nbt, neq, iterat, icodma
     real(kind=8) :: ul(neq), dul(neq), utl(neq)
@@ -361,7 +361,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                 else
                     if (iterat .eq. 1) then
                         if (feq2 .ge. c2) then
-                            call u2mess('I', 'ELEMENTS_26')
+                            call utmess('I', 'ELEMENTS_26')
                         endif
                         si(7) = sim(7) + dnsdu2*dur
                         si(11) = sim(11) + dmsdt2*dryr
@@ -384,7 +384,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         varip(7) = si(11)
                         si(7) = dnsdu2*uu
                         si(11) = dmsdt2*tt
-                        call u2mess('I', 'ELEMENTS_27')
+                        call utmess('I', 'ELEMENTS_27')
                         varip(3) = 2.0d0
 !
                         call dicor3(k02, dur, dryr, sim, si,&
@@ -402,7 +402,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         dnsdt2 = 0.d0
                         si(7) = u2*feq2*nu2/dxu2/varip(2)
                         si(11) = t2*feq2*mu2/dryu2/varip(2)
-                        call u2mess('I', 'ELEMENTS_27')
+                        call utmess('I', 'ELEMENTS_27')
                         call dicor3(k02, dur, dryr, sim, si,&
                                     dnsdu, dmsdt, dnsdt)
                         varip(3) = 2.d0
@@ -432,10 +432,10 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         if (iterat .eq. 1) then
                             feq1 = sqrt( (si(7)/nu1)**2 + (si(11)/mu1) **2 )
                             if (feq1 .ge. c1) then
-                                call u2mess('I', 'ELEMENTS_28')
+                                call utmess('I', 'ELEMENTS_28')
                                 goto 19
                             endif
-                            call u2mess('I', 'ELEMENTS_29')
+                            call utmess('I', 'ELEMENTS_29')
 !
 ! ** ON REPASSE EN MECANISME 1
 !
@@ -451,7 +451,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                                    )**2&
                                    )
                             if (feq2 .gt. rg2) then
-                                call u2mess('I', 'ELEMENTS_30')
+                                call utmess('I', 'ELEMENTS_30')
                             endif
 !
                             if (dur .ne. 0.d0) dnsdu2 = si(7)/utot
@@ -476,10 +476,10 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                             t2 = tt - varim(5)
                             varip(1) = sqrt ( (u2/dxu1)**2 + (t2/ dryu1)**2 )
                             p1 = varip(1)
-                            call u2mess('I', 'ELEMENTS_29')
+                            call utmess('I', 'ELEMENTS_29')
 !
                             if (p1 .gt. 1.d0) then
-                                call u2mess('I', 'ELEMENTS_28')
+                                call utmess('I', 'ELEMENTS_28')
                                 goto 19
                             endif
 !
@@ -544,7 +544,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         si(7) = dnsdu2*uu
                         si(11) = dmsdt2*tt
 !
-                        call u2mess('I', 'ELEMENTS_27')
+                        call utmess('I', 'ELEMENTS_27')
                         varip(3) = 2.0d0
                         call dicor3(k02, dur, dryr, sim, si,&
                                     dnsdu, dmsdt, dnsdt)
@@ -562,7 +562,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                         dnsdt2 = 0.d0
                         si(7) = u2*feq2*nu2/dxu2/varip(2)
                         si(11) = t2*feq2*mu2/dryu2/varip(2)
-                        call u2mess('I', 'ELEMENTS_27')
+                        call utmess('I', 'ELEMENTS_27')
                         call dicor3(k02, dur, dryr, sim, si,&
                                     dnsdu, dmsdt, dnsdt)
                         varip(3) = 2.d0

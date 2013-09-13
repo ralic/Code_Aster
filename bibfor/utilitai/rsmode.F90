@@ -1,7 +1,6 @@
 subroutine rsmode(resu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -14,10 +13,11 @@ subroutine rsmode(resu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: resu
 ! person_in_charge: jacques.pellet at edf.fr
 !***********************************************************************
@@ -64,8 +64,9 @@ subroutine rsmode(resu)
     if (iexi .eq. 0) goto 50
 !
     nu=' '
-    call dismoi('C', 'NUME_DDL', resu, 'RESU_DYNA', ibid, nu, iret)
-
+    call dismoi('C', 'NUME_DDL', resu, 'RESU_DYNA', ibid,&
+                nu, iret)
+!
     if (nu .eq. ' ') goto 50
 !
     prchn1=nu(1:8)//'.NUME'
@@ -102,7 +103,7 @@ subroutine rsmode(resu)
                 valk(2)=ma1
                 valk(3)=nu
                 valk(4)=ma2
-                call u2mesk('F', 'UTILITAI_29', 4, valk)
+                call utmess('F', 'UTILITAI_29', nk=4, valk=valk)
             endif
 !
 !        -- SI LE CHAMP NOMCHA N'A PAS LA BONNE NUMEROTATION,

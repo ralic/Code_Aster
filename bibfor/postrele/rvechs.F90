@@ -4,7 +4,6 @@ subroutine rvechs(ssch19, nbcp, nbco, nbsp, ma,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -15,8 +14,9 @@ subroutine rvechs(ssch19, nbcp, nbco, nbsp, ma,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rvchl3.h"
 #include "asterfort/rvchn3.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ssch19
     integer :: nbcp, nbco, nbsp, n, ptadr, for(*), fex(*)
     integer :: ma(*), vlc(*), nbndf(6, *), clocf(6, 4, *)
@@ -114,7 +114,7 @@ subroutine rvechs(ssch19, nbcp, nbco, nbsp, ma,&
         else if (ktypm(1:4) .eq. 'HEXA') then
             itypm = 3
         else
-            call u2mesk('F', 'POSTRELE_18', 1, ktypm)
+            call utmess('F', 'POSTRELE_18', sk=ktypm)
         endif
         call rvchn3(zr(avale), zi(apadr), ma(vlc(i)), itypm, nbpt,&
                     nbcp, face, cref, nbndf, clocf,&
@@ -134,7 +134,7 @@ subroutine rvechs(ssch19, nbcp, nbco, nbsp, ma,&
         else if (ktypm(1:4) .eq. 'HEXA') then
             itypm = 3
         else
-            call u2mesk('F', 'POSTRELE_18', 1, ktypm)
+            call utmess('F', 'POSTRELE_18', sk=ktypm)
         endif
         call rvchn3(zr(avale), zi(apadr), ma(vlc(n)), itypm, nbpt,&
                     nbcp, face, cref, nbndf, clocf,&
@@ -160,7 +160,7 @@ subroutine rvechs(ssch19, nbcp, nbco, nbsp, ma,&
         else if (ktypm(1:4) .eq. 'HEXA') then
             itypm = 3
         else
-            call u2mesk('F', 'POSTRELE_18', 1, ktypm)
+            call utmess('F', 'POSTRELE_18', sk=ktypm)
         endif
         call rvchl3(zr(avale), zi(apadr), zi(apnsp), zi(apnbn), ma( vlc(i)),&
                     nbma, itypm, nbco, nbsp, nbpt,&

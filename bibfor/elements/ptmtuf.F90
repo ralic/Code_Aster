@@ -3,7 +3,7 @@ subroutine ptmtuf(m, rho, e, rof, ce,&
                   g, alfay, alfaz, ey, ez)
     implicit none
 #include "asterc/r8gaem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: m(*)
     real(kind=8) :: rho, e, rof, ce, a, ai, xl, xiy, xiz, g, alfay, alfaz, ey
     real(kind=8) :: ez
@@ -116,7 +116,7 @@ subroutine ptmtuf(m, rho, e, rof, ce,&
         if (abs(e) .lt. 1.d0/r8gaem()) then
             g=1.d0
         else
-            call u2mess('F', 'ELEMENTS2_54')
+            call utmess('F', 'ELEMENTS2_54')
         endif
     endif
 !

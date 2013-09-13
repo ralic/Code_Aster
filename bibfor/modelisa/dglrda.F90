@@ -37,7 +37,7 @@ subroutine dglrda()
 #include "asterfort/moconm.h"
 #include "asterfort/parglr.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ subroutine dglrda()
     character(len=8) :: fsncx, fsncy, fscxd, fscyd, fscxd2, fscyd2
     character(len=8) :: fincx, fincy, ficxd, ficyd, ficxd2, ficyd2
     character(len=16) :: type, nomcmd
-    integer ::  impf, icst, icis
+    integer :: impf, icst, icis
 !
     call jemarq()
 !
@@ -553,7 +553,7 @@ subroutine dglrda()
             call mmfonc(fon(2*ii), minmp(ii), aux)
             if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or.&
                 (maxmp(ii) -minmp(ii) .le. 0.d0)) then
-                call u2mess('F', 'ELEMENTS_87')
+                call utmess('F', 'ELEMENTS_87')
             endif
         else
             maxmp(ii)=mp1cst(ii)

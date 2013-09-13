@@ -59,8 +59,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: imod, nbm, icoq, nbno, numno(nbno), inomax, nbnoto, iaxe
     real(kind=8) :: coordo(3, nbnoto), defm(2, nbnoto, nbm)
@@ -133,7 +132,9 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         endif
 10  end do
 !
-    if (nbnocr .le. 8) call u2mess('F', 'ALGELINE3_12')
+    if (nbnocr .le. 8) then
+        call utmess('F', 'ALGELINE3_12')
+    endif
 !
 !
 ! --- 4.CREATION D'UNE DISCRETISATION EN THETA SUR LE CONTOUR
@@ -163,7 +164,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         if (defini) then
             if (theta .lt. 0.d0) theta = theta + 2.d0*pi
         else
-            call u2mess('F', 'ALGELINE3_13')
+            call utmess('F', 'ALGELINE3_13')
         endif
         dr = dble(cos(theta)) * defm(1, numnoe, imod) + dble(sin(theta)) * defm(2, numnoe, imod)
         zr(itheta+ino-1) = theta
@@ -263,7 +264,9 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 70  end do
     crit = 1.d0 - modmax*modmax/somm
 !
-    if (ipmax .eq. 1) call u2mess('F', 'ALGELINE3_14')
+    if (ipmax .eq. 1) then
+        call utmess('F', 'ALGELINE3_14')
+    endif
 !
     rki = dble(ipmax-1)
     torco(iligne,imod) = rki
@@ -293,7 +296,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
     delta = s11*s22 - s12*s12
     if (dble(abs(delta)) .lt. tole) then
         write(kmod,'(I3)') imod
-        call u2mesk('F', 'ALGELINE3_15', 1, kmod)
+        call utmess('F', 'ALGELINE3_15', sk=kmod)
     endif
     alpha = (s22*y1 - s12*y2)/delta
     beta = (s11*y2 - s12*y1)/delta
@@ -320,7 +323,7 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
         if (theta0 .lt. 0.d0) theta0 = theta0 + 2.d0*pi
     else
         write(kmod,'(I3)') imod
-        call u2mesk('F', 'ALGELINE3_16', 1, kmod)
+        call utmess('F', 'ALGELINE3_16', sk=kmod)
     endif
     theta0 = theta0/rki
     torco(iligne+1,imod) = theta0

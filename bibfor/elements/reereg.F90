@@ -25,7 +25,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 #include "asterfort/elrfvf.h"
 #include "asterfort/invjax.h"
 #include "asterfort/lceqvn.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
     character(len=1) :: stop
@@ -109,7 +109,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
                 coor, invjac, ipb)
     if (ipb .eq. 1) then
         if (stop .eq. 'S') then
-            call u2mess('F', 'ALGORITH5_19')
+            call utmess('F', 'ALGORITH5_19')
         else if (stop.eq.'C') then
             iret=1
             goto 999
@@ -146,7 +146,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
         goto 100
     else
         if (stop .eq. 'S') then
-            call u2mess('F', 'ELEMENTS2_58')
+            call utmess('F', 'ELEMENTS2_58')
         else
             ASSERT(stop.eq.'C')
             iret=1

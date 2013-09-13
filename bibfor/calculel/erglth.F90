@@ -56,7 +56,7 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: inst
     integer :: niveau, iordr
     character(len=8) :: resuco
@@ -84,7 +84,9 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
     call celver(champ2, 'NBSPT_1', 'STOP', ibid)
     call jelira(champ2//'.CELD', 'DOCU', cval=docu)
-    if (docu .ne. 'CHML') call u2mess('F', 'CALCULEL5_44')
+    if (docu .ne. 'CHML') then
+        call utmess('F', 'CALCULEL5_44')
+    endif
     call jeveuo(champ2//'.CELK', 'L', iacelk)
     ligrel = zk24(iacelk-1+1)(1:19)
 !
@@ -102,7 +104,9 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
         if (first) then
             longt = long2
         else
-            if (longt .ne. long2) call u2mess('F', 'CALCULEL5_45')
+            if (longt .ne. long2) then
+                call utmess('F', 'CALCULEL5_45')
+            endif
         endif
         first = .false.
  1  end do
@@ -171,7 +175,7 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     if (nors .gt. ovfl) then
         nu0 = 100.d0*err0/nors
     else
-        call u2mess('I', 'CALCULEL5_46')
+        call utmess('I', 'CALCULEL5_46')
         nu0 = 0.d0
     endif
     write(ifi,*) ' '

@@ -3,7 +3,6 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
                   vecel, basez, ligrez)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
@@ -16,8 +15,9 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
+!
     integer :: nchar
     real(kind=8) :: time
     character(len=8) :: lchar(*)
@@ -72,7 +72,9 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
     newnom = '.0000000'
     vecelz = vecel
     base = basez
-    if (modele(1:1) .eq. ' ') call u2mess('F', 'CALCULEL2_82')
+    if (modele(1:1) .eq. ' ') then
+        call utmess('F', 'CALCULEL2_82')
+    endif
 !
     nh = 0
     call mecham('MASS_MECA', modele, cara, nh, chgeom,&

@@ -35,7 +35,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 #include "asterfort/nmgrtg.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
 !
     character(len=8) :: typmod(*)
@@ -152,7 +152,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 !
         if (maxeps .gt. 0.05d0) then
             if (compor(1)(1:4) .ne. 'ELAS') then
-                call u2mesr('A', 'COMPOR2_9', 1, maxeps)
+                call utmess('A', 'COMPOR2_9', sr=maxeps)
             endif
         endif
 !

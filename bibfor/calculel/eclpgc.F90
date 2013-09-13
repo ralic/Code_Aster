@@ -1,6 +1,6 @@
 subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                   nomfpg)
-    implicit   none
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,6 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celcel.h"
 #include "asterfort/celver.h"
@@ -77,9 +76,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 ! ---------------------------------------------------------------------
 !     VARIABLES NECESSAIRES A L'APPEL DE ECLATY :
@@ -106,7 +105,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     integer :: k, te, npg1, npoini, ideca2
     integer :: igr, jmaco, jcmaco, jliel, jcliel, jcnsl2
     integer :: ibid, nbpg, ino, nbgr, inogl, kse
-    integer ::  iamol1, jcelv1, jcnsv2, mxcmp
+    integer :: iamol1, jcelv1, jcnsv2, mxcmp
     integer :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
     integer :: iipg, jceld1, jcelk1, moloc1, ncmpmx
     parameter(mxcmp=100)
@@ -130,7 +129,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     ch1b=ch1
     call dismoi('F', 'NOM_GD', ch1b, 'CHAMP', ibid,&
                 nomg1, ibid)
-    if (nomg1(5:6) .ne. '_R') call u2mess('F', 'CALCULEL2_39')
+    if (nomg1(5:6) .ne. '_R') then
+        call utmess('F', 'CALCULEL2_39')
+    endif
     nomg2=nomg1
     lvari=(nomg1.eq.'VARI_R')
     if (lvari) nomg2='VAR2_R'
@@ -140,14 +141,16 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(ch1b, 'NBSPT_1', 'COOL', kk)
     if (kk .eq. 1) then
-        call u2mesk('I', 'PREPOST_36', 1, nomg1)
+        call utmess('I', 'PREPOST_36', sk=nomg1)
         call celcel('PAS_DE_SP', ch1b, 'V', '&&ECLPGC.CH1B1')
         ch1b='&&ECLPGC.CH1B1'
     endif
 !
 !     -- PROJECTION SUR LE LIGREL REDUIT SI NECESSAIRE :
     call jeveuo(ch1b//'.CELK', 'L', jcelk1)
-    if (zk24(jcelk1-1+3)(1:4) .ne. 'ELGA') call u2mess('F', 'CALCULEL2_41')
+    if (zk24(jcelk1-1+3)(1:4) .ne. 'ELGA') then
+        call utmess('F', 'CALCULEL2_41')
+    endif
     if (zk24(jcelk1-1+1)(1:19) .ne. ligrel) then
         optio=zk24(jcelk1-1+2)
         param=zk24(jcelk1-1+6)
@@ -247,7 +250,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     if (npg1 .ne. 0) then
         if (nbpg .ne. npg1) then
             valk(1)=nomte
-            call u2mesk('F', 'CALCULEL2_42', 1, valk)
+            call utmess('F', 'CALCULEL2_42', sk=valk(1))
         endif
     else
 !            -- ON IGNORE LES AUTRES ELEMENTS :
@@ -287,7 +290,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     ima=ima+1
 !
     nbno=nbnoma(ima)
-    if (nbno .gt. 27) call u2mess('F', 'CALCULEL2_43')
+    if (nbno .gt. 27) then
+        call utmess('F', 'CALCULEL2_43')
+    endif
     do 50,ino=1,nbno
     inogl=numglm(ima,ino)
     do 40,iddl=1,nddl

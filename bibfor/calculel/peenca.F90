@@ -11,8 +11,7 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: champ
     integer :: long, nbmail, nummai(*)
     real(kind=8) :: vr(long)
@@ -65,7 +64,7 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
 !
     call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
-        call u2mess('F', 'CALCULEL3_52')
+        call utmess('F', 'CALCULEL3_52')
     endif
     call jeveuo(champ2//'.CELK', 'L', lcelk)
     ligrel = zk24(lcelk)(1:19)
@@ -83,7 +82,7 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
             vr(i) = rzero
 12      continue
     else
-        call u2mesk('F', 'CALCULEL3_74', 1, scal)
+        call utmess('F', 'CALCULEL3_74', sk=scal)
     endif
 !
     call jeveuo(champ2//'.CELV', 'L', lvale)

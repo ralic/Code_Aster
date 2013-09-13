@@ -33,7 +33,7 @@ subroutine limsst(nomcmd)
 #include "asterc/getfac.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 !
     integer :: nbchoc, nbrede, nbrevi
     character(len=24) :: valk(2)
@@ -55,33 +55,27 @@ subroutine limsst(nomcmd)
     if (method .ne. 'EULER' .and. method(1:5) .ne. 'ADAPT' .and. method(1:5) .ne. 'RUNGE') then
         valk (1) = method
         valk (2) = 'EULER,RUNGE_..,ADAPT_..'
-        call u2mesg('F', 'ALGORITH13_29', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_29', nk=2, valk=valk)
     endif
 !
     if (n2 .ne. 0) then
-        call u2mesg('F', 'ALGORITH13_30', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_30')
     endif
 !
     if (nbchoc .ne. 0) then
-        call u2mesg('F', 'ALGORITH13_31', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_31')
     endif
 !
     if (nbrede .ne. 0) then
-        call u2mesg('F', 'ALGORITH13_32', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_32')
     endif
 !
     if (nbrevi .ne. 0) then
-        call u2mesg('F', 'ALGORITH13_33', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_33')
     endif
 !
     if (namor .ne. 0) then
-        call u2mesg('F', 'ALGORITH13_34', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_34')
     endif
 !
 end subroutine

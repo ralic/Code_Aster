@@ -43,7 +43,7 @@ subroutine verico(nbmato, nbpart, val)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -96,7 +96,7 @@ subroutine verico(nbmato, nbpart, val)
                 if (id .le. id2) goto 2
 !
             else
-                call u2mess('A', 'UTILITAI5_60')
+                call utmess('A', 'UTILITAI5_60')
                 val=1
                 nbpart=nbpart+1
                 zi(flagma-1+ima)=1

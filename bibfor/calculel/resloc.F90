@@ -70,7 +70,6 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
@@ -84,8 +83,8 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 #include "asterfort/jexnom.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nchar
     integer :: tabido(5)
     character(len=8) :: modele, lchar(1)
@@ -173,7 +172,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         endif
 121      continue
         if (iret2 .eq. 0) then
-            call u2mesk('A', 'INDICATEUR_6', 1, lchar(i))
+            call utmess('A', 'INDICATEUR_6', sk=lchar(i))
             iret1 = iret1 + 1
         endif
 12  end do
@@ -185,13 +184,13 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     do 13 , j = 2 , ntychx
 !GN        WRITE(6,*) 'ITYCHA(',J,') =', ITYCHA(J)
     if (itycha(j) .gt. 1) then
-        call u2mesk('A', 'INDICATEUR_7', 1, ktych(j))
+        call utmess('A', 'INDICATEUR_7', sk=ktych(j))
         iret1 = iret1 + 1
     endif
     13 end do
 !
     if (iret1 .ne. 0) then
-        call u2mess('F', 'INDICATEUR_8')
+        call utmess('F', 'INDICATEUR_8')
     endif
 !
 !====
@@ -563,7 +562,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
                 'OUI')
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
-        call u2mesk('F', 'CALCULEL2_88', 1, option)
+        call utmess('F', 'CALCULEL2_88', sk=option)
     endif
 !
 !====

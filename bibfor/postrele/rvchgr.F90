@@ -1,6 +1,6 @@
 subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
                   iret)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -12,8 +12,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 #include "asterfort/rvrepc.h"
 #include "asterfort/rvrepm.h"
 #include "asterfort/rvrepn.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=24) :: nlsnac
     character(len=19) :: sdnewr
     character(len=8) :: courbe, mailla, repere
@@ -92,7 +91,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
                     k8b, ierd)
         if (k8b(1:3) .eq. 'NON') then
             iret = 0
-            call u2mess('A', 'POSTRELE_28')
+            call utmess('A', 'POSTRELE_28')
             goto 9999
         endif
     endif
@@ -104,7 +103,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
             iret = 0
             valk (1) = courbe
             valk (2) = repere
-            call u2mesk('A', 'POSTRELE_29', 2, valk)
+            call utmess('A', 'POSTRELE_29', nk=2, valk=valk)
             goto 9999
         endif
 !
@@ -159,7 +158,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !
         else
 !
-            call u2mess('A', 'POSTRELE_28')
+            call utmess('A', 'POSTRELE_28')
 !
         endif
 !

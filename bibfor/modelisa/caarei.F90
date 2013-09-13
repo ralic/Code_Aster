@@ -34,9 +34,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xddlim.h"
 !
@@ -141,7 +139,9 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     model = ligrmo(1:8)
     call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
                 k8bid, ier)
-    if (ndim .ne. 3) call u2mesi('F', 'CHARGES2_7', 1, ndim)
+    if (ndim .ne. 3) then
+        call utmess('F', 'CHARGES2_7', si=ndim)
+    endif
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Type of coefficients
@@ -270,7 +270,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
             do i_keyword = 1, n_keyword
                 keyword = keywordlist(i_keyword)
                 if (zi(jcompt-1+i_keyword) .eq. 0) then
-                    call u2mesk('F', 'CHARGES2_45', 1, keyword)
+                    call utmess('F', 'CHARGES2_45', sk=keyword)
                 endif
             enddo
 !

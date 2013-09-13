@@ -14,7 +14,7 @@ subroutine fonlev(resu, noma, nbnoff)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: resu, noma
@@ -139,12 +139,12 @@ subroutine fonlev(resu, noma, nbnoff)
                     if (((typma.ne.'QUAD').and.(typma.ne.'TRIA')) .and. (nbnoff.gt.1)) then
                         valk(1) = type
                         valk(2) = motfac
-                        call u2mesk('F', 'RUPTURE0_65', 2, valk)
+                        call utmess('F', 'RUPTURE0_65', nk=2, valk=valk)
                         elseif ((typma(1:3).ne.'SEG').and.(nbnoff.eq.1))&
                     then
                         valk(1) = type
                         valk(2) = motfac
-                        call u2mesk('F', 'RUPTURE0_75', 2, valk)
+                        call utmess('F', 'RUPTURE0_75', nk=2, valk=valk)
                     else
                         zk8(jmai1) = maille
                         jmai1 = jmai1 + 1
@@ -163,11 +163,11 @@ subroutine fonlev(resu, noma, nbnoff)
                 if (((typma.ne.'QUAD').and.(typma.ne.'TRIA')) .and. ( nbnoff.gt.1)) then
                     valk(1) = type
                     valk(2) = motfac
-                    call u2mesk('F', 'RUPTURE0_65', 2, valk)
+                    call utmess('F', 'RUPTURE0_65', nk=2, valk=valk)
                 else if ((typma(1:3).ne.'SEG').and.(nbnoff.eq.1)) then
                     valk(1) = type
                     valk(2) = motfac
-                    call u2mesk('F', 'RUPTURE0_75', 2, valk)
+                    call utmess('F', 'RUPTURE0_75', nk=2, valk=valk)
                 else
                     zk8(jmai1) = zk8(jjj-1 + ino)
                     jmai1 = jmai1 + 1
@@ -204,7 +204,7 @@ subroutine fonlev(resu, noma, nbnoff)
         if (k2 .ne. nbmal) then
             valk(1) = motfac
             valk(2) = zk8(jmaii-1 + j2)
-            call u2mesk('E', 'RUPTURE0_70', 2, valk)
+            call utmess('E', 'RUPTURE0_70', nk=2, valk=valk)
         endif
 !
 ! --- VERIFICATION COHERENCE LEVRE SUP / FOND
@@ -236,7 +236,7 @@ subroutine fonlev(resu, noma, nbnoff)
                         (type(1:5).ne.'QUAD4') .and. ( type(1:5).ne.'TRIA6')) then
                         valk(1) = type(1:5)
                         valk(2) = motfac
-                        call u2mesk('F', 'RUPTURE0_65', 2, valk)
+                        call utmess('F', 'RUPTURE0_65', nk=2, valk=valk)
                     endif
                     call jeveuo(jexnum(conec, ibid), 'L', iamase)
                     call jenuno(jexnum(noma//'.NOMNOE', zi(iamase)), noeug)
@@ -251,7 +251,7 @@ subroutine fonlev(resu, noma, nbnoff)
                 if (compta .eq. 0) then
                     valk(1) = zk8(jnoe1-1 + i)
                     valk(2) = motfac
-                    call u2mesk('F', 'RUPTURE0_72', 2, valk)
+                    call utmess('F', 'RUPTURE0_72', nk=2, valk=valk)
                 endif
 610          continue
         endif
@@ -279,7 +279,7 @@ subroutine fonlev(resu, noma, nbnoff)
         do 710 i = 1, nbmas1
             do 715 j = 1, nbmas2
                 if (zk8(jsup-1 + i) .eq. zk8(jinf-1 + j)) then
-                    call u2mesk('F', 'RUPTURE0_73', 1, zk8(jsup-1 + i))
+                    call utmess('F', 'RUPTURE0_73', sk=zk8(jsup-1 + i))
                 endif
 715          continue
 710      continue
@@ -309,7 +309,7 @@ subroutine fonlev(resu, noma, nbnoff)
             if (sqrt(d) .gt. precr) then
                 valk(1) = zk8(jfinf+ino-1)
                 valk(2) = zk8(jfsup+ino-1)
-                call u2mesk('F', 'RUPTURE0_69', 2, valk)
+                call utmess('F', 'RUPTURE0_69', nk=2, valk=valk)
             endif
 555      continue
     endif

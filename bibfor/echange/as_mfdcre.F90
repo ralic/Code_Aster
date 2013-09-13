@@ -1,5 +1,5 @@
 subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
-                  unit, ncomp, cret)
+                     unit, ncomp, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,17 +19,18 @@ subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mfdcre.h"
     character(len=*) :: cha, nomamd, comp, unit
     character(len=80) :: unidt
     aster_int :: fid, ncomp, cret, type
 !
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, ncomp4, cret4, type4
     unidt = ' '
@@ -44,6 +45,6 @@ subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
     call mfdcre(fid, cha, type, ncomp, comp,&
                 unit, unidt, nomamd, cret)
 #endif
-
+!
 #endif
 end subroutine

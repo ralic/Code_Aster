@@ -6,7 +6,7 @@ subroutine nummod(nugene, modmec)
 #include "asterfort/jemarq.h"
 #include "asterfort/nummo1.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modmec
     character(len=14) :: nugene
 !-----------------------------------------------------------------------
@@ -61,7 +61,7 @@ subroutine nummod(nugene, modmec)
     if (nbvect .le. nbmode) then
         nbmode = nbvect
     else
-        call u2mess('I', 'ALGORITH9_10')
+        call utmess('I', 'ALGORITH9_10')
     endif
 !
     call nummo1(nugene, modmec, nbmode, typrof)

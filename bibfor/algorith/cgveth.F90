@@ -1,7 +1,7 @@
 subroutine cgveth(typfis, cas)
     implicit none
+#include "asterfort/utmess.h"
 !
-#include "asterfort/u2mess.h"
     character(len=8) :: typfis
     character(len=16) :: cas
 !
@@ -37,7 +37,9 @@ subroutine cgveth(typfis, cas)
     if (typfis .eq. 'THETA') then
 !
 !       ON NE DOIT PAS ETRE DANS UN CALCUL 3D LOCAL
-        if (cas .eq. '3D_LOCAL') call u2mess('F', 'RUPTURE0_57')
+        if (cas .eq. '3D_LOCAL') then
+            call utmess('F', 'RUPTURE0_57')
+        endif
 !
 !     SI LE CHAMP THETA N'EST PAS FOURNI
 !      ELSE

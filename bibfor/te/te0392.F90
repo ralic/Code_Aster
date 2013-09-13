@@ -26,8 +26,6 @@ subroutine te0392(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
 #include "asterfort/assert.h"
 #include "asterfort/caatdb.h"
 #include "asterfort/cast3d.h"
@@ -40,7 +38,9 @@ subroutine te0392(option, nomte)
 #include "asterfort/ortrep.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
+!-----------------------------------------------------------------------
     integer :: idecno, idecpg, idfde2, igau, imate, imatuu, ipoid2
     integer :: ivf2, nbres, nbsig, nno, npg1
 !-----------------------------------------------------------------------
@@ -141,7 +141,7 @@ subroutine te0392(option, nomte)
     if (codre .eq. 0) then
         nu = valres(2)
     else
-        call u2mess('F', 'ELEMENTS4_72')
+        call utmess('F', 'ELEMENTS4_72')
     endif
     nub = nu/(1.d0-nu)
 !

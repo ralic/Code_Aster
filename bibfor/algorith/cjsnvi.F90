@@ -1,5 +1,6 @@
 subroutine cjsnvi(mod, ndt, ndi, nvi)
     implicit none
+#include "asterfort/utmess.h"
 !
 !       ================================================================
 ! ======================================================================
@@ -29,7 +30,6 @@ subroutine cjsnvi(mod, ndt, ndi, nvi)
 !           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi
 !
 ! VARIABLES LOALES POUR SE PREMUNIR D APPELS DU TYPE
@@ -54,14 +54,14 @@ subroutine cjsnvi(mod, ndt, ndi, nvi)
 !
 ! - C_PLAN
     else if (mod(1:6).eq.'C_PLAN') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
 !
 ! - 1D
     else if (mod(1:2).eq.'1D') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
 ! - 1D
     else
-        call u2mess('F', 'ALGORITH2_20')
+        call utmess('F', 'ALGORITH2_20')
     endif
     nvi = ndtloc+10
     ndt = ndtloc

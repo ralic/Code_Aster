@@ -37,7 +37,7 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
 #include "asterfort/lcprmm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, k, kk, l, ll, nvi
     integer :: nbmeca, ind(7), iret, imat, nbmect
     real(kind=8) :: n, beta, dhuj, m, pco, pref, pc
@@ -259,12 +259,12 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
             hook(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_34')
+            call utmess('F', 'COMPOR1_34')
         endif
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 !
     endif
 !
@@ -446,7 +446,9 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
 ! =====================================================================
     call mgauss('NCVP', b, d, 7, nbmeca,&
                 ndt, det, iret)
-    if (iret .eq. 1) call u2mess('F', 'COMPOR1_6')
+    if (iret .eq. 1) then
+        call utmess('F', 'COMPOR1_6')
+    endif
 !
 ! =====================================================================
 ! --- IV. CALCUL DE TE = IDEN6 - E*D (6X6) ----------------------------
@@ -483,7 +485,7 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
 !        CALL JEDEMA ()
 ! =====================================================================
 999  continue
-    call u2mess('A', 'COMPOR1_14')
+    call utmess('A', 'COMPOR1_14')
 !
 1000  continue
 !

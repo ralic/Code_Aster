@@ -26,9 +26,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/tbexp2.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbr, nbc, nbk, nbobj
@@ -110,7 +108,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !
     call jeexin(jexnom('&&RCSTOC.TEMPOR', mcle8), iret)
     if (iret .gt. 0) then
-        call u2mesk('F', 'MODELISA6_69', 1, zk16(jnomo-1+i))
+        call utmess('F', 'MODELISA6_69', sk=zk16(jnomo-1+i))
     else
         call jecroc(jexnom('&&RCSTOC.TEMPOR', mcle8))
     endif
@@ -264,7 +262,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                     goto 151
                 endif
 150          continue
-            call u2mesk('F', 'MODELISA6_70', 1, nomcle(ii))
+            call utmess('F', 'MODELISA6_70', sk=nomcle(ii))
 151          continue
 !
             call jeveuo(nomfct//'.PROL', 'L', jfct)
@@ -272,12 +270,12 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                 call jelira(nomfct//'.VALE', 'LONMAX', nbptm)
                 if (nomrc(1:8) .eq. 'TRACTION') then
                     if (nbptm .lt. 4) then
-                        call u2mesk('F', 'MODELISA6_71', 1, nomcle(ii))
+                        call utmess('F', 'MODELISA6_71', sk=nomcle(ii))
                     endif
                 endif
                 if (nomrc(1:13) .eq. 'META_TRACTION') then
                     if (nbptm .lt. 2) then
-                        call u2mesk('F', 'MODELISA6_72', 1, nomcle(ii))
+                        call utmess('F', 'MODELISA6_72', sk=nomcle(ii))
                     endif
                 endif
                 nbcoup = nbptm / 2
@@ -288,15 +286,13 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                     valkk (1) = nomcle(ii)
                     valkk (2) = nomfct
                     valrr (1) = zr(jrpv)
-                    call u2mesg('F', 'MODELISA9_59', 2, valkk, 0,&
-                                0, 1, valrr)
+                    call utmess('F', 'MODELISA9_59', nk=2, valk=valkk, sr=valrr(1))
                 endif
                 if (zr(jrpv+nbptm/2) .le. 0.d0) then
                     valkk (1) = nomcle(ii)
                     valkk (2) = nomfct
                     valrr (1) = zr(jrpv+nbptm/2)
-                    call u2mesg('F', 'MODELISA9_60', 2, valkk, 0,&
-                                0, 1, valrr)
+                    call utmess('F', 'MODELISA9_60', nk=2, valk=valkk, sr=valrr(1))
                 endif
 !        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
                 iret=2
@@ -314,20 +310,18 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                         valrr (1) = e1
                         valrr (2) = ei
                         valrr (3) = zr(jrpv+i)
-                        call u2mesg('E', 'MODELISA9_61', 1, valkk, 0,&
-                                    0, 3, valrr)
+                        call utmess('E', 'MODELISA9_61', sk=valkk(1), nr=3, valr=valrr)
                     else if ((e1-ei)/e1 .le. precma) then
                         valkk (1) = nomcle(ii)
                         valrr (1) = e1
                         valrr (2) = ei
                         valrr (3) = precma
                         valrr (4) = zr(jrpv+i)
-                        call u2mesg('A', 'MODELISA9_62', 1, valkk, 0,&
-                                    0, 4, valrr)
+                        call utmess('A', 'MODELISA9_62', sk=valkk(1), nr=4, valr=valrr)
                     endif
 200              continue
                 if (iret .ne. 0) then
-                    call u2mess('F', 'MODELISA6_73')
+                    call utmess('F', 'MODELISA6_73')
                 endif
 !
             else if (zk24(jfct)(1:1) .eq. 'N') then
@@ -339,12 +333,12 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                     if (nbpts .ge. nbmax) nbmax = nbpts
                     if (nomrc(1:8) .eq. 'TRACTION') then
                         if (nbpts .lt. 4) then
-                            call u2mess('F', 'MODELISA6_74')
+                            call utmess('F', 'MODELISA6_74')
                         endif
                     endif
                     if (nomrc(1:13) .eq. 'META_TRACTION') then
                         if (nbpts .lt. 2) then
-                            call u2mesk('F', 'MODELISA6_75', 1, nomcle( ii))
+                            call utmess('F', 'MODELISA6_75', sk=nomcle( ii))
                         endif
                     endif
                     call jeveuo(jexnum(nomfct//'.VALE', k), 'L', jrpv)
@@ -353,16 +347,16 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                         valkk (1) = nomcle(ii)
                         valkk (2) = nomfct
                         valrr (1) = zr(jrpv)
-                        call u2mesg('F', 'MODELISA9_63', 2, valkk, 1,&
-                                    vali, 1, valrr)
+                        call utmess('F', 'MODELISA9_63', nk=2, valk=valkk, si=vali,&
+                                    sr=valrr(1))
                     endif
                     if (zr(jrpv+nbpts/2) .le. 0.d0) then
                         vali = k
                         valkk (1) = nomcle(ii)
                         valkk (2) = nomfct
                         valrr (1) = zr(jrpv+nbpts/2)
-                        call u2mesg('F', 'MODELISA9_64', 2, valkk, 1,&
-                                    vali, 1, valrr)
+                        call utmess('F', 'MODELISA9_64', nk=2, valk=valkk, si=vali,&
+                                    sr=valrr(1))
                     endif
 !         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
                     iret=2
@@ -380,17 +374,16 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                             valrr (1) = e1
                             valrr (2) = ei
                             valrr (3) = zr(jrpv+i)
-                            call u2mesg('E', 'MODELISA9_65', 1, valkk, 0,&
-                                        0, 3, valrr)
+                            call utmess('E', 'MODELISA9_65', sk=valkk(1), nr=3, valr=valrr)
                         endif
 210                  continue
                     if (iret .ne. 0) then
-                        call u2mess('F', 'MODELISA6_73')
+                        call utmess('F', 'MODELISA6_73')
                     endif
 160              continue
 !
             else
-                call u2mess('F', 'MODELISA6_76')
+                call utmess('F', 'MODELISA6_76')
             endif
 149      continue
 !

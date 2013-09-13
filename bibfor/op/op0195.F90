@@ -52,8 +52,7 @@ subroutine op0195()
 #include "asterfort/nopar2.h"
 #include "asterfort/titre.h"
 #include "asterfort/u195tb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/varaff.h"
 #include "asterfort/x195cb.h"
     integer :: n1, ib, ifm, niv, iret, i11, i12, test, ibid
@@ -100,14 +99,18 @@ subroutine op0195()
     if (mo .ne. ' ') then
         call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ib,&
                     ma2, ib)
-        if ((ma.ne.' ') .and. (ma.ne.ma2)) call u2mess('F', 'UTILITAI3_21')
+        if ((ma.ne.' ') .and. (ma.ne.ma2)) then
+            call utmess('F', 'UTILITAI3_21')
+        endif
         ma = ma2
     endif
 !
     call getres(chou, typco, kbid)
     call exisd('CHAMP', chou, test)
     if (test .eq. 1) then
-        if (.not.((opera.eq.'ASSE').or.(opera.eq.'COMB'))) call u2mess('F', 'UTILITAI3_43')
+        if (.not.((opera.eq.'ASSE').or.(opera.eq.'COMB'))) then
+            call utmess('F', 'UTILITAI3_43')
+        endif
     endif
     call getvtx(' ', 'TYPE_CHAM', scal=tychr1, nbret=ib)
     tychr = tychr1(1:4)
@@ -130,7 +133,9 @@ subroutine op0195()
 !
     if (tychr(1:2) .eq. 'EL') then
         if ((opera.eq.'AFFE') .or. (opera.eq.'ASSE') .or. ( opera.eq.'DISC')) then
-            if (mo .eq. ' ') call u2mess('F', 'UTILITAI3_22')
+            if (mo .eq. ' ') then
+                call utmess('F', 'UTILITAI3_22')
+            endif
             ligrel = mo//'.MODELE'
 !
 !         -- CALCUL D'UN CHAM_ELEM "MODELE" : CELMOD
@@ -148,7 +153,7 @@ subroutine op0195()
                         valk(2) = mo
                         valk(3) = ma2
                         valk(4) = ma
-                        call u2mesk('F', 'CALCULEL4_59', 4, valk)
+                        call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
                     endif
 !
                     call jeexin(chin//'.CELK', iret)
@@ -171,7 +176,7 @@ subroutine op0195()
                 valk(1)=ligrel
                 valk(2)=nompar
                 valk(3)=optio2
-                call u2mesk('F', 'UTILITAI3_23', 3, valk)
+                call utmess('F', 'UTILITAI3_23', nk=3, valk=valk)
             endif
 !
 !         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :
@@ -179,7 +184,7 @@ subroutine op0195()
             if (zk24(ib-1+3) .ne. tychr) then
                 valk(1) = optio2
                 valk(2) = tychr
-                call u2mesk('F', 'UTILITAI3_24', 2, valk)
+                call utmess('F', 'UTILITAI3_24', nk=2, valk=valk)
             endif
         endif
     endif
@@ -193,13 +198,15 @@ subroutine op0195()
     if (opera .eq. 'NORMALE') then
 !     -----------------------------------------
         if (tychr .eq. 'NOEU') then
-            if (nomgd .ne. 'GEOM_R') call u2mesk('F', 'UTILITAI3_25', 1, opera)
+            if (nomgd .ne. 'GEOM_R') then
+                call utmess('F', 'UTILITAI3_25', sk=opera)
+            endif
             call cnonor(mo, nomgd, 'G', chou)
 !
         else
             valk(1) = opera
             valk(2) = tychr
-            call u2mesk('F', 'UTILITAI3_26', 2, valk)
+            call utmess('F', 'UTILITAI3_26', nk=2, valk=valk)
         endif
 !
 !
@@ -264,7 +271,7 @@ subroutine op0195()
             if (.not. (nomgd.eq.'VARI_R'.and.nomgd2.eq.'VAR2_R')) then
                 valk(1) = chin
                 valk(2) = tychr1
-                call u2mesk('F', 'UTILITAI3_27', 2, valk)
+                call utmess('F', 'UTILITAI3_27', nk=2, valk=valk)
             endif
         endif
         call chpchd(chin, tychr, celmod, prol0, 'G',&
@@ -314,7 +321,7 @@ subroutine op0195()
                 endif
                 valk (1) = nomgd1
                 valk (2) = nogd
-                call u2mesk('F', 'UTILITAI6_5', 2, valk)
+                call utmess('F', 'UTILITAI6_5', nk=2, valk=valk)
             endif
  1          continue
 !
@@ -362,7 +369,9 @@ subroutine op0195()
                     ma2, ib)
         valk(1)=ma2
         valk(2)=ma
-        if (ma .ne. ma2) call u2mesk('F', 'CALCULEL4_78', 2, valk)
+        if (ma .ne. ma2) then
+            call utmess('F', 'CALCULEL4_78', nk=2, valk=valk)
+        endif
     endif
 !
 !
@@ -373,7 +382,7 @@ subroutine op0195()
     if (tych .ne. tychr) then
         valk(1)=tychr
         valk(2)=tych
-        call u2mesk('F', 'CALCULEL4_70', 2, valk)
+        call utmess('F', 'CALCULEL4_70', nk=2, valk=valk)
     endif
 !
     call dismoi('F', 'NOM_GD', chou, 'CHAMP', ib,&
@@ -381,7 +390,7 @@ subroutine op0195()
     if (nogd .ne. nomgd) then
         valk(1)=nomgd
         valk(2)=nogd
-        call u2mesk('F', 'CALCULEL4_71', 2, valk)
+        call utmess('F', 'CALCULEL4_71', nk=2, valk=valk)
     endif
 !
 !

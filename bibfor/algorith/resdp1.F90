@@ -18,9 +18,9 @@ subroutine resdp1(materf, seq, i1e, pmoins, dp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    implicit      none
+    implicit none
 #include "asterfort/schdp1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: materf(5, 2), pmoins, dp, seq, i1e, plas, pptest, fcrit0
 ! =====================================================================
 ! --- RESOLUTION NUMERIQUE --------------------------------------------
@@ -58,7 +58,7 @@ subroutine resdp1(materf, seq, i1e, pmoins, dp,&
         if (pmoins .lt. pult) then
             a1 = trois * deuxmu / deux + trois * troisk * a * a + h
             if (a1 .eq. 0.0d0) then
-                call u2mess('F', 'ALGORITH10_41')
+                call utmess('F', 'ALGORITH10_41')
             endif
             dp = fcrit / a1
             valcoe = pult - pmoins
@@ -66,14 +66,14 @@ subroutine resdp1(materf, seq, i1e, pmoins, dp,&
                 fcrit = schdp1(seq, i1e, sy, h, a, pult, pult)
                 b2 = trois * deuxmu / deux + trois * troisk * a * a
                 if (b2 .eq. 0.0d0) then
-                    call u2mess('F', 'ALGORITH10_42')
+                    call utmess('F', 'ALGORITH10_42')
                 endif
                 dp = fcrit / b2
             endif
         else
             b2 = trois * deuxmu / deux + trois * troisk * a * a
             if (b2 .eq. 0.0d0) then
-                call u2mess('F', 'ALGORITH10_42')
+                call utmess('F', 'ALGORITH10_42')
             endif
             dp = fcrit / b2
         endif
@@ -96,7 +96,7 @@ subroutine resdp1(materf, seq, i1e, pmoins, dp,&
         if (pmoins .lt. pult) then
             a1 = trois * troisk * a * a + h
             if (a1 .eq. 0.0d0) then
-                call u2mess('F', 'ALGORITH10_41')
+                call utmess('F', 'ALGORITH10_41')
             endif
             dp = fcrit / a1
             valcoe = pult - pmoins

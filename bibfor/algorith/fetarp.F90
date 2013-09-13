@@ -36,7 +36,7 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
 #include "asterfort/fetfiv.h"
 #include "asterfort/fetprj.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     integer :: ifm, niter, nbi, nbreor, dimgi, ipiv, nbsd, ifetf, ifeth, irex
@@ -124,7 +124,7 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
             goto 31
         endif
         if ((info.ne.0) .or. ((ido.eq.99).and.(iparam(5).lt.nfreq))) then
-            call u2mess('A', 'ALGORITH3_62')
+            call utmess('A', 'ALGORITH3_62')
         endif
         info=0
         call dneupd(.false., 'A', zl(itest4), zr(itest5), zr(itest5+nfreq),&
@@ -132,7 +132,9 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
                     'I', nbi, 'SR', nfreq, 0.d0,&
                     zr(itest), nbvect, zr(itest1), nbi, iparam,&
                     ipntr, zr(itest2), zr(itest3), lonwl, info)
-        if (info .ne. 0) call u2mess('A', 'ALGORITH3_63')
+        if (info .ne. 0) then
+            call utmess('A', 'ALGORITH3_63')
+        endif
         write(ifm,*)
         write(ifm,*)'******* NMAX_ITER VP PLUS BASSES DE P*FI*P *******'
         do 33 i = 1, iparam(5)

@@ -39,7 +39,7 @@ subroutine permea(imate, hydr, phi, t, sat,&
     implicit none
 !
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, ncon, nc, nc1
     integer :: aniso
     parameter      (nc = 1)
@@ -65,7 +65,7 @@ subroutine permea(imate, hydr, phi, t, sat,&
         cond(2) = 0.d0
         cond(3) = 0.d0
 !
-        call u2mess('F', 'ALGORITH9_80')
+        call utmess('F', 'ALGORITH9_80')
 !
         nompar(1)='PORO'
         nompar(2)='TEMP'

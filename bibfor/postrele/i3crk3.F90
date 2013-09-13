@@ -1,8 +1,7 @@
 subroutine i3crk3(typk, face, crf, crk)
     implicit none
+#include "asterfort/utmess.h"
 !
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
     integer :: typk, face
     real(kind=8) :: crf(*), crk(*)
 !
@@ -67,7 +66,7 @@ subroutine i3crk3(typk, face, crf, crk)
             crk(2) = r1
             crk(1) = un - r1 -r2
         else
-            call u2mesk('F', 'INTEMAIL_6', 1, 'TETRA')
+            call utmess('F', 'INTEMAIL_6', sk='TETRA')
         endif
     else if (typk .eq. 2) then
         if (face .eq. 0) then
@@ -95,7 +94,7 @@ subroutine i3crk3(typk, face, crf, crk)
             crk(2) = (un + r1)*unsur2
             crk(3) = r2
         else
-            call u2mesk('F', 'INTEMAIL_6', 1, 'PENTA')
+            call utmess('F', 'INTEMAIL_6', sk='PENTA')
         endif
     else if (typk .eq. 3) then
         if (face .eq. 0) then
@@ -127,9 +126,9 @@ subroutine i3crk3(typk, face, crf, crk)
             crk(3) = r2
             crk(2) = un
         else
-            call u2mesk('F', 'INTEMAIL_6', 1, 'HEXA')
+            call utmess('F', 'INTEMAIL_6', sk='HEXA')
         endif
     else
-        call u2mess('F', 'INTEMAIL_7')
+        call utmess('F', 'INTEMAIL_7')
     endif
 end subroutine

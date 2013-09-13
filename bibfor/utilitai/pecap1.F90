@@ -73,7 +73,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -90,8 +89,8 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
 ! -----  ARGUMENTS
     integer :: ngi
     character(len=*) :: chgeoz, tempez, lisgma(ngi)
@@ -140,7 +139,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     call dismoi('F', 'TYPE_RESU', temper, 'RESULTAT', ibid,&
                 typres, ierd)
     if (typres .ne. 'EVOL_THER') then
-        call u2mess('F', 'UTILITAI3_50')
+        call utmess('F', 'UTILITAI3_50')
     endif
 !
 ! --- RECUPERATION DU NOMBRE D'ORDRES DU RESULTAT :
@@ -148,7 +147,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     call rsutnu(temper, ' ', 0, knum, nbordr,&
                 prec, crit, iret)
     if (nbordr .ne. 1) then
-        call u2mesk('F', 'UTILITAI3_51', 1, temper)
+        call utmess('F', 'UTILITAI3_51', sk=temper)
     endif
 !
 ! --- RECUPERATION DU CHAMP DE TEMPERATURES DU RESULTAT :
@@ -214,14 +213,18 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
                         cbid, k8bid, k8bid, r8b, 'X_MIN',&
                         k8bid, ibid, xmin, cbid, k8bid,&
                         iret2)
-            if (iret2 .ne. 0) call u2mess('F', 'MODELISA2_13')
+            if (iret2 .ne. 0) then
+                call utmess('F', 'MODELISA2_13')
+            endif
             call tbliva(nomt19, 0, ' ', ibid, r8b,&
                         cbid, k8bid, k8bid, r8b, 'Y_MIN',&
                         k8bid, ibid, ymin, cbid, k8bid,&
                         iret2)
-            if (iret2 .ne. 0) call u2mess('F', 'MODELISA2_13')
+            if (iret2 .ne. 0) then
+                call utmess('F', 'MODELISA2_13')
+            endif
         else
-            call u2mess('F', 'UTILITAI3_53')
+            call utmess('F', 'UTILITAI3_53')
         endif
 !
 ! --- RECUPERATION DE LA TEMPERATURE AU PREMIER NOEUD DU GROUP_MA :

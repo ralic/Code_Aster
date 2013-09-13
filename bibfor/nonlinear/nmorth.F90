@@ -27,7 +27,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 #include "asterfort/lteatt.h"
 #include "asterfort/matrot.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/verift.h"
     character(len=*) :: fami, poum
@@ -79,7 +79,9 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
  1      end do
     endif
 !
-    if (angmas(1) .eq. r8vide()) call u2mess('F', 'ALGORITH8_20')
+    if (angmas(1) .eq. r8vide()) then
+        call utmess('F', 'ALGORITH8_20')
+    endif
 !
     repere(1)=1.d0
     repere(2)=angmas(1)
@@ -104,7 +106,9 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         endif
     endif
 !
-    if (.not.vrai) call u2mess('F', 'ALGORITH8_22')
+    if (.not.vrai) then
+        call utmess('F', 'ALGORITH8_22')
+    endif
 !
     do 2 i = 1, nbsigm
         depgth(i)=0.d0

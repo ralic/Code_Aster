@@ -2,7 +2,7 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin)
     implicit none
 #include "jeveux.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: coor1(*), coor2(*), d
     integer :: icoupl(*), nbnott(3)
 !---------------------------------------------------------------------
@@ -98,7 +98,7 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin)
         xn2(2) = x3(3)*x4(1)-x3(1)*x4(3)
         xn2(3) = x3(1)*x4(2)-x3(2)*x4(1)
     else
-        call u2mess('F', 'MODELISA6_7')
+        call utmess('F', 'MODELISA6_7')
     endif
     s=0.d0
     do 3 i = 1, 3
@@ -109,7 +109,7 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin)
     else if (s.lt.0) then
         kdeb0 = kdeb2
     else
-        call u2mess('F', 'MODELISA6_8')
+        call utmess('F', 'MODELISA6_8')
     endif
     dmin = 99999999.d0
     nbperm = nbsom

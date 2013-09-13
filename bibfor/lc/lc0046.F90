@@ -24,7 +24,7 @@ subroutine lc0046(fami, kpg, ksp, ndim, imate,&
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/lcesgv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, ndim, codret, kpg, ksp, neps, nsig, ndsde, nwkin, nwkout
     integer :: icomp, nvi
     real(kind=8) :: wkin(nwkin), wkout(nwkout), crit(*)
@@ -66,7 +66,7 @@ subroutine lc0046(fami, kpg, ksp, ndim, imate,&
 !     ENDO_SCALAIRE N'EST PAS DISOPNIBLE POUR D'AUTRE FORMULATIONS
     else
 !
-        call u2mess('F', 'COMPOR1_66')
+        call utmess('F', 'COMPOR1_66')
 !
     endif
 !

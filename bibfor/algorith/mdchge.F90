@@ -17,8 +17,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 #include "asterfort/mgutdm.h"
 #include "asterfort/orient.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/vechbn.h"
 !
@@ -92,11 +91,11 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 !
         call getvtx(motfac, 'SOUS_STRUC_1', iocc=i, scal=sst1, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('F', 'ALGORITH5_31')
+            call utmess('F', 'ALGORITH5_31')
         endif
         call jenonu(jexnom(mdssno, sst1), iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'ALGORITH5_32')
+            call utmess('F', 'ALGORITH5_32')
         endif
         call mgutdm(mdgene, sst1, ibid, 'NOM_NUME_DDL', ibid,&
                     nume1)
@@ -111,11 +110,11 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
             call utnono(' ', maya1, 'NOEUD', nomgr1, nomno1,&
                         iret)
             if (iret .eq. 10) then
-                call u2mesk('F', 'ELEMENTS_67', 1, nomgr1)
+                call utmess('F', 'ELEMENTS_67', sk=nomgr1)
             else if (iret.eq.1) then
                 valk(1) = nomgr1
                 valk(2) = nomno1
-                call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
             endif
             noecho(i,1) = nomno1
         endif
@@ -129,11 +128,11 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
             lnoue2 = .true.
             call getvtx(motfac, 'SOUS_STRUC_2', iocc=i, scal=sst2, nbret=n2)
             if (n2 .eq. 0) then
-                call u2mess('F', 'ALGORITH5_33')
+                call utmess('F', 'ALGORITH5_33')
             endif
             call jenonu(jexnom(mdssno, sst2), iret)
             if (iret .eq. 0) then
-                call u2mess('F', 'ALGORITH5_34')
+                call utmess('F', 'ALGORITH5_34')
             endif
             call mgutdm(mdgene, sst2, ibid, 'NOM_NUME_DDL', ibid,&
                         nume2)
@@ -146,11 +145,11 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
                 call utnono(' ', maya2, 'NOEUD', nomgr2, nomno2,&
                             iret)
                 if (iret .eq. 10) then
-                    call u2mesk('F', 'ELEMENTS_67', 1, nomgr2)
+                    call utmess('F', 'ELEMENTS_67', sk=nomgr2)
                 else if (iret.eq.1) then
                     valk(1) = nomgr2
                     valk(2) = nomno2
-                    call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+                    call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
                 endif
                 noecho(i,5) = nomno2
             endif
@@ -222,7 +221,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
             noecho(i,9) = refo(1:8)
         endif
         if (noecho(i,9) .eq. 'BI_CERCI' .and. parcho(i,31) .lt. parcho(i, 30)) then
-            call u2mess('F', 'ALGORITH5_35')
+            call utmess('F', 'ALGORITH5_35')
         endif
 ! ------ SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
         if (ctang .eq. 0.d0 .and. ktang .ne. 0.d0) then

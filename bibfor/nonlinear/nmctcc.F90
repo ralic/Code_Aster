@@ -20,7 +20,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -30,7 +30,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
 #include "asterfort/mmmbca.h"
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmimck.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xmmbca.h"
 #include "asterfort/xmtbca.h"
     character(len=8) :: noma
@@ -138,7 +138,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
     if ((.not.mmcvca) .and. (mmitca.eq.maxcon)) then
         if (lfrot .and. lxfcm) then
 ! ------- CONVERGENCE FORCEE
-            call u2mess('A', 'CONTACT3_86')
+            call utmess('A', 'CONTACT3_86')
             mmcvca = .true.
         else
             lerroc = .true.

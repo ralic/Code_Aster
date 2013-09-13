@@ -36,9 +36,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -138,7 +136,9 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                 k8bid, iret)
     call dismoi('F', 'NB_MA_MAILLA', mesh, 'MAILLAGE', nb_elem,&
                 k8bid, iret)
-    if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'CHARGES2_6')
+    if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) then
+        call utmess('F', 'CHARGES2_6')
+    endif
 !
 ! - Initializations of types
 !
@@ -219,7 +219,9 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
             if (l_rela_cine) then
                 list_rela_old = cabl_prec//'.LIRELA'
                 call jeexin(list_rela_old//'.RLNR', iret)
-                if (iret .eq. 0) call u2mesk('F', 'CHARGES2_48', 1, cabl_prec)
+                if (iret .eq. 0) then
+                    call utmess('F', 'CHARGES2_48', sk=cabl_prec)
+                endif
 !
 ! ------------- Get old linear relations
 !
@@ -260,7 +262,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                 call char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
                                 call jeveuo(list_node, 'L', jlino)
                                 if (nb_node .eq. 1) then
-                                    call u2mess('I', 'CHARGES2_17')
+                                    call utmess('I', 'CHARGES2_17')
                                     goto 140
                                 endif
 !

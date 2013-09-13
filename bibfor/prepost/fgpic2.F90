@@ -28,8 +28,8 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
 !           NPIC NOMBRE DE PICS (NPIC = NPOINT AU MAXIMUM)
 !       ----------------------------------------------------------------
 !
-    implicit       none
-#include "asterfort/u2mesk.h"
+    implicit none
+#include "asterfort/utmess.h"
     integer :: i, npoint, npic, nmax, ntrv
     real(kind=8) :: point(*), pic(*), rtrv(*), pmax, pinter
     real(kind=8) :: dp1, dp2, epsi
@@ -92,7 +92,7 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
         pic(npic) = rtrv(ntrv)
     else
         k16b = method(1:16)
-        call u2mesk('F', 'PREPOST_4', 1, k16b)
+        call utmess('F', 'PREPOST_4', sk=k16b)
     endif
 !
 end subroutine

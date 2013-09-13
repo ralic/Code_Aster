@@ -14,7 +14,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vetyma.h"
 !
 ! ======================================================================
@@ -65,7 +65,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
     real(kind=8) :: wave_dire(3), wave_type_r
     character(len=8) :: signal
     character(len=16) :: wave_type
-    integer ::  jvalv
+    integer :: jvalv
     integer :: iocc, ndir, val_nb, nondp, ibid, codret
     character(len=16) :: keywordfact
     character(len=19) :: carte(2)
@@ -144,7 +144,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
             else if (wave_type.eq.'SH') then
                 wave_type_r = 2.d0
             else if (wave_type.eq.'S ') then
-                call u2mess('F', 'CHARGES2_61')
+                call utmess('F', 'CHARGES2_61')
             else
                 ASSERT(.false.)
             endif
@@ -154,7 +154,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
             else if (wave_type.eq.'S ') then
                 wave_type_r = 1.d0
             else if (wave_type.eq.'SV'.or.wave_type.eq.'SH') then
-                call u2mess('A', 'CHARGES2_62')
+                call utmess('A', 'CHARGES2_62')
                 wave_type_r = 1.d0
             else
                 ASSERT(.false.)

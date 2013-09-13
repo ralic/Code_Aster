@@ -14,10 +14,10 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
 #include "asterfort/jquad4.h"
 #include "asterfort/q4gbc.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
 #include "asterfort/utdtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), rig(*), ener(*)
     character(len=16) :: option, nomte
@@ -88,7 +88,7 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
 ! --- Q4G EXCENTRE, ON S'ARRETE EN ERREUR FATALE :
 !     ------------------------------------------
     if (excent .ne. zero) then
-        call u2mess('F', 'ELEMENTS2_57')
+        call utmess('F', 'ELEMENTS2_57')
     endif
 !
     call r8inir(96, zero, kmc, 1)

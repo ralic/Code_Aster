@@ -1,11 +1,10 @@
 subroutine verdis(model, nomail, foue, i3d, i2d,&
                   ndim, ier)
-    implicit          none
+    implicit none
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/modexi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=1) :: foue
     character(len=8) :: model, nomail
     integer :: i3d, i2d, ndim, ier
@@ -67,7 +66,9 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 !              =  23  : 2D+3D     MELANGE
 !              = 123  : 1D+2D+3D  MELANGE
 !        IBID>3 ==> MELANGE DE MODELISATIONS ==> MESSAGE AFFE_MODELE
-        if (ibid .gt. 3) call u2mess('A', 'MODELISA4_4')
+        if (ibid .gt. 3) then
+            call utmess('A', 'MODELISA4_4')
+        endif
 !
         ndim = ibid
         if (ibid .ge. 100) then
@@ -83,7 +84,7 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 !     LA DIMENSION C'EST 2D OU 3D : TOUS LES AUTRES CAS SONT EXCLUS
     if ((ndim.ne.2) .and. (ndim.ne.3)) then
         call codent(dimmod, 'G', kmess)
-        call u2mesk(foue, 'DISCRETS_20', 1, kmess)
+        call utmess(foue, 'DISCRETS_20', sk=kmess)
         ier = ier + 1
     endif
 !
@@ -94,12 +95,12 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 !
 ! --- IL FAUT DES DISCRETS DANS LA MODELISATION
     if ((i3d.eq.0) .and. (i2d.eq.0)) then
-        call u2mess(foue, 'DISCRETS_17')
+        call utmess(foue, 'DISCRETS_17')
         ier = ier + 1
     endif
 ! --- PAS DE DISCRET 2D ET 3D SUR UN MODELE
     if ((i3d.eq.1) .and. (i2d.eq.1)) then
-        call u2mess(foue, 'DISCRETS_16')
+        call utmess(foue, 'DISCRETS_16')
         ier = ier + 1
     endif
 !

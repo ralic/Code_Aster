@@ -42,7 +42,7 @@ subroutine op0194()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/smevol.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=6) :: nompro
@@ -123,14 +123,12 @@ subroutine op0194()
                     if (nbtrou .eq. 0) then
                         valk = temper
                         valr = inst
-                        call u2mesg('F', 'UTILITAI6_51', 1, valk, 0,&
-                                    0, 1, valr)
+                        call utmess('F', 'UTILITAI6_51', sk=valk, sr=valr)
                     else if (nbtrou.gt.1) then
                         valk = temper
                         valr = inst
                         vali = nbtrou
-                        call u2mesg('F', 'UTILITAI6_52', 1, valk, 1,&
-                                    vali, 1, valr)
+                        call utmess('F', 'UTILITAI6_52', sk=valk, si=vali, sr=valr)
                     endif
                 endif
                 call rsexch('F', temper, 'META_ELNO', num, phasin,&

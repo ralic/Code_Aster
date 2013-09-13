@@ -24,9 +24,9 @@ subroutine fnovsu(option, nface, congem, vectu, press1,&
 ! =====================================================================
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: maxfa
     parameter    (maxfa=6)
     integer :: dimcon, dimuel
@@ -151,8 +151,7 @@ subroutine fnovsu(option, nface, congem, vectu, press1,&
         vectu(adcm1)= sfluw+sfluvp
         vectu(adcm2)= sfluas+sfluad
     else
-        call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                    typvf, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_9', si=typvf)
 ! REMARQUE POUR UN SCHEMA A DEUX POINT TYPVF=1
 !          SFLUW = CONGEM(ADCP11+1,1)
 !          SFLUVP = CONGEM(ADCP12+1,1)

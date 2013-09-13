@@ -83,8 +83,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 #include "asterfort/jexnum.h"
 #include "asterfort/reci3d.h"
 #include "asterfort/tbajli.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 !
@@ -177,22 +176,22 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogrna(1))
+            call utmess('F', 'ELEMENTS_67', sk=nogrna(1))
         else if (iret.eq.1) then
             valk(1) = nogrna(1)
             valk(2) = k8b
-            call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
         noancr(1) = k8b
 !
         call utnono(' ', mailla, 'NOEUD', nogrna(2), k8b,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogrna(2))
+            call utmess('F', 'ELEMENTS_67', sk=nogrna(2))
         else if (iret.eq.1) then
             valk(1) = nogrna(2)
             valk(2) = k8b
-            call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
         noancr(2) = k8b
     endif
@@ -280,7 +279,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
         xnorm2 = axe(1)*axe(1) + axe(2)*axe(2) + axe(3)*axe(3)
 !
         if (xnorm2 .eq. zero) then
-            call u2mess('F', 'MODELISA4_70')
+            call utmess('F', 'MODELISA4_70')
         endif
 !
         xnorm = sqrt(xnorm2)
@@ -504,7 +503,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
             write(k3b,'(I3)') icabl
             valk(1) = k3b
             valk(2) = nnoeca
-            call u2mesk('F', 'MODELISA4_71', 2, valk)
+            call utmess('F', 'MODELISA4_71', nk=2, valk=valk)
         endif
 !
 ! 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES

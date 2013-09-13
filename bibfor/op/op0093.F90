@@ -46,8 +46,7 @@ subroutine op0093()
 #include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
 #include "asterfort/psmo93.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, ierd, nbmodd
@@ -93,7 +92,7 @@ subroutine op0093()
     call getfac('PSEUDO_MODE', nbpsmo)
     if (nbpsmo .ne. 0) then
         if (nma .eq. 0) then
-            call u2mess('F', 'ALGELINE2_77')
+            call utmess('F', 'ALGELINE2_77')
         endif
     endif
 !
@@ -134,7 +133,7 @@ subroutine op0093()
                 ibid, -9999)
     if (iret .eq. 2) then
         valk = raide
-        call u2mesk('F', 'ALGELINE4_37', 1, valk)
+        call utmess('F', 'ALGELINE4_37', sk=valk)
     endif
 !
     call getfac('MODE_STAT', nbmost)

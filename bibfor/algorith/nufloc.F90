@@ -25,7 +25,7 @@ function nufloc(ndim, nsc, isc)
 !
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ndim, nsc, isc(1:nsc)
 !
     character(len=8) :: elrefe
@@ -72,7 +72,7 @@ function nufloc(ndim, nsc, isc)
             fa=10-isc(1)-isc(2)-isc(3)
             ASSERT(fa.ge.1.and.fa.le.4)
         else
-            call u2mesk('F', 'VOLUFINI_12', 1, elrefe)
+            call utmess('F', 'VOLUFINI_12', sk=elrefe)
         endif
     endif
     nufloc=fa

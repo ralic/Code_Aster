@@ -23,7 +23,7 @@ subroutine dfllne(mcfact, nechec, nerreu)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: mcfact
     integer :: nechec, nerreu
 !
@@ -69,7 +69,9 @@ subroutine dfllne(mcfact, nechec, nerreu)
 !
 ! --- ON NE PEUT DEFINIR QU'UNE SEULE OCCURRENCE AVEC 'ERREUR'
 !
-    if (nerreu .gt. 1) call u2mess('F', 'DISCRETISATION_10')
+    if (nerreu .gt. 1) then
+        call utmess('F', 'DISCRETISATION_10')
+    endif
 !
     call jedema()
 end subroutine

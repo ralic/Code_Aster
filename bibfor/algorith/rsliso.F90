@@ -30,7 +30,7 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
 #include "asterfort/rctrac.h"
 #include "asterfort/rctype.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: temp, p, rp, e, drdp, airerp, dum, resu
     integer :: imat, jprol, jvale, nbvale, kpg, ksp, iret
     character(len=*) :: fami
@@ -42,7 +42,9 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
                 ksp, temp, iret)
     call rctype(imat, 1, 'TEMP', temp, resu,&
                 type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) call u2mess('F', 'CALCULEL_31')
+    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'CALCULEL_31')
+    endif
     call rctrac(imat, 1, 'SIGM', resu, jprol,&
                 jvale, nbvale, e)
     call rcfonc('V', 1, jprol, jvale, nbvale,&

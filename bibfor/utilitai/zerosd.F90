@@ -2,7 +2,7 @@ function zerosd(typesd, sd)
     implicit none
     logical :: zerosd
 #include "jeveux.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerobj.h"
     character(len=*) :: sd, typesd
 ! ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ function zerosd(typesd, sd)
         zerosd=zerobj(k19//'.CELV')
 !
     else
-        call u2mesk('F', 'UTILITAI_47', 1, typ2sd)
+        call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
 end function

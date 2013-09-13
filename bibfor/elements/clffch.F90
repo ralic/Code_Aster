@@ -47,8 +47,8 @@ subroutine clffch(alias, type, nno, xi, yi,&
 !......................................................................C
 !......................................................................C
 !
-    implicit     none
-#include "asterfort/u2mess.h"
+    implicit none
+#include "asterfort/utmess.h"
     character(len=6) :: alias, type
     real(kind=8) :: tn(1), ajx(1), ajy(1), ajz(1), xin(1), yin(1), zin(1)
     real(kind=8) :: bjxx(1), bjyy(1), bjzz(1), bjxy(1), bjxz(1), bjyz(1), xi, yi
@@ -204,7 +204,7 @@ subroutine clffch(alias, type, nno, xi, yi,&
         endif
 !     ---------------------------------------------------------
     else
-        call u2mess('F', 'ELEMENTS_20')
+        call utmess('F', 'ELEMENTS_20')
     endif
 !
 end subroutine

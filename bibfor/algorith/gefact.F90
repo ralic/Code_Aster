@@ -56,9 +56,7 @@ subroutine gefact(duree, nominf)
 #include "asterfort/jexnum.h"
 #include "asterfort/ordis.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     real(kind=8) :: duree
@@ -163,15 +161,14 @@ subroutine gefact(duree, nominf)
             pas1 = zr(lfreq+ii) - zr(lfreq+ii-1)
             difpas = abs(pas1-pas)
             if (difpas .gt. prec) then
-                call u2mess('F', 'ALGORITH3_78')
+                call utmess('F', 'ALGORITH3_78')
             endif
 100      continue
 !
         if (( lnbpn ) .and. (nbpini.lt.nbval)) then
             freqf = zr(lfreq+nbpini-1)
             valr = freqf
-            call u2mesg('A', 'ALGORITH15_11', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('A', 'ALGORITH15_11', sr=valr)
         else
             freqf = zr(lfreq+nbval-1)
         endif
@@ -185,15 +182,14 @@ subroutine gefact(duree, nominf)
             if (nbpoin .gt. nbpini) then
                 vali = nbpoin
                 r8b = 0.d0
-                call u2mesg('A', 'ALGORITH15_12', 0, ' ', 1,&
-                            vali, 0, r8b)
+                call utmess('A', 'ALGORITH15_12', si=vali)
             else
                 pui2 = log(dble(nbpini))/log(2.d0)
                 pui2d = abs( pui2 - aint( pui2 ))
                 pui3d = abs( 1.d0 - pui2d )
                 if (pui2d .ge. 1.d-06 .and. pui3d .ge. 1.d-06) then
                     nbpini = 2**(int(pui2)+1)
-                    call u2mess('A', 'ALGORITH3_80')
+                    call utmess('A', 'ALGORITH3_80')
                 endif
                 nbpoin = nbpini
             endif
@@ -236,15 +232,13 @@ subroutine gefact(duree, nominf)
                     nbpoin = 2**(int(log(2.d0*freqf*duree)/log(2.d0)))
                     vali = nbpoin
                     r8b = 0.d0
-                    call u2mesg('A', 'ALGORITH15_13', 0, ' ', 1,&
-                                vali, 0, r8b)
+                    call utmess('A', 'ALGORITH15_13', si=vali)
                 endif
             else
                 nbpoin = 2**(int(log(2.d0*freqf*duree)/log(2.d0)))
                 if (( dfreq.gt. 2*pmin) .and. (pmin.gt.0.d0)) then
                     valr = 1.d0/pmin
-                    call u2mesg('A', 'ALGORITH15_14', 0, ' ', 0,&
-                                0, 1, valr)
+                    call utmess('A', 'ALGORITH15_14', sr=valr)
                 endif
             endif
         else
@@ -254,7 +248,7 @@ subroutine gefact(duree, nominf)
                 pui2d = abs( pui2 - aint( pui2 ))
                 pui3d = abs( 1.d0 - pui2d )
                 if (pui2d .ge. 1.d-06 .and. pui3d .ge. 1.d-06) then
-                    call u2mess('A', 'ALGORITH3_80')
+                    call utmess('A', 'ALGORITH3_80')
                     nbpoin = 2**(int(pui2)+1)
                 endif
                 dfreq=freqf/(nbpoin-1)
@@ -263,8 +257,7 @@ subroutine gefact(duree, nominf)
                 if ((dfreq .gt. pmin ) .and. (pmin.gt.0.d0)) then
                     vali = nbpoin
                     valr = (freqf-freqi)/pmin+1
-                    call u2mesg('A', 'ALGORITH15_15', 0, ' ', 1,&
-                                vali, 1, valr)
+                    call utmess('A', 'ALGORITH15_15', si=vali, sr=valr)
                 endif
             else
                 if (pmin .gt. 0.d0) then
@@ -378,7 +371,7 @@ subroutine gefact(duree, nominf)
                             resuim= y1+(freq-x1)*(y2-y1)/(x2-x1)
                         endif
                     else
-                        call u2mesk('A', 'PREPOST3_6', 1, coli)
+                        call utmess('A', 'PREPOST3_6', sk=coli)
                     endif
                 endif
                 zr(ix) = resure

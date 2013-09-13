@@ -17,9 +17,8 @@ subroutine cfcrma(neqmat, noma, resoco)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/crnslv.h"
 #include "asterfort/infdbg.h"
@@ -30,8 +29,9 @@ subroutine cfcrma(neqmat, noma, resoco)
 #include "asterfort/jemarq.h"
 #include "asterfort/jevtbl.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: neqmat
     character(len=8) :: noma
     character(len=24) :: resoco
@@ -112,8 +112,7 @@ subroutine cfcrma(neqmat, noma, resoco)
         vali (2) = hmax
         vali (3) = hmax/1024+1
         valk = ' '
-        call u2mesg('F', 'ALGORITH12_41', 1, valk, 3,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_41', sk=valk, ni=3, vali=vali)
     endif
 !
 ! --- ON FAIT LA PREMIERE COLONNE (DU 1ER BLOC) A PART

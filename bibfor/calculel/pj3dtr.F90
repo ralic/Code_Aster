@@ -35,9 +35,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 #include "asterfort/pjeflo.h"
 #include "asterfort/pjefmi.h"
 #include "asterfort/reereg.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=16) :: corres, cortr3
@@ -205,7 +203,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         ideca2=ideca2+nbno
 10      continue
     enddo
-    if (ideca2 .eq. 0) call u2mess('F', 'CALCULEL3_97')
+    if (ideca2 .eq. 0) then
+        call utmess('F', 'CALCULEL3_97')
+    endif
 !
     loin2 = .false.
     nbnod = 0
@@ -286,7 +286,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
             enddo
 !
         else
-            call u2mesk('F', 'ELEMENTS_55', 1, elrefa)
+            call utmess('F', 'ELEMENTS_55', sk=elrefa)
         endif
 !
         xr1(1) = ksi
@@ -353,12 +353,10 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 umessr(2) = geom2(3*(ino2m-1)+2)
                 umessr(3) = geom2(3*(ino2m-1)+3)
                 umessr(4) = tdmin2(ii)
-                call u2mesg('I', 'CALCULEL5_43', 1, nono2, 0,&
-                            0, 4, umessr)
+                call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
             enddo
             call jenuno(jexnum(m2//'.NOMNOE', tino2m(1)), nono2)
-            call u2mesg('A', 'CALCULEL5_48', 1, nono2, 1,&
-                        nbnodm, 1, tdmin2(1))
+            call utmess('A', 'CALCULEL5_48', sk=nono2, si=nbnodm, sr=tdmin2(1))
         endif
     endif
 !

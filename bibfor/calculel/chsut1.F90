@@ -26,7 +26,7 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verigd.h"
     integer :: ncmp
     character(len=*) :: chs1, nomgd2, base, chs2
@@ -61,8 +61,12 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 !
     call exisd('CHAM_NO_S', chsa, i1)
     call exisd('CHAM_ELEM_S', chsa, i2)
-    if (i1*i2 .ne. 0) call u2mesk('A', 'CALCULEL2_2', 1, chsa)
-    if (i1+i2 .eq. 0) call u2mesk('A', 'CALCULEL2_3', 1, chsa)
+    if (i1*i2 .ne. 0) then
+        call utmess('A', 'CALCULEL2_2', sk=chsa)
+    endif
+    if (i1+i2 .eq. 0) then
+        call utmess('A', 'CALCULEL2_3', sk=chsa)
+    endif
 !
 !
 !     1.  ON RECOPIE LE CHAMP "IN" ET ON RECUPERE LES ADRESSES JEVEUX :
@@ -101,7 +105,7 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
     if (tsca1 .ne. tsca2) then
         valk(1)=tsca1
         valk(2)=tsca2
-        call u2mesk('F', 'CALCULEL4_4', 2, valk)
+        call utmess('F', 'CALCULEL4_4', nk=2, valk=valk)
     endif
 !
 !     2.2 : NOMGD1 ET LCMP1 SONT COHERENTS :

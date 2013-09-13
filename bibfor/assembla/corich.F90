@@ -18,7 +18,6 @@ subroutine corich(action, champ, ichin, ichout)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -35,8 +34,9 @@ subroutine corich(action, champ, ichin, ichout)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: action, champ
     integer :: ichin, ichout
 ! ----------------------------------------------------------------------
@@ -134,8 +134,12 @@ subroutine corich(action, champ, ichin, ichout)
 !     -- CAS ACTION = 'E'
 !     ------------------------------------------------------
     if (action .eq. 'E') then
-        if (ichin .eq. 0) call u2mess('F', 'ASSEMBLA_13')
-        if (ichin .lt. -2) call u2mess('F', 'ASSEMBLA_14')
+        if (ichin .eq. 0) then
+            call utmess('F', 'ASSEMBLA_13')
+        endif
+        if (ichin .lt. -2) then
+            call utmess('F', 'ASSEMBLA_14')
+        endif
         nomch = champ(1:19)
         call jenonu(jexnom(repert, nomch), kk)
         if (kk .eq. 0) call jecroc(jexnom(repert, nomch))
@@ -163,7 +167,7 @@ subroutine corich(action, champ, ichin, ichout)
         nomch = champ(1:19)
         call jenonu(jexnom(repert, nomch), kk)
         if (kk .eq. 0) then
-            call u2mess('F', 'ASSEMBLA_15')
+            call utmess('F', 'ASSEMBLA_15')
         else
             call jeveuo(numich, 'E', jnumic)
             zi(jnumic-1+kk) = 0
@@ -173,7 +177,7 @@ subroutine corich(action, champ, ichin, ichout)
 !     -- CAS ACTION IMPREVUE :
 !     ------------------------------------------------------
     else
-        call u2mess('F', 'ASSEMBLA_16')
+        call utmess('F', 'ASSEMBLA_16')
     endif
 !
 !

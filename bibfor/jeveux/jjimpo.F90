@@ -20,9 +20,7 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
 ! aslint: disable=
     implicit none
 #include "jeveux_private.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: unit
     integer :: iadmi, ideci, idatoc, lt, lonoi
     character(len=*) :: mess, genri, typei
@@ -78,13 +76,13 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
     idco = iszon(jiszon+ies+1)
 !
     if (idos .eq. 0) then
-        call u2mess('F', 'JEVEUX1_49')
+        call utmess('F', 'JEVEUX1_49')
     endif
     if (icls .lt. 0 .or. icls .gt. len(classe)) then
-        call u2mesi('F', 'JEVEUX1_50', 1, icls)
+        call utmess('F', 'JEVEUX1_50', si=icls)
     else
         if (classe(icls:icls) .eq. ' ' .or. classe(icls:icls) .eq. '$') then
-            call u2mesk('F', 'JEVEUX1_51', 1, classe(icls:icls))
+            call utmess('F', 'JEVEUX1_51', sk=classe(icls:icls))
         endif
     endif
     if (idatoc .eq. 0) then
@@ -173,7 +171,7 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
                 nd)
             endif
         else
-            call u2mesk('F', 'JEVEUX1_43', 1, typei)
+            call utmess('F', 'JEVEUX1_43', sk=typei)
         endif
     else
         nm = iszon(jiszon+kadm-1+ilmax)

@@ -24,7 +24,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: chamna, chamnb
     real(kind=8) :: alpha
 !-----------------------------------------------------------------------
@@ -55,7 +55,9 @@ subroutine vlaxpy(alpha, chamna, chamnb)
     call jeexin(chamn1(1:19)//'.FETC', iret1)
     if (iret1 .ne. 0) then
         call jeexin(chamn2(1:19)//'.FETC', iret2)
-        if (iret2 .eq. 0) call u2mess('F', 'ALGELINE3_91')
+        if (iret2 .eq. 0) then
+            call utmess('F', 'ALGELINE3_91')
+        endif
         lfeti=.true.
     else
         lfeti=.false.

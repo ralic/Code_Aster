@@ -62,11 +62,9 @@ subroutine op0150()
 #include "asterfort/rsmode.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
 !
@@ -159,7 +157,9 @@ subroutine op0150()
     else
         call getvtx(' ', 'NOM_CHAM', nbval=100, vect=linoch, nbret=nbnoch)
     endif
-    if (nbnoch .lt. 0) call u2mess('F', 'UTILITAI2_86')
+    if (nbnoch .lt. 0) then
+        call utmess('F', 'UTILITAI2_86')
+    endif
 !
 !     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
     call getvis(' ', 'NB_VARI', scal=nbvari, nbret=nvar)
@@ -275,8 +275,7 @@ subroutine op0150()
         if (iexi .eq. 0) then
             valk (1) = typres
             valk (2) = linoch(ich)
-            call u2mesg('F', 'UTILITAI8_24', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'UTILITAI8_24', nk=2, valk=valk)
         endif
 30  continue
 !
@@ -309,15 +308,17 @@ subroutine op0150()
 !
         call jeexin(ligrel//'.LGRF', iexi)
         if (iexi .eq. 0) then
-            call u2mess('F', 'UTILITAI2_88')
+            call utmess('F', 'UTILITAI2_88')
         else
             call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
                         k8bid, ier)
-            if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'MODELISA2_6')
+            if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+                call utmess('F', 'MODELISA2_6')
+            endif
         endif
 !
         if (nbnoch .ne. 1 .or. linoch(1) .ne. 'PRES') then
-            call u2mess('F', 'UTILITAI2_89')
+            call utmess('F', 'UTILITAI2_89')
         endif
 !
         call getvtx(' ', 'NOM_FICHIER', scal=fich, nbret=nfic)
@@ -396,7 +397,7 @@ subroutine op0150()
             if (-iaux .ne. nbcmpv) then
                 valk(1) = lcmpva
                 valk(2) = lcmpvm
-                call u2mesk('F', 'UTILITAI2_95', 2, valk)
+                call utmess('F', 'UTILITAI2_95', nk=2, valk=valk)
             endif
             if (nbcmpv .gt. 0) then
                 call wkvect(ncmpva, 'V V K8', nbcmpv, jcmpva)
@@ -433,10 +434,10 @@ subroutine op0150()
 !
     if (((n1.ne.0).or.(n2.ne.0).or.(n3.ne.0)) .and. ((typres.eq.'EVOL_CHAR'))) then
         if ((n3.ne.0) .and. (form.eq.'ENSIGHT')) then
-            call u2mesk('I', 'UTILITAI5_98', 1, typres)
+            call utmess('I', 'UTILITAI5_98', sk=typres)
             goto 265
         else
-            call u2mesk('A', 'UTILITAI5_93', 1, typres)
+            call utmess('A', 'UTILITAI5_93', sk=typres)
             goto 265
         endif
     endif

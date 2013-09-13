@@ -1,9 +1,8 @@
 subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                   lcrpa, vi, vr, vc, vk,&
                   lprec, lcrit, iret)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
@@ -15,8 +14,9 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: npacri, vi(*), iret
     real(kind=8) :: vr(*), lprec(*)
     complex(kind=8) :: vc(*)
@@ -86,17 +86,17 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 !
     call jeexin(nomtab//'.TBBA', irt)
     if (irt .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
 !
     call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
     nbpara = zi(jtbnp )
     nblign = zi(jtbnp+1)
     if (nbpara .eq. 0) then
-        call u2mess('F', 'UTILITAI4_65')
+        call utmess('F', 'UTILITAI4_65')
     endif
     if (nblign .eq. 0) then
-        call u2mess('F', 'UTILITAI4_66')
+        call utmess('F', 'UTILITAI4_66')
     endif
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---

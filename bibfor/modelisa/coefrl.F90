@@ -35,8 +35,8 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ipas, ires, nckmax, nborck
     real(kind=8) :: bornck(20), coefck(20, 11)
@@ -130,7 +130,7 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas,&
         endif
 30  end do
     if (ipas1 .ne. ipas .or. ires1 .ne. ires) then
-        call u2mess('F', 'MODELISA4_33')
+        call utmess('F', 'MODELISA4_33')
     endif
 !
 120  continue

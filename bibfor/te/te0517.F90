@@ -1,7 +1,6 @@
 subroutine te0517(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
@@ -14,11 +13,12 @@ subroutine te0517(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
-
+!
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -68,7 +68,7 @@ subroutine te0517(option, nomte)
 ! ----------------------------------------------------------------------
     nno = 2
     ncomp = 18
-
+!
     if (nomte .eq. 'MECA_POU_D_EM') then
         nc = 6
         npg = 2
@@ -104,13 +104,15 @@ subroutine te0517(option, nomte)
         call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
                     iret)
         nbsp=jtab(7)
-        if (nbsp .ne. nbfib) call u2mess('F', 'ELEMENTS_4')
+        if (nbsp .ne. nbfib) then
+            call utmess('F', 'ELEMENTS_4')
+        endif
         call jevech('PSTRXMR', 'L', istrxm)
 !
 !
         reactu = .false.
         call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
-                        iretc)
+                    iretc)
         if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'GROT_GDEP')
 !
         call jevech('PVECTUR', 'E', ivectu)
@@ -132,12 +134,12 @@ subroutine te0517(option, nomte)
 !
         if (nomte .eq. 'MECA_POU_D_EM') then
 !
-            do kp = 1,npg
-                do k = 1,nc
+            do kp = 1, npg
+                do k = 1, nc
                     fl(nc*(kp-1)+k) = zr(istrxm-1+ncomp*(kp-1)+k)
                 end do
             end do
-
+!
 !
         else if (nomte.eq.'MECA_POU_D_TGM') then
 !

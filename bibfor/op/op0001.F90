@@ -61,7 +61,7 @@ subroutine op0001()
 #include "asterfort/lrmhdf.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/mavegr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=16) :: cmd
     common          /opmail/        cmd
@@ -150,7 +150,7 @@ subroutine op0001()
                         iarg, 0, zk8, nbval)
             nbval=abs(nbval)
             if (nbval .ne. 0) then
-                call u2mess('E', 'MODELISA5_48')
+                call utmess('E', 'MODELISA5_48')
             endif
         endif
     endif
@@ -177,7 +177,7 @@ subroutine op0001()
         call getvr8('VERI_MAIL', 'APLAT', iocc=1, scal=dtol, nbret=iret)
         call chckma(nomu, dtol)
     else
-        call u2mess('A', 'MODELISA5_49')
+        call utmess('A', 'MODELISA5_49')
     endif
 !
 !

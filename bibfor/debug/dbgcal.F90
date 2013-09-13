@@ -21,8 +21,8 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
 !
     implicit none
 #include "asterfort/jelstc.h"
-#include "asterfort/u2mesi.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
     character(len=*) :: optioz
     integer :: ifm
     integer :: nbin, nbout
@@ -69,10 +69,10 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
         write(ifm,*) ' * PARAMETRE <',lpaiz(ich),'>'
         write(ifm,*) ' * CHAMP     <',lchiz(ich),'>'
         if (lpaiz(ich)(1:1) .eq. ' ') then
-            call u2mesi('A', 'PRECALCUL_60', 1, ich)
+            call utmess('A', 'PRECALCUL_60', si=ich)
         endif
         if (lchiz(ich)(1:1) .eq. ' ') then
-            call u2mesi('A', 'PRECALCUL_61', 1, ich)
+            call utmess('A', 'PRECALCUL_61', si=ich)
         endif
 !
         call jelstc(' ', lchiz(ich)(1:19), 1, 0, k8bid,&
@@ -102,10 +102,10 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
         write(ifm,*) ' * PARAMETRE <',lpaouz(ich),'>'
         write(ifm,*) ' * CHAMP     <',lchouz(ich),'>'
         if (lpaouz(ich)(1:1) .eq. ' ') then
-            call u2mesi('A', 'PRECALCUL_62', 1, ich)
+            call utmess('A', 'PRECALCUL_62', si=ich)
         endif
         if (lchouz(ich)(1:1) .eq. ' ') then
-            call u2mesi('A', 'PRECALCUL_63', 1, ich)
+            call utmess('A', 'PRECALCUL_63', si=ich)
         endif
 !
         call jelstc(' ', lchouz(ich)(1:19), 1, 0, k8bid,&

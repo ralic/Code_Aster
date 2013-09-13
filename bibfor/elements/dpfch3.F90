@@ -20,7 +20,7 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
     implicit none
 !      REAL*8 (A-H,O-Z)
 #include "asterfort/matini.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     integer :: nno, nnf
     real(kind=8) :: poids, dfrdeg(1), dfrdng(1), dfrdkg(1), coor(1)
     real(kind=8) :: dfrdef(1), dfrdnf(1), dfrdkf(1)
@@ -87,8 +87,7 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
     jac = g(1,1) * j11 + g(1,2) * j21 + g(1,3) * j31
     if (jac .le. 0.0d0) then
         valr = jac
-        call u2mesg('A', 'ELEMENTS5_30', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('A', 'ELEMENTS5_30', sr=valr)
     endif
 !
 !     --- CALCUL DES DERIVEES EN ESPACE DES FONCTIONS DE FORME

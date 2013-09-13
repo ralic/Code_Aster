@@ -1,15 +1,16 @@
 subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     implicit none
+#include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utflmd.h"
 #include "asterfort/utmamo.h"
 #include "asterfort/utmasu.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbma2d
     character(len=8) :: mo
@@ -46,9 +47,8 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
-    integer ::  jma2d, jcoor, jma3d
+    integer :: jma2d, jcoor, jma3d
     integer :: ima, ibid, iret
     integer :: nbma, nbmamo, jlima, nbmat, jmato
 !
@@ -77,7 +77,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     if (nbma2d .gt. 0) then
         call jeveuo(mail2d, 'L', jma2d)
     else
-        call u2mess('F', 'CALCULEL5_54')
+        call utmess('F', 'CALCULEL5_54')
     endif
 !
 ! --- ON RECHERCHE LA MAILLES 3D SUPPORT DE CHAQUE MAILLE 2D FOURNIE

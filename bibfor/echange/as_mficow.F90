@@ -18,15 +18,16 @@ subroutine as_mficow(fid, des, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mficow.h"
     aster_int :: fid, cret
     character(len=*) :: des
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, cret4
     fid4 = fid
@@ -35,6 +36,6 @@ subroutine as_mficow(fid, des, cret)
 #else
     call mficow(fid, des, cret)
 #endif
-
+!
 #endif
 end subroutine

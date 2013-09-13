@@ -1,7 +1,7 @@
 subroutine dinonc(nomte, icodre, valre, klv, raide,&
                   nbpar, param, okdire)
     implicit none
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: nomte
     integer :: icodre(*)
     integer :: nbpar
@@ -91,7 +91,7 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
         do ii = 3, 5
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
-                    call u2mesk('F', 'DISCRETS_1', 1, nomte)
+                    call utmess('F', 'DISCRETS_1', sk=nomte)
                 endif
             enddo
         enddo
@@ -118,7 +118,7 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
         do ii = 2, 4
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
-                    call u2mesk('F', 'DISCRETS_2', 1, nomte)
+                    call utmess('F', 'DISCRETS_2', sk=nomte)
                 endif
             enddo
         enddo
@@ -138,7 +138,7 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
         do ii = 2, 5
             do jj = 1, nbpar
                 if (icodre(nbpar*ii+jj) .eq. 0) then
-                    call u2mesk('F', 'DISCRETS_3', 1, nomte)
+                    call utmess('F', 'DISCRETS_3', sk=nomte)
                 endif
             enddo
         enddo

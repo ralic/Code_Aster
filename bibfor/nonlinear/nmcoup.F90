@@ -30,8 +30,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/lcumfe.h"
 #include "asterfort/lcumfp.h"
 #include "asterfort/nmcpla.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !
@@ -107,7 +106,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
     cmp3(1:16) = comp(10)
     option(1)(1:16) = opt
     if (cmp3(1:8) .ne. '        ') then
-        call u2mess('F', 'ALGORITH7_1')
+        call utmess('F', 'ALGORITH7_1')
     endif
 !
 !
@@ -127,28 +126,28 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
             else if (cmp2(1:10) .eq. 'ENDO_ISOT_BETON' .or. cmp2(1:6)&
         .eq. 'MAZARS') then
             option(2)(1:16) = cmp2(1:16)
-            call u2mess('F', 'ALGORITH7_2')
+            call utmess('F', 'ALGORITH7_2')
 !
         else
-            call u2mess('F', 'ALGORITH7_3')
+            call utmess('F', 'ALGORITH7_3')
         endif
 !
     else if (cmp1(1:13).eq.'BETON_UMLV_FP') then
 !
         if (cmp2(1:15) .eq. 'ENDO_ISOT_BETON' .or. cmp2(1:6) .eq. 'MAZARS') then
 !
-            call u2mess('A', 'ALGORITH7_83')
+            call utmess('A', 'ALGORITH7_83')
 !
             cmp4(1:16) = typmod(2)
             option(2)(1:16) = cmp2(1:16)
 !
             if (cmp2(1:15) .eq. 'ENDO_ISOT_BETON') then
                 if ((typmod(1).eq.'C_PLAN') .and. (.not.lcpdb)) then
-                    call u2mess('F', 'ALGORITH7_5')
+                    call utmess('F', 'ALGORITH7_5')
                 endif
             else
                 if ((typmod(1).eq.'C_PLAN') .and. lcpdb) then
-                    call u2mess('F', 'ALGORITH7_4')
+                    call utmess('F', 'ALGORITH7_4')
                 endif
             endif
 !
@@ -160,7 +159,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
             else if (typmod(2) .eq. 'GRADVARI') then
                 texte(1)=cmp4
                 texte(2)=cmp2
-                call u2mesk('F', 'COMPOR1_49', 2, texte)
+                call utmess('F', 'COMPOR1_49', nk=2, valk=texte)
             else
                 call lcumfp(fami, kpg, ksp, ndim, typmod,&
                             imat, comp, timed, timef, epsdt,&
@@ -168,7 +167,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                             vinf, dsde, crit)
             endif
         else
-            call u2mess('F', 'ALGORITH7_3')
+            call utmess('F', 'ALGORITH7_3')
         endif
 !
     else if (cmp1(1:4).eq.'GLRC') then
@@ -180,16 +179,16 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
             option(2)(1:16) = cmp2(1:16)
 !
             call kit_glrc_dm_vmis(imat, cmp2, epsdt, depst, vind,&
-                        opt, sigd, sigf, vinf, dsde,&
-                        crit, iret)
+                                  opt, sigd, sigf, vinf, dsde,&
+                                  crit, iret)
 !
         else
-            call u2mess('F', 'ALGORITH7_3')
+            call utmess('F', 'ALGORITH7_3')
         endif
 !
     else
-        call u2mess('F', 'ALGORITH7_6')
+        call utmess('F', 'ALGORITH7_6')
     endif
 !
-999 continue
+999  continue
 end subroutine

@@ -16,8 +16,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verifg.h"
 #include "asterfort/vlggl.h"
 #include "asterfort/vlgglc.h"
@@ -132,7 +131,9 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
                     iret)
         jin=itab(1)
         nbsp=itab(7)
-        if (nbsp .ne. nspg) call u2mess('F', 'ELEMENTS_4')
+        if (nbsp .ne. nspg) then
+            call utmess('F', 'ELEMENTS_4')
+        endif
         call jevech('PVECTUR', 'E', jout)
         do 40 i = 1, nbrddl
             f(i) = 0.d0
@@ -466,7 +467,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
             zr(jout-1+j) = vout(j)
 460      continue
     else
-        call u2mesk('F', 'ELEMENTS4_49', 1, option)
+        call utmess('F', 'ELEMENTS4_49', sk=option)
     endif
 !
 end subroutine

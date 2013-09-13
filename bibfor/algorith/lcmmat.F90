@@ -74,8 +74,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3), nbval, nvini
     integer :: kpg, ksp, irota, impexp, nfs, nsg
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -122,7 +121,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !
     if (impexp .eq. 1) then
         if (irota .ne. 0) then
-            call u2mess('F', 'COMPOR2_11')
+            call utmess('F', 'COMPOR2_11')
         endif
     endif
 !
@@ -369,7 +368,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
         if (cerr(3) .ne. 0) materf(75,1) = 0.d0
 !
     else
-        call u2mesk('F', 'ALGORITH4_65', 1, phenom)
+        call utmess('F', 'ALGORITH4_65', sk=phenom)
     endif
 !
     nr=ndt+nbsyst
@@ -390,7 +389,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
     do 40 i = 1, nmat
         if (abs(materd(i,2)-materf(i,2) ) .gt. epsi*materd(i,2)) then
             matcst = 'NON'
-            call u2mess('F', 'COMPOR1_27')
+            call utmess('F', 'COMPOR1_27')
             goto 9999
         endif
 40  end do

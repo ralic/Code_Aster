@@ -1,7 +1,6 @@
 subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -16,8 +15,9 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
 #include "asterfort/jexnum.h"
 #include "asterfort/rvabsc.h"
 #include "asterfort/rvnchm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: nlsnac, sdlieu
     character(len=8) :: typco, courbe, mailla
 !     ------------------------------------------------------------------
@@ -103,7 +103,7 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
                 nbarc = (nbarc/2) - 1
                 nbsd = nbarc + nbsgt
                 if (nbarc .ne. 0 .and. nbsgt .ne. 0) then
-                    call u2mess('F', 'POSTRELE_23')
+                    call utmess('F', 'POSTRELE_23')
                 endif
             else
                 call jelira(courbe//'.CHEMIN', 'NMAXOC', nbsd)

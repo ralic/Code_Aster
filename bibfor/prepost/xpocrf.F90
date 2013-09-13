@@ -2,7 +2,6 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecroc.h"
@@ -14,8 +13,8 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ltnotb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: modele, maxfem
     integer :: mftot, nftot
 !
@@ -76,7 +75,9 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                 k8b, iret)
     call dismoi('F', 'DIM_GEOM', mo, 'MODELE', ndim,&
                 k8b, iret)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'MODELISA2_6')
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+        call utmess('F', 'MODELISA2_6')
+    endif
 !
     call jeveuo(maxfem//'.TYPMAIL', 'E', jtypm2)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntpoi1)
@@ -129,11 +130,11 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 !           VERIFICATION DE L'ABSENCE DE GROUPE AYANT LE MEME NOM
                     call jenonu(jexnom(maxfem//'.GROUPEMA', nogma), ibid)
                     if (ibid .gt. 0) then
-                        call u2mesk('F', 'ALGELINE3_7', 1, nogma)
+                        call utmess('F', 'ALGELINE3_7', sk=nogma)
                     endif
                     call jenonu(jexnom(maxfem//'.GROUPENO', nogno), ibid)
                     if (ibid .gt. 0) then
-                        call u2mesk('F', 'SOUSTRUC_37', 1, nogno)
+                        call utmess('F', 'SOUSTRUC_37', sk=nogno)
                     endif
 !
                     ntail = zi(jfmult-1+2*ifon)-zi(jfmult-1+2*ifon-1)+ 1
@@ -142,7 +143,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                     call jecroc(jexnom(maxfem//'.GROUPEMA', nogma))
                     call jenonu(jexnom(maxfem//'.GROUPEMA', nogma), igr)
                     call jeecra(jexnum(maxfem//'.GROUPEMA', igr), 'LONMAX', nfon)
-                    call jeecra(jexnum(maxfem//'.GROUPEMA', igr), 'LONUTI', max((ntail-1),1))
+                    call jeecra(jexnum(maxfem//'.GROUPEMA', igr), 'LONUTI', max((ntail-1), 1))
                     call jeveuo(jexnum(maxfem//'.GROUPEMA', igr), 'E', iagma)
 !
 !           CONSTRUCTION DES GROUPES DE NOEUDS DU FOND DE FISSURE

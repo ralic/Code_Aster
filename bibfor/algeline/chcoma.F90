@@ -9,7 +9,7 @@ subroutine chcoma(tablez, nomaou)
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomaou
     character(len=*) :: tablez
 !.======================================================================
@@ -100,18 +100,24 @@ subroutine chcoma(tablez, nomaou)
                     k8b, ibid, r8b, c16b, noma,&
                     iret)
     endif
-    if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA2_89')
+    endif
     call tbliva(table, 1, 'LIEU', ibid, r8b,&
                 c16b, noma, k8b, r8b, 'CDG_Y',&
                 k8b, ibid, yg, c16b, k8b,&
                 iret)
     print*,'IRET ',iret
-    if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA2_89')
+    endif
     call tbliva(table, 1, 'LIEU', ibid, r8b,&
                 c16b, noma, k8b, r8b, 'CDG_Z',&
                 k8b, ibid, zg, c16b, k8b,&
                 iret)
-    if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+    if (iret .ne. 0) then
+        call utmess('F', 'MODELISA2_89')
+    endif
 !
 ! --- RECUPERATION DANS LA TABLE DE L'ANGLE FAISANT PASSER DU REPERE
 ! --- PRINCIPAL D'INERTIE AU REPERE GLOBAL :
@@ -120,7 +126,9 @@ subroutine chcoma(tablez, nomaou)
                 c16b, noma, k8b, r8b, 'ALPHA',&
                 k8b, ibid, alpha, c16b, k8b,&
                 iret)
-    if (iret .ne. 0) call u2mess('F', 'ALGELINE_7')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGELINE_7')
+    endif
 !
 ! --- PASSAGE DE L'ANGLE DE DEGRES EN RADIANS :
 !     ---------------------------------------

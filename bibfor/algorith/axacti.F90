@@ -47,7 +47,6 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !
 !      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
@@ -55,7 +54,8 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
 !-----------------------------------------------------------------------
     integer :: i, icomp, ier, inu, j, lldesc, llnoa
     integer :: nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
@@ -75,7 +75,8 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !-------------------RECUPERATION DE LA LISTE-INTERFACE------------------
 !
     call jemarq()
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ier, intf, ier)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ier,&
+                intf, ier)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
@@ -84,7 +85,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
     call dismoi('F', 'NB_EC', intf, 'INTERF_DYNA', nbec,&
                 k8bid, ier)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 !-------------------REQUETTE DESCRIPTEUR DES DEFORMEES STATIQUES--------

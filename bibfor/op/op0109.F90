@@ -50,10 +50,7 @@ subroutine op0109()
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
 !
@@ -156,7 +153,7 @@ subroutine op0109()
     if (zr(lval+nbmode*2) .eq. r8vide()) then
 !
         valk (1) = meca
-        call u2mesk('F', 'SEISME_27', 1, valk)
+        call utmess('F', 'SEISME_27', sk=valk(1))
 !
     endif
 !
@@ -172,7 +169,7 @@ subroutine op0109()
         if (nbamor .gt. nbmode) then
             vali(1) = nbamor
             vali(2) = nbmode
-            call u2mesi('F', 'SEISME_11', 2, vali)
+            call utmess('F', 'SEISME_11', ni=2, vali=vali)
         endif
         if (nbamor .lt. nbmode) then
             call wkvect('&&OP0109.AMORTISSEMEN2', 'V V R', nbmode, jamo2)
@@ -192,7 +189,7 @@ subroutine op0109()
             if (nbamor .gt. nbmode) then
                 vali(1) = nbamor
                 vali(2) = nbmode
-                call u2mesi('F', 'SEISME_11', 2, vali)
+                call utmess('F', 'SEISME_11', ni=2, vali=vali)
             endif
             call jeveuo(liar//'.VALE', 'L', jarm)
             call wkvect('&&OP0109.AMORTISSEMENT', 'V V R', nbmode, jamor)
@@ -229,7 +226,7 @@ subroutine op0109()
     if (nbamor .ne. nbmode) then
         vali(1) = nbamor
         vali(2) = nbmode
-        call u2mesi('F', 'SEISME_13', 2, vali)
+        call utmess('F', 'SEISME_13', ni=2, vali=vali)
     endif
 !     ----- DIVERS RECOMBINAISON -----
     call getvtx('COMB_MODE', 'TYPE', iocc=1, scal=typcmo, nbret=ncm)
@@ -253,16 +250,15 @@ subroutine op0109()
         valk (2) = typcmo
         valk (3) = zk16(jopt)
         vali (1) = nbmode
-        call u2mesg('I', 'SEISME_15', 3, valk, 1,&
-                    vali, 0, 0.d0)
+        call utmess('I', 'SEISME_15', nk=3, valk=valk, si=vali(1))
         do 15 j = 2, nbopt
-            call u2mesk('I', 'SEISME_16', 1, zk16(jopt+j-1))
+            call utmess('I', 'SEISME_16', sk=zk16(jopt+j-1))
 15      continue
         if (nna .ne. 0) then
-            call u2mesk('I', 'SEISME_17', 1, nature)
+            call utmess('I', 'SEISME_17', sk=nature)
         endif
         if (ncd .ne. 0) then
-            call u2mesk('I', 'SEISME_18', 1, typcdi)
+            call utmess('I', 'SEISME_18', sk=typcdi)
         endif
     endif
 !     ----- RECUPERATION DES EXCITATIONS -----
@@ -288,15 +284,15 @@ subroutine op0109()
             call getvtx('COMB_MULT_APPUI', 'TYPE_COMBI', iocc=1, scal=typcma, nbret=nty2)
             call getfac('COMB_MULT_APPUI', nmult)
             if (ndepl .ne. 0 .and. nmult .eq. 0) then
-                call u2mess('F', 'SEISME_14')
+                call utmess('F', 'SEISME_14')
             endif
             if (nty2 .ne. 0) then
-                call u2mesk('I', 'SEISME_19', 1, typcma)
+                call utmess('I', 'SEISME_19', sk=typcma)
             endif
         else if ((.not.monoap) .and. (muapde)) then
             call getfac('COMB_MULT_APPUI', nmult)
             if (nmult .ne. 0) then
-                call u2mess('A', 'SEISME_28')
+                call utmess('A', 'SEISME_28')
             endif
         endif
     endif
@@ -317,7 +313,7 @@ subroutine op0109()
                     k8b, ibid, xmastr, c16b, k8b,&
                     iret)
         if (iret .eq. 2) then
-            call u2mesk('F', 'SEISME_20', 1, tmas)
+            call utmess('F', 'SEISME_20', sk=tmas)
         else if (iret .eq. 3) then
             call tbexp2(tmas, 'ENTITE')
             paraki(1) = 'LIEU'
@@ -329,7 +325,7 @@ subroutine op0109()
                         k8b, ibid, xmastr, c16b, k8b,&
                         iret)
             if (iret .ne. 0) then
-                call u2mesk('F', 'SEISME_20', 1, tmas)
+                call utmess('F', 'SEISME_20', sk=tmas)
             endif
         endif
         calmas = .true.
@@ -422,15 +418,17 @@ subroutine op0109()
 !     --- RECUPERATION DES MODES STATIQUES ---
     call getvtx(' ', 'MULTI_APPUI', nbval=0, nbret=nret1)
     call getfac('DEPL_MULT_APPUI', nret2)
-    if ((nret1.ne.0) .and. (nret2.eq.0)) call u2mess('A', 'SEISME_31')
+    if ((nret1.ne.0) .and. (nret2.eq.0)) then
+        call utmess('A', 'SEISME_31')
+    endif
     call getvid('DEPL_MULT_APPUI', 'MODE_STAT', iocc=1, scal=stat, nbret=ns)
 !     --- VERIFICATION - SI GUPTA -> PAS DE MULTI_APPUI ---
     if ((typcmo.eq.'GUPTA') .and. (nret1.ne.0)) then
-        call u2mess('F', 'SEISME_32')
+        call utmess('F', 'SEISME_32')
     endif
 !     --- VERIFICATION - SI GUPTA -> F1 < F2 ---
     if ((typcmo.eq.'GUPTA') .and. (f1gup.ge.f2gup)) then
-        call u2mess('F', 'SEISME_33')
+        call utmess('F', 'SEISME_33')
     endif
 !     --- VERIFICATION DES MODES ---
     if (masse .ne. ' ') then
@@ -443,7 +441,9 @@ subroutine op0109()
     if (.not.monoap) then
         call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
                     nume, iret)
-        if (nume .eq. ' ') call u2mess('F', 'SEISME_40')
+        if (nume .eq. ' ') then
+            call utmess('F', 'SEISME_40')
+        endif
         call wkvect('&&OP0109.REAC_SUP', 'V V R', nbsup*nbmode*3, jrea)
         call wkvect('&&OP0109.DEPL_SUP', 'V V R', nbsup*3, jdep)
         call wkvect('&&OP0109.TYPE_COM', 'V V I', nbsup*3, jcsu)

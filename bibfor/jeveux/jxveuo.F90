@@ -24,7 +24,7 @@ subroutine jxveuo(cel, itab, inat, jitab)
 #include "asterfort/jjprem.h"
 #include "asterfort/jxliro.h"
 #include "asterfort/jxlocs.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itab(*), inat, jitab
     character(len=*) :: cel
 ! ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ subroutine jxveuo(cel, itab, inat, jitab)
         if (long(jlong(ic)+ixdeso) .ne. 0) then
             lonoi = lono ( jlono(ic) + ixdeso ) * ltypi
         else
-            call u2mess('F', 'JEVEUX1_62')
+            call utmess('F', 'JEVEUX1_62')
         endif
     else
         iblono = iadm ( jiadm(ic) + 2*ixlono-1 )
@@ -222,7 +222,7 @@ subroutine jxveuo(cel, itab, inat, jitab)
                 call jjalls(lonoi, ic, genri, typei, ltypi,&
                             'INIT', itab, jitab, iadmi, iadyn)
             else
-                call u2mess('F', 'JEVEUX1_61')
+                call utmess('F', 'JEVEUX1_61')
             endif
         else
 !

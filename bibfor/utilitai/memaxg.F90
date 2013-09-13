@@ -2,7 +2,6 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jecrec.h"
@@ -17,8 +16,9 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/tbexve.h"
 #include "asterfort/tbtrtb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nborn, lonvec
     real(kind=8) :: born(*), gbil(*)
     character(len=8) :: result
@@ -92,7 +92,7 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
     call tbajpa(tabgma, nbprup, zk16(inopr), zk8(itypr))
 !
     if (nborn .ne. (2.d0*lonvec)) then
-        call u2mess('F', 'RUPTURE1_14')
+        call utmess('F', 'RUPTURE1_14')
 !
     endif
     collec = '&&MEMAXG.BORNES_Q'

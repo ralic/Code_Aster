@@ -50,7 +50,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 #include "asterfort/mpjeft.h"
 #include "asterfort/mpmod3.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: basemo, nommes
@@ -97,7 +97,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
     if (nbcham .ne. 0) then
         nbcham = -nbcham
     else
-        call u2mess('A', 'ALGORITH10_93')
+        call utmess('A', 'ALGORITH10_93')
     endif
     call wkvect('&&LISTE_CHAMP', 'V V K16', nbcham, lch)
     call getvtx('MODELE_MESURE', 'NOM_CHAM', iocc=1, nbval=nbcham, vect=zk16(lch),&
@@ -152,7 +152,9 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !       2-2 : PROJECTION DU CHAM_NO_S : CH1S -> CH2S
             call detrsd('CHAM_NO_S', ch2s)
             call cnsprj(ch1s, corres, 'V', ch2s, iret)
-            if (iret .gt. 0) call u2mess('F', 'ALGORITH6_25')
+            if (iret .gt. 0) then
+                call utmess('F', 'ALGORITH6_25')
+            endif
 !
             call jeveuo(ch2s//'.CNSK', 'L', jcnsk)
             call jeveuo(ch2s//'.CNSD', 'L', jcnsd)
@@ -191,7 +193,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 22                  continue
                     val = sqrt(val)
                     if (val .lt. r8prem()) then
-                        call u2mess('F', 'ALGORITH6_26')
+                        call utmess('F', 'ALGORITH6_26')
                     endif
                     do 23 ii = 1, 3
                         vori(ii) = vori(ii)/val

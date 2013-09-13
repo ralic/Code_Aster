@@ -21,7 +21,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1, ioc, isd
@@ -84,7 +84,9 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     else
         nbcmp2 = nbvari
     endif
-    if (nbcmp2 .gt. 3000) call u2mess('F', 'POSTRELE_13')
+    if (nbcmp2 .gt. 3000) then
+        call utmess('F', 'POSTRELE_13')
+    endif
 !
     call getvtx('ACTION', 'INTITULE', iocc=iocc, scal=intitu, nbret=n1)
     call getvid('ACTION', 'CHEMIN', iocc=iocc, scal=courbe, nbret=nc)

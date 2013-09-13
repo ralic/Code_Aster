@@ -115,9 +115,7 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomprg
     integer(kind=4) :: numpas, info, nprog, nlu, lenvar
     parameter (lenvar = 144)
@@ -140,7 +138,7 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
     if (info .eq. 0 .and. nprog .ne. nlu) then
         valk(1)=nomprg
         valk(2)=nomvar
-        call u2mesk('A', 'EDYOS_41', 2, valk)
+        call utmess('A', 'EDYOS_41', nk=2, valk=valk)
         goto 9999
     endif
 !
@@ -149,166 +147,165 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
     valk(1)=nomprg
     valk(2)=nomvar
     vali(1)=numpas
-    call u2mesg('F', 'EDYOS_42', 2, valk, 1,&
-                vali, 0, 0.d0)
+    call utmess('F', 'EDYOS_42', nk=2, valk=valk, si=vali(1))
     if (info .eq. 1) then
-        call u2mess('F', 'EDYOS_1')
+        call utmess('F', 'EDYOS_1')
     endif
 !
     if (info .eq. 2) then
-        call u2mess('F', 'EDYOS_2')
+        call utmess('F', 'EDYOS_2')
     endif
 !
     if (info .eq. 3) then
-        call u2mess('F', 'EDYOS_3')
+        call utmess('F', 'EDYOS_3')
     endif
 !
     if (info .eq. 4) then
-        call u2mess('F', 'EDYOS_4')
+        call utmess('F', 'EDYOS_4')
     endif
 !
     if (info .eq. 5) then
-        call u2mess('F', 'EDYOS_5')
+        call utmess('F', 'EDYOS_5')
     endif
 !
     if (info .eq. 6) then
-        call u2mess('F', 'EDYOS_6')
+        call utmess('F', 'EDYOS_6')
     endif
 !
     if (info .eq. 7) then
-        call u2mess('F', 'EDYOS_7')
+        call utmess('F', 'EDYOS_7')
     endif
 !
     if (info .eq. 8) then
-        call u2mess('F', 'EDYOS_8')
+        call utmess('F', 'EDYOS_8')
     endif
 !
     if (info .eq. 9) then
-        call u2mess('F', 'EDYOS_9')
+        call utmess('F', 'EDYOS_9')
     endif
 !
     if (info .eq. 10) then
-        call u2mess('F', 'EDYOS_10')
+        call utmess('F', 'EDYOS_10')
     endif
 !
     if (info .eq. 11) then
-        call u2mess('F', 'EDYOS_11')
+        call utmess('F', 'EDYOS_11')
     endif
 !
     if (info .eq. 12) then
-        call u2mess('F', 'EDYOS_12')
+        call utmess('F', 'EDYOS_12')
     endif
 !
     if (info .eq. 13) then
-        call u2mess('F', 'EDYOS_13')
+        call utmess('F', 'EDYOS_13')
     endif
 !
     if (info .eq. 14) then
-        call u2mess('F', 'EDYOS_14')
+        call utmess('F', 'EDYOS_14')
     endif
 !
     if (info .eq. 15) then
-        call u2mess('F', 'EDYOS_15')
+        call utmess('F', 'EDYOS_15')
     endif
 !
     if (info .eq. 16) then
-        call u2mess('F', 'EDYOS_16')
+        call utmess('F', 'EDYOS_16')
     endif
 !
     if (info .eq. 17) then
-        call u2mess('F', 'EDYOS_17')
+        call utmess('F', 'EDYOS_17')
     endif
 !
     if (info .eq. 18) then
-        call u2mess('F', 'EDYOS_18')
+        call utmess('F', 'EDYOS_18')
     endif
 !
     if (info .eq. 19) then
-        call u2mess('F', 'EDYOS_19')
+        call utmess('F', 'EDYOS_19')
     endif
 !
     if (info .eq. 20) then
-        call u2mess('F', 'EDYOS_20')
+        call utmess('F', 'EDYOS_20')
     endif
 !
     if (info .eq. 21) then
-        call u2mess('F', 'EDYOS_21')
+        call utmess('F', 'EDYOS_21')
     endif
 !
     if (info .eq. 22) then
-        call u2mess('F', 'EDYOS_22')
+        call utmess('F', 'EDYOS_22')
     endif
 !
     if (info .eq. 23) then
-        call u2mess('F', 'EDYOS_23')
+        call utmess('F', 'EDYOS_23')
     endif
 !
     if (info .eq. 24) then
-        call u2mess('F', 'EDYOS_24')
+        call utmess('F', 'EDYOS_24')
     endif
 !
     if (info .eq. 25) then
-        call u2mess('F', 'EDYOS_25')
+        call utmess('F', 'EDYOS_25')
     endif
 !
     if (info .eq. 26) then
-        call u2mess('F', 'EDYOS_26')
+        call utmess('F', 'EDYOS_26')
     endif
 !
     if (info .eq. 27) then
-        call u2mess('F', 'EDYOS_27')
+        call utmess('F', 'EDYOS_27')
     endif
 !
     if (info .eq. 28) then
-        call u2mess('F', 'EDYOS_28')
+        call utmess('F', 'EDYOS_28')
     endif
 !
     if (info .eq. 29) then
-        call u2mess('F', 'EDYOS_29')
+        call utmess('F', 'EDYOS_29')
     endif
 !
     if (info .eq. 30) then
-        call u2mess('F', 'EDYOS_30')
+        call utmess('F', 'EDYOS_30')
     endif
 !
     if (info .eq. 31) then
-        call u2mess('F', 'EDYOS_31')
+        call utmess('F', 'EDYOS_31')
     endif
 !
     if (info .eq. 32) then
-        call u2mess('F', 'EDYOS_32')
+        call utmess('F', 'EDYOS_32')
     endif
 !
     if (info .eq. 33) then
-        call u2mess('F', 'EDYOS_33')
+        call utmess('F', 'EDYOS_33')
     endif
 !
     if (info .eq. 34) then
-        call u2mess('F', 'EDYOS_34')
+        call utmess('F', 'EDYOS_34')
     endif
 !
     if (info .eq. 35) then
-        call u2mess('F', 'EDYOS_35')
+        call utmess('F', 'EDYOS_35')
     endif
 !
     if (info .eq. 36) then
-        call u2mess('F', 'EDYOS_36')
+        call utmess('F', 'EDYOS_36')
     endif
 !
     if (info .eq. 37) then
-        call u2mess('F', 'EDYOS_37')
+        call utmess('F', 'EDYOS_37')
     endif
 !
     if (info .eq. 38) then
-        call u2mess('F', 'EDYOS_38')
+        call utmess('F', 'EDYOS_38')
     endif
 !
     if (info .eq. 39) then
-        call u2mess('F', 'EDYOS_39')
+        call utmess('F', 'EDYOS_39')
     endif
 !
     if (info .eq. 40) then
-        call u2mess('F', 'EDYOS_40')
+        call utmess('F', 'EDYOS_40')
     endif
 !
 !     SORTIE DE L'EXECUTION

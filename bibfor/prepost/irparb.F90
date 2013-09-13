@@ -9,7 +9,7 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexpa.h"
 #include "asterfort/rsnopa.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: resu, parin(*), nomjv
     integer :: nbin, nbout
@@ -72,8 +72,7 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
                 call getres(cbid, cbid, nomcmd)
                 valk (1) = parin(i)
                 valk (2) = ' '
-                call u2mesg('A', 'PREPOST5_41', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'PREPOST5_41', nk=2, valk=valk)
             else
                 nbout = nbout + 1
                 zk16(lpout+nbout-1) = parin(i)

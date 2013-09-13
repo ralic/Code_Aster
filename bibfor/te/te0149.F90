@@ -1,5 +1,5 @@
 subroutine te0149(option, nomte)
-    implicit       none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -10,8 +10,7 @@ subroutine te0149(option, nomte)
 #include "asterfort/posipr.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
@@ -74,7 +73,7 @@ subroutine te0149(option, nomte)
 !     UN SEUL MATERIAU
     if (nbmat .ne. 1) then
         messk(1) = option
-        call u2mesk('F', 'ELEMENTS4_59', 1, messk)
+        call utmess('F', 'ELEMENTS4_59', sk=messk(1))
     endif
 !     LE 1ER MATERIAU
     imat = jmat+zi(jmat+nbmat+1)
@@ -83,7 +82,7 @@ subroutine te0149(option, nomte)
         if (zk16(zi(imat)+icomp-1)(1:4) .ne. 'ELAS') then
             messk(1) = option
             messk(2) = zk16(zi(imat)+icomp-1)(1:10)
-            call u2mesk('F', 'ELEMENTS4_64', 2, messk)
+            call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
         endif
 152  end do
 ! --- ------------------------------------------------------------------
@@ -113,7 +112,7 @@ subroutine te0149(option, nomte)
 !JMP            R2    =  ZR(LSECR+11)
 !JMP            EP2   =  ZR(LSECR+12)
         else
-            call u2mess('F', 'ELEMENTS3_30')
+            call utmess('F', 'ELEMENTS3_30')
         endif
         call jevech('PABSCUR', 'L', labsc)
         absmoy = ( zr(labsc-1+1) + zr(labsc-1+2) ) /2.d0
@@ -128,7 +127,7 @@ subroutine te0149(option, nomte)
         cm = valref(6)
         phie = r1*2.d0
         if (phie .eq. 0.d0) then
-            call u2mess('F', 'ELEMENTS3_26')
+            call utmess('F', 'ELEMENTS3_26')
         endif
         phii = ( phie - 2.d0*ep1 )
         call rhoequ(rho, rhos, rhofi, rhofe, cm,&

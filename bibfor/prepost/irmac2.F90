@@ -1,6 +1,6 @@
 subroutine irmac2(ktype, ityca, gtype, nnoe)
-    implicit   none
-#include "asterfort/u2mess.h"
+    implicit none
+#include "asterfort/utmess.h"
     integer :: ityca, nnoe
     character(len=8) :: ktype, gtype
 !     ------------------------------------------------------------------
@@ -33,7 +33,7 @@ subroutine irmac2(ktype, ityca, gtype, nnoe)
         gtype = 'SEG3'
     else if (ktype .eq. 'SEG4') then
         nnoe = nnoe - 2
-        call u2mess('I', 'PREPOST2_64')
+        call utmess('I', 'PREPOST2_64')
         ityca = 2
         gtype = 'SEG2'
     else if (ktype .eq. 'TRIA3') then
@@ -44,7 +44,7 @@ subroutine irmac2(ktype, ityca, gtype, nnoe)
         gtype = 'TRI6'
     else if (ktype .eq. 'TRIA7') then
         nnoe = nnoe - 1
-        call u2mess('I', 'PREPOST2_65')
+        call utmess('I', 'PREPOST2_65')
         ityca = 6
         gtype = 'TRI6'
     else if (ktype .eq. 'QUAD4') then
@@ -55,7 +55,7 @@ subroutine irmac2(ktype, ityca, gtype, nnoe)
         gtype = 'QUA8'
     else if (ktype .eq. 'QUAD9') then
         nnoe = nnoe - 1
-        call u2mess('I', 'PREPOST2_66')
+        call utmess('I', 'PREPOST2_66')
         ityca = 10
         gtype = 'QUA8'
 !CC         ITYCA = 11
@@ -77,7 +77,7 @@ subroutine irmac2(ktype, ityca, gtype, nnoe)
         gtype = 'PR15'
     else if (ktype .eq. 'PENTA18') then
         ityca = 17
-        call u2mess('I', 'PREPOST2_86')
+        call utmess('I', 'PREPOST2_86')
         gtype = 'PR15'
     else if (ktype .eq. 'TETRA4') then
         ityca = 23

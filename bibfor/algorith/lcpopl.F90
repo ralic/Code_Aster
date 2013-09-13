@@ -36,7 +36,7 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
 #include "asterc/r8vide.h"
 #include "asterfort/hujori.h"
 #include "asterfort/lgldcm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), sigf(*), vind(*), vinf(*)
     real(kind=8) :: angmas(3), sigd(6), deps(6)
@@ -72,7 +72,9 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
 !
     if (loi(1:6) .eq. 'HUJEUX') then
 ! --- 1 ORIENTATION DES CONTRAINTES SELON ANGMAS VERS REPERE GLOBAL
-        if (angmas(1) .eq. r8vide()) call u2mess('F', 'ALGORITH8_20')
+        if (angmas(1) .eq. r8vide()) then
+            call utmess('F', 'ALGORITH8_20')
+        endif
         reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero) .or. (&
         angmas(3).ne.zero)
         call hujori('GLOBA', 1, reorie, angmas, sigd,&

@@ -13,8 +13,8 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/t3gbc.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), rig(*), ener(*)
     character(len=16) :: option, nomte
@@ -84,7 +84,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
 ! --- Q4G EXCENTRE, ON S'ARRETE EN ERREUR FATALE :
 !     ------------------------------------------
     if (excent .ne. zero) then
-        call u2mess('F', 'ELEMENTS2_57')
+        call utmess('F', 'ELEMENTS2_57')
     endif
 !
     call r8inir(81, zero, kc, 1)

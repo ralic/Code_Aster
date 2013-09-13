@@ -17,7 +17,7 @@ subroutine zerodi(x, y)
 ! ======================================================================
 !
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: x(4), y(4)
 ! ----------------------------------------------------------------------
 !  RESOLUTION D'EQUATIONS SCALAIRES PAR UNE METHODE DE DICHOTOMIE
@@ -43,7 +43,9 @@ subroutine zerodi(x, y)
     endif
 !
 !    CONSTRUCTION D'UN NOUVEL ESTIME
-    if (x(1) .eq. x(2)) call u2mess('F', 'ALGORITH9_84')
+    if (x(1) .eq. x(2)) then
+        call utmess('F', 'ALGORITH9_84')
+    endif
     xp = (x(1) + x(2)) / 2.d0
 !
 !    DECALAGE DES ITERES

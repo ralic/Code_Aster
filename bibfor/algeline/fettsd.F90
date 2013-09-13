@@ -62,7 +62,6 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/fetmpi.h"
 #include "asterfort/fetrex.h"
 #include "asterfort/fetsca.h"
@@ -76,9 +75,10 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
+!
     integer :: nbi, nbsd, vddl(nbsd), irex, nbi2, ifeti, ifm, itps, nivmpi, rang
     integer :: option
     character(len=19) :: sdfeti, chsol
@@ -163,7 +163,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
             raux=raux+zr(iret2+i-1)
 12      continue
 !
-        call u2mess('E', 'ALGELINE5_5')
+        call utmess('E', 'ALGELINE5_5')
         if (rang .eq. 0) then
             write(ifm,*)
             write(ifm,*)'TEST SD_FETI 1 (IL DOIT ETRE EGAL A 0 !) ',&

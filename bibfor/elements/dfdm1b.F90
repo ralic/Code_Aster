@@ -20,7 +20,7 @@ subroutine dfdm1b(nno, poids, dfrdk, coor, dfdx,&
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nno
     real(kind=8) :: dfrdk(1), coor(*), dfdx(1)
     real(kind=8) :: jacp, poids
@@ -57,11 +57,11 @@ subroutine dfdm1b(nno, poids, dfrdk, coor, dfdx,&
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
         nomail= zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ALGORITH2_59', 1, nomail)
-        endif
+        call utmess('F', 'ALGORITH2_59', sk=nomail)
+    endif
 !
-            do i = 1, nno
-                dfdx(i) = dfrdk(i) / jac
-            end do
-            jacp = jac * poids
-        end subroutine
+    do i = 1, nno
+        dfdx(i) = dfrdk(i) / jac
+    end do
+    jacp = jac * poids
+end subroutine

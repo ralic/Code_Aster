@@ -42,7 +42,6 @@ subroutine ddlact(nomres, numddl)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/actiau.h"
 #include "asterfort/acticb.h"
 #include "asterfort/actimn.h"
@@ -55,8 +54,9 @@ subroutine ddlact(nomres, numddl)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/recddl.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=6) :: pgc
     character(len=8) :: nomres, typint
     character(len=8) :: k8bid
@@ -171,8 +171,7 @@ subroutine ddlact(nomres, numddl)
 50      continue
 !
         if (actifs .lt. 1) then
-            call u2mesg('F', 'SOUSTRUC2_8', 0, ' ', 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'SOUSTRUC2_8')
         endif
 !
         call jelibe(jexnum(actint, i))

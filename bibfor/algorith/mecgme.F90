@@ -39,7 +39,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: modelz, carelz
     character(len=*) :: mate
     real(kind=8) :: instap, instam
@@ -242,14 +242,14 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                             if (option .eq. 'CHAR_MECA_EFON_R') then
                                 lpain(16) = 'PPREFFR'
                                 lchin(16) = nomcha//'.CHME.PREFF'
-                                lpain(1)     = 'PEFOND'
-                                lchin(1)     = nomcha//'.CHME.EFOND'
+                                lpain(1) = 'PEFOND'
+                                lchin(1) = nomcha//'.CHME.EFOND'
                             endif
                             if (option .eq. 'CHAR_MECA_EFON_F') then
                                 lpain(16) = 'PPREFFF'
                                 lchin(16) = nomcha//'.CHME.PREFF'
-                                lpain(1)     = 'PEFOND'
-                                lchin(1)     = nomcha//'.CHME.EFOND'
+                                lpain(1) = 'PEFOND'
+                                lchin(1) = nomcha//'.CHME.EFOND'
                             endif
                             lchout(1) (10:10) = 'G'
                             inum = inum + 1
@@ -273,7 +273,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                     endif
                 enddo
                 if (somme .eq. 0) then
-                    call u2mess('F', 'MECANONLINE2_4')
+                    call utmess('F', 'MECANONLINE2_4')
                 endif
             endif
         enddo

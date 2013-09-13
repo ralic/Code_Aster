@@ -18,8 +18,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     real(kind=8) :: rinf, rsup, module, dir(3), coor(*)
@@ -162,7 +161,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
         xi = zr(jfond-1+4*(numfon-1)+1)
         yi = zr(jfond-1+4*(numfon-1)+2)
         if (.not.ldirec) then
-            call u2mess('I', 'XFEM_10')
+            call utmess('I', 'XFEM_10')
 !         RÉCUPÉRATION DU GRADIENT DE LST
             grlt = fiss//'.GRLTNO'
             chgrs = '&&GCOU2D.GRLT'
@@ -198,7 +197,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                 if (norme .le. r8prem()) then
                     if ((abs(alpha-1).gt.eps) .and. ((alpha-1).le.0)) then
                         call jenuno(jexnum(noma//'.NOMNOE', i), k8b)
-                        call u2mesk('F', 'XFEM_12', 1, k8b)
+                        call utmess('F', 'XFEM_12', sk=k8b)
                     endif
                     norme = 1.d0
                 endif

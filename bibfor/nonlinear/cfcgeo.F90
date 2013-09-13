@@ -19,9 +19,8 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -38,7 +37,8 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     logical :: dvgeom, geoerr
@@ -215,7 +215,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 ! --- AFFICHAGE
 !
     if (geoala) then
-        call u2mess('A', 'CONTACT3_96')
+        call utmess('A', 'CONTACT3_96')
     endif
 !
     call jedema()

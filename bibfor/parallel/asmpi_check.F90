@@ -20,19 +20,16 @@ subroutine asmpi_check(nbpro4, iret)
     implicit none
 ! aslint: disable=W1306
 !     ARGUMENT IN
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
 #include "asterc/uttrst.h"
-#include "asterfort/gtstat.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/asmpi_status.h"
+#include "asterfort/gtstat.h"
 #include "asterfort/mpistp.h"
 #include "asterfort/ststat.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     mpi_int :: nbpro4
 !     ARGUMENT OUT
     integer :: iret
@@ -74,7 +71,7 @@ subroutine asmpi_check(nbpro4, iret)
         call asmpi_status(ST_OK, resp0)
         if (resp0 .ne. ST_OK) then
             iret = 1
-            call u2mess('I', 'APPELMPI_80')
+            call utmess('I', 'APPELMPI_80')
             call mpistp(2)
             goto 999
         endif
@@ -86,7 +83,7 @@ subroutine asmpi_check(nbpro4, iret)
         timout = tres * 0.2d0
         if (timout < 0) then
             timout = 120.
-            call u2mesr('A', 'APPELMPI_94', 1, timout)
+            call utmess('A', 'APPELMPI_94', sr=timout)
         endif
 !
 !       DEMANDE LE STATUT A CHAQUE PROCESSEUR
@@ -108,7 +105,7 @@ subroutine asmpi_check(nbpro4, iret)
                     nbterm = nbterm + 1
                     isterm(i) = .true.
                     if (diag(i) .eq. ST_ER) then
-                        call u2mesi('I', 'APPELMPI_84', 1, i)
+                        call utmess('I', 'APPELMPI_84', si=i)
                         call ststat(ST_ER_OTH)
                     endif
                 endif
@@ -120,11 +117,11 @@ subroutine asmpi_check(nbpro4, iret)
         if (lcont .and. (tf - t0) .gt. timout) then
             lcont = .false.
             valr(1) = timout
-            call u2mesr('E', 'APPELMPI_97', 1, valr)
+            call utmess('E', 'APPELMPI_97', sr=valr(1))
             do 102 i = 1, np1
                 if (.not. isterm(i)) then
-                    call u2mesi('E+', 'APPELMPI_96', 1, i)
-                    call u2mesk('E', 'APPELMPI_83', 1, 'MPI_IRECV')
+                    call utmess('E+', 'APPELMPI_96', si=i)
+                    call utmess('E', 'APPELMPI_83', sk='MPI_IRECV')
                     call ststat(ST_UN_OTH)
                 endif
 102          continue
@@ -133,7 +130,7 @@ subroutine asmpi_check(nbpro4, iret)
 !       END WHILE
 !
         if (gtstat(ST_ER_PR0)) then
-            call u2mesi('I', 'APPELMPI_84', 1, 0)
+            call utmess('I', 'APPELMPI_84', si=0)
         endif
 !       DIRE A CEUX QUI ONT REPONDU SI ON CONTINUE OU PAS
         if (gtstat(ST_OK)) then
@@ -144,7 +141,7 @@ subroutine asmpi_check(nbpro4, iret)
         do 103 i = 1, np1
             if (isterm(i)) then
                 if (istat .ne. ST_OK) then
-                    call u2mesi('I', 'APPELMPI_81', 1, i)
+                    call utmess('I', 'APPELMPI_81', si=i)
                 endif
                 call MPI_SEND(istat, 1, MPI_INTEGER4, i, ST_TAG_CNT,&
                               mpicou, iermpi)

@@ -4,8 +4,7 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: xyzg(3, *), pgl(3, 3)
     character(len=1) :: kstop
     integer :: iret
@@ -133,7 +132,7 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
     if (normu .lt. r8miem()) then
         if (kstop .eq. 'S') then
             call tecael(iadzi, iazk24)
-            call u2mesk('F', 'MODELISA10_5', 1, zk24(iazk24+2))
+            call utmess('F', 'MODELISA10_5', sk=zk24(iazk24+2))
         else if (kstop.eq.'C') then
             iret = 1
         else
@@ -150,8 +149,8 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
         if (kstop .eq. 'S') then
             call tecael(iadzi, iazk24)
             valr = abs(dist)
-            call u2mesk('A+', 'ELEMENTS4_80', 1, zk24(iazk24+2))
-            call u2mesr('A', 'ELEMENTS4_82', 1, valr)
+            call utmess('A+', 'ELEMENTS4_80', sk=zk24(iazk24+2))
+            call utmess('A', 'ELEMENTS4_82', sr=valr)
         else if (kstop.eq.'C') then
             iret = 2
         else

@@ -1,4 +1,4 @@
-subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
+subroutine gcchar(ichar, iprec, time, carteo, lfchar,&
                   lpchar, lformu, lfmult, lccomb, cartei,&
                   nomfct, newfct, oldfon)
 !
@@ -11,7 +11,7 @@ subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
 #include "asterfort/gcharm.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tecart.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,8 +36,8 @@ subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
     logical :: lfmult
     logical :: lccomb
     character(len=24) :: oldfon
-    character(len=8) ::  nomfct
-    character(len=8) ::  newfct
+    character(len=8) :: nomfct
+    character(len=8) :: newfct
     integer :: ichar
     integer :: iprec
     real(kind=8) :: time
@@ -85,20 +85,24 @@ subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
 !
     if (lpchar) then
         call copisd('CHAMP_GD', 'V', cartei, carteo)
-        if (lfmult.and.(.not.lformu)) then
-            call gcharm(lfchar, cartei, nomfct, newfct, time  ,&
+        if (lfmult .and. (.not.lformu)) then
+            call gcharm(lfchar, cartei, nomfct, newfct, time,&
                         carteo)
         endif
     else
-        if (.not.lccomb) call u2mess('F', 'RUPTURE2_3')
-        if (lformu) call u2mess('F', 'RUPTURE2_2')
+        if (.not.lccomb) then
+            call utmess('F', 'RUPTURE2_3')
+        endif
+        if (lformu) then
+            call utmess('F', 'RUPTURE2_2')
+        endif
         call copisd('CHAMP_GD', 'V', carteo, chtmp1)
         call copisd('CHAMP_GD', 'V', cartei, chtmp2)
         call detrsd('CHAMP_GD', carteo)
         if (lfmult) then
-            call gcharm(lfchar, cartei, nomfct, newfct, time  ,&
+            call gcharm(lfchar, cartei, nomfct, newfct, time,&
                         carteo)
-            call gcharm(lfchar, cartei, nomfct, newfct, time  ,&
+            call gcharm(lfchar, cartei, nomfct, newfct, time,&
                         chtmp2)
         endif
         fonc1 = zl(jfonci+iprec-1)
@@ -108,7 +112,7 @@ subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
 !
 ! ----- EFFECTUE LA FUSION DE 2 CHARGES DE MEME TYPE
 !
-        call gcharf(ichar , fonc1, chtmp1, fonc2, chtmp2,&
+        call gcharf(ichar, fonc1, chtmp1, fonc2, chtmp2,&
                     carteo)
     endif
     iprec = ichar

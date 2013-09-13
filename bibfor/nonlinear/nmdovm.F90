@@ -18,7 +18,6 @@ subroutine nmdovm(modele, mesmai, nbma, ces2, comcod,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/lctest.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
@@ -29,7 +28,8 @@ subroutine nmdovm(modele, mesmai, nbma, ces2, comcod,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     character(len=24) :: modele, mesmai
     character(len=16) :: txcp, comp, comcod
 !
@@ -101,8 +101,7 @@ subroutine nmdovm(modele, mesmai, nbma, ces2, comcod,&
         if (nomcom .eq. ' ') then
             mailma = nomail(1:8)//'.NOMMAI'
             call jenuno(jexnum(mailma, ima), noma)
-            call u2mesg(tx, 'COMPOR1_50', 1, noma, 0,&
-                        0, 0, 0.d0)
+            call utmess(tx, 'COMPOR1_50', sk=noma)
         endif
 !           NUMERO DU GREL CONTENANT LA MAILLE IMA
         nugrel=zi(irepe-1+2*(ima-1)+1)
@@ -121,8 +120,7 @@ subroutine nmdovm(modele, mesmai, nbma, ces2, comcod,&
             if (irett .eq. 0) then
                 texte(1)='C_PLAN'
                 texte(2)=comp
-                call u2mesg(tx, 'COMPOR1_47', 2, texte, 0,&
-                            0, 0, 0.d0)
+                call utmess(tx, 'COMPOR1_47', nk=2, valk=texte)
                 txcp='DEBORST'
             endif
 !           Dans le grel il y a TYPMOD=COMP1D
@@ -131,8 +129,7 @@ subroutine nmdovm(modele, mesmai, nbma, ces2, comcod,&
             if (irett .eq. 0) then
                 texte(1)='1D'
                 texte(2)=comp
-                call u2mesg(tx, 'COMPOR1_48', 2, texte, 0,&
-                            0, 0, 0.d0)
+                call utmess(tx, 'COMPOR1_48', nk=2, valk=texte)
                 txcp='DEBORST'
             endif
 !           Dans le grel il y a TYPMOD=COMP3D
@@ -141,16 +138,14 @@ subroutine nmdovm(modele, mesmai, nbma, ces2, comcod,&
             if (irett .eq. 0) then
                 texte(1)='3D'
                 texte(2)=comp
-                call u2mesg(tx, 'COMPOR1_49', 2, texte, 0,&
-                            0, 0, 0.d0)
+                call utmess(tx, 'COMPOR1_49', nk=2, valk=texte)
             endif
         else
             call lctest(comcod, 'MODELISATION', typmod, irett)
             if (irett .eq. 0) then
                 texte(1)=typmod
                 texte(2)=comp
-                call u2mesg('A', 'COMPOR1_49', 2, texte, 0,&
-                            0, 0, 0.d0)
+                call utmess('A', 'COMPOR1_49', nk=2, valk=texte)
             endif
         endif
 !

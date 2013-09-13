@@ -24,7 +24,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsutc4.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: noma1, noma2, resu1, resu2
@@ -175,10 +175,10 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     call rsutnu(resu1, 'RESU', iocc, '&&RDTRES.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
     if (iret .ne. 0) then
-        call u2mesk('F', 'CALCULEL4_61', 1, resu1)
+        call utmess('F', 'CALCULEL4_61', sk=resu1)
     endif
     if (nbordr .eq. 0) then
-        call u2mesk('F', 'CALCULEL4_62', 1, resu1)
+        call utmess('F', 'CALCULEL4_62', sk=resu1)
     endif
     call jeveuo('&&RDTRES.NUME_ORDRE', 'L', jordr)
     call gettco(resu1, typres)
@@ -211,7 +211,9 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         redpos=.false.
     endif
 40  continue
-    if (.not.redpos) call u2mesk('A', 'CALCULEL4_7', 1, nomsym( isym))
+    if (.not.redpos) then
+        call utmess('A', 'CALCULEL4_7', sk=nomsym( isym))
+    endif
     50 end do
 !
 !

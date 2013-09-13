@@ -21,7 +21,6 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -30,8 +29,9 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: prchno
     integer :: neq, gds, ncmp, corr2(ncmp)
     character(len=*) :: basz
@@ -76,7 +76,7 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
     integer :: jdeeq, ncmpmx, nec, jnueq, nbligr, n1, jprno, i2
     integer :: nbno, j, iddl, iadg, k, ieq
 !
-    character(len=1) ::  base
+    character(len=1) :: base
 !
 !
     call jemarq()
@@ -87,15 +87,23 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx)
     nec = nbec(gds)
-    if (ncmpmx .eq. 0) call u2mess('F', 'ASSEMBLA_24')
-    if (nec .eq. 0) call u2mess('F', 'ASSEMBLA_25')
+    if (ncmpmx .eq. 0) then
+        call utmess('F', 'ASSEMBLA_24')
+    endif
+    if (nec .eq. 0) then
+        call utmess('F', 'ASSEMBLA_25')
+    endif
 !
     call jeveuo(prchno(1:19)//'.NUEQ', 'L', jnueq)
     call jelira(prchno(1:19)//'.PRNO', 'NMAXOC', nbligr)
-    if (nbligr .ne. 1) call u2mess('F', 'ASSEMBLA_33')
+    if (nbligr .ne. 1) then
+        call utmess('F', 'ASSEMBLA_33')
+    endif
 !
     call jelira(jexnum(prchno(1:19)//'.PRNO', 1), 'LONMAX', n1)
-    if (n1 .le. 0) call u2mess('F', 'ASSEMBLA_34')
+    if (n1 .le. 0) then
+        call utmess('F', 'ASSEMBLA_34')
+    endif
     call jeveuo(jexnum(prchno(1:19)//'.PRNO', 1), 'L', jprno)
 !
     nbno = n1/ (nec+2)

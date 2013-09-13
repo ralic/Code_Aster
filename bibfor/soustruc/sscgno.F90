@@ -55,9 +55,8 @@ subroutine sscgno(ma, nbgnin)
 #include "asterfort/jexnum.h"
 #include "asterfort/ornofd.h"
 #include "asterfort/ssgngm.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     real(kind=8) :: vecori(3)
@@ -146,7 +145,7 @@ subroutine sscgno(ma, nbgnin)
     call getvtx(motfac, 'NOM', iocc=iocc, scal=nogno, nbret=n1)
     call jenonu(jexnom(grpnoe, nogno), iret)
     if (iret .gt. 0) then
-        call u2mesk('F', 'SOUSTRUC_37', 1, nogno)
+        call utmess('F', 'SOUSTRUC_37', sk=nogno)
     endif
 !
     n2 = -n2
@@ -192,7 +191,7 @@ subroutine sscgno(ma, nbgnin)
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
-                call u2mesk('A', 'SOUSTRUC_38', 1, nogno)
+                call utmess('A', 'SOUSTRUC_38', sk=nogno)
             endif
             goto 100
         endif
@@ -253,7 +252,7 @@ subroutine sscgno(ma, nbgnin)
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
-                call u2mesk('A', 'SOUSTRUC_38', 1, nogno)
+                call utmess('A', 'SOUSTRUC_38', sk=nogno)
             endif
         else
             call jecroc(jexnom(grpnoe, nogno))
@@ -304,7 +303,7 @@ subroutine sscgno(ma, nbgnin)
 !
         if (n .eq. 0) then
             if (alarm .eq. 'OUI') then
-                call u2mesk('A', 'SOUSTRUC_38', 1, nogno)
+                call utmess('A', 'SOUSTRUC_38', sk=nogno)
             endif
         else
             call jecroc(jexnom(grpnoe, nogno))
@@ -378,14 +377,14 @@ subroutine sscgno(ma, nbgnin)
             call cgnoxf(motfac, iocc, ma, lisno, nbno)
 !
         else
-            call u2mesk('F', 'CALCULEL6_10', 1, option)
+            call utmess('F', 'CALCULEL6_10', sk=option)
         endif
 !
 !         -- CREATION ET AFFECTATION DU GROUP_NO :
 !         ----------------------------------------
         if (nbno .eq. 0) then
             if (alarm .eq. 'OUI') then
-                call u2mesk('A', 'SOUSTRUC_38', 1, nogno)
+                call utmess('A', 'SOUSTRUC_38', sk=nogno)
             endif
         else
             call jeveuo(lisno, 'L', idlino)
@@ -425,7 +424,7 @@ subroutine sscgno(ma, nbgnin)
             if (zi(jnoeu2-1+num) .eq. 2) then
                 valk(1) = nom1
                 valk(2) = nogno
-                call u2mesk('A', 'SOUSTRUC_39', 2, valk)
+                call utmess('A', 'SOUSTRUC_39', nk=2, valk=valk)
                 goto 20
             endif
             nbno = nbno + 1
@@ -464,8 +463,12 @@ subroutine sscgno(ma, nbgnin)
             if (n6a .eq. 0) ind1 = 1
             call getvis(motfac, 'NUME_FIN', iocc=iocc, scal=ind2, nbret=n6a)
             if (n6a .eq. 0) ind2 = ili2
-            if (ind2 .lt. ind1) call u2mess('F', 'SOUSTRUC_33')
-            if (ili2 .lt. ind2) call u2mess('F', 'SOUSTRUC_34')
+            if (ind2 .lt. ind1) then
+                call utmess('F', 'SOUSTRUC_33')
+            endif
+            if (ili2 .lt. ind2) then
+                call utmess('F', 'SOUSTRUC_34')
+            endif
             n6a = ind2 - ind1 + 1
         else
             n6a = 1

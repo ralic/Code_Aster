@@ -11,7 +11,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     integer :: nbobst, nbpt, nbloc
     real(kind=8) :: temps(*), fcho(*), vgli(*), tdebut, tfin
@@ -103,7 +103,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 !
     if (nbloc .eq. 0) nbloc = 1
     if (nbloc .gt. 1) then
-        call u2mess('I', 'ALGORITH10_76')
+        call utmess('I', 'ALGORITH10_76')
 !
         nbloc = 1
     endif

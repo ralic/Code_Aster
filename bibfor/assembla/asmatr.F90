@@ -19,7 +19,6 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/ascima.h"
 #include "asterfort/assert.h"
 #include "asterfort/assmam.h"
@@ -35,8 +34,9 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 #include "asterfort/masyns.h"
 #include "asterfort/resyme.h"
 #include "asterfort/typmat.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: base, mataz, tlimat(*), licoef, nu
     integer :: nbmat, itysca
     character(len=*) :: solveu, infcha
@@ -142,7 +142,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !     ------------------
     metres = zk24(jslvk)
     if ((metres.eq.'GCPC'.or.metres.eq.'FETI') .and. (matsym.eq.'N')) then
-        call u2mesk('F', 'ASSEMBLA_1', 1, matsym)
+        call utmess('F', 'ASSEMBLA_1', sk=matsym)
     endif
 !
 !

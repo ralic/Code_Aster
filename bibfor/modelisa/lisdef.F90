@@ -17,7 +17,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -30,6 +30,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/liscva.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: valkz, optkz
     character(len=4) :: oper
@@ -391,7 +392,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ------- CHARGEMENT IDENTIFIE: ACTIVATION DANS LA TABLE D'ENCODAGE
 !
-            if ((iposit.ge.1).and.(iposit.le.30)) then
+            if ((iposit.ge.1) .and. (iposit.le.30)) then
                 tabcod(iposit) = 1
             endif
 10      continue
@@ -468,7 +469,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ------- CHARGEMENT IDENTIFIE: ACTIVATION DANS LA TABLE D'ENCODAGE
 !
-            if ((iposit.ge.1).and.(iposit.le.60)) then
+            if ((iposit.ge.1) .and. (iposit.le.60)) then
                 tabcox(iposit) = 1
             endif
 11      continue
@@ -530,7 +531,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             charge = prefob(1:8)
             call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
                         typcha, iret)
-            if (iret.eq.1) call u2mess('F','CHARGES_3')
+            if (iret .eq. 1) then
+                call utmess('F', 'CHARGES_3')
+            endif
             if (typcha(5:7) .eq. '_RE') then
                 typech = 'REEL'
             else if (typcha(5:7).eq.'_RI') then
@@ -686,7 +689,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
     else if (oper.eq.'MOTC') then
         indxch = opti
         motcle = motcl(indxch)
-        valkz  = motcle
+        valkz = motcle
 !
 ! ----------------------------------------------------------------------
     else if (oper.eq.'IDNS') then

@@ -20,7 +20,6 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 ! A_UTIL
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
@@ -36,8 +35,9 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
     logical :: lcumul(nbchs), lcoc
@@ -175,7 +175,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                 vali(1)=ima
                 vali(2)=nbpt
                 vali(3)=zi(jnbpt-1+ima)
-                call u2mesi('F', 'CALCULEL_35', 3, vali)
+                call utmess('F', 'CALCULEL_35', ni=3, vali=vali)
             endif
         else
             if (nbpt .ne. 0) zi(jnbpt-1+ima)=nbpt
@@ -187,7 +187,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                 vali(1)=ima
                 vali(2)=nbsp
                 vali(3)=zi(jnbsp-1+ima)
-                call u2mesi('F', 'CALCULEL_36', 3, vali)
+                call utmess('F', 'CALCULEL_36', ni=3, vali=vali)
             endif
         else
             if (nbsp .ne. 0) zi(jnbsp-1+ima)=nbsp

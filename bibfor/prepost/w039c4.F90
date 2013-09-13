@@ -1,6 +1,7 @@
 subroutine w039c4(carte, ifi, form)
-    implicit   none
+    implicit none
 !
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesred.h"
@@ -15,7 +16,7 @@ subroutine w039c4(carte, ifi, form)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: carte, form
     integer :: ifi
 ! ======================================================================
@@ -46,7 +47,6 @@ subroutine w039c4(carte, ifi, form)
 !
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
     integer :: iret, ibid, nugd, n1, jnocmp
     integer :: jcesk, jcesd, jcesc, jcesv, jcesl, jdesc
@@ -82,7 +82,7 @@ subroutine w039c4(carte, ifi, form)
     call jelira(jexnum('&CATA.GD.NOMCMP', nugd), 'LONMAX', n1)
     if (n1 .gt. 80) then
 !       -- ON NE GARDE QUE LES 80 PREMIERES :
-        call u2mesk('A', 'CALCULEL4_24', 1, cart1)
+        call utmess('A', 'CALCULEL4_24', sk=cart1)
         chels2='&&W039C4.CHELS2'
         call copisd('CHAM_ELEM_S', 'V', chels1, chels2)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', nugd), 'L', jnocmp)

@@ -2,7 +2,6 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
                   nomaz, liso1z, liso2z, lonlis)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -11,8 +10,9 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/padist.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: noeud1(*), noeud2(*), lonli1, lonli2, lonlis
     character(len=*) :: nomaz, liso1z, liso2z
     real(kind=8) :: dmin0
@@ -153,8 +153,7 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
                     valk (1) = nomno2
                     valk (2) = nomno1
                     valk (3) = nomno3
-                    call u2mesg('F', 'MODELISA8_77', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
                 endif
             endif
 10      continue
@@ -197,8 +196,7 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
                     valk (1) = nomno2
                     valk (2) = nomno1
                     valk (3) = nomno3
-                    call u2mesg('F', 'MODELISA8_77', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_77', nk=3, valk=valk)
                 endif
             endif
 30      continue

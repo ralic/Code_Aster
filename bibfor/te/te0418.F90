@@ -17,13 +17,13 @@ subroutine te0418(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -83,7 +83,7 @@ subroutine te0418(option, nomte)
         nompar(4) = 'INST'
         valpar(4) = zr(itpsr)
     else
-        call u2mesk('F', 'ELEMENTS2_77', 1, option)
+        call utmess('F', 'ELEMENTS2_77', sk=option)
     endif
 !
     do 40 kp = 1, npg

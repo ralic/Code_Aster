@@ -27,9 +27,7 @@ subroutine jjarep(iclas, nrmax)
 #include "asterfort/jxecro.h"
 #include "asterfort/jxhcod.h"
 #include "asterfort/jxlibd.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iclas, nrmax
 ! ----------------------------------------------------------------------
 !     PERMET D'AGRANDIR UN REPERTOIRE DE NOM
@@ -104,11 +102,9 @@ subroutine jjarep(iclas, nrmax)
     lhcod = jjprem ( nrmax , irt )
     if (irt .eq. 1) then
         if (ic .eq. 1) then
-            call u2mesg('A', 'JEVEUX_64', 1, nombas(ic), 1,&
-                        nrmax, 0, rbid)
+            call utmess('A', 'JEVEUX_64', sk=nombas(ic), si=nrmax)
         else
-            call u2mesg('A', 'JEVEUX_65', 1, nombas(ic), 1,&
-                        nrmax, 0, rbid)
+            call utmess('A', 'JEVEUX_65', sk=nombas(ic), si=nrmax)
         endif
     endif
     call jjalls(lhcod*lois, ic, 'V', 'I', lois,&
@@ -139,7 +135,7 @@ subroutine jjarep(iclas, nrmax)
  5      continue
         if (hcod(jcod-1+i) .eq. 0) then
             if (nuti .ge. nrmax) then
-                call u2mess('F', 'JEVEUX_58')
+                call utmess('F', 'JEVEUX_58')
             else
                 idatin = nuti + 1
                 iin = i
@@ -148,7 +144,7 @@ subroutine jjarep(iclas, nrmax)
             j = hcod(jcod-1+i)
             cle = rnom(jnom-1+abs(j))
             if (cle .eq. clel) then
-                call u2mesk('F', 'JEVEUX_59', 1, clel)
+                call utmess('F', 'JEVEUX_59', sk=clel)
             else
                 if (ne .eq. 1) in = jxhcod (clel,lorep-2)
                 ne = ne + 1
@@ -156,7 +152,7 @@ subroutine jjarep(iclas, nrmax)
                 if (ne .le. lorep) then
                     goto 5
                 else
-                    call u2mess('F', 'JEVEUX_58')
+                    call utmess('F', 'JEVEUX_58')
                 endif
             endif
         endif

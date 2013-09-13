@@ -45,14 +45,14 @@ subroutine conjac(i0, i1, i2, i3, macoc,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-!
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: i0, i1, i2, i3
     character(len=8) :: mailla
     integer :: nbcoc
@@ -142,7 +142,9 @@ subroutine conjac(i0, i1, i2, i3, macoc,&
         endif
         write(ifm,*) 'JACOBIEN ',scal
     endif
-    if (scal .lt. 0) call u2mess('E', 'MODELISA4_35')
+    if (scal .lt. 0) then
+        call utmess('E', 'MODELISA4_35')
+    endif
 !
     call jedema()
 !

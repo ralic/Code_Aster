@@ -1,11 +1,11 @@
 subroutine vetube(r1, r2, angdeb, angfin, angare,&
                   angmax, angva, profon, volume, epais)
 ! aslint: disable=
-    implicit   none
+    implicit none
 #include "asterc/r8dgrd.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8rddg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: r1, r2, angdeb, angfin, angare, angmax, angva, profon
     real(kind=8) :: volume, epais
 !-----------------------------------------------------------------------
@@ -87,7 +87,7 @@ subroutine vetube(r1, r2, angdeb, angfin, angare,&
     endif
 !
     if (2*delta .gt. 360.d0) then
-        call u2mess('F', 'PREPOST4_93')
+        call utmess('F', 'PREPOST4_93')
     endif
 !
 end subroutine

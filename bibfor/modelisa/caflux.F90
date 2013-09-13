@@ -17,9 +17,7 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/tecart.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vetyma.h"
     integer :: ndim
     character(len=4) :: fonree
@@ -103,7 +101,9 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
         endif
         n4 = n1+n2+n3
         if ((n5.ne.0) .and. (n4.ne.0)) then
-            if (fonree .eq. 'FONC') call u2mess('F', 'MODELISA2_64')
+            if (fonree .eq. 'FONC') then
+                call utmess('F', 'MODELISA2_64')
+            endif
         endif
         if (n4 .ne. 0) icre1 = .true.
         if (n5 .ne. 0) icre2 = .true.
@@ -195,16 +195,13 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                 if (iret .eq. 1) then
                     valk (1) = para
                     valk (2) = nomtab
-                    call u2mesg('F', 'MODELISA8_34', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_34', nk=2, valk=valk)
                 else if (iret .eq. 2) then
                     valk (1) = para
-                    call u2mesg('F', 'MODELISA8_35', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_35', sk=valk(1))
                 else if (iret .eq. 3) then
                     valk (1) = mongrm
-                    call u2mesg('F', 'MODELISA8_36', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_36', sk=valk(1))
                 endif
                 para = 'LONGUEUR'
                 call tbliva(nomtab, 1, 'GROUP_MA', ibid, r8b,&
@@ -214,16 +211,13 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                 if (iret .eq. 1) then
                     valk (1) = para
                     valk (2) = nomtab
-                    call u2mesg('F', 'MODELISA8_34', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_34', nk=2, valk=valk)
                 else if (iret .eq. 2) then
                     valk (1) = para
-                    call u2mesg('F', 'MODELISA8_35', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_35', sk=valk(1))
                 else if (iret .eq. 3) then
                     valk (1) = mongrm
-                    call u2mesg('F', 'MODELISA8_36', 1, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'MODELISA8_36', sk=valk(1))
                 endif
                 ncmp1 = ncmp1 + 1
                 zk8(jncmp1-1 + ncmp1) = 'FLUN'

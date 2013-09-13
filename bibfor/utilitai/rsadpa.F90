@@ -1,8 +1,7 @@
 subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
                   itype, ljeveu, ctype)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/extrs3.h"
@@ -15,7 +14,8 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsutrg.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: npara, iordr, itype, ljeveu(*)
     character(len=1) :: cel
     character(len=*) :: nomsd, lpara(*), ctype(*)
@@ -76,8 +76,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         if (irang .eq. 0) then
             valk (1) = nomsd
             vali (1) = iordr
-            call u2mesg('F', 'UTILITAI6_77', 1, valk, 1,&
-                        vali, 0, r8bid)
+            call utmess('F', 'UTILITAI6_77', sk=valk(1), si=vali(1))
         endif
     else
         if (irang .eq. 0) then
@@ -87,8 +86,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
                 valk (1) = nomsd
                 vali (1) = iordr
                 vali (2) = nbordr
-                call u2mesg('F', 'UTILITAI6_78', 1, valk, 2,&
-                            vali, 0, r8bid)
+                call utmess('F', 'UTILITAI6_78', sk=valk(1), ni=2, vali=vali)
             endif
             call jeecra(noms2//'.ORDR', 'LONUTI', nrang)
             call jeveuo(noms2//'.ORDR', 'E', jordr)
@@ -105,8 +103,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         valk (1) = nomsd
         vali (1) = irang
         vali (2) = nbordr
-        call u2mesg('F', 'UTILITAI6_79', 1, valk, 2,&
-                    vali, 0, r8bid)
+        call utmess('F', 'UTILITAI6_79', sk=valk(1), ni=2, vali=vali)
     endif
 !
     do 10,i = 1,npara
@@ -120,8 +117,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         valk (1) = nomsd
         valk (2) = param
         valk (3) = k16b
-        call u2mesg('F', 'UTILITAI6_80', 3, valk, 0,&
-                    0, 0, r8bid)
+        call utmess('F', 'UTILITAI6_80', nk=3, valk=valk)
     endif
 !
     call extrs3(noms2, param, irang, cel, itype,&

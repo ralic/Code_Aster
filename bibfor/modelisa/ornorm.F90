@@ -1,7 +1,6 @@
 subroutine ornorm(noma, listma, nbmail, reorie, norien)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iorim1.h"
@@ -13,10 +12,10 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utmavo.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: listma(*), nbmail, norien
     logical :: reorie
     character(len=8) :: noma
@@ -54,14 +53,14 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
     integer :: p1, p2, ifm, niv, ktyp, p3, p4
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, nconex, zero
-    logical ::  dime1, dime2
+    logical :: dime1, dime2
     character(len=1) :: lect
     character(len=2) :: kdim
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
     character(len=24) :: valk(2)
 !
-#define pasori(ima)   zi(lori-1+ima).eq.0
+#define pasori(ima) zi(lori-1+ima).eq.0
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -120,9 +119,11 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
             call jenuno(jexnum(mailma, numa), nomail)
             valk(1) = nomail
             valk(2) = typel
-            call u2mesk('F', 'MODELISA5_94', 2, valk)
+            call utmess('F', 'MODELISA5_94', nk=2, valk=valk)
         endif
-        if (dime1 .and. dime2) call u2mess('F', 'MODELISA5_98')
+        if (dime1 .and. dime2) then
+            call utmess('F', 'MODELISA5_98')
+        endif
 10  end do
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
@@ -151,7 +152,9 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
      &                    ' SERT A ORIENTER UN NOUVEAU GROUPE CONNEXE'
             endif
             nconex = nconex + 1
-            if (nconex .gt. 1) call u2mess('F', 'MODELISA5_99')
+            if (nconex .gt. 1) then
+                call utmess('F', 'MODELISA5_99')
+            endif
             zi(lori-1+ima) = 1
             lliste = 0
             iliste = 0

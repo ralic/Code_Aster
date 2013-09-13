@@ -39,7 +39,6 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/axdipo.h"
 #include "asterfort/deffen.h"
 #include "asterfort/discax.h"
@@ -59,9 +58,10 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 #include "asterfort/pha300.h"
 #include "asterfort/scaldf.h"
 #include "asterfort/scalff.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/veriff.h"
 #include "asterfort/wkvect.h"
+!
     logical :: casint, ltable, exiind
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ival(2)
     character(len=8) :: nomu, caelem, modele, table, nomnoa, noma
@@ -104,7 +104,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
     call jeveuo(fsic, 'L', ifsic)
     itypfl = zi(ifsic)
     if (itypfl .ne. 2) then
-        call u2mess('F', 'MODELISA7_4')
+        call utmess('F', 'MODELISA7_4')
     endif
 !
 ! --- 2.RECUPERATION DES INFORMATIONS CARACTERISTIQUES DU SPECTRE ---
@@ -181,7 +181,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 !
     call jelira(noma//'.NOMNOE', 'NOMUTI', nbn)
     if (nbn .lt. 3) then
-        call u2mess('F', 'MODELISA7_6')
+        call utmess('F', 'MODELISA7_6')
     endif
     call wkvect('&&SPECFF.TEMP.NUNO', 'V V I', nbn, inuno)
     call wkvect('&&SPECFF.TEMP.DIAX', 'V V R', nbn, idiax)
@@ -257,7 +257,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                         ind = i1
                     endif
 320              continue
-                if (.not. exiind) call u2mess('F', 'MODELISA2_89')
+                if (.not. exiind) then
+                    call utmess('F', 'MODELISA2_89')
+                endif
                 call jeveuo(jexnum(chtab, ind), 'L', itab)
                 call jelira(jexnum(chtab, ind), 'LONMAX', nbval)
                 if (ifo2 .eq. ifo1) then

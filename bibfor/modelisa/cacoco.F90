@@ -35,7 +35,7 @@ subroutine cacoco(char, motfac, noma)
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: char, noma
@@ -151,7 +151,7 @@ subroutine cacoco(char, motfac, noma)
                 if (iad1 .gt. 0) then
                     ep = zr(icesv-1+iad1)
                 else
-                    call u2mesk('F', 'CONTACT3_39', 1, nommae)
+                    call utmess('F', 'CONTACT3_39', sk=nommae)
                 endif
 !
 ! --- RECUPERATION EXCENTRICITE
@@ -161,10 +161,10 @@ subroutine cacoco(char, motfac, noma)
                 if (iad1 .gt. 0) then
                     exc = zr(icesv-1+iad1)
                     if (exc .ne. 0.d0) then
-                        call u2mesk('F', 'CONTACT3_40', 1, nommae)
+                        call utmess('F', 'CONTACT3_40', sk=nommae)
                     endif
                 else
-                    call u2mesk('F', 'CONTACT3_41', 1, nommae)
+                    call utmess('F', 'CONTACT3_41', sk=nommae)
                 endif
 !
 ! --- NOEUDS DE LA MAILLE

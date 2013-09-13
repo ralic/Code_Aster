@@ -55,7 +55,7 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
 #include "jeveux.h"
 #include "asterfort/mdexcc.h"
 #include "asterfort/mdexcv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nofimd
     character(len=*) :: nochmd
     character(len=*) :: nomcmc, nmcmfi
@@ -117,7 +117,7 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
 !
     else
 !
-        call u2mess('F', 'MED_76')
+        call utmess('F', 'MED_76')
 !
     endif
 !

@@ -20,7 +20,6 @@ subroutine utims3(comm, sch1, ipos, base)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dbgobj.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -28,9 +27,10 @@ subroutine utims3(comm, sch1, ipos, base)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelstc.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttr24.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: comm, sch1, base
     integer :: ipos
 ! ----------------------------------------------------------------------
@@ -63,13 +63,13 @@ subroutine utims3(comm, sch1, ipos, base)
 !     -------------------------
     long = len(sch1)
     if (len(sch1) .gt. 24) then
-        call u2mess('F', 'UTILITAI5_42')
+        call utmess('F', 'UTILITAI5_42')
     endif
     if ((ipos.lt.0) .or. (ipos.gt.24)) then
-        call u2mess('F', 'UTILITAI5_43')
+        call utmess('F', 'UTILITAI5_43')
     endif
     if (ipos+len(sch1) .gt. 25) then
-        call u2mess('F', 'UTILITAI5_44')
+        call utmess('F', 'UTILITAI5_44')
     endif
 !
 !

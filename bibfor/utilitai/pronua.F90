@@ -17,7 +17,6 @@ subroutine pronua(method, nuag1, nuag2)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
@@ -29,9 +28,9 @@ subroutine pronua(method, nuag1, nuag2)
 #include "asterfort/jexnum.h"
 #include "asterfort/nuadrf.h"
 #include "asterfort/nuainr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: method, nuag1, nuag2
 !
 !  BUT : PROJETER LES VALEURS DU NUAGE NUAG1 SUR LES POINTS
@@ -70,7 +69,7 @@ subroutine pronua(method, nuag1, nuag2)
     if (nx1 .ne. nx2) then
         valk(1) = nua1
         valk(2) = nua2
-        call u2mesk('F', 'UTILITAI3_89', 2, valk)
+        call utmess('F', 'UTILITAI3_89', nk=2, valk=valk)
     endif
     np1 = zi(inuai1-1+1)
     np2 = zi(inuai2-1+1)
@@ -79,7 +78,7 @@ subroutine pronua(method, nuag1, nuag2)
     if (gd1 .ne. gd2) then
         valk(1) = nua1
         valk(2) = nua2
-        call u2mesk('F', 'UTILITAI3_90', 2, valk)
+        call utmess('F', 'UTILITAI3_90', nk=2, valk=valk)
     endif
     call jenuno(jexnum('&CATA.GD.NOMGD', gd1), nogd)
     call dismoi('F', 'TYPE_SCA', nogd, 'GRANDEUR', ibid,&
@@ -103,7 +102,7 @@ subroutine pronua(method, nuag1, nuag2)
     ii2=zi(inuai2-1+5+i2)
     i1=indiis(zi(inuai1-1+6),ii2,1,nc1)
     if (i1 .eq. 0) then
-        call u2mesk('F', 'UTILITAI3_91', 1, nua1)
+        call utmess('F', 'UTILITAI3_91', sk=nua1)
     else
         zi(iacorr-1+i2) = i1
     endif
@@ -173,7 +172,7 @@ subroutine pronua(method, nuag1, nuag2)
 10      continue
 !
     else
-        call u2mess('F', 'UTILITAI3_93')
+        call utmess('F', 'UTILITAI3_93')
     endif
 !
     20 end do

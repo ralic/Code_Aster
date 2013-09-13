@@ -18,7 +18,7 @@ subroutine hujncv(rouhuj, nitimp, iter, ndt, nvi,&
 ! ======================================================================
 ! DUMP EN CAS NON CONVERGENCE ITE INTERNES HUJEUX
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: rouhuj
     integer :: nitimp, iter, ndt, nvi, umess
     real(kind=8) :: erimp(nitimp, 3)
@@ -33,7 +33,7 @@ subroutine hujncv(rouhuj, nitimp, iter, ndt, nvi,&
 300  continue
     1000   format(t3,i4,t10,e12.5,&
      &          t30,e12.5,t50,e12.5)
-    call u2mess('F', 'MODELISA9_10')
+    call utmess('F', 'MODELISA9_10')
     write(umess,*) ' DEPS '
     write(6,1002) (i,deps(i),i = 1 , ndt)
     write(umess,*) ' SIGD '

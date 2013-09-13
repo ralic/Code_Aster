@@ -25,7 +25,7 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
 #include "asterfort/ceobfd.h"
 #include "asterfort/dfbdb.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: eps(6)
     real(kind=8) :: bm(6), dm, b(6), d, mult
     real(kind=8) :: lambda, mu, alpha, seuil, ecrob, ecrod
@@ -158,7 +158,7 @@ subroutine lceob1(intmax, tole, eps, bm, dm,&
                 if (ksi .ne. 0.d0) then
                     iksi=un/ksi
                 else
-                    call u2mess('F', 'ALGORITH4_54')
+                    call utmess('F', 'ALGORITH4_54')
                 endif
 !
                 psi=1-mult*(1-alpha)*dfddd

@@ -45,7 +45,7 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nr, nvi, iret, imat
     real(kind=8) :: drdy(nr, nr), dsde(6, 6), mater(nmat, 2), vinf(nvi)
     real(kind=8) :: angmas(3), sigf(6)
@@ -252,10 +252,10 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
             hook(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_38')
+            call utmess('F', 'COMPOR1_38')
         endif
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
     endif
 ! ====================================================================
 ! --- OPERATEUR ELASTICITE NON LINEAIRE ------------------------------
@@ -313,7 +313,9 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
     endif
 !
 9999  continue
-    if (angmas(1) .eq. r8vide()) call u2mess('F', 'ALGORITH8_20')
+    if (angmas(1) .eq. r8vide()) then
+        call utmess('F', 'ALGORITH8_20')
+    endif
     reorie =(angmas(1).ne.zero) .or. (angmas(2).ne.zero)&
      &         .or. (angmas(3).ne.zero)
     if (iret .ne. 0) then

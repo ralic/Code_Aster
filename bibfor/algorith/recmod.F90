@@ -13,7 +13,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbmode, nbamor
@@ -88,7 +88,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
             endif
 126      continue
         if (nbmode .eq. 0) then
-            call u2mess('F', 'ALGORITH10_31')
+            call utmess('F', 'ALGORITH10_31')
         endif
     else
         call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmode, ilmode)
@@ -96,7 +96,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                     nbret=ibid)
         do 232 im = 1, nbmode
             if (zi(ilmode-1+im) .gt. nbmod1) then
-                call u2mess('F', 'ALGORITH10_32')
+                call utmess('F', 'ALGORITH10_32')
             endif
 232      continue
     endif

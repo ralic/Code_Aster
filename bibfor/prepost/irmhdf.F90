@@ -47,6 +47,9 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mmhcre.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irmdes.h"
@@ -59,12 +62,8 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 #include "asterfort/lrmtyp.h"
 #include "asterfort/mdexma.h"
 #include "asterfort/mdnoma.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mmhcre.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
     integer :: connex(*), typma(*), point(*)
     integer :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma
     integer :: infmed, nbtitr
@@ -157,8 +156,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
     call mdnoma(nomamd, lnomam, nomast, codret)
     if (codret .ne. 0) then
         saux08='MDNOMA  '
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !
@@ -174,8 +172,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 !
         valk (1) = nofimd(1:32)
         valk (2) = nomamd
-        call u2mesg('A', 'MED_67', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('A', 'MED_67', nk=2, valk=valk)
 !
 !     ------------------------------------------------------------------
 !
@@ -201,8 +198,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
                 call as_mficlo(fid, codret)
                 if (codret .ne. 0) then
                     saux08='mficlo'
-                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                                codret, 0, 0.d0)
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
             endif
         else
@@ -211,8 +207,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
         call as_mfiope(fid, nofimd, edmode, codret)
         if (codret .ne. 0) then
             saux08='mfiope'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
         if (infmed .ge. 2) then
@@ -223,7 +218,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
             call codent(edmode, 'G', saux08)
             valk(1) = saux08
             valk(2) = saux16(edmode)
-            call u2mesk('I', 'MED_40', 2, valk)
+            call utmess('I', 'MED_40', nk=2, valk=valk)
         endif
 !
 ! 2.2. ==> CREATION DU MAILLAGE AU SENS MED (TYPE MED_NON_STRUCTURE)
@@ -235,11 +230,10 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
         desc = 'CREE PAR CODE_ASTER'
         descdt = 'SANS UNITES'
         call as_mmhcre(fid, nomamd, ndim, ednstr, desc,&
-                    descdt, edcart, nomcoo, unicoo, codret)
+                       descdt, edcart, nomcoo, unicoo, codret)
         if (codret .ne. 0) then
             saux08='mmhcre'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 ! 2.3. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
@@ -301,8 +295,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
         call as_mficlo(fid, codret)
         if (codret .ne. 0) then
             saux08='mficlo'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
 !====

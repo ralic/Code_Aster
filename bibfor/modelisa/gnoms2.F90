@@ -1,5 +1,5 @@
 subroutine gnoms2(noojb, k1, k2)
-    implicit   none
+    implicit none
 !     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ subroutine gnoms2(noojb, k1, k2)
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: inum, iret, k1, k2, nessai, ndigit, iessai
     character(len=24) :: noojb, noojb1
 !     -----------------------------------------------------------------
@@ -53,7 +53,7 @@ subroutine gnoms2(noojb, k1, k2)
     call jeexin(noojb1, iret)
     if (iret .eq. 0) goto 20
     10 end do
-    call u2mess('F', 'MODELISA4_69')
+    call utmess('F', 'MODELISA4_69')
 !
 20  continue
     noojb=noojb1

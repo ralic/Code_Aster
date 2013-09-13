@@ -14,8 +14,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,7 +126,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
         write (ifm,*) ' '
         write (ifm,*) '_RELA IMPRESSION D''UNE RELATION LINEAIRE ENTRE '&
      &    ,nbterm,' DDLS. (AVANT NORMALISATION DE LA RELATION)'
-        do iterm = 1,nbterm
+        do iterm = 1, nbterm
             if (repe_type(iterm) .eq. 0) then
                 if (type_coef .eq. 'REEL') then
                     write (ifm,101) coef_real(iterm),node_name(iterm),dof_name(iterm)
@@ -165,16 +164,20 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
     if (type_coef .eq. 'REEL') then
         norm_coef = 0.d0
-        do iterm = 1,nbterm
+        do iterm = 1, nbterm
             norm_coef = max(norm_coef,abs(coef_real(iterm)))
         enddo
-        if (norm_coef .eq. 0.d0) call u2mess('F', 'CHARGES2_97')
+        if (norm_coef .eq. 0.d0) then
+            call utmess('F', 'CHARGES2_97')
+        endif
     else if (type_coef.eq.'COMP') then
         norm_coef = 0.d0
-        do iterm = 1,nbterm
-                norm_coef = max(norm_coef,abs(coef_cplx(iterm)))
+        do iterm = 1, nbterm
+            norm_coef = max(norm_coef,abs(coef_cplx(iterm)))
         enddo
-        if (norm_coef .eq. 0.d0) call u2mess('F', 'CHARGES2_97')
+        if (norm_coef .eq. 0.d0) then
+            call utmess('F', 'CHARGES2_97')
+        endif
     else
         ASSERT(.false.)
     endif
@@ -187,7 +190,9 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
         vale_cplx_norm = vale_cplx_norm/norm_coef
     else if (vale_type.eq.'FONC') then
 ! ----- Alarm if normalization ratio too much different from 1 ...
-        if ((norm_coef.gt.1.d3) .or. (norm_coef.lt.1.d-3)) call u2mess('A', 'CHARGES2_99')
+        if ((norm_coef.gt.1.d3) .or. (norm_coef.lt.1.d-3)) then
+            call utmess('A', 'CHARGES2_99')
+        endif
 ! ----- ... but cannot normalize function value !
         norm_coef=1.d0
     endif
@@ -339,7 +344,7 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
             endif
         enddo
 !
-    elseif (type_coef .eq. 'REEL') then
+    else if (type_coef .eq. 'REEL') then
         do iterm = 1, nbterm
             if (abs(coef_real(iterm)) .gt. epsi) then
                 if (repe_type(iterm) .eq. 0) then

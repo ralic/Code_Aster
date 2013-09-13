@@ -34,7 +34,7 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/w155ch.h"
     character(len=8) :: nomres, resu
     integer :: nbordr, liordr(nbordr)
@@ -124,8 +124,7 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
     else
         valk(1)=nomsym(isym)
         valk(2)=resu
-        call u2mesg('A', 'CALCULEL5_3', 2, valk, 1,&
-                    nuordr, 0, rbid)
+        call utmess('A', 'CALCULEL5_3', nk=2, valk=valk, si=nuordr)
     endif
 10  continue
     20 end do

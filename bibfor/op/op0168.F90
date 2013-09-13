@@ -46,9 +46,7 @@ subroutine op0168()
 #include "asterfort/rsorac.h"
 #include "asterfort/rsvpar.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/vpstor.h"
@@ -139,8 +137,9 @@ subroutine op0168()
                         massi, iret)
             call dismoi('F', 'REF_AMOR_PREM', modein, 'RESU_DYNA', ibid,&
                         amori, iret)
-            if (massi .ne. masse .or. amori .ne. amor .or. raidi .ne. raide) call u2mess(&
-                                                                             'F', 'ALGELINE3_9')
+            if (massi .ne. masse .or. amori .ne. amor .or. raidi .ne. raide) then
+                call utmess('F', 'ALGELINE3_9')
+            endif
 !
             call rsorac(modein, 'LONUTI', ibid, r8b, k8b,&
                         c16b, r8b, k8b, nbmodt, 1,&
@@ -183,8 +182,7 @@ subroutine op0168()
 22                  continue
                     valk(1) = modein
                     vali(1) = zi(jme+j-1)
-                    call u2mesg('A', 'ALGELINE4_55', 1, valk, 1,&
-                                vali, 0, 0.d0)
+                    call utmess('A', 'ALGELINE4_55', sk=valk(1), si=vali(1))
 20              continue
                 call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
@@ -285,7 +283,7 @@ subroutine op0168()
                         dy = zr(lpar(2))
                         dz = zr(lpar(3))
                         if (dx .eq. undf .or. dy .eq. undf .or. dz .eq. undf) then
-                            call u2mess('F', 'ALGELINE3_10')
+                            call utmess('F', 'ALGELINE3_10')
                         endif
                         if (n7 .ne. 0) then
                             if (dx .ge. seuil .or. dy .ge. seuil .or. dz .ge. seuil) then
@@ -342,7 +340,9 @@ subroutine op0168()
 !
 !     --- STOCKAGE ---
 !
-    if (ndimt .eq. 0) call u2mess('F', 'ALGELINE3_11')
+    if (ndimt .eq. 0) then
+        call utmess('F', 'ALGELINE3_11')
+    endif
     call rscrsd('G', modeou, typcon, ndimt)
     iprec = 0
     nomsy = 'DEPL'
@@ -353,8 +353,7 @@ subroutine op0168()
         call jelira(jexnum(kmode, i), 'LONUTI', nbmode)
         if (nbmode .eq. 0) then
             valk(1) = modein
-            call u2mesg('A', 'ALGELINE4_56', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('A', 'ALGELINE4_56', sk=valk(1))
             goto 102
         endif
         call jeveuo(jexnum(kmode, i), 'L', jordr)
@@ -380,7 +379,7 @@ subroutine op0168()
                         nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
                         zk24(lvalk), iprec)
         else
-            call u2mesk('F', 'ALGELINE2_44', 1, typmod)
+            call utmess('F', 'ALGELINE2_44', sk=typmod)
         endif
         iprec = iprec + nbmode
         call jedetr(kvec)
@@ -413,8 +412,7 @@ subroutine op0168()
             if (nume1 .eq. nume2) then
                 vali(1) = ibid
                 vali(2) = iord
-                call u2mesg('A', 'ALGELINE4_57', 0, ' ', 2,&
-                            vali, 0, 0.d0)
+                call utmess('A', 'ALGELINE4_57', ni=2, vali=vali)
             endif
 210      continue
 200  continue
@@ -426,7 +424,7 @@ subroutine op0168()
         valk(1)=modeou
         valk(2)=typcon
         valk(3)=nomcmd
-        call u2mesk('I', 'ALGELINE6_8', 3, valk)
+        call utmess('I', 'ALGELINE6_8', nk=3, valk=valk)
         call getvtx('IMPRESSION', 'CUMUL', iocc=1, scal=ouinon, nbret=n1)
         call getvtx('IMPRESSION', 'CRIT_EXTR', iocc=1, scal=critfi, nbret=n2)
 !
@@ -438,9 +436,9 @@ subroutine op0168()
         if (iret .ne. 100 .and. critfi .eq. 'MASS_EFFE_UN' .and. typcon(1:9) .eq.&
             'MODE_MECA') then
             if (ouinon .eq. 'OUI') then
-                call u2mess('I', 'ALGELINE6_50')
+                call utmess('I', 'ALGELINE6_50')
             else
-                call u2mess('I', 'ALGELINE6_52')
+                call utmess('I', 'ALGELINE6_52')
             endif
             cumulx = 0.d0
             cumuly = 0.d0
@@ -459,7 +457,7 @@ subroutine op0168()
                 dy = zr(lpar(2))
                 dz = zr(lpar(3))
                 if (dx .eq. undf .or. dy .eq. undf .or. dz .eq. undf) then
-                    call u2mess('F', 'ALGELINE3_10')
+                    call utmess('F', 'ALGELINE3_10')
                 endif
                 cumulx = cumulx + dx
                 cumuly = cumuly + dy
@@ -474,19 +472,19 @@ subroutine op0168()
                 valr(6) = cumuly
                 valr(7) = cumulz
                 if (ouinon .eq. 'OUI') then
-                    call u2mesg('I', 'ALGELINE6_51', 0, '', 2,&
-                                vali, 7, valr)
+                    call utmess('I', 'ALGELINE6_51', ni=2, vali=vali, nr=7,&
+                                valr=valr)
                 else
-                    call u2mesg('I', 'ALGELINE6_53', 0, '', 2,&
-                                vali, 4, valr)
+                    call utmess('I', 'ALGELINE6_53', ni=2, vali=vali, nr=4,&
+                                valr=valr)
                 endif
 300          continue
         endif
         if (critfi .eq. 'MASS_GENE') then
             if (ouinon .eq. 'OUI') then
-                call u2mess('I', 'ALGELINE6_54')
+                call utmess('I', 'ALGELINE6_54')
             else
-                call u2mess('I', 'ALGELINE6_56')
+                call utmess('I', 'ALGELINE6_56')
             endif
             cumulx = 0.d0
             do 301 j = 1, nbmode
@@ -508,11 +506,11 @@ subroutine op0168()
                 valr(2) = dx
                 valr(3) = cumulx
                 if (ouinon .eq. 'OUI') then
-                    call u2mesg('I', 'ALGELINE6_55', 0, '', 2,&
-                                vali, 3, valr)
+                    call utmess('I', 'ALGELINE6_55', ni=2, vali=vali, nr=3,&
+                                valr=valr)
                 else
-                    call u2mesg('I', 'ALGELINE6_57', 0, '', 2,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_57', ni=2, vali=vali, nr=2,&
+                                valr=valr)
                 endif
 301          continue
         endif

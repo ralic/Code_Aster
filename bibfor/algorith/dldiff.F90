@@ -81,9 +81,8 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
@@ -180,7 +179,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     if (sop .eq. 'MASS_MECA_DIAG') then
         call extdia(masse, numedd, 2, zr(iwk1))
     else
-        call u2mess('F', 'ALGORITH3_13')
+        call utmess('F', 'ALGORITH3_13')
     endif
 !
     dt1 = zr(jlpas)
@@ -212,7 +211,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
         typear(6) = '         '
     endif
     if (nbexcl .eq. nbtyar) then
-        call u2mess('F', 'ALGORITH3_14')
+        call utmess('F', 'ALGORITH3_14')
     endif
     do 16 , iexcl = 1,nbexcl
     if (typ1(iexcl) .eq. 'DEPL') then
@@ -303,8 +302,8 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
         vali(2) = igrpa
         valr(1) = dt
         valr(2) = dtmax
-        call u2mesg('F', 'DYNAMIQUE_12', 0, valk, 2,&
-                    vali, 2, valr)
+        call utmess('F', 'DYNAMIQUE_12', ni=2, vali=vali, nr=2,&
+                    valr=valr)
     endif
 ! ==> FIN DE VERIFICATION
 !

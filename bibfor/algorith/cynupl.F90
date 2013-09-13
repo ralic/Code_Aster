@@ -46,7 +46,6 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"
@@ -63,8 +62,9 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !-----------------------------------------------------------------------
@@ -104,7 +104,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), nugd)
     nec = nbec(nugd)
     if (nec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
 !

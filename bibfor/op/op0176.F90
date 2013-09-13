@@ -57,7 +57,7 @@ subroutine op0176()
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter ( nompro = 'OP0176' )
@@ -78,7 +78,7 @@ subroutine op0176()
     logical :: fals, true, lbid, lrest
 !
     complex(kind=8) :: c16b
-    integer ::  nmail, nmode
+    integer :: nmail, nmode
 !
 ! ----------------------------------------------------------------------
 !
@@ -151,7 +151,9 @@ subroutine op0176()
 !
 !
     if (resuin .eq. resuou) then
-        if (lrest) call u2mess('F', 'PREPOST2_5')
+        if (lrest) then
+            call utmess('F', 'PREPOST2_5')
+        endif
         call extrs1(resuin, nbordr, zi(jordr), nbpara, zk16(jpa),&
                     nbarch, zi(jarch), nbexcl, zk16(jexcl), nbnosy)
     else

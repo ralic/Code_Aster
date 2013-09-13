@@ -38,7 +38,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 #include "asterfort/memare.h"
 #include "asterfort/nmvgme.h"
 #include "asterfort/reajre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: mate, ligrez, vecelz, depmoz, depdez, vitez
     character(len=19) :: vecele
     character(len=24) :: modele, carele, charge, infcha, compor, carcri
@@ -209,14 +209,14 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
                     if (option .eq. 'CHAR_MECA_EFON_R') then
                         lpain(16) = 'PPREFFR'
                         lchin(16) = nomcha//'.CHME.PREFF'
-                        lpain(1)     = 'PEFOND'
-                        lchin(1)     = nomcha//'.CHME.EFOND'
+                        lpain(1) = 'PEFOND'
+                        lchin(1) = nomcha//'.CHME.EFOND'
                     endif
                     if (option .eq. 'CHAR_MECA_EFON_F') then
                         lpain(16) = 'PPREFFF'
                         lchin(16) = nomcha//'.CHME.PREFF'
-                        lpain(1)     = 'PEFOND'
-                        lchin(1)     = nomcha//'.CHME.EFOND'
+                        lpain(1) = 'PEFOND'
+                        lchin(1) = nomcha//'.CHME.EFOND'
                     endif
 !
                     call gcnco2(newnom)
@@ -241,14 +241,14 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
                 endif
             end do
             if (somme .eq. 0) then
-                call u2mess('F', 'MECANONLINE2_4')
+                call utmess('F', 'MECANONLINE2_4')
             endif
         endif
 !       --TRAITEMENT DE AFFE_CHAR_MECA/EVOL_CHAR
 !       ----------------------------------------
 !       RESULTATS POSSIBLES
 !          1 - VITESSE
-        do  ii = 1, 1
+        do ii = 1, 1
             resufv(ii) = resuel
             call gcnco2(newnom)
             resufv(ii) (10:16) = newnom(2:8)

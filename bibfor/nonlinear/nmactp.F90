@@ -19,7 +19,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/isacti.h"
@@ -29,8 +29,8 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmevac.h"
 #include "asterfort/nmleeb.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sderro
     character(len=24) :: defico, resoco
     character(len=19) :: sddisc, solveu
@@ -126,7 +126,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
 ! ------- CONVERGENCE FORCEE -> ON PASSE A LA SUITE
 !
-            call u2mess('A', 'MECANONLINE2_37')
+            call utmess('A', 'MECANONLINE2_37')
             actpas = 0
         else
 !

@@ -7,8 +7,7 @@ subroutine te0245(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -56,10 +55,10 @@ subroutine te0245(option, nomte)
                     ' ', phenom, 0, ' ', r8b,&
                     1, 'RHO', rho, codres, 1)
         if (rho .le. r8prem()) then
-            call u2mess('F', 'ELEMENTS5_45')
+            call utmess('F', 'ELEMENTS5_45')
         endif
     else
-        call u2mess('F', 'ELEMENTS_50')
+        call utmess('F', 'ELEMENTS_50')
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -79,7 +78,7 @@ subroutine te0245(option, nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
 !     --- CALCUL DES CARACTERISTIQUES ELEMENTAIRES ----
@@ -108,7 +107,7 @@ subroutine te0245(option, nomte)
 !
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
 end subroutine

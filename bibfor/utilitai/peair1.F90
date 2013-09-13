@@ -1,7 +1,6 @@
 subroutine peair1(modele, nbma, lisma, aire, long)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -12,11 +11,11 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
+!
     integer :: nbma, lisma(*)
     real(kind=8) :: aire, long
     character(len=*) :: modele
@@ -81,7 +80,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
     long = 0.d0
     nbel = 0
-    do  ima = 1, nbma
+    do ima = 1, nbma
         numa = lisma(ima)
         call jenuno(jexnum(noma//'.NOMMAI', numa), nomail)
 !
@@ -94,7 +93,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
             call jenuno(jexnum(mlgnma, numa), nomail)
             valk(1) = nomail
             valk(2) = typel
-            call u2mesk('F', 'UTILITY_1', 2, valk)
+            call utmess('F', 'UTILITY_1', nk=2, valk=valk)
         endif
         nbel = nbel + 1
         call jeveuo(jexnum(mlgcnx, numa), 'L', jdno)
@@ -132,13 +131,13 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
     nbext1=0
     nbext2=0
-    do  ima = 1, nbel
+    do ima = 1, nbel
         iext1=0
         iext2=0
         ni1 = zi(jn1-1+3*ima-2)
         ni2 = zi(jn1-1+3*ima-1)
         zi(jm1-1+ima)=ima
-        do  jma = 1, nbel
+        do jma = 1, nbel
             if (jma .ne. ima) then
                 nj1 = zi(jn1-1+3*jma-2)
                 nj2 = zi(jn1-1+3*jma-1)
@@ -150,7 +149,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
         if (iext2 .eq. 0) nbext2=nbext2+1
     end do
     if ((nbext1.ne.0) .and. (nbext2.ne.0)) then
-        call u2mess('F', 'UTILITY_2')
+        call utmess('F', 'UTILITY_2')
     endif
 !
 !     VERIFICATION QUE LE CONTOUR EST CONTINU ET REORIENTATION
@@ -183,7 +182,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
             endif
         endif
     end do
-    call u2mess('F', 'UTILITY_2')
+    call utmess('F', 'UTILITY_2')
 43  continue
     zi(jm1-1+jma)=0
     if (nbe .ge. nbma) then
@@ -201,7 +200,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
     mlgcoo = noma//'.COORDO    .VALE'
     call jeveuo(mlgcoo, 'L', jdco)
-    do  ima = 1, nbma
+    do ima = 1, nbma
         nj1 = zi(jn2-1+3*ima-2)
         orig(1) = orig(1)+zr(jdco-1+3*nj1-2)
         orig(2) = orig(2)+zr(jdco-1+3*nj1-1)
@@ -229,7 +228,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     call provec(vgn1, vgn2, xn)
     call normev(xn, xnorm)
     aire=0.d0
-    do  ima = 1, nbma
+    do ima = 1, nbma
         nj1 = zi(jn2-1+3*ima-2)
         nj2 = zi(jn2-1+3*ima-1)
         nj3 = zi(jn2-1+3*ima)

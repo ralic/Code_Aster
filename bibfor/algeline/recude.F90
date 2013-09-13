@@ -34,7 +34,7 @@ subroutine recude(caelem, phie, ep)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/recugd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: caelem
     real(kind=8) :: phie, ep
@@ -70,7 +70,7 @@ subroutine recude(caelem, phie, ep)
     do 10 ia = 1, iassef
         lr1 = ivalre + 4* (ia-1)
         if (zr(lr1) .ne. zr(lr1+2)) then
-            call u2mess('F', 'ALGELINE3_31')
+            call utmess('F', 'ALGELINE3_31')
         endif
 !    PAR HYPOTHESE, LA VALEUR EST NULLE S'IL NE S'AGIT
 !    PAS D'UN SEGMENT
@@ -78,7 +78,7 @@ subroutine recude(caelem, phie, ep)
 !
         if (ia .ne. 1 .and. phie2 .ne. 0.d0) then
             if (zr(lr1) .ne. phie2) then
-                call u2mess('F', 'ALGELINE3_31')
+                call utmess('F', 'ALGELINE3_31')
             endif
         endif
 !
@@ -88,7 +88,7 @@ subroutine recude(caelem, phie, ep)
 !
     phie=2.d0*phie2
     if (phie .eq. 0.d0) then
-        call u2mess('F', 'ALGELINE3_32')
+        call utmess('F', 'ALGELINE3_32')
     endif
 !
     call jedetr('&&RECUDE.TEMP.VRES')

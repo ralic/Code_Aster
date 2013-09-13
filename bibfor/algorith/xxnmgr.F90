@@ -20,7 +20,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/nmcomp.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/reeref.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
@@ -135,7 +135,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
 !
     if (axi) then
-        call u2mess('F', 'XFEM2_5')
+        call utmess('F', 'XFEM2_5')
     endif
 !
     call elref5(elrese, 'XINT', ndimb, nno, nnos,&

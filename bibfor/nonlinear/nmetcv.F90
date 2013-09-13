@@ -19,14 +19,14 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=24) :: chain, chaout
     character(len=24) :: nomchs, chrefe
     character(len=24) :: lochin, locout
@@ -63,7 +63,7 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
     call dismoi('C', 'TYPE_CHAMP', chain, 'CHAMP', ibid,&
                 lochin, iret)
     if (iret .eq. 1) then
-        call u2mesk('F', 'ETATINIT_50', 1, nomchs)
+        call utmess('F', 'ETATINIT_50', sk=nomchs)
     endif
 !
 ! --- PAS DE CONVERSION SI BONS TYPES
@@ -80,12 +80,12 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
     valk(3) = locout
     if (locout .eq. 'ELGA') then
         if (chrefe .eq. ' ') then
-            call u2mesk('F', 'ETATINIT_52', 3, valk)
+            call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
         else
-            call u2mesk('I', 'ETATINIT_51', 3, valk)
+            call utmess('I', 'ETATINIT_51', nk=3, valk=valk)
         endif
     else
-        call u2mesk('F', 'ETATINIT_52', 3, valk)
+        call utmess('F', 'ETATINIT_52', nk=3, valk=valk)
     endif
 !
 ! --- TRANSFORMER LE CHAM_ELEM EN CHAM_ELGA

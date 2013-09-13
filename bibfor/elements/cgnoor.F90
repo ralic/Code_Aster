@@ -18,10 +18,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 !
@@ -123,7 +120,9 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     call reliem(' ', nomail, 'NO_MAILLE', motfac, iocc,&
                 nbmc, motcle, typmcl, mesmai, nbma)
 !
-    if (nbma .eq. 0) call u2mess('F', 'ELEMENTS_66')
+    if (nbma .eq. 0) then
+        call utmess('F', 'ELEMENTS_66')
+    endif
     call jeveuo(mesmai, 'L', jmail)
     call wkvect(mafour, 'V V I', nbma, jcour2)
     do 10,im=1,nbma
@@ -143,30 +142,29 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     call jeexin(jexnom(nommai, nomma), existe)
     if (existe .eq. 0) then
         ier=ier+1
-        call u2mesg('E', 'ELEMENTS5_19', 1, nomma, 1,&
-                    iocc, 0, 0.d0)
+        call utmess('E', 'ELEMENTS5_19', sk=nomma, si=iocc)
     else
         call jenonu(jexnom(nommai, nomma), ibid)
         jtypm=iatyma-1+ibid
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm)), typm)
         if (typm(1:3) .ne. 'SEG') then
-            if (nomcmd .ne. 'DEFI_GROUP') call u2mess('F', 'RUPTURE0_63')
+            if (nomcmd .ne. 'DEFI_GROUP') then
+                call utmess('F', 'RUPTURE0_63')
+            endif
             ier=ier+1
-            call u2mesg('E', 'ELEMENTS5_20', 1, nomma, 1,&
-                        iocc, 0, 0.d0)
+            call utmess('E', 'ELEMENTS5_20', sk=nomma, si=iocc)
         endif
         if (im .gt. 1) then
             if (typm .ne. typmp) then
                 ier=ier+1
-                call u2mesg('E', 'ELEMENTS5_21', 1, nomma, 1,&
-                            iocc, 0, 0.d0)
+                call utmess('E', 'ELEMENTS5_21', sk=nomma, si=iocc)
             endif
         endif
         typmp=typm
     endif
     20 end do
     if (ier .gt. 0) then
-        call u2mesi('F', 'ELEMENTS5_15', 1, iocc)
+        call utmess('F', 'ELEMENTS5_15', si=iocc)
     endif
 !
 !
@@ -180,11 +178,11 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         call utnono(' ', nomail, 'NOEUD', nogrp, ndorig,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogrp)
+            call utmess('F', 'ELEMENTS_67', sk=nogrp)
         else if (iret.eq.1) then
             valk(1)='GROUP_NO_ORIG'
             valk(2)=ndorig
-            call u2mesk('A', 'ELEMENTS5_17', 2, valk)
+            call utmess('A', 'ELEMENTS5_17', nk=2, valk=valk)
         endif
     else
         ndorig=' '
@@ -201,11 +199,11 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         call utnono(' ', nomail, 'NOEUD', nogrp, ndextr,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogrp)
+            call utmess('F', 'ELEMENTS_67', sk=nogrp)
         else if (iret.eq.1) then
             valk(1)='GROUP_NO_EXTR'
             valk(2)=ndextr
-            call u2mesk('A', 'ELEMENTS5_17', 2, valk)
+            call utmess('A', 'ELEMENTS5_17', nk=2, valk=valk)
         endif
     else
         ndextr=' '
@@ -250,7 +248,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     MAILLES
     if (n2 .ne. 0) bug=.true.
     if (bug) then
-        call u2mess('F', 'ELEMENTS5_16')
+        call utmess('F', 'ELEMENTS5_16')
     endif
 !
 !
@@ -263,7 +261,9 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
         call getvr8(motfac, 'VECT_ORIE', iocc=iocc, nbval=3, vect=vecori,&
                     nbret=n1)
         if ((ndorig.eq.ndextr) .and. (ndorig.ne.' ')) then
-            if (n1 .le. 0) call u2mess('A', 'ELEMENTS_70')
+            if (n1 .le. 0) then
+                call utmess('A', 'ELEMENTS_70')
+            endif
         endif
     endif
 !
@@ -282,12 +282,18 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
             if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
 50      continue
 !
-        if (trouv .eq. 0) call u2mesk('F', 'ELEMENTS_68', 1, ndorig)
+        if (trouv .eq. 0) then
+            call utmess('F', 'ELEMENTS_68', sk=ndorig)
+        endif
         if (typlig .eq. 'FERME') then
-            if (trouv .ne. 2) call u2mesk('F', 'ELEMENTS_69', 1, ndextr)
+            if (trouv .ne. 2) then
+                call utmess('F', 'ELEMENTS_69', sk=ndextr)
+            endif
         else
             if (.not.(typlig.eq.' '.and.ndorig.eq.ndextr)) then
-                if (trouv .ne. 1) call u2mesk('F', 'ELEMENTS_69', 1, ndextr)
+                if (trouv .ne. 1) then
+                    call utmess('F', 'ELEMENTS_69', sk=ndextr)
+                endif
             endif
         endif
     endif
@@ -307,12 +313,18 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
             if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
 51      continue
 !
-        if (trouv .eq. 0) call u2mesk('F', 'ELEMENTS_68', 1, ndorig)
+        if (trouv .eq. 0) then
+            call utmess('F', 'ELEMENTS_68', sk=ndorig)
+        endif
         if (typlig .eq. 'FERME') then
-            if (trouv .ne. 2) call u2mesk('F', 'ELEMENTS_69', 1, ndorig)
+            if (trouv .ne. 2) then
+                call utmess('F', 'ELEMENTS_69', sk=ndorig)
+            endif
         else
             if (.not.(typlig.eq.' '.and.ndorig.eq.ndextr)) then
-                if (trouv .ne. 1) call u2mesk('F', 'ELEMENTS_69', 1, ndorig)
+                if (trouv .ne. 1) then
+                    call utmess('F', 'ELEMENTS_69', sk=ndorig)
+                endif
             endif
         endif
 !
@@ -347,11 +359,11 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !
 80          continue
 90      continue
-        call u2mess('F', 'ELEMENTS_71')
+        call utmess('F', 'ELEMENTS_71')
 !
 100      continue
         call jenuno(jexnum(nomnoe, nunori), ndorig)
-        call u2mesk('I', 'ELEMENTS_72', 1, ndorig)
+        call utmess('I', 'ELEMENTS_72', sk=ndorig)
         call jedetr('&&CGNOOR.NOEUD_APPARIES')
 !
     endif

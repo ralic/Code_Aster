@@ -18,7 +18,7 @@ subroutine zeroco(x, y)
 !
     implicit none
 #include "asterc/r8maem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerodi.h"
     real(kind=8) :: x(4), y(4)
 ! ----------------------------------------------------------------------
@@ -35,7 +35,9 @@ subroutine zeroco(x, y)
     real(kind=8) :: infini
 !
 !    TEST DES PRE-CONDITIONS
-    if (y(1) .gt. 0 .or. y(2) .lt. 0) call u2mess('F', 'ELEMENTS4_61')
+    if (y(1) .gt. 0 .or. y(2) .lt. 0) then
+        call utmess('F', 'ELEMENTS4_61')
+    endif
 !
 !
 !    TRAITEMENT DES SITUATIONS AVEC BORNES INFINIES -> DICHOTOMIE
@@ -58,7 +60,7 @@ subroutine zeroco(x, y)
 !
 !    CONSTRUCTION D'UN NOUVEL ESTIME
     if (x(3) .eq. x(4)) then
-        call u2mess('A', 'ALGORITH9_84')
+        call utmess('A', 'ALGORITH9_84')
         goto 9999
     endif
     p = (y(4)-y(3)) / (x(4)-x(3))

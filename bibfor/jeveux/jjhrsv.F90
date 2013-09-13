@@ -24,7 +24,7 @@ subroutine jjhrsv(idts, nbval, iadmi)
 #include "asterc/hdftsd.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlidy.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: idts, nbval, iadmi
 ! ----------------------------------------------------------------------
 ! RELIT UN SEGMENT DE VALEURS ASSOCIE A UN OBJET JEVEUX, LE TYPE INTEGER
@@ -53,7 +53,7 @@ subroutine jjhrsv(idts, nbval, iadmi)
     nbv = 0
     iret = hdftsd(idts,typei,ltypi,nbv)
     if (iret .ne. 0) then
-        call u2mess('F', 'JEVEUX_52')
+        call utmess('F', 'JEVEUX_52')
     endif
     if (typei .eq. 'I') then
         iconv = 1
@@ -83,7 +83,7 @@ subroutine jjhrsv(idts, nbval, iadmi)
         iret = hdfrsv(idts,nbv,k1zon(kitab),iconv)
     endif
     if (iret .ne. 0) then
-        call u2mess('F', 'JEVEUX_53')
+        call utmess('F', 'JEVEUX_53')
     endif
     iret = hdfcld(idts)
 ! FIN ------------------------------------------------------------------

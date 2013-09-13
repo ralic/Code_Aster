@@ -18,8 +18,8 @@ subroutine hbcalc(fmoins, gamma, dg, nbmat, materf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit      none
-#include "asterfort/u2mess.h"
+    implicit none
+#include "asterfort/utmess.h"
     integer :: nbmat
     real(kind=8) :: fmoins, incrg, gamma, dg, i1e, sigeqe, derive(5)
     real(kind=8) :: vp(3), materf(nbmat, 2), etap, vh, vg, parame(4)
@@ -68,7 +68,7 @@ subroutine hbcalc(fmoins, gamma, dg, nbmat, materf,&
 ! ======================================================================
     dfdga = deux*aux3*(aux1 + aux2) - aux4
     if (abs(dfdga) .lt. eps) then
-        call u2mess('F', 'ALGORITH3_87')
+        call utmess('F', 'ALGORITH3_87')
     endif
     incrg = -fmoins/dfdga
 ! ======================================================================

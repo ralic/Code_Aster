@@ -81,7 +81,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 #include "asterfort/jexnom.h"
 #include "asterfort/lcprsn.h"
 #include "asterfort/normev.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
@@ -171,7 +171,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     call getvr8('THETA', 'DIRECTION', iocc=1, nbval=3, vect=dir,&
                 nbret=nbr8)
     if (nbr8 .eq. 0 .and. ienorm .ne. 0) then
-        call u2mess('A', 'RUPTURE0_91')
+        call utmess('A', 'RUPTURE0_91')
     endif
 !     ON VERIFIE QUE LA DIRECTION FOURNIE EST ORTHOGONALE A LA NORMALE
     if (nbr8 .ne. 0 .and. ienorm .ne. 0) then
@@ -180,7 +180,9 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
         call normev(dir, norme)
         call normev(tmpv, norme)
         call lcprsn(3, dir, tmpv, psca)
-        if (abs(psca) .gt. 0.1d0) call u2mess('F', 'RUPTURE0_94')
+        if (abs(psca) .gt. 0.1d0) then
+            call utmess('F', 'RUPTURE0_94')
+        endif
     endif
 !
 ! 1ER CAS: LA DIRECTION DE THETA EST DONNEE, ON LA NORME
@@ -329,7 +331,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
             ndimte = 1+nbnos/2
             pair = .true.
             if (connex) then
-                call u2mess('F', 'RUPTURE1_1')
+                call utmess('F', 'RUPTURE1_1')
             endif
         endif
     else if (thlagr) then

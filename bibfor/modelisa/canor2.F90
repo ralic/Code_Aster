@@ -16,7 +16,7 @@ subroutine canor2(coor, a, b)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: coor(3, *), a, b, x1, x2, y1, y2, x12, y12, norme
     real(kind=8) :: valr(5)
 !-----------------------------------------------------------------------
@@ -39,7 +39,6 @@ subroutine canor2(coor, a, b)
         valr (3) = x2
         valr (4) = y2
         valr (5) = norme
-        call u2mesg('F', 'MODELISA8_52', 0, ' ', 0,&
-                    0, 5, valr)
+        call utmess('F', 'MODELISA8_52', nr=5, valr=valr)
     endif
 end subroutine

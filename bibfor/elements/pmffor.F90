@@ -37,7 +37,7 @@ subroutine pmffor(nf, ncf, vf, se, ff)
 !                FF(3) = -INT(SE.Y.DS) = MZ
 ! -----------------------------------------------------------
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nf, ncf, i
     real(kind=8) :: vf(ncf, nf), se(nf), ff(3), zero, sf
     parameter (zero=0.0d+0)
@@ -59,7 +59,7 @@ subroutine pmffor(nf, ncf, vf, se, ff)
     else
 ! --- ERREUR SUR NCARFI
         call codent(ncf, 'G', kncf)
-        call u2mesk('F', 'ELEMENTS2_40', 1, kncf)
+        call utmess('F', 'ELEMENTS2_40', sk=kncf)
     endif
 !
 end subroutine

@@ -53,16 +53,16 @@ subroutine creso1(solveu, method, preco, renum, syme,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/sdsolv.h"
-#include "asterfort/u2mesi.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: zslvk, zslvr, zslvi
     integer :: nprec, nmaxit, istop, niremp, ifm, numsd, nbma, nbreor, inumsd
     integer :: imail, nbreoi, reacre
@@ -151,7 +151,7 @@ subroutine creso1(solveu, method, preco, renum, syme,&
             if (zi(inumsd+ibuff-1) .gt. 0) then
 ! MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
                 vali (1) = ibuff
-                call u2mesi('F', 'ALGORITH16_98', 1, vali)
+                call utmess('F', 'ALGORITH16_98', si=vali(1))
             else
                 zi(inumsd+ibuff-1) = numsd
             endif
@@ -173,7 +173,7 @@ subroutine creso1(solveu, method, preco, renum, syme,&
                     if (zi(imail-1+i) .ne. 0) then
 ! MAILLE POURTANT DANS LE MODELE
                         vali (1) = i
-                        call u2mesi('F', 'ELEMENTS4_76', 1, vali)
+                        call utmess('F', 'ELEMENTS4_76', si=vali(1))
                     endif
                 endif
 20          continue

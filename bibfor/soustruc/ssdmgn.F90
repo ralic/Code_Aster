@@ -39,9 +39,8 @@ subroutine ssdmgn(mag)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utlisi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: mag
@@ -106,7 +105,7 @@ subroutine ssdmgn(mag)
                 if (iret .eq. 0) then
                     valk(1) = nosma
                     valk(2) = mag
-                    call u2mesk('F', 'SOUSTRUC_26', 2, valk)
+                    call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
                 endif
                 call jenonu(jexnom(mag//'.SUPMAIL', nosma), nusma)
             endif
@@ -187,7 +186,9 @@ subroutine ssdmgn(mag)
             lmail=max(lmail,0)
             lgnl=max(lgnl,0)
             longt= lpref+lmail+lgnl
-            if (longt .gt. 8) call u2mess('F', 'SOUSTRUC_61')
+            if (longt .gt. 8) then
+                call utmess('F', 'SOUSTRUC_61')
+            endif
             if (lpref .gt. 0) then
                 call getvtx('DEFI_GROUP_NO', 'PREFIXE', iocc=iocc, scal=pref, nbret=nbid)
             endif
@@ -275,7 +276,7 @@ subroutine ssdmgn(mag)
                     zi(iagno-1+ii)=i1noe+kk
                 end do
             else
-                call u2mesk('A', 'SOUSTRUC_62', 1, nomgng)
+                call utmess('A', 'SOUSTRUC_62', sk=nomgng)
             endif
         endif
     end do

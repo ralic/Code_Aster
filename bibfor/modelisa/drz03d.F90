@@ -1,4 +1,4 @@
-subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
+subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
                   type_lagr, lisrel)
 !
     implicit none
@@ -6,6 +6,10 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
 #include "jeveux.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_soli_mat1.h"
+#include "asterfort/char_soli_mat2.h"
+#include "asterfort/char_soli_mat3.h"
+#include "asterfort/drz03d_tria.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -13,13 +17,8 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/char_soli_mat1.h"
-#include "asterfort/char_soli_mat2.h"
-#include "asterfort/char_soli_mat3.h"
-#include "asterfort/drz03d_tria.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -39,7 +38,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! =====================================================================
 !
-    character(len=8), intent(in)  :: noma
+    character(len=8), intent(in) :: noma
     character(len=4), intent(in) :: type_vale
     real(kind=8), intent(in) :: dist_mini
     integer, intent(in) :: nb_node
@@ -74,7 +73,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
     integer :: numnoe_a, numnoe_b, numnoe_c, numnoe_m
     integer :: i_no, i, j
     real(kind=8) :: matr_inve_1(3, 3), matr_2(3, 12), matr_3(3, 3), matr_4(3, 12)
-    real(kind=8) :: matr_5(3, 12),  matr_6(3, 9), matr_7(3, 9)
+    real(kind=8) :: matr_5(3, 12), matr_6(3, 9), matr_7(3, 9)
     real(kind=8) :: ab(3), ac(3), am(3)
     real(kind=8) :: norm_ab(3), tang_ab_2(3)
     real(kind=8) :: abm(3), coek, lab, labm
@@ -98,7 +97,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
     ASSERT(dist_mini .gt. 0.d0)
     un = 1.d0
     zero = 0.d0
-    l_same  = .false.
+    l_same = .false.
     l_trian = .false.
     numnoe_a = 0
     numnoe_b = 0
@@ -153,14 +152,14 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
 !
 ! - Find a triangle (three nodes) with non-zero surface
 !
-    call drz03d_tria(dist_mini, nb_node, zi(jlino), zr(jcoor), numnoe_a, &
+    call drz03d_tria(dist_mini, nb_node, zi(jlino), zr(jcoor), numnoe_a,&
                      numnoe_b, numnoe_c, ab, ac, l_trian)
 !
 ! - Name of nodes
 !
-    if (numnoe_a.ne.0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
-    if (numnoe_b.ne.0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
-    if (numnoe_c.ne.0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_c), nomnoe_c)
+    if (numnoe_a .ne. 0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+    if (numnoe_b .ne. 0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
+    if (numnoe_c .ne. 0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_c), nomnoe_c)
 !
 ! - Zero_surface triangle - Degenerate case: are all nodes have the same coordinates ?
 !
@@ -171,8 +170,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
             am(1) = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1) +1)
             am(2) = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1) +2)
             am(3) = zr(jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1) +3)
-            if ((abs(am(1)).gt.dist_mini) .or. &
-                (abs(am(2)).gt.dist_mini) .or. &
+            if ((abs(am(1)).gt.dist_mini) .or. (abs(am(2)).gt.dist_mini) .or.&
                 (abs(am(3)).gt.dist_mini)) then
                 l_same = .false.
                 goto 80
@@ -281,7 +279,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
 !
 ! ------------- Computation of matrix for solid movement in 3D - Second part
 !
-                call char_soli_mat2(am, matr_inve_1, matr_2, matr_4, matr_3, &
+                call char_soli_mat2(am, matr_inve_1, matr_2, matr_4, matr_3,&
                                     matr_5)
 !
 ! ------------- Relation : [M5].DU(AM,BM,CM) = 0
@@ -307,7 +305,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
                     enddo
                     call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
                                 zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
-                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                                type_coef, type_vale, type_lagr, 0.d0, lisrel)
                 enddo
             endif
         enddo
@@ -411,7 +409,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
                     if (lab .gt. dist_mini) goto 260
                 enddo
 !
-260             continue
+260              continue
 !
 ! ------------- Try to define normal to AB
 !
@@ -424,7 +422,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
                     norm_ab(2) = zero
                     norm_ab(3) = -ab(1)
                     lab = sqrt(ab(1)*ab(1)+ab(3)*ab(3))
-                    if (lab .le. dist_mini) call u2mess('F', 'CHARGES2_46')
+                    if (lab .le. dist_mini) then
+                        call utmess('F', 'CHARGES2_46')
+                    endif
                 endif
 !
 ! ------------- Defining second tangent to AB
@@ -489,10 +489,10 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
 !
 ! ------------- Coefficient
 !
-                coek = ( norm_ab(1)*norm_ab(1)  + &
-                         norm_ab(2)*norm_ab(2)  + &
-                         norm_ab(3)*norm_ab(3)) * &
-                       (ab(1)*ab( 1)+ab(2)*ab(2)+ab(3)*ab(3))
+                coek = (&
+                       norm_ab(1)*norm_ab(1) + norm_ab(2)*norm_ab(2) + norm_ab(3)*norm_ab(3)) * (&
+                       &ab(1)*ab( 1)+ab(2)*ab(2)+ab(3)*ab(3)&
+                       )
                 coek = 1.d0/coek
 !
                 do i_no = 2, nb_node
@@ -526,9 +526,10 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
                             do j = 1, 9
                                 zr(jliscr+j-1) = matr_7(i,j)
                             enddo
-                            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), &
-                                    zi(jlisdm),zr(jlisdi), nb_term, vale_real, vale_cplx, &
-                                    vale_fonc,type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno),&
+                                        zi(jlisdm), zr(jlisdi), nb_term, vale_real, vale_cplx,&
+                                        vale_fonc, type_coef, type_vale, type_lagr, 0.d0,&
+                                        lisrel)
                         enddo
                     endif
                 enddo

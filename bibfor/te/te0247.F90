@@ -1,7 +1,6 @@
 subroutine te0247(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/carapo.h"
 #include "asterfort/chgrep.h"
@@ -24,11 +23,11 @@ subroutine te0247(option, nomte)
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/verifm.h"
+!
     character(len=*) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,7 +110,7 @@ subroutine te0247(option, nomte)
 !
     if (nomte .eq. 'MECA_POU_C_T') then
         if (zk16(icompo) .ne. 'ELAS' .or. zk16(icompo+2) .ne. 'PETIT') then
-            call u2mess('F', 'ELEMENTS5_43')
+            call utmess('F', 'ELEMENTS5_43')
         endif
     endif
 !
@@ -152,7 +151,7 @@ subroutine te0247(option, nomte)
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
         valk(2) = nomte
-        call u2mesk('F', 'ELEMENTS3_40', 2, valk)
+        call utmess('F', 'ELEMENTS3_40', nk=2, valk=valk)
     endif
     reactu = zk16(icompo+2) .eq. 'GROT_GDEP'
 !
@@ -244,7 +243,7 @@ subroutine te0247(option, nomte)
 !
         if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA') then
             if ((itemp.ne.0) .and. (nu.ne.num)) then
-                call u2mess('A', 'ELEMENTS3_59')
+                call utmess('A', 'ELEMENTS3_59')
             endif
             call nmpoel(nomte, npg, klv, xl, nno,&
                         nc, pgl, pgl1, pgl2, zr(ideplp),&
@@ -296,7 +295,7 @@ subroutine te0247(option, nomte)
                         alfaz, alfaz2, ey, ez, 1)
         endif
         if ((itemp.ne.0) .and. (nu.ne.num)) then
-            call u2mess('A', 'ELEMENTS3_59')
+            call utmess('A', 'ELEMENTS3_59')
         endif
 !
         call nmpoel(nomte, npg, klv, xl, nno,&
@@ -308,7 +307,7 @@ subroutine te0247(option, nomte)
 !-- DES VECTEURS FORCES NODALES ET EFFORTS
         if (vecteu) then
             if (xl .eq. 0.d0) then
-                call u2mess('F', 'ELEMENTS3_60')
+                call utmess('F', 'ELEMENTS3_60')
             endif
             effnom = zr(icontm)
 !
@@ -393,7 +392,7 @@ subroutine te0247(option, nomte)
 !
         endif
     else
-        call u2mesk('F', 'ELEMENTS3_61', 1, zk16(icompo))
+        call utmess('F', 'ELEMENTS3_61', sk=zk16(icompo))
     endif
     if (matric) then
 !       CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE
@@ -421,7 +420,7 @@ subroutine te0247(option, nomte)
                             rgeom)
                 call lcsovn(nk, klv, rgeom, klv)
             else
-                call u2mess('A', 'ELEMENTS3_28')
+                call utmess('A', 'ELEMENTS3_28')
             endif
         endif
 !

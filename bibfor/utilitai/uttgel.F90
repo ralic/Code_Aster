@@ -30,7 +30,7 @@ subroutine uttgel(nomte, ndim, typgeo)
 ! 0.1. ==> ARGUMENTS
 !
 #include "asterfort/codent.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ndim
     character(len=2) :: typgeo
     character(len=16) :: nomte
@@ -121,7 +121,7 @@ subroutine uttgel(nomte, ndim, typgeo)
     else
 !
         call codent(ndim, 'G', k8bid)
-        call u2mesk('F', 'UTILITAI_9', 1, k8bid)
+        call utmess('F', 'UTILITAI_9', sk=k8bid)
 !
     endif
 !

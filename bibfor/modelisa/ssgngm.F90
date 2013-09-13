@@ -17,8 +17,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: noma
@@ -95,7 +94,9 @@ subroutine ssgngm(noma, iocc, nbgnaj)
                     iarg, nbgma, zk24(ialgma), nb)
         if (no .ne. 0) then
             nbgno = -no
-            if (nbgno .ne. nbgma) call u2mess('F', 'MODELISA7_8')
+            if (nbgno .ne. nbgma) then
+                call utmess('F', 'MODELISA7_8')
+            endif
             call wkvect('&&SSGNGM.NOM_GNO', 'V V K24', nbgno, iangno)
             call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=nbgno, vect=zk24(iangno),&
                         nbret=no)
@@ -108,7 +109,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             call jeexin(jexnom(grpma, nomgma), iret)
             if (iret .eq. 0) then
                 ier = ier + 1
-                call u2mesk('E', 'ELEMENTS_62', 1, nomgma)
+                call utmess('E', 'ELEMENTS_62', sk=nomgma)
             endif
 20      continue
         ASSERT(ier.eq.0)
@@ -133,7 +134,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
         n1 = zi(ianbno-1+i)
         call jeexin(jexnom(grpno, nomgno), iret)
         if (iret .gt. 0) then
-            call u2mesk('A', 'MODELISA7_9', 1, nomgno)
+            call utmess('A', 'MODELISA7_9', sk=nomgno)
         else
             call jecroc(jexnom(grpno, nomgno))
             call jeecra(jexnom(grpno, nomgno), 'LONMAX', max(n1, 1))

@@ -1,16 +1,15 @@
 subroutine te0464(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/infdis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpplg.h"
+!
     character(len=16) :: option, nomte
 ! ------------------------------------------------------------------
 ! ======================================================================
@@ -55,18 +54,18 @@ subroutine te0464(option, nomte)
 !        LE CODE STOKE DANS LA CARTE
         call infdis('TYDI', infodi, r8bid, k8bid)
         if (infodi .ne. ibid) then
-            call u2mesk('F+', 'DISCRETS_25', 1, nomte)
+            call utmess('F+', 'DISCRETS_25', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'F+')
         endif
 !        DISCRET DE TYPE MASSE
         call infdis('DISM', infodi, r8bid, k8bid)
         if (infodi .eq. 0) then
-            call u2mesk('A+', 'DISCRETS_26', 1, nomte)
+            call utmess('A+', 'DISCRETS_26', sk=nomte)
             call infdis('DUMP', ibid, r8bid, 'A+')
         endif
         nc = 6
     else
-        call u2mess('F', 'CALCULEL_17')
+        call utmess('F', 'CALCULEL_17')
     endif
 !     OPTION DE CALCUL INVALIDE
     if (option .ne. 'RIGI_GYRO') ASSERT(.false.)

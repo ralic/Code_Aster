@@ -6,7 +6,7 @@ subroutine rcangm(ndim, coor, angmas)
 #include "asterfort/angvxy.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utrcyl.h"
     integer :: ndim
     real(kind=8) :: angmas(7), coor(3)
@@ -85,7 +85,7 @@ subroutine rcangm(ndim, coor, angmas)
  1              continue
                 call angvxy(xg, yg, angmas)
             else
-                call u2mess('F', 'ELEMENTS2_38')
+                call utmess('F', 'ELEMENTS2_38')
                 call r8inir(7, 0.d0, angmas, 1)
             endif
         endif

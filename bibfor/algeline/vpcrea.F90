@@ -8,7 +8,7 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: icond, ier
     character(len=*) :: modes, masse, amor, raide, nume
@@ -34,7 +34,7 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: iret,ibid,imat(3),i4,i
+    integer :: iret, ibid, imat(3), i4, i
     character(len=14) :: nume2, numat(3)
     character(len=19) :: numddl, numtmp, nomat(3)
     character(len=24) :: valk(4), matric(3), raide2, masse2, amor2
@@ -68,7 +68,7 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
     if (i4 .ne. 0) then
         do 10 i = 1, 3
             if ((numat(i).ne.nume2) .and. (numat(i).ne.' ')) then
-                call u2mesk('F', 'ALGELINE3_60', 1, nomat(i))
+                call utmess('F', 'ALGELINE3_60', sk=nomat(i))
             endif
 10      continue
         numddl=nume
@@ -89,26 +89,30 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 !     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
 !    call dismoi('C', 'NB_MODES_TOT', modes, 'RESULTAT', nbmodes, k24bid, iret)
     if (icond .eq. 0) then
-        ! On remplie les champs relatifs aux matrices assemblees
+! On remplie les champs relatifs aux matrices assemblees
         matric(1) = raide
         matric(2) = masse
         matric(3) = amor
 !       call refdaj('F',modes,nbmodes,numddl,'DYNAMIQUE',matric,iret)
-        call refdaj('F',modes,-1,numddl,'DYNAMIQUE',matric,iret)       
+        call refdaj('F', modes, -1, numddl, 'DYNAMIQUE',&
+                    matric, iret)
     else
-        call dismoi('F', 'REF_RIGI_PREM', modes, 'RESU_DYNA', ibid, raide2, iret)
-        call dismoi('F', 'REF_MASS_PREM', modes, 'RESU_DYNA', ibid, masse2, iret)
-        call dismoi('F', 'REF_AMOR_PREM', modes, 'RESU_DYNA', ibid, amor2 , iret)
-        if ((raide.ne.raide2).or.(masse.ne.masse2).or.(amor.ne.amor2)) ier = 1
+        call dismoi('F', 'REF_RIGI_PREM', modes, 'RESU_DYNA', ibid,&
+                    raide2, iret)
+        call dismoi('F', 'REF_MASS_PREM', modes, 'RESU_DYNA', ibid,&
+                    masse2, iret)
+        call dismoi('F', 'REF_AMOR_PREM', modes, 'RESU_DYNA', ibid,&
+                    amor2, iret)
+        if ((raide.ne.raide2) .or. (masse.ne.masse2) .or. (amor.ne.amor2)) ier = 1
         if (ier .ne. 0) then
             valk(1) = modes
             valk(2) = raide2
             valk(3) = masse2
             valk(4) = amor2
-            if (amor2(1:8).ne.' ') then 
-                call u2mesk('F', 'ALGELINE3_61', 4, valk)
+            if (amor2(1:8) .ne. ' ') then
+                call utmess('F', 'ALGELINE3_61', nk=4, valk=valk)
             else
-                call u2mesk('F', 'ALGELINE3_62', 3, valk)
+                call utmess('F', 'ALGELINE3_62', nk=3, valk=valk)
             endif
         endif
     endif

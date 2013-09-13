@@ -36,13 +36,13 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/sigela.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     integer :: ndim, imate, kpg, ksp
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(3), option(2),option2
+    character(len=16) :: compor(3), option(2), option2
     character(len=*) :: fami
     real(kind=8) :: tinstm, tinstp
     real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)
@@ -246,7 +246,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     data     kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
     materi = ' '
-
+!
 !   CALCUL DE L'INTERVALLE DE TEMPS
 !
     tdt = tinstp-tinstm
@@ -302,7 +302,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'ELAS', 1, 'TEMP', 0.d0,&
                     2, nomres, valres, icodre, 1)
-        call u2mess('I', 'COMPOR1_60')
+        call utmess('I', 'COMPOR1_60')
 !
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'ELAS', 1, 'TEMP', 0.d0,&
@@ -329,7 +329,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'ELAS', 1, 'TEMP', tmaxp,&
                     1, nomres(4), valres(4), icodre(4), 0)
-        call u2mess('I', 'COMPOR1_61')
+        call utmess('I', 'COMPOR1_61')
 !
     else
         call rcvalb(fami, kpg, ksp, '-', imate,&
@@ -350,7 +350,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
     if ((option(2).eq.'MAZARS') .or. (option(2).eq.'ENDO_ISOT_BETON')) then
         if ((iisnan(tref).eq.1) .or. (icodre(3).ne.0) .or. (icodre(4) .ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         else
             if (iisnan(tm) .eq. 0) then
                 epsthm = valres(3) * (tm - tref)
@@ -434,14 +434,14 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                 ' ', 'ELAS', 0, ' ', rbid,&
                 1, nomres(1), valres(1), icodre(1), 2)
     if (icodre(1) .ne. 0) then
-        call u2mess('F', 'ALGORITH4_94')
+        call utmess('F', 'ALGORITH4_94')
     endif
     hygrm=valres(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 0, ' ', rbid,&
                 1, nomres(1), valres(1), icodre(1), 2)
     if (icodre(1) .ne. 0) then
-        call u2mess('F', 'ALGORITH4_94')
+        call utmess('F', 'ALGORITH4_94')
     endif
     hygrp=valres(1)
 !

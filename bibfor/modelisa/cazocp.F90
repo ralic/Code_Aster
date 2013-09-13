@@ -28,7 +28,7 @@ subroutine cazocp(char)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: char
 !
 ! ----------------------------------------------------------------------
@@ -264,7 +264,7 @@ subroutine cazocp(char)
         if (lgcp) then
             call getvr8(' ', 'RESI_ABSO', scal=precis, nbret=noc)
             if (noc .eq. 0) then
-                call u2mess('F', 'CONTACT_4')
+                call utmess('F', 'CONTACT_4')
             endif
             zr(jparcr+4-1) = precis
 !

@@ -2,7 +2,6 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                   nbbloq, nblagr, nbliai)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -15,7 +14,8 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: neq, tabddl(*), nbacti, nbbloq, nblagr, nbliai
     character(len=4) :: choix
     character(len=14) :: nume
@@ -253,7 +253,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
             endif
 22      continue
     else
-        call u2mesk('F', 'UTILITAI5_3', 1, choix)
+        call utmess('F', 'UTILITAI5_3', sk=choix)
     endif
 !
     call jedema()

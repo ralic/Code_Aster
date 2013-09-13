@@ -31,7 +31,7 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
     implicit none
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: tab(neq)
     real(kind=8) :: psidel(neq, nbexci), temps
     character(len=8) :: nomfon(2*nbexci)
@@ -49,8 +49,7 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
     do 10 iex = 1, nbexci
         if (nomfon(iex) .eq. k8bid) then
             valk = 'CHARGE EN MONO APPUI'
-            call u2mesg('A', 'ALGORITH13_44', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('A', 'ALGORITH13_44', sk=valk)
             goto 10
         endif
         call fointe('F ', nomfon(iex), 1, nompar, temps,&

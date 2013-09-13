@@ -19,9 +19,8 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/exiscp.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -31,8 +30,9 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/palino.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: noma, nomo
     character(len=16) :: motfac
     integer :: nzocu
@@ -189,7 +189,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !
         zi(jpoi+izone) = zi(jpoi+izone-1) + nbno - nbsup
         if (nbno .eq. nbsup) then
-            call u2mess('F', 'UNILATER_48')
+            call utmess('F', 'UNILATER_48')
         endif
 1000  end do
 !

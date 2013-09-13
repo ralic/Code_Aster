@@ -39,7 +39,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 #include "asterfort/nmmalu.h"
 #include "asterfort/prep2.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vicin0.h"
 #include "asterfort/vicin2.h"
 #include "blas/daxpy.h"
@@ -164,7 +164,9 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !
 !     TEST SUR LE NOMBRE DE NOEUDS SI TEST NON VERIFIE MESSAGE ERREUR
     ASSERT(nno.le.27)
-    if (typmod(1) .eq. 'C_PLAN') call u2mess('F', 'ALGORITH8_1')
+    if (typmod(1) .eq. 'C_PLAN') then
+        call utmess('F', 'ALGORITH8_1')
+    endif
     if (axi) ndu = 3
 !
 !------------------------------DEPLACEMENT ET GEOMETRIE-------------

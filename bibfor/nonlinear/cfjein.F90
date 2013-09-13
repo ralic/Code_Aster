@@ -18,7 +18,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/caladu.h"
 #include "asterfort/cfdisd.h"
@@ -29,7 +29,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: depdel
@@ -212,7 +212,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
             if (jeuini .gt. aljeu) then
                 ialarm = ialarm+1
                 if (ialarm .eq. 1) then
-                    call u2mess('A', 'CONTACT_9')
+                    call utmess('A', 'CONTACT_9')
                 endif
                 call cfimp2(defico, resoco, noma, iliai, 'C0',&
                             'ALJ')

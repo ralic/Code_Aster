@@ -7,8 +7,7 @@ subroutine te0241(option, nomte)
 #include "asterfort/ptmtuf.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
@@ -126,7 +125,7 @@ subroutine te0241(option, nomte)
 !
     if (nomte .ne. 'MEFS_POU_D_T') then
         ch16 = nomte
-        call u2mesk('F', 'ELEMENTS2_42', 1, ch16)
+        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
@@ -136,7 +135,7 @@ subroutine te0241(option, nomte)
     if (xl .eq. 0.d0) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
-        call u2mesk('F', 'ELEMENTS2_43', 1, nomail)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
     do 30 i = 1, 136
@@ -161,7 +160,7 @@ subroutine te0241(option, nomte)
                             ez, itype, isect)
             endif
         else
-            call u2mess('F', 'ELEMENTS3_56')
+            call utmess('F', 'ELEMENTS3_56')
         endif
 !
 !        --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
@@ -174,7 +173,7 @@ subroutine te0241(option, nomte)
 !
     else
         ch16 = option
-        call u2mesk('F', 'ELEMENTS2_47', 1, ch16)
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
 end subroutine

@@ -21,7 +21,7 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vp2tru.h"
 #include "asterfort/vpordo.h"
 #include "asterfort/vpqlts.h"
@@ -116,13 +116,15 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
     endif
 !
     if (nbvect .eq. 1) vecpro(1) = 1.d0
-    if (ier .ne. 0) call u2mess('F', 'ALGELINE3_55')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGELINE3_55')
+    endif
 !
 !     --- PASSAGE AUX VALEURS PROPRES DU SYSTEME INITIAL ---
     if (type .eq. 'G') then
         do 30 ivect = 1, nbvect
             if (alpha(ivect) .eq. 0.0d0) then
-                call u2mess('A', 'ALGELINE3_56')
+                call utmess('A', 'ALGELINE3_56')
                 alpha(ivect) = 1.d+70
             else
                 alpha(ivect) = 1.d0 / alpha(ivect)

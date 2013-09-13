@@ -28,7 +28,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcpqu.h"
 #include "asterfort/nmlssv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     logical :: lnewtc, lnewtf, lnewtg
     logical :: lexpl
     integer :: ifm, niv
-    integer ::  nsta
+    integer :: nsta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -435,7 +435,9 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --- BLINDAGE ARRET=NON
 !
     larrno = (nint(parcri(4)).eq.1)
-    if (larrno) call u2mess('A', 'MECANONLINE5_37')
+    if (larrno) then
+        call utmess('A', 'MECANONLINE5_37')
+    endif
 !
 ! --- CALCUL DYNAMIQUE EXPLICITE
 !

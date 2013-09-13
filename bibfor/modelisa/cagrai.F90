@@ -12,7 +12,7 @@ subroutine cagrai(char, ligrmo, noma, fonree)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
@@ -62,7 +62,7 @@ subroutine cagrai(char, ligrmo, noma, fonree)
     else if (fonree.eq.'FONC') then
         call alcart('G', carte, noma, 'FLUX_F')
     else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree)
+        call utmess('F', 'MODELISA2_37', sk=fonree)
     endif
 !
     call jeveuo(carte//'.NCMP', 'E', jncmp)

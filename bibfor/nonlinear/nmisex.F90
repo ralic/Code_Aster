@@ -21,15 +21,15 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmcri1.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
+!
     integer :: imate, ndim, kpg, ksp, iret
     real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: deps(6), sigm(6), sigp(6), vim(*), vip(*)
@@ -87,7 +87,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: rac2
     integer :: icodre(3)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(3),materi
+    character(len=8) :: nomres(3), materi
 !
 !----- COMMONS NECESSAIRES A VON_MISES ISOTROPE C_PLAN :
 !      COMMONS COMMUNS A NMCRI1 ET NMISOT
@@ -196,8 +196,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         if ((e-dsde) .lt. r8miem()) then
             valrm(1)=dsde
             valrm(2)=e
-            call u2mesg('F', 'COMPOR1_54', 0, ' ', 0,&
-                        ibid, 2, valrm)
+            call utmess('F', 'COMPOR1_54', nr=2, valr=valrm)
         else
             rprim = dsde*e/(e-dsde)
         endif

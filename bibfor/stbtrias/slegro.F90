@@ -37,7 +37,6 @@ subroutine slegro(iunv, imod, datset)
 !     ================================================================
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
 #include "asterfort/jedema.h"
@@ -46,9 +45,9 @@ subroutine slegro(iunv, imod, datset)
 #include "asterfort/jjmmaa.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxscan.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: valk(2)
 !
 !
@@ -127,12 +126,14 @@ subroutine slegro(iunv, imod, datset)
         endif
         icol = 1
         ilong = lxlgut (nomgro)
-        if (ilong .gt. 8) call u2mesk('A', 'STBTRIAS_5', 1, nomgro)
+        if (ilong .gt. 8) then
+            call utmess('A', 'STBTRIAS_5', sk=nomgro)
+        endif
         ngro8 = nomgro
         call lxscan(ngro8, icol, iclass, ival, rval,&
                     cval)
         if (iclass .ne. 3) then
-            call u2mesk('A', 'STBTRIAS_6', 1, ngro8)
+            call utmess('A', 'STBTRIAS_6', sk=ngro8)
             if (nbenti .eq. 0) then
                 goto 1
             else
@@ -146,13 +147,13 @@ subroutine slegro(iunv, imod, datset)
         else if (ilong.ne.ival) then
             valk(1) = nomgro
             valk(2) = ngro8(1:ival)
-            call u2mesk('A', 'STBTRIAS_7', 2, valk)
+            call utmess('A', 'STBTRIAS_7', nk=2, valk=valk)
             toto = ngro8(1:ival)
             ngro8 = ' '
             ngro8 = toto
         endif
         if (ngro8(1:5) .eq. 'COUL_') then
-            call u2mess('A', 'STBTRIAS_8')
+            call utmess('A', 'STBTRIAS_8')
             lwrit = .false.
         endif
         if (nbenti .eq. 0) goto 1

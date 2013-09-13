@@ -22,7 +22,6 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
@@ -36,9 +35,10 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ligrma.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xpogma.h"
+!
     character(len=8) :: mo, malini
     character(len=24) :: mailc, mailx, logrma, listgr
 !
@@ -193,12 +193,9 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !     NOMBRE DE MAILLES NON TRAITEES
     nbman = nbma - nbmac - nbmax
 !
-    call u2mesg('I', 'XFEM_7', 1, 'NON TRAITEES', 1,&
-                nbman, 0, 0.d0)
-    call u2mesg('I', 'XFEM_7', 1, 'CLASSIQUES', 1,&
-                nbmac, 0, 0.d0)
-    call u2mesg('I', 'XFEM_7', 1, 'X-FEM', 1,&
-                nbmax, 0, 0.d0)
+    call utmess('I', 'XFEM_7', sk='NON TRAITEES', si=nbman)
+    call utmess('I', 'XFEM_7', sk='CLASSIQUES', si=nbmac)
+    call utmess('I', 'XFEM_7', sk='X-FEM', si=nbmax)
 !
     imac = 0
     imax = 0

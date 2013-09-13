@@ -48,8 +48,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/titrea.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: mcf
@@ -92,7 +91,9 @@ subroutine rvpara(nomtab, mcf, nbpost)
     call infmaj()
     call infniv(ifm, niv)
 !
-    if (niv .ge. 2) call u2mesk('I', 'POSTRELE_8', 1, nomtab)
+    if (niv .ge. 2) then
+        call utmess('I', 'POSTRELE_8', sk=nomtab)
+    endif
 !
     nocmp = '&&'//nompro//'_NOM_CMP_TABLE  '
     ncmpmx = 100
@@ -210,12 +211,14 @@ subroutine rvpara(nomtab, mcf, nbpost)
                             iret)
                 if (iret .eq. 0) goto 16
 14          continue
-            call u2mesk('F', 'POSTRELE_9', 1, nomsy)
+            call utmess('F', 'POSTRELE_9', sk=nomsy)
 16          continue
             call jedetr(knume)
             call utncmp(chextr, nbc, nomobj)
         endif
-        if (nbc .eq. 0) call u2mess('F', 'POSTRELE_59')
+        if (nbc .eq. 0) then
+            call utmess('F', 'POSTRELE_59')
+        endif
         call jeveuo(nomobj, 'L', jcmp1)
         do 10 i = 1, nbc
             do 12 j = 1, ncmp
@@ -600,7 +603,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
         do 1789 , n1 = 1 , nbp
         valk(1) = nopara(n1)
         valk(2) = typara(n1)
-        call u2mesk('I', 'POSTRELE_10', 2, valk)
+        call utmess('I', 'POSTRELE_10', nk=2, valk=valk)
 1789      continue
     endif
 !

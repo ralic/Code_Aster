@@ -20,7 +20,6 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -43,10 +42,11 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 #include "asterfort/jexnum.h"
 #include "asterfort/padist.h"
 #include "asterfort/panbno.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xtyhea.h"
 #include "blas/ddot.h"
+!
     character(len=24) :: trav
     integer :: nfiss
     character(len=8) :: fiss(nfiss), noma
@@ -172,7 +172,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                         call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                         if (.not.ismali(typma)) then
-                            call u2mesk('F', 'XFEM_41', 1, nomail)
+                            call utmess('F', 'XFEM_41', sk=nomail)
                         endif
                     endif
 !
@@ -391,7 +391,9 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 !
                     if (lcont .and. zi(jtab-1+5*(ima-1)+kk) .le. 0 .and.&
                         zi(jtab-1+5*(ima-1)+4) .eq. 0) then
-                        if (kk .ne. 1) call u2mesk('F', 'XFEM_44', 1, nomail)
+                        if (kk .ne. 1) then
+                            call utmess('F', 'XFEM_44', sk=nomail)
+                        endif
                         do 188 ifis = 1, ifiss-1
                             call jeexin(grp(4*(ifis-1)+1), iret)
                             if (iret .ne. 0) then
@@ -411,7 +413,9 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 !
 ! SI MAILLE DEJA EN CONTACT POUR UNE AUTRE FISS
                     if (.not.lcont .and. zi(jtab-1+5*(ima-1)+kk) .gt. 0) then
-                        if (kk .ne. 1) call u2mesk('F', 'XFEM_44', 1, nomail)
+                        if (kk .ne. 1) then
+                            call utmess('F', 'XFEM_44', sk=nomail)
+                        endif
                         ASSERT(zi(jtab-1+5*(ima-1)+4).eq.0)
                         icont(ifiss) = icont(ifiss)+1
                         zi(jcont(ifiss)-1+icont(ifiss)) = ima
@@ -426,18 +430,22 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                     else if (zi(jtab-1+5*(ima-1)+4).eq.0) then
 ! --- SI LA MAILLE EST VUE UNE DEUXIEME FOIS (MULTIFISSURATION)
 !
-                        if (contac .gt. 1) call u2mesk('F', 'XFEM_43', 1, nomail)
+                        if (contac .gt. 1) then
+                            call utmess('F', 'XFEM_43', sk=nomail)
+                        endif
 ! --- SI CONTACT AUTRE QUE P1P1
                         if (kk .gt. 1 .or. abs(zi(jtab-1+5*(ima-1)+2)) .eq. 1 .or.&
                             abs(zi(jtab-1+5*(ima-1)+3)) .eq. 1) then
 ! --- SI UNE DES MAILLES CONTIENT DU CRACK-TIP
-                            call u2mesk('F', 'XFEM_44', 1, nomail)
+                            call utmess('F', 'XFEM_44', sk=nomail)
                         endif
 !
 ! --- CALCUL DU NOMBRE DE FONCTIONS HEAVISIDE
                         call xtyhea(nfiss, ifiss, ima, nno, jconx1,&
                                     jconx2, jstnl, jstnv, nbheav)
-                        if (nbheav .gt. 4) call u2mesk('F', 'XFEM_40', 1, nomail)
+                        if (nbheav .gt. 4) then
+                            call utmess('F', 'XFEM_40', sk=nomail)
+                        endif
                         zi(jnbpt2-1+ima) = nbheav
                         if (zi(jtab-1+5*(ima-1)+1) .gt. 0 .or. lcont) then
 ! --- SI AU MOINS UNE DES 2 FISSURES A DU CONTACT

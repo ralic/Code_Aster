@@ -2,8 +2,7 @@ subroutine focoli(ipt, coli, interp, x, y,&
                   rvar, resu, ier)
     implicit none
 #include "asterc/r8prem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ipt, ier
     real(kind=8) :: x(*), y(*), rvar, resu
     character(len=1) :: coli
@@ -28,13 +27,13 @@ subroutine focoli(ipt, coli, interp, x, y,&
     real(kind=8) :: epsi, tole
     real(kind=8) :: valr(3)
 ! ----------------------------------------------------------------------
-#define linlin(x0,x1,y1,x2,y2)  y1+(x0-x1)*(y2-y1)/(x2-x1)
+#define linlin(x0,x1,y1,x2,y2) y1+(x0-x1)*(y2-y1)/(x2-x1)
 #define linlog(x0,x1,y1,x2,y2) exp(log(y1)+(x0-x1)*(log(y2)-log(y1)) \
-        /(x2-x1))
+    /(x2-x1))
 #define loglog(x0,x1,y1,x2,y2) exp(log(y1)+(log(x0)-log(x1))*(log(y2) \
-        -log(y1))/(log(x2)-log(x1)))
+    -log(y1))/(log(x2)-log(x1)))
 #define loglin(x0,x1,y1,x2,y2) y1+(log(x0)-log(x1))*(y2-y1) \
-        /(log(x2)-log(x1))
+    /(log(x2)-log(x1))
 ! ----------------------------------------------------------------------
 !
 !     --- PAS D'INTERPOLATION ---
@@ -70,13 +69,12 @@ subroutine focoli(ipt, coli, interp, x, y,&
                 valr (1) = rvar
                 valr (2) = x(ipt)
                 valr (3) = x(ipt+1)
-                call u2mesg('A', 'UTILITAI6_14', 0, ' ', 0,&
-                            0, 3, valr)
+                call utmess('A', 'UTILITAI6_14', nr=3, valr=valr)
             endif
 !
         else
             ier = 230
-            call u2mesk('A', 'UTILITAI_84', 1, interp)
+            call utmess('A', 'UTILITAI_84', sk=interp)
         endif
 !
 !     --- EXTRAPOLATION ---
@@ -86,7 +84,7 @@ subroutine focoli(ipt, coli, interp, x, y,&
 !
     else
         ier = 240
-        call u2mesk('A', 'UTILITAI_85', 1, coli)
+        call utmess('A', 'UTILITAI_85', sk=coli)
     endif
 !
 end subroutine

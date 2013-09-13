@@ -29,8 +29,7 @@ subroutine xconta(char, noma, nomo, ndim)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xbarvi.h"
 #include "asterfort/xdefco.h"
@@ -84,13 +83,13 @@ subroutine xconta(char, noma, nomo, ndim)
     call exixfe(nomo, ier)
     if (ier .eq. 0) then
         valk(1) = nomo
-        call u2mesk('F', 'XFEM2_8', 1, valk)
+        call utmess('F', 'XFEM2_8', sk=valk(1))
     endif
     call jeveuo(nomo(1:8)//'.FISS', 'L', jfiss)
     call jeveuo(nomo(1:8)//'.NFIS', 'L', jnfis)
     nfiss = zi(jnfis)
     if (nfiss .gt. nfismx) then
-        call u2mesi('F', 'XFEM_2', 1, nfismx)
+        call utmess('F', 'XFEM_2', si=nfismx)
     endif
 !
 ! --- CREATION SD POUR SD REL. LIN.

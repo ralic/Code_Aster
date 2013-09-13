@@ -28,7 +28,7 @@ subroutine nmdocn(parcri, parcon)
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: parcri(*), parcon(*)
 !
 ! ----------------------------------------------------------------------
@@ -142,7 +142,7 @@ subroutine nmdocn(parcri, parcon)
 ! --- ALARMES RELATIVES A LA QUALITE DE LA CONVERGENCE
 !
     if (parcri(2) .ne. r8vide() .and. parcri(2) .gt. 1.0001d-4) then
-        call u2mess('A', 'MECANONLINE5_21')
+        call utmess('A', 'MECANONLINE5_21')
     endif
 !
     call jedema()

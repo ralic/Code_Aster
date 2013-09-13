@@ -34,7 +34,7 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: ligr2z, chel2z, chel1z, base2, optioz, paramz
 !
 ! ----------------------------------------------------------------------
@@ -132,7 +132,7 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
         if (iret .ne. 0) then
             valk(1) = chel1
             valk(2) = chel2
-            call u2mesk('F', 'CALCULEL_90', 2, valk)
+            call utmess('F', 'CALCULEL_90', nk=2, valk=valk)
         endif
     endif
 !

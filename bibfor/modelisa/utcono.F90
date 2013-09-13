@@ -10,7 +10,7 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 !
     integer :: iocc, ndim, iret
@@ -56,20 +56,16 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
             call getres(k8b, concep, cmd)
             valk (1) = mcfac
             vali (1) = iocc
-            call u2mesg('F+', 'MODELISA9_23', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F+', 'MODELISA9_23', sk=valk(1), si=vali(1))
             if (ndim .eq. 2) then
-                call u2mesg('F+', 'MODELISA9_24', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('F+', 'MODELISA9_24')
             else
-                call u2mesg('F+', 'MODELISA9_25', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('F+', 'MODELISA9_25')
             endif
             vali (1) = abs(n1)
             vali (2) = ndim
             valk (1) = mocle(1)
-            call u2mesg('F', 'MODELISA9_26', 1, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'MODELISA9_26', sk=valk(1), ni=2, vali=vali)
         endif
         iret = 1
         goto 9999
@@ -89,8 +85,7 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
             valk (2) = mocle(2)
             valk (3) = noeud
             vali (1) = iocc
-            call u2mesg('F', 'MODELISA9_27', 3, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'MODELISA9_27', nk=3, valk=valk, si=vali(1))
         endif
         do 10 i = 1, ndim
             coor(i) = zr(jcoor+3*(numno-1)+i-1)
@@ -110,15 +105,13 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
             valk (2) = mocle(3)
             valk (3) = nomgrn
             vali (1) = iocc
-            call u2mesg('F', 'MODELISA9_28', 3, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'MODELISA9_28', nk=3, valk=valk, si=vali(1))
         else if (ier .eq. 1) then
             call getres(k8b, concep, cmd)
             valk (1) = mcfac
             valk (2) = k8b
             vali (1) = iocc
-            call u2mesg('A', 'MODELISA9_29', 2, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'MODELISA9_29', nk=2, valk=valk, si=vali(1))
         endif
         call jenonu(jexnom(nomnoe, k8b), numno)
         do 20 i = 1, ndim

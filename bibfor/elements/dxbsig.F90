@@ -21,7 +21,7 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma)
 #include "asterfort/dxbmat.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
     character(len=16) :: nomte
     real(kind=8) :: xyzl(3, 1), pgl(3, 1)
@@ -74,7 +74,7 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma)
         call gquad4(xyzl, cara)
 !
     else
-        call u2mesk('F', 'ELEMENTS_14', 1, nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
     endif
 !
 ! --- INITIALISATIONS :

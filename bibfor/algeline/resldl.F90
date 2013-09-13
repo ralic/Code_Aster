@@ -2,7 +2,6 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
                   csolu, prepos)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/jedema.h"
@@ -13,7 +12,8 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/rldlg3.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: nommat, vcine
     integer :: nsecm
     real(kind=8) :: rsolu(*)
@@ -73,7 +73,9 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
 !
     call mtdscr(nomma2)
     call jeveuo(nomma2(1:19)//'.&INT', 'E', lmat)
-    if (lmat .eq. 0) call u2mess('F', 'ALGELINE3_40')
+    if (lmat .eq. 0) then
+        call utmess('F', 'ALGELINE3_40')
+    endif
 !
     neq=zi(lmat+2)
     nimpo=zi(lmat+7)
@@ -81,14 +83,16 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
 ! --- SI ON NE FAIT PAS LES PREPOS, ON NE SE PREOCCUPE PAS DES
 !     AFFE_CHAR_CINE. DONC C'EST NORMAL QUE L'INFO SOIT INCOHERENTE
 !     A CE NIVEAU
-        if ((nimpo.ne.0) .and. prepos) call u2mess('F', 'ALGELINE3_41')
+        if ((nimpo.ne.0) .and. prepos) then
+            call utmess('F', 'ALGELINE3_41')
+        endif
         idvalc=0
     else
         call jeveuo(vci19//'.VALE', 'L', idvalc)
         call jelira(vci19//'.VALE', 'TYPE', cval=type)
         if (((type.eq.'R').and.(zi(lmat+3).ne.1)) .or.&
             ((type.eq.'C') .and.(zi(lmat+3).ne.2))) then
-            call u2mess('F', 'ALGELINE3_42')
+            call utmess('F', 'ALGELINE3_42')
         endif
     endif
 !

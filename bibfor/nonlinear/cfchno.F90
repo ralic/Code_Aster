@@ -23,7 +23,6 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfnomm.h"
@@ -35,8 +34,9 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
 #include "asterfort/mmmron.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmtann.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     character(len=8) :: noma
     character(len=4) :: typenm
     integer :: ndimg
@@ -116,7 +116,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     if (lescl) then
         call cfnorm(ndimg, tau1e, tau2e, enorm, noor)
         if (noor .le. r8prem()) then
-            call u2mesk('F', 'CONTACT3_26', 1, nomnoe)
+            call utmess('F', 'CONTACT3_26', sk=nomnoe)
         endif
     endif
 !
@@ -126,9 +126,9 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
         call mmnorm(ndimg, tau1m, tau2m, mnorm, noor)
         if (noor .le. r8prem()) then
             if (typenm .eq. 'MAIL') then
-                call u2mesk('F', 'CONTACT3_27', 1, nomenm)
+                call utmess('F', 'CONTACT3_27', sk=nomenm)
             else if (typenm.eq.'NOEU') then
-                call u2mesk('F', 'CONTACT3_26', 1, nomenm)
+                call utmess('F', 'CONTACT3_26', sk=nomenm)
             else
                 ASSERT(.false.)
             endif
@@ -179,9 +179,9 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     call mmtann(ndimg, tau1, tau2, niverr)
     if (niverr .eq. 1) then
         if (typenm .eq. 'MAIL') then
-            call u2mesk('F', 'CONTACT3_31', 2, valk)
+            call utmess('F', 'CONTACT3_31', nk=2, valk=valk)
         else if (typenm.eq.'NOEU') then
-            call u2mesk('F', 'CONTACT3_35', 2, valk)
+            call utmess('F', 'CONTACT3_35', nk=2, valk=valk)
         else
             ASSERT(.false.)
         endif

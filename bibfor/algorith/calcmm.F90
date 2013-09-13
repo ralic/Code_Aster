@@ -3,7 +3,7 @@ subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
                   irota)
     implicit none
 #include "asterfort/lcmmsg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nmat, nbcomm(nmat, 3), nvi, irota, nfs, nsg
     real(kind=8) :: pgl(3, 3), toutms(nfs, nsg, 6), vind(*)
     character(len=16) :: comp(*)
@@ -53,7 +53,7 @@ subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
 !         CALCUL DES TENSEURS MS POUR GAGNER DU TEMPS
     nbfsys=nbcomm(nmat,2)
     if (nbfsys .gt. 5) then
-        call u2mess('F', 'ALGORITH_68')
+        call utmess('F', 'ALGORITH_68')
     endif
     ir=0
 !

@@ -32,7 +32,7 @@ subroutine cripoi(nbm, b, crit)
 #include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dcabs2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbm
     complex(kind=8) :: b(nbm, nbm)
     real(kind=8) :: crit
@@ -58,7 +58,7 @@ subroutine cripoi(nbm, b, crit)
 !
     if (sommii .lt. tole) then
 !
-        call u2mess('A', 'ALGELINE_30')
+        call utmess('A', 'ALGELINE_30')
         crit = r8nnem()
 !
     else
@@ -91,7 +91,7 @@ subroutine cripoi(nbm, b, crit)
 !
         if (sommii .lt. x*tolr) then
 !
-            call u2mess('A', 'ALGELINE_31')
+            call utmess('A', 'ALGELINE_31')
             crit = r8nnem()
 !
         else

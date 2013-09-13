@@ -66,9 +66,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: motfaz
@@ -136,7 +134,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
         call getvr8(motfac(1:l), 'R_SUP', iocc=iocc, scal=rsup, nbret=nbm)
 !
         if (nbm .ne. 0 .and. rsup .le. rinf) then
-            call u2mess('F', 'RUPTURE1_6')
+            call utmess('F', 'RUPTURE1_6')
         endif
 !
         if (nomcmd .ne. 'CALC_G') then
@@ -155,12 +153,12 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 if (iret .eq. 0) then
                     valk(1) = zk24(jjj+igr-1)
                     valk(2) = noma
-                    call u2mesk('F', 'RUPTURE1_8', 2, valk)
+                    call utmess('F', 'RUPTURE1_8', nk=2, valk=valk)
                 else
 !
                     call jelira(jexnom(grpno, zk24(jjj2+igr-1)), 'LONUTI', n1)
                     if (n1 .gt. 1) then
-                        call u2mess('F', 'RUPTURE1_10')
+                        call utmess('F', 'RUPTURE1_10')
                     else
                         call jeveuo(jexnom(grpno, zk24(jjj2+igr-1)), 'L', iadr)
                         call jenuno(jexnum(nomno, zi(iadr)), noeud)
@@ -176,14 +174,14 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
 !
             do 6 i = 1, nno
                 if (nno .gt. 1) then
-                    call u2mess('F', 'RUPTURE1_10')
+                    call utmess('F', 'RUPTURE1_10')
                 else
 !
                     call jenonu(jexnom(nomno, zk8(jjj+i-1)), iret)
                     if (iret .eq. 0) then
                         valk(1) = zk8(jjj+i-1)
                         valk(2) = noma
-                        call u2mesk('F', 'RUPTURE0_14', 2, valk)
+                        call utmess('F', 'RUPTURE0_14', nk=2, valk=valk)
                     else
                         call jenuno(jexnum(nomno, iret), noeud)
                     endif
@@ -193,7 +191,9 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
 !
         else
             call getvr8(motfac(1:l), 'R_INF_FO', iocc=iocc, scal=rbid, nbret=ibid)
-            if (ibid .ne. 0) call u2mess('F', 'RUPTURE1_18')
+            if (ibid .ne. 0) then
+                call utmess('F', 'RUPTURE1_18')
+            endif
 !
             call getvid('THETA', 'FOND_FISS', iocc=1, scal=fond, nbret=n1)
             if (n1 .ne. 0) then
@@ -201,7 +201,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 chfond = fond//'.FOND.NOEU'
                 call jelira(chfond, 'LONMAX', lnoff)
                 if (lnoff .ne. 1) then
-                    call u2mess('F', 'RUPTURE1_10')
+                    call utmess('F', 'RUPTURE1_10')
                 else
                     call jeveuo(chfond, 'L', n1)
                     noeud=zk8(n1)
@@ -210,12 +210,16 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 if (nbm .eq. 0) then
                     call dismoi('F', 'CONFIG_INIT', fond, 'FOND_FISS', ibid,&
                                 config, ibid)
-                    if (config .eq. 'DECOLLEE') call u2mess('F', 'RUPTURE1_7')
+                    if (config .eq. 'DECOLLEE') then
+                        call utmess('F', 'RUPTURE1_7')
+                    endif
                 endif
             else
 !           CAS X-FEM
                 call getvid('THETA', 'FISSURE', iocc=1, scal=fond, nbret=n2)
-                if (n2 .eq. 0) call u2mess('F', 'RUPTURE1_11')
+                if (n2 .eq. 0) then
+                    call utmess('F', 'RUPTURE1_11')
+                endif
 !           RECUPERATION DU NUMERO DU FOND DE FISSURE DEMANDE
                 call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !           ON ECRIT 'NUM'+_i OU i=NUMFON
@@ -232,7 +236,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                 rsup = 4*zr(iatmno-1+numfon)
                 valr(1) = rinf
                 valr(2) = rsup
-                call u2mesr('I', 'RUPTURE1_5', 2, valr)
+                call utmess('I', 'RUPTURE1_5', nr=2, valr=valr)
             endif
         endif
  2  end do

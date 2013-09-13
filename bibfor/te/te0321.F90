@@ -1,12 +1,12 @@
 subroutine te0321(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -68,12 +68,20 @@ subroutine te0321(option, nomte)
     if (compor(1) .eq. 'ACIER') then
         nval=5
         do 10, j=1,nval
-        if (zr(iphasi-1+j) .eq. r8vide()) call u2mess('F', 'ELEMENTS5_44')
+        if (zr(iphasi-1+j) .eq. r8vide()) then
+            call utmess('F', 'ELEMENTS5_44')
+        endif
 10      continue
     else if (compor(1).eq.'ZIRC') then
-        if (zr(iphasi-1+1) .eq. r8vide()) call u2mess('F', 'ELEMENTS5_44')
-        if (zr(iphasi-1+2) .eq. r8vide()) call u2mess('F', 'ELEMENTS5_44')
-        if (zr(iphasi-1+4) .eq. r8vide()) call u2mess('F', 'ELEMENTS5_44')
+        if (zr(iphasi-1+1) .eq. r8vide()) then
+            call utmess('F', 'ELEMENTS5_44')
+        endif
+        if (zr(iphasi-1+2) .eq. r8vide()) then
+            call utmess('F', 'ELEMENTS5_44')
+        endif
+        if (zr(iphasi-1+4) .eq. r8vide()) then
+            call utmess('F', 'ELEMENTS5_44')
+        endif
     endif
 !
     fami='FPG1'

@@ -10,7 +10,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nnm, inm, inmtot, nbmac, ise, ndime, npg
     integer :: jcesd1, jcesd2, ima, ndim, iadc, jcesv1, jcesl2, jcesv2
     integer :: jcvid1, jcvid2, jcviv1, jcvil2, jcviv2, idcalv, iadv
@@ -69,7 +69,9 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 !
     call jemarq()
 !
-    if (inmtot .ge. 999999) call u2mesk('F', 'XFEM_8', 1, valk)
+    if (inmtot .ge. 999999) then
+        call utmess('F', 'XFEM_8', sk=valk(1))
+    endif
 !
     inm = inm + 1
     inmtot = inmtot + 1

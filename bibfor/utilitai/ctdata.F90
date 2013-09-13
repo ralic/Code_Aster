@@ -14,7 +14,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/megeom.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbcmp, ndim, nbno, nbma, nbval
     character(len=1) :: tsca
@@ -102,7 +102,9 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                         nomgd, iret)
             call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                         tsca, ibid)
-            if (tsca .ne. 'R') call u2mess('F', 'TABLE0_42')
+            if (tsca .ne. 'R') then
+                call utmess('F', 'TABLE0_42')
+            endif
             if (tych(1:2) .eq. 'EL') then
                 call dismoi('F', 'NOM_MODELE', zk24(jkcha+i-1)(1:19), 'CHAMP', ibid,&
                             nomo, iret)
@@ -170,7 +172,9 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
         call getvtx('RESU', 'NOEUD', iocc=1, nbval=0, nbret=n1)
         call getvtx('RESU', 'GROUP_NO', iocc=1, nbval=0, nbret=n2)
         n3=-n1-n2
-        if (n3 .ne. 0) call u2mess('F', 'TABLE0_41')
+        if (n3 .ne. 0) then
+            call utmess('F', 'TABLE0_41')
+        endif
 !
         motcle(1) = 'MAILLE'
         motcle(2) = 'GROUP_MA'

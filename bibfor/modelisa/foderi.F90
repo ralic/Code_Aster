@@ -5,7 +5,7 @@ subroutine foderi(nomfon, temp, f, df)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveut.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomfon
     real(kind=8) :: temp, f, df
 !     ------------------------------------------------------------------
@@ -72,12 +72,12 @@ subroutine foderi(nomfon, temp, f, df)
 !
 ! --- FONCTION INTERPRETEE NON-UTILISABLE
 !
-        call u2mess('F', 'MODELISA4_61')
+        call utmess('F', 'MODELISA4_61')
     else if (zk24(jpro)(1:1).eq.'N') then
 !
 ! --- NAPPE - IMPOSSIBLE
 !
-        call u2mess('F', 'MODELISA4_62')
+        call utmess('F', 'MODELISA4_62')
     endif
 !
     call jeveut(chval, 'L', jvalf)
@@ -107,9 +107,9 @@ subroutine foderi(nomfon, temp, f, df)
             df = (zr(jv+1)-zr(jv))/(zr(jp+1)-zr(jp))
             f = df*(temp-zr(jp))+zr(jv)
         else if (svprgd(isave)(1:1).eq.'E') then
-            call u2mess('F', 'MODELISA4_63')
+            call utmess('F', 'MODELISA4_63')
         else
-            call u2mess('F', 'MODELISA4_64')
+            call utmess('F', 'MODELISA4_64')
         endif
 !
     else if (tessup) then
@@ -122,9 +122,9 @@ subroutine foderi(nomfon, temp, f, df)
             df = (zr(jv)-zr(jv-1))/(zr(jp)-zr(jp-1))
             f = df*(temp-zr(jp-1))+zr(jv-1)
         else if (svprgd(isave)(2:2).eq.'E') then
-            call u2mess('F', 'MODELISA4_65')
+            call utmess('F', 'MODELISA4_65')
         else
-            call u2mess('F', 'MODELISA4_66')
+            call utmess('F', 'MODELISA4_66')
         endif
 !
     else
@@ -136,7 +136,7 @@ subroutine foderi(nomfon, temp, f, df)
                 goto 5
             endif
  8      continue
-        call u2mess('F', 'MODELISA4_67')
+        call utmess('F', 'MODELISA4_67')
  5      continue
 !
     endif

@@ -18,7 +18,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), mas(*), ener(*)
@@ -323,7 +323,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
                 call dxtloe(flex, memb, mefl, ctor, .false.,&
                             depl, ener)
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
     endif

@@ -17,9 +17,9 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dxmate.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: nomte
     real(kind=8) :: xyzl(3, 1), pgl(3, 3)
     real(kind=8) :: epsini(6)
@@ -71,7 +71,7 @@ subroutine dxefgi(nomte, xyzl, pgl, epsini, sigt)
         nno = 4
 !
     else
-        call u2mesk('F', 'ELEMENTS_14', 1, nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
     endif
 !
 ! --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,

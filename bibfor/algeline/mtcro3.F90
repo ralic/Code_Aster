@@ -1,8 +1,8 @@
 subroutine mtcro3(m, n, a, nmax, x,&
                   y)
     implicit none
+#include "asterfort/utmess.h"
 !
-#include "asterfort/u2mess.h"
     integer :: nmax, m, n
     real(kind=8) :: a(nmax, *), x(*), y(*)
 ! ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine mtcro3(m, n, a, nmax, x,&
 !
 !
     if (( m.le.0 ) .and. ( n.le.0 )) then
-        call u2mess('A', 'ALGELINE2_13')
+        call utmess('A', 'ALGELINE2_13')
     endif
 !
     do 20, j = 1, n

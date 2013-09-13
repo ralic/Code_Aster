@@ -1,7 +1,7 @@
 subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
                   tempb)
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
@@ -10,7 +10,7 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nval2
     real(kind=8) :: temps, tempa, tempb
     character(len=8) :: tabthr
@@ -82,11 +82,11 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabthr
-        call u2mesk('F', 'UTILITAI7_1', 2, valk)
+        call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
     else if (iret .eq. 20) then
         valk(1) = tabthr
         valk(2) = 'INST'
-        call u2mesk('F', 'UTILITAI7_3', 2, valk)
+        call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
     endif
     call tbextb(tabthr, 'V', tmpth2, 1, 'INST',&
                 'EQ', ibid, temph2, cbid, k8b,&
@@ -94,11 +94,11 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
     if (iret .eq. 10) then
         valk(1) = 'INST'
         valk(2) = tabthr
-        call u2mesk('F', 'UTILITAI7_1', 2, valk)
+        call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
     else if (iret .eq. 20) then
         valk(1) = tabthr
         valk(2) = 'INST'
-        call u2mesk('F', 'UTILITAI7_3', 2, valk)
+        call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
     endif
 ! ======================================================================
 ! --- RECUPERATION DE LA LISTE DE TEMPERATURE TEMPH1 -------------------

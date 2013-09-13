@@ -33,8 +33,8 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -150,7 +150,9 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 ! ON EST EN PARALLELE, L'UTILISATEUR A PEUT-ETRE EMIS UN SOUHAIT QUANT
 ! AU NBRE DE SD POUR LE PROCESSEUR MAITRE
             call getvis(ach24(1:16), 'NB_SD_PROC0', iocc=1, scal=nbsdp0, nbret=ibid)
-            if ((nbsd-nbsdp0) .lt. (nbproc-1)) call u2mess('F', 'APPELMPI_3')
+            if ((nbsd-nbsdp0) .lt. (nbproc-1)) then
+                call utmess('F', 'APPELMPI_3')
+            endif
         else
             nbsdp0=0
         endif

@@ -21,7 +21,6 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
@@ -36,8 +35,9 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/renuu1.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mo, ma
     character(len=14) :: nu
     integer :: nlili, nm, nl, nbntt
@@ -169,7 +169,9 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         do 13, i=1,nbnm
         ino=zi(iamail-1+i)
         iino=ino
-        if (ino .le. 0) call u2mess('F', 'ASSEMBLA_36')
+        if (ino .le. 0) then
+            call utmess('F', 'ASSEMBLA_36')
+        endif
         do 14, j=i+1,nbnm
         jno=zi(iamail-1+j)
         jjno=jno
@@ -333,8 +335,12 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         icol=icol+1
     else
         iio2=i-icol
-        if ((iio1.lt.1) .or. (iio1.gt.nm)) call u2mess('F', 'ASSEMBLA_38')
-        if ((iio2.lt.1) .or. (iio2.gt.nm)) call u2mess('F', 'ASSEMBLA_38')
+        if ((iio1.lt.1) .or. (iio1.gt.nm)) then
+            call utmess('F', 'ASSEMBLA_38')
+        endif
+        if ((iio2.lt.1) .or. (iio2.gt.nm)) then
+            call utmess('F', 'ASSEMBLA_38')
+        endif
         zi(ianewn-1+iio1)=i-icol
     endif
     2 end do

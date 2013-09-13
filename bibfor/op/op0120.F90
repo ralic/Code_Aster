@@ -41,7 +41,7 @@ subroutine op0120()
 #include "asterfort/jexnum.h"
 #include "asterfort/rms.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
@@ -57,13 +57,13 @@ subroutine op0120()
 !-----------------------------------------------------------------------
     integer :: long, ival(2), ier
     real(kind=8) :: resu, zero
-    character(len=8) ::  nomu, nomref
+    character(len=8) :: nomu, nomref
     character(len=16) :: concep, nomcmd
     character(len=19) :: nomfon
     character(len=24) :: nomobj
     character(len=24) :: chnumi, chnumj, chfreq, chvale
 !
-    integer ::  ispec
+    integer :: ispec
     integer :: lnumi, lnumj, lfreq, lrefe, nbabs, mxval, ipf
 !
 !     ------------------------------------------------------------------
@@ -85,7 +85,7 @@ subroutine op0120()
     pts2 = abs(pts1-pts)
     pts3 = abs(1.d0-pts2)
     if (pts2 .ge. 1.d-06 .and. pts3 .ge. 1.d-06) then
-        call u2mess('F', 'ALGORITH9_56')
+        call utmess('F', 'ALGORITH9_56')
     endif
 !
     call infmaj()
@@ -233,7 +233,9 @@ subroutine op0120()
     endif
     if (niv .ge. 2) then
         nomobj = '&&OP0117.FONCTION'
-        if (nfcod .ne. mxval) call u2mess('F', 'MODELISA2_89')
+        if (nfcod .ne. mxval) then
+            call utmess('F', 'MODELISA2_89')
+        endif
         call jeveuo(nomobj, 'L', ltabl)
         call intimp(ifm, zr(lrms), zk24(ltabl), nmatr, nfcod)
     endif

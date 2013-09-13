@@ -63,7 +63,6 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 !     ------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/gdire3.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -74,8 +73,9 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: obj3, dire1, dire2, dire3, numno
     character(len=24) :: conex, nomobj, coorn
     character(len=8) :: fond, noma, noeug, nomno2
@@ -134,7 +134,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
             else if (type(1:4).eq.'TRIA') then
                 nn = 3
             else
-                call u2mess('F', 'ELEMENTS_83')
+                call utmess('F', 'ELEMENTS_83')
             endif
             do 100 k = 1, nn
                 call jenuno(jexnum(nomobj, zi(iamase+k-1)), noeug)

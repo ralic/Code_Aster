@@ -36,7 +36,6 @@ subroutine snecol(imod, nbnode)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
 #include "asterfort/jedema.h"
@@ -44,8 +43,9 @@ subroutine snecol(imod, nbnode)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=1) :: prfnoe
     character(len=4) :: kbid
     character(len=8) :: chnode, chgrou
@@ -79,7 +79,7 @@ subroutine snecol(imod, nbnode)
         icol = zi(jinfo-1+(i-1)*3+3)
         ipos = icol + 1
         if (ipos .gt. icmax) then
-            call u2mess('A', 'STBTRIAS_2')
+            call utmess('A', 'STBTRIAS_2')
             goto 100
         endif
         if (.not.logiq(ipos)) then

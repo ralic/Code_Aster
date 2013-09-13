@@ -5,8 +5,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbcham, itresu(*), nfonct
     character(len=8) :: basemo
     character(len=16) :: typea(*), typbas(*)
@@ -53,7 +52,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
         typea(3) = 'ACCE            '
         call jeexin(trange//'.DEPL', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'ALGORITH10_11')
+            call utmess('F', 'ALGORITH10_11')
         else
             call jeveuo(trange//'.DEPL', 'L', itresu(1))
 !
@@ -61,13 +60,13 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
 !
         call jeexin(trange//'.VITE', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'ALGORITH10_12')
+            call utmess('F', 'ALGORITH10_12')
         else
             call jeveuo(trange//'.VITE', 'L', itresu(2))
         endif
         call jeexin(trange//'.ACCE', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'ALGORITH10_13')
+            call utmess('F', 'ALGORITH10_13')
         else
             call jeveuo(trange//'.ACCE', 'L', itresu(3))
         endif
@@ -105,7 +104,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typea(i) = 'DEPL'
                 call jeexin(trange//'.DEPL', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_11')
+                    call utmess('F', 'ALGORITH10_11')
                 else
                     call jeveuo(trange//'.DEPL', 'L', itresu(i))
                 endif
@@ -122,7 +121,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typea(i) = 'VITE'
                 call jeexin(trange//'.VITE', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_12')
+                    call utmess('F', 'ALGORITH10_12')
                 else
                     call jeveuo(trange//'.VITE', 'L', itresu(i))
                 endif
@@ -139,7 +138,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typea(i) = 'ACCE'
                 call jeexin(trange//'.ACCE', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_13')
+                    call utmess('F', 'ALGORITH10_13')
                 else
                     call jeveuo(trange//'.ACCE', 'L', itresu(i))
                 endif
@@ -156,7 +155,7 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typea(i) = 'ACCE_ABSOLU'
                 call jeexin(trange//'.ACCE', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_13')
+                    call utmess('F', 'ALGORITH10_13')
                 else
                     call jeveuo(trange//'.ACCE', 'L', itresu(i))
                 endif
@@ -174,15 +173,15 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typea(i) = champ(i)
                 call jeexin(trange//'.DEPL', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_11')
+                    call utmess('F', 'ALGORITH10_11')
                 else
                     call jeveuo(trange//'.DEPL', 'L', itresu(i))
                 endif
                 if (multap) then
-                    call u2mess('F', 'ALGORITH10_14')
+                    call utmess('F', 'ALGORITH10_14')
                 endif
                 if (mode .eq. blanc) then
-                    call u2mess('F', 'ALGORITH10_15')
+                    call utmess('F', 'ALGORITH10_15')
                 else
                     call rsexch('F', basemo, typea(i), 1, nomcha,&
                                 iret)
@@ -194,18 +193,18 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                 typea(i) = champ(i)
                 call jeexin(trange//'.DEPL', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'ALGORITH10_11')
+                    call utmess('F', 'ALGORITH10_11')
                 else
                     call jeveuo(trange//'.DEPL', 'L', itresu(i))
                 endif
                 if (.not. tousno) then
-                    call u2mesk('F', 'ALGORITH10_17', 1, typea(i))
+                    call utmess('F', 'ALGORITH10_17', sk=typea(i))
                 endif
                 if (multap) then
-                    call u2mess('F', 'ALGORITH10_14')
+                    call utmess('F', 'ALGORITH10_14')
                 endif
                 if (mode .eq. blanc) then
-                    call u2mess('F', 'ALGORITH10_15')
+                    call utmess('F', 'ALGORITH10_15')
                 else
                     call rsexch('F', basemo, typea(i), 1, nomcha,&
                                 iret)

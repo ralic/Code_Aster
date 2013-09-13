@@ -2,7 +2,6 @@ subroutine paligi(pheno, modl, ligrch, igrel, inema,&
                   iliste)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/ini002.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -12,7 +11,8 @@ subroutine paligi(pheno, modl, ligrch, igrel, inema,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=4) :: pheno
     character(len=*) :: modl, ligrch
     integer :: igrel, inema, iliste(*)
@@ -82,7 +82,7 @@ subroutine paligi(pheno, modl, ligrch, igrel, inema,&
         else if (nbno.eq.3) then
             typelm(7:8) = '33'
         else
-            call u2mess('F', 'MODELISA6_9')
+            call utmess('F', 'MODELISA6_9')
         endif
     else if (modl(1:2).eq.'AX') then
         typelm(3:6) = 'PLSE'
@@ -91,7 +91,7 @@ subroutine paligi(pheno, modl, ligrch, igrel, inema,&
         else if (nbno.eq.3) then
             typelm(7:8) = '33'
         else
-            call u2mess('F', 'MODELISA6_9')
+            call utmess('F', 'MODELISA6_9')
         endif
     else if (modl(1:2).eq.'3D') then
         typelm(5:9) = '_FACE'
@@ -106,11 +106,11 @@ subroutine paligi(pheno, modl, ligrch, igrel, inema,&
         else if (nbno.eq.9) then
             typelm(10:11) = '99'
         else
-            call u2mess('F', 'MODELISA6_9')
+            call utmess('F', 'MODELISA6_9')
         endif
         call ini002(typelm, nmaxob, itabl, k24tab, nval)
     else
-        call u2mess('F', 'MODELISA6_14')
+        call utmess('F', 'MODELISA6_14')
     endif
     call jenonu(jexnom('&CATA.TE.NOMTE', typelm), itypel)
 !

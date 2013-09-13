@@ -12,7 +12,7 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsindi.h"
 #include "asterfort/tbexv1.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc, nbinst
     real(kind=8) :: prec
@@ -94,13 +94,11 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
         if (nbtrou .lt. 1) then
             valr = dinst
             valk = nomtab
-            call u2mesg('F', 'PREPOST5_74', 1, valk, 0,&
-                        0, 1, valr)
+            call utmess('F', 'PREPOST5_74', sk=valk, sr=valr)
         else if (nbtrou.gt.1) then
             valr = dinst
             valk = nomtab
-            call u2mesg('F', 'PREPOST5_75', 1, valk, 0,&
-                        0, 1, valr)
+            call utmess('F', 'PREPOST5_75', sk=valk, sr=valr)
         endif
 20  end do
 !

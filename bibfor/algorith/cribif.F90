@@ -17,12 +17,12 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-    implicit      none
+    implicit none
 #include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/fbifur.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/zerop3.h"
 #include "asterfort/zeropn.h"
     integer :: nbrac4
@@ -54,7 +54,7 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
     racine(3) = 0.0d0
     racine(4) = 0.0d0
     if ((mod(1:6).ne.'D_PLAN') .and. (mod(1:6).ne.'C_PLAN') .and. (mod(1:4).ne.'AXIS')) then
-        call u2mess('F', 'ALGORITH2_43')
+        call utmess('F', 'ALGORITH2_43')
     endif
 ! =====================================================================
 ! --- AFFECTATION DES VARIABLES ---------------------------------------

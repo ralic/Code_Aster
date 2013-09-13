@@ -20,10 +20,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbma, listma(*), iocs, nbths, liths(*)
@@ -107,7 +104,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
                     nbcmp, licmp, -1, -1, -nbcmp)
         chth(iocs) = chams0
     else
-        call u2mess('F', 'POSTRCCM_19')
+        call utmess('F', 'POSTRCCM_19')
     endif
 !
     call jeveuo(chams0//'.CESD', 'L', jcesd)
@@ -130,7 +127,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 12  continue
     vali(1) = iocc
     vali(2) = iths
-    call u2mesi('F', 'POSTRCCM_23', 2, vali)
+    call utmess('F', 'POSTRCCM_23', ni=2, vali=vali)
 14  continue
 !
     call getvid(motclf, 'TABL_RESU_THER', iocc=iocc, scal=tbther, nbret=n1)
@@ -141,14 +138,13 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     if (.not. exist) then
         valk(1) = tbther
         valk(2) = 'INST'
-        call u2mesk('F', 'POSTRCCM_1', 2, valk)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
     call tbexip(tbther, 'ABSC_CURV', exist, k8b)
     if (.not. exist) then
         valk(1) = tbther
         valk(2) = 'ABSC_CURV'
-        call u2mesg('F', 'POSTRCCM_1', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
     call tbexv1(tbther, 'INST', instan, 'V', nbinst,&
                 k8b)
@@ -163,7 +159,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     if (.not. exist) then
         valk(1) = tbmoye
         valk(2) = 'INST'
-        call u2mesk('F', 'POSTRCCM_1', 2, valk)
+        call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
     endif
 !
     exist = .false.
@@ -201,8 +197,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
             valk (2) = 'TEMP'
             valk (3) = nopara(1)
             valk (4) = nopara(2)
-            call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                        0, 2, vale)
+            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                        valr=vale)
         endif
         vale(2) = zr(jabsc+nbabsc-1)
         call tbliva(tbther, 2, nopara, ibid, vale,&
@@ -214,8 +210,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
             valk (2) = 'TEMP'
             valk (3) = nopara(1)
             valk (4) = nopara(2)
-            call u2mesg('F', 'POSTRCCM_2', 4, valk, 0,&
-                        0, 2, vale)
+            call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                        valr=vale)
         endif
         zr(jther-1+2*(i-1)+1) = tint
         zr(jther-1+2*(i-1)+2) = text
@@ -234,8 +230,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
             valk (3) = nopara(1)
             valk (4) = nopara(2)
             valk (5) = 'MOMENT_0'
-            call u2mesg('F', 'POSTRCCM_16', 5, valk, 0,&
-                        0, 1, inst)
+            call utmess('F', 'POSTRCCM_16', nk=5, valk=valk, sr=inst)
         endif
         call tbliva(tbmoye, 2, nopara, ibid, inst,&
                     cbid, 'MOMENT_1', 'RELATIF', epsi, 'TEMP',&
@@ -247,8 +242,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
             valk (3) = nopara(1)
             valk (4) = nopara(2)
             valk (5) = 'MOMENT_1'
-            call u2mesg('F', 'POSTRCCM_16', 5, valk, 0,&
-                        0, 1, inst)
+            call utmess('F', 'POSTRCCM_16', nk=5, valk=valk, sr=inst)
         endif
         zr(jmoye-1+2*(i-1)+1) = ta
         zr(jmoye-1+2*(i-1)+2) = vmoy
@@ -293,7 +287,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
             else
                 vali(1) = iocs
                 vali(2) = ima
-                call u2mesi('F', 'POSTRCCM_24', 2, vali)
+                call utmess('F', 'POSTRCCM_24', ni=2, vali=vali)
             endif
             icmp = 2
             iad = decal + (ipt-1)*nbcmp + icmp
@@ -319,7 +313,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
                     vali(1) = iocs
                     vali(2) = ima
                     vali(3) = ino
-                    call u2mesi('F', 'POSTRCCM_25', 3, vali)
+                    call utmess('F', 'POSTRCCM_25', ni=3, vali=vali)
                 endif
                 icmp = 2
                 iad = decal + (ipt-1)*nbcmp + icmp
@@ -351,7 +345,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
             if (.not.zl(jcesl-1+iad)) then
                 vali(1) = iocs
                 vali(2) = ima
-                call u2mesi('F', 'POSTRCCM_24', 2, vali)
+                call utmess('F', 'POSTRCCM_24', ni=2, vali=vali)
             endif
 320      continue
 310      continue

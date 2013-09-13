@@ -1,5 +1,5 @@
 subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
-                  typrep, nocomp, unit, cret)
+                     typrep, nocomp, unit, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,17 +19,18 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/msmsmi.h"
     character(len=*) :: nom
     character(len=*) :: desc
     character(len=16) :: nocomp, unit
     aster_int :: fid, dim, cret, typrep, iterat
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, dim4, cret4, typre4, itera4
     fid4 = fid
@@ -43,6 +44,6 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
     call msmsmi(fid, iterat, nom, dim, dim,&
                 desc, typrep, nocomp, unit, cret)
 #endif
-
+!
 #endif
 end subroutine

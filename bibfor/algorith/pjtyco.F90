@@ -37,7 +37,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutc4.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: resuin
     character(len=19) :: cham1
     logical :: isole
@@ -104,10 +104,10 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
                     prec, crit, iret)
 !
         if (iret .ne. 0) then
-            call u2mesk('F', 'CALCULEL4_61', 1, resuin)
+            call utmess('F', 'CALCULEL4_61', sk=resuin)
         endif
         if (nbordr .eq. 0) then
-            call u2mesk('F', 'CALCULEL4_62', 1, resuin)
+            call utmess('F', 'CALCULEL4_62', sk=resuin)
         endif
 !
         call jeveuo('&&PJXXCO.NUME_ORDRE', 'L', jordr)

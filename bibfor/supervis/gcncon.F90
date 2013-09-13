@@ -6,7 +6,7 @@ subroutine gcncon(type, result)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: type
     character(len=*) :: result
@@ -59,7 +59,7 @@ subroutine gcncon(type, result)
         zi(ipos)=zi(ipos)+1
         ASSERT(zi(ipos) .lt. 10000000)
     else
-        call u2mesk('F', 'SUPERVIS_8', 1, type)
+        call utmess('F', 'SUPERVIS_8', sk=type)
     endif
     call jedema()
 end subroutine

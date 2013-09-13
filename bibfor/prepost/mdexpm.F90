@@ -41,14 +41,13 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterfort/assert.h"
-#include "asterfort/lxlgut.h"
 #include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/as_mmhmii.h"
 #include "asterfort/as_mmhnmh.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/assert.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nofimd, nomamd
 !
     logical :: existm, ficexi, dejouv
@@ -107,8 +106,7 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
             call as_mmhnmh(idfimd, nbmaie, codret)
             if (codret .ne. 0) then
                 saux08='mmhnmh'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
 !
 ! 2.2. ==> RECHERCHE DU NOM ET DE LA DIMENSION DU PREMIER MAILLAGE
@@ -124,14 +122,13 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
                 daux = ' '
                 iaux = 1
                 call as_mmhmii(idfimd, iaux, saux64, kaux, tyaux,&
-                            daux, codret)
+                               daux, codret)
                 if (codret .ne. 0) then
                     saux08='mmhmii'
-                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                                codret, 0, 0.d0)
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
                 if (tyaux .ne. ednstr) then
-                    call u2mess('A', 'MED_81')
+                    call utmess('A', 'MED_81')
                 endif
 !
                 iaux = len(nomamd)
@@ -151,8 +148,7 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
                 call as_mficlo(idfimd, codret)
                 if (codret .ne. 0) then
                     saux08='mficlo'
-                    call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                                codret, 0, 0.d0)
+                    call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
                 idfimd = 0
             endif

@@ -29,7 +29,7 @@ subroutine defttr(np1, np4, nbm, npf, nttr,&
 !
 ! ARGUMENTS
 ! ---------
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
     integer :: np1, np4, nbm, npf, nttr, ntrans
     real(kind=8) :: ttran0, ttrans, text(*), fext(np4, *), fextt0(*), fexttr(*)
@@ -83,7 +83,9 @@ subroutine defttr(np1, np4, nbm, npf, nttr,&
 40      continue
         if (ttrans .gt. text(nttr)) then
             nttr = nttr + 1
-            if (nttr .gt. np4) call u2mess('F', 'ALGORITH2_66')
+            if (nttr .gt. np4) then
+                call utmess('F', 'ALGORITH2_66')
+            endif
             goto 40
         endif
 !

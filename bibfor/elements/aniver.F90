@@ -33,7 +33,7 @@ subroutine aniver(mater)
 #include "asterfort/dortvp.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: mater
 ! -----  VARIABLES LOCALES
     character(len=2) :: m2blan
@@ -219,7 +219,7 @@ subroutine aniver(mater)
                         if (e2 .eq. zero) goto 20
                         if (e3 .eq. zero) goto 20
                         if (ien .eq. 0) then
-                            call u2mess('A', 'ELEMENTS_9')
+                            call utmess('A', 'ELEMENTS_9')
                             goto 100
                         endif
 !

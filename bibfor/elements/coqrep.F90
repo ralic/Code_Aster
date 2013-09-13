@@ -3,7 +3,7 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: pgl(3, 3), t2iu(*), t2ui(*), alpha, beta, c, s
 !     ---------------------------------------------------
 ! ======================================================================
@@ -47,7 +47,7 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     pjdz = dz - ps*pgl(3,3)
     norm = sqrt (pjdx*pjdx + pjdy*pjdy + pjdz*pjdz)
     if (norm .le. r8prem()) then
-        call u2mess('F', 'ELEMENTS_40')
+        call utmess('F', 'ELEMENTS_40')
     endif
 !
     pjdx = pjdx/norm

@@ -44,7 +44,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod
     parameter     (nmod = 8 )
 !
@@ -124,7 +124,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
     endif
 !
 !

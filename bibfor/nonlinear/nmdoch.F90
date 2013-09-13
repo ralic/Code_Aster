@@ -38,8 +38,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 #include "asterfort/liscli.h"
 #include "asterfort/lisexp.h"
 #include "asterfort/lislfc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iexcit
     character(len=19) :: lischa, excit
@@ -154,7 +153,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 nchar=0
                 zi(jinfch) = nchar
             else if (nomcmd.eq.'STAT_NON_LINE') then
-                call u2mess('F', 'CHARGES_2')
+                call utmess('F', 'CHARGES_2')
             endif
         endif
     else
@@ -229,7 +228,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     call getvid('EXCIT', 'CHARGE', iocc=indic, scal=nomcha, nbret=n1)
                     do 131,ichd = 1,nchar
                     if (nomcha .eq. zk8(jlisdb+ichd-1)) then
-                        call u2mesk('E', 'CHARGES_1', 1, nomcha)
+                        call utmess('E', 'CHARGES_1', sk=nomcha)
                     endif
 131                  continue
                 else
@@ -278,7 +277,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             call dismoi('F', 'TYPE_CHARGE', nomcha, 'CHARGE', ibid,&
                         affcha, iret)
             if ((affcha(1:5).ne.'MECA_') .and. (affcha(1:5) .ne.'CIME_')) then
-                call u2mesk('F', 'CHARGES_22', 1, nomcha(1:8))
+                call utmess('F', 'CHARGES_22', sk=nomcha(1:8))
             endif
 !
 ! ------- FONCTIONS MULTIPLICATIVES DES CHARGES
@@ -292,7 +291,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                         lfcplx, lacce, fctcsr, nomfct)
             if (nomfct .ne. fctcsr) then
                 if (typcha .eq. 'FIXE_PIL') then
-                    call u2mesk('F', 'CHARGES_38', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_38', sk=nomcha(1:8))
                 endif
             endif
 !
@@ -302,11 +301,11 @@ subroutine nmdoch(lischa, iexcit, excit)
             infoch = 'RIEN'
             if (affcha(1:5) .eq. 'CIME_') then
                 if (typcha(1:4) .eq. 'SUIV') then
-                    call u2mesk('F', 'CHARGES_23', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_23', sk=nomcha(1:8))
                 else if (typcha.eq.'FIXE_PIL') then
-                    call u2mesk('F', 'CHARGES_27', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_27', sk=nomcha(1:8))
                 else if (typcha(1:4).eq.'DIDI') then
-                    call u2mesk('F', 'CHARGES_24', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_24', sk=nomcha(1:8))
                 else
                     if (affcha(5:7) .eq. '_FT') then
                         infoch = 'CINE_FT'
@@ -330,17 +329,17 @@ subroutine nmdoch(lischa, iexcit, excit)
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
                 if (typcha(1:4) .eq. 'SUIV') then
-                    call u2mesk('F', 'CHARGES_23', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_23', sk=nomcha(1:8))
 !
                 else if (typcha.eq.'FIXE_PIL') then
                     call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
                                 parcha, iret)
                     if (parcha(1:3) .eq. 'OUI') then
-                        call u2mesk('F', 'CHARGES_28', 1, nomcha(1:8))
+                        call utmess('F', 'CHARGES_28', sk=nomcha(1:8))
                     endif
 !
                     if (affcha(5:7) .eq. '_FT') then
-                        call u2mesk('F', 'CHARGES_28', 1, nomcha(1:8))
+                        call utmess('F', 'CHARGES_28', sk=nomcha(1:8))
                     else if (affcha(5:7).eq.'_FO') then
                         infoch = 'DIRI_PILO_F'
                     else
@@ -392,7 +391,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                             call dismoi('F', 'PARA_INST', lchin(1:19), 'CARTE', ibid,&
                                         parcha, iret)
                             if (parcha(1:3) .eq. 'OUI') then
-                                call u2mess('F', 'CHARGES_28')
+                                call utmess('F', 'CHARGES_28')
                             endif
                         endif
 !
@@ -431,7 +430,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     infoch = 'NEUM_CSTE'
                 endif
                 if (typcha .eq. 'FIXE_PIL') then
-                    call u2mesk('F', 'CHARGES_34', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_34', sk=nomcha(1:8))
                 endif
             endif
             if (infoch .ne. 'RIEN') then
@@ -447,19 +446,19 @@ subroutine nmdoch(lischa, iexcit, excit)
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
                 if (nomcmd .eq. 'STAT_NON_LINE') then
-                    call u2mesk('F', 'CHARGES_50', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_50', sk=nomcha(1:8))
                 endif
                 if (typcha .eq. 'SUIV') then
-                    call u2mesk('F', 'CHARGES_51', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_51', sk=nomcha(1:8))
                 endif
                 if (typcha .eq. 'DIDI') then
-                    call u2mesk('F', 'CHARGES_52', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_52', sk=nomcha(1:8))
                 endif
                 if (affcha(5:6) .eq. '_F') then
-                    call u2mesk('F', 'CHARGES_53', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_53', sk=nomcha(1:8))
                 endif
                 if (nomfct .ne. fctcsr) then
-                    call u2mesk('F', 'CHARGES_54', 1, nomcha(1:8))
+                    call utmess('F', 'CHARGES_54', sk=nomcha(1:8))
                 endif
                 infoch = 'EXCIT_SOL'
             endif
@@ -511,10 +510,10 @@ subroutine nmdoch(lischa, iexcit, excit)
             if (nomcmd .eq. 'STAT_NON_LINE') then
                 call getvtx('PILOTAGE', 'TYPE', iocc=1, scal=k24bid, nbret=n1)
                 if (n1 .ne. 0 .and. npilo .eq. 0) then
-                    call u2mess('F', 'CHARGES_39')
+                    call utmess('F', 'CHARGES_39')
                 endif
                 if (npilo .gt. 1) then
-                    call u2mess('F', 'CHARGES_40')
+                    call utmess('F', 'CHARGES_40')
                 endif
             endif
         endif

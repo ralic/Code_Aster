@@ -1,18 +1,17 @@
 subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                   formar)
 ! aslint: disable=W1303
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ifr, nparim
     character(len=*) :: table, lipaim(*), formaz, formar
 ! ----------------------------------------------------------------------
@@ -116,11 +115,10 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 12      continue
         erreur = .true.
         valk = inpar
-        call u2mesg('A', 'UTILITAI6_89', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('A', 'UTILITAI6_89', sk=valk)
 10  end do
     if (erreur) then
-        call u2mess('F', 'PREPOST_60')
+        call utmess('F', 'PREPOST_60')
     endif
 !
     nparaf = npara
@@ -228,7 +226,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 20  end do
 22  continue
     if (nparaf .ne. npara) then
-        call u2mess('A', 'UTILITAI4_84')
+        call utmess('A', 'UTILITAI4_84')
     endif
     call codent(ifin, 'G', chfin)
     form1 = '(A'//chfin//')'

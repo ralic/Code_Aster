@@ -1,5 +1,6 @@
 subroutine usufon(type, para, d, f, df)
     implicit none
+#include "asterfort/utmess.h"
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,6 @@ subroutine usufon(type, para, d, f, df)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-#include "asterfort/u2mesk.h"
     real(kind=8) :: para(*)
     character(len=16) :: typez
     character(len=*) :: type
@@ -211,7 +211,7 @@ subroutine usufon(type, para, d, f, df)
 !
     else
         typez = type(1:16)
-        call u2mesk('F', 'PREPOST4_82', 1, typez)
+        call utmess('F', 'PREPOST4_82', sk=typez)
     endif
 !
 end subroutine

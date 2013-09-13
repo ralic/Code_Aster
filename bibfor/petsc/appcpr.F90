@@ -30,8 +30,7 @@ subroutine appcpr(kptsc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kptsc
 !----------------------------------------------------------------
 !
@@ -144,7 +143,7 @@ subroutine appcpr(kptsc)
     else if (precon.eq.'ML') then
         call PCSetType(pc, PCML, ierr)
         if (ierr .ne. 0) then
-            call u2mesk('F', 'PETSC_19', 1, precon)
+            call utmess('F', 'PETSC_19', sk=precon)
         endif
         call PetscOptionsSetValue('-pc_type', 'ml', ierr)
         ASSERT(ierr.eq.0)
@@ -160,7 +159,7 @@ subroutine appcpr(kptsc)
     else if (precon.eq.'BOOMER') then
         call PCSetType(pc, PCHYPRE, ierr)
         if (ierr .ne. 0) then
-            call u2mesk('F', 'PETSC_19', 1, precon)
+            call utmess('F', 'PETSC_19', sk=precon)
         endif
         call PetscOptionsSetValue('-pc_hypre_type', 'boomeramg', ierr)
         ASSERT(ierr.eq.0)
@@ -191,12 +190,12 @@ subroutine appcpr(kptsc)
                     exilag, iret)
         if (iret .eq. 0) then
             if (exilag .eq. 'OUI') then
-                call u2mess('F', 'PETSC_17')
+                call utmess('F', 'PETSC_17')
             endif
         endif
         call apbloc(nomat, nosolv, tbloc)
         if (tbloc .le. 0) then
-            call u2mess('F', 'PETSC_18')
+            call utmess('F', 'PETSC_18')
         endif
     endif
 !
@@ -206,9 +205,9 @@ subroutine appcpr(kptsc)
     if (ierr .ne. 0) then
         if (precon .eq. 'LDLT_SP') then
 !           ERREUR : PCENT_PIVOT PAS SUFFISANT
-            call u2mess('F', 'PETSC_15')
+            call utmess('F', 'PETSC_15')
         else
-            call u2mess('F', 'PETSC_14')
+            call utmess('F', 'PETSC_14')
         endif
     endif
 !

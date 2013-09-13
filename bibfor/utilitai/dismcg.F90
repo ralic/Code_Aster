@@ -20,7 +20,6 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dismpn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -29,7 +28,8 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -84,7 +84,7 @@ subroutine dismcg(questi, nomobz, repi, repkz, ierd)
         repk = zk24(iarefe+1)
         call jeexin(repk(1:19)//'.NEQU', iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'UTILITAI_51')
+            call utmess('F', 'UTILITAI_51')
             ierd=1
             goto 9999
         endif

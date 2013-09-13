@@ -47,8 +47,7 @@ subroutine crmeri(promes, iakpee)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslsvd.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: promes
@@ -217,7 +216,7 @@ subroutine crmeri(promes, iakpee)
         if (nbmesu .lt. nbvecb) then
             affici(1) = nbmesu
             affici(2) = nbvecb
-            call u2mesi('F', 'SOUSTRUC_82', 2, affici)
+            call utmess('F', 'SOUSTRUC_82', ni=2, vali=affici)
         endif
 !
         vals = '&VALS'
@@ -257,7 +256,9 @@ subroutine crmeri(promes, iakpee)
                     ier, zr(lwks))
 !
         call jedetr(trav)
-        if (ier .ne. 0) call u2mess('F', 'UTILITAI3_8')
+        if (ier .ne. 0) then
+            call utmess('F', 'UTILITAI3_8')
+        endif
 !
         call wkvect(trav, 'V V R', nbvecb*nbmesu, ltrav)
 !
@@ -329,7 +330,7 @@ subroutine crmeri(promes, iakpee)
         if (nddle .lt. nbord) then
             affici(1) = nddle
             affici(2) = nbord
-            call u2mesi('F', 'SOUSTRUC_83', 2, affici)
+            call utmess('F', 'SOUSTRUC_83', ni=2, vali=affici)
         endif
 !
         call wkvect(vals, 'V V R', nbord, lvals)
@@ -359,7 +360,9 @@ subroutine crmeri(promes, iakpee)
                     zr(lu), zr(lv), nddle, zr(isol), eps,&
                     ier, zr(lwks))
 !
-        if (ier .ne. 0) call u2mess('F', 'UTILITAI3_8')
+        if (ier .ne. 0) then
+            call utmess('F', 'UTILITAI3_8')
+        endif
 !
         call jedetr(wks)
 !

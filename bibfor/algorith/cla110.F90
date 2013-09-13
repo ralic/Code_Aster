@@ -58,7 +58,7 @@ subroutine cla110(nomres, modgen)
 #include "asterfort/pmppr.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/recuma.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
 !
@@ -113,8 +113,7 @@ subroutine cla110(nomres, modgen)
         call jenonu(jexnom(repnom, nomsst), nusst)
         if (nusst .eq. 0) then
             valk (1) = nomsst
-            call u2mesg('A', 'ALGORITH12_49', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('A', 'ALGORITH12_49', sk=valk(1))
         else
             zi(ltfac+nusst-1)=1
         endif
@@ -126,8 +125,7 @@ subroutine cla110(nomres, modgen)
 30  end do
 !
     if (nbstac .eq. 0) then
-        call u2mesg('F', 'ALGORITH12_50', 0, ' ', 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH12_50')
     endif
 !
 !-----DEFINITION DES REPERTOIRES DE TRAVAIL-----------------------------
@@ -171,8 +169,7 @@ subroutine cla110(nomres, modgen)
             else
                 valk (1) = zk8(lutsst-1+i)
                 valk (2) = k8bid
-                call u2mesg('F', 'ALGORITH12_51', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGORITH12_51', nk=2, valk=valk)
             endif
 100      continue
     else

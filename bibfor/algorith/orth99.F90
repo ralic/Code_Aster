@@ -22,7 +22,7 @@ subroutine orth99(nomres, ritz)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecind.h"
 #include "asterfort/vpgskp.h"
 #include "asterfort/vtcrem.h"
@@ -65,7 +65,7 @@ subroutine orth99(nomres, ritz)
     character(len=16) :: typbas
     character(len=14) :: nu, numdd1, numdda, matri1
     character(len=19) :: matr, chamol
-    integer ::  ir
+    integer :: ir
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -143,7 +143,7 @@ subroutine orth99(nomres, ritz)
                 intf, ir)
 !
     if (numdd1 .ne. numdda) then
-        call u2mess('I', 'ALGELINE2_81')
+        call utmess('I', 'ALGELINE2_81')
     endif
     nu = numdda(1:14)
     call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)

@@ -32,7 +32,7 @@ function critnu(zimat, nmnbn, deps, dtg, normm)
 #include "asterfort/gplass.h"
 #include "asterfort/matmul.h"
 #include "asterfort/mppffn.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: critnu, zimat, nmprif, j
 !
     real(kind=8) :: nmnbn(6), nprnbn(6), nmprpl(2, 3), nmprzf, nmprzg
@@ -54,7 +54,7 @@ function critnu(zimat, nmnbn, deps, dtg, normm)
 !
     if (nmprif .gt. 0) then
         critnu=-1
-        call u2mess('A', 'ELEMENTS_21')
+        call utmess('A', 'ELEMENTS_21')
         goto 20
     endif
 !

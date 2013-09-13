@@ -5,7 +5,7 @@ function edgequ(ndimsi, tens, ani)
 !
 !
 #include "asterc/r8prem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndimsi
     real(kind=8) :: tens(ndimsi), ani(6, 6)
 !
@@ -56,7 +56,7 @@ function edgequ(ndimsi, tens, ani)
         if (abs(equi) .lt. r8prem()) then
             equi = 0.d0
         else
-            call u2mess('F', 'COMPOR1_71')
+            call utmess('F', 'COMPOR1_71')
         endif
     endif
 !

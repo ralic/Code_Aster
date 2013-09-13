@@ -16,7 +16,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ncha
     character(len=4) :: ctyp
@@ -114,7 +114,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
                 call rslesd(result, nuord, modnew, materi, cara,&
                             excit, iexcit)
                 if (modnew .ne. modele) then
-                    call u2mess('F', 'CALCULEL7_3')
+                    call utmess('F', 'CALCULEL7_3')
                 endif
 99          continue
         else
@@ -134,19 +134,23 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     else
 !
         call getvid(' ', 'MODELE', scal=modele, nbret=n1)
-        if (n1 .eq. 0) call u2mess('F', 'CALCULEL6_84')
+        if (n1 .eq. 0) then
+            call utmess('F', 'CALCULEL6_84')
+        endif
 !
         call getvid(' ', 'CARA_ELEM', scal=cara, nbret=n2)
         call dismoi('F', 'EXI_RDM', modele, 'MODELE', ibid,&
                     k8b, ie)
-        if ((n2.eq.0) .and. (k8b(1:3).eq.'OUI')) call u2mess('A', 'CALCULEL3_39')
+        if ((n2.eq.0) .and. (k8b(1:3).eq.'OUI')) then
+            call utmess('A', 'CALCULEL3_39')
+        endif
 !
 !
         call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
         call dismoi('F', 'BESOIN_MATER', modele, 'MODELE', ibid,&
                     k8b, ie)
         if ((nomcmd.ne.'CALC_MATR_ELEM') .and. (n3.eq.0) .and. (k8b(1:3) .eq.'OUI')) then
-            call u2mess('A', 'CALCULEL3_40')
+            call utmess('A', 'CALCULEL3_40')
         endif
 !
         if (n3 .ne. 0) then
@@ -175,7 +179,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
                             k8b, ie)
                 if (k8b .ne. nomo) then
                     ier = ier + 1
-                    call u2mess('E', 'CALCULEL3_41')
+                    call utmess('E', 'CALCULEL3_41')
                 endif
 10          continue
 !
@@ -183,7 +187,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 !                               EVENTUELEMENT DONNE EN ARGUMENT ---
             if (n1 .ne. 0 .and. modele .ne. nomo) then
                 ier = ier + 1
-                call u2mess('E', 'CALCULEL3_42')
+                call utmess('E', 'CALCULEL3_42')
             endif
 !
 !        --- VERIFICATION DU TYPE DE CHARGEMENT ---
@@ -195,7 +199,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
                 if ((k8b(1:4).ne.'MECA') .and. (k8b(1:4).ne.'CIME') .and.&
                     (k8b(1:4).ne.'THER') .and. (k8b(1:4).ne.'ACOU')) then
                     ier = ier + 1
-                    call u2mess('E', 'CALCULEL3_43')
+                    call utmess('E', 'CALCULEL3_43')
                 endif
 20          continue
         endif
@@ -232,11 +236,15 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
         do 60 i = 1, ncha
             call dismoi('F', 'NOM_MODELE', zk8(icha+i-1), 'CHARGE', ibid,&
                         nomo, ie)
-            if (nomo .ne. modele) call u2mess('F', 'CALCULEL3_44')
+            if (nomo .ne. modele) then
+                call utmess('F', 'CALCULEL3_44')
+            endif
 60      continue
     endif
 !
-    if (ier .ne. 0) call u2mess('F', 'CALCULEL3_45')
+    if (ier .ne. 0) then
+        call utmess('F', 'CALCULEL3_45')
+    endif
 !
     call jedema()
 end subroutine

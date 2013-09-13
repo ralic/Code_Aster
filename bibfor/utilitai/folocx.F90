@@ -2,9 +2,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
                   epsi, coli, ier)
     implicit none
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: n, i, ier
     real(kind=8) :: vale(n)
     real(kind=8) :: valr(2)
@@ -58,7 +56,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
     coli = '?'
     if (n .lt. 1) then
         ier = 10
-        call u2mess('E', 'FONCT0_18')
+        call utmess('E', 'FONCT0_18')
         goto 9999
     else if (n.eq.1) then
 !             ON A X = VALE(1) + EPSILON
@@ -74,7 +72,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
             coli = 'C'
         else
             ier = 30
-            call u2mess('E', 'FONCT0_23')
+            call utmess('E', 'FONCT0_23')
         endif
         goto 9999
     endif
@@ -91,7 +89,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
             ier = 30
             valr (1) = x
             valr (2) = vale(1)
-            call u2mesr('E', 'FONCT0_19', 2, valr)
+            call utmess('E', 'FONCT0_19', nr=2, valr=valr)
             goto 9999
         else if (prolgd(1:1) .eq. 'L') then
             coli = 'E'
@@ -101,7 +99,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
             coli = 'T'
         else
             ier = 20
-            call u2mesk('E', 'FONCT0_21', 1, prolgd(1:1))
+            call utmess('E', 'FONCT0_21', sk=prolgd(1:1))
             goto 9999
         endif
 !
@@ -117,7 +115,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
             ier = 40
             valr (1) = x
             valr (2) = vale(n)
-            call u2mesr('E', 'FONCT0_20', 2, valr)
+            call utmess('E', 'FONCT0_20', nr=2, valr=valr)
             goto 9999
         else if (prolgd(2:2) .eq. 'C') then
             coli = 'C'
@@ -128,7 +126,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
             coli = 'E'
         else
             ier = 20
-            call u2mesk('E', 'FONCT0_21', 1, prolgd(2:2))
+            call utmess('E', 'FONCT0_21', sk=prolgd(2:2))
             goto 9999
         endif
 !

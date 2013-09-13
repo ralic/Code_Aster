@@ -10,8 +10,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: chin, chout
@@ -51,7 +50,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     integer :: neq2, jdesc1, jdesc2, jrefe1, jrefe2, jdeeq1, jdeeq2
     integer :: nnomx, ncpmx, jtrav1, nuno2, nucp2, nuno1, nucp1, jdeeq
     integer :: jcmpgd, ncmpmx, icmp
-    character(len=1) ::  typ1, typ2
+    character(len=1) :: typ1, typ2
     character(len=8) :: nomgd
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
@@ -98,7 +97,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 valk(1) = ch1
                 valk(2) = ch2
                 valk(3) = typ1
-                call u2mesk('F', 'ALGELINE3_93', 3, valk)
+                call utmess('F', 'ALGELINE3_93', nk=3, valk=valk)
             endif
         else
             if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
@@ -114,7 +113,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 valk(2) = typ1
                 valk(3) = ch2
                 valk(4) = typ2
-                call u2mesk('F', 'ALGELINE3_94', 4, valk)
+                call utmess('F', 'ALGELINE3_94', nk=4, valk=valk)
             endif
         endif
         goto 9999
@@ -132,7 +131,9 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
     call jeveuo(ch1//'.DESC', 'L', jdesc1)
     call jeveuo(ch2//'.DESC', 'L', jdesc2)
-    if ((zi(jdesc1-1+2).lt.0) .or. (zi(jdesc2-1+2).lt.0)) call u2mess('F', 'ALGELINE3_95')
+    if ((zi(jdesc1-1+2).lt.0) .or. (zi(jdesc2-1+2).lt.0)) then
+        call utmess('F', 'ALGELINE3_95')
+    endif
 !
     call jeveuo(ch1//'.REFE', 'L', jrefe1)
     call jeveuo(ch2//'.REFE', 'L', jrefe2)
@@ -141,7 +142,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
         valk(2) = ch2
         valk(3) = zk24(jrefe1)(1:8)
         valk(4) = zk24(jrefe2)(1:8)
-        call u2mesk('F', 'CALCULEL2_1', 4, valk)
+        call utmess('F', 'CALCULEL2_1', nk=4, valk=valk)
     endif
     call jeveuo(zk24(jrefe1-1+2)(1:19)//'.DEEQ', 'L', jdeeq1)
     call jeveuo(zk24(jrefe2-1+2)(1:19)//'.DEEQ', 'L', jdeeq2)
@@ -202,7 +203,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
             valk(1) = ch1
             valk(2) = ch2
             valk(3) = typ1
-            call u2mesk('F', 'ALGELINE3_93', 3, valk)
+            call utmess('F', 'ALGELINE3_93', nk=3, valk=valk)
         endif
 !
     else if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
@@ -223,7 +224,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
         valk(2) = typ1
         valk(3) = ch2
         valk(4) = typ2
-        call u2mesk('F', 'ALGELINE3_94', 4, valk)
+        call utmess('F', 'ALGELINE3_94', nk=4, valk=valk)
     endif
 !
 !     A CAUSE DE LA SOUS-STRUCTURATION STATIQUE, ON DOIT AJOUTER

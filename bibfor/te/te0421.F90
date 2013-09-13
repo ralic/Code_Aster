@@ -17,7 +17,6 @@ subroutine te0421(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -26,7 +25,8 @@ subroutine te0421(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES EN 2D
@@ -91,7 +91,7 @@ subroutine te0421(option, nomte)
         nomres(3) = 'NU_XY'
         nomres(4) = 'NU_Z'
     else
-        call u2mess('F', 'ELEMENTS_50')
+        call utmess('F', 'ELEMENTS_50')
     endif
     call jevech('PVECTUR', 'E', ivectu)
 !

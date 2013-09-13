@@ -60,9 +60,8 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 #include "asterfort/nmdoki.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/utlcal.h"
+#include "asterfort/utmess.h"
 !
     character(len=8) :: noma, k8b, typmcl(2)
     character(len=16) :: tymatg, comp, algo, mocles(2), moclef(2), crirup
@@ -162,13 +161,13 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
                             texte(1)=algo
                             texte(2)='ALGO_INTE'
                             texte(3)=comp
-                            call u2mesk('F', 'COMPOR1_45', 3, texte)
+                            call utmess('F', 'COMPOR1_45', nk=3, valk=texte)
                         endif
                     else
                         texte(1)=algo
                         texte(2)='ALGO_INTE'
                         texte(3)=comp
-                        call u2mesk('F', 'COMPOR1_45', 3, texte)
+                        call utmess('F', 'COMPOR1_45', nk=3, valk=texte)
                     endif
                 endif
             else
@@ -244,8 +243,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
                         if (irett .eq. 0) then
                             texte(1)=tymatg
                             texte(2)=comp
-                            call u2mesg('F', 'COMPOR1_46', 2, texte, 0,&
-                                        0, 0, 0.d0)
+                            call utmess('F', 'COMPOR1_46', nk=2, valk=texte)
                         endif
                     endif
                 endif
@@ -257,8 +255,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
                             if ((typtgt.ne.0) .and. (comp.ne.'SANS')) then
                                 texte(1)=tymatg
                                 texte(2)='IMPLEX'
-                                call u2mesg('F', 'COMPOR1_46', 2, texte, 0,&
-                                            0, 0, 0.d0)
+                                call utmess('F', 'COMPOR1_46', nk=2, valk=texte)
                             else
                                 typtgt=9
                             endif
@@ -267,8 +264,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
                             if ((irett.eq.0) .and. (comp.ne.'SANS')) then
                                 texte(1)='IMPLEX'
                                 texte(2)=comp
-                                call u2mesg('F', 'COMPOR1_46', 2, texte, 0,&
-                                            0, 0, 0.d0)
+                                call utmess('F', 'COMPOR1_46', nk=2, valk=texte)
                             endif
                         endif
                     endif

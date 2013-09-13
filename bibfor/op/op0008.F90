@@ -43,7 +43,7 @@ subroutine op0008()
 #include "asterfort/rcmfmc.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/ss2mme.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: ibid, ich, icha, ied, ncha, nh
     integer :: n1, n3, n4, n5, n7, n9, iresu, jrelr, iexi, nbresu
@@ -86,14 +86,16 @@ subroutine op0008()
 !
         call dismoi('F', 'NOM_MODELE', zk8(icha), 'CHARGE', ibid,&
                     mo1, ied)
-        if ((n1.eq.1) .and. (modele.ne.mo1)) call u2mess('F', 'CALCULEL3_88')
+        if ((n1.eq.1) .and. (modele.ne.mo1)) then
+            call utmess('F', 'CALCULEL3_88')
+        endif
 !
         modele = mo1
         do 10,ich = 1,ncha
         call dismoi('F', 'NOM_MODELE', zk8(icha-1+ich), 'CHARGE', ibid,&
                     k8bid, ied)
         if (k8bid .ne. modele) then
-            call u2mess('F', 'CALCULEL3_89')
+            call utmess('F', 'CALCULEL3_89')
         endif
 10      continue
     endif
@@ -121,7 +123,7 @@ subroutine op0008()
         call dismoi('F', 'TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', ibid,&
                     k8bid, ied)
         if (k8bid(1:5) .ne. 'MECA_') then
-            call u2mess('F', 'CALCULEL3_91')
+            call utmess('F', 'CALCULEL3_91')
         endif
 20      continue
     endif
@@ -130,7 +132,9 @@ subroutine op0008()
         do 30,ich = 1,ncha
         call dismoi('F', 'TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', ibid,&
                     k8bid, ied)
-        if (k8bid(1:5) .ne. 'THER_') call u2mess('F', 'CALCULEL3_92')
+        if (k8bid(1:5) .ne. 'THER_') then
+            call utmess('F', 'CALCULEL3_92')
+        endif
 30      continue
     endif
 !
@@ -138,7 +142,9 @@ subroutine op0008()
         do 40,ich = 1,ncha
         call dismoi('F', 'TYPE_CHARGE', zk8(icha-1+ich), 'CHARGE', ibid,&
                     k8bid, ied)
-        if (k8bid(1:5) .ne. 'ACOU_') call u2mess('F', 'CALCULEL3_93')
+        if (k8bid(1:5) .ne. 'ACOU_') then
+            call utmess('F', 'CALCULEL3_93')
+        endif
 40      continue
     endif
 !

@@ -28,7 +28,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 #include "asterfort/rctrac.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"
     integer :: ndim, imat, iret, kpg, ksp
@@ -471,7 +471,9 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             nomcle(4)='SIGM_F4'
             nomcle(5)='SIGM_C'
 !
-            if (iret2 .eq. 1) call u2mess('F', 'CALCULEL_31')
+            if (iret2 .eq. 1) then
+                call utmess('F', 'CALCULEL_31')
+            endif
             do 75 k = 1, nz
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                             jvale, nbval( k), rbid)
@@ -652,7 +654,9 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                             if (phase(k) .gt. 0.d0) then
                                 vip(k)=vi(k)+dp
                                 hplus(k)=h(k)
-                                if (iret2 .eq. 1) call u2mess('F', 'CALCULEL_31')
+                                if (iret2 .eq. 1) then
+                                    call utmess('F', 'CALCULEL_31')
+                                endif
                                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                                             jvale, nbval(k), rbid)
                                 call rcfonc('V', 2, jprol, jvale, nbval(k),&

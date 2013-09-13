@@ -20,7 +20,7 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vphqrp.h"
     integer :: degre
     real(kind=8) :: ai(degre), racine(2*degre)
@@ -83,7 +83,7 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
     if (kstop .eq. ' ') goto 40
 !
     if (ier .ne. 0) then
-        call u2mesi(kstop, 'ALGORITH17_6', 1, ier)
+        call utmess(kstop, 'ALGORITH17_6', si=ier)
     endif
 !
 40  continue

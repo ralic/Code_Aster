@@ -4,7 +4,7 @@ subroutine exisd(typesd, nomsd, iret)
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: iret
     character(len=*) :: typesd, nomsd
 ! ----------------------------------------------------------------------
@@ -197,7 +197,7 @@ subroutine exisd(typesd, nomsd, iret)
         if (i1*i2*i3*i4 .ne. 0) goto 20
 !
     else
-        call u2mesk('F', 'UTILITAI_47', 1, typ2sd)
+        call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
     iret = 0

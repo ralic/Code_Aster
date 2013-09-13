@@ -1,12 +1,12 @@
 subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
                   ndimen, itype)
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=*) :: nomte
     integer :: symetr, nbterm, nbnoeu, nbcomp, ndimen, itype
 ! ======================================================================
@@ -240,7 +240,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
         kmess(2) = 'INFTED'
         call tecael(iadzi, iazk24)
         kmess(3) = zk24(iazk24-1+3)
-        call u2mesk('F', 'DISCRETS_13', 3, kmess)
+        call utmess('F', 'DISCRETS_13', nk=3, valk=kmess)
     endif
 !
 end subroutine

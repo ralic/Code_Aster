@@ -39,7 +39,6 @@ subroutine rotchc(profno, cvale, tetss, nbss, invsk,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/intet0.h"
 #include "asterfort/isdeco.h"
@@ -50,8 +49,9 @@ subroutine rotchc(profno, cvale, tetss, nbss, invsk,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
 !
 !
 !-----------------------------------------------------------------------
@@ -83,7 +83,7 @@ subroutine rotchc(profno, cvale, tetss, nbss, invsk,&
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 kbid, ierd)
     if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
+        call utmess('F', 'MODELISA_94')
     endif
 !
     nueq=profno//'.NUEQ'

@@ -45,8 +45,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsrusd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "blas/dcopy.h"
@@ -93,7 +92,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
         call rsexch(' ', reuse, 'DEPL', nume, champ,&
                     iret)
         if (iret .ne. 0) then
-            call u2mesk('F', 'ALGORITH3_25', 1, reuse)
+            call utmess('F', 'ALGORITH3_25', sk=reuse)
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, depini, 1)
@@ -101,7 +100,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
         call rsexch(' ', reuse, 'VITE', nume, champ,&
                     iret)
         if (iret .ne. 0) then
-            call u2mesk('F', 'ALGORITH3_26', 1, reuse)
+            call utmess('F', 'ALGORITH3_26', sk=reuse)
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, vitini, 1)
@@ -109,7 +108,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
         call rsexch(' ', reuse, 'ACCE', nume, champ,&
                     iret)
         if (iret .ne. 0) then
-            call u2mesk('F', 'ALGORITH3_27', 1, reuse)
+            call utmess('F', 'ALGORITH3_27', sk=reuse)
         else
             call jeveuo(champ//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, accini, 1)
@@ -162,7 +161,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, depini, 1)
         else
-            call u2mess('I', 'ALGORITH3_28')
+            call utmess('I', 'ALGORITH3_28')
         endif
 !
         call getvid('ETAT_INIT', 'VITE', iocc=1, scal=champ, nbret=nvi)
@@ -178,7 +177,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, vitini, 1)
         else
-            call u2mess('I', 'ALGORITH3_29')
+            call utmess('I', 'ALGORITH3_29')
         endif
 !
         call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=champ, nbret=nai)
@@ -198,7 +197,7 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
     endif
 !
     if (linfo) then
-        call u2mess('I', 'ETATINIT_5')
+        call utmess('I', 'ETATINIT_5')
     endif
 !
     call jedema()

@@ -26,7 +26,7 @@ subroutine ve0124()
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: k8bid, resu
     character(len=16) :: type, oper, typres
 !     ------------------------------------------------------------------
@@ -42,11 +42,11 @@ subroutine ve0124()
         do 700 k = 1, iocc
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_7')
+                call utmess('E', 'ALGORITH11_7')
             endif
             call getvis('AFFE', 'NUME_MODE', iocc=k, scal=ibid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_8')
+                call utmess('E', 'ALGORITH11_8')
             endif
 700      continue
 !
@@ -54,15 +54,15 @@ subroutine ve0124()
         do 702 k = 1, iocc
             call getvis('AFFE', 'NUME_MODE', iocc=k, scal=ibid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_9')
+                call utmess('E', 'ALGORITH11_9')
             endif
             call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_10')
+                call utmess('E', 'ALGORITH11_10')
             endif
             call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_10')
+                call utmess('E', 'ALGORITH11_10')
             endif
 702      continue
 !
@@ -70,15 +70,15 @@ subroutine ve0124()
         do 704 k = 1, iocc
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_11')
+                call utmess('E', 'ALGORITH11_11')
             endif
             call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_12')
+                call utmess('E', 'ALGORITH11_12')
             endif
             call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_12')
+                call utmess('E', 'ALGORITH11_12')
             endif
 704      continue
 !
@@ -86,15 +86,15 @@ subroutine ve0124()
         do 705 k = 1, iocc
             call getvtx('AFFE', 'NOM_CAS', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_13')
+                call utmess('E', 'ALGORITH11_13')
             endif
             call getvr8('AFFE', 'INST', iocc=k, scal=r8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_14')
+                call utmess('E', 'ALGORITH11_14')
             endif
             call getvid('AFFE', 'LIST_INST', iocc=k, scal=k8bid, nbret=n0)
             if (n0 .ne. 0) then
-                call u2mess('E', 'ALGORITH11_14')
+                call utmess('E', 'ALGORITH11_14')
             endif
 705      continue
     endif
@@ -103,19 +103,19 @@ subroutine ve0124()
     if (iocc .gt. 0) then
         call getvid(' ', 'RESU_INIT', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('E', 'ALGORITH11_15')
+            call utmess('E', 'ALGORITH11_15')
         endif
         call getvid(' ', 'MAILLAGE_INIT', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('E', 'ALGORITH11_16')
+            call utmess('E', 'ALGORITH11_16')
         endif
         call getvid(' ', 'RESU_FINAL', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('E', 'ALGORITH11_17')
+            call utmess('E', 'ALGORITH11_17')
         endif
         call getvid(' ', 'MAILLAGE_FINAL', nbval=0, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('E', 'ALGORITH11_18')
+            call utmess('E', 'ALGORITH11_18')
         endif
     endif
 !

@@ -88,7 +88,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=2) :: chdim
 !
     integer :: iare, nnos, nnoa
@@ -338,7 +338,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
 !
     else
 !
-        call u2mesk('F', 'UTILITAI_9', 1, chdim)
+        call utmess('F', 'UTILITAI_9', sk=chdim)
 !
     endif
 !

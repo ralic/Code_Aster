@@ -19,7 +19,7 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
 #include "jeveux_private.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: clas, souch, klst(*)
     integer :: ipos, maxval, nbval
 ! ----------------------------------------------------------------------
@@ -61,7 +61,7 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
     l = len ( souch )
     if (ipos + l .gt. 25 .or. ipos .lt. 0 .or. l .eq. 0) then
         k32val=souch
-        call u2mesk('F', 'JEVEUX1_11', 1, k32val)
+        call utmess('F', 'JEVEUX1_11', sk=k32val)
     endif
     kclas = clas (1:min(1,len(clas)))
     if (kclas .eq. ' ') then

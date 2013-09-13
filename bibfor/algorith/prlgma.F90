@@ -28,7 +28,7 @@ subroutine prlgma(mati, sina, cosa, sinb, cosb,&
 ! ARGUMENTS
 ! ---------
 #include "asterfort/prmama.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: mati(3, 3), sina, cosa, sinb, cosb, sing, cosg, matf(3, 3)
 !
 ! VARIABLES LOCALES
@@ -97,7 +97,9 @@ subroutine prlgma(mati, sina, cosa, sinb, cosb,&
     call prmama(iprod, mati, 3, 3, 3,&
                 rzyx, 3, 3, 3, temp,&
                 3, 3, 3, ier)
-    if (ier .ne. 0) call u2mess('F', 'ALGORITH10_2')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGORITH10_2')
+    endif
 !
 !                                     SINA = -SINA
 ! POUR LA TRANSFORMATION INVERSE  =>  SINB = -SINB
@@ -134,7 +136,9 @@ subroutine prlgma(mati, sina, cosa, sinb, cosb,&
     call prmama(iprod, rzyx, 3, 3, 3,&
                 temp, 3, 3, 3, matf,&
                 3, 3, 3, ier)
-    if (ier .ne. 0) call u2mess('F', 'ALGORITH10_2')
+    if (ier .ne. 0) then
+        call utmess('F', 'ALGORITH10_2')
+    endif
 !
 ! --- FIN DE PRLGMA.
 end subroutine

@@ -50,9 +50,7 @@ subroutine op0172()
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbexve.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -132,7 +130,9 @@ subroutine op0172()
     nomob2 = '&&OP0172.NUME'
     call tbexve(enerpo, 'NUME_ORDRE', nomob2, 'V', nbmod2,&
                 k8b)
-    if (nbmod2 .eq. 0) call u2mess('F', 'MODELISA2_89')
+    if (nbmod2 .eq. 0) then
+        call utmess('F', 'MODELISA2_89')
+    endif
     call jeveuo(nomob2, 'L', jnuor)
     call ordis(zi(jnuor), nbmod2)
 !     --- ON ELIMINE LES DOUBLONS ---
@@ -155,7 +155,7 @@ subroutine op0172()
         if (iret .eq. 0) then
         else if (iret .eq. 3) then
         else
-            call u2mess('F', 'PREPOST4_18')
+            call utmess('F', 'PREPOST4_18')
         endif
 12  continue
 !
@@ -228,7 +228,9 @@ subroutine op0172()
 114  continue
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
                 iarg, 0, k8b, nbgr)
-    if (nbgr .eq. 0) call u2mess('F', 'PREPOST4_19')
+    if (nbgr .eq. 0) then
+        call utmess('F', 'PREPOST4_19')
+    endif
     nbgr = -nbgr
     call wkvect('&&OP0172.GROUP_MA', 'V V K24', nbgr, idgm)
     call wkvect('&&OP0172.NOEUD', 'V V I', nbnoeu, idno)
@@ -259,10 +261,14 @@ subroutine op0172()
     if (method .ne. 'RIGI_PARASOL') goto 112
     zrig = min(abs(rigi(1)),abs(rigi(2)))
     zrig = min(zrig,abs(rigi(3)))
-    if (zrig .le. r8prem( )) call u2mess('F', 'PREPOST4_20')
+    if (zrig .le. r8prem( )) then
+        call utmess('F', 'PREPOST4_20')
+    endif
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
                 iarg, 0, k8b, nbgr)
-    if (nbgr .eq. 0) call u2mess('F', 'PREPOST4_19')
+    if (nbgr .eq. 0) then
+        call utmess('F', 'PREPOST4_19')
+    endif
     nbgr = -nbgr
     call wkvect('&&OP0172.GROUP_MA', 'V V K24', nbgr, idgm)
     call wkvect('&&OP0172.NOEUD', 'V V I', nbnoeu, idno)
@@ -274,7 +280,9 @@ subroutine op0172()
     if (method .ne. 'RIGI_PARASOL' .or. ncompo .ne. 6) goto 113
     zrig = min(abs(rigi(4)),abs(rigi(5)))
     zrig = min(zrig,abs(rigi(6)))
-    if (zrig .le. r8prem( )) call u2mess('F', 'PREPOST4_21')
+    if (zrig .le. r8prem( )) then
+        call utmess('F', 'PREPOST4_21')
+    endif
     call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=0, nbret=ncg)
     call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
                 iarg, 0, k8b, nno)
@@ -317,7 +325,7 @@ subroutine op0172()
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
                 if (ncmp .ne. ncompo) then
-                    call u2mess('F', 'PREPOST4_22')
+                    call utmess('F', 'PREPOST4_22')
                 endif
                 do 53 ic = 1, ncmp
                     zr(idepmo+(ic-1)*nbmode+i-1) = zr(&
@@ -337,7 +345,7 @@ subroutine op0172()
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
                 if (ncmp .ne. ncompo) then
-                    call u2mess('F', 'PREPOST4_22')
+                    call utmess('F', 'PREPOST4_22')
                 endif
                 do 73 ic = 1, ncmp
                     valr(ic) = zr(iadmo1+iddl+ic-1)*zr(irigno+6*(ino- 1)+ic-1)
@@ -388,7 +396,9 @@ subroutine op0172()
     call wkvect('&&OP0172.AMINT', 'V V R', nbga, idam)
     call getvr8('AMOR_INTERNE', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nba)
     nba = -nba
-    if (nbga .ne. nba) call u2mess('F', 'PREPOST4_23')
+    if (nbga .ne. nba) then
+        call utmess('F', 'PREPOST4_23')
+    endif
 !
     call getvr8('AMOR_INTERNE', 'AMOR_REDUIT', iocc=1, nbval=nbga, vect=zr(idam),&
                 nbret=nba)
@@ -396,7 +406,9 @@ subroutine op0172()
     call getvr8('AMOR_SOL', 'SEUIL', iocc=1, scal=seuil, nbret=nbs)
     call getvid('AMOR_SOL', 'FONC_AMOR_GEO', iocc=1, nbval=0, nbret=nco)
     nco = -nco
-    if (ncmp .ne. nco) call u2mess('F', 'PREPOST4_24')
+    if (ncmp .ne. nco) then
+        call utmess('F', 'PREPOST4_24')
+    endif
     call getvid('AMOR_SOL', 'FONC_AMOR_GEO', iocc=1, nbval=ncmp, vect=amogeo,&
                 nbret=nba)
     call getvtx('AMOR_SOL', 'HOMOGENE', iocc=1, scal=rep, nbret=nrp)
@@ -417,7 +429,9 @@ subroutine op0172()
                         c16b, zk24(idga+i- 1), 'RELA', 1.d-03, 'POUR_CENT',&
                         k8b, ibid, poucen, c16b, k8b,&
                         iret)
-            if (iret .ge. 2) call u2mesk('A', 'STBTRIAS_6', 1, zk24(idga+i- 1))
+            if (iret .ge. 2) then
+                call utmess('A', 'STBTRIAS_6', sk=zk24(idga+i- 1))
+            endif
 !
             zr(iamomo+imod-1) = zr(iamomo+imod-1) + 1.0d-2*poucen*zr( idam+i-1)
             enesol = enesol + poucen
@@ -444,8 +458,7 @@ subroutine op0172()
             valrr (1) = amomo
             valrr (2) = seuil
             vali = imod
-            call u2mesg('I', 'PREPOST5_64', 0, ' ', 1,&
-                        vali, 2, valrr)
+            call utmess('I', 'PREPOST5_64', si=vali, nr=2, valr=valrr)
         endif
 60  continue
 !

@@ -1,7 +1,6 @@
 subroutine te0037(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
@@ -16,13 +15,14 @@ subroutine te0037(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
 #include "asterfort/xxmmvd.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -305,7 +305,7 @@ subroutine te0037(option, nomte)
                     forrep(2,2) = forrep(2,2)+ cisa * (-nd(1))
                 endif
             else
-                call u2mess('F', 'XFEM_15')
+                call utmess('F', 'XFEM_15')
             endif
 !
 !         CALCUL EFFECTIF DU SECOND MEMBRE SUR LES DEUX LEVRES

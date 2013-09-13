@@ -41,7 +41,7 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
 #include "asterfort/lirtet.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
 #include "asterfort/vernmb.h"
@@ -81,7 +81,7 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
             valk(1) = cnl
             valk(2) = mcl(i)
             valk(3) = mcl(j)
-            call u2mesk('E', 'MODELISA4_77', 3, valk)
+            call utmess('E', 'MODELISA4_77', nk=3, valk=valk)
             ier = 1
             goto 2
         endif

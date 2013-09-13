@@ -18,7 +18,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterc/lor8em.h"
@@ -43,9 +43,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vampli.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
@@ -119,7 +117,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     call dismoi('F', 'TYPE_RESU', nomsd, 'RESULTAT', ibid,&
                 typres, ierd)
     if ((typres(1:9) .ne. 'EVOL_ELAS') .and. (typres(1:9) .ne. 'EVOL_NOLI')) then
-        call u2mess('F', 'PREPOST4_26')
+        call utmess('F', 'PREPOST4_26')
     endif
 !
 ! CONSTRUCTION DU CHAMP SIMPLE DESTINE A RECEVOIR LES RESULTATS :
@@ -170,11 +168,11 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 410  continue
 !
     if ((ordini .eq. 1) .and. ((inscri .eq.'ABSOLU') .or. (inscri .eq.'RELATIF') )) then
-        call u2mess('A', 'PREPOST4_48')
+        call utmess('A', 'PREPOST4_48')
     endif
 !
     if (zi(jordr) .eq. 0) then
-        call u2mess('A', 'PREPOST4_27')
+        call utmess('A', 'PREPOST4_27')
         nbordr = nbordr - 1
     endif
 !
@@ -191,12 +189,12 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     creppe = .false.
     if (crepse) then
         if (.not. crepst) then
-            call u2mess('A', 'PREPOST4_45')
+            call utmess('A', 'PREPOST4_45')
             crepst = .true.
         endif
 !
         if (( .not. crepsp )) then
-            call u2mess('A', 'PREPOST4_46')
+            call utmess('A', 'PREPOST4_46')
             creppe = .true.
         endif
 !
@@ -278,8 +276,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
         else if (( tpaq .ge. tdisp(1) ) .and. (ino .lt. 3)) then
             vali (1) = tdisp(1)
             vali (2) = tpaq
-            call u2mesg('F', 'PREPOST5_67', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'PREPOST5_67', ni=2, vali=vali)
 !
 ! 2/ STOCKAGE DES NUMEROS DES PAQUETS, DE LA TAILLE DES PAQUETS,
 !    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
@@ -314,8 +311,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     if (nbpaq .gt. nbpmax) then
         vali (1) = nbpmax
         vali (2) = nbpaq
-        call u2mesg('F', 'PREPOST5_70', 0, ' ', 2,&
-                    vali, 0, 0.d0)
+        call utmess('F', 'PREPOST5_70', ni=2, vali=vali)
     endif
 !
 ! TRAITEMENT DES PAQUETS DE NOEUDS.
@@ -340,7 +336,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             iret2)
 !
                 if ((iret1.ne.0) .and. (iret2.ne.0)) then
-                    call u2mess('A', 'PREPOST4_38')
+                    call utmess('A', 'PREPOST4_38')
                 endif
 !
                 if (iret1 .eq. 0) then
@@ -356,7 +352,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             'V', cns2)
                 call jeexin(cns2(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'PREPOST4_40')
+                    call utmess('F', 'PREPOST4_40')
                 endif
                 call jeveuo(cns2(1:19)//'.CNSD', 'L', jsigd)
                 call jeveuo(cns2(1:19)//'.CNSL', 'L', jsigl)
@@ -376,7 +372,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             'V', cns4)
                 call jeexin(cns4(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'PREPOST4_41')
+                    call utmess('F', 'PREPOST4_41')
                 endif
                 call jeveuo(cns4(1:19)//'.CNSD', 'L', jepsd)
                 call jeveuo(cns4(1:19)//'.CNSL', 'L', jepsl)
@@ -397,7 +393,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             'V', cns6)
                 call jeexin(cns6(1:19)//'.CNSV', iret)
                 if (iret .eq. 0) then
-                    call u2mess('F', 'PREPOST4_43')
+                    call utmess('F', 'PREPOST4_43')
                 endif
                 call jeveuo(cns6(1:19)//'.CNSD', 'L', jepspd)
                 call jeveuo(cns6(1:19)//'.CNSL', 'L', jepspl)
@@ -411,7 +407,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 call rsexch(' ', nomsd, 'EPSP_NOEU', iordr, cheppe,&
                             valep)
                 if (valep .ne. 0) then
-                    call u2mess('A', 'PREPOST4_46')
+                    call utmess('A', 'PREPOST4_46')
                 endif
                 if (valep .eq. 0) then
                     cns7 = '&&PAQNOE.EPSPE_S7'
@@ -421,7 +417,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                                 'V', cns8)
                     call jeexin(cns8(1:19)//'.CNSV', iret)
                     if (iret .eq. 0) then
-                        call u2mess('F', 'PREPOST4_43')
+                        call utmess('F', 'PREPOST4_43')
                     endif
                     call jeveuo(cns8(1:19)//'.CNSD', 'L', jepped)
                     call jeveuo(cns8(1:19)//'.CNSL', 'L', jeppel)
@@ -448,9 +444,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             (iordr-1)*tspaq ) = zr( jsigv + (icmp-1) +&
                             (nunoe-1)*6 )
                         else if (icmp .eq. 5) then
-                            call u2mesi('F', 'FATIGUE1_2', 1, icmp)
+                            call utmess('F', 'FATIGUE1_2', si=icmp)
                         else
-                            call u2mess('F', 'PREPOST4_30')
+                            call utmess('F', 'PREPOST4_30')
                         endif
 340                  continue
                 endif
@@ -463,9 +459,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                             + (iordr-1)*tspaq ) = zr( jepsv + (icmp-1)&
                             + (nunoe-1)*6 )
                         else if (icmp .eq. 5) then
-                            call u2mesi('F', 'FATIGUE1_3', 1, icmp)
+                            call utmess('F', 'FATIGUE1_3', si=icmp)
                         else
-                            call u2mess('F', 'PREPOST4_35')
+                            call utmess('F', 'PREPOST4_35')
                         endif
 360                  continue
                 endif
@@ -478,9 +474,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
  18                          + (iordr-1)*tspaq ) = zr( jepspv + (&
                             icmp-1) + (nunoe-1)*6 )
                         else if (icmp .eq. 5) then
-                            call u2mesi('F', 'FATIGUE1_3', 1, icmp)
+                            call utmess('F', 'FATIGUE1_3', si=icmp)
                         else
-                            call u2mess('F', 'PREPOST4_35')
+                            call utmess('F', 'PREPOST4_35')
                         endif
 380                  continue
                 endif
@@ -494,9 +490,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                                 somnow*18 + (iordr-1)*tspaq ) =&
                                 zr( jeppev + (icmp-1) + (nunoe-1)*6 )
                             else if (icmp .eq. 5) then
-                                call u2mesi('F', 'FATIGUE1_3', 1, icmp)
+                                call utmess('F', 'FATIGUE1_3', si=icmp)
                             else
-                                call u2mess('F', 'PREPOST4_35')
+                                call utmess('F', 'PREPOST4_35')
                             endif
 390                      continue
 !

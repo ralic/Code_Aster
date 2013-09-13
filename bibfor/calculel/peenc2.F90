@@ -1,5 +1,5 @@
 subroutine peenc2(champ, rcoef)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/celver.h"
 #include "asterfort/digdel.h"
@@ -9,7 +9,7 @@ subroutine peenc2(champ, rcoef)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: champ
     real(kind=8) :: rcoef
 !     ------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine peenc2(champ, rcoef)
 !
     call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
-        call u2mess('F', 'CALCULEL3_52')
+        call utmess('F', 'CALCULEL3_52')
     endif
     call jeveuo(champ2//'.CELK', 'L', lcelk)
     ligrel = zk24(lcelk)(1:19)

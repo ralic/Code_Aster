@@ -21,10 +21,8 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
 #include "asterfort/pj3dfb.h"
 #include "asterfort/pj4dap.h"
 #include "asterfort/pjxxut.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=16) :: corres, k16bid, nomcmd
@@ -147,7 +145,9 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
         ico=ico+2
     else
         ASSERT(.false.)
-        if (ico .eq. 0) call u2mess('F', 'CALCULEL4_55')
+        if (ico .eq. 0) then
+            call utmess('F', 'CALCULEL4_55')
+        endif
     endif
     51 end do
     call wkvect('&&PJXXCO.TRIA3', 'V V I', 1+4*ico, iatr3)
@@ -286,7 +286,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     endif
     if (nbtrou .eq. 0) then
         call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
-        call u2mesk('F', 'CALCULEL4_56', 1, nono2)
+        call utmess('F', 'CALCULEL4_56', sk=nono2)
     endif
 !
     zi(iaconb-1+ino2)=3
@@ -317,12 +317,10 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
             umessr(2) = zr(iacoo2+3*(ino2m-1)+1)
             umessr(3) = zr(iacoo2+3*(ino2m-1)+2)
             umessr(4) = tdmin2(ii)
-            call u2mesg('I', 'CALCULEL5_43', 1, nono2, 0,&
-                        0, 4, umessr)
+            call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
 70          continue
             call jenuno(jexnum(m2//'.NOMNOE', tino2m(1)), nono2)
-            call u2mesg('A', 'CALCULEL5_48', 1, nono2, 1,&
-                        nbnodm, 1, tdmin2(1))
+            call utmess('A', 'CALCULEL5_48', sk=nono2, si=nbnodm, sr=tdmin2(1))
         endif
     endif
 !

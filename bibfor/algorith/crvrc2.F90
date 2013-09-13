@@ -44,7 +44,7 @@ subroutine crvrc2()
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: nbfac, n1, nbinst, kinst, jordr1, iordr
     integer :: nbin, iret, jinst, jtemp, iexi
     real(kind=8) :: vinst
@@ -69,10 +69,14 @@ subroutine crvrc2()
 !
 !     -- ON VERIFIE QUE LE CARA_ELEM S'APPUIE BIEN SUR LE MODELE
     call jeexin(carele//'.CANBSP    .CELK', iexi)
-    if (iexi .eq. 0) call u2mesk('F', 'CALCULEL4_14', 1, carele)
+    if (iexi .eq. 0) then
+        call utmess('F', 'CALCULEL4_14', sk=carele)
+    endif
     call jeveuo(carele//'.CANBSP    .CELK', 'L', jtemp)
     model2=zk24(jtemp-1+1)(1:8)
-    if (model2 .ne. modele) call u2mesk('F', 'CALCULEL4_15', 1, carele)
+    if (model2 .ne. modele) then
+        call utmess('F', 'CALCULEL4_15', sk=carele)
+    endif
 !
 !
 !
@@ -83,7 +87,7 @@ subroutine crvrc2()
 !
     call jeexin(resu//'           .DESC', iret)
     if (iret .ne. 0) then
-        call u2mesk('F', 'CALCULEL7_6', 1, resu)
+        call utmess('F', 'CALCULEL7_6', sk=resu)
     else
         call rscrsd('G', resu, 'EVOL_THER', nbinst)
     endif

@@ -44,7 +44,7 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
 #include "asterfort/infniv.h"
 #include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, ndec, iret
     integer :: i, k, ifm, niv, nsubd, maj
     integer :: nvimax, idec, imat, indi(7)
@@ -69,7 +69,9 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
     data zero, deux   / 0.d0, 2.d0/
     data tol, tole1 / .5d0, 1.d-7 /
 !
-    if (nvi .gt. nvimax) call u2mess('F', 'COMPOR1_1')
+    if (nvi .gt. nvimax) then
+        call utmess('F', 'COMPOR1_1')
+    endif
 !
     try = .true.
     loop = .false.

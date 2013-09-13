@@ -1,7 +1,7 @@
 subroutine i3pdm2(epsi, n, s, nbs, p,&
                   dedans)
-    implicit   none
-#include "asterfort/u2mess.h"
+    implicit none
+#include "asterfort/utmess.h"
     integer :: nbs
     real(kind=8) :: n(*), s(3, *), p(*), epsi
     logical :: dedans
@@ -67,7 +67,7 @@ subroutine i3pdm2(epsi, n, s, nbs, p,&
         nz = zf - zd
         ps = sqrt(nx*nx+ny*ny+nz*nz)
         if (ps .le. epsi*max(nx,ny,nz)) then
-            call u2mess('F', 'INTEMAIL_9')
+            call utmess('F', 'INTEMAIL_9')
         else
             ps = un/ps
             nx = nx*ps

@@ -36,7 +36,7 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ipas, ires
     real(kind=8) :: cd, xsi0
 !
@@ -104,7 +104,7 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
         endif
     endif
     if (ipas1 .ne. ipas .or. ires1 .ne. ires) then
-        call u2mess('F', 'MODELISA4_29')
+        call utmess('F', 'MODELISA4_29')
     endif
 !
 ! **********************************************************************
@@ -447,7 +447,7 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
 !
         else
 !
-            call u2mess('F', 'MODELISA4_30')
+            call utmess('F', 'MODELISA4_30')
 !
         endif
 !

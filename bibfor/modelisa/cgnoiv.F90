@@ -13,7 +13,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iocc, nbno
@@ -78,7 +78,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     if (noma .ne. ma1) then
         valk(1)=cham19
         valk(2)=noma
-        call u2mesk('F', 'CALCULEL2_50', 2, valk)
+        call utmess('F', 'CALCULEL2_50', nk=2, valk=valk)
     endif
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
                 kbid, ibid)

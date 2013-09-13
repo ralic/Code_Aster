@@ -6,7 +6,7 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
 #include "asterfort/i3crad.h"
 #include "asterfort/i3ptrv.h"
 #include "asterfort/i3sl32.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: k, f, nbpt, lstpt(*), nba
     real(kind=8) :: epsi, sgt(*), coorsm(3, *)
     logical :: fink
@@ -175,7 +175,7 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
             endif
             nbpt = -nbpt
         else
-            call u2mesk('F', 'INTEMAIL_8', 1, typsl)
+            call utmess('F', 'INTEMAIL_8', sk=typsl)
         endif
         finf = ( finf .or. (arete .ge. nba) )
         goto 100

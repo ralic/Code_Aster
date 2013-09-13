@@ -18,7 +18,6 @@ subroutine te0100(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -35,9 +34,9 @@ subroutine te0100(option, nomte)
 #include "asterfort/rcangm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tgveri.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
@@ -150,7 +149,7 @@ subroutine te0100(option, nomte)
     if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
         if (zk16(icompo) .ne. 'VMIS_ISOT_LINE' .and. zk16(icompo) .ne. 'ELAS' .and.&
             zk16(icompo) .ne. 'ENDO_FRAGILE' .and. zk16( icompo) .ne. 'ENDO_ISOT_BETON') then
-            call u2mess('F', 'ELEMENTS5_50')
+            call utmess('F', 'ELEMENTS5_50')
         endif
         call jevech('PCONTXR', 'E', icontp)
     endif
@@ -279,7 +278,7 @@ subroutine te0100(option, nomte)
                         zr( ivarip), zr(ivectu), zr(imatuu), codret)
 !
         else
-            call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
+            call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif
 !
         if (codret .ne. 0) goto 2000

@@ -57,7 +57,7 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcsolz.h"
 #include "asterfort/pbflkz.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: umoy, hmoy, rmoy, long, cf0, fsvr(7)
     integer :: icoq, imod, nbm
@@ -120,7 +120,9 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
 !
     call lcsolz(zc(imata), gamma, 3, 3, 1,&
                 iret)
-    if (iret .ne. 0) call u2mess('F', 'ALGELINE3_17')
+    if (iret .ne. 0) then
+        call utmess('F', 'ALGELINE3_17')
+    endif
 !
     call jedetr('&&PBFLGA.TEMP.MATA')
     call jedema()

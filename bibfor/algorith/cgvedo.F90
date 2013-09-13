@@ -2,8 +2,7 @@ subroutine cgvedo(ndim, option)
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim
     character(len=16) :: option
 !
@@ -42,19 +41,21 @@ subroutine cgvedo(ndim, option)
      &                      'CALC_K_MAX' /
 !
 !     VERIFICATION DE NDIM VAUT 2 OU 3
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'RUPTURE0_2')
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+        call utmess('F', 'RUPTURE0_2')
+    endif
 !
 !     VERIFICATION DE L'OPTION (NORMALEMENT, C'EST FAIT DANS LE CAPY)
-    bool = option .eq. 'CALC_G' .or. option.eq. 'CALC_G_GLOB' .or. option .eq. 'CALC_K_G' &
-      .or. option .eq. 'K_G_MODA'.or. option .eq. 'G_BILI' .or. option .eq. 'G_BILI_GLOB' &
-      .or. option .eq. 'G_MAX' .or. option .eq.'G_MAX_GLOB' .or. option .eq. 'CALC_K_MAX'
+    bool = option .eq. 'CALC_G' .or. option .eq. 'CALC_G_GLOB' .or. option .eq. 'CALC_K_G' .or.&
+           option .eq. 'K_G_MODA' .or. option .eq. 'G_BILI' .or. option .eq. 'G_BILI_GLOB' .or.&
+           option .eq. 'G_MAX' .or. option .eq. 'G_MAX_GLOB' .or. option .eq. 'CALC_K_MAX'
     ASSERT(bool)
 !
 !     CERTAINES OPTIONS NE S'UTILISENT (OU NE SONT PROGRAMMEES) QU'EN 3D
     if (ndim .eq. 2) then
         do 10 i = 1, nbop3d
             if (option .eq. liop3d(i)) then
-                call u2mesk('F', 'RUPTURE0_3', 1, option)
+                call utmess('F', 'RUPTURE0_3', sk=option)
             endif
 10      continue
     endif

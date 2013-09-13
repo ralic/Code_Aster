@@ -28,9 +28,7 @@ subroutine te0031(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/t3grig.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -170,14 +168,12 @@ subroutine te0031(option, nomte)
                 if ((icou-1) .ne. nbcou) then
                     vali(1)=icou-1
                     vali(2)=nbcou
-                    call u2mesg('F', 'ELEMENTS3_51', 0, ' ', 2,&
-                                vali, 0, 0.d0)
+                    call utmess('F', 'ELEMENTS3_51', ni=2, vali=vali)
                 endif
                 if (abs(epais-eptot)/epais .gt. 1.d-2) then
                     valr(1)=eptot
                     valr(2)=epais
-                    call u2mesg('F', 'ELEMENTS3_52', 0, ' ', 0,&
-                                0, 2, valr)
+                    call utmess('F', 'ELEMENTS3_52', nr=2, valr=valr)
                 endif
             endif
         endif
@@ -302,15 +298,15 @@ subroutine te0031(option, nomte)
         call jevech('PDEPLPR', 'L', jdepr)
         call jevech('PCOMPOR', 'L', icompo)
         if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-            call u2mess('F', 'ELEMENTS2_71')
+            call utmess('F', 'ELEMENTS2_71')
         endif
         if (lcqhom) then
-            call u2mess('F', 'ELEMENTS2_75')
+            call utmess('F', 'ELEMENTS2_75')
         endif
         if ((zk16(icompo+2)(6:10).eq.'_REAC') .or. (zk16(icompo+2) .eq.'GROT_GDEP')) then
 !            GROT_GDEP CORRESPOND ICI A EULER_ALMANSI
             if (zk16(icompo+2)(6:10) .eq. '_REAC') then
-                call u2mess('A', 'ELEMENTS2_72')
+                call utmess('A', 'ELEMENTS2_72')
             endif
             do 100 i = 1, nno
                 i1=3*(i-1)
@@ -341,7 +337,7 @@ subroutine te0031(option, nomte)
             call dktnli(nomte, option, xyzl, uml, dul,&
                         vecloc, matloc, codret)
         else
-            call u2mesk('F', 'ELEMENTS2_74', 1, nomte)
+            call utmess('F', 'ELEMENTS2_74', sk=nomte)
         endif
 !
         if (option(1:9) .eq. 'FULL_MECA') then
@@ -366,7 +362,9 @@ subroutine te0031(option, nomte)
         nbsp=itab(7)
         nbcou=zi(jnbspi)
 !
-        if (nbsp .ne. npge*nbcou) call u2mess('F', 'ELEMENTS_4')
+        if (nbsp .ne. npge*nbcou) then
+            call utmess('F', 'ELEMENTS_4')
+        endif
 !
         ind=8
         call dxeffi(option, nomte, pgl, zr(icontp), ind,&

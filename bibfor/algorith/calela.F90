@@ -21,8 +21,8 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
 #include "asterfort/dpassa.h"
 #include "asterfort/matini.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
     integer :: i, j, ndim, irep
     integer :: aniso
@@ -41,7 +41,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     real(kind=8) :: young2, alpha1, alpha3, g13, g12
     real(kind=8) :: d(6, 6), al(6), t, dorth(6, 6), c1, delta, repere(7)
     real(kind=8) :: mdal(6), dalal, angmas(3), work(6, 6), bid(3)
-    real(kind=8) :: tetaro, phirot, passag(6, 6),pass(3, 3),tal(3,3),talg(3,3)
+    real(kind=8) :: tetaro, phirot, passag(6, 6), pass(3, 3), tal(3, 3), talg(3, 3)
     character(len=8) :: ncra2(dim2), ncra3(dim3)
     character(len=8) :: ncra1(dim1)
     character(len=16) :: phenom
@@ -84,7 +84,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     repere(2) = angmas(1)
     repere(3) = angmas(2)
     repere(4) = angmas(3)
-
+!
 !
     call dpassa(bid, repere, irep, passag)
 ! ======================================================================
@@ -99,7 +99,8 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
 ! ======================================================================
     if (aniso .eq. 0) then
         call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                    [t], 3, ncra1(1), elas1(1), icodr1, 0)
+                    [t], 3, ncra1(1), elas1(1), icodr1,&
+                    0)
         young = elas1(1)
         nu = elas1(2)
         g = young/(2.d0*(1.d0+nu))
@@ -129,7 +130,8 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     else if (aniso.eq.1) then
         if (phenom .eq. 'ELAS') then
             call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                        [t], 3, ncra1(1), elas1(1), icodr1, 0)
+                        [t], 3, ncra1(1), elas1(1), icodr1,&
+                        0)
             young1 = elas1(1)
             young3 = elas1(1)
             nu12 = elas1(2)
@@ -143,10 +145,11 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
 !
         else if (phenom.eq.'ELAS_ISTR') then
             if (ndim .ne. 3) then
-                call u2mess('F', 'ALGORITH17_35')
+                call utmess('F', 'ALGORITH17_35')
             endif
             call rcvala(imate, ' ', 'ELAS_ISTR', 1, 'TEMP',&
-                        [t], 7, ncra2(1), elas2(1), icodr2, 0)
+                        [t], 7, ncra2(1), elas2(1), icodr2,&
+                        0)
             young1 = elas2(1)
             young3 = elas2(2)
             nu12 = elas2(3)
@@ -156,7 +159,8 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
             tal(2,2) = elas2(6)
             tal(3,3) = elas2(7)
 !            alpha3 = elas2(7)
-            call utbtab('ZERO', 3, 3, tal, pass,work, talg)
+            call utbtab('ZERO', 3, 3, tal, pass,&
+                        work, talg)
             al(1) = talg(1,1)
             al(2) = talg(2,2)
             al(3) = talg(3,3)
@@ -185,7 +189,8 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     else if (aniso.eq.2) then
         if (phenom .eq. 'ELAS') then
             call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                        [t], 3, ncra1(1), elas1(1), icodr1, 0)
+                        [t], 3, ncra1(1), elas1(1), icodr1,&
+                        0)
             young1 = elas1(1)
             young2 = elas1(1)
             young3 = elas1(1)
@@ -198,10 +203,11 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
             al(3)  =elas1(3)
         else if (phenom.eq.'ELAS_ORTH') then
             if (ndim .ne. 2) then
-                call u2mess('F', 'ALGORITH17_36')
+                call utmess('F', 'ALGORITH17_36')
             endif
             call rcvala(imate, ' ', 'ELAS_ORTH', 1, 'TEMP',&
-                        [t], 10, ncra3(1), elas3(1), icodr2, 0)
+                        [t], 10, ncra3(1), elas3(1), icodr2,&
+                        0)
             young1 = elas3(1)
             young3 = elas3(2)
             young2 = elas3(3)
@@ -212,7 +218,8 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
             tal(1,1) = elas3(8)
             tal(2,2) = elas3(9)
             tal(3,3) = elas3(10)
-            call utbtab('ZERO', 3, 3, tal, pass,work, talg)
+            call utbtab('ZERO', 3, 3, tal, pass,&
+                        work, talg)
             al(1) = talg(1,1)
             al(2) = talg(2,2)
             al(3) = talg(3,3)

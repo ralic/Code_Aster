@@ -34,7 +34,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/modsta.h"
 #include "asterfort/mstget.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, neq, lmatm
     real(kind=8) :: r8b, zero, un, coef(3), xnorm
@@ -133,7 +133,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
                 xnorm = xnorm + coef(id)*coef(id)
 36          continue
             if (xnorm .le. zero) then
-                call u2mess('F', 'ALGELINE2_78')
+                call utmess('F', 'ALGELINE2_78')
             endif
             xnorm = un / sqrt(xnorm)
             do 38 id = 1, 3

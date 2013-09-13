@@ -19,7 +19,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
@@ -30,7 +30,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 #include "asterfort/nmdecc.h"
 #include "asterfort/nmdecv.h"
 #include "asterfort/nmfinp.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     character(len=19) :: sddisc
     integer :: ievdac, retdex
     real(kind=8) :: durdec, insref, deltac
@@ -88,7 +88,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 !
     valr(1) = insref
     valr(2) = durdec
-    call u2mesr('I', 'SUBDIVISE_13', 2, valr)
+    call utmess('I', 'SUBDIVISE_13', nr=2, valr=valr)
 !
     numins = 1
 !
@@ -148,9 +148,9 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
     if (retdex .eq. 0) then
 !
     else if (retdex.eq.1) then
-        call u2mesr('I', 'SUBDIVISE_14', 1, insfin)
+        call utmess('I', 'SUBDIVISE_14', sr=insfin)
     else if (retdex.eq.2) then
-        call u2mesr('I', 'SUBDIVISE_15', 1, insref)
+        call utmess('I', 'SUBDIVISE_15', sr=insref)
     else
         ASSERT(.false.)
     endif

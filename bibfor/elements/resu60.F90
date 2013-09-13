@@ -34,7 +34,7 @@ subroutine resu60(resu1, resu2)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/refdcp.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
@@ -52,7 +52,7 @@ subroutine resu60(resu1, resu2)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-
+!
     integer :: jacce, jacce1, jacce2, jvite, jvite1, jvite2
     integer :: jdepl, jdepl1, jdepl2, jdesc
     integer :: jfreq, jfreq1, jfreq2, jordr, jordr1, jordr2
@@ -75,7 +75,7 @@ subroutine resu60(resu1, resu2)
 !     CONDITION POUR SAVOIR SI LES FLAGS SONT BIEN TOUS LES 2 ZEROS
 !     OU BIEN DIFFERENTS DE ZERO = COMPATIBILITE DES RESUS
     if (.not.(flagd.and.flagv.and.flaga)) then
-        call u2mess('F', 'ALGORITH17_25')
+        call utmess('F', 'ALGORITH17_25')
     endif
 !
     call jeveuo(resu1//'           .DESC', 'E', jdesc)
@@ -160,7 +160,7 @@ subroutine resu60(resu1, resu2)
 !
 !     --- COPIE DU NOUVEAU .REFD DANS LA SD FINALE ---
 !
-    call refdcp(resu2,resu1)
+    call refdcp(resu2, resu1)
 !
 !     --- DESTRUCTION DES OBJETS PROVISOIRES
 !

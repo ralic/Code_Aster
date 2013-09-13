@@ -56,7 +56,6 @@ subroutine te0570(option, nomte)
 ! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/angvxy.h"
@@ -67,9 +66,10 @@ subroutine te0570(option, nomte)
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
+!
     character(len=8) :: elrefe
     character(len=16) :: nomte, option
     real(kind=8) :: jac, jacpoi, jacpo2, zero, e1(3), e2(3), e3(3), gn1(3)
@@ -106,7 +106,7 @@ subroutine te0570(option, nomte)
                 iret)
 !
     if (.not.zl(itabm(8))) then
-        call u2mess('F', 'ELEMENTS4_32')
+        call utmess('F', 'ELEMENTS4_32')
     endif
 !
     icoqu= itabm(1)
@@ -114,7 +114,7 @@ subroutine te0570(option, nomte)
     coef = epais*epais*epais/12.0d0
 !
     if (epais .le. r8prem()) then
-        call u2mess('F', 'ELEMENTS4_33')
+        call utmess('F', 'ELEMENTS4_33')
     endif
 !
     if (option .eq. 'CARA_SECT_POUT3') then
@@ -199,7 +199,7 @@ subroutine te0570(option, nomte)
 !       --------
             jac = sqrt(dxdk*dxdk+dydk*dydk+dzdk*dzdk)
             if (jac .le. r8prem()) then
-                call u2mess('F', 'ELEMENTS4_34')
+                call utmess('F', 'ELEMENTS4_34')
             endif
             jacpoi = jac*zr(ipoids+ipg-1)*epais
             jacpo2 = jac*zr(ipoids+ipg-1)*coef
@@ -316,7 +316,7 @@ subroutine te0570(option, nomte)
 !       --------
             jac = sqrt(dxdk*dxdk+dydk*dydk+dzdk*dzdk)
             if (jac .le. r8prem()) then
-                call u2mess('F', 'ELEMENTS4_34')
+                call utmess('F', 'ELEMENTS4_34')
             endif
             jacpoi = jac*zr(ipoids+ipg-1)*epais
             jacpo2 = jac*zr(ipoids+ipg-1)*coef

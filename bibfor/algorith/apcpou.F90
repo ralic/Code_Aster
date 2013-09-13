@@ -28,7 +28,7 @@ subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
 #include "asterfort/jemarq.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
     character(len=19) :: sdappa
     character(len=4) :: typzon
@@ -77,7 +77,7 @@ subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
 ! --- REDEFINITION SI BASE LOCALE DANS LE CAS DES POUTRES
 !
     if (itype .eq. 0) then
-        call u2mesk('F', 'APPARIEMENT_61', 1, nommai)
+        call utmess('F', 'APPARIEMENT_61', sk=nommai)
     else if (itype.eq.1) then
         call normev(vector, norme)
         call provec(vector, tau1, tau2)

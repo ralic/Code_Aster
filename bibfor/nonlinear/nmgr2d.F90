@@ -34,7 +34,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 #include "asterfort/nmgrtg.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     integer :: nno, npg, imate, lgpg, codret, cod(9)
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami
@@ -146,7 +146,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !        VERIFICATION QUE EPS RESTE PETIT
         if (maxeps .gt. 0.05d0) then
             if (compor(1)(1:4) .ne. 'ELAS') then
-                call u2mesr('A', 'COMPOR2_9', 1, maxeps)
+                call utmess('A', 'COMPOR2_9', sr=maxeps)
             endif
         endif
 !

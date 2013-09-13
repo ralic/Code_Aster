@@ -3,7 +3,7 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 !
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndime, ninter, npts, nptm
 !
 ! ======================================================================
@@ -46,39 +46,39 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 !
 !       NBRE DE POINT D'INTERSECTION INCORRECT (1) OU (2)
         if (ninter .le. 1) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       NBRE DE POINT D'INTERSECTION INCORRECT (1) OU (2)
         else if (ninter.gt.3) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       NBRE PT INTER SOMMET > NBRE PT INTER TOTAL (1)
         else if (npts.gt.ninter) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       LA FISSURE INTERCEPTE DEUX NOEUDS SOMMETS UNIQUEMENT (1) OU (2)
         else if (ninter.eq.2 .and. npts.eq.2) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       LA FISSURE INTERCEPTE LES 3 ARETES STRICTEMENT (2)
         else if (ninter.eq.3 .and. npts.eq.0) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       (2)
         else if (ninter.eq.3 .and. npts.eq.1 .and. nptm.ne.1) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       LA FISSURE JOUXTE UN BORD DE L'ELEMENT (1)
         else if (ninter.eq.3 .and. npts.eq.2 .and. nptm.eq.1) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       (1) OU (2)
         else if (ninter.eq.3 .and. npts.eq.2 .and. nptm.ne.1) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
 !       (1) OU (2)
         else if (ninter.eq.3 .and. npts.eq.3) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
 !
         endif
 !
@@ -88,7 +88,7 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 !
 !       NBRE DE POINT D'INTERSECTION INCORRECT (1) OU (2)
         if (ninter .ne. 1 .and. npts .ne. 0) then
-            call u2mess('F', 'XFEM_64')
+            call utmess('F', 'XFEM_64')
         endif
 !
     endif

@@ -54,8 +54,7 @@ subroutine op0183()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vefnme.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vtcreb.h"
@@ -129,12 +128,12 @@ subroutine op0183()
     call rsutnu(resuco, ' ', 0, knum, nbordr,&
                 prec, crit, iret)
     if (iret .eq. 10) then
-        call u2mesk('F', 'CALCULEL4_8', 1, resuco)
+        call utmess('F', 'CALCULEL4_8', sk=resuco)
         goto 60
 !
     endif
     if (iret .ne. 0) then
-        call u2mess('F', 'ALGORITH3_41')
+        call utmess('F', 'ALGORITH3_41')
         goto 60
 !
     endif
@@ -225,7 +224,7 @@ subroutine op0183()
                 call codent(iordr, 'G', kiord)
                 valk(1)=kiord
                 valk(2)=option
-                call u2mesk('A', 'PREPOST5_2', 2, valk)
+                call utmess('A', 'PREPOST5_2', nk=2, valk=valk)
                 goto 40
 !
             endif
@@ -240,7 +239,7 @@ subroutine op0183()
             call codent(iordr, 'G', kiord)
             valk(1)=kiord
             valk(2)=option
-            call u2mesk('A', 'PREPOST5_3', 2, valk)
+            call utmess('A', 'PREPOST5_3', nk=2, valk=valk)
             goto 40
         else
 !         CREATION D'UN VECTEUR ACCROISSEMENT DE DEPLACEMENT NUL
@@ -310,7 +309,7 @@ subroutine op0183()
             call codent(iordr, 'G', kiord)
             valk(1)=option
             valk(2)=kiord
-            call u2mesk('A', 'PREPOST5_1', 2, valk)
+            call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
         endif
         call vtcreb(chamno, nume, 'G', 'R', neq)

@@ -55,17 +55,16 @@ subroutine op0081()
 #include "asterfort/jedetr.h"
 #include "asterfort/refe81.h"
 #include "asterfort/remp81.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ioc, n1, nbval, imod, iret
 !
-    real(kind=8) ::  pi
+    real(kind=8) :: pi
 !
     character(len=8) :: nomres, nomcon, nomope, mailla, basmod, blanc, k8bid
     character(len=19) :: raid, mass, amor, impe, typmat
     character(len=24) :: nommat
-    integer ::  nbmod, iocm, iocf, ioca, vali(2)
+    integer :: nbmod, iocm, iocf, ioca, vali(2)
     integer :: lmass, lrigi, lamor, ldref, ldres
 !
     data blanc /'        '/
@@ -123,7 +122,7 @@ subroutine op0081()
         else if (typmat.eq.'MATR_ASSE_DEPL_C') then
             call calprc(nommat, 'G', basmod, raid)
         else
-            call u2mesk('F', 'ALGORITH14_17', 1, typmat)
+            call utmess('F', 'ALGORITH14_17', sk=typmat)
         endif
 !
         nommat = nomres//'.MAEL_MASS'
@@ -166,8 +165,7 @@ subroutine op0081()
             vali(1) = nbmod
             vali(2) = iocm
             if (iocm .lt. 0) vali(2) = -iocm
-            call u2mesg('F', 'ALGORITH17_31', 1, 'MASSE_GENE', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH17_31', sk='MASSE_GENE', ni=2, vali=vali)
         endif
 !
 ! ---   FREQUENCES PROPRES
@@ -179,8 +177,7 @@ subroutine op0081()
             vali(1) = nbmod
             vali(2) = iocf
             if (iocf .lt. 0) vali(2) = -iocm
-            call u2mesg('F', 'ALGORITH17_31', 1, 'FREQ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH17_31', sk='FREQ', ni=2, vali=vali)
         endif
 !
 ! ---   AMORTISSEMENTS REDUITS
@@ -191,8 +188,7 @@ subroutine op0081()
             vali(1) = nbmod
             vali(2) = ioca
             if (iocf .lt. 0) vali(2) = -iocm
-            call u2mesg('F', 'ALGORITH17_31', 1, 'FREQ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH17_31', sk='FREQ', ni=2, vali=vali)
         endif
 !
 ! ----- REMPLISSAGE
@@ -223,8 +219,7 @@ subroutine op0081()
 !
 ! ---   LE VEC DES MASSES EFFE EST REMPLI A 0, ON EMET UNE ALARME
 !       (ON NE PEUT PAS LE REMPLIR, ON NE CONNAIT PAS LA MAT DE MASSE)
-        call u2mesg('A', 'ALGORITH17_32', 1, ' ', 0,&
-                    1, 0, 0.d0)
+        call utmess('A', 'ALGORITH17_32', sk=' ')
         do 50 imod = 1, 3*nbmod
             zr(ldres-1+imod) = 0.d0
 50      continue

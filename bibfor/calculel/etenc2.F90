@@ -21,7 +21,6 @@ subroutine etenc2(cartz, iret)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -29,9 +28,9 @@ subroutine etenc2(cartz, iret)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: cart
     character(len=*) :: cartz
     integer :: iret
@@ -58,7 +57,9 @@ subroutine etenc2(cartz, iret)
 !
     iret = 0
     call jeexin(cart//'.DESC', iret0)
-    if (iret0 .le. 0) call u2mess('F', 'CALCULEL2_49')
+    if (iret0 .le. 0) then
+        call utmess('F', 'CALCULEL2_49')
+    endif
 !
     call jeveuo(cart//'.NOLI', 'L', noli)
     call jeveuo(cart//'.DESC', 'L', desc)
@@ -118,8 +119,7 @@ subroutine etenc2(cartz, iret)
                         vali (1) = ient
                         vali (2) = i
                         vali (3) = ii
-                        call u2mesg('F', 'CALCULEL5_85', 1, valk, 3,&
-                                    vali, 0, 0.d0)
+                        call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
                     endif
                     zi(jptma-1+ii) = igd
 30              continue

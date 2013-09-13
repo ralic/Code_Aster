@@ -61,7 +61,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 !
@@ -156,7 +156,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         numail = zi(jnumad+imail-1)
         if ((zi(jtyma+numail-1).ne.ntseg) .and. (zi(jtyma+numail-1) .ne.ntseg2)) then
             write(k3b,'(I3)') icabl
-            call u2mesk('F', 'MODELISA7_54', 1, k3b)
+            call utmess('F', 'MODELISA7_54', sk=k3b)
         endif
         if (zi(jtyma+numail-1) .eq. ntseg) nbse2=nbse2+1
         if (zi(jtyma+numail-1) .eq. ntseg2) nbse3=nbse3+1
@@ -199,22 +199,22 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogrna(1))
+            call utmess('F', 'ELEMENTS_67', sk=nogrna(1))
         else if (iret.eq.1) then
             valk(1) = nogrna(1)
             valk(2) = k8b
-            call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
         noancr(1) = k8b
 !
         call utnono(' ', mailla, 'NOEUD', nogrna(2), k8b,&
                     iret)
         if (iret .eq. 10) then
-            call u2mesk('F', 'ELEMENTS_67', 1, nogrna(2))
+            call utmess('F', 'ELEMENTS_67', sk=nogrna(2))
         else if (iret.eq.1) then
             valk(1) = nogrna(2)
             valk(2) = k8b
-            call u2mesk('A', 'SOUSTRUC_87', 2, valk)
+            call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
         noancr(2) = k8b
 !
@@ -260,7 +260,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                     write(k3b,'(I3)') icabl
                     valk(1) = k3b
                     valk(2) = noancr(1)
-                    call u2mesk('F', 'MODELISA7_55', 2, valk)
+                    call utmess('F', 'MODELISA7_55', nk=2, valk=valk)
                 endif
                 isuiv0(nbchem) = isuiv
             endif
@@ -271,7 +271,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         write(k3b,'(I3)') icabl
         valk(1) = k3b
         valk(2) = noancr(1)
-        call u2mesk('F', 'MODELISA7_56', 2, valk)
+        call utmess('F', 'MODELISA7_56', nk=2, valk=valk)
     endif
 !
     nosui1 = zk8(jnonod+isuiv0(1)-1)
@@ -413,7 +413,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         valk(1) = k3b
         valk(2) = noancr(1)
         valk(3) = noancr(2)
-        call u2mesk('F', 'MODELISA7_57', 3, valk)
+        call utmess('F', 'MODELISA7_57', nk=3, valk=valk)
 !
 ! 3.2 MISE A JOUR DES OBJETS DE SORTIE
 ! ---
@@ -561,7 +561,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         else
 !
             write(k3b,'(I3)') icabl
-            call u2mesk('F', 'MODELISA7_58', 1, k3b)
+            call utmess('F', 'MODELISA7_58', sk=k3b)
         endif
 !
     endif

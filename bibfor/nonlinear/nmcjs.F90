@@ -110,7 +110,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 #include "asterfort/iunifi.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcsove.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imat, ndt, ndi, nvi, iret
 !
     real(kind=8) :: crit(*)
@@ -178,7 +178,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !     --------------------------------
 !
     if (((iisnan(tempm).gt.0).or.(iisnan(tref).gt.0)) .and. (materf(3,1).ne.0.d0)) then
-        call u2mess('F', 'CALCULEL_15')
+        call utmess('F', 'CALCULEL_15')
     else if (materf(3,1).eq.0.d0) then
         epsthe = 0.d0
         epsthm = 0.d0
@@ -206,7 +206,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
     if ((vind(nvi).ne.0.d0) .and. (vind(nvi).ne.1.d0) .and. (vind(nvi).ne.2.d0) .and.&
         (vind(nvi).ne.3.d0)) then
         write(umess,*) ' INDICATEUR DE PLASTICITE ERRONE : ',vind(nvi)
-        call u2mess('F', 'ALGORITH6_80')
+        call utmess('F', 'ALGORITH6_80')
     endif
 !
 !

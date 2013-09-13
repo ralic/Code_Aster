@@ -2,6 +2,7 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
                   itmax, toler, iter, r, rini,&
                   irteti)
     implicit none
+#include "asterfort/utmess.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +41,6 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
 !                       =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
 !                       =3 ITMAX ATTEINT REDECOUPAGE
 !       ----------------------------------------------------------------
-#include "asterfort/u2mesr.h"
     integer :: itmax, iter, nr, irteti, ii, nmat
     real(kind=8) :: toler, ddy(nr), dy(nr), r(nr), rini(nr), mater(nmat, 2)
 !
@@ -59,7 +59,7 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
         if (abs(mater(21,2)) .gt. mater(20,2)) then
             valrm(1) = mater(20,2)
             valrm(2) = mater(21,2)
-            call u2mesr('I', 'COMPOR1_58', 2, valrm)
+            call utmess('I', 'COMPOR1_58', nr=2, valr=valrm)
 !           REDECOUPAGE
             irteti = 3
             goto 9999

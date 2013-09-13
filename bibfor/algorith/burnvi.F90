@@ -30,7 +30,7 @@ subroutine burnvi(mod, ndt, ndi, nr, nvi)
 !     NVI   :  NB DE VARIABLES INTERNES
 !=====================================================================
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nr, nvi, nvint
     character(len=8) :: mod
 !
@@ -70,17 +70,17 @@ subroutine burnvi(mod, ndt, ndi, nr, nvi)
 ! === =================================================================
 !        MODELISATION DE TYPE POUTRE NON AUTORISEE
 ! === =================================================================
-        call u2mess('F', 'ALGORITH4_45')
+        call utmess('F', 'ALGORITH4_45')
     else if (mod(1:2).eq.'1D') then
 ! === =================================================================
 !        MODELISATION DE TYPE 1D NON AUTORISEE
 ! === ==============================================================
-        call u2mess('F', 'ALGORITH4_45')
+        call utmess('F', 'ALGORITH4_45')
     else
 ! === ==============================================================
 !        MODELISATION INCONNUE
 ! === ==============================================================
-        call u2mess('F', 'ALGORITH2_20')
+        call utmess('F', 'ALGORITH2_20')
     endif
 !
 end subroutine

@@ -2,13 +2,13 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
                   vr, livr, vc, livc, vk,&
                   livk)
     implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbpara, vi, livi(*)
     real(kind=8) :: vr, livr(*)
     complex(kind=8) :: vc, livc(*)
@@ -45,7 +45,6 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
 ! I/O : LIVK   : LISTE DES VALEURS POUR LES PARAMETRES "K"
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,10 +61,10 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
     nomtab = table
     call jeexin(nomtab//'.TBBA', iret)
     if (iret .eq. 0) then
-        call u2mess('F', 'UTILITAI4_64')
+        call utmess('F', 'UTILITAI4_64')
     endif
     if (nomtab(18:19) .ne. '  ') then
-        call u2mess('F', 'UTILITAI4_68')
+        call utmess('F', 'UTILITAI4_68')
     endif
 !
     call jeveuo(nomtab//'.TBLP', 'L', jtblp)
@@ -107,7 +106,7 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
             endif
         endif
 10  continue
-    call u2mesk('F', 'TABLE0_1', 1, nompar)
+    call utmess('F', 'TABLE0_1', sk=nompar)
 20  continue
 !
     call jedema()

@@ -70,11 +70,9 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 #include "asterfort/mdexch.h"
 #include "asterfort/mdexma.h"
 #include "asterfort/mdnoma.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
 #include "asterfort/utlicm.h"
+#include "asterfort/utmess.h"
     character(len=8) :: typech, modele, sdcarm
     character(len=19) :: chanom
     character(len=64) :: nochmd
@@ -190,7 +188,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     call dismoi('F', 'DIM_GEOM_B', nomaas, 'MAILLAGE', ndim,&
                 saux32, codret)
     if (codret .ne. 0) then
-        call u2mess('F', 'MED_43')
+        call utmess('F', 'MED_43')
     endif
 !
 ! 2.2. ==> CREATION DU NOM DU MAILLAGE POUR MED
@@ -198,8 +196,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     call mdnoma(nomamd, lnomam, nomaas, codret)
     if (codret .ne. 0) then
         saux08='MDNOMA  '
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 ! 2.3. ==> CE MAILLAGE EST-IL DEJA PRESENT DANS LE FICHIER ?
@@ -230,7 +227,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
                 ncmpve, ntlcmp, ntncmp, ntucmp)
 !
     if (ncmpve .gt. 80) then
-        call u2mesk('A', 'MED_99', 1, nochmd)
+        call utmess('A', 'MED_99', sk=nochmd)
         goto 9999
     endif
 !
@@ -334,8 +331,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 !
     else
 !
-        call u2mesg('F', 'MED2_4', 1, nochmd, 0,&
-                    0, 1, instan)
+        call utmess('F', 'MED2_4', sk=nochmd, sr=instan)
 !
     endif
 !

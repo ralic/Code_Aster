@@ -26,7 +26,7 @@ subroutine regene(nomres, resgen, profno)
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
@@ -140,8 +140,7 @@ subroutine regene(nomres, resgen, profno)
         call jeexin(mailsk//'.INV.SKELETON', iret)
         if (iret .eq. 0) then
             valk = mailsk
-            call u2mesg('F', 'ALGORITH14_27', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH14_27', sk=valk)
         endif
         call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
 !

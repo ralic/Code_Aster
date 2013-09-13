@@ -24,7 +24,7 @@ subroutine numer3(modele, lischa, solveu, nu)
 #include "asterfort/iunifi.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/numero.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: modele, solveu, lischa
     character(len=*) :: nu
 !
@@ -72,7 +72,7 @@ subroutine numer3(modele, lischa, solveu, nu)
         iul = iunifi('MESSAGE')
         call jeimpo(iul, ob1, ' ')
         call jeimpo(iul, ob2, ' ')
-        call u2mess('F', 'ASSEMBLA_31')
+        call utmess('F', 'ASSEMBLA_31')
     endif
 !
     call detrsd('NUME_DDL', nuav)

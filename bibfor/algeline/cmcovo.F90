@@ -27,9 +27,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
 !
@@ -142,7 +140,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         if (typm .eq. 'QUAD4') then
         else if (typm.eq.'TRIA3') then
         else
-            call u2mesk('F', 'ALGELINE_14', 1, typm)
+            call utmess('F', 'ALGELINE_14', sk=typm)
         endif
         call jelira(jexnum(connev, numa), 'LONMAX', nbno)
         call jeveuo(jexnum(connev, numa), 'L', jopt)
@@ -266,7 +264,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 valk(2) = ma1
                 valk(3) = ma2
                 valk(4) = kangl
-                call u2mesk('A', 'ALGELINE_15', 4, valk)
+                call utmess('A', 'ALGELINE_15', nk=4, valk=valk)
             endif
 72      continue
 !
@@ -309,8 +307,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jecroc(jexnom(nomnoe, nomg))
         else
             valk(1) = nomg
-            call u2mesg('F', 'ALGELINE4_5', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_5', sk=valk(1))
         endif
 40  end do
 !
@@ -324,7 +321,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         call codent(inov, 'G', knume)
         lgnu = lxlgut(knume)
 !
-        if (lgnu+lgno .gt. 8) call u2mess('F', 'ALGELINE_16')
+        if (lgnu+lgno .gt. 8) then
+            call utmess('F', 'ALGELINE_16')
+        endif
         nomg = prefno(1:lgno)//knume
         call jeexin(jexnom(nomnoe, nomg), iret)
         if (iret .eq. 0) then
@@ -332,8 +331,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             zk24(jnonew+ino-1) = nomg
         else
             valk(1) = nomg
-            call u2mesg('F', 'ALGELINE4_5', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_5', sk=valk(1))
         endif
 50  end do
 !
@@ -435,8 +433,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jecroc(jexnom(nommai, nomg))
         else
             valk(1) = nomg
-            call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_7', sk=valk(1))
         endif
 !
         zi(iatyma-1+ima) = zi(jtypm+ima-1)
@@ -465,7 +462,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         imav = imav + 1
         call codent(imav, 'G', knume)
         lgnd = lxlgut(knume)
-        if (lgnd+lgpref .gt. 8) call u2mess('F', 'ALGELINE_17')
+        if (lgnd+lgpref .gt. 8) then
+            call utmess('F', 'ALGELINE_17')
+        endif
         nomg = prefma(1:lgpref)//knume
 !
         call jeexin(jexnom(nommai, nomg), iret)
@@ -473,8 +472,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jecroc(jexnom(nommai, nomg))
         else
             valk(1) = nomg
-            call u2mesg('F', 'ALGELINE4_7', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_7', sk=valk(1))
         endif
 !
         call jenonu(jexnom(nommai, nomg), ima2)
@@ -539,8 +537,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 call jecroc(jexnom(grpmai, nomg))
             else
                 valk(1) = nomg
-                call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_9', sk=valk(1))
             endif
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
             call jelira(jexnum(grpmav, i), 'LONUTI', nbmai)
@@ -558,8 +555,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call jecroc(jexnom(grpmai, nomg))
         else
             valk(1) = nomg
-            call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGELINE4_9', sk=valk(1))
         endif
         call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma))
         call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
@@ -587,8 +583,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 call jecroc(jexnom(grpnoe, nomg))
             else
                 valk(1) = nomg
-                call u2mesg('F', 'ALGELINE4_11', 1, valk, 0,&
-                            0, 0, 0.d0)
+                call utmess('F', 'ALGELINE4_11', sk=valk(1))
             endif
             call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno))
             call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)

@@ -23,8 +23,7 @@ subroutine jenuno(nomlu, nomo)
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu, nomo
 ! ----------------------------------------------------------------------
 ! RENVOIE LE NOM ASSOCIE A UN IDENTIFICATEUR
@@ -79,7 +78,7 @@ subroutine jenuno(nomlu, nomo)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('F', 'JEVEUX_25', 1, noml32(1:24))
+        call utmess('F', 'JEVEUX_25', sk=noml32(1:24))
     else
         if (iret .eq. 1) then
 !
@@ -87,14 +86,13 @@ subroutine jenuno(nomlu, nomo)
 !
             genri = genr ( jgenr(iclaos) + idatos )
             if (genri .ne. 'N') then
-                call u2mesk('F', 'JEVEUX1_12', 1, noml32)
+                call utmess('F', 'JEVEUX1_12', sk=noml32)
             endif
             lutii = luti ( jluti(iclaos) + idatos )
             if (lutii .lt. numec .or. numec .le. 0) then
                 vali(1) = lutii
                 vali(2) = numec
-                call u2mesg('F', 'JEVEUX1_13', 1, noml32, 2,&
-                            vali, 0, valr)
+                call utmess('F', 'JEVEUX1_13', sk=noml32, ni=2, vali=vali)
             endif
             iadmi = iadm ( jiadm(iclaos) + 2*idatos-1 )
             iadmex = iadmi
@@ -121,14 +119,13 @@ subroutine jenuno(nomlu, nomo)
             call jjallc(iclaco, idatco, 'L', ibacol)
             ixnom = iszon ( jiszon + ibacol + idnom )
             if (ixnom .eq. 0) then
-                call u2mesk('F', 'JEVEUX1_14', 1, noml32)
+                call utmess('F', 'JEVEUX1_14', sk=noml32)
             endif
             lutii = luti ( jluti(iclaco) + ixnom )
             if (lutii .lt. numec .or. numec .le. 0) then
                 vali(1) = lutii
                 vali(2) = numec
-                call u2mesg('F', 'JEVEUX1_13', 1, noml32, 2,&
-                            vali, 0, valr)
+                call utmess('F', 'JEVEUX1_13', sk=noml32, ni=2, vali=vali)
             endif
             iadmi = iadm ( jiadm(iclaco) + 2*ixnom-1 )
             kadm = iadmi

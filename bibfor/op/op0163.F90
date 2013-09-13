@@ -39,9 +39,9 @@ subroutine op0163()
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
 !
@@ -189,7 +189,7 @@ subroutine op0163()
             call rsexch(' ', nomres, type(ich), iarch, chamno,&
                         iret)
             if (iret .eq. 0) then
-                call u2mesk('A', 'ALGORITH2_64', 1, chamno)
+                call utmess('A', 'ALGORITH2_64', sk=chamno)
             else if (iret .eq. 100) then
                 if (typres .eq. 'DYNA_HARMO') then
                     call vtcrem(chamno, matrm, 'G', 'C')

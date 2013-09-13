@@ -26,7 +26,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
 #include "asterfort/ntcra0.h"
 #include "asterfort/ntcrar.h"
 #include "asterfort/ntcrli.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: instin
     character(len=8) :: mailla
     character(len=19) :: sddisc
@@ -60,7 +60,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
     integer :: n1
     character(len=8) :: nomo, result
     character(len=19) :: lisins
-    integer ::  numreo
+    integer :: numreo
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
     call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
     if (n1 .eq. 0) then
         if (.not.lostat) then
-            call u2mess('F', 'DISCRETISATION_8')
+            call utmess('F', 'DISCRETISATION_8')
         endif
         levol = .false.
         call ntcra0(sddisc)

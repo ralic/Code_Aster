@@ -19,7 +19,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -38,7 +38,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro
@@ -133,7 +133,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
         if (lmanu) then
             if (mmitgo .eq. nbreag) then
                 if ((.not.mmcvgo) .and. (nbreag.gt.1)) then
-                    call u2mess('A', 'CONTACT3_96')
+                    call utmess('A', 'CONTACT3_96')
                 endif
                 mmcvgo = .true.
             else

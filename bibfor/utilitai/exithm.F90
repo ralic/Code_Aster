@@ -45,7 +45,7 @@ subroutine exithm(modele, yathm, perman)
 ! 0.1. ==> ARGUMENTS
 !
 #include "asterfort/dismoi.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele
 !
     logical :: yathm, perman
@@ -74,7 +74,7 @@ subroutine exithm(modele, yathm, perman)
     else if (repons.eq.'NON') then
         yathm = .false.
     else
-        call u2mesk('F', 'UTILITAI_75', 1, repons)
+        call utmess('F', 'UTILITAI_75', sk=repons)
     endif
 !
 end subroutine

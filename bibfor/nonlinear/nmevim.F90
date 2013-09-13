@@ -27,8 +27,8 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 #include "asterfort/nmimpx.h"
 #include "asterfort/nmlecv.h"
 #include "asterfort/nmltev.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sderro
     character(len=19) :: sddisc
     character(len=4) :: nombcl
@@ -98,36 +98,36 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
             if (meven .ne. ' ') then
                 if (llign) call nmimpx(sdimpr)
                 if (meven .eq. 'MECANONLINE10_1') then
-                    call u2mess('I', 'MECANONLINE10_1')
+                    call utmess('I', 'MECANONLINE10_1')
                 else if (meven.eq.'MECANONLINE10_2') then
-                    call u2mess('I', 'MECANONLINE10_2')
+                    call utmess('I', 'MECANONLINE10_2')
                 else if (meven.eq.'MECANONLINE10_3') then
-                    call u2mess('I', 'MECANONLINE10_3')
+                    call utmess('I', 'MECANONLINE10_3')
                 else if (meven.eq.'MECANONLINE10_4') then
-                    call u2mess('I', 'MECANONLINE10_4')
+                    call utmess('I', 'MECANONLINE10_4')
                 else if (meven.eq.'MECANONLINE10_5') then
-                    call u2mess('I', 'MECANONLINE10_5')
+                    call utmess('I', 'MECANONLINE10_5')
                 else if (meven.eq.'MECANONLINE10_6') then
-                    call u2mess('I', 'MECANONLINE10_6')
+                    call utmess('I', 'MECANONLINE10_6')
                 else if (meven.eq.'MECANONLINE10_7') then
-                    call u2mess('I', 'MECANONLINE10_7')
+                    call utmess('I', 'MECANONLINE10_7')
                 else if (meven.eq.'MECANONLINE10_8') then
-                    call u2mess('I', 'MECANONLINE10_8')
+                    call utmess('I', 'MECANONLINE10_8')
                 else if (meven.eq.'MECANONLINE10_9') then
-                    call u2mess('I', 'MECANONLINE10_9')
+                    call utmess('I', 'MECANONLINE10_9')
                 else if (meven.eq.'MECANONLINE10_10') then
-                    call u2mess('I', 'MECANONLINE10_10')
+                    call utmess('I', 'MECANONLINE10_10')
                 else if (meven.eq.'MECANONLINE10_11') then
-                    call u2mess('I', 'MECANONLINE10_11')
+                    call utmess('I', 'MECANONLINE10_11')
                 else if (meven.eq.'MECANONLINE10_12') then
-                    call u2mess('I', 'MECANONLINE10_12')
+                    call utmess('I', 'MECANONLINE10_12')
                 else if (meven.eq.'MECANONLINE10_20') then
-                    call u2mess('I', 'MECANONLINE10_20')
+                    call utmess('I', 'MECANONLINE10_20')
                 else if (meven.eq.'MECANONLINE10_24') then
-                    call u2mess('I', 'MECANONLINE10_24')
+                    call utmess('I', 'MECANONLINE10_24')
                 else if (meven.eq.'MECANONLINE10_25') then
                     if (cvbouc .and. nombcl .eq. 'NEWT') then
-                        call u2mess('A', 'MECANONLINE10_25')
+                        call utmess('A', 'MECANONLINE10_25')
                     endif
                 else
                     ASSERT(.false.)
@@ -147,16 +147,16 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
                     r8bid, ibid, action)
         if (nomevd .eq. 'COLLISION') then
             if (llign) call nmimpx(sdimpr)
-            call u2mess('I', 'MECANONLINE10_21')
+            call utmess('I', 'MECANONLINE10_21')
         else if (nomevd.eq.'INTERPENETRATION') then
             if (llign) call nmimpx(sdimpr)
-            call u2mess('I', 'MECANONLINE10_22')
+            call utmess('I', 'MECANONLINE10_22')
         else if (nomevd.eq.'DIVE_RESI') then
             if (llign) call nmimpx(sdimpr)
-            call u2mess('I', 'MECANONLINE10_23')
+            call utmess('I', 'MECANONLINE10_23')
         else if (nomevd.eq.'DELTA_GRANDEUR') then
             if (llign) call nmimpx(sdimpr)
-            call u2mess('I', 'MECANONLINE10_24')
+            call utmess('I', 'MECANONLINE10_24')
         endif
     endif
 !

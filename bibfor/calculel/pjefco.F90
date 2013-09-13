@@ -47,6 +47,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 #include "asterfort/pjeftg.h"
 #include "asterfort/pjfuco.h"
 #include "asterfort/reliem.h"
+#include "asterfort/utmess.h"
     character(len=8) :: moa1, moa2
     character(len=16) :: corres
     character(len=1) :: base
@@ -162,7 +163,9 @@ subroutine pjefco(moa1, moa2, corres, base)
 !        ------------------------
 !
 !       -- le mot cle VIS_A_VIS ne peut pas fonctionner avec la methode ECLA_PG :
-        if (noma1(1:2) .eq. '&&') call u2mess('F', 'CALCULEL4_17')
+        if (noma1(1:2) .eq. '&&') then
+            call utmess('F', 'CALCULEL4_17')
+        endif
 !
         do 30 iocc = 1, nbocc
 !

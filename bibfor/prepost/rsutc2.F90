@@ -1,6 +1,6 @@
 subroutine rsutc2(typres, nomch, nomgd, typsd)
     implicit none
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: typres, nomch, nomgd, typsd
 !
 ! person_in_charge: jacques.pellet at edf.fr
@@ -81,7 +81,7 @@ subroutine rsutc2(typres, nomch, nomgd, typsd)
         typsd = 'NOEU'
     else
 !
-        call u2mess('F', 'PREPOST4_76')
+        call utmess('F', 'PREPOST4_76')
     endif
 !
 !--- TRAITEMENT DES CHAMPS DE DEPLACEMENTS COMPLEXES

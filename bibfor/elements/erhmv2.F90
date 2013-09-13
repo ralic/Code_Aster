@@ -94,7 +94,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 !
 #include "asterc/r8miem.h"
 #include "asterfort/cabthm.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     logical :: axi, perman
     integer :: dimuel
     integer :: ndim, nno, nnos, nnom, dimdep, dimdef, nmec, np1, np2
@@ -348,7 +348,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 !
             tm2h1v(3) = tm2h1v(3) + poids2 * ( ter11 + ter12 )**2
         else
-            call u2mess('F', 'INDICATEUR_31')
+            call utmess('F', 'INDICATEUR_31')
         endif
 !
     endif

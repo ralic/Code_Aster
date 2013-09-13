@@ -34,7 +34,7 @@ subroutine jelibd(nomlu, ltot)
 #include "asterfort/jjcroc.h"
 #include "asterfort/jjlbsg.h"
 #include "asterfort/jjvern.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
 !
     integer :: lk1zon, jk1zon, liszon, jiszon
@@ -97,7 +97,7 @@ subroutine jelibd(nomlu, ltot)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        call u2mesk('A', 'JEVEUX_26', 1, noml32(1:24))
+        call utmess('A', 'JEVEUX_26', sk=noml32(1:24))
         goto 9999
     else if (iret .eq. 1) then
 !

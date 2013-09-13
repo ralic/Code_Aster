@@ -23,7 +23,7 @@ subroutine jenonu(nomlu, numo)
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: nomlu
     integer :: numo
 !     ==================================================================
@@ -48,13 +48,17 @@ subroutine jenonu(nomlu, numo)
     ipgcex = ipgc
     ipgc = -2
 !
-    if (len(nomlu) .ne. 32) call u2mesk('F', 'JEVEUX_24', 1, nomlu)
+    if (len(nomlu) .ne. 32) then
+        call utmess('F', 'JEVEUX_24', sk=nomlu)
+    endif
 !
     icre = 0
     noml32 = nomlu
     call jjvern(noml32, icre, iret)
 !
-    if (iret .eq. 0) call u2mesk('F', 'JEVEUX_23', 1, noml32)
+    if (iret .eq. 0) then
+        call utmess('F', 'JEVEUX_23', sk=noml32)
+    endif
 !
     if (iret .eq. 1) then
 !       ----- OBJET DE TYPE REPERTOIRE

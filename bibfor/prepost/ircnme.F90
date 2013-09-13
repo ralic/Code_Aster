@@ -43,9 +43,6 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 !
     implicit none
 #include "jeveux.h"
-!
-! 0.1. ==> ARGUMENTS
-!
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/ircame.h"
@@ -54,7 +51,10 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
+! 0.1. ==> ARGUMENTS
+!
     character(len=8) :: typech, modele, sdcarm
     character(len=19) :: chanom
     character(len=64) :: nochmd
@@ -128,7 +128,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 !====
 !
     if (codret .ne. 0 .and. codret .ne. 100) then
-        call u2mesk('A', 'MED_89', 1, chanom)
+        call utmess('A', 'MED_89', sk=chanom)
     endif
 !
     call jedema()

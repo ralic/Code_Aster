@@ -21,7 +21,6 @@ function mmmaxi(modelz, lisma, nbma)
     implicit none
     logical :: mmmaxi
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/infbav.h"
 #include "asterfort/infmue.h"
@@ -32,8 +31,9 @@ function mmmaxi(modelz, lisma, nbma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utmasu.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: modelz
     character(len=24) :: lisma
     integer :: nbma
@@ -122,7 +122,7 @@ function mmmaxi(modelz, lisma, nbma)
     else if (nbaxis.eq.0) then
         mmmaxi = .false.
     else
-        call u2mess('F', 'CONTACT2_12')
+        call utmess('F', 'CONTACT2_12')
     endif
 !
     call jedetr(maisup)

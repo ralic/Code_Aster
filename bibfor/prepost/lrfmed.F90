@@ -4,7 +4,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                   noma, nbcmpv, ncmpva, ncmpvm, prolz,&
                   iinst, crit, epsi, linoch, acce)
 ! aslint: disable=W1504
-    implicit  none
+    implicit none
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
@@ -47,6 +47,9 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !
 !
 #include "jeveux.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfinvr.h"
+#include "asterfort/as_mfiope.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -64,16 +67,12 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 #include "asterfort/lrmtyp.h"
 #include "asterfort/mdchin.h"
 #include "asterfort/mdexpm.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/as_mfinvr.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/ulisog.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter (nompro='LRFMED')
@@ -185,7 +184,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
         call mdchin(nofimd, ifimed, nochmd, typent, typgom,&
                     prefix, npas, iret)
         if (npas .eq. 0) then
-            call u2mesk('A', 'MED_95', 1, nochmd)
+            call utmess('A', 'MED_95', sk=nochmd)
             goto 240
         endif
         call jeveuo(prefix//'.INST', 'L', ipas)
@@ -220,7 +219,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
 !         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
         if (typcha(1:4) .eq. 'ELNO') then
             typent = edmail
-            call u2mesk('A', 'MED_53', 1, nochmd)
+            call utmess('A', 'MED_53', sk=nochmd)
             do 231,letype = 1,nbtyp
             iaux = renumd(letype)
             typgom = typgeo(iaux)
@@ -274,8 +273,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             numord = zi(jnume+itps-1)
             itps0=indiis(zi(jnuom),numord,1,npas)
             if (itps0 .eq. 0) then
-                call u2mesg('A', 'MED_87', 1, resu, 1,&
-                            numord, 0, r8b)
+                call utmess('A', 'MED_87', sk=resu, si=numord)
                 goto 250
             endif
             numpt=zi(inum+2*itps0-2)
@@ -344,8 +342,8 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
             valk (2) = chanom
             vali (1) = itps
             vali (2) = iret
-            call u2mesg('F', 'UTILITAI8_27', 2, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'UTILITAI8_27', nk=2, valk=valk, ni=2,&
+                        vali=vali)
         endif
         call copisd('CHAMP_GD', 'G', chanom, nomch)
         call rsnoch(resu, linoch(i), numord)

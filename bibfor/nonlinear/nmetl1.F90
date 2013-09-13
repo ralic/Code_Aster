@@ -18,7 +18,7 @@ subroutine nmetl1(result, numein, sdieto, icham)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -27,7 +27,7 @@ subroutine nmetl1(result, numein, sdieto, icham)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmetnc.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
     character(len=24) :: sdieto
     character(len=8) :: result
@@ -116,7 +116,7 @@ subroutine nmetl1(result, numein, sdieto, icham)
             if (iret .ne. 0) then
                 valk(1) = champ
                 valk(2) = nomcha
-                call u2mesk('A', 'MECANONLINE_2', 2, valk)
+                call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
             endif
             elseif ((loccha.eq.'ELGA').or. (loccha.eq.'ELNO').or. (&
         loccha.eq.'ELEM')) then

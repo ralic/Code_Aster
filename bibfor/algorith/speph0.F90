@@ -20,10 +20,8 @@ subroutine speph0(nomu, table)
 #include "asterfort/speph1.h"
 #include "asterfort/speph2.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utchdl.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomu, table
@@ -95,7 +93,7 @@ subroutine speph0(nomu, table)
         else
             call getvr8(' ', 'BANDE', nbval=2, vect=bande, nbret=ibid)
             if (ibid .eq. 0) then
-                call u2mess('F', 'ALGORITH10_61')
+                call utmess('F', 'ALGORITH10_61')
             endif
             call wkvect('&&SPEPH0.LISTEMODES', 'V V I', nbmod1, ilmode)
             do 10 im = 1, nbmod1
@@ -109,19 +107,19 @@ subroutine speph0(nomu, table)
                 endif
 10          continue
             if (nbmode .eq. 0) then
-                call u2mess('F', 'ALGORITH10_31')
+                call utmess('F', 'ALGORITH10_31')
             endif
         endif
     else
         call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=ibid)
         if (ibid .eq. 0) then
-            call u2mess('F', 'ALGORITH10_62')
+            call utmess('F', 'ALGORITH10_62')
         endif
         call wkvect('&&SPEPH0.LISTEMODES', 'V V I', nbmode, ilmode)
         call getvis(' ', 'NUME_ORDRE', nbval=nbmode, vect=zi(ilmode), nbret=ibid)
         do 20 im = 1, nbmode
             if (zi(ilmode-1+im) .gt. nbmod1) then
-                call u2mess('F', 'ALGORITH10_32')
+                call utmess('F', 'ALGORITH10_32')
             endif
 20      continue
     endif
@@ -167,7 +165,7 @@ subroutine speph0(nomu, table)
 200  continue
 !
     if (idim1 .ne. idim0) then
-        call u2mess('F', 'ALGORITH10_63')
+        call utmess('F', 'ALGORITH10_63')
     endif
 !
 !     --- OPTION DE RECOMBINAISON ---
@@ -181,18 +179,18 @@ subroutine speph0(nomu, table)
     if (nocham .eq. 'ACCE_GENE') then
         if (optcha(1:4) .eq. 'ACCE') then
         else
-            call u2mess('F', 'ALGORITH10_64')
+            call utmess('F', 'ALGORITH10_64')
         endif
     else if (nocham.eq.'VITE_GENE') then
         if (optcha(1:4) .eq. 'VITE') then
         else
-            call u2mess('F', 'ALGORITH10_65')
+            call utmess('F', 'ALGORITH10_65')
         endif
     else if (nocham.eq.'DEPL_GENE') then
         if (optcha(1:4) .eq. 'ACCE') then
-            call u2mess('F', 'ALGORITH10_66')
+            call utmess('F', 'ALGORITH10_66')
         else if (optcha(1:4).eq.'VITE') then
-            call u2mess('F', 'ALGORITH10_67')
+            call utmess('F', 'ALGORITH10_67')
         endif
     endif
     optch1 = optcha
@@ -204,7 +202,7 @@ subroutine speph0(nomu, table)
     call getvtx(' ', 'NOEUD', nbval=0, nbret=nbn1)
     call getvtx(' ', 'NOM_CMP', nbval=0, nbret=nbn2)
     if (nbn1 .ne. nbn2) then
-        call u2mess('F', 'ALGORITH10_68')
+        call utmess('F', 'ALGORITH10_68')
     endif
     nbn = -nbn1
     call wkvect('&&SPEPH0.NOEUD_REP', 'V V K8', nbn, inoen)
@@ -216,7 +214,7 @@ subroutine speph0(nomu, table)
     if (nbmail .ne. 0) then
         nbmail = -nbmail
         if (nbn .ne. nbmail) then
-            call u2mess('F', 'ALGORITH10_69')
+            call utmess('F', 'ALGORITH10_69')
         endif
         call wkvect('&&SPEPH0.MAILLE_REP', 'V V K8', nbn, imain)
         call getvtx(' ', 'MAILLE', nbval=nbn, vect=zk8(imain), nbret=ibid)
@@ -237,18 +235,18 @@ subroutine speph0(nomu, table)
             call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
                         iddl)
             if (inoeud .eq. 0) then
-                call u2mesk('F', 'UTILITAI_92', 1, noeud)
+                call utmess('F', 'UTILITAI_92', sk=noeud)
             else if (iddl.eq.0) then
                 valk(1) = cmp
                 valk(2) = noeud
-                call u2mesk('F', 'UTILITAI_93', 2, valk)
+                call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
             endif
             zi(inddl+i-1) = iddl
 30      continue
 !
     else if (typcha(1:9).eq.'CHAM_ELEM') then
         if (nbmail .eq. 0) then
-            call u2mess('F', 'ALGORITH10_72')
+            call utmess('F', 'ALGORITH10_72')
         endif
         call dismoi('F', 'NOM_MAILLA', cham19, 'CHAM_ELEM', ibid,&
                     noma, iret)
@@ -264,12 +262,12 @@ subroutine speph0(nomu, table)
                 valk(1) = cmp
                 valk(2) = noeud
                 valk(3) = maille
-                call u2mesk('F', 'ALGORITH10_73', 3, valk)
+                call utmess('F', 'ALGORITH10_73', nk=3, valk=valk)
             endif
             zi(inddl+i-1) = iddl
 40      continue
     else
-        call u2mess('F', 'CALCULEL_17')
+        call utmess('F', 'CALCULEL_17')
     endif
 !
     call getvtx(' ', 'OPTION', scal=optcal, nbret=ibid)
@@ -286,7 +284,7 @@ subroutine speph0(nomu, table)
     intdon = .true.
     if (option(1:4) .eq. 'DIAG') intdon = .false.
     if (intmod .and. .not.intdon) then
-        call u2mess('F', 'MODELISA5_81')
+        call utmess('F', 'MODELISA5_81')
     endif
 !
 !     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
@@ -309,8 +307,7 @@ subroutine speph0(nomu, table)
         if (nbtrou .ne. 1) then
             valk (1) = modsta
             valk (2) = acces
-            call u2mesg('F', 'ALGORITH14_63', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH14_63', nk=2, valk=valk)
         endif
         call rsexch('F', modsta, optch1, numod, cham19,&
                     iret)

@@ -27,8 +27,8 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tebiot.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/unsmfi.h"
+#include "asterfort/utmess.h"
 !
     integer :: nelas, ndim, iret
     parameter    ( nelas=4 )
@@ -60,26 +60,27 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
         call rccoma(imate, 'ELAS', 0, phenom, iret)
         if (iret .eq. 0) then
             if (phenom .eq. 'ELAS_ISTR') then
-                call u2mess('F', 'ALGORITH17_33')
+                call utmess('F', 'ALGORITH17_33')
             else if (phenom.eq.'ELAS_ORTH') then
-                call u2mess('F', 'ALGORITH17_34')
+                call utmess('F', 'ALGORITH17_34')
             endif
         else
 ! CAS ELAS_GONF
             call rccoma(imate, 'ELAS_ISTR', 0, phenom, iret)
             if (iret .eq. 0) then
-                call u2mess('F', 'ALGORITH17_33')
+                call utmess('F', 'ALGORITH17_33')
             endif
             call rccoma(imate, 'ELAS_ORTH', 0, phenom, iret)
             if (iret .eq. 0) then
-                call u2mess('F', 'ALGORITH17_34')
+                call utmess('F', 'ALGORITH17_34')
             endif
             phenom = 'ELAS'
 !
         endif
 !
         call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                    [t], 3, ncra1(1), elas( 1), icodre, 0)
+                    [t], 3, ncra1(1), elas( 1), icodre,&
+                    0)
 !
         young = elas(1)
         nu = elas(2)
@@ -117,8 +118,8 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
 ! =====================================================================
 ! --- SI ABSENCE DE MECANIQUE -----------------------------------------
 ! =====================================================================
-    else
-     if (aniso .eq. 0) then
+else
+    if (aniso .eq. 0) then
 ! =====================================================================
 ! --- CALCUL CAS ISOTROPE ---------------------------------------------
 ! =====================================================================
@@ -137,12 +138,12 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
             biot(3)=phi0
             call tebiot(angmas, biot, tbiot, 0, ndim)
         endif
-     else if (aniso.eq.1) then
+    else if (aniso.eq.1) then
 ! =====================================================================
 ! --- CALCUL CAS ISOTROPE TRANSVERSE-----------------------------------
 ! =====================================================================
         if (ndim .ne. 3) then
-            call u2mess('F', 'ALGORITH17_38')
+            call utmess('F', 'ALGORITH17_38')
         endif
         alphfi = 0.0d0
         cs = em
@@ -157,12 +158,12 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
             biot(4)=phi0
             call tebiot(angmas, biot, tbiot, 1, ndim)
         endif
-     else if (aniso.eq.2) then
+    else if (aniso.eq.2) then
 ! =====================================================================
 ! --- CALCUL CAS ORTHO 2D-----------------------------------
 ! =====================================================================
         if (ndim .ne. 2) then
-            call u2mess('F', 'ALGORITH17_37')
+            call utmess('F', 'ALGORITH17_37')
         endif
         alphfi = 0.0d0
         cs = em
@@ -177,8 +178,8 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
             biot(4)=phi0
             call tebiot(angmas, biot, tbiot, 2, ndim)
         endif
-     endif
     endif
+endif
 ! =====================================================================
 ! --- CALCUL EPSV AU TEMPS MOINS --------------------------------------
 ! =====================================================================

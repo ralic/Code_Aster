@@ -1,7 +1,6 @@
 subroutine celcel(transf, cel1, base, cel2)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -14,8 +13,9 @@ subroutine celcel(transf, cel1, base, cel2)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: transf, cel1, base, cel2
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -203,7 +203,7 @@ subroutine celcel(transf, cel1, base, cel2)
         if (ico .eq. 0) then
             valk(1)=cel1
             valk(2)=nomgd
-            call u2mesk('F', 'CALCULEL2_40', 2, valk)
+            call utmess('F', 'CALCULEL2_40', nk=2, valk=valk)
         endif
 !
 !

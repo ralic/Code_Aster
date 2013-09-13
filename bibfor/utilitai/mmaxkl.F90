@@ -26,7 +26,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
 !
@@ -111,7 +111,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     call getvid('COMP_INCR', 'SIGM_INIT', iocc=1, scal=chsigi, nbret=init)
     if (init .ne. 0) then
         valk='CALC_K_MAX'
-        call u2mesk('F', 'RUPTURE1_13', 1, valk)
+        call utmess('F', 'RUPTURE1_13', sk=valk)
     endif
 !
 ! CALCUL DE K POUR CHACUNE DES SITUATIONS

@@ -31,7 +31,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcmat.h"
 #include "asterfort/nmxmat.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, solveu
     character(len=24) :: numedd, numfix, resoco, defico
@@ -182,7 +182,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
                     .false., nbmatr, ltypma, loptme, loptma,&
                     lcalme, lassme)
         if (lvarc) then
-            call u2mess('A', 'MECANONLINE3_2')
+            call utmess('A', 'MECANONLINE3_2')
         endif
     endif
 !
@@ -207,7 +207,7 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
                     lcalme, lassme, lcfint, meelem, measse,&
                     veelem, ldccvg, codere)
         if (ldccvg .gt. 0) then
-            call u2mess('F', 'MECANONLINE_1')
+            call utmess('F', 'MECANONLINE_1')
         endif
     endif
 !

@@ -1,7 +1,6 @@
 subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dimge1.h"
 #include "asterfort/dismma.h"
@@ -16,7 +15,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     integer :: repi, ierd
     character(len=*) :: questi, repkz, nomobz
 ! ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer :: dimge(3)
     logical :: melang
-    character(len=8) ::  calcri, mailla, nomacr, modele
+    character(len=8) :: calcri, mailla, nomacr, modele
     character(len=16) :: nomte, phenom, nomodl, tyvois
     character(len=19) :: nomob
     character(len=32) :: repk
@@ -391,7 +391,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         else if (phenom(1:4).eq.'ACOU') then
             repk='ACOUSTIQUE'
         else
-            call u2mesk('F', 'UTILITAI_63', 1, phenom)
+            call utmess('F', 'UTILITAI_63', sk=phenom)
         endif
 !
 !

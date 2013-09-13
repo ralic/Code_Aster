@@ -17,8 +17,7 @@ subroutine rcfode(ifon, temp, f, df)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ifon
     real(kind=8) :: temp, f, df
 ! ......................................................................
@@ -50,14 +49,14 @@ subroutine rcfode(ifon, temp, f, df)
         df = 0.d0
         goto 101
     else if (zk24(jpro)(1:1).eq.'I') then
-        call u2mess('F', 'MODELISA6_31')
+        call utmess('F', 'MODELISA6_31')
     endif
     isave = zi(ifon+indfct)
     if (zk24(jpro)(1:1) .eq. 'N') then
 !
 !---- NAPPE - IMPOSSIBLE
 !
-        call u2mess('F', 'MODELISA6_58')
+        call utmess('F', 'MODELISA6_58')
     endif
     nbvf = zi(ifon)
 !
@@ -118,8 +117,7 @@ subroutine rcfode(ifon, temp, f, df)
             f = df*(temp-zr(jp))+zr(jv)
         else if (zk24(jpro+4)(1:1).eq.'E') then
             valr = temp
-            call u2mesg('F', 'MODELISA8_93', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('F', 'MODELISA8_93', sr=valr)
         endif
         isave = 1
     else if (tessup) then
@@ -133,8 +131,7 @@ subroutine rcfode(ifon, temp, f, df)
             f = df*(temp-zr(jp-1))+zr(jv-1)
         else if (zk24(jpro+4)(2:2).eq.'E') then
             valr = temp
-            call u2mesg('F', 'MODELISA8_94', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('F', 'MODELISA8_94', sr=valr)
         endif
         isave = nbvf - 1
     endif

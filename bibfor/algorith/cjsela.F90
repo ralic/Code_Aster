@@ -35,7 +35,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsove.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, iret
     real(kind=8) :: coef, e, nu, al, la, mu, hook(6, 6), i1
     real(kind=8) :: deps(6), dsig(6), sigd(6), sigf(6)
@@ -110,7 +110,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
     endif
 !
 !

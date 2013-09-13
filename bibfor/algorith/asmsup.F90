@@ -21,9 +21,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnc.h"
 #include "asterfort/typddl.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbmode, neq, nbsup, ndir(*), nsupp(*), tcosup(nbsup, *), lordr(*)
@@ -108,8 +106,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                 valk(1) = dir(id)
                 vali(1) = nbbd
                 vali(2) = nsupp(id)
-                call u2mesg('E', 'SEISME_23', 1, valk, 2,&
-                            vali, 0, 0.d0)
+                call utmess('E', 'SEISME_23', sk=valk(1), ni=2, vali=vali)
             endif
         endif
 10  end do
@@ -124,7 +121,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
         ier = ier + 1
         valk(1) = meca
         valk(2) = nomsy
-        call u2mesk('E', 'SEISME_24', 2, valk)
+        call utmess('E', 'SEISME_24', nk=2, valk=valk)
         goto 9999
     endif
 !
@@ -187,7 +184,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                             ier = ier + 1
                             valk(1) = noeu
                             valk(2) = noma
-                            call u2mesk('E', 'SEISME_1', 2, valk)
+                            call utmess('E', 'SEISME_1', nk=2, valk=valk)
                             goto 46
                         endif
                         do 48 is = 1, nbsup
@@ -213,7 +210,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                                 ier = ier + 1
                                 valk(1) = grnoeu
                                 valk(2) = noma
-                                call u2mesk('E', 'SEISME_2', 2, valk)
+                                call utmess('E', 'SEISME_2', nk=2, valk=valk)
                                 goto 50
                             else
                                 call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
@@ -239,7 +236,9 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 42  end do
 !
 9999  continue
-    if (ier .ne. 0) call u2mess('F', 'SEISME_6')
+    if (ier .ne. 0) then
+        call utmess('F', 'SEISME_6')
+    endif
 !
     call jedema()
 end subroutine

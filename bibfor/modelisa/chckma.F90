@@ -31,7 +31,6 @@ subroutine chckma(nomu, dtol)
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterfort/cncinv.h"
@@ -45,8 +44,9 @@ subroutine chckma(nomu, dtol)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: nomu
     real(kind=8) :: dtol
 !
@@ -126,10 +126,10 @@ subroutine chckma(nomu, dtol)
 11      continue
 10  end do
     if (alarme) then
-        call u2mess('A', 'MODELISA4_6')
+        call utmess('A', 'MODELISA4_6')
     endif
     if (nb200 .eq. 1) then
-        call u2mess('A', 'MODELISA4_7')
+        call utmess('A', 'MODELISA4_7')
     endif
 !
 !
@@ -228,7 +228,7 @@ subroutine chckma(nomu, dtol)
         it=it+nbnm
 100  end do
     if (alarme) then
-        call u2mess('A', 'MODELISA4_8')
+        call utmess('A', 'MODELISA4_8')
     endif
 !
 !     -----------------------------------------------------------
@@ -278,11 +278,11 @@ subroutine chckma(nomu, dtol)
         it=it+nbnm
 200  end do
     if (alarme) then
-        call u2mess('A', 'MODELISA4_9')
+        call utmess('A', 'MODELISA4_9')
     endif
 !     ON ARRETE EN ERREUR SUR MAILLE DEGENEREE
     if (erreur) then
-        call u2mess('F', 'MODELISA4_10')
+        call utmess('F', 'MODELISA4_10')
     endif
 !
 !     -----------------------------------------------------------

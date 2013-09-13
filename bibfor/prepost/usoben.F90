@@ -1,15 +1,15 @@
 subroutine usoben(guidag, dimobs, obsuse, nco, rayo,&
                   thet, nbsect, parusu, typusu, nomt19,&
                   arete, arete2, rcarte, denc)
-    implicit   none
+    implicit none
 #include "asterc/r8dgrd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/tbajli.h"
-#include "asterfort/u2mesg.h"
 #include "asterfort/usenco.h"
 #include "asterfort/usvect.h"
+#include "asterfort/utmess.h"
     integer :: dimobs, nco, nbsect, typusu(*)
     real(kind=8) :: obsuse(*), parusu(20, *), rayo(*), thet(*), arete, arete2
     real(kind=8) :: rcarte, denc
@@ -113,15 +113,13 @@ subroutine usoben(guidag, dimobs, obsuse, nco, rayo,&
 !
         if (abs(alpham-alphaf) .le. r8prem()) then
             vali = i
-            call u2mesg('A', 'PREPOST6_4', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'PREPOST6_4', si=vali)
             goto 100
         endif
 !
         if (abs(alpham-alphad) .le. r8prem()) then
             vali = i
-            call u2mesg('A', 'PREPOST6_5', 0, ' ', 1,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'PREPOST6_5', si=vali)
             goto 100
         endif
 !

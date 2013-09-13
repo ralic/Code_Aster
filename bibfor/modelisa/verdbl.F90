@@ -1,5 +1,6 @@
 subroutine verdbl(deblig, cnl, ier, irteti)
     implicit none
+#include "asterfort/utmess.h"
 !       ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +27,6 @@ subroutine verdbl(deblig, cnl, ier, irteti)
 !       OUT     IER     =       0 > VRAI ( RETURN )
 !                       =       1 > FAUX ( RETURN 1 )
 !       ----------------------------------------------------------------
-#include "asterfort/u2mesk.h"
     integer :: ier, deblig
     character(len=14) :: cnl
     character(len=16) :: cmd
@@ -37,7 +37,7 @@ subroutine verdbl(deblig, cnl, ier, irteti)
 !-----------------------------------------------------------------------
     irteti = 0
     if (deblig .eq. 0) then
-        call u2mesk('E', 'MODELISA7_66', 1, cnl)
+        call utmess('E', 'MODELISA7_66', sk=cnl)
         ier = 1
         irteti = 1
         goto 9999

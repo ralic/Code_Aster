@@ -23,9 +23,8 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 #include "asterfort/numek8.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utcmp2.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
 !
@@ -213,7 +212,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                             nbret=n1)
             else
                 if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
-                    call u2mess('F', 'POSTRELE_20')
+                    call utmess('F', 'POSTRELE_20')
                 endif
                 call getvtx('ACTION', 'RESULTANTE', iocc=iocc, nbval=0, nbret=n1)
                 call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=0, nbret=n2)
@@ -252,7 +251,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 !
             nomobj = '&&OP0051.NOMCMP.USER'
             call utncmp(nchp19, nbc, nomobj)
-            if (nbc .eq. 0) call u2mesi('F', 'POSTRELE_54', 1, iocc)
+            if (nbc .eq. 0) then
+                call utmess('F', 'POSTRELE_54', si=iocc)
+            endif
             call jeveuo(nomobj, 'L', ancpu2)
             call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbc)
             call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)

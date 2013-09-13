@@ -56,7 +56,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 #include "asterfort/epthmc.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option
     character(len=4) :: fami
     real(kind=8) :: xyz(1), depl(1), epsm(1), repere(7)
@@ -106,7 +106,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
                     zr(ivf), xyz, repere, instan, mater,&
                     option, epsth)
     else if (option(1:4).eq.'EPME'.or.option(1:4).eq.'EPMG') then
-        call u2mesk('F', 'ELEMENTS_15', 1, phenom)
+        call utmess('F', 'ELEMENTS_15', sk=phenom)
     endif
 !
 ! --- CALCUL DES DEFORMATIONS MECANIQUES AUX POINTS D'INTEGRATION :

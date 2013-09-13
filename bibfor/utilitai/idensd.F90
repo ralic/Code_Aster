@@ -5,7 +5,7 @@ function idensd(typesd, sd1, sd2)
 #include "asterfort/idenob.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: sd1, sd2, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -65,7 +65,7 @@ function idensd(typesd, sd1, sd2)
 !
 !
     else
-        call u2mesk('F', 'UTILITAI_47', 1, typ2sd)
+        call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
     goto 9999

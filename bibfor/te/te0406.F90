@@ -1,5 +1,5 @@
 subroutine te0406(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -14,8 +14,7 @@ subroutine te0406(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/transp.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
 #include "blas/ddot.h"
@@ -122,7 +121,7 @@ subroutine te0406(option, nomte)
                 iret)
     if (icompo .ne. 0) then
         if (zk16(icompo+2) .eq. 'GROT_GDEP') then
-            call u2mess('F', 'ELEMENTS3_91')
+            call utmess('F', 'ELEMENTS3_91')
         endif
     endif
 !
@@ -409,7 +408,7 @@ subroutine te0406(option, nomte)
 !
                 zr ( jener ) = 0.5d0 * zr ( jfreq ) * zr ( jener )
             else
-                call u2mesk('F', 'ELEMENTS2_1', 1, option)
+                call utmess('F', 'ELEMENTS2_1', sk=option)
             endif
         endif
 !

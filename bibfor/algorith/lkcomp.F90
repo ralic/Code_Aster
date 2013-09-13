@@ -3,7 +3,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
                   option, sigp, vinp, dside, retcom,&
                   invi)
 !
-    implicit  none
+    implicit none
 #include "asterc/iisnan.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -22,7 +22,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 #include "asterfort/lkoptg.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: retcom, imate, invi
     character(len=8) :: mod(*)
     character(len=16) :: option
@@ -170,7 +170,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).gt.0)) then
         if ((iisnan(tref).gt.0) .and. (indal .eq. 0)) then
-            call u2mess('F', 'CALCULEL_31')
+            call utmess('F', 'CALCULEL_31')
         else
             coef = alpha*(tp-tref) - alpha*(tm-tref)
         endif
@@ -205,7 +205,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
         call lkcrip(i1ml, sml, vinm, nbmat, materd,&
                     ucrpm, seupm)
         if (seupm/materd(4,1) .gt. 1.0d-6) then
-            call u2mess('F', 'ALGORITH2_2')
+            call utmess('F', 'ALGORITH2_2')
         endif
     endif
 ! =================================================================

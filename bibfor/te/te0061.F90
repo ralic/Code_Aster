@@ -30,7 +30,6 @@ subroutine te0061(option, nomte)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
@@ -39,10 +38,11 @@ subroutine te0061(option, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/utrcyl.h"
+!
     integer :: nbres
     parameter (nbres=4)
     character(len=8) :: nomres(nbres)
@@ -112,7 +112,7 @@ subroutine te0061(option, nomte)
         lambor(3) = valres(3)
         cp = valres(4)
     else
-        call u2mess('F', 'ELEMENTS2_63')
+        call utmess('F', 'ELEMENTS2_63')
     endif
 !
 !====

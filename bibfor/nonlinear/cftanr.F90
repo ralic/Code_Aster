@@ -37,8 +37,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     integer :: posenm, posnoe, numenm
     integer :: izone
@@ -137,9 +136,9 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 !
     if (lescl) then
         if (posnoe .eq. 0) then
-            call u2mess('F', 'CONTACT_98')
+            call utmess('F', 'CONTACT_98')
         else if (posnoe.eq.-1) then
-            call u2mess('F', 'CONTACT_99')
+            call utmess('F', 'CONTACT_99')
         endif
     endif
 !
@@ -190,12 +189,12 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
             vector(3) = mminfr(defico,'VECT_MAIT_DIRZ',izone)
         endif
         if ((ndimg.eq.2) .and. (itypem.eq.2)) then
-            call u2mesk('F', 'CONTACT3_43', 1, nommam)
+            call utmess('F', 'CONTACT3_43', sk=nommam)
         endif
         lpoutr = (ndimg.eq.3).and.(aliasm(1:2).eq.'SE')
         lpoint = aliasm.eq.'POI1'
         if (lpoint) then
-            call u2mesk('F', 'CONTACT3_75', 1, nommam)
+            call utmess('F', 'CONTACT3_75', sk=nommam)
         endif
         call cfnors(noma, defico, resoco, posmam, typenm,&
                     numenm, lpoutr, lpoint, ksipr1, ksipr2,&
@@ -213,7 +212,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
             vector(3) = mminfr(defico,'VECT_ESCL_DIRZ',izone)
         endif
         if ((ndimg.eq.2) .and. (itypee.eq.2)) then
-            call u2mesk('F', 'CONTACT3_43', 1, nommae)
+            call utmess('F', 'CONTACT3_43', sk=nommae)
         endif
         lpoutr = (ndimg.eq.3).and.(aliase(1:2).eq.'SE')
         lpoint = aliase.eq.'POI1'

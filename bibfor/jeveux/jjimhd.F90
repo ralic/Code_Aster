@@ -25,7 +25,7 @@ subroutine jjimhd(idfic, inat, crnom, ngrp, kattr,&
 #include "asterc/hdfopd.h"
 #include "asterc/hdfwat.h"
 #include "asterc/hdfwsv.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: idfic, inat, iadmi, lt, lonoi
     character(len=*) :: crnom, ngrp, genri, typei
     character(len=24) :: kattr(*)
@@ -129,12 +129,12 @@ subroutine jjimhd(idfic, inat, crnom, ngrp, kattr,&
                 write(kattr(4)(11:11),'(I1)') lt
             endif
         else
-            call u2mesk('F', 'JEVEUX1_43', 1, typei)
+            call utmess('F', 'JEVEUX1_43', sk=typei)
         endif
         iddat = hdfopd (idfic,ngrp,crnom)
         iret = hdfwat (iddat,nomatr,5,kattr)
         if (iret .lt. 0) then
-            call u2mesk('A', 'JEVEUX1_48', 1, crnom)
+            call utmess('A', 'JEVEUX1_48', sk=crnom)
         endif
         iret = hdfcld (iddat)
     else
@@ -155,7 +155,7 @@ subroutine jjimhd(idfic, inat, crnom, ngrp, kattr,&
         endif
         iret = hdfwat (idg,nomatr,5,kattr)
         if (iret .lt. 0) then
-            call u2mesk('A', 'JEVEUX1_48', 1, crnom)
+            call utmess('A', 'JEVEUX1_48', sk=crnom)
         endif
         iret = hdfwsv (idfic,crnom,'T_NOM',typei,lt,k1zon(ji),lg)
         typei = 'I'

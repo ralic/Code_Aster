@@ -8,7 +8,7 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
 #include "asterc/r8gaem.h"
 #include "asterfort/fun1.h"
 #include "asterfort/fun2.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itype
     real(kind=8) :: sk(*)
     real(kind=8) :: e, rof, ce, a1, ai1, a2, ai2, xl, xiy1, xiy2, xiz1, xiz2
@@ -113,7 +113,7 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
 !     -- SI G  ET E SONT NULS : K=0
     if (abs(g) .lt. 1.d0/r8gaem()) then
         if (abs(e) .lt. 1.d0/r8gaem()) goto 9999
-        call u2mess('F', 'ELEMENTS2_54')
+        call utmess('F', 'ELEMENTS2_54')
     endif
 !
 !     1/ TRACTION-COMPRESSION

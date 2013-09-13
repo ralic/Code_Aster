@@ -38,7 +38,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: vecelz
     character(len=24) :: modele
@@ -111,7 +111,9 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     if ((n1.gt.0) .and. (nevo.gt.0)) then
         call rsexch(' ', evol, 'DEPL', numref, depdid,&
                     iret)
-        if (iret .ne. 0) call u2mesk('F', 'MECANONLINE5_20', 1, evol)
+        if (iret .ne. 0) then
+            call utmess('F', 'MECANONLINE5_20', sk=evol)
+        endif
     endif
 !
 ! --- CONSTRUCTION DU VECTEUR BDIDI.UREF

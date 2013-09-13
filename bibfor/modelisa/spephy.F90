@@ -65,7 +65,6 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -75,8 +74,9 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     logical :: intphy, intmod, exiind
     integer :: ioptch, nbmr, nbn, imod1, nbpf, nbm, ivitef
     integer :: nuor(nbmr), lnumi, lnumj, ij
@@ -159,7 +159,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
             if (.not.exiind) then
                 valk(1)(1:10) = 'INTE_SPEC'
                 valk(2)(1:8) = table
-                call u2mesk('F', 'MODELISA2_91', 2, valk)
+                call utmess('F', 'MODELISA2_91', nk=2, valk=valk)
             endif
 !
             isj = (imj* (imj-1))/2 + imi

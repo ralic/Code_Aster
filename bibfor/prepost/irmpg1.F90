@@ -53,17 +53,16 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 0.1. ==> ARGUMENTS
 !
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mlclci.h"
+#include "asterfort/as_mlclor.h"
+#include "asterfort/as_mlclow.h"
+#include "asterfort/as_mlcnlc.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mlclow.h"
-#include "asterfort/as_mlclci.h"
-#include "asterfort/as_mlclor.h"
-#include "asterfort/as_mlcnlc.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbnoto, nbrepg, nbsp, ndim, typgeo
 !
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
@@ -124,13 +123,12 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
     inquire(file=nofimd,exist=ficexi)
     if (.not. ficexi) then
-        call u2mess('F', 'MED2_3')
+        call utmess('F', 'MED2_3')
     endif
     call as_mfiope(idfimd, nofimd, edleaj, codret)
     if (codret .ne. 0) then
         saux08='mfiope'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 ! 1.4. ==> CREATION DE LA PRMIERE MOITIE DU NOM DE LA LOCALISATION :
@@ -158,8 +156,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
     if (codret .ne. 0) then
         saux08='mlcnlc'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !
@@ -186,12 +183,11 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !              NBREPL = NOMBRE DE POINTS DE GAUSS
 !
     call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl,&
-                ndim2, nomas2, codret)
+                   ndim2, nomas2, codret)
 !
     if (codret .ne. 0) then
         saux08='mlclci'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (nivinf .gt. 1) then
@@ -218,12 +214,11 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
         if (typgel .eq. typgeo .and. nbrepl .eq. nbrepg) then
 !
             call as_mlclor(idfimd, raux1, raux2, raux3, edfuin,&
-                        saux64, codret)
+                           saux64, codret)
 !
             if (codret .ne. 0) then
                 saux08='mlclor'
-                call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                            codret, 0, 0.d0)
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
             endif
 !
             kaux = nbnoto*ndim
@@ -433,12 +428,11 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     do 32 , iaux = 1 , nblopg
 !
     call as_mlclci(idfimd, iaux, saux64, typgel, nbrepl,&
-                ndim2, nomas2, codret)
+                   ndim2, nomas2, codret)
 !
     if (codret .ne. 0) then
         saux08='mlclci'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (saux64 .eq. nolopg) then
@@ -466,13 +460,12 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     endif
 !
     call as_mlclow(idfimd, typgeo, refcoo, edfuin, nbrepg,&
-                gscoo, wg, nolopg, ndim, nomasu,&
-                codret)
+                   gscoo, wg, nolopg, ndim, nomasu,&
+                   codret)
 !
     if (codret .ne. 0) then
         saux08='mlclow'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 !====
@@ -486,8 +479,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
         saux08='mficlo'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
     if (nivinf .gt. 1) then

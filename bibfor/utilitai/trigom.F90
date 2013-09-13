@@ -20,7 +20,7 @@ function trigom(fonc, x)
     implicit none
     real(kind=8) :: trigom
 #include "asterfort/assert.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=4) :: fonc
 ! ----------------------------------------------------------------------
 !  BUT : CALCULER ASIN(X) OU ACOS(X) SANS RISQUER DE SE PLANTER SI
@@ -36,7 +36,9 @@ function trigom(fonc, x)
     real(kind=8) :: x, eps, x2
     eps = 1.d-12
 !
-    if ((x.gt.1.d0+eps) .or. (x.lt.-1.d0-eps)) call u2mess('F', 'UTILITAI5_50')
+    if ((x.gt.1.d0+eps) .or. (x.lt.-1.d0-eps)) then
+        call utmess('F', 'UTILITAI5_50')
+    endif
 !
     x2 = x
     if (x .gt. 1.d0) x2 = 1.d0

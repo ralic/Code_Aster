@@ -19,7 +19,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: id, neq, nbsup, nsupp(*), ndir(*), nintra, nbdis(nbsup)
@@ -109,7 +109,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                         ier = ier + 1
                         valk(1) = noeu
                         valk(2) = noma
-                        call u2mesk('E', 'SEISME_1', 2, valk)
+                        call utmess('E', 'SEISME_1', nk=2, valk=valk)
                         goto 22
                     endif
                     if (nx .ne. 0) then
@@ -148,7 +148,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                         ier = ier + 1
                         valk(1) = grnoeu
                         valk(2) = noma
-                        call u2mesk('E', 'SEISME_2', 2, valk)
+                        call utmess('E', 'SEISME_2', nk=2, valk=valk)
                         goto 26
                     else
                         call jelira(jexnom(obj1, grnoeu), 'LONUTI', nn)
@@ -185,7 +185,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                     ier = ier + 1
                     valk(1) = noeref
                     valk(2) = noma
-                    call u2mesk('E', 'SEISME_1', 2, valk)
+                    call utmess('E', 'SEISME_1', nk=2, valk=valk)
                     goto 9999
                 endif
                 if (ire2 .ne. 0) then
@@ -203,7 +203,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                             endif
 92                      continue
                         ier = ier + 1
-                        call u2mesk('E', 'SEISME_3', 1, noeref)
+                        call utmess('E', 'SEISME_3', sk=noeref)
                         goto 9999
                     endif
 90              continue

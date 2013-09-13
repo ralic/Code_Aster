@@ -21,13 +21,13 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
+!
     integer :: nmafon, nmaen1, nmaen2, nmaen3
     integer :: jmafon, jmaen1, jmaen2, jmaen3
     character(len=8) :: noma
@@ -63,7 +63,9 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
 !
     nommai = noma//'.NOMMAI'
 !
-    if (niv .ge. 2) call u2mesi('I', 'XFEM_29', 1, nmafon)
+    if (niv .ge. 2) then
+        call utmess('I', 'XFEM_29', si=nmafon)
+    endif
     if (niv .ge. 3) then
         do 320 ima = 1, nmafon
             call jenuno(jexnum(nommai, zi(jmafon-1+ima)), nomail)
@@ -71,7 +73,9 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
 320      continue
     endif
 !
-    if (niv .ge. 2) call u2mesi('I', 'XFEM_30', 1, nmaen1)
+    if (niv .ge. 2) then
+        call utmess('I', 'XFEM_30', si=nmaen1)
+    endif
     if (niv .ge. 3) then
         do 321 ima = 1, nmaen1
             call jenuno(jexnum(nommai, zi(jmaen1-1+ima)), nomail)
@@ -79,7 +83,9 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
 321      continue
     endif
 !
-    if (niv .ge. 2) call u2mesi('I', 'XFEM_31', 1, nmaen2)
+    if (niv .ge. 2) then
+        call utmess('I', 'XFEM_31', si=nmaen2)
+    endif
     if (niv .ge. 3) then
         do 322 ima = 1, nmaen2
             call jenuno(jexnum(nommai, zi(jmaen2-1+ima)), nomail)
@@ -87,7 +93,9 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
 322      continue
     endif
 !
-    if (niv .ge. 2) call u2mesi('I', 'XFEM_32', 1, nmaen3)
+    if (niv .ge. 2) then
+        call utmess('I', 'XFEM_32', si=nmaen3)
+    endif
     if (niv .ge. 3) then
         do 323 ima = 1, nmaen3
             call jenuno(jexnum(nommai, zi(jmaen3-1+ima)), nomail)

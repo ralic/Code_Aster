@@ -35,8 +35,7 @@ subroutine op0036()
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsv.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc, ibid, ni, nr, nk, i, j, ir, jvale, jp, ndim, jt
     integer :: nocc, nocc2, nindi, iii, dimmax, jy, jlng, jprol, jd
@@ -91,7 +90,7 @@ subroutine op0036()
 !
             if (nindi .ne. 0) then
                 if ((-ni-nr-nk) .ne. (-nindi)) then
-                    call u2mess('F', 'UTILITAI2_75')
+                    call utmess('F', 'UTILITAI2_75')
                 endif
                 call wkvect(indic, 'V V I', -nindi, iii)
                 longco=0
@@ -136,7 +135,7 @@ subroutine op0036()
             do 150 j = 1, nocc
                 nmpar1=zk16(jd+j-1)
                 if ((nmpar.eq.nmpar1) .and. (j.ne.iocc)) then
-                    call u2mess('F', 'UTILITAI2_76')
+                    call utmess('F', 'UTILITAI2_76')
                 endif
 150          continue
 !
@@ -219,14 +218,18 @@ subroutine op0036()
         call jeveuo(nfct//'.PROL', 'L', jprol)
 !
         if (zk24(jprol) .ne. 'FONCTION' .and. zk24(jprol) .ne. 'CONSTANT' .and. zk24(jprol)&
-            .ne. 'FONCT_C') call u2mesk('F', 'UTILITAI2_78', 1, nomcmd)
+            .ne. 'FONCT_C') then
+            call utmess('F', 'UTILITAI2_78', sk=nomcmd)
+        endif
         call getvtx('FONCTION', 'PARA', iocc=1, nbval=2, vect=nmparf,&
                     nbret=ir)
         if (ir .eq. 0) then
             nmparf(1)=zk24(jprol+2)(1:16)
             nmparf(2)=zk24(jprol+3)(1:16)
         endif
-        if (nmparf(1) .eq. nmparf(2)) call u2mess('F', 'UTILITAI2_79')
+        if (nmparf(1) .eq. nmparf(2)) then
+            call utmess('F', 'UTILITAI2_79')
+        endif
 !
 !       ---CAS CREATION D UNE NOUVELLE TABLE
 !       ---

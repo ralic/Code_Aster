@@ -20,8 +20,7 @@ subroutine pecapo(resu, modele, cara, nh)
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/tbnuli.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nh
     character(len=*) :: resu, modele, cara
@@ -81,7 +80,7 @@ subroutine pecapo(resu, modele, cara, nh)
         call getvid('CARA_POUTRE', 'CARA_GEOM', iocc=1, scal=nomtab, nbret=ntab)
         call tbcopi('G', nomtab, resu)
     else
-        call u2mess('F', 'UTILITAI3_59')
+        call utmess('F', 'UTILITAI3_59')
     endif
 !
     option = 'MASS_INER'
@@ -138,7 +137,7 @@ subroutine pecapo(resu, modele, cara, nh)
 !       --------------------------
     call getvtx('CARA_POUTRE', 'OPTION', iocc=1, nbval=0, nbret=nopt)
     if (nopt .eq. 0) then
-        call u2mess('F', 'UTILITAI3_60')
+        call utmess('F', 'UTILITAI3_60')
     endif
 !
     call getvtx('CARA_POUTRE', 'OPTION', iocc=1, scal=option, nbret=nopt)
@@ -148,7 +147,7 @@ subroutine pecapo(resu, modele, cara, nh)
 !       ------------------------------------
     if (option .ne. 'CARA_TORSION' .and. option .ne. 'CARA_CISAILLEMEN' .and. option .ne.&
         'CARA_GAUCHI') then
-        call u2mesk('F', 'UTILITAI3_61', 1, option)
+        call utmess('F', 'UTILITAI3_61', sk=option)
     endif
 !
 !     -----------------------------------------------------------
@@ -173,7 +172,7 @@ subroutine pecapo(resu, modele, cara, nh)
             nct=-nct
             call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, scal=temper, nbret=nct)
         else
-            call u2mess('F', 'UTILITAI3_62')
+            call utmess('F', 'UTILITAI3_62')
         endif
 !
 ! --- RECUPERATION DES MAILLES DE BORD CONSTITUANT LES
@@ -217,14 +216,14 @@ subroutine pecapo(resu, modele, cara, nh)
         if (ncty .ne. 0) then
             call getvid('CARA_POUTRE', 'LAPL_PHI_Y', iocc=1, scal=tempe1, nbret=ncty)
         else
-            call u2mess('F', 'UTILITAI3_63')
+            call utmess('F', 'UTILITAI3_63')
         endif
 !
         call getvid('CARA_POUTRE', 'LAPL_PHI_Z', iocc=1, nbval=0, nbret=nctz)
         if (nctz .ne. 0) then
             call getvid('CARA_POUTRE', 'LAPL_PHI_Z', iocc=1, scal=tempe2, nbret=nctz)
         else
-            call u2mess('F', 'UTILITAI3_64')
+            call utmess('F', 'UTILITAI3_64')
         endif
 !
 ! --- RECUPERATION DANS LA TABLE DE LA SURFACE DE LA SECTION S,
@@ -243,17 +242,23 @@ subroutine pecapo(resu, modele, cara, nh)
                     c16b, noma, k8b, r8b, 'A',&
                     k8b, ibid, s, c16b, k8b,&
                     iret)
-        if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+        if (iret .ne. 0) then
+            call utmess('F', 'MODELISA2_89')
+        endif
         call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                     c16b, noma, k8b, r8b, 'IY',&
                     k8b, ibid, iy, c16b, k8b,&
                     iret)
-        if (iret .ne. 0) call u2mess('F', 'MODELISA2_89')
+        if (iret .ne. 0) then
+            call utmess('F', 'MODELISA2_89')
+        endif
         call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                     c16b, noma, k8b, r8b, 'IZ',&
                     k8b, ibid, iz, c16b, k8b,&
                     iret)
-        if (iret .ne. 0) call u2mess('F', 'ALGELINE_7')
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGELINE_7')
+        endif
         call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                     c16b, noma, k8b, r8b, 'ALPHA',&
                     k8b, ibid, alpha, c16b, k8b,&
@@ -404,7 +409,7 @@ subroutine pecapo(resu, modele, cara, nh)
         if (nct .ne. 0) then
             call getvid('CARA_POUTRE', 'LAPL_PHI', iocc=1, scal=temper, nbret=nct)
         else
-            call u2mess('F', 'UTILITAI3_62')
+            call utmess('F', 'UTILITAI3_62')
         endif
 !
 ! --- CALCUL DE LA CONSTANTE DE GAUCHISSEMENT IOMEGA :

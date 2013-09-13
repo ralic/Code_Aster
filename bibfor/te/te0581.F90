@@ -34,7 +34,7 @@ subroutine te0581(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 !
 ! VARIABLES LOCALES
@@ -56,11 +56,12 @@ subroutine te0581(option, nomte)
     if ((jtab1(1).eq.0) .or. (jtab2(1).eq.0) .or. (jtab3(1).eq.0)) then
         valk(1) = option
         valk(2) = nomte
-        call u2mesk('F', 'ELEMENTS4_38', 2, valk)
+        call utmess('F', 'ELEMENTS4_38', nk=2, valk=valk)
     endif
 !
-    if (( jtab1(2).ne.jtab2(2) ) .or. ( jtab1(3).ne.jtab2(3) )) call u2mesk('F', 'ELEMENTS4_39',&
-                                                                            1, option)
+    if (( jtab1(2).ne.jtab2(2) ) .or. ( jtab1(3).ne.jtab2(3) )) then
+        call utmess('F', 'ELEMENTS4_39', sk=option)
+    endif
 !
 !
     nbpt=jtab3(3)

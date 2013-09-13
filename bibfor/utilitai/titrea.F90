@@ -12,7 +12,7 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/titre1.h"
 #include "asterfort/titred.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: niv, st, base
     character(len=*) :: nomcon, nomcha, nomobj, motfac, formr
@@ -67,8 +67,7 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
             call getres(nomres, concep, nomcmd)
             vali = iocc
             valk = motfac
-            call u2mesg('A', 'UTILITAI7_4', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('A', 'UTILITAI7_4', sk=valk, si=vali)
             goto 9999
         endif
     endif

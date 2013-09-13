@@ -1,5 +1,5 @@
 subroutine as_mmhcre(fid, nom, dim, type, desc,&
-                  descdt, typrep, nocomp, unit, cret)
+                     descdt, typrep, nocomp, unit, cret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -19,17 +19,18 @@ subroutine as_mmhcre(fid, nom, dim, type, desc,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mmhcre.h"
     character(len=*) :: nom
     character(len=*) :: desc, descdt
     character(len=16) :: nocomp, unit
     aster_int :: fid, dim, type, cret, stunde, typrep
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: fid4, dim4, type4, cret4, stund4, typre4
     stunde = 1
@@ -48,6 +49,6 @@ subroutine as_mmhcre(fid, nom, dim, type, desc,&
                 desc, descdt, stunde, typrep, nocomp,&
                 unit, cret)
 #endif
-
+!
 #endif
 end subroutine

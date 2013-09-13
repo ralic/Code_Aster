@@ -1,7 +1,6 @@
 subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -12,8 +11,9 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: icode, nbacc, nbpara
     character(len=*) :: nomsd, nomjv
 ! ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    character(len=16) ::  nompar
+    character(len=16) :: nompar
     character(len=19) :: nomd2
 ! ----------------------------------------------------------------------
 !
@@ -84,10 +84,10 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
         call jeexin(nomjv, iret)
         if (iret .ne. 0) call jedetr(nomjv)
         if (icode .eq. 0 .and. nbacc .eq. 0) then
-            call u2mess('A', 'UTILITAI4_44')
+            call utmess('A', 'UTILITAI4_44')
         endif
         if (icode .eq. 1 .and. nbpara .eq. 0) then
-            call u2mess('A', 'UTILITAI4_45')
+            call utmess('A', 'UTILITAI4_45')
         endif
         if ((nbacc+nbpara) .ne. 0) then
             call wkvect(nomjv, 'V V K16', (nbacc+nbpara), jpara)

@@ -13,7 +13,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,12 +116,12 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ldyna     = ndynlo(sddyna,'DYNAMIQUE')
-    lamor     = ndynlo(sddyna,'MAT_AMORT')
-    lctcd     = isfonc(fonact,'CONT_DISCRET')
-    leltc     = isfonc(fonact,'ELT_CONTACT')
-    lchoc     = isfonc(fonact,'DIS_CHOC')
-    lvarc     = isfonc(fonact,'EXI_VARC' )
+    ldyna = ndynlo(sddyna,'DYNAMIQUE')
+    lamor = ndynlo(sddyna,'MAT_AMORT')
+    lctcd = isfonc(fonact,'CONT_DISCRET')
+    leltc = isfonc(fonact,'ELT_CONTACT')
+    lchoc = isfonc(fonact,'DIS_CHOC')
+    lvarc = isfonc(fonact,'EXI_VARC' )
     l_elas_fo = isfonc(fonact,'ELAS_FO' )
 !
 ! --- AJOUTE-T-ON UNE CONTRIBUTION DU CONTACT DISCRET DANS LA MATRICE ?
@@ -184,7 +184,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
     if (leltc) then
         if (.not.reasma) then
             if (.not.lelas) then
-                call u2mess('A', 'MECANONLINE5_4')
+                call utmess('A', 'MECANONLINE5_4')
             endif
             reasma = .true.
         endif
@@ -194,7 +194,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 !
     if (lmodim .or. lchoc) then
         if (.not.reasma) then
-            call u2mess('A', 'MECANONLINE5_5')
+            call utmess('A', 'MECANONLINE5_5')
             reasma = .true.
         endif
     endif

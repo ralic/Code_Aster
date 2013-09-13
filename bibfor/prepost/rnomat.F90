@@ -18,9 +18,8 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: van-xuan.tran at edf.fr
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
@@ -30,7 +29,8 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: icesd, icesl, icesv, imap, adrma, jtypma, k
     real(kind=8) :: vala, valb, coefpa
     character(len=8) :: nommat
@@ -107,7 +107,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 !C OU COMPOSANTE NON AFFECTEE
             ASSERT(iad .gt. 0)
             if ((k .gt. 1) .and. (nommat .ne. zk8(icesv - 1 + iad))) then
-                call u2mess('F', 'FATIGUE1_33')
+                call utmess('F', 'FATIGUE1_33')
             else
                 nommat = zk8(icesv - 1 + iad)
             endif
@@ -129,7 +129,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 !
     call rccome(nommat, 'CISA_PLAN_CRIT', phenom, icodre(1))
     if (icodre(1) .eq. 1) then
-        call u2mess('F', 'FATIGUE1_63')
+        call utmess('F', 'FATIGUE1_63')
     endif
 !
 ! 2.1 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE MATAKE POUR
@@ -140,20 +140,20 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                     1, 'MATAKE_A', v(1), icodre(1), 0)
         vala=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_64')
+            call utmess('F', 'FATIGUE1_64')
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_B', v(1), icodre(1), 0)
         valb=v(1)                                
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_65')
+            call utmess('F', 'FATIGUE1_65')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_FLE', v(1), icodre(1), 0)
         coefpa=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_66')
+            call utmess('F', 'FATIGUE1_66')
         endif
 !
 ! 2.2 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE DANG VAN POUR
@@ -164,21 +164,21 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                     1, 'D_VAN_A ', v(1), icodre(1), 0)
         vala=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_67')
+            call utmess('F', 'FATIGUE1_67')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_B ', v(1), icodre(1), 0)
         valb=v(1) 
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_68')
+            call utmess('F', 'FATIGUE1_68')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_CIS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_69')
+            call utmess('F', 'FATIGUE1_69')
         endif
     endif
 !
@@ -190,20 +190,20 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                     1, 'MATAKE_A', v(1), icodre(1), 0)
         vala=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_70')
+            call utmess('F', 'FATIGUE1_70')
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_B', v(1), icodre(1), 0)
         valb=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_71')
+            call utmess('F', 'FATIGUE1_71')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_FLE', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_72')
+            call utmess('F', 'FATIGUE1_72')
         endif
     endif
 !
@@ -215,20 +215,20 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                     1, 'D_VAN_A ', v(1), icodre(1), 0)
         vala=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_73')
+            call utmess('F', 'FATIGUE1_73')
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_B ', v(1), icodre(1), 0)
         valb=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_74')
+            call utmess('F', 'FATIGUE1_74')
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'COEF_CIS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_72')
+            call utmess('F', 'FATIGUE1_72')
         endif
     endif
 !
@@ -240,7 +240,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                     1, 'FATSOC_A', v(1), icodre(1), 0)
         vala=v(1)            
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_75')
+            call utmess('F', 'FATIGUE1_75')
         endif
 !
         valb = 1.0d0
@@ -249,7 +249,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                     1, 'COEF_CIS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
-            call u2mess('F', 'FATIGUE1_72')
+            call utmess('F', 'FATIGUE1_72')
         endif
 !
     endif

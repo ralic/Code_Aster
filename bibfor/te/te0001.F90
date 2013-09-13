@@ -5,7 +5,7 @@ subroutine te0001(option, nomte)
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -91,7 +91,7 @@ subroutine te0001(option, nomte)
 21          continue
         endif
     else
-        call u2mesk('F', 'ELEMENTS2_61', 1, option)
+        call utmess('F', 'ELEMENTS2_61', sk=option)
     endif
 !
 !     --- PROJECTION DANS LE REPERE ABSOLU ---

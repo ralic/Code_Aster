@@ -1,14 +1,13 @@
 subroutine panbno(ityp, nbnott)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ityp, nbnott(3)
 !---------------------------------------------------------------------
 ! ======================================================================
@@ -73,10 +72,10 @@ subroutine panbno(ityp, nbnott)
         if (nbntot .ge. 20) nbnott(2) = 12
         if (nbntot .eq. 27) nbnott(3) = 7
     else
-        call u2mesk('F', 'MODELISA6_20', 1, nomtm)
+        call utmess('F', 'MODELISA6_20', sk=nomtm)
     endif
     if (nbntot .ne. (nbnott(1)+nbnott(2)+nbnott(3))) then
-        call u2mess('F', 'MODELISA6_21')
+        call utmess('F', 'MODELISA6_21')
     endif
     call jedema()
 end subroutine

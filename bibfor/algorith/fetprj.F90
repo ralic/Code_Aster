@@ -60,7 +60,6 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterc/matfpe.h"
 #include "asterfort/assert.h"
 #include "asterfort/fetmpi.h"
@@ -70,11 +69,12 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dgemv.h"
 #include "blas/dsptrs.h"
+!
     integer :: nbsd, nbi, dimgi, option, vsdf(nbsd), vddl(nbsd), ipiv, irex
     integer :: iprj, rang, nbproc
     real(kind=8) :: vi(nbi), vo(nbi), rbid
@@ -123,7 +123,9 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
 !
         if (.not.lrigid) then
 !
-            if (option .ne. 1) call u2mess('F', 'ALGORITH3_66')
+            if (option .ne. 1) then
+                call utmess('F', 'ALGORITH3_66')
+            endif
             call dcopy(nbi, vi, 1, vo, 1)
 !
         else

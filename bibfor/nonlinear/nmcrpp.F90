@@ -26,8 +26,7 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: motfaz
     integer :: iocc
     character(len=8) :: criter
@@ -76,18 +75,20 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
     call getvr8(motfac, 'PRECISION', iocc=iocc, scal=prec, nbret=n1)
     call getvtx(motfac, 'CRITERE', iocc=iocc, scal=criter, nbret=n2)
     if (criter .eq. 'ABSOLU') then
-        if (n1 .eq. 0) call u2mess('F', 'LISTINST_1')
+        if (n1 .eq. 0) then
+            call utmess('F', 'LISTINST_1')
+        endif
     else if (criter.eq.'RELATIF') then
         if (n1 .eq. 0) then
             prec = predef
-            call u2mesr('A', 'LISTINST_2', 1, predef)
+            call utmess('A', 'LISTINST_2', sr=predef)
         endif
     else
         ASSERT(.false.)
     endif
 !
     if (prec .le. r8prem()) then
-        call u2mess('F', 'LISTINST_3')
+        call utmess('F', 'LISTINST_3')
     endif
 !
 ! --- TOLERANCE

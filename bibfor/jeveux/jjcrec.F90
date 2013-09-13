@@ -22,9 +22,7 @@ subroutine jjcrec(icl, ida, genri, typei, nb,&
 #include "asterfort/jjallt.h"
 #include "asterfort/jjecrs.h"
 #include "asterfort/jjprem.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: icl, ida, nb, iadmi
     character(len=*) :: genri, typei
 ! ----------------------------------------------------------------------
@@ -63,24 +61,24 @@ subroutine jjcrec(icl, ida, genri, typei, nb,&
     genr(jgenr (icl) + ida ) = genri(1:1)
     type(jtype (icl) + ida ) = typei(1:1)
     if (genri .eq. 'N' .and. typei(1:1) .ne. 'K') then
-        call u2mess('F', 'JEVEUX1_38')
+        call utmess('F', 'JEVEUX1_38')
     endif
     if (typei(1:1) .eq. 'K') then
         l = len(typei)
         if (l .eq. 1) then
-            call u2mess('F', 'JEVEUX1_39')
+            call utmess('F', 'JEVEUX1_39')
         endif
         write(ifmt,'(''(I'',I1,'')'')') l - 1
         read ( typei(2:l) , ifmt ) iv
         if (iv .le. 0 .or. iv .gt. 512) then
-            call u2mesi('F', 'JEVEUX1_40', 1, iv)
+            call utmess('F', 'JEVEUX1_40', si=iv)
         endif
         if (genri .eq. 'N') then
             if (mod ( iv , lois ) .ne. 0) then
-                call u2mesi('F', 'JEVEUX1_41', 1, iv)
+                call utmess('F', 'JEVEUX1_41', si=iv)
             endif
             if (iv .gt. 24) then
-                call u2mesi('F', 'JEVEUX1_42', 1, iv)
+                call utmess('F', 'JEVEUX1_42', si=iv)
             endif
         endif
     else if (typei(1:1) .eq. 'S') then
@@ -94,7 +92,7 @@ subroutine jjcrec(icl, ida, genri, typei, nb,&
     else if (typei(1:1) .eq. 'L') then
         iv = lols
     else
-        call u2mesk('F', 'JEVEUX1_43', 1, typei(1:1))
+        call utmess('F', 'JEVEUX1_43', sk=typei(1:1))
     endif
     ltyp(jltyp (icl) + ida ) = iv
     iadm(jiadm (icl) + 2*ida-1 ) = 0

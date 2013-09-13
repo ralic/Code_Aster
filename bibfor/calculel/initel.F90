@@ -20,7 +20,6 @@ subroutine initel(ligrel)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterfort/creprn.h"
 #include "asterfort/dismoi.h"
@@ -35,8 +34,9 @@ subroutine initel(ligrel)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ligrel
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -148,7 +148,7 @@ subroutine initel(ligrel)
             nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
             if (zi(jprin-1+nuno) .ne. 1) then
                 call jenuno(jexnum(ma//'.NOMMAI', numa), nomail)
-                call u2mesk('A', 'CALCULEL2_63', 1, nomail)
+                call utmess('A', 'CALCULEL2_63', sk=nomail)
                 goto 71
             endif
 60          continue
@@ -159,7 +159,9 @@ subroutine initel(ligrel)
 !     -- SI C'EST LE LIGREL DU MODELE, ON VERIFIE QU'IL EXISTE AU MOINS
 !        UN ELEMENT PRINCIPAL (QUI CALCULE DE LA RIGIDITE):
     if (nomcmd .eq. 'AFFE_MODELE' .and. resuco(1:8) .eq. ligrel(1:8)) then
-        if (nbprin .eq. 0) call u2mesk('A', 'CALCULEL2_64', 1, resuco)
+        if (nbprin .eq. 0) then
+            call utmess('A', 'CALCULEL2_64', sk=resuco)
+        endif
 !
     endif
 !

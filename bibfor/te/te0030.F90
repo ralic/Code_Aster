@@ -28,7 +28,7 @@ subroutine te0030(option, nomte)
 #include "asterfort/redrpr.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 !    - FONCTION REALISEE:  CALCUL DE L'OPTIONS INDL_ELGA
@@ -85,7 +85,7 @@ subroutine te0030(option, nomte)
 ! =====================================================================
 ! --- CAS NON TRAITE --------------------------------------------------
 ! =====================================================================
-                call u2mesk('F', 'ELEMENTS_11', 1, nomte)
+                call utmess('F', 'ELEMENTS_11', sk=nomte)
             endif
         endif
 ! =====================================================================

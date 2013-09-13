@@ -21,7 +21,6 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
@@ -44,8 +43,9 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/pteequ.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: cnsz, cnoz, basez, prchnz, prol0
     character(len=1) :: kstop
 ! ------------------------------------------------------------------
@@ -171,13 +171,15 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !             -- ON ACCEPTE : DEPL_R / DEPL_C
                     if ((nomgd(1:5).eq.'DEPL_') .and. (zk24(jrefn-1+2) (1:5).eq.'DEPL_')) then
                     else
-                        call u2mesk('F', 'CALCULEL4_6', 2, valk)
+                        call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)
                     endif
                 endif
             else
 !         -- SINON ON NE PEUT VERIFIER QUE LA LONGUEUR DE .PRNO :
                 call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', n1)
-                if (n1 .ne. nbno*(nbec+2)) call u2mesk('F', 'CALCULEL4_6', 2, valk)
+                if (n1 .ne. nbno*(nbec+2)) then
+                    call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)
+                endif
             endif
         endif
     endif
@@ -406,9 +408,9 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     if (kstop .eq. ' ') goto 80
 !
     if (messag .eq. 'CALCULEL2_12') then
-        call u2mesk(kstop, 'CALCULEL2_12', 2, valk)
+        call utmess(kstop, 'CALCULEL2_12', nk=2, valk=valk)
     else if (messag.eq.'CALCULEL2_13') then
-        call u2mesk(kstop, 'CALCULEL2_13', 3, valk)
+        call utmess(kstop, 'CALCULEL2_13', nk=3, valk=valk)
     else
         ASSERT(.false.)
     endif

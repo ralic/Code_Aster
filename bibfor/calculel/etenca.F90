@@ -21,7 +21,6 @@ subroutine etenca(chinz, ligrlz, iret)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -31,8 +30,9 @@ subroutine etenca(chinz, ligrlz, iret)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mailla.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: ligrel, chin
     character(len=*) :: ligrlz, chinz
     integer :: iret
@@ -175,8 +175,7 @@ subroutine etenca(chinz, ligrlz, iret)
                         vali (1) = ient
                         vali (2) = i
                         vali (3) = ii
-                        call u2mesg('F', 'CALCULEL5_85', 1, valk, 3,&
-                                    vali, 0, 0.d0)
+                        call utmess('F', 'CALCULEL5_85', sk=valk, ni=3, vali=vali)
                     endif
                     zi(ptma-1+ii) = igd
 40              continue

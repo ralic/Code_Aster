@@ -1,4 +1,4 @@
-subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
+subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node,&
                           list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
 !
     implicit none
@@ -10,12 +10,12 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/padist.h"
 #include "asterfort/parotr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -124,22 +124,22 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
 !
 ! ----- Apply transformation for translation/rotation
 !
-        call parotr(mesh, jgeom_init, nume_node_1, 0, cent, &
+        call parotr(mesh, jgeom_init, nume_node_1, 0, cent,&
                     matr_rota, tran, x1)
 !
 ! ----- Find nearest node
 !
         dist_mini = r8gaem()
-        ino_mini  = 0
+        ino_mini = 0
         do ino_2 = 1, nb_node
             nume_node_2 = zi(j_node_i2-1+ino_2)
             x2(1) = zr(jgeom_init+3*(nume_node_2-1)-1+1)
             x2(2) = zr(jgeom_init+3*(nume_node_2-1)-1+2)
             x2(3) = zr(jgeom_init+3*(nume_node_2-1)-1+3)
-            dist  = padist( 3, x1, x2 )
+            dist = padist( 3, x1, x2 )
             if (dist .lt. dist_mini) then
                 dist_mini = dist
-                ino_mini  = ino_2
+                ino_mini = ino_2
             endif
         enddo
 !
@@ -148,7 +148,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
         if (ino_mini .eq. 0) then
             i_error = 1
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_1), name_node_1)
-            call u2mesk('E', 'CHARGES2_50', 1, name_node_1)
+            call utmess('E', 'CHARGES2_50', sk=name_node_1)
             goto 99
         endif
         nume_node_2 = zi(j_node_i2-1+ino_mini)
@@ -158,8 +158,8 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
         nume_node_2 = zi(j_node_i2 -1+ino_mini)
         nume_node_a = zi(j_node_inv-1+ino_mini)
         if (nume_node_a .eq. 0) then
-            zi(j_node_o1-1+ino_1)     = nume_node_1
-            zi(j_node_o2-1+ino_1)     = nume_node_2
+            zi(j_node_o1-1+ino_1) = nume_node_1
+            zi(j_node_o2-1+ino_1) = nume_node_2
             zi(j_node_inv-1+ino_mini) = nume_node_2
         else
             ier = ier + 1
@@ -169,7 +169,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
             valk(1) = name_node_2
             valk(2) = name_node_1
             valk(3) = name_node_a
-            call u2mesk('E', 'CHARGES2_51', 3, valk)
+            call utmess('E', 'CHARGES2_51', nk=3, valk=valk)
         endif
     end do
 !
@@ -196,18 +196,18 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
 ! ----- Find nearest node
 !
         dist_mini = r8gaem()
-        ino_mini  = 0
+        ino_mini = 0
         do ino_1 = 1, nb_node
             nume_node_1 = zi(j_node_i1-1+ino_1)
 !
 ! --------- Apply transformation for translation/rotation
 !
-            call parotr(mesh, jgeom_init, nume_node_1, 0, cent, &
+            call parotr(mesh, jgeom_init, nume_node_1, 0, cent,&
                         matr_rota, tran, x1)
-            dist  = padist( 3, x1, x2 )
+            dist = padist( 3, x1, x2 )
             if (dist .lt. dist_mini) then
                 dist_mini = dist
-                ino_mini  = ino_1
+                ino_mini = ino_1
             endif
         enddo
 !
@@ -216,7 +216,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
         if (ino_mini .eq. 0) then
             i_error = 1
             call jenuno(jexnum(mesh//'.NOMNOE', nume_node_2), name_node_2)
-            call u2mesk('F', 'CHARGES2_50', 1, name_node_2)
+            call utmess('F', 'CHARGES2_50', sk=name_node_2)
             goto 99
         endif
         nume_node_1 = zi(j_node_i1-1+ino_mini)
@@ -226,8 +226,8 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
         nume_node_1 = zi(j_node_i1 -1+ino_mini)
         nume_node_a = zi(j_node_inv-1+ino_mini)
         if (nume_node_a .eq. 0) then
-            zi(j_node_o3-1+ino_2)     = nume_node_2
-            zi(j_node_o4-1+ino_2)     = nume_node_1
+            zi(j_node_o3-1+ino_2) = nume_node_2
+            zi(j_node_o4-1+ino_2) = nume_node_1
             zi(j_node_inv-1+ino_mini) = nume_node_1
         else
             ier = ier + 1
@@ -237,7 +237,7 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
             valk(1) = name_node_1
             valk(2) = name_node_2
             valk(3) = name_node_a
-            call u2mesk('E', 'CHARGES2_51', 3, valk)
+            call utmess('E', 'CHARGES2_51', nk=3, valk=valk)
         endif
     end do
 !
@@ -268,14 +268,14 @@ subroutine char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
                     valk(1) = name_node_1
                     valk(2) = name_node_2
                     valk(3) = name_node_4
-                    call u2mesk('E', 'CHARGES2_51', 3, valk)
+                    call utmess('E', 'CHARGES2_51', nk=3, valk=valk)
                 endif
             endif
         enddo
         if (iexcor .eq. 0) then
             ier = ier + 1
             valk(1) = name_node_1
-            call u2mesk('E', 'CHARGES2_52', 1, valk)
+            call utmess('E', 'CHARGES2_52', sk=valk(1))
         endif
     enddo
 !

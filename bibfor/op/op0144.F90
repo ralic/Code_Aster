@@ -56,7 +56,7 @@ subroutine op0144()
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
@@ -134,11 +134,11 @@ subroutine op0144()
 ! --- 0.VERIFICATIONS AVANT EXECUTION ---
 !
     if (nbno .ne. 0 .and. nbam .ne. 0 .and. nbam .ne. nbno) then
-        call u2mess('F', 'ALGELINE2_82')
+        call utmess('F', 'ALGELINE2_82')
     endif
 !
     if (nbno .ne. 0 .and. nbconn .ne. 0 .and. nbconn .ne. nbno) then
-        call u2mess('F', 'ALGELINE2_83')
+        call utmess('F', 'ALGELINE2_83')
     endif
 !
 ! --- 1.RECUPERATION DES CARACTERISTIQUES MODALES AVANT COUPLAGE ---
@@ -201,7 +201,7 @@ subroutine op0144()
         umin = vmin
         vmin = vmax
         vmax = umin
-        call u2mess('A', 'ALGELINE2_85')
+        call utmess('A', 'ALGELINE2_85')
     endif
 !
     vite = nomu//'.VITE'

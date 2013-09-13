@@ -1,7 +1,6 @@
 subroutine te0375(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
@@ -23,8 +22,9 @@ subroutine te0375(option, nomte)
 #include "asterfort/resr3d.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/uthk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -349,7 +349,7 @@ subroutine te0375(option, nomte)
     25 end do
 !
     if (ter1 .lt. 0.d0) then
-        call u2mesk('A', 'INDICATEUR_9', 2, valk)
+        call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
         goto 9999
     endif
 !
@@ -476,7 +476,7 @@ subroutine te0375(option, nomte)
 ! ------- CALCUL DU TERME D'ERREUR -------------------------------------
 !
             if (inte .lt. 0.d0) then
-                call u2mesk('A', 'INDICATEUR_9', 2, valk)
+                call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
                 goto 9999
             endif
 !
@@ -514,7 +514,7 @@ subroutine te0375(option, nomte)
 ! ------- CALCUL DU TERME D'ERREUR -------------------------------------
 !
             if (inte .lt. 0.d0) then
-                call u2mesk('A', 'INDICATEUR_9', 2, valk)
+                call utmess('A', 'INDICATEUR_9', nk=2, valk=valk)
                 goto 9999
             endif
 !
@@ -532,7 +532,7 @@ subroutine te0375(option, nomte)
         else
 !
             valk(1)=typmav(1:4)
-            call u2mesk('F', 'INDICATEUR_10', 1, valk)
+            call utmess('F', 'INDICATEUR_10', sk=valk(1))
 !
         endif
 !

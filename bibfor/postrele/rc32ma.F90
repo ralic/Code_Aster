@@ -8,7 +8,7 @@ subroutine rc32ma(mater)
 #include "asterfort/jemarq.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: mater
 !     ------------------------------------------------------------------
@@ -60,13 +60,19 @@ subroutine rc32ma(mater)
     call getfac(motclf, nbsitu)
 !
     call rccome(mater, 'ELAS', phenom, icodre(1))
-    if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'ELAS')
+    if (icodre(1) .eq. 1) then
+        call utmess('F', 'POSTRCCM_7', sk='ELAS')
+    endif
 !
     call rccome(mater, 'FATIGUE', phenom, icodre(1))
-    if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'FATIGUE')
+    if (icodre(1) .eq. 1) then
+        call utmess('F', 'POSTRCCM_7', sk='FATIGUE')
+    endif
 !
     call rccome(mater, 'RCCM', phenom, icodre(1))
-    if (icodre(1) .eq. 1) call u2mesk('F', 'POSTRCCM_7', 1, 'RCCM')
+    if (icodre(1) .eq. 1) then
+        call utmess('F', 'POSTRCCM_7', sk='RCCM')
+    endif
 !
     nocmp(1) = 'E'
     nocmp(2) = 'NU'

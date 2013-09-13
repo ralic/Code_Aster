@@ -1,4 +1,6 @@
-subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
+subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
+                  nno3, nno4, vu, vg, vp,&
+                  vpi)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +21,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
     implicit none
 !
 #include "asterfort/teattr.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ndim, nno1, nno2, nno3, nno4
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27), iret, iefm
     character(len=8) :: typmod(*)
@@ -121,8 +123,8 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
                 vu(1,n) = 1 + (n-1)*5
                 vu(2,n) = 2 + (n-1)*5
                 vu(3,n) = 3 + (n-1)*5
-                vp(  n) = 4 + (n-1)*5
-                vg(  n) = 5 + (n-1)*5
+                vp( n) = 4 + (n-1)*5
+                vg( n) = 5 + (n-1)*5
             end do
             os = 5*nno2
             do n = 1, nno1-nno2
@@ -137,15 +139,15 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
                 vu(1,n) = 1 + (n-1)*5
                 vu(2,n) = 2 + (n-1)*5
                 vu(3,n) = 3 + (n-1)*5
-                vp(  n) = 4 + (n-1)*5
-                vg(  n) = 5 + (n-1)*5
+                vp( n) = 4 + (n-1)*5
+                vg( n) = 5 + (n-1)*5
             end do
             os = 5*nno2
             do n = 1, nno1-nno2
                 vu(1,n+nno2) = 1 + (n-1)*4 + os
                 vu(2,n+nno2) = 2 + (n-1)*4 + os
                 vu(3,n+nno2) = 3 + (n-1)*4 + os
-                vp(  n+nno2) = 4 + (n-1)*4 + os
+                vp( n+nno2) = 4 + (n-1)*4 + os
             end do
             goto 100
 !       ELSEIF (IEFM .EQ. 4) THEN
@@ -183,7 +185,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
                 vu(1,n) = 1 + (n-1)*4
                 vu(2,n) = 2 + (n-1)*4
                 vu(3,n) = 3 + (n-1)*4
-                vp(  n) = 4 + (n-1)*4
+                vp( n) = 4 + (n-1)*4
             end do
             goto 100
         else if (iefm .eq. 8) then
@@ -192,7 +194,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
                 vu(1,n) = 1 + (n-1)*4
                 vu(2,n) = 2 + (n-1)*4
                 vu(3,n) = 3 + (n-1)*4
-                vp(  n) = 4 + (n-1)*4
+                vp( n) = 4 + (n-1)*4
             end do
             os = 4*nno3
             do n = 1, nno1-nno3
@@ -207,7 +209,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
                 vu( 1,n) = 1 + (n-1)*7
                 vu( 2,n) = 2 + (n-1)*7
                 vu( 3,n) = 3 + (n-1)*7
-                vp(   n) = 4 + (n-1)*7
+                vp( n) = 4 + (n-1)*7
                 vpi(1,n) = 5 + (n-1)*7
                 vpi(2,n) = 6 + (n-1)*7
                 vpi(3,n) = 7 + (n-1)*7
@@ -320,8 +322,8 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
         endif
     endif
 !
-    call u2mesk('F', 'DVP_4', 1, nomte)
-100 continue
+    call utmess('F', 'DVP_4', sk=nomte)
+100  continue
 !
     if (typmod(1) .eq. 'AXIS') then
         do n = 1, nno1

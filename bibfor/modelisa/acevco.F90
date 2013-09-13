@@ -4,7 +4,7 @@ subroutine acevco(nbocc, nlm, nlg, ier)
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -37,7 +37,7 @@ subroutine acevco(nbocc, nlm, nlg, ier)
 !  IN/OUT
 !     IER    : CUMUL DES ERREURS
 ! ----------------------------------------------------------------------
-    integer ::  ioc, nco, ne, nef, nex, nexf, ng, nin
+    integer :: ioc, nco, ne, nef, nex, nexf, ng, nin
     integer :: nk, nm, nsom
     character(len=8) :: k8b, nomu
     character(len=16) :: concep, cmd
@@ -58,14 +58,14 @@ subroutine acevco(nbocc, nlm, nlg, ier)
         call getvtx('COQUE', 'MODI_METRIQUE', iocc=ioc, nbval=0, nbret=nco)
 !
         if (ioc .eq. 1 .and. abs(ne+nef) .ne. 1) then
-            call u2mess('E', 'MODELISA_53')
+            call utmess('E', 'MODELISA_53')
             ier = ier + 1
         endif
 !
         if ((nex+nexf) .ne. 0 .and. nin .ne. 0) then
             call getvtx('COQUE', 'INER_ROTA', iocc=ioc, scal=k8b, nbret=nin)
             if (k8b .eq. 'NON') then
-                call u2mess('E', 'MODELISA_54')
+                call utmess('E', 'MODELISA_54')
                 ier = ier + 1
             endif
         endif

@@ -49,12 +49,11 @@ subroutine op0153()
 #include "asterfort/tbexve.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/usupru.h"
 #include "asterfort/usupus.h"
 #include "asterfort/usuvu2.h"
 #include "asterfort/usuvus.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
     integer :: i, ibid, idangt, idcotu, idvcob, idvctu, ifires
@@ -117,11 +116,11 @@ subroutine op0153()
     if (ntn .ne. 0) then
         call exisd('TABLE', resu, iret)
         if (iret .eq. 0) then
-            call u2mess('F', 'PREPOST4_7')
+            call utmess('F', 'PREPOST4_7')
         endif
         call getvid(' ', 'TABL_USURE', scal=k8b, nbret=n1)
         if (k8b .ne. resu(1:8)) then
-            call u2mess('F', 'PREPOST4_7')
+            call utmess('F', 'PREPOST4_7')
         endif
         call getvr8(' ', 'INST', scal=dinst, nbret=nis)
         if (nis .eq. 0) then
@@ -208,16 +207,16 @@ subroutine op0153()
 !              LES ANGLES SONT CROISSANTS ENTRE -180. ET +180. :
 !              -----------------------------------------------
                 if ((zr(idangt).lt.(-180.d0-epsil)) .or. (zr(idangt) .gt.(-180.d0+epsil))) then
-                    call u2mess('F', 'PREPOST4_8')
+                    call utmess('F', 'PREPOST4_8')
                 endif
             endif
             call getvr8('SECTEUR', 'ANGL_FIN', iocc=i, scal=zr(idangt+i), nbret=na)
             if (zr(idangt+i) .lt. zr(idangt+i-1)) then
-                call u2mess('F', 'PREPOST4_9')
+                call utmess('F', 'PREPOST4_9')
             endif
             if (i .eq. nbsect) then
                 if ((zr(idangt+i).lt.(180.d0-epsil)) .or. (zr(idangt+ i).gt.(180.d0+epsil))) then
-                    call u2mess('F', 'PREPOST4_10')
+                    call utmess('F', 'PREPOST4_10')
                 endif
             endif
             call getvr8('SECTEUR', 'COEF_USUR_MOBILE', iocc=i, scal=zr(idvctu+i-1), nbret=n5)
@@ -266,7 +265,7 @@ subroutine op0153()
         if (info .gt. 1) write(ifires,1130)
         call getvr8(' ', 'RAYON_MOBILE', scal=rayot, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('F', 'PREPOST4_11')
+            call utmess('F', 'PREPOST4_11')
         endif
         do 24 i = 1, nbsect
             do 22 k = 1, nbinst
@@ -280,7 +279,7 @@ subroutine op0153()
 24      continue
         call getvr8(' ', 'RAYON_OBST', scal=rayoo, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('F', 'PREPOST4_12')
+            call utmess('F', 'PREPOST4_12')
         endif
         do 20 i = 1, nbsect
             do 23 k = 1, nbinst
@@ -359,7 +358,7 @@ subroutine op0153()
         call tbajpa(resu, nbpar, nopar, typar)
     else
         if (tabpus .ne. resu) then
-            call u2mess('F', 'PREPOST4_13')
+            call utmess('F', 'PREPOST4_13')
         endif
 !   ON REPREND UNE TABLE EXISTANTE
         nomta = tabpus
@@ -376,7 +375,7 @@ subroutine op0153()
         call jeveuo('&&OP0153.SECT', 'L', jsect)
         nbsec2 = zi(jsect+nbvpu-1)
         if (nbsec2 .ne. nbsect) then
-            call u2mess('F', 'PREPOST4_14')
+            call utmess('F', 'PREPOST4_14')
         endif
         call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=dinst, nbret=nis)
         if (nis .eq. 0) then
@@ -391,11 +390,11 @@ subroutine op0153()
             if (iret .eq. 10) then
                 valk(1) = 'INST'
                 valk(2) = nomta
-                call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
             else if (iret .eq. 20) then
                 valk(1) = nomta
                 valk(2) = 'INST'
-                call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
             endif
             call detrsd('TABLE', nomta)
             call tbextb(newtab, 'G', nomta, 1, 'INST',&
@@ -404,11 +403,11 @@ subroutine op0153()
             if (iret .eq. 10) then
                 valk(1) = 'INST'
                 valk(2) = newtab
-                call u2mesk('F', 'UTILITAI7_1', 2, valk)
+                call utmess('F', 'UTILITAI7_1', nk=2, valk=valk)
             else if (iret .eq. 20) then
                 valk(1) = newtab
                 valk(2) = 'INST'
-                call u2mesk('F', 'UTILITAI7_3', 2, valk)
+                call utmess('F', 'UTILITAI7_3', nk=2, valk=valk)
             endif
             call tbexve(nomta, 'INST', '&&OP0153.INS5', 'V', nbvpu,&
                         type)
@@ -431,7 +430,7 @@ subroutine op0153()
                         k8b, ibid, zr(ivuso+i-1), c16b, k8b,&
                         ire2)
             if ((ire1+ire2) .gt. 0) then
-                call u2mesk('F', 'PREPOST4_15', 1, nomta)
+                call utmess('F', 'PREPOST4_15', sk=nomta)
             endif
  1      continue
     endif

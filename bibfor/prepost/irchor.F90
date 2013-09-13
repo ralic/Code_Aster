@@ -18,9 +18,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ioccur, nbnosy, nbordr, nbrcmp, nbcmdu, nbpara, codret
     character(len=8) :: leresu
@@ -145,14 +143,14 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
             call getvtx('RESU', 'NOM_CHAM_MED', iocc=ioccur, nbval=nbcmdu, vect=zk80(jncmed),&
                         nbret=iret)
             if ((nbcmdu.ne.0) .and. (nbcmdu.ne.nbnosy)) then
-                call u2mess('F', 'PREPOST2_1')
+                call utmess('F', 'PREPOST2_1')
             endif
         else if (nnrmed.lt.0) then
             call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=0, nbret=nnocmp)
             if (nnocmp .lt. 0) then
                 valk(1)='NOM_CMP'
                 valk(2)='NOM_RESU_MED'
-                call u2mesk('F', 'MED2_6', 2, valk)
+                call utmess('F', 'MED2_6', nk=2, valk=valk)
             endif
             call jelira(leresu//'           .DESC', 'NOMUTI', nbcmdu)
             call getvtx('RESU', 'NOM_RESU_MED', iocc=ioccur, scal=resmed, nbret=nnrmed)
@@ -208,8 +206,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                     if (iret .ne. 0) then
                         valk (1) = zk16(jnosy+innosy)
                         vali = zi(jordr+jnordr)
-                        call u2mesg('A', 'POSTRELE_41', 1, valk, 1,&
-                                    vali, 0, 0.d0)
+                        call utmess('A', 'POSTRELE_41', sk=valk(1), si=vali)
                     endif
 14              continue
 16          continue
@@ -236,8 +233,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                     if (nbcmpt .eq. 0) then
                         valk (1) = zk8(jvcmp+icmp)
                         valk (2) = k1bid
-                        call u2mesg('A', 'PREPOST5_61', 2, valk, 0,&
-                                    0, 0, 0.d0)
+                        call utmess('A', 'PREPOST5_61', nk=2, valk=valk)
                     endif
 15              continue
             endif

@@ -15,7 +15,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/nbsigm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/reeref.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
     integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
@@ -120,7 +120,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
     k2bid = ' '
     if (grdepl) then
-        call u2mess('F', 'XFEM2_2')
+        call utmess('F', 'XFEM2_2')
     endif
 !
     call elref5(elrese, 'XINT', ndimb, nno, nnos,&

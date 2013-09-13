@@ -8,7 +8,7 @@ subroutine te0520(option, nomte)
 #include "asterfort/fnovsu.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/voiuti.h"
     character(len=16) :: option, nomte
 ! =====================================================================
@@ -146,8 +146,7 @@ subroutine te0520(option, nomte)
     if ((typvf.eq.1) .or. (typvf.eq.2)) then
         codvoi='A2'
     else
-        call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                    typvf, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_9', si=typvf)
     endif
     if (option .ne. 'FORC_NODA') then
         call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&

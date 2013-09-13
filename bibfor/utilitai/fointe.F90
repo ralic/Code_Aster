@@ -1,6 +1,6 @@
 subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
                   resu, ier)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/fiintf.h"
 #include "asterc/r8prem.h"
@@ -15,10 +15,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     integer :: nbpu, ier
     character(len=*) :: codmes, nomf, nompu(*)
     real(kind=8) :: valpu(*), resu
@@ -104,13 +101,13 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 !     ------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !
-#define linlin(x,x1,y1,x2,y2)  y1+(x-x1)*(y2-y1)/(x2-x1)
+#define linlin(x,x1,y1,x2,y2) y1+(x-x1)*(y2-y1)/(x2-x1)
 #define linlog(x,x1,y1,x2,y2) exp(log(y1)+(x-x1)*(log(y2)-log(y1)) \
-        /(x2-x1))
+    /(x2-x1))
 #define loglog(x,x1,y1,x2,y2) exp(log(y1)+(log(x)-log(x1))*(log(y2) \
-        -log(y1))/(log(x2)-log(x1)))
+    -log(y1))/(log(x2)-log(x1)))
 #define loglin(x,x1,y1,x2,y2) y1+(log(x)-log(x1))*(y2-y1) \
-        /(log(x2)-log(x1))
+    /(log(x2)-log(x1))
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -218,8 +215,8 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
         ier = 160
         vali(1)=nbpu
         vali(2)=svnbpa(isave)
-        call u2mesk('A+', 'FONCT0_9', 1, nomfon)
-        call u2mesi('A', 'FONCT0_14', 2, vali)
+        call utmess('A+', 'FONCT0_9', sk=nomfon)
+        call utmess('A', 'FONCT0_14', ni=2, vali=vali)
         goto 9998
     endif
     do 20 i = 1, svnbpa(isave)
@@ -230,17 +227,17 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
                     svpar(i,isave)=nupar
                 else
                     ier = 120
-                    call u2mesk('A+', 'FONCT0_9', 1, nomfon)
-                    call u2mesk('A', 'FONCT0_15', nbpu, nompu)
+                    call utmess('A+', 'FONCT0_9', sk=nomfon)
+                    call utmess('A', 'FONCT0_15', nk=nbpu, valk=nompu)
                     goto 9998
                 endif
             endif
 21      continue
         if (svpar(i,isave) .eq. 0) then
             ier = 130
-            call u2mesk('A+', 'FONCT0_9', 1, nomfon)
-            call u2mesk('A+', 'FONCT0_16', svnbpa(isave), svnomp(1, isave))
-            call u2mesk('A', 'FONCT0_17', nbpu, nompu)
+            call utmess('A+', 'FONCT0_9', sk=nomfon)
+            call utmess('A+', 'FONCT0_16', nk=svnbpa(isave), valk=svnomp(1, isave))
+            call utmess('A', 'FONCT0_17', nk=nbpu, valk=nompu)
             goto 9998
         endif
 20  end do
@@ -282,7 +279,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
             if (ier .ne. 0) goto 9998
         else if (coli.eq.'I') then
             if (svinte(isave)(1:3) .eq. 'NON') then
-                call u2mesk('A', 'FONCT0_11', 1, nomfon)
+                call utmess('A', 'FONCT0_11', sk=nomfon)
                 ier = 170
                 goto 9998
             endif
@@ -316,8 +313,8 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
             tab(2) = zr(lpara+i )
             resu = linlin(rpar,tab(1),tab(3),tab(2),tab(4))
         else
-            call u2mesk('A+', 'FONCT0_9', 1, nomfon)
-            call u2mesr('A', 'FONCT0_12', 1, rvar)
+            call utmess('A+', 'FONCT0_9', sk=nomfon)
+            call utmess('A', 'FONCT0_12', sr=rvar)
             ier = 140
             goto 9998
         endif
@@ -326,7 +323,7 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
         valk(1)=nomfon
         valk(2)=svtypf(isave)
         valk(3)='FOINTE'
-        call u2mesk('A', 'FONCT0_13', 3, valk)
+        call utmess('A', 'FONCT0_13', nk=3, valk=valk)
         ier = 150
         goto 9998
     endif
@@ -345,11 +342,10 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
             else
                 codme2(2:2) = ' '
             endif
-            call u2mesk(codme2(1:1)//'+', 'FONCT0_9', 1, nomfon)
-            call u2mesg(codme2, 'FONCT0_54', nbpu, nompu, 1,&
-                        nbpu, 0, 0.d0)
+            call utmess(codme2(1:1)//'+', 'FONCT0_9', sk=nomfon)
+            call utmess(codme2, 'FONCT0_54', nk=nbpu, valk=nompu, si=nbpu)
             if (codme2(2:2) .eq. '+') then
-                call u2mesk(codme2(1:1), 'FONCT0_10', 1, nomail)
+                call utmess(codme2(1:1), 'FONCT0_10', sk=nomail)
             endif
         endif
     endif

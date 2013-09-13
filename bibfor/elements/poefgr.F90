@@ -11,7 +11,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 #include "asterfort/pomass.h"
 #include "asterfort/ptforp.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
 #include "asterfort/verifm.h"
@@ -169,7 +169,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
         if (suropt .eq. 'MASS_MECA     ') kanl = 1
         if (suropt .eq. 'MASS_FLUI_STRU') kanl = 1
         if (kanl .eq. 2) then
-            call u2mesk('A', 'ELEMENTS2_44', 1, suropt)
+            call utmess('A', 'ELEMENTS2_44', sk=suropt)
         endif
         if (nomte(1:13) .eq. 'MECA_POU_D_EM') then
             call jevech('PMATERC', 'L', lmater)

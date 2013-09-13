@@ -3,7 +3,7 @@ subroutine acevca(nbocc, nlm, nlg, ier)
 #include "asterc/getres.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -30,7 +30,7 @@ subroutine acevca(nbocc, nlm, nlg, ier)
 ! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    character(len=8) ::  nomu
+    character(len=8) :: nomu
     character(len=16) :: concep, cmd
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine acevca(nbocc, nlm, nlg, ier)
         call getvr8('CABLE', 'SECTION', iocc=ioc, nbval=0, nbret=ne)
 !
         if (ioc .eq. 1 .and. ne .eq. 0) then
-            call u2mess('E', 'MODELISA_52')
+            call utmess('E', 'MODELISA_52')
             ier = ier + 1
         endif
 !

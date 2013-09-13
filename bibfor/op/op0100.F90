@@ -73,8 +73,7 @@ subroutine op0100()
 #include "asterfort/rsrusd.h"
 #include "asterfort/tbexve.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
     integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, nbpara
@@ -157,7 +156,7 @@ subroutine op0100()
         if (option .eq. 'CALC_K_G') then
             lmoda = .true.
         else
-            call u2mess('F', 'RUPTURE0_27')
+            call utmess('F', 'RUPTURE0_27')
         endif
     endif
 !
@@ -221,7 +220,9 @@ subroutine op0100()
         if (iret .eq. 0) then
             direc=.false.
 !         A VIRER !!
-            if (typfis .eq. 'FONDFISS' .and. ndim .eq. 2) call u2mess('F', 'RUPTURE0_81')
+            if (typfis .eq. 'FONDFISS' .and. ndim .eq. 2) then
+                call utmess('F', 'RUPTURE0_81')
+            endif
         else if (iret.lt.0) then
             ASSERT(.false.)
         else if (iret.gt.0) then
@@ -301,7 +302,9 @@ subroutine op0100()
         endif
 !
         if (liss .eq. 'LEGENDRE' .or. liss .eq. 'MIXTE') then
-            if (connex) call u2mess('F', 'RUPTURE0_90')
+            if (connex) then
+                call utmess('F', 'RUPTURE0_90')
+            endif
         endif
 !
         thetai = '&&THETA '
@@ -447,7 +450,7 @@ subroutine op0100()
                 endif
 !
             else
-                call u2mesk('F', 'RUPTURE0_92', 1, option)
+                call utmess('F', 'RUPTURE0_92', sk=option)
             endif
         endif
 !

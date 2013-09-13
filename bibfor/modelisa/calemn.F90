@@ -55,10 +55,10 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     character(len=*) :: motfaz, nomaz, lisi1z, lisi2z
 ! -----  VARIABLES LOCALES
-    character(len=8) ::  noma, typem
+    character(len=8) :: noma, typem
     character(len=16) :: motcle, tymocl, motfac
     character(len=24) :: lisin1, lisin2
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -110,7 +110,7 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
                     motcle = 'MAILLE_1'
                     tymocl = 'MAILLE'
                 else
-                    call u2mesk('F', 'MODELISA2_92', 1, motfac)
+                    call utmess('F', 'MODELISA2_92', sk=motfac)
                 endif
             endif
         endif
@@ -146,7 +146,7 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
                     motcle = 'MAILLE_2'
                     tymocl = 'MAILLE'
                 else
-                    call u2mesk('F', 'MODELISA2_93', 1, motfac)
+                    call utmess('F', 'MODELISA2_93', sk=motfac)
                 endif
             endif
         endif

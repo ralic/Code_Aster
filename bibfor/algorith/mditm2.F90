@@ -92,8 +92,8 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
 #include "asterfort/sigusr.h"
 #include "asterfort/sommve.h"
 #include "asterfort/transi.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vardep.h"
@@ -280,7 +280,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
     ts0 = tfexm - ttrans
     if (ts0 .lt. ts) then
         ts = ts0
-        call u2mess('A', 'ALGORITH5_52')
+        call utmess('A', 'ALGORITH5_52')
     endif
 !
     tc = 0.0d0
@@ -431,7 +431,9 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
             endif
             call vardep(nbnl, dep, dep0, tconf2, tconf1,&
                         ivar, dt0, toln, tolc, tolv)
-            if (ivar .ne. 0) call u2mess('A', 'ALGORITH5_53')
+            if (ivar .ne. 0) then
+                call utmess('A', 'ALGORITH5_53')
+            endif
             xnbr0 = mod(nbr0+1,10000)
             if (xnbr0 .eq. 0) then
                 call jelira(chain1, 'LONMAX', ilong)

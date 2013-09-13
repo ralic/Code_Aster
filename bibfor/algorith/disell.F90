@@ -23,7 +23,7 @@ subroutine disell(pz, az, bz, h)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/trigom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: pz(2), az, bz, h
 !
 !      CALCUL DE H : DISTANCE SIGNEE ENTRE LE POINT P ET L'ELLIPSE
@@ -191,7 +191,7 @@ subroutine disell(pz, az, bz, h)
 10  end do
 !
 !     NOMBRE D'ITERATIONS MAXI ATTEINT
-    call u2mess('F', 'XFEM_2')
+    call utmess('F', 'XFEM_2')
 !
 !
 9999  continue

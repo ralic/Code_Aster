@@ -27,8 +27,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: imate, kpg, ksp
     character(len=8) :: typmod(*)
     character(len=16) :: compor(3), option
@@ -97,7 +96,9 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 ksp, tp, iret3)
     call rcvarc('F', 'TEMP', 'REF', fami, kpg,&
                 ksp, tref, iret1)
-    if ((iret1+iret2+iret3) .ge. 1) call u2mess('F', 'CALCULEL_31')
+    if ((iret1+iret2+iret3) .ge. 1) then
+        call utmess('F', 'CALCULEL_31')
+    endif
     nompar = 'TEMP'
 !
 !     -- 1 INITIALISATIONS :
@@ -111,7 +112,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     call granvi(mod, ndimsi, ibid, ibid)
     call matini(6, 6, 0.d0, dsidep)
     if (.not.( compor(1)(1:10) .eq. 'GRANGER_FP' )) then
-        call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
+        call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
     delta = instap-instam
     temp = (tp+tm)/2
@@ -157,7 +158,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 1, nomres(3), valres(3), icodre(3), 2)
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
         if ((icodre(3).ne.0) .or. (iisnan(tref).ne.0)) then
-            call u2mess('F', 'CALCULEL_15')
+            call utmess('F', 'CALCULEL_15')
         else
             epsthm = valres(3)*(tm-tref)
         endif
@@ -184,7 +185,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         epsthp = 0.d0
         elseif (((iisnan(tp).gt.0).or.(iisnan(tm).gt.0).or. (iisnan(tref)&
     .gt.0)).and.(icodre(3) .eq. 0 )) then
-        call u2mess('F', 'CALCULEL_15')
+        call utmess('F', 'CALCULEL_15')
     else
         epsthp = valres(3)*(tp-tref)
     endif
@@ -256,7 +257,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
             valres(i+8)=1.d0
             elseif ( ((icodre(i) .eq. 0) .and. (icodre(i+8) .ne. 0))&
         .or. ((icodre(i) .ne. 0) .and. (icodre(i+8) .eq. 0))) then
-            call u2mess('F', 'ALGORITH8_2')
+            call utmess('F', 'ALGORITH8_2')
         endif
         j(i)=valres(i)
         taux(i)=valres(i+8)
@@ -323,7 +324,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 1, nomres, valres, icodre, 2)
 !
     if (icodre(1) .ne. 0) then
-        call u2mess('F', 'ALGORITH7_98')
+        call utmess('F', 'ALGORITH7_98')
     endif
     hygrm=valres(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
@@ -331,7 +332,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 1, nomres, valres, icodre, 2)
 !
     if (icodre(1) .ne. 0) then
-        call u2mess('F', 'ALGORITH7_98')
+        call utmess('F', 'ALGORITH7_98')
     endif
     hygrp=valres(1)
 !

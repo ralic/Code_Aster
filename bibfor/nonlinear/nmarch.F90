@@ -21,7 +21,7 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dinuar.h"
@@ -37,7 +37,7 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
     character(len=8) :: result
     integer :: fonact(*)
@@ -149,7 +149,9 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 !
 ! ----- AFFICHAGE
 !
-        if (lprint) call u2mess('I', 'ARCHIVAGE_5')
+        if (lprint) then
+            call utmess('I', 'ARCHIVAGE_5')
+        endif
 !
 ! ----- EXTENSION DE RESULT SI TROP PETIT (DOUBLEMENT)
 !

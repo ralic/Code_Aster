@@ -8,7 +8,7 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/dicor3.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: k0(78), sim(12), p1, pi, ui, ti, dxu1, dxu2, dryu1, dryu2
     real(kind=8) :: nu1, nu2, mu1, mu2, c1, dbar2, uu, tt, dur, dryr
     real(kind=8) :: dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2, dnsdt2
@@ -73,7 +73,7 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
 !
 ! ICI UI=UI-VARIM4 ET TI=TI-VARIM5
 !C ON REMPLACE APRES UI PAR UU-DUR ET TI PAR TT-DRYR
-    call u2mess('I', 'ELEMENTS_25')
+    call utmess('I', 'ELEMENTS_25')
     if (pi .ne. 0.d0) then
         ubr1 = ui/dxu1/pi
         tbr1 = ti/dryu1/pi

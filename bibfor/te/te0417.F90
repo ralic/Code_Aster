@@ -1,14 +1,14 @@
 subroutine te0417(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/dxroep.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectci.h"
+!
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -58,7 +58,7 @@ subroutine te0417(option, nomte)
 !
     call dxroep(rho, epais)
     if (rho .le. r8prem()) then
-        call u2mess('F', 'ELEMENTS5_45')
+        call utmess('F', 'ELEMENTS5_45')
     endif
     epais2=epais*epais
     epais3=epais*epais2

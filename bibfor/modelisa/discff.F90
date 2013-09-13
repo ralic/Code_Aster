@@ -44,7 +44,7 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: nbfonc, nbp1, nbp2
     character(len=8) :: nomfon(nbfonc)
     character(len=19) :: tbfonc, fonc1, fonc2
@@ -144,7 +144,7 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
 !
 !
             if (ier1 .ne. 0 .or. ier2 .ne. 0) then
-                call u2mess('F', 'MODELISA4_40')
+                call utmess('F', 'MODELISA4_40')
             endif
 !
             call jelibe(fprol1)

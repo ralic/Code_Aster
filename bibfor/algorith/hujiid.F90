@@ -59,7 +59,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 #include "asterfort/mgauss.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, k, kk, l, ll, nbmect
     integer :: nbmeca, indi(7), iret, iadzi, iazk24
     integer :: ifm, niv
@@ -196,12 +196,12 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
             hooknl(6,6) = g3
 !
         else
-            call u2mess('F', 'COMPOR1_39')
+            call utmess('F', 'COMPOR1_39')
         endif
 !
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
 !
-        call u2mess('F', 'COMPOR1_4')
+        call utmess('F', 'COMPOR1_4')
 !
     endif
 !
@@ -464,7 +464,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! ---- I.2.2. MECANISME ISOTROPE MONOTONE
         else if (kk .eq. 4) then
 !
-            if (k .ne. nbmeca) call u2mess('F', 'COMPOR1_5')
+            if (k .ne. nbmeca) then
+                call utmess('F', 'COMPOR1_5')
+            endif
             i1de = d13*trace(ndi,ye)
             f2(k) = -abs(i1de) - rc(k)*d*pc
             if (f2(k) .gt. zero) f2(k) = zero

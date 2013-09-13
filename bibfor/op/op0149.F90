@@ -35,7 +35,7 @@ subroutine op0149()
 #include "asterfort/jeveuo.h"
 #include "asterfort/modiba.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomres, basemo, modefl, typflu
     character(len=8) :: kbid
@@ -65,7 +65,7 @@ subroutine op0149()
         nbamo1 = abs( na1 )
         if (nbamo1 .ne. 0) then
             if (nbamo1 .ne. nbnuo1) then
-                call u2mess('F', 'ALGORITH9_57')
+                call utmess('F', 'ALGORITH9_57')
             endif
         endif
     endif
@@ -123,7 +123,9 @@ subroutine op0149()
     refefl = basefl//'.REMF'
     call jeveuo(refefl, 'L', ireffl)
     modefl = zk8(ireffl+1)
-    if (basemo .ne. modefl) call u2mess('F', 'ALGORITH9_58')
+    if (basemo .ne. modefl) then
+        call utmess('F', 'ALGORITH9_58')
+    endif
 !
 !-----2.2.ERREUR FATALE SI NUME_VITE_FLUI INVALIDE
 !
@@ -146,7 +148,7 @@ subroutine op0149()
 !
     nbmod2 = nbmode - nbmfl
     if (.not.lnuor .and. lamor .and. nbamo1 .ne. nbmod2) then
-        call u2mess('F', 'ALGORITH9_60')
+        call utmess('F', 'ALGORITH9_60')
     endif
 !
 !
@@ -205,7 +207,7 @@ subroutine op0149()
 !---------CONSTITUTION DES LISTES
 !
             if (nbnuo2 .eq. 0) then
-                call u2mess('F', 'ALGORITH9_61')
+                call utmess('F', 'ALGORITH9_61')
             else
                 nbnuor = nbnuo2 + nbmfl
                 call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)

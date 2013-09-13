@@ -1,7 +1,6 @@
 subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elraca.h"
@@ -11,8 +10,9 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=16) :: corres, cortr3
     character(len=8) :: elrf1d(3)
     integer :: nutm1d(3)
@@ -113,7 +113,9 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     zi(i2com1-1+ino2)=ima1
     ideca2=ideca2+nbno
     10 end do
-    if (ideca2 .eq. 0) call u2mess('F', 'CALCULEL3_97')
+    if (ideca2 .eq. 0) then
+        call utmess('F', 'CALCULEL3_97')
+    endif
 !
 !     2.2 ALLOCATION DE .PJEF_NU .PJEF_CF .PJEF_CO:
 !         (ET REMPLISSAGE DE CES 3 OBJETS)

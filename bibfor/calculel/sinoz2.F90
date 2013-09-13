@@ -27,7 +27,6 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 ! ----------------------- DECLARATIONS --------------------------------
 !
 #include "jeveux.h"
-!
 #include "asterfort/assvec.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/celver.h"
@@ -48,13 +47,14 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 #include "asterfort/mecanb.h"
 #include "asterfort/mtcrou.h"
 #include "asterfort/predia.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utelvf.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zzappa.h"
 #include "asterfort/zzcala.h"
 #include "asterfort/zzcalb.h"
 #include "asterfort/zzpoly.h"
+!
     character(len=8) :: modele, kbid, ma, typema, licmp(4), vecass, elrefe
     character(len=8) :: famil
     character(len=14) :: nu14
@@ -95,7 +95,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     call dismoi('F', 'PHENOMENE', modele, 'MODELE', ibid,&
                 phen, ier)
     if (phen .ne. 'MECANIQUE') then
-        call u2mess('F', 'CALCULEL4_83')
+        call utmess('F', 'CALCULEL4_83')
     endif
 !
     call dismoi('F', 'NOM_MAILLA', sigel(1:19), 'CHAM_ELEM', ibid,&
@@ -209,7 +209,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
         endif
 80  end do
     if (inob .ne. nbnob) then
-        call u2mess('F', 'CALCULEL4_84')
+        call utmess('F', 'CALCULEL4_84')
     endif
 !
 !    VERIFICATION DES TYPES DE MAILLE
@@ -222,20 +222,20 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
         if (typema(1:4) .eq. 'TRIA') then
             ntri = ntri + 1
             if (typema(5:5) .ne. '3' .and. typema(5:5) .ne. '6') then
-                call u2mess('F', 'CALCULEL4_85')
+                call utmess('F', 'CALCULEL4_85')
             endif
         else if (typema(1:4).eq.'QUAD') then
             nqua = nqua + 1
             if (typema(5:5) .ne. '4' .and. typema(5:5) .ne. '8' .and. typema(5:5) .ne. '9') then
-                call u2mess('F', 'CALCULEL4_86')
+                call utmess('F', 'CALCULEL4_86')
             endif
         endif
 90  end do
     if (ntri .ne. 0 .and. nqua .ne. 0) then
-        call u2mess('F', 'CALCULEL4_87')
+        call utmess('F', 'CALCULEL4_87')
     endif
     if (ntri .eq. 0 .and. nqua .eq. 0) then
-        call u2mess('F', 'CALCULEL4_88')
+        call utmess('F', 'CALCULEL4_88')
     endif
 !
     mo = modele//'.MODELE    '
@@ -460,7 +460,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     do 260 i = 1, nbnob
         num = zi(jnb-1+i)
         if (zi(jpa-1+i) .eq. 0) then
-            call u2mess('F', 'CALCULEL4_89')
+            call utmess('F', 'CALCULEL4_89')
         endif
         do 250 ic = 1, 4
             zr(jsig-1+4* (num-1)+ic) = zr(jsig-1+4* (num-1)+ic)/ zi(jpa-1+i)

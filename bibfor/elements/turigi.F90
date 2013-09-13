@@ -31,7 +31,7 @@ subroutine turigi(nomte, nbrddl, k)
 #include "asterfort/mavec.h"
 #include "asterfort/moytem.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: nomte
     integer :: nbrddl, nc
     integer :: ndim, nnos, idfdk, jdfd2, jgano
@@ -125,7 +125,7 @@ subroutine turigi(nomte, nbrddl, k)
         icoude = icoud2 - 10
         mmt = 0
         if (h/a .gt. (0.25d0)) then
-            call u2mess('A', 'ELEMENTS4_54')
+            call utmess('A', 'ELEMENTS4_54')
         endif
     else
         icoude = icoud2
@@ -146,7 +146,8 @@ subroutine turigi(nomte, nbrddl, k)
     nbpar = 1
     nompar = 'TEMP'
     call rcvala(zi(imate), ' ', 'ELAS', nbpar, nompar,&
-                [valpar], 2, nomres, valres, icodre,1)
+                [valpar], 2, nomres, valres, icodre,&
+                1)
     e = valres(1)
     nu = valres(2)
 ! DEFINITION DE LA MATRICE DE COMPORTEMENT C

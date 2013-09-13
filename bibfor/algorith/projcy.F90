@@ -36,7 +36,7 @@ subroutine projcy(nomres)
 #include "asterfort/jeveuo.h"
 #include "asterfort/prcycb.h"
 #include "asterfort/prcymn.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     character(len=8) :: nomres, typint
     character(len=24) :: repmat, soumat
     character(len=24) :: valk
@@ -91,8 +91,7 @@ subroutine projcy(nomres)
 !
     if (nook) then
         valk = typint
-        call u2mesg('F', 'ALGORITH14_3', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH14_3', sk=valk)
     endif
 !
     call jedema()

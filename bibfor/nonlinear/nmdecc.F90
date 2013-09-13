@@ -20,14 +20,14 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: optdez
     character(len=24) :: nomlis
@@ -197,20 +197,17 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
         if (optdec .eq. 'UNIFORME') then
             valr(1) = instam
             valr(2) = pasdt
-            call u2mesg('I', 'SUBDIVISE_10', 0, k16bid, 1,&
-                        nbrpas, 2, valr)
+            call utmess('I', 'SUBDIVISE_10', si=nbrpas, nr=2, valr=valr)
         else if (optdec.eq.'PROGRESSIF') then
             valr(1) = instam
             valr(2) = premie
             valr(3) = suivan
-            call u2mesg('I', 'SUBDIVISE_11', 0, k16bid, 1,&
-                        nbrpas, 3, valr)
+            call utmess('I', 'SUBDIVISE_11', si=nbrpas, nr=3, valr=valr)
         else if (optdec.eq.'DEGRESSIF') then
             valr(1) = instam
             valr(2) = premie
             valr(3) = suivan
-            call u2mesg('I', 'SUBDIVISE_12', 0, k16bid, 1,&
-                        nbrpas, 3, valr)
+            call utmess('I', 'SUBDIVISE_12', si=nbrpas, nr=3, valr=valr)
         else
             ASSERT(.false.)
         endif

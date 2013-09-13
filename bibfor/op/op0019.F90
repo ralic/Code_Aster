@@ -84,7 +84,7 @@ subroutine op0019()
 #include "asterfort/jexnom.h"
 #include "asterfort/pmfd00.h"
 #include "asterfort/tecart.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
 !
@@ -264,7 +264,7 @@ subroutine op0019()
             if (ver(i) .eq. 'NOEUD   ') ivr(2) = 1
 40      continue
     else if (nbver.lt.0) then
-        call u2mess('F', 'MODELISA5_55')
+        call utmess('F', 'MODELISA5_55')
     endif
 !
     do i = 1, nbmcf
@@ -333,7 +333,7 @@ subroutine op0019()
     lxpf = 0
     if (nbocc(9) .ne. 0) then
         if (nbocc(1) .eq. 0) then
-            call u2mess('F', 'MODELISA5_56')
+            call utmess('F', 'MODELISA5_56')
         endif
         call acevpf(nbocc(9), nlm, nlg)
         lxpf = max(nlm,nlg)
@@ -450,7 +450,7 @@ subroutine op0019()
                 ngrill, ngribt, nmembr, jdlm, jdln,&
                 iret)
     if (iret .ne. 0) then
-        call u2mess('F', 'MODELISA5_57')
+        call utmess('F', 'MODELISA5_57')
     endif
 !
 ! --- ------------------------------------------------------------------
@@ -478,7 +478,7 @@ subroutine op0019()
                 nbtel, locaco, locagb, locamb, jdlm,&
                 jdln, lmax, iret)
     if (iret .ne. 0) then
-        call u2mess('F', 'MODELISA5_59')
+        call utmess('F', 'MODELISA5_59')
     endif
 !     FABRICATION DE LA CARTE COMMUNE A TOUS LES ELEMENTS LINEIQUE
 !     S'IL Y EN A D'AFFECTE
@@ -491,13 +491,13 @@ subroutine op0019()
         endif
     endif
     if ((nbocc(1).eq.0) .and. (npoutr.ne.0)) then
-        call u2mess('A', 'MODELISA5_60')
+        call utmess('A', 'MODELISA5_60')
     endif
     if ((nbocc(7).eq.0) .and. (nbarre.ne.0)) then
-        call u2mess('A', 'MODELISA5_61')
+        call utmess('A', 'MODELISA5_61')
     endif
     if ((nbocc(6).eq.0) .and. (ncable.ne.0)) then
-        call u2mess('A', 'MODELISA5_62')
+        call utmess('A', 'MODELISA5_62')
     endif
 !
 ! --- ------------------------------------------------------------------

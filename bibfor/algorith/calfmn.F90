@@ -28,7 +28,7 @@ subroutine calfmn(np1, nbm, testc, fmod0, fmod00,&
 ! ARGUMENTS
 ! ---------
 #include "asterfort/prmave.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: np1, nbm, testc
     real(kind=8) :: fmod0(*), fmod00(*), cmod(np1, *), kmod(np1, *), vitg0(*)
     real(kind=8) :: depg0(*)
@@ -54,12 +54,16 @@ subroutine calfmn(np1, nbm, testc, fmod0, fmod00,&
         ier = 0
         call prmave(0, kmod, np1, nbm, nbm,&
                     depg0, nbm, fmod0, nbm, ier)
-        if (ier .ne. 0) call u2mess('F', 'ALGORITH_71')
+        if (ier .ne. 0) then
+            call utmess('F', 'ALGORITH_71')
+        endif
 !
         ier = 0
         call prmave(1, cmod, np1, nbm, nbm,&
                     vitg0, nbm, fmod0, nbm, ier)
-        if (ier .ne. 0) call u2mess('F', 'ALGORITH_71')
+        if (ier .ne. 0) then
+            call utmess('F', 'ALGORITH_71')
+        endif
 !
         do 20 i = 1, nbm
             fmod0(i) = fmod00(i) - fmod0(i)

@@ -2,13 +2,13 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ltnotb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     character(len=8) :: modele
     integer :: mftot, nftot, nfcomf, ngfon
 ! ======================================================================
@@ -64,7 +64,9 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                 malini, iret)
     call dismoi('F', 'DIM_GEOM', mo, 'MODELE', ndim,&
                 k8b, iret)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'MODELISA2_6')
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+        call utmess('F', 'MODELISA2_6')
+    endif
 !
     if (ndim .eq. 2) then
 !

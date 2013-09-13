@@ -21,7 +21,7 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
     implicit none
 !
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     logical :: axi
     integer :: ndim, nno
@@ -58,5 +58,7 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
 20      continue
 10  end do
 !
-    if (axi) call u2mess('F', 'ALGORITH7_76')
+    if (axi) then
+        call utmess('F', 'ALGORITH7_76')
+    endif
 end subroutine

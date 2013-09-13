@@ -31,7 +31,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/tfvegr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: itypfl
     character(len=16) :: nommcf
 ! ----------------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             endif
 10      continue
         if (ncoup .eq. 0) then
-            call u2mess('E', 'MODELISA7_19')
+            call utmess('E', 'MODELISA7_19')
             goto 9999
         endif
         ncara = 0
@@ -114,7 +114,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                 endif
 30          continue
             if (ntpas .eq. 0 .or. ntres .ne. nbocc .or. npas .eq. 0) then
-                call u2mess('E', 'MODELISA7_20')
+                call utmess('E', 'MODELISA7_20')
             endif
 !
 ! ------1.2.SI NON PRISE EN COMPTE DU COUPLAGE
@@ -128,7 +128,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                 endif
 50          continue
             if (ncm .eq. 0) then
-                call u2mess('E', 'MODELISA7_21')
+                call utmess('E', 'MODELISA7_21')
             endif
         endif
 !
@@ -136,16 +136,16 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !       AU MOINS UNE FOIS DANS L UNE DES OCCURENCES DU MOT-CLE FACTEUR
 !
         if (ncara .eq. 0) then
-            call u2mess('E', 'MODELISA7_22')
+            call utmess('E', 'MODELISA7_22')
         endif
         if (nrhoi .eq. 0) then
-            call u2mess('E', 'MODELISA7_23')
+            call utmess('E', 'MODELISA7_23')
         endif
         if (nrhoe .eq. 0) then
-            call u2mess('E', 'MODELISA7_24')
+            call utmess('E', 'MODELISA7_24')
         endif
         if (ncara .eq. 0) then
-            call u2mess('E', 'MODELISA7_25')
+            call utmess('E', 'MODELISA7_25')
         endif
 !
 ! ----2.CAS D'UNE GRAPPE
@@ -157,7 +157,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
         if (ouinon .eq. 'OUI') then
             call getvtx(nommcf, 'GRAPPE_2', iocc=1, nbval=0, nbret=igra2)
             if (igra2 .eq. 0) then
-                call u2mess('E', 'MODELISA7_26')
+                call utmess('E', 'MODELISA7_26')
             endif
         endif
 !
@@ -183,7 +183,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             call getvr8(nommcf, 'RAYON_TUBE', iocc=iocc, nbval=0, nbret=irayon)
             if (irayon .eq. 0) then
                 if (nbocc .gt. 1) then
-                    call u2mess('E', 'MODELISA7_27')
+                    call utmess('E', 'MODELISA7_27')
                 endif
             else
                 call getvr8(nommcf, 'COOR_TUBE', iocc=iocc, nbval=0, nbret=nbcoor)
@@ -191,7 +191,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                 nbtub = int(nbcoor/2)
                 nbtub2 = 2*nbtub
                 if (nbtub2 .ne. nbcoor) then
-                    call u2mess('E', 'MODELISA7_28')
+                    call utmess('E', 'MODELISA7_28')
                 endif
             endif
 !
@@ -202,7 +202,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             if (ivect .ne. 0) then
                 count1 = count1 + 1
                 if (abs(ivect) .ne. 3) then
-                    call u2mess('E', 'MODELISA7_29')
+                    call utmess('E', 'MODELISA7_29')
                 else
                     ier2 = 0
                     call getvr8(nommcf, 'VECT_X', iocc=iocc, nbval=3, vect=vect(1),&
@@ -216,7 +216,9 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                     else
                         ier2 = 1
                     endif
-                    if (ier2 .eq. 1) call u2mess('E', 'MODELISA7_30')
+                    if (ier2 .eq. 1) then
+                        call utmess('E', 'MODELISA7_30')
+                    endif
                 endif
             endif
 !
@@ -237,7 +239,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             call getvr8(nommcf, 'PESANTEUR', iocc=iocc, nbval=0, nbret=ipesan)
             ipesan = abs(ipesan)
             if (ipesan .ne. 0 .and. ipesan .ne. 4) then
-                call u2mess('E', 'MODELISA7_31')
+                call utmess('E', 'MODELISA7_31')
             endif
 !
 ! --------3.5.INCREMENTATION DU COMPTEUR POUR <CARA_PAROI>
@@ -249,12 +251,12 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             if (icapa .ne. 0) then
                 count5 = count5 + 1
                 if (icapa .ne. 3 .and. icapa .ne. 4) then
-                    call u2mess('E', 'MODELISA7_32')
+                    call utmess('E', 'MODELISA7_32')
                 else
                     call getvr8(nommcf, 'VALE_PAROI', iocc=iocc, nbval=0, nbret=ivapa)
                     ivapa = abs(ivapa)
                     if (ivapa .ne. icapa) then
-                        call u2mess('E', 'MODELISA7_33')
+                        call utmess('E', 'MODELISA7_33')
                     else
                         call getvtx(nommcf, 'CARA_PAROI', iocc=iocc, nbval=icapa, vect=carapa(1),&
                                     nbret=ibid)
@@ -275,9 +277,9 @@ subroutine tfveri(nommcf, nbocc, itypfl)
                                 endif
 60                          continue
                             if (nbyc .ne. 1 .or. nbzc .ne. 1 .or. nbr .ne. 1) then
-                                call u2mess('E', 'MODELISA7_34')
+                                call utmess('E', 'MODELISA7_34')
                             else if (valepa(ir).le.0.d0) then
-                                call u2mess('E', 'MODELISA7_35')
+                                call utmess('E', 'MODELISA7_35')
                             endif
                         else
                             do 70 icara = 1, icapa
@@ -294,14 +296,14 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 70                          continue
                             if (nbyc .ne. 1 .or. nbzc .ne. 1 .or. nbhy .ne. 1 .or. nbhz&
                                 .ne. 1) then
-                                call u2mess('E', 'MODELISA7_36')
+                                call utmess('E', 'MODELISA7_36')
                                 else if (valepa(ihy).le.0.d0 .or. valepa(&
                             ihz).le.0.d0) then
-                                call u2mess('E', 'MODELISA7_37')
+                                call utmess('E', 'MODELISA7_37')
                             else
                                 call getvr8(nommcf, 'ANGL_VRIL', iocc=iocc, nbval=0, nbret=iangl)
                                 if (iangl .eq. 0) then
-                                    call u2mess('E', 'MODELISA7_38')
+                                    call utmess('E', 'MODELISA7_38')
                                 endif
                             endif
                         endif
@@ -323,15 +325,15 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 ! ------3.7.VERIFICATION DES COMPTEURS
 !
         if (count1 .eq. 0) then
-            call u2mess('E', 'MODELISA7_39')
+            call utmess('E', 'MODELISA7_39')
         else if (count2.eq.0) then
-            call u2mess('E', 'MODELISA7_40')
+            call utmess('E', 'MODELISA7_40')
         else if (count3.eq.0) then
-            call u2mess('E', 'MODELISA7_41')
+            call utmess('E', 'MODELISA7_41')
         else if (count4.eq.0) then
-            call u2mess('E', 'MODELISA7_42')
+            call utmess('E', 'MODELISA7_42')
         else if (count5.eq.0) then
-            call u2mess('E', 'MODELISA7_43')
+            call utmess('E', 'MODELISA7_43')
         endif
 !
 ! ------3.8.VERIFICATION DES DONNEES CARACTERISTIQUES DES GRILLES
@@ -348,7 +350,7 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !
         call getvr8(nommcf, 'VECT_X', iocc=1, nbval=0, nbret=ivect)
         if (abs(ivect) .ne. 3) then
-            call u2mess('E', 'MODELISA7_44')
+            call utmess('E', 'MODELISA7_44')
         else
             ier2 = 0
             call getvr8(nommcf, 'VECT_X', iocc=1, nbval=3, vect=vect(1),&
@@ -362,7 +364,9 @@ subroutine tfveri(nommcf, nbocc, itypfl)
             else
                 ier2 = 1
             endif
-            if (ier2 .eq. 1) call u2mess('E', 'MODELISA7_45')
+            if (ier2 .eq. 1) then
+                call utmess('E', 'MODELISA7_45')
+            endif
         endif
 !
     endif

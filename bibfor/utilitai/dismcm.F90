@@ -27,7 +27,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jelstc.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
@@ -45,7 +45,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) ::  mater, nomf
+    character(len=8) :: mater, nomf
     character(len=10) :: nomrc
     character(len=24) :: quest2, nomobj(100)
     logical :: trouve
@@ -91,7 +91,9 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
                 call jelstc('G', mater, 1, 100, nomobj,&
                             n)
-                if (n .lt. 0) call u2mess('F', 'UTILITAI_54')
+                if (n .lt. 0) then
+                    call utmess('F', 'UTILITAI_54')
+                endif
                 do 20,ii=1,n
                 if (nomobj(ii)(20:24) .eq. '.VALK') then
                     call jeveuo(nomobj(ii), 'L', iaobj)

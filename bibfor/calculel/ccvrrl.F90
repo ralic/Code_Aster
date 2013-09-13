@@ -19,7 +19,6 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterfort/angvec.h"
 #include "asterfort/carces.h"
@@ -35,10 +34,10 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
+!
     integer :: codret
     character(len=1) :: cmperr
     character(len=8) :: nommai, modele, carael
@@ -219,9 +218,9 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                 if (ier .eq. 1 .or. ier .eq. 2) then
                     call jenuno(jexnum(nommai//'.NOMMAI', numma), nomail)
                     if (ier .eq. 1) then
-                        call u2mesk('A', 'MODELISA10_5', 1, nomail)
+                        call utmess('A', 'MODELISA10_5', sk=nomail)
                     else
-                        call u2mesk('A', 'ELEMENTS4_80', 1, nomail)
+                        call utmess('A', 'ELEMENTS4_80', sk=nomail)
                     endif
                 endif
 !
@@ -280,9 +279,9 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
                     if (ier .eq. 1 .or. ier .eq. 2) then
                         call jenuno(jexnum(nommai//'.NOMMAI', numma2), nomail)
                         if (ier .eq. 1) then
-                            call u2mesk('A', 'MODELISA10_5', 1, nomail)
+                            call utmess('A', 'MODELISA10_5', sk=nomail)
                         else
-                            call u2mesk('A', 'ELEMENTS4_80', 1, nomail)
+                            call utmess('A', 'ELEMENTS4_80', sk=nomail)
                         endif
                     endif
 !
@@ -329,7 +328,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     if (lprobm) then
         if (cmperr .ne. ' ') then
             tabres(1) = 180.d0*maxdif/pi
-            call u2mesr(cmperr, 'UTILITAI_4', 1, tabres)
+            call utmess(cmperr, 'UTILITAI_4', sr=tabres(1))
         endif
         codret = 1
     endif

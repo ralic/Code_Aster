@@ -58,10 +58,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 #include "asterfort/rrldc.h"
 #include "asterfort/sesqui.h"
 #include "asterfort/trldc.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/zcopy.h"
     integer :: vali(2), nbmod, ndim, ndimax
     complex(kind=8) :: ck(*), cm(*), ceigen(nbmod)
@@ -75,8 +72,8 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !-----------------------------------------------------------------------
 !
     valk = 'CMPHII'
-    call u2mesk('I', 'ALGELINE7_2', 1, valk)
-    call u2mess('I', 'ALGELINE7_3')
+    call utmess('I', 'ALGELINE7_2', sk=valk)
+    call utmess('I', 'ALGELINE7_3')
 !
 !      RECOPIE DE LA MATRICE DE RAIDEUR
     call zcopy(ndim*(ndim+1)/2, ck, 1, cmat1, 1)
@@ -86,7 +83,7 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
 !    GESTION DU PIVOT NUL
     if (ipivo .ne. 0) then
         vali(1) = ipivo
-        call u2mesi('F', 'ALGORITH12_53', 1, vali)
+        call utmess('F', 'ALGORITH12_53', si=vali(1))
     endif
 !
 !
@@ -163,8 +160,8 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter,&
         valr(1)=xer
         valr(2)=dble(ceigen(j))
         valr(3)=dimag(ceigen(j))
-        call u2mesg('I', 'ALGELINE7_4', 0, ' ', 2,&
-                    vali, 3, valr)
+        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
+                    valr=valr)
 !
 50  end do
 !

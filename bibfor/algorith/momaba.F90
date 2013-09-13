@@ -1,7 +1,6 @@
 subroutine momaba(mailla)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/barhex.h"
 #include "asterfort/barpen.h"
 #include "asterfort/barpyr.h"
@@ -18,8 +17,9 @@ subroutine momaba(mailla)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: mailla
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -82,7 +82,9 @@ subroutine momaba(mailla)
 !
 !     ON INTERDIT 'GROUP_MA_FOND' ET 'MAILLE_FOND'
 !     SI LE MAILLAGE EST DE DIMENSION 2.
-    if (zi(jdim+5) .eq. 2) call u2mess('F', 'ALGORITH6_16')
+    if (zi(jdim+5) .eq. 2) then
+        call utmess('F', 'ALGORITH6_16')
+    endif
 !
     do 140 i = 1, nbma
         ityp=jtyma-1+zi(jnuma+i-1)
@@ -101,7 +103,7 @@ subroutine momaba(mailla)
             n1=zi(jpoin)
             n2=0
         else
-            call u2mess('F', 'ALGORITH6_17')
+            call utmess('F', 'ALGORITH6_17')
         endif
 !
         do 130 j = 1, nbmat
@@ -336,7 +338,9 @@ subroutine momaba(mailla)
 !
 !     ON VERIFIE L'UNICITE DU NOEUD DU FOND DE FISSURE POUR UN
 !     MAILLAGE DE DIMENSION 2
-    if (zi(jdim+5) .eq. 2 .and. nbma .gt. 1) call u2mess('F', 'ALGORITH6_18')
+    if (zi(jdim+5) .eq. 2 .and. nbma .gt. 1) then
+        call utmess('F', 'ALGORITH6_18')
+    endif
 !
     call jeveuo(nomjv, 'L', jnuma)
     call wkvect('&&NOEU_MIL_FISS', 'V V I', nbma, jnbma)
@@ -486,7 +490,9 @@ subroutine momaba(mailla)
         zr(jcoor+nn+2)=zr(jcon+nn+2)
 250  end do
 !
-    if (.not.lmodi) call u2mess('F', 'ALGORITH16_72')
+    if (.not.lmodi) then
+        call utmess('F', 'ALGORITH16_72')
+    endif
 !
     call jedetr('&&NOEU_MIL_FISS')
     call jedetr('&&COORD_NOEUDS')

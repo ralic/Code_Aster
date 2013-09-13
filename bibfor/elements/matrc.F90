@@ -18,7 +18,6 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/elref4.h"
@@ -26,8 +25,9 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 #include "asterfort/moytem.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
+!
     integer :: nno
     real(kind=8) :: kcis, matc(5, 5), vectt(3, 3)
 !
@@ -59,7 +59,8 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 !
     nbpar = 1
     nompar = 'TEMP'
-    call moytem(fami, npg, 3*zi(jcou), '+', valpar(1),iret)
+    call moytem(fami, npg, 3*zi(jcou), '+', valpar(1),&
+                iret)
 !
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
@@ -71,7 +72,8 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 !        ------ MATERIAU ISOTROPE --------------------------------------
 !
         call rcvala(zi(jmate), ' ', phenom, nbpar, nompar,&
-                    valpar(1), nbv, nomres, valres, icodre,1)
+                    valpar(1), nbv, nomres, valres, icodre,&
+                    1)
 !
         young = valres(1)
         nu = valres(2)
@@ -99,7 +101,8 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 ! ----   ET DU TEMPS
 !        -----------
         call rcvala(zi(jmate), ' ', phenom, nbpar, nompar,&
-                    valpar(1), nbv, nomres, valres, icodre,1)
+                    valpar(1), nbv, nomres, valres, icodre,&
+                    1)
 !
         el = valres(1)
         et = valres(2)
@@ -179,7 +182,7 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 80      continue
 !
     else
-        call u2mess('F', 'ELEMENTS_42')
+        call utmess('F', 'ELEMENTS_42')
     endif
 !
 end subroutine

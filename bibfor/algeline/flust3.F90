@@ -3,7 +3,6 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
                   npv, nivpar, nivdef)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -23,8 +22,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 #include "asterfort/mefrac.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rslipa.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbm, npv, nivpar, nivdef, nuor(*)
     real(kind=8) :: amor(*), freq(*), masg(*), vite(*), fact(*)
     character(len=8) :: typflu, base
@@ -90,7 +90,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     integer :: ifscr, ifsgm, ifsgr, ifsvi, ifsvk, ifsvr, igreq
     integer :: ikn, ilargg, ilongg, im, imataa, imatma
     integer :: imatra, inbmag, inbneq, inbnog, inomcy, inomeq, inum
-    integer :: ior,iphix,iphiy,ire,ireq,irint
+    integer :: ior, iphix, iphiy, ire, ireq, irint
     integer :: irugg, ixint, iyint, iz, izg, izint, j
     integer :: jdco, jtypg, lfacx, lmasg, lrigg, n, n1
     integer :: nbcyl, nbddl, nbfin, nbgrma, nbgrmx, nbgrp, nbgtot
@@ -191,7 +191,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         som(7) = don(1) + (don(3)*cos(ang) + don(4)*sin(ang))/2
         som(8) = don(2) + (don(3)*sin(ang) - don(4)*cos(ang))/2
     else
-        call u2mess('F', 'ALGELINE_44')
+        call utmess('F', 'ALGELINE_44')
     endif
 !
 ! --- 1.7.RAYONS DES TUBES DU FAISCEAU REEL ASSOCIES AUX TUBES
@@ -284,8 +284,9 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
 !-----RECUPERATION D'INFORMATIONS POUR CREATION DES OBJETS DE TRAVAIL
 !
-
-    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi, matria, ire)
+!
+    call dismoi('F', 'REF_RIGI_PREM', base, 'RESU_DYNA', ibi,&
+                matria, ire)
     call dismoi('F', 'NOM_NUME_DDL', matria, 'MATR_ASSE', ibi,&
                 numddl, ire)
     call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', neq,&
@@ -322,7 +323,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         do 130 i = 1, nbgrp
             nt = nt + zi(inbneq+i-1)
             if (nt .gt. nbcyl) then
-                call u2mess('F', 'ALGELINE_45')
+                call utmess('F', 'ALGELINE_45')
             endif
             do 110 j = 1, zi(inbneq+i-1)
                 nn = nn + 1
@@ -330,7 +331,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 110          continue
 130      continue
         if (nt .ne. nbcyl) then
-            call u2mess('F', 'ALGELINE_45')
+            call utmess('F', 'ALGELINE_45')
         endif
     endif
 !
@@ -395,10 +396,10 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
         irot(2) = 1
         irot(3) = 2
     else
-        call u2mess('F', 'ALGELINE_46')
+        call utmess('F', 'ALGELINE_46')
     endif
     if (ndir .ne. iaxe) then
-        call u2mess('F', 'ALGELINE_47')
+        call utmess('F', 'ALGELINE_47')
     endif
 !
 !

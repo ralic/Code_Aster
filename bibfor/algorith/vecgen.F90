@@ -47,8 +47,7 @@ subroutine vecgen(nomres, numeg)
 #include "asterfort/mgutdm.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
@@ -137,7 +136,7 @@ subroutine vecgen(nomres, numeg)
         call jenonu(jexnom(profg//'.LILI', 'LIAISONS'), ibid)
         call jelira(jexnum(profg//'.PRNO', ibid), 'LONMAX', nblia)
         if (nblia .eq. 1) then
-            call u2mess('F', 'ALGORITH_32')
+            call utmess('F', 'ALGORITH_32')
         endif
 !
 !       VERIFIER QUE LE NOMBRE NBCHAR DE SOUS-STRUCTURES CHARGEES EST
@@ -147,8 +146,7 @@ subroutine vecgen(nomres, numeg)
         if (nbchar .gt. nbsst) then
             vali (1) = nbchar
             vali (2) = nbsst
-            call u2mesg('F', 'ALGORITH15_69', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_69', ni=2, vali=vali)
         endif
     endif
 !
@@ -233,8 +231,7 @@ subroutine vecgen(nomres, numeg)
             vali (1) = i
             vali (2) = 1
             vali (3) = ioc
-            call u2mesg('F', 'ALGORITH15_70', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_70', ni=3, vali=vali)
         else
             call getvtx(motfac, 'SOUS_STRUC', iocc=i, scal=nomsst, nbret=ioc)
         endif
@@ -251,8 +248,7 @@ subroutine vecgen(nomres, numeg)
             vali (1) = i
             vali (2) = 1
             vali (3) = ioc
-            call u2mesg('F', 'ALGORITH15_71', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_71', ni=3, vali=vali)
         else
             call getvid(motfac, 'VECT_ASSE', iocc=i, scal=nom2mb, nbret=ioc)
             call chpver('F', nom2mb, 'NOEU', 'DEPL_R', ier)
@@ -268,8 +264,7 @@ subroutine vecgen(nomres, numeg)
         num = zi(ldesc+1)
         if (num .lt. 0) then
             valk (1) = nom2mb
-            call u2mesg('F', 'ALGORITH15_72', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_72', sk=valk(1))
         endif
         call jeveuo(nom2mb//'           .REFE', 'L', lrefe)
         nuchar = zk24(lrefe+1)
@@ -286,8 +281,8 @@ subroutine vecgen(nomres, numeg)
             vali (2) = gd
             valk (1) = sstold
             valk (2) = nomsst
-            call u2mesg('F+', 'ALGORITH15_73', 2, valk, 2,&
-                        vali, 0, 0.d0)
+            call utmess('F+', 'ALGORITH15_73', nk=2, valk=valk, ni=2,&
+                        vali=vali)
         endif
         gd0 = gd
         sstold = nomsst
@@ -310,8 +305,7 @@ subroutine vecgen(nomres, numeg)
 !
         if (typeba(1:4) .ne. 'RITZ' .and. typeba(1:9) .ne. 'CLASSIQUE') then
             valk (1) = nomsst
-            call u2mesg('F', 'ALGORITH15_74', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_74', sk=valk(1))
         endif
 !
 !     PAR SECURITE, ON S'ASSURE QUE LE NUME_DDL ASSOCIE AU CHARGEMENT
@@ -321,8 +315,7 @@ subroutine vecgen(nomres, numeg)
             valk (1) = nomsst
             valk (2) = nubamo
             valk (3) = nuchar
-            call u2mesg('F', 'ALGORITH15_75', 3, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH15_75', nk=3, valk=valk)
         endif
 !
 !     COPIE DU NUME_DDL DANS LE .LICH

@@ -17,10 +17,10 @@ subroutine te0034(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -87,7 +87,7 @@ subroutine te0034(option, nomte)
         call fointe('FM', zk8(iforc-1+6), 4, nompar, valpar,&
                     mz, icod6)
     else
-        call u2mesk('F', 'ELEMENTS2_77', 1, option)
+        call utmess('F', 'ELEMENTS2_77', sk=option)
     endif
 !
 !     -- AFFECTATION DU RESULTAT:

@@ -6,8 +6,7 @@ subroutine lrvemo(modele)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=8) :: modele
 !
 ! ======================================================================
@@ -56,13 +55,13 @@ subroutine lrvemo(modele)
         valk(2)=typres
         if (typres(1:9) .eq. 'EVOL_THER') then
             if (pheno(1:9) .eq. 'MECANIQUE') then
-                call u2mess('F+', 'MED_54')
-                call u2mesk('F', 'MED_56', 2, valk)
+                call utmess('F+', 'MED_54')
+                call utmess('F', 'MED_56', nk=2, valk=valk)
             endif
         else
             if (pheno(1:9) .eq. 'THERMIQUE') then
-                call u2mess('F+', 'MED_54')
-                call u2mesk('F', 'MED_56', 2, valk)
+                call utmess('F+', 'MED_54')
+                call utmess('F', 'MED_56', nk=2, valk=valk)
             endif
         endif
     else if (nomcmd(1:10).eq.'LIRE_CHAMP') then

@@ -18,8 +18,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/rsvpar.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 !
@@ -99,7 +98,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 10  end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
-        call u2mess('F', 'ALGORITH9_81')
+        call utmess('F', 'ALGORITH9_81')
     endif
     do 12 i = 1, nbdir
         depl(i) = depl(i) / xnorm
@@ -160,8 +159,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     ier = ier + 1
                     valk (1) = acces(1:8)
                     valk (2) = acces(9:16)
-                    call u2mesg('F', 'ALGELINE4_61', 2, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_61', nk=2, valk=valk)
                     goto 40
                 endif
                 call rsvpar(modsta, iordr, 'TYPE_DEFO', ibid, r8b,&
@@ -171,8 +169,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     valk (1) = 'MODE_MECA'
                     valk (2) = acces(1:8)
                     valk (3) = acces(9:16)
-                    call u2mesg('F', 'ALGELINE4_62', 3, valk, 0,&
-                                0, 0, 0.d0)
+                    call utmess('F', 'ALGELINE4_62', nk=3, valk=valk)
                     goto 40
                 endif
                 call rsexch('F', modsta, 'DEPL', iordr, chamno,&

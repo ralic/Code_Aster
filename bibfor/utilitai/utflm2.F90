@@ -2,7 +2,6 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
                   nbtrou, tatrou)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -14,8 +13,9 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: dim, nbtrou, nbma
     integer :: tabmai(nbma), tatrou(nbma)
     character(len=8) :: mailla
@@ -83,7 +83,9 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !     -- SI DIM=-1, ON TRIE SUR TYPMAI :
     if (dim .eq. -1) then
         call jenonu(jexnom('&CATA.TM.NOMTM', typmai), itych)
-        if (itych .eq. 0) call u2mesk('F', 'CALCULEL2_67', 1, typmai)
+        if (itych .eq. 0) then
+            call utmess('F', 'CALCULEL2_67', sk=typmai)
+        endif
 !
     else
 !

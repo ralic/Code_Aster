@@ -28,8 +28,7 @@ subroutine jedetv()
 #include "asterfort/jjlidy.h"
 #include "asterfort/jjmzat.h"
 #include "asterfort/jxlibd.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !-----------------------------------------------------------------------
@@ -88,7 +87,7 @@ subroutine jedetv()
     valr(2)= nbacce(2*ic-1)*longbl(ic)*lois/1024.d0
     valr(3)= nbacce(2*ic  )*longbl(ic)*lois/1024.d0
     if (valr(3) .gt. valr(1)*valr(2) .and. valr(2) .ne. 0) then
-        call u2mesr('A', 'JEVEUX1_64', 3, valr)
+        call utmess('A', 'JEVEUX1_64', nr=3, valr=valr)
     endif
 !
     do 150 jido = 1, nremax(ic)
@@ -158,7 +157,7 @@ subroutine jedetv()
                 if (id(k) .gt. 0) then
                     nom32 = rnom ( jrnom(ic) + id(k) )
                     if (nivo .ge. 2) then
-                        call u2mesk('I', 'JEVEUX_07', 1, nom32)
+                        call utmess('I', 'JEVEUX_07', sk=nom32)
                     endif
                     call jjcren(nom32, -2, iret)
                     call jjmzat(ic, id(k))
@@ -174,7 +173,7 @@ subroutine jedetv()
                 call jxlibd(0, ido, ic, iaddi, lonoi)
             endif
             if (nivo .ge. 2) then
-                call u2mesk('I', 'JEVEUX_07', 1, crnom(1:24))
+                call utmess('I', 'JEVEUX_07', sk=crnom(1:24))
             endif
             call jjcren(crnom(1:24), -2, iret)
             call jjmzat(ic, ido)
@@ -202,7 +201,7 @@ subroutine jedetv()
                 call jxlibd(0, ido, ic, iaddi, lonoi)
             endif
             if (nivo .ge. 2) then
-                call u2mesk('I', 'JEVEUX_07', 1, crnom(1:24))
+                call utmess('I', 'JEVEUX_07', sk=crnom(1:24))
             endif
             call jjcren(crnom, -1, iret)
             nomos = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'

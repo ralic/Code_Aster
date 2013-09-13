@@ -25,7 +25,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
 !
@@ -262,7 +262,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
     endif
 !
     if (ier .ne. 0) then
-        call u2mess('F', 'MODELISA_12')
+        call utmess('F', 'MODELISA_12')
     endif
 !
 ! --- IMPRESSION DES VALEURS DES ORIENTATIONS SI DEMANDE

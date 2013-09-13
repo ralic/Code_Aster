@@ -2,7 +2,6 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/gicnx2.h"
 #include "asterfort/gidoma.h"
 #include "asterfort/gilig0.h"
@@ -12,8 +11,9 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nfic, niv, ndim, nbobo
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -68,7 +68,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 !
             read(nfic,1002) nivo, nberr, ndim
             if (nberr .gt. 0) then
-                call u2mess('A', 'PREPOST_59')
+                call utmess('A', 'PREPOST_59')
             endif
             read(nfic,1003) r8bid
             goto 1

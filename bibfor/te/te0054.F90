@@ -29,14 +29,14 @@ subroutine te0054(option, nomte)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option, phenom
@@ -60,7 +60,9 @@ subroutine te0054(option, nomte)
     call jevech('PMATTTR', 'E', imattt)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    if (icodre(1) .ne. 0) call u2mess('A', 'ELEMENTS2_63')
+    if (icodre(1) .ne. 0) then
+        call utmess('A', 'ELEMENTS2_63')
+    endif
     fami='FPG1'
     kpg=1
     spt=1

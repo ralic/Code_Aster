@@ -38,7 +38,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 #include "asterfort/nmtime.h"
 #include "asterfort/nmxmat.h"
 #include "asterfort/preres.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=16) :: method(*)
     integer :: fonact(*)
     character(len=*) :: modelz
@@ -141,7 +141,7 @@ subroutine ndxprm(modelz, mate, carele, compor, carcri,&
 !
     metpre = method(5)
     if (metpre .ne. 'TANGENTE') then
-        call u2mess('F', 'MECANONLINE5_1')
+        call utmess('F', 'MECANONLINE5_1')
     endif
 !
 ! --- INITIALISATIONS

@@ -20,7 +20,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: nbcp, nbco, nbsp, iocc, i1, ioc, isd
     real(kind=8) :: t(*)
@@ -87,7 +87,9 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
         else
             nbcmp2 = nbvari
         endif
-        if (nbcmp2 .gt. 3000) call u2mess('F', 'POSTRELE_13')
+        if (nbcmp2 .gt. 3000) then
+            call utmess('F', 'POSTRELE_13')
+        endif
     endif
 !
     nomval = ncheff//'.VALACCE'

@@ -36,7 +36,7 @@ subroutine op0170()
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbexve.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, nbtab, nbmom, n1, nbpfat, ivmom, i, ilign, nbl0, inbl0
     integer :: nbl2, inbl2, nbl4, inbl4
@@ -87,12 +87,16 @@ subroutine op0170()
         nomob2 = '&&OP0170.LAMBDA_2'
         call tbexve(table, 'LAMBDA_02', nomob2, 'V', nbl2,&
                     k8b)
-        if (nbl2 .ne. nbl0) call u2mess('F', 'MODELISA2_89')
+        if (nbl2 .ne. nbl0) then
+            call utmess('F', 'MODELISA2_89')
+        endif
         call jeveuo(nomob2, 'L', inbl2)
         nomob3 = '&&OP0170.LAMBDA_4'
         call tbexve(table, 'LAMBDA_04', nomob3, 'V', nbl4,&
                     k8b)
-        if (nbl4 .ne. nbl0) call u2mess('F', 'ALGELINE_7')
+        if (nbl4 .ne. nbl0) then
+            call utmess('F', 'ALGELINE_7')
+        endif
         call jeveuo(nomob3, 'L', inbl4)
         nbmom = nbl0
         call wkvect('&&OP0170.MOMENT', 'V V R', 3*nbmom, ivmom)
@@ -115,7 +119,9 @@ subroutine op0170()
 !
     endif
 !
-    if (nbmom .eq. 0) call u2mess('A', 'PREPOST4_17')
+    if (nbmom .eq. 0) then
+        call utmess('A', 'PREPOST4_17')
+    endif
 !
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, nbpfat, nopfat, typfat)

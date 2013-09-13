@@ -29,10 +29,10 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
 !  IN : NBVALE  :    DIMENSION DES VECTEURS KNOM ET VEC2
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-!
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: nbn, vec1(nbn), nbvale, vec2(nbvale)
     character(len=8) :: knom(nbvale), nomnd
     character(len=24) :: nomnoe
@@ -51,7 +51,7 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
             endif
 20      continue
         if (it .ne. 1) then
-            call u2mess('F', 'UTILITAI5_59')
+            call utmess('F', 'UTILITAI5_59')
         endif
         it = 0
 10  end do

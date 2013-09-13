@@ -33,8 +33,7 @@ subroutine ssdmdn(mag)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: mag
@@ -91,7 +90,9 @@ subroutine ssdmdn(mag)
             lmail=max(lmail,0)
             lnoeu=max(lnoeu,0)
             longt= lpref+lmail+lnoeu
-            if (longt .gt. 8) call u2mess('F', 'SOUSTRUC_57')
+            if (longt .gt. 8) then
+                call utmess('F', 'SOUSTRUC_57')
+            endif
             if (lpref .gt. 0) then
                 call getvtx('DEFI_NOEUD', 'PREFIXE', iocc=iocc, scal=pref, nbret=n2)
             endif
@@ -128,7 +129,9 @@ subroutine ssdmdn(mag)
             call getvtx('DEFI_NOEUD', 'SUPER_MAILLE', iocc=iocc, scal=nosma, nbret=n1)
             call getvtx('DEFI_NOEUD', 'NOEUD_FIN', iocc=iocc, scal=nomnog, nbret=n2)
             call getvtx('DEFI_NOEUD', 'NOEUD_INIT', iocc=iocc, scal=nomnol, nbret=n3)
-            if ((n1*n2*n3) .eq. 0) call u2mess('F', 'SOUSTRUC_58')
+            if ((n1*n2*n3) .eq. 0) then
+                call utmess('F', 'SOUSTRUC_58')
+            endif
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
             nomacr= zk8(ianmcr-1+isma)
@@ -141,7 +144,7 @@ subroutine ssdmdn(mag)
             if (kk .eq. 0) then
                 valk(1) = nomnol
                 valk(2) = nosma
-                call u2mesk('A', 'SOUSTRUC_59', 2, valk)
+                call utmess('A', 'SOUSTRUC_59', nk=2, valk=valk)
                 goto 1
             endif
 !
@@ -151,7 +154,7 @@ subroutine ssdmdn(mag)
             else
                 valk(1) = nomnol
                 valk(2) = nosma
-                call u2mesk('A', 'SOUSTRUC_60', 2, valk)
+                call utmess('A', 'SOUSTRUC_60', nk=2, valk=valk)
             endif
         endif
  1      continue

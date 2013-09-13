@@ -45,7 +45,6 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/bmnodi.h"
 #include "asterfort/bmradi.h"
 #include "asterfort/dcapno.h"
@@ -58,15 +57,16 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
 !
-    integer           :: nl, nc
-    real(kind=8)      :: flex(nl, nc)
-    character(len=6)  :: pgc
-    character(len=8)  :: basmod, typint, intf, kbid, k8bid
+!
+    integer :: nl, nc
+    real(kind=8) :: flex(nl, nc)
+    character(len=6) :: pgc
+    character(len=8) :: basmod, typint, intf, kbid, k8bid
     character(len=19) :: numddl
     character(len=24) :: chamva, noeint
     character(len=24) :: valk
@@ -75,7 +75,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !-----------------------------------------------------------------------
     integer :: i, ibid, iddeeq, iord, iran, iret, j
     integer :: jj, k, kk, ldkge, ldmge, llcham, lldes
-    integer :: llnoc,llnol,lltyp,ltextc,ltextl,ltorc
+    integer :: llnoc, llnol, lltyp, ltextc, ltextl, ltorc
     integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
     integer :: numc, numl
     real(kind=8) :: toto, xkgen, xx
@@ -91,13 +91,14 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 ! --- RECUPERATION CONCEPTS AMONT
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
-
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                intf, iret)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                numddl, iret)
+!
     if (intf .eq. '        ') then
         valk = basmod
-        call u2mesg('F', 'ALGORITH13_17', 1, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'ALGORITH13_17', sk=valk)
     endif
 !
 ! --- TEST SUR LE TYPE D'INTERFACE

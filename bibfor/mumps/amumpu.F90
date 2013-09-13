@@ -56,9 +56,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -66,12 +67,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jjldyn.h"
-#include "asterfort/asmpi_comm_jev.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utgtme.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "mumps/cmumps.h"
 #include "mumps/dmumps.h"
@@ -94,8 +91,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     real(kind=8) :: rval(3), rval1, rval2, rval3, rval1b, rval2b, rval3b, rinf12
     real(kind=8) :: rinf13
     integer :: info16, info26, vali(10), icoefm, icn22, icn23, rang, n, iaux1
-    integer ::  info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
-    integer ::  tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
+    integer :: info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
+    integer :: tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
     integer :: info34, icnt33
     integer :: pid
     mpi_int :: mpicou
@@ -284,7 +281,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             if (usersm(1:4) .eq. 'AUTO') then
                 lpb1=.true.
                 usersm='OUT_OF_CORE'
-                if (niv .ge. 2) call u2mess('I', 'FACTOR_82')
+                if (niv .ge. 2) then
+                    call utmess('I', 'FACTOR_82')
+                endif
             endif
         else
             lpeak=.true.
@@ -313,7 +312,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             vali(1)=info16
             vali(2)=icoefm
             vali(3)=tmax
-            call u2mesi('A', 'FACTOR_74', 3, vali)
+            call utmess('A', 'FACTOR_74', ni=3, vali=vali)
         endif
         case ('OUT_OF_CORE')
 ! ------------------
@@ -325,7 +324,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             vali(1)=info26
             vali(2)=icoefm
             vali(3)=tmax
-            call u2mesi('A', 'FACTOR_75', 3, vali)
+            call utmess('A', 'FACTOR_75', ni=3, vali=vali)
         endif
         case ('AUTO')
 ! -----------------------------------------------------------------
@@ -351,7 +350,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             endif
             if (niv .ge. 2) then
                 vali(1)=int(rval1b-rval1)
-                call u2mesi('I', 'FACTOR_51', 1, vali)
+                call utmess('I', 'FACTOR_51', si=vali(1))
             endif
             if (tmaxb .ge. info16) then
                 icn22=0
@@ -365,7 +364,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
                 vali(3)=info16
                 vali(4)=info26
                 vali(5)=icoefm
-                call u2mesi('F', 'FACTOR_76', 5, vali)
+                call utmess('F', 'FACTOR_76', ni=5, vali=vali)
             endif
         endif
         case ('EVAL')
@@ -385,9 +384,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         vali(5)=max(info3,1)
         vali(6)=vali(2)+vali(3)
         vali(7)=vali(2)+vali(4)
-        call u2mesg('I', 'FACTOR_81', 0, valk, 7,&
-                    vali, 0, 0.d0)
-        if (.not.lpeak) call u2mess('A', 'FACTOR_83')
+        call utmess('I', 'FACTOR_81', ni=7, vali=vali)
+        if (.not.lpeak) then
+            call utmess('A', 'FACTOR_83')
+        endif
         case default
         ASSERT(.false.)
         end select
@@ -547,7 +547,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         select case(kvers)
         case('4.9.2','4.10.0')
         case default
-        call u2mesk('F', 'FACTOR_72', 1, kvers)
+        call utmess('F', 'FACTOR_72', sk=kvers)
         end select
 !
 !       ------------------------------------------------

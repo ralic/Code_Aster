@@ -19,7 +19,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/chpver.h"
@@ -30,7 +30,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
 #include "asterfort/nmetnc.h"
 #include "asterfort/nmsigi.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcomp.h"
     character(len=24) :: modele, compor
     character(len=24) :: sdieto
@@ -113,16 +113,16 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
 ! --- LE CHAMP N'A JAMAIS ETE LU
 !
     if (statut .eq. ' ') then
-        call u2mesk('F', 'ETATINIT_30', 1, nomchs)
+        call utmess('F', 'ETATINIT_30', sk=nomchs)
     else
         valk(1) = nomchs
         valk(2) = result(1:8)
         if (statut .eq. 'ZERO') then
-            call u2mesk('I', 'ETATINIT_31', 1, nomchs)
+            call utmess('I', 'ETATINIT_31', sk=nomchs)
         else if (statut.eq.'SDRESU') then
-            call u2mesk('I', 'ETATINIT_32', 2, valk)
+            call utmess('I', 'ETATINIT_32', nk=2, valk=valk)
         else if (statut.eq.'CHAMP') then
-            call u2mesk('I', 'ETATINIT_33', 1, nomchs)
+            call utmess('I', 'ETATINIT_33', sk=nomchs)
         else
             ASSERT(.false.)
         endif

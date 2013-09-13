@@ -51,8 +51,6 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 ! MATTT  --> MATRICE DE MASSE ELEMENTAIRE
 !.......................................................................
 #include "jeveux.h"
-!-----------------------------------------------------------------------
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -61,10 +59,12 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/reeret.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+!-----------------------------------------------------------------------
+!
     character(len=8) :: elrefp
     integer :: ndim, nnop, imate, itemps, igeom, nfh, nfe, jpintt
     integer :: lonch(10), cnset(4*32), heavt(36)
@@ -86,7 +86,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     integer :: nbddl
     integer :: mxstac, icodre(1), spt, ipoids, idfde, nosema, ind1, lddl, jnp
     integer :: iddlma
-    integer ::  ind2
+    integer :: ind2
 !
     parameter (mxstac=1000)
 !     NBRE MAX DE NOEUDS D'UN SOUS-ELEMENT (TRIA3,TETRA4,TRIA6 -> 6)
@@ -115,7 +115,9 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 !
 !     POUR PREPARER L'APPEL A RCVALB
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
-    if (icodre(1) .ne. 0) call u2mess('F', 'ELEMENTS2_63')
+    if (icodre(1) .ne. 0) then
+        call utmess('F', 'ELEMENTS2_63')
+    endif
 !     POUR L'INSTANT ON NE TRAITE PAS 'THER_ORTH'
     ASSERT(phenom.eq.'THER')
     valpar(1) = zr(itemps-1+1)

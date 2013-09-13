@@ -23,7 +23,7 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 #include "asterfort/rctype.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, mate
     character(len=*) :: fami, poum
 !
@@ -62,7 +62,9 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
                 ksp, temp, iret)
     call rctype(mate, 1, 'TEMP', temp, resu,&
                 type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) call u2mess('F', 'CALCULEL_31')
+    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'CALCULEL_31')
+    endif
     call rctrac(mate, 1, 'SIGM', resu, jprolp,&
                 jvalep, nbvalp, young)
 !

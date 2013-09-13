@@ -4,10 +4,7 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/freqom.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesr.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ifm, nbfre1, nbfre2, nbfreq, nblagr
     real(kind=8) :: omgmin, omgmax, dimc1
     complex(kind=8) :: zimc1
@@ -81,7 +78,9 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
                 endif
             endif
         endif
-        if (nbfreq .gt. 9999) call u2mesi('A', 'ALGELINE3_64', 1, nbfreq)
+        if (nbfreq .gt. 9999) then
+            call utmess('A', 'ALGELINE3_64', si=nbfreq)
+        endif
 !
 !   --- AFFICHAGE SI MODE_ITER_SIMULT+BANDE OU MODE_ITER_INV+
 !   --- SEPARE/AJUSTE OU INFO_MODE+MIN/MAX
@@ -91,53 +90,49 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
                 fmax=freqom(omgmax)
                 write(ifm,950)
                 if (typep .eq. 'R') then
-                    call u2mess('I', 'ALGELINE6_33')
+                    call utmess('I', 'ALGELINE6_33')
                 else if (typep.eq.'F') then
-                    call u2mess('I', 'ALGELINE6_34')
+                    call utmess('I', 'ALGELINE6_34')
                 endif
                 if (nbfreq .eq. 0) then
                     valr(1)=fmin
                     valr(2)=fmax
                     vali(1)=1
-                    call u2mesg('I', 'ALGELINE6_35', 0, ' ', 1,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_35', si=vali(1), nr=2, valr=valr)
                 else if (fmin.eq.0.d0) then
                     valr(1)=fmax
                     vali(1)=nbfreq
-                    call u2mesg('I', 'ALGELINE6_36', 0, ' ', 1,&
-                                vali, 1, valr)
+                    call utmess('I', 'ALGELINE6_36', si=vali(1), sr=valr(1))
                 else
                     valr(1)=fmin
                     valr(2)=fmax
                     vali(1)=1
                     vali(2)=nbfreq
-                    call u2mesg('I', 'ALGELINE6_37', 0, ' ', 2,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_37', ni=2, vali=vali, nr=2,&
+                                valr=valr)
                 endif
             else
                 if (typep .eq. 'R') then
-                    call u2mess('I', 'ALGELINE6_28')
+                    call utmess('I', 'ALGELINE6_28')
                 else if (typep.eq.'F') then
-                    call u2mess('I', 'ALGELINE6_29')
+                    call utmess('I', 'ALGELINE6_29')
                 endif
                 if (nbfreq .eq. 0) then
                     valr(1)=omgmin
                     valr(2)=omgmax
                     vali(1)=1
-                    call u2mesg('I', 'ALGELINE6_30', 0, ' ', 1,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_30', si=vali(1), nr=2, valr=valr)
                 else if (omgmin .eq. 0.d0) then
                     valr(1)=omgmax
                     vali(1)=nbfreq
-                    call u2mesg('I', 'ALGELINE6_31', 0, ' ', 1,&
-                                vali, 1, valr)
+                    call utmess('I', 'ALGELINE6_31', si=vali(1), sr=valr(1))
                 else
                     valr(1)=omgmin
                     valr(2)=omgmax
                     vali(1)=1
                     vali(2)=nbfreq
-                    call u2mesg('I', 'ALGELINE6_32', 0, ' ', 2,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_32', ni=2, vali=vali, nr=2,&
+                                valr=valr)
                 endif
             endif
 !
@@ -148,34 +143,32 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
                 fmax=freqom(omgmax)
                 if (ibande .eq. 1) then
                     write(ifm,950)
-                    call u2mess('I', 'ALGELINE6_33')
+                    call utmess('I', 'ALGELINE6_33')
                 endif
                 valr(1)=fmin
                 valr(2)=fmax
                 vali(1)=ibande
                 if (nbfreq .eq. 0) then
-                    call u2mesg('I', 'ALGELINE6_35', 0, ' ', 1,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_35', si=vali(1), nr=2, valr=valr)
                 else
                     vali(2)=nbfreq
-                    call u2mesg('I', 'ALGELINE6_37', 0, ' ', 2,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_37', ni=2, vali=vali, nr=2,&
+                                valr=valr)
                 endif
             else
                 if (ibande .eq. 1) then
                     write(ifm,950)
-                    call u2mess('I', 'ALGELINE6_28')
+                    call utmess('I', 'ALGELINE6_28')
                 endif
                 valr(1)=omgmin
                 valr(2)=omgmax
                 vali(1)=ibande
                 if (nbfreq .eq. 0) then
-                    call u2mesg('I', 'ALGELINE6_30', 0, ' ', 1,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_30', si=vali(1), nr=2, valr=valr)
                 else
                     vali(2)=nbfreq
-                    call u2mesg('I', 'ALGELINE6_32', 0, ' ', 2,&
-                                vali, 2, valr)
+                    call utmess('I', 'ALGELINE6_32', ni=2, vali=vali, nr=2,&
+                                valr=valr)
                 endif
             endif
 !
@@ -187,17 +180,17 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
     else if (typep.eq.'C') then
         nbfreq=nbfre2
         if (nbfreq .gt. 9999) then
-            call u2mess('A', 'ALGELINE3_64')
-            call u2mesi('I', 'ALGELINE7_19', 1, nbfreq)
+            call utmess('A', 'ALGELINE3_64')
+            call utmess('I', 'ALGELINE7_19', si=nbfreq)
         endif
         write(ifm,950)
-        call u2mess('I', 'ALGELINE6_38')
+        call utmess('I', 'ALGELINE6_38')
         if (nbfreq .eq. 0) then
             if (typcon(1:6) .eq. 'CERCLE') then
                 valr(1)=dble(zimc1)
                 valr(2)=dimag(zimc1)
                 valr(3)=dimc1
-                call u2mesr('I', 'ALGELINE6_39', 3, valr)
+                call utmess('I', 'ALGELINE6_39', nr=3, valr=valr)
             endif
         else
             if (typcon(1:6) .eq. 'CERCLE') then
@@ -205,8 +198,7 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
                 valr(2)=dimag(zimc1)
                 valr(3)=dimc1
                 vali(1)=nbfreq
-                call u2mesg('I', 'ALGELINE6_40', 0, ' ', 1,&
-                            vali, 3, valr)
+                call utmess('I', 'ALGELINE6_40', si=vali(1), nr=3, valr=valr)
             endif
         endif
 !

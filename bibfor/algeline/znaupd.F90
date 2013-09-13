@@ -420,7 +420,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !
 #include "asterc/r8prem.h"
 #include "asterfort/ivout.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/znaup2.h"
 #include "asterfort/zvout.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -639,7 +639,7 @@ subroutine znaupd(ido, bmat, n, which, nev,&
     vali(4) = nrorth
     vali(5) = nitref
     vali(6) = nrstrt
-    call u2mesi('I', 'ALGELINE6_27', 6, vali)
+    call utmess('I', 'ALGELINE6_27', ni=6, vali=vali)
 !
     mxiter=0
     nopx=0

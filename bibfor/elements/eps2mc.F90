@@ -45,7 +45,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: xyz(1), depl(1), eps2(1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
@@ -166,7 +166,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 !
             eps2(nbsig*(igau-1)+4) = undemi*(dudx*dudy + dvdx*dvdy)
         else
-            call u2mess('F', 'ELEMENTS_11')
+            call utmess('F', 'ELEMENTS_11')
         endif
 !
 20  end do

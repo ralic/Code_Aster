@@ -52,8 +52,7 @@ subroutine op0166()
 #include "asterfort/pjxxco.h"
 #include "asterfort/pjxxpr.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: iret
     integer :: ie, ibid, n1, n2, n3
     integer :: jpjk1
@@ -66,7 +65,7 @@ subroutine op0166()
     character(len=19) :: resuou, cham1, method, rtyp
     character(len=19) :: ligre1, ligre2
     character(len=24) :: valk(4)
-    integer ::  nbocc
+    integer :: nbocc
 !
 !
 !
@@ -140,7 +139,7 @@ subroutine op0166()
 !      IL N'EST PAS POSSIBLE DE PROJETER UNE SD_RESULTAT
 !
     if ((method.eq.'ECLA_PG') .and. (.not.isole)) then
-        call u2mess('F', 'CALCULEL5_9')
+        call utmess('F', 'CALCULEL5_9')
     endif
 !
 !
@@ -190,7 +189,7 @@ subroutine op0166()
             valk(2) = norein
             valk(3) = noma1
             valk(4) = nomare
-            call u2mesk('F', 'CALCULEL4_59', 4, valk)
+            call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
         endif
 !
         call getvid(' ', 'CHAM_NO_REFE', scal=cnref, nbret=n1)
@@ -201,7 +200,7 @@ subroutine op0166()
                 valk(1)=cnref
                 valk(2)=noma3
                 valk(3)=noma2
-                call u2mesk('F', 'CALCULEL2_6', 3, valk)
+                call utmess('F', 'CALCULEL2_6', nk=3, valk=valk)
             endif
         else
             cnref=' '
@@ -215,15 +214,19 @@ subroutine op0166()
 !       LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
         call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
         if (n1 .eq. 0) then
-            call u2mess('F', 'CALCULEL5_40')
+            call utmess('F', 'CALCULEL5_40')
         endif
 !       VIS_A_VIS EST INTERDIT AVEC SOUS_POINT
         call getfac('VIS_A_VIS', nbocc)
-        if (nbocc .ne. 0) call u2mess('F', 'CALCULEL5_31')
+        if (nbocc .ne. 0) then
+            call utmess('F', 'CALCULEL5_31')
+        endif
         if (.not. isole) then
             call dismoi('F', 'TYPE_RESU', resuin, 'RESULTAT', ibid,&
                         rtyp, ie)
-            if (rtyp .ne. 'EVOL_THER') call u2mess('F', 'CALCULEL5_30')
+            if (rtyp .ne. 'EVOL_THER') then
+                call utmess('F', 'CALCULEL5_30')
+            endif
         endif
     else
         noca = ' '
@@ -269,7 +272,7 @@ subroutine op0166()
             valk(2) = norein
             valk(3) = moa1
             valk(4) = nomare
-            call u2mesk('F', 'CALCULEL4_59', 4, valk)
+            call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
         endif
 !        -- POUR POUVOIR PROJETER LES CHAM_ELEM, IL FAUT MODELE_2
         call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
@@ -279,7 +282,7 @@ subroutine op0166()
             if (moa2 .ne. noma2) then
                 valk(1) = moa2
                 valk(2) = noma2
-                call u2mesk('F', 'CALCULEL4_72', 2, valk)
+                call utmess('F', 'CALCULEL4_72', nk=2, valk=valk)
             endif
             moa2=nomo2
         endif
@@ -311,7 +314,7 @@ subroutine op0166()
                 tychv=' '
             endif
             if (tychv .eq. 'NOEU') then
-                call u2mess('F', 'CALCULEL5_36')
+                call utmess('F', 'CALCULEL5_36')
             endif
 !
 !       ---- ON DETERMINE LE TYPE DE CHAMP A PROJETER
@@ -323,7 +326,7 @@ subroutine op0166()
 !       ------ CAS OU IL Y A UN CHAM_NO
                 if (method .eq. 'ECLA_PG') then
                     valk(1) = method
-                    call u2mesk('F', 'CALCULEL5_32', 1, valk)
+                    call utmess('F', 'CALCULEL5_32', sk=valk(1))
                 endif
                 if (method .eq. 'SOUS_POINT') then
                     ligre2 = nomo2//'.MODELE'
@@ -341,13 +344,13 @@ subroutine op0166()
                 if (method .eq. 'ECLA_PG') then
                     valk(1) = method
                     valk(2) = 'ELNO'
-                    call u2mesk('F', 'CALCULEL5_33', 2, valk)
+                    call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
                 endif
 !       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
-                    call u2mess('F', 'CALCULEL5_37')
+                    call utmess('F', 'CALCULEL5_37')
                 endif
 !
                 ligre2 = nomo2//'.MODELE'
@@ -365,13 +368,13 @@ subroutine op0166()
                 if ((method.eq.'ECLA_PG') .or. (method.eq.'SOUS_POINT')) then
                     valk(1) = method
                     valk(2) = 'ELEM'
-                    call u2mesk('F', 'CALCULEL5_33', 2, valk)
+                    call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
                 endif
 !       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
-                    call u2mess('F', 'CALCULEL5_37')
+                    call utmess('F', 'CALCULEL5_37')
                 endif
                 ligre2 = nomo2//'.MODELE'
                 tychv = ' '
@@ -384,17 +387,17 @@ subroutine op0166()
                 if ((method.eq.'COLLOCATION') .or. ( method.eq.'SOUS_POINT')) then
                     valk(1) = method
                     valk(2) = 'ELGA'
-                    call u2mesk('F', 'CALCULEL5_33', 2, valk)
+                    call utmess('F', 'CALCULEL5_33', nk=2, valk=valk)
                 endif
 !       ------  LES MOTS-CLES 'MODELE_1' ET 'MODELE_2' SONT OBLIGATOIRES
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ie)
                 call getvid(' ', 'MODELE_1', scal=nomo1, nbret=n1)
                 if (n1 .eq. 0) then
-                    call u2mess('F', 'CALCULEL5_35')
+                    call utmess('F', 'CALCULEL5_35')
                 endif
                 call getvid(' ', 'MODELE_2', scal=nomo2, nbret=n1)
                 if (n1 .eq. 0) then
-                    call u2mess('F', 'CALCULEL5_37')
+                    call utmess('F', 'CALCULEL5_37')
                 endif
                 ligre1 = nomo1//'.MODELE'
                 ligre2 = nomo2//'.MODELE'

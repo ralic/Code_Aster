@@ -1,8 +1,7 @@
 subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
                   axez)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -15,9 +14,9 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
+!
     integer :: nbno, numnd(*)
     character(len=*) :: deplaz, nomjv
     real(kind=8) :: orig(3), axez(3)
@@ -62,7 +61,9 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
                 k8b, ier)
     call dismoi('F', 'NOM_MAILLA', deplaz, 'CHAM_NO', ibid,&
                 nomail, ier)
-    if (k8b(1:6) .ne. 'DEPL_R') call u2mess('F', 'POSTRELE_17')
+    if (k8b(1:6) .ne. 'DEPL_R') then
+        call utmess('F', 'POSTRELE_17')
+    endif
     call jeveuo(nomail//'.COORDO    .VALE', 'L', axyzm)
 !
     call jenonu(jexnom(prno//'.LILI', '&MAILLA'), ibid)
@@ -70,7 +71,9 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
     call jeveuo(prno//'.NUEQ', 'L', jnueq)
 !
     nec = nbec( gd )
-    if (nec .gt. 10) call u2mess('F', 'POSTRELE_53')
+    if (nec .gt. 10) then
+        call utmess('F', 'POSTRELE_53')
+    endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !
@@ -94,7 +97,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
 36      continue
         if (xnormr .lt. epsi) then
             call jenuno(jexnum(nomail//'.NOMNOE', nunoe), k8b)
-            call u2mesk('F', 'POSTRELE_30', 1, k8b)
+            call utmess('F', 'POSTRELE_30', sk=k8b)
         endif
         xnormr = sqrt( xnormr )
         do 38 i = 1, 3
@@ -109,7 +112,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
         xnormr = sqrt( xnormr )
         if (xnormr .lt. epsi) then
             call jenuno(jexnum(nomail//'.NOMNOE', nunoe), k8b)
-            call u2mesk('F', 'POSTRELE_31', 1, k8b)
+            call utmess('F', 'POSTRELE_31', sk=k8b)
         endif
         do 34 i = 1, 3
             pgl(1,i) = axer(i)

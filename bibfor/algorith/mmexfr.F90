@@ -26,7 +26,7 @@ subroutine mmexfr(noma, defico, izone, posmam, tau1,&
 #include "asterfort/mmnorm.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
@@ -86,8 +86,8 @@ subroutine mmexfr(noma, defico, izone, posmam, tau1,&
         call normev(tau1fr, norme)
         if (norme .le. r8prem()) then
             call cfnomm(noma, defico, 'MAIL', posmam, nommam)
-            call u2mesg('F', 'CONTACT3_18', 1, nommam, 1,&
-                        izone, 3, vdirex)
+            call utmess('F', 'CONTACT3_18', sk=nommam, si=izone, nr=3,&
+                        valr=vdirex)
         endif
 ! ----- ON CALCULE TAU2FR PAR PROD. VECT.
         call mmnorm(ndimg, tau1, tau2, norm, norme)

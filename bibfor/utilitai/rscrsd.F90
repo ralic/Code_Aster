@@ -1,7 +1,6 @@
 subroutine rscrsd(base, nomsd, typesd, nbordr)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -11,9 +10,10 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 #include "asterfort/jelira.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpara.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: base, nomsd, typesd
     integer :: nbordr
 ! ----------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     integer :: nbcham, nbnova
     integer :: ncmec1, ncmec2, ncmec3, ncmuti, ncmeca
     integer :: ncthe1, ncther, ncthet, ncvarc, ncacou
-    character(len=1) ::  bas1
+    character(len=1) :: bas1
     character(len=16) :: types2
     character(len=19) :: noms2
 !     ------------------------------------------------------------------
@@ -446,7 +446,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         goto 99
 !
     else
-        call u2mesk('F', 'UTILITAI4_31', 1, types2)
+        call utmess('F', 'UTILITAI4_31', sk=types2)
     endif
 !
 !     ------------------------------------------------------------------
@@ -461,11 +461,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !
 !     -- POUR QUE LES COLLECTIONS .TACH ET .TAVA SOIENT BIEN CREEES :
 !     ---------------------------------------------------------------
-    do k=1,nbcham
+    do k = 1, nbcham
         call jecroc(jexnum(noms2//'.TACH', k))
     end do
     call jelira(noms2//'.NOVA', 'NOMMAX', nbnova)
-    do  k=1,nbnova
+    do k = 1, nbnova
         call jecroc(jexnum(noms2//'.TAVA', k))
     end do
 !

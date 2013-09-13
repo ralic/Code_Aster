@@ -17,7 +17,6 @@ subroutine alcart(base, chinz, maz, nomgdz)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-!
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -29,8 +28,9 @@ subroutine alcart(base, chinz, maz, nomgdz)
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/scalai.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: chin
     character(len=*) :: chinz, maz, nomgdz
     character(len=8) :: ma, nomgd
@@ -65,7 +65,7 @@ subroutine alcart(base, chinz, maz, nomgdz)
     integer :: noma, jbid
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  j1
+    integer :: j1
 !-----------------------------------------------------------------------
     call jemarq()
 !     NGDMX ET NMAMX : SERVENT A DIMENSIONNER LES OBJETS
@@ -89,7 +89,9 @@ subroutine alcart(base, chinz, maz, nomgdz)
 !
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
-    if (gd .eq. 0) call u2mesk('F', 'CALCULEL_3', 1, nomgd)
+    if (gd .eq. 0) then
+        call utmess('F', 'CALCULEL_3', sk=nomgd)
+    endif
     nec = nbec(gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     scal = scalai(gd)

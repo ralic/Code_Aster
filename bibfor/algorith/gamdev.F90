@@ -4,7 +4,7 @@ function gamdev(alpha)
 #include "asterc/getran.h"
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: alpha
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -66,8 +66,7 @@ function gamdev(alpha)
     gamdev = y
     if (v .lt. 0) then
         valr = gamdev
-        call u2mesg('A', 'ALGORITH13_18', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('A', 'ALGORITH13_18', sr=valr)
     endif
 !
 end function

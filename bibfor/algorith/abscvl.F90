@@ -7,7 +7,7 @@ subroutine abscvl(ndim, tabar, xg, s)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reereg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndim
     real(kind=8) :: xg(ndim), s, tabar(*)
 !
@@ -72,7 +72,7 @@ subroutine abscvl(ndim, tabar, xg, s)
                 goto 1
             else if (k.eq.2) then
 !             LES 3 POINTS SONT CONFONDUS!
-                call u2mess('F', 'XFEM_66')
+                call utmess('F', 'XFEM_66')
             endif
         endif
     else if (abs(a).gt.1.d-6) then
@@ -83,7 +83,7 @@ subroutine abscvl(ndim, tabar, xg, s)
             else if (k.eq.2) then
 !            L'ARETE EST TROP ARRONDIE :
 !            IL Y A 2 SOLUTIONS SUIVANT X ET 2 SUIVANT Y
-                call u2mess('F', 'XFEM_66')
+                call utmess('F', 'XFEM_66')
             endif
         else if (ksider.gt.1.d0 .or. ksider.lt.-1.d0) then
             tabelt(1)=tabar(k)

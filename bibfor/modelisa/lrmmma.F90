@@ -53,7 +53,8 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
     implicit none
 !
 #include "jeveux.h"
-!
+#include "asterfort/as_mmhcyr.h"
+#include "asterfort/as_mmhear.h"
 #include "asterfort/codent.h"
 #include "asterfort/codlet.h"
 #include "asterfort/infniv.h"
@@ -67,11 +68,9 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/as_mmhcyr.h"
-#include "asterfort/as_mmhear.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -196,11 +195,11 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 !          LEUR NUMERO
 !
         call as_mmhear(fid, nomamd, zk16(jnomty(ityp)), edmail, typgeo(ityp),&
-                    codret)
+                       codret)
 !
         if (codret .ne. 0) then
             if (infmed .ge. 3) then
-                call u2mesk('I', 'MED_19', 1, nomtyp(ityp))
+                call utmess('I', 'MED_19', sk=nomtyp(ityp))
             endif
             if (nbmail .ge. 10000000) then
 !           + DE 10 MILLIONS DE MAILLES (AU TOTAL), ON PASSE EN BASE 36
@@ -226,11 +225,10 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !
         call as_mmhcyr(fid, nomamd, zi(jcxtyp(ityp)), nmatyp(ityp) * nnotyp(ityp), edfuin,&
-                    edmail, typgeo(ityp), ednoda, codret)
+                       edmail, typgeo(ityp), ednoda, codret)
         if (codret .ne. 0) then
             saux08='mmhcyr'
-            call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                        codret, 0, 0.d0)
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
         do 231 , imatyp = 1 , nmatyp(ityp)

@@ -84,9 +84,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=*) :: action, matasz, vcinez, solvez
     integer :: iret, nbsol
     real(kind=8) :: rsolu(*)
@@ -106,7 +104,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     integer :: k, ierd, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
     integer :: jslvk, jslvi, nprec, iretz, pcentp(2)
     logical :: lbid, lpreco
-    character(len=1) ::  rouc, prec
+    character(len=1) :: rouc, prec
     character(len=4) :: etamat, etam
     character(len=12) :: k12bid
     character(len=14) :: nonu, nu, impr
@@ -156,9 +154,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     if (iprem .eq. 0) then
         if (impr(1:3) .ne. 'NON') then
             if (impr(1:9) .eq. 'OUI_SOLVE') then
-                call u2mesi('A', 'FACTOR_70', 1, ifmump)
+                call utmess('A', 'FACTOR_70', si=ifmump)
             else if (impr(1:11).eq.'OUI_NOSOLVE') then
-                call u2mesi('A', 'FACTOR_71', 1, ifmump)
+                call utmess('A', 'FACTOR_71', si=ifmump)
             else
 ! --- OPTION NON PREVUE
                 ASSERT(.false.)
@@ -233,7 +231,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                     select case(kvers)
                     case('4.9.2','4.10.0')
                     case default
-                    call u2mesk('F', 'FACTOR_72', 1, kvers)
+                    call utmess('F', 'FACTOR_72', sk=kvers)
                     end select
                 endif
                 goto 9999
@@ -305,7 +303,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         goto 2
     endif
     4 end do
-    call u2mess('F', 'FACTOR_60')
+    call utmess('F', 'FACTOR_60')
  2  continue
 !
 !
@@ -337,7 +335,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         call jeveuo(nomat//'.REFA', 'E', jrefa)
         etamat=zk24(jrefa-1+8)
         if (etamat .eq. 'DECT') then
-            if (.not.lpreco) call u2mess('A', 'FACTOR_59')
+            if (.not.lpreco) then
+                call utmess('A', 'FACTOR_59')
+            endif
             goto 9999
         else
             zk24(jrefa-1+8)='DECT'
@@ -426,7 +426,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                             iretz, impr, ifmump, prepos, pcentp)
             endif
         endif
-        call u2mess('F', 'FACTOR_77')
+        call utmess('F', 'FACTOR_77')
     endif
 !
 ! --- GESTION DES CODES RETOUR EN CAS DE DETECTION DE SINGULARITES
@@ -436,11 +436,13 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             if (nprec .lt. 0) then
 ! --- FONCTIONNALITE DE DETECTION DE SINGULARITE NON ACTIVEE:
 !                                               STOP EN UTMESS_F
-                call u2mess('F', 'FACTOR_42')
+                call utmess('F', 'FACTOR_42')
             else
 ! --- FONCTIONNALITE DE DETECTION DE SINGULARITE ACTIVEE:
 !                                    ALARME + GESTION DU PB VIA TLDLG3
-                if (.not.lpreco) call u2mess('A', 'FACTOR_42')
+                if (.not.lpreco) then
+                    call utmess('A', 'FACTOR_42')
+                endif
             endif
         endif
     endif
@@ -456,7 +458,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     call jedema()
 !
 #else
-    call u2mess('F', 'FERMETUR_1')
+    call utmess('F', 'FERMETUR_1')
 !
 #endif
 end subroutine

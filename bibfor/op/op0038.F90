@@ -48,8 +48,7 @@ subroutine op0038()
 #include "asterfort/mechti.h"
 #include "asterfort/medom1.h"
 #include "asterfort/sdmpic.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 !
     integer :: ibid, ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
 !
@@ -85,7 +84,7 @@ subroutine op0038()
     call getres(chelem, type, oper)
     call getvid(' ', 'ACCE', nbval=0, nbret=n1)
     if (n1 .ne. 0) then
-        call u2mess('A', 'CALCULEL3_96')
+        call utmess('A', 'CALCULEL3_96')
     endif
 !
     call utalrm('OFF', 'CALCULEL3_40')
@@ -200,7 +199,7 @@ subroutine op0038()
 !        -- OPTIONS INCONNUES :
 !        ----------------------
     else
-        call u2mesk('F', 'CALCULEL3_22', 1, option)
+        call utmess('F', 'CALCULEL3_22', sk=option)
     endif
 !
 10  continue

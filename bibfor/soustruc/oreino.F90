@@ -1,17 +1,16 @@
 subroutine oreino(noma, lnoeud, nbno, nori, next,&
                   coor, crit, prec, iera, ier)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+!
     integer :: lnoeud(*), nbno, nori, next, ier, iera
     real(kind=8) :: coor(*), prec
     character(len=8) :: noma
@@ -71,7 +70,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     zab = zb-za
     ab2 = xab**2 + yab**2 + zab**2
     if (ab2 .eq. 0.0d0) then
-        call u2mess('A', 'SOUSTRUC_20')
+        call utmess('A', 'SOUSTRUC_20')
         ier = ier + 1
         goto 9999
     endif
@@ -101,7 +100,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
         else if (crit(1:4) .eq. 'RELA') then
             r8b = v2 / ab2
         else
-            call u2mess('A', 'SOUSTRUC_21')
+            call utmess('A', 'SOUSTRUC_21')
             ier = ier + 1
             goto 9999
         endif
@@ -110,12 +109,10 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
             v2 = sqrt( v2 )
             call jenuno(jexnum(nomnoe, inod), nomn)
             if (iera .eq. 0) then
-                call u2mesg('A', 'SOUSTRUC_22', 1, nomn, 0,&
-                            0, 1, v2)
+                call utmess('A', 'SOUSTRUC_22', sk=nomn, sr=v2)
                 iera = iera+1
             else
-                call u2mesg('I', 'SOUSTRUC_22', 1, nomn, 0,&
-                            0, 1, v2)
+                call utmess('I', 'SOUSTRUC_22', sk=nomn, sr=v2)
             endif
             ier = ier + 1
         endif
@@ -128,8 +125,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
                 valk (1) = nomn
                 valk (2) = nomn
                 valr = c
-                call u2mesg('A', 'SOUSTRUC_86', 2, valk, 0,&
-                            0, 1, valr)
+                call utmess('A', 'SOUSTRUC_86', nk=2, valk=valk, sr=valr)
                 ier = ier + 1
             endif
         endif
@@ -156,7 +152,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
 !                          N'ONT PAS LA MEME PROJECTION ---
     do 400 inoe = 1, nbno-1
         if (zr(idis-1+inoe) .eq. zr(idis-1+inoe+1)) then
-            call u2mess('A', 'SOUSTRUC_23')
+            call utmess('A', 'SOUSTRUC_23')
             ier = ier + 1
         endif
 400  end do

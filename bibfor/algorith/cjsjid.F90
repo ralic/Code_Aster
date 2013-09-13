@@ -58,7 +58,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod, i, j, k, codret
     parameter     (nmod = 16)
     real(kind=8) :: epsd(6), deps(6), depse(6), depsdp(6)
@@ -213,7 +213,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! --- CP/1D ------------------------------------------------------------
 ! ======================================================================
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call u2mess('F', 'ALGORITH2_15')
+        call utmess('F', 'ALGORITH2_15')
     endif
 ! ======================================================================
 ! --- OPERATEURS NON LINEAIRE ------------------------------------------

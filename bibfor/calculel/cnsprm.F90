@@ -32,7 +32,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: iret
@@ -101,7 +101,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     if (isma .le. 0) then
         valk(1)=mail
         valk(2)=ma1
-        call u2mesk('F', 'CALCULEL5_53', 2, valk)
+        call utmess('F', 'CALCULEL5_53', nk=2, valk=valk)
     endif
     macrel= zk8(iamacr-1+isma)
 !
@@ -150,7 +150,9 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     endif
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
-    if (gd .eq. 0) call u2mesk('F', 'CALCULEL_67', 1, nomgd)
+    if (gd .eq. 0) then
+        call utmess('F', 'CALCULEL_67', sk=nomgd)
+    endif
 !
 ! ALLOCATION DE CNS2 :
     call detrsd('CHAM_NO_S', cns2)

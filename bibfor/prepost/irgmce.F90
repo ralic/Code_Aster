@@ -21,8 +21,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
     character(len=8) :: nomaou, nomain, tycha
@@ -138,12 +137,12 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
         call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                     tsca, ibid)
         if (tsca .ne. 'R') then
-            call u2mess('F', 'ALGORITH2_63')
+            call utmess('F', 'ALGORITH2_63')
         endif
 !
         type = zk8(jcesk-1+3)
         if (type(1:4) .ne. 'ELNO') then
-            call u2mess('F', 'PREPOST2_52')
+            call utmess('F', 'PREPOST2_52')
         endif
 !
         if (ior .eq. 1) then
@@ -173,7 +172,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 50          continue
         else
             if (zi(zi(jtabd+ior-1)-1+2) .ne. nbcmp) then
-                call u2mess('F', 'PREPOST2_53')
+                call utmess('F', 'PREPOST2_53')
             endif
         endif
 !
@@ -230,11 +229,13 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                 endif
 61          continue
             k8b = nomcmp(k)
-            call u2mesk('F', 'PREPOST2_54', 1, k8b)
+            call utmess('F', 'PREPOST2_54', sk=k8b)
 62          continue
             if (k .ne. ix) lcmp=.true.
 269      continue
-        if (lcmp) call u2mesk('A', 'PREPOST2_55', ncmpme, zk8(jzcmp))
+        if (lcmp) then
+            call utmess('A', 'PREPOST2_55', nk=ncmpme, valk=zk8(jzcmp))
+        endif
         call jedetr('&&IRGMCE.ORDRE_CMP')
     endif
 !
@@ -247,7 +248,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                 endif
 70          continue
             k8b = nomcmp(k)
-            call u2mesk('F', 'PREPOST2_54', 1, k8b)
+            call utmess('F', 'PREPOST2_54', sk=k8b)
 80          continue
         else
             icmp = k
@@ -338,7 +339,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
         do 145 k = 1, nbcmpi
             icmp=indik8(zk8(jncmp),nomcmp(k),1,nbcmp)
             if (icmp .eq. 0) then
-                call u2mesk('F', 'PREPOST6_34', 1, nomcmp(k))
+                call utmess('F', 'PREPOST6_34', sk=nomcmp(k))
             endif
 145      continue
 !

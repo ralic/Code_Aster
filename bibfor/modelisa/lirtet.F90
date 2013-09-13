@@ -35,8 +35,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
 #include "asterfort/assert.h"
 #include "asterfort/liritm.h"
 #include "asterfort/lirlig.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     common/opmail/cmd
     character(len=16) :: cmd
     character(len=14) :: cnl
@@ -108,13 +107,13 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
                     if (icl .eq. 3) then
                         if (iv .gt. 24) then
                             cvz = cv
-                            call u2mesk('A', 'MODELISA4_97', 1, cvz(1:iv))
+                            call utmess('A', 'MODELISA4_97', sk=cvz(1:iv))
                         endif
                         lcv=min(iv,24)
                         ASSERT(len(cv).ge.lcv)
                         nom=cv(1:lcv)
                     else
-                        call u2mess('F', 'MODELISA4_98')
+                        call utmess('F', 'MODELISA4_98')
                     endif
                     lnom=.true.
                 else if (cv(1:6).eq.'NBLIGE') then

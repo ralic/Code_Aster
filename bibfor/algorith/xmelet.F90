@@ -23,7 +23,6 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref2.h"
@@ -32,7 +31,8 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 #include "asterfort/ismali.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
+!
     character(len=16) :: nomte
     character(len=8) :: typmai, elrees, elrema, elreco
     integer :: ndim, nddl, nnc
@@ -130,7 +130,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
         nsinge = 1
         nfhe = 0
     else
-        call u2mesk('F', 'DVP_4', 1, nomte)
+        call utmess('F', 'DVP_4', sk=nomte)
     endif
 !
     if (enrm(1:1) .eq. 'H') then
@@ -146,7 +146,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
         nsingm = 0
         nfhm = 0
     else
-        call u2mesk('F', 'DVP_4', 1, nomte)
+        call utmess('F', 'DVP_4', sk=nomte)
     endif
 !
     call elref2(nomte, 10, lielrf, ntrou)

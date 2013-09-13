@@ -13,7 +13,7 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
 #include "asterfort/i3qpsp.h"
 #include "asterfort/i3rpqp.h"
 #include "asterfort/i3sl3r.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink
@@ -390,7 +390,7 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
     if (pb) then
         vali (1) = k
         vali (2) = f
-        call u2mesi('F', 'INTEMAIL_24', 2, vali)
+        call utmess('F', 'INTEMAIL_24', ni=2, vali=vali)
     endif
 !
     if (fink) nbpt = 0

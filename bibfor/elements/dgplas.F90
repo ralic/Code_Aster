@@ -11,7 +11,7 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
 ! PARAMETRES ENTRANTS
 #include "asterfort/dgmmax.h"
 #include "asterfort/dgmpla.h"
-#include "asterfort/u2mesr.h"
+#include "asterfort/utmess.h"
     integer :: nnap, ilit, icisai, ipente
 !
     real(kind=8) :: ea(*), sya(*), eb, nub, num, nuf, w, emaxm, emaxf
@@ -86,7 +86,7 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
         if (emaxm .lt. dxd) then
             rmesg(1)=emaxm
             rmesg(2)=dxd
-            call u2mesr('F', 'ALGORITH6_5', 2, rmesg)
+            call utmess('F', 'ALGORITH6_5', nr=2, valr=rmesg)
         endif
         dxp=emaxm
         np=b*dxp
@@ -112,7 +112,7 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
             if (emaxm .lt. dxd) then
                 rmesg(1)=emaxm
                 rmesg(2)=dxd
-                call u2mesr('F', 'ALGORITH6_5', 2, rmesg)
+                call utmess('F', 'ALGORITH6_5', nr=2, valr=rmesg)
             endif
             dxp=emaxm
             np=b*dxd+sytb/3.d0
@@ -127,7 +127,7 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
         if (emaxf .lt. drd) then
             rmesg(1)=emaxf
             rmesg(2)=drd
-            call u2mesr('F', 'ALGORITH6_5', 2, rmesg)
+            call utmess('F', 'ALGORITH6_5', nr=2, valr=rmesg)
         endif
         drp=emaxf
         call dgmmax(eb, nub, num, nuf, h,&

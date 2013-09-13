@@ -8,7 +8,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 #include "asterfort/jemarq.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcvale.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nommat
     real(kind=8) :: sig(*), defpla(*), temp(*), dom(*)
@@ -70,10 +70,14 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 !
     pheno = 'DOMMA_LEMAITRE'
     call rccome(nommat, pheno, phenom, icodre(1))
-    if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_6')
+    if (icodre(1) .eq. 1) then
+        call utmess('F', 'FATIGUE1_6')
+    endif
     pheno = 'ELAS'
     call rccome(nommat, pheno, phenom, icodre(1))
-    if (icodre(1) .eq. 1) call u2mess('F', 'FATIGUE1_7')
+    if (icodre(1) .eq. 1) then
+        call utmess('F', 'FATIGUE1_7')
+    endif
 !
 ! --- CALCUL DU DOMMAGE ELEMENTAIRE
 !

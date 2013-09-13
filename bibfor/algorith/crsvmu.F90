@@ -18,7 +18,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: istop, nprec
     real(kind=8) :: epsmat
@@ -65,7 +65,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     character(len=19) :: k19b
     character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximc, eximod, jprti, jprtk
-    integer ::  jpart, iexi
+    integer :: jpart, iexi
     logical :: ldgrel
     mpi_int :: mrank, msize
 !------------------------------------------------------------------
@@ -133,7 +133,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             if (zi(jprti) .ne. nbproc) then
                 vali(1)=zi(jprti)
                 vali(2)=nbproc
-                call u2mesi('F', 'CALCULEL_13', 2, vali)
+                call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
             endif
 !
             call jeveuo(partit//'.PRTK', 'L', jprtk)

@@ -99,8 +99,8 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 #include "asterfort/preres.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trmult.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
@@ -241,7 +241,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
                 k8b, ie)
     if (k8b .eq. ' ') limped = .false.
 !
-    if (limped) call u2mess('I', 'ALGORITH3_23')
+    if (limped) then
+        call utmess('I', 'ALGORITH3_23')
+    endif
 !
 !     --- CHARGEMENT PAR ONDES PLANES
 !
@@ -281,7 +283,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     do 69 , iexci = 1,nbexci
     call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
     if (k8b .eq. 'OUI' .and. nbv .eq. 0) then
-        call u2mess('F', 'ALGORITH13_46')
+        call utmess('F', 'ALGORITH13_46')
     endif
 69  continue
 !
@@ -358,7 +360,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
      &      'CAS CONDITIONNELLEMENT STABLE.'
         endif
         if (beta .eq. 0) then
-            call u2mess('F', 'ALGORITH9_2')
+            call utmess('F', 'ALGORITH9_2')
         endif
     else
         call getvr8('SCHEMA_TEMPS', 'THETA', iocc=1, scal=theta, nbret=n1)
@@ -393,7 +395,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         typear(6) = '         '
     endif
     if (nbexcl .eq. nbtyar) then
-        call u2mess('F', 'ALGORITH3_14')
+        call utmess('F', 'ALGORITH3_14')
     endif
     do 112 , iexcl = 1,nbexcl
     if (typ1(iexcl) .eq. 'DEPL') then

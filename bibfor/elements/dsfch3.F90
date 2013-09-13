@@ -24,7 +24,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
     implicit none
 !      REAL*8 (A-H,O-Z)
 #include "asterfort/matini.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: valr
     integer :: nno, nnf
     real(kind=8) :: poids, dpdeg(1), dpdng(1), dpdkg(1), dsdeeg(1), dsdnng(1)
@@ -100,8 +100,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
     jac = g(1,1) * j11 + g(1,2) * j21 + g(1,3) * j31
     if (jac .le. 0.0d0) then
         valr = jac
-        call u2mesg('A', 'ELEMENTS5_30', 0, ' ', 0,&
-                    0, 1, valr)
+        call utmess('A', 'ELEMENTS5_30', sr=valr)
     endif
 !
 !     --- CALCUL DA LA MATRICE T1

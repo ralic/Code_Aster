@@ -2,7 +2,6 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                   nbmail, noment, valpar)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
@@ -12,7 +11,8 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
+!
     integer :: ndim, nbmail
     real(kind=8) :: valpar(*)
     character(len=*) :: noment(*), noma
@@ -40,7 +40,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
 !     ------------------------------------------------------------------
 !
 !
-    character(len=8) ::  noma8
+    character(len=8) :: noma8
     character(len=24) :: mlggma, mlgval, mlgcox
 !     ------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
         cosa = cos ( alpha )
         sina = sin ( alpha )
     else
-        call u2mess('F', 'UTILITAI3_48')
+        call utmess('F', 'UTILITAI3_48')
         cdx = valpar(19)
         cdy = valpar(20)
     endif

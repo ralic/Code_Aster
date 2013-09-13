@@ -30,7 +30,7 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
     character(len=24) :: numedd
     character(len=19) :: sddisc, incest
@@ -100,7 +100,9 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 !
     if (numins .ge. 2) then
         instaa = diinst(sddisc,numins-2)
-        if (instaa .eq. instam) call u2mess('F', 'ALGORITH8_28')
+        if (instaa .eq. instam) then
+            call utmess('F', 'ALGORITH8_28')
+        endif
         coef = (instap-instam) / (instam-instaa)
         call jeveuo(depold(1:19)// '.VALE', 'L', jold)
         call daxpy(neq, coef, zr(jold), 1, zr(jdepes),&

@@ -1,8 +1,7 @@
 subroutine extrs3(resu, param, iordr, cel, itype,&
                   type, iad)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jelira.h"
@@ -11,7 +10,8 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxliis.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
     integer :: itype, iad, iordr
     character(len=1) :: cel
     character(len=*) :: resu, param, type
@@ -47,7 +47,7 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 !     ------------------------------------------------------------------
 !
     integer :: ipara, iatava, ire1, ire2, idebu, imaxi, iloty
-    integer ::  iaobj, len
+    integer :: iaobj, len
     character(len=8) :: k8b, nomobj, k8debu, k8maxi
     character(len=24) :: valk(3)
     character(len=16) :: nopara
@@ -61,8 +61,7 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
     if (ipara .eq. 0) then
         valk (1) = nopara
         valk (2) = nomsd
-        call u2mesg('F', 'UTILITAI6_12', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_12', nk=2, valk=valk)
     endif
 !
     call jeveuo(jexnum(nomsd//'.TAVA', ipara), 'L', iatava)
@@ -75,8 +74,7 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
         valk (1) = nopara
         valk (2) = k8debu
         valk (3) = k8maxi
-        call u2mesg('F', 'UTILITAI6_13', 3, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('F', 'UTILITAI6_13', nk=3, valk=valk)
     endif
 !
     call jeveuo(nomsd//nomobj, cel, iaobj)

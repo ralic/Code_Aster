@@ -53,7 +53,7 @@ subroutine op0182()
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, ns, dimtub, dimobs, ifm, i, idray, idtob, idrob, idthe
     integer :: irett, jtubus, jobsus, n1, nis, nc, nco, ncr, npu, nr, niv, npo
@@ -110,7 +110,7 @@ subroutine op0182()
                     k8typ, ibid, r8b, c16b, typini,&
                     iret2)
         if (irett .ne. 0 .or. iret2 .ne. 0) then
-            call u2mess('F', 'PREPOST4_96')
+            call utmess('F', 'PREPOST4_96')
         endif
         call copisd('FONCTION', 'V', nomf, '&&OP0182.REUSE.NOMF')
         call detrsd('TABLE', resu)
@@ -173,7 +173,7 @@ subroutine op0182()
     if (nis .ne. 0) then
         ns = -nis
         if (ns .ne. 10 .and. ns .ne. 12) then
-            call u2mess('F', 'PREPOST3_63')
+            call utmess('F', 'PREPOST3_63')
         endif
         call getvr8(' ', 'V_USUR_TUBE', nbval=ns, vect=vust, nbret=nis)
         call getvr8(' ', 'V_USUR_OBST', nbval=ns, vect=vuso, nbret=nis)
@@ -208,7 +208,7 @@ subroutine op0182()
                 k8typ, ibid, r8b, c16b, nomfg,&
                 iret2)
     if (irett .ne. 0 .or. iret2 .ne. 0) then
-        call u2mess('F', 'PREPOST4_96')
+        call utmess('F', 'PREPOST4_96')
     endif
     call jelira(nomfg(1:19)//'.VALE', 'LONMAX', nco)
     nco = nco/2

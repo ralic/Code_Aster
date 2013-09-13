@@ -45,7 +45,6 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/cheddl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
@@ -56,7 +55,8 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess.h"
+!
 !
 !
 !-----------------------------------------------------------------------
@@ -84,21 +84,22 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
     if (basmod(1:1) .ne. ' ') then
 !
-        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid, intf, iret)
+        call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
+                    intf, iret)
         if (intf .eq. ' ') then
             valk (1) = basmod
-            call u2mesg('F', 'ALGORITH12_30', 1, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_30', sk=valk(1))
         endif
-        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
+        call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                    numddl, iret)
     else
         if (intf(1:1) .ne. ' ') then
-            call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid, numddl, iret)
+            call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
+                        numddl, iret)
         else
             valk (1) = basmod
             valk (2) = intf
-            call u2mesg('F', 'ALGORITH12_31', 2, valk, 0,&
-                        0, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_31', nk=2, valk=valk)
         endif
     endif
 !
@@ -117,8 +118,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
         if (nomint .eq. '          ') then
             valk (1) = nomint
             vali = numint
-            call u2mesg('F', 'ALGORITH12_29', 1, valk, 1,&
-                        vali, 0, 0.d0)
+            call utmess('F', 'ALGORITH12_29', sk=valk(1), si=vali)
         else
             call jenonu(jexnom(intf//'.IDC_NOMS', nomint), numint)
         endif

@@ -1,7 +1,6 @@
 subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dgmode.h"
 #include "asterfort/digdel.h"
 #include "asterfort/dismoi.h"
@@ -14,9 +13,9 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
+!
     integer :: nbel, numail(*)
     character(len=*) :: chelez, nomjv
     real(kind=8) :: pgl(3, 3)
@@ -47,7 +46,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     integer :: ier, numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr
     integer :: jligr, jpnt, ipoin, ianoma, imodel, ilong
     real(kind=8) :: sg(6), sl(6)
-    character(len=8) ::  nomcmp, nomma
+    character(len=8) :: nomcmp, nomma
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
@@ -67,7 +66,9 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
 !
     nec = nbec( gd )
-    if (nec .gt. 10) call u2mess('F', 'POSTRELE_53')
+    if (nec .gt. 10) then
+        call utmess('F', 'POSTRELE_53')
+    endif
 !
     call dismoi('F', 'NOM_OPTION', chelez, 'CHAM_ELEM', ibid,&
                 option, ier)
@@ -83,7 +84,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     else
         valk (1) = chelm
         valk (2) = option
-        call u2mesk('F', 'POSTRELE_26', 2, valk)
+        call utmess('F', 'POSTRELE_26', nk=2, valk=valk)
     endif
 !
     call jedupo(chelm//'.CELV', 'V', nomjv, .false.)
@@ -109,7 +110,9 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
         call dgmode(mode, imodel, ilong, nec, tabec)
         nscal = digdel( mode )
         icoef=max(1,zi(jceld-1+4))
-        if (icoef .gt. 1) call u2mess('F', 'POSTRELE_15')
+        if (icoef .gt. 1) then
+            call utmess('F', 'POSTRELE_15')
+        endif
         nsca = nscal*icoef
         ipoin = zi(jlongr-1+igrel)
         iel = zi(jligr-1+ipoin+ielg-1)

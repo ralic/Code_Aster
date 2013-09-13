@@ -29,7 +29,7 @@ subroutine ver152(option, moflui, moint, n12, model)
 !---------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: n12, ibid, ierd
     character(len=*) :: option, model, moflui, moint
     character(len=9) :: optio9
@@ -40,21 +40,21 @@ subroutine ver152(option, moflui, moint, n12, model)
 !        MOFLU8 =
 !
     if (n12 .eq. 0 .and. (optio9.eq.'AMOR_AJOU'.or. optio9.eq.('RIGI_AJOU'))) then
-        call u2mess('F', 'ALGORITH11_24')
+        call utmess('F', 'ALGORITH11_24')
     endif
 !
     call dismoi('F', 'PHENOMENE', moflui, 'MODELE', ibid,&
                 rk16, ierd)
 !
     if (rk16(1:9) .ne. 'THERMIQUE') then
-        call u2mess('F', 'ALGORITH11_25')
+        call utmess('F', 'ALGORITH11_25')
     endif
 !
     call dismoi('F', 'PHENOMENE', moint, 'MODELE', ibid,&
                 rk16, ierd)
 !
     if (rk16(1:9) .ne. 'THERMIQUE') then
-        call u2mess('F', 'ALGORITH11_26')
+        call utmess('F', 'ALGORITH11_26')
     endif
 !
     call dismoi('F', 'MODELISATION', moflui, 'MODELE', ibid,&
@@ -68,7 +68,7 @@ subroutine ver152(option, moflui, moint, n12, model)
             if (rep .eq. '3D') then
                 model='3D'
             else
-                call u2mess('F', 'ALGORITH11_27')
+                call utmess('F', 'ALGORITH11_27')
             endif
         endif
     endif

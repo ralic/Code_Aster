@@ -48,9 +48,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 #include "asterfort/parti0.h"
 #include "asterfort/teattr.h"
 #include "asterfort/typmat.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -124,7 +123,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: idime, jlres, jprn1, jprn2, jresl, jrsvi
     integer :: iel, ier, ierd, ifcpu, ifel1, ifel2, ifel3, ifel4
     integer :: ifel5, jfetm, jfetn, ifm, igr
-    integer ::  jfnusd, ilima, ilimat, ilimo, ilimpi, ilinu
+    integer :: jfnusd, ilima, ilimat, ilimo, ilimpi, ilinu
     integer :: imat, jnumsd, jrefn, iresu
     integer :: iret, iret1, iret2, iret3, itbloc
     integer :: jrefa, jsmde, jsmdi, jsmhc, jvalm(2)
@@ -141,9 +140,9 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 #define zzngel(ili) zi(jadli+3*(ili-1))
 #define zznelg(ili,igrel) zi(zi(jadli+3*(ili-1)+2)+igrel)- \
-        zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
+    zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
 #define zzliel(ili,igrel,iel) zi(zi(jadli+3*(ili-1)+1)-1+ \
-        zi(zi(jadli+3*(ili-1)+2)+igrel-1)+iel-1)
+    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+iel-1)
 !----------------------------------------------------------------------
 !
 !
@@ -353,7 +352,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         if (zi(jprti) .ne. nbproc) then
             vali(1)=zi(jprti)
             vali(2)=nbproc
-            call u2mesi('F', 'CALCULEL_13', 2, vali)
+            call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
         endif
         call jeveuo(partit//'.PRTK', 'L', jprtk)
         ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
@@ -611,7 +610,9 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                     if (optio2 .ne. optio) optio2='&&MELANGE'
                 endif
 !
-                if (mo2 .ne. mo) call u2mess('F', 'ASSEMBLA_5')
+                if (mo2 .ne. mo) then
+                    call utmess('F', 'ASSEMBLA_5')
+                endif
 !
 !
 !           3.1 TRAITEMENT DES MACRO-ELEMENTS :

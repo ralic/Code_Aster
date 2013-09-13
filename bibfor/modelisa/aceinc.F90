@@ -22,8 +22,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vafcar.h"
 #include "asterfort/wkvect.h"
 !
@@ -233,7 +232,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 exituy, ibid)
     if (exituy .ne. 'OUI') then
         if (ixnw .eq. 0 .and. nnoe .ne. 0) then
-            call u2mess('E', 'MODELISA_37')
+            call utmess('E', 'MODELISA_37')
             ier = ier + 1
         endif
 !      ELSE
@@ -247,35 +246,35 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
         if (nbocc(1) .ne. 0) then
             do 81 i = 1, nbepo
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
-                    call u2mesk('A', 'MODELISA_38', 1, nommai)
+                    call utmess('A', 'MODELISA_38', sk=nommai)
                 endif
 81          continue
         endif
         if (nbocc(3) .ne. 0 .or. nbocc(10) .ne. 0 .or. nbocc(15) .ne. 0) then
             do 82 i = nbepo+1, nbepo+nbedi
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
-                    call u2mesk('A', 'MODELISA_39', 1, nommai)
+                    call utmess('A', 'MODELISA_39', sk=nommai)
                 endif
 82          continue
         endif
         if (nbocc(6) .ne. 0) then
             do 84 i = nbepo+nbedi+nbeco+1, nbepo+nbedi+nbeco+nbeca
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
-                    call u2mesk('A', 'MODELISA_40', 1, nommai)
+                    call utmess('A', 'MODELISA_40', sk=nommai)
                 endif
 84          continue
         endif
         if (nbocc(7) .ne. 0) then
             do 85 i = nbepo+nbedi+nbeco+nbeca+1, nbepo+nbedi+nbeco+ nbeca+nbeba
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
-                    call u2mesk('A', 'MODELISA_41', 1, nommai)
+                    call utmess('A', 'MODELISA_41', sk=nommai)
                 endif
 85          continue
         endif
         if (nbocc(12) .ne. 0) then
             do 88 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbtel
                 if (zi(jdlm+nummai-1) .eq. ntyele(i)) then
-                    call u2mesk('A', 'MODELISA_42', 1, nommai)
+                    call utmess('A', 'MODELISA_42', sk=nommai)
                 endif
 88          continue
         endif
@@ -286,7 +285,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
             call jenuno(jexnum(mlgnno, numnoe), nomnoe)
             do 102 i = nbepo+1, nbepo+nbedi
                 if (zi(jdln+k-1) .eq. ntyele(i)) then
-                    call u2mesk('A', 'MODELISA_43', 1, nomnoe)
+                    call utmess('A', 'MODELISA_43', sk=nomnoe)
                 endif
 102          continue
 100      continue

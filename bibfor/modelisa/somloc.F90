@@ -23,7 +23,7 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/u2mesi.h"
+#include "asterfort/utmess.h"
     integer :: m, adco, nbso, nusglo, nusloc
 !
     logical :: trouve
@@ -40,7 +40,7 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
     if (.not.trouve) then
         vali(1)=nusglo
         vali(2)=m
-        call u2mesi('F', 'VOLUFINI_2', 2, vali)
+        call utmess('F', 'VOLUFINI_2', ni=2, vali=vali)
     endif
 !
 end subroutine

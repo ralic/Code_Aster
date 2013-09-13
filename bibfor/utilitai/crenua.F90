@@ -5,7 +5,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: np, nx, nc
     character(len=*) :: nuage, nomgd
@@ -66,7 +66,7 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
     else if (type(1:1) .eq. 'C') then
         call wkvect(knuage//'.NUAV', 'V V C', ndim, jnuav)
     else
-        call u2mess('F', 'UTILITAI_45')
+        call utmess('F', 'UTILITAI_45')
     endif
 !
 !     --- CREATION DU .NUAL ---

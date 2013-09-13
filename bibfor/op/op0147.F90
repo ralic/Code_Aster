@@ -35,7 +35,7 @@ subroutine op0147()
 #include "asterfort/jeveuo.h"
 #include "asterfort/ordis.h"
 #include "asterfort/titre.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
     integer :: i, ifreq, im, imasg, imod1, inumo
@@ -47,7 +47,7 @@ subroutine op0147()
     character(len=16) :: concep, cmd
     character(len=19) :: base
     character(len=24) :: freq, masg, vite, numo, nomobj, chnumi
-    integer ::  lnumi, lrefe, lrefes
+    integer :: lnumi, lrefe, lrefes
     real(kind=8) :: epsi, val, vitef
 !
 !-----------------------------------------------------------------------
@@ -117,7 +117,7 @@ subroutine op0147()
             goto 31
         endif
 30  end do
-    call u2mess('F', 'MODELISA5_78')
+    call utmess('F', 'MODELISA5_78')
 31  continue
 !
 ! --- 3.RECUPERATION DE L'OPTION DE CALCUL ---
@@ -128,7 +128,7 @@ subroutine op0147()
 !
     call jeveuo(table//'.REFE', 'L', lrefe)
     if (zk16(lrefe+1)(1:4) .eq. 'DIAG' .and. casint) then
-        call u2mess('F', 'MODELISA5_79')
+        call utmess('F', 'MODELISA5_79')
     endif
 !
 ! --- 4.CREATION DE LA STRUCTURE RESULTAT ET CALCUL DE LA REPONSE ---

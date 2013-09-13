@@ -18,13 +18,13 @@ subroutine nmevdp(sddisc, ievdac, retswa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     integer :: ievdac, retswa
     character(len=19) :: sddisc
 !
@@ -74,14 +74,14 @@ subroutine nmevdp(sddisc, ievdac, retswa)
         piless = 1
         pilcho = 'NATUREL'
         retswa = 0
-        call u2mess('I', 'MECANONLINE10_42')
+        call utmess('I', 'MECANONLINE10_42')
     else if (piless.eq.1) then
 !
 ! ----- ON RETENTE EN CHOISISSANT L'AUTRE SOLUTION
 !
         piless = 2
         pilcho = 'AUTRE'
-        call u2mess('I', 'MECANONLINE10_43')
+        call utmess('I', 'MECANONLINE10_43')
         retswa = 1
     else
         ASSERT(.false.)

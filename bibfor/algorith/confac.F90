@@ -3,7 +3,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
     integer :: ft(12, 3), nbft, f(6, 4), nbf
     character(len=8) :: typma
 !     ------------------------------------------------------------------
@@ -284,7 +284,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
         f(1,3)=2
         f(1,4)=0
     else
-        call u2mesk('F', 'ALGORITH2_24', 1, typma)
+        call utmess('F', 'ALGORITH2_24', sk=typma)
     endif
 !
     call jedema()

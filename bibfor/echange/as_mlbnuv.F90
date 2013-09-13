@@ -18,15 +18,16 @@ subroutine as_mlbnuv(maj, mini, rel, cret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
 #include "med/mlbnuv.h"
     aster_int :: maj, mini, rel
     aster_int :: cret
 #ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
+    call utmess('F', 'FERMETUR_2')
 #else
-
+!
 #if med_int_kind != aster_int_kind
     med_int :: maj4, min4, rel4
     med_int :: cret4
@@ -38,6 +39,6 @@ subroutine as_mlbnuv(maj, mini, rel, cret)
 #else
     call mlbnuv(maj, mini, rel, cret)
 #endif
-
+!
 #endif
 end subroutine

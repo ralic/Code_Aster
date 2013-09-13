@@ -30,7 +30,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
 #include "asterfort/jemarq.h"
 #include "asterfort/mavec.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     logical :: matsym
@@ -120,7 +120,7 @@ subroutine tgveri(option, carcri, compor, nno, geom,&
             epsilo=pertu*maxgeo
         endif
         if (epsilo .lt. r8miem()) then
-            call u2mess('F', 'ALGORITH11_86')
+            call utmess('F', 'ALGORITH11_86')
         endif
 !
 !      ARCHIVAGE DES VALEURS DE REFERENCE

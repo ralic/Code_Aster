@@ -27,9 +27,8 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
     integer :: ievdac
     character(len=24) :: defico, resoco
     character(len=19) :: sddisc
@@ -125,17 +124,16 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
                         newcoe)
         endif
         if (retpen .eq. 1) then
-            call u2mesg('I', 'MECANONLINE10_46', 0, ' ', 1,&
-                        izone, 1, newcoe)
+            call utmess('I', 'MECANONLINE10_46', si=izone, sr=newcoe)
         endif
 15  end do
 !
 ! --- AFFICHAGE
 !
     if (retpen .eq. 0) then
-        call u2mess('I', 'MECANONLINE10_44')
+        call utmess('I', 'MECANONLINE10_44')
     else if (retpen.eq.1) then
-        call u2mess('I', 'MECANONLINE10_45')
+        call utmess('I', 'MECANONLINE10_45')
     else
         ASSERT(.false.)
     endif

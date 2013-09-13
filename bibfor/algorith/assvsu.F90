@@ -24,8 +24,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 #include "asterfort/nvithm.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecac2.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vfcfks.h"
     integer :: maxfa
@@ -611,7 +610,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !     DANS LE CAS DES ELEMENTS FINIS ANGMAS EST NECESSAIRE
 !     DANS LE CAS DES VOLUMES FINIS ON INITIALISE À 0 ANGMAS(7)
     real(kind=8) :: angbid(3)
-    integer ::  ivois
+    integer :: ivois
     integer :: iadp1k, iadp2k
     integer :: adcm1, adcm2
 !
@@ -663,8 +662,8 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !===============================
     uticer = .false.
 !
-    bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) &
-       .or.(option(1:9).eq.'FULL_MECA' )
+    bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
+           (option(1:9).eq.'FULL_MECA' )
     ASSERT(bool)
 !
     fickfa = .false.
@@ -734,7 +733,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     if (thmc .ne. loi) then
         valk(1) = loi
         valk(2) = thmc
-        call u2mesk('F', 'ALGORITH_34', 2, valk)
+        call utmess('F', 'ALGORITH_34', nk=2, valk=valk)
     endif
 ! ====================================================================
 ! DECLARATION DE DEUX LOGIQUES POUR SAVOIR CE QUE L ON DOIT CALCULER
@@ -753,7 +752,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
         cont = .true.
     else
         valk(1) = option
-        call u2mesk('F', 'VOLUFINI_8', 1, valk)
+        call utmess('F', 'VOLUFINI_8', sk=valk(1))
     endif
 ! ====================================================================
 ! --- INITIALISATION A ZERO MATUU ET VECTU
@@ -799,8 +798,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
             endif
         endif
     else
-        call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                    typvf, 0, 0.d0)
+        call utmess('F', 'VOLUFINI_9', si=typvf)
     endif
 ! ===============================================
 ! ==== INITIALISATION DE DSDE ================
@@ -820,7 +818,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 vintp(1, 1), dsde, pesa, retcom, 1,&
                 1, p10, p20, angbid)
     if (retcom .ne. 0) then
-        call u2mesk('F', 'COMPOR1_9', 0, ' ')
+        call utmess('F', 'COMPOR1_9')
     endif
     if ((typvf.eq.2)) then
         do 7 fa = 1, nface
@@ -840,8 +838,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 702                  continue
                 endif
             else
-                call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
-                            typvf, 0, 0.d0)
+                call utmess('F', 'VOLUFINI_9', si=typvf)
             endif
 ! ===============================================
 ! ==== INITIALISATION DE DSDE ================
@@ -861,7 +858,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         vintp(1, fa+1), dsde, pesa, retcom, 1,&
                         1, p10, p20, angbid)
             if (retcom .ne. 0) then
-                call u2mesk('F', 'COMPOR1_9', 0, ' ')
+                call utmess('F', 'COMPOR1_9')
             endif
  7      continue
     endif
@@ -1162,7 +1159,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
         else if (nnov .eq. 27) then
             nnosv=4
         else if (nnov .eq. 27) then
-            call u2mesk('F', 'VOLUFINI_15', 0, ' ')
+            call utmess('F', 'VOLUFINI_15')
         endif
         nfacev=nnosv
         if (nface .gt. nfacev) then
@@ -1282,7 +1279,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                     1, p10v, p20v, angbid)
 !
         if (retcom .ne. 0) then
-            call u2mesk('F', 'COMPOR1_9', 0, ' ')
+            call utmess('F', 'COMPOR1_9')
         endif
 ! ******************************************************
 ! CALCUL POUR LES ARETES DE LA MAILLE VOISINE
@@ -1317,7 +1314,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         1, p10v, p20v, angbid)
 !
             if (retcom .ne. 0) then
-                call u2mesk('F', 'COMPOR1_9', 0, ' ')
+                call utmess('F', 'COMPOR1_9')
             endif
 227      continue
 ! CALCUL DES VARIABLES POUR LA MAILLE VOISINE

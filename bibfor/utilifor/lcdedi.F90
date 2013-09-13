@@ -57,7 +57,7 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
 #include "asterc/iisnan.h"
 #include "asterc/r8vide.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, ndt, ndi, nmat, k, iret
     character(len=*) :: fami
     real(kind=8) :: td, tf, tr, tempd, tempf, tref
@@ -89,7 +89,7 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
 !
     if ((iisnan(tf).eq.0) .and. (iisnan(td).eq.0)) then
         if (iisnan(tr) .ne. 0) then
-            call u2mess('F', 'CALCULEL_31')
+            call utmess('F', 'CALCULEL_31')
         else
             if (materd(nmat,1) .eq. 0) then
                 alphad = materd(3,1)

@@ -17,7 +17,7 @@ subroutine liscom(nomo, codarr, lischa)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -26,8 +26,7 @@ subroutine liscom(nomo, codarr, lischa)
 #include "asterfort/lislch.h"
 #include "asterfort/lislco.h"
 #include "asterfort/lisnnb.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
     character(len=19) :: lischa
     character(len=1) :: codarr
     character(len=8) :: nomo
@@ -72,7 +71,9 @@ subroutine liscom(nomo, codarr, lischa)
         if (.not.lveag .and. .not.lveas) then
             call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
                         modch1, iret)
-            if (modch1 .ne. nomo) call u2mesk(codarr, 'CHARGES5_5', 1, charge)
+            if (modch1 .ne. nomo) then
+                call utmess(codarr, 'CHARGES5_5', sk=charge)
+            endif
         endif
     endif
 !
@@ -87,12 +88,14 @@ subroutine liscom(nomo, codarr, lischa)
             if (.not.lveag .and. .not.lveas) then
                 call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
                             modch2, iret)
-                if (modch1 .ne. modch2) call u2mess(codarr, 'CHARGES5_6')
+                if (modch1 .ne. modch2) then
+                    call utmess(codarr, 'CHARGES5_6')
+                endif
             endif
         endif
 10  continue
 !
-999 continue
+999  continue
 !
     call jedema()
 end subroutine

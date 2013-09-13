@@ -63,6 +63,12 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mficlo.h"
+#include "asterfort/as_mficom.h"
+#include "asterfort/as_mfinvr.h"
+#include "asterfort/as_mfiope.h"
+#include "asterfort/as_mlbnuv.h"
+#include "asterfort/as_mmhnme.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cnscre.h"
@@ -85,17 +91,9 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 #include "asterfort/mdexch.h"
 #include "asterfort/mdexma.h"
 #include "asterfort/mdexpm.h"
-#include "asterfort/as_mficlo.h"
-#include "asterfort/as_mficom.h"
-#include "asterfort/as_mmhnme.h"
-#include "asterfort/as_mfiope.h"
-#include "asterfort/as_mlbnuv.h"
-#include "asterfort/as_mfinvr.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/ulisog.h"
 #include "asterfort/utlicm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nrofic, typen
     integer :: ncmprf, jnocmp
@@ -226,43 +224,38 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     call as_mficom(nofimd, hdfok, medok, codret)
     if (hdfok .eq. 0) then
         saux08='mficom'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 ! 1.4.2. ==> VERIFICATION DE LA VERSION MED
 !
     if (medok .eq. 0) then
         vali (1) = codret
-        call u2mess('F+', 'MED_24')
+        call utmess('F+', 'MED_24')
         call as_mlbnuv(vlib(1), vlib(2), vlib(3), iret)
         if (iret .eq. 0) then
             vali (1) = vlib(1)
             vali (2) = vlib(2)
             vali (3) = vlib(3)
-            call u2mesg('F+', 'MED_25', 0, ' ', 3,&
-                        vali, 0, 0.d0)
+            call utmess('F+', 'MED_25', ni=3, vali=vali)
         endif
         call as_mfiope(idfimd, nofimd, edlect, codret)
         call as_mfinvr(idfimd, vfic(1), vfic(2), vfic(3), iret)
         if (iret .eq. 0) then
             if (vfic(2) .eq. -1 .or. vfic(3) .eq. -1) then
-                call u2mesg('F+', 'MED_26', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('F+', 'MED_26')
             else
                 vali (1) = vfic(1)
                 vali (2) = vfic(2)
                 vali (3) = vfic(3)
-                call u2mesg('F+', 'MED_27', 0, ' ', 3,&
-                            vali, 0, 0.d0)
+                call utmess('F+', 'MED_27', ni=3, vali=vali)
             endif
             if (vfic(1) .lt. vlib(1) .or. ( vfic(1).eq.vlib(1) .and. vfic(2).lt.vlib(2) )&
                 .or.&
                 (&
                 vfic(1) .eq. vlib(1) .and. vfic( 2) .eq. vlib(2) .and. vfic(3) .eq. vlib(3)&
                 )) then
-                call u2mesg('F+', 'MED_28', 0, ' ', 0,&
-                            0, 0, 0.d0)
+                call utmess('F+', 'MED_28')
             endif
         endif
         call as_mficlo(idfimd, codret)
@@ -279,7 +272,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
         call mdexpm(nofimd, ifimed, nomamd, existm, ndim,&
                     codret)
         if (.not.existm) then
-            call u2mesk('F', 'MED_50', 1, nofimd)
+            call utmess('F', 'MED_50', sk=nofimd)
         endif
 !
 ! 1.5.2. ==> C'EST UN MAILLAGE DESIGNE PAR UN NOM
@@ -294,7 +287,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
         if (.not.existm) then
             valk(1) = nomamd(1:24)
             valk(2) = nofimd(1:24)
-            call u2mesk('F', 'MED_51', 2, valk)
+            call utmess('F', 'MED_51', nk=2, valk=valk)
         endif
 !
     endif
@@ -337,8 +330,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     call as_mfiope(idfimd, nofimd, edlect, codret)
     if (codret .ne. 0) then
         saux08='mfiope'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 ! 2.1. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
@@ -393,7 +385,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
 !       RECUPERE LE NOMBRE DE MAILLES DE TYPE TYGEOM
     call as_mmhnme(idfimd, nomamd, edconn, edmail, tygeom,&
-                ednoda, nmatyp, codre2)
+                   ednoda, nmatyp, codre2)
 !
     if (codre2 .eq. 0) then
 !
@@ -433,9 +425,9 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                 valr = inst
                 vali (1) = typent
                 vali (2) = typgeo(1)
-                call u2mesg('A', 'MED_97', 2, valk, 2,&
-                            vali, 1, valr)
-                call u2mess('A', 'MED_52')
+                call utmess('A', 'MED_97', nk=2, valk=valk, ni=2,&
+                            vali=vali, sr=valr)
+                call utmess('A', 'MED_52')
                 goto 22
 2221              continue
 !
@@ -446,8 +438,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                     vali (3) = numord
                     vali (4) = numpt
                     valr = inst
-                    call u2mesg('I', 'MED_86', 1, valk, 4,&
-                                vali, 1, valr)
+                    call utmess('I', 'MED_86', sk=valk(1), ni=4, vali=vali,&
+                                sr=valr)
                 endif
                 call jedetr(prefix//'.INST')
                 call jedetr(prefix//'.NUME')
@@ -492,32 +484,29 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     if (.not.existt) then
         valk (1) = nofimd(1:24)
         valk (2) = nochmd(1:24)
-        call u2mesg('A+', 'MED_98', 2, valk, 0,&
-                    0, 0, 0.d0)
+        call utmess('A+', 'MED_98', nk=2, valk=valk)
         if (iinst .ne. 0) then
             valr = inst
-            call u2mesg('A+', 'MED_68', 0, ' ', 0,&
-                        0, 1, valr)
+            call utmess('A+', 'MED_68', sr=valr)
         else
             vali (1) = numord
             vali (2) = numpt
-            call u2mesg('A+', 'MED_69', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call utmess('A+', 'MED_69', ni=2, vali=vali)
         endif
         if (existc .eq. 0) then
-            call u2mess('A', 'MED_32')
+            call utmess('A', 'MED_32')
         else if (existc.eq.1) then
-            call u2mess('A', 'MED_33')
+            call utmess('A', 'MED_33')
         else if (existc.eq.2) then
             if (iinst .ne. 0) then
-                call u2mess('A', 'MED_34')
+                call utmess('A', 'MED_34')
             else
-                call u2mess('A', 'MED_35')
+                call utmess('A', 'MED_35')
             endif
         else if (existc.eq.4) then
-            call u2mess('A', 'MED_36')
+            call utmess('A', 'MED_36')
         endif
-        call u2mess('F', 'MED_37')
+        call utmess('F', 'MED_37')
     endif
 !
 !====
@@ -679,7 +668,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                 endif
 72          continue
             if (k .ne. nbty(letype)) then
-                call u2mess('F', 'MED_58')
+                call utmess('F', 'MED_58')
             endif
         else
             k=0
@@ -696,7 +685,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                 endif
 73          continue
             if (k .ne. lgprof) then
-                call u2mess('F', 'MED_58')
+                call utmess('F', 'MED_58')
             endif
         endif
 !
@@ -723,8 +712,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
         saux08='mficlo'
-        call u2mesg('F', 'DVP_97', 1, saux08, 1,&
-                    codret, 0, 0.d0)
+        call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
 ! 5.2. ==> MENAGE

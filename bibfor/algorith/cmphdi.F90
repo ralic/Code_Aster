@@ -65,10 +65,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 #include "asterfort/sepavp.h"
 #include "asterfort/sesqui.h"
 #include "asterfort/trldc.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesi.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/utmess.h"
 #include "blas/zcopy.h"
     integer :: ndim, nbmod, niter, ndimax
     complex(kind=8) :: ck(*), cm(*)
@@ -87,7 +84,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !-----------------------------------------------------------------------
 !
     valk = 'CMPHDI'
-    call u2mesk('I', 'ALGELINE7_2', 1, valk)
+    call utmess('I', 'ALGELINE7_2', sk=valk)
 !
 !
 !        SEPARATION DES VALEURS PROPRES
@@ -95,7 +92,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
     call sepavp(ck, cm, cmat1, ndim, alpha,&
                 beta, nbmod, lambd1, lambd2, interv)
 !
-    call u2mess('I', 'ALGELINE7_3')
+    call utmess('I', 'ALGELINE7_3')
 !
 !        INITIALISATION DES VECTEURS POUR LES ITERATIONS
 !
@@ -124,7 +121,7 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         call trldc(cmat1, ndim, ipivo)
         if (ipivo .ne. 0) then
             vali(1) = ipivo
-            call u2mesi('F', 'ALGORITH12_53', 1, vali)
+            call utmess('F', 'ALGORITH12_53', si=vali(1))
         endif
 !
 !
@@ -147,7 +144,9 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
         sortie=.false.
         call cvnorm(cm, cmod(1, j), ndim, iretou)
-        if (iretou .eq. 1) call u2mess('F', 'ALGORITH2_22')
+        if (iretou .eq. 1) then
+            call utmess('F', 'ALGORITH2_22')
+        endif
 !
         ct=0
 !
@@ -159,7 +158,9 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         ct=ct+1
         call cmatve(cmat2, cmod(1, j), cvect1, ndim)
         call cvnorm(cm, cvect1, ndim, iretou)
-        if (iretou .eq. 1) call u2mess('F', 'ALGORITH2_22')
+        if (iretou .eq. 1) then
+            call utmess('F', 'ALGORITH2_22')
+        endif
         call ctescv(cvect1, cmod(1, j), cvec0, cmod0, ndim,&
                     ecart)
         call zcopy(ndim, cmod(1, j), 1, cmod0, 1)
@@ -178,8 +179,8 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
         valr(1)=ecart
         valr(2)=dble(ceigen(j))
         valr(3)=dimag(ceigen(j))
-        call u2mesg('I', 'ALGELINE7_4', 0, ' ', 2,&
-                    vali, 3, valr)
+        call utmess('I', 'ALGELINE7_4', ni=2, vali=vali, nr=3,&
+                    valr=valr)
 10  end do
 !
 end subroutine
