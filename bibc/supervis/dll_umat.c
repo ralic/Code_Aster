@@ -68,7 +68,7 @@ void load_umat_lib(const char* libname, const char* symbol)
         valk = MakeTabFStr(nk, VALK_SIZE);
         SetTabFStr(valk, 0, "UMAT", VALK_SIZE);
         SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-        CALL_U2MESG("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid);
+        CALL_UTMESS_CORE("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid);
         FreeStr(valk);  // uncallable
     }
     printf("searching symbol '%s'... ", symbol);
@@ -89,7 +89,7 @@ void load_umat_lib(const char* libname, const char* symbol)
         SetTabFStr(valk, 0, "UMAT", VALK_SIZE);
         SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
         SetTabFStr(valk, 2, (char *)symbol, VALK_SIZE);
-        CALL_U2MESG("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid);
+        CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid);
         FreeStr(valk);  // uncallable
     }
     printf("found\n");

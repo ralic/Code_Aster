@@ -37,7 +37,7 @@ INTEGER DEFP(HDFCLF, hdfclf, INTEGER *idf)
     if ((icode = H5Fclose(idfic)) < 0) 
         return -1 ;
 #else
-    CALL_U2MESS("F", "FERMETUR_3");
+    CALL_UTMESS("F", "FERMETUR_3");
 #endif
     return 0;
 }     

@@ -15,8 +15,6 @@ subroutine cragch(long, typcoe, typval, ligrch)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

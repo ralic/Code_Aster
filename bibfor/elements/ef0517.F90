@@ -5,7 +5,6 @@ subroutine ef0517(nomte)
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
     character(len=16) :: nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

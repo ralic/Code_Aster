@@ -13,7 +13,6 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/vetyma.h"
     integer :: ndim
     character(len=4) :: fonree

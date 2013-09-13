@@ -14,7 +14,6 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/tecart.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/vetyma.h"
     integer :: ndim
     character(len=4) :: fonree

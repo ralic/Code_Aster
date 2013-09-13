@@ -21,7 +21,8 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 !
     implicit none
 #include "asterfort/assert.h"
-#include "asterfort/u2mesg.h"
+#include "asterfort/utmess_core.h"
+!
     character(len=*), intent(in) :: typ
     character(len=*), intent(in) :: idmess
     integer, intent(in), optional :: nk
@@ -92,11 +93,11 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     endif
 !
     if (use_valk) then
-        call u2mesg(typ, idmess, unk, valk, uni, &
-                    ptri, unr, ptrr)
+        call utmess_core(typ, idmess, unk, valk, uni, &
+                         ptri, unr, ptrr)
     else
-        call u2mesg(typ, idmess, unk, uvk, uni, &
-                    ptri, unr, ptrr)
+        call utmess_core(typ, idmess, unk, uvk, uni, &
+                         ptri, unr, ptrr)
     endif
 !
 end subroutine utmess

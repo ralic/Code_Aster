@@ -66,7 +66,7 @@ INTEGER DEFPSPS(HDFWAT, hdfwat, INTEGER *iddat, char *nomat, STRING_SIZE ln,
   } 
   free(nom);
 #else
-  CALL_U2MESS("F", "FERMETUR_3");
+  CALL_UTMESS("F", "FERMETUR_3");
 #endif
   return iret;
 }

@@ -63,7 +63,7 @@ INTEGER DEFPPPP(HDFRSV, hdfrsv, INTEGER *idat, INTEGER *lsv, void *sv, INTEGER *
     }
   }
 #else
-  CALL_U2MESS("F", "FERMETUR_3");
+  CALL_UTMESS("F", "FERMETUR_3");
 #endif
   return iret ; 
 }

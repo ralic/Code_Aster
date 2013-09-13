@@ -16,8 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine u2mess(ch1, idmess)
-        character(*) :: ch1
+    subroutine utmess_core(typ, idmess, nk, valk, ni,&
+                           vali, nr, valr)
+        character(*) :: typ
         character(*) :: idmess
-    end subroutine u2mess
+        integer :: nk
+        character(*) :: valk(*)
+        integer :: ni
+        integer :: vali(*)
+        integer :: nr
+        real(kind=8) :: valr(*)
+    end subroutine utmess_core
 end interface

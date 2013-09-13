@@ -340,7 +340,7 @@ void errhdlr_func(MPI_Comm *comm, int *err, ... ) {
     MPI_Error_string(*err, errstr, &len);
     printf("\n<F> MPI Error code %d:\n    %s\n\n", *err, errstr);
     fflush(stdout);
-    CALL_U2MESS("F", "APPELMPI_5");
+    CALL_UTMESS("F", "APPELMPI_5");
     return;
 }
 #endif

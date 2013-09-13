@@ -47,7 +47,7 @@ INTEGER DEFS(HDFOPF, hdfopf, char *nomfic, STRING_SIZE ln)
     iret = (INTEGER) idfic;
   free (nomf);
 #else
-  CALL_U2MESS("F", "FERMETUR_3");
+  CALL_UTMESS("F", "FERMETUR_3");
 #endif
   return iret;
 }     

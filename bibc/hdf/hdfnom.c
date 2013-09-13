@@ -72,7 +72,7 @@ INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, STRING_SIZE ln,
   free(nomg);
   free(pnomdts);
 #else
-  CALL_U2MESS("F", "FERMETUR_3");
+  CALL_UTMESS("F", "FERMETUR_3");
 #endif
   return nbobj; 
 }

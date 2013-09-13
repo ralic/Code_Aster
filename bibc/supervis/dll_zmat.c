@@ -64,7 +64,7 @@ void load_zmat_lib()
     zmatbase_handle = dlopen(LIB_Zmatbase, RTLD_NOW | RTLD_GLOBAL);
     if ( ! zmatbase_handle ) {
         printf("%s\n", dlerror());
-        CALL_U2MESS("F", "FERMETUR_4");
+        CALL_UTMESS("F", "FERMETUR_4");
     }
     printf("done\n");
 
@@ -72,7 +72,7 @@ void load_zmat_lib()
     zmat_handle = dlopen(LIB_Zmat, RTLD_NOW);
     if ( ! zmat_handle ) {
         printf("%s\n", dlerror());
-        CALL_U2MESS("F", "FERMETUR_4");
+        CALL_UTMESS("F", "FERMETUR_4");
     }
     dlerror();    /* Clear any existing error */
 
@@ -81,7 +81,7 @@ void load_zmat_lib()
     *(void **) (&f_zaster) = dlsym(zmat_handle, SYMB_Zmat);
     if ((error = dlerror()) != NULL)  {
         printf("%s\n", error);
-        CALL_U2MESS("F", "FERMETUR_4");
+        CALL_UTMESS("F", "FERMETUR_4");
     }
     
     /* zasini */
@@ -89,7 +89,7 @@ void load_zmat_lib()
     *(void **) (&f_zasini) = dlsym(zmat_handle, SYMB_Zini);
     if ((error = dlerror()) != NULL)  {
         printf("%s\n", error);
-        CALL_U2MESS("F", "FERMETUR_4");
+        CALL_UTMESS("F", "FERMETUR_4");
     }
     printf("found\n");
     

@@ -57,7 +57,7 @@ INTEGER DEFPS(HDFOPG, hdfopg, INTEGER *idf, char *nomgr, STRING_SIZE ln)
     iret = (INTEGER) idgrp;
   free (nomd);
 #else
-  CALL_U2MESS("F", "FERMETUR_3");
+  CALL_UTMESS("F", "FERMETUR_3");
 #endif
   return iret;
 }     

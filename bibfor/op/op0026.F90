@@ -54,7 +54,6 @@ subroutine op0026()
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/u2mesg.h"
 #include "asterfort/vebtla.h"
 #include "asterfort/vrcomp.h"
 !

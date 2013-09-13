@@ -13,7 +13,6 @@ subroutine calirg(mesh, nbno, list_node, tran, cent,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/matrot.h"
 #include "asterfort/parotr.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================

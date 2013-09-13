@@ -176,21 +176,21 @@ extern void DEFSSPSPPSPPP(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE
 #define CALL_AFFICH(a,b) CALLSS(AFFICH,affich,a,b)
 extern void DEFSS(AFFICH,affich,char *,STRING_SIZE,char *,STRING_SIZE);
 
-#define CALL_U2MESS(cod, idmess) CALLSS(U2MESS, u2mess, cod, idmess)
-extern void DEFSS(U2MESS, u2mess, char *, STRING_SIZE, char *, STRING_SIZE);
+#define CALL_UTMESS(cod, idmess) CALLSS(UTMESS, utmess, cod, idmess)
+extern void DEFSS(UTMESS, utmess, char *, STRING_SIZE, char *, STRING_SIZE);
 
 /* particulier car on fixe les longueurs des chaines valk */
 #define VALK_SIZE 128
-extern void DEFSSPSPPPP(U2MESG, u2mesg, char *, STRING_SIZE, char *, STRING_SIZE, INTEGER *,
-    char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *);
+extern void DEFSSPSPPPP(UTMESS_CORE, utmess_core, char *, STRING_SIZE, char *, STRING_SIZE,
+                        INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *);
 #ifdef _STRLEN_AT_END
-#define CALL_U2MESG(cod, idmess, nk, valk, ni, vali, nr, valr) \
-    F_FUNC(U2MESG, u2mesg)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod), \
-                           strlen(idmess), VALK_SIZE)
+#define CALL_UTMESS_CORE(cod, idmess, nk, valk, ni, vali, nr, valr) \
+    F_FUNC(UTMESS_CORE, utmess_core)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod), \
+                                     strlen(idmess), VALK_SIZE)
 #else
-#define CALL_U2MESG(cod, idmess, nk, valk, ni, vali, nr, valr) \
-    F_FUNC(U2MESG, u2mesg)(cod, strlen(cod), idmess, strlen(idmess), nk, valk, VALK_SIZE, \
-                           ni, vali, nr, valr)
+#define CALL_UTMESS_CORE(cod, idmess, nk, valk, ni, vali, nr, valr) \
+    F_FUNC(UTMESS_CORE, utmess_core)(cod, strlen(cod), idmess, strlen(idmess), nk, \
+                                     valk, VALK_SIZE, ni, vali, nr, valr)
 #endif
 
 

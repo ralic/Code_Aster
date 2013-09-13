@@ -5,7 +5,6 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/u2mess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

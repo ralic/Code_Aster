@@ -36,7 +36,7 @@ INTEGER DEFP(HDFCLG, hdfclg, INTEGER *idg)
    if ((icode = H5Gclose(idgrp)) < 0) 
       return -1 ;
 #else
-   CALL_U2MESS("F", "FERMETUR_3");
+   CALL_UTMESS("F", "FERMETUR_3");
 #endif
    return 0;
 }     

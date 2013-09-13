@@ -143,7 +143,7 @@ lgind  : longueur de tableaux de pointeurs
      
 #else    
   
-    CALL_U2MESS("F", "FERMETUR_15");
+    CALL_UTMESS("F", "FERMETUR_15");
   
            
 #endif

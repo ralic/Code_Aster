@@ -130,7 +130,7 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg,
   free(vtype);
   if (type_id == H5T_FORTRAN_S1) { free(mot);}
 #else
-  CALL_U2MESS("F", "FERMETUR_3");
+  CALL_UTMESS("F", "FERMETUR_3");
 #endif
   return 0 ; 
 }

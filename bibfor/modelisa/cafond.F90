@@ -18,8 +18,6 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 #include "asterfort/mesomm.h"
 #include "asterfort/nocart.h"
 #include "asterfort/peair1.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mesk.h"
 #include "asterfort/vetyma.h"
 !
 ! ======================================================================

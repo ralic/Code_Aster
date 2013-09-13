@@ -17,8 +17,6 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,  &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

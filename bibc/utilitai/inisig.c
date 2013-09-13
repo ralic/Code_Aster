@@ -116,7 +116,7 @@ void DEF0(INISIG, inisig)
 
 void stptrap (int sig)
 {
-  CALL_U2MESS("I", "SUPERVIS_97");
+  CALL_UTMESS("I", "SUPERVIS_97");
   exit(EXIT_FAILURE);
 }
 
@@ -135,7 +135,7 @@ void stpusr1 (int sig)
     /* SToP USR1 :
      * callback appelé lors de la réception du signal USR1.
      */
-    CALL_U2MESS("I", "SUPERVIS_96");
+    CALL_UTMESS("I", "SUPERVIS_96");
     status_usr1 = (INTEGER)1;
 }
 

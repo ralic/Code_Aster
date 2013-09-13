@@ -205,22 +205,6 @@ subroutine op0109()
         else
 !           A MODIFIER
             ASSERT(.false.)
-!            call getvid(' ', 'AMOR_GENE', 1, iarg, 1,&
-!                        amogen, n1)
-!            refd(1:8) = amogen
-!            call jeveuo(refd, 'L', jrefc)
-!            numgec = zk24(jrefc+1)(1:14)
-!            desc(1:19) = numgec//'.SLCS'
-!            call jeveuo(desc, 'L', jdesc)
-!            nbamor = zi(jdesc)
-!            if (zi(jdesc+3) .ne. 1) then
-!                amortissement non diagonal, on ne sait pas traiter..
-!                call u2mess('F', 'SEISME_12') 
-!            else
-!                call wkvect('&&OP0109.AMORTI', 'V V R8', nbamor*nbamor, jamog)
-!                call copmat(amogen, numgec, zr(jamog))
-!                jamor = jamog
-!            endif
         endif
     endif
     if (nbamor .ne. nbmode) then

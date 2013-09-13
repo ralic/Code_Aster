@@ -116,7 +116,6 @@ subroutine lccgad(fami, kpg, ksp, mat, option,&
         if (adh) then
             glis=0.d0
         else
-!             if (n.lt.0.d0)call u2mesr('A','MODELISA2_11',1,n)
             if (n .lt. 0.d0) n = 0.d0
             if (abs(mu+r*sut) .le. (frot*n)) then
                 glis = vip(1)

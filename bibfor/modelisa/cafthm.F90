@@ -14,7 +14,6 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/u2mesk.h"
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=19) :: ligrmo
