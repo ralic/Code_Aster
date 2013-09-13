@@ -47,14 +47,17 @@ ACCE_X = FORMULE(NOM_PARA='INST',VALE='''A0*sin(W0*INST) *
                 ''')
 f_NLIN = FORMULE(NOM_PARA='DX',VALE='K0*DX*((abs(DX)-1.E-6)/X0) ')
 
+def NONLINEARITE_SOL(X) :
+    X0 = 1.E-6
+    if X == 0. : return 0
+    sign = X/abs(X)
+    X = abs(X)
+    if X <= X0 : return 0
+    else       : return sign* ( f_NLIN(X) )
 
-NON_LIN=CALC_FONC_INTERP(FONCTION=f_NLIN,
-                         VALE_PARA=1.E-6,
-                         NOM_PARA = 'DX',
-                         INTERPOL='LIN',
-                         PROL_DROITE='LINEAIRE',
-                         PROL_GAUCHE='LINEAIRE',
-                        )
+FOR_EFDE = FORMULE(NOM_PARA='DX',
+                   VALE='NONLINEARITE_SOL(DX)')
+
 
 # ---------------------------------------------------------------------
 MAILLAGE=LIRE_MAILLAGE( )
@@ -135,7 +138,7 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  ETAT_INIT=_F( VITE = VECT_GEN),
                 EXCIT=_F( VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCE_X),
                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                 RELATION = f_NLIN),
+                                 RELATION = FOR_EFDE),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
                 )
 
@@ -146,7 +149,7 @@ TRAN_GED=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  ETAT_INIT=_F( VITE= VECT_GEN),
                 EXCIT=_F( VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCE_X),
                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                 RELATION = f_NLIN),
+                                 RELATION = FOR_EFDE),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
                 )
 
@@ -446,7 +449,7 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         ETAT_INIT=_F( VITE = VECT_GEN),
                        EXCIT=_F( VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCE_X),
                        RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                        RELATION = f_NLIN),
+                                        RELATION = FOR_EFDE),
                         INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,
                         PAS=PAS)
                        )
@@ -457,7 +460,7 @@ TRAN_GE4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         ETAT_INIT=_F( VITE = VECT_GEN),
                        EXCIT=_F( VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCE_X),
                        RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                        RELATION = f_NLIN),
+                                        RELATION = FOR_EFDE),
                         INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,
                         PAS=PAS)
                        )

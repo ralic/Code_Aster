@@ -39,7 +39,7 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
 !
 !     --- BOUCLE SUR LES NOEUDS DE NON-LINEARITE ---
 !
-    do 10 i = 1, nbrevi
+    do i = 1, nbrevi
 !
         comp = fonrev(i,2)
         fonc = fonrev(i,3)
@@ -52,9 +52,9 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
         if (comp(1:3) .eq. 'DRZ') icomp = 6
 !
         vitess = 0.d0
-        do 20 j = 1, nbmode
+        do j = 1, nbmode
             vitess = vitess + dplrev(i,j,icomp)*vitgen(j)
-20      continue
+        end do
 !
         saurev(i) = vitess
         sarevi(i) = 1
@@ -63,10 +63,10 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
                     force, ier)
         if (abs(force) .le. r8prem()) sarevi(i) = 0
 !
-        do 30 j = 1, nbmode
+        do j = 1, nbmode
             fexgen(j)=fexgen(j)+dplrev(i,j,icomp)*force
-30      continue
+        end do
 !
-10  end do
+    end do
 !
 end subroutine

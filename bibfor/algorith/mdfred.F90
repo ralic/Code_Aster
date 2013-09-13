@@ -41,7 +41,7 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 !
 !     --- BOUCLE SUR LES NOEUDS DE NON-LINEARITE ---
 !
-    do 10 i = 1, nbrede
+    do i = 1, nbrede
 !
         comp = fonred(i,2)
         fonc = fonred(i,3)
@@ -54,9 +54,9 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
         if (comp(1:3) .eq. 'DRZ') icomp = 6
 !
         seuil = 0.d0
-        do 20 j = 1, nbmode
+        do j = 1, nbmode
             seuil = seuil + dplred(i,j,icomp)*depgen(j)
-20      continue
+        end do
 !
         saured(i) = seuil
         saredi(i) = 1
@@ -65,10 +65,10 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
                     force, ier)
         if (abs(force) .le. r8prem()) saredi(i) = 0
 !
-        do 30 j = 1, nbmode
+        do j = 1, nbmode
             fexgen(j)=fexgen(j)+dplred(i,j,icomp)*force
-30      continue
+        end do
 !
-10  end do
+    end do
 !
 end subroutine
