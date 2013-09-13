@@ -72,11 +72,10 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     complex(kind=8) :: coef_cplx_unit
     real(kind=8) :: coef_real_unit
     integer :: jlino, jcoor, jprnm, jgeom2, jnom
-    integer :: i_no, i_cmp
+    integer :: i_no, i_cmp, i
     integer :: ier, cmp_index
     integer :: nbcmp, nbec
     integer :: numnoe_m
-    logical :: l_cent
     real(kind=8) :: cent(3)
     logical :: l_angl_naut, l_tran
     real(kind=8) :: angl_naut(3)
@@ -92,8 +91,10 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     coef_cplx_unit = (1.d0,0.d0)
     coef_real_unit = 1.d0
     l_tran = .true.
-    l_cent = .false.
     l_angl_naut = .false.
+    do i = 1, 3
+        cent(i) = 0.d0
+    end do
 !
 ! - Information about <GRANDEUR>
 !
