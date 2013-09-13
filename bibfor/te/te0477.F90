@@ -77,7 +77,7 @@ subroutine te0477(option, nomte)
     do 10 i = 1, 2
         para(i) = 0.d0
 10  continue
-    call r8inir(720, 0.D0, dsde, 1)
+    call r8inir(720, 0.d0, dsde, 1)
 !
 !  ###############################################################
 !  -- ELASTOPLASTICITE
