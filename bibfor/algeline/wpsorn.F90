@@ -218,7 +218,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
         call u2mess('I', 'ALGELINE6_91')
     else if (info.lt.0) then
         vali (1) = info
-        call u2mesg('F', 'ALGELINE4_82', 1, vali)
+        call u2mesi('F', 'ALGELINE4_82', 1, vali)
     endif
 !
 ! GESTION DES MODES CONVERGES

@@ -50,7 +50,7 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
     integer :: i, jnuma, jnbnma, jnoma, jnbmag, jnbtym, jindma
     integer :: nte, ij, ima, ityp, nbno, inum, nbnoas, ino
     integer :: idiv, irest, mod, k, l, jtypma, indmax, maxmai
-    integer :: max, jgrmai, numgro, vali, jgr
+    integer :: max, jgrmai, numgro, vali(2), jgr
     character(len=1) :: prfnoe, prfmai
     character(len=8) :: chgrou, chtab(32), chmail, k8bid
     character(len=12) :: chenti
@@ -165,7 +165,9 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !MH
         if (numgro .ge. 1000000) then
             ier = ier + 1
-            call u2mesg('E', 'PREPOST5_21', 0, ' ', 2,&
+            vali(1) = numgro
+            vali(2) = 1000000
+            call u2mesg('E', 'PREPOST5_21', 0, ' ', 0,&
                         vali, 0, 0.d0)
             goto 60
         endif
