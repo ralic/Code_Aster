@@ -582,10 +582,10 @@ subroutine crtype()
 !       the fields composing the sd_resultat
         if (numedd .eq. ' ') then
             call getvid('AFFE', 'CHAM_GD', iocc=1, scal=champ, nbret=ier)
-            call dismoi('F', 'PROF_CHNO', champ, 'CHAMP', ibid,&
-                        profch, ier)
-            call refdaj('F', resu19, -1, profch, 'DYNAMIQUE',&
-                        matric, ier)
+            call dismoi('C', 'PROF_CHNO', champ, 'CHAMP', ibid, profch, ier)
+            if (ier .eq. 0) then
+                call refdaj('F', resu19, -1, profch, 'DYNAMIQUE', matric, ier)
+            endif
         else
             call refdaj('F', resu19, -1, numedd, 'DYNAMIQUE',&
                         matric, ier)
