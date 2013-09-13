@@ -397,7 +397,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !------- 3.5.PONDERATIONS DUES AUX DEFORMEES MODALES
 !                                                --> VECTEUR VECR3  ---
 !            MASSES MODALES EN EAU               --> VECTEUR VECR1  ---
-!
+            call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
             call mtdscr(masse)
             call jeveuo(masse//'.&INT', 'L', lmasse)
             call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
