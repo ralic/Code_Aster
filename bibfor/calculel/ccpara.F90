@@ -39,7 +39,7 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: nparin, iret, ibid, jainst, jfreq, iaopds, iaoplo, ipara
-    integer :: jnmo, opt, inume, iarg, jains2
+    integer :: jnmo, opt, inume, jains2
 !
     real(kind=8) :: rbid, tps(6), rundf, omega2, freq, time, zero
     parameter   (zero = 0.0d0)

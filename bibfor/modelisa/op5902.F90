@@ -44,7 +44,6 @@ subroutine op5902(nboccp, compor)
     integer :: ncpri, ncprk, ncprr, jcprk, jcprr, jcpri, nvit, lmk, ifvol, ipl
     integer :: imono, nbmono, nvloc, indvar
     integer :: nbsyst, nbsysm
-    integer :: iarg
 !
 !
 !

@@ -55,7 +55,6 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
     character(len=1) :: typcst(2)
     character(len=8) :: namddl
     character(len=19) :: matass, matpre
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------

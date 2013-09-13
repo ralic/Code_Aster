@@ -55,13 +55,13 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !-----------------------------------------------------------------------
     integer :: ibid, iret
     character(len=4) :: excmod
-    character(len=8) :: k8b, intexc
+    character(len=8) ::  intexc
     character(len=16) :: graexc
     character(len=24) :: chnumi, chnumj, chnoei, chnoej, chcmpi, chcmpj, chvale
     character(len=24) :: chfreq
 !
     logical :: lindi, exiind
-    integer :: iarg, lnumi, lnumj, mxval, num, lcmpi, lcmpj
+    integer ::  lnumi, lnumj, mxval, num, lcmpi, lcmpj
     integer :: nbfreq, ifreq
 !
     call getvid('EXCIT', 'INTE_SPEC', iocc=1, scal=intexc, nbret=ibid)

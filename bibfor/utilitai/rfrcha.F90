@@ -58,7 +58,7 @@ subroutine rfrcha()
     character(len=16) :: nomcmd, typcon, typcha
     character(len=19) :: nomfon, cham19
     character(len=24) :: nogno, nogma
-    integer :: iarg, vali
+    integer ::  vali
 !     ------------------------------------------------------------------
     call jemarq()
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION

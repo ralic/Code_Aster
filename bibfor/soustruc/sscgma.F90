@@ -59,7 +59,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "asterfort/wkvect.h"
 !
 !
-    character(len=8) :: ma, noma, kbid, kpos, nom1, tout
+    character(len=8) :: ma, noma, kbid, kpos, nom1
     character(len=8) :: alarm, tyma
     character(len=16) :: concep, cmd, option
     character(len=24) :: lisma, nogma, nogma2

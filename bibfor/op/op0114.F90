@@ -52,7 +52,6 @@ subroutine op0114()
     character(len=16) :: option, valk(3)
     character(len=24) :: ayacs
     character(len=lenvar) :: nomvar
-    integer :: iarg
 !     COUPLAGE <=
 !
     call jemarq()

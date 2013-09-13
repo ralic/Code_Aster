@@ -29,7 +29,6 @@ subroutine op0020()
 #include "asterfort/ulopen.h"
     integer :: ouielt, impr, n1, nbocc
     character(len=24) :: fichie
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     impr = 0

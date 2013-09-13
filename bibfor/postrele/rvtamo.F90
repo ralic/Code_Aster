@@ -64,7 +64,6 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
     character(len=16) :: intitu, nompar(6)
     character(len=24) :: nomval, nomacc, nnores, nopara(18), nomjv
     character(len=80) :: valek(11)
-    integer :: iarg
 !
     data nompar / 'MOMENT_0'  ,  'MOMENT_1'  ,  'MINIMUM'   ,&
      &              'MAXIMUM'   ,  'MOYE_INT'  ,  'MOYE_EXT'  /

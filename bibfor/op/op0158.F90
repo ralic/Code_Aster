@@ -43,7 +43,6 @@ subroutine op0158()
     character(len=16) :: metres
     integer :: ibid, ifm
     integer :: niv
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

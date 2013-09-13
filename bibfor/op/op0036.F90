@@ -41,7 +41,7 @@ subroutine op0036()
     integer :: iocc, ibid, ni, nr, nk, i, j, ir, jvale, jp, ndim, jt
     integer :: nocc, nocc2, nindi, iii, dimmax, jy, jlng, jprol, jd
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jtrav5, npar
-    integer :: longco, nocc3, iarg
+    integer :: longco, nocc3
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: kbid

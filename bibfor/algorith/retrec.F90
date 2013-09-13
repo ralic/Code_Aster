@@ -77,7 +77,6 @@ subroutine retrec(nomres, resgen, nomsst)
     character(len=24) :: valk(2)
     integer :: itresu(3), elim, iret
     character(len=8) :: k8bid, kbid
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

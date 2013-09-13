@@ -67,7 +67,6 @@ subroutine speph0(nomu, table)
     character(len=24) :: chnumi, chnumj, chfreq
 !
     character(len=3) :: toutor
-    integer :: iarg
 !-----------------------------------------------------------------------
     call jemarq()
 !

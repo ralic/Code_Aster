@@ -48,7 +48,6 @@ subroutine pjeftc(ma1, ma2, resuou, base)
     integer :: nbval, nbocc, iocc, nbgno2, vali(2)
     character(len=16) :: nomgma, nomgno
     character(len=16) :: corre1, corre2, corre3
-    integer :: iarg
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

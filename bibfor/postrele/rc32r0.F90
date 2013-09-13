@@ -43,7 +43,6 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     character(len=8) :: valek(3), typar0(npar0), typar1(npar1), typtab
     character(len=16) :: nopar0(npar0), nopar1(npar1), nopar2(npar2)
     character(len=24) :: k24a, k24s
-    integer :: iarg
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !

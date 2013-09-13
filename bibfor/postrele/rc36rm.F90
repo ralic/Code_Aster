@@ -49,7 +49,6 @@ subroutine rc36rm()
     character(len=16) :: motclf, nomsym
     character(len=24) :: knum, nomcha, chams0
     character(len=24) :: valk(7)
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

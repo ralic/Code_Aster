@@ -135,7 +135,7 @@ subroutine op0045()
     integer :: nparr, nbcine, neq, nitqrm, izero, nbrss, nitbat, niv, mxresf, nblagr, nperm
     integer :: nitjac, n1, nstoc, nconv, iexin, lworkr, laur, qrn, qrlwor, iqrn, lqrn
     integer :: qrar, qrai, qrba, qrvl, kqrn, qrn2, ilscal, irscal, lauc, laul, icscal, ivscal
-    integer :: iiscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, iarg, rang
+    integer :: iiscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, rang
     integer :: nbproc, typeco, vali(5), nbvecg, nfreqg, rangl, icom1, icom2, l, l1, l2, l3, indf
 !     &             ,IETFIN,IETDEB,IETRAT,IETMAX
     real(kind=8) :: prorto, fmin, fmax, alpha, tolsor, det(2), rzero, omemin, omemax, omeshi, undf

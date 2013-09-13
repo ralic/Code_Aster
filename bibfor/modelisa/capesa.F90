@@ -48,7 +48,6 @@ subroutine capesa(char, noma, ipesa, ndim)
     integer :: nbma, ncmp, ndim, npesa
     character(len=8) :: k8b
     character(len=16) :: motclf
-    integer :: iarg
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
 !

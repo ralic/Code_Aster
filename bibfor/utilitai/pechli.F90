@@ -63,7 +63,6 @@ subroutine pechli(resu, modele, mate)
     character(len=24) :: ligrmo, chgeom, depla, chtime
     character(len=24) :: lchin(4), lchout(1), lisord
     character(len=72) :: rep
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

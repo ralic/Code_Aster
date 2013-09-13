@@ -51,7 +51,7 @@ subroutine op0038()
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 !
-    integer :: ibid, ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh, iarg
+    integer :: ibid, ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
 !
     real(kind=8) :: time, rundf
 !

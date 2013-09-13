@@ -33,14 +33,11 @@ subroutine acevpc(nbocc, nlm, nlg, ier)
     real(kind=8) :: xrc, xoa, xfl, xsi
     character(len=8) :: nomu
     character(len=16) :: concep, cmd
-    character(len=8) :: k8bid
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: ioc, na, nc, nf, ng, nm, np
     integer :: nr, ns, nsom
-    real(kind=8) :: xoc, xop
 !-----------------------------------------------------------------------
     call getres(nomu, concep, cmd)
 !

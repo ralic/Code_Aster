@@ -50,12 +50,11 @@ subroutine op0008()
     real(kind=8) :: time, tps(6), vcmpth(4)
     complex(kind=8) :: cbid
     logical :: exitim
-    character(len=8) :: matez, modele, cha, cara, kbid, k8bid, kmpic
+    character(len=8) :: matez, modele, cara, kbid, k8bid, kmpic
     character(len=8) :: nomcmp(6), mo1, materi, ncmpth(4)
     character(len=16) :: type, oper, suropt
     character(len=19) :: matel, resuel
     character(len=24) :: time2, mate
-    integer :: iarg
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
     data ncmpth/'TEMP','TEMP_MIL','TEMP_INF','TEMP_SUP'/

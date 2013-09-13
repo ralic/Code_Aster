@@ -60,7 +60,6 @@ subroutine op0005()
     character(len=16) :: nomrc, typmat, materi, k16bid
     character(len=19) :: noobrc
     character(len=24) :: valk(4)
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

@@ -75,7 +75,6 @@ subroutine vecgen(nomres, numeg)
     integer :: gd, gd0, nblia, ibid, elim, neqet, neqred, lmapro, lsilia, lsst
     integer :: nbsst, i1, j1
     integer :: vali(3)
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

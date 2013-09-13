@@ -45,9 +45,8 @@ subroutine chpeva(chou)
 #include "asterfort/wkvect.h"
     integer :: n1, ib, jpara1, npara, jpara2, k, nncp, ibid
     character(len=4) :: typ1, typ2, knum
-    character(len=8) :: kbid, chin, chou, nomgd
+    character(len=8) ::  chin, chou, nomgd
     character(len=19) :: ligrel, chs1, chs2, chins
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     call jemarq()

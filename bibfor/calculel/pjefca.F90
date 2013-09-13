@@ -60,7 +60,6 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
     character(len=8) :: moa, nomo1, noma1, cdim1, kbid
     integer :: ndim, iagma1, ie, ibid, nbma1, ditopo, typm1, dim1, jtypm1
     integer :: nb1, kma, jtmdim, jrepe, n1, iexi
-    integer :: iarg
 !-----------------------------------------------------------------------
     call jemarq()
 !

@@ -94,13 +94,12 @@ subroutine op0151()
     character(len=19) :: nomsd, chelem, chelrs, ligrel, nomsd2
     character(len=24) :: valk(6)
     logical :: fordef, crsigm, crepst, crepse, crepsp
-    real(kind=8) :: rbid
     real(kind=8) :: prec, instic
 !
     integer :: nval, impr, ifm, jordr, jcoef, jcelk, jcelv
     integer :: nbpt, nbord, nbcmp, numcmp(6), ntcmp, ibid
     integer :: ivdmg, numsym, nbpt2, nbord2, iret, ivch
-    integer :: vali(2), paract(30), iarg
+    integer :: vali(2), paract(30)
 !
 ! ------------
 !-----------------------------------------------------------------------

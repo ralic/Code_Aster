@@ -41,7 +41,6 @@ subroutine op0130()
     character(len=8) :: trange, noeu, cmp, nomres
     character(len=16) :: nomcmd, concep, koptio
     logical :: loptio
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

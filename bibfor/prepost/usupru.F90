@@ -37,7 +37,6 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
     real(kind=8) :: lsup, vusurt(*), vusuro(*), prust(*), para(7)
     character(len=4) :: crit
     character(len=24) :: type, typ1, typ2
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i, ire1, ire2, iret, n1, n2, n3

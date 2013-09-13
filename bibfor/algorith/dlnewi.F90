@@ -175,7 +175,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: vali(2)
     real(kind=8) :: valr(2)
     logical :: gasymr, gsyrie, ener
-    integer :: iarg
 !
     data nomddl/'        '/
     data vitini/'&&VITINI'/

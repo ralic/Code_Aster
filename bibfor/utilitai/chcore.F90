@@ -45,7 +45,6 @@ subroutine chcore(chou)
     character(len=4) :: docu
     character(len=8) :: chou, chin, nomgd
     character(len=24) :: k24b, vale, valin
-    integer :: iarg
 !
     call jemarq()
 !

@@ -83,7 +83,6 @@ subroutine caraun(char, motfac, nzocu, nbgdcu, coefcu,&
     character(len=24) :: paraci
     integer :: jparci
     integer :: jcoef, jnbgd, jcmpg, jmult
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

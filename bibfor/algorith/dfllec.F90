@@ -78,7 +78,6 @@ subroutine dfllec(sdlist, dtmin)
     integer :: jeevr, jeevk, jesur
     logical :: loblig, lsave
     integer :: jtrav, ilast, iplus
-    integer :: iarg
 !
     data evdord  /'ERRE'     ,'DELTA_GRANDEUR'  ,&
      &              'COLLISION','INTERPENETRATION',&

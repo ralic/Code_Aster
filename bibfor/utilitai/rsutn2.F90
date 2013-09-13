@@ -48,7 +48,6 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
     character(len=16) :: k16b
     character(len=19) :: cham19
     character(len=24) :: knume
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

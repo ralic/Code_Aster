@@ -71,7 +71,6 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
     real(kind=8) :: alpha, beta, gamma
     character(len=8) :: k8bid, type_elem, elem_name, valk(2)
     character(len=24) :: connex
-    integer :: iarg
 !
 ! --------------------------------------------------------------------------------------------------
 !

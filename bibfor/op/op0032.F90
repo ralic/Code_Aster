@@ -71,7 +71,7 @@ subroutine op0032()
     integer :: neqact, neq, niterc, npivot(2), l, lmasse, lraide, lddl
     integer :: ldynam, nk, nbrow, lprod, iret, nbfreq, krefa, idet(2), jstu
     integer :: vali(4), ifm, niv, nbtetc, nbtet0, nbtet1, typeco
-    integer :: nbtet2, nbev0, nbev1, nbev2, miterc, iarg, ibid, k1, k2
+    integer :: nbtet2, nbev0, nbev1, nbev2, miterc, ibid, k1, k2
     integer :: jkpar, l1, l2, l3, l11, l21, frecou, izero
     real(kind=8) :: omgmin, omgmax, omin, omax, fcorig, omecor, precsh, rayonc
     real(kind=8) :: dimc1, rzero, calpar(2), calpac(3), calpaf(2), rbid, det(2)

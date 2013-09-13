@@ -60,7 +60,6 @@ subroutine op0093()
     character(len=19) :: raide, masse, amor, numedd, matpre, solveu, raidfa
     character(len=24) :: valk, mocb, moatta, moaimp, moauni, mointf, ddlcb
     character(len=24) :: ddlmn, vefreq, ddlac
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

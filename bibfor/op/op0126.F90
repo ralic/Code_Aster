@@ -45,7 +45,6 @@ subroutine op0126()
     character(len=3) :: rep
     character(len=8) :: nomres, sst1, sst2, intf1, intf2, k8bid, option
     character(len=16) :: nomcon, nomope
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

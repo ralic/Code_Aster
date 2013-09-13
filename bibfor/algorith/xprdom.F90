@@ -117,7 +117,6 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !     MULTIPLE CRACK FRONTS
     integer :: jfmult, numfon, fon
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !     DEBUT

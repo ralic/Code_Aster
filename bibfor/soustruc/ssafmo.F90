@@ -54,7 +54,6 @@ subroutine ssafmo(mo)
 !     ------------------
     character(len=8) :: ma, kbid, nosma
     character(len=24) :: valk(2)
-    integer :: iarg
 !
 !
 !

@@ -43,7 +43,6 @@ subroutine rfnoch()
     character(len=24) :: valk(2), nogno
     character(len=16) :: parax, paray, nomcmd, typcon
     character(len=19) :: listr, nomfon, resu
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

@@ -36,7 +36,6 @@ subroutine op0101()
     character(len=16) :: type, oper
     character(len=19) :: chci19
     logical :: cinef
-    integer :: iarg
 !
 ! ======================================================================
 ! --- DEBUT

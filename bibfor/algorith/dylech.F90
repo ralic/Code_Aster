@@ -53,7 +53,7 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 ! ----------------------------------------------------------------------
 !
     character(len=16) :: motfac, nomcmd
-    integer :: iresu, jlccre, jlresu, iarg, n
+    integer :: iresu, jlccre, jlresu, n
     integer :: nbveas, nbveag, nbveat, nbchar
     integer :: ifm, niv
 !

@@ -87,7 +87,6 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     character(len=16) :: typemo
     character(len=19) :: chdynr, chacce
     character(len=24) :: chamgd, nochin, nochi1, chdepl, ligrmo
-    integer :: iarg
 !
     data         ncmppe/ 'G' , 'AG' , 'BG' , 'CG' /
     data         ncmpfo/ 'FX' , 'FY' , 'FZ' , 'MX' , 'MY' , 'MZ' ,&

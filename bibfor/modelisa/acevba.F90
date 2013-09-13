@@ -41,11 +41,10 @@ subroutine acevba(nbocc, nlm, nlg, ier)
 !     NSECBA : NOMBRE DE SECTIONS PAR BARRE
 !     NTYPSE : NOMBRE DE TYPE DE SECTION
 ! ----------------------------------------------------------------------
-    real(kind=8) :: r8b, tst
+    real(kind=8) ::  tst
     character(len=8) :: k8b, kioc, ki, nomu
     character(len=24) :: valk(3)
     character(len=16) :: k16b, sec, concep, cmd
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

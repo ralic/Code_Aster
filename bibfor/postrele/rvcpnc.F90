@@ -78,7 +78,6 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc, alcpc2
     integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, ier, iexi, nn
     logical :: dirx, diry, dirz
-    integer :: iarg
 !
 !======================================================================
 !

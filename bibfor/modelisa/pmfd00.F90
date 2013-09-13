@@ -68,7 +68,7 @@ subroutine pmfd00()
     parameter  (ncarfi=3)
 !
     integer :: nbocc0, nbocc1, nbocc2, nbocc3, nbocc4
-    integer :: iret, ibid, ifm, niv, iarg, iasbon, iasedi, iasmax
+    integer :: iret, ibid, ifm, niv, iasbon, iasedi, iasmax
     integer :: nbvm, nmailp, numail, nbfib, icode, igrand, ima, inomcp
     integer :: ii, jj, ioc, ipos, ier, izone, nbcmp, nbec
     integer :: ira1, iriy1, iriz1, irva1, irviy1, irviz1

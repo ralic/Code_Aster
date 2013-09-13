@@ -48,14 +48,13 @@ subroutine op0157()
     character(len=3) :: toucha, toucmp, toupar, interp
     character(len=4) :: motfac
     character(len=8) :: k8b, form
-    character(len=16) :: nomcmd, typcon, crit, k16bid, fich
+    character(len=16) :: nomcmd, typcon, crit, fich
     character(len=19) :: gene, knum, kdisc, krang
     character(len=80) :: titre
     logical :: lhist
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, ifi, iocc, ire2, iret, isy, jcmpg
+    integer ::  ifi, iocc, ire2, iret, isy, jcmpg
     integer :: jdisc, jnosy, jordr, jpara, jrang, n, n01
     integer :: n10, n11, n21, n22, nbcmpg, nbdisc, nbnosy
     integer :: nbordr, nbpara, nc, nocc, np, nr

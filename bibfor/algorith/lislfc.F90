@@ -62,7 +62,6 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
     real(kind=8) :: rcoef, icoef
     character(len=19) :: nomf19
     integer :: iret
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

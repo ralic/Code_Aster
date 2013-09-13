@@ -44,16 +44,15 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
 ! OUT  NBMAIL : NOMBRE DE MAILLES RECUPEREES
 !     ------------------------------------------------------------------
 !
-    integer :: n1, ier, kotyp, im, numa, ityp, nume, ibid, iatyma, lgp, lgm
+    integer :: n1, ier, kotyp, im, numa, ityp, nume, iatyma, lgp, lgm
     integer :: ilist, klist, nbmc, nbma, jnoma
     parameter     ( nbmc = 3 )
     logical :: lnume, lmail
     integer :: lopt, lnom
-    character(len=8) :: k8b, noma, option, oldtyp, prfm, nommai, knume
+    character(len=8) ::  noma, option, oldtyp, prfm, nommai, knume
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
     character(len=24) :: nomama, nomaty, nomjv
     character(len=24) :: valk(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

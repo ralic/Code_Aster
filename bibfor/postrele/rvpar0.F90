@@ -58,9 +58,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
     integer :: nbtbmx, admemo, nbtabl
     integer :: nbresu
 !
-    character(len=8) :: k8b
     character(len=18) :: nomstr
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !====

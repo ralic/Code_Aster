@@ -30,12 +30,8 @@ function utmotp(fonree, motfac, iocc, motcle)
 #include "asterfort/u2mess.h"
     character(len=4) :: fonree
     character(len=*) :: motfac, motcle
-    character(len=8) :: kbid
-    complex(kind=8) :: cbid
-    integer :: iarg
 !-----------------------------------------------------------------------
     integer :: iocc
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     if (fonree .eq. 'REEL') then
         call getvr8(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)

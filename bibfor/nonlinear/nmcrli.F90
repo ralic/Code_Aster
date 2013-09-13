@@ -77,7 +77,6 @@ subroutine nmcrli(instin, lisins, sddisc)
     integer :: ifm, niv
     character(len=16) :: typeco, motfac, typres, nomcmd
     character(len=19) :: provli
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

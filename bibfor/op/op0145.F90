@@ -39,18 +39,16 @@ subroutine op0145()
 #include "asterfort/wkvect.h"
     integer :: ibid, dim, mxval
     character(len=1) :: typspe
-    character(len=8) :: k8bid, intspe, caelem, modele, nomzon
+    character(len=8) ::  intspe, caelem, modele, nomzon
     character(len=16) :: concep, cmd, nommcf, mcfac(9)
     character(len=19) :: nomu
     character(len=24) :: vain, vare, vate, nnoe, chnumi
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: iangl, ifo, ifonct, iinter, imc, imcf, imci
     integer :: inat, inatur, inoeud, iocc, ispect, jvavf
     integer :: lfon, lnat, lnnoe, lnom, long, lvain, lvare
     integer :: lvate, nbmcl, nnap
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     data mcfac /'SPEC_LONG_COR_1','SPEC_LONG_COR_2',&
      &            'SPEC_LONG_COR_3','SPEC_LONG_COR_4',&

@@ -116,7 +116,6 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
     character(len=16) :: method
     character(len=16) :: k16bid, nomcmd
     character(len=19) :: channo
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !

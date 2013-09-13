@@ -43,7 +43,6 @@ subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
 ! ======================================================================
     integer :: ibid
     character(len=8) :: motfac, k8b, tabrev, tabmdb, tabthr
-    integer :: iarg
 ! ======================================================================
     call jemarq()
 ! ======================================================================

@@ -88,7 +88,6 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     real(kind=8) :: nx, ny, nz, nt(3), eps2, sinvec, cosvec
     real(kind=8) :: n4n2(3), n4n3(3), nq(3), norme, angl
     logical :: logic
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

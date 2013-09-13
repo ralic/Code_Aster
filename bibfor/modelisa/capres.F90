@@ -58,7 +58,6 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai, lismai
-    integer :: iarg
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
 !-----------------------------------------------------------------------

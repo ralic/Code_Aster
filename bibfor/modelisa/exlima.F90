@@ -48,11 +48,10 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 !     -----------------------------------------------------------------
 !
     integer :: ib, n1, jma, nbma
-    character(len=8) :: modele, noma, k8bid
+    character(len=8) :: modele, noma
     character(len=16) :: motfac, motcle(2), typmcl(2), oper, k16b
     character(len=19) :: ligrmo
     character(len=24) :: lismai, noojb
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     motfac = motfaz

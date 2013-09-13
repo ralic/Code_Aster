@@ -85,7 +85,6 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! FONCTIONS EXTERNES
 ! ------------------
-    integer :: iarg
 !     EXTERNAL      R8DEPI
 !
 ! ROUTINES EXTERNES

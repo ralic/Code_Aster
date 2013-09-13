@@ -84,9 +84,9 @@ subroutine op0167()
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
-    character(len=8) :: k8b, nomain, nomaou, newmai, prefix, mo, geofi
+    character(len=8) ::  nomain, nomaou, newmai, prefix, mo, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
-    character(len=16) :: typcon, nomcmd, option, k16bid
+    character(len=16) :: typcon, nomcmd, option
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
     character(len=19) :: table, ligrel, cham1
     character(len=24) :: nommai, grpmai, typmai, connex, nodime, grpnoe, nomnoe
@@ -109,7 +109,6 @@ subroutine op0167()
     integer :: jnnoma, jnnomb, jadrjv, jnonum, dimcon, decala, iocct
     real(kind=8) :: shrink, lonmin
     logical :: lpb
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

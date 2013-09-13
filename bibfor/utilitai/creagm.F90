@@ -74,7 +74,6 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
     real(kind=8) :: tmps(3)
     character(len=8) :: ktmp
     character(len=24) :: sdbord, nom, grpmav, grpma, gpptnm, grpema
-    integer :: iarg
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
     call jemarq()

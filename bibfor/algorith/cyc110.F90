@@ -60,7 +60,6 @@ subroutine cyc110(nomres, mailla, nbsect)
     character(len=8) :: k8bid, nomres, mailla, nomcou
     character(len=16) :: mcgrm, motfac, mcmail
     character(len=24) :: gpptnm, grmcou
-    integer :: iarg
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

@@ -39,13 +39,11 @@ subroutine tfvegr(nommcf, ocgril)
 !
     character(len=16) :: nommcf
     integer :: ocgril, ntypg
-    integer :: iarg
 !
 !    ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibid, igril, iveci, nbgtot, ntot2, ntypg2, ntypg3
     integer :: ntypg4, ntypg5, ntypg6
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     call jemarq()
 !

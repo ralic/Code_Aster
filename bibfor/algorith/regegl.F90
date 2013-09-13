@@ -82,7 +82,6 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
     character(len=24) :: valk, nomsst, intf
     complex(kind=8) :: cbid
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/

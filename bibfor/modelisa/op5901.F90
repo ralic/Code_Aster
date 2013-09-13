@@ -44,7 +44,7 @@ subroutine op5901(nboccm, ifm, niv, compor)
     character(len=19) :: listr
     real(kind=8) :: ms(6), ng(3), q(3, 3), lg(3), pgl(3, 3)
     complex(kind=8) :: cbid
-    integer :: iarg, ifm, niv, nbtbsg, nums(2), indvar
+    integer ::  ifm, niv, nbtbsg, nums(2), indvar
     integer :: iocc, nbmat, nbecou, nbecro, nbcine, nbelas, nbfasy
     integer :: i, j, nbela1, nbsys, nvi, imk, imi, ipr, itab, itsg, irra, irr2
     integer :: ncprr, ir, irota, iadlr, decal, nbrota, nbsyst, tabdes(13)

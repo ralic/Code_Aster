@@ -49,7 +49,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     character(len=16) :: motfac, nomsym
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(2), lchout(1)
     character(len=19) :: excit
-    integer :: iarg, vali(2), iexi
+    integer ::  vali(2), iexi
     logical :: lreel, lnoeu, ldetli, lvide
 !     ------------------------------------------------------------------
 !

@@ -58,7 +58,6 @@ subroutine cazocd(char, motfac, izone, nzoco)
     real(kind=8) :: aljeu
     real(kind=8) :: coefpt, coefpn, coefff, coefte
     logical :: lcact, lfrot, lpenac, lpenaf
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

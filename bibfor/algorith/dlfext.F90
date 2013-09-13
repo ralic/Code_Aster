@@ -73,7 +73,6 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
     character(len=16) :: method
     character(len=19) :: ligrmo, lischa
     character(len=24) :: vechmp, vachmp, cnchmp, k24bid
-    integer :: iarg
 !
     data vechmp,vachmp,cnchmp/3*' '/
     data k24bid/' '/

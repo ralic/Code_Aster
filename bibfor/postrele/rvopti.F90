@@ -39,7 +39,6 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
 !
     integer :: iocc, nc, ier
     integer :: lnch
-    integer :: iarg
 !
 !======================================================================
 !

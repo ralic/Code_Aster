@@ -65,7 +65,6 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     character(len=19) :: nomf
     character(len=24) :: instan, abscur
     character(len=24) :: valk(7)
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

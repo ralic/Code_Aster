@@ -60,7 +60,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     integer :: nuno, jints, nbtrls, iera
     integer :: numfin, isym, inoli, jinf, jnoli, nbnoli, jcoori, jinti
     integer :: nbtrli, ino, inos, nbs, numun, jts, jti, nbi, inoi
-    integer :: jnofos, irlev, jbaslo, ndim, iarg
+    integer :: jnofos, irlev, jbaslo, ndim
     real(kind=8) :: x0(3), x1, x2, y1, y2, z1, z2, d, vplan(3), dmin
     real(kind=8) :: dmax, prec, preco, ps, vectan(3), precn
     character(len=6) :: nompro

@@ -44,7 +44,6 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     character(len=8) :: knum, kdir
     character(len=19) :: knoeu, didi, lnore, nbnor, ordr
     character(len=80) :: nomcas, chainq, chainl, chaina
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: ia, ibid, ic, icas, id, idep, ifm

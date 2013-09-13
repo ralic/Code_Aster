@@ -36,7 +36,6 @@ subroutine op0022()
     integer :: nv, niv, ifm
     character(len=8) :: resu
     character(len=16) :: concep, nomcmd, opera
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call infmaj()

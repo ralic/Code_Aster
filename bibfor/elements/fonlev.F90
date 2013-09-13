@@ -61,7 +61,6 @@ subroutine fonlev(resu, noma, nbnoff)
     character(len=9) :: typlev(2), motfac, valk(2)
     character(len=24) :: nomobj, grouma, nommai, conec, trav, trav2
     parameter(prec=1.d-1)
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     call jemarq()

@@ -67,7 +67,6 @@ subroutine fonnor(resu, noma, cnxinv)
     character(len=16) :: casfon
     character(len=19) :: basnof, basseg, macofo
     parameter    (nompro='FONNOR')
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     call jemarq()

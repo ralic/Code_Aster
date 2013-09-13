@@ -42,7 +42,6 @@ subroutine op0074()
     character(len=14) :: numgen
     character(len=19) :: solveu
     character(len=16) :: typrep, nomcmd, typres
-    integer :: iarg
 !
 !     --- ETAPE DE VERIFICATIONS
 !

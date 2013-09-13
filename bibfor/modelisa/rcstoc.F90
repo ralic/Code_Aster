@@ -82,7 +82,6 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     integer :: jtypo, jnomo, ibk, nbmax, vali
     integer :: i, k, ii, jfct, jrpv, jvale, nbcoup, n
     integer :: iret, nbfct, nbpts, jprol, nbptm, lpro1, lpro2
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

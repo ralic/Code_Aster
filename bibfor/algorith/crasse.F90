@@ -52,7 +52,7 @@ subroutine crasse()
     character(len=8) :: k8b, resu2, resu1
     character(len=16) :: type, oper, chter
     character(len=19) :: nomch, cham1, resu19
-    integer :: iarg, nbcham, kch
+    integer ::  nbcham, kch
 !
 ! ----------------------------------------------------------------------
     call jemarq()

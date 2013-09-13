@@ -80,7 +80,6 @@ subroutine charci(chcine, mfact, mo, type)
     character(len=24) :: cino, cnuddl, cvlddl, nprol
     character(len=80) :: titre
     logical :: lxfem
-    integer :: iarg
     data nprol/'                   .PROL'/
 ! --- DEBUT -----------------------------------------------------------
 !

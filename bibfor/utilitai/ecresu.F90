@@ -60,7 +60,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !
 !     ------------------------------------------------------------------
-    integer :: nbordr, ltps, jordr, ibid, i, nbsym, iarg
+    integer :: nbordr, ltps, jordr, ibid, i, nbsym
     integer :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
     integer :: nbsauv, iarchi, isto1, isto2, isto3, isto4
     integer :: jdeps, jvits, jaccs, jpass, jinst

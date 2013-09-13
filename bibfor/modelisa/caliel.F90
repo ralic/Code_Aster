@@ -65,7 +65,6 @@ subroutine caliel(fonrez, chargz)
     character(len=16) :: motfac, option
     character(len=19) :: ligrmo, lisrel, k19b
     integer :: iocc, nliai, ilmoch, iop, ibid, ier
-    integer :: iarg
 !
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !

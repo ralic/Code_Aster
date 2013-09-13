@@ -129,7 +129,6 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !     BISECTION METHOD AND VELOCITY INTERPOLATION
     real(kind=8) :: tolld, dprec, ds, vp, betap
     integer :: maxite, jlimsx, jlimdx
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !     DEBUT

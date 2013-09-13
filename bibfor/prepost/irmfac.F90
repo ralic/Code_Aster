@@ -61,7 +61,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     integer :: nbnot, nvamin, nbpara, jpara, nbmat, nbcmp, nbnosy, nbordr
     integer :: nbcmdu, jnunot, jnosy, jordr, jcmp, jncmed, jnumat, nfor, nresu
     integer :: ncham, n01, nmail, ncoor, ninf, nsup, nvamax, npart, infmai
-    integer :: ier, ibid, iret, ncarae, nvari, iarg
+    integer :: ier, ibid, iret, ncarae, nvari
 !
     real(kind=8) :: borsup, borinf
 !

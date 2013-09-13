@@ -32,12 +32,10 @@ subroutine op0092()
 #include "asterfort/titre.h"
 #include "asterfort/u2mess.h"
     character(len=8) :: monmot
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: nbd, nbdir, nbv
-    real(kind=8) :: depl
 !-----------------------------------------------------------------------
     call infmaj()
 !

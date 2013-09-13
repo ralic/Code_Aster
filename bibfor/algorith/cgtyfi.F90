@@ -36,7 +36,7 @@ subroutine cgtyfi(typfis, nomfis)
 !   NOMFIS : NOM DE LA SD DECRIVANT LE FOND DE FISSURE
 ! ======================================================================
 !
-    integer :: iarg, ithet, ifond, ifiss
+    integer ::  ithet, ifond, ifiss
 !
     call jemarq()
 !

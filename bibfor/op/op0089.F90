@@ -44,7 +44,6 @@ subroutine op0089()
     character(len=8) :: noma, macrel, promes, modlms, noca
     character(len=19) :: method
     character(len=24) :: vref
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

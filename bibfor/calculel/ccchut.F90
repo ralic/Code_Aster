@@ -59,9 +59,7 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
     integer :: ioc, nuti, ibid
     integer :: nb_form, nb_crit, nb_norm
     integer :: jform, nume_field_out
-    character(len=8) :: k8b
     character(len=16) :: field_type, crit, norm, type_comp
-    integer :: iarg
 !
 ! --------------------------------------------------------------------------------------------------
 !

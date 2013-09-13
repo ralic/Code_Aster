@@ -51,7 +51,6 @@ subroutine op0156()
     character(len=19) :: pfchn1, pfchn2
     character(len=16) :: type, nomcmd
     character(len=19) :: masse, resu, chamno, chamn2
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
     call infmaj()

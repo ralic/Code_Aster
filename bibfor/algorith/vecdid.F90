@@ -80,7 +80,6 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     logical :: debug
     integer :: ifmdbg, nivdbg
     complex(kind=8) :: cbid
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

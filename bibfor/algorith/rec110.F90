@@ -59,7 +59,6 @@ subroutine rec110(nomres, nomsqu, modgen)
     character(len=8) :: nomres, nomsqu, modgen, tt, lintf, ljntf
     character(len=8) :: k8bid, nomnoe, crit, nomsst
     logical :: fusion
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

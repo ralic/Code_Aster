@@ -65,7 +65,7 @@ subroutine orth99(nomres, ritz)
     character(len=16) :: typbas
     character(len=14) :: nu, numdd1, numdda, matri1
     character(len=19) :: matr, chamol
-    integer :: iarg, ir
+    integer ::  ir
 !----------------------------------------------------------------------
     call jemarq()
 !

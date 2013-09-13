@@ -27,8 +27,6 @@ subroutine acevma(nbocc, nlm, nlg)
 ! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    character(len=8) :: k8b
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

@@ -43,7 +43,6 @@ subroutine op0173()
     character(len=19) :: newtab, newta1
     character(len=24) :: para
     character(len=80) :: valk
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

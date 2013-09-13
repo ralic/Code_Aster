@@ -76,7 +76,6 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
     character(len=8) :: extrcp, extrch, extrga
     character(len=24) :: list
     integer :: jlist
-    integer :: iarg
     character(len=19) :: sdextr
 !
 ! ----------------------------------------------------------------------

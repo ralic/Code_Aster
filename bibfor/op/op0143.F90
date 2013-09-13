@@ -53,14 +53,12 @@ subroutine op0143()
     integer :: irho, jrho
     character(len=2) :: carapa(4)
     character(len=3) :: ouinon
-    character(len=8) :: k8bid
     character(len=9) :: typas(2), tpas
     character(len=16) :: concep, cmd, nommcf, mcfac(4)
     character(len=19) :: nomu
     character(len=8) :: nomu8
     character(len=24) :: fsic, fsvi, fsvr, fsvk, fsgm, fscr, fsgr
     real(kind=8) :: vect(3), valepa(4)
-    integer :: iarg
 !
 !       DATA TYPAS   /'CARRE_LIGN ','TRIA_LIGN'/
 !-----------------------------------------------------------------------
@@ -71,7 +69,7 @@ subroutine op0143()
     integer :: jcoup, jpas, jtpas, lfscr, lfsgm, lfsgr, lfsic
     integer :: lfsvi, lfsvk, lfsvr, lnbcr, nbangl, nbcara, nbcoor
     integer :: nbcr, nbgrma, nbgtot, nbocc, ntypg, nzex
-    real(kind=8) :: pas, pi, rbid, y
+    real(kind=8) :: pas, pi, y
 !-----------------------------------------------------------------------
     data typas   /'CARRE_LIG','TRIA_LIGN'/
     data mcfac   /'FAISCEAU_TRANS ','GRAPPE',&

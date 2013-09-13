@@ -54,7 +54,6 @@ subroutine ritz99(nomres)
     character(len=24) :: trang1, trang2, tempor, tempi, tempi2, rigi1, mass1, amor1
     character(len=24) :: valk(3), concep(3)
     logical :: seul
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -67,10 +67,10 @@ subroutine cagrou(load, mesh, vale_type)
 !
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
-    character(len=8) :: k8bid, list_suffix
+    character(len=8) ::  list_suffix
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
-    integer :: iarg, ibid
+    integer ::  ibid
     integer :: nliai
     real(kind=8) :: vale_real_zero
     character(len=8) :: vale_func_zero

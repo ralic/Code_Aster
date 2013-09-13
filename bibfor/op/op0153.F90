@@ -65,7 +65,7 @@ subroutine op0153()
     integer :: n0, n1, n5, na, nbinst, nbpair, nbpar
     integer :: nbpar2, nbpmr, nbpt, nbsec2, nbsect, nbtota, nbv
     integer :: nbvpu, ni1, nis, npu, ntn
-    real(kind=8) :: coinst, haut, puusur, r8b, rayoo, rayot
+    real(kind=8) :: coinst, haut, puusur, rayoo, rayot
 !
 !-----------------------------------------------------------------------
     parameter    ( nbpar = 16, nbpar2 = 12, nbpmr = 5 )
@@ -79,7 +79,6 @@ subroutine op0153()
     character(len=19) :: tabpus, nomta, newtab
     character(len=24) :: type, valk(2)
     complex(kind=8) :: c16b
-    integer :: iarg
     data nopar  / 'PUIS_USUR_GLOBAL' ,&
      &              'INST' , 'DUREE' , 'ORIG_INST' ,&
      &              'V_USUR_TUBE' , 'V_USUR_OBST' , 'P_USUR_TUBE' ,&

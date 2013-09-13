@@ -35,14 +35,10 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 !     OPERATEUR  IMPR_TABLE , TRAITEMENT DU MOT CLE FACTEUR "FILTRE"
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, ltitr, jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
+    integer ::  ltitr, jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
     integer :: jpafi, jccfi, jvifi, jvrfi, jvcfi, jvkfi, jprfi, jcrfi, l, l1, l2
     integer :: l3, l4, irt
-    real(kind=8) :: r8b
-    complex(kind=8) :: cbid
-    character(len=8) :: k8b
     character(len=80) :: montit
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

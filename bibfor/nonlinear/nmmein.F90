@@ -62,7 +62,6 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
     character(len=19) :: nlisco, nliseq, nlisrl, nbasco
     integer :: jlicmp, iadrma
     integer :: nbarvi, ibid, iret
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

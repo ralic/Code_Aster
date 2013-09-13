@@ -108,7 +108,7 @@ subroutine op0019()
     integer :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail, nbmtrd
     integer :: lxmr, noemf3
     integer :: npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill
-    integer :: ngribt, nmembr, iclf, ioc, icle, ng, iarg
+    integer :: ngribt, nmembr, iclf, ioc, icle, ng
     integer :: depart, jdnm, ixnw, jdln, jdlm, jdls
     logical :: locaco, locagb, locamb
     character(len=6) :: kioc

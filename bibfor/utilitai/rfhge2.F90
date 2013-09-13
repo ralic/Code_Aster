@@ -58,7 +58,6 @@ subroutine rfhge2(harmge)
     character(len=19) :: nomfon, knume, kinst, resu, matras
     character(len=24) :: nogno, valk(2)
     complex(kind=8) :: crep, cbid
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

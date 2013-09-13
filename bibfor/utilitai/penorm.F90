@@ -79,7 +79,7 @@ subroutine penorm(resu, modele)
     integer :: nn
     integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
     integer :: nb_cmp_act
-    real(kind=8) :: r8b, prec, inst, vnorm(1)
+    real(kind=8) ::  prec, inst, vnorm(1)
     complex(kind=8) :: c16b
     logical :: exiord
     character(len=4) :: tych, ki, exirdm
@@ -94,7 +94,6 @@ subroutine penorm(resu, modele)
     character(len=24) :: mesmai, mesmaf, valr, vali
     character(len=24) :: coefca, valk2(5), grouma
     character(len=24) :: list_cmp, list_cmp_neut
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

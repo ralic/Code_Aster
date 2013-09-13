@@ -49,14 +49,13 @@ subroutine op0024()
 #include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    real(kind=8) :: r8b, debut, fin, pas, xxx, xpdt, toler, derpas
+    real(kind=8) ::  debut, fin, pas, xxx, xpdt, toler, derpas
     real(kind=8) :: valr(3)
     integer :: ifm, niv, nv, nbvale, ndim, jpas, jnbp, jbor, jval, kval, i
     integer :: vali
     integer :: n1, nbocc, nsup, iocc, np, nbpas, nbval, iinter, ico, j
     character(len=19) :: resu
     character(len=16) :: nomcmd, concep
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

@@ -36,7 +36,6 @@ subroutine nxdomt(parmei, parmer)
 ! ----------------------------------------------------------------------
     integer :: iocc, n1
     real(kind=8) :: theta
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
     call getvr8(' ', 'PARM_THETA', scal=theta, nbret=n1)

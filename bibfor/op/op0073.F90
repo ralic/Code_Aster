@@ -50,7 +50,6 @@ subroutine op0073()
     real(kind=8) :: r8bid, rad
     complex(kind=8) :: cbid
     logical :: crprol
-    integer :: iarg
 !     ------------------------------------------------------------------
     data nopara / 'LIEU'    , 'TYPE'    , 'FONCTION' /
     data typara / 'K8'      , 'K24'     , 'K24'      /

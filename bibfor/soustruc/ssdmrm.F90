@@ -54,7 +54,6 @@ subroutine ssdmrm(mag)
     real(kind=8) :: prec, di, dj
     character(len=16) :: option
     character(len=24) :: valk(2), nognoi, nognoj
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iacoo2, iadim2, iadime, iagno, ialiii, ialiij

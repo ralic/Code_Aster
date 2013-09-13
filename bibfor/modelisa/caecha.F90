@@ -55,7 +55,6 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
     character(len=8) :: k8b
     character(len=16) :: motclf
     character(len=19) :: carte1, carte2, cartes(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

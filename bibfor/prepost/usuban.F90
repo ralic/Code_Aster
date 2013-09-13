@@ -32,7 +32,6 @@ subroutine usuban(mater, isupp, para, ier)
 !-----------------------------------------------------------------------
     character(len=24) :: loi, mate, type
     character(len=24) :: valk(3)
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: ier, isupp, lk, lt, n1, n2

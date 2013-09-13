@@ -102,7 +102,6 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     real(kind=8) :: norme, vecx, vecy, vecz, dir(3), tmpv(3), psca
 !
     logical :: direc, suiv, milieu
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

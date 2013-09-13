@@ -134,7 +134,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     real(kind=8) :: tps1(4), rint1, rint2, conv
     real(kind=8) :: valr(3)
     integer :: vali(2), nbconv, nbmxcv, n1
-    character(len=8) :: tran, k8b, vvar
+    character(len=8) :: tran, vvar
     character(len=19) :: matpre, matasm
 !     ------------------------------------------------------------------
 !
@@ -158,7 +158,6 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     character(len=6) :: typal(palmax)
     character(len=8) :: cnpal(palmax)
     character(len=24) :: cpal
-    integer :: iarg
     real(kind=8) :: fsauv(palmax, 3), vrot, arot, vrotin, arotin
 !
 !

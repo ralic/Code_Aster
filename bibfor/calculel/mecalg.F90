@@ -109,7 +109,6 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     character(len=24) :: pavolu, pa1d2d, pa2d3d, papres, pepsin
     character(len=24) :: chsig, chepsp, chvari, chsigi, livk(nbmxpa)
     parameter (resuco = '&&MECALG')
-    integer :: iarg
     data chvarc/'&&MECALG.CH_VARC_R'/
     data chvref/'&&MECALG.CHVREF'/
 !

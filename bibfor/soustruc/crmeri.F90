@@ -74,7 +74,6 @@ subroutine crmeri(promes, iakpee)
     integer :: lu, lvals, lv, lvsu
 !
     real(kind=8) :: omega2, masg, eps, eps1
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -50,7 +50,7 @@ subroutine op0194()
 !
     integer :: ibid, iret, n1, n2, n3, num, numpha
     integer :: nbordt, nbtrou, ier, jopt, nbopt, nb, nchar, iopt
-    integer :: nbordr, jordr, nuord, vali, iarg
+    integer :: nbordr, jordr, nuord, vali
 !
     real(kind=8) :: inst, prec
     real(kind=8) :: valr, r8b

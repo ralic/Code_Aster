@@ -68,8 +68,6 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     integer :: ifm, niv
     real(kind=8) :: tabco(narz, ndim), tabcr(narz)
     integer :: nunoa, nunob
-    character(len=8) :: k8bid
-    integer :: iarg
     logical :: pilo
 !
 ! ----------------------------------------------------------------------

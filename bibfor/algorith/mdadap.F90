@@ -162,7 +162,6 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     character(len=6) :: typal(palmax)
     character(len=8) :: cnpal(palmax)
     character(len=24) :: cpal
-    integer :: iarg
     real(kind=8) :: fsauv(palmax, 3)
 !
     call jemarq()

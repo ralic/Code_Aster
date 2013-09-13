@@ -105,7 +105,6 @@ subroutine op0041()
     character(len=24) :: lismae, lisnoe, pheno
     logical :: grille, ldmax, goinop
     character(len=8) :: fisgri
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

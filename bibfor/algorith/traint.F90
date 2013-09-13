@@ -70,7 +70,6 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     integer :: lesc, lraid, leff1, leff2, ltrain, ideeq, nbddl, llint, lslast
     integer :: lcopy1, lcopy2, unit, lmasst, ldepma, ldepsl, nl
     real(kind=8) :: travm, travk, trvint
-    integer :: iarg
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1=numlia

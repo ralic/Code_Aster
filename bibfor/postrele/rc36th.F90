@@ -66,7 +66,6 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     character(len=16) :: nopara(2)
     character(len=19) :: chams0
     character(len=24) :: instan, abscur, mesmai, mesnoe, nojvth, nojvmy, valk(7)
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

@@ -67,7 +67,6 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
     logical :: ldmax, dbg
     real(kind=8) :: distma
-    integer :: iarg
 !----------------------------------------------------------------------
     call jemarq()
     ASSERT(base.eq.'V')

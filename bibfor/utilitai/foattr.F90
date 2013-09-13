@@ -34,7 +34,6 @@ subroutine foattr(motcle, iocc, nomfon)
     character(len=16) :: npara, nresu
     character(len=19) :: temp
     character(len=24) :: prol
-    integer :: iarg
 !     ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

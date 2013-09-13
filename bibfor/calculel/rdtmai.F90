@@ -84,7 +84,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm
     logical :: lvide, lcaay
-    integer :: iarg
 !
     call jemarq()
 !

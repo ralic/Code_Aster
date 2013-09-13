@@ -50,10 +50,8 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
 !
 !
 !
-    character(len=8) :: k8bid
     integer :: nchp, n1
     integer :: icham
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

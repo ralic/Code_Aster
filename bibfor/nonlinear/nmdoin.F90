@@ -59,7 +59,6 @@ subroutine nmdoin(evol, evonol, instin, numein)
     complex(kind=8) :: c16bid
     character(len=8) :: k8bid, criter
     character(len=16) :: motfac
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

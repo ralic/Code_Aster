@@ -57,7 +57,6 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
     character(len=19) :: nocha2, chextr, knum
     character(len=24) :: nomnoe
     character(len=5) :: sufv
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, ib, ie, in, inoe, inumer

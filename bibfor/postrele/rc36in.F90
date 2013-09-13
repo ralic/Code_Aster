@@ -52,7 +52,6 @@ subroutine rc36in(noma, nbma, listma, chindi)
     character(len=8) :: motcls(2), typmcs(2), motcln(2), typmcn(2)
     character(len=16) :: motclf, nocmp(nbcmp)
     character(len=24) :: mesmai, mesnoe
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

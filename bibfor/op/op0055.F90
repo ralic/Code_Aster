@@ -55,14 +55,13 @@ subroutine op0055()
     integer :: ibas, ibid, iocc, idon, idonn, ifonoe, ndonn
     integer :: iret1, iret2, iret, irets
     integer :: n1, n2
-    character(len=6) :: k6b, nompro
-    character(len=8) :: k8b, resu, noma, typfon, confin
+    character(len=6) ::  nompro
+    character(len=8) ::  resu, noma, typfon, confin
     character(len=9) :: entit(8)
     character(len=13) :: motcl(8)
     character(len=16) :: typres, oper
     character(len=19) :: basfon, basloc, cnxinv, fontyp, lnno, ltno
     character(len=24) :: valk(2), entnom, fondfi, fonoeu
-    integer :: iarg
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()

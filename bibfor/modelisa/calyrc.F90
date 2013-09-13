@@ -84,7 +84,6 @@ subroutine calyrc(chargz)
     character(len=19) :: lisrel
     character(len=24) :: geom3
     character(len=24) :: valk(2)
-    integer :: iarg
     logical :: l_tran
     real(kind=8) :: tran(3)
     logical :: l_cent

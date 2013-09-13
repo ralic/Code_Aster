@@ -62,7 +62,6 @@ subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
     character(len=16) :: typnum
     character(len=24) :: mdgene, mdssno, numero
     character(len=24) :: valk
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !

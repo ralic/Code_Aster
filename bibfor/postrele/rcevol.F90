@@ -53,7 +53,6 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     character(len=24) :: cinst, csili, csiex, csno, csne, csneo, csnee, cspo
     character(len=24) :: cspe, cfao, cfae, cnoc, cresu, cresp, intitu, cspto
     character(len=24) :: cspte, cspmo, cspme, cstex, csmex
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
 ! --- VECTEUR DES INSTANTS DEMANDES

@@ -106,7 +106,6 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     character(len=19) :: excit, nonbor
     character(len=24) :: chaout, ligrel, mateco, ligres
     character(len=24) :: noliop, lisins, mesmai, lacalc, suropt
-    integer :: iarg
 !
     logical :: ligmod
 !

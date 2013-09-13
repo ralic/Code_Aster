@@ -41,7 +41,6 @@ subroutine dliext()
     complex(kind=8) :: c16b
     integer :: ibid, n1, n2, n3, nbordr, k, iord, k1, jordr, nbvale, jvale, iad
     integer :: jnbpa, jbint, jlpas
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
     knum = '&&DLIEXT.KNUM'

@@ -69,7 +69,7 @@ subroutine nmdopo(sddyna, method, sdpost)
     logical :: ldyna, lstat, limpl
     logical :: lflam, lmvib
     character(len=16) :: option, optmod, optrig, modrig, opmrig
-    character(len=16) :: matrig, motfac, motpas, typmat, ngeo, k16bid, ddlexc
+    character(len=16) :: matrig, motfac, motpas, typmat, ngeo, ddlexc
     character(len=16) :: dlstab, sign
     character(len=24) :: k24bid
     integer :: nfreq, cdsp

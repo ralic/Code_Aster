@@ -65,7 +65,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
     real(kind=8) :: wave_dire(3), wave_type_r
     character(len=8) :: signal
     character(len=16) :: wave_type
-    integer :: iarg, jvalv
+    integer ::  jvalv
     integer :: iocc, ndir, val_nb, nondp, ibid, codret
     character(len=16) :: keywordfact
     character(len=19) :: carte(2)

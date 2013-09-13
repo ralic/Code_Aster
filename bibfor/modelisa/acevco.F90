@@ -37,9 +37,8 @@ subroutine acevco(nbocc, nlm, nlg, ier)
 !  IN/OUT
 !     IER    : CUMUL DES ERREURS
 ! ----------------------------------------------------------------------
-    integer :: iarg, ioc, nco, ne, nef, nex, nexf, ng, nin
+    integer ::  ioc, nco, ne, nef, nex, nexf, ng, nin
     integer :: nk, nm, nsom
-    real(kind=8) :: r8b
     character(len=8) :: k8b, nomu
     character(len=16) :: concep, cmd
 !-----------------------------------------------------------------------

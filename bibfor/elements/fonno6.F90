@@ -83,7 +83,6 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
     character(len=6) :: syme
     character(len=8) :: k8b, type
     parameter    (angmax=2.5d0)
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !

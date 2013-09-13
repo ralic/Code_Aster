@@ -65,7 +65,6 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=8) :: noma, k8bid, motcle(2), tymocl(2), typma
     character(len=16) :: motfac, typapp
     character(len=24) :: listrv, lismai, mesnoe, lismas, lnnma
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !

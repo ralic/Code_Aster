@@ -65,7 +65,6 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     character(len=8) :: repon
     character(len=8) :: nomres
     character(len=19) :: max, may, maz, stolci
-    integer :: iarg
 ! ------------------------------------------------------------------
 !----- ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE ---
 !

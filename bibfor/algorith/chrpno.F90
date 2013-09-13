@@ -77,7 +77,6 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     character(len=19) :: chams1, chams0
     character(len=24) :: mesnoe
     character(len=24) :: valk
-    integer :: iarg
 !
     call jemarq()
     epsi = 1.0d-6

@@ -59,14 +59,13 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=24) :: lisnoe
 !
     real(kind=8) :: x0(3), x(3), xx0(3), axe(3), angle(2)
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
     integer :: idcoor, idlino, ier, ino, iocc, iret, nangle
     integer :: nb, nbno, nbnoe, ndim, nprec, nrayon, nv
     integer :: nvect
-    real(kind=8) :: ang, d2, dist, eps, prec, psca, r8bid
+    real(kind=8) :: ang, d2, dist, eps, prec, psca
     real(kind=8) :: rayon, un, xnorm, xnorm2, xnoxx0
     real(kind=8) :: xnoxx2, zero
 !-----------------------------------------------------------------------

@@ -66,7 +66,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !          : LONLIS : <0 SI CONTACT ET POI1
 ! ----------------------------------------------------------------------
 !
-    character(len=8) :: k8bid, noma, nomnoe, nomail
+    character(len=8) ::  noma, nomnoe, nomail
     character(len=16) :: motfac, motcle
     character(len=16) :: mgrma1, mgrma2, mgrno1, mgrno2
     character(len=16) :: mmail1, mmail2, mnoeu1, mnoeu2

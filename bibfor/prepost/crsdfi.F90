@@ -47,7 +47,6 @@ subroutine crsdfi(linoch, nbnoch, noidez)
     integer :: i, ich, ival, nb, nbcmp
     character(len=8) :: cmp(1000)
     character(len=16) :: blanc, nocham, noidea
-    integer :: iarg
     data blanc/'                '/
 !
     call jemarq()

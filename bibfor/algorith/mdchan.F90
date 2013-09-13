@@ -59,7 +59,6 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
     integer :: n1, jnorm
     real(kind=8) :: txloc(3), tzloc(3), tyloc(3), ang(3), alpha, beta
     real(kind=8) :: normx(3), normy(3), angl, rnorm, rad
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     rad = r8dgrd()

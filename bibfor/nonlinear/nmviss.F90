@@ -68,7 +68,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
     integer :: jrigt, jmast, jamot, jfor
     character(len=8) :: k8bid
     complex(kind=8) :: c16bid
-    integer :: neq, iarg
+    integer :: neq
     integer :: nume0, nume, nbtro1, nbtro2
     real(kind=8) :: instd, inst, pas, coef1, coef2
     real(kind=8) :: impe12, r8bid

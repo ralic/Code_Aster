@@ -59,7 +59,6 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
     character(len=19) :: chextr, chext2
     character(len=24) :: valk(3)
     complex(kind=8) :: cbid
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ib, ibid, id, ier, im, in, inum

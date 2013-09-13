@@ -84,7 +84,6 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
     logical :: direct
     logical :: lbid
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !

@@ -144,7 +144,6 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     integer :: nbpasc, ifnobi, ifcibi
     integer :: adeeq
     integer :: ibid
-    integer :: iarg
     logical :: ener
 !
 !     -----------------------------------------------------------------

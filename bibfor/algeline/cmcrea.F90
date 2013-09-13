@@ -73,7 +73,6 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     character(len=24) :: dimin, dimout, nmain, nmaout, tmain, tmaout, conin
     character(len=24) :: conout
     character(len=24) :: gmain, gmaout, nomgma, gmaptr
-    integer :: iarg
 !
     data linoma /'&&CMCREA.LINOMA'/
     data liconn /'&&CMCREA.LICONN'/

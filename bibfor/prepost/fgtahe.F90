@@ -44,7 +44,6 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
     integer :: icodwo, icodma, icodba, icodhs, icodre(3)
     character(len=8) :: nommat, nomfo1, nomnap, cara
     character(len=16) :: pheno, phenom
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: nbval

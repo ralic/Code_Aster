@@ -42,11 +42,10 @@ subroutine rscrmo(iocc, nomsd, nomjv)
     integer :: jnosy, iacelk, iret, jmodl, np, nc, n22
     integer :: nbmodl, nbmmod
     real(kind=8) :: prec
-    character(len=8) :: k8b, docu, crit
+    character(len=8) ::  docu, crit
     character(len=16) :: nomsym
     character(len=19) :: nomd2, noch19
     character(len=24) :: knum
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

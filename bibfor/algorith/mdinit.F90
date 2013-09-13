@@ -46,7 +46,6 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
     integer :: im, jdepi, jviti
     character(len=19) :: nomdep, nomvit
     character(len=8) :: tran, crit, inter
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

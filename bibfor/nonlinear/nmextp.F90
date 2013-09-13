@@ -71,11 +71,10 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 !
     integer :: jpi, jspi
     integer :: ipi, ispi
-    integer :: ibid, n1, n2, n3, iret
+    integer ::  n1, n2, n3, iret
     integer :: ntpt, ntspt
     character(len=16) :: valk(2)
     integer :: jcesd
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -114,8 +114,6 @@ subroutine op0150()
     parameter (lcmpvm='NOM_CMP_MED')
     integer :: jcmpva, jcmpvm
 !
-    character(len=72) :: rep
-    integer :: iarg
 !
     logical :: lprem
 ! ----------------------------------------------------------------------

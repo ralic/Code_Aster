@@ -72,7 +72,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 #include "blas/dcopy.h"
     integer :: neq
     integer :: nveca, nchar
-    integer :: liad(*), iarg
+    integer :: liad(*)
     integer :: imat(3), nume
 !
     real(kind=8) :: dep0(*), vit0(*), acc0(*)

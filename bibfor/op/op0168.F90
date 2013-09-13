@@ -78,7 +78,6 @@ subroutine op0168()
     character(len=24) :: valk(3)
     character(len=24) :: kvec, kvali, kvalr, kvalk, nopara(nbpara)
     complex(kind=8) :: c16b
-    integer :: iarg
 !     ------------------------------------------------------------------
     data  refd  / '                   .REFD' /
     data  kvec  / '&&OP0168.VAL_PROPRE' /

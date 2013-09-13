@@ -12,7 +12,6 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
     character(len=24) :: valk
     integer :: neq, nper, nrmax, i, n1, nv
     integer :: vali(2)
-    integer :: iarg
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

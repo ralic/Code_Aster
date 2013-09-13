@@ -78,7 +78,6 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
     integer :: nbinmx, nbinfo
     parameter   (nbinmx=99)
     character(len=24) :: lisinf(nbinmx)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

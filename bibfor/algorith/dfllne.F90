@@ -47,7 +47,6 @@ subroutine dfllne(mcfact, nechec, nerreu)
     integer :: ibid
     integer :: iechec
     character(len=16) :: even
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

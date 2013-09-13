@@ -54,11 +54,10 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     integer :: imamax, iptmax, imamin, iptmin, jcone
     integer :: imaaax, ipamax, imaain, ipamin, ier1, ier2
     real(kind=8) :: x
-    character(len=8) :: k8b, nocmp, ma
+    character(len=8) ::  nocmp, ma
     character(len=16) :: motcle(2), typmcl(2)
     character(len=19) :: chams1
     character(len=24) :: mesmai
-    integer :: iarg
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_MA'

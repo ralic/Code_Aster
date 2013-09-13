@@ -86,7 +86,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, cnbno, ibidno, kwork, somnow, inop
     integer :: nbma, adrma, jtypma
-    integer :: icmp, jad, iarg
+    integer :: icmp, jad
     integer :: vali(2), nbvecm, paract(30)
 !
     real(kind=8) :: fatsoc, dgam, gamma, pi, dphi, tab1(18), phi0

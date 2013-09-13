@@ -181,7 +181,6 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     logical :: utili
     character(len=8) :: repere
     character(len=24) :: nomjv
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

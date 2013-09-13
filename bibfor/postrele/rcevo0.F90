@@ -43,7 +43,6 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
     character(len=8) :: typ, table, tabfl0, tabpr0
     character(len=16) :: motclf
     character(len=24) :: intit0
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

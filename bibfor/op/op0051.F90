@@ -80,7 +80,6 @@ subroutine op0051()
     character(len=24) :: xnumcp, xnomcp, vnomch, vcodop, xnovar
     character(len=24) :: naccis, naccr8, nch24, nlsmac, nlsnac
     logical :: trouve
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !====

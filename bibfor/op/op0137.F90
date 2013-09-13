@@ -26,7 +26,6 @@ subroutine op0137()
 ! ----------------------------------------------------------------------
     character(len=3) :: repons
     integer :: l
-    integer :: iarg
 !
 !
 !

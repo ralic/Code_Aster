@@ -44,9 +44,8 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iarg, val_nb, ibid
+    integer ::  val_nb, ibid
     character(len=16) :: keyword
-    real(kind=8) :: r8dummy
 !
 ! --------------------------------------------------------------------------------------------------
 !

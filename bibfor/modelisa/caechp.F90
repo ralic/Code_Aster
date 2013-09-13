@@ -73,7 +73,6 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
     character(len=24) :: liel, modl, llist1, llist2, llistt
     character(len=19) :: carte
     character(len=24) :: mesmai, lismai
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

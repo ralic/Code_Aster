@@ -60,7 +60,6 @@ subroutine nmetl2(motfac, sdieto, icham)
     character(len=24) :: chetin, loccha, lochin
     character(len=24) :: motcei, statut
     character(len=24) :: nomcha, nomch0, nomchs, valk(2)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

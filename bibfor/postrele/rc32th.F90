@@ -60,7 +60,6 @@ subroutine rc32th()
     character(len=16) :: motclf, valek(2), motcl2
     character(len=24) :: instan, abscur, jvorig, jvextr
     character(len=24) :: valk(7)
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

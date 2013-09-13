@@ -57,9 +57,7 @@ subroutine arg126(nomres)
     character(len=24) :: repsst, nommcl, rotsst, famli, trasst
     character(len=24) :: valk(3)
     integer :: nbsst, i, j, ioc, ibid, ldnmcl, ldrot, nblia, ldlid, iret, ldtra
-    real(kind=8) :: rbid, pi
-    character(len=8) :: kbid
-    integer :: iarg
+    real(kind=8) ::  pi
 !
 !-----------------------------------------------------------------------
     data clesst,clenom /'SOUS_STRUC','NOM'/

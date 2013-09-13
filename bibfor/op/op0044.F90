@@ -111,7 +111,6 @@ subroutine op0044()
     complex(kind=8) :: cbid, dcmplx
     logical :: lbid
     character(len=1) :: ktyp
-    integer :: iarg
 !     ------------------------------------------------------------------
     data zam     / 0.01d0 , 0.02d0 , 0.03d0 /
     data zfr     / -1.0d0 , 1.00d0 , 0.00d0 /

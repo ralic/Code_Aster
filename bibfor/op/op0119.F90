@@ -74,7 +74,6 @@ subroutine op0119()
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
     character(len=24) :: mlgtms, mlgcnx, mlgcoo, mlgtma, mlgtno, nomgf
     character(len=24) :: vnbfig, vcafig, vpocfg, rnomgf, gfmagl, valk(3)
-    integer :: iarg
 !
     data limcls/'MAILLE_SECT','GROUP_MA_SECT','TOUT_SECT'/
     data ltymcl/'MAILLE','GROUP_MA','TOUT'/

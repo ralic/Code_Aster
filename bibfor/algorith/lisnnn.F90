@@ -44,7 +44,7 @@ subroutine lisnnn(motfac, iexci, charge)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nval, iarg
+    integer :: nval
     integer :: eximve, eximvg
 !
 ! ----------------------------------------------------------------------

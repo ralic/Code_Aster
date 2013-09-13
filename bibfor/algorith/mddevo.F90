@@ -123,7 +123,6 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     character(len=6) :: typal(palmax)
     character(len=3) :: finpal(palmax)
     character(len=8) :: cnpal(palmax)
-    integer :: iarg
     real(kind=8) :: fsauv(palmax, 3)
 !
     call jemarq()

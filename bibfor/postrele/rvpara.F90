@@ -81,7 +81,6 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !
     character(len=24) :: nocmp
     integer :: jnocmp, ncmpmx
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !====

@@ -69,7 +69,6 @@ subroutine phi152(model, option, mate, phibar, ma,&
     character(len=24) :: nomcha
     character(len=24) :: phib24, criter
     complex(kind=8) :: cbid
-    integer :: iarg
     data maprec   /'&&OP0152.MAPREC'/
     data chsol    /'&&OP0152.SOLUTION'/
 ! -----------------------------------------------------------------

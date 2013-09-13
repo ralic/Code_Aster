@@ -49,7 +49,6 @@ subroutine w175af(modele, chfer1)
     character(len=8) :: k8b, typmcl(2), noma, typcb
     character(len=16) :: motcls(2)
     character(len=24) :: mesmai
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

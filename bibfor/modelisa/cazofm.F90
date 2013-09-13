@@ -60,7 +60,6 @@ subroutine cazofm(char, motfac, iform, nzoco)
     integer :: jparci
     character(len=16) :: valk(3)
     real(kind=8) :: coefff
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

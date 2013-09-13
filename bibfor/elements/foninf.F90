@@ -35,7 +35,7 @@ subroutine foninf(resu, typfon)
 !       TYPFON : TYPE DE FOND DE FISSURE
 !
 !
-    integer :: iarg, ibid, jinfo
+    integer ::  ibid, jinfo
     character(len=8) :: syme, confin
 !
 !     -----------------------------------------------------------------

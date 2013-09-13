@@ -51,7 +51,6 @@ subroutine ssdmdn(mag)
     character(len=8) :: nomacr, nosma, kbid, mal, pref, nomnol, nomnog
     integer :: indi(4)
     character(len=24) :: valk(2)
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

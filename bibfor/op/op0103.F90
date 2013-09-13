@@ -27,7 +27,6 @@ subroutine op0103()
 #include "asterfort/jemarq.h"
     character(len=8) :: modele
     integer :: ib
-    integer :: iarg
 !
 !
     call jemarq()

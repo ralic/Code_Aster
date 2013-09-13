@@ -43,7 +43,6 @@ subroutine op0040()
     integer :: jnocmp, isy, iord, ifi, n2
     character(len=16) :: nomsym, nomfi
     character(len=19) :: resuin, nomcha
-    integer :: iarg
 !
     call infniv(ifm, niv)
 !

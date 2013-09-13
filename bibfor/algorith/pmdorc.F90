@@ -46,7 +46,7 @@ subroutine pmdorc(compor, carcri, nbvari, k)
 #include "asterfort/utlcal.h"
     integer :: iret, n1, nbvari, k, icpri, typtgt, exits
     integer :: ncomel, numlc, iteint, itepas, itdebo, nbocc, irett
-    integer :: nunit, iarg, indimp, ncmpma, dimaki, dimanv, ii
+    integer :: nunit, indimp, ncmpma, dimaki, dimanv, ii
 !    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     parameter (dimaki=9)
 !    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM

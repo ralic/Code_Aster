@@ -44,10 +44,10 @@ subroutine op5903(nbocci, compor)
 !     COMMANDE:  DEFI_COMPOR MOT-CLE MULTIFIBRE
 !
 !
-    integer :: iarg, idbor, imi, imk, iocc, irett
+    integer ::  idbor, imi, imk, iocc, irett
     integer :: ibid, nbg, nbgmax, img, ig, ig1, jnfg, iaff
     integer :: nbvf, nbv, icp, nbkit, nbnvi(2), ncomel, numlc
-    character(len=8) :: materi, sdgf, k8bid, mator
+    character(len=8) :: materi, sdgf, mator
     character(len=16) :: nomrel, algo1d, nomkit(2), lcomel(5), comcod
     character(len=16) :: comco2, texte(2), moclef
     character(len=24) :: vnbfig, rnomgf, kgroup

@@ -88,9 +88,8 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     real(kind=8) :: tps1(4), valr(3), beta, gamma, res, tol, acce
     real(kind=8) :: vrot, vrotin, arot, arotin
     integer :: vali(2), n1, ifm, niv
-    character(len=8) :: tran, k8b, vvar
+    character(len=8) :: tran, vvar
     character(len=4) :: k4bid
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION

@@ -41,9 +41,7 @@ subroutine op0102()
 !
 !
 !
-    character(len=8) :: k8bid
     real(kind=8) :: inst
-    integer :: iarg
 !
 !
 !-----------------------------------------------------------------------

@@ -24,7 +24,6 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
 #include "asterfort/iunifi.h"
 #include "asterfort/u2mess.h"
     real(kind=8) :: fn(*), vg(*), para(*)
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i, if, ifn0, iret, n1, n2

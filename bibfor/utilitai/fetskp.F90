@@ -77,7 +77,6 @@ subroutine fetskp()
     character(len=24) :: k24b, grpema, nom, sdbord
     character(len=256) :: jnom(4)
     character(len=128) :: rep
-    integer :: iarg
     mpi_int :: mrank, msize
 !
 ! CORPS DU PROGRAMME

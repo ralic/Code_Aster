@@ -57,7 +57,6 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno
     character(len=24) :: lismai, lismar, lisman, maifis
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !

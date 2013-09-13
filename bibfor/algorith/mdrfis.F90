@@ -43,7 +43,7 @@ subroutine mdrfis(nbmode, depgen, fexgen, nbnli, nbrfis,&
     real(kind=8) :: dplmod(nbnli, nbmode, *), parcho(nbnli, *)
     character(len=8) :: fk(2), dfk(2), foncp, k8b
 !
-    integer :: ierd, i, ier, iarg, n1
+    integer :: ierd, i, ier, n1
     real(kind=8) :: angrot, phi, r1(3), r2(3)
     real(kind=8) :: fkphi, dfkphi
     real(kind=8) :: orig(3), sina, cosa, sinb, cosb, sing, cosg

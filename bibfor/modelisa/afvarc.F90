@@ -54,7 +54,7 @@ subroutine afvarc(chmat, nomail, nomode)
     integer :: ifac, nbfac, nmxfac, nmxcmp, ibid, nbvarc, nbtou, jma
     integer :: iocc, jncmp1, jncmp2, jvalv1, jvalv2, kvarc, nbcvrc
     integer :: jcvnom, jcvvar, jcvcmp, jcvgd, itrou, nbm1, nbgm1, ier
-    integer :: iarg, nref, nbdetr, nbgdut, nbgdmx, ico, jadetr
+    integer ::  nref, nbdetr, nbgdut, nbgdmx, ico, jadetr
     integer :: jvale, jdesc
 !
     character(len=8) :: k8b, typmcl(2), nomgd, kbid

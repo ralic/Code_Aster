@@ -39,7 +39,6 @@ subroutine recire(typopt, iderre, frexci, fremin, fremax,&
 !
 !-----------------------------------------------------------------------
     integer :: ibid, nbocc
-    integer :: iarg
 !-----------------------------------------------------------------------
 !
     typopt = 'TOUT'

@@ -103,7 +103,6 @@ subroutine op0056()
     character(len=16) :: type, nomcmd, fichie
     logical :: elas, ther
     parameter (nv=83)
-    integer :: iarg
 !
     r8bid = 0.d0
     call jemarq()

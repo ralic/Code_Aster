@@ -65,7 +65,6 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     integer :: nbgrpn, nbneud, nbcrb, grel, nbgrel, jceld, amod, mod
     integer :: j, k, n1, ierd, ibid
     logical :: chelok
-    integer :: iarg
 !
 !=====================================================================
 !

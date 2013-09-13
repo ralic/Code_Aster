@@ -84,7 +84,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod
     logical :: tousno, multap, leffor, prems
-    integer :: iarg, iexi
+    integer ::  iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadesc, iarchi, ibid, ich, id

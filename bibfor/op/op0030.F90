@@ -62,7 +62,6 @@ subroutine op0030()
     integer :: iform
     logical :: lallv
     character(len=24) :: defico
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

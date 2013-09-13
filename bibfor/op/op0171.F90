@@ -92,7 +92,6 @@ subroutine op0171()
     character(len=8) :: valk
     integer :: vali(2)
     real(kind=8) :: valr(2)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -82,7 +82,6 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     character(len=16) :: k16b, nomcmd
     character(len=19) :: grlt, chgrs
     character(len=24) :: chamno
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -43,7 +43,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iarg, n, ibid, iret
+    integer ::  n, ibid, iret
     character(len=8) :: repons
 !
 ! ----------------------------------------------------------------------

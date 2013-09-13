@@ -65,7 +65,6 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    real(kind=8) :: r8bid
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd
 !
@@ -88,7 +87,6 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
     character(len=24) :: valer, valem, valea
     character(len=24) :: valk(2)
     logical :: cpx
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

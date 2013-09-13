@@ -105,7 +105,6 @@ subroutine fetcrf(sdfet1)
     character(len=24) :: valk(3), methco, pzone, psurma, psurno, contma, nomfcl
     character(len=24) :: nomfcm, nomfcn, contno, k24bid, nomfci, ndimco, k24buf
     logical :: lbord, lcfc1, lpaire
-    integer :: iarg
 !
 !
 ! CORPS DU PROGRAMME

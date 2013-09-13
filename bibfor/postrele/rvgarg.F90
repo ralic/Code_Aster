@@ -75,7 +75,6 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
-    integer :: iarg
 !
 !=================== CORPS DE LA ROUTINE =============================
 !

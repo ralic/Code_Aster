@@ -51,7 +51,6 @@ subroutine op0027()
     real(kind=8) :: delta
     character(len=8) :: nomres, nommat
     character(len=16) :: nomcmd, concep
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()

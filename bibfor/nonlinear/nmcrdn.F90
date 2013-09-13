@@ -49,10 +49,8 @@ subroutine nmcrdn(sdsuiv, motfac, ntsddl, nbocc)
     integer :: iocc, isuiv, nbtit, ibid
     character(len=24) :: ddltit
     integer :: jddlti
-    character(len=16) :: k16bid
     character(len=16) :: titre(3)
     character(len=1) :: chaine
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

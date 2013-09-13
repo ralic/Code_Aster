@@ -73,7 +73,7 @@ subroutine pevolu(resu, modele, nbocc)
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
     character(len=8) :: typmcl(1), tout, nomcmp, infoma, ncpini
     character(len=8) :: nopar, norme
-    real(kind=8) :: r8b, prec, inst, borne(2), voltot, seuil
+    real(kind=8) ::  prec, inst, borne(2), voltot, seuil
     complex(kind=8) :: c16b
     character(len=19) :: knum, kins, lisins, cham, cham2, chamtm, celmod, ligrel
     character(len=19) :: tmpcha, cham3
@@ -81,7 +81,6 @@ subroutine pevolu(resu, modele, nbocc)
     character(len=16) :: vali
     character(len=24) :: mesmai, mesmaf, mesmae, borpct, valk2(5), grouma
     logical :: exiord, toneut, lseuil
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

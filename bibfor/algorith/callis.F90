@@ -76,7 +76,6 @@ subroutine callis(nomres)
     integer :: iopt, nbeq1, nbeq2, ddla1, ddla2, imast, nbcol
     integer :: taille(2), icar(4)
     real(kind=8) :: un, moins1
-    integer :: iarg
 !
 !
 !-----------------------------------------------------------------------

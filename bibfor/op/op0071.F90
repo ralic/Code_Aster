@@ -46,7 +46,6 @@ subroutine op0071()
     character(len=16) :: typres, nomcom, typbas
     character(len=14) :: nugene
     character(len=24) :: matric
-    integer :: iarg
 !-----------------------------------------------------------------------
 !
     call jemarq()

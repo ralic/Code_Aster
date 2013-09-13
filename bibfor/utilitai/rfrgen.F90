@@ -71,7 +71,6 @@ subroutine rfrgen(trange)
     character(len=14) :: nume
     character(len=16) :: nomcmd, typcon, nomcha, nomsy, tysd
     character(len=19) :: nomfon, knume, kinst, resu, matras, fonct
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

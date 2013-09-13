@@ -68,7 +68,6 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     logical :: lener, lproj, lmatdi, lldsp, lctgcp, lcomp
     integer :: ifm, niv
     character(len=24) :: typilo, typrel, metres
-    integer :: iarg
 !
 ! ---------------------------------------------------------------------
 !

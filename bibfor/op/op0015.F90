@@ -44,7 +44,7 @@ subroutine op0015()
     character(len=19) :: solve1, solve2
     complex(kind=8) :: cbid
     real(kind=8) :: eps, rbid
-    integer :: iarg, iret
+    integer ::  iret
 !     ------------------------------------------------------------------
     call jemarq()
 !

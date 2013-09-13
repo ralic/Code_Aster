@@ -48,9 +48,8 @@ subroutine op0174()
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: table, concpt, typ
-    character(len=16) :: nomcmd, typcon, nomsym, k16b, nom
+    character(len=16) :: nomcmd, typcon, nomsym, nom
     character(len=24) :: nomtab, kbid
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !

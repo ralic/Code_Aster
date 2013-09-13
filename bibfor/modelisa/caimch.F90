@@ -68,7 +68,6 @@ subroutine caimch(chargz)
 !
     real(kind=8) :: beta, alpha
     complex(kind=8) :: betac
-    integer :: iarg
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

@@ -59,7 +59,6 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
     character(len=8) :: blan8
     character(len=16) :: concep, nomcmd, phenom
     character(len=19) :: excit
-    integer :: iarg
 !
     call jemarq()
 !              12345678

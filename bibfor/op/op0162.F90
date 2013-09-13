@@ -56,7 +56,6 @@ subroutine op0162()
     real(kind=8) :: petir8, di(6)
     real(kind=8) :: tini, tfin, fini, ffin, pas
     complex(kind=8) :: cbid
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadmo1, iadmo2, ibid, ic, idbase, iddeeq

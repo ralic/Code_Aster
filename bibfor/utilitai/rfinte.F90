@@ -40,7 +40,7 @@ subroutine rfinte(ispec)
     integer :: nbval
     integer :: lpro, i1, indi
     integer :: i, kvale
-    integer :: ifm, niv, iarg, n2, n3, n4, mxval, numi, numj, nbfreq, ifreq
+    integer :: ifm, niv, n2, n3, n4, mxval, numi, numj, nbfreq, ifreq
     integer :: lnumi, lnumj, lvale, lfreq, lrefe
     integer :: lnoei, lnoej, lcmpi, lcmpj
     character(len=8) :: nospec, noei, noej, cmpi, cmpj

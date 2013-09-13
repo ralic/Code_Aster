@@ -61,7 +61,6 @@ subroutine mtdorc(modelz, compoz, carcri)
     character(len=16) :: comp, moclef(2), k16bid, nomcmd, mocles(2)
     character(len=19) :: compor
     character(len=24) :: ligrmo, modele, mesmai
-    integer :: iarg
 !
     data nomgrd/'COMPOR  '/
     data nomcmp/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',&

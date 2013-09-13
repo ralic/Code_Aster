@@ -103,7 +103,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     character(len=24) :: nolili, nconec, ncncin, valk(2)
     character(len=80) :: titmai
     logical :: lmasu
-    integer :: iarg
     integer :: i, iacelk, iad, iadr, ianoma, ibid, iel
     integer :: ier, im, imod, in, ino, iret, itype
     integer :: jceld, jcncin, jcnx, jcoor, jdrvlc, jligr, jliste

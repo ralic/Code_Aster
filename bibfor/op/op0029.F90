@@ -43,7 +43,6 @@ subroutine op0029()
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: ifm, niv, ibid
-    integer :: iarg
 !
 ! CORPS DU PROGRAMME
     call jemarq()

@@ -55,7 +55,6 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     integer :: jcnsv, jcnsl, jcnsvn, coefln(10), jfiss, iadrco, nuno
     character(len=8) :: ch, kbid, nomfis(10)
     character(len=19) :: cnsln, cnslt, jonfis, joncoe
-    integer :: iarg
 !
 !
 ! ----------------------------------------------------------------------

@@ -41,7 +41,7 @@ subroutine rc32si()
 #include "asterfort/wkvect.h"
 !
 !
-    integer :: n1, nbsitu, iocc, ibid, nume, ii, nocc, ing, jnbocc, jnumgr
+    integer :: n1, nbsitu, iocc, nume, ii, nocc, ing, jnbocc, jnumgr
     integer :: jpresa, jpresb, nbchar, jchar, jnsitu, jcombi, jnbgr, ig
     integer :: numpas(2), nbvg, jnbvg, nbgr, numgr, nbsigr, jnsg, nbth, jseigr
     integer :: nscy, nbm, vali(3), nbgrt, numg1, numg2, nbseis, numgs, nbsg1
@@ -50,7 +50,6 @@ subroutine rc32si()
     logical :: yapass
     character(len=8) :: k8b, knume, ouinon
     character(len=16) :: motcl1, motcl2
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
     motcl1 = 'SITUATION'

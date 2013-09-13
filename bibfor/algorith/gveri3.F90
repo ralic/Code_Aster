@@ -74,7 +74,6 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !
     logical :: thlagr, thlag2
 !
-    integer :: iarg
 !
     call jemarq()
 !

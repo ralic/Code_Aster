@@ -93,7 +93,6 @@ subroutine gefact(duree, nominf)
     character(len=24) :: chvale, chdesc, chnuor, nomobj
     character(len=24) :: chnumi, chnumj, chfreq, chval
     logical :: lfreqf, lfreqi, lnbpn, linter, lprem, diag
-    integer :: iarg
     integer :: i1, lnumi, lnumj, lfreq, nbfreq
 !
 !     ----------------------------------------------------------------

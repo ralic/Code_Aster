@@ -63,7 +63,6 @@ subroutine diag99(nomres)
     character(len=14) :: nu
     character(len=24) :: masse, numddl, mailla
     character(len=19) :: chamol, chamne
-    integer :: iarg
 !----------------------------------------------------------------------
     call jemarq()
 !

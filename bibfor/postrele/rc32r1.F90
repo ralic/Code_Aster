@@ -46,7 +46,6 @@ subroutine rc32r1(nomres)
     character(len=16) :: nopar2(npar2), nopar1(npar1), nopar4(npar4)
     character(len=16) :: nopar6(npar6), nopar0(npar0)
     character(len=24) :: k24b, k24c, k24t
-    integer :: iarg
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !

@@ -41,7 +41,6 @@ subroutine op0169()
     character(len=16) :: cmd
     character(len=19) :: nomfon, typflu
     character(len=24) :: fsic, fsvr, prol, vale
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibid, lfsic, lfsvr, lprol, lvale

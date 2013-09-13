@@ -50,7 +50,6 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
     integer :: n2, i, nucmp, iret, jnocmp, lgncmp
     character(len=8) :: k8b, nocmp
     character(len=16) :: nomcmd
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

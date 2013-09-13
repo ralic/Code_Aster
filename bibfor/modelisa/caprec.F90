@@ -83,7 +83,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     integer :: nliai, ndimmo
     real(kind=8) :: dist_mini, dist
     character(len=8) :: k8bid, model, answer
-    integer :: n1, iocc, iarg, iret, ibid
+    integer :: n1, iocc, iret, ibid
     integer :: nbrela, jdnbre
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
     character(len=2) :: lagr_type

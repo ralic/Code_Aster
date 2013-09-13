@@ -56,7 +56,6 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
     character(len=8) :: namddl
     character(len=19) :: matpre, matass
     character(len=24) :: nmat(3), nmatra
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -58,7 +58,6 @@ subroutine cazocp(char)
     logical :: lgcp
     logical :: lctcd, lctcc, lxfcm, lfrot, lmail
     character(len=16) :: lissa
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

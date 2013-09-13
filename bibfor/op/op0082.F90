@@ -48,7 +48,6 @@ subroutine op0082()
     character(len=19) :: cnxinv
     character(len=24) :: vcn, grlr
     real(kind=8) :: lcmin
-    integer :: iarg
 !
 !
 ! ----------------------------------------------------------------------

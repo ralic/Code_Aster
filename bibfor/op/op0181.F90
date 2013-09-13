@@ -38,7 +38,7 @@ subroutine op0181()
     character(len=19) :: resin, resou, vectot, k19bid
     character(len=24) :: typres
     character(len=12) :: bl11pt
-    integer :: iarg, iret, igrand
+    integer ::  iret, igrand
 !     ------------------------------------------------------------------
     call jemarq()
     call getres(resou, type, cmd)

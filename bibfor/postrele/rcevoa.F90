@@ -74,7 +74,6 @@ subroutine rcevoa(typtab, nommat)
     parameter  ( nparm=2 , npard=2 )
     character(len=8) :: typarm(nparm), typard(npard)
     character(len=16) :: noparm(nparm), nopard(npard)
-    integer :: iarg
     data noparm / 'THETA', 'FACT_AMORCAGE' /
     data typarm / 'R', 'R' /
     data nopard / 'THETA', 'FACT_AMORCAGE' /

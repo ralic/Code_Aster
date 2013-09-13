@@ -81,7 +81,7 @@ subroutine op0100()
     integer :: lnoff, jinst, ndeg, nbropt, iadrco, iadrno, j, ipuls, iord0
     integer :: iord1, iord2, nborn, nbco, ibor, ig, lnoeu, labscu, nbval
     integer :: ndimte, ier, ndim, jordr, jopt
-    integer :: nxpara, iarg
+    integer :: nxpara
     parameter (nxpara = 11)
 !
     real(kind=8) :: time, timeu, timev, dir(3), rinf, rsup, module, puls

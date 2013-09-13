@@ -42,7 +42,6 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
 ! ----------------------------------------------------------------------
     integer :: ibid, n2, iret, ivari
     character(len=24) :: valk(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)

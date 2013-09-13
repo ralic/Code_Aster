@@ -48,7 +48,6 @@ subroutine crsvld(motfac, solveu, istop, nprec, syme,&
 !
     integer :: ibid, islvk, islvi, islvr
     character(len=8) :: renum
-    integer :: iarg
 !
 !------------------------------------------------------------------
     call jemarq()

@@ -46,11 +46,10 @@ subroutine rfbefl(base)
     character(len=16) :: nomcmd, typcon
     character(len=19) :: nomfon
     character(len=24) :: vite, numeo, numo, freq
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, id, imod, ind, ind1, ind2
+    integer :: i, id, imod, ind, ind1, ind2
     integer :: inumeo, j, lfon, lfreq, lnumo, lpro, lvar
     integer :: lvite, min, n1, n2, n3, n4, n5
     integer :: nbm, nbno, nbv, npv, nummod

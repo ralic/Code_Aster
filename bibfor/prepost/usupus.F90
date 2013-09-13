@@ -43,7 +43,6 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 #include "blas/dcopy.h"
     character(len=8) :: noeu
     character(len=19) :: trange, kforn, kvgli
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i, ichoc, idebut, idiadh, idwk4, ifin, ifires

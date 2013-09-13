@@ -62,7 +62,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
 !              --> 4 (NOEUD-NOEUD)
 !
     integer :: ifon, iadabs, ivect, imatr
-    integer :: i, iarg, ibid, kk
+    integer :: i, ibid, kk
     real(kind=8) :: s1, s2, delta, s3, sn2, sn1, sn
     real(kind=8) :: gthi(nnoff), k1th(nnoff), k2th(nnoff), k3th(nnoff)
     real(kind=8) :: gs(nnoff), k1s(nnoff), k2s(nnoff), k3s(nnoff)

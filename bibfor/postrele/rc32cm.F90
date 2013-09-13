@@ -37,10 +37,8 @@ subroutine rc32cm()
 #include "asterfort/jexnom.h"
 !
     integer :: n1, n1t, iocc, ndim, nbchar, nume, jchar
-    real(kind=8) :: r8b
     character(len=8) :: knumec
     character(len=16) :: motclf
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

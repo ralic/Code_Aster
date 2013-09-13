@@ -68,7 +68,6 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
     character(len=4) :: tych
     character(len=8) :: crit
     character(len=16) :: nomsym(200)
-    integer :: iarg
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

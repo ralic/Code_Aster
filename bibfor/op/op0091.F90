@@ -89,7 +89,6 @@ subroutine op0091()
     real(kind=8) :: trvint, rbid, vr(2), temp
     complex(kind=8) :: cbid
     character(len=24) :: lisint, modet
-    integer :: iarg
 !     -----------------------------------------------------------------
     call jemarq()
     call getres(nomres, typres, nomcmd)

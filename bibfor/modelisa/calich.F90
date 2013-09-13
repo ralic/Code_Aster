@@ -72,7 +72,6 @@ subroutine calich(chargz)
     character(len=24) :: noeuma
 !
     complex(kind=8) :: betac
-    integer :: iarg
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

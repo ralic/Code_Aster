@@ -57,7 +57,6 @@ subroutine rcveri(tablz)
     character(len=24) :: coorx, coory, coorz, instan, intitu
     logical :: exi1, exi2, exi3, exist, noinst, impnm
     parameter(crit='RELATIF ',eps=1.0d-6, eps2=1.0d-2)
-    integer :: iarg
 !
     call jemarq()
 !

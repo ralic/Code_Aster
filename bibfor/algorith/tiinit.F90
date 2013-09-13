@@ -60,7 +60,7 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
     integer :: n1
     character(len=8) :: nomo, result
     character(len=19) :: lisins
-    integer :: iarg, numreo
+    integer ::  numreo
 !
 ! ----------------------------------------------------------------------
 !

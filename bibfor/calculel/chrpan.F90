@@ -51,7 +51,6 @@ subroutine chrpan(modele, carte, chelem)
     character(len=8) :: k8b, noma, motcls(2), typmcl(2)
     character(len=19) :: chelms
     character(len=24) :: mesmai, ligrmo
-    integer :: iarg
 ! --- ------------------------------------------------------------------
     call getfac('AFFE', nrep)
     if (nrep .eq. 0) goto 9999

@@ -60,12 +60,11 @@ subroutine asenap(masse)
     integer :: ncas, nocas, ns, nt, nucas, nx, ny, nz
     real(kind=8) :: dx, dy, dz, epsima
     character(len=4) :: ctyp
-    character(len=8) :: k8b, resu, noma
+    character(len=8) ::  resu, noma
     character(len=8) :: knum, kdir, stat, motcle(2), tymocl(2)
     character(len=15) :: motfac
     character(len=16) :: concep, nomcmd, mesnoe
     character(len=24) :: obj2, valk(2), noref
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

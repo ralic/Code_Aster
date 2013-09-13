@@ -49,7 +49,6 @@ subroutine rftabl(tabres)
     character(len=19) :: nomfon, newtab, newta1
     character(len=24) :: nopara, nomf
     character(len=24) :: valk(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

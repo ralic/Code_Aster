@@ -71,7 +71,6 @@ subroutine op0182()
     character(len=19) :: resu
     character(len=24) :: type, tabk(nbpara), nomfon, nomf, typini, nomfg, typobc
     character(len=24) :: nomobc
-    integer :: iarg
 !
     data nopara / 'LIEU'    , 'SECTEUR' , 'TYPE'    , 'ANGL_DEBUT',&
      &              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX', 'SURF_INIT' ,&

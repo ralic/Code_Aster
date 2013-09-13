@@ -44,10 +44,8 @@ subroutine nmarex(motfac, sdarch)
 !
     integer :: ibid
     integer :: nb
-    character(len=16) :: k16bid
     character(len=24) :: arcexc
     integer :: jarexc
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

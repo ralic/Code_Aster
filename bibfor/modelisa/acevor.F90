@@ -41,12 +41,11 @@ subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
     integer :: nval
 !-----------------------------------------------------------------------
     parameter ( nbcar = 100 , nbval = 1000 , nco = 4 )
-    real(kind=8) :: r8b, val(nbval)
+    real(kind=8) ::  val(nbval)
     character(len=6) :: kioc
-    character(len=8) :: k8b, car(nbcar), nomu, carori(nco)
+    character(len=8) ::  car(nbcar), nomu, carori(nco)
     character(len=16) :: cmd, concep
     character(len=24) :: valk(2)
-    integer :: iarg
     data carori  /'VECT_Y  ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
 !     ------------------------------------------------------------------
 !

@@ -63,7 +63,6 @@ subroutine rvmima(nomres, iocc)
     character(len=19) :: knum, champ
     character(len=24) :: nomjv
     character(len=80) :: valk(200)
-    integer :: iarg
     logical :: exist
 !
     data nopano / 'INTITULE', 'CHAM_GD',&

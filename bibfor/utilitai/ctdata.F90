@@ -71,7 +71,6 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     character(len=19) :: ligrel
     character(len=24) :: chgeom, lchin(6), lchout(1)
     logical :: exicar
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

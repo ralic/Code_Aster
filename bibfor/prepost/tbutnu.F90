@@ -51,7 +51,6 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
     character(len=8) :: k8b
     character(len=24) :: valk
     character(len=19) :: listr
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()

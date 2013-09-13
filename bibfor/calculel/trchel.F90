@@ -50,8 +50,7 @@ subroutine trchel(ific, nocc)
     integer :: iocc, ibid, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22, n1r, n2r, n3r
     integer :: irefrr, irefir, irefcr
-    real(kind=8) :: epsi, epsir, r8b
-    complex(kind=8) :: c16b
+    real(kind=8) :: epsi, epsir
     character(len=1) :: typres
     character(len=3) :: ssigne
     character(len=4) :: testok, chpt

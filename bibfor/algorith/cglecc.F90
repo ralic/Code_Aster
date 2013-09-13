@@ -47,7 +47,7 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 !              'NON' S'IL NE FAUT PAS RECALCULER LES CONTRAINTES
 ! ======================================================================
 !
-    integer :: ncelas, iarg, ier, i, jvec, nbord, iord, vali
+    integer :: ncelas, ier, i, jvec, nbord, iord, vali
     character(len=24) :: k24b
 !
     call jemarq()

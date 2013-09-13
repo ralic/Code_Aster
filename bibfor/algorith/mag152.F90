@@ -46,7 +46,6 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     character(len=8) :: modgen
     character(len=14) :: num14, nugene
     character(len=19) :: nomsto
-    integer :: iarg
 ! -----------------------------------------------------------------
 !
 !        CAS NUME_DDL_GENE  PRESENT

@@ -70,7 +70,6 @@ subroutine asmaco(ma1, ma2, mag)
     real(kind=8) :: prec1, prec2, prec, dist, x1, y1, z1, x2, y2, z2, r8b, armin
     real(kind=8) :: xi1, yi1, zi1
     complex(kind=8) :: c16b
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !

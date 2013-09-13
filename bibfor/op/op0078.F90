@@ -38,7 +38,6 @@ subroutine op0078()
     character(len=16) :: nomcmd, typres, champ(4)
     integer :: i, j
     integer :: ir, nbcham
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !

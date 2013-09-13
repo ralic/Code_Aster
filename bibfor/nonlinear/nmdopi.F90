@@ -116,7 +116,6 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     character(len=24) :: liseq2, lisno1, lisno2
     real(kind=8) :: coef1, coef2, coefi, vect(3)
     logical :: isxfe, selxfe, selfem
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

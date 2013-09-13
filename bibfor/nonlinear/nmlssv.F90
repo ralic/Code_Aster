@@ -51,7 +51,6 @@ subroutine nmlssv(mode, lischa, nbsst)
     character(len=24) :: fomul2
     integer :: jfomu2
     integer :: i, ibid
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -28,7 +28,6 @@ subroutine op0136()
 #include "asterfort/titre.h"
     integer :: n1
     character(len=8) :: typcha
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call infmaj()

@@ -64,7 +64,6 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
     logical :: evonol
     character(len=19) :: commoi, insmoi
     character(len=24) :: k24bid
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

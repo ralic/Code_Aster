@@ -88,7 +88,6 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
 !
     character(len=8) :: nommod
     integer :: iaux
-    integer :: iarg
 !
 !====
 ! 1. LECTURE DANS LE FICHIER MED

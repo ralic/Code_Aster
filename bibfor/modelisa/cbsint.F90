@@ -50,7 +50,6 @@ subroutine cbsint(char, noma, ligrmo, fonree)
     character(len=16) :: motclf
     character(len=19) :: carte
     character(len=24) :: chsig
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

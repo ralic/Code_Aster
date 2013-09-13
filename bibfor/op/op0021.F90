@@ -49,7 +49,6 @@ subroutine op0021()
     integer :: ifm, niv, ibid
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
-    integer :: iarg
 !
 !
 ! CORPS DU PROGRAMME

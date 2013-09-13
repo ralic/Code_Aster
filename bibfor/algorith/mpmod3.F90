@@ -80,7 +80,6 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     real(kind=8) :: val, rbid
 !
     complex(kind=8) :: cbid
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

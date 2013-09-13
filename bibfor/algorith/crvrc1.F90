@@ -49,7 +49,7 @@ subroutine crvrc1()
 #include "asterfort/wkvect.h"
     integer :: ibid, nbfac, n1, nbinst, kinst, jinst, jlinst
     integer :: nbin, iret, iexi, jtemp
-    real(kind=8) :: rbid, vinst
+    real(kind=8) ::  vinst
     complex(kind=8) :: cbid
     character(len=8) :: kbid, resu, carele, paout, lpain(10), tempef
     character(len=8) :: model2, modele
@@ -57,7 +57,6 @@ subroutine crvrc1()
     character(len=19) :: ligrmo, chout, chinst
     character(len=24) :: chcara(18), lchin(10)
     logical :: exicar
-    integer :: iarg
 !
 !----------------------------------------------------------------------
     call jemarq()

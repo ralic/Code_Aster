@@ -62,7 +62,7 @@ subroutine op0177()
 !
     real(kind=8) :: r8b, valr, epsi, epsir
 !
-    complex(kind=8) :: cbid, valc, c16b
+    complex(kind=8) :: cbid, valc
 !
     character(len=1) :: typr
     character(len=3) :: ssigne
@@ -74,7 +74,6 @@ subroutine op0177()
     character(len=24) :: travr, travi, travc, travrr, travir, travcr
     character(len=80) :: valk
     character(len=200) :: lign1, lign2
-    integer :: iarg
     logical :: lref
 !     ------------------------------------------------------------------
 !

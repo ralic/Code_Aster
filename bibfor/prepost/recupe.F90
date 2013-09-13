@@ -46,7 +46,6 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
     integer :: ibid, ier
     character(len=8) :: k8b
     character(len=16) :: motfac
-    integer :: iarg
 ! ======================================================================
     call jemarq()
 ! ======================================================================

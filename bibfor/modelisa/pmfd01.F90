@@ -58,7 +58,6 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     character(len=8) :: licmp(2+99)
     complex(kind=8) :: cbid
     integer :: ngmxel, nbcp, jsp
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !

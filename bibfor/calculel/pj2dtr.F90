@@ -77,7 +77,6 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     integer :: iatr3, iatyma, ideca1, ideca2, ie, ilcnx1, ima1, ino, ino2
     integer :: iret, itr, itypm, kdim, kk, nbfpg, nbno, ndim, nma1, nma2, nno
     integer :: nno1, nno2, nnos, nuno, nuno2, nutm, ibid
-    integer :: iarg
 !
     integer :: nbmax
     parameter  (nbmax=5)

@@ -67,7 +67,6 @@ subroutine impe81(nomres, impe, basemo)
     character(len=16) :: typres, nomcom
     character(len=19) :: impini
     character(len=19) :: impk, impm, impc
-    integer :: iarg
 !
     data blanc /'        '/
 !

@@ -67,7 +67,6 @@ subroutine ndloam(sddyna, result, evonol, nume)
     integer :: jrestd, jrestv, jresta
     integer :: ifm, niv
     integer :: nocc1, nocc2, nocc3, nocc
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -47,7 +47,7 @@ subroutine fonvec(resu, noma, cnxinv)
     integer :: iagrn, numer
     integer :: ndtaex, ndtaor, nvenor
     integer :: nveor, nveex
-    real(kind=8) :: xpfi, xpfo, ypfi, ypfo, zpfi, zpfo, zrbid
+    real(kind=8) :: xpfi, xpfo, ypfi, ypfo, zpfi, zpfo
     real(kind=8) :: valr(6), ps1, ps2, zero
     character(len=24) :: nomgrp(2)
     character(len=24) :: grpnoe, cooval

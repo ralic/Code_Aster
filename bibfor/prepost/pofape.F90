@@ -71,7 +71,6 @@ subroutine pofape()
     parameter    ( nbpapf = 37  )
     character(len=3) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
-    integer :: iarg
     data  nomppf / 'CRITERE' , 'VALE_CRITERE' , 'PRES_HYDRO_MAX' ,&
      &               'AMPLI_CISSION' , 'RAYON_SPHERE'   ,&
      &               'VALE_MIN' , 'VALE_MAX' , 'DOMMAGE' ,'NBRUP',&

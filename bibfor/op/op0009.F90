@@ -62,7 +62,7 @@ subroutine op0009()
     character(len=1) :: base
     character(len=4) :: ctyp, kmpic
     character(len=8) :: k8b, modele, cara, sigg, nomcmp(6), blan8, strx
-    character(len=8) :: rigi8, mass8, kbid
+    character(len=8) :: rigi8, mass8
     character(len=16) :: type, oper, suropt
     character(len=19) :: kcha, matel, rigiel, massel, resuel
     character(len=24) :: time2, mate, compor
@@ -70,7 +70,6 @@ subroutine op0009()
     integer :: nchar, n1, jrecc, n2, n3, n4, ier, n5, nh, n6, ncha, icha
     integer :: ibid, nbresu, jrelr, iresu, iexi, n7
     complex(kind=8) :: c16b
-    integer :: iarg
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
     data tps/0.d0,2*1.d0,3*0.d0/

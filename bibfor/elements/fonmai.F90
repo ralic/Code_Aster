@@ -69,7 +69,6 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
     character(len=16) :: motcle(2), typmcl(2)
     character(len=24) :: conec, typp, nommai, nomnoe, noeord
     character(len=24) :: mesnoe, mafour, nogrp
-    integer :: iarg
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !

@@ -65,7 +65,7 @@ subroutine peeint(resu, modele, nbocc)
     integer :: nbgma, jgma, nma, jma, igm, nbpa1, nbpa2, nn, inum, nli, nlo
     integer :: nd, ib, jlicmp, jlicm2, jlicm1, nucmp, jcpini
     parameter(nzero=0,nbpa1=4,nbpa2=2)
-    real(kind=8) :: rbid, prec, inst
+    real(kind=8) ::  prec, inst
     complex(kind=8) :: cbid
     character(len=8) :: k8b, kbid, mailla, resuco, crit, nopar
     character(len=4) :: tych, ki, exirdm
@@ -76,7 +76,6 @@ subroutine peeint(resu, modele, nbocc)
     character(len=19) :: cham2, cham3, chamtm, ligtmp
     character(len=24) :: nomcha, valk2(5)
     logical :: exiord, toneut
-    integer :: iarg
     data nompa1/'NOM_CHAM','NUME_ORDRE','INST','VOL'/
     data typpa1/'K16','I','R','R'/
     data nompa2/'CHAM_GD','VOL'/

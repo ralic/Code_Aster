@@ -65,14 +65,13 @@ subroutine op0191()
     real(kind=8) :: prec
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-    character(len=8) :: crit, k8b, tych, nomma, modele
+    character(len=8) :: crit, tych, nomma, modele
     character(len=8) :: carele, k8bid, exipla, exicoq
     character(len=16) :: concep, nomcmd, option, tysd, type, repere
     character(len=19) :: knum, resuou, kbid, resuin
     character(len=19) :: chams1, chams0, chafus, chs(2), ligrel
     character(len=24) :: nompar, champ0, champ1
     character(len=24) :: valk(2)
-    integer :: iarg
 !
     logical :: lreuse, lcumu(2), lcoc(2)
 !

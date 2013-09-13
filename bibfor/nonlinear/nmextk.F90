@@ -78,7 +78,6 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 !
     integer :: nparx
     parameter    (nparx=20)
-    character(len=8) :: k8bid
     integer :: n1
     integer :: iret
     integer :: jcmp, jno, jma, jpi, jspi, iad
@@ -92,7 +91,6 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
     character(len=16) :: valk(2)
     integer :: jcesd, jcesl, jcesv, jcesc
     integer :: vali(4)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

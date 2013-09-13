@@ -46,7 +46,6 @@ subroutine chreco(chou)
     character(len=8) :: chou, chin, nomgd, partie
     character(len=24) :: k24b, vale, valin
     real(kind=8) :: x, y, c1
-    integer :: iarg
 !
     call jemarq()
 !

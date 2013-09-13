@@ -42,7 +42,7 @@ subroutine op0052()
     character(len=6) :: nompro
     parameter  (nompro='OP0052')
 !
-    integer :: ifm, niv, ibid, n0, iret, np, nc, iarg
+    integer :: ifm, niv, ibid, n0, iret, np, nc
     integer :: nbordr, nbropt
 !
     real(kind=8) :: prec

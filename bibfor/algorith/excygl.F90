@@ -55,7 +55,6 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
     character(len=19) :: profno
     character(len=24) :: indirf
     integer :: numdia, nbsec
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -53,7 +53,6 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=8) :: noma, crit, nom1
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=24) :: lisnoe, nomnoe
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

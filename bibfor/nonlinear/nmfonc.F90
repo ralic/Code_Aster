@@ -108,7 +108,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     logical :: lnewtc, lnewtf, lnewtg
     logical :: lexpl
     integer :: ifm, niv
-    integer :: iarg, nsta
+    integer ::  nsta
 !
 ! --------------------------------------------------------------------------------------------------
 !

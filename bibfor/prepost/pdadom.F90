@@ -45,7 +45,6 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
     integer :: ibask, ifonc, ihosin, iawho2, nbval
     logical :: endur
-    integer :: iarg
 !
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------

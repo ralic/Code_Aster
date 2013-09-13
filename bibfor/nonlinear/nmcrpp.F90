@@ -58,7 +58,6 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
     integer :: n1, n2
     character(len=16) :: motfac
     real(kind=8) :: predef
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

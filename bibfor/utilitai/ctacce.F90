@@ -60,7 +60,6 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
     character(len=8) :: crit
     character(len=16) :: valk
     character(len=24) :: nlist
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

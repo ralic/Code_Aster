@@ -35,7 +35,7 @@ subroutine op0160()
     integer :: versio, n1, ific, vali(2)
     character(len=8) :: format, macrel, basemo, k8b
     character(len=16) :: fichie
-    integer :: iarg, jrefe, nbmodt, nbvect, jdesm
+    integer ::  jrefe, nbmodt, nbvect, jdesm
 !     ------------------------------------------------------------------
     call infmaj()
 !

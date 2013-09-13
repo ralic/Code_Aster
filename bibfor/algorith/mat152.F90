@@ -58,11 +58,10 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
     character(len=8) :: lpain(2), lpaout(1)
     character(len=9) :: option
     character(len=14) :: num
-    character(len=19) :: max, may, maz, chamno
+    character(len=19) :: max, may, maz
     character(len=24) :: chgeom, lchin(2)
     character(len=24) :: nomcha, nocham
     character(len=24) :: ligrmo, made
-    integer :: iarg
 ! -----------------------------------------------------------------
 !--------------------------------------------------------------
 ! CALCUL DES MATR_ELEM AX ET AY DANS L'OPTION FLUX_FLUI_X ET _Y

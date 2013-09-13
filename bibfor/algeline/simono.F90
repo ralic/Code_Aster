@@ -47,7 +47,6 @@ subroutine simono()
     character(len=14) :: nume
     character(len=16) :: type, nomcmd
     character(len=19) :: resu
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, idchm, ie, in, jddl, jvec, nbd

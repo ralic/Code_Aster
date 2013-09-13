@@ -46,7 +46,6 @@ subroutine op0140()
     character(len=16) :: nomcon, nomope
     character(len=24) :: seliai
     integer :: ibid, iopt, elim
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !

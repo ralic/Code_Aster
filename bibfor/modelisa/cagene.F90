@@ -54,7 +54,6 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
     character(len=19) :: ligrmo
     integer :: ibid, ier
     integer :: jnoma, jnomo
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

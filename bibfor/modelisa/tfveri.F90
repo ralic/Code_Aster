@@ -39,11 +39,8 @@ subroutine tfveri(nommcf, nbocc, itypfl)
     integer :: ocgril
     character(len=2) :: carapa(4)
     character(len=3) :: ouinon
-    character(len=8) :: k8bid
-    character(len=9) :: tpas
 !      CHARACTER*9   TYPAS(2)
     real(kind=8) :: vect(3), valepa(4)
-    integer :: iarg
 !
 !      DATA TYPAS   /'CARRE_LIGN ','TRIA_LIGN'/
 ! ----------------------------------------------------------------------
@@ -61,7 +58,6 @@ subroutine tfveri(nommcf, nbocc, itypfl)
     integer :: nbhz, nbocc, nbr, nbtub, nbtub2, nbyc, nbzc
     integer :: ncara, ncm, ncmp, ncoup, npas, nrhoe, nrhoi
     integer :: ntpas, ntres, ntypg
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     if (itypfl .eq. 1) then
 ! ---    VERIFICATION DE LA PRESENCE D AU MOINS UNE OCCURENCE DU

@@ -56,7 +56,6 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=24) :: lisnoe
 !
     real(kind=8) :: x0(3), x(3)
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------

@@ -39,7 +39,6 @@ subroutine cbconv(char)
 #include "asterfort/u2mess.h"
     character(len=8) :: char, vitess
     character(len=19) :: carte
-    integer :: iarg
 !
 !     CREATION ET CHARGEMENT DE L'OBJET 'CHAR'.CHTH.CONVE
 !

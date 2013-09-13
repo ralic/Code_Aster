@@ -29,7 +29,6 @@ subroutine ve0124()
 #include "asterfort/u2mess.h"
     character(len=8) :: k8bid, resu
     character(len=16) :: type, oper, typres
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibid, iocc, k, n0, n1

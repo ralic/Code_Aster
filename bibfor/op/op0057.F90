@@ -31,7 +31,6 @@ subroutine op0057()
 #include "asterfort/getvtx.h"
     integer :: ibid
     character(len=16) :: relat
-    integer :: iarg
 !
     call getvtx(' ', 'RELATION', scal=relat, nbret=ibid)
 !

@@ -61,7 +61,6 @@ subroutine mpjeft(corres)
     integer :: nbold
     integer :: ndecal, it1, it2, it3, ifres
     real(kind=8) :: coef, rbid
-    integer :: iarg
 !----------------------------------------------------------------------
 !       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
 !       --------------------------------------------------------

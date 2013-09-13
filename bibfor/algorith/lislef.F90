@@ -66,7 +66,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
     character(len=8) :: fctcsr
     complex(kind=8) :: ccoef
     real(kind=8) :: rcoef, icoef
-    integer :: iret, iarg, ibid
+    integer :: iret, ibid
     integer :: eximcp
     integer :: nfcplx, nfreel
     logical :: lcrfcr, lcrfcc

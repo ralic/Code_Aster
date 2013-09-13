@@ -30,7 +30,6 @@ subroutine op0050()
 #include "asterfort/u2mess.h"
     integer :: ibid, nbparm, nbpars, nbpara, n1
     character(len=8) :: k8b, nomail
-    integer :: iarg
 !----------------------------------------------------------------------
 !
 !----------------------------------------------------------------------

@@ -53,7 +53,6 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
     real(kind=8) :: fillin, epsmax, resipc
     character(len=8) :: kalgo, kprec, renum
     character(len=19) :: solvbd
-    integer :: iarg
 !
 !------------------------------------------------------------------
     call jemarq()

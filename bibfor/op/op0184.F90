@@ -83,7 +83,6 @@ subroutine op0184()
     character(len=24) :: coorn, typma, coorp, mlgcnx, lchin(1), lchout(1)
     character(len=24) :: noliel, chgeom, option, connex
     character(len=80) :: k80b, k80bm, k80bid
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     call jemarq()

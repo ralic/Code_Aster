@@ -48,8 +48,7 @@ subroutine trchno(ific, nocc)
     integer :: iocc, ibid, iret, nbcmp, jcmp, n1, n2, n3, n4
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
-    real(kind=8) :: epsi, epsir, r8b
-    complex(kind=8) :: c16b
+    real(kind=8) :: epsi, epsir
     character(len=1) :: typres
     character(len=3) :: ssigne
     character(len=4) :: testok

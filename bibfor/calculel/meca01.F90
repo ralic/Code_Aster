@@ -139,7 +139,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
     logical :: exicar
     logical :: yaxfem, yathm, perman
-    integer :: iarg
 !
 !=======================================================================
 ! 1. PREALABLES

@@ -34,7 +34,6 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud)
 ! OUT : NOEUD  : NOM DU NOEUD RECUPERE
 !     ------------------------------------------------------------------
     integer :: n1, iret
-    character(len=8) :: k8b
     character(len=16) :: mcnoeu, mcgrno
     character(len=24) :: valk(2), nogno
     integer :: iarg

@@ -60,7 +60,6 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
     character(len=24) :: vect, matr, lissg
 !
     logical :: connex
-    integer :: iarg
 !
 ! OBJET DECRIVANT LE MAILLAGE
 !

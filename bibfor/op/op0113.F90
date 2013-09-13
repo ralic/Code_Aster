@@ -74,7 +74,6 @@ subroutine op0113()
     integer :: jmail2, jtab, jxc, iret
     character(len=8) :: modelx, mod1, k8bid, noma, k8cont
     logical :: linter
-    integer :: iarg
 !
     data motfac /' '/
 !

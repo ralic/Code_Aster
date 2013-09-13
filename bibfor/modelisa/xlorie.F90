@@ -49,7 +49,6 @@ subroutine xlorie(fiss)
     character(len=16) :: typenr
     character(len=24) :: xcarfo
     integer :: jcaraf
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

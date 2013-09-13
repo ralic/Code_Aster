@@ -68,7 +68,6 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     integer :: nucmp2, icmp, nbec, ndumin
     logical :: elim
     real(kind=8) :: rcoef
-    integer :: iarg
 !
 !
     call jemarq()

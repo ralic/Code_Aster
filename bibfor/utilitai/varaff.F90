@@ -47,7 +47,7 @@ subroutine varaff(noma, gran, base, ceselz)
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: ceselm
     character(len=24) :: mesmai
-    integer :: iarg, nvarmx, jcesd, jcesl, jcesv, jlnova, jlnovx, jlvavx
+    integer ::  nvarmx, jcesd, jcesl, jcesv, jlnova, jlnovx, jlvavx
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter  (nvarmx=10000)
     logical :: ltou

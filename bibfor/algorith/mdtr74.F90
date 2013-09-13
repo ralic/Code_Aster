@@ -112,7 +112,6 @@ subroutine mdtr74(nomres)
     character(len=24) :: npal
 !
     logical :: prdeff
-    integer :: iarg
 !
 ! =<
 !

@@ -74,7 +74,6 @@ subroutine pofaun()
     parameter (nbpapf=5)
     character(len=1) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
-    integer :: iarg
     data nomppf/'CYCLE','VALE_MIN','VALE_MAX','DOMMAGE','DOMM_CUMU'/
     data typppf/'I','R','R','R','R'/
 !     ------------------------------------------------------------------

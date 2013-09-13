@@ -88,7 +88,6 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     character(len=19) :: ligrel, cesout, cespoi
     character(len=24) :: mesmai, valk(3)
     logical :: exist
-    integer :: iarg
 !
     call jemarq()
     call infniv(ifm, niv)

@@ -70,7 +70,6 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
     integer :: nbmode, ibid, iret, neqsec, lttsc, llfreq, ltveco, ldfreq, ldkge
     integer :: ldmge, ldom2, ldomo, nbnot, nbcmp, llcham, nbsec, neq, ires2
     integer :: numdia, ltvesi
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !

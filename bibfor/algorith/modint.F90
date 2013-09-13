@@ -99,7 +99,6 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     character(len=1) :: listyp(2)
     character(len=19) :: lismat(2), imped, solveu, nume91, nume, prno
     character(len=24) :: valk
-    integer :: iarg
 !
 !-- DEBUT --C
 !

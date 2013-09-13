@@ -83,7 +83,6 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     character(len=14) :: nugene
     character(len=24) :: nomcha
     complex(kind=8) :: cbid
-    integer :: iarg
 ! -----------------------------------------------------------------
 !---------------------------------------------------------------------
 !

@@ -92,7 +92,6 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     real(kind=8) :: p(3), ff(3), dist, lsna, lsnb, lsta, lstb, rayon
     logical :: coupln, couplt
     real(kind=8) :: damax
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !     DEBUT

@@ -53,7 +53,6 @@ subroutine op0155()
     character(len=19) :: resu19, nomr19
     real(kind=8) :: prec
     character(len=24) :: nompar
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

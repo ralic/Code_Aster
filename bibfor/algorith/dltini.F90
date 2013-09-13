@@ -63,7 +63,6 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
     integer :: ierr
     character(len=8) :: reuse
     character(len=19) :: champ, cham2
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

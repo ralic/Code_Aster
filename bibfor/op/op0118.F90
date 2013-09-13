@@ -57,7 +57,6 @@ subroutine op0118()
     character(len=8) :: typar(2), nomvec
     character(len=16) :: typvec, nomcmd, nopar(2)
     character(len=19) :: nominf, nomfon
-    integer :: iarg
 !
     data nopar / 'NUME_ORDRE' , 'FONCTION' /
     data typar / 'I'          , 'K24'      /

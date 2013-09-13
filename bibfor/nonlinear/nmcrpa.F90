@@ -61,9 +61,7 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
     integer :: n2, n3, i, iret
     character(len=19) :: list
     integer :: jlist, jslist
-    real(kind=8) :: r8bid
     character(len=16) :: motfac
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

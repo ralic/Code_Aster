@@ -39,7 +39,6 @@ subroutine ops026()
     character(len=8) :: action, acces, type
     character(len=16) :: knom
     character(len=255) :: fichie
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call infmaj()

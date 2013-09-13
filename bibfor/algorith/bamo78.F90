@@ -104,7 +104,6 @@ subroutine bamo78(nomres, trange, typres)
     character(len=8) :: nomcmp(20)
     character(len=16) :: valcmp(20)
     logical :: lcumu(2), lcoc(2)
-    integer :: iarg
 !-----------------------------------------------------------------------
     integer :: iarc2, ievnew, iopt, jordr, lpar, n, nbins2
     integer :: nbtrou, nc, nh, nncp, num0, nume0

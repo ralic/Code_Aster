@@ -44,7 +44,6 @@ subroutine op0110()
     integer :: ioc1, ioc2, ioc3, ioc11, llref, llnbs, nbsect, ioc12, ibid
     character(len=8) :: modelg, rescyc, nomres, noma, nomsqu
     character(len=16) :: nomope, nomcmd
-    integer :: iarg
 !-----------------------------------------------------------------------
 !
     call jemarq()

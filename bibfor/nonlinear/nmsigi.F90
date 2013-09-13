@@ -58,7 +58,6 @@ subroutine nmsigi(ligrmo, compor, sigini)
     character(len=8) :: charge
     character(len=16) :: option
     character(len=19) :: sigcha
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

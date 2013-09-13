@@ -38,7 +38,6 @@ subroutine op0043()
     character(len=8) :: typema
     character(len=16) :: k16nom
     integer :: n
-    integer :: iarg
 !
     call jemarq()
     call infmaj()

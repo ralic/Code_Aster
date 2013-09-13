@@ -38,7 +38,6 @@ subroutine infmaj()
 !
     integer :: info, nbval
     integer :: linfo
-    integer :: iarg
 !
     info = 1
 !

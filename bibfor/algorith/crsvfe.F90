@@ -68,7 +68,6 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
     character(len=19) :: solfeb
     character(len=24) :: sdfeti, masd, infofe, k24bid
     logical :: testok
-    integer :: iarg
 !------------------------------------------------------------------
     call jemarq()
 !

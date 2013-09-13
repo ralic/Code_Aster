@@ -46,7 +46,7 @@ subroutine pmfd02(noma, cesdec)
 ! ----------------------------------------------------------------------
 !
     integer :: nbocc, iocc, iret, nbma, nbcou, nbv, nbsec
-    integer :: nbap, k, i, jncmp, jvalv, jma, iarg
+    integer :: nbap, k, i, jncmp, jvalv, jma
     character(len=8) :: k8b
     character(len=16) :: mocles(2), typmcl(2), moclef(2)
     character(len=19) :: carte

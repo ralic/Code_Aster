@@ -58,10 +58,9 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
 #include "asterfort/u2mesk.h"
     character(len=*) :: motfaz, nomaz, lisi1z, lisi2z
 ! -----  VARIABLES LOCALES
-    character(len=8) :: k8bid, noma, typem
+    character(len=8) ::  noma, typem
     character(len=16) :: motcle, tymocl, motfac
     character(len=24) :: lisin1, lisin2
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------

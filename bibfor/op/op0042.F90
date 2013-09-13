@@ -62,7 +62,6 @@ subroutine op0042()
     character(len=19) :: knum, kcha, solveu
     character(len=24) :: mate
     logical :: newcal
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

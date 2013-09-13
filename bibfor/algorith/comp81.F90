@@ -85,7 +85,6 @@ subroutine comp81(nomres, basmod, raidf, noma)
     character(len=19) :: nu
 !
     logical :: lredu
-    integer :: iarg
 !
     data blanc         /'        '/
 !

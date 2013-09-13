@@ -40,11 +40,10 @@ subroutine ops007()
 ! ----------------------------------------------------------------------
 !
     character(len=1) :: klas
-    character(len=8) :: k8bid
     character(len=32) :: kch
     integer :: ifm, niv
     integer :: l
-    integer :: ibid, iarg
+    integer :: ibid
     integer :: iocc, nbocc
     integer :: ipos, npos, jlpos
     integer :: icon, ncon, jlcon

@@ -48,10 +48,8 @@ subroutine nmobno(sdobse, motfac, nbocc)
     integer :: iocc, nbtit, ibid
     character(len=24) :: obsnom
     integer :: jobsno
-    character(len=16) :: k16bid
     character(len=80) :: titobs
     character(len=1) :: chaine
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

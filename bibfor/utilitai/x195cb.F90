@@ -45,7 +45,6 @@ subroutine x195cb(tychr, nomgd, chou)
     character(len=8) :: nomgd, nomgd1, ma1, ma2
     character(len=3) :: tsca
     character(len=19) :: ch1, ch2, pfcn1, pfcn2
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !

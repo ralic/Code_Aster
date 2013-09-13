@@ -31,7 +31,6 @@ subroutine ops005()
     character(len=16) :: typres, nomcmd
     character(len=19) :: nomfon
     integer :: lprol, lnova, nk, ir
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

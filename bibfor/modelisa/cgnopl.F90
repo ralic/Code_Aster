@@ -59,14 +59,13 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=24) :: lisnoe
 !
     real(kind=8) :: x0(3), vecnor(3), angle(2)
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
     integer :: ibid, idcoor, idlino, ier, iocc, iret, nangle
     integer :: nb, nbno, nbnoe, ndim, ndim1, nprec, nv
     integer :: nvect
-    real(kind=8) :: prec, r8bid, xnorm, xnorm2, zero
+    real(kind=8) :: prec, xnorm, xnorm2, zero
 !-----------------------------------------------------------------------
     call jemarq()
 !

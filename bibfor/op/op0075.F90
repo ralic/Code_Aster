@@ -45,7 +45,7 @@ subroutine op0075()
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, basemo
     logical :: prsimp
-    integer :: jord, nbord, i, iord, lpain(3), lpaout(3), iarg, ibid, ir1, iret
+    integer :: jord, nbord, i, iord, lpain(3), lpaout(3), ibid, ir1, iret
     integer :: j, j2refe, j3refe, jrefn, n1, nbcham
 !     ------------------------------------------------------------------
     call jemarq()

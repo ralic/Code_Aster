@@ -50,7 +50,6 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
     integer :: i, j, k, nfonu, jfonu, ibasff, jbasu
     real(kind=8) :: smax, s, s1, s2, xyz1, xyz2
     character(len=24) :: fontmp, bastmp
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

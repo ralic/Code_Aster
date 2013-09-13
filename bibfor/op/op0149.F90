@@ -43,7 +43,6 @@ subroutine op0149()
     character(len=19) :: basefl
     character(len=24) :: numo, vite, refefl, fsic, fsvi
     logical :: newres, lnuor, lamor, lamoru, nocopl, numok
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -53,7 +52,7 @@ subroutine op0149()
     integer :: na1, nbamo1, nbamun, nbmfl, nbmod2, nbmode, nbnuo1
     integer :: nbnuo2, nbnuor, nbvite, niv, numode, numvit, nuomin
 !
-    real(kind=8) :: amorun, rbid, rtamp
+    real(kind=8) :: amorun, rtamp
 !-----------------------------------------------------------------------
     call jemarq()
 !

@@ -50,7 +50,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     integer :: jcmp, n1, nr, np, nc, ni, no, jno, jin, numo
     integer :: nbgma, jgma, nma, igm, nbpar, nn, inum, nli, nlo
     parameter(nzero=0,nbpar=3)
-    real(kind=8) :: rbid, prec, inst
+    real(kind=8) ::  prec, inst
     complex(kind=8) :: cbid
     character(len=8) :: k8b, kbid, mailla, resuco, crit, tych
     character(len=8) :: nomgd, tout, grpma, typpar(nbpar)
@@ -59,7 +59,6 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     character(len=19) :: knum, cham, kins, lisins
     character(len=24) :: nomcha
     logical :: exiord
-    integer :: iarg
     data nompar/'CHAMP_GD','NUME_ORDRE','INST'/
     data typpar/'K16','I','R'/
 !     ------------------------------------------------------------------

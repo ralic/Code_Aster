@@ -68,7 +68,6 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     character(len=8) :: k8bid, mo, lpain(3), lpaout(1), stocfl, maicfl, mail
     character(len=19) :: chams
     character(len=24) :: chgeom, ligrel, lchin(3), lchout(1), chcara(18)
-    integer :: iarg
 !
 ! ---------------------------------------------------------------------
 !

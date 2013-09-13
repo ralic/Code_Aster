@@ -71,7 +71,6 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
     integer :: numno, nutyma, nbnoto
     real(kind=8) :: tmps(6)
     character(len=8) :: nom, k8bid, typma1, typma2
-    integer :: iarg
 !
 ! CORPS DU PROGRAMME
     call jemarq()

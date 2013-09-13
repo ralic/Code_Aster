@@ -40,7 +40,6 @@ subroutine op0105()
     character(len=16) :: kbi1, kbi2
     character(len=8) :: oper
     integer :: n1, iadim1, iadim2, ibid
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

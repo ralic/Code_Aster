@@ -84,12 +84,11 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
     integer :: ibib, ie, imolo, jceld, n2, kk, ier, nbvari, nbr
     integer :: ii, jmmail, nbtrou, nbcmp, nbcmp1, nc, jcmp, jcmp1, ntc
     character(len=4) :: docu
-    character(len=8) :: nmaila, courbe, k8b, nomgd, resuco, nomvar, num
+    character(len=8) :: nmaila, courbe, nomgd, resuco, nomvar, num
     character(len=15) :: nconec
     character(len=16) :: motcle(2), typmcl(2), nchsym
     character(len=19) :: nchp19
     character(len=24) :: ncncin, nrepe, lismai, malist, nomobj, valk(3)
-    integer :: iarg
     data nbvari /100/
 !**********************************************************************
 !

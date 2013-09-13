@@ -49,7 +49,6 @@ subroutine pofaqu()
     parameter    ( nbpapf = 3  )
     character(len=1) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
-    integer :: iarg
     data  nomppf /  'INST' , 'DOMMAGE' , 'DOMM_CUMU' /
     data  typppf / 'R' , 'R' , 'R' /
 !     ------------------------------------------------------------------

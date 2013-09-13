@@ -95,7 +95,6 @@ subroutine op0026()
     logical :: l_merimo, l_medime, l_vefnme
     logical :: tabret(0:10)
     integer :: fonact(100)
-    integer :: iarg
 !-----------------------------------------------------------------------
     data lischa     /'&&OP0026.LISCHA'/
     data carele     /'&&OP0026.CARELE'/

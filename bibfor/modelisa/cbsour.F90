@@ -33,7 +33,6 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
     character(len=8) :: scalc
     character(len=16) :: motfac
     character(len=24) :: carte, chsour
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     carte = char//'.CHTH.SOURE'

@@ -69,7 +69,6 @@ subroutine op0141()
     character(len=19) :: matr, pronu1, pronu2, pronua
     character(len=24) :: chamol
     logical :: c1, c2, zcmplx, ieri
-    integer :: iarg
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !

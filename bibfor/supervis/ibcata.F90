@@ -55,7 +55,7 @@ subroutine ibcata(ier)
     character(len=32) :: dfnom(mxdfca), nom (mxcata)
     character(len=24) :: valk
     integer :: dfunit(mxdfca), unite(mxcata)
-    integer :: iarg, i
+    integer ::  i
 !     ------------------------------------------------------------------
 !     OPTIONS PAR DEFAUT :
 !

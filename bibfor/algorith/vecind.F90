@@ -62,7 +62,6 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
     character(len=19) :: mat, nume
-    integer :: iarg
 !
     call wkvect('&&VECIND.NEW_STAT', 'V V R', nbc*nbc, jnsta)
     call wkvect('&&VECIND.TRAV1', 'V V R', nbl, ltrav1)

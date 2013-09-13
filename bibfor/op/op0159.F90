@@ -52,7 +52,6 @@ subroutine op0159()
     character(len=16) :: concep, nomcmd, metres
     complex(kind=8) :: cbid
     real(kind=8) :: rbid
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

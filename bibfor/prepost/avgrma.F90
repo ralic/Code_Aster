@@ -95,7 +95,6 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat
-    integer :: iarg
 !
 !
 !-----------------------------------------------------------------------

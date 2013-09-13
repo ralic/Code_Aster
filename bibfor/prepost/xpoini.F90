@@ -62,7 +62,6 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
     character(len=16) :: k16b, nomcmd, tysd, linom(nchmax)
     character(len=19) :: k19bid
 !
-    integer :: iarg
 !
     call jemarq()
 !

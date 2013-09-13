@@ -38,7 +38,6 @@ subroutine ibtcpu(ier)
     real(kind=8) :: pccpu, tpmax, dix, ntmax
     parameter(dix=10.d0)
     character(len=16) :: cbid, nomcmd
-    integer :: iarg
 !
     ier = 0
     tpmax = 0.d0

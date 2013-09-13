@@ -69,7 +69,6 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     integer :: lnoeum, lrangm, nbmesu, nbord, nddle, lmesu, ltrav
     real(kind=8) :: v1, v2, coef1, valx, valy, valz, eps
     complex(kind=8) :: v1c, v2c
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -44,7 +44,6 @@ subroutine op0175()
     character(len=16) :: crit
     character(len=19) :: chfer1, chfer2, chefge, resu19
     real(kind=8) :: prec
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

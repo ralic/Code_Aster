@@ -67,15 +67,14 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     character(len=8) :: kval
     complex(kind=8) :: cval
     character(len=24) :: typres
-    integer :: iarg
 !------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier, ier1, iocc, iord, iret
+    integer :: i, ier, ier1, iocc, iord, iret
     integer :: ival, jbid, jdisc, jordr, jrang, l, laccr
     integer :: ldisc, lli, lt, n, nbi, nbi2, nbdisc
     integer :: nbtrou, nno, nto, nutrou(1)
-    real(kind=8) :: epsi, rbid, tusr
+    real(kind=8) :: epsi, tusr
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0

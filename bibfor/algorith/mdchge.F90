@@ -77,7 +77,6 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
     character(len=14) :: nume1, nume2
     character(len=24) :: mdgene, mdssno, refo, nomgr1, nomgr2
     character(len=24) :: valk(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call getfac('CHOC', nbchoc)

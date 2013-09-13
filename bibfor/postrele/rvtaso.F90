@@ -61,7 +61,6 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nopara(18), nomjv
     character(len=80) :: valek(11)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

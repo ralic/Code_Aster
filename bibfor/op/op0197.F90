@@ -88,7 +88,6 @@ subroutine op0197()
     real(kind=8) :: valrr(3)
     complex(kind=8) :: c16b
     logical :: calm, cals, impr, dept, recm, recs
-    integer :: iarg
 !
     data noparr / 'NURES', 'INST','SIGMA_WEIBULL','PROBA_WEIBULL'/
     data typarr / 'I','R','R','R' /

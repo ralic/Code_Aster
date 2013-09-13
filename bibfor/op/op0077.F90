@@ -65,7 +65,6 @@ subroutine op0077()
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, vbl24(1)
     integer :: ioc1, jord, nbord, i, iord, lpaout(3)
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------

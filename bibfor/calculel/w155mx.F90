@@ -49,7 +49,6 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
     character(len=16) :: motfac, nomsym, nomsy2
     character(len=19) :: chin, chextr, excit, ligrel, resu19
     character(len=24) :: nompar
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

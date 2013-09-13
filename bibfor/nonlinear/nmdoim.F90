@@ -43,7 +43,7 @@ subroutine nmdoim(sdimpr)
     integer :: ifm, niv
     character(len=16) :: motfac, repk
     logical :: ltcvfi, linfre, linftp
-    integer :: iarg, noc, utcvfi, pasaff
+    integer ::  noc, utcvfi, pasaff
 !
 ! ----------------------------------------------------------------------
 !

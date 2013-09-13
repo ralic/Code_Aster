@@ -33,7 +33,6 @@ subroutine op0047()
     logical :: lgrcou
     character(len=8) :: k8b
     character(len=16) :: k16b, cmd
-    integer :: iarg
 !
     call infmaj()
     call getres(k8b, k16b, cmd)

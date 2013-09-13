@@ -135,7 +135,6 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     logical :: exicar
 !
     character(len=24) :: valkm(2)
-    integer :: iarg
 !
 !
     call jemarq()

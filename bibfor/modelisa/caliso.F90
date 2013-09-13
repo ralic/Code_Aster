@@ -85,7 +85,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     character(len=8) :: cmp_name
     character(len=19) :: list_rela
     character(len=16) :: keywordfact
-    integer :: iarg
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz

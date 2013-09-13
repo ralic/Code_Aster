@@ -70,7 +70,7 @@ subroutine crtype()
     integer :: jcham, jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf
     integer :: ino, nbv, jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini
-    integer :: valii(2), nfr, n4, jnmo, nmode, iarg, nbcmpd, nbcmpi
+    integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi
 !
     parameter  (mxpara=10)
 !

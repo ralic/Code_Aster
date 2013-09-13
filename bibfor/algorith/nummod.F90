@@ -43,7 +43,6 @@ subroutine nummod(nugene, modmec)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, typrof
-    integer :: iarg
 !-----------------------------------------------------------------------
 !
     call jemarq()

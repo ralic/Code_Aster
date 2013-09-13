@@ -87,7 +87,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
     integer :: jomin, jomax, jvmin, jvmax
     integer :: vnormx(2), ideb, ifin, n, k, dim, j, kp, nbp
-    integer :: iarg, nbplan, vnorm(2)
+    integer ::  nbplan, vnorm(2)
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     real(kind=8) :: pseuil, gammam, phim, dphi2, epsilo, gamma
     real(kind=8) :: vecn2(3*nbvec), vecu2(3*nbvec), vecv2(3*nbvec)

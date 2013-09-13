@@ -41,7 +41,6 @@ subroutine op0098()
     character(len=8) :: nomres, mailla, nomgd, k8bid
     character(len=19) :: numddl
     character(len=16) :: nomope, nomcon
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -46,7 +46,6 @@ subroutine refe80(nomres)
     character(len=10) :: typbas(3)
     character(len=24) :: blanc, idesc
     character(len=24) :: valk(3)
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !

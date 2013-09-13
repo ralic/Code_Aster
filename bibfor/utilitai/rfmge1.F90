@@ -47,7 +47,6 @@ subroutine rfmge1(modgen)
     character(len=14) :: nugene
     character(len=16) :: k16b, nomcmd, typcon, nomcha, npara
     character(len=19) :: noch19, nomfon, knume
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

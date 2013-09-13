@@ -75,7 +75,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !
 !
 !
-    integer :: jnosy, jncmed, jpa, jordr, iarg, n23, iret, n21, nvcmp
+    integer :: jnosy, jncmed, jpa, jordr, n23, iret, n21, nvcmp
     integer :: n22, nnrmed, isy, nnocha, nnocmp, nchar, jvcmp, ibid, npreci
     integer :: vali, ncrit, innosy, jnordr, icmp, nbcmpt, gd, ier, ncmpmx, iad
     integer :: ntpara, nnpara, jcmp, nparam
@@ -85,10 +85,8 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
     character(len=1) :: k1bid
     character(len=3) :: toupar, toucha
     character(len=8) :: k8b, resmed, crit, nomgd
-    character(len=16) :: k16bid
     character(len=19) :: noch19, knum
     character(len=24) :: valk(6)
-    character(len=64) :: k64bid
 !
     logical :: afaire
 !

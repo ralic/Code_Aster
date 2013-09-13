@@ -46,7 +46,6 @@ subroutine w039ca(ifi, form)
     character(len=80) :: titre
     character(len=19) :: ligrel
     logical :: lexi
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

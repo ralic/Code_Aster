@@ -58,7 +58,6 @@ subroutine lrrefd(resu, prchnd)
     character(len=14) :: nuddlr, nuddlm
     character(len=19) :: pronur, pronum
     character(len=24) :: matric(3)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

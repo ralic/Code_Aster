@@ -55,7 +55,7 @@ subroutine op0079()
     integer :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
     integer :: idvec1, idvec2
 !-----------------------------------------------------------------------
-    integer :: iadvec, iamatr, iarg, ibid, icod, iadref
+    integer :: iadvec, iamatr, ibid, icod, iadref
     integer :: iddeeq, idvect, iliord, imod, ind, iord, isym
     integer :: jmod, jrefa, llnequ, n0, n1, n2, n4
     integer :: nbid, neq

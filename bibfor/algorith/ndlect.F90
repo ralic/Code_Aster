@@ -104,7 +104,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
-    integer :: iarg
 !
     data cnfedo,cnfsdo    /'&&NDLECT.CNFEDO','&&NDLECT.CNFSDO'/
     data cndido,cndidi    /'&&NDLECT.CNDIDO','&&NDLECT.CNDIDI'/

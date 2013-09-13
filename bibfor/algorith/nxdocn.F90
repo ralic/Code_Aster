@@ -33,7 +33,6 @@ subroutine nxdocn(parcri, parcrr)
 ! ----------------------------------------------------------------------
     character(len=16) :: nomcvg
     integer :: n1, iocc
-    integer :: iarg
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES CRITERES DE CONVERGENCE
 !

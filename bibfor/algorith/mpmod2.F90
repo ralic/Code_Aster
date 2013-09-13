@@ -71,7 +71,6 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
     real(kind=8) :: vori(3)
     real(kind=8) :: val, vect(3)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

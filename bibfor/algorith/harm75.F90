@@ -77,7 +77,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
     logical :: tousno, leffor, prems
-    integer :: iarg, inocmp, inoecp, inumno, inuddl
+    integer ::  inocmp, inoecp, inumno, inuddl
     integer :: j, jc, i, ie, iadesc, iarchi, ich
     integer :: idbase, idvecg, iret, iretou, jfreq
     integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg

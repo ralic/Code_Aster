@@ -33,7 +33,6 @@ subroutine op0117()
 !
 !
 !
-    integer :: iarg
 !
 !
 !

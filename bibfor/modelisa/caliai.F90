@@ -60,7 +60,7 @@ subroutine caliai(fonree, charge)
     character(len=4) :: typcoe, typval, typco2
     character(len=7) :: typcha
     character(len=8) :: betaf
-    character(len=8) :: k8bid, motcle, mogrou, mod, noma, nomnoe, char
+    character(len=8) ::  motcle, mogrou, mod, noma, nomnoe, char
     character(len=16) :: motfac, concep, oper
     character(len=19) :: lisrel
     character(len=24) :: trav, grouno, noeuma

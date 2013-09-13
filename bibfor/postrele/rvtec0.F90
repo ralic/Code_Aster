@@ -75,7 +75,6 @@ subroutine rvtec0(t, co, sp, absc, x,&
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nopara(1053), nomjv
     character(len=80) :: valek(1051)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

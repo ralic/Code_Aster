@@ -91,7 +91,6 @@ subroutine op0048()
     character(len=19) :: force0, force1
 !
     logical :: lamort, lcrea, lprem, exipou
-    integer :: iarg
 !     -----------------------------------------------------------------
     data modele   /'                        '/
 !                     123456789012345678901234

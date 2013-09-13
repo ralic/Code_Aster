@@ -66,11 +66,9 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     integer :: vali
     real(kind=8) :: knorm, ktang, r8bid
     real(kind=8) :: valr(3)
-    real(kind=8) :: zero, deuxpi, dti, dtp, dta
+    real(kind=8) :: zero, deuxpi, dti, dtp
     character(len=8) :: veripa, nomres, tran, li
     character(len=16) :: typres, nomcmd, method
-    character(len=19) :: numarc
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

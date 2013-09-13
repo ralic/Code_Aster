@@ -44,7 +44,6 @@ subroutine nmextf(motfac, iocc, extrcp)
 !
     character(len=8) :: typext
     integer :: n1
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

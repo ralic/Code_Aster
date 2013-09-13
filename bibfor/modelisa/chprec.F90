@@ -70,7 +70,6 @@ subroutine chprec(chou)
     character(len=24) :: valk(3)
     character(len=8) :: k8bid, ma, fis
     logical :: grille
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

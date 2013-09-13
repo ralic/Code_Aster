@@ -59,7 +59,6 @@ subroutine pascom(meca, sddyna, sddisc)
     integer :: iorol, jordm, jinst
     real(kind=8) :: dtcou, phi, dt, r8b
     character(len=8) :: k8bid, stocfl
-    integer :: iarg
 !
 ! ---------------------------------------------------------------------
 !

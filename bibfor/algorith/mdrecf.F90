@@ -82,7 +82,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     character(len=19) :: veasge, fonct, facce
     character(len=19) :: chamno, chamn2, nofk19, resu
     character(len=24) :: deeq, typeba
-    integer :: iarg, jpsdel, npsdel, iipsdl
+    integer ::  jpsdel, npsdel, iipsdl
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ib, ibid, iddeeq, ieq, ii, iinst, imod

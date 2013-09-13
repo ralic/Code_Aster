@@ -103,7 +103,6 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
     logical :: exicar, evol
     real(kind=8) :: zero
     parameter(zero=0.d0)
-    integer :: iarg
 !
     call jemarq()
     call getres(k8b, k16b, nomcmd)

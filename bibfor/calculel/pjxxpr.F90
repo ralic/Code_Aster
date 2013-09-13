@@ -100,7 +100,6 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     integer :: iexi, jpara, ier, inume
     real(kind=8) :: r8b, prec
     complex(kind=8) :: c16b
-    integer :: iarg
 !
 !
 ! DEB -----------------------------------------------------------------

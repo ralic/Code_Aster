@@ -56,7 +56,6 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     character(len=8) :: kbid, modsta
     character(len=16) :: graexc, grdmod
     character(len=24) :: k24bd1, k24bd2, k24bd3
-    integer :: iarg
 !
 !---------MODES STATIQUES
 !

@@ -33,7 +33,6 @@ subroutine trprec(mcf, iocc, epsi, crit, prec,&
     integer :: iocc, np, nc
     real(kind=8) :: epsi, prec, epsir(2)
     character(len=8) :: crit, crit2, critr(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call getvr8(mcf, 'TOLE_MACHINE', iocc=iocc, nbval=0, nbret=np)

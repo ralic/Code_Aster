@@ -109,7 +109,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf, jtblp, jtbnp, nblign
-    integer :: nbpara, iarg, n1, irt, jtabx, jtaby, nbval
+    integer :: nbpara, n1, irt, jtabx, jtaby, nbval
     real(kind=8) :: df, flim, krelax, zero, fi, f2
     complex(kind=8) :: cbid
     logical :: trouv1, trouv2, exi1, exi2

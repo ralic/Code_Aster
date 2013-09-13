@@ -56,7 +56,6 @@ subroutine cresol(solveu)
     character(len=16) :: method, nomsol
     character(len=19) :: ligrmo
     integer :: eximc
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

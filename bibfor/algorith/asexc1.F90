@@ -54,13 +54,12 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
     integer :: nature(3), id, ier, ifm, ii, im, inat, ioc, nbpt1, nbpt2, n1
     integer :: nimpr, jvar1
     real(kind=8) :: amor, coef, deuxpi, echel, epsi, freq, dirspe(3), echspe(3)
-    real(kind=8) :: valpu(2), omega, omega2, r8b, resu, un, uns2pi, xnorm, zero
+    real(kind=8) :: valpu(2), omega, omega2, resu, un, uns2pi, xnorm, zero
     character(len=1) :: dir(3)
     character(len=4) :: knat
     character(len=8) :: spect, nomspe(3), nompu(2)
     character(len=9) :: niveau
     character(len=24) :: vale
-    integer :: iarg
 !     ------------------------------------------------------------------
     data   vale / '                   .VALE' /
     data  nompu / 'AMOR' , 'FREQ'    /

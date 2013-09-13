@@ -36,7 +36,6 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
 ! ----------------------------------------------------------------------
     character(len=24) :: magrma
     character(len=24) :: nogp, nogl
-    integer :: iarg
 !-----------------------------------------------------------------------
     integer :: in, ioc, ldgm, ngl, ngp, nma, noemaf
 !

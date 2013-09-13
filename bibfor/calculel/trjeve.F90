@@ -34,7 +34,6 @@ subroutine trjeve(ific, nocc)
     character(len=8) :: crit
     character(len=16) :: tbtxt(2), tbref(2)
     character(len=24) :: nomobj
-    integer :: iarg
     logical :: lref
 !     ------------------------------------------------------------------
 !

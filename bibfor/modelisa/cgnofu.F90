@@ -66,7 +66,6 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=8) :: k8b, noma, prefix, typm, ndorig, ndextr
     character(len=16) :: motfac, motcle(3), typmcl(3)
     character(len=24) :: lisnoe, mesmai, lisnom, mafour
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

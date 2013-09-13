@@ -50,7 +50,6 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
     character(len=24) :: time, modl24, nu24, fomult
     character(len=19) :: solveu, infcha, maprec
     complex(kind=8) :: c16b
-    integer :: iarg
     data maprec   /'&&OP0152.MAPREC'/
     data infcha   /'&&OP0152.INFCHA'/
     data fomult   /'&&OP0152.LIFCTS'/

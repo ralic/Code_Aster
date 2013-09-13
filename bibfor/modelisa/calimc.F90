@@ -73,7 +73,6 @@ subroutine calimc(chargz)
     character(len=8) :: nogdsi
     character(len=24) :: numedd, nprno
     character(len=3) :: ttran
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i2, i3, iaconx, iadref, iaprno

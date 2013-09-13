@@ -41,7 +41,6 @@ subroutine iredmi(macr)
 !
     character(len=8) :: k8b, mael, basemo, masse, noma, listam
     character(len=16) :: nomcmd
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -50,7 +49,7 @@ subroutine iredmi(macr)
     integer :: j, j2, jamo2, jamor, jfreq, jmass, jordr
     integer :: jrefe, jrigi, k, lamor, n1, n2
     integer :: nbamor, nbmode, nbmods, nbmodt
-    real(kind=8) :: petir8, pi, r8b
+    real(kind=8) :: petir8, pi
 !-----------------------------------------------------------------------
     call jemarq()
     mael = macr

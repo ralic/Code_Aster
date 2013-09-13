@@ -74,9 +74,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     character(len=16) :: concep, nomcmd, nomacc
     character(len=19) :: knacc, kvacc, knmod, listr, resuin, knum2
     complex(kind=8) :: c16b
-    character(len=8) :: k8bid
     integer :: ltout, linst, lfreq, lordr
-    integer :: iarg
     logical :: verifi
 !     ------------------------------------------------------------------
     call jemarq()

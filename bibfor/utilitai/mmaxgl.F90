@@ -67,7 +67,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, j, k, n, ibid, nbprup, nbpar, ncomb, nfreq, init, iarg
+    integer :: i, j, k, n, ibid, nbprup, nbpar, ncomb, nfreq, init
     integer :: ig, ind, indold, iprov, iq, igq, ipa, inopr, itypr, ni, nj
     integer :: irmax, ikmax
 !

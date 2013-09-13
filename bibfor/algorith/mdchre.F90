@@ -58,7 +58,6 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
     integer :: n1, iret, jcoord
     real(kind=8) :: tempo(3), dircho(3), coord(3), txno
     character(len=24) :: mdssno
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     n1 = 0

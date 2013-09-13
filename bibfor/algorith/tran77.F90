@@ -70,7 +70,6 @@ subroutine tran77(nomres, typres, nomin, basemo)
     character(len=24) :: matric, chamno, crefe(2), nomcha, objve1, k24bid
     character(len=24) :: objve2, objve3, objve4
     logical :: tousno, multap, leffor, prems
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadesc, iarchi, ibid, ich, idbase, iadrif

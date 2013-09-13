@@ -32,11 +32,10 @@ subroutine vriale()
 #include "asterfort/u2mess.h"
     integer :: ibid, nbamor, nbmode, nindex, nbindi, nbindj, nbcmpi, nbcmpj
     integer :: nnoeex, nvasex, ncmpex, nmost1, napexc
-    real(kind=8) :: r8b, fremin, fremax
+    real(kind=8) ::  fremin, fremax
     character(len=4) :: excmod
-    character(len=8) :: k8b, intrep
+    character(len=8) ::  intrep
     character(len=16) :: tyconc, nomcmd, graexc
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call getres(intrep, tyconc, nomcmd)

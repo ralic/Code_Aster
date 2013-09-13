@@ -46,7 +46,6 @@ subroutine rfnapp(nappe)
     character(len=8) :: k8b, crit
     character(len=16) :: nomcmd, typfon
     character(len=19) :: nomfon
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

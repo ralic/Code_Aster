@@ -83,7 +83,6 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
     real(kind=8) :: t1, t(3), x, y, z, xpi, ypi, zpi, rx, ry, rz, mx, my, mz
     real(kind=8) :: zero
-    integer :: iarg
 !
 !==================== CORPS DE LA ROUTINE =============================
 !

@@ -95,7 +95,6 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     parameter (nbmax=5)
     integer :: tino2m(nbmax), nbnod, nbnodm, ii
     real(kind=8) :: tdmin2(nbmax), umessr(4)
-    integer :: iarg
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

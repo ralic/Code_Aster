@@ -61,7 +61,6 @@ subroutine ssdmgn(mag)
     logical :: unaun
 ! ----------------------------------------------------------------------
     character(len=24) :: valk(2)
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i1, i1noe, iadim2, iadime, iagnl, iagno, ialino

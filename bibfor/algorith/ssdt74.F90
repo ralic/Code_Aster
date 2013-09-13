@@ -83,7 +83,6 @@ subroutine ssdt74(nomres, nomcmd)
     integer :: nbpal
     real(kind=8) :: vrotat, dtsto
     logical :: prdeff
-    integer :: iarg
 ! =<
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

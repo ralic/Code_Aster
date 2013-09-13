@@ -58,7 +58,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 #include "asterfort/u2mesg.h"
     integer :: icmp, k, jma, nbma, iret, i, ibid, n1, jvalv, ncmpma, jncmp
     integer :: nbmo1, nbocc, dimaki, dimanv, nbkit, numlc, nbvari, icpri
-    integer :: nbvarz, nunit, ii, inv, iarg, indimp
+    integer :: nbvarz, nunit, ii, inv, indimp
 !    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     parameter (dimaki=9)
 !    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM

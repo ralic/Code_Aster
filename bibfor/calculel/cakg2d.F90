@@ -119,7 +119,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=24) :: obj1, obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
 !
-    integer :: iarg
     data chvarc/'&&CAKG2D.CH_VARC_R'/
     data chvref/'&&CAKG2D.CHVREF'/
 !

@@ -66,7 +66,7 @@ subroutine op0166()
     character(len=19) :: resuou, cham1, method, rtyp
     character(len=19) :: ligre1, ligre2
     character(len=24) :: valk(4)
-    integer :: iarg, nbocc
+    integer ::  nbocc
 !
 !
 !

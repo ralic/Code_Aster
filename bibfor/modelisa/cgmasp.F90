@@ -66,7 +66,6 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=24) :: lismai
 !
     real(kind=8) :: x0(3), x(3)
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------

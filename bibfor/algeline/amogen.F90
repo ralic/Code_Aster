@@ -33,14 +33,13 @@ subroutine amogen(mat19)
 #include "asterfort/wkvect.h"
 !
     character(len=19) :: mat19
-    character(len=8) :: masse, raid, k8bid, listam
+    character(len=8) :: masse, raid, listam
     character(len=16) :: nomcmd
     integer :: nbid, jamog, iamog, idiff
     integer :: vali(3)
     integer :: iamat, n, m, m2, i, iam, iak, j, nbamor, nlist
     integer :: iblo, idesc, ialime, iaconl, jrefa, jrefa2, iadesc, n2, n1
-    real(kind=8) :: r8bid, kmin, valmin, kmax, rk
-    integer :: iarg
+    real(kind=8) ::  kmin, valmin, kmax, rk
 !
     call jemarq()
 !

@@ -40,12 +40,10 @@ subroutine op0017()
     integer :: i, iocc
     logical :: lattr, lcont
     character(len=1) :: base
-    character(len=8) :: kbid
     character(len=8) :: leresu
     character(len=16) :: nomfi
     character(len=72) :: chaine
 !     ------------------------------------------------------------------
-    integer :: iarg
 !
     call jemarq()
     call infmaj()

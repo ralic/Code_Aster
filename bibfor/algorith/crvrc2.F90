@@ -53,7 +53,6 @@ subroutine crvrc2()
     character(len=19) :: ligrel, chout, resu1, chtemp
     character(len=24) :: chcara(18), lchin(10)
     logical :: exicar
-    integer :: iarg
 !
 !----------------------------------------------------------------------
     call jemarq()

@@ -55,9 +55,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 !
 !
     character(len=19) :: resu2
-    character(len=16) :: k16bid
     integer :: nbnosy, jl1, isy, n2, jl2, ibid, k, kk
-    integer :: iarg
 !
     resu2 = resu
 !

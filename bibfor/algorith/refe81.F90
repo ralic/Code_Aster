@@ -49,10 +49,8 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 !
     character(len=24) :: valk(2), typbas
     character(len=8) :: nomres, mailla, basmod, maillb, bl8, lintf
-    character(len=8) :: k8bid
     character(len=14) :: numddl, numbis, numter
     character(len=19) :: raid, mass, amor
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

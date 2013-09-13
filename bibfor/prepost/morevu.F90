@@ -47,7 +47,6 @@ subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
     character(len=8) :: k8b, crit
     character(len=19) :: nomta
     character(len=16) :: valek(2)
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

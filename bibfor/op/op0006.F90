@@ -36,7 +36,7 @@ subroutine op0006()
 #include "asterfort/rcmate.h"
     character(len=8) :: chmat, nomail, nomode
     character(len=16) :: nomcmd, type
-    integer :: iarg, ifm, n1, niv
+    integer ::  ifm, n1, niv
 ! ----------------------------------------------------------------------
 !
     call jemarq()

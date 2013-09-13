@@ -47,7 +47,7 @@ subroutine op0188()
 ! CALCUL D'UN INDICATEUR BINAIRE (APPELEE PAR RAFF_XFEM)
 !
 !
-    integer :: ibid, iarg, iret, i, j, ino, nuno, numa, nbnozo
+    integer :: ibid, iret, i, j, ino, nuno, numa, nbnozo
     integer :: jncmp, jvalv, ncmp, jmafon, nmafon, jma, nbma, nbno, nbmali
     integer :: jlst, jlsn, jnoeu, nbmac, jadr, adrvlc, acncin
     integer :: idlima, nbmazo

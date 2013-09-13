@@ -88,7 +88,6 @@ subroutine op0152()
     character(len=24) :: nomcha, time, nocham
     character(len=24) :: mate, phib24
     complex(kind=8) :: cbid
-    integer :: iarg
 ! -----------------------------------------------------------------
     data nomcmp /'INST    ','DELTAT  ','THETA   ',&
      &             'KHI     ','R       ','RHO     '/

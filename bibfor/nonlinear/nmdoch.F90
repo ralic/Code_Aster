@@ -92,7 +92,6 @@ subroutine nmdoch(lischa, iexcit, excit)
     integer :: nbtych
     parameter    (nbtych=18)
     character(len=6) :: nomlig(nbtych)
-    integer :: iarg
 !
     data nomlig  /'.FORNO','.F3D3D','.F2D3D','.F1D3D',&
      &              '.F2D2D','.F1D2D','.F1D1D','.PESAN',&

@@ -46,9 +46,8 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
 ! ----------------------------------------------------------------------
     integer :: jarch, nbocc, n1, jnum, lnum, k, ipach, jinsc
     real(kind=8) :: epsi
-    character(len=8) :: k8b, rela
+    character(len=8) ::  rela
     character(len=19) :: numarc
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

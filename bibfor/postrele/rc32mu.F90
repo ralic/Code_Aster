@@ -48,7 +48,6 @@ subroutine rc32mu()
     character(len=16) :: motclf, valek
     character(len=24) :: abscur
     character(len=24) :: valk(7)
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

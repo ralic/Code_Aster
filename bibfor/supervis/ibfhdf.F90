@@ -26,7 +26,6 @@ subroutine ibfhdf(fichdf)
 ! ----------------------------------------------------------------------
     character(len=16) :: cbid, nomcmd, fhdf
     integer :: nfhdf
-    integer :: iarg
 !
     fichdf = ' '
     call getres(cbid, cbid, nomcmd)

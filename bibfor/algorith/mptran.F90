@@ -90,7 +90,6 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     real(kind=8) :: r8bid, dt, pas, diff, rbid
 !
     complex(kind=8) :: cbid
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -40,7 +40,6 @@ subroutine op0128()
     character(len=11) :: option
     character(len=14) :: nugene
     character(len=16) :: nomcon, nomope
-    integer :: iarg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibid, iopt

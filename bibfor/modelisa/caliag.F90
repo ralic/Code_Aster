@@ -71,7 +71,7 @@ subroutine caliag(fonrez, chargz)
     integer :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
     parameter (nmocl=300)
-    real(kind=8) :: rbid, beta
+    real(kind=8) ::  beta
     complex(kind=8) :: betac
     logical :: dnor
     character(len=2) :: typlag
@@ -83,7 +83,6 @@ subroutine caliag(fonrez, chargz)
     character(len=19) :: prefix, ligrmo, lisrel
     character(len=24) :: coni, conr, nomdd1, nomdd2, coef1, coef2, lisin1
     character(len=24) :: lisin2
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -55,7 +55,6 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
     real(kind=8) :: x1, y1, z1, x2, y2, z2, xp1, yp1, zp1, distan
     real(kind=8) :: ca(3), sa(3), rot(3)
     character(len=8) :: repk
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: ierd, ino1, nbid

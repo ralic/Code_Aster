@@ -51,7 +51,6 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
     character(len=8) :: resu, crit
     character(len=16) :: nomcas
     character(len=24) :: nlist
-    integer :: iarg
 !
 !================== CORPS DE LA ROUTINE ===============================
 !

@@ -90,7 +90,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     integer :: i, j, k, icoef, ikm1, ikm2, ikm3, nbcol, inopr, itypr
     integer :: iad, init
     integer :: ipr, ipi, iret, iord, jinst, nborn, itypc, nbval
-    integer :: ik1, ik2, ik3, labscu, igl, ibid, iglm
+    integer :: ik1, ik2, ik3, labscu, igl, iglm
     integer :: inom, ityp, mxval, nbv, itmp
     real(kind=8) :: kmoy, time, puls
     complex(kind=8) :: cbid
@@ -101,7 +101,6 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     character(len=24) :: depla, depmax, chsigi
     character(len=24) :: valk
     logical :: exitim, lmoda
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

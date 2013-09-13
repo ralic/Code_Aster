@@ -80,7 +80,6 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     character(len=19) :: chamno
     character(len=24) :: fomult
     complex(kind=8) :: calpha
-    integer :: iarg
 !
     call jemarq()
     fomult = fomulz

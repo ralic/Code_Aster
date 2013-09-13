@@ -78,7 +78,7 @@ subroutine op0176()
     logical :: fals, true, lbid, lrest
 !
     complex(kind=8) :: c16b
-    integer :: iarg, nmail, nmode
+    integer ::  nmail, nmode
 !
 ! ----------------------------------------------------------------------
 !

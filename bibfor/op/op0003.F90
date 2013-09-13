@@ -49,7 +49,7 @@ subroutine op0003()
     integer :: jnoe, n, nbval, lval, lfon
     integer :: nbcoup, nbcou2
     integer :: nblr, nblv, nbrma, nbln, nbvc, nbvr, nbla, nblo
-    real(kind=8) :: min1, min2, min3, r8bid
+    real(kind=8) :: min1, min2, min3
     character(len=2) :: prolgd
     character(len=4) :: interp(2)
     character(len=8) :: k8b, nompar, nomres, nommai

@@ -39,7 +39,6 @@ subroutine ntdcom(evolsc)
     character(len=8) :: k8b
     character(len=16) :: comp, motcle, k16bid, nomcmd, tysd
     logical :: lrela, lsech
-    integer :: iarg
 !
     data         motcle / 'COMP_THER_NL' /
 ! ----------------------------------------------------------------------

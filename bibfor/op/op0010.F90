@@ -82,7 +82,7 @@ subroutine op0010()
     character(len=19) :: noesom, isozro, noresi, cnxinv, cnsbl, cnsdis, cnslj
     character(len=19) :: vpoint, delta
     character(len=24) :: lismae, lisnoe, vcn, grlr, vcnt, grlrt
-    real(kind=8) :: meserr(3), r8b
+    real(kind=8) :: meserr(3)
     character(len=8) :: test, msgout(2)
 !     MESSAGES
 !
@@ -117,7 +117,6 @@ subroutine op0010()
     character(len=19) :: grltc, grlnc
     logical :: ldpre
     real(kind=8) :: radimp, radlim
-    integer :: iarg
 !
 !     FRONT SUR LA GRILLE
     logical :: goinop

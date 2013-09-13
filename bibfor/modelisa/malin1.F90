@@ -57,7 +57,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: charge
-    character(len=8) :: k8bid, noma, nomnoe, nomail
+    character(len=8) ::  noma, nomnoe, nomail
     character(len=16) :: momail, mogrma
     character(len=16) :: motfac
     character(len=24) :: noeuma, mailma, grmama, lisnoe

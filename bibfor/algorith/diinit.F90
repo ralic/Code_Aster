@@ -71,7 +71,7 @@ subroutine diinit(noma, nomo, result, mate, carele,&
     logical :: limpex, lctcd
     character(len=8) :: meca
     character(len=19) :: lisins
-    integer :: iarg, numreo
+    integer ::  numreo
 !
 ! ----------------------------------------------------------------------
 !

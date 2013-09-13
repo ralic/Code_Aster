@@ -41,7 +41,6 @@ subroutine op0049()
     character(len=4) :: kbid4
     character(len=14) :: kbid14
     character(len=16) :: k16nom
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: ibid, n1, nbobj, ndim, nfias, nfigi

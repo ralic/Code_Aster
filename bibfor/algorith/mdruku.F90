@@ -62,7 +62,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     integer :: neqgen, nbsauv, nbchoc, nbrfis, nbexci, logcho(nbchoc, *)
     integer :: liad(*), inumor(*), idescf(*), nbpal, nbobjs, iapp, iarchi, isto1
     integer :: isto2, isto3, isto4, jchor, jredi, jredr, jrevi, jrevr, jvint
-    integer :: nbconv, nbmxcv, nbsaui, nbscho, im, ind, iadrk, iarg, ibid
+    integer :: nbconv, nbmxcv, nbsaui, nbscho, im, ind, iadrk, ibid
     integer :: jacce, ier, iret, jacci, jaccs, jamgy, jdcho, jdepi, jdepl, jdeps
     integer :: jerde, jervi, jfcho, jfext, jicho, jinst, jkde, jkvi, jm, jmass
     integer :: jordr, jpass, jredc, jredd, jrevc, jrevv, jrigy, jtra1, jvcho

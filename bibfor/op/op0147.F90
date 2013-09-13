@@ -38,7 +38,7 @@ subroutine op0147()
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ifreq, im, imasg, imod1, inumo
+    integer :: i, ifreq, im, imasg, imod1, inumo
     integer :: inuor, ivite, jnuor, nbm, nbmr
     integer :: nnn, npv, i1, i3, ivitef
 !-----------------------------------------------------------------------
@@ -47,7 +47,7 @@ subroutine op0147()
     character(len=16) :: concep, cmd
     character(len=19) :: base
     character(len=24) :: freq, masg, vite, numo, nomobj, chnumi
-    integer :: iarg, lnumi, lrefe, lrefes
+    integer ::  lnumi, lrefe, lrefes
     real(kind=8) :: epsi, val, vitef
 !
 !-----------------------------------------------------------------------

@@ -46,12 +46,10 @@ subroutine calapl(char, ligrmo, noma)
 ! ----------------------------------------------------------------------
     integer :: ima, nbflp, jvalv, jncmp, iocc, into, jtran, jno, nbtou, nbma
     integer :: jma, nbma2, jma2, ntra, nsym, jnuma
-    real(kind=8) :: rbid
     character(len=8) :: k8b, typmcl(2), typmc2(2)
     character(len=16) :: motclf, motcle(2), motcl2(2), listma, ltrans
     character(len=19) :: carte
     character(len=24) :: mesmai, mesma2, connex
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

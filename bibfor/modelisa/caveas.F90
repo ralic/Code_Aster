@@ -46,7 +46,6 @@ subroutine caveas(chargz)
 ! ------ VARIABLES LOCALES
     character(len=8) :: charge, vecass
     character(len=24) :: obj
-    integer :: iarg
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

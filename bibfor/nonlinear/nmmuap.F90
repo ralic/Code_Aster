@@ -55,7 +55,6 @@ subroutine nmmuap(sddyna)
     integer :: iddeeq
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
     integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
-    integer :: iarg
 !
 ! ---------------------------------------------------------------------
 !

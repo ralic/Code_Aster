@@ -41,7 +41,6 @@ subroutine asctub(mailla)
     integer :: nbno, icoor, idime, n1, ino, ndim
     real(kind=8) :: rm, azim, theta, rho, azimr, pi, xp, yp, ltchar, dext, ep
     character(len=24) :: coord, dime
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

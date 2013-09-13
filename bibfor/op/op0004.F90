@@ -54,7 +54,6 @@ subroutine op0004()
     logical :: defonc
     integer :: iret, iret2
     integer :: vali(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -63,7 +62,6 @@ subroutine op0004()
     integer :: lpro, lval, mxva, n, n1, n2, n3
     integer :: nbcoup, nbfonc, nbpara, nbval, niv, nprol, nv
 !
-    real(kind=8) :: rbid, toto
 !-----------------------------------------------------------------------
     call jemarq()
 !

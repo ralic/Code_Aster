@@ -58,7 +58,6 @@ subroutine op0107()
     character(len=16) :: concep, nomcmd
     character(len=19) :: resu, knum, tabtyp(3)
     character(len=24) :: mate, chdef
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !

@@ -97,7 +97,6 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     logical :: lzero
     real(kind=8) :: coefav
     integer :: ifm, niv
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

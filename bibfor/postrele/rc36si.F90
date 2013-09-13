@@ -46,7 +46,7 @@ subroutine rc36si(noma, nbma, listma)
 ! IN  : LISTMA : LISTE DES MAILLES D'ANALYSE
 !     ------------------------------------------------------------------
 !
-    integer :: n1, nbsitu, iocc, ibid, jmomea, jmomeb, ii, nocc, jreth, jnbocc
+    integer :: n1, nbsitu, iocc, jmomea, jmomeb, ii, nocc, jreth, jnbocc
     integer :: jnumgr, jpresa, jpresb, nbchar, jchar1, jchar2, jnsitu, jcombi
     integer :: jpassa, jnbgr, ig, numpas(2), nscy, nbgr, numgr, nbsigr, jnsg
     integer :: nbth, jseigr, jchth, nume, nbm, nbp12, nbp23, nbp13, jsp12, jsp23
@@ -56,7 +56,6 @@ subroutine rc36si(noma, nbma, listma)
     character(len=8) :: k8b, ouinon
     character(len=16) :: motcl1, motcl2
     character(len=24) :: chmome
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
     motcl1 = 'SITUATION'

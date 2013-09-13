@@ -66,7 +66,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     character(len=2) :: type_lagr
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
-    integer :: iarg, iocc, i_error, icoupl, ier
+    integer ::  iocc, i_error, icoupl, ier
     integer :: ndim, nliai, n1, nbec
     character(len=8) :: cmp_name, nomg
     integer :: jnom, jprnm, nb_cmp

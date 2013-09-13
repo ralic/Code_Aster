@@ -51,7 +51,6 @@ subroutine nmdidi(modele, lischa, depmoi, vedidi)
     integer :: numref, n1, nevo, iret
     character(len=19) :: depdid
     character(len=24) :: evol
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

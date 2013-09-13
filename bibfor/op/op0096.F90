@@ -91,7 +91,6 @@ subroutine op0096()
     character(len=24) :: nsds8, nsds9, nsds10, nsds11, nsds12, nsds13, nsds14
     character(len=24) :: nommai, lismai, para
     logical :: coupe, fini, swap, egfac
-    integer :: iarg
 !
 !===================================================================
 !

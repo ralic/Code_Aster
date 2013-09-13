@@ -98,7 +98,6 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     real(kind=8) :: zero
     real(kind=8) :: angl_naut(3)
     integer :: n_angle
-    integer :: iarg
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     integer :: n_suffix

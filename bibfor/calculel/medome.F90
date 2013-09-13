@@ -67,7 +67,6 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     character(len=19) :: excit, knum
     character(len=8) :: crit
     logical :: lpost
-    integer :: iarg
     call jemarq()
 !
 !              12345678

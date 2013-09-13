@@ -63,7 +63,6 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     character(len=19) :: nomf
     character(len=24) :: instan, abscur
     character(len=24) :: valk(7)
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

@@ -78,7 +78,6 @@ subroutine regene(nomres, resgen, profno)
     character(len=24) :: chamol, indirf, crefe(2), numedd, basmo2
     character(len=24) :: valk, matric(3)
     logical :: zcmplx
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/

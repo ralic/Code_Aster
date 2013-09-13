@@ -73,7 +73,6 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     character(len=16) :: monacc
     character(len=19) :: chextr, motfac
     character(len=24) :: obj1, obj2, valk(2), grnoeu
-    integer :: iarg
 !     ------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
 !     ------------------------------------------------------------------

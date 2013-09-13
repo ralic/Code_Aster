@@ -56,7 +56,6 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=19) :: ligrmo
     character(len=24) :: noojb
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     motfac=motfaz

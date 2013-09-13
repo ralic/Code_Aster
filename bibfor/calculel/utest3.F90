@@ -35,7 +35,6 @@ subroutine utest3(mclfac, iocc, tbref)
 ! ----------------------------------------------------------------------
     integer :: n0, n2
     character(len=16) :: legend, refer
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

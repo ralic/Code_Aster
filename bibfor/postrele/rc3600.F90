@@ -57,7 +57,6 @@ subroutine rc3600()
     character(len=8) :: typmcs(2), nomgd
     character(len=16) :: nomcmd, concep, motclf, nocmp(5)
     character(len=24) :: mesmai, ncncin, chindi, chcara, chresu
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

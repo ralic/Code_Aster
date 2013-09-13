@@ -89,7 +89,6 @@ subroutine op0109()
     character(len=24) :: valk(3)
     logical :: tronc, monoap, muapde, comdir, corfre, calmas
     complex(kind=8) :: c16b
-    integer :: iarg
 !     ------------------------------------------------------------------
     data  dir    / 'X' , 'Y' , 'Z' /
     data  desc   /'                   .SCDE'/

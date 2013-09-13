@@ -38,7 +38,7 @@ subroutine rcmate(chmat, nomail, nomode)
 ! ----------------------------------------------------------------------
 !
     integer :: ibid, nocc, i, nm, nt, jncmp, jvalv, nbma, jmail, ier, nbcmp
-    integer :: iarg, jad
+    integer ::  jad
     character(len=4) :: oui
     character(len=8) :: k8b, nommat, typmcl(2)
     character(len=16) :: motcle(2)

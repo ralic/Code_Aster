@@ -64,14 +64,13 @@ subroutine i2segm(nomail, nbpars, nbpara)
     real(kind=8) :: point(2), poina(2), poinb(2), dgrd
     real(kind=8) :: epsi, xa, xb, xc, ya, yb, yc, r, alfinf, alfsup
     real(kind=8) :: epsi2, tole, dm, xrc1, xrc2, xex, xor, yex, yor
-    character(len=8) :: k8b, nomcrb, nomm1, nomm2, crit
+    character(len=8) ::  nomcrb, nomm1, nomm2, crit
     character(len=16) :: opera, typcrb, motcle(3), typmcl(2)
     character(len=24) :: conec, coord, type, nommai, lismai
     character(len=24) :: norsgt, nexsgt, nparor, nparex, ncnxor, ncnxex
     character(len=24) :: nmail1, nmail2, nfacor, nfacex, ntpcrb
     character(len=24) :: npasgt, npbsgt, npcarc, nrarc, nsarc, nnomma
     character(len=24) :: valk(7)
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
     dgrd = r8dgrd()

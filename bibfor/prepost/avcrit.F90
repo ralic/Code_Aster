@@ -72,7 +72,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !                     DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
     integer :: ivect, ad0, ad1, ad2, icycl, nval, ipar, j, np
-    integer :: ibid, nparma, jprof, paract(30), iarg
+    integer :: ibid, nparma, jprof, paract(30)
     real(kind=8) :: coepre, valpar(30), valpu(30)
     integer :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn, jveppr
     integer :: jvsipn, jvsieq, jveteq

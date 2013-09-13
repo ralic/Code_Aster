@@ -91,7 +91,6 @@ subroutine op0046()
     logical :: exipou
 !
     complex(kind=8) :: calpha
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()

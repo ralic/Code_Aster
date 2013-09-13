@@ -64,7 +64,6 @@ subroutine macr78(nomres, trange, typres)
     character(len=24) :: chamno, nomcha, numedd, nprno
 !      CHARACTER*3  TREDU
     logical :: lredu
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iaconx, iadref, iaprno, iarc0, iarch

@@ -46,7 +46,6 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
     real(kind=8) :: pus(*), pmoye, pourpu(*), poupre(*)
     character(len=8) :: k8b
     character(len=24) :: loi, mate
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i, ifires, iret, isupp, n1, n2

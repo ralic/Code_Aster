@@ -63,7 +63,6 @@ subroutine pecapo(resu, modele, cara, nh)
     character(len=8) :: mater
     integer :: icodre(1)
     integer :: ilignm, n1
-    integer :: iarg
 !     ------------------------------------------------------------------
     data  ptors / 'JX'      /
     data  prt   / 'RT'      /

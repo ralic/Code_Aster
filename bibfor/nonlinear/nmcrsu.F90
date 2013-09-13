@@ -79,7 +79,6 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     character(len=24) :: tpsavr, tpsavk, tpstpr, tpstpk
     character(len=24) :: tpsext
     integer :: jtpsex
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

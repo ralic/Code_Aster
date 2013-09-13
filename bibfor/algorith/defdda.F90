@@ -54,10 +54,8 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
     character(len=*) :: motcle
     character(len=24) :: temddl, temidc
     character(len=24) :: valk
-    character(len=80) :: kar80
     integer :: nbec, icod(nbec)
     logical :: ok, okg
-    integer :: iarg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, iec, ioc, iopt, j, llncmp

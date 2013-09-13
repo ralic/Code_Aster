@@ -65,12 +65,11 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=8) :: k8bid, oui
+    character(len=8) ::  oui
     integer :: n1, n2, n3, n4, n5, n6
     character(len=16) :: valk(1)
     integer :: nbmocl
     character(len=16) :: limocl(5), tymocl(5)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

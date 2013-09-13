@@ -49,7 +49,7 @@ subroutine op9999()
     integer :: info, nbenre, nboct
     integer :: ifm, iunerr, iunres, iunmes
     integer :: i, l, jco, nbco
-    integer :: nbext, nfhdf, iarg
+    integer :: nbext, nfhdf
     character(len=8) :: k8b, ouinon
     character(len=16) :: fchier, fhdf, typres
     character(len=80) :: fich

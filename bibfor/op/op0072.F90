@@ -64,7 +64,6 @@ subroutine op0072()
     character(len=24) :: matric, kbid, deeq, typeba, valk(24)
     complex(kind=8) :: cbid, dcmplx
     real(kind=8) :: zero
-    integer :: iarg
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------

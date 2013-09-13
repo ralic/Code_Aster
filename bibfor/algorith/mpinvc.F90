@@ -69,7 +69,6 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
     character(len=16) :: nomcha
     character(len=16) :: secmb, wks, phipht, phitph, matsys, work, eta, vals, u
     character(len=16) :: v
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -96,7 +96,6 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: iad2, iad3, iad4, ninter, pint, ifiss
     character(len=24) :: grp(3), gr
     integer :: nmaenr, ienr, jgrp, jxc, ier, jnbpt
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

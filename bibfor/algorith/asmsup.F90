@@ -77,7 +77,6 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
     character(len=16) :: nomsy
     character(len=19) :: cham19
     character(len=24) :: obj1, obj2, valk(2), grnoeu
-    integer :: iarg
 !     ------------------------------------------------------------------
     data  dir / 'X' , 'Y' , 'Z' /
     data  nomcmp / 'DX' , 'DY' , 'DZ' /

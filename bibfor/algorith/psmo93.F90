@@ -45,7 +45,6 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     character(len=19) :: solveu
     character(len=24) :: moauni, moaimp, ddlac
     logical :: accuni
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ia, id, ierd, ii, imod, ind

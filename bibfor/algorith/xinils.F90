@@ -89,7 +89,6 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     character(len=24) :: lisma, lisse
     logical :: callst
     integer :: ifm, niv
-    integer :: iarg
 !
 !
     call jemarq()

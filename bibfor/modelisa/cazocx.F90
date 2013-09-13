@@ -66,7 +66,6 @@ subroutine cazocx(char, nomo, motfac, izone)
     character(len=16) :: valk(2)
     integer :: iret, jxc
     logical :: lfrot
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

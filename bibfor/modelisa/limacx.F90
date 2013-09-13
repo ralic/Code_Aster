@@ -51,7 +51,6 @@ subroutine limacx(char, motfac, ndim, nzoco)
     character(len=8) :: fiss
     character(len=24) :: xfimai, ndimco
     integer :: jfimai, jdim
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

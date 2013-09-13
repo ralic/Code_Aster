@@ -57,13 +57,13 @@ subroutine op0120()
 !-----------------------------------------------------------------------
     integer :: long, ival(2), ier
     real(kind=8) :: resu, zero
-    character(len=8) :: k8b, nomu, nomref
+    character(len=8) ::  nomu, nomref
     character(len=16) :: concep, nomcmd
     character(len=19) :: nomfon
     character(len=24) :: nomobj
     character(len=24) :: chnumi, chnumj, chfreq, chvale
 !
-    integer :: iarg, ispec
+    integer ::  ispec
     integer :: lnumi, lnumj, lfreq, lrefe, nbabs, mxval, ipf
 !
 !     ------------------------------------------------------------------

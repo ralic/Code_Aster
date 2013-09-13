@@ -86,7 +86,6 @@ subroutine calirc(chargz)
     character(len=24) :: valk(2)
     character(len=1) :: kb
     real(kind=8) :: rbid
-    integer :: iarg
     logical :: l_tran
     real(kind=8) :: tran(3)
     logical :: l_cent

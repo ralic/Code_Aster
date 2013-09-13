@@ -69,14 +69,13 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !
     real(kind=8) :: x0(3), x(3), xx0(3), axe(3), angle(2)
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
     integer :: ibid, idcoor, idlima, idnoeu, ier, ima, ino
     integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
     integer :: nbnod, ndim, nrayon, numnoe, nv, nvect
-    real(kind=8) :: ang, d2, eps, psca, r8bid
+    real(kind=8) :: ang, d2, eps, psca
     real(kind=8) :: rayon, un, xnorm, xnorm2, xnoxx0, xnoxx2, zero
 !
 !-----------------------------------------------------------------------

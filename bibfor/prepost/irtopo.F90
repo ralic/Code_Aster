@@ -64,7 +64,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
 !
 !
-    integer :: nbno, nbgrn, nbma, nbgrm, iarg, nbnofa, nbgnfa, nbmafa
+    integer :: nbno, nbgrn, nbma, nbgrm, nbnofa, nbgnfa, nbmafa
     integer :: nbgmfa, jtopo, jlgrn, jngrn, ibid, jlno, jnno, jlgrm, jngrm
     integer :: jlma, jmma, nbnoe, jindno, ino, jnunou, nbnou, nbele, jnuma
     integer :: jnunos, nbnos, jnofi, ii, igrm, igrn, ima, nbnomx, nbgnmx

@@ -48,10 +48,9 @@ subroutine u195tb(chou)
 !
     integer :: n1, n2, jnoma, ibid, iret, nncp
     character(len=3) :: prol0
-    character(len=8) :: nomgd, ma, mo, k8b
+    character(len=8) :: nomgd, ma, mo
     character(len=16) :: tychlu, option, typchs, typch2
     character(len=19) :: chs, tabin, ligrel
-    integer :: iarg
 !
     call jemarq()
 !

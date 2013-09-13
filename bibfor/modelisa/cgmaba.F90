@@ -71,7 +71,6 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=16) :: selec
 !
     real(kind=8) :: x0(3), x(3), xx0(3), vecnor(3), angle(2)
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
@@ -79,7 +78,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
     integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
     integer :: nbnod, ndim, ndim1, ndist, numnoe, nv, nvect
 !
-    real(kind=8) :: d, dist, r8bid, xnorm, xnorm2, zero
+    real(kind=8) :: d, dist, xnorm, xnorm2, zero
 !
 !-----------------------------------------------------------------------
     call jemarq()

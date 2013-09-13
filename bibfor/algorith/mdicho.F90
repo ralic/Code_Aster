@@ -47,7 +47,6 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
 ! ----------------------------------------------------------------------
     integer :: i, ifr, icho, ipas, ix, iy, iz, nbtitr
     character(len=8) :: typeob, blan8
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

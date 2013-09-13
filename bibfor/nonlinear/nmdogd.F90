@@ -9,7 +9,6 @@ subroutine nmdogd(moclef, comp, k, ncomel, lcomel,&
     character(len=16) :: lcomel(5), defo, moclef
     integer :: n1
     integer :: exist
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 ! ======================================================================

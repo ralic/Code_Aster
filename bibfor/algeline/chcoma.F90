@@ -68,7 +68,6 @@ subroutine chcoma(tablez, nomaou)
     character(len=8) :: k8b
     character(len=19) :: table
     character(len=24) :: cooval, coodes, nogrma, noma
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     call jemarq()

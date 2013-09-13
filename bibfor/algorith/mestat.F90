@@ -91,7 +91,6 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     character(len=24) :: fomult, noojb
     logical :: matcst, assmat, lfeti
     logical :: lbid, ltemp, lhydr, lsech, lptot
-    integer :: iarg
 !
 ! DEB------------------------------------------------------------------
 !====

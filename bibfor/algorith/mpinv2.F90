@@ -68,7 +68,6 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
     character(len=16) :: nomcha
     character(len=16) :: scdmbr, wks, phipht, phitph, matsys, work, eta, vals, u
     character(len=16) :: v
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

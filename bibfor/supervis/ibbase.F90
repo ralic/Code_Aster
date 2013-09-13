@@ -71,7 +71,6 @@ subroutine ibbase(ier, fichdf)
     integer :: nbblca(mxbase, mxcas), lgblca(mxbase, mxcas)
     integer :: lgreca(mxbase, mxcas)
     integer :: vali(2), info
-    integer :: iarg
 !
     data      nomba  /'GLOBALE '   , 'VOLATILE'   /
     data      presba /    0        ,     0        /

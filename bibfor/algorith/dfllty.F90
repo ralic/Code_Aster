@@ -81,9 +81,9 @@ subroutine dfllty(sdlist, metlis, dtmin)
     integer :: nbinst, nadapt
     integer :: jinst, jditr, jlisre
     integer :: n1, n2, nval, i, iret, ibid, n3, j
-    real(kind=8) :: pasmin, pasmax, pas0, r8b, dt
+    real(kind=8) :: pasmin, pasmax, pas0, dt
     integer :: nbpamx, nbdec
-    integer :: iarg, numrep
+    integer ::  numrep
     character(len=8) :: resu
     character(len=2) :: type
     logical :: exist

@@ -44,7 +44,7 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
 #include "asterfort/wkvect.h"
     character(len=8) :: noeu
     character(len=19) :: trange
-    integer :: nbpair, nbinst, iarg
+    integer :: nbpair, nbinst
     real(kind=8) :: coef(*), ang(*), temps(*)
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
     real(kind=8) :: pus(*), pmoye, pourpu(*), poupre(*)

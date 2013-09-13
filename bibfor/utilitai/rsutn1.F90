@@ -53,7 +53,7 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
     character(len=8) :: k8b, crit
     character(len=24) :: knume
     character(len=24) :: valk(2)
-    integer :: iarg, nrang
+    integer ::  nrang
 !     ------------------------------------------------------------------
     call jemarq()
 !

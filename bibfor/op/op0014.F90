@@ -67,7 +67,6 @@ subroutine op0014()
     integer :: ldtblo, lfnblo, ndeci, neq, niv, npvneg
     integer :: jslvk, jslvr, jslvi, reacpr
     real(kind=8) :: rbid, fillin, epsmat, eps
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

@@ -37,7 +37,6 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
     character(len=8) :: blanc, mode
     character(len=16) :: champ(8)
     character(len=19) :: nomcha
-    integer :: iarg
 !     ------------------------------------------------------------------
     data blanc    /'        '/
 !     ------------------------------------------------------------------

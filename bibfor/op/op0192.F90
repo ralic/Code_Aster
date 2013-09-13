@@ -100,7 +100,6 @@ subroutine op0192()
 !
     character(len=24) :: ncmpva, ncmpvm
     character(len=24) :: valk(2)
-    integer :: iarg
 !
 ! DEB ------------------------------------------------------------------
 !====

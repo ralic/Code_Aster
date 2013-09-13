@@ -77,7 +77,6 @@ subroutine phi199(model, mate, ma, nu, num,&
     character(len=19) :: vecso1, vesto1, maprec, solveu, chsol, chamno
     character(len=24) :: nomcha, nocham, criter
     character(len=24) :: valk(3)
-    integer :: iarg
 !
     data maprec   /'&&OP0199.MAPREC'/
     data chsol    /'&&OP0199.SOLUTION'/

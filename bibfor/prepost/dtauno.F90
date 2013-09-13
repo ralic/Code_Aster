@@ -92,7 +92,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
     integer :: tab2(18), inop, nunoe, jdtaum, jresun
     integer :: jtypma
     integer :: icmp, kwork, somnow, cnbno
-    integer :: vali(2), jad, iarg, ima
+    integer :: vali(2), jad, ima
 !
     real(kind=8) :: dgam, pi, dphi, tab1(18)
     real(kind=8) :: phi0, coepre, vala, valb, gamma

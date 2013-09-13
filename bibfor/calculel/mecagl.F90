@@ -127,7 +127,6 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=24) :: lchin(40), lchout(1), chthet, chtime
     character(len=24) :: objcur, normff, pavolu, papres, pa2d3d
     character(len=24) :: chsig, chepsp, chvari, type, pepsin, livk(nbmxpa)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -70,7 +70,6 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=24) :: lisnoe
     logical :: grille
     real(kind=8) :: rayon, dist
-    integer :: iarg
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

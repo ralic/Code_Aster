@@ -76,7 +76,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     character(len=24) :: chvale
     character(len=3) :: tout
     real(kind=8) :: rbid, valx(3)
-    integer :: iarg, mxval, lnumi, lnumj, num, ij
+    integer ::  mxval, lnumi, lnumj, num, ij
 !-----------------------------------------------------------------------
     integer :: i, ic, icha, ide, ideb, idefm, idep
     integer :: ier, ifre, ifsic, ifsvi, ifsvk, ii, ik

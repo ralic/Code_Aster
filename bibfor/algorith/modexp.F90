@@ -76,7 +76,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     character(len=19) :: raide, masse, solveu, prno, ssami, raiint
     character(len=24) :: coint, noddli, matmod, vefreq, indin1, lino1, tramod
     character(len=24) :: modet
-    integer :: iarg, iret
+    integer ::  iret
 !
 !---------------------------------------------------C
 !--                                               --C

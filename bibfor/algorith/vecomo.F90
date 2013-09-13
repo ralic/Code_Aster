@@ -86,7 +86,6 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     real(kind=8) :: mat3(nbcmpm, nbcmpm), zero, dxrm, lcaram, tra2(3)
     real(kind=8) :: mattmp(nbcmpm, nbcmpm), difmax, lcara1, lcara2
     real(kind=8) :: matro1(nbcmpm, nbcmpm), matro2(nbcmpm, nbcmpm), seuil, dxrij
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     data zero /0.0d+00/

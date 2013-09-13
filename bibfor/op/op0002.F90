@@ -43,7 +43,6 @@ subroutine op0002()
     character(len=16) :: consta
     character(len=19) :: nomfon
     character(len=24) :: chpro, chval, nomres
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
     call infmaj()

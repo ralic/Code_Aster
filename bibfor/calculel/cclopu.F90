@@ -65,9 +65,8 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     parameter (ntymax = 9)
 !
     integer :: i, ityp, n1, jopt, jopty, postmp, nbopfa, ioc, ibid
-    integer :: nuti, nsup, joput, jord, iordr, iret, iarg
+    integer :: nuti, nsup, joput, jord, iordr, iret
 !
-    character(len=8) :: k8b
     character(len=9) :: mcfact
     character(len=12) :: typopt, tygrop(ntymax)
     character(len=16) :: option

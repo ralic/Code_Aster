@@ -72,7 +72,6 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     character(len=24) :: nomval, nomacc, nnores, nomjv
     complex(kind=8) :: c16b
     character(len=80) :: valek(11)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

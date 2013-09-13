@@ -52,13 +52,11 @@ subroutine caraff(noma, gran, base, cartz)
 !-----------------------------------------------------------------------
     integer :: gd, ibid, ied, nocc, ncmpmx, nbtou, n1, vali(2)
     integer :: iad, jncmp, jvalv, jmail, nbcmp, k, iocc, nbmail, nbvar
-    real(kind=8) :: rbid, rvid
-    complex(kind=8) :: cbid
+    real(kind=8) ::  rvid
     character(len=8) :: k8b, tsca, typmcl(2)
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

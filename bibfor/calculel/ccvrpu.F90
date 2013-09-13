@@ -51,7 +51,6 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 !
     integer :: jordr, iordr, numord, jpara, n1, n2, n3, nchalu, icharg
     integer :: lchalu, fchalu, nchasd, jlcha, jinfc, jfcha, ilu, isd
-    integer :: iarg
 !
     character(len=8) :: k8b, modelu, carelu, chmatu, modelr, carelr, chmatr
     character(len=8) :: fonclu

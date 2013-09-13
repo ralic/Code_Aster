@@ -50,7 +50,6 @@ subroutine calamo(nomres, classe, basmod)
     character(len=1) :: classe
     character(len=8) :: basmod, blanc, k8bid
     character(len=24) :: nomres
-    integer :: iarg
 !
 !
 !-----------------------------------------------------------------------
@@ -58,7 +57,7 @@ subroutine calamo(nomres, classe, basmod)
     integer :: i, iad, iam, idiff, ier, ioc, lamo2
     integer :: lamor, lddes, ldref, ldres, lfreq, lmgen, nbamor
     integer :: nbdef, nbmod, ntail
-    real(kind=8) :: bid, coeff
+    real(kind=8) ::  coeff
 !-----------------------------------------------------------------------
     data blanc /'        '/
 !-----------------------------------------------------------------------

@@ -45,7 +45,6 @@ subroutine op0016()
     character(len=80) :: txt
     character(len=16) :: noment
     character(len=1) :: nomcla
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i, imes, info, ires, iret, iuni

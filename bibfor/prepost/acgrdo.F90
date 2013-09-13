@@ -113,7 +113,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
     real(kind=8) :: strema, stremi, veps(6), eqeps, vepst, epspac
     integer :: nperm, itype, iordre, nvp, nitjac, ordini, ordfin
     integer :: i, j, k, l, ibid, jprof, nparma, np, icodre(1), adr, iret, ipar
-    integer :: decal, paract(30), adrl, iarg, nbf, nbtot
+    integer :: decal, paract(30), adrl, nbf, nbtot
     character(len=24) :: chnom, cbid
     character(len=16) :: phenom, typcha
     character(len=8) :: nompf(22), nompar(22), nomgrd

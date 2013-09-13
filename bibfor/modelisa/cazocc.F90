@@ -65,7 +65,6 @@ subroutine cazocc(char, motfac, izone)
     integer :: parint
     logical :: lintno, lfrot, lsscon, lssfro, lexdir
     logical :: lgliss, lnewtg, lnewtc
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -75,7 +75,6 @@ subroutine op0144()
     character(len=24) :: numoi, fsic, nomcha, matria, chrefe, chdesc
     character(len=24) :: chvale
     character(len=32) :: nomvar
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i, iacmp, iamor, iav, icmp, idec, idesc
@@ -85,7 +84,7 @@ subroutine op0144()
     integer :: j, jcdesc, jcrefe, jdesc, jj, jprno, long
     integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
     integer :: nec, nivdef, nivpar, numgd
-    real(kind=8) :: amor, rbid, umin, vmax, vmin, vmoy, vpas
+    real(kind=8) :: amor, umin, vmax, vmin, vmoy, vpas
 !
 !-----------------------------------------------------------------------
     data         nomcmp /'DX      ','DY      ','DZ      ',&

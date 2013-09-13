@@ -66,7 +66,7 @@ subroutine nmdomt(method, parmet)
     real(kind=8) :: pasmin, relirl
     real(kind=8) :: rhomin, rhomax, rhoexc
     integer :: ifm, niv
-    integer :: iarg, ibid, iret, nocc
+    integer ::  ibid, iret, nocc
     character(len=16) :: relmet
 !
 ! ----------------------------------------------------------------------

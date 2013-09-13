@@ -48,7 +48,6 @@ subroutine clas99(nomres)
     character(len=8) :: nomres, intf, kbid
     character(len=19) :: numddl, raid, mass, raidlt
     complex(kind=8) :: cbid
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

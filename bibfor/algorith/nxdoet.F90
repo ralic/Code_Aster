@@ -83,7 +83,6 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
     real(kind=8) :: tempct
     integer :: ifm, niv
     logical :: evonol, leinit
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

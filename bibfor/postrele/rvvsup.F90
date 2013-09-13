@@ -34,11 +34,9 @@ subroutine rvvsup()
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesi.h"
     integer :: n1, n2, n3, n4, iocc, nbpost
-    real(kind=8) :: r8b
-    character(len=8) :: k8b, resu, nomres
+    character(len=8) ::  resu, nomres
     character(len=24) :: valk(4)
     character(len=16) :: nomcmd, concep, typres
-    integer :: iarg
 !
 !=======================================================================
 !

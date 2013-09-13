@@ -47,11 +47,10 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
     integer :: ibid, nbnoeu, idnoeu, nbc, nbcmp, jcmp
     integer :: i100, i110, icp, ino, inomax, inomin, inamax, inamin
     real(kind=8) :: x
-    character(len=8) :: k8b, nocmp, ma
+    character(len=8) ::  nocmp, ma
     character(len=16) :: motcle(4), typmcl(4)
     character(len=19) :: chams1
     character(len=24) :: mesnoe
-    integer :: iarg
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_NO'

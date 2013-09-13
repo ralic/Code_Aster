@@ -106,7 +106,6 @@ subroutine dglrdm()
     character(len=19) :: mendom
     character(len=19) :: cisail, pente
     character(len=16) :: type, nomcmd, fichie
-    integer :: iarg
 !
     call jemarq()
 !

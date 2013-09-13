@@ -69,7 +69,6 @@ subroutine capoco(char, motfac)
     integer :: jmaco, jjpou
     character(len=19) :: carsd, carte
     logical :: ldpou
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

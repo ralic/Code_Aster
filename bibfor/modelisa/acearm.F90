@@ -72,7 +72,6 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
     character(len=16) :: rep, repdis(nrd), concep, cmd, k16nom
     character(len=19) :: cart(3), cartdi
     character(len=24) :: nogp, nogl, tmpnd(3), tmpvd(3), mlgnma, tmcinf, tmvinf
-    integer :: iarg
 !
     data repdis  /'GLOBAL          ','LOCAL           '/
     data kma     /'K','M','A'/

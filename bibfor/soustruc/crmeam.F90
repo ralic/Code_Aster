@@ -71,7 +71,6 @@ subroutine crmeam(promes, iaapee)
     integer :: lu, lvals, lv, lvsu
 !
     real(kind=8) :: masg, eps, amog
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

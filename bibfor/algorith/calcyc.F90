@@ -48,14 +48,13 @@ subroutine calcyc(nomres)
 !
 !
     character(len=6) :: pgc
-    character(len=8) :: nomres, typint, basmod, k8b
+    character(len=8) :: nomres, typint, basmod
     character(len=14) :: option
     character(len=24) :: repmat, soumat
     character(len=24) :: valk
     complex(kind=8) :: comshi
     logical :: axok
     real(kind=8) :: rlome2(2)
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -67,7 +66,7 @@ subroutine calcyc(nomres)
     integer :: nbdax0, nbdax1, nbddef, nbddg, nbddr, nbdia, nbdia1
     integer :: nbdia2, nblif, nbmcal, nbmobt, nbmos, nbnew, nbsec
     integer :: nbtmp, nmaxit, ntail, ntt, numa
-    real(kind=8) :: beta, bid, omeg2, pi, pima, precaj, precse
+    real(kind=8) :: beta, omeg2, pi, pima, precaj, precse
 !
 !-----------------------------------------------------------------------
     data pgc /'CALCYC'/

@@ -95,7 +95,6 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
     real(kind=8) :: amin, apas, rbid, rval, dir(3)
     complex(kind=8) :: cval, czero, cun
     logical :: trouve, zcmplx, ficab, ficva, vucont, vudef
-    integer :: iarg
 !
 !----------------------------------------------------------------------
 !

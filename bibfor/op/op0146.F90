@@ -52,7 +52,7 @@ subroutine op0146()
     integer :: lvmoy, n1, n2, nb, nbm
     integer :: dim, ij, nbabs
 !-----------------------------------------------------------------------
-    integer :: ibid, ideb, idisc, ifreq, ik, im1, im2
+    integer ::  ideb, idisc, ifreq, ik, im1, im2
     integer :: inumo, ipf, ipv, is, ispect, iv, ivali
     integer :: ivate, ivite, iz, js, jvavf, lbaref, lfsvi
     integer :: lfsvk, linds, lnoe, lnozo, lpasf, lspec
@@ -65,14 +65,14 @@ subroutine op0146()
     integer :: i3, ivitef, lfreq, lnumi, lnumj, lrefe
     real(kind=8) :: val, vitef
     logical :: casint
-    character(len=8) :: k8b, nomu, option, nomzon, nompro
+    character(len=8) ::  nomu, option, nomzon, nompro
     character(len=16) :: concep, cmd
     character(len=19) :: base, spectr, typflu
     character(len=24) :: vali, vite, freq, numo
     character(len=24) :: fsvi, fsvk, basref, pvite
     character(len=24) :: valk(3)
     character(len=24) :: chnumi, chnumj, chfreq, chvale
-    integer :: iarg, mxval
+    integer ::  mxval
 !
 !-----------------------------------------------------------------------
     call jemarq()

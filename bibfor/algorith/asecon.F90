@@ -66,7 +66,6 @@ subroutine asecon(nomsy, neq, mome, resu)
     character(len=16) :: monacc, concep, nomcmd, def
     character(len=19) :: chextr, champ, moncha
     character(len=24) :: vale, noms2, valk(3)
-    integer :: iarg
 !     ------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
     data  vale / '                   .VALE' /

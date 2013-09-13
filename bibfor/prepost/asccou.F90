@@ -39,7 +39,6 @@ subroutine asccou(mailla)
     integer :: nbno, icoor, idime, n1, ino, ndim
     real(kind=8) :: rc, alpha, xt, yt, zt, pi, beta, alphar, xcou, ycou, zcou
     character(len=24) :: coord, dime
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

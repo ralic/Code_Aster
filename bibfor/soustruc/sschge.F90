@@ -63,7 +63,6 @@ subroutine sschge(nomacr)
     character(len=24) :: mate
     character(len=8) :: vprof, nomcas
     character(len=19) :: vecas, vecel
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: iadesm, ialica, ialich, iarefm, iavale, icas, iocc

@@ -53,7 +53,6 @@ subroutine detgnm(ma)
     character(len=8) :: k8b
     character(len=16) :: detr(2), group(2), ptrn(2)
     character(len=24) :: grp, gpptnm, nomgp
-    integer :: iarg
     data detr  / 'DETR_GROUP_MA','DETR_GROUP_NO'/
     data group / '.GROUPEMA','.GROUPENO'/
     data ptrn  / '.PTRNOMMAI','.PTRNOMNOE'/

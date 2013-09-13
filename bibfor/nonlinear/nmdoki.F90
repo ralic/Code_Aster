@@ -45,7 +45,6 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
 ! ----------------------------------------------------------------------
     integer :: ii, n1, numlc2, nbvari, nbvarm
     character(len=16) :: comcod
-    integer :: iarg
 !
 !
     nbkit=0

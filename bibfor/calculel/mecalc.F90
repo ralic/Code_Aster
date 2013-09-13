@@ -94,7 +94,6 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     character(len=24) :: chnova
     integer :: iaux, ibid, iret1, iret2, ier, nb, nbin, nbout, ifm, niv, iret
     integer :: ifiss
-    integer :: iarg
 !
     chdep2 = chdepl
     chele2 = chelem

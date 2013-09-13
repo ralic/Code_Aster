@@ -81,7 +81,6 @@ subroutine mxmoam(sddyna, nbmodp)
     integer :: jacccn
     character(len=24) :: deeq
     character(len=24) :: nomcha
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

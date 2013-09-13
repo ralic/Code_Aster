@@ -33,7 +33,6 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt,&
     character(len=80) :: mess
     integer :: iocc, pt, n1
     real(kind=8) :: poin(3)
-    integer :: iarg
 !
     mess = ' '
     pt = 1

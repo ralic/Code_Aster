@@ -32,7 +32,7 @@ subroutine op0013()
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=8) :: nu, vecas, k8, vprof
+    character(len=8) :: nu, vecas, vprof
     character(len=16) :: typv, oper
     integer :: type
 !
@@ -42,7 +42,6 @@ subroutine op0013()
 !
 !
     character(len=19) :: ch19
-    integer :: iarg
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifm, ilicoe, ilivec, nbvec, niv
 !

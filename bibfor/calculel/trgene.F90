@@ -51,13 +51,13 @@ subroutine trgene(ific, nocc)
 ! ----------------------------------------------------------------------
     character(len=6) :: nompro
     parameter (nompro='TRGENE')
-    integer :: vali, ibid, iocc, iret, jlue, jordr, jdesc, jrefe, n1, n2, n3
+    integer :: vali, iocc, iret, jlue, jordr, jdesc, jrefe, n1, n2, n3
     integer :: nbordr, numord, ncmp, nbinst, im, jinst, jcham, nbmode, jvecg
     integer :: jnume, jdeeq, istru, i, irefr, irefi, irefc, nref, nl1, nl2
     integer :: jfreq, nbfreq
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
-    real(kind=8) :: valr, epsi, epsir, prec, temps, r8b, freq
-    complex(kind=8) :: valc, c16b
+    real(kind=8) :: valr, epsi, epsir, prec, temps, freq
+    complex(kind=8) :: valc
     character(len=1) :: typres
     character(len=3) :: ssigne
     character(len=4) :: ch4
@@ -68,7 +68,6 @@ subroutine trgene(ific, nocc)
     character(len=19) :: cham19, knum, resu19
     character(len=24) :: travr, travi, travc, travrr, travir, travcr
     character(len=200) :: lign1, lign2
-    integer :: iarg
     logical :: lref
 !     ------------------------------------------------------------------
     call jemarq()

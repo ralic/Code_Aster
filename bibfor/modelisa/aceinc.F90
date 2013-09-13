@@ -64,7 +64,6 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
     integer :: mcl, nbcar, nbema, nbmagr, nbmail, nbmtrd, nbnogr
     integer :: ncar, ncara, ng, nj, nm, nn, nnoe
     integer :: naxe, nummai, numnoe, nutyel
-    real(kind=8) :: r8b
 !-----------------------------------------------------------------------
     parameter    ( nbcar = 100 )
     character(len=4) :: exituy

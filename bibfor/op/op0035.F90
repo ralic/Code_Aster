@@ -41,13 +41,12 @@ subroutine op0035()
 #include "asterfort/wkvect.h"
     character(len=1) :: ketat
     character(len=8) :: result, k8bid, etat
-    character(len=16) :: type, nomcmd, k16bid
+    character(len=16) :: type, nomcmd
     character(len=255) :: kfic
     complex(kind=8) :: cbid
     integer :: nbval, jkval, jtval, ibid, k, ul
     integer :: nbunit, nbfic
     real(kind=8) :: rval, rbid
-    integer :: iarg
 !
     call jemarq()
     call infmaj()

@@ -50,7 +50,6 @@ subroutine resu74(tran, nomres)
     integer :: nbchoc, ntem1
     real(kind=8) :: prec, tinit, prec2
     character(len=8) :: resu, crit
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

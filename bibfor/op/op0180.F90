@@ -94,7 +94,6 @@ subroutine op0180()
     parameter    (nbpar2=9)
     character(len=3) :: typpa2(nbpar2)
     character(len=24) :: nompa2(nbpar2)
-    integer :: iarg
 !
     data          aire  /'A1      '/
     data          effnor/'N       ','CONT_X  ','CONT_Y  '/

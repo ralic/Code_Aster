@@ -66,7 +66,6 @@ subroutine i2chem(nomail, nbparm)
     character(len=24) :: conec, type, nommai, nomnoe, noeud, nomgr
     character(len=24) :: grpmai, nchmin, nmail1, nmail2, ntpcrb, nnomma
     character(len=24) :: valk(7)
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

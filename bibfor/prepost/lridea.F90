@@ -106,7 +106,6 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     character(len=80) :: rec(20)
 !
     parameter (nbfiel=40,versio=5)
-    integer :: iarg
 ! ---------------------------------------------------------------------
     call jemarq()
 !

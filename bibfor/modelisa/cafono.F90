@@ -78,7 +78,6 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     character(len=16) :: motcle(nmocl), motclf, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
-    integer :: iarg
     integer :: nb_node, nb_list_elem, nb_list_node
 !     ------------------------------------------------------------------
     call jemarq()

@@ -104,7 +104,6 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     character(len=19) :: changl, carte
     character(len=24) :: mesmai, chgeom, lchin(4), chaout
     character(len=24) :: valk(3), chcara(18)
-    integer :: iarg
 !
     call jemarq()
     epsi = 1.0d-6

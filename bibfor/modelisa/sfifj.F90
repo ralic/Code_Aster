@@ -50,13 +50,13 @@ subroutine sfifj(nomres)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nfinit, nfin, nbm, nbpoin, nbid, iarg
+    integer :: nfinit, nfin, nbm, nbpoin, nbid
     integer :: npoin, iff, ivare, lvale, ibid, in
     integer :: im1, im2, ivate, ivecx, ivecy, ivecz, nvecx, nvecy
     integer :: nveco, ier, ncham, jpara, jordr
     integer :: lnumi, lnumj, lfreq, mxval, nbabs, ij
     real(kind=8) :: fmin, fmax, finit, ffin, df, f, prs
-    real(kind=8) :: kste, uflui, dhyd, rho, rbid, jc, fcoupu, fmodel
+    real(kind=8) :: kste, uflui, dhyd, rho, jc, fcoupu, fmodel
     real(kind=8) :: dir(3, 3), fcoup
     real(kind=8) :: deuxpi, puls, uc, ut, long1, long2
     real(kind=8) :: valr

@@ -33,7 +33,6 @@ subroutine op0193()
 !
     character(len=8) :: basemo, nommes
     character(len=24) :: vrange, vnoeud, basepr, vcham
-    integer :: iarg
 !
 !DEB
 !

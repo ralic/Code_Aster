@@ -45,7 +45,6 @@ subroutine rc32ma(mater)
     integer :: icodre(nbcmp)
     character(len=8) :: nopa, nopb, typeke, nocmp(nbcmp)
     character(len=16) :: phenom, motclf
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

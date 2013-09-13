@@ -62,7 +62,6 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
     character(len=14) :: num
     character(len=19) :: chnul, cn2, pchno2
     character(len=24) :: prchno
-    integer :: iarg
 ! -----------------------------------------------------------------
     data epsi    /1.d-2/
 !---------------------------------------------------------------------

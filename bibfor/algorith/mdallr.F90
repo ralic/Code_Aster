@@ -58,7 +58,6 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
     integer :: nbmax, ipar, ipar1, ipar2
     parameter        (nbmax=50)
     character(len=24) :: kpar(nbmax)
-    integer :: iarg
 !
     call jemarq()
 !

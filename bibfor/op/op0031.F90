@@ -59,7 +59,6 @@ subroutine op0031()
     integer :: iocc
     integer :: ibid, lcoef, ltypec, nbcst, lr, lc, iret, ides1
     integer :: jrefe, jpomr
-    integer :: iarg
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !

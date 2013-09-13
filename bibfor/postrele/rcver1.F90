@@ -50,7 +50,6 @@ subroutine rcver1(phenoz, tablz, tably)
     character(len=16) :: tabref, tabcom, typmec, valek(5), phenom
     character(len=24) :: ordo1, ordo2, intit1, intit2, inst1, inst2
     logical :: exi1, exi2, exi3, exist
-    integer :: iarg
 !
     call jemarq()
 !

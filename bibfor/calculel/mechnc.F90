@@ -35,7 +35,6 @@ subroutine mechnc(noma, motcle, iocc, chnumc)
     character(len=3) :: ordo
     character(len=8) :: k8b, licmp(3)
     complex(kind=8) :: c16b
-    integer :: iarg
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

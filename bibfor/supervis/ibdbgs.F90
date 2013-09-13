@@ -47,7 +47,7 @@ subroutine ibdbgs()
 !
 ! ----------------------------------------------------------------------
     character(len=3) :: repons
-    integer :: l, ncode, ndbg, iarg, i1
+    integer :: l, ncode, ndbg, i1
 !
 !     --- OPTIONS PAR DEFAUT ---
 !-----------------------------------------------------------------------

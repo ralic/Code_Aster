@@ -102,7 +102,6 @@ subroutine dfllad(sdlist)
     character(len=24) :: lisavr, lisavk, listpr, listpk
     integer :: laevr, laevk, latpr, latpk
     integer :: jaevr, jaevk, jatpr, jatpk
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

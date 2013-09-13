@@ -127,12 +127,11 @@ subroutine lecdon(ficext, unitpa, prdeff)
     parameter (palmax=20)
     character(len=6) :: typpal(palmax)
     character(len=3) :: finpal(palmax)
-    character(len=8) :: cnpal(palmax), cnod, k8b
+    character(len=8) :: cnpal(palmax), cnod
 !
     integer :: zcpal, znpal
     character(len=16) :: k16nom
     character(len=24) :: cpal, npal
-    integer :: iarg
 !
     call jemarq()
     niv = 0

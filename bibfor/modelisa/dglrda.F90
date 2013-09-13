@@ -68,7 +68,7 @@ subroutine dglrda()
     character(len=8) :: fsncx, fsncy, fscxd, fscyd, fscxd2, fscyd2
     character(len=8) :: fincx, fincy, ficxd, ficyd, ficxd2, ficyd2
     character(len=16) :: type, nomcmd
-    integer :: iarg, impf, icst, icis
+    integer ::  impf, icst, icis
 !
     call jemarq()
 !

@@ -61,10 +61,9 @@ subroutine op0154()
     character(len=16) :: kbi1, kbi2, option
     character(len=19) :: geomi, geomf
     character(len=24) :: valk(3)
-    real(kind=8) :: ltchar, pt(3), pt2(3), dir(3), angl, r8bid
+    real(kind=8) :: ltchar, pt(3), pt2(3), dir(3), angl
 !
     real(kind=8) :: axe1(3), axe2(3), perp(3)
-    integer :: iarg
 !
 ! -DEB------------------------------------------------------------------
 !

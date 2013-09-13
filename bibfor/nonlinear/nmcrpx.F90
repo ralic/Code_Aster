@@ -82,7 +82,6 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
     integer :: nbinst, n1, freq
     character(len=24) :: sdlist, sdinfl
     integer :: jinfl
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

@@ -55,7 +55,6 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
     complex(kind=8) :: c16b
     character(len=8) :: k8b
     character(len=24) :: nomcha
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

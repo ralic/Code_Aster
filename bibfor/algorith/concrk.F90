@@ -33,7 +33,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
     integer :: jdeps, jvits, jaccs, jpass, jords, jinst, jfcho, jdcho, jvcho
     integer :: jicho, jredc, jredd, jrevc, jrevv, ibid, jdepl, jvite, jacce
     integer :: jdisc, jordr, jptem, jfc, jdl, jvc, jic, jvi, jvir, jedc, jedd
-    integer :: jevc, jevd, decal1, decal2, decal3, decal4, decal5, decal6, iarg
+    integer :: jevc, jevd, decal1, decal2, decal3, decal4, decal5, decal6
     integer :: nm, jrefa
 !
     character(len=4) :: nom4rk, intk, k4bid(3)

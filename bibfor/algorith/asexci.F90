@@ -66,7 +66,6 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
     character(len=5) :: motfac
     character(len=8) :: k8b, noma
     character(len=14) :: nume
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

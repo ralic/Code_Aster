@@ -72,7 +72,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
     integer :: nno
 !
     real(kind=8) :: amor, coef, deuxpi, echel, epsi, freq, dirsp0(3)
-    real(kind=8) :: echsp0(3), valpu(2), omega, omega2, r8b
+    real(kind=8) :: echsp0(3), valpu(2), omega, omega2
     real(kind=8) :: resu, un, uns2pi, xnorm, zero
 !
     character(len=1) :: dir(3)

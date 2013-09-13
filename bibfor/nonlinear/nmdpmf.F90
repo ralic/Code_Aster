@@ -36,7 +36,7 @@ subroutine nmdpmf(compor)
 !
 ! IN/OUT  COMPOR    carte de comportement
 ! ----------------------------------------------------------------------
-    integer :: n1, ibid, iarg, iret
+    integer :: n1, ibid, iret
     logical :: lcumu(2), lcoc(2)
     character(len=6) :: nompro
     character(len=8) :: chmat, licmp

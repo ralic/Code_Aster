@@ -47,7 +47,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: n1, ibid, k, nbnot, iarg, ino, jtrav, ncmp
+    integer :: n1, ibid, k, nbnot, ino, jtrav, ncmp
     integer :: jlisno, jcn2v, jcn2l, jcn2k
     character(len=3) :: tsca
     character(len=8) :: nocmp, noma, ma1, kbid, nomgd

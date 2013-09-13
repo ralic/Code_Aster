@@ -87,7 +87,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     integer :: icmp, vali(2)
     real(kind=8) :: dgam, gamma, pi, dphi, tab1(18)
     real(kind=8) :: phi0, vala, valb, coefpa, vresu2(24), valpar(22)
-    integer :: icodwo, iarg
+    integer :: icodwo
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat

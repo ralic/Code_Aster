@@ -32,7 +32,6 @@ subroutine tran78(nomres, typres, nomin)
 !
     character(len=8) :: macrel
     character(len=19) :: trange
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: nmc

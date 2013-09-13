@@ -41,7 +41,6 @@ subroutine op0161()
     character(len=8) :: k8b, resu, resuin, modele, mate, carele
     character(len=16) :: concep, nomcmd, nsymb
     character(len=24) :: nomch
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ian, ibid, ich, ior, iordr, iret, jangl

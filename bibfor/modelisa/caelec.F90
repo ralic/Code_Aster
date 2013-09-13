@@ -45,7 +45,6 @@ subroutine caelec(char, ligrmo, noma)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

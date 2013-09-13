@@ -59,7 +59,6 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
     character(len=8) :: cara, nomo, materi, repons
     character(len=16) :: nomcmd, typesd
     character(len=19) :: excit
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

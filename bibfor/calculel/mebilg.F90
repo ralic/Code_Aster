@@ -63,7 +63,7 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: ibid, init, niv, ifm, iarg
+    integer :: ibid, init, niv, ifm
     integer :: nchin, livi(nbmxpa)
 !
     real(kind=8) :: g, livr(nbmxpa)

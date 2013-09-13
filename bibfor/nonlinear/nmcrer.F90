@@ -43,7 +43,7 @@ subroutine nmcrer(carcri, sdcriq)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: iarg, ibid, jvale
+    integer ::  ibid, jvale
     character(len=24) :: errthm
     integer :: jerrt
     character(len=16) :: motfac, chaine

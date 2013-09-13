@@ -75,7 +75,6 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     real(kind=8) :: valr(2)
     complex(kind=8) :: valc1, valc2
     integer :: npoinz, nuspz
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -86,7 +85,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     integer :: lg1, lg2, lpro, lval1, lval2, lvar
     integer :: n1, n2, n3, n4, nbinst, nbordr, npoint
     integer :: nusp, vali1, vali2
-    real(kind=8) :: r1, r2, r8b, rbase, rval, valr1, valr2
+    real(kind=8) :: r1, r2, rbase, rval, valr1, valr2
 !
 !-----------------------------------------------------------------------
     call jemarq()

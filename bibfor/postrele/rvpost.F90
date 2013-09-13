@@ -82,7 +82,6 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
     character(len=4) :: docu
     character(len=1) :: ca
     logical :: chok
-    integer :: iarg
 !
 !==================== CORPS DE LA ROUTINE =============================
 !

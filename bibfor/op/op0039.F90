@@ -53,13 +53,13 @@ subroutine op0039()
 #include "asterfort/wkvect.h"
     integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive, ier
     integer :: numemo, nbmodl, nmail, nresu, ncham, ibid, nres, n11, iret, ndim
-    integer :: jlast, jmodl, iarg, nmo, nn, nmod, nforma, ngibi, ifimed, codret
+    integer :: jlast, jmodl, nmo, nn, nmod, nforma, ngibi, ifimed, codret
 !
     real(kind=8) :: versi2, eps
 !
     character(len=1) :: k1occ, saux01
     character(len=8) :: modele, noma, noma2, form, nomare, nomsq
-    character(len=8) :: k8b, resu, nomab, resure(9), resur(9), saux08
+    character(len=8) ::  resu, nomab, resure(9), resur(9), saux08
     character(len=16) :: fich, formr
     character(len=24) :: nomjv, valk(6), corrn, corrm
     character(len=200) :: nofimd

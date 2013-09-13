@@ -73,7 +73,6 @@ subroutine op0112()
     integer :: icompo, numpas, iadr, ifm, niv
     real(kind=8) :: ti, tf, dt
     character(len=24) :: ayacs
-    integer :: iarg
 !     COUPLAGE <=
 !
     call jemarq()

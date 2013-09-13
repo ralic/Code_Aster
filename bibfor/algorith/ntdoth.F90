@@ -94,7 +94,6 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
     integer :: nbtych
     parameter   (nbtych = 11)
     character(len=6) :: nomlig(nbtych)
-    integer :: iarg
 !
     data nomlig/&
      &     '.CIMPO'  ,'.SOURE'  ,'.FLURE'  ,'.FLUR2'  ,&

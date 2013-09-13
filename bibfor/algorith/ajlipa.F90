@@ -62,7 +62,7 @@ subroutine ajlipa(modelz, base)
     integer :: idd, nbmasd, i2, nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
     integer :: iexi
     integer :: icobis, jfdim, dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
-    integer :: nbgrel, jrepe, jfref, jprti, jprtk, nbsma, iarg
+    integer :: nbgrel, jrepe, jfref, jprti, jprtk, nbsma
 !
     logical :: plein0
 !

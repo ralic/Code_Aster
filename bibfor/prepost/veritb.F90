@@ -41,7 +41,6 @@ subroutine veritb(nk1d, ndim, oridef)
     integer :: i, ibid, nbval1, nbval2
     character(len=8) :: motfac, k8b, tabrev, tabmdb, tabthr
     character(len=19) :: tbins1, tbins2
-    integer :: iarg
 ! ======================================================================
     call jemarq()
 ! ======================================================================

@@ -45,7 +45,6 @@ subroutine op0023()
     logical :: nfac
     character(len=8) :: repons
     character(len=16) :: nomfi
-    integer :: iarg
 !     ------------------------------------------------------------------
 !     TEST DU MECANISME DE NAN
     call getvtx(' ', 'TEST_NAN', scal=repons, nbret=n)

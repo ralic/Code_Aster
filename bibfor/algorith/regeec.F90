@@ -72,7 +72,6 @@ subroutine regeec(nomres, resgen, nomsst)
     character(len=24) :: crefe(2), chamol, chamba
     character(len=24) :: valk(2), seliai, sizlia, sst
     complex(kind=8) :: cbid
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/

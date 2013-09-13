@@ -61,7 +61,6 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     integer :: nfonc, jgeomi, inoi, ier
 !
     real(kind=8) :: vx(3)
-    integer :: iarg
 !----------------------------------------------------------------------
 ! DEB ------------------------------------------------------------------
     call jemarq()

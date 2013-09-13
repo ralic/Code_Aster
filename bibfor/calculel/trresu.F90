@@ -58,8 +58,8 @@ subroutine trresu(ific, nocc)
     integer :: nbordr, numord, nupo, nbcmp, jcmp
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
-    real(kind=8) :: valr, epsi, epsir, prec, r8b
-    complex(kind=8) :: valc, c16b
+    real(kind=8) :: valr, epsi, epsir, prec
+    complex(kind=8) :: valc
     character(len=1) :: typres
     character(len=3) :: ssigne
     character(len=4) :: typch, testok, chpt

@@ -53,7 +53,6 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
     character(len=8) :: precon
     character(len=19) :: solvbd
     character(len=8) :: renum
-    integer :: iarg
 !
 !------------------------------------------------------------------
     call jemarq()

@@ -62,7 +62,6 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
     character(len=8) :: kfx, kfy, kfz, kmx, kmy, kmz, typch, plan
     character(len=16) :: motclf
     character(len=19) :: carte
-    integer :: iarg
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
 !     ------------------------------------------------------------------

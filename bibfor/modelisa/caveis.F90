@@ -42,7 +42,6 @@ subroutine caveis(chargz)
 ! ------ VARIABLES LOCALES
     character(len=8) :: charge, maille
     character(len=24) :: obj, gnintf
-    integer :: iarg
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

@@ -66,7 +66,6 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     integer :: lintf, nbint, ideeq, lcopy1, lsecme, limped, unit, numsst
     real(kind=8) :: travm, travk, traint, comlin(2), shift
     character(len=24) :: lisint
-    integer :: iarg
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1=numsst

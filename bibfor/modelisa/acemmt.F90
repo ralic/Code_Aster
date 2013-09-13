@@ -38,7 +38,6 @@ subroutine acemmt(noma, nmmt)
     character(len=8) :: mmt, typmcl(2)
     character(len=16) :: motfac, motcls(2)
     character(len=24) :: mesmai
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
 !

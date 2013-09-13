@@ -53,14 +53,13 @@ subroutine op0054()
     integer :: nbv, nbr8, nbno, nocc2d, nocc3d, iadrt1
     integer :: iadrno, impr, iadrco, iadrma, iadrt2, iadrt3, iadrt4, iadrt5
     integer :: icode, ific, n1, ibid, ier
-    real(kind=8) :: r8b, dir(3), rinf, rsup
+    real(kind=8) ::  dir(3), rinf, rsup
     logical :: ldirec
     character(len=8) :: noma, modele, fond, resu, noeud, format, config
     character(len=16) :: type, oper, fichie, valk(2)
     character(len=24) :: trav1, trav2, trav3, trav4, stok4
     character(len=24) :: obj1, nomno, coorn, obj2, taillr
     character(len=24) :: theta, gdteta
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

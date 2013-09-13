@@ -48,7 +48,6 @@ subroutine casonl(char, ligrmo, noma, ndim)
     integer :: nsour, jvalv, jncmp, n1, ncmp, iocc
     character(len=16) :: motclf
     character(len=19) :: carte
-    integer :: iarg
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
 !

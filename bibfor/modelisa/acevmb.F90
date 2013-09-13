@@ -28,8 +28,6 @@ subroutine acevmb(nbocc, nlm, nlg)
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
     integer :: ioc, ng, nm, nsom
-    character(len=8) :: k8b
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     nlm = 0

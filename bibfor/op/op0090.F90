@@ -35,7 +35,6 @@ subroutine op0090()
     integer :: nta, nres, nc, nna
     character(len=8) :: k8b
     character(len=19) :: cham19, resu, tabres, tabtyp(8), nappe
-    integer :: iarg
     data tabtyp/'NOEU#DEPL_R','NOEU#TEMP_R','NOEU#PRES_R',&
      &            'ELXX#SIEF_R','ELXX#VARI_R','ELXX#EPSI_R',&
      &            'ELXX#FLUX_R','ELXX#PRES_R'/

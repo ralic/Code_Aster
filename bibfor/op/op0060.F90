@@ -119,7 +119,6 @@ subroutine op0060()
     character(len=24) :: nomat(4), basemo, matric(3)
     character(len=24) :: exreco, exresu
     integer :: nbexre
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

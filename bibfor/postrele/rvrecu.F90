@@ -40,7 +40,6 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
 !
     real(kind=8) :: a, b
     integer :: i, jval, kval, n1, neq
-    integer :: iarg
 !
 !==================== CORPS DE LA ROUTINE =============================
 !

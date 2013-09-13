@@ -46,7 +46,6 @@ subroutine op0170()
     character(len=8) :: k8b, nomres, table, typfat(nbpfat)
     character(len=16) :: nomcmd, concep, nopfat(nbpfat), nopfa2(4)
     character(len=24) :: nomob1, nomob2, nomob3
-    integer :: iarg
 !     -----------------------------------------------------------------
     data  nopfat / 'MOMENT_SPEC_0' , 'MOMENT_SPEC_2' ,&
      &               'MOMENT_SPEC_4' ,&

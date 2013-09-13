@@ -82,10 +82,9 @@ subroutine majou(model, modmec, solveu, num, nu,&
     character(len=24) :: nomcha
     character(len=*) :: mate
     complex(kind=8) :: cbid
-    integer :: nbsel, idsel, n15, n16, sel, ii
+    integer :: nbsel, idsel, n15, n16, ii
     integer :: vali
     character(len=20) :: tempor
-    integer :: iarg
 !
 ! -----------------------------------------------------------------
 !-----------------------------------------------------------------

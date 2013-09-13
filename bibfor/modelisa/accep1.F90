@@ -58,10 +58,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     character(len=7) :: incr, ielem, imode
     character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, partit, k8b
     character(len=16) :: option
-    character(len=19) :: nomcha, chgeom, matas, chharm, chamno
+    character(len=19) :: nomcha, chgeom, matas, chharm
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     logical :: yang
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     call jemarq()

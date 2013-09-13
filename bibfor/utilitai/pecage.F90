@@ -65,7 +65,6 @@ subroutine pecage(resu, modele, nbocc)
     character(len=24) :: chgeom
     complex(kind=8) :: c16b
     logical :: nsymx, nsymy
-    integer :: iarg
 !     ------------------------------------------------------------------
     data noparr/'LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',&
      &     'IZ_G_M','IYZ_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',&

@@ -48,7 +48,6 @@ subroutine desccy(nomres)
 !
     character(len=8) :: intf, kbid, basmod, nomres
     character(len=24) :: noeint
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

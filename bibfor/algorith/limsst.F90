@@ -38,14 +38,12 @@ subroutine limsst(nomcmd)
     integer :: nbchoc, nbrede, nbrevi
     character(len=24) :: valk(2)
     character(len=16) :: nomcmd, method
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: n1, n2, namor
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
     call getfac('ETAT_INIT', n2)

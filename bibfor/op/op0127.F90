@@ -46,7 +46,6 @@ subroutine op0127()
     character(len=24) :: typrof
     integer :: ibid1, ibid2, iopt
     real(kind=8) :: rtbloc
-    integer :: iarg
 !
 !
 !-----------------------------------------------------------------------

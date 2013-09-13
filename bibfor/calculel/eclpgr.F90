@@ -55,7 +55,6 @@ subroutine eclpgr()
     character(len=16) :: typre2
     character(len=19) :: ligrel, ch1, ch2, prchno
     character(len=24) :: nomfpg, valk(2)
-    integer :: iarg
 ! DEB -----------------------------------------------------------------
 !
     call jemarq()

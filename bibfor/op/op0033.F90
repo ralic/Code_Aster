@@ -92,7 +92,6 @@ subroutine op0033()
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
     real(kind=8) :: vimp2(3, 3), coef, parcri(7), jm, jp, jd, rbid
     logical :: finpas, itemax, conver
-    integer :: iarg
     character(len=19) :: nomvi
     character(len=19) :: vim, vip, vim2, svip
     integer :: lvim, lvip, lvim2, lsvip, lnomvi

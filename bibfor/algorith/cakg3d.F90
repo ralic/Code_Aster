@@ -123,7 +123,6 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=24) :: abscur, pavolu, papres, pa2d3d
     character(len=24) :: chsig, chepsp, chvari, type, pepsin, livk(nbmxpa)
     character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

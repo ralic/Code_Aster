@@ -65,7 +65,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !     LISS   : TYPE DE LISSAGE (NOM UNIQUE CONTRACTE)
 ! ======================================================================
 !
-    integer :: ibid, iarg, ier, nexci
+    integer :: ibid, ier, nexci
     character(len=8) :: k8b
 !
     call jemarq()

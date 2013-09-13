@@ -52,9 +52,8 @@ subroutine ssdmdm(mag)
 !     IN:
 !        MAG : NOM DU MAILLAGE QUE L'ON DEFINIT.
 !
-    character(len=8) :: kbi81, nomacr, nomail, kbid, ma
+    character(len=8) ::  nomacr, nomail, kbid, ma
     real(kind=8) :: lisr8(9), dist, a1, a2, a3, dmin, dmax, r1
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1noe, i1nol, iaconx, iacoo2, iacoor, iadesm

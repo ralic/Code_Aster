@@ -54,7 +54,6 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
     character(len=24) :: valk
     character(len=16) :: nomcmd, cbid, motcle
     character(len=8) :: nomres, concep
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

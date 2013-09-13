@@ -55,7 +55,6 @@ subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
     integer :: n1, n2
     real(kind=8) :: inst
     integer :: jinst
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

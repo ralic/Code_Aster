@@ -42,7 +42,6 @@ subroutine debut()
     character(len=16) :: nomcmd, k16b, cmpdef, cmput, cmpout
     character(len=80) :: fichdf
     integer :: ier, lout, n, ncode
-    integer :: iarg
 !
     fichdf=' '
 !

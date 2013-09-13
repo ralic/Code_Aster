@@ -42,13 +42,11 @@ subroutine op0134()
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
     integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, lnova, nbnova, lprol
-    real(kind=8) :: rval
     logical :: compl
     character(len=8) :: nopn, nopf
     character(len=16) :: nomcmd, typres
     character(len=19) :: nomfon, nomfin, listp, listf, typco
     character(len=24) :: noparp, noparf, valk(3)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

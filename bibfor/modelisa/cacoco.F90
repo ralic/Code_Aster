@@ -73,7 +73,6 @@ subroutine cacoco(char, motfac, noma)
     integer :: jmaco, jjcoq
     character(len=19) :: carsd, carte
     logical :: ldcoq
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

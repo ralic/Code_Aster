@@ -51,7 +51,7 @@ subroutine pewext(resu)
     character(len=19) :: depla1, force1
     character(len=19) :: depls0, depls1, forcs0, forcs1
     character(len=24) :: lisord
-    integer :: iarg, ier
+    integer ::  ier
 !
 !-----------------------------------------------------------------------
 !

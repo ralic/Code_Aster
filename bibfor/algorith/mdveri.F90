@@ -33,12 +33,10 @@ subroutine mdveri()
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
     integer :: i, nbchoc, nbrede, nbrevi, ibid, jref1, jref2
-    real(kind=8) :: r8bid
-    character(len=8) :: nomres, method, amogen, k8bid, ouinon, channo
+    character(len=8) :: nomres, method, amogen, ouinon, channo
     character(len=8) :: matr1, matr2, basemo
     character(len=24) :: ref1, ref2
     character(len=16) :: typres, nomcmd
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !

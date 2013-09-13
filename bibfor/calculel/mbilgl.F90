@@ -123,7 +123,6 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     character(len=19) :: uchrot, vchrot
     character(len=24) :: upavol, vpavol, upa23d, vpa23d, upapre, vpapre
     character(len=24) :: upepsi, vpepsi
-    integer :: iarg
 !
     data vrcmoi /'&&MBILGL.VRCM'/
     data vrcplu /'&&MBILGL.VRCP'/

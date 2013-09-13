@@ -66,7 +66,7 @@ subroutine medomp(result, modele, mate, carele, nh)
     character(len=19) :: knum, k19bid
     character(len=8) :: crit
     logical :: lrdm, lmater
-    integer :: iarg, lfour
+    integer ::  lfour
 !
 ! ----------------------------------------------------------------------
 !

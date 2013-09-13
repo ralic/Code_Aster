@@ -35,11 +35,10 @@ subroutine op0094()
 #include "asterfort/wkvect.h"
     integer :: nbhist, nbtrc, nbparr, ibid, lonmax, nbval, i, j, jvale, nbv, ind
     parameter    ( nbparr = 19 )
-    real(kind=8) :: rbid, xnbv, vale(6)
+    real(kind=8) ::  xnbv, vale(6)
     character(len=8) :: k8b, nomtrc, typarr(nbparr)
     character(len=16) :: concep, nomcmd, noparr(nbparr)
     complex(kind=8) :: c16b
-    integer :: iarg
 !
     data noparr / 'VITESSE' , 'PARA_EQ' , 'COEF_0' , 'COEF_1' ,&
      &              'COEF_2' , 'COEF_3' , 'COEF_4' , 'COEF_5' ,&

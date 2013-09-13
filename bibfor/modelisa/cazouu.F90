@@ -61,7 +61,6 @@ subroutine cazouu(motfac, nzoco, nommcz)
     real(kind=8) :: parar1
     integer :: parai1
     character(len=16) :: parak1
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

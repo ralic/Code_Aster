@@ -40,12 +40,10 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
 !     ------------------------------------------------------------------
     integer :: n1, n2, n3, numno, i, ier, jcoor
     integer :: vali(2)
-    real(kind=8) :: r8b
     character(len=8) :: k8b, noeud
     character(len=16) :: concep, cmd
     character(len=24) :: coord, nomnoe, nomgrn
     character(len=24) :: valk(3)
-    integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
     iret = 0

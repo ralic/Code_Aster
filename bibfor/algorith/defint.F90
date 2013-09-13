@@ -76,7 +76,6 @@ subroutine defint(mailla, nomres)
     character(len=80) :: kar80
     integer :: icodma(nbecmx), icodac(nbecmx)
     integer :: vali
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

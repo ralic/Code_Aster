@@ -74,7 +74,6 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
     character(len=24) :: excisd, valk(4)
 !
     parameter(nompro='RSLESD')
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

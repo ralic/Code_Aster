@@ -65,7 +65,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     character(len=19) :: k19b
     character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximc, eximod, jprti, jprtk
-    integer :: iarg, jpart, iexi
+    integer ::  jpart, iexi
     logical :: ldgrel
     mpi_int :: mrank, msize
 !------------------------------------------------------------------

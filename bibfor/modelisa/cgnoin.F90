@@ -61,7 +61,6 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=19) :: tablg
     logical :: ldmax
     real(kind=8) :: distma, armin, r8b
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     call jemarq()

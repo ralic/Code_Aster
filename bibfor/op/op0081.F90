@@ -60,12 +60,12 @@ subroutine op0081()
 #include "asterfort/wkvect.h"
     integer :: ioc, n1, nbval, imod, iret
 !
-    real(kind=8) :: rbid, pi
+    real(kind=8) ::  pi
 !
     character(len=8) :: nomres, nomcon, nomope, mailla, basmod, blanc, k8bid
     character(len=19) :: raid, mass, amor, impe, typmat
     character(len=24) :: nommat
-    integer :: iarg, nbmod, iocm, iocf, ioca, vali(2)
+    integer ::  nbmod, iocm, iocf, ioca, vali(2)
     integer :: lmass, lrigi, lamor, ldref, ldres
 !
     data blanc /'        '/

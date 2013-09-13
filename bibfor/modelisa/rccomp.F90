@@ -50,7 +50,6 @@ subroutine rccomp(chmat, nomail, nomode)
     character(len=8) :: nomcmp(ncmpma), k8b, sdcomp
     character(len=16) :: comcod
     character(len=19) :: compor
-    integer :: iarg
     data nomcmp/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',&
      &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',&
      &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',&

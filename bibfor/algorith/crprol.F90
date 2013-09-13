@@ -74,7 +74,6 @@ subroutine crprol()
     character(len=19) :: cnoinr, cnsinr
     character(len=24) :: knum, tabl2
     character(len=24) :: valk(2)
-    integer :: iarg
 !
     call jemarq()
 !

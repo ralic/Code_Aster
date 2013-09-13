@@ -84,7 +84,6 @@ subroutine rc36ma(nommat, noma)
     character(len=16) :: phenom, motcl1, motcl2
     character(len=19) :: chnmat, chsmat, chsma2
     character(len=24) :: chmata, chmatb
-    integer :: iarg
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

@@ -50,7 +50,6 @@ subroutine nmetdo(sdcriq)
     integer :: idebut, iret
     logical :: ellisq
     character(len=16) :: comp1, comel(dimaki), argii, argjj
-    integer :: iarg
     character(len=24) :: errthm
 !
 ! ----------------------------------------------------------------------

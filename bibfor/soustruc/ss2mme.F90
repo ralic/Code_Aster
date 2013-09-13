@@ -65,7 +65,6 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
     integer :: iarefr, ialmai, ialsch, imas, iasssa, iamacr
     integer :: ier0, ioc, i, ibid, ierd, iret
     character(len=16) :: motfac, valk(2)
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

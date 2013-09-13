@@ -42,7 +42,7 @@ subroutine vrcinp(nbvrcm, ind, instam, instap)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: nbocc, iarg, ier, n1, iocc
+    integer :: nbocc, ier, n1, iocc
     character(len=19) :: tvcnom, tvcfon, tvcval
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg

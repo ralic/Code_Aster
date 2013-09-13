@@ -71,7 +71,6 @@ subroutine crmema(promes, iampee)
     integer :: lu, lvals, lv, lvsu
 !
     real(kind=8) :: masg, eps
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

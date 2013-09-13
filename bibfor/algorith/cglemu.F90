@@ -50,11 +50,11 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
 !              DOIT ETRE TRAITE OU PAS
 ! ======================================================================
 !
-    integer :: ier, iarg, ncas, jncas, jnord, i, ibid, iind, ivec, nbord
+    integer :: ier, ncas, jncas, jnord, i, ibid, iind, ivec, nbord
     integer :: nutrou, nbtrou
     real(kind=8) :: rbid
     character(len=8) :: k8b
-    character(len=16) :: typsd, k16b, nomcas, valk(2)
+    character(len=16) :: typsd, nomcas, valk(2)
     character(len=24) :: melcas
     complex(kind=8) :: c16b
 !

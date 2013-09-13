@@ -67,7 +67,6 @@ subroutine nmdocn(parcri, parcon)
     character(len=8) :: rep
     integer :: ifm, niv
     logical :: lretcv
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

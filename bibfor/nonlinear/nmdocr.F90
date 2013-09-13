@@ -87,7 +87,6 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
     character(len=16) :: nomkit(dimaki), lcomel(5), meca, mecaco
 !
 !
-    integer :: iarg
 ! ----------------------------------------------------------------------
     call jemarq()
     carcri = carcrz

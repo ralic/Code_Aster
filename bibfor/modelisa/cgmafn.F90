@@ -77,7 +77,6 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
     real(kind=8) :: angle(3), vecnor(3), coor(3, 9)
     integer :: vali(3)
-    integer :: iarg
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
@@ -86,7 +85,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
     integer :: nb, nbang, nbma, nbmai, nbno, nbo, nboui
     integer :: ndim, ndim1, nv, nvect
     real(kind=8) :: a, ang, angpre, b, c, eps, psca
-    real(kind=8) :: r8bid, un, undemi, xnorel, xnorm
+    real(kind=8) ::  un, undemi, xnorel, xnorm
     real(kind=8) :: xnorm2, zero
 !-----------------------------------------------------------------------
     call jemarq()

@@ -30,10 +30,8 @@ subroutine acevca(nbocc, nlm, nlg, ier)
 ! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    real(kind=8) :: r8b
-    character(len=8) :: k8b, nomu
+    character(len=8) ::  nomu
     character(len=16) :: concep, cmd
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ioc, ne, ng, nm, nsom

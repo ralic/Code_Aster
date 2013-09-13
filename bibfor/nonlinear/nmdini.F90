@@ -61,7 +61,6 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
     integer :: n1, n2, i
     real(kind=8) :: inst, ins, dt, dtmin
     integer :: jinst
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !

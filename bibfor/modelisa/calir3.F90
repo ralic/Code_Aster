@@ -42,7 +42,6 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     real(kind=8) :: rbid, epais
     integer :: ino2, nuno2, jgeom2, k, ncmp, jcnsd, jcnsv, jcnsl, ibid
     character(len=19) :: chnorm, csnorm
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
     call jemarq()

@@ -65,7 +65,6 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
     character(len=14) :: num
     character(len=19) :: chnul, cn1, cn2, pchno1, pchno2
     character(len=24) :: prchno
-    integer :: iarg
 ! -----------------------------------------------------------------
 !---------------------------------------------------------------------
 ! TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER

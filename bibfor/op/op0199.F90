@@ -59,7 +59,6 @@ subroutine op0199()
     character(len=16) :: typres, nomcom
     character(len=19) :: max, may, maz, chamno, solveu
     character(len=24) :: blanc, time, nocham, mate
-    integer :: iarg
 !
 ! -----------------------------------------------------------------
     data nomcmp / 'INST    ', 'DELTAT  ', 'THETA   ',&

@@ -46,7 +46,6 @@ subroutine op0178()
     character(len=19) :: nomsd
     character(len=24) :: nomfi, obj
     character(len=140) :: form1
-    integer :: iarg
 !
 !
 !-----------------------------------------------------------------------

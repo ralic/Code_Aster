@@ -73,7 +73,6 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     character(len=24) :: cnom, valk(3)
 !
     logical :: lcoc
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     call jemarq()

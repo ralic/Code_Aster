@@ -97,7 +97,6 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     character(len=16) :: k16bid, nomcmd
     character(len=24) :: conec, typp, nommai, nomnoe, mesmai, valk(2), nogrp
     logical :: bug
-    integer :: iarg
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !

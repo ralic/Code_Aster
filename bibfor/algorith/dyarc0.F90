@@ -60,7 +60,6 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     character(len=8) :: k8b, crit
     character(len=16) :: motcle, nomsym
     character(len=19) :: numarc, knum, resu
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
     call jemarq()

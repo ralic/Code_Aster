@@ -39,9 +39,8 @@ subroutine inidbg()
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
     integer :: ifm, niv, n, i, jdbg
-    character(len=16) :: czcont, czmeca, czpilo, k16b, czfact, czappa
+    character(len=16) :: czcont, czmeca, czpilo, czfact, czappa
     common /czdbg/czcont,czmeca,czpilo,czfact,czappa
-    integer :: iarg
 !
     call jemarq()
 !

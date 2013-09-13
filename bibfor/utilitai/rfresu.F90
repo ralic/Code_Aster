@@ -44,7 +44,7 @@ subroutine rfresu()
 #include "asterfort/utnono.h"
     integer :: nbtrou, numer1, l, n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn, npr, ngn, ibid, ie
-    integer :: nres, ifm, niv, nusp, iarg
+    integer :: nres, ifm, niv, nusp
     real(kind=8) :: epsi
     character(len=8) :: k8b, crit, maille, noma, intres
     character(len=8) :: noeud, cmp, nomgd

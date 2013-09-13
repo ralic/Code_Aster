@@ -57,7 +57,6 @@ subroutine cetucr(motfac, model0)
     character(len=8) :: nomgrd(nbmcle)
     character(len=16) :: motcle(nbmcle)
     character(len=19) :: table
-    integer :: iarg
 !     ------------------------------------------------------------------
     data motcle / 'LONGUEUR', 'PRESSION', 'TEMPERATURE' /
     data nomgrd / 'LONGUEUR', 'PRESSION', 'TEMP' /

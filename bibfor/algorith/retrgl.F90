@@ -79,7 +79,6 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     character(len=24) :: crefe(2), chamba, indirf, chamno, seliai, sizlia, sst
     character(len=24) :: valk, nomsst, k24bid
     integer :: itresu(3), elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

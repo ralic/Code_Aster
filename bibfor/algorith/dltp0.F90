@@ -44,7 +44,6 @@ subroutine dltp0(t0, nume)
     character(len=16) :: typres, nomcmd
     character(len=24) :: valk
     complex(kind=8) :: c16b
-    integer :: iarg
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, jadr, jbint, jordr, n1, nbordr

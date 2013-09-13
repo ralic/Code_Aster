@@ -44,7 +44,6 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
     real(kind=8) :: valr(4)
     character(len=8) :: nomres, dyna, li
     character(len=16) :: typres, nomcmd
-    integer :: iarg
 !
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------

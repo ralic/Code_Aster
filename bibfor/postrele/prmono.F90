@@ -39,11 +39,10 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     integer :: ibid, nbnoeu, idnoeu, nbc, jcmp
     integer :: i100, i110, icp, ino
     real(kind=8) :: x
-    character(len=8) :: k8b, ma
+    character(len=8) ::  ma
     character(len=16) :: motcle(4), typmcl(4)
     character(len=19) :: chams1
     character(len=24) :: mesnoe
-    integer :: iarg
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_NO'

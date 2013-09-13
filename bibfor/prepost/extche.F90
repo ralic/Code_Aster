@@ -219,7 +219,6 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     logical :: utili
     character(len=8) :: repere
     character(len=24) :: nomjv, nomaux
-    integer :: iarg
 !
 !================= FIN DES DECLARATIONS ============================
 !

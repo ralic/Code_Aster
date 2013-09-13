@@ -44,11 +44,9 @@ subroutine op0012()
     character(len=16) :: typm, oper
     character(len=19) :: matel, solveu
     character(len=24) :: lchci, lmatel
-    character(len=72) :: kbidon
     integer :: itysca, nbchc, nbmat, jlimat, jlchci, ibid, k, j, nbchar
     integer :: jrecc, ico, iexi, iret, islvk, ilimat
 !-----------------------------------------------------------------------
-    integer :: iarg
 !----------------------------------------------------------------------
     call jemarq()
 !

@@ -45,12 +45,11 @@ subroutine op0011()
     parameter   (nlimat=100)
     integer :: ifm, nbid, nbmat, niv, nbcha, iacha, jnslv, il
     character(len=2) :: base
-    character(len=8) :: k8b, tlimat(nlimat), nuuti, renum, mo
+    character(len=8) ::  tlimat(nlimat), nuuti, renum, mo
     character(len=14) :: nudev
     character(len=16) :: type, oper, method
     character(len=19) :: ch19, solveu
     character(len=24) :: charge
-    integer :: iarg
 !----------------------------------------------------------------------
     call infmaj()
     call infniv(ifm, niv)

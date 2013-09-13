@@ -72,7 +72,6 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     character(len=8) :: model1, crit, type, model2, kchml
     character(len=19) :: chp, chpre, ligrel
     logical :: acceno, redpos
-    integer :: iarg
 !     -----------------------------------------------------------------
 !
     call jemarq()

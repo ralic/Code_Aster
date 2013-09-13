@@ -38,7 +38,7 @@ subroutine cgcrio(resu, vecord)
 !     VECORD : VECTEUR DES NUME_ORDRE DU RESU
 ! ======================================================================
 !
-    integer :: ier, iarg, nbord
+    integer :: ier, nbord
     real(kind=8) :: prec
     character(len=8) :: crit
 !
