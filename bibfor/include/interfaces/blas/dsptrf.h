@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dsptrf(uplo, n, ap, ipiv, info)
-        character(len=1) :: uplo
-        integer :: n
-        real(kind=8) :: ap(*)
-        integer :: ipiv(*)
-        integer :: info
+        character(len=1) ,intent(in) :: uplo
+        integer, intent(in) :: n
+        real(kind=8) ,intent(inout) :: ap(*)
+        blas_int ,intent(out) :: ipiv(*)
+        blas_int, intent(out) :: info
     end subroutine dsptrf
 end interface

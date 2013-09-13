@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     function dznrm2(n, x, incx)
-        integer :: n
-        complex(kind=8) :: x(*)
-        integer :: incx
+        integer, intent(in) :: n
+        complex(kind=8),intent(in) :: x(*)
+        integer, intent(in) :: incx
         real(kind=8) :: dznrm2
     end function dznrm2
 end interface

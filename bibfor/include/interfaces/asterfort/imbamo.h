@@ -15,9 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine imbamo(nomres, ifm)
+interface 
+    subroutine imbamo(nomres)
         character(len=8) :: nomres
-        integer :: ifm
     end subroutine imbamo
-end interface
+end interface 

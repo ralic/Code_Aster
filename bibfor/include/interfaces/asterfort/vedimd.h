@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
+interface
     subroutine vedimd(nomo, lischa, instan, vecele)
         character(len=8) :: nomo
         character(len=19) :: lischa
         real(kind=8) :: instan
         character(len=19) :: vecele
     end subroutine vedimd
-end interface 
+end interface

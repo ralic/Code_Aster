@@ -17,10 +17,10 @@
 !
 interface
     subroutine zvout(lout, n, cx, idigit, ifmt)
-        integer :: lout
-        integer :: n
-        complex(kind=8) :: cx(*)
-        integer :: idigit
-        character(*) :: ifmt
+        integer, intent(in) :: lout
+        integer, intent(in) :: n
+        complex(kind=8), intent(in) :: cx(*)
+        integer, intent(in) :: idigit
+        character(*), intent(in) :: ifmt
     end subroutine zvout
 end interface

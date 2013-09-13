@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zrot(n, cx, incx, cy, incy,&
                     c, s)
-        integer :: n
-        complex(kind=8) :: cx(*)
-        integer :: incx
-        complex(kind=8) :: cy(*)
-        integer :: incy
-        real(kind=8) :: c
-        complex(kind=8) :: s
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(inout) :: cx(*)
+        integer, intent(in) :: incx
+        complex(kind=8) ,intent(inout) :: cy(*)
+        integer, intent(in) :: incy
+        real(kind=8) ,intent(in) :: c
+        complex(kind=8) ,intent(in) :: s
     end subroutine zrot
 end interface

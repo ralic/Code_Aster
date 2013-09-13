@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
+interface
     subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
                       npuis)
         character(len=16) :: motfac
@@ -25,4 +25,4 @@ interface
         real(kind=8) :: phase
         integer :: npuis
     end subroutine lislef
-end interface 
+end interface

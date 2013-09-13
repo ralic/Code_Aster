@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zgeqr2(m, n, a, lda, tau,&
                       work, info)
-        integer :: lda
-        integer :: m
-        integer :: n
-        complex(kind=8) :: a(lda, *)
-        complex(kind=8) :: tau(*)
-        complex(kind=8) :: work(*)
-        integer :: info
+        integer, intent(in) :: lda
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(inout) :: a(lda, *)
+        complex(kind=8) ,intent(out) :: tau(*)
+        complex(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(out) :: info
     end subroutine zgeqr2
 end interface

@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zcopy(n, zx, incx, zy, incy)
-        integer :: n
-        complex(kind=8) :: zx(*)
-        integer :: incx
-        complex(kind=8) :: zy(*)
-        integer :: incy
+        integer, intent(in) :: n
+        complex(kind=8),intent(in) :: zx(*)
+        integer, intent(in) :: incx
+        complex(kind=8),intent(out) :: zy(*)
+        integer, intent(in) :: incy
     end subroutine zcopy
 end interface

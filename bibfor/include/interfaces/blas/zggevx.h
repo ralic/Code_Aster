@@ -15,6 +15,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zggevx(balanc, jobvl, jobvr, sense, n,&
                       a, lda, b, ldb, alpha,&
@@ -22,34 +24,34 @@ interface
                       ilo, ihi, lscale, rscale, abnrm,&
                       bbnrm, rconde, rcondv, work, lwork,&
                       rwork, iwork, bwork, info)
-        integer :: ldvr
-        integer :: ldvl
-        integer :: ldb
-        integer :: lda
-        character(len=1) :: balanc
-        character(len=1) :: jobvl
-        character(len=1) :: jobvr
-        character(len=1) :: sense
-        integer :: n
-        complex(kind=8) :: a(lda, *)
-        complex(kind=8) :: b(ldb, *)
-        complex(kind=8) :: alpha(*)
-        complex(kind=8) :: beta(*)
-        complex(kind=8) :: vl(ldvl, *)
-        complex(kind=8) :: vr(ldvr, *)
-        integer :: ilo
-        integer :: ihi
-        real(kind=8) :: lscale(*)
-        real(kind=8) :: rscale(*)
-        real(kind=8) :: abnrm
-        real(kind=8) :: bbnrm
-        real(kind=8) :: rconde(*)
-        real(kind=8) :: rcondv(*)
-        complex(kind=8) :: work(*)
-        integer :: lwork
-        real(kind=8) :: rwork(*)
-        integer :: iwork(*)
-        logical :: bwork(*)
-        integer :: info
+        integer, intent(in) :: ldvr
+        integer, intent(in) :: ldvl
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: balanc
+        character(len=1) ,intent(in) :: jobvl
+        character(len=1) ,intent(in) :: jobvr
+        character(len=1) ,intent(in) :: sense
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(inout) :: a(lda, *)
+        complex(kind=8) ,intent(inout) :: b(ldb, *)
+        complex(kind=8) ,intent(out) :: alpha(*)
+        complex(kind=8) ,intent(out) :: beta(*)
+        complex(kind=8) ,intent(out) :: vl(ldvl, *)
+        complex(kind=8) ,intent(out) :: vr(ldvr, *)
+        blas_int, intent(out) :: ilo
+        blas_int, intent(out) :: ihi
+        real(kind=8) ,intent(out) :: lscale(*)
+        real(kind=8) ,intent(out) :: rscale(*)
+        real(kind=8) ,intent(out) :: abnrm
+        real(kind=8) ,intent(out) :: bbnrm
+        real(kind=8) ,intent(out) :: rconde(*)
+        real(kind=8) ,intent(out) :: rcondv(*)
+        complex(kind=8) ,intent(out) :: work(*)
+        integer, intent(in) :: lwork
+        real(kind=8) ,intent(out) :: rwork(*)
+        blas_int ,intent(out) :: iwork(*)
+        logical(kind=4) ,intent(out) :: bwork(*)
+        blas_int, intent(out) :: info
     end subroutine zggevx
 end interface

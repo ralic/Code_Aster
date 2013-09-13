@@ -15,21 +15,23 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dsygv(itype, jobz, uplo, n, a,&
                      lda, b, ldb, w, work,&
                      lwork, info)
-        integer :: ldb
-        integer :: lda
-        integer :: itype
-        character(len=1) :: jobz
-        character(len=1) :: uplo
-        integer :: n
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: b(ldb, *)
-        real(kind=8) :: w(*)
-        real(kind=8) :: work(*)
-        integer :: lwork
-        integer :: info
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        integer, intent(in) :: itype
+        character(len=1) ,intent(in) :: jobz
+        character(len=1) ,intent(in) :: uplo
+        integer, intent(in) :: n
+        real(kind=8) ,intent(inout) :: a(lda, *)
+        real(kind=8) ,intent(inout) :: b(ldb, *)
+        real(kind=8) ,intent(out) :: w(*)
+        real(kind=8) ,intent(out) :: work(*)
+        integer, intent(in) :: lwork
+        blas_int, intent(out) :: info
     end subroutine dsygv
 end interface

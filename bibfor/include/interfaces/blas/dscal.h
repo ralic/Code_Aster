@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dscal(n, da, dx, incx)
-        integer :: n
-        real(kind=8) :: da
-        real(kind=8) :: dx(*)
-        integer :: incx
+        integer, intent(in) :: n
+        real(kind=8),intent(in) :: da
+        real(kind=8),intent(inout) :: dx(*)
+        integer, intent(in) :: incx
     end subroutine dscal
 end interface

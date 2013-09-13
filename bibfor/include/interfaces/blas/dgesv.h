@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dgesv(n, nrhs, a, lda, ipiv,&
                      b, ldb, info)
-        integer :: ldb
-        integer :: lda
-        integer :: n
-        integer :: nrhs
-        real(kind=8) :: a(lda, *)
-        integer :: ipiv(*)
-        real(kind=8) :: b(ldb, *)
-        integer :: info
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        integer, intent(in) :: n
+        integer, intent(in) :: nrhs
+        real(kind=8) ,intent(inout) :: a(lda, *)
+        blas_int ,intent(out) :: ipiv(*)
+        real(kind=8) ,intent(inout) :: b(ldb, *)
+        blas_int, intent(out) :: info
     end subroutine dgesv
 end interface

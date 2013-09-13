@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     function ddot(n, dx, incx, dy, incy)
-        integer :: n
-        real(kind=8) :: dx(*)
-        integer :: incx
-        real(kind=8) :: dy(*)
-        integer :: incy
+        integer, intent(in) :: n
+        real(kind=8),intent(in) :: dx(*)
+        integer, intent(in) :: incx
+        real(kind=8),intent(in) :: dy(*)
+        integer, intent(in) :: incy
         real(kind=8) :: ddot
     end function ddot
 end interface

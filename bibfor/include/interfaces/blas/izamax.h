@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     function izamax(n, zx, incx)
-        integer :: n
-        complex(kind=8) :: zx(*)
-        integer :: incx
-        integer :: izamax
+        integer, intent(in) :: n
+        complex(kind=8),intent(in) :: zx(*)
+        integer, intent(in) :: incx
+        blas_int              :: izamax
     end function izamax
 end interface

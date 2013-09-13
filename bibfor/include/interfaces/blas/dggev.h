@@ -15,27 +15,29 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dggev(jobvl, jobvr, n, a, lda,&
                      b, ldb, alphar, alphai, beta,&
                      vl, ldvl, vr, ldvr, work,&
                      lwork, info)
-        integer :: ldvr
-        integer :: ldvl
-        integer :: ldb
-        integer :: lda
-        character(len=1) :: jobvl
-        character(len=1) :: jobvr
-        integer :: n
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: b(ldb, *)
-        real(kind=8) :: alphar(*)
-        real(kind=8) :: alphai(*)
-        real(kind=8) :: beta(*)
-        real(kind=8) :: vl(ldvl, *)
-        real(kind=8) :: vr(ldvr, *)
-        real(kind=8) :: work(*)
-        integer :: lwork
-        integer :: info
+        integer, intent(in) :: ldvr
+        integer, intent(in) :: ldvl
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: jobvl
+        character(len=1) ,intent(in) :: jobvr
+        integer, intent(in) :: n
+        real(kind=8) ,intent(inout) :: a(lda, *)
+        real(kind=8) ,intent(inout) :: b(ldb, *)
+        real(kind=8) ,intent(out) :: alphar(*)
+        real(kind=8) ,intent(out) :: alphai(*)
+        real(kind=8) ,intent(out) :: beta(*)
+        real(kind=8) ,intent(out) :: vl(ldvl, *)
+        real(kind=8) ,intent(out) :: vr(ldvr, *)
+        real(kind=8) ,intent(out) :: work(*)
+        integer, intent(in) :: lwork
+        blas_int, intent(out) :: info
     end subroutine dggev
 end interface

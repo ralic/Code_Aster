@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dladiv(a, b, c, d, p,&
                       q)
-        real(kind=8) :: a
-        real(kind=8) :: b
-        real(kind=8) :: c
-        real(kind=8) :: d
-        real(kind=8) :: p
-        real(kind=8) :: q
+        real(kind=8) ,intent(in) :: a
+        real(kind=8) ,intent(in) :: b
+        real(kind=8) ,intent(in) :: c
+        real(kind=8) ,intent(in) :: d
+        real(kind=8) ,intent(out) :: p
+        real(kind=8) ,intent(out) :: q
     end subroutine dladiv
 end interface

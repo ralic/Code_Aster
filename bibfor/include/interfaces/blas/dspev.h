@@ -15,17 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dspev(jobz, uplo, n, ap, w,&
                      z, ldz, work, info)
-        integer :: ldz
-        character(len=1) :: jobz
-        character(len=1) :: uplo
-        integer :: n
-        real(kind=8) :: ap(*)
-        real(kind=8) :: w(*)
-        real(kind=8) :: z(ldz, *)
-        real(kind=8) :: work(*)
-        integer :: info
+        integer, intent(in) :: ldz
+        character(len=1) ,intent(in) :: jobz
+        character(len=1) ,intent(in) :: uplo
+        integer, intent(in) :: n
+        real(kind=8) ,intent(inout) :: ap(*)
+        real(kind=8) ,intent(out) :: w(*)
+        real(kind=8) ,intent(out) :: z(ldz, *)
+        real(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(out) :: info
     end subroutine dspev
 end interface

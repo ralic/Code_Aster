@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     function dlapy2(x, y)
-        real(kind=8) :: x
-        real(kind=8) :: y
+        real(kind=8) ,intent(in) :: x
+        real(kind=8) ,intent(in) :: y
         real(kind=8) :: dlapy2
     end function dlapy2
 end interface

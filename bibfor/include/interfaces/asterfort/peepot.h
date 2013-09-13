@@ -15,16 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine peepot(resu, modele, mate, cara, nchar,&
-                      lchar, nh, nbocc)
-        character(*) :: resu
-        character(*) :: modele
-        character(*) :: mate
-        character(*) :: cara
-        integer :: nchar
-        character(*) :: lchar(*)
-        integer :: nh
-        integer :: nbocc
+interface 
+    subroutine peepot(resu,modele,mate,cara,nh,&
+                      nbocc)
+          character(*) :: resu
+          character(*) :: modele
+          character(*) :: mate
+          character(*) :: cara
+          integer :: nh
+          integer :: nbocc
     end subroutine peepot
-end interface
+end interface 

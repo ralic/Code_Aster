@@ -15,14 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine peingl(resu,modele,mate,cara,nh,nbocc,motfaz)
-              character(*) :: resu
-              character(*) :: modele
-              character(*) :: mate
-              character(*) :: cara
-              integer :: nh
-              integer :: nbocc
-              character(*) :: motfaz
-            end subroutine peingl
-          end interface 
+interface 
+    subroutine peingl(resu, modele, mate, cara, nh,&
+                      nbocc, motfaz)
+        character(*) :: resu
+        character(*) :: modele
+        character(*) :: mate
+        character(*) :: cara
+        integer :: nh
+        integer :: nbocc
+        character(*) :: motfaz
+    end subroutine peingl
+end interface 

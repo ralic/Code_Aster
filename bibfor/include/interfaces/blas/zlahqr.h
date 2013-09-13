@@ -15,22 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zlahqr(wantt, wantz, n, ilo, ihi,&
                       h, ldh, w, iloz, ihiz,&
                       z, ldz, info)
-        integer :: ldz
-        integer :: ldh
-        logical :: wantt
-        logical :: wantz
-        integer :: n
-        integer :: ilo
-        integer :: ihi
-        complex(kind=8) :: h(ldh, *)
-        complex(kind=8) :: w(*)
-        integer :: iloz
-        integer :: ihiz
-        complex(kind=8) :: z(ldz, *)
-        integer :: info
+        integer, intent(in) :: ldz
+        integer, intent(in) :: ldh
+        logical, intent(in) :: wantt
+        logical, intent(in) :: wantz
+        integer, intent(in) :: n
+        integer, intent(in) :: ilo
+        integer, intent(in) :: ihi
+        complex(kind=8) ,intent(inout) :: h(ldh, *)
+        complex(kind=8) ,intent(out) :: w(*)
+        integer, intent(in) :: iloz
+        integer, intent(in) :: ihiz
+        complex(kind=8) ,intent(inout) :: z(ldz, *)
+        blas_int, intent(out) :: info
     end subroutine zlahqr
 end interface

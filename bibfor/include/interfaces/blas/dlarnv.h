@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dlarnv(idist, iseed, n, x)
-        integer :: idist
-        integer :: iseed(4)
-        integer :: n
-        real(kind=8) :: x(*)
+        integer, intent(in) :: idist
+        blas_int ,intent(inout) :: iseed(4)
+        integer, intent(in) :: n
+        real(kind=8) ,intent(out) :: x(*)
     end subroutine dlarnv
 end interface

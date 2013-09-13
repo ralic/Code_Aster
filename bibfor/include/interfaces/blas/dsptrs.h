@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dsptrs(uplo, n, nrhs, ap, ipiv,&
                       b, ldb, info)
-        integer :: ldb
-        character(len=1) :: uplo
-        integer :: n
-        integer :: nrhs
-        real(kind=8) :: ap(*)
-        integer :: ipiv(*)
-        real(kind=8) :: b(ldb, *)
-        integer :: info
+        integer, intent(in) :: ldb
+        character(len=1) ,intent(in) :: uplo
+        integer, intent(in) :: n
+        integer, intent(in) :: nrhs
+        real(kind=8) ,intent(in) :: ap(*)
+        blas_int ,intent(in) :: ipiv(*)
+        real(kind=8) ,intent(inout) :: b(ldb, *)
+        blas_int, intent(out) :: info
     end subroutine dsptrs
 end interface

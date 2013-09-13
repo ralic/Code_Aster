@@ -16,14 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine peecin(resu, modele, mate, cara, nchar,&
-                      lchar, nh, nbocc)
+    subroutine peecin(resu, modele, mate, cara, nh,&
+                      nbocc)
         character(*) :: resu
         character(*) :: modele
         character(*) :: mate
         character(*) :: cara
-        integer :: nchar
-        character(*) :: lchar(*)
         integer :: nh
         integer :: nbocc
     end subroutine peecin

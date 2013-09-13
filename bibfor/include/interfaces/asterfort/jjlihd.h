@@ -28,7 +28,7 @@ interface
         integer :: ic
         integer :: ido
         integer :: idc
-        integer :: jmarq(2)
+        integer :: jmarq(1)
         integer :: iadmi
         integer :: iadyn
     end subroutine jjlihd

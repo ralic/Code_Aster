@@ -15,14 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zaxpy(n, za, zx, incx, zy,&
                      incy)
-        integer :: n
-        complex(kind=8) :: za
-        complex(kind=8) :: zx(*)
-        integer :: incx
-        complex(kind=8) :: zy(*)
-        integer :: incy
+        integer, intent(in) :: n
+        complex(kind=8),intent(in) :: za
+        complex(kind=8),intent(in) :: zx(*)
+        integer, intent(in) :: incx
+        complex(kind=8),intent(inout) :: zy(*)
+        integer, intent(in) :: incy
     end subroutine zaxpy
 end interface

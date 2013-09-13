@@ -15,17 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dger(m, n, alpha, x, incx,&
                     y, incy, a, lda)
-        integer :: lda
-        integer :: m
-        integer :: n
-        real(kind=8) :: alpha
-        real(kind=8) :: x(*)
-        integer :: incx
-        real(kind=8) :: y(*)
-        integer :: incy
-        real(kind=8) :: a(lda, *)
+        integer, intent(in) :: lda
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        real(kind=8) ,intent(in) :: alpha
+        real(kind=8) ,intent(in) :: x(*)
+        integer, intent(in) :: incx
+        real(kind=8) ,intent(in) :: y(*)
+        integer, intent(in) :: incy
+        real(kind=8) ,intent(inout) :: a(lda, *)
     end subroutine dger
 end interface

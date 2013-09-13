@@ -15,12 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine peritr(resu,modele,cara,nh,nbocc)
-              character(*) :: resu
-              character(*) :: modele
-              character(*) :: cara
-              integer :: nh
-              integer :: nbocc
-            end subroutine peritr
-          end interface 
+interface 
+    subroutine peritr(resu,modele,cara,nh,nbocc)
+        character(*) :: resu
+        character(*) :: modele
+        character(*) :: cara
+        integer :: nh
+        integer :: nbocc
+    end subroutine peritr
+end interface 

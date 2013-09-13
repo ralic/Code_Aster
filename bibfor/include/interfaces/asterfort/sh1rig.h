@@ -20,7 +20,7 @@ interface
         real(kind=8) :: xetemp(*)
         real(kind=8) :: para(2)
         real(kind=8) :: dsde(20,6,6)
-        character(len=16) :: option
         real(kind=8) :: re(45, 45)
+        character(len=16) :: option
     end subroutine sh1rig
 end interface

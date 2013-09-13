@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine drot(n, dx, incx, dy, incy,&
                     c, s)
-        integer :: n
-        real(kind=8) :: dx(*)
-        integer :: incx
-        real(kind=8) :: dy(*)
-        integer :: incy
-        real(kind=8) :: c
-        real(kind=8) :: s
+        integer, intent(in) :: n
+        real(kind=8),intent(inout) :: dx(*)
+        integer, intent(in) :: incx
+        real(kind=8),intent(inout) :: dy(*)
+        integer, intent(in) :: incy
+        real(kind=8),intent(in) :: c
+        real(kind=8),intent(in) :: s
     end subroutine drot
 end interface

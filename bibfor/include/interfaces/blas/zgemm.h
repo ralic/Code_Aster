@@ -15,22 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zgemm(transa, transb, m, n, k,&
                      alpha, a, lda, b, ldb,&
                      beta, c, ldc)
-        integer :: ldc
-        integer :: ldb
-        integer :: lda
-        character(len=1) :: transa
-        character(len=1) :: transb
-        integer :: m
-        integer :: n
-        integer :: k
-        complex(kind=8) :: alpha
-        complex(kind=8) :: a(lda, *)
-        complex(kind=8) :: b(ldb, *)
-        complex(kind=8) :: beta
-        complex(kind=8) :: c(ldc, *)
+        integer, intent(in) :: ldc
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: transa
+        character(len=1) ,intent(in) :: transb
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        integer, intent(in) :: k
+        complex(kind=8) ,intent(in) :: alpha
+        complex(kind=8) ,intent(in) :: a(lda, *)
+        complex(kind=8) ,intent(in) :: b(ldb, *)
+        complex(kind=8) ,intent(in) :: beta
+        complex(kind=8) ,intent(inout) :: c(ldc, *)
     end subroutine zgemm
 end interface

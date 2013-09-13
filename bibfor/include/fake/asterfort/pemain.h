@@ -15,14 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine pemain(resu,modele,mate,cara,nh,nbocc,deform)
-              character(*) :: resu
-              character(*) :: modele
-              character(*) :: mate
-              character(*) :: cara
-              integer :: nh
-              integer :: nbocc
-              character(*) :: deform
-            end subroutine pemain
-          end interface 
+interface 
+    subroutine pemain(resu,modele,mate,cara,nh,&
+                      nbocc,deform)
+        character(*) :: resu
+        character(*) :: modele
+        character(*) :: mate
+        character(*) :: cara
+        integer :: nh
+        integer :: nbocc
+        character(*) :: deform
+    end subroutine pemain
+end interface 

@@ -15,21 +15,23 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine dorm2r(side, trans, m, n, k,&
                       a, lda, tau, c, ldc,&
                       work, info)
-        integer :: ldc
-        integer :: lda
-        character(len=1) :: side
-        character(len=1) :: trans
-        integer :: m
-        integer :: n
-        integer :: k
-        real(kind=8) :: a(lda, *)
-        real(kind=8) :: tau(*)
-        real(kind=8) :: c(ldc, *)
-        real(kind=8) :: work(*)
-        integer :: info
+        integer, intent(in) :: ldc
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: side
+        character(len=1) ,intent(in) :: trans
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        integer, intent(in) :: k
+        real(kind=8) ,intent(in) :: a(lda, *)
+        real(kind=8) ,intent(in) :: tau(*)
+        real(kind=8) ,intent(inout) :: c(ldc, *)
+        real(kind=8) ,intent(out) :: work(*)
+        blas_int, intent(out) :: info
     end subroutine dorm2r
 end interface

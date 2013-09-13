@@ -15,17 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zgeru(m, n, alpha, x, incx,&
                      y, incy, a, lda)
-        integer :: lda
-        integer :: m
-        integer :: n
-        complex(kind=8) :: alpha
-        complex(kind=8) :: x(*)
-        integer :: incx
-        complex(kind=8) :: y(*)
-        integer :: incy
-        complex(kind=8) :: a(lda, *)
+        integer, intent(in) :: lda
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(in) :: alpha
+        complex(kind=8) ,intent(in) :: x(*)
+        integer, intent(in) :: incx
+        complex(kind=8) ,intent(in) :: y(*)
+        integer, intent(in) :: incy
+        complex(kind=8) ,intent(inout) :: a(lda, *)
     end subroutine zgeru
 end interface

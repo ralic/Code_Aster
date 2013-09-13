@@ -15,18 +15,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+
 interface
     subroutine zlascl(type, kl, ku, cfrom, cto,&
                       m, n, a, lda, info)
-        integer :: lda
-        character(len=1) :: type
-        integer :: kl
-        integer :: ku
-        real(kind=8) :: cfrom
-        real(kind=8) :: cto
-        integer :: m
-        integer :: n
-        complex(kind=8) :: a(lda, *)
-        integer :: info
+        integer, intent(in) :: lda
+        character(len=1) ,intent(in) :: type
+        integer, intent(in) :: kl
+        integer, intent(in) :: ku
+        real(kind=8) ,intent(in) :: cfrom
+        real(kind=8) ,intent(in) :: cto
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        complex(kind=8) ,intent(inout) :: a(lda, *)
+        blas_int, intent(out) :: info
     end subroutine zlascl
 end interface
