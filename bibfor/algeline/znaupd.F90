@@ -412,7 +412,6 @@ subroutine znaupd(ido, bmat, n, which, nev,&
 !
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !     %--------------------------------------%
 !     | INCLUDE FILES FOR DEBUGGING AND INFO |

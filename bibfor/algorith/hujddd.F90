@@ -1,6 +1,5 @@
 subroutine hujddd(carac, k, mater, ind, yf,&
                   vin, vec, mat, iret)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

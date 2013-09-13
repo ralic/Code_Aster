@@ -19,7 +19,6 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1501
     implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/critet.h"

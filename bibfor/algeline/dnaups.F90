@@ -431,7 +431,7 @@ subroutine dnaups(ido, bmat, n, which, nev,&
 ! ENDLIB
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501,W1504
+! aslint: disable=,W1504
     implicit none
 !
 !     %--------------------------------------%

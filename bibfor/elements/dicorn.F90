@@ -2,7 +2,6 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
                   ul, dul, utl, sim, varim,&
                   klv, klv2, varip)
 ! ----------------------------------------------------------------------
-! aslint: disable=W1501
     implicit none
 #include "asterfort/dicor0.h"
 #include "asterfort/dicor2.h"

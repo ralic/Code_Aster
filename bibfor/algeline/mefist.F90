@@ -5,7 +5,7 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
                   phiy, defm, itypg, zg, hg,&
                   dg, tg, cdg, cpg, rugg,&
                   base)
-! aslint: disable=W1501,W1504
+! aslint: disable=,W1504
     implicit none
 !
 #include "jeveux.h"

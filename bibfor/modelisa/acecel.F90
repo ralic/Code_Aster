@@ -109,11 +109,13 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
         do 48 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbepo+nbedi+ nbeco+nbeca+nbeba+nbema+nbegb
             if(nutyel.eq.ntyele(i))ngribt = ngribt + 1
 48      continue
-        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1, nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb
+        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1, &
+                  nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb
             if(nutyel.eq.ntyele(i))nmembr = nmembr + 1
 49      continue
 !
-        do 60 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+1, nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+nbthm1
+        do 60 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+1, &
+                  nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+nbthm1
             if(nutyel.eq.ntyele(i))nmassi = nmassi + 1
 60      continue
         do 61 i= nbepo+nbedi+nbeco+nbeca+nbeba+nbema+ nbegb+nbemb+&

@@ -16,7 +16,6 @@ subroutine te0491(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !.......................................................................
-! aslint: disable=W1501
     implicit none
 !
 !

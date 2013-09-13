@@ -1,7 +1,6 @@
 subroutine i3iqps(epsi, k, f, desc, desctm,&
                   conexk, coordo, sgt, nbpt, lstpt,&
                   fink)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterfort/i3crqp.h"

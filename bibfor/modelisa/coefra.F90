@@ -20,7 +20,6 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
 !   CALCUL DU COEFFICIENT DE RAIDEUR AJOUTEE CK EN FONCTION DE LA
 !   VITESSE REDUITE  (FAISCEAU DE TUBES SOUS ECOULEMENT TRANSVERSE)
 !-----------------------------------------------------------------------
-! aslint: disable=W1501
     implicit none
 !  IN   : IPAS      : TYPE DE PAS
 !  IN   : IRES      : TYPE DE RESEAU DU POINT COURANT

@@ -58,7 +58,6 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 !
 ! REMARQUE : RESLOC ET QIRES1 DOIVENT RESTER TRES SIMILAIRES
 ! ......................................................................
-! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

@@ -20,7 +20,6 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
 !   CALCUL DU COEFFICIENT D AMORTISSEMENT AJOUTE CD EN FONCTION
 !   DE LA VITESSE REDUITE (FAISCEAU DE TUBES SOUS ECOULEMENT TRANSVERSE)
 !-----------------------------------------------------------------------
-! aslint: disable=W1501
     implicit none
 !  IN    : IPAS      : TYPE DE PAS
 !  IN    : IRES      : TYPE DE RESEAU DU POINT COURANT

@@ -86,17 +86,17 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
         endif
     endif
     if (idatoc .eq. 0) then
-        write (unit,'(/,'' IMPRESSION SEGMENT DE VALEURS >'',A,&
-     &            ''<'')') rnom(jrnom(icls)+idos)(1:32)
+        write (unit,"(/,' IMPRESSION SEGMENT DE VALEURS >',A,            '<')") &
+            rnom(jrnom(icls)+idos)(1:32)
     else if (idatoc .eq. -1) then
-        write (unit,'(/,'' IMPRESSION COLLECTION ENTIERE >''&
-     &            ,A,''<'')') rnom(jrnom(icls)+idos)(1:24)
+        write (unit,"(/,' IMPRESSION COLLECTION ENTIERE >'            ,A,'<')") &
+            rnom(jrnom(icls)+idos)(1:24)
     else if (idco .gt. 0) then
-        write(unit,'(/,'' IMPRESSION OBJET DE COLLECTION >''&
-     &         ,A,''<  OC : '',I6)') rnom(jrnom(icls)+idco)(1:24),idos
+        write(unit,"(/,' IMPRESSION OBJET DE COLLECTION >'         ,A,'<  OC : ',I6)") &
+            rnom(jrnom(icls)+idco)(1:24),idos
     else if (idco .eq. 0) then
-        write(unit,'(/,'' IMPRESSION OBJET DE COLLECTION CONTIGUE>''&
-     &       ,A,''<  OC : '',I6)') rnom(jrnom(icls)+idos)(1:24),idatoc
+        write(unit,"(/,' IMPRESSION OBJET DE COLLECTION CONTIGUE>'       ,A,'<  OC : ',I6)") &
+            rnom(jrnom(icls)+idos)(1:24),idatoc
     endif
     write (unit,'(A,A)' ) ' >>>>> ',mess(1:min(50,len(mess)))
     if (genri .ne. 'N') then
@@ -124,23 +124,21 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
             ji = 1 + ( (jiszon +kadm - 1)*lois +ideci +ladm) / lor8
             nl = lonoi / ( 5 * lor8 )
             nd = mod( lonoi , (5*lor8) ) / lor8
-            write ( unit , '((I7,'' - '',5(1PD12.5,1X)))') (5*(l-1)+1,&
+            write ( unit , "((I7,' - ',5(1PD12.5,1X)))") (5*(l-1)+1,&
             (r8zon( ji + 5*(l-1)+k-1),k=1,5),l=1,nl)
             if (nd .ne. 0) then
-                write ( unit , '(I7,'' - '',5(1PD12.5,1X))') 5*nl+1,(&
+                write ( unit , "(I7,' - ',5(1PD12.5,1X))") 5*nl+1,(&
                 r8zon( ji +5*nl+k-1),k=1,nd)
             endif
         else if (typei .eq. 'C') then
             ji = 1 + ( (jiszon +kadm - 1)*lois +ideci +ladm) / lor8
             nl = lonoi / ( 2 * loc8)
             nd = mod( lonoi , ( 2 * loc8) ) / loc8
-            write ( unit , '((I7,'' - '',1P,&
-     &                                   2(A1,D12.5,'','',D12.5,A1)))')&
+            write ( unit , "((I7,' - ',1P,2(A1,D12.5,',',D12.5,A1)))")&
      &      (2*(l-1)+1,('(',r8zon(ji+4*(l-1)+2*k),&
      &                      r8zon(ji+4*(l-1)+2*k+1),')',k=0,1),l=1,nl)
             if (nd .ne. 0) then
-                write ( unit , '((I7,'' - '',1P,&
-     &                                   2(A1,D12.5,'','',D12.5,A1)))')&
+                write ( unit , "((I7,' - ',1P,2(A1,D12.5,',',D12.5,A1)))")&
      &         2*nl+1,'(',r8zon(ji+4*(l-1)),&
      &                     r8zon(ji+4*(l-1)+1),')'
             endif

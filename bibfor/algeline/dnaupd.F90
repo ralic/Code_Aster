@@ -416,7 +416,6 @@ subroutine dnaupd(ido, bmat, n, which, nev,&
                   tol, resid, ncv, v, ldv,&
                   iparam, ipntr, workd, workl, lworkl,&
                   info, neqact, alpha)
-! aslint: disable=W1501
     implicit none
 !
 !     %--------------------------------------%

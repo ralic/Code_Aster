@@ -2,7 +2,6 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
                  instap, tempm, tempf, tref, angmas,&
                  epsd, deps, sigd, vind, opt,&
                  sigf, vinf, dsde, iret)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

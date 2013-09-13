@@ -185,7 +185,7 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
                 'EPYY' .or. zk8(j_lcmp_act_in-1+icmp) .eq. 'EPZZ    ') then
                 zr(j_lcoe_act-1+icmp) = 1.d0
                 nb_cmp_act = nb_cmp_act+1
-                elseif (zk8(j_lcmp_act_in-1+icmp).eq.'EPXY'.or. zk8(j_lcmp_act_in-1+icmp).eq.'EPXZ'  &
+                elseif (zk8(j_lcmp_act_in-1+icmp).eq.'EPXY'.or. zk8(j_lcmp_act_in-1+icmp).eq.'EPXZ'&
                     .or. zk8(j_lcmp_act_in-1+icmp).eq.'EPYZ')then
                 zr(j_lcoe_act-1+icmp) = coef_cross
                 nb_cmp_act = nb_cmp_act+1

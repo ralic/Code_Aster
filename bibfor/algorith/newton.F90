@@ -24,7 +24,7 @@ subroutine newton(np1, np2, np3, np4, nbm,&
                   tconf2, toln, tolc, tolv, testc,&
                   itforn)
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=,W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
