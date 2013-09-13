@@ -29,6 +29,7 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
 ! IN  : DPLREV : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE REV
 ! IN  : FONREV : FONCTIONS DE NON-LINEARITE
 ! ----------------------------------------------------------------------
+#include "asterc/r8prem.h"
     integer :: ier, icomp, nbmode, nbrevi, sarevi(*)
     real(kind=8) :: force, vitess, vitgen(*), fexgen(*), saurev(*)
     real(kind=8) :: dplrev(nbrevi, nbmode, *)
@@ -60,7 +61,7 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
 !
         call fointe('F ', fonc, 1, [comp], [vitess],&
                     force, ier)
-        if (force .eq. 0.d0) sarevi(i) = 0
+        if (abs(force) .le. r8prem()) sarevi(i) = 0
 !
         do 30 j = 1, nbmode
             fexgen(j)=fexgen(j)+dplrev(i,j,icomp)*force

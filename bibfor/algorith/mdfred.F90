@@ -31,6 +31,7 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 ! OUT : SAURED : VALEURS SAUVEGARDEES
 ! OUT : SAREDI : VALEURS SAUVEGARDEES
 ! ----------------------------------------------------------------------
+#include "asterc/r8prem.h"
     integer :: ier, icomp, nbmode, nbrede, saredi(*)
     real(kind=8) :: seuil, force, depgen(*), fexgen(*)
     real(kind=8) :: saured(*), dplred(nbrede, nbmode, *)
@@ -62,7 +63,7 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 !
         call fointe('F ', fonc, 1, [comp], [seuil],&
                     force, ier)
-        if (force .eq. 0.d0) saredi(i) = 0
+        if (abs(force) .le. r8prem()) saredi(i) = 0
 !
         do 30 j = 1, nbmode
             fexgen(j)=fexgen(j)+dplred(i,j,icomp)*force
