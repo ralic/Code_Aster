@@ -42,7 +42,6 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
 ! ----------------------------------------------------------------------
 !
     integer :: iarg, iret, valimc, vali
-    real(kind=8) :: rbid
     character(len=16) :: valk(2)
 !
 ! ----------------------------------------------------------------------

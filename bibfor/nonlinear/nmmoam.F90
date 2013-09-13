@@ -69,7 +69,7 @@ subroutine nmmoam(sdammz, nbmoda)
     character(len=24) :: deeq
     character(len=24) :: matric, nomcha
     character(len=24) :: sdammo
-    real(kind=8) :: pi, r8bid
+    real(kind=8) :: pi
     integer :: iret, iam, imode, vali(3)
     integer :: na, nb, n, nm
     integer :: nbmd, neq, nbmax, nbamor

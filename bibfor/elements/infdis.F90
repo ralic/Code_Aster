@@ -71,7 +71,6 @@ subroutine infdis(quest, ivale, rvale, kvale)
 !
     character(len=8) :: nommai, mailla
     integer :: nbnoeu
-    real(kind=8) :: r8bid
 !
     data elemnd /  '_DIS_T_N     ','_DIS_TR_N    ',&
      &               '_DIS_T_L     ','_DIS_TR_L    ',&

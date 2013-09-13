@@ -68,7 +68,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     character(len=8) :: nomres(3), kbid, type, materi
     real(kind=8) :: epsthe, sigy, aire, dsde, valrm(2)
     real(kind=8) :: r8bid, valres(3), resu, apui, npui, rprim
-    integer :: iret1, iret2, ibid
+    integer :: iret1, iret2
 ! ----------------------------------------------------------------------
 !
     materi = ' '

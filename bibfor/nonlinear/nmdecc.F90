@@ -83,7 +83,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
 !
     real(kind=8) :: inst, pasdt, premie, suivan, valr(3)
     integer :: ipas, jinst
-    character(len=16) :: k16bid, optdec
+    character(len=16) ::  optdec
 !
 ! ----------------------------------------------------------------------
 !

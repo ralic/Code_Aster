@@ -68,7 +68,6 @@ subroutine jenuno(nomlu, nomo)
     character(len=32) :: noml32
     character(len=1) :: genri
     integer :: icre, iret, itab(1), vali(2)
-    real(kind=8) :: valr
 ! DEB ------------------------------------------------------------------
     ipgcex = ipgc
     ipgc = -2

@@ -77,7 +77,6 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     integer :: ibid, ient, jprnm
     integer :: itrno, itrma, ima, ino, nbma, nbno, nbnoma, imo, ier, jmodel
     integer :: lma, lno, itbma, itbno, iret, inoem, ntou, k, ifm, niv
-    real(kind=8) :: r8bid
     character(len=8) :: k8b, type2, oui, noent, nomgd
     character(len=16) :: motfac, motcle, typmcl, phenom
     character(len=19) :: ligrel

@@ -38,7 +38,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
 !
     character(len=16) :: car, nom
     character(len=24) :: valk(2)
-    integer :: ibid, no1, no2, lg, i, locvr(2)
+    integer ::  no1, no2, lg, i, locvr(2)
     real(kind=8) :: x1(3), x2(3), x3(3), angl(3), valr(2)
     real(kind=8) :: alpha, beta, gamma
     real(kind=8) :: dgrd

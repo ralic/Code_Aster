@@ -109,7 +109,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     integer :: maxnod, n, n2, nbcmpt, nbel, nbgrel, nbm
     integer :: nbmac, nbmodl, nbn, nbno, nbtitr, nbtma, ncmpmx
     integer :: ndim, ngr
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     data iprem /0/
 !

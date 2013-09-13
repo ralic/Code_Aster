@@ -47,7 +47,6 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
     character(len=16) :: motfac, nomsym(10)
     character(len=19) :: chin, chextr, excit, ligrel, resu19
     character(len=24) :: valk(4)
-    real(kind=8) :: rbid
 !     ------------------------------------------------------------------
 !
     call jemarq()

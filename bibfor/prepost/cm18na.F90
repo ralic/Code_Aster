@@ -55,7 +55,6 @@ subroutine cm18na(main, nbma, nbno, lima, typema,&
     integer :: m, a, no, ma, no1, no2, no3, no4, i, nomi, tyma
     integer :: jnoma
     character(len=8) :: nomnoe
-    real(kind=8) :: rbid
 ! ----------------------------------------------------------------------
     call jemarq()
     connex = main//'.CONNEX'

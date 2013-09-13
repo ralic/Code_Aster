@@ -63,7 +63,6 @@ subroutine mxmoam(sddyna, nbmodp)
     integer :: ldblo, ldblo1, ldblo2
     integer :: imode, ifonc, imode2
     integer :: iret, ibid, nf, lpar, vali(3)
-    real(kind=8) :: r8bid
     character(len=8) :: k8bid
     character(len=8) :: modmec, magene, amgene, rigene
     character(len=14) :: numddl

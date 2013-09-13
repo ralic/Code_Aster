@@ -51,7 +51,7 @@ subroutine te0340(option, nomte)
     integer :: jtab(7), iadzi, iazk24, jcret, codret
     integer :: ndim, iret, ntrou, vali(2)
     integer :: iu(3, 3), iuc(3), im(3), isect, icontm
-    real(kind=8) :: tang(3, 3), rbid, a
+    real(kind=8) :: tang(3, 3), a
 !
 !
 ! - FONCTIONS DE FORME

@@ -93,7 +93,6 @@ subroutine jeimhd(fichdf, clas)
     parameter      ( nomatc = 'ATTRIBUTS JEVEUX' )
     character(len=32) :: crnom, ngrp, nomcol
     character(len=80) :: nhdf
-    real(kind=8) :: rbid
     integer :: ic, julist, ltypi, ilong, lonoi, iaddi(2), iadmi, iadmx
     integer :: idfic, nbmax, jctab, idg, idgc
     integer :: lidbas

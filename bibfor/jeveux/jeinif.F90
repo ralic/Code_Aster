@@ -119,7 +119,6 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     character(len=24) :: valk(3)
     integer :: ncar, itlec(1), itecr(1), iadadd(2), lgbl
     integer :: vali(7), irt, ind
-    real(kind=8) :: valr(1)
     parameter      ( ncar = 11 )
 ! ----------------------------------------------------------------------
     logical :: lenrg

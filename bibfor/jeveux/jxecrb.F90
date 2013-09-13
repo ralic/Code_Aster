@@ -74,7 +74,6 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
     character(len=128) :: nom128
     logical :: lrab
     integer :: lgbl, vali(3)
-    real(kind=8) :: r8bid
 ! DEB ------------------------------------------------------------------
     ib = 0
     ierr = 0

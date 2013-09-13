@@ -93,7 +93,6 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
     integer :: nb_cmp
     integer :: nb_cmp_resu
     integer :: vali(3)
-    real(kind=8) :: rbid
     character(len=2) :: cnum
     character(len=4) :: type_field_in, type_field_out
     character(len=8) :: ma, model, nomgd

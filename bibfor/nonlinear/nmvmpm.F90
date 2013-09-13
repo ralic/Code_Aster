@@ -50,7 +50,6 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
 !
 !     POUR LES MESSAGES
     real(kind=8) :: valrm(2)
-    integer :: valim(2)
     character(len=15) :: valkm(5)
 !
 !     DATA NOMRE2/'EP','SY','SU','PUISS'/

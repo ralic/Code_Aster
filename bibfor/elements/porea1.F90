@@ -56,7 +56,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
 ! --- ------------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: i, ibid
+    integer :: i
     real(kind=8) :: utg(14), xug(6), xd(3), xl2, alfa1, beta1, alfa0, beta0
     real(kind=8) :: xugm(6), dgamma, tet1, tet2, gamma1, xdm(3)
     real(kind=8) :: ang1(3)

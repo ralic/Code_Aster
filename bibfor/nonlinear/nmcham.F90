@@ -35,7 +35,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer :: imate, nbvar, kpg, ksp, memo, visc, iret, idelta, nrad, ibid
+    integer :: imate, nbvar, kpg, ksp, memo, visc, iret, idelta, nrad
     character(len=16) :: compor(3), valk(2)
     real(kind=8) :: mat(18), matel(4)
     character(len=*) :: fami

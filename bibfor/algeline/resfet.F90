@@ -66,7 +66,7 @@ subroutine resfet(matas, chcine, chsecm, chsol, niter,&
     integer :: niter, nbreor, nbreoi, reacre, jslvi, jslvk, jslvr
     integer :: idime, nbsd, idd, ifetm, ilimpi, ifetpt, ifetc, iinf
     integer :: ibid, ifm, niv
-    real(kind=8) :: rbid, temps(6)
+    real(kind=8) ::  temps(6)
     character(len=19) :: solv19, sdfeti, arg1, arg2, pchn1, pchn2
     character(len=24) :: opt, infofe, valk(2)
     character(len=24) :: tyreor, preco, scalin, stogi, acma, acsm

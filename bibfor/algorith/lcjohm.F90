@@ -43,7 +43,7 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 !
 ! - VARIABLES LOCALES
 !
-    integer :: ibid, i, kpg, spt
+    integer ::  i, kpg, spt
     real(kind=8) :: kni, umc, gamma, kt, clo, para(4), valr(2), tmecn, tmecs
     character(len=8) :: ncra1(4), fami, poum
     integer :: icodre(18)

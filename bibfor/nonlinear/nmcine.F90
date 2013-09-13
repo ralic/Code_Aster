@@ -67,7 +67,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: nomres(3), materi
     real(kind=8) :: rac2
 !-----------------------------------------------------------------------
-    integer :: ibid, iret, k, l
+    integer ::  iret, k, l
     real(kind=8) :: a1, a2, c, cm, dsdem
 !-----------------------------------------------------------------------
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/

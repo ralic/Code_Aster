@@ -59,7 +59,7 @@ subroutine jefini(cond)
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
     common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
 !     ==================================================================
-    integer :: vali(7), info, ifm, ires, iret, ibid
+    integer :: vali(7), info, ifm, ires, iret
     character(len=8) :: kcond, staou, k8tab(3)
     character(len=24) :: ladate
     real(kind=8) :: rval(3)

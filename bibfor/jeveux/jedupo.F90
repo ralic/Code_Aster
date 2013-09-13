@@ -86,7 +86,6 @@ subroutine jedupo(schin, claout, schout, dupcol)
     character(len=32) :: nomin, nomout, nomcol
     character(len=1) :: kclas, genri, typei
     logical :: idenba, libcol, x2u
-    real(kind=8) :: val
     data             iv / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
     data             csuffi / '$$DESO  ','$$IADD  ','$$IADM  ',&
      &                          '$$MARQ  ','$$NOM   ','        ',&

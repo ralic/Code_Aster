@@ -61,7 +61,6 @@ subroutine char_read_tran(keywordfact, iocc, ndim, l_tran, tran,&
 !
     integer :: ibid, nangmx, i
     integer :: ntran, ncent, nangl, vali(2)
-    real(kind=8) :: r8bid
 !
 ! --------------------------------------------------------------------------------------------------
 !

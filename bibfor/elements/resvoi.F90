@@ -65,7 +65,6 @@ subroutine resvoi(moz, maz, chvoiz)
     integer :: jceld, nbmav1, nbmav2, nbmav3, nbmav4
     integer :: numav1, numav2, numav3, numav4, typ, som(4, 6, 4), iatyma
 !
-    real(kind=8) :: r8bidt(1)
 !
     logical :: troisd
 !

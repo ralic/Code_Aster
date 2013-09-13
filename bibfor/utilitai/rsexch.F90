@@ -61,7 +61,6 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
     character(len=19) :: nomd2, chext2, chext3
     character(len=24) :: valk(3)
     integer :: iexi, irang, isymb, jtach, nbordr, nbormx, jordr
-    real(kind=8) :: rbid
 ! ----------------------------------------------------------------------
     call jemarq()
     icode = -99

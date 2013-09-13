@@ -58,7 +58,6 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
 !     ------------------------------------------------------------------
     character(len=24) :: valk(2)
     character(len=8) :: valkm
-    integer :: valim
     real(kind=8) :: tst, valrm
 !     ------------------------------------------------------------------
 !

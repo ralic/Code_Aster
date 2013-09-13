@@ -100,7 +100,6 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     character(len=8) :: nomres(10), nompar(10)
 ! ======================================================================
     real(kind=8) :: valrm(5)
-    integer :: valim
     character(len=16) :: valkm(5)
 ! ======================================================================
     parameter   ( zero   = 0.d0   )

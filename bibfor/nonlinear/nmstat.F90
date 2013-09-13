@@ -73,7 +73,6 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     integer :: ctgeom
     integer :: nbliac, nbliaf
     integer :: ctccpr, ctcmat, ctcvec, ctiter, ctcfro
-    integer :: ibid
     integer :: vali(5)
     character(len=24) :: tpscvt
 !

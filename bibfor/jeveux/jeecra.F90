@@ -74,7 +74,6 @@ subroutine jeecra(nomlu, catr, ival, cval)
     integer :: ilorep, ideno, ilnom, ilmax, iluti, idehc
     parameter      ( ilorep=1,ideno=2,ilnom=3,ilmax=4,iluti=5,idehc=6)
 ! DEB ------------------------------------------------------------------
-    real(kind=8) :: r8bid
 !
     catrlu = catr
     noml32 = nomlu

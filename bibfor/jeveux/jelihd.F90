@@ -148,7 +148,6 @@ subroutine jelihd(nomf, fichdf, clas)
     character(len=32) :: nomsys, d32
     integer :: kat(lidbas), lso(lidbas), kdy(lidbas), lgbl, iadyn
     integer :: irt, ind
-    real(kind=8) :: valr
     data cidbas  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,&
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,&
      &               '$$LONG  ' , '$$LONO  ' , '$$DATE  ' , '$$LUTI  ' ,&

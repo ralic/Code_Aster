@@ -65,7 +65,6 @@ subroutine celces(celz, basez, cesz)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
     integer :: ico, adiel, ispt, jcesd, jlpt, jlcupt, cumu, jnocmp
     character(len=24) :: valk(2)
-    real(kind=8) :: rbid
 !
 #define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------

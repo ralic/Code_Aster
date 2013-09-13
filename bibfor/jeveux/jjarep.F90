@@ -75,7 +75,6 @@ subroutine jjarep(iclas, nrmax)
     common /idynje/  ldyn , lgdyn , nbdyn , nbfree
 ! ----------------------------------------------------------------------
     character(len=32) :: clel, cle
-    real(kind=8) :: rbid
     character(len=4) :: z
     integer :: jcod, kadhc, jnom, kadno, lorep, iadrs(20), kat(20)
     integer :: lgnom, nuti, lso(20), imq(2), iaddi(2), kdy(20)

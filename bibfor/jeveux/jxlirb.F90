@@ -42,7 +42,6 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 !-----------------------------------------------------------------------
     integer :: i, iadloc, ierr, jiacce, jiecr, n
     integer :: nbacce, nblent, numext
-    real(kind=8) :: r8bid
 !-----------------------------------------------------------------------
     parameter      ( n = 5 )
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr

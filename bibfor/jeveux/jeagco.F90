@@ -63,7 +63,6 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
     integer :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlono
     integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
     integer :: llect, lonoi, n, nbl, nmax
-    real(kind=8) :: val
 !-----------------------------------------------------------------------
     parameter  ( n = 5 )
     common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&

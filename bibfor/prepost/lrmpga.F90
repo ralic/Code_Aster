@@ -107,7 +107,6 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     integer :: nutyma, ipg, ipgm, jperm
     integer :: npr, n
     integer :: iopt, imod, jmod, igrd, iadgd, nec
-    real(kind=8) :: rbid
 !
     character(len=1) :: saux01
     character(len=8) :: saux08, k8b, fapg, elref, nomtm, tyele(ntygeo)

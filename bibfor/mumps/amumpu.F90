@@ -100,7 +100,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     character(len=2) :: fstring
     character(len=8) :: k8tab(3)
     character(len=10) :: strpid
-    character(len=24) :: kpiv, valk(2), ksizemu
+    character(len=24) :: kpiv, ksizemu
     character(len=80) :: nvers
 !
     call jemarq()

@@ -52,7 +52,7 @@ subroutine te0360(option, nomte)
     integer :: jtab(7), iadzi, iazk24, jcret, codret
     integer :: ndim, iret, ntrou, vali(2)
     integer :: iu(3, 18), im(3, 9), it(18)
-    real(kind=8) :: ang(24), rbid
+    real(kind=8) :: ang(24)
 !
 !
 !

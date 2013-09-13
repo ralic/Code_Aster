@@ -59,7 +59,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     character(len=19) :: chsref, chscom
     character(len=24) :: vrcplu, vrcref
     integer :: jcesd, jcesl, jcesv, nbma, nbpt, nbsp, icmp
-    integer :: jcrsd, jcrsl, jcrsv, vali, ima, ipt, isp, iad, iad2
+    integer :: jcrsd, jcrsl, jcrsv, ima, ipt, isp, iad, iad2
     integer :: imamax, imamin, jnom, jvarc, iref
     real(kind=8) :: valmin, valmax, valr(2)
     real(kind=8) :: valeur, valref

@@ -42,8 +42,8 @@ subroutine rcver1(phenoz, tablz, tably)
 !      - MEME NOMBRE DE LIGAMENTS, MEMES INSTANTS (CAS "EVOLUTION")
 !     ------------------------------------------------------------------
     integer :: n1, nbno1, nbno2, jordo1, jordo2, nbint1, nbint2, i, j
-    integer :: vali(2), nbins1, nbins2, jinst1, jinst2, ibid
-    real(kind=8) :: valr(2), eps, r8b, v1, v2
+    integer :: vali(2), nbins1, nbins2, jinst1, jinst2
+    real(kind=8) :: valr(2), eps, v1, v2
     parameter(eps=1.d-6)
     character(len=8) :: k8b, valk(3), tyva
     character(len=16) :: tabref, tabcom, typmec, valek(5), phenom

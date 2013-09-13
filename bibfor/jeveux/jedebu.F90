@@ -62,7 +62,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     integer :: i, jcara, jdate, jdocu, jgenr, jhcod
     integer :: jiacce, jiadd, jiadm, jlong, jlono, jltyp
     integer :: jluti, jmarq, jorig, jrnom, jtype, k
-    integer :: n, nbacce, ibid
+    integer :: n, nbacce
     real(kind=8) :: val
 !-----------------------------------------------------------------------
     parameter  ( n = 5 )
@@ -132,7 +132,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     common /jiacce/  jiacce(n),nbacce(2*n)
 ! --------------------------------- ------------------------------------
     integer :: mxlici, iret
-    real(kind=8) :: r8bid, rval(6)
+    real(kind=8) ::  rval(6)
     character(len=8) :: k8tab(6)
     parameter      ( mxlici = 67 )
     character(len=mxlici) :: clicit

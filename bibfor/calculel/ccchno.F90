@@ -77,7 +77,6 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     character(len=19) :: optele, nochou, chams0, chams1
     character(len=24) :: chelem, noobj(nmaxob)
 !
-    real(kind=8) :: valr(1)
 !
     call jemarq()
 !

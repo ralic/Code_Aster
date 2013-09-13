@@ -61,7 +61,6 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 !-----------------------------------------------------------------------
     integer :: ibid, nbordr, nrang, jordr, i, ipara, ier, irang, ifr
     integer :: vali(2)
-    real(kind=8) :: r8bid
     character(len=24) :: valk(3)
     character(len=16) :: param, k16b
     character(len=19) :: noms2

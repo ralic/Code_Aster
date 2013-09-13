@@ -86,7 +86,6 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     integer :: jdlg2, jj
     character(len=1) :: rouc
     character(len=4) :: etam
-    character(len=8) :: kbid
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: vcival

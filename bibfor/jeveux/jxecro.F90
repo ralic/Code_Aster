@@ -60,7 +60,6 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
     common /kbasje/  nombas(n)
     common /jusadi/  jusadi(n)
 !     ------------------------------------------------------------------
-    real(kind=8) :: r8bid
     integer :: iadmo, kadd, ladd, nde, lgbl, lso2
     logical :: lpetit
     parameter      ( nde = 6)

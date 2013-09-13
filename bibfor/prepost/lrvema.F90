@@ -64,7 +64,6 @@ subroutine lrvema(nomail, mfich, nochmd)
     parameter (ednoda=0)
 !
     integer :: nummed(ntymax)
-    real(kind=8) :: r8b
     character(len=1) :: k1b
     character(len=8) :: saux08, nomast(ntymax), k8b
     character(len=64) :: nomamd

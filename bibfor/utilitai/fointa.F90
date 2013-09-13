@@ -43,7 +43,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 !
     integer :: npar(2), indfct, jpro, jpar, lpara, nbvn, nbpara, i
     integer :: nupar, nbpt, jval, inume, ier, iret
-    real(kind=8) :: tab(4), rpar, rvar, epsi, valr(4)
+    real(kind=8) :: tab(4), rpar, rvar, epsi
     character(len=1) :: coli
     character(len=19) :: nomf
     character(len=24) :: nompf(2)

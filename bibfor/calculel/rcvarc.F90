@@ -75,7 +75,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     integer :: k, itabm(7), itabp(7), itabr(7)
     character(len=24) :: valk(4)
     character(len=8) :: nomail
-    real(kind=8) :: valvrm, valvrp, valr(3), tdef, rundf
+    real(kind=8) :: valvrm, valvrp, tdef, rundf
     save itabm,itabp,itabr,rundf
     data iprem /0/
 ! ---------------------------------------------------------------

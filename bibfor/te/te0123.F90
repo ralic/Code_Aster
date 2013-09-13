@@ -54,7 +54,7 @@ subroutine te0123(option, nomte)
     integer :: jtab(7), iadzi, iazk24, jcret, codret
     integer :: ndim, iret, ntrou, idim, i, vali(2)
 !
-    real(kind=8) :: trav1(3*8), angmas(7), bary(3), rbid
+    real(kind=8) :: trav1(3*8), angmas(7), bary(3)
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, nbvois
     parameter(nvoima=12,nscoma=4)

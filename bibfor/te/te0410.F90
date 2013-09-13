@@ -41,7 +41,6 @@ subroutine te0410(optioz, nomtz)
 !-----------------------------------------------------------------------
     integer :: i, icontr, jcou, jgeom, lzi
     integer :: nbcou, npgsn, npgsr
-    real(kind=8) :: r8bid
 !-----------------------------------------------------------------------
     parameter (npgt=10,ncoumx=10)
     integer :: nb1, itab(7), iret

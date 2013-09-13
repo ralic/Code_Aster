@@ -27,7 +27,6 @@ subroutine jxouvr(iclas, idn)
     integer :: n
 !-----------------------------------------------------------------------
     integer :: ierr
-    real(kind=8) :: r8bid
 !-----------------------------------------------------------------------
     parameter      ( n = 5 )
     character(len=8) :: nomfic, kstout, kstini

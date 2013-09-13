@@ -94,7 +94,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     integer :: mfich, jinst, itps
     integer :: ifm, nivinf, jrefe, jnuom
     integer :: nbma, jnbpgm, jnbpmm, ordins
-    real(kind=8) :: epsi, r8b
+    real(kind=8) :: epsi
     character(len=3) :: prolz
     character(len=4) :: acce
     character(len=8) :: resu, noma, typcha
