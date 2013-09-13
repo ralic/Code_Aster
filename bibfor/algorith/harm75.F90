@@ -141,13 +141,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
     if (mode .eq. ' ') then
 !
-!
-!
-        call dismoi('F', 'REF_RIGI_PREM', hrange, 'RESU_DYNA', ibid,&
-                    matgen, iret)
-        call dismoi('F', 'BASE_MODALE', hrange, 'RESU_DYNA', ibid,&
-                    basemo, iret)
-!
+        call dismoi('C', 'REF_RIGI_PREM', hrange, 'RESU_DYNA', ibid, matgen, iret)
+        call dismoi('F', 'BASE_MODALE'  , hrange, 'RESU_DYNA', ibid, basemo, iret)
+
         if (matgen(1:8) .ne. blanc) then
             call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
                         matric, iret)

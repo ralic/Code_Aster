@@ -139,7 +139,7 @@ subroutine orth99(nomres, ritz)
                     numdd1, ir)
     endif
 !
-    call dismoi('F', 'REF_INTD_PREM', base, 'RESU_DYNA', ibid,&
+    call dismoi('C', 'REF_INTD_PREM', base, 'RESU_DYNA', ibid,&
                 intf, ir)
 !
     if (numdd1 .ne. numdda) then
