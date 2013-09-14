@@ -49,7 +49,7 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
     integer :: i, jnuma, jnbnma, jnoma, jnbmag, jnbtym, jindma
     integer :: nte, ij, ima, ityp, nbno, inum, nbnoas, ino
     integer :: idiv, irest, mod, k, l, jtypma, indmax, maxmai
-    integer :: max, jgrmai, numgro, vali(2), jgr
+    integer :: max, jgrmai, numgro, jgr
     character(len=1) :: prfnoe, prfmai
     character(len=8) :: chgrou, chtab(32), chmail, k8bid
     character(len=12) :: chenti
@@ -159,12 +159,9 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
     ier = 0
     do 60 i = 1, indmax
         numgro = zi(jindma+i-1)
-!MH
-!   NUMGRO = 1
-!MH
         if (numgro .ge. 1000000) then
             ier = ier + 1
-            call utmess('E', 'PREPOST5_21', ni=2, vali=vali)
+            call utmess('E', 'PREPOST5_21', ni=2, vali=[numgro, 1000000])
             goto 60
         endif
         call codent(numgro, 'G', chgrou(3:8))
