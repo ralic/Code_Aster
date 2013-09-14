@@ -63,13 +63,13 @@ subroutine mdfext(tinit, dt, neqgen, nbexci, idescf,&
         t=tinit
         do 10 k = 1, nbpas
             if (idescf(i) .eq. 1) then
-                call fointe('F ', nomfon(i), 1, nompar, t,&
+                call fointe('F ', nomfon(i), 1, [nompar], [t],&
                             alpha, ier)
                 do 30 j = 1, neqgen
                     f(j,k) = f(j,k) + alpha * zr(liad(i)+j-1)
 30              continue
             else if (idescf(i).eq.2) then
-                call fointe('F ', nomfon(i), 1, nompar, t,&
+                call fointe('F ', nomfon(i), 1, [nompar], [t],&
                             alpha, ier)
                 f(inumor(i),k)=f(inumor(i),k)+alpha
             else if (idescf(i).eq.3) then

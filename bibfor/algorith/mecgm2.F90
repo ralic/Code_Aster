@@ -18,7 +18,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
@@ -116,7 +116,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
 !
             call lxliis(zk24(jmec+ichar-1)(7:8), icha, ier)
             if (icha .gt. 0) then
-                call fointe('F ', zk24(jfonct+icha-1)(1:8), 1, 'INST', instan,&
+                call fointe('F ', zk24(jfonct+icha-1)(1:8), 1, ['INST'], [instan],&
                             valres, ier)
             else
                 ASSERT(.false.)

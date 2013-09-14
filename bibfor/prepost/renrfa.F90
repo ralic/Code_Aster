@@ -74,7 +74,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 !
 ! A PARTIR DE GRANDEUR EQUI, ON RESOUT LE NOMBRE DE CYCLE AVEC
 ! LA FONCTION DU TYPE: NBRUPT = F(VALGRD)
-        call fointe('F', nomfor, np, nompf, valgrd,&
+        call fointe('F', nomfor, np, [nompf], [valgrd],&
                     nrupt, icodre)
 !
     else
@@ -93,7 +93,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
         endif
 !
 ! VERIFIER QUE  VALGRD < GRDMAX
-        call fointe('F', nomfor, np, nompfi, lnf(20),&
+        call fointe('F', nomfor, np, [nompfi], [lnf(20)],&
                     grdmax, icodre)
 !
         if (valgrd .gt. grdmax) then
@@ -101,7 +101,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
         endif
 !
         do 10 i = 1, ndat
-            call fointe('F', nomfor, np, nompfi, lnf(i),&
+            call fointe('F', nomfor, np, [nompfi], [lnf(i)],&
                         grd(i), icodre)
             if (grd(i) .gt. valgrd) then
 !                   NRUPT2 = LNF(I)+

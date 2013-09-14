@@ -112,7 +112,7 @@ subroutine te0354(option, nomte)
         if (resi) then
 !
 !        CALCUL DE LA SOURCE
-            call fointe('FM', zk8(isour), 1, 'TEMP', tg,&
+            call fointe('FM', zk8(isour), 1, ['TEMP'], [tg],&
                         sour, iret)
             coef = w*sour*coefop
 !

@@ -442,7 +442,7 @@ subroutine op0172()
         zr(iamomo+imod-1) = zr(iamomo+imod-1) + amosol*enesol
 !
         do 62 ic = 1, ncmp
-            call fointe('F ', amogeo(ic), 1, 'FREQ', f,&
+            call fointe('F ', amogeo(ic), 1, ['FREQ'], [f],&
                         amoge, ire)
             if (rep .eq. 'OUI') amoge = amoge / 2.d0
             if (abs(zr(ienmot+imod-1)) .gt. r8prem( )) zr(iamomo+ imod-1) = zr(iamomo+imod-1) + a&

@@ -203,9 +203,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
         vrotin = 0.d0
         arotin = 0.d0
         if (vvar .eq. 'OUI') then
-            call fointe('F ', foncv, 1, 'INST', tinit,&
+            call fointe('F ', foncv, 1, ['INST'], [tinit],&
                         vrotin, ier)
-            call fointe('F ', fonca, 1, 'INST', tinit,&
+            call fointe('F ', fonca, 1, ['INST'], [tinit],&
                         arotin, ier)
             do 113 im = 1, neqgen
                 do 114 jm = 1, neqgen
@@ -436,9 +436,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
             vrot = 0.d0
             arot = 0.d0
             if (vvar .eq. 'OUI') then
-                call fointe('F ', foncv, 1, 'INST', temps,&
+                call fointe('F ', foncv, 1, ['INST'], [temps],&
                             vrot, ier)
-                call fointe('F ', fonca, 1, 'INST', temps,&
+                call fointe('F ', fonca, 1, ['INST'], [temps],&
                             arot, ier)
                 do 115 im = 1, neqgen
                     do 116 jm = 1, neqgen

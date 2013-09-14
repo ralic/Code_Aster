@@ -1,6 +1,7 @@
 subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
                   fonrev, saurev, sarevi)
     implicit none
+#include "asterfort/fointe.h"
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +29,11 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
 ! IN  : DPLREV : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE REV
 ! IN  : FONREV : FONCTIONS DE NON-LINEARITE
 ! ----------------------------------------------------------------------
-#include "asterfort/fointe.h"
     integer :: ier, icomp, nbmode, nbrevi, sarevi(*)
     real(kind=8) :: force, vitess, vitgen(*), fexgen(*), saurev(*)
     real(kind=8) :: dplrev(nbrevi, nbmode, *)
     character(len=8) :: fonc, comp, fonrev(nbrevi, *)
-    integer :: i, j  
+    integer :: i, j
 !-----------------------------------------------------------------------
 !
 !     --- BOUCLE SUR LES NOEUDS DE NON-LINEARITE ---
@@ -58,7 +58,8 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
         saurev(i) = vitess
         sarevi(i) = 1
 !
-        call fointe('F ', fonc, 1, comp, vitess, force, ier)
+        call fointe('F ', fonc, 1, [comp], [vitess],&
+                    force, ier)
         if (force .eq. 0.d0) sarevi(i) = 0
 !
         do 30 j = 1, nbmode

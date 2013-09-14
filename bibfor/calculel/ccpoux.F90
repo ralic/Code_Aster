@@ -212,7 +212,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                             0, lfreq, k8b)
                 freq = zr(lfreq)
                 if (l1 .ne. 0) then
-                    call fointe('F ', fmult, 1, 'FREQ', freq,&
+                    call fointe('F ', fmult, 1, ['FREQ'], [freq],&
                                 valres, ier)
                     calpha = dcmplx(valres,zero)
                 else if (l3.ne.0) then
@@ -224,7 +224,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                             0, linst, k8b)
                 inst = zr(linst)
                 if (l1 .ne. 0) then
-                    call fointe('F ', fmult, 1, 'INST', inst,&
+                    call fointe('F ', fmult, 1, ['INST'], [inst],&
                                 alpha, ier)
                 else if (l3.ne.0) then
                     alpha = coeff
@@ -236,7 +236,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             else if (typesd.eq.'EVOL_ELAS') then
                 typcoe = 'R'
                 if (l1 .ne. 0) then
-                    call fointe('F ', fmult, 1, 'INST', inst,&
+                    call fointe('F ', fmult, 1, ['INST'], [inst],&
                                 alpha, ier)
                 else
                     call utmess('A', 'CALCULEL3_3')

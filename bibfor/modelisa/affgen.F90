@@ -260,7 +260,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
             ASSERT((alpha .ge. 0.d0) .or. (alpha .le. 1.d0))
             nompaf = 'ALPHA'
             valpaf = alpha
-            call fointe('A', foncis, 1, nompaf, valpaf,&
+            call fointe('A', foncis, 1, [nompaf], [valpaf],&
                         ccis, ier)
 !  AY
             if (nel .eq. ntel(2) .or. nel .eq. ntel(12)) then

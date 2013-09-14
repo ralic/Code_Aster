@@ -1,6 +1,6 @@
 subroutine fext(t, neq, nvect, liad, lifo,&
                 f)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
@@ -48,7 +48,7 @@ subroutine fext(t, neq, nvect, liad, lifo,&
     zero = 0.d0
     call r8inir(neq, zero, f, 1)
     do 10 i = 1, nvect
-        call fointe('F ', lifo(i), 1, nompar, t,&
+        call fointe('F ', lifo(i), 1, [nompar], [t],&
                     alpha, ier)
         call daxpy(neq, alpha, zr(liad(i)), 1, f,&
                    1)

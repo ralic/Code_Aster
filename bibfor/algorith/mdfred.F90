@@ -1,6 +1,7 @@
 subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
                   fonred, saured, saredi)
     implicit none
+#include "asterfort/fointe.h"
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +31,6 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 ! OUT : SAURED : VALEURS SAUVEGARDEES
 ! OUT : SAREDI : VALEURS SAUVEGARDEES
 ! ----------------------------------------------------------------------
-#include "asterfort/fointe.h"
     integer :: ier, icomp, nbmode, nbrede, saredi(*)
     real(kind=8) :: seuil, force, depgen(*), fexgen(*)
     real(kind=8) :: saured(*), dplred(nbrede, nbmode, *)
@@ -60,7 +60,8 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
         saured(i) = seuil
         saredi(i) = 1
 !
-        call fointe('F ', fonc, 1, comp, seuil, force, ier)
+        call fointe('F ', fonc, 1, [comp], [seuil],&
+                    force, ier)
         if (force .eq. 0.d0) saredi(i) = 0
 !
         do 30 j = 1, nbmode

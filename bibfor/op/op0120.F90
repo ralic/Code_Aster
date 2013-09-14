@@ -133,7 +133,7 @@ subroutine op0120()
             nomfon = zk8(lfon+kf-1)
             do 50 it = 1, nbpts
                 tinst = tinst1 + (imatr-1)* (durdec) + (it-1)*dt
-                call fointe('F ', nomfon, 1, 'INST', tinst,&
+                call fointe('F ', nomfon, 1, ['INST'], [tinst],&
                             resu, ier)
                 zero = 0.d0
                 zc(lvale+it-1) = dcmplx(resu,zero)

@@ -304,7 +304,7 @@ subroutine sfifj(nomres)
                         prs = 0.d0
                     else if (zk16(ivate).eq.'SPEC_CORR_CONV_2') then
                         puls = deuxpi*f
-                        call fointe('F', fonct, 1, 'PULS', puls,&
+                        call fointe('F', fonct, 1, ['PULS'], [puls],&
                                     prs, ier)
                         call accept(f, nbm, method, im2, im1,&
                                     uflui, jc, dir, uc, ut,&

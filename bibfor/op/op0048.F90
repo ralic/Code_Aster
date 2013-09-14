@@ -290,7 +290,7 @@ subroutine op0048()
                     codret)
         call vrcref(modele(1:8), mate(1:8), carael(1:8), chvref(1: 19))
         if (exipou .and. nfon .ne. 0) then
-            call fointe('F ', nomfon, 1, 'INST', time,&
+            call fointe('F ', nomfon, 1, ['INST'], [time],&
                         alpha, iret)
         endif
         call rsexch(' ', result, 'STRX_ELGA', iordr, chstru,&

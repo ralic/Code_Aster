@@ -150,7 +150,7 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
             call jeveuo(forgen, 'L', jforge)
             call jeveuo(valfon, 'E', jvalfo)
             do 14 ifonc = 1, nbgene
-                call fointe('F ', zk24(jfonge+ifonc-1)(1:8), 1, 'INST', instap,&
+                call fointe('F ', zk24(jfonge+ifonc-1)(1:8), 1, ['INST'], [instap],&
                             zr(jvalfo+ifonc-1), ier)
 14          continue
         endif

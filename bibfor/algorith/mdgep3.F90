@@ -52,7 +52,7 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
             call utmess('A', 'ALGORITH13_44', sk=valk)
             goto 10
         endif
-        call fointe('F ', nomfon(iex), 1, nompar, temps,&
+        call fointe('F ', nomfon(iex), 1, [nompar], [temps],&
                     coef, ier)
         do 11 ieq = 1, neq
             tab(ieq) = tab(ieq) + psidel(ieq,iex)*coef

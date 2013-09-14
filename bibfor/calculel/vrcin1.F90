@@ -252,7 +252,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !           -- PRISE EN COMPTE DE L'EVENTUELLE TRANSFORMATION DU TEMPS
 !              (AFFE_VARC/FONC_INST):
         if (finst .ne. ' ') then
-            call fointe('F', finst, 1, 'INST', inst,&
+            call fointe('F', finst, 1, ['INST'], [inst],&
                         instev, ibid)
         else
             instev=inst

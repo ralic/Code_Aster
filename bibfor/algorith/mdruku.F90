@@ -160,9 +160,9 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
         vrotin = 0.d0
         arotin = 0.d0
         if (vitvar .eq. 'OUI') then
-            call fointe('F ', foncv, 1, 'INST', tinit,&
+            call fointe('F ', foncv, 1, ['INST'], [tinit],&
                         vrotin, ier)
-            call fointe('F ', fonca, 1, 'INST', tinit,&
+            call fointe('F ', fonca, 1, ['INST'], [tinit],&
                         arotin, ier)
             do 113 im = 1, neqgen
                 do 114 jm = 1, neqgen

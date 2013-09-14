@@ -115,11 +115,11 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
 !
     do 910 iex = 1, nbexci
         if (zi(jmltap+iex-1) .eq. 1) then
-            call fointe('F ', zk8(jnodep+iex-1), 1, 'INST', instap,&
+            call fointe('F ', zk8(jnodep+iex-1), 1, ['INST'], [instap],&
                         coef1, ie)
-            call fointe('F ', zk8(jnovit+iex-1), 1, 'INST', instap,&
+            call fointe('F ', zk8(jnovit+iex-1), 1, ['INST'], [instap],&
                         coef2, ie)
-            call fointe('F ', zk8(jnoacc+iex-1), 1, 'INST', instap,&
+            call fointe('F ', zk8(jnoacc+iex-1), 1, ['INST'], [instap],&
                         coef3, ie)
         else
             coef1 = zero

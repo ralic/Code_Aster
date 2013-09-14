@@ -189,7 +189,7 @@ subroutine op0033()
         igrad=0
 !            VALEURS IMPOSEES DE CONTRAINTES OU DEFORMATIONS
         do 20 i = 1, 6
-            call fointe('F', fonimp(i), 1, 'INST', instap,&
+            call fointe('F', fonimp(i), 1, ['INST'], [instap],&
                         valimp(i), ier)
 !               NORMALISATION DES TERMES EN CONTRAINTES
             if (indimp(i) .eq. 0) valimp(i)=valimp(i)/coef
@@ -200,7 +200,7 @@ subroutine op0033()
         igrad=1
 !           VALEURS IMPOSEES DE GRADIENTS F
         do 21 i = 1, 9
-            call fointe('F', fonimp(i), 1, 'INST', instap,&
+            call fointe('F', fonimp(i), 1, ['INST'], [instap],&
                         valimp(i), ier)
 21      continue
     endif

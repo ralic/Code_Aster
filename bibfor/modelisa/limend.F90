@@ -193,7 +193,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
                 call utmess('F', 'FATIGUE1_93')
             endif
 !
-            call fointe('F', forvie, np, nompf, nlimim,&
+            call fointe('F', forvie, np, [nompf], [nlimim],&
                         vallim, ibid)
 !
             if (salt .lt. vallim) then

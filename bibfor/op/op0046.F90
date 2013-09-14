@@ -212,7 +212,7 @@ subroutine op0046()
         call vrcref(modele(1:8), mate(1:8), carele(1:8), chvref(1:19))
 !
         if (exipou .and. nfon .ne. 0) then
-            call fointe('F ', nomfon, 1, 'INST', time,&
+            call fointe('F ', nomfon, 1, ['INST'], [time],&
                         alpha, ier)
         endif
 !

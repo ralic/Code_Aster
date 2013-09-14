@@ -16,9 +16,13 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 #include "asterfort/jeveut.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: nbpu, ier
-    character(len=*) :: codmes, nomf, nompu(*)
-    real(kind=8) :: valpu(*), resu
+    character(*), intent(in) :: codmes
+    character(*), intent(in) :: nomf
+    integer, intent(in) :: nbpu
+    character(*), intent(in) :: nompu(*)
+    real(kind=8), intent(in) :: valpu(*)
+    real(kind=8), intent(out) :: resu
+    integer, intent(out) :: ier
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

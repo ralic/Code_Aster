@@ -50,7 +50,7 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
             call utmess('A', 'ALGORITH13_44', sk=valk)
             goto 10
         endif
-        call fointe('F ', nomfon(iex), 1, nompar, temps,&
+        call fointe('F ', nomfon(iex), 1, [nompar], [temps],&
                     coef, ier)
         rep = rep + psidel(iddl,iex)*coef
 10  end do

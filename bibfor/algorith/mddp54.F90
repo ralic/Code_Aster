@@ -135,9 +135,9 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
         vrot = 0.d0
         arot = 0.d0
         if (vitvar(1:3) .eq. 'OUI') then
-            call fointe('F ', foncv, 1, 'INST', teval,&
+            call fointe('F ', foncv, 1, ['INST'], [teval],&
                         vrot, ier)
-            call fointe('F ', fonca, 1, 'INST', teval,&
+            call fointe('F ', fonca, 1, ['INST'], [teval],&
                         arot, ier)
             do 115 im = 1, neqgen
                 do 116 jm = 1, neqgen

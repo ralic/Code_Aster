@@ -129,7 +129,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
                 ASSERT(icha.le.nchar)
                 valres = 1.d0
                 if (fct .and. zk24(jfonct+icha-1) .ne. ' ') then
-                    call fointe('F ', zk24(jfonct+icha-1), 1, npara, vpara,&
+                    call fointe('F ', zk24(jfonct+icha-1), 1, [npara], [vpara],&
                                 valres, ier)
                 else
                     valres=1.d0

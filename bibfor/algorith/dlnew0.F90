@@ -191,11 +191,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         do 22 iexci = 1, nbexci
 !
             if (mltap(iexci) .eq. 1) then
-                call fointe('F ', nodepl(iexci), 1, 'INST', temps,&
+                call fointe('F ', nodepl(iexci), 1, ['INST'], [temps],&
                             coefd, ieq)
-                call fointe('F ', novite(iexci), 1, 'INST', temps,&
+                call fointe('F ', novite(iexci), 1, ['INST'], [temps],&
                             coefv, ieq)
-                call fointe('F ', noacce(iexci), 1, 'INST', temps,&
+                call fointe('F ', noacce(iexci), 1, ['INST'], [temps],&
                             coefa, ieq)
                 do 221 ieq = 1, neq
                     depla(ieq) = depla(ieq) + psdel(ieq)*coefd

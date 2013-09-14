@@ -415,7 +415,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
                     if (zk24(jfonct+ichar-1)(1:8) .eq. '&&CONSTA') then
                         rcoef=1.0d0
                     else
-                        call fointe('F ', zk24(jfonct+ichar-1)(1:8), 1, 'INST', instap,&
+                        call fointe('F ', zk24(jfonct+ichar-1)(1:8), 1, ['INST'], [instap],&
                                     rcoef, ierd)
                     endif
                     do 70 ima = 1, nbsma

@@ -205,7 +205,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                 u(3) = zg - hc
                 dist=ddot(3,u,1,u,1)
                 dist = sqrt(dist)
-                call fointe('F ', zk8(ifongr+i-1), 1, 'X', dist,&
+                call fointe('F ', zk8(ifongr+i-1), 1, ['X'], [dist],&
                             coef, iret)
                 zr(isurma+im-1) = zr(isurma+im-1)*coef
             else

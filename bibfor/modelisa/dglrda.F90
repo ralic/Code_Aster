@@ -545,9 +545,9 @@ subroutine dglrda()
     do ii = 1, 2
         if (icst .eq. 0) then
             k8b = 'X '
-            call fointe('F', fon(2*(ii-1)+1), 1, 'X ', 0.0d0,&
+            call fointe('F', fon(2*(ii-1)+1), 1, ['X '], [0.0d0],&
                         mp1n0, ibid)
-            call fointe('F', fon(2*ii ), 1, 'X ', 0.0d0,&
+            call fointe('F', fon(2*ii ), 1, ['X '], [0.0d0],&
                         mp2n0, ibid)
             call mmfonc(fon(2*(ii-1)+1), aux, maxmp(ii))
             call mmfonc(fon(2*ii), minmp(ii), aux)

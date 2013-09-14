@@ -91,9 +91,9 @@ subroutine vrcinp(nbvrcm, ind, instam, instap)
         iactif=2
 !        EVALUATION DES FONCTIONS
         do 20 iocc = 1, nbcvrc
-            call fointe('F', zk8(jvcfon-1+iocc), 1, 'INST', instam,&
+            call fointe('F', zk8(jvcfon-1+iocc), 1, ['INST'], [instam],&
                         zr( jvcval-1+3*(iocc-1)+1), ier)
-            call fointe('F', zk8(jvcfon-1+iocc), 1, 'INST', instap,&
+            call fointe('F', zk8(jvcfon-1+iocc), 1, ['INST'], [instap],&
                         zr( jvcval-1+3*(iocc-1)+2), ier)
 20      continue
 !

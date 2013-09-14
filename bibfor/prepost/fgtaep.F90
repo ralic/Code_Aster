@@ -71,7 +71,7 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
             call fointe('F ', nomnap, 2, nomp, valp,&
                         dsigm, ier)
             nomp(2) = 'SIGM'
-            call fointe('F ', nomfo1, 1, nomp(2), dsigm,&
+            call fointe('F ', nomfo1, 1, [nomp(2)], [dsigm],&
                         depsi, ier)
             call rcvale(nommat, pheno, nbpar, nompar, [depsi],&
                         1, nomres, nrupt(1), icodre(1), 2)

@@ -52,7 +52,7 @@ subroutine mdrfis(nbmode, depgen, fexgen, nbnli, nbrfis,&
 !
     call getvtx(' ', 'VITESSE_VARIABLE', scal=k8b, nbret=n1)
     if (k8b .eq. 'OUI') then
-        call fointe('F ', foncp, 1, 'INST', temps,&
+        call fointe('F ', foncp, 1, ['INST'], [temps],&
                     angrot, ier)
     else
         angrot = angini + vrotat * temps
@@ -90,9 +90,9 @@ subroutine mdrfis(nbmode, depgen, fexgen, nbnli, nbrfis,&
         phi=atan2(drl(2),drl(3))
         if (phi .lt. 0.d0) phi = r8depi() + phi
 !
-        call fointe('F', fk(1), 1, 'ABSC', phi,&
+        call fointe('F', fk(1), 1, ['ABSC'], [phi],&
                     fkphi, ierd)
-        call fointe('F', dfk(1), 1, 'ABSC', phi,&
+        call fointe('F', dfk(1), 1, ['ABSC'], [phi],&
                     dfkphi, ierd)
 !
         ml(1)=0.d0

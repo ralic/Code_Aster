@@ -67,7 +67,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 !
 ! - VALEUR DE LA FONCTION
 !
-    call fointe('A', nomfct, 1, 'INST', time,&
+    call fointe('A', nomfct, 1, ['INST'], [time],&
                 const, iret)
     charge = cartei(1:8)
 !

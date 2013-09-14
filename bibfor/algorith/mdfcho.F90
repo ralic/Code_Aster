@@ -104,12 +104,18 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
             coedep(iex) = zero
             coevit(iex) = zero
             coeacc(iex) = zero
-            if (nofdep(iex) .ne. ' ') call fointe('F', nofdep(iex), 1, nompar, temps,&
-                                                  coedep(iex), ier)
-            if (nofvit(iex) .ne. ' ') call fointe('F', nofvit(iex), 1, nompar, temps,&
-                                                  coevit(iex), ier)
-            if (nofacc(iex) .ne. ' ') call fointe('F', nofacc(iex), 1, nompar, temps,&
-                                                  coeacc(iex), ier)
+            if (nofdep(iex) .ne. ' ') then
+                call fointe('F', nofdep(iex), 1, [nompar], [temps],&
+                            coedep(iex), ier)
+            endif
+            if (nofvit(iex) .ne. ' ') then
+                call fointe('F', nofvit(iex), 1, [nompar], [temps],&
+                            coevit(iex), ier)
+            endif
+            if (nofacc(iex) .ne. ' ') then
+                call fointe('F', nofacc(iex), 1, [nompar], [temps],&
+                            coeacc(iex), ier)
+            endif
 11      continue
     endif
 !

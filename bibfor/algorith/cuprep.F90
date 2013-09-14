@@ -18,7 +18,7 @@ subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/caladu.h"
 #include "asterfort/cudisi.h"
@@ -119,7 +119,7 @@ subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
 !
     do 20 icmp = 1, ncmpg
         call cusign(jcmpg, icmp, sign)
-        call fointe('F', zk8(jcoefg-1+icmp), 1, 'INST', inst,&
+        call fointe('F', zk8(jcoefg-1+icmp), 1, ['INST'], [inst],&
                     coef, iret)
         zr(japcoe+icmp) = sign*coef
 20  end do
