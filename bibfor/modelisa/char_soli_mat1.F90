@@ -2,6 +2,7 @@ subroutine char_soli_mat1(ab, ac, matr_inve_1, matr_2)
 !
     implicit none
 !
+#include "asterfort/matinv.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 !

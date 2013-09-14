@@ -1,8 +1,9 @@
 subroutine refdcp(resin, resout)
-
-    implicit   none
+!
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jedup1.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -30,25 +31,25 @@ subroutine refdcp(resin, resout)
 !
 !   COPIER LE CONTENU DE REFERENCES DYNAMIQUE DE resin DANS resout
 !
-    integer           :: ir1 , ir2
+    integer :: ir1, ir2
     character(len=16) :: refd, indi
-    character(len=1)  :: jvb
+    character(len=1) :: jvb
 !
     call jemarq()
-!   
+!
     refd = '           .REFD'
     indi = '           .INDI'
-    jvb    = 'G'
+    jvb = 'G'
 !
     if (resin .ne. resout) then
         call jeexin(resin //refd, ir1)
         call jeexin(resout//refd, ir2)
-!    
+!
         if (ir1 .gt. 0 .and. ir2 .gt. 0) then
             call jedetr(resout//refd)
             call jedetr(resout//indi)
         endif
-!    
+!
         if (ir1 .gt. 0) then
             if (resout(1:2) .eq. '&&') jvb = 'V'
             call jedup1(resin//refd, jvb, resout//refd)

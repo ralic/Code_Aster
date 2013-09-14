@@ -8,6 +8,7 @@ subroutine te0600(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/epsthm.h"
+#include "asterfort/eulnau.h"
 #include "asterfort/fnothm.h"
 #include "asterfort/jevech.h"
 #include "asterfort/naueul.h"

@@ -34,8 +34,10 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 #include "asterfort/fonbpa.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
 !
     integer :: nbvec, nbordr, ncycl(nbvec)
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))

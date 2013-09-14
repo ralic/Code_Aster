@@ -6,6 +6,7 @@ subroutine lrrefd(resu, prchnd)
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: resu

@@ -26,6 +26,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
 !
 #include "jeveux.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"

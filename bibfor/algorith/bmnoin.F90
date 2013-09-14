@@ -18,6 +18,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"

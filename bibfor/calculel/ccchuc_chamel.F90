@@ -1,13 +1,14 @@
-subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp, &
-                         crit, nb_form, name_form, name_gd, nb_cmp_resu, &
+subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp,&
+                         crit, nb_form, name_form, name_gd, nb_cmp_resu,&
                          work_out_val, work_out_ele, nb_elem_out, ichk)
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/ccchcf.h"
 #include "asterfort/ccchcr.h"
+#include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -114,14 +115,14 @@ implicit none
 !
 ! - Create working vectors
 !
-    call wkvect(work_val, 'V V R' , nb_cmp, j_val)
+    call wkvect(work_val, 'V V R', nb_cmp, j_val)
     call wkvect(work_cmp, 'V V K8', nb_cmp, j_cmp)
 !
     do ima = 1, nb_elem
-        ichk   = -1
-        nbpt   = zi(jchsd-1+5+4*(ima-1)+1)
-        nbsp   = zi(jchsd-1+5+4*(ima-1)+2)
-        nbcmp  = zi(jchsd-1+5+4*(ima-1)+3)
+        ichk = -1
+        nbpt = zi(jchsd-1+5+4*(ima-1)+1)
+        nbsp = zi(jchsd-1+5+4*(ima-1)+2)
+        nbcmp = zi(jchsd-1+5+4*(ima-1)+3)
         do ipt = 1, nbpt
             do isp = 1, nbsp
 !
@@ -138,9 +139,9 @@ implicit none
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
                         nb_val_in = nb_val_in + 1
-                        zr(j_val-1+nb_val_in)  = zr(jchsv-1+iad)
+                        zr(j_val-1+nb_val_in) = zr(jchsv-1+iad)
                         zk8(j_cmp-1+nb_val_in) = zk8(jchsc-1+icmp)
-                    endif                 
+                    endif 
                 enddo
 !
 ! ------------- Compute result
@@ -149,7 +150,7 @@ implicit none
                     ASSERT(nb_cmp_resu .eq. 1)
                     call ccchcr(crit, name_gd, nb_val_in, zr(j_val), zk8(j_cmp),&
                                 nb_cmp_resu, zr(j_resu), ichk)
-                elseif (type_comp .eq. 'FORMULE') then
+                else if (type_comp .eq. 'FORMULE') then
                     ASSERT(nb_cmp_resu .eq. nb_form)
                     call ccchcf(name_form, nb_val_in, zr(j_val), zk8(j_cmp), nb_cmp_resu,&
                                 zr(j_resu), ichk)
@@ -158,8 +159,8 @@ implicit none
                 endif
 !
 ! ------------- Copy to output field
-! 
-                if (ichk.eq.0) then
+!
+                if (ichk .eq. 0) then
                     do icmp = 1, nb_cmp_resu
                         call cesexi('S', jchrd, jchrl, ima, ipt,&
                                     isp, icmp, iad)
@@ -172,11 +173,11 @@ implicit none
         enddo
 !
 ! ----- Add element computed
-! 
-        if (ichk.eq.0) then
+!
+        if (ichk .eq. 0) then
             nb_elem_out = nb_elem_out + 1
             zi(j_elem-1+nb_elem_out) = ima
-        endif    
+        endif 
     enddo
 !
     call jedetr(work_val)

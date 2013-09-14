@@ -2,6 +2,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"

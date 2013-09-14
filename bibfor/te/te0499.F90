@@ -9,6 +9,7 @@ subroutine te0499(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/pronor.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/vff2dn.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

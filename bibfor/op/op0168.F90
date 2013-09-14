@@ -25,6 +25,7 @@ subroutine op0168()
 #include "asterc/getres.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"

@@ -25,10 +25,12 @@ subroutine tebiot(angmas, biot, tbiot, aniso, ndim)
 #include "asterc/r8pi.h"
 #include "asterfort/matini.h"
 #include "asterfort/matrot.h"
-    integer ::  aniso, ndim
+#include "asterfort/utbtab.h"
+#include "asterfort/vecini.h"
+    integer :: aniso, ndim
     real(kind=8) :: angmas(3), biot(4)
     real(kind=8) :: tbiot(6)
-    real(kind=8) :: bt(3, 3),work(3,3)
+    real(kind=8) :: bt(3, 3), work(3, 3)
     real(kind=8) :: pass(3, 3), ipass(3, 3), bgl(3, 3), int(3, 3)
     real(kind=8) :: zero
 ! ======================================================================
@@ -80,7 +82,8 @@ subroutine tebiot(angmas, biot, tbiot, aniso, ndim)
 ! ======================================================================
 ! --- CALCUL DU TENSEUR DE BIOT BGL DANS LE REPERE GLOBAL -------------
 ! ======================================================================
-    call utbtab('ZERO', 3, 3, bt, pass,work, bgl)
+    call utbtab('ZERO', 3, 3, bt, pass,&
+                work, bgl)
 !
     tbiot(1)= bgl(1,1)
     tbiot(2)= bgl(2,2)

@@ -1,6 +1,6 @@
 subroutine dilata(imate, phi, alphfi, t, aniso,&
                   angmas, tbiot, phenom)
-
+!
     implicit none
 ! ======================================================================
 !
@@ -24,23 +24,26 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
 ! --- CALCUL DE ALPHAFI ------------------------------------------------
 ! ======================================================================
 #include "asterc/r8pi.h"
+#include "asterfort/matini.h"
+#include "asterfort/matrot.h"
 #include "asterfort/rcvala.h"
+#include "asterfort/utbtab.h"
     integer :: nelas2
-    integer :: nelas1,nelas3
+    integer :: nelas1, nelas3
     parameter  ( nelas1=1 )
     parameter  ( nelas2=2 )
     parameter  ( nelas3=3 )
-    real(kind=8) :: elas1(nelas1),elas2(nelas2),elas3(nelas3)
+    real(kind=8) :: elas1(nelas1), elas2(nelas2), elas3(nelas3)
     character(len=8) :: ncra1(nelas1)
     character(len=8) :: ncra2(nelas2)
     character(len=8) :: ncra3(nelas3)
-    integer :: icodre1(nelas1),icodre2(nelas2),icodre3(nelas3)
+    integer :: icodre1(nelas1), icodre2(nelas2), icodre3(nelas3)
     integer :: imate, aniso, i, anisoi
     real(kind=8) :: phi, t, tbiot(6), alpha(6)
     real(kind=8) :: kron(6), angmas(3), alphfi
     character(len=16) :: phenom
-    real(kind=8) :: talpha(3, 3),talphal(3, 3)
-    real(kind=8) :: passag(3,3),work(3,3)
+    real(kind=8) :: talpha(3, 3), talphal(3, 3)
+    real(kind=8) :: passag(3, 3), work(3, 3)
 ! =====================================================================
 ! --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES ----------
 ! =====================================================================
@@ -58,46 +61,50 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
 ! =====================================================================
 ! --- DEFINITION DU SYMBOLE DE KRONECKER UTILE POUR LA SUITE ----------
 ! =====================================================================
-    do 10 i = 1, 3
-            kron(i) = 1.d0
-10  continue
-    do 20 i = 4, 6
-            kron(i) = 0.d0
-20  continue
+    do i = 1, 3
+        kron(i) = 1.d0
+    end do
+    do i = 4, 6
+        kron(i) = 0.d0
+    end do
 !
 ! =====================================================================
 ! --- CALCUL CAS ISOTROPE ---------------------------------------------
 ! =====================================================================
-    999 if (anisoi.eq.0) then
+999  continue
+    if (anisoi .eq. 0) then
 ! =====================================================================
 ! --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 ! =====================================================================
-     call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                [t], 1, ncra1(1), elas1(1), icodre1,0)
-     talpha(1,1)=elas1(1)
-     talpha(2,2)=elas1(1)
-     talpha(3,3)=elas1(1)
-
+        call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
+                    [t], 1, ncra1(1), elas1(1), icodre1,&
+                    0)
+        talpha(1,1)=elas1(1)
+        talpha(2,2)=elas1(1)
+        talpha(3,3)=elas1(1)
+!
 ! =====================================================================
 ! --- CALCUL CAS ISOTROPE TRANSVERSE 3D-------------------------------
 ! =====================================================================
     else if (anisoi.gt.0) then
-     if (phenom .eq. 'ELAS') then
-        anisoi=0
-        goto 999
-     else if ((phenom.eq.'ELAS_ISTR')) then
-        call rcvala(imate, ' ', 'ELAS_ISTR', 1, 'TEMP',&
-                   [t], 2, ncra2(1), elas2(1), icodre2,0)
-          talpha(1,1)=elas2(1)
-          talpha(2,2)=elas2(1)
-          talpha(3,3)=elas2(2)
-     else if ( phenom.eq.'ELAS_ORTH')then
-        call rcvala(imate, ' ', 'ELAS_ORTH', 1, 'TEMP',&
-                    [t], 3, ncra3(1), elas3(1), icodre3,0)
-          talpha(1,1)=elas3(1)
-          talpha(2,2)=elas3(3)
-          talpha(3,3)=elas3(2)
-     endif
+        if (phenom .eq. 'ELAS') then
+            anisoi=0
+            goto 999
+        else if ((phenom.eq.'ELAS_ISTR')) then
+            call rcvala(imate, ' ', 'ELAS_ISTR', 1, 'TEMP',&
+                        [t], 2, ncra2(1), elas2(1), icodre2,&
+                        0)
+            talpha(1,1)=elas2(1)
+            talpha(2,2)=elas2(1)
+            talpha(3,3)=elas2(2)
+        else if (phenom.eq.'ELAS_ORTH') then
+            call rcvala(imate, ' ', 'ELAS_ORTH', 1, 'TEMP',&
+                        [t], 3, ncra3(1), elas3(1), icodre3,&
+                        0)
+            talpha(1,1)=elas3(1)
+            talpha(2,2)=elas3(3)
+            talpha(3,3)=elas3(2)
+        endif
     endif
 !
 ! matrice de passage du local au global
@@ -105,7 +112,8 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
 ! ======================================================================
 ! --- CALCUL DU TENSEUR DE ALPHA BGL DANS LE REPERE GLOBAL -------------
 ! ======================================================================
-    call utbtab('ZERO', 3, 3, talpha, passag,work, talphal)
+    call utbtab('ZERO', 3, 3, talpha, passag,&
+                work, talphal)
 ! =====================================================================
 ! --- DEFINITION DU TENSEUR DE CONDUCTIVITE THERMIQUE -----------------
 ! =====================================================================

@@ -1,5 +1,5 @@
-subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
-                         node_name, cmp_name_loc, cmp_valr_loc, cmp_name_glo, &
+subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
+                         node_nume, node_name, cmp_name_loc, cmp_valr_loc, cmp_name_glo,&
                          cmp_acti_glo, cmp_valr_glo)
 !
     implicit none
@@ -8,8 +8,10 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/matloc.h"
 #include "asterfort/reliem.h"
+#include "asterfort/utpvlg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +83,7 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! - Initializations
 !
-    do i_cmp = 1,6
+    do i_cmp = 1, 6
         cmp_valr_glo(i_cmp) = 0.d0
         cmp_acti_glo(i_cmp) = 0
         cmp_name_glo(i_cmp) = list_cmp(i_cmp)
@@ -104,26 +106,26 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! - Local coordinate system
 !
-    call matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
+    call matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
                 node_name, nb_repe_elem, zi(j_repe_elem), matr_glob_loca)
 !
 ! - Translation
 !
-    do i_direc = 1,3
+    do i_direc = 1, 3
         dloc(i_direc) = 0.d0
         rln1(i_direc) = 0.d0
     enddo
     do i_cmp = 1, 6
         cmp_name = cmp_name_loc(i_cmp)
-        if (cmp_name.eq.'DX') then
+        if (cmp_name .eq. 'DX') then
             rln1(1) = 1.d0
             dloc(1) = cmp_valr_loc(i_cmp)
         endif
-        if (cmp_name.eq.'DY') then
+        if (cmp_name .eq. 'DY') then
             rln1(2) = 1.d0
             dloc(2) = cmp_valr_loc(i_cmp)
         endif
-        if (cmp_name.eq.'DZ') then
+        if (cmp_name .eq. 'DZ') then
             rln1(3) = 1.d0
             dloc(3) = cmp_valr_loc(i_cmp)
         endif
@@ -133,35 +135,35 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
     call utpvlg(1, 3, matr_glob_loca, rln1, rgn1)
 !
     if (rgn1(1) .ne. 0.d0) then
-      cmp_valr_glo(1) = dglo(1)
-      cmp_acti_glo(1) = 1
+        cmp_valr_glo(1) = dglo(1)
+        cmp_acti_glo(1) = 1
     endif
     if (rgn1(2) .ne. 0.d0) then
-      cmp_valr_glo(2) = dglo(2)
-      cmp_acti_glo(2) = 1
+        cmp_valr_glo(2) = dglo(2)
+        cmp_acti_glo(2) = 1
     endif
     if (rgn1(3) .ne. 0.d0) then
-      cmp_valr_glo(3) = dglo(3)
-      cmp_acti_glo(3) = 1
+        cmp_valr_glo(3) = dglo(3)
+        cmp_acti_glo(3) = 1
     endif
 !
 ! - Rotation
 !
-    do i_direc = 1,3
+    do i_direc = 1, 3
         dloc(i_direc) = 0.d0
         rln1(i_direc) = 0.d0
     enddo
     do i_cmp = 1, 6
         cmp_name = cmp_name_loc(i_cmp)
-        if (cmp_name.eq.'DRX') then
+        if (cmp_name .eq. 'DRX') then
             rln1(1) = 1.d0
             dloc(1) = cmp_valr_loc(i_cmp)
         endif
-        if (cmp_name.eq.'DRY') then
+        if (cmp_name .eq. 'DRY') then
             rln1(2) = 1.d0
             dloc(2) = cmp_valr_loc(i_cmp)
         endif
-        if (cmp_name.eq.'DRZ') then
+        if (cmp_name .eq. 'DRZ') then
             rln1(3) = 1.d0
             dloc(3) = cmp_valr_loc(i_cmp)
         endif
@@ -171,16 +173,16 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
     call utpvlg(1, 3, matr_glob_loca, rln1, rgn1)
 !
     if (rgn1(1) .ne. 0.d0) then
-      cmp_valr_glo(4) = dglo(1)
-      cmp_acti_glo(4) = 1
+        cmp_valr_glo(4) = dglo(1)
+        cmp_acti_glo(4) = 1
     endif
     if (rgn1(2) .ne. 0.d0) then
-      cmp_valr_glo(5) = dglo(2)
-      cmp_acti_glo(5) = 1
+        cmp_valr_glo(5) = dglo(2)
+        cmp_acti_glo(5) = 1
     endif
     if (rgn1(3) .ne. 0.d0) then
-      cmp_valr_glo(6) = dglo(3)
-      cmp_acti_glo(6) = 1
+        cmp_valr_glo(6) = dglo(3)
+        cmp_acti_glo(6) = 1
     endif
 !
     call jedema()

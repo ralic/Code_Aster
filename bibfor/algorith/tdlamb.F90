@@ -22,10 +22,13 @@ subroutine tdlamb(angmas, dlambt, tdlamt, aniso, ndim)
 ! --- CAS ISOTROPE OU ISOTROPE TRANSVERSE ------------------------------
 ! ======================================================================
 #include "asterc/r8pi.h"
+#include "asterfort/matini.h"
+#include "asterfort/matrot.h"
+#include "asterfort/utbtab.h"
     integer :: aniso, ndim
     real(kind=8) :: angmas(3), dlambt(4)
     real(kind=8) :: tdlamt(ndim, ndim), tdlamti(3, 3)
-    real(kind=8) :: passag(3,3),work(3,3),tk2(3,3)
+    real(kind=8) :: passag(3, 3), work(3, 3), tk2(3, 3)
 ! ======================================================================
 ! --- INITIALISATION DU TENSEUR ----------------------------------------
 ! ======================================================================
@@ -40,23 +43,24 @@ subroutine tdlamb(angmas, dlambt, tdlamt, aniso, ndim)
 ! ======================================================================
         tdlamt(1,1)=dlambt(1)
         tdlamt(2,2)=dlambt(1)
-        if(ndim.eq.3)then
-         tdlamt(3,3)=dlambt(1)
+        if (ndim .eq. 3) then
+            tdlamt(3,3)=dlambt(1)
         endif
     else if (aniso.eq.1) then
 ! ======================================================================
 ! --- CAS ISOTROPE TRANSVERSE 3D------------------------------------------
 ! --- CALCUL DU TENSEUR DE CONDUCTIVITE DANS LE REPERE GLOBAL ----------
 ! ======================================================================
-     if(ndim.eq.3)then
-        tdlamti(1,1)=dlambt(2)
-        tdlamti(2,2)=dlambt(2)
-        tdlamti(3,3)=dlambt(3)
+        if (ndim .eq. 3) then
+            tdlamti(1,1)=dlambt(2)
+            tdlamti(2,2)=dlambt(2)
+            tdlamti(3,3)=dlambt(3)
 ! Recupération de la matrice de passage du local au global
-        call matrot(angmas,passag)
-        call utbtab('ZERO', 3, 3, tdlamti, passag,work, tk2)
-        tdlamt= tk2
-      endif
+            call matrot(angmas, passag)
+            call utbtab('ZERO', 3, 3, tdlamti, passag,&
+                        work, tk2)
+            tdlamt= tk2
+        endif
     else if (aniso.eq.2) then
 ! ======================================================================
 ! --- CAS ORTHOTROPE 2D ------------------------------------------
@@ -64,8 +68,9 @@ subroutine tdlamb(angmas, dlambt, tdlamt, aniso, ndim)
 ! ======================================================================
         tdlamti(1,1)=dlambt(2)
         tdlamti(2,2)=dlambt(4)
-        call matrot(angmas,passag)
-        call utbtab('ZERO', 3, 3, tdlamti, passag,work, tk2)
+        call matrot(angmas, passag)
+        call utbtab('ZERO', 3, 3, tdlamti, passag,&
+                    work, tk2)
         tdlamt(1,1)= tk2(1,1)
         tdlamt(2,2)= tk2(2,2)
         tdlamt(1,2)= tk2(1,2)

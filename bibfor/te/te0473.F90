@@ -30,6 +30,7 @@ subroutine te0473(option, nomte)
 #include "asterfort/idsshb.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/sh1rig.h"
 #include "asterfort/sh2rig.h"

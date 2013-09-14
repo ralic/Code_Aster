@@ -13,6 +13,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -35,7 +36,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in)  :: noma
+    character(len=8), intent(in) :: noma
     character(len=4), intent(in) :: type_vale
     real(kind=8), intent(in) :: dist_mini
     integer, intent(in) :: nb_node
@@ -220,7 +221,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
 ! --------- Compute linear relation
 !
             call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                        zr(jlisdi),  nb_term, vale_real, vale_cplx, vale_fonc,&
+                        zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
                         type_coef, type_vale, type_lagr, 0.d0, lisrel)
         endif
     enddo
@@ -247,7 +248,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
                 zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
                 type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
-999 continue
+999  continue
 !
     call jedetr('&&DRZ02D.LISNO')
     call jedetr('&&DRZ02D.LISDDL')

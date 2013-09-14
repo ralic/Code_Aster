@@ -28,6 +28,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"

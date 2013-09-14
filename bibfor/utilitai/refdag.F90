@@ -1,9 +1,13 @@
 subroutine refdag(resin)
-
-    implicit   none
+!
+    implicit none
 #include "jeveux.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jedup1.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -32,20 +36,20 @@ subroutine refdag(resin)
 !
 !   DOUBLER LA TAILLE DES OBJETS CONTENEURS DES REFERENCES DYNAMIQUES (.REFD ET INDI)
 !
-    integer           :: nbrefs, ibid, jbid, jindi, jindi2, jrefe, jrefe2
-    character(len=1)  :: jvb
-    character(len=8)  :: restmp, k8bid
+    integer :: nbrefs, ibid, jbid, jindi, jindi2, jrefe, jrefe2
+    character(len=1) :: jvb
+    character(len=8) :: restmp, k8bid
     character(len=16) :: refd, indi
     character(len=32) :: jexnum
 !
     call jemarq()
-!   
+!
     restmp = '&&REFDAJ'
 !
-    refd   = '           .REFD'
-    indi   = '           .INDI'
+    refd = '           .REFD'
+    indi = '           .INDI'
 !
-    jvb    = 'G'
+    jvb = 'G'
     if (resin(1:2) .eq. '&&') jvb = 'V'
 !
 !   Save the existing information in a temporary location
@@ -59,7 +63,8 @@ subroutine refdag(resin)
 !
 !   Initialize the REFD and INDI with the new size (double nbrefs)
     call wkvect(resin//indi, jvb//' V I', 2*nbrefs, jindi)
-    call jecrec(resin//refd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT',2*nbrefs)
+    call jecrec(resin//refd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT',&
+                2*nbrefs)
     call jeecra(resin//refd, 'LONT', (2*nbrefs)*5, k8bid)
 !
 !   Set all INDI entries to -100 (default/empty reference value)
@@ -73,7 +78,7 @@ subroutine refdag(resin)
 !       INDI entry
         zi(jindi+ibid-1) = zi(jindi2+ibid-1)
 !       REFD entry
-        call jeveuo(jexnum(restmp//refd, ibid), 'L', jrefe2)   
+        call jeveuo(jexnum(restmp//refd, ibid), 'L', jrefe2)
         call jecroc(jexnum( resin//refd, ibid))
         call jeveuo(jexnum( resin//refd, ibid), 'E', jrefe)
         do 30 jbid = 1, 5

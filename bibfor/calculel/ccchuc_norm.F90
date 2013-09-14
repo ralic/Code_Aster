@@ -4,12 +4,16 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/calc_coor_elga.h"
 #include "asterfort/calc_norm_coef.h"
 #include "asterfort/calc_norm_elem.h"
 #include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/chpchd.h"
 #include "asterfort/chsut1.h"
+#include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedetr.h"
@@ -17,6 +21,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 #include "asterfort/megeom.h"
 #include "asterfort/nopar2.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

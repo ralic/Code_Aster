@@ -6,6 +6,7 @@ subroutine char_crea_ligf(mesh, ligrch, nb_node, nb_list_elem, nb_list_node)
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
@@ -64,13 +65,13 @@ subroutine char_crea_ligf(mesh, ligrch, nb_node, nb_list_elem, nb_list_node)
         zi(j_nbno) = 0
 !
         call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                     nb_grel)
+                    nb_grel)
         call jeecra(ligrch//'.LIEL', 'LONT', nb_list_elem, ' ')
 !
         call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nb_grel)
         call jeecra(ligrch//'.NEMA', 'LONT', nb_list_node, ' ')
-
+!
         call wkvect(ligrch//'.LGNS', 'G V I', 2*nb_node, j_lgns)
     endif
 !

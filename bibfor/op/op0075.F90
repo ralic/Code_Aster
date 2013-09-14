@@ -26,6 +26,7 @@ subroutine op0075()
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/harm75.h"

@@ -1,7 +1,7 @@
 subroutine dhrc_jacob(eps, vint, b, c, bp1,&
-                  cp1, bp2, cp2, as1, bs1,&
-                  cs1, as2, bs2, cs2, indi,&
-                  neta1, neta2, cstseu, jacob)
+                      cp1, bp2, cp2, as1, bs1,&
+                      cs1, as2, bs2, cs2, indi,&
+                      neta1, neta2, cstseu, jacob)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ subroutine dhrc_jacob(eps, vint, b, c, bp1,&
 !
     implicit none
 !
+#include "asterfort/dhrc_calc_n.h"
 #include "asterfort/matini.h"
     integer :: indi(6)
     real(kind=8) :: vint(7), eps(8)
@@ -59,7 +60,7 @@ subroutine dhrc_jacob(eps, vint, b, c, bp1,&
 !
 !
     call dhrc_calc_n(eps, vint, b, c, neta1,&
-                neta2)
+                     neta2)
 !
     call matini(6, 6, 0.0d0, jacobt)
 !

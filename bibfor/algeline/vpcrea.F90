@@ -8,6 +8,7 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: icond, ier

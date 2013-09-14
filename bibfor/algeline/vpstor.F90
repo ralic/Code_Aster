@@ -16,6 +16,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsexis.h"

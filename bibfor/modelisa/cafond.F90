@@ -1,16 +1,19 @@
 subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
-    implicit   none
+    implicit none
 !
 #include "jeveux.h"
+#include "asterc/getfac.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/char_crea_cart.h"
-#include "asterfort/getelem.h"
+#include "asterfort/char_read_val.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlim1.h"
+#include "asterfort/getelem.h"
 #include "asterfort/infniv.h"
+#include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -38,11 +41,11 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: load
-    character(len=8), intent(in)  :: mesh
-    integer, intent(in)  :: ndim
+    character(len=8), intent(in) :: load
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: ndim
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,11 +93,11 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
     keywordfact = 'EFFE_FOND'
     call getfac(keywordfact, npres)
-    if (npres.eq.0) goto 99
+    if (npres .eq. 0) goto 99
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo, &
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo,&
                         vale_type, nb_carte, carte)
     ASSERT(nb_carte.eq.2)
 !
@@ -102,10 +105,10 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
-    option    = 'CARA_SECT_POUT3'
-    ligrel    = '&&CAFOND.LIGREL'
-    lpain(1)  = 'PGEOMER'
-    lchin(1)  = mesh//'.COORDO'
+    option = 'CARA_SECT_POUT3'
+    ligrel = '&&CAFOND.LIGREL'
+    lpain(1) = 'PGEOMER'
+    lchin(1) = mesh//'.COORDO'
     lpaout(1) = 'PCASECT'
     lchout(1) = '&&CAFOND.PSECT'
     list_elem_sect = '&&CAFOND.LISTSECT'
@@ -116,14 +119,14 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 ! ----- Elements for hole
 !
         suffix = '_INT'
-        call getelem(mesh, keywordfact, iocc, suffix, 'F', &
+        call getelem(mesh, keywordfact, iocc, suffix, 'F',&
                      list_elem_hole, nb_elem_hole)
         call jeveuo(list_elem_hole, 'L', j_elem_hole)
 !
 ! ----- Elements for section
 !
         suffix = ' '
-        call getelem(mesh, keywordfact, iocc, suffix, 'F', &
+        call getelem(mesh, keywordfact, iocc, suffix, 'F',&
                      list_elem_sect, nb_elem_sect)
         call jeveuo(list_elem_sect, 'L', j_elem_sect)
 !
@@ -133,7 +136,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
 ! ----- Get pressure
 !
-        call char_read_val(keywordfact, iocc, 'PRES', vale_type, val_nb, &
+        call char_read_val(keywordfact, iocc, 'PRES', vale_type, val_nb,&
                            pres_real, pres_fonc, c16dummy, k16dummy)
         ASSERT(val_nb.eq.1)
 !
@@ -172,8 +175,8 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
         call jeveuo(carte(2)//'.VALV', 'E', jvalv)
         nb_cmp = 1
         if (vale_type .eq. 'REEL') then
-            zr(jvalv-1+1)  = pres_real
-        elseif (vale_type .eq. 'FONC') then
+            zr(jvalv-1+1) = pres_real
+        else if (vale_type .eq. 'FONC') then
             zk8(jvalv-1+1) = pres_fonc
         else
             ASSERT(.false.)
@@ -183,7 +186,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
 ! ----- Check elements
 !
-        call vetyma(mesh, ndim, keywordfact, list_elem_sect, nb_elem_sect, &
+        call vetyma(mesh, ndim, keywordfact, list_elem_sect, nb_elem_sect,&
                     codret)
 !
         call jedetr(list_elem_hole)
@@ -192,6 +195,6 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
     end do
 !
 99  continue
-
+!
     call jedema()
 end subroutine

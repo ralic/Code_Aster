@@ -33,6 +33,7 @@ subroutine calcft(option, thmc, imate, ndim, dimdef,&
     implicit none
 ! aslint: disable=W1306
 #include "asterfort/dilata.h"
+#include "asterfort/matini.h"
 #include "asterfort/unsmfi.h"
     integer :: ndim, dimdef, dimcon, imate, aniso
     integer :: yamec, yap1, yap2
@@ -74,15 +75,15 @@ subroutine calcft(option, thmc, imate, ndim, dimdef,&
 ! =====================================================================
 ! --- REDEFINITION DU TENSEUR DE BIOT ---------------------------------
 ! =====================================================================
-     biot(1,1)=tbiot(1)
-     biot(2,2)=tbiot(2)
-     biot(3,3)=tbiot(3)
-     biot(1,2)=tbiot(4)
-     biot(1,3)=tbiot(5)
-     biot(2,3)=tbiot(6)
-     biot(2,1)=biot(1,2)
-     biot(3,1)=biot(1,3)
-     biot(3,2)=biot(2,3)
+    biot(1,1)=tbiot(1)
+    biot(2,2)=tbiot(2)
+    biot(3,3)=tbiot(3)
+    biot(1,2)=tbiot(4)
+    biot(1,3)=tbiot(5)
+    biot(2,3)=tbiot(6)
+    biot(2,1)=biot(1,2)
+    biot(3,1)=biot(1,3)
+    biot(3,2)=biot(2,3)
 ! =====================================================================
 ! --- RECUPERATION DES COEFFICIENTS MECANIQUES ALPHAFI ET CS-----------
 ! =====================================================================

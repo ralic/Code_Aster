@@ -51,6 +51,7 @@ subroutine crtype()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lisccr.h"
+#include "asterfort/lrcomm.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"

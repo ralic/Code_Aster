@@ -1,11 +1,12 @@
-subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat, &
+subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat,&
                      ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
 !
     implicit none
 !
-#include "asterfort/cncinv.h"
 #include "asterfort/celces.h"
+#include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
+#include "asterfort/jeexin.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +57,7 @@ subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+!
 !
 ! - Initializations
 !
@@ -65,12 +66,12 @@ subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat, &
     ch_xfem_stat = ' '
     ch_xfem_lnno = ' '
     ch_xfem_ltno = ' '
-    connex_inv   = ' '
+    connex_inv = ' '
 !
     call jeexin(model//'.XFEM_CONT', ier)
     if (ier .ne. 0) then
         l_xfem = .true.
-        connex_inv   = '&&CHXFEM.CNXINV'
+        connex_inv = '&&CHXFEM.CNXINV'
         call cncinv(mesh, ibid, 0, 'V', connex_inv)
         ch_xfem_node = '&&CHXFEM.NOXFEM'
         call cnocns(model//'.NOXFEM', 'V', ch_xfem_node)
@@ -81,5 +82,5 @@ subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat, &
         call celces(model//'.LNNO', 'V', ch_xfem_lnno)
         call celces(model//'.LTNO', 'V', ch_xfem_ltno)
     endif
-
+!
 end subroutine

@@ -63,6 +63,7 @@ subroutine op0060()
 #include "asterfort/mtdscr.h"
 #include "asterfort/omega2.h"
 #include "asterfort/preres.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/resoud.h"
 #include "asterfort/resu60.h"
 #include "asterfort/rsadpa.h"

@@ -20,6 +20,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
 #include "asterc/r8dgrd.h"
 #include "asterfort/dpassa.h"
 #include "asterfort/matini.h"
+#include "asterfort/matrot.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"

@@ -49,6 +49,7 @@ subroutine op0037()
 #include "asterfort/rsorac.h"
 #include "asterfort/rsvpar.h"
 #include "asterfort/titre.h"
+#include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/vpcrea.h"

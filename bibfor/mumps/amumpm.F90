@@ -40,6 +40,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 !
 #include "aster_types.h"
 #include "asterf.h"
+#include "asterc/getres.h"
 #include "asterc/r4maem.h"
 #include "asterc/r4miem.h"
 #include "asterc/r8maem.h"

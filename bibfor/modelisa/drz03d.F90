@@ -15,6 +15,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/provec.h"

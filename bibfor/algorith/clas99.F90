@@ -24,10 +24,12 @@ subroutine clas99(nomres)
 !
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/camoat.h"
 #include "asterfort/camoch.h"
 #include "asterfort/camoco.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
@@ -120,7 +122,7 @@ subroutine clas99(nomres)
 !
 ! --- DETERMINATION NOMBRE TOTAL DE MODES ET DEFORMEES
 !
-    call assert(intf(1:8) .ne. ' ')
+    ASSERT(intf(1:8) .ne. ' ')
     call jeveuo(intf//'.IDC_DESC', 'L', lldesc)
     nbsdd=nbmod+zi(lldesc+4)
 !      NBSDD1=ZI(LLDESC+4)

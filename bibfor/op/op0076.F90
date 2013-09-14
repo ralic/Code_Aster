@@ -23,6 +23,7 @@ subroutine op0076()
 !-----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/extrac.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"

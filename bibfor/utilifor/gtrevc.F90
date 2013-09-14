@@ -404,4 +404,3 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !     END OF GTREVC
 !
 end subroutine
-

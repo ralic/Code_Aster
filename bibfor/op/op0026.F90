@@ -51,10 +51,12 @@ subroutine op0026()
 #include "asterfort/nmdome.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/nmvcle.h"
+#include "asterfort/nmvcre.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/vebtla.h"
+#include "asterfort/vefnme.h"
 #include "asterfort/vrcomp.h"
 !
 ! ----------------------------------------------------------------------

@@ -23,6 +23,7 @@ subroutine lisccm(nomcmd, codarr, lischa)
 #include "asterfort/jemarq.h"
 #include "asterfort/lisccc.h"
 #include "asterfort/lislch.h"
+#include "asterfort/lislcm.h"
 #include "asterfort/lislco.h"
 #include "asterfort/lisnnb.h"
 #include "asterfort/utmess.h"

@@ -1,9 +1,11 @@
-subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
+subroutine refdaj(arret, result, nbordr, numer, typre,&
+                  conre, codret)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -44,7 +46,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
 ! --------- call refdaj ('F',tragen,nbordr,numddl,'DYNAMIQUE'  ,matric,iret)
 !           call refdaj ('F',ritzba,nbordr,numddl,'INTERF_DYNA',intdyn,iret)
 !           call refdaj ('F',ritzba,nbordr,numddl,'INTERF_STAT',modsta,iret)
-! 
+!
 !                     DESCRIPTIVE DES VARIABLES
 !   ___________________________________________________________________
 !  | IN > ARRET  : 'F' OU ' ' : ON ARRETE AVEC ERREUR FATALE EN    [K1]|
@@ -102,7 +104,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
 !
     data  accres /'ACOU_HARMO','DYNA_HARMO','DYNA_TRANS' ,'HARM_GENE','MODE_ACOU',&
                   'MODE_FLAMB','MODE_MECA' ,'MODE_MECA_C','TRAN_GENE','EVOL_NOLI'/
-
+!
     data  accref /'DYNAMIQUE','INTERF_DYNA','INTERF_STAT','MESURE','INIT'/
     data  lonref / 3,1,1,1 /
 !
@@ -110,8 +112,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
     conref = conre
     numer1 = numer
     codret = 0
-    bl24   = '                        '
-    jvb    = 'G'
+    bl24 = '                        '
+    jvb = 'G'
     typres = ' '
     nbinit = 4
     nbord1 = nbordr
@@ -184,7 +186,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
 !     2.1 - CREATION DU .INDI ET .REFD SI BESOIN
     if (newref) then
         call wkvect(obindi, jvb//' V I', nbinit, jbid)
-        call jecrec(corefd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT',nbinit)
+        call jecrec(corefd, jvb//' V K24', 'NU', 'CONTIG', 'CONSTANT',&
+                    nbinit)
         call jeecra(corefd, 'LONT', nbinit*5, k8bid)
 !       INITIALISATION DES ELEMENTS DE .INDI A (-100)
         do 17 ibid = 1, nbinit
@@ -198,7 +201,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
 !
 !     2.2 - RAJOUT SI BESOIN DE L'ENTREE DE REF. A LA COLLECTION REFD
     call jelira(corefd, 'NUTIOC', nbrefs, k8bid)
-    call jelira(corefd, 'LONT'  , nbrefsmax, k8bid)
+    call jelira(corefd, 'LONT', nbrefsmax, k8bid)
     nbrefsmax = nbrefsmax/5
 !
 !     2.2.1 - VERIFIER QUE LE NOMBRE MAX D'OBJETS DE LA COLLECTION REFD
@@ -215,9 +218,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
     if (nbrefs .ge. 1) then
         do 20 ibid = 1, nbrefs
             call jeveuo(jexnum(corefd, ibid), 'E', jrefe)
-            if ( (typre   .eq. zk24(jrefe))  .and. &
-                 (numer   .eq. zk24(jrefe+1)).and. &
-                 (conre(1).eq. zk24(jrefe+2)) ) then
+            if ((typre .eq. zk24(jrefe)) .and. (numer .eq. zk24(jrefe+1)) .and.&
+                (conre(1).eq. zk24(jrefe+2))) then
 !               --- ALORS METTRE A JOUR L'ENTREE DU .REFD
                 do 21 jbid = 1, lonref(indref)
                     zk24(jrefe+jbid+1) = conref(jbid)
@@ -251,7 +253,8 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
 !       --- TRAITEMENT SPECIAL SI IL S'AGIT DE LA PREMIERE ENTREE INDI :
 !           SI nbord1 EST EGALE A -1 ET UN NOMBRE NON NULL DES CHAMPS EST DEJA STOCKE
 !           DANS LA SD : ON Y MET CE NOMBRE
-        call dismoi('C', 'NB_CHAMPS', result, 'RESU_DYNA', nbcham, k8bid, ir)
+        call dismoi('C', 'NB_CHAMPS', result, 'RESU_DYNA', nbcham,&
+                    k8bid, ir)
         if ((ir .eq. 0) .and. (nbcham .ne. 0)) then
             nbord1 = nbcham
         endif

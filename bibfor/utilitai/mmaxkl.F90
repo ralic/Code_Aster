@@ -20,6 +20,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/medom1.h"
+#include "asterfort/medomg.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/tbajli.h"

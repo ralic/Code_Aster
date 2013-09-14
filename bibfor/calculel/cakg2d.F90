@@ -22,6 +22,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/lisnnb.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
 #include "asterfort/mesomm.h"

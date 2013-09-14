@@ -35,6 +35,7 @@ subroutine op0077()
 #include "asterfort/harm75.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"

@@ -22,10 +22,13 @@ subroutine telamb(angmas, lambt, tlambt, aniso, ndim)
 ! --- CAS ISOTROPE OU ISOTROPE TRANSVERSE ------------------------------
 ! ======================================================================
 #include "asterc/r8pi.h"
+#include "asterfort/matini.h"
+#include "asterfort/matrot.h"
+#include "asterfort/utbtab.h"
     integer :: aniso, ndim
     real(kind=8) :: angmas(3), lambt(4)
-    real(kind=8) :: tlambt(ndim, ndim),lambti(3,3)
-    real(kind=8) :: passag(3,3),work(3,3),tk2(3,3)
+    real(kind=8) :: tlambt(ndim, ndim), lambti(3, 3)
+    real(kind=8) :: passag(3, 3), work(3, 3), tk2(3, 3)
 ! ======================================================================
 ! --- INITIALISATION DU TENSEUR ----------------------------------------
 ! ======================================================================
@@ -40,8 +43,8 @@ subroutine telamb(angmas, lambt, tlambt, aniso, ndim)
 ! ======================================================================
         tlambt(1,1)=lambt(1)
         tlambt(2,2)=lambt(1)
-        if(ndim.eq.3)then
-         tlambt(3,3)=lambt(1)
+        if (ndim .eq. 3) then
+            tlambt(3,3)=lambt(1)
         endif
     else if (aniso.eq.1) then
 ! ======================================================================
@@ -52,10 +55,11 @@ subroutine telamb(angmas, lambt, tlambt, aniso, ndim)
         lambti(2,2)=lambt(2)
         lambti(3,3)=lambt(3)
 ! Recupération de la matrice de passage du local au global
-        if(ndim.eq.3)then
-         call matrot(angmas,passag)
-         call utbtab('ZERO', 3, 3, lambti, passag,work, tk2)
-         tlambt = tk2
+        if (ndim .eq. 3) then
+            call matrot(angmas, passag)
+            call utbtab('ZERO', 3, 3, lambti, passag,&
+                        work, tk2)
+            tlambt = tk2
         endif
     else if (aniso.eq.2) then
 ! ======================================================================
@@ -64,8 +68,9 @@ subroutine telamb(angmas, lambt, tlambt, aniso, ndim)
 ! ======================================================================
         lambti(1,1)=lambt(2)
         lambti(2,2)=lambt(4)
-        call matrot(angmas,passag)
-        call utbtab('ZERO', 3, 3, lambti, passag,work, tk2)
+        call matrot(angmas, passag)
+        call utbtab('ZERO', 3, 3, lambti, passag,&
+                    work, tk2)
         tlambt(1,1)= tk2(1,1)
         tlambt(2,2)= tk2(2,2)
         tlambt(1,2)= tk2(1,2)

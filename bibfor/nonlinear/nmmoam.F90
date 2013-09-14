@@ -21,6 +21,7 @@ subroutine nmmoam(sdammz, nbmoda)
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/r8pi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"

@@ -1,6 +1,6 @@
 subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
-                  chpres, chepsi, chpesa, chrota, lfonc ,&
-                  time  , iord)
+                  chpres, chepsi, chpesa, chrota, lfonc,&
+                  time, iord)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -19,6 +19,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 #include "asterfort/lisltc.h"
 #include "asterfort/lisltf.h"
 #include "asterfort/lisnnb.h"
+#include "asterfort/lisnnl.h"
 #include "asterfort/mefor0.h"
 #include "asterfort/mepres.h"
 #include "asterfort/wkvect.h"
@@ -85,7 +86,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     logical :: lfchar, lfmult, lformu, lccomb, lpchar
     integer :: nbauth, nbnaut, mclaut(2), iposit
     integer :: iprec, ibid, itypob(2), ibid2(2)
-    character(len=19) :: carteo,cartei
+    character(len=19) :: carteo, cartei
     logical :: lvolu, l1d2d, l2d3d, lpres
     logical :: lepsi, lpesa, lrota
     logical :: lfvolu, lf1d2d, lf2d3d, lfpres
@@ -100,13 +101,13 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     lfonc = .false.
     nomcmd = 'CALC_G'
     phenom = 'MECANIQUE'
-    lvolu  = .false.
-    l1d2d  = .false.
-    l2d3d  = .false.
-    lpres  = .false.
-    lepsi  = .false.
-    lpesa  = .false.
-    lrota  = .false.
+    lvolu = .false.
+    l1d2d = .false.
+    l2d3d = .false.
+    lpres = .false.
+    lepsi = .false.
+    lpesa = .false.
+    lrota = .false.
     lfvolu = .false.
     lf1d2d = .false.
     lf2d3d = .false.
@@ -153,8 +154,8 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
         call lisltf(lischa, ichar, typfct)
         call lislnf(lischa, ichar, nomfct)
         lfmult = .false.
-        if (typfct(1:5).eq.'FONCT') then
-          lfmult = .true.
+        if (typfct(1:5) .eq. 'FONCT') then
+            lfmult = .true.
         endif
 !
 ! ----- CHARGEMENTS UTILISES OU NON DANS CALC_G
@@ -175,7 +176,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 ! ----------------- MOT-CLEF DE LA CHARGE
 !
                     call lisdef('MOTC', k24bid, iposit, motcle, ibid2)
-                    if (motcle.eq.'DIRI_DUAL') goto 12
+                    if (motcle .eq. 'DIRI_DUAL') goto 12
 !
 ! ----------------- PREFIXE DE L'OBJET DE LA CHARGE
 !
@@ -190,20 +191,20 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 ! ----------------- SELECTION SUIVANT TYPE
 !
                     call gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
-                                chepsi, chpesa, chrota, lvolu , l1d2d ,&
-                                l2d3d , lpres , lepsi , lpesa , lrota ,&
+                                chepsi, chpesa, chrota, lvolu, l1d2d,&
+                                l2d3d, lpres, lepsi, lpesa, lrota,&
                                 lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi,&
                                 lfpesa, lfrota, carteo, lformu, lpchar,&
                                 lccomb)
 !
 ! ----------------- PREPARATION NOM DE LA FONCTION RESULTANTE
 !
-                    call gcfonc(ichar , iord  , cartei, lfchar, lfmult, &
+                    call gcfonc(ichar, iord, cartei, lfchar, lfmult,&
                                 newfct, lformu)
 !
 ! ----------------- CONSTRUIT LA CARTE A PARTIR DU CHARGEMENT
 !
-                    call gcchar(ichar , iprec , time  , carteo, lfchar,&
+                    call gcchar(ichar, iprec, time, carteo, lfchar,&
                                 lpchar, lformu, lfmult, lccomb, cartei,&
                                 nomfct, newfct, oldfon)
 !

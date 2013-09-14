@@ -35,6 +35,7 @@ subroutine op0163()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdgeph.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"

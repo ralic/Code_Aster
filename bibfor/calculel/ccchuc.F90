@@ -18,6 +18,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
 #include "asterfort/cnscno.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/codent.h"
+#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"

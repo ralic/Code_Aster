@@ -4,6 +4,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"

@@ -6,6 +6,7 @@ subroutine te0019(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
+#include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmpr3d_vect.h"
 !
@@ -72,16 +73,16 @@ subroutine te0019(option, nomte)
 !
 ! - For pressure, no node affected -> 0
 !
-    if (option.eq.'CHAR_MECA_PRES_F') then
+    if (option .eq. 'CHAR_MECA_PRES_F') then
         call jevecd('PPRESSF', j_pres, 0.d0)
-    elseif (option.eq.'CHAR_MECA_EFON_F') then
+    else if (option.eq.'CHAR_MECA_EFON_F') then
         call jevecd('PPREFFF', j_pres, 0.d0)
     endif
 !
 ! - Multiplicative ratio for pressure (EFFE_FOND)
 !
     coef_mult = 1.d0
-    if (option.eq.'CHAR_MECA_EFON_F') then
+    if (option .eq. 'CHAR_MECA_EFON_F') then
         call jevech('PEFOND', 'L', j_effe)
         coef_mult = zr(j_effe-1+1)
     endif
@@ -116,7 +117,7 @@ subroutine te0019(option, nomte)
 !
 ! - Second member
 !
-    call nmpr3d_vect(nno, npg, zr(ipoids), zr(ivf), zr(idf), &
+    call nmpr3d_vect(nno, npg, zr(ipoids), zr(ivf), zr(idf),&
                      zr(j_geom), pres_point, zr(j_vect))
 !
 end subroutine

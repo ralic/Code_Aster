@@ -1,8 +1,8 @@
 subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
-                  sig, vip, a0, b0, c0,&
-                  aa_t, ga_t, ab, gb, ac,&
-                  gc, aa_c, ga_c, cstseu, crit,&
-                  codret, dsidep)
+                   sig, vip, a0, b0, c0,&
+                   aa_t, ga_t, ab, gb, ac,&
+                   gc, aa_c, ga_c, cstseu, crit,&
+                   codret, dsidep)
 ! aslint: disable=W1504
 !
 ! ======================================================================
@@ -25,20 +25,24 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
     implicit none
 #include "jeveux.h"
-!
-#include "asterfort/coqrep.h"
-#include "blas/dgeev.h"
-#include "asterfort/dxefro.h"
-#include "asterfort/dhrc_jacob.h"
-#include "asterfort/jevech.h"
-#include "asterfort/dhrc_mat_elas.h"
-#include "asterfort/matini.h"
-#include "asterfort/dhrc_mat_tan.h"
-#include "asterfort/mgauss.h"
 #include "asterc/r8dgrd.h"
-#include "asterfort/r8inir.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/dhrc_calc_a.h"
+#include "asterfort/dhrc_calc_b.h"
+#include "asterfort/dhrc_calc_c.h"
+#include "asterfort/dhrc_jacob.h"
+#include "asterfort/dhrc_mat_elas.h"
+#include "asterfort/dhrc_mat_tan.h"
 #include "asterfort/dhrc_seuils.h"
+#include "asterfort/dhrc_sig.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matini.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/utbtab.h"
+#include "blas/dgeev.h"
+!
     integer :: codret
 !
     real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), cstseu(2)
@@ -187,23 +191,21 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 !
 !
-    call dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
-                ga_c, epsg, vint, a, ap1,&
-                ap2, as1, as2)
+    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
+                     epsg, vint, a, ap1, ap2,&
+                     as1, as2)
 !
-    call dhrc_calc_b(b0, ab, gb,&
-                vint, b, bp1, bp2, bs1,&
-                bs2)
+    call dhrc_calc_b(b0, ab, gb, vint, b,&
+                     bp1, bp2, bs1, bs2)
 !
-    call dhrc_calc_c(c0, ac, gc,&
-                vint, c, cp1, cp2, cs1,&
-                cs2)
+    call dhrc_calc_c(c0, ac, gc, vint, c,&
+                     cp1, cp2, cs1, cs2)
 !
 !
 ! --  CALCUL DES SEUILS
     call dhrc_seuils(epsg, vint, b, c, ap1,&
-                bp1, cp1, ap2, bp2, cp2,&
-                cstseu, neta1, neta2, seuils)
+                     bp1, cp1, ap2, bp2, cp2,&
+                     cstseu, neta1, neta2, seuils)
 !
     do k = 1, 6
         indip(k)=0
@@ -294,9 +296,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             call matini(6, 6, 0.0d0, jacob)
 !
             call dhrc_jacob(epsg, vint, b, c, bp1,&
-                        cp1, bp2, cp2, as1, bs1,&
-                        cs1, as2, bs2, cs2, indi,&
-                        neta1, neta2, cstseu, jacob)
+                            cp1, bp2, cp2, as1, bs1,&
+                            cs1, as2, bs2, cs2, indi,&
+                            neta1, neta2, cstseu, jacob)
 !
 !
 ! C --  VERIFICATION DE LA CONVEXITE DE L'ENERGIE LIBRE
@@ -338,23 +340,21 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  CALCUL DES TENSEURS DE RAIDEUR A,B,C EN FONCTION DE
 !     L'ENDOMMAGEMENT ET DE LEURS DERIVEES PAR RAPPORT A D1 ET D2
 !
-                call dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
-                            ga_c, epsg, vint, a, ap1,&
-                            ap2, as1, as2)
+                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
+                                 epsg, vint, a, ap1, ap2,&
+                                 as1, as2)
 !
-                call dhrc_calc_b(b0, ab, gb,&
-                            vint, b, bp1, bp2, bs1,&
-                            bs2)
+                call dhrc_calc_b(b0, ab, gb, vint, b,&
+                                 bp1, bp2, bs1, bs2)
 !
-                call dhrc_calc_c(c0, ac, gc,&
-                            vint, c, cp1, cp2, cs1,&
-                            cs2)
+                call dhrc_calc_c(c0, ac, gc, vint, c,&
+                                 cp1, cp2, cs1, cs2)
             endif
 !
 ! --  CALCUL DES SEUILS AVEC VARIABLES ACTUALISEES
             call dhrc_seuils(epsg, vint, b, c, ap1,&
-                        bp1, cp1, ap2, bp2, cp2,&
-                        cstseu, neta1, neta2, seuils)
+                             bp1, cp1, ap2, bp2, cp2,&
+                             cstseu, neta1, neta2, seuils)
 !
             l=0
             do k = 1, 6
@@ -407,20 +407,18 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 !
 ! --  CALCUL DES CONTRAINTES
-    call dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
-                ga_c, epsg, vip, a, ap1,&
-                ap2, as1, as2)
+    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
+                     epsg, vip, a, ap1, ap2,&
+                     as1, as2)
 !
 ! C     ECRITURE DES VALEURS PROPRES
 !
 !
-    call dhrc_calc_b(b0, ab, gb,&
-                vip, b, bp1, bp2, bs1,&
-                bs2)
+    call dhrc_calc_b(b0, ab, gb, vip, b,&
+                     bp1, bp2, bs1, bs2)
 !
-    call dhrc_calc_c(c0, ac, gc,&
-                vip, c, cp1, cp2, cs1,&
-                cs2)
+    call dhrc_calc_c(c0, ac, gc, vip, c,&
+                     cp1, cp2, cs1, cs2)
 !
     call dhrc_sig(epsg, vip, a, b, sigg)
 !
@@ -443,9 +441,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 !
 ! --  CALCUL DE LA MATRICE ELASTIQUE
-        call dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
-                    ga_c, epsg, vip, a, ap1,&
-                    ap2, as1, as2)
+        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
+                         epsg, vip, a, ap1, ap2,&
+                         as1, as2)
         call dhrc_mat_elas(a, dsideg)
 !
     else
@@ -458,24 +456,22 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  CALCUL DE LA MATRICE TANGENTE
 !
 ! --  CALCUL DE LA JACOBIENNE => JACOB(NBACT,NBACT)
-        call dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
-                    ga_c, epsg, vip, a, ap1,&
-                    ap2, as1, as2)
+        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
+                         epsg, vip, a, ap1, ap2,&
+                         as1, as2)
 !
-        call dhrc_calc_b(b0, ab, gb,&
-                    vip, b, bp1, bp2, bs1,&
-                    bs2)
+        call dhrc_calc_b(b0, ab, gb, vip, b,&
+                         bp1, bp2, bs1, bs2)
 !
-        call dhrc_calc_c(c0, ac, gc,&
-                    vip, c, cp1, cp2, cs1,&
-                    cs2)
+        call dhrc_calc_c(c0, ac, gc, vip, c,&
+                         cp1, cp2, cs1, cs2)
 !
         call matini(6, 6, 0.0d0, jacob)
 !
         call dhrc_jacob(epsg, vip, b, c, bp1,&
-                    cp1, bp2, cp2, as1, bs1,&
-                    cs1, as2, bs2, cs2, indip,&
-                    neta1, neta2, cstseu, jacob)
+                        cp1, bp2, cp2, as1, bs1,&
+                        cs1, as2, bs2, cs2, indip,&
+                        neta1, neta2, cstseu, jacob)
 !
 ! --  INVERSION DE LA JACOBIENNE => BOCAJ(NBACT,NBACT)
 !
@@ -488,9 +484,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         call mgauss('NFSP', jacob, bocaj, 6, ntest,&
                     6, det, iret)
 !
-        call dhrc_mat_tan(a, ap1, ap2, b,&
-                    bp1, bp2, bocaj, neta1, neta2,&
-                    indip, cstseu, epsg, vip, dsideg)
+        call dhrc_mat_tan(a, ap1, ap2, b, bp1,&
+                          bp2, bocaj, neta1, neta2, indip,&
+                          cstseu, epsg, vip, dsideg)
     endif
 !
     call matini(6, 6, 0.0d0, ates)

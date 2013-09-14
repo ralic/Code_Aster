@@ -2,6 +2,7 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
                   errmax, y0, dy0, rkfct, resu,&
                   iret)
     implicit none
+#include "asterfort/rk5app.h"
     integer :: nbeq, nbmax, iret
     real(kind=8) :: param(*), t0, dt0, y0(nbeq), dy0(nbeq), resu(2*nbeq), errmax
     external rkfct
@@ -72,11 +73,11 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
     parameter (grlog  =  1.0e+08)
 !
     nbbou = 0
-    t9  = t0
+    t9 = t0
     dt9 = dt0
-    y9(:)  = y0(:)
+    y9(:) = y0(:)
 !   ON COMMENCE
-100 continue
+100  continue
 !
 !   dépassement du nombre d'itération maximum ==> découpage global
     if (nbbou .gt. nbmax) then
@@ -115,13 +116,13 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
         xbid1 = creduc * dt9 * (erreur**pumoin)
         dt9 = max(0.10d0 * dt9, xbid1)
         goto 100
-    elseif (abs(t9 + dt9 - t0 - dt0) .gt. precis) then
+    else if (abs(t9 + dt9 - t0 - dt0) .gt. precis) then
 !       on a converge ==> augmentation du pas de temps
         nbbou = 0
 !       temps convergé
         t9 = t9 + dt9
 !       solution convergée
-        y9(1:nbeq)  = solu(1:nbeq)
+        y9(1:nbeq) = solu(1:nbeq)
 !       augmente le pas d'intégration dans la limite de coeffm
         if (erreur .gt. seuil) then
             dt9 = creduc * dt9 * (erreur**puplus)
@@ -136,5 +137,5 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
     endif
 !   résultat
     resu = solu(1:2*nbeq)
-999 continue
+999  continue
 end subroutine

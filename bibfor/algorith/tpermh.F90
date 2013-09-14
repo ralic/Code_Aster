@@ -24,10 +24,13 @@ subroutine tpermh(angmas, permin, tperm, aniso, ndim)
 ! ======================================================================
 #include "asterc/r8dgrd.h"
 #include "asterc/r8pi.h"
+#include "asterfort/matini.h"
+#include "asterfort/matrot.h"
+#include "asterfort/utbtab.h"
     integer :: aniso, ndim
     real(kind=8) :: angmas(3), permin(4)
-    real(kind=8) :: tperm(ndim, ndim),perml(3, 3)
-    real(kind=8) :: passag(3,3),work(3,3),tk2(3,3)
+    real(kind=8) :: tperm(ndim, ndim), perml(3, 3)
+    real(kind=8) :: passag(3, 3), work(3, 3), tk2(3, 3)
 ! ======================================================================
 ! --- INITIALISATION DU TENSEUR DE PERMEABILITE ------------------------
 ! ======================================================================
@@ -44,8 +47,8 @@ subroutine tpermh(angmas, permin, tperm, aniso, ndim)
 ! ======================================================================
         tperm(1,1)=permin(1)
         tperm(2,2)=permin(1)
-        if(ndim.eq.3)then
-         tperm(3,3)=permin(1)
+        if (ndim .eq. 3) then
+            tperm(3,3)=permin(1)
         endif
     else if (aniso.eq.1) then
 ! ======================================================================
@@ -56,8 +59,9 @@ subroutine tpermh(angmas, permin, tperm, aniso, ndim)
         perml(2,2)=permin(2)
         perml(3,3)=permin(3)
 ! Recupération de la matrice de passage du local au global
-        call matrot(angmas,passag)
-        call utbtab('ZERO', 3, 3, perml, passag,work, tperm)
+        call matrot(angmas, passag)
+        call utbtab('ZERO', 3, 3, perml, passag,&
+                    work, tperm)
     else if (aniso.eq.2) then
 ! ======================================================================
 ! --- CAS ORTHOTROPE 2D ------------------------------------------
@@ -65,12 +69,13 @@ subroutine tpermh(angmas, permin, tperm, aniso, ndim)
 ! ======================================================================
         perml(1,1)=permin(2)
         perml(2,2)=permin(4)
-        call matrot(angmas,passag)
-        call utbtab('ZERO', 3, 3, perml, passag,work, tk2)
+        call matrot(angmas, passag)
+        call utbtab('ZERO', 3, 3, perml, passag,&
+                    work, tk2)
         tperm(1,1)= tk2(1,1)
         tperm(2,2)= tk2(2,2)
         tperm(1,2)= tk2(1,2)
         tperm(2,1)= tk2(2,1)
     endif
-
+!
 end subroutine

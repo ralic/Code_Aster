@@ -48,6 +48,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
 !
 !
 #include "jeveux.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"

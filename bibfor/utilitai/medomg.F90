@@ -12,6 +12,7 @@ subroutine medomg(result, numord, modele, mate, lischa)
 #include "asterfort/liscnv.h"
 #include "asterfort/liscom.h"
 #include "asterfort/lislec.h"
+#include "asterfort/lisnnb.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rslesd.h"
 !
@@ -57,8 +58,8 @@ subroutine medomg(result, numord, modele, mate, lischa)
     character(len=8) :: materi, carele
     character(len=16) :: phenom, motfac, nomcmd
     character(len=19) :: lisold
-    integer :: iexcit,iret,nbchar
-    character(len=1) :: base,codarr
+    integer :: iexcit, iret, nbchar
+    character(len=1) :: base, codarr
     logical :: lxfem
 !
 ! ----------------------------------------------------------------------
@@ -73,7 +74,7 @@ subroutine medomg(result, numord, modele, mate, lischa)
     nomcmd = 'CALC_G'
     phenom = 'MECANIQUE'
     motfac = 'EXCIT'
-    base   = 'V'
+    base = 'V'
     codarr = 'F'
 !
 ! - SUPPRESSION ANCIENNES LISTE_CHARGES
@@ -106,20 +107,20 @@ subroutine medomg(result, numord, modele, mate, lischa)
     call exixfe(modele, iret)
     lxfem = iret.ne.0
     if (lxfem) then
-      codarr = 'A'
+        codarr = 'A'
     else
-      codarr = 'F'
+        codarr = 'F'
     endif
 !
     call lisnnb(lischa, nbchar)
 !
 ! - VERIFICATION DE LA COHERENCE DES MODELES
 !
-    if (nbchar.ne.0) call liscom(modele, codarr,lischa)
+    if (nbchar .ne. 0) call liscom(modele, codarr, lischa)
 !
 ! - VERIFICATION CHARGE PRISE EN COMPTE DANS CALC_G ?
 !
-    if (nbchar.ne.0) call lisccm(nomcmd, 'F', lischa)
+    if (nbchar .ne. 0) call lisccm(nomcmd, 'F', lischa)
 !
     call jedema()
 end subroutine
