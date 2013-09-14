@@ -42,7 +42,6 @@ subroutine execop()
 #include "asterfort/op9999.h"
 #include "asterfort/opsexe.h"
 #include "asterfort/sigusr.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
@@ -140,8 +139,7 @@ subroutine execop()
 !
     call uttrst(tpres)
     if (tpres .lt. 0.d0) then
-        call utexcm(28, 'SUPERVIS_63', 0, k8bid, 0,&
-                    ibid, 1, -tpres)
+        call utmess('Z', 'SUPERVIS_63', sr=-tpres, num_except=28)
     endif
 !
 !     -- CONTROLE DE L'APPARIEMMENT DES JEMARQ/JEDEMA

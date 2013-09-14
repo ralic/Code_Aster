@@ -20,7 +20,7 @@ subroutine op0025()
 !     COMMANDE:  THER_LINEAIRE
 ! ----------------------------------------------------------------------
 !
-    implicit   none
+    implicit none
 !
 ! 0.1. ==> ARGUMENTS
 !
@@ -50,7 +50,7 @@ subroutine op0025()
 #include "asterfort/nxlect.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/utexcm.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
@@ -256,8 +256,8 @@ subroutine op0025()
         vali = numins
         valr(1) = tps1(4)
         valr(2) = tps1(1)
-        call utexcm(28, 'ALGORITH16_68', 0, ' ', 1,&
-                    vali, 2, valr)
+        call utmess('Z', 'ALGORITH16_68', si=vali, nr=2, valr=valr,&
+                    num_except=28)
     else
         write (ifm,'(A,1X,I6,2(1X,A,1X,1PE11.3))') 'NUMERO D''ORDRE:',&
         numins,'INSTANT:',instap, 'DUREE MOYENNE:',tps1(4)

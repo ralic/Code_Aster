@@ -59,7 +59,6 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 #include "asterfort/rsnume.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/utcrre.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
 #include "asterfort/uttcpr.h"
@@ -238,8 +237,8 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
             valr (1) = time
             valr (2) = tcpu
             valr (3) = tcpu
-            call utexcm(28, 'ALGORITH16_88', 0, ' ', 1,&
-                        vali, 3, valr)
+            call utmess('Z', 'ALGORITH16_88', si=vali, nr=3, valr=valr,&
+                        num_except=28)
             call utmess('F', 'ALGORITH11_83')
             goto 999
         endif

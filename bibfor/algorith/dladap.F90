@@ -88,7 +88,6 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 #include "asterfort/recpar.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -571,8 +570,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
         valr(1) = tarchi
         valr(2) = nbpasc*tps1(4)
         valr(3) = tps1(1)
-        call utexcm(28, 'DYNAMIQUE_11', 0, ' ', 3,&
-                    vali, 3, valr)
+        call utmess('Z', 'DYNAMIQUE_11', ni=3, vali=vali, nr=3,&
+                    valr=valr, num_except=28)
     endif
 !
     vali(1) = ipas

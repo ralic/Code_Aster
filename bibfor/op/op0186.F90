@@ -57,7 +57,6 @@ subroutine op0186()
 #include "asterfort/rsinch.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -397,8 +396,8 @@ subroutine op0186()
             itab(1) = numins
             rtab(1) = tps2(4)
             rtab(2) = tps2(1)
-            call utexcm(28, 'DISCRETISATION2_79', 0, k8b, 1,&
-                        itab, 2, rtab)
+            call utmess('Z', 'DISCRETISATION2_79', si=itab(1), nr=2, valr=rtab,&
+                        num_except=28)
         else
             goto 20
         endif
@@ -406,8 +405,7 @@ subroutine op0186()
         write (ifm,fmt1)
         itab(1) = numins
         itab(2) = iterat
-        call utexcm(22, 'THERNONLINE4_85', 0, k8b, 2,&
-                    itab, 0, rtab)
+        call utmess('Z', 'THERNONLINE4_85', ni=2, vali=itab, num_except=22)
     endif
     write (ifm,fmt1)
 !
@@ -493,8 +491,8 @@ subroutine op0186()
         itab(1) = numins
         rtab(1) = tps2(4)
         rtab(2) = tps2(1)
-        call utexcm(28, 'DISCRETISATION2_80', 0, k8bid, 1,&
-                    itab, 2, rtab)
+        call utmess('Z', 'DISCRETISATION2_80', si=itab(1), nr=2, valr=rtab,&
+                    num_except=28)
     endif
 !
     if (finpas) goto 500

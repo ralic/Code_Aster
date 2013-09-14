@@ -55,7 +55,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 #include "asterfort/lcsove.h"
 #include "asterfort/rsliso.h"
 #include "asterfort/rslphi.h"
-#include "asterfort/utexcp.h"
+#include "asterfort/utmess.h"
     integer :: kpg, ksp, imat, nmat, irtet, itmax, ncompt, nvi
     integer :: nint, testcv, convp
 !
@@ -409,7 +409,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 !
 ! -- ERREURS--------------------------------------------------------
 45  continue
-    call utexcp(23, 'COMPOR1_16')
+    call utmess('Z', 'COMPOR1_16', num_except=23)
     goto 9999
 !
 ! -- PROBABLEMENT UN INCREMENT TROP GRAND DE DEFORMATION-----------

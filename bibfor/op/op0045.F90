@@ -83,7 +83,6 @@ subroutine op0045()
 #include "asterfort/sspace.h"
 #include "asterfort/titre.h"
 #include "asterfort/tldlg2.h"
-#include "asterfort/utexcp.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vecini.h"
@@ -740,7 +739,7 @@ subroutine op0045()
             npivot=npiv2(1)
             if (nfreq .le. 0) then
                 if (arret(1:3) .eq. 'OUI') then
-                    call utexcp(24, 'MODAL_1')
+                    call utmess('Z', 'MODAL_1', num_except=24)
                 else
                     nfreq = 1
                     call rscrsd('G', modes, typcon, nfreq)

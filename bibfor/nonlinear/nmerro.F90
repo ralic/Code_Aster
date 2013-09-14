@@ -18,7 +18,7 @@ subroutine nmerro(sderro, sdtime, numins)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterfort/jedema.h"
@@ -27,8 +27,7 @@ subroutine nmerro(sderro, sdtime, numins)
 #include "asterfort/nmecev.h"
 #include "asterfort/nmerge.h"
 #include "asterfort/sigusr.h"
-#include "asterfort/utexcm.h"
-#include "asterfort/utexcp.h"
+#include "asterfort/utmess.h"
     integer :: numins
     character(len=24) :: sdtime, sderro
 !
@@ -105,44 +104,42 @@ subroutine nmerro(sderro, sdtime, numins)
         itab(1) = numins
         rtab(1) = moyite
         rtab(2) = tpsrst
-        call utexcm(28, 'MECANONLINE9_1', 0, k8bid, 1,&
-                    itab, 2, rtab)
+        call utmess('Z', 'MECANONLINE9_1', si=itab(1), nr=2, valr=rtab,&
+                    num_except=28)
     else if (mtcpup) then
         itab(1) = numins
         rtab(1) = moypas
         rtab(2) = tpsrst
-        call utexcm(28, 'MECANONLINE9_2', 0, k8bid, 1,&
-                    itab, 2, rtab)
+        call utmess('Z', 'MECANONLINE9_2', si=itab(1), nr=2, valr=rtab,&
+                    num_except=28)
     else if (echldc) then
-        call utexcp(23, 'MECANONLINE9_3')
+        call utmess('Z', 'MECANONLINE9_3', num_except=23)
     else if (echeq1.or.echeq2) then
-        call utexcp(25, 'MECANONLINE9_4')
+        call utmess('Z', 'MECANONLINE9_4', num_except=25)
     else if (echco1) then
-        call utexcp(26, 'MECANONLINE9_5')
+        call utmess('Z', 'MECANONLINE9_5', num_except=26)
     else if (echco2) then
-        call utexcp(27, 'MECANONLINE9_6')
+        call utmess('Z', 'MECANONLINE9_6', num_except=27)
     else if (itemax) then
-        call utexcp(22, 'MECANONLINE9_7')
+        call utmess('Z', 'MECANONLINE9_7', num_except=22)
     else if (echpil) then
-        call utexcp(29, 'MECANONLINE9_8')
+        call utmess('Z', 'MECANONLINE9_8', num_except=29)
     else if (echpfg) then
-        call utexcp(30, 'MECANONLINE9_9')
+        call utmess('Z', 'MECANONLINE9_9', num_except=30)
     else if (echpff) then
-        call utexcp(31, 'MECANONLINE9_10')
+        call utmess('Z', 'MECANONLINE9_10', num_except=31)
     else if (echpfc) then
-        call utexcp(32, 'MECANONLINE9_11')
+        call utmess('Z', 'MECANONLINE9_11', num_except=32)
     else if (errres) then
-        call utexcp(35, 'MECANONLINE9_12')
+        call utmess('Z', 'MECANONLINE9_12', num_except=35)
     else
         call nmecev(sderro, 'L', nomevd, action)
         valk(1) = action
         valk(2) = nomevd
         if (action .eq. 'ARRET') then
-            call utexcm(33, 'MECANONLINE9_51', 1, nomevd, 0,&
-                        ibid, 0, r8bid)
+            call utmess('Z', 'MECANONLINE9_51', sk=nomevd, num_except=33)
         else
-            call utexcm(34, 'MECANONLINE9_50', 2, valk, 0,&
-                        ibid, 0, r8bid)
+            call utmess('Z', 'MECANONLINE9_50', nk=2, valk=valk, num_except=34)
         endif
     endif
 !

@@ -57,8 +57,7 @@ subroutine op0171()
 #include "asterfort/rssepa.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
-#include "asterfort/utexcm.h"
-#include "asterfort/utexcp.h"
+#include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcopy.h"
@@ -327,8 +326,8 @@ subroutine op0171()
             vali(1) = iterl
             valr(1) = tps2(4)
             valr(2) = tps2(1)
-            call utexcm(28, 'DISCRETISATION2_79', 0, valk, 1,&
-                        vali, 2, valr)
+            call utmess('Z', 'DISCRETISATION2_79', si=vali(1), nr=2, valr=valr,&
+                        num_except=28)
         endif
 !
 ! - ON VA REFAIRE UNE ITERATION
@@ -342,7 +341,7 @@ subroutine op0171()
 !
         if ((parcri(9).eq.0) .and. (iterl.ge.itmaxl)) then
             write (ifm,fmt)
-            call utexcp(22, 'MECANONLINE9_7')
+            call utmess('Z', 'MECANONLINE9_7', num_except=22)
         endif
 !
     endif

@@ -1,6 +1,6 @@
 subroutine utmess(typ, idmess, nk, valk, sk, &
                   ni, vali, si, nr, valr, &
-                  sr)
+                  sr, num_except)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,17 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 ! ======================================================================
 ! person_in_charge: mathieu.courtois at edf.fr
 !
+! All messages (informations, warnings, errors) should be printed through this subroutine.
+! Only the first two arguments are compulsory.
+! Example: call utmess('A', 'SUPERVIS_1')
+!
+! To pass a single value, just use sk/si/sr=value.
+! To pass more values, use nk/ni/nr=<number of values> + valk/vali/valr=<array of values>.
+! Example: call utmess('A', 'MECANONLINE_34', nr=2, valr=[a, b])
+! 
+!
+! See comments in utmess_core for details
+!
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/utmess_core.h"
@@ -34,6 +45,12 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     integer, intent(in), optional :: nr
     real(kind=8), intent(in), optional, target :: valr(*)
     real(kind=8), intent(in), optional :: sr
+    integer, intent(in), optional :: num_except
+!
+!   common used to pass the exception number
+!   TODO: add this argument to utmess_core
+    integer :: nexcep
+    common /utexc/ nexcep
 !
 !   working variables
     integer :: unk, uni, unr
@@ -47,6 +64,10 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     real(kind=8), target :: uvr(1)
     real(kind=8), pointer :: ptrr(:)
 !
+    ASSERT(.not. present(num_except) .or. typ == 'Z')
+    if (present(num_except)) then
+        nexcep = num_except
+    endif
 !   associate pointers to valk or sk
     unk = 1
     uvk(1) = ' '

@@ -99,7 +99,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 #include "asterfort/preres.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trmult.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -621,8 +620,8 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     endif
 !
     if (istop .eq. 1) then
-        call utexcm(28, 'DYNAMIQUE_10', 0, valk, 2,&
-                    vali, 2, valr)
+        call utmess('Z', 'DYNAMIQUE_10', ni=2, vali=vali, nr=2,&
+                    valr=valr, num_except=28)
     endif
 !
 !     --- DESTRUCTION DES OBJETS DE TRAVAIL ---

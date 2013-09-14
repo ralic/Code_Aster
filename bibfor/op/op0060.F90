@@ -73,7 +73,6 @@ subroutine op0060()
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
 #include "asterfort/utcrre.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -543,8 +542,8 @@ subroutine op0060()
         if (tps1(4) .gt. .90d0*tps1(1) .and. i .ne. nbfreq) then
             rtab(1) = tps1(4)
             rtab(2) = tps1(1)
-            call utexcm(28, 'DYNAMIQUE_13', 0, k8bid, 1,&
-                        ifreq, 2, rtab)
+            call utmess('Z', 'DYNAMIQUE_13', si=ifreq, nr=2, valr=rtab,&
+                        num_except=28)
         endif
 42  continue
 !

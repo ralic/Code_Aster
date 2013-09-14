@@ -47,7 +47,6 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
 #include "asterfort/lcverr.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
     integer :: typess, itmax, iter, intg, nr, icomp
     real(kind=8) :: toler, essai, ddy(*), dy(*)
@@ -160,8 +159,7 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
                 else
                     vali = intg
                     valr = dp
-                    call utexcm(23, 'ALGORITH16_60', 0, ' ', 1,&
-                                vali, 1, valr)
+                    call utmess('Z', 'ALGORITH16_60', si=vali, sr=valr, num_except=23)
                 endif
             endif
 !

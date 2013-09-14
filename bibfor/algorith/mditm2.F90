@@ -92,7 +92,6 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
 #include "asterfort/sigusr.h"
 #include "asterfort/sommve.h"
 #include "asterfort/transi.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -559,8 +558,8 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
         valr (1) = tc
         valr (2) = tps1(4)
         valr (3) = tps1(1)
-        call utexcm(28, 'ALGORITH16_87', 0, ' ', 1,&
-                    vali, 3, valr)
+        call utmess('Z', 'ALGORITH16_87', si=vali, nr=3, valr=valr,&
+                    num_except=28)
     endif
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1

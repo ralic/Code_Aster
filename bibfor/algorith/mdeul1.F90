@@ -37,7 +37,6 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 #include "asterfort/resu74.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/trlds.h"
-#include "asterfort/utexcm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
@@ -610,8 +609,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                 valr (1) = tarchi
                 valr (2) = tps1(4)
                 valr (3) = tps1(1)
-                call utexcm(28, 'ALGORITH16_77', 0, ' ', 2,&
-                            vali, 3, valr)
+                call utmess('Z', 'ALGORITH16_77', ni=2, vali=vali, nr=3,&
+                            valr=valr, num_except=28)
                 goto 9999
             endif
         endif
