@@ -19,20 +19,20 @@ interface
     subroutine utites(label1, label2, type, nbref, refi,&
                       refr, refc, vali, valr, valc,&
                       epsi, crit, ific, llab, ssigne)
-        integer :: nbref
-        character(*) :: label1
-        character(*) :: label2
-        character(*) :: type
-        integer :: refi(nbref)
-        real(kind=8) :: refr(nbref)
-        complex(kind=8) :: refc(nbref)
-        integer :: vali
-        real(kind=8) :: valr
-        complex(kind=8) :: valc
-        real(kind=8) :: epsi
-        character(*) :: crit
-        integer :: ific
-        logical :: llab
-        character(*) :: ssigne
+        integer, intent(in) :: nbref
+        character(*), intent(in) :: label1
+        character(*), intent(in) :: label2
+        character(*), intent(in) :: type
+        integer, intent(in) :: refi(nbref)
+        real(kind=8), intent(in) :: refr(nbref)
+        complex(kind=8), intent(in) :: refc(nbref)
+        integer, intent(in) :: vali
+        real(kind=8), intent(in) :: valr
+        complex(kind=8), intent(in) :: valc
+        real(kind=8), intent(in) :: epsi
+        character(*), intent(in) :: crit
+        integer, intent(in) :: ific
+        logical, intent(in) :: llab
+        character(*), intent(in) :: ssigne
     end subroutine utites
 end interface

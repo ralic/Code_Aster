@@ -5,12 +5,21 @@ subroutine utites(label1, label2, type, nbref, refi,&
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcovt.h"
-    integer :: vali, nbref, refi(nbref), ific
-    character(len=*) :: label1, label2, type, crit, ssigne
-    real(kind=8) :: valr, refr(nbref), epsi
-    complex(kind=8) :: valc, refc(nbref)
-    logical :: llab
-! ----------------------------------------------------------------------
+    integer, intent(in) :: nbref
+    character(*), intent(in) :: label1
+    character(*), intent(in) :: label2
+    character(*), intent(in) :: type
+    integer, intent(in) :: refi(nbref)
+    real(kind=8), intent(in) :: refr(nbref)
+    complex(kind=8), intent(in) :: refc(nbref)
+    integer, intent(in) :: vali
+    real(kind=8), intent(in) :: valr
+    complex(kind=8), intent(in) :: valc
+    real(kind=8), intent(in) :: epsi
+    character(*), intent(in) :: crit
+    integer, intent(in) :: ific
+    logical, intent(in) :: llab
+    character(*), intent(in) :: ssigne
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +48,9 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !  IN  : L   : LLAB   : FLAG IMPRESSION LABELS
 !  OUT :                IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
+    integer :: wali
+    real(kind=8) :: walr
+    complex(kind=8) :: walc
     integer :: i, imin, minvi, tmpi, nl, tvali(2), nl1, nl2
     parameter   (nl=6)
     character(len=4) :: testok, rela
@@ -52,6 +64,10 @@ subroutine utites(label1, label2, type, nbref, refi,&
     data lign2/'REFERENCE','LEGENDE','VALE_REFE','VALE_CALC','ERREUR',&
      &           'TOLE'/
 !     ------------------------------------------------------------------
+!   variables de travail
+    wali = vali
+    walr = valr
+    walc = valc
 !
     k120 = label1
     k170 = label2
@@ -73,11 +89,11 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !
     if (type(1:1) .eq. 'R') then
 !
-        if (ssigne .eq. 'OUI') valr = abs(valr)
-        minvr=abs(valr-refr(1))
+        if (ssigne .eq. 'OUI') walr = abs(walr)
+        minvr=abs(walr-refr(1))
         imin=1
         do 10 i = 1, nbref-1
-            tmpr=abs(valr-refr(i+1))
+            tmpr=abs(walr-refr(i+1))
             if (tmpr .lt. minvr) then
                 tmpr=minvr
                 imin=i+1
@@ -85,7 +101,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
 10      continue
 !
         tvalr(1)=refr(imin)
-        tvalr(2)=valr
+        tvalr(2)=walr
         tvali(1)=0
         tvali(2)=0
         tchval(1)=' '
@@ -94,9 +110,9 @@ subroutine utites(label1, label2, type, nbref, refi,&
         tcherr(2)=' '
 !
         if (rela .eq. 'RELA') then
-            lok = ( abs(valr-refr(imin)) .le. epsi * abs(refr(imin)) )
+            lok = ( abs(walr-refr(imin)) .le. epsi * abs(refr(imin)) )
             if (refr(imin) .ne. zero) then
-                err = (valr - refr(imin)) / refr(imin) *cent
+                err = (walr - refr(imin)) / refr(imin) *cent
             else
                 if (lok) then
                     err = 0.d0
@@ -108,8 +124,8 @@ subroutine utites(label1, label2, type, nbref, refi,&
             terrr(1)=err
             terrr(2)=epsi*cent
         else
-            lok = ( abs(valr - refr(imin)) .le. epsi )
-            err = valr - refr(imin)
+            lok = ( abs(walr - refr(imin)) .le. epsi )
+            err = walr - refr(imin)
             if (lok) testok = ' OK '
             terrr(1)=err
             terrr(2)=epsi
@@ -151,22 +167,22 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !
     else if (type(1:1) .eq. 'I') then
 !
-        minvi=abs(vali-refi(1))
+        minvi=abs(wali-refi(1))
         imin=1
         do 20 i = 1, nbref-1
-            tmpi=abs(vali-refi(i+1))
+            tmpi=abs(wali-refi(i+1))
             if (tmpi .lt. minvi) then
                 tmpi=minvi
                 imin=i+1
             endif
 20      continue
-        if (ssigne .eq. 'OUI') vali = abs(vali)
-        err = dble( vali - refi(imin) )
+        if (ssigne .eq. 'OUI') wali = abs(wali)
+        err = dble( wali - refi(imin) )
 !
         tvalr(1)=0.d0
         tvalr(2)=0.d0
         tvali(1)=refi(imin)
-        tvali(2)=vali
+        tvali(2)=wali
         tchval(1)=' '
         tchval(2)=' '
         tcherr(1)=' '
@@ -175,7 +191,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
         if (rela .eq. 'RELA') then
             lok = ( abs( err ) .le. epsi*abs(refi(imin)) )
             if (refi(imin) .ne. 0) then
-                err = ( vali - refi(imin) )*cent / refi(imin)
+                err = ( wali - refi(imin) )*cent / refi(imin)
             else
                 if (lok) then
                     err = 0.d0
@@ -231,16 +247,16 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !
         vtc = refc(1)
         if (ssigne .eq. 'OUI') then
-            valc = abs(valc)
+            walc = abs(walc)
             vtc = abs(vtc)
         endif
-        minvc=abs(valc-vtc)
+        minvc=abs(walc-vtc)
         imin=1
 !    --- NBREF > 1 N'EST PAS GERE PAR LE SUPERVISEUR...
         do 30 i = 1, nbref-1
             vtc = refc(i+1)
             if (ssigne .eq. 'OUI') vtc = abs(vtc)
-            tmpc=abs(valc-vtc)
+            tmpc=abs(walc-vtc)
             if (tmpc .lt. minvc) then
                 tmpc=minvc
                 imin=i+1
@@ -257,9 +273,9 @@ subroutine utites(label1, label2, type, nbref, refi,&
         tcherr(2)=' '
 !
         if (rela .eq. 'RELA') then
-            lok = ( abs(valc-vtc) .le. epsi * abs(vtc))
+            lok = ( abs(walc-vtc) .le. epsi * abs(vtc))
             if (vtc .ne. zeroc) then
-                err = abs(valc - vtc) / abs(vtc) *cent
+                err = abs(walc - vtc) / abs(vtc) *cent
             else
                 if (lok) then
                     err = 0.d0
@@ -271,20 +287,20 @@ subroutine utites(label1, label2, type, nbref, refi,&
             terrr(1)=err
             terrr(2)=epsi*cent
         else
-            lok = ( abs(valc - vtc) .le. epsi )
-            err = abs(valc - vtc)
+            lok = ( abs(walc - vtc) .le. epsi )
+            err = abs(walc - vtc)
             if (lok) testok = ' OK '
             terrr(1)=err
             terrr(2)=epsi
         endif
 !
         tvalr(1)=dble(vtc)
-        tvalr(2)=dble(valc)
+        tvalr(2)=dble(walc)
         call utcovt('R', tvalr, tvali, terrr, rela,&
                     tchvar, tcherr)
 !
         tvalr(1)=dimag(vtc)
-        tvalr(2)=dimag(valc)
+        tvalr(2)=dimag(walc)
         call utcovt('R', tvalr, tvali, terrr, rela,&
                     tchvac, tcherr)
 !

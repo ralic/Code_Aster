@@ -54,18 +54,21 @@ subroutine utesto(nomobj, type, tbtxt, refi, refr,&
     call tstobj(nomobj, 'NON', resume, sommi, sommr,&
                 lonuti, lonmax, tysc, iret, ni)
 !
+    rbid = 0.d0
+    cbid = dcmplx(0.d0, 0.d0)
+    ibid = 0
     if (iret .eq. 0) then
         if (type .eq. 'RESUME') then
-            call utites(tbtxt(1), tbtxt(2), 'I', 1, refi,&
-                        rbid, cbid, resume, rbid, cbid,&
+            call utites(tbtxt(1), tbtxt(2), 'I', 1, [refi],&
+                        [rbid], [cbid], resume, rbid, cbid,&
                         epsi, crit, ific, llab, ssigne)
         else if (type.eq.'I') then
-            call utites(tbtxt(1), tbtxt(2), 'I', 1, refi,&
-                        rbid, cbid, sommi, rbid, cbid,&
+            call utites(tbtxt(1), tbtxt(2), 'I', 1, [refi],&
+                        [rbid], [cbid], sommi, rbid, cbid,&
                         epsi, crit, ific, llab, ssigne)
         else if (type.eq.'R') then
-            call utites(tbtxt(1), tbtxt(2), 'R', 1, ibid,&
-                        refr, cbid, ibid, sommr, cbid,&
+            call utites(tbtxt(1), tbtxt(2), 'R', 1, [ibid],&
+                        [refr], [cbid], ibid, sommr, cbid,&
                         epsi, crit, ific, llab, ssigne)
         endif
     else

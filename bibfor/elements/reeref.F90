@@ -35,16 +35,33 @@ subroutine reeref(elrefp, axi, nnop, nnos, geom,&
 #include "asterfort/matini.h"
 #include "asterfort/reereg.h"
 #include "asterfort/vecini.h"
-    character(len=3) :: cinem
-    character(len=8) :: elrefp
-    integer :: nnop, ndim, nfh, nfe, ddls, idepl
-    integer :: nfiss, fisno(nnop, nfiss)
-    real(kind=8) :: xg(ndim), he(nfiss), fe(4), dgdgl(4, ndim)
-    real(kind=8) :: xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
-    real(kind=8) :: eps(6), grad(ndim, ndim), geom(*)
-    logical :: grand, axi
-    integer :: nnos, ddlm
-    real(kind=8) :: r, ur
+    integer, intent(in) :: nfiss
+    integer, intent(in) :: ndim
+    integer, intent(in) :: nnop
+    character(len=8), intent(in) :: elrefp
+    logical, intent(in) :: axi
+    integer, intent(in) :: nnos
+    real(kind=8), intent(in) :: geom(*)
+    real(kind=8), intent(in) :: xg(ndim)
+    integer, intent(in) :: idepl
+    logical, intent(in) :: grand
+    real(kind=8), intent(in) :: he(nfiss)
+    real(kind=8), intent(in) :: r
+    real(kind=8), intent(in) :: ur
+    integer, intent(in) :: fisno(nnop, nfiss)
+    integer, intent(in) :: nfh
+    integer, intent(in) :: nfe
+    integer, intent(in) :: ddls
+    integer, intent(in) :: ddlm
+    real(kind=8), intent(in) :: fe(4)
+    real(kind=8), intent(in) :: dgdgl(4, ndim)
+    character(len=3), intent(in) :: cinem
+    real(kind=8), intent(out) :: xe(ndim)
+    real(kind=8), intent(out) :: ff(nnop)
+    real(kind=8), intent(out) :: dfdi(nnop, ndim)
+    real(kind=8), intent(out) :: f(3, 3)
+    real(kind=8), intent(out) :: eps(6)
+    real(kind=8), intent(out) :: grad(ndim, ndim)
 !
 ! ----------------------------------------------------------------------
 !
@@ -130,7 +147,7 @@ subroutine reeref(elrefp, axi, nnop, nnos, geom,&
     call invjax('S', nno, ndim, nderiv, dff,&
                 geom, invjac, iret)
 !
-    if (cinem .eq. 'NON') goto 9999
+    if (cinem .eq. 'NON') goto 999
 !
 ! --- DERIVEES DES FONCTIONS DE FORMES CLASSIQUES EN XE : DFDI
 !
@@ -143,7 +160,7 @@ subroutine reeref(elrefp, axi, nnop, nnos, geom,&
 300      continue
 310  end do
 !
-    if (cinem .eq. 'DFF') goto 9999
+    if (cinem .eq. 'DFF') goto 999
 !
 ! --- MATRICE IDENTITE
 !
@@ -170,7 +187,7 @@ subroutine reeref(elrefp, axi, nnop, nnos, geom,&
         eps(i) = zero
 40  end do
 !
-    if (cinem .eq. 'INI') goto 9999
+    if (cinem .eq. 'INI') goto 999
 !
     ldec=.false.
     if (ddlm .eq. 0 .or. ddlm .eq. -1 .or. ddlm .eq. ddls) ldec=.true.
@@ -251,7 +268,7 @@ subroutine reeref(elrefp, axi, nnop, nnos, geom,&
     endif
 !
 !
-9999  continue
+999 continue
 !
     call jedema()
 end subroutine

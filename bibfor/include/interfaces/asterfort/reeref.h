@@ -22,32 +22,32 @@ interface
                       nfe, ddls, ddlm, fe, dgdgl,&
                       cinem, xe, ff, dfdi, f,&
                       eps, grad)
-        integer :: nfiss
-        integer :: ndim
-        integer :: nnop
-        character(len=8) :: elrefp
-        logical :: axi
-        integer :: nnos
-        real(kind=8) :: geom(*)
-        real(kind=8) :: xg(ndim)
-        integer :: idepl
-        logical :: grand
-        real(kind=8) :: he(nfiss)
-        real(kind=8) :: r
-        real(kind=8) :: ur
-        integer :: fisno(nnop, nfiss)
-        integer :: nfh
-        integer :: nfe
-        integer :: ddls
-        integer :: ddlm
-        real(kind=8) :: fe(4)
-        real(kind=8) :: dgdgl(4, ndim)
-        character(len=3) :: cinem
-        real(kind=8) :: xe(ndim)
-        real(kind=8) :: ff(nnop)
-        real(kind=8) :: dfdi(nnop, ndim)
-        real(kind=8) :: f(3, 3)
-        real(kind=8) :: eps(6)
-        real(kind=8) :: grad(ndim, ndim)
+        integer, intent(in) :: nfiss
+        integer, intent(in) :: ndim
+        integer, intent(in) :: nnop
+        character(len=8), intent(in) :: elrefp
+        logical, intent(in) :: axi
+        integer, intent(in) :: nnos
+        real(kind=8), intent(in) :: geom(*)
+        real(kind=8), intent(in) :: xg(ndim)
+        integer, intent(in) :: idepl
+        logical, intent(in) :: grand
+        real(kind=8), intent(in) :: he(nfiss)
+        real(kind=8), intent(in) :: r
+        real(kind=8), intent(in) :: ur
+        integer, intent(in) :: fisno(nnop, nfiss)
+        integer, intent(in) :: nfh
+        integer, intent(in) :: nfe
+        integer, intent(in) :: ddls
+        integer, intent(in) :: ddlm
+        real(kind=8), intent(in) :: fe(4)
+        real(kind=8), intent(in) :: dgdgl(4, ndim)
+        character(len=3), intent(in) :: cinem
+        real(kind=8), intent(out) :: xe(ndim)
+        real(kind=8), intent(out) :: ff(nnop)
+        real(kind=8), intent(out) :: dfdi(nnop, ndim)
+        real(kind=8), intent(out) :: f(3, 3)
+        real(kind=8), intent(out) :: eps(6)
+        real(kind=8), intent(out) :: grad(ndim, ndim)
     end subroutine reeref
 end interface

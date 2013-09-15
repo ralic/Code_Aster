@@ -66,8 +66,8 @@ subroutine utest5(cham19, nomail, nocmp, tbtxt, refi,&
         write (ific,*) 'NOOK '
     else
         ssigne='NON'
-        call utites(tbtxt(1), tbtxt(2), typres, 1, refi,&
-                    refr, refc, vali, valr, valc,&
+        call utites(tbtxt(1), tbtxt(2), typres, 1, [refi],&
+                    [refr], [refc], vali, valr, valc,&
                     epsi, crit, ific, llab, ssigne)
     endif
 !
