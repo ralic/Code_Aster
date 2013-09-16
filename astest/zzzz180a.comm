@@ -79,8 +79,9 @@ INT1=DEFI_INTE_SPEC(    DIMENSION=2,PAR_FONCTION=(
                                     FONCTION = SPECT22))
                           )
 
-POST1=POST_DYNA_ALEA(       INTE_SPEC=INT1,
-                                    OPTION='DIAG')
+POST1=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                                    INTE_SPEC=INT1,
+                                    OPTION='DIAG'))
 
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -180,8 +181,9 @@ INTERS=CALC_INTE_SPEC(          INST_INIT=0.,
                                       NB_POIN=nbpoin,
                                 FONCTION=( FONCT1,  FONCT2, ), )
 
-POST=POST_DYNA_ALEA(       INTE_SPEC=INTERS,
-                                    OPTION='DIAG')
+POST=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                                    INTE_SPEC=INTERS,
+                                    OPTION='DIAG'))
 
 # IMPR_TABLE(TABLE=POST,
 #            UNITE=8,

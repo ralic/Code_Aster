@@ -410,8 +410,9 @@ DEF_SPEC=DEFI_INTE_SPEC(DIMENSION=1,
                                         NUME_ORDRE_J=1,
                                         FONCTION=F_DSP,),);
 
-POST_DSP=POST_DYNA_ALEA(INTE_SPEC=DEF_SPEC, TOUT_ORDRE = 'OUI',
-                        OPTION = 'DIAG', INFO=2,);
+POST_DSP=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                        INTE_SPEC=DEF_SPEC, TOUT_ORDRE = 'OUI',
+                        OPTION = 'DIAG'), INFO=2,);
 
 TRAJ=GENE_FONC_ALEA(INTE_SPEC=DEF_SPEC,
                     FREQ_INIT=0.0, FREQ_FIN=FCOUP, 

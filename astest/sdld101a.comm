@@ -355,12 +355,13 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.000,
 #  PROBABILITE DE DEPASSEMENT DE SEUIL      **********#
 #  PROBA CUMULEE SELON VANMARCKE             *********#
 #*****************************************************#
-STADEF=POST_DYNA_ALEA(  INTE_SPEC=INTERRE1,
+STADEF=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                        INTE_SPEC=INTERRE1,
                         NOEUD_I='P2',
                         NOM_CMP_I='DX',
                         NOEUD_J='P2',
                         NOM_CMP_J='DX',
-                        MOMENT=( 6,  7,  10),
+                        MOMENT=( 6,  7,  10),),
                         INFO=2
                       )
 

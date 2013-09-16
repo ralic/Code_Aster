@@ -392,12 +392,13 @@ INTEREP1=REST_SPEC_PHYS(         MODE_MECA=MODE1,
                                         OPTION='TOUT_TOUT'  )
 
 #
-POSALEA1=POST_DYNA_ALEA(    INTE_SPEC=INTEREP1,
+POSALEA1=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                              INTE_SPEC=INTEREP1,
                                 NOEUD_I='N1',
                               NOM_CMP_I='DX',
                                 NOEUD_J='N1',
                               NOM_CMP_J='DX',
-                          )
+                          ))
 
 #
 TEST_TABLE(PRECISION=0.11,

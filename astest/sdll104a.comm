@@ -204,29 +204,32 @@ INTCS=DEFI_INTE_SPEC(
 # *****TEST DES VARIANCES PAR GENE_FONC_ALEA**********#
 #*********************************************************************#                                                
                          
-STADE=POST_DYNA_ALEA(  INTE_SPEC=INTKTJ1,
+STADE=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                          INTE_SPEC=INTKTJ1,
                           NUME_ORDRE_J = 1,
                           NUME_ORDRE_I = 1,
+                          DUREE =10.,),
                           INFO=2,
-                           DUREE =10.,
                       )   
                       
-STADEJ2=POST_DYNA_ALEA(  INTE_SPEC=INTKTJ2,
+STADEJ2=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                         INTE_SPEC=INTKTJ2,
                          NOEUD_I = 'PA11',
                          NOM_CMP_I = 'DY',
                          NOEUD_J = 'PA11',
                          NOM_CMP_J = 'DY',
-                          INFO=2,
-                           DUREE =10.,
+                         DUREE =10.,),
+                           INFO=2,
                       )   
                       
-STADECS=POST_DYNA_ALEA(  INTE_SPEC=INTCS,
+STADECS=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                         INTE_SPEC=INTCS,
                          NOEUD_I = 'PA11',
                          NOM_CMP_I = 'DY',
                          NOEUD_J = 'PB11',
                          NOM_CMP_J = 'DY',
+                         DUREE =10.,),
                           INFO=2,
-                           DUREE =10.,
                       )   
                       
 TEST_TABLE(CRITERE='RELATIF',

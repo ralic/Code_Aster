@@ -286,8 +286,9 @@ DSP_M=DEFI_INTE_SPEC(    DIMENSION=1,PAR_FONCTION=(
                                     NUME_ORDRE_J = 1,
                                     FONCTION = FONCMC),  ))
 
-POST_DSP=POST_DYNA_ALEA(  INTE_SPEC=DSP_M,
-                                    OPTION='DIAG');
+POST_DSP=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                                    INTE_SPEC=DSP_M,
+                                    OPTION='DIAG'));
 
 
 ##############################

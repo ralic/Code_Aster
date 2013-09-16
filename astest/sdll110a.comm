@@ -200,28 +200,27 @@ for i in range(len(vite)):
                         NOEUD=('N_02_030','N_02_031' )
                )
 
-  DYN0[i]=POST_DYNA_ALEA( 
+  DYN0[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(
              INTE_SPEC=RPP0[i], 
             TOUT_ORDRE='OUI',
                 OPTION='DIAG'
-               )
+               ))
 
 # IMPR_TABLE ( TABLE=DYN0, 
 # #             UNITE=8,
 #              TITRE='DYNO', FORMAT='TABLEAU',
 # );
 
-DYN1=POST_DYNA_ALEA( 
+DYN1=POST_DYNA_ALEA(INTERSPECTRE=_F(
           INTE_SPEC=RPP0[200],
-       #   NUME_VITE_FLUI = 201, 
-          INFO=2,
+       #   NUME_VITE_FLUI = 201,
           NOEUD_I=('N_02_030','N_02_030','N_02_031' ),
           NOEUD_J=('N_02_030','N_02_031','N_02_031'),
           NOM_CMP_I=('DX','DX', 'DX',)   ,
           NOM_CMP_J=('DX','DX', 'DX',)   ,               
 #          TOUT_ORDRE='OUI',
-
-);
+          ),
+          INFO=2,)
 
 fact=2.
 

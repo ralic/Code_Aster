@@ -1036,10 +1036,11 @@ for i in range(len(vite)):
 
 #
 
-  STX7[i]=POST_DYNA_ALEA(     INTE_SPEC=RPP7[i],
+  STX7[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                           INTE_SPEC=RPP7[i],
                                TOUT_ORDRE='OUI',
                                    OPTION='DIAG'
-                           )
+                           ))
 
 #
 
@@ -1280,10 +1281,11 @@ for i in range(len(vite)):
 
 #
 
-  STX8[i]=POST_DYNA_ALEA(     INTE_SPEC=RPP8[i],
+  STX8[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                           INTE_SPEC=RPP8[i],
                                TOUT_ORDRE='OUI',
                                    OPTION='DIAG'
-                           )
+                           ))
 
 #
 
@@ -1391,10 +1393,11 @@ for i in range(len(vite)):
 
 #
 
-  STX9[i]=POST_DYNA_ALEA(     INTE_SPEC=RPP9[i],
+  STX9[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                           INTE_SPEC=RPP9[i],
                                TOUT_ORDRE='OUI',
                                    OPTION='DIAG'
-                           )
+                           ))
 
 #
 
@@ -1510,10 +1513,11 @@ for i in range(len(vite)):
 
 #
 
-  STX10[i]=POST_DYNA_ALEA(     INTE_SPEC=RPP10[i],
+  STX10[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                            INTE_SPEC=RPP10[i],
                                 TOUT_ORDRE='OUI',
                                     OPTION='DIAG'
-                            )
+                            ))
 
 #
 

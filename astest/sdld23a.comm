@@ -292,23 +292,25 @@ INTERRE4=REST_SPEC_PHYS(         MODE_MECA=FREQ3,
 # *****POST-TRAITEMENT:MOMENTS SPECTRAUX*****************************#
 #*********************************************************************#
 
-TABREP2=POST_DYNA_ALEA(    INTE_SPEC=INTERRE2,
+TABREP2=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                             INTE_SPEC=INTERRE2,
                                NOEUD_I='P4',
                              NOM_CMP_I='DX',
                                NOEUD_J='P4',
                              NOM_CMP_J='DX',
                                 MOMENT=( 6,  8, )
-                        )
+                        ))
 
 
 
-TABREP4=POST_DYNA_ALEA(    INTE_SPEC=INTERRE4,
+TABREP4=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                             INTE_SPEC=INTERRE4,
                                NOEUD_I='P4',
                              NOM_CMP_I='DX',
                                NOEUD_J='P4',
                              NOM_CMP_J='DX',
                                 MOMENT=( 6,  8, )
-                        )
+                        ))
 
 #
 

@@ -24,7 +24,7 @@ from math  import pi,sqrt,log,exp
 EnumTypes = (ListType, TupleType)
 
 
-def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
+def post_dyna_alea_ops(self,INTERSPECTRE,FRAGILITE,TITRE,INFO,**args):
    import numpy as NP
    import aster
    from Accas                 import _F
@@ -212,15 +212,16 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #  ------------------------------------------------------------------
 #  OPTION INTESPEC
 # ------------------------------------------------------------------
-   if INTE_SPEC !=None :
+   if INTERSPECTRE !=None :
 
-      TOUT_ORDRE = args['TOUT_ORDRE']
+      INTE_SPEC=INTERSPECTRE['INTE_SPEC']
+      TOUT_ORDRE=INTERSPECTRE['TOUT_ORDRE']
 
-      NUME_ORDRE_I=args['NUME_ORDRE_I']
-      NOEUD_I=args['NOEUD_I']
-      OPTION=args['OPTION']
-      MOMENT=args['MOMENT']
-      DUREE=args['DUREE']
+      NUME_ORDRE_I=INTERSPECTRE['NUME_ORDRE_I']
+      NOEUD_I=INTERSPECTRE['NOEUD_I']
+      OPTION=INTERSPECTRE['OPTION']
+      MOMENT=INTERSPECTRE['MOMENT']
+      DUREE=INTERSPECTRE['DUREE']
 
 
       # table résultat
@@ -241,7 +242,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       if NUME_ORDRE_I!=None :
         l_ind_i=NUME_ORDRE_I
         if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
-        l_ind_j=args['NUME_ORDRE_J']
+        l_ind_j=INTERSPECTRE['NUME_ORDRE_J']
         if l_ind_j:
           if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
           if len(l_ind_i)!=len(l_ind_j) :
@@ -254,12 +255,12 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
         tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
       elif NOEUD_I!=None :
         l_ind_i=NOEUD_I
-        l_cmp_i=args['NOM_CMP_I']
+        l_cmp_i=INTERSPECTRE['NOM_CMP_I']
         if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
         if type(l_cmp_i) not in EnumTypes : l_cmp_i=[l_cmp_i]
-        l_ind_j=args['NOEUD_J']
+        l_ind_j=INTERSPECTRE['NOEUD_J']
         if l_ind_j:
-          l_cmp_j=args['NOM_CMP_J']
+          l_cmp_j=INTERSPECTRE['NOM_CMP_J']
           if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
           if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
           if len(l_ind_i)!=len(l_ind_j) :
@@ -270,7 +271,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
              UTMESS('F','PROBA0_10')
         else:
           l_ind_j=NOEUD_I
-          l_cmp_j=args['NOM_CMP_I']
+          l_cmp_j=INTERSPECTRE['NOM_CMP_I']
           if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
           if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
         # paramètres fixes de la table
