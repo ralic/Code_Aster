@@ -127,7 +127,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
@@ -142,7 +142,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     nomres(5) = 'ECROB'
     nomres(6) = 'ECROD'
     call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ENDO_ORTH_BETON', 0, ' ', 0.d0,&
+                ' ', 'ENDO_ORTH_BETON', 0, ' ', [0.d0],&
                 nbres, nomres, valres, icodre, 1)
     alpha = valres(1)
     k0 = valres(2)

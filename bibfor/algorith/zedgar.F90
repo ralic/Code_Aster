@@ -87,7 +87,7 @@ subroutine zedgar(matos, tm, tp, instp, dinst,&
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, matos,&
-                ' ', 'META_ZIRC', 1, 'TEMP', tp,&
+                ' ', 'META_ZIRC', 1, 'TEMP', [tp],&
                 12, nomres, valres, icodre, 1)
 !
     tdeq = valres(1)

@@ -8,7 +8,6 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
     implicit none
 !
 ! ======================================================================
-! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,8 +22,6 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! ======================================================================
 ! ======================================================================
 ! - VARIABLES D'ENTREE
 !
@@ -57,7 +54,7 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'JOINT_BANDIS', 0, ' ', 0.d0,&
+                ' ', 'JOINT_BANDIS', 0, ' ', [0.d0],&
                 4, ncra1(1), para(1), icodre, 1)
     kni = para(1)
     umc = para(2)

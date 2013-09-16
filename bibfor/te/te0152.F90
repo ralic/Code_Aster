@@ -58,7 +58,7 @@ subroutine te0152(option, nomte)
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8bid,&
+                ' ', 'FLUIDE', 0, ' ', [r8bid],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     if (rho .le. r8prem()) then

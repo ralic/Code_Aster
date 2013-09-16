@@ -74,7 +74,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
     nomres(3) = 'ECRO_M'
     nomres(4) = 'SY'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'CORR_ACIER', 0, ' ', 0.d0,&
+                ' ', 'CORR_ACIER', 0, ' ', [0.d0],&
                 4, nomres, valres, codres, 1)
 !
     coefdc = valres(1)
@@ -85,7 +85,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
     nomres(2) = 'E'
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, codres, 1)
 !
     nu = valres(1)

@@ -97,7 +97,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb(fami, igau, 1, '+', iadmat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         e = valres(1)
         nu = valres(2)
@@ -162,7 +162,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb(fami, igau, 1, '+', iadmat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         e = valres(1)
         nu = valres(2)

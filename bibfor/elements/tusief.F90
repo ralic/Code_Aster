@@ -116,7 +116,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
         nbpar = 1
         nompar = 'TEMP'
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', nbpar, nompar, valpar,&
+                    ' ', 'ELAS', nbpar, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
         e = valres(1)
         nu = valres(2)

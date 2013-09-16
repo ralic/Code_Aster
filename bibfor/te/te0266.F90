@@ -1,5 +1,6 @@
 subroutine te0266(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -30,15 +31,14 @@ subroutine te0266(option, nomte)
 !
 ! ---------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
 !
-    integer :: icodre
+    integer :: icodre(1)
     integer :: nno, kp, i, k, itempe, itemp, iflux, iharm, nh
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: npg, nnos, jgano, ndim, kpg, spt, j, nbcmp
 !
-    real(kind=8) :: valres, fluxr, fluxz, fluxt
+    real(kind=8) :: valres(1), fluxr, fluxz, fluxt
     real(kind=8) :: dfdr(9), dfdz(9), poids, xh, r
 !
     character(len=8) :: fami, poum
@@ -63,7 +63,7 @@ subroutine te0266(option, nomte)
     poum='+'
     nbcmp=3
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 1, 'INST', zr(itemp),&
+                ' ', 'THER', 1, 'INST', [zr(itemp)],&
                 1, 'LAMBDA', valres, icodre, 1)
 !
     do 101 kp = 1, npg
@@ -85,9 +85,9 @@ subroutine te0266(option, nomte)
             fluxt = fluxt - zr(itempe+j-1)*zr(ivf+k+j-1)*xh/r
 110      continue
 !
-        zr(iflux+(kp-1)*nbcmp-1+1) = -valres*fluxr
-        zr(iflux+(kp-1)*nbcmp-1+2) = -valres*fluxz
-        zr(iflux+(kp-1)*nbcmp-1+3) = -valres*fluxt
+        zr(iflux+(kp-1)*nbcmp-1+1) = -valres(1)*fluxr
+        zr(iflux+(kp-1)*nbcmp-1+2) = -valres(1)*fluxz
+        zr(iflux+(kp-1)*nbcmp-1+3) = -valres(1)*fluxt
 !
 101  end do
 !

@@ -20,7 +20,6 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 ! ======================================================================
 ! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
-! aslint: disable=W1306
     implicit none
 !
 !     BUT: MATRICE DE MASSE ELEMENTAIRE EN THERMIQUE LINEAIRE
@@ -227,7 +226,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 !
 !         RECUPERER LES PARAMETRES MATERIAUX
             call rcvalb('XFEM', kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'INST', valpar,&
+                        ' ', phenom, 1, 'INST', [valpar],&
                         1, 'RHO_CP', valres, icodre, 1)
             rhocp = valres(1)
 !

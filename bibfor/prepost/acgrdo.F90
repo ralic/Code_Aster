@@ -683,7 +683,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !        POUR CRITERE= DANG_VAN OU MATAKE
 !
 !
-            call limend(nommat, grdeq, 'WOHLER', ' ', endur)
+            call limend(nommat, grdeq(1), 'WOHLER', ' ', endur)
             if (endur) then
                 nrupt(k)=r8maem()
             else

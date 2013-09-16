@@ -144,7 +144,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 105  end do
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), codret(1), 1)
     em = valres(1)
     num = valres(2)
@@ -155,7 +155,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
         troikm = em/(1.d0-2.d0*num)
     endif
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), codret(1), 1)
     e = valres(1)
     nu = valres(2)
@@ -173,7 +173,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     if (iret4 .eq. 0) then
         nomres(1)='ALPHA'
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), codret(1), 0)
         if (codret(1) .ne. 0) valres(1) = 0.d0
         alpha = valres(1)
@@ -194,14 +194,14 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
     nomres(7)='TROOM'
     nomres(8)='TMELT'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_COOK', 0, ' ', 0.d0,&
+                ' ', 'ECRO_COOK', 0, ' ', [0.d0],&
                 3, nomres, valres, codret, 1)
     acook = valres(1)
     bcook = valres(2)
     npuis = valres(3)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_COOK', 0, ' ', 0.d0,&
+                ' ', 'ECRO_COOK', 0, ' ', [0.d0],&
                 5, nomres(4), valres(4), codret(4), 0)
 !
     if (codret(4) .ne. 0) then

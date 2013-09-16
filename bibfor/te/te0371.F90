@@ -27,18 +27,18 @@ subroutine te0371(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     integer :: igeom, imate, kpg, spt
     integer :: i, j, k, l, ik, ijkl, ldec, kdec, ino, jno
     integer :: ndim, nno, npg2, ipg, nnos, jgano
     integer :: ipoids, ivf, idfrde, imatuu
-    real(kind=8) :: a(2, 2, 27, 27), rho
+    real(kind=8) :: a(2, 2, 27, 27), rho(1)
     real(kind=8) :: poids, jac
     real(kind=8) :: dxde, dxdk, dyde, dydk
 !
@@ -58,7 +58,7 @@ subroutine te0371(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
 !     INITIALISATION DE LA MATRICE
@@ -96,8 +96,8 @@ subroutine te0371(option, nomte)
 !
         do 130 ino = 1, nno
             do 140 jno = 1, ino
-                a(1,2,ino,jno) = a(1,2,ino,jno) + poids * rho * zr(ivf+ldec+ino-1) * zr(ivf+ldec+&
-                                 &jno-1)
+                a(1,2,ino,jno) = a(1,2,ino,jno) + poids * rho(1) * zr(ivf+ldec+ino-1) * &
+                                 zr(ivf+ldec+jno-1)
 140          continue
 130      continue
 113  continue

@@ -28,13 +28,13 @@ subroutine te0174(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-    integer :: icodre, kpg, spt
+!
+    integer :: icodre(1), kpg, spt
     character(len=8) :: nompar(4), fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
@@ -46,7 +46,7 @@ subroutine te0174(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ier, ii, ino, iret, itemps, ivnor
     integer :: j, jno, mater, n, nbpar
-    real(kind=8) :: r8b, rho, x, y, z
+    real(kind=8) :: r8b, rho(1), x, y, z
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfdx, jgano)
@@ -61,7 +61,7 @@ subroutine te0174(option, nomte)
     call jevech('PMATERC', 'L', imate)
     mater = zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     call jevech('PVECTUR', 'E', ivectu)
@@ -143,8 +143,8 @@ subroutine te0174(option, nomte)
 !
         do 103 i = 1, nno
             ii = 2*i
-            zr(ivectu+ii-1) = zr(ivectu+ii-1)-jac*zr(ipoids+ipg-1) * vnorf * rho * zr(ivf+ldec+i-&
-                              &1)
+            zr(ivectu+ii-1) = zr(ivectu+ii-1)-jac*zr(ipoids+ipg-1) * vnorf * rho(1) &
+                            * zr(ivf+ldec+i-1)
 103      continue
 101  end do
 !

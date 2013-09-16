@@ -2,7 +2,6 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                   imat, necris, necoul, nbval, valres,&
                   nmat, itbint, nfs, nsg, hsri,&
                   ifa, nomfam, nbsys)
-! aslint: disable=W1306
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +43,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
     integer :: nmat, nbval, imat, i, nbsys, ifa, nbcoef
     real(kind=8) :: valh(6)
     real(kind=8) :: valres(nmat), hsri(nsg, nsg), h, e, nu, mu
-    real(kind=8) :: vallue(nmat)
+    real(kind=8) :: vallue(nmat), val(1)
     character(len=*) :: fami, poum
     character(len=8) :: nomres(nmat)
     integer :: icodre(nmat)
@@ -62,7 +61,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         nomres(2)='Q'
         nomres(3)='B'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necris, 0, ' ', 0.d0,&
+                    nmater, necris, 0, ' ', [0.d0],&
                     3, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -77,7 +76,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         nomres(4)='Q2'
         nomres(5)='B2'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necris, 0, ' ', 0.d0,&
+                    nmater, necris, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
 !
         call lceqvn(nbval, vallue, valres(2))
@@ -91,23 +90,26 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         nomres(2)='BETA'
         nomres(3)='RHO_REF'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necris, 0, ' ', 0.d0,&
+                    nmater, necris, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
 !         CALCUL ET STOCKAGE DE MU
         call rccoma(imat, 'ELAS', 1, phenom, icodre(1))
 !
         if (phenom .eq. 'ELAS') then
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'E', e, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'E', val, icodre, 1)
+            e=val(1)            
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'NU', nu, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'NU', val, icodre, 1)
+            nu=val(1)            
             mu=e/(2.0d0+2.0d0*nu)
         else
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', phenom, 0, ' ', 0.d0,&
-                        1, 'G_LN', mu, icodre, 1)
+                        ' ', phenom, 0, ' ', [0.d0],&
+                        1, 'G_LN', val, icodre, 1)
+            mu=val(1)            
         endif
         vallue(4)=mu
         nbval=4
@@ -131,7 +133,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         nomres(11)='DZ_IRRA'
 !
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necris, 0, ' ', 0.d0,&
+                    nmater, necris, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
 !
 !         CALCUL ET STOCKAGE DE MU
@@ -139,16 +141,19 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !
         if (phenom .eq. 'ELAS') then
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'E', e, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'E', val, icodre, 1)
+            e=val(1)            
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'NU', nu, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'NU', val, icodre, 1)
+            nu=val(1)            
             mu=e/(2.0d0+2.0d0*nu)
         else
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', phenom, 0, ' ', 0.d0,&
-                        1, 'G_LN', mu, icodre, 1)
+                        ' ', phenom, 0, ' ', [0.d0],&
+                        1, 'G_LN', val, icodre, 1)
+            mu=val(1)            
         endif
         nbval=nbval+1
         vallue(nbval)=mu
@@ -162,7 +167,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         nomres(1)='TAU_F'
 !         on limite au strict minimum. tout est dans l'écoulement
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necris, 0, ' ', 0.d0,&
+                    nmater, necris, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         nbval=1
         call lceqvn(nbval, vallue, valres(2))
@@ -177,16 +182,19 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !
         if (phenom .eq. 'ELAS') then
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'E', e, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'E', val, icodre, 1)
+            e=val(1)            
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'NU', nu, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'NU', val, icodre, 1)
             mu=e/(2.0d0+2.0d0*nu)
+            nu=val(1)
         else
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', phenom, 0, ' ', 0.d0,&
-                        1, 'G_LN', mu, icodre, 1)
+                        ' ', phenom, 0, ' ', [0.d0],&
+                        1, 'G_LN', val, icodre, 1)
+            mu=val(1)            
         endif
         vallue(1)=mu
         nbval=1
@@ -204,8 +212,9 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         nomres(1)='H'
 !
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necris, 0, ' ', 0.d0,&
-                    1, nomres, h, icodre, 0)
+                    nmater, necris, 0, ' ', [0.d0],&
+                    1, nomres, val, icodre, 0)
+        h=val(1)            
         if (icodre(1) .eq. 0) then
             nbcoef=1
             valh(1)=h
@@ -217,7 +226,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
             nomres(5)='H5'
             nomres(6)='H6'
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        nmater, necris, 0, ' ', 0.d0,&
+                        nmater, necris, 0, ' ', [0.d0],&
                         6, nomres, valh, icodre, 0)
 !           IL FAUT AU MOINS H1 A H4
             do 1 i = 1, 4

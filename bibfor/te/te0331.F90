@@ -1,7 +1,6 @@
 subroutine te0331(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
@@ -14,6 +13,7 @@ subroutine te0331(option, nomte)
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vpri2d.h"
+!
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -128,10 +128,10 @@ subroutine te0331(option, nomte)
 !     --- RECUPERATION DES DONNEES MATERIAU ---
 !
     call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', r8bid,&
+                ' ', phenom, 0, ' ', [r8bid],&
                 3, nomres, valres, icodre, 1)
     call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', r8bid,&
+                ' ', phenom, 0, ' ', [r8bid],&
                 1, nomres(3), valres(3), icodre(3), 1)
     if (icodre(3) .ne. 0) valres(3) = 1.d-6
     m = valres(1)
@@ -190,7 +190,7 @@ subroutine te0331(option, nomte)
 !
             tmoy = tmoy/volume
             call rcvalb(fami, 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', tmoy,&
+                        ' ', phenom, 1, 'TEMP', [tmoy],&
                         1, nomres(4), valres(4), icodre(4), 1)
             sref = valres(4)
             sigi = sigi/sref
@@ -252,7 +252,7 @@ subroutine te0331(option, nomte)
                 tdp(6) = 0.d0
                 call epdcp(tc, tdp, sigi, epsgi)
                 call rcvalb(fami, kp, 1, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', 0.d0,&
+                            ' ', phenom, 0, ' ', [0.d0],&
                             1, nomres(4), valres(4), icodre(4), 1)
                 sref = valres(4)
 !
@@ -331,7 +331,7 @@ subroutine te0331(option, nomte)
             call epdcp(tc, tdp, sigi, epsgi)
             tmoy = tmoy/volume
             call rcvalb(fami, 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', tmoy,&
+                        ' ', phenom, 1, 'TEMP', [tmoy],&
                         1, nomres(4), valres(4), icodre(4), 1)
             sref = valres(4)
             signew=exp((-epsgi/2.d0))*sigi/sref
@@ -375,7 +375,7 @@ subroutine te0331(option, nomte)
 ! CALCUL DE SIGI
                 call vpri2d(cong, sigi)
                 call rcvalb(fami, kp, 1, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', 0.d0,&
+                            ' ', phenom, 0, ' ', [0.d0],&
                             1, nomres(4), valres(4), icodre(4), 1)
                 sref = valres(4)
                 sigi = sigi/sref

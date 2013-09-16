@@ -18,11 +18,11 @@
 interface
     subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
                       type)
-        integer :: jmat
-        integer :: nbpu
-        character(*) :: nompu(*)
-        real(kind=8) :: valpu(*)
-        real(kind=8) :: resu
-        character(*) :: type
+        integer, intent(in) :: jmat
+        integer, intent(in) :: nbpu
+        character(*), intent(in) :: nompu(*)
+        real(kind=8), intent(in) :: valpu(*)
+        real(kind=8), intent(out) :: resu
+        character(*), intent(out) :: type
     end subroutine rctype
 end interface

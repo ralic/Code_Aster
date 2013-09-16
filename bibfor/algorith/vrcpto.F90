@@ -109,13 +109,13 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
         nomres(1)='BIOT_COE'
 !
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'THM_DIFFU', 0, ' ', 0.d0,&
+                    ' ', 'THM_DIFFU', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), icodre, 1)
         if (icodre(1) .ne. 0) valres(1) = 0.d0
         biotm = valres(1)
 !
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'THM_DIFFU', 0, ' ', 0.d0,&
+                    ' ', 'THM_DIFFU', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), icodre, 1)
         if (icodre(1) .ne. 0) valres(1) = 0.d0
         biotp = valres(1)
@@ -126,7 +126,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
         nomres(2)='NU'
 !
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         if (icodre(1) .ne. 0) valres(1) = 0.d0
         if (icodre(2) .ne. 0) valres(2) = 0.d0
@@ -134,7 +134,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
         num = valres(2)
 !
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         if (icodre(1) .ne. 0) valres(1) = 0.d0
         if (icodre(2) .ne. 0) valres(2) = 0.d0

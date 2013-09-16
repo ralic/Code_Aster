@@ -28,13 +28,13 @@ subroutine te0255(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=16) :: nomte, option
     real(kind=8) :: poids, nx, ny
     integer :: ipoids, ivf, idfde, igeom, ivnor
@@ -45,7 +45,7 @@ subroutine te0255(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: i, ii, jgano, ndim, nnos
-    real(kind=8) :: r, r8b, rho
+    real(kind=8) :: r, r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -62,7 +62,7 @@ subroutine te0255(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 10 i = 1, 2*nno
@@ -89,7 +89,7 @@ subroutine te0255(option, nomte)
 !
         do 30 i = 1, nno
             ii = 2*i
-            zr(ivectu+ii-1) = zr(ivectu+ii-1) - poids*zr(ivnor+kp-1)* rho*zr(ivf+ldec+i-1)
+            zr(ivectu+ii-1) = zr(ivectu+ii-1) - poids*zr(ivnor+kp-1)* rho(1)*zr(ivf+ldec+i-1)
 30      continue
 !
 40  end do

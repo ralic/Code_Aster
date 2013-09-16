@@ -1,7 +1,6 @@
 subroutine te0191(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
@@ -10,6 +9,7 @@ subroutine te0191(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vecma.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -42,7 +42,7 @@ subroutine te0191(option, nomte)
     character(len=8) :: fami, poum
     character(len=16) :: phenom
     integer :: icodre(1)
-    real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r, r8b, rho
+    real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r, r8b, rho(1)
     real(kind=8) :: matp(27, 27), matv(378)
     integer :: nno, kp, nnos, npg2, i, j, k, l, imatuu, nddl, nvec, iacce, ivect
     integer :: ipoids, ivf, idfde, igeom, imate, ijkl, ik, kpg, spt
@@ -59,7 +59,7 @@ subroutine te0191(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 0, ' ', r8b,&
+                ' ', phenom, 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre(1), 1)
 !
     do 113 k = 1, 3
@@ -80,7 +80,7 @@ subroutine te0191(option, nomte)
         do 102 i = 1, nno
             r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
 102      continue
-        poids = poids*r*rho
+        poids = poids*r*rho(1)
 !
         do 106 i = 1, nno
             do 107 j = 1, i

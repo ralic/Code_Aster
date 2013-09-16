@@ -50,7 +50,7 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !  OUT M, N ET GAMMA : COEFFICIENT DE VISCOSITE A L INSTANT COURANT
 ! ----------------------------------------------------------------------
     integer :: i, j, k
-    real(kind=8) :: valres(27), a(3), q(3), fmel(3)
+    real(kind=8) :: valres(27), a(3), q(3), fmel(3), val(1)
     real(kind=8) :: m11(2), m22(2), m33(2), m44(2), m55(2), m66(2)
     real(kind=8) :: m12(2), m13(2), m23(2)
     integer :: icodre(27)
@@ -61,30 +61,31 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !     ALPHA FACULTATIFS
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     nomc(1) = 'E       '
     nomc(2) = 'NU      '
     nomc(3) = 'F_ALPHA '
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 2, nomc, valres, icodre, 2)
     mum = valres(1)/(2.d0*(1.d0+valres(2)))
     troikm = valres(1)/(1.d0-2.d0*valres(2))
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 2, nomc, valres, icodre, 2)
     mu = valres(1)/(2.d0*(1.d0+valres(2)))
     troisk = valres(1)/(1.d0-2.d0*valres(2))
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
-                1, nomc(3), alpham, icodre(3), 2)
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
+                1, nomc(3), val, icodre(3), 2)
+    alpham=val(1)            
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
-                1, nomc(3), alphap, icodre(3), 2)
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
+                1, nomc(3), val, icodre(3), 2)
+    alphap=val(1)            
 !
 ! 2 - MATRICE D ANISOTROPIE
 ! 2.1 - DONNEES UTILISATEUR - UNIQUEMENT LA PHASE FROIDE ET CHAUDE
@@ -105,7 +106,7 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
     nomc(27)= 'C_MTZ_TZ'
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'META_LEMA_ANI', 0, ' ', 0.d0,&
+                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
                 12, nomc(16), valres(16), icodre(16), 2)
 !
     m11(1)=valres(16)
@@ -203,7 +204,7 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
     nomc(15)= 'C_Q     '
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'META_LEMA_ANI', 0, ' ', 0.d0,&
+                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
                 12, nomc(4), valres(4), icodre(4), 2)
 !
     do 20 k = 1, 3

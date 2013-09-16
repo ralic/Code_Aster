@@ -53,7 +53,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 !  COMMON MATERIAU POUR VON MISES
 !
     integer :: jprol, jvale, nbval
-    real(kind=8) :: pm, young, nu, mu, unk, troisk, cother
+    real(kind=8) :: pm, young, nu, mu, unk, troisk, cother, val(1)
     real(kind=8) :: sigm0, epsi0, dt, coefm, rpm, pente
 !
     common /lcpim/&
@@ -76,16 +76,16 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 ! 1 - A L INSTANT COURANT YOUNG, MU ET UNK
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'ELAS', 0, kbid, r8bid,&
-                1, 'NU', nu, icodre(1), 2)
+                ' ', 'ELAS', 0, kbid, [r8bid],&
+                1, 'NU', val, icodre(1), 2)
+    nu=val(1)            
 !
     call verift(fami, kpg, ksp, poum, mate,&
                 materi, 'ELAS', 1, epsthe, iret1)
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
     if (compor(6:14) .eq. 'ISOT_TRAC') then
-        call rctype(mate, 1, 'TEMP', temp, resu,&
-                    type)
+        call rctype(mate, 1, 'TEMP', [temp], resu, type)
         if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif
@@ -93,8 +93,9 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
                     jvale, nbval, young)
     else
         call rcvalb(fami, kpg, ksp, poum, mate,&
-                    ' ', 'ELAS', 0, kbid, r8bid,&
-                    1, 'E', young, icodre(1), 2)
+                    ' ', 'ELAS', 0, kbid, [r8bid],&
+                    1, 'E', val, icodre(1), 2)
+        young=val(1)            
     endif
 !
 !     CRIT_RUPT
@@ -128,7 +129,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
         nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, poum, mate,&
-                    ' ', 'ECRO_LINE', 0, kbid, r8bid,&
+                    ' ', 'ECRO_LINE', 0, kbid, [r8bid],&
                     2, nomres, valres, icodre(1), 2)
         dsde=valres(1)
         sigy=valres(2)
@@ -147,7 +148,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
         nomres(2)='A_PUIS'
         nomres(3)='N_PUIS'
         call rcvalb(fami, kpg, ksp, poum, mate,&
-                    ' ', 'ECRO_PUIS', 0, kbid, r8bid,&
+                    ' ', 'ECRO_PUIS', 0, kbid, [r8bid],&
                     3, nomres, valres, icodre, 2)
         sigy = valres(1)
         apui = valres(2)
@@ -164,7 +165,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
         nomres(2)= 'EPSI_0'
         nomres(3)= 'M'
         call rcvalb(fami, kpg, ksp, poum, mate,&
-                    ' ', 'VISC_SINH', 0, kbid, r8bid,&
+                    ' ', 'VISC_SINH', 0, kbid, [r8bid],&
                     3, nomres, valres, icodre(1), 2)
         sigm0=valres(1)
         epsi0=valres(2)

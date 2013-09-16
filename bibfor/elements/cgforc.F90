@@ -1,7 +1,6 @@
 subroutine cgforc(ndim, nno1, nno2, npg, wref,&
-                  vff1, dffr1, geom, mat,&
-                  pesa, iu, a, tang,&
-                  vect)
+                  vff1, dffr1, geom, mat, pesa,&
+                  iu, a, tang, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +48,9 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref,&
 ! IN  A       : SECTION DE LA BARRE
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! ----------------------------------------------------------------------
-    integer :: nddl, g, n, i, kk, codres
+    integer :: nddl, g, n, i, kk, codres(1)
     real(kind=8) :: wg, b(4, 3), t1
-    real(kind=8) :: rho, courb, l(3)
+    real(kind=8) :: rho(1), courb, l(3)
 ! ----------------------------------------------------------------------
 !
 !
@@ -66,18 +65,18 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref,&
 !      CALCUL DES ELEMENTS GEOM DE L'EF AU POINT DE GAUSS CONSIDERE
 !
         call rcvalb('RIGI', g, 1, '+', mat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'RHO', rho, codres, 1)
 !
-        call cgcine(ndim, nno1, vff1(1, g), &
-                    wref(g), dffr1(1, g), geom, tang, wg,&
-                    l, b, courb)
+        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g),&
+                    geom, tang, wg, l, b,&
+                    courb)
 !
 !        VECTEUR FINT:U ET UC
         do 300 n = 1, nno1
             do 301 i = 1, ndim
                 kk = iu(i,n)
-                t1 = vff1(n,g)*a*rho*pesa(1)*pesa(i+1)
+                t1 = vff1(n,g)*a*rho(1)*pesa(1)*pesa(i+1)
                 vect(kk) = vect(kk) + wg*t1
 301          continue
 300      continue

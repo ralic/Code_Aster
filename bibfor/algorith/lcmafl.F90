@@ -1,7 +1,6 @@
 subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
                   imat, necoul, nbval, valres, nmat,&
                   itbint, nfs, nsg, hsri, nbsys)
-! aslint: disable=W1306
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +40,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
     integer :: kpg, ksp, nmat, imat, nbval, nbcoef, itbint, nfs, nsg
     integer :: iret2, nbsys
     real(kind=8) :: valres(nmat), hsri(nsg, nsg), h, e, nu, mu
-    real(kind=8) :: tempf, valh(6), vallue(nmat)
+    real(kind=8) :: tempf, valh(6), vallue(nmat), val(1)
     character(len=8) :: nomres(nmat)
     integer :: icodre(nmat)
     character(len=*) :: fami, poum
@@ -57,7 +56,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(2)='K'
         nomres(3)='C'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -73,7 +72,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(4)='A'
         nomres(5)='D'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -90,7 +89,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(5)='N'
         nomres(6)='Y'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -109,7 +108,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(6)='Y'
 !
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -128,7 +127,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(6)='GC0'
         nomres(7)='K'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -160,7 +159,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(17)='DELTA2'
         nomres(18)='DEPDT'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
 !
 !         CALCUL ET STOCKAGE DE MU
@@ -168,16 +167,19 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
 !
         if (phenom .eq. 'ELAS') then
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'E', e, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'E', val, icodre, 1)
+            e=val(1)            
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
-                        1, 'NU', nu, icodre, 1)
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        1, 'NU', val, icodre, 1)
+            nu=val(1)            
             mu=e/(2.0d0+2.0d0*nu)
         else
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', phenom, 0, ' ', 0.d0,&
-                        1, 'G_LN', mu, icodre, 1)
+                        ' ', phenom, 0, ' ', [0.d0],&
+                        1, 'G_LN', val, icodre, 1)
+            mu=val(1)            
         endif
         call rcvarc('F', 'TEMP', poum, fami, kpg,&
                     ksp, tempf, iret2)
@@ -198,7 +200,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
             nomres(1)='A_IRRA'
             nomres(2)='XI_IRRA'
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        nmater, necoul, 0, ' ', 0.d0,&
+                        nmater, necoul, 0, ' ', [0.d0],&
                         2, nomres, vallue(nbval+1), icodre, 1)
             nbval=nbval+2
         endif
@@ -223,7 +225,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(9)='P'
         nomres(10)='Q'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -242,8 +244,9 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
 !         DEFINITION DE LA MATRICE D'INTERACTION POUR KOCKS-RAUCH
         nomres(1)='H'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
-                    1, nomres, h, icodre, 0)
+                    nmater, necoul, 0, ' ', [0.d0],&
+                    1, nomres, val, icodre, 0)
+        h=val(1)            
         if (icodre(1) .eq. 0) then
             nbcoef=1
             valh(1)=h
@@ -255,7 +258,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
             nomres(5)='H5'
             nomres(6)='H6'
             call rcvalb(fami, kpg, ksp, poum, imat,&
-                        nmater, necoul, 0, ' ', 0.d0,&
+                        nmater, necoul, 0, ' ', [0.d0],&
                         6, nomres, valh, icodre, 0)
             if (icodre(5) .eq. 0) then
                 nbcoef=6

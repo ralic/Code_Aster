@@ -150,11 +150,11 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, valpam,&
+                ' ', 'ELAS', 1, nompar, [valpam],&
                 2, nomres, valres, icodre, 2)
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, valpam,&
+                ' ', 'ELAS', 1, nompar, [valpam],&
                 1, nomres(3), valres(3), icodre(3), 2)
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
         if ((icodre(3).ne.0) .or. (iisnan(tref).ne.0)) then
@@ -173,11 +173,11 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, valpap,&
+                ' ', 'ELAS', 1, nompar, [valpap],&
                 2, nomres, valres, icodre, 2)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, valpap,&
+                ' ', 'ELAS', 1, nompar, [valpap],&
                 1, nomres(3), valres(3), icodre(3), 0)
 !
     if (icodre(3) .ne. 0) then
@@ -199,28 +199,28 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     nomres(1)='B_ENDOGE'
     nomres(2)='K_DESSIC'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, valpam,&
+                ' ', 'ELAS', 1, nompar, [valpam],&
                 1, nomres, valres, icodre, 0)
 !
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendom = valres(1)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, valpap,&
+                ' ', 'ELAS', 1, nompar, [valpap],&
                 1, nomres, valres, icodre, 0)
 !
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendop = valres(1)
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, valpam,&
+                ' ', 'ELAS', 1, nompar, [valpam],&
                 1, nomres(2), valres(2), icodre, 0)
 !
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdessm = valres(2)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, valpap,&
+                ' ', 'ELAS', 1, nompar, [valpap],&
                 1, nomres(2), valres(2), icodre, 0)
 !
     if (icodre(2) .ne. 0) valres(2) = 0.d0
@@ -247,10 +247,10 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     coefj=0.d0
     do 110 i = 1, 8
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', 0.d0,&
+                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(i), valres(i), icodre(i), 0)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', 0.d0,&
+                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(i+8), valres(i+8), icodre(i+8), 0)
         if ((icodre(i) .ne.0) .and. (icodre(i+8) .ne.0)) then
             valres(i) = 0.d0
@@ -274,7 +274,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     else
         nomres(1)='QSR_K'
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', 0.d0,&
+                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), icodre(1), 0)
         if (icodre(i) .ne. 0) valres(1)=0.d0
         qsrt=valres(1)
@@ -291,7 +291,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     if (compor(1) (1:14) .eq. 'GRANGER_FP_V') then
         nomres(1)='QSR_V'
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', 0.d0,&
+                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), icodre(1), 0)
         if (icodre(i) .ne. 0) valres(1)=0.d0
         qsrv=valres(1)
@@ -306,7 +306,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         tceq = (agem+agep)/2
         nomres(1)='FONC_V'
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'V_GRANGER_FP', 1, 'INST', tceq,&
+                    ' ', 'V_GRANGER_FP', 1, 'INST', [tceq],&
                     1, nomres, valres, icodre, 0)
 !
         vieil = valres(1)
@@ -320,7 +320,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !
     nomres(1)='FONC_DESORP'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, valpam,&
+                ' ', 'ELAS', 1, nompar, [valpam],&
                 1, nomres, valres, icodre, 2)
 !
     if (icodre(1) .ne. 0) then
@@ -328,7 +328,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     endif
     hygrm=valres(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, valpap,&
+                ' ', 'ELAS', 1, nompar, [valpap],&
                 1, nomres, valres, icodre, 2)
 !
     if (icodre(1) .ne. 0) then

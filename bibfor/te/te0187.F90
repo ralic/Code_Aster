@@ -29,13 +29,13 @@ subroutine te0187(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=16) :: nomte, option
     character(len=8) :: fami, poum
     real(kind=8) :: omega
@@ -51,7 +51,7 @@ subroutine te0187(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: ipoids, ivf, mater, ndim, nnos, npg
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'NOEU', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -67,13 +67,13 @@ subroutine te0187(option, nomte)
     poum='+'
     mater=zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     pi=r8pi()
     call jevech('PFREQR', 'L', ifreq)
     omega=2.d0*pi*zr(ifreq)
-    omerho=omega*rho
+    omerho=omega*rho(1)
 !
 !
 !    BOUCLE SUR LES NOEUDS

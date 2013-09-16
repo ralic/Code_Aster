@@ -74,7 +74,7 @@ subroutine te0240(option, nomte)
     nomres(2) = 'NU'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', nbpar, nompar, valpar,&
+                ' ', 'ELAS', nbpar, nompar, [valpar],&
                 nbres, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)
@@ -86,7 +86,7 @@ subroutine te0240(option, nomte)
     nomres(2) = 'CELE_R'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', nbpar, nompar, valpar,&
+                ' ', 'FLUIDE', nbpar, nompar, [valpar],&
                 nbres, nomres, valres, codres, 1)
     rho = valres(1)
     celer = valres(2)

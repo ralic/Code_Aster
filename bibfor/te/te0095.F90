@@ -62,7 +62,7 @@ subroutine te0095(option, nomte)
     real(kind=8) :: vaparu(4), vaparv(4)
     real(kind=8) :: gelem, guv3, g, poids, puls
     real(kind=8) :: tgudm(3), tgvdm(3)
-    real(kind=8) :: rho, om, omo
+    real(kind=8) :: rho(1), om, omo
 !
     integer :: jgano, ipoids, ivf, idfde, nno, kp, npg1, compt
     integer :: igeom, ithet, ific, idepu, idepv
@@ -175,13 +175,13 @@ subroutine te0095(option, nomte)
     if ((ipesau.ne.0) .or. (irotau.ne.0)) then
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre, 1)
         if (ipesau .ne. 0) then
             do 160 i = 1, nno
                 do 161 j = 1, ndim
                     kk = ndim*(i-1) + j
-                    fnou(kk) = fnou(kk) + rho*zr(ipesau)*zr(ipesau+j)
+                    fnou(kk) = fnou(kk) + rho(1)*zr(ipesau)*zr(ipesau+j)
 161              continue
 160          continue
         endif
@@ -194,7 +194,7 @@ subroutine te0095(option, nomte)
 171              continue
                 do 172 j = 1, ndim
                     kk = ndim*(i-1) + j
-                    fnou(kk) = fnou(kk) + rho*om*om*(zr(igeom+kk-1)- omo*zr(irotau+j))
+                    fnou(kk) = fnou(kk) + rho(1)*om*om*(zr(igeom+kk-1)- omo*zr(irotau+j))
 172              continue
 170          continue
         endif
@@ -203,13 +203,13 @@ subroutine te0095(option, nomte)
     if ((ipesav.ne.0) .or. (irotav.ne.0)) then
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre, 1)
         if (ipesav .ne. 0) then
             do 260 i = 1, nno
                 do 261 j = 1, ndim
                     kk = ndim*(i-1) + j
-                    fnov(kk) = fnov(kk) + rho*zr(ipesav)*zr(ipesav+j)
+                    fnov(kk) = fnov(kk) + rho(1)*zr(ipesav)*zr(ipesav+j)
 261              continue
 260          continue
         endif
@@ -222,7 +222,7 @@ subroutine te0095(option, nomte)
 271              continue
                 do 272 j = 1, ndim
                     kk = ndim*(i-1) + j
-                    fnov(kk) = fnov(kk) + rho*om*om*(zr(igeom+kk-1)- omo*zr(irotav+j))
+                    fnov(kk) = fnov(kk) + rho(1)*om*om*(zr(igeom+kk-1)- omo*zr(irotav+j))
 272              continue
 270          continue
         endif
@@ -346,10 +346,10 @@ subroutine te0095(option, nomte)
         gelem = 0.d0
 ! PAS DE TERME DYNAMIQUE DANS GBIL
         puls = 0.d0
-        rho = 0.d0
+        rho(1) = 0.d0
         call gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
                     tgudm, tgvdm, ttrgu, ttrgv, poids,&
-                    c1, c2, c3, k3a, rho,&
+                    c1, c2, c3, k3a, rho(1),&
                     puls, gelem)
         guv3 = guv3 + gelem
 90  end do

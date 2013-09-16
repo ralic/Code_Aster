@@ -1,5 +1,6 @@
 subroutine te0551(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -30,7 +31,6 @@ subroutine te0551(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
 !
     integer :: i, idfde, idurt, iphasi, ivf, ndim, nnos
@@ -66,7 +66,7 @@ subroutine te0551(option, nomte)
     nomres(5) = 'C_DURT'
 !
     call rcvalb(fami, kpg, spt, poum, matos,&
-                ' ', 'DURT_META', 1, 'TEMP', 0.d0,&
+                ' ', 'DURT_META', 1, 'TEMP', [0.d0],&
                 5, nomres, valres, icodre, 2)
 !
     do 10 kn = 1, nno

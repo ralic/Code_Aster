@@ -55,7 +55,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icomp, ier, iloci, ilocj, inod
+    integer :: i, ibid(1), icomp, ier, iloci, ilocj, inod
     integer :: inog, iret, j, k, lldesc, llnod, llnog
     integer :: nbcmp, nbcpmx, nbdcou, nbddr, nbdga, nbec
     integer :: nbnod, nbnog, nbnot, nbsec, nbtet, noer, numd
@@ -84,12 +84,10 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !-----------------RECUPERATION DES CONCEPTS AMONT-----------------------
 !
-!
-!
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                intf, iret)
-    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
-                mailla, iret)
+
+
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1), intf, iret)
+    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid(1), mailla, iret)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
@@ -134,11 +132,9 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !--------------RECUPERATION NOMBRE DE DDL AUX INTERFACES----------------
 !
     kbid=' '
-    call bmnodi(basmod, kbid, '          ', numd, 0,&
-                ibid, nbddr)
+    call bmnodi(basmod, kbid, '          ', numd, 0, ibid, nbddr)
     kbid=' '
-    call bmnodi(basmod, kbid, '          ', numg, 0,&
-                ibid, nbdga)
+    call bmnodi(basmod, kbid, '          ', numg, 0, ibid, nbdga)
     if (nbdga .ne. nbddr) then
         vali (1) = nbddr
         vali (2) = nbdga

@@ -100,7 +100,7 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 nbres, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
@@ -113,7 +113,7 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
     nomres(1) = 'SY'
     nomres(2) = 'D_SIGM_EPSI'
     call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 nbres, nomres, valres, icodre, 1)
     sy = valres(1)
     gamma = - valres(2)/e

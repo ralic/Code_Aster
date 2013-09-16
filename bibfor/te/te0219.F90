@@ -36,9 +36,9 @@ subroutine te0219(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     character(len=8) :: grxf, gryf, nompar(3), elrefe, alias8, fami, poum
-    real(kind=8) :: dfdx(9), dfdy(9), poids, x, y, valres
+    real(kind=8) :: dfdx(9), dfdy(9), poids, x, y, valres(1)
     real(kind=8) :: coorse(18), vectt(9), grx, gry, valpar(3)
     integer :: ndim, nno, nnos, kp, npg, i, k, ivectt, igrai
     integer :: ipoids, ivf, idfde, igeom, imate, jgano
@@ -85,7 +85,7 @@ subroutine te0219(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 1, 'INST', 0.d0,&
+                ' ', 'THER', 1, 'INST', [0.d0],&
                 1, 'LAMBDA', valres, icodre, 1)
 !
     call connec(nomte, nse, nnop2, c)
@@ -123,7 +123,7 @@ subroutine te0219(option, nomte)
             endif
 !
             if (lteatt(' ','AXIS','OUI')) poids = poids*x
-            poids = poids*valres
+            poids = poids*valres(1)
 !
             do 103 i = 1, nno
                 vectt(c(ise,i)) = vectt( c(ise,i)) + poids*( dfdx(i)* grx+dfdy(i)*gry)

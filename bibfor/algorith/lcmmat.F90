@@ -3,7 +3,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
                   materf, matcst, nbcomm, cpmono, ndt,&
                   ndi, nr, nvi, hsr, nfs,&
                   nsg, toutms, vind, impexp)
-! aslint: disable=W1306,W1504
+! aslint: disable=W1504
     implicit none
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
@@ -254,20 +254,20 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
         call rcvalb(fami, kpg, ksp, '-', imat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomc(1), materd(1, 1), cerr(1), 1)
         call rcvalb(fami, kpg, ksp, '-', imat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomc(3), materd(3, 1), cerr(3), 0)
         materd(nmat,1)=0
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
         call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', 'ELAS', 0, '   ', 0.d0,&
+                    ' ', 'ELAS', 0, '   ', [0.d0],&
                     2, nomc(1), materf(1, 1), cerr(1), 1)
         call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', 'ELAS', 0, '  ', 0.d0,&
+                    ' ', 'ELAS', 0, '  ', [0.d0],&
                     1, nomc(3), materf(3, 1), cerr(3), 0)
         if (cerr(3) .ne. 0) materf(3,1) = 0.d0
         materf(nmat,1)=0
@@ -320,7 +320,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
         nomc(3) = 'ALPHA_N'
 !
         call rcvalb(fami, kpg, ksp, '-', imat,&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     3, nomc, materd(73, 1), cerr, 0)
         if (cerr(1) .ne. 0) materd(73,1) = 0.d0
         if (cerr(2) .ne. 0) materd(74,1) = 0.d0
@@ -361,7 +361,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
         materf(nmat,1)=1
 !
         call rcvalb(fami, kpg, ksp, '+', imat,&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     3, nomc, materd(73, 1), cerr, 0)
         if (cerr(1) .ne. 0) materf(73,1) = 0.d0
         if (cerr(2) .ne. 0) materf(74,1) = 0.d0

@@ -178,7 +178,7 @@ subroutine te0358(option, nomte)
         endif
 !
         call rcvalb(fami, kp, 1, '+', mater,&
-                    ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                    ' ', 'ELAS_META', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 1)
         e = valres(1)
         nu = valres(2)
@@ -187,7 +187,7 @@ subroutine te0358(option, nomte)
         if (compor(1:5) .eq. 'ACIER') then
 !
             call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_PT', 0, ' ', 0.d0,&
+                        ' ', 'META_PT', 0, ' ', [0.d0],&
                         4, nomres(3), valres(3), icodre(3), 0)
 !
             do 30 i = 3, 6
@@ -211,7 +211,7 @@ subroutine te0358(option, nomte)
                 if (deltaz .gt. 0) then
                     j = 6 + i
                     call rcvalb('RIGI', 1, 1, '+', mater,&
-                                ' ', 'META_PT', 1, 'META', zfbm,&
+                                ' ', 'META_PT', 1, 'META', [zfbm],&
                                 1, nomres(j), valres(j), icodre(j), 0)
                     if (icodre(j) .ne. 0) valres(j) = 0.d0
 !
@@ -220,7 +220,7 @@ subroutine te0358(option, nomte)
 50          continue
 !
             call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_VISC', 0, ' ', 0.d0,&
+                        ' ', 'META_VISC', 0, ' ', [0.d0],&
                         5, nomres(17), valres(17), icodre(17), 0)
             test = 1
             do 60 i = 17, 21
@@ -229,7 +229,7 @@ subroutine te0358(option, nomte)
             if ((zr(ivari+ (kp-1)*lgpg+5).gt.0.5d0) .and. (test.eq.1)) then
 !
                 call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'ELAS_META', 1, 'META', zfbm,&
+                            ' ', 'ELAS_META', 1, 'META', [zfbm],&
                             1, nomres(11), valres(11), icodre(11), 0)
                 if (icodre(11) .ne. 0) then
                     valres(11) = zfbm
@@ -246,7 +246,7 @@ subroutine te0358(option, nomte)
                     'META_V_IL') then
 !
                     call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', 0.d0,&
+                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                                 5, nomres(12), valres( 12), icodre(12), 1)
                     r0(1) = valres(12)*e/ (e-valres(12))
                     r0(2) = valres(13)*e/ (e-valres(13))
@@ -257,7 +257,7 @@ subroutine te0358(option, nomte)
                 if (zk16(icompo) (1:9) .eq. 'META_P_CL' .or. zk16( icompo) (1:9) .eq.&
                     'META_V_CL') then
                     call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', 0.d0,&
+                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                                 5, nomres(12), valres( 12), icodre(12), 1)
                     r0(1) = (2.d0/3.d0)*valres(12)*e/ (e-valres(12))
                     r0(2) = (2.d0/3.d0)*valres(13)*e/ (e-valres(13))
@@ -301,7 +301,7 @@ subroutine te0358(option, nomte)
 !
         else if (compor(1:4).eq.'ZIRC') then
             call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_PT', 0, ' ', 0.d0,&
+                        ' ', 'META_PT', 0, ' ', [0.d0],&
                         2, nomres(3), valres(3), icodre(3), 0)
 !
             do 80 i = 3, 4
@@ -322,7 +322,7 @@ subroutine te0358(option, nomte)
             trans = 0.d0
             if (deltaz .gt. 0) then
                 call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'META_PT', 1, 'META', zfbm,&
+                            ' ', 'META_PT', 1, 'META', [zfbm],&
                             1, nomres(5), valres(5), icodre(5), 0)
                 if (icodre(5) .ne. 0) valres(5) = 0.d0
 !
@@ -336,7 +336,7 @@ subroutine te0358(option, nomte)
             if (deltaz .gt. 0) then
 !
                 call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'META_PT', 1, 'META', zfbm,&
+                            ' ', 'META_PT', 1, 'META', [zfbm],&
                             1, nomres(6), valres(6), icodre(6), 0)
                 if (icodre(6) .ne. 0) valres(6) = 0.d0
 !
@@ -345,7 +345,7 @@ subroutine te0358(option, nomte)
 !
 !
             call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_VISC', 0, ' ', 0.d0,&
+                        ' ', 'META_VISC', 0, ' ', [0.d0],&
                         3, nomres(14), valres(14), icodre(14), 0)
             test = 1
             do 90 i = 14, 16
@@ -354,7 +354,7 @@ subroutine te0358(option, nomte)
             if ((zr(ivari+ (kp-1)*lgpg+3).gt.0.5d0) .and. (test.eq.1)) then
 !
                 call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'ELAS_META', 1, 'META', zalpha,&
+                            ' ', 'ELAS_META', 1, 'META', [zalpha],&
                             1, nomres(7), valres(7), icodre(7), 0)
                 if (icodre(7) .ne. 0) then
                     valres(7) = zalpha
@@ -368,7 +368,7 @@ subroutine te0358(option, nomte)
                 if (zk16(icompo) (1:9) .eq. 'META_P_IL' .or. zk16( icompo) (1:9) .eq.&
                     'META_V_IL') then
                     call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', 0.d0,&
+                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                                 3, nomres(8), valres( 8), icodre(8), 1)
                     r0(1) = valres(8)*e/ (e-valres(8))
                     r0(2) = valres(9)*e/ (e-valres(9))
@@ -377,7 +377,7 @@ subroutine te0358(option, nomte)
                 if (zk16(icompo) (1:9) .eq. 'META_P_CL' .or. zk16( icompo) (1:9) .eq.&
                     'META_V_CL') then
                     call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', 0.d0,&
+                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                                 5, nomres(8), valres( 8), icodre(8), 1)
                     r0(1) = (2.d0/3.d0)*valres(8)*e/ (e-valres(8))
                     r0(2) = (2.d0/3.d0)*valres(9)*e/ (e-valres(9))

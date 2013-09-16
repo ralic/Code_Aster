@@ -352,7 +352,7 @@ subroutine te0041(option, nomte)
             valres(3) = zero
             call utpsgl(nno, nc, pgl, zr(jdr), matv2)
             call rcvalb(fami, kpg, spt, poum, zi(jma),&
-                        ' ', 'DIS_CONTACT', 0, ' ', valpar,&
+                        ' ', 'DIS_CONTACT', 0, ' ', [valpar],&
                         3, nomres, valres, icodre, 0)
             if (icodre(1) .eq. 0 .and. valres(1) .ne. zero) then
                 if (icodre(2) .eq. 0) then

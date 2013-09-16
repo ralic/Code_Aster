@@ -388,7 +388,7 @@ subroutine te0490(option, nomte)
             nomres(2) = 'NU'
 !
             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
                         2, nomres, valres, icodre, 2)
 !
 !
@@ -410,7 +410,7 @@ subroutine te0490(option, nomte)
                 nomres(2) = 'SY'
 !
                 call rcvalb(fami, igau, 1, '+', zi(imate),&
-                            ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                            ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                             2, nomres, valres, icodre, 2)
 !
                 dsde = valres(1)
@@ -440,10 +440,8 @@ subroutine te0490(option, nomte)
 !
 !  --- TEMPERATURE AU POINT D'INTEGRATION COURANT :
 !
-                call rcvarc(' ', 'TEMP', '+', fami, igau,&
-                            1, tempg, iret1)
-                call rctype(zi(imate), 1, 'TEMP', tempg, resu,&
-                            type)
+                call rcvarc(' ', 'TEMP', '+', fami, igau, 1, tempg, iret1)
+                call rctype(zi(imate), 1, 'TEMP', [tempg], resu, type)
                 if ((type(1:4).eq.'TEMP') .and. (iret1.eq.1)) then
                     call utmess('F', 'CALCULEL_31')
                 endif
@@ -624,7 +622,7 @@ subroutine te0490(option, nomte)
                 nomres(2) = 'SY'
 !
                 call rcvalb(fami, igau, 1, '+', zi(imate),&
-                            ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                            ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                             2, nomres, valres, icodre, 2)
 !
                 dsde = valres(1)
@@ -755,7 +753,7 @@ subroutine te0490(option, nomte)
             nomres(2) = 'NU'
 !
             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
                         2, nomres, valres, icodre, 2)
 !
             e = valres(1)
@@ -838,7 +836,7 @@ subroutine te0490(option, nomte)
                 nomres(1) = 'D_SIGM_EPSI'
                 nomres(2) = 'SY'
                 call rcvalb(fami, igau, 1, '+', zi(imate),&
-                            ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                            ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                             2, nomres, valres, icodre, 2)
 !
                 dsde = valres(1)

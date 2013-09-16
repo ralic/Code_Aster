@@ -28,7 +28,6 @@ subroutine te0175(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
@@ -36,11 +35,12 @@ subroutine te0175(option, nomte)
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     integer :: idfde, igeom, idino, kpg, spt
     integer :: iinte, ipres, imate, ifreq, npg, ipoids, ivf
     integer :: nno, ino, i, ndim, nnos, jgano, mater
-    real(kind=8) :: omerho, pi, dfdx(9), dfdy(9), jac, r8b, rho
-    integer :: icodre
+    real(kind=8) :: omerho, pi, dfdx(9), dfdy(9), jac, r8b, rho(1)
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     complex(kind=8) :: vitx, vity
@@ -63,12 +63,12 @@ subroutine te0175(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, '   ', r8b,&
+                ' ', 'FLUIDE', 0, '   ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     call jevech('PFREQR', 'L', ifreq)
     pi=r8pi()
-    omerho=2.d0*pi*zr(ifreq)*rho
+    omerho=2.d0*pi*zr(ifreq)*rho(1)
 !
 !    BOUCLE SUR LES NOEUDS
     do 30 ino = 1, npg

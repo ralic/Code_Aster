@@ -29,11 +29,11 @@ subroutine te0555(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
+!
     integer :: icodre(1)
     character(len=8) :: nomres(1), fami, poum
     character(len=16) :: nomte, option
@@ -67,7 +67,7 @@ subroutine te0555(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, nomres, valres, icodre, 1)
     celer = valres(1)
     if (celer .lt. 1.d-1) goto 999

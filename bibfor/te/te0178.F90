@@ -27,17 +27,17 @@ subroutine te0178(option, nomte)
 ! ......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
+!
     complex(kind=8) :: rhosz
     character(len=8) :: fami, poum
     character(len=16) :: option, nomte
-    integer :: icodre
-    real(kind=8) :: poids, r, nx, ny, rho
+    integer :: icodre(1)
+    real(kind=8) :: poids, r, nx, ny, rho(1)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: imattt, i, j, ij, l, li, lj
     integer :: imate, iimpe, kpg, spt
@@ -65,11 +65,11 @@ subroutine te0178(option, nomte)
     poum='+'
     mater = zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     if (zc(iimpe) .ne. (0.d0,0.d0)) then
-        rhosz = rho/zc(iimpe)
+        rhosz = rho(1)/zc(iimpe)
     else
         goto 50
     endif

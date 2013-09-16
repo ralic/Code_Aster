@@ -186,7 +186,7 @@ subroutine te0239(option, nomte)
         nbpar = 1
         nompar = 'TEMP'
         call rcvalb('RIGI', kp, 1, '-', zi(imate),&
-                    ' ', 'ELAS', nbpar, nompar, tempm,&
+                    ' ', 'ELAS', nbpar, nompar, [tempm],&
                     2, nomres, valres, valret, 1)
 !
         nu = valres(2)

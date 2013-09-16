@@ -94,7 +94,7 @@ subroutine te0078(option, nomte)
         nomres(2) = 'RHO_CP'
         aniso = .false.
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     2, nomres, valres, icodre, 1)
         lambda = valres(1)
         cp = valres(2)
@@ -104,7 +104,7 @@ subroutine te0078(option, nomte)
         nomres(3) = 'RHO_CP'
         aniso = .true.
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     3, nomres, valres, icodre, 1)
         lambor(1) = valres(1)
         lambor(2) = valres(2)

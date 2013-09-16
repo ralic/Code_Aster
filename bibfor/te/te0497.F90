@@ -282,7 +282,7 @@ subroutine te0497(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_DIFFU', 1, nompar, valres,&
+                ' ', 'THM_DIFFU', 1, nompar, [valres],&
                 nbre1, nomre1, valre1, codme1, 0)
 !
     if (codme1(1) .eq. 0 .and. codme1(2) .eq. 0) then
@@ -290,7 +290,7 @@ subroutine te0497(option, nomte)
         biot = valre1(2)
     else if (codme1(2).eq.1) then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_DIFFU', 1, nompar, valres,&
+                    ' ', 'THM_DIFFU', 1, nompar, [valres],&
                     nbr13, nomr13, valr13, codm13, 0)
         if ((codm13(1).eq.0) .and. (codm13(2).eq.0) .and. (codm13(3) .eq.0)) then
             rhohom = valr13(1)
@@ -310,14 +310,14 @@ subroutine te0497(option, nomte)
 ! => PERMIN_X,PERMIN_Y ET PERMIN_Z SINON
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_DIFFU', 1, nompar, valres,&
+                ' ', 'THM_DIFFU', 1, nompar, [valres],&
                 nbr11, nomr11, valr11, codm11, 0)
 !
     if (codm11(1) .eq. 0) then
         permin = valr11(1)
     else if (codm11(1).eq.1) then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_DIFFU', 1, nompar, valres,&
+                    ' ', 'THM_DIFFU', 1, nompar, [valres],&
                     nbr12, nomr12, valr12, codm12, 0)
         if (( codm12(1).eq.0 ) .and. ( codm12(2).eq.0 )) then
             permin = sqrt(valr12(1)**2+valr12(2)**2+valr12(1)**2)
@@ -329,7 +329,7 @@ subroutine te0497(option, nomte)
     endif
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_LIQU', 1, nompar, valres,&
+                ' ', 'THM_LIQU', 1, nompar, [valres],&
                 nbre2, nomre2, valre2, codme2, 1)
 !
     if (( codme2(1).eq.0 ) .and. ( codme2(2).eq.0 )) then
@@ -356,7 +356,7 @@ subroutine te0497(option, nomte)
 ! 4.1. RECHERCHE DE LA POROSITE INITIALE
 !
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_INIT', 1, nompar, valres,&
+                    ' ', 'THM_INIT', 1, nompar, [valres],&
                     nbre3, nomre3, valre3, codme3, 1)
 !
         if (codme3(1) .eq. 0) then
@@ -368,7 +368,7 @@ subroutine te0497(option, nomte)
 ! 4.2. RECHERCHE DU COEFFICIENT DE POISSON ET DU MODULE DE YOUNG
 !
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS', 1, nompar, valres,&
+                    ' ', 'ELAS', 1, nompar, [valres],&
                     nbre4, nomre4, valre4, codme4, 0)
 !
         if (( codme4(1).eq.0 ) .and. ( codme4(2).eq.0 )) then
@@ -376,7 +376,7 @@ subroutine te0497(option, nomte)
             poisso = valre4(2)
         else if ((codme4(1).eq.1).and.(codme4(2).eq.1)) then
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'ELAS_ISTR', 1, nompar, valres,&
+                        ' ', 'ELAS_ISTR', 1, nompar, [valres],&
                         nbre5, nomre5, valre5, codme5, 0)
             if ((codme5(1).eq.0) .and. (codme5(2).eq.0) .and. (codme5(3) .eq.0) .and.&
                 (codme5(4).eq.0)) then
@@ -384,7 +384,7 @@ subroutine te0497(option, nomte)
                 poisso = sqrt(valre5(3)**2+valre5(4)**2)
             else
                 call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                            ' ', 'ELAS_ORTH', 1, nompar, valres,&
+                            ' ', 'ELAS_ORTH', 1, nompar, [valres],&
                             nbre6, nomre6, valre6, codme6, 0)
                 if ((codme6(1).eq.0) .and. (codme6(2).eq.0) .and. (codme6(3).eq.0) .and.&
                     (codme6(4).eq.0)) then

@@ -122,7 +122,7 @@ subroutine lceigv(fami, kpg, ksp, neps, imate,&
                 bendo, gamma, seuil)
 !
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'NON_LOCAL', 0, ' ', 0.d0,&
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
                 2, nomnl, valnl, iok, 2)
     c = valnl(1)
     r = valnl(2)

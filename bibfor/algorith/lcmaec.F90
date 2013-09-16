@@ -1,6 +1,5 @@
 subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
                   imat, necoul, nbval, valres, nmat)
-! aslint: disable=W1306
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +44,7 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
         nbval=1
         nomres(1)='D'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1
@@ -60,7 +59,7 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
         nomres(3)='PM'
         nomres(4)='C'
         call rcvalb(fami, kpg, ksp, poum, imat,&
-                    nmater, necoul, 0, ' ', 0.d0,&
+                    nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         call lceqvn(nbval, vallue, valres(2))
         nbval=nbval+1

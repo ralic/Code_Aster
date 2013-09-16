@@ -91,7 +91,7 @@ subroutine te0235(option, nomte)
         spt=1
         poum='+'
         call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', r8b,&
+                    ' ', 'ELAS', 0, ' ', [r8b],&
                     3, nomres, valres, codres, 1)
         e = valres(1)
         xnu = valres(2)

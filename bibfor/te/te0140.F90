@@ -99,7 +99,7 @@ subroutine te0140(option, nomte)
     call jevech('PMATERC', 'L', imate)
     if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', opti, nbpar, nompar, valpar,&
+                    ' ', opti, nbpar, nompar, [valpar],&
                     nbres, nomres, valres, codres, 1)
         e = valres(1)
         xnu = valres(2)

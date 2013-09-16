@@ -2,7 +2,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
                   option, compor, imate, sigm, deps,&
                   vim, vip, sig, dsidep, proj,&
                   iret)
-    implicit      none
+    implicit none
 #include "asterfort/lcdrpr.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprsm.h"
@@ -77,7 +77,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
 ! --- CARACTERISTIQUES MATERIAU ---------------------------------------
 ! =====================================================================
     call rcvalb(fami, 1, 1, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     young = valres(1)
     nu = valres(2)

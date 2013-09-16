@@ -129,7 +129,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
     spt=1
     poum='+'
     call rcvalb(famil, kpg, spt, poum, mat,&
-                ' ', 'NON_LOCAL', 0, ' ', 0.d0,&
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
                 1, nom, val, k2, 2)
     call coefdg(compor(1), mat, di)
 !

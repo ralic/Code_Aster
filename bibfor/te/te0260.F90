@@ -33,9 +33,9 @@ subroutine te0260(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: fami, poum
-    real(kind=8) :: dfdr(9), dfdz(9), poids, r, theta, valres
+    real(kind=8) :: dfdr(9), dfdz(9), poids, r, theta, valres(1)
     integer :: nno, kp, npg1, i, j, k, itemps, imattt, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, igeom, imate, kpg, spt
 !
@@ -65,7 +65,7 @@ subroutine te0260(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 1, 'INST', zr(itemps),&
+                ' ', 'THER', 1, 'INST', [zr(itemps)],&
                 1, 'LAMBDA', valres, icodre, 1)
 !
     do 101 kp = 1, npg1
@@ -86,8 +86,8 @@ subroutine te0260(option, nomte)
             do 103 j = 1, i
                 wij = zr(ivf+k+i-1) * zr(ivf+k+j-1)
                 ij = ij + 1
-                zr(ij) = zr(ij) + poids * valres * theta * ( dfdr(i)* dfdr(j) + dfdz(i)*dfdz(j) +&
-                         & xh2*wij/r2)
+                zr(ij) = zr(ij) + poids * valres(1) * theta * &
+                                ( dfdr(i)*dfdr(j) + dfdz(i)*dfdz(j) + xh2*wij/r2)
 103          continue
 101  end do
 end subroutine

@@ -132,7 +132,7 @@ subroutine te0470(option, nomte)
     poum='+'
     tpg = 0.d0
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 0, '   ', tpg,&
+                ' ', phenom, 0, '   ', [tpg],&
                 nbv, nomres, valres, icodre, 1)
     rhopou = valres(1)
     call rccoma(zi(imate), 'FLUIDE', 1, phenom, icodre(1))
@@ -144,7 +144,7 @@ subroutine te0470(option, nomte)
     endif
     tpg = 0.d0
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 0, '   ', tpg,&
+                ' ', phenom, 0, '   ', [tpg],&
                 nbv, nomres, valres, icodre, 1)
     rhoflu = valres(1)
 !     ----------------------------------------------------------------

@@ -140,7 +140,7 @@ subroutine te0471(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 0, '   ', tpg,&
+                ' ', phenom, 0, '   ', [tpg],&
                 nbv, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
@@ -153,7 +153,7 @@ subroutine te0471(option, nomte)
     endif
     tpg = 0.d0
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 0, '   ', tpg,&
+                ' ', phenom, 0, '   ', [tpg],&
                 nbv, nomres, valres, icodre, 1)
 !     ----------------------------------------------------------------
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

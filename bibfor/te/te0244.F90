@@ -31,7 +31,6 @@ subroutine te0244(option, nomte)
 !
 ! PARAMETRES D'APPEL
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -43,14 +42,15 @@ subroutine te0244(option, nomte)
 #include "asterfort/rcfode.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
+!
     character(len=16) :: nomte, option
 !
 !
     character(len=8) :: elrefe, alias8
-    integer :: icodre
+    integer :: icodre(1)
     real(kind=8) :: beta, dbeta, lambda, r8bid, dfdx(9), dfdy(9), poids, r, tpg
     real(kind=8) :: theta, deltat, dtpgdx, dtpgdy, coorse(18), tpgbuf, vectt(9)
-    real(kind=8) :: vecti(9), dlambd, diff, tpsec, chal, hydrpg(9)
+    real(kind=8) :: vecti(9), dlambd, diff, tpsec, chal(1), hydrpg(9)
     integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, jgano, ipoids, ivf
     integer :: idfde, igeom, imate, icomp, ifon(3), itemp, ivectt, ivecti
     integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2, isechf
@@ -121,7 +121,7 @@ subroutine te0244(option, nomte)
         lhyd = .true.
         call jevech('PHYDRPM', 'L', ihydr)
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'THER_HYDR', 0, ' ', r8bid,&
+                    ' ', 'THER_HYDR', 0, ' ', [r8bid],&
                     1, 'CHALHYDR', chal, icodre, 1)
         do 150 kp = 1, npg2
             k = nno*(kp-1)
@@ -236,13 +236,11 @@ subroutine te0244(option, nomte)
 ! THER_HYDR
                     do 420 i = 1, nno
                         vectt(c(ise,i)) = vectt(&
-                                          c(ise,i)) + poids * ((beta-chal*hydrpg(kp))*zr(ivf2+k+i&
-                                          &-1)/deltat&
-                                          )
+                                          c(ise,i)) + poids * ((beta-chal(1)*hydrpg(kp))*&
+                                          zr(ivf2+k+i-1)/deltat)
                         vecti(c(ise,i)) = vecti(&
-                                          c(ise,i)) + poids * ((dbeta*tpg-chal*hydrpg(kp))*zr(ivf&
-                                          &2+k+i-1)/ deltat&
-                                          )
+                                          c(ise,i)) + poids * ((dbeta*tpg-chal(1)*hydrpg(kp))*&
+                                          zr(ivf2+k+i-1)/ deltat)
 420                  continue
                 else
 ! THER_NL

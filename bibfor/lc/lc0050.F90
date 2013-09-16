@@ -60,7 +60,6 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 ! aslint: disable=W1504,W0104
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8nnem.h"
 #include "asterc/umatwp.h"
 #include "asterfort/assert.h"
@@ -77,6 +76,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
+!
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret, nprop2
     integer :: nprops, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
     integer :: kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, iret2
@@ -162,7 +162,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
 !     LECTURE DU PREMIER PARAMETRE NB, FACULTATIF
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'UMAT', 0, ' ', 0.d0,&
+                ' ', 'UMAT', 0, ' ', [0.d0],&
                 1, 'NB_VALE', propl(1), codrel, 0)
     if (codrel(1) .eq. 0) then
         nbcoef=nint(propl(1))
@@ -171,7 +171,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     endif
 !     lecture des autres parametres
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'UMAT', 0, ' ', 0.d0,&
+                ' ', 'UMAT', 0, ' ', [0.d0],&
                 nbcoef, nomres, propl, codrel, 0)
 !     COMPTAGE DU NOMBRE DE PROPRIETES
 !     CODREL(I)=0 SI LE PARAMETRE EXISTE, 1 SINON
@@ -223,11 +223,11 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !        RETRAIT DESSICATION
         nomreb(1)='K_DESSIC'
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomreb, valreb, icodrb, 1)
         kdessm = valreb(1)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomreb, valreb, icodrb, 1)
         kdessp = valreb(1)
         call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
@@ -253,11 +253,11 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !        RETRAIT ENDOGENE
         nomreb(1)='B_ENDOGE'
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomreb, valreb, icodrb, 1)
         bendom = valreb(1)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomreb, valreb, icodrb, 1)
         bendop = valreb(1)
         hydrm=predef(2)
@@ -342,7 +342,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     do 90,j = 1,3
     drot(j,i) = drott(i,j)
 90  continue
-100 continue
+100  continue
 !
     celent=wkin(1)
     npt=kpg
@@ -385,7 +385,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     pnewdt=1.d0
-
+!
 !   pour MFRONT ddsdde(1)= type de matrice tangente
 !   ddsdde(1) <0 : matrice de prédiction
 !   -1, matrice elastique initiale (sans endommagement)
@@ -396,20 +396,20 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !    2 matrice secante (avec endommagement)
 !    3 matrice tangente
 !    4 matrice tangente cohérente
-
+!
     ddsdde=1.d0
     if (option .eq. 'RIGI_MECA_TANG') then
         ddsdde(1)=-3.d0
-    else if (option .eq. 'RIGI_MECA_ELAS' ) then
+    else if (option .eq. 'RIGI_MECA_ELAS') then
         ddsdde(1)=-2.d0
-    else if (option .eq. 'FULL_MECA_ELAS' ) then
+    else if (option .eq. 'FULL_MECA_ELAS') then
         ddsdde(1)= 2.d0
-    else if (option .eq. 'FULL_MECA' ) then
+    else if (option .eq. 'FULL_MECA') then
         ddsdde(1)= 4.d0
-    else if (option .eq. 'RAPH_MECA' ) then
+    else if (option .eq. 'RAPH_MECA') then
         ddsdde(1)= 0.d0
     endif
-
+!
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         call dcopy(nsig, sigm, 1, stress, 1)

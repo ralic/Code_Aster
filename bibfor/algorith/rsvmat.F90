@@ -92,26 +92,24 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materd(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
     if (cerr(4) .ne. 0) materd(4,1) = 0.d0
     if (cerr(5) .ne. 0) materd(5,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ROUSSELIER', 0, ' ', 0.d0,&
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
                 8, nomc(6), materd(1, 2), cerr(6), 2)
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'VISC_SINH', 0, ' ', 0.d0,&
+                ' ', 'VISC_SINH', 0, ' ', [0.d0],&
                 3, nomc(14), materd(9, 2), cerr(14), 2)
 !
 !         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 !         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
-                ksp, tempd, iret)
-    call rctype(imat, 1, 'TEMP', tempd, resu,&
-                type)
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tempd, iret)
+    call rctype(imat, 1, 'TEMP', [tempd], resu, type)
     if ((type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'CALCULEL_31')
     endif
@@ -121,26 +119,24 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materf(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
     if (cerr(4) .ne. 0) materf(4,1) = 0.d0
     if (cerr(5) .ne. 0) materf(5,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ROUSSELIER', 0, ' ', 0.d0,&
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
                 8, nomc(6), materf(1, 2), cerr(6), 2)
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'VISC_SINH', 0, ' ', 0.d0,&
+                ' ', 'VISC_SINH', 0, ' ', [0.d0],&
                 3, nomc(14), materf(9, 2), cerr(14), 2)
 !
 !         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 !         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                ksp, tempf, iret)
-    call rctype(imat, 1, 'TEMP', tempf, resu,&
-                type)
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tempf, iret)
+    call rctype(imat, 1, 'TEMP', [tempf], resu, type)
     if ((type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'CALCULEL_31')
     endif

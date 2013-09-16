@@ -99,12 +99,12 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
         call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                     ksp, tm, iret2)
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    materi, compor, 0, ' ', 0.d0,&
+                    materi, compor, 0, ' ', [0.d0],&
                     ndim, nomres, valrem, codrem, 0)
         call rcvarc(' ', 'TEMP', '+', fami, kpg,&
                     ksp, tp, iret3)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    materi, compor, 0, ' ', 0.d0,&
+                    materi, compor, 0, ' ', [0.d0],&
                     ndim, nomres, valrep, codrep, 0)
 !
         somire = iret2 + iret3
@@ -141,7 +141,7 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
         call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                     ksp, tm, iret2)
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    materi, compor, 0, ' ', 0.d0,&
+                    materi, compor, 0, ' ', [0.d0],&
                     ndim, nomres, valrem, codrem, 0)
         somire = iret2 + iret3
 !

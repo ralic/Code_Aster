@@ -6,8 +6,8 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                   dsde, deps, p1, p2, t,&
                   dt, retcom, dp1, dp2, sat,&
                   tbiot, ang2, aniso, phenom)
+! aslint: disable=W1504
 ! ----------------------------------------------------------------------
-! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,6 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !                                 N = NOMBRE DE PALIERS
 !                OUT RETCOM
 ! ======================================================================
-! aslint: disable=W1504
     implicit none
 #include "asterfort/calela.h"
 #include "asterfort/dpvplc.h"
@@ -118,7 +117,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         endif
     endif
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ELAS', 1, 'TEMP', t,&
+                ' ', 'ELAS', 1, 'TEMP', [t],&
                 3, ncra1(1), elas(1), icodre, 0)
     young = elas(1)
     nu = elas(2)

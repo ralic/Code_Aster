@@ -28,15 +28,15 @@ subroutine te0172(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-    integer :: icodre, kpg, spt
+!
+    integer :: icodre(1), kpg, spt
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: a(4, 4, 27, 27), sx(27, 27), sy(27, 27)
-    real(kind=8) :: sz(27, 27), norm(3), rho
+    real(kind=8) :: sz(27, 27), norm(3), rho(1)
     integer :: igeom, imate
     integer :: i, j, k, l, ik, ijkl, idec, jdec, ldec, kdec, kco, ino, jno
     integer :: ndim, nno, ipg, nnos, npg2
@@ -106,7 +106,7 @@ subroutine te0172(option, nomte)
 120          continue
 !
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'FLUIDE', 0, ' ', r8b,&
+                    ' ', 'FLUIDE', 0, ' ', [r8b],&
                     1, 'RHO', rho, icodre, 1)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -117,8 +117,8 @@ subroutine te0172(option, nomte)
             do 140 jno = 1, ino
                 do 150 kco = 1, 3
 !
-                    a(kco,4,ino,jno) = a(kco,4,ino,jno) + zr(ipoids+ ipg-1) * norm(kco) * rho * z&
-                                       &r(ivf+ldec+ino-1) * zr(ivf+ldec+jno-1)
+                    a(kco,4,ino,jno) = a(kco,4,ino,jno) + zr(ipoids+ ipg-1) * norm(kco) * rho(1) *&
+                                       zr(ivf+ldec+ino-1) * zr(ivf+ldec+jno-1)
 !
 150              continue
 140          continue

@@ -91,54 +91,48 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materd(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
     if (cerr(4) .ne. 0) materd(4,1) = 0.d0
     if (cerr(5) .ne. 0) materd(5,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ROUSSELIER', 0, ' ', 0.d0,&
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
                 9, nomc(6), materd(1, 2), cerr(6), 2)
 !
 !         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 !         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
-                ksp, tempd, iret)
-    call rctype(imat, 1, 'TEMP', tempd, resu,&
-                type)
+    call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tempd, iret)
+    call rctype(imat, 1, 'TEMP', [tempd], resu, type)
     if ((type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'CALCULEL_31')
     endif
-    call rctrac(imat, 1, 'SIGM', resu, jprol,&
-                jvale, nbvale, materd(1, 1))
+    call rctrac(imat, 1, 'SIGM', resu, jprol, jvale, nbvale, materd(1, 1))
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materf(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
     if (cerr(4) .ne. 0) materf(4,1) = 0.d0
     if (cerr(5) .ne. 0) materf(5,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ROUSSELIER', 0, ' ', 0.d0,&
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
                 9, nomc(6), materf(1, 2), cerr(6), 2)
 !
 !         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 !         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                ksp, tempf, iret)
-    call rctype(imat, 1, 'TEMP', tempf, resu,&
-                type)
+    call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tempf, iret)
+    call rctype(imat, 1, 'TEMP', [tempf], resu, type)
     if ((type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'CALCULEL_31')
     endif
-    call rctrac(imat, 1, 'SIGM', resu, jprol,&
-                jvale, nbvale, materf(1, 1))
+    call rctrac(imat, 1, 'SIGM', resu, jprol, jvale, nbvale, materf(1, 1))
 !
 ! -     MATERIAU CONSTANT ? ------------------------------------------
 !

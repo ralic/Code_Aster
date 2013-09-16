@@ -47,10 +47,10 @@ subroutine te0014(option, nomte)
     real(kind=8) :: amm(81, 81), ft(81), x(27), y(27), z(27)
     real(kind=8) :: xi, xij
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
-    real(kind=8) :: rho, om1, om2, om3, omm, omo, rri
+    real(kind=8) :: rho(1), om1, om2, om3, omm, omo, rri
     integer :: ipoids, ivf, idfde
     integer :: jgano, ndl, nno, kp, npg, ii, jj, i, j
-    integer :: ndim,  l, ic
+    integer :: ndim, l, ic
     integer :: iret, nnos
     real(kind=8) :: r8b
     integer :: j_geom, j_rota, j_vect, j_mate, j_deplm, j_deplp
@@ -80,7 +80,7 @@ subroutine te0014(option, nomte)
                 iret)
     call tecach('ONN', 'PDEPLPR', 'L', 1, j_deplp,&
                 iret)
-    rota_speed   = zr(j_rota-1+1)
+    rota_speed = zr(j_rota-1+1)
     rota_axis(1) = zr(j_rota-1+2)
     rota_axis(2) = zr(j_rota-1+3)
     rota_axis(3) = zr(j_rota-1+4)
@@ -96,7 +96,7 @@ subroutine te0014(option, nomte)
 !
     call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(j_mate),&
-                ' ', phenom, 0, ' ', r8b,&
+                ' ', phenom, 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre(1), 1)
 !
 ! - Computation
@@ -132,7 +132,7 @@ subroutine te0014(option, nomte)
         call dfdm3d(nno, kp, ipoids, idfde, zr(j_geom),&
                     dfdx, dfdy, dfdz, poids)
         do i = 1, nno
-            xi = rho*poids*zr(ivf+l+i-1)
+            xi = rho(1)*poids*zr(ivf+l+i-1)
             ii = 3* (i-1)
             do j = 1, nno
                 xij = xi*zr(ivf+l+j-1)

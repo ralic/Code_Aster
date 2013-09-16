@@ -35,10 +35,10 @@ subroutine te0245(option, nomte)
 !        'MECA_2D_BARRE'    : BARRE 2D
 !
 !
-    integer :: codres
+    integer :: codres(1)
     character(len=16) :: ch16, phenom
     character(len=8) :: nomail
-    real(kind=8) :: rho, a, xl, r8b
+    real(kind=8) :: rho(1), a, xl, r8b
     integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
 !
@@ -48,13 +48,13 @@ subroutine te0245(option, nomte)
 !-----------------------------------------------------------------------
     call jevech('PMATERC', 'L', lmater)
 !
-    call rccoma(zi(lmater), 'ELAS', 1, phenom, codres)
+    call rccoma(zi(lmater), 'ELAS', 1, phenom, codres(1))
 !
     if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
         call rcvalb('FPG1', 1, 1, '+', zi(lmater),&
-                    ' ', phenom, 0, ' ', r8b,&
+                    ' ', phenom, 0, ' ', [r8b],&
                     1, 'RHO', rho, codres, 1)
-        if (rho .le. r8prem()) then
+        if (rho(1) .le. r8prem()) then
             call utmess('F', 'ELEMENTS5_45')
         endif
     else
@@ -87,12 +87,12 @@ subroutine te0245(option, nomte)
 !
 !        --- MASSE ET CDG DE L'ELEMENT ---
         if (nomte .eq. 'MECA_BARRE') then
-            zr(lcastr) = rho * a * xl
+            zr(lcastr) = rho(1) * a * xl
             zr(lcastr+1) =( zr(lx+4) + zr(lx+1) ) / 2.d0
             zr(lcastr+2) =( zr(lx+5) + zr(lx+2) ) / 2.d0
             zr(lcastr+3) =( zr(lx+6) + zr(lx+3) ) / 2.d0
         else if (nomte.eq.'MECA_2D_BARRE') then
-            zr(lcastr) = rho * a * xl
+            zr(lcastr) = rho(1) * a * xl
             zr(lcastr+1) =( zr(lx+3) + zr(lx+1) ) / 2.d0
             zr(lcastr+2) =( zr(lx+4) + zr(lx+2) ) / 2.d0
         endif

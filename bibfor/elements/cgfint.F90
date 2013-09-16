@@ -5,7 +5,6 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
                   iu, iuc, im, a, sigm,&
                   vim, sigp, vip, matr, vect,&
                   codret)
-!-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,10 +21,8 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!-----------------------------------------------------------------------
-!
-    implicit none
 ! aslint: disable=W1504
+    implicit none
 !
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
@@ -87,7 +84,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
 ! ----------------------------------------------------------------------
     character(len=16) :: cmp1, cmp2
     logical :: resi, rigi
-    integer :: nddl, g, cod(27), n, i, m, j, kk, codm(3), nbvifr,nbvica
+    integer :: nddl, g, cod(27), n, i, m, j, kk, codm(3), nbvifr, nbvica
     integer :: nbvi
     real(kind=8) :: rbid, r, mu, epsm, deps, wg, l(3), de, ddedt, t1
     real(kind=8) :: b(4, 3), gliss
@@ -106,7 +103,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
     rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
     nddl = nno1*(ndim+1) + nno2
 !
-
+!
     ASSERT(compor(1).eq.'KIT_CG')
     cmp2(1:16)=compor(8)
     cmp1(1:16)=compor(9)
@@ -121,7 +118,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
     read (compor(2),'(I16)') nbvi
     nbvifr = 2
     nbvica = nbvi - nbvifr
-
+!
     if (rigi) call r8inir(nddl*nddl, 0.d0, matr, 1)
     if (resi) call r8inir(nddl, 0.d0, vect, 1)
 !
@@ -132,9 +129,9 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
 !
 !      CALCUL DES ELEMENTS GEOM DE L'EF AU POINT DE GAUSS CONSIDERE
 !
-        call cgcine(ndim, nno1, vff1(1, g), &
-                    wref(g), dffr1(1, g), geom, tang, wg,&
-                    l, b, courb)
+        call cgcine(ndim, nno1, vff1(1, g), wref(g), dffr1(1, g),&
+                    geom, tang, wg, l, b,&
+                    courb)
 !
 !      CALCUL DU DEPLACEMENT TANGENTIEL DE LA GAINE (UPROJ)
 !                DEPLACEMENT DU CABLE               (UCAB)
@@ -206,7 +203,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
         endif
 !
         call rcvalb('RIGI', g, 1, poum, mat,&
-                    ' ', 'CABLE_GAINE_FROT', 0, ' ', 0.d0,&
+                    ' ', 'CABLE_GAINE_FROT', 0, ' ', [0.d0],&
                     3, nom, val, codm, 2)
         rphi=val(1)
         r=val(2)

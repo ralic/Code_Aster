@@ -42,7 +42,7 @@ subroutine te0077(option, nomte)
     integer :: icodre(1)
     character(len=16) :: phenom
     character(len=8) :: elrefe, alias8
-    real(kind=8) :: dfdx(9), dfdy(9), poids, r, cp
+    real(kind=8) :: dfdx(9), dfdy(9), poids, r, cp(1)
     real(kind=8) :: mt(9, 9), coorse(18)
     integer :: ndim, nno, nnos, kp, npg, i, j, k, ij, itemps, imattt
     integer :: c(6, 9), ise, nse, nnop2, npg2, ipoid2, ivf2, idfde2
@@ -74,11 +74,11 @@ subroutine te0077(option, nomte)
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
     if (phenom .eq. 'THER') then
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     1, 'RHO_CP', cp, icodre(1), 1)
     else if (phenom .eq. 'THER_ORTH') then
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     1, 'RHO_CP', cp, icodre(1), 1)
     else
         call utmess('F', 'ELEMENTS2_63')
@@ -103,7 +103,7 @@ subroutine te0077(option, nomte)
 !
                 do 103 j = 1, i
                     ij = ij + 1
-                    zr(ij) = zr(ij) + poids * cp/deltat * zr(ivf+k+i- 1) * zr(ivf+k+j-1)
+                    zr(ij) = zr(ij) + poids * cp(1)/deltat * zr(ivf+k+i- 1) * zr(ivf+k+j-1)
 103              continue
 101      continue
 !
@@ -143,11 +143,9 @@ subroutine te0077(option, nomte)
 !
                 do 203 i = 1, nno
                     do 203 j = 1, nno
-                        mt(c(ise,i),c(ise,j)) = mt(&
-                                                c(ise, i),&
-                                                c(ise, j)) + poids * cp/deltat * zr(ivf2+k+i-1) *&
-                                                & zr( ivf2+k+j-1&
-                                                )
+                        mt(c(ise,i),c(ise,j)) = mt(c(ise,i),c(ise,j)) &
+                        + poids * cp(1)/deltat * zr(ivf2+k+i-1) &
+                        *                        zr(ivf2+k+j-1)
 203                  continue
 201          continue
 !

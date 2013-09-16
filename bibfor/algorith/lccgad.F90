@@ -97,7 +97,7 @@ subroutine lccgad(fami, kpg, ksp, mat, option,&
     courb=wkin(2)
 !
     call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'CABLE_GAINE_FROT', 0, ' ', 0.d0,&
+                ' ', 'CABLE_GAINE_FROT', 0, ' ', [0.d0],&
                 3, nom, val, cod, 2)
 !
 !    PARAMETRE DU COMPORTEMENT DE LA LOI DE TALON-CURNIER

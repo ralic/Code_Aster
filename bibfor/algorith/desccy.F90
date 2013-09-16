@@ -51,7 +51,7 @@ subroutine desccy(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, ier, lddnin, ldnoea, ldnoed, ldnoeg, ldnumg
+    integer :: ibid(1), ier, lddnin, ldnoea, ldnoed, ldnoeg, ldnumg
     integer :: lldesc, llref, nba, nbd, nbda, nbdd, nbdg
     integer :: nbg, nbmcal, nbmod, nbmod1, nbmod2, nbnot, nboc
     integer :: nbtemp, numa, numd, numg
@@ -102,11 +102,9 @@ subroutine desccy(nomres)
 !
 !------COMPTAGE DEFORMEES STATIQUES INTERFACE DROITE GAUCHE-------------
 !
-    call bmnodi(basmod, kbid, '        ', numd, 0,&
-                ibid, nbdd)
+    call bmnodi(basmod, kbid, '        ', numd, 0, ibid, nbdd)
     kbid=' '
-    call bmnodi(basmod, kbid, '        ', numg, 0,&
-                ibid, nbdg)
+    call bmnodi(basmod, kbid, '        ', numg, 0, ibid, nbdg)
 !
 !--------------TEST SUR NOMBRE DE DDL AUX INTERFACES--------------------
 !
@@ -121,8 +119,7 @@ subroutine desccy(nomres)
     nbda=0
     if (numa .gt. 0) then
         kbid=' '
-        call bmnodi(basmod, kbid, '        ', numa, 0,&
-                    ibid, nbda)
+        call bmnodi(basmod, kbid, '        ', numa, 0, ibid, nbda)
     else
         nbda=0
     endif
@@ -131,7 +128,7 @@ subroutine desccy(nomres)
 !
 !  NOMBRE DE MODES DEMANDES
 !
-    call getvis('   ', 'NB_MODE', iocc=1, scal=nbmod1, nbret=ibid)
+    call getvis('   ', 'NB_MODE', iocc=1, scal=nbmod1, nbret=ibid(1))
 !
 !  NOMBRE DE MODES EXISTANTS
     call dismoi('F', 'NB_MODES_DYN', basmod, 'RESULTAT', nbmod2,&
@@ -151,7 +148,7 @@ subroutine desccy(nomres)
     if (nboc .eq. 0) then
         nbmcal=nbmod
     else
-        call getvis('CALCUL', 'NMAX_FREQ', iocc=1, scal=nbmcal, nbret=ibid)
+        call getvis('CALCUL', 'NMAX_FREQ', iocc=1, scal=nbmcal, nbret=ibid(1))
     endif
 !
     if (nbmcal .gt. nbmod) then

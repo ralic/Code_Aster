@@ -68,7 +68,7 @@ subroutine te0165(option, nomte)
     call jevech('PMATERC', 'L', imate)
     nomres(1) = 'E'
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', r8bid,&
+                ' ', 'ELAS', 0, '  ', [r8bid],&
                 1, nomres, valres, icodre, 1)
     call verift('RIGI', 1, 1, '+', zi(imate),&
                 materi, 'ELAS', 1, epsthe, iret)

@@ -240,7 +240,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 !
         call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'LEMAITRE_IRRA', 0, ' ', 0.d0,&
+                    ' ', 'LEMAITRE_IRRA', 0, ' ', [0.d0],&
                     7, nomlem, coelem, codlem, 1)
 !
 !        RAJOUT DEMANDE PAR ROMEO FERNANDES (FICHE 17275)
@@ -282,7 +282,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     else if (compor(1)(1:10).eq.'VISC_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'VISC_IRRA_', 1, 'TEMP', tschem,&
+                    ' ', 'VISC_IRRA_', 1, 'TEMP', [tschem],&
                     5, nomvil(1), coevil(1), codvil, 1)
         a = coevil(1)
         b = coevil(2)
@@ -303,7 +303,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     else if (compor(1)(1:10).eq.'GRAN_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'GRAN_IRRA_', 1, ' ', 0.d0,&
+                    ' ', 'GRAN_IRRA_', 1, ' ', [0.d0],&
                     5, nomvil(1), coevil(1), codvil, 1)
         if (coevil(5) .ne. 1.d0) then
             fluphi=coevil(5)
@@ -323,7 +323,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !
     else if (compor(1)(1:10).eq.'LEMA_SEUIL') then
         call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'LEMA_SEUIL', 1, 'TEMP', tschem,&
+                    ' ', 'LEMA_SEUIL', 1, 'TEMP', [tschem],&
                     2, nomint(1), coeint(1), codint, 1)
         unsurm=0.d0
         valden=1.d0

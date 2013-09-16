@@ -100,7 +100,7 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
     if (compor(1) .eq. 'VMIS_POU_LINE') then
         numloi = 1
         call rcvalb(fami, kpg, spt, poum, icodma,&
-                    ' ', 'ECRO_LINE', nbpar, nopar, valpar,&
+                    ' ', 'ECRO_LINE', nbpar, nopar, [valpar],&
                     2, nomre4, valres, icodre, 1)
         ep = valres(1)
         sy = valres(2)
@@ -118,7 +118,7 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
     else if (compor(1) .eq. 'VMIS_POU_FLEJOU') then
         numloi = 2
         call rcvalb(fami, kpg, spt, poum, icodma,&
-                    ' ', 'ECRO_FLEJOU', nbpar, nopar, valpar,&
+                    ' ', 'ECRO_FLEJOU', nbpar, nopar, [valpar],&
                     4, nomre2, valres, icodre, 1)
         ep = valres(1)
         sy = valres(2)
@@ -160,7 +160,7 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
 !
 !     NP,MEY,CAY,...,MPX
     call rcvalb(fami, kpg, spt, poum, icodma,&
-                ' ', 'VMIS_POUTRE', nbpar, nopar, valpar,&
+                ' ', 'VMIS_POUTRE', nbpar, nopar, [valpar],&
                 10, nomre3, valres, icodre, 1)
     xnp = valres(1)
     xmey = valres(2)

@@ -40,7 +40,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
     real(kind=8) :: dlong0, crildc(3)
     real(kind=8) :: effnom, vim(*)
     real(kind=8) :: effnop, vip(*), fono(neq), klv(nbt)
-    integer :: codres
+    integer :: codres(1)
     real(kind=8) :: dsde, epsm
 ! -------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
     integer :: iret
     real(kind=8) :: sigm, deps, depsth, depsm, tmoins, tplus
-    real(kind=8) :: sigp, xrig
+    real(kind=8) :: sigp, xrig, val(1)
     logical :: isot, cine, elas, corr, impl, isotli
     character(len=8) :: materi
 !
@@ -115,14 +115,16 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 ! --- CARACTERISTIQUES ELASTIQUES A TMOINS
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
-                1, 'E', em, codres, 1)
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                1, 'E', val, codres, 1)
+    em=val(1)            
 !
 ! --- CARACTERISTIQUES ELASTIQUES A TPLUS
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
-                1, 'E', ep, codres, 1)
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                1, 'E', val, codres, 1)
+    ep=val(1) 
 !
 !
     if (isot .and. (.not.impl)) then

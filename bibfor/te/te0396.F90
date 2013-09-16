@@ -19,7 +19,6 @@ subroutine te0396(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/gdfint.h"
@@ -29,6 +28,7 @@ subroutine te0396(option, nomte)
 #include "asterfort/promat.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/verift.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  OPTION : 'CHAR_MECA_TEMP_R'
@@ -75,10 +75,10 @@ subroutine te0396(option, nomte)
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', r8bid,&
+                ' ', 'ELAS', 0, '  ', [r8bid],&
                 2, nomres, valres, icodre, 1)
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', r8bid,&
+                ' ', 'ELAS', 0, '  ', [r8bid],&
                 1, nomres(3), valres(3), icodre(3), 0)
     e = valres(1)
     nu = valres(2)

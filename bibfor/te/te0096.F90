@@ -70,7 +70,7 @@ subroutine te0096(option, nomte)
     real(kind=8) :: epsino(36), fno(18)
     real(kind=8) :: thet, tn(20), tgdm(3), prod, prod1, prod2, divt
     real(kind=8) :: valpar(3), tcla, tthe, tfor, tplas, tini, poids, r, rbid
-    real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho, om, omo
+    real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho(1), om, omo
     real(kind=8) :: dtdm(3, 5), der(6), dfdm(3, 5), dudm(3, 4), dvdm(3, 4)
     real(kind=8) :: vepscp
     real(kind=8) :: ecin, prod3, prod4, nu(1), accele(3)
@@ -262,10 +262,10 @@ subroutine te0096(option, nomte)
     if (ivites .ne. 0) then
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb(famil, kpg, spt, poum, matcod,&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre(1), 1)
         call rcvalb(famil, kpg, spt, poum, matcod,&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'NU', nu(1), icodre(1), 1)
     endif
 !
@@ -273,14 +273,14 @@ subroutine te0096(option, nomte)
     if ((ipesa.ne.0) .or. (irota.ne.0)) then
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb(famil, kpg, spt, poum, matcod,&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre(1), 1)
         if (ipesa .ne. 0) then
             do 95 i = 1, nno
                 ij = ndim*(i-1)
                 do 90 j = 1, ndim
                     kk = ij + j
-                    fno(kk)=fno(kk)+rho*zr(ipesa)*zr(ipesa+j)
+                    fno(kk)=fno(kk)+rho(1)*zr(ipesa)*zr(ipesa+j)
 90              continue
 95          continue
         endif
@@ -294,7 +294,7 @@ subroutine te0096(option, nomte)
 100              continue
                 do 103 j = 1, ndim
                     kk = ij + j
-                    fno(kk)=fno(kk)+rho*om*om*(zr(igeom+kk-1)-omo*zr(&
+                    fno(kk)=fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
 103              continue
 105          continue
@@ -627,9 +627,9 @@ subroutine te0096(option, nomte)
                     prod4 = prod4 + dvdm(j1,4)*dvdm(j1,j2)*dtdm(j2,4)
 497              continue
 496          continue
-            ecin = 0.5d0*rho*ecin
-            prod3 = rho*prod3
-            prod4 = rho*prod4
+            ecin = 0.5d0*rho(1)*ecin
+            prod3 = rho(1)*prod3
+            prod4 = rho(1)*prod4
         endif
 !
         prod = 0.d0

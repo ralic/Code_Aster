@@ -27,16 +27,16 @@ subroutine te0179(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=8) :: fami, poum
     character(len=16) :: option, nomte
-    integer :: icodre, kpg, spt
-    real(kind=8) :: poids, r, nx, ny, rho
+    integer :: icodre(1), kpg, spt
+    real(kind=8) :: poids, r, nx, ny, rho(1)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: i, l, li
     integer :: imate, ivitn
@@ -64,7 +64,7 @@ subroutine te0179(option, nomte)
 !
     mater = zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 30 kp = 1, npg
@@ -81,7 +81,7 @@ subroutine te0179(option, nomte)
 !
         do 20 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
-            zc(ivectt+i-1) = zc(ivectt+i-1) + poids*zr(li)*zc(ivitn+ kp-1)*rho
+            zc(ivectt+i-1) = zc(ivectt+i-1) + poids*zr(li)*zc(ivitn+ kp-1)*rho(1)
 20      continue
 30  end do
 end subroutine

@@ -112,10 +112,10 @@ subroutine te0151(option, nomte)
     poum='+'
 !
     call rcvalb(famil, kpg, spt, poum, zi(lmater),&
-                ' ', 'ELAS', nbpar, nompar, valpar,&
+                ' ', 'ELAS', nbpar, nompar, [valpar],&
                 2, nomres, valres, codres, 1)
     call rcvalb(famil, kpg, spt, poum, zi(lmater),&
-                ' ', 'ELAS', nbpar, nompar, valpar,&
+                ' ', 'ELAS', nbpar, nompar, [valpar],&
                 1, nomres(3), valres(3), codres(3), 1)
 !
     e = valres(1)

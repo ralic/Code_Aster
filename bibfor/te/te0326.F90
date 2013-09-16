@@ -31,7 +31,6 @@ subroutine te0326(option, nomte)
 !..................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/divgra.h"
 #include "asterfort/e1e2nn.h"
 #include "asterfort/elref4.h"
@@ -39,12 +38,13 @@ subroutine te0326(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: jac(9), nx(9), ny(9), nz(9)
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9)
-    real(kind=8) :: norm(3, 9), r8b, rho
+    real(kind=8) :: norm(3, 9), r8b, rho(1)
     real(kind=8) :: acloc(3, 9), acc(3, 9), flufn(9)
     real(kind=8) :: vibar(2, 9), e1(3, 9), e2(3, 9)
     real(kind=8) :: divsig(9), xin(9), cova(3, 3), metr(2, 2), a(2, 2)
@@ -89,7 +89,7 @@ subroutine te0326(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 0, ' ', r8b,&
+                ' ', 'THER', 0, ' ', [r8b],&
                 1, 'RHO_CP', rho, icodre, 1)
 !
     do 1200 i = 1, nno
@@ -290,8 +290,8 @@ subroutine te0326(option, nomte)
     do 61 ipg = 1, npg1
         ldec=(ipg-1)*nno
         do 103 i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + rho*jac(ipg)*zr(ipoids+ ipg-1) *zr(ivf+ldec+i-1) *(&
-                             &flufn(ipg)*divsig(ipg) + gphgxn(ipg))
+            zr(ivectt+i-1) = zr(ivectt+i-1) + rho(1)*jac(ipg)*zr(ipoids+ ipg-1) *zr(ivf+ldec+i-1)&
+                             *(flufn(ipg)*divsig(ipg) + gphgxn(ipg))
 !
 103      continue
 61  end do

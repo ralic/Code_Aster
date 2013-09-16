@@ -26,9 +26,9 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    logical :: limit
-    character(len=*) :: nommaz, nomres, forvie
-    real(kind=8) :: salt
+    logical, intent(out) :: limit
+    character(len=*), intent(in) :: nommaz, nomres, forvie
+    real(kind=8), intent(in) :: salt
 ! ----------------------------------------------------------------------
 !     TEST PERMETTANT DE SAVOIR SI ON EST EN DESSOUS DE LA LIMITE
 !     D'ENDURANCE POUR LA COURBE DE FATIGUE DEFINIE PAR LE

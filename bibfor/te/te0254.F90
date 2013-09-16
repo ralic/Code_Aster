@@ -28,13 +28,13 @@ subroutine te0254(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
+!
+!-----------------------------------------------------------------------
     integer :: nbres
     real(kind=8) :: r, r8bid
 !-----------------------------------------------------------------------
@@ -64,7 +64,7 @@ subroutine te0254(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8bid,&
+                ' ', 'FLUIDE', 0, ' ', [r8bid],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     celer = valres(2)

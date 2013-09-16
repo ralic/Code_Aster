@@ -61,7 +61,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
 !
     logical :: grand, calbn, axi
-    integer :: codre
+    integer :: codre(1)
     character(len=8) :: nomres(2)
     character(len=16) :: phenom
     integer :: kpg, i, ii, ino, ia, j, k, kl, proj, nbpg2
@@ -147,7 +147,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
 !  RECUP DU COEF DE POISSON POUR ASQBI
 !
-    call rccoma(imate, 'ELAS', 1, phenom, codre)
+    call rccoma(imate, 'ELAS', 1, phenom, codre(1))
     nomres(1)='E'
     if (phenom .eq. 'ELAS') then
         nomres(2)='NU'
@@ -160,9 +160,9 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     endif
 !
     call rcvalb('FPG1', 1, 1, '+', imate,&
-                ' ', phenom, 0, ' ', 0.d0,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, nomres(2), valres(2), codre, 1)
-    if (codre .eq. 0) then
+    if (codre(1) .eq. 0) then
         nu = valres(2)
     else
         call utmess('F', 'ELEMENTS4_72')

@@ -53,7 +53,7 @@ subroutine lclbr2(fami, kpg, ksp, imate, compor,&
 !    LECTURE DES CARACTERISTIQUES DU MATERIAU
     nomres(1) = 'E'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres, valres, icodre, 1)
     e = valres(1)
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
@@ -63,7 +63,7 @@ subroutine lclbr2(fami, kpg, ksp, imate, compor,&
     nomres(4) = 'EPSC'
     nomres(5) = 'N'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'BETON_REGLE_PR', 0, ' ', 0.d0,&
+                ' ', 'BETON_REGLE_PR', 0, ' ', [0.d0],&
                 5, nomres, valres, icodre, 1)
     gamma = - e/valres(1)
     sigmt = valres(2)

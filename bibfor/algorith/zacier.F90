@@ -95,7 +95,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
     nomres(6) = 'TAUX_1'
     nomres(7) = 'TAUX_3'
     call rcvalb(fami, kpg, spt, poum, matos,&
-                ' ', 'META_ACIER', 1, 'INST', 0.d0,&
+                ' ', 'META_ACIER', 1, 'INST', [0.d0],&
                 7, nomres, ctes, icodre, 1)
     ar3 = ctes(1)
     ac1 = ctes(4)
@@ -108,7 +108,7 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
     nomres(10)= 'D10'
     nomres(11)= 'WSR_K'
     call rcvalb(fami, kpg, spt, poum, matos,&
-                ' ', 'META_ACIER', 1, 'INST', 0.d0,&
+                ' ', 'META_ACIER', 1, 'INST', [0.d0],&
                 4, nomres(8), ctes(8), icodre(8), 0)
 !
     if (icodre(8) .eq. 1) ctes(8) = 0.d0

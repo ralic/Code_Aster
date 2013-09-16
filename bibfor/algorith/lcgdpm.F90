@@ -94,7 +94,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
     real(kind=8) :: rbid, precr
     real(kind=8) :: kr(6), pdtsca(6)
-    real(kind=8) :: valres(20)
+    real(kind=8) :: valres(20),val(1)
 !
     character(len=1) :: c1
     integer :: icodre(20), test
@@ -192,12 +192,12 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     nomres(6)='EPSF_EPSC_TREF'
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
     mum=valres(1)/(2.d0*(1.d0+valres(2)))
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
     epsth = phase(nz)*(epsthe(1)-(1.d0-valres(5))*valres(6)) + zalpha*(epsthe(2)+valres(5)*valres&
             &(6))
@@ -231,14 +231,19 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
         endif
 !
         call rcvalb(fami, 1, 1, '+', imat,&
-                    ' ', 'ELAS_META', 1, 'META', zalpha,&
-                    1, nomres(6), fmel, icodre(6), 0)
-        if (icodre(6) .ne. 0) fmel = zalpha
+                    ' ', 'ELAS_META', 1, 'META', [zalpha],&
+                    1, nomres(6), val, icodre(6), 0)
+                    
+        if (icodre(6) .ne. 0) then 
+           fmel = zalpha
+        else
+           fmel = val(1)
+        endif     
 !
 ! 2.3 - LIMITE D ELASTICITE
 !
         call rcvalb(fami, kpg, ksp, c1, imat,&
-                    ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                    ' ', 'ELAS_META', 0, ' ', [0.d0],&
                     5, nomres, sy, icodre, 2)
 !
         if (resi) then
@@ -262,7 +267,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 nomres(8) ='F4_C_THETA'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_RE', 0, '  ', 0.d0,&
+                            ' ', 'META_RE', 0, '  ', [0.d0],&
                             8, nomres, theta, icodre, 2)
             else
 !
@@ -301,11 +306,11 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 nomres(20) = 'C_M'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_VISC', 0, ' ', 0.d0,&
+                            ' ', 'META_VISC', 0, ' ', [0.d0],&
                             10, nomres, valres, icodre, 2)
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_VISC', 0, ' ', 0.d0,&
+                            ' ', 'META_VISC', 0, ' ', [0.d0],&
                             10, nomres(11), valres(11), icodre(11), 0)
 !
                 do 25 k = 1, nz
@@ -409,7 +414,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 nomres(8) = 'F4_D_F_META'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_PT', 0, ' ', 0.d0,&
+                            ' ', 'META_PT', 0, ' ', [0.d0],&
                             4, nomres, valres, icodre, 2)
 !
                 do 60 k = 1, nz-1
@@ -420,7 +425,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     if (deltaz .gt. 0.d0) then
                         j = 4+k
                         call rcvalb(fami, 1, 1, '+', imat,&
-                                    ' ', 'META_PT', 1, 'META', zalpha,&
+                                    ' ', 'META_PT', 1, 'META', [zalpha],&
                                     1, nomres(j), valres(j), icodre( j), 2)
                         trans = trans + kpt(k)*valres(j)*(zvarip- zvarim)
                     endif
@@ -448,7 +453,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             nomres(5) ='C_D_SIGM_EPSI'
 !
             call rcvalb(fami, kpg, ksp, c1, imat,&
-                        ' ', 'META_ECRO_LINE', 0, ' ', 0.d0,&
+                        ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                         5, nomres, h, icodre, 2)
 !
             h(1)=h(1)*e/(e-h(1))

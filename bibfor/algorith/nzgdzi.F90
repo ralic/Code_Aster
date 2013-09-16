@@ -70,7 +70,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
     real(kind=8) :: temp, dt
 !
     real(kind=8) :: epsth, e, nu, mu, mum, troisk
-    real(kind=8) :: fmel, sy(3), h(3), hmoy, hplus(3), r(3), rmoy
+    real(kind=8) :: fmel(1), sy(3), h(3), hmoy, hplus(3), r(3), rmoy
     real(kind=8) :: theta(4)
     real(kind=8) :: eta(3), n(3), unsurn(3), c(3), m(3), cmoy, mmoy, cr
     real(kind=8) :: dz(2), dz1(2), dz2(2), vi(3), dvin, vimoy, ds
@@ -191,12 +191,12 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
     nomres(6)='EPSF_EPSC_TREF'
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
     mum=valres(1)/(2.d0*(1.d0+valres(2)))
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
     epsth = phase(nz)*(epsthe(1)-(1.d0-valres(5))*valres(6)) + zalpha*(epsthe(2)+valres(5)*valres&
             &(6))
@@ -226,14 +226,14 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
         endif
 !
         call rcvalb(fami, 1, 1, '+', imat,&
-                    ' ', 'ELAS_META', 1, 'META', zalpha,&
+                    ' ', 'ELAS_META', 1, 'META', [zalpha],&
                     1, nomres(4), fmel, icodre(4), 0)
-        if (icodre(4) .ne. 0) fmel = zalpha
+        if (icodre(4) .ne. 0) fmel(1) = zalpha
 !
 ! 2.3 - LIMITE D ELASTICITE
 !
         call rcvalb(fami, kpg, ksp, c1, imat,&
-                    ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                    ' ', 'ELAS_META', 0, ' ', [0.d0],&
                     3, nomres, sy, icodre, 2)
 !
         if (resi) then
@@ -253,7 +253,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
                 nomres(4) ='F2_C_THETA'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_RE', 0, '  ', 0.d0,&
+                            ' ', 'META_RE', 0, '  ', [0.d0],&
                             4, nomres, theta, icodre, 2)
             else
 !
@@ -284,11 +284,11 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
                 nomres(12) = 'C_M'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_VISC', 0, ' ', 0.d0,&
+                            ' ', 'META_VISC', 0, ' ', [0.d0],&
                             6, nomres, valres, icodre, 2)
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_VISC', 0, ' ', 0.d0,&
+                            ' ', 'META_VISC', 0, ' ', [0.d0],&
                             6, nomres(7), valres(7), icodre(7), 0)
 !
                 do 25 k = 1, nz
@@ -388,7 +388,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
                 nomres(4) = 'F2_D_F_META'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_PT', 0, ' ', 0.d0,&
+                            ' ', 'META_PT', 0, ' ', [0.d0],&
                             2, nomres, valres, icodre, 2)
 !
                 do 60 k = 1, nz-1
@@ -399,7 +399,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
                     if (deltaz .gt. 0.d0) then
                         j = 2+k
                         call rcvalb(fami, 1, 1, '+', imat,&
-                                    ' ', 'META_PT', 1, 'META', zalpha,&
+                                    ' ', 'META_PT', 1, 'META', [zalpha],&
                                     1, nomres(j), valres(j), icodre( j), 2)
                         trans = trans + kpt(k)*valres(j)*(zvarip- zvarim)
                     endif
@@ -425,7 +425,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
             nomres(3) ='C_D_SIGM_EPSI'
 !
             call rcvalb(fami, kpg, ksp, c1, imat,&
-                        ' ', 'META_ECRO_LINE', 0, ' ', 0.d0,&
+                        ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                         3, nomres, h, icodre, 2)
 !
             h(1)=h(1)*e/(e-h(1))
@@ -469,8 +469,8 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
             rmoy = 0.d0
             hmoy = 0.d0
         endif
-        rmoy =(1.d0-fmel)*r(nz)+fmel*rmoy
-        hmoy = (1.d0-fmel)*h(nz)+fmel*hmoy
+        rmoy =(1.d0-fmel(1))*r(nz)+fmel(1)*rmoy
+        hmoy = (1.d0-fmel(1))*h(nz)+fmel(1)*hmoy
 !
     else
 !
@@ -608,7 +608,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
             else
                 vip(4)=1.d0
                 mutild=2.d0*mu*trbel/3.d0
-                call nzcalc(crit, phase, nz, fmel, seuil,&
+                call nzcalc(crit, phase, nz, fmel(1), seuil,&
                             dt, trans, hmoy, mutild, eta,&
                             unsurn, dp, iret)
                 if (iret .eq. 1) goto 9999
@@ -645,15 +645,15 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
                                     hmoy = hmoy + phase(k)*h(k)
                                 endif
 242                          continue
-                            rmoy=fmel*rmoy/zalpha
-                            hmoy=fmel*hmoy/zalpha
+                            rmoy=fmel(1)*rmoy/zalpha
+                            hmoy=fmel(1)*hmoy/zalpha
                         endif
                         if (phase(nz) .gt. 0.d0) then
-                            rmoy = (1.d0-fmel)*(r(nz)-h(nz)*dp)+rmoy
-                            hmoy = (1.d0-fmel)*h(nz)+hmoy
+                            rmoy = (1.d0-fmel(1))*(r(nz)-h(nz)*dp)+rmoy
+                            hmoy = (1.d0-fmel(1))*h(nz)+hmoy
                         endif
                         seuil=eqtel-(1.d0+mu*trans*trbel)*rmoy
-                        call nzcalc(crit, phase, nz, fmel, seuil,&
+                        call nzcalc(crit, phase, nz, fmel(1), seuil,&
                                     dt, trans, hmoy, mutild, eta,&
                                     unsurn, dp, iret)
                         if (iret .eq. 1) goto 9999
@@ -695,12 +695,12 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
             if (phase(nz) .gt. 0.d0) then
 !
                 if (compor(1)(1:9) .eq. 'META_P_IL' .or. compor(1)(1:9) .eq. 'META_V_IL') then
-                    vip(5)=vip(5)+(1-fmel)*h(nz)*vip(nz)
+                    vip(5)=vip(5)+(1-fmel(1))*h(nz)*vip(nz)
                 endif
 !
                 if (compor(1)(1:10) .eq. 'META_P_INL' .or. compor(1)(1:10) .eq.&
                     'META_V_INL') then
-                    vip(5)=vip(5)+(1-fmel)*(r(nz)-sy(nz))
+                    vip(5)=vip(5)+(1-fmel(1))*(r(nz)-sy(nz))
                 endif
 !
             endif
@@ -710,13 +710,13 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
 !
                     if (compor(1)(1:9) .eq. 'META_P_IL' .or. compor(1)(1: 9) .eq.&
                         'META_V_IL') then
-                        vip(5)=vip(5)+fmel*phase(k)*h(k)*vip(k)/&
+                        vip(5)=vip(5)+fmel(1)*phase(k)*h(k)*vip(k)/&
                         zalpha
                     endif
 !
                     if (compor(1)(1:10) .eq. 'META_P_INL' .or. compor(1)( 1:10) .eq.&
                         'META_V_INL') then
-                        vip(5)=vip(5)+fmel*phase(k)*(r(k)-sy(k))/&
+                        vip(5)=vip(5)+fmel(1)*phase(k)*(r(k)-sy(k))/&
                         zalpha
                     endif
 !
@@ -820,10 +820,10 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
                     do 178 i = 1, nz
                         n0(i) = (1-n(i))/n(i)
 178                  continue
-                    dv = (1-fmel)*phase(nz)*(eta(nz)/n(nz)/dt) * ((dp/dt)**n0(nz))
+                    dv = (1-fmel(1))*phase(nz)*(eta(nz)/n(nz)/dt) * ((dp/dt)**n0(nz))
                     if (zalpha .gt. 0.d0) then
                         do 179 i = 1, nz-1
-                            if (phase(i) .gt. 0.d0) dv = dv+fmel*(&
+                            if (phase(i) .gt. 0.d0) dv = dv+fmel(1)*(&
                                                          phase(i)/zalpha)*(eta(i)/n(i)/dt)* ((dp/&
                                                          &dt)**n0(i)&
                                                          )

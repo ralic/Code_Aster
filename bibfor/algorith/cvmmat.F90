@@ -145,7 +145,7 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 ! -     RECUPERATION MATERIAU A (T)
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomc(1), materd(1, 1), cerr(1), 0)
 !
 !
@@ -158,7 +158,7 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'VISCOCHAB', 0, ' ', 0.d0,&
+                ' ', 'VISCOCHAB', 0, ' ', [0.d0],&
                 25, nomc(4), materd(1, 2), cerr(4), 2)
 !
 ! -     MISE A JOUR DU COMMUN COED POUR TRAITER LE CAS ANISOTHERME
@@ -169,7 +169,7 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 ! -     RECUPERATION MATERIAU A (T+DT)
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomc(1), materf(1, 1), cerr(1), 0)
 !
 !
@@ -181,7 +181,7 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'VISCOCHAB', 0, ' ', 0.d0,&
+                ' ', 'VISCOCHAB', 0, ' ', [0.d0],&
                 25, nomc(4), materf(1, 2), cerr(4), 2)
 !
 ! -     PARAMETRES DES LOIS DE COMPORTEMENT A 2 SEUILS

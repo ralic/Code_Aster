@@ -5,11 +5,12 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
 #include "jeveux.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
-    integer :: jmat, nbpar, nbres, kpg, ksp, iarret
-    real(kind=8) :: valpar(nbpar), valres(nbres)
-    integer :: codret(nbres)
+    integer, intent(in) :: jmat, nbpar, nbres, kpg, ksp, iarret
+    real(kind=8), intent(in) :: valpar(nbpar)
+    real(kind=8), intent(out) :: valres(nbres)
+    integer, intent(out) :: codret(nbres)
     character(len=*) :: nomat, phenom, nompar(nbpar), nomres(nbres)
-    character(len=*) :: poum, fami
+    character(len=*), intent(in) :: poum, fami
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

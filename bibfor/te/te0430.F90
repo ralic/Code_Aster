@@ -52,7 +52,7 @@ subroutine te0430(option, nomte)
     integer :: ipesa, iepsin, iadzi, iazk24
     real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac, epsthe, epsref
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
-    real(kind=8) :: sig, rho, valres(2)
+    real(kind=8) :: sig, rho(1), valres(2)
     logical :: lexc
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
@@ -150,7 +150,7 @@ subroutine te0430(option, nomte)
             else if (option.eq.'CHAR_MECA_EPSI_R') then
                 nomres(1) = 'E'
                 call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                            ' ', 'ELAS', 0, ' ', 0.d0,&
+                            ' ', 'ELAS', 0, ' ', [0.d0],&
                             1, nomres, valres, codres, 1)
                 sig=valres(1)*zr(iepsin)
 !
@@ -165,7 +165,7 @@ subroutine te0430(option, nomte)
                 endif
                 nomres(1) = 'E'
                 call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                            ' ', 'ELAS', 0, ' ', 0.d0,&
+                            ' ', 'ELAS', 0, ' ', [0.d0],&
                             1, nomres, valres, codres, 1)
                 sig=valres(1)*epsthe
             endif
@@ -187,7 +187,7 @@ subroutine te0430(option, nomte)
 !
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
                         1, nomres, valres, codres, 1)
             sig=valres(1)*epsref
 !
@@ -201,12 +201,12 @@ subroutine te0430(option, nomte)
 !
         else if (option.eq.'CHAR_MECA_PESA_R') then
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
                         1, 'RHO', rho, codres, 1)
             do 130 n = 1, nno
                 do 130 i = 1, 3
                     zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*nddl+i-&
-                    1)+ rho*zr(ipoids+kpg-1)*zr(ipesa)*zr(ipesa+i)*&
+                    1)+ rho(1)*zr(ipoids+kpg-1)*zr(ipesa)*zr(ipesa+i)*&
                     vff(n)*densit*jac
 130              continue
         endif

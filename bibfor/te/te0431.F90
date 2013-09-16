@@ -178,7 +178,7 @@ subroutine te0431(option, nomte)
         if (option .eq. 'RIGI_MECA') then
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS', 0, ' ', 0.d0,&
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
                         1, nomres, valres, codres, 1)
             rig=valres(1)
 !

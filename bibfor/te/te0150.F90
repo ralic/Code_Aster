@@ -86,7 +86,7 @@ subroutine te0150(option, nomte)
     real(kind=8) :: fr(14), fi(14), fgr(14), fgi(14)
     real(kind=8) :: fer(12), fei(12)
     real(kind=8) :: ea
-    real(kind=8) :: kendog, kdessi, sech, hydr, instan, sechg(3), hydrg(3), sref
+    real(kind=8) :: kendog(1), kdessi(1), sech, hydr, instan, sechg(3), hydrg(3), sref
     integer :: ndim, nno, nnos, npg, ipoids
     integer :: ivf, idfdx, jgano
     integer :: icompo, isdcom, nbgfmx, iadzi, iazk24, isicom
@@ -435,8 +435,8 @@ subroutine te0150(option, nomte)
             call rcvalb(fami, 1, 1, '+', zi(lmater),&
                         materi, 'ELAS', 3, nompar, valpar,&
                         1, 'K_DESSIC', kdessi, codres, 0)
-            if (codres(1) .ne. 0) kdessi=0.d0
-            f = -kdessi*(sref-sech)
+            if (codres(1) .ne. 0) kdessi(1)=0.d0
+            f = -kdessi(1)*(sref-sech)
 !
         else if (option.eq.'CHAR_MECA_HYDR_R') then
 !
@@ -470,9 +470,9 @@ subroutine te0150(option, nomte)
             call rcvalb(fami, 1, 1, '+', zi(lmater),&
                         materi, 'ELAS', 3, nompar, valpar,&
                         1, 'B_ENDOGE', kendog, codres, 0)
-            if (codres(1) .ne. 0) kendog=0.d0
+            if (codres(1) .ne. 0) kendog(1)=0.d0
 !        DEPLACEMENT INDUIT PAR L'HYDRATATION
-            f = -kendog*hydr
+            f = -kendog(1)*hydr
         else
             ch16 = option
             call utmess('F', 'ELEMENTS2_47', sk=ch16)

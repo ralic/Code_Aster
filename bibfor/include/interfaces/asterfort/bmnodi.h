@@ -18,12 +18,12 @@
 interface
     subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
                       ivcord, nbdif)
-        integer :: nbdef
-        character(*) :: basmdz
-        character(*) :: intfz
-        character(*) :: nmintz
-        integer :: numint
-        integer :: ivcord(nbdef)
-        integer :: nbdif
+        integer, intent(in)  :: nbdef
+        character(*), intent(in)  :: basmdz
+        character(*), intent(in)  :: intfz
+        character(*), intent(in)  :: nmintz
+        integer, intent(in) :: numint
+        integer, intent(out) :: ivcord(nbdef)
+        integer, intent(inout) :: nbdif
     end subroutine bmnodi
 end interface

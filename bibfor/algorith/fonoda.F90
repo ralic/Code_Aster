@@ -19,7 +19,7 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit     none
+    implicit none
 #include "asterfort/rcvalb.h"
     logical :: fnoevo
     logical :: perman
@@ -39,7 +39,7 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 ! --- RECUPERATION DE LA PESANTEUR DANS DEFI_MATERIAU ------------------
 ! ======================================================================
     call rcvalb('FPG1', 1, 1, '+', imate,&
-                ' ', 'THM_DIFFU', 0, ' ', 0.d0,&
+                ' ', 'THM_DIFFU', 0, ' ', [0.d0],&
                 nhom, ncra5, hom, icodre, 1)
     pesa(1)=hom(1)
     pesa(2)=hom(2)

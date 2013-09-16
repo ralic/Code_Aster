@@ -52,7 +52,7 @@ subroutine te0436(option, nomte)
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
     real(kind=8) :: alpha, beta, epot
     real(kind=8) :: epsm(3), epsg(3, 9), epsthe, sig(3), sigg(3, 9), rig(6, 6)
-    real(kind=8) :: rho
+    real(kind=8) :: rho(1)
     real(kind=8) :: x(8), y(8), z(8), surfac, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6)
     real(kind=8) :: vro
@@ -103,9 +103,9 @@ subroutine te0436(option, nomte)
     else if (option.eq.'MASS_INER') then
         call jevech('PMASSINE', 'E', imass)
         call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                    ' ', 'ELAS_MEMBRANE', 0, ' ', 0.d0,&
+                    ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
                     1, 'RHO', rho, codres, 1)
-        if (rho .le. r8prem()) then
+        if (rho(1) .le. r8prem()) then
             call utmess('F', 'ELEMENTS5_45')
         endif
     endif
@@ -244,17 +244,17 @@ subroutine te0436(option, nomte)
 510          continue
 !
     else if (option.eq.'MASS_INER') then
-        vro = rho / surfac
-        zr(imass) = rho * surfac
+        vro = rho(1) / surfac
+        zr(imass) = rho(1) * surfac
         zr(imass+1) = cdg(1)/surfac
         zr(imass+2) = cdg(2)/surfac
         zr(imass+3) = cdg(3)/surfac
-        zr(imass+4) = matine(1)*rho - vro*(cdg(2)*cdg(2)+cdg(3)*cdg(3) )
-        zr(imass+5) = matine(3)*rho - vro*(cdg(1)*cdg(1)+cdg(3)*cdg(3) )
-        zr(imass+6) = matine(6)*rho - vro*(cdg(1)*cdg(1)+cdg(2)*cdg(2) )
-        zr(imass+7) = matine(2)*rho - vro*(cdg(1)*cdg(2))
-        zr(imass+8) = matine(4)*rho - vro*(cdg(1)*cdg(3))
-        zr(imass+9) = matine(5)*rho - vro*(cdg(2)*cdg(3))
+        zr(imass+4) = matine(1)*rho(1) - vro*(cdg(2)*cdg(2)+cdg(3)*cdg(3) )
+        zr(imass+5) = matine(3)*rho(1) - vro*(cdg(1)*cdg(1)+cdg(3)*cdg(3) )
+        zr(imass+6) = matine(6)*rho(1) - vro*(cdg(1)*cdg(1)+cdg(2)*cdg(2) )
+        zr(imass+7) = matine(2)*rho(1) - vro*(cdg(1)*cdg(2))
+        zr(imass+8) = matine(4)*rho(1) - vro*(cdg(1)*cdg(3))
+        zr(imass+9) = matine(5)*rho(1) - vro*(cdg(2)*cdg(3))
     endif
 !
 end subroutine

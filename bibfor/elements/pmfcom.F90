@@ -118,7 +118,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb(fami, 1, 1, '+', icdmat,&
-                    materi, 'ELAS', 0, '', 0.d0,&
+                    materi, 'ELAS', 0, '', [0.d0],&
                     2, nomres, valres, icodre, 1)
         ep = valres(1)
         nu = valres(2)
@@ -148,7 +148,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !       on récupère les paramètres matériau
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '+', icdmat,&
-                    materi, 'LABORD_1D', 0, ' ', 0.0d0,&
+                    materi, 'LABORD_1D', 0, ' ', [0.0d0],&
                     9, noeclb, valres, icodre, 1)
 !       boucle comportement sur chaque fibre
         do i = 1, nf
@@ -169,7 +169,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !       on récupère les paramètres matériau
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '+', icdmat,&
-                    materi, 'MAZARS', 0, ' ', 0.0d0,&
+                    materi, 'MAZARS', 0, ' ', [0.0d0],&
                     8, mazars, valres, icodre, 1)
         if (icodre(7)+icodre(8) .ne. 0) then
             valkm(1)='MAZARS_GC'
@@ -212,7 +212,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !       on récupère les paramètres matériau
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '-', icdmat,&
-                    materi, 'PINTO_MENEGOTTO', 0, ' ', 0.0d0,&
+                    materi, 'PINTO_MENEGOTTO', 0, ' ', [0.0d0],&
                     12, nompim, valres, icodre, 0)
         if (icodre(7) .ne. 0) valres(7) = -1.0d0
         cstpm(1) = ep

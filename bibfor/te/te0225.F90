@@ -109,10 +109,10 @@ subroutine te0225(option, nomte)
                 x3 = zr(jcoopg+ip-1)
                 tpg = tpg1* (un-x3**2) + x3* (tpg3* (un+x3)-tpg2* (un- x3))/ deux
                 call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                            ' ', 'ELAS', 1, 'TEMP', tpg,&
+                            ' ', 'ELAS', 1, 'TEMP', [tpg],&
                             2, nomres, valres, icodre, 1)
                 call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                            ' ', 'ELAS', 1, 'TEMP', tpg,&
+                            ' ', 'ELAS', 1, 'TEMP', [tpg],&
                             1, nomres(3), valres(3), icodre(3), 0)
                 if (((iret1+iret2+iret3+iret4).ge.1) .and. (icodre(3) .eq.0)) then
                     call utmess('F', 'CALCULEL_15')

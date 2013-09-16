@@ -51,8 +51,8 @@ subroutine te0528(option, nomte)
     parameter (mxcmel=162)
     parameter (nbsgm=6)
     real(kind=8) :: epsfl(mxcmel), epstmp(nbsgm)
-    real(kind=8) :: valpar, nu
-    integer :: icodre
+    real(kind=8) :: valpar, nu(1)
+    integer :: icodre(1)
     character(len=8) :: nomres, nompar
     character(len=16) :: compo1, compo2, valk(2)
     logical :: lflu
@@ -192,10 +192,10 @@ subroutine te0528(option, nomte)
                 valpar=zr(itemps)
 !
                 call rcvalb('RIGI', igau, 1, '+', zi(imate),&
-                            ' ', 'ELAS', 1, nompar, valpar,&
+                            ' ', 'ELAS', 1, nompar, [valpar],&
                             1, nomres, nu, icodre, 1)
 !
-                call calcgr(igau, nbsig, nbvari, zr(ivari), nu,&
+                call calcgr(igau, nbsig, nbvari, zr(ivari), nu(1),&
                             epstmp)
                 do 187 i = 1, nbsig
                     epsfl(nbsig*(igau-1)+i)=epstmp(i)

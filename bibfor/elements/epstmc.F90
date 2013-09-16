@@ -113,7 +113,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 ! ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
 !     ----------------------------------------------------------
             call rcvalb(fami, igau, isgau, poum, mater,&
-                        ' ', phenom, 1, nompar, valpar,&
+                        ' ', phenom, 1, nompar, [valpar],&
                         nbv, nomres, valres, icodre, 0)
 !
             if (icodre(1) .eq. 0) then
@@ -147,7 +147,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             nbv = 1
 !
             call rcvalb(fami, igau, isgau, poum, mater,&
-                        ' ', phenom, 1, nompar, valpar,&
+                        ' ', phenom, 1, nompar, [valpar],&
                         nbv, nomres, valres, icodre, 0)
 !
             if (icodre(1) .ne. 0) valres(1)=0.d0
@@ -163,7 +163,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             nbv = 2
 !
             call rcvalb(fami, igau, isgau, poum, mater,&
-                        ' ', phenom, 1, nompar, valpar,&
+                        ' ', phenom, 1, nompar, [valpar],&
                         nbv, nomres, valres, icodre, 0)
             e = valres(1)
             nu = valres(2)
@@ -188,7 +188,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !           DE L HYDRATATION OU DU SECHAGE
 !           ----------------------------------------------------------
         call rcvalb(fami, igau, isgau, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 0)
 !
         if (icodre(1) .ne. 0) valres(1)=0.d0

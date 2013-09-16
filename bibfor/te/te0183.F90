@@ -33,7 +33,7 @@ subroutine te0183(option, nomte)
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
@@ -45,7 +45,7 @@ subroutine te0183(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ii, ino, ivitn, j, jno, mater
     integer :: nddl
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfdx, jgano)
@@ -63,7 +63,7 @@ subroutine te0183(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     if (nomte(6:7) .ne. 'MX') nddl = nno
@@ -117,13 +117,13 @@ subroutine te0183(option, nomte)
                 ii = 4*i-3
 !
                 zc(ivectt+ii-1) = zc(ivectt+ii-1) + jac * zr(ipoids+ ipg-1) * zc(ivitn+ipg-1) * z&
-                                  &r(ivf+ldec+i-1) *rho
+                                  &r(ivf+ldec+i-1) *rho(1)
 203          continue
         else
 !
             do 103 i = 1, nno
                 zc(ivectt+i-1) = zc(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zc(ivitn+ipg-1) * zr(&
-                                 &ivf+ldec+i-1) *rho
+                                 &ivf+ldec+i-1) *rho(1)
 103          continue
         endif
 !

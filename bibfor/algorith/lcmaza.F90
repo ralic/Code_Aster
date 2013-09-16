@@ -164,10 +164,10 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 2, nomres, valres, icodre, 1)
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 1, nomres(3), valres(3), icodre(3), 0)
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
         if ((iisnan(tref).ne.0) .or. (icodre(3).ne.0)) then
@@ -210,7 +210,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     nomres(5) = 'BT'
     nomres(6) = 'K'
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'MAZARS', 1, nompar, valpar,&
+                ' ', 'MAZARS', 1, nompar, [valpar],&
                 6, nomres, valres, icodre, 1)
     epsd0 = valres(1)
     ac = valres(2)
@@ -222,7 +222,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     if (coup) then
         nomres(7) = 'CHI'
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'MAZARS', 0, ' ', 0.d0,&
+                    ' ', 'MAZARS', 0, ' ', [0.d0],&
                     1, nomres(7), valres(7), icodre(7), 1)
         chi = valres(7)
         if (chi .eq. 0.d0) then

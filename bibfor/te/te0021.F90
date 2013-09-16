@@ -28,12 +28,12 @@ subroutine te0021(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: a(3, 3, 27, 27)
@@ -45,7 +45,7 @@ subroutine te0021(option, nomte)
 !-----------------------------------------------------------------------
     integer :: ijkl, ik, irota, k, l, ndim, nnos
     integer :: npg2
-    real(kind=8) :: omega1, omega2, omega3, r8b, rho, wij
+    real(kind=8) :: omega1, omega2, omega3, r8b, rho(1), wij
 !-----------------------------------------------------------------------
     call elref4(' ', 'MASS', ndim, nno, nnos,&
                 npg2, ipoids, ivf, idfde, jgano)
@@ -59,8 +59,8 @@ subroutine te0021(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
-                1, 'RHO', rho, icodre, 1)
+                ' ', 'ELAS', 0, ' ', [r8b],&
+                1, 'RHO', rho(1), icodre, 1)
     omega1 = zr(irota+1)*zr(irota)
     omega2 = zr(irota+2)*zr(irota)
     omega3 = zr(irota+3)*zr(irota)
@@ -85,7 +85,7 @@ subroutine te0021(option, nomte)
 !
         do 70 i = 1, nno
             do 60 j = 1, i
-                wij = rho*poids*zr(ivf+l+i-1)*zr(ivf+l+j-1)
+                wij = rho(1)*poids*zr(ivf+l+i-1)*zr(ivf+l+j-1)
                 a(1,1,i,j) = a(1,1,i,j) - (omega2**2+omega3**2)*wij
                 a(2,2,i,j) = a(2,2,i,j) - (omega1**2+omega3**2)*wij
                 a(3,3,i,j) = a(3,3,i,j) - (omega1**2+omega2**2)*wij

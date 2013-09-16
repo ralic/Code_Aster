@@ -123,10 +123,10 @@ subroutine te0390(option, nomte)
     nomres(3) = 'RHO'
     nomres(4) = 'ALPHA'
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', r8bid,&
+                ' ', 'ELAS', 0, '  ', [r8bid],&
                 2, nomres, valres, icodre, 1)
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', r8bid,&
+                ' ', 'ELAS', 0, '  ', [r8bid],&
                 1, nomres(3), valres(3), icodre(3), 0)
     if (icodre(3) .ne. 0) then
         if (stoudy .gt. demi) then

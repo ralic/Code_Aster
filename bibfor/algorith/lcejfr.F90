@@ -20,7 +20,6 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! ======================================================================
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
-! aslint: disable=W1306
     implicit none
 #include "asterfort/matinv.h"
 #include "asterfort/pmavec.h"
@@ -106,7 +105,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     if (resi) inst = instap
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
                 3, nom, val, cod, 2)
 ! DEFINITION DE PARAMETRES PHYSIQUE:
 !     PENTE ELASTIQUE NORMALE
@@ -119,7 +118,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! PENTE ELASTIQUE TANGENTIELLE
 ! (SI ELLE N'EST PAS DEFINI ALORS K_T=K_N)
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
                 1, nom(4), val(4), cod(4), 0)
     if (cod(4) .eq. 0) then
         kt = val(4)
@@ -129,7 +128,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! PARAMETRE PENA_TANG
 ! (SI IL N'EST PAS DEFINI ALORS KAPPA=(K_N+K_T)*1E-6)
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
                 1, nom(5), val(5), cod(5), 0)
     if (cod(5) .eq. 0) then
         kappa = val(5)
@@ -164,13 +163,13 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !--------------------------------------------------------------------
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
                 1, nom(7), val(7), cod(7), 0)
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
                 1, nom(8), val(8), cod(8), 0)
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_FROT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_FROT', 0, ' ', [0.d0],&
                 1, nom(9), val(9), cod(9), 0)
 !
     if (cod(7) .eq. 0) rhof = val(7)

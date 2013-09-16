@@ -17,12 +17,12 @@ subroutine te0217(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 !
@@ -36,10 +36,10 @@ subroutine te0217(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     character(len=8) :: nompar(4), grxf, gryf, grzf, fami, poum
 !
-    real(kind=8) :: valres, valpar(4), x, y, z
+    real(kind=8) :: valres(1), valpar(4), x, y, z
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, grx, gry, grz
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, nno, ndim, kp, npg1, i, l, ivectt, igrai, imate
@@ -61,7 +61,7 @@ subroutine te0217(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 1, 'INST', 0.d0,&
+                ' ', 'THER', 1, 'INST', [0.d0],&
                 1, 'LAMBDA', valres, icodre, 1)
 !
     if (option .eq. 'CHAR_THER_GRAI_R') then
@@ -98,7 +98,7 @@ subroutine te0217(option, nomte)
             z = z + zr(igeom-1+3* (i-1)+3)*zr(ivf+l+i-1)
 20      continue
 !
-        poids = poids*valres
+        poids = poids*valres(1)
 !
         if (fonc) then
             valpar(1) = x

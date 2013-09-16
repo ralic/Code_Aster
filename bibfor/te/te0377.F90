@@ -213,7 +213,7 @@ subroutine te0377(option, nomte)
         endif
 !
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', r8bid,&
+                    ' ', phenom, 0, ' ', [r8bid],&
                     ibid, nompar, valres, icodre, 1)
 !
         if (typnor .eq. 'NRJ') then

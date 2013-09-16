@@ -42,9 +42,9 @@ subroutine crirup(fami, imat, ndim, npg, lgpg,&
 #include "asterfort/fgequi.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer :: npg, kpg, i, ndim, lgpg, imat, ivp, cerr
+    integer :: npg, kpg, i, ndim, lgpg, imat, ivp, cerr(1)
 !
-    real(kind=8) :: sigmoy(6), sigp(2*ndim, npg), equi(20), sc, prin1
+    real(kind=8) :: sigmoy(6), sigp(2*ndim, npg), equi(20), sc(1), prin1
     real(kind=8) :: vip(lgpg, npg), vim(lgpg, npg), pm, pp, dp, instam, instap
     real(kind=8) :: dt
 !
@@ -58,7 +58,7 @@ subroutine crirup(fami, imat, ndim, npg, lgpg,&
     endif
 !
     call rcvalb(fami, 1, 1, '+', imat,&
-                ' ', 'CRIT_RUPT', 0, ' ', 0.d0,&
+                ' ', 'CRIT_RUPT', 0, ' ', [0.d0],&
                 1, 'SIGM_C', sc, cerr, 1)
     call r8inir(6, 0.d0, sigmoy, 1)
 !
@@ -104,7 +104,7 @@ subroutine crirup(fami, imat, ndim, npg, lgpg,&
 500  end do
 !
 !     CRITERE DE RUPTURE
-    if (prin1 .gt. sc) then
+    if (prin1 .gt. sc(1)) then
 ! LA CONTRAINTE PRINCIPALE MAXI DEPASSE LE SEUIL
         do 600 kpg = 1, npg
             vip(lgpg,kpg)=1.d0

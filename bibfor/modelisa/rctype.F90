@@ -23,13 +23,15 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    integer :: imate, nbpu, jmat
-    real(kind=8) :: valpu(*), resu
-    character(len=*) :: nompu(*), type
+    integer, intent(in) :: jmat, nbpu
+    real(kind=8), intent(in) :: valpu(*) 
+    real(kind=8), intent(out) :: resu
+    character(len=*), intent(in) :: nompu(*)
+    character(len=*), intent(out) :: type
 ! ----------------------------------------------------------------------
 !     DETERMINATION DU TYPE DES VARIABLES DONT DEPEND LA COURBE DE
 !     TRACTION
-! IN  IMATE  : ADRESSE DU MATERIAU CODE
+! IN  JMAT  : ADRESSE DU MATERIAU CODE
 ! IN  NBPU  : NOMBRE DE PARAMETRES DANS NOMPU ET VALPU
 ! IN  NOMPU : NOMS DES PARAMETRES "UTILISATEUR"
 ! IN  VALPU : VALEURS DES PARAMETRES "UTILISATEUR"
@@ -40,7 +42,7 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
 !
 !
     integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, jpro
-    integer :: nbmat
+    integer :: imate, nbmat
     character(len=16) :: nompf(2)
     character(len=24) :: valk
 ! ----------------------------------------------------------------------

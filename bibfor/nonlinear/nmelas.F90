@@ -136,7 +136,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 105  end do
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 2)
     em = valres(1)
     num = valres(2)
@@ -149,7 +149,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 2)
     e = valres(1)
     nu = valres(2)
@@ -170,25 +170,25 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     nomres(1)='B_ENDOGE'
     nomres(2)='K_DESSIC'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(1), valres(1), icodre(1), 0)
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendom = valres(1)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(1), valres(1), icodre(1), 0)
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendop = valres(1)
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(2), valres(2), icodre(2), 0)
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdessm = valres(2)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(2), valres(2), icodre(2), 0)
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdessp = valres(2)

@@ -44,7 +44,7 @@ subroutine coefdg(compor, mat, dpida2)
         nom(1) = 'E'
         nom(2) = 'NU'
         call rcvalb(fami, kpg, spt, poum, mat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nom(1), val(1), k2, 2)
 !
         dpida2 = val(1)

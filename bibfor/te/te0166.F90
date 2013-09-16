@@ -33,8 +33,8 @@ subroutine te0166(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre
-    real(kind=8) :: rho, a, w(9), l1(3), l2(3), l10(3), l20(3)
+    integer :: icodre(1)
+    real(kind=8) :: rho(1), a, w(9), l1(3), l2(3), l10(3), l20(3)
     real(kind=8) :: norml1, norml2, norl10, norl20, l0, norm1p, norm2p
     real(kind=8) :: poids(3)
     character(len=8) :: fami, poum
@@ -52,7 +52,7 @@ subroutine te0166(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)
@@ -91,8 +91,8 @@ subroutine te0166(option, nomte)
 !
     norm1p = norml1 * l0 / (norml1+norml2)
     norm2p = norml2 * l0 / (norml1+norml2)
-    poids(1) = rho * a * norm1p * zr(ipesa) / 2.d0
-    poids(2) = rho * a * norm2p * zr(ipesa) / 2.d0
+    poids(1) = rho(1) * a * norm1p * zr(ipesa) / 2.d0
+    poids(2) = rho(1) * a * norm2p * zr(ipesa) / 2.d0
     poids(3) = poids(1) + poids(2)
 !
 !

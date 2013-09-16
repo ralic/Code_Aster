@@ -30,10 +30,10 @@ subroutine te0374(option, nomte)
 !
 !!
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     integer :: icodre(2)
 !!
     character(len=8) :: nomres(2), fami, poum
@@ -69,7 +69,7 @@ subroutine te0374(option, nomte)
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', rbid,&
+                ' ', 'FLUIDE', 0, ' ', [rbid],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     celer = valres(2)

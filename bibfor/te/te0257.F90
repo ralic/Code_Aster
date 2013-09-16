@@ -28,16 +28,16 @@ subroutine te0257(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
-    real(kind=8) :: a(3, 3, 3, 3), nx, ny, rho, norm(2), poids
+    real(kind=8) :: a(3, 3, 3, 3), nx, ny, rho(1), norm(2), poids
     integer :: igeom, imate, i, j, k, l, ik, ijkl, ldec, kco, ino, jno
     integer :: nno, npg, kp, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, imatuu, kpg, spt
@@ -61,7 +61,7 @@ subroutine te0257(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
 !     INITIALISATION DE LA MATRICE
@@ -103,8 +103,8 @@ subroutine te0257(option, nomte)
             do 70 jno = 1, ino
                 do 60 kco = 1, 2
 !
-                    a(kco,3,ino,jno) = a(kco,3,ino,jno) + poids*norm( kco)*rho*zr(ivf+ldec+ino-1)&
-                                       &* zr(ivf+ldec+jno-1)
+                    a(kco,3,ino,jno) = a(kco,3,ino,jno) + poids*norm( kco)*rho(1)*&
+                                       zr(ivf+ldec+ino-1)* zr(ivf+ldec+jno-1)
 !
 !
 !

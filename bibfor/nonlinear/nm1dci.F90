@@ -62,13 +62,13 @@ subroutine nm1dci(fami, kpg, ksp, imate, em,&
     data nomecl/'D_SIGM_E','SY'/
 !     ------------------------------------------------------------------
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                materi, 'ECRO_LINE', 0, ' ', 0.d0,&
+                materi, 'ECRO_LINE', 0, ' ', [0.d0],&
                 1, nomecl, valres, icodre, 1)
     etm = valres(1)
     hm = em*etm/ (em-etm)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'ECRO_LINE', 0, ' ', 0.d0,&
+                materi, 'ECRO_LINE', 0, ' ', [0.d0],&
                 2, nomecl, valres, icodre, 1)
     etp = valres(1)
     hp = ep*etp/ (ep-etp)

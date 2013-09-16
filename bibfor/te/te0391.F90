@@ -1,7 +1,6 @@
 subroutine te0391(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/gdjrg0.h"
@@ -9,6 +8,7 @@ subroutine te0391(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -39,8 +39,8 @@ subroutine te0391(option, nomte)
 !
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre, kpg, spt
-    real(kind=8) :: en(3, 2), enprim(3, 2), x00(3, 3), y0(3), rot0(3, 3), rho
+    integer :: icodre(1), kpg, spt
+    real(kind=8) :: en(3, 2), enprim(3, 2), x00(3, 3), y0(3), rot0(3, 3), rho(1)
     real(kind=8) :: grani(4), mass(18, 18), r8bid, zero
     real(kind=8) :: a, xiy, xiz, xjx, pjacob, ajacob
     integer :: nno, nnos, jgano, ndim, npg, nord, ipoids, ivf, idfdk, kp, ne, ic
@@ -79,7 +79,7 @@ subroutine te0391(option, nomte)
 !
     call jevech('PMATERC', 'L', imate)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8bid,&
+                ' ', 'ELAS', 0, ' ', [r8bid],&
                 1, 'RHO', rho, icodre, 1)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -91,10 +91,10 @@ subroutine te0391(option, nomte)
     xiy = zr(lsect+2)
     xiz = zr(lsect+3)
     xjx = zr(lsect+8)
-    grani(1) = rho*xjx
-    grani(2) = rho*xiy
-    grani(3) = rho*xiz
-    grani(4) = rho*a
+    grani(1) = rho(1)*xjx
+    grani(2) = rho(1)*xiy
+    grani(3) = rho(1)*xiz
+    grani(4) = rho(1)*a
 !
 !     --- RECUPERATION DES ORIENTATIONS INITIALES Y0(1), Y0(2), Y0(3)
     call jevech('PCAORIE', 'L', lorien)

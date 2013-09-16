@@ -28,7 +28,7 @@ subroutine te0312(option, nomte)
 !
     integer :: lmater
     character(len=8) :: fami, poum
-    real(kind=8) :: kdessi
+    real(kind=8) :: kdessi(1)
     integer :: icodre(2), kpg, spt
 !.......................................................................
 !
@@ -38,7 +38,7 @@ subroutine te0312(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'K_DESSIC', kdessi, icodre, 0)
 !
     if (icodre(1) .eq. 0) then

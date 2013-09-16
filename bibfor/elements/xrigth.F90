@@ -20,7 +20,6 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 ! ======================================================================
 ! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
-! aslint: disable=W1306
     implicit none
 !
 !     BUT: MATRICE DE RIGIDITE ELEMENTAIRE EN THERMIQUE LINEAIRE
@@ -51,8 +50,6 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 ! MATTT  --> MATRICE DE RIGIDITE ELEMENTAIRE
 !.......................................................................
 #include "jeveux.h"
-!-----------------------------------------------------------------------
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -64,6 +61,8 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+!-----------------------------------------------------------------------
+!
     character(len=8) :: elrefp
     integer :: ndim, nnop, imate, itemps, igeom, nfh, nfe, jpintt
     integer :: lonch(10), cnset(4*32), heavt(36)
@@ -78,7 +77,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
     real(kind=8) :: he
-    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), valpar(1), valres(1), lambda
+    real(kind=8) :: valpar(1), valres(1), lambda
     real(kind=8) :: r
     real(kind=8) :: jac, theta, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: pdscal
@@ -228,7 +227,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !
 !         RECUPERER LES PARAMETRES MATERIAUX
             call rcvalb('XFEM', kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'INST', valpar,&
+                        ' ', phenom, 1, 'INST', [valpar],&
                         1, 'LAMBDA', valres, icodre(1), 1)
             lambda = valres(1)
 !

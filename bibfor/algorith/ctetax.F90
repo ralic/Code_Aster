@@ -59,7 +59,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icomp, ier, iloci, ilocj, inoa
+    integer :: i, ibid(1), icomp, ier, iloci, ilocj, inoa
     integer :: iret, j, k, lldesc, llnoa, nbcmp
     integer :: nbcpmx, nbdax, nbdcou, nbec, nbnoa, nbnot, nbsec
     integer :: nbtet, noer, nta, numa
@@ -86,10 +86,8 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !-------------------RECUPERATION DU MAILLAGE----------------------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                intf, iret)
-    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid,&
-                mailla, iret)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1), intf, iret)
+    call dismoi('F', 'NOM_MAILLA', intf, 'INTERF_DYNA', ibid(1), mailla, iret)
 !
 !----------------RECUPERATION DU NOMBRE D'ENTIERS CODES-----------------
 !
@@ -120,8 +118,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !-------------RECUPERATION NOMBRE DE DDL INTERFACE AXE------------------
 !
     kbid=' '
-    call bmnodi(basmod, kbid, '         ', numa, 0,&
-                ibid, nbdax)
+    call bmnodi(basmod, kbid, '         ', numa, 0, ibid, nbdax)
 !
     if (nbdax .ne. nbtet) then
         vali (1) = nbdax

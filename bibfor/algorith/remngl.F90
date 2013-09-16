@@ -79,7 +79,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibib, ibid, icomp, iddi, idi
+    integer :: i, iad, ibid(1), icomp, iddi, idi
     integer :: idiam, idicou, ieqf, ieqi, ier, ii, inum
     integer :: iorc, iormo, j, jj, k, ldfreq, ldkge
     integer :: ldmge, ldom2, ldomo, ldotm, ldtyd, llcham, lldesc
@@ -138,14 +138,10 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid,&
-                intf, ier)
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
-                numddl, ier)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqsec,&
-                k8b, ier)
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
-                k8b, ier)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1), intf, ier)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid(1), numddl, ier)
+    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqsec, k8b, ier)
+    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp, k8b, ier)
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------
 !
@@ -158,8 +154,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION MATRICE DE MASSE-------------------------------------
 !
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid,&
-                mass, ier)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid(1), mass, ier)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
@@ -184,41 +179,34 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----CALCUL DES MATRICES DE FLEXIBILITE RESIDUELLE---------------------
 !
     kbid=' '
-    call bmnodi(basmod, kbid, '         ', numd, 0,&
-                ibib, nbddr)
+    call bmnodi(basmod, kbid, '         ', numd, 0, ibid(1), nbddr)
     flexdr='&&REMNGL.FLEX.DROITE'
     call wkvect(flexdr, 'V V R', nbddr*neqsec, ltfldr)
-    ibid = 0
-    call flexib(basmod, nbmod, zr(ltfldr), neqsec, nbddr,&
-                ibid, numd)
+    ibid(1) = 0
+    call flexib(basmod, nbmod, zr(ltfldr), neqsec, nbddr, ibid(1), numd)
 !
     flexga='&&REMNGL.FLEX.GAUCHE'
     call wkvect(flexga, 'V V R', nbddr*neqsec, ltflga)
-    call flexib(basmod, nbmod, zr(ltflga), neqsec, nbddr,&
-                ibid, numg)
+    call flexib(basmod, nbmod, zr(ltflga), neqsec, nbddr, ibid(1), numg)
 !
     if (numa .gt. 0) then
         flexax='&&REMNGL.FLEX.AXE'
         kbid=' '
-        call bmnodi(basmod, kbid, '         ', numa, 0,&
-                    ibid, nbdax)
+        call bmnodi(basmod, kbid, '         ', numa, 0, ibid(1), nbdax)
         call wkvect(flexax, 'V V R', nbdax*neqsec, ltflax)
-        call flexib(basmod, nbmod, zr(ltflax), neqsec, nbddr,&
-                    ibid, numa)
+        call flexib(basmod, nbmod, zr(ltflax), neqsec, nbddr, ibid(1), numa)
     endif
 !
 !-----CALCUL DES MATRICES DE CHANGEMENT DE BASE TETA--------------------
 !
     tetgd='&&REMNGL.TETGD'
     call wkvect(tetgd, 'V V R', nbddr*nbddr, ltetgd)
-    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd),&
-                nbddr)
+    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd), nbddr)
 !
     if (numa .gt. 0) then
         tetax='&&REMNGL.TETAX'
         call wkvect(tetax, 'V V R', nbdax*nbdax, ltetax)
-        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax),&
-                    nbdax)
+        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax), nbdax)
     endif
 !
 !-----CLASSEMENT DES MODES PROPRES--------------------------------------

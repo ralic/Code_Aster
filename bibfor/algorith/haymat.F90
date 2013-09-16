@@ -72,13 +72,13 @@ subroutine haymat(fami, kpg, ksp, mod, imat,&
 ! -   RECUPERATION MATERIAU A (T)
 !
     call rcvalb(fami, kpg, ksp, poum, imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomc(1), coefel, cerr(1), 0)
 !
     if (cerr(3) .ne. 0) coefel(3) = 0.d0
 !
     call rcvalb(fami, kpg, ksp, poum, imat,&
-                ' ', 'HAYHURST', 0, ' ', 0.d0,&
+                ' ', 'HAYHURST', 0, ' ', [0.d0],&
                 13, nomc(4), coefpl, cerr(4), 1)
 !
 !     NOMBRE DE COEF MATERIAU

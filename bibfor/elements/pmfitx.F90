@@ -78,11 +78,11 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! ---    ON MULTIPLIE PAR RHO OU E (CONSTANT SUR LE GROUPE)
         if (isw .eq. 1) then
             call rcvalb('RIGI', 1, 1, '+', icdmat,&
-                        materi, 'ELAS', 0, ' ', zero,&
+                        materi, 'ELAS', 0, ' ', [zero],&
                         1, 'E', val, codres, 0)
             if (codres(1) .eq. 1) then
                 call rcvalb('RIGI', 1, 1, '+', icdmat,&
-                            materi, 'ELAS_FLUI', 0, ' ', zero,&
+                            materi, 'ELAS_FLUI', 0, ' ', [zero],&
                             1, 'E', val, codres, 1)
             endif
         else if (isw.eq.2) then
@@ -130,12 +130,12 @@ subroutine pmfitx(icdmat, isw, casect, gto)
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb('RIGI', 1, 1, '+', icdmat,&
-                    materi, 'ELAS', 0, ' ', zero,&
+                    materi, 'ELAS', 0, ' ', [zero],&
                     2, nomres, valres, codres, 0)
 !
         if (codres(1) .eq. 1) then
             call rcvalb('RIGI', 1, 1, '+', icdmat,&
-                        materi, 'ELAS_FLUI', 0, ' ', zero,&
+                        materi, 'ELAS_FLUI', 0, ' ', [zero],&
                         2, nomres, valres, codres, 1)
         endif
         e = valres(1)

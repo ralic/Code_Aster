@@ -64,7 +64,7 @@ subroutine pipetc(mat, sup, sud, mup, mud,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mat,&
-                ' ', 'RUPT_FRAG', 0, ' ', 0.d0,&
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
                 3, nom, val, cod, 2)
     gc = val(1)
     sc = val(2)

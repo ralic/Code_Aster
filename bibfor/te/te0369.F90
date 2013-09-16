@@ -28,11 +28,11 @@ subroutine te0369(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
@@ -43,7 +43,7 @@ subroutine te0369(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: i, ii, ino, ionde, j, jno
-    real(kind=8) :: celer, rbid
+    real(kind=8) :: celer(1), rbid
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfdx, jgano)
@@ -60,7 +60,7 @@ subroutine te0369(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', rbid,&
+                ' ', 'FLUIDE', 0, ' ', [rbid],&
                 1, 'CELE_R', celer, icodre, 1)
 !
     do 11 i = 1, 2*nno
@@ -109,7 +109,7 @@ subroutine te0369(option, nomte)
         do 103 i = 1, nno
             ii = 2*i
             zr(ivectu+ii-1) = zr(ivectu+ii-1) + jac*zr(ipoids+ipg-1) * zr(ionde+ipg-1) * zr(ivf+l&
-                              &dec+i-1)/ celer
+                              &dec+i-1)/ celer(1)
 103      continue
 !
 101  end do

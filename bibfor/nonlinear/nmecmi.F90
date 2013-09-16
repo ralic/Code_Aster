@@ -130,23 +130,23 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
     if (compor(1)(1:14) .eq. 'VMIS_ECMI_TRAC') then
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(2), valres(2), icodre(2), 2)
         num = valres(2)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(2), valres(2), icodre(2), 2)
         nu = valres(2)
     else
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres(1), valres(1), icodre(1), 2)
         em = valres(1)
         num = valres(2)
         deumum = em/(1.d0+num)
         troikm = em/(1.d0-2.d0*num)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres(1), valres(1), icodre(1), 2)
         e = valres(1)
         nu = valres(2)
@@ -160,11 +160,11 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !     ---------------------------------------
     nomres(1)='C'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'PRAGER', 0, ' ', 0.d0,&
+                ' ', 'PRAGER', 0, ' ', [0.d0],&
                 1, nomres, valres, icodre, 1)
     prag=valres(1)
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'PRAGER', 0, ' ', 0.d0,&
+                ' ', 'PRAGER', 0, ' ', [0.d0],&
                 1, nomres, valres, icodre, 1)
     pragm=valres(1)
     line=0.d0
@@ -173,7 +173,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                    ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 1)
         dsde=valres(1)
         sigy=valres(2)
@@ -181,10 +181,8 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         rpm = rprim*pm +sigy
     else
 !
-        call rcvarc(' ', 'TEMP', '-', fami, kpg,&
-                    ksp, tm, iret2)
-        call rctype(imate, 1, 'TEMP', tm, resu,&
-                    type)
+        call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tm, iret2)
+        call rctype(imate, 1, 'TEMP', [tm], resu, type)
         if ((type.eq.'TEMP') .and. (iret2.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif
@@ -193,10 +191,8 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         deumum = em/(1.d0+num)
         troikm = em/(1.d0-2.d0*num)
 !
-        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                    ksp, tp, iret1)
-        call rctype(imate, 1, 'TEMP', tp, resu,&
-                    type)
+        call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tp, iret1)
+        call rctype(imate, 1, 'TEMP', [tp], resu, type)
         if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif

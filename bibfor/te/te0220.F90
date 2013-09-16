@@ -17,12 +17,12 @@ subroutine te0220(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:
@@ -35,9 +35,9 @@ subroutine te0220(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     character(len=8) :: nompar, fami, poum
-    real(kind=8) :: valres, valpar
+    real(kind=8) :: valres(1), valpar
     real(kind=8) :: dfdx(9), dfdy(9), poids, flux, fluy, epot
     integer :: ndim, nno, nnos, npg, kp, j, itempe, itemp, iener
     integer :: ipoids, ivf, idfde, jgano, igeom, imate, iret, nbpar
@@ -68,7 +68,7 @@ subroutine te0220(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', nbpar, nompar, valpar,&
+                ' ', 'THER', nbpar, nompar, [valpar],&
                 1, 'LAMBDA', valres, icodre, 1)
 !
     epot = 0.d0
@@ -84,6 +84,6 @@ subroutine te0220(option, nomte)
 !
         epot = epot - ( flux**2 + fluy**2 )*poids
 101  end do
-    zr(iener) = epot * valres / 2.d0
+    zr(iener) = epot * valres(1) / 2.d0
 !
 end subroutine

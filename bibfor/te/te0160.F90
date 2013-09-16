@@ -79,10 +79,10 @@ subroutine te0160(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'EC_SUR_E'
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, '  ', r8bid,&
+                ' ', 'ELAS', 0, '  ', [r8bid],&
                 1, nomres, valres, icodre, 1)
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                ' ', 'CABLE', 0, '  ', r8bid,&
+                ' ', 'CABLE', 0, '  ', [r8bid],&
                 1, nomres(2), valres(2), icodre(2), 1)
     e = valres(1)
     ec = e*valres(2)

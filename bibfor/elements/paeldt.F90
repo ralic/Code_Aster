@@ -1,4 +1,4 @@
-subroutine paeldt(kpg, ksp, fami, icdmat, materi, &
+subroutine paeldt(kpg, ksp, fami, icdmat, materi,&
                   em, ep, nup, depsth)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@ subroutine paeldt(kpg, ksp, fami, icdmat, materi, &
     implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/verift.h"
-
+!
     integer :: kpg, ksp, icdmat
     character(len=4) :: fami
     character(len=8) :: materi
@@ -30,25 +30,25 @@ subroutine paeldt(kpg, ksp, fami, icdmat, materi, &
 !        DEFORMATION THERMIQUE POUR UN SOUS-POINT DONNE
 !
 ! --- ------------------------------------------------------------------
-    integer :: icodre(2),iret
+    integer :: icodre(2), iret
     real(kind=8) :: valres(2)
-    character(len=8) ::nomres(2)
+    character(len=8) :: nomres(2)
 !
     nomres(1) = 'E'
     nomres(2) = 'NU'
-
+!
     call rcvalb(fami, kpg, ksp, '-', icdmat,&
-                materi, 'ELAS', 0, ' ', 0.d0,&
+                materi, 'ELAS', 0, ' ', [0.d0],&
                 1, nomres, valres, icodre, 1)
     em = valres(1)
 !
     call rcvalb(fami, kpg, ksp, '+', icdmat,&
-                materi, 'ELAS', 0, ' ', 0.d0,&
+                materi, 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     ep = valres(1)
     nup = valres(2)
-
-    call verift(fami, kpg, ksp, 'T', icdmat, materi,&
-                            'ELAS', 1, depsth, iret)
-
+!
+    call verift(fami, kpg, ksp, 'T', icdmat,&
+                materi, 'ELAS', 1, depsth, iret)
+!
 end subroutine

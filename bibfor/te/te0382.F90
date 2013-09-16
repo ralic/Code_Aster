@@ -73,7 +73,7 @@ subroutine te0382(option, nomte)
     parameter (nbnamx=3)
 !
     integer :: ifm, niv, iadzi, iazk24
-    integer :: ibid, iaux, iret, itab(7), itabid(9, 6, 4)
+    integer :: ibid, iaux, iret, itab(7)
     integer :: igeom, jtime, ierr, ivois
     integer :: imate, iref1, iref2, ndim
     integer :: nno, npg, idfde, jgano, nbcmp, tyv
@@ -474,7 +474,7 @@ subroutine te0382(option, nomte)
         nompar(2)='NU'
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb(famil, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, ' ', r8bid,&
+                    ' ', phenom, 1, ' ', [r8bid],&
                     2, nompar, valres, icodre, 1)
         e =valres(1)
         nu=valres(2)

@@ -42,7 +42,7 @@ subroutine te0069(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate, npg, jgano
     integer :: nuno, icamas, kpg, spt, nbcmp
 !
-    real(kind=8) :: dfdx(9), dfdy(9), tpg, poids, lambda, fpg(18), lambor(2)
+    real(kind=8) :: dfdx(9), dfdy(9), tpg, poids, lambda(1), fpg(18), lambor(2)
     real(kind=8) :: p(2, 2), point(2), orig(2), fluglo(2), fluloc(2)
     real(kind=8) :: valres(2)
     real(kind=8) :: alpha, fluxx, fluxy
@@ -84,20 +84,20 @@ subroutine te0069(option, nomte)
 ! 1.3 PREALABLES LIES A LA RECUPERATION DES DONNEES MATERIAUX EN
 !     THERMIQUE LINEAIRE ISOTROPE OU ORTHOTROPE
 !====
-    lambda = 0.d0
+    lambda(1) = 0.d0
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemp),&
+                    ' ', phenom, 1, 'INST', [zr(itemp)],&
                     1, nomres, valres, icodre, 1)
-        lambda = valres(1)
+        lambda(1) = valres(1)
         aniso = .false.
 !
     else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemp),&
+                    ' ', phenom, 1, 'INST', [zr(itemp)],&
                     2, nomres, valres, icodre, 1)
         lambor(1) = valres(1)
         lambor(2) = valres(2)
@@ -169,12 +169,12 @@ subroutine te0069(option, nomte)
 !
         if (phenom .eq. 'THER_NL') then
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'TEMP', tpg,&
+                        ' ', phenom, 1, 'TEMP', [tpg],&
                         1, 'LAMBDA', lambda, icodre, 1)
         endif
         if (.not.aniso) then
-            fluglo(1) = lambda*fluxx
-            fluglo(2) = lambda*fluxy
+            fluglo(1) = lambda(1)*fluxx
+            fluglo(2) = lambda(1)*fluxy
         else
             fluloc(1) = p(1,1)*fluxx + p(2,1)*fluxy
             fluloc(2) = p(1,2)*fluxx + p(2,2)*fluxy

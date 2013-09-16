@@ -79,7 +79,7 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg2, spt, poum, imate,&
-                ' ', 'RUPT_FRAG', 0, ' ', 0.d0,&
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
 !
     gc = valres(1)

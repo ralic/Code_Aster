@@ -204,44 +204,44 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 ! -      RECUPERATION MATERIAU A TEMPD (T)
 !
         call rcvalb(fami, kpg, ksp, '-', jmat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     3, nomc(1), materd(1, 1), cerr(1), 0)
         if (cerr(3) .ne. 0) then
             materd(3,1) = 0.d0
         endif
         call rcvalb(fami, kpg, ksp, '-', jmat,&
-                    ' ', 'LEMAITRE', 0, ' ', 0.d0,&
+                    ' ', 'LEMAITRE', 0, ' ', [0.d0],&
                     3, nomc(4), materd(1, 2), cerr(4), 2)
         call rcvalb(fami, kpg, ksp, '-', jmat,&
-                    ' ', 'VENDOCHAB', 0, ' ', 0.d0,&
+                    ' ', 'VENDOCHAB', 0, ' ', [0.d0],&
                     5, nomc(7), materd(4, 2), cerr(7), 2)
         if (matcst .eq. 'NAP') then
             materd(9,2)=0.0d0
         else
             call rcvalb(fami, kpg, ksp, '-', jmat,&
-                        ' ', 'VENDOCHAB', 0, ' ', 0.d0,&
+                        ' ', 'VENDOCHAB', 0, ' ', [0.d0],&
                         1, nomc(12), materd(9, 2), cerr(12), 2)
         endif
 !
 ! -      RECUPERATION MATERIAU A TEMPF (T+DT)
 !
         call rcvalb(fami, kpg, ksp, '+', jmat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     3, nomc(1), materf(1, 1), cerr(1), 0)
         if (cerr(3) .ne. 0) then
             materf(3,1) = 0.d0
         endif
         call rcvalb(fami, kpg, ksp, '+', jmat,&
-                    ' ', 'LEMAITRE', 0, ' ', 0.d0,&
+                    ' ', 'LEMAITRE', 0, ' ', [0.d0],&
                     3, nomc(4), materf(1, 2), cerr(4), 2)
         call rcvalb(fami, kpg, ksp, '+', jmat,&
-                    ' ', 'VENDOCHAB', 0, ' ', 0.d0,&
+                    ' ', 'VENDOCHAB', 0, ' ', [0.d0],&
                     5, nomc(7), materf(4, 2), cerr(7), 2)
         if (matcst .eq. 'NAP') then
             materf(9,2)=0.0d0
         else
             call rcvalb(fami, kpg, ksp, '+', jmat,&
-                        ' ', 'VENDOCHAB', 0, ' ', 0.d0,&
+                        ' ', 'VENDOCHAB', 0, ' ', [0.d0],&
                         1, nomc(12), materf(9, 2), cerr(12), 2)
         endif
 !
@@ -260,31 +260,31 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
         call rcvalb(fami, kpg, ksp, '-', jmat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     3, nomc(1), materd(1, 1), cerr(1), 0)
         if (cerr(3) .ne. 0) then
             materd(3,1) = 0.d0
         endif
         call rcvalb(fami, kpg, ksp, '-', jmat,&
-                    ' ', 'LEMAITRE', 0, ' ', 0.d0,&
+                    ' ', 'LEMAITRE', 0, ' ', [0.d0],&
                     3, nomc(4), materd(1, 2), cerr(4), 2)
         call rcvalb(fami, kpg, ksp, '-', jmat,&
-                    ' ', 'VISC_ENDO', 0, ' ', 0.d0,&
+                    ' ', 'VISC_ENDO', 0, ' ', [0.d0],&
                     3, nomc(7), materd(4, 2), cerr(7), 2)
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
         call rcvalb(fami, kpg, ksp, '+', jmat,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     3, nomc(1), materf(1, 1), cerr(1), 0)
         if (cerr(3) .ne. 0) then
             materf(3,1) = 0.d0
         endif
         call rcvalb(fami, kpg, ksp, '+', jmat,&
-                    ' ', 'LEMAITRE', 0, ' ', 0.d0,&
+                    ' ', 'LEMAITRE', 0, ' ', [0.d0],&
                     3, nomc(4), materf(1, 2), cerr(4), 2)
         call rcvalb(fami, kpg, ksp, '+', jmat,&
-                    ' ', 'VISC_ENDO', 0, ' ', 0.d0,&
+                    ' ', 'VISC_ENDO', 0, ' ', [0.d0],&
                     3, nomc(7), materf(4, 2), cerr(7), 2)
 !
     endif

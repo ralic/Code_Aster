@@ -66,8 +66,8 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
     integer :: ncstpm, iret
     parameter     (ncstpm=13)
     real(kind=8) :: cstpm(ncstpm)
-    real(kind=8) :: em, ep, depsth, depsm
-    integer :: codres
+    real(kind=8) :: em, ep, depsth, depsm, val(1)
+    integer :: codres(1)
 !
     character(len=8) ::  materi
     character(len=16) :: valkm(2)
@@ -104,12 +104,14 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
     if (.not.com1d) then
 !       caractéristiques élastiques à t-
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
-                    1, 'E', em, codres, 1)
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
+                    1, 'E', val, codres, 1)
+        em=val(1)            
 !       caractéristiques élastiques à t+
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
-                    1, 'E', ep, codres, 1)
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
+                    1, 'E', val, codres, 1)
+        ep=val(1)            
     endif
 !
     if (isot) then

@@ -41,7 +41,7 @@ subroutine te0054(option, nomte)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option, phenom
     real(kind=8) :: valpar, dfdx(27), dfdy(27), dfdz(27), poids
-    real(kind=8) :: cp, deltat
+    real(kind=8) :: cp(1), deltat
     integer :: ipoids, ivf, idfde, igeom, imate, ll, ndim
     integer :: jgano, nno, kp, npg2, ij, i, j, imattt, itemps
     integer :: nnos, kpg, spt
@@ -71,7 +71,7 @@ subroutine te0054(option, nomte)
     valpar = zr(itemps)
     deltat = zr(itemps+1)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 1, 'INST', valpar,&
+                ' ', phenom, 1, 'INST', [valpar],&
                 1, 'RHO_CP', cp, icodre(1), 1)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
@@ -86,8 +86,7 @@ subroutine te0054(option, nomte)
 !
             do 20 j = 1, i
                 ij = (i-1)*i/2 + j
-                zr(imattt+ij-1) = zr(imattt+ij-1) + cp/deltat*poids* zr(ivf+ll+i-1)* zr(ivf+ll+j-&
-                                  &1)
+                zr(imattt+ij-1)=zr(imattt+ij-1) + cp(1)/deltat*poids* zr(ivf+ll+i-1)* zr(ivf+ll+j-1)
 !
 20          continue
 30      continue

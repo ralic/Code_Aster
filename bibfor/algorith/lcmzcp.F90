@@ -143,10 +143,10 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 2, nomres, valres, icodre, 1)
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 1, nomres(3), valres(3), icodre(3), 0)
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
         if ((iisnan(tref).ne.0) .or. (icodre(3).ne.0)) then
@@ -177,7 +177,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 ! --- ON RECUPERE LES PARAMETRES MATERIAU
     call r8inir(nbval, 0.d0, valres, 1)
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'MAZARS', 1, nompar, valpar,&
+                ' ', 'MAZARS', 1, nompar, [valpar],&
                 nbval, mazars, valres, icodre, 1)
     if (icodre(7)+icodre(8) .ne. 0) then
         valkm(1)='MAZARS_GC'

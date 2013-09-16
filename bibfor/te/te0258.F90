@@ -29,16 +29,16 @@ subroutine te0258(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
-    real(kind=8) :: nx, ny, poids, rho, rho2
+    real(kind=8) :: nx, ny, poids, rho(1), rho2
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: ndi, nno, kp, npg, imatuu, iimpe
     integer :: ldec, kpg, spt
@@ -68,7 +68,7 @@ subroutine te0258(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
 ! --- INITIALISATION DE LA MATRICE D'IMPEDANCE
@@ -81,7 +81,7 @@ subroutine te0258(option, nomte)
     else
 !
 !        BOUCLE SUR LES POINTS DE GAUSS
-        rho2 = -rho*rho
+        rho2 = -rho(1)*rho(1)
 !
         do 50 kp = 1, npg
 !

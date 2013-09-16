@@ -18,13 +18,13 @@ subroutine metau2(option, nomte, iret)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
+!
     character(len=16) :: nomte, option
     integer :: iret
 !
@@ -114,7 +114,7 @@ subroutine metau2(option, nomte, iret)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, tpg, iret2)
         call rcvalb('RIGI', 1, 1, '+', mater,&
-                    ' ', 'ELAS_META', 1, 'TEMP', tpg,&
+                    ' ', 'ELAS_META', 1, 'TEMP', [tpg],&
                     6, nomres, valres, icodre, 1)
         coef = valres(1)/ (1.d0-2.d0*valres(2))
         zalpha=0.d0

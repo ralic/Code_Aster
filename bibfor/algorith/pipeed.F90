@@ -125,7 +125,7 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'RUPT_FRAG', 0, ' ', 0.d0,&
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
                 nbres, nomres, valres, icodre, 2)
     gc = valres(1)
     sigmc = valres(2)

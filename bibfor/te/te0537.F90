@@ -149,7 +149,7 @@ subroutine te0537(option, nomte)
             nomres(1) = 'E'
             nomres(2) = 'NU'
             call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                        materi, 'ELAS', 0, ' ', 0.d0,&
+                        materi, 'ELAS', 0, ' ', [0.d0],&
                         2, nomres, valres, codres, 1)
             e = valres(1)
             nu = valres(2)
@@ -201,7 +201,7 @@ subroutine te0537(option, nomte)
             nomres(1) = 'E'
             nomres(2) = 'NU'
             call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                        materi, 'ELAS', 0, ' ', 0.d0,&
+                        materi, 'ELAS', 0, ' ', [0.d0],&
                         2, nomres, valres, codres, 1)
             e = valres(1)
             nu = valres(2)

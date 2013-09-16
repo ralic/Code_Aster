@@ -30,13 +30,13 @@ subroutine te0315(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: poids, nx, ny, norm(2), acloc(2, 3)
@@ -50,7 +50,7 @@ subroutine te0315(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, iacce, idim, itemp, jgano, k, ndim
     integer :: nnos
-    real(kind=8) :: r, r8b, rho
+    real(kind=8) :: r, r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -66,7 +66,7 @@ subroutine te0315(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 0, ' ', r8b,&
+                ' ', 'THER', 0, ' ', [r8b],&
                 1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then
@@ -135,7 +135,7 @@ subroutine te0315(option, nomte)
         endif
 !
         do 60 i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*flufn(kp)*rho*zr( ivf+ldec+i-1)
+            zr(ivectt+i-1) = zr(ivectt+i-1) + poids*flufn(kp)*rho(1)*zr( ivf+ldec+i-1)
 60      continue
 70  end do
 !

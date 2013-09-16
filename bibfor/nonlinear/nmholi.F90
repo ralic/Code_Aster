@@ -53,9 +53,8 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
     character(len=8) :: fami, poum
     real(kind=8) :: eps(6), poids, epsno, sy, m, am, epsh
     real(kind=8) :: dfdi(27, 3), fbid(3, 3), r
-    real(kind=8) :: rac23
-!
-    integer :: cod
+    real(kind=8) :: rac23, val(1)
+    integer :: cod(1)
 ! ------------------------------------------------------------------
 !
 !
@@ -74,8 +73,9 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
-                1, 'SY', sy, cod, 2)
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
+                1, 'SY', val, cod, 2)
+    sy=val(1)            
     m = 1 + 10**(1-inst)
     am = sy * rac23**m
 !

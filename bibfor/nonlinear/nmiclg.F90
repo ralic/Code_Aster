@@ -38,7 +38,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
     real(kind=8) :: vim(*)
     real(kind=8) :: vip(*)
     real(kind=8) :: sigy, sigm, deps, sigp
-    integer :: codres
+    integer :: codres(1)
     real(kind=8) :: dsde, epsm
 ! -------------------------------------------------------------------
 !
@@ -72,7 +72,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
     integer :: iret
     real(kind=8) :: depsth, depsm, tmoins, tplus
     real(kind=8) :: em, ep, dsdem, dsdep
-    real(kind=8) :: valres(4), syc, etc, syt, ett, cr
+    real(kind=8) :: valres(4), syc, etc, syt, ett, cr, val(1)
     logical :: isot, cine, elas, corr, impl, isotli, pinto, asyml, sans
     data nomasl / 'SY_C', 'DC_SIGM_','SY_T','DT_SIGM_' /
 !
@@ -118,14 +118,16 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
 ! --- CARACTERISTIQUES ELASTIQUES A TMOINS
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
-                1, 'E', em, codres, 1)
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                1, 'E', val, codres, 1)
+    em=val(1)             
 !
 ! --- CARACTERISTIQUES ELASTIQUES A TPLUS
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
-                1, 'E', ep, codres, 1)
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                1, 'E', val, codres, 1)
+    ep=val(1)            
 !
 !
     if (isot .and. (.not.impl)) then
@@ -162,7 +164,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
         call nmmaba(imate, compor, ep, dsde, sigy,&
                     ncstpm, cstpm)
         call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'ECRO_ASYM_LINE', 0, ' ', 0.d0,&
+                    ' ', 'ECRO_ASYM_LINE', 0, ' ', [0.d0],&
                     4, nomasl, valres, codres, 1)
         syc = valres(1)
         etc = valres(2)

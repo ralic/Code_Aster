@@ -28,10 +28,10 @@ subroutine te0370(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=8) :: fami
     character(len=16) :: nomte, option
     real(kind=8) :: a(2, 2, 27, 27)
@@ -69,7 +69,7 @@ subroutine te0370(option, nomte)
 ! --- CARACTERISTIQUES MATERIAUX
 !
     call rcvalb(fami, kpg, spt, '+', zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 2, nompar, valpar, codret, 1)
     rho = valpar(1)
     pesa = valpar(2)

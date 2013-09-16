@@ -17,11 +17,11 @@ subroutine te0111(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - BUT :  CALCUL DES MATRICES DE RAIDEUR CENTRIFUGE ELEMENTAIRES
@@ -33,7 +33,7 @@ subroutine te0111(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=4) :: fami
     real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r
     integer :: nno, kp, npg2, i, j, imatuu, nnos, ndim, jgano
@@ -42,7 +42,7 @@ subroutine te0111(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: ijkl, ik, irota, k, l
-    real(kind=8) :: omega1, omega2, omega3, rho, wij
+    real(kind=8) :: omega1, omega2, omega3, rho(1), wij
 !-----------------------------------------------------------------------
     fami = 'MASS'
     call elref4(' ', fami, ndim, nno, nnos,&
@@ -78,14 +78,14 @@ subroutine te0111(option, nomte)
 102      continue
         poids = poids*r
         call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'RHO', rho, icodre, 1)
 !
         do 106 i = 1, nno
 !
             do 107 j = 1, i
 !
-                wij = rho * poids * zr(ivf+l+i-1) * zr(ivf+l+j-1)
+                wij = rho(1) * poids * zr(ivf+l+i-1) * zr(ivf+l+j-1)
 !
                 a(1,1,i,j) = a(1,1,i,j) - (omega2**2 + omega3**2) * wij
 !

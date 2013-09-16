@@ -28,16 +28,16 @@ subroutine te0373(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
-    real(kind=8) :: poids, nx, ny, celer
+    real(kind=8) :: poids, nx, ny, celer(1)
     integer :: ipoids, ivf, idfde, igeom, ionde, kpg, spt
     integer :: nno, kp, npg, ivectu, imate, ldec
     logical :: laxi
@@ -62,7 +62,7 @@ subroutine te0373(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', rbid,&
+                ' ', 'FLUIDE', 0, ' ', [rbid],&
                 1, 'CELE_R', celer, icodre, 1)
 !
     do 10 i = 1, 2*nno
@@ -87,7 +87,7 @@ subroutine te0373(option, nomte)
         endif
         do 30 i = 1, nno
             ii = 2*i
-            zr(ivectu+ii-1) = zr(ivectu+ii-1) + poids*zr(ionde+kp-1)* zr(ivf+ldec+i-1)/celer
+            zr(ivectu+ii-1) = zr(ivectu+ii-1) + poids*zr(ionde+kp-1)* zr(ivf+ldec+i-1)/celer(1)
 30      continue
 40  end do
 !

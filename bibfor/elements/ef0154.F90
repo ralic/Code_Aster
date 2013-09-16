@@ -35,12 +35,12 @@ subroutine ef0154(nomte)
 !
     real(kind=8) :: pgl(3, 3), klc(6, 6)
     real(kind=8) :: ugr(6), ulr(6), flr(6)
-    integer :: codres
+    integer :: codres(1)
     character(len=4) :: fami
     character(len=8) :: nomail, materi
     character(len=16) :: ch16
     logical :: lteimp
-    real(kind=8) :: a, epsth, e, r8bid, xfl1, xfl4, xl, xrig
+    real(kind=8) :: a, epsth, e, r8bid, xfl1, xfl4, xl, xrig, val(1)
     integer :: i, j, jdepl, jeffo
     integer :: lmater, lorien, lsect, iret, lx, nc, nno, iadzi, iazk24
 !     ------------------------------------------------------------------
@@ -63,8 +63,9 @@ subroutine ef0154(nomte)
                 materi, 'ELAS', 1, epsth, iret)
 !
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                ' ', 'ELAS', 0, ' ', r8bid,&
-                1, 'E', e, codres, 1)
+                ' ', 'ELAS', 0, ' ', [r8bid],&
+                1, 'E', val, codres, 1)
+    e=val(1)            
     if (epsth .ne. 0.d0) lteimp=.true.
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---

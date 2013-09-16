@@ -129,11 +129,11 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 !
 !
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, 0, ' ', 0.0d0,&
+                    ' ', phenom, 0, ' ', [0.0d0],&
                     1, 'MEMB_L  ', valres(1), icodre, 0)
         if (icodre(1) .eq. 1) then
             call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                        ' ', phenom, 0, ' ', 0.0d0,&
+                        ' ', phenom, 0, ' ', [0.0d0],&
                         1, 'M_LLLL  ', valres(1), icodre, 0)
             if (icodre(1) .eq. 1) then
                 call utmess('F', 'ELEMENTS_41')
@@ -214,10 +214,10 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
         multic = 0
 !
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(3), valres(3), icodre(3), 0)
         if ((icodre(3).ne.0) .or. (valres(3).eq.0.d0)) then
             indith = -1
@@ -253,7 +253,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
     else if (phenom.eq.'ELAS_COQUE') then
         multic = 0
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
         if (elasco .eq. 1) then
             indalf = 11
@@ -261,7 +261,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
             indalf = 34
         endif
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(indalf), valres(indalf), icodre(indalf), 0)
         if ((icodre(indalf).ne.0) .or. (valres(indalf).eq.0.d0)) then
             indith = -1
@@ -335,11 +335,11 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
     else if (phenom.eq.'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(19), valres(19), icodre(19), 0)
         epais = valres(19)
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     27, nomres(30), valres(30), icodre(30), 0)
         dm(1,1) = valres(30)
         dm(1,2) = valres(31)

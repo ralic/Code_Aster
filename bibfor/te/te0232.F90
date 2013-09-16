@@ -43,12 +43,12 @@ subroutine te0232(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     real(kind=8) :: zero, dfdx(3), nx, ny, poids, cour, rx, ry
     integer :: nno, kp, k, npg, i
     integer :: ipoids, ivf, idfdk
     integer :: jgano, ndim, nnos
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
     integer :: j_geom, j_rota, j_vect, j_mate, j_caco
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
@@ -112,7 +112,7 @@ subroutine te0232(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(j_mate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
 ! - Computation
@@ -121,7 +121,7 @@ subroutine te0232(option, nomte)
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(j_geom), dfdx,&
                     cour, poids, nx, ny)
-        poids = poids*rho*rota_speed**2*zr(j_caco)
+        poids = poids*rho(1)*rota_speed**2*zr(j_caco)
         rx = zero
         ry = zero
         do i = 1, nno

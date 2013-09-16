@@ -48,7 +48,7 @@ subroutine te0084(option, nomte)
     real(kind=8) :: dfdx(9), dfdy(9), poids, rx, ry
     integer :: nno, kp, k, npg1, i, jgano, ndim, nnos
     integer :: ipoids, ivf, idfde
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
     integer :: j_geom, j_rota, j_vect, j_mate
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
@@ -106,7 +106,7 @@ subroutine te0084(option, nomte)
 !
     call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(j_mate),&
-                ' ', phenom, 0, ' ', r8b,&
+                ' ', phenom, 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre(1), 1)
 !
 ! - Computation
@@ -115,7 +115,7 @@ subroutine te0084(option, nomte)
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(j_geom),&
                     dfdx, dfdy, poids)
-        poids = poids * rho * rota_speed**2
+        poids = poids * rho(1) * rota_speed**2
         rx= 0.d0
         ry= 0.d0
         do i = 1, nno

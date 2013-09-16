@@ -231,7 +231,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 !        ------ MATERIAU ISOTROPE --------------------------------------
 !
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         young = valres(1)
@@ -285,7 +285,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 !
     else if (phenom.eq.'ELAS_COQUE') then
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
         if (elasco .eq. 1) then
             multic = 0
@@ -431,7 +431,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
     else if (phenom.eq.'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     18, nomres, valres, icodre, 1)
         dm(1,1) = valres(1)
         dm(1,2) = valres(2)
@@ -461,7 +461,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
         df(3,1) = df(1,3)
         df(3,2) = df(2,3)
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     6, nomres(21), valres(21), icodre(21), 1)
         dci(1,1) = valres(21)
         dci(2,2) = valres(22)

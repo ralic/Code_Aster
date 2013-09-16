@@ -94,7 +94,7 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e = valres(1)
@@ -134,7 +134,7 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -194,7 +194,7 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
 ! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)

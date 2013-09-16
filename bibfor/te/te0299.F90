@@ -51,7 +51,7 @@ subroutine te0299(option, nomte)
 #include "asterfort/vecini.h"
 !
     integer :: icodre(3)
-    integer :: codrho
+    integer :: codrho(1)
     integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano, icomp
     integer :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls
     integer :: imate, iforc, iforf, ifond, itemps, k, i, j, kk, l, ndim, jtab(7)
@@ -60,7 +60,7 @@ subroutine te0299(option, nomte)
     real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4)
-    real(kind=8) :: rho, om, omo, rbid, e, nu, rbid2(3, 3, 3)
+    real(kind=8) :: rho(1), om, omo, rbid, e, nu, rbid2(3, 3, 3)
     real(kind=8) :: thet, tno(20), tgdm(3)
     real(kind=8) :: xag, yag, xg, yg, xa, ya, norm, a, b
     real(kind=8) :: c1, c2, c3, cs, u1(2), u2(2)
@@ -105,7 +105,7 @@ subroutine te0299(option, nomte)
     g = 0.d0
     k1 = 0.d0
     k2 = 0.d0
-    rho = 0.d0
+    rho(1) = 0.d0
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
@@ -210,13 +210,13 @@ subroutine te0299(option, nomte)
     if (lpesa .or. lrota) then
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre, 1)
         if (lpesa) then
             do i = 1, nno
                 do j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rho*zr(ipesa)*zr(ipesa+j)
+                    fno(kk)=fno(kk)+rho(1)*zr(ipesa)*zr(ipesa+j)
                 end do
             end do
         endif
@@ -230,7 +230,7 @@ subroutine te0299(option, nomte)
                 end do
                 do j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rho*om*om*(zr(igeom+kk-1)-omo*zr(&
+                    fno(kk)=fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
                 end do
             end do
@@ -314,7 +314,7 @@ subroutine te0299(option, nomte)
 ! ----- RECUPERATION DE E, NU
 !
         call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 0)
         ASSERT(icodre(1)+icodre(2).eq.0)
 !
@@ -322,10 +322,10 @@ subroutine te0299(option, nomte)
 ! ----- RECUPERATION DE RHO
 !
         call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', rho, codrho, 0)
 !
-        if ((codrho.ne.0) .and. lmoda) then
+        if ((codrho(1).ne.0) .and. lmoda) then
             call utmess('F', 'RUPTURE1_26')
         endif
 !
@@ -440,7 +440,7 @@ subroutine te0299(option, nomte)
         call gbilin(fami, kp, zi(imate), dudm, dudm,&
                     dtdm, dfdm, tgdm, poids, c1,&
                     c2, c3, cs, th, 2.d0,&
-                    rho, puls, axi, guv)
+                    rho(1), puls, axi, guv)
         g = g + guv
 !
         guv1 = 0.d0
@@ -448,7 +448,7 @@ subroutine te0299(option, nomte)
         call gbilin(fami, kp, zi(imate), dudm, du1dm,&
                     dtdm, dfdm, tgdm, poids, c1,&
                     c2, c3, cs, th, 1.d0,&
-                    rho, puls, axi, guv1)
+                    rho(1), puls, axi, guv1)
         k1 = k1 + guv1
 !
         guv2 = 0.d0
@@ -456,7 +456,7 @@ subroutine te0299(option, nomte)
         call gbilin(fami, kp, zi(imate), dudm, du2dm,&
                     dtdm, dfdm, tgdm, poids, c1,&
                     c2, c3, cs, th, 1.d0,&
-                    rho, puls, axi, guv2)
+                    rho(1), puls, axi, guv2)
         k2 = k2 + guv2
 !
     end do

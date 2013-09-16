@@ -42,12 +42,12 @@ subroutine te0161(option, nomte)
 !        CHAR_MECA_SF1D1D'
 !
 ! --- ------------------------------------------------------------------
-    integer :: icodre, jj
+    integer :: icodre(1), jj
     integer :: nno, kp, i, ivectu, ipesa, nddl, npg, iyty, nordre, lsect
     integer :: ipoids, ivf, igeom, imate, iforc
     integer :: itemps, nbpar, idepla, ideplp, k, l, ic, neu, iret, neum1
     logical :: normal
-    real(kind=8) :: r8min, r8bid, rho, a, coef
+    real(kind=8) :: r8min, r8bid, rho(1), a, coef
     real(kind=8) :: s, s2, s3, s4, s5, x(4), c1, c2(3), w(6), u(3), v(3), w2(3)
 !
     integer :: ifcx, idfdk, jgano, ndim, nnos
@@ -78,7 +78,7 @@ subroutine te0161(option, nomte)
         call jevech('PMATERC', 'L', imate)
         call jevech('PPESANR', 'L', ipesa)
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', r8bid,&
+                    ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'RHO', rho, icodre, 1)
         if (nomte .eq. 'MECA_POU_D_T_GD') then
             call jevech('PCAGNPO', 'L', lsect)
@@ -86,7 +86,7 @@ subroutine te0161(option, nomte)
             call jevech('PCACABL', 'L', lsect)
         endif
         a = zr(lsect)
-        c1 = a*rho*zr(ipesa)
+        c1 = a*rho(1)*zr(ipesa)
         c2(1) = zr(ipesa+1)
         c2(2) = zr(ipesa+2)
         c2(3) = zr(ipesa+3)

@@ -46,7 +46,7 @@ subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
     nomres(1)='MPCST'
 !
     call rcvalb('FPG1', 1, 1, '+', zimat,&
-                ' ', 'GLRC_DAMAGE', 0, ' ', 0.d0,&
+                ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
                 1, nomres, valres, icodre, 1)
 !
     if (valres(1) .eq. 0.d0) then
@@ -56,7 +56,7 @@ subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
         nomres(4)='MINMP2'
 !
         call rcvalb('FPG1', 1, 1, '+', zimat,&
-                    ' ', 'GLRC_DAMAGE', 0, ' ', 0.d0,&
+                    ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
                     4, nomres, valres, icodre, 1)
 !
         nmplas(1,1)=valres(1)

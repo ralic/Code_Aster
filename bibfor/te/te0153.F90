@@ -38,10 +38,10 @@ subroutine te0153(option, nomte)
 !        'MECA_2D_BARRE' : ELEMENT BARRE
 !
 !
-    integer :: codres
+    integer :: codres(1)
     character(len=8) :: nomail
     character(len=16) :: ch16
-    real(kind=8) :: e, rho, pgl(3, 3), mat(21), matr(21)
+    real(kind=8) :: e(1), rho(1), pgl(3, 3), mat(21), matr(21)
     real(kind=8) :: a, xl, xrig, xmas, matp(6, 6), mat2dm(4, 4), mat2dv(10)
     integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
@@ -92,22 +92,22 @@ subroutine te0153(option, nomte)
     call jevech('PMATERC', 'L', imate)
     if (option .eq. 'RIGI_MECA') then
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', r8b,&
+                    ' ', 'ELAS', 0, ' ', [r8b],&
                     1, 'E', e, codres, 1)
-        xrig = e * a / xl
+        xrig = e(1) * a / xl
         mat( 1) = xrig
         mat( 7) = -xrig
         mat(10) = xrig
 !
     else if (option.eq.'MASS_MECA' .or. option.eq.'M_GAMMA') then
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', r8b,&
+                    ' ', 'ELAS', 0, ' ', [r8b],&
                     1, 'RHO', rho, codres, 1)
         do 40 i = 1, 21
             matr(i) = 0.d0
 40      continue
 !
-        xmas = rho * a * xl / 6.d0
+        xmas = rho(1) * a * xl / 6.d0
         mat( 1) = xmas * 2.d0
         mat( 3) = xmas * 2.d0
         mat( 6) = xmas * 2.d0
@@ -122,9 +122,9 @@ subroutine te0153(option, nomte)
         else if ( (option.eq.'MASS_MECA_DIAG') .or. (&
     option.eq.'MASS_MECA_EXPLI')) then
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', r8b,&
+                    ' ', 'ELAS', 0, ' ', [r8b],&
                     1, 'RHO', rho, codres, 1)
-        xmas = rho * a * xl / 2.d0
+        xmas = rho(1) * a * xl / 2.d0
         mat( 1) = xmas
         mat( 3) = xmas
         mat( 6) = xmas

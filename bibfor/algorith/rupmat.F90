@@ -17,10 +17,10 @@ subroutine rupmat(fami, kpg, ksp, imat, vim,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =================================================================
-    implicit     none
+    implicit none
 #include "asterfort/rcvalb.h"
-    integer :: kpg, ksp, imat, lgpg, cerr, i
-    real(kind=8) :: e, vim(*), sigd(6), coef
+    integer :: kpg, ksp, imat, lgpg, cerr(1), i
+    real(kind=8) :: e, vim(*), sigd(6), coef(1)
     character(len=*) :: fami
 ! =================================================================
 !   IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
@@ -37,10 +37,10 @@ subroutine rupmat(fami, kpg, ksp, imat, vim,&
     endif
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'CRIT_RUPT', 0, ' ', 0.d0,&
+                ' ', 'CRIT_RUPT', 0, ' ', [0.d0],&
                 1, 'COEF', coef, cerr, 1)
 !
-    e = e /coef
+    e = e /coef(1)
 !
     do 100 i = 1, 6
         sigd(i)=0.d0

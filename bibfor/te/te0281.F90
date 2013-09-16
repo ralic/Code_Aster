@@ -32,7 +32,6 @@ subroutine te0281(option, nomte)
 !
 ! PARAMETRES D'APPEL
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -41,13 +40,14 @@ subroutine te0281(option, nomte)
 #include "asterfort/rcdiff.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=16) :: nomte, option
 !
 !
-    integer :: icodre
+    integer :: icodre(1)
     real(kind=8) :: beta, dbeta, lambda, theta, deltat, tpg, r8bid, dfdx(27)
     real(kind=8) :: dfdy(27), dfdz(27), poids, dtpgdx, dtpgdy, dtpgdz, dlambd
-    real(kind=8) :: tpgbuf, tpsec, diff, chal, hydrpg(27)
+    real(kind=8) :: tpgbuf, tpsec, diff, chal(1), hydrpg(27)
     integer :: jgano, ipoids, ivf, idfde, igeom, imate, itemp, nno, kp, nnos
     integer :: npg, i, l, ifon(3), ndim, icomp, ivectt, ivecti
     integer :: itemps
@@ -104,7 +104,7 @@ subroutine te0281(option, nomte)
 152      continue
 !
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'THER_HYDR', 0, ' ', r8bid,&
+                    ' ', 'THER_HYDR', 0, ' ', [r8bid],&
                     1, 'CHALHYDR', chal, icodre, 1)
     else
         lhyd = .false.
@@ -166,10 +166,10 @@ subroutine te0281(option, nomte)
             if (lhyd) then
 ! THER_HYDR
                 do 81 i = 1, nno
-                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids* ((beta- chal*hydrpg(kp))* zr(ivf2+l+&
-                                     &i-1)/deltat)
-                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids* ((dbeta* tpg-chal*hydrpg(kp))* zr(iv&
-                                     &f2+l+i-1)/deltat)
+                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids* ((beta- &
+                                     chal(1)*hydrpg(kp))* zr(ivf2+l+i-1)/deltat)
+                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids* ((dbeta* &
+                                     tpg-chal(1)*hydrpg(kp))* zr(ivf2+l+i-1)/deltat)
 81              continue
             else
 ! THER_NL

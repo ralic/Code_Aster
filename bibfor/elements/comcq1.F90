@@ -19,7 +19,6 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!  VARIABLE ENTREE/SORTIE
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/nm1dci.h"
@@ -30,14 +29,16 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
 #include "asterfort/utmess.h"
 #include "asterfort/verifg.h"
 #include "asterfort/verift.h"
+!
+!  VARIABLE ENTREE/SORTIE
     character(len=*) :: fami
     character(len=16) :: option, compor(*), valkm(2)
     integer :: codret, kpg, ksp, mod, imate
-    real(kind=8) :: tempm, tempp, angmas(3), sigm(4), eps(4), deps(4)
+    real(kind=8) :: tempm, tempp, angmas(3), sigm(4), eps(4), deps(4), val(1)
     real(kind=8) :: vim(*), vip(*), sigp(4), dsde(6, 6), carcri(*), lc(1)
     real(kind=8) :: instm, instp, ep, em, depsth, etg, depsm, wkout(1)
     character(len=8) :: typmod(2), nompar, materi
-    integer :: codres
+    integer :: codres(1)
 !
 !
 !  VARIABLE LOCALE
@@ -86,13 +87,15 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
 !            CARACTERISTIQUES ELASTIQUES A TMOINS
             nompar = 'TEMP'
             call rcvalb('RIGI', kpg, 1, '-', imate,&
-                        ' ', 'ELAS', 1, nompar, tempm,&
-                        1, 'E', em, codres, 1)
+                        ' ', 'ELAS', 1, nompar, [tempm],&
+                        1, 'E', val, codres, 1)
+            em=val(1)            
 !
 ! ---        CARACTERISTIQUES ELASTIQUES A TPLUS
             call rcvalb('RIGI', kpg, 1, '+', imate,&
-                        ' ', 'ELAS', 1, nompar, tempp,&
-                        1, 'E', ep, codres, 1)
+                        ' ', 'ELAS', 1, nompar, [tempp],&
+                        1, 'E', val, codres, 1)
+            ep=val(1)            
             if (compor(1) .eq. 'ELAS') then
                 call verifg('RIGI', kpg, 3, 'T', imate,&
                             'ELAS', 1, depsth, iret)

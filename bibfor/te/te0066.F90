@@ -17,12 +17,12 @@ subroutine te0066(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 !
@@ -37,8 +37,8 @@ subroutine te0066(option, nomte)
 !
 !
     character(len=8) :: nompar, fami, poum
-    integer :: icodre
-    real(kind=8) :: valpar, lambda, poids, epot
+    integer :: icodre(1)
+    real(kind=8) :: valpar, lambda(1), poids, epot
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), flux, fluy, fluz
     integer :: i, ipoids, ivf, idfde, igeom, imate, kpg, spt
     integer :: ndim, jgano, nno, kp, npg1, iener, itemp, itempe
@@ -71,7 +71,7 @@ subroutine te0066(option, nomte)
     endif
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', nbpar, nompar, valpar,&
+                ' ', 'THER', nbpar, nompar, [valpar],&
                 1, 'LAMBDA', lambda, icodre, 1)
 !
     epot = 0.d0
@@ -90,5 +90,5 @@ subroutine te0066(option, nomte)
         epot = epot - (flux**2+fluy**2+fluz**2)*poids
 !
 30  end do
-    zr(iener) = epot*lambda/2.d0
+    zr(iener) = epot*lambda(1)/2.d0
 end subroutine

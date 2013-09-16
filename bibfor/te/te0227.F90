@@ -41,9 +41,9 @@ subroutine te0227(option, nomte)
 !
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     real(kind=8) :: dfdx(3), r, rm, poids, cour, nx, ny, xg, yg
-    real(kind=8) :: r8b, rho, x(3), y(3), xxi, xyi, yyi
+    real(kind=8) :: r8b, rho(1), x(3), y(3), xxi, xyi, yyi
     real(kind=8) :: matine(6), volume, depi, zero
     integer :: nno, nnos, jgano, ndim, ipoids, ivf, idfdk, igeom, imate, icaco
     integer :: kp, npg, i, j, k, lcastr
@@ -71,12 +71,12 @@ subroutine te0227(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
-    if (rho .le. r8prem()) then
+    if (rho(1) .le. r8prem()) then
         call utmess('F', 'ELEMENTS5_45')
     endif
-    rm = rho*zr(icaco)
+    rm = rho(1)*zr(icaco)
 !
     call jevech('PMASSINE', 'E', lcastr)
 !

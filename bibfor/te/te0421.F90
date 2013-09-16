@@ -125,10 +125,10 @@ subroutine te0421(option, nomte)
         if (phenom .eq. 'ELAS') then
 !CC --- CAS ISOTROPE
             call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, valpar,&
+                        ' ', phenom, nbpar, nompar, [valpar],&
                         2, nomres, valres, icodre, 1)
             call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, valpar,&
+                        ' ', phenom, nbpar, nompar, [valpar],&
                         1, nomres(3), valres(3), icodre(3), 0)
             if (icodre(3) .ne. 0) valres(3) = 0.d0
 !
@@ -144,7 +144,7 @@ subroutine te0421(option, nomte)
         else if (phenom.eq.'ELAS_ORTH') then
 !CC --- CAS ORTHOTROPE
             call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, valpar,&
+                        ' ', phenom, nbpar, nompar, [valpar],&
                         7, nomres, valres, icodre, 1)
 !
             e1 = valres(1)
@@ -169,7 +169,7 @@ subroutine te0421(option, nomte)
         else if (phenom.eq.'ELAS_GITR') then
 !CC     CAS ISOTROPE_TRANSVERSE
             call rcvalb(fami, kp, 1, '+', zi(imate),&
-                        ' ', phenom, nbpar, nompar, valpar,&
+                        ' ', phenom, nbpar, nompar, [valpar],&
                         4, nomres, valres, icodre, 1)
 !
             e1 = valres(1)

@@ -91,7 +91,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     nomres(2)='NU'
     nomres(3)='ALPHA'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     em = valres(1)
     num = valres(2)
@@ -99,7 +99,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     troikm = em/(1.d0-2.d0*num)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     e = valres(1)
     nu = valres(2)
@@ -112,7 +112,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     nomres(1)='D_SIGM_EPSI'
     nomres(2)='SY'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     dsdem=valres(1)
     if ((em-dsdem) .lt. r8miem()) then
@@ -126,7 +126,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     nomres(1)='D_SIGM_EPSI'
     nomres(2)='SY'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
     dsde=valres(1)
     sigy=valres(2)

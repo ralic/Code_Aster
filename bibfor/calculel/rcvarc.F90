@@ -28,10 +28,11 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-    character(len=*) :: novrc, poum, fami
-    character(len=1) :: arret
-    integer :: iret, kpg, ksp
-    real(kind=8) :: valvrc
+    character(len=*), intent(in) :: novrc, poum, fami
+    character(len=1), intent(in) :: arret
+    integer, intent(out) :: iret
+    integer, intent(in) :: kpg, ksp
+    real(kind=8), intent(out) :: valvrc
 !-----------------------------------------------------------------------
 ! BUT: RECUPERER LA VALEUR D'UNE VARIABLE DE COMMANDE SUR UN SOUS-POINT
 !      DE GAUSS (KPG,KSP) ET POUR UNE VALEUR D'INSTANT ('+','-','REF')
@@ -85,13 +86,13 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     endif
 !
 !     -- S'IL N'Y A PAS DE VARC, ON NE PEUT PAS LES TROUVER !
-    if (nbcvrc .eq. 0) goto 9998
+    if (nbcvrc .eq. 0) goto 998
 !
     if (iactif .eq. 2) then
 !        ON VIENT DE CALC_POINT_MAT
         ASSERT(fami.eq.'PMAT')
         call rcvarp(arret, novrc, poum, valvrc, iret)
-        goto 9999
+        goto 999
     endif
 !
     tdef=rundf
@@ -105,7 +106,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     k=indik8(zk8(jfpgl),fami,1,nfpg)
     if (k .eq. 0) then
         if (arret .eq. ' ') then
-            goto 9998
+            goto 998
         else
             valk(1)=novrc
             valk(2)=fami
@@ -128,7 +129,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         iret=1
         if (arret .eq. ' ') then
             valvrc=rundf
-            goto 9999
+            goto 999
         else
             call tecael(iadzi, iazk24)
             nomail=zk24(iazk24-1+3)(1:8)
@@ -151,7 +152,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
             else
                 call tecach('NNN', 'PVARCMR', 'L', 7, itabm,&
                             iret)
-                if (iret .ne. 0) goto 9998
+                if (iret .ne. 0) goto 998
             endif
             km=iel
         endif
@@ -165,7 +166,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
             else
                 call tecach('NNN', 'PVARCPR', 'L', 7, itabp,&
                             iret)
-                if (iret .ne. 0) goto 9998
+                if (iret .ne. 0) goto 998
             endif
             kp=iel
         endif
@@ -179,7 +180,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
             else
                 call tecach('NNN', 'PVARCRR', 'L', 7, itabr,&
                             iret)
-                if (iret .ne. 0) goto 9998
+                if (iret .ne. 0) goto 998
             endif
             kr=iel
         endif
@@ -191,7 +192,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !
     if (poum .eq. 'REF') then
         nb2vrc=itabr(6)
-        if (nb2vrc .ne. nbcvrc) goto 9998
+        if (nb2vrc .ne. nbcvrc) goto 998
 !       NBPG=ITABR(3)
         nbsp=itabr(7)
 !       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
@@ -201,7 +202,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !
     else if (poum.eq.'+' .and. iredec.eq.0) then
         nb2vrc=itabp(6)
-        if (nb2vrc .ne. nbcvrc) goto 9998
+        if (nb2vrc .ne. nbcvrc) goto 998
 !       NBPG=ITABP(3)
         nbsp=itabp(7)
 !       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
@@ -211,7 +212,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !
     else if (poum.eq.'-' .and. iredec.eq.0) then
         nb2vrc=itabm(6)
-        if (nb2vrc .ne. nbcvrc) goto 9998
+        if (nb2vrc .ne. nbcvrc) goto 998
 !       NBPG=ITABM(3)
         nbsp=itabm(7)
 !       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
@@ -221,7 +222,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !
     else if (iredec.eq.1) then
         nb2vrc=itabm(6)
-        if (nb2vrc .ne. nbcvrc) goto 9998
+        if (nb2vrc .ne. nbcvrc) goto 998
 !       NBPG=ITABM(3)
         nbsp=itabm(7)
 !       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
@@ -230,7 +231,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         valvrm=zr(itabm(1) -1 + (kpgvrc-1)*nbcvrc + kcvrc)
 !
         nb2vrc=itabp(6)
-        if (nb2vrc .ne. nbcvrc) goto 9998
+        if (nb2vrc .ne. nbcvrc) goto 998
 !       NBPG=ITABP(3)
         nbsp=itabp(7)
 !       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
@@ -265,7 +266,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         if (novr8 .eq. 'TEMP') then
             valvrc=tdef
             iret=1
-            goto 9999
+            goto 999
         endif
         if (arret .eq. ' ') then
             valvrc=rundf
@@ -277,16 +278,16 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
             call utmess('F', 'CALCULEL4_69', nk=2, valk=valk)
         endif
     endif
-    goto 9999
+    goto 999
 !
 !
 !
 !
-9998  continue
+998  continue
     if (arret .eq. ' ') then
         valvrc=rundf
         iret=1
-        goto 9999
+        goto 999
     endif
     call tecael(iadzi, iazk24)
     vali(1)=nb2vrc
@@ -295,7 +296,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     call utmess('F', 'CALCULEL6_67', sk=valk(1), ni=2, vali=vali)
 !
 !
-9999  continue
+999  continue
 !
 !
 end subroutine

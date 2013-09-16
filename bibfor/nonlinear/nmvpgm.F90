@@ -162,7 +162,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     nomres(1)='E'
     nomres(2)='NU'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 2, nomres, valres, icodre, 2)
     em = valres(1)
     num = valres(2)
@@ -170,7 +170,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     troikm = em/(1.d0-2.d0*num)
     valpar(1)=instap
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 2, nomres, valres, icodre, 2)
     e = valres(1)
     nu = valres(2)
@@ -184,7 +184,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     nomres(3) = 'EPSI_01'
     nomres(4) = 'EPSI_02'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'GATT_MONERIE', 1, nompar, valpar,&
+                ' ', 'GATT_MONERIE', 1, nompar, [valpar],&
                 4, nomres, valres, icodre, 2)
     grain = valres(1)
     porom = vim(2)

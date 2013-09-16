@@ -41,7 +41,7 @@ subroutine te0285(option, nomte)
 !
     integer :: ndim, nno, nnos, kp, npg, i, j, k, lcastr, jgano
     integer :: ipoids, ivf, idfde, igeom, imate
-    real(kind=8) :: rho, xg, yg, depi, zero
+    real(kind=8) :: rho(1), xg, yg, depi, zero
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9)
     real(kind=8) :: matine(6), r8b, xxi, xyi, yyi, volume
     real(kind=8) :: ixrp2, iyrp2, xp(9), yp(9), xpg, ypg
@@ -64,9 +64,9 @@ subroutine te0285(option, nomte)
 !
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 0, ' ', r8b,&
+                        ' ', phenom, 0, ' ', [r8b],&
                         1, 'RHO', rho, icodre(1), 1)
-            if (rho .le. r8prem()) then
+            if (rho(1) .le. r8prem()) then
                 call utmess('F', 'ELEMENTS5_45')
             endif
             call jevech('PMASSINE', 'E', lcastr)
@@ -76,7 +76,7 @@ subroutine te0285(option, nomte)
     else if (option.eq.'CARA_GEOM') then
 !
 !       POUR LE CALCUL DES CARA_GEOM DE SECTION DE POUTRE RHO=1
-        rho=1.d0
+        rho(1)=1.d0
         call jevech('PCARAGE', 'E', lcastr)
     else
 !          OPTION DE CALCUL NON VALIDE
@@ -134,19 +134,19 @@ subroutine te0285(option, nomte)
     if (lteatt(' ','AXIS','OUI')) then
         xg = zero
         yg = zr(lcastr+2) / volume
-        zr(lcastr) = depi * volume * rho
+        zr(lcastr) = depi * volume * rho(1)
         zr(lcastr+3) = yg
         zr(lcastr+1) = zero
         zr(lcastr+2) = zero
 !
 !        --- ON DONNE LES INERTIES AU CDG ---
-        matine(6) = matine(3) * rho * depi
-        matine(1) = matine(1) * rho * depi + matine(6)/2.d0 - zr( lcastr)*yg*yg
+        matine(6) = matine(3) * rho(1) * depi
+        matine(1) = matine(1) * rho(1) * depi + matine(6)/2.d0 - zr( lcastr)*yg*yg
         matine(2) = zero
         matine(3) = matine(1)
 !
     else
-        zr(lcastr) = volume * rho
+        zr(lcastr) = volume * rho(1)
         zr(lcastr+1) = zr(lcastr+1) / volume
         zr(lcastr+2) = zr(lcastr+2) / volume
         zr(lcastr+3) = zero
@@ -154,9 +154,9 @@ subroutine te0285(option, nomte)
 !        --- ON DONNE LES INERTIES AU CDG ---
         xg = zr(lcastr+1)
         yg = zr(lcastr+2)
-        matine(1) = matine(1)*rho - zr(lcastr)*yg*yg
-        matine(2) = matine(2)*rho - zr(lcastr)*xg*yg
-        matine(3) = matine(3)*rho - zr(lcastr)*xg*xg
+        matine(1) = matine(1)*rho(1) - zr(lcastr)*yg*yg
+        matine(2) = matine(2)*rho(1) - zr(lcastr)*xg*yg
+        matine(3) = matine(3)*rho(1) - zr(lcastr)*xg*xg
         matine(6) = matine(1) + matine(3)
     endif
     zr(lcastr+4) = matine(1)

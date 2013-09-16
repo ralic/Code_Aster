@@ -34,7 +34,7 @@ subroutine te0065(option, nomte)
     integer :: nbres, nbfamx
 !-----------------------------------------------------------------------
     integer :: l, lcastr, ndim, nnos
-    real(kind=8) :: rho, xxi, yyi, zero, zzi
+    real(kind=8) :: rho(1), xxi, yyi, zero, zzi
 !-----------------------------------------------------------------------
     parameter   ( nbres = 3, nbfamx = 20 )
 !
@@ -70,7 +70,7 @@ subroutine te0065(option, nomte)
         endif
         tpg = 0.d0
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', tpg,&
+                    ' ', phenom, 0, ' ', [tpg],&
                     nbv, nomres, valres, icodre, 1)
         rhopou = valres(1)
 !
@@ -84,7 +84,7 @@ subroutine te0065(option, nomte)
         endif
         tpg = 0.d0
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', tpg,&
+                    ' ', phenom, 0, ' ', [tpg],&
                     nbv, nomres, valres, icodre, 1)
         rhoflu = valres(1)
 !
@@ -100,7 +100,7 @@ subroutine te0065(option, nomte)
         rapp = zr(lcorr+5)
         rapp = rapp * rapp / ycell
         yf = zr(lcorr+3)/ycell
-        rho = ( rhopou * ayz * rapp ) + ( rhoflu * yf )
+        rho(1) = ( rhopou * ayz * rapp ) + ( rhoflu * yf )
         call elref4(lielrf(1), 'RIGI', ndim, nno, nnos,&
                     npg, ipoids, ivf, idfde, jgano)
 !
@@ -109,9 +109,9 @@ subroutine te0065(option, nomte)
                     npg, ipoids, ivf, idfde, jgano)
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 0, ' ', r8b,&
+                        ' ', phenom, 0, ' ', [r8b],&
                         1, 'RHO', rho, icodre, 1)
-            if (rho .le. r8prem()) then
+            if (rho(1) .le. r8prem()) then
                 call utmess('F', 'ELEMENTS5_45')
             endif
         else
@@ -168,17 +168,17 @@ subroutine te0065(option, nomte)
     xg = zr(lcastr+1)/volume
     yg = zr(lcastr+2)/volume
     zg = zr(lcastr+3)/volume
-    zr(lcastr) = volume*rho
+    zr(lcastr) = volume*rho(1)
     zr(lcastr+1) = xg
     zr(lcastr+2) = yg
     zr(lcastr+3) = zg
 !
 !     ---ON DONNE LES INERTIES EN G ---
-    zr(lcastr+4) = matine(1)*rho - zr(lcastr)* (yg*yg+zg*zg)
-    zr(lcastr+5) = matine(3)*rho - zr(lcastr)* (xg*xg+zg*zg)
-    zr(lcastr+6) = matine(6)*rho - zr(lcastr)* (xg*xg+yg*yg)
-    zr(lcastr+7) = matine(2)*rho - zr(lcastr)* (xg*yg)
-    zr(lcastr+8) = matine(4)*rho - zr(lcastr)* (xg*zg)
-    zr(lcastr+9) = matine(5)*rho - zr(lcastr)* (yg*zg)
+    zr(lcastr+4) = matine(1)*rho(1) - zr(lcastr)* (yg*yg+zg*zg)
+    zr(lcastr+5) = matine(3)*rho(1) - zr(lcastr)* (xg*xg+zg*zg)
+    zr(lcastr+6) = matine(6)*rho(1) - zr(lcastr)* (xg*xg+yg*yg)
+    zr(lcastr+7) = matine(2)*rho(1) - zr(lcastr)* (xg*yg)
+    zr(lcastr+8) = matine(4)*rho(1) - zr(lcastr)* (xg*zg)
+    zr(lcastr+9) = matine(5)*rho(1) - zr(lcastr)* (yg*zg)
 !
 end subroutine

@@ -22,7 +22,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-! aslint: disable=W1306,W1504
+! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -93,7 +93,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     integer :: fisno(nnop, nfiss), ifiss
     real(kind=8) :: g, k1, k2, k3, coefk, coeff3, valres(3), alpha, he(nfiss)
     real(kind=8) :: devres(3), e, nu, lambda, mu, ka, c1, c2, c3, xg(ndim)
-    real(kind=8) :: fe(4), k3a
+    real(kind=8) :: fe(4), k3a, val(1)
     real(kind=8) :: dgdgl(4, 3), xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: eps(6), e1(3), e2(3), norme, e3(3), p(3, 3)
     real(kind=8) :: invp(3, 3), rg, tg, rbid1(4)
@@ -107,7 +107,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3), ur, r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref, tempg
     real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef
-    integer :: icodre(3), codrho
+    integer :: icodre(3), codrho(1)
     character(len=8) :: nomres(3), elrese(6), fami(6)
     character(len=16) :: phenom
     logical :: lcour, grdepl, axi
@@ -230,10 +230,11 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('XFEM', ipg, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', 0.d0,&
-                    1, 'RHO', rho, codrho, 0)
+                    ' ', phenom, 0, ' ', [0.d0],&
+                    1, 'RHO', val, codrho, 0)
+        rho=val(1)            
 !
-        if ((codrho.ne.0) .and. lmoda) then
+        if ((codrho(1).ne.0) .and. lmoda) then
             call utmess('F', 'RUPTURE1_26')
         endif
 !

@@ -1,7 +1,6 @@
 subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
                   ddlh, ddlc, nfe, basloc, nnop,&
                   npg, imate, lsn, lst, matuu)
-! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -64,12 +63,12 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !
 !
 !
-    integer :: retour
+    integer :: retour(1)
     integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret, ibid
     integer :: nno, nnos, npgbis, ddlt, ddld, cpt, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
 !
-    real(kind=8) :: f(3, 3), eps(6), rho
+    real(kind=8) :: f(3, 3), eps(6), rho(1)
     real(kind=8) :: fe(4), baslog(6)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: rbid1(10), rbid2(10)
@@ -184,9 +183,9 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !
 !       ON RECUPERE LA MASSE VOLUMIQUE
 !
-        call rccoma(imate, 'ELAS', 1, phenom, retour)
+        call rccoma(imate, 'ELAS', 1, phenom, retour(1))
         call rcvalb('RIGI', kpg, 1, '+', imate,&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', rho, retour, 1)
 !
 !
@@ -202,7 +201,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
                         endif
                         if (j .le. j1) then
                             kk = kkd + ddlt*(m-1)+j
-                            matuu(kk) = matuu(kk)+enr(n,i)*enr(m,j)* jac*rho
+                            matuu(kk) = matuu(kk)+enr(n,i)*enr(m,j)* jac*rho(1)
                         endif
 !
 241                  continue

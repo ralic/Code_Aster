@@ -80,13 +80,13 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
 ! MEM DFDI2   :
 ! ----------------------------------------------------------------------
 !
-    integer :: k2, kpg, spt
+    integer :: k2(1), kpg, spt
     character(len=8) :: fami, poum
 !
     logical :: resi, rigi, grand, axi
     integer :: ndimsi, nddl, g, cod(27), n, i, m, j, kl, pq, os, kk
     integer :: iu(3, 27), ie(6, 8)
-    real(kind=8) :: rac2, lc, c, deplm(3*27), depld(3*27), dfdi1(27, 3)
+    real(kind=8) :: rac2, lc(1), c, deplm(3*27), depld(3*27), dfdi1(27, 3)
     real(kind=8) :: r, wg, epsgm(6, 2), epsgd(6, 2), gepsm(6, 3), geps(6, 3)
     real(kind=8) :: f(3, 3)
     real(kind=8) :: b(6, 3, 27), de(6), sigma(6), dsidep(6, 6, 2), t1, t2
@@ -111,9 +111,9 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', 'NON_LOCAL', 0, ' ', 0.d0,&
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
                 1, 'LONG_CAR', lc, k2, 1)
-    c = lc**2
+    c = lc(1)**2
     do 5 g = 1, npg
         cod(g)=0
  5  end do

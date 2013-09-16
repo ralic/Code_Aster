@@ -46,8 +46,8 @@ subroutine te0583(option, nomte)
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
     real(kind=8) :: hk, poids, rayon, theta, tk(4), ck, sk
     real(kind=8) :: cosfi, sinfi, te, pgl4(3, 3), fpesa4(6), xpg(4)
-    real(kind=8) :: r8b, rext, sec, rho, r, time, valpar(4)
-    integer :: codres, kpg, spt
+    real(kind=8) :: r8b, rext, sec, rho(1), r, time, valpar(4)
+    integer :: codres(1), kpg, spt
     character(len=8) :: nompar(4), fami, poum
     character(len=16) :: phenom
     integer :: nbcou, nbsec, m, lorien, icoude
@@ -232,7 +232,7 @@ subroutine te0583(option, nomte)
         do 250 iter = 1, niter
             if (option .eq. 'CHAR_MECA_PESA_R') then
                 call jevech('PMATERC', 'L', lmater)
-                call rccoma(zi(lmater), 'ELAS', 1, phenom, codres)
+                call rccoma(zi(lmater), 'ELAS', 1, phenom, codres(1))
                 if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq.&
                     'ELAS_ORTH') then
                     fami='FPG1'
@@ -240,7 +240,7 @@ subroutine te0583(option, nomte)
                     spt=1
                     poum='+'
                     call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                                ' ', phenom, 0, ' ', r8b,&
+                                ' ', phenom, 0, ' ', [r8b],&
                                 1, 'RHO', rho, codres, 1)
                 else
                     call utmess('F', 'ELEMENTS4_43')
@@ -248,7 +248,7 @@ subroutine te0583(option, nomte)
                 call jevech('PPESANR', 'L', jpesa)
                 pesan = zr(jpesa)
                 do 100 i = 1, 3
-                    vpesan(i) = rho*pesan*zr(jpesa+i)
+                    vpesan(i) = rho(1)*pesan*zr(jpesa+i)
 100              continue
                 do 110 i = 4, 6
                     vpesan(i) = 0.d0

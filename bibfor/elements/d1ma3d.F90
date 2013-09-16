@@ -99,7 +99,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----   ET DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e = valres(1)
@@ -145,7 +145,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----   ET DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -209,7 +209,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----   ET DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)

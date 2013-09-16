@@ -21,7 +21,6 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
 ! --- BUT : CALCUL DE LA LOI DE COMPORTEMENT ELASTIQUE POUR LA PARTIE --
 ! ---       SECOND GRADIENT --------------------------------------------
 ! ======================================================================
-! aslint: disable=W1306
     implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -57,7 +56,7 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
             id(p,p)=1.0d0
 30      continue
         call rcvalb(fami, kpg, spt, poum, imate,&
-                    ' ', 'ELAS_2NDG', 0, ' ', 0.0d0,&
+                    ' ', 'ELAS_2NDG', 0, ' ', [0.0d0],&
                     5, ncra(1), val(1), icodre(1), 1)
 !
         do 50 p = 1, ndim

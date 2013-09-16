@@ -30,10 +30,10 @@ subroutine te0325(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     integer :: icodre(1), kpg, spt
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
@@ -48,7 +48,7 @@ subroutine te0325(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, iacce, idim, ino, itemp, j, jno
     integer :: k, mater
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfdx, jgano)
@@ -64,7 +64,7 @@ subroutine te0325(option, nomte)
     poum='+'
     mater = zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'THER', 0, ' ', r8b,&
+                ' ', 'THER', 0, ' ', [r8b],&
                 1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then
@@ -159,8 +159,8 @@ subroutine te0325(option, nomte)
         flufn(ipg) = acc(1,ipg)*norm(1) + acc(2,ipg)*norm(2) +acc(3, ipg)*norm(3)
 !
         do 103 i = 1, nno
-            zr(ivectt+i-1) = zr(ivectt+i-1) + jac*zr(ipoids+ipg-1)* flufn(ipg) * rho * zr(ivf+lde&
-                             &c+i-1)
+            zr(ivectt+i-1) = zr(ivectt+i-1) + jac*zr(ipoids+ipg-1)* flufn(ipg) * rho(1) *&
+                             zr(ivf+ldec+i-1)
 103      continue
 101  end do
 !

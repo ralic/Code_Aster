@@ -20,8 +20,8 @@ subroutine granac(fami, kpg, ksp, icdmat, materi,&
 !     RECUPERATION DES CARACTERISTIQUES DE GRANDISSEMENT
     implicit none
 #include "asterfort/rcvalb.h"
-    integer :: icdmat, kpg, ksp, nbpar, codret
-    real(kind=8) :: irram, irrap, tm, tp, valres
+    integer :: icdmat, kpg, ksp, nbpar, codret(1)
+    real(kind=8) :: irram, irrap, tm, tp, valres(1)
     real(kind=8) :: depsgm, depsgp, depsgr, valpar(2)
     character(len=8) :: materi, nomgrd, nompar(2)
     character(len=16) :: compo
@@ -42,7 +42,7 @@ subroutine granac(fami, kpg, ksp, icdmat, materi,&
             call rcvalb(fami, kpg, ksp, '+', icdmat,&
                         materi, compo, nbpar, nompar, valpar,&
                         1, nomgrd, valres, codret, 0)
-            depsgm = valres
+            depsgm = valres(1)
         else
             depsgm = 0.0d0
         endif
@@ -54,7 +54,7 @@ subroutine granac(fami, kpg, ksp, icdmat, materi,&
             call rcvalb(fami, kpg, ksp, '+', icdmat,&
                         materi, compo, nbpar, nompar, valpar,&
                         1, nomgrd, valres, codret, 0)
-            depsgp = valres
+            depsgp = valres(1)
         else
             depsgp = 0.0d0
         endif

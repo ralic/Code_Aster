@@ -74,7 +74,7 @@ subroutine te0027(option, nomte)
     real(kind=8) :: prod, prod1, prod2, divt, valpar(4)
     real(kind=8) :: tcla, tthe, tfor, tplas, tini, poids, rbid
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4), dvdm(3, 4)
-    real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho, om, omo
+    real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho(1), om, omo
     real(kind=8) :: ecin, prod3, prod4, accele(3), e(1), nu(1), mu
 !
     logical :: grand, fonc, incr, epsini
@@ -227,7 +227,7 @@ subroutine te0027(option, nomte)
     if (ivites .ne. 0) then
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', matcod,&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre(1), 1)
     endif
 !
@@ -236,13 +236,13 @@ subroutine te0027(option, nomte)
     if ((ipesa.ne.0) .or. (irota.ne.0)) then
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', matcod,&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre(1), 1)
         if (ipesa .ne. 0) then
             do 150 i = 1, nno
                 do 140 j = 1, ndim
                     kk = ndim* (i-1) + j
-                    fno(kk) = fno(kk) + rho*zr(ipesa)*zr(ipesa+j)
+                    fno(kk) = fno(kk) + rho(1)*zr(ipesa)*zr(ipesa+j)
 140              continue
 150          continue
         endif
@@ -255,7 +255,7 @@ subroutine te0027(option, nomte)
 160              continue
                 do 170 j = 1, ndim
                     kk = ndim* (i-1) + j
-                    fno(kk) = fno(kk) + rho*om*om* (zr(igeom+kk-1)- omo*zr(irota+j))
+                    fno(kk) = fno(kk) + rho(1)*om*om* (zr(igeom+kk-1)- omo*zr(irota+j))
 170              continue
 180          continue
         endif
@@ -531,9 +531,9 @@ subroutine te0027(option, nomte)
                     prod4 = prod4 + dvdm(j1,4)*dvdm(j1,j2)*dtdm(j2,4)
 497              continue
 496          continue
-            ecin = 0.5d0*rho*ecin
-            prod3 = rho*prod3
-            prod4 = rho*prod4
+            ecin = 0.5d0*rho(1)*ecin
+            prod3 = rho(1)*prod3
+            prod4 = rho(1)*prod4
         endif
 !
         prod = 0.d0

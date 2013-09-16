@@ -116,7 +116,7 @@ subroutine dibili(option, nomte, ndim, nbt, nno,&
     endif
     valpar(:) = 0.0d0
     call rcvalb('FPG1', 1, 1, '+', zi(imat),&
-                ' ', 'DIS_BILI_ELAS', 1, 'TEMP', temper,&
+                ' ', 'DIS_BILI_ELAS', 1, 'TEMP', [temper],&
                 nbpart, nompar, valpar, codret, 0)
 !   les caractéristiques sont toujours dans le repère local on fait seulement une copie
     call dcopy(nbt, zr(jdc), 1, klv, 1)

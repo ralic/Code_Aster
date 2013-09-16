@@ -18,7 +18,6 @@ subroutine te0434(option, nomte)
 ! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -30,6 +29,7 @@ subroutine te0434(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/terefe.h"
 #include "asterfort/verift.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE CHARGEMENT :
@@ -52,7 +52,7 @@ subroutine te0434(option, nomte)
     integer :: ipoids, ivf, idfde, jgano
     integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
-    real(kind=8) :: alpha, beta, rho, rig(3, 3)
+    real(kind=8) :: alpha, beta, rho(1), rig(3, 3)
     real(kind=8) :: epsthe, epsref, sgmref, sig(3)
 !
     materi = ' '
@@ -183,22 +183,21 @@ subroutine te0434(option, nomte)
 !
             do 200 n = 1, nno
                 do 200 i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sgmref*sqrt(abs(jac)&
-                                                )/npg
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + &
+                                                sgmref*sqrt(abs(jac))/npg
 200              continue
 !
 ! - CHAR_MECA_PESA_R
 !
         else if (option.eq.'CHAR_MECA_PESA_R') then
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS_MEMBRANE', 0, ' ', 0.d0,&
+                        ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
                         1, 'RHO', rho, codres, 1)
             do 300 n = 1, nno
                 do 300 i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1) = zr(&
-                                                ivectu+(n-1)*nddl+ i-1) + rho*zr(ipesa)*zr(ipesa+&
-                                                &i) *vff(n)*zr( ipoids+kpg-1&
-                                                )*jac
+                                                ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)*&
+                                                zr(ipesa+i) *vff(n)*zr( ipoids+kpg-1)*jac
 300              continue
         endif
 !

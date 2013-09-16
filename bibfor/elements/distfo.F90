@@ -1,7 +1,7 @@
 function distfo(zimat, kfonc, xx, yy, normx,&
                 normy)
 !
-    implicit  none
+    implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,9 +36,9 @@ function distfo(zimat, kfonc, xx, yy, normx,&
 !
     real(kind=8) :: distfo, xx, yy, normx, normy, x0, y0
     real(kind=8) :: xi, yi, xm1, res, ym1, rp, dym1, tol
-    real(kind=8) :: xm2, ym2, dyi
+    real(kind=8) :: xm2, ym2, dyi, val(1)
 !
-    integer :: codres
+    integer :: codres(1)
     character(len=8) :: kfonc, fami, poum
     character(len=16) :: phenom
 !
@@ -62,8 +62,9 @@ function distfo(zimat, kfonc, xx, yy, normx,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zimat,&
-                ' ', phenom, 1, 'X ', xi,&
-                1, kfonc, yi, codres, 1)
+                ' ', phenom, 1, 'X ', [xi],&
+                1, kfonc, val, codres, 1)
+    yi=val(1)            
     call cdnfon(zimat, kfonc, xi, 1, dyi,&
                 ier)
     yi = yi/ normy
@@ -87,8 +88,9 @@ function distfo(zimat, kfonc, xx, yy, normx,&
     xi = xi* normx
 !
     call rcvalb(fami, kpg, spt, poum, zimat,&
-                ' ', phenom, 1, 'X ', xi,&
-                1, kfonc, yi, codres, 1)
+                ' ', phenom, 1, 'X ', [xi],&
+                1, kfonc, val, codres, 1)
+    yi=val(1)                 
     call cdnfon(zimat, kfonc, xi, 1, dyi,&
                 ier)
 !

@@ -209,10 +209,10 @@ subroutine te0512(option, nomte)
 ! ----------------------------------------------------------------------
     do 60 igau = 1, npg
         call rcvalb(fami, igau, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     nbres, nomres, valres, codres, 1)
         call rcvalb(fami, igau, 1, '+', zi(imate),&
-                    ' ', phenm2, 0, ' ', 0.d0,&
+                    ' ', phenm2, 0, ' ', [0.d0],&
                     nbres2, nomre2, valre2, codre2, 1)
 !
         ts = valre2(1)

@@ -125,7 +125,7 @@ subroutine te0141(option, nomte)
             mator = ' '
         endif
         call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                    mator, 'ELAS_FLUI', 1, 'ABSC', absmoy,&
+                    mator, 'ELAS_FLUI', 1, 'ABSC', [absmoy],&
                     nbres, nomres, valres, codres, 1)
         e = valres(1)
         xnu = valres(2)
@@ -146,7 +146,7 @@ subroutine te0141(option, nomte)
     .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA') then
         if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
             call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                        ' ', 'ELAS', nbpar, nompar, valpar,&
+                        ' ', 'ELAS', nbpar, nompar, [valpar],&
                         3, nomres, valres, codres, 1)
             e = valres(1)
             xnu = valres(2)

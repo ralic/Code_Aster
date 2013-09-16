@@ -1,5 +1,5 @@
 subroutine te0144(option, nomte)
-    implicit  none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
@@ -93,7 +93,7 @@ subroutine te0144(option, nomte)
                 iret1)
 !
     call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                ' ', 'ELAS', 1, 'TEMP', temp,&
+                ' ', 'ELAS', 1, 'TEMP', [temp],&
                 2, nomres, valres, codres, 1)
     e = valres(1)
     xnu = valres(2)

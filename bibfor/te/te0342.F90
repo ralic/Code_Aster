@@ -95,7 +95,7 @@ subroutine te0342(option, nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call rcvalb('RIGI', npg, 1, '+', zi(lmater),&
-                ' ', 'ELAS', nbpar, nompar, valpar,&
+                ' ', 'ELAS', nbpar, nompar, [valpar],&
                 nbres, nomres, valres, codres, 1)
 !
     e = valres(1)

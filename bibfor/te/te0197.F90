@@ -42,14 +42,14 @@ subroutine te0197(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     real(kind=8) :: dfdx(9), dfdy(9), poids, r
     integer :: nno, kp, npg1, i, ndim, jgano, nnos
     integer :: ipoids, ivf, idfde, kpg, spt
     integer :: j_geom, j_rota, j_vect, j_mate
     integer :: k
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ subroutine te0197(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(j_mate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
 ! - Computation
@@ -111,7 +111,7 @@ subroutine te0197(option, nomte)
         do i = 1, nno
             r = r + zr(j_geom+2*(i-1))*zr(ivf+k+i-1)
         end do
-        poids = poids*rho*r
+        poids = poids*rho(1)*r
         r = r - rota_cent(1)
         do i = 1, nno
             k=(kp-1)*nno

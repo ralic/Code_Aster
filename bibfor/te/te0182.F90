@@ -30,15 +30,15 @@ subroutine te0182(option, nomte)
     implicit none
 !*
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
-    integer :: icodre, kpg, spt
+!
+    integer :: icodre(1), kpg, spt
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
-    real(kind=8) :: rho
+    real(kind=8) :: rho(1)
     complex(kind=8) :: rhosz
     integer :: ipoids, ivf, idfdx, idfdy, igeom, imate
     integer :: ndim, nno, ndi, ipg, imattt
@@ -69,7 +69,7 @@ subroutine te0182(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 10 i = 1, ndi
@@ -79,7 +79,7 @@ subroutine te0182(option, nomte)
 !**
     rhosz= (0.0d0,0.0d0)
     if (zc(iimp) .ne. (0.d0,0.d0)) then
-        rhosz= rho/zc(iimp)
+        rhosz= rho(1)/zc(iimp)
     else
         goto 120
     endif

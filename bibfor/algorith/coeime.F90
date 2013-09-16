@@ -5,8 +5,8 @@ subroutine coeime(meca, imate, nomail, option, resi,&
                   defgep, defgem, sigm, sigp, varim,&
                   varip, ouvh, tlint, drde, kpi,&
                   vicphi, unsurn, retcom)
+! aslint: disable=W1504
 !
-!======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,6 @@ subroutine coeime(meca, imate, nomail, option, resi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
-!
-! aslint: disable=W1306,W1504
     implicit none
 !
 ! VARIABLES D'ENTREE
@@ -144,7 +141,7 @@ subroutine coeime(meca, imate, nomail, option, resi,&
             unsurn=0.d0
         else
             call rcvalb(fami, kpg, spt, poum, imate,&
-                        ' ', 'THM_RUPT', 0, ' ', 0.d0,&
+                        ' ', 'THM_RUPT', 0, ' ', [0.d0],&
                         2, ncra(1), para(1), icodre, 1)
             ouvfic = para(1)
             unsurn = para(2)
@@ -212,7 +209,7 @@ subroutine coeime(meca, imate, nomail, option, resi,&
 ! - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
 !
         call rcvalb(fami, kpg, spt, poum, imate,&
-                    ' ', 'THM_RUPT', 0, ' ', 0.d0,&
+                    ' ', 'THM_RUPT', 0, ' ', [0.d0],&
                     2, ncra(1), para(1), icodre, 1)
         ouvfic = para(1)
         unsurn = para(2)

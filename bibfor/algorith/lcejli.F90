@@ -20,7 +20,6 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 ! ======================================================================
 ! person_in_charge: jerome.laverne at edf.fr
 !
-! aslint: disable=W1306
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -79,7 +78,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
     endif
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'RUPT_FRAG', 0, ' ', 0.d0,&
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
                 4, nom, val, cod, 2)
 !
     gc = val(1)

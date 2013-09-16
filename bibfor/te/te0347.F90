@@ -188,7 +188,7 @@ subroutine te0347(option, nomte)
                 nomres(1) = 'E'
                 nomres(2) = 'NU'
                 call rcvalb(fami, 1, 1, '+', zi(imate),&
-                            ' ', 'ELAS', 1, 'TEMP', temp,&
+                            ' ', 'ELAS', 1, 'TEMP', [temp],&
                             2, nomres, valres, iret, 1)
                 e = valres(1)
                 nu = valres(2)

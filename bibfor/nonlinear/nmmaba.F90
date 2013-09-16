@@ -101,7 +101,7 @@ subroutine nmmaba(icodma, compor, e, dsde, sigy,&
 !
     nbres = 2
     call rcvalb(fami, 1, 1, '+', icodma,&
-                ' ', 'ELAS', nbpar, nompar, valpar,&
+                ' ', 'ELAS', nbpar, nompar, [valpar],&
                 1, nomela, valres, codres, 1)
     e = valres(1)
 !
@@ -117,10 +117,10 @@ subroutine nmmaba(icodma, compor, e, dsde, sigy,&
         nompar = '  '
         valpar = 0.d0
         call rcvalb(fami, 1, 1, '+', icodma,&
-                    ' ', 'ECRO_LINE', nbpar, nompar, valpar,&
+                    ' ', 'ECRO_LINE', nbpar, nompar, [valpar],&
                     1, nomecl, valres, codres, 1)
         call rcvalb(fami, 1, 1, '+', icodma,&
-                    ' ', 'ECRO_LINE', nbpar, nompar, valpar,&
+                    ' ', 'ECRO_LINE', nbpar, nompar, [valpar],&
                     1, nomecl(2), valres(2), codres(2), 0)
         if (codres(2) .ne. 0) valres(2) = 0.d0
         dsde = valres(1)
@@ -140,7 +140,7 @@ subroutine nmmaba(icodma, compor, e, dsde, sigy,&
         valpar = 0.d0
 !
         call rcvalb(fami, 1, 1, '+', icodma,&
-                    ' ', 'PINTO_MENEGOTTO', nbpar, nompar, valpar,&
+                    ' ', 'PINTO_MENEGOTTO', nbpar, nompar, [valpar],&
                     nbres, nompim, valres, codres, 0)
         if (codres(7) .ne. 0) valres(7) = -1.d0
         cstpm(1) =e

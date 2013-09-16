@@ -86,7 +86,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 ! === ===========
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materd(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
     if (cerr(4) .ne. 0) materd(4,1) = 0.d0
@@ -97,7 +97,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 ! === ===========
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materf(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
     if (cerr(4) .ne. 0) materf(4,1) = 0.d0
@@ -116,7 +116,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 ! === ===========
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomc(6), materd(6, 1), cerr(6), 0)
     if (cerr(6) .ne. 0) then
         call utmess('F', 'ALGORITH4_94')
@@ -127,7 +127,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 ! === ===========
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomc(6), materf(6, 1), cerr(6), 0)
     if (cerr(6) .ne. 0) then
         call utmess('F', 'ALGORITH4_94')
@@ -152,7 +152,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 ! === =================
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'BETON_BURGER_FP', 0, ' ', 0.d0,&
+                ' ', 'BETON_BURGER_FP', 0, ' ', [0.d0],&
                 7, nomc(7), materd(1, 2), cerr(7), 0)
 !
     do 10 ii = 1, 7
@@ -172,7 +172,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 ! === =================
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'BETON_BURGER_FP', 0, ' ', 0.d0,&
+                ' ', 'BETON_BURGER_FP', 0, ' ', [0.d0],&
                 1, nomc(14), materd(8, 2), cerr(14), 0)
     if (cerr(8) .ne. 0) then
         materd(8,2) = -1.d0

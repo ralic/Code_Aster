@@ -17,15 +17,15 @@ subroutine dilpen(imate, rpena)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    implicit  none
+    implicit none
 #include "asterfort/rcvalb.h"
     integer :: imate
     real(kind=8) :: rpena
 ! ======================================================================
 ! --- BUT : RECUPERATION DU COEFFICIENT DE PENALISATION ----------------
 ! ======================================================================
-    real(kind=8) :: val
-    integer :: icodre, kpg, spt
+    real(kind=8) :: val(1)
+    integer :: icodre(1), kpg, spt
     character(len=8) :: ncra, fami, poum
 ! ======================================================================
 ! --- DEFINITION DES DONNEES INITIALES ---------------------------------
@@ -35,10 +35,10 @@ subroutine dilpen(imate, rpena)
     kpg=1
     spt=1
     poum='+'
-    val = 0.0d0
+    val(1) = 0.0d0
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'NON_LOCAL', 0, ' ', 0.0d0,&
+                ' ', 'NON_LOCAL', 0, ' ', [0.0d0],&
                 1, ncra, val, icodre, 0)
-    rpena = val
+    rpena = val(1)
 ! ======================================================================
 end subroutine

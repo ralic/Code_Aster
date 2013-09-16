@@ -34,7 +34,7 @@ subroutine lcerma(mat, fami, kpg, ksp, poum)
     integer :: nbel, nber, nbnl
     parameter (nbel=2,nber=6,nbnl=2)
     integer :: iok(nbel+nber+nbnl)
-    real(kind=8) :: valel(nbel), valer(nber), valnl(nbnl), alpha, temp, tref
+    real(kind=8) :: valel(nbel), valer(nber), valnl(nbnl), alpha(1), temp, tref
     real(kind=8) :: coef
     real(kind=8) :: e, nu, cc, cv
     character(len=8) :: nomel(nbel), nomer(nber), nomnl(nbnl)
@@ -56,13 +56,13 @@ subroutine lcerma(mat, fami, kpg, ksp, poum)
 ! - LECTURE DES PARAMETRES MECANIQUES
 !
     call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 nbel, nomel, valel, iok, 2)
     call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'NON_LOCAL', 0, ' ', 0.d0,&
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
                 nbnl, nomnl, valnl, iok, 2)
     call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'ENDO_SCALAIRE', 0, ' ', 0.d0,&
+                ' ', 'ENDO_SCALAIRE', 0, ' ', [0.d0],&
                 nber, nomer, valer, iok, 2)
 !
     pc = valnl(1)
@@ -90,22 +90,22 @@ subroutine lcerma(mat, fami, kpg, ksp, poum)
 !
     if (fami .eq. 'NONE') then
         epsth = 0.d0
-        goto 9999
+        goto 999
     endif
 !
     call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'ALPHA', alpha, iok, 0)
 !
     if (iok(1) .eq. 0) then
         call rcvarc('F', 'TEMP', 'REF', fami, kpg,&
-                    ksp, tref, iok)
+                    ksp, tref, iok(1))
         call rcvarc('F', 'TEMP', poum, fami, kpg,&
-                    ksp, temp, iok)
-        epsth = alpha*(temp-tref)
+                    ksp, temp, iok(1))
+        epsth = alpha(1)*(temp-tref)
     else
         epsth = 0
     endif
 !
-9999  continue
+999  continue
 end subroutine

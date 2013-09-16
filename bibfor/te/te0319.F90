@@ -68,7 +68,7 @@ subroutine te0319(option, nomte)
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     1, nomres, valres, icodre, 1)
         lambda = valres(1)
         aniso = .false.
@@ -77,7 +77,7 @@ subroutine te0319(option, nomte)
         nomres(2) = 'LAMBDA_T'
         nomres(3) = 'LAMBDA_N'
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     3, nomres, valres, icodre, 1)
         lambor(1) = valres(1)
         lambor(2) = valres(2)
@@ -145,8 +145,9 @@ subroutine te0319(option, nomte)
 !
         if (phenom .eq. 'THER_NL') then
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'TEMP', tpg,&
-                        1, 'LAMBDA', lambda, icodre, 1)
+                        ' ', phenom, 1, 'TEMP', [tpg],&
+                        1, 'LAMBDA', valres, icodre, 1)
+            lambda = valres(1)
         endif
 !
         if (.not.aniso) then

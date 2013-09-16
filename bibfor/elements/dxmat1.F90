@@ -44,7 +44,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
     integer :: nbpar
     real(kind=8) :: cdf, cdm, valres(56)
     real(kind=8) :: young, nu, epais, valpar
-    real(kind=8) :: xab1(3, 3), dh(3, 3)
+    real(kind=8) :: dh(3, 3)
     real(kind=8) :: dx, dy, dz, norm
     real(kind=8) :: ps, pjdx, pjdy, pjdz, alphat
     real(kind=8) :: alpha, beta
@@ -106,10 +106,10 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
 !        ------ MATERIAU ISOTROPE ------------------------------------
 !
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(3), valres(3), icodre(3), 0)
         if ((icodre(3).ne.0) .or. (valres(3).eq.0.d0)) then
             indith = -1

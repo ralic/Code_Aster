@@ -159,7 +159,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     nomres(1)='E'
     nomres(2)='NU'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 2, nomres, valres, icodre, 2)
     em = valres(1)
     num = valres(2)
@@ -167,7 +167,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     troikm = em/(1.d0-2.d0*num)
     valpar(1)=instap
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 2, nomres, valres, icodre, 2)
     e = valres(1)
     nu = valres(2)
@@ -181,7 +181,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     nompar(1) = 'TEMP'
     valpar(1) = tschem
     call rcvalb(fami, 1, 1, '+', imate,&
-                ' ', 'LEMAITRE', 1, nompar, valpar,&
+                ' ', 'LEMAITRE', 1, nompar, [valpar],&
                 3, nomres, valres, icodre, 2)
     valden = valres(1)
     unsurk = valres(2)

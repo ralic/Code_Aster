@@ -48,7 +48,7 @@ subroutine nmasse(fami, kpg, ksp, poum, icodma,&
     nomres(2)='NU'
 !
     call rcvalb(fami, kpg, ksp, poum, icodma,&
-                materi, 'ELAS', 1, nompar, valpar,&
+                materi, 'ELAS', 1, nompar, [valpar],&
                 2, nomres, valres, icodre, 2)
 !
     e = valres(1)

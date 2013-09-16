@@ -1,7 +1,6 @@
 subroutine te0292(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -12,6 +11,7 @@ subroutine te0292(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/uthk.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -138,7 +138,7 @@ subroutine te0292(option, nomte)
 102      continue
 !
         call rcvalb(fami, kp, 1, '+', mater,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 1)
         e = valres(1)
         nu = valres(2)

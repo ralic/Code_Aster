@@ -193,11 +193,11 @@ subroutine te0334(option, nomte)
         valpar = zr(itemps)
 !
         call rcvalb('RIGI', igau, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 1, nompar, valpar,&
+                    ' ', 'ELAS', 1, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
 !
         call rcvalb('RIGI', igau, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 1, nompar, valpar,&
+                    ' ', 'ELAS', 1, nompar, [valpar],&
                     1, nomres(3), valres(3), icodre(3), 0)
 !
         e = valres(1)

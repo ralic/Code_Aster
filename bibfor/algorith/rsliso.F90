@@ -38,10 +38,8 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
     character(len=8) :: type
 !       ----------------------------------------------------------------
 ! --  TEMPERATURE
-    call rcvarc(' ', 'TEMP', poum, fami, kpg,&
-                ksp, temp, iret)
-    call rctype(imat, 1, 'TEMP', temp, resu,&
-                type)
+    call rcvarc(' ', 'TEMP', poum, fami, kpg, ksp, temp, iret)
+    call rctype(imat, 1, 'TEMP', [temp], resu, type)
     if ((type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'CALCULEL_31')
     endif

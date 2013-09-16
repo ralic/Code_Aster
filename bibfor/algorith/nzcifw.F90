@@ -74,7 +74,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
     real(kind=8) :: dt
 !
     real(kind=8) :: epsth, e, deuxmu, deumum, troisk
-    real(kind=8) :: fmel, sy(5), symoy, h(5), hmoy, rprim
+    real(kind=8) :: fmel(1), sy(5), symoy, h(5), hmoy, rprim
     real(kind=8) :: theta(8)
     real(kind=8) :: eta(5), n(5), unsurn(5), c(5), m(5), cmoy, mmoy, cr
     real(kind=8) :: dz(4), dz1(4), dz2(4), vi(30), dvin, vimt(30)
@@ -111,7 +111,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
 !
     materi = ' '
-
+!
     if (ndim .eq. 2) then
         ndimsi=4
     else
@@ -193,12 +193,12 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
     nomres(6)='EPSF_EPSC_TREF'
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
     deumum = valres(1)/(1.d0+valres(2))
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                ' ', 'ELAS_META', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
     epsth = phase(nz)*(epsthe(1)-(1.d0-valres(5))*valres(6)) + zalpha*(epsthe(2) + valres(5)*valr&
             &es(6))
@@ -231,14 +231,14 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
         endif
 !
         call rcvalb(fami, 1, 1, '+', imat,&
-                    ' ', 'ELAS_META', 1, 'META', zalpha,&
+                    ' ', 'ELAS_META', 1, 'META', [zalpha],&
                     1, nomres(6), fmel, icodre(6), 0)
-        if (icodre(6) .ne. 0) fmel = zalpha
+        if (icodre(6) .ne. 0) fmel(1) = zalpha
 !
 ! 2.3 - LIMITE D ELASTICITE
 !
         call rcvalb(fami, kpg, ksp, c1, imat,&
-                    ' ', 'ELAS_META', 0, ' ', 0.d0,&
+                    ' ', 'ELAS_META', 0, ' ', [0.d0],&
                     5, nomres, sy, icodre, 2)
 !
 ! 2.4 - PENTE D ECROUISSAGE
@@ -250,7 +250,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
         nomres(5) ='C_D_SIGM_EPSI'
 !
         call rcvalb(fami, kpg, ksp, c1, imat,&
-                    ' ', 'META_ECRO_LINE', 0, ' ', 0.d0,&
+                    ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
                     5, nomres, h, icodre, 2)
 !
         h(1)=(2.d0/3.d0)*h(1)*e/(e-h(1))
@@ -282,7 +282,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
                 nomres(8) ='F4_C_THETA'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_RE', 0, '  ', 0.d0,&
+                            ' ', 'META_RE', 0, '  ', [0.d0],&
                             8, nomres, theta, icodre, 2)
 !
             else
@@ -322,11 +322,11 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
                 nomres(20) = 'C_M'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_VISC', 0, ' ', 0.d0,&
+                            ' ', 'META_VISC', 0, ' ', [0.d0],&
                             10, nomres, valres, icodre, 2)
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_VISC', 0, ' ', 0.d0,&
+                            ' ', 'META_VISC', 0, ' ', [0.d0],&
                             10, nomres(11), valres(11), icodre(11), 0)
 !
                 do 40 k = 1, nz
@@ -455,7 +455,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
                 nomres(8) = 'F4_D_F_META'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
-                            ' ', 'META_PT', 0, ' ', 0.d0,&
+                            ' ', 'META_PT', 0, ' ', [0.d0],&
                             4, nomres, valres, icodre, 2)
 !
                 do 125 k = 1, nz-1
@@ -466,7 +466,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
                     if (deltaz .gt. 0.d0) then
                         j = 4+k
                         call rcvalb(fami, 1, 1, '+', imat,&
-                                    ' ', 'META_PT', 1, 'META', zalpha,&
+                                    ' ', 'META_PT', 1, 'META', [zalpha],&
                                     1, nomres(j), valres(j), icodre( j), 2)
                         trans = trans + kpt(k)*valres(j)*(zvarip- zvarim)
                     endif
@@ -504,7 +504,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
         else
             symoy = 0.d0
         endif
-        symoy =(1.d0-fmel)*sy(nz)+fmel*symoy
+        symoy =(1.d0-fmel(1))*sy(nz)+fmel(1)*symoy
 !
     else
 !
@@ -676,10 +676,10 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
                             do 240 k = 1, nz
                                 n0(k) = (1-n(k))/n(k)
 240                          continue
-                            dv = (1-fmel)*phase(nz)*(eta(nz)/n(nz)/dt) * ((dp/dt)**n0(nz))
+                            dv = (1-fmel(1))*phase(nz)*(eta(nz)/n(nz)/dt) * ((dp/dt)**n0(nz))
                             if (zalpha .gt. 0.d0) then
                                 do 245 k = 1, nz-1
-                                    if (phase(k) .gt. 0.d0) dv = dv+ fmel*(&
+                                    if (phase(k) .gt. 0.d0) dv = dv+ fmel(1)*(&
                                                                  phase(k)/zalpha) * (eta(k)/ n(k)&
                                                                  &/dt)*((dp/dt)**n0(k)&
                                                                  )

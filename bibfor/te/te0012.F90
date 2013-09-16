@@ -52,7 +52,7 @@ subroutine te0012(option, nomte)
     character(len=4) :: fami
     character(len=1) :: stopz(3)
     real(kind=8) :: a(3, 3, 27, 27), matp(81, 81), matv(3321)
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, rho
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, rho(1)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jgano, nno, kp, i, j, k, imatuu, iacce, ivect
     integer :: ijkl, ik, l, ndim, npg, nddl, nvec
@@ -98,11 +98,11 @@ subroutine te0012(option, nomte)
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     dfdx, dfdy, dfdz, poids)
         call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', rho, icodre(1), 1)
         do 80 i = 1, nno
             do 70 j = 1, i
-                a(1,1,i,j) = a(1,1,i,j) + rho*poids*zr(ivf+l+i-1)* zr(ivf+l+j-1)
+                a(1,1,i,j) = a(1,1,i,j) + rho(1)*poids*zr(ivf+l+i-1)* zr(ivf+l+j-1)
 70          continue
 80      continue
 90  end do

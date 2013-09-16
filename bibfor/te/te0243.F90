@@ -17,7 +17,6 @@ subroutine te0243(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -31,6 +30,7 @@ subroutine te0243(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/runge6.h"
 #include "asterfort/teattr.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS RESIDUS
@@ -47,8 +47,8 @@ subroutine te0243(option, nomte)
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, r8bid, diff
     real(kind=8) :: dtpgdx, dtpgdy, hydrgm(9), hydrgp(9)
     real(kind=8) :: coorse(18), vectt(9), err
-    real(kind=8) :: chal, tpgm
-    integer :: icodre
+    real(kind=8) :: chal(1), tpgm
+    integer :: icodre(1)
     character(len=8) :: elrefe, alias8
     integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, ifon(3)
     integer :: ipoids, ivf, idfde, igeom, imate
@@ -118,7 +118,7 @@ subroutine te0243(option, nomte)
         call jevech('PHYDRPP', 'E', ihydrp)
         call jevech('PTEMPER', 'L', itempr)
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'THER_HYDR', 0, ' ', r8bid,&
+                    ' ', 'THER_HYDR', 0, ' ', [r8bid],&
                     1, 'CHALHYDR', chal, icodre, 1)
         do 150 kp = 1, npg2
             k = nno*(kp-1)
@@ -174,10 +174,8 @@ subroutine te0243(option, nomte)
                 if (lteatt(' ','AXIS','OUI')) poids = poids*r
 !DIR$ IVDEP
                 do 105 i = 1, nno
-                    vectt(c(ise,i)) = vectt(&
-                                      c(ise,i)) + poids * theta*lambda*(dfdx(i)*dtpgdx+dfdy(i)*dt&
-                                      &pgdy&
-                                      )
+                    vectt(c(ise,i)) = vectt(c(ise,i)) + poids * theta*lambda*&
+                                      (dfdx(i)*dtpgdx+dfdy(i)*dtpgdy)
 105              continue
 101          continue
 !
@@ -218,9 +216,8 @@ subroutine te0243(option, nomte)
                     do 104 i = 1, nno
                         k=(kp-1)*nno
                         vectt(c(ise,i)) = vectt(&
-                                          c(ise,i)) + poids * (beta-chal*hydrgp(kp))/deltat*khi*z&
-                                          &r(ivf2+k+i- 1&
-                                          )
+                                          c(ise,i)) + poids * (beta-chal(1)*hydrgp(kp))/deltat*&
+                                          khi*zr(ivf2+k+i- 1)
 104                  continue
                 else
 ! --- THERMIQUE NON LINEAIRE SEULE

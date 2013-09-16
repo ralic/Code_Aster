@@ -52,13 +52,13 @@ subroutine te0154(option, nomte)
 !
     real(kind=8) :: pgl(3, 3), klc(6, 6), enerth
     real(kind=8) :: ugr(6), ulr(6), flr(6)
-    integer :: codres
+    integer :: codres(1)
     character(len=1) :: stopz(3)
     character(len=4) :: fami
     character(len=8) :: nomail, materi
     character(len=16) :: ch16
     logical :: lteimp
-    real(kind=8) :: a, epsth, e, r8bid, rho, xfl1, xfl4, xl, xmas, xrig
+    real(kind=8) :: a, epsth, e(1), r8bid, rho(1), xfl1, xfl4, xl, xmas, xrig
     integer :: i, if, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
     integer :: lmater, lorien, lsect, iret, lx, nc, nno, iadzi, iazk24
     integer :: jvite
@@ -82,7 +82,7 @@ subroutine te0154(option, nomte)
                 materi, 'ELAS', 1, epsth, iret)
 !
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                ' ', 'ELAS', 0, ' ', r8bid,&
+                ' ', 'ELAS', 0, ' ', [r8bid],&
                 1, 'E', e, codres, 1)
     if (epsth .ne. 0.d0) lteimp =.true.
 !
@@ -199,7 +199,7 @@ subroutine te0154(option, nomte)
 !     --- ENERGIE DE DEFORMATION ----
     if (option .eq. 'EPOT_ELEM') then
         call jevech('PENERDR', 'E', jende)
-        xrig = e * a / xl
+        xrig = e(1) * a / xl
         klc(1,1) = xrig
         klc(1,4) = -xrig
         klc(4,1) = -xrig
@@ -216,11 +216,11 @@ subroutine te0154(option, nomte)
 !
     else if (option .eq. 'ECIN_ELEM') then
         call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', r8bid,&
+                    ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'RHO', rho, codres, 1)
         call jevech('PENERCR', 'E', jende)
         call jevech('POMEGA2', 'L', jfreq)
-        xmas = rho * a * xl / 6.d0
+        xmas = rho(1) * a * xl / 6.d0
         klc(1,1) = xmas * 2.d0
         klc(2,2) = xmas * 2.d0
         klc(3,3) = xmas * 2.d0
@@ -244,7 +244,7 @@ subroutine te0154(option, nomte)
         call jevech('PDEFOPG', 'E', jdefo)
         zr(jdefo-1+1)=(ulr(4)-ulr(1))/xl
     else
-        xrig = e * a / xl
+        xrig = e(1) * a / xl
         klc(1,1) = xrig
         klc(1,4) = -xrig
         klc(4,1) = -xrig
@@ -258,7 +258,7 @@ subroutine te0154(option, nomte)
         if (lteimp) then
 !
 !              --- CALCUL DES FORCES INDUITES ---
-            xfl1 = -epsth * e * a
+            xfl1 = -epsth * e(1) * a
             xfl4 = -xfl1
             flr(1) = flr(1) - xfl1
             flr(4) = flr(4) - xfl4

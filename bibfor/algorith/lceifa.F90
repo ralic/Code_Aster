@@ -69,7 +69,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
     endif
 !
     call rcvalb(fami, kpg, ksp, poum, mat,&
-                ' ', 'RUPT_FRAG', 0, ' ', 0.d0,&
+                ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
                 4, nom, val, cod, 2)
 !
     gc = val(1)

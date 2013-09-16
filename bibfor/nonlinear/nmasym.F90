@@ -86,7 +86,7 @@ subroutine nmasym(fami, kpg, ksp, icodma, option,&
     spt=1
     poum='+'
     call rcvalb(famil, kpg1, spt, poum, icodma,&
-                ' ', 'ELAS', 0, nompar, valpar,&
+                ' ', 'ELAS', 0, nompar, [valpar],&
                 1, nomela, valres, icodre, 1)
     e = valres(1)
 !
@@ -97,7 +97,7 @@ subroutine nmasym(fami, kpg, ksp, icodma, option,&
     nbres = 4
     nbpar = 0
     call rcvalb(fami, 1, 1, '+', icodma,&
-                ' ', 'ECRO_ASYM_LINE', nbpar, nompar, valpar,&
+                ' ', 'ECRO_ASYM_LINE', nbpar, nompar, [valpar],&
                 nbres, nomasl, valres, icodre, 1)
     syc = valres(1)
     etc = valres(2)

@@ -45,7 +45,7 @@ subroutine te0062(option, nomte)
     integer :: npg1, i, iflux, itemps, itempe, l, n1, n2, ndim
     integer :: icamas, nuno, nnos, nbcmp
 !
-    real(kind=8) :: valres(3), lambda, fluxx, fluxy, fluxz, tpg, dfdx(27)
+    real(kind=8) :: valres(3), lambda(1), fluxx, fluxy, fluxz, tpg, dfdx(27)
     real(kind=8) :: dfdy(27)
     real(kind=8) :: dfdz(27), poids, lambor(3), fluglo(3), fluloc(3), p(3, 3)
     real(kind=8) :: dire(3), orig(3), point(3), angl(3)
@@ -83,7 +83,7 @@ subroutine te0062(option, nomte)
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     1, nomres, lambda, icodre, 1)
         aniso = .false.
     else if (phenom.eq.'THER_ORTH') then
@@ -91,7 +91,7 @@ subroutine te0062(option, nomte)
         nomres(2) = 'LAMBDA_T'
         nomres(3) = 'LAMBDA_N'
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     3, nomres, valres, icodre, 1)
         lambor(1) = valres(1)
         lambor(2) = valres(2)
@@ -161,14 +161,14 @@ subroutine te0062(option, nomte)
 !
         if (phenom .eq. 'THER_NL') then
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 1, 'TEMP', tpg,&
+                        ' ', phenom, 1, 'TEMP', [tpg],&
                         1, 'LAMBDA', lambda, icodre, 1)
         endif
 !
         if (.not.aniso) then
-            fluglo(1) = lambda*fluxx
-            fluglo(2) = lambda*fluxy
-            fluglo(3) = lambda*fluxz
+            fluglo(1) = lambda(1)*fluxx
+            fluglo(2) = lambda(1)*fluxy
+            fluglo(3) = lambda(1)*fluxz
         else
             fluglo(1) = fluxx
             fluglo(2) = fluxy

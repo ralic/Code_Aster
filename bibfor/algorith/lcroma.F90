@@ -48,7 +48,7 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 ! ----------------------------------------------------------------------
     integer :: icodre(6)
     character(len=8) :: nomres(6), type
-    real(kind=8) :: r8bid, valres(6), pente, aire, temp, resu
+    real(kind=8) :: r8bid, valres(6), pente, aire, temp, resu, val(1)
 ! ----------------------------------------------------------------------
 !
 !
@@ -56,12 +56,11 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 ! 1 - CARACTERISTIQUE ELASTIQUE E ET NU => CALCUL DE MU - K
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
-                1, 'NU', nu, icodre(1), 2)
-    call rcvarc(' ', 'TEMP', poum, fami, kpg,&
-                ksp, temp, iret)
-    call rctype(mate, 1, 'TEMP', temp, resu,&
-                type)
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                1, 'NU', val, icodre(1), 2)
+    nu=val(1)            
+    call rcvarc(' ', 'TEMP', poum, fami, kpg, ksp, temp, iret)
+    call rctype(mate, 1, 'TEMP', [temp], resu, type)
     if ((type.eq.'TEMP') .and. (iret.eq.1)) then
         call utmess('F', 'CALCULEL_31')
     endif
@@ -90,7 +89,7 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
     nomres(6) = 'DP_MAXI'
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'ROUSSELIER', 0, ' ', 0.d0,&
+                ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
                 6, nomres, valres, icodre, 2)
     rousd = valres(1)
     sig1 = valres(2)

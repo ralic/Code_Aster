@@ -51,7 +51,7 @@ subroutine te0432(option, nomte)
     integer :: kk, nddl
     integer :: iacce, ivect, l, nvec, ivite, ifreq, iecin, idepl
     real(kind=8) :: dff(2, 8), p(3, 6), tref
-    real(kind=8) :: dir11(3), vff(8), b(6, 8), jac, rho
+    real(kind=8) :: dir11(3), vff(8), b(6, 8), jac, rho(1)
     real(kind=8) :: densit, vecn(3)
     real(kind=8) :: distn, pgl(3, 3), masdep(48)
     real(kind=8) :: aexc(3, 3, 8, 8), a(6, 6, 8, 8), coef, matv(1176)
@@ -163,7 +163,7 @@ subroutine te0432(option, nomte)
 ! - MASS_MECA
 !
         call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'RHO', rho, codres, 1)
 !
 !
@@ -171,11 +171,11 @@ subroutine te0432(option, nomte)
 !
         call nmgrib(nno, zr(igeom), dff, dir11, lexc,&
                     vecn, b, jac, p)
-        wgt = wgt + rho*zr(ipoids+kpg-1)*jac*densit
+        wgt = wgt + rho(1)*zr(ipoids+kpg-1)*jac*densit
 !
         do 130 n = 1, nno
             do 130 i = 1, n
-                coef = rho*zr(ipoids+kpg-1)*jac*densit*vff(n)*vff(i)
+                coef = rho(1)*zr(ipoids+kpg-1)*jac*densit*vff(n)*vff(i)
                 a(1,1,n,i) = a(1,1,n,i) + coef
                 a(2,2,n,i) = a(2,2,n,i) + coef
                 a(3,3,n,i) = a(3,3,n,i) + coef

@@ -1,5 +1,5 @@
 subroutine te0226(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
@@ -40,9 +40,9 @@ subroutine te0226(option, nomte)
 !
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     real(kind=8) :: dfdx(3), r, rm, rf, rmf, poids, cour, nx, ny, h, vfi, vfj
-    real(kind=8) :: matp(9, 9), matv(45), r8b, rho
+    real(kind=8) :: matp(9, 9), matv(45), r8b, rho(1)
     integer :: nno, nnos, jgano, ndim, ipoids, ivf, idfdk, igeom, imate, icaco
     integer :: kp, npg, ii, jj, i, j, k, imatuu, kd1, kd2, kd3, ij1, ij2, ij3
     integer :: nddl, nvec, iacce, ivect
@@ -65,11 +65,11 @@ subroutine te0226(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
     h = zr(icaco)
-    rm = rho*h
-    rf = rho*h**3/12.d0
+    rm = rho(1)*h
+    rf = rho(1)*h**3/12.d0
 !
     do 10 k = 1, nvec
         matv(k) = 0.0d0

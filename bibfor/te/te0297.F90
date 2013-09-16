@@ -56,8 +56,8 @@ subroutine te0297(option, nomte)
     integer :: nface, cface(5, 3), ifa, singu, jpmilt, ipuls, iret, jtab(7)
     integer :: irese, ddlm, jbasec, nptf, nfiss, jfisno
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
-    real(kind=8) :: pres, fno(81), rho, coorse(81), puls
-    integer :: icodre(3), codrho
+    real(kind=8) :: pres, fno(81), rho(1), coorse(81), puls
+    integer :: icodre(3), codrho(1)
     character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
     character(len=16) :: phenom
     logical :: lmoda
@@ -120,7 +120,7 @@ subroutine te0297(option, nomte)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
-    call xcgfvo(option, ndim, nnop, fno, rho)
+    call xcgfvo(option, ndim, nnop, fno, rho(1))
 !
 ! --- RECUPERATION DE LA PULSATION
 !
@@ -136,11 +136,11 @@ subroutine te0297(option, nomte)
     endif
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', 0.d0,&
+    call rcvalb(fami(1), 1, 1, '+', zi(imate),&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, codrho, 0)
 !
-    if ((codrho.ne.0) .and. lmoda) then
+    if ((codrho(1).ne.0) .and. lmoda) then
         call utmess('F', 'RUPTURE1_26')
     endif
 !
@@ -173,7 +173,7 @@ subroutine te0297(option, nomte)
 !
         call xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
-                    rho, puls, lmoda, zr(jbaslo), nnop,&
+                    rho(1), puls, lmoda, zr(jbaslo), nnop,&
                     idepl, zr(jlsn), zr( jlst), idecpg, igthet,&
                     fno, nfiss, jfisno)
 !

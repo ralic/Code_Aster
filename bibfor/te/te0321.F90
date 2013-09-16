@@ -40,8 +40,8 @@ subroutine te0321(option, nomte)
     character(len=16) :: compor(3)
     character(len=8) :: fami, poum
 !
-    integer :: icodre, kpg, spt
-    real(kind=8) :: tno0, ms0, zalpha, zbeta
+    integer :: icodre(1), kpg, spt
+    real(kind=8) :: tno0, ms0(1), zalpha, zbeta
     real(kind=8) :: metapg(189)
     integer :: jgano, nno, kn, j, itempe, nnos, npg1
     integer :: iphasi, iphasn, idfde, nval
@@ -95,7 +95,7 @@ subroutine te0321(option, nomte)
 !     ON RECALCULE DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
         nomres = 'MS0'
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'META_ACIER', 1, 'INST', 0.d0,&
+                    ' ', 'META_ACIER', 1, 'INST', [0.d0],&
                     1, nomres, ms0, icodre, 1)
 !
         do 50 kn = 1, nno
@@ -105,7 +105,7 @@ subroutine te0321(option, nomte)
                 metapg(1+7* (kn-1)+j) = zr(iphasi+j)
 30          continue
 !
-            metapg(1+7* (kn-1)+6) = ms0
+            metapg(1+7* (kn-1)+6) = ms0(1)
             metapg(1+7* (kn-1)+5) = tno0
 !
             do 40 j = 1, 7

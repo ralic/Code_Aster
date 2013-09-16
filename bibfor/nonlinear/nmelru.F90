@@ -157,8 +157,7 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
 !
         else if (trac) then
             sieleq = demu * epseq
-            call rctype(imate, 1, 'TEMP', temp, resu,&
-                        type)
+            call rctype(imate, 1, 'TEMP', [temp], resu, type)
             if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
                 call utmess('F', 'CALCULEL_31')
             endif
@@ -177,7 +176,7 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
             nomres(1)='SY'
 !
             call rcvalb(fami, kpg, ksp, poum, imate,&
-                        ' ', 'ECRO_PUIS', 0, ' ', 0.d0,&
+                        ' ', 'ECRO_PUIS', 0, ' ', [0.d0],&
                         1, nomres, valres, icodre, 1)
             sigy=valres(1)
             coco = e/alfafa/sigy

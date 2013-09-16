@@ -1,8 +1,8 @@
 subroutine te0600(option, nomte)
     implicit none
 #include "jeveux.h"
-#include "asterc/r8dgrd.h"
 #include "asterc/ismaem.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/assthm.h"
 #include "asterfort/caethm.h"
 #include "asterfort/dfdm2d.h"
@@ -69,7 +69,7 @@ subroutine te0600(option, nomte)
     character(len=16) :: phenom
 ! =====================================================================
     integer :: li, kp, j, l, k, ibid, typvf, idim
-    real(kind=8) :: r8bid, rho, coef, rx
+    real(kind=8) :: r8bid, rho(1), coef, rx
     integer :: icodre(1)
     logical :: axi, perman
 ! =====================================================================
@@ -268,7 +268,7 @@ subroutine te0600(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
         call rccoma(zi(imate), 'THM_DIFFU', 1, phenom, icodre(1))
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', r8bid,&
+                    ' ', phenom, 0, ' ', [r8bid],&
                     1, 'RHO', rho, icodre, 1)
         if (ndim .eq. 3) then
 ! =====================================================================
@@ -284,7 +284,7 @@ subroutine te0600(option, nomte)
                 l = (kp-1)*nno
                 call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                             dfdbid, dfdbid, dfdbid, poids)
-                coef = rho*poids*zr(ipesa)
+                coef = rho(1)*poids*zr(ipesa)
                 do 60 i = 1, nnos
                     ii = nddls* (i-1)
                     do 50 j = 1, 3
@@ -307,7 +307,7 @@ subroutine te0600(option, nomte)
                 k = (kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                             dfdbid, dfdbid, poids)
-                poids = poids*rho*zr(ipesa)
+                poids = poids*rho(1)*zr(ipesa)
                 if (axi) then
                     rx = 0.d0
                     do 80 i = 1, nno

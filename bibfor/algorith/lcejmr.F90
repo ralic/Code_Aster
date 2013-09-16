@@ -21,7 +21,6 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! ======================================================================
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
-! aslint: disable=W1306
     implicit none
 #include "asterc/r8pi.h"
 #include "asterfort/matinv.h"
@@ -124,7 +123,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     endif
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
                 5, nom, val, cod, 2)
 !
 ! CONTRAINTE CRITIQUE SANS PENALISATION
@@ -148,7 +147,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     endif
 ! PENTE TANGENTIELLE INITIAL (SI ELLE N'EST PAS DEFINI ALORS K_T=K_N)
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
                 1, nom(6), val(6), cod(6), 0)
     if (cod(6) .eq. 0) then
         rt0 = val(6)
@@ -195,13 +194,13 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! RECUPERATION DE LA MASSE VOL ET DE LA VISCO (MODELISATION JOINT HM)
 !--------------------------------------------------------------------
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
                 1, nom(9), val(9), cod(9), 0)
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
                 1, nom(10), val(10), cod(10), 0)
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', 0, ' ', 0.d0,&
+                ' ', 'JOINT_MECA_RUPT', 0, ' ', [0.d0],&
                 1, nom(11), val(11), cod(11), 0)
 !
     if (cod(9) .eq. 0) rhof = val(9)

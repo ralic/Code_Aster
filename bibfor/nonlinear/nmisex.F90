@@ -147,7 +147,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 105  end do
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 2)
 !
     em = valres(1)
@@ -160,7 +160,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     endif
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 2)
 !
     e = valres(1)
@@ -187,7 +187,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         nomres(2)='SY'
 !
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                    ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
 !
         dsde=valres(1)

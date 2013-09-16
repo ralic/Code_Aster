@@ -1,5 +1,4 @@
-subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
-                  ivcord, nbdif)
+subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, ivcord, nbdif)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,20 +60,20 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !
 !
 !
+    character(len=*), intent(in) :: basmdz, nmintz, intfz
+    integer, intent(in) :: numint,nbdef
+    integer, intent(out):: ivcord(nbdef)
+    integer, intent(inout) :: nbdif
+!    
     character(len=8) :: basmod, nomint, intf, blanc, intfb
     character(len=8) :: k8bid
-    character(len=*) :: basmdz, nmintz, intfz
     character(len=24) :: noeint, idesc
     character(len=24) :: valk(3)
-    integer :: vali, ier, nbdef
-    integer :: ivcord(nbdef), idec(300), ibid
+    integer :: vali, ier 
+    integer :: idec(300), ibid
     character(len=10) :: typbas(3)
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     integer :: i, inoe, iordef, iret, j, lldes, llnoe
-    integer :: nbcmp, nbdif, nbec, nbmod, nbnoe
-    integer :: nbnot, numint
+    integer :: nbnot, nbcmp, nbec, nbmod, nbnoe
 !-----------------------------------------------------------------------
     data typbas/'CLASSIQUE','CYCLIQUE','RITZ'/
 !-----------------------------------------------------------------------

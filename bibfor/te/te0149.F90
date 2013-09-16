@@ -117,7 +117,7 @@ subroutine te0149(option, nomte)
         call jevech('PABSCUR', 'L', labsc)
         absmoy = ( zr(labsc-1+1) + zr(labsc-1+2) ) /2.d0
         call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS_FLUI', 1, 'ABSC', absmoy,&
+                    ' ', 'ELAS_FLUI', 1, 'ABSC', [absmoy],&
                     nbref, nomref, valref, codref, 1)
         e = valref(1)
         nu = valref(2)
@@ -135,10 +135,10 @@ subroutine te0149(option, nomte)
 ! --- ------------------------------------------------------------------
     else
         call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', nbpar, nompar, valpar,&
+                    ' ', 'ELAS', nbpar, nompar, [valpar],&
                     2, nomres, valres, codres, 1)
         call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', nbpar, nompar, valpar,&
+                    ' ', 'ELAS', nbpar, nompar, [valpar],&
                     1, nomres(3), valres(3), codres(3), 0)
         if (codres(3) .ne. 0) valres(3) = zero
         e = valres(1)

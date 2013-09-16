@@ -178,10 +178,10 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
 !
 !
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(3), valres(3), icodre(3), 0)
         if ((icodre(3).ne.0) .or. (valres(3).eq.0.d0)) then
             indith = -1
@@ -210,10 +210,10 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
 !
     else if (phenom.eq.'ELAS_COQUE') then
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(11), valres(11), icodre(11), 0)
         if ((icodre(11).ne.0) .or. (valres(11).eq.0.d0)) then
             indith = -1
@@ -243,19 +243,19 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi,&
     else if (phenom.eq.'ELAS_COQMU') then
 !        ------ MATERIAU MULTICOUCHE -----------------------------------
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(19), valres(19), icodre(19), 1)
         epais = valres(19)
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(57), valres(57), icodre(57), 1)
         epi = valres(57)
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     1, nomres(59), valres(59), icodre(59), 1)
         ordi = valres(59)
         call rcvalb('RIGI', 1, 1, '+', zi(jmate),&
-                    ' ', phenom, nbpar, nompar, valpar,&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     27, nomres(102), valres(102), icodre(102), 1)
         dm(1,1) = valres(102)
         dm(1,2) = valres(103)

@@ -47,7 +47,7 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
     nomres(3)='TEMP_MINI'
     nomres(4)='TEMP_MAXI'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'VERI_BORNE', 0, ' ', 0.d0,&
+                ' ', 'VERI_BORNE', 0, ' ', [0.d0],&
                 4, nomres, valres, icodre, 0)
 !
 !     TRAITEMENT DE EPSI_MAXI

@@ -70,7 +70,7 @@ subroutine mbrigi(fami, kpg, imate, rig)
     nomres(6) = 'M_LTLT'
 !
     call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', 0.d0,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 6, nomres, valres, codres, 1)
 !
 ! -  EN CAS DE PROBLEME AVEC LES VARIABLES DE COMMANDES

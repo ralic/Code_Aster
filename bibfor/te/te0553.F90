@@ -17,11 +17,11 @@ subroutine te0553(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !
@@ -67,7 +67,7 @@ subroutine te0553(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 3, nomres, valres, icodre, 1)
 !
     e = valres(1)

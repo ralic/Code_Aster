@@ -122,7 +122,7 @@ subroutine te0477(option, nomte)
         call moytem(fami, npg, 1, '+', tempm,&
                     iret)
         call rcvalb(fami, 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 1, 'TEMP', tempm,&
+                    ' ', 'ELAS', 1, 'TEMP', [tempm],&
                     nbv, nomres, valres, icodre, 1)
         e = valres(1)
         nu = valres(2)

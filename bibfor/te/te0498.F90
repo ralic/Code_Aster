@@ -91,7 +91,7 @@ subroutine te0498(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 3, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
@@ -336,6 +336,6 @@ subroutine te0498(option, nomte)
 !
     enddo
 !
- 99 continue
+99  continue
 !
 end subroutine

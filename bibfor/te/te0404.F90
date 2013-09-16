@@ -26,7 +26,6 @@ subroutine te0404(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dxmate.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
@@ -36,6 +35,7 @@ subroutine te0404(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
+!
     character(len=16) :: option, nomte
 !
     character(len=4) :: fami
@@ -48,7 +48,7 @@ subroutine te0404(option, nomte)
     integer :: i, j, ipoids, ivf, idfde, jgano, ier, iret
     integer :: jcoqu, multic, idfd2, icoopg
     real(kind=8) :: dmin, distij, xi, yi, zii, xj, yj, zj
-    real(kind=8) :: e, nu, rho, vitmat, epais
+    real(kind=8) :: e, nu, rho(1), vitmat, epais
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9), valres(2)
@@ -105,7 +105,7 @@ subroutine te0404(option, nomte)
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb(fami, 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, codres, 1)
         e = valres(1)
         nu = valres(2)
@@ -129,12 +129,12 @@ subroutine te0404(option, nomte)
     endif
 !
     call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', 0.d0,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
 !     CALCUL DE LA CELERITE DES ONDES DANS LE MATERIAU
 !
-    vitmat = sqrt(e/rho)
+    vitmat = sqrt(e/rho(1))
 !
 !     CALCUL DU PAS DE TEMPS DE LA CONDITION DE COURANT
 !

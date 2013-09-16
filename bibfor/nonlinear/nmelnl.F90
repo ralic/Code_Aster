@@ -134,21 +134,21 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
     if (iret .ne. 0) secref=0.d0
     if (elas .or. line .or. puis) then
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(3), valres(3), icodre(3), 0)
         if (icodre(3) .ne. 0) valres(3)=0.d0
     else
         call rctrac(imate, 1, 'SIGM', temp, jprol,&
                     jvale, nbvale, valres(1))
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(2), valres(2), icodre(2), 2)
 !
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'ELAS', 0, ' ', 0.d0,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomres(3), valres(3), icodre(3), 0)
         if (icodre(3) .ne. 0) valres(3)=0.d0
     endif
@@ -168,13 +168,13 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
     nomres(4)='B_ENDOGE'
     nomres(5)='K_DESSIC'
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(4), valres(4), icodre(4), 0)
     if (icodre(4) .ne. 0) valres(4) = 0.d0
     bendo = valres(4)
 !
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(5), valres(5), icodre(5), 0)
     if (icodre(5) .ne. 0) valres(5) = 0.d0
     kdess = valres(5)
@@ -186,7 +186,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
         nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                    ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 2)
         dsde = valres(1)
         sigy = valres(2)
@@ -234,7 +234,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
             nomres(1) = 'BIOT_COE'
 !
             call rcvalb(fami, kpg, ksp, poum, imate,&
-                        ' ', phenom, 0, ' ', 0.d0,&
+                        ' ', phenom, 0, ' ', [0.d0],&
                         1, nomres, valres, icodre, 1)
 !
             biot = valres(1)

@@ -42,7 +42,7 @@ function restzo(zimat, nmnbn, bend, normm, normn)
     nomres(1)='MPCST'
 !
     call rcvalb('FPG1', 1, 1, '+', zimat,&
-                ' ', 'GLRC_DAMAGE', 0, ' ', 0.d0,&
+                ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
                 1, nomres, valres, icodre, 1)
 !
     if (valres(1) .eq. 0.d0) then
@@ -52,7 +52,7 @@ function restzo(zimat, nmnbn, bend, normm, normn)
         nomres(4)='MINMP2'
 !
         call rcvalb('FPG1', 1, 1, '+', zimat,&
-                    ' ', 'GLRC_DAMAGE', 0, ' ', 0.d0,&
+                    ' ', 'GLRC_DAMAGE', 0, ' ', [0.d0],&
                     4, nomres, valres, icodre, 1)
 !
         if (bend .eq. 1) then

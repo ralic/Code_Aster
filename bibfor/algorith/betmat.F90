@@ -105,32 +105,32 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
 ! -     RECUPERATION MATERIAU A TEMPD (T)
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 5, nomc(1), materd(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
     if (cerr(4) .ne. 0) materd(4,1) = 0.d0
     if (cerr(5) .ne. 0) materd(5,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'BETON_DOUBLE_DP', 0, ' ', 0.d0,&
+                ' ', 'BETON_DOUBLE_DP', 0, ' ', [0.d0],&
                 8, nomc(6), materd(1, 2), cerr(6), 2)
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'BETON_DOUBLE_DP', 0, ' ', 0.d0,&
+                ' ', 'BETON_DOUBLE_DP', 0, ' ', [0.d0],&
                 1, nomc(14), materd(9, 2), cerr(14), 0)
     if (cerr(14) .ne. 0) materd(9,2) = -1.d0
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 1, nompar, valpaf,&
+                ' ', 'ELAS', 1, nompar, [valpaf],&
                 5, nomc(1), materf(1, 1), cerr(1), 0)
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
     if (cerr(4) .ne. 0) materf(4,1) = 0.d0
     if (cerr(5) .ne. 0) materf(5,1) = 0.d0
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'BETON_DOUBLE_DP', 1, nompar, valpaf,&
+                ' ', 'BETON_DOUBLE_DP', 1, nompar, [valpaf],&
                 8, nomc(6), materf(1, 2), cerr(6), 2)
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'BETON_DOUBLE_DP', 1, nompar, valpaf,&
+                ' ', 'BETON_DOUBLE_DP', 1, nompar, [valpaf],&
                 1, nomc(14), materf(9, 2), cerr(14), 0)
     if (cerr(14) .ne. 0) materf(9,2) = -1.d0
 !

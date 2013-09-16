@@ -28,8 +28,6 @@ subroutine te0485(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
 #include "jeveux.h"
-!
-!-----------------------------------------------------------------------
 #include "asterfort/elref4.h"
 #include "asterfort/idsshb.h"
 #include "asterfort/jevech.h"
@@ -40,6 +38,8 @@ subroutine te0485(option, nomte)
 #include "asterfort/sh2sig.h"
 #include "asterfort/sh6sig.h"
 #include "asterfort/sh8sig.h"
+!
+!-----------------------------------------------------------------------
     integer :: i, icont, idepl, idfde, igeom, imate, ipoids
     integer :: iret, ivf, j, jgano, nbres, nbv
     integer :: ndim, nno, nnos, npg
@@ -83,7 +83,7 @@ subroutine te0485(option, nomte)
         call moytem(fami, npg, 1, '+', tempm,&
                     iret)
         call rcvalb(famil, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS', 1, 'TEMP', tempm,&
+                    ' ', 'ELAS', 1, 'TEMP', [tempm],&
                     nbv, nomres, valres, icodre, 1)
         e = valres(1)
         nu = valres(2)

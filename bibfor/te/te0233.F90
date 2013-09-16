@@ -1,12 +1,12 @@
 subroutine te0233(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -35,7 +35,7 @@ subroutine te0233(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre, kpg, spt
+    integer :: icodre(1), kpg, spt
     real(kind=8) :: dfdx(3), nx, ny, poids, cour, rx
     integer :: nno, kp, k, npg, i, ivectu, ipesa, icaco
     integer :: ipoids, ivf, idfdk, igeom, imate
@@ -43,7 +43,7 @@ subroutine te0233(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: jgano, ndim, nnos
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
@@ -61,14 +61,14 @@ subroutine te0233(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 40 kp = 1, npg
         k = (kp-1)*nno
         call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
                     cour, poids, nx, ny)
-        poids = poids*rho*zr(ipesa)*zr(icaco)
+        poids = poids*rho(1)*zr(ipesa)*zr(icaco)
         if (nomte .eq. 'MECXSE3') then
             rx = 0.d0
             do 10 i = 1, nno

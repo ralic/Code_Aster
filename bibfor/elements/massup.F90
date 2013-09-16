@@ -20,7 +20,6 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
-! aslint: disable=W1306
     implicit none
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DE LA MATRICE DE MASSE
@@ -56,7 +55,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
     integer :: n1, n2, j2, k2, idiag
     integer :: igeom, ivf, i2, idec, spt
 !
-    real(kind=8) :: vff1(nno, npg), geom(ndim, nno), rho, r
+    real(kind=8) :: vff1(nno, npg), geom(ndim, nno), rho(1), r
     real(kind=8) :: a(ndim, ndim, nno, nno), matv(ndim*nno*(ndim*nno+1)/2)
     real(kind=8) :: poids, wgt, trace, alpha
     character(len=8) :: fami, poum
@@ -77,7 +76,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, mate,&
-                ' ', phenom, 0, ' ', 0.d0,&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     if (ndim .eq. 2) then
@@ -96,7 +95,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
 !
             do 80 i = 1, nno
                 do 70 j = 1, i
-                    a(1,1,i,j) = a(1,1,i,j)+rho*poids*vff1(i,kpg)* vff1(j,kpg)
+                    a(1,1,i,j) = a(1,1,i,j)+rho(1)*poids*vff1(i,kpg)* vff1(j,kpg)
                     a(2,2,i,j) = a(1,1,i,j)
 70              continue
 80          continue
@@ -108,7 +107,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
 !
             do 110 i = 1, nno
                 do 100 j = 1, i
-                    a(1,1,i,j) = a(1,1,i,j)+rho*poids*vff1(i,kpg)* vff1(j,kpg)
+                    a(1,1,i,j) = a(1,1,i,j)+rho(1)*poids*vff1(i,kpg)* vff1(j,kpg)
                     a(2,2,i,j) = a(1,1,i,j)
                     a(3,3,i,j) = a(1,1,i,j)
 100              continue

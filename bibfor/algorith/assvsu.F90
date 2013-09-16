@@ -195,7 +195,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     integer :: retcom, iret, kvois, fa, i, j
 !
     real(kind=8) :: pesa(3)
-    real(kind=8) :: rthmc
+    real(kind=8) :: rthmc(1)
     real(kind=8) :: valcen(14, 6), valcev(14, 6, maxfa)
     real(kind=8) :: valfac(maxfa, 14, 6)
     real(kind=8) :: valfav(maxfa, 14, 6, maxfa)
@@ -710,24 +710,24 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'THM_INIT', 0, ' ', 0.d0,&
+                ' ', 'THM_INIT', 0, ' ', [0.d0],&
                 1, 'COMP_THM', rthmc, codmes, 1)
     thmc = compor(8)
-    if ((rthmc-1.0d0) .lt. r8prem()) then
+    if ((rthmc(1)-1.0d0) .lt. r8prem()) then
         loi = 'LIQU_SATU'
-    else if ((rthmc-2.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-2.0d0).lt.r8prem()) then
         loi = 'GAZ'
-    else if ((rthmc-3.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-3.0d0).lt.r8prem()) then
         loi = 'LIQU_VAPE'
-    else if ((rthmc-4.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-4.0d0).lt.r8prem()) then
         loi = 'LIQU_VAPE_GAZ'
-    else if ((rthmc-5.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-5.0d0).lt.r8prem()) then
         loi = 'LIQU_GAZ'
-    else if ((rthmc-6.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-6.0d0).lt.r8prem()) then
         loi = 'LIQU_GAZ_ATM'
-    else if ((rthmc-9.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-9.0d0).lt.r8prem()) then
         loi = 'LIQU_AD_GAZ_VAPE'
-    else if ((rthmc-10.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-10.0d0).lt.r8prem()) then
         loi = 'LIQU_AD_GAZ'
     endif
     if (thmc .ne. loi) then

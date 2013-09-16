@@ -739,7 +739,7 @@ subroutine vdpnlr(option, nomte, codret)
                 endif
 !
                 call rcvalb('MASS', intsn, ksp, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', 0.d0,&
+                            ' ', phenom, 0, ' ', [0.d0],&
                             nbv, nomres, valres, icodre, 1)
 !
                 cisail = valres(1)/ (1.d0+valres(2))

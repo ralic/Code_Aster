@@ -1,7 +1,6 @@
 subroutine te0168(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/biline.h"
 #include "asterfort/elref4.h"
@@ -10,6 +9,7 @@ subroutine te0168(option, nomte)
 #include "asterfort/pmavec.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vecma.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -38,8 +38,8 @@ subroutine te0168(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: icodre
-    real(kind=8) :: a, rho, coef, jacobi, en(3, 2), r8b
+    integer :: icodre(1)
+    real(kind=8) :: a, rho(1), coef, jacobi, en(3, 2), r8b
     real(kind=8) :: matp(6, 6), matv(21)
     integer :: nno, npg, k, kp, i, ii, jj, ki, ky, nddl, nvec, imatuu, lsect
     integer :: ipoids, ivf, iyty, igeom, imate, iacce, ivect
@@ -57,7 +57,7 @@ subroutine te0168(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)
@@ -77,7 +77,7 @@ subroutine te0168(option, nomte)
     do 70 kp = 1, npg
         ky = (kp-1)*nddl*nddl
         jacobi = sqrt(biline(nddl,zr(igeom),zr(iyty+ky),zr(igeom)))
-        coef = rho*a*jacobi*zr(ipoids-1+kp)
+        coef = rho(1)*a*jacobi*zr(ipoids-1+kp)
         k = 0
         do 60 ii = 1, nno
             do 50 ki = 1, 3

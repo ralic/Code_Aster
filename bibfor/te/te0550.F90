@@ -29,14 +29,14 @@ subroutine te0550(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
-    integer :: icodre
+!
+    integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, poids, a(6, 6)
@@ -50,7 +50,7 @@ subroutine te0550(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ii, ivectu, ivien, ivite, j, jgano
     integer :: jj, ndim, nnos
-    real(kind=8) :: celer, r, r8b
+    real(kind=8) :: celer(1), r, r8b
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -67,9 +67,9 @@ subroutine te0550(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', r8b,&
+                ' ', 'FLUIDE', 0, ' ', [r8b],&
                 1, 'CELE_R', celer, icodre, 1)
-    if (celer .lt. 1.d-1) goto 110
+    if (celer(1) .lt. 1.d-1) goto 110
 !
     call jevech('PVECTUR', 'E', ivectu)
 !
@@ -104,7 +104,7 @@ subroutine te0550(option, nomte)
                 ii = 2*i
                 jj = 2*j - 1
 !
-                a(ii,jj) = a(ii,jj) - poids/celer*zr(ivf+ldec+i-1)* zr(ivf+ldec+j-1)
+                a(ii,jj) = a(ii,jj) - poids/celer(1)*zr(ivf+ldec+i-1)* zr(ivf+ldec+j-1)
 !
 50          continue
 60      continue

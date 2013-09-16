@@ -17,7 +17,6 @@ subroutine te0283(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -28,6 +27,7 @@ subroutine te0283(option, nomte)
 #include "asterfort/rcfode.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/runge6.h"
+!
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 !
@@ -43,10 +43,10 @@ subroutine te0283(option, nomte)
 !
 !
 !
-    integer :: icodre
+    integer :: icodre(1)
     real(kind=8) :: beta, lambda, theta, deltat, khi, tpg, tpgm
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, r8bid, hydrgm(27)
-    real(kind=8) :: dtpgdx, dtpgdy, dtpgdz, rbid, chal, hydrgp(27)
+    real(kind=8) :: dtpgdx, dtpgdy, dtpgdz, rbid, chal(1), hydrgp(27)
     real(kind=8) :: tpsec, diff, err
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jgano, nno, kp, npg1, i, itemps, ifon(3), l, ndim
@@ -95,7 +95,7 @@ subroutine te0283(option, nomte)
             call jevech('PHYDRPP', 'E', ihydrp)
             call jevech('PTEMPER', 'L', itempr)
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', 'THER_HYDR', 0, ' ', r8bid,&
+                        ' ', 'THER_HYDR', 0, ' ', [r8bid],&
                         1, 'CHALHYDR', chal, icodre, 1)
             do 150 kp = 1, npg2
                 l = nno*(kp-1)
@@ -154,8 +154,8 @@ subroutine te0283(option, nomte)
             if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
 ! ---   THERMIQUE NON LINEAIRE AVEC HYDRATATION
                 do 61 i = 1, nno
-                    zr(iveres+i-1) = zr(iveres+i-1) + poids* ((beta- chal*hydrgp(kp))/ deltat*khi&
-                                     &*zr(ivf2+l+i-1))
+                    zr(iveres+i-1) = zr(iveres+i-1) + poids* ((beta- chal(1)*hydrgp(kp))&
+                                     / deltat*khi*zr(ivf2+l+i-1))
 61              continue
             else
 ! ---   THERMIQUE NON LINEAIRE SEULE
@@ -198,8 +198,8 @@ subroutine te0283(option, nomte)
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
 !CDIR$ IVDEP
             do 90 i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1) + poids* ( theta*diff* (dfdx(i)*dtpgdx+dfdy(i)*dt&
-                                 &pgdy+ dfdz(i)*dtpgdz))
+                zr(iveres+i-1) = zr(iveres+i-1) + poids* ( theta*diff* (dfdx(i)*dtpgdx+dfdy(i)&
+                                 *dtpgdy+ dfdz(i)*dtpgdz))
 90          continue
 70      continue
         do 71 kp = 1, npg2

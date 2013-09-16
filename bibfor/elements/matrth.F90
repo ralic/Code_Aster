@@ -77,7 +77,7 @@ subroutine matrth(fami, npg, young, nu, alpha,&
         nomres(1)='ALPHA_L'
         nomres(2)='ALPHA_T'
         call rcvalb(fami, 1, 1, '+', zi(jmate),&
-                    ' ', phenom, 0, nompar, valpar,&
+                    ' ', phenom, 0, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
         if (icodre(1) .ne. 0) then
             indith = -1

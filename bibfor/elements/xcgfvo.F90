@@ -47,7 +47,7 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
     integer :: igeom, imate, iforc, iforf, itemps, ipesa, irota
     integer :: iret, ino, j, kk, mxstac
     logical :: fonc
-    real(kind=8) :: valpar(4), rbid, om, omo
+    real(kind=8) :: valpar(4), rbid, om, omo, val(1)
     integer :: icodre(1)
     character(len=8) :: nompar(4)
     character(len=16) :: phenom
@@ -131,8 +131,9 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
 !
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, ' ', rbid,&
-                    1, 'RHO', rho, icodre(1), 1)
+                    ' ', phenom, 1, ' ', [rbid],&
+                    1, 'RHO', val, icodre(1), 1)
+        rho=val(1)            
 !
         if (ipesa .ne. 0) then
             do 60 ino = 1, nnop

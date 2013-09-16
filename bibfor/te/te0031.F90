@@ -79,7 +79,7 @@ subroutine te0031(option, nomte)
     parameter(npge=3)
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, ind
-    integer :: multic, codret, jdepm, jdepr
+    integer :: multic, codret(1), jdepm, jdepr
     integer :: icompo, i1, i2, j, jvect, kpg, spt
     integer :: k, jcret, jfreq, iacce
     integer :: jmate, jgeom, jmatr, jener, i, jcara
@@ -89,7 +89,7 @@ subroutine te0031(option, nomte)
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24), effgt(32)
     real(kind=8) :: vecloc(24), ener(3), matp(24, 24), matv(300)
-    real(kind=8) :: epi, eptot, r8bid, valr(2)
+    real(kind=8) :: epi(1), eptot, r8bid, valr(2)
 !
     character(len=2) :: val
     character(len=3) :: num
@@ -131,7 +131,7 @@ subroutine te0031(option, nomte)
 !
         if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
             'RIGI_MECA_TANG') then
-            call rccoma(zi(jmate), 'ELAS', 1, phenom, codret)
+            call rccoma(zi(jmate), 'ELAS', 1, phenom, codret(1))
 !
             if (phenom .eq. 'ELAS_COQUE' .or. phenom .eq. 'ELAS_COQMU') then
                 lcqhom=.true.
@@ -149,7 +149,7 @@ subroutine te0031(option, nomte)
             nbcou=zi(jnbspi)
             icou=0
             eptot=0.d0
-            epi=0.d0
+            epi(1)=0.d0
             call jevech('PCACOQU', 'L', jcara)
             epais=zr(jcara)
 10          continue
@@ -158,10 +158,10 @@ subroutine te0031(option, nomte)
             call codent(1, 'G', val)
             nomres='C'//num//'_V'//val
             call rcvalb(fami, kpg, spt, poum, zi(jmate),&
-                        ' ', 'ELAS_COQMU', 0, ' ', r8bid,&
+                        ' ', 'ELAS_COQMU', 0, ' ', [r8bid],&
                         1, nomres, epi, codret, 0)
-            if (codret .eq. 0) then
-                eptot=eptot+epi
+            if (codret(1) .eq. 0) then
+                eptot=eptot+epi(1)
                 goto 10
             endif
             if (eptot .ne. 0.d0) then
@@ -332,10 +332,10 @@ subroutine te0031(option, nomte)
 !
         if (nomte .eq. 'MEDKTR3') then
             call dktnli(nomte, option, xyzl, uml, dul,&
-                        vecloc, matloc, codret)
+                        vecloc, matloc, codret(1))
         else if (nomte.eq.'MEDKQU4 ') then
             call dktnli(nomte, option, xyzl, uml, dul,&
-                        vecloc, matloc, codret)
+                        vecloc, matloc, codret(1))
         else
             call utmess('F', 'ELEMENTS2_74', sk=nomte)
         endif
@@ -389,7 +389,7 @@ subroutine te0031(option, nomte)
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         call jevech('PCODRET', 'E', jcret)
-        zi(jcret)=codret
+        zi(jcret)=codret(1)
     endif
 !
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :

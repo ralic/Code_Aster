@@ -81,14 +81,14 @@ subroutine te0076(option, nomte)
     if (phenom .eq. 'THER') then
         nomres(1) = 'LAMBDA'
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     1, nomres, valres, icodre, 1)
         lambda = valres(1)
     else if (phenom .eq. 'THER_ORTH') then
         nomres(1) = 'LAMBDA_L'
         nomres(2) = 'LAMBDA_T'
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, 'INST', zr(itemps),&
+                    ' ', phenom, 1, 'INST', [zr(itemps)],&
                     2, nomres, valres, icodre, 1)
 !
         lambor(1) = valres(1)

@@ -58,7 +58,7 @@ subroutine te0499(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option.eq.'ONDE_PLAN')
-
+!
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
@@ -88,7 +88,7 @@ subroutine te0499(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 3, nomres, valres, icodre, 1)
 !
     e = valres(1)
@@ -242,7 +242,7 @@ subroutine te0499(option, nomte)
             zr(ivectu+ii-1) = zr(ivectu+ii-1) + (taux+coedir*taondx)* zr(ivf+k+i-1)*poids
             zr(ivectu+ii+1-1) = zr(ivectu+ii+1-1) + (tauy+coedir* taondy)*zr(ivf+k+i-1)*poids
         enddo
-
+!
     enddo
 !
 99  continue

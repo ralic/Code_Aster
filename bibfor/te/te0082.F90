@@ -50,7 +50,7 @@ subroutine te0082(option, nomte)
     character(len=1) :: stopz(3)
     integer :: icodre(1)
 !      CHARACTER*4        FAMI
-    real(kind=8) :: valres, dfdx(9), dfdy(9), poids, r, r8b, vfi, vfj
+    real(kind=8) :: valres(1), dfdx(9), dfdy(9), poids, r, r8b, vfi, vfj
     real(kind=8) :: matp(18, 18), matv(171), masvit(18), masdep(18)
     real(kind=8) :: vect1(18), vect2(18)
     integer :: nno, kp, nnos, npg2, ii, jj, i, j, k, imatuu, jgano
@@ -79,7 +79,7 @@ subroutine te0082(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', r8b,&
+                ' ', phenom, 0, ' ', [r8b],&
                 1, 'RHO', valres, icodre(1), 1)
 !
     do 2 k = 1, nvec
@@ -97,7 +97,7 @@ subroutine te0082(option, nomte)
 20          continue
             poids = poids*r
         endif
-        poids = poids*valres
+        poids = poids*valres(1)
 !
         kd1 = 2
         kd2 = 1

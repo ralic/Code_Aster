@@ -44,7 +44,7 @@ subroutine imbint(nomres, ifm)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !-----------------------------------------------------------------------
-    integer :: i, ibid, idau, idcb, idda, idha, idmn
+    integer :: i, ibid(1), idau, idcb, idda, idha, idmn
     integer :: ifau, ifcb, ifha, ifmn, ino, ipoin, iret
     integer :: ityp, j, k, llact, lldes, lldesc, llncmp
     integer :: llnoe, lltyp, nbcmp, nbcpmx, nbdef, nbec, nbint
@@ -82,8 +82,7 @@ subroutine imbint(nomres, ifm)
 !
 !--------------RECUPERATION DU NOM DU MAILLA--------------------------
 !
-    call dismoi('F', 'NOM_MAILLA', nomres, 'INTERF_DYNA', ibid,&
-                mailla, ibid1)
+    call dismoi('F', 'NOM_MAILLA', nomres, 'INTERF_DYNA', ibid(1), mailla, ibid1)
 !
 !--------------RECUPERATION TYPE LIST_INTERFACE-------------------------
 !
@@ -204,8 +203,7 @@ subroutine imbint(nomres, ifm)
 !
 20      continue
         write(ifm,*)'  '
-        call bmnodi('        ', nomres, '         ', i, 0,&
-                    ibid, nbdef)
+        call bmnodi('        ', nomres, '         ', i, 0, ibid(1), nbdef)
         write(ifm,*)'  '
         write(ifm,*)' NOMBRE DE DEFORMEES STATIQUES ASSOCIES: ',nbdef
         write(ifm,*)'  '

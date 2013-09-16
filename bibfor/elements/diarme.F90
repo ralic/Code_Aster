@@ -75,7 +75,7 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, icodma,&
-                ' ', 'ARME', nbpar, nompar, valpar,&
+                ' ', 'ARME', nbpar, nompar, [valpar],&
                 nbre2, nomre2, valre2, codre2, 1)
 !
     kye = valre2(1)

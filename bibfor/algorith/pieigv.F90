@@ -113,7 +113,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)
@@ -132,7 +132,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     nomres(2) = 'SYT'
     nomres(3) = 'SYC'
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'BETON_ECRO_LINE', 0, ' ', 0.d0,&
+                ' ', 'BETON_ECRO_LINE', 0, ' ', [0.d0],&
                 3, nomres, valres, icodre, 0)
     gamma = -e/valres(1)
     k0=valres(2)**2 *(1.d0+gamma)/(2.d0*e)&

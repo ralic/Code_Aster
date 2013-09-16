@@ -5,8 +5,9 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                   mecani, press1, press2, tempe, dimdef,&
                   dimcon, dimuel, nbvari, ndim, compor,&
                   typmod, typvf, axi, perman)
-! aslint: disable=W1501,W1504
     implicit none
+!
+! aslint: disable=W1501,W1504
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -105,7 +106,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     integer :: ipg, retcom, fa, i, j
 !
     real(kind=8) :: pesa(3), kintvf(6)
-    real(kind=8) :: rthmc, p10, p20
+    real(kind=8) :: rthmc(1), p10, p20
     real(kind=8) :: valcen(14, 6), valfac(maxfa, 14, 6)
 !
     logical :: tange, cont, bool
@@ -336,24 +337,24 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'THM_INIT', 0, ' ', 0.d0,&
+                ' ', 'THM_INIT', 0, ' ', [0.d0],&
                 1, 'COMP_THM', rthmc, codmes, 1)
     thmc = compor(8)
-    if ((rthmc-1.0d0) .lt. r8prem()) then
+    if ((rthmc(1)-1.0d0) .lt. r8prem()) then
         loi = 'LIQU_SATU'
-    else if ((rthmc-2.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-2.0d0).lt.r8prem()) then
         loi = 'GAZ'
-    else if ((rthmc-3.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-3.0d0).lt.r8prem()) then
         loi = 'LIQU_VAPE'
-    else if ((rthmc-4.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-4.0d0).lt.r8prem()) then
         loi = 'LIQU_VAPE_GAZ'
-    else if ((rthmc-5.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-5.0d0).lt.r8prem()) then
         loi = 'LIQU_GAZ'
-    else if ((rthmc-6.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-6.0d0).lt.r8prem()) then
         loi = 'LIQU_GAZ_ATM'
-    else if ((rthmc-9.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-9.0d0).lt.r8prem()) then
         loi = 'LIQU_AD_GAZ_VAPE'
-    else if ((rthmc-10.0d0).lt.r8prem()) then
+    else if ((rthmc(1)-10.0d0).lt.r8prem()) then
         loi = 'LIQU_AD_GAZ'
     endif
     if (thmc .ne. loi) then

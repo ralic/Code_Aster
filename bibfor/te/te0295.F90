@@ -51,7 +51,7 @@ subroutine te0295(option, nomte)
 !
 !
     integer :: icodre(3)
-    integer :: codrho
+    integer :: codrho(1)
     integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos
     integer :: jgano, icomp, ibalo, icour
     integer :: igeom, ithet, ificg, irota, ipesa, idepl, iret
@@ -66,7 +66,7 @@ subroutine te0295(option, nomte)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4), du3dm(3, 4)
     real(kind=8) :: p(3, 3), invp(3, 3)
     real(kind=8) :: courb(3, 3, 3)
-    real(kind=8) :: rho, om, omo, rbid, e, nu, alpha, tref
+    real(kind=8) :: rho(1), om, omo, rbid, e, nu, alpha, tref
     real(kind=8) :: thet, tpg(27), tno(20), tgdm(3), ttrg, la, mu, ka
     real(kind=8) :: xg, yg, zg, ff
     real(kind=8) :: c1, c2, c3, rg, phig
@@ -217,13 +217,13 @@ subroutine te0295(option, nomte)
     if (lpesa .or. lrota) then
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 1, ' ', rbid,&
+                    ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre, 1)
         if (lpesa) then
             do 95 i = 1, nno
                 do 90 j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rho*zr(ipesa)*zr(ipesa+j)
+                    fno(kk)=fno(kk)+rho(1)*zr(ipesa)*zr(ipesa+j)
 90              continue
 95          continue
         endif
@@ -237,7 +237,7 @@ subroutine te0295(option, nomte)
 100              continue
                 do 103 j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rho*om*om*(zr(igeom+kk-1)-omo*zr(&
+                    fno(kk)=fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
 103              continue
 105          continue
@@ -337,7 +337,7 @@ subroutine te0295(option, nomte)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, r8bid, iret)
         call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     3, nomres, valres, icodre, 0)
         ASSERT(icodre(1)+icodre(2).eq.0)
         if (icodre(3) .ne. 0) then
@@ -348,10 +348,10 @@ subroutine te0295(option, nomte)
 ! ----- RECUPERATION DE RHO
 !
         call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', 0.d0,&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', rho, codrho, 0)
 !
-        if ((codrho.ne.0) .and. lmoda) then
+        if ((codrho(1).ne.0) .and. lmoda) then
             call utmess('F', 'RUPTURE1_26')
         endif
 !
@@ -454,28 +454,28 @@ subroutine te0295(option, nomte)
         guv = 0.d0
         call gbil3d(dudm, dudm, dtdm, dfdm, dfdm,&
                     tgdm, tgdm, ttrg, ttrg, poids,&
-                    c1, c2, c3, k3a, rho,&
+                    c1, c2, c3, k3a, rho(1),&
                     puls, guv)
         g = g + guv
 !
         guv1 = 0.d0
         call gbil3d(dudm, du1dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, rho,&
+                    c1, c2, c3, k3a, rho(1),&
                     puls, guv1)
         k1 = k1 + guv1
 !
         guv2 = 0.d0
         call gbil3d(dudm, du2dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, rho,&
+                    c1, c2, c3, k3a, rho(1),&
                     puls, guv2)
         k2 = k2 + guv2
 !
         guv3 = 0.d0
         call gbil3d(dudm, du3dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, rho,&
+                    c1, c2, c3, k3a, rho(1),&
                     puls, guv3)
         k3 = k3 + guv3
 !

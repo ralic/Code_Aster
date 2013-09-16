@@ -71,7 +71,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
 !
     nomres(1) = 'K'
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS_HYPER', 0, ' ', 0.d0,&
+                ' ', 'ELAS_HYPER', 0, ' ', [0.d0],&
                 1, nomres, valres, codres, 0)
 !
     if (codres(1) .eq. 0) then
@@ -80,7 +80,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
     else
         nomres(1) = 'NU'
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', 'ELAS_HYPER', 0, ' ', 0.d0,&
+                    ' ', 'ELAS_HYPER', 0, ' ', [0.d0],&
                     1, nomres, valres, codres, 2)
         nu = valres(1)
         denom = 3.d0*(1.d0-2.d0*nu)
@@ -96,7 +96,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
     nomres(2) = 'C01'
     nomres(3) = 'C20'
     call rcvalb(fami, kpg, ksp, poum, imate,&
-                ' ', 'ELAS_HYPER', 0, ' ', 0.d0,&
+                ' ', 'ELAS_HYPER', 0, ' ', [0.d0],&
                 nbres, nomres, valres, codres, 2)
     c10 = valres(1)
     c01 = valres(2)

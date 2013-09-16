@@ -66,7 +66,7 @@ subroutine te0033(option, nomte)
     integer :: jnbspi, nbcou, icou
     integer :: icodre(1), kpg, spt
 !
-    real(kind=8) :: zero, epi, epais, eptot, alpha, beta
+    real(kind=8) :: zero, epi(1), epais, eptot, alpha, beta
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid, valr(2)
     real(kind=8) :: depl(24)
     real(kind=8) :: effgt(32), effpg(32)
@@ -122,7 +122,7 @@ subroutine te0033(option, nomte)
             nbcou = zi(jnbspi)
             icou = 0
             eptot = 0.d0
-            epi = 0.d0
+            epi(1) = 0.d0
             call jevech('PCACOQU', 'L', jcara)
             epais = zr(jcara)
  5          continue
@@ -135,10 +135,10 @@ subroutine te0033(option, nomte)
             spt=1
             poum='+'
             call rcvalb(famil, kpg, spt, poum, zi(jmate),&
-                        ' ', 'ELAS_COQMU', 0, ' ', r8bid,&
+                        ' ', 'ELAS_COQMU', 0, ' ', [r8bid],&
                         1, nomres, epi, icodre(1), 0)
             if (icodre(1) .eq. 0) then
-                eptot=eptot+epi
+                eptot=eptot+epi(1)
                 goto 5
             endif
             if (eptot .ne. 0.d0) then

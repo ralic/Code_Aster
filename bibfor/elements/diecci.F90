@@ -107,7 +107,7 @@ subroutine diecci(option, nomte, ndim, nbt, nno,&
 !   récupere tous les paramètres
     valpar(:) = 0.0d0
     call rcvalb('FPG1', 1, 1, '+', zi(imat),&
-                ' ', 'DIS_ECRO_CINE', 0, ' ', 0.0d0,&
+                ' ', 'DIS_ECRO_CINE', 0, ' ', [0.0d0],&
                 nbpart, nompar, valpar, codret, 0)
 !   les caractéristiques sont toujours dans le repère local on fait seulement une copie
     call dcopy(nbt, zr(jdc), 1, klv, 1)

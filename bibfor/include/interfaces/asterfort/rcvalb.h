@@ -19,20 +19,20 @@ interface
     subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
                       nomat, phenom, nbpar, nompar, valpar,&
                       nbres, nomres, valres, codret, iarret)
-        integer :: nbres
-        integer :: nbpar
-        character(*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(*) :: poum
-        integer :: jmat
-        character(*) :: nomat
-        character(*) :: phenom
-        character(*) :: nompar(nbpar)
-        real(kind=8) :: valpar(nbpar)
-        character(*) :: nomres(nbres)
-        real(kind=8) :: valres(nbres)
-        integer :: codret(nbres)
-        integer :: iarret
+        integer, intent(in) :: nbres
+        integer, intent(in) :: nbpar
+        character(*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        character(*), intent(in) :: poum
+        integer, intent(in) :: jmat
+        character(*), intent(in) :: nomat
+        character(*), intent(in) :: phenom
+        character(*), intent(in) :: nompar(nbpar)
+        real(kind=8), intent(in) :: valpar(nbpar)
+        character(*), intent(in) :: nomres(nbres)
+        real(kind=8), intent(out) :: valres(nbres)
+        integer, intent(out) :: codret(nbres)
+        integer, intent(in) :: iarret
     end subroutine rcvalb
 end interface

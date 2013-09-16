@@ -340,14 +340,14 @@ subroutine te0489(option, nomte)
                             nomres(1) = 'D_SIGM_EPSI'
                             nomres(2) = 'SY'
                             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_LINE', ibid, ' ', 0.d0,&
+                                        ' ', 'ECRO_LINE', ibid, ' ', [0.d0],&
                                         2, nomres, valres, icodre, 2)
                             dsde = valres(1)
                             rp0 = valres(2)
 !
                             nomres(1) = 'E'
                             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ELAS', ibid, ' ', 0.d0,&
+                                        ' ', 'ELAS', ibid, ' ', [0.d0],&
                                         1, nomres, valres, icodre, 2)
                             e = valres(1)
                             rp = dsde*e/(e-dsde)*pm+rp0
@@ -355,7 +355,7 @@ subroutine te0489(option, nomte)
                         else if (compor(10:14) .eq. '_PUIS') then
                             nomres(1) = 'E'
                             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ELAS', ibid, ' ', 0.d0,&
+                                        ' ', 'ELAS', ibid, ' ', [0.d0],&
                                         1, nomres, valres, icodre, 2)
                             e = valres(1)
 !
@@ -363,7 +363,7 @@ subroutine te0489(option, nomte)
                             nomres(2)='A_PUIS'
                             nomres(3)='N_PUIS'
                             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_PUIS', ibid, ' ', 0.d0,&
+                                        ' ', 'ECRO_PUIS', ibid, ' ', [0.d0],&
                                         3, nomres, valres, icodre, 2)
                             sigy = valres(1)
                             alfafa = valres(2)
@@ -372,10 +372,8 @@ subroutine te0489(option, nomte)
                             rp = sigy * (coco*pp)**unsurn + sigy
 !
                         else if (compor(10:14) .eq. '_TRAC') then
-                            call rcvarc(' ', 'TEMP', '-', fami, igau,&
-                                        1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', tp, resu,&
-                                        type)
+                            call rcvarc(' ', 'TEMP', '-', fami, igau, 1, tp, iret)
+                            call rctype(zi(imate), 1, 'TEMP', [tp], resu, type)
                             if (type .eq. 'TEMP') then
                                 call utmess('F', 'CALCULEL_31')
                             endif
@@ -426,20 +424,18 @@ subroutine te0489(option, nomte)
                         if (compor .eq. 'VMIS_ISOT_LINE') then
                             nomres(1) = 'SY'
                             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                                        ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                                         1, nomres, valres, icodre, 2)
                             rp0 = valres(1)
                         else if (compor(10:14) .eq. '_PUIS') then
                             nomres(1)='SY'
                             call rcvalb(fami, igau, 1, '+', zi(imate),&
-                                        ' ', 'ECRO_PUIS', 0, ' ', 0.d0,&
+                                        ' ', 'ECRO_PUIS', 0, ' ', [0.d0],&
                                         1, nomres, valres, icodre, 2)
                             rp0 = valres(1)
                         else if (compor(10:14) .eq. '_TRAC') then
-                            call rcvarc(' ', 'TEMP', '-', fami, igau,&
-                                        1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', tp, resu,&
-                                        type)
+                            call rcvarc(' ', 'TEMP', '-', fami, igau, 1, tp, iret)
+                            call rctype(zi(imate), 1, 'TEMP', [tp], resu, type)
                             if (type .eq. 'TEMP') then
                                 call utmess('F', 'CALCULEL_31')
                             endif

@@ -279,7 +279,7 @@ subroutine te0368(option, nomte)
         spt=1
         poum='+'
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', phenom, 1, ' ', r8bid,&
+                    ' ', phenom, 1, ' ', [r8bid],&
                     1, nompar, valres, icodre, 1)
         rho = valres(1)
 !GN        WRITE(IFM,1000) 'RHO', RHO

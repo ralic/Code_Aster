@@ -59,11 +59,11 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
 !     VARIABLES LOCALES
 !     ------------------------------------------------------------------
     real(kind=8) :: epsm
-    integer :: codres
+    integer :: codres(1)
     real(kind=8) :: e, sy, dc, v, k, m
     real(kind=8) :: epsilf, epsd, epsc, d, p, epsp, ecr, fplas, indi
     real(kind=8) :: dfds, dfpds, dfdecr, difecr, lambp, fd, var1
-    real(kind=8) :: var2, var3, rv, fini, fplas2, b
+    real(kind=8) :: var2, var3, rv, fini, fplas2, b, val(1)
     logical :: dconv, pconv, melas
     integer :: iter, itemax, i, j, ibid
     pm = vim(1)
@@ -75,20 +75,25 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
 !
 ! --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', 0.d0,&
-                1, 'D_CORR', dc, codres, 1)
+                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+                1, 'D_CORR', val, codres, 1)
+    dc=val(1)            
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', 0.d0,&
-                1, 'ECRO_K', k, codres, 1)
+                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+                1, 'ECRO_K', val, codres, 1)
+    k=val(1)            
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', 0.d0,&
-                1, 'ECRO_M', m, codres, 1)
+                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+                1, 'ECRO_M', val, codres, 1)
+    m=val(1)           
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'CORR_ACIER', 0, ' ', 0.d0,&
-                1, 'SY', sy, codres, 1)
+                materi, 'CORR_ACIER', 0, ' ', [0.d0],&
+                1, 'SY', val, codres, 1)
+    sy=val(1)            
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                materi, 'ELAS', 0, ' ', 0.d0,&
-                1, 'NU', v, codres, 1)
+                materi, 'ELAS', 0, ' ', [0.d0],&
+                1, 'NU', val, codres, 1)
+    v=val(1)            
 !
 ! --- PARAMETRES DE CONVERGENCE
     resi = crildc(3)

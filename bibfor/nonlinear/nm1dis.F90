@@ -78,10 +78,10 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
 !
     if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1).eq.'GRILLE_ISOT_LINE')) then
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    materi, 'ECRO_LINE', 0, ' ', 0.d0,&
+                    materi, 'ECRO_LINE', 0, ' ', [0.d0],&
                     1, nomecl, valres, icodre, 1)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    materi, 'ECRO_LINE', 0, ' ', 0.d0,&
+                    materi, 'ECRO_LINE', 0, ' ', [0.d0],&
                     1, nomecl(2), valres(2), icodre(2), 0)
         if (icodre(2) .ne. 0) valres(2) = 0.d0
         et = valres(1)
@@ -94,17 +94,14 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
     else if (compor(1).eq.'VMIS_ISOT_TRAC') then
         call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                     ksp, valpar, iret)
-        call rctype(imate, 1, nompar, valpar, resu,&
-                    type)
+        call rctype(imate, 1, nompar, [valpar], resu, type)
         if ((type.eq.'TEMP') .and. (iret.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif
         call rctrac(imate, 1, 'SIGM', resu, jprolm,&
                     jvalem, nbvalm, em)
-        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                    ksp, valpar, iret)
-        call rctype(imate, 1, nompar, valpar, resu,&
-                    type)
+        call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, valpar, iret)
+        call rctype(imate, 1, nompar, [valpar], resu, type)
         if ((type.eq.'TEMP') .and. (iret.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif

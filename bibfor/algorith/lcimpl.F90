@@ -54,10 +54,10 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
 !
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 1, nomecl, valres, codres, 1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ECRO_LINE', 0, ' ', 0.d0,&
+                ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 1, nomecl(2), valres(2), codres(2), 0)
 !
     if (codres(2) .ne. 0) valres(2) = 0.d0

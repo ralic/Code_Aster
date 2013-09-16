@@ -126,7 +126,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
 ! === ================================================
 !     CARACTERISTIQUES ELASTIQUES A TEMP- ET IRRA-
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS', 0, ' ', 0.0d0,&
+                ' ', 'ELAS', 0, ' ', [0.0d0],&
                 3, nomcel, materd(1, 1), cerr, 1)
 !
 !     TEMPERATURE A T-
@@ -137,7 +137,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
                 ksp, irrad, iret)
 !     CARACTERISTIQUES MATERIAU A TEMP- ET IRRA-
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'IRRAD3M', 0, ' ', 0.0d0,&
+                ' ', 'IRRAD3M', 0, ' ', [0.0d0],&
                 nbcara, nomcir, mat, cerr, 1)
 !
 !     POUR PLUS DE CLARETE, JE RENOMME LES GRANDEURS
@@ -305,7 +305,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
 ! === ================================================
 !     CARACTERISTIQUES ELASTIQUES A TEMP+ ET IRRA+
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'ELAS', 0, ' ', 0.0d0,&
+                ' ', 'ELAS', 0, ' ', [0.0d0],&
                 3, nomcel, materf(1, 1), cerr, 1)
 !
 !     TEMPERATURE A T+
@@ -328,7 +328,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
     endif
 !     CARACTERISTIQUES MATERIAU A TEMP+ ET IRRA+
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'IRRAD3M', 0, ' ', 0.0d0,&
+                ' ', 'IRRAD3M', 0, ' ', [0.0d0],&
                 nbcara, nomcir, mat, cerr, 1)
 !
 !     POUR PLUS DE CLARETE

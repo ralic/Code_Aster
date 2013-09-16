@@ -56,7 +56,7 @@ subroutine matela(icodma, materi, itemp, temp, e,&
         valpar = temp
     endif
     call rcvalb('RIGI', 1, 1, '+', icodma,&
-                materi, 'ELAS', nbpar, nompar, valpar,&
+                materi, 'ELAS', nbpar, nompar, [valpar],&
                 2, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)

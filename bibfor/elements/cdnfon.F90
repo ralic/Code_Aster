@@ -34,9 +34,9 @@ subroutine cdnfon(zimat, kfonc, xx, dn, fxx,&
 #include "asterfort/rcvalb.h"
     integer :: dn, ier, zimat, kpg, spt
 !
-    real(kind=8) :: xx, fxx
+    real(kind=8) :: xx, fxx, val(1)
 !
-    integer :: codres
+    integer :: codres(1)
     character(len=8) :: kfonc, kaux, fami, poum
     character(len=16) :: phenom
 !
@@ -49,25 +49,27 @@ subroutine cdnfon(zimat, kfonc, xx, dn, fxx,&
 !
     if (dn .eq. 0) then
         call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', xx,&
-                    1, kfonc, fxx, codres, 0)
+                    ' ', phenom, 1, 'X ', [xx],&
+                    1, kfonc, val, codres, 0)
     else if (dn .eq. 1) then
         write (kaux,'(A1,A7)') 'D',kfonc(1:7)
         call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', xx,&
-                    1, kaux, fxx, codres, 0)
+                    ' ', phenom, 1, 'X ', [xx],&
+                    1, kaux, val, codres, 0)
     else if (dn .eq. 2) then
         write (kaux,'(A2,A6)') 'DD',kfonc(1:6)
         call rcvalb(fami, kpg, spt, poum, zimat,&
-                    ' ', phenom, 1, 'X ', xx,&
-                    1, kaux, fxx, codres, 0)
+                    ' ', phenom, 1, 'X ', [xx],&
+                    1, kaux, val, codres, 0)
     else
         ier = 3
     endif
 !
-    if (codres .ne. 0) then
+    if (codres(1) .ne. 0) then
         fxx = 0.d0
         ier = 2
+    else
+        fxx=val(1)    
     endif
 !
 end subroutine

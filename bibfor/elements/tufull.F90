@@ -325,7 +325,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                 endif
 !
                 call rcvalb('RIGI', igau, ksp, '+', zi(imate),&
-                            ' ', phenom, 0, ' ', 0.d0,&
+                            ' ', phenom, 0, ' ', [0.d0],&
                             nbv, nomres, valres, valret, 1)
 !
                 cisail = valres(1)/ (1.d0+valres(2))

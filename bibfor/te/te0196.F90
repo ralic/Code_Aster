@@ -17,11 +17,11 @@ subroutine te0196(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES TERMES ELEMENTAIRES EN MECANIQUE
@@ -33,7 +33,7 @@ subroutine te0196(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre
+    integer :: icodre(1)
     real(kind=8) :: dfdx(9), dfdy(9), poids, r
     character(len=8) :: fami, poum
     integer :: nno, kp, npg1, i, ivectu, ipesa, ndim, nnos, jgano
@@ -42,7 +42,7 @@ subroutine te0196(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: k
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfde, jgano)
@@ -57,7 +57,7 @@ subroutine te0196(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', r8b,&
+                ' ', 'ELAS', 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 101 kp = 1, npg1
@@ -71,7 +71,7 @@ subroutine te0196(option, nomte)
 102      continue
         poids = poids*r
 !
-        poids = poids*rho
+        poids = poids*rho(1)
         do 103 i = 1, nno
             k=(kp-1)*nno
             zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + poids * zr(ipesa) * zr(ipesa+1) * zr(ivf+k+i-1)

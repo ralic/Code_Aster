@@ -63,13 +63,13 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !
 !
 !
-    integer :: codre1(4), codre2(2), codre3, codre4(5), codre5(5), iret2
+    integer :: codre1(4), codre2(2), codre3(1), codre4(5), codre5(5), iret2
     character(len=8) :: nomre1(4), nomre2(2), nomre3, nomre4(5), nomre5(5)
     character(len=8) :: nompar(2)
 !
     integer :: npg, nno, nbpar
     integer :: iretp, iretm
-    real(kind=8) :: valre1(4), valre2(2), valre3, valre4(5), valre5(5)
+    real(kind=8) :: valre1(4), valre2(2), valre3(1), valre4(5), valre5(5)
     real(kind=8) :: valpar(2), irram, irrap
     real(kind=8) :: fno, h1
     real(kind=8) :: dux, duy, dph, dth
@@ -110,7 +110,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !
 ! recuperation des donnees materiau pour le discret
     call rcvalb(fami, 1, 1, '+', icodma,&
-                ' ', 'DIS_GRICRA', 0, ' ', 0.d0,&
+                ' ', 'DIS_GRICRA', 0, ' ', [0.d0],&
                 4, nomre1, valre1, codre1, 0)
 !
     knax=valre1(1)
@@ -127,7 +127,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
     irrap = irrap - irram + varim(6)
 !
     call rcvalb(fami, 1, 1, '+', icodma,&
-                ' ', 'DIS_GRICRA', 0, ' ', 0.d0,&
+                ' ', 'DIS_GRICRA', 0, ' ', [0.d0],&
                 2, nomre2, valre2, codre2, 0)
 !
     if (codre2(1) .eq. 0) then
@@ -152,14 +152,14 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
         call rcvalb(fami, 1, 1, '+', icodma,&
                     ' ', 'DIS_GRICRA', nbpar, nompar, valpar,&
                     1, nomre3, valre3, codre3, 0)
-        if (codre3 .eq. 0) then
-            fno=valre3/4.d0
+        if (codre3(1) .eq. 0) then
+            fno=valre3(1)/4.d0
             muax=valre2(2)
         endif
     endif
 !
     call rcvalb(fami, 1, 1, '+', icodma,&
-                ' ', 'DIS_GRICRA', 0, ' ', 0.d0,&
+                ' ', 'DIS_GRICRA', 0, ' ', [0.d0],&
                 5, nomre4, valre4, codre4, 0)
 !
     if (codre4(1) .eq. 0) then

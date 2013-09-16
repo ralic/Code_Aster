@@ -96,7 +96,7 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
 ! ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
 !        -----------
         call rcvalb(fami, igau, isgau, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e = valres(1)
@@ -174,7 +174,7 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
 ! ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
 !        -----------
         call rcvalb(fami, igau, isgau, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -242,7 +242,7 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
 ! ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
 !        -----------
         call rcvalb(fami, igau, isgau, poum, mater,&
-                    ' ', phenom, 1, nompar, valpar,&
+                    ' ', phenom, 1, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)

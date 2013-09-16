@@ -81,10 +81,10 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     call verift(fami, kp, 1, '+', imate,&
                 materi, 'ELAS', 1, epsthe, iret)
     call rcvalb(fami, kp, 1, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 1)
     call rcvalb(fami, kp, 1, '+', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, nomres(3), valres(3), icodre(3), 0)
     e = valres(1)
     nu = valres(2)

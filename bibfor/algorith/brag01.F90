@@ -204,7 +204,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
     nomres(1)='E'
     nomres(2)='NU'
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 0, ' ', 0.d0,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
 !
 !        MODULES INSTANTANES ISOTROPES
@@ -267,8 +267,9 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 !                 AUTRE  PAS DE CONSOLIDATION
 !          LOC : 1 PRISE EN COMPTE LOCALISATION
 !
+    rbid=0.d0
     call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'BETON_RAG', 0, ' ', rbid,&
+                ' ', 'BETON_RAG', 0, ' ', [rbid],&
                 33, nomres, valres, icodre, 2)
 !
     if (valres(1) .eq. 1.0d0) then

@@ -51,10 +51,10 @@ subroutine te0155(option, nomte)
 !        'MECA_2D_BARRE'       : BARRE
 !
 !
-    integer :: codres
+    integer :: codres(1)
     character(len=4) :: fami
     character(len=8) :: nompar(4), poum
-    real(kind=8) :: a, e, rho, xl, temp, xdep, xrig, w(6), w2(3)
+    real(kind=8) :: a, e(1), rho(1), xl, temp, xdep, xrig, w(6), w2(3)
     real(kind=8) :: pgl(3, 3), fl(6), qg(6), ql(6), valpa1(4), valpa2(4)
     real(kind=8) :: r8min, s, s2, s3, s4, s5, xxx, r8bid, vect(6)
     integer :: nno, nc, lx, lorien, idepla, ideplp, i, lvect, lsect
@@ -64,7 +64,7 @@ subroutine te0155(option, nomte)
     real(kind=8) :: valpav(1), fcx, vite2, vp(3), ang1(3), u(3), v(3), instan
     logical :: normal, global, okvent
 !
-    real(kind=8) :: kendog, kdessi, sech, hydr
+    real(kind=8) :: kendog(1), kdessi(1), sech, hydr
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iret1
@@ -156,12 +156,12 @@ subroutine te0155(option, nomte)
         spt=1
         poum='+'
         call rcvalb('FPG1', kpg, spt, poum, zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', r8bid,&
+                    ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'RHO', rho, codres, 1)
 !
         call jevech('PPESANR', 'L', lpesa)
         do 20 i = 1, 3
-            qg(i) = rho * zr(lpesa) * zr(lpesa+i)
+            qg(i) = rho(1) * zr(lpesa) * zr(lpesa+i)
             qg(i+3) = qg(i)
 20      continue
 !
@@ -450,7 +450,7 @@ subroutine te0155(option, nomte)
 !        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         call jevech('PMATERC', 'L', lmater)
         call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', r8bid,&
+                    ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'E', e, codres, 1)
 !
 !        TEMPERATURE DE REFERENCE
@@ -458,7 +458,7 @@ subroutine te0155(option, nomte)
                     materi, 'ELAS', 1, epsth, iret)
 !
 !        TERME DE LA MATRICE ELEMENTAIRE
-        xrig = e * a / xl
+        xrig = e(1) * a / xl
 !
 !        DEPLACEMENT INDUIT PAR LA TEMPERATURE
         xdep = epsth * xl
@@ -489,7 +489,7 @@ subroutine te0155(option, nomte)
 !        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         call jevech('PMATERC', 'L', lmater)
         call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', r8bid,&
+                    ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'E', e, codres, 1)
 !
         call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
@@ -519,7 +519,7 @@ subroutine te0155(option, nomte)
         valpa2(3) = sech
 !
 !        TERME DE LA MATRICE ELEMENTAIRE
-        xrig = e * a / xl
+        xrig = e(1) * a / xl
 !
 ! ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 !           DU SECHAGE
@@ -528,10 +528,10 @@ subroutine te0155(option, nomte)
                     ' ', 'ELAS', 3, nompar, valpa2,&
                     1, 'K_DESSIC', kdessi, codres, 0)
 !
-        if (codres .ne. 0) kdessi=0.d0
+        if (codres(1) .ne. 0) kdessi(1)=0.d0
 !
 !C        DEPLACEMENT INDUIT PAR LE SECHAGE
-        xdep = -kdessi*(sref-sech) * xl
+        xdep = -kdessi(1)*(sref-sech) * xl
 !
 !        --- CALCUL DES FORCES INDUITES ---
         fl(1) = -xrig * xdep
@@ -559,7 +559,7 @@ subroutine te0155(option, nomte)
 !        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         call jevech('PMATERC', 'L', lmater)
         call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', r8bid,&
+                    ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'E', e, codres, 1)
 !
 ! ---- RECUPERATION DE L'INSTANT
@@ -589,7 +589,7 @@ subroutine te0155(option, nomte)
         valpa2(3) = hydr
 !
 !        TERME DE LA MATRICE ELEMENTAIRE
-        xrig = e * a / xl
+        xrig = e(1) * a / xl
 !
 ! ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 !           OU DE L HYDRATATION
@@ -598,10 +598,10 @@ subroutine te0155(option, nomte)
                     ' ', 'ELAS', 3, nompar, valpa2,&
                     1, 'B_ENDOGE', kendog, codres, 0)
 !
-        if (codres .ne. 0) kendog=0.d0
+        if (codres(1) .ne. 0) kendog(1)=0.d0
 !
 !C        DEPLACEMENT INDUIT PAR LE SECHAGE
-        xdep = -kendog*hydr * xl
+        xdep = -kendog(1)*hydr * xl
 !
 !        --- CALCUL DES FORCES INDUITES ---
         fl(1) = -xrig * xdep

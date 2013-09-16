@@ -99,7 +99,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     real(kind=8) :: pqx(4), pqy(4), pqz(4)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
     real(kind=8) :: valres(2), nu, nub, rac2, den, bid
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: nomres(2)
     character(len=16) :: optios
     data h/ 1.d0, 1.d0, -1.d0,-1.d0,-1.d0,-1.d0, 1.d0, 1.d0,&
@@ -260,9 +260,9 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 !
 !
         call rcvalb(fami, kpg, 1, '-', imate,&
-                    ' ', compor(1), 0, ' ', 0.d0,&
+                    ' ', compor(1), 0, ' ', [0.d0],&
                     1, nomres(2), valres(2), icodre, 1)
-        if (icodre .eq. 0) then
+        if (icodre(1) .eq. 0) then
             nu = valres(2)
         else
             call utmess('F', 'ELEMENTS4_72')

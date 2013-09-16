@@ -131,7 +131,7 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     call moytem(fami, npg, 1, '+', temp,&
                 iret)
     call rcvalb(fami, 1, 1, '+', icodma,&
-                ' ', 'ELAS', 1, 'TEMP', temp,&
+                ' ', 'ELAS', 1, 'TEMP', [temp],&
                 2, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)
@@ -143,7 +143,7 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     call moytem(fami, npg, 1, '-', temm,&
                 iret)
     call rcvalb(fami, 1, 1, '-', icodma,&
-                ' ', 'ELAS', 1, 'TEMP', temm,&
+                ' ', 'ELAS', 1, 'TEMP', [temm],&
                 2, nomres, valres, codres, 1)
     em = valres(1)
     num = valres(2)

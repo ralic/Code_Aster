@@ -17,13 +17,13 @@ subroutine te0085(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+!
     character(len=16) :: option, nomte, phenom
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES TERMES ELEMENTAIRES EN MECANIQUE
@@ -42,7 +42,7 @@ subroutine te0085(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: jgano, ndim, nnos
-    real(kind=8) :: r8b, rho
+    real(kind=8) :: r8b, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -54,14 +54,14 @@ subroutine te0085(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', r8b,&
+                ' ', phenom, 0, ' ', [r8b],&
                 1, 'RHO', rho, icodre(1), 1)
 !
     do 101 kp = 1, npg
         k = nno*(kp-1)
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     dfdx, dfdy, poids)
-        poids = poids * rho * zr(ipesa)
+        poids = poids * rho(1) * zr(ipesa)
         if (lteatt(' ','AXIS','OUI')) then
             rx= 0.d0
             do 102 i = 1, nno

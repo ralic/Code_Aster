@@ -132,7 +132,7 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !   récupère tous les paramètres
     valcar(:) = 0.0d0
     call rcvalb('FPG1', 1, 1, '+', zi(imat),&
-                ' ', 'DIS_VISC', 0, ' ', 0.0d0,&
+                ' ', 'DIS_VISC', 0, ' ', [0.0d0],&
                 nbcar, nomcar, valcar, codcar, 0)
 !   examen des codcar. assert pas nécessaire ? car un_parmi(a,b) dans les catalogues
     ASSERT(codcar(ie1)+codcar(is1) .eq. 1)

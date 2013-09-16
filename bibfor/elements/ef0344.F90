@@ -102,7 +102,7 @@ subroutine ef0344(nomte)
     nompar='TEMP'
 !
     call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                ' ', 'ELAS', nbpar, nompar, valpar,&
+                ' ', 'ELAS', nbpar, nompar, [valpar],&
                 2, nomres, valres, codres, 1)
 !
     e=valres(1)

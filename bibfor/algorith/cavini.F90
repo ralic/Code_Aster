@@ -33,9 +33,9 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
     integer :: ndim, nno, npg, lgpg, imate, zz, zzz, zzzz, nono, nitert, ntirmx
     real(kind=8) :: geom(1:ndim, 1:nno)
     real(kind=8) :: vim(1:lgpg, 1:npg), gr
-    real(kind=8) :: lc, mm, echp, ki, epai, ct1, ct2, randd, surff
+    real(kind=8) :: lc(1), mm, echp, ki, epai, ct1, ct2, randd, surff
     integer :: icodre(5)
-    integer :: k2, kpg, spt
+    integer :: k2(1), kpg, spt
     character(len=8) :: nomres(5), fami, poum
     real(kind=8) :: valres(5), sa, sp, sc
 !
@@ -58,10 +58,10 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'ENDO_HETEROGENE', 0, ' ', 0.d0,&
+                ' ', 'ENDO_HETEROGENE', 0, ' ', [0.d0],&
                 5, nomres, valres, icodre, 1)
     call rcvalb(fami, kpg, spt, poum, imate,&
-                ' ', 'NON_LOCAL', 0, ' ', 0.d0,&
+                ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
                 1, 'LONG_CAR', lc, k2, 1)
 !  FACTEUR D ECHELLE
     echp = valres(1)
@@ -88,7 +88,7 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
         ct1=0.d0
         ct1=0.d0-log(1.d0-randd)
         sa=0.d0
-        sa=echp*((lc**3.d0)**(1.d0/mm))/ ((surff*epai)**(1.d0/mm))*(&
+        sa=echp*((lc(1)**3.d0)**(1.d0/mm))/ ((surff*epai)**(1.d0/mm))*(&
         ct1**(1.d0/mm))
         do 5,zz=1,npg
         vim(3,zz)=sa
@@ -97,15 +97,13 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
 !  INITIALISATION DE LA CONTRAINTE DE PROPAGATION
 ! SI NON PRECISEE
     if (vim(4,1) .lt. 0.0001d0) then
-!       CALL RCVALA(IMATE,' ','NON_LOCAL',0,' ',0.D0,1,'LONG_CAR',
-!     &              LC,K2,'FM')
 !
 ! TENACITE
-!        KI=1.0D6
+!
         ct2=0.d0
         ct2=0.5736d0
         sp=0.d0
-        sp=ct2*((ki**2.d0/(3.1416d0*lc))**(0.5d0))
+        sp=ct2*((ki**2.d0/(3.1416d0*lc(1)))**(0.5d0))
         do 6,zzz=1,npg
         vim(4,zzz)=sp
  6      continue

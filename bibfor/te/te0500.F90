@@ -175,20 +175,20 @@ subroutine te0500(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_DIFFU', 1, nompar, valpar,&
+                ' ', 'THM_DIFFU', 1, nompar, [valpar],&
                 nbre1, nomre1, valre1, codme1, 0)
 !
     if (codme1(1) .eq. 0) then
         permin = valre1(1)
     else if (codme1(1).eq.1) then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'THM_DIFFU', 1, nompar, valpar,&
+                    ' ', 'THM_DIFFU', 1, nompar, [valpar],&
                     nbrr1, nomrr1, valrr1, codmr1, 0)
         if (( codmr1(1).eq.0 ) .and. ( codmr1(2).eq.0 )) then
             permin = sqrt(valrr1(1)**2+valrr1(2)**2+valrr1(1)**2)
         else
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'THM_DIFFU', 1, nompar, valpar,&
+                        ' ', 'THM_DIFFU', 1, nompar, [valpar],&
                         nbrr1, nomrr2, valrr2, codmr2, 0)
             if (( codmr2(1).eq.0 ) .and. ( codmr2(2).eq.0 )) then
                 permin = sqrt(valrr1(1)**2+valrr1(2)**2)
@@ -202,7 +202,7 @@ subroutine te0500(option, nomte)
 !        VISCOSITE DYNAMIQUE DU LIQUIDE
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THM_LIQU', 1, nompar, valpar,&
+                ' ', 'THM_LIQU', 1, nompar, [valpar],&
                 nbre2, nomre2, valre2, codme2, 1)
 !
     if (codme2(1) .eq. 0 .and. codme2(2) .eq. 0) then
@@ -215,20 +215,20 @@ subroutine te0500(option, nomte)
 ! --- D. MODULE DE YOUNG
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 1, nompar, valpar,&
+                ' ', 'ELAS', 1, nompar, [valpar],&
                 nbre3, nomre3, valre3, codme3, 0)
 !
     if (codme3(1) .eq. 0) then
         myoung = valre3(1)
     else if (codme3(1).eq.1) then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS_ISTR', 1, nompar, valpar,&
+                    ' ', 'ELAS_ISTR', 1, nompar, [valpar],&
                     nbrr3, nomrr3, valrr3, codmr3, 0)
         if (( codmr3(1).eq.0 ) .and. ( codmr3(2).eq.0 )) then
             myoung = sqrt(valrr3(1)**2+valrr3(2)**2)
         else
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', 'ELAS_ORTH', 1, nompar, valpar,&
+                        ' ', 'ELAS_ORTH', 1, nompar, [valpar],&
                         nbrr3, nomrr4, valrr4, codmr4, 0)
             if (( codmr4(1).eq.0 ) .and. ( codmr4(2).eq.0 )) then
                 myoung = sqrt(valrr4(1)**2+valrr4(2)**2)
