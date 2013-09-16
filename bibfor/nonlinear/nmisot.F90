@@ -513,12 +513,18 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 sigdv(k) = sigmdv(k)
                 rp = rp + sigdv(k)**2
 118          continue
-            rp = sqrt(1.5d0*rp)
+             rp = sqrt(1.5d0*rp)
+!            condition sur sigeps inoperante pour RIGI_MECA_TANG car deps=0             
+             sigeps=1.d0
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
             do 119 k = 1, ndimsi
                 sigdv(k) = sigpdv(k)
 119          continue
+             sigeps = 0.d0
+             do 170 k = 1, ndimsi
+                sigeps = sigeps + sigdv(k)*depsdv(k)
+170          continue
         endif
 !
 !       -- 8.1 PARTIE PLASTIQUE:
@@ -530,10 +536,6 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !
         a=1.d0
         if (.not.dech) then
-            sigeps = 0.d0
-            do 170 k = 1, ndimsi
-                sigeps = sigeps + sigdv(k)*depsdv(k)
-170          continue
             if (plasti .and. sigeps .ge. 0.d0) then
                 a = 1.d0+1.5d0*deuxmu*dp/rp
                 coef = - (1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/rp** 2 *(1.d0 - dp*rprim/rp )/a
