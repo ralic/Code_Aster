@@ -37,7 +37,7 @@ T1= 3600;
 
 
 
-NORDRE = 10.
+NORDRE = 10
 
    
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
@@ -240,7 +240,7 @@ ORIREP=AFFE_CARA_ELEM(MODELE=MODELE,
        MASSIF=( _F(GROUP_MA=('TOUT'),
                    ANGL_REP=(ALPHA,BETA),
                         ),),);                 
-# On passe au calcul
+# On passe au calcul avec NORDRE CORRESPONDANT A WTNA112A
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CARA_ELEM=ORIREP,
@@ -271,9 +271,9 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
              VALE_REFE = PREF,
-             VALE_CALC = 1.3029221E+07,
+             VALE_CALC = 1.257696E+07,
              CRITERE = 'RELATIF',
-             PRECISION = 0.01,
+             PRECISION = 0.05,
                   REFERENCE='ANALYTIQUE',)
            )
 TEST_RESU(
@@ -283,10 +283,60 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N2',
              VALE_REFE = PREF,
-             VALE_CALC = 1.30367331E+07,
+             VALE_CALC = 1.2585286268E+07,
+             CRITERE = 'RELATIF',
+             PRECISION = 0.05,
+             REFERENCE='ANALYTIQUE',)
+           )
+   
+# On passe au calcul avec NORDRE PLUS PETIT AFIN DE S'ASSURER QUE L ON CONVERGE VERS LA SOLUTION DE REFERENCE
+NORDR1 = 15
+
+   
+INST2=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(
+                      _F( JUSQU_A=T1,NOMBRE=NORDR1,),
+                             ),);
+U1=STAT_NON_LINE(MODELE=MODELE,
+                 CARA_ELEM=ORIREP,
+                 CHAM_MATER=CHMAT0,
+                 EXCIT=(
+                        _F(CHARGE=CLFMEC,),
+                        _F(CHARGE=PRHAUT,),  
+                        _F(CHARGE=CLFT,FONC_MULT = EV_THER,),),
+                 COMP_INCR=_F(RELATION='KIT_THM',PARM_THETA=1.,
+                              RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
+                 INCREMENT=_F(LIST_INST=INST2,
+                              INST_FIN=T1,
+                                ),
+                 ETAT_INIT =_F(SIGM=SIGINIT,DEPL=DDL_INIT),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
+                 ARCHIVAGE  = _F( LIST_INST  = INST2),
+                       ); 
+TEST_RESU(
+           RESU=_F(  RESULTAT = U1, 
+             NUME_ORDRE = NORDR1,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'PRE1',
+             NOEUD = 'N1',
+             VALE_REFE = PREF,
+             VALE_CALC = 1.2994293E+07,
+             CRITERE = 'RELATIF',
+             PRECISION = 0.01,
+                  REFERENCE='ANALYTIQUE',)
+           )
+TEST_RESU(
+           RESU=_F(  RESULTAT = U1 ,     
+             NUME_ORDRE = NORDR1,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'PRE1',
+             NOEUD = 'N2',
+             VALE_REFE = PREF,
+             VALE_CALC = 1.3001383540208E+07,
              CRITERE = 'RELATIF',
              PRECISION = 0.01,
              REFERENCE='ANALYTIQUE',)
            )
-
 FIN();

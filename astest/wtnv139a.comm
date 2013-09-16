@@ -86,7 +86,7 @@ SILXZ = SIL[0][2]
 SILYZ = SIL[1][2]
 
 ###############################
-#print 'SIGL',SIL
+print 'SIGL',SIL
 
 # COEFFICIENTS DE BIOT REPERE LN
 CBIOTL = 0.81689
