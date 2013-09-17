@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NOM='FDLV112A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 #  LE MODELE PROVOQUANT CES ALARMES EST UN MODELE D'INTERFACE
 
 LIST_IN = DEFI_LIST_REEL( DEBUT=0.,
-                           INTERVALLE=_F(  JUSQU_A = 11.14,  PAS = 0.002))
+                           INTERVALLE=_F(  JUSQU_A = 11.14,  PAS = 0.01))
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -47,11 +47,11 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     CREA_GROUP_NO=_F(INTERSEC=('FONDATIO','BARRAGE'),
                                      NOM='BARFOND',),);
 
-BETON=DEFI_MATERIAU(ELAS=_F(E=3.6E10,
-                            NU=0.2,
+BETON=DEFI_MATERIAU(ELAS=_F(E=3.6000000000E10,
+                            NU=0.20000000000000001,
                             RHO=2400.0,
                             AMOR_ALPHA=2.E-3,
-                            AMOR_BETA=0.3,),);
+                            AMOR_BETA=0.29999999999999999,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(GROUP_MA='BARRAGE',
@@ -242,10 +242,10 @@ MODHUMI2=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN2,
 DYNGEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        MATR_MASS=MASTOT2,
                        MATR_RIGI=RIGGEN2,
-                AMOR_MODAL=_F(AMOR_REDUIT=0.05,),
+                AMOR_MODAL=_F(AMOR_REDUIT=0.050000000000000003,),
                 SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        INCREMENT=_F(INST_INIT=0.0,
-                                    INST_FIN=11.14,
+                                    INST_FIN=11.140000000000001,
                                     PAS=2.E-3,),
                        ARCHIVAGE=_F(PAS_ARCH=5,
                        ),
@@ -280,27 +280,67 @@ DXR=RECU_FONCTION(RESULTAT=DYN,
                   NOM_CMP='DX',
                   NOEUD='NO1909',);
 
-FREQSPEC=DEFI_LIST_REEL(DEBUT=0.1,
+DYR=RECU_FONCTION(RESULTAT=DYN,
+                  NOM_CHAM='ACCE',
+                  TOUT_ORDRE='OUI',
+                  NOM_CMP='DY',
+                  NOEUD='NO1909',);
+
+DZR=RECU_FONCTION(RESULTAT=DYN,
+                  NOM_CHAM='ACCE',
+                  TOUT_ORDRE='OUI',
+                  NOM_CMP='DZ',
+                  NOEUD='NO1909',);
+
+FREQSPEC=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
                         INTERVALLE=(_F(JUSQU_A=10.0,
-                                       NOMBRE=100,),
+                                       NOMBRE=99,),
                                     _F(JUSQU_A=20.0,
                                        NOMBRE=100,),
                                     _F(JUSQU_A=100.0,
-                                       NOMBRE=100,),),);
+                                       NOMBRE=80,),),);
 
 SPXR=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=DXR,
-                                AMOR_REDUIT=0.05,
+                                AMOR_REDUIT=0.050000000000000003,
                                 LIST_FREQ=FREQSPEC,
                                 NORME=1.0,),);
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.190154,
-                         VALE_PARA=0.43,
+SPYR=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=DYR,
+                                AMOR_REDUIT=0.050000000000000003,
+                                LIST_FREQ=FREQSPEC,
+                                NORME=1.0,),);
+
+SPZR=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=DZR,
+                                AMOR_REDUIT=0.050000000000000003,
+                                LIST_FREQ=FREQSPEC,
+                                NORME=1.0,),);
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=5.858849,
+                         VALE_PARA=1.0,
                          FONCTION=DXR,
                          ),
-                      _F(VALE_CALC=16.80180,
-                         VALE_PARA=(10.0, 0.05),
+                      _F(VALE_CALC=17.57892,
+                         VALE_PARA=(9.0, 0.05),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPXR,
+                         ),
+                      _F(VALE_CALC=2.807564,
+                         VALE_PARA=1.0,
+                         FONCTION=DYR,
+                         ),
+                      _F(VALE_CALC=9.749478,
+                         VALE_PARA=(9.0, 0.05),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPYR,
+                         ),
+                      _F(VALE_CALC=-0.77467029,
+                         VALE_PARA=1.02,
+                         FONCTION=DZR,
+                         ),
+                      _F(VALE_CALC=3.805157,
+                         VALE_PARA=(17.4, 0.05),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=SPZR,
                          ),
                       ),
               )
