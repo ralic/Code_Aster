@@ -46,7 +46,7 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Contraintes aux noeuds par élément"), ),
             "SIGM_NOEU":        ( ("lin", "nonlin",),
                                  _(u"Contraintes aux noeuds"), ),
-            "SIPM_ELNO":        ( ("lin",),
+            "SIPM_ELNO":        ( ("lin","nonlin"),
                                  _(u"Contraintes aux noeuds par élément pour les éléments de poutre"), ),
             "SIPO_ELNO":        ( ("lin", "nonlin",),
                                  _(u"Contraintes aux noeuds par élément pour les éléments de poutre"), ),

@@ -117,6 +117,8 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                                 ITER_GLOB_MAXI=100,),
                  );
 
+U1=CALC_CHAMP(CONTRAINTE=('SIEF_ELNO','SIPM_ELNO'),reuse=U1,RESULTAT=U1)
+
 
 TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='AUTRE_ASTER',
@@ -152,6 +154,61 @@ TEST_RESU(RESU=(_F(INST=1.0,
                 ),
           )
 
+# Remplacer N001 par N002 des la correction ELGA -> ELNO pour les POU_D_EM
 
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N001',
+                   SOUS_POINT = 200,
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-7.80155774644956E+06,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N001',
+                   SOUS_POINT = 1,
+                   NOM_CMP='SIXX',
+                   VALE_CALC=1.31499192496359E+06,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='SIPM_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N001',
+                   NOM_CMP='SIXXMIN',
+                   VALE_CALC=-7.80155774644956E+06,
+                   VALE_REFE=-7.80155774644956E+06,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0000000000000001E-06,
+                   ),
+                ),
+          )
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='SIPM_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N001',
+                   NOM_CMP='SIXXMAX',
+                   VALE_CALC=1.31499192496359E+06,
+                   VALE_REFE=1.31499192496359E+06,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0000000000000001E-06,
+                   ),
+                ),
+          )
 
 FIN()

@@ -96,6 +96,8 @@ MODE_LOCAL__
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
     ENONLIN  = NEUT_I   ELEM__         (X1)
     ESTRAUX  = STRX_R   ELGA__ RIGI    (ALPHA    BETA     GAMMA)
+    ESIMXNO  = SIEFMX_R ELNO__ IDEN__  (SIXXMIN     SIXXMAX)
+    ESIMXNC  = SIEFMX_C ELNO__ IDEN__  (SIXXMIN     SIXXMAX)
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -267,7 +269,8 @@ OPTION__
                                      CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                              OUT__  ECONTNO  PCONTRR  ECONTNC  PCONTRC
+                              OUT__  ESIMXNO  PSIMXRR
+                                     ESIMXNC  PSIMXRC
     SIPO_ELNO           149   IN__   CABSCUR  PABSCUR  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                                      DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  DDL_MECA PDEPLAR
                                      CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC

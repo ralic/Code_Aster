@@ -216,7 +216,7 @@ subroutine te0344(option, nomte)
 ! --- ARCHIVAGE
 !
     if (option .eq. 'SIPM_ELNO') then
-        call jevech('PCONTRR', 'E', jeffo)
+        call jevech('PSIMXRR', 'E', jeffo)
         do 210 i = 1, 6
             fe(i) = flr(i)
             fe(i+6) = flr(i+7)

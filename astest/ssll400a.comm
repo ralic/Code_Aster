@@ -271,7 +271,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVF100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=3183.0988618379,
                   VALE_REFE=3183.1,
                   REFERENCE = 'ANALYTIQUE',
@@ -287,7 +287,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVF100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=12732.395447352,
                   VALE_REFE=1.27324E4,
                   REFERENCE = 'ANALYTIQUE',
@@ -408,9 +408,22 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVF100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(1.2732395447388E+05, -1.2732395447388E+05),
-                  VALE_REFE=(1.27324E5, -1.27324E5),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=1.2732395447388E+05,
+                  VALE_REFE=1.27324E5,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-1.2732395447388E+05,
+                  VALE_REFE=-1.27324E5,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
@@ -424,7 +437,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVF100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=5.790023100122E-10,
                   VALE_REFE=0.0,
                   REFERENCE = 'ANALYTIQUE',
@@ -432,39 +445,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='ABSOLU',
                   MAILLE='S112',),
           )
-
-#
-# SXY A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MCVF100Y,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N1',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=3183.0988618385,
-                  VALE_REFE=3183.0999999999999,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S13',),
-          )
-
-#
-# SXY A X = L
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MCVF100Y,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=12732.395447351,
-                  VALE_REFE=1.27324E4,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S112',),
-          )
-
 #
 # ------ MOM100X - MOMENT DE TORSION  MX = 100 N.M AU NOEUD N2 :
 #
@@ -518,70 +498,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='MT',
                   VALE_CALC=100.0,
                   VALE_REFE=100.0,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S112',),
-          )
-
-#
-# SXY A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MCVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N1',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=63661.977236758,
-                  VALE_REFE=6.3661900000000001E4,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S13',),
-          )
-
-#
-# SXY A X = L
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MCVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=5.0929581789406E+05,
-                  VALE_REFE=5.0929579999999999E5,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S112',),
-          )
-
-#
-# SXZ A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MCVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N1',
-                  NOM_CMP='SIXZ',
-                  VALE_CALC=63661.977236758,
-                  VALE_REFE=6.3661900000000001E4,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S13',),
-          )
-
-#
-# SXZ A X = L
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MCVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXZ',
-                  VALE_CALC=5.0929581789406E+05,
-                  VALE_REFE=5.0929579999999999E5,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
@@ -701,9 +617,22 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVM100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(1.2732395447413E+05,-1.2732395447413E+05),
-                  VALE_REFE=(1.2732395E5, -1.2732395E5),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=1.2732395447413E+05,
+                  VALE_REFE=1.2732395E5,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-1.2732395447413E+05,
+                  VALE_REFE=-1.2732395E5,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
@@ -717,14 +646,28 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVM100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(1.0185916357881E+06,-1.0185916357881E+06),
-                  VALE_REFE=(1.0185916E6, -1.0185916E6),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=1.0185916357881E+06,
+                  VALE_REFE=1.0185916E6,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
                   MAILLE='S112',),
           )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MCVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-1.0185916357881E+06,
+                  VALE_REFE=-1.0185916E6,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
+          )
+
 
 #
 # ------ DENS100X - FORCE REPARTIE FX = 100 N
@@ -791,7 +734,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVD100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=3183.0988618379,
                   VALE_REFE=3183.0900000000001,
                   REFERENCE = 'ANALYTIQUE',
@@ -807,7 +750,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVD100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=1.1308638867426E-13,
                   VALE_REFE=0.0,
                   REFERENCE = 'ANALYTIQUE',
@@ -926,27 +869,24 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVDENY,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(63661.977236883,-63661.977236883),
-                  VALE_REFE=(6.3662E4, -6.3662E4),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=63661.977236883,
+                  VALE_REFE=6.3662E4,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
                   MAILLE='S13',),
           )
 
-#
-# SXY A X = 0
-#
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MCVDENY,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=(3183.0988618381,-3183.0988618381),
-                  VALE_REFE=(3183.0999999999999, -3183.0999999999999),
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-63661.977236883,
+                  VALE_REFE=-6.3662E4,
                   REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.E-3,
+                  PRECISION=1.0E-05,
                   CRITERE='RELATIF',
                   MAILLE='S13',),
           )
@@ -1064,7 +1004,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVF100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=20000.0,
                   VALE_REFE=2.E4,
                   REFERENCE = 'ANALYTIQUE',
@@ -1080,7 +1020,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVF100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=40000.0,
                   VALE_REFE=4.E4,
                   REFERENCE = 'ANALYTIQUE',
@@ -1199,9 +1139,22 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVF100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(2.3999999998788E+06,-2.3999999998788E+06),
-                  VALE_REFE=(2.400000E6, -2.400000E6),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=2.3999999998788E+06,
+                  VALE_REFE=2.400000E6,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVF100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-2.3999999998788E+06,
+                  VALE_REFE=-2.400000E6,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
@@ -1215,44 +1168,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVF100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=1.4188117347658E-07,
                   VALE_REFE=0.0,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.E-3,
                   CRITERE='ABSOLU',
-                  MAILLE='S112',),
-          )
-
-#
-# SXY A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVF100Y,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N1',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=20000.0,
-                  VALE_REFE=2.E4,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S13',),
-          )
-
-#
-# SXY A X = L
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVF100Y,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=39999.999999988,
-                  VALE_REFE=4.E4,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
                   MAILLE='S112',),
           )
 
@@ -1313,71 +1234,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   MAILLE='S112',),
           )
-
-#
-# SXY A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N1',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=1.56E+06,
-                  VALE_REFE=1.560000E6,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S13',),
-          )
-
-#
-# SXY A X = L
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=3.84E+06,
-                  VALE_REFE=4.037100E6,
-                  CRITERE='RELATIF',
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=0.050000000000000003,
-                  MAILLE='S112',),
-          )
-
-#
-# SXZ A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N1',
-                  NOM_CMP='SIXZ',
-                  VALE_CALC=1.56E+06,
-                  VALE_REFE=1.560000E6,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S13',),
-          )
-
-#
-# SXZ A X = L
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVM100X,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXZ',
-                  VALE_CALC=3.84E+06,
-                  VALE_REFE=4.037100E6,
-                  CRITERE='RELATIF',
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=0.05,
-                  MAILLE='S112',),
-          )
-
 #
 # ------ MOM100Y - MOMENT DE FLEXION  MY = 100 N.M AU NOEUD N2 :
 #
@@ -1489,9 +1345,21 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVM100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(1.200000E6, -1.200000E6),
-                  VALE_REFE=(1.200000E6, -1.200000E6),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=1.200000E6,
+                  VALE_REFE=1.200000E6,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
+          )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-1.200000E6,
+                  VALE_REFE=-1.200000E6,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
@@ -1505,14 +1373,28 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVM100Y,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(-4.800000E6, 4.800000E6),
-                  VALE_REFE=(-4.800000E6, 4.800000E6),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=4.800000E6,
+                  VALE_REFE=4.800000E6,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
                   MAILLE='S112',),
           )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVM100Y,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N2',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-4.800000E6,
+                  VALE_REFE=-4.800000E6,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S112',),
+          )
+
 
 #
 # ------ DENS100X - FORCE REPARTIE FX = 100 N
@@ -1579,7 +1461,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVD100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=20000.0,
                   VALE_REFE=2.E4,
                   REFERENCE = 'ANALYTIQUE',
@@ -1595,7 +1477,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVD100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N7',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=13333.333333333,
                   VALE_REFE=1.33333E4,
                   REFERENCE = 'ANALYTIQUE',
@@ -1611,7 +1493,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVD100X,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=2.3092638912203E-11,
                   VALE_REFE=0.0,
                   REFERENCE = 'ANALYTIQUE',
@@ -1730,14 +1612,27 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVDENY,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=(1.200000E6, -1.200000E6),
-                  VALE_REFE=(1.200000E6, -1.200000E6),
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=1.200000E6,
+                  VALE_REFE=1.200000E6,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
                   CRITERE='RELATIF',
                   MAILLE='S13',),
           )
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  RESULTAT=MRVDENY,
+                  NOM_CHAM='SIPM_ELNO',
+                  NOEUD='N1',
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-1.200000E6,
+                  VALE_REFE=-1.200000E6,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION=1.0E-05,
+                  CRITERE='RELATIF',
+                  MAILLE='S13',),
+          )
+
 
 #
 # SXX A X = L
@@ -1746,7 +1641,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MRVDENY,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXX',
+                  NOM_CMP='SIXXMAX',
                   VALE_CALC=2.6376900663649E-08,
                   VALE_REFE=0.0,
                   REFERENCE = 'ANALYTIQUE',
@@ -1754,39 +1649,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='ABSOLU',
                   MAILLE='S112',),
           )
-
-#
-# SXY A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVDENY,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N1',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=20000.0,
-                  VALE_REFE=2.E4,
-                  CRITERE='RELATIF',
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.E-2,
-                  MAILLE='S13',),
-          )
-
-#
-# SXY A X = 0
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MRVDENY,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=1.8196999462816E-09,
-                  VALE_REFE=0.0,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.E-3,
-                  CRITERE='ABSOLU',
-                  MAILLE='S112',),
-          )
-
 #
 # POUTRE DE SECTION GENERALE VARIABLE
 #
@@ -1937,7 +1799,7 @@ MCGPESX=MECA_STATIQUE(         MODELE=MO,
                                   EXCIT=_F( CHARGE = PENSENGX),
                                  )
 
-CALC_CHAMP(reuse=MCGPESX,RESULTAT=MCGPESX,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+CALC_CHAMP(reuse=MCGPESX,RESULTAT=MCGPESX,CONTRAINTE=('EFGE_ELNO',))
 
 
 #

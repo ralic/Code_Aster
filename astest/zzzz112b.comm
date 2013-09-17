@@ -101,7 +101,7 @@ RESU2=MECA_STATIQUE(        MODELE=MODAST,
 RESU2=CALC_CHAMP(reuse=RESU2,
                  RESULTAT=RESU2,
                  LIST_INST=L_INST,
-                 CONTRAINTE='SIGM_ELNO',);
+                 CONTRAINTE=('SIGM_ELNO','SIPM_ELNO'),);
 
 RESUPOS=POST_CHAMP(RESULTAT=RESU2,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
@@ -138,6 +138,13 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_REFE=100.0,
                    PRECISION=0.029999999999999999,
                    MAILLE='M1',),
+                _F(INST=1.0,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='SIPM_ELNO',
+                   NOEUD='N321',
+                   NOM_CMP='SIXXMAX',
+                   VALE_CALC=3.7861524464911E-06,
+                   MAILLE='M101',),
                 ),
           )
 
@@ -154,7 +161,7 @@ RESU_NL=STAT_NON_LINE(        MODELE=MODAST,
 
 RESU_NL=CALC_CHAMP(reuse=RESU_NL,
                    RESULTAT=RESU_NL,
-                   CONTRAINTE='SIGM_ELNO',
+                   CONTRAINTE=('SIGM_ELNO','SIPM_ELNO'),
                    VARI_INTERNE='VARI_ELNO',);
 
 RESNLPOS=POST_CHAMP(RESULTAT=RESU_NL,
@@ -197,6 +204,16 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_REFE=100.0,
                    PRECISION=0.029999999999999999,
                    MAILLE='M1',),
+                _F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU_NL,
+                   NOM_CHAM='SIPM_ELNO',
+                   NOEUD='N321',
+                   NOM_CMP='SIXXMAX',
+                   VALE_CALC=3.7861524464911E-06,
+                   VALE_REFE=3.7861524464911E-06,
+                   PRECISION=0.029999999999999999,
+                   MAILLE='M101',),
                 ),
           )
 

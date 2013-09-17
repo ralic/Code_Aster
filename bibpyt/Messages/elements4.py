@@ -30,7 +30,15 @@ cata_msg = {
 3 : _(u"""
  pour l'option INDIC_SEUIL, les seules relations admises sont "VMIS_ISOT_LINE", "VMIS_ISOT_TRAC"  et "VMIS_CINE_LINE" .
 """),
+4 : _(u"""
+ L'option SIPM_ELNO n'est pas autorisée pour les sections de poutre de type GENERALE
+ pour les éléments de poutre autres que multifibre.
+ En effet, dans ce cas il est impossible de connaître les contraintes extrêmes dans la section.
 
+ Conseil :
+
+ Vous pouvez utiliser des poutres multifibres pour calculer cette option.
+"""),
 14 : _(u"""
   Vous utilisez un élément de type multifibre <%(k1)s>.
   Il faut que sous COMP_INCR le mot clef RELATION='MULTIFIBRE'.

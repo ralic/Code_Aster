@@ -40,6 +40,8 @@ subroutine te0149(option, nomte)
 !        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
 !        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
+!        'MECA_POU_D_EM': POUTRE D'EULER MULTIFIBRE (SIPM_ELNO UNIQUEMENT)
+!        'MECA_POU_D_TGM': POUTRE DE TIMOSHENKO MULTIFIBRE (SIPM_ELNO UNIQUEMENT)
 !     ------------------------------------------------------------------
 !
     integer :: nbres, nbref
@@ -48,6 +50,8 @@ subroutine te0149(option, nomte)
     integer :: labsc, jeffo, iret, nbpar
     real(kind=8) :: valres(nbres), valref(nbref)
     integer :: codres(nbres), codref(nbref)
+    integer :: nbfib, inbf, isief, ino, i
+    real(kind=8) :: sixx, simin, simax
     character(len=8) :: nompar, nomres(nbres), nomref(nbref)
     character(len=24) :: suropt, messk(2)
     real(kind=8) :: zero, e, nu, rho, valpar, r1, ep1, absmoy, rhos, rhofi
@@ -62,6 +66,30 @@ subroutine te0149(option, nomte)
     okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
     ASSERT(okopt)
 !
+!   SIPM_ELNO pour les PMF
+    if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM')then
+        call jevech('PNBSP_I', 'L', inbf)
+        nbfib = zi(inbf)
+        call jevech('PSIEFNOR', 'L', isief)
+        call jevech('PSIMXRR', 'E', jeffo)
+        do ino = 1,2
+            simax = zr(isief-1+nbfib*(ino-1)+1)
+            simin = zr(isief-1+nbfib*(ino-1)+1)
+            do i = 2, nbfib
+                sixx = zr(isief-1+nbfib*(ino-1)+i)
+                if (sixx .gt. simax) then
+                    simax = sixx
+                elseif (sixx .lt. simin)then
+                    simin = sixx
+                endif
+            enddo
+            zr(jeffo-1+2*(ino-1)+1) = simin
+            zr(jeffo-1+2*(ino-1)+2) = simax
+        enddo
+    else
+
+
+
     zero = 0.d0
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -87,11 +115,7 @@ subroutine te0149(option, nomte)
 152  end do
 ! --- ------------------------------------------------------------------
 !
-    if (nomte(1:12) .eq. 'MECA_POU_D_E') then
-        npg = 2
-    else
-        npg = 3
-    endif
+    npg = 3
 !
     call moytem('RIGI', npg, 1, '+', valpar,&
                 iret)
@@ -162,7 +186,7 @@ subroutine te0149(option, nomte)
 !                 EFGE(4)  = MT  EFGE(5)  = MFY  EFGE(6)  = MFZ
 !        NOEUD 2  EFGE(7)  = N   EFGE(8)  = VY   EFGE(9)  = VZ
 !                 EFGE(10) = MT  EFGE(11) = MFY  EFGE(12) = MFZ
-        call jevech('PCONTRR', 'E', jeffo)
+        call jevech('PSIMXRR', 'E', jeffo)
         call posigr(nomte, efge, zr(jeffo))
 !
 ! --- ------------------------------------------------------------------
@@ -177,5 +201,7 @@ subroutine te0149(option, nomte)
 !                 EFGE(10) = MT  EFGE(11) = MFY  EFGE(12) = MFZ
         call jevech('PCONTPO', 'E', jeffo)
         call posipr(nomte, efge, zr(jeffo))
+    endif
+!   fin if PMF
     endif
 end subroutine

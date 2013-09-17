@@ -115,6 +115,8 @@ MODE_LOCAL__
                                         KZ       GAX      DXINT    ALPHA    BETA     GAMMA   )
     EGAMIMA  = SPMX_R   ELGA__ RIGI    (VAL      NUCOU    NUSECT   NUFIBR   POSIC   POSIS    )
     ENOMIMA  = SPMX_R   ELNO__ IDEN__  (VAL      NUCOU    NUSECT   NUFIBR   POSIC   POSIS    )
+    ESIMXNO  = SIEFMX_R ELNO__ IDEN__  (SIXXMIN     SIXXMAX)
+    ESIMXNC  = SIEFMX_C ELNO__ IDEN__  (SIXXMIN     SIXXMAX)
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -222,7 +224,7 @@ OPTION__
     INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      141   IN__   CABSCUR  PABSCUR  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I  
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I
                                      ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR
     MASS_INER           38    IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -295,6 +297,9 @@ OPTION__
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           4     IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
+    SIPM_ELNO           149   IN__   ECONTNO  PSIEFNOR ENBSP_I  PNBSP_I
+                              OUT__  ESIMXNO  PSIMXRR
+                                     ESIMXNC  PSIMXRC
     SIPO_ELNO           -1    IN__    OUT__    XXXXXX   XXXXXX
     MINMAX_SP           99    IN__
                               OUT__  EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA

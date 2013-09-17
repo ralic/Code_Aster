@@ -180,46 +180,30 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   MAILLE='S11',),
           )
-
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=MEST1,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N2',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=4.6426162502738E+05,
-                  VALE_REFE=4.6426159999999998E5,
-                  REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
-                  CRITERE='RELATIF',
-                  MAILLE='S11',),
-          )
-
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N1',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=-1856.8129745701,
-                  VALE_REFE=-1856.8,
+                  NOM_CMP='SIXXMIN',
+                  VALE_CALC=-8.105694691387E+05,
+                  VALE_REFE=-8.1056E5,
                   REFERENCE = 'ANALYTIQUE',
-                  PRECISION=1.0E-05,
+                  PRECISION=1.5E-05,
                   CRITERE='RELATIF',
                   MAILLE='S11',),
           )
-
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MEST1,
                   NOM_CHAM='SIPM_ELNO',
                   NOEUD='N2',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=3.0555344783583E-11,
-                  VALE_REFE=0.0,
+                  NOM_CMP='SIXXMAX',
+                  VALE_CALC=4.6426162502738E+05,
+                  VALE_REFE=4.6426159999999998E5,
                   REFERENCE = 'ANALYTIQUE',
                   PRECISION=1.0E-05,
-                  CRITERE='ABSOLU',
+                  CRITERE='RELATIF',
                   MAILLE='S11',),
           )
 

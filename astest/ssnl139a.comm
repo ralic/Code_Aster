@@ -116,6 +116,8 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                 ITER_GLOB_MAXI=100,),
                  );
+U1=CALC_CHAMP(CONTRAINTE=('SIEF_ELNO','SIPM_ELNO'),reuse=U1,RESULTAT=U1)
+
 
 
 TEST_RESU(RESU=(_F(INST=1.0,
@@ -137,5 +139,62 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    ),
                 ),
           )
+
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N002',
+                   SOUS_POINT = 200,
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-7.6209543436533E+06,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N002',
+                   SOUS_POINT = 1,
+                   NOM_CMP='SIXX',
+                   VALE_CALC=1.1454966160064E+06,
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='SIPM_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N002',
+                   NOM_CMP='SIXXMIN',
+                   VALE_CALC=-7.6209543436533E+06,
+                   VALE_REFE=-7.6209543436533E+06,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0000000000000001E-06,
+                   ),
+                ),
+          )
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='SIPM_ELNO',
+                   MAILLE='SEG2001',
+                   NOEUD='N002',
+                   NOM_CMP='SIXXMAX',
+                   VALE_CALC=1.1454966160064E+06,
+                   VALE_REFE=1.1454966160064E+06,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0000000000000001E-06,
+                   ),
+                ),
+          )
+
 
 FIN()

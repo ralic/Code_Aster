@@ -101,7 +101,7 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
                       )
 
 #
-MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO',))
 
 
 #
@@ -157,20 +157,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   PRECISION=9.9999999999999995E-07,
                   MAILLE='S17',),
-          )
-
-#
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MEST1,
-                  NOM_CHAM='SIPM_ELNO',
-                  NOEUD='N8',
-                  NOM_CMP='SIXX',
-                  VALE_CALC= 1.76425283E+07,
-                  VALE_REFE=1.7642520E7,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,
-                  MAILLE='S18',),
           )
 
 #

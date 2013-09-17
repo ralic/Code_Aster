@@ -39,7 +39,7 @@ MEST1B=MECA_STATIQUE(  MODELE=MO,
                        CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
                        EXCIT=_F( CHARGE = CHARG1B)   )
 
-MEST1B=CALC_CHAMP(reuse=MEST1B,RESULTAT=MEST1B,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+MEST1B=CALC_CHAMP(reuse=MEST1B,RESULTAT=MEST1B,CONTRAINTE=('EFGE_ELNO',))
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -126,26 +126,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='SIPM_ELNO',
-                   NOEUD='N1',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=49.999999999,
-                   VALE_REFE=50.0,
-                   MAILLE='S11',),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='SIPM_ELNO',
-                   NOEUD='N3',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=49.999999999,
-                   VALE_REFE=50.0,
-                   MAILLE='S12',),
-                ),
-          )
 
 # ------ TRACTION SIMPLE GX : ------------------------------------------
 
@@ -161,7 +141,7 @@ MEST1T=MECA_STATIQUE(  MODELE=MO,
                        CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
                        EXCIT=_F( CHARGE = CHARG1T)   )
 
-MEST1T=CALC_CHAMP(reuse=MEST1T,RESULTAT=MEST1T,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+MEST1T=CALC_CHAMP(reuse=MEST1T,RESULTAT=MEST1T,CONTRAINTE=('EFGE_ELNO',))
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -248,26 +228,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='SIPM_ELNO',
-                   NOEUD='N1',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=49.999999999,
-                   VALE_REFE=50.0,
-                   MAILLE='S11',),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='SIPM_ELNO',
-                   NOEUD='N3',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=49.999999999,
-                   VALE_REFE=50.0,
-                   MAILLE='S12',),
-                ),
-          )
 
 FIN( )
 #
