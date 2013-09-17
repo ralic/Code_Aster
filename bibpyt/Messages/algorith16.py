@@ -96,23 +96,23 @@ cata_msg = {
 """),
 
 14 : _(u"""
- pas de temps utilisateur trop grand :   %(r1)f
- pas de temps nécessaire pour le calcul: %(r2)f
+ pas de temps utilisateur trop grand :   %(r1)e
+ pas de temps nécessaire pour le calcul: %(r2)e
  risques de problèmes de précision
 
 """),
 
 15 : _(u"""
- pas de temps utilisateur trop grand :   %(r1)f
- pas de temps nécessaire pour le calcul: %(r2)f
+ pas de temps utilisateur trop grand :   %(r1)e
+ pas de temps nécessaire pour le calcul: %(r2)e
  paramètres de calcul dans ce cas
  nombre de pas de calcul :  %(i1)d
 
 """),
 
 16 : _(u"""
- pas de temps utilisateur trop grand   : %(r1)f
- pas de temps nécessaire pour le calcul: %(r2)f
+ pas de temps utilisateur trop grand   : %(r1)e
+ pas de temps nécessaire pour le calcul: %(r2)e
 """),
 
 17 : _(u"""

@@ -23,7 +23,6 @@ interface
                       iu, iuc, im, a, sigm,&
                       vim, sigp, vip, matr, vect,&
                       codret)
-! aslint: disable=W1504
         integer :: lgpg
         integer :: npg
         integer :: nno2

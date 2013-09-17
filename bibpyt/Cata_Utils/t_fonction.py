@@ -36,8 +36,8 @@ class ProlongementError(FonctionError):   pass
 def interp(typ_i,val,x1,x2,y1,y2,tol=1.e-6) :
   """Interpolation linéaire/logarithmique entre un couple de valeurs
   """
-  if abs(val-x1) < tol : return y1
-  if abs(val-x2) < tol : return y2
+  if abs(val-x1) < tol*abs(x1) : return y1
+  if abs(val-x2) < tol*abs(x2) : return y2
   if typ_i[0] == 'LOG' and (x1 <= 0. or x2 <= 0.):
       raise InterpolationError("Interpolation LOG invalide sur l'intervalle [%g, %g]." % (x1, x2))
   if typ_i[1] == 'LOG' and (y1 <= 0. or y2 <= 0.):
@@ -131,53 +131,63 @@ class t_fonction :
     para['NOM_PARA']==other.para['NOM_PARA']
     return t_fonction(other.vale_x,map(self,other.vale_y),para)
 
-  def __call__(self,val,tol=1.e-6):
-    """méthode pour évaluer f(x)
-    - tolérance, par défaut 1.e-6 en relatif sur la longueur de l'intervalle
-    - adjacent, pour capter les erreurs d'arrondi en cas de prolongement exclu
+  def __call__(self, val, tol=1.e-6):
+    """Evaluation de f(val)
+    'tol': tolérance utilisée uniquement aux extrémités (bornes des abscisses)
+    pour éviter les erreurs d'arrondi en cas de prolongement EXCLU.
     """
-    i=NP.searchsorted(self.vale_x, val)
-    n=len(self.vale_x)
+    i = NP.searchsorted(self.vale_x, val)
+    n = len(self.vale_x)
     if n == 1:
       # Utilisation abusive de la tolérance relative mais ce cas est particulier
-      if (val-self.vale_x[0]) < tol:
+      if (val - self.vale_x[0]) <= tol * abs(self.vale_x[0]):
          return self.vale_y[0]
-      elif val-self.vale_x[0] > 0:
+      elif val > self.vale_x[0]:
          if (self.para['PROL_DROITE']=='CONSTANT') or (self.para['PROL_DROITE']=='LINEAIRE'):
             return self.vale_y[0]
-         else: raise ProlongementError, 'fonction évaluée hors du domaine de définition'
-      elif val-self.vale_x[0] < 0:
+      else:
          if (self.para['PROL_GAUCHE']=='CONSTANT') or (self.para['PROL_GAUCHE']=='LINEAIRE'):
             return self.vale_y[0]
-         else: raise ProlongementError, 'fonction évaluée hors du domaine de définition'
-    
-    if i==0 :
-      if self.para['PROL_GAUCHE']=='EXCLU'    :
-         eps_g=(val-self.vale_x[0] )/(self.vale_x[1] -self.vale_x[0])
-         if abs(eps_g)<=tol  : return self.vale_y[0]
-         else                : raise ProlongementError, 'fonction évaluée hors du domaine de définition'
-      else  : 
-         if self.para['PROL_GAUCHE']=='CONSTANT' : return self.vale_y[0]
-         if self.para['PROL_GAUCHE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[0],
-                                                                                           self.vale_x[1],
-                                                                                           self.vale_y[0],
-                                                                                           self.vale_y[1])
-    elif i==n :
-      if self.para['PROL_DROITE']=='EXCLU'    :
-         eps_d=(val-self.vale_x[-1])/(self.vale_x[-1]-self.vale_x[-2])
-         if abs(eps_d)<=tol  : return self.vale_y[-1]
-         else                : raise ProlongementError, 'fonction évaluée hors du domaine de définition'
-      else  : 
-         if self.para['PROL_DROITE']=='CONSTANT' : return self.vale_y[-1]
-         if self.para['PROL_DROITE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[-1],
-                                                                                           self.vale_x[-2],
-                                                                                           self.vale_y[-1],
-                                                                                           self.vale_y[-2])
-    else :
-      return interp(self.para['INTERPOL'],val,self.vale_x[i-1],
-                                              self.vale_x[i],
-                                              self.vale_y[i-1],
-                                              self.vale_y[i])
+      raise ProlongementError('fonction évaluée hors du domaine de définition, para=%f' % val)
+    # i = 0, val <= val_min
+    if i==0:
+      eps_g = (val - self.vale_x[0]) / (self.vale_x[1] - self.vale_x[0])
+      if abs(eps_g) <= tol:
+         return self.vale_y[0]
+      else:
+        if val < self.vale_x[0]:
+          if self.para['PROL_GAUCHE']=='EXCLU':
+            raise ProlongementError('fonction évaluée hors du domaine de définition, para=%f' % val)
+          else:
+            if self.para['PROL_GAUCHE']=='CONSTANT':
+                return self.vale_y[0]
+            if self.para['PROL_GAUCHE']=='LINEAIRE':
+                return interp(self.para['INTERPOL'], val,
+                              self.vale_x[0], self.vale_x[1],
+                              self.vale_y[0], self.vale_y[1])
+        else:
+          raise ParametreError('valeur inattendue, para=%f' % val)
+    # i = n, val > val_max
+    elif i==n:
+      eps_d = (val - self.vale_x[-1]) / (self.vale_x[-1] - self.vale_x[-2])
+      if abs(eps_d) <= tol:
+         return self.vale_y[-1]
+      else:
+        if val > self.vale_x[-1]:
+          if self.para['PROL_DROITE']=='EXCLU':
+            raise ProlongementError('fonction évaluée hors du domaine de définition, para=%f' % val)
+          else:
+            if self.para['PROL_DROITE']=='CONSTANT':
+                return self.vale_y[-1]
+            if self.para['PROL_DROITE']=='LINEAIRE':
+                return interp(self.para['INTERPOL'], val,
+                              self.vale_x[-1], self.vale_x[-2],
+                              self.vale_y[-1], self.vale_y[-2])
+        else:
+          raise ParametreError('valeur inattendue, para=%f' % val)
+    return interp(self.para['INTERPOL'], val,
+                  self.vale_x[i-1], self.vale_x[i],
+                  self.vale_y[i-1], self.vale_y[i])
 
   def homo_support(self,other) :
     """Renvoie le support d'abscisses homogénéisé entre self et other
@@ -568,36 +578,63 @@ class t_nappe :
     self.l_fonc       = l_fonc
     self.para         = para
 
-  def __call__(self,val1,val2):
-    """méthode pour évaluer nappe(val1,val2)
+  def __call__(self, val1, val2, tol=1.e-6):
+    """Evaluation de f(val1, val2)
+    'tol': tolérance utilisée uniquement aux extrémités (bornes des abscisses)
+    pour éviter les erreurs d'arrondi en cas de prolongement EXCLU.
     """
-    i=NP.searchsorted(self.vale_para,val1)
-    n=len(self.vale_para)
-    if i==0 :
-      if val1==self.vale_para[0]  : return self.l_fonc[0](val2)
-      if val1 <self.vale_para[0]  : 
-         if self.para['PROL_GAUCHE']=='EXCLU'    : raise ParametreError, 'nappe évaluée hors du domaine de définition'
-         if self.para['PROL_GAUCHE']=='CONSTANT' : return self.l_fonc[0](val2)
-         if self.para['PROL_GAUCHE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val1,
-                                                                 self.vale_para[0],
-                                                                 self.vale_para[1],
-                                                                 self.l_fonc[0](val2),
-                                                                 self.l_fonc[1](val2))
-    elif i==n :
-      if val1==self.vale_para[-1] : return self.l_fonc[-1](val2)
-      if val1 >self.vale_para[-1]  : 
-         if self.para['PROL_DROITE']=='EXCLU'    : raise ParametreError, 'nappe évaluée hors du domaine de définition'
-         if self.para['PROL_DROITE']=='CONSTANT' : return self.l_fonc[-1](val2)
-         if self.para['PROL_DROITE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val1,
-                                                                 self.vale_para[-1],
-                                                                 self.vale_para[-2],
-                                                                 self.l_fonc[-1](val2),
-                                                                 self.l_fonc[-2](val2))
-    else :
-      return interp(self.para['INTERPOL'],val1,self.vale_para[i-1],
-                                               self.vale_para[i],
-                                               self.l_fonc[i-1](val2),
-                                               self.l_fonc[i](val2))
+    i = NP.searchsorted(self.vale_para, val1)
+    n = len(self.vale_para)
+    if n == 1:
+      # Utilisation abusive de la tolérance relative mais ce cas est particulier
+      if (val1 - self.vale_para[0]) <= tol * abs(self.vale_para[0]):
+         return self.l_fonc[0](val2)
+      elif val1 > self.vale_para[0]:
+         if (self.para['PROL_DROITE']=='CONSTANT') or (self.para['PROL_DROITE']=='LINEAIRE'):
+            return self.l_fonc[0](val2)
+      else:
+         if (self.para['PROL_GAUCHE']=='CONSTANT') or (self.para['PROL_GAUCHE']=='LINEAIRE'):
+            return self.l_fonc[0](val2)
+      raise ProlongementError('nappe évaluée hors du domaine de définition, para=%f' % val1)
+    # i = 0, val1 <= val_min
+    if i==0:
+      eps_g = (val1 - self.vale_para[0]) / (self.vale_para[1] - self.vale_para[0])
+      if abs(eps_g) <= tol:
+         return self.l_fonc[0](val2)
+      else:
+        if val1 < self.vale_para[0]:
+          if self.para['PROL_GAUCHE']=='EXCLU':
+            raise ProlongementError('nappe évaluée hors du domaine de définition, para=%f' % val1)
+          else:
+            if self.para['PROL_GAUCHE']=='CONSTANT':
+                return self.l_fonc[0](val2)
+            if self.para['PROL_GAUCHE']=='LINEAIRE':
+                return interp(self.para['INTERPOL'], val1,
+                              self.vale_para[0], self.vale_para[1],
+                              self.l_fonc[0](val2), self.l_fonc[1](val2))
+        else:
+          raise ParametreError('valeur inattendue, para=%f' % val1)
+    # i = n, val1 > val_max
+    elif i==n:
+      eps_d = (val1 - self.vale_para[-1]) / (self.vale_para[-1] - self.vale_para[-2])
+      if abs(eps_d) <= tol:
+         return self.l_fonc[-1](val2)
+      else:
+        if val1 > self.vale_para[-1]:
+          if self.para['PROL_DROITE']=='EXCLU':
+            raise ProlongementError('nappe évaluée hors du domaine de définition, para=%f' % val1)
+          else:
+            if self.para['PROL_DROITE']=='CONSTANT':
+                return self.l_fonc[-1](val2)
+            if self.para['PROL_DROITE']=='LINEAIRE':
+                return interp(self.para['INTERPOL'], val1,
+                              self.vale_para[-1], self.vale_para[-2],
+                              self.l_fonc[-1](val2), self.l_fonc[-2](val2))
+        else:
+          raise ParametreError('valeur inattendue, para=%f' % val1)
+    return interp(self.para['INTERPOL'], val1,
+                  self.vale_para[i-1], self.vale_para[i],
+                  self.l_fonc[i-1](val2), self.l_fonc[i](val2))
 
   def evalfonc(self, liste_val) :
     """Renvoie la mm nappe dont les fonctions sont interpolées aux points définis

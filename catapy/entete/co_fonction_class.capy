@@ -130,14 +130,15 @@ class fonction_sdaster(fonction_class):
       """Retourne la liste des ordonnées"""
       return self.Valeurs()[1]
 
-   def __call__(self,val):
-      ### Pour EFICAS : substitution de l'instance de classe
-      ### parametre par sa valeur
+   def __call__(self, val, tol=1.e-6):
+      """Evaluate a function at 'val'. If provided, 'tol' is a relative
+      tolerance to match an abscissa value."""
+      # Pour EFICAS : substitution de l'instance de classe
+      # parametre par sa valeur
       if isinstance(val, ASSD):
          val=val.valeur
-      ###
       __ff=self.convert()
-      return __ff(val)
+      return __ff(val, tol=tol)
 
 
 class fonction_c(fonction_class):
@@ -223,14 +224,15 @@ class fonction_c(fonction_class):
          Leg=os.linesep.join(self.sdj.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
 
-   def __call__(self,val):
-      ### Pour EFICAS : substitution de l'instance de classe
-      ### parametre par sa valeur
+   def __call__(self, val, tol=1.e-6):
+      """Evaluate a function at 'val'. If provided, 'tol' is a relative
+      tolerance to match an abscissa value."""
+      # Pour EFICAS : substitution de l'instance de classe
+      # parametre par sa valeur
       if isinstance(val, ASSD):
          val=val.valeur
-      ###
       __ff=self.convert(arg='complex')
-      return __ff(val)
+      return __ff(val, tol=tol)
 
 
 class nappe_sdaster(fonction_class):
@@ -327,13 +329,14 @@ class nappe_sdaster(fonction_class):
             Leg=os.linesep.join(self.sdj.TITR.get()) )
       gr.Trace(FORMAT=FORMAT,**kargs)
 
-   def __call__(self,val1,val2):
-      ### Pour EFICAS : substitution de l'instance de classe
-      ### parametre par sa valeur
+   def __call__(self, val1, val2, tol=1.e-6):
+      """Evaluate a function at 'val'. If provided, 'tol' is a relative
+      tolerance to match an abscissa value."""
+      # Pour EFICAS : substitution de l'instance de classe
+      # parametre par sa valeur
       if isinstance(val1, ASSD):
          val1=val1.valeur
       if isinstance(val2, ASSD):
          val2=val2.valeur
-      ###
       __ff=self.convert()
-      return __ff(val1,val2)
+      return __ff(val1, val2, tol=tol)
