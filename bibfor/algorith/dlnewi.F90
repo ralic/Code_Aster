@@ -170,7 +170,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     real(kind=8) :: c0, c1, c2, c3, c4, c5
     real(kind=8) :: beta, gamma, dt, theta, tf, tol, res
     real(kind=8) :: tempm, temps
-    character(len=8) :: valk
     integer :: vali(2)
     real(kind=8) :: valr(2)
     logical :: gasymr, gsyrie, ener

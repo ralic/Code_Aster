@@ -123,7 +123,6 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     real(kind=8) :: dt, dtm, dtmax, temps, dt1, tf
     real(kind=8) :: omeg, deuxpi
     real(kind=8) :: r8bid
-    character(len=8) :: valk
     integer :: vali(2)
     real(kind=8) :: valr(2)
     logical :: ener

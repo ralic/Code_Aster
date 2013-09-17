@@ -32,6 +32,7 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
+    integer :: neq, nbexci
     real(kind=8) :: tab(neq)
     real(kind=8) :: psidel(neq, nbexci), temps
     character(len=8) :: nomfon(2*nbexci)
@@ -41,7 +42,7 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
     real(kind=8) :: coef
 !
 !-----------------------------------------------------------------------
-    integer :: ieq, ier, iex, nbexci, neq
+    integer :: ieq, ier, iex
 !-----------------------------------------------------------------------
     k8bid = '        '
     call r8inir(neq, 0.d0, tab, 1)

@@ -235,6 +235,9 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 endif
             else if (typesd.eq.'EVOL_ELAS') then
                 typcoe = 'R'
+                call rsadpa(resuin, 'L', 1, 'INST', nordre,&
+                            0, linst, k8b)
+                inst = zr(linst)
                 if (l1 .ne. 0) then
                     call fointe('F ', fmult, 1, ['INST'], [inst],&
                                 alpha, ier)

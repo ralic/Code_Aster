@@ -85,7 +85,6 @@ subroutine op0186()
     character(len=24) :: sdieto, tpscvt
     character(len=76) :: fmt2, fmt3, fmt4
     character(len=85) :: fmt1
-    character(len=8) :: k8b
 !
 ! ----------------------------------------------------------------------
     data lischa/'&&OP0186.LISCHA'/

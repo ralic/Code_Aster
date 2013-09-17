@@ -3,7 +3,7 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                   logcho, dplmod, parcho, noecho, saucho,&
                   temps, nofdep, nofvit, nofacc, nbexci,&
                   psidel, nonmot)
-! aslint: disable=W1306,W1501,W1504
+! aslint: disable=W1306,W1504
     implicit none
 #include "asterfort/distno.h"
 #include "asterfort/fnorm.h"
@@ -19,7 +19,7 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 #include "asterfort/togene.h"
 #include "asterfort/tophy3.h"
 #include "asterfort/tophys.h"
-    integer :: logcho(nbchoc, *)
+    integer :: nbchoc, nbmode, logcho(nbchoc, *)
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*), accgen(*)
     real(kind=8) :: parcho(nbchoc, *), saucho(nbchoc, *), masgen(*), phicar(*)
     real(kind=8) :: pulsa2(*), amogen(*)
@@ -83,7 +83,7 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
     real(kind=8) :: coedep(nbexci), coevit(nbexci), coeacc(nbexci)
 !
 !-----------------------------------------------------------------------
-    integer :: ier, nbchoc, nbmode
+    integer :: ier
     real(kind=8) :: anorm, ax1, ax2, ay1, ay2, az1, az2
     real(kind=8) :: cfrotd, cfrots, cl, cnorm, coefa, coefad, coefb
     real(kind=8) :: coefc, coefcc, coefd, coefk1, coefk2, coefpy, cosa

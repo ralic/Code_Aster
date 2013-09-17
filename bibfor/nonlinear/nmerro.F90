@@ -48,9 +48,8 @@ subroutine nmerro(sderro, sdtime, numins)
 !
     character(len=24) :: timpas, timite
     integer :: jtpas, jtite
-    real(kind=8) :: rtab(2), r8bid
-    integer :: itab(2), ibid
-    character(len=8) :: k8bid
+    real(kind=8) :: rtab(2)
+    integer :: itab(2)
     logical :: echldc, echeq1, echeq2, echco1, echco2, echpil
     logical :: mtcpui, mtcpup, itemax
     logical :: echpfg, echpff, echpfc

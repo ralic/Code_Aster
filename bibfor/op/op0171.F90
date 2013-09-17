@@ -88,7 +88,6 @@ subroutine op0171()
     character(len=24) :: cndirp, cnchci, cnchtp
     character(len=24) :: chlapm, chlapp, cnresi, noobj
     character(len=76) :: fmt
-    character(len=8) :: valk
     integer :: vali(2)
     real(kind=8) :: valr(2)
 !

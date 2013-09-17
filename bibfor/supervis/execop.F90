@@ -50,10 +50,10 @@ subroutine execop()
     integer :: nivuti, nivpgm, unite
     common /inf001/ nivuti,nivpgm,unite
 !
-    integer :: nuoper, nuop2, ibid, imaav, imaap
+    integer :: nuoper, nuop2, imaav, imaap
     real(kind=8) :: tpres, pcent, rval(12)
     character(len=6) :: nommar
-    character(len=8) :: k8bid, k8tab(7)
+    character(len=8) ::  k8tab(7)
     integer :: iret, iret2
 !     ------------------------------------------------------------------
 !
