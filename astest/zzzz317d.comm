@@ -56,14 +56,14 @@ ZPA_50=0.1618
 SA_25=0.1901
 tini=2.5
 SA_1=0.1415
-SA_01=0.0080
+SA_013=0.0127
 ############################################
 ## on teste NBTIR>1, NB_ITER=0
 #############################################
 
 
 nbtir=20
-fc=0.10
+fc=0.05
 
 ACCE1a=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=200000,
@@ -99,21 +99,21 @@ SRO_MED=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SRO,
 ## TESTS
 #############################################
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15906898,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15934181,
                          VALE_REFE=ZPA_50    ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MED,),
-                        _F(VALE_CALC= 0.19751334  ,
+                        _F(VALE_CALC= 0.19668035  ,
                          VALE_REFE=SA_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MED,),
-                        _F(VALE_CALC=8.133449E-03,
-                         VALE_REFE=SA_01  ,                        
-                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1),
+                        _F(VALE_CALC=0.01240963 ,
+                         VALE_REFE=SA_013  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1333),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MED,),
@@ -148,31 +148,29 @@ SRO2a=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC2a, LIST_FREQ = L_FREQ, METHODE='H
 ## TESTS
 #############################################
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17959194 ,                         
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17883070 ,                         
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          FONCTION=SRO1a,),
-                        _F(VALE_CALC=0.20405387  ,                         
+                        _F(VALE_CALC=0.20346056 ,                         
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          FONCTION=SRO1a,),
-                        _F(VALE_CALC=0.01058748 ,                     
-                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1),
+                        _F(VALE_CALC=0.01643251  ,                     
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1333),
                          FONCTION=SRO1a,),
                          ),)
 
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17959194  , VALE_REFE=0.17959194 ,                           
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17883072   , VALE_REFE=0.17883070 ,                           
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          FONCTION=SRO2a, REFERENCE='AUTRE_ASTER',),
 
-                        _F(VALE_CALC= 0.20405387  ,   VALE_REFE=0.20405387 ,                          
+                        _F(VALE_CALC= 0.20346059  ,   VALE_REFE=0.20346056    ,                          
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          FONCTION=SRO2a, REFERENCE='AUTRE_ASTER',),
 
-                        _F(VALE_CALC= 0.01058748 ,  VALE_REFE=0.01058748 ,                       
-                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1),
+                        _F(VALE_CALC= 0.01643251  ,  VALE_REFE=0.01643251  ,                       
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1333),
                          FONCTION=SRO2a, REFERENCE='AUTRE_ASTER',),
                          ),)
-
-
 ###
 FIN( )

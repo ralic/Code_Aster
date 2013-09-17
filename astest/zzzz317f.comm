@@ -72,7 +72,7 @@ SAF_25=0.3248
 
 # tirages accelerogrammes
 nbtir=20
-fc=0.075
+fc=0.05
 ACCE1a=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=200000,
               PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,    FREQ_FILTRE=fc,
@@ -104,25 +104,25 @@ SRO_SIG=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SRO,
 ## TESTS: spectres cibles
 #############################################
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15955094,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.16124108 ,
                          VALE_REFE=ZPA_50    ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MED,),
-                        _F(VALE_CALC=0.209115,
+                        _F(VALE_CALC=0.20891688 ,
                          VALE_REFE=SAM_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.2,
                          FONCTION=SRO_MED,),
-                        _F(VALE_CALC= 0.26585746,
+                        _F(VALE_CALC= 0.26688150  ,
                          VALE_REFE=SAF_50    ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_SIG,),
-                        _F(VALE_CALC= 0.314218 ,
+                        _F(VALE_CALC= 0.31857962 ,
                          VALE_REFE=SAF_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          REFERENCE='ANALYTIQUE',

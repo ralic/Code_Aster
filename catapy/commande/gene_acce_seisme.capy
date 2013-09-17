@@ -56,7 +56,7 @@ GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
             SPEC_OSCI       =SIMP(statut='o',typ=(fonction_sdaster),),
             AMOR_REDUIT     =SIMP(statut='o', typ='R', val_min=0., val_max=1.),
             FREQ_PAS      =SIMP(statut='f',typ='R' , fr="pas"),
-            NB_ITER      =SIMP(statut='f',typ='I' ,defaut=1, val_min=1,fr="nombre d'iterations pour fitter le spectre" ,),
+            NB_ITER      =SIMP(statut='f',typ='I' ,defaut=0, val_min=0,fr="nombre d'iterations pour fitter le spectre" ,),
         ),
 #       
          SPEC_FRACTILE    = FACT(statut='f',max=1,

@@ -40,11 +40,10 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    import aster_fonctions
    from Utilitai.optimize   import fmin
    from Utilitai.gauss_process  import  DSP2ACCE1D,itersim_SRO, gene_traj_gauss_evol1D , Rice2, peak, SRO2DSP,DSP2FR,corrcoefmodel,RAND_DSP,RAND_VEC
-   from Utilitai.gauss_process  import  calc_dsp_KT,calc_dsp_FR, f_ARIAS, f_ARIAS_TSM,fonctm_gam, fonctm_JetH
+   from Utilitai.gauss_process  import  calc_dsp_KT,calc_dsp_FR, f_ARIAS, f_ARIAS_TSM,fonctm_gam, fonctm_JetH, acce_filtre_CP
    from Utilitai.gauss_process  import  f_opta, f_opt1, f_opt2
    EnumTypes = (list, tuple)
    
-
    
    commande='GENE_ACCE_SEISME'
 
@@ -179,8 +178,6 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
          sro_beta=NP.log(f_spec_sigma.vale_y/sro_ref)
          f_beta = t_fonction(l_freq, sro_beta, para=para_dsp)
 
-
-
       ZPA=sro_ref[-1]
       F_MIN=l_freq[0]
       if FREQ_FILTRE == None :
@@ -189,12 +186,9 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
       if FREQ_COUP> l_freq[-1]:
          sro_ref.append(ZPA )
          l_freq.append(FREQ_COUP)
-
-
       if F_MIN> 0.0:
          l_freq.insert(0, 0.0)
          sro_ref.insert(0, 0.0)
-
 
       f_spec = t_fonction(l_freq, sro_ref, para=para_dsp)
 
@@ -232,7 +226,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    l_w2=NP.arange(DW/2., OM+DW/2., DW)   
    nbfreq=2*len(l_w2) 
 
-# parfois les listes ne sont bien construites  pour cause d'erreur num si valeurs reeles
+# parfois les listes ne sont pas bien construites pour cause d'erreur num si valeurs reeles
    l_temps=l_temps[0:NB_POIN]
    l_w=l_w[0:NB_POIN]
    l_w2=l_w2[0:NB_POIN/2]  
@@ -326,7 +320,8 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
         
  
       if SPECTRE !=None :
-         fqt=fqt
+         int12 =NP.trapz(fqt**2,l_temps)# equivalence energie totale avec signal module par CONSTANT sur DUREE
+         fqt=fqt*sqrt(DUREE/int12)  
       elif  ARIAS!= None:
          vale_arias=f_ARIAS (l_temps, fqt, NORME)
          fqt=fqt*sqrt(ARIAS/vale_arias)
@@ -378,14 +373,14 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
 
 
    if SPECTRE !=None :
-      f_dsp = SRO2DSP(f_spec, **SRO_args)  #  CALCUL DE LA DSP SPECTRUM-COMPATIBLE   
+      f_dsp, f_spec_ref = SRO2DSP(f_spec, **SRO_args)  #  CALCUL DE LA DSP SPECTRUM-COMPATIBLE   
       fonc_dsp = f_dsp.evalfonc(l_w2)
       FC=0.05
 
       if SPEC_MEDIANE != None :
 
          if NB_ITER>0 :
-            fonc_dsp_opt, liste_rv =itersim_SRO(fonc_dsp, f_spec, norme_sro, amo,  DUREE , NB_ITER, f_mod,  INFO, dico_err,  F_MIN, F_CORNER,NB_TIRAGE)
+            fonc_dsp_opt, liste_rv =itersim_SRO(fonc_dsp, f_spec_ref, amo,  DUREE , NB_ITER, f_mod,  INFO, dico_err,  F_MIN, F_CORNER,NB_TIRAGE)
 
             if FREQ_PENTE != None :
                wg,amort,R0,R2, f_FIT =DSP2FR(fonc_dsp_opt,FC)
@@ -449,15 +444,16 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
                print 'TIRAGE ', ntir+1
 
             if  NB_ITER >0:     #     cas  SPEC_UNIQUE !=None:
-               fonc_dsp_opt, rv =itersim_SRO(fonc_dsp, f_spec, norme_sro, amo,  DUREE , NB_ITER, f_mod,  INFO, dico_err,F_MIN, F_CORNER)
+               fonc_dsp_opt, rv =itersim_SRO(fonc_dsp, f_spec_ref, amo,  DUREE , NB_ITER, f_mod,  INFO, dico_err,F_MIN, F_CORNER)
                Xt=DSP2ACCE1D(fonc_dsp_opt ,rv[0])
-               Xt=Xt*fqt
-               listv=list(Xt)
             else:
                Xt=DSP2ACCE1D(fonc_dsp) 
-               Xt=NP.array(Xt)*fqt
-               listv=list(Xt)
-
+            Xt=Xt*fqt
+            if F_CORNER> 0.0:  
+               Xf=acce_filtre_CP(Xt,DT,F_CORNER)
+               listv=list(Xf)
+            else:
+                listv=list(Xt)
 
 
          if SPEC_MEDIANE != None:
@@ -465,7 +461,11 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
             if FREQ_PENTE != None and NB_ITER>0:
                for (ntir,rvtir) in  enumerate(liste_rv):
                   Xt=gene_traj_gauss_evol1D(calc_dsp_FR, l_w2, l_temps,T1,T2,rvtir, **FR_args)
-                  listv=list(Xt*fqt)
+                  if F_CORNER> 0.0:  
+                      Xf=acce_filtre_CP(Xt*fqt,DT,F_CORNER)
+                      listv=list(Xf)
+                  else:
+                      listv=list(Xt*fqt)    
                   _f_out[ntir]=DEFI_FONCTION( ABSCISSE=tuple(l_temps), ORDONNEE=listv,**para_traj  )
                   tab.append({'NUME_ORDRE' : ntir+1,  'FONCTION' : _f_out[ntir].nom})
                break
@@ -473,7 +473,11 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
             elif NB_ITER>0:
                for (ntir,rvtir) in  enumerate(liste_rv):
                   Xt=DSP2ACCE1D(fonc_dsp_opt ,rvtir)
-                  listv=list(Xt*fqt) 
+                  if F_CORNER> 0.0:  
+                      Xf=acce_filtre_CP(Xt*fqt,DT,F_CORNER)
+                      listv=list(Xf)
+                  else:
+                      listv=list(Xt*fqt)    
                   _f_out[ntir]=DEFI_FONCTION( ABSCISSE=tuple(l_temps), ORDONNEE=listv,**para_traj  )
                   tab.append({'NUME_ORDRE' : ntir+1,  'FONCTION' : _f_out[ntir].nom})
                break 
@@ -481,51 +485,30 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
             elif FREQ_PENTE != None:
                Xt=gene_traj_gauss_evol1D(calc_dsp_FR, l_w2, l_temps,T1,T2, **FR_args)
                Xt=NP.array(Xt)*fqt
-               listv=list(Xt)
-
             else:
                Xt=DSP2ACCE1D(fonc_dsp) 
                Xt=NP.array(Xt)*fqt
-               listv=list(Xt)
-
-
+            if F_CORNER> 0.0:  
+                Xf=acce_filtre_CP(Xt,DT,F_CORNER)
+                listv=list(Xf)
+            else:
+                listv=list(Xt)      
 
 
          if SPEC_FRACTILE !=None:
-#
-#            if FREQ_PENTE != None and NB_ITER>0:
-#               for (ntir,rvtir) in  enumerate(liste_rv):
-#                  alpha2=RAND_VEC(Periods, MAT_COVC, len(l_w2), para=2.0)
-#                  FR_args['ALEA_DSP']=alpha2
-#                  Xt=gene_traj_gauss_evol1D(calc_dsp_FR, l_w2, l_temps,T1,T2,rvtir, **FR_args)
-#                  listv=list(Xt*fqt)
-#                  _f_out[ntir]=DEFI_FONCTION( ABSCISSE=tuple(l_temps), ORDONNEE=listv,**para_traj  )
-#                  tab.append({'NUME_ORDRE' : ntir+1,  'FONCTION' : _f_out[ntir].nom})
-#               break
-#
-#            elif NB_ITER>0:
-#               for (ntir,rvtir) in  enumerate(liste_rv):
-#                  fonc_dsp_opt_rv=RAND_DSP(Periods,MAT_COVC,fonc_dsp_opt )
-##                  Xt=DSP2ACCE1D(fonc_dsp_opt_rv ,rvtir)
-#                  Xt=DSP2ACCE1D(fonc_dsp_opt_rv )
-#                  listv=list(Xt*fqt) 
-#                  _f_out[ntir]=DEFI_FONCTION( ABSCISSE=tuple(l_temps), ORDONNEE=listv,**para_traj  )
-#                  tab.append({'NUME_ORDRE' : ntir+1,  'FONCTION' : _f_out[ntir].nom})
-#               break 
-
 
             if FREQ_PENTE != None:
                alpha2=RAND_VEC(Periods, MAT_COVC, len(l_w2), para=2.0)
                FR_args['ALEA_DSP']=alpha2
                Xt=gene_traj_gauss_evol1D(calc_dsp_FR, l_w2, l_temps,T1,T2, **FR_args)
-
             else:
                fonc_dsp_rv=RAND_DSP(Periods,MAT_COVC,fonc_dsp )
                Xt=DSP2ACCE1D(fonc_dsp_rv) 
-
-            Xt=NP.array(Xt)*fqt
-            listv=list(Xt)
-
+            if F_CORNER> 0.0:  
+                Xf=acce_filtre_CP(Xt*fqt,DT,F_CORNER)
+                listv=list(Xf)
+            else:
+                listv=list(Xt*fqt) 
 
 
 #--- construction des fonctions sortie

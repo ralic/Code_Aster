@@ -165,22 +165,17 @@ def gene_traj_gauss_evol1D(calc_dsp_KT, l_w2,l_temps,t_ini, t_fin, rv=None, **kw
 #-----------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------
-def acce_filtre_CP(f_in,fcorner,amoc=1.0):
+def acce_filtre_CP(vale_acce,dt, fcorner,amoc=1.0):
     # ---------------------------------------------------------
-    # IN : f_in: ACCELEROGRAMME (signal temporel), 
+    # IN : f_in: ACCELEROGRAMME (signal temporel), pas dt
     #         fcorner : corner frequency (Hz),  amoc: amortissement, l_freq: list of frequencies in Hz
     # OUT: f_out: ACCELEROGRAMME filtre (signal temporel),
     #### attention: il faut de preference  2**N
     # ---------------------------------------------------------
 
 # CP filter/corner frequency : wcp
-      wcp=fcorner*2.*pi
-
-      vale_t=f_in.vale_x
-      vale_acce=f_in.vale_y
-      N=len(vale_t)
-      dt=vale_t[1]-vale_t[0]
-
+      wcp=fcorner*2.*pi 
+      N=len(vale_acce)
       # discrectisation
       OM=pi/dt
       dw=2.*OM/N
@@ -203,11 +198,8 @@ def acce_filtre_CP(f_in,fcorner,amoc=1.0):
             Yw.append(Yw[N2-ni-1].conjugate())
             ni=ni+1
       acce_out=NP.fft.ifft(Yw).real 
-      f_out = t_fonction(vale_t, acce_out, para=f_in.para)
-      return f_out        
-
-
-
+#      f_out = t_fonction(vale_t, acce_out, para=f_in.para)
+      return acce_out        
 
 # ------------------------------------------------------------------------------------------
 def dsp_filtre_CP(f_in,fcorner,amoc=1.0):
@@ -449,7 +441,7 @@ def peakm(p,TSM, w2, DSP) :
 def DSP2SRO(f_in, xig, TSM) :
     # ---------------------------------------------
     # IN  : f_in: DSP   function of frequency (rad/s)
-    # OUT : f_out: SRO  function of frequency (rad/s), meme norme que DSP
+    # OUT : f_out: SRO  function of frequency (Hz), meme norme que DSP
     # ---------------------------------------------
       para_dsp=f_in.para
       vale_freq=f_in.vale_x
@@ -465,7 +457,7 @@ def DSP2SRO(f_in, xig, TSM) :
          npeakm ,m0i =peakm( 0.5,  TSM,  vale_freq, vale_dsp_rep)  
          vale_sro.append(w_0**2*npeakm*sqrt(m0i) )
 #
-      f_out = t_fonction(vale_freq, vale_sro, para=para_dsp)
+      f_out = t_fonction(vale_freq/2./pi, vale_sro, para=para_dsp)
       return f_out
 
 
@@ -478,7 +470,7 @@ def DSP2SRO(f_in, xig, TSM) :
 # iteration par formule de Rice pour mieux fitter le spectre cible
 def iter_SRO(f_dsp, f_sro, amort, TS) :
     # ---------------------------------------------
-    # IN  : f_in: DSP, sro: spectre cible, amort: amortissement sro, TS: duree phase forte, meme disretisation
+    # IN  : f_in: DSP [rad/s], sro : spectre cible [Hz], amort: amortissement sro, TS: duree phase forte, meme disretisation
     # OUT : f_out: dsp apres iterations pour fitter au mieux le spectre sro
     # --------------------------------------------- 
       para_dsp=f_dsp.para
@@ -493,12 +485,11 @@ def iter_SRO(f_dsp, f_sro, amort, TS) :
       while ii < Niter:
          ii=ii+1
          f_sroi = DSP2SRO(f_dsp, amort, TS)
-         valesro=f_sroi.evalfonc(freq_dsp).vale_y
+         valesro=f_sroi.evalfonc(freq_dsp/2./pi).vale_y
         #  calcul de la correction des DSP
          nz=NP.nonzero(valesro)
          factm=NP.ones(nbvale)
          factm[nz]=vale_sro_ref[nz]/valesro[nz]
-#         factm[0]=1.0
          vale_dspi= vale_dsp*factm**2
          vale_dsp= vale_dspi
          f_dsp=t_fonction(freq_dsp,vale_dsp , para=para_dsp)
@@ -509,9 +500,9 @@ def iter_SRO(f_dsp, f_sro, amort, TS) :
 
 
 # iteration par simulation temporelle pour fitter le spectre cible sur une realisation (accelerogramme)
-def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,FCORNER, NB_TIRAGE=1 ) :
+def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,FCORNER, NB_TIRAGE=1 ) :
     # ---------------------------------------------
-    # IN  : f_in: DSP, sro: spectre cible, 
+    # IN  : f_in: DSP [rad/s], sro: spectre cible [Hz], 
     #    amort: amortissement sro, TS: duree phase forte, meme disretisation
     #    type_mod: type de fonction de modulation     niter: nombre d'iterations, 
     #    FMIN: fequence min pour fit et filtrage ("corner frequency" Hz)
@@ -525,14 +516,15 @@ def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err,
    nbfreq=2*nbfreq2
    #  sro cible
    freq_sro=freq_dsp/2./pi
-   vale_sro_ref=f_sro.evalfonc(freq_sro).vale_y*norme
+   vale_sro_ref=f_sro.evalfonc(freq_sro).vale_y
    #  fonction de modulation 
    hmod=f_modul.vale_y
    ltemps=f_modul.vale_x
+   dt=ltemps[2]-ltemps[1]
    para_modul=f_modul.para
 
 #  FMIN pour le calcul de l'erreur relative 
-   FMINM=max(FMIN, 0.05)
+   FMINM=max(FMIN, 0.1)
    FC=max(FCORNER,FMINM)
    N1=NP.searchsorted(freq_sro,FMINM)+1
    FRED=freq_sro[N1:]
@@ -555,15 +547,16 @@ def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err,
          list_rv.append(rv)
          ntir=ntir+1
 
-
-
 #  INITIALISATION
    errmult=[]
    l_dsp=[f_dsp]
 
    if NB_TIRAGE==1:
-     acce =DSP2ACCE1D(f_dsp ,rv)*hmod  #modulation       
+     acce =DSP2ACCE1D(f_dsp ,rv)*hmod  #modulation   
+     if FCORNER> 0.0:  
+        acce=acce_filtre_CP(acce,dt,FCORNER)
      f_acce=t_fonction(ltemps,acce, para=para_modul)
+
      l_acce=[f_acce]
      f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
      valesro=f_sroi.vale_y
@@ -573,6 +566,8 @@ def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err,
      for ntir in range(NB_TIRAGE):
          Xt=DSP2ACCE1D(f_dsp ,list_rv[ntir])
          acce =Xt*hmod  #   modulation 
+         if FCORNER> 0.0:  
+             acce=acce_filtre_CP(acce,dt,FCORNER)
          f_acce=t_fonction(ltemps,acce, para=para_modul)
          f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
          liste_valesro.append(f_sroi.vale_y)
@@ -588,7 +583,6 @@ def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err,
    err_RMS=  coef_RMS*err_rms
    errmult.append (sqrt( 1./3.*(err_ZPA**2+err_MAX**2+err_RMS**2))   )
    print 'err_mult : ',sqrt( 1./3.*(err_ZPA**2+err_MAX**2+err_RMS**2))
-
 
 
 # ITERATIONS
@@ -614,6 +608,8 @@ def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err,
          #  calcul accelerogramme et SRO
             Xt =DSP2ACCE1D(f_dsp ,rv)       
             acce =Xt*hmod  #   modulation  
+            if FCORNER> 0.0:  
+                acce=acce_filtre_CP(acce,dt,FCORNER)
             f_acce=t_fonction(ltemps,acce, para=para_modul)
             l_acce.append(f_acce)
             f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
@@ -625,6 +621,8 @@ def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err,
             for ntir in range(NB_TIRAGE):
                Xt=DSP2ACCE1D(f_dsp ,list_rv[ntir])
                acce =Xt*hmod  #   modulation 
+               if FCORNER> 0.0:  
+                   acce=acce_filtre_CP(acce,dt,FCORNER)
                f_acce=t_fonction(ltemps,acce, para=para_modul)
                f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
                liste_valesro.append(f_sroi.vale_y)
@@ -676,10 +674,9 @@ def itersim_SRO(f_dsp, f_sro, norme,amort, TS, nb_iter, f_modul, INFO, dico_err,
 
 
 
-# calcul de lerreur
+# calcul de l'erreur
 # ---------------------------------------------
 def erre_spectre(Freq, valesro,vale_sro_ref ) :
-
          errlin=(valesro-vale_sro_ref)/vale_sro_ref*100.
          errzpa=errlin[-1]
          errmax=max(abs(errlin))
@@ -717,7 +714,7 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN) :
    # ---------------------------------------------
       wmax=FCOUP*2.*pi
 
-      fmin=max(FMIN,0.05)
+      fmin=max(FMIN,0.01)
       wmin=fmin*2.*pi
 #      wmin=1.001
       dw=PAS*2.*pi   
@@ -745,9 +742,10 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN) :
          if freqi <= wmin:
             fi=freqi/2./pi
             valsro=float(f_in.evalfonc([fi]).vale_y*NORME)
-            lsro.append(valsro)
+#            lsro.append(valsro)
+            lsro.append(0.0)
             valg = freqi*dsp_p
-            DSP.append( valg )
+            DSP.append( 0.0)
 
          else:
             fi=freqi/2./pi
@@ -765,16 +763,17 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN) :
          lw.append(freqi)
          n=n+1
 
+      lf=[valef/2./pi  for valef in lw]
       f_out = t_fonction(lw, DSP, para=para_dsp)
 #     iteration sans simulation: formule de rice
-      f_iter_sro_ref = t_fonction(lw, lsro, para=para_dsp)  # sro for   frequency list lw (rad/s), physical units (not g)
+      f_iter_sro_ref = t_fonction(lf, lsro, para=para_dsp)  # sro for   frequency list lw (rad/s), physical units (not g)
       f_dsp=iter_SRO(f_out,f_iter_sro_ref, AMORT, TSM)
 
-      if FCORNER> 0.0:    
+      if FCORNER> 0.0:  
          f_out=dsp_filtre_CP(f_dsp,FCORNER) 
       else:
          f_out=f_dsp
-      return f_out
+      return f_out, f_iter_sro_ref
 
 
 # ----------------------------------------------------------------- 
@@ -914,7 +913,6 @@ def f_opt_FR2(para_ini,f_dsp_refe,R0,R2,fcorner) :
    residu2=NP.sum((sFR-f_dsp_refe.vale_y)**2)
    return sqrt(residu2)
 ## ---------------------------------------------------------
-
 
 
 
