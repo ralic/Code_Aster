@@ -221,8 +221,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! --- ON RECUPERE UNIQUEMENT UN NUMERO DE VERSION LICITE
             if (action(1:7) .eq. 'VERSION') then
                 if (zk24(jslvk-1+12)(1:4) .eq. 'XXXX') then
-                    call amumpu(31, rouc, ibid, k12bid, ibid,&
-                                lbid, kvers)
+                    call amumpu(31, rouc, ibid, k12bid, ibid, lbid, kvers, ibid)
                     zk24(jslvk-1+12)=kvers
                 else
 ! --- ON TESTE JUSTE LE CARACTERE LICITE DU NUMERO DE VERSION DEJA

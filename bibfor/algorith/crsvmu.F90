@@ -257,7 +257,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     zi(islvi-1+3) = istop
     zi(islvi-1+4) = -9999
     zi(islvi-1+5) = -9999
-    zi(islvi-1+6) = -9999
+    zi(islvi-1+6) = 1
     zi(islvi-1+7) = -9999
     zi(islvi-1+8) = 0
 !

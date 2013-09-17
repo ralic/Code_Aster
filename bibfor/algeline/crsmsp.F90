@@ -110,7 +110,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     zi(jslvi-1+3) = 0
     zi(jslvi-1+4) = -9999
     zi(jslvi-1+5) = -9999
-    zi(jslvi-1+6) = -9999
+    zi(jslvi-1+6) = 1
     zi(jslvi-1+7) = -9999
     zi(jslvi-1+8) = 0
 !

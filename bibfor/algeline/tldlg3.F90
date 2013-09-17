@@ -211,9 +211,9 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !
     else if (metres.eq.'MUMPS') then
 !     ---------------------------------------
-        call amumph('DETR_OCC', solvop, noma19, rbid, cbid,&
+        call amumph('DETR_OCC', solvop, noma19, [rbid], [cbid],&
                     ' ', 0, iretz, .true.)
-        call amumph('PRERES', solvop, noma19, rbid, cbid,&
+        call amumph('PRERES', solvop, noma19, [rbid], [cbid],&
                     ' ', 0, iretz, .true.)
         nzero=-999
         iretp=0

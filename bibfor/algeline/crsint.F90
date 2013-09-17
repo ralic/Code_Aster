@@ -65,7 +65,7 @@ subroutine crsint(solveu)
     zi(islvi-1+3) = 0
     zi(islvi-1+4) = -9999
     zi(islvi-1+5) = -9999
-    zi(islvi-1+6) = -9999
+    zi(islvi-1+6) = 1
     zi(islvi-1+7) = -9999
     zi(islvi-1+8) = 0
     call jedema()

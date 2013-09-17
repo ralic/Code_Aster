@@ -190,8 +190,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         enddo
 !
 ! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
-        call amumpu(3, type, kxmps, k12bid, ibid,&
-                    lbid, kvers)
+        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
 !
 ! ---     MESSAGES/ALERTES MUMPS
         icntl(1) = to_mumps_int(ifm)
@@ -391,8 +390,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         if (mpimum .ne. mpicou) ASSERT(.false.)
 !
 ! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
-        call amumpu(3, type, kxmps, k12bid, ibid,&
-                    lbid, kvers)
+        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
 !
 ! ---     MESSAGE/ALERTES MUMPS
         icntl(1) = to_mumps_int(ifm)

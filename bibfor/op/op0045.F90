@@ -607,12 +607,27 @@ subroutine op0045()
     solveu='&&OP0045.SOLVEUR'
     call cresol(solveu)
     call jeveuo(solveu//'.SLVK', 'L', islvk)
-    call jeveuo(solveu//'.SLVI', 'L', islvi)
+    call jeveuo(solveu//'.SLVI', 'E', islvi)
     nprec=zi(islvi)
     metres=zk24(islvk)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
         (metres(1:5).ne.'MUMPS')) then
         call utmess('F', 'ALGELINE5_71')
+    endif
+!
+! --- SI ON A BESOIN DE FACTORISER SIMULTANNEMENT DEUX MATRICES AVEC LE SOLVEUR MUMPS ON LUI
+!     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
+!     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
+! --- CF COMMENTAIRES PLUS LOIN SUR MATOPA/MATPSC.
+    if (metres(1:5).eq.'MUMPS') then
+        if ((lc).and.(lkr).and.(appr(1:1).eq.'R')) then
+            if (zi(islvi-1+6).lt.0) then
+! --- PB INITIALISATION DE LA SD_SOLVEUR
+                ASSERT(.false.)
+            else
+                zi(islvi-1+6)=2
+            endif
+        endif
     endif
 !
     nprec=zi(islvi)

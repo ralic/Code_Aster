@@ -176,6 +176,7 @@ subroutine op0014()
         zi(jslvi-1+1) =nprec
         zi(jslvi-1+2) =pcpiv
         zi(jslvi-1+3) =istop
+        zi(jslvi-1+6) =1
         zk24(jslvk-1+2)=ktyps
         zk24(jslvk-1+3)=ktypr
         zk24(jslvk-1+6)=klag2

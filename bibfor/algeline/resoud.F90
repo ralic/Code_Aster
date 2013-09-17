@@ -250,10 +250,10 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                         cine19, nsecm, iret, prepos)
         else
             if (type .eq. 'R') then
-                call amumph('RESOUD', solv19, matr19, zr(jtrav), cbid,&
+                call amumph('RESOUD', solv19, matr19, zr(jtrav), [cbid],&
                             cine19, 1, iret, prepos)
             else
-                call amumph('RESOUD', solv19, matr19, rbid, zc(jtrav),&
+                call amumph('RESOUD', solv19, matr19, [rbid], zc(jtrav),&
                             cine19, 1, iret, prepos)
             endif
         endif

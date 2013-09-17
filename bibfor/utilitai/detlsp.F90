@@ -59,7 +59,7 @@ subroutine detlsp(matasz, solvez)
         if (precon .eq. 'LDLT_SP') then
             solvbd = zk24(jslvk-1+3)
             call crsmsp(solvbd, matass, 0)
-            call amumph('DETR_MAT', solvbd, matass, r8bid, c16bid,&
+            call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid],&
                         ' ', 0, iret, .true.)
             call detrsd('SOLVEUR', solvbd)
         endif

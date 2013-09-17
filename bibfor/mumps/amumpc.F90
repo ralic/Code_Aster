@@ -77,15 +77,15 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 #include "mpif.h"
 #include "jeveux.h"
     type (cmumps_struc) , pointer :: cmpsk
-    integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm
+    integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
     character(len=4) :: etam, klag2
-    character(len=8) :: ktypr, k8bid
+    character(len=8) :: ktypr
     character(len=12) :: usersm, k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat
-    character(len=24) :: kmonit(12), k24aux, kvers
+    character(len=24) :: kmonit(12), k24aux, kvers, k24bid
     real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
     logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
     logical :: lopfac
@@ -115,14 +115,16 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
     ASSERT((rouc.eq.'C').and.(prec.eq.'S'))
     cmpsk=>cmps(kxmps)
     iret=0
+    call jeveuo(nosolv//'.SLVK', 'E', jslvk)
+    call jeveuo(nosolv//'.SLVR', 'L', jslvr)
+    call jeveuo(nosolv//'.SLVI', 'E', jslvi)
 !
 ! --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
 ! --- => LQUALI
-    call jeveuo(nosolv//'.SLVR', 'L', jslvr)
+
     epsmax=zr(jslvr-1+2)
     lquali=(epsmax.gt.0.d0)
 !
-    call jeveuo(nosolv//'.SLVK', 'E', jslvk)
 ! --- POUR "ELIMINER" LE 2EME LAGRANGE :
 ! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
     klag2=zk24(jslvk-1+6)
@@ -144,7 +146,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
     endif
 !
 ! --- PARAMETRE NPREC
-    call jeveuo(nosolv//'.SLVI', 'E', jslvi)
+
     nprec=zi(jslvi)
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
@@ -164,7 +166,8 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
     epsmat=zr(jslvr-1+1)
 !
 ! --- STRATEGIE MEMOIRE POUR MUMPS
-    usersm=zk24(jslvk+8)
+    usersm=zk24(jslvk-1+9)
+    nbfact=zi(jslvi-1+6)
 !
 ! --- POUR MONITORING
     call amumpt(0, kmonit, temps, rang, nbproc,&
@@ -194,8 +197,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !        ON RECUPERE ET STOCKE DS SD_SOLVEUR LE NUMERO DE VERSION
 !        LICITE
 !       ----------------------------------------------------------
-        call amumpu(3, type, kxmps, k12bid, ibid,&
-                    lbid, kvers)
+        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
         zk24(jslvk-1+12)=kvers
 !
 !       -----------------------------------------------------
@@ -294,9 +296,8 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !       -----------------------------------------------------
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
-        if (.not.lpb13) call amumpu(1, 'C', kxmps, usersm, ibid,&
-                                    lbid, k12bid)
-!
+         if (.not.lpb13) call amumpu(1, 'C', kxmps, usersm, ibid,lbid, K24bid, nbfact)
+
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 ! ---   ASSOCIEE
         if (usersm(1:4) .eq. 'EVAL') goto 99
@@ -430,14 +431,12 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !       ------------------------------------------------
 !        DETECTION DE SINGULARITE SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(2, 'C', kxmps, k8bid, nprec,&
-                    lresol, k12bid)
+        call amumpu(2, 'C', kxmps, k12bid, nprec, lresol, k24bid, ibid)
 !
 !       ------------------------------------------------
 !        RECUPERATION DU DETERMINANT SI NECESSAIRE:
 !       ------------------------------------------------
-        call amumpu(4, 'C', kxmps, k8bid, ibid,&
-                    lbid, k12bid)
+        call amumpu(4, 'C', kxmps, k12bid, ibid, lbid, k24bid, ibid)
 !
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 !       INUTILES

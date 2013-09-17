@@ -51,7 +51,7 @@ subroutine ldsp2(pc, x1, y, ierr)
     ASSERT(ierr.eq.0)
 !
 ! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
-    call amumph('RESOUD', spsomu, spmat, xx(xidx+1), cbid,&
+    call amumph('RESOUD', spsomu, spmat, xx(xidx+1), [cbid],&
                 ' ', 1, iret, .true.)
 !
 ! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS

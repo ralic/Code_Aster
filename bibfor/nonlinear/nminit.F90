@@ -30,6 +30,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/accel0.h"
+#include "asterfort/assert.h"
 #include "asterfort/cetule.h"
 #include "asterfort/cfmxsd.h"
 #include "asterfort/cucrsd.h"
@@ -68,6 +69,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 #include "asterfort/nmrini.h"
 #include "asterfort/nmvcle.h"
 #include "asterfort/nmvcre.h"
+#include "jeveux.h"
     integer :: fonact(*)
     real(kind=8) :: parcon(*), parcri(*), parmet(*)
     character(len=16) :: method(*)
@@ -88,6 +90,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
     character(len=24) :: deficu, resocu, sdsuiv, sdcriq
     character(len=24) :: comref
 !
+!
 ! ----------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
@@ -107,7 +110,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, ibid
+    integer :: iret, ibid, islvi
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: commoi
@@ -120,13 +123,12 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! ----------------------------------------------------------------------
 !
+    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
 !
 ! --- AFFICHAGE
 !
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> INITIALISATION DU CALCUL'
-    endif
+    if (niv .ge. 2) write (ifm,*) '<MECANONLINE> INITIALISATION DU CALCUL'
 !
 ! --- INITIALISATIONS
 !
@@ -172,6 +174,21 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
     lerrt = isfonc(fonact,'ERRE_TEMPS_THM')
     lreli = isfonc(fonact,'RECH_LINE' )
     lviss = ndynlo(sddyna,'VECT_ISS' )
+!
+! --- SI ON A BESOIN DE FACTORISER SIMULTANNEMENT DEUX MATRICES AVEC LE SOLVEUR MUMPS ON LUI
+!     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
+!     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
+    if (isfonc(fonact,'MUMPS')) then
+        if (isfonc(fonact,'CRIT_STAB').or.isfonc(fonact,'MODE_VIBR')) then
+            call jeveuo(solveu//'.SLVI', 'E', islvi)
+            if (zi(islvi-1+6).lt.0) then
+! --- PB INITIALISATION DE LA SD_SOLVEUR
+                ASSERT(.false.)
+            else
+                zi(islvi-1+6)=2
+            endif
+        endif
+    endif
 !
 ! --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT DU CONTACT
 !
@@ -329,5 +346,6 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 ! --- INITIALISATIONS TIMERS ET STATISTIQUES
 !
     call nmrini(sdtime, sdstat, 'T')
+    call jedema()
 !
 end subroutine

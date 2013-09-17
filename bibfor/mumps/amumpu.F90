@@ -1,5 +1,4 @@
-subroutine amumpu(option, type, kxmps, usersm, nprec,&
-                  lresol, kvers)
+subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -42,7 +41,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 !
 ! SI OPTION=1
-! IN  USERSM :   K8   : STRATEGIE MEMOIRE DE L'UTILISATEUR
+! IN  USERSM :   K12  : STRATEGIE MEMOIRE DE L'UTILISATEUR
+! IN  NBFACT :   IN   : NBRE DE FACTORISEES EN SIMULTANNE (SI GESTION_MEMOIRE='AUTO')
 !                 (INFORMATION SOUVENT ISSUE DE SD_SOLVEUR.SLVK(8))
 ! SI OPTION=2
 ! IN  NPREC  :   IN   : NBRE DE DIGITS POUR DETECTION DE SINGULARITE
@@ -74,7 +74,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 #include "mumps/dmumps.h"
 #include "mumps/smumps.h"
 #include "mumps/zmumps.h"
-    integer :: option, kxmps, nprec
+    integer :: option, kxmps, nprec, nbfact
     character(len=1) :: type
     character(len=12) :: usersm
     character(len=24) :: kvers
@@ -88,19 +88,19 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     type (cmumps_struc) , pointer :: cmpsk
     type (dmumps_struc) , pointer :: dmpsk
     type (zmumps_struc) , pointer :: zmpsk
-    real(kind=8) :: rval(3), rval1, rval2, rval3, rval1b, rval2b, rval3b, rinf12
+    real(kind=8) :: rval(2), rval1, rval2, rval1b, rval2b, rinf12
     real(kind=8) :: rinf13
     integer :: info16, info26, vali(10), icoefm, icn22, icn23, rang, n, iaux1
-    integer :: info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
-    integer :: tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
+    integer ::  info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
+    integer ::  tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
     integer :: info34, icnt33
     integer :: pid
     mpi_int :: mpicou
     logical :: lpara, lpeak, lpb1
     character(len=2) :: fstring
-    character(len=8) :: k8tab(3)
+    character(len=8) :: k8tab(2)
     character(len=10) :: strpid
-    character(len=24) :: kpiv, ksizemu
+    character(len=24) :: kpiv, valk(2), ksizemu
     character(len=80) :: nvers
 !
     call jemarq()
@@ -259,11 +259,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         tmax=-999
         rval1=-999
         rval2=-999
-        rval3=-999
         tmaxb=-999
         rval1b=-999
         rval2b=-999
-        rval3b=-999
         icn22=-999
         icn23=-999
 !
@@ -289,14 +287,13 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             lpeak=.true.
         endif
         k8tab(1)='MEM_TOTA'
-        k8tab(2)='COUR_JV '
-        k8tab(3)='RLQ_MEM '
-        call utgtme(3, k8tab, rval, iret)
+        k8tab(2)='VMSIZE'
+        call utgtme(2, k8tab, rval, iret)
         rval1=rval(1)
         rval2=rval(2)
-        rval3=rval(3)
+        ASSERT((nbfact.ge.1).and.(nbfact.le.nmxins))
         if (iret .eq. 0) then
-            tmax=int(rval1-(rval2+rval3))
+            tmax=int(rval1-rval2)/nbfact
         else
             ASSERT(.false.)
         endif
@@ -312,7 +309,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             vali(1)=info16
             vali(2)=icoefm
             vali(3)=tmax
-            call utmess('A', 'FACTOR_74', ni=3, vali=vali)
+            vali(4)=nbfact
+            call utmess('A', 'FACTOR_74', ni=4, vali=vali)
         endif
         case ('OUT_OF_CORE')
 ! ------------------
@@ -324,7 +322,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             vali(1)=info26
             vali(2)=icoefm
             vali(3)=tmax
-            call utmess('A', 'FACTOR_75', ni=3, vali=vali)
+            vali(4)=nbfact
+            call utmess('A', 'FACTOR_75', ni=4, vali=vali)
         endif
         case ('AUTO')
 ! -----------------------------------------------------------------
@@ -337,14 +336,12 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         else
             call jjldyn(0, -1, ltot)
             k8tab(1)='MEM_TOTA'
-            k8tab(2)='COUR_JV'
-            k8tab(3)='RLQ_MEM'
-            call utgtme(3, k8tab, rval, iret)
+            k8tab(2)='VMSIZE'
+            call utgtme(2, k8tab, rval, iret)
             rval1b=rval(1)
             rval2b=rval(2)
-            rval3b=rval(3)
             if (iret .eq. 0) then
-                tmaxb=int(rval1b-(rval2b+rval3b))
+                tmaxb=int(rval1b-rval2b)/nbfact
             else
                 ASSERT(.false.)
             endif
@@ -364,7 +361,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
                 vali(3)=info16
                 vali(4)=info26
                 vali(5)=icoefm
-                call utmess('F', 'FACTOR_76', ni=5, vali=vali)
+                vali(6)=nbfact
+                call utmess('F', 'FACTOR_76', ni=6, vali=vali)
             endif
         endif
         case ('EVAL')
@@ -379,12 +377,13 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         iaux1=int(rval(1)+rval(2))
         vali(1)=n
         vali(2)=max(iaux1,1)
-        vali(3)=max(info16,1)
-        vali(4)=max(info26,1)
-        vali(5)=max(info3,1)
+        vali(3)=max(info16*nbfact,1)
+        vali(4)=max(info26*nbfact,1)
+        vali(5)=max(info3*nbfact,1)
         vali(6)=vali(2)+vali(3)
         vali(7)=vali(2)+vali(4)
-        call utmess('I', 'FACTOR_81', ni=7, vali=vali)
+        vali(8)=nbfact
+        call utmess('I', 'FACTOR_81', ni=8, vali=vali)
         if (.not.lpeak) then
             call utmess('A', 'FACTOR_83')
         endif
@@ -446,15 +445,15 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !          CALL SYSTEM('free -m >> fort.11')
             write(ifm,*)
             write(ifm,*)'*********************************************'
-            write(ifm,*)'<AMUMPU> GESTION MEMOIRE USERSM/ICN22/ICN23: ',&
-     &      usersm,icn22,icn23
+            write(ifm,*)'<AMUMPU> GESTION MEMOIRE USERSM/ICN22/ICN23/NBFACT: ',&
+     &      usersm,icn22,icn23,nbfact
             write(ifm,*)'<AMUMPU> CONSO MUMPS EXEC/OBJET_AIRNJCN/IC/OOC ',&
      &                 execmu,nsizema,info16-(execmu+nsizema),&
      &                                info26-(execmu+nsizema)
-            write(ifm,*)'<AMUMPU> 1ERE ESTIMATION JEVEUX/RELIQUAT/TMAX: ',&
-     &                 rval2,rval3,tmax
-            write(ifm,*)'<AMUMPU> 2NDE ESTIMATION JEVEUX/RELIQUAT/TMAX: ',&
-     &                 rval2b,rval3b,tmaxb
+            write(ifm,*)'<AMUMPU> 1ERE ESTIMATION VMSIZE/MEM_TOTA/TMAX: ',&
+     &                 rval2,rval1,tmax
+            write(ifm,*)'<AMUMPU> 2NDE ESTIMATION VMSIZE/MEM_TOTA/TMAX: ',&
+     &                 rval2b,rval1b,tmaxb
             write(ifm,*)'*********************************************'
         endif
 !

@@ -81,9 +81,9 @@ subroutine pcmump(matasz, solvez, iretz)
 ! --  APPEL AU PRECONDITIONNEUR
     iret = 0
     if (iterpr .gt. reacpr .or. iterpr .eq. 0) then
-        call amumph('DETR_MAT', solvbd, matass, rbid, cbid,&
+        call amumph('DETR_MAT', solvbd, matass, [rbid], [cbid],&
                     ' ', 0, iret, .true.)
-        call amumph('PRERES', solvbd, matass, rbid, cbid,&
+        call amumph('PRERES', solvbd, matass, [rbid], [cbid],&
                     ' ', 0, iret, .true.)
     endif
 !

@@ -16,16 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine amumph(action, solvez, matasz, rsolu, csolu,&
-                      vcinez, nbsol, iret, prepos)
-        character(*) :: action
-        character(*) :: solvez
-        character(*) :: matasz
+    subroutine amumph(action, solvez, matasz, rsolu, csolu, vcinez, nbsol, iret, prepos)
+        character(len=*) :: action, matasz, vcinez, solvez
+        integer :: iret, nbsol
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
-        character(*) :: vcinez
-        integer :: nbsol
-        integer :: iret
         logical :: prepos
     end subroutine amumph
 end interface

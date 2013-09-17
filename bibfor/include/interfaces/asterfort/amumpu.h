@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine amumpu(option, type, kxmps, usersm, nprec,&
-                      lresol, kvers)
-        integer :: option
+    subroutine amumpu(option, type, kxmps, usersm, nprec, lresol, kvers, nbfact)
+        integer :: option, nbfact
         character(len=1) :: type
         integer :: kxmps
         character(len=12) :: usersm

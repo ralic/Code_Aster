@@ -343,7 +343,8 @@ Solveur MUMPS :
   Attention, vous avez demandé un calcul IN_CORE, mais MUMPS estime avoir besoin pour cela de
   %(i1)d Mo (avec %(i2)d %% de marge), alors qu'il n'y a que %(i3)d Mo de disponible sur ce processeur !
   Le calcul pourrait donc être ralenti ou achopper pour cette raison.
-  
+  Nombre de systèmes linéaires à factoriser en même temps: %(i4)d.
+
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
   (par ordre décroissant d'efficacité):
@@ -358,6 +359,7 @@ Solveur MUMPS :
   Attention, vous avez demandé un calcul OUT_OF_CORE, mais MUMPS estime avoir besoin pour cela de
   %(i1)d Mo (avec %(i2)d %% de marge), alors qu'il n'y a que %(i3)d Mo de disponible sur ce processeur !
   Le calcul pourrait donc être ralenti ou achopper pour cette raison.
+  Nombre de systèmes linéaires à factoriser en même temps: %(i4)d.
   
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
@@ -378,6 +380,7 @@ Solveur MUMPS :
      - IN_CORE    : %(i3)d Mo,
      - OUT_OF_CORE: %(i4)d Mo.
   Estimations à %(i5)d %% de marge près.
+  Nombre de systèmes linéaires à factoriser en même temps: %(i6)d.
   
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul
@@ -422,6 +425,7 @@ Conseil :
 81: _(u"""
 
 - Taille du système linéaire: %(i1)d
+- Nombre de systèmes linéaires à factoriser en même temps: %(i8)d.
  
 - Mémoire minimale consommée par Code_Aster (JEVEUX, Superviseur, Python...) : %(i2)d Mo
 - Estimation de la mémoire MUMPS avec GESTION_MEMOIRE='IN_CORE'              : %(i3)d Mo

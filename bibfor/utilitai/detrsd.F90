@@ -382,7 +382,7 @@ subroutine detrsd(typesd, nomsd)
             call dismoi('F', 'METH_RESO', matas, 'MATR_ASSE', ibid,&
                         metres, ibid)
             if (metres .eq. 'MUMPS') then
-                call amumph('DETR_MAT', ' ', matas, rbid, cbid,&
+                call amumph('DETR_MAT', ' ', matas, [rbid], [cbid],&
                             ' ', 0, ibid, lbid)
             else if (metres.eq.'PETSC') then
                 call apetsc('DETR_MAT', ' ', matas, rbid, ' ',&
