@@ -17,7 +17,7 @@
 !
 interface
     subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
-                      trav2, trav3, chfond, grlt, thlagr,&
+                      trav2, trav3, chfond, connex, grlt, thlagr,&
                       thlag2, basfon, nbre, milieu, pair,&
                       ndimte)
         character(len=8) :: resu
@@ -28,6 +28,7 @@ interface
         character(len=24) :: trav2
         character(len=24) :: trav3
         character(len=24) :: chfond
+        logical :: connex
         character(len=19) :: grlt
         logical :: thlagr
         logical :: thlag2

@@ -277,16 +277,25 @@ subroutine op0100()
     if (cas .eq. '3D_LOCAL' .and. typfis .eq. 'FISSURE') then
 !
         call dismoi('F', 'TYPE_FOND', nomfis, 'FISS_XFEM', ibid,&
-                    k16bid, ier)
-!       ON A TOUJOURS
-        connex = .false.
+                    typfon, ier)
+!
+        if (typfon .eq. 'FERME') then
+            connex = .true.
+        else
+            connex = .false.
+        endif
+!
+        if (liss .eq. 'LEGENDRE' .or. liss .eq. 'MIXTE') then
+            if (connex) call utmess('F', 'RUPTURE0_90')
+        endif
+!
         thetai = '&&THETA '
         grlt = nomfis//'.GRLTNO'
 !
         call gveri3(chfond, taillr, config, lnoff, thlagr,&
                     thlag2, ndeg, trav1, trav2, trav3)
         call gcour3(thetai, noma, coorn, lnoff, trav1,&
-                    trav2, trav3, chfond, grlt, thlagr,&
+                    trav2, trav3, chfond, connex, grlt, thlagr,&
                     thlag2, basfon, ndeg, milieu, pair,&
                     ndimte)
 !

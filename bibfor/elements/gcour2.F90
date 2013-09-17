@@ -464,6 +464,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     else
                         s0 = zr(iadabs+nbnoeu-1)
                         s1 = zr(iadabs+nbnoeu-1-2)
+                        zr(iadrtt) = (zr(iadabs+nbnoeu-1)-s1)/(s0- s1)
                         zr(iadrtt-1) = (zr(iadabs+nbnoeu-1-1)-s1)/(s0- s1)
                     endif
                 endif
@@ -472,14 +473,15 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     if (milieu) then
                         s0 = zr(iadabs+1-1)
                         s1 = zr(iadabs+1-1+4)
-                        zr(iadrtt) = (zr(iadabs+1-1)-s1)/(s0-s1)
+                        zr(iadrtt)   = (zr(iadabs+1-1)  -s1)/(s0-s1)
                         zr(iadrtt+1) = (zr(iadabs+1-1+1)-s1)/(s0-s1)
                         zr(iadrtt+2) = (zr(iadabs+1-1+2)-s1)/(s0-s1)
                         zr(iadrtt+3) = (zr(iadabs+1-1+3)-s1)/(s0-s1)
                     else
-                        s0 = zr(iadabs+kno-1)
-                        s1 = zr(iadabs+kno-1+2)
-                        zr(iadrtt+1) = (zr(iadabs+kno-1+1)-s1)/(s0-s1)
+                        s0 = zr(iadabs+1-1)
+                        s1 = zr(iadabs+1-1+2)
+                        zr(iadrtt) = (zr(iadabs+1-1)-s1)/(s0-s1)
+                        zr(iadrtt+1) = (zr(iadabs+1-1+1)-s1)/(s0-s1)
                     endif
                 endif
                 i1 = 1

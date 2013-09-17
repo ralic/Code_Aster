@@ -376,6 +376,10 @@ cata_msg={
      est en dehors de la structure.
 """),
 
+60: _(u"""
+     -> Pour le fond fermé, un point supplémentaire du fond a été ajouté.
+
+"""),
 
 61: _(u"""
   -> Une face contient au moins 3 points d'intersection avec la courbe d'isovaleur zéro du champ

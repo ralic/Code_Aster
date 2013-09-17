@@ -75,36 +75,37 @@ d = 10.   0.   0. ;
 e =  0.  10.   0. ;
 f = 10.  10.   0. ;
 *opti donn 5 ;
-su   = droite 5 a b ;
 ma2 = ma1 syme plan o a b ;
 ma3 = (ma1 et ma2) ;
 ma4 = ma3 syme plan o a c ;
 ma5 = ma3 et ma4 ;
-levinf2 = levinf1 syme droit o d ;
-levinf3 = levinf2 et levinf1 ;
-levinf4 = levinf3 syme droit o e ;
-levinf  = levinf3 et levinf4 ;
+*
 lff2    = lff1 syme droit o d ;
 lff3    = lff2 et lff1 ;
 lff4    = lff3 syme droit o e ;
 lff     = lff3 et lff4 ;
+*
+levinf21 = levinf1 syme plan o e d ;
+levinf2 = levinf21 tour 180 o d ;
+levinf3 = levinf2 et levinf1 ;
+levinf4 = levinf3 tour 180 o a ;
+levinf = levinf3 et levinf4 ;
+*
 ssup_2  = ssup_1 syme droit o d ;
 ssup_3  = ssup_2 et ssup_1 ;
 ssup_4  = ssup_3 syme droit o e ;
 ssup_f  = ssup_3 et ssup_4 ;
+*
 sinf_2  = sinf_1 syme droit a b ;
 sinf_3  = sinf_2 syme droit a c ;
 sinf_4  = sinf_3 syme droit a b ;
 sinf_f  = sinf_1 et sinf_2 et sinf_3 et sinf_4 ;
-slat_2  = slat_1 syme droit d b ;
-slat_f  = slat_1 et slat_2 ;
-mail  = ma5 et sinf_f et lff et levinf et ssup_f et slat_f ;
+*
+mail = ma5 et levinf et lff et ssup_f et sinf_f ;
 elim 0.01 mail ;
-trac cache mail ;
-lig = droite 2 a b ;
-ma = mail et lig ;
+oublie levinf21 ;
 *opti donn 5 ;
 opti sauv format 'essai.mgib' ;
-sauv format ma ;
+sauv format mail ;
 *opti donn 5;
 fin ;

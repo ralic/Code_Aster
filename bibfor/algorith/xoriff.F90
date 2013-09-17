@@ -156,9 +156,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
         if (zi(jtabpt-1+ipt+1) .eq. 0) then
 !
 !         PRESENCE DE PLUSIEURS FONDS FERMES INTERDIT
-            if (typfon .eq. 'FERME') then
-                call utmess('F', 'XFEM_20')
-            endif
+            if (typfon .eq. 'FERME') call utmess('F', 'XFEM_20')
 !
             indice = 0
 !
@@ -200,6 +198,10 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 10  continue
 !
     zi(jfonmu-1+2*(nbfond-1)+2) = nfon
+!
+    if (typfon .eq. 'FERME')then
+        zi(jfonmu-1+2*(nbfond-1)+2) = nfon+1
+    endif
 !
     call utmess('I', 'XFEM_34', si=nbfond)
 !

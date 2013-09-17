@@ -1,0 +1,151 @@
+# TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+DEBUT(CODE=_F(NOM='SSLV134L',NIV_PUB_WEB='INTERNET'))
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED')
+
+M=MODI_MAILLAGE(reuse=M,
+                MAILLAGE=M,
+                ORIE_PEAU_3D=_F(GROUP_MA = ( 'SINF_F','IINF_F' ),),);
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F( GROUP_MA = ('MA','SINF_F','IINF_F',),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D', ))
+
+MA=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
+                         NU = 0.3,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT = 'OUI',
+                         MATER = MA,),);
+
+M=DEFI_GROUP(reuse=M,   
+             MAILLAGE=M,
+             CREA_GROUP_NO=(_F(  GROUP_MA = 'SINF_F',),
+                            _F(  GROUP_MA = 'IINF_F',  ),) )
+                
+                                        
+
+                                        
+LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
+                           INTERVALLE =_F (JUSQU_A= 1.0, NOMBRE = 1   )
+                                         );
+
+
+FF=DEFI_FISS_XFEM(MODELE=MO,
+                  DEFI_FISS=_F(FORM_FISS='ELLIPSE',
+                               DEMI_GRAND_AXE=2.001,
+                               DEMI_PETIT_AXE=2.001,
+                               CENTRE=(0,0,0),
+                               VECT_X=(1,0,0),
+                               VECT_Y=(0,1,0),
+       ),
+                 )
+MOX=MODI_MODELE_XFEM(MODELE_IN=MO,FISSURE=FF)
+
+
+CH=AFFE_CHAR_MECA(MODELE=MOX,
+                  DDL_IMPO=(
+                         _F(  NOEUD = 'N8290',        DX = 0.,    ),
+                         _F(  NOEUD = 'N8354',        DX = 0.,   ),
+                         _F(  NOEUD = 'N8299',        DY = 0.,    ),
+                         _F(  NOEUD = 'N8421',        DY = 0.,    ),
+                         _F(  NOEUD = 'N17844',        DX = 0.,    ),
+                         _F(  NOEUD = 'N13157',        DX = 0.,   ),
+                         _F(  NOEUD = 'N17849',        DY = 0.,    ),
+                         _F(  NOEUD = 'N17839',        DY = 0.,    ),
+       _F(  NOEUD=('N18259','N15135','N16739','N13457'),        DZ = 0.,),),
+                      PRES_REP=(
+                         _F(  GROUP_MA = 'SINF_F',   PRES = -1.E6, ),
+                         _F(  GROUP_MA = 'IINF_F',   PRES = -1.E6, ),)
+                   )
+
+RESU=MECA_STATIQUE(MODELE=MOX,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(  CHARGE = CH,   ) )
+
+GLOC=CALC_G(RESULTAT=RESU,
+            INST = 0,
+            OPTION='CALC_K_G',
+            THETA=_F(FISSURE=FF,R_INF=0.24,
+                              R_SUP=0.48),
+                     LISSAGE=_F(LISSAGE_G='LAGRANGE_REGU',
+                                LISSAGE_THETA='LAGRANGE_REGU'),
+                     )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.04,
+           VALE_CALC=11.961527088317,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=11,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.04,
+           VALE_CALC= 11.970027662249,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=31,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.04,
+           VALE_CALC= 11.966218751018,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=15,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.04,
+           VALE_CALC= 11.961395585783 ,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=22,),
+           )
+
+TEST_TABLE(VALE_CALC= 11.974411279997 ,
+           
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GLOC,
+           )
+
+TEST_TABLE(
+           VALE_CALC= 11.912304834797,
+           
+           NOM_PARA='G',
+           TYPE_TEST='MIN',
+           TABLE=GLOC,
+           )
+
+
+FIN( )
+#
+#

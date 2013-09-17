@@ -83,7 +83,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
     integer :: nbfond, numfon
     integer :: ifm, niv
-    integer :: nmaen1, nmaen2, nmaen3, ncouch
+    integer :: nmaen1, nmaen2, nmaen3, ncouch, nfono
     character(len=8) :: k8bid
     character(len=16) :: typdis
     character(len=19) :: cnxinv, info, listpt
@@ -291,6 +291,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
     fonmul = '&&XENRCH.FONDMULT'
     call wkvect(fonmul, 'V V I', nfon, jfonmu)
+    nfono = nfon
 !
 !     SEULEMENT EN 3D
     if (ndim .eq. 3) then
@@ -304,6 +305,8 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                     jtail, fonmul, nbfond)
 !
     endif
+!   SI LE FOND EST FERME
+    if (nfono .eq. (nfon-1)) call utmess('I','XFEM_60')
 !
 !     REMPLISSAGE DE FONDFISS ET DE BASEFOND
 !     STOCKAGE DES FONDS MULTIPLES EN 2D

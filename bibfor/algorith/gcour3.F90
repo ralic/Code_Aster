@@ -1,5 +1,5 @@
 subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
-                  trav2, trav3, chfond, grlt, thlagr,&
+                  trav2, trav3, chfond, connex, grlt, thlagr,&
                   thlag2, basfon, nbre, milieu, pair,&
                   ndimte)
     implicit none
@@ -40,6 +40,8 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !        COORN  : NOM DE L'OBJET CONTENANT LES COORDONNEES DU MAILLAGE
 !        LNOFF  : NOMBRE DE NOEUDS DE GAMM0
 !        CHFOND : NOMS DES NOEUDS DU FOND DE FISSURE
+!        CONNEX: .TRUE.  : FOND DE FISSURE FERME
+!                .FALSE. : FOND DE FISSURE DEBOUCHANT
 !        GRLT   : GRADIENT DE LA LEVEL-SET TANGENTE
 !        TRAV1  : RINF
 !        TRAV2  : RSUP
@@ -73,6 +75,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: trav1, trav2, trav3, chfond, chamno, coorn
     character(len=24) :: basfon
@@ -90,7 +93,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2
     real(kind=8) :: grtx0, grty0, grtz0, grtx1, grty1, grtz1
 !
-    logical :: thlagr, milieu, debug, thlag2, pair
+    logical :: thlagr, milieu, debug, thlag2, pair, connex
 !
 !-----------------------------------------------------------------------
     integer :: iadrtt, jbas, kno
@@ -131,6 +134,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
         if (mod(lnoff,2) .eq. 0) then
             ndimte = 1+lnoff/2
             pair = .true.
+            if (connex) call utmess('F','RUPTURE1_1')
         endif
     else if (thlagr) then
         ndimte = lnoff
@@ -200,6 +204,20 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                 if ((k.eq. ndimte) .and. pair) then
                     zr(iadrtt) = 0.5d0
                     zr(iadrtt-1) = 0.d0
+                endif
+                if ((k .eq. 1) .and. connex) then
+                    iadrtt = iadrt3 + (k-1)*lnoff + lnoff - 1
+                    s0 = zr(ifon-1+4*(lnoff-1)+4)
+                    s1 = zr(ifon-1+4*(lnoff-1-2)+4)
+                    zr(iadrtt) = (zr(ifon-1+4*(lnoff-1)+4)-s1)/(s0- s1)
+                    zr(iadrtt-1) = (zr(ifon-1+4*(lnoff-1-1)+4)-s1)/(s0- s1)
+                endif
+                if ((k .eq. ndimte) .and. connex) then
+                    iadrtt = iadrt3 + (k-1)*lnoff + 1 - 1
+                    s0 = zr(ifon-1+4*(1-1)+4)
+                    s1 = zr(ifon-1+4*(1-1+2)+4)
+                    zr(iadrtt) = (zr(ifon-1+4*(1-1)+4)-s1)/(s0- s1)
+                    zr(iadrtt+1) = (zr(ifon-1+4*(1-1+1)+4)-s1)/(s0- s1)
                 endif
 !
             else if (thlagr) then
