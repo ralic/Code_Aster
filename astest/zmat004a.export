@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm zmat004a.comm D 1
-F mail ssnv171c.mail D 20
+F mail ssnv172a.mail D 20
 F libr zmat004a.33 D 33

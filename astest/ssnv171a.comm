@@ -18,9 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV171B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
-
-
+DEBUT(CODE=_F(NOM='SSNV171A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
@@ -38,7 +36,6 @@ CHARGE=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
 
-
 COMPOR1=DEFI_COMPOR( ROTA_RESEAU='POST',
                      MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
@@ -54,150 +51,61 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
                                     NOMBRE=300,),),);
+                                    
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=10,
                                  SUBD_NIVEAU=10),)
-MONOIMPR=SIMU_POINT_MAT(INFO=1,
-                   COMP_INCR=_F(RELATION='MONOCRISTAL',
-                                COMPOR=COMPOR1,
-                                ALGO_INTE='NEWTON_RELI',
-                                ),
+MONOIMPL=SIMU_POINT_MAT(INFO=1,
+                   COMP_INCR=_F(RELATION='MONOCRISTAL',COMPOR=COMPOR1,),
                    MASSIF=_F(ANGL_REP=30.0),
                    NEWTON=_F(REAC_ITER=1,),
-                   MATER      = ACIER,  
+                   MATER = ACIER,  
                    INCREMENT=_F(LIST_INST=DEFLIST1),
-                   ARCHIVAGE=_F(LIST_INST=LINST,PRECISION=1.E-6),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
                         );  
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_CALC=210.0,
-           VALE_REFE=210.0,
+TEST_TABLE(VALE_CALC=210.0,
            NOM_PARA='SIXX',
-           TABLE=MONOIMPR,
+           TABLE=MONOIMPL,
            FILTRE=_F(PRECISION=1.E-06,
                      NOM_PARA='INST',
                      VALE=1.5,),
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_REFE=1.8913169223994E-03,
-           VALE_CALC=1.8913169223994E-03,
+TEST_TABLE(VALE_CALC=1.8913169223994E-03,
            NOM_PARA='EPXX',
-           TABLE=MONOIMPR,
+           TABLE=MONOIMPL,
            FILTRE=_F(PRECISION=1.E-06,
                      NOM_PARA='INST',
                      VALE=1.5,),
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_REFE=-5.0273159559248E-04,
-           VALE_CALC=-5.0273159559248E-04,
+TEST_TABLE(VALE_CALC=-5.0273159559248E-04,
            NOM_PARA='EPYY',
-           TABLE=MONOIMPR,
+           TABLE=MONOIMPL,
            FILTRE=_F(PRECISION=1.E-06,
                      NOM_PARA='INST',
                      VALE=1.5,),
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_CALC=-6.884729831599E-05,
-           VALE_REFE=-6.884729831599E-05,
+TEST_TABLE(VALE_CALC=-6.884729831599E-05,
            NOM_PARA='V2',
-           TABLE=MONOIMPR,
+           TABLE=MONOIMPL,
            FILTRE=_F(PRECISION=1.E-06,
                      NOM_PARA='INST',
                      VALE=1.5,),
            )
 
 # rotation de reseau
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_CALC=-1.8809431585402E-04,
-           VALE_REFE=-1.8809431585402E-04,
+TEST_TABLE(VALE_CALC=-1.8809431585402E-04,
            NOM_PARA='V58',
-           TABLE=MONOIMPR,
+           TABLE=MONOIMPL,
            FILTRE=_F(PRECISION=1.E-06,
                      NOM_PARA='INST',
                      VALE=1.5,),
            )
 
-
-
-# implicite avec NEWTON_PERT
-MONOIMPP=SIMU_POINT_MAT(INFO=2,
-                   COMP_INCR=_F(RELATION='MONOCRISTAL',
-                                COMPOR=COMPOR1,
-                                ALGO_INTE='NEWTON_PERT',
-                                ),
-                   MASSIF=_F(ANGL_REP=30.0),
-                   NEWTON=_F(REAC_ITER=1,),
-                   MATER      = ACIER,  
-                   INCREMENT=_F(LIST_INST=DEFLIST1),
-                   ARCHIVAGE=_F(LIST_INST=LINST,PRECISION=1.E-6),
-                   SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_CALC=210.0,
-           VALE_REFE=210.0,
-           NOM_PARA='SIXX',
-           TABLE=MONOIMPP,
-           FILTRE=_F(PRECISION=1.E-06,
-                     NOM_PARA='INST',
-                     VALE=1.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_REFE=1.8913169223994E-03,
-           VALE_CALC=1.8913169223994E-03,
-           NOM_PARA='EPXX',
-           TABLE=MONOIMPP,
-           FILTRE=_F(PRECISION=1.E-06,
-                     NOM_PARA='INST',
-                     VALE=1.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_REFE=-5.0273159559248E-04,
-           VALE_CALC=-5.0273159559248E-04,
-           NOM_PARA='EPYY',
-           TABLE=MONOIMPP,
-           FILTRE=_F(PRECISION=1.E-06,
-                     NOM_PARA='INST',
-                     VALE=1.5,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_CALC=-6.884729831599E-05,
-           VALE_REFE=-6.884729831599E-05,
-           NOM_PARA='V2',
-           TABLE=MONOIMPP,
-           FILTRE=_F(PRECISION=1.E-06,
-                     NOM_PARA='INST',
-                     VALE=1.5,),
-           )
-
-# rotation de reseau
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-6,
-           VALE_CALC=-1.8809431585402E-04,
-           VALE_REFE=-1.8809431585402E-04,
-           NOM_PARA='V58',
-           TABLE=MONOIMPP,
-           FILTRE=_F(PRECISION=1.E-06,
-                     NOM_PARA='INST',
-                     VALE=1.5,),
-           )
 
 FIN()

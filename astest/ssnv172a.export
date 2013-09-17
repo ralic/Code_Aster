@@ -6,6 +6,6 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnv172a.comm D 1
-F mail ssnv171c.mail D 20
+F mail ssnv172a.mail D 20
 F libr ssnv172a.40 D 40
 F libr ssnv172a.49 D 49
