@@ -150,14 +150,13 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    # MAILLAGE
    nom_bamo = v_refa_rigi[0]
    iret,ibid,nume_ddl = aster.dismoi('F','NUME_DDL',nom_bamo,'RESU_DYNA')
-   nom_mail = aster.getvectjev( nume_ddl[0:14] + '.NUME.REFN        ' )[0]
+   iret,ibid,nom_mail = aster.dismoi('F','NOM_MAILLA',nume_ddl,'NUME_DDL')
    maillage = sd_maillage(nom_mail)
    # MODELE, DDLGENE
    nom_ddlgene = v_refa_rigi[1]
-   nom_modele = aster.getvectjev( nume_ddl[0:14] + '.NUME.LILI        ' )[1]
+   iret,ibid,nom_modele = aster.dismoi('F','NOM_MODELE',nume_ddl,'NUME_DDL')
    resultat = self.get_concept(nom_bamo)
    nume_ddlgene = self.get_concept(nom_ddlgene)
-   modele = self.get_concept(nom_modele[0:8])
    #TEST base modale
    nom_bamo2 = v_refa_mass[0]
    if nom_bamo.strip() != nom_bamo2.strip():
@@ -462,9 +461,10 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
          if INTERF['MODE_INTERF']=='QUELCONQUE' :
             XPI=XI
-            SI=0.0+0j
+            SI0=0.0
             for k1 in range(0,nbme):
-              SI=SI+XOe[k1]
+              SI0=SI0+XOe[k1]*XOe[k1]
+            SI = sqrt(SI0)
             for idd in range(0,nddi):
               if NCMP2[idd][0:2] == NOM_CMP:
                 XPI[idd]=SI*XI[idd]
@@ -496,22 +496,20 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
       if  TYPE_RESU=="SPEC":
          SP=NP.zeros((nbmodt,nbmodt))
-         for k1 in range(0,nbme):
-            if INTERF['MODE_INTERF']=='QUELCONQUE' :
-              XPI=XI
-              for idd in range(0,nddi):
-                if NCMP2[idd][0:2] == NOM_CMP:
-                  XPI[idd]=XOe[k1]*XI[idd]
-              QPI=NP.dot(PHIT, XPI)
-              U0=NP.dot(linalg.inv(PPHI), QPI)
-              FS = NP.dot(KRS, U0)
-            else:
-         #  calcul de la force sismique mode POD par mode POD
-              FS = NP.dot(KRS,XO[k1])
-#             Fzero=NP.zeros((1,nbmodd))
-#             FS2=NP.concatenate((Fzero,NP.reshape(FS,(1,nbmods))),1)
+         if INTERF['MODE_INTERF']=='QUELCONQUE' :
+            XPI=XI
+            SI0=0.0
+            for k1 in range(0,nbme):
+              SI0=SI0+XOe[k1]*XOe[k1]
+            SI = sqrt(SI0)
+            for idd in range(0,nddi):
+              if NCMP2[idd][0:2] == NOM_CMP:
+                XPI[idd]=SI*XI[idd]
+            QPI=NP.dot(PHIT, XPI)
+            U0=NP.dot(linalg.inv(PPHI), QPI)
+            FS = NP.dot(KRS, U0)
             FSISM[nbmodd:nbmodt][:] =FS
-        #  Calcul harmonique
+       #  Calcul harmonique
             __fosi.RECU_VECT_GENE_C(FSISM)
             __dyge = DYNA_LINE_HARM(
                           MATR_MASS = MATR_GENE['MATR_MASS'],
@@ -526,8 +524,28 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
             RS = NP.array(__dyge.sdj.DEPL.get())
             DETRUIRE(CONCEPT=_F(NOM=(__dyge)),INFO=1)
              # stockage des matrices résultats: sum(s_q s_q* )
-            SP=SP+RS*NP.conj(RS[:,NP.newaxis])
-
+            SP=RS*NP.conj(RS[:,NP.newaxis])
+         else:
+            for k1 in range(0,nbme):
+         #  calcul de la force sismique mode POD par mode POD
+              FS = NP.dot(KRS,XO[k1])
+              FSISM[nbmodd:nbmodt][:] =FS
+        #  Calcul harmonique
+              __fosi.RECU_VECT_GENE_C(FSISM)
+              __dyge = DYNA_LINE_HARM(
+                          MATR_MASS = MATR_GENE['MATR_MASS'],
+                          MATR_RIGI = __rito,
+                          FREQ = freqk,
+                          MATR_AMOR = __ma_amort,
+                          EXCIT =_F ( VECT_ASSE_GENE = __fosi,
+                                      COEF_MULT= 1.0,
+                                  ),
+                        );
+         #  recuperer le vecteur modal depl calcule par dyge
+              RS = NP.array(__dyge.sdj.DEPL.get())
+              DETRUIRE(CONCEPT=_F(NOM=(__dyge)),INFO=1)
+             # stockage des matrices résultats: sum(s_q s_q* )
+              SP=SP+RS*NP.conj(RS[:,NP.newaxis])
 
 
 #--------------------------------------------
