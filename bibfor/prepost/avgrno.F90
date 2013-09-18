@@ -87,7 +87,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     integer :: l, cnbno, ibidno, kwork, somnow, inop
     integer :: nbma, adrma, jtypma
     integer :: icmp, jad
-    integer :: vali(2), nbvecm, paract(30)
+    integer :: vali(2), nbvecm, paract(35)
 !
     real(kind=8) :: fatsoc, dgam, gamma, pi, dphi, tab1(18), phi0
     real(kind=8) :: vala, valb, coefpa, cudomx
@@ -117,6 +117,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !-----------------------------------------------------------------------
 !
     call jemarq()
+
 !
 ! CONSTRUCTION DU VECTEUR NORMAL SUR UNE DEMI SPHERE
 ! CONSTRUCTION DU VECTEUR U DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE

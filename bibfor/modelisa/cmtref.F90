@@ -53,7 +53,7 @@ subroutine cmtref(chmat, nomail)
     integer :: iret, jdcm1, jvcm1, jlcm1, jdtrf, jvtrf, jltrf
     integer :: nbcm1, nbtrf, kcm1, ktrf, codcm1, codtrf, igd
     integer :: nccm1, nctrf, jncmp, jvalv, nucm1, nutrf, kk
-    integer :: ico, ibid, nm, nbma, ninter, codint, jlint, ncm1, ntrf
+    integer :: ico, nm, nbma, ninter, codint, jlint, ncm1, ntrf
     real(kind=8) :: tref, valr(2)
     character(len=8) :: k8b, mater, nocp
     character(len=8) :: ktref, nomgd

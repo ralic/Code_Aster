@@ -26,7 +26,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 #include "asterfort/utmess.h"
     character(len=3) :: impgrd
     character(len=16) :: nomcri, nomfor, typcha
-    integer :: paract (30)
+    integer :: paract (35)
     logical :: fordef, crsigm, crepst, crepse, crepsp
 !
 ! ---------------------------------------------------------------------
@@ -51,32 +51,39 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 ! CREPSP  LOGICAL : HISTOIRE DE DEFORMATION PLASTIQUE NECESSAIRE
 !
 !-----------------------------------------------------------------------
-    integer :: ip, id, nparma, jprof, np, l
-    character(len=2) :: nomty1(22), nomty2(30)
-    character(len=8) :: nompa1(22), nompa2(30), nompf(30)
+    integer :: ip, id, nparma, nparm2, jprof, np, l
+    character(len=2) :: nomty1(35), nomty2(30)
+    character(len=8) :: nompa1(35), nompa2(30), nompf(35)
     character(len=24) :: chnom, cbid
     logical :: grdexi
 !
 !     ---------------------------------------------------------------
-    data  nompa1/   'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&
+    data  nompa1/       'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&
      &                  'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1',&
      &                  'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',&
      &                  'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',&
      &                  'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',&
-     &                  'RAYSPH', 'AMPCIS'  /
+     &                  'RAYSPH', 'AMPCIS', 'DEPSEE',&
+     &                  'DTAUCR', 'DGAMCR', 'DSINCR', 'DEPNCR', &
+     &                  'MTAUCR', 'MGAMCR', 'MSINCR', 'MEPNCR', &
+     &                  'DGAMPC', 'DEPNPC', 'MGAMPC', 'MEPNPC'/
 !     ---------------------------------------------------------------
 !     ---------------------------------------------------------------
 !      C = CONTRAINTE, T = DEF TOTALE, E = DEF ELAS, P = DEF PLAS
+!
 !
     data  nomty1/   'CC', 'CC', 'CC', 'CC',&
      &                  'TT', 'TT', 'PP', 'TT',&
      &                  'CT', 'CP', 'CE', 'CC',&
      &                  'CC', 'CC', 'CC', 'TC',&
      &                  'TT', 'CC', 'TT', 'PP',&
-     &                  'CC', 'CC'  /
+     &                  'CC', 'CC', 'EE',&
+     &                  'CC', 'TT', 'CC', 'TT',&
+     &                  'CC', 'TT', 'CC', 'TT',&
+     &                  'PP', 'PP', 'PP', 'PP'                /
 !     ---------------------------------------------------------------
 !     ---------------------------------------------------------------
-    data  nompa2/  'TAUPR_1','TAUPR_2','SIGN_1',  'SIGN_2',&
+    data  nompa2/      'TAUPR_1','TAUPR_2','SIGN_1',  'SIGN_2',&
      &                 'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2',&
      &                 'SIPR1_1','SIPR1_2','EPSN1_1', 'EPSN1_2',&
      &                 'ETPR1_1','ETPR1_2','SITN1_1', 'SITN1_2',&
@@ -85,7 +92,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
      &                 'EPEQ_1', 'EPEQ_2',  'INVJ2_1','INVJ2_2',&
      &                 'SITRE_1', 'SITRE_2'     /
 !       -------------------------------------------------------------
-    data  nomty2/  'CC','CC','CC',  'CC',&
+    data  nomty2/      'CC','CC','CC',  'CC',&
      &                 'CC','CC','TT', 'TT',&
      &                 'CC','CC','TC', 'TC',&
      &                 'TT','TT','CT', 'CT',&
@@ -101,8 +108,10 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
     call jemarq()
 !
 !
+    nparm2 = 30
+
 ! NOMBRE MAX DE PARAMETRES DISPONIBLES
-    nparma = 30
+    nparma = 35
 !
 !     INITIALISATION
     do 15 ip = 1, nparma
@@ -110,6 +119,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
 15  end do
 !
     fordef = .false.
+
     if (nomcri(1:7) .eq. 'FORMULE') then
 !
 ! RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
@@ -121,10 +131,10 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                     nompf)
 !
 ! VERIFIER QUE LE NOM DE GRANDEUR A CALCULER EST BON
-        if (typcha .eq. 'NON_PERIODIQUE') then
+        if (typcha(1:14) .eq. 'NON_PERIODIQUE') then
             do 10 id = 1, np
                 grdexi = .false.
-                do 40 ip = 1, nparma
+                do 40 ip = 1, nparm2
                     if (nompf(id) .eq. nompa2(ip)) then
                         grdexi = .true.
                         paract(ip) = 1
@@ -151,8 +161,9 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract,&
                 endif
 10          continue
 !
-        else
-!
+         endif
+!      
+         if (typcha(1:10) .eq. 'PERIODIQUE') then
             do 60 id = 1, np
                 grdexi = .false.
                 do 50 ip = 1, nparma

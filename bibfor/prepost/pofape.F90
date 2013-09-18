@@ -50,25 +50,25 @@ subroutine pofape()
 !     -----------------------------------------------------------------
 !
     integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, nbc, ibid, iordo
-    integer :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract (30), nbeps
+    integer :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract (35), nbeps
     integer :: ifonc2, ifonce, iordoe, ifonc3, ifoncp, iordop, nbepsp
     integer :: tdisp, nbnop, lisnoe(1), nbnot, nbordr, nnoini
     integer :: tspaq, k, jrwork, nbcmp, ordini
 !
     real(kind=8) :: rbid, phmax, cissio, sphere, pcorr, val(2), vmax, vmin
-    real(kind=8) :: domage, rcrit, vresu(24), resu(7), valpar(22)
+    real(kind=8) :: domage, rcrit, vresu(24), resu(7), valpar(35)
     complex(kind=8) :: cbid
-    logical :: lhaigh, lke, post, fordef, plcicr, lbid
-    logical :: crsigm, crepst, crepse, crepsp
+    logical :: lhaigh, lke, post, fordef, plcicr
+    logical :: crsigm, crepst, crepse, crepsp, plcr2
     integer :: icodre(2), icodwo, icodba, icodhs
     character(len=8) :: k8b, nomten(6), nomres(2), kdomm, nompar, nommat, cara
     character(len=8) :: result, nomeps(6), nomepp(6)
     character(len=16) :: nomcmd, pheno, phenom, criter, nomfor, typcha, forvie
-    character(len=16) :: proaxe, nommet
+    character(len=16) :: proaxe, nommet, forcri
     character(len=19) :: k19b
     character(len=24) :: fvale(6), etvale(6), ptvale(6)
 !     --- POST_FATI_MULT -----------------------------------------------
-    parameter    ( nbpapf = 37  )
+    parameter    ( nbpapf = 50  )
     character(len=3) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
     data  nomppf / 'CRITERE' , 'VALE_CRITERE' , 'PRES_HYDRO_MAX' ,&
@@ -79,16 +79,21 @@ subroutine pofape()
      &               'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',&
      &               'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',&
      &               'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',&
-     &               'RAYSPH', 'AMPCIS',&
+     &               'RAYSPH', 'AMPCIS', 'DEPSEE', &
+     &               'DTAUCR', 'DGAMCR', 'DSINCR', 'DEPNCR', &
+     &               'MTAUCR', 'MGAMCR', 'MSINCR', 'MEPNCR', &
+     &               'DGAMPC', 'DEPNPC', 'MGAMPC', 'MEPNPC', &
      &               'VNM1X',  'VNM1Y', 'VNM1Z',&
      &               'VNM2X',  'VNM2Y',  'VNM2Z'  /
 !
 !
-    data  typppf /  'K16' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R',&
+    data  typppf /'K16','R' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R',&
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
-     &                  'R',  'R',  'R' , 'R' , 'R' , 'R' , 'R' , 'R'/
+     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
+     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',&
+     &                  'R',  'R',  'R' , 'R' , 'R' , 'R' , 'R' /
 !
 !     ---------------------------------------------------------------
 !     ----------------------------------------------------------------
@@ -119,6 +124,12 @@ subroutine pofape()
     if (nval .eq. 0) then
         forvie = '        '
     endif
+
+    call getvid(' ', 'FORMULE_CRITIQUE', scal=forcri, nbret=nval)
+    if (nval .eq. 0) then
+        forcri = '        '
+    endif
+
 !
     kdomm = ' '
     call getvtx(' ', 'DOMMAGE', scal=kdomm, nbret=n1)
@@ -142,9 +153,10 @@ subroutine pofape()
     crepst = .false.
     crepse = .false.
     crepsp = .false.
+    fordef = .false.
 !
     call anacri(criter, nomfor, typcha, 'OUI', paract,&
-                lbid, crsigm, crepst, crepse, crepsp)
+                fordef, crsigm, crepst, crepse, crepsp)
 !     --- RECUPERATION DE LA FONCTION CHARGEMENT ---
 !
 !CCCCCCCCC RECUPERER LA CONTRAINTE
@@ -332,9 +344,9 @@ subroutine pofape()
         ( criter .eq. 'DANG_VAN_MODI_AV' ) .or. ( criter .eq. 'FATESOCI_MODI_AV' ) .or.&
         ( criter .eq. 'MATAKE_MODI_AC' ) .or. ( criter .eq. 'DANG_VAN_MODI_AC' )) then
 !
-! ANALYSER LE CRITERE
-        call anacri(criter, nomfor, typcha, 'OUI', paract,&
-                    fordef, lbid, lbid, lbid, lbid)
+! ! ANALYSER LE CRITERE
+!         call anacri(criter, nomfor, typcha, 'OUI', paract,&
+!                     fordef, lbid, lbid, lbid, lbid)
         post = .true.
 ! CONS TRUIRE UN VECTEUR WORK QUI CONTIENT CONTRAINE ET DEFORMATION
         nbcmp = 6
@@ -358,29 +370,30 @@ subroutine pofape()
         nbnop = 1
         tspaq = 18
         plcicr = .false.
+        plcr2 = .false.
 !
 ! POUR CHARGEMENT PERIODIQUE
         if (typcha .eq. 'PERIODIQUE') then
 !
             call dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
                         nnoini, nbnop, tspaq, nommet, criter,&
-                        nomfor, kdomm, forvie, k8b, k19b,&
+                        nomfor, kdomm, forvie, forcri, k8b, k19b,&
                         nommat, post, valpar, vresu)
 !
-!
-            if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or.&
+           if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or.&
                 (paract(5) .eq. 1) .or. (paract(6) .eq. 1)) then
 !
                 plcicr = .true.
             endif
-!
+
+! PLAN CRITIQUE DE TYPE CISSAILLEMENT DE DANG VAN-MATAKE
             if (plcicr) then
 !
                 call tbajli(result, 1, nomppf(10), ibid, vresu(1),&
                             cbid, k8b, ilign)
 !
                 do 46 i = 1, 3
-                    call tbajli(result, 1, nomppf(i+31), ibid, vresu(i+1),&
+                    call tbajli(result, 1, nomppf(i+44), ibid, vresu(i+1),&
                                 cbid, k8b, ilign)
 !
 46              continue
@@ -390,17 +403,43 @@ subroutine pofape()
                                 cbid, k8b, ilign)
 !
 44              continue
+            endif
+
+!POUR LES NOUVEUAX CRITERS DE PLAN CRITIQUE
+
+            do 47 i = 24, 35
+                if (paract(i) .eq. 1) plcr2 = .true.
+47          continue
+            
+            if (plcr2) then
+                do 48 i = 1, 3
+                    call tbajli(result, 1, nomppf(i+44), ibid, vresu(i+1),&
+                                cbid, k8b, ilign)
 !
-            else
-! POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
-                do 43 i = 1, 22
+48              continue 
+
+                do 49 i = 24, 35
                     if (paract(i) .eq. 1) then
                         call tbajli(result, 1, nomppf(i+9), ibid, valpar(i),&
                                     cbid, k8b, ilign)
                     endif
-43              continue
-!
+49             continue
+               
             endif
+
+            
+! POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
+           if (paract(2) .eq. 1) then
+               call tbajli(result, 1, nomppf(11), ibid, valpar(2),&
+                                    cbid, k8b, ilign)
+           endif
+           do 43 i = 7, 23
+                if (paract(i) .eq. 1) then
+                   call tbajli(result, 1, nomppf(i+9), ibid, valpar(i),&
+                                    cbid, k8b, ilign)
+                endif
+43          continue
+!
 !
             call tbajli(result, 1, nomppf(2), ibid, vresu(9),&
                         cbid, k8b, ilign)
@@ -418,20 +457,20 @@ subroutine pofape()
                         kdomm, forvie, fordef, k8b, proaxe,&
                         nommat, k19b, post, resu)
 !
-            call tbajli(result, 1, nomppf(32), ibid, resu(1),&
+            call tbajli(result, 1, nomppf(45), ibid, resu(1),&
                         cbid, k8b, ilign)
-            call tbajli(result, 1, nomppf(33), ibid, resu(2),&
+            call tbajli(result, 1, nomppf(46), ibid, resu(2),&
                         cbid, k8b, ilign)
-            call tbajli(result, 1, nomppf(34), ibid, resu(3),&
+            call tbajli(result, 1, nomppf(47), ibid, resu(3),&
                         cbid, k8b, ilign)
             call tbajli(result, 1, nomppf(8), ibid, resu(4),&
                         cbid, k8b, ilign)
 !
-            call tbajli(result, 1, nomppf(35), ibid, resu(5),&
+            call tbajli(result, 1, nomppf(48), ibid, resu(5),&
                         cbid, k8b, ilign)
-            call tbajli(result, 1, nomppf(36), ibid, resu(6),&
+            call tbajli(result, 1, nomppf(49), ibid, resu(6),&
                         cbid, k8b, ilign)
-            call tbajli(result, 1, nomppf(37), ibid, resu(7),&
+            call tbajli(result, 1, nomppf(50), ibid, resu(7),&
                         cbid, k8b, ilign)
 !
         endif

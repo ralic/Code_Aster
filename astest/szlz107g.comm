@@ -1,5 +1,5 @@
 #
-# TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE CONSTANTE
+# TITRE CRITERES EN FORMULE DU TYPE PLAN CRIT POUR POST_FATIGUE AMPLITUDE CONSTANTE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(  CODE=_F(  NOM = 'SZLZ107B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(  CODE=_F(  NOM = 'SZLZ107G',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ### ON VEUT RETROUVER LE MEME RESULTAT AVEC CALC_FATIGUE DE CAS-TEST SSLV135d
 SIGMXX=DEFI_FONCTION(    NOM_PARA='INST',
@@ -251,95 +251,79 @@ WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                                  2900.,         10.,    )  )
 
 MAT0=DEFI_MATERIAU(
-#                    ELAS=_F(E = 200000.,
-#                            NU = 0.3,
-#                            ALPHA = 0. ),
+                   ELAS=_F(E = 200000.,
+                           NU = 0.3,
+                           ALPHA = 0. ),
                     
                    FATIGUE=_F(WOHLER = WHOL,
-                              D0 = 540.97,
-                              TAU0 = 352.),);
+        
+                      D0 = 540.97,
+                      TAU0 = 352.),);
+                              
+# PROPRIETES MATERIAUX
+WHOL_F =   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
+           )
+MANCO1=   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 0.01*(NBRUP**(-0.1619)) '''
+           ) 
 
-NBPR = 14
+NBPR = 12
 CRIT = [None]*NBPR
 FATN = [None]*NBPR
 FATM = [None]*NBPR
 NPAR = [None]*NBPR
-CRIT[0] =   FORMULE(
-           NOM_PARA='DEPSPE',
-           VALE= '''DEPSPE'''
-           )
 
-CRIT[1] =   FORMULE(
-           NOM_PARA='EPSPR1',
-           VALE= '''EPSPR1'''
-           )
 
-CRIT[2] =   FORMULE(
-           NOM_PARA='SIGNM1',
-           VALE= '''SIGNM1'''
-           )
+NPAR = ['DTAUCR', 'DGAMCR', 'DSINCR', 'DEPNCR','MTAUCR', 'MGAMCR', 'MSINCR', 'MEPNCR','DGAMPC', 'DEPNPC', 'MGAMPC', 'MEPNPC' ]
+NCRI = ['''(DTAUCR)''', '''DGAMCR''', '''DSINCR''', '''DEPNCR''','''MTAUCR''', '''MGAMCR''', '''MSINCR''', '''MEPNCR''','''DGAMPC''', '''DEPNPC''', '''MGAMPC''', '''MEPNPC''' ]
+FVIE = [WHOL_F, MANCO1, WHOL_F, MANCO1, WHOL_F, MANCO1, WHOL_F, MANCO1, MANCO1, MANCO1, MANCO1, MANCO1 ]
+NPRS = ['VALE_CRITERE','DOMMAGE','NBRUP','VNM1X', 'VNM1Y', 'VNM1Z' ]
 
-CRIT[3] =   FORMULE(
-           NOM_PARA='APHYDR',
-           VALE= '''APHYDR'''
-           )
-CRIT[4] =   FORMULE(
-           NOM_PARA='DENDIS',
-           VALE= '''DENDIS'''
-           )
 
-CRIT[5] =   FORMULE(
-           NOM_PARA='DENDIE',
-           VALE= '''DENDIE'''
-           )
+RESU = [100, 1.028E-6, 9.73E5, 0.707, 0.707, 0, 
+        2.425E-3, 1.583E-4, 6.3163E3, 0.707, 0.707, 0, 
+        200, 1.348E-5, 7.418E4, (-1,1), 0.0174, 0,
+        1.75E-3, 2.11E-5, 4.74E4,(-1, 1), 0.0174, 0,
 
-CRIT[6] =   FORMULE(
-           NOM_PARA='DSIGEQ',
-           VALE= '''DSIGEQ'''
-           )
+        100, 1.028E-6, 9.73E5, 0.707, 0.707, 0, 
+        2.425E-3, 1.583E-4, 6.3163E3, 0.707, 0.707, 0, 
+        200, 1.348E-5, 7.418E4, (-1,1), 0.0174, 0,
+        1.75E-3, 2.11E-5, 4.74E4, (-1,1), 0.0174, 0,
 
-CRIT[7] =   FORMULE(
-           NOM_PARA='SIGPR1',
-           VALE= '''SIGPR1'''
-           )
+        1.125E-3, 1.3782E-6, 7.256E5, 0.707, 0.707, 0, 
+        0.75E-3, 1.126E-7, 8.88E6, (-1,1), 0.0174, 0,
+        1.125E-3, 1.3782E-6, 7.256E5, 0.707, 0.707, 0, 
+        0.75E-3, 1.126E-7, 8.88E6, (-1,1), 0.0174, 0
+        ]
+        
+#CALCULE
+RESC = [100, 1.0277056600669E-06, 9.73041E+05, 0.70710678118655, 0.70710678118655,0,
+         2.425E-3, 1.5833553719608E-04, 6316.0,  0.70710678118655, 0.70710678118655,0,
+         199.93923112351, 1.3464884811041E-05, 74267.0 , (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+         1.7492631773725E-03, 2.1056179833038E-05, 47492.0 ,(0.99984806626684, -0.99984806626684), 0.017431132564039 , 0,
 
-CRIT[8] =   FORMULE(
-           NOM_PARA='EPSNM1',
-           VALE= '''EPSNM1'''
-           )
+         100, 1.0277056600669E-06, 9.73041E+05, 0.70710678118655, 0.70710678118655,0,
+         2.425E-3, 1.5833553719608E-04, 6316.0,  0.70710678118655, 0.70710678118655,0,
+         199.93923112351, 1.3464884811041E-05, 74267.0 , (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+         1.7492631773725E-03, 2.1056179833038E-05, 47492.0 , (0.99984806626684, -0.99984806626684), 0.017431132564039 , 0,
 
-CRIT[9] =   FORMULE(
-           NOM_PARA='INVA2S',
-           VALE= '''INVA2S'''
-           )
+         1.125E-3, 1.3781582480363E-06 , 7.25606E+05, 0.70710678118655, 0.70710678118655,0,
+         7.4965817506973E-04, 1.1231085934024E-07 , 8.903859E+06, (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+         1.125E-3, 1.3781582480363E-06, 7.25606E+05, 0.70710678118655, 0.70710678118655,0,
+         7.4965817506973E-04, 1.1231085934024E-07 , 8.903859E+06, (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+        ]
 
-CRIT[10] =   FORMULE(
-           NOM_PARA='DSITRE',
-           VALE= '''DSITRE'''
-           )
-
-CRIT[11] =   FORMULE(
-           NOM_PARA='DEPTRE',
-           VALE= '''DEPTRE'''
-           )
-
-CRIT[12] =   FORMULE(
-           NOM_PARA='EPSPAC',
-           VALE= '''EPSPAC'''
-           )
-
-CRIT[13] =   FORMULE(
-           NOM_PARA='DEPSEE',
-           VALE= '''DEPSEE'''
-           )
-           
-RESU = [7.5E-4, 7.625E-4, 200, 66.66666, 0.45, 0.17333333,  200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.6742346E-3, 0.00086666666]
-NPAR = ['DEPSPE', 'EPSPR1', 'SIGNM1', 'APHYDR', 'DENDIS','DENDIE', 'DSIGEQ','SIGPR1', 'EPSNM1','INVA2S','DSITRE','DEPTRE', 'EPSPAC', 'DEPSEE' ]
-for i in range(NBPR) :
-#for i in range(5,6) :
-#
+#######################
 # TEST CRITERE FORMULE 
 #########################################NOEUD
+for i in range(NBPR) :
+    CRIT[i] = FORMULE(
+           NOM_PARA=(NPAR[i]),
+           VALE = NCRI[i]
+           )
     FATN[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
                                      SIGM_XX = SIGMXX,
@@ -364,29 +348,41 @@ for i in range(NBPR) :
                                      EPSP_YZ  = ZERO,
                                      
                                      ),
+
                        TYPE_CHARGE = 'PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
                        FORMULE_GRDEQ = CRIT[i],
-                       DOMMAGE='WOHLER',
-                       MATER=MAT0                
+                       FORMULE_CRITIQUE = CRIT[i],
+                       DOMMAGE  = 'FORM_VIE',
+                       FORMULE_VIE = FVIE[i],
+                       METHODE = 'CERCLE_EXACT',
+                       MATER=MAT0               
                         )
                        
     IMPR_TABLE(TABLE = FATN[i]) 
 
-    TEST_TABLE(VALE_CALC=RESU[i],
-               VALE_REFE=RESU[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA=NPAR[i],
-               TABLE=FATN[i],)
+    for j in range(6) :     
+        crit2 = 'RELATIF' if RESU[j + 6*i] != 0. else 'ABSOLU'
+        TEST_TABLE(CRITERE=crit2,
+                   VALE_REFE=RESU[j+ 6*i],
+                   VALE_CALC=RESC[j+ 6*i],
+                   REFERENCE='ANALYTIQUE',
+                   NOM_PARA=NPRS[j],
+                   TABLE=FATN[i],
+                   PRECISION=0.004)
 
-###################################################
-# POUR RETROUVER LES CRITERES DE DANG_VAN ET MATAKE
-###################################################
-#LE CHARGEMENT OBTENU AVEC SSLV135a
 #######################################################
-# ASSOCIE AVEC LA SOLUTION SOL_NL de SSLV135a
+#POUR LES CRITERES DE PLANS CRITIQUE
 #######################################################
-# POUR DANG-VAN et MATAKE
+
+####################################################
+## POUR RETROUVER LES CRITERES DE DANG_VAN ET MATAKE
+####################################################
+##LE CHARGEMENT OBTENU AVEC SSLV135a
+########################################################
+## ASSOCIE AVEC LA SOLUTION SOL_NL de SSLV135a
+########################################################
+## POUR DANG-VAN et MATAKE
 SIGMXX2=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
                       0.00000E+00 ,  0.00000E+00,  
@@ -467,41 +463,38 @@ EPSTZZ2=DEFI_FONCTION(    NOM_PARA='INST',
                                   ) ) 
            
 ## CRITERES A TESTER
-CRIT2 = [None]*4
+CRIT2 = [None]*2
 
 #POUR RETROUVER 'MATAKE_MODI_AC'
 CRIT2[0] =   FORMULE(
-           NOM_PARA=('DTAUMA','NORMAX'),
-           VALE=''' 1.5*( DTAUMA + max(0,NORMAX) ) '''
+           NOM_PARA=('DTAUCR','MSINCR'),
+           VALE=''' 1.5*( DTAUCR + max(0,MSINCR) ) '''
            )
            
 #POUR RETROUVER 'DANG_VAN_MODI_AC'
 CRIT2[1] =  FORMULE(
-           NOM_PARA=('DTAUMA','PHYDRM'),
-           VALE=''' 1.5*(DTAUMA + max(PHYDRM,0)) '''
+           NOM_PARA=('DTAUCR','PHYDRM'),
+           VALE=''' 1.5*(DTAUCR + max(PHYDRM,0)) '''
            )
-CRIT2[2] = 'MATAKE_MODI_AC'
-CRIT2[3] = 'DANG_VAN_MODI_AC'
+           
+FORCRI = FORMULE(
+           NOM_PARA=('DTAUCR'),
+           VALE = '''DTAUCR'''
+           )
 ## -----------------------------------------------------------------------
 
-FATN2 = [None]*4
+FATN2 = [None]*2
 
-NPAR = ['DTAUMA','VNM1X', 'VNM1Y', 'VNM1Z','NORMAX', 'NORMOY','EPNMAX', 'EPNMOY',
-         'VALE_CRITERE','NBRUP','DOMMAGE']
-CTEST = ['RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','ABSOLU', 'RELATIF', 
-         'ABSOLU','RELATIF', 'RELATIF', 'RELATIF']
+NPA1 = ['DTAUCR','VNM1X', 'VNM1Y', 'VNM1Z','MSINCR',
+        'DTAUCR','VNM1X', 'VNM1Y', 'VNM1Z','PHYDRM']
  
-RESU = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
-        5.0000000000000E+01, 0,1.7500000000000E-04, 0,
-        3.0000000000000E+02, 1.0946000000000E+04 ,9.1356470832402E-05,
+RESU = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 5.0000000000000E+01,
 # DANG_VAN        
-        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
-        5.0000000000000E+01, 0,1.7500000000000E-04,0,
-        2.7500000000000E+02, 1.4903000000000E+04 ,6.7099587679274E-05,
-          ]
+        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 33.333333333333 ]
 # 
-NPARM = ['DTAUMA','NORMAX', 'VALE_CRITERE','NBRUP','DOMMAGE']
-NPARD = ['DTAUMA','PHYDRM', 'VALE_CRITERE','NBRUP','DOMMAGE']
+RESUC = [149.91876731731, 7.0710678118655E-01, 7.0710678118655E-01,0, 49.939101256496,
+# DANG_VAN        
+        149.91876731731 , 7.0710678118655E-01, 7.0710678118655E-01,0, 33.333333333333 ]
 
 for i in range(2) :
 
@@ -522,30 +515,49 @@ for i in range(2) :
                                      EPS_YZ  = ZERO2,
                                      
                                      ),
+                     
                        TYPE_CHARGE = 'PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
                        FORMULE_GRDEQ = CRIT2[i],
-                       DOMMAGE='WOHLER',
+                       FORMULE_CRITIQUE = FORCRI,
+                       DOMMAGE  = 'FORM_VIE',
+                       FORMULE_VIE = WHOL_F,
                        METHODE = 'CERCLE_EXACT',
-                       MATER=MAT0                  
+                       MATER=MAT0                 
                        )
     
     IMPR_TABLE(TABLE = FATN2[i])
     
-    for j in range(11) :     
-        crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
+    for j in range(5) :     
+        crit = 'RELATIF' if RESU[j + 5*i] != 0. else 'ABSOLU'
         TEST_TABLE(CRITERE=crit,
-                   VALE_REFE=RESU[j+ 11*i],
-                   VALE_CALC=RESU[j+ 11*i],
+                   VALE_REFE=RESU[j+ 5*i],
+                   VALE_CALC=RESUC[j+ 5*i],
                    REFERENCE='ANALYTIQUE',
-                   NOM_PARA=NPAR[j],
-                   TABLE=FATN2[i],)
+                   NOM_PARA=NPA1[j+ 5*i],
+                   TABLE=FATN2[i],
+                   PRECISION=0.004)
 
-FATNW2 = [None]*2
 
-### FORMULE_VIE = WHOL,
+#########################################################################
+#TEST CRITERES DE DANG_VAN_MODI_AV ET MATAKE_MODI_AV
+#RETROUVER LES RESULTAT DE SZLZ107E. POUR LE DOMMAGE? IL FAUT DIVISER PAR 2
+# CAR ON CONSIDERE UN SEUL CYCLE DANS CE TEST_TABLE
+
+FATN3 = [None]*2
+
+NPA3 = ['VNM1X', 'VNM1Y', 'VNM1Z','DOMMAGE']
+
+FATNF = [None]*2
+ 
+RESU = [(-0.39073112848927, 0.39073112848927), (0.92387953251129,9.2050485345244E-01), 0, 1.6582830743888E-04 ,
+#REFERENCE DE DV
+         0.70710678118655, 0.70710678118655, 0, 4.3980118706998E-05]
+
+
 for i in range(2) :
-    FATNW2[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
+
+    FATN3[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
                                      SIGM_XX = SIGMXX2,
                                      SIGM_YY = SIGMYY2,
@@ -562,79 +574,28 @@ for i in range(2) :
                                      EPS_YZ  = ZERO2,
                                      
                                      ),
+                     
                        TYPE_CHARGE = 'PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
                        FORMULE_GRDEQ = CRIT2[i],
+# ON TESTE PLE PLAN DU DOMMAGE
+                       FORMULE_CRITIQUE = CRIT2[i],
                        DOMMAGE  = 'FORM_VIE',
-                       FORMULE_VIE = WHOL,
+                       FORMULE_VIE = WHOL_F,
                        METHODE = 'CERCLE_EXACT',
-                       MATER=MAT0  
+                       MATER=MAT0                 
                        )
     
-    IMPR_TABLE(TABLE = FATNW2[i])
+    IMPR_TABLE(TABLE = FATN3[i])
     
-    for j in range(11) :     
-        crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
+    for j in range(4) :     
+        crit = 'RELATIF' if RESU[j + 4*i] != 0. else 'ABSOLU'
         TEST_TABLE(CRITERE=crit,
-                   VALE_REFE=RESU[j + 11*i],
-                   VALE_CALC=RESU[j + 11*i],
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA=NPAR[j],
-                   TABLE=FATNW2[i],)
-
-### POUR RETROUVER CRIERES EN NOMS
-ACIER = [None]*2                                
-ACIER[0]   = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
-                                                NU       = .3,
-                                                ALPHA    = 0. ),
-                            FATIGUE        =_F( WOHLER   = WHOL, ),
-                            CISA_PLAN_CRIT =_F( CRITERE = 'MATAKE_MODI_AC',
-                                                MATAKE_A  = 1.0,
-                                                MATAKE_B  = 2.0,
-                                                COEF_FLEX_TORS = 1.5 )
-                          )
-ACIER[1]   = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
-                                                NU       = .3,
-                                                ALPHA    = 0. ),
-                            FATIGUE        =_F( WOHLER   = WHOL, ),
-                            CISA_PLAN_CRIT =_F( CRITERE = 'DANG_VAN_MODI_AC',
-                                                D_VAN_A = 1.0,
-                                                D_VAN_B = 2.0,
-                                                COEF_CISA_TRAC = 1.5 )
-                          )
-for i in range(2) :
-    FATN2[i+2]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
-                       HISTOIRE=_F(  
-                                     SIGM_XX = SIGMXX2,
-                                     SIGM_YY = SIGMYY2,
-                                     SIGM_ZZ = ZERO2,
-                                     SIGM_XY = ZERO2,
-                                     SIGM_XZ = ZERO2,
-                                     SIGM_YZ = ZERO2,
-                                     
-                                     EPS_XX  = EPSTXX2,
-                                     EPS_YY  = EPSTYY2,
-                                     EPS_ZZ  = EPSTZZ2,
-                                     EPS_XY  = ZERO2,
-                                     EPS_XZ  = ZERO2,
-                                     EPS_YZ  = ZERO2,
-                                     
-                                     ),
-                       TYPE_CHARGE = 'PERIODIQUE',
-                       CRITERE=CRIT2[i+2],
-                       MATER=ACIER[i]                  
-                       )
-    
-    IMPR_TABLE(TABLE = FATN2[i+2])
-    
-    for j in range(11) :     
-        crit = 'RELATIF' if RESU[j + 11*i] != 0. else 'ABSOLU'
-        TEST_TABLE(CRITERE=crit,
-                   VALE_REFE=RESU[j+ 11*i],
-                   VALE_CALC=RESU[j+ 11*i],
-                   REFERENCE='ANALYTIQUE',
-                   NOM_PARA=NPAR[j],
-                   TABLE=FATN2[i],)
-
+                   VALE_REFE=RESU[j+ 4*i],
+                   VALE_CALC=RESU[j+ 4*i],
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_PARA=NPA3[j],
+                   TABLE=FATN3[i],
+                   PRECISION=0.001)
 FIN()
 #

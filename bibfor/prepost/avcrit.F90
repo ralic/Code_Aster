@@ -40,14 +40,11 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 #include "asterfort/wkvect.h"
 !
     integer :: nbvec, nbordr, ncycl(nbvec)
-!    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
     integer :: tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)
     real(kind=8) :: vala, coefpa
-!    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     integer :: jomin, jomax, jvmin, jvmax, jgdreq
-!    real(kind=8) :: gdreq(nbvec*nbordr)
     character(len=16) :: nomcri, nomfor
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE EQUIVALENTE POUR TOUS LES VECTEURS NORMAUX
@@ -74,18 +71,12 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !                     DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
     integer :: ivect, ad0, ad1, ad2, icycl, nval, ipar, j, np
-    integer :: ibid, nparma, jprof, paract(30)
+    integer :: ibid, nparma, jprof, paract(35)
     real(kind=8) :: coepre, valpar(30), valpu(30)
     integer :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn, jveppr
     integer :: jvsipn, jvsieq, jveteq
 !
-!    real(kind=8) :: vsign(nbvec*nbordr), vphydr(nbordr)
-!    real(kind=8) :: vsipr(nbordr), vepsn(nbordr)
-!    real(kind=8) :: vetpr(nbordr), vsitn(nbordr)
-!    real(kind=8) :: veppr(nbordr), vsipn(nbordr)
-!    real(kind=8) :: vsieq(nbordr), veteq(nbordr)
-!
-    logical :: fordef, lbid
+    logical :: lbid
     character(len=8) :: nompf(30), nompar(30)
     character(len=16) :: typcha
     character(len=24) :: chnom, cbid
@@ -128,7 +119,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     typcha = 'NON_PERIODIQUE'
 !
     call anacri(nomcri, nomfor, typcha, 'NON', paract,&
-                fordef, lbid, lbid, lbid, lbid)
+                lbid, lbid, lbid, lbid, lbid)
 !
 !-----------------------------------------------------------------------
 ! CALCULER LES GRANDEURS

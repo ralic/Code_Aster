@@ -12,9 +12,11 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 #include "asterfort/avpic2.h"
 #include "asterfort/avrain.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/projax.h"
 #include "asterfort/propla.h"
+#include "asterfort/wkvect.h"
     integer :: nbvec, nbordr, kwork
     integer :: sommw, tdisp, tspaq, ipgn
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
@@ -179,8 +181,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     call wkvect('&&AVCIPR_ITVR', 'V V I', 2*(nbordr+2), jitrv)
     call wkvect('&&AVCIPR_VALORD', 'V V I', nbvec*nbordr, jvalor)
     call wkvect('&&AVCIPR_ORPIC', 'V V I', nbvec*(nbordr+2), jordpi)
-
-
+    
     call propla(nbvec, vectn, vectu, vectv, nbordr,&
                 kwork, sommw, vwork, tdisp, tspaq,&
                 ipgn, nomcri, nomfor, fordef, fatsoc,&

@@ -1,6 +1,6 @@
 subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                   nmaini, nbmap, numpaq, tspaq, nommet,&
-                  nomcri, nomfor, grdvie, forvie, cesr)
+                  nomcri, nomfor, grdvie, forvie, forcri, cesr)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     integer :: jrwork, jnbpg, nbpgt, nbordr, nmaini, numpaq, nbmap
     integer :: tspaq, ordini
     character(len=8) :: grdvie
-    character(len=16) :: nomcri, nommet, nomfor, forvie
+    character(len=16) :: nomcri, nommet, nomfor, forvie, forcri
     character(len=19) :: cesr
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLAN INCLINE POUR LEQUEL DELTA_TAU EST MAXIMUM
@@ -78,14 +78,12 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: j, kwork, n, jcerd, jcerl, jcerv, jad
+    integer :: kwork, jcerd, jcerl, jcerv, jad
     integer :: iret, imap, icesd, icesl, icesv, ibid
-    integer :: ipg, tneces, tdisp(1), jvecpg, jvectn
-    integer :: jvectu, jvectv, ngam, dim, tab2(18)
-    integer :: nbpg, sompgw, nbpgp, l, jdtaum, jresun
-    integer :: icmp, vali(2)
-    real(kind=8) :: dgam, gamma, pi, dphi, tab1(18)
-    real(kind=8) :: phi0, vala, valb, coefpa, vresu2(24), valpar(22)
+    integer :: ipg
+    integer :: nbpg, sompgw, nbpgp, l
+    integer :: icmp 
+    real(kind=8) :: vala, valb, coefpa, vresu2(24), valpar(35)
     integer :: icodwo
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
@@ -95,41 +93,19 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !-----------------------------------------------------------------------
 !234567                                                              012
 !-----------------------------------------------------------------------
-    data  tab1/ 180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
-     &             11.25d0, 10.588d0, 10.0d0, 10.0d0, 10.0d0, 10.588d0,&
-     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0 /
-!
-    data  tab2/ 1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
-     &           12, 9, 6, 3 /
-!
-    pi = r8pi()
 !-----------------------------------------------------------------------
 !
     call jemarq()
 !
-! CONSTRUCTION DU VECTEUR CONTENANT DELTA_TAU_MAX
-! CONSTRUCTION DU VECTEUR CONTENANT LA VALEUR DU POINTEUR PERMETTANT
-!              DE RETROUVER LE VECTEUR NORMAL ASSOCIE A DELTA_TAU_MAX
-!
-    call wkvect('&&DELTAU.DTAU_MAX', 'V V R', 209, jdtaum)
-    call wkvect('&&DELTAU.RESU_N', 'V V I', 209, jresun)
-!
-! CONSTRUCTION DU VECTEUR NORMAL SUR UNE DEMI SPHERE
-! CONSTRUCTION DU VECTEUR U DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
-! CONSTRUCTION DU VECTEUR V DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
-!
-    call wkvect('&&DELTAU.VECT_NORMA', 'V V R', 630, jvectn)
-    call wkvect('&&DELTAU.VECT_TANGU', 'V V R', 630, jvectu)
-    call wkvect('&&DELTAU.VECT_TANGV', 'V V R', 630, jvectv)
-!
+! !
 ! OBTENTION DES ADRESSES '.CESD', '.CESL' ET '.CESV' DU CHAMP SIMPLE
 ! DESTINE A RECEVOIR LES RESULTATS : DTAUM, ....
 !
     call jeveuo(cesr//'.CESD', 'L', jcerd)
     call jeveuo(cesr//'.CESL', 'E', jcerl)
     call jeveuo(cesr//'.CESV', 'E', jcerv)
-!
-!
+! !
+! !
 ! RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 !
     call getvid(' ', 'CHAM_MATER', scal=chmat1, nbret=iret)
@@ -141,33 +117,6 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     call jeveuo(cesmat//'.CESL', 'L', icesl)
     call jeveuo(cesmat//'.CESV', 'L', icesv)
 !
-    tneces = 209*nbordr*2
-    call jedisp(1, tdisp)
-    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
-    if (tdisp(1) .lt. tneces) then
-        vali (1) = tdisp(1)
-        vali (2) = tneces
-        call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
-    else
-        call wkvect('&&DELTAU.VECTPG', 'V V R', tneces, jvecpg)
-        call jerazo('&&DELTAU.VECTPG', tneces, 1)
-    endif
-!
-    dgam = 10.0d0
-!
-    n = 0
-    dim = 627
-    do 300 j = 1, 18
-        gamma=(j-1)*dgam*(pi/180.0d0)
-        dphi=tab1(j)*(pi/180.0d0)
-        ngam=tab2(j)
-        phi0=dphi/2.0d0
-!
-        call vecnuv(1, ngam, gamma, phi0, dphi,&
-                    n, 1, dim, zr(jvectn), zr(jvectu),&
-                    zr(jvectv))
-!
-300  end do
 !
 ! CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
 ! POINT DE GAUSS DU PAQUET DE MAILLES.
@@ -211,14 +160,14 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
         do 420 ipg = 1, nbpg
 !
-            call jerazo('&&DELTAU.VECTPG', tneces, 1)
+!            call jerazo('&&DELTAU.VECTPG', tneces, 1)
 !
 ! REMPACER PAR ACMATA
-            call acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
+            call acgrdo(nbordr, ordini,&
                         kwork, sompgw, jrwork, tspaq, ipg,&
-                        jvecpg, jdtaum, jresun, nommet, nommat,&
+                        nommet, nommat,&
                         nomcri, vala, coefpa, nomfor, grdvie,&
-                        forvie, valpar, vresu2)
+                        forvie, forcri, valpar, vresu2)
 !
 !
 ! C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
@@ -244,15 +193,8 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
 ! MENAGE
 !
-    call detrsd('CHAM_ELEM_S', cesmat)
-!
-    call jedetr('&&DELTAU.DTAU_MAX')
-    call jedetr('&&DELTAU.RESU_N')
-    call jedetr('&&DELTAU.VECT_NORMA')
-    call jedetr('&&DELTAU.VECT_TANGU')
-    call jedetr('&&DELTAU.VECT_TANGV')
-!
-    call jedetr('&&DELTAU.VECTPG')
+     call detrsd('CHAM_ELEM_S', cesmat)
+! !
 !
     call jedema()
 end subroutine

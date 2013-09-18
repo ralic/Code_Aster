@@ -66,6 +66,7 @@ subroutine jerazo(nomlu, ni, i1)
 ! ----------------------------------------------------------------------
     noml32 = nomlu
     noml8 = noml32(25:32)
+
 !
     icre = 0
     call jjvern(noml32, icre, iret)

@@ -57,7 +57,6 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
 ! -----------------
     integer :: idecma, idecno, imail, ipara, jnumac, jtblp, jtbnp, jtens, jvalv, nblign, nbmaca
     integer :: nbno, nbpara, numail, nbma, mma
-    character(len=1) :: k1b
     character(len=24) :: tens
     real(kind=8) :: rtens
     logical :: trouve

@@ -56,7 +56,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-    integer :: icmp, k, jma, nbma, iret, i, ibid, n1, jvalv, ncmpma, jncmp
+    integer :: icmp, k, jma, nbma, iret, i, n1, jvalv, ncmpma, jncmp
     integer :: nbmo1, nbocc, dimaki, dimanv, nbkit, numlc, nbvari, icpri
     integer :: nbvarz, nunit, ii, inv, indimp
 !    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
@@ -64,7 +64,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 !    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
     parameter (dimanv=4)
     integer :: nbnvi(dimanv), ncomel, nvmeta, nt
-    character(len=8) :: noma, k8b, typmcl(2), nomcmp(*), sdcomp, tavari
+    character(len=8) :: noma, typmcl(2), nomcmp(*), sdcomp, tavari
     character(len=16) :: tymatg, moclef(2), comp, txcp, defo, mocles(2)
     character(len=16) :: texte(2), comcod, lcomel(10), nomkit(dimaki)
     character(len=16) :: nomsub, nomcmd, comco2, crirup

@@ -74,7 +74,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
 ! REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
-    integer :: ivect, iordr, n, decal, adrs, decpro, paract(30)
+    integer :: ivect, iordr, n, decal, adrs, decpro, paract(35)
     logical :: lbid, crsigm, crepst, crepse, crepsp
     character(len=16) :: typcha
     real(kind=8) :: nx, ny, nz, ux, uy, uz, vx, vy, vz
@@ -106,6 +106,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
 !
 ! TRAITEMENT DES PAQUETS DE NOEUDS.
 !
+    write(6,*) 'propla', nomcri,  fordef
     if (( nomcri(1:16) .eq. 'FATESOCI_MODI_AV' ) .or. fordef) then
         decpro = 6
         goto 50

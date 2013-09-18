@@ -59,7 +59,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 !
 ! RECUPERER LE NOM DE PARAMETRE GRANDEUR_EQUIVALEN
 !
-    nbmx=30
+    nbmx=35
     chnom(20:24) = '.PROL'
     chnom(1:19) = nomfor
     nrupt = 0.d0
@@ -96,6 +96,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
         call fointe('F', nomfor, np, [nompfi], [lnf(20)],&
                     grdmax, icodre)
 !
+
         if (valgrd .gt. grdmax) then
             call utmess('F', 'FATIGUE1_94')
         endif

@@ -1,5 +1,5 @@
 subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
-                  nomfor, grdvie, forvie, fordef, typcha,&
+                  nomfor, grdvie, forvie,forcri, fordef, typcha,&
                   proaxe, instic, inscri, prec)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,6 +49,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 #include "asterfort/wkvect.h"
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
+    character(len=16) :: forcri 
     logical :: fordef
     real(kind=8) :: instic, prec
 ! ---------------------------------------------------------------------
@@ -72,7 +73,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax, jnbpaq
     integer :: nmaini, nbmap, tspaq, iordr, jad
     integer :: jsigv, jsigd, jsigl, imap, nbpg, ipg, icmp, iret1
-    integer :: jepsv, jepsd, jepsl, paract(30), jepped, jeppel
+    integer :: jepsv, jepsd, jepsl, paract(35), jepped, jeppel
     integer :: jepspv, jepspd, jepspl, iret2, jeppev, valep
     integer :: i, kwork, sompgw, sompgs, sompgi, jmail, jgrma
     integer :: n, ninit, nbpggm, nbmagm, nmemo, nncp
@@ -626,7 +627,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         if (typcha .eq. 'PERIODIQUE') then
             call deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                         nmaini, nbmap, numpaq, tspaq, nommet,&
-                        nomcri, nomfor, grdvie, forvie, cesr)
+                        nomcri, nomfor, grdvie, forvie, forcri, cesr)
 !
         else if (typcha .eq. 'NON_PERIODIQUE') then
             call avgrma(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr,&

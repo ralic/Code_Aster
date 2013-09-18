@@ -18,7 +18,7 @@
 interface
     subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
                       nnoini, nbnop, tspaq, nommet, nomcri,&
-                      nomfor, grdvie, forvie, nommai, cnsr,&
+                      nomfor, grdvie, forvie,forcri, nommai, cnsr,&
                       nommap, post, valpar, vresu)
         integer :: nbnot
         integer :: jrwork
@@ -33,6 +33,7 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
+        character(len=16) :: forcri
         character(len=8) :: nommai
         character(len=19) :: cnsr
         character(len=8) :: nommap

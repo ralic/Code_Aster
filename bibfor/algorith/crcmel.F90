@@ -49,7 +49,7 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
     integer :: iret, nbmo1, i, nt, n1, ncmpma, ibid, irepe
     integer :: jncmp, jvalv, icmp, iexi
     character(len=16) :: moclef(2)
-    character(len=8) :: nomcmp(ncmpma), noma, k8b
+    character(len=8) :: nomcmp(ncmpma), noma
     character(len=19) :: compor
     character(len=24) :: modele, ligrel
     character(len=19) :: ces1, ces2, cel1

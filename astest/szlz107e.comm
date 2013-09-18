@@ -221,11 +221,11 @@ NPAR = ['VNM1X',   'VNM1Y',   'VNM1Z', 'DOMMAGE', 'VNM2X',  'VNM2Y',  'VNM2Z']
  
 RESU = [(-0.38268343236509,0.38268343236509), (0.92387953251129,9.2050485345244E-01), 0, 7.0532362250862E-04,
         (-0.38268343236509,0.38268343236509), (0.92387953251129,9.2050485345244E-01), 0,
-##REFERENCE DE DV
+#REFERENCE DE DV
          0.70710678118655, 0.70710678118655, 0, 1.3419917535855E-04, -0.70710678118655, 0.70710678118655, 0
          ]
 CTEST = ['RELATIF', 'RELATIF', 'ABSOLU','RELATIF','RELATIF', 'RELATIF', 'ABSOLU']
-# 
+
 for i in range(2) :
 
     FATN[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
@@ -430,6 +430,41 @@ CRIT_FAT =   FORMULE(
 RESU2 = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.16830578997527,
          (-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.16830578997527]
 
+
+## POUR RETROUVER LES CRITERES EN NOM AVEC PROJECTION = DEUX_AXES  
+FATN2SF2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
+                   HISTOIRE=_F(  
+                                 SIGM_XX = SIGMXX,
+                                 SIGM_YY = SIGMYY,
+                                 SIGM_ZZ = ZERO,
+                                 SIGM_XY = ZERO,
+                                 SIGM_XZ = ZERO,
+                                 SIGM_YZ = ZERO,
+                                 
+                                 EPS_XX  = EPSTXX,
+                                 EPS_YY  = EPSTYY,
+                                 EPS_ZZ  = EPSTZZ,
+                                 EPS_XY  = ZERO,
+                                 EPS_XZ  = ZERO,
+                                 EPS_YZ  = ZERO,                                 
+                                 ),
+                   TYPE_CHARGE = 'NON_PERIODIQUE',
+                   CRITERE='FATESOCI_MODI_AV',
+                   MATER=ACIER2,
+                   PROJECTION = 'DEUX_AXES'                 )
+
+IMPR_TABLE(TABLE = FATN2SF2)
+
+for j in range(7) :     
+
+    TEST_TABLE( TABLE=FATN2SF2,
+            NOM_PARA = NPAR[j],
+            VALE_REFE=RESU2[j],
+            VALE_CALC=RESU2[j],
+            CRITERE = CTEST[j],
+            REFERENCE='AUTRE_ASTER'
+            )                               
+
 FATN2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                    HISTOIRE=_F(  
                                  SIGM_XX = SIGMXX,
@@ -576,39 +611,7 @@ for j in range(7) :
             REFERENCE='AUTRE_ASTER'
             )
 
-## POUR RETROUVER LES CRITERES EN NOM AVEC PROJECTION = DEUX_AXES  
-FATN2SF2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
-                   HISTOIRE=_F(  
-                                 SIGM_XX = SIGMXX,
-                                 SIGM_YY = SIGMYY,
-                                 SIGM_ZZ = ZERO,
-                                 SIGM_XY = ZERO,
-                                 SIGM_XZ = ZERO,
-                                 SIGM_YZ = ZERO,
-                                 
-                                 EPS_XX  = EPSTXX,
-                                 EPS_YY  = EPSTYY,
-                                 EPS_ZZ  = EPSTZZ,
-                                 EPS_XY  = ZERO,
-                                 EPS_XZ  = ZERO,
-                                 EPS_YZ  = ZERO,                                 
-                                 ),
-                   TYPE_CHARGE = 'NON_PERIODIQUE',
-                   CRITERE='FATESOCI_MODI_AV',
-                   MATER=ACIER2,
-                   PROJECTION = 'DEUX_AXES'                 )
 
-IMPR_TABLE(TABLE = FATN2SF2)
-
-for j in range(7) :     
-
-    TEST_TABLE( TABLE=FATN2SF2,
-            NOM_PARA = NPAR[j],
-            VALE_REFE=RESU2[j],
-            VALE_CALC=RESU2[j],
-            CRITERE = CTEST[j],
-            REFERENCE='AUTRE_ASTER'
-            )                               
 FIN()
 #
 

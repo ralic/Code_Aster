@@ -97,7 +97,7 @@ subroutine xmcart(noma, defico, modele, resoco)
     character(len=24) :: tabfin, nosdco
     integer :: jvalv(7), jncmp(7), jcesl(7), jcesd(7), jcesv(7), iad
     character(len=2) :: ch2
-    character(len=8) :: kbid, nomgd
+    character(len=8) ::  nomgd
     character(len=19) :: ligrxf, chs(7), carte(7)
     integer :: zxain, ifm, niv, jconx, ninter, nbpi, ier
     logical :: lmulti

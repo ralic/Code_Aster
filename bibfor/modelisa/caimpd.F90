@@ -43,7 +43,7 @@ subroutine caimpd(char, ligrmo, noma, fonree)
 !      FONREE : FONC OU REEL
 ! ----------------------------------------------------------------------
     integer :: iocc, n, nimpe, jvalv, jncmp, nbma, jma
-    character(len=8) :: k8b, typmcl(2)
+    character(len=8) ::  typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai

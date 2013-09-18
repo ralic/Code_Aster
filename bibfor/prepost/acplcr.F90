@@ -1,12 +1,19 @@
-subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
-                  kwork, sompgw, jrwork, tspaq, ipg, dectau, &
-                  jvecpg, jnorma)
+subroutine acplcr(nbvec,jvectn, jvectu, jvectv, nbordr,&
+                  kwork, sompgw, jrwork, tspaq, ipg, dectau,nommet, &
+                  jvecpg, jnorma,rayon,jresun, jdtaum,jtauma,&
+                  jsgnma,jdsgma )
+
     implicit   none
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
+#include "asterc/r8prem.h"
+#include "asterfort/raycir.h"
+#include "asterfort/taurlo.h"
+!
     integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma, dectau
+    integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma
+    logical :: rayon
+    integer :: dectau, jresun, jdtaum,jtauma,jsgnma,jdsgma
+    character(len=16) ::nommet
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,74 +58,76 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
 !     TSPAQ   : IN  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 !                     COURANT.
 !     IPG     : IN  : IEME POINT DE GAUSS.
-!     DECTAU  : IN  : DECALER ZRWORK DECTAU = 0, STRESS
-!                                    DECTAU = 6, STRAIN
-!                                    DECTAU = 12, PLASTIC STRAIN
 !     JVECPG  : IN  : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
 !                     LES COMPOSANTES u ET v DU VECTEUR TAU
 !                     (CISAILLEMENT), POUR TOUS LES NUMEROS
 !                     D'ORDRE DE CHAQUE VECTEUR NORMAL.
+!     jnorma  : IN  : ADRESS DU VECTEUR NORMAL
+!     rayon   : IN : LOGICAL POUR VOIR SI LA METHODE CIRCONSCRITE EST
+!                     NECESSAIR  
+!     jresun  : IN:  POUR RAYCIR
+!     jdtaum  : OUT: ADRESSS D_TAU OU D_GAMMA POUR TOUTE ORIETATION
+!     jtauma  : OUT: ADRESSS TAU_MAX OUGAMMA_MAX POUR TOUTE ORIETATION
+!     jsgnma  : OUT: ADRESSS D_SIGN OU D_EPSN POUR TOUTE ORIETATION
+!     jdsgma  : OUT: ADRESSS SIGN_MAX OU EPSN_MAX POUR TOUTE ORIETATION
 ! ----------------------------------------------------------------------
-    integer :: ivect, iordr, n, adrs, decal
-    real(kind=8) :: nx, ny, nz, ux, uy, uz, vx, vy, vz
-    real(kind=8) :: sixx, siyy, sizz, sixy, sixz, siyz, fx, fy, fz
-    real(kind=8) :: norm, taux, tauy, tauz, cutau, cvtau
+    integer :: ivect, iordr, n
+    real(kind=8) :: norm, cutau, cvtau
+    real(kind=8) ::epsilo, tau, dnomin, dnomax
+
 !     ------------------------------------------------------------------
+
+!    call jemarq()
+
+    epsilo = 1.0d-7
+
+    call taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
+                kwork, sompgw, jrwork, tspaq, ipg,dectau,&
+                jvecpg, jnorma)
+
+!  CDU RAYON CIRCONSCRIT
 !
-!234567                                                              012
-!
-    call jemarq()
-!
+    if (rayon) then
+        call raycir(jvecpg, jdtaum, jresun, nbordr, nbvec,&
+            nommet)
+    endif
+
+! SHEAR MAX
     n = 0
-!
-
     do 10 ivect = 1, nbvec
-        nx = zr(jvectn + (ivect-1)*3)
-        ny = zr(jvectn + (ivect-1)*3 + 1)
-        nz = zr(jvectn + (ivect-1)*3 + 2)
-!
-        ux = zr(jvectu + (ivect-1)*3)
-        uy = zr(jvectu + (ivect-1)*3 + 1)
-        uz = zr(jvectu + (ivect-1)*3 + 2)
-!
-        vx = zr(jvectv + (ivect-1)*3)
-        vy = zr(jvectv + (ivect-1)*3 + 1)
-        vz = zr(jvectv + (ivect-1)*3 + 2)
-!
+        zr(jtauma+ivect-1) = r8prem()
         do 20 iordr = 1, nbordr
-            decal = 18
-            adrs = (iordr-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
-!
-            sixx = zr(jrwork + adrs + 0 + dectau)
-            siyy = zr(jrwork + adrs + 1 + dectau)
-            sizz = zr(jrwork + adrs + 2 + dectau)
-            sixy = zr(jrwork + adrs + 3 + dectau)
-            sixz = zr(jrwork + adrs + 4 + dectau)
-            siyz = zr(jrwork + adrs + 5 + dectau)
-
-! CALCUL DE vect_F = [SIG].vect_n
-            fx = sixx*nx + sixy*ny + sixz*nz
-            fy = sixy*nx + siyy*ny + siyz*nz
-            fz = sixz*nx + siyz*ny + sizz*nz
-!
-! CALCUL DE NORM = vect_F.vect_n
-            norm = fx*nx + fy*ny + fz*nz
-!
-! CALCUL DE vect_TAU = vect_F - NORM vect_n
-            taux = fx - norm*nx
-            tauy = fy - norm*ny
-            tauz = fz - norm*nz
-!
-! PROJECTION DU vect_TAU SUR LES VECTEURS u ET v DU REPERE LOCAL
-            cutau = ux*taux + uy*tauy + uz*tauz
-            cvtau = vx*taux + vy*tauy + vz*tauz
             n = n + 1
-            zr( jvecpg + (n-1)*2 ) = cutau
-            zr( jvecpg + (n-1)*2 + 1 ) = cvtau
-            zr( jnorma + (n-1) ) = norm
+            cutau = zr( jvecpg + (n-1)*2 ) 
+            cvtau = zr( jvecpg + (n-1)*2 + 1 ) 
+            tau = sqrt(cutau**2 +cvtau**2)
+            if ((tau .gt. epsilo) .and. & 
+                ((tau-zr(jtauma+ivect)) .gt. epsilo)) then
+                zr(jtauma+ivect-1) = tau
+            endif
 20      continue
 !
 10  end do
+
+
+!! AMPLITUDE NORMAL MAX    
+    do 12 ivect = 1, nbvec      
+        dnomin = zr(jnorma)
+        dnomax = zr(jnorma)
+        do 22 iordr = 1, nbordr
+            norm = zr( jnorma -1 +iordr+(ivect-1)*nbordr)
+            if ((dnomin - norm) .gt. epsilo) then
+                dnomin = norm
+            endif
+            if ((dnomax - norm) .lt. epsilo) then
+                dnomax = norm
+            endif 
+22     continue
+
+       zr(jdsgma+ivect-1) = (dnomax - dnomin)/2
+       zr(jsgnma+ivect-1) = dnomax
+  
 !
-    call jedema()
+12 end do
+
 end subroutine

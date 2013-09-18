@@ -16,21 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine acmata(jvectn, jvectu, jvectv, nbordr, kwork,&
-                      sompgw, jrwork, tspaq, ipg, jvecpg,&
-                      jdtaum, jresun, nommet, vrespc)
-        integer :: jvectn
-        integer :: jvectu
-        integer :: jvectv
+    subroutine acmata(nbordr, kwork,&
+                      sompgw, jrwork, tspaq, ipg, &
+                      nommet, vrespc)
         integer :: nbordr
         integer :: kwork
         integer :: sompgw
         integer :: jrwork
         integer :: tspaq
         integer :: ipg
-        integer :: jvecpg
-        integer :: jdtaum
-        integer :: jresun
         character(len=16) :: nommet
         real(kind=8) :: vrespc(24)
     end subroutine acmata

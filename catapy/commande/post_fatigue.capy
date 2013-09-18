@@ -84,14 +84,16 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
              MATER          = SIMP(statut='f',typ=mater_sdaster),
              COEF_CORR      = SIMP(statut='f',typ='R'),
              COEF_PREECROU =SIMP(statut='f',typ='R',defaut= 1.0E+0),
-             
+
+         
              b_period       =BLOC(condition = "TYPE_CHARGE == 'PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE_MODI_AC","DANG_VAN_MODI_AC","CROSSLAND",
                                                                "PAPADOPOULOS","FORMULE_CRITERE") ),
+ 
                METHODE       =SIMP(statut='f',typ='TXM',into=("CERCLE_EXACT",) ),                
                b_fati_pf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
                    FORMULE_GRDEQ   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
-
+                   FORMULE_CRITIQUE = SIMP(statut='f',typ=(fonction_sdaster,formule) ),  
                ),
              ),
            

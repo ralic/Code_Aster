@@ -47,7 +47,7 @@ subroutine mtdorc(modelz, compoz, carcri)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ncmpma, dimaki, ibid, nbocc, i, icmp, jma, jncmp
+    integer :: ncmpma, dimaki, nbocc, i, icmp, jma, jncmp
     integer :: jnoma, jvalv, k, n1, nbma, nbmo1, nbvari
     integer :: dimanv
 !    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT

@@ -85,7 +85,7 @@ subroutine op0151()
     character(len=8) :: nomu, nomres, nommai, nommat
     character(len=8) :: nomfon, nomnap, cara, nommod, grdvie, inscri
     character(len=16) :: concep, cmd, pheno, phenom, typcal, nomcri, nommet
-    character(len=16) :: proaxe, nomsym, typcha, nomopt, nomgde, nomfor
+    character(len=16) :: proaxe, nomsym, typcha, nomopt, nomgde, nomfor, forcri
     character(len=16) :: forvie
     character(len=16) :: mexpic, mcompt, mdomag, typeq, typoi, typdg, option
     character(len=19) :: nomsd, chelem, chelrs, ligrel, nomsd2
@@ -151,6 +151,12 @@ subroutine op0151()
         if (nval .eq. 0) then
             forvie = '        '
         endif
+
+        call getvid(' ', 'FORMULE_CRITIQUE', scal=forcri, nbret=nval)
+        if (nval .eq. 0) then
+            forcri = '        '
+        endif
+
 !
 ! ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
         call getvtx(' ', 'METHODE', scal=nommet, nbret=nval)
@@ -198,14 +204,14 @@ subroutine op0151()
 !
 ! ---   CONSTRUCTION DES PAQUETS DE MAILLES
             call paqmai(nomres, nomu, nommai, nommet, nomcri,&
-                        nomfor, grdvie, forvie, fordef, typcha,&
+                        nomfor, grdvie, forvie, forcri, fordef, typcha,&
                         proaxe, instic, inscri, prec)
 !
         else if (nomopt .eq. 'DOMA_NOEUD') then
 !
 ! ---   CONSTRUCTION DES PAQUETS DE NOEUDS
             call paqnoe(nomres, nomu, nommai, nommet, nomcri,&
-                        nomfor, grdvie, forvie, fordef, typcha,&
+                        nomfor, grdvie, forvie, forcri, fordef, typcha,&
                         proaxe, instic, inscri, prec)
         endif
 !

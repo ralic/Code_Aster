@@ -88,7 +88,8 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !-----------------------------------------------------------------------
 !
     cetir = sqrt(3.0d0/4.0d0)
-    epsilo = 1.0d-8
+
+    epsilo = 1.0d-6
     epsil1 = 1.0d-4
 !
     call wkvect('&&RAYCIR.SECT1', 'V V R', nbordr*2, jsec1)
@@ -121,7 +122,8 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
             n1 = n1 + 1
             cui = zr( jvecpg + (n1-1)*2 )
             cvi = zr( jvecpg + (n1-1)*2 + 1 )
-!
+        
+ !
             if (cui .lt. cumin) then
                 cumin = cui
             endif
@@ -518,6 +520,9 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 cvpn1 = cvppe2
                 cupn2 = cupn
                 cvpn2 = cvpn
+                write(6,*) 'raycir 521', cupn0, cvpn0, cupn1,&
+                          cvpn1, cupn2,cvpn2
+
                 call cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
                             cvpn2, cuon, cvon, ray3pt)
 !
@@ -661,6 +666,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !
         cutau = zr(jvecpg + (n-1)*2 + (ivect-1)*nbordr*2)
         cvtau = zr(jvecpg + (n-1)*2 + (ivect-1)*nbordr*2 + 1)
+
 !
         dist = sqrt((cutau - cuon)**2 + (cvtau - cvon)**2)
         p = dist - rayon

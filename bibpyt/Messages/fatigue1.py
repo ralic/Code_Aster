@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -422,6 +423,11 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 
 99: _(u"""
  Pour le critère utilisée, l'histoire de la tenseur de déformation plastique (EPSP_XX...) est demandée.
+"""),
+
+53: _(u"""
+ Dans CALC_FATIGUE/POST_FATIGUE  pour le critère d'amorçage du type plan critique, aucune grandeur  
+ de la FORMULE_CRITIQUE dépend de l'orientation du plan. Veuillez vérifier et/ou enlever cet mot-clé.
 """),
 
 }

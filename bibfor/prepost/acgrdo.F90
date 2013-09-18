@@ -1,14 +1,15 @@
-subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
+subroutine acgrdo(nbordr, ordini,&
                   kwork, sompgw, jrwork, tspaq, ipg,&
-                  jvecpg, jdtaum, jresun, nommet, nommat,&
+                  nommet, nommat,&
                   nomcri, vala, coefpa, nomfor, grdvie,&
-                  forvie, valpar, vresu)
-! aslint: disable=W1504
+                  forvie, forcri,valpar, vresu)
+! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/acmata.h"
+#include "asterfort/acgrpc.h"
 #include "asterfort/anacri.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/fmrayo.h"
@@ -26,11 +27,11 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 #include "asterfort/teneps.h"
 #include "asterfort/utmess.h"
 !
-    integer :: jvectn, jvectu, jvectv, nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jdtaum, jresun
-    character(len=16) :: nommet, nomcri, nomfor, forvie
+    integer :: nbordr, kwork
+    integer :: sompgw, jrwork, tspaq, ipg
+    character(len=16) :: nommet, nomcri, nomfor, forvie, forcri
     character(len=8) :: nommat, grdvie
-    real(kind=8) :: vresu(24), valpar(22), vala, coefpa
+    real(kind=8) :: vresu(24), valpar(35), vala, coefpa
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,12 +58,6 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !           A 1 ET SOMPGW = SOMNOW,JVECPG = JVECNO
 ! ---------------------------------------------------------------------
 ! ARGUMENTS :
-!     JVECTN  : IN  : ADRESSE DU VECTEUR CONTENANT LES COMPOSANTES DES
-!                     VECTEURS NORMAUX.
-!     JVECTU  : IN  : ADRESSE DU VECTEUR CONTENANT LES COMPOSANTES DES
-!                     VECTEURS u DU PLAN DE CISAILLEMENT.
-!     JVECTV  : IN  : ADRESSE DU VECTEUR CONTENANT LES COMPOSANTES DES
-!                     VECTEURS v DU PLAN DE CISAILLEMENT.
 !     NBORDR  : IN  : NOMBRE DE NUMEROS D'ORDRE.
 !     ORDINI     IN    I  : ORDRE INITIAL POUR LE CHARGEMENT CYCLIQUE
 !     KWORK   : IN  : KWORK = 0 ON TRAITE LA 1ERE MAILLE DU PAQUET DE
@@ -78,15 +73,6 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !     TSPAQ   : IN  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 !                     COURANT.
 !     IPG     : IN  : IEME POINT DE GAUSS.
-!     JVECPG  : IN  : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
-!                     LES COMPOSANTES u ET v DU VECTEUR TAU
-!                     (CISAILLEMENT), POUR TOUS LES NUMEROS
-!                     D'ORDRE DE CHAQUE VECTEUR NORMAL.
-!    JDTAU      IN    ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
-!                     LES VALEURS DE DELTA_TAU_MAX POUR CHAQUE VECTEUR.
-!    JVECN      IN    ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
-!                     LA VALEUR DU POINTEUR PERMETTANT D'ACCEDER AU
-!                     VECTEUR NORMAL ASSOCIE A DELTA_TAU_MAX.
 !    NOMMET     IN    NOM DE METHOD D'APPROCHEMENT DE CERCLE ("CERCLE
 !                     EXACT" ET "CERCLE APPROCHE")
 !    VALA       IN    VALEUR DU PARAMETRE a ASSOCIE AU CRITERE.
@@ -98,44 +84,37 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
     real(kind=8) :: resupc(24), grdeq(2), dtaum(2), nxm(2), nym(2), coepre
     real(kind=8) :: nzm(2), nrupt(2), dom(2), sigeq(2)
-    real(kind=8) :: normax(2), normoy(2), epnmax(2), epnmoy(2), valpu(22)
-    real(kind=8) :: phydro, phydrm, sigm(nbordr*6)
+    real(kind=8) :: normax(2), normoy(2), epnmax(2), epnmoy(2), valpu(35)
+    real(kind=8) :: phydro, phydrm, sigm(nbordr*6), vanocr(23)
     real(kind=8) :: sig(6), eps(6), epse(6), epsp(6), vepsp(6)
     real(kind=8) :: epsl(6), epsel(6), epspl(6), eqepsp, jacaux(3)
     real(kind=8) :: vsig(6), sigl(6), eqsig, vsige, equi(17)
-    real(kind=8) :: phymin, rbid(6), vepspe
+    real(kind=8) :: phymin, rbid(6), vepspe, vepse(6), eqepse
     real(kind=8) :: nm1x, nm1y, nm1z, br(6), vecpro(3, 3), valpro(3)
     real(kind=8) :: eprmax, eprmin, signm1, tol, toldyn, ar(6)
-    real(kind=8) :: fxm, fym, fzm, sinm1m, somdef
+    real(kind=8) :: fxm, fym, fzm, sinm1m, somdef, vepsem, respc(24)
     real(kind=8) :: devsig(6), dvepse(6), dendis, dsigl(6), raysph
     real(kind=8) :: depsl(6), somden, dendie, etrema, etremi
     real(kind=8) :: sigmax, exm, eym, ezm, epsnm1, epnm1m, sigmin
-    real(kind=8) :: strema, stremi, veps(6), eqeps, vepst, epspac
+    real(kind=8) :: strema, stremi, veps(6), eqeps, vepst, epspac, vnmax(6)
     integer :: nperm, itype, iordre, nvp, nitjac, ordini, ordfin
     integer :: i, j, k, l, ibid, jprof, nparma, np, icodre(1), adr, iret, ipar
-    integer :: decal, paract(30), adrl, nbf, nbtot
+    integer :: decal, paract(35), adrl, nbf, nbtot
     character(len=24) :: chnom, cbid
     character(len=16) :: phenom, typcha
-    character(len=8) :: nompf(22), nompar(22), nomgrd
+    character(len=8) :: nompf(35), nompar(35), nomgrd
     logical :: endur, plcicr, lbid
-!-----------------------------------------------------------------------
-!       DATA  LSIG/ 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ' /
-! C
-!       DATA  LEPS/ 'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ' /
-! C
-!       DATA  LGRD/  'DTAUM1', 'VNM1X', 'VNM1Y', 'VNM1Z', 'SINMAX1',
-!      &             'SINMOY', 'EPNMAX', 'EPNMOY', 'SIGEQ1', 'NBRUP1',
-!      &             'ENDO1', 'DTAUM2', 'VNM2X', 'VNM2Y', 'VNM2Z',
-!      &        'SINMAX2', 'SINMOY2', 'EPNMAX2', 'EPNMOY2', 'SIGEQ2',
-!      &             'NBRUP2', 'ENDO2' ,'VMIS', 'TRESCA' /
-!
-!     ---------------------------------------------------------------
+!----------------------------------------------------------------
+!---------------------------------------------------------------
     data  nompar/   'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',&
      &                  'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1',&
      &                  'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',&
      &                  'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',&
      &                  'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',&
-     &                  'RAYSPH', 'AMPCIS'   /
+     &                  'RAYSPH', 'AMPCIS', 'DEPSEE',&
+     &                  'DTAUCR', 'DGAMCR', 'DSINCR', 'DEPNCR', &
+     &                  'MTAUCR', 'MGAMCR', 'MSINCR', 'MEPNCR', &
+     &                  'DGAMPC', 'DEPNPC', 'MGAMPC', 'MEPNPC'/
 !     ---------------------------------------------------------------
 !
 ! -------------------------------------------------------------------
@@ -148,6 +127,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
     call anacri(nomcri, nomfor, typcha, 'NON', paract,&
                 lbid, lbid, lbid, lbid, lbid)
+
 !
 ! ------------------------------------------------------------------
 !---  CALCULER DES GRANDEURS ACTIVES
@@ -159,6 +139,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
     phydro = 0.d0
     vepspe = 0.d0
     vsige = 0.d0
+    vepsem = 0.d0
     eprmax = r8prem()
     eprmin = r8maem()
     nm1x = 0.d0
@@ -185,6 +166,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
     do 20 i = 1, 24
         resupc(i) = 0.0d0
+        respc(i) = 0.0d0
 20  end do
 !
     do 35 i = 1, 6
@@ -193,6 +175,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
         epse(i)= 0.0d0
         epsp(i)= 0.0d0
         vepsp(i)= 0.0d0
+        vepse(i) = 0.d0
         vsig(i)= 0.0d0
         epsl(i)= 0.0d0
         epsel(i)= 0.0d0
@@ -564,6 +547,36 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
         endif
 !
+
+
+! ---------------------------------------------------------------
+! -- CALCULER LA DEMI-AMPLITUDE DE LA DEFORMATION ELASTIQUE EQVA
+! POUR LE CRIETRE MANSON_COFF
+
+!   
+        if (paract(23) .eq. 1) then
+
+            do 51 l = j, ordfin
+                adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
+!
+                call teneps(jrwork, adrl, rbid, rbid, epsel,&
+                            rbid)
+!
+                do 52 k = 1, 6
+                    vepse(k)= epse(k) - epsel(k)
+52              continue
+
+                call fgequi(vepse, 'EPSI', 3, equi)
+                eqepse = equi(1)
+    !
+                if (vepsem .lt. eqepse) then
+                    vepsem = eqepse
+                endif
+
+51          continue
+    !
+        endif
+
 10  end do
 !
 !
@@ -594,6 +607,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
     endif
 !
+
 ! ---------------------------------------------------------------
 ! POUR LES GRANDEURS DES CRITERERS "CISSAILEMENT PLAN CRITIQUE",
 ! ACMATA  CALCULE LES 8 PREMIER GRANDEURS ET CEUX DE 13-20
@@ -601,25 +615,21 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
     if ((paract(1) .eq. 1) .or. (paract(3) .eq. 1) .or. (paract(4) .eq. 1) .or.&
         (paract(5) .eq. 1) .or. (paract(6) .eq. 1)) then
 !
-        plcicr = .true.
-    endif
 !
-    do 109 k = 1, 2
-        dtaum(k) = 0.d0
-        nxm(k) = 0.d0
-        nym(k) = 0.d0
-        nzm(k) = 0.d0
-        normax(k)= 0.d0
-        normoy(k)= 0.d0
-        epnmax(k)= 0.d0
-        epnmoy(k)= 0.d0
-109  end do
-!
-    if (plcicr) then
-!
-        call acmata(jvectn, jvectu, jvectv, nbordr, kwork,&
-                    sompgw, jrwork, tspaq, ipg, jvecpg,&
-                    jdtaum, jresun, nommet, resupc)
+        do 109 k = 1, 2
+            dtaum(k) = 0.d0
+            nxm(k) = 0.d0
+            nym(k) = 0.d0
+            nzm(k) = 0.d0
+            normax(k)= 0.d0
+            normoy(k)= 0.d0
+            epnmax(k)= 0.d0
+            epnmoy(k)= 0.d0
+109     end do
+
+        call acmata(nbordr, kwork,&
+                    sompgw, jrwork, tspaq, ipg, & 
+                    nommet, resupc)
 !
         do 110 k = 1, 2
             dtaum(k) = resupc(1+(k-1)*11)
@@ -635,12 +645,57 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 !
     endif
 !
-! -----------------------------------------------------------------
+! ----------------------------------------------------------
+! POUR LES GRANDEURS DES CRITERERS "PLAN CRITIQUE"
+! CALCULE LES 8 PREMIER GRANDEURS ET CEUX DE 13-20! 
+!-----------------------------------------------------------------
 ! --  EVALUER LES CRITERES EXISTANTS
 ! -----------------------------------------------------------------
 !
 !
-    do 120 k = 1, 2
+    do 111 i = 24, 35
+        if (paract(i) .eq. 1) plcicr =.true.
+111 continue
+
+    if   ( (plcicr) .and. (forcri .eq. '        ')) then
+        call utmess('F', 'FATIGUE1_53')
+    endif
+
+
+    if  (plcicr) then
+
+! Récuperer les paramètres qui ne dépendent pas de plan
+        do 121 i = 1, 23
+            vanocr(i) = 0.d0
+121     continue
+
+        vanocr(7) = vepspe/2.d0
+        vanocr(8) = (eprmax - eprmin)/2.d0
+        vanocr(9) = sinm1m
+        vanocr(10) = dendis
+        vanocr(11) = dendie
+        vanocr(12) = (phydrm - phymin)/2.d0
+        vanocr(13) = (phydrm + phymin)/2.d0
+        vanocr(14) = vsige/2.d0
+        vanocr(15) = (sigmax - sigmin)/2.d0
+        vanocr(16) = epnm1m
+        vanocr(17) = vepst/2.d0
+        vanocr(18) = (strema -stremi)/4.d0
+        vanocr(19) = (etrema -etremi)/4.d0
+        vanocr(20) = epspac
+        vanocr(21) = raysph
+        vanocr(22) = vsige/(2.d0*1.732051d0)
+        vanocr(23) = vepsem/2.d0
+
+        call acgrpc(nbordr, kwork,&
+             sompgw, jrwork, tspaq, ipg, &
+             nommet, forcri,nompar, vanocr, respc,vnmax)
+       
+   endif
+
+
+!!!!!!EVALUER DES CRITERS 
+   do 120 k = 1, 2
 !
         if (nomcri(1:7) .ne. 'FORMULE') then
 !
@@ -703,11 +758,19 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
 ! ---------------------------------------------------------------
 !           EVALUER CRITERES FOURNIS PAR FORMULE
 !---------------------------------------------------------------
+    nparma = 35
     do 100 k = 1, 2
 !
+      
+        if  (plcicr) then 
+            do 450 j = 1, 12
+                valpar(23+j) = respc(j+(k-1)*12) 
+450         continue
+        endif
+
         if (nomcri(1:7) .eq. 'FORMULE') then
 !        NOMBRE DE PARAMETRES DISPONIBLES
-            nparma = 22
+
 !        VALEURS DE CES PARAMETRES, CORRESSPOND A NOMPAR
             valpar(1) = dtaum(k)
             valpar(2) = phydrm
@@ -715,6 +778,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
             valpar(4) = normoy(k)
             valpar(5) = epnmax(k)
             valpar(6) = epnmoy(k)
+
             valpar(7) = vepspe/2.d0
             valpar(8) = (eprmax - eprmin)/2.d0
             valpar(9) = sinm1m
@@ -731,6 +795,7 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
             valpar(20) = epspac
             valpar(21) = raysph
             valpar(22) = vsige/(2.d0*1.732051d0)
+            valpar(23) = vepsem/2.d0
 !
 !  RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
             chnom(20:24) = '.PROL'
@@ -821,6 +886,13 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
         vresu(9+(k-1)*11) = grdeq(k)
         vresu(10+(k-1)*11) = nrupt(k)
         vresu(11+(k-1)*11) = dom(k)
+
+        if  (plcicr) then
+            vresu(2+(k-1)*11) = vnmax(3*(k-1)+1)
+            vresu(3+(k-1)*11) = vnmax(3*(k-1)+2)
+            vresu(4+(k-1)*11) = vnmax(3*(k-1)+3)
+        endif
+
 101  end do
     vresu(23) = 0.0d0
     vresu(24) = 0.0d0

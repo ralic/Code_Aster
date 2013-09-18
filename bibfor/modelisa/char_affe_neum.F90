@@ -56,7 +56,6 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 !
     character(len=16) :: load_type
     character(len=24) :: list_elem
-    character(len=8) :: k8dummy
     character(len=8) :: suffix
     integer :: j_elem
     integer :: nb_elem

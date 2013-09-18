@@ -37,7 +37,7 @@ subroutine rcmate(chmat, nomail, nomode)
 !  IN : NOMAIL : NOM DU MAILLAGE
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, nocc, i, nm, nt, jncmp, jvalv, nbma, jmail, ier, nbcmp
+    integer ::  nocc, i, nm, nt, jncmp, jvalv, nbma, jmail, ier, nbcmp
     integer ::  jad
     character(len=4) :: oui
     character(len=8) :: k8b, nommat, typmcl(2)

@@ -1,6 +1,6 @@
 # person_in_charge: van-xuan.tran at edf.fr
 #
-# TITRE FATIGUE, AMPLITUDE VARIABLE, TEST DU CRITERE DANG_VAN_MODI_AV
+# TITRE FATIGUE, AMPLITUDE VARIABLE, TEST DU CRITERE PLAN CRITIQUE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,9 +19,9 @@
 # ======================================================================
 #
 #----------------------------------------------------------------------
-#    Cas test sslv135d : cube 3D
+#    Cas test sslv135h : cube 3D
 #                        Essai de chargement cyclique bi-axial
-#                        critere en formule
+#                        critere en formule du type plan critique
 #----------------------------------------------------------------------
 #        Unites : Newton , Millimetre , Seconde (N,MM,S,->Mpa)
 #----------------------------------------------------------------------
@@ -79,7 +79,7 @@
 #
 #
 #
-DEBUT(CODE=_F(NOM='sslv135d',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NOM='sslv135h',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
                IGNORE_ALARM=('PREPOST4_27')),
                
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
@@ -267,89 +267,70 @@ TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
                                 NOM_CHAM='EPSP_NOEU' ,
                                 OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=TABEPSP);
-
-NBPR = 14
-CRIT= [None]*NBPR
-FATN= [None]*NBPR
-FATM= [None]*NBPR
-
-CRIT[0] =   FORMULE(
-           NOM_PARA='DEPSPE',
-           VALE= '''DEPSPE'''
+# PROPRIETES MATERIAUX
+WHOL_F =   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
            )
+MANCO1=   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 0.01*(NBRUP**(-0.1619)) '''
+           ) 
 
-CRIT[1] =   FORMULE(
-           NOM_PARA='EPSPR1',
-           VALE= '''EPSPR1'''
-           )
+NBPR = 12
+CRIT = [None]*NBPR
+FATN = [None]*NBPR
+FATM = [None]*NBPR
+NPAR = [None]*NBPR
 
-CRIT[2] =   FORMULE(
-           NOM_PARA='SIGNM1',
-           VALE= '''SIGNM1'''
-           )
 
-CRIT[3] =   FORMULE(
-           NOM_PARA='DENDIE',
-           VALE= '''DENDIE'''
-           )
+NPAR = ['DTAUCR', 'DGAMCR', 'DSINCR', 'DEPNCR','MTAUCR', 'MGAMCR', 'MSINCR', 'MEPNCR','DGAMPC', 'DEPNPC', 'MGAMPC', 'MEPNPC' ]
+NCRI = ['''DTAUCR''', '''DGAMCR''', '''DSINCR''', '''DEPNCR''','''MTAUCR''', '''MGAMCR''', '''MSINCR''', '''MEPNCR''','''DGAMPC''', '''DEPNPC''', '''MGAMPC''', '''MEPNPC''' ]
+FVIE = [WHOL_F, MANCO1, WHOL_F, MANCO1, WHOL_F, MANCO1, WHOL_F, MANCO1, MANCO1, MANCO1, MANCO1, MANCO1 ]
+NPRS = ['SIGEQ1','ENDO1','NBRUP1','VNM1X', 'VNM1Y', 'VNM1Z' ]
 
-CRIT[4] =   FORMULE(
-           NOM_PARA='APHYDR',
-           VALE= '''APHYDR'''
-           )
-CRIT[5] =   FORMULE(
-           NOM_PARA='DENDIS',
-           VALE= '''DENDIS'''
-           )
+RESU = [100, 1.028E-6, 9.73E5, (0.707, -0.707), 0.707, 0, 
+        2.425E-3, 1.583E-4, 6.3163E3, (0.707, -0.707), 0.707, 0, 
+        200, 1.348E-5, 7.418E4, (-1,1), 0.0174, 0,
+        1.75E-3, 2.11E-5, 4.74E4,(-1, 1), 0.0174, 0,
 
-CRIT[6] =   FORMULE(
-           NOM_PARA='DSIGEQ',
-           VALE= '''DSIGEQ'''
-           )
+        100, 1.028E-6, 9.73E5, (0.707, -0.707), 0.707,  0, 
+        2.425E-3, 1.583E-4, 6.3163E3, (0.707, -0.707), 0.707, 0, 
+        200, 1.348E-5, 7.418E4, (-1,1), 0.0174, 0,
+        1.75E-3, 2.11E-5, 4.74E4, (-1,1), 0.0174, 0,
 
-CRIT[7] =   FORMULE(
-           NOM_PARA='SIGPR1',
-           VALE= '''SIGPR1'''
-           )
+        1.125E-3, 1.3782E-6, 7.256E5, (0.707, -0.707), 0.707, 0, 
+        0.75E-3, 1.126E-7, 8.88E6, (-1,1), 0.0174, 0,
+        1.125E-3, 1.3782E-6, 7.256E5, (0.707, -0.707), 0.707, 0, 
+        0.75E-3, 1.126E-7, 8.88E6, (-1,1), 0.0174, 0
+        ]
+        
+#CALCULE
+RESC = [100, 1.0277056600669E-06, 9.73041E+05, (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
+         2.425E-3, 1.5833553719608E-04, 6316.0,  (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
+         199.93923112351, 1.3464884811041E-05, 74267.0 , (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+         1.7492631773725E-03, 2.1056179833038E-05, 47492.0 ,(0.99984806626684, -0.99984806626684), 0.017431132564039 , 0,
 
-CRIT[8] =   FORMULE(
-           NOM_PARA='EPSNM1',
-           VALE= '''EPSNM1'''
-           )
+         100, 1.0277056600669E-06, 9.73041E+05, (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
+         2.425E-3, 1.5833553719608E-04, 6316.0,  (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
+         199.93923112351, 1.3464884811041E-05, 74267.0 , (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+         1.7492631773725E-03, 2.1056179833038E-05, 47492.0 , (0.99984806626684, -0.99984806626684), 0.017431132564039 , 0,
 
-CRIT[9] =   FORMULE(
-           NOM_PARA='INVA2S',
-           VALE= '''INVA2S'''
-           )
+         1.125E-3, 1.3781582480363E-06 , 7.25606E+05, (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
+         7.4965817506973E-04, 1.1231085934024E-07 , 8.903859E+06, (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+         1.125E-3, 1.3781582480363E-06, 7.25606E+05, (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
+         7.4965817506973E-04, 1.1231085934024E-07 , 8.903859E+06, (0.99984806626684, -0.99984806626684), 0.017431132564039, 0,
+        ]
 
-CRIT[10] =   FORMULE(
-           NOM_PARA='DSITRE',
-           VALE= '''DSITRE'''
-           )
-
-CRIT[11] =   FORMULE(
-           NOM_PARA='DEPTRE',
-           VALE= '''DEPTRE'''
-           )
-
-CRIT[12] =   FORMULE(
-           NOM_PARA='EPSPAC',
-           VALE= '''EPSPAC'''
-           )
-
-CRIT[13] =   FORMULE(
-           NOM_PARA='DEPSEE',
-           VALE= '''DEPSEE'''
-           )           
-
-RESU = [7.5E-4, 7.625E-4, 200, 0.17333333, 66.66666, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.6742346E-3, 0.00086666666]
-
-#for i in range(2,3) :
-
-for i in range(NBPR) :
-#
-# TEST CRITERE FORMULE AVEC 'DOMA_NOEUD',
+#######################
+# TEST CRITERE FORMULE 
 #########################################NOEUD
+for i in range(NBPR) :
+    CRIT[i] = FORMULE(
+           NOM_PARA=(NPAR[i]),
+           VALE = NCRI[i]
+           )
+
     FATN[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                            OPTION        = 'DOMA_NOEUD',
                            TYPE_CHARGE   = 'PERIODIQUE',
@@ -357,22 +338,29 @@ for i in range(NBPR) :
                            CHAM_MATER    = MAT,
                            GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
                            MAILLAGE      = CUBE,
-                           CRITERE       = 'FORMULE_CRITERE',
                            FORMULE_GRDEQ   = CRIT[i],
-                           COURBE_GRD_VIE  = 'WOHLER',
+                           FORMULE_CRITIQUE = CRIT[i],
+                           COURBE_GRD_VIE  = 'FORM_VIE',
+                           CRITERE='FORMULE_CRITERE',
+                           FORMULE_VIE = FVIE[i],
                            INST_INIT_CYCL = 1.0,
                            INST_CRIT = 'RELATIF',
                          )
 
 
 
-    TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN[i],
-                            NOM_CMP = 'SIGEQ1',
-                            NOEUD = 'N1',
-                            VALE_CALC = RESU[i],
-                           ),
-                       )
-              )
+    for j in range(6) :     
+        crit2 = 'RELATIF' if RESU[j + 6*i] != 0. else 'ABSOLU'
+        TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+                     REFERENCE='ANALYTIQUE',
+                     NOM_CMP=NPRS[j],
+                     CHAM_GD=FATN[i],
+                     VALE_REFE=RESU[j+ 6*i],
+                     VALE_CALC=RESC[j+ 6*i],
+                     CRITERE=crit2,
+                     PRECISION=0.004
+                     ), 
+          )
 
 # TEST CRITERE FORMULE AVEC 'DOMA_ELGA',
 #########################################NOEUD
@@ -383,21 +371,27 @@ for i in range(NBPR) :
                          GROUP_MA      = ('CUBE'),
                          RESULTAT      = SOL_NL,
                          CHAM_MATER    = MAT,
-                         CRITERE       = 'FORMULE_CRITERE',
                          FORMULE_GRDEQ   = CRIT[i],
-                         COURBE_GRD_VIE  = 'WOHLER',
+                         FORMULE_CRITIQUE = CRIT[i],
+                         CRITERE='FORMULE_CRITERE',
+                         FORMULE_VIE = FVIE[i],
+                         COURBE_GRD_VIE  = 'FORM_VIE',
                          INST_INIT_CYCL = 1.0,
                          INST_CRIT = 'ABSOLU',
                          PRECISION = 1.E-4
                        )
 
-    TEST_RESU(CHAM_ELEM=(_F(CHAM_GD = FATM[i],
-                            NOM_CMP = 'SIGEQ1',
-                            MAILLE = 'M60',
-                            POINT = 3,
-                            VALE_CALC = RESU[i],
-                            ),
-                          )
-              )
+    for j in range(6) :     
+        crit2 = 'RELATIF' if RESU[j + 6*i] != 0. else 'ABSOLU'                  
+        TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
+                        POINT=3,
+                        NOM_CMP=NPRS[j],
+                        PRECISION=0.004,
+                        MAILLE='M60',
+                        CHAM_GD=FATM[i],
+                        VALE_REFE=RESU[j+ 6*i],
+                        VALE_CALC=RESC[j+ 6*i],
+                        CRITERE=crit2,
+                        ),),) 
 
 FIN( )

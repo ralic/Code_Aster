@@ -17,7 +17,7 @@
 !
 interface
     subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
-                      nomfor, grdvie, forvie, fordef, typcha,&
+                      nomfor, grdvie, forvie, forcri, fordef, typcha,&
                       proaxe, instic, inscri, prec)
         character(len=8) :: nomsd
         character(len=8) :: nomu
@@ -27,6 +27,7 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
+        character(len=16) :: forcri
         logical :: fordef
         character(len=16) :: typcha
         character(len=16) :: proaxe

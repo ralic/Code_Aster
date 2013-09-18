@@ -1,6 +1,6 @@
 subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
                   nnoini, nbnop, tspaq, nommet, nomcri,&
-                  nomfor, grdvie, forvie, nommai, cnsr,&
+                  nomfor, grdvie, forvie, forcri, nommai, cnsr,&
                   nommap, post, valpar, vresu)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,9 +48,9 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
     integer :: jrwork, nbnot, lisnoe(nbnot), nbordr, nnoini, nbnop
     integer :: tspaq, ordini
     logical :: post
-    real(kind=8) :: vresu(24), valpar(22)
+    real(kind=8) :: vresu(24), valpar(35)
     character(len=8) :: nommai, grdvie, nommap
-    character(len=16) :: nomcri, nommet, nomfor, forvie
+    character(len=16) :: nomcri, nommet, nomfor, forvie, forcri
     character(len=19) :: cnsr
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLAN INCLINE POUR LEQUEL DELTA_TAU EST MAXIMUM
@@ -84,20 +84,17 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !    NOEUDS DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: j, k, ki, l, n, jcnrd, jcnrl, jcnrv, ibidno
-    integer :: iret, nbma, adrma, icesd, icesl, icesv
-    integer :: ibid, tneces, tdisp(1), jvecno
-    integer :: jvectn, jvectu, jvectv, ngam, ideb, dim
-    integer :: tab2(18), inop, nunoe, jdtaum, jresun
-    integer :: jtypma
+    integer ::  ki, l, jcnrd, jcnrl, jcnrv, ibidno
+    integer :: iret, nbma, adrma, icesd, icesl, icesv  
+    integer :: inop, nunoe
+    integer :: jtypma, ibid
     integer :: icmp, kwork, somnow, cnbno
     integer :: vali(2), jad, ima
+    integer :: icodwo
 !
-    real(kind=8) :: dgam, pi, dphi, tab1(18)
-    real(kind=8) :: phi0, coepre, vala, valb, gamma
+    real(kind=8) :: coepre, vala, valb
     real(kind=8) :: coefpa
 !
-    integer :: icodwo
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat, ncncin
@@ -106,33 +103,10 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !-----------------------------------------------------------------------
 !234567                                                              012
 !-----------------------------------------------------------------------
-    data  tab1/ 180.0d0, 60.0d0, 30.0d0, 20.0d0, 15.0d0, 12.857d0,&
-     &             11.25d0, 10.588d0, 10.0d0, 10.0d0, 10.0d0, 10.588d0,&
-     &             11.25d0, 12.857d0, 15.0d0, 20.0d0, 30.0d0, 60.0d0 /
-!
-    data  tab2/ 1, 3, 6, 9, 12, 14, 16, 17, 18, 18, 18, 17, 16, 14,&
-     &           12, 9, 6, 3 /
-!
-    pi = r8pi()
-!-----------------------------------------------------------------------
 !
     call jemarq()
 !
-! CONSTRUCTION DU VECTEUR CONTENANT DELTA_TAU_MAX
-! CONSTRUCTION DU VECTEUR CONTENANT LA VALEUR DU POINTEUR PERMETTANT
-!              DE RETROUVER LE VECTEUR NORMAL ASSOCIE A DELTA_TAU_MAX
-!
-    call wkvect('&&DTAUNO.DTAU_MAX', 'V V R', 209, jdtaum)
-    call wkvect('&&DTAUNO.RESU_N', 'V V I', 209, jresun)
-!
-! CONSTRUCTION DU VECTEUR NORMAL SUR UNE DEMI SPHERE
-! CONSTRUCTION DU VECTEUR U DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
-! CONSTRUCTION DU VECTEUR V DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
-!
-    call wkvect('&&DTAUNO.VECT_NORMA', 'V V R', 630, jvectn)
-    call wkvect('&&DTAUNO.VECT_TANGU', 'V V R', 630, jvectu)
-    call wkvect('&&DTAUNO.VECT_TANGV', 'V V R', 630, jvectv)
-!
+
 ! OBTENTION DES ADRESSES '.CESD', '.CESL' ET '.CESV' DU CHAMP SIMPLE
 ! DESTINE A RECEVOIR LES RESULTATS : DTAUM, ....
     if (.not. post) then
@@ -157,37 +131,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     endif
 !
-    tneces = 209*nbordr*2
-    call jedisp(1, tdisp)
-    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
-    if (tdisp(1) .lt. tneces) then
-        vali (1) = tdisp(1)
-        vali (2) = tneces
-        call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
-    else
-        call wkvect('&&DTAUNO.VECTNO', 'V V R', tneces, jvecno)
-        call jerazo('&&DTAUNO.VECTNO', tneces, 1)
-    endif
-!
-    dgam = 10.0d0
-!
-    n = 0
-    k = 1
-    ideb = 1
-    dim = 627
-    do 300 j = 1, 18
-        gamma=(j-1)*dgam*(pi/180.0d0)
-        dphi=tab1(j)*(pi/180.0d0)
-        phi0=dphi/2.0d0
-        ngam=tab2(j)
-!
-        call vecnuv(ideb, ngam, gamma, phi0, dphi,&
-                    n, k, dim, zr( jvectn), zr(jvectu),&
-                    zr(jvectv))
-!
-300  end do
-!
-! CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
+!  CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
 ! NOEUDS DU PAQUET DE MAILLES.
     l = 1
     cnbno = 0
@@ -236,14 +180,14 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
                 call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
             endif
 !
-            if (k .eq. 0) then
+            if (ki .eq. 0) then
                 vali (1) = nunoe
                 vali (2) = nbma
                 call utmess('A', 'PREPOST5_10', ni=2, vali=vali)
             endif
         endif
 !
-        call jerazo('&&DTAUNO.VECTNO', tneces, 1)
+!        call jerazo('&&DTAUNO.VECTNO', tneces, 1)
 !
 ! C  IBIDNO JOUE LE ROLE DE IPG DNAS TAURLO
 !
@@ -260,11 +204,11 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
 !
 ! REMPACER PAR ACMATA
-        call acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
+        call acgrdo(nbordr, ordini,&
                     kwork, somnow, jrwork, tspaq, ibidno,&
-                    jvecno, jdtaum, jresun, nommet, nommat,&
+                    nommet, nommat,&
                     nomcri, vala, coefpa, nomfor, grdvie,&
-                    forvie, valpar, vresu)
+                    forvie,forcri, valpar, vresu)
 !
 ! AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
         if (.not. post) then
@@ -284,12 +228,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
         call detrsd('CHAM_ELEM_S', cesmat)
     endif
 !
-    call jedetr('&&DTAUNO.DTAU_MAX')
-    call jedetr('&&DTAUNO.RESU_N')
-    call jedetr('&&DTAUNO.VECT_NORMA')
-    call jedetr('&&DTAUNO.VECT_TANGU')
-    call jedetr('&&DTAUNO.VECT_TANGV')
-    call jedetr('&&DTAUNO.VECTNO')
+
     call jedetr('&&DTAUNO.CNCINV')
 !
     call jedema()

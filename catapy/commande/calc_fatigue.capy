@@ -106,11 +106,12 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                b_fati_pf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
                    FORMULE_GRDEQ   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                    COURBE_GRD_VIE  = SIMP(statut='o',typ='TXM',into=("WOHLER","MANSON_C","FORM_VIE") ),
+                   FORMULE_CRITIQUE = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
                    b_fati_pfvie  = BLOC(condition = "(COURBE_GRD_VIE == 'FORM_VIE')",
                         FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                   ),
                ),
-               
+
                INST_INIT_CYCL =SIMP(statut='f',typ='R',min=1, max=1),
                INST_CRIT      =SIMP(statut='f',typ='TXM',into=("RELATIF","ABSOLU",) ),
                regles=(PRESENT_PRESENT('INST_INIT_CYCL','INST_CRIT', ),),

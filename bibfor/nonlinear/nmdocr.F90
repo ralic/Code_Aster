@@ -71,7 +71,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
     character(len=24) :: mesmai, modele
     integer :: iret, jncmp, jvalv, numgd, jacmp, nbcrit, icmp, k, jma, nbma
     integer :: irett
-    integer :: itepas, i, itdebo, ibid, typtgt, n1, nbmo1, nbocc
+    integer :: itepas, i, itdebo, typtgt, n1, nbmo1, nbocc
     real(kind=8) :: resi, resid, tsampl, tsretu, tseuil, pert, theta, iteint
     real(kind=8) :: alpha, algor, tolrad
     integer :: exits

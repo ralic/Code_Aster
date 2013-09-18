@@ -18,7 +18,7 @@
 interface
     subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                       nmaini, nbmap, numpaq, tspaq, nommet,&
-                      nomcri, nomfor, grdvie, forvie, cesr)
+                      nomcri, nomfor, grdvie, forvie,forcri, cesr)
         integer :: jrwork
         integer :: jnbpg
         integer :: nbpgt
@@ -33,6 +33,7 @@ interface
         character(len=16) :: nomfor
         character(len=8) :: grdvie
         character(len=16) :: forvie
+        character(len=16) :: forcri
         character(len=19) :: cesr
     end subroutine deltau
 end interface
