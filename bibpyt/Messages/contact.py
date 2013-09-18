@@ -47,14 +47,15 @@ Contact méthode GCP. Le pas d'avancement est négatif ; risque de comportement 
 """),
 
 8 : _(u"""
-Contact méthodes discrètes.
- -> Il y a des éléments de type QUAD8 sur la surface esclave de contact. Ces éléments produisent des forces nodales négatives aux noeuds sommets.
-    Afin de limiter les oscillations des forces et d'empêcher une pénétration intempestive de la surface maître dans la surface esclave, on
-    a procédé à des liaisons cinématiques (LIAISON_DDL) entre les noeuds milieux et les noeuds sommets, sur les deux surfaces (maître et esclave).
- -> Risque & Conseil :
-    Il est préférable d'utiliser des éléments de type QUAD9. Changer votre maillage ou utiliser la commande MODI_MAILLAGE.
-    Ces liaisons supplémentaires peuvent provoquer des incompatibilités avec les conditions limites, ce qui se traduira par un pivot nul dans
-    la matrice.
+Formulation discrète du contact.
+ -> Il y a des éléments de type QUAD8 sur les surfaces de contact. Ces éléments ne permettent pas de respecter exactement la condition de contact.
+    Afin d'empêcher une pénétration intempestive des surfaces, on a procédé à des liaisons cinématiques (LIAISON_DDL) entre les noeuds milieux et les noeuds sommets, sur les deux surfaces (maître et esclave).
+
+ Risques et conseils :
+   - Ces liaisons supplémentaires peuvent provoquer des incompatibilités avec les conditions limites en particulier dans le cas de symétries, ce qui se traduira par une matrice singulière.
+     Dans ce cas, il est possible de n'appliquer les conditions aux limites concernées que sur les noeuds sommets (on pourra utiliser la commande DEFI_GROUP pour créer le groupe de noeuds adéquat).
+   - Il est toutefois préférable d'utiliser sur les surfaces de contact des éléments de type QUAD9. Pour cela, transformez les éléments volumiques HEXA20 en HEXA27 ou PENTA15 en PENTA18 (par exemple avec la commande CREA_MAILLAGE).
+
 """),
 
 9 : _(u"""
