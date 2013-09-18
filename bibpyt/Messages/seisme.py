@@ -205,10 +205,10 @@ Il faut faire plus d'un seul tirage avec l'option SPEC_MEDIANE.
 
 39: _(u"""
 Attention:
-    La durée de la simulation vaut %(k1)s s. Elle est supérieur à trois fois la phase forte. 
+    La durée de la simulation vaut %(k1)s s. Elle est inférieure à 1.5 fois la phase forte. 
     Ceci peut conduire à des résultats moins bons.
 Conseil:
-    Réduire NB_POINT.
+    Augmenter NB_POINT ou réduire la durée de la phase forte.
 """),
 
 40: _(u"""

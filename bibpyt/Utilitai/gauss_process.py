@@ -498,17 +498,25 @@ def iter_SRO(f_dsp, f_sro, amort, TS) :
       return f_out
 
 
-
 # iteration par simulation temporelle pour fitter le spectre cible sur une realisation (accelerogramme)
-def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,FCORNER, NB_TIRAGE=1 ) :
+#def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,FCORNER, NB_TIRAGE=1 ) :
+def itersim_SRO(f_dsp, f_sro,nb_iter,f_modul, SRO_args ,dico_err,NB_TIRAGE=1 ) :
     # ---------------------------------------------
-    # IN  : f_in: DSP [rad/s], sro: spectre cible [Hz], 
+    # IN  : f_dsp: DSP [rad/s], f_sro: spectre cible [Hz], 
     #    amort: amortissement sro, TS: duree phase forte, meme disretisation
     #    type_mod: type de fonction de modulation     niter: nombre d'iterations, 
     #    FMIN: fequence min pour fit et filtrage ("corner frequency" Hz)
     # OUT : f_out: accelerogramme apres iterations pour fitter au mieux le spectre cible
     # ---------------------------------------------
    #  dsp in  
+
+   FMIN=SRO_args['FMIN']
+   FCORNER=SRO_args['FCORNER']
+   amort=SRO_args['AMORT']
+   TS=SRO_args['TSM']
+   METHODE_SRO=SRO_args['METHODE_SRO']
+   INFO=SRO_args['INFO']
+
    para_dsp=f_dsp.para
    freq_dsp=f_dsp.vale_x
    vale_dsp=f_dsp.vale_y
@@ -558,7 +566,7 @@ def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,
      f_acce=t_fonction(ltemps,acce, para=para_modul)
 
      l_acce=[f_acce]
-     f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
+     f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2 , METHODE_SRO) 
      valesro=f_sroi.vale_y
 
    elif NB_TIRAGE>1 :
@@ -569,7 +577,7 @@ def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,
          if FCORNER> 0.0:  
              acce=acce_filtre_CP(acce,dt,FCORNER)
          f_acce=t_fonction(ltemps,acce, para=para_modul)
-         f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
+         f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2, METHODE_SRO) 
          liste_valesro.append(f_sroi.vale_y)
      valesro=NP.median(NP.array(liste_valesro),axis=0)
 
@@ -612,7 +620,7 @@ def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,
                 acce=acce_filtre_CP(acce,dt,FCORNER)
             f_acce=t_fonction(ltemps,acce, para=para_modul)
             l_acce.append(f_acce)
-            f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
+            f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2, METHODE_SRO ) 
             valesro=f_sroi.vale_y
 
          elif NB_TIRAGE>1 :
@@ -624,7 +632,7 @@ def itersim_SRO(f_dsp, f_sro, amort, TS, nb_iter, f_modul, INFO, dico_err, FMIN,
                if FCORNER> 0.0:  
                    acce=acce_filtre_CP(acce,dt,FCORNER)
                f_acce=t_fonction(ltemps,acce, para=para_modul)
-               f_sroi = ACCE2SRO(f_acce, amort,freq_sro,2 ) 
+               f_sroi = ACCE2SROM(f_acce, amort,freq_sro,2, METHODE_SRO ) 
                liste_valesro.append(f_sroi.vale_y)
             valesro=NP.median(NP.array(liste_valesro),axis=0)
 #            valesro=median_values(liste_valesro)
@@ -779,9 +787,27 @@ def SRO2DSP(f_in, NORME, AMORT, TSM, FCOUP, PAS, FCORNER, FMIN) :
 # ----------------------------------------------------------------- 
 #     ACCE2SRO
 # -----------------------------------------------------------------
- # conversion ACCE en SRO par fft et filtrage
+ 
+# conversion ACCE en SRO par methode HARMO ou NIGAM
+def ACCE2SROM(f_in, xig, l_freq, ideb, METHODE_SRO) :
+   if METHODE_SRO=="NIGAM" : 
+      para_dsp = {
+         'INTERPOL' : ['LIN','LIN'],
+         'NOM_PARA'    : 'FREQ',
+         'PROL_DROITE' : 'CONSTANT',
+         'PROL_GAUCHE' : 'EXCLU',
+         'NOM_RESU'   : 'ACCE',
+          }
+      spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,l_freq, [xig])
+      vale_sro = spectr[0, ideb, :]
+      f_out = t_fonction(l_freq, vale_sro, para=para_dsp)
+   elif METHODE_SRO=="HARMO":
+      f_out=ACCE2SRO(f_in, xig, l_freq, ideb=2)
+   else: print "ERROR METHODE SRO"
+   return f_out
 
 
+ # conversion ACCE en SRO par fft et filtrage: METHODE_SRO=HARMO
 def ACCE2SRO(f_in, xig, l_freq, ideb=2) :
     # ---------------------------------------------------------
     # IN : f_in: ACCELEROGRAMME (signal temporel) 
@@ -796,7 +822,6 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2) :
          'PROL_GAUCHE' : 'EXCLU',
          'NOM_RESU'   : 'ACCE',
       }
-
       vale_t=f_in.vale_x
       vale_acce=f_in.vale_y
       N=len(vale_t)

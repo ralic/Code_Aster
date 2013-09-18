@@ -195,7 +195,6 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
       SRO_args={'TSM':DUREE, 'FCOUP': FREQ_COUP,'NORME':norme_sro,'AMORT':amo, 'PAS': SPEC_PAS,'FCORNER':F_CORNER,'FMIN':F_MIN }
 
 
-
 #  ------------------------------------------------------------------
 #  ECHANTILLONNAGE
 #  ------------------------------------------------------------------   
@@ -211,7 +210,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
          NB_POIN=NB_POIN+1
       TT=(NB_POIN-1)*DT   
       DW=2.*OM/NB_POIN
-      if TT> 3.*DUREE and SPECTRE !=None:
+      if TT<DUREE*1.5 :
          UTMESS('A', 'SEISME_39', valk=(str(TT)))
 
 
@@ -220,6 +219,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
       NB_POIN= int(ceil((TTS/DT+1)/2.) *2. )     # on prend NB_POIN pair uniquement   
       DW=2.*OM/NB_POIN     
       TT=(NB_POIN-1)*DT
+
 
    l_temps=NP.arange(0., NB_POIN*DT,  DT)
    l_w=NP.arange(-OM+DW/2., OM+DW/2., DW)     
@@ -234,8 +234,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    if INFO==2:
       print  'FREQUENCE DE COUPURE =',FREQ_COUP ,'Hz     NB_POIN =', NB_POIN ,'Hz     FREQ_PAS =', DW/2./pi, 'Hz'
       print  'PAS DE TEMPS =',DT,  '     INTERVALLE DE TEMPS =',TT
-      print  'FREQ_FILTRE  =', F_CORNER,  'Hz'
-   assert DUREE+INST_INI <= TT , "Duree de la phase forte > duree du seisme" 
+      print  'FREQ_FILTRE  =', F_CORNER,  'Hz' 
    assert  NB_POIN==nbfreq
    assert len(l_temps)==NB_POIN   
    assert len(l_w)==NB_POIN      
@@ -376,11 +375,13 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
       f_dsp, f_spec_ref = SRO2DSP(f_spec, **SRO_args)  #  CALCUL DE LA DSP SPECTRUM-COMPATIBLE   
       fonc_dsp = f_dsp.evalfonc(l_w2)
       FC=0.05
+      SRO_args['INFO']=INFO
 
       if SPEC_MEDIANE != None :
 
          if NB_ITER>0 :
-            fonc_dsp_opt, liste_rv =itersim_SRO(fonc_dsp, f_spec_ref, amo,  DUREE , NB_ITER, f_mod,  INFO, dico_err,  F_MIN, F_CORNER,NB_TIRAGE)
+            SRO_args['METHODE_SRO']=SPEC_MEDIANE['METHODE']
+            fonc_dsp_opt, liste_rv =itersim_SRO(fonc_dsp, f_spec_ref, NB_ITER, f_mod,SRO_args ,dico_err, NB_TIRAGE)
 
             if FREQ_PENTE != None :
                wg,amort,R0,R2, f_FIT =DSP2FR(fonc_dsp_opt,FC)
@@ -399,7 +400,9 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
             wg,amort,R0,R2, f_FIT =DSP2FR(fonc_dsp,FC)
             FR_args={'FCORNER':FC, 'W0':wg, 'Xi0':amort ,'WPENTE':wn,'para_R0':R0,'para_R2':R2,'fonc_FIT':f_FIT, 'TYPE_DSP': 'FR'}
 
-
+ 
+      if SPEC_UNIQUE !=None and NB_ITER>0:   
+         SRO_args['METHODE_SRO']=SPEC_UNIQUE['METHODE']
 
 ###     ----------------------------------------------------------------- 
 ##     ALGORITHMES DE GENERATION DE SIGNAUX ET CREATION RESU
@@ -444,7 +447,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
                print 'TIRAGE ', ntir+1
 
             if  NB_ITER >0:     #     cas  SPEC_UNIQUE !=None:
-               fonc_dsp_opt, rv =itersim_SRO(fonc_dsp, f_spec_ref, amo,  DUREE , NB_ITER, f_mod,  INFO, dico_err,F_MIN, F_CORNER)
+               fonc_dsp_opt, rv =itersim_SRO(fonc_dsp, f_spec_ref, NB_ITER, f_mod, SRO_args, dico_err, NB_TIRAGE)
                Xt=DSP2ACCE1D(fonc_dsp_opt ,rv[0])
             else:
                Xt=DSP2ACCE1D(fonc_dsp) 
