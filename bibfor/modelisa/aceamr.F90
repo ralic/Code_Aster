@@ -334,8 +334,8 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
      &    ' <DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',&
      &    '(REPERE ',a6,'), OCCURRENCE ',i4)
 !
-    1011 format(' _F(',a,'=''',A8,''', CARA=''',A,''',',/,&
+    1011 format(' _F(',a,'=''',a8,''', CARA=''',a,''',',/,&
      &       '   VALE=(',3(1x,1pe12.5,','),/,&
      &       '         ',3(1x,1pe12.5,','),'),',/,&
-     &       '   REPERE=''',A,'''),')
+     &       '   REPERE=''',a,'''),')
 end subroutine

@@ -561,11 +561,11 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     1005 format(/,' PAS DE REPARTITION EN ROTATION POUR DES ',a,/)
     1006 format(/,' RAIDEURS DE ROTATION A REPARTIR POUR DES ',a,/&
      &        ,'  RX: ',1pe12.5,' RY: ',1pe12.5,' RZ: ',1pe12.5,/)
-    1010 format(' _F(',a,'=''',A8,''', CARA=''',A,''',',/,&
+    1010 format(' _F(',a,'=''',a8,''', CARA=''',a,''',',/,&
      &       '    VALE=(',3(1x,1pe12.5,','),'),',/,&
-     &       '    REPERE=''',A,'''),')
-    1011 format(' _F(',a,'=''',A8,''', CARA=''',A,''',',/,&
+     &       '    REPERE=''',a,'''),')
+    1011 format(' _F(',a,'=''',a8,''', CARA=''',a,''',',/,&
      &       '    VALE=(',3(1x,1pe12.5,','),/,&
      &       '          ',3(1x,1pe12.5,','),'),',/,&
-     &       '    REPERE=''',A,'''),')
+     &       '    REPERE=''',a,'''),')
 end subroutine

@@ -8,6 +8,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/char_crea_cart.h"
+#include "asterfort/char_read_val.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/getelem.h"
@@ -73,7 +74,6 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
     real(kind=8) :: r8dummy
     real(kind=8) :: hole_area, cara_geom(10), mate_area, coef_mult
     complex(kind=8) :: c16dummy
-    character(len=8) :: k8dummy
     character(len=8) :: pres_fonc
     real(kind=8) :: pres_real
     character(len=16) :: keywordfact, option, k16dummy
