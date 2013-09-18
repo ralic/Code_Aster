@@ -233,13 +233,17 @@ Le module de Young est nul.
 """),
 
 92 : _(u"""
-Erreur utilisateur :
- Vous essayez d'appliquer une pression (comme fonction) non nulle sur un élément de coque.
- (AFFE_CHAR_MECA_F/PRES_REP/PRES) pour la maille  %(k1)s
- La programmation ne le permet pas.
+ Vous essayez d'appliquer un chargement de pression fonction (et non nul) sur un élément de coque (avec le mot-clé facteur PRES_REP) pour la maille %(k1)s.
 
-Conseil :
- Pour appliquer une telle pression, il faut utiliser AFFE_CHAR_MECA_F/FORCE_COQUE/PRES
+ Pour cette modélisation, il faut utiliser le mot-clé FORCE_COQUE.
+"""),
+
+93 : _(u"""
+ Vous essayez d'appliquer un chargement de pression suiveur (et non nul) sur un élément 'DKT' (avec le mot-clé facteur PRES_REP et le mot-clé TYPE_CHARGE='SUIV') pour la maille %(k1)s.
+ Cette fonctionnalité n'est pas disponible.
+
+ Conseil :
+    - remplacez la modélisation 'DKT' par la modélisation 'COQUE_3D'.
 """),
 
 }

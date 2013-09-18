@@ -86,7 +86,7 @@ subroutine te0486(option, nomte)
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3)(1:8)
                 valk = nomail
-                call utmess('F', 'ELEMENTS4_92', sk=valk)
+                call utmess('F', 'ELEMENTS4_93', sk=valk)
             endif
 10      continue
 !

@@ -74,11 +74,17 @@ CHP=AFFE_CHAR_MECA(         MODELE=MO,
                               PRES_REP=_F(  GROUP_MA = 'CYLINDRE',  PRES = 10.)
                        )
 
+ZERO=DEFI_CONSTANTE(VALE=0)
+CHPF=AFFE_CHAR_MECA_F(         MODELE=MO,
+                              PRES_REP=_F(  GROUP_MA = 'CYLINDRE',  PRES = ZERO)
+                       )
+
 
 RESP=MECA_STATIQUE(       MODELE=MO,
                             CARA_ELEM=CA,        CHAM_MATER=CM,EXCIT=(
                             _F(  CHARGE = CH),
-                            _F(  CHARGE = CHP),),
+                            _F(  CHARGE = CHP),
+                            _F(  CHARGE = CHPF),),
 
                         )
 

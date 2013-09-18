@@ -1,5 +1,6 @@
 subroutine te0487(option, nomte)
     implicit none
+! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
@@ -72,7 +73,7 @@ subroutine te0487(option, nomte)
     nompar(4) = 'INST'
     valpar(4) = zr(itemp)
 !
-    do 10 ino = 0, nno-1
+    do ino = 0, nno-1
         valpar(1) = zr(igeom+3*ino )
         valpar(2) = zr(igeom+3*ino+1)
         valpar(3) = zr(igeom+3*ino+2)
@@ -82,8 +83,8 @@ subroutine te0487(option, nomte)
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3)(1:8)
             valk = nomail
-            call utmess('F', 'ELEMENTS4_92', sk=valk)
+            call utmess('F', 'ELEMENTS4_93', sk=valk)
         endif
-10  end do
+    end do
 !
 end subroutine
