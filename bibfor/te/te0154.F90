@@ -81,6 +81,7 @@ subroutine te0154(option, nomte)
     call verift(fami, 1, 1, '+', zi(lmater),&
                 materi, 'ELAS', iret, epsth=epsth)
 !
+    r8bid = 0.0d0
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
                 ' ', 'ELAS', 0, ' ', [r8bid],&
                 1, 'E', e, codres, 1)

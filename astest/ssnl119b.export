@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm ssnl119b.comm D 1
-F libr ssnl119a.17 D 17
-F libr ssnl119a.18 D 18
+F datg ssnl119b.datg D 16
+F libr ssnl119b.17 D 17
+F libr ssnl119b.18 D 18

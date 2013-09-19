@@ -74,6 +74,7 @@ subroutine te0396(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
+    r8bid = 0.0d0
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
                 ' ', 'ELAS', 0, '  ', [r8bid],&
                 2, nomres, valres, icodre, 1)

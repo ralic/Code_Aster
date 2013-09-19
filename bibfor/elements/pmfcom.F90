@@ -29,7 +29,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 #include "asterfort/nm1dpm.h"
 #include "asterfort/nm1tra.h"
 #include "asterfort/nm1vil.h"
-#include "asterfort/nmcb1d.h"
 #include "asterfort/paeldt.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -81,17 +80,15 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     integer :: nbval, nbvari, codrep, ksp
     parameter     (nbval=12)
     integer :: icodre(nbval)
-    integer :: i, ivari, codret, iret1, iret2, iret3
+    integer :: i, ivari, codret, iret1
     real(kind=8) :: valres(nbval), ep, em, depsth, epsth
     real(kind=8) :: cstpm(13), epsm, angmas(3), depsm, nu
     character(len=4) :: fami
-    character(len=8) :: noeclb(9), nompim(12), mazars(8)
+    character(len=8) :: nompim(12), mazars(8)
     character(len=8) :: materi, nomres(2)
     character(len=16) :: compo, algo
     character(len=30) :: valkm(3)
 !
-    data noeclb /'Y01','Y02','A1','A2','B1',&
-                 'B2','BETA1','BETA2','SIGF'/
     data nompim /'SY','EPSI_ULT','SIGM_ULT','EPSP_HAR','R_PM',&
                  'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM',&
                  'C_PM','A_PM'/
@@ -139,27 +136,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             endif
             modf(i) = ep
             sigf(i) = ep*(contm(i)/em + ddefp(i) - depsth)
-        enddo
-!
-    else if (compo.eq.'LABORD_1D') then
-        epsth = 0.d0
-!       on récupère les paramètres matériau
-        call r8inir(nbval, 0.d0, valres, 1)
-        call rcvalb(fami, 1, 1, '+', icdmat,&
-                    materi, 'LABORD_1D', 0, ' ', [0.0d0],&
-                    9, noeclb, valres, icodre, 1)
-!       boucle comportement sur chaque fibre
-        do i = 1, nf
-            ivari = nbvalc*(i-1) + 1
-            if (ltemp) then
-                ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, '+', icdmat,&
-                            materi, em, ep, nu, epsth)
-            endif
-            epsm = defm(i) - epsth
-            call nmcb1d(ep, valres, contm(i), varim(ivari), epsm,&
-                        ddefp(i), modf(i), sigf(i), varip(ivari), crit,&
-                        option)
         enddo
 !
     else if (compo.eq.'MAZARS_GC') then
@@ -290,6 +266,9 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !
     else if ((compo.eq.'GRAN_IRRA_LOG').or. (compo.eq.'VISC_IRRA_LOG')) then
         if (algo(1:10) .eq. 'ANALYTIQUE') then
+            if ( .not. ltemp) then
+                call utmess('F', 'CALCULEL_31')
+            endif        
             do i = 1, nf
                 ivari = nbvalc* (i-1) + 1
                 if (ltemp) then
@@ -299,9 +278,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                                 tmoins=tempm, tplus=tempp, trefer=tref)
                 endif
                 depsm = ddefp(i)-depsth
-                if ((iret1+iret2+iret3) .ge. 1) then
-                    call utmess('F', 'CALCULEL_31')
-                endif
                 call nm1vil('RIGI', kpg, i, icdmat, materi,&
                             crit, instam, instap, tempm, tempp,&
                             tref, depsm, contm(i), varim(ivari), option,&

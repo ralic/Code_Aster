@@ -79,6 +79,7 @@ subroutine te0155(option, nomte)
     nno = 2
     nc = 3
     fami = 'RIGI'
+    r8bid = 0.0d0
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
     call jevech('PGEOMER', 'L', lx)

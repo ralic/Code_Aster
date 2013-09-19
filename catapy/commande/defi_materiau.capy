@@ -799,17 +799,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ECRO_COMP_P_PIC =SIMP(statut='f',typ='TXM',defaut="LINEAIRE",into=("LINEAIRE","PARABOLE") ),
              ECRO_TRAC_P_PIC =SIMP(statut='f',typ='TXM',defaut="LINEAIRE",into=("LINEAIRE","EXPONENT") ),
            ),
-           LABORD_1D=FACT(statut='f',min=0 ,
-             Y01             =SIMP(statut='o',typ='R'),
-             Y02             =SIMP(statut='o',typ='R'),
-             A1              =SIMP(statut='o',typ='R'),
-             A2              =SIMP(statut='o',typ='R'),
-             B1              =SIMP(statut='o',typ='R'),
-             B2              =SIMP(statut='o',typ='R'),
-             BETA1           =SIMP(statut='o',typ='R'),
-             BETA2           =SIMP(statut='o',typ='R'),
-             SIGF            =SIMP(statut='o',typ='R'),
-           ),
          MAZARS=FACT(statut='f',min=0 ,
              EPSD0           =SIMP(statut='o',typ='R'),
              K               =SIMP(statut='o',typ='R'),
@@ -1817,23 +1806,23 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                   regles = (EXCLUS('BIOT_COEF','BIOT_N',),
                                             PRESENT_PRESENT('BIOT_N','BIOT_L',),
                                             PRESENT_PRESENT('BIOT_T','BIOT_L','BIOT_N',),
-         
+
                                             EXCLUS('PERM_IN','PERM_END','PERMIN_L',),
                                             PRESENT_ABSENT('PERMIN_N','PERMIN_T',),
                                             PRESENT_PRESENT('PERMIN_N','PERMIN_L',),
                                             PRESENT_PRESENT('PERMIN_T','PERMIN_L',),
-         
-         
+
+
                                             EXCLUS('LAMB_T','LAMB_TL',),
                                             PRESENT_ABSENT('LAMB_TN','LAMB_TT',),
                                             PRESENT_PRESENT('LAMB_TN','LAMB_TL',),
                                             PRESENT_PRESENT('LAMB_TT','LAMB_TL',),
-        
-         
+
+
                                             EXCLUS('D_LB_T','D_LB_TL',),
                                             PRESENT_ABSENT('D_LB_TN','D_LB_TT',),
                                             PRESENT_PRESENT('D_LB_TN','D_LB_TL',),
-         
+
                                             EXCLUS('LAMB_CT','LAMB_C_L',),
                                             PRESENT_ABSENT('LAMB_C_N','LAMB_C_T',),
                                             PRESENT_PRESENT('LAMB_C_N','LAMB_C_L',),
@@ -1846,7 +1835,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                             PRESENT_PRESENT('LAMB_TN','PERMIN_N',),
                                             PRESENT_PRESENT('LAMB_TL','PERMIN_L',),
                                             PRESENT_PRESENT('LAMB_TT','PERMIN_T',),
-         
+
                                             ),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES OBLIGATOIRE   -------------------------------------
@@ -2782,7 +2771,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                             PRESENT_PRESENT('LAMB_TN','PERMIN_N',),
                                             PRESENT_PRESENT('LAMB_TL','PERMIN_L',),
                                             PRESENT_PRESENT('LAMB_TT','PERMIN_T',),
-         
+
                                             ENSEMBLE('SATU_PRES','D_SATU_PRES','PERM_LIQU','D_PERM_LIQU_SATU',
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
                                             ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
@@ -3165,7 +3154,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                             PRESENT_PRESENT('LAMB_TN','PERMIN_N',),
                                             PRESENT_PRESENT('LAMB_TL','PERMIN_L',),
                                             PRESENT_PRESENT('LAMB_TT','PERMIN_T',),
-          
+
                                             ENSEMBLE('SATU_PRES','D_SATU_PRES','PERM_LIQU','D_PERM_LIQU_SATU',
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
                                             ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),

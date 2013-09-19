@@ -16,8 +16,8 @@
 # ======================================================================
 # person_in_charge: jean-michel.proix@edf.fr
 #
-def C_RELATION( COMMAND ) : 
-    
+def C_RELATION( COMMAND ):
+
     if COMMAND in ('CALC_G','POST_GP',):
                    return (             "ELAS",            #COMMUN#
                                         "ELAS_VMIS_LINE",
@@ -43,7 +43,6 @@ def C_RELATION( COMMAND ) :
                                         "GRANGER_FP_V",
                                         "GRANGER_FP_INDT",
                                         "GRAN_IRRA_LOG",
-                                        "LABORD_1D",
                                         "MAZARS_GC",
                                         "VISC_IRRA_LOG",
                                         "VMIS_CINE_GC",
@@ -128,7 +127,6 @@ def C_RELATION( COMMAND ) :
                                         "KIT_THHM",
                                         "KIT_THM",
                                         "KIT_THV",
-                                        "LABORD_1D",
                                         "LAIGLE",
                                         "LEMAITRE",
                                         "LEMAITRE_IRRA",

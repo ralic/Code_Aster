@@ -16,15 +16,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# COMPARAISON DU MODELE GLRC_DM AVEC ENDO_ISOT ET LABORD_1D
+# COMPARAISON DU MODELE GLRC_DM AVEC ENDO_ISOT
 #
 # DETAILS : MODELISATION : MULTI-COUCHES
 #                          (DKT- ENDO_ISOT_BETON+2*GRILLE ACIER)
 #                           .VS.
 #                           DKTG (GLRC_DM)
-#                           .VS.
-#                           MULTI-FIBRES
-#                           (LABORD_1D + 4 BARRES D'ACIER)
 #            MAILLAGE     : TRIA3 ET POUT
 #            CHARGEMENT   : CYCLIQUE TRACTION - COMPRESSION
 #            REMARQUE 1   : LES PARAMETRES GLRC_DM ONT ETE IDENTIFIES

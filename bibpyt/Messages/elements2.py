@@ -48,10 +48,6 @@ cata_msg = {
  les vecteurs sont au nombre de 1 ou 2
 """),
 
-37 : _(u"""
- pas de zéro, convergence impossible
-"""),
-
 38 : _(u"""
   ->  L'option ANGL_AXE n'est pas prise en compte en 2D mais seulement
       en 3D.

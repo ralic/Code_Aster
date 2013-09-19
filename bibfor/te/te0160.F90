@@ -78,6 +78,7 @@ subroutine te0160(option, nomte)
 !
     nomres(1) = 'E'
     nomres(2) = 'EC_SUR_E'
+    r8bid = 0.0d0
     call rcvalb('RIGI', 1, 1, '+', zi(imate),&
                 ' ', 'ELAS', 0, '  ', [r8bid],&
                 1, nomres, valres, icodre, 1)

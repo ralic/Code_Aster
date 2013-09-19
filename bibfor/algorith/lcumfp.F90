@@ -393,6 +393,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     nomres(6)='ETA_RD'
     nomres(7)='ETA_ID'
 !
+    rbid = 0.0d0
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'BETON_UMLV_FP', 0, ' ', [rbid],&
                 7, nomres, valres, icodre, 2)
