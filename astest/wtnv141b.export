@@ -5,5 +5,5 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist C
 
-F comm zzzz272b.comm D 1
-F mmed zzzz272b.mmed D 20
+F comm wtnv141b.comm D 1
+F mmed wtnv141b.mmed D 20
