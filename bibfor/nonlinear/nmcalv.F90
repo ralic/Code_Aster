@@ -94,7 +94,6 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     character(len=19) :: depl, sigm, strx
     integer :: neq, iret, ibid
     real(kind=8) :: partps(2), inst(3)
-    logical :: fnoevo
     character(len=24) :: charge, infoch
     character(len=8) :: noma, k8bid
     character(len=16) :: optio2
@@ -140,7 +139,6 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     inst(1) = instap
     inst(2) = instap-instam
     inst(3) = 0.d0
-    fnoevo = .true.
 !
     charge = lischa(1:19)//'.LCHA'
     infoch = lischa(1:19)//'.INFC'
@@ -180,10 +178,9 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
             ASSERT(.false.)
         endif
 !
-        call vefnme(modele, sigm, carele, depl, depdel,&
-                    vecele, mate, compor, 0, fnoevo,&
-                    partps, carcri, varc, ' ', optio2,&
-                    strx, 'V')
+        call vefnme(optio2, 'V'   , modele, mate  , carele  ,&
+                    compor, partps, 0     , ' '   , varc    ,&
+                    sigm  , strx  , depl  , depdel, vecele)
         call nmdep0('OFF', solalg)
 !
 ! --- DEPLACEMENTS DIRICHLET FIXE

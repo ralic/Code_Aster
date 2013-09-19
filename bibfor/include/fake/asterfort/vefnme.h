@@ -16,26 +16,23 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
-                      vecelz, matcod, compor, nh, fnoevo,&
-                      partps, carcri, chvarc, ligrez, option,&
-                      strx, base)
-        character(*) :: modele
-        character(*) :: sigma
-        character(*) :: caraz
-        character(*) :: depmoi
-        character(*) :: depdel
-        character(*) :: vecelz
-        character(*) :: matcod
-        character(*) :: compor
-        integer :: nh
-        logical :: fnoevo
-        real(kind=8) :: partps(*)
-        character(*) :: carcri
-        character(*) :: chvarc
-        character(*) :: ligrez
-        character(len=16) :: option
-        character(*) :: strx
-        character(len=1) :: base
+    subroutine vefnme(option, base  , model , mate      , carele  ,&
+                      compor, partps, nh    , ligrelz   , varicomz,&
+                      sigmaz, strxz , deplz , depl_incrz, vecelz)
+        character(len=16), intent(in) :: option
+        character(len=1), intent(in) :: base
+        character(len=8), intent(in) :: model
+        real(kind=8), intent(in) :: partps(*)
+        character(len=24), intent(in) :: carele
+        character(len=24), intent(in) :: mate
+        character(len=*), intent(in) :: ligrelz
+        integer, intent(in) :: nh
+        character(len=19), intent(in) :: compor
+        character(len=*), intent(in) :: sigmaz
+        character(len=*), intent(in) :: varicomz
+        character(len=*), intent(in) :: strxz
+        character(len=*), intent(in) :: deplz
+        character(len=*), intent(in) :: depl_incrz
+        character(len=*), intent(inout) :: vecelz
     end subroutine vefnme
 end interface

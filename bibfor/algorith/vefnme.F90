@@ -1,7 +1,26 @@
-subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
-                  vecelz, matcod, compor, nh, fnoevo,&
-                  partps, carcri, chvarc, ligrez, option,&
-                  strx, base)
+subroutine vefnme(option, base  , model , mate      , carele  ,&
+                  compor, partps, nh    , ligrelz   , varicomz,&
+                  sigmaz, strxz , deplz , depl_incrz, vecelz)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/dbgcal.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecara.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,40 +40,30 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/calcul.h"
-#include "asterfort/corich.h"
-#include "asterfort/dbgcal.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/gcnco2.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mecact.h"
-#include "asterfort/mecara.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
-    logical :: fnoevo
-    real(kind=8) :: partps(*)
-    character(len=1) :: base
-    character(len=*) :: modele, ligrez
-    character(len=*) :: sigma, caraz, depmoi, depdel, vecelz
-    character(len=*) :: matcod, compor, carcri, chvarc, strx
-    character(len=16) :: option
-    integer :: nh
+    character(len=16), intent(in) :: option
+    character(len=1), intent(in) :: base
+    character(len=8), intent(in) :: model
+    real(kind=8), intent(in) :: partps(*)
+    character(len=24), intent(in) :: carele
+    character(len=24), intent(in) :: mate
+    character(len=*), intent(in) :: ligrelz
+    integer, intent(in) :: nh
+    character(len=19), intent(in) :: compor
+    character(len=*), intent(in) :: sigmaz
+    character(len=*), intent(in) :: varicomz
+    character(len=*), intent(in) :: strxz
+    character(len=*), intent(in) :: deplz
+    character(len=*), intent(in) :: depl_incrz
+    character(len=*), intent(inout) :: vecelz
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CALCUL
+! Elementary computation
 !
-! CALCUL DES VECTEURS ELEMENTAIRES (FORC_NODA)
+! Option: FORC_NODA
+!         FONL_NOEU
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
 ! IN  MODELE : NOM DU MODELE (NECESSAIRE SI SIGMA EST UNE CARTE)
@@ -73,36 +82,43 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! OUT VECELZ : VECT_ELEM RESULTAT.
 !
 !
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=33)
+    parameter    (nbout=1, nbin=31)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    character(len=8) :: k8bla, mailla, carele
-    character(len=19) :: ligrel
+    character(len=8) :: k8bla, mesh
     character(len=8) :: newnom
-    character(len=19) :: numhar, tpsmoi, tpsplu
+    character(len=19) :: numhar, tpsmoi, tpsplu, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18), vecele
     character(len=16) :: optio2
-    logical :: lbid, debug
-    integer :: ibid, ied, ier, ifmdbg, nivdbg
-    real(kind=8) :: instm, instp 
+    logical :: lbid
+    integer :: ibid, iret
+    real(kind=8) :: instm, instp, rbid
+    complex(kind=8) :: cbid
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno
+    character(len=19) :: sigma, varicom, strx
+    character(len=19) :: depl, depl_incr
+    logical :: debug
+    integer :: ifmdbg, nivdbg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
+    sigma     = sigmaz
+    varicom   = varicomz
+    strx      = strxz
+    depl      = deplz
+    depl_incr = depl_incrz
+    ligrel    = ligrelz
     newnom = '.0000000'
-    carele = caraz
-    vecele = vecelz
-    ligrel = ligrez
     numhar = '&&VEFNME.NUME_HARM'
     tpsmoi = '&&VEFNME.CH_INSTAM'
     tpsplu = '&&VEFNME.CH_INSTAP'
@@ -114,54 +130,61 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
     else
         debug = .false.
     endif
-    if (depmoi .ne. ' ') then
-        call dismoi('F', 'NOM_MAILLA', depmoi, 'CHAM_NO', ibid,&
-                    mailla, ied)
+!
+! - Get mesh
+!
+    if (depl .ne. ' ') then
+        call dismoi('F', 'NOM_MAILLA', depl , 'CHAM_NO', ibid,&
+                    mesh, iret)
     else if (sigma.ne.' ') then
-        call dismoi('F', 'NOM_MAILLA', sigma(1:19), 'CHAM_ELEM', ibid,&
-                    mailla, ied)
+        call dismoi('F', 'NOM_MAILLA', sigma, 'CHAM_ELEM', ibid,&
+                    mesh, iret)
     else
         ASSERT(.false.)
     endif
-    chgeom = mailla(1:8)//'.COORDO'
+    chgeom = mesh(1:8)//'.COORDO'
+!
+! - VECT_ELEM name
+!
+    vecele = vecelz
     if (vecele .eq. ' ') then
         vecele = '&&VEFNME'
     endif
     if (ligrel .eq. ' ') then
-        ligrel = modele(1:8)//'.MODELE'
+        ligrel_local = model(1:8)//'.MODELE'
+    else
+        ligrel_local = ligrel
     endif
 !
-! --- CARTE POUR LES CARA. ELEM.
+! - <CARTE> for structural elements
 !
     call mecara(carele(1:8), lbid, chcara)
 !
-! --- CARTE POUR LES HARMONIQUES DE FOURIER
+! - <CARTE> for Fourier mode
 !
-    call mecact('V', numhar, 'MAILLA', mailla, 'HARMON',&
+    call mecact('V', numhar, 'MAILLA', mesh, 'HARMON',&
                 ncmp=1, nomcmp='NH', si=nh)
 !
-! --- CARTE DES INSTANTS POUR THM
+! - <CARTE> for instant
 !
-    if (fnoevo) then
-        instm = partps(1)
-        instp = partps(2)
-        call mecact('V', tpsmoi, 'MAILLA', mailla, 'INST_R',&
-                    ncmp=1, nomcmp='INST', sr=instm)
-        call mecact('V', tpsplu, 'MAILLA', mailla, 'INST_R',&
-                    ncmp=1, nomcmp='INST', sr=instp)
-    endif
+    instm = partps(1)
+    instp = partps(2)
+    call mecact('V', tpsmoi, 'MAILLA', mesh, 'INST_R',&
+                ncmp=1, nomcmp='INST', sr=instm)
+    call mecact('V', tpsplu, 'MAILLA', mesh, 'INST_R',&
+                ncmp=1, nomcmp='INST', sr=instp)
 !
-! --- INITIALISATION DES CHAMPS POUR CALCUL
+! - Init fields
 !
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
 !
-! --- CREATION DES LISTES DES CHAMPS IN
+! - CREATION DES LISTES DES CHAMPS IN
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     lpain(2) = 'PMATERC'
-    lchin(2) = matcod
+    lchin(2) = mate(1:19)
     lpain(3) = 'PCAGNPO'
     lchin(3) = chcara(6)
     lpain(4) = 'PCAORIE'
@@ -171,9 +194,9 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
     lpain(6) = 'PCONTMR'
     lchin(6) = sigma
     lpain(7) = 'PDEPLMR'
-    lchin(7) = depmoi
+    lchin(7) = depl
     lpain(8) = 'PDEPLPR'
-    lchin(8) = depdel
+    lchin(8) = depl_incr
     lpain(9) = 'PCAARPO'
     lchin(9) = chcara(9)
     lpain(10) = 'PCADISK'
@@ -184,35 +207,33 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
     lchin(12) = numhar
     lpain(13) = 'PCAMASS'
     lchin(13) = chcara(12)
-    lpain(14) = 'PCARCRI'
-    lchin(14) = carcri
-    lpain(15) = 'PINSTMR'
-    lchin(15) = tpsmoi
-    lpain(16) = 'PINSTPR'
-    lchin(16) = tpsplu
-    lpain(17) = 'PVARCPR'
-    lchin(17) = chvarc
-    lpain(18) = 'PCAGEPO'
-    lchin(18) = chcara(5)
-    lpain(19) = 'PNBSP_I'
-    lchin(19) = chcara(16)
-    lpain(20) = 'PFIBRES'
-    lchin(20) = chcara(17)
+    lpain(14) = 'PINSTMR'
+    lchin(14) = tpsmoi
+    lpain(15) = 'PINSTPR'
+    lchin(15) = tpsplu
+    lpain(16) = 'PVARCPR'
+    lchin(16) = varicom
+    lpain(17) = 'PCAGEPO'
+    lchin(17) = chcara(5)
+    lpain(18) = 'PNBSP_I'
+    lchin(18) = chcara(16)
+    lpain(19) = 'PFIBRES'
+    lchin(19) = chcara(17)
 !
 ! --- CADRE X-FEM
 !
-    call exixfe(modele, ier)
-    if (ier .ne. 0) then
-        pintto =modele(1:8)//'.TOPOSE.PIN'
-        cnseto =modele(1:8)//'.TOPOSE.CNS'
-        heavto =modele(1:8)//'.TOPOSE.HEA'
-        loncha =modele(1:8)//'.TOPOSE.LON'
-        pmilto =modele(1:8)//'.TOPOSE.PMI'
-        basloc =modele(1:8)//'.BASLOC'
-        lsn =modele(1:8)//'.LNNO'
-        lst =modele(1:8)//'.LTNO'
-        stano = modele(1:8)//'.STNO'
-        fissno = modele(1:8)//'.FISSNO'
+    call exixfe(model, iret)
+    if (iret .ne. 0) then
+        pintto = model(1:8)//'.TOPOSE.PIN'
+        cnseto = model(1:8)//'.TOPOSE.CNS'
+        heavto = model(1:8)//'.TOPOSE.HEA'
+        loncha = model(1:8)//'.TOPOSE.LON'
+        pmilto = model(1:8)//'.TOPOSE.PMI'
+        basloc = model(1:8)//'.BASLOC'
+        lsn    = model(1:8)//'.LNNO'
+        lst    = model(1:8)//'.LTNO'
+        stano  = model(1:8)//'.STNO'
+        fissno = model(1:8)//'.FISSNO'
     else
         pintto = '&&VEFNME.PINTTO.BID'
         cnseto = '&&VEFNME.CNSETO.BID'
@@ -226,30 +247,30 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
         fissno = '&&VEFNME.FISSNO.BID'
     endif
 !
-    lpain(22) = 'PPINTTO'
-    lchin(22) = pintto
-    lpain(23) = 'PCNSETO'
-    lchin(23) = cnseto
-    lpain(24) = 'PHEAVTO'
-    lchin(24) = heavto
-    lpain(25) = 'PLONCHA'
-    lchin(25) = loncha
-    lpain(26) = 'PBASLOR'
-    lchin(26) = basloc
-    lpain(27) = 'PLSN'
-    lchin(27) = lsn
-    lpain(28) = 'PLST'
-    lchin(28) = lst
-    lpain(29) = 'PSTANO'
-    lchin(29) = stano
-    lpain(30) = 'PCINFDI'
-    lchin(30) = chcara(15)
-    lpain(31) = 'PPMILTO'
-    lchin(31) = pmilto
-    lpain(32) = 'PFISNO'
-    lchin(32) = fissno
-    lpain(33) = 'PSTRXMR'
-    lchin(33) = strx
+    lpain(20) = 'PPINTTO'
+    lchin(20) = pintto
+    lpain(21) = 'PCNSETO'
+    lchin(21) = cnseto
+    lpain(22) = 'PHEAVTO'
+    lchin(22) = heavto
+    lpain(23) = 'PLONCHA'
+    lchin(23) = loncha
+    lpain(24) = 'PBASLOR'
+    lchin(24) = basloc
+    lpain(25) = 'PLSN'
+    lchin(25) = lsn
+    lpain(26) = 'PLST'
+    lchin(26) = lst
+    lpain(27) = 'PSTANO'
+    lchin(27) = stano
+    lpain(28) = 'PCINFDI'
+    lchin(28) = chcara(15)
+    lpain(29) = 'PPMILTO'
+    lchin(29) = pmilto
+    lpain(30) = 'PFISNO'
+    lchin(30) = fissno
+    lpain(31) = 'PSTRXMR'
+    lchin(31) = strx
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !
@@ -261,7 +282,7 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare(base, vecele, modele, ' ', carele,&
+    call memare(base, vecele, model, ' ', carele,&
                 'CHAR_MECA')
 !
     if (debug) then
@@ -269,20 +290,16 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
                     nbout, lpaout, lchout)
     endif
 !
+! - APPEL A CALCUL
 !
-! --- APPEL A CALCUL
-!
-    call calcul('S', optio2, ligrel, nbin, lchin,&
+    call calcul('S', optio2, ligrel_local, nbin, lchin,&
                 lpain, nbout, lchout, lpaout, base,&
                 'OUI')
-!
-!
-!
     call reajre(vecele, lchout(1), base)
 !
     vecelz = vecele//'.RELR'
 !
-! --- MENAGE
+! - Cleaning
 !
     call detrsd('CHAMP_GD', numhar)
     call detrsd('CHAMP_GD', tpsmoi)

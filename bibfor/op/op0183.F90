@@ -85,7 +85,7 @@ subroutine op0183()
     parameter(nompro='OP0183')
 !     ------------------------------------------------------------------
 !
-    logical :: exitim, fnoevo
+    logical :: exitim
 !
 !     ------------------------------------------------------------------
     data infcha/'&&INFCHA.INFCHA'/
@@ -286,11 +286,9 @@ subroutine op0183()
             call nmdorc(modele, compor, k24bid)
         endif
 !
-        fnoevo=.false.
-        call vefnme(modele, sigma, carac, chdepl, chdep2,&
-                    vfono, mater, compor, nh, fnoevo,&
-                    partps, k24bid, chvarc, ligrel, option,&
-                    ' ', 'V')
+        call vefnme(option, 'V'   , modele, mater , carac ,&
+                    compor, partps, nh    , ligrel, chvarc,&
+                    sigma , ' '   , chdepl, chdep2, vfono)    
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vfono, nume, 'R', vafono)

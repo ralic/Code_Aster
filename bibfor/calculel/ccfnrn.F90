@@ -83,7 +83,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
     character(len=24) :: strx, raide
     character(len=24) :: bidon, chacce, k24b, modele, kstr
-    logical :: exitim, lbid, lstr, lstr2, fnoevo
+    logical :: exitim, lbid, lstr, lstr2
     parameter(nompro='CCFNRN')
     data chvarc/'&&CCFNRN.CHVARC'/
     data infcha/'&&INFCHA.INFCHA'/
@@ -288,12 +288,10 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                     codret)
         call rsexch(' ', resuin, 'COMPORTEMENT', iordr, compor,&
                     iret)
-!
-        fnoevo=.false.
-        call vefnme(modele, sigma, carac, chdepl, chdep2,&
-                    vfono, mater, compor, nh, fnoevo,&
-                    partps, k24bid, chvarc, ligrel, option,&
-                    strx, 'V')
+
+        call vefnme(option, 'V'   , modele, mater , carac ,&
+                    compor, partps, nh    , ligrel, chvarc,&
+                    sigma , strx  , chdepl, chdep2, vfono)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vfono, nume, 'R', vafono)
