@@ -3,20 +3,22 @@ subroutine te0444(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
-#include "asterfort/dxqpgl.h"
+#include "asterfort/dkqmas.h"
 #include "asterfort/dkqrig.h"
+#include "asterfort/dktmas.h"
 #include "asterfort/dktrig.h"
 #include "asterfort/dxiner.h"
-#include "asterfort/dxtpgl.h"
+#include "asterfort/dxqpgl.h"
 #include "asterfort/dxroep.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/q4grig.h"
+#include "asterfort/t3grig.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
-#include "asterfort/t3grig.h"
 #include "asterfort/vecma.h"
 !     ----------------------------------------------------------------
 ! ======================================================================
@@ -66,7 +68,8 @@ subroutine te0444(option, nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+                npg, ipoids, ivf, idfdx, jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -80,13 +83,17 @@ subroutine te0444(option, nomte)
 !
     if (option .eq. 'EPOT_ELEM') then
         if (nomte .eq. 'MEDKTG3') then
-            call dktrig(nomte, xyzl, option, pgl, matloc, ener, multic)
+            call dktrig(nomte, xyzl, option, pgl, matloc,&
+                        ener, multic)
         else if (nomte.eq.'MEDKQG4') then
-            call dkqrig(nomte, xyzl, option, pgl, matloc, ener)
+            call dkqrig(nomte, xyzl, option, pgl, matloc,&
+                        ener)
         else if (nomte.eq.'MET3GG3') then
-            call t3grig(nomte, xyzl, option, pgl, matloc, ener)
+            call t3grig(nomte, xyzl, option, pgl, matloc,&
+                        ener)
         else if (nomte.eq.'MEQ4GG4') then
-            call q4grig(nomte, xyzl, option, pgl, matloc, ener)
+            call q4grig(nomte, xyzl, option, pgl, matloc,&
+                        ener)
         endif
 !
         call jevech('PENERDR', 'E', jener)
@@ -95,12 +102,13 @@ subroutine te0444(option, nomte)
             zr(jener-1+i) = ener(i)
         end do
 !
-    else if (option.eq.'MASS_MECA'       .or. option.eq.'MASS_MECA_DIAG'&
+        else if (option.eq.'MASS_MECA'       .or. option.eq.'MASS_MECA_DIAG'&
         .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA'&
         .or. option.eq.'ECIN_ELEM') then
 !
         if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
-            call dktmas(xyzl, option, pgl, matloc, ener, multic)
+            call dktmas(xyzl, option, pgl, matloc, ener,&
+                        multic)
         else if (nomte.eq.'MEDKQG4'.or. nomte.eq.'MEQ4GG4') then
             call dkqmas(xyzl, option, pgl, matloc, ener)
         endif
@@ -161,7 +169,8 @@ subroutine te0444(option, nomte)
             call utmess('F', 'ELEMENTS5_45')
         endif
 !
-        call dxiner(nno, zr(igeom), rho, epais, zr(imatuu), zr(imatuu+1), zr(imatuu+4))
+        call dxiner(nno, zr(igeom), rho, epais, zr(imatuu),&
+                    zr(imatuu+1), zr(imatuu+4))
     else
         ASSERT(.false.)
     endif

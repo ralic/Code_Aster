@@ -200,7 +200,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- PESANTEUR
 !
-        call cbpesa(load, mesh, ndim, ligrmo)
+        call cbpesa(load, mesh, ndim)
 !
 ! ----- ROTATION
 !

@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cbpesa(char, noma, ndim, ligrmo)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: ndim
-        character(len=*) :: ligrmo
+    subroutine cbpesa(char, noma, ndim)
+        character(len=8), intent(in) :: char
+        character(len=8), intent(in) :: noma
+        integer, intent(in) :: ndim
     end subroutine cbpesa
 end interface

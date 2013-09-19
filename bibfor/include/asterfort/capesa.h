@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine capesa(char, noma, ipesa, ndim, ligrmo)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: ipesa
-        integer :: ndim
-        character(len=*) :: ligrmo
+    subroutine capesa(char, noma, ipesa, ndim)
+        character(len=8), intent(in) :: char
+        character(len=8), intent(in) :: noma
+        integer, intent(in) :: ipesa
+        integer, intent(in) :: ndim
     end subroutine capesa
 end interface

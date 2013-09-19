@@ -1,4 +1,4 @@
-subroutine cbpesa(char, noma, ndim, ligrmo)
+subroutine cbpesa(char, noma, ndim)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,17 +22,14 @@ subroutine cbpesa(char, noma, ndim, ligrmo)
 !      CHAR   : NOM UTILISATEUR DE LA CHARGE
 !      NOMA   : NOM DU MAILLAGE
 !      NDIM   : DIMENSION DU PROBLEME
-!      LIGRMO : NOM DU LIGREL DE MODELE
 !
 #include "asterc/getfac.h"
 #include "asterfort/capesa.h"
     character(len=8) :: char, noma
-    character(len=*) :: ligrmo
     integer :: ipesa, ndim
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call getfac('PESANTEUR', ipesa)
     if (ipesa .ne. 0) then
-        call capesa(char, noma, ipesa, ndim, ligrmo)
+        call capesa(char, noma, ipesa, ndim)
     endif
 end subroutine

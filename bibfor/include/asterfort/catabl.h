@@ -16,6 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine op0070()
-    end subroutine op0070
+    subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
+                      newobj, newsd)
+        character(len=8), intent(in) :: newtab
+        character(len=8), intent(in) :: oldtab
+        real(kind=8), intent(in) :: inst
+        integer, intent(in) :: numins
+        integer, intent(in) :: nbnobj
+        character(len=16), intent(in) :: newobj(nbnobj)
+        character(len=24), intent(in) :: newsd(nbnobj)
+    end subroutine catabl
 end interface

@@ -69,7 +69,8 @@ subroutine te0409(option, nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+                npg, ipoids, ivf, idfdx, jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -81,8 +82,8 @@ subroutine te0409(option, nomte)
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-    if (option.eq.'FULL_MECA'      .or. option.eq.'RAPH_MECA' .or.&
-        option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
+    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
+        'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA') then
 !
         lrgm = option.eq.'RIGI_MECA       '
 !
@@ -98,7 +99,7 @@ subroutine te0409(option, nomte)
                 do i = 1, nno
                     i1 = 3* (i-1)
                     i2 = 6* (i-1)
-                    zr(igeom+i1)   = zr(igeom+i1)   + zr(ideplm+i2)   + zr(ideplp+i2)
+                    zr(igeom+i1) = zr(igeom+i1) + zr(ideplm+i2) + zr(ideplp+i2)
                     zr(igeom+i1+1) = zr(igeom+i1+1) + zr(ideplm+i2+1) + zr(ideplp+i2+1)
                     zr(igeom+i1+2) = zr(igeom+i1+2) + zr(ideplm+i2+2) + zr(ideplp+i2+2)
                 end do
@@ -124,14 +125,16 @@ subroutine te0409(option, nomte)
             icarcr=1
         endif
 !
-        if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3'&
-       .or. nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEQ4GG4') then
+        if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3' .or. nomte .eq. 'MEDKQG4' .or.&
+            nomte .eq. 'MEQ4GG4') then
             if (lrgm) then
-                call dxglrc(nomte, option, compor, xyzl, uml, dul, vecloc, matloc, pgl,&
-                            zr(icarcr), codret)
+                call dxglrc(nomte, option, compor, xyzl, uml,&
+                            dul, vecloc, matloc, pgl, zr(icarcr),&
+                            codret)
             else
-                call dxglrc(nomte, option, zk16(icompo), xyzl, uml, dul, vecloc, matloc, pgl,&
-                            zr(icarcr), codret)
+                call dxglrc(nomte, option, zk16(icompo), xyzl, uml,&
+                            dul, vecloc, matloc, pgl, zr(icarcr),&
+                            codret)
             endif
         else
             call utmess('F', 'ELEMENTS2_74', sk=nomte)

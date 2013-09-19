@@ -5,20 +5,22 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
                   jomax, post, cudomx, vnormx, nbplan)
 !
 ! aslint: disable=W1306,W1504
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/avcdmx.h"
 #include "asterfort/avcrit.h"
 #include "asterfort/avdomt.h"
 #include "asterfort/avdowh.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
+!
     integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)
     character(len=16) :: nomcri, forvie, nomfor
     character(len=8) :: nommat, grdvie
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
-    integer ::jomin, jomax, jvmin, jvmax
+    integer :: jomin, jomax, jvmin, jvmax
     real(kind=8) :: vala, coefpa
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     integer :: vnormx(2), ncycl(nbvec), nbplan
@@ -107,8 +109,8 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !         DE CHAQUE VECTEUR NORMAL
 !
 !    real(kind=8) :: gdreq(nbvec*nbordr)
-     integer ::jgdreq, jnrupt,jdomel
-     real(kind=8) ::domtot(nbvec)
+    integer :: jgdreq, jnrupt, jdomel
+    real(kind=8) :: domtot(nbvec)
 !    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr), domtot(nbvec)
 !  ------------------------------------------------------------------
 !  ---------------------
@@ -119,11 +121,11 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !
 ! 1.3 CALCUL DE LA GRANDEUR EQUIVALENTE AU SENS DU CRITERE CHOISI :
 !     MATAKE_MODI_AV, FATEMI ET SOCIE (ELASTIQUE OU PLASTIQUE), DANG VAN
-
+!
     call wkvect('&&AVGRDO_GDREQ', 'V V R', nbvec*nbordr, jgdreq)
     call wkvect('&&AVGRDO_NRUPT', 'V V R', nbvec*nbordr, jnrupt)
     call wkvect('&&AVGRDO_DOMEL', 'V V R', nbvec*nbordr, jdomel)
-
+!
     call avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                 kwork, sommw, tspaq, i, vala,&
                 coefpa, ncycl, jvmin, jvmax, jomin,&
@@ -146,7 +148,7 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 ! 4. CALCUL DU CUMUL DE DOMMAGE MAXIMAL ET VECTEUR NORMAL ASSOCIE
 !
     call avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
-
+!
     call jedetr('&&AVGRDO_GDREQ')
     call jedetr('&&AVGRDO_NRUPT')
     call jedetr('&&AVGRDO_DOMEL')

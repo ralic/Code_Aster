@@ -23,6 +23,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
 ! --- CALCUL DU MODULE DE BIOT CS --------------------------------------
 ! ======================================================================
 #include "asterfort/rcvala.h"
+#include "asterfort/utmess.h"
     integer :: nelas2, nelas1, nelas3, nelas4, ndim
     integer :: dim3
     parameter  ( dim3=3 )

@@ -1,6 +1,6 @@
 subroutine dhrc_seuils(eps, vint, b, c, ap1,&
-                  bp1, cp1, ap2, bp2, cp2,&
-                  cstseu, neta1, neta2, seuils)
+                       bp1, cp1, ap2, bp2, cp2,&
+                       cstseu, neta1, neta2, seuils)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,8 @@ subroutine dhrc_seuils(eps, vint, b, c, ap1,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
+#include "asterfort/dhrc_calc_g.h"
+#include "asterfort/dhrc_calc_n.h"
     real(kind=8) :: b(6, 2, 2), c(2, 2, 2)
     real(kind=8) :: ap1(6, 6), bp1(6, 2), cp1(2, 2)
     real(kind=8) :: ap2(6, 6), bp2(6, 2), cp2(2, 2)
@@ -61,10 +63,10 @@ subroutine dhrc_seuils(eps, vint, b, c, ap1,&
 ! ----------------------------------------------------------------------
 !
     call dhrc_calc_g(eps, vint, ap1, bp1, cp1,&
-                ap2, bp2, cp2, g1, g2)
+                     ap2, bp2, cp2, g1, g2)
 !
     call dhrc_calc_n(eps, vint, b, c, neta1,&
-                neta2)
+                     neta2)
 !
 ! ----------------------------------------------------------------------
 ! -------CALCUL DES SEUILS-------

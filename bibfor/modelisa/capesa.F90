@@ -24,7 +24,6 @@ subroutine capesa(char, noma, ipesa, ndim)
 !      NOMA  : NOM DU MAILLAGE
 !      IPESA : OCCURENCE DU MOT-CLE FACTEUR PESANTEUR
 !      NDIM  : DIMENSIOn DU PROBLEME
-!      LIGRMO: NOM DU LIGREL DE MODELE
 !
 #include "jeveux.h"
 #include "asterc/r8miem.h"
@@ -39,12 +38,17 @@ subroutine capesa(char, noma, ipesa, ndim)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vetyma.h"
+    character(len=8), intent(in) :: char
+    character(len=8), intent(in) :: noma
+    integer, intent(in) :: ipesa
+    integer, intent(in) :: ndim
+!
     real(kind=8) :: pesa(4), norme, pes(3)
-    character(len=8) :: char, noma, licmp(4)
+    character(len=8) :: licmp(4)
     character(len=19) :: carte
-    integer :: iocc, ipesa, nbmail, nbgpma
+    integer :: iocc, nbmail, nbgpma
     integer :: jncmp, jvalv
-    integer :: nbma, ncmp, ndim, npesa
+    integer :: nbma, ncmp, npesa
     character(len=8) :: k8b
     character(len=16) :: motclf
     character(len=19) :: cartes(1)

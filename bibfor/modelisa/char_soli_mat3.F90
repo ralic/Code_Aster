@@ -2,6 +2,7 @@ subroutine char_soli_mat3(am, coef, matr_6, matr_8)
 !
     implicit none
 !
+#include "asterfort/pmppr.h"
 #include "asterfort/provec.h"
 !
 ! ======================================================================
