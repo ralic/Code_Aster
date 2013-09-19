@@ -28,10 +28,10 @@ subroutine te0176(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: nomte, option
     real(kind=8) :: dfdx(9), dfdy(9), poids
     integer :: ipoids, ivf, idfde, igeom, ij
@@ -60,7 +60,7 @@ subroutine te0176(option, nomte)
     do 101 kp = 1, npg1
 !
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
 !
         ij=imattt - 1
         do 106 i = 1, nno

@@ -1,13 +1,13 @@
 subroutine te0298(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -199,7 +199,7 @@ subroutine te0298(option, nomte)
 820      continue
 !
         call dfdm2d(nno, kp, ipoids, idfde, coor,&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
 !
         if (fonc) then
             do 60 j = 1, 3

@@ -17,7 +17,6 @@ subroutine te0279(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -25,6 +24,7 @@ subroutine te0279(option, nomte)
 #include "asterfort/ntfcma.h"
 #include "asterfort/rcdiff.h"
 #include "asterfort/rcfode.h"
+!
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 !
@@ -79,7 +79,7 @@ subroutine te0279(option, nomte)
         do 40 kp = 1, npg
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpgi = 0.d0
             do 10 i = 1, nno
                 tpgi = tpgi + zr(itempi+i-1)*zr(ivf+l+i-1)
@@ -99,7 +99,7 @@ subroutine te0279(option, nomte)
         do 80 kp = 1, npg2
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpgi = 0.d0
             do 50 i = 1, nno
                 tpgi = tpgi + zr(itempi+i-1)*zr(ivf2+l+i-1)
@@ -133,7 +133,7 @@ subroutine te0279(option, nomte)
         do 90 kp = 1, npg
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpgi = 0.d0
             tpsec = 0.d0
             do 100 i = 1, nno
@@ -153,7 +153,7 @@ subroutine te0279(option, nomte)
         do 91 kp = 1, npg2
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             do 111 i = 1, nno
 !
                 do 121 j = 1, i

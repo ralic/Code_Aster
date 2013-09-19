@@ -15,17 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
-                      dfdx, dfdy, dfdz, jac)
-        integer :: nno
-        integer :: ipg
-        integer :: ipoids
-        integer :: idfde
-        real(kind=8) :: coor(1)
-        real(kind=8) :: dfdx(1)
-        real(kind=8) :: dfdy(1)
-        real(kind=8) :: dfdz(1)
-        real(kind=8) :: jac
-    end subroutine dfdm3d
-end interface
+          interface 
+            subroutine dfdm3d(nno,ipg,ipoids,idfde,coor,jac,dfdx,dfdy,  &
+     &dfdz)
+              integer, intent(in) :: nno
+              integer, intent(in) :: ipg
+              integer, intent(in) :: ipoids
+              integer, intent(in) :: idfde
+              real(kind=8), intent(in) :: coor(*)
+              real(kind=8), intent(out) :: jac
+              real(kind=8) ,optional, intent(out) :: dfdx(*)
+              real(kind=8) ,optional, intent(out) :: dfdy(*)
+              real(kind=8) ,optional, intent(out) :: dfdz(*)
+            end subroutine dfdm3d
+          end interface 

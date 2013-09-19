@@ -1,7 +1,6 @@
 subroutine te0024(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
@@ -9,6 +8,7 @@ subroutine te0024(option, nomte)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: nomte, option
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,10 +63,10 @@ subroutine te0024(option, nomte)
     do 100 ino = 1, nno
         if (ndim .eq. 3) then
             call dfdm3d(nno, ino, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, jac)
+                        jac, dfdx, dfdy, dfdz)
         else if (ndim .eq. 2) then
             call dfdm2d(nno, ino, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, jac)
+                        jac, dfdx, dfdy)
         endif
 !
         gradx = 0.0d0

@@ -48,12 +48,12 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/epthmc.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/sigtmc.h"
+!
     integer :: ipoids, ivf, idfde
     character(len=16) :: option
     character(len=*) :: fami
@@ -94,12 +94,12 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
 !
         if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
             call dfdm3d(nno, igau, ipoids, idfde, xyz,&
-                        dfdx, dfdy, dfdz, poidi)
+                        poidi, dfdx, dfdy, dfdz)
 ! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 2D
         else
             k=(igau-1)*nno
             call dfdm2d(nno, igau, ipoids, idfde, xyz,&
-                        dfdx, dfdy, poidi)
+                        poidi, dfdx, dfdy)
             if (lteatt(' ','AXIS','OUI')) then
                 rayon = 0.d0
                 do 41 i = 1, nno

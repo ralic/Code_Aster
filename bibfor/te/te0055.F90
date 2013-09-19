@@ -29,10 +29,10 @@ subroutine te0055(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: nomte, option
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
     integer :: ipoids, ivf, idfde, igeom
@@ -60,7 +60,7 @@ subroutine te0055(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !CDIR$ IVDEP
         do 30 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(isour-1+kp)*zr( ivf+l+i-1)

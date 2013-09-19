@@ -149,7 +149,7 @@ subroutine te0392(option, nomte)
 !
     do 2 kpg = 1, npg1
         call dfdm3d(nno, kpg, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, jac)
+                    jac, dfdx, dfdy, dfdz)
         do 3 ino = 1, nno
             bi(1,ino) = dfdx(ino)
             bi(2,ino) = dfdy(ino)
@@ -186,7 +186,7 @@ subroutine te0392(option, nomte)
 30      continue
 !
         call dfdm3d(nno, igau, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, jacgau)
+                    jacgau, dfdx, dfdy, dfdz)
 !
 !  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 !  --      PREMIER ORDRE AUX DEPLACEMENTS

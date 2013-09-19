@@ -51,7 +51,7 @@ subroutine te0187(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: ipoids, ivf, mater, ndim, nnos, npg
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'NOEU', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -67,7 +67,7 @@ subroutine te0187(option, nomte)
     poum='+'
     mater=zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [r8b],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     pi=r8pi()
@@ -82,7 +82,7 @@ subroutine te0187(option, nomte)
         idino=iinte+(ino-1)*6-1
         ipino=ipres+ino-1
         call dfdm3d(nno, ino, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, jac)
+                    jac, dfdx, dfdy, dfdz)
 !
         vitx(ino)=(0.0d0,0.0d0)
         vity(ino)=(0.0d0,0.0d0)

@@ -414,7 +414,7 @@ subroutine te0368(option, nomte)
 !
     iaux = ipg
     call dfdm3d(nno, iaux, ipoids, idfde, zr(igeom),&
-                dfdx, dfdy, dfdz, poids)
+                poids, dfdx, dfdy, dfdz)
 !
 ! ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. PRIMAL ---
 !

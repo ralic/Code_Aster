@@ -64,7 +64,7 @@ subroutine te0285(option, nomte)
 !
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 0, ' ', [r8b],&
+                        ' ', phenom, 0, ' ', [0.d0],&
                         1, 'RHO', rho, icodre(1), 1)
             if (rho(1) .le. r8prem()) then
                 call utmess('F', 'ELEMENTS5_45')
@@ -103,7 +103,7 @@ subroutine te0285(option, nomte)
     do 100 kp = 1, npg
         k = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         if (lteatt(' ','AXIS','OUI')) then
             r = zero
             do 102 i = 1, nno
@@ -182,7 +182,7 @@ subroutine te0285(option, nomte)
         do 120 kp = 1, npg
             k = (kp-1) * nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
             xpg = zero
             ypg = zero

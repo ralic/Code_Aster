@@ -153,7 +153,7 @@ subroutine te0078(option, nomte)
         do 201 kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             r = 0.d0
             tpg = 0.d0
             dtpgdx = 0.d0
@@ -217,7 +217,7 @@ subroutine te0078(option, nomte)
         do 301 kp = 1, npg2
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             r = 0.d0
             tpg = 0.d0
             do 302 i = 1, nno

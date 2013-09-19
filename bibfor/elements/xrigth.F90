@@ -209,10 +209,10 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !         AVEC LES COORDONNEES DU SOUS-ELEMENT
             if (ndim .eq. 2) then
                 call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                            r8bid1, r8bid2, jac)
+                            jac, r8bid1, r8bid2)
             else if (ndim.eq.3) then
                 call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                            r8bid1, r8bid2, r8bid3, jac)
+                            jac, r8bid1, r8bid2, r8bid3)
             endif
 !
 !         MODIFICATION DU JACOBIEN SI AXI

@@ -39,7 +39,7 @@ subroutine te0015(option, nomte)
 !
     integer :: icodre(1)
     character(len=16) :: phenom
-    real(kind=8) :: r8bid, rho(1), coef
+    real(kind=8) :: rho(1), coef
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
     integer :: ipoids, ivf, idfde, igeom
     integer :: jgano, imate, ipesa, ivectu, nnos
@@ -60,7 +60,7 @@ subroutine te0015(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [r8bid],&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
     ndl = 3*nno
@@ -74,7 +74,7 @@ subroutine te0015(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         coef = rho(1)*poids*zr(ipesa)
 !

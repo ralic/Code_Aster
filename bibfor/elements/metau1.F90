@@ -100,7 +100,7 @@ subroutine metau1(option, nomte, iret)
         k = (kp-1)*nno
 !
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         r = 0.d0
 !    RECUPERATION DES PHASES METALLURGIQUES
         do 5 l = 1, nz

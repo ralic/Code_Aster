@@ -224,10 +224,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                                     rbid1, rbid2, rbid3, poids)
-        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                                     rbid1, rbid2, poids)
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse, poids)
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse, poids)
 !
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)

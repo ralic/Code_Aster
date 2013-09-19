@@ -65,7 +65,7 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
         do 10 kp = 1, npg
             k = (kp-1)*nno
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdbid, dfdbid, dfdbid, poids)
+                        poids, dfdbid, dfdbid, dfdbid)
 !
 !      --- CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
 !
@@ -109,7 +109,7 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
         do 100 kp = 1, npg
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdbid, dfdbid, poids)
+                        poids, dfdbid, dfdbid)
 !
 !      --- CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
             fx = 0.d0

@@ -1,11 +1,11 @@
 subroutine te0017(option, nomte)
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ subroutine te0017(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         xx = 0.d0
         yy = 0.d0

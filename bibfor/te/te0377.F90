@@ -82,7 +82,7 @@ subroutine te0377(option, nomte)
     integer :: nbf
     integer :: tymvol, ndegre, ifa, tyv
 !
-    real(kind=8) :: r8bid=0.d0, r8bid3(3)
+    real(kind=8) :: r8bid3(3)
     real(kind=8) :: dfdx(9), dfdy(9), hk, poids
     real(kind=8) :: fpx, fpy
     real(kind=8) :: frx(9), fry(9)
@@ -209,7 +209,7 @@ subroutine te0377(option, nomte)
         endif
 !
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [r8bid],&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     ibid, nompar, valres, icodre, 1)
 !
         if (typnor .eq. 'NRJ') then
@@ -291,7 +291,7 @@ subroutine te0377(option, nomte)
 ! ------- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X ET /Y ---------
 !
     call dfdm2d(nno, ipg, ipoids, idfde, zr(igeom),&
-                dfdx, dfdy, poids)
+                poids, dfdx, dfdy)
 !
 ! ------- CALCUL DE L'ORIENTATION DE LA MAILLE -------------------------
 !

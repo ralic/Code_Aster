@@ -19,12 +19,12 @@ subroutine te0398(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DU GRADIENT AUX NOEUDS D'UN CHAMP SCALAIRE
@@ -64,7 +64,7 @@ subroutine te0398(option, nomte)
 !       BOUCLE SUR LES POINTS DE GAUSS
         do 200 kp = 1, npg
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, jac)
+                        jac, dfdx, dfdy, dfdz)
             gradx = 0.0d0
             grady = 0.0d0
             gradz = 0.0d0

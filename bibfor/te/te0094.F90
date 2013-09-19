@@ -1,12 +1,12 @@
 subroutine te0094(option, nomte)
-    implicit     none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -57,7 +57,7 @@ subroutine te0094(option, nomte)
     do 101 kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
         r = 0.d0
         z = 0.d0
         do 102 i = 1, nno

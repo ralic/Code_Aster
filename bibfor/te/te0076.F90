@@ -133,7 +133,7 @@ subroutine te0076(option, nomte)
         do 101 kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (lteatt(' ','AXIS','OUI')) then
                 r = 0.d0
                 do 102 i = 1, nno

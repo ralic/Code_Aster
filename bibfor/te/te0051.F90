@@ -124,7 +124,7 @@ subroutine te0051(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
 !
         if (.not.global .and. aniso) then
             point(1) = 0.d0

@@ -93,7 +93,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
 !         ----------------------------------------------
             call dfdm3d(nno, igau, ipoids, idfde, xyz,&
-                        dfdx, dfdy, dfdz, jacob)
+                        jacob, dfdx, dfdy, dfdz)
 !
 ! ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 !         ------------------------------------
@@ -135,7 +135,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
 !         ----------------------------------------------
             call dfdm2d(nno, igau, ipoids, idfde, xyz,&
-                        dfdx, dfdy, jacob)
+                        jacob, dfdx, dfdy)
 !
 ! ----    CALCUL DES DERIVEES DES DEPLACEMENTS :
 !         ------------------------------------

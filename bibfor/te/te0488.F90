@@ -130,7 +130,7 @@ subroutine te0488(option, nomte)
         if (ndim .eq. 3) then
 !         -- CAS DES ELEMENTS 3D
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        rbid81, rbid81, rbid81, poids)
+                        poids)
         else if (ndim.eq.2) then
 !         -- CAS DES ELEMENTS "PEAU" DE 3D
             call subaco(nno, zr(idfde+(kp-1)*ndim*nno), zr(igeom), cova)

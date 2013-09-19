@@ -1,8 +1,6 @@
 subroutine te0103(option, nomte)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2d.h"
@@ -11,6 +9,7 @@ subroutine te0103(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/r8inir.h"
+!
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,7 +115,7 @@ subroutine te0103(option, nomte)
         do 80 kp = 1, npg2
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
             xgau = zero
             ygau = zero

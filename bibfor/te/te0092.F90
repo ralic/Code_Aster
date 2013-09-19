@@ -17,11 +17,11 @@ subroutine te0092(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -62,7 +62,7 @@ subroutine te0092(option, nomte)
         syy=zr(kc+1)
         sxy=zr(kc+3)
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         if (axis .gt. 0.5d0) then
             r = zero
             do 102 i = 1, nno

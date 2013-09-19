@@ -74,10 +74,10 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
     if (ldfdi) then
         if (tridim) then
             call dfdm3d(nno, kpg, ipoids, idfde, geom,&
-                        dfdi(1, 1), dfdi(1, 2), dfdi(1, 3), poids)
+                        poids, dfdi(1, 1), dfdi(1, 2), dfdi(1, 3))
         else
             call dfdm2d(nno, kpg, ipoids, idfde, geom,&
-                        dfdi(1, 1), dfdi(1, 2), poids)
+                        poids, dfdi(1, 1), dfdi(1, 2))
         endif
     endif
 !

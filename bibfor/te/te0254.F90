@@ -36,7 +36,7 @@ subroutine te0254(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: nbres
-    real(kind=8) :: r, r8bid
+    real(kind=8) :: r
 !-----------------------------------------------------------------------
     parameter         ( nbres=2 )
     character(len=8) :: nomres(nbres), fami, poum
@@ -64,7 +64,7 @@ subroutine te0254(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [r8bid],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     celer = valres(2)
@@ -81,7 +81,7 @@ subroutine te0254(option, nomte)
     do 101 kp = 1, npg2
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
 !%
         if (lteatt(' ','AXIS','OUI')) then
             r = 0.d0

@@ -147,7 +147,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     den = 0.d0
     do 2 kpg = 1, nbpg2
         call dfdm3d(nno, kpg, ipoid2, idfde2, geom,&
-                    dfdx, dfdy, dfdz, jac)
+                    jac, dfdx, dfdy, dfdz)
         den = den + jac
         do 3 ino = 1, nno
             bi(1,ino) = bi(1,ino) + jac * dfdx(ino)

@@ -297,10 +297,10 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !       ON ENVOIE DFDM2D OU DFDM3D AVEC LES COORD DU SS-ELT
         if (ndim .eq. 2) then
             call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                        rbid10, rbid10, jac)
+                        jac)
         else if (ndim.eq.3) then
             call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                        rbid4, rbid4, rbid4, jac)
+                        jac)
         endif
 !
 !      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)

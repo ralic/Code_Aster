@@ -42,7 +42,7 @@ subroutine te0191(option, nomte)
     character(len=8) :: fami, poum
     character(len=16) :: phenom
     integer :: icodre(1)
-    real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r, r8b, rho(1)
+    real(kind=8) :: a(3, 3, 9, 9), dfdx(9), dfdy(9), poids, r, rho(1)
     real(kind=8) :: matp(27, 27), matv(378)
     integer :: nno, kp, nnos, npg2, i, j, k, l, imatuu, nddl, nvec, iacce, ivect
     integer :: ipoids, ivf, idfde, igeom, imate, ijkl, ik, kpg, spt
@@ -59,7 +59,7 @@ subroutine te0191(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', phenom, 0, ' ', [r8b],&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
     do 113 k = 1, 3
@@ -74,7 +74,7 @@ subroutine te0191(option, nomte)
     do 101 kp = 1, npg2
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
 !
         r = 0.0d0
         do 102 i = 1, nno

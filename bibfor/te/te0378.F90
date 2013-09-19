@@ -370,7 +370,7 @@ subroutine te0378(option, nomte)
 !
     iaux = ipg
     call dfdm2d(nno, iaux, ipoids, idfde, zr(igeom),&
-                dfdx, dfdy, poids)
+                poids, dfdx, dfdy)
 !
 ! ------- CALCUL DE L'ORIENTATION DE LA MAILLE -------------------------
 !

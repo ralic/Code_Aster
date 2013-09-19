@@ -45,7 +45,7 @@ subroutine te0281(option, nomte)
 !
 !
     integer :: icodre(1)
-    real(kind=8) :: beta, dbeta, lambda, theta, deltat, tpg, r8bid, dfdx(27)
+    real(kind=8) :: beta, dbeta, lambda, theta, deltat, tpg, dfdx(27)
     real(kind=8) :: dfdy(27), dfdz(27), poids, dtpgdx, dtpgdy, dtpgdz, dlambd
     real(kind=8) :: tpgbuf, tpsec, diff, chal(1), hydrpg(27)
     integer :: jgano, ipoids, ivf, idfde, igeom, imate, itemp, nno, kp, nnos
@@ -104,7 +104,7 @@ subroutine te0281(option, nomte)
 152      continue
 !
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'THER_HYDR', 0, ' ', [r8bid],&
+                    ' ', 'THER_HYDR', 0, ' ', [0.d0],&
                     1, 'CHALHYDR', chal, icodre, 1)
     else
         lhyd = .false.
@@ -117,7 +117,7 @@ subroutine te0281(option, nomte)
         do 70 kp = 1, npg
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
             dtpgdy = 0.d0
@@ -152,7 +152,7 @@ subroutine te0281(option, nomte)
         do 140 kp = 1, npg2
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             do 80 i = 1, nno
 ! CALCUL DE T- ET DE SON GRADIENT
@@ -166,10 +166,10 @@ subroutine te0281(option, nomte)
             if (lhyd) then
 ! THER_HYDR
                 do 81 i = 1, nno
-                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids* ((beta- &
-                                     chal(1)*hydrpg(kp))* zr(ivf2+l+i-1)/deltat)
-                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids* ((dbeta* &
-                                     tpg-chal(1)*hydrpg(kp))* zr(ivf2+l+i-1)/deltat)
+                    zr(ivectt+i-1) = zr(ivectt+i-1) + poids* ((beta-  chal(1)*hydrpg(kp))* zr(ivf&
+                                     &2+l+i-1)/deltat)
+                    zr(ivecti+i-1) = zr(ivecti+i-1) + poids* ((dbeta*  tpg-chal(1)*hydrpg(kp))* z&
+                                     &r(ivf2+l+i-1)/deltat)
 81              continue
             else
 ! THER_NL
@@ -202,7 +202,7 @@ subroutine te0281(option, nomte)
         do 150 kp = 1, npg
             l = nno*(kp-1)
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
             dtpgdy = 0.d0
@@ -226,7 +226,7 @@ subroutine te0281(option, nomte)
         do 151 kp = 1, npg2
             l = nno*(kp-1)
             call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
             dtpgdy = 0.d0

@@ -89,11 +89,11 @@ subroutine te0291(option, nomte)
         k=(kp-1)*nno
         if (ndim .eq. 2) then
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             nbcmp=4
         else if (ndim.eq.3) then
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             nbcmp=6
         endif
 !

@@ -843,7 +843,7 @@ subroutine te0491(option, nomte)
 !
 ! ---      CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
             call dfdm3d(nno, igau, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids)
 !
 ! ---      VOLUME DE L'ELEMENT :
 !

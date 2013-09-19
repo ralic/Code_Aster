@@ -1,11 +1,11 @@
 subroutine te0181(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalc.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -68,7 +68,7 @@ subroutine te0181(option, nomte)
         l = (kp-1)*nno
 !
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         do 40 i = 1, nno
             do 30 j = 1, i

@@ -17,7 +17,6 @@ subroutine te0080(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -26,6 +25,7 @@ subroutine te0080(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -81,7 +81,7 @@ subroutine te0080(option, nomte)
         do 101 kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                        dfdx, dfdy, poids)
+                        poids)
             r = 0.d0
             z = 0.d0
             do 102 i = 1, nno

@@ -92,7 +92,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1,&
 !
 !       CALCUL DES DERIVEE DES FF DANS LE PLAN TANGENTIEL
         call dfdm2d(nno2, kpg, ipg, idf2, geotan,&
-                    dfdis(1, 1), dfdis(1, 2), wg2)
+                    wg2, dfdis(1, 1), dfdis(1, 2))
 !
     else if (ndim.eq.2) then
 !

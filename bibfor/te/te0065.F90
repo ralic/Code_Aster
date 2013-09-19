@@ -42,7 +42,7 @@ subroutine te0065(option, nomte)
     character(len=8) :: nomres(nbres), lielrf(nbfamx)
     character(len=16) :: phenom
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, volume
-    real(kind=8) :: x(27), y(27), z(27), xg, yg, zg, matine(6), r8b
+    real(kind=8) :: x(27), y(27), z(27), xg, yg, zg, matine(6)
     real(kind=8) :: rhopou, rhoflu, tpg, valres(nbres), ayz, ycell, rapp, yf
     integer :: ipoids, ivf, idfde, igeom, nbv, lsect, lcorr
     integer :: jgano, nno, kp, npg, i, j, imate, ntrou
@@ -109,7 +109,7 @@ subroutine te0065(option, nomte)
                     npg, ipoids, ivf, idfde, jgano)
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', phenom, 0, ' ', [r8b],&
+                        ' ', phenom, 0, ' ', [0.d0],&
                         1, 'RHO', rho, icodre, 1)
             if (rho(1) .le. r8prem()) then
                 call utmess('F', 'ELEMENTS5_45')
@@ -139,7 +139,7 @@ subroutine te0065(option, nomte)
     do 70 kp = 1, npg
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         volume = volume + poids
         do 60 i = 1, nno

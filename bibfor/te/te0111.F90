@@ -70,7 +70,7 @@ subroutine te0111(option, nomte)
 !
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
 !
         r = 0.d0
         do 102 i = 1, nno

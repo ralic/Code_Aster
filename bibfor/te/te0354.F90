@@ -95,14 +95,14 @@ subroutine te0354(option, nomte)
 !      CALCUL DU POIDS DU POINT DE GAUSS
         if (ndim .eq. 2) then
             call dfdm2d(nno, g, iw, idfde, zr(igeom),&
-                        dfdx, dfdy, w)
+                        w, dfdx, dfdy)
             if (axi) then
                 rg = ddot(nno,zr(igeom),2,zr(ivf+os),1)
                 w = w*rg
             endif
         else
             call dfdm3d(nno, g, iw, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, w)
+                        w, dfdx, dfdy, dfdz)
         endif
 !
 !      CALCUL DE LA TEMPERATURE AU POINT DE GAUSS

@@ -19,13 +19,13 @@ subroutine te0501(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rcfode.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -58,7 +58,7 @@ subroutine te0501(option, nomte)
     do 101 kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         r = 0.d0
         tpg = 0.d0
         do 102 i = 1, nno

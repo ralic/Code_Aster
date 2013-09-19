@@ -221,7 +221,7 @@ subroutine te0576(option, nomte)
 !  --    CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 !        -------------------------------------------------
         call dfdm3d(nno, igau, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         do 30 isig = 1, nbsig
             epsi(isig) = zero

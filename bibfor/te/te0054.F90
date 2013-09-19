@@ -80,7 +80,7 @@ subroutine te0054(option, nomte)
 !
         ll = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         do 30 i = 1, nno
 !

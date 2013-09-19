@@ -17,13 +17,13 @@ subroutine te0479(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS
@@ -63,7 +63,7 @@ subroutine te0479(option, nomte)
         if (ndim .eq. 2) then
 !         -- CAS DES ELEMENTS 2D
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        rbid81, rbid81, poids)
+                        poids, rbid81, rbid81)
         else if (ndim.eq.1) then
 !         -- CAS DES ELEMENTS PEAU
             call vff2dn(ndim, nno, kp, ipoids, idfde,&

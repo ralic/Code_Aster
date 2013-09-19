@@ -17,10 +17,10 @@ subroutine te0112(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - BUT :  CALCUL DES MATRICES DE RAIDEUR GEOMETRIQUE ELEMENTAIRES
@@ -67,7 +67,7 @@ subroutine te0112(option, nomte)
         ic = icontr + (kp-1)*6
 !
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdr, dfdz, poids)
+                    poids, dfdr, dfdz)
 !
         r = 0.d0
         do 102 i = 1, nno

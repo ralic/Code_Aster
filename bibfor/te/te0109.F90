@@ -150,7 +150,7 @@ subroutine te0109(option, nomte)
         do 30 kp = 1, npg
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             dtmdx = 0.d0
             dtidx = 0.d0
             dtsdx = 0.d0

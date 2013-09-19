@@ -69,7 +69,7 @@ subroutine te0266(option, nomte)
     do 101 kp = 1, npg
         k = (kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdr, dfdz, poids)
+                    poids, dfdr, dfdz)
 !
         r = 0.d0
         do 102 i = 1, nno

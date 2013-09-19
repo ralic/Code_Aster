@@ -151,7 +151,7 @@ subroutine te0339(option, nomte)
 !        ----------------------------------------------
         do 30,kp = 1,npg,1
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdbid, dfdbid, dfdbid, poids)
+                    poids, dfdbid, dfdbid, dfdbid)
         dvpg = poids
         vk = vk + dvpg
         do 20,i = 1,6,1
@@ -216,7 +216,7 @@ subroutine te0339(option, nomte)
 !           2.2.3 INTEGRATION PAR QUADRATURE
 !           --------------------------------
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdbid, dfdbid, dfdbid, poids)
+                    poids, dfdbid, dfdbid, dfdbid)
         dvpg = poids
         vk = vk + dvpg
         triax = triax + dvpg* (sigm/sigeq)
@@ -240,7 +240,7 @@ subroutine te0339(option, nomte)
 !        ----------------------------------------------
         do 100,kp = 1,npg,1
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdbid, dfdbid, dfdbid, poids)
+                    poids, dfdbid, dfdbid, dfdbid)
         dvpg = poids
         vk = vk + dvpg
         do 90,i = 1,6,1
@@ -297,7 +297,7 @@ subroutine te0339(option, nomte)
         varigm = zr(ivarmg+nbvari* (kp-1)+ipopp-1)
         varigp = zr(ivarpg+nbvari* (kp-1)+ipopp-1)
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdbid, dfdbid, dfdbid, poids)
+                    poids, dfdbid, dfdbid, dfdbid)
         dvpg = poids
         volu = volu+dvpg
 !

@@ -323,10 +323,10 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !       AVEC LES COORDONNEES DU SOUS-ELEMENT
         if (ndim .eq. 2) then
             call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                        rbid10, rb10, jac)
+                        jac)
         else if (ndim.eq.3) then
             call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                        rbid4, rb4, rbd4, jac)
+                        jac)
         endif
 !
 !       MODIFICATION DU JACOBIEN SI AXI

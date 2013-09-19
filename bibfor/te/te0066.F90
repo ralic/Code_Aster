@@ -76,7 +76,7 @@ subroutine te0066(option, nomte)
     epot = 0.d0
     do 30 kp = 1, npg1
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
         flux = 0.d0
         fluy = 0.d0
         fluz = 0.d0

@@ -269,7 +269,7 @@ subroutine te0600(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
         call rccoma(zi(imate), 'THM_DIFFU', 1, phenom, icodre(1))
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [r8bid],&
+                    ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', rho, icodre, 1)
         if (ndim .eq. 3) then
 ! =====================================================================
@@ -284,7 +284,7 @@ subroutine te0600(option, nomte)
             do 70 kp = 1, npg
                 l = (kp-1)*nno
                 call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                            dfdbid, dfdbid, dfdbid, poids)
+                            poids, dfdbid, dfdbid, dfdbid)
                 coef = rho(1)*poids*zr(ipesa)
                 do 60 i = 1, nnos
                     ii = nddls* (i-1)
@@ -307,7 +307,7 @@ subroutine te0600(option, nomte)
             do 110 kp = 1, npg
                 k = (kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                            dfdbid, dfdbid, poids)
+                            poids, dfdbid, dfdbid)
                 poids = poids*rho(1)*zr(ipesa)
                 if (axi) then
                     rx = 0.d0

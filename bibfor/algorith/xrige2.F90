@@ -161,7 +161,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       ON ENVOIE DFDM2D AVEC LES COORD DU SS-ELT
         call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                    rbid1, rbid2, jac)
+                    jac)
 !
 !--------CALCUL DES FONCTIONS ENRICHIES--------------------------
 !

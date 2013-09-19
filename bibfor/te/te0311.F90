@@ -364,7 +364,7 @@ subroutine te0311(option, nomte)
 7090      continue
 !
         call dfdm2d(nno, kp, ipoids, idfde, coor,&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
 !
         if (fonc) then
             do 60 j = 1, 3

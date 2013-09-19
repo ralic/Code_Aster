@@ -96,7 +96,7 @@ subroutine te0012(option, nomte)
     do 90 kp = 1, npg
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
         call rcvalb(fami, kp, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', rho, icodre(1), 1)

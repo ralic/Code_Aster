@@ -69,7 +69,7 @@ subroutine te0026(option, nomte)
 !
         ic = icontr + (kp-1)*6
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
 !
         do 70 i = 1, nno
             do 60 j = 1, i

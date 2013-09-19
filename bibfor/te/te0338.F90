@@ -152,7 +152,7 @@ subroutine te0338(option, nomte)
         pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
         if (pp .ge. seuil) then
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdbid, dfdbid, dfdbid, poids)
+                        poids, dfdbid, dfdbid, dfdbid)
             dvpg = poids
             vkp = vkp + dvpg
             do 20,i = 1,6,1
@@ -220,7 +220,7 @@ subroutine te0338(option, nomte)
         pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
         if (pp .ge. seuil) then
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdbid, dfdbid, dfdbid, poids)
+                        poids, dfdbid, dfdbid, dfdbid)
             dvpg = poids
             vkp = vkp + dvpg
             do 60,i = 1,6,1
@@ -286,7 +286,7 @@ subroutine te0338(option, nomte)
         signew = 0.d0
         if (pp .ge. seuil) then
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdbid, dfdbid, dfdbid, poids)
+                        poids, dfdbid, dfdbid, dfdbid)
             dvpg = poids
             if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
                 ppt = 1.d0
@@ -324,7 +324,7 @@ subroutine te0338(option, nomte)
         pp = zr(ivarig+nbvari* (kp-1)+ipopp-1)
         if (pp .ge. seuil) then
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdbid, dfdbid, dfdbid, poids)
+                        poids, dfdbid, dfdbid, dfdbid)
             dvpg = poids
             if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
                 ppt = 1.d0

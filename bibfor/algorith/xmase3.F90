@@ -178,7 +178,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       ON ENVOIE DFDM3D AVEC LES COORD DU SS-ELT
         call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                    rbid1, rbid2, rbid3, jac)
+                    jac)
 !
 !       ON RECUPERE LA MASSE VOLUMIQUE
 !

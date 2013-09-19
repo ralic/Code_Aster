@@ -153,7 +153,7 @@ subroutine te0358(option, nomte)
     do 140 kp = 1, npg1
         icpg = 6* (kp-1)
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, tpg, iret1)
 !

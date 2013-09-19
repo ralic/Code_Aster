@@ -1,12 +1,12 @@
 subroutine te0106(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ subroutine te0106(option, nomte)
         do 30 kp = 1, npg1
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             do 20 gi = 1, nno
                 do 10 pi = 1, 3
                     i = 3* (gi-1) + pi - 1 + ivectt

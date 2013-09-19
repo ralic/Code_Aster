@@ -587,7 +587,7 @@ subroutine te0110(option, nomte)
             do 100 kp = 1, npg2
                 k = (kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
 !
 ! ---   COORDONNEES DU POINT D'INTEGRATION COURANT :
 !       ------------------------------------------
@@ -640,7 +640,7 @@ subroutine te0110(option, nomte)
 ! ---   (DANS POIDS)  SUR L'ELEMENT :
 !       ---------------------------
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             do 110 pi = 1, 3
                 tpg(pi) = zero
                 dtpgdx(pi) = zero
@@ -694,7 +694,7 @@ subroutine te0110(option, nomte)
         do 230 kp = 1, npg2
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
             do 220 gi = 1, nno
                 ivf1 = ivf + k + gi - 1

@@ -138,7 +138,7 @@ subroutine te0069(option, nomte)
         k=(kp-1)*nno
         ifpg=(kp-1)*2
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         tpg = 0.0d0
         fluxx = 0.0d0
         fluxy = 0.0d0

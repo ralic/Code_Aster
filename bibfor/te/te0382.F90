@@ -214,7 +214,7 @@ subroutine te0382(option, nomte)
 ! ----- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X ET /Y
 !
     call dfdm2d(nno, ipg, ipoidp, idfde, zr(igeom),&
-                dfdxp, dfdyp, poidp)
+                poidp, dfdxp, dfdyp)
 !
 ! ----- CALCUL DE LA DIVERGENCE (INUTILISEE ICI) ET DE LANORME DE SIGMA
 !

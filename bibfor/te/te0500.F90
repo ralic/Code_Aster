@@ -288,7 +288,7 @@ subroutine te0500(option, nomte)
 ! 4.2. ON RECUPERE LES POIDS D'INTEGRATION AUX POINTS DE GAUSS
 !
         call dfdm2d(nnos, kpi, ipoid2, idfde2, zr(igeom),&
-                    rbid81, rbid81, poids2)
+                    poids2)
 !
         iaux = nbcmp*(kpi-1)
 !

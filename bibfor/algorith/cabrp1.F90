@@ -23,11 +23,11 @@ subroutine cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! person_in_charge: romeo.fernandes at edf.fr
 ! ======================================================================
 ! aslint: disable=W1306,W1504
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
+!
     logical :: axi
     integer :: kpi, ipoids, ipoid2, idfde, idfde2, ndim, regula(6), dimdef, ivf
     integer :: ivf2, nno, nnos, nnom, nddls, nddlm, dimuel
@@ -76,23 +76,23 @@ subroutine cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! --- CAS QUADRATIQUES -------------------------------------------------
 ! ======================================================================
         call dfdm2d(nno, kpi, ipoids, idfde, geom,&
-                    dfdi(1, 1), dfdi(1, 2), poids)
+                    poids, dfdi(1, 1), dfdi(1, 2))
 ! ======================================================================
 ! --- CAS LINEAIRES ----------------------------------------------------
 ! ======================================================================
         call dfdm2d(nnos, kpi, ipoid2, idfde2, geom,&
-                    dfdi2(1, 1), dfdi2(1, 2), poids2)
+                    poids2, dfdi2(1, 1), dfdi2(1, 2))
     else if (ndim.eq.3) then
 ! ======================================================================
 ! --- CAS QUADRATIQUES -------------------------------------------------
 ! ======================================================================
         call dfdm3d(nno, kpi, ipoids, idfde, geom,&
-                    dfdi(1, 1), dfdi(1, 2), dfdi(1, 3), poids)
+                    poids, dfdi(1, 1), dfdi(1, 2), dfdi(1, 3))
 ! ======================================================================
 ! --- CAS LINEAIRES ----------------------------------------------------
 ! ======================================================================
         call dfdm3d(nnos, kpi, ipoid2, idfde2, geom,&
-                    dfdi2(1, 1), dfdi2(1, 2), dfdi2(1, 3), poids2)
+                    poids2, dfdi2(1, 1), dfdi2(1, 2), dfdi2(1, 3))
     endif
 ! ======================================================================
 ! --- REMPLISSAGE DE L OPERATEUR B -------------------------------------

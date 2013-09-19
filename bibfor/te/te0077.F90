@@ -90,7 +90,7 @@ subroutine te0077(option, nomte)
         do 101 kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (lteatt(' ','AXIS','OUI')) then
                 r = 0.d0
                 do 102 i = 1, nno
@@ -128,7 +128,7 @@ subroutine te0077(option, nomte)
             do 201 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 if (lteatt(' ','AXIS','OUI')) then
                     r = 0.d0
                     do 202 i = 1, nno
@@ -143,9 +143,11 @@ subroutine te0077(option, nomte)
 !
                 do 203 i = 1, nno
                     do 203 j = 1, nno
-                        mt(c(ise,i),c(ise,j)) = mt(c(ise,i),c(ise,j)) &
-                        + poids * cp(1)/deltat * zr(ivf2+k+i-1) &
-                        *                        zr(ivf2+k+j-1)
+                        mt(c(ise,i),c(ise,j)) = mt(&
+                                                c(ise, i),&
+                                                c(ise, j)) + poids * cp(1)/deltat * zr(ivf2+k+i-1&
+                                                &) * zr(ivf2+k+j-1&
+                                                )
 203                  continue
 201          continue
 !

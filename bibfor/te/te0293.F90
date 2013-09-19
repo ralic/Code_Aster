@@ -1,12 +1,12 @@
 subroutine te0293(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -58,10 +58,10 @@ subroutine te0293(option, nomte)
         k=(kp-1)*nno
         if (ndim .eq. 2) then
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
         else
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
         endif
 !
         if (laxi) then

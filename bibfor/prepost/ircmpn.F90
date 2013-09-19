@@ -73,7 +73,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     integer :: nbnoec
     integer :: linoec(*)
     integer :: adsl
-    integer :: caimpi(10, 1)
+    integer :: caimpi(10)
     integer :: profas(nbvato)
 !
     character(len=*) :: nofimd
@@ -185,25 +185,25 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !====
 !
 !                  CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
-    caimpi(1,1) = 0
+    caimpi(1) = 0
 !                  CAIMPI(2,I) = NOMBRE DE POINTS DE GAUSS
-    caimpi(2,1) = ednopg
+    caimpi(2) = ednopg
 !                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
-    caimpi(3,1) = ednopg
+    caimpi(3) = ednopg
 !                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
-    caimpi(4,1) = ednopg
+    caimpi(4) = ednopg
 !                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
-    caimpi(5,1) = ednopg
+    caimpi(5) = ednopg
 !                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
-    caimpi(6,1) = ednopg
+    caimpi(6) = ednopg
 !                  CAIMPI(4,I) = NOMBRE DE MAILLES A ECRIRE
-    caimpi(7,1) = nval
+    caimpi(7) = nval
 !                  CAIMPI(5,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
-    caimpi(8,1) = 0
+    caimpi(8) = 0
 !                  CAIMPI(6,I) = TYPE GEOMETRIQUE AU SENS MED
-    caimpi(9,1) = typnoe
+    caimpi(9) = typnoe
 !                  CAIMPI(7,I) = NOMBRE DE MAILLES IDENTIQUES
-    caimpi(10,1) = nbvato
+    caimpi(10) = nbvato
 !                  CAIMPK(1) = NOM DE LA LOCALISATION ASSOCIEE
     caimpk(1) = ednoga
 !                  CAIMPK(2) = NOM DU PROFIL AU SENS MED

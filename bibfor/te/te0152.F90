@@ -31,7 +31,7 @@ subroutine te0152(option, nomte)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: l, lcastr, nbres, ndim, nnos
-    real(kind=8) :: r8bid, rho, xxi, yyi, zero, zzi
+    real(kind=8) ::  rho, xxi, yyi, zero, zzi
 !-----------------------------------------------------------------------
     parameter (nbres=2)
     character(len=8) :: nomres(nbres), fami, poum
@@ -58,7 +58,7 @@ subroutine te0152(option, nomte)
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [r8bid],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     if (rho .le. r8prem()) then
@@ -84,7 +84,7 @@ subroutine te0152(option, nomte)
     do 70 kp = 1, npg
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         volume = volume + poids
         do 60 i = 1, nno

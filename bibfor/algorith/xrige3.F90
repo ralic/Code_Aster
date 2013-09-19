@@ -157,7 +157,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !       ET LES DERIVEES DES FONCTIONS DE FORME,
 !       ON ENVOIE DFDM3D AVEC LES COORD DU SS-ELT
         call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                    dfdx, dfdy, dfdz, jac)
+                    jac)
         do 127 i = 1, ndim
             do 128 n = 1, nnop
 !----------LA PARTIE CORRESPOINDANTE AU FF CLASSIQUES

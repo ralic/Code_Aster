@@ -19,12 +19,12 @@ subroutine te0521(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rcfode.h"
+!
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ subroutine te0521(option, nomte)
     do 40 kp = 1, npg
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
         tpg = 0.d0
         do 10 i = 1, nno
             tpg = tpg + zr(itempi+i-1)*zr(ivf+l+i-1)

@@ -301,7 +301,7 @@ subroutine te0375(option, nomte)
 ! ------- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X, /Y ET /Z -----
 !
     call dfdm3d(nno, ipg, ipoids, idfde, zr(igeom),&
-                dfdx, dfdy, dfdz, poids)
+                poids, dfdx, dfdy, dfdz)
 !
 ! ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA --------------
 !

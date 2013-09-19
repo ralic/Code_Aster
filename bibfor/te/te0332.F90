@@ -116,7 +116,7 @@ subroutine te0332(option, nomte)
             k=(kp-1)*nno
             r=0.d0
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 160 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
@@ -164,7 +164,7 @@ subroutine te0332(option, nomte)
             sdrsrm = zr(isdrmr+kp-1)
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 170 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
@@ -205,7 +205,7 @@ subroutine te0332(option, nomte)
             r=0.d0
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 210 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
@@ -260,7 +260,7 @@ subroutine te0332(option, nomte)
             varigm=zr(ivarmg+nbvari*(kp-1)+ipopp-1)
             varigp=zr(ivarpg+nbvari*(kp-1)+ipopp-1)
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 240 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)

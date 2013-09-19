@@ -43,7 +43,7 @@ subroutine te0157(option, nomte)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: rho, xg, yg, depi, zero
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9), volume
-    real(kind=8) :: matine(6), xxi, yyi, xyi, r8bid
+    real(kind=8) :: matine(6), xxi, yyi, xyi
     integer :: icodre(nbres)
     character(len=8) :: nomres(nbres), fami, poum
 !     ------------------------------------------------------------------
@@ -63,7 +63,7 @@ subroutine te0157(option, nomte)
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [r8bid],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     if (rho .le. r8prem()) then
@@ -89,7 +89,7 @@ subroutine te0157(option, nomte)
     do 100 kp = 1, npg2
         k = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
         if (lteatt(' ','AXIS','OUI')) then
             r = zero
             do 102 i = 1, nno

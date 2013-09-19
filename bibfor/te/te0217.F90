@@ -87,7 +87,7 @@ subroutine te0217(option, nomte)
     do 40 kp = 1, npg1
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
 !
         x = 0.d0
         y = 0.d0

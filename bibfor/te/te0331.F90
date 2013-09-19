@@ -51,7 +51,7 @@ subroutine te0331(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(4)
     character(len=16) :: optcal(12), phenom
-    real(kind=8) :: sig(6), sigi, dsigwb, valres(4), epsgi, r8bid=0.d0
+    real(kind=8) :: sig(6), sigi, dsigwb, valres(4), epsgi
     real(kind=8) :: poids, r, volume, volact, dvol, seuil, m, v0
     real(kind=8) :: cong(4), epsq(4), dfdx(9), dfdy(9), pp, ppt
     real(kind=8) :: tc(6), tdp(6), sigold, signew, sref, tg, tmoy
@@ -128,10 +128,10 @@ subroutine te0331(option, nomte)
 !     --- RECUPERATION DES DONNEES MATERIAU ---
 !
     call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [r8bid],&
+                ' ', phenom, 0, ' ', [0.d0],&
                 3, nomres, valres, icodre, 1)
     call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [r8bid],&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, nomres(3), valres(3), icodre(3), 1)
     if (icodre(3) .ne. 0) valres(3) = 1.d-6
     m = valres(1)
@@ -147,7 +147,7 @@ subroutine te0331(option, nomte)
             k=(kp-1)*nno
             r=0.d0
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 160 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
@@ -212,7 +212,7 @@ subroutine te0331(option, nomte)
             r=0.d0
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 170 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
@@ -277,7 +277,7 @@ subroutine te0331(option, nomte)
             r=0.d0
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 210 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
@@ -355,7 +355,7 @@ subroutine te0331(option, nomte)
                 cong(ii)=zr(icong+(4*kp)-5+ii)
 175          continue
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             if (laxi) then
                 do 240 ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)

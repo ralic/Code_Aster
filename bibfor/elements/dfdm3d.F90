@@ -1,5 +1,5 @@
 subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
-                  dfdx, dfdy, dfdz, jac)
+                  jac, dfdx, dfdy, dfdz)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,13 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
 #include "asterfort/matini.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: ipg, ipoids, idfde, nno
-    real(kind=8) :: coor(1), dfdx(1), dfdy(1), dfdz(1), jac
+#include "asterfort/assert.h"
+    integer, intent(in) :: nno, ipg, ipoids, idfde
+    real(kind=8), intent(in) :: coor(*)
+    real(kind=8), intent(out) ::  jac
+    real(kind=8), optional, intent(out) :: dfdx(*)
+    real(kind=8), optional, intent(out) :: dfdy(*)
+    real(kind=8), optional, intent(out) :: dfdz(*)
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES DERIVEES DES FONCTIONS DE FORME
 !               PAR RAPPORT A UN ELEMENT COURANT EN UN POINT DE GAUSS
@@ -80,18 +85,25 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
         nomail= zk24(iazk24-1+3)(1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
     endif
-!
-    do 200 i = 1, nno
-        k = 3*nno*(ipg-1)
-        ii = 3*(i-1)
-        de = zr(idfde-1+k+ii+1)
-        dn = zr(idfde-1+k+ii+2)
-        dk = zr(idfde-1+k+ii+3)
-        dfdx(i) = ( j11*de + j12*dn + j13*dk ) / jac
-        dfdy(i) = ( j21*de + j22*dn + j23*dk ) / jac
-        dfdz(i) = ( j31*de + j32*dn + j33*dk ) / jac
-200  end do
-!
+
+    if (present(dfdx)) then
+        ASSERT(present(dfdy))
+        ASSERT(present(dfdz))
+        do i = 1, nno
+            k = 3*nno*(ipg-1)
+            ii = 3*(i-1)
+            de = zr(idfde-1+k+ii+1)
+            dn = zr(idfde-1+k+ii+2)
+            dk = zr(idfde-1+k+ii+3)
+            dfdx(i) = ( j11*de + j12*dn + j13*dk ) / jac
+            dfdy(i) = ( j21*de + j22*dn + j23*dk ) / jac
+            dfdz(i) = ( j31*de + j32*dn + j33*dk ) / jac
+        enddo
+     else
+        ASSERT(.not.present(dfdy))
+        ASSERT(.not.present(dfdz))
+     endif
+
     jac = abs(jac)*poids
-!
+
 end subroutine

@@ -97,7 +97,7 @@ subroutine metau2(option, nomte, iret)
 !
     do 40 kp = 1, npg1
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
 !
         do 50 l = 1, nz
             if (lacier) then

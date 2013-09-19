@@ -150,7 +150,7 @@ subroutine te0061(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
 !
         dtemdx = zero
         dtemdy = zero
@@ -211,7 +211,7 @@ subroutine te0061(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
         tem = zero
         do 170 i = 1, nno
 ! CALCUL DE T-

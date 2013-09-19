@@ -178,7 +178,7 @@ subroutine te0509(option, nomte)
 !   ---    AU POINT D'INTEGRATION COURANT :
 !          ------------------------------
             call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
 !   ---    CALCUL DE SOMME/S_ELEMENT(PHI.DS) :
 !          ---------------------------------
@@ -223,7 +223,7 @@ subroutine te0509(option, nomte)
 ! ---    AU POINT D'INTEGRATION COURANT :
 !        ------------------------------
             call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
 ! ---    CALCUL DES CONTRAINTES SIGMA_XY = D(PSI_Y)/DY ET
 ! ---    SIGMA_XZ = D(PSI_Y)/DZ  AU POINT D'INTEGRATION COURANT :
@@ -279,7 +279,7 @@ subroutine te0509(option, nomte)
 ! ---    AU POINT D'INTEGRATION COURANT :
 !        ------------------------------
             call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
 ! ---    CALCUL DES CONTRAINTES SIGMA_XY = D(PSI_Z)/DY ET
 ! ---    SIGMA_XZ = D(PSI_Z)/DZ  AU POINT D'INTEGRATION COURANT :
@@ -329,7 +329,7 @@ subroutine te0509(option, nomte)
 ! ---    AU POINT D'INTEGRATION COURANT :
 !        ------------------------------
             call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
 !
 ! ---    CALCUL D(PSI_Y)/DY, D(PSI_Y)/DZ ET D(PSI_Z)/DY, D(PSI_Z)/DZ
@@ -391,7 +391,7 @@ subroutine te0509(option, nomte)
 !   ---    AU POINT D'INTEGRATION COURANT :
 !          ------------------------------
             call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
 !
 !   ---    CALCUL DE SOMME/S_ELEMENT(OMEGA**2.DS) :
 !          --------------------------------------

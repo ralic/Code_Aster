@@ -310,7 +310,7 @@ subroutine te0036(option, nomte)
 !         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             if (ndime .eq. 2) then
                 call dfdm2d(nno, kpg, ipoids, idfde, coorlo,&
-                            rb1, rb2, poids)
+                            poids, rb1, rb2)
             else if (ndime.eq.1) then
                 kk = (kpg-1)*nno
                 call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorlo, rb1,&

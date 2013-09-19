@@ -51,10 +51,10 @@ subroutine dfdmip(ndim, nno, axi, geom, g,&
 ! - CALCUL DES DERIVEES DES FONCTIONS DE FORME ET JACOBIEN
     if (ndim .eq. 3) then
         call dfdm3d(nno, g, iw, idfde, geom,&
-                    dfdi(1, 1), dfdi(1, 2), dfdi(1, 3), w)
+                    w, dfdi(1, 1), dfdi(1, 2), dfdi(1, 3))
     else
         call dfdm2d(nno, g, iw, idfde, geom,&
-                    dfdi(1, 1), dfdi(1, 2), w)
+                    w, dfdi(1, 1), dfdi(1, 2))
     endif
 !
 !

@@ -52,7 +52,6 @@ subroutine te0014(option, nomte)
     integer :: jgano, ndl, nno, kp, npg, ii, jj, i, j
     integer :: ndim, l, ic
     integer :: iret, nnos
-    real(kind=8) :: r8b=0.d0
     integer :: j_geom, j_rota, j_vect, j_mate, j_deplm, j_deplp
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
@@ -94,7 +93,7 @@ subroutine te0014(option, nomte)
 !
     call rccoma(zi(j_mate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(j_mate),&
-                ' ', phenom, 0, ' ', [r8b],&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
 ! - Computation
@@ -128,7 +127,7 @@ subroutine te0014(option, nomte)
     do kp = 1, npg
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(j_geom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
         do i = 1, nno
             xi = rho(1)*poids*zr(ivf+l+i-1)
             ii = 3* (i-1)

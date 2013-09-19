@@ -108,7 +108,7 @@ subroutine te0318(option, nomte)
     do 101 kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         tpg = 0.0d0
         fluxx = 0.0d0
         fluxy = 0.0d0

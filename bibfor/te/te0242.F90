@@ -17,7 +17,6 @@ subroutine te0242(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
@@ -28,6 +27,7 @@ subroutine te0242(option, nomte)
 #include "asterfort/rcdiff.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/teattr.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
@@ -120,7 +120,7 @@ subroutine te0242(option, nomte)
             do 101 kp = 1, npg
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 tpgi = 0.d0
                 do 102 i = 1, nno
@@ -154,7 +154,7 @@ subroutine te0242(option, nomte)
             do 401 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 tpgi = 0.d0
                 do 402 i = 1, nno
@@ -186,7 +186,7 @@ subroutine te0242(option, nomte)
             do 203 kp = 1, npg
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 tpg = 0.d0
                 tpsec = 0.d0
@@ -221,7 +221,7 @@ subroutine te0242(option, nomte)
             do 304 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 do 302 i = 1, nno
                     r = r + coorse(2*(i-1)+1) *zr(ivf2+k+i-1)

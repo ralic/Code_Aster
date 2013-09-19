@@ -96,7 +96,7 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
 ! --- AU POINT DE GAUSS COURANT DANS LE REPERE REEL -------------------
 !
         call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                    dfdx, dfdy, poijac)
+                    poijac, dfdx, dfdy)
 !
 ! --- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA ------------------
 !

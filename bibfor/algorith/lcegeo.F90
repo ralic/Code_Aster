@@ -85,7 +85,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
             volume = 0.d0
             do 10 kpg = 1, npg
                 call dfdm3d(nno, kpg, ipoids, idfde, geom,&
-                            dfdx, dfdy, dfdz, poids)
+                            poids, dfdx, dfdy, dfdz)
                 volume = volume + poids
 10          continue
             if (npg .ge. 9) then
@@ -99,7 +99,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
             do 40 kpg = 1, npg
                 k = (kpg-1)*nno
                 call dfdm2d(nno, kpg, ipoids, idfde, geom,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 if (laxi) then
                     r = 0.d0
                     do 30 i = 1, nno

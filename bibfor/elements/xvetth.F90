@@ -213,11 +213,9 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !         CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !         AVEC LES COORDONNEES DU SOUS-ELEMENT
             if (ndim .eq. 2) then
-                call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                            r8bid1, r8bid2, jac)
+                call dfdm2d(nno, kpg, ipoids, idfde, coorse, jac)
             else if (ndim.eq.3) then
-                call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                            r8bid1, r8bid2, r8bid3, jac)
+                call dfdm3d(nno, kpg, ipoids, idfde, coorse, jac)
             endif
 !
 !         MODIFICATION DU JACOBIEN SI AXI

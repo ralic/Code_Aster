@@ -73,7 +73,7 @@ subroutine te0220(option, nomte)
     epot = 0.d0
     do 101 kp = 1, npg
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         flux = 0.d0
         fluy = 0.d0
         do 110 j = 1, nno

@@ -48,7 +48,7 @@ subroutine te0244(option, nomte)
 !
     character(len=8) :: elrefe, alias8
     integer :: icodre(1)
-    real(kind=8) :: beta, dbeta, lambda, r8bid, dfdx(9), dfdy(9), poids, r, tpg
+    real(kind=8) :: beta, dbeta, lambda, dfdx(9), dfdy(9), poids, r, tpg
     real(kind=8) :: theta, deltat, dtpgdx, dtpgdy, coorse(18), tpgbuf, vectt(9)
     real(kind=8) :: vecti(9), dlambd, diff, tpsec, chal(1), hydrpg(9)
     integer :: ndim, nno, nnos, kp, npg, i, j, k, itemps, jgano, ipoids, ivf
@@ -121,7 +121,7 @@ subroutine te0244(option, nomte)
         lhyd = .true.
         call jevech('PHYDRPM', 'L', ihydr)
         call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'THER_HYDR', 0, ' ', [r8bid],&
+                    ' ', 'THER_HYDR', 0, ' ', [0.d0],&
                     1, 'CHALHYDR', chal, icodre, 1)
         do 150 kp = 1, npg2
             k = nno*(kp-1)
@@ -161,7 +161,7 @@ subroutine te0244(option, nomte)
             do 301 kp = 1, npg
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 tpg = 0.d0
                 dtpgdx = 0.d0
@@ -213,7 +213,7 @@ subroutine te0244(option, nomte)
             do 401 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde2, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 tpg = 0.d0
                 do 402 i = 1, nno
@@ -236,11 +236,13 @@ subroutine te0244(option, nomte)
 ! THER_HYDR
                     do 420 i = 1, nno
                         vectt(c(ise,i)) = vectt(&
-                                          c(ise,i)) + poids * ((beta-chal(1)*hydrpg(kp))*&
-                                          zr(ivf2+k+i-1)/deltat)
+                                          c(ise,i)) + poids * ((beta-chal(1)*hydrpg(kp))* zr(ivf2&
+                                          &+k+i-1)/deltat&
+                                          )
                         vecti(c(ise,i)) = vecti(&
-                                          c(ise,i)) + poids * ((dbeta*tpg-chal(1)*hydrpg(kp))*&
-                                          zr(ivf2+k+i-1)/ deltat)
+                                          c(ise,i)) + poids * ((dbeta*tpg-chal(1)*hydrpg(kp))* zr&
+                                          &(ivf2+k+i-1)/ deltat&
+                                          )
 420                  continue
                 else
 ! THER_NL
@@ -268,7 +270,7 @@ subroutine te0244(option, nomte)
             do 310 kp = 1, npg
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 tpg = 0.d0
                 dtpgdx = 0.d0
@@ -303,7 +305,7 @@ subroutine te0244(option, nomte)
             do 314 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
-                            dfdx, dfdy, poids)
+                            poids, dfdx, dfdy)
                 r = 0.d0
                 tpg = 0.d0
                 do 312 i = 1, nno

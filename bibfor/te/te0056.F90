@@ -18,11 +18,11 @@ subroutine te0056(option, nomte)
 !.......................................................................
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 !
 !     BUT: CALCUL DU SECOND MEMBRE ELEMENTAIRE EN THERMIQUE CORRESPON-
@@ -69,7 +69,7 @@ subroutine te0056(option, nomte)
     do 50 kp = 1, npg1
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
 !    CALCUL DE SOURC
 !

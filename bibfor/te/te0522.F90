@@ -19,12 +19,12 @@ subroutine te0522(option, nomte)
 ! ======================================================================
 !
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ntfcma.h"
 #include "asterfort/rcfodi.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES DE
@@ -95,7 +95,7 @@ subroutine te0522(option, nomte)
         ul(3,kp) = 0.d0
         k = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
         do 50 i = 1, nno
             ul(1,kp) = ul(1,kp) + uloc(1,i)*zr(ivf+k+i-1)
             ul(2,kp) = ul(2,kp) + uloc(2,i)*zr(ivf+k+i-1)

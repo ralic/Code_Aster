@@ -39,7 +39,7 @@ subroutine te0175(option, nomte)
     integer :: idfde, igeom, idino, kpg, spt
     integer :: iinte, ipres, imate, ifreq, npg, ipoids, ivf
     integer :: nno, ino, i, ndim, nnos, jgano, mater
-    real(kind=8) :: omerho, pi, dfdx(9), dfdy(9), jac, r8b, rho(1)
+    real(kind=8) :: omerho, pi, dfdx(9), dfdy(9), jac, rho(1)
     integer :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
@@ -63,7 +63,7 @@ subroutine te0175(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, '   ', [r8b],&
+                ' ', 'FLUIDE', 0, '   ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     call jevech('PFREQR', 'L', ifreq)
@@ -74,7 +74,7 @@ subroutine te0175(option, nomte)
     do 30 ino = 1, npg
         idino=iinte+(ino-1)*4-1
         call dfdm2d(nno, ino, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, jac)
+                    jac, dfdx, dfdy)
 !
         vitx=(0.0d0,0.0d0)
         vity=(0.0d0,0.0d0)

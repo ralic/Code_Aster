@@ -79,7 +79,7 @@ subroutine te0082(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [r8b],&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', valres, icodre(1), 1)
 !
     do k = 1, nvec
@@ -89,7 +89,7 @@ subroutine te0082(option, nomte)
     do kp = 1, npg2
         k = (kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
         if (lteatt(' ','AXIS','OUI')) then
             r = 0.0d0
             do 20 i = 1, nno

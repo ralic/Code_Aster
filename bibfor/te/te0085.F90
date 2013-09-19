@@ -42,7 +42,7 @@ subroutine te0085(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: jgano, ndim, nnos
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
@@ -54,13 +54,13 @@ subroutine te0085(option, nomte)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [r8b],&
+                ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
     do 101 kp = 1, npg
         k = nno*(kp-1)
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
         poids = poids * rho(1) * zr(ipesa)
         if (lteatt(' ','AXIS','OUI')) then
             rx= 0.d0

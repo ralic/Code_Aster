@@ -245,7 +245,7 @@ subroutine te0118(option, nomte)
                             npg, ipoids, ivf, idfde, jgano)
                 ASSERT(npg.eq.1)
                 call dfdm3d(nno, 1, ipoids, idfde, zr(igeom),&
-                            dfdx, dfdy, dfdz, meast)
+                            meast, dfdx, dfdy, dfdz)
                 call elref4(' ', 'NOEU', ndim, nno, nnos,&
                             npg, ipoids, ivf, idfde, jgano)
 !
@@ -287,7 +287,7 @@ subroutine te0118(option, nomte)
                             npg, ipoids, ivf, idfde, jgano)
 !               ASSERT(NPG.EQ.1)
                 call dfdm2d(nno, 1, ipoids, idfde, zr(igeom),&
-                            dfdx, dfdy, meast)
+                            meast, dfdx, dfdy)
                 call elref4(' ', 'NOEU', ndim, nno, nnos,&
                             npg, ipoids, ivf, idfde, jgano)
             endif
@@ -299,10 +299,10 @@ subroutine te0118(option, nomte)
 !
             if (ndime .eq. 3) then
                 call dfdm3d(nno, ino, ipoids, idfde, zr(igeom),&
-                            dfdx, dfdy, dfdz, jac)
+                            jac, dfdx, dfdy, dfdz)
             else if (ndime.eq.2) then
                 call dfdm2d(nno, ino, ipoids, idfde, zr(igeom),&
-                            dfdx, dfdy, jac)
+                            jac, dfdx, dfdy)
             endif
 !
             if (typma(1:5) .eq. 'TETRA') then

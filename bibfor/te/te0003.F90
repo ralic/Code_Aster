@@ -530,10 +530,10 @@ subroutine te0003(option, nomte)
 ! FONCTIONS DE FORME ET LEURS DERIVEES
     if (l2d) then
         call dfdm2d(nno, ipg, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
     else
         call dfdm3d(nno, ipg, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
     endif
 !
 ! CALCUL L'ORIENTATION DE LA MAILLE

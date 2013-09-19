@@ -45,7 +45,7 @@ subroutine te0283(option, nomte)
 !
     integer :: icodre(1)
     real(kind=8) :: beta, lambda, theta, deltat, khi, tpg, tpgm
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, r8bid, hydrgm(27)
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, hydrgm(27)
     real(kind=8) :: dtpgdx, dtpgdy, dtpgdz, rbid, chal(1), hydrgp(27)
     real(kind=8) :: tpsec, diff, err
     integer :: ipoids, ivf, idfde, igeom, imate
@@ -95,7 +95,7 @@ subroutine te0283(option, nomte)
             call jevech('PHYDRPP', 'E', ihydrp)
             call jevech('PTEMPER', 'L', itempr)
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                        ' ', 'THER_HYDR', 0, ' ', [r8bid],&
+                        ' ', 'THER_HYDR', 0, ' ', [0.d0],&
                         1, 'CHALHYDR', chal, icodre, 1)
             do 150 kp = 1, npg2
                 l = nno*(kp-1)
@@ -110,7 +110,7 @@ subroutine te0283(option, nomte)
         do 30 kp = 1, npg1
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
             dtpgdy = 0.d0
@@ -133,7 +133,7 @@ subroutine te0283(option, nomte)
         do 60 kp = 1, npg2
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             do 40 i = 1, nno
                 tpg = tpg + zr(itempi+i-1)*zr(ivf2+l+i-1)
@@ -154,8 +154,8 @@ subroutine te0283(option, nomte)
             if (zk16(icomp) (1:9) .eq. 'THER_HYDR') then
 ! ---   THERMIQUE NON LINEAIRE AVEC HYDRATATION
                 do 61 i = 1, nno
-                    zr(iveres+i-1) = zr(iveres+i-1) + poids* ((beta- chal(1)*hydrgp(kp))&
-                                     / deltat*khi*zr(ivf2+l+i-1))
+                    zr(iveres+i-1) = zr(iveres+i-1) + poids* ((beta- chal(1)*hydrgp(kp)) / deltat&
+                                     &*khi*zr(ivf2+l+i-1))
 61              continue
             else
 ! ---   THERMIQUE NON LINEAIRE SEULE
@@ -182,7 +182,7 @@ subroutine te0283(option, nomte)
         do 70 kp = 1, npg1
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             dtpgdx = 0.d0
             dtpgdy = 0.d0
@@ -198,14 +198,14 @@ subroutine te0283(option, nomte)
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
 !CDIR$ IVDEP
             do 90 i = 1, nno
-                zr(iveres+i-1) = zr(iveres+i-1) + poids* ( theta*diff* (dfdx(i)*dtpgdx+dfdy(i)&
-                                 *dtpgdy+ dfdz(i)*dtpgdz))
+                zr(iveres+i-1) = zr(iveres+i-1) + poids* ( theta*diff* (dfdx(i)*dtpgdx+dfdy(i) *d&
+                                 &tpgdy+ dfdz(i)*dtpgdz))
 90          continue
 70      continue
         do 71 kp = 1, npg2
             l = (kp-1)*nno
             call dfdm3d(nno, kp, ipoid2, idfde2, zr(igeom),&
-                        dfdx, dfdy, dfdz, poids)
+                        poids, dfdx, dfdy, dfdz)
             tpg = 0.d0
             do 81 i = 1, nno
                 tpg = tpg + zr(itempi+i-1)*zr(ivf2+l+i-1)

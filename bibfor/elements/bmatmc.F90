@@ -40,16 +40,13 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !                                   D'INTEGRATION IGAU.
 !
 !.========================= DEBUT DES DECLARATIONS ====================
-! -----  ARGUMENTS
+
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matini.h"
 #include "asterfort/utmess.h"
-    real(kind=8) :: xyz(1), nharm, jacob, b(nbsig, 1)
-! -----  VARIABLES LOCALES
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), b3j(9), nharay
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS
@@ -57,6 +54,8 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !-----------------------------------------------------------------------
     integer :: i, idecno, idfde, igau, ipoids, ivf, j
     integer :: k, nbsig, nno
+    real(kind=8) :: xyz(1), nharm, jacob, b(nbsig, 1)
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), b3j(9), nharay
     real(kind=8) :: rayon, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0
@@ -73,7 +72,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB)
 !         ----------------------------------------------
         call dfdm3d(nno, igau, ipoids, idfde, xyz,&
-                    dfdx, dfdy, dfdz, jacob)
+                    jacob, dfdx, dfdy, dfdz)
 !
 ! ----    AFFECTATION DE LA MATRICE (B)
 !         -----------------------------
@@ -105,7 +104,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB)
 !         ----------------------------------------------
         call dfdm2d(nno, igau, ipoids, idfde, xyz,&
-                    dfdx, dfdy, jacob)
+                    jacob, dfdx, dfdy)
 !
 ! ----    AFFECTATION DE LA MATRICE (B)
 !         -----------------------------
@@ -138,7 +137,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB)
 !         ----------------------------------------------
         call dfdm2d(nno, igau, ipoids, idfde, xyz,&
-                    dfdx, dfdy, jacob)
+                    jacob, dfdx, dfdy)
 !
         jacob = jacob*rayon
 !
@@ -183,7 +182,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB)
 !         ----------------------------------------------
         call dfdm2d(nno, igau, ipoids, idfde, xyz,&
-                    dfdx, dfdy, jacob)
+                    jacob, dfdx, dfdy)
 !
         jacob = jacob*rayon
         nharay = nharm/rayon

@@ -97,7 +97,7 @@ subroutine te0421(option, nomte)
     do 101 kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         r = zero
         call rcvarc(' ', 'EPSAXX', '+', 'RIGI', kp,&
                     1, exx, iret)

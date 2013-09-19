@@ -1,12 +1,16 @@
 subroutine dfdm2d(nno, ipg, ipoids, idfde, coor,&
-                  dfdx, dfdy, jac)
+                  jac, dfdx, dfdy)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: nno, ipg, ipoids, idfde
-    real(kind=8) :: coor(1), dfdx(1), dfdy(1), jac
+#include "asterfort/assert.h"
+    integer, intent(in) :: nno, ipg, ipoids, idfde
+    real(kind=8), intent(in) :: coor(*)
+    real(kind=8), intent(out) ::  jac
+    real(kind=8), optional, intent(out) :: dfdx(*)
+    real(kind=8), optional, intent(out) :: dfdy(*)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,24 +62,29 @@ subroutine dfdm2d(nno, ipg, ipoids, idfde, coor,&
         dyde = dyde + coor(2*i )*de
         dydk = dydk + coor(2*i )*dk
 100  end do
-!
+
     jac = dxde*dydk - dxdk*dyde
-!
+
     if (abs(jac) .le. 1.d0/r8gaem()) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)
         call utmess('F', 'ALGORITH2_59', sk=nomail)
     endif
-!
-    do 200 i = 1, nno
-        k = 2*nno*(ipg-1)
-        ii = 2*(i-1)
-        de = zr(idfde-1+k+ii+1)
-        dk = zr(idfde-1+k+ii+2)
-        dfdx(i) = (dydk*de-dyde*dk)/jac
-        dfdy(i) = (dxde*dk-dxdk*de)/jac
-200  end do
-!
+
+    if (present(dfdx)) then
+        ASSERT(present(dfdy))
+        do i = 1, nno
+            k = 2*nno*(ipg-1)
+            ii = 2*(i-1)
+            de = zr(idfde-1+k+ii+1)
+            dk = zr(idfde-1+k+ii+2)
+            dfdx(i) = (dydk*de-dyde*dk)/jac
+            dfdy(i) = (dxde*dk-dxdk*de)/jac
+        enddo
+     else
+        ASSERT(.not.present(dfdy))
+     endif
+
     jac = abs(jac)*poids
-!
+
 end subroutine

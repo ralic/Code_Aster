@@ -105,7 +105,7 @@ subroutine te0219(option, nomte)
         do 101 kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coorse,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             x = 0.d0
             y = 0.d0
             do 102 i = 1, nno

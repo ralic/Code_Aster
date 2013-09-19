@@ -19,7 +19,6 @@ subroutine te0525(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -27,6 +26,7 @@ subroutine te0525(option, nomte)
 #include "asterfort/projet.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/rcfodi.h"
+!
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 !
@@ -94,7 +94,7 @@ subroutine te0525(option, nomte)
         ul(3,kp) = 0.d0
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
         tpg = 0.d0
         tpg0 = 0.d0
         dtpgdx(kp) = 0.d0
@@ -127,7 +127,7 @@ subroutine te0525(option, nomte)
     do 70 kp = 1, npg1
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
         dbpgdx(kp) = 0.d0
         dbpgdy(kp) = 0.d0
         dbpgdz(kp) = 0.d0
@@ -151,7 +151,7 @@ subroutine te0525(option, nomte)
     do 90 kp = 1, npg1
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids, dfdx, dfdy, dfdz)
 !
         do 80 i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) + jacob(kp)*zr(ivf+l+i-1)* (rr* (ul(1,kp)*dbpgdx(kp)+&

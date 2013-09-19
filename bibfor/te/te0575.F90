@@ -243,7 +243,7 @@ subroutine te0575(option, nomte)
 !       ------------------------------
 !
         call dfdm2d(nno, igau, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
 !
         axi=.false.
         if ((lteatt(' ','AXIS','OUI')) .or. (lteatt(' ','FOURIER', 'OUI'))) then

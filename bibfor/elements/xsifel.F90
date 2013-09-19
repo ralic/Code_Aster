@@ -232,7 +232,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call rcvalb('XFEM', ipg, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', [0.d0],&
                     1, 'RHO', val, codrho, 0)
-        rho=val(1)            
+        rho=val(1)
 !
         if ((codrho(1).ne.0) .and. lmoda) then
             call utmess('F', 'RUPTURE1_26')
@@ -281,10 +281,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
-        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                                     rbid1, rbid2, rbid3, poids)
-        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                                     rbid1, rbid2, poids)
+        if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse, poids)
+        if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse, poids)
 !
 !       --------------------------------------
 !       1) COORDONNÉES POLAIRES ET BASE LOCALE

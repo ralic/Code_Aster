@@ -1,5 +1,5 @@
 subroutine te0093(option, nomte)
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
@@ -47,7 +47,7 @@ subroutine te0093(option, nomte)
     do 201 kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids)
 !
 !      --- CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
         fx = 0.d0

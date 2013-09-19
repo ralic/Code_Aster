@@ -457,7 +457,7 @@ subroutine te0101(option, nomte)
         do 130 kp = 1, npg1
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             do 120 gi = 1, nno
                 do 110 gj = 1, gi
                     do 100 pi = 1, 3
@@ -503,7 +503,7 @@ subroutine te0101(option, nomte)
         do 180 kp = 1, npg2
             k = (kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             do 170 gi = 1, nno
                 do 160 gj = 1, gi
                     do 150 pi = 1, 3

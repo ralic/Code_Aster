@@ -1,10 +1,10 @@
 subroutine te0114(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -69,7 +69,7 @@ subroutine te0114(option, nomte)
         idpg = (kp-1) * 6
         kdec = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdr, dfdz, poids)
+                    poids, dfdr, dfdz)
         r = 0.d0
         do 102 i = 1, nno
             r = r + zr(igeom+2*(i-1))*zr(ivf+kdec+i-1)

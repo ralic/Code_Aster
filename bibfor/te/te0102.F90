@@ -268,7 +268,7 @@ subroutine te0102(option, nomte)
 ! ---   (DANS POIDS)  SUR L'ELEMENT :
 !       ---------------------------
             call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
-                        dfdx, dfdy, poids)
+                        poids, dfdx, dfdy)
             do 90 gi = 1, nno
                 do 80 gj = 1, gi
                     do 70 pi = 1, 3

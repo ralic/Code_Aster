@@ -71,7 +71,7 @@ subroutine te0260(option, nomte)
     do 101 kp = 1, npg1
         k = (kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdr, dfdz, poids)
+                    poids, dfdr, dfdz)
 !
         r = 0.d0
         do 102 i = 1, nno
@@ -86,8 +86,8 @@ subroutine te0260(option, nomte)
             do 103 j = 1, i
                 wij = zr(ivf+k+i-1) * zr(ivf+k+j-1)
                 ij = ij + 1
-                zr(ij) = zr(ij) + poids * valres(1) * theta * &
-                                ( dfdr(i)*dfdr(j) + dfdz(i)*dfdz(j) + xh2*wij/r2)
+                zr(ij) = zr(ij) + poids * valres(1) * theta * ( dfdr(i)*dfdr(j) + dfdz(i)*dfdz(j)&
+                         & + xh2*wij/r2)
 103          continue
 101  end do
 end subroutine

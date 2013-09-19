@@ -19,7 +19,6 @@ subroutine te0505(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -28,6 +27,7 @@ subroutine te0505(option, nomte)
 #include "asterfort/projet.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/rcfodi.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -87,7 +87,7 @@ subroutine te0505(option, nomte)
         ul(2,kp) = 0.d0
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         r = 0.d0
         tpg = 0.d0
         tpg0 = 0.d0
@@ -121,7 +121,7 @@ subroutine te0505(option, nomte)
     do 110 kp = 1, npg
         k = (kp -1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
         dbpgdx(kp) = 0.d0
         dbpgdy(kp) = 0.d0
         dupgdx(kp) = 0.d0
@@ -141,7 +141,7 @@ subroutine te0505(option, nomte)
     do 103 kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, poids)
+                    poids, dfdx, dfdy)
 !
         do 104 i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) + jacob(kp)*zr(ivf+k+i-1)* ( rr * (ul(1,kp)*dbpgdx(kp&

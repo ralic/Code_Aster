@@ -126,7 +126,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
 !     CALCUL DE JAC EN 2D
     call dfdm2d(nnof, ipg, ipoidf, idfdef, coor2d,&
-                rbid1, rbid2, jac)
+                jac)
 !
 !     COORDONNÉES RÉELLES 2D DU POINT DE GAUSS IPG
     call vecini(2, 0.d0, xg)

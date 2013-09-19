@@ -38,7 +38,6 @@ subroutine te0170(option, nomte)
     integer :: icompo, ideplm, ideplp, ivectu, k, l, n1
     integer :: n2, nbres, ndim, nn, nno2, nnos, nt2
 !
-    real(kind=8) :: r8bid
 !-----------------------------------------------------------------------
     parameter (nbres=2)
     character(len=8) :: nomres(nbres), fami, poum
@@ -74,9 +73,8 @@ subroutine te0170(option, nomte)
     kpg=1
     spt=1
     poum='+'
-    r8bid=0.d0
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [r8bid],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     celer = valres(2)
@@ -98,7 +96,7 @@ subroutine te0170(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !      TERME EN (P**2)/ (RHO*(CEL**2))  C

@@ -45,7 +45,7 @@ subroutine te0021(option, nomte)
 !-----------------------------------------------------------------------
     integer :: ijkl, ik, irota, k, l, ndim, nnos
     integer :: npg2
-    real(kind=8) :: omega1, omega2, omega3, r8b, rho(1), wij
+    real(kind=8) :: omega1, omega2, omega3, rho(1), wij
 !-----------------------------------------------------------------------
     call elref4(' ', 'MASS', ndim, nno, nnos,&
                 npg2, ipoids, ivf, idfde, jgano)
@@ -59,7 +59,7 @@ subroutine te0021(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho(1), icodre, 1)
     omega1 = zr(irota+1)*zr(irota)
     omega2 = zr(irota+2)*zr(irota)
@@ -81,7 +81,7 @@ subroutine te0021(option, nomte)
 !
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                    dfdx, dfdy, dfdz, poids)
+                    poids)
 !
         do 70 i = 1, nno
             do 60 j = 1, i
