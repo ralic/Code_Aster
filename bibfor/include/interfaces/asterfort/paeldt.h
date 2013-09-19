@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine paeldt(kpg, ksp, fami, icdmat, materi, &
-                      em, ep, nup, depsth, tmoins, &
-                      tplus,trefer)
+    subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
+                      materi, em, ep, nup, depsth,&
+                      tmoins, tplus, trefer)
         integer :: kpg
         integer :: ksp
-        integer :: icdmat
         character(len=4) :: fami
+        character(len=1) :: poum
+        integer :: icdmat
         character(len=8) :: materi
         real(kind=8) :: em
         real(kind=8) :: ep

@@ -82,7 +82,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     parameter     (nbval=12)
     integer :: icodre(nbval)
     integer :: i, ivari, codret, iret1, iret2, iret3
-    real(kind=8) :: valres(nbval), ep, em, depsth
+    real(kind=8) :: valres(nbval), ep, em, depsth, epsth
     real(kind=8) :: cstpm(13), epsm, angmas(3), depsm, nu
     character(len=4) :: fami
     character(len=8) :: noeclb(9), nompim(12), mazars(8)
@@ -134,15 +134,15 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         do i = 1, nf
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                            materi, em, ep, nu, depsth)
             endif
             modf(i) = ep
             sigf(i) = ep*(contm(i)/em + ddefp(i) - depsth)
         enddo
 !
     else if (compo.eq.'LABORD_1D') then
-        depsth = 0.d0
+        epsth = 0.d0
 !       on récupère les paramètres matériau
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '+', icdmat,&
@@ -153,17 +153,17 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, '+', icdmat,&
+                            materi, em, ep, nu, epsth)
             endif
-            epsm = defm(i) - depsth
+            epsm = defm(i) - epsth
             call nmcb1d(ep, valres, contm(i), varim(ivari), epsm,&
                         ddefp(i), modf(i), sigf(i), varip(ivari), crit,&
                         option)
         enddo
 !
     else if (compo.eq.'MAZARS_GC') then
-        depsth = 0.d0
+        epsth = 0.d0
 !       on récupère les paramètres matériau
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '+', icdmat,&
@@ -175,18 +175,18 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             valkm(3)=mazars(8)
             call utmess('F', 'COMPOR1_76', nk=3, valk=valkm)
         endif
-!       ajout de nu dans VALRES
+!       ajout de NU dans VALRES
         valres(9) = nu
 !       boucle comportement sur chaque fibre
         do i = 1, nf
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, '+', icdmat,&
+                            materi, em, ep, nu, epsth)
                 valres(9) = nu
             endif
-            epsm = defm(i) - depsth
+            epsm = defm(i) - epsth
             call mazu1d(ep, valres, contm(i), varim(ivari), epsm,&
                         ddefp(i), modf(i), sigf(i), varip(ivari), option)
         enddo
@@ -197,8 +197,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                            materi, em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
             call vmci1d('RIGI', kpg, i, icdmat, em,&
@@ -221,8 +221,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc*(i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                            materi, em, ep, nu, depsth)
                 cstpm(1) = ep
             endif
             depsm = ddefp(i)-depsth
@@ -236,8 +236,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                            materi, em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
             call nm1dci('RIGI', kpg, i, icdmat, em,&
@@ -250,8 +250,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                            materi, em, ep, nu, depsth)
             endif
             depsm = ddefp(i)-depsth
             call nm1dis('RIGI', kpg, i, icdmat, em,&
@@ -264,8 +264,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                            materi, em, ep, nu, depsth)
             endif
             call nm1dco('RIGI', kpg, i, option, icdmat,&
                         materi, ep, contm(i), epsm, ddefp(i),&
@@ -279,8 +279,9 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
                 ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth, tplus=tempp)
+                call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                            materi, em, ep, nu, depsth,&
+                            tplus=tempp)
             endif
 !           nm1tra ne fonctionne que pour 1 matériau par maille (vérifie dans rctrac)
             call nm1tra(icdmat, tempp, defm(i), ddefp(i), varim(ivari),&
@@ -293,9 +294,9 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                 ivari = nbvalc* (i-1) + 1
                 if (ltemp) then
                     ksp=debsp-1+i
-                    call paeldt(kpg, ksp, fami, icdmat, materi,&
-                                em, ep, nu, depsth, tmoins=tempm,&
-                                tplus=tempp, trefer=tref)
+                    call paeldt(kpg, ksp, fami, 'T', icdmat,&
+                                materi, em, ep, nu, depsth,&
+                                tmoins=tempm, tplus=tempp, trefer=tref)
                 endif
                 depsm = ddefp(i)-depsth
                 if ((iret1+iret2+iret3) .ge. 1) then

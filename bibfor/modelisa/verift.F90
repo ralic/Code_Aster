@@ -37,20 +37,21 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!  FAMI : FAMILLE DE POINTS DE GAUSS
-!  KPG  : NUMERO DU POINT DE GAUSS
-!  KSP  : NUMERO DU SOUS-POINT DE GAUSS
-!  POUM : '+' SI TEMPERATURE EN TEMPS +
-!         '-' SI TEMPERATURE EN TEMPS -
-!         'T' SI TEMPERATURE EN TEMPS + ET -
-! IMATE : MATERIAU
-! COMPOR : COMPORTEMENT
-! NDIM  : 1 SI ISOTROPE
-!         2 SI ISOTROPE TRANSVERSE (OU METALLURGIQUE)
-!         3 SI ORTHOTROPE
-! EPSTH : DILATATION
-! IRET  : CODE RETOUR CONCERNANT LA TEMPERATURE 0 SI OK
-!                                               1 SI NOOK
+!  FAMI     : famille de points de gauss
+!  KPG      : numero du point de gauss
+!  KSP      : numero du sous-point de gauss
+!  POUM     : '+' si temperature en temps +
+!             '-' si temperature en temps -
+!             'T' si temperature en temps + et -
+! IMATE     : materiau
+! COMPOR    : comportement
+! NDIM      : 1 si isotrope
+!             2 si isotrope transverse (ou metallurgique)
+!             3 si orthotrope
+! EPSTH     : incrément de dilatation thermique si poum=T
+!             déformation thermique si poum = + ou -
+! IRET      : code retour concernant la temperature 0 si ok
+!                                                   1 si nook
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,6 +1,6 @@
-subroutine paeldt(kpg, ksp, fami, icdmat, materi,&
-                  em, ep, nup, depsth, tmoins,&
-                  tplus, trefer)
+subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
+                  materi, em, ep, nup, depsth,&
+                  tmoins, tplus, trefer)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,10 @@ subroutine paeldt(kpg, ksp, fami, icdmat, materi,&
 #include "asterfort/verift.h"
 !
     integer :: kpg, ksp, icdmat
+    character(len=1) :: poum
     character(len=4) :: fami
     character(len=8) :: materi
-    real(kind=8) :: em, ep, nup, depsth
+    real(kind=8) :: em, ep, num, nup, depsth
     real(kind=8), intent(out), optional :: tmoins, tplus, trefer
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,20 +40,34 @@ subroutine paeldt(kpg, ksp, fami, icdmat, materi,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
-    call rcvalb(fami, kpg, ksp, '-', icdmat,&
-                materi, 'ELAS', 0, ' ', [0.d0],&
-                1, nomres, valres, icodre, 1)
-    em = valres(1)
+    if ( poum.eq. 'T' ) then
+        call rcvalb(fami, kpg, ksp, '-', icdmat,&
+                    materi, 'ELAS', 0, ' ', [0.d0],&
+                    2, nomres, valres, icodre, 1)
+        em  = valres(1)
+        num = valres(2)
 !
-    call rcvalb(fami, kpg, ksp, '+', icdmat,&
-                materi, 'ELAS', 0, ' ', [0.d0],&
-                2, nomres, valres, icodre, 1)
-    ep = valres(1)
-    nup = valres(2)
+        call rcvalb(fami, kpg, ksp, '+', icdmat,&
+                    materi, 'ELAS', 0, ' ', [0.d0],&
+                    2, nomres, valres, icodre, 1)
+        ep  = valres(1)
+        nup = valres(2)
 !
-    call verift(fami, kpg, ksp, 'T', icdmat,&
-                materi, 'ELAS', iret, epsth=depsth, &
-                tmoins=tms, tplus=tpl, trefer=tref)
+        call verift(fami, kpg, ksp, 'T', icdmat,&
+                    materi, 'ELAS', iret, epsth= depsth,&
+                    tmoins=tms, tplus=tpl, trefer=tref)
+!
+    else
+        call rcvalb(fami, kpg, ksp, poum, icdmat,&
+                    materi, 'ELAS', 0, ' ', [0.d0],&
+                    2, nomres, valres, icodre, 1)
+        ep  = valres(1)
+        nup = valres(2)
+        em  = valres(1)
+        call verift(fami, kpg, ksp, poum, icdmat,&
+                    materi, 'ELAS', iret, epsth=depsth,&
+                    tmoins=tms, tplus=tpl, trefer=tref)
+    endif
 !
     if (present(tmoins)) then
         tmoins = tms
