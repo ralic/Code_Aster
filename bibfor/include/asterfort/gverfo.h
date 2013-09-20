@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine gverfo(charg, ier)
-        character(len=19) :: charg
+    subroutine gverfo(cartei, ier)
+        character(len=19) :: cartei
         integer :: ier
     end subroutine gverfo
 end interface

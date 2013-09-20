@@ -21,7 +21,7 @@ interface
                       nnoff, iord, ndeg, thlagr, glagr, &
                       thlag2, milieu, ndimte, pair, extim, &
                       time, nbprup, noprup, chvite, chacce, &
-                      lmelas, nomcas, kcalc, fonoeu, incr)
+                      lmelas, nomcas, kcalc, fonoeu, lincr)
         character(len=16) :: option
         character(len=8) :: result
         character(len=8) :: modele
@@ -35,7 +35,7 @@ interface
         integer :: nnoff
         integer :: iord
         integer :: ndeg
-        logical :: incr
+        logical :: lincr
         logical :: thlagr
         logical :: glagr
         logical :: thlag2

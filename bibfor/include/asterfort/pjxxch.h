@@ -16,12 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pjxxch(correz, ch1z, ch2z, tycha2, prfchz,&
+    subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
                       prol0, ligrez, base, iret)
         character(len=*) :: correz
         character(len=*) :: ch1z
         character(len=*) :: ch2z
-        character(len=4) :: tycha2
+        character(len=4) :: tychv
         character(len=*) :: prfchz
         character(len=*) :: prol0
         character(len=*) :: ligrez

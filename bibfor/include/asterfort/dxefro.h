@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dxefro(ne, t2ve, edgle, edglc)
+    subroutine dxefro(ne, t2iu, edgle, edglc)
         integer :: ne
-        real(kind=8) :: t2ve(2, 2)
+        real(kind=8) :: t2iu(2, 2)
         real(kind=8) :: edgle(*)
         real(kind=8) :: edglc(*)
     end subroutine dxefro

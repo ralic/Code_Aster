@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine refe81(nomres, basmod, raidf, massf, amorf,&
+    subroutine refe81(nomres, basmod, raid, mass, amor,&
                       mailla)
         character(len=8) :: nomres
         character(len=8) :: basmod
-        character(len=19) :: raidf
-        character(len=19) :: massf
-        character(len=19) :: amorf
+        character(len=19) :: raid
+        character(len=19) :: mass
+        character(len=19) :: amor
         character(len=8) :: mailla
     end subroutine refe81
 end interface

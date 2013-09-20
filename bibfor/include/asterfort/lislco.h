@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lislco(lischa, ichar, codcha)
+    subroutine lislco(lischa, ichar, genrec)
         character(len=19) :: lischa
         integer :: ichar
-        integer :: codcha
+        integer :: genrec
     end subroutine lislco
 end interface

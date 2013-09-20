@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function lisico(genchz, codcha)
+    function lisico(genchz, genrec)
         character(len=*) :: genchz
-        integer :: codcha
+        integer :: genrec
         logical :: lisico
     end function lisico
 end interface

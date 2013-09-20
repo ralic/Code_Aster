@@ -17,13 +17,13 @@
 !
 interface
     subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out,&
-                      val_out, ichck)
+                      val_out, ichk)
         character(len=8), intent(in) :: name_form(nb_cmp_out)
         integer, intent(in) :: nb_val_in
         real(kind=8), intent(in) :: val_in(nb_val_in)
         character(len=8), intent(in) :: cmp_in(nb_val_in)
         integer, intent(in) :: nb_cmp_out
         real(kind=8), intent(out) :: val_out(nb_cmp_out)
-        integer, intent(out) :: ichck
+        integer, intent(out) :: ichk
     end subroutine ccchcf
 end interface

@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ccchut(resuin, resuou, lisord, nbordr)
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=19) :: lisord
-        integer :: nbordr
+    subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
+        character(len=8) :: sdresu_in
+        character(len=8) :: sdresu_out
+        character(len=19) :: list_ordr
+        integer :: nb_ordr
     end subroutine ccchut
 end interface

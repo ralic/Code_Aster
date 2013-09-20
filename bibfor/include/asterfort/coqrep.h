@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine coqrep(pgl, alpha, beta, t2ev, t2ve,&
+    subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
                       c, s)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: alpha
         real(kind=8) :: beta
-        real(kind=8) :: t2ev(*)
-        real(kind=8) :: t2ve(*)
+        real(kind=8) :: t2iu(*)
+        real(kind=8) :: t2ui(*)
         real(kind=8) :: c
         real(kind=8) :: s
     end subroutine coqrep

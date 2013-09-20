@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine calirg(noma, nbno, list_node, tran,  cent, &
-                      l_angl_naut, angl_naut, geom2, l_rota, matr_rota)
-        character(len=8), intent(in) :: noma
+    subroutine calirg(mesh, nbno, list_node, tran,  cent, &
+                      l_angl_naut, angl_naut, geom_defo, l_rota, matr_rota)
+        character(len=8), intent(in) :: mesh
         integer, intent(in) :: nbno
         character(len=24), intent(in) :: list_node
         logical, intent(in) :: l_angl_naut
         real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(in) :: cent(3)
         real(kind=8), intent(in) :: tran(3)
-        character(len=*) :: geom2
+        character(len=*) :: geom_defo
         logical, intent(out) :: l_rota
         real(kind=8), intent(out) :: matr_rota(3, 3)
     end subroutine calirg

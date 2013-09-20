@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function isfonc(list_func_acti, func_z)
+    function isfonc(list_func_acti, func_name_z)
         integer, intent(in) :: list_func_acti(*)
-        character(len=*), intent(in) :: func_z
+        character(len=*), intent(in) :: func_name_z
         logical :: isfonc
     end function isfonc
 end interface

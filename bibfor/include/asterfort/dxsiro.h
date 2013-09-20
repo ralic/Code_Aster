@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dxsiro(ne, t2ve, tensav, tensap)
+    subroutine dxsiro(ne, t2iu, tensav, tensap)
         integer :: ne
-        real(kind=8) :: t2ve(2, 2)
+        real(kind=8) :: t2iu(2, 2)
         real(kind=8) :: tensav(*)
         real(kind=8) :: tensap(*)
     end subroutine dxsiro

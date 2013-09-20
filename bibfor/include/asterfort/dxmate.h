@@ -18,7 +18,7 @@
 interface
     subroutine dxmate(fami, df, dm, dmf, dc,&
                       dci, dmc, dfc, nno, pgl,&
-                      multic, coupmf, t2ev, t2ve, t1ve)
+                      multic, coupmf, t2iu, t2ui, t1ve)
         character(len=4) :: fami
         real(kind=8) :: df(3, 3)
         real(kind=8) :: dm(3, 3)
@@ -31,8 +31,8 @@ interface
         real(kind=8) :: pgl(3, 3)
         integer :: multic
         logical :: coupmf
-        real(kind=8) :: t2ev(4)
-        real(kind=8) :: t2ve(4)
+        real(kind=8) :: t2iu(4)
+        real(kind=8) :: t2ui(4)
         real(kind=8) :: t1ve(9)
     end subroutine dxmate
 end interface
