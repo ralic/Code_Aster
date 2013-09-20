@@ -347,8 +347,8 @@ subroutine penorm(resu, modele)
             else
                 ASSERT(.false.)
             endif
-            call utflmd(mailla, mesmai, iresma, ' ', nbma,&
-                        mesmaf)
+            call utflmd(mailla, mesmai, nbma, iresma, ' ',&
+                         nbma, mesmaf)
             call jedetr(mesmai)
             mesmai=mesmaf
         else

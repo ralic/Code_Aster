@@ -72,7 +72,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
                 3, limocl, tymocl, mesmai, nbma)
 !
 ! --- ON NE GARDE QUE LES MAILLES SURFACIQUES
-    call utflmd(ma, mesmai, 2, ' ', nbma2d,&
+    call utflmd(ma, mesmai, nbma, 2, ' ', nbma2d,&
                 mail2d)
     if (nbma2d .gt. 0) then
         call jeveuo(mail2d, 'L', jma2d)

@@ -368,8 +368,8 @@ subroutine pevolu(resu, modele, nbocc)
                 else
                     ASSERT(.false.)
                 endif
-                call utflmd(mailla, mesmai, iresma, ' ', nbma,&
-                            mesmaf)
+                call utflmd(mailla, mesmai, nbma, iresma, ' ',&
+                             nbma, mesmaf)
             else
                 infoma='-'
             endif

@@ -89,8 +89,8 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !     -- ON NE CONSERVE QUE LES MAILLES AFFECTEES :
     call utmamo(moa2, nbmamo, limato)
 !     -- ON NE CONSERVE QUE LES MAILLES DE DIMENSION NDIM :
-    call utflmd(mail2, limato, ndim, ' ', nbtrou,&
-                litrou)
+    call utflmd(mail2, limato, nbmamo, ndim, ' ',&
+                 nbtrou, litrou)
     ASSERT(nbtrou.gt.0)
     call jeveuo(litrou, 'L', jlitr)
     call exlim1(zi(jlitr), nbtrou, moa2, 'V', ligrel)

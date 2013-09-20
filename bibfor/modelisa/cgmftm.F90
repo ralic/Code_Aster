@@ -84,10 +84,10 @@ subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
         typmai=tyma
     endif
 !
-    call utflmd(noma, lisma, dim, typmai, nbmaf,&
-                lismaf)
+    call utflmd(noma, lisma, nbma, dim, typmai, &
+                nbmaf, lismaf)
 !
-    if (nbma .eq. 0) then
+    if (nbmaf .eq. 0) then
         ierr = 1
     else
         ierr = 0

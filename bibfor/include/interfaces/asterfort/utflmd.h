@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utflmd(mailla, limail, dim, typmai, nbtrou,&
-                      litrou)
+    subroutine utflmd(mailla, limail, nbmail, dim, typmai,&
+                      nbtrou, litrou)
         character(len=8) :: mailla
         character(*) :: limail
+        integer :: nbmail
         integer :: dim
         character(*) :: typmai
         integer :: nbtrou
