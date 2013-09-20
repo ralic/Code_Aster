@@ -1,5 +1,6 @@
 subroutine verift(fami, kpg, ksp, poum, imate,&
-                  materi, compor, ndim, epsth, iret)
+                  materi, compor, iret, ndim, epsth,&
+                  vepsth, tmoins, tplus, trefer)
     implicit none
 !
 ! ======================================================================
@@ -18,15 +19,23 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: fami, poum, compor
-    integer :: kpg, ksp, ndim, iret, imate
-    real(kind=8) :: epsth(ndim)
-    character(len=8) :: materi
+    character(len=*), intent(in) :: fami, poum, compor
+    character(len=8), intent(in) :: materi
+    integer, intent(in) :: kpg, ksp, imate
+    integer, optional, intent(in) :: ndim
+    integer, intent(out) :: iret
+    real(kind=8), optional, intent(out) :: epsth
+    real(kind=8), optional, intent(out) :: vepsth(*)
+    real(kind=8), optional, intent(out) :: tmoins, tplus, trefer
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  FAMI : FAMILLE DE POINTS DE GAUSS
 !  KPG  : NUMERO DU POINT DE GAUSS
@@ -43,139 +52,149 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
 ! IRET  : CODE RETOUR CONCERNANT LA TEMPERATURE 0 SI OK
 !                                               1 SI NOOK
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: codrem(3), codrep(3)
+    integer :: codrem(3), codrep(3), ndimloc
     character(len=8) :: nomres(3), valek(2)
     integer :: iret1, iret2, iret3, ind, somire, iadzi, iazk24
-    real(kind=8) :: tm, tref, tp, valrep(3), valrem(3)
+    real(kind=8) :: tm, tref, tp, valrep(3), valrem(3), tpoum, epsth3(3)
+! --------------------------------------------------------------------------------------------------
+    if ( present(ndim) ) then
+        ASSERT( present(vepsth) )
+        ASSERT( .not.present(epsth) )
+        ndimloc = ndim
+    else
+        ASSERT( present(epsth) )
+        ASSERT( .not.present(vepsth) )
+        ndimloc = 1
+    endif
 !
-!
-!
-!     -- S'IL N'Y A PAS DE TEMPERATURE, EPSTH=0.
+    iret = 0
+    iret1 = 0
+    iret2 = 0
+    iret3 = 0
+!   s'il n'y a pas de température, epsth=0.
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                ksp, tref, iret1)
+                ksp, tp, iret1)
     if (iret1 .ne. 0) then
-        do 1 ind = 1, ndim
-            epsth(ind) = 0.d0
- 1      continue
-        iret=1
+        do ind = 1, ndimloc
+            epsth3(ind) = 0.d0
+        enddo
+        iret = 1
         goto 9999
     endif
 !
-!
-    iret = 0
-    iret2 = 0
-    iret3 = 0
-!
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
                 ksp, tref, iret1)
+    if (iret1 .eq. 1) then
+        call tecael(iadzi, iazk24)
+        valek(1) = zk24(iazk24-1+3) (1:8)
+        call utmess('F', 'CALCULEL_8', sk=valek(1))
+    endif
+    if (present(trefer)) then
+        trefer = tref
+    endif
 !
     if (compor .eq. 'ELAS_META') then
-        if (ndim .eq. 2) then
+        if (ndimloc .eq. 2) then
             nomres(1) = 'C_ALPHA'
             nomres(2) = 'F_ALPHA'
+        else
+            ASSERT(.false.)
         endif
     else
-        if (ndim .eq. 1) then
+        if      (ndimloc.eq.1) then
             nomres(1) = 'ALPHA'
-        else if (ndim.eq.2) then
+        else if (ndimloc.eq.2) then
             nomres(1) = 'ALPHA_L'
             nomres(2) = 'ALPHA_N'
-        else
+        else if (ndimloc.eq.3) then
             nomres(1) = 'ALPHA_L'
             nomres(2) = 'ALPHA_T'
             nomres(3) = 'ALPHA_N'
+        else
+            ASSERT(.false.)
         endif
     endif
 !
-!
-!
-!
-!
     if (poum .eq. 'T') then
-!
         call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                     ksp, tm, iret2)
         call rcvalb(fami, kpg, ksp, '-', imate,&
                     materi, compor, 0, ' ', [0.d0],&
-                    ndim, nomres, valrem, codrem, 0)
+                    ndimloc, nomres, valrem, codrem, 0)
         call rcvarc(' ', 'TEMP', '+', fami, kpg,&
                     ksp, tp, iret3)
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     materi, compor, 0, ' ', [0.d0],&
-                    ndim, nomres, valrep, codrep, 0)
+                    ndimloc, nomres, valrep, codrep, 0)
 !
         somire = iret2 + iret3
-!
         if (somire .eq. 0) then
-!
-            if (iret1 .eq. 1) then
-                call tecael(iadzi, iazk24)
-                valek(1) = zk24(iazk24-1+3) (1:8)
-                call utmess('F', 'CALCULEL_8', sk=valek(1))
-            endif
-            do 5 ind = 1, ndim
+            do ind = 1, ndimloc
                 if ((codrem(ind).ne.0) .or. (codrep(ind).ne.0)) then
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
                     call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
                 endif
- 5          continue
+            enddo
 !
-            do 10 ind = 1, ndim
-                epsth(ind) = valrep(ind)*(tp-tref)-valrem(ind)*(tm- tref)
-10          continue
+            do ind = 1, ndimloc
+                epsth3(ind) = valrep(ind)*(tp-tref)-valrem(ind)*(tm- tref)
+            enddo
 !
+            if (present(tmoins)) then
+                tmoins = tm
+            endif
+            if (present(tplus)) then
+                tplus = tp
+            endif
         else
-!
-            do 20 ind = 1, ndim
-                epsth(ind) = 0.d0
-20          continue
-!
+            do ind = 1, ndimloc
+                epsth3(ind) = 0.d0
+            enddo
         endif
-!
     else
         call rcvarc(' ', 'TEMP', poum, fami, kpg,&
-                    ksp, tm, iret2)
+                    ksp, tpoum, iret2)
         call rcvalb(fami, kpg, ksp, poum, imate,&
                     materi, compor, 0, ' ', [0.d0],&
-                    ndim, nomres, valrem, codrem, 0)
-        somire = iret2 + iret3
+                    ndimloc, nomres, valrem, codrem, 0)
 !
-        if (somire .eq. 0) then
-!
-            if (iret1 .eq. 1) then
-                call tecael(iadzi, iazk24)
-                valek(1) = zk24(iazk24-1+3) (1:8)
-                call utmess('F', 'CALCULEL_8', sk=valek(1))
-            endif
-            do 35 ind = 1, ndim
+        if (iret2 .eq. 0) then
+            do ind = 1, ndimloc
                 if (codrem(ind) .ne. 0) then
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
                     call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
                 endif
-35          continue
+            enddo
 !
-            do 30 ind = 1, ndim
-                epsth(ind) = valrem(ind)*(tm-tref)
-30          continue
+            do ind = 1, ndimloc
+                epsth3(ind) = valrem(ind)*(tpoum-tref)
+            enddo
 !
+            if ( (poum.eq.'-') .and. present(tmoins) ) then
+                tmoins = tpoum
+            endif
+            if ( (poum.eq.'+') .and. present(tplus)) then
+                tplus = tpoum
+            endif
         else
-!
-            do 40 ind = 1, ndim
-                epsth(ind) = 0.d0
-40          continue
-!
+            do ind = 1, ndimloc
+                epsth3(ind) = 0.d0
+            enddo
         endif
-!
     endif
 !
     if ((iret2+iret3) .ge. 1) iret = 1
 !
 9999  continue
+    if ( present(ndim) ) then
+        vepsth(1:ndim) = epsth3(1:ndim)
+    else
+        epsth = epsth3(1)
+    endif
 end subroutine

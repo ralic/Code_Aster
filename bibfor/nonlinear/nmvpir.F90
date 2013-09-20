@@ -141,7 +141,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
                 ksp, tp, iret2)
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, epsthe, iret3)
+                materi, 'ELAS', iret3, epsth=epsthe)
     theta = crit(4)
 ! TEMPERATURE AU MILIEU DU PAS DE TEMPS
     if (iret3 .eq. 0) then
@@ -207,14 +207,14 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         call rcvarc(' ', epsa(k), '+', fami, kpg,&
                     ksp, defap(k), iret2)
         if (iret2 .eq. 1) defap(k)=0.d0
-20  end do
+ 20 end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
     do 105 k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
-105  end do
+105 end do
 !
 ! CARACTERISTIQUES ELASTIQUES VARIABLES
 !
@@ -381,16 +381,16 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         endif
 !
         epsmo = epsmo + depsth(k)
-110  end do
+110 end do
 !
     epsmo = epsmo/3.d0
     do 111 k = 1, ndimsi
         depsdv(k) = depsth(k) - epsmo * kron(k)
-111  end do
+111 end do
     sigmo = 0.d0
     do 113 k = 1, 3
         sigmo = sigmo + sigm(k)
-113  end do
+113 end do
     sigmo = sigmo /3.d0
 !
     sieqm=0.d0
@@ -400,13 +400,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         sigmp(k)=(theta*deuxmu+(1.d0-theta)*deumum) /deumum*(sigm(k)-&
         sigmo*kron(k))+ (theta*troikp+(1.d0-theta)*troikm)/troikm*&
         sigmo*kron(k)
-114  end do
+114 end do
     sieqm=sqrt(1.5d0*sieqm)
     sieqm=sieqm*(theta*deuxmu+(1.d0-theta)*deumum)/deumum
     sigmo = 0.d0
     do 116 k = 1, 3
         sigmo = sigmo + sigmp(k)
-116  end do
+116 end do
     sigmo = sigmo /3.d0
 !
 !
@@ -417,7 +417,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
             sigel(k) = sigdv(k) + deumup * depsdv(k)/theta
             sieqp = sieqp + sigel(k)**2
 !
-117      continue
+117     continue
         sieqp=sqrt(1.5d0*sieqp)
     endif
 !
@@ -427,7 +427,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         sigel(k) = sigdv(k) + deumup * depsdv(k)
         sieleq = sieleq + sigel(k)**2
 !
-118  end do
+118 end do
     sieleq = sqrt(1.5d0*sieleq)
 !
 !----RESOLUTION DE L'EQUATION SCALAIRE----
@@ -498,7 +498,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
             sigp(k) = (sigp(k) - sigm(k))/theta + sigm(k)
             deltev = (sigel(k)-sigdv(k))/(deumup*theta)
             deltp2 = deltp2 + deltev**2
-170      continue
+170     continue
 !
         if (compor(1)(5:10) .eq. '_IRRA_') then
             call lcdevi(sigp, dev)
@@ -544,12 +544,12 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
                 dsidep(k,l) = coef1*(deltkl-kron(k)*kron(l)/3.d0)
                 dsidep(k,l) = deumup*(dsidep(k,l)+ coef2*sigel(k)* sigel(l))
                 dsidep(k,l) = dsidep(k,l) + troikp*kron(k)*kron(l)/ 3.d0
-135          continue
+135         continue
     endif
 !
 !
-299  continue
+299 continue
 !
-9999  continue
+9999 continue
 !
 end subroutine

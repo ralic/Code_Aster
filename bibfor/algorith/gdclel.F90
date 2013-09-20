@@ -50,14 +50,14 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
 !
 !
     materi=' '
-
+!
     lambda = young*nu/(1+nu)/(1-2*nu)
     deuxmu = young/(1+nu)
     mu = deuxmu/2
     troisk = young/(1-2*nu)
     unk = troisk/3
-    call verift(fami, kpg, ksp, '+', imate, &
-                materi, 'ELAS', 1, epsth, iret)
+    call verift(fami, kpg, ksp, '+', imate,&
+                materi, 'ELAS', iret, epsth=epsth)
     cother = troisk*epsth
 !
 end subroutine

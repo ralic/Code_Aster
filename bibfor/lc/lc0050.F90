@@ -154,7 +154,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !     PARAMETRES UMAT STOCKES DANS 'KIT1-KIT9'
     do 10 ii = 1, dimaki-1
         nomlib(16*(ii-1)+1:16*ii) = compor(7+ii)
-10  continue
+ 10 continue
     nomsub = compor(7+dimaki)
 !
 !     LECTURE DES PROPRIETES MATERIAU (MOT-CLE UMAT DE DEFI_MATERIAU)
@@ -188,7 +188,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
                 write(ifm,*) nomres(i),props(nprop2)
             endif
         endif
-20  continue
+ 20 continue
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 ! RAISON: PASSAGE A UMAT DE LA TEMPERATURE
@@ -203,10 +203,10 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     if (iret .ne. 0) tref=0.d0
 !     CALCUL DES DEFORMATIONS DE DILATATION THERMIQUE
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, depst1, iret)
+                materi, 'ELAS', iret, epsth=depst1)
     if (iret .ne. 0) depst1=0.d0
     call verift(fami, kpg, ksp, '-', imate,&
-                materi, 'ELAS', 1, epsth1, iret)
+                materi, 'ELAS', iret, epsth=epsth1)
     if (iret .ne. 0) epsth1=0.d0
 !
 ! APPEL DE RCVARC POUR EXTRAIRE TOUTES LES VARIABLES DE COMMANDE
@@ -278,7 +278,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
                         ksp, vrcp, iret2)
             dpred(i)=vrcp-vrcm
         endif
-30  continue
+ 30 continue
 !
 !
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
@@ -341,8 +341,8 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     do 100,i = 1,3
     do 90,j = 1,3
     drot(j,i) = drott(i,j)
-90  continue
-100  continue
+ 90 continue
+100 continue
 !
     celent=wkin(1)
     npt=kpg
@@ -380,7 +380,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
             do 70 i = 1, npred
                 write(ifm,'(A8,2(1X,E11.4))') lvarc(i),predef(i),&
                 dpred(i)
-70          continue
+ 70         continue
         endif
     endif
 !
@@ -460,16 +460,16 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
         do 40 i = 1, 6
             do 40 j = 4, 6
                 dsidep(i,j) = dsidep(i,j)*rac2
-40          continue
+ 40         continue
         do 50 i = 4, 6
             do 50 j = 1, 6
                 dsidep(i,j) = dsidep(i,j)*rac2
-50          continue
+ 50         continue
         if ((niv.ge.2) .and. (idbg.eq.1)) then
             write(ifm,*)'APRES APPEL UMAT,OPERATEUR TANGENT DSIDEP='
             do 60 i = 1, 6
                 write(ifm,'(6(1X,E11.4))') (dsidep(i,j),j=1,6)
-60          continue
+ 60         continue
         endif
     endif
 !

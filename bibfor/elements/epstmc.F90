@@ -83,7 +83,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !
     do 10 i = 1, 6
         epsth(i) = zero
-10  end do
+ 10 end do
 !
     call rcvarc(' ', 'HYDR', poum, fami, igau,&
                 isgau, hydr, iret)
@@ -208,7 +208,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             call rcvarc(' ', epsa(k), poum, fami, igau,&
                         isgau, epsth(k), iret)
             if (iret .eq. 1) epsth(k)=0.d0
-20      end do
+ 20     end do
 !
 !
 ! ---- ------------------------------------------------------------
@@ -227,7 +227,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
         if (phenom .eq. 'ELAS') then
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        materi, 'ELAS', 1, epsth(1), iret)
+                        materi, 'ELAS', iret, epsth=epsth(1) )
             epsth(2) = epsth(1)
             epsth(3) = epsth(1)
 !
@@ -253,7 +253,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        materi, phenom, 3, epsthl(1), iret)
+                        materi, phenom, iret, ndim=3, vepsth=epsthl)
 !
             epsthl(4) = 0.d0
             epsthl(5) = 0.d0
@@ -302,7 +302,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        materi, phenom, 2, epsthl(1), iret)
+                        materi, phenom, iret, ndim=2, vepsth=epsthl)
 !
             epsthl(3) = epsthl(2)
             epsthl(2) = epsthl(1)

@@ -60,7 +60,7 @@ subroutine ef0154(nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater),&
-                materi, 'ELAS', 1, epsth, iret)
+                materi, 'ELAS', iret, epsth=epsth)
 !
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
                 ' ', 'ELAS', 0, ' ', [r8bid],&
@@ -96,7 +96,7 @@ subroutine ef0154(nomte)
 !     --- RECUPERATION DES DEPLACEMENTS OU DES VITESSES ----
     do 10 i = 1, 6
         ugr(i)=0.d0
-10  end do
+ 10 end do
 !
 !
 ! ON RECUPERE DES DEPLACEMENTS
@@ -105,7 +105,7 @@ subroutine ef0154(nomte)
     if (nomte .eq. 'MECA_BARRE') then
         do 20 i = 1, 6
             ugr(i)=zr(jdepl+i-1)
-20      continue
+ 20     continue
     else if (nomte.eq.'MECA_2D_BARRE') then
         ugr(1)=zr(jdepl+1-1)
         ugr(2)=zr(jdepl+2-1)
@@ -122,8 +122,8 @@ subroutine ef0154(nomte)
     do 40 i = 1, 6
         do 30 j = 1, 6
             klc(i,j)=0.d0
-30      continue
-40  end do
+ 30     continue
+ 40 end do
 !
     xrig=e*a/xl
     klc(1,1)=xrig

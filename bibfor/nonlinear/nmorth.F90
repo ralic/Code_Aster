@@ -76,7 +76,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
             else
                 depstr(i)=deps(i)*rac2
             endif
- 1      end do
+  1     end do
     endif
 !
     if (angmas(1) .eq. r8vide()) then
@@ -112,7 +112,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
     do 2 i = 1, nbsigm
         depgth(i)=0.d0
- 2  end do
+  2 end do
 !
 !     MATRICES TANGENTES
 !
@@ -146,8 +146,8 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         do 10 i = 1, nbsigm
             do 20 j = 1, nbsigm
                 dsidep(i,j)=hookf(nbsigm*(j-1)+i)
-20          continue
-10      continue
+ 20         continue
+ 10     continue
     endif
 !
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
@@ -156,7 +156,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         if (phenom .eq. 'ELAS_ORTH') then
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        materi, 'ELAS_ORTH', 3, valres, iret)
+                        materi, 'ELAS_ORTH', iret, ndim=3, vepsth=valres)
             deplth(1) = valres(1)
             deplth(2) = valres(2)
             deplth(3) = valres(3)
@@ -167,7 +167,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 ! RECUPERATION DES PARAMETRES MATERIAUX A L INSTANT -
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        materi, 'ELAS_ISTR', 2, valres, iret)
+                        materi, 'ELAS_ISTR', iret, ndim=2, vepsth=valres)
             deplth(1) = valres(1)
             deplth(2) = valres(1)
             deplth(3) = valres(2)
@@ -210,12 +210,12 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
             else
                 depsme(i)=depstr(i)-2.d0*depgth(i)
             endif
-30      continue
+ 30     continue
 !
 ! CONTRAINTE A L ETAT +
         do 55 i = 4, nbsigm
             sigm(i)=sigm(i)/rac2
-55      continue
+ 55     continue
 ! MODIFICATIOn DE SIGM POUR PRENDRE EN COMPTE LA VARIATION DE
 ! COEF ELASTIQUES AVEC LA TEMPERATURE
 !
@@ -223,16 +223,16 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
             epsm2(i)=0.d0
             do 50 j = 1, nbsigm
                 epsm2(i)=epsm2(i)+mkooh(nbsigm*(j-1)+i)*sigm(j)
-50          continue
-40      continue
+ 50         continue
+ 40     continue
 !
         do 60 i = 1, nbsigm
             sigp(i)=0.d0
             do 70 j = 1, nbsigm
                 sigp(i)=sigp(i)+hookf(nbsigm*(j-1)+i)*(depsme(j)+&
                 epsm2(j))
-70          continue
-60      continue
+ 70         continue
+ 60     continue
 !
 ! PAS DE VARIABLE INTERNE POUR CE COMPORTEMENT
         vip=0.d0
@@ -240,18 +240,18 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 ! REMISE AU FORMAT ASTER DES VALEURS EXTRA DIAGONALES
         do 80 i = 4, nbsigm
             sigp(i)=sigp(i)*rac2
-80      continue
+ 80     continue
     endif
 !
     if (option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'FULL_MECA') then
         do 67 i = 1, 6
             do 67 j = 4, 6
                 dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
-67          continue
+ 67         continue
         do 68 i = 4, 6
             do 68 j = 1, 6
                 dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
-68          continue
+ 68         continue
     endif
 !
 end subroutine

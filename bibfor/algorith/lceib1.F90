@@ -97,9 +97,9 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 1)
         call verift(fami, kpg, ksp, '-', imate,&
-                    materi, 'ELAS', 1, epsthe(1), icodre)
+                    materi, 'ELAS', icodre(1), epsth=epsthe(1))
         call verift(fami, kpg, ksp, '+', imate,&
-                    materi, 'ELAS', 1, epsthe(2), icodre)
+                    materi, 'ELAS', icodre(1), epsth=epsthe(2))
 !
         e = valres(1)
         nu = valres(2)
@@ -152,11 +152,11 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                     do 5 k = 1, ndimsi
                         eps(k) = epsm(k) - ( epsthe(1) - kdess * ( sref-sechm) - bendo * hydrm ) &
                                  &* kron(k)
- 5                  continue
+  5                 continue
                     trepsm=0.d0
                     do 1 i = 1, ndim
                         trepsm=trepsm+eps(i)
- 1                  continue
+  1                 continue
                     if (trepsm .gt. 0.d0) then
                         trepsm=0.d0
                     endif

@@ -1,5 +1,6 @@
 subroutine paeldt(kpg, ksp, fami, icdmat, materi,&
-                  em, ep, nup, depsth)
+                  em, ep, nup, depsth, tmoins,&
+                  tplus, trefer)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,14 +25,15 @@ subroutine paeldt(kpg, ksp, fami, icdmat, materi,&
     character(len=4) :: fami
     character(len=8) :: materi
     real(kind=8) :: em, ep, nup, depsth
-! --- ------------------------------------------------------------------
+    real(kind=8), intent(out), optional :: tmoins, tplus, trefer
+! --------------------------------------------------------------------------------------------------
 !
 !        CALCUL DES PARAMETRES ELASTIQUES ET DE LA
 !        DEFORMATION THERMIQUE POUR UN SOUS-POINT DONNE
 !
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     integer :: icodre(2), iret
-    real(kind=8) :: valres(2)
+    real(kind=8) :: valres(2), tpl, tms, tref
     character(len=8) :: nomres(2)
 !
     nomres(1) = 'E'
@@ -49,6 +51,16 @@ subroutine paeldt(kpg, ksp, fami, icdmat, materi,&
     nup = valres(2)
 !
     call verift(fami, kpg, ksp, 'T', icdmat,&
-                materi, 'ELAS', 1, depsth, iret)
+                materi, 'ELAS', iret, epsth=depsth, &
+                tmoins=tms, tplus=tpl, trefer=tref)
 !
+    if (present(tmoins)) then
+        tmoins = tms
+    endif
+    if (present(tplus)) then
+        tplus = tpl
+    endif
+    if (present(trefer)) then
+        trefer = tref
+    endif
 end subroutine

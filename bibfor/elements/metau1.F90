@@ -111,14 +111,14 @@ subroutine metau1(option, nomte, iret)
                 call rcvarc(' ', zirc(l), '+', 'RIGI', kp,&
                             1, phaspg(l), ire1)
             endif
- 5      continue
+  5     continue
 !
         do 10 i = 1, nno
             r = r + zr(igeom+2* (i-1))*zr(ivf+k+i-1)
-10      continue
+ 10     continue
 !
         call verift('RIGI', kp, 1, '+', mater,&
-                    materi, 'ELAS_META', 2, epsthe(1), iret1)
+                    materi, 'ELAS_META', iret1, ndim=2, vepsth=epsthe)
         call rcvalb('RIGI', kp, 1, '+', mater,&
                     ' ', 'ELAS_META', 0, 'TEMP', [0.d0],&
                     6, nomres, valres, icodre, 1)
@@ -128,13 +128,13 @@ subroutine metau1(option, nomte, iret)
             do 20 i = 1, nno
                 k = (kp-1)*nno
                 dfdx(i) = dfdx(i) + zr(ivf+k+i-1)/r
-20          continue
+ 20         continue
         endif
 !
         zalpha=0.d0
         do 25 i = 1, nz
             zalpha=zalpha+phaspg(i)
-25      continue
+ 25     continue
 !
         coef1 = (1.d0-zalpha)* (epsthe(1)- (1-valres(5))*valres(6))
         coef2 = zalpha* (epsthe(2)+valres(5)*valres(6))
@@ -144,7 +144,7 @@ subroutine metau1(option, nomte, iret)
             k = (kp-1)*nno
             zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids*dfdx(i)
             zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids*dfdy(i)
-30      continue
-40  end do
-9999  continue
+ 30     continue
+ 40 end do
+9999 continue
 end subroutine

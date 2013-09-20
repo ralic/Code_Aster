@@ -91,7 +91,7 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
 !----------RECUPERATION DES CARACTERISTIQUES
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', iret, epsth=epsthe)
 !
     epsm = (xlongm-xlong0)/xlong0
     epsp = (xlongm+dlong0-xlong0)/xlong0

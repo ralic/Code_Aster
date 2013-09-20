@@ -94,7 +94,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
     real(kind=8) :: rbid, precr
     real(kind=8) :: kr(6), pdtsca(6)
-    real(kind=8) :: valres(20),val(1)
+    real(kind=8) :: valres(20), val(1)
 !
     character(len=1) :: c1
     integer :: icodre(20), test
@@ -148,7 +148,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             call rcvarc(' ', acier(k), '-', fami, kpg,&
                         ksp, phasm(k), ire2)
             if (ire2 .eq. 1) phasm(k)=0.d0
- 5      continue
+  5     continue
 !
     else
 !
@@ -157,12 +157,12 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             call rcvarc(' ', acier(k), '-', fami, kpg,&
                         ksp, phase(k), ire2)
             if (ire2 .eq. 1) phase(k)=0.d0
-10      continue
+ 10     continue
 !
     endif
 !
     call verift(fami, kpg, ksp, c1, imat,&
-                materi, 'ELAS_META', 2, epsthe, iret1)
+                materi, 'ELAS_META', iret1, ndim=2, vepsth=epsthe)
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret2)
     zalpha=phase(1)+phase(2)+phase(3)+phase(4)
@@ -174,7 +174,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     do 15 k = 1, nz
         if (phase(k) .le. precr) phase(k)=0.d0
         if (phase(k) .ge. 1.d0) phase(k)=1.d0
-15  continue
+ 15 continue
     if (zalpha .le. precr) zalpha=0.d0
     if (zalpha .ge. 1.d0) zalpha=1.d0
 !
@@ -233,12 +233,12 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
         call rcvalb(fami, 1, 1, '+', imat,&
                     ' ', 'ELAS_META', 1, 'META', [zalpha],&
                     1, nomres(6), val, icodre(6), 0)
-                    
-        if (icodre(6) .ne. 0) then 
-           fmel = zalpha
+!
+        if (icodre(6) .ne. 0) then
+            fmel = zalpha
         else
-           fmel = val(1)
-        endif     
+            fmel = val(1)
+        endif 
 !
 ! 2.3 - LIMITE D ELASTICITE
 !
@@ -273,7 +273,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
                 do 20 i = 1, 8
                     theta(i)=1.d0
-20              continue
+ 20             continue
 !
             endif
 !
@@ -321,7 +321,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     c(k) =valres(2*nz+k)
                     if (icodre(3*nz+k) .ne. 0) valres(3*nz+k)=20.d0
                     m(k) = valres(3*nz+k)
-25              continue
+ 25             continue
 !
             else
 !
@@ -331,7 +331,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     unsurn(k)= 1.d0
                     c(k) = 0.d0
                     m(k) = 20.d0
-30              continue
+ 30             continue
 !
             endif
 !
@@ -346,14 +346,14 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     dz1(k)=0.d0
                     dz2(k)=-dz(k)
                 endif
-35          continue
+ 35         continue
 !
             if (phase(nz) .gt. 0.d0) then
                 dvin=0.d0
                 do 40 k = 1, nz-1
                     dvin=dvin+dz2(k)*(theta(4+k)*vim(k)-vim(nz))/&
                     phase(nz)
-40              continue
+ 40             continue
                 vi(nz)=vim(nz)+dvin
                 vimoy=phase(nz)*vi(nz)
             else
@@ -369,7 +369,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 else
                     vi(k)=0.d0
                 endif
-45          continue
+ 45         continue
 !
 ! 2.7 - RESTAURATION D ORIGINE VISQUEUSE
 !
@@ -378,7 +378,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             do 50 k = 1, nz
                 cmoy=cmoy+phase(k)*c(k)
                 mmoy=mmoy+phase(k)*m(k)
-50          continue
+ 50         continue
 !
             cr=cmoy*vimoy
             if (cr .le. 0.d0) then
@@ -392,7 +392,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     vi(k)=vi(k)-ds
                     if (vi(k) .le. 0.d0) vi(k)=0.d0
                 endif
-55          continue
+ 55         continue
 !
 ! 2.8 - PLASTICITE DE TRANSFORMATION
 !
@@ -429,7 +429,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                                     1, nomres(j), valres(j), icodre( j), 2)
                         trans = trans + kpt(k)*valres(j)*(zvarip- zvarim)
                     endif
-60              continue
+ 60             continue
 !
             endif
 !
@@ -438,7 +438,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             trans=0.d0
             do 65 k = 1, nz
                 vi(k)=vim(k)
-65          continue
+ 65         continue
 !
         endif
 !
@@ -464,7 +464,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
             do 70 k = 1, nz
                 r(k) = h(k)*vi(k)+sy(k)
-70          continue
+ 70         continue
 !
         endif
 !
@@ -486,7 +486,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                             rbid, rbid, rbid, vi(k), r(k),&
                             h(k), rbid, rbid, rbid)
                 r(k) = r(k) + sy(k)
-75          continue
+ 75         continue
 !
             maxval = max(nbval(1),nbval(2),nbval(3),nbval(4),nbval(5))
 !
@@ -537,8 +537,8 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             else
                 dfb(i,j)=(dj**(-1.d0/3.d0))*df(i,j)
             endif
-110      continue
-100  end do
+110     continue
+100 end do
 !
 ! 3.2 - CONTRAINTES DE KIRSHHOFF A L INSTANT PRECEDENT
 !
@@ -546,14 +546,14 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     taum(6)=0.d0
     do 120 i = 1, 2*ndim
         taum(i)=jm*sigm(i)
-120  end do
+120 end do
 !
     trtaum=taum(1)+taum(2)+taum(3)
     eqtaum=0.d0
     do 130 i = 1, 6
         dvtaum(i)=taum(i)-kr(i)*trtaum/3.d0
         eqtaum=eqtaum+pdtsca(i)*(dvtaum(i)**2.d0)
-130  end do
+130 end do
     eqtaum=sqrt(1.5d0*eqtaum)
 !
 ! 3.3 - DEFORMATIONS ELASTIQUES A L INSTANT PRECEDENT :
@@ -566,7 +566,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     endif
     do 140 i = 1, 6
         bem(i)=dvtaum(i)/mum+kr(i)*xm
-140  end do
+140 end do
 !
 ! 3.4 - BEL(I,J)=DFB(I,K)*BEM(K,L)*DFB(J,L)
 !
@@ -577,10 +577,10 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 do 180 l = 1, 3
                     bel(ind(i,j))=bel(ind(i,j)) +dfb(i,k)*bem(ind(k,l)&
                     )*dfb(j,l)
-180              continue
-170          continue
-160      continue
-150  end do
+180             continue
+170         continue
+160     continue
+150 end do
 !
 ! 3.5 - TRACE ET PARTIE DEVIATORIQUE DU TENSEUR BEL
 !
@@ -588,20 +588,20 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
     do 190 i = 1, 6
         dvbel(i)=bel(i)-kr(i)*trbel/3.d0
-190  end do
+190 end do
 !
 ! 3.6 - CONTRAINTE ELASTIQUE (PARTIE DEVIATORIQUE)
 !
     do 200 i = 1, 6
         dvtel(i)=mu*dvbel(i)
-200  end do
+200 end do
 !
 ! 3.7 - CONTRAINTE EQUIVALENTE ELASTIQUE ET SEUIL
 !
     eqtel=0.d0
     do 210 i = 1, 6
         eqtel=eqtel+pdtsca(i)*dvtel(i)*dvtel(i)
-210  end do
+210 end do
     eqtel=sqrt(1.5d0*eqtel)
 !
 ! 3.8 - TRACE DU TENSEUR DE KIRSHHOFF (CONNUE CAR NE DEPEND QUE DE J)
@@ -623,11 +623,11 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
             do 220 i = 1, 6
                 taup(i)=dvtel(i)+kr(i)*trtaup
-220          continue
+220         continue
 !
             do 230 i = 1, 2*ndim
                 sigp(i)=taup(i)/jp
-230          continue
+230         continue
 !
 ! 4.2 - COMPORTEMENT PLASTIQUE
 ! 4.2.1 - CALCUL DE DP
@@ -670,7 +670,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                                 r(k)=r(k)+sy(k)
                                 if (abs(h(k)-hplus(k)) .gt. precr) test= 1
                             endif
-241                      continue
+241                     continue
                         if (test .eq. 0) goto 600
 !
                         hmoy=0.d0
@@ -681,7 +681,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                                     rmoy = rmoy + phase(k)*(r(k)-h(k)* dp)
                                     hmoy = hmoy + phase(k)*h(k)
                                 endif
-242                          continue
+242                         continue
                             rmoy=fmel*rmoy/zalpha
                             hmoy=fmel*hmoy/zalpha
                         endif
@@ -694,9 +694,9 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                                     dt, trans, hmoy, mutild, eta,&
                                     unsurn, dp, iret)
                         if (iret .eq. 1) goto 9999
-240                  continue
+240                 continue
                     ASSERT((test.ne.1).or.(j.ne.maxval))
-600                  continue
+600                 continue
                 endif
             endif
 !
@@ -712,11 +712,11 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     dvtaup(i)=dvtel(i)/(1.d0+mu*trans*trbel)
                 endif
                 taup(i)=dvtaup(i)+kr(i)*trtaup
-250          continue
+250         continue
 !
             do 260 i = 1, 2*ndim
                 sigp(i)=taup(i)/jp
-260          continue
+260         continue
 !
 ! 4.2.3 - CALCUL DE VIP ET RMOY
 !
@@ -726,7 +726,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 else
                     vip(k)=0.d0
                 endif
-270          continue
+270         continue
 !
             vip(7)=0.d0
             if (phase(nz) .gt. 0.d0) then
@@ -757,7 +757,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                         zalpha
                     endif
 !
-280              continue
+280             continue
             endif
         endif
     endif
@@ -771,11 +771,11 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then
             do 300 i = 1, 6
                 tau(i)=taum(i)
-300          continue
+300         continue
         else
             do 310 i = 1, 6
                 tau(i)=taup(i)
-310          continue
+310         continue
         endif
 !
         mat0(1,1)=df(2,2)*df(3,3)-df(2,3)*df(3,2)
@@ -793,9 +793,9 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 mat1(i,j)=0.d0
                 do 350 k = 1, 3
                     mat1(i,j)=mat1(i,j)+dfb(i,k)*bem(ind(k,j))
-350              continue
-340          continue
-330      continue
+350             continue
+340         continue
+330     continue
 !
         do 360 i = 1, 3
             do 370 j = 1, 3
@@ -803,17 +803,17 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     do 390 l = 1, 3
                         mat2(ind(i,j),k,l)=kr(ind(i,k))*mat1(j,l)&
                         +kr(ind(j,k))*mat1(i,l)
-390                  continue
-380              continue
-370          continue
-360      continue
+390                 continue
+380             continue
+370         continue
+360     continue
 !
         eqtau=0.d0
         trtau=(tau(1)+tau(2)+tau(3))/3.d0
         do 391 i = 1, 6
             dvtau(i)=tau(i)-trtau*kr(i)
             eqtau=eqtau+pdtsca(i)*(dvtau(i)**2.d0)
-391      continue
+391     continue
         eqtau=sqrt(1.5d0*eqtau)
         if (eqtau .gt. 0.d0) then
             coeff1=1.d0+mu*trans*trbel+mu*dp*trbel/eqtau
@@ -834,9 +834,9 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     dsigdf(i,j,k)= coeff2*dsigdf(i,j,k) + coeff3*&
                     dvbel(i)*mat0(j,k) + coeff4*kr(i)*mat0(j,k)&
                     - tau(i)*mat0(j,k)/(jp*dj)
-420              continue
-410          continue
-400      continue
+420             continue
+410         continue
+400     continue
 !
         if (plasti .eq. 0.d0) then
             coeff5=-2.d0*trans*coeff2
@@ -846,9 +846,9 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                     do 450 k = 1, 3
                         dsigdf(i,j,k) = dsigdf(i,j,k) + coeff5*dvtau( i)*mat1(j,k) + coeff6*dvtau&
                                         &(i)*mat0(j,k)
-450                  continue
-440              continue
-430          continue
+450                 continue
+440             continue
+430         continue
         else
             mode=2
             if (compor(1)(1:6) .eq. 'META_V') mode=1
@@ -856,7 +856,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 if (dp .gt. 0.d0) then
                     do 178 i = 1, nz
                         n0(i) = (1-n(i))/n(i)
-178                  continue
+178                 continue
                     dv = (1-fmel)*phase(nz)*(eta(nz)/n(nz)/dt) * ((dp/dt)**n0(nz))
                     if (zalpha .gt. 0.d0) then
                         do 179 i = 1, nz-1
@@ -864,7 +864,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                                                          phase(i)/zalpha)*(eta(i)/n(i)/dt)* ((dp/&
                                                          &dt)**n0(i)&
                                                          )
-179                      continue
+179                     continue
                     endif
                 else
                     dv =0.d0
@@ -890,7 +890,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 coeff8=0.d0
                 do 451 i = 1, 6
                     coeff8=coeff8+pdtsca(i)*dvtau(i)*dvbel(i)
-451              continue
+451             continue
                 coeff9=coeff1*rb*(eqtau*trans+dp)/eqtau +3.d0*mu*&
                 coeff8*(eqtau-rb*dp)/(2.d0*(eqtau**3.d0))
                 coeff9=-coeff9*coeff3*trbel/coeff5
@@ -901,17 +901,17 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                         do 457 k = 1, 3
                             mat3(i,j)=mat3(i,j)+dvtau(ind(i,k))*mat1(&
                             k,j)
-457                      continue
-456                  continue
-455              continue
+457                     continue
+456                 continue
+455             continue
                 do 460 i = 1, 6
                     do 470 j = 1, 3
                         do 480 k = 1, 3
                             dsigdf(i,j,k) = dsigdf(i,j,k) + coeff6* dvtau(i)*mat3(j,k) + coeff7*d&
                                             &vtau(i)*mat1( j,k) + coeff9*dvtau(i)*mat0(j,k)
-480                      continue
-470                  continue
-460              continue
+480                     continue
+470                 continue
+460             continue
             endif
         endif
     endif
@@ -927,7 +927,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
         do 500 i = 1, 6
             dvtau(i)=taup(i)-kr(i)*trtau/3.d0
             eqtau=eqtau+pdtsca(i)*(dvtau(i)**2.d0)
-500      continue
+500     continue
         eqtau=sqrt(1.5d0*eqtau)
         je2=(eqtau**2.d0)/(3.d0*(mu**2.d0))
         je3=dvtau(1)*(dvtau(2)*dvtau(3)-dvtau(6)*dvtau(6)) -dvtau(4)*(&
@@ -942,7 +942,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             xp=sol(1)
             do 510 i = 2, nbr
                 if ((abs(sol(i)-xm)) .lt. (abs(sol(i-1)-xm))) xp=sol(i)
-510          continue
+510         continue
         endif
         if (compor(1)(1:4) .eq. 'ELAS') then
             vip(1) = 3.d0*(1.d0-(jp**(2.d0/3.d0))*xp)/2.d0
@@ -952,6 +952,6 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

@@ -74,7 +74,7 @@ subroutine ef0344(nomte)
             messk(2)=zk16(zi(imat)+icomp-1)(1:10)
             call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
         endif
-10  end do
+ 10 end do
 ! --- ------------------------------------------------------------------
     nbpar=0
     materi = ' '
@@ -85,14 +85,14 @@ subroutine ef0344(nomte)
     rad=zero
     do 20 i = 1, nbres
         valres(i)=zero
-20  end do
+ 20 end do
 !
     do 40 i = 1, 3
         do 30 j = 1, 3
             pgl1(i,j)=zero
             pgl2(i,j)=zero
-30      continue
-40  end do
+ 30     continue
+ 40 end do
 !
     npg=3
     call moytem('RIGI', npg, 1, '+', valpar,&
@@ -152,7 +152,7 @@ subroutine ef0344(nomte)
     call jevech('PDEPLAR', 'L', jdepl)
     do 50 i = 1, 14
         ugr(i)=zr(jdepl+i-1)
-50  end do
+ 50 end do
 ! --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UGR
     call utpvgl(nno, nc, pgl, ugr, ulr)
 ! --- VECTEUR EFFORT       LOCAL  FLR = KLC * ULR
@@ -160,10 +160,10 @@ subroutine ef0344(nomte)
 ! --- ------------------------------------------------------------------
 ! --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION
     call verift('RIGI', npg, 1, '+', zi(lmater),&
-                materi, 'ELAS', 1, epsith, iret1)
+                materi, 'ELAS', iret1, epsth=epsith)
     do 60 i = 1, 14
         ugr(i)=0.d0
-60  end do
+ 60 end do
     ugr(1)=-epsith*xl
     ugr(8)=-ugr(1)
 ! --- ------------------------------------------------------------------
@@ -171,7 +171,7 @@ subroutine ef0344(nomte)
     do 70 i = 1, 7
         flr(i)=flr(i)-klc(i,1)*ugr(1)
         flr(i+7)=flr(i+7)-klc(i+7,1+7)*ugr(1+7)
-70  end do
+ 70 end do
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS
     call tecach('ONN', 'PFR1D1D', 'L', iret, iad=lforcr)
@@ -183,7 +183,7 @@ subroutine ef0344(nomte)
         do 80 i = 1, 6
             flr(i)=flr(i)-fe(i)
             flr(i+7)=flr(i+7)-fe(i+6)
-80      continue
+ 80     continue
     endif
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS (SOUS FORME DE FONCTION)
@@ -196,7 +196,7 @@ subroutine ef0344(nomte)
         do 90 i = 1, 6
             flr(i)=flr(i)-fe(i)
             flr(i+7)=flr(i+7)-fe(i+6)
-90      continue
+ 90     continue
     endif
 !
 ! --- ------------------------------------------------------------------
@@ -207,7 +207,7 @@ subroutine ef0344(nomte)
     do 100 i = 1, 7
         zr(jeffo-1+i)=-flr(i)
         zr(jeffo-1+i+7)=flr(i+7)
-100  end do
+100 end do
 !
 !
 end subroutine

@@ -118,7 +118,7 @@ subroutine te0435(option, nomte)
 !
     do 1955 kpg = 1, npg
         cod(kpg)=0
-1955  end do
+1955 end do
 !
 ! - DIRECTION DE REFERENCE POUR UN COMPORTEMENT ANISOTROPE
 !
@@ -135,7 +135,7 @@ subroutine te0435(option, nomte)
         do 110 n = 1, nno
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-110      continue
+110     continue
 !
 ! --- CALCUL DE LA MATRICE "B" :
 !              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
@@ -164,10 +164,10 @@ subroutine te0435(option, nomte)
                         i-1)
                         deps(c)=deps(c)+b(c,i,n)*zr(ideplp+(n-1)*nddl+&
                         i-1)
-130                  continue
+130                 continue
 !
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        materi, 'ELAS_MEMBRANE', 1, epsthe, iret)
+                        materi, 'ELAS_MEMBRANE', iret, epsth=epsthe)
             call r8inir(3, 0.d0, epsth, 1)
             epsth(1) = epsthe
             epsth(2) = epsthe
@@ -178,12 +178,12 @@ subroutine te0435(option, nomte)
             do 140 c = 1, ncomp
                 do 140 cc = 1, ncomp
                     sigp(c) = sigp(c) + (epsm(cc)+deps(cc)-epsth(cc)) *rig(cc,c)
-140              continue
+140             continue
 !
             if ((option .eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
                 do 150 c = 1, ncomp
                     zr(icontp+(kpg-1)*ncomp+c-1)=sigp(c)
-150              continue
+150             continue
             endif
 !
         endif
@@ -197,7 +197,7 @@ subroutine te0435(option, nomte)
                         zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
                         nddl+i-1) +b(c,i,n)*sigp(c)*zr(ipoids+kpg-1)*&
                         jac
-160                  continue
+160                 continue
         endif
 !
         if (matric) then
@@ -218,18 +218,18 @@ subroutine te0435(option, nomte)
                                 do 210 cc = 1, ncomp
                                     tmp = tmp + b(cc,i,n)*rig(cc,c)*b( c,j,m) *zr(ipoids+kpg-1)*j&
                                           &ac
-210                              continue
+210                             continue
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (j .le. j1) then
                                 kk = kkd + nddl*(m-1)+j
                                 zr(imatuu+kk-1) = zr(imatuu+kk-1) + tmp
                             endif
-200                      continue
+200                     continue
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800  end do
+800 end do
 !
     if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
         call codere(cod, npg, zi(jcret))

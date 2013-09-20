@@ -116,7 +116,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     do 19 k = 1, 6
         defam(k) = 0.d0
         defap(k) = 0.d0
-19  end do
+ 19 end do
 !
     do 20 k = 1, ndimsi
         call rcvarc(' ', epsa(k), '-', fami, kpg,&
@@ -126,14 +126,14 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
         call rcvarc(' ', epsa(k), '+', fami, kpg,&
                     ksp, defap(k), iret5)
         if (iret5 .ne. 0) defap(k)=0.d0
-20  end do
+ 20 end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
     do 105 k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
-105  end do
+105 end do
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -163,7 +163,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, epsthe, iret0)
+                materi, 'ELAS', iret0, epsth=epsthe)
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !
@@ -204,30 +204,30 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
         depsth(k) = deps(k) -coef -(defap(k)-defam(k))
         depsth(k+3) = deps(k+3)-(defap(k+3)-defam(k+3))
         depsmo = depsmo + depsth(k)
-110  end do
+110 end do
     depsmo = depsmo/3.d0
     do 115 k = 1, ndimsi
         depsdv(k) = depsth(k) - depsmo * kron(k)*co
-115  end do
+115 end do
 !
 !     -- 5 CALCUL DE SIGMP :
 !     ----------------------
     sigmmo = 0.d0
     do 113 k = 1, 3
         sigmmo = sigmmo + sigm(k)
-113  end do
+113 end do
     sigmmo = sigmmo /3.d0
     do 114 k = 1, ndimsi
         sigmp(k)=deuxmu/deumum*(sigm(k)-sigmmo*kron(k)) + troisk/&
         troikm*sigmmo*kron(k)
-114  end do
+114 end do
 !
 !     -- 6 CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
 !     -------------------------------------------------------
     sigmmo = 0.d0
     do 116 k = 1, 3
         sigmmo = sigmmo + sigmp(k)
-116  end do
+116 end do
     sigmmo = sigmmo /3.d0
 !
 !     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
@@ -237,7 +237,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !
         do 145 k = 1, ndimsi
             sigp(k) = sigmp(k)+deuxmu*depsdv(k)+co*troisk*depsmo*kron( k)
-145      continue
+145     continue
 !
         vip(1) = 0.d0
 !
@@ -250,17 +250,17 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
         do 100, k=1,ndimsi
         do 101, l=1,ndimsi
         dsidep(k,l) = 0.d0
-101      continue
-100      continue
+101     continue
+100     continue
 !
         do 130 k = 1, 3
             do 131 l = 1, 3
                 dsidep(k,l) = dsidep(k,l)+co*(troisk/3.d0-deuxmu/3.d0)
-131          continue
-130      continue
+131         continue
+130     continue
         do 120 k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu
-120      continue
+120     continue
 !
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
@@ -270,8 +270,8 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
                     if (l .eq. 3) goto 137
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
                     k,3)*dsidep(3,l)
-137              continue
-136          continue
+137             continue
+136         continue
         endif
 !
     endif

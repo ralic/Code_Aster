@@ -109,10 +109,10 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     plast = vim(2)
     do 11 k = 1, 3
         xm(k) = vim(k+2)
-11  end do
+ 11 end do
     do 10 k = 4, ndimsi
         xm(k) = vim(k+2)*sqrt(2.d0)
-10  end do
+ 10 end do
     dp=0.d0
 !
 !
@@ -154,7 +154,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         troisk = e/(1.d0-2.d0*nu)
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, epsthe, iret0)
+                materi, 'ELAS', iret0, epsth=epsthe)
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------
@@ -181,8 +181,10 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         rpm = rprim*pm +sigy
     else
 !
-        call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tm, iret2)
-        call rctype(imate, 1, 'TEMP', [tm], resu, type)
+        call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+                    ksp, tm, iret2)
+        call rctype(imate, 1, 'TEMP', [tm], resu,&
+                    type)
         if ((type.eq.'TEMP') .and. (iret2.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif
@@ -191,8 +193,10 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         deumum = em/(1.d0+num)
         troikm = em/(1.d0-2.d0*num)
 !
-        call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tp, iret1)
-        call rctype(imate, 1, 'TEMP', [tp], resu, type)
+        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+                    ksp, tp, iret1)
+        call rctype(imate, 1, 'TEMP', [tp], resu,&
+                    type)
         if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif
@@ -217,33 +221,33 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     do 110 k = 1, 3
         depsth(k) = deps(k) -coef
         depsmo = depsmo + depsth(k)
-110  end do
+110 end do
     depsmo = depsmo/3.d0
     do 111 k = 4, ndimsi
         depsth(k) = deps(k)
-111  end do
+111 end do
     do 115 k = 1, ndimsi
         depsdv(k) = depsth(k) - depsmo * kron(k)
-115  end do
+115 end do
 !
 !     -- 5 CALCUL DE SIGMP :
 !     ----------------------
     sigmmo = 0.d0
     do 113 k = 1, 3
         sigmmo = sigmmo + sigm(k)
-113  end do
+113 end do
     sigmmo = sigmmo /3.d0
     do 114 k = 1, ndimsi
         sigmp(k)=deuxmu/deumum*(sigm(k)-sigmmo*kron(k)) + troisk/&
         troikm*sigmmo*kron(k)
-114  end do
+114 end do
 !
 !     -- 6 CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
 !     -------------------------------------------------------
     sigmmo = 0.d0
     do 116 k = 1, 3
         sigmmo = sigmmo + sigmp(k)
-116  end do
+116 end do
     sigmmo = sigmmo /3.d0
     sieleq = 0.d0
     do 117 k = 1, ndimsi
@@ -253,7 +257,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         endif
         sigel(k)=sigmdv(k)+deuxmu*depsdv(k)-xm(k)
         sieleq = sieleq + sigel(k)**2
-117  end do
+117 end do
     sieleq = sqrt(1.5d0*sieleq)
     seuil = sieleq - rpm
     hp=1.d0
@@ -335,7 +339,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
             xp(k)=xm(k)*(1.d0-g1)+g1*sigedv(k)
             sigpdv(k) = sigedv(k)*gp/hp+xm(k)*1.5d0*deuxmu*dp/rp/hp
             sigp(k) = sigpdv(k) + (sigmmo + troisk*depsmo)*kron(k)
-160      continue
+160     continue
     endif
 !
 !     -- 8 CALCUL DE DSIDEP(6,6) :
@@ -347,44 +351,44 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
             do 118 k = 1, ndimsi
                 sigdv(k) = sigmdv(k)-xm(k)
-118          continue
+118         continue
             rp = rpm
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
             do 119 k = 1, ndimsi
                 sigdv(k) = sigpdv(k)-xp(k)
-119          continue
+119         continue
         endif
 !
 !       -- 8.1 PARTIE PLASTIQUE:
         do 100 k = 1, ndimsi
             do 101 l = 1, ndimsi
                 dsidep(k,l) = 0.d0
-101          continue
-100      continue
+101         continue
+100     continue
 !
         sigeps = 0.d0
         do 170 k = 1, ndimsi
             sigeps = sigeps + sigdv(k)*depsdv(k)
-170      continue
+170     continue
         if (plasti .and. sigeps .ge. 0.d0) then
             cc=-(1.5d0*deuxmu)**2/( 1.5d0*(deuxmu+prag)+rprim )/rp**2&
             *(1.d0 - dp*rprim/rp )/hp
             do 135 k = 1, ndimsi
                 do 135 l = 1, ndimsi
                     dsidep(k,l) = cc*sigdv(k)*sigdv(l)
-135              continue
+135             continue
         endif
 !
 !       -- 8.2 PARTIE ELASTIQUE:
         do 130 k = 1, 3
             do 131 l = 1, 3
                 dsidep(k,l)=dsidep(k,l)+troisk/3.d0-deuxmu/3.d0*gp/hp
-131          continue
-130      continue
+131         continue
+130     continue
         do 120 k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu*gp/hp
-120      continue
+120     continue
 !
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
@@ -394,8 +398,8 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                     if (l .eq. 3) goto 137
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
                     k,3)*dsidep(3,l)
-137              continue
-136          continue
+137             continue
+136         continue
         endif
     endif
 !
@@ -416,11 +420,11 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         vip(2)=plast
         do 31 k = 1, 3
             vip(k+2) = xp(k)
-31      continue
+ 31     continue
         do 30 k = 4, ndimsi
             vip(k+2) = xp(k)/sqrt(2.d0)
-30      continue
+ 30     continue
     endif
 !
-9999  continue
+9999 continue
 end subroutine

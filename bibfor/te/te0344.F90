@@ -90,7 +90,7 @@ subroutine te0344(option, nomte)
             messk(2) = zk16(zi(imat)+icomp-1)(1:10)
             call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
         endif
-152  end do
+152 end do
 ! --- ------------------------------------------------------------------
     nbpar = 0
     nompar = '  '
@@ -100,13 +100,13 @@ subroutine te0344(option, nomte)
     rad = zero
     do 10 i = 1, nbres
         valres(i) = zero
-10  end do
+ 10 end do
 !
     do 11 i = 1, 3
         do 11 j = 1, 3
             pgl1(i,j) = zero
             pgl2(i,j) = zero
-11      continue
+ 11     continue
 !
     npg = 3
     call moytem('RIGI', npg, 1, '+', valpar,&
@@ -165,7 +165,7 @@ subroutine te0344(option, nomte)
     call jevech('PDEPLAR', 'L', jdepl)
     do 510 i = 1, 14
         ugr(i) = zr(jdepl+i-1)
-510  end do
+510 end do
 ! --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UGR
     call utpvgl(nno, nc, pgl, ugr, ulr)
 ! --- VECTEUR EFFORT       LOCAL  FLR = KLC * ULR
@@ -173,10 +173,10 @@ subroutine te0344(option, nomte)
 ! --- ------------------------------------------------------------------
 ! --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION
     call verift('RIGI', npg, 1, '+', zi(lmater),&
-                materi, 'ELAS', 1, epsith, iret1)
+                materi, 'ELAS', iret1, epsth=epsith)
     do 20 i = 1, 14
         ugr(i) = 0.d0
-20  end do
+ 20 end do
     ugr(1) = -epsith*xl
     ugr(8) = -ugr(1)
 ! --- ------------------------------------------------------------------
@@ -184,7 +184,7 @@ subroutine te0344(option, nomte)
     do 35 i = 1, 7
         flr(i) = flr(i) - klc(i,1)*ugr(1)
         flr(i+7) = flr(i+7) - klc(i+7,1+7)*ugr(1+7)
-35  end do
+ 35 end do
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS
     call tecach('ONN', 'PFR1D1D', 'L', iret, iad=lforcr)
@@ -196,7 +196,7 @@ subroutine te0344(option, nomte)
         do 100 i = 1, 6
             flr(i) = flr(i) - fe(i)
             flr(i+7) = flr(i+7) - fe(i+6)
-100      continue
+100     continue
     endif
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS (SOUS FORME DE FONCTION)
@@ -209,7 +209,7 @@ subroutine te0344(option, nomte)
         do 110 i = 1, 6
             flr(i) = flr(i) - fe(i)
             flr(i+7) = flr(i+7) - fe(i+6)
-110      continue
+110     continue
     endif
 !
 ! --- ------------------------------------------------------------------
@@ -220,7 +220,7 @@ subroutine te0344(option, nomte)
         do 210 i = 1, 6
             fe(i) = flr(i)
             fe(i+6) = flr(i+7)
-210      continue
+210     continue
         call posigr(nomte, fe, zr(jeffo))
 !
     else if (option.eq.'SIPO_ELNO') then
@@ -228,7 +228,7 @@ subroutine te0344(option, nomte)
         do 220 i = 1, 6
             fe(i) = flr(i)
             fe(i+6) = flr(i+7)
-220      continue
+220     continue
         call posipr(nomte, fe, zr(jeffo))
 !
     endif

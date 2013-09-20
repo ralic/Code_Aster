@@ -219,8 +219,8 @@ subroutine te0490(option, nomte)
     do 150 i = 1, nno
         do 140 idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+140     continue
+150 end do
 !
     call ortrep(zi(imate), ndim, xyz, repere)
 !
@@ -351,7 +351,7 @@ subroutine te0490(option, nomte)
 !
             do 20 i = 1, nbsig
                 sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
-20          continue
+ 20         continue
 !
 ! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 !
@@ -479,7 +479,7 @@ subroutine te0490(option, nomte)
                     if (idconm .ne. 0) then
                         do 25 i = 1, nbsig
                             sigmm(i) = zr(idsigm+(igau-1)*nbsig+i-1)
-25                      continue
+ 25                     continue
                     endif
 !
 ! ---       TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
@@ -488,7 +488,7 @@ subroutine te0490(option, nomte)
 !
                     do 30 i = 1, nbsig
                         epsi(i)= epss(i+(igau-1)*nbsig)
-30                  continue
+ 30                 continue
 !
 ! ---      TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION PRECEDENT
 !          ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
@@ -497,13 +497,13 @@ subroutine te0490(option, nomte)
                     if (ideplm .ne. 0) then
                         do 35 i = 1, nbsig
                             epsim(i) = epssm(i+(igau-1)*nbsig)
-35                      continue
+ 35                     continue
                     endif
 !
                     if ((idconm.ne.0) .and. (ideplm.ne.0)) then
                         do 50 i = 1, nbsig
                             delta(i)=epsi(i)-epsim(i)
-50                      continue
+ 50                     continue
 !
 !---          CALCUL DES TERMES A SOMMER
 !
@@ -556,7 +556,7 @@ subroutine te0490(option, nomte)
 !  -- DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
             call verift(fami, igau, 1, '+', zi(imate),&
-                        materi, 'ELAS', 1, epsthe, iret)
+                        materi, 'ELAS', iret, epsth=epsthe)
 !
 !
 ! --- TRAITEMENT DU CAS CONTRAINTES PLANES :
@@ -709,7 +709,7 @@ subroutine te0490(option, nomte)
                 endif
             endif
 !
-10      continue
+ 10     continue
 !
 ! ----   RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
 ! ----   AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR
@@ -762,7 +762,7 @@ subroutine te0490(option, nomte)
 !
             do 70 i = 1, nbsig
                 sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
-70          continue
+ 70         continue
 !
 ! --- CALCUL DES DEFORMATIONS ELASTIQUES AU POINT
 ! --- D'INTEGRATION COURANT EN CONSIDERANT LE MATERIAU ISOTROPE :
@@ -810,10 +810,10 @@ subroutine te0490(option, nomte)
                 ASSERT(idvari.ne.1)
                 do 75 i = 1, nbsig
                     x(i) = zr(idvari+(igau-1)*nbsig2+i-1)
-75              continue
+ 75             continue
                 do 80 i = 1, nbsig
                     sigma(i) = sigma(i) - x(i)
-80              continue
+ 80             continue
             endif
 !
 ! --- CALCUL DU TRAVAIL PLASTIQUE AU POINT D'INTEGRATION COURANT :
@@ -914,7 +914,7 @@ subroutine te0490(option, nomte)
                 indigl = indigl + (un - eplast/eplaeq)*poids
             endif
 !
-60      continue
+ 60     continue
 !
 ! ---- RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
 ! ---- AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR

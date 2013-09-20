@@ -132,14 +132,14 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
 !
     if (isot .and. (.not.impl)) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', iret, epsth=depsth)
         depsm=deps-depsth
         call nm1dis(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
                     compor, ' ', sigp, vip, dsde)
     else if (cine) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', iret, epsth=depsth)
         depsm = deps-depsth
         call nm1dci(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -148,7 +148,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
         dsde = ep
         vip(1) = 0.d0
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', iret, epsth=depsth)
         sigp = ep* (sigm/em+deps-depsth)
     else if (corr) then
         call nm1dco(fami, kpg, ksp, option, imate,&
@@ -188,7 +188,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
         endif
     else if (pinto) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', iret, epsth=depsth)
         depsm=deps-depsth
         call nmmaba(imate, compor(1), ep, dsde, sigy,&
                     ncstpm, cstpm)

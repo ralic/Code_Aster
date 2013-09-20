@@ -95,7 +95,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
 !
     materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, epsthe, iret1)
+                materi, 'ELAS', iret1, epsth=epsthe)
 !
     iret=0
     theta = crit(4)
@@ -113,7 +113,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
 !
     do 90 k = 1, 6
         degran(k) = 0.d0
-90  end do
+ 90 end do
     rac2 = sqrt(2.d0)
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret1)
@@ -144,7 +144,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
         call rcvarc(' ', epsa(k), '+', fami, kpg,&
                     ksp, defap(k), iret2)
         if (iret2 .eq. 1) defap(k)=0.d0
-20  end do
+ 20 end do
 !
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
@@ -152,7 +152,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     do 105 k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
-105  end do
+105 end do
 !
     nompar(1)='INST'
     valpar(1)=instam
@@ -198,36 +198,36 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
             depsth(k+3) = depsth(k+3) * theta
         endif
         epsmo = epsmo + depsth(k)
-110  end do
+110 end do
 !
     epsmo = epsmo/3.d0
     do 115 k = 1, ndimsi
         depsdv(k) = depsth(k) - epsmo * kron(k)
-115  end do
+115 end do
 !
     sigmo = 0.d0
     do 113 k = 1, 3
         sigmo = sigmo + sigm(k)
-113  end do
+113 end do
     sigmo = sigmo /3.d0
 !
     do 114 k = 1, ndimsi
         sigmp(k)=(theta*deuxmu+(1.d0-theta)*deumum) /deumum*(sigm(k)-&
         sigmo*kron(k))+ (theta*troisk+(1.d0-theta)*troikm)/troikm*&
         sigmo*kron(k)
-114  end do
+114 end do
 !
     sigmo = 0.d0
     do 116 k = 1, 3
         sigmo = sigmo + sigmp(k)
-116  end do
+116 end do
     sigmo = sigmo /3.d0
     sieleq = 0.d0
     do 117 k = 1, ndimsi
         sigdv(k) = sigmp(k) - sigmo * kron(k)
         sigel(k) = sigdv(k) + deuxmu * depsdv(k)
         sieleq = sieleq + sigel(k)**2
-117  end do
+117 end do
     sieleq = sqrt(1.5d0*sieleq)
 !
 !----RESOLUTION DE L'EQUATION SCALAIRE----
@@ -272,7 +272,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
             sigp(k) = (sigp(k) - sigm(k))/theta + sigm(k)
             deltev = (sigel(k)-sigdv(k))/(deuxmu*theta)
             deltp2 = deltp2 + deltev**2
-160      continue
+160     continue
         vip(1) = vim(1) + sqrt(2.d0*deltp2/3.d0)
     endif
 !
@@ -292,11 +292,11 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
                 dsidep(k,l) = coef1*(deltkl-kron(k)*kron(l)/3.d0)
                 dsidep(k,l) = deuxmu*(dsidep(k,l)+coef2*sigel(k)* sigel(l))
                 dsidep(k,l) = dsidep(k,l) + troisk*kron(k)*kron(l)/ 3.d0
-135          continue
+135         continue
     endif
 !
-299  continue
-9999  continue
+299 continue
+9999 continue
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

@@ -52,7 +52,7 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi,&
 !
     materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, depsth, iret1)
+                materi, 'ELAS', iret1, epsth=depsth)
 !
     troikm = matm(1)
     deumum = matm(2)
@@ -62,20 +62,20 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi,&
 !    CALCUL DES DEFORMATIONS PLASTIQUES AU TEMPS -
     do 5 k = 1, ndimsi
         epm(k) = epsm(k) - sigm(k)/deumum
- 5  end do
+  5 end do
     epmmo = (epm(1)+epm(2)+epm(3)) / 3.d0
     do 6 k = 1, 3
         epm(k) = epm(k) - epmmo
- 6  end do
+  6 end do
 !
 !    PARTS HYDROSTATIQUES ET DEVIATORIQUES DE L'INCR. DEFO. MECANIQUE
     do 10 k = 1, ndimsi
         depsme(k) = deps(k) - depsth*kron(k)
-10  end do
+ 10 end do
     depsmo = (depsme(1)+depsme(2)+depsme(3))/3.d0
     do 20 k = 1, ndimsi
         depsdv(k) = depsme(k) - depsmo * kron(k)
-20  end do
+ 20 end do
 !
 !
 !    PART HYDROSTATIQUE DES CONTRAINTES
@@ -87,12 +87,12 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi,&
     do 30 k = 1, ndimsi
         sigdvm(k) = sigm(k) - sigmom*kron(k)
         sigdv(k) = deuxmu/deumum*sigdvm(k) + deuxmu*depsdv(k)
-30  end do
+ 30 end do
 !
 !
 !    CONTRAINTES ELASTIQUES
     do 40 k = 1, ndimsi
         sigp(k) = sigmo*kron(k) + sigdv(k)
-40  end do
+ 40 end do
 !
 end subroutine

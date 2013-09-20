@@ -65,8 +65,8 @@ subroutine te0396(option, nomte)
             ico = ico + 1
             en(ne,kp) = zr(ivf-1+ico)
             enprim(ne,kp) = zr(idfdk-1+ico)
-10      continue
-20  end do
+ 10     continue
+ 20 end do
 !
 !
 ! PARAMETRES EN ENTREE
@@ -117,8 +117,8 @@ subroutine te0396(option, nomte)
     do 40 ne = 1, nno
         do 30 kc = 1, 6
             fint(kc,ne) = 0.d0
-30      continue
-40  end do
+ 30     continue
+ 40 end do
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -128,13 +128,13 @@ subroutine te0396(option, nomte)
         do 60 kc = 1, 3
             k0 = k0 + 1
             x00(kc,ne) = zr(k0)
-60      continue
-70  end do
+ 60     continue
+ 70 end do
 !
 !     MATRICE DE ROTATION ASSOCIE AU VECTEUR ROTATION NUL
     do 80 i = 1, 3
         qigk(i) = 0.d0
-80  end do
+ 80 end do
     call marota(qigk, rotk)
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
@@ -148,19 +148,19 @@ subroutine te0396(option, nomte)
 !
         do 90 ic = 1, 3
             x0pg(ic) = 0.d0
-90      continue
+ 90     continue
         unsurj = 1.d0/ajacob
         do 110 ic = 1, 3
             do 100 ne = 1, nno
                 x0pg(ic) = x0pg(ic) + unsurj*enprim(ne,kp)*x00(ic,ne)
-100          continue
-110      continue
+100         continue
+110     continue
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    materi, 'ELAS', 1, epsthe, iret)
+                    materi, 'ELAS', iret, epsth=epsthe)
         do 130 i = 1, 3
             gn(i) = 0.d0
             gm(i) = 0.d0
-130      continue
+130     continue
 !
 !        DILATATION THERMIQUE : -E*A*ALPHA*(T-TREF)
 !
@@ -173,7 +173,7 @@ subroutine te0396(option, nomte)
         call gdfint(kp, nno, ajacob, pjacob, en,&
                     enprim, x0pg, pn, pm, fint)
 !
-140  end do
+140 end do
 !
 !     FIN DE BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -182,6 +182,6 @@ subroutine te0396(option, nomte)
         do 150 kc = 1, 6
             ifint = ifint + 1
             zr(ifint) = fint(kc,ne)
-150      continue
-160  end do
+150     continue
+160 end do
 end subroutine

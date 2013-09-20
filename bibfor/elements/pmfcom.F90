@@ -35,8 +35,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-#include "asterfort/verifm.h"
-#include "asterfort/verift.h"
 #include "asterfort/vmci1d.h"
 #include "blas/dcopy.h"
     integer :: nf, icdmat, nbvalc, isecan, kpg, debsp
@@ -282,7 +280,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             if (ltemp) then
                 ksp=debsp-1+i
                 call paeldt(kpg, ksp, fami, icdmat, materi,&
-                            em, ep, nu, depsth)
+                            em, ep, nu, depsth, tplus=tempp)
             endif
 !           nm1tra ne fonctionne que pour 1 matériau par maille (vérifie dans rctrac)
             call nm1tra(icdmat, tempp, defm(i), ddefp(i), varim(ivari),&
@@ -296,7 +294,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                 if (ltemp) then
                     ksp=debsp-1+i
                     call paeldt(kpg, ksp, fami, icdmat, materi,&
-                                em, ep, nu, depsth)
+                                em, ep, nu, depsth, tmoins=tempm,&
+                                tplus=tempp, trefer=tref)
                 endif
                 depsm = ddefp(i)-depsth
                 if ((iret1+iret2+iret3) .ge. 1) then

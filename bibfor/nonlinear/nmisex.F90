@@ -127,7 +127,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     do 19 k = 1, 6
         defam(k) = 0.d0
         defap(k) = 0.d0
-19  end do
+ 19 end do
 !
     do 20 k = 1, ndimsi
         call rcvarc(' ', epsa(k), '-', fami, kpg,&
@@ -137,14 +137,14 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         call rcvarc(' ', epsa(k), '+', fami, kpg,&
                     ksp, defap(k), iret5)
         if (iret5 .ne. 0) defap(k)=0.d0
-20  end do
+ 20 end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
     do 105 k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
-105  end do
+105 end do
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -175,7 +175,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     endif
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, epsthe, iret0)
+                materi, 'ELAS', iret0, epsth=epsthe)
 !
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES
@@ -221,13 +221,13 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         depsth(k) = deps(k) - coef - (defap(k) - defam(k))
         depsth(k+3) = deps(k+3) - (defap(k+3)-defam(k+3))
         depsmo = depsmo + depsth(k)
-110  end do
+110 end do
 !
     depsmo = depsmo / 3.d0
 !
     do 115 k = 1, ndimsi
         depsdv(k) = depsth(k) - depsmo * kron(k)*co
-115  end do
+115 end do
 !
 !     -- 5 CALCUL DE SIGMP :
 !     ----------------------
@@ -235,13 +235,13 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
     do 113 k = 1, 3
         sigmmo = sigmmo + sigm(k)
-113  end do
+113 end do
 !
     sigmmo = sigmmo / 3.d0
 !
     do 114 k = 1, ndimsi
         sigmp(k) = deuxmu/deumum*( sigm(k)-sigmmo*kron(k)) + troisk/ troikm*sigmmo*kron(k)
-114  end do
+114 end do
 !
 !     -- 6 CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
 !     -------------------------------------------------------
@@ -249,7 +249,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
     do 116 k = 1, 3
         sigmmo = sigmmo + sigmp(k)
-116  end do
+116 end do
 !
     sigmmo = sigmmo / 3.d0
     sieleq = 0.d0
@@ -258,7 +258,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         sigmdv(k) = sigmp(k)- sigmmo * kron(k)
         sigel(k) = sigmdv(k) + deuxmu * depsdv(k)
         sieleq = sieleq + sigel(k)**2
-117  end do
+117 end do
 !
     sieleq = sqrt(1.5d0*sieleq)
     seuil = sieleq - rp
@@ -272,7 +272,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         if (compor(1)(1:4) .eq. 'ELAS') then
             do 145 k = 1, ndimsi
                 sigp(k) = sigmp(k)+deuxmu*depsdv(k)+co*troisk*depsmo* kron(k)
-145          continue
+145         continue
 !
 !       -- 7.1 CALCUL DE DP (ET DX SI C_PLAN) :
 !       -------------------------------------------
@@ -327,7 +327,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                 sigpdv(k) = sigmdv(k) + deuxmu * depsdv(k)
                 sigpdv(k) = sigpdv(k)*rp/(rp+1.5d0*deuxmu*dp)
                 sigp(k) = sigpdv(k) + (sigmmo + co*troisk*depsmo)* kron(k)
-160          continue
+160         continue
         endif
 !
 !
@@ -349,7 +349,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         if (compor(1)(1:4) .eq. 'ELAS') then
             do 146 k = 1, ndimsi
                 sigp(k) = sigmp(k)+deuxmu*depsdv(k)+co*troisk*depsmo* kron(k)
-146          continue
+146         continue
 !
 !       -- 7.1 CALCUL DE DP (ET DX SI C_PLAN) :
 !       -------------------------------------------
@@ -367,7 +367,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                 sigpdv(k) = sigmdv(k) + deuxmu * depsdv(k)
                 sigpdv(k) = sigpdv(k)*rp/(rp+1.5d0*deuxmu*dp)
                 sigp(k) = sigpdv(k) + (sigmmo + co*troisk*depsmo)* kron(k)
-161          continue
+161         continue
         endif
 !
 !    MATRICE TANGENTE
@@ -378,14 +378,14 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
             do 118 k = 1, ndimsi
                 sigdv(k) = sigmdv(k)
                 rp = rp + sigdv(k)**2
-118          continue
+118         continue
             rp = sqrt(1.5d0*rp)
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
             if (compor(1) .eq. 'VMIS_ISOT_LINE') then
                 do 119 k = 1, ndimsi
                     sigdv(k) = sigpdv(k)
-119              continue
+119             continue
             endif
         endif
 !
@@ -393,8 +393,8 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         do 100, k = 1, ndimsi
         do 101, l = 1, ndimsi
         dsidep(k,l) = 0.d0
-101      continue
-100      continue
+101     continue
+100     continue
 !
         a=1.d0
         if (.not.dech) then
@@ -402,7 +402,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                 sigeps = 0.d0
                 do 170 k = 1, ndimsi
                     sigeps = sigeps + sigdv(k)*depsdv(k)
-170              continue
+170             continue
                 if (plasti .and. sigeps .ge. 0.d0) then
                     a = 1.d0+1.5d0*deuxmu*dp/rp
                     coef = -(1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/ rp**2 *(1.d0 - dp*rprim/rp &
@@ -410,8 +410,8 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                     do 135 k = 1, ndimsi
                         do 138 l = 1, ndimsi
                             dsidep(k,l) = coef*sigdv(k)*sigdv(l)
-138                      continue
-135                  continue
+138                     continue
+135                 continue
                 endif
             endif
         endif
@@ -420,12 +420,12 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         do 130 k = 1, 3
             do 131 l = 1, 3
                 dsidep(k,l) = dsidep(k,l)+co*(troisk/3.d0-deuxmu/( 3.d0*a))
-131          continue
-130      continue
+131         continue
+130     continue
 !
         do 120 k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu/a
-120      continue
+120     continue
 !
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
@@ -436,13 +436,13 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                     if (l .eq. 3) goto 137
 !
                     dsidep(k,l) = dsidep(k,l) - 1.d0/dsidep(3,3)* dsidep(k,3)*dsidep(3,l)
-137              continue
-136          continue
+137             continue
+136         continue
         endif
     else
         ASSERT(.false.)
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

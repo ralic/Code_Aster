@@ -109,7 +109,7 @@ subroutine dxsith(nomte, mater, sigma)
 !         ----------------------------------------------------
                 ipgh=npgh*(icou-1)+igauh
                 call verift('RIGI', ipg, ipgh, '+', mater,&
-                            materi, 'ELAS', 1, epsth( 1), iret)
+                            materi, 'ELAS', iret, epsth=epsth(1) )
 !
                 epsth(2) = epsth(1)
                 epsth(3) = zero
@@ -128,11 +128,11 @@ subroutine dxsith(nomte, mater, sigma)
                 do 130 i = 1, 4
                     do 131 j = 1, 4
                         sigma(icpg+i)=sigma(icpg+i)-epsth(j)*d(i,j)
-131                  continue
-130              continue
+131                 continue
+130             continue
 !
-120          continue
-110      continue
-100  end do
+120         continue
+110     continue
+100 end do
 !
 end subroutine

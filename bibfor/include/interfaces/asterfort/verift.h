@@ -17,16 +17,22 @@
 !
 interface
     subroutine verift(fami, kpg, ksp, poum, imate,&
-                      materi, compor, ndim, epsth, iret)
-        integer :: ndim
-        character(*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(*) :: poum
-        integer :: imate
-        character(len=8) :: materi
-        character(*) :: compor
-        real(kind=8) :: epsth(ndim)
-        integer :: iret
+                      materi, compor, iret, ndim, epsth,&
+                      vepsth, tmoins, tplus, trefer)
+
+        character(len=*), intent(in) :: fami
+        character(len=*), intent(in) :: poum
+        character(len=*), intent(in) :: compor
+        character(len=8), intent(in) :: materi
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: imate
+        integer, optional, intent(in) :: ndim
+        integer, intent(out) :: iret
+        real(kind=8), optional, intent(out) :: epsth
+        real(kind=8), optional, intent(out) :: vepsth(*)
+        real(kind=8), optional, intent(out) :: tmoins
+        real(kind=8), optional, intent(out) :: tplus
+        real(kind=8), optional, intent(out) :: trefer
     end subroutine verift
 end interface

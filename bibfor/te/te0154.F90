@@ -79,7 +79,7 @@ subroutine te0154(option, nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater),&
-                materi, 'ELAS', 1, epsth, iret)
+                materi, 'ELAS', iret, epsth=epsth)
 !
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
                 ' ', 'ELAS', 0, ' ', [r8bid],&
@@ -119,7 +119,7 @@ subroutine te0154(option, nomte)
 !     --- RECUPERATION DES DEPLACEMENTS OU DES VITESSES ----
     do 19 i = 1, 6
         ugr(i) = 0.d0
-19  end do
+ 19 end do
 !
     if (option .ne. 'ECIN_ELEM') then
 !
@@ -129,7 +129,7 @@ subroutine te0154(option, nomte)
         if (nomte .eq. 'MECA_BARRE') then
             do 21 i = 1, 6
                 ugr(i) = zr(jdepl+i-1)
-21          continue
+ 21         continue
         else if (nomte.eq.'MECA_2D_BARRE') then
             ugr(1) = zr(jdepl+1-1)
             ugr(2) = zr(jdepl+2-1)
@@ -149,7 +149,7 @@ subroutine te0154(option, nomte)
             if (nomte .eq. 'MECA_BARRE') then
                 do 22 i = 1, 6
                     ugr(i) = zr(jvite+i-1)
-22              continue
+ 22             continue
             else if (nomte.eq.'MECA_2D_BARRE') then
                 ugr(1) = zr(jvite+1-1)
                 ugr(2) = zr(jvite+2-1)
@@ -166,7 +166,7 @@ subroutine te0154(option, nomte)
                 if (nomte .eq. 'MECA_BARRE') then
                     do 23 i = 1, 6
                         ugr(i) = zr(jdepl+i-1)
-23                  continue
+ 23                 continue
                 else if (nomte.eq.'MECA_2D_BARRE') then
                     ugr(1) = zr(jdepl+1-1)
                     ugr(2) = zr(jdepl+2-1)
@@ -189,8 +189,8 @@ subroutine te0154(option, nomte)
     do 30 i = 1, 6
         do 32 j = 1, 6
             klc(i,j) = 0.d0
-32      continue
-30  end do
+ 32     continue
+ 30 end do
 !
 !     --- ENERGIE DE DEFORMATION ----
     if (option .eq. 'EPOT_ELEM') then

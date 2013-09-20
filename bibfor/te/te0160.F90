@@ -103,10 +103,10 @@ subroutine te0160(option, nomte)
 !
     do 20 i = 1, 3*nno
         w(i) = zr(idepla-1+i) + zr(ideplp-1+i)
-20  end do
+ 20 end do
     do 70 kp = 1, npg
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    materi, 'ELAS', 1, epsth, iret)
+                    materi, 'ELAS', iret, epsth=epsth)
 !
         k = (kp-1)*nordre*nordre
         jacobi = sqrt(biline(nordre,zr(igeom),zr(iyty+k),zr(igeom)))
@@ -140,19 +140,19 @@ subroutine te0160(option, nomte)
                 do 40 j = 1, i
                     imat = imat + 1
                     zr(imat) = zr(imat) + coef1*ytywpq(i)*ytywpq(j) + coef2*zr(nelyty+j)
-40              continue
-50          continue
+ 40             continue
+ 50         continue
         endif
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
             coef = nx*zr(ipoids-1+kp)/jacobi
             do 60 i = 1, nordre
                 zr(jefint-1+i) = zr(jefint-1+i) + coef*ytywpq(i)
-60          continue
+ 60         continue
             zr(lsigma-1+kp) = nx
 !
             zr(ivarip+kp-1) = 0.0d0
         endif
-70  end do
+ 70 end do
 !
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then

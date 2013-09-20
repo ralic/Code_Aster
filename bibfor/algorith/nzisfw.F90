@@ -139,7 +139,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
             call rcvarc(' ', acier(k), '-', fami, kpg,&
                         ksp, phasm(k), ire2)
             if (ire2 .eq. 1) phasm(k)=0.d0
- 5      continue
+  5     continue
 !
     else
 !
@@ -148,14 +148,14 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
             call rcvarc(' ', acier(k), c1, fami, kpg,&
                         ksp, phase(k), ire2)
             if (ire2 .eq. 1) phase(k)=0.d0
-10      continue
+ 10     continue
 !
     endif
 !
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret2)
     call verift(fami, kpg, ksp, c1, imat,&
-                materi, 'ELAS_META', 2, epsthe, iret1)
+                materi, 'ELAS_META', iret1, ndim=2, vepsth=epsthe)
     zalpha=phase(1)+phase(2)+phase(3)+phase(4)
     phase(nz)=1.d0-zalpha
 !
@@ -165,7 +165,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
     do 15 k = 1, nz
         if (phase(k) .le. precr) phase(k)=0.d0
         if (phase(k) .ge. 1.d0) phase(k)=1.d0
-15  continue
+ 15 continue
     if (zalpha .le. precr) zalpha=0.d0
     if (zalpha .ge. 1.d0) zalpha=1.d0
 !
@@ -260,7 +260,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 !
                 do 20 i = 1, 8
                     theta(i)=1.d0
-20              continue
+ 20             continue
 !
             endif
 !
@@ -308,7 +308,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                     c(k) =valres(2*nz+k)
                     if (icodre(3*nz+k) .ne. 0) valres(3*nz+k)=20.d0
                     m(k) = valres(3*nz+k)
-25              continue
+ 25             continue
 !
             else
 !
@@ -318,7 +318,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                     unsurn(k)= 1.d0
                     c(k) = 0.d0
                     m(k) = 20.d0
-30              continue
+ 30             continue
 !
             endif
 !
@@ -333,14 +333,14 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                     dz1(k)=0.d0
                     dz2(k)=-dz(k)
                 endif
-35          continue
+ 35         continue
 !
             if (phase(nz) .gt. 0.d0) then
                 dvin=0.d0
                 do 40 k = 1, nz-1
                     dvin=dvin+dz2(k)*(theta(4+k)*vim(k)-vim(nz))/&
                     phase(nz)
-40              continue
+ 40             continue
                 vi(nz)=vim(nz)+dvin
                 vimoy=phase(nz)*vi(nz)
             else
@@ -356,7 +356,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                 else
                     vi(k)=0.d0
                 endif
-45          continue
+ 45         continue
 !
 ! 2.7 - RESTAURATION D ORIGINE VISQUEUSE
 !
@@ -365,7 +365,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
             do 50 k = 1, nz
                 cmoy=cmoy+phase(k)*c(k)
                 mmoy=mmoy+phase(k)*m(k)
-50          continue
+ 50         continue
 !
             cr=cmoy*vimoy
             if (cr .le. 0.d0) then
@@ -379,7 +379,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                     vi(k)=vi(k)-ds
                     if (vi(k) .le. 0.d0) vi(k)=0.d0
                 endif
-55          continue
+ 55         continue
 !
 ! 2.8 - PLASTICITE DE TRANSFORMATION
 !
@@ -416,7 +416,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                                     1, nomres(j), valres(j), icodre( j), 2)
                         trans = trans + kpt(k)*valres(j)*(zvarip- zvarim)
                     endif
-60              continue
+ 60             continue
 !
             endif
 !
@@ -424,7 +424,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 !
             do 65 k = 1, nz
                 vi(k)=vim(k)
-65          continue
+ 65         continue
 !
         endif
 !
@@ -450,7 +450,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 !
             do 70 k = 1, nz
                 r(k)=h(k)*vi(k)+sy(k)
-70          continue
+ 70         continue
 !
         endif
 !
@@ -472,7 +472,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                             rbid, rbid, rbid, vi(k), r(k),&
                             h(k), rbid, rbid, rbid)
                 r(k) = r(k) + sy(k)
-75          continue
+ 75         continue
 !
             maxval = max(nbval(1),nbval(2),nbval(3),nbval(4),nbval(5))
 !
@@ -510,23 +510,23 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
     do 80 i = 1, ndimsi
         dvdeps(i) = deps(i) - trdeps * kron(i)
         dvsigm(i) = sigm(i) - trsigm * kron(i)
-80  end do
+ 80 end do
 !
     sieleq = 0.d0
     do 85 i = 1, ndimsi
         sigel(i) = deuxmu*dvsigm(i)/deumum + deuxmu*dvdeps(i)
         sieleq = sieleq + sigel(i)**2
-85  end do
+ 85 end do
     sieleq = sqrt(1.5d0*sieleq)
 !
     if (sieleq .gt. 0.d0) then
         do 90 i = 1, ndimsi
             sig0(i) = sigel(i)/sieleq
-90      continue
+ 90     continue
     else
         do 95 i = 1, ndimsi
             sig0(i) = 0.d0
-95      continue
+ 95     continue
     endif
 !
 ! ************************
@@ -541,7 +541,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 !
             do 100 i = 1, ndimsi
                 sigp(i) = sigel(i)+trsigp*kron(i)
-100          continue
+100         continue
 !
 ! 4.2 - COMPORTEMENT PLASTIQUE
 ! 4.2.1 - CALCUL DE DP
@@ -580,7 +580,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                                 r(k) = r(k) + sy(k)
                                 if (abs(h(k)-hplus(k)) .gt. precr) test= 1
                             endif
-110                      continue
+110                     continue
                         if (test .eq. 0) goto 600
 !
                         hmoy=0.d0
@@ -591,7 +591,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                                     rmoy = rmoy + phase(k)*(r(k)-h(k)* dp)
                                     hmoy = hmoy + phase(k)*h(k)
                                 endif
-115                          continue
+115                         continue
                             rmoy=fmel(1)*rmoy/zalpha
                             hmoy=fmel(1)*hmoy/zalpha
                         endif
@@ -605,9 +605,9 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                                     dt, trans, hmoy, deuxmu, eta,&
                                     unsurn, dp, iret)
                         if (iret .eq. 1) goto 9999
-105                  continue
+105                 continue
                     ASSERT((test.ne.1).or.(j.ne.maxval))
-600                  continue
+600                 continue
                 endif
             endif
 !
@@ -619,7 +619,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                 dvsigp(i) = sigel(i) - 1.5d0*deuxmu*dp*sig0(i)
                 dvsigp(i) = dvsigp(i)/(1.5d0*deuxmu*trans + 1.d0)
                 sigp(i) = dvsigp(i) + trsigp*kron(i)
-120          continue
+120         continue
 !
 ! 4.2.3 - CALCUL DE VIP ET RMOY
 !
@@ -629,7 +629,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                 else
                     vip(k)=0.d0
                 endif
-125          continue
+125         continue
 !
             vip(7)=0.d0
             if (phase(nz) .gt. 0.d0) then
@@ -660,7 +660,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                         zalpha
                     endif
 !
-130              continue
+130             continue
             endif
         endif
     endif
@@ -680,13 +680,13 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 !
         do 140 i = 1, ndimsi
             dsidep(i,i) =1.d0
-140      continue
+140     continue
 !
         do 145 i = 1, 3
             do 150 j = 1, 3
                 dsidep(i,j) = dsidep(i,j)-1.d0/3.d0
-150          continue
-145      continue
+150         continue
+145     continue
 !
         if (option(1:9) .eq. 'FULL_MECA') then
             coef1=(1.5d0*deuxmu*trans+1.d0)
@@ -697,8 +697,8 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
         do 155 i = 1, ndimsi
             do 160 j = 1, ndimsi
                 dsidep(i,j)=dsidep(i,j)*deuxmu/coef1
-160          continue
-155      continue
+160         continue
+155     continue
 !
 ! 5.2 - PARTIE PLASTIQUE
 !
@@ -714,7 +714,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                     sigeps = 0.d0
                     do 165 i = 1, ndimsi
                         sigeps = sigeps + dvsigp(i)*dvdeps(i)
-165                  continue
+165                 continue
 !
                     if ((mode.eq.1) .or. ((mode .eq. 2) .and. ( sigeps.ge.0.d0))) then
 !
@@ -723,15 +723,14 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                         if (mode .eq. 1) then
                             do 170 k = 1, nz
                                 n0(k) = (1-n(k))/n(k)
-170                          continue
+170                         continue
                             dv = (1-fmel(1))*phase(nz)*(eta(nz)/n(nz)/dt) * ((dp/dt)**n0(nz))
                             if (zalpha .gt. 0.d0) then
                                 do 175 k = 1, nz-1
-                                    if (phase(k) .gt. 0.d0) dv = dv+ fmel(1)*(&
-                                                                 phase(k)/zalpha) * (eta(k)/ n(k)&
-                                                                 &/dt)*((dp/dt)**n0(k)&
-                                                                 )
-175                              continue
+                                    if (phase(k) .gt. 0.d0) dv = dv+ fmel(1)*( phase(k)/zalpha) *&
+                                                                 & (eta(k)/ n(k)/dt)*((dp/dt)**n0&
+                                                                 &(k) )
+175                             continue
                             endif
                         endif
 !
@@ -758,23 +757,23 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
         do 180 i = 1, ndimsi
             do 185 j = 1, ndimsi
                 dsidep(i,j) = dsidep(i,j)*b
-185          continue
-180      continue
+185         continue
+180     continue
 !
         do 190 i = 1, 3
             do 195 j = 1, 3
                 dsidep(i,j) = dsidep(i,j)+troisk/3.d0
-195          continue
-190      continue
+195         continue
+190     continue
 !
         do 200 i = 1, ndimsi
             do 205 j = 1, ndimsi
                 dsidep(i,j) = dsidep(i,j)- coef3*sig0(i)*sig0(j)
-205          continue
-200      continue
+205         continue
+200     continue
 !
     endif
 !
-9999  continue
+9999 continue
 !
 end subroutine

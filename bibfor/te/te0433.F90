@@ -121,7 +121,7 @@ subroutine te0433(option, nomte)
 !
         do 8 i = 1, 3
             vecn(i)=distn*pgl(3,i)
- 8      continue
+  8     continue
         nddl=6
 !
     else
@@ -135,7 +135,7 @@ subroutine te0433(option, nomte)
             x(i) = zr(igeom+3* (i-1))
             y(i) = zr(igeom+3*i-2)
             z(i) = zr(igeom+3*i-1)
-40      continue
+ 40     continue
         if (lexc) then
             x(i) = x(i) + vecn(1)
             y(i) = y(i) + vecn(2)
@@ -158,7 +158,7 @@ subroutine te0433(option, nomte)
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-11      continue
+ 11     continue
 !
 ! --- CALCUL DE LA MATRICE "B" : DEPL NODAL --> EPS11 ET DU JACOBIEN
 !
@@ -174,11 +174,11 @@ subroutine te0433(option, nomte)
             do 210 i = 1, nno
                 do 210 j = 1, nddl
                     epsm=epsm+b(j,i)*zr(idepl+(i-1)*nddl+j-1)
-210              continue
+210             continue
 !
 !         CALCUL DE LA CONTRAINTE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        materi, 'ELAS', 1, epsthe, iret)
+                        materi, 'ELAS', iret, epsth=epsthe)
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
                         ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -201,7 +201,7 @@ subroutine te0433(option, nomte)
                 do 30 j = 1, nddl
                     epsg(kpg)=epsg(kpg)+b(j,i)*zr(idepl+(i-1)*nddl+j-&
                     1)
-30              continue
+ 30             continue
 !
 ! --- MASS_INER : ON SOMME LA CONTRIBUTION DU PG A LA MASSE TOTALE
 !
@@ -222,20 +222,20 @@ subroutine te0433(option, nomte)
                     matine(2) = matine(2) + x(i)*vff(i)*vff(j)*y(j)* ppg
                     matine(4) = matine(4) + x(i)*vff(i)*vff(j)*z(j)* ppg
                     matine(5) = matine(5) + y(i)*vff(i)*vff(j)*z(j)* ppg
-310              continue
+310             continue
                 matine(1) = matine(1) + ppg*(yyi+zzi)
                 matine(3) = matine(3) + ppg*(xxi+zzi)
                 matine(6) = matine(6) + ppg*(xxi+yyi)
-300          continue
+300         continue
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800  end do
+800 end do
 !
     if (option .eq. 'SIEF_ELGA') then
         do 510 kpg = 1, npg
             zr(icontp+kpg-1)=sigg(kpg)
-510      continue
+510     continue
 !
     else if (option.eq.'EPOT_ELEM') then
         zr(inr) = epot
@@ -243,7 +243,7 @@ subroutine te0433(option, nomte)
     else if (option.eq.'EPSI_ELGA') then
         do 500 kpg = 1, npg
             zr(idefo+kpg-1)=epsg(kpg)
-500      continue
+500     continue
 !
     else if (option.eq.'MASS_INER') then
         vro = rho(1) / volume

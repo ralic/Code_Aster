@@ -268,7 +268,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     else
         ifou = 2
     endif
- 1  continue
+  1 continue
 !
 !
 !   INITIALISATION DU FLUAGE SPHERIQUE PROPRE
@@ -276,9 +276,6 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     isph = 1
 !
 ! RECUPERATION DES VALEURS DE TEMPERATURE
-!
-!      CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET1)
-!      CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)
     call rcvarc('F', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret)
     call rcvarc('F', 'TEMP', '+', fami, kpg,&
@@ -365,9 +362,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     else
 !
         call verift(fami, kpg, ksp, '+', imate,&
-                    materi, 'ELAS', 1, epsthp, iret1)
+                    materi, 'ELAS', iret1, epsth=epsthp)
         call verift(fami, kpg, ksp, '-', imate,&
-                    materi, 'ELAS', 1, epsthm, iret2)
+                    materi, 'ELAS', iret2, epsth=epsthm)
     endif
 !
 !
@@ -479,7 +476,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !   DANS LE CAS OU LE TEST DE DEFORMATION DE FLUAGE PROPRE
 !        IRREVE A ECHOUE : ISPH = 0
 !
-10  continue
+ 10 continue
 !
 ! INITIALISATION DES VARIABLES
 !
@@ -494,8 +491,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
             dep(i,j) = 0.d0
             bn(i,j) = 0.d0
             cn(i,j) = 0.d0
-12      continue
-11  end do
+ 12     continue
+ 11 end do
 !
 !
 !_______________________________________________________________________
@@ -558,7 +555,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
             call r8inir(6, 0.d0, epsel, 1)
             do 35 k = 1, nstrs
                 epsel(k) = epsm(k) - epsrm * kron(k) - epsfm(k)
-35          continue
+ 35         continue
 !
 !
 !  -  ON CALCUL LES CONTRAINTES ELASTIQUES AU TEMP M
@@ -704,19 +701,19 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
             call r8inir(36, 0.d0, matn, 1)
             do 30 i = 1, nstrs
                 matn(i,i)=1.d0
-30          continue
+ 30         continue
 !
             do 31 i = 1, nstrs
                 do 31 j = 1, nstrs
                     do 31 k = 1, nstrs
                         matn(i,j)=matn(i,j)+cn(i,k)*dep(k,j)
-31                  continue
+ 31                 continue
 !
             call r8inir(36, 0.d0, invn, 1)
 !
             do 36 i = 1, nstrs
                 invn(i,i)=1.d0
-36          continue
+ 36         continue
 !
             call mgauss('NFVP', matn, invn, 6, nstrs,&
                         nstrs, det, iret)
@@ -727,7 +724,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                 do 37 j = 1, nstrs
                     do 37 k = 1, nstrs
                         dsidep(i,j)=dsidep(i,j)+invn(k,j)*dep(i,k)
-37                  continue
+ 37                 continue
 !
             if (option(2) .eq. 'ENDO_ISOT_BETON') then
                 if (option(1) .eq. 'RIGI_MECA_TANG') then
@@ -750,7 +747,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                         epsrm = kdess*(sechm-sref)-bendo*hydrm + epsthm
                         do 40 i = 1, nstrs
                             epsme(i)=epsm(i)-epsrm*kron(i)
-40                      continue
+ 40                     continue
                         call lceibt(nstrs, epsme, epsfm, dep, invn,&
                                     cn, dsidep)
                     endif
@@ -762,7 +759,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                                    1)
                         do 45 i = 1, nstrs
                             epse(i)=epsm(i)+deps(i)-epsrp*kron(i)
-45                      continue
+ 45                     continue
                         call lcumvi('FT', vip, epsf)
                         call lceibt(nstrs, epse, epsf, dep, invn,&
                                     cn, dsidep)
@@ -778,8 +775,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                         if (l .eq. 3) goto 137
                         dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*&
                         dsidep(k,3)*dsidep(3,l)
-137                  continue
-136              continue
+137                 continue
+136             continue
             endif
 !
 !

@@ -86,7 +86,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
     wbe =zero
     do 10 i = 1, 3
         sol(i)=zero
-10  end do
+ 10 end do
 !
 !
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
@@ -114,7 +114,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !
         do 60 i = 1, nbsig
             tau(i) = jac*sigma(i)
-60      continue
+ 60     continue
 !
 ! ---    CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
 !
@@ -123,7 +123,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
         do 70 i = 1, 6
             dvtau(i) = tau(i) - kr(i)*trtau/3.d0
             eqtau = eqtau + pdtsca(i)* (dvtau(i)**2.d0)
-70      continue
+ 70     continue
         eqtau = sqrt(1.5d0*eqtau)
 !
 ! ---    CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
@@ -135,7 +135,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !  ---   DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
         call verift(fami, igau, 1, '+', iadmat,&
-                    materi, 'ELAS', 1, epsthe, icodre)
+                    materi, 'ELAS', icodre(1), epsth=epsthe)
 !
 !
 ! ---    ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...
@@ -219,9 +219,9 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
             do 90 jsig = 1, nbsig
                 epsi(isig)=epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigma(&
                 jsig)
-90          continue
+ 90         continue
             enelas = enelas + undemi*sigma(isig)*epsi(isig)
-80      continue
+ 80     continue
 !
     else
         call utmess('F', 'COMPOR1_77', sk=compor(3))

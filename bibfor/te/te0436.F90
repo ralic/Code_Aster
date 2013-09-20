@@ -123,7 +123,7 @@ subroutine te0436(option, nomte)
             x(i) = zr(igeom+3* (i-1))
             y(i) = zr(igeom+3*i-2)
             z(i) = zr(igeom+3*i-1)
-10      continue
+ 10     continue
         call r8inir(3, 0.d0, cdg, 1)
         call r8inir(6, 0.d0, matine, 1)
         surfac = 0.d0
@@ -141,7 +141,7 @@ subroutine te0436(option, nomte)
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-110      continue
+110     continue
 !
 ! --- CALCUL DE LA MATRICE "B" :
 !              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
@@ -160,11 +160,11 @@ subroutine te0436(option, nomte)
                     do 130 c = 1, ncomp
                         epsm(c)=epsm(c)+b(c,i,n)*zr(idepl+(n-1)*nddl+&
                         i-1)
-130                  continue
+130                 continue
 !
 !         RETRAIT DE LA DEFORMATION THERMIQUE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        materi, 'ELAS_MEMBRANE', 1, epsthe, iret)
+                        materi, 'ELAS_MEMBRANE', iret, epsth=epsthe)
             epsm(1) = epsm(1) - epsthe
             epsm(2) = epsm(2) - epsthe
 !
@@ -175,16 +175,16 @@ subroutine te0436(option, nomte)
             do 140 c = 1, ncomp
                 do 140 cc = 1, ncomp
                     sig(c) = sig(c) + epsm(cc)*rig(cc,c)
-140              continue
+140             continue
 !
             if (option .eq. 'EPOT_ELEM') then
                 do 150 c = 1, ncomp
                     epot = epot+(sig(c)*epsm(c)*zr(ipoids+kpg-1)*jac)/ 2
-150              continue
+150             continue
             else
                 do 160 c = 1, ncomp
                     sigg(c,kpg) = sig(c)
-160              continue
+160             continue
             endif
 !
 ! --- EPSI_ELGA : ON CALCULE LA DEFORMATION AU PG
@@ -197,7 +197,7 @@ subroutine te0436(option, nomte)
                     do 200 c = 1, ncomp
                         epsg(c,kpg)= epsg(c,kpg) + b(c,i,n)*zr(idepl+(&
                         n-1)*nddl+i-1)
-200                  continue
+200                 continue
 !
 ! --- MASS_INER : ON SOMME LA CONTRIBUTION DU PG A LA MASSE TOTALE
 !
@@ -218,21 +218,21 @@ subroutine te0436(option, nomte)
                     matine(2) = matine(2) + x(i)*vff(i)*vff(j)*y(j)* ppg
                     matine(4) = matine(4) + x(i)*vff(i)*vff(j)*z(j)* ppg
                     matine(5) = matine(5) + y(i)*vff(i)*vff(j)*z(j)* ppg
-310              continue
+310             continue
                 matine(1) = matine(1) + ppg*(yyi+zzi)
                 matine(3) = matine(3) + ppg*(xxi+zzi)
                 matine(6) = matine(6) + ppg*(xxi+yyi)
-300          continue
+300         continue
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800  end do
+800 end do
 !
     if (option .eq. 'SIEF_ELGA') then
         do 500 kpg = 1, npg
             do 500 c = 1, ncomp
                 zr(icontp+(kpg-1)*ncomp+c-1)=sigg(c,kpg)
-500          continue
+500         continue
 !
     else if (option.eq.'EPOT_ELEM') then
         zr(inr) = epot
@@ -241,7 +241,7 @@ subroutine te0436(option, nomte)
         do 510 kpg = 1, npg
             do 510 c = 1, ncomp
                 zr(idefo+(kpg-1)*ncomp+c-1) = epsg(c,kpg)
-510          continue
+510         continue
 !
     else if (option.eq.'MASS_INER') then
         vro = rho(1) / surfac

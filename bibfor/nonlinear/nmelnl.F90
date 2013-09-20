@@ -119,7 +119,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 !
 ! TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
     call verift(fami, kpg, ksp, poum, imate,&
-                materi, 'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', iret, epsth=epsthe)
 !
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret)
@@ -249,17 +249,17 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
         epsth(k) = eps(k) - ther - epspto
         epsth(k+3) = eps(k+3)
         epsmo = epsmo + epsth(k)
-10  end do
+ 10 end do
     epsmo = epsmo/3.d0
 !
     do 20 k = 1, ndimsi
         epsdv(k) = epsth(k) - epsmo * kron(k)
-20  end do
+ 20 end do
 ! - CALCUL DE LA CONTRAINTE ELASTIQUE EQUIVALENTE
     epseq = 0.d0
     do 30 k = 1, ndimsi
         epseq = epseq + epsdv(k)*epsdv(k)
-30  end do
+ 30 end do
     epseq = sqrt(1.5d0*epseq)
     sieleq = deuxmu * epseq
     nonlin = .false.
@@ -278,7 +278,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
             pm = 0.d0
             do 40 k = 1, 4
                 sigel(k) = deuxmu*epsdv(k)
-40          continue
+ 40         continue
             imate2 = imate
             if (line) then
                 rprim = e*dsde/(e-dsde)
@@ -367,11 +367,11 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
     if (inco) then
         do 50 k = 1, ndimsi
             sig(k) = g*epsdv(k)
-50      continue
+ 50     continue
     else
         do 55 k = 1, ndimsi
             sig(k) = troisk*epsmo*kron(k) + g*epsdv(k)
-55      continue
+ 55     continue
     endif
 !====================================================================
 ! TRAITEMENTS PARTICULIERS
@@ -391,17 +391,17 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
         do 60, k=1,ndimsi
         do 70, l=1,ndimsi
         dsidep(k,l) = 0.d0
-70      continue
-60      continue
+ 70     continue
+ 60     continue
 !      TERME LINEAIRE
         do 80 k = 1, 3
             do 90 l = 1, 3
                 dsidep(k,l) = (troisk-g)/3.d0
-90          continue
-80      continue
+ 90         continue
+ 80     continue
         do 100 k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + g
-100      continue
+100     continue
 !      TERME NON LINEAIRE
         if (nonlin .and. (option(11:14).ne.'ELAS')) then
             coef = deuxmu*rprim/(1.5d0*deuxmu+rprim) - g
@@ -409,8 +409,8 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
             do 110 k = 1, ndimsi
                 do 120 l = 1, ndimsi
                     dsidep(k,l) = dsidep(k,l) + coef*epsdv(k)*epsdv(l)
-120              continue
-110          continue
+120             continue
+110         continue
         endif
 !      CORRECTION POUR LES CONTRAINTES PLANES
         if (cplan) then
@@ -420,8 +420,8 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
                     if (l .eq. 3) goto 140
                     dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
                     k,3)*dsidep(3,l)
-140              continue
-130          continue
+140             continue
+130         continue
         endif
     endif
 !====================================================================

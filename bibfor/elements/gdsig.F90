@@ -53,7 +53,7 @@ subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
     un = 1.d0
     materi = ' '
     call verift(fami, kpg, ksp, '+', imate,&
-                materi, 'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', iret, epsth=epsthe)
 !
 !
     call promat(rotk, 3, 3, 3, rot0,&
@@ -69,7 +69,7 @@ subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
     do 1 i = 1, 3
         gn(i) = granc(i) * granga(i)
         gm(i) = granc(3+i) * grank(i)
- 1  end do
+  1 end do
 !
 !     DILATATION THERMIQUE : -E*A*ALPHA*(T-TREF)
 !C

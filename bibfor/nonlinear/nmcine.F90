@@ -67,7 +67,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: nomres(3), materi
     real(kind=8) :: rac2
 !-----------------------------------------------------------------------
-    integer ::  iret, k, l
+    integer :: iret, k, l
     real(kind=8) :: a1, a2, c, cm, dsdem
 !-----------------------------------------------------------------------
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -78,12 +78,12 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     ndimsi = ndim*2
     do 10 k = 4, ndimsi
         vim(k) = vim(k)*rac2
-10  end do
+ 10 end do
 !
 !
     materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', iret, epsth=epsthe)
 !
 !
 ! LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (TEMPS - ET +)
@@ -142,11 +142,11 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     do 110 k = 1, 3
         depsth(k) = deps(k) -epsthe
         depsth(k+3) = deps(k+3)
-110  end do
+110 end do
     epsmo = (depsth(1)+depsth(2)+depsth(3))/3.d0
     do 115 k = 1, ndimsi
         depsdv(k) = depsth(k) - epsmo * kron(k)
-115  end do
+115 end do
     sigmo = (sigm(1)+sigm(2)+sigm(3))/3.d0
     sieleq = 0.d0
     do 114 k = 1, ndimsi
@@ -154,7 +154,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
         sigdv(k) = deuxmu/deumum*sigdv(k)
         sigel(k) = sigdv(k) + deuxmu * depsdv(k)
         sieleq = sieleq + (sigel(k)-c/cm*vim(k))**2
-114  end do
+114 end do
     sigmo = troisk/troikm * sigmo
     sieleq = sqrt(1.5d0*sieleq)
     seuil = sieleq - sigy
@@ -180,7 +180,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
             sigdv(k) = sigel(k) - a1*(sigel(k)-vim(k)*c/cm)
             sigp(k) = sigdv(k) + (sigmo + troisk*epsmo)*kron(k)
             vip(k) = vim(k)*c/cm + a2*(sigel(k)-vim(k)*c/cm)
-160      continue
+160     continue
     endif
 !
 ! CALCUL DE LA RIGIDITE TANGENTE
@@ -188,20 +188,20 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
         call matini(6, 6, 0.d0, dsidep)
         do 120 k = 1, 6
             dsidep(k,k) = deuxmu
-120      continue
+120     continue
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then
             do 174 k = 1, ndimsi
                 sigdv(k) = sigdv(k) - vim(k)*c/cm
-174          continue
+174         continue
         else
             do 175 k = 1, ndimsi
                 sigdv(k) = sigdv(k) - vip(k)
-175          continue
+175         continue
         endif
         sigeps = 0.d0
         do 170 k = 1, ndimsi
             sigeps = sigeps + sigdv(k)*depsdv(k)
-170      continue
+170     continue
         a1 = 1.d0/(1.d0+1.5d0*(deuxmu+c)*dp/sigy)
         a2 = (1.d0+1.5d0*c*dp/sigy)*a1
         if (plasti .ge. 0.5d0 .and. sigeps .ge. 0.d0) then
@@ -209,14 +209,14 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
             do 135 k = 1, ndimsi
                 do 135 l = 1, ndimsi
                     dsidep(k,l) = a2 * dsidep(k,l) + coef*sigdv(k)* sigdv(l)
-135              continue
+135             continue
             lambda = lambda + deuxmu**2*a1*dp/sigy/2.d0
         endif
         do 130 k = 1, 3
             do 131 l = 1, 3
                 dsidep(k,l) = dsidep(k,l) + lambda
-131          continue
-130      continue
+131         continue
+130     continue
     endif
 !
     iret=0
@@ -233,11 +233,11 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 ! MISE AU FORMAT DES CONTRAINTES DE RAPPEL
     do 20 k = 4, ndimsi
         vim(k) = vim(k)/rac2
-20  end do
+ 20 end do
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         do 30 k = 4, ndimsi
             vip(k) = vip(k)/rac2
-30      continue
+ 30     continue
     endif
 !
 ! FIN ------------------------------------------------------------------

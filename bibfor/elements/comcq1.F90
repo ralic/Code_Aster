@@ -105,7 +105,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                 else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1)&
             .eq.'VMIS_ISOT_TRAC')) then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            materi, 'ELAS', 1, depsth, iret)
+                            materi, 'ELAS', iret, epsth=depsth)
                 depsm=deps(1)-depsth
                 call nm1dis(fami, kpg, ksp, imate, em,&
                             ep, sigm(1), depsm, vim, option,&
@@ -116,7 +116,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                 sigp(2)=0.d0
             else if (compor(1).eq.'VMIS_CINE_LINE') then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            materi, 'ELAS', 1, depsth, iret)
+                            materi, 'ELAS', iret, epsth=depsth)
                 depsm=deps(1)-depsth
                 call nm1dci(fami, kpg, ksp, imate, em,&
                             ep, sigm(1), depsm, vim, option,&

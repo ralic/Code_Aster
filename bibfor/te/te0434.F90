@@ -112,7 +112,7 @@ subroutine te0434(option, nomte)
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-110      continue
+110     continue
 !
 ! --- CALCUL DE LA MATRICE "B" :
 !              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
@@ -130,7 +130,7 @@ subroutine te0434(option, nomte)
             if (option .eq. 'FORC_NODA') then
                 do 120 c = 1, ncomp
                     sig(c) = zr(icontm+(kpg-1)*ncomp+c-1)
-120              continue
+120             continue
 !
 ! - CHAR_MECA_EPSI_R : SIG = RIG*EPSIN
 !
@@ -142,21 +142,21 @@ subroutine te0434(option, nomte)
                 do 130 c = 1, ncomp
                     do 130 cc = 1, ncomp
                         sig(c) = sig(c) + zr(iepsin+cc-1)*rig(cc,c)
-130                  continue
+130                 continue
 !
 ! - CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
 !
             else if (option.eq.'CHAR_MECA_TEMP_R') then
 !
                 call verift(fami, kpg, 1, '+', zi(imate),&
-                            materi, 'ELAS_MEMBRANE', 1, epsthe, iret)
+                            materi, 'ELAS_MEMBRANE', iret, epsth=epsthe)
 !
                 call mbrigi(fami, kpg, imate, rig)
 !
                 call r8inir(3, 0.d0, sig, 1)
                 do 140 c = 1, ncomp
                     sig(c) = epsthe*(rig(1,c)+rig(2,c))
-140              continue
+140             continue
 !
             endif
 !
@@ -166,7 +166,7 @@ subroutine te0434(option, nomte)
                         zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
                         nddl+i-1) +b(c,i,n)*sig(c)*zr(ipoids+kpg-1)*&
                         jac
-150                  continue
+150                 continue
 !
 ! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
 !
@@ -183,9 +183,9 @@ subroutine te0434(option, nomte)
 !
             do 200 n = 1, nno
                 do 200 i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + &
-                                                sgmref*sqrt(abs(jac))/npg
-200              continue
+                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sgmref*sqrt(abs(jac)&
+                                                )/npg
+200             continue
 !
 ! - CHAR_MECA_PESA_R
 !
@@ -196,12 +196,13 @@ subroutine te0434(option, nomte)
             do 300 n = 1, nno
                 do 300 i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1) = zr(&
-                                                ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)*&
-                                                zr(ipesa+i) *vff(n)*zr( ipoids+kpg-1)*jac
-300              continue
+                                                ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)* zr(ip&
+                                                &esa+i) *vff(n)*zr( ipoids+kpg-1&
+                                                )*jac
+300             continue
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800  end do
+800 end do
 !
 end subroutine

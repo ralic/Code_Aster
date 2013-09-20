@@ -70,14 +70,14 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
     xmt = vim(2)
     pmc = vim(3)
     xmc = vim(4)
-
+!
     materi = ' '
 !     ------------------------------------------------------------------
 !     DELTA DEFORMATION MECANIQUE
 !     ------------------------------------------------------------------
 !
     call verift(fami, kpg, ksp, 'T', icodma,&
-                materi, 'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', iret, epsth=epsthe)
 !
     depmec = deps-epsthe
 !     ------------------------------------------------------------------

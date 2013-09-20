@@ -79,7 +79,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     materi = ' '
 !
     call verift(fami, kp, 1, '+', imate,&
-                materi, 'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', iret, epsth=epsthe)
     call rcvalb(fami, kp, 1, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 1)
@@ -133,17 +133,17 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
                 do 102 k = 1, 3
                     do 103 l = 1, 3
                         bil(i,j,k,l) = 0.5d0 * ( dudm(i,j)*dvdm(k,l)+ dudm(k,l)*dvdm(i,j) )
-103                  continue
-102              continue
-101          continue
-100      continue
+103                 continue
+102             continue
+101         continue
+100     continue
 !
         s21 = 0.d0
         do 110 k = 1, 3
             do 120 p = 1, 3
                 s21 = s21 + bil(k,k,k,p)*dtdm(p,k)
-120          continue
-110      continue
+120         continue
+110     continue
 !
         s22 = 0.d0
         do 300 k = 1, 3
@@ -151,10 +151,10 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
                 if (l .ne. k) then
                     do 302 p = 1, 3
                         s22 = s22 + bil(l,l,k,p)*dtdm(p,k)
-302                  continue
+302                 continue
                 endif
-301          continue
-300      continue
+301         continue
+300     continue
 !
         s23 = 0.d0
         do 400 k = 1, 3
@@ -165,12 +165,12 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
                             do 403 p = 1, 3
                                 s23 = s23 + bil(l,m,l,p)*dtdm(p,m)
                                 s23 = s23 + bil(l,m,m,p)*dtdm(p,l)
-403                          continue
+403                         continue
                         endif
-402                  continue
+402                 continue
                 endif
-401          continue
-400      continue
+401         continue
+400     continue
 !
 !
     endif
@@ -187,8 +187,8 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     do 20 i = 1, 2
         do 10 j = 1, 2
             prod = prod + dvdm(i,j)*dtdm(j,i)
-10      continue
-20  end do
+ 10     continue
+ 20 end do
     if (axi) prod = prod+dvdm(3,3)*dtdm(3,3)
     s2th = 0.5d0*th*coef*epsthe*prod*e/(1.d0-2.d0*nu)
 !
@@ -200,7 +200,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     if (iret .eq. 0) then
         do 50 i = 1, 2
             prod = prod + tgdm(i)*dtdm(i,4)
-50      continue
+ 50     continue
         tthe = poids*prod*divv*coef*alpha*e/(2.d0*(1.d0-2.d0*nu))
     else
         tthe = 0.d0
@@ -213,9 +213,9 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
         prod=0.d0
         do 70 j = 1, 2
             prod = prod + dfdm(i,j)*dtdm(j,4)
-70      continue
+ 70     continue
         tfor = tfor + cs*dvdm(i,4)*(prod+dfdm(i,4)*divt)*poids
-80  end do
+ 80 end do
 !
 ! - TERME DYNAMIQUE
 !
@@ -223,8 +223,8 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     do 200 i = 1, 2
         do 210 j = 1, 2
             prod = prod + dudm(i,j)*dtdm(j,4)*dvdm(i,4)+ dvdm(i,j)* dtdm(j,4)*dudm(i,4)
-210      continue
-200  end do
+210     continue
+200 end do
     tdyn = -0.5d0*rho*(puls**2)*prod*poids
 !
     g = tcla+tthe+tfor+tdyn

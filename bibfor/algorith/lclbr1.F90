@@ -89,22 +89,22 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 !
     call verift(fami, kpg, ksp, '+', imate,&
-                materi, 'ELAS', 1, epsthp, iret1)
+                materi, 'ELAS', iret1, epsth=epsthp)
     call verift(fami, kpg, ksp, '-', imate,&
-                materi, 'ELAS', 1, epsthm, iret2)
+                materi, 'ELAS', iret2, epsth=epsthm)
     if (resi) then
         do 10 k = 1, ndimsi
             eps(k) = epsm(k) + deps(k) - epsthp*kron(k)
-10      continue
+ 10     continue
     else
         do 40 k = 1, ndimsi
             eps(k) = epsm(k) - epsthm*kron(k)
-40      continue
+ 40     continue
     endif
 !
     do 45 k = 4, ndimsi
         eps(k) = eps(k)/rac2
-45  end do
+ 45 end do
     eps(3)=0.d0
 !
 ! -- DIAGONALISATION DES DEFORMATIONS
@@ -138,7 +138,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
                 deumud(i)=sigp(i)/epsp(i)
             endif
         endif
-50  end do
+ 50 end do
     if ((resi) .and. (.not.coup)) then
         call r8inir(6, 0.d0, sig, 1)
         do 1010 i = 1, 2
@@ -146,7 +146,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
             sig(1)=sig(1)+vecp(1,i)*vecp(1,i)*rtemp
             sig(2)=sig(2)+vecp(2,i)*vecp(2,i)*rtemp
             sig(4)=sig(4)+vecp(1,i)*vecp(2,i)*rtemp
-1010      continue
+1010     continue
         sig(4)=rac2*sig(4)
         sig(3)=0.d0
         sig(5)=0.d0
@@ -165,7 +165,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
         endif
         do 120 k = 1, 2
             dspdep(k,k) = dspdep(k,k) + deumud(k)
-120      continue
+120     continue
         dspdep(3,3)=e
         if (epsp(1)*epsp(2) .ge. 0.d0) then
             dspdep(4,4)=deumud(1)
@@ -193,8 +193,8 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
                                 do 25 n = 1, 2
                                     rtemp2=rtemp2+vecp(k,m)* vecp(i,n)&
                                     *vecp(j,n)*vecp(l,m)*dspdep(n,m)
-25                              continue
-24                          continue
+ 25                             continue
+ 24                         continue
                             rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*vecp(k,&
                             1)*vecp(l,2)*dspdep(4,4)
                             rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*vecp(k,&
@@ -202,10 +202,10 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
                             dsidep(t(i,j),t(k,l))=dsidep(t(i,j),t(k,l)&
                             )+rtemp2*rtemp4
                         endif
-23                  continue
-22              continue
-21          continue
-20      continue
+ 23                 continue
+ 22             continue
+ 21         continue
+ 20     continue
         dsidep(3,3)=dspdep(3,3)
         dsidep(1,2)=dsidep(2,1)
         dsidep(1,4)=dsidep(4,1)

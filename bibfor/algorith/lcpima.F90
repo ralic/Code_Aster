@@ -81,11 +81,12 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     nu=val(1)            
 !
     call verift(fami, kpg, ksp, poum, mate,&
-                materi, 'ELAS', 1, epsthe, iret1)
+                materi, 'ELAS', iret1, epsth=epsthe)
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
     if (compor(6:14) .eq. 'ISOT_TRAC') then
-        call rctype(mate, 1, 'TEMP', [temp], resu, type)
+        call rctype(mate, 1, 'TEMP', [temp], resu,&
+                    type)
         if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
             call utmess('F', 'CALCULEL_31')
         endif

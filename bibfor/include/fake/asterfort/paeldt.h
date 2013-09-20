@@ -17,7 +17,8 @@
 !
 interface
     subroutine paeldt(kpg, ksp, fami, icdmat, materi, &
-                      em, ep, nup, depsth)
+                      em, ep, nup, depsth, tmoins, &
+                      tplus,trefer)
         integer :: kpg
         integer :: ksp
         integer :: icdmat
@@ -27,5 +28,8 @@ interface
         real(kind=8) :: ep
         real(kind=8) :: nup
         real(kind=8) ::depsth
+        real(kind=8), intent(out), optional :: tmoins
+        real(kind=8), intent(out), optional :: tplus
+        real(kind=8), intent(out), optional :: trefer
     end subroutine paeldt
 end interface

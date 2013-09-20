@@ -110,7 +110,7 @@ subroutine te0430(option, nomte)
 !
         do 8 i = 1, 3
             vecn(i)=distn*pgl(3,i)
- 8      continue
+  8     continue
         nddl=6
 !
     else
@@ -128,7 +128,7 @@ subroutine te0430(option, nomte)
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-11      continue
+ 11     continue
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL --> EPS11 ET DU JACOBIEN
 !
@@ -158,7 +158,7 @@ subroutine te0430(option, nomte)
 !
             else if (option.eq.'CHAR_MECA_TEMP_R') then
                 call verift(fami, kpg, 1, '+', zi(imate),&
-                            materi, 'ELAS', 1, epsthe, iret)
+                            materi, 'ELAS', iret, epsth=epsthe)
                 if (iret .ne. 0) then
                     call tecael(iadzi, iazk24)
                     call utmess('F', 'CALCULEL2_81', sk=zk24(iazk24-1+3))
@@ -174,7 +174,7 @@ subroutine te0430(option, nomte)
                 do 100 i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*nddl+i-&
                     1) +b(i,n)*sig*zr(ipoids+kpg-1)*jac*densit
-100              continue
+100             continue
 !
 ! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
 !      (N'EST VALABLE QUE POUR LES GRILLES MEMBRANES)
@@ -195,7 +195,7 @@ subroutine te0430(option, nomte)
                 do 110 i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sig*sqrt(abs(jac)&
                                                 )*densit/npg
-110              continue
+110             continue
 !
 ! - CHAR_MECA_PESA_R
 !
@@ -208,10 +208,10 @@ subroutine te0430(option, nomte)
                     zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*nddl+i-&
                     1)+ rho(1)*zr(ipoids+kpg-1)*zr(ipesa)*zr(ipesa+i)*&
                     vff(n)*densit*jac
-130              continue
+130             continue
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800  end do
+800 end do
 !
 end subroutine
