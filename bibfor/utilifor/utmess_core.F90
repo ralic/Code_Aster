@@ -1,5 +1,5 @@
 subroutine utmess_core(typ, idmess, nk, valk, ni,&
-                       vali, nr, valr)
+                       vali, nr, valr, fname)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +35,15 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 #include "asterfort/asmpi_warn.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/trabck.h"
-    character(len=*) :: typ, idmess, valk(*)
-    integer :: nk, ni, vali(*), nr
+    character(len=*) :: typ
+    character(len=*) :: idmess
+    integer :: nk
+    character(len=*) :: valk(*)
+    integer :: ni
+    integer :: vali(*)
+    integer :: nr
     real(kind=8) :: valr(*)
+    character(len=*) :: fname
 !
     integer :: nexcep
     common /utexc /  nexcep
@@ -110,7 +116,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
             recurs = 1234567891
 !          ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
             call utprin('F', 0, 'CATAMESS_55', 0, valk,&
-                        0, vali, 0, valr)
+                        0, vali, 0, valr, fname)
 !          ON NE FAIT PLUS RIEN ET ON SORT DE LA ROUTINE
             goto 999
         endif
@@ -131,7 +137,7 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
     endif
 !
     call utprin(typm, numex, idmess, nk, valk,&
-                ni, vali, nr, valr)
+                ni, vali, nr, valr, fname)
 !
 !     --- REMONTEE D'ERREUR SI DISPO
     if (ltrb) then
@@ -172,12 +178,12 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !               - SI ERREUR <F> MAIS LA COMMANDE A DIT "EXCEPTION+VALID"
                 if (lvalid) then
                     call utprin('I', 0, 'CATAMESS_70', 1, nomres,&
-                                0, vali, 0, valr)
+                                0, vali, 0, valr, fname)
 !
 !             SINON LE CONCEPT COURANT EST DETRUIT
                 else
                     call utprin('I', 0, 'CATAMESS_69', 1, nomres,&
-                                0, vali, 0, valr)
+                                0, vali, 0, valr, fname)
                     lc = lxlgut(nomres)
                     if (lc .gt. 0) then
                         call jedetc(' ', nomres(1:lc), 1)

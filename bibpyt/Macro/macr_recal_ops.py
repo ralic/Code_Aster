@@ -47,7 +47,7 @@ def Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess):
    from Macro.reca_controles import gestion
    from Utilitai.Utmess import UTMESS, MessageLog
 
-   UTMESS('I','RECAL0_39', valk=str(CALCUL_ASTER.evaluation_fonction), cc=Mess.get_filename())
+   UTMESS('I','RECAL0_39', valk=str(CALCUL_ASTER.evaluation_fonction), files=Mess.get_filename())
 
    LIST_NOM_PARA_ALPHA = [ para[0] for para in LIST_PARA ]
    LIST_NOM_PARA_ALPHA.sort()
@@ -480,12 +480,12 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    #-------------------------------------------------------------------------------
    #
    elif (METHODE == 'FMIN'):
-       UTMESS('I','RECAL0_13', valk=METHODE, cc=Mess.get_filename())
+       UTMESS('I','RECAL0_13', valk=METHODE, files=Mess.get_filename())
        val, fval, warnflag = fmin(CALCUL_ASTER.calcul_F, val, maxiter=ITER_MAXI, maxfun=ITER_FONC_MAXI, fulloutput=1)
 
        iter_fonc = CALCUL_ASTER.evaluation_fonction
-       if warnflag==1: UTMESS('I','RECAL0_54', cc=Mess.get_filename())
-       if warnflag==2: UTMESS('I','RECAL0_55', cc=Mess.get_filename())
+       if warnflag==1: UTMESS('I','RECAL0_54', files=Mess.get_filename())
+       if warnflag==2: UTMESS('I','RECAL0_55', files=Mess.get_filename())
        Mess.affiche_etat_final_convergence(iter,ITER_MAXI,iter_fonc,ITER_FONC_MAXI, RESI_GLOB_RELA,residu=0,Act=[])
        Mess.affiche_fonctionnelle(fval)
        Mess.affiche_valeurs(val)
@@ -498,7 +498,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    #-------------------------------------------------------------------------------
    #
    elif (METHODE == 'GENETIQUE'):
-      UTMESS('I','RECAL0_13', valk=METHODE, cc=Mess.get_filename())
+      UTMESS('I','RECAL0_13', valk=METHODE, files=Mess.get_filename())
       from Macro.reca_evol import evolutivo
       nb_parents  = NB_PARENTS
       nb_fils     = NB_FILS
@@ -576,7 +576,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
        #
        if METHODE in ['FMINBFGS', 'FMINNCG']:
 
-          UTMESS('I','RECAL0_13', valk=METHODE, cc=Mess.get_filename())
+          UTMESS('I','RECAL0_13', valk=METHODE, files=Mess.get_filename())
 
           # Derivees
           f      = CALCUL_ASTER.calcul_F2
@@ -599,7 +599,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
           # Affichage des messages de sortie
           iter_fonc = CALCUL_ASTER.evaluation_fonction
-          if warnflag: UTMESS('I','RECAL0_55', cc=Mess.get_filename())
+          if warnflag: UTMESS('I','RECAL0_55', files=Mess.get_filename())
           Mess.affiche_etat_final_convergence(iter,ITER_MAXI,iter_fonc,ITER_FONC_MAXI, RESI_GLOB_RELA, residu=0, Act=[])
           Mess.affiche_fonctionnelle(fval)
           Mess.affiche_valeurs(val)
@@ -623,7 +623,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
              # BOUCLE PRINCIPALE DE L'ALGORITHME de Levenberg-Marquardt
              #___________________________________________________________
 
-             UTMESS('I','RECAL0_13', valk=METHODE, cc=Mess.get_filename())
+             UTMESS('I','RECAL0_13', valk=METHODE, files=Mess.get_filename())
              epsilon = 10.*RESI_GLOB_RELA
              while(iter<ITER_MAXI):
                 iter = iter +1
@@ -633,7 +633,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
                 ecart_para = reca_algo.calcul_norme2( NP.array(new_val) - NP.array(val) )
                 if debug: print "AA0/ecart para=%s\nAA0/oldpara/newpara=%s %s" % (ecart_para, val, new_val)
                 if ecart_para < TOLE_PARA:
-                    UTMESS('I','RECAL0_51', valr=ecart_para, cc=Mess.get_filename())
+                    UTMESS('I','RECAL0_51', valr=ecart_para, files=Mess.get_filename())
                     break
 
                 # Calculs au point courant val et toutes les perturbations par differences finies (N+1 calculs distribues ou inclus)
@@ -679,7 +679,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
                 # On teste la variation sur la fonctionnelle
                 if ecart_fonc < TOLE_FONC:
-                    UTMESS('I','RECAL0_52', valr=ecart_fonc, cc=Mess.get_filename())
+                    UTMESS('I','RECAL0_52', valr=ecart_fonc, files=Mess.get_filename())
                     break
 
                 if (GRAPHIQUE):
@@ -693,13 +693,13 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
                 # On teste le residu
                 if residu <= RESI_GLOB_RELA:
-                    UTMESS('I','RECAL0_50', valr=residu, cc=Mess.get_filename())
+                    UTMESS('I','RECAL0_50', valr=residu, files=Mess.get_filename())
                     break
 
                 # On teste un manque de temps CPU
                 restant, temps_iter, err = reca_utilitaires.temps_CPU(restant, temps_iter)
                 if (err==1):
-                   UTMESS('I','RECAL0_53', cc=Mess.get_filename())
+                   UTMESS('I','RECAL0_53', files=Mess.get_filename())
                    break
 
              #_____________________________________________

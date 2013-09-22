@@ -406,12 +406,13 @@ PyObject *args;
 /*
  * Functions based on MessageLog object.
  */
-void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
-                                 _IN INTEGER *exc_typ,
-                                 _IN char *idmess, _IN STRING_SIZE lidmess,
-                                 _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
-                                 _IN INTEGER *nbi, _IN INTEGER *vali,
-                                 _IN INTEGER *nbr, _IN DOUBLE *valr)
+void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
+                                   _IN INTEGER *exc_typ,
+                                   _IN char *idmess, _IN STRING_SIZE lidmess,
+                                   _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
+                                   _IN INTEGER *nbi, _IN INTEGER *vali,
+                                   _IN INTEGER *nbr, _IN DOUBLE *valr,
+                                   _IN char *fname, _IN STRING_SIZE lfn)
 {
     /*
      * Fortran/Python interface to print the messages.
@@ -419,9 +420,10 @@ void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
      * WARNING: In the case that the error indicator has already been set, we must
      * restore it after PyObject_CallMethod.
      */
-    PyObject *tup_valk, *tup_vali, *tup_valr, *res;
     char *kvar;
-    int i, iexc=0;
+    int i, iexc=0, iret;
+    PyObject *tup_valk, *tup_vali, *tup_valr, *res;
+    PyObject *method, *args, *kwargs, *pyfname;
     PyObject *etype, *eval, *etb;
     
     if ( PyErr_Occurred() ) {
@@ -445,9 +447,17 @@ void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
        PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble((double)valr[i]) ) ;
     }
 
-    res = PyObject_CallMethod(gMsgLog, "print_message", "s#s#OOOi",
-                              typmess, ltype, idmess, lidmess, tup_valk, tup_vali, tup_valr,
-                              (int)*exc_typ);
+    method = PyObject_GetAttrString(gMsgLog, "print_message");
+    args = Py_BuildValue("s#s#OOOi", typmess, ltype, idmess, lidmess,
+                         tup_valk, tup_vali, tup_valr, (int)*exc_typ),
+    kwargs = PyDict_New();
+    pyfname = PyString_FromStringAndSize(fname, lfn);
+    iret = PyDict_SetItemString(kwargs, "files", pyfname);
+    if (iret != 0) {
+       MYABORT("error the given filename in utprin");
+    }
+    
+    res = PyObject_Call(method, args, kwargs);
     if (!res) {
        MYABORT("erreur lors de l'appel a MessageLog");
     }
@@ -455,6 +465,10 @@ void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
         PyErr_Restore(etype, eval, etb);
     }
 
+    Py_DECREF(pyfname);
+    Py_DECREF(args);
+    Py_XDECREF(kwargs);
+    Py_DECREF(method);
     Py_DECREF(tup_valk);
     Py_DECREF(tup_vali);
     Py_DECREF(tup_valr);

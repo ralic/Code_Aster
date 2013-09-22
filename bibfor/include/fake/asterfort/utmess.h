@@ -18,7 +18,7 @@
 interface
     subroutine utmess(typ, idmess, nk, valk, sk, &
                       ni, vali, si, nr, valr, &
-                      sr, num_except)
+                      sr, num_except, fname)
         character(len=*), intent(in) :: typ
         character(len=*), intent(in) :: idmess
         integer, intent(in), optional :: nk
@@ -31,5 +31,6 @@ interface
         real(kind=8), intent(in), optional, target :: valr(*)
         real(kind=8), intent(in), optional :: sr
         integer, intent(in), optional :: num_except
+        character(len=*), optional :: fname
     end subroutine utmess
 end interface

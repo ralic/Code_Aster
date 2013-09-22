@@ -184,16 +184,17 @@ extern void DEFSS(UTMESS, utmess, char *, STRING_SIZE, char *, STRING_SIZE);
 
 /* particulier car on fixe les longueurs des chaines valk */
 #define VALK_SIZE 128
-extern void DEFSSPSPPPP(UTMESS_CORE, utmess_core, char *, STRING_SIZE, char *, STRING_SIZE,
-                        INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *);
+extern void DEFSSPSPPPPS(UTMESS_CORE, utmess_core, char *, STRING_SIZE, char *, STRING_SIZE,
+                         INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *,
+                         char *, STRING_SIZE);
 #ifdef _STRLEN_AT_END
-#define CALL_UTMESS_CORE(cod, idmess, nk, valk, ni, vali, nr, valr) \
-    F_FUNC(UTMESS_CORE, utmess_core)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod), \
-                                     strlen(idmess), VALK_SIZE)
+#define CALL_UTMESS_CORE(cod, idmess, nk, valk, ni, vali, nr, valr, fname) \
+    F_FUNC(UTMESS_CORE, utmess_core)(cod, idmess, nk, valk, ni, vali, nr, valr, fname, \
+                                     strlen(cod), strlen(idmess), VALK_SIZE, strlen(fname))
 #else
-#define CALL_UTMESS_CORE(cod, idmess, nk, valk, ni, vali, nr, valr) \
+#define CALL_UTMESS_CORE(cod, idmess, nk, valk, ni, vali, nr, valr, fname) \
     F_FUNC(UTMESS_CORE, utmess_core)(cod, strlen(cod), idmess, strlen(idmess), nk, \
-                                     valk, VALK_SIZE, ni, vali, nr, valr)
+                                     valk, VALK_SIZE, ni, vali, nr, valr, fname, strlen(fname))
 #endif
 
 

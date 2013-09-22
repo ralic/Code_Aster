@@ -124,7 +124,7 @@ class MESSAGE_LOGGER(Singleton):
 
 
     def print_message(self, code, idmess, valk=(), vali=(), valr=(), exc_num=None,
-                            exception=False, print_as=None, cc=None):
+                      exception=False, print_as=None, files=None, cc=True):
         """Appelé par la routine fortran U2MESG ou à la fonction python UTMESS
         pour afficher un message.
         L'impression de ce message est différée si le `code` est suivi d'un "+".
@@ -133,7 +133,7 @@ class MESSAGE_LOGGER(Singleton):
             valk, vali, valr : liste des chaines, entiers ou réels.
         Si exception==True, on lève une exception en cas d'erreur, sinon
         c'est l'appelant qui devra s'en charger (dans le C a priori).
-        'print_as' : cf. print_buffer_content.
+        'print_as', 'files', 'cc' : cf. print_buffer_content.
         """
         idmess  = idmess.strip()
         # le '+' n'a pas de sens pour les messages 'I'.
@@ -164,7 +164,7 @@ class MESSAGE_LOGGER(Singleton):
             self.check_limit()
 
             # on imprime le message en attente
-            self.print_buffer_content(print_as, cc)
+            self.print_buffer_content(print_as, files, cc)
 
             if exception and code[0] in ('S', 'F'):
                 if self._mpi_rank is not None:
@@ -339,7 +339,7 @@ Exception : %s
         """
         return self._buffer[0]['id_message']
 
-    def print_buffer_content(self, print_as=None, cc=None):
+    def print_buffer_content(self, print_as=None, files=None, cc=True):
         """Extrait l'ensemble des messages du buffer dans un dictionnaire unique,
         imprime le message, et vide le buffer pour le message suivant.
             - code : celui du message le plus grave (cf. dgrav)
@@ -347,8 +347,14 @@ Exception : %s
             - corps : concaténation de tous les messages.
         'print'_as permet d'imprimer un message sur des fichiers autres que les fichiers
         habituels de 'code'. Par ex, imprimer un message d'info sur 'ERREUR'.
-        'cc' : liste de noms de fichiers ou objets fichier dans lesquels copier le message
+        'files' : liste de noms de fichiers ou objets fichier dans lesquels
+        écrire le message
+        'cc' : si True, on écrit comme d'habitude et dans les 'files',
+        si False, on n'écrit que sur les fichiers habituels (MESSAGE, RESULTAT,
+        ERREUR) ou bien dans 'files' si fournit.
         """
+        if type(files) in (str, unicode):
+            files = files.strip()
         if len(self._buffer) < 1:
             return None
 
@@ -372,12 +378,13 @@ Exception : %s
         l_unit = list_unit(print_as or dglob['code'])
 
         # texte final et impression
-        txt = self.format_message(dglob)
-        for unite in l_unit:
-            self.affiche(unite, txt)
-        # "cc"
-        if cc:
-            copy_text_to(convert(txt), cc)
+        if cc or not files:
+            txt = self.format_message(dglob)
+            for unite in l_unit:
+                self.affiche(unite, txt)
+        # "files"
+        if files:
+            copy_text_to(convert(txt), files)
 
         self.init_buffer()
 
@@ -693,7 +700,8 @@ def raise_UTMESS(exc):
 # unique instance du MESSAGE_LOGGER
 MessageLog = MESSAGE_LOGGER()
 
-def UTMESS(code, idmess, valk=(), vali=(), valr=(), exc_num=None, print_as=None, cc=None):
+def UTMESS(code, idmess, valk=(), vali=(), valr=(),
+           exc_num=None, print_as=None, files=None, cc=True):
     """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
     optionnels.
         code   : 'A', 'E', 'S', 'F', 'I'
@@ -710,7 +718,7 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), exc_num=None, print_as=None,
             + puis exception ou abort en fonction du niveau d'erreur.
     """
     MessageLog(code, idmess, valk, vali, valr, exc_num=exc_num,
-               exception=True, print_as=print_as, cc=cc)
+               exception=True, print_as=print_as, files=files, cc=cc)
 
 
 def ASSERT(condition, message=""):

@@ -1,6 +1,6 @@
 subroutine utmess(typ, idmess, nk, valk, sk, &
                   ni, vali, si, nr, valr, &
-                  sr, num_except)
+                  sr, num_except, fname)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,9 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 ! To pass a single value, just use sk/si/sr=value.
 ! To pass more values, use nk/ni/nr=<number of values> + valk/vali/valr=<array of values>.
 ! Example: call utmess('A', 'MECANONLINE_34', nr=2, valr=[a, b])
-! 
+!
+! If 'fname' is provided, it must be valid filename and the message will be written
+! into this file instead of standard MESSAGE, RESULTAT, ERREUR files.
 !
 ! See comments in utmess_core for details
 !
@@ -46,6 +48,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     real(kind=8), intent(in), optional, target :: valr(*)
     real(kind=8), intent(in), optional :: sr
     integer, intent(in), optional :: num_except
+    character(len=*), optional :: fname
 !
 !   common used to pass the exception number
 !   TODO: add this argument to utmess_core
@@ -63,6 +66,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     integer, pointer :: ptri(:)
     real(kind=8), target :: uvr(1)
     real(kind=8), pointer :: ptrr(:)
+    character(len=256) :: ufname
 !
     ASSERT(.not. present(num_except) .or. typ == 'Z')
     if (present(num_except)) then
@@ -102,7 +106,7 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
     uvr(1) = 0.d0
     ptrr => uvr(1:1)
     if (present(sr) .or. present(valr) .or. present(nr)) then
-    ASSERT(present(sr) .neqv. (present(valr) .and. present(nr)))
+        ASSERT(present(sr) .neqv. (present(valr) .and. present(nr)))
         if (present(nr)) then
             unr = nr
             ptrr => valr(1:nr)
@@ -113,12 +117,17 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
         endif
     endif
 !
+    ufname = ' '
+    if (present(fname)) then
+        ufname = fname
+    endif
+!
     if (use_valk) then
         call utmess_core(typ, idmess, unk, valk, uni, &
-                         ptri, unr, ptrr)
+                         ptri, unr, ptrr, ufname)
     else
         call utmess_core(typ, idmess, unk, uvk, uni, &
-                         ptri, unr, ptrr)
+                         ptri, unr, ptrr, ufname)
     endif
 !
 end subroutine utmess

@@ -17,15 +17,16 @@
 !
 interface
     subroutine utprin(ch1, num, idmess, nk, valk,&
-                      ni, vali, nr, valr)
-        character(*) :: ch1
+                      ni, vali, nr, valr, fname)
+        character(len=*) :: ch1
         integer :: num
-        character(*) :: idmess
+        character(len=*) :: idmess
         integer :: nk
-        character(*) :: valk(*)
+        character(len=*) :: valk(*)
         integer :: ni
         integer :: vali(*)
         integer :: nr
         real(kind=8) :: valr(*)
+        character(len=*) :: fname
     end subroutine utprin
 end interface

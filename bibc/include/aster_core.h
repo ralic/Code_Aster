@@ -40,10 +40,11 @@ extern void DEFSPP(GTOPTR,gtoptr, _IN char *, STRING_SIZE, _OUT DOUBLE *, _OUT I
 extern void DEFSSP(GTOPTK,gtoptk, _IN char *, STRING_SIZE, _OUT char *, STRING_SIZE,
                    _OUT INTEGER *);
 
-extern void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *, _IN STRING_SIZE, _IN INTEGER *,
+extern void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *, _IN STRING_SIZE, _IN INTEGER *,
                          _IN char *, _IN STRING_SIZE,
                          _IN INTEGER *, _IN char *, _IN STRING_SIZE, _IN INTEGER *,
-                         _IN INTEGER *, _IN INTEGER *, _IN DOUBLE *);
+                         _IN INTEGER *, _IN INTEGER *, _IN DOUBLE *,
+                         _IN char*, _IN STRING_SIZE);
 extern void DEFPP(CHKMSG,chkmsg, _IN INTEGER *, _OUT INTEGER *);
 extern void DEFSSP(CHEKSD,cheksd,_IN char *,_IN STRING_SIZE, _IN char *, _IN STRING_SIZE,
                    _OUT INTEGER *);

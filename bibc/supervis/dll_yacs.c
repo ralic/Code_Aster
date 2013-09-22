@@ -90,7 +90,7 @@ void load_yacs_lib()
         valk = MakeTabFStr(nk, VALK_SIZE);
         SetTabFStr(valk, 0, "YACS/Calcium", VALK_SIZE);
         SetTabFStr(valk, 1, LIB_YACS, VALK_SIZE);
-        CALL_UTMESS_CORE("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid);
+        CALL_UTMESS_CORE("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
         FreeStr(valk);  // uncallable
     }
 
@@ -242,7 +242,7 @@ void load_yacs_lib()
         SetTabFStr(valk, 0, "YACS/Calcium", VALK_SIZE);
         SetTabFStr(valk, 1, LIB_YACS, VALK_SIZE);
         SetTabFStr(valk, 2, symbol, VALK_SIZE);
-        CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid);
+        CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
         FreeStr(valk);  // unreachable
     }
 }
