@@ -422,13 +422,16 @@ MANCO1=   FORMULE(
            VALE=''' 0.2*(NBRUP**(-0.1619)) '''
            )
 
+# Pour le critère FS, il faut multiplier la déformatipn par 2 car on trouve 
+# la déformation du type d'ingénieurie dans le critère
+
 CRIT_FAT =   FORMULE(
            NOM_PARA=('EPSPR_1','EPSPR_2','SIGN_1','SIGN_2'),
-           VALE=''' 1.5*( abs(EPSPR_1-EPSPR_2)/2.0 * (1+ max(0,SIGN_1, SIGN_2) )) '''
+           VALE=''' 1.5*( abs(EPSPR_1-EPSPR_2) * (1+ max(0,SIGN_1, SIGN_2) )) '''
            )
 
-RESU2 = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.16830578997527,
-         (-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.16830578997527]
+RESU2 = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.43649132038876,
+         (-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.43649132038876]
 
 
 ## POUR RETROUVER LES CRITERES EN NOM AVEC PROJECTION = DEUX_AXES  
@@ -537,44 +540,6 @@ for j in range(7) :
             CRITERE = CTEST[j],
             REFERENCE='AUTRE_ASTER'
             )
-# POUR FORMULE_VIE = MANCO1,
-RESU2F = [(-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.61539334669937,
-          (-0.43051109680829,0.43051109680830), 0.90258528434986, 0, 0.61539334669937]                      
-FATN2F=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
-                   HISTOIRE=_F(  
-                                 SIGM_XX = SIGMXX,
-                                 SIGM_YY = SIGMYY,
-                                 SIGM_ZZ = ZERO,
-                                 SIGM_XY = ZERO,
-                                 SIGM_XZ = ZERO,
-                                 SIGM_YZ = ZERO,
-                                 
-                                 EPS_XX  = EPSTXX,
-                                 EPS_YY  = EPSTYY,
-                                 EPS_ZZ  = EPSTZZ,
-                                 EPS_XY  = ZERO,
-                                 EPS_XZ  = ZERO,
-                                 EPS_YZ  = ZERO,
-                                 ),
-                   TYPE_CHARGE = 'NON_PERIODIQUE',
-                   CRITERE='FORMULE_CRITERE',
-                   FORMULE_GRDEQ = CRIT_FAT,
-                   DOMMAGE  = 'FORM_VIE',
-                   FORMULE_VIE = MANCO1,
-                   MATER=ACIER2,
-                   PROJECTION = 'UN_AXE'                 )
-
-IMPR_TABLE(TABLE = FATN2F)
-
-for j in range(7) :     
-
-    TEST_TABLE( TABLE=FATN2F,
-            NOM_PARA = NPAR[j],
-            VALE_REFE=RESU2F[j],
-            VALE_CALC=RESU2F[j],
-            CRITERE = CTEST[j],
-            REFERENCE='AUTRE_ASTER'
-            )  
              
 ## POUR RETROUVER LES CRITERES EN NOM  
 FATN2SF=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',

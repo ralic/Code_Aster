@@ -219,8 +219,11 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                 zr(jgdreq+ad1)= zr(jgdreq+ad1)*coefpa
             endif
 !
+!  Pour le critère de FATEMI_SOCIE? il faut utiliser le tenseur de déformation du 
+!  type d'ingéneire gamma_ij = 2*eps_ij avec i #j
+
             if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
-                zr(jgdreq+ad1)= coepre*abs((zr(jvmax+ad2) - zr(jvmin+ad2))/2.0d0)&
+                zr(jgdreq+ad1)= coepre*abs((zr(jvmax+ad2) - zr(jvmin+ad2))/2.0d0*2.0d0)&
                 *(1.0d0 + vala*max(zr(jvsign+ad0+zi(jomax+ad2)), &
                 zr(jvsign+ad0+zi(jomin+ad2)), 0.0d0))
                 zr(jgdreq+ad1)= zr(jgdreq+ad1)*coefpa

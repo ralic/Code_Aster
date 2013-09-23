@@ -106,7 +106,6 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
 !
 ! TRAITEMENT DES PAQUETS DE NOEUDS.
 !
-    write(6,*) 'propla', nomcri,  fordef
     if (( nomcri(1:16) .eq. 'FATESOCI_MODI_AV' ) .or. fordef) then
         decpro = 6
         goto 50
