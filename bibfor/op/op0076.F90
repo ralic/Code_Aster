@@ -121,7 +121,7 @@ subroutine op0076()
         call wkvect(nomres//'           .VALE', 'G V C', nbmode, idvecg)
 !
 !       --- RECUPERATION DU CHAMP ---
-        call zxtrac(interp, prec, crit, nbinst, zr(idinst),&
+        call zxtrac('NON', 0.d0, 'RELATIF', nbinst, zr(idinst),&
                     freq, zc(idcham), nbmode, zc(idvecg), ierd)
 !
         if (ierd .ne. 0) then
