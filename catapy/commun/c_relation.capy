@@ -48,7 +48,6 @@ def C_RELATION( COMMAND ) :
                                         "VISC_IRRA_LOG",
                                         "VMIS_CINE_GC",
                                         "VMIS_CINE_LINE",
-                                        "VMIS_ISOT_CINE",
                                         "VMIS_ISOT_LINE",
                                         "VMIS_ISOT_TRAC",
                                         "VMIS_ISOT_PUIS",

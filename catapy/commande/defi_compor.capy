@@ -111,7 +111,6 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
 # MECA KIT_DDI
                                        "VMIS_ISOT_TRAC",
                                        "VMIS_ISOT_LINE",
-                                       "VMIS_ISOT_CINE",
                                        "VMIS_ISOT_PUIS",
                                        "GRANGER_FP",
                                        "GRANGER_FP_INDT",
