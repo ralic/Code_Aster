@@ -47,6 +47,10 @@ cata_msg={
    Faire une demande d'évolution pour lever cette limitation si nécessaire.
 """),
 
+7 : _(u"""
+   La loi métallurgique META_LEMA_ANI n'est utilisable qu'avec le zirconium.
+"""),
+
 8 : _(u"""
    DEFI_COMPOR : la somme des fractions volumiques est très différente de 1.0 : <%(r1).15E>
    Vérifiez FRAC_VOL pour toutes les occurrences du mot clé POLYCRISTAL.

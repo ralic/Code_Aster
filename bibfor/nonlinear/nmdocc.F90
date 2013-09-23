@@ -164,6 +164,12 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
             call nmdoki(moclef(i), modele, comp, k, dimaki,&
                         nbkit, nomkit, nbnvi, ncomel, lcomel,&
                         numlc, nvmeta)
+
+            if (comp.eq.'META_LEMA_ANI') then
+                if (nomkit(1).ne.'ZIRC') then
+                    call utmess('F','COMPOR2_7')
+                endif
+            endif
 !
 !         PRISE EN COMPTE DE DEBORST
             call nmdocp(ncomel, lcomel, txcp)
