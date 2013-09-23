@@ -117,8 +117,7 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     from Options import options as opts
     env = self.all_envs[self.variant]
     environ = os.environ.copy()
-    cmds = []
-
+    cmdenv = []
     if env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
         exec_task = self.get_tgen_by_name('asterexec')
         python = osp.join(exec_task.install_task.dest, exec_task.target)
@@ -129,7 +128,7 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     if ld_paths:
         add_to_env_paths(environ, 'LD_LIBRARY_PATH', ld_paths)
         # add to cli as it could contain variable (``$LIBDIR`` for example)
-        cmds.append('LD_LIBRARY_PATH="%s"' % environ['LD_LIBRARY_PATH']) # XXX
+        cmdenv.append('LD_LIBRARY_PATH="%s"' % environ['LD_LIBRARY_PATH'])
 
     python_path = self.get_tgen_by_name('bibpyt').install_path
     add_to_env_paths(environ, 'LIBDIR', env['LIBDIR'])
@@ -139,23 +138,20 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     add_to_env_paths(environ, 'PYTHONPATH', python_path)
     add_to_env_paths(environ, 'ASTER_ROOT', env['PREFIX'])
 
-    cmds += [python, osp.join(python_path, pyfile)]
-    cmds += args
-
-    cmds = ' '.join(cmds)
-
+    cmdexe = [python, osp.join(python_path, pyfile)] + args
+    cmds = ' '.join(cmdenv + cmdexe)
     Logs.debug('os environ: %r' % environ)
     try:
         self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
     except Exception, err:
         Logs.warn('stdout: %s' % err.stdout)
         Logs.warn('stderr: %s' % err.stderr)
-        Logs.info('To run manually, set:')
+        Logs.info('To run manually, use:')
         Logs.info('BINDIR="%s"' % environ['BINDIR'])
         Logs.info('PYTHONDIR="%s"' % environ['PYTHONDIR'])
-        Logs.info('and copy/paste the command line below:')
+        Logs.info('export LD_LIBRARY_PATH="%s"' % environ['LD_LIBRARY_PATH'])
+        Logs.info(' '.join(cmdexe))
         raise
-    # self.exec_command(cmds, env=environ)
 
 def get_ld_paths(self):
     # Add *LIBPATH paths to LD_LIBRARY_PATH
