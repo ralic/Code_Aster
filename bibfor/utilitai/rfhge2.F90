@@ -48,23 +48,22 @@ subroutine rfhge2(harmge)
 !
 !     OPERATEUR "RECU_FONCTION"  MOT CLE "HARM_GENE"
 !     ------------------------------------------------------------------
-    character(len=1) :: type
     character(len=4) :: interp(2)
     character(len=8) :: k8b, crit, noeud, cmp, noma, basemo
-    character(len=8) :: matpro, intres
+    character(len=8) :: intres
     character(len=14) :: nume
-    character(len=16) :: nomcmd, typcon, nomcha, nomsy
-    character(len=19) :: nomfon, knume, kinst, resu, matras
+    character(len=16) :: nomcmd, typcon, nomcha
+    character(len=19) :: nomfon, knume, kinst, resu
     character(len=24) :: nogno, valk(2)
     complex(kind=8) :: crep, cbid
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iagno, iaref2, ibid, idbase, iddl, idinsg, idvecg
+    integer :: iagno, ibid, idbase, iddl, idinsg, idvecg
     integer :: ie, ierd, ign2, ii, ino, inoeud, iordr, ldesc
     integer :: iret, itresu, jinst, jj, lfon, lg1, lg2
-    integer :: lordr, lpro, lvar, mxmode, n1, n2
-    integer :: n3, nbinsg, nbmode, nbordr, nbpari, nbpark, nbparr
+    integer :: lordr, lpro, lvar, n1, n2
+    integer :: n3, nbinsg, nbmode, nbordr
     integer :: neq, ngn, numcmp
     real(kind=8) :: epsi
 !-----------------------------------------------------------------------
@@ -156,39 +155,20 @@ subroutine rfhge2(harmge)
 !
 ! --- CAS D'UNE VARIABLE PHYSIQUE
 !
-        call dismoi('F', 'REF_RIGI_PREM', resu, 'RESU_DYNA', ibid,&
-                    matpro, iret)
-        call jeveuo(matpro//'           .REFA', 'L', iaref2)
-        basemo = zk24(iaref2)(1:8)
-        call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                    matras, iret)
+        call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid,&
+                    basemo, iret)
+        call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                    nume, iret)
+        call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
+                    noma, ie)
 !
-        nomsy = 'DEPL'
 ! ---   RECUPERATION DE LA BASE MODALE DANS UN VECTEUR DE TRAVAIL
-        if (matras .ne. ' ') then
-            call vprecu(basemo, nomsy, -1, ibid, '&&RFHGE2.VECT.PROPRE',&
-                        0, k8b, k8b, k8b, k8b,&
-                        neq, mxmode, type, nbpari, nbparr,&
-                        nbpark)
-            call jeveuo('&&RFHGE2.VECT.PROPRE', 'L', idbase)
-            if (type .ne. 'R') then
-                call utmess('F', 'UTILITAI4_16', sk=type)
-            endif
-            call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
-                        nume, ie)
-            call dismoi('F', 'NOM_MAILLA', matras, 'MATR_ASSE', ibid,&
-                        noma, ie)
-        else
-            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                        nume, iret)
-            call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
-                        noma, ie)
-            call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&
-                        k8b, ie)
-            call wkvect('&&RFHGE2.VECT.PROPRE', 'V V R', neq*nbmode, idbase)
-            call copmod(basemo, 'DEPL', neq, nume, nbmode,&
-                        'R', zr(idbase), cbid)
-        endif
+        call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&
+                    k8b, ie)
+        call wkvect('&&RFHGE2.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
+        call copmod(basemo, 'DEPL', neq, nume, nbmode,&
+                    'R', zr( idbase), cbid)
+!
 ! --- TRAITEMENT D'UN GROUP DE NOEUDS SEUELEMENT
         if (ngn .ne. 0) then
             call jenonu(jexnom(noma//'.GROUPENO', nogno), ign2)
