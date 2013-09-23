@@ -1,6 +1,6 @@
 subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
                   sderro, defico, resoco, valinc, solalg,&
-                  mmcvca)
+                  mmcvca, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
     character(len=24) :: sdimpr, sderro
     character(len=19) :: valinc(*), solalg(*)
     logical :: mmcvca
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -122,7 +123,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
         endif
     else if (lctcc) then
         call mmmbca(noma, sddyna, iterat, defico, resoco,&
-                    valinc, solalg, ctcsta, mmcvca)
+                    valinc, solalg, ctcsta, mmcvca, instan)
         call mmcycl(defico, resoco, typcyc, liecyc)
 ! ----- FLIP-FLOP: ON FORCE LA CONVERGENCE
         if (typcyc .eq. 'FLIP FLOP') then

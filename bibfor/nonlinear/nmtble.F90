@@ -1,7 +1,7 @@
 subroutine nmtble(modele, noma, mate, defico, resoco,&
                   niveau, fonact, sdimpr, sdstat, sdtime,&
-                  sddyna, sderro, sdconv, sddisc, valinc,&
-                  solalg)
+                  sddyna, sderro, sdconv, sddisc, numins,&
+                  valinc, solalg)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/diinst.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -38,6 +39,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
     integer :: niveau
+    integer :: numins
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=24) :: sdstat, sdimpr, sdtime, sderro, sdconv
@@ -84,6 +86,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
     logical :: lboucf, lboucg, lboucc
     integer :: mmitgo, mmitfr, mmitco
     character(len=4) :: etnewt
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,7 +96,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
     call nmleeb(sderro, 'NEWT', etnewt)
     if ((niveau.eq.0) .or. (etnewt.ne.'CONV')) then
-        goto 9999
+        goto 998
     endif
 !
 ! --- INFOS SUR LES BOUCLES
@@ -107,6 +110,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
     mmcvca = .false.
     mmcvfr = .false.
     mmcvgo = .false.
+    instan = diinst(sddisc,numins)
 !
     goto (101,102,103) niveau
 !
@@ -122,7 +126,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
         call nmctcc(noma, modele, mate, sddyna, sdimpr,&
                     sderro, defico, resoco, valinc, solalg,&
-                    mmcvca)
+                    mmcvca, instan)
         call nmtime(sdtime, 'END', 'CTCC_CONT')
         call nmrinc(sdstat, 'CTCC_CONT')
 !
@@ -176,7 +180,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
         endif
     endif
 !
-999  continue
+999 continue
 !
 ! --- REMISE A ZERO DES COMPTEURS DE CYCLE
 !
@@ -204,7 +208,7 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !
-9999  continue
+998 continue
     call nmevcv(sderro, fonact, 'FIXE')
 !
     call jedema()

@@ -1,5 +1,5 @@
 subroutine cfdist(defico, method, izone, posnoe, posmae,&
-                  coord, dist)
+                  coord, dist, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
     character(len=8) :: method
     integer :: izone
     integer :: posnoe, posmae
-    real(kind=8) :: dist, coord(3)
+    real(kind=8) :: dist, coord(3), instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,6 +51,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
 ! IN  POSNOE : INDICE DU NOEUD ESCLAVE DANS CONTNO
 ! IN  POSMAE : INDICE DE LA MAILLE ESCLAVE DANS CONTMA
 ! IN  COORD  : VALEUR DES COORDONNEES DU NOEUD COURANT
+! IN  INSTAN : INST Component
 ! OUT DIST   : JEU SUPPLEMENTAIRE
 !
 !
@@ -63,8 +64,8 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
     character(len=24) :: jeufo1, jeufo2
     integer :: jjfo1, jjfo2
     character(len=8) :: jeuf1, jeuf2
-    character(len=8) :: nompar(3)
-    real(kind=8) :: valpar(3)
+    character(len=8) :: nompar(4)
+    real(kind=8) :: valpar(4)
     real(kind=8) :: dist1, dist2, distst
     logical :: ldpou, ldcoq, ldescl, ldmait
 !
@@ -95,9 +96,11 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
     nompar(1) = 'X'
     nompar(2) = 'Y'
     nompar(3) = 'Z'
+    nompar(4) = 'INST'
     valpar(1) = coord(1)
     valpar(2) = coord(2)
     valpar(3) = coord(3)
+    valpar(4) = instan
 !
 ! --- TYPES DE JEUX SUPS
 !
@@ -110,7 +113,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
 !
     if (ldmait) then
         jeuf1 = zk8(jjfo1+izone-1)
-        call fointe('F', jeuf1, 3, nompar, valpar,&
+        call fointe('F', jeuf1, 4, nompar, valpar,&
                     dist1, ier)
     endif
 !
@@ -118,7 +121,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
 !
     if (ldescl) then
         jeuf2 = zk8(jjfo2+izone-1)
-        call fointe('F', jeuf2, 3, nompar, valpar,&
+        call fointe('F', jeuf2, 4, nompar, valpar,&
                     dist2, ier)
     endif
 !

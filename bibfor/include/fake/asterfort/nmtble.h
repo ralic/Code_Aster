@@ -18,8 +18,8 @@
 interface
     subroutine nmtble(modele, noma, mate, defico, resoco,&
                       niveau, fonact, sdimpr, sdstat, sdtime,&
-                      sddyna, sderro, sdconv, sddisc, valinc,&
-                      solalg)
+                      sddyna, sderro, sdconv, sddisc, numins,&
+                      valinc, solalg)
         character(len=24) :: modele
         character(len=8) :: noma
         character(len=24) :: mate
@@ -35,6 +35,7 @@ interface
         character(len=24) :: sdconv
         character(len=19) :: sddisc
         character(len=19) :: valinc(*)
+        integer :: numins
         character(len=19) :: solalg(*)
     end subroutine nmtble
 end interface

@@ -17,7 +17,7 @@
 !
 interface
     subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
-                      npt, jeux, loca, enti, zone)
+                      npt, jeux, loca, enti, zone,instan)
         character(len=8) :: noma
         character(len=24) :: defico
         character(len=24) :: resoco
@@ -28,5 +28,6 @@ interface
         character(len=24) :: loca
         character(len=24) :: enti
         character(len=24) :: zone
+        real(kind=8) :: instan
     end subroutine mmveri
 end interface

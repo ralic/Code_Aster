@@ -1,5 +1,5 @@
 subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
-                  npt, jeux, loca, enti, zone)
+                  npt, jeux, loca, enti, zone, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,13 +47,14 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmnpoi.h"
 #include "asterfort/utmess.h"
-!
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo
     character(len=19) :: sdappa
     character(len=24) :: jeux, loca, enti, zone
     integer :: npt
+    real(kind=8) :: instan
+    
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +77,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! IN  LOCA   : NUMERO DU NOEUD POUR LE POINT DE CONTACT (-1 SI LE POINT
 !              N'EST PAS UN NOEUD ! )
 ! IN  NPT    : NOMBRE DE POINTS EN MODE VERIF
-!
+! IN  INSTAN : INST VALUE
 !
 !
 !
@@ -127,7 +128,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
     ip = 1
     npt0 = 0
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! ----- OPTIONS SUR LA ZONE DE CONTACT
 !
@@ -145,7 +146,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----- BOUCLE SUR LES NOEUDS DE CONTACT
 !
-        do 20 iptm = 1, nbpt
+        do iptm = 1, nbpt
 !
 ! ------- NOEUD ESCLAVE COURANT
 !
@@ -216,7 +217,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
                 call cfdist(defico, 'DISCRETE', izone, posnoe, posmae,&
-                            coorpc, dist)
+                            coorpc, dist, instan)
 !
 ! --------- JEU TOTAL
 !
@@ -257,7 +258,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
                 call cfdist(defico, 'DISCRETE', izone, posnoe, posmae,&
-                            coorpc, dist)
+                            coorpc, dist, instan)
 !
 ! --------- JEU TOTAL
 !
@@ -293,9 +294,9 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
             ip = ip + 1
 !
-20      continue
+        end do
 25      continue
-10  end do
+    end do
 !
     ASSERT(npt0.eq.npt)
 !

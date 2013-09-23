@@ -1,5 +1,6 @@
 subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
-                  npt, jeux, loca, enti, zone)
+                  npt, jeux, loca, enti, zone,&
+                  instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,13 +50,13 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/mmpnoe.h"
 #include "asterfort/mmtanr.h"
 #include "asterfort/utmess.h"
-!
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo
     character(len=19) :: sdappa
     character(len=24) :: jeux, loca, enti, zone
     integer :: npt
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,7 +79,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! IN  LOCA   : NUMERO DU NOEUD POUR LE POINT DE CONTACT (-1 SI LE POINT
 !              N'EST PAS UN NOEUD ! )
 ! IN  NPT    : NOMBRE DE POINTS EN MODE VERIF
-!
+! IN  instan : INST value
 !
 !
 !
@@ -128,7 +129,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
     ip = 1
     npt0 = 0
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! ----- OPTIONS SUR LA ZONE DE CONTACT
 !
@@ -147,7 +148,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
@@ -167,7 +168,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- BOUCLE SUR LES POINTS
 !
-            do 30 iptm = 1, nptm
+            do iptm = 1, nptm
 !
 ! --------- INFOS APPARIEMENT
 !
@@ -230,7 +231,7 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- CALCUL DU JEU FICTIF AU POINT DE CONTACT
 !
                 call cfdist(defico, 'CONTINUE', izone, posnoe, posmae,&
-                            coorpc, dist)
+                            coorpc, dist, instan)
 !
 ! --------- NOM DU POINT DE CONTACT
 !
@@ -271,10 +272,10 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 !
                 ip = ip + 1
 !
-30          continue
-20      continue
+            end do
+        end do
 25      continue
-10  end do
+    end do
 !
     ASSERT(npt0.eq.npt)
 !

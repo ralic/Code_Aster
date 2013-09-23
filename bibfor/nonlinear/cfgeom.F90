@@ -1,5 +1,5 @@
 subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
-                  defico, resoco, depplu)
+                  defico, resoco, depplu, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,7 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
     character(len=8) :: noma
     character(len=24) :: defico, resoco, sdtime, sdstat
     character(len=19) :: depplu
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +90,7 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 !
 ! ----- APPARIEMENT
 !
-        call cfappa(noma, defico, resoco)
+        call cfappa(noma, defico, resoco, instan)
         call nmtime(sdtime, 'END', 'CONT_GEOM')
         call nmrinc(sdstat, 'CONT_GEOM')
 !

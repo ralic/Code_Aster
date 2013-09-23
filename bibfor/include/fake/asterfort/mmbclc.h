@@ -18,7 +18,8 @@
 interface
     subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
                       sddisc, sddyna, sdimpr, defico, resoco,&
-                      valinc, solalg, sdtime, sdstat, mmcvca)
+                      valinc, solalg, sdtime, sdstat, mmcvca,&
+                      instan)
         character(len=8) :: noma
         character(len=8) :: nomo
         character(len=24) :: numedd
@@ -34,5 +35,6 @@ interface
         character(len=24) :: sdtime
         character(len=24) :: sdstat
         logical :: mmcvca
+        real(kind=8) :: instan
     end subroutine mmbclc
 end interface

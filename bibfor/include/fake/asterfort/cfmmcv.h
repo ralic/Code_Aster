@@ -19,7 +19,7 @@ interface
     subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
                       sdimpr, sdstat, sddisc, sdtime, sderro,&
                       numins, iterat, defico, resoco, valinc,&
-                      solalg)
+                      solalg, instan)
         character(len=8) :: noma
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -36,5 +36,6 @@ interface
         character(len=24) :: resoco
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
+        real(kind=8) :: instan
     end subroutine cfmmcv
 end interface

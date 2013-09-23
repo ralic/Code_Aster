@@ -1,4 +1,4 @@
-subroutine cfappa(noma, defico, resoco)
+subroutine cfappa(noma, defico, resoco, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,7 @@ subroutine cfappa(noma, defico, resoco)
 #include "asterfort/jemarq.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,7 +81,7 @@ subroutine cfappa(noma, defico, resoco)
 !
 ! --- RECOPIE APPARIEMENT POUR CONTACT
 !
-    call cfapre(noma, defico, resoco, newgeo, sdappa)
+    call cfapre(noma, defico, resoco, newgeo, sdappa, instan)
     if (niv .ge. 2) then
         write (ifm,*) '<CONTACT> ...... FIN DE L''APPARIEMENT'
     endif

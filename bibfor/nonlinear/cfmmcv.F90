@@ -1,7 +1,7 @@
 subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
                   sdimpr, sdstat, sddisc, sdtime, sderro,&
                   numins, iterat, defico, resoco, valinc,&
-                  solalg)
+                  solalg, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro, sdstat, sdtime
     character(len=19) :: solalg(*), valinc(*)
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -106,7 +107,7 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
     if (lnewtc) then
         call mmbclc(noma, nomo, numedd, iterat, numins,&
                     sddisc, sddyna, sdimpr, defico, resoco,&
-                    valinc, solalg, sdtime, sdstat, mmcvca)
+                    valinc, solalg, sdtime, sdstat, mmcvca, instan)
         if (mmcvca) then
             call nmcrel(sderro, 'DIVE_CTCC', .false.)
         else

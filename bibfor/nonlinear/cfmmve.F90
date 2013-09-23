@@ -1,4 +1,4 @@
-subroutine cfmmve(noma, defico, resoco, valinc)
+subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ subroutine cfmmve(noma, defico, resoco, valinc)
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,6 +54,7 @@ subroutine cfmmve(noma, defico, resoco, valinc)
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
+! IN  INSTAN : INST VALUE
 !
 !
 !
@@ -126,10 +128,10 @@ subroutine cfmmve(noma, defico, resoco, valinc)
 !
     if (lctcc) then
         call mmveri(noma, defico, resoco, newgeo, sdappa,&
-                    npt, jeux, loca, enti, zone)
+                    npt, jeux, loca, enti, zone, instan)
     else if (lctcd) then
         call cfveri(noma, defico, resoco, newgeo, sdappa,&
-                    npt, jeux, loca, enti, zone)
+                    npt, jeux, loca, enti, zone, instan)
     else
         ASSERT(.false.)
     endif

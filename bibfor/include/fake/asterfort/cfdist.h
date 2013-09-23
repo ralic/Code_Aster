@@ -17,7 +17,7 @@
 !
 interface
     subroutine cfdist(defico, method, izone, posnoe, posmae,&
-                      coord, dist)
+                      coord, dist, instan)
         character(len=24) :: defico
         character(len=8) :: method
         integer :: izone
@@ -25,5 +25,6 @@ interface
         integer :: posmae
         real(kind=8) :: coord(3)
         real(kind=8) :: dist
+        real(kind=8) :: instan
     end subroutine cfdist
 end interface

@@ -1,6 +1,7 @@
 subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
                   sddisc, sddyna, sdimpr, defico, resoco,&
-                  valinc, solalg, sdtime, sdstat, mmcvca)
+                  valinc, solalg, sdtime, sdstat, mmcvca,&
+                  instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +42,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
     character(len=24) :: defico, resoco, sdtime, sdstat, sdimpr, numedd
     character(len=19) :: valinc(*), solalg(*)
     logical :: mmcvca
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -126,7 +128,8 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
         call nmtime(sdtime, 'INI', 'CTCC_CONT')
         call nmtime(sdtime, 'RUN', 'CTCC_CONT')
         call mmmbca(noma, sddyna, iterat, defico, resoco,&
-                    valinc, solalg, ctcsta, mmcvca)
+                    valinc, solalg, ctcsta, mmcvca,&
+                    instan)
         call nmtime(sdtime, 'END', 'CTCC_CONT')
         call nmrinc(sdstat, 'CTCC_CONT')
     endif
@@ -142,7 +145,7 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
         call nmrinc(sdstat, 'CTCC_PREP')
     endif
 !
-999  continue
+999 continue
 !
 ! --- STATUTS DE CONTACT EN NEWTON GENERALISE
 !

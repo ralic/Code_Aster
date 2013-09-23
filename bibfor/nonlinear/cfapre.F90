@@ -1,4 +1,5 @@
-subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
+subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
+                  instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +21,6 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
 #include "asterfort/apvect.h"
@@ -49,6 +49,8 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
     character(len=19) :: sdappa
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo
+    real(kind=8) :: instan
+    
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,6 +85,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
     real(kind=8) :: ksipr1, ksipr2, tau1m(3), tau2m(3)
     real(kind=8) :: coorne(3), dissup
     real(kind=8) :: coefff, coefpn, coefpt, coefte
+    
 !
 ! ----------------------------------------------------------------------
 !
@@ -113,7 +116,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
 !
 ! --- BOUCLE SUR LES ZONES
 !
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! ----- INFORMATION SUR LA ZONE
 !
@@ -139,7 +142,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
 !
 ! ----- BOUCLE SUR LES NOEUDS DE CONTACT
 !
-        do 20 i = 1, nbpt
+        do i = 1, nbpt
 !
 ! ------- NOEUD ESCLAVE COURANT
 !
@@ -201,7 +204,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
 ! ------- CALCUL DU JEU FICTIF DE LA ZONE
 !
             call cfdist(defico, 'DISCRETE', izone, posnoe, posmae,&
-                        coorne, dissup)
+                        coorne, dissup, instan)
 !
 ! ------- CARACTERISTIQUES DE LA LIAISON POUR LA ZONE
 !
@@ -216,9 +219,9 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
             ip = ip + 1
             ASSERT(iliai.le.ip)
 !
-20      continue
+        end do
 25      continue
-10  end do
+    end do
 !
 ! --- NOMBRE DE LIAISONS EFFECTIVES
 !

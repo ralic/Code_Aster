@@ -113,7 +113,7 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
         if (.not.lallv) then
             call nmcofr(noma, depplu, depdel, ddepla, solveu,&
                         numedd, matass, defico, resoco, iterat,&
-                        resigr, sdstat, sdtime, ctccvg)
+                        resigr, sdstat, sdtime, ctccvg, instan)
         endif
         ctccvg = 0
     endif

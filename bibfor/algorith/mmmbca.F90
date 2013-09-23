@@ -1,5 +1,6 @@
 subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
-                  valinc, solalg, ctcsta, mmcvca)
+                  valinc, solalg, ctcsta, mmcvca,&
+                  instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +66,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
     character(len=19) :: sddyna
     logical :: mmcvca
     integer :: iterat, ctcsta
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,6 +88,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! OUT MMCVCA : INDICATEUR DE CONVERGENCE POUR BOUCLE DES
 !              CONTRAINTES ACTIVES
 !               .TRUE. SI LA BOUCLE DES CONTRAINTES ACTIVES A CONVERGE
+! IN INSTAN  : INST VALUE
 !
 ! ----------------------------------------------------------------------
 !
@@ -211,7 +214,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! --- BOUCLE SUR LES ZONES
 !
     iptc = 1
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! --- OPTIONS SUR LA ZONE DE CONTACT
 !
@@ -234,7 +237,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 !
 ! ----- BOUCLE SUR LES MAILLES ESCLAVES
 !
-        do 20 imae = 1, nbmae
+        do imae = 1, nbmae
 !
 ! ------- NUMERO ABSOLU DE LA MAILLE ESCLAVE
 !
@@ -265,7 +268,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 !
 ! ------- BOUCLE SUR LES POINTS
 !
-            do 30 iptm = 1, nptm
+            do iptm = 1, nptm
 !
 ! --------- COORDONNEES ACTUALISEES DU POINT DE CONTACT
 !
@@ -315,7 +318,7 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! --------- CALCUL DU JEU FICTIF AU POINT DE CONTACT
 !
                 call cfdist(defico, 'CONTINUE', izone, posnoe, posmae,&
-                            geome, dist)
+                            geome, dist, instan)
                 zr(jjsup+iptc-1) = dist
 !
 ! --------- JEU TOTAL
@@ -391,10 +394,10 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! --------- LIAISON DE CONTACT SUIVANTE
 !
                 iptc = iptc + 1
-30          continue
-20      continue
+            end do
+        end do
 25      continue
-10  end do
+    end do
 !
 ! --- GESTION DE LA GLISSIERE
 !

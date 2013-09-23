@@ -17,7 +17,8 @@
 !
 interface
     subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
-                      valinc, solalg, ctcsta, mmcvca)
+                      valinc, solalg, ctcsta, mmcvca,&
+                      instan)
         character(len=8) :: noma
         character(len=19) :: sddyna
         integer :: iterat
@@ -27,5 +28,6 @@ interface
         character(len=19) :: solalg(*)
         integer :: ctcsta
         logical :: mmcvca
+        real(kind=8) :: instan
     end subroutine mmmbca
 end interface

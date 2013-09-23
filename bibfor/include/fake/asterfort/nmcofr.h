@@ -18,7 +18,7 @@
 interface
     subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
                       numedd, matass, defico, resoco, iterat,&
-                      resigr, sdstat, sdtime, ctccvg)
+                      resigr, sdstat, sdtime, ctccvg,instan)
         character(len=8) :: noma
         character(len=19) :: depplu
         character(len=19) :: depdel
@@ -33,5 +33,6 @@ interface
         character(len=24) :: sdstat
         character(len=24) :: sdtime
         integer :: ctccvg
+        real(kind=8) :: instan
     end subroutine nmcofr
 end interface

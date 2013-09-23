@@ -53,10 +53,9 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 #include "asterfort/nmresi.h"
 #include "asterfort/nmrvai.h"
 #include "asterfort/utmess.h"
-!
     integer :: fonact(*)
     integer :: iterat, numins
-    real(kind=8) :: eta, conv(*), parcri(*), parmet(*)
+    real(kind=8) :: eta, conv(*), parcri(*), parmet(*), instan
     character(len=19) :: sdcrit, sddisc, sddyna, sdnume
     character(len=19) :: matass, solveu
     character(len=19) :: measse(*), veasse(*)
@@ -66,6 +65,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     character(len=24) :: numedd, modele
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr, sderro, sdstat, sdconv, sdtime
+
 !
 ! ----------------------------------------------------------------------
 !
@@ -165,6 +165,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! --- INSTANTS
 !
+    instan = diinst(sddisc,numins)
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins )
 !
@@ -175,7 +176,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! --- EVENEMENT ERREUR ACTIVE ?
 !
     call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-    if (lerror) goto 9999
+    if (lerror) goto 999
 !
 ! --- EXAMEN DU NOMBRE D'ITERATIONS
 !
@@ -238,7 +239,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
         call cfmmcv(noma, modele, numedd, fonact, sddyna,&
                     sdimpr, sdstat, sddisc, sdtime, sderro,&
                     numins, iterat, defico, resoco, valinc,&
-                    solalg)
+                    solalg, instan)
     endif
 !
 ! --- ENREGISTRE LES DONNEES POUR AFFICHAGE DANS LA SDIMPR
@@ -249,7 +250,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 ! --- CAPTURE ERREUR EVENTUELLE
 !
     call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-    if (lerror) goto 9999
+    if (lerror) goto 999
 !
 ! --- INFORMATION POUR DEBORST
 !
@@ -286,7 +287,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
         call nmnkft(solveu, sddisc, iterat)
     endif
 !
-9999  continue
+999 continue
 !
 ! --- MISE A JOUR DE L'INDICATEUR DE SUCCES SUR LES ITERATIONS DE NEWTON
 !

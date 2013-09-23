@@ -370,11 +370,11 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
     endif
 !
 ! --- GESTION FIN DE BOUCLE POINTS FIXES
-!
+!  
     call nmtble(modele, noma, mate, defico, resoco,&
                 niveau, fonact, sdimpr, sdstat, sdtime,&
-                sddyna, sderro, sdconv, sddisc, valinc,&
-                solalg)
+                sddyna, sderro, sdconv, sddisc, numins,&
+                valinc, solalg)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !

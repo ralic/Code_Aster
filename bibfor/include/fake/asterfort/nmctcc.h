@@ -18,7 +18,7 @@
 interface
     subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
                       sderro, defico, resoco, valinc, solalg,&
-                      mmcvca)
+                      mmcvca,instan)
         character(len=8) :: noma
         character(len=24) :: modele
         character(len=24) :: mate
@@ -30,5 +30,6 @@ interface
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         logical :: mmcvca
+        real(kind=8) :: instan
     end subroutine nmctcc
 end interface

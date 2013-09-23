@@ -1,6 +1,6 @@
 subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
                   numedd, matass, defico, resoco, iterat,&
-                  resigr, sdstat, sdtime, ctccvg)
+                  resigr, sdstat, sdtime, ctccvg, instan)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
     character(len=19) :: solveu, matass
     real(kind=8) :: resigr
     integer :: iterat, ctccvg
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -113,7 +114,7 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 ! --- APPARIEMENT
 !
     call cfgeom(reageo, iterat, noma, sdtime, sdstat,&
-                defico, resoco, depplu)
+                defico, resoco, depplu, instan)
 !
 ! --- ALGORITHMES DE CONTACT
 !

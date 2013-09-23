@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmve(noma, defico, resoco, valinc)
+    subroutine cfmmve(noma, defico, resoco, valinc,instan)
         character(len=8) :: noma
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: valinc(*)
+        real(kind=8) :: instan
     end subroutine cfmmve
 end interface

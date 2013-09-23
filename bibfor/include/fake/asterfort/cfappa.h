@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfappa(noma, defico, resoco)
+    subroutine cfappa(noma, defico, resoco, instan)
         character(len=8) :: noma
         character(len=24) :: defico
         character(len=24) :: resoco
+        real(kind=8) :: instan
     end subroutine cfappa
 end interface

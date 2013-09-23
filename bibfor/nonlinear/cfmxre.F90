@@ -41,6 +41,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
     character(len=19) :: sddisc
     character(len=19) :: solalg(*), veasse(*), valinc(*)
     integer :: numins
+    real(kind=8) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,6 +105,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 !
 ! --- INSTANT
 !
+    instan = diinst(sddisc,numins)
     inst(1) = diinst(sddisc,numins)
     inst(2) = inst(1) - diinst(sddisc,numins-1)
 !
@@ -139,7 +141,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
 50  continue
 !
     if (lexiv) then
-        call cfmmve(noma, defico, resoco, valinc)
+        call cfmmve(noma, defico, resoco, valinc, instan)
     endif
 !
 ! --- TRANSFO DU CHAM_NO_S EN CHAM_NO (AVEC UN PROF_CHNO CONSTANT !)
