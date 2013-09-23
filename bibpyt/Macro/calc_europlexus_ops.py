@@ -586,10 +586,25 @@ class EUROPLEXUS:
                   group_ma = self.get_group_ma(affe)
                   # traitement special pour les Q4GG : separation des mailles TRIA3 et QUAD4
                   if modelisation=='Q4GG':
-                      group_ma_t3=[]
-                      group_ma_q4=[]
+                  # type des mailles
+                      ltyma = aster.getvectjev("&CATA.TM.NOMTM")
+                      ltyma_maya = concept_maillage.sdj.TYPMAIL.get()
+                      group_ma_t3 = []
+                      group_ma_q4 = []
                       gr_t3q4 = {}
+                      # vérification de la présence de QUAD4 et/ou TRIA3 dans le groupe
                       for gr in group_ma:
+                          lquad4 = False
+                          ltria3 = False
+                          l_ma_gr = concept_maillage.sdj.GROUPEMA.get()[gr.ljust(24)]
+                          for m in l_ma_gr:
+                              if ltyma[ltyma_maya[m-1]][0:5]=='QUAD4' :
+                                  lquad4 = True
+                                  break
+                          for m in l_ma_gr:
+                              if ltyma[ltyma_maya[m-1]][0:5]=='TRIA3' :
+                                  ltria3 = True
+                                  break
                           l_gr=len(gr)
                           if l_gr<=6:
                               gr3 = gr +(6-l_gr)*'_'+'T3'
@@ -609,13 +624,18 @@ class EUROPLEXUS:
                           group_ma_q4.append(gr4)
                           gr_t3q4[gr]=[gr3,gr4]
 
-                          if not MApyt.gma.has_key(string.rstrip(gr3)) and not MApyt.gma.has_key(string.rstrip(gr4)) :
+                          if not MApyt.gma.has_key(string.rstrip(gr3)) and ltria3 :
+                              DEFI_GROUP(reuse=concept_maillage, MAILLAGE=concept_maillage,
+                                         CREA_GROUP_MA= (
+                                         _F(NOM=gr3, GROUP_MA=gr,  TYPE_MAILLE='TRIA3'),
+                                        ))
+                          if not MApyt.gma.has_key(string.rstrip(gr4)) and lquad4 :
                               DEFI_GROUP(reuse=concept_maillage, MAILLAGE=concept_maillage,
                                          CREA_GROUP_MA= (
                                          _F(NOM=gr4, GROUP_MA=gr,  TYPE_MAILLE='QUAD4'),
-                                         _F(NOM=gr3, GROUP_MA=gr,  TYPE_MAILLE='TRIA3'),
                                         ))
-                      # un des deux groupes est-il vide ?
+ 
+                     # un des deux groupes est-il vide ?
                       MApyt.FromAster(concept_maillage)
                       for gr in gr_t3q4.keys() :
                           gr3,gr4 = gr_t3q4[gr]
@@ -1310,7 +1330,9 @@ class EUROPLEXUS:
                 dic_corresNapp = {'E' : 'EA','SY':'FY','OMX':'OMX','OMY':'OMY','RX':'RX','RY':'RY','FS':'FS'}
                 dic_corresPrec = {'E' : 'EA','SY':'FY','OMX':'OMX','OMY':'OMY','RX':'RX','RY':'RY'}
                 dic_corresLinr = {'E' : 'EA','SY':'FY','OML':'OMLR','NU':'NULR','RLR':'RLR'}
-                dic_corres2 = {'OMT' : 'OMT','EAT':'EAT','BT1':'BT1','BT2':'BT2','SYT' : 'FT','GAMMA':'GAMM','QP1':'QP1','QP2':'QP2','C1N1':'C1N1','C1N2':'C1N2','C1N3':'C1N3','C2N1':'C2N1','C2N2':'C2N2','C2N3':'C2N3','C1M1':'C1M1','C1M2':'C1M2','C1M3':'C1M3','C2M1':'C2M1','C2M2':'C2M2','C2M3':'C2M3','SYC':'FC'}
+                dic_corres2 = {'OMT' : 'OMT','EAT':'EAT','BT1':'BT1','BT2':'BT2','SYT' : 'FT','GAMMA':'GAMM','QP1':'QP1','QP2':'QP2',
+                               'C1N1':'C1N1','C1N2':'C1N2','C1N3':'C1N3','C2N1':'C2N1','C2N2':'C2N2','C2N3':'C2N3','C1M1':'C1M1','C1M2':'C1M2','C1M3':'C1M3',
+                               'C2M1':'C2M1','C2M2':'C2M2','C2M3':'C2M3','SYC':'FC'}
                 dic_corres2b = {'MP1X':'MP1X','MP2X':'MP2X','MP1Y':'MP1Y','MP2Y':'MP2Y','MP1X_FO':'MP1X','MP2X_FO':'MP2X','MP1Y_FO':'MP1Y','MP2Y_FO':'MP2Y'}
                 dic_corres3 = {'PREX' : 'PREX', 'PREY' : 'PREY'}
                 dic_corres4 = {'AMOR_ALPHA':'KRAY','AMOR_BETA':'MRAY'}
