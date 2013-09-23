@@ -1,5 +1,5 @@
 subroutine aidty2(impr)
-! person_in_charge: Christophe-mmn.durand at edf.fr
+! person_in_charge: jessica.haelewyn at edf.fr
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
