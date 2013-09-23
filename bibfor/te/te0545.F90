@@ -19,7 +19,6 @@ subroutine te0545(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elrefv.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ngfint.h"
@@ -30,6 +29,7 @@ subroutine te0545(option, nomte)
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"
 #include "blas/dgemv.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
@@ -103,8 +103,8 @@ subroutine te0545(option, nomte)
 !
 !
 !    NOMBRE DE VARIABLES INTERNES
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
 !

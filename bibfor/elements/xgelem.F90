@@ -139,8 +139,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     ddls=ddld+ddlc
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+                itab=jtab)
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS

@@ -116,7 +116,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
     real(kind=8) :: rbid, rundf, theta, deltat
     real(kind=8) :: time, erp, erd, s, longc, presc
 !
-    character(len=1) :: k1bid
     character(len=2) :: cret
     character(len=8) :: k8b
     character(len=8) :: ctype
@@ -242,7 +241,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
             endif
 !
             call rsadpa(resuco, 'L', 1, 'INST', ibid,&
-                        0, iainst, k8b)
+                        0, sjv=iainst, styp=k8b)
 !
             if (jaux .eq. 1) then
                 time = zr(iainst)
@@ -258,7 +257,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                     call utmess('A', 'INDICATEUR_4', sk=resuco)
                 else
                     call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr,&
-                                0, iad, k8b)
+                                0, sjv=iad, styp=k8b)
                     theta = zr(iad)
                     if ((theta.gt.1.d0) .or. (theta.lt.0.d0)) then
                         call utmess('F', 'INDICATEUR_5', sk=resuco)
@@ -493,8 +492,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !----- CREE UNE CARTE CONSTANTE
         chs='&&OP0069.CH_NEUT_R'
         call mecact('V', chs, 'MODELE', ligrmo, 'NEUT_R',&
-                    1, 'X1', ibid, s, cbid,&
-                    k1bid)
+                    ncmp=1, nomcmp='X1', sr=s)
 !
 ! 4.2.2. ==> SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
         call medom1(modele, mate, cara, kchap, ncharp,&
@@ -547,7 +545,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !          POUR LE NUMERO D'ORDRE IORDR
         if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
             call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                        0, iainst, k8b)
+                        0, sjv=iainst, styp=k8b)
             time = zr(iainst)
         else
             time = 0.d0
@@ -672,7 +670,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !          POUR LE NUMERO D'ORDRE IORDR
         if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
             call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                        0, iainst, k8b)
+                        0, sjv=iainst, styp=k8b)
             time = zr(iainst)
         else
             time = 0.d0
@@ -728,7 +726,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
         if (iret .eq. 0) then
             if ((tysd.eq.'EVOL_ELAS') .or. (tysd.eq.'EVOL_NOLI')) then
                 call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                            0, iainst, k8b)
+                            0, sjv=iainst, styp=k8b)
                 time = zr(iainst)
             else
                 time = 0.d0

@@ -57,8 +57,8 @@ subroutine te0563(option, nomte)
 !
     call jevech('PCOORPG', 'L', j_coor_elga)
     call jevech('PCHAMPG', 'L', j_vale)
-    call jevech('PCOEFR' , 'L', j_coef)
-    call jevech('PCALCI' , 'L', j_calc)
+    call jevech('PCOEFR', 'L', j_coef)
+    call jevech('PCALCI', 'L', j_calc)
 !
 ! - Output fields
 !
@@ -66,16 +66,16 @@ subroutine te0563(option, nomte)
 !
 ! - Informations of input fields
 !
-    call tecach('OON', 'PCHAMPG', 'L', 2, jtab1,&
-                iret)
+    call tecach('OON', 'PCHAMPG', 'L', iret, nval=2,&
+                itab=jtab1)
     ncmp_vale = jtab1(2)/npg
 !
-    call tecach('OON', 'PCOORPG', 'L', 2, jtab2,&
-                iret)
+    call tecach('OON', 'PCOORPG', 'L', iret, nval=2,&
+                itab=jtab2)
     ncmp_coor = jtab2(2)/npg
 !
-    call tecach('OON', 'PCOEFR', 'L', 2, jtab3,&
-                iret)
+    call tecach('OON', 'PCOEFR', 'L', iret, nval=2,&
+                itab=jtab3)
     ncmp_coef = jtab3(2)
 !
     ASSERT(ncmp_coef .ge. ncmp_vale)
@@ -85,18 +85,17 @@ subroutine te0563(option, nomte)
     resu = 0.d0
     do ipg = 1, npg
         poids_pg = zr(j_coor_elga + ncmp_coor*(ipg-1)+ncmp_coor-1)
-        vale_pg  = 0.d0
+        vale_pg = 0.d0
         do icmp = 1, ncmp_vale
-            vale_pg = vale_pg + zr(j_coef-1+icmp) * &
-                      zr(j_vale-1+ncmp_vale*(ipg-1)+icmp) * &
-                      zr(j_vale-1+ncmp_vale*(ipg-1)+icmp)
+            vale_pg = vale_pg + zr(j_coef-1+icmp) * zr(j_vale-1+ncmp_vale*(ipg-1)+icmp) * zr(j_va&
+                      &le-1+ncmp_vale*(ipg-1)+icmp)
         enddo
         resu = resu + vale_pg * poids_pg
     enddo
-
+!
     calc_elem = zi(j_calc)
-  
-    if (calc_elem.lt.0) then
+!
+    if (calc_elem .lt. 0) then
         zr(j_resu) = resu
     else
         zr(j_resu) = sqrt(resu)

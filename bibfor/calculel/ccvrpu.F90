@@ -96,7 +96,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 !         VERIFICATION DU MODELE
         if (modelu .ne. ' ') then
             call rsadpa(resuin, 'L', 1, 'MODELE', numord,&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             modelr = zk8(jpara)
             if (modelr .ne. ' ' .and. modelr .ne. modelu) then
                 valk(1) = 'MODELE'
@@ -110,7 +110,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 !         VERIFICATION DU CARAELEM
         if (carelu .ne. ' ') then
             call rsadpa(resuin, 'L', 1, 'CARAELEM', numord,&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             carelr=zk8(jpara)
             if (carelr .ne. ' ' .and. carelr .ne. carelu) then
                 valk(1) = 'CARA_ELEM'
@@ -124,7 +124,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 !         VERIFICATION DU CHAMATER
         if (chmatu .ne. ' ') then
             call rsadpa(resuin, 'L', 1, 'CHAMPMAT', numord,&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             chmatr=zk8(jpara)
             if (chmatr .ne. ' ' .and. chmatr .ne. chmatu) then
                 valk(1) = 'CHAM_MATER'
@@ -138,7 +138,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 !         VERIFICATION DU CHARGEMENT
         if (nchalu .ne. 0) then
             call rsadpa(resuin, 'L', 1, 'EXCIT', numord,&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             excisd=zk24(jpara)
             nchasd=0
             if (excisd .ne. ' ') then

@@ -64,7 +64,7 @@ subroutine rsinfo(nomcon, ifi)
     integer :: ifi, ibid, nbnosy, lres, inomsy, i, j, k, isy, ii
     integer :: iatach, lnosy, lnopa, lnupa, latac, lg, lb
     integer :: iret, ltirt, nbac, nbpa, iac, ipar, iad, jpa
-    integer :: nbordt, ipcd, ipcf, lpoin, longt
+    integer :: nbordt, ipcd, ipcf, lpoin, longt, tord(1)
     real(kind=8) :: r8b, rundf
     complex(kind=8) :: c16b
     character(len=8) :: k8b, nomb1, nomgd, ctype
@@ -110,9 +110,10 @@ subroutine rsinfo(nomcon, ifi)
 !
 ! 2.2. ==> NUMEROS D'ORDRE
 !
-    call rsorac(nomd2, 'LONUTI', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbordt, 1,&
+    call rsorac(nomd2, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tord, 1,&
                 ibid)
+    nbordt=tord(1)            
 !
     if (nbordt .eq. 1) then
         write (ifi,10001) nomd2(1:8)
@@ -126,7 +127,7 @@ subroutine rsinfo(nomcon, ifi)
      &            ' NUMEROS D''ORDRE')
 !
     call wkvect('&&'//nompro//'.NUME_ORDRE', 'V V I', nbordt, lres)
-    call rsorac(nomd2, 'TOUT_ORDRE', ibid, r8b, k8b,&
+    call rsorac(nomd2, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(lres), nbordt,&
                 ibid)
 !
@@ -280,7 +281,7 @@ subroutine rsinfo(nomcon, ifi)
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS DE VARIABLES D''ACCES:'
         do 25 iac = 1, nbac
             call rsadpa(nomd2, 'L', 1, zk16(jpa-1+iac), zi(lres),&
-                        1, iad, ctype)
+                        1, sjv=iad, styp=ctype)
             if (ctype(1:1) .eq. 'I') then
                 write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  I'
             else if (ctype(1:1).eq.'R') then
@@ -313,7 +314,7 @@ subroutine rsinfo(nomcon, ifi)
             do 2611 j = 1, nbpa
                 nopara = zk16(jpa-1+j+nbac)
                 call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
-                            1, iad, ctype)
+                            1, sjv=iad, styp=ctype)
                 if (ctype(1:1) .eq. 'I') then
                 else if (ctype(1:1) .eq. 'R') then
                     if (zr(iad) .eq. rundf) goto 2611
@@ -361,7 +362,7 @@ subroutine rsinfo(nomcon, ifi)
                 ipcf = ipcd + 15
                 nopara = zk16(lnupa+j-1)
                 call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
-                            1, iad, ctype)
+                            1, sjv=iad, styp=ctype)
                 if (ctype(1:1) .eq. 'I') then
                     chain2(ipcd:ipcf) = '       I        '
                 else if (ctype(1:1).eq.'R') then

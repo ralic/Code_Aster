@@ -96,8 +96,7 @@ subroutine te0040(option, nomte)
         call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
                     iinpg, 'S')
         call jevech('PSIEFNOR', 'E', ioutno)
-        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
-                    iret)
+        call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             if (zk16(icompo+2) .eq. 'GROT_GDEP') then
                 lgreen = .true.

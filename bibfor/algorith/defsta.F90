@@ -173,7 +173,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 ! ----- STOCKAGE DES PSEUDO PARAMETRES
 !
         call rsadpa(nomres, 'E', nbpabm, bmpara, inord,&
-                    0, ldpar, kbid)
+                    0, tjv=ldpar, styp=kbid)
         zi(ldpar(1))=inord
         zr(ldpar(2))=0.d0
         zk24(ldpar(3))=blanc

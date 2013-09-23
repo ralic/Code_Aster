@@ -76,7 +76,8 @@ subroutine te0451(option, nomte)
     nomres='C'//num//'_V'//val
     r8bid = 0.d0
     call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                [r8bid], 1, nomres, epi(1), icodre(1),0)
+                [r8bid], 1, nomres, epi(1), icodre(1),&
+                0)
     if (icodre(1) .eq. 0) lcoqmu=.true.
     if (lcoqmu) then
         ASSERT(nbcou.le.100)
@@ -84,7 +85,8 @@ subroutine te0451(option, nomte)
         call codent(icou, 'G', num)
         nomres='C'//num//'_V'//val
         call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    [r8bid], 1, nomres, epi(1), icodre(1),0)
+                    [r8bid], 1, nomres, epi(1), icodre(1),&
+                    0)
         ASSERT(icodre(1).eq.0)
         ASSERT(epi(1).ge.0.d0)
         epcou(icou)=epi(1)
@@ -94,8 +96,8 @@ subroutine te0451(option, nomte)
 !
 !     -- CONTRAINTES DANS LES COUCHES :
 !     ----------------------------------
-    call tecach('OOO', 'PSIEFR', 'L', 7, itab,&
-                iret)
+    call tecach('OOO', 'PSIEFR', 'L', iret, nval=7,&
+                itab=itab)
     jsigm=itab(1)
     npg=itab(3)
     nbsp=itab(7)
@@ -106,8 +108,8 @@ subroutine te0451(option, nomte)
 !
 !     -- CALCUL DES EFFORTS PAR INTEGRATION DANS L'EPAISSEUR :
 !     --------------------------------------------------------
-    call tecach('OOO', 'PEFGER', 'E', 7, itab,&
-                iret)
+    call tecach('OOO', 'PEFGER', 'E', iret, nval=7,&
+                itab=itab)
     jeff=itab(1)
     ASSERT(itab(2).eq.nbeff*npg)
 !

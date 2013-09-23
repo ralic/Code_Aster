@@ -300,7 +300,7 @@ subroutine crprol()
         call detrsd('CHAM_NO_S', cnsinr)
 !
         call rsadpa(resu, 'E', 1, 'INST', iord,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zr(iad) = dinst
 !
         call detrsd('TABLE', tabl2)

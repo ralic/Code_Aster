@@ -74,8 +74,8 @@ subroutine dxsith(nomte, mater, sigma)
 !
 ! --- RECUPERATION DE L'INSTANT
 !     -------------------------
-    call tecach('ONN', 'PTEMPSR', 'L', 8, itab,&
-                iret)
+    call tecach('ONN', 'PTEMPSR', 'L', iret, nval=8,&
+                itab=itab)
     ibid = itab(1)
     if (iret .eq. 0) then
         inst = zr(ibid)

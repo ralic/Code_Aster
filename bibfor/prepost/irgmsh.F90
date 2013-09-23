@@ -123,7 +123,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
         if (iret .ne. 0) then
             do 20 ior = 1, nbordr
                 call rsadpa(nomcon, 'L', 1, 'INST', ordr(ior),&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 zr(jpara+ior-1) = zr(iad)
 20          continue
         else
@@ -131,7 +131,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             if (iret .ne. 0) then
                 do 22 ior = 1, nbordr
                     call rsadpa(nomcon, 'L', 1, 'FREQ', ordr(ior),&
-                                0, iad, k8b)
+                                0, sjv=iad, styp=k8b)
                     zr(jpara+ior-1) = zr(iad)
 22              continue
             endif

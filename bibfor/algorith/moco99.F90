@@ -66,7 +66,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     integer :: nbpabm
     parameter   (nbpabm=10)
     integer :: ldpar(nbpabm), ldpa2(nbpabm)
-    integer :: nbcham, nbold, nbtrou, vali
+    integer :: nbcham, nbold(1), nbtrou, vali
     integer :: i, ii, jtyp, ier, iorol, ire, ibid, jordr
     integer :: llkge, llmge, llncp, llom2, lltmo, llval2, llvalo
 !
@@ -98,12 +98,12 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                 cbid, epsi, 'ABSOLU', nbold, 1,&
                 nbtrou)
 !
-    if (nbmod .gt. nbold) then
-        vali = nbold
+    if (nbmod .gt. nbold(1)) then
+        vali = nbold(1)
         call utmess('I', 'ALGORITH13_48', si=vali)
-        nbmod=nbold
+        nbmod=nbold(1)
     endif
-    nbmod=min(nbmod,nbold)
+    nbmod=min(nbmod,nbold(1))
 !
     if (nbmod .eq. 0) goto 9999
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
@@ -164,17 +164,17 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 ! ----- RECUPERATION DES VALEURS GENERALISEES ET PULSATION CARREE
 !
         call rsadpa(resul, 'L', 1, 'RIGI_GENE', iorol,&
-                    0, llkge, k8bid)
+                    0, sjv=llkge, styp=k8bid)
         genek=zr(llkge)
         call rsadpa(resul, 'L', 1, 'MASS_GENE', iorol,&
-                    0, llmge, k8bid)
+                    0, sjv=llmge, styp=k8bid)
         genem=zr(llmge)
         call rsadpa(resul, 'L', 1, 'OMEGA2', iorol,&
-                    0, llom2, k8bid)
+                    0, sjv=llom2, styp=k8bid)
         omeg2=zr(llom2)
 !
         call rsadpa(resul, 'L', 1, 'TYPE_MODE', iorol,&
-                    0, lltmo, k8bid)
+                    0, sjv=lltmo, styp=k8bid)
         typmo=zk16(lltmo)
 !
 11      continue
@@ -182,12 +182,12 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 ! ----- ECRITURE DES NOUVEAUX PARAMETRES
 !
         call rsadpa(nomres, 'E', nbpabm, bmpara, iorne,&
-                    0, ldpar, k8bid)
+                    0, tjv=ldpar, styp=k8bid)
         zi(ldpar(1))=iorne
         if (typmo(1:8) .ne. 'MODE_DYN') then
             if (typeba(1:1) .ne. ' ') then
                 call rsadpa(resul, 'L', nbpabm, bmpara, iorol,&
-                            0, ldpa2, k8bid)
+                            0, tjv=ldpa2, styp=k8bid)
                 zr(ldpar(2)) = zr(ldpa2(2))
                 zk24(ldpar(3)) = zk24(ldpa2(3))
                 zk16(ldpar(4)) = zk16(ldpa2(4))
@@ -208,7 +208,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
             zk16(ldpar(5))=' '
             if (typmo(1:8) .eq. 'MODE_STA') then
                 call rsadpa(resul, 'L', 1, 'NOEUD_CMP', iorol,&
-                            0, llncp, k8bid)
+                            0, sjv=llncp, styp=k8bid)
                 zk16(ldpar(4)) = zk16(llncp)
                 zk16(ldpar(5)) = 'STATIQUE'
                 if (interf .ne. ' ') then
@@ -226,9 +226,9 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
             goto 12
         endif
         call rsadpa(resul, 'L', 1, 'FREQ', iorol,&
-                    0, llvalo, k8bid)
+                    0, sjv=llvalo, styp=k8bid)
         call rsadpa(resul, 'L', 1, 'AMOR_REDUIT', iorol,&
-                    0, llval2, k8bid)
+                    0, sjv=llval2, styp=k8bid)
         zr(ldpar(2))=zr(llvalo)
         zk24(ldpar(3))=' '
         zk16(ldpar(4))=' '

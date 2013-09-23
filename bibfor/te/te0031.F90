@@ -89,7 +89,7 @@ subroutine te0031(option, nomte)
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24), effgt(32)
     real(kind=8) :: vecloc(24), ener(3), matp(24, 24), matv(300)
-    real(kind=8) :: epi(1), eptot, r8bid, valr(2)
+    real(kind=8) :: epi(1), eptot, r8bid=0.d0, valr(2)
 !
     character(len=2) :: val
     character(len=3) :: num
@@ -118,8 +118,7 @@ subroutine te0031(option, nomte)
                 ibid, 'S')
 !
     jnbspi=0
-    call tecach('NNN', 'PNBSP_I', 'L', 1, jnbspi,&
-                iret1)
+    call tecach('NNN', 'PNBSP_I', 'L', iret1, iad=jnbspi)
 !
     lcqhom=.false.
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option(1:9) .eq.&
@@ -356,8 +355,8 @@ subroutine te0031(option, nomte)
 !
     else if (option.eq.'FORC_NODA') then
 !     -------------------------------------
-        call tecach('OOO', 'PCONTMR', 'L', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
+                    itab=itab)
         icontp=itab(1)
         nbsp=itab(7)
         nbcou=zi(jnbspi)

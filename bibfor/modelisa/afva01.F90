@@ -34,7 +34,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 !       ON TROUVE DES COMPOSANTES AUTRES QUE 'TEMP' ET 'LAGR'
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-    integer :: ncmp, ncmpmx, k, j1, jordr, j, iret, nbordr, ibid
+    integer :: ncmp, ncmpmx, k, j1, jordr, j, iret, nbordr(1), ibid
     character(len=19) :: ch19, kbid, res19
     character(len=24) :: corr1, corr2, nomcmp
     real(kind=8) :: r8b
@@ -62,15 +62,15 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
     else if (typsd.eq.'EVOL') then
 !     -----------------------------
         res19=nomsd
-        call rsorac(res19, 'LONUTI', ibid, r8b, kbid,&
+        call rsorac(res19, 'LONUTI', 0, r8b, kbid,&
                     c16b, r8b, kbid, nbordr, 1,&
                     ibid)
-        call wkvect('&&AFVA01.NUME_ORDRE', 'V V I', nbordr, jordr)
-        call rsorac(res19, 'TOUT_ORDRE', ibid, r8b, kbid,&
-                    c16b, r8b, kbid, zi(jordr), nbordr,&
+        call wkvect('&&AFVA01.NUME_ORDRE', 'V V I', nbordr(1), jordr)
+        call rsorac(res19, 'TOUT_ORDRE', 0, r8b, kbid,&
+                    c16b, r8b, kbid, zi(jordr), nbordr(1),&
                     ibid)
 !
-        do 20 j = 1, nbordr
+        do 20 j = 1, nbordr(1)
             call rsexch('F', res19, nomsym, zi(jordr-1+j), ch19,&
                         iret)
             if (iret .ne. 0) goto 20

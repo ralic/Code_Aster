@@ -402,7 +402,7 @@ subroutine mdtr74(nomres)
 !     &          TYPBA2(1:9).NE.'BASE_MODA') THEN
                 if (typeba(1:1) .eq. ' ') then
                     call rsadpa(basemo, 'L', 1, 'AMOR_REDUIT', im,&
-                                0, lamre, k8b)
+                                0, sjv=lamre, styp=k8b)
                     zr(jamog+im-1) = zr(lamre)
                 else
                     zr(jamog+im-1) = 0.d0

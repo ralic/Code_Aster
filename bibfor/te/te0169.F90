@@ -18,11 +18,11 @@ subroutine te0169(option, nomte)
 ! SUPPRESSION D'INSTRUCTIONS INUTILES
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 #include "blas/ddot.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES FORCES NODALES DE MEPOULI
@@ -55,8 +55,7 @@ subroutine te0169(option, nomte)
         call jevech('PGEOMER', 'L', igeom)
 !
         call jevech('PDEPLMR', 'L', idepla)
-        call tecach('ONN', 'PDEPLPR', 'L', 1, ideplp,&
-                    iret)
+        call tecach('ONN', 'PDEPLPR', 'L', iret, iad=ideplp)
         call jevech('PCONTMR', 'L', lsigma)
 !        PARAMETRES EN SORTIE
         call jevech('PVECTUR', 'E', jefint)

@@ -73,7 +73,7 @@ subroutine macr78(nomres, trange, typres)
     integer :: linst, lnocm2, lnocmp, lpa2, lpar, n0
     integer :: n1, nbcham, nbec, nbinst, nbmdef, nbmdyn, nbmode
     integer :: nbndef, nbndyn, nbnoe, nbntot, nbtdyn, nec, neq
-    integer :: nes, nmc
+    integer :: nes, nmc, tmod(1)
     real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     data nomcmp   /'DX      ','DY      ','DZ      ',&
@@ -94,9 +94,10 @@ subroutine macr78(nomres, trange, typres)
     call getvid(' ', 'MACR_ELEM_DYNA', scal=macrel, nbret=nmc)
     call jeveuo(macrel//'.MAEL_REFE', 'L', iadref)
     basemo = zk24(iadref)
-    call rsorac(basemo, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, k8b, nbmode, 1,&
+    call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
+                cbid, rbid, k8b, tmod, 1,&
                 ibid)
+    nbmode=tmod(1)            
     call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
                 numedd, iret)
     call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
@@ -116,7 +117,7 @@ subroutine macr78(nomres, trange, typres)
 !      ASSERT(NBNDEF.EQ.NBNDE2)
     if (nbmdef .ne. 0) then
         call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', nbmdyn+1,&
-                    0, lnocmp, k8b)
+                    0, sjv=lnocmp, styp=k8b)
         if (zk16(lnocmp) .eq. ' ') then
             lredu=.true.
             nec = nbmode/nbntot
@@ -130,7 +131,7 @@ subroutine macr78(nomres, trange, typres)
                 goto 32
             endif
             call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', nbmdyn+k+1,&
-                        0, lnocm2, k8b)
+                        0, sjv=lnocm2, styp=k8b)
             if (zk16(lnocmp)(1:8) .ne. zk16(lnocm2)(1:8)) then
                 nes = k
                 goto 32
@@ -157,7 +158,7 @@ subroutine macr78(nomres, trange, typres)
         nbtdyn = nbndyn
         do 23 i = nbmdyn+1, nbmode
             call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', i,&
-                        0, lnocmp, k8b)
+                        0, sjv=lnocmp, styp=k8b)
             zk8(jnocmp+2*i-2) = zk16(lnocmp)(1:8)
             zk8(jnocmp+2*i-1) = zk16(lnocmp)(9:16)
 23      continue
@@ -265,22 +266,22 @@ subroutine macr78(nomres, trange, typres)
             call rsnoch(nomres, champ(i)(1:4), iarch)
             if (i .eq. 1) then
                 call rsadpa(nomres, 'E', 1, 'INST', iarch,&
-                            0, linst, k8b)
+                            0, sjv=linst, styp=k8b)
                 zr(linst) = zr(jinst+iarc0-1)
                 call rsadpa(nomin, 'L', 1, 'MODELE', inum,&
-                            0, lpa2, k8b)
+                            0, sjv=lpa2, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'MODELE', iarch,&
-                            0, lpar, k8b)
+                            0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
                 call rsadpa(nomin, 'L', 1, 'CHAMPMAT', inum,&
-                            0, lpa2, k8b)
+                            0, sjv=lpa2, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iarch,&
-                            0, lpar, k8b)
+                            0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
                 call rsadpa(nomin, 'L', 1, 'CARAELEM', inum,&
-                            0, lpa2, k8b)
+                            0, sjv=lpa2, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'CARAELEM', iarch,&
-                            0, lpar, k8b)
+                            0, sjv=lpar, styp=k8b)
                 zk8(lpar) = zk8(lpa2)
             endif
 310      continue

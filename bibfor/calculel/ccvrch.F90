@@ -37,7 +37,7 @@ subroutine ccvrch(resuin, numor0)
     if (getexm('EXCIT','CHARGE') .eq. 1) call getfac('EXCIT', nchalu)
 !
     call rsadpa(resuin, 'L', 1, 'EXCIT', numor0,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     excisd=zk24(jpara)
 !
     if (excisd .eq. ' ') then

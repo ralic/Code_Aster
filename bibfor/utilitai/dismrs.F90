@@ -64,7 +64,7 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, iatach, ico, iexi, iret, j
-    integer :: jlipar, k, n1, nbch, nbdyn, nbmod, nbstat
+    integer :: jlipar, k, n1, nbch, nbdyn, nbmod(1), nbstat
     integer :: nbsy
 !-----------------------------------------------------------------------
     call jemarq()
@@ -199,22 +199,22 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'NB_MODES_TOT') then
 !     ------------------------------------------
-        call rsorac(nomob, 'LONUTI', ibid, rbid, k8bid,&
+        call rsorac(nomob, 'LONUTI', 0, rbid, k8bid,&
                     cbid, rbid, k8bid, nbmod, 1,&
                     ibid)
-        repi = nbmod
+        repi = nbmod(1)
         repk='NON'
 !
     else if (questi.eq.'NB_MODES_STA') then
 !     ------------------------------------------
         nbstat=0
-        call rsorac(nomob, 'LONUTI', ibid, rbid, k8bid,&
+        call rsorac(nomob, 'LONUTI', 0, rbid, k8bid,&
                     cbid, rbid, k8bid, nbmod, 1,&
                     ibid)
 !
-        do 41, i=1,nbmod
+        do 41, i=1,nbmod(1)
         call rsadpa(nomob, 'L', 1, 'TYPE_MODE', i,&
-                    0, iad, k8bid)
+                    0, sjv=iad, styp=k8bid)
         nomch = zk16(iad)(1:16)
         if (nomch(1:8) .eq. 'MODE_STA') then
             nbstat=nbstat+1
@@ -226,13 +226,13 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'NB_MODES_DYN') then
 !     ------------------------------------------
         nbdyn=0
-        call rsorac(nomob, 'LONUTI', ibid, rbid, k8bid,&
+        call rsorac(nomob, 'LONUTI', 0, rbid, k8bid,&
                     cbid, rbid, k8bid, nbmod, 1,&
                     ibid)
 !
-        do 51, i=1,nbmod
+        do 51, i=1,nbmod(1)
         call rsadpa(nomob, 'L', 1, 'TYPE_MODE', i,&
-                    0, iad, k8bid)
+                    0, sjv=iad, styp=k8bid)
         nomch = zk16(iad)(1:16)
         if ((nomch(1:9).eq.'MODE_DYN')) then
             nbdyn=nbdyn+1

@@ -71,14 +71,14 @@ subroutine te0443(option, nomte)
 !
     if (option .eq. 'REPE_TENS') then
         ncmp = 6
-        call tecach('ONO', 'PCOGAIN', 'L', 7, itab,&
-                    iret(1))
-        call tecach('ONO', 'PCONOIN', 'L', 7, itab,&
-                    iret(2))
-        call tecach('ONO', 'PDEGAIN', 'L', 7, itab,&
-                    iret(3))
-        call tecach('ONO', 'PDENOIN', 'L', 7, itab,&
-                    iret(4))
+        call tecach('ONO', 'PCOGAIN', 'L', iret(1), nval=7,&
+                    itab=itab)
+        call tecach('ONO', 'PCONOIN', 'L', iret(2), nval=7,&
+                    itab=itab)
+        call tecach('ONO', 'PDEGAIN', 'L', iret(3), nval=7,&
+                    itab=itab)
+        call tecach('ONO', 'PDENOIN', 'L', iret(4), nval=7,&
+                    itab=itab)
         iret1 = iret(1) + iret(2) + iret(3) + iret(4)
         ASSERT(iret1.eq.6)
 !
@@ -98,14 +98,14 @@ subroutine te0443(option, nomte)
 !
     else if (option.eq.'REPE_GENE') then
         ncmp = 8
-        call tecach('ONO', 'PEFGAIN', 'L', 7, itab,&
-                    iret(1))
-        call tecach('ONO', 'PEFNOIN', 'L', 7, itab,&
-                    iret(2))
-        call tecach('ONO', 'PDGGAIN', 'L', 7, itab,&
-                    iret(3))
-        call tecach('ONO', 'PDGNOIN', 'L', 7, itab,&
-                    iret(4))
+        call tecach('ONO', 'PEFGAIN', 'L', iret(1), nval=7,&
+                    itab=itab)
+        call tecach('ONO', 'PEFNOIN', 'L', iret(2), nval=7,&
+                    itab=itab)
+        call tecach('ONO', 'PDGGAIN', 'L', iret(3), nval=7,&
+                    itab=itab)
+        call tecach('ONO', 'PDGNOIN', 'L', iret(4), nval=7,&
+                    itab=itab)
         iret1 = iret(1) + iret(2) + iret(3) + iret(4)
         ASSERT(iret1.eq.6)
 !
@@ -139,8 +139,8 @@ subroutine te0443(option, nomte)
     call jevech('PANGREP', 'L', jang)
     call jevech(pain, 'L', jin)
     call jevech(paout, 'E', jout)
-    call tecach('OOO', pain, 'L', 7, itab,&
-                iret2)
+    call tecach('OOO', pain, 'L', iret2, nval=7,&
+                itab=itab)
     nbsp = itab(7)
     if ((nbsp.ne.1) .and. (mod(nbsp,3).ne.0)) then
         call utmess('F', 'ELEMENTS5_54', si=nbsp)

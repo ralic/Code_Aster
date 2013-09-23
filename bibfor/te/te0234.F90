@@ -101,8 +101,8 @@ subroutine te0234(option, nomte)
     call jevech('PMATERC', 'L', imate)
     nomres(1) = 'E'
     nomres(2) = 'NU'
-    call tecach('OOO', 'PCONTMR', 'L', 7, itab,&
-                iret)
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
+                itab=itab)
     icontm=itab(1)
     nbsp=itab(7)
     if (nbsp .ne. npge*nbcou) then

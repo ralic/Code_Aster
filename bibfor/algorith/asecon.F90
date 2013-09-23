@@ -58,7 +58,7 @@ subroutine asecon(nomsy, neq, mome, resu)
     integer :: iad, ibid, icas, idep, idir, ier, ii, in, ino, ioc, iocc, iordr
     integer :: iorst, iret, jabs, jaux, jcas, jcum, jdir, jlin, jno, jord, jqua
     integer :: jrep, jsta, jtyp, jvale, jval1, lnod, nbmode, nbno, nboc, nbtrou
-    integer :: ncas, ndep, nucas, nume
+    integer :: ncas, ndep, nucas, nume, tordr(1)
     real(kind=8) :: r8b, epsmac, xxx, xx1, xx2, xx3
     complex(kind=8) :: cbid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3), knum, kdir, stat
@@ -93,8 +93,9 @@ subroutine asecon(nomsy, neq, mome, resu)
     if (nomsy(1:4) .eq. 'VITE') noms2 = 'DEPL'
 !
     call rsorac(mome, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                cbid, r8b, k8b, iordr, 1,&
+                cbid, r8b, k8b, tordr, 1,&
                 nbtrou)
+    iordr=tordr(1)            
 !
     call rsexch('F', meca, noms2, iordr, moncha,&
                 ier)
@@ -167,8 +168,9 @@ subroutine asecon(nomsy, neq, mome, resu)
                                 monacc = noeu//cmp
                                 xx1 = zr(jdir+3*(ino-1)+idir-1)
                                 call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc,&
-                                            cbid, r8b, k8b, iorst, 1,&
+                                            cbid, r8b, k8b, tordr, 1,&
                                             nbtrou)
+                                iorst=tordr(1) 
                                 call rsexch('F', stat, nomsy, iorst, chextr,&
                                             iret)
                                 call jeexin(chextr//'.VALE', ibid)
@@ -218,11 +220,11 @@ subroutine asecon(nomsy, neq, mome, resu)
 !
         call rsnoch(resu, nomsy, iordr)
         call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call codent(iocc, 'D', occur)
         zk16(iad) = 'COMBI'// occur
         call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zk16(iad) = def
         call jelibe(vale)
 !
@@ -264,10 +266,10 @@ subroutine asecon(nomsy, neq, mome, resu)
 !
 !        --- PARAMETRE ---
     call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
-                0, iad, k8b)
+                0, sjv=iad, styp=k8b)
     zk16(iad) = 'CUMUL'//' QUAD'
     call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
-                0, iad, k8b)
+                0, sjv=iad, styp=k8b)
     zk16(iad) = def
 !
     call jedetr('&&ASECON.CUMUL')

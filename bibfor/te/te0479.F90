@@ -67,7 +67,7 @@ subroutine te0479(option, nomte)
         else if (ndim.eq.1) then
 !         -- CAS DES ELEMENTS PEAU
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
-                        zr(igeom), rbid81, rbid81, poids)
+                        zr(igeom), rbid81(1), rbid81(1), poids)
         else
             ASSERT(.false.)
         endif

@@ -68,7 +68,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 ! ----------------------------------------------------------------------
 !
     character(len=5) :: suffix
-    character(len=8) :: nomcha, lpain(16), paout, affcha, kbid, newnom
+    character(len=8) :: nomcha, lpain(16), paout, affcha, newnom
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime, ligrel, ligrmo
     character(len=24) :: lchin(16), chtim2, ligrch, evolch
@@ -76,7 +76,6 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     integer :: ibid, iret, nchar, ilve, jchar, jinf, k, icha, numchm
     integer :: ierd, jlchin, ier
     logical :: exicar, bidon
-    complex(kind=8) :: cbid
     integer :: nbchmx, ii, somme
     parameter (nbchmx=7)
     integer :: nbopt(nbchmx), tab(nbchmx)
@@ -132,12 +131,10 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 !
     chtime = '&&VECHME.CH_INST_R'
     call mecact('V', chtime, 'LIGREL', ligrel, 'INST_R  ',&
-                1, 'INST   ', ibid, instap, cbid,&
-                kbid)
+                ncmp=1, nomcmp='INST   ', sr=instap)
     chtim2 = '&&VECHME.CH_INST_M'
     call mecact('V', chtim2, 'LIGREL', ligrel, 'INST_R  ',&
-                1, 'INST   ', ibid, instam, cbid,&
-                kbid)
+                ncmp=1, nomcmp='INST   ', sr=instam)
 !
     lpain(2) = 'PGEOMER'
     lchin(2) = chgeom

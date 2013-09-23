@@ -377,7 +377,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
 32          continue
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
 30      continue
 !
@@ -498,7 +498,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !
 52          continue
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
 50      continue
 !

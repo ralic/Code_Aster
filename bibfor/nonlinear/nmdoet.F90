@@ -253,7 +253,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 156      continue
         call jeveuo(sdpilo(1:19)//'.PLIR', 'E', jplir)
         call rsadpa(result, 'L', 1, 'COEF_MULT', numein,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         coefav = zr(jinst)
         if (coefav .ne. 0.d0 .and. coefav .ne. r8vide()) then
             zr(jplir+5) = coefav
@@ -266,10 +266,10 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         errthm = sdcriq(1:19)//'.ERRT'
         call jeveuo(errthm, 'E', jerrt)
         call rsadpa(result, 'L', 1, 'ERRE_TPS_LOC', numein,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         zr(jerrt-1+1) = zr(jinst)
         call rsadpa(result, 'L', 1, 'ERRE_TPS_GLOB', numein,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         zr(jerrt-1+2) = zr(jinst)
 !
     endif

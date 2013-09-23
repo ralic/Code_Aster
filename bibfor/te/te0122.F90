@@ -1,5 +1,5 @@
 subroutine te0122(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elref4.h"
@@ -102,8 +102,8 @@ subroutine te0122(option, nomte)
     else if (option.eq.'VARI_ELNO') then
 !
         call jevech('PVARIGR', 'L', ichg)
-        call tecach('OOO', 'PVARINR', 'E', 7, jtab,&
-                    ibid)
+        call tecach('OOO', 'PVARINR', 'E', ibid, nval=7,&
+                    itab=jtab)
         ncmp = max(jtab(6),1)*jtab(7)
         ichn = jtab(1)
 !

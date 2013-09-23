@@ -65,7 +65,7 @@ subroutine phi199(model, mate, ma, nu, num,&
 !---------------------------------------------------------------------
     integer :: ibid, nbvale, nbrefe, nbdesc, iret, nbno, idno, id, ier
     integer :: ilires, jref, neq, nbd, nbdir, i, jvec, jddl, in, nbsta
-    integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, idmst
+    integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, idmst, tmod(1)
     real(kind=8) :: rbid, xnorm, xd, depl(6), epsi
     complex(kind=8) :: c16b, cbid
     character(len=2) :: model
@@ -98,9 +98,10 @@ subroutine phi199(model, mate, ma, nu, num,&
 !     DES MAILLAGES COMMUNS
 !
     if (n3 .gt. 0) then
-        call rsorac(modmec, 'LONUTI', ibid, rbid, k8bid,&
-                    cbid, rbid, 'ABSOLU', nbmode, 1,&
+        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
+                    cbid, rbid, 'ABSOLU', tmod, 1,&
                     ibid)
+        nbmode=tmod(1)            
         call rsexch('F', modmec, 'DEPL', 1, nomcha,&
                     iret)
         call dismoi('F', 'NOM_MAILLA', nomcha, 'CHAM_NO', ibid,&
@@ -129,9 +130,10 @@ subroutine phi199(model, mate, ma, nu, num,&
 !
 !----- -RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA
 !
-        call rsorac(modmec, 'LONUTI', ibid, rbid, k8bid,&
-                    cbid, rbid, 'ABSOLU', nbmode, 1,&
+        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
+                    cbid, rbid, 'ABSOLU', tmod, 1,&
                     ibid)
+        nbmode=tmod(1)            
 !
         call wkvect('&&OP0199.PHI1', 'V V K24', 1, iphi1)
 !
@@ -201,8 +203,9 @@ subroutine phi199(model, mate, ma, nu, num,&
 !
 !              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                     call rsorac(modsta, 'NOEUD_CMP', ibid, rbid, acces,&
-                                c16b, epsi, crit, iordr, 1,&
+                                c16b, epsi, crit, tmod, 1,&
                                 nbtrou)
+                    iordr=tmod(1)            
                     if (nbtrou .ne. 1) then
                         ier = ier + 1
                         valk (1) = acces(1:8)

@@ -69,8 +69,7 @@ subroutine ortrep(mater, ndim, coor, repere)
         repere(i) = 0.0d0
 10  end do
 !
-    call tecach('NNN', 'PCAMASS', 'L', 1, icamas,&
-                iret)
+    call tecach('NNN', 'PCAMASS', 'L', iret, iad=icamas)
 !
     if (iret .ne. 0) then
 !     --------------------

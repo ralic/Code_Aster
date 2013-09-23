@@ -87,16 +87,15 @@ subroutine te0431(option, nomte)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PMATERC', 'L', imate)
-        call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                    itab=jtab)
         lgpg = max(jtab(6),1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PVARIMP', 'L', ivarix)
 !
 ! --- ORIENTATION DU MASSIF
 !
-        call tecach('NNN', 'PCAMASS', 'L', 1, icamas,&
-                    iret)
+        call tecach('NNN', 'PCAMASS', 'L', iret, iad=icamas)
         call r8inir(3, r8nnem(), angmas, 1)
         if (icamas .gt. 0) then
             if (zr(icamas) .gt. 0.d0) then

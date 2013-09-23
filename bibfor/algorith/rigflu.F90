@@ -46,10 +46,9 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
     integer :: ibid, ialich, jinf, ierr, nchar, ialifc, nh
     real(kind=8) :: tps(6)
     character(len=14) :: nu
-    character(len=8) :: k8b, modele, nomcmp(6), char, ma, mel
+    character(len=8) :: modele, nomcmp(6), char, ma, mel
     character(len=24) :: time, modl24, nu24, fomult
     character(len=19) :: solveu, infcha, maprec
-    complex(kind=8) :: c16b
     data maprec   /'&&OP0152.MAPREC'/
     data infcha   /'&&OP0152.INFCHA'/
     data fomult   /'&&OP0152.LIFCTS'/
@@ -63,8 +62,7 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
 !-----  CALCUL DE LA MATRICE ELEMENTAIRE DE RAIDEUR DU FLUIDE
 !
     call mecact('V', time, 'MODELE', modele//'.MODELE', 'INST_R',&
-                6, nomcmp, ibid, tps, c16b,&
-                k8b)
+                ncmp=6, lnomcmp=nomcmp, vr=tps)
 !
     call merith(modele, nbchar, char, mate, ' ',&
                 time, mel, nh, 'V')

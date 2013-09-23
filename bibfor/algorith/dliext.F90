@@ -40,7 +40,7 @@ subroutine dliext()
     real(kind=8) :: inter2(2), r8b, vpara
     complex(kind=8) :: c16b
     integer :: ibid, n1, n2, n3, nbordr, k, iord, k1, jordr, nbvale, jvale, iad
-    integer :: jnbpa, jbint, jlpas
+    integer :: jnbpa, jbint, jlpas, tordr(1)
 !     ------------------------------------------------------------------
     call jemarq()
     knum = '&&DLIEXT.KNUM'
@@ -61,18 +61,19 @@ subroutine dliext()
 !     -- ON PARCOURT TOUS LES NUME_ORDRE ET ON NE CONSERVE
 !        QUE CEUX QUI SONT DANS L'INTERVALLE
 !        ATTENTION : ON LIT ET ECRIT DANS KNUM
-    call rsorac(sdresu, 'LONUTI', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbordr, 1,&
+    call rsorac(sdresu, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tordr, 1,&
                 ibid)
+    nbordr=tordr(1)
     call wkvect(knum, 'V V I', nbordr, jordr)
-    call rsorac(sdresu, 'TOUT_ORDRE', ibid, r8b, k8b,&
+    call rsorac(sdresu, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
                 ibid)
     k1 = 0
     do 10,k = 1,nbordr
     iord = zi(jordr-1+k)
     call rsadpa(sdresu, 'L', 1, param, iord,&
-                0, iad, kbid)
+                0, sjv=iad, styp=kbid)
     ASSERT(iad.ne.0)
     vpara = zr(iad)
     if (vpara .ge. inter2(1) .and. vpara .le. inter2(2)) then

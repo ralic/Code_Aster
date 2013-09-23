@@ -22,7 +22,6 @@ subroutine delat(modgen, nbsst, nbmo)
 ! AUTEUR : G. ROUSSEAU
 !
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -31,6 +30,7 @@ subroutine delat(modgen, nbsst, nbmo)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
+!
     integer :: ibid, nbid, isst
     character(len=8) :: k8bid
     character(len=8) :: modgen, macel
@@ -40,7 +40,7 @@ subroutine delat(modgen, nbsst, nbmo)
 !
 !-----------------------------------------------------------------------
     integer :: ibamo, icompt, idelat, ij, imacl, jpara, nbmo
-    integer :: nbmodg, nbsst, nbtype
+    integer :: nbmodg(1), nbsst, nbtype
     real(kind=8) :: bid, ebid
 !-----------------------------------------------------------------------
     call jemarq()
@@ -55,7 +55,7 @@ subroutine delat(modgen, nbsst, nbmo)
         call rsorac(zk24(ibamo), 'LONUTI', ibid, bid, k8bid,&
                     cbid, ebid, 'ABSOLU', nbmodg, 1,&
                     nbid)
-        nbmo=nbmo+nbmodg
+        nbmo=nbmo+nbmodg(1)
  1  continue
 !
 ! TABLEAU INDIQUANT LES MODES PROPRES
@@ -73,7 +73,7 @@ subroutine delat(modgen, nbsst, nbmo)
         do 3, ij=1,nbtype
         icompt=icompt+1
         call rsadpa(zk24(ibamo)(1:19), 'L', 1, 'TYPE_DEFO', ij,&
-                    0, jpara, k8bid)
+                    0, sjv=jpara, styp=k8bid)
         if (zk16(jpara)(1:8) .ne. 'PROPRE  ') goto 3
         zi(idelat+icompt-1)=1
  3      continue

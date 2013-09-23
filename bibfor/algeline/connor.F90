@@ -45,7 +45,6 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/extmod.h"
@@ -55,6 +54,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: melflu
     character(len=8) :: typflu, base
     integer :: nbm
@@ -68,7 +68,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     real(kind=8) :: coef(nbm), delta(nbm), rhotub, rhos
     integer :: imode, im, ifsvr, ifsvi, nbma, nbzex, nmamin, nmamax
     integer :: iener, ima, izone, ivcn, iven, icste, modul, nbval, i, j
-    integer :: jconn,modul2,k,jzone,ifsvk,ide,ire,neq,idep,ibid
+    integer :: jconn, modul2, k, jzone, ifsvk, ide, ire, neq, idep, ibid
     integer :: ldepl(6), lmasg, increm, id, irap
     real(kind=8) :: di, de, mastub, ltube, numera(nbm), denomi
     real(kind=8) :: pas, correl, a, b, c, d, e, f, mphi2(nbm)
@@ -139,8 +139,9 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
  7  continue
 ! ---  DEFORMEES MODALES
 !
-
-    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
+!
+    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
+                masse, ire)
     call mtdscr(masse)
     call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
                 numddl, ire)
@@ -416,7 +417,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !    LA MASSE GENERALISEE DU MODE IM
 !
         call rsadpa(base, 'L', 1, 'MASS_GENE', nuor(im),&
-                    0, lmasg, k8b)
+                    0, sjv=lmasg, styp=k8b)
         mass(im) = zr(lmasg)
         zr(iven-1+nbm+im) = sqrt((numera(im)*mastub) / (mass(im)*rhos) )
         do 195 i = 1, nbval

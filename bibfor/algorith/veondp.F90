@@ -64,14 +64,12 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: ibid, i, iret, iondp
-    character(len=8) :: k8bid
     character(len=19) :: vecele
     character(len=24) :: chinst
     integer :: jnoma
     character(len=24) :: chgeom, ligrmo
     integer :: nchond
     character(len=19) :: chondp
-    complex(kind=8) :: c16bid
     logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
@@ -101,8 +99,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
 ! --- CREATION D'UNE CARTE D'INSTANTS
 !
     call mecact('V', chinst, 'MODELE', ligrmo, 'INST_R',&
-                1, 'INST', ibid, temps, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=temps)
 !
 ! --- CHAMPS D'ENTREE
 !

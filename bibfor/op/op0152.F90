@@ -72,7 +72,7 @@ subroutine op0152()
     integer :: jscdi, jscde, jschc, jscib, n1bloc, n2bloc
     integer :: nbid, nbloc, nterm
     integer :: n1, n2, n3, n4, n5, n6, n7, n9, n10, n12, n13, n14
-    integer :: ifm, niv
+    integer :: ifm, niv, tmod(1)
     real(kind=8) :: tps(6), mij, cij, kij
     real(kind=8) :: bid, ebid
     character(len=2) :: model
@@ -210,8 +210,9 @@ subroutine op0152()
 !----------------------------------------------------------------
     if (n5 .gt. 0) then
         call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', nbmode, 1,&
+                    cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
+        nbmode=tmod(1)
         nbmo = nbmode
         call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
                     iret)

@@ -63,7 +63,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 !     ------------------------------------------------------------------
     integer :: nbvari, nbpar, jval1, jvalk, ilign, ipt, nbsp, i, nbco, lc, ln, ic, i2, valei(12)
     integer :: n1, adrval, ind, lck, adracc, jacc, ik, ir, ii, ivari(3000), nbcmp2, jvari, jnpar
-    integer :: jtpar, nbacc, nbpr, jaces, iac, iadr, lcr, nc, iord
+    integer :: jtpar, nbacc, nbpr, jaces, iac, iadr, lcr, nc, iord(1)
     real(kind=8) :: prec
     logical :: exist
     character(len=3) :: typpar
@@ -159,7 +159,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
                 call jeveuo(nomjv, 'L', jaces)
                 do 10 iac = 1, nbacc
                     call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
-                                1, iadr, ctype)
+                                1, sjv=iadr, styp=ctype)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
                     if (.not. exist) then
                         call tbajpa(nomtab, 1, zk16(jaces-1+iac), ctype)
@@ -198,7 +198,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
-            valei(ii) = iord
+            valei(ii) = iord(1)
             nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'NUME_MODE'
             ii = ii + 1
@@ -210,7 +210,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
-            valei(ii) = iord
+            valei(ii) = iord(1)
             nbpar = nbpar + 1
             zk24(jvalk-1+nbpar) = 'INST'
             ir = ir + 1

@@ -14,7 +14,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbsup, nsupp(*), neq, nbmode, id
+    integer :: nbsup, nsupp(*), neq, nbmode, id, tordr(1)
     real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), spectr(*)
     real(kind=8) :: reasup(nbsup, nbmode, *), recmop(nbsup, neq, *)
     real(kind=8) :: recmor(nbsup, neq, *)
@@ -93,8 +93,9 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 !
 !           --- DEFORMEE STATIQUE ---
             call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces(id),&
-                        cbid, r8b, k8b, iordr, 1,&
+                        cbid, r8b, k8b, tordr, 1,&
                         nbtrou)
+            iordr=tordr(1)            
             call rsexch('F', psmo, nomsy, iordr, chextr,&
                         iret)
             call jeexin(chextr//'.VALE', ibid)
@@ -121,8 +122,9 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                 ind = id + 3*(nbmode-1) + 3*nbmode*(is-1)
                 gamma0 = spectr(ind)
                 call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, monacc,&
-                            cbid, r8b, k8b, iordr, 1,&
+                            cbid, r8b, k8b, tordr, 1,&
                             nbtrou)
+                iordr=tordr(1)            
                 call rsexch('F', psmo, nomsy, iordr, chextr,&
                             iret)
                 call jeexin(chextr//'.VALE', ibid)

@@ -414,7 +414,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
                 numod = nuor(imod)
 !
                 call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
-                            0, lmasg, k8b)
+                            0, sjv=lmasg, styp=k8b)
 !
                 call rsexch('F', base, 'DEPL', numod, nomcha,&
                             iret)

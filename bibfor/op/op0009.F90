@@ -61,7 +61,7 @@ subroutine op0009()
     real(kind=8) :: time, tps(6)
     character(len=1) :: base
     character(len=4) :: ctyp, kmpic
-    character(len=8) :: k8b, modele, cara, sigg, nomcmp(6), blan8, strx
+    character(len=8) :: modele, cara, sigg, nomcmp(6), blan8, strx
     character(len=8) :: rigi8, mass8
     character(len=16) :: type, oper, suropt
     character(len=19) :: kcha, matel, rigiel, massel, resuel
@@ -69,7 +69,6 @@ subroutine op0009()
     logical :: exitim
     integer :: nchar, n1, jrecc, n2, n3, n4, ier, n5, nh, n6, ncha, icha
     integer :: ibid, nbresu, jrelr, iresu, iexi, n7
-    complex(kind=8) :: c16b
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
     data tps/0.d0,2*1.d0,3*0.d0/
@@ -170,15 +169,13 @@ subroutine op0009()
 !
     else if (suropt.eq.'RIGI_THER') then
         call mecact('V', time2, 'MODELE', modele//'.MODELE', 'INST_R',&
-                    6, nomcmp, ibid, tps, c16b,&
-                    k8b)
+                    ncmp=6, lnomcmp=nomcmp, vr=tps)
         call merith(modele, ncha, zk8(icha), mate, cara,&
                     time2, matel, nh, base)
 !
     else if (suropt.eq.'MASS_THER') then
         call mecact('V', time2, 'MODELE', modele//'.MODELE', 'INST_R',&
-                    6, nomcmp, ibid, tps, c16b,&
-                    k8b)
+                    ncmp=6, lnomcmp=nomcmp, vr=tps)
         call memath(suropt, modele, mate, cara, time2,&
                     matel)
 !

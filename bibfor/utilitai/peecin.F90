@@ -68,7 +68,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
     integer :: nbpaep, iocc, jma, nf, inume, ifm, niv, ier
     parameter (nbpaep=2,nbparr=6,nbpard=4)
     real(kind=8) :: prec, xfreq, varpep(nbpaep), alpha, valer(3), inst
-    real(kind=8) :: r8b, rundf
+    real(kind=8) :: rundf
     character(len=1) :: base
     character(len=2) :: codret
     character(len=8) :: k8b, noma, resul, crit, nommai, nommas, typarr(nbparr), typard(nbpard)
@@ -194,7 +194,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
             do 10 iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'FREQ', numord,&
-                            0, iainst, k8b)
+                            0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
 10          continue
         endif
@@ -206,7 +206,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
             do 20 iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
-                            0, iainst, k8b)
+                            0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
 20          continue
         endif
@@ -217,8 +217,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
     call mechnc(noma, ' ', 0, chnumc)
     chmasd = '&&PEECIN.MASD'
     call mecact('V', chmasd, 'MAILLA', noma, 'POSI',&
-                1, 'POS', inume, r8b, c16b,&
-                k8b)
+                ncmp=1, nomcmp='POS', si=inume)
 !
     do 70 iord = 1, nbordr
         call jemarq()
@@ -228,7 +227,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
         valer(1) = inst
         if (typres .eq. 'FOURIER_ELAS') then
             call rsadpa(resul, 'L', 1, 'NUME_MODE', numord,&
-                        0, jnmo, k8b)
+                        0, sjv=jnmo, styp=k8b)
             call meharm(modele, zi(jnmo), chharm)
         endif
         chtime = ' '
@@ -257,15 +256,14 @@ subroutine peecin(resu, modele, mate, cara, nh,&
             else
 !           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
                 call rsadpa(resul, 'L', 1, 'OMEGA2', numord,&
-                            0, lfreq, k8b)
+                            0, sjv=lfreq, styp=k8b)
                 xfreq = zr(lfreq)
             endif
         endif
 !
         chfreq = '&&PEECIN.OMEGA2'
         call mecact('V', chfreq, 'MAILLA', noma, 'OME2_R',&
-                    1, 'OMEG2', ibid, xfreq, c16b,&
-                    k8b)
+                    ncmp=1, nomcmp='OMEG2', sr=xfreq)
 !
         call dismoi('F', 'NOM_GD', depla, 'CHAMP', ibid,&
                     nomgd, ie)

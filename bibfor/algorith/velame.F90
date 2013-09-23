@@ -62,9 +62,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     character(len=24) :: chgeom, chlapl, chgeo2
     character(len=24) :: ligrmo, ligrch, lchin(3), kcmp(2)
     integer :: ibid, iret, nchar
-    real(kind=8) :: time
     logical :: bidon
-    complex(kind=8) :: cbid
 !
 !-----------------------------------------------------------------------
     integer :: icha, ifla, j, jchar, jinf, lonlis
@@ -136,8 +134,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
                     kcmp(1) = chgeom(1:8)
                     kcmp(2) = chgeo2(1:19)
                     call mecact('V', chlapl, 'MODELE', modele, 'FLAPLA  ',&
-                                2, lcmp, ibid, time, cbid,&
-                                kcmp)
+                                ncmp=2, lnomcmp=lcmp, vk=kcmp)
                     lchin(1) = chlapl
                     ifla = 1
                 endif

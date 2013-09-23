@@ -359,7 +359,7 @@ subroutine rehaec(nomres, resgen, nomsst)
                 call rsnoch(nomres, chmp(ich), iarchi)
 42          continue
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
-                        0, lfreq, k8b)
+                        0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
 40      continue
 !

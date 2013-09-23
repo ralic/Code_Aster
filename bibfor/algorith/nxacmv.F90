@@ -100,7 +100,6 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
     integer :: ibid, k, ierr, nbmat, lonch, loncm1, jmer, jmed, jmem, jtn, jtni
     integer :: jnchtp, jndirp, jnchnl, jntntp, jntnti, j2nd, j2nd1, j2nd2, j2nd3
     integer :: j2ni, j2ni1, j2ni2, j2ni3, iret, typcum, ifm, niv
-    complex(kind=8) :: cbid
     character(len=1) :: typres
     character(len=2) :: codret
     character(len=8) :: k8bid, nomcmp(6)
@@ -173,8 +172,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 !
         ligrmo = modele(1:8)//'.MODELE'
         call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
-                    6, nomcmp, ibid, tpsthe, cbid,&
-                    k8bid)
+                    ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
 ! 1.2. ==> TEMPERATURES IMPOSEES (DIRICHLET)                 ---& CNDIRP
         call vedith(modele, charge, infoch, time, vediri)

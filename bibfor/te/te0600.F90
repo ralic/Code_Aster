@@ -70,7 +70,7 @@ subroutine te0600(option, nomte)
     character(len=16) :: phenom
 ! =====================================================================
     integer :: li, kp, j, l, k, ibid, typvf, idim
-    real(kind=8) :: r8bid, rho(1), coef, rx
+    real(kind=8) :: r8bid=0.d0, rho(1), coef, rx
     integer :: icodre(1)
     logical :: axi, perman
 ! =====================================================================
@@ -372,10 +372,8 @@ subroutine te0600(option, nomte)
 ! --- C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET -------------------
 ! --- ALORS LES TERMES DEPENDANT DE DT SONT EVALUES --------------------
 ! ======================================================================
-        call tecach('ONN', 'PINSTMR', 'L', 1, iinstm,&
-                    iretm)
-        call tecach('ONN', 'PINSTPR', 'L', 1, iinstp,&
-                    iretp)
+        call tecach('ONN', 'PINSTMR', 'L', iretm, iad=iinstm)
+        call tecach('ONN', 'PINSTPR', 'L', iretp, iad=iinstp)
         if (iretm .eq. 0 .and. iretp .eq. 0) then
             dt = zr(iinstp) - zr(iinstm)
             fnoevo = .true.
@@ -452,8 +450,8 @@ subroutine te0600(option, nomte)
         call jevech('PCOMPOR', 'L', icompo)
         read (zk16(icompo+1),'(I16)') ncmp
         read (zk16(icompo-1+7+9+4),'(I16)') nvim
-        call tecach('OON', 'PVARIGR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
+                    itab=jtab)
 !
         call posthm(option, modint, jgano, ncmp, nvim,&
                     zr(ichg), zr(ichn))

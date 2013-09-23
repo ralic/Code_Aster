@@ -70,7 +70,7 @@ subroutine te0390(option, nomte)
     integer :: lorien, lsect, lsig, lsigma, ndim, ne, nno
     integer :: nnos, nord, npg
     real(kind=8) :: a, ajacob, alfnmk, ay, az, delnmk, demi
-    real(kind=8) :: deux, e, g, pas, pjacob, r8bid, rho
+    real(kind=8) :: deux, e, g, pas, pjacob, r8bid=0.d0, rho
     real(kind=8) :: stoudy, un, xiy, xiz, xjx, zero
 !-----------------------------------------------------------------------
     call elref1(elrefe)
@@ -84,8 +84,7 @@ subroutine te0390(option, nomte)
 !* STOUDY VAUT: 1., SI L'ON EST EN DYNAMIQUE
 !*              0., SI L'ON EST EN STATIQUE
 !
-    call tecach('NNN', 'PSTADYN', 'L', 1, istady,&
-                iret)
+    call tecach('NNN', 'PSTADYN', 'L', iret, iad=istady)
     if (istady .eq. 0) then
         stoudy = 0.d0
     else

@@ -83,8 +83,8 @@ subroutine te0206(option, nomte)
                 coopg)
 !
 !     RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
     if (resi) then

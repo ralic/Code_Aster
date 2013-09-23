@@ -64,7 +64,7 @@ subroutine op0176()
 !
     integer :: ibid, nbordr, jordr, nbexcl, jexcl, nbarch, jarch
     integer :: nbac, nbpa, jpa, iret, nbnosy, nbpara, nbrest
-    integer :: izero, nive, versio, iul
+    integer :: izero, nive, versio, iul, tord(1)
 !
     real(kind=8) :: r8b
 !
@@ -105,11 +105,12 @@ subroutine op0176()
 !
 !     --- NOMBRE DE NUMERO D'ORDRE ---
 !
-    call rsorac(resuin, 'LONUTI', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbordr, 1,&
+    call rsorac(resuin, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tord, 1,&
                 ibid)
+    nbordr=tord(1)            
     call wkvect('&&'//nompro//'.NUME_ORDRE', 'V V I', nbordr, jordr)
-    call rsorac(resuin, 'TOUT_ORDRE', ibid, r8b, k8b,&
+    call rsorac(resuin, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
                 ibid)
 !
@@ -170,10 +171,11 @@ subroutine op0176()
     iul = iunifi( 'MESSAGE' )
     call rsinfo(resuou, iul)
 !
-    call rsorac(resuou, 'LONUTI', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbordr, 1,&
+    call rsorac(resuou, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tord, 1,&
                 ibid)
-    call rsorac(resuou, 'TOUT_ORDRE', ibid, r8b, k8b,&
+    nbordr=tord(1)            
+    call rsorac(resuou, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
                 ibid)
     k8b = '        '

@@ -133,8 +133,8 @@ subroutine te0489(option, nomte)
     nbsig = nbsigm()
 !
 ! ---- RECUPERATION DU NOMBRE DE COMPOSANTES
-    call tecach('OOO', 'PDERAMG', 'L', 7, jtab,&
-                iret)
+    call tecach('OOO', 'PDERAMG', 'L', iret, nval=7,&
+                itab=jtab)
     idera1 = jtab(1)
     nbcmp = jtab(2)/jtab(3)
 !
@@ -145,8 +145,8 @@ subroutine te0489(option, nomte)
 !
 ! ---- RECUPERATION DES CONTRAINTES A L'INSTANT T :
 !
-    call tecach('OOO', 'PCONTMR', 'L', 3, jtab,&
-                iret)
+    call tecach('OOO', 'PCONTMR', 'L', iret, nval=3,&
+                itab=jtab)
     npg = jtab(3)
     isigtm = jtab(1)
 !
@@ -372,8 +372,10 @@ subroutine te0489(option, nomte)
                             rp = sigy * (coco*pp)**unsurn + sigy
 !
                         else if (compor(10:14) .eq. '_TRAC') then
-                            call rcvarc(' ', 'TEMP', '-', fami, igau, 1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', [tp], resu, type)
+                            call rcvarc(' ', 'TEMP', '-', fami, igau,&
+                                        1, tp, iret)
+                            call rctype(zi(imate), 1, 'TEMP', [tp], resu,&
+                                        type)
                             if (type .eq. 'TEMP') then
                                 call utmess('F', 'CALCULEL_31')
                             endif
@@ -434,8 +436,10 @@ subroutine te0489(option, nomte)
                                         1, nomres, valres, icodre, 2)
                             rp0 = valres(1)
                         else if (compor(10:14) .eq. '_TRAC') then
-                            call rcvarc(' ', 'TEMP', '-', fami, igau, 1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', [tp], resu, type)
+                            call rcvarc(' ', 'TEMP', '-', fami, igau,&
+                                        1, tp, iret)
+                            call rctype(zi(imate), 1, 'TEMP', [tp], resu,&
+                                        type)
                             if (type .eq. 'TEMP') then
                                 call utmess('F', 'CALCULEL_31')
                             endif

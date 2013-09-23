@@ -190,7 +190,7 @@ subroutine op0149()
 12              continue
                 do 13 k = 1, nbmode
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+k),&
-                                0, jpara, kbid)
+                                0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.
                         goto 14
@@ -254,7 +254,7 @@ subroutine op0149()
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
                 do 30 i = 1, nbnuor
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+i),&
-                                0, jpara, kbid)
+                                0, sjv=jpara, styp=kbid)
                     zi(inuor+i-1) = zi(jpara)
 30              continue
                 idec = 0
@@ -301,7 +301,7 @@ subroutine op0149()
         call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
         do 50 i = 1, nbnuor
             call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+i),&
-                        0, jpara, kbid)
+                        0, sjv=jpara, styp=kbid)
             zi(inuor+i-1) = zi(jpara)
 50      continue
         if ((lnuor.and.lamor) .or. (lnuor.and.lamoru)) then
@@ -318,7 +318,7 @@ subroutine op0149()
 53              continue
                 do 54 k = 1, nbmode
                     call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+k),&
-                                0, jpara, kbid)
+                                0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.
                         goto 55

@@ -12,6 +12,7 @@ subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -78,7 +79,7 @@ subroutine calc_meta_init(sd_temp, temp_nume, ligrmo, compor, phasin,&
 ! - Current time
 !
     call rsadpa(sd_temp, 'L', 1, 'INST', temp_nume,&
-                0, iainst, k8_dummy)
+                0, sjv=iainst, styp=k8_dummy)
     time = zr(iainst)
 !
 ! - Computation of metallurgical field

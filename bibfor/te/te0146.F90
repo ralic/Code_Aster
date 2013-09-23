@@ -78,8 +78,8 @@ subroutine te0146(option, nomte)
     ht=zr(jepais)
 !
     call jevech('PEFFORR', 'L', jefge)
-    call tecach('OOO', 'PEFFORR', 'L', 7, itab,&
-                iret)
+    call tecach('OOO', 'PEFFORR', 'L', iret, nval=7,&
+                itab=itab)
     ASSERT(iret.eq.0)
     nno=itab(3)
     ASSERT(nno.gt.0.and.nno.le.9)

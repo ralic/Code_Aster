@@ -18,7 +18,6 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -27,6 +26,7 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexpa.h"
+!
     integer :: numva, icode, ctype, ival(*), ier
     real(kind=8) :: rval(*)
     character(len=80) :: kval(*)
@@ -50,7 +50,7 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
 !
 !
     integer :: iret, iord, nbord, i, iad, numord
-    character(len=8) ::  ktype
+    character(len=8) :: ktype
     character(len=19) :: nomsd
 ! ---------------------------------------------------------------------
     call jemarq()
@@ -83,7 +83,7 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
     do 10 i = 1, nbord
         numord = zi(iord-1 + i)
         call rsadpa(nomsd, 'L', 1, nomva, numord,&
-                    1, iad, ktype)
+                    1, sjv=iad, styp=ktype)
 !                  123456789.123456789.1234
         kval(i) = '                        '
         if (ktype .eq. 'R') then

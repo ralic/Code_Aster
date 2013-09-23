@@ -48,9 +48,8 @@ subroutine op0008()
     integer :: ibid, ich, icha, ied, ncha, nh
     integer :: n1, n3, n4, n5, n7, n9, iresu, jrelr, iexi, nbresu
     real(kind=8) :: time, tps(6), vcmpth(4)
-    complex(kind=8) :: cbid
     logical :: exitim
-    character(len=8) :: matez, modele, cara, kbid, k8bid, kmpic
+    character(len=8) :: matez, modele, cara, k8bid, kmpic
     character(len=8) :: nomcmp(6), mo1, materi, ncmpth(4)
     character(len=16) :: type, oper, suropt
     character(len=19) :: matel, resuel
@@ -166,11 +165,9 @@ subroutine op0008()
         tps(1) = time
         time2 = '&TIME'
         call mecact('V', time2, 'MODELE', modele//'.MODELE', 'INST_R  ',&
-                    6, nomcmp, ibid, tps, cbid,&
-                    kbid)
+                    ncmp=6, lnomcmp=nomcmp, vr=tps)
         call mecact('V', '&&OP0008.PTEMPER', 'MODELE', modele//'.MODELE', 'TEMP_R',&
-                    4, ncmpth, ibid, vcmpth, cbid,&
-                    kbid)
+                    ncmp=4, lnomcmp=ncmpth, vr=vcmpth)
         call me2mth(modele, ncha, zk8(icha), mate, cara,&
                     time2, '&&OP0008.PTEMPER', matel)
     else if (suropt.eq.'CHAR_ACOU') then

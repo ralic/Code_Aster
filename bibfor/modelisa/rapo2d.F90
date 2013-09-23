@@ -354,8 +354,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     coorig(2) = yg
 !
     call mecact('V', '&&RAPO2D.CAORIGE', 'LIGREL', ligrel, 'GEOM_R',&
-                2, nocmp, icmp, coorig, ccmp,&
-                kcmp)
+                ncmp=2, lnomcmp=nocmp, vr=coorig)
 !
 ! --- DETERMINATION DE 2 LISTES  DE VECTEURS PAR ELEMENT PRENANT
 !     LEURS VALEURS AUX NOEUDS DES ELEMENTS.

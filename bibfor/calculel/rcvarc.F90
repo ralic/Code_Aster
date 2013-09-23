@@ -147,11 +147,11 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     if (poum .eq. '-' .or. (poum.eq.'+' .and. iredec.eq.1)) then
         if (iel .ne. km) then
             if (arret .ne. ' ') then
-                call tecach('OOO', 'PVARCMR', 'L', 7, itabm,&
-                            ibid)
+                call tecach('OOO', 'PVARCMR', 'L', ibid, nval=7,&
+                            itab=itabm)
             else
-                call tecach('NNN', 'PVARCMR', 'L', 7, itabm,&
-                            iret)
+                call tecach('NNN', 'PVARCMR', 'L', iret, nval=7,&
+                            itab=itabm)
                 if (iret .ne. 0) goto 998
             endif
             km=iel
@@ -161,11 +161,11 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     if (poum .eq. '+' .or. (poum.eq.'-' .and. iredec.eq.1)) then
         if (iel .ne. kp) then
             if (arret .ne. ' ') then
-                call tecach('OOO', 'PVARCPR', 'L', 7, itabp,&
-                            ibid)
+                call tecach('OOO', 'PVARCPR', 'L', ibid, nval=7,&
+                            itab=itabp)
             else
-                call tecach('NNN', 'PVARCPR', 'L', 7, itabp,&
-                            iret)
+                call tecach('NNN', 'PVARCPR', 'L', iret, nval=7,&
+                            itab=itabp)
                 if (iret .ne. 0) goto 998
             endif
             kp=iel
@@ -175,11 +175,11 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     if (poum .eq. 'REF') then
         if (iel .ne. kr) then
             if (arret .ne. ' ') then
-                call tecach('OOO', 'PVARCRR', 'L', 7, itabr,&
-                            ibid)
+                call tecach('OOO', 'PVARCRR', 'L', ibid, nval=7,&
+                            itab=itabr)
             else
-                call tecach('NNN', 'PVARCRR', 'L', 7, itabr,&
-                            iret)
+                call tecach('NNN', 'PVARCRR', 'L', iret, nval=7,&
+                            itab=itabr)
                 if (iret .ne. 0) goto 998
             endif
             kr=iel

@@ -50,7 +50,7 @@ subroutine op0194()
 !
     integer :: ibid, iret, n1, n2, n3, num, numpha
     integer :: nbordt, nbtrou, ier, jopt, nbopt, nb, nchar, iopt
-    integer :: nbordr, jordr, nuord, vali
+    integer :: nbordr, jordr, nuord, vali, tord(1)
 !
     real(kind=8) :: inst, prec
     real(kind=8) :: valr, r8b
@@ -76,11 +76,12 @@ subroutine op0194()
     call getvid(' ', 'RESULTAT', scal=temper, nbret=n1)
     call gettco(temper, tysd)
 !
-    call rsorac(temper, 'LONUTI', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbordr, 1,&
+    call rsorac(temper, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tord, 1,&
                 ibid)
+    nbordr=tord(1)            
     call wkvect(kordre, 'V V I', nbordr, jordr)
-    call rsorac(temper, 'TOUT_ORDRE', ibid, r8b, k8b,&
+    call rsorac(temper, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
                 ibid)
     nuord = zi(jordr)
@@ -118,8 +119,9 @@ subroutine op0194()
                     call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=n3)
                     nbordt = 1
                     call rsorac(temper, 'INST', ibid, inst, k8b,&
-                                c16b, prec, crit, num, nbordt,&
+                                c16b, prec, crit, tord, nbordt,&
                                 nbtrou)
+                    num=tord(1)            
                     if (nbtrou .eq. 0) then
                         valk = temper
                         valr = inst

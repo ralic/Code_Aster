@@ -263,7 +263,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         do 10 iord = 1, nbordr
             numord = zi(jord+iord-1)
             call rsadpa(resul, 'L', 1, 'INST', numord,&
-                        0, iainst, k8b)
+                        0, sjv=iainst, styp=k8b)
             zr(jins+iord-1) = zr(iainst)
 10      continue
     endif

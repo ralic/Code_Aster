@@ -39,7 +39,6 @@ subroutine te0036(option, nomte)
 !
 !
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/abscvf.h"
 #include "asterfort/assert.h"
@@ -65,6 +64,7 @@ subroutine te0036(option, nomte)
 #include "asterfort/xdeffe.h"
 #include "asterfort/xteddl.h"
 #include "blas/ddot.h"
+!
     character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
     character(len=8) :: k8bid, elref
     character(len=16) :: nomte, option
@@ -128,8 +128,8 @@ subroutine te0036(option, nomte)
     call teattr(nomte, 'S', 'XFEM', enr, ier)
     if (enr(1:2) .eq. 'XH') then
 ! --- NOMBRE DE FISSURES
-        call tecach('NOO', 'PHEAVTO', 'L', 7, jtab,&
-                    iret)
+        call tecach('NOO', 'PHEAVTO', 'L', iret, nval=7,&
+                    itab=jtab)
         ncomp = jtab(2)
         nfiss = jtab(7)
         nfh = 1

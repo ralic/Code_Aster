@@ -96,8 +96,7 @@ subroutine te0049(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ---- CONSTRUCTION DU VECTEUR DES DEFORMATIONS INITIALES DEFINIES AUX

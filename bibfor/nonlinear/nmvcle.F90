@@ -56,9 +56,8 @@ subroutine nmvcle(modelz, matz, carelz, lischz, instan,&
     logical :: exivrc
     character(len=24) :: charge
     character(len=19) :: ctps, tout
-    integer :: ibid, iex, iret, nchar, jchar
+    integer :: iex, iret, nchar, jchar
     character(len=8) :: k8bid
-    complex(kind=8) :: cbid
 !
 !
     call jemarq()
@@ -91,8 +90,7 @@ subroutine nmvcle(modelz, matz, carelz, lischz, instan,&
     ctps = com // '.INST'
     k8bid = ' '
     call mecact('V', ctps, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
-                1, 'INST', ibid, instan, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=instan)
 !
 !    CHAMPS REELS (TRUE) OU PAR DEFAUT (FALSE)
     call wkvect(com//'.EXISTENCE', 'V V L ', 1, iex)

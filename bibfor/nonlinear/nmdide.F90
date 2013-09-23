@@ -18,7 +18,7 @@ subroutine nmdide(lreuse, result, numder, insder)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/jedema.h"
@@ -49,7 +49,7 @@ subroutine nmdide(lreuse, result, numder, insder)
 !
 !
 !
-    integer :: ibid, jinst
+    integer :: ibid, jinst, tnum(1)
     character(len=8) :: k8bid
     complex(kind=8) :: c16bid
     real(kind=8) :: r8bid
@@ -66,11 +66,12 @@ subroutine nmdide(lreuse, result, numder, insder)
 ! --- ACCES SD RESULTAT (OU PAS)
 !
     if (lreuse) then
-        call rsorac(result, 'DERNIER', ibid, r8bid, k8bid,&
-                    c16bid, 0.d0, 'ABSOLU', numder, 1,&
+        call rsorac(result, 'DERNIER', 0, r8bid, k8bid,&
+                    c16bid, 0.d0, 'ABSOLU', tnum, 1,&
                     ibid)
+        numder=tnum(1)            
         call rsadpa(result, 'L', 1, 'INST', numder,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         insder = zr(jinst)
     else
         numder = 0

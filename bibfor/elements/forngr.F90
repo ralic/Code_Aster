@@ -166,8 +166,8 @@ subroutine forngr(option, nomte)
 !
     if (option .eq. 'FORC_NODA') then
 !
-        call tecach('OOO', 'PCONTMR', 'L', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
+                    itab=itab)
         icontm=itab(1)
         nbsp=itab(7)
         if (nbsp .ne. npge*nbcou) then

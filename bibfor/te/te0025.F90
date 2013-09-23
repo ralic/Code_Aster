@@ -1,13 +1,13 @@
 subroutine te0025(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -75,8 +75,7 @@ subroutine te0025(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
 !      -----------------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         instan = zr(itemps)
     endif

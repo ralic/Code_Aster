@@ -72,8 +72,7 @@ subroutine tanbul(option, ndim, g, mate, compor,&
     endif
 !
 ! - RECUPERATION DE L INSTANT
-    call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         valpar = zr(itemps)
     else

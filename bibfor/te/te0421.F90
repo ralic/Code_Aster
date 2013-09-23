@@ -64,8 +64,7 @@ subroutine te0421(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
-    call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .eq. 0) then
         nbpar = 0
         nompar=' '

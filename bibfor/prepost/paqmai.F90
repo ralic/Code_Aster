@@ -71,7 +71,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     integer :: ibid, ierd, lordr, jordr, nbordr, ndim, iret, jcesd
     integer :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp(1), jrwork, tpaq
     integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax, jnbpaq
-    integer :: nmaini, nbmap, tspaq, iordr, jad
+    integer :: nmaini, nbmap, tspaq, iordr, jad, tord(1)
     integer :: jsigv, jsigd, jsigl, imap, nbpg, ipg, icmp, iret1
     integer :: jepsv, jepsd, jepsl, paract(35), jepped, jeppel
     integer :: jepspv, jepspd, jepspl, iret2, jeppev, valep
@@ -132,8 +132,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! DES NUMEROS D'ORDRE
 !
     call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, lordr, 1,&
+                c16b, r8b, k8b, tord, 1,&
                 nbordr)
+    lordr=tord(1)            
 !
     if (nbordr .lt. 0) then
         ndim = -nbordr
@@ -154,7 +155,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     do 420 k = 2, nbordr
         iord = zi(jordr-1+k)
         call rsadpa(nomsd, 'L', 1, 'INST', iord,&
-                    0, jinst, kbid)
+                    0, sjv=jinst, styp=kbid)
         if (instic .gt. r8prem()) then
             if (inscri .eq. 'ABSOLU') then
                 if (abs(zr(jinst) - instic) .lt. prec) then

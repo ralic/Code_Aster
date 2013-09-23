@@ -68,10 +68,10 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: numref, n1, nevo, iret, ibid
+    integer :: numref, n1, nevo, iret
     integer :: nchar, nbres, jchar, jinf, icha
     real(kind=8) :: alpha
-    character(len=8) :: nomcha, k8bid
+    character(len=8) :: nomcha
     character(len=19) :: vecele
     character(len=16) :: option
     character(len=1) :: base
@@ -79,7 +79,6 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     character(len=24) :: ligrch, chalph
     logical :: debug
     integer :: ifmdbg, nivdbg
-    complex(kind=8) :: cbid
 !
 ! ----------------------------------------------------------------------
 !
@@ -134,8 +133,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     alpha=1.d0
     chalph = '&&VEBUME.CH_NEUT_R'
     call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ',&
-                1, 'X1', ibid, alpha, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='X1', sr=alpha)
 !
 ! --- PREPARATION DES VECT_ELEM
 !

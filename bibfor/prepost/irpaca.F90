@@ -196,7 +196,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
 !
     do 55 i = 1, nbacc
         call rsadpa(nomco, 'L', 1, chacc(i), ordr(iocc),&
-                    1, iad, ctype)
+                    1, sjv=iad, styp=ctype)
         if (ctype(1:1) .eq. 'R') then
             itype = 25
             write (ifi,'(A,I4)') ' ENREGISTREMENT DE TYPE',ideu

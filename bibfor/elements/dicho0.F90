@@ -74,7 +74,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
     if (irep .eq. 1) then
         if (ndim .eq. 3) then
             call utpsgl(nno, nc, pgl, zr(jdc), klv)
-        elseif (ndim.eq.2) then
+        else if (ndim.eq.2) then
             call ut2mgl(nno, nc, pgl, zr(jdc), klv)
         endif
     else
@@ -89,36 +89,33 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
 !
     call jevech('PINSTPR', 'L', jinst)
 !
-    call tecach('ONN', 'PVITPLU', 'L', 1, ivitp,&
-                iretlc)
+    call tecach('ONN', 'PVITPLU', 'L', iretlc, iad=ivitp)
     if (iretlc .eq. 0) then
         if (ndim .eq. 3) then
             call utpvgl(nno, nc, pgl, zr(ivitp), dvl)
-        elseif (ndim.eq.2) then
+        else if (ndim.eq.2) then
             call ut2vgl(nno, nc, pgl, zr(ivitp), dvl)
         endif
     else
         dvl(:) = 0.d0
     endif
 !
-    call tecach('ONN', 'PDEPENT', 'L', 1, idepen,&
-                iretlc)
+    call tecach('ONN', 'PDEPENT', 'L', iretlc, iad=idepen)
     if (iretlc .eq. 0) then
         if (ndim .eq. 3) then
             call utpvgl(nno, nc, pgl, zr(idepen), dpe)
-        elseif (ndim.eq.2) then
+        else if (ndim.eq.2) then
             call ut2vgl(nno, nc, pgl, zr(idepen), dpe)
         endif
     else
         dpe(:) = 0.0d0
     endif
 !
-    call tecach('ONN', 'PVITENT', 'L', 1, iviten,&
-                iretlc)
+    call tecach('ONN', 'PVITENT', 'L', iretlc, iad=iviten)
     if (iretlc .eq. 0) then
         if (ndim .eq. 3) then
             call utpvgl(nno, nc, pgl, zr(iviten), dve)
-        elseif (ndim.eq.2) then
+        else if (ndim.eq.2) then
             call ut2vgl(nno, nc, pgl, zr(iviten), dve)
         endif
     else
@@ -137,7 +134,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
         call jevech('PMATUUR', 'E', imat)
         if (ndim .eq. 3) then
             call utpslg(nno, nc, pgl, klv, zr(imat))
-        elseif (ndim.eq.2) then
+        else if (ndim.eq.2) then
             call ut2mlg(nno, nc, pgl, klv, zr(imat))
         endif
     endif
@@ -155,39 +152,39 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
         if (nno .eq. 1) then
             do ii = 1, neq
                 zr(icontp-1+ii) = fl(ii) + zr(icontm-1+ii)
-                fl(ii)          = fl(ii) + zr(icontm-1+ii)
+                fl(ii) = fl(ii) + zr(icontm-1+ii)
             enddo
-        elseif (nno.eq.2) then
+        else if (nno.eq.2) then
             do ii = 1, nc
-                zr(icontp-1+ii)    = -fl(ii)    + zr(icontm-1+ii)
-                zr(icontp-1+ii+nc) =  fl(ii+nc) + zr(icontm-1+ii+nc)
-                fl(ii)             =  fl(ii)    - zr(icontm-1+ii)
-                fl(ii+nc)          =  fl(ii+nc) + zr(icontm-1+ii+nc)
+                zr(icontp-1+ii) = -fl(ii) + zr(icontm-1+ii)
+                zr(icontp-1+ii+nc) = fl(ii+nc) + zr(icontm-1+ii+nc)
+                fl(ii) = fl(ii) - zr(icontm-1+ii)
+                fl(ii+nc) = fl(ii+nc) + zr(icontm-1+ii+nc)
             enddo
         endif
         if (nno .eq. 1) then
             zr(icontp-1+1) = force(1)
             zr(icontp-1+2) = force(2)
-            fl(1)          = force(1)
-            fl(2)          = force(2)
+            fl(1) = force(1)
+            fl(2) = force(2)
             if (ndim .eq. 3) then
-                fl(3)          = force(3)
+                fl(3) = force(3)
                 zr(icontp-1+3) = force(3)
             endif
-        elseif (nno.eq.2) then
-            zr(icontp-1+1)    =  force(1)
-            zr(icontp-1+1+nc) =  force(1)
-            zr(icontp-1+2)    =  force(2)
-            zr(icontp-1+2+nc) =  force(2)
-            fl(1)             = -force(1)
-            fl(1+nc)          =  force(1)
-            fl(2)             = -force(2)
-            fl(2+nc)          =  force(2)
+        else if (nno.eq.2) then
+            zr(icontp-1+1) = force(1)
+            zr(icontp-1+1+nc) = force(1)
+            zr(icontp-1+2) = force(2)
+            zr(icontp-1+2+nc) = force(2)
+            fl(1) = -force(1)
+            fl(1+nc) = force(1)
+            fl(2) = -force(2)
+            fl(2+nc) = force(2)
             if (ndim .eq. 3) then
-                zr(icontp-1+3)    =  force(3)
-                zr(icontp-1+3+nc) =  force(3)
-                fl(3)             = -force(3)
-                fl(3+nc)          =  force(3)
+                zr(icontp-1+3) = force(3)
+                zr(icontp-1+3+nc) = force(3)
+                fl(3) = -force(3)
+                fl(3+nc) = force(3)
             endif
         endif
         if (abs(force(1)) .lt. r8prem()) then

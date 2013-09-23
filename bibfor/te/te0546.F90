@@ -1,9 +1,9 @@
 subroutine te0546(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: nomte, option
 !.......................................................................
 ! ======================================================================
@@ -33,16 +33,16 @@ subroutine te0546(option, nomte)
 !.......................................................................
 !
 !
-    call tecach('OOO', 'PSIEFR', 'L', 8, itab1,&
-                iret)
+    call tecach('OOO', 'PSIEFR', 'L', iret, nval=8,&
+                itab=itab1)
     ASSERT(iret.eq.0)
 !
     if (option .eq. 'SIGM_ELGA') then
-        call tecach('OOO', 'PSIGMR', 'E', 8, itab2,&
-                    iret)
+        call tecach('OOO', 'PSIGMR', 'E', iret, nval=8,&
+                    itab=itab2)
     else if (option.eq.'EFGE_ELGA') then
-        call tecach('OOO', 'PEFGER', 'E', 8, itab2,&
-                    iret)
+        call tecach('OOO', 'PEFGER', 'E', iret, nval=8,&
+                    itab=itab2)
     else
         ASSERT(.false.)
     endif

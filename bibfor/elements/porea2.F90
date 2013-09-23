@@ -1,14 +1,14 @@
 subroutine porea2(nno, nc, geom, gamma, pgl,&
                   xl)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
+!
     integer :: nno, nc
     real(kind=8) :: geom(3, nno), gamma
 !
@@ -50,8 +50,7 @@ subroutine porea2(nno, nc, geom, gamma, pgl,&
 !
     ASSERT(nno.eq.2)
 !
-    call tecach('ONN', 'PDEPLMR', 'L', 1, ideplm,&
-                iret)
+    call tecach('ONN', 'PDEPLMR', 'L', iret, iad=ideplm)
     if (iret .ne. 0) then
         do 100 i = 1, 2*nc
             utg(i) = 0.d0
@@ -62,8 +61,7 @@ subroutine porea2(nno, nc, geom, gamma, pgl,&
 102      continue
     endif
 !
-    call tecach('ONN', 'PDEPLPR', 'L', 1, ideplp,&
-                iret)
+    call tecach('ONN', 'PDEPLPR', 'L', iret, iad=ideplp)
     if (iret .eq. 0) then
         do 104 i = 1, 2*nc
             utg(i) = utg(i) + zr(ideplp-1+i)

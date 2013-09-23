@@ -31,10 +31,8 @@ subroutine mechnc(noma, motcle, iocc, chnumc)
 ! OUT : CHNUMC : NOM DE LA CARTE CREEE
 !     ------------------------------------------------------------------
     integer :: ival(3), ncou, nangl
-    real(kind=8) :: r8b
     character(len=3) :: ordo
-    character(len=8) :: k8b, licmp(3)
-    complex(kind=8) :: c16b
+    character(len=8) :: licmp(3)
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -60,8 +58,7 @@ subroutine mechnc(noma, motcle, iocc, chnumc)
         ival(2) = nx3
         ival(3) = nangl
         call mecact('V', chnumc, 'MAILLA', noma, 'NUMC_I',&
-                    3, licmp, ival, r8b, c16b,&
-                    k8b)
+                    ncmp=3, lnomcmp=licmp, vi=ival)
     endif
 !
 end subroutine

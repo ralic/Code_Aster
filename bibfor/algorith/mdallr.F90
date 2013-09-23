@@ -112,9 +112,9 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 !
         do 200 i = 1, ipar
             call rsadpa(resu1, 'L', 1, kpar(i), imode,&
-                        1, ipar1, typ)
+                        1, sjv=ipar1, styp=typ)
             call rsadpa(resu2, 'E', 1, kpar(i), imode,&
-                        0, ipar2, k8b)
+                        0, sjv=ipar2, styp=k8b)
             if (typ(1:1) .eq. 'I') then
                 zi(ipar2) = zi(ipar1)
             else if (typ(1:1) .eq. 'R') then

@@ -36,7 +36,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbordr, ncharg, codret
+    integer :: nbordr, ncharg, codret, tbid(1)
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou
     character(len=16) :: option, typesd
@@ -145,7 +145,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     if (iret .ne. 0) exitim = .true.
 !
     call rsorac(resuin, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbord2, 1,&
+                c16b, r8b, k8b, tbid, 1,&
                 nbtrou)
     if (nbtrou .lt. 0) nbtrou = -nbtrou
     call wkvect(nonbor, 'V V I', nbtrou, lres)
@@ -159,7 +159,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     call rslesd(resuin, minord, modele, mateco(1:8), carael,&
                 excit, iexcit)
     call rsadpa(resuin, 'L', 1, 'MODELE', minord,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     if (zk8(jpara) .ne. modele) then
         call utmess('A', 'CALCULEL_24')
     endif

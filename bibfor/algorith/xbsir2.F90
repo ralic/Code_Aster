@@ -5,8 +5,17 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                   nomte)
 !
 ! aslint: disable=W1504
-    implicit   none
+    implicit none
 #include "jeveux.h"
+#include "asterfort/elelin.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xmprep.h"
+#include "asterfort/xmulco.h"
+#include "asterfort/xmvco3.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,15 +57,6 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! CALCUL RESIDU DE REFERENCE ELEMENTS COHESIF MIXTE XFEM
 ! TERMES D INTERFACE
 ! -------------------
-#include "asterfort/elelin.h"
-#include "asterfort/elref4.h"
-#include "asterfort/jevech.h"
-#include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
-#include "asterfort/xmprep.h"
-#include "asterfort/xmulco.h"
-#include "asterfort/xmvco3.h"
     integer :: cface(5, 3), contac, ddlc, ddlm, ddls
     integer :: i, iadzi, iazk24, ib, ibid, ifa, ifiss, igeom, ipgf
     integer :: iret, jaint, jbasec, jcface
@@ -100,22 +100,22 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     if (nfiss .gt. 1) then
         call jevech('PHEAVNO', 'L', jheano)
         call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', 2, jtab,&
-                    iret)
+        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+                    itab=jtab)
         ncomph = jtab(2)
     endif
 !     DIMENSIONS DES GRANDEURS DANS LA CARTE
-    call tecach('OOO', 'PPINTER', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PPINTER', 'L', iret, nval=2,&
+                itab=jtab)
     ncompp = jtab(2)
-    call tecach('OOO', 'PAINTER', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PAINTER', 'L', iret, nval=2,&
+                itab=jtab)
     ncompa = jtab(2)
-    call tecach('OOO', 'PBASECO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PBASECO', 'L', iret, nval=2,&
+                itab=jtab)
     ncompb = jtab(2)
-    call tecach('OOO', 'PCFACE', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PCFACE', 'L', iret, nval=2,&
+                itab=jtab)
     ncompc = jtab(2)
 !
 ! --- BOUCLE SUR LES FISSURES

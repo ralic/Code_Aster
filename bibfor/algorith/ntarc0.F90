@@ -68,16 +68,16 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
 ! --- ARCHIVAGE DE L'INSTANT
 !
     call rsadpa(result, 'E', 1, 'INST', numarc,&
-                0, jinst, k8bid)
+                0, sjv=jinst, styp=k8bid)
     zr(jinst) = instan
 !
 ! --- ARCHIVAGE DE DELTAT ET PARM_THETA
 !
     call rsadpa(result, 'E', 1, 'PARM_THETA', numarc,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zr(jpara) = para(1)
     call rsadpa(result, 'E', 1, 'DELTAT', numarc,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zr(jpara) = para(2)
 !
 ! --- ARCHIVAGE DES CRITERES DE CONVERGENCE
@@ -86,16 +86,16 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
         call jeveuo(sdcrit(1:19)//'.CRTR', 'L', jcrr)
         call jeveuo(sdcrit(1:19)//'.CRDE', 'L', jcrk)
         call rsadpa(result, 'E', 1, zk16(jcrk), numarc,&
-                    0, jpara, k8bid)
+                    0, sjv=jpara, styp=k8bid)
         zi(jpara) = nint(zr(jcrr))
         call rsadpa(result, 'E', 1, zk16(jcrk+1), numarc,&
-                    0, jpara, k8bid)
+                    0, sjv=jpara, styp=k8bid)
         zi(jpara) = nint(zr(jcrr+1))
         call rsadpa(result, 'E', 1, zk16(jcrk+2), numarc,&
-                    0, jpara, k8bid)
+                    0, sjv=jpara, styp=k8bid)
         zr(jpara) = zr(jcrr+2)
         call rsadpa(result, 'E', 1, zk16(jcrk+3), numarc,&
-                    0, jpara, k8bid)
+                    0, sjv=jpara, styp=k8bid)
         zr(jpara) = zr(jcrr+3)
     endif
 !

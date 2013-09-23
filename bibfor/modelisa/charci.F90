@@ -68,7 +68,7 @@ subroutine charci(chcine, mfact, mo, type)
     integer :: ibid, ifm, niv, icmp, cmp, ier, ino, nbno, nuno
     integer :: ioc, jcnsv, jcnsl, idino, nbobm
     integer :: idnddl, idvddl, nbddl, iddl, i, idprol, jafck
-    integer :: ila, nbcmp, jcmp, noc, n1, iord, iret
+    integer :: ila, nbcmp, jcmp, noc, n1, iord(1), iret
     integer :: jnoxfl, nlicmp, mxcmp, icmpmx
     parameter (mxcmp=100)
 !
@@ -142,10 +142,10 @@ subroutine charci(chcine, mfact, mo, type)
                     iret)
         ASSERT(iret.eq.1)
         if (mfac .eq. 'MECA_IMPO') then
-            call rsexch('F', evoim, 'DEPL', iord, depla,&
+            call rsexch('F', evoim, 'DEPL', iord(1), depla,&
                         iret)
         else
-            call rsexch('F', evoim, 'TEMP', iord, depla,&
+            call rsexch('F', evoim, 'TEMP', iord(1), depla,&
                         iret)
         endif
         call cnocns(depla, 'V', cns)

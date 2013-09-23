@@ -85,7 +85,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     zi(ilorms+i1-1)=0
     do 213,i2=1,nmost2
     call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', zi(jordr-1+i2),&
-                0, jpara, kbid)
+                0, sjv=jpara, styp=kbid)
     if ((zk8(ilnoex+i1-1)//zk8(ilcpex+i1-1)) .eq. zk16(jpara)) then
         zi(ilorms+i1-1)=i2
     endif

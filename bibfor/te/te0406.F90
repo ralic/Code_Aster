@@ -102,7 +102,7 @@ subroutine te0406(option, nomte)
 !
     integer :: ii, jj
 !
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
 !
 !---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 !
@@ -117,8 +117,7 @@ subroutine te0406(option, nomte)
 !
 !---- TEST D'EXISTENCE "COMPOR"
 !
-    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo,&
-                iret)
+    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
     if (icompo .ne. 0) then
         if (zk16(icompo+2) .eq. 'GROT_GDEP') then
             call utmess('F', 'ELEMENTS3_91')
@@ -380,11 +379,8 @@ subroutine te0406(option, nomte)
 !
 !------- ADRESSE DU MODE
 !
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
-        call tecach(stopz, 'PVITESR', 'L', 1, iv,&
-                    iret)
+        stopz='ONO'
+        call tecach(stopz, 'PVITESR', 'L', iret, iad=iv)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
 !
@@ -396,8 +392,7 @@ subroutine te0406(option, nomte)
 !
         else
 !
-            call tecach(stopz, 'PDEPLAR', 'L', 1, iu,&
-                        iret)
+            call tecach(stopz, 'PDEPLAR', 'L', iret, iad=iu)
             if (iret .eq. 0) then
                 call jevech('POMEGA2', 'L', jfreq)
                 call r8inir(51, 0.d0, masu, 1)

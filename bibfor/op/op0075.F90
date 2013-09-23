@@ -174,9 +174,9 @@ subroutine op0075()
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         do 50 iord = 1, nbord
             call rsadpa(resin, 'L', 3, param, zi(jord+iord-1),&
-                        0, lpain, k8bid)
+                        0, tjv=lpain, styp=k8bid)
             call rsadpa(nomres, 'E', 3, param, zi(jord+iord-1),&
-                        0, lpaout, k8bid)
+                        0, tjv=lpaout, styp=k8bid)
             do 40 i = 1, 3
                 zk8(lpaout(i))=zk8(lpain(i))
 40          continue

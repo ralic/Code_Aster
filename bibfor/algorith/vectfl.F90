@@ -43,13 +43,12 @@ subroutine vectfl(opt, modele, carele, mate, templu,&
 !
 !
 !
-    character(len=8) :: lpain(4), lpaout(1), kbid
+    character(len=8) :: lpain(4), lpaout(1)
     character(len=16) :: option
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
     character(len=24) :: ligrmo, lchin(4), lchout(1), ve2
     integer :: ibid
-    complex(kind=8) :: cbid
 !
 !-----------------------------------------------------------------------
     integer :: jlve
@@ -78,11 +77,9 @@ subroutine vectfl(opt, modele, carele, mate, templu,&
     lchin(1) = chgeom
     chtime = '&&VECHME.CH_INST_R'
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                1, 'INST   ', ibid, instap, cbid,&
-                kbid)
+                ncmp=1, nomcmp='INST   ', sr=instap)
     call mecact('V', '&VECTFL.VEC', 'MODELE', ligrmo, 'TEMP_R  ',&
-                1, 'TEMP   ', ibid, 0.d0, cbid,&
-                kbid)
+                ncmp=1, nomcmp='TEMP   ', sr=0.d0)
     lpain(2) = 'PTEMPSR'
     lchin(2) = chtime
     lchin(3) = templu

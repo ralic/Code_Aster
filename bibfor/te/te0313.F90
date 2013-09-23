@@ -216,10 +216,8 @@ subroutine te0313(option, nomte)
 ! --- C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET -------------------
 ! --- ALORS LES TERMES DEPENDANT DE DT SONT EVALUES --------------------
 ! ======================================================================
-        call tecach('ONN', 'PINSTMR', 'L', 1, iinstm,&
-                    iretm)
-        call tecach('ONN', 'PINSTPR', 'L', 1, iinstp,&
-                    iretp)
+        call tecach('ONN', 'PINSTMR', 'L', iretm, iad=iinstm)
+        call tecach('ONN', 'PINSTPR', 'L', iretp, iad=iinstp)
         if (iretm .eq. 0 .and. iretp .eq. 0) then
             dt = zr(iinstp) - zr(iinstm)
             fnoevo = .true.
@@ -260,10 +258,10 @@ subroutine te0313(option, nomte)
 ! --- 5. OPTION : VARI_ELNO ---------------------------------------
 ! ======================================================================
     if (option .eq. 'VARI_ELNO') then
-        call tecach('OOO', 'PVARIGR', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PVARINR', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PVARIGR', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PVARINR', 'E', iret, nval=7,&
+                    itab=itabou)
         ichg=itabin(1)
         ichn=itabou(1)
 !

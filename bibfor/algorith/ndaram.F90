@@ -71,7 +71,7 @@ subroutine ndaram(result, sddyna, numarc)
 ! --- ARCHIVAGE NOM TRAN_GENE_NOLI
 !
     call rsadpa(result, 'E', 1, 'TRAN_GENE_NOLI', numarc,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zk24(jpara) = trgene
     nbmodp = ndynin(sddyna,'NBRE_MODE_PROJ')
 !

@@ -56,7 +56,7 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
     real(kind=8) :: rho, epais, roe, rof, ctor, excent, xinert
     real(kind=8) :: zero, un, six, huit, douze, wgtf, wgtmf
     real(kind=8) :: qsi, eta, carat3(21), coef1, coef2
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
     logical :: exce, iner
 !     ------------------------------------------------------------------
 !
@@ -255,19 +255,15 @@ subroutine dktmas(xyzl, option, pgl, mas, ener,&
 210      continue
 !
     else if (option.eq.'ECIN_ELEM') then
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
+        stopz='ONO'
 ! IRET NE PEUT VALOIR QUE 0 (TOUT VA BIEN) OU 2 (CHAMP NON FOURNI)
-        call tecach(stopz, 'PVITESR', 'L', 1, jvitg,&
-                    iret)
+        call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
         if (iret .eq. 0) then
             call utpvgl(3, 6, pgl, zr(jvitg), vite)
             call dxtloe(flex, memb, mefl, ctor, .false.,&
                         vite, ener)
         else
-            call tecach(stopz, 'PDEPLAR', 'L', 1, jdepg,&
-                        iret)
+            call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
             if (iret .eq. 0) then
                 call utpvgl(3, 6, pgl, zr(jdepg), depl)
                 call dxtloe(flex, memb, mefl, ctor, .false.,&

@@ -47,10 +47,10 @@ subroutine te0082(option, nomte)
 !
 !
     character(len=16) :: phenom
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
     integer :: icodre(1)
 !      CHARACTER*4        FAMI
-    real(kind=8) :: valres(1), dfdx(9), dfdy(9), poids, r, r8b, vfi, vfj
+    real(kind=8) :: valres(1), dfdx(9), dfdy(9), poids, r, r8b=0.d0, vfi, vfj
     real(kind=8) :: matp(18, 18), matv(171), masvit(18), masdep(18)
     real(kind=8) :: vect1(18), vect2(18)
     integer :: nno, kp, nnos, npg2, ii, jj, i, j, k, imatuu, jgano
@@ -82,11 +82,11 @@ subroutine te0082(option, nomte)
                 ' ', phenom, 0, ' ', [r8b],&
                 1, 'RHO', valres, icodre(1), 1)
 !
-    do 2 k = 1, nvec
+    do k = 1, nvec
         matv(k) = 0.0d0
- 2  end do
+    end do
 !
-    do 10 kp = 1, npg2
+    do kp = 1, npg2
         k = (kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     dfdx, dfdy, poids)
@@ -115,7 +115,7 @@ subroutine te0082(option, nomte)
                 matv(ij2+1) = matv(ij2+1) + poids*vfi*vfj
 40          continue
 30      continue
-10  end do
+    end do
 !
     if (option .eq. 'MASS_MECA') then
         call jevech('PMATUUR', 'E', imatuu)
@@ -188,11 +188,8 @@ subroutine te0082(option, nomte)
 ! OPTION ECIN_ELEM : CALCUL DE L'ENERGIE CINETIQUE
 !
     else if (option .eq. 'ECIN_ELEM') then
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
-        call tecach(stopz, 'PVITESR', 'L', 1, ivite,&
-                    iret)
+        stopz='ONO'
+        call tecach(stopz, 'PVITESR', 'L', iret, iad=ivite)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
             call jevech('PENERCR', 'E', iecin)
@@ -200,8 +197,7 @@ subroutine te0082(option, nomte)
             call pmavec('ZERO', nddl, matp, zr(ivite), masvit)
             zr(iecin) = .5d0*ddot(nddl,zr(ivite),1,masvit,1)
         else
-            call tecach(stopz, 'PDEPLAR', 'L', 1, idepl,&
-                        iret)
+            call tecach(stopz, 'PDEPLAR', 'L', iret, iad=idepl)
             if (iret .eq. 0) then
                 call jevech('PENERCR', 'E', iecin)
                 call jevech('POMEGA2', 'L', ifreq)

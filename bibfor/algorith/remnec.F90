@@ -118,9 +118,12 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !-----------------RECUPERATION DU NOMBRE DE DDL PHYSIQUES---------------
 !
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid(1), numddl, ier)
-    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid(1), matrix, ier)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq, k8b, ier)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid(1),&
+                numddl, ier)
+    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid(1),&
+                matrix, ier)
+    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
+                k8b, ier)
 !
 !-------------RECUPERATION DES FREQUENCES ------------------------------
 !
@@ -128,7 +131,8 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !----------------RECUPERATION MATRICE DE MASSE--------------------------
 !
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid(1), mass, ier)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid(1),&
+                mass, ier)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
@@ -153,22 +157,27 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !-------------CALCUL DES MATRICES DE FLEXIBILITE RESIDUELLE-------------
 !
     kbid = ' '
-    call bmnodi(basmod, kbid, '         ', numd, 0, ibid(1), nbddr)
+    call bmnodi(basmod, kbid, '         ', numd, 0,&
+                ibid(1), nbddr)
     flexdr = '&&REMNEC.FLEX.DROITE'
     call wkvect(flexdr, 'V V R', nbddr*neq, ltfldr)
     ibid(1) = 0
-    call flexib(basmod, nbmod, zr(ltfldr), neq, nbddr, ibid(1), numd)
+    call flexib(basmod, nbmod, zr(ltfldr), neq, nbddr,&
+                ibid(1), numd)
 !
     flexga = '&&REMNEC.FLEX.GAUCHE'
     call wkvect(flexga, 'V V R', nbddr*neq, ltflga)
-    call flexib(basmod, nbmod, zr(ltflga), neq, nbddr, ibid(1), numg)
+    call flexib(basmod, nbmod, zr(ltflga), neq, nbddr,&
+                ibid(1), numg)
 !
     if (numa .gt. 0) then
         flexax = '&&REMNEC.FLEX.AXE'
         kbid = ' '
-        call bmnodi(basmod, kbid, '         ', numa, 0, ibid(1), nbdax)
+        call bmnodi(basmod, kbid, '         ', numa, 0,&
+                    ibid(1), nbdax)
         call wkvect(flexax, 'V V R', nbdax*neq, ltflax)
-        call flexib(basmod, nbmod, zr(ltflax), neq, nbddr, ibid(1), numa)
+        call flexib(basmod, nbmod, zr(ltflax), neq, nbddr,&
+                    ibid(1), numa)
     endif
 !
 !--------------CALCUL DES MATRICES DE CHANGEMENT DE BASE TETA-----------
@@ -181,7 +190,8 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
     if (numa .gt. 0) then
         tetax = '&&REMNEC.TETAX'
         call wkvect(tetax, 'V V R', nbdax*nbdax, ltetax)
-        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax), nbdax)
+        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax),&
+                    nbdax)
     endif
 !
 !--------------------CLASSEMENT DES MODES PROPRES-----------------------
@@ -281,17 +291,17 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
             call vtcrem(chamva, matrix, 'G', 'R')
             call jeveuo(chamva//'.VALE', 'E', llcham)
             call rsadpa(nomres, 'E', 1, 'FREQ', inum,&
-                        0, ldfre, k8b)
+                        0, sjv=ldfre, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum,&
-                        0, ldkge, k8b)
+                        0, sjv=ldkge, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum,&
-                        0, ldmge, k8b)
+                        0, sjv=ldmge, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'OMEGA2', inum,&
-                        0, ldom2, k8b)
+                        0, sjv=ldom2, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum,&
-                        0, ldomo, k8b)
+                        0, sjv=ldomo, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
-                        0, ldotm, k8b)
+                        0, sjv=ldotm, styp=k8b)
 !
             fact = 1.d0 / (para(1)**0.5d0)
             genek = (zr(llfreq+icomp-1)*depi)**2
@@ -307,7 +317,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 ! ------- SPECIFIQUE A BASE_MODALE
 !
             call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum,&
-                        0, ldtyd, k8b)
+                        0, sjv=ldtyd, styp=k8b)
             zk16(ldtyd) = 'PROPRE          '
 !
             call rsnoch(nomres, depl, inum)
@@ -328,17 +338,17 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
                 call jeveuo(chamva//'.VALE', 'E', llcham)
 !
                 call rsadpa(nomres, 'E', 1, 'FREQ', inum,&
-                            0, ldfre, k8b)
+                            0, sjv=ldfre, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum,&
-                            0, ldkge, k8b)
+                            0, sjv=ldkge, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum,&
-                            0, ldmge, k8b)
+                            0, sjv=ldmge, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'OMEGA2', inum,&
-                            0, ldom2, k8b)
+                            0, sjv=ldom2, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum,&
-                            0, ldomo, k8b)
+                            0, sjv=ldomo, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
-                            0, ldotm, k8b)
+                            0, sjv=ldotm, styp=k8b)
 !
                 fact = 1.d0 / (para(2)**0.5d0)
                 genek = (zr(llfreq+icomp-1)*depi)**2
@@ -352,7 +362,7 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
                 zk16(ldotm) = 'MODE_DYN'
 !
                 call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum,&
-                            0, ldtyd, k8b)
+                            0, sjv=ldtyd, styp=k8b)
                 zk16(ldtyd) = 'PROPRE          '
 !
                 call rsnoch(nomres, depl, inum)

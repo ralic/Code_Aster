@@ -79,8 +79,8 @@ subroutine te0358(option, nomte)
     call jevech('PCONTMR', 'L', icontr)
     call jevech('PCOMPOR', 'L', icompo)
     compor = zk16(icompo+7)
-    call tecach('OON', 'PVARIPR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
     call jevech('PVARIPR', 'L', ivari)
     call jevech('PVECTUR', 'E', ivectu)

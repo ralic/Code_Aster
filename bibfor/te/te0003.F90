@@ -457,11 +457,9 @@ subroutine te0003(option, nomte)
     nomgds = zk24(icharg+11)(1:19)
 !
 ! LA SOURCE PEUT ETRE REELLE OU FONCTION (OU ABSENTE) :
-    call tecach('ONN', 'PSOURCR', 'L', 1, isour,&
-                iret)
+    call tecach('ONN', 'PSOURCR', 'L', iret, iad=isour)
     if (iret .ne. 0) then
-        call tecach('ONN', 'PSOURCF', 'L', 1, isour,&
-                    iret2)
+        call tecach('ONN', 'PSOURCF', 'L', iret2, iad=isour)
         if (iret2 .eq. 0) ASSERT(nomgds.eq.'SOUR_F')
     endif
 !

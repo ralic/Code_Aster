@@ -89,8 +89,8 @@ subroutine te0477(option, nomte)
         call jevech('PMATERC', 'L', imate)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PVARIMR', 'L', ivarim)
-        call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                    itab=jtab)
 !       LGPG : nombre de variables internes par sous point
         lgpg = max(jtab(6),1)
         call jevech('PDEPLMR', 'L', ideplm)

@@ -112,8 +112,8 @@ subroutine te0347(option, nomte)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PVARINR', 'E', ichn)
 !
-        call tecach('OON', 'PVARIGR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIGR', 'L', iret(1), nval=7,&
+                    itab=jtab)
         lgpg = max(jtab(6),1)*jtab(7)
         read (zk16(icompo+1),'(I16)') nbvar
 !        POUR LES VARIABLES INTERNES, ON PROJETTE AVEC LES FONCTIONS
@@ -162,8 +162,7 @@ subroutine te0347(option, nomte)
             call jevech('PVECTUR', 'E', ivectu)
             call jevech('PGEOMER', 'L', igeom)
 !
-            call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
-                        iretc)
+            call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icompo)
             reactu = .false.
             if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'GROT_GDEP')
 !

@@ -106,7 +106,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
         call jeveuo(carcri(1:19)//'.VALV', 'L', jpara)
         theta = zr(jpara+3)
         call rsadpa(result, 'E', 1, 'PARM_THETA', numarc,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         zr(jinst) = theta
     endif
 !
@@ -116,7 +116,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
         call nmarcp('FLAM', sdpost, k19bla, chcrit, iret)
         if (iret .ne. 0) then
             call rsadpa(result, 'E', 1, 'CHAR_CRIT', numarc,&
-                        0, jacces, k16bid)
+                        0, sjv=jacces, styp=k16bid)
             zr(jacces) = chcrit
         endif
     endif
@@ -127,7 +127,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
         call nmarcp('STAB', sdpost, k19bla, chstab, iret)
         if (iret .ne. 0) then
             call rsadpa(result, 'E', 1, 'CHAR_STAB', numarc,&
-                        0, jacce2, k16bid)
+                        0, sjv=jacce2, styp=k16bid)
             zr(jacce2) = chstab
         endif
     endif
@@ -139,7 +139,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
         call nmarcp('VIBR', sdpost, k19bla, freqr, iret)
         if (iret .ne. 0) then
             call rsadpa(result, 'E', 1, 'FREQ', numarc,&
-                        0, jacces, k16bid)
+                        0, sjv=jacces, styp=k16bid)
             zr(jacces) = freqr
         endif
     endif
@@ -147,7 +147,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! --- ARCHIVAGE DE L'INSTANT
 !
     call rsadpa(result, 'E', 1, 'INST', numarc,&
-                0, jinst, k8bid)
+                0, sjv=jinst, styp=k8bid)
     zr(jinst) = instan
 !
 !  --- ARCHIVAGE DE L'INSTANT  PRECEDENT SI HHT
@@ -156,7 +156,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
         ASSERT(ldyna)
         instam = ndynre(sddyna,'INST_PREC')
         call rsadpa(result, 'E', 1, 'INST_PREC', numarc,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         zr(jinst) = instam
     endif
 !
@@ -172,17 +172,17 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
     valr = zr(jcrr+1-1)
     valk = zk16(jcrk+1-1)
     call rsadpa(result, 'E', 1, valk, numarc,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zi(jpara) = nint(valr)
     valr = zr(jcrr+5-1)
     valk = zk16(jcrk+5-1)
     call rsadpa(result, 'E', 1, valk, numarc,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zr(jpara) = valr
     valr = zr(jcrr+6-1)
     valk = zk16(jcrk+6-1)
     call rsadpa(result, 'E', 1, valk, numarc,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zr(jpara) = valr
 !
 ! --- ARCHIVAGE DES INDICATEURS D'ERREUR EN TEMPS EN THM UNIQUEMENT
@@ -193,10 +193,10 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
         taberr(1) = zr(jerrt-1+1)
         taberr(2) = zr(jerrt-1+2)
         call rsadpa(result, 'E', 1, 'ERRE_TPS_LOC', numarc,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         zr(jinst) = taberr(1)
         call rsadpa(result, 'E', 1, 'ERRE_TPS_GLOB', numarc,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
         zr(jinst) = taberr(2)
     endif
 !
@@ -211,7 +211,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
             call jeveuo(sdpilo(1:19)//'.PLIR', 'L', jplir)
             coef = zr(jplir)
             call rsadpa(result, 'E', 1, 'COEF_MULT', numarc,&
-                        0, jinst, k8bid)
+                        0, sjv=jinst, styp=k8bid)
             zr(jinst) = coef
         endif
     endif

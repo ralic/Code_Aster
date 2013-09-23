@@ -47,9 +47,6 @@ subroutine afvarc(chmat, nomail, nomode)
 ! ----------------------------------------------------------------------
 !     TRAITEMENT DE AFFE_MATERIAU / AFFE_VARC
 ! ----------------------------------------------------------------------
-!
-    complex(kind=8) :: cbid
-!
     integer :: n1, n2, nboccv, nbma, k, ncmp
     integer :: ifac, nbfac, nmxfac, nmxcmp, ibid, nbvarc, nbtou, jma
     integer :: iocc, jncmp1, jncmp2, jvalv1, jvalv2, kvarc, nbcvrc
@@ -57,7 +54,7 @@ subroutine afvarc(chmat, nomail, nomode)
     integer :: nref, nbdetr, nbgdut, nbgdmx, ico, jadetr
     integer :: jvale, jdesc
 !
-    character(len=8) :: k8b, typmcl(2), nomgd, kbid
+    character(len=8) :: k8b, typmcl(2), nomgd
     character(len=8) :: nomgd2, chamgd, evol, nocmp1, nocmp2, finst, evouch
     character(len=16) :: motcle(2), nomcha, prolga, proldr, k16a, k16b, k16c
     character(len=24) :: mesmai, cvnom, cvvar, cvgd, cvcmp, valk(3)
@@ -283,8 +280,7 @@ subroutine afvarc(chmat, nomail, nomode)
         rcmp(k) = r8nnem()
 31      continue
         call mecact('G', carvid, 'MAILLA', nomail, nomgd,&
-                    ncmp, zk8(jcvcmp+nbcvrc), ibid, rcmp, cbid,&
-                    kbid)
+                    ncmp=ncmp, lnomcmp=zk8(jcvcmp+nbcvrc), vr=rcmp)
 !
         zk16(jvalv2-1+2) = 'CHAMP'
         zk16(jvalv2-1+3) = carvid(1:16)

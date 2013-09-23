@@ -73,7 +73,7 @@ subroutine vecgen(nomres, numeg)
     complex(kind=8) :: cbid
     integer :: gd, gd0, nblia, ibid, elim, neqet, neqred, lmapro, lsilia, lsst
     integer :: nbsst, i1, j1
-    integer :: vali(3)
+    integer :: vali(3), tmod(1)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -352,9 +352,10 @@ subroutine vecgen(nomres, numeg)
                     basmod)
 !
 !     NOMBRE DE MODES NBMOD DE LA BASE MODALE
-        call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
-                    cbid, rbid, kbid, nbmod, 1,&
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
+                    cbid, rbid, kbid, tmod, 1,&
                     ibid)
+        nbmod=tmod(1)            
 !
 !     RECUPERATION DU .VALE ASSOCIE AU SECOND MEMBRE
         call jeveuo(nom2mb//'           .VALE', 'L', ladrve)

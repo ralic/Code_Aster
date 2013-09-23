@@ -20,11 +20,11 @@ subroutine te0208(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pipef3.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: nomte, option
 !
 !-----------------------------------------------------------------------
@@ -59,8 +59,8 @@ subroutine te0208(option, nomte)
     typmod(2) = 'ELEMJOIN'
 !
 ! RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
 ! PARAMETRE EN SORTIE

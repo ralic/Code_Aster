@@ -82,15 +82,12 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     character(len=8) :: sigere(nbsig)
 !
     logical :: lbid
-    integer :: ibid
-    complex(kind=8) :: cbid
-    character(len=8) :: k8bid
     character(len=19) :: vecele
     character(len=19) :: ligrmo, verefe, carte
     character(len=24) :: chgeom
     character(len=24) :: chcara(18)
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
-    character(len=19) ::  pinter, ainter, baseco, ccface, lonfac
+    character(len=19) :: pinter, ainter, baseco, ccface, lonfac
     logical :: debug
     integer :: ifmdbg, nivdbg
     character(len=16) :: option
@@ -118,8 +115,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
 ! --- CREATION CARTE DES VALEURS DE REFRENCES
 !
     call mecact('V', carte, 'MODELE', ligrmo, 'PREC',&
-                nbsig, sigere, ibid, parcon, cbid,&
-                k8bid)
+                ncmp=nbsig, lnomcmp=sigere, vr=parcon)
 !
 ! --- CARTE DE LA GEOMETRIE
 !

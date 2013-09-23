@@ -52,7 +52,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 #include "asterfort/wkvect.h"
     character(len=8) :: typflu, nombm
     integer :: icoupl, nbm0, nbmode, nbmd, jpuls, jmasg, jamo1, jlocf, itypfl
-    integer :: numvif, jbase, jamog
+    integer :: numvif, jbase, jamog, tmod(1)
     real(kind=8) :: vgap
     integer :: iveci1, ivecr1, ivecr2, ivecr3, ivecr4, ivecr5, itrans
     real(kind=8) :: eps, ts
@@ -149,8 +149,9 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !     ET SUR BASE REDUITE
 !     -------------------
     call rsorac(nombm, 'LONUTI', ib, r8b, k8b,&
-                c16b, 0.0d0, k8b, nbm0, 1,&
+                c16b, 0.0d0, k8b, tmod, 1,&
                 nbtrou)
+      nbm0=tmod(1)          
 !     NBM0 = NBMCFC
 !
     call getvis('SCHEMA_TEMPS', 'NB_MODE', iocc=1, scal=nbmode, nbret=n1)
@@ -183,10 +184,10 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
     do 10 im = 1, nbmode
         call rsadpa(nombm, 'L', 1, 'OMEGA2', im,&
-                    0, lomeg, k8b)
+                    0, sjv=lomeg, styp=k8b)
         zr(jpuls+im-1) = sqrt ( zr(lomeg) )
         call rsadpa(nombm, 'L', 1, 'MASS_GENE', im,&
-                    0, lmasg, k8b)
+                    0, sjv=lmasg, styp=k8b)
         zr(jmasg+im-1) = zr(lmasg)
         zl(jlocf+im-1) = .false.
 10  continue

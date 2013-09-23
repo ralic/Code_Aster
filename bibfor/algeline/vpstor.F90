@@ -186,13 +186,13 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
                     sd2 = zk24(jmod2)(1:8)
                     call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     modele = zk8(jpara)
                     call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     chmat = zk8(jpara)
                     call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     carael = zk8(jpara)
                     goto 39
                 else
@@ -226,13 +226,13 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
                     sd2 = zk24(jmod2)(1:8)
                     call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     modele = zk8(jpara)
                     call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     chmat = zk8(jpara)
                     call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     carael = zk8(jpara)
                     goto 39
                 endif
@@ -302,7 +302,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         irang = indk24(nopara,nopast(1),1,nbpari)
         if (irang .gt. 0) then
             call rsadpa(modes, 'E', 1, nopast(1), nordr,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zi(ladpa) = resufi(kmode,irang)
         endif
 !
@@ -311,7 +311,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         irang = indk24(nopara(nbpari+1),nopast(2),1,nbpark)
         if (irang .gt. 0) then
             call rsadpa(modes, 'E', 1, nopast(2), nordr,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk24(ladpa) = resufk(kmode,irang)
         endif
 !
@@ -326,7 +326,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                     typmod = 'MODE_DYN'
                 endif
                 call rsadpa(modes, 'E', 1, nopast(3), nordr,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk16(ladpa)= typmod
             endif
 !
@@ -337,7 +337,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         irang = indk24(nopara(nbpari+1),nopast(4),1,nbpark)
         if (irang .gt. 0) then
             call rsadpa(modes, 'E', 1, nopast(4), nordr,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk16(ladpa) = resufk(kmode,irang)
         endif
 !
@@ -345,13 +345,13 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 !
         if (lstock) then
             call rsadpa(modes, 'E', 1, 'MODELE', nordr,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk8(ladpa)=modele
             call rsadpa(modes, 'E', 1, 'CHAMPMAT', nordr,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk8(ladpa)=chmat
             call rsadpa(modes, 'E', 1, 'CARAELEM', nordr,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk8(ladpa)=carael
         endif
 !
@@ -360,7 +360,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 !
         if (typcon .eq. 'MODE_FLAMB') then
             call rsadpa(modes, 'E', 1, 'CHAR_CRIT', nordr,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             if (nomcmd .eq. 'NORM_MODE') then
                 zr(ladpa) = resufr(kmode,1)
             else
@@ -368,14 +368,14 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
             endif
         else if (typcon .eq. 'MODE_STAB') then
             call rsadpa(modes, 'E', 1, 'CHAR_STAB', 1,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zr(ladpa) = resufr(kmode,1)
         else
             do 48 i = 5, nbpast
                 irang = indk24(nopara(nbpari+nbpark+1),nopast(i),1, nbparr)
                 if (irang .gt. 0) then
                     call rsadpa(modes, 'E', 1, nopast(i), nordr,&
-                                0, ladpa, k8b)
+                                0, sjv=ladpa, styp=k8b)
                     zr(ladpa) = resufr(kmode,irang)
                 endif
 48          continue

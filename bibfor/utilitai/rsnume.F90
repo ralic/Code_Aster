@@ -31,7 +31,7 @@ subroutine rsnume(resu, nomsy, nu)
 ! OUT  K14  NU      : NOM DU NUME_DDL  TROUVE (OU ' ' SINON)
 ! ----------------------------------------------------------------------
 !
-    integer :: dernie, ibid, icode, iret, luti, iret2, iarefe
+    integer :: dernie(1), ibid, icode, iret, luti, iret2, iarefe
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8bid
@@ -45,11 +45,11 @@ subroutine rsnume(resu, nomsy, nu)
     if (iret .gt. 0) then
         call jelira(resu2//'.ORDR', 'LONUTI', luti)
         if (luti .eq. 0) goto 9999
-        call rsorac(resu, 'DERNIER', ibid, rbid, k8bid,&
+        call rsorac(resu, 'DERNIER', 0, rbid, k8bid,&
                     cbid, rbid, 'ABSOLU', dernie, 1,&
                     ibid)
 !
-        call rsexch(' ', resu, nomsy, dernie, chamno,&
+        call rsexch(' ', resu, nomsy, dernie(1), chamno,&
                     icode)
 !
         if (icode .eq. 0) then

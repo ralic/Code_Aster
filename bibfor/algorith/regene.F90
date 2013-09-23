@@ -67,7 +67,7 @@ subroutine regene(nomres, resgen, profno)
 !
     integer :: i, iadref, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
     integer :: jbid, ldnew, llchol, llinsk, llnueq, nbmod, nbnot, neq
-    integer :: nno, numo, iadpar(7), nbmo2, llref2, llref3, llref4, llref5
+    integer :: nno, numo, iadpar(7), nbmo2, llref2, llref3, llref4, llref5, tmod(1)
     real(kind=8) :: freq, genek, genem, omeg2, rbid, xsi
     complex(kind=8) :: cbid
     character(len=1) :: typsca
@@ -94,9 +94,10 @@ subroutine regene(nomres, resgen, profno)
     call jelira(chamol, 'TYPE', cval=typsca)
     if (typsca .eq. 'C') zcmplx = .true.
 !
-    call rsorac(resgen, 'LONUTI', ibid, rbid, kbid,&
-                cbid, rbid, kbid, nbmod, 1,&
+    call rsorac(resgen, 'LONUTI', 0, rbid, kbid,&
+                cbid, rbid, kbid, tmod, 1,&
                 ibid)
+    nbmod=tmod(1)            
 !
 ! --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 !
@@ -192,9 +193,10 @@ subroutine regene(nomres, resgen, profno)
         call jeveuo(numgen//'.NUEQ', 'L', llnueq)
         call getvid(' ', 'MODE_MECA', scal=modmec, nbret=ibid)
         if (ibid .ne. 0) basmod=modmec
-        call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
-                    cbid, rbid, kbid, nbmo2, 1,&
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
+                    cbid, rbid, kbid, tmod, 1,&
                     ibid)
+        nbmo2=tmod(1)            
         call wkvect('&&REGENE.BASEMODE', 'V V R', nbmo2*neq, idbase)
         call copmod(basmod, 'DEPL', neq, profno(1:14), nbmo2,&
                     'R', zr( idbase), cbid)
@@ -221,7 +223,7 @@ subroutine regene(nomres, resgen, profno)
             call jeveuo(chamne//'.VALE', 'E', ldnew)
 !
             call rsadpa(resgen, 'L', 6, nompar, iord,&
-                        0, iadpar, kbid)
+                        0, tjv=iadpar, styp=kbid)
             freq = zr(iadpar(1))
             genek = zr(iadpar(2))
             genem = zr(iadpar(3))
@@ -237,7 +239,7 @@ subroutine regene(nomres, resgen, profno)
 !
             call rsnoch(nomres, depl, i)
             call rsadpa(nomres, 'E', 7, nompar, i,&
-                        0, iadpar, kbid)
+                        0, tjv=iadpar, styp=kbid)
             zr(iadpar(1)) = freq
             zr(iadpar(2)) = genek
             zr(iadpar(3)) = genem
@@ -253,9 +255,10 @@ subroutine regene(nomres, resgen, profno)
 !-----------------------------------------------------------------------
 !
 !
-        call rsorac(basmod, 'LONUTI', ibid, rbid, kbid,&
-                    cbid, rbid, kbid, nbmo2, 1,&
+        call rsorac(basmod, 'LONUTI', 0, rbid, kbid,&
+                    cbid, rbid, kbid, tmod, 1,&
                     ibid)
+        nbmo2=tmod(1)            
 !
         call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
                     numedd, iret)
@@ -294,7 +297,7 @@ subroutine regene(nomres, resgen, profno)
             call jeveuo(chamno//'.VALE', 'E', ldnew)
 !
             call rsadpa(resgen, 'L', 6, nompar, iord,&
-                        0, iadpar, kbid)
+                        0, tjv=iadpar, styp=kbid)
             freq = zr(iadpar(1))
             genek = zr(iadpar(2))
             genem = zr(iadpar(3))
@@ -311,7 +314,7 @@ subroutine regene(nomres, resgen, profno)
             call rsnoch(nomres, depl, i)
 !
             call rsadpa(nomres, 'E', 7, nompar, i,&
-                        0, iadpar, kbid)
+                        0, tjv=iadpar, styp=kbid)
             zr(iadpar(1)) = freq
             zr(iadpar(2)) = genek
             zr(iadpar(3)) = genem

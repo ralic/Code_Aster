@@ -62,11 +62,8 @@ subroutine merimp(modele, carele, mate, comref, compor,&
 !
 !
 !
-    integer :: ibid
     integer :: iret, ier
     logical :: exicar
-    complex(kind=8) :: c16bid
-    character(len=8) :: k8bid
     character(len=24) :: chgeom, chcara(18), chiter
     character(len=19) :: depent, vitent
     character(len=19) :: depmoi, sigmoi, varmoi, commoi, strmoi
@@ -208,8 +205,7 @@ subroutine merimp(modele, carele, mate, comref, compor,&
 !
     iter = iterat
     call mecact('V', chiter, 'MODELE', ligrmo, 'NEUT_R',&
-                1, 'X1', ibid, iter, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='X1', sr=iter)
 !
 ! --- REMPLISSAGE DES CHAMPS D'ENTREE
 !

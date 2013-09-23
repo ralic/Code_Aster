@@ -80,7 +80,7 @@ subroutine calimc(chargz)
     integer :: iddl, iddl2, idimen, idirec, idnoeu, ierd, ii
     integer :: imod, imod2, inoe, iocc, iret, j, j2
     integer :: j3, jj, jncmpd, jncmpi, k, lldef, n2
-    integer :: nbec, nbmdef, nbmdyn, nbmode, nbnde2, nbndef, nbndyn
+    integer :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
     integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq
     integer :: nmc
     real(kind=8) :: beta, rbid, vale, zero
@@ -143,7 +143,7 @@ subroutine calimc(chargz)
         call getvid(motfac, 'MACR_ELEM_DYNA', iocc=iocc, scal=macrel, nbret=nmc)
         call jeveuo(macrel//'.MAEL_REFE', 'L', iadref)
         basemo = zk24(iadref)
-        call rsorac(basemo, 'LONUTI', ibid, rbid, k8b,&
+        call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
                     cbid, rbid, k8b, nbmode, 1,&
                     ibid)
         call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
@@ -160,8 +160,8 @@ subroutine calimc(chargz)
         call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmdef,&
                     k8b, ierd)
         call jelira(macrel//'.LINO', 'LONMAX', nbntot)
-        nbmdyn = nbmode-nbmdef
-        nec = nbmode/nbntot
+        nbmdyn = nbmode(1)-nbmdef
+        nec = nbmode(1)/nbntot
         nbndyn = nbmdyn/nec
         nbndef = nbntot-nbndyn
         nbnde2 = nbmdef/nec
@@ -188,8 +188,8 @@ subroutine calimc(chargz)
         numddl = numedd(1:14)
         call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                     k8b, iret)
-        call wkvect('&&CALIMC.BASE', 'V V R', nbmode*neq, idbase)
-        call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
+        call wkvect('&&CALIMC.BASE', 'V V R', nbmode(1)*neq, idbase)
+        call copmod(basemo, 'DEPL', neq, numddl, nbmode(1),&
                     'R', zr(idbase), cbid)
         call dismoi('F', 'NOM_GD', numddl, 'NUME_DDL', ibid,&
                     nogdsi, ierd)

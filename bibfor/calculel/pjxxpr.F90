@@ -83,7 +83,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
 !
 !
-    integer :: ibid, ie, jxxk1, iret, jordr, nbordr, i, iordr
+    integer :: ibid, ie, jxxk1, iret, jordr, nbordr, i, iordr, tmod(1)
     integer :: iains1, iains2, nbsym, isym, ico, ind, nbmax
     parameter (nbmax=50)
     integer :: ipar, ipar1, ipar2
@@ -135,16 +135,17 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !       ON NE TRAITE QUE LE CHAMP DEPL
         nbsym = 1
         nomsym(1) = 'DEPL'
-        call rsorac(resu1, 'LONUTI', ibid, r8b, kb,&
-                    c16b, r8b, kb, nbordr, 1,&
+        call rsorac(resu1, 'LONUTI', 0, r8b, kb,&
+                    c16b, r8b, kb, tmod, 1,&
                     ibid)
+        nbordr=tmod(1)            
         if (nbordr .eq. 0) then
             call utmess('F', 'CALCULEL4_62', sk=resu1)
         endif
 !
         call wkvect('&&PJXXPR.NUME_ORDRE', 'V V I', nbordr, jordr)
 !
-        call rsorac(resu1, 'TOUT_ORDRE', ibid, r8b, kb,&
+        call rsorac(resu1, 'TOUT_ORDRE', 0, r8b, kb,&
                     c16b, r8b, kb, zi(jordr), nbordr,&
                     ibid)
 !
@@ -265,18 +266,18 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         call vpcrea(0, resu2, ' ', ' ', ' ',&
                     prfch2(1:8), ier)
         call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
-                    0, iains1, kb)
+                    0, sjv=iains1, styp=kb)
         call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
-                    0, iains2, kb)
+                    0, sjv=iains2, styp=kb)
         zr(iains2) = zr(iains1)
 !
 !           RECOPIE DE NUME_MODE S'IL EXISTE:
         call jenonu(jexnom(resu1//'           .NOVA', 'NUME_MODE'), inume)
         if (inume .ne. 0) then
             call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr,&
-                        0, iains1, kb)
+                        0, sjv=iains1, styp=kb)
             call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr,&
-                        0, iains2, kb)
+                        0, sjv=iains2, styp=kb)
             zi(iains2) = zi(iains1)
         endif
 !
@@ -284,24 +285,24 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         call vpcrea(0, resu2, ' ', ' ', ' ',&
                     prfch2(1:8), ier)
         call rsadpa(resu1, 'L', 1, 'NOEUD_CMP', iordr,&
-                    0, iains1, kb)
+                    0, sjv=iains1, styp=kb)
         call rsadpa(resu2, 'E', 1, 'NOEUD_CMP', iordr,&
-                    0, iains2, kb)
+                    0, sjv=iains2, styp=kb)
         zk16(iains2) = zk16(iains1)
 !
     else if (typres.eq.'DYNA_HARMO') then
         call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
-                    0, iains1, kb)
+                    0, sjv=iains1, styp=kb)
         call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
-                    0, iains2, kb)
+                    0, sjv=iains2, styp=kb)
         zr(iains2) = zr(iains1)
 !
         elseif ((typres(1:4).eq.'EVOL') .or. (typres(1:4)&
             .eq.'DYNA')) then
         call rsadpa(resu1, 'L', 1, 'INST', iordr,&
-                    0, iains1, kb)
+                    0, sjv=iains1, styp=kb)
         call rsadpa(resu2, 'E', 1, 'INST', iordr,&
-                    0, iains2, kb)
+                    0, sjv=iains2, styp=kb)
         zr(iains2) = zr(iains1)
 !
     else
@@ -319,9 +320,9 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
     do 10 ind = 1, ipar
         call rsadpa(resu1, 'L', 1, kpar(ind), iordr,&
-                    1, ipar1, typ1)
+                    1, sjv=ipar1, styp=typ1)
         call rsadpa(resu2, 'E', 1, kpar(ind), iordr,&
-                    0, ipar2, typ2)
+                    0, sjv=ipar2, styp=typ2)
         if (typ1(1:1) .eq. 'I') then
             zi(ipar2) = zi(ipar1)
 !
@@ -357,7 +358,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         call jelira(resu2//'           .ORDR', 'LONUTI', nbordr)
         do 11 i = 1, nbordr
             call rsadpa(resu2, 'E', 1, 'MODELE', zi(jordr-1+i),&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zk8(jpara)=mo2
 11      continue
     endif

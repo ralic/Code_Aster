@@ -51,14 +51,13 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
 !
 !
 !
-    character(len=8) :: nomcha, lpain(3), lpaout(1), k8bid, newnom
+    character(len=8) :: nomcha, lpain(3), lpaout(1), newnom
     character(len=16) :: option
     character(len=24) :: ligrch, lchin(3), lchout(1), chgeom, chtime
     integer :: ibid, iret, nchar, jinf, jchar, icha
     integer :: numdi
     logical :: bidon
     character(len=19) :: lvedip
-    complex(kind=8) :: cbid
 !
 ! ----------------------------------------------------------------------
 !
@@ -96,8 +95,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
 !
     chtime = '&&VEDPME.CH_INST_R'
     call mecact('V', chtime, 'MODELE', modele(1:8)//'.MODELE', 'INST_R  ',&
-                1, 'INST', ibid, instap, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=instap)
     lchin(3) = chtime
 !
     do 10 icha = 1, nchar
@@ -122,7 +120,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
         call calcul('S', option, ligrch, 3, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
-        call reajre(lvedip, lchout, 'V')
+        call reajre(lvedip, lchout(1), 'V')
 15      continue
 !
 10  end do

@@ -47,9 +47,7 @@ subroutine ntcrch(modele, numedd, hydr0, vhydr)
 !
     character(len=19) :: hydric, hydris, ligrmo
     integer :: ibid, nncp, iret, neq
-    character(len=8) :: k8bid
     character(len=24) :: vtemp
-    complex(kind=8) :: c16bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,8 +65,7 @@ subroutine ntcrch(modele, numedd, hydr0, vhydr)
 !
     if (vhydr .ne. ' ') then
         call mecact('V', hydric, 'MODELE', ligrmo, 'HYDR_R',&
-                    1, 'HYDR', ibid, 0.d0, c16bid,&
-                    k8bid)
+                    ncmp=1, nomcmp='HYDR', sr=0.d0)
         call carces(hydric, 'ELNO', ' ', 'V', hydris,&
                     'A', iret)
         call cescel(hydris, ligrmo, 'RESI_RIGI_MASS', 'PHYDRPP', 'NON',&

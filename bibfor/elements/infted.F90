@@ -197,32 +197,28 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', 1, lsect,&
-                    iret)
+        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
         if (iret .eq. 0) itype = nint(zr(lsect-1+23))
     else if (nomte.eq.'MECA_POU_D_E') then
         nbterm = 78
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', 1, lsect,&
-                    iret)
+        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
         if (iret .eq. 0) itype = nint(zr(lsect-1+23))
     else if (nomte.eq.'MECA_POU_D_EM') then
         nbterm = 78
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', 1, lsect,&
-                    iret)
+        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
         if (iret .eq. 0) itype = nint(zr(lsect-1+23))
     else if (nomte.eq.'MECA_POU_C_T') then
         nbterm = 78
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', 1, lsect,&
-                    iret)
+        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
         if (iret .eq. 0) itype = nint(zr(lsect-1+23))
         else if ( (nomte.eq.'MECA_POU_D_TG') .or. (&
     nomte.eq.'MECA_POU_D_TGM') ) then
@@ -230,8 +226,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
         nbnoeu = 2
         nbcomp = 7
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', 1, lsect,&
-                    iret)
+        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
         if (iret .eq. 0) itype = nint(zr(lsect-1+23))
 !
 !     L'ELEMENT N'EST PAS TRAITE

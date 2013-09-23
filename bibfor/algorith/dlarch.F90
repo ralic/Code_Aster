@@ -83,11 +83,11 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
     if (istoc .eq. 0) then
         iarchi = iarchi + 1
         call rsadpa(result, 'E', 1, 'INST', iarchi,&
-                    0, iaux, k8b)
+                    0, sjv=iaux, styp=k8b)
         zr(iaux) = temps
     else
         call rsadpa(result, 'L', 1, 'INST', iarchi,&
-                    0, iaux, k8b)
+                    0, sjv=iaux, styp=k8b)
         temps = zr(iaux)
     endif
 !

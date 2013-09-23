@@ -133,9 +133,9 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
         iordr=zi(jordr+iaux-1)
         do 50 j = 1, nbpara
             call rsadpa(resuin, 'L', 1, zk16(jpara+j-1), iordr,&
-                        1, iadin, type)
+                        1, sjv=iadin, styp=type)
             call rsadpa(resuou, 'E', 1, zk16(jpara+j-1), iordr,&
-                        1, iadou, type)
+                        1, sjv=iadou, styp=type)
 !
             if (type(1:1) .eq. 'I') then
                 zi(iadou)=zi(iadin)

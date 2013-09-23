@@ -54,7 +54,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 ! IN  : TYPCDI : TYPE DE COMBINAISON DES DIRECTIONS
 !     ------------------------------------------------------------------
     integer :: ibid, i, id, ieq, ier, in, iordr, jdef, jdir, jval, lvale, nbmode
-    integer :: nbtrou, jdrr
+    integer :: nbtrou, jdrr, tordr(1)
     real(kind=8) :: r8b, r1, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19
     real(kind=8) :: r2, r20, r21, r22, r23, r24, r3, r4, r5, r6, r7, r8, r9, rx
     real(kind=8) :: ry, rz, xxx
@@ -85,8 +85,9 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
     if (nomsy(1:4) .eq. 'VITE') noms2 = 'DEPL'
     if (nomsy(1:4) .eq. 'ACCE') noms2 = 'DEPL'
     call rsorac(mome, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, iordr, 1,&
+                c16b, r8b, k8b, tordr, 1,&
                 nbtrou)
+    iordr=tordr(1)            
     call rsexch('F', mome, noms2, iordr, moncha,&
                 ier)
 !
@@ -129,13 +130,13 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 !
 !           --- PARAMETRE ---
             call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
-                        0, jdir, k8b)
+                        0, sjv=jdir, styp=k8b)
             zk16(jdir) = 'DIR     '//comp(id)
             call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
-                        0, jdef, k8b)
+                        0, sjv=jdef, styp=k8b)
             zk16(jdef) = def
             call rsadpa(resu, 'E', 1, 'FREQ', iordr,&
-                        0, jdrr, k8b)
+                        0, sjv=jdrr, styp=k8b)
             zr(jdrr) = id
         endif
 20  end do
@@ -207,17 +208,17 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 !
 !        --- PARAMETRE ---
         call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
-                    0, jdir, k8b)
+                    0, sjv=jdir, styp=k8b)
         if (typcdi(1:4) .eq. 'QUAD') then
             zk16(jdir) = 'COMBI   '//comp(4)
         else if (typcdi(1:4).eq.'NEWM') then
             zk16(jdir) = 'COMBI   '//comp(5)
         endif
         call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
-                    0, jdef, k8b)
+                    0, sjv=jdef, styp=k8b)
         zk16(jdef) = def
         call rsadpa(resu, 'E', 1, 'FREQ', iordr,&
-                    0, jdrr, k8b)
+                    0, sjv=jdrr, styp=k8b)
         zr(jdrr) = 4
     endif
 !

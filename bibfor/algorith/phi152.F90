@@ -56,7 +56,7 @@ subroutine phi152(model, option, mate, phibar, ma,&
 #include "asterfort/tabcor.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, nbvale, nbrefe, nbdesc, nbmode, iret, ierd
-    integer :: ilires, j, nbid, ivalk, indice, tabad(5)
+    integer :: ilires, j, nbid, ivalk, indice, tabad(5),tmod(1)
     integer :: iphi1, iphi2, n5, n6, n7, n1, icor(2), n2, ndble
     real(kind=8) :: bid, ebid, rbid
     character(len=*) :: option, mate, phibar, solvez
@@ -89,8 +89,9 @@ subroutine phi152(model, option, mate, phibar, ma,&
         call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
                     iret)
         call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', nbmode, 1,&
+                    cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
+        nbmode=tmod(1)            
         call dismoi('F', 'NOM_MAILLA', nomcha(1:19), 'CHAM_NO', ibid,&
                     mailla, ierd)
         call dismoi('F', 'NOM_MAILLA', moint, 'MODELE', ibid,&
@@ -126,8 +127,9 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !----- -RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA
 !
         call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', nbmode, 1,&
+                    cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
+        nbmode=tmod(1)            
 !
         call wkvect('&&OP0152.PHI1', 'V V K24', nbmode, iphi1)
         call wkvect('&&OP0152.PHI2', 'V V K24', nbmode, iphi2)

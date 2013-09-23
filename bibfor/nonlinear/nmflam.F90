@@ -187,7 +187,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
     numord = 0
     do 60 i = 1, nfreqc
         call rsadpa(sdmode, 'L', 1, varacc, i,&
-                    0, ljeveu, k16bid)
+                    0, sjv=ljeveu, styp=k16bid)
         freqv = zr(ljeveu)
         freqa = abs(freqv)
         if (freqa .lt. freqm) then
@@ -198,7 +198,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 60  end do
     if (nsta .ne. 0) then
         call rsadpa(sdstab, 'L', 1, 'CHAR_STAB', 1,&
-                    0, ljeve2, k16bid)
+                    0, sjv=ljeve2, styp=k16bid)
         csta = zr(ljeve2)
     endif
 !

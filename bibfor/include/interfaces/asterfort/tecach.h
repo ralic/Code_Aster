@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine tecach(stopz, nmparz, louez, nval, itab,&
-                      iret)
-        integer :: nval
-        character(*) :: stopz
-        character(*) :: nmparz
-        character(*) :: louez
-        integer :: itab(nval)
-        integer :: iret
+    subroutine tecach(stopz, nmparz, louez, iret, nval,&
+                      itab, iad, numa)
+        integer, intent(in), optional :: nval, numa
+        character(*), intent(in) :: stopz
+        character(*), intent(in) :: nmparz
+        character(*), intent(in) :: louez
+        integer, intent(out), optional :: itab(*)
+        integer, intent(out), optional :: iad
+        integer, intent(out) :: iret
     end subroutine tecach
 end interface

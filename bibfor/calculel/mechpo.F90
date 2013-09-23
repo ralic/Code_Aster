@@ -49,19 +49,17 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
     character(len=8) :: k8b, ncmppe(4), ncmpfo(11), tpf(11)
     character(len=19) :: ch19
     character(len=24) :: ligrmo, chdepl
-    complex(kind=8) :: c16b, tpc(11)
+    complex(kind=8) :: tpc(11)
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier, iret
-    real(kind=8) :: r8b, rbid, zero
 !-----------------------------------------------------------------------
     data         ncmppe/ 'G' , 'AG' , 'BG' , 'CG' /
     data         ncmpfo/ 'FX' , 'FY' , 'FZ' , 'MX' , 'MY' , 'MZ' ,&
      &                     'BX' , 'REP' , 'ALPHA' , 'BETA' , 'GAMMA' /
 !    -------------------------------------------------------------------
     call jemarq()
-    zero = 0.d0
     do 10 i = 1, 11
-        tps(i) = zero
+        tps(i) = 0.d0
         tpf(i) = '&FOZERO'
         tpc(i) = ( 0.d0 , 0.d0 )
 10  end do
@@ -75,15 +73,13 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
         lpain(nbopt) = 'PCOEFFR'
         lchin(nbopt) = souche(1:8)//ch5//'.COEFF'
         call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'IMPE_R',&
-                    1, 'IMPE', ibid, alpha, c16b,&
-                    k8b)
+                    ncmp=1, nomcmp='IMPE', sr=alpha)
     else if (typcoe.eq.'C') then
         nbopt = nbopt+1
         lpain(nbopt) = 'PCOEFFC'
         lchin(nbopt) = souche(1:8)//ch5//'.COEFF'
         call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'IMPE_C',&
-                    1, 'IMPE', ibid, r8b, calpha,&
-                    k8b)
+                    ncmp=1, nomcmp='IMPE', sc=calpha)
     endif
 !
     nbopt = nbopt+1
@@ -94,8 +90,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
         call codent(nbopt, 'D0', ch5(2:5))
         lchin(nbopt) = souche(1:8)//ch5//'.PESAN.DESC'
         call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'PESA_R  ',&
-                    4, ncmppe, ibid, tps, c16b,&
-                    k8b)
+                    ncmp=4, lnomcmp=ncmppe, vr=tps)
     endif
 !
     nbopt = nbopt+1
@@ -107,24 +102,21 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
         lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
         call fozero(tpf(1))
         call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ',&
-                    11, ncmpfo, ibid, rbid, c16b,&
-                    tpf)
+                    ncmp=11, lnomcmp=ncmpfo, vk=tpf)
 !
         nbopt = nbopt+1
         lpain(nbopt) = 'PFR1D1D'
         call codent(nbopt, 'D0', ch5(2:5))
         lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
         call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ',&
-                    11, ncmpfo, ibid, tps, c16b,&
-                    k8b)
+                    ncmp=11, lnomcmp=ncmpfo, vr=tps)
 !
         nbopt = nbopt+1
         lpain(nbopt) = 'PFC1D1D'
         call codent(nbopt, 'D0', ch5(2:5))
         lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
         call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ',&
-                    11, ncmpfo, ibid, rbid, tpc,&
-                    k8b)
+                    ncmp=11, lnomcmp=ncmpfo, vc=tpc)
 !
     else
         call dismoi('F', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
@@ -137,16 +129,14 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ',&
-                        11, ncmpfo, ibid, tps, c16b,&
-                        k8b)
+                        ncmp=11, lnomcmp=ncmpfo, vr=tps)
 !
             nbopt = nbopt+1
             lpain(nbopt) = 'PFC1D1D'
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ',&
-                        11, ncmpfo, ibid, rbid, tpc,&
-                        k8b)
+                        ncmp=11, lnomcmp=ncmpfo, vc=tpc)
         else if (k8b(5:6) .eq. '_RI') then
             lpain(nbopt) = 'PFC1D1D'
 !
@@ -155,8 +145,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_R  ',&
-                        11, ncmpfo, ibid, tps, c16b,&
-                        k8b)
+                        ncmp=11, lnomcmp=ncmpfo, vr=tps)
 !
             nbopt = nbopt+1
             lpain(nbopt) = 'PFF1D1D'
@@ -164,8 +153,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call fozero(tpf(1))
             call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ',&
-                        11, ncmpfo, ibid, rbid, c16b,&
-                        tpf)
+                        ncmp=11, lnomcmp=ncmpfo, vk=tpf)
         else
             lpain(nbopt) = 'PFR1D1D'
 !
@@ -175,16 +163,14 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call fozero(tpf(1))
             call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_F  ',&
-                        11, ncmpfo, ibid, rbid, c16b,&
-                        tpf)
+                        ncmp=11, lnomcmp=ncmpfo, vk=tpf)
 !
             nbopt = nbopt+1
             lpain(nbopt) = 'PFC1D1D'
             call codent(nbopt, 'D0', ch5(2:5))
             lchin(nbopt) = souche(1:8)//ch5//'.P1D1D.DESC'
             call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'FORC_C  ',&
-                        11, ncmpfo, ibid, rbid, tpc,&
-                        k8b)
+                        ncmp=11, lnomcmp=ncmpfo, vc=tpc)
         endif
     endif
 !
@@ -205,8 +191,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
     call codent(nbopt, 'D0', ch5(2:5))
     lchin(nbopt) = souche(1:8)//ch5//'.SUR_OPTION'
     call mecact('V', lchin(nbopt), 'MODELE', ligrmo, 'NEUT_K24',&
-                1, 'Z1', ibid, rbid, c16b,&
-                suropt)
+                ncmp=1, nomcmp='Z1', sk=suropt)
 !
     call jedema()
 end subroutine

@@ -70,7 +70,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     integer :: nbmail, jma, im, nume, imc, ier
     integer :: numord, iainst, iord, nbmtrc, lvale, nbin, iocc
     parameter (mxvale=3,nbparr=7,nbpard=5)
-    real(kind=8) :: r8b, rtval(mxvale), prec, inst, valer(4), vref, coesym, mref, sref, probaw
+    real(kind=8) :: rtval(mxvale), prec, inst, valer(4), vref, coesym, mref, sref, probaw
     real(kind=8) :: sigmaw
     character(len=1) :: base
     character(len=2) :: codret
@@ -159,8 +159,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 !
 !     CREATION CARTE CONSTANTE ET NULLE SUR TOUT LE MAILLAGE
     call mecact('V', '&&PEWEIB.SIGIE', 'MAILLA', noma, 'DOMA_R',&
-                1, 'DOMA', ibid, 0.d0, c16b,&
-                k8b)
+                ncmp=1, nomcmp='DOMA', sr=0.d0)
 !
     knum = '&&PEWEIB.NUME_ORDRE'
     kins = '&&PEWEIB.INSTANT'
@@ -204,7 +203,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
             do 20 iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
-                            0, iainst, k8b)
+                            0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
 20          continue
         endif
@@ -299,8 +298,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 !
         ssoup = optcal(1)//optcal(2)(1:8)
         call mecact('V', '&&PEWEIB.CH.SOUSOP', 'MAILLA', noma, 'NEUT_K24',&
-                    1, 'Z1', ibid, r8b, c16b,&
-                    ssoup)
+                    ncmp=1, nomcmp='Z1', sk=ssoup)
 !
         optio2 = 'WEIBULL'
         chelem = '&&PEWEIB.WEIBULL'

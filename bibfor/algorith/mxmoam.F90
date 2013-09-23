@@ -169,7 +169,7 @@ subroutine mxmoam(sddyna, nbmodp)
 !
         do 10 imode = 1, nbmodp
             call rsadpa(modmec, 'L', 1, 'MASS_GENE', imode,&
-                        0, lpar, k8bid)
+                        0, sjv=lpar, styp=k8bid)
             zr(jmasge+imode-1) = zr(lpar)
 10      continue
 !

@@ -23,7 +23,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 #include "asterfort/nufloc.h"
 #include "asterfort/nvithm.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/tecac2.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vfcfks.h"
@@ -1199,36 +1199,26 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! ================================================================
 ! --- PARAMETRES EN ENTREE POUR LE VOISIN CONSIDERE
 ! ================================================================
-        call tecac2('OOO', numav, 'PGEOMER', 'L', 1,&
-                    igeomv, iret)
+        call tecach('OOO', 'PGEOMER', 'L', iret, iad=igeomv, numa=numav)
         ASSERT(iret.eq.0)
-        call tecac2('OOO', numav, 'PMATERC', 'L', 1,&
-                    imatev, iret)
+        call tecach('OOO', 'PMATERC', 'L', iret, iad=imatev, numa=numav)
         ASSERT(iret.eq.0)
-        call tecac2('OOO', numav, 'PDEPLMR', 'L', 1,&
-                    idepmv, iret)
+        call tecach('OOO', 'PDEPLMR', 'L', iret, iad=idepmv, numa=numav)
         ASSERT(iret.eq.0)
-        call tecac2('OOO', numav, 'PCOMPOR', 'L', 1,&
-                    icompv, iret)
+        call tecach('OOO', 'PCOMPOR', 'L', iret, iad=icompv, numa=numav)
         ASSERT(iret.eq.0)
-        call tecac2('OOO', numav, 'PCARCRI', 'L', 1,&
-                    icarcv, iret)
+        call tecach('OOO', 'PCARCRI', 'L', iret, iad=icarcv, numa=numav)
         ASSERT(iret.eq.0)
-        call tecac2('OOO', numav, 'PVARIMR', 'L', 1,&
-                    ivarmv, iret)
+        call tecach('OOO', 'PVARIMR', 'L', iret, iad=ivarmv, numa=numav)
         ASSERT(iret.eq.0)
-        call tecac2('OOO', numav, 'PCONTMR', 'L', 1,&
-                    iconmv, iret)
+        call tecach('OOO', 'PCONTMR', 'L', iret, iad=iconmv, numa=numav)
         ASSERT(iret.eq.0)
         if (cont) then
-            call tecac2('OOO', numav, 'PDEPLPR', 'L', 1,&
-                        iddepv, iret)
+            call tecach('OOO', 'PDEPLPR', 'L', iret, iad=iddepv, numa=numav)
             ASSERT(iret.eq.0)
-            call tecac2('OOO', numav, 'PCONTPR', 'E', 1,&
-                        iconpv, iret)
+            call tecach('OOO', 'PCONTPR', 'E', iret, iad=iconpv, numa=numav)
             ASSERT(iret.eq.0)
-            call tecac2('OOO', numav, 'PVARIPR', 'E', 1,&
-                        ivarpv, iret)
+            call tecach('OOO', 'PVARIPR', 'E', iret, iad=ivarpv, numa=numav)
             ASSERT(iret.eq.0)
         else
             ivarpv = ivarmv

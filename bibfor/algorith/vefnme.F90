@@ -86,14 +86,11 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
     character(len=19) :: numhar, tpsmoi, tpsplu
     character(len=19) :: chgeom, chcara(18), vecele
     character(len=16) :: optio2
-    logical :: lbid
-    integer :: ibid, ied, ier
-    real(kind=8) :: instm, instp, rbid
-    complex(kind=8) :: cbid
+    logical :: lbid, debug
+    integer :: ibid, ied, ier, ifmdbg, nivdbg
+    real(kind=8) :: instm, instp 
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno
-    logical :: debug
-    integer :: ifmdbg, nivdbg
 !
 ! ----------------------------------------------------------------------
 !
@@ -141,8 +138,7 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! --- CARTE POUR LES HARMONIQUES DE FOURIER
 !
     call mecact('V', numhar, 'MAILLA', mailla, 'HARMON',&
-                1, 'NH', nh, rbid, cbid,&
-                k8bla)
+                ncmp=1, nomcmp='NH', si=nh)
 !
 ! --- CARTE DES INSTANTS POUR THM
 !
@@ -150,11 +146,9 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
         instm = partps(1)
         instp = partps(2)
         call mecact('V', tpsmoi, 'MAILLA', mailla, 'INST_R',&
-                    1, 'INST', ibid, instm, cbid,&
-                    k8bla)
+                    ncmp=1, nomcmp='INST', sr=instm)
         call mecact('V', tpsplu, 'MAILLA', mailla, 'INST_R',&
-                    1, 'INST', ibid, instp, cbid,&
-                    k8bla)
+                    ncmp=1, nomcmp='INST', sr=instp)
     endif
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
@@ -267,7 +261,8 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare(base, vecele, modele, ' ', carele, 'CHAR_MECA')
+    call memare(base, vecele, modele, ' ', carele,&
+                'CHAR_MECA')
 !
     if (debug) then
         call dbgcal(optio2, ifmdbg, nbin, lpain, lchin,&
@@ -278,7 +273,8 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! --- APPEL A CALCUL
 !
     call calcul('S', optio2, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, base, 'OUI')
+                lpain, nbout, lchout, lpaout, base,&
+                'OUI')
 !
 !
 !

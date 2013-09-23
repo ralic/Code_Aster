@@ -403,11 +403,11 @@ subroutine crmeri(promes, iakpee)
 !
     do 570 imod = 1, nbord
         call rsadpa(modmes, 'L', 1, 'OMEGA2', imod,&
-                    0, ipuls, k8bid)
+                    0, sjv=ipuls, styp=k8bid)
         omega2 = zr(ipuls)
         zr(lomeg2-1+imod) = omega2
         call rsadpa(modmes, 'L', 1, 'MASS_GENE', imod,&
-                    0, ipuls, k8bid)
+                    0, sjv=ipuls, styp=k8bid)
         masg = zr(ipuls)
         zr(lmasg-1+imod) = masg
         do 560 iddl = 1, nddle

@@ -3,7 +3,6 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                   lisrel, coorig)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/afretu.h"
 #include "asterfort/assvec.h"
 #include "asterfort/calcul.h"
@@ -21,6 +20,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 #include "asterfort/raorfi.h"
 #include "asterfort/reajre.h"
 #include "asterfort/vdiff.h"
+!
     integer :: lonlis, iprno(*)
     character(len=2) :: typlag
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
@@ -48,12 +48,10 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
     integer :: nbcmp, nbmode, numno1, jcoor
     parameter (nbmode=3,nbcmp=6* (nbmode-1))
-    character(len=1) :: k1bid
     character(len=8) :: nocmp(nbcmp), lpain(6), lpaout(3), nomddl(4)
     character(len=24) :: lchin(6), lchout(3), valech
-    real(kind=8) :: rbid, coef(4), eg1(3), eg2(3), eg3(3)
+    real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3)
     real(kind=8) :: rayon, coori1(3), gp1(3)
-    complex(kind=8) :: cbid
     integer :: imod, info, ifm
     integer :: nbcoef, idec
 !
@@ -121,8 +119,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
     imod = 0
     call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD',&
-                1, 'NUM', imod, rbid, cbid,&
-                k1bid)
+                ncmp=1, nomcmp='NUM', si=imod)
     call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin,&
                 lpain, 3, lchout, lpaout, 'V',&
                 'OUI')
@@ -161,8 +158,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
             write (ifm,*) 'RELATIONS SUR LE MODE ',imod
         endif
         call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD',&
-                    1, 'NUM', imod, rbid, cbid,&
-                    k1bid)
+                    ncmp=1, nomcmp='NUM', si=imod)
         call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin,&
                     lpain, 3, lchout, lpaout, 'V',&
                     'OUI')

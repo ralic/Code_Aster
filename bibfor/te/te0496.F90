@@ -1,10 +1,10 @@
 subroutine te0496(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
-#include "jeveux.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,8 +40,8 @@ subroutine te0496(option, nomte)
 !     LES AUTRES INFO VIENNENT DE PNBSP_I
 !     SI PCOMPOR N'EST PAS FOURNI : NCMP_DYN = 0
 !     ------------------------------------------------
-    call tecach('ONN', 'PCOMPOR', 'L', 2, itab,&
-                iret)
+    call tecach('ONN', 'PCOMPOR', 'L', iret, nval=2,&
+                itab=itab)
     if (itab(1) .ne. 0) then
         ASSERT(itab(2).eq.1)
         jcompo=itab(1)
@@ -56,8 +56,7 @@ subroutine te0496(option, nomte)
 !
 !     PNBSP_I : INFOS NECESSSAIRES AU CALCUL DU NOMBRE DE SOUS-POINTS.
 !     SI LE CHAMP N'EST PAS DONNE ==> VALEUR PAR DEFAUT
-    call tecach('NNN', 'PNBSP_I', 'L', 1, jnbsp,&
-                iret)
+    call tecach('NNN', 'PNBSP_I', 'L', iret, iad=jnbsp)
     if (jnbsp .eq. 0) goto 9999
 !
 ! --- CAS DES ELEMENTS "COQUE EPAISSE" (MULTI-COUCHE) :

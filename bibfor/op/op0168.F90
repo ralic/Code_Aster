@@ -55,7 +55,7 @@ subroutine op0168()
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, impr, iord, iprec, iret
-    integer :: j, jadr, jme, jnom, jor, jordr
+    integer :: j, jadr, jme, jnom, jor, jordr, tmod(1)
     integer :: k, lmod, lvali, lvalk, lvalr, n1
     integer :: n10, n2, n3, n4, n5, n6, n7
     integer :: n8, n9, nbfilt, nbme, nbmode, nbmodt, nbmodu
@@ -142,11 +142,12 @@ subroutine op0168()
                 call utmess('F', 'ALGELINE3_9')
             endif
 !
-            call rsorac(modein, 'LONUTI', ibid, r8b, k8b,&
-                        c16b, r8b, k8b, nbmodt, 1,&
+            call rsorac(modein, 'LONUTI', 0, r8b, k8b,&
+                        c16b, r8b, k8b, tmod, 1,&
                         ibid)
+            nbmodt=tmod(1)            
             call wkvect('&&OP0168.NUME_ORDRE', 'V V I', nbmodt, jor)
-            call rsorac(modein, 'TOUT_ORDRE', ibid, r8b, k8b,&
+            call rsorac(modein, 'TOUT_ORDRE', 0, r8b, k8b,&
                         c16b, r8b, k8b, zi(jor), nbmodt,&
                         ibid)
 !
@@ -202,7 +203,7 @@ subroutine op0168()
                 do 30 j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'NUME_MODE', iord,&
-                                0, jadr, k8b)
+                                0, sjv=jadr, styp=k8b)
                     nume = zi(jadr)
                     do 32 k = 1, nbmodu
                         if (nume .eq. zi(jme+k-1)) then
@@ -228,7 +229,7 @@ subroutine op0168()
                 do 40 j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'NUME_MODE', iord,&
-                                0, jadr, k8b)
+                                0, sjv=jadr, styp=k8b)
                     nume = zi(jadr)
                     do 42 k = 1, nbme
                         if (nume .eq. zi(jme+k-1)) goto 40
@@ -254,7 +255,7 @@ subroutine op0168()
                 do 50 j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'FREQ', iord,&
-                                0, jadr, k8b)
+                                0, sjv=jadr, styp=k8b)
                     freq = zr(jadr)
                     if (freq .ge. fremin .and. freq .le. fremax) then
                         nbmode = nbmode + 1
@@ -279,7 +280,7 @@ subroutine op0168()
                     do 60 j = 1, nbmodt
                         iord = zi(jor+j-1)
                         call rsadpa(modein, 'L', 3, nompar, iord,&
-                                    0, lpar, k8b)
+                                    0, tjv=lpar, styp=k8b)
                         dx = zr(lpar(1))
                         dy = zr(lpar(2))
                         dz = zr(lpar(3))
@@ -316,14 +317,14 @@ subroutine op0168()
                         iord = zi(jor+j-1)
                         nompav = 'MASS_GENE'
                         call rsadpa(modein, 'L', 1, nompav, iord,&
-                                    0, lpar, k8b)
+                                    0, sjv=lpar(1), styp=k8b)
                         mastot = mastot + zr(lpar(1))
 61                  continue
                     do 62 j = 1, nbmodt
                         iord = zi(jor+j-1)
                         nompav = 'MASS_GENE'
                         call rsadpa(modein, 'L', 1, nompav, iord,&
-                                    0, lpar, k8b)
+                                    0, sjv=lpar(1), styp=k8b)
                         dx = zr(lpar(1))/mastot
                         if (dx .ge. seuil) then
                             nbmode = nbmode + 1
@@ -393,22 +394,23 @@ subroutine op0168()
 !
 !     --- ON ALARME SI NUME_MODE IDENTIQUE ---
 !
-    call rsorac(modeou, 'LONUTI', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbmode, 1,&
+    call rsorac(modeou, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tmod, 1,&
                 ibid)
+    nbmode=tmod(1)            
     call wkvect('&&OP0168.NUME_ORDRE', 'V V I', nbmode, jordr)
-    call rsorac(modeou, 'TOUT_ORDRE', ibid, r8b, k8b,&
+    call rsorac(modeou, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbmode,&
                 ibid)
     do 200 j = 1, nbmode
         iord = zi(jordr+j-1)
         call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                    0, jadr, k8b)
+                    0, sjv=jadr, styp=k8b)
         nume1 = zi(jadr)
         do 210 k = j+1, nbmode
             iord = zi(jordr+k-1)
             call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                        0, jadr, k8b)
+                        0, sjv=jadr, styp=k8b)
             nume2 = zi(jadr)
             if (nume1 .eq. nume2) then
                 vali(1) = ibid
@@ -432,7 +434,7 @@ subroutine op0168()
         call rsvpar(modeou, 1, 'MASS_EFFE_UN_DX', ibid, undf,&
                     k8b, iret)
         call rsadpa(modeou, 'L', 1, 'MASS_EFFE_UN_DX', 1,&
-                    0, jadr, k8b)
+                    0, sjv=jadr, styp=k8b)
 !
         if (iret .ne. 100 .and. critfi .eq. 'MASS_EFFE_UN' .and. typcon(1:9) .eq.&
             'MODE_MECA') then
@@ -447,13 +449,13 @@ subroutine op0168()
             do 300 j = 1, nbmode
                 iord = zi(jordr+j-1)
                 call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                            0, jadr, k8b)
+                            0, sjv=jadr, styp=k8b)
                 nume = zi(jadr)
                 call rsadpa(modeou, 'L', 1, 'FREQ', iord,&
-                            0, jadr, k8b)
+                            0, sjv=jadr, styp=k8b)
                 freq = zr(jadr)
                 call rsadpa(modeou, 'L', 3, nompar, iord,&
-                            0, lpar, k8b)
+                            0, tjv=lpar, styp=k8b)
                 dx = zr(lpar(1))
                 dy = zr(lpar(2))
                 dz = zr(lpar(3))
@@ -491,14 +493,14 @@ subroutine op0168()
             do 301 j = 1, nbmode
                 iord = zi(jordr+j-1)
                 call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                            0, jadr, k8b)
+                            0, sjv=jadr, styp=k8b)
                 nume = zi(jadr)
                 call rsadpa(modeou, 'L', 1, 'FREQ', iord,&
-                            0, jadr, k8b)
+                            0, sjv=jadr, styp=k8b)
                 freq = zr(jadr)
                 nompav = 'MASS_GENE'
                 call rsadpa(modeou, 'L', 1, nompav, iord,&
-                            0, lpar, k8b)
+                            0, sjv=lpar(1), styp=k8b)
                 dx = zr(lpar(1))
                 cumulx = cumulx + dx
                 vali(1) = iord

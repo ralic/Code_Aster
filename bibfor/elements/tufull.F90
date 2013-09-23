@@ -125,8 +125,8 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     endif
 !
     read (zk16(icompo-1+2),'(I16)') nbvari
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
     call jevech('PGEOMER', 'L', igeom)

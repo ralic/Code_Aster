@@ -104,8 +104,8 @@ subroutine te0511(option, nomte)
 ! --- RECUPERER EGALEMENT LA DIMENSION DU VECTEUR QUI DIFFERE SUIVANT -
 ! --- LA MODELISATION THM ---------------------------------------------
 ! =====================================================================
-            call tecach('OOO', 'PCONTPR', 'L', 3, tabthm,&
-                        iret)
+            call tecach('OOO', 'PCONTPR', 'L', iret, nval=3,&
+                        itab=tabthm)
             icontp = tabthm(1)
             dimmax = tabthm(2)
             npgu = tabthm(3)

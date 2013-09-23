@@ -56,7 +56,7 @@ subroutine te0155(option, nomte)
     character(len=8) :: nompar(4), poum
     real(kind=8) :: a, e(1), rho(1), xl, temp, xdep, xrig, w(6), w2(3)
     real(kind=8) :: pgl(3, 3), fl(6), qg(6), ql(6), valpa1(4), valpa2(4)
-    real(kind=8) :: r8min, s, s2, s3, s4, s5, xxx, r8bid, vect(6)
+    real(kind=8) :: r8min, s, s2, s3, s4, s5, xxx, r8bid=0.d0, vect(6)
     integer :: nno, nc, lx, lorien, idepla, ideplp, i, lvect, lsect
     integer :: lmater, lpesa, lforc, itemps, nbpar, iret
     integer :: ifcx, iadzi, iazk24, kpg, spt
@@ -194,8 +194,7 @@ subroutine te0155(option, nomte)
     if (option .eq. 'CHAR_MECA_FR1D1D' .or. option .eq. 'CHAR_MECA_SR1D1D') then
 !          ------------------------------
 !        POUR LE CAS DU VENT
-        call tecach('NNN', 'PVITER', 'L', 1, lforc,&
-                    iret)
+        call tecach('NNN', 'PVITER', 'L', iret, iad=lforc)
         if (lforc .ne. 0) then
             if (nomte .eq. 'MECA_2D_BARRE') then
 ! OPTION NON PROGRAMMEE
@@ -216,8 +215,7 @@ subroutine te0155(option, nomte)
         call jevech('PFF1D1D', 'L', lforc)
         normal = zk8(lforc+3) .eq. 'VENT'
         global = zk8(lforc+3) .eq. 'GLOBAL'
-        call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                    iret)
+        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             valpa1(4) = zr(itemps)
             valpa2(4) = zr(itemps)
@@ -388,8 +386,7 @@ subroutine te0155(option, nomte)
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', 1, ifcx,&
-                            iret)
+                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -411,8 +408,7 @@ subroutine te0155(option, nomte)
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', 1, ifcx,&
-                            iret)
+                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -492,8 +488,7 @@ subroutine te0155(option, nomte)
                     ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'E', e, codres, 1)
 !
-        call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                    iret)
+        call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             instan = zr(itemps)
         else
@@ -564,8 +559,7 @@ subroutine te0155(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-        call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                    iret)
+        call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             instan = zr(itemps)
         else

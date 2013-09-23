@@ -259,7 +259,7 @@ subroutine trgene(ific, nocc)
             call getvtx('GENE', 'PARA', iocc=iocc, scal=nopara, nbret=n1)
             if (n1 .ne. 0) then
                 call rsadpa(resu19, 'L', 1, nopara, numord,&
-                            1, jlue, k16b)
+                            1, sjv=jlue, styp=k16b)
                 if (k16b(1:1) .ne. typres) then
                     call utmess('F', 'CALCULEL6_95')
                 else if (typres.eq.'R') then

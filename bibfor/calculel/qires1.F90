@@ -105,11 +105,8 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     integer :: iptmd1, iptmd2, numgd1, numgd2
     integer :: icmpp(nbcmp ), icmpd(nbcmp )
     integer :: nbrin
-!
-    real(kind=8) :: r8bid
-!
     character(len=1) :: base
-    character(len=8) :: lpain(nbchix), lpaout(1), k8bid
+    character(len=8) :: lpain(nbchix), lpaout(1)
     character(len=8) :: licmpp(nbcmp ), licmpd(nbcmp )
     character(len=8) :: typcp3, typcd3
     character(len=16) :: option
@@ -118,9 +115,6 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     character(len=24) :: lchin(nbchix), lchout(1), chgeom
     character(len=24) :: chfop1, chfop2, chfop3
     character(len=24) :: chfod1, chfod2, chfod3
-!
-    complex(kind=8) :: c16bid
-!
 !
 ! ----------------------------------------------------------------------
     base = 'V'
@@ -300,8 +294,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 !
 !
     call mecact(base, '&&'//nompro//'.CH_FORCEP', 'MODELE', ligrel, 'NEUT_I',&
-                nbcmp, licmpp, icmpp, r8bid, c16bid,&
-                k8bid)
+                ncmp=nbcmp, lnomcmp=licmpp, vi=icmpp)
 !
     icmpp(2) = -1
     icmpp(3) = -1
@@ -312,8 +305,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     icmpp(8) = numgp2
 !
     call mecact(base, '&&'//nompro//'.CH_PRESSP', 'MODELE', ligrel, 'NEUT_I',&
-                nbcmp, licmpp, icmpp, r8bid, c16bid,&
-                k8bid)
+                ncmp=nbcmp, lnomcmp=licmpp, vi=icmpp)
 !
 ! ------- FIN CREATION CARTES PB. PRIMAL--------------------------------
 !
@@ -388,8 +380,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
 !
 !
     call mecact(base, '&&'//nompro//'.CH_FORCED', 'MODELE', ligrel, 'NEUT_I',&
-                nbcmp, licmpd, icmpd, r8bid, c16bid,&
-                k8bid)
+                ncmp=nbcmp, lnomcmp=licmpd, vi=icmpd)
 !
 !
     icmpd(2) = -1
@@ -401,8 +392,7 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     icmpd(8) = numgd2
 !
     call mecact(base, '&&'//nompro//'.CH_PRESSD', 'MODELE', ligrel, 'NEUT_I',&
-                nbcmp, licmpd, icmpd, r8bid, c16bid,&
-                k8bid)
+                ncmp=nbcmp, lnomcmp=licmpd, vi=icmpd)
 !
 ! ------- FIN CREATION CARTES PB. DUAL----------------------------------
 !

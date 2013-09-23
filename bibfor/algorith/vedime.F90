@@ -18,7 +18,7 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -55,14 +55,13 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
     character(len=8) :: lpain(3), lpaout
     character(len=19) :: lchin(3), lchout
     character(len=8) :: nomcha
-    character(len=8) :: k8bid, newnom
+    character(len=8) :: newnom
     character(len=16) :: option
     character(len=19) :: vecele, ligrmo
     character(len=24) :: ligrch, chgeom, chtime
     integer :: ibid, iret, nchar, ilve, jinf, jchar, icha
     integer :: numdi
     logical :: bidon
-    complex(kind=8) :: cbid
 !
 ! ----------------------------------------------------------------------
 !
@@ -113,8 +112,7 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
 !
     chtime = '&&VEDIME.CH_INST_R'
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                1, 'INST', ibid, instap, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=instap)
 !
 ! --- CHAMPS IN
 !

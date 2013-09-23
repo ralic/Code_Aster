@@ -50,10 +50,8 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     integer :: iret, ilime, inoli, ibid, ngrel, ipg, n1, jlgrf
     integer :: ncham, icham, nn, nbelto, nbelgr, ntail, ialiel
     integer :: igr, ima, ii, iel, ive, itab, imo
-    real(kind=8) :: rbid
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
-    complex(kind=8) :: cbid
     character(len=7) :: incr, ielem, imode
     character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, partit, k8b
     character(len=16) :: option
@@ -135,8 +133,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         call codent(1, 'D0', lchout(1) (12:14))
         chharm = '&&ACCEP1.NUME_HARM'
         call mecact('V', chharm, 'MODELE', modele, 'NUMMOD',&
-                    1, 'NUM', i, rbid, cbid,&
-                    ' ')
+                    ncmp=1, nomcmp='NUM', si=i)
         lchin(3) = chharm
         call calcul('S', option, ligrmo, 3, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&

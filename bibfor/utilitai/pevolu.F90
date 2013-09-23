@@ -65,7 +65,7 @@ subroutine pevolu(resu, modele, nbocc)
     integer :: nn
     integer :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
     integer :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
-    integer :: jlicmp, jlicm2, jlicm1, nucmp, ivali, bfix, ivol(2)
+    integer :: jlicmp, jlicm2, jlicm1, nucmp, ivali, bfix, ivol(2), tord(1)
     parameter(nbpmax=13)
     character(len=4) :: tych, ki
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
@@ -242,14 +242,15 @@ subroutine pevolu(resu, modele, nbocc)
 !           - ORDRE -
                     numo=zi(jno+inum-1)
                     call rsadpa(resuco, 'L', 1, 'INST', numo,&
-                                0, jin, k8b)
+                                0, sjv=jin, styp=k8b)
                     inst=zr(jin)
                 else
 !           - INST -
                     inst=zr(jin+inum-1)
                     call rsorac(resuco, 'INST', 0, zr(jin+inum-1), k8b,&
-                                c16b, prec, crit, numo, nbordr,&
+                                c16b, prec, crit, tord, nbordr,&
                                 iret)
+                    numo=tord(1)            
                 endif
                 call getvtx('VOLUMOGRAMME', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=iret)
                 if (iret .eq. 0) then

@@ -18,14 +18,14 @@
 interface
     subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
                       coor, nx, ny, jac)
-        integer :: ndim
-        integer :: nno
-        integer :: ipg
-        integer :: ipoids
-        integer :: idfde
-        real(kind=8) :: coor(1)
-        real(kind=8) :: nx
-        real(kind=8) :: ny
-        real(kind=8) :: jac
+        integer, intent(in) :: ndim
+        integer, intent(in) :: nno
+        integer, intent(in) :: ipg
+        integer, intent(in) :: ipoids
+        integer, intent(in) :: idfde
+        real(kind=8), intent(in) :: coor(1)
+        real(kind=8), intent(out) :: nx
+        real(kind=8), intent(out) :: ny
+        real(kind=8), intent(out) :: jac
     end subroutine vff2dn
 end interface

@@ -336,7 +336,7 @@ subroutine retrec(nomres, resgen, nomsst)
                 call rsnoch(nomres, chmp(ich), iarchi)
 32          continue
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
 30      continue
 !
@@ -399,7 +399,7 @@ subroutine retrec(nomres, resgen, nomsst)
                 call rsnoch(nomres, chmp(ich), iarchi)
 42          continue
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
 40      continue
 !

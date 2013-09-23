@@ -1,7 +1,6 @@
 subroutine te0534(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/confac.h"
 #include "asterfort/elelin.h"
@@ -22,6 +21,7 @@ subroutine te0534(option, nomte)
 #include "asterfort/xvcont.h"
 #include "asterfort/xvfrot.h"
 #include "asterfort/xxlagm.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -127,8 +127,8 @@ subroutine te0534(option, nomte)
     call jevech('PDEPL_P', 'L', idepl)
     call jevech('PINDCOI', 'L', jindco)
     call jevech('PDONCO', 'L', jdonco)
-    call tecach('OOO', 'PDONCO', 'L', 2, jtab,&
-                ibid)
+    call tecach('OOO', 'PDONCO', 'L', ibid, nval=2,&
+                itab=jtab)
     ncompd = jtab(2)
     call jevech('PSEUIL', 'L', jseuil)
     call jevech('PLST', 'L', jlst)
@@ -142,25 +142,25 @@ subroutine te0534(option, nomte)
         call jevech('PFISNO', 'L', jfisno)
         call jevech('PHEAVNO', 'L', jheano)
         call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', 2, jtab,&
-                    iret)
+        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+                    itab=jtab)
         ncomph = jtab(2)
     endif
 !     DIMENSSION DES GRANDEURS DANS LA CARTE
-    call tecach('OOO', 'PDONCO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PDONCO', 'L', iret, nval=2,&
+                itab=jtab)
     ncompd = jtab(2)
-    call tecach('OOO', 'PPINTER', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PPINTER', 'L', iret, nval=2,&
+                itab=jtab)
     ncompp = jtab(2)
-    call tecach('OOO', 'PAINTER', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PAINTER', 'L', iret, nval=2,&
+                itab=jtab)
     ncompa = jtab(2)
-    call tecach('OOO', 'PBASECO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PBASECO', 'L', iret, nval=2,&
+                itab=jtab)
     ncompb = jtab(2)
-    call tecach('OOO', 'PCFACE', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PCFACE', 'L', iret, nval=2,&
+                itab=jtab)
     ncompc = jtab(2)
 !
 !     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
@@ -190,8 +190,8 @@ subroutine te0534(option, nomte)
         if (algocr .eq. 3) then
             call jevech('PMATERC', 'L', jmate)
             call jevech('PCOHES', 'L', jcohes)
-            call tecach('OOO', 'PCOHES', 'L', 2, jtab,&
-                        iret)
+            call tecach('OOO', 'PCOHES', 'L', iret, nval=2,&
+                        itab=jtab)
             ncompv = jtab(2)
         endif
 !

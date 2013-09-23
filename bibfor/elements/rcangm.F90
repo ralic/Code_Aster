@@ -39,8 +39,7 @@ subroutine rcangm(ndim, coor, angmas)
     real(kind=8) :: alpha, beta
 !     ------------------------------------------------------------------
 !
-    call tecach('NNO', 'PCAMASS', 'L', 1, icamas,&
-                iret)
+    call tecach('NNO', 'PCAMASS', 'L', iret, iad=icamas)
     call r8inir(7, 0.d0, angmas, 1)
 !
     if (iret .eq. 0) then

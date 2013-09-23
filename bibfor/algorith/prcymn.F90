@@ -33,7 +33,6 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/amppr.h"
 #include "asterfort/bmradi.h"
 #include "asterfort/ctetax.h"
@@ -61,6 +60,7 @@ subroutine prcymn(nomres, soumat, repmat)
 #include "asterfort/zerlag.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+!
 !
 !
     character(len=6) :: pgc
@@ -91,13 +91,15 @@ subroutine prcymn(nomres, soumat, repmat)
     intf  =zk24(llref1+1)
     basmod=zk24(llref1+2)
     call jelibe(nomres//'.CYCL_REFE')
-
-
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid, numddl, iret)
+!
+!
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid,&
+                numddl, iret)
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
-
-    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid, raid, iret)
+!
+    call dismoi('F', 'REF_RIGI_PREM', basmod, 'RESU_DYNA', ibid,&
+                raid, iret)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
@@ -193,10 +195,10 @@ subroutine prcymn(nomres, soumat, repmat)
 !
     do 10 i = 1, nbmod
         call rsadpa(basmod, 'L', 1, 'RIGI_GENE', i,&
-                    0, llkge, k8bid)
+                    0, sjv=llkge, styp=k8bid)
         zr(ldk0ii+i*(i-1)/2) = zr(llkge)
         call rsadpa(basmod, 'L', 1, 'MASS_GENE', i,&
-                    0, llmge, k8bid)
+                    0, sjv=llmge, styp=k8bid)
         zr(ldm0ii+i*(i-1)/2) = zr(llmge)
 10  continue
 !

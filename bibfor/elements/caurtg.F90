@@ -48,9 +48,9 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/vectan.h"
+    integer :: ncmp 
     character(len=16) :: nomte
     real(kind=8) :: sigmau(ncmp, 1), sigrtg(ncmp, 1)
-    integer :: ncmp
 ! -----  VARIABLES LOCALES
     real(kind=8) :: vecthe(9, 3), vecta(9, 2, 3)
     real(kind=8) :: vectpt(9, 2, 3), vectn(9, 3)
@@ -79,8 +79,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 !     ---------------------------------------------------------
     if (lgreen) then
-        call tecach('OON', 'PDEPLAR', 'L', 1, idepl,&
-                    iret)
+        call tecach('OON', 'PDEPLAR', 'L', iret, iad=idepl)
     else
         goto 9999
     endif

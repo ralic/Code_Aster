@@ -65,7 +65,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     integer :: ng, kk, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, nume, ier
     integer :: numord, numomu, nbordr
     parameter (mxvale=5,nbparr=6,nbpard=4)
-    real(kind=8) :: r8b, prec, inst, rsr0, volu, numema, triax, lnrsr0
+    real(kind=8) :: prec, inst, rsr0, volu, numema, triax, lnrsr0
     real(kind=8) :: vr(5), rtval(2), valer(3)
     character(len=8) :: k8b, noma, resul, crit, nomail, nommai, lpain(7), lpaout(2)
     character(len=8) :: typarr(nbparr), typard(nbpard), valek(2), tabcmp(5)
@@ -154,7 +154,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
             do 20 iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
-                            0, iainst, k8b)
+                            0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
 20          continue
         endif
@@ -167,8 +167,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     lnrsr0 = 0.d0
 !      VARIPG = '&&PERITR.VARIPG'
     call mecact('V', '&&PERITR.SDRMR', 'MAILLA', noma, 'NEUT_R',&
-                1, 'X1', ibid, 0.d0, c16b,&
-                k8b)
+                ncmp=1, nomcmp='X1', sr=0.d0)
 !
     call wkvect('&&PERITR.TRAV1', 'V V R', mxvale, lvale)
     do 90 iord = 1, nbordr
@@ -203,8 +202,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 !
         ssoup = optcal(1)//optcal(2)(1:8)
         call mecact('V', '&&PERITR.CH.SOUSOP', 'MAILLA', noma, 'NEUT_K24',&
-                    1, 'Z1', ibid, r8b, c16b,&
-                    ssoup)
+                    ncmp=1, nomcmp='Z1', sk=ssoup)
 !
         optio2 = 'RICE_TRACEY'
         chelem = '&&PERITR.RITR'

@@ -114,7 +114,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     complex(kind=8) :: cbid, livc(nbmxpa)
     logical :: fonc, lxfem
     character(len=2) :: codret
-    character(len=8) :: k8bid, resu, fiss
+    character(len=8) :: resu, fiss
     character(len=8) :: lpain(30), lpaout(1)
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
@@ -330,8 +330,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         if ((opti.eq.'CALC_G_F') .or. (opti.eq.'G_LAGR_F')) then
             chtime = '&&MECAGL.CH_INST_R'
             call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
-                        1, 'INST', ibid, time, cbid,&
-                        k8bid)
+                        ncmp=1, nomcmp='INST', sr=time)
             lpain(nchin+1) = 'PTEMPSR'
             lchin(nchin+1) = chtime
             nchin = nchin + 1

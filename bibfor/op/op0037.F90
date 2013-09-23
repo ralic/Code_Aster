@@ -72,7 +72,7 @@ subroutine op0037()
     integer :: mosign, nbmod, nbmode, nbpafi, nbpafk, nbpafr
     integer :: nbpaft, nbpami, nbpamk, nbpamr, nbpamt, nbpara, nbpari
     integer :: nbpark, nbparr, nbtrou, ncmp, ncmpac, neq, npari
-    integer :: npark, nparr, numddl, numnoe
+    integer :: npark, nparr, numddl, numnoe, tmod(1)
     real(kind=8) :: xmastr
 !-----------------------------------------------------------------------
     parameter   ( nbpami=1 , nbpamr=15 , nbpamk=1, nbpamt=17 )
@@ -200,8 +200,9 @@ subroutine op0037()
 !     --- PROTECTION DES OBJETS PERES (AYANT GENERE DES OBJETS .PAPA)
 !
     call rsorac(modein, 'LONUTI', ibid, r8b, k8b,&
-                c16b, 0.0d0, k8b, nbmod, 1,&
+                c16b, 0.0d0, k8b, tmod, 1,&
                 nbtrou)
+    nbmod=tmod(1)            
     call wkvect('&&OP0037.NUMERO.ORDRE', 'V V I', nbmod, lnumor)
     call rsorac(modein, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, 0.0d0, k8b, zi(lnumor), nbmod,&
@@ -509,7 +510,7 @@ subroutine op0037()
             call utmess('I', 'ALGELINE7_9')
             do 78 im = 1, nbmod
                 call rsadpa(modein, 'L', 1, 'NORME', zi(lnumor+im-1),&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 valk(1) = zk24(ladpa)
                 valk(2) = method
                 vali = zi(lnumor+im-1)
@@ -705,7 +706,7 @@ subroutine op0037()
 !
     do 60 im = 1, nbmode
         call rsadpa(modeou, 'E', 1, 'NORME', zi(lnumor+im-1),&
-                    0, lnorm, k8b)
+                    0, sjv=lnorm, styp=k8b)
         zk24(lnorm) = method
 60  continue
 !

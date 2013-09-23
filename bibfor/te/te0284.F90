@@ -17,7 +17,6 @@ subroutine te0284(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/bsigmc.h"
 #include "asterfort/elref4.h"
 #include "asterfort/epsimc.h"
@@ -26,6 +25,7 @@ subroutine te0284(option, nomte)
 #include "asterfort/ortrep.h"
 #include "asterfort/sigimc.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES EN 2D
@@ -77,8 +77,7 @@ subroutine te0284(option, nomte)
 !
 ! ---- RECUPERATION DE L'HARMONIQUE DE FOURIER
 !      ---------------------------------------
-    call tecach('NNN', 'PHARMON', 'L', 1, iharmo,&
-                iret)
+    call tecach('NNN', 'PHARMON', 'L', iret, iad=iharmo)
     if (iharmo .eq. 0) then
         nharm = zero
     else
@@ -125,8 +124,7 @@ subroutine te0284(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ---- CONSTRUCTION DU VECTEUR DES DEFORMATIONS INITIALES DEFINIES AUX

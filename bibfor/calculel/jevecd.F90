@@ -37,8 +37,8 @@ subroutine jevecd(nompar, jad, valdef)
     character(len=16) :: option, nomte, nomtm, pheno, modeli
     common /cakk01/option,nomte,nomtm,pheno,modeli
 !
-    call tecach('OON', nompar, 'L', 8, itab,&
-                iret)
+    call tecach('OON', nompar, 'L', iret, nval=8,&
+                itab=itab)
     ASSERT((iret.eq.0).or.(iret.eq.3))
 !
     jad=itab(1)

@@ -133,14 +133,13 @@ subroutine te0575(option, nomte)
 !
 ! ----    RECUPERATION DE L'INSTANT DE CALCUL
 !         -----------------------------------
-        call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                    iret)
+        call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-        call tecach('ONN', 'PVARIGR', 'L', 7, jtab,&
-                    iret)
+        call tecach('ONN', 'PVARIGR', 'L', iret, nval=7,&
+                    itab=jtab)
         if (iret .eq. 0) then
             idvari=jtab(1)
             nbvari = max(jtab(6),1)*jtab(7)
@@ -153,8 +152,8 @@ subroutine te0575(option, nomte)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNN', 'PCOMPOR', 'L', 7, jtab,&
-                iret)
+    call tecach('NNN', 'PCOMPOR', 'L', iret, nval=7,&
+                itab=jtab)
     compor(1)='ELAS'
     compor(2)=' '
     compor(3)='PETIT'
@@ -188,8 +187,7 @@ subroutine te0575(option, nomte)
 ! ---   RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A
 ! ---   L'INSTANT PRECEDENT :
 !       -------------------
-        call tecach('NNN', 'PDEPLM', 'L', 1, ideplm,&
-                    iret)
+        call tecach('NNN', 'PDEPLM', 'L', iret, iad=ideplm)
         if (ideplm .ne. 0) then
             call jevech('PDEPLM', 'L', idepmm)
         endif
@@ -202,16 +200,14 @@ subroutine te0575(option, nomte)
 ! ---   RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A
 ! ---   L'INSTANT PRECEDENT :
 !       -------------------
-        call tecach('NNN', 'PCONTMR', 'L', 1, idsigm,&
-                    iret)
+        call tecach('NNN', 'PCONTMR', 'L', iret, iad=idsigm)
         if (idsigm .ne. 0) then
             call jevech('PCONTMR', 'L', idsigm)
         endif
 !
 ! ---   RECUPERATION EVENTUELLE DU NUMERO D'HARMONIQUE :
 !       ----------------------------------------------
-        call tecach('NNN', 'PHARMON', 'L', 1, iharmo,&
-                    iret)
+        call tecach('NNN', 'PHARMON', 'L', iret, iad=iharmo)
         if (iharmo .ne. 0) then
             nh = zi(iharmo)
             nharm = dble(nh)

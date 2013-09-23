@@ -45,10 +45,9 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
     integer :: nbcmp, nbmode, irayo, ibid
     parameter (nbmode=3,nbcmp=6* (nbmode-1))
-    character(len=1) :: k1bid
     character(len=8) :: nocmp(nbcmp), lpain(5), lpaout(6), nomddl(4)
     character(len=24) :: lchin(5), lchout(6), valech
-    real(kind=8) :: rbid, coef(4), eg1(3), eg2(3), eg3(3), sectio
+    real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3), sectio
     complex(kind=8) :: cbid
     integer :: imod, info, ifm
     integer :: nbcoef, idec
@@ -130,8 +129,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
     imod = 0
     call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD',&
-                1, 'NUM', imod, rbid, cbid,&
-                k1bid)
+                ncmp=1, nomcmp='NUM', si=imod)
     call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin,&
                 lpain, 6, lchout, lpaout, 'V',&
                 'OUI')
@@ -170,8 +168,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
             write (ifm,*) 'RELATIONS SUR LE MODE ',imod
         endif
         call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD',&
-                    1, 'NUM', imod, rbid, cbid,&
-                    k1bid)
+                    ncmp=1, nomcmp='NUM', si=imod)
         call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin,&
                     lpain, 6, lchout, lpaout, 'V',&
                     'OUI')

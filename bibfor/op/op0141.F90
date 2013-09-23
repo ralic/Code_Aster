@@ -58,7 +58,7 @@ subroutine op0141()
     integer :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
     integer :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
     integer :: idvec1, iddeeq, idvec2, ifm, niv, llneq1, neq1, llneq2, iret
-    integer :: iddl, ier, indv
+    integer :: iddl, ier, indv, tmod(1)
     real(kind=8) :: rbid, pij, pii, pjj
     complex(kind=8) :: cbid, dcmplx, ztemp, dconjg
     character(len=1) :: typsca
@@ -133,13 +133,15 @@ subroutine op0141()
 !
 ! RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
     call gettco(base1, typba1)
-    call rsorac(base1, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, 'ABSOLU', nbmod1, 1,&
+    call rsorac(base1, 'LONUTI', 0, rbid, k8b,&
+                cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
+    nbmod1=tmod(1)            
     call gettco(base2, typba2)
-    call rsorac(base2, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, 'ABSOLU', nbmod2, 1,&
+    call rsorac(base2, 'LONUTI', 0, rbid, k8b,&
+                cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
+    nbmod2=tmod(1)            
 !
 ! RECUPERATION DE LA NUMEROTATION DES BASES
 !

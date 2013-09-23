@@ -157,7 +157,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                     endif
                 endif
                 call rsadpa(resu, 'L', 1, nomacc, lordr(iordr),&
-                            0, lacce, k8b)
+                            0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
                 if (typres(1:10) .eq. 'DYNA_HARMO') then
                     zr(lvar+iordr-1) = zr(lacce)
@@ -215,7 +215,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                         ie)
             if (ie .eq. 0) then
                 call rsadpa(resu, 'L', 1, nomacc, lordr(iordr),&
-                            0, lacce, k8b)
+                            0, sjv=lacce, styp=k8b)
                 call utch19(cham19, noma, maille, noeuz, npoinz,&
                             nuspz, ivari, cmp, type, valr,&
                             valc, vali, iret)

@@ -98,7 +98,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 ! ----ON VERIFIE SI DERRIERE UN CONCEPT MODE_MECA SE TROUVE UN MODE_DYN
     if (typesd(1:9) .eq. 'MODE_MECA') then
         call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1,&
-                    0, iad, k8bid)
+                    0, sjv=iad, styp=k8bid)
         typmo=zk16(iad)
     else
         typmo=' '
@@ -212,7 +212,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         nh=0
         if (typesd(1:8) .eq. 'FOURIER_') then
             call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr,&
-                        0, jnmo, k8bid)
+                        0, sjv=jnmo, styp=k8bid)
             nh=zi(jnmo)
         endif
 ! ICI
@@ -280,7 +280,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !
         if (exitim) then
             call rsadpa(resuin, 'L', 1, 'INST', iordr,&
-                        0, iad, ctyp)
+                        0, sjv=iad, styp=ctyp)
             time=zr(iad)
         endif
 !
@@ -361,7 +361,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                             'R', cnfpip)
 ! - RECUPERATION DU PARAMETRE DE CHARGE ETAN DANS LA SD EVOL_NOLI
                 call rsadpa(resuin, 'L', 1, 'ETA_PILOTAGE', iordr,&
-                            0, iad, ctyp)
+                            0, sjv=iad, styp=ctyp)
                 etan=zr(iad)
             endif
 !
@@ -388,7 +388,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !       --- TRAITEMENT DES MODE_MECA ---
         if (typesd .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_DYN') then
             call rsadpa(resuin, 'L', 1, 'OMEGA2', iordr,&
-                        0, iad, ctyp)
+                        0, sjv=iad, styp=ctyp)
             omega2=zr(iad)
             call jeveuo(chdepl(1:19)//'.VALE', 'L', ldepl)
             call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
@@ -407,22 +407,22 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             elseif (typesd.eq.'MODE_MECA' .and. typmo(1:8).eq.'MODE_STA')&
         then
             call rsadpa(resuin, 'L', 1, 'TYPE_DEFO', iordr,&
-                        0, iad, ctyp)
+                        0, sjv=iad, styp=ctyp)
             if (zk16(iad)(1:9) .eq. 'FORC_IMPO') then
                 call rsadpa(resuin, 'L', 1, 'NUME_DDL', iordr,&
-                            0, iad, ctyp)
+                            0, sjv=iad, styp=ctyp)
                 inume=zi(iad)
                 zr(jnoch+inume-1)=zr(jnoch+inume-1)-1.d0
             else if (zk16(iad)(1:9).eq.'ACCE_IMPO') then
                 call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
                 call rsadpa(resuin, 'L', 1, 'COEF_X', iordr,&
-                            0, iad, ctyp)
+                            0, sjv=iad, styp=ctyp)
                 coef(1)=zr(iad)
                 call rsadpa(resuin, 'L', 1, 'COEF_Y', iordr,&
-                            0, iad, ctyp)
+                            0, sjv=iad, styp=ctyp)
                 coef(2)=zr(iad)
                 call rsadpa(resuin, 'L', 1, 'COEF_Z', iordr,&
-                            0, iad, ctyp)
+                            0, sjv=iad, styp=ctyp)
                 coef(3)=zr(iad)
                 call wkvect('&&'//nompro//'.POSI_DDL', 'V V I', 3*lonc2, jddl)
                 call pteddl('NUME_DDL', nume, 3, nomcmp, lonc2,&

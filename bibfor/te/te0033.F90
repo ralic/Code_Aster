@@ -67,7 +67,7 @@ subroutine te0033(option, nomte)
     integer :: icodre(1), kpg, spt
 !
     real(kind=8) :: zero, epi(1), epais, eptot, alpha, beta
-    real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid, valr(2)
+    real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid=0.d0, valr(2)
     real(kind=8) :: depl(24)
     real(kind=8) :: effgt(32), effpg(32)
     real(kind=8) :: t2iu(4), t2ui(4), c, s
@@ -116,8 +116,7 @@ subroutine te0033(option, nomte)
     jnbspi = 0
     if (option .eq. 'SIEF_ELGA' .or. option .eq. 'EPSI_ELGA') then
         call jevech('PMATERC', 'L', jmate)
-        call tecach('NNN', 'PNBSP_I', 'L', 1, jnbspi,&
-                    iret)
+        call tecach('NNN', 'PNBSP_I', 'L', iret, iad=jnbspi)
         if (iret .eq. 0) then
             nbcou = zi(jnbspi)
             icou = 0

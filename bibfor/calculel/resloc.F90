@@ -116,14 +116,13 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     integer :: nbrin
     real(kind=8) :: rcmp(2)
     character(len=1) :: base
-    character(len=8) :: licmp(nbcmp), lpain(nbchix), lpaout(1), kcmp
+    character(len=8) :: licmp(nbcmp), lpain(nbchix), lpaout(1)
     character(len=8) :: typc3
     character(len=16) :: option
     character(len=19) :: carte1, carte2, carte3, nomgd1, nomgd2, nomgd3
     character(len=19) :: pintto, cnseto, loncha, pmilto
     character(len=24) :: chgeom, lchin(nbchix), lchout(1), chfor1, chfor2
     character(len=24) :: chfor3
-    complex(kind=8) :: ccmp
 !
     integer :: ntychx
     parameter ( ntychx = 9 )
@@ -380,8 +379,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     icmp(12) = iconx2
 !
     call mecact(base, '&&'//nompro//'.CH_FORCE', 'MODELE', ligrel, 'NEUT_I',&
-                nbcmp, licmp, icmp, rcmp, ccmp,&
-                kcmp)
+                ncmp=nbcmp, lnomcmp=licmp, vi=icmp)
 !
     icmp(2) = jceldm
     icmp(3) = jcelvm
@@ -399,8 +397,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
     icmp(12) = numgd3
 !
     call mecact(base, '&&'//nompro//'.CH_PRESS', 'MODELE', ligrel, 'NEUT_I',&
-                nbcmp, licmp, icmp, rcmp, ccmp,&
-                kcmp)
+                ncmp=nbcmp, lnomcmp=licmp, vi=icmp)
 !
 !====
 ! 4. CHARGEMENTS VOLUMIQUES : PESANTEUR, ROTATION OU FORCES DE VOLUME
@@ -472,8 +469,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
         rcmp(2) = tbgrca(2)
 !
         call mecact(base, '&&'//nompro//'.GRDCA', 'MODELE', ligrel, 'NEUT_R',&
-                    2, licmp, icmp, rcmp, ccmp,&
-                    kcmp)
+                    ncmp=2, lnomcmp=licmp, vr=rcmp)
     endif
 !
     lpain(1) = 'PGEOMER'

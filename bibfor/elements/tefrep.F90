@@ -38,8 +38,8 @@ subroutine tefrep(option, nomte, param, iforc)
     character(len=8) :: nommai
 !     ------------------------------------------------------------------
 !
-    call tecach('OON', param, 'L', 8, itab,&
-                iret)
+    call tecach('OON', param, 'L', iret, nval=8,&
+                itab=itab)
     ASSERT(iret.eq.0.or.iret.eq.3)
 !
     if (iret .eq. 0) then

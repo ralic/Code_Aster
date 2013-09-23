@@ -54,21 +54,15 @@ subroutine qintzz(modele, ligrel, matez, sigmap, sigmad,&
 !
 ! ......................................................................
 !
-    integer :: ibid
-!
-    character(len=8) :: lpain(7), lpaout(1), k8bid
+    character(len=8) :: lpain(7), lpaout(1)
     character(len=16) :: option
     character(len=24) :: lchin(7), lchout(1), chgeom, mate
-!
-!
-    complex(kind=8) :: cbid
 !
 ! DEB-------------------------------------------------------------------
 !
     chtemp = '&&TEMP'
     call mecact('V', chtemp, 'LIGREL', ligrel, 'TEMP_R',&
-                1, 'TEMP', ibid, 0.0d0, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='TEMP', sr=0.0d0)
 !
     mate = matez
     call megeom(modele, chgeom)

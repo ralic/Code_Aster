@@ -63,7 +63,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     parameter (nompro='LRCOMM')
 !
     integer :: iordr, lordr, nexci, jpara
-    integer :: i, iret, ibid, nbtrou
+    integer :: i, iret, ibid, nbtrou, tord(1)
 !
     real(kind=8) :: epsi, rbid
 !
@@ -86,8 +86,9 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     lischa = '&&'//nompro//'.LISCHA    '
 !
     call rsorac(resu, 'LONUTI', ibid, rbid, k8bid,&
-                cbid, epsi, crit, nbordr, 1,&
+                cbid, epsi, crit, tord, 1,&
                 nbtrou)
+    nbordr=tord(1)            
     if (nbordr .le. 0) then
         call utmess('F', 'UTILITAI2_97')
     endif
@@ -100,7 +101,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         do 10 i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'CHAMPMAT', iordr,&
-                        0, jpara, k8bid)
+                        0, sjv=jpara, styp=k8bid)
             zk8(jpara)=chmat
 10      continue
     endif
@@ -108,7 +109,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         do 20 i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'CARAELEM', iordr,&
-                        0, jpara, k8bid)
+                        0, sjv=jpara, styp=k8bid)
             zk8(jpara)=carael
 20      continue
     endif
@@ -130,7 +131,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         do 40 i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'MODELE', iordr,&
-                        0, jpara, k8bid)
+                        0, sjv=jpara, styp=k8bid)
             zk8(jpara)=modele
 40      continue
     endif
@@ -155,7 +156,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         do 50 i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'EXCIT', iordr,&
-                        0, jpara, k8bid)
+                        0, sjv=jpara, styp=k8bid)
             zk24(jpara)=lisch2
 50      continue
         call copisd(' ', 'G', lischa, lisch2)

@@ -152,16 +152,16 @@ subroutine te0295(option, nomte)
     endif
 !
     lpesa = .false.
-    call tecach('ONN', 'PPESANR', 'L', 7, jtab,&
-                iret)
+    call tecach('ONN', 'PPESANR', 'L', iret, nval=7,&
+                itab=jtab)
     ipesa=jtab(1)
     if (iret .eq. 0) then
         lpesa = .true.
     endif
 !
     lrota = .false.
-    call tecach('ONN', 'PROTATR', 'L', 7, jtab,&
-                iret)
+    call tecach('ONN', 'PROTATR', 'L', iret, nval=7,&
+                itab=jtab)
     irota=jtab(1)
     if (iret .eq. 0) then
         lrota = .true.
@@ -181,8 +181,8 @@ subroutine te0295(option, nomte)
 ! --- RECUPERATION DE LA PULSATION
 !
     lmoda = .false.
-    call tecach('ONN', 'PPULPRO', 'L', 7, jtab,&
-                iret)
+    call tecach('ONN', 'PPULPRO', 'L', iret, nval=7,&
+                itab=jtab)
     ipuls=jtab(1)
     if (iret .eq. 0) then
         puls = zr(ipuls)

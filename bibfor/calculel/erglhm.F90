@@ -76,7 +76,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
     if (.not.perman) then
 !
         call rsadpa(resuc1, 'L', 6, lpartr, iord-1,&
-                    0, ljeveu, kbid)
+                    0, tjv=ljeveu, styp=kbid)
 !
         do 40 , iaux = 1 , 6
         if (iord .eq. 1) then
@@ -144,7 +144,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
     if (perman) then
 !
         call rsadpa(resuc1, 'E', 3, lparst, iord,&
-                    0, ljeveu, kbid)
+                    0, tjv=ljeveu, styp=kbid)
 !
         do 50 , iaux = 1 , 3
         zr(ljeveu(iaux)) = taberr(iaux)
@@ -153,7 +153,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
     else
 !
         call rsadpa(resuc1, 'E', 6, lpartr, iord,&
-                    0, ljeveu, kbid)
+                    0, tjv=ljeveu, styp=kbid)
 !
         do 60 , iaux = 1 , 6
         zr(ljeveu(iaux)) = taberr(iaux)

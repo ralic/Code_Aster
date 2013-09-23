@@ -108,7 +108,6 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
 !
     character(len=2) :: codret
-    character(len=8) :: k8bid
     character(len=8) :: lpain(25), lpaout(1)
     character(len=16) :: opti, livk(nbmxpa), valk
     character(len=24) :: ligrmo, chgeom, chgthi
@@ -273,15 +272,13 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
         nchin = 20
         if (opti .eq. 'G_BILI_F') then
             call mecact('V', chtimu, 'MODELE', ligrmo, 'INST_R  ',&
-                        1, 'INST   ', ibid, timeu, cbid,&
-                        k8bid)
+                        ncmp=1, nomcmp='INST   ', sr=timeu)
             nchin = nchin + 1
             lpain(nchin) = 'UTEMPSR'
             lchin(nchin) = chtimu
 !
             call mecact('V', chtimv, 'MODELE', ligrmo, 'INST_R  ',&
-                        1, 'INST   ', ibid, timev, cbid,&
-                        k8bid)
+                        ncmp=1, nomcmp='INST   ', sr=timev)
             nchin = nchin + 1
             lpain(nchin) = 'VTEMPSR'
             lchin(nchin) = chtimv

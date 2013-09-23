@@ -43,7 +43,7 @@ subroutine op0199()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, nbmo, nbmode, ndble, indice, ifm, niv
+    integer :: ibid, nbmo, nbmode(1), ndble, indice, ifm, niv
     integer :: tabad(5), iadesc, iarefe, i, iadirg, imade
     integer :: iphi1, iphi2, iprsto, iret, itxsto
     integer :: itysto, itzsto, ivalk, ivale
@@ -104,10 +104,10 @@ subroutine op0199()
     if (n6 .ne. 0) nugene = numgen
 !
     if (n5 .ne. 0) then
-        call rsorac(modmec, 'LONUTI', ibid, rbid, k8bid,&
+        call rsorac(modmec, 'LONUTI', 0, rbid, k8bid,&
                     cbid, rbid, 'ABSOLU', nbmode, 1,&
                     ibid)
-        nbmo = nbmode
+        nbmo = nbmode(1)
         call rsexch(' ', modmec, 'DEPL', 1, nocham,&
                     iret)
     endif
@@ -189,7 +189,7 @@ subroutine op0199()
             itzsto = tabad(3)
             iprsto = tabad(4)
             iadirg = tabad(5)
-            nbmo=nbmode
+            nbmo=nbmode(1)
         endif
     else
 !

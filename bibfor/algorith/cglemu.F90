@@ -51,7 +51,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
 ! ======================================================================
 !
     integer :: ier, ncas, jncas, jnord, i, ibid, iind, ivec, nbord
-    integer :: nutrou, nbtrou
+    integer :: nutrou(1), nbtrou
     real(kind=8) :: rbid
     character(len=8) :: k8b
     character(len=16) :: typsd, nomcas, valk(2)
@@ -107,7 +107,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
                 valk(2)=resu
                 call utmess('F', 'RUPTURE0_28', nk=2, valk=valk)
             else
-                iind=indiis(zi(ivec),nutrou,1,nbord)
+                iind=indiis(zi(ivec),nutrou(1),1,nbord)
                 zl(jnord+iind-1)=.true.
             endif
 10      continue

@@ -17,7 +17,6 @@ subroutine te0198(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/bsigmc.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -25,6 +24,7 @@ subroutine te0198(option, nomte)
 #include "asterfort/ortrep.h"
 #include "asterfort/sigtmc.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -95,8 +95,7 @@ subroutine te0198(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ---- RECUPERATION  DU NUMERO D'HARMONIQUE

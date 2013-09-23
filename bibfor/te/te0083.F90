@@ -103,8 +103,7 @@ subroutine te0083(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT
 !      -------------------------
-    call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ---- CALCUL DES CONTRAINTES THERMIQUES

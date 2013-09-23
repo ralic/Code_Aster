@@ -17,9 +17,8 @@ subroutine te0008(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elref4.h"
@@ -29,6 +28,7 @@ subroutine te0008(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 #include "blas/daxpy.h"
+!
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -81,10 +81,8 @@ subroutine te0008(option, nomte)
 30  end do
 !
     if (option .eq. 'FORC_NODA') then
-        call tecach('ONN', 'PDEPLMR', 'L', 1, idepl,&
-                    iretd)
-        call tecach('ONN', 'PCOMPOR', 'L', 1, icomp,&
-                    iretc)
+        call tecach('ONN', 'PDEPLMR', 'L', iretd, iad=idepl)
+        call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icomp)
         if ((iretd.eq.0) .and. (iretc.eq.0)) then
             if (zk16(icomp+2)(1:6) .ne. 'PETIT ') then
                 do 20 i = 1, ndim*nno

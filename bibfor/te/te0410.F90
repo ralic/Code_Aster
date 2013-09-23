@@ -83,8 +83,8 @@ subroutine te0410(optioz, nomtz)
 !     ---------------------
     call vdrepe(nomte, matevn, matevg)
     if (option(1:9) .eq. 'EPSI_ELGA') then
-        call tecach('OOO', 'PDEFOPG', 'E', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7,&
+                    itab=itab)
         icontr=itab(1)
 !
 ! ----- STOCKAGE DU VECTEUR DES DEFORMATIONS
@@ -102,8 +102,8 @@ subroutine te0410(optioz, nomtz)
 !
 !
     else if (option(1:9) .eq. 'SIEF_ELGA') then
-        call tecach('OOO', 'PCONTRR', 'E', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PCONTRR', 'E', iret, nval=7,&
+                    itab=itab)
         icontr=itab(1)
 !
 ! ----- STOCKAGE DU VECTEUR DES CONTRAINTES EN ELASTICITE
@@ -121,8 +121,8 @@ subroutine te0410(optioz, nomtz)
 !
 !
     else if (option(1:9) .eq. 'DEGE_ELGA') then
-        call tecach('OOO', 'PDEFOPG', 'E', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7,&
+                    itab=itab)
         icontr=itab(1)
 !
 ! ---   PASSAGE DES DEFORMATIONS DANS LE REPERE UTILISATEUR
@@ -131,8 +131,8 @@ subroutine te0410(optioz, nomtz)
         call vdefro(npgsn, matevn, edgpg, zr(icontr))
 !
     else if (option(1:9) .eq. 'DEGE_ELNO') then
-        call tecach('OOO', 'PDEFOGR', 'E', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PDEFOGR', 'E', iret, nval=7,&
+                    itab=itab)
         icontr=itab(1)
 !
 ! ---   PASSAGE DES DEFORMATIONS DANS LE REPERE UTILISATEUR

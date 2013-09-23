@@ -314,7 +314,7 @@ subroutine op0077()
             call jeveuo(zk8(lmacr)//'.REFM', 'L', lrefm)
             do 50 iord = 1, nbord
                 call rsadpa(nomres, 'E', 3, param, zi(jord+iord-1),&
-                            0, lpaout, k8b)
+                            0, tjv=lpaout, styp=k8b)
                 zk8(lpaout(1))=zk8(lrefm)
                 zk8(lpaout(2))=zk8(lrefm+2)
                 zk8(lpaout(3))=zk8(lrefm+3)

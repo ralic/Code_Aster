@@ -2,7 +2,6 @@ subroutine erglme(jceld, iavale, option, iord, ligrel,&
                   longt, nbgr, resuco, resuc1)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -14,6 +13,7 @@ subroutine erglme(jceld, iavale, option, iord, ligrel,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
+!
     integer :: jceld, iavale, iord, longt, nbgr
     character(len=*) :: resuco
     character(len=19) :: resuc1, ligrel
@@ -148,22 +148,22 @@ subroutine erglme(jceld, iavale, option, iord, ligrel,&
 !
     if (option .eq. 'ERME_ELEM') then
         call rsadpa(resuc1, 'E', 1, 'ERREUR_ERRE', iord,&
-                    0, ladpa, k8bid)
+                    0, sjv=ladpa, styp=k8bid)
     else if (option.eq.'ERZ1_ELEM') then
         call rsadpa(resuc1, 'E', 1, 'ERREUR_ERZ1', iord,&
-                    0, ladpa, k8bid)
+                    0, sjv=ladpa, styp=k8bid)
     else if (option.eq.'ERZ2_ELEM') then
         call rsadpa(resuc1, 'E', 1, 'ERREUR_ERZ2', iord,&
-                    0, ladpa, k8bid)
+                    0, sjv=ladpa, styp=k8bid)
     else if (option.eq.'QIRE_ELEM') then
         call rsadpa(resuc1, 'E', 1, 'ERREUR_QIRE', iord,&
-                    0, ladpa, k8bid)
+                    0, sjv=ladpa, styp=k8bid)
     else if (option.eq.'QIZ1_ELEM') then
         call rsadpa(resuc1, 'E', 1, 'ERREUR_QIZ1', iord,&
-                    0, ladpa, k8bid)
+                    0, sjv=ladpa, styp=k8bid)
     else if (option.eq.'QIZ2_ELEM') then
         call rsadpa(resuc1, 'E', 1, 'ERREUR_QIZ2', iord,&
-                    0, ladpa, k8bid)
+                    0, sjv=ladpa, styp=k8bid)
     endif
     zr(ladpa)=err0
 !

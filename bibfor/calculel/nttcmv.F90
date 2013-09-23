@@ -25,7 +25,6 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
@@ -42,6 +41,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 #include "asterfort/preres.h"
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
+!
     logical :: reasvt, reasmt
     real(kind=8) :: tpsthe(6), tpsnp1
     character(len=1) :: creas
@@ -61,9 +61,8 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
     integer :: ibid, k, iret, ierr, nbmat, jmet
     integer :: jmer, jmed, j2nd, jdirp, jchtp, lonch
-    complex(kind=8) :: cbid
     character(len=1) :: typres
-    character(len=8) :: k8bid, nomcmp(6)
+    character(len=8) :: nomcmp(6)
     character(len=24) :: ligrmo, merigi, mediri, tlimat(3)
     character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl
 !
@@ -95,8 +94,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
         ligrmo = modele(1:8)//'.MODELE'
         call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
-                    6, nomcmp, ibid, tpsthe, cbid,&
-                    k8bid)
+                    ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
 !       ON CREE CETTE CARTE IDENTIQUE A TIME MAIS AVEC 1-THETA=1
 !       A LA PLACE DE THETA POUR PERMETTRE LE CALCUL DE LA CHARGE
@@ -104,8 +102,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
         tpsthe(3) = 1.d0
         call mecact('V', timemo, 'MODELE', ligrmo, 'INST_R',&
-                    6, nomcmp, ibid, tpsthe, cbid,&
-                    k8bid)
+                    ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
         tpsthe(3) = 0.d0
 !
 ! --- TEMPERATURES IMPOSEES                                  ---> CNDIRP

@@ -52,7 +52,7 @@ subroutine te0014(option, nomte)
     integer :: jgano, ndl, nno, kp, npg, ii, jj, i, j
     integer :: ndim, l, ic
     integer :: iret, nnos
-    real(kind=8) :: r8b
+    real(kind=8) :: r8b=0.d0
     integer :: j_geom, j_rota, j_vect, j_mate, j_deplm, j_deplp
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
@@ -76,10 +76,8 @@ subroutine te0014(option, nomte)
     call jevech('PGEOMER', 'L', j_geom)
     call jevech('PMATERC', 'L', j_mate)
     call jevech('PROTATR', 'L', j_rota)
-    call tecach('ONN', 'PDEPLMR', 'L', 1, j_deplm,&
-                iret)
-    call tecach('ONN', 'PDEPLPR', 'L', 1, j_deplp,&
-                iret)
+    call tecach('ONN', 'PDEPLMR', 'L', iret, iad=j_deplm)
+    call tecach('ONN', 'PDEPLPR', 'L', iret, iad=j_deplp)
     rota_speed = zr(j_rota-1+1)
     rota_axis(1) = zr(j_rota-1+2)
     rota_axis(2) = zr(j_rota-1+3)

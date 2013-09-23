@@ -94,8 +94,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     integer :: jvale
     integer :: jplir, jpltk, jplsl
     integer :: ibid, ier, n1, n2, neq, ndim
-    real(kind=8) :: coef, r8bid, lm(2)
-    complex(kind=8) :: c16bid
+    real(kind=8) :: coef, lm(2)
     character(len=8) :: k8bid, noma, lborn(2), nomcmp
     character(len=8) :: modele, fiss
     character(len=16) :: relmet
@@ -231,8 +230,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         cartyp = '&&NMDOPI.TYPEPILO'
         ligrmo = modele // '.MODELE'
         call mecact('V', cartyp, 'MODELE', ligrmo, 'PILO_K',&
-                    1, 'TYPE', ibid, r8bid, c16bid,&
-                    typpil)
+                    ncmp=1, nomcmp='TYPE', sk=typpil)
         zk24(jpltk+2) = cartyp
 !
         lm(1) = etrmax
@@ -241,8 +239,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         lborn(1) = 'A0'
         lborn(2) = 'A1'
         call mecact('V', careta, 'MODELE', ligrmo, 'PILO_R',&
-                    2, lborn, ibid, lm, c16bid,&
-                    k8bid)
+                    ncmp=2, lnomcmp=lborn, vr=lm)
         zk24(jpltk+3) = careta
 !
 !

@@ -49,7 +49,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
 ! OUT : GRDMOD : TYPE DE GRANDEUR A RECUPERER DANS LES MODES DYN ET STA
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, nbtrou, nbmod1, lnumor, ilmode, iad, imod1, im, iret
+    integer :: ibid, nbtrou, nbmod1(1), lnumor, ilmode, iad, imod1, im, iret
     integer :: iadrmg, ilamod, ilamor, na1
     real(kind=8) :: rbid, freq1, amunif
     complex(kind=8) :: c16b
@@ -66,9 +66,9 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
     call rsorac(modmec, 'LONUTI', ibid, rbid, k8b,&
                 c16b, 0.0d0, k8b, nbmod1, 1,&
                 nbtrou)
-    call wkvect('&&RECMOD.NUMERO.ORDRE', 'V V I', nbmod1, lnumor)
+    call wkvect('&&RECMOD.NUMERO.ORDRE', 'V V I', nbmod1(1), lnumor)
     call rsorac(modmec, 'TOUT_ORDRE', ibid, rbid, k8b,&
-                c16b, 0.0d0, k8b, zi(lnumor), nbmod1,&
+                c16b, 0.0d0, k8b, zi(lnumor), nbmod1(1),&
                 nbtrou)
 !
     call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=0, nbret=nbmode)
@@ -76,11 +76,11 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
     if (nbmode .eq. 0) then
         call getvr8('BASE_MODALE', 'BANDE', iocc=1, nbval=2, vect=bande,&
                     nbret=ibid)
-        call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmod1, ilmode)
-        do 126 im = 1, nbmod1
+        call wkvect('&&OP0131.LISTEMODES', 'V V I', nbmod1(1), ilmode)
+        do 126 im = 1, nbmod1(1)
             imod1 = zi(lnumor+im-1)
             call rsadpa(modmec, 'L', 1, 'FREQ', imod1,&
-                        0, iad, k8b)
+                        0, sjv=iad, styp=k8b)
             freq1 = zr(iad)
             if ((freq1-bande(1))*(freq1-bande(2)) .le. 0.d0) then
                 nbmode = nbmode + 1
@@ -95,7 +95,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
         call getvis('BASE_MODALE', 'NUME_ORDRE', iocc=1, nbval=nbmode, vect=zi(ilmode),&
                     nbret=ibid)
         do 232 im = 1, nbmode
-            if (zi(ilmode-1+im) .gt. nbmod1) then
+            if (zi(ilmode-1+im) .gt. nbmod1(1)) then
                 call utmess('F', 'ALGORITH10_32')
             endif
 232      continue
@@ -136,7 +136,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
     do 231 im = 1, nbmode
         imod1 = zi(ilmode+im-1)
         call rsadpa(modmec, 'L', 1, 'MASS_GENE', imod1,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zr(iadrmg+im-1) = zr(iad)
 231  end do
 !

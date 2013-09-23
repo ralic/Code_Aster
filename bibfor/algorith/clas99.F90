@@ -57,7 +57,7 @@ subroutine clas99(nomres)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, ii, inor, lldesc, lrang, ir
-    integer :: ltmome, ltnbmo, nbid, nbmod, nbmodo, nbmoma, nbmome
+    integer :: ltmome, ltnbmo, nbid, nbmod, nbmodo(1), nbmoma, nbmome
     integer :: nbmout, nbsdd
     real(kind=8) :: bid, ebid
 !-----------------------------------------------------------------------
@@ -99,19 +99,19 @@ subroutine clas99(nomres)
                     cbid, ebid, 'ABSOLU', nbmodo, 1,&
                     nbid)
 !
-        if (nbmodo .lt. nbmout) then
+        if (nbmodo(1) .lt. nbmout) then
             call utmess('I', 'ALGORITH15_92')
             valk = zk8(ltmome-1+i)
             call utmess('I', 'ALGORITH15_93', sk=valk)
-            vali = nbmodo
+            vali = nbmodo(1)
             call utmess('I', 'ALGORITH15_94', si=vali)
         else
-            nbmodo=nbmout
+            nbmodo(1)=nbmout
         endif
 !
-        zi(ltnbmo+i-1) = nbmodo
-        nbmoma = max(nbmoma,nbmodo)
-        nbmod = nbmod+nbmodo
+        zi(ltnbmo+i-1) = nbmodo(1)
+        nbmoma = max(nbmoma,nbmodo(1))
+        nbmod = nbmod+nbmodo(1)
  5  continue
 !
     call wkvect('&&CLAS99.NUME.RANG', 'V V I', nbmoma, lrang)

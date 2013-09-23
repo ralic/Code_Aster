@@ -17,7 +17,6 @@ subroutine te0164(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/biline.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
@@ -25,6 +24,7 @@ subroutine te0164(option, nomte)
 #include "asterfort/matvec.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES FORCES NODALES DE MECABL2
@@ -61,8 +61,7 @@ subroutine te0164(option, nomte)
         call jevech('PGEOMER', 'L', igeom)
 !
         call jevech('PDEPLMR', 'L', idepla)
-        call tecach('ONN', 'PDEPLPR', 'L', 1, ideplp,&
-                    iret)
+        call tecach('ONN', 'PDEPLPR', 'L', iret, iad=ideplp)
         call jevech('PCONTMR', 'L', lsigma)
 !        PARAMETRES EN SORTIE
         call jevech('PVECTUR', 'E', jefint)

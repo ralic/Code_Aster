@@ -54,7 +54,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
 ! IN  : NBSP   : NOMBRE DE SOUS-POINTS
 !     ------------------------------------------------------------------
     integer :: nbpar, ilign, i, l, m, icp, isp, jacc, ik, ir, ii, valei(10), n1, adracc, adrval
-    integer :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nc, nbvari, jvari, nbcmp2, iord
+    integer :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nc, nbvari, jvari, nbcmp2, iord(1)
     real(kind=8) :: prec, valer(12)
     logical :: exist
     complex(kind=8) :: c16b
@@ -150,7 +150,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                 call jeveuo(nomjv, 'L', jaces)
                 do 70 iac = 1, nbacc
                     call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
-                                1, iadr, ctype)
+                                1, sjv=iadr, styp=ctype)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
                     if (.not. exist) then
                         call tbajpa(nomtab, 1, zk16(jaces-1+iac), ctype)
@@ -189,7 +189,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
-            valei(ii) = iord
+            valei(ii) = iord(1)
             nbpar = nbpar + 1
             nopara(nbpar) = 'NUME_MODE'
             ii = ii + 1
@@ -201,7 +201,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
-            valei(ii) = iord
+            valei(ii) = iord(1)
             nbpar = nbpar + 1
             nopara(nbpar) = 'INST'
             ir = ir + 1

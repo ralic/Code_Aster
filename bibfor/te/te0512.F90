@@ -237,8 +237,8 @@ subroutine te0512(option, nomte)
 !
 ! --- 3.1 RECUPERATION DU COMPORTEMENT
 !
-    call tecach('OON', 'PVARIPR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
+                itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
     nbsig = nbvari
     call jevech('PCOMPOR', 'L', icompo)

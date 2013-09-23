@@ -17,7 +17,6 @@ subroutine te0478(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
@@ -27,6 +26,7 @@ subroutine te0478(option, nomte)
 #include "asterfort/ppga1d.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utpvlg.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !
@@ -52,8 +52,8 @@ subroutine te0478(option, nomte)
 !
 !     NDIM1 EST LA DIMENSION TOPOLOGIQUE. IL FAUT CALCULER LA
 !     DIMENSION DE L'ESPACE NDIM (2 OU 3) :
-    call tecach('OOO', 'PGEOMER', 'L', 2, tab,&
-                iret)
+    call tecach('OOO', 'PGEOMER', 'L', iret, nval=2,&
+                itab=tab)
     ndim = tab(2)/nno
     igeom = tab(1)
 !

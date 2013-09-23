@@ -481,10 +481,10 @@ subroutine lect58(ideas, nomres, mail, typres, acces,&
                 call rsnoch(nomres, nomsym, numord)
                 if (zcmplx) then
                     call rsadpa(nomres, 'E', 1, 'FREQ', numord,&
-                                0, jabs, k8bid)
+                                0, sjv=jabs, styp=k8bid)
                 else
                     call rsadpa(nomres, 'E', 1, 'INST', numord,&
-                                0, jabs, k8bid)
+                                0, sjv=jabs, styp=k8bid)
                 endif
                 zr(jabs) = zr(labs-1 + numord)
 !

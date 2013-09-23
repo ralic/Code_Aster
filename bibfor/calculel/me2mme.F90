@@ -22,7 +22,6 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
@@ -46,6 +45,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+!
     character(len=8) :: modele, cara, kbid, lcmp(5)
     character(len=*) :: modelz, caraz, matelz, lchar(*), mate, basez
     character(len=19) :: matel
@@ -101,7 +101,6 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    complex(kind=8) :: cbid
     logical :: exicar
     character(len=1) :: base
     character(len=2) :: codret
@@ -269,8 +268,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !        -- EN PRINCIPE, EXITIM EST TOUJOURS .TRUE.
     chtime='&&ME2MME.CH_INST_R'
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                1, 'INST   ', ibid, time, cbid,&
-                kbid)
+                ncmp=1, nomcmp='INST   ',sr=time)
     lpain(5)='PTEMPSR'
     lchin(5)=chtime
 !
@@ -564,8 +562,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                 kcmp(1)=noma
                 kcmp(2)=chgeom(1:19)
                 call mecact('V', chlapl, 'MAILLA', noma, 'FLAPLA  ',&
-                            2, lcmp(1), ibid, time, cbid,&
-                            kcmp(1))
+                            ncmp=2, lnomcmp=lcmp(1), vk=kcmp(1))
                 ifla=1
             endif
             option='CHAR_MECA_FRLAPL'

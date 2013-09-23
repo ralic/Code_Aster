@@ -73,8 +73,7 @@ subroutine te0486(option, nomte)
         call elref4(' ', 'RIGI', ndim, nno, nnos,&
                     npg, ipoids, ivf, idfdx, jgano)
 !
-        call tecach('NNN', 'PPRESSR', 'L', 1, ipres,&
-                    iret)
+        call tecach('NNN', 'PPRESSR', 'L', iret, iad=ipres)
 !
         if (ipres .eq. 0) then
             call jevech('PFRCO3D', 'L', ipres)

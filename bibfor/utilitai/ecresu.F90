@@ -147,7 +147,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !        --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
         do 20 i = 0, nbordr-1
             call rsadpa(resou, 'E', 1, 'FREQ', i+1,&
-                        0, ltps2, k8b)
+                        0, sjv=ltps2, styp=k8b)
             zr(ltps2) = zr(ltps+i)
             call rsexch(' ', resou, grande, i+1, chdeps,&
                         iret)
@@ -181,7 +181,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
         do 200 i = 1, nbordr
 !  Temps
             call rsadpa(resou, 'E', 1, 'INST', (i-1),&
-                        0, ltps2, k8b)
+                        0, sjv=ltps2, styp=k8b)
             zr(ltps2) = zr(ltps+i-1)
             call rsexch(' ', resou, grande, (i-1), chdeps,&
                         iret)

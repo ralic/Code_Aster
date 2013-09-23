@@ -1,5 +1,6 @@
 subroutine te0004(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/ppgan2.h"
@@ -30,7 +31,6 @@ subroutine te0004(option, nomte)
 !
 !.......................................................................
 !
-#include "jeveux.h"
 !
 !
     integer :: ndim, nno, nnos, npg, nbsp
@@ -44,129 +44,129 @@ subroutine te0004(option, nomte)
 !
     if (option .eq. 'DERA_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDERAPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDERANO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDERAPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDERANO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'DISS_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDISSPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDISSNO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDISSPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDISSNO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EFGE_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PEFGAR', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PEFFORR', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PEFGAR', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PEFFORR', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'ENDO_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PTRIAPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PTRIANO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PTRIAPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PTRIANO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'ENEL_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PENERPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PENERNO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PENERPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PENERNO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPFD_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPFP_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPME_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPMG_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPSG_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPSI_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPSP_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'EPVC_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PDEFOPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PDEFONO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PDEFONO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'ETOT_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PENERPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PENERNO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PENERPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PENERNO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'FLUX_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PFLUXPG', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PFLUXNO', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PFLUXPG', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PFLUXNO', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'SIGM_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PCONTRR', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PSIEFNOR', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PSIEFNOR', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'SIEF_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PCONTRR', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PSIEFNOR', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PSIEFNOR', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else if (option.eq.'VARI_ELNO') then
         fami = 'RIGI'
-        call tecach('OOO', 'PVARIGR', 'L', 7, itabin,&
-                    iret)
-        call tecach('OOO', 'PVARINR', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PVARIGR', 'L', iret, nval=7,&
+                    itab=itabin)
+        call tecach('OOO', 'PVARINR', 'E', iret, nval=7,&
+                    itab=itabou)
 !
     else
         ASSERT(.false.)

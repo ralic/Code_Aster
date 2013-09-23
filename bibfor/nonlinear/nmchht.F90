@@ -86,7 +86,7 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
     character(len=19) :: commoi, complu, insmoi, insplu
     complex(kind=8) :: c16bid
     real(kind=8) :: instap, instam, r8bid
-    integer :: iterat, ldccvg, numder
+    integer :: iterat, ldccvg, numder(1)
     integer :: ifm, niv, ibid, jinst
 !
 ! ----------------------------------------------------------------------
@@ -115,11 +115,11 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !
     if (lreuse) then
         call getres(result, k16bid, k16bid)
-        call rsorac(result, 'DERNIER', ibid, r8bid, k8bid,&
+        call rsorac(result, 'DERNIER', 0, r8bid, k8bid,&
                     c16bid, 0.d0, 'ABSOLU', numder, 1,&
                     ibid)
-        call rsadpa(result, 'L', 1, 'INST_PREC', numder,&
-                    0, jinst, k8bid)
+        call rsadpa(result, 'L', 1, 'INST_PREC', numder(1),&
+                    0, sjv=jinst, styp=k8bid)
         instam = zr(jinst)
     endif
     instap = diinst(sddisc,0)
@@ -135,11 +135,9 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
     call nmvcex('INST', complu, insplu)
     k8bid = ' '
     call mecact('V', insmoi, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
-                1, 'INST', ibid, instam, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=instam)
     call mecact('V', insplu, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
-                1, 'INST', ibid, instap, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=instap)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !

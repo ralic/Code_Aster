@@ -86,7 +86,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     logical :: recunp
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ieq, ii, ik, imode, ir
+    integer :: i, ibid, ieq, ii, ik, imode, ir, tmod(1)
     integer :: iret, j, jpara, lmode, lnopar, lnume, lnumor
     integer :: lresui, lresuk, lresur, lvale, nbmodt, nbout, nbtpar
     integer :: nbtrou, neq1, nordr
@@ -97,13 +97,14 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
 !
     if (nbvect .lt. 0) then
 !        --- TOUS LES MODES ---
-        call rsorac(modes, 'LONUTI', ibid, rbid, k8b,&
-                    c16b, 0.0d0, k8b, nbmode, 1,&
+        call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b,&
+                    c16b, 0.0d0, k8b, tmod, 1,&
                     nbtrou)
+        nbmode=tmod(1)            
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmode, lnumor)
-        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid, k8b,&
+        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, zi(lnumor), nbmode,&
-                    nbtrou)
+                    nbtrou)           
     else if (nbvect .gt. 0) then
 !        --- A PARTIR D'UNE LISTE DE NUMEROS D'ORDRE ---
         nbmode = nbvect
@@ -116,13 +117,14 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
 !        --- RIEN ---
         nbmode = 0
         typmod = '?'
-        call rsorac(modes, 'LONUTI', ibid, rbid, k8b,&
-                    c16b, 0.0d0, k8b, nbmodt, 1,&
+        call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b,&
+                    c16b, 0.0d0, k8b, tmod, 1,&
                     nbtrou)
+        nbmodt=tmod(1)           
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmodt, lnumor)
-        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid, k8b,&
+        call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, zi(lnumor), nbmodt,&
-                    nbtrou)
+                    nbtrou)         
         goto 100
     endif
 !     ------------------------------------------------------------------
@@ -215,7 +217,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     nbpark = 0
     do 40 i = 1, nbout
         call rsadpa(modes, 'L', 1, zk16(jpara+i-1), zi(lnumor),&
-                    i, lnume, type)
+                    i, sjv=lnume, styp=type)
         if (type(1:1) .eq. 'I') then
             nbpari = nbpari + 1
         else if (type(1:1).eq.'R') then
@@ -241,7 +243,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         do 52 j = 1, nbmode
             nordr = zi(lnumor-1+j)
             call rsadpa(modes, 'L', 1, zk16(jpara+i-1), nordr,&
-                        i, lnume, type)
+                        i, sjv=lnume, styp=type)
             if (type(1:1) .eq. 'I') then
                 ii = ii + 1
                 zi(lresui+ii-1) = zi(lnume)

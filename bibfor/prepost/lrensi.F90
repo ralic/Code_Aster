@@ -329,7 +329,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
         call copisd('CHAMP_GD', 'G', chpres, nomch)
         call rsnoch(resu, linoch(1), itps)
         call rsadpa(resu, 'E', 1, 'INST', itps,&
-                    0, jinst, k8b)
+                    0, sjv=jinst, styp=k8b)
         zr(jinst) = zr(ipas-1+itps)
 !
         call jedetr('&&'//nompro//'.PRES.'//chaine)

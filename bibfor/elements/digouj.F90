@@ -71,8 +71,9 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     real(kind=8) :: e, rp, rprim, sieleq, sigdv, sigel, sigeps
     real(kind=8) :: sigy
 !-----------------------------------------------------------------------
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    valpap=0.d0
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
     if (nc .ne. 2) then
@@ -96,8 +97,10 @@ subroutine digouj(option, compor, nno, nbt, neq,&
         call utmess('F', 'ELEMENTS_32', sk=compor(1))
     endif
 !
-    call rctype(icodma, 0, nompar, [valpap], resu, type)
-    call rctrac(icodma, 1, 'SIGM', resu, jprolp, jvalep, nbvalp, e)
+    call rctype(icodma, 0, nompar, [valpap], resu,&
+                type)
+    call rctrac(icodma, 1, 'SIGM', resu, jprolp,&
+                jvalep, nbvalp, e)
     if (compor(1) .eq. 'DIS_GOUJ2E_PLAS') then
         call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
                     sigy, dum, dum, dum, dum,&

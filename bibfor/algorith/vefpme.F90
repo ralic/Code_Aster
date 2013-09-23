@@ -67,13 +67,12 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nompar(nbchmx)
     character(len=6) :: nomopf(nbchmx), nomopr(nbchmx)
     character(len=7) :: nomcmp(3)
-    character(len=8) :: nomcha, lpain(27), lpaout(1), k8bid, newnom
+    character(len=8) :: nomcha, lpain(27), lpaout(1), newnom
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime, ligrel
     character(len=24) :: ligrmo, ligrch, lchin(27), lchout(1)
     character(len=24) :: charge, infcha
     logical :: exicar, bidon
-    complex(kind=8) :: cbid
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
      &   '.F1D1D','.PRESS','.FCO3D','.FCO2D','.FLUX','.PESAN','.VEASS','.EFOND'/
@@ -121,8 +120,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     nomcmp(2) = 'DELTAT '
     nomcmp(3) = 'THETA  '
     call mecact('V', chtime, 'LIGREL', ligrmo, 'INST_R  ',&
-                3, nomcmp, ibid, partps, cbid,&
-                k8bid)
+                ncmp=3, lnomcmp=nomcmp, vr=partps)
     lpain(2) = 'PGEOMER'
     lchin(2) = chgeom
     lpain(3) = 'PTEMPSR'
@@ -184,7 +182,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
 !           POUR LES ELEMENTS X-FEM
                     call exixfe(modele, ier)
                     nchin = 13
-
+!
 !
 ! ----------------- For EFFE_FOND: you need two <CARTE>
 !
@@ -192,17 +190,17 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
                         nchin = nchin + 1
                         lpain(nchin) = 'PPREFFR'
                         lchin(nchin) = nomcha//'.CHME.PREFF'
-                        lpain(1)     = 'PEFOND'
-                        lchin(1)     = nomcha//'.CHME.EFOND'
+                        lpain(1) = 'PEFOND'
+                        lchin(1) = nomcha//'.CHME.EFOND'
                     endif
                     if (option .eq. 'CHAR_MECA_EFON_F') then
                         nchin = nchin + 1
                         lpain(nchin) = 'PPREFFF'
                         lchin(nchin) = nomcha//'.CHME.PREFF'
-                        lpain(1)     = 'PEFOND'
-                        lchin(1)     = nomcha//'.CHME.EFOND'
+                        lpain(1) = 'PEFOND'
+                        lchin(1) = nomcha//'.CHME.EFOND'
                     endif
-
+!
                     if (ier .ne. 0) then
                         lpain(nchin + 1) = 'PPINTTO'
                         lchin(nchin + 1) = modele(1:8)//'.TOPOSE.PIN'
@@ -239,9 +237,9 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
                             nchin = nchin + 5
                         endif
                     endif
-
-
-
+!
+!
+!
 !
                     if (nomlig(k) .eq. '.VEASS') then
                         call jeveuo(lchin(1), 'L', jlchin)

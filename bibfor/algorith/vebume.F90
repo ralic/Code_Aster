@@ -20,7 +20,6 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/conlag.h"
 #include "asterfort/corich.h"
@@ -38,6 +37,7 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 #include "asterfort/mecact.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+!
     character(len=*) :: modelz, matasz, deplaz, vecelz
     character(len=19) :: lischa
 !
@@ -66,11 +66,10 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
     integer :: iret, nchar, ndir, icha, ibid
     integer :: jchar, jinf, ifmdbg, nivdbg
     real(kind=8) :: alpha
-    character(len=8) :: nomcha, k8bid, masque, modele
+    character(len=8) :: nomcha, masque, modele
     character(len=16) :: option
     character(len=19) :: depla, vecele, matass
     character(len=24) :: ligrch, chalph
-    complex(kind=8) :: cbid
     logical :: debug
 !
 ! ----------------------------------------------------------------------
@@ -111,8 +110,7 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
     call conlag(matass, alpha)
     chalph = '&&VEBUME.CH_NEUT_R'
     call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ',&
-                1, 'X1', ibid, alpha, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='X1', sr=alpha)
 !
 ! --- ALLOCATION DU VECT_ELEM RESULTAT :
 !

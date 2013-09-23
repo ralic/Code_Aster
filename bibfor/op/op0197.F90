@@ -81,7 +81,7 @@ subroutine op0197()
     integer :: itps, it, iseg, nchar, jcha, itabr, vali(nbparr), inur, ix, iy
     integer :: nrupt, iweik, iweir, ipro, irent, isigk, isigkp, isigi, ntemp
     integer :: itpsi, itpre, ntpsi, ipth, inopa, itypa, ivapa, ikval, ikvak, imc
-    integer :: iainst, preor, deror, nbold, ichco, anomm1, anomm2
+    integer :: iainst, preor, deror, nbold, ichco, anomm1, anomm2, tord(1)
     real(kind=8) :: mini, minip, vini, epsi, mk, mkp, sigint, r8bid
     real(kind=8) :: valr(nbparr), test, proint, maxcs, tpsmin, tpsmax
     real(kind=8) :: valrr(3)
@@ -210,17 +210,19 @@ subroutine op0197()
 !       DANS LES INSTANTS DE CALCUL
 !
         call getvid('RESU', 'EVOL_NOLI', iocc=iresu, scal=resu, nbret=n1)
-        call rsorac(resu, 'PREMIER', ibid, r8bid, k8bid,&
-                    c16b, 0.d0, 'ABSOLU', preor, 1,&
+        call rsorac(resu, 'PREMIER', 0, r8bid, k8bid,&
+                    c16b, 0.d0, 'ABSOLU', tord, 1,&
                     ibid)
-        call rsorac(resu, 'DERNIER', ibid, r8bid, k8bid,&
-                    c16b, 0.d0, 'ABSOLU', deror, 1,&
+        preor=tord(1)            
+        call rsorac(resu, 'DERNIER', 0, r8bid, k8bid,&
+                    c16b, 0.d0, 'ABSOLU', tord, 1,&
                     ibid)
+        deror=tord(1)            
         call rsadpa(resu, 'L', 1, 'INST', preor,&
-                    0, iainst, k8bid)
+                    0, sjv=iainst, styp=k8bid)
         tpsmin = zr(iainst)
         call rsadpa(resu, 'L', 1, 'INST', deror,&
-                    0, iainst, k8bid)
+                    0, sjv=iainst, styp=k8bid)
         tpsmax = zr(iainst)
         if (zr(iinst) .lt. tpsmin) then
             valrr (1) = zr(iinst)

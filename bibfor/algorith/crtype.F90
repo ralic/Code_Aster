@@ -67,9 +67,9 @@ subroutine crtype()
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
     integer :: jcham, jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf
-    integer :: ino, nbv, jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
+    integer :: ino, nbv(1), jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini
-    integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi
+    integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
 !
     parameter  (mxpara=10)
 !
@@ -210,16 +210,17 @@ subroutine crtype()
 !
 !        MOT CLE "NOM_CAS", "NUME_MODE", "FREQ"  PRESENT :
         if (lncas) then
-            call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
-                        cbid, rbid, k8b, numini, 1,&
+            call rsorac(resu, 'LONUTI', 0, rbid, k8b,&
+                        cbid, rbid, k8b, tnum, 1,&
                         nbtrou)
+            numini=tnum(1)            
             if (typres .eq. 'MODE_MECA') then
                 call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
                 if (n0 .ne. 0) then
                     j = 0
                     do 100 i = 1, numini
                         call rsadpa(resu, 'L', 1, 'NUME_MODE', i,&
-                                    0, jnmo, k8b)
+                                    0, sjv=jnmo, styp=k8b)
                         nmode = zi(jnmo)
                         if (nmode .eq. nume) then
                             numini = nume
@@ -268,28 +269,28 @@ subroutine crtype()
             call getvtx('AFFE', 'NOM_CAS', iocc=iocc, scal=acces, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'NOM_CAS', numini,&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 zk16(iad) = acces
             endif
 !
             call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'NUME_MODE', numini,&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 zi(iad) = nume
             endif
 !
             call getvtx('AFFE', 'TYPE_MODE', iocc=iocc, scal=typmod, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'TYPE_MODE', numini,&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 zk8(iad) = typmod
             endif
 !
             call getvr8('AFFE', 'FREQ', iocc=iocc, scal=freq, nbret=n0)
             if (n0 .ne. 0) then
                 call rsadpa(resu, 'E', 1, 'FREQ', numini,&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 zr(iad) = freq
             endif
             goto 80
@@ -317,16 +318,17 @@ subroutine crtype()
                         nbret=n1)
             call getvr8('AFFE', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
             call getvtx('AFFE', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
-            call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
+            call rsorac(resu, 'LONUTI', 0, rbid, k8b,&
                         cbid, rbid, k8b, nbv, 1,&
                         ibid)
 !
             ivmx = rsmxno(resu)
             do 30 k = 1, nbinst
-                if (nbv .gt. 0) then
+                if (nbv(1) .gt. 0) then
                     call rsorac(resu, typabs, ibid, zr(jinst+k-1), k8b,&
-                                cbid, prec, criter, nume, 1,&
+                                cbid, prec, criter, tnum, 1,&
                                 nbr)
+                    nume=tnum(1)            
                 else
                     nbr = 0
                 endif
@@ -379,7 +381,7 @@ subroutine crtype()
 !
             call wkvect(linst, 'V V R', nbinst, jinst)
             call jeveuo(listr8//'.VALE', 'L', jval)
-            call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
+            call rsorac(resu, 'LONUTI', 0, rbid, k8b,&
                         cbid, rbid, k8b, nbv, 1,&
                         ibid)
             call wkvect(lcpt, 'V V I', nbinst, jcpt)
@@ -390,10 +392,11 @@ subroutine crtype()
                 if (k .gt. numfin) goto 40
                 j = j + 1
                 zr(jinst-1+j) = zr(jval-1+k)
-                if (nbv .gt. 0) then
+                if (nbv(1) .gt. 0) then
                     call rsorac(resu, typabs, ibid, zr(jval-1+k), k8b,&
-                                cbid, prec, criter, nume, 1,&
+                                cbid, prec, criter, tnum, 1,&
                                 nbr)
+                    nume=tnum(1)                
                 else
                     nbr = 0
                 endif
@@ -470,7 +473,7 @@ subroutine crtype()
                         iret)
             if (iret .eq. 0) then
                 call rsadpa(resu, 'L', 1, typabs, icompt,&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 valkk(1) = zk8(jcham+icompt-1)
                 valkk(2) = champ(1:8)
                 valrr(1) = zr(iad)
@@ -544,7 +547,7 @@ subroutine crtype()
 !
             call rsnoch(resu, nsymb, icompt)
             call rsadpa(resu, 'E', 1, typabs, icompt,&
-                        0, iad, k8b)
+                        0, sjv=iad, styp=k8b)
             zr(iad) = tps
             call rssepa(resu, icompt, modele, materi, carele,&
                         excit)

@@ -80,7 +80,6 @@ subroutine merit3(modele, nchar, lchar, mate, cara,&
     character(len=24) :: lchin(7), lchout(1), chgeom, chcara(18)
     character(len=24) :: chvite, ligrmo, carte, convch
     integer :: iret, ilires
-    complex(kind=8) :: cbid
     logical :: exicar
 !
 !
@@ -128,8 +127,7 @@ subroutine merit3(modele, nchar, lchar, mate, cara,&
                 chvite = vitess
                 carte = '&&MERIT3'//'.CONVECT.DECENT'
                 call mecact('V', carte, 'MODELE', modele//'.MODELE', 'NEUT_K24',&
-                            1, 'Z1', 0, 0.d0, cbid,&
-                            'NON')
+                            ncmp=1, nomcmp='Z1', sk='NON')
                 lpain(1) = 'PGEOMER'
                 lchin(1) = chgeom
                 lpain(2) = 'PMATERC'

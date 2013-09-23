@@ -70,7 +70,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 #include "asterfort/nmmabu.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/tecac2.h"
+#include "asterfort/tecach.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -149,8 +149,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
         do 1783,kvois=1,nbvois
 !
         numav=livois(kvois)
-        call tecac2('OOO', numav, 'PVARIMP', 'L', 1,&
-                    vivois, iret)
+        call tecach('OOO', 'PVARIMP', 'L', iret, iad=vivois, numa=numav)
         ASSERT(iret.eq.0)
 !
         if (nint(zr(vivois-1+5)) .eq. numa) then

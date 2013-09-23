@@ -54,7 +54,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
     character(len=8) :: k8b
     integer :: n0, n1, jkcha, jrval, jival, jniord, nbto, nbno, nblo, nbni, nbli
     integer :: nbnm, nblm, nbnf, nblf, nbis, nbr8, jlist, ibid, nbtrou, i
-    integer :: vali, n2, jinst, kk, nuord
+    integer :: vali, n2, jinst, kk, nuord, tord(1)
     real(kind=8) :: r8b, epsi, valr, rinst
     complex(kind=8) :: cbid
     character(len=8) :: crit
@@ -200,8 +200,9 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 !
             cbid = dcmplx(0,0)
             call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                        cbid, r8b, k8b, nbval, 1,&
+                        cbid, r8b, k8b, tord, 1,&
                         nbtrou)
+            nbval=tord(1)            
             call wkvect(nival, 'V V I', nbval, jival)
             call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
                         cbid, r8b, k8b, zi(jival), nbval,&
@@ -216,7 +217,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                 do 25, kk=1,nbval
                 nuord=zi(jival-1+kk)
                 call rsadpa(resu, 'L', 1, 'INST', nuord,&
-                            0, jinst, k8b)
+                            0, sjv=jinst, styp=k8b)
                 rinst=zr(jinst)
                 zr(jrval-1+kk) = rinst
 25              continue
@@ -257,8 +258,8 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
             call jeveuo(nival, 'L', jival)
             do 40 i = 1, nbval
                 call rsorac(resu, 'NUME_MODE', zi(jival+i-1), 0.0d0, k8b,&
-                            cbid, epsi, crit, ibid, 0,&
-                            n1)
+                            cbid, epsi, crit, tord, 0,&
+                            n1)    
                 if (n1 .eq. 0) then
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                     valk = typac
@@ -286,8 +287,8 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
             call jeveuo(nrval, 'L', jrval)
             do 50 i = 1, nbval
                 call rsorac(resu, typac, 0, zr(jrval+i-1), k8b,&
-                            cbid, epsi, crit, ibid, 0,&
-                            n1)
+                            cbid, epsi, crit, tord, 0,&
+                            n1)          
                 if (n1 .eq. 0) then
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                     valk = typac

@@ -309,7 +309,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
             if (nbordr .ne. 1) then
                 do 102 in = 0, nbnoe-1
                     call rsadpa(nomsd, 'L', 1, 'INST', zi(inumer+zi( jddlx+in)-1),&
-                                0, iad, ctyp)
+                                0, sjv=iad, styp=ctyp)
                     zr(nvale+zi(jddlx+in)-1) = zr(iad)
                     zr(nvale+zi(jddly+in)-1) = zr(iad)
                     if (zi(jddlz+in) .ne. 0) zr(nvale+zi(jddlz+in)- 1) = zr(iad)
@@ -326,14 +326,14 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
             else
                 do 110 j = 0, neq-1
                     call rsadpa(nomsd, 'L', 1, 'INST', zi(inumer+j),&
-                                0, iad, ctyp)
+                                0, sjv=iad, styp=ctyp)
                     zr(nvale+j) = zr(iad)
 110              continue
             endif
         else
             do 120 j = 0, neq-1
                 call rsadpa(nomsd, 'L', 1, 'INST', zi(inumer+j),&
-                            0, iad, ctyp)
+                            0, sjv=iad, styp=ctyp)
                 zr(nvale+j) = zr(iad)
 120          continue
         endif

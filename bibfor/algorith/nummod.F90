@@ -39,7 +39,7 @@ subroutine nummod(nugene, modmec)
 ! MODMEC /I/ : NOM K8 DU MODE_MECA OU DU MODE_GENE
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbvect, nbmode
+    integer :: ibid, n1, nbvect, nbmode, tmod(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, typrof
@@ -53,8 +53,9 @@ subroutine nummod(nugene, modmec)
 !-----RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA OU MODE_GENE
 !
     call rsorac(modmec, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, k8b, nbmode, 1,&
+                cbid, rbid, k8b, tmod, 1,&
                 n1)
+    nbmode=tmod(1)            
 !
 !-----TEST NBVECT A UTILISER / NBMODE
 !

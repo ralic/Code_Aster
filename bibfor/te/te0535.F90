@@ -116,19 +116,19 @@ subroutine te0535(option, nomte)
 !     CA N A PAS DE SENS).
 !     CEPENDANT CE CHAMP EST INITIALISE A 0 PAR LA ROUTINE NMMATR.
     call jevech('PDEPLPR', 'L', ideplp)
-    call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
+                itab=jtab)
     icontm = jtab(1)
 !
     call jevech('PSTRXMR', 'L', istrxm)
 !
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     ivarim = jtab(1)
 !
     if (vecteu) then
-        call tecach('OON', 'PVARIMP', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIMP', 'L', iret, nval=7,&
+                    itab=jtab)
         ivarmp = jtab(1)
     else
         ivarmp=1

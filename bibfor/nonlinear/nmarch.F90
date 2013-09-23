@@ -142,7 +142,7 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 !
         if (numarc .ge. 2) then
             call rsadpa(result, 'L', 1, 'INST', numarc-1,&
-                        0, jinst, k8bid)
+                        0, sjv=jinst, styp=k8bid)
             instam = zr(jinst)
             if (instan .le. instam) goto 999
         endif

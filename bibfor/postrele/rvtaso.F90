@@ -52,7 +52,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
 ! IN  : NOMTAB : INTITULE DE LA TABLE
 !     ------------------------------------------------------------------
     integer :: nbpar, ilign, ls, lc, isp, icp, ico, n1, nc, adrval, adracc, jacc, ik, ir, ii
-    integer :: valei(12), nbacc, nbpr, jaces, iac, iadr, iord
+    integer :: valei(12), nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(10)
     complex(kind=8) :: c16b
     logical :: exist
@@ -129,7 +129,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
                 call jeveuo(nomjv, 'L', jaces)
                 do 10 iac = 1, nbacc
                     call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
-                                1, iadr, ctype)
+                                1, sjv=iadr, styp=ctype)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
                     if (.not. exist) then
                         call tbajpa(nomtab, 1, zk16(jaces-1+iac), ctype)
@@ -168,7 +168,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
-            valei(ii) = iord
+            valei(ii) = iord(1)
             nbpar = nbpar + 1
             nopara(nbpar) = 'NUME_MODE'
             ii = ii + 1
@@ -180,7 +180,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
-            valei(ii) = iord
+            valei(ii) = iord(1)
             nbpar = nbpar + 1
             nopara(nbpar) = 'INST'
             ir = ir + 1

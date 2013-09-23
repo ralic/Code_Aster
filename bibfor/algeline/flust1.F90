@@ -54,7 +54,6 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-!
 #include "asterc/r8pi.h"
 #include "asterfort/connor.h"
 #include "asterfort/cpdepl.h"
@@ -74,6 +73,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rslipa.h"
 #include "asterfort/wkvect.h"
+!
     character(len=19) :: melflu
     character(len=8) :: typflu, base
     integer :: nuor(*)
@@ -101,7 +101,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !-----------------------------------------------------------------------
     integer :: iamfr, ibid, icoupl, ieq, ier, ifreqi, ifsic
     integer :: ifsvk, im, imod, ind, indic, ior, ire
-    integer :: iret,iv,ivale,kmasg,labsc,laux1
+    integer :: iret, iv, ivale, kmasg, labsc, laux1
     integer :: laux2, lddl, ldefm, lfact, lires, lmasg, lmasse
     integer :: lnoe, lprofv, lrho, lvale, neq, nt
     real(kind=8) :: pi, rval1
@@ -132,9 +132,10 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !
 ! --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
 !
-
-
-    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid, masse, ire)
+!
+!
+    call dismoi('F', 'REF_MASS_PREM', base, 'RESU_DYNA', ibid,&
+                masse, ire)
     call mtdscr(masse)
     call jeveuo(masse//'.&INT', 'L', lmasse)
     call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
@@ -200,9 +201,9 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
         zr(kmasg+im-1) = rval1
 !
         call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
-                    0, lfact, k8b)
+                    0, sjv=lfact, styp=k8b)
         call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
-                    0, lmasg, k8b)
+                    0, sjv=lmasg, styp=k8b)
         masg(im) = zr(lmasg)
         fact(3*(im-1)+1) = zr(lfact ) * masg(im)
         fact(3*(im-1)+2) = zr(lfact+1) * masg(im)

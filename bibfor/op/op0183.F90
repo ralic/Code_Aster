@@ -273,7 +273,7 @@ subroutine op0183()
 !
         if (exitim) then
             call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                        0, iad, ctyp)
+                        0, sjv=iad, styp=ctyp)
             time=zr(iad)
         endif
 !
@@ -298,9 +298,9 @@ subroutine op0183()
         call rsexch(' ', resuc1, 'DEPL', iordr, chamno,&
                     iret)
         call rsadpa(resuc1, 'E', 1, 'INST', iordr,&
-                    0, ltps2, k8bid)
+                    0, sjv=ltps2, styp=k8bid)
         call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                    0, ltps, k8bid)
+                    0, sjv=ltps, styp=k8bid)
         zr(ltps2)=zr(ltps)
 !
 !

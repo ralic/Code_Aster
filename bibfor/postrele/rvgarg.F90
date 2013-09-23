@@ -71,7 +71,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     integer :: anomcp, anumcp, ancpu1, ancpu2, adesc, acpgd, avchef
     integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, ie, avcodo
     integer :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
-    integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50)
+    integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50),tord(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
 !
@@ -123,12 +123,13 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
         call jenonu(jexnom(nresu//'           .DESC', nchsym), n1)
         if (n1 .ne. 0) then
 !           /* LE CHAMP SYMBOLIQUE EXISTE (POTENTIELLEMENT)*/
-            call rsorac(nresu, 'LONUTI', ibid, rbid, k8b,&
-                        cbid, rbid, 'RELATIF', n3, 1,&
+            call rsorac(nresu, 'LONUTI', 0, rbid, k8b,&
+                        cbid, rbid, 'RELATIF', tord, 1,&
                         ibid)
+            n3=tord(1)            
             if (n3 .gt. 0) then
                 call wkvect(kordre, 'V V I', n3, jordr)
-                call rsorac(nresu, 'TOUT_ORDRE', ibid, rbid, k8b,&
+                call rsorac(nresu, 'TOUT_ORDRE', 0, rbid, k8b,&
                             cbid, rbid, 'RELATIF', zi(jordr), n3,&
                             ibid)
                 do 10 j = 1, n3

@@ -171,15 +171,15 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
         if ((typsd(1:9).eq.'MODE_MECA')) then
             call rsadpa(nomres, 'E', 1, 'FREQ', i,&
-                        0, ldfreq, k8b)
+                        0, sjv=ldfreq, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'RIGI_GENE', i,&
-                        0, ldkge, k8b)
+                        0, sjv=ldkge, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'MASS_GENE', i,&
-                        0, ldmge, k8b)
+                        0, sjv=ldmge, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'OMEGA2', i,&
-                        0, ldom2, k8b)
+                        0, sjv=ldom2, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'NUME_MODE', i,&
-                        0, ldomo, k8b)
+                        0, sjv=ldomo, styp=k8b)
             genek = (zr(llfreq+icomp-1)*depi)**2
             zr(ldfreq) = zr(llfreq+icomp-1)
             zr(ldkge) = genek
@@ -190,11 +190,11 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !  SPECIFIQUE A BASE_MODALE
 !
             call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', i,&
-                        0, ldtyd, k8b)
+                        0, sjv=ldtyd, styp=k8b)
             zk16(ldtyd) = 'PROPRE          '
         else
             call rsadpa(nomres, 'E', 1, 'INST', i,&
-                        0, ldfreq, k8b)
+                        0, sjv=ldfreq, styp=k8b)
             zr(ldfreq) = zr(llfreq+icomp-1)
         endif
 !

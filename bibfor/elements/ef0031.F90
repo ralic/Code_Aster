@@ -63,8 +63,7 @@ subroutine ef0031(nomte)
 !
 !
 !
-    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo,&
-                iret)
+    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
     call jevech('PCONTRR', 'L', icontp)
     ind=8
     call dxeffi('EFGE_ELNO', nomte, pgl, zr(icontp), ind,&

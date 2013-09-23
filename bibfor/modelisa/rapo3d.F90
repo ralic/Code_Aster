@@ -496,8 +496,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     coorig(3) = zg
 !
     call mecact('V', '&&RAPO3D.CAORIGE', 'LIGREL', ligrel, 'GEOM_R',&
-                3, nocmp, icmp, coorig, ccmp,&
-                kcmp)
+                ncmp=3, lnomcmp=nocmp, vr=coorig)
 !
 ! --- DETERMINATION DE 2 LISTES  DE VECTEURS PAR ELEMENT PRENANT
 !     LEURS VALEURS AUX NOEUDS DES ELEMENTS.

@@ -160,7 +160,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
             do 10 iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
-                            0, iainst, k8b)
+                            0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
 10          continue
         else
@@ -169,7 +169,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                 do 20 iord = 1, nbordr
                     numord = zi(jord+iord-1)
                     call rsadpa(resul, 'L', 1, 'FREQ', numord,&
-                                0, iainst, k8b)
+                                0, sjv=iainst, styp=k8b)
                     zr(jins+iord-1) = zr(iainst)
 20              continue
             endif
@@ -187,7 +187,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
         valer(1) = inst
         if (typres .eq. 'FOURIER_ELAS') then
             call rsadpa(resul, 'L', 1, 'NUME_MODE', numord,&
-                        0, jnmo, k8b)
+                        0, sjv=jnmo, styp=k8b)
             call meharm(modele, zi(jnmo), chharm)
         endif
         chtime = ' '

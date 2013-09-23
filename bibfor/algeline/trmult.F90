@@ -59,7 +59,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     character(len=24) :: magrno, manono
     character(len=24) :: valk(3)
     character(len=8) :: kbid
-    integer :: ibid, iordr, ier
+    integer :: ibid, iordr(1), ier
     real(kind=8) :: r8b, epsi
     character(len=8) :: cmp(6), crit
     character(len=16) :: acces
@@ -162,7 +162,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     call utmess('F', 'ALGELINE4_61', nk=2, valk=valk)
                     goto 40
                 endif
-                call rsvpar(modsta, iordr, 'TYPE_DEFO', ibid, r8b,&
+                call rsvpar(modsta, iordr(1), 'TYPE_DEFO', ibid, r8b,&
                             'DEPL_IMPO', iret)
                 if (iret .ne. 100) then
                     ier = ier + 1
@@ -172,7 +172,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     call utmess('F', 'ALGELINE4_62', nk=3, valk=valk)
                     goto 40
                 endif
-                call rsexch('F', modsta, 'DEPL', iordr, chamno,&
+                call rsexch('F', modsta, 'DEPL', iordr(1), chamno,&
                             iret)
                 call jeveuo(chamno//'.VALE', 'L', idmst)
 !

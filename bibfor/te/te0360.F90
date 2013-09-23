@@ -107,13 +107,13 @@ subroutine te0360(option, nomte)
 !
 ! - ON VERIFIE QUE PVARIMR ET PVARIPR ONT LE MEME NOMBRE DE V.I. :
 !
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg1 = max(jtab(6),1)*jtab(7)
 !
     if ((option(1:4).eq.'RAPH') .or. (option(1:4).eq.'FULL')) then
-        call tecach('OON', 'PVARIPR', 'E', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIPR', 'E', iret, nval=7,&
+                    itab=jtab)
         lgpg2 = max(jtab(6),1)*jtab(7)
 !
         if (lgpg1 .ne. lgpg2) then

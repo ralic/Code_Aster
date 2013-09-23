@@ -87,10 +87,10 @@ subroutine rfmge1(modgen)
         zk24(lpro+3) = npara
         do 200 iord = 1, nbordr
             call rsadpa(modgen, 'L', 1, 'FREQ', zi(jordr+iord-1),&
-                        0, iad, k8b)
+                        0, sjv=iad, styp=k8b)
             zr(lvar-1+iord) = zr(iad)
             call rsadpa(modgen, 'L', 1, npara, zi(jordr+iord-1),&
-                        0, iad, k8b)
+                        0, sjv=iad, styp=k8b)
             zr(lfon-1+iord) = zr(iad)
 200      continue
         goto 9999
@@ -106,7 +106,7 @@ subroutine rfmge1(modgen)
         call rsexch('F', modgen, nomcha, zi(jordr+iord-1), noch19,&
                     iret)
         call rsadpa(modgen, 'L', 1, 'FREQ', zi(jordr+iord-1),&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zr(lvar+iord) = zr(iad)
 !
         call jeveuo(noch19//'.VALE', 'L', jvale)

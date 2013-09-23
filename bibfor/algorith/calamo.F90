@@ -134,9 +134,9 @@ subroutine calamo(nomres, classe, basmod)
     do 10 i = 1, nbmod
         iad = i* (i+1)/2
         call rsadpa(basmod, 'L', 1, 'FREQ', i,&
-                    0, lfreq, k8bid)
+                    0, sjv=lfreq, styp=k8bid)
         call rsadpa(basmod, 'L', 1, 'MASS_GENE', i,&
-                    0, lmgen, k8bid)
+                    0, sjv=lmgen, styp=k8bid)
         coeff = 4.d0*pi*zr(lfreq)*zr(lamor+i-1)*zr(lmgen)
         zr(ldres+iad-1) = coeff
 10  end do

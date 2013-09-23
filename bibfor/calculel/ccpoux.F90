@@ -74,10 +74,10 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     integer :: l1, l3, jlcha, jfcha, n1, ipara, ibid, ier, linst
 !
     real(kind=8) :: zero, un, coeff, valres
-    real(kind=8) :: alpha, tps(11), rbid, freq, inst
+    real(kind=8) :: alpha, tps(11), freq, inst
     parameter    (zero=0.d0,un=1.d0)
 !
-    complex(kind=8) :: czero, cbid, calpha, tpc(11)
+    complex(kind=8) :: czero, calpha, tpc(11)
     parameter    (czero= (0.d0,0.d0))
 !
     character(len=1) :: typcoe
@@ -99,7 +99,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     typemo = ' '
     if (typesd .eq. 'MODE_MECA') then
         call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1,&
-                    0, ltymo, k8b)
+                    0, sjv=ltymo, styp=k8b)
         typemo=zk16(ltymo)
     endif
     call rsexch('F', resuin, 'DEPL', nordre, chdepl,&
@@ -118,7 +118,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     ier)
         call jeveuo(chamgd(1:19)//'.VALE', 'L', ldepl)
         call rsadpa(resuin, 'L', 1, 'OMEGA2', nordre,&
-                    0, lfreq, k8b)
+                    0, sjv=lfreq, styp=k8b)
         do 20 ii = 0, neq - 1
             zr(lvale+ii) = -zr(lfreq)*zr(ldepl+ii)
 20      continue
@@ -209,7 +209,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             if (typesd .eq. 'DYNA_HARMO') then
                 typcoe = 'C'
                 call rsadpa(resuin, 'L', 1, 'FREQ', nordre,&
-                            0, lfreq, k8b)
+                            0, sjv=lfreq, styp=k8b)
                 freq = zr(lfreq)
                 if (l1 .ne. 0) then
                     call fointe('F ', fmult, 1, ['FREQ'], [freq],&
@@ -221,7 +221,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             else if (typesd.eq.'DYNA_TRANS') then
                 typcoe = 'R'
                 call rsadpa(resuin, 'L', 1, 'INST', nordre,&
-                            0, linst, k8b)
+                            0, sjv=linst, styp=k8b)
                 inst = zr(linst)
                 if (l1 .ne. 0) then
                     call fointe('F ', fmult, 1, ['INST'], [inst],&
@@ -236,7 +236,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             else if (typesd.eq.'EVOL_ELAS') then
                 typcoe = 'R'
                 call rsadpa(resuin, 'L', 1, 'INST', nordre,&
-                            0, linst, k8b)
+                            0, sjv=linst, styp=k8b)
                 inst = zr(linst)
                 if (l1 .ne. 0) then
                     call fointe('F ', fmult, 1, ['INST'], [inst],&
@@ -273,15 +273,13 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
         if ((curpar.eq.'PCOEFFR') .and. (typcoe.eq.'R')) then
             nochin = '&&MECHPO'//ch5//'.COEFF'
             call mecact('V', nochin, 'MODELE', ligrmo, 'IMPE_R',&
-                        1, 'IMPE', ibid, alpha, cbid,&
-                        k8b)
+                        ncmp=1, nomcmp='IMPE', sr=alpha)
             lichin(ipara) = nochin
         endif
         if ((curpar.eq.'PCOEFFC') .and. (typcoe.eq.'C')) then
             nochin = '&&MECHPO'//ch5//'.COEFF'
             call mecact('V', nochin, 'MODELE', ligrmo, 'IMPE_C',&
-                        1, 'IMPE', ibid, rbid, calpha,&
-                        k8b)
+                        ncmp=1, nomcmp='IMPE', sc=calpha)
             lichin(ipara) = nochin
         endif
 !
@@ -293,8 +291,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 nochin = '&&MECHPO'//ch5//'.PESAN.DESC'
                 lichin(ipara) = nochin
                 call mecact('V', nochin, 'MODELE', ligrmo, 'PESA_R  ',&
-                            4, ncmppe, ibid, tps, cbid,&
-                            k8b)
+                            ncmp=4, lnomcmp=ncmppe, vr=tps)
             else
                 lichin(ipara) = nochin
             endif
@@ -305,8 +302,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 lichin(ipara) = nochin
                 call fozero(tpf(1))
                 call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_F  ',&
-                            11, ncmpfo, ibid, rbid, cbid,&
-                            tpf)
+                            ncmp=11, lnomcmp=ncmpfo, vk=tpf)
             else
                 if (typcha(5:7) .eq. '_FO') then
                     lichin(ipara) = nochi1
@@ -316,8 +312,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     lichin(ipara) = nochin
                     call fozero(tpf(1))
                     call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_F  ',&
-                                11, ncmpfo, ibid, rbid, cbid,&
-                                tpf)
+                                ncmp=11, lnomcmp=ncmpfo, vk=tpf)
                 endif
             endif
         else if (curpar.eq.'PFR1D1D') then
@@ -326,16 +321,14 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
                 lichin(ipara) = nochin
                 call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_R  ',&
-                            11, ncmpfo, ibid, tps, cbid,&
-                            k8b)
+                            ncmp=11, lnomcmp=ncmpfo, vr=tps)
             else
                 if ((typcha(5:7).eq.'_FO') .or. (typcha(5:7).eq.'_RI')) then
                     call codent(ipara, 'D0', ch5(2:5))
                     nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
                     lichin(ipara) = nochin
                     call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_R  ',&
-                                11, ncmpfo, ibid, tps, cbid,&
-                                k8b)
+                                ncmp=11, lnomcmp=ncmpfo, vr=tps)
                 else
                     lichin(ipara) = nochi1
                 endif
@@ -346,8 +339,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                 nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
                 lichin(ipara) = nochin
                 call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_C  ',&
-                            11, ncmpfo, ibid, rbid, tpc,&
-                            k8b)
+                            ncmp=11, lnomcmp=ncmpfo, vc=tpc)
             else
                 if (typcha(5:7) .eq. '_RI') then
                     lichin(ipara) = nochi1
@@ -356,8 +348,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
                     lichin(ipara) = nochin
                     call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_C  ',&
-                                11, ncmpfo, ibid, rbid, tpc,&
-                                k8b)
+                                ncmp=11, lnomcmp=ncmpfo, vc=tpc)
                 endif
             endif
         else if (curpar.eq.'PCHDYNR') then
@@ -374,8 +365,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             nochin = '&&MECHPO'//ch5//'.SUR_OPTION'
             lichin(ipara) = nochin
             call mecact('V', nochin, 'MODELE', ligrmo, 'NEUT_K24',&
-                        1, 'Z1', ibid, rbid, cbid,&
-                        suropt)
+                        ncmp=1, nomcmp='Z1', sk=suropt)
         endif
 70  end do
 !

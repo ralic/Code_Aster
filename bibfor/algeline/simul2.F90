@@ -49,7 +49,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: lmat, neq, ibid, iordr, ier
+    integer :: lmat, neq, ibid, iordr(1), ier
     real(kind=8) :: r8b, epsi
     character(len=8) :: k8b, cmp(6), crit
     character(len=24) :: valk(3)
@@ -105,7 +105,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     call utmess('E', 'ALGELINE5_41', nk=2, valk=valk)
                     goto 20
                 endif
-                call rsvpar(modsta, iordr, 'TYPE_DEFO', ibid, r8b,&
+                call rsvpar(modsta, iordr(1), 'TYPE_DEFO', ibid, r8b,&
                             'DEPL_IMPO', iret)
                 if (iret .ne. 100) then
                     ier = ier + 1
@@ -115,7 +115,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     call utmess('E', 'ALGELINE5_42', nk=3, valk=valk)
                     goto 20
                 endif
-                call rsexch(' ', modsta, 'DEPL', iordr, chamno,&
+                call rsexch(' ', modsta, 'DEPL', iordr(1), chamno,&
                             iret)
                 if (iret .ne. 0) then
                     ier = ier + 1

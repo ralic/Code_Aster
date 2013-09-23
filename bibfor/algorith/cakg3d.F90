@@ -112,7 +112,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     complex(kind=8) :: cbid, livc(nbmxpa)
     logical :: lfonc
     character(len=2) :: codret
-    character(len=8) :: k8bid, resu
+    character(len=8) :: resu
     character(len=16) :: opti, valk
     character(len=19) :: chrota, chpesa, chvolu, ch1d2d, chepsi, ch2d3d, chpres
     character(len=19) :: chvarc, chvref
@@ -297,8 +297,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         chtime = '&&CAKG3D.CH_INST_R'
         if (opti .eq. 'CALC_K_G_F') then
             call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                        1, 'INST   ', ibid, time, cbid,&
-                        k8bid)
+                        ncmp=1, nomcmp='INST   ', sr=time)
             nchin = nchin + 1
             lpain(nchin) = 'PTEMPSR'
             lchin(nchin) = chtime
@@ -307,8 +306,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         if (lmoda) then
             chpuls = '&&CAKG3D.PULS'
             call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ',&
-                        1, 'FREQ   ', ibid, puls, cbid,&
-                        ' ')
+                        ncmp=1, nomcmp='FREQ   ',sr=puls)
             nchin = nchin + 1
             lpain(nchin) = 'PPULPRO'
             lchin(nchin) = chpuls

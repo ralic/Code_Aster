@@ -1,7 +1,6 @@
 subroutine te0547(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8vide.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
@@ -24,6 +23,7 @@ subroutine te0547(option, nomte)
 #include "asterfort/xmulco.h"
 #include "asterfort/xteini.h"
 #include "asterfort/xxlag3.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -77,7 +77,7 @@ subroutine te0547(option, nomte)
     real(kind=8) :: rela
 !
     real(kind=8) :: cohes, copilo(5), dtau, ffc(8), ffp(27)
-    real(kind=8) ::  mat3bd(3, 3), mat6bd(6, 6)
+    real(kind=8) :: mat3bd(3, 3), mat6bd(6, 6)
     real(kind=8) :: jac, mud(3), mup(3), r3bd(3), ma3bd(3, 3)
     real(kind=8) :: nd(3), r8bid, r6bid(6), rb, r3bid(3)
     real(kind=8) :: rr, rbid, sud(3), sud2d(2), sudd(3), sup(3)
@@ -138,8 +138,8 @@ subroutine te0547(option, nomte)
     if (rela .ne. 0.d0) then
         call jevech('PMATERC', 'L', imate)
         call jevech('PCOHES', 'L', jcohes)
-        call tecach('OOO', 'PCOHES', 'L', 2, jtab,&
-                    iret)
+        call tecach('OOO', 'PCOHES', 'L', iret, nval=2,&
+                    itab=jtab)
         ncompv = jtab(2)
     endif
     mate = zi(imate)

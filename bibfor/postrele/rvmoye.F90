@@ -146,7 +146,7 @@ subroutine rvmoye(nomres, iocc)
             call jeveuo(nomjv, 'L', jaces)
             do 1001 iac = 1, nbacc
                 call rsadpa(resu, 'L', 1, zk16(jaces-1+iac), iord,&
-                            1, iadr, ctype)
+                            1, sjv=iadr, styp=ctype)
                 call tbexip(nomres, zk16(jaces-1+iac), exist, typpar)
                 if (.not. exist) then
                     call tbajpa(nomres, 1, zk16(jaces-1+iac), ctype)

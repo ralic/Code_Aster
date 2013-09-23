@@ -1,8 +1,7 @@
 subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -19,6 +18,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsmena.h"
 #include "asterfort/rsutch.h"
+!
     integer :: nbrang, nuordr(*), nbarch, nbpara, nuarch(*), nbexcl, nbnosy
     character(len=16) :: nompar(*), chexcl(*)
     character(len=*) :: resu0
@@ -111,7 +111,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
         do 60 j = 1, nbpara
             nopara=nompar(j)
             call rsadpa(nomsdr, 'L', 1, nopara, nuordr(i),&
-                        1, iadin, type)
+                        1, sjv=iadin, styp=type)
             call extrs3(nomsdr, nopara, irang, 'E', 1,&
                         type, iadou)
             if (type(1:1) .eq. 'I') then

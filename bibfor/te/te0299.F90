@@ -60,7 +60,7 @@ subroutine te0299(option, nomte)
     real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4)
-    real(kind=8) :: rho(1), om, omo, rbid, e, nu, rbid2(3, 3, 3)
+    real(kind=8) :: rho(1), om, omo, rbid=0.d0, e, nu, rbid2(3, 3, 3)
     real(kind=8) :: thet, tno(20), tgdm(3)
     real(kind=8) :: xag, yag, xg, yg, xa, ya, norm, a, b
     real(kind=8) :: c1, c2, c3, cs, u1(2), u2(2)
@@ -145,16 +145,16 @@ subroutine te0299(option, nomte)
     endif
 !
     lpesa = .false.
-    call tecach('ONN', 'PPESANR', 'L', 7, jtab,&
-                iret)
+    call tecach('ONN', 'PPESANR', 'L', iret, nval=7,&
+                itab=jtab)
     ipesa=jtab(1)
     if (iret .eq. 0) then
         lpesa = .true.
     endif
 !
     lrota = .false.
-    call tecach('ONN', 'PROTATR', 'L', 7, jtab,&
-                iret)
+    call tecach('ONN', 'PROTATR', 'L', iret, nval=7,&
+                itab=jtab)
     irota=jtab(1)
     if (iret .eq. 0) then
         lrota = .true.
@@ -174,8 +174,8 @@ subroutine te0299(option, nomte)
 ! --- RECUPERATION DE LA PULSATION
 !
     lmoda = .false.
-    call tecach('ONN', 'PPULPRO', 'L', 7, jtab,&
-                iret)
+    call tecach('ONN', 'PPULPRO', 'L', iret, nval=7,&
+                itab=jtab)
     ipuls=jtab(1)
     if (iret .eq. 0) then
         puls = zr(ipuls)

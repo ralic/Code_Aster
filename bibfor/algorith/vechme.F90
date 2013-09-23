@@ -1,4 +1,4 @@
-subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
+subroutine vechme(stop, modelz, chargz, infchz, inst,&
                   carele, mate, vrcplu, ligrez, vecelz)
 !
 ! ======================================================================
@@ -19,7 +19,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -83,7 +83,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
     character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nompar(nbchmx)
     character(len=6) :: nomopf(nbchmx), nomopr(nbchmx)
     character(len=7) :: nomcmp(3)
-    character(len=8) :: nomcha, k8bid
+    character(len=8) :: nomcha
     character(len=8) :: lpain(nchinx), lpaout, newnom, modele
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime, ligrel
@@ -92,7 +92,6 @@ subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
     character(len=24) :: lchin(nchinx)
     character(len=24) :: charge, infcha
     logical :: exicar, bidon, lxfem
-    complex(kind=8) :: cbid
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
      &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',&
@@ -169,8 +168,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
     nomcmp(2) = 'DELTAT '
     nomcmp(3) = 'THETA  '
     call mecact('V', chtime, 'LIGREL', ligrmo, 'INST_R  ',&
-                3, nomcmp, ibid, inst, cbid,&
-                k8bid)
+                ncmp=3, lnomcmp=nomcmp, vr=inst)
 !
 ! --- CHAMPS IN
 !
@@ -285,15 +283,15 @@ subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
                         nchin = nchin + 1
                         lpain(nchin) = 'PPREFFR'
                         lchin(nchin) = nomcha//'.CHME.PREFF'
-                        lpain(1)     = 'PEFOND'
-                        lchin(1)     = nomcha//'.CHME.EFOND'
+                        lpain(1) = 'PEFOND'
+                        lchin(1) = nomcha//'.CHME.EFOND'
                     endif
                     if (option .eq. 'CHAR_MECA_EFON_F') then
                         nchin = nchin + 1
                         lpain(nchin) = 'PPREFFF'
                         lchin(nchin) = nomcha//'.CHME.PREFF'
-                        lpain(1)     = 'PEFOND'
-                        lchin(1)     = nomcha//'.CHME.EFOND'
+                        lpain(1) = 'PEFOND'
+                        lchin(1) = nomcha//'.CHME.EFOND'
                     endif
 !
 ! ----------- POUR LES ELEMENTS DE BORD XFEM

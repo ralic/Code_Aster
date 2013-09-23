@@ -247,7 +247,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                 call utmess('A', 'CALCULEL4_98', sk=resuco)
             else
                 call rsadpa(resuco, 'L', 1, 'PARM_THETA', iordr,&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 valthe=zr(iad)
                 if ((valthe.gt.1.d0) .or. (valthe.lt.0.d0)) then
                     call utmess('F', 'INDICATEUR_5', sk=resuco)
@@ -291,7 +291,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 !
 ! RECUPERATION DE L'INSTANT CORRESPONDANT A IORDR
             call rsadpa(resuco, 'L', 1, 'INST', iordr,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
             inst=zr(linst)
 !
 ! IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC...
@@ -375,9 +375,9 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
         iordr=zi(jordr+iaux-1)
         do 130 j = 1, nbpara
             call rsadpa(resuco, 'L', 1, zk16(jpa+j-1), iordr,&
-                        1, iadin, type)
+                        1, sjv=iadin, styp=type)
             call rsadpa(leres1, 'E', 1, zk16(jpa+j-1), iordr,&
-                        1, iadou, type)
+                        1, sjv=iadou, styp=type)
             if (type(1:1) .eq. 'I') then
                 zi(iadou)=zi(iadin)
             else if (type(1:1).eq.'R') then

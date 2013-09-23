@@ -20,7 +20,6 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elref1.h"
@@ -31,6 +30,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 #include "asterfort/rccoma.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
+!
     integer :: ndim, nnop, nfh, igeom, nbsig, lonch(10)
     real(kind=8) :: sigth(*), inst
 !
@@ -78,8 +78,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
     call jevech('PMATERC', 'L', imate)
     call rccoma(zi(imate), 'ELAS', 1, phenom, iret)
     ASSERT(iret.eq.0 .and. phenom.eq.'ELAS')
-    call tecach('ONO', 'PCAMASS', 'L', 1, ibid,&
-                iret)
+    call tecach('ONO', 'PCAMASS', 'L', iret, iad=ibid)
     ASSERT(iret.ne.0)
     r8bi7(1) = 1.d0
 !

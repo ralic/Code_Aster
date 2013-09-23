@@ -80,11 +80,10 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     character(len=19) :: pmilto, fissno, pinter
     character(len=24) :: chgeom, chcara(18), chharm
     character(len=24) :: argu, chtime
-    complex(kind=8) :: c16bid
     character(len=8) :: modele, carele
     character(len=19) :: matele, ligrmo, ligrch
     character(len=1) :: base
-    integer :: iarefe, ibid, icha, icode, ilires, iret
+    integer :: iarefe, icha, icode, ilires, iret
     logical :: lxfem
 !
 ! ----------------------------------------------------------------------
@@ -121,8 +120,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 !
     if (.not.exitim) time = 0.d0
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
-                1, 'INST', ibid, time, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=time)
 !
 ! --- CHAMP DES VARIABLES DE COMMANDE
 !

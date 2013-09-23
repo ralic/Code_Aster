@@ -18,7 +18,6 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/conlag.h"
 #include "asterfort/corich.h"
@@ -32,6 +31,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
 #include "asterfort/mecact.h"
 #include "asterfort/memare.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: modele, charge, infcha, carele, mate, chtni, vebtem
     character(len=*) :: matasz
 ! ----------------------------------------------------------------------
@@ -54,12 +54,11 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     real(kind=8) :: alpha
-    character(len=8) :: nomcha, k8bid, newnom
+    character(len=8) :: nomcha, newnom
     character(len=16) :: option
     character(len=19) :: vecel, matass
     character(len=24) :: ligrch, chalph
     integer :: iret, nchar, icha, jchar, jinf, ibid, jdir, ndir
-    complex(kind=8) :: cbid
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,8 +94,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
     call conlag(matass, alpha)
     chalph = '&&VETHBU.CH_NEUT_R'
     call mecact('V', chalph, 'MODELE', modele, 'NEUT_R  ',&
-                1, 'X1', ibid, alpha, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='X1', sr=alpha)
 !
 ! --- CALCUL DE L'OPTION B.T
 !

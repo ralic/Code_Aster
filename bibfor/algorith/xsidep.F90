@@ -66,7 +66,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 #include "asterfort/tecach.h"
 #include "asterfort/xside2.h"
 #include "asterfort/xside3.h"
-    integer :: nnop
+    integer :: nfiss, nnop
     character(len=8) :: elrefp, elrese(6), fami(6), typmod(*)
     character(len=16) :: compor(4)
     real(kind=8) :: he(nfiss), sig(*), lsn(nnop), lst(nnop), basloc(*)
@@ -74,7 +74,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     integer :: nse, npg, imate, ddlc, ddlm, ndim, nfh
     integer :: j, ise, in, ino, cnset(4*32), heavt(*), lonch(10)
     integer :: ibid, idecpg, nbsig, ig, ifiss, idebs, jpmilt, nfe, idepl
-    integer :: nfiss, jfisno, jpintt, igeom
+    integer :: jfisno, jpintt, igeom
     integer :: irese, nno, fisno(nnop, nfiss), jtab(2), ncomp, iret
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
@@ -87,8 +87,8 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     call elref1(elrefp)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+                itab=jtab)
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM

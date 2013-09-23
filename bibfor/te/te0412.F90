@@ -153,8 +153,7 @@ subroutine te0412(option, nomte)
 !
 ! - ON REGARDE SI ON EST EN LINEAIRE OU ENN NON-LINEAIRE
 !
-    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo,&
-                iret)
+    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
 !
     if (iret .eq. 0) then
 !

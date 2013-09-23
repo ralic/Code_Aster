@@ -76,13 +76,13 @@ subroutine te0537(option, nomte)
     npg = 2
 !
     if (option .eq. 'EPSI_ELGA') then
-        call tecach('OON', 'PDEFOPG', 'E', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PDEFOPG', 'E', iret, nval=7,&
+                    itab=jtab)
         jcont = jtab(1)
     else if (option.eq.'SIEF_ELGA') then
         call jevech('PMATERC', 'L', imate)
-        call tecach('OON', 'PCONTRR', 'E', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PCONTRR', 'E', iret, nval=7,&
+                    itab=jtab)
         jcont = jtab(1)
     else if (option.eq.'STRX_ELGA') then
         call jevech('PMATERC', 'L', imate)

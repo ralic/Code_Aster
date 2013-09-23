@@ -17,13 +17,13 @@ subroutine te0007(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/bsigmc.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION FORC_NODA
@@ -79,10 +79,8 @@ subroutine te0007(option, nomte)
     do 90 i = 1, ndim*nno
         geo(i) =zr(igeom-1+i)
 90  end do
-    call tecach('ONN', 'PDEPLMR', 'L', 1, idepl,&
-                iretd)
-    call tecach('ONN', 'PCOMPOR', 'L', 1, icomp,&
-                iretc)
+    call tecach('ONN', 'PDEPLMR', 'L', iretd, iad=idepl)
+    call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icomp)
     if ((iretd.eq.0) .and. (iretc.eq.0)) then
         if (zk16(icomp+2)(1:6) .ne. 'PETIT ') then
             do 80 i = 1, ndim*nno

@@ -482,7 +482,7 @@ subroutine op0172()
     write(ifr,1002)
     do 11 imod = 1, nbmode
         call rsadpa(meca, 'L', 1, 'FREQ', imod,&
-                    0, jfreq, k8b)
+                    0, sjv=jfreq, styp=k8b)
         omega=2.d0*pi*zr(jfreq)
         zr(iamomo+imod-1) = 0.5d0*(alfa*omega+beta/omega)
         write(ifr,1003) imod, zr(jfreq), zr(iamomo+imod-1)

@@ -76,8 +76,7 @@ subroutine ef0415(nomte)
     call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
                 ichg, 'S')
 !
-    call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
-                iret)
+    call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
 !
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)

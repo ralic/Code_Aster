@@ -1,5 +1,6 @@
 subroutine te0335(option, nomte)
     implicit none
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/fgequi.h"
@@ -57,7 +58,6 @@ subroutine te0335(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
 !
     integer :: neeqmx, nceqmx
@@ -75,30 +75,30 @@ subroutine te0335(option, nomte)
 !
     if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H')) then
         call elref4(' ', 'MASS', ndim1, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+                    npg, ipoids, ivf, idfde, jgano)
     else
         call elref4(' ', 'RIGI', ndim1, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+                    npg, ipoids, ivf, idfde, jgano)
     endif
 !
     if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELGA')&
         .or. (option.eq.'EPMQ_ELNO')) then
 !
-        call tecach('OOO', 'PDEFORR', 'L', 7, itabin,&
-                    iret)
+        call tecach('OOO', 'PDEFORR', 'L', iret, nval=7,&
+                    itab=itabin)
         idefo=itabin(1)
-        call tecach('OOO', 'PDEFOEQ', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PDEFOEQ', 'E', iret, nval=7,&
+                    itab=itabou)
         ASSERT(itabou(2)/itabou(3).eq.neeqmx)
 !
         elseif ((option.eq.'SIEQ_ELGA') .or. (option.eq.'SIEQ_ELNO'))&
     then
 !
-        call tecach('OOO', 'PCONTRR', 'L', 7, itabin,&
-                    iret)
+        call tecach('OOO', 'PCONTRR', 'L', iret, nval=7,&
+                    itab=itabin)
         icont=itabin(1)
-        call tecach('OOO', 'PCONTEQ', 'E', 7, itabou,&
-                    iret)
+        call tecach('OOO', 'PCONTEQ', 'E', iret, nval=7,&
+                    itab=itabou)
         ASSERT(itabou(2)/itabou(3).eq.nceqmx)
 !
     else

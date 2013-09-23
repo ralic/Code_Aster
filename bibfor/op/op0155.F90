@@ -113,9 +113,9 @@ subroutine op0155()
         do 10 j = 1, nbpara
             nopara=zk16(jnompa-1+j)
             call rsadpa(resu, 'L', 1, nopara, nuordr,&
-                        1, iadin, type)
+                        1, sjv=iadin, styp=type)
             call rsadpa(nomres, 'E', 1, nopara, nuordr,&
-                        1, iadou, type)
+                        1, sjv=iadou, styp=type)
             if (type(1:1) .eq. 'I') then
                 zi(iadou)=zi(iadin)
             else if (type(1:1).eq.'R') then

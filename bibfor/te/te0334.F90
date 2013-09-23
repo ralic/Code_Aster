@@ -119,8 +119,7 @@ subroutine te0334(option, nomte)
 ! ---    PLANES :
 !        ---------------------------------------------------------
     if (lteatt(' ','C_PLAN','OUI')) then
-        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
-                    iret)
+        call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             compor = zk16(icompo)
             if (compor .ne. 'VMIS_ISOT_LINE' .and. compor(1:4) .ne. 'ELAS' .and. compor&
@@ -154,8 +153,8 @@ subroutine te0334(option, nomte)
 ! --- RECUPERATION DES VARIABLES INTERNES AUX PT D'INTEGRATION COURANT :
 !     -----------------------------------------------------------------
     call jevech('PVARIGR', 'L', ivari)
-    call tecach('OON', 'PVARIGR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
+                itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
 !
 ! --- VERIFICATION DU COMPORTEMENT FLUAGE :

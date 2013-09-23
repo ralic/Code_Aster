@@ -16,7 +16,7 @@ subroutine ef0039(nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit       none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
@@ -27,8 +27,8 @@ subroutine ef0039(nomte)
     integer :: itab(2), ieffo, n1, i, iret, icontg
 !     ------------------------------------------------------------------
 !
-    call tecach('OOO', 'PEFFORR', 'E', 2, itab,&
-                iret)
+    call tecach('OOO', 'PEFFORR', 'E', iret, nval=2,&
+                itab=itab)
     ieffo=itab(1)
     n1=itab(2)
 !

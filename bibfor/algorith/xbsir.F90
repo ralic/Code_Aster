@@ -7,13 +7,13 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
 ! aslint: disable=W1306,W1504
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref5.h"
 #include "asterfort/iselli.h"
 #include "asterfort/tecach.h"
 #include "asterfort/xxbsig.h"
+!
     integer :: ndim, nnop, nfh, nfe, ddlc, ddlm, igeom, nbsig, ivectu
     integer :: jfisno, nfiss
     integer :: cnset(4*32), heavt(*), lonch(10), idepl, jpintt, jpmilt
@@ -83,8 +83,8 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
     call elref1(elrefp)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+                itab=jtab)
     ncomp = jtab(2)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO ET NPG

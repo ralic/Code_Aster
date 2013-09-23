@@ -69,7 +69,7 @@ subroutine op0184()
     integer :: iadrno, imp, jdme, ntseg, imamin, jdco, jdno, no1, no2, nutyel
     integer :: jcelv, jceld, idec, nbelgr, liel, iel, iadno, nno
     integer :: jinst, nbtrou, lordr, ntpoi, itest, iad, imapl
-    integer :: nbordt, te, nbgr, igr, ier
+    integer :: nbordt, te, nbgr, igr, ier, tord(1)
     real(kind=8) :: rbid, pres, epsi, temps, tref, cm(3), a(3), b(3), la, lb, d2
     real(kind=8) :: d2min
     real(kind=8) :: valr
@@ -402,7 +402,7 @@ subroutine op0184()
     call copisd('CHAMP_GD', 'G', chpres, nomch)
     call rsnoch(resu, nsymb, ipas)
     call rsadpa(resu, 'E', 1, 'INST', ipas,&
-                0, jinst, k8b)
+                0, sjv=jinst, styp=k8b)
     zr(jinst) = temps
     do 150 i = 1, nbmapl
         zr(jpres-1+i) = 0.d0
@@ -414,8 +414,9 @@ subroutine op0184()
 !
     call utmess('I', 'UTILITAI8_8')
     call rsorac(resu, 'LONUTI', ibid, rbid, k8b,&
-                cbid, epsi, crit, nbordr, 1,&
+                cbid, epsi, crit, tord, 1,&
                 nbtrou)
+    nbordr=tord(1)            
     if (nbordr .le. 0) then
         call utmess('F', 'UTILITAI2_97')
     endif
@@ -425,7 +426,7 @@ subroutine op0184()
                 nbtrou)
     do 170 iord = 1, nbordr
         call rsadpa(resu, 'L', 1, 'INST', zi(lordr+iord-1),&
-                    0, jinst, k8b)
+                    0, sjv=jinst, styp=k8b)
         vali (1) = zi(lordr+iord-1)
         valr = zr(jinst)
         call utmess('I', 'UTILITAI8_9', si=vali(1), sr=valr)

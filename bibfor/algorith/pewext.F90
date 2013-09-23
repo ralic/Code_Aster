@@ -104,7 +104,7 @@ subroutine pewext(resu)
 !
 !       EXTRACTION DE L'INSTANT DE CALCUL
         call rsadpa(result, 'L', 1, 'INST', numord,&
-                    0, jinst, k8b)
+                    0, sjv=jinst, styp=k8b)
         inst=zr(jinst)
 !
 !       EXTRACTION DU CHAMP DE DEPLCAMENT

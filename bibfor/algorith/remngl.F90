@@ -138,10 +138,14 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
 !
-    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1), intf, ier)
-    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid(1), numddl, ier)
-    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqsec, k8b, ier)
-    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp, k8b, ier)
+    call dismoi('F', 'REF_INTD_PREM', basmod, 'RESU_DYNA', ibid(1),&
+                intf, ier)
+    call dismoi('F', 'NUME_DDL', basmod, 'RESU_DYNA', ibid(1),&
+                numddl, ier)
+    call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neqsec,&
+                k8b, ier)
+    call dismoi('F', 'NB_CMP_MAX', intf, 'INTERF_DYNA', nbcmp,&
+                k8b, ier)
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------
 !
@@ -154,7 +158,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION MATRICE DE MASSE-------------------------------------
 !
-    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid(1), mass, ier)
+    call dismoi('F', 'REF_MASS_PREM', basmod, 'RESU_DYNA', ibid(1),&
+                mass, ier)
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)
@@ -179,34 +184,41 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----CALCUL DES MATRICES DE FLEXIBILITE RESIDUELLE---------------------
 !
     kbid=' '
-    call bmnodi(basmod, kbid, '         ', numd, 0, ibid(1), nbddr)
+    call bmnodi(basmod, kbid, '         ', numd, 0,&
+                ibid(1), nbddr)
     flexdr='&&REMNGL.FLEX.DROITE'
     call wkvect(flexdr, 'V V R', nbddr*neqsec, ltfldr)
     ibid(1) = 0
-    call flexib(basmod, nbmod, zr(ltfldr), neqsec, nbddr, ibid(1), numd)
+    call flexib(basmod, nbmod, zr(ltfldr), neqsec, nbddr,&
+                ibid(1), numd)
 !
     flexga='&&REMNGL.FLEX.GAUCHE'
     call wkvect(flexga, 'V V R', nbddr*neqsec, ltflga)
-    call flexib(basmod, nbmod, zr(ltflga), neqsec, nbddr, ibid(1), numg)
+    call flexib(basmod, nbmod, zr(ltflga), neqsec, nbddr,&
+                ibid(1), numg)
 !
     if (numa .gt. 0) then
         flexax='&&REMNGL.FLEX.AXE'
         kbid=' '
-        call bmnodi(basmod, kbid, '         ', numa, 0, ibid(1), nbdax)
+        call bmnodi(basmod, kbid, '         ', numa, 0,&
+                    ibid(1), nbdax)
         call wkvect(flexax, 'V V R', nbdax*neqsec, ltflax)
-        call flexib(basmod, nbmod, zr(ltflax), neqsec, nbddr, ibid(1), numa)
+        call flexib(basmod, nbmod, zr(ltflax), neqsec, nbddr,&
+                    ibid(1), numa)
     endif
 !
 !-----CALCUL DES MATRICES DE CHANGEMENT DE BASE TETA--------------------
 !
     tetgd='&&REMNGL.TETGD'
     call wkvect(tetgd, 'V V R', nbddr*nbddr, ltetgd)
-    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd), nbddr)
+    call ctetgd(basmod, numd, numg, nbsec, zr(ltetgd),&
+                nbddr)
 !
     if (numa .gt. 0) then
         tetax='&&REMNGL.TETAX'
         call wkvect(tetax, 'V V R', nbdax*nbdax, ltetax)
-        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax), nbdax)
+        call ctetgd(basmod, numa, numg, nbsec, zr(ltetax),&
+                    nbdax)
     endif
 !
 !-----CLASSEMENT DES MODES PROPRES--------------------------------------
@@ -301,17 +313,17 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !  COMMUN POUR MODE_MECA ET BASE_MODALE
 !
             call rsadpa(nomres, 'E', 1, 'FREQ', inum,&
-                        0, ldfreq, k8b)
+                        0, sjv=ldfreq, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum,&
-                        0, ldkge, k8b)
+                        0, sjv=ldkge, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum,&
-                        0, ldmge, k8b)
+                        0, sjv=ldmge, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'OMEGA2', inum,&
-                        0, ldom2, k8b)
+                        0, sjv=ldom2, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum,&
-                        0, ldomo, k8b)
+                        0, sjv=ldomo, styp=k8b)
             call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
-                        0, ldotm, k8b)
+                        0, sjv=ldotm, styp=k8b)
             fact = 1.d0 / (para(1)**0.5d0)
             genek = (zr(llfreq+icomp-1)*depi)**2
             zr(ldfreq) = zr(llfreq+icomp-1)
@@ -324,7 +336,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !  SPECIFIQUE A BASE_MODALE
 !
             call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum,&
-                        0, ldtyd, k8b)
+                        0, sjv=ldtyd, styp=k8b)
             zk16(ldtyd) = 'PROPRE          '
 !
 !  BOUCLE SUR LES SECTEURS
@@ -382,17 +394,17 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !  COMMUN POUR MODE_MECA ET BASE_MODALE
 !
                 call rsadpa(nomres, 'E', 1, 'FREQ', inum,&
-                            0, ldfreq, k8b)
+                            0, sjv=ldfreq, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'RIGI_GENE', inum,&
-                            0, ldkge, k8b)
+                            0, sjv=ldkge, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'MASS_GENE', inum,&
-                            0, ldmge, k8b)
+                            0, sjv=ldmge, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'OMEGA2', inum,&
-                            0, ldom2, k8b)
+                            0, sjv=ldom2, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'NUME_MODE', inum,&
-                            0, ldomo, k8b)
+                            0, sjv=ldomo, styp=k8b)
                 call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
-                            0, ldotm, k8b)
+                            0, sjv=ldotm, styp=k8b)
                 fact = 1.d0 / (para(2)**0.5d0)
                 genek = (zr(llfreq+icomp-1)*depi)**2
                 zr(ldfreq) = zr(llfreq+icomp-1)
@@ -405,7 +417,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !  SPECIFIQUE A BASE_MODALE
 !
                 call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', inum,&
-                            0, ldtyd, k8b)
+                            0, sjv=ldtyd, styp=k8b)
                 zk16(ldtyd) = 'PROPRE          '
 !
 !  BOUCLE SUR LES SECTEURS

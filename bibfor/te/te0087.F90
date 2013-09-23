@@ -106,8 +106,7 @@ subroutine te0087(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL :
 !      -----------------------------------
-    call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         instan = zr(itemps)
     endif
@@ -115,8 +114,7 @@ subroutine te0087(option, nomte)
 ! ---- RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES PLANES :
 !      ---------------------------------------------------------------
     if (lteatt(' ','C_PLAN','OUI')) then
-        call tecach('NNN', 'PCOMPOR', 'L', 1, icompo,&
-                    iret)
+        call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             compor = zk16(icompo)
             if (compor .ne. 'ELAS' .and. compor .ne. '                ') then

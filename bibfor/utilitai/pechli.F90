@@ -142,11 +142,10 @@ subroutine pechli(resu, modele, mate)
 !
 !      CREACTION DE LA CARTE DE L INSTANT DE CALCUL
         call rsadpa(result, 'L', 1, 'INST', numord,&
-                    0, jinst, k8b)
+                    0, sjv=jinst, styp=k8b)
         inst = zr(jinst)
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
-                    1, 'INST', ibid, inst, c16b,&
-                    k8b)
+                    ncmp=1, nomcmp='INST', sr=inst)
 !
 !
 !      CALCUL DES TERMES ELEMENTAIRES
@@ -183,7 +182,7 @@ subroutine pechli(resu, modele, mate)
 !      CALCUL DU CHARGEMENT PERMANENT SI NECESSAIRE
         if (chrcst) then
             call rsadpa(result, 'L', 1, 'ETA_PILOTAGE', numord,&
-                        0, jpilo, k8b)
+                        0, sjv=jpilo, styp=k8b)
             eta = zr(jpilo)
             m = 1 + 10** (1-inst)
             f0u = m*chlim(2) - eta

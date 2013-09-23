@@ -348,7 +348,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
         call copisd('CHAMP_GD', 'G', chanom, nomch)
         call rsnoch(resu, linoch(i), numord)
         call rsadpa(resu, 'E', 1, acce, numord,&
-                    0, jinst, k8bid)
+                    0, sjv=jinst, styp=k8bid)
 !
         if (nis .ne. 0) then
             zr(jinst) = inst

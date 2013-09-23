@@ -75,7 +75,7 @@ subroutine te0151(option, nomte)
     parameter    (             nbres = 3 )
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
     character(len=4) :: fami
     character(len=8) :: nompar, nomres(nbres), nomail, famil, poum
     character(len=16) :: ch16
@@ -235,19 +235,15 @@ subroutine te0151(option, nomte)
             ug(i) = zr(jdepl+i-1)
 20      continue
     else
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
-        call tecach(stopz, 'PVITESR', 'L', 1, jvite,&
-                    iret)
+        stopz='ONO'
+        call tecach(stopz, 'PVITESR', 'L', iret, iad=jvite)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
             do 21 i = 1, 2*nc
                 ug(i) = zr(jvite+i-1)
 21          continue
         else
-            call tecach(stopz, 'PDEPLAR', 'L', 1, jdepl,&
-                        iret)
+            call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepl)
             if (iret .eq. 0) then
                 do 22 i = 1, 2*nc
                     ug(i) = zr(jdepl+i-1)

@@ -57,7 +57,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 !
 !
 !
-    integer :: nbhist, iadtrc(2), long, jordr, nbordr, i, iret, vali(2), iad
+    integer :: nbhist, iadtrc(2), long, jordr, nbordr(1), i, iret, vali(2), iad
     integer :: ifm, jmate, ibid, num0, num1, num2, num3, iord, iainst, numphi
     real(kind=8) :: r8b, time(6), inst0, inst1, inst2, dt3
     real(kind=8) :: valr(2)
@@ -112,8 +112,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
         call wkvect('&&SMEVOL_TRC', 'V V R', 15*nbhist, vali(2))
         chftrc = '&&SMEVOL.ADRESSES'
         call mecact('V', chftrc, 'LIGREL', ligrmo, 'ADRSJEVN',&
-                    2, nomcm2, vali, r8b, cbid,&
-                    k8b)
+                    ncmp=2, lnomcmp=nomcm2, vi=vali)
     else
         chftrc = ' '
     endif
@@ -122,12 +121,12 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 !
     sdtemp = temper
     kordre = '&&SMEVOL.NUMEORDR'
-    call rsorac(sdtemp, 'LONUTI', ibid, r8b, k8b,&
+    call rsorac(sdtemp, 'LONUTI', 0, r8b, k8b,&
                 cbid, r8b, k8b, nbordr, 1,&
                 ibid)
-    call wkvect(kordre, 'V V I', nbordr, jordr)
-    call rsorac(sdtemp, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                cbid, r8b, k8b, zi(jordr), nbordr,&
+    call wkvect(kordre, 'V V I', nbordr(1), jordr)
+    call rsorac(sdtemp, 'TOUT_ORDRE', 0, r8b, k8b,&
+                cbid, r8b, k8b, zi(jordr), nbordr(1),&
                 ibid)
 !
 ! CREATION CHAM_ELEM COMPOR DONNANT NOMBRE DE VARIABLE INTERNE ET
@@ -153,14 +152,14 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 !
     else
         numphi=0
-        do iord = 2, nbordr
+        do iord = 2, nbordr(1)
             if (zi(jordr+iord-1) .eq. numpha) numphi=iord-1
         enddo
     endif
 !
 ! --- BOUCLE SUR LES PAS DE TEMPS DU CHAMP DE TEMPERATURE
 !
-    do iord = 1, nbordr - 2
+    do iord = 1, nbordr(1) - 2
 !
         if (zi(jordr+iord-1) .lt. zi(jordr+numphi-1)) goto 19
 !
@@ -180,15 +179,15 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 ! --- RECUPERATION DE L'INSTANT DE CALCUL ET DES DELTAT -> CHAMP(INST_R)
 !
         call rsadpa(sdtemp, 'L', 1, 'INST', num1,&
-                    0, iainst, k8b)
+                    0, sjv=iainst, styp=k8b)
         inst0 = zr(iainst)
 !
         call rsadpa(sdtemp, 'L', 1, 'INST', num2,&
-                    0, iainst, k8b)
+                    0, sjv=iainst, styp=k8b)
         inst1 = zr(iainst)
 !
         call rsadpa(sdtemp, 'L', 1, 'INST', num3,&
-                    0, iainst, k8b)
+                    0, sjv=iainst, styp=k8b)
         inst2 = zr(iainst)
 !
         time(1) = inst1
@@ -198,7 +197,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
         call jenonu(jexnom(sdtemp//'.NOVA', 'DELTAT'), iad)
         if (iad .ne. 0) then
             call rsadpa(sdtemp, 'L', 1, 'DELTAT', num3,&
-                        0, iad, k8b)
+                        0, sjv=iad, styp=k8b)
             dt3 = zr(iad)
             if (dt3 .ne. r8vide()) then
                 if (abs(dt3-time(3)) .gt. r8prem()) then
@@ -212,8 +211,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 !
         chtime = '&&SMEVOL.CH_INST_R'
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                    6, timcmp, ibid, time, cbid,&
-                    k8b)
+                    ncmp=6, lnomcmp=timcmp, vr=time)
 !
 ! CALCUL DE META_ELNO
 ! ------------------------

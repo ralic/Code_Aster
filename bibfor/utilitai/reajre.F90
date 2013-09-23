@@ -10,7 +10,7 @@ subroutine reajre(matelz, resuez, basez)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: matelz, resuez, basez
+    character(len=*), intent(in) :: matelz, resuez, basez
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

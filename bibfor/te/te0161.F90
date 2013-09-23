@@ -47,7 +47,7 @@ subroutine te0161(option, nomte)
     integer :: ipoids, ivf, igeom, imate, iforc
     integer :: itemps, nbpar, idepla, ideplp, k, l, ic, neu, iret, neum1
     logical :: normal
-    real(kind=8) :: r8min, r8bid, rho(1), a, coef
+    real(kind=8) :: r8min, r8bid=0.d0, rho(1), a, coef
     real(kind=8) :: s, s2, s3, s4, s5, x(4), c1, c2(3), w(6), u(3), v(3), w2(3)
 !
     integer :: ifcx, idfdk, jgano, ndim, nnos
@@ -98,8 +98,7 @@ subroutine te0161(option, nomte)
     if (option .eq. 'CHAR_MECA_FR1D1D' .or. option .eq. 'CHAR_MECA_SR1D1D') then
         c1 = 1.0d0
 !        POUR LE CAS DU VENT
-        call tecach('NNN', 'PVITER', 'L', 1, iforc,&
-                    iret)
+        call tecach('NNN', 'PVITER', 'L', iret, iad=iforc)
         if (iret .eq. 0) then
             normal = .true.
             okvent = .true.
@@ -114,8 +113,7 @@ subroutine te0161(option, nomte)
         c1 = 1.0d0
         call jevech('PFF1D1D', 'L', iforc)
         normal = zk8(iforc+6) .eq. 'VENT'
-        call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                    iret)
+        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
         if (iret .eq. 0) then
             x(4) = zr(itemps)
             nbpar = 4
@@ -228,8 +226,7 @@ subroutine te0161(option, nomte)
                 valpav(1) = sqrt(vite2)
                 if (valpav(1) .gt. r8min) then
 !                 RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                    call tecach('ONN', 'PVENTCX', 'L', 1, ifcx,&
-                                iret)
+                    call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
                     if (iret .ne. 0) then
                         call utmess('F', 'ELEMENTS3_39')
                     endif

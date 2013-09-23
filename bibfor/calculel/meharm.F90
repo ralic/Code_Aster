@@ -21,18 +21,15 @@ subroutine meharm(modele, nh, chharm)
     character(len=*) :: modele
     character(len=24) :: chharm
     character(len=8) :: mailla
-    complex(kind=8) :: cbid
 !
 !    CETTE ROUTINE GENERE UN CHAMP D'HARMONIQUE (CARTE CONSTANTE)
 !
 !-----------------------------------------------------------------------
     integer :: ibid, ierd, nh
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
     call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
                 mailla, ierd)
     chharm = '&&MEHARM.NUME_HARM'
     call mecact('V', chharm, 'MAILLA', mailla, 'HARMON',&
-                1, 'NH', nh, rbid, cbid,&
-                ' ')
+                ncmp=1, nomcmp='NH', si=nh)
 end subroutine

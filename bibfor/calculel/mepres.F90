@@ -30,17 +30,12 @@ subroutine mepres(nomo, chpres, fonc)
 !     FONC = .FALSE. FORCE REELLE
 !
 !
-    real(kind=8) :: rcmp(2), rbid
+    real(kind=8) :: rcmp(2)
 !
     character(len=8) :: licmp(2), nomf(2), zero
     character(len=19) :: ligrmo
 !
-    complex(kind=8) :: cbid
 !
-!     -----------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
-    integer :: ibid
 !-----------------------------------------------------------------------
     zero = '&&MEPRES'
     ligrmo = nomo//'.MODELE    '
@@ -53,12 +48,10 @@ subroutine mepres(nomo, chpres, fonc)
         nomf(1) = zero
         nomf(2) = zero
         call mecact('V', chpres, 'MODELE', ligrmo, 'PRES_F',&
-                    2, licmp, ibid, rbid, cbid,&
-                    nomf)
+                    ncmp=2, lnomcmp=licmp, vk=nomf)
     else
         call mecact('V', chpres, 'MODELE', ligrmo, 'PRES_R',&
-                    2, licmp, ibid, rcmp, cbid,&
-                    ' ')
+                    ncmp=2, lnomcmp=licmp, vr=rcmp)
     endif
 !
 end subroutine

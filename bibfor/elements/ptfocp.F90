@@ -161,10 +161,8 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
 !
 !     --- RECUPERATION DU COEF_MULT ---
 !
-    call tecach('NNN', 'PCOEFFR', 'L', 1, icoer,&
-                iret)
-    call tecach('NNN', 'PCOEFFC', 'L', 1, icoec,&
-                iret)
+    call tecach('NNN', 'PCOEFFR', 'L', iret, iad=icoer)
+    call tecach('NNN', 'PCOEFFC', 'L', iret, iad=icoec)
 !
     if (icoer .ne. 0) then
         do 400 i = 1, 12

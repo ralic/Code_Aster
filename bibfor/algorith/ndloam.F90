@@ -114,7 +114,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
 ! --- EXISTENCE DU PARAMETRE DANS SD_RESULTAT
 !
         call rsadpa(result, 'L', 1, 'TRAN_GENE_NOLI', nume,&
-                    1, jtrgen, ctype)
+                    1, sjv=jtrgen, styp=ctype)
         trgene = zk24(jtrgen)
         call jeexin(trgene(1:18)//'D', iret)
         if (iret .eq. 0) then

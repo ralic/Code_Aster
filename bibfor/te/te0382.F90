@@ -172,8 +172,8 @@ subroutine te0382(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PFORCE', 'L', iref1)
     call jevech('PPRESS', 'L', iref2)
-    call tecach('OOO', 'PCONTNO', 'L', 3, itab,&
-                iret)
+    call tecach('OOO', 'PCONTNO', 'L', iret, nval=3,&
+                itab=itab)
     isigno=itab(1)
     nbcmp=nbsigm()
 !

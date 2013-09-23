@@ -218,14 +218,13 @@ subroutine te0491(option, nomte)
 !
 ! ---- RECUPERATION DE L'INSTANT DE CALCUL
 !      -----------------------------------
-    call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) instan = zr(itemps)
 !
 ! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
 !     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNN', 'PCOMPOR', 'L', 7, jtab,&
-                iret)
+    call tecach('NNN', 'PCOMPOR', 'L', iret, nval=7,&
+                itab=jtab)
     compor(1)='ELAS'
     compor(2)=' '
     compor(3)='PETIT'
@@ -249,8 +248,7 @@ subroutine te0491(option, nomte)
         if (grand) then
             call utmess('F', 'COMPOR1_78', sk=compor(3))
         endif
-        call tecach('NNN', 'PDEPLM', 'L', 1, ideplm,&
-                    iret)
+        call tecach('NNN', 'PDEPLM', 'L', iret, iad=ideplm)
         if (ideplm .ne. 0) then
             call jevech('PDEPLM', 'L', idepmm)
         endif
@@ -260,8 +258,7 @@ subroutine te0491(option, nomte)
 !
     if (option .eq. 'ENER_TOTALE') then
         if ((compor(1) (1:9).ne.'VMIS_ISOT') .and. (compor(1) (1:4) .ne.'ELAS')) then
-            call tecach('NNN', 'PCONTMR', 'L', 1, idconm,&
-                        iret)
+            call tecach('NNN', 'PCONTMR', 'L', iret, iad=idconm)
             if (idconm .ne. 0) then
                 call jevech('PCONTMR', 'L', idsigm)
             endif
@@ -270,8 +267,8 @@ subroutine te0491(option, nomte)
 !
 ! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
 !        N'EXISTE PAS EN LINEAIRE
-    call tecach('ONN', 'PVARIPR', 'L', 7, jtab,&
-                iret)
+    call tecach('ONN', 'PVARIPR', 'L', iret, nval=7,&
+                itab=jtab)
     if (iret .eq. 0) then
         idvari=jtab(1)
         nbvari = max(jtab(6),1)*jtab(7)
@@ -424,8 +421,10 @@ subroutine te0491(option, nomte)
 !
 ! --- RECUPERATION DE LA COURBE DE TRACTION :
 !
-                call rcvarc(' ', 'TEMP', '+', fami, igau, 1, tempg, iret1)
-                call rctype(zi(imate), 1, 'TEMP', [tempg], resu, type)
+                call rcvarc(' ', 'TEMP', '+', fami, igau,&
+                            1, tempg, iret1)
+                call rctype(zi(imate), 1, 'TEMP', [tempg], resu,&
+                            type)
                 if ((type(1:4).eq.'TEMP') .and. (iret1.eq.1)) then
                     call utmess('F', 'CALCULEL_31')
                 endif

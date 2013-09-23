@@ -62,7 +62,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !
     integer :: i, iad, ibid, ieq, ier, iord, iret, j, jbid, k, ldnew, llchab
-    integer :: llchol, llnueq, llors, llprs, vali(2), nbbas, nbddg, nbmod, nbsst
+    integer :: llchol, llnueq, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
     integer :: neq, nno, numo, nusst, nutars, iadpar(6), llref2, llref3
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid
@@ -199,7 +199,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! --- RECUPERATION NOMBRE DE MODES PROPRES CALCULES
 !
-    call rsorac(resgen, 'LONUTI', ibid, rbid, kbid,&
+    call rsorac(resgen, 'LONUTI', 0, rbid, kbid,&
                 cbid, rbid, kbid, nbmod, 1,&
                 ibid)
 !
@@ -215,26 +215,26 @@ subroutine regeec(nomres, resgen, nomsst)
     endif
 !
     if (nno .ne. 0) then
-        nbmod = -nno
-        call wkvect('&&REGEEC.NUME', 'V V I', nbmod, jbid)
-        call getvis(' ', 'NUME_ORDRE', nbval=nbmod, vect=zi(jbid), nbret=nno)
+        nbmod(1) = -nno
+        call wkvect('&&REGEEC.NUME', 'V V I', nbmod(1), jbid)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbmod(1), vect=zi(jbid), nbret=nno)
     else
-        call wkvect('&&REGEEC.NUME', 'V V I', nbmod, jbid)
-        do 2 i = 1, nbmod
+        call wkvect('&&REGEEC.NUME', 'V V I', nbmod(1), jbid)
+        do 2 i = 1, nbmod(1)
             zi(jbid+i-1) = i
  2      continue
     endif
 !
 ! --- ALLOCATION STRUCTURE DE DONNEES RESULTAT
 !
-    call rscrsd('G', nomres, 'MODE_MECA', nbmod)
+    call rscrsd('G', nomres, 'MODE_MECA', nbmod(1))
 !
 ! --- RESTITUTION PROPREMENT DITE
 !
     call jeveuo(numgen//'.NUEQ', 'L', llnueq)
 !
 ! --- BOUCLE SUR LES MODES A RESTITUER
-    do 20 i = 1, nbmod
+    do 20 i = 1, nbmod(1)
         iord = zi(jbid+i-1)
 !
 ! ----- REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
@@ -259,7 +259,7 @@ subroutine regeec(nomres, resgen, nomsst)
         call jeveuo(chamne//'.VALE', 'E', ldnew)
 !
         call rsadpa(resgen, 'L', 5, nompar, iord,&
-                    0, iadpar, kbid)
+                    0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
         genem = zr(iadpar(3))
@@ -289,7 +289,7 @@ subroutine regeec(nomres, resgen, nomsst)
 30      continue
         call rsnoch(nomres, depl, i)
         call rsadpa(nomres, 'E', 6, nompar, i,&
-                    0, iadpar, kbid)
+                    0, tjv=iadpar, styp=kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
         zr(iadpar(3)) = genem

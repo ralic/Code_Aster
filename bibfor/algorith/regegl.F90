@@ -68,7 +68,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     integer :: i, iad, iar, ibid, idep, ieq, ier, iord, iret, j, jbid, k, l
     integer :: ldnew, llchab, llchol, llind, lliner, llinsk, llmass, i1, k1
     integer :: llnueq, llors, llprs, llrot, ltrotx, ltroty, ltrotz, ltvec
-    integer :: ltype, nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod, nbnot, nbsst
+    integer :: ltype, nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod(1), nbnot, nbsst
     integer :: neq, neqs, nno, numo, nutars, llref2, llref3, elim, lmoet
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst
     integer :: iadpar(12)
@@ -157,7 +157,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----RECUPERATION NOMBRE DE MODES PROPRES CALCULES---------------------
 !
-    call rsorac(resgen, 'LONUTI', ibid, rbid, kbid,&
+    call rsorac(resgen, 'LONUTI', 0, rbid, kbid,&
                 cbid, rbid, kbid, nbmod, 1,&
                 ibid)
 !
@@ -166,19 +166,19 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
     call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=nno)
     if (nno .ne. 0) then
-        nbmod = -nno
-        call wkvect('&&REGEGL.NUME', 'V V I', nbmod, jbid)
-        call getvis(' ', 'NUME_ORDRE', nbval=nbmod, vect=zi(jbid), nbret=nno)
+        nbmod(1) = -nno
+        call wkvect('&&REGEGL.NUME', 'V V I', nbmod(1), jbid)
+        call getvis(' ', 'NUME_ORDRE', nbval=nbmod(1), vect=zi(jbid), nbret=nno)
     else
-        call wkvect('&&REGEGL.NUME', 'V V I', nbmod, jbid)
-        do 2 i = 1, nbmod
+        call wkvect('&&REGEGL.NUME', 'V V I', nbmod(1), jbid)
+        do 2 i = 1, nbmod(1)
             zi(jbid+i-1) = i
  2      continue
     endif
 !
 !-----ALLOCATION STRUCTURE DE DONNEES RESULTAT--------------------------
 !
-    call rscrsd('G', nomres, 'MODE_MECA', nbmod)
+    call rscrsd('G', nomres, 'MODE_MECA', nbmod(1))
 !
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
@@ -218,7 +218,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !  BOUCLE SUR LES MODES A RESTITUER
 !
-    do 20 i = 1, nbmod
+    do 20 i = 1, nbmod(1)
         iord = zi(jbid+i-1)
 !
 !  REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
@@ -246,7 +246,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         call jeveuo(chamne//'.VALE', 'E', ldnew)
 !
         call rsadpa(resgen, 'L', 8, nompar, iord,&
-                    0, iadpar, kbid)
+                    0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
         genem = zr(iadpar(3))
@@ -367,7 +367,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         efmasz = efmasz*efmasz/genem
         call rsnoch(nomres, depl, i)
         call rsadpa(nomres, 'E', 12, nompar, i,&
-                    0, iadpar, kbid)
+                    0, tjv=iadpar, styp=kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
         zr(iadpar(3)) = genem

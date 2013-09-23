@@ -89,7 +89,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
             call wkvect('&&IRPARA.NOMK80_PARA', 'V V K16', nbpa, lk80pa)
             do 120 ipa = 1, nbpa
                 call rsadpa(resu, 'L', 1, nompar(ipa), ordr(1),&
-                            1, iad, ctype)
+                            1, sjv=iad, styp=ctype)
                 if (ctype(1:1) .eq. 'I') then
                     if (zi(iad) .ne. iundf) then
                        zk16(lnipa+necri) = nompar(ipa)
@@ -135,7 +135,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (necri .ne. 0) then
                         do 202 iec = 1, necri
                             call rsadpa(resu, 'L', 1, zk16(lnipa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(14X,A,I12)') zk16(lnipa-1+iec)&
                             ,zi(iad)
 202                      continue
@@ -143,7 +143,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (necrr .ne. 0) then
                         do 204 iec = 1, necrr
                             call rsadpa(resu, 'L', 1, zk16(lnrpa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(14X,A,1PE12.5)') zk16(lnrpa-1+&
                             iec), zr(iad)
 204                      continue
@@ -151,7 +151,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (neck8 .ne. 0) then
                         do 206 iec = 1, neck8
                             call rsadpa(resu, 'L', 1, zk16(lk8pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(14X,A,1X,A)') zk16(lk8pa-1+&
                             iec),zk8(iad)
 206                      continue
@@ -159,7 +159,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (neck16 .ne. 0) then
                         do 208 iec = 1, neck16
                             call rsadpa(resu, 'L', 1, zk16(lk16pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(14X,A,1X,A)') zk16(lk16pa-1+&
                             iec),zk16(iad)
 208                      continue
@@ -167,7 +167,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (neck24 .ne. 0) then
                         do 210 iec = 1, neck24
                             call rsadpa(resu, 'L', 1, zk16(lk24pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(14X,A,1X,A)') zk16(lk24pa-1+&
                             iec),zk24(iad)
 210                      continue
@@ -175,7 +175,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (neck32 .ne. 0) then
                         do 212 iec = 1, neck32
                             call rsadpa(resu, 'L', 1, zk16(lk32pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(14X,A,1X,A)') zk16(lk32pa-1+&
                             iec),zk32(iad)
 212                      continue
@@ -183,7 +183,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (neck80 .ne. 0) then
                         do 214 iec = 1, neck80
                             call rsadpa(resu, 'L', 1, zk16(lk80pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(14X,A)') zk16(lk32pa-1+iec)
                             write(ifi,'(1X,A)') zk80(iad)
 214                      continue
@@ -210,7 +210,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (necri .ne. 0) then
                         do 302 iec = 1, necri
                             call rsadpa(resu, 'L', 1, zk16(lnipa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(toto(i:i+16),1001) zi(iad)
                             i=i+17
                             if (i .ge. 68) then
@@ -223,7 +223,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (necrr .ne. 0) then
                         do 304 iec = 1, necrr
                             call rsadpa(resu, 'L', 1, zk16(lnrpa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(toto(i:i+16),1002) zr(iad)
                             i=i+17
                             if (i .ge. 68) then
@@ -236,7 +236,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (neck8 .ne. 0) then
                         do 306 iec = 1, neck8
                             call rsadpa(resu, 'L', 1, zk16(lk8pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(toto(i:i+16),1008) zk8(iad)
                             i=i+17
                             if (i .ge. 68) then
@@ -249,7 +249,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     if (neck16 .ne. 0) then
                         do 308 iec = 1, neck16
                             call rsadpa(resu, 'L', 1, zk16(lk16pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(toto(i:i+16),1016) zk16(iad)
                             i=i+17
                             if (i .ge. 68) then
@@ -267,7 +267,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                         i=14
                         do 310 iec = 1, neck24
                             call rsadpa(resu, 'L', 1, zk16(lk24pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(toto(i:i+24),1024) zk24(iad)
                             i=i+25
                             if (i .ge. 50) then
@@ -285,7 +285,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                         i=14
                         do 312 iec = 1, neck32
                             call rsadpa(resu, 'L', 1, zk16(lk32pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(toto(i:i+32),1032) zk32(iad)
                             i=i+33
                             if (i .ge. 64) then
@@ -302,7 +302,7 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                         endif
                         do 314 iec = 1, neck80
                             call rsadpa(resu, 'L', 1, zk16(lk80pa-1+iec), ordr(iord),&
-                                        1, iad, ctype)
+                                        1, sjv=iad, styp=ctype)
                             write(ifi,'(A)') zk80(iad)
 314                      continue
                     endif
@@ -352,43 +352,43 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                     i = 14
                     do 422 iec = 1, necri
                         call rsadpa(resu, 'L', 1, zk16(lnipa-1+iec), ordr( iord),&
-                                    1, iad, ctype)
+                                    1, sjv=iad, styp=ctype)
                         write(titi(i:i+15),'(I12)') zi(iad)
                         i = i + 17
 422                  continue
                     do 424 iec = 1, necrr
                         call rsadpa(resu, 'L', 1, zk16(lnrpa-1+iec), ordr( iord),&
-                                    1, iad, ctype)
+                                    1, sjv=iad, styp=ctype)
                         write(titi(i:i+15),'(1PD12.5)') zr(iad)
                         i = i + 17
 424                  continue
                     do 426 iec = 1, neck8
                         call rsadpa(resu, 'L', 1, zk16(lk8pa-1+iec), ordr( iord),&
-                                    1, iad, ctype)
+                                    1, sjv=iad, styp=ctype)
                         titi(i:i+15) = zk8(iad)
                         i = i + 17
 426                  continue
                     do 428 iec = 1, neck16
                         call rsadpa(resu, 'L', 1, zk16(lk16pa-1+iec), ordr(iord),&
-                                    1, iad, ctype)
+                                    1, sjv=iad, styp=ctype)
                         titi(i:i+15) = zk16(iad)
                         i = i + 17
 428                  continue
                     do 430 iec = 1, neck24
                         call rsadpa(resu, 'L', 1, zk16(lk24pa-1+iec), ordr(iord),&
-                                    1, iad, ctype)
+                                    1, sjv=iad, styp=ctype)
                         titi(i:i+23) = zk24(iad)
                         i = i + 25
 430                  continue
                     do 432 iec = 1, neck32
                         call rsadpa(resu, 'L', 1, zk16(lk32pa-1+iec), ordr(iord),&
-                                    1, iad, ctype)
+                                    1, sjv=iad, styp=ctype)
                         titi(i:i+31) = zk32(iad)
                         i = i + 33
 432                  continue
                     do 434 iec = 1, neck80
                         call rsadpa(resu, 'L', 1, zk16(lk80pa-1+iec), ordr(iord),&
-                                    1, iad, ctype)
+                                    1, sjv=iad, styp=ctype)
                         titi(i:i+79) = zk80(iad)
                         i = i + 81
 434                  continue

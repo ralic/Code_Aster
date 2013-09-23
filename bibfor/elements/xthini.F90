@@ -20,11 +20,11 @@ subroutine xthini(nomte, nfh, nfe)
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref4.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: nomte
     integer :: nfh, nfe
 !
@@ -40,7 +40,7 @@ subroutine xthini(nomte, nfh, nfe)
 !     ------------------------------------------------------------------
 !
     integer :: nno, ibid, ier, nnos, nfiss
-    integer ::  jtab(7), iret
+    integer :: jtab(7), iret
     character(len=8) :: enr
 !
 ! ----------------------------------------------------------------------
@@ -60,8 +60,8 @@ subroutine xthini(nomte, nfh, nfe)
     if (enr(1:2) .eq. 'XH') then
         nfh = 1
 !       NOMBRE DE FISSURES :
-        call tecach('NOO', 'PLST', 'L', 7, jtab,&
-                    iret)
+        call tecach('NOO', 'PLST', 'L', iret, nval=7,&
+                    itab=jtab)
         nfiss = jtab(7)
 !       ON NE TRAITE PAS LA JONCTION DE FISSURES EN THERMMIQUE
         ASSERT(nfiss.eq.1)

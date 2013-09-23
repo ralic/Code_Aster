@@ -194,42 +194,38 @@ subroutine te0368(option, nomte)
 !
 ! 1.3. --- CHAMP DE CONTRAINTES
 !
-    call tecach('OOO', 'PCONTNOP', 'L', 3, itab,&
-                iret)
+    call tecach('OOO', 'PCONTNOP', 'L', iret, nval=3,&
+                itab=itab)
     iadp=itab(1)
     nbcmp=itab(2)/nno
-    call tecach('OOO', 'PCONTNOD', 'L', 3, itab,&
-                iret)
+    call tecach('OOO', 'PCONTNOD', 'L', iret, nval=3,&
+                itab=itab)
     iadd=itab(1)
 !
 ! 1.4. --- CARTES DE PESANTEUR ET ROTATION
 !
-    call tecach('ONN', 'PPESANRP', 'L', 1, itab,&
-                iret)
+    call tecach('ONN', 'PPESANRP', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PPESANRP', 'L', ipesp)
         yaprp = .true.
     else
         yaprp = .false.
     endif
-    call tecach('ONN', 'PROTATRP', 'L', 1, itab,&
-                iret)
+    call tecach('ONN', 'PROTATRP', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATRP', 'L', irotp)
         yarop = .true.
     else
         yarop = .false.
     endif
-    call tecach('ONN', 'PPESANRD', 'L', 1, itab,&
-                iret)
+    call tecach('ONN', 'PPESANRD', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PPESANRD', 'L', ipesd)
         yaprd = .true.
     else
         yaprd = .false.
     endif
-    call tecach('ONN', 'PROTATRD', 'L', 1, itab,&
-                iret)
+    call tecach('ONN', 'PROTATRD', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATRD', 'L', irotd)
         yarod = .true.
@@ -239,22 +235,18 @@ subroutine te0368(option, nomte)
 !
 ! 1.5. --- FORCES VOLUMIQUES EVENTUELLES
 !          VALEURS REELLES ?
-    call tecach('ONN', 'PFRVOLUP', 'L', 1, ifovrp,&
-                iret)
+    call tecach('ONN', 'PFRVOLUP', 'L', iret, iad=ifovrp)
 !          OU FONCTIONS ?
     if (ifovrp .eq. 0) then
-        call tecach('ONN', 'PFFVOLUP', 'L', 1, ifovfp,&
-                    iret)
+        call tecach('ONN', 'PFFVOLUP', 'L', iret, iad=ifovfp)
     else
         ifovfp = 0
     endif
 !          VALEURS REELLES ?
-    call tecach('ONN', 'PFRVOLUD', 'L', 1, ifovrd,&
-                iret)
+    call tecach('ONN', 'PFRVOLUD', 'L', iret, iad=ifovrd)
 !          OU FONCTIONS ?
     if (ifovrd .eq. 0) then
-        call tecach('ONN', 'PFFVOLUD', 'L', 1, ifovfd,&
-                    iret)
+        call tecach('ONN', 'PFFVOLUD', 'L', iret, iad=ifovfd)
     else
         ifovfd = 0
     endif

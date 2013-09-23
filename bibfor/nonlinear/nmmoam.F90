@@ -176,10 +176,10 @@ subroutine nmmoam(sdammz, nbmoda)
     call wkvect(sdammo(1:19)//'.VALM', 'V V R', 3*nbmoda, jvalmo)
     do 10 imode = 1, nbmoda
         call rsadpa(modmec, 'L', 1, 'MASS_GENE', imode,&
-                    0, jmasg, k8bid)
+                    0, sjv=jmasg, styp=k8bid)
         zr(jvalmo+3*(imode-1)+1-1) = zr(jmasg)
         call rsadpa(modmec, 'L', 1, 'FREQ', imode,&
-                    0, jfreq, k8bid)
+                    0, sjv=jfreq, styp=k8bid)
         zr(jvalmo+3*(imode-1)+2-1) = zr(jfreq)*2.d0*pi
         zr(jvalmo+3*(imode-1)+3-1) = zr(jamor+imode-1)
 10  continue

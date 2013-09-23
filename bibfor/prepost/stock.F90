@@ -115,7 +115,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     call rsexpa(resu, 0, acce, iret)
     ASSERT(iret.gt.0)
     call rsadpa(resu, 'E', 1, acce, numord,&
-                0, jiouf, k8b)
+                0, sjv=jiouf, styp=k8b)
     zr(jiouf) = iouf
 !
 !     S.2 : NUME_MODE, MASS_GENE et AMOR_GENE :
@@ -124,7 +124,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
         call rsadpa(resu, 'E', 1, param, numord,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zi(iad) = numode
     endif
 !
@@ -132,7 +132,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
         call rsadpa(resu, 'E', 1, param, numord,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zr(iad) = masgen
     endif
 !
@@ -140,7 +140,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
         call rsadpa(resu, 'E', 1, param, numord,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zr(iad) = amrge
     endif
 !
@@ -148,7 +148,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
         call rsadpa(resu, 'E', 1, param, numord,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         if (amrge .lt. 1.d92) then
             zr(iad) = 2*amrge*masgen*depi*iouf
         else
@@ -160,7 +160,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
         call rsadpa(resu, 'E', 1, param, numord,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         if (masgen .lt. 1.d92) then
             zr(iad) = masgen*(depi*iouf)**2
         else
@@ -172,7 +172,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     call rsexpa(resu, 2, param, iret)
     if (iret .gt. 0) then
         call rsadpa(resu, 'E', 1, param, numord,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zr(iad) = (depi*iouf)**2
     endif
 !

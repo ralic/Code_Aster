@@ -68,7 +68,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
     integer :: ierd, ifin, im, imoad, imoda, imode, imodf, iul, jaxe, jpara
     integer :: lcoef, lddad, lfreq, lnom, lnume, lres, ltype, na, nbmoad, nbmoda
     integer :: ladpa, nbmodd, nbmode, nbmodf, nbpar, nbpsmo, nbtrou, nnaxe, nnd
-    integer :: lnumm
+    integer :: lnumm, tmod(1)
 !
     real(kind=8) :: r8b, zero, un, coef(3), xnorm
 !
@@ -157,31 +157,31 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call rgndas(nume, ieq, nomnoe, nomcmp, k8b,&
                             k8b, k8b)
                 call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
-                            0, lnom, k8b)
+                            0, sjv=lnom, styp=k8b)
                 zk16(lnom) = nomnoe//nomcmp
                 call rsadpa(resu, 'E', 1, 'NUME_DDL', imode,&
-                            0, lnume, k8b)
+                            0, sjv=lnume, styp=k8b)
                 zi(lnume) = ieq
                 call rsadpa(resu, 'E', 1, 'NUME_MODE', imode,&
-                            0, lnumm, k8b)
+                            0, sjv=lnumm, styp=k8b)
                 zi(lnumm) = imode
                 call rsadpa(resu, 'E', 1, 'TYPE_DEFO', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'DEPL_IMPO'
                 call rsadpa(resu, 'E', 1, 'TYPE_MODE', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'MODE_STA'
                 call rsadpa(resu, 'E', 1, 'MODELE', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = modele(1:8)
                 call rsadpa(resu, 'E', 1, 'CHAMPMAT', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = chmat
                 call rsadpa(resu, 'E', 1, 'CARAELEM', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = carael
                 call rsadpa(resu, 'E', 1, 'FREQ', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zr(ltype) = zero
             endif
 50      continue
@@ -222,31 +222,31 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call rgndas(nume, ieq, nomnoe, nomcmp, k8b,&
                             k8b, k8b)
                 call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
-                            0, lnom, k8b)
+                            0, sjv=lnom, styp=k8b)
                 zk16(lnom) = nomnoe//nomcmp
                 call rsadpa(resu, 'E', 1, 'NUME_DDL', imode,&
-                            0, lnume, k8b)
+                            0, sjv=lnume, styp=k8b)
                 zi(lnume) = ieq
                 call rsadpa(resu, 'E', 1, 'NUME_MODE', imode,&
-                            0, lnumm, k8b)
+                            0, sjv=lnumm, styp=k8b)
                 zi(lnumm) = imode
                 call rsadpa(resu, 'E', 1, 'TYPE_DEFO', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'FORC_IMPO'
                 call rsadpa(resu, 'E', 1, 'TYPE_MODE', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'MODE_STA'
                 call rsadpa(resu, 'E', 1, 'MODELE', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = modele(1:8)
                 call rsadpa(resu, 'E', 1, 'CHAMPMAT', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = chmat
                 call rsadpa(resu, 'E', 1, 'CARAELEM', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = carael
                 call rsadpa(resu, 'E', 1, 'FREQ', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zr(ltype) = zero
             endif
 60      continue
@@ -287,31 +287,31 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                 call rgndas(nume, ieq, nomnoe, nomcmp, k8b,&
                             k8b, k8b)
                 call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
-                            0, lnom, k8b)
+                            0, sjv=lnom, styp=k8b)
                 zk16(lnom) = nomnoe//nomcmp
                 call rsadpa(resu, 'E', 1, 'NUME_DDL', imode,&
-                            0, lnume, k8b)
+                            0, sjv=lnume, styp=k8b)
                 zi(lnume) = ieq
                 call rsadpa(resu, 'E', 1, 'NUME_MODE', imode,&
-                            0, lnumm, k8b)
+                            0, sjv=lnumm, styp=k8b)
                 zi(lnumm) = imode
                 call rsadpa(resu, 'E', 1, 'TYPE_DEFO', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'ACCE_DDL_IMPO'
                 call rsadpa(resu, 'E', 1, 'TYPE_MODE', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'MODE_STA'
                 call rsadpa(resu, 'E', 1, 'MODELE', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = modele(1:8)
                 call rsadpa(resu, 'E', 1, 'CHAMPMAT', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = chmat
                 call rsadpa(resu, 'E', 1, 'CARAELEM', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = carael
                 call rsadpa(resu, 'E', 1, 'FREQ', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zr(ltype) = zero
             endif
 66      continue
@@ -401,7 +401,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !
 !              --- LES PARAMETRES ---
                 call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
-                            0, lnom, k8b)
+                            0, sjv=lnom, styp=k8b)
                 if (direct) then
                     if (nnd .eq. 0) then
                         call codent(imoda, 'G', knum)
@@ -425,31 +425,31 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                     endif
                 endif
                 call rsadpa(resu, 'E', 1, 'COEF_X', imode,&
-                            0, lcoef, k8b)
+                            0, sjv=lcoef, styp=k8b)
                 zr(lcoef) = coef(1)
                 call rsadpa(resu, 'E', 1, 'COEF_Y', imode,&
-                            0, lcoef, k8b)
+                            0, sjv=lcoef, styp=k8b)
                 zr(lcoef) = coef(2)
                 call rsadpa(resu, 'E', 1, 'COEF_Z', imode,&
-                            0, lcoef, k8b)
+                            0, sjv=lcoef, styp=k8b)
                 zr(lcoef) = coef(3)
                 call rsadpa(resu, 'E', 1, 'NUME_MODE', imode,&
-                            0, lnumm, k8b)
+                            0, sjv=lnumm, styp=k8b)
                 zi(lnumm) = imode
                 call rsadpa(resu, 'E', 1, 'TYPE_DEFO', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'ACCE_IMPO'
                 call rsadpa(resu, 'E', 1, 'TYPE_MODE', imode,&
-                            0, ltype, k8b)
+                            0, sjv=ltype, styp=k8b)
                 zk16(ltype) = 'MODE_STA'
                 call rsadpa(resu, 'E', 1, 'MODELE', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = modele(1:8)
                 call rsadpa(resu, 'E', 1, 'CHAMPMAT', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = chmat
                 call rsadpa(resu, 'E', 1, 'CARAELEM', imode,&
-                            0, ladpa, k8b)
+                            0, sjv=ladpa, styp=k8b)
                 zk8(ladpa) = carael
 74          continue
 70      continue
@@ -487,31 +487,31 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 !              --- LES PARAMETRES ---
 !
             call rsadpa(resu, 'E', 1, 'NOEUD_CMP', imode,&
-                        0, lnom, k8b)
+                        0, sjv=lnom, styp=k8b)
             zk16(lnom) = '  '
             call rsadpa(resu, 'E', 1, 'NUME_DDL', imode,&
-                        0, lnume, k8b)
+                        0, sjv=lnume, styp=k8b)
             zi(lnume) = ieq
             call rsadpa(resu, 'E', 1, 'NUME_MODE', imode,&
-                        0, lnumm, k8b)
+                        0, sjv=lnumm, styp=k8b)
             zi(lnumm) = imode
             call rsadpa(resu, 'E', 1, 'TYPE_DEFO', imode,&
-                        0, ltype, k8b)
+                        0, sjv=ltype, styp=k8b)
             zk16(ltype) = 'DEPL_IMPO'
             call rsadpa(resu, 'E', 1, 'TYPE_MODE', imode,&
-                        0, ltype, k8b)
+                        0, sjv=ltype, styp=k8b)
             zk16(ltype) = 'MODE_INT'
             call rsadpa(resu, 'E', 1, 'FREQ', imode,&
-                        0, ltype, k8b)
+                        0, sjv=ltype, styp=k8b)
             zr(ltype) = zr(lfreq+ieq-1)
             call rsadpa(resu, 'E', 1, 'MODELE', imode,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = modele(1:8)
             call rsadpa(resu, 'E', 1, 'CHAMPMAT', imode,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = chmat
             call rsadpa(resu, 'E', 1, 'CARAELEM', imode,&
-                        0, ladpa, k8b)
+                        0, sjv=ladpa, styp=k8b)
             zk8(ladpa) = carael
 !
 90      continue
@@ -523,8 +523,9 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
     formar = '1PE12.5'
     if (niv .gt. 1) then
         call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                    c16b, r8b, k8b, nbmode, 1,&
+                    c16b, r8b, k8b, tmod, 1,&
                     nbtrou)
+        nbmode=tmod(1)            
         call wkvect('&&OP0093.ECRITURE.RES', 'V V I', nbmode, lres)
         call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
                     c16b, r8b, k8b, zi(lres), nbmode,&

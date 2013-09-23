@@ -114,7 +114,7 @@ subroutine op0091()
     call wkvect('&&OP0091.PULSA_PROPRES', 'V V R', nbmod, lomeg)
     do 30 i1 = 1, nbmod
         call rsadpa(resgen, 'L', 1, 'FREQ', i1,&
-                    0, jadr, kb)
+                    0, sjv=jadr, styp=kb)
         zr(lomeg+i1-1)=2*r8pi()*zr(jadr)
 30  end do
 !

@@ -173,8 +173,8 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !     (CETTE AFFECTATION N'A LIEU QUE DANS LE CAS OU ON PREND LA
 !     MATRICE ELASTIQUE AU LIEU DE LA MATRICE TANGENTE)
 !
-    call tecach('NNN', 'PCACO3D', 'E', 8, itab,&
-                iret)
+    call tecach('NNN', 'PCACO3D', 'E', iret, nval=8,&
+                itab=itab)
     jcrf = itab(1)
     if (jcrf .ne. 0) zr(jcrf) = coef
 !

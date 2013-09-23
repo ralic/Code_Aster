@@ -1,7 +1,6 @@
 subroutine te0532(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
@@ -22,6 +21,7 @@ subroutine te0532(option, nomte)
 #include "asterfort/xteini.h"
 #include "asterfort/xxlag2.h"
 #include "asterfort/xxlagm.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -66,7 +66,7 @@ subroutine te0532(option, nomte)
     integer :: jmate, singu, jcohes, jcoheo, jheano, ifiss, jheafa, ncomph
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
     integer :: nbspg, nspfis, nvit, ncompv
-    integer ::  nptf
+    integer :: nptf
     character(len=8) :: elref, typma, elrefc, job
     character(len=8) :: elc, fpg
     real(kind=8) :: ffpc(27), rela, eps, rhon
@@ -75,7 +75,7 @@ subroutine te0532(option, nomte)
     real(kind=8) :: coefcp, coeffp, coefcr, coeffr, r6bid(6)
     real(kind=8) :: p(3, 3), pp(3, 3), dsidep(6, 6), tau1(3), lamb(3)
     real(kind=8) :: tau2(3), alpha(3), dnor(3), dtang(3), am3(3), sigma(6)
-    real(kind=8) ::  cohes(3), mat3bd(3, 3), mat6bd(6, 6)
+    real(kind=8) :: cohes(3), mat3bd(3, 3), mat6bd(6, 6)
     parameter    (prec=1.d-16)
     logical :: imprim, lbid
 !......................................................................
@@ -113,8 +113,8 @@ subroutine te0532(option, nomte)
     call jevech('PDEPL_P', 'L', idepl)
     call jevech('PINDCOI', 'L', jindco)
     call jevech('PDONCO', 'L', jdonco)
-    call tecach('OOO', 'PDONCO', 'L', 2, jtab,&
-                ibid)
+    call tecach('OOO', 'PDONCO', 'L', ibid, nval=2,&
+                itab=jtab)
     ncompd = jtab(2)
     call jevech('PGLISS', 'L', jgliss)
     call jevech('PLST', 'L', jlst)
@@ -128,25 +128,25 @@ subroutine te0532(option, nomte)
         call jevech('PFISNO', 'L', jfisno)
         call jevech('PHEAVNO', 'L', jheano)
         call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', 2, jtab,&
-                    iret)
+        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+                    itab=jtab)
         ncomph = jtab(2)
     endif
 !     DIMENSSION DES GRANDEURS DANS LA CARTE
-    call tecach('OOO', 'PDONCO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PDONCO', 'L', iret, nval=2,&
+                itab=jtab)
     ncompd = jtab(2)
-    call tecach('OOO', 'PPINTER', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PPINTER', 'L', iret, nval=2,&
+                itab=jtab)
     ncompp = jtab(2)
-    call tecach('OOO', 'PAINTER', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PAINTER', 'L', iret, nval=2,&
+                itab=jtab)
     ncompa = jtab(2)
-    call tecach('OOO', 'PBASECO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PBASECO', 'L', iret, nval=2,&
+                itab=jtab)
     ncompb = jtab(2)
-    call tecach('OOO', 'PCFACE', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PCFACE', 'L', iret, nval=2,&
+                itab=jtab)
     ncompc = jtab(2)
 !
     call jevech('PINCOCA', 'E', jout1)
@@ -173,8 +173,8 @@ subroutine te0532(option, nomte)
             call jevech('PMATERC', 'L', jmate)
             call jevech('PCOHES', 'L', jcohes)
             call jevech('PCOHESO', 'E', jcoheo)
-            call tecach('OOO', 'PCOHES', 'L', 2, jtab,&
-                        iret)
+            call tecach('OOO', 'PCOHES', 'L', iret, nval=2,&
+                        itab=jtab)
             ncompv = jtab(2)
         endif
 !

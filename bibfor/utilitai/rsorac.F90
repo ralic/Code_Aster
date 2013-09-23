@@ -16,10 +16,11 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
 #include "asterfort/rsindi.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbtrou, nutrou(*), ival, ndim
-    real(kind=8) :: rval, epsi
-    character(len=*) :: nomsd, acces, kval, crit
-    complex(kind=8) :: cval
+    integer, intent(out) :: nbtrou, nutrou(*)
+    integer, intent(in) :: ival, ndim
+    real(kind=8), intent(in) :: rval, epsi
+    character(len=*), intent(in) :: nomsd, acces, kval, crit
+    complex(kind=8), intent(in) :: cval
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -43,7 +43,7 @@ subroutine te0166(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    real(kind=8) :: r8b
+    real(kind=8) :: r8b=0.d0
 !-----------------------------------------------------------------------
     fami='FPG1'
     kpg=1
@@ -57,8 +57,7 @@ subroutine te0166(option, nomte)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)
 !
-    call tecach('ONO', 'PDEPLMR', 'L', 1, idepla,&
-                iret)
+    call tecach('ONO', 'PDEPLMR', 'L', iret, iad=idepla)
     if (iret .ne. 0) then
         call utmess('F', 'CALCULEL6_78')
     endif

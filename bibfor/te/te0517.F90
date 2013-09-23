@@ -101,8 +101,8 @@ subroutine te0517(option, nomte)
 !
         call jevech('PCAORIE', 'L', iorien)
         call jevech('PGEOMER', 'L', igeom)
-        call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
+                    itab=jtab)
         nbsp=jtab(7)
         if (nbsp .ne. nbfib) then
             call utmess('F', 'ELEMENTS_4')
@@ -111,8 +111,7 @@ subroutine te0517(option, nomte)
 !
 !
         reactu = .false.
-        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
-                    iretc)
+        call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icompo)
         if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'GROT_GDEP')
 !
         call jevech('PVECTUR', 'E', ivectu)

@@ -124,8 +124,8 @@ subroutine te0514(option, nomte)
         if (ndime .eq. 2) call jevech('PGRADLN', 'L', jgrlsn)
     endif
 !
-    call tecach('OOO', 'PHEAVTO', 'E', 7, jtab,&
-                iret)
+    call tecach('OOO', 'PHEAVTO', 'E', iret, nval=7,&
+                itab=jtab)
     ncomph = jtab(2)
     nfiss = jtab(7)
 !
@@ -140,11 +140,11 @@ subroutine te0514(option, nomte)
 10      continue
     endif
 !
-    call tecach('OOO', 'PPINTTO', 'E', 2, jtab2,&
-                iret)
+    call tecach('OOO', 'PPINTTO', 'E', iret, nval=2,&
+                itab=jtab2)
     ncompp = jtab2(2)/ndim
-    call tecach('OOO', 'PCNSETO', 'E', 2, jtab2,&
-                iret)
+    call tecach('OOO', 'PCNSETO', 'E', iret, nval=2,&
+                itab=jtab2)
     ncompc = jtab2(2)
 !
     npi=0

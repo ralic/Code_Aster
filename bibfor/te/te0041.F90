@@ -182,11 +182,9 @@ subroutine te0041(option, nomte)
             call infdis('REPA', irep, r8bid, k8bid)
             call jevech('PMATUUR', 'E', jdm)
             if (ndim .ne. 3) goto 6
-            call tecach('ONN', 'PRIGIEL', 'L', 1, jdr,&
-                        iret)
+            call tecach('ONN', 'PRIGIEL', 'L', iret, iad=jdr)
             if (jdr .eq. 0) goto 6
-            call tecach('NNN', 'PMATERC', 'L', 1, jma,&
-                        iret)
+            call tecach('NNN', 'PMATERC', 'L', iret, iad=jma)
             if ((jma.eq.0) .or. (iret.ne.0)) goto 6
             nomres(1) = 'RIGI_NOR'
             nomres(2) = 'AMOR_NOR'
@@ -338,11 +336,9 @@ subroutine te0041(option, nomte)
             call infdis('REPA', irep, r8bid, k8bid)
             call jevech('PMATUNS', 'E', jdm)
             if (ndim .ne. 3) goto 8
-            call tecach('ONN', 'PRIGIEL', 'L', 1, jdr,&
-                        iret)
+            call tecach('ONN', 'PRIGIEL', 'L', iret, iad=jdr)
             if (jdr .eq. 0) goto 8
-            call tecach('NNN', 'PMATERC', 'L', 1, jma,&
-                        iret)
+            call tecach('NNN', 'PMATERC', 'L', iret, iad=jma)
             if ((jma.eq.0) .or. (iret.ne.0)) goto 8
             nomres(1) = 'RIGI_NOR'
             nomres(2) = 'AMOR_NOR'

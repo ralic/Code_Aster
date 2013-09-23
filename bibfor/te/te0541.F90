@@ -64,8 +64,7 @@ subroutine te0541(option, nomte)
     nbsig = nbsigm()
 !
 !     RECUPERATION DES XHAMPS IN ET OUT
-    call tecach('ONO', 'PCOMPOR', 'L', 1, itab,&
-                iret)
+    call tecach('ONO', 'PCOMPOR', 'L', iret, iad=itab(1))
     do 100 k = 1, 4
         if (iret .eq. 0) then
             compor(k) = zk16(itab(1)-1+k)

@@ -18,7 +18,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -58,10 +58,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
-    character(len=8) :: k8bid
     logical :: exicar
-    complex(kind=8) :: c16bid
     character(len=8) :: nomcmp(3)
     character(len=19) :: ligrmo
     character(len=19) :: chgeom, chcara(18), chtime
@@ -89,8 +86,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
     nomcmp(2) = 'DELTAT'
     nomcmp(3) = 'THETA'
     call mecact('V', chtime, 'LIGREL', ligrmo, 'INST_R',&
-                3, nomcmp, ibid, partps, c16bid,&
-                k8bid)
+                ncmp=3, lnomcmp=nomcmp, vr=partps)
 !
 ! --- CHAMPS D'ENTREES STANDARDS
 !

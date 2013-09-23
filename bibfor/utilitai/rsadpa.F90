@@ -1,5 +1,6 @@
 subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
-                  itype, ljeveu, ctype)
+                  itype, tjv, ttyp, sjv, styp)
+! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -16,9 +17,11 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 #include "asterfort/rsutrg.h"
 #include "asterfort/utmess.h"
 !
-    integer :: npara, iordr, itype, ljeveu(*)
-    character(len=1) :: cel
-    character(len=*) :: nomsd, lpara(*), ctype(*)
+    integer, intent(in) :: npara, iordr, itype
+    integer, intent(out), optional :: sjv, tjv(*)
+    character(len=1), intent(in) :: cel
+    character(len=*), intent(in) :: nomsd, lpara(*)
+    character(len=*), intent(out), optional :: styp, ttyp(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,7 +63,8 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 !            INVALIDER LJEVEU
 !-----------------------------------------------------------------------
     integer :: ibid, nbordr, nrang, jordr, i, ipara, ier, irang, ifr
-    integer :: vali(2)
+    integer :: vali(2), ljeveu(npara)
+    character(len=3)  :: ctype(npara)
     character(len=24) :: valk(3)
     character(len=16) :: param, k16b
     character(len=19) :: noms2
@@ -105,23 +109,42 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         call utmess('F', 'UTILITAI6_79', sk=valk(1), ni=2, vali=vali)
     endif
 !
-    do 10,i = 1,npara
-    param = lpara(i)
-    call jenonu(jexnom(noms2//'.NOVA', param), ipara)
-    if (ipara .eq. 0) then
-        ifr = iunifi('RESULTAT')
-        call dismoi('F', 'TYPE_RESU', nomsd, 'RESULTAT', ibid,&
-                    k16b, ier)
-        call jeimpo(ifr, noms2//'.NOVA', ' ')
-        valk (1) = nomsd
-        valk (2) = param
-        valk (3) = k16b
-        call utmess('F', 'UTILITAI6_80', nk=3, valk=valk)
+    do i = 1,npara
+        param = lpara(i)
+        call jenonu(jexnom(noms2//'.NOVA', param), ipara)
+        if (ipara .eq. 0) then
+            ifr = iunifi('RESULTAT')
+            call dismoi('F', 'TYPE_RESU', nomsd, 'RESULTAT', ibid,&
+                        k16b, ier)
+            call jeimpo(ifr, noms2//'.NOVA', ' ')
+            valk (1) = nomsd
+            valk (2) = param
+            valk (3) = k16b
+            call utmess('F', 'UTILITAI6_80', nk=3, valk=valk)
+        endif
+!
+        call extrs3(noms2, param, irang, cel, itype,&
+                    ctype(i), ljeveu(i))
+!
+    end do
+!    
+    if ( present(tjv) ) then
+        ASSERT (.not. present(sjv))
+        do i=1,npara  
+            tjv(i)=ljeveu(i)
+        end do
+    else if ( present(sjv) ) then
+        sjv=ljeveu(1)
     endif
-!
-    call extrs3(noms2, param, irang, cel, itype,&
-                ctype(i), ljeveu(i))
-!
-    10 end do
+    if ( itype .gt. 0 ) then
+            if ( present(ttyp) ) then
+                ASSERT (.not. present(styp))
+                do i=1,npara  
+                    ttyp(i)=ctype(i)
+                end do
+            else if ( present(styp) ) then  
+                styp=ctype(1)
+            endif 
+    endif 
 !
 end subroutine

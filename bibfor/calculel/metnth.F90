@@ -70,7 +70,6 @@ subroutine metnth(modele, lchar, cara, mate, time,&
     character(len=24) :: chvite, ligrmo, carte, convch, carele
     integer :: iret, ilires
     integer :: nchar, jchar
-    complex(kind=8) :: cbid
     logical :: exicar
 !
 ! DEB-------------------------------------------------------------------
@@ -131,8 +130,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
             chvite = vitess
             carte = '&&METNTH'//'.CONVECT.DECENT'
             call mecact('V', carte, 'MODELE', modele(1:8)//'.MODELE', 'NEUT_K24',&
-                        1, 'Z1', 0, 0.d0, cbid,&
-                        decent)
+                        ncmp=1, nomcmp='Z1', sk=decent)
             lpain(1) = 'PGEOMER'
             lchin(1) = chgeom
             lpain(2) = 'PMATERC'

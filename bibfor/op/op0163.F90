@@ -225,10 +225,10 @@ subroutine op0163()
 92      continue
         if (typres .eq. 'DYNA_HARMO') then
             call rsadpa(nomres, 'E', 1, 'FREQ', iarch,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
         else
             call rsadpa(nomres, 'E', 1, 'INST', iarch,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
         endif
         zr(linst) = zr(jinst+i)
 90  continue

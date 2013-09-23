@@ -17,9 +17,8 @@ subroutine te0519(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
@@ -32,6 +31,7 @@ subroutine te0519(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xteini.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !  XFEM GRANDS GLISSEMENTS
@@ -85,12 +85,12 @@ subroutine te0519(option, nomte)
     if (nfiss .gt. 1) then
         call jevech('PFISNO', 'L', jfisno)
         call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', 2, jtab,&
-                    iret)
+        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+                    itab=jtab)
         ncomph = jtab(2)
     endif
-    call tecach('OOO', 'PPINTER', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PPINTER', 'L', iret, nval=2,&
+                itab=jtab)
     ncompp = jtab(2)
     jeu(1) = -1
     jeu(2) = +1

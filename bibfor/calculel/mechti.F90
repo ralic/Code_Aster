@@ -38,10 +38,8 @@ subroutine mechti(noma, inst, deltat, theta, chtime)
     character(len=6) :: nompro
     parameter (nompro='MECHTI')
 !
-    integer :: ibid(6)
     real(kind=8) :: tps(6), rundf
-    character(len=8) :: k8b, nomcmp(6)
-    complex(kind=8) :: c16b
+    character(len=8) :: nomcmp(6)
 !
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
@@ -58,7 +56,6 @@ subroutine mechti(noma, inst, deltat, theta, chtime)
     tps(6) = rundf
 !
     call mecact('V', chtime, 'MAILLA', noma, 'INST_R',&
-                6, nomcmp, ibid, tps, c16b,&
-                k8b)
+                ncmp=6, lnomcmp=nomcmp, vr=tps)
 !
 end subroutine

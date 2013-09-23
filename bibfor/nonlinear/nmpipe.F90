@@ -92,10 +92,9 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 !
     integer :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
     integer :: jcesd, jcesl, jcesv, ja0a1, ja0, ja1, ja2, ja3, jtrav
-    integer :: iret, ibid, ja4
+    integer :: iret, ja4
     real(kind=8) :: result
-    complex(kind=8) :: cbid
-    character(len=8) :: k8bid, cpar
+    character(len=8) :: cpar
     character(len=19) :: copilo, copils, ctau
     character(len=24) :: a0a1, trav
     character(len=19) :: chgeom
@@ -187,8 +186,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     call detrsd('CARTE', ctau)
     cpar = 'A0'
     call mecact('V', ctau, 'LIGREL', ligrpi, 'PILO_R',&
-                1, cpar, ibid, tau, cbid,&
-                k8bid)
+                ncmp=1, nomcmp=cpar, sr=tau)
 !
 ! --- REMPLISSAGE DES CHAMPS D'ENTREE
 !

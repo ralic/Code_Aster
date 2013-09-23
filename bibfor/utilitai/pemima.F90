@@ -47,10 +47,10 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     integer :: iret, nbcmp, nzero, ibid, nbordr, iocc, jnuma, nbma
-    integer :: jcmp, n1, nr, np, nc, ni, no, jno, jin, numo
+    integer :: jcmp, n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
     integer :: nbgma, jgma, nma, igm, nbpar, nn, inum, nli, nlo
     parameter(nzero=0,nbpar=3)
-    real(kind=8) ::  prec, inst
+    real(kind=8) :: prec, inst
     complex(kind=8) :: cbid
     character(len=8) :: k8b, kbid, mailla, resuco, crit, tych
     character(len=8) :: nomgd, tout, grpma, typpar(nbpar)
@@ -149,13 +149,14 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                 if (exiord) then
                     numo=zi(jno+inum-1)
                     call rsadpa(resuco, 'L', 1, 'INST', numo,&
-                                0, jin, kbid)
+                                0, sjv=jin, styp=kbid)
                     inst=zr(jin)
                 else
                     inst=zr(jin+inum-1)
                     call rsorac(resuco, 'INST', 0, zr(jin+inum-1), kbid,&
-                                cbid, prec, crit, numo, nbordr,&
+                                cbid, prec, crit, tord, nbordr,&
                                 iret)
+                    numo=tord(1)            
                 endif
 !
 !             --- CHAMP DU POST-TRAITEMENT

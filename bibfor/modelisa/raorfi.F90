@@ -57,7 +57,6 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     real(kind=8) :: rayon
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), l, omega, theta
     real(kind=8) :: pgl4(3, 3)
-    complex(kind=8) :: ccmp(3)
 !
     call jemarq()
     call infniv(ifm, info)
@@ -150,8 +149,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     nocmp(3) = 'Z'
 !
     call mecact('V', typrac//'.CAXE_TUY', 'LIGREL', ligrel, 'GEOM_R',&
-                3, nocmp, ier, e1, ccmp,&
-                k8bid)
+                ncmp=3, lnomcmp=nocmp, vr=e1)
 !
 !     CALCUL DU VECTEUR GPL, AVEC P ORIGINE DE PHI
 !
@@ -177,8 +175,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     nocmp(3) = 'Z'
 !
     call mecact('V', typrac//'.CAORIFI', 'LIGREL', ligrel, 'GEOM_R',&
-                3, nocmp, ier, coorif, ccmp,&
-                k8bid)
+                ncmp=3, lnomcmp=nocmp, vr=coorif)
 !
 !     COORDONNEES DES VECTEURS UNITAIRES DANS LE REPERE GLOBAL
 !

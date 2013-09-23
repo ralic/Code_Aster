@@ -74,8 +74,8 @@ subroutine te0353(option, nomte)
     call jevech('PCONTMR', 'L', icontr)
     call jevech('PCOMPOR', 'L', icompo)
     compor=zk16(icompo+7)
-    call tecach('OON', 'PVARIPR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg=max(jtab(6),1)*jtab(7)
     call jevech('PVARIPR', 'L', ivari)
     call jevech('PVECTUR', 'E', ivectu)
@@ -256,11 +256,13 @@ subroutine te0353(option, nomte)
                         vi(4)=zr(ivari+(kp-1)*lgpg+3)
                         vi(5)=zr(ivari+(kp-1)*lgpg+4)
                         do 90 i = 1, 5
-                            call rctype(mater, 1, 'TEMP', [tpg], resu, type)
+                            call rctype(mater, 1, 'TEMP', [tpg], resu,&
+                                        type)
                             if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
                                 call utmess('F', 'CALCULEL_31')
                             endif
-                            call rctrac(mater, 2, nomcle(i), resu, jprol, jvale, nbval, r8bid)
+                            call rctrac(mater, 2, nomcle(i), resu, jprol,&
+                                        jvale, nbval, r8bid)
                             call rcfonc('V', 2, jprol, jvale, nbval,&
                                         r8bid, r8bid, r8bid, vi(i), r8bid,&
                                         r0(i), r8bid, r8bid, r8bid)
@@ -396,11 +398,13 @@ subroutine te0353(option, nomte)
                     vi(2)=zr(ivari+(kp-1)*lgpg+1)
                     vi(3)=zr(ivari+(kp-1)*lgpg+2)
                     do 120 i = 1, 3
-                        call rctype(mater, 1, 'TEMP', [tpg], resu, type)
+                        call rctype(mater, 1, 'TEMP', [tpg], resu,&
+                                    type)
                         if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
                             call utmess('F', 'CALCULEL_31')
                         endif
-                        call rctrac(mater, 3, nomcle(i), tpg, jprol, jvale, nbval, r8bid)
+                        call rctrac(mater, 3, nomcle(i), tpg, jprol,&
+                                    jvale, nbval, r8bid)
                         call rcfonc('V', 3, jprol, jvale, nbval,&
                                     r8bid, r8bid, r8bid, vi(i), r8bid,&
                                     r0(i), r8bid, r8bid, r8bid)

@@ -82,8 +82,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
     character(len=24) :: nomcha
     character(len=*) :: mate
     complex(kind=8) :: cbid
-    integer :: nbsel, idsel, n15, n16, ii
-    integer :: vali
+    integer :: nbsel, idsel, n15, n16, ii, vali, tmod(1)
     character(len=20) :: tempor
 !
 ! -----------------------------------------------------------------
@@ -113,8 +112,9 @@ subroutine majou(model, modmec, solveu, num, nu,&
     iadz = 1
 !
     call rsorac(modmec, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', nbmode, 1,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
+    nbmode=tmod(1)
 !
 !
 ! CREATION DE VECTEURS CONTENANT LES NOMS DES VECTEURS DE CHAMP AUX
@@ -183,7 +183,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
     do 100 jj = 1, nbsel
         do 200 kk = 1, nbnumo
             call rsadpa(modmec, 'L', 1, 'NUME_MODE', zi(jordr-1+kk),&
-                        0, jpara, k8bid)
+                        0, sjv=jpara, styp=k8bid)
             if (zi(idsel+jj-1) .eq. zi(jpara)) goto 100
 200      continue
         vali = zi(idsel+jj-1)

@@ -51,8 +51,7 @@ subroutine te0220(option, nomte)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PENERDR', 'E', iener)
 !
-    call tecach('ONN', 'PTEMPSR', 'L', 1, itemp,&
-                iret)
+    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemp)
     if (itemp .eq. 0) then
         nbpar = 0
         nompar = ' '

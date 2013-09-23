@@ -73,7 +73,7 @@ subroutine penorm(resu, modele)
     character(len=16) :: nompar(nbpmax)
 !
     integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nb_coef_user
-    integer :: jno, jin, j_coef_user
+    integer :: jno, jin, j_coef_user, tord(1)
     integer :: nbpar, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
     integer :: nn
     integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
@@ -282,14 +282,15 @@ subroutine penorm(resu, modele)
 !           - ORDRE -
                 numo=zi(jno+inum-1)
                 call rsadpa(resuco, 'L', 1, 'INST', numo,&
-                            0, jin, k8b)
+                            0, sjv=jin, styp=k8b)
                 inst=zr(jin)
             else
 !           - INST -
                 inst=zr(jin+inum-1)
                 call rsorac(resuco, 'INST', 0, zr(jin+inum-1), k8b,&
-                            c16b, prec, crit, numo, nbordr,&
+                            c16b, prec, crit, tord, nbordr,&
                             iret)
+                numo=tord(1)            
             endif
             call getvtx('NORME', 'NOM_CHAM', iocc=1, scal=nomcha, nbret=iret)
             if (iret .eq. 0) then

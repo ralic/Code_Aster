@@ -90,7 +90,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     integer :: ifm, niv
     real(kind=8) :: alpha, beta, gamma, theta, phi, kappa
     real(kind=8) :: rcmp(3), shima
-    complex(kind=8) :: c16bid
     logical :: lmuap, lammo, lshima, lviss, lamra
     logical :: lamor, lktan, londe, limped, ldyna, lexpl
 !
@@ -418,8 +417,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     rcmp(3) = gamma
     call jedetr(stadyn)
     call mecact('V', stadyn, 'MODELE', modele(1:8)//'.MODELE', 'STAOUDYN',&
-                3, licmp, ibid, rcmp, c16bid,&
-                k8bid)
+                ncmp=3, lnomcmp=licmp, vr=rcmp)
 !
 ! --- MODE MULTI-APPUI
 !

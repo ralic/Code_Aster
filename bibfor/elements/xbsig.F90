@@ -85,8 +85,8 @@ subroutine xbsig(option, ndim, nnop, nfh, nfe,&
     call elref1(elrefp)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+                itab=jtab)
     ncomp = jtab(2)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO ET NPG

@@ -47,7 +47,7 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
     integer :: igeom, imate, iforc, iforf, itemps, ipesa, irota
     integer :: iret, ino, j, kk, mxstac
     logical :: fonc
-    real(kind=8) :: valpar(4), rbid, om, omo, val(1)
+    real(kind=8) :: valpar(4), rbid=0.d0, om, omo, val(1)
     integer :: icodre(1)
     character(len=8) :: nompar(4)
     character(len=16) :: phenom
@@ -72,10 +72,8 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
         ASSERT(.false.)
     endif
 !
-    call tecach('ONN', 'PPESANR', 'L', 1, ipesa,&
-                iret)
-    call tecach('ONN', 'PROTATR', 'L', 1, irota,&
-                iret)
+    call tecach('ONN', 'PPESANR', 'L', iret, iad=ipesa)
+    call tecach('ONN', 'PROTATR', 'L', iret, iad=irota)
 !
 !     INITIALISATION DE FNO
     call vecini(ndim*nnop, 0.d0, fno)

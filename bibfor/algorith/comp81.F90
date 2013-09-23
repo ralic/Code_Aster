@@ -213,7 +213,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 554  continue
     if (nbmdef .ne. 0) then
         call rsadpa(basmod, 'L', 1, 'NOEUD_CMP', nbmdyn+1,&
-                    0, lnocmp, k8bid)
+                    0, sjv=lnocmp, styp=k8bid)
         if (zk16(lnocmp) .eq. ' ') lredu=.true.
     endif
     if (lredu) then

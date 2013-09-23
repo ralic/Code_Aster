@@ -154,8 +154,7 @@ subroutine te0047(optioz, nomtez)
 !
 !   récupération des orientations (angles nautiques -> vecteur ang)
 !   orientation de l'élément et déplacements dans les repères g et l
-    call tecach('ONN', 'PCAORIE', 'L', 1, lorien,&
-                iret)
+    call tecach('ONN', 'PCAORIE', 'L', iret, iad=lorien)
     if (iret .ne. 0) then
         messak(1) = nomte
         messak(2) = option

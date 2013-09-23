@@ -82,7 +82,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 !
     character(len=24) :: modele, carele
     character(len=24) :: charge, infcha
-    character(len=8) :: nomcha, k8bid
+    character(len=8) :: nomcha
     character(len=8) :: affcha
     character(len=16) :: option
     character(len=24) :: chtim2
@@ -93,7 +93,6 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     logical :: lbid, prem
     integer :: jchar, jinf, jlme
     integer :: nchar, numchm, nbchme
-    complex(kind=8) :: c16bid
     integer :: ifm, niv
 !
     integer :: nbchmx
@@ -165,11 +164,9 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 ! --- CHAMP POUR LES INSTANTS
 !
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                1, 'INST   ', ibid, instap, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='INST   ', sr=instap)
     call mecact('V', chtim2, 'MODELE', ligrmo, 'INST_R  ',&
-                1, 'INST   ', ibid, instam, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='INST   ', sr=instam)
 !
 ! --- REMPLISSAGE DES CHAMPS
 !

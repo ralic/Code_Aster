@@ -97,11 +97,9 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 ! --- RECUPERATION DU CHAMP DE DEPLACEMENT DANS LE CAS GROT_GDEP :
 !     ---------------------------------------------------------
     if (lgreen) then
-        call tecach('NNN', 'PDEPLAR', 'L', 1, idepl,&
-                    iret)
+        call tecach('NNN', 'PDEPLAR', 'L', iret, iad=idepl)
         if (iret .ne. 0) then
-            call tecach('NNN', 'PDEPPLU', 'L', 1, idepl,&
-                        iret)
+            call tecach('NNN', 'PDEPPLU', 'L', iret, iad=idepl)
             ASSERT(iret.eq.0)
         endif
     else

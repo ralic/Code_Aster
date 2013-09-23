@@ -47,10 +47,9 @@ subroutine crvrc1()
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, nbfac, n1, nbinst, kinst, jinst, jlinst
+    integer :: nbfac, n1, nbinst, kinst, jinst, jlinst
     integer :: nbin, iret, iexi, jtemp
     real(kind=8) :: vinst
-    complex(kind=8) :: cbid
     character(len=8) :: kbid, resu, carele, paout, lpain(10), tempef
     character(len=8) :: model2, modele
     character(len=16) :: type, oper
@@ -119,8 +118,7 @@ subroutine crvrc1()
     do 10,kinst = 1,nbinst
     vinst = zr(jlinst-1+kinst)
     call mecact('V', chinst, 'MODELE', ligrmo, 'INST_R',&
-                1, 'INST', ibid, vinst, cbid,&
-                kbid)
+                ncmp=1, nomcmp='INST', sr=vinst)
     call rsexch(' ', resu, 'TEMP', kinst, chout,&
                 iret)
 !
@@ -131,7 +129,7 @@ subroutine crvrc1()
     call detrsd('CHAM_ELEM_S', chout)
     call rsnoch(resu, 'TEMP', kinst)
     call rsadpa(resu, 'E', 1, 'INST', kinst,&
-                0, jinst, kbid)
+                0, sjv=jinst, styp=kbid)
     zr(jinst) = vinst
     call detrsd('CHAMP', chinst)
     10 end do

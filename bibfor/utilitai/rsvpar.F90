@@ -61,7 +61,7 @@ subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
 12  continue
     ier = 110
     call rsadpa(nomsd, 'L', 1, nompar, iordr,&
-                1, jadr, ctype)
+                1, sjv=jadr, styp=ctype)
     if (ctype(1:1) .eq. 'I') then
         if (zi(jadr) .eq. ipar) ier = 100
     else if (ctype(1:1).eq.'R') then

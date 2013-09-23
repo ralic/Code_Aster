@@ -132,8 +132,8 @@ subroutine te0510(option, nomte)
 ! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
         goto 999
     endif
-    call tecach('NOO', 'PLST', 'L', 7, jtab,&
-                iret)
+    call tecach('NOO', 'PLST', 'L', iret, nval=7,&
+                itab=jtab)
 !     NOMBRE DE FISSURES
     nfiss = jtab(7)
     vali(1)=nfimax
@@ -155,26 +155,26 @@ subroutine te0510(option, nomte)
             fisco(i)=zi(jfisco-1+i)
 73      continue
         call jevech('PHEAVFA', 'E', jout7)
-        call tecach('OOO', 'PHEAVFA', 'E', 2, jtab,&
-                    iret)
+        call tecach('OOO', 'PHEAVFA', 'E', iret, nval=2,&
+                    itab=jtab)
         ncomph = jtab(2)
     endif
 !
 !     DIMENSIONS DES GRANDEURS DANS LA CARTE
-    call tecach('OOO', 'PPINTER', 'E', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PPINTER', 'E', iret, nval=2,&
+                itab=jtab)
     ncompp = jtab(2)
-    call tecach('OOO', 'PGESCLA', 'E', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PGESCLA', 'E', iret, nval=2,&
+                itab=jtab)
     ASSERT(jtab(2).eq.ncompp)
-    call tecach('OOO', 'PAINTER', 'E', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PAINTER', 'E', iret, nval=2,&
+                itab=jtab)
     ncompa = jtab(2)
-    call tecach('OOO', 'PBASECO', 'E', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PBASECO', 'E', iret, nval=2,&
+                itab=jtab)
     ncompb = jtab(2)
-    call tecach('OOO', 'PCFACE', 'E', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PCFACE', 'E', iret, nval=2,&
+                itab=jtab)
     ncompc = jtab(2)
 !
 ! --- BOUCLE SUR LES FISSURES

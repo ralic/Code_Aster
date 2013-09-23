@@ -106,7 +106,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     parameter   (mxstac=1000)
     character(len=2) :: codret
     character(len=8) :: noma, fond, licmp(4), typmo, fiss, mosain
-    character(len=8) :: k8bid
     character(len=16) :: option, optio2, valk
     character(len=19) :: ch1d2d, chpres, chrota, chpesa, chvolu, ch2d3d, chepsi
     character(len=19) :: chvref, chvarc
@@ -269,8 +268,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     zr(iadrff+3) = rcmp(4)
 !
     call mecact('V', chfond, 'MAILLA', noma, 'FISS_R',&
-                4, licmp, ibid, rcmp, cbid,&
-                ' ')
+                ncmp=4, lnomcmp=licmp, vr=rcmp)
 !
 !
 ! --- RECUPERATION DES DONNEES XFEM (TOPOSE)
@@ -362,8 +360,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     chtime = '&&CAKG2D.CH_INST_R'
     if (option .eq. 'CALC_K_G_F') then
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                    1, 'INST   ', ibid, time, cbid,&
-                    k8bid)
+                    ncmp=1, nomcmp='INST   ', sr=time)
         nchin = nchin + 1
         lpain(nchin) = 'PTEMPSR'
         lchin(nchin) = chtime
@@ -372,8 +369,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     if (lmoda) then
         chpuls = '&&CAKG2D.PULS'
         call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ',&
-                    1, 'FREQ   ', ibid, puls, cbid,&
-                    ' ')
+                    ncmp=1, nomcmp='FREQ   ', sr=puls)
         nchin = nchin + 1
         lpain(nchin) = 'PPULPRO'
         lchin(nchin) = chpuls

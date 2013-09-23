@@ -55,7 +55,7 @@ subroutine refe99(nomres)
 !
     integer :: i, ioc1, ioc3, ioc4, ioc5, ier, ibid, ibmo, imint, inmax
     integer :: ltmome, nbg, nbmome, ltnbmo, ltnbmax, nbli, nbmax, vali(2)
-    integer :: nbtot, nbold, nbmod1, nbmod2, nbmout, nbmodo
+    integer :: nbtot, nbold(1), nbmod1, nbmod2, nbmout, nbmodo(1)
 !
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
@@ -141,25 +141,25 @@ subroutine refe99(nomres)
                 call utmess('F', 'ALGORITH14_24', nk=4, valk=valk)
             endif
 !           Determine the real number of modes to recuperate from each base
-            call rsorac(momeca, 'LONUTI', ibid, rbid, kbid,&
+            call rsorac(momeca, 'LONUTI', 0, rbid, kbid,&
                         cbid, rbid, 'ABSOLU', nbmodo, 1,&
                         ibid)
             nbmout = zi(ltnbmax+i-1)
-            if (nbmodo .lt. nbmout) then
+            if (nbmodo(1) .lt. nbmout) then
                 call utmess('I', 'ALGORITH15_92')
                 valk = momeca
                 call utmess('I', 'ALGORITH15_93', sk=valk(1))
-                vali = nbmodo
+                vali = nbmodo(1)
                 call utmess('I', 'ALGORITH15_94', si=vali(1))
             else
-                nbmodo = nbmout
+                nbmodo(1) = nbmout
             endif
-            zi(ltnbmo+i-1) = nbmodo
+            zi(ltnbmo+i-1) = nbmodo(1)
 !           Add a reference in the dynamic result data structure
             concep(1) = raid
             concep(2) = mass
             concep(3) = amor
-            call refdaj('F', nomres, nbmodo, numddl, 'DYNAMIQUE',&
+            call refdaj('F', nomres, nbmodo(1), numddl, 'DYNAMIQUE',&
                         concep, ier)
             concep(1) = intf
             call refdaj('F', nomres, 0, numddl, 'INTERF_DYNA',&
@@ -247,26 +247,26 @@ subroutine refe99(nomres)
                             numbis, ier)
                 if (numddl .eq. ' ') numddl = numbis
 !               Determine the real number of modes to recuperate from each base
-                call rsorac(momeca, 'LONUTI', ibid, rbid, kbid,&
+                call rsorac(momeca, 'LONUTI', 0, rbid, kbid,&
                             cbid, rbid, 'ABSOLU', nbmodo, 1,&
                             ibid)
                 nbmout = zi(ltnbmax+i-1)
-                if (nbmodo .lt. nbmout) then
+                if (nbmodo(1) .lt. nbmout) then
                     call utmess('I', 'ALGORITH15_92')
                     valk = momeca
                     call utmess('I', 'ALGORITH15_93', sk=valk(1))
-                    vali = nbmodo
+                    vali = nbmodo(1)
                     call utmess('I', 'ALGORITH15_94', si=vali(1))
                 else
-                    nbmodo = nbmout
+                    nbmodo(1) = nbmout
                 endif
-                zi(ltnbmo+i-1) = nbmodo
-                nbmod1 = nbmod1 + nbmodo
+                zi(ltnbmo+i-1) = nbmodo(1)
+                nbmod1 = nbmod1 + nbmodo(1)
 !               Add a reference in the dynamic result data structure
                 concep(1) = raid
                 concep(2) = mass
                 concep(3) = amor
-                call refdaj('F', nomres, nbmodo, numddl, 'DYNAMIQUE',&
+                call refdaj('F', nomres, nbmodo(1), numddl, 'DYNAMIQUE',&
                             concep, ier)
 20          continue
         endif
@@ -275,13 +275,13 @@ subroutine refe99(nomres)
 !           Maximum number of static modes to extract : nbmod2
             call getvis('RITZ', 'NMAX_MODE', iocc=2, scal=nbmod2, nbret=inmax)
 !           Number of modes that actually exist in the static base : nbold
-            call rsorac(resul2, 'LONUTI', ibid, rbid, k8b,&
+            call rsorac(resul2, 'LONUTI', 0, rbid, k8b,&
                         cbid, rbid, 'ABSOLU', nbold, 1,&
                         ibid)
             if (inmax .eq. 0) then
-                nbmod2 = nbold
+                nbmod2 = nbold(1)
             else
-                nbmod2 = min(nbmod2,nbold)
+                nbmod2 = min(nbmod2,nbold(1))
             endif
 !
             concep(1) = resul2

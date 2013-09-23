@@ -74,14 +74,13 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     character(len=8) :: licmp(npara)
     real(kind=8) :: rcmp(npara)
 !
-    integer :: ibid, icmp, codret, iret
+    integer :: ibid, codret, iret
     character(len=1) :: base
-    character(len=8) :: kcmp
     character(len=24) :: ligrmo, chgeom
     character(len=24) :: chtime
     character(len=24) :: cartca
     character(len=19) :: sigmam, sigmap, chelem
-    complex(kind=8) :: cbid, ccmp
+    complex(kind=8) :: cbid
     real(kind=8) :: somme(1)
     real(kind=8) :: instap, instam, deltat
     real(kind=8) :: longc, presc
@@ -151,8 +150,7 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     rcmp(2) = presc
 !
     call mecact(base, cartca, 'MODELE', ligrmo, 'NEUT_R',&
-                npara, licmp, icmp, rcmp, ccmp,&
-                kcmp)
+                ncmp=npara, lnomcmp=licmp, vr=rcmp)
 !
 ! --- CALCUL DES INDICATEURS LOCAUX PAR ELEMENT
 !

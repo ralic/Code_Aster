@@ -181,13 +181,13 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
     do 20 imod = 1, nbm
         numod = nuor(imod)
         call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod,&
-                    0, lfacx, k8b)
+                    0, sjv=lfacx, styp=k8b)
         zr(ifact+imod-1) = zr(lfacx)
         zr(ifact+nbm+imod-1) = zr(lfacx+1)
         zr(ifact+2*nbm+imod-1) = zr(lfacx+2)
         fi = freqi(numod)
         call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
-                    0, lmasg, k8b)
+                    0, sjv=lmasg, styp=k8b)
         mi = zr(lmasg)
         ki = 4.d0*pi*pi*fi*fi*mi
         zr(imatm+nbm*(imod-1)+imod-1) = zr(imatm+nbm*(imod-1)+imod-1) + mi
@@ -309,7 +309,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
             numod = nuor(kmod)
             fk = freqi(numod)
             call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
-                        0, lmasg, k8b)
+                        0, sjv=lmasg, styp=k8b)
             mk = zr(lmasg)
             ck = 4.d0*pi*fk*amor(kmod)*mk
             amfr(imod,1) = amfr(imod,1) + vecpr(kmod,imod) * ck * vecpr(kmod,imod)

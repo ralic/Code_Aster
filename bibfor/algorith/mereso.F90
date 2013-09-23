@@ -164,19 +164,19 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !*** INST
 !
     call rsadpa(result, 'E', 1, 'INST', itps,&
-                0, iainst, k8bid)
+                0, sjv=iainst, styp=k8bid)
     zr(iainst) = partps(1)
 !
 !*** METHODE, RENUM, ...
 !
     call rsadpa(result, 'E', 1, 'METHODE', itps,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zk16(jpara) = zk24(islvk)(1:16)
     call rsadpa(result, 'E', 1, 'RENUM', itps,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     zk16(jpara) = zk24(islvk+3)(1:16)
     call rsadpa(result, 'E', 1, 'STOCKAGE', itps,&
-                0, jpara, k8bid)
+                0, sjv=jpara, styp=k8bid)
     if (zk24(islvk)(1:4) .eq. 'LDLT') then
         zk16(jpara) = 'LIGN_CIEL'
     else
@@ -191,15 +191,15 @@ subroutine mereso(result, modele, mate, carele, fomult,&
         call jeveuo(criter(1:19)//'.CRTR', 'L', jcrr)
         call jeveuo(criter(1:19)//'.CRDE', 'L', jcrk)
         call rsadpa(result, 'E', 1, zk16(jcrk), itps,&
-                    0, jpara, k8bid)
+                    0, sjv=jpara, styp=k8bid)
         zi(jpara) = zi(jcri)
         call rsadpa(result, 'E', 1, zk16(jcrk+1), itps,&
-                    0, jpara, k8bid)
+                    0, sjv=jpara, styp=k8bid)
         zr(jpara) = zr(jcrr)
     endif
     call uttcpu('CPU.OP0046.3', 'FIN', ' ')
 !
-100 format(1p,3x,'CHAMP STOCKE : ',a16,' INSTANT : ',1pe12.5,&
+    100 format(1p,3x,'CHAMP STOCKE : ',a16,' INSTANT : ',1pe12.5,&
      &         '  NUMERO D''ORDRE : ',i5)
 !
 end subroutine

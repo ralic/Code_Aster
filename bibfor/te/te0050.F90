@@ -61,20 +61,17 @@ subroutine te0050(option, nomte)
     irns=0
     if (option .eq. 'AMOR_MECA') then
 !        CALL TECACH('NNO','PRIGIEL','L',1,IBID,INS)
-        call tecach('NNO', 'PRIGIEL', 'L', 1, idrigi,&
-                    ins)
+        call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
-            call tecach('ONN', 'PMATUUR', 'E', 5, idresu,&
-                        iret)
+            call tecach('ONN', 'PMATUUR', 'E', iret, nval=5,&
+                        itab=idresu)
         else
-            call tecach('NNN', 'PMATUNS', 'E', 5, idresu,&
-                        irns)
-            if (irns .ne. 0) call tecach('ONN', 'PMATUUR', 'E', 5, idresu,&
-                                         iret)
+            call tecach('NNN', 'PMATUNS', 'E', irns, nval=5,&
+                        itab=idresu)
+            if (irns .ne. 0) call tecach('ONN', 'PMATUUR', 'E', iret, 5, itab=idresu)
         endif
     else if (option.eq.'RIGI_MECA_HYST') then
-        call tecach('ONN', 'PMATUUC', 'E', 5, idresu,&
-                    iret)
+        call tecach('ONN', 'PMATUUC', 'E', iret, nval=5, itab=idresu)
     else
         ASSERT(.false.)
     endif
@@ -84,8 +81,8 @@ subroutine te0050(option, nomte)
     nompar(2)='Y'
     nompar(3)='Z'
 !
-    call tecach('ONN', 'PGEOMER', 'L', 5, idgeo,&
-                iret)
+    call tecach('ONN', 'PGEOMER', 'L', iret, nval=5,&
+                itab=idgeo)
     igeom=idgeo(1)
     idimge=idgeo(2)/nno
     ASSERT(idimge.eq.2 .or. idimge.eq.3)
@@ -102,12 +99,12 @@ subroutine te0050(option, nomte)
     mater=zi(imate)
 !
     if (ins .eq. 0) then
-        call tecach('ONN', 'PRIGIEL', 'L', 2, idrigi,&
-                    iret)
+        call tecach('ONN', 'PRIGIEL', 'L', iret, nval=2,&
+                    itab=idrigi)
         ASSERT(idrigi(2).eq.nbval)
     else if (irns.eq.0) then
-        call tecach('ONN', 'PRIGINS', 'L', 2, idrigi,&
-                    iret)
+        call tecach('ONN', 'PRIGINS', 'L', iret, nval=2,&
+                    itab=idrigi)
         ASSERT(idrigi(2).eq.nbval)
     endif
 !
@@ -117,8 +114,8 @@ subroutine te0050(option, nomte)
 !
     if (option .eq. 'AMOR_MECA') then
 !     --------------------------------
-        call tecach('ONN', 'PMASSEL', 'L', 2, idmass,&
-                    iret)
+        call tecach('ONN', 'PMASSEL', 'L', iret, nval=2,&
+                    itab=idmass)
 !
         if (ins .eq. 0) then
             ASSERT(idmass(2).eq.nbval)

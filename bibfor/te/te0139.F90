@@ -89,8 +89,8 @@ subroutine te0139(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     lgpg1 = max(jtab(6),1)*jtab(7)
     lgpg = lgpg1
 !

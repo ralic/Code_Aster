@@ -62,7 +62,7 @@ subroutine peeint(resu, modele, nbocc)
     integer :: iret, nbcmp, nzero, ibid, nbordr, iocc, jnuma, nbma, ncmpm
     integer :: jcmp, n1, numa, nr, np, nc, im, ni, no, jno, jin, numo, i
     integer :: nbgma, jgma, nma, jma, igm, nbpa1, nbpa2, nn, inum, nli, nlo
-    integer :: nd, ib, jlicmp, jlicm2, jlicm1, nucmp, jcpini
+    integer :: nd, ib, jlicmp, jlicm2, jlicm1, nucmp, jcpini, tord(1)
     parameter(nzero=0,nbpa1=4,nbpa2=2)
     real(kind=8) :: prec, inst
     complex(kind=8) :: cbid
@@ -186,13 +186,14 @@ subroutine peeint(resu, modele, nbocc)
                 if (exiord) then
                     numo=zi(jno+inum-1)
                     call rsadpa(resuco, 'L', 1, 'INST', numo,&
-                                0, jin, kbid)
+                                0, sjv=jin, styp=kbid)
                     inst=zr(jin)
                 else
                     inst=zr(jin+inum-1)
                     call rsorac(resuco, 'INST', 0, zr(jin+inum-1), kbid,&
-                                cbid, prec, crit, numo, nbordr,&
+                                cbid, prec, crit, tord, nbordr,&
                                 iret)
+                    numo=tord(1)            
                 endif
 !
 !         --- CHAMP DU POST-TRAITEMENT

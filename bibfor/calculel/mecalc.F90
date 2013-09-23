@@ -72,8 +72,8 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     character(len=*) :: chtref, chtime, chnumc, chharm, charge, cheps, chmeta
     character(len=*) :: typcoe, ligrel, base, ch1, ch2, chvari, chacse, chelex
     character(len=*) :: chdese, chtese, nopase
-    real(kind=8) :: alpha, r8b
-    complex(kind=8) :: calpha, c16b
+    real(kind=8) :: alpha
+    complex(kind=8) :: calpha
     integer :: typese, codret
     character(len=6) :: nompro
     parameter (nompro='MECALC')
@@ -248,8 +248,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                 noma=chgeom(1:8)
                 call getvtx(' ', 'NOM_VARI', scal=vari, nbret=ibid)
                 call mecact('V', chnova, 'MAILLA', noma, 'NEUT_K24',&
-                            1, 'Z1', ibid, r8b, c16b,&
-                            vari)
+                            ncmp=1, nomcmp='Z1', sk=vari)
 !
                 lpain(1) = 'PVARIGR'
                 lpaout(1) = 'PVARIGS'
@@ -260,8 +259,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                 noma=chgeom(1:8)
                 call getvtx(' ', 'NOM_VARI', scal=vari, nbret=ibid)
                 call mecact('V', chnova, 'MAILLA', noma, 'NEUT_K24',&
-                            1, 'Z1', ibid, r8b, c16b,&
-                            vari)
+                            ncmp=1, nomcmp='Z1', sk=vari)
                 lpain(1) = 'PVARINR'
                 lpaout(1) = 'PVARINS'
                 lpain(2) = 'PNOVARI'

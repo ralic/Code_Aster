@@ -46,7 +46,7 @@ subroutine te0174(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ier, ii, ino, iret, itemps, ivnor
     integer :: j, jno, mater, n, nbpar
-    real(kind=8) :: r8b, rho(1), x, y, z
+    real(kind=8) :: r8b=0.d0, rho(1), x, y, z
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfdx, jgano)
@@ -88,8 +88,7 @@ subroutine te0174(option, nomte)
     nompar(3) = 'Z'
     nompar(4) = 'INST'
 !
-    call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                iret)
+    call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         valpar(4) = zr(itemps)
         nbpar = 4
@@ -143,8 +142,8 @@ subroutine te0174(option, nomte)
 !
         do 103 i = 1, nno
             ii = 2*i
-            zr(ivectu+ii-1) = zr(ivectu+ii-1)-jac*zr(ipoids+ipg-1) * vnorf * rho(1) &
-                            * zr(ivf+ldec+i-1)
+            zr(ivectu+ii-1) = zr(ivectu+ii-1)-jac*zr(ipoids+ipg-1) * vnorf * rho(1) * zr(ivf+ldec&
+                              &+i-1)
 103      continue
 101  end do
 !

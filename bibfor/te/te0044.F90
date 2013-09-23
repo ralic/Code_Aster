@@ -52,7 +52,7 @@ subroutine te0044(option, nomte)
     real(kind=8) :: r8bid, ul(12), pgl(3, 3), klc(12, 12), mat(144)
     integer :: infodi, nbterm, nno, nc, ndim, itype, neq, kanl, irep, iiff
     integer :: i, lorie, ldepl, lvite, jende, ldis, jfreq, ibid, iret
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
     character(len=8) :: k8bid
 !
 !     ------------------------------------------------------------------
@@ -114,11 +114,8 @@ subroutine te0044(option, nomte)
             call ut2vgl(nno, nc, pgl, zr(ldepl), ul)
         endif
     else
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
-        call tecach(stopz, 'PVITESR', 'L', 1, lvite,&
-                    iret)
+        stopz='ONO'
+        call tecach(stopz, 'PVITESR', 'L', iret, iad=lvite)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
             if (ndim .eq. 3) then
@@ -127,8 +124,7 @@ subroutine te0044(option, nomte)
                 call ut2vgl(nno, nc, pgl, zr(lvite), ul)
             endif
         else
-            call tecach(stopz, 'PDEPLAR', 'L', 1, ldepl,&
-                        iret)
+            call tecach(stopz, 'PDEPLAR', 'L', iret, iad=ldepl)
             if (iret .eq. 0) then
                 if (ndim .eq. 3) then
                     call utpvgl(nno, nc, pgl, zr(ldepl), ul)

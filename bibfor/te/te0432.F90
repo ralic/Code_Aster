@@ -43,7 +43,7 @@ subroutine te0432(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
     integer :: nno, npg, i, imatuu, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: iret, iretd, iretv
@@ -83,14 +83,10 @@ subroutine te0432(option, nomte)
     else if (option.eq.'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
     else if (option.eq.'ECIN_ELEM') then
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
-        call tecach(stopz, 'PVITESR', 'L', 1, ivite,&
-                    iretv)
+        stopz='ONO'
+        call tecach(stopz, 'PVITESR', 'L', iretv, iad=ivite)
         if (iretv .ne. 0) then
-            call tecach(stopz, 'PDEPLAR', 'L', 1, idepl,&
-                        iretd)
+            call tecach(stopz, 'PDEPLAR', 'L', iretd, iad=idepl)
             if (iretd .eq. 0) then
                 call jevech('POMEGA2', 'L', ifreq)
             else

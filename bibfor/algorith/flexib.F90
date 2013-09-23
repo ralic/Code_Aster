@@ -197,10 +197,10 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     do 80 i = 1, nbmod
 !
         call rsadpa(basmod, 'L', 1, 'RIGI_GENE', i,&
-                    0, ldkge, k8bid)
+                    0, sjv=ldkge, styp=k8bid)
         xkgen=zr(ldkge)
         call rsadpa(basmod, 'L', 1, 'MASS_GENE', i,&
-                    0, ldmge, k8bid)
+                    0, sjv=ldmge, styp=k8bid)
 !
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)

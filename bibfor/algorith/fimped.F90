@@ -29,24 +29,20 @@ subroutine fimped(modele, mate, numedd, neq, vitini,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/reajre.h"
-    character(len=8) :: lpain(5), lpaout(1), k8bid
+    integer :: i, ibid, jnoma, jreane, jvaanc, neq, npain
+    character(len=8) :: lpain(5), lpaout(1)
     character(len=24) :: modele, mate, numedd, vitini, veccor
     character(len=24) :: vitent, chinst
     character(len=24) :: veanec, vaanec, lchin(5), lchout(1)
     character(len=24) :: chgeom, ligrel
     real(kind=8) :: foimpe(neq), temps
-    complex(kind=8) :: cbid
-!
-!-----------------------------------------------------------------------
-    integer :: i, ibid, jnoma, jreane, jvaanc, neq, npain
 !
 !-----------------------------------------------------------------------
     call jemarq()
 !
     chinst = '&&CHINST'
     call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
-                1, 'INST', ibid, temps, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=temps)
     call jedetr(veanec(1:19)//'.RELR')
 !
     ligrel = modele(1:8)//'.MODELE'

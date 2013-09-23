@@ -30,17 +30,10 @@ subroutine mefor0(nomo, chfor0, fonc)
 !       FONC = .FALSE. FORCE REELLE
 !
 !
-    real(kind=8) :: rcmp(3), rbid
-    integer :: ibid
+    real(kind=8) :: rcmp(3)
 !
     character(len=8) :: licmp(3), nomf(3), zero
     character(len=19) :: ligrmo
-!
-    complex(kind=8) :: cbid
-!
-!   ------------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     chfor0 = '&&MEFOR0.FORCE_NULLE'
     zero = '&&MEFOR0'
@@ -57,12 +50,10 @@ subroutine mefor0(nomo, chfor0, fonc)
         nomf(2) = zero
         nomf(3) = zero
         call mecact('V', chfor0, 'MODELE', ligrmo, 'FORC_F',&
-                    3, licmp, ibid, rbid, cbid,&
-                    nomf)
+                    ncmp=3, lnomcmp=licmp, vk=nomf)
     else
         call mecact('V', chfor0, 'MODELE', ligrmo, 'FORC_R',&
-                    3, licmp, ibid, rcmp, cbid,&
-                    ' ')
+                    ncmp=3, lnomcmp=licmp, vr=rcmp)
     endif
 !
 end subroutine

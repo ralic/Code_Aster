@@ -35,19 +35,13 @@ subroutine te0415(optioz, nomtz)
     integer :: j, j1
     integer :: jvari, k1, k2, l, lgpg
     integer :: lzi, lzr, nbcou, nbvari, nep, np1
-    integer :: np2, np3, np4, npge, npgt, npo, npp
+    integer :: np2, np3, np4, npge, npo, npp
     integer :: nso
     real(kind=8) :: s
 !-----------------------------------------------------------------------
     parameter (npge=3)
-    parameter (npgt=10)
     integer :: icou, jmat, jnbspi
     integer :: nb2, npgsn, jtab(7)
-    real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
-    real(kind=8) :: vectg(2, 3), vectt(3, 3)
-    real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
-    real(kind=8) :: sigm(6, 270), sigma(6, 120), siggn(6, 9)
-    real(kind=8) :: pk2(6, 270), siggnu(6, 9)
 !
     option = optioz
     nomte = nomtz
@@ -66,8 +60,8 @@ subroutine te0415(optioz, nomtz)
         call jevech('PVARIGR', 'L', ichg)
         call jevech('PCOMPOR', 'L', icompo)
         read (zk16(icompo-1+2),'(I16)') nbvari
-        call tecach('OON', 'PVARIGR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
+                    itab=jtab)
         lgpg = max(jtab(6),1)*jtab(7)
         call jevech('PNBSP_I', 'L', jnbspi)
         nbcou=zi(jnbspi-1+1)

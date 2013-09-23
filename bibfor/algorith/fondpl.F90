@@ -30,17 +30,16 @@ subroutine fondpl(modele, mate, numedd, neq, chondp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/reajre.h"
-    character(len=8) :: lpain(5), lpaout(1), k8bid, chondp(nchond)
+!
+    integer :: i, ibid, iret, j, jnoma, jreond, jvaond
+    integer :: nchond, neq, npain
+    character(len=8) :: lpain(5), lpaout(1), chondp(nchond)
     character(len=24) :: modele, mate, numedd, vecond
     character(len=24) :: chinst
     character(len=24) :: veonde, vaonde, lchin(5), lchout(1)
     character(len=24) :: chgeom, ligrel
     real(kind=8) :: foonde(neq), temps
-    complex(kind=8) :: cbid
 !
-!-----------------------------------------------------------------------
-    integer :: i, ibid, iret, j, jnoma, jreond, jvaond
-    integer :: nchond, neq, npain
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -50,8 +49,7 @@ subroutine fondpl(modele, mate, numedd, neq, chondp,&
 !
     chinst = '&&CHINST'
     call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
-                1, 'INST', ibid, temps, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=temps)
     ligrel = modele(1:8)//'.MODELE'
     call jeveuo(ligrel(1:19)//'.LGRF', 'L', jnoma)
     chgeom = zk8(jnoma)//'.COORDO'

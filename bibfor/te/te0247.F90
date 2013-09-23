@@ -254,8 +254,8 @@ subroutine te0247(option, nomte)
         elseif ((zk16(icompo).eq.'LMARC_IRRA').or. (zk16(icompo)&
     .eq.'LEMAITRE_IRRA')) then
 !
-        call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                    itab=jtab)
         lgpg = max(jtab(6),1)*jtab(7)
 !
 !-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES

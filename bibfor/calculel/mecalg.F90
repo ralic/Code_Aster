@@ -307,8 +307,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         .or. (option.eq.'CALC_G_GLOB_F') .or. (option.eq.'CALC_DGG_E_F') .or.&
         (option.eq.'CALC_DGG_FORC_F') .or. (option.eq.'CALC_DG_FORC_F')) then
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
-                    1, 'INST   ', ibid, time, cbid,&
-                    k8b)
+                    ncmp=1, nomcmp='INST   ', sr=time)
         lpain(nchin+1) = 'PTEMPSR'
         lchin(nchin+1) = chtime
         nchin = nchin + 1

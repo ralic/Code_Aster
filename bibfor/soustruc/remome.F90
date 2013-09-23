@@ -51,7 +51,7 @@ subroutine remome(promes, modmes, nommac)
 !
     integer :: nbmesu, nbmtot, numord, lmesu, imes, lord, lrange, lori, ii
     integer :: iret, icmp, ino, lnoeud, idesc, gd, nbcmp, ibid, lref
-    integer :: jcnsd, jcnsc, jcnsv, jcnsl, jcnsk
+    integer :: jcnsd, jcnsc, jcnsv, jcnsl, jcnsk, tord(1)
 !
     real(kind=8) :: rbid, vori(3), val, vect(3)
 !
@@ -85,9 +85,11 @@ subroutine remome(promes, modmes, nommac)
     chs = '&&MESURE.CHS'
 !
 ! RECUPERATION DU NB DE VECTEURS PROPRES IDENTIFIES : NBMTOT
-    call rsorac(modmes, 'LONUTI', ibid, rbid, k8bid,&
-                cbid, rbid, 'ABSOLU', nbmtot, 1,&
+    call rsorac(modmes, 'LONUTI', 0, rbid, k8bid,&
+                cbid, rbid, 'ABSOLU', tord, 1,&
                 ibid)
+    nbmtot=tord(1)            
+                
 !
 ! BOUCLE SUR LES NUMEROS ORDRE
 !

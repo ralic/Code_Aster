@@ -58,14 +58,13 @@ subroutine orth99(nomres, ritz)
 !
     integer :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iddeeq
     integer :: llnequ, neq, idmode, jtrav1, jtrav3, jtrav4, iorol, iorne, iad
-    integer :: jiad, jvale, ieq, i, nindep
+    integer :: jiad, jvale, ieq, i, nindep, ir, tmod(1)
     real(kind=8) :: alpha, rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, matras, base, ortho, intf
     character(len=16) :: typbas
     character(len=14) :: nu, numdd1, numdda, matri1
     character(len=19) :: matr, chamol
-    integer :: ir
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -118,9 +117,11 @@ subroutine orth99(nomres, ritz)
 !
 ! RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
     call gettco(base, typbas)
-    call rsorac(base, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, 'ABSOLU', nbmode, 1,&
+    call rsorac(base, 'LONUTI', 0, rbid, k8b,&
+                cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
+    nbmode=tmod(1)
+                
 !
     call jeveuo(base//'           .ORDR', 'L', jordm)
 ! RECUPERATION DE LA NUMEROTATION DES BASES
@@ -219,45 +220,45 @@ subroutine orth99(nomres, ritz)
         call rsnoch(nomres, 'DEPL', iorne)
 !
         call rsadpa(base, 'L', 1, 'NUME_MODE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zi(jiad) = zi(iad)
 !
         call rsadpa(base, 'L', 1, 'FREQ', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'FREQ', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(base, 'L', 1, 'NORME', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'NORME', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zk24(jiad) = zk24(iad)
 !
         call rsadpa(base, 'L', 1, 'OMEGA2', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(base, 'L', 1, 'MASS_GENE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(base, 'L', 1, 'RIGI_GENE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(base, 'L', 1, 'TYPE_MODE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 80  continue
 !

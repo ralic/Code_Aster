@@ -1,6 +1,6 @@
 subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
-                  ncmp, licmp, icmp, rcmp, ccmp,&
-                  kcmp)
+                  ncmp, nomcmp,  si, sr, sc, sk, &
+                        lnomcmp, vi, vr, vc, vk         )
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1306
 !-----------------------------------------------------------------------
     implicit none
 !     CREER 1 CARTE CONSTANTE SUR 1 MODELE.
@@ -34,32 +35,37 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-    character(len=*) :: base, nomcar, nomco
-    character(len=*) :: nomgdz, moclez
+    character(len=*), intent(in) :: base, nomcar, nomco
+    character(len=*), intent(in) :: nomgdz, moclez
     character(len=8) :: nomgd
     character(len=6) :: mocle
-    integer :: ncmp
-    character(len=*) :: licmp(ncmp)
-    character(len=*) :: kcmp(ncmp)
+    integer, intent(in) :: ncmp
+    character(len=*), intent(in), optional :: nomcmp, sk, lnomcmp(ncmp), vk(ncmp)   
+    integer, intent(in), optional :: si, vi(ncmp) 
+    real(kind=8), intent(in), optional :: sr, vr(ncmp) 
+    complex(kind=8), intent(in), optional :: sc, vc(ncmp)   
+!     
+!   Liste des variables locales utilisées pour récuperer les arguments 
+    character(len=24) :: licmp(ncmp), kcmp(ncmp)
     integer :: icmp(ncmp)
     real(kind=8) :: rcmp(ncmp)
     complex(kind=8) :: ccmp(ncmp)
 ! ----------------------------------------------------------------------
 !     ENTREES:
-!      BASE   : BASE DE CREATION POUR LA CARTE (G/V/L)
-!      NOMCAR : NOM DE LA CARTE A CREER (SI ELLE EXISTE ON LA DETRUIT).
-!      MOCLEZ : 'MAILLA' , 'MODELE' OU 'LIGREL'
-!      NOMCO  : NOM DU MAILLAGE SUPPORT DE LA CARTE (SI MOCLE='MAILLA')
-!             : NOM DU MODELE SUPPORT DE LA CARTE (SI MOCLE='MODELE')
-!             : NOM DU LIGREL SUPPORT DE LA CARTE.(SI MOCLE= 'LIGREL')
-!             : K19 SI MOCLEZ = LIGREL, K8 SINON
-!      NOMGDZ : NOM DE LA GRANDEUR ASSOCIEE A LA CARTE.
-!      NCMP   : NOMBRE DE CMP A EDITER SUR LA CARTE.
-!      LICMP  : LISTE DES NOMS DE CMP A EDITER.
-!      ICMP   : LISTE DES VALEURS ENTIERES DES CMP A EDITER.(EVENTUEL).
-!      RCMP   : LISTE DES VALEURS REELLES  DES CMP A EDITER.(EVENTUEL).
-!      CCMP   : LISTE DES VALEURS COMPLEX  DES CMP A EDITER.(EVENTUEL).
-!      KCMP   : LISTE DES VALEURS CHAR*8,16,24  DES CMP A EDITER.(EVT).
+!      BASE       : BASE DE CREATION POUR LA CARTE (G/V/L)
+!      NOMCAR     : NOM DE LA CARTE A CREER (SI ELLE EXISTE ON LA DETRUIT).
+!      MOCLEZ     : 'MAILLA' , 'MODELE' OU 'LIGREL'
+!      NOMCO      : NOM DU MAILLAGE SUPPORT DE LA CARTE (SI MOCLE='MAILLA')
+!                 : NOM DU MODELE SUPPORT DE LA CARTE (SI MOCLE='MODELE')
+!                 : NOM DU LIGREL SUPPORT DE LA CARTE.(SI MOCLE= 'LIGREL')
+!                 : K19 SI MOCLEZ = LIGREL, K8 SINON
+!      NOMGDZ     : NOM DE LA GRANDEUR ASSOCIEE A LA CARTE.
+!      NCMP       : NOMBRE DE CMP A EDITER SUR LA CARTE.
+! NOMCMP/LNOMCMP  : LISTE DES NOMS DE CMP A EDITER.
+!      SI/VI      : LISTE DES VALEURS ENTIERES DES CMP A EDITER.(EVENTUEL).
+!      SR/VR      : LISTE DES VALEURS REELLES  DES CMP A EDITER.(EVENTUEL).
+!      SC/VC      : LISTE DES VALEURS COMPLEX  DES CMP A EDITER.(EVENTUEL).
+!      SK/VK      : LISTE DES VALEURS CHAR*8,16,24  DES CMP A EDITER.(EVT).
 !
 !     SORTIES:
 !       NOMCAR : EST REMPLI.
@@ -76,10 +82,60 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
     character(len=8) :: noma
 !
 !-----------------------------------------------------------------------
-    integer :: i, ianoma, iret, jncmp, jvalv, ltyp
+    integer :: i, ianoma, iret, jncmp, jvalv, ltyp, j
 !
 !-----------------------------------------------------------------------
     call jemarq()
+! 
+!   DETERMINATION DU TYPE DE CARTE A AFFECTER 
+    if (present(si) .or. present(vi)) then
+        j=1
+    else if (present(sr) .or. present(vr)) then
+        j=2
+    else if (present(sc) .or. present(vc)) then   
+        j=3
+    else
+        j=4    
+    endif    
+!
+!   AFFECTATION DES VARIABLES LOCALES EN FONCTION DES ARGUMENTS  
+    if ( ncmp .gt. 1 ) then 
+        do i=1,ncmp 
+            licmp(i)=lnomcmp(i)
+        end do       
+        select case (j) 
+        case (1)
+             do i=1,ncmp
+                 icmp(i)=vi(i)
+             end do    
+        case (2)
+             do i=1,ncmp
+                 rcmp(i)=vr(i)
+             end do               
+        case (3)
+             do i=1,ncmp
+                 ccmp(i)=vc(i)
+             end do               
+        case (4)
+             do i=1,ncmp
+                 kcmp(i)=vk(i)
+             end do               
+        end select       
+    else
+        licmp(1) = nomcmp
+        select case (j) 
+        case (1)
+             icmp(1)=si
+        case (2)
+             rcmp(1)=sr
+        case (3)
+             ccmp(1)=sc
+        case (4)
+             kcmp(1)=sk               
+        end select
+    endif
+!   
+!   
     mocle = moclez
     nomgd = nomgdz
 !

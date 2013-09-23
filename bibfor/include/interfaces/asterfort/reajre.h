@@ -17,8 +17,8 @@
 !
 interface
     subroutine reajre(matelz, resuez, basez)
-        character(*) :: matelz
-        character(*) :: resuez
-        character(*) :: basez
+        character(*), intent(in) :: matelz
+        character(*), intent(in) :: resuez
+        character(*), intent(in) :: basez
     end subroutine reajre
 end interface

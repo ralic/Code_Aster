@@ -76,7 +76,6 @@ subroutine op0171()
     real(kind=8) :: tps1(4), tps2(4), tpex
     real(kind=8) :: parcrr(9), testi, epsr, epsl
     real(kind=8) :: r8aux(1)
-    complex(kind=8) :: cbid
     character(len=1) :: ci1, ci2, creas, ce1, ce2
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd, nomcvg
@@ -196,8 +195,7 @@ subroutine op0171()
     ligrmo = modele(1:8)//'.MODELE'
     r8aux(1) = 0.d0
     call mecact('V', chlapm, 'MODELE', ligrmo, 'NEUT_R',&
-                1, 'X1', ibid, r8aux, cbid,&
-                k8bid)
+                ncmp=1, nomcmp='X1', sr=r8aux(1))
 !
     tpsnp1 = 0.d0
     prem = .true.
@@ -382,7 +380,7 @@ subroutine op0171()
     call rsexch(' ', result, 'TEMP', 0, nomch,&
                 iret)
     call rsadpa(result, 'E', 1, 'INST', 0,&
-                0, jinst, k8bid)
+                0, sjv=jinst, styp=k8bid)
     zr(jinst) = 0.d0
     call copisd('CHAMP_GD', 'G', vtempp(1:19), nomch(1:19))
     call rsnoch(result, 'TEMP', 0)

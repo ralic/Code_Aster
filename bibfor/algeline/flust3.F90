@@ -451,11 +451,11 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     do 160 im = 1, nbm
         ior = nuor(im)
         call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
-                    0, lmasg, k8b)
+                    0, sjv=lmasg, styp=k8b)
         call rsadpa(base, 'L', 1, 'RIGI_GENE', ior,&
-                    0, lrigg, k8b)
+                    0, sjv=lrigg, styp=k8b)
         call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
-                    0, lfacx, k8b)
+                    0, sjv=lfacx, styp=k8b)
         zr(imatma+im-1) = zr(lmasg)
         zr(imatra+im-1) = zr(lrigg)
         zr(ifpart+im-1) = zr(lfacx)

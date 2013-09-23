@@ -56,7 +56,7 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
 !
     character(len=19) :: chamno, chamn2
     real(kind=8) :: prec, eps0
-    integer :: ieq, neq, iresu, ibid, ifreq, iret
+    integer :: ieq, neq, iresu, ibid, ifreq(1), iret
     character(len=8) :: k8bid
     integer :: jlccre, jlresu, jlvale
     complex(kind=8) :: c16bid
@@ -74,15 +74,15 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
     call jeveuo(exresu, 'L', jlresu)
     do 10 iresu = 1, nbexre
         if (abs(freq) .gt. eps0) then
-            call rsorac(zk8(jlresu+iresu-1), 'FREQ', ibid, freq, k8bid,&
+            call rsorac(zk8(jlresu+iresu-1), 'FREQ', 0, freq, k8bid,&
                         c16bid, prec, 'RELATIF', ifreq, 1,&
                         ibid)
         else
-            call rsorac(zk8(jlresu+iresu-1), 'FREQ', ibid, freq, k8bid,&
+            call rsorac(zk8(jlresu+iresu-1), 'FREQ', 0, freq, k8bid,&
                         c16bid, eps0, 'ABSOLU', ifreq, 1,&
                         ibid)
         endif
-        call rsexch('F', zk8(jlresu+iresu-1), 'DEPL', ifreq, chamno,&
+        call rsexch('F', zk8(jlresu+iresu-1), 'DEPL', ifreq(1), chamno,&
                     iret)
         call vtcopy(chamno, chamn2, 'F', ibid)
         call jeveuo(chamn2//'.VALE', 'L', jlvale)

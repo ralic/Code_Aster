@@ -87,10 +87,7 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
     integer :: j_lcmp_act_in
     integer :: icmp, i_calc_elem
     character(len=4) :: ki
-    real(kind=8) :: coef_init, coef_cross, r8dummy
-    integer :: idummy
-    character(len=8) :: k8dummy
-    complex(kind=8) :: c16dummy
+    real(kind=8) :: coef_init, coef_cross
     character(len=4) :: prod_type
 !
 ! --------------------------------------------------------------------------------------------------
@@ -231,14 +228,12 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
 ! - Construct <CARTE> of coefficients to filter components
 !
     call mecact('V', chcoef, 'MODELE', model, 'NEUT_R',&
-                nb_cmp_max, zk8(j_lcmp_act), idummy, zr(j_lcoe_act), c16dummy,&
-                k8dummy)
+                ncmp=nb_cmp_max, lnomcmp=zk8(j_lcmp_act), vr=zr(j_lcoe_act))
 !
 ! - Construct <CARTE> for type of calc_elem (NORM or SQUA)
 !
     call mecact('V', chcalc, 'MODELE', model, 'NEUT_I',&
-                1, 'X1', i_calc_elem, r8dummy, c16dummy,&
-                k8dummy)
+                ncmp=1, nomcmp='X1', si=i_calc_elem)
 !
     call jedetr(list_coe_act)
     call jedetr(list_cmp_act)

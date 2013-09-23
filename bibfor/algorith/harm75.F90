@@ -372,7 +372,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !
             call rsnoch(nomres, type(ich), iarchi)
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
-                        0, lfreq, k8b)
+                        0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
 200      continue
         call jedetr('&&HARM75.BASE')

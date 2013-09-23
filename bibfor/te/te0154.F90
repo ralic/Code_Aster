@@ -53,12 +53,12 @@ subroutine te0154(option, nomte)
     real(kind=8) :: pgl(3, 3), klc(6, 6), enerth
     real(kind=8) :: ugr(6), ulr(6), flr(6)
     integer :: codres(1)
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
     character(len=4) :: fami
     character(len=8) :: nomail, materi
     character(len=16) :: ch16
     logical :: lteimp
-    real(kind=8) :: a, epsth, e(1), r8bid, rho(1), xfl1, xfl4, xl, xmas, xrig
+    real(kind=8) :: a, epsth, e(1), r8bid=0.d0, rho(1), xfl1, xfl4, xl, xmas, xrig
     integer :: i, if, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
     integer :: lmater, lorien, lsect, iret, lx, nc, nno, iadzi, iazk24
     integer :: jvite
@@ -139,11 +139,8 @@ subroutine te0154(option, nomte)
 !
     else
 !
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
-        call tecach(stopz, 'PVITESR', 'L', 1, jvite,&
-                    iret)
+        stopz='ONO'
+        call tecach(stopz, 'PVITESR', 'L', iret, iad=jvite)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
 !
@@ -164,8 +161,7 @@ subroutine te0154(option, nomte)
 !
 ! ON RECUPERE DES DEPLACEMENTS
 !
-            call tecach(stopz, 'PDEPLAR', 'L', 1, jdepl,&
-                        iret)
+            call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepl)
             if (iret .eq. 0) then
                 if (nomte .eq. 'MECA_BARRE') then
                     do 23 i = 1, 6

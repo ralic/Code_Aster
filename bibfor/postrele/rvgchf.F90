@@ -77,7 +77,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
     character(len=1) :: car1, car2
     integer :: n1, n2, n3, i, j, nbordr, ibid, iordr, nbtrou
     integer :: aliste, atypac, avalac, alschp, avalr8, avalis, anores
-    integer :: vali
+    integer :: vali, tord(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
 !
@@ -101,8 +101,9 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
 !     /* ACCES A TOUS LES NUMEROS D' ORDRES */
         cbid = dcmplx(0,0)
         call rsorac(nomsd, 'LONUTI', ibid, rbid, k8bid,&
-                    cbid, rbid, k8bid, nbordr, 1,&
+                    cbid, rbid, k8bid, tord, 1,&
                     nbtrou)
+        nbordr=tord(1)            
         call wkvect(nvalac, 'V V I', nbordr, avalac)
         call rsorac(nomsd, 'TOUT_ORDRE', ibid, rbid, k8bid,&
                     cbid, rbid, k8bid, zi(avalac), nbordr,&

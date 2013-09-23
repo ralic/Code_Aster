@@ -233,9 +233,9 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         if (nopara .eq. 'EXCIT') goto 60
 !
         call rsadpa(resu1, 'L', 1, nopara, iordr,&
-                    1, iad1, type)
+                    1, sjv=iad1, styp=type)
         call rsadpa(resu2, 'E', 1, nopara, iordr,&
-                    1, iad2, type)
+                    1, sjv=iad2, styp=type)
         if (nopara .eq. 'MODELE') ASSERT(type.eq.'K8')
         if (type .eq. 'I') then
             zi(iad2)=zi(iad1)

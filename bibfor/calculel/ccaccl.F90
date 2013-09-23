@@ -72,11 +72,6 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 !
     integer :: iret1, iret2, ibid, kparin
     integer :: ipara, inume, nbsp
-!
-    real(kind=8) :: r8b
-!
-    complex(kind=8) :: cbid
-!
     character(len=2) :: kbid
     character(len=8) :: k8b, noma, curpar, carae2, parain
     character(len=16) :: concep, nomcmd
@@ -116,8 +111,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
         inume=0
         if (typesd .eq. 'EVOL_NOLI') inume=1
         call mecact('V', chnlin, 'MAILLA', noma, 'NEUT_I',&
-                    1, 'X1', inume, r8b, cbid,&
-                    k8b)
+                    ncmp=1, nomcmp='X1', si=inume)
 !       -- SI LINEAIRE, ON DOIT CHANGER PCOMPOR (POUR POU_D_EM):
         if (inume .eq. 0) then
             kparin=indik8(lipain,'PCOMPOR',1,nbpain)

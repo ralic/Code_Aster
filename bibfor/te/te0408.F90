@@ -1,7 +1,6 @@
 subroutine te0408(option, nomte)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dxtpif.h"
 #include "asterfort/elref4.h"
@@ -10,6 +9,7 @@ subroutine te0408(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -54,8 +54,8 @@ subroutine te0408(option, nomte)
 !
 !     1- SI LA TEMPERATURE EST AUX NOEUDS (TEMP/TEMP_SUP/TEMP_INF):
 !        ------------------------------------------------------------
-    call tecach('ONN', 'PTEMPER', 'L', 8, itabp,&
-                iret)
+    call tecach('ONN', 'PTEMPER', 'L', iret, nval=8,&
+                itab=itabp)
     if (iret .eq. 0 .or. iret .eq. 3) then
         tempno=.true.
         itempp=itabp(1)
@@ -80,8 +80,7 @@ subroutine te0408(option, nomte)
     else
 !     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
 !        -------------------------------------------------------
-        call tecach('ONN', 'PTEMPEF', 'L', 1, itempf,&
-                    iret)
+        call tecach('ONN', 'PTEMPEF', 'L', iret, iad=itempf)
         ASSERT(iret.eq.0)
         call jevech('PINST_R', 'L', itemps)
         inst=zr(itemps)

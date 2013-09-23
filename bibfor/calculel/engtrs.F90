@@ -49,7 +49,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 ! IN  : PRECI  : PRECISION POUR LE TEST_RESU
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, nbordt, vali, jordr, nbnosy, isy, iatach, lg, i, j, iord
+    integer :: ibid, nbordt(1), vali, jordr, nbnosy, isy, iatach, lg, i, j, iord
     integer :: iret, jvale, long, lg1, lg2
     real(kind=8) :: r8b, valr
     complex(kind=8) :: c16b
@@ -72,12 +72,12 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 !
 ! --- NUMEROS D'ORDRE
 !
-    call rsorac(nomsd, 'LONUTI', ibid, r8b, k8b,&
+    call rsorac(nomsd, 'LONUTI', 0, r8b, k8b,&
                 c16b, r8b, k8b, nbordt, 1,&
                 ibid)
-    call wkvect('&&ENGTRS.NUME_ORDRE', 'V V I', nbordt, jordr)
-    call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, zi(jordr), nbordt,&
+    call wkvect('&&ENGTRS.NUME_ORDRE', 'V V I', nbordt(1), jordr)
+    call rsorac(nomsd, 'TOUT_ORDRE', 0, r8b, k8b,&
+                c16b, r8b, k8b, zi(jordr), nbordt(1),&
                 ibid)
 !
 ! --- NOMS SYMBOLIQUES
@@ -92,7 +92,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
         form3 = '('' _F(RESULTAT= '',A8,'', NOM_CHAM= '''''// nomsym(1:lg)&
                 //''''', NUME_ORDRE= '',I6,'','')'
 !
-        do 110 j = 1, nbordt
+        do 110 j = 1, nbordt(1)
             iord = zi(jordr+j-1)
             if (zk24(iatach-1+j)(1:1) .ne. ' ') then
                 call rsexch(' ', nomsd, nomsym, iord, chextr,&

@@ -1,7 +1,6 @@
 subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
@@ -10,6 +9,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 #include "asterfort/jexnum.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/wkvect.h"
+!
     integer :: jadd, nbval, n1, j1
     character(len=*) :: nomsd, nopara, nomobj
 ! ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !       NOMOBJ(K) == "RSADPA(NOPARA,IORDR)"
 !  - CETTE ROUTINE NE FAIT PAS JEMARQ/JEDEMA POUR NE PAS
 !    INVALIDER L'ADRESSE JEVEUX JADD
-    integer ::  kk, jordr, jpara, i1, jtava, l1
+    integer :: kk, jordr, jpara, i1, jtava, l1
     character(len=8) :: k8b, tsca
     character(len=5) :: nom1
     character(len=24) :: nomk24
@@ -90,7 +90,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !
     do 1 kk = 1, n1
         call rsadpa(noms2, 'L', 1, nompar, zi(jordr-1+kk),&
-                    0, jpara, k8b)
+                    0, sjv=jpara, styp=k8b)
         if (tsca .eq. 'R') then
             zr(j1-1+kk)=zr(jpara)
         else if (tsca.eq.'C') then

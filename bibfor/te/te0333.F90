@@ -147,8 +147,8 @@ subroutine te0333(option, nomte)
 ! --- RECUPERATION DES VARIABLES INTERNES AUX PT D'INTEGRATION COURANT :
 !    ------------------------------------------------------------------
     call jevech('PVARIGR', 'L', ivari)
-    call tecach('OON', 'PVARIGR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
+                itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
 !
 !

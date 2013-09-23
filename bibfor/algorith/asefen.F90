@@ -65,7 +65,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     integer :: ibid, idi, ier, igr, in, ino, inorf, ioc, iordr, ire1, ire2, iret
     integer :: is, jdgn, jgrn, jnoe, jvale, nbtrou, ncas, ng, ngr, nn, nno, nnr
     integer :: nx, ny, nz, ns
-    integer :: jrepmo
+    integer :: jrepmo, tordr(1)
     real(kind=8) :: dx, dy, dz, r8b, xx1, xxx
     complex(kind=8) :: cbid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3), noma
@@ -228,8 +228,9 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
         xx1 = depsup(is,id)
         if (ns .ne. 0) then
             call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc,&
-                        cbid, r8b, k8b, iordr, 1,&
+                        cbid, r8b, k8b, tordr, 1,&
                         nbtrou)
+            iordr=tordr(1)            
             call rsexch('F', stat, nomsy, iordr, chextr,&
                         iret)
             call jeexin(chextr//'.VALE', ibid)

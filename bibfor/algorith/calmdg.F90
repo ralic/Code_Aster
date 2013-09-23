@@ -72,7 +72,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !---------------------------------------------------------------------
     integer :: ibid, nbid, isst, iadrp
     integer :: i, j, itxsto, itysto, iprsto
-    integer :: icor(2), ndble
+    integer :: icor(2), ndble, tmod(1)
     real(kind=8) :: tgeom(6)
     real(kind=8) :: norm1, norm2, reste(3), deuxpi
     character(len=2) :: model
@@ -182,8 +182,9 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! DEFINI
 !
         call rsorac(bamo, 'LONUTI', ibid, bid, k8bid,&
-                    cbid, ebid, 'ABSOLU', nbmodg, 1,&
+                    cbid, ebid, 'ABSOLU', tmod, 1,&
                     nbid)
+        nbmodg=tmod(1)           
 !
         zi(itabl+isst-1)=nbmodg
 !

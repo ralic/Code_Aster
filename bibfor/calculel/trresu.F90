@@ -204,7 +204,7 @@ subroutine trresu(ific, nocc)
             call utest3('RESU', iocc, tbtxt)
 !
             call rsadpa(leresu, 'L', 1, nopara, numord,&
-                        1, jlue, k16b)
+                        1, sjv=jlue, styp=k16b)
             if (k16b(1:1) .ne. typres) then
                 call utmess('F', 'CALCULEL6_95')
             else if (typres.eq.'R') then

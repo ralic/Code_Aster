@@ -416,8 +416,7 @@ subroutine te0150(option, nomte)
                         1, sref, iret)
             if (iret .eq. 1) sref=0.d0
 ! ----   RECUPERATION DE L'INSTANT
-            call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                        iret)
+            call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
             if (itemps .ne. 0) then
                 instan = zr(itemps)
             else
@@ -452,8 +451,7 @@ subroutine te0150(option, nomte)
                 hydr=hydr+hydrg(igau)/npg
 60          continue
 ! ----   RECUPERATION DE L'INSTANT
-            call tecach('ONN', 'PTEMPSR', 'L', 1, itemps,&
-                        iret)
+            call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
             if (itemps .ne. 0) then
                 instan = zr(itemps)
             else

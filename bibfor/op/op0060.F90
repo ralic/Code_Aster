@@ -116,7 +116,7 @@ subroutine op0060()
     character(len=19) :: nomt, nomi
     character(len=24) :: nomat(4), basemo, matric(3)
     character(len=24) :: exreco, exresu
-    integer :: nbexre
+    integer :: nbexre, tmod(1)
 !
 ! ----------------------------------------------------------------------
 !
@@ -302,9 +302,10 @@ subroutine op0060()
     else
 !     --- SI REPRISE DE CALCUL SUR BASE PHYSIQUE
 !       - AGRANDIR LA SD_RESULTAT DE NBOLD A NBOLD+NBFREQ
-        call rsorac(result, 'LONUTI', ibid, r8bid, k8bid,&
-                    c16bid, r8bid, 'ABSOLU', nbold, 1,&
+        call rsorac(result, 'LONUTI', 0, r8bid, k8bid,&
+                    c16bid, r8bid, 'ABSOLU', tmod, 1,&
                     ibid)
+        nbold=tmod(1)            
         call rsagsd(result, nbfreq+nbold)
     endif
 !
@@ -497,7 +498,7 @@ subroutine op0060()
 !
 !         --- RECOPIE DE LA FREQUENCE DE STOCKAGE
             call rsadpa(result, 'E', 1, 'FREQ', ifreq+nbold,&
-                        0, linst, k8bid)
+                        0, sjv=linst, styp=k8bid)
             zr(linst) = freq
 !
         else
@@ -568,13 +569,13 @@ subroutine op0060()
         call jelira(result//'           .ORDR', 'LONUTI', nbord)
         do 43 i = 1, nbord
             call rsadpa(result, 'E', 1, 'MODELE', zi(jord+i-1),&
-                        0, ladpa, k8bid)
+                        0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = nomo
             call rsadpa(result, 'E', 1, 'CHAMPMAT', zi(jord+i-1),&
-                        0, ladpa, k8bid)
+                        0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = mate(1:8)
             call rsadpa(result, 'E', 1, 'CARAELEM', zi(jord+i-1),&
-                        0, ladpa, k8bid)
+                        0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = carele(1:8)
 43      continue
     endif

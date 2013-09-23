@@ -400,7 +400,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 52          continue
             call rsadpa(nomres, 'E', 1, 'FREQ', iarchi,&
-                        0, lfreq, k8b)
+                        0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
 50      continue
 !

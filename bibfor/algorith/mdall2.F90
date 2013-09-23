@@ -74,7 +74,7 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
     do 10 inord = 1, nbo
         zi(jordr-1+inord) = zi(iordr-1+inord)
         call rsadpa(res, 'L', 1, 'INST', zi(iordr-1+inord),&
-                    0, iinst, k8b)
+                    0, sjv=iinst, styp=k8b)
         zr(jinst-1+inord) = zr(iinst)
 10  continue
 !

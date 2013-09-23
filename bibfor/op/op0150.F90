@@ -471,7 +471,7 @@ subroutine op0150()
                     nbtrou)
         do 280 iord = 1, nbordr
             call rsadpa(resu, 'L', 1, acce, zi(lordr+iord-1),&
-                        0, jinst, k8bid)
+                        0, sjv=jinst, styp=k8bid)
             write (ifm,*) '    NUMERO D''ORDRE : ',zi(lordr+iord-1),&
      &        '    '//acces//' : ',zr(jinst)
 280      continue

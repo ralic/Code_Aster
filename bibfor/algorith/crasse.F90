@@ -105,7 +105,7 @@ subroutine crasse()
 !
 !         -- STOCKAGE DE L'INSTANT :
         call rsadpa(resu1, 'L', 1, 'INST', iord1,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         inst1=zr(iad)
 !         -- ON VERIFIE QUE LES INSTANTS SONT CROISSANTS :
         inst2=inst1+trans
@@ -121,7 +121,7 @@ subroutine crasse()
         tprev=inst2
 !
         call rsadpa(resu2, 'E', 1, 'INST', iord2,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         zr(iad)=inst2
 !
         do 115 kch = 1, nbcham

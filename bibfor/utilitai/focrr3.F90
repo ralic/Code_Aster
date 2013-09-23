@@ -91,7 +91,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
     do 20 iordr = 1, nbordr
 !
         call rsadpa(resu, 'L', 1, nomacc, zi(kordr+iordr-1),&
-                    1, iad1, type)
+                    1, sjv=iad1, styp=type)
         if (type(1:1) .eq. 'R') then
             zr(lvar+iordr-1) = zr(iad1)
         else
@@ -99,7 +99,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
         endif
 !
         call rsadpa(resu, 'L', 1, nopara, zi(kordr+iordr-1),&
-                    1, iad2, type)
+                    1, sjv=iad2, styp=type)
         if (type(1:1) .eq. 'R') then
             zr(lfon+iordr-1) = zr(iad2)
         else

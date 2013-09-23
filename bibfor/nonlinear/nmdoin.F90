@@ -52,7 +52,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
 !
 !
 !
-    integer :: ibid, dernie, nume
+    integer :: ibid, dernie(1), nume, tnum(1)
     integer :: n1, n2, n3
     integer :: jinst
     real(kind=8) :: r8bid, prec, inst
@@ -88,9 +88,9 @@ subroutine nmdoin(evol, evonol, instin, numein)
             if (n3 .eq. 0) then
                 call utmess('F', 'ETATINIT_2', sk=evol)
             else
-                numein = dernie
+                numein = dernie(1)
                 call rsadpa(evol, 'L', 1, 'INST', numein,&
-                            0, jinst, k8bid)
+                            0, sjv=jinst, styp=k8bid)
                 instin = zr(jinst)
             endif
         endif
@@ -102,8 +102,9 @@ subroutine nmdoin(evol, evonol, instin, numein)
             call getvr8(motfac, 'PRECISION', iocc=1, scal=prec, nbret=ibid)
             call getvtx(motfac, 'CRITERE', iocc=1, scal=criter, nbret=ibid)
             call rsorac(evol, 'INST', ibid, instin, k8bid,&
-                        c16bid, prec, criter, numein, 1,&
+                        c16bid, prec, criter, tnum, 1,&
                         n3)
+            numein=tnum(1)            
             if (n3 .eq. 0) then
                 call utmess('F', 'ETATINIT_3', sk=evol)
             endif
@@ -117,7 +118,7 @@ subroutine nmdoin(evol, evonol, instin, numein)
         if (n2 .ne. 0) then
             numein = nume
             call rsadpa(evol, 'L', 1, 'INST', numein,&
-                        0, jinst, k8bid)
+                        0, sjv=jinst, styp=k8bid)
             instin = zr(jinst)
         endif
     endif

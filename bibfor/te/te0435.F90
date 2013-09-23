@@ -17,7 +17,6 @@ subroutine te0435(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/r8dgrd.h"
 #include "asterfort/codere.h"
 #include "asterfort/elref4.h"
@@ -28,6 +27,7 @@ subroutine te0435(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/verift.h"
 #include "blas/dcopy.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE COMPORTEMENT :
@@ -92,8 +92,8 @@ subroutine te0435(option, nomte)
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PDEPLMR', 'L', ideplm)
         call jevech('PDEPLPR', 'L', ideplp)
-        call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                    itab=jtab)
         nvari = max(jtab(6),1)*jtab(7)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PVARIMP', 'L', ivarix)

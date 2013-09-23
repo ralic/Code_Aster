@@ -127,8 +127,8 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
         call utmess('F', 'ELEMENTS_13')
     endif
     read (zk16(icompo-1+2),'(I16)') nbvari
-    call tecach('OON', 'PVARIMR', 'L', 7, itab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=itab)
 !      LGPG = MAX(ITAB(6),1)*ITAB(7) resultats faux sur Bull avec ifort
     if (itab(6) .le. 1) then
         lgpg=itab(7)

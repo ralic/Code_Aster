@@ -103,7 +103,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
     endif
 !
     call rsadpa(result, 'L', 1, 'MODELE', nuord,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     nomsd=zk8(jpara)
 !
     if (nomsd .ne. ' ') then
@@ -125,7 +125,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !
     if (nomsd .eq. ' ' .and. nomlu .ne. ' ') then
         call rsadpa(result, 'E', 1, 'MODELE', nuord,&
-                    0, jpara, k8b)
+                    0, sjv=jpara, styp=k8b)
         zk8(jpara)=modele
     endif
 !
@@ -138,7 +138,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !--- RECUPERATION DU NOM DU CARA_ELEM
 !
     call rsadpa(result, 'L', 1, 'CARAELEM', nuord,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     nomsd=zk8(jpara)
     if (getexm(' ','CARA_ELEM') .eq. 1) then
         call getvid(' ', 'CARA_ELEM', scal=nomlu, nbret=n2)
@@ -166,7 +166,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !
     if (nomsd .eq. ' ' .and. nomlu .ne. ' ') then
         call rsadpa(result, 'E', 1, 'CARAELEM', nuord,&
-                    0, jpara, k8b)
+                    0, sjv=jpara, styp=k8b)
         zk8(jpara)=carele
     endif
 !
@@ -187,7 +187,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
     endif
 !
     call rsadpa(result, 'L', 1, 'CHAMPMAT', nuord,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     nomsd=zk8(jpara)
 !
     if (nomsd .ne. ' ') then
@@ -209,7 +209,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !
     if (nomsd .eq. ' ' .and. nomlu .ne. ' ') then
         call rsadpa(result, 'E', 1, 'CHAMPMAT', nuord,&
-                    0, jpara, k8b)
+                    0, sjv=jpara, styp=k8b)
         zk8(jpara)=materi
     endif
 !
@@ -255,7 +255,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT
 !
     call rsadpa(result, 'L', 1, 'EXCIT', nuord,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     excisd=zk24(jpara)
 !
 !--- VERIFICATIONS ET AFFECTATIONS

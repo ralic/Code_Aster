@@ -127,8 +127,8 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     endif
     if (option .eq. 'FORC_NODA') then
         nspg=(2*nbsec + 1)*(2*nbcou + 1)
-        call tecach('OOO', 'PCONTMR', 'L', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
+                    itab=itab)
         jin=itab(1)
         nbsp=itab(7)
         if (nbsp .ne. nspg) then

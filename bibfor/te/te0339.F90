@@ -75,8 +75,8 @@ subroutine te0339(option, nomte)
     call jevech('PVARIPR', 'L', ivarpg)
     call jevech('PSDRMR', 'L', isdrmr)
     call jevech('PSOUSOP', 'L', issopt)
-    call tecach('OON', 'PVARIPR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
+                itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
     call jevech('PCOMPOR', 'L', icompo)
 !     READ (ZK16(ICOMPO+1),'(I16)') NBVARI

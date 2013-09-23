@@ -142,9 +142,9 @@ subroutine eclpgr()
     do 30 i = 1, nbordr
         iordr=zi(jordr+i-1)
         call rsadpa(evo1, 'L', 1, 'INST', iordr,&
-                    0, iains1, kbid)
+                    0, sjv=iains1, styp=kbid)
         call rsadpa(resu, 'E', 1, 'INST', iordr,&
-                    0, iains2, kbid)
+                    0, sjv=iains2, styp=kbid)
         zr(iains2)=zr(iains1)
 30  end do
 !

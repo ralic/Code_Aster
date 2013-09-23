@@ -44,8 +44,8 @@ subroutine te0222(option, nomte)
 !-----------------------------------------------------------------------
     undemi = 0.5d0
 !
-    call tecach('OON', 'PNOSYM', 'L', 3, itab1,&
-                iret)
+    call tecach('OON', 'PNOSYM', 'L', iret, nval=3,&
+                itab=itab1)
 !
     if (iret .ne. 0) then
         if (iret .eq. 3) then
@@ -57,8 +57,8 @@ subroutine te0222(option, nomte)
             call utmess('F', 'ELEMENTS3_46', sk=nomte)
         endif
     endif
-    call tecach('OON', 'PSYM', 'E', 3, itab2,&
-                iret)
+    call tecach('OON', 'PSYM', 'E', iret, nval=3,&
+                itab=itab2)
 !
 ! --- NOMBRE DE LIGNES DE LA MATRICE ELEMENTAIRE NON-SYMETRIQUE
 ! --- EN ENTREE :

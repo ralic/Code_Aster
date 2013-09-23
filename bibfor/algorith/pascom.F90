@@ -76,7 +76,7 @@ subroutine pascom(meca, sddyna, sddisc)
     call jeveuo(meca//'           .ORDR', 'L', jordm)
     iorol = zi(jordm)
     call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
-                0, iad, k8bid)
+                0, sjv=iad, styp=k8bid)
     if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem( )) then
         dtcou = 1.d0 / r8prem( )
     else
@@ -85,7 +85,7 @@ subroutine pascom(meca, sddyna, sddisc)
     do 21 i = 1, nbmode-1
         iorol = zi(jordm+i)
         call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
-                    0, iad, k8bid)
+                    0, sjv=iad, styp=k8bid)
         if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem( )) then
             dt = 1.d0 / r8prem( )
         else

@@ -59,8 +59,7 @@ subroutine te0487(option, nomte)
     call jevech('PDEPLMR', 'L', idepm)
     call jevech('PDEPLPR', 'L', idepp)
     call jevech('PTEMPSR', 'L', itemp)
-    call tecach('NNN', 'PPRESSF', 'L', 1, ipres,&
-                iret)
+    call tecach('NNN', 'PPRESSF', 'L', iret, iad=ipres)
     if (ipres .eq. 0) then
         call jevech('PFFCO3D', 'L', ipres)
         call jevech('PCACOQU', 'L', icaco)

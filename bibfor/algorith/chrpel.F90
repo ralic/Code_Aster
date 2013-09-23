@@ -92,7 +92,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     real(kind=8) :: vectx(3), vecty(3), angrep(3)
     real(kind=8) :: x(27), y(27), z(27)
     real(kind=8) :: xpg(27), ypg(27), zpg(27)
-    complex(kind=8) :: valetc(6), cbid
+    complex(kind=8) :: valetc(6)
     character(len=3) :: tsca
     character(len=8) :: ma, k8b, typmcl(2), nomgd, tych, param
     character(len=8) :: lpain(4), paout, licmp(3), kbid
@@ -1029,8 +1029,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
         licmp(2) = 'BETA'
         licmp(3) = 'REP'
         call mecact('V', carte, 'MODELE', modele, 'CAORIE',&
-                    3, licmp, ibid, angrep, cbid,&
-                    ' ')
+                    ncmp=3, lnomcmp=licmp, vr=angrep)
 !
 !  CREATION D UN CHAM_ELEM D'ANGLES EN LISANT LES ANGL_REP
 !

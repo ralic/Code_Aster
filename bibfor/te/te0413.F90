@@ -97,12 +97,12 @@ subroutine te0413(option, nomte)
         endif
 !
         if (option .eq. 'DISS_ELGA') then
-            call tecach('OON', 'PVARIGR', 'L', 7, jtab,&
-                        iret)
+            call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
+                        itab=jtab)
             jvari = jtab(1)
         else if (option.eq.'DISS_ELEM') then
-            call tecach('OON', 'PVARIPR', 'L', 7, jtab,&
-                        iret)
+            call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
+                        itab=jtab)
             jvari = jtab(1)
         endif
 !

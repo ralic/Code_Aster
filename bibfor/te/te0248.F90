@@ -357,8 +357,8 @@ subroutine te0248(optioz, nomtez)
             depx=dlong/xlong0
 !
             if (vecteu) then
-                call tecach('OON', 'PVARIMP', 'L', 7, jtab,&
-                            iret)
+                call tecach('OON', 'PVARIMP', 'L', iret, nval=7,&
+                            itab=jtab)
                 nbvari = max(jtab(6),1)*jtab(7)
                 ivarmp=jtab(1)
                 call dcopy(nbvari, zr(ivarmp), 1, zr(ivarip), 1)

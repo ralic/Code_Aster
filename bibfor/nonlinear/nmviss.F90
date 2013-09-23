@@ -76,7 +76,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
     integer :: id1, id2, ifreq
     integer :: ivald, ivalv, ivala, ivad2, ivav2, ivaa2
     integer :: jinst, ldnew
-    integer :: nddint, unitef, nbmode
+    integer :: nddint, unitef, nbmode, tnum(1)
     character(len=16) :: motfac
     character(len=8) :: criter
     real(kind=8) :: prec
@@ -133,11 +133,13 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
         goto 99
     else
         call rsorac(result, 'PREMIER', ibid, r8bid, k8bid,&
-                    c16bid, prec, criter, nume0, 1,&
+                    c16bid, prec, criter, tnum, 1,&
                     nbtro1)
+        nume0=tnum(1)            
         call rsorac(result, 'INST', ibid, inst, k8bid,&
-                    c16bid, prec, criter, nume, 1,&
+                    c16bid, prec, criter, tnum, 1,&
                     nbtro2)
+        nume=tnum(1)            
         if ((abs(nbtro1).ne.1) .or. (abs(nbtro2).ne.1)) then
             call utmess('F', 'DYNAMIQUE_25')
         endif
@@ -185,7 +187,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
             inst=instd+pas
         else
             call rsadpa(result, 'L', 1, 'INST', iarc,&
-                        1, jinst, k8bid)
+                        1, sjv=jinst, styp=k8bid)
             inst=zr(jinst)
         endif
 !

@@ -51,7 +51,7 @@ subroutine te0331(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(4)
     character(len=16) :: optcal(12), phenom
-    real(kind=8) :: sig(6), sigi, dsigwb, valres(4), epsgi, r8bid
+    real(kind=8) :: sig(6), sigi, dsigwb, valres(4), epsgi, r8bid=0.d0
     real(kind=8) :: poids, r, volume, volact, dvol, seuil, m, v0
     real(kind=8) :: cong(4), epsq(4), dfdx(9), dfdy(9), pp, ppt
     real(kind=8) :: tc(6), tdp(6), sigold, signew, sref, tg, tmoy
@@ -93,8 +93,8 @@ subroutine te0331(option, nomte)
     call jevech('PWEIBUL', 'E', iweib)
     call jevech('PSIGISG', 'E', isigis)
 !
-    call tecach('OON', 'PVARIPG', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIPG', 'L', iret, nval=7,&
+                itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
     call jevech('PCOMPOR', 'L', icompo)
 !     READ (ZK16(ICOMPO+1),'(I16)') NBVARI

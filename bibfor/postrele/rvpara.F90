@@ -62,7 +62,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
     parameter ( nompro = 'RVPARA' )
 !
     integer :: ifm, niv
-    integer :: iocc, ibid
+    integer :: iocc, ibid, tord(1)
     integer :: jchem, jcham, jresu, jncmp, ncmp, i
     integer :: jinva, jprin, jmome, jmail, jmoye, j, jtrad
     integer :: jtran, n1, n2, n3, jcmp1, jcmp2, jcmp3, nbc, nume
@@ -197,12 +197,13 @@ subroutine rvpara(nomtab, mcf, nbpost)
             call getvid(mcf, 'RESULTAT', iocc=iocc, scal=resu, nbret=n3)
             call getvtx(mcf, 'NOM_CHAM', iocc=iocc, scal=nomsy, nbret=n1)
 !
-            call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                        c16b, r8b, k8b, nbordr, 1,&
+            call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                        c16b, r8b, k8b, tord, 1,&
                         ibid)
+            nbordr=tord(1)            
             knume = '&&'//nompro//'.NUME_ORDRE'
             call wkvect(knume, 'V V I', nbordr, jnume)
-            call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
+            call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
                         c16b, r8b, k8b, zi(jnume), nbordr,&
                         ibid)
             do 14 i = 1, nbordr

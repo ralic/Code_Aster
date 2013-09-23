@@ -52,7 +52,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 ! OUT : LICHEX : NOMS DES CHAMPS EXCLUS
 ! ----------------------------------------------------------------------
     integer :: ibid, jarch, jchex, n1, nbocc, jnum, lnum, k, ier, ipach, karch
-    integer :: jordr, nbtrou, nbordr, iocc, n2, nbcham, i, j, iret, iflag, jtrav
+    integer :: jordr, nbtrou, nbordr(1), iocc, n2, nbcham, i, j, iret, iflag, jtrav
     integer :: irang
     real(kind=8) :: r8b, prec
     complex(kind=8) :: c16b
@@ -66,12 +66,12 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     lichex = '&&OP0176.LISTE.CHAM'
     iocc = 1
     resu = resuz
-    call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
+    call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
                 c16b, r8b, k8b, nbordr, 1,&
                 ibid)
 !
     nbchex = 0
-    call wkvect(lisarc, 'V V I', nbordr, jarch)
+    call wkvect(lisarc, 'V V I', nbordr(1), jarch)
 !
 !     --- LES CHAMPS EN SORTIE ---
 !
@@ -137,7 +137,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 !
     call getfac(motcle, nbocc)
     if (nbocc .eq. 0) then
-        do 90 k = 1, nbordr
+        do 90 k = 1, nbordr(1)
             zi(jarch+k-1)=1
 90      continue
         goto 9999
@@ -153,7 +153,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
             karch = zi(jnum+k-1)
             if (karch .le. 0) then
                 goto 10
-            else if (karch .gt. nbordr) then
+            else if (karch .gt. nbordr(1)) then
                 goto 12
             else
                 zi(jarch+karch-1) = 1
@@ -166,7 +166,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     call getvis(motcle, 'PAS_ARCH', iocc=iocc, scal=ipach, nbret=n1)
     if (n1 .ne. 0) then
         ipach = 1
-        do 20 k = ipach, nbordr, ipach
+        do 20 k = ipach, nbordr(1), ipach
             zi(jarch+k-1) = 1
 20      continue
         goto 9999
@@ -191,7 +191,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 9999  continue
 !
     nbarch = 0
-    do 40 k = 1, nbordr
+    do 40 k = 1, nbordr(1)
         nbarch = nbarch + zi(jarch+k-1)
 40  end do
 !

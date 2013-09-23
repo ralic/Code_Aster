@@ -186,8 +186,7 @@ subroutine te0497(option, nomte)
 !--------------------------------------------------------------------
 ! 1. EVENTUELS PARAMETRES TEMPORELS
 !--------------------------------------------------------------------
-    call tecach('ONN', 'PTEMPSR', 'L', 1, itab,&
-                iret)
+    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itab(1))
     if (iret .eq. 0) then
         instpm(1) = zr(itab(1))
         if (.not.perman) then
@@ -223,13 +222,13 @@ subroutine te0497(option, nomte)
 !      1. TOUJOURS A L'INSTANT ACTUEL --> ISIENP
 !      2. SI TRANSITOIRE, A L'INSTANT PRECEDENT --> ISIENM
 !
-    call tecach('ONN', 'PCONTNO', 'L', 3, itab,&
-                iret)
+    call tecach('ONN', 'PCONTNO', 'L', iret, nval=3,&
+                itab=itab)
     isienp = itab(1)
     nbcmp = itab(2)/nno
     if (.not. perman) then
-        call tecach('ONN', 'PCONTNM', 'L', 3, itab,&
-                    iret)
+        call tecach('ONN', 'PCONTNM', 'L', iret, nval=3,&
+                    itab=itab)
         isienm = itab(1)
     else
         isienm = 1
@@ -237,16 +236,14 @@ subroutine te0497(option, nomte)
 !
 ! 2.4. CARTES DE PESANTEUR ET ROTATION
 !
-    call tecach('ONN', 'PPESANR', 'L', 1, itab,&
-                iret)
+    call tecach('ONN', 'PPESANR', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PPESANR', 'L', ipes)
         yapr = .true.
     else
         yapr = .false.
     endif
-    call tecach('ONN', 'PROTATR', 'L', 1, itab,&
-                iret)
+    call tecach('ONN', 'PROTATR', 'L', iret, iad=itab(1))
     if (itab(1) .ne. 0) then
         call jevech('PROTATR', 'L', irot)
         yaro = .true.
@@ -256,12 +253,10 @@ subroutine te0497(option, nomte)
 !
 ! 2.5. LES FORCES VOLUMIQUES EVENTUELLES :
 !          VALEURS REELLES ?
-    call tecach('ONN', 'PFRVOLU', 'L', 1, ifovr,&
-                iret)
+    call tecach('ONN', 'PFRVOLU', 'L', iret, iad=ifovr)
 !          OU FONCTIONS ?
     if (ifovr .eq. 0) then
-        call tecach('ONN', 'PFFVOLU', 'L', 1, ifovf,&
-                    iret)
+        call tecach('ONN', 'PFFVOLU', 'L', iret, iad=ifovf)
     else
         ifovf = 0
     endif

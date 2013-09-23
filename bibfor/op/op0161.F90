@@ -45,7 +45,7 @@ subroutine op0161()
 !-----------------------------------------------------------------------
     integer :: ian, ibid, ich, ior, iordr, iret, jangl
     integer :: jcara, jcham, jcoe, jjan, jmat, jmod, jnch
-    integer :: jnha, jnmo, jordr, jpara, jtch, jtmo, k
+    integer :: jnha, jnmo, jordr, jpara, jtch, jtmo, k, tord(1)
     integer :: n1, n2, n3, nbangl, nbcham, nbordr, nbtrou
 !
     real(kind=8) :: angle, rbid
@@ -57,10 +57,11 @@ subroutine op0161()
 !
     call getvid(' ', 'RESULTAT', scal=resuin, nbret=n1)
     call rsorac(resuin, 'LONUTI', ibid, rbid, k8b,&
-                cbid, rbid, k8b, nbordr, 1,&
+                cbid, rbid, k8b, tord, 1,&
                 nbtrou)
+    nbordr=tord(1)           
     call wkvect('&&OP0161.NUME_ORDRE', 'V V I', nbordr, jordr)
-    call rsorac(resuin, 'TOUT_ORDRE', ibid, rbid, k8b,&
+    call rsorac(resuin, 'TOUT_ORDRE', 0, rbid, k8b,&
                 cbid, rbid, k8b, zi(jordr), nbordr,&
                 ibid)
 !
@@ -92,20 +93,20 @@ subroutine op0161()
                 k = k + 1
                 zk24(jnch+k-1) = nomch
                 call rsadpa(resuin, 'L', 1, 'TYPE_MODE', iordr,&
-                            0, jtmo, k8b)
+                            0, sjv=jtmo, styp=k8b)
                 zk8(jtch+k-1) = zk8(jtmo)
                 call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr,&
-                            0, jnmo, k8b)
+                            0, sjv=jnmo, styp=k8b)
                 zi(jnha+k-1) = zi(jnmo)
                 zr(jcoe+k-1) = 1.d0
                 call rsadpa(resuin, 'L', 1, 'MODELE', iordr,&
-                            0, jmod, k8b)
+                            0, sjv=jmod, styp=k8b)
                 modele = zk8(jmod)
                 call rsadpa(resuin, 'L', 1, 'CHAMPMAT', iordr,&
-                            0, jmat, k8b)
+                            0, sjv=jmat, styp=k8b)
                 mate = zk8(jmat)
                 call rsadpa(resuin, 'L', 1, 'CARAELEM', iordr,&
-                            0, jcara, k8b)
+                            0, sjv=jcara, styp=k8b)
                 carele = zk8(jcara)
             endif
 120      continue
@@ -115,19 +116,19 @@ subroutine op0161()
 !     STOCKAGE DU NOM DU MODELE
 !     -------------------------
             call rsadpa(resu, 'E', 1, 'MODELE', ian,&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zk8(jpara)=modele
 !
 !     STOCKAGE DU NOM DU CHAMP MATERIAU
 !     ---------------------------------
             call rsadpa(resu, 'E', 1, 'CHAMPMAT', ian,&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zk8(jpara)=mate
 !
 !     STOCKAGE DU NOM DE LA CARACTERISTIQUE ELEMENTAIRE
 !     -------------------------------------------------
             call rsadpa(resu, 'E', 1, 'CARAELEM', ian,&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zk8(jpara)=carele
 !
 130      continue
@@ -149,7 +150,7 @@ subroutine op0161()
                             zr(jcoe), 'G', nomch)
                 call rsnoch(resu, nsymb, ian)
                 call rsadpa(resu, 'E', 1, 'ANGLE', ian,&
-                            0, jjan, k8b)
+                            0, sjv=jjan, styp=k8b)
                 zr(jjan) = zr(jangl+ian-1)
 110          continue
         endif

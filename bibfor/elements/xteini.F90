@@ -4,7 +4,6 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/iselli.h"
@@ -12,6 +11,7 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
+!
     character(len=16) :: nomte
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ddlm
     integer :: nfiss, contac
@@ -81,8 +81,8 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
         if (enr(1:3) .eq. 'XH3') nfh = 3
         if (enr(1:3) .eq. 'XH4') nfh = 4
 !       NOMBRE DE FISSURES
-        call tecach('NOO', 'PLST', 'L', 7, jtab,&
-                    iret)
+        call tecach('NOO', 'PLST', 'L', iret, nval=7,&
+                    itab=jtab)
         nfiss = jtab(7)
     endif
 !

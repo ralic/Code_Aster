@@ -17,7 +17,6 @@ subroutine te0286(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/bsigmc.h"
 #include "asterfort/elref4.h"
 #include "asterfort/ethdst.h"
@@ -27,6 +26,7 @@ subroutine te0286(option, nomte)
 #include "asterfort/ortrep.h"
 #include "asterfort/simtep.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! FONCTION REALISEE:
@@ -111,8 +111,7 @@ subroutine te0286(option, nomte)
 !
 ! ---- RECUPERATION  DU NUMERO D'HARMONIQUE
 !      ------------------------------------
-    call tecach('NNN', 'PHARMON', 'L', 1, iharmo,&
-                iret)
+    call tecach('NNN', 'PHARMON', 'L', iret, iad=iharmo)
     if (iharmo .ne. 0) then
         nh = zi(iharmo)
         nharm = dble(nh)

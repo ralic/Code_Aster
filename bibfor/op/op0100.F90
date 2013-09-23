@@ -371,7 +371,7 @@ subroutine op0100()
                 timeu=0.d0
                 timev=0.d0
                 call rsadpa(resu, 'L', 1, 'NOM_CAS', iord0,&
-                            0, iad, k8bid)
+                            0, sjv=iad, styp=k8bid)
                 nomcas=zk16(iad)
             endif
 !
@@ -389,10 +389,10 @@ subroutine op0100()
 !
                 if (.not.lmelas) then
                     call rsadpa(resu, 'L', 1, 'INST', iord1,&
-                                0, jinst, k8bid)
+                                0, sjv=jinst, styp=k8bid)
                     timeu = zr(jinst)
                     call rsadpa(resu, 'L', 1, 'INST', iord2,&
-                                0, jinst, k8bid)
+                                0, sjv=jinst, styp=k8bid)
                     timev = zr(jinst)
                     exitim = .true.
                 endif
@@ -486,17 +486,17 @@ subroutine op0100()
                 exitim = .false.
                 time=0.d0
                 call rsadpa(resu, 'L', 1, 'NOM_CAS', iord,&
-                            0, iad, k8bid)
+                            0, sjv=iad, styp=k8bid)
                 nomcas=zk16(iad)
             else if (lmoda) then
                 call rsadpa(resu, 'L', 1, 'OMEGA2', iord,&
-                            0, ipuls, k8bid)
+                            0, sjv=ipuls, styp=k8bid)
                 puls = zr(ipuls)
                 puls = sqrt(puls)
                 time = 0.d0
             else
                 call rsadpa(resu, 'L', 1, 'INST', iord,&
-                            0, jinst, k8bid)
+                            0, sjv=jinst, styp=k8bid)
                 time = zr(jinst)
                 exitim = .true.
             endif
@@ -569,19 +569,19 @@ subroutine op0100()
                     if (.not.zl(jnord+i-1)) goto 34
                 endif
                 call rsadpa(resu, 'L', 1, 'NOM_CAS', iord,&
-                            0, iad, k8bid)
+                            0, sjv=iad, styp=k8bid)
                 nomcas=zk16(iad)
                 exitim = .false.
                 time = 0.d0
             else if (lmoda) then
                 call rsadpa(resu, 'L', 1, 'OMEGA2', iord,&
-                            0, ipuls, k8bid)
+                            0, sjv=ipuls, styp=k8bid)
                 puls = zr(ipuls)
                 puls = sqrt(puls)
                 time = 0.d0
             else
                 call rsadpa(resu, 'L', 1, 'INST', iord,&
-                            0, jinst, k8bid)
+                            0, sjv=jinst, styp=k8bid)
                 time = zr(jinst)
                 exitim = .true.
             endif

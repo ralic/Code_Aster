@@ -19,8 +19,9 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: ndim, nno, ipoids, idfde, ipg, i, k
-    real(kind=8) :: dx, coor(1), nx, ny, jac, dxds, dyds
+    integer, intent(in) :: ndim, nno, ipoids, idfde, ipg
+    real(kind=8), intent(in) :: coor(1)
+    real(kind=8), intent(out) :: nx, ny, jac
 ! ......................................................................
 !    - BUT:  CALCULER LA VALEUR DU POIDS D'INTEGRATION EN 1 POINT DE
 !            GAUSS POUR UN SEGMENT PLAN  A 2 OU 3 NOEUDS.
@@ -42,6 +43,8 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
 !    - LES SEGMENTS DOIVENT ETRE "PLANS" (DANS OXY)
 ! ......................................................................
 !
+    integer :: i, k
+    real(kind=8) :: dx, dxds, dyds
 !
     ASSERT(ndim.eq.1)
     dxds = 0.d0

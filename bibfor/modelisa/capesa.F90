@@ -40,7 +40,6 @@ subroutine capesa(char, noma, ipesa, ndim)
 #include "asterfort/utmess.h"
 #include "asterfort/vetyma.h"
     real(kind=8) :: pesa(4), norme, pes(3)
-    complex(kind=8) :: cbid
     character(len=8) :: char, noma, licmp(4)
     character(len=19) :: carte
     integer :: iocc, ipesa, nbmail, nbgpma
@@ -86,8 +85,7 @@ subroutine capesa(char, noma, ipesa, ndim)
             licmp(3)='BG'
             licmp(4)='CG'
             call mecact('G', carte, 'MAILLA', noma, 'PESA_R',&
-                        4, licmp, 0, pesa, cbid,&
-                        ' ')
+                        ncmp=4, lnomcmp=licmp, vr=pesa)
         else
 !
 !   APPLICATION DE LA PESANTEUR AUX MAILLES OU GROUPES DE MAILLES

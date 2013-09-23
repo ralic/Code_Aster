@@ -238,13 +238,13 @@ subroutine op0048()
     call jelira(result//'           .ORDR', 'LONUTI', nbord)
     do 61 iordr = 1, nbord
         call rsadpa(result, 'E', 1, 'MODELE', zi(jord+iordr-1),&
-                    0, ladpa, k8b)
+                    0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=modele(1:8)
         call rsadpa(result, 'E', 1, 'CHAMPMAT', zi(jord+iordr-1),&
-                    0, ladpa, k8b)
+                    0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=materi
         call rsadpa(result, 'E', 1, 'CARAELEM', zi(jord+iordr-1),&
-                    0, ladpa, k8b)
+                    0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=carael
 61  end do
 !
@@ -283,7 +283,7 @@ subroutine op0048()
                     chcara, chharm, iret)
         if (iret .ne. 0) goto 62
         call rsadpa(result, 'L', 1, 'INST', iordr,&
-                    0, ladpa, k8b)
+                    0, sjv=ladpa, styp=k8b)
         time = zr(ladpa)
         call mechti(chgeom(1:8), time, rundf, rundf, chtime)
         call vrcins(modele, mate, carael, time, chvarc(1:19),&

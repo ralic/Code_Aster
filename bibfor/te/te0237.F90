@@ -74,13 +74,13 @@ subroutine te0237(option, nomte)
     endif
 !
     if (option .eq. 'EPSI_ELGA') then
-        call tecach('OOO', 'PDEFOPG', 'E', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7,&
+                    itab=itab)
         idefor=itab(1)
     else if (option.eq.'SIEF_ELGA') then
         call jevech('PMATERC', 'L', imate)
-        call tecach('OOO', 'PCONTRR', 'E', 7, itab,&
-                    iret)
+        call tecach('OOO', 'PCONTRR', 'E', iret, nval=7,&
+                    itab=itab)
         icont=itab(1)
         call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
                     1, tref, iret)

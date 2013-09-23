@@ -79,7 +79,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
     logical :: lfonct, zcmplx
 !
-    integer :: i, j, jabs
+    integer :: i, j, jabs, tmod(1)
     integer :: jdep, jvit, jacc, jpass, jordr, lord, imes, iret, gd
     integer :: labs, lmesu, lcoef, lred, jcnsd, jcnsc, jcnsv, n1
     integer :: ncoef, nfonc, lfonc, null, ibid, jcnsl, nbcmp
@@ -116,9 +116,10 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     call getvtx('RESOLUTION', 'REGUL', iocc=1, scal=kreg, nbret=n1)
 !
 ! RECUPERATION DU NOMBRE D ABSCISSES : NBABS
-    call rsorac(nommes, 'LONUTI', ibid, r8bid, k8bid,&
-                cbid, r8bid, 'ABSOLU', nbabs, 1,&
+    call rsorac(nommes, 'LONUTI', 0, r8bid, k8bid,&
+                cbid, r8bid, 'ABSOLU', tmod, 1,&
                 ibid)
+    nbabs=tmod(1)            
 !
     vabs = '&&ABSCISSES'
     call wkvect(vabs, 'V V R', nbabs, labs)
@@ -162,10 +163,10 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! RECUPERATION DE L ABSCISSE
             if ((typres(1:9).eq.'MODE_GENE') .or. (typres(1:9) .eq.'HARM_GENE')) then
                 call rsadpa(nommes, 'L', 1, 'FREQ', numord,&
-                            0, jabs, k8bid)
+                            0, sjv=jabs, styp=k8bid)
             else if (typres(1:9).eq.'TRAN_GENE') then
                 call rsadpa(nommes, 'L', 1, 'INST', numord,&
-                            0, jabs, k8bid)
+                            0, sjv=jabs, styp=k8bid)
             endif
             zr(labs-1 + numord) = zr(jabs)
 !
@@ -394,7 +395,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
     if (typres(1:9) .eq. 'MODE_GENE') then
         do 401 i = 1, nbabs
             call rsadpa(nomres, 'E', 1, 'NUME_MODE', zi(jordr-1+i),&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zi(jpara) = i
 401      continue
     endif
@@ -415,7 +416,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
                 zr(jabs-1+i) = zr(labs-1+i)
             else
                 call rsadpa(nomres, 'E', 1, 'FREQ', zi(jordr-1+i),&
-                            0, jpara, k8b)
+                            0, sjv=jpara, styp=k8b)
                 zr(jpara) = zr(labs-1 + i)
             endif
         endif
@@ -435,13 +436,13 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
                 call jeveuo(jexnum(nombas//'           .TACH', 1), 'L', jbasm)
                 sd2=zk24(jbasm)(1:8)
                 call rsadpa(sd2, 'L', 1, 'MODELE', 1,&
-                            0, jpara, k8b)
+                            0, sjv=jpara, styp=k8b)
                 modele=zk8(jpara)
                 call rsadpa(sd2, 'L', 1, 'CHAMPMAT', 1,&
-                            0, jpara, k8b)
+                            0, sjv=jpara, styp=k8b)
                 chmat=zk8(jpara)
                 call rsadpa(sd2, 'L', 1, 'CARAELEM', 1,&
-                            0, jpara, k8b)
+                            0, sjv=jpara, styp=k8b)
                 carael=zk8(jpara)
                 goto 44
             endif
@@ -466,13 +467,13 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
         do 43 i = 1, nbord
             call rsadpa(nomres, 'E', 1, 'MODELE', zi(jordr-1+i),&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zk8(jpara)=modele
             call rsadpa(nomres, 'E', 1, 'CHAMPMAT', zi(jordr-1+i),&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zk8(jpara)=chmat
             call rsadpa(nomres, 'E', 1, 'CARAELEM', zi(jordr-1+i),&
-                        0, jpara, k8b)
+                        0, sjv=jpara, styp=k8b)
             zk8(jpara)=carael
 43      continue
     endif

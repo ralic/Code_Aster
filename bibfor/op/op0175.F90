@@ -71,11 +71,11 @@ subroutine op0175()
     nuord = zi(jordr-1+1)
 !
     call rsadpa(resu, 'L', 1, 'MODELE', nuord,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     modele=zk8(jpara)
     ASSERT(modele.ne.' ')
     call rsadpa(resu, 'L', 1, 'CARAELEM', nuord,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     cara=zk8(jpara)
     ASSERT(cara.ne.' ')
 !

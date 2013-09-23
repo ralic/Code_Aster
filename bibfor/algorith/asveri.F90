@@ -60,7 +60,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ib, ibid, id, ier, im, in, inum
-    integer :: iordr, iret, irt, irt1, irt2, is, nbmode
+    integer :: iordr(1), iret, irt, irt1, irt2, is, nbmode
     integer :: nbopt, nbtrou, ns
     real(kind=8) :: r8b, rb
 !-----------------------------------------------------------------------
@@ -89,7 +89,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                         goto 10
                     endif
                     monpar = 'ACCE_IMPO'
-                    call rsvpar(psmo, iordr, 'TYPE_DEFO', ib, rb,&
+                    call rsvpar(psmo, iordr(1), 'TYPE_DEFO', ib, rb,&
                                 monpar, iret)
                     if (iret .ne. 100) then
                         ier = ier + 1
@@ -120,7 +120,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             goto 16
                         endif
                         monpar = 'DEPL_IMPO'
-                        call rsvpar(stat, iordr, 'TYPE_DEFO', ib, rb,&
+                        call rsvpar(stat, iordr(1), 'TYPE_DEFO', ib, rb,&
                                     monpar, iret)
                         if (iret .ne. 100) then
                             ier = ier + 1
@@ -143,7 +143,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                             goto 14
                         endif
                         monpar = 'ACCE_DDL_IMPO'
-                        call rsvpar(psmo, iordr, 'TYPE_DEFO', ib, rb,&
+                        call rsvpar(psmo, iordr(1), 'TYPE_DEFO', ib, rb,&
                                     monpar, iret)
                         if (iret .ne. 100) then
                             ier = ier + 1
@@ -249,7 +249,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                                     cbid, r8b, k8b, iordr, 1,&
                                     nbtrou)
                         if (nbtrou .eq. 1) then
-                            call rsexch('F', psmo, nomsy, iordr, chext2,&
+                            call rsexch('F', psmo, nomsy, iordr(1), chext2,&
                                         iret)
                             if (ctyp(1:2) .eq. 'NO') then
                                 call vrrefe(chextr, chext2, irt)
@@ -281,7 +281,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                                         cbid, r8b, k8b, iordr, 1,&
                                         nbtrou)
                             if (nbtrou .eq. 1) then
-                                call rsexch('F', stat, nomsy, iordr, chext2,&
+                                call rsexch('F', stat, nomsy, iordr(1), chext2,&
                                             iret)
                                 if (ctyp(1:2) .eq. 'NO') then
                                     call vrrefe(chextr, chext2, irt)
@@ -303,7 +303,7 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                                         cbid, r8b, k8b, iordr, 1,&
                                         nbtrou)
                             if (nbtrou .eq. 1) then
-                                call rsexch('F', psmo, nomsy, iordr, chext2,&
+                                call rsexch('F', psmo, nomsy, iordr(1), chext2,&
                                             iret)
                                 if (ctyp(1:2) .eq. 'NO') then
                                     call vrrefe(chextr, chext2, irt)

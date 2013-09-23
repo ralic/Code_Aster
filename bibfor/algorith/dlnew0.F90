@@ -146,7 +146,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     parameter ( nompro = 'DLNEW0' )
 !
     integer :: iforc0, iforc1
-    integer :: lresu, lcrre, nbexre, item2, iret, lvale, ibid, i
+    integer :: lresu, lcrre, nbexre, item2(1), iret, lvale, ibid, i
     integer :: lval1, lval2, ltps0, ltps1, nbinst, ifnobi, ifcibi, alarm
     integer :: iexci, ieq, iresu
 !
@@ -298,16 +298,16 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
         eps0 =1.d-12
         do 210 iresu = 1, nbexre
             if (abs(temps) .gt. eps0) then
-                call rsorac(zk8(lresu+iresu-1), 'INST', ibid, temps, k8bid,&
+                call rsorac(zk8(lresu+iresu-1), 'INST', 0, temps, k8bid,&
                             cbid, prec, 'RELATIF', item2, 1,&
                             ibid)
             else
-                call rsorac(zk8(lresu+iresu-1), 'INST', ibid, temps, k8bid,&
+                call rsorac(zk8(lresu+iresu-1), 'INST', 0, temps, k8bid,&
                             cbid, eps0, 'ABSOLU', item2, 1,&
                             ibid)
             endif
             if (ibid .gt. 0) then
-                call rsexch('F', zk8(lresu+iresu-1), 'DEPL', item2, cham19,&
+                call rsexch('F', zk8(lresu+iresu-1), 'DEPL', item2(1), cham19,&
                             iret)
                 call vtcopy(cham19, chamno, 'F', iret)
                 call jeveuo(chamno//'.VALE', 'L', lvale)
@@ -320,9 +320,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                 do 211 i = 1, nbinst-1
 !
                     call rsadpa(zk8(lresu+iresu-1), 'L', 1, 'INST', i,&
-                                0, ltps0, k8bid)
+                                0, sjv=ltps0, styp=k8bid)
                     call rsadpa(zk8(lresu+iresu-1), 'L', 1, 'INST', i+1,&
-                                0, ltps1, k8bid)
+                                0, sjv=ltps1, styp=k8bid)
                     if (i .eq. 1 .and. temps .lt. zr(ltps0)) then
                         call rsexch('F', zk8(lresu+iresu-1), 'DEPL', i, cham19,&
                                     iret)

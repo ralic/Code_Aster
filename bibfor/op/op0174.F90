@@ -41,7 +41,7 @@ subroutine op0174()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iret, lonord, iord, ipara, i, n, numord, ibid
+    integer :: iret, lonord(1), iord, ipara, i, n, numord, ibid
     integer :: nbpara, inom, ityp, ilong, itabi, itabr, itabc
     integer :: pi, pc, pr
     real(kind=8) :: rbid
@@ -86,12 +86,12 @@ subroutine op0174()
 !
 ! -- LECTURE DES NUMEROS D'ORDRE
 !
-    call rsorac(concpt, 'LONUTI', ibid, rbid, kbid,&
+    call rsorac(concpt, 'LONUTI', 0, rbid, kbid,&
                 cbid, rbid, kbid, lonord, 1,&
                 ibid)
-    call wkvect('&&OP0174.NUME_ORDRE', 'V V I', lonord, iord)
-    call rsorac(concpt, 'TOUT_ORDRE', ibid, rbid, kbid,&
-                cbid, rbid, kbid, zi(iord), lonord,&
+    call wkvect('&&OP0174.NUME_ORDRE', 'V V I', lonord(1), iord)
+    call rsorac(concpt, 'TOUT_ORDRE', 0, rbid, kbid,&
+                cbid, rbid, kbid, zi(iord), lonord(1),&
                 ibid)
 !
 !
@@ -128,7 +128,7 @@ subroutine op0174()
     do 30 i = 1, nbpara
         nom = zk16(inom + i)
         call rsadpa(concpt, 'L', 1, nom, numord,&
-                    1, ipara, typ)
+                    1, sjv=ipara, styp=typ)
         if (typ(1:1) .ne. 'R' .and. typ(1:1) .ne. 'I' .and. typ(1:1) .ne. 'C') then
             call utmess('F', 'UTILITAI3_6')
         endif
@@ -149,7 +149,7 @@ subroutine op0174()
     call wkvect('&&OP0174.PARA_I', 'V V I', nbpara+1, itabi)
     call wkvect('&&OP0174.PARA_C', 'V V C', nbpara+1, itabc)
 !
-    do 40 n = 1, lonord
+    do 40 n = 1, lonord(1)
         numord = zi(iord-1+n)
 !
         pi = 0
@@ -162,7 +162,7 @@ subroutine op0174()
         do 50 i = 1, nbpara
             nom = zk16(inom + i)
             call rsadpa(concpt, 'L', 1, nom, numord,&
-                        1, ipara, typ)
+                        1, sjv=ipara, styp=typ)
             if (typ(1:1) .eq. 'R') then
                 zr(itabr+pr) = zr(ipara)
                 pr = pr+1

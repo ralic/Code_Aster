@@ -204,8 +204,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     if (option .eq. 'CHAR_MECA_FR1D1D' .or. option .eq. 'CHAR_MECA_SR1D1D') then
 !     --- FORCES REPARTIES PAR VALEURS REELLES---
 !        POUR LE CAS DU VENT
-        call tecach('NNN', 'PVITER', 'L', 1, lforc,&
-                    iret)
+        call tecach('NNN', 'PVITER', 'L', iret, iad=lforc)
         if (iret .eq. 0) then
             if (nomte .eq. 'MECA_POU_C_T') goto 997
             okvent = .true.
@@ -229,8 +228,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         elseif ( option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq.&
     'CHAR_MECA_SF1D1D' ) then
 !     --- FORCES REPARTIES PAR FONCTIONS ---
-        call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                    iret)
+        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
         if (iret .eq. 0) then
             w(4) = zr(itemps)
             w(8) = zr(itemps)
@@ -286,8 +284,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', 1, ifcx,&
-                            iret)
+                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -312,8 +309,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             valpav(1) = sqrt( vite2 )
             if (valpav(1) .gt. r8min) then
 !            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
-                call tecach('ONN', 'PVENTCX', 'L', 1, ifcx,&
-                            iret)
+                call tecach('ONN', 'PVENTCX', 'L', iret, iad=ifcx)
                 if (iret .ne. 0) goto 999
                 if (zk8(ifcx)(1:1) .eq. '.') goto 999
                 call fointe('FM', zk8(ifcx), 1, nompav, valpav,&
@@ -375,10 +371,8 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !
 !     --- RECUPERATION DU COEF_MULT ---
 !
-    call tecach('NNN', 'PCOEFFR', 'L', 1, icoer,&
-                iretr)
-    call tecach('NNN', 'PCOEFFC', 'L', 1, icoec,&
-                iretc)
+    call tecach('NNN', 'PCOEFFR', 'L', iretr, iad=icoer)
+    call tecach('NNN', 'PCOEFFC', 'L', iretc, iad=icoec)
 !
     if (iretr .eq. 0) then
         do 400 i = 1, 12

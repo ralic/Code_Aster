@@ -95,7 +95,7 @@ subroutine bamo78(nomres, trange, typres)
     character(len=1) :: typcoe
     character(len=2) :: codret
     character(len=24) :: trgene
-    integer :: jtrgen
+    integer :: jtrgen, tmod(1)
     complex(kind=8) :: calpha, cbid
     character(len=24) :: mate, compor, carele
     logical :: exicar
@@ -107,7 +107,7 @@ subroutine bamo78(nomres, trange, typres)
 !-----------------------------------------------------------------------
     integer :: iarc2, ievnew, iopt, jordr, lpar, n, nbins2
     integer :: nbtrou, nc, nh, nncp, num0, nume0
-    real(kind=8) :: alpha, epsi, rbid, rundf, time
+    real(kind=8) :: alpha, epsi, rundf, time
 !-----------------------------------------------------------------------
     data lcumu/.false.,.false./
     data lcoc/.false.,.false./
@@ -145,9 +145,10 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- NOMBRE DE MODES
 !
-    call rsorac(basemo, 'LONUTI', ibid, r8bid, k8bid,&
-                c16bid, r8bid, k8bid, nbmode, 1,&
+    call rsorac(basemo, 'LONUTI', 0, r8bid, k8bid,&
+                c16bid, r8bid, k8bid, tmod, 1,&
                 ibid)
+    nbmode=tmod(1)            
 !
 ! --- NUME_DDL ATTACHE A LA BASE MODALE
 !
@@ -220,11 +221,13 @@ subroutine bamo78(nomres, trange, typres)
         call rscrsd('G', nomres, typres, nbinst)
     else
         call rsorac(nomres, 'DERNIER', ibid, r8bid, k8bid,&
-                    c16bid, epsi, crit, nume0, 1,&
+                    c16bid, epsi, crit, tmod, 1,&
                     nbtrou)
+        nume0=tmod(1)            
         call rsorac(nomres, 'INST', ibid, zr(jinst), k8bid,&
-                    c16bid, epsi, crit, nume, 1,&
+                    c16bid, epsi, crit, tmod, 1,&
                     nbtrou)
+        nume=tmod(1)            
         if (nbtrou .ne. 0) nume0 = nume
         nbins2 = nbinst + nume0
         call rsagsd(nomres, nbins2)
@@ -243,7 +246,7 @@ subroutine bamo78(nomres, trange, typres)
 !
 !
             call rsadpa(sdnoli, 'L', 1, 'TRAN_GENE_NOLI', nume,&
-                        1, jtrgen, ctype)
+                        1, sjv=jtrgen, styp=ctype)
             trgene = zk24(jtrgen)
 !
             if (champ(icham) .eq. 'DEPL') then
@@ -285,16 +288,16 @@ subroutine bamo78(nomres, trange, typres)
             call rsnoch(nomres, champ(icham)(1:4), iarc2)
             if (icham .eq. 1) then
                 call rsadpa(nomres, 'E', 1, 'INST', iarc2,&
-                            0, linst, k8bid)
+                            0, sjv=linst, styp=k8bid)
                 zr(linst) = zr(jinst+iarch-1)
                 call rsadpa(nomres, 'E', 1, 'MODELE', iarc2,&
-                            0, lpar, k8bid)
+                            0, sjv=lpar, styp=k8bid)
                 zk8(lpar) = modele
                 call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iarc2,&
-                            0, lpar, k8bid)
+                            0, sjv=lpar, styp=k8bid)
                 zk8(lpar) = materi
                 call rsadpa(nomres, 'E', 1, 'CARAELEM', iarc2,&
-                            0, lpar, k8bid)
+                            0, sjv=lpar, styp=k8bid)
                 zk8(lpar) = carele(1:8)
             endif
 !
@@ -408,8 +411,7 @@ subroutine bamo78(nomres, trange, typres)
         call carces(chel1, 'ELEM', ' ', 'V', ches1,&
                     'A', ibid)
         call mecact('V', chel2, 'LIGREL', ligrel, 'COMPOR',&
-                    20, nomcmp, ibid, rbid, calpha,&
-                    valcmp)
+                    ncmp=20, lnomcmp=nomcmp,  vk=valcmp)
         call carces(chel2, 'ELEM', ' ', 'V', ches2,&
                     'A', ibid)
         nc = 2

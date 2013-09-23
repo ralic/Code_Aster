@@ -202,9 +202,9 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
         do 50 im = 1, nbm
             ior = nuor(im)
             call rsadpa(base, 'L', 1, 'MASS_GENE', ior,&
-                        0, lmasg, k8b)
+                        0, sjv=lmasg, styp=k8b)
             call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', ior,&
-                        0, lfact, k8b)
+                        0, sjv=lfact, styp=k8b)
             masg(im) = zr(lmasg)
             fact(3*(im-1)+1) = zr(lfact ) * masg(im)
             fact(3*(im-1)+2) = zr(lfact+1) * masg(im)

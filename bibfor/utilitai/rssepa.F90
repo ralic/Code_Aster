@@ -52,25 +52,25 @@ subroutine rssepa(result, nuordr, modele, mate, carele,&
 !     STOCKAGE DU NOM DU MODELE
 !     -------------------------
     call rsadpa(result, 'E', 1, 'MODELE', nuordr,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     zk8(jpara)=modele
 !
 !     STOCKAGE DU NOM DU CHAMP MATERIAU
 !     ---------------------------------
     call rsadpa(result, 'E', 1, 'CHAMPMAT', nuordr,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     zk8(jpara)=mate(1:8)
 !
 !     STOCKAGE DU NOM DE LA CARACTERISTIQUE ELEMENTAIRE
 !     -------------------------------------------------
     call rsadpa(result, 'E', 1, 'CARAELEM', nuordr,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     zk8(jpara)=carele
 !
 !     STOCKAGE DU NOM DE LA SD INFO_CHARGE
 !     ------------------------------------
     call rsadpa(result, 'E', 1, 'EXCIT', nuordr,&
-                0, jpara, k8b)
+                0, sjv=jpara, styp=k8b)
     zk24(jpara)=excit(1:19)
 !
     call jedema()

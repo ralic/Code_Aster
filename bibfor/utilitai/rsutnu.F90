@@ -73,7 +73,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     character(len=16) :: concep, nomcmd, nomacc
     character(len=19) :: knacc, kvacc, knmod, listr, resuin, knum2
     complex(kind=8) :: c16b
-    integer :: ltout, linst, lfreq, lordr
+    integer :: ltout, linst, lfreq, lordr, tord(1)
     logical :: verifi
 !     ------------------------------------------------------------------
     call jemarq()
@@ -107,15 +107,16 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     call jeexin(knacc, iret)
     if (iret .gt. 0) call jeveuo(knacc, 'L', jpara)
     if (nbacc .ne. 0) then
-        call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                    c16b, r8b, k8b, iord, 1,&
+        call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
+                    c16b, r8b, k8b, tord, 1,&
                     ibid)
+        iord=tord(1)            
         do 40 iacc = 1, nbacc
             if (getexm(motcle,zk16(jpara-1+iacc)) .eq. 0) goto 40
 !
             ctyp = '    '
             call rsadpa(resu, 'L', 1, zk16(jpara-1+iacc), iord,&
-                        1, iad, ctyp)
+                        1, sjv=iad, styp=ctyp)
             if (ctyp(1:1) .eq. 'I') then
                 call getvis(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
             else if (ctyp(1:1).eq.'R') then
@@ -126,9 +127,10 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
             endif
 !
             if (n2 .ne. 0) then
-                call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                            c16b, r8b, k8b, nbordt, 1,&
+                call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                            c16b, r8b, k8b, tord, 1,&
                             ibid)
+                nbordt=tord(1)            
                 call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
                 call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
                 nbval = -n2
@@ -172,7 +174,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     if (ctyp(1:1) .eq. 'I') then
                         call rsorac(resu, zk16(jpara-1+iacc), zi(jval-1+ ival), r8b, k8b,&
                                     c16b, prec, crit, zi(jord2), nbordt,&
-                                    nbtrou)
+                                    nbtrou)                                    
                     else if (ctyp(1:1).eq.'R') then
                         call rsorac(resu, zk16(jpara-1+iacc), ibid, zr(jval-1+ival), k8b,&
                                     c16b, prec, crit, zi(jord2), nbordt,&
@@ -301,9 +303,10 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     if (linst .eq. 1) then
         call getvid(motcle, 'LIST_INST', iocc=iocc, scal=listr, nbret=n1)
         if (n1 .ne. 0) then
-            call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                        c16b, r8b, k8b, nbordt, 1,&
+            call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                        c16b, r8b, k8b, tord, 1,&
                         ibid)
+            nbordt=tord(1)            
             nomacc = 'INST'
             call jeveuo(listr//'.VALE', 'L', laccr)
             call jelira(listr//'.VALE', 'LONMAX', nbinst)
@@ -348,9 +351,10 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     if (lfreq .eq. 1) then
         call getvid(motcle, 'LIST_FREQ', iocc=iocc, scal=listr, nbret=n1)
         if (n1 .ne. 0) then
-            call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                        c16b, r8b, k8b, nbordt, 1,&
+            call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                        c16b, r8b, k8b, tord, 1,&
                         ibid)
+            nbordt=tord(1)            
             nomacc = 'FREQ'
             call jeveuo(listr//'.VALE', 'L', laccr)
             call jelira(listr//'.VALE', 'LONMAX', nbfreq)
@@ -409,11 +413,12 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
     ltout = getexm(motcle,'TOUT_ORDRE')
     if (ltout .eq. 1) then
-        call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
-                    c16b, r8b, k8b, nbordr, 1,&
+        call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                    c16b, r8b, k8b, tord, 1,&
                     ibid)
+        nbordr=tord(1)            
         call wkvect(knum, 'V V I', nbordr, jordr)
-        call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
+        call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
                     c16b, r8b, k8b, zi(jordr), nbordr,&
                     ibid)
     endif

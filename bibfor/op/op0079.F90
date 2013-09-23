@@ -57,7 +57,7 @@ subroutine op0079()
     integer :: iadvec, iamatr, ibid, icod, iadref
     integer :: iddeeq, idvect, iliord, imod, ind, iord, isym
     integer :: jmod, jrefa, llnequ, n0, n1, n2, n4
-    integer :: nbid, neq
+    integer :: nbid, neq, tmod(1)
     real(kind=8) :: bid, ebid, pij
 !-----------------------------------------------------------------------
     parameter    (nbsym=3)
@@ -101,8 +101,9 @@ subroutine op0079()
 ! --- RECUPERATION DU NB DE MODES
 !
     call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', nbmode, 1,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
+    nbmode=tmod(1)            
 !
 !
     call jeveuo(numgen//'      .SMOS.SMDE', 'L', jsmde)
@@ -111,8 +112,9 @@ subroutine op0079()
 ! --- RECUPERATION DU NOMBRE DE NUME_ORDRE DE LA SD_RESU
 !
     call rsorac(res, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', nbo, 1,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
+    nbo=tmod(1)            
     call jeveuo(res//'           .ORDR', 'L', iliord)
 !
 !

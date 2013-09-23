@@ -202,22 +202,22 @@ subroutine op0196()
 !
         if (tysd(1:4) .eq. 'EVOL') then
             call rsadpa(resuco, 'L', 1, 'INST', iord,&
-                        0, jinst1, kbid)
+                        0, sjv=jinst1, styp=kbid)
             call rsadpa(resux, 'E', 1, 'INST', iord,&
-                        0, jinst2, kbid)
+                        0, sjv=jinst2, styp=kbid)
             zr(jinst2) = zr(jinst1)
             call rsadpa(resux, 'E', 1, 'MODELE', iord,&
-                        0, jmod, kbid)
+                        0, sjv=jmod, styp=kbid)
             zk8(jmod)=modvis
         else if (tysd(1:9).eq.'MODE_MECA') then
             call rsadpa(resuco, 'L', 1, 'FREQ', iord,&
-                        0, jinst1, kbid)
+                        0, sjv=jinst1, styp=kbid)
             call rsadpa(resux, 'E', 1, 'FREQ', iord,&
-                        0, jinst2, kbid)
+                        0, sjv=jinst2, styp=kbid)
             zr(jinst2) = zr(jinst1)
 !
             call rsadpa(resux, 'E', 1, 'MODELE', iord,&
-                        0, jmod, kbid)
+                        0, sjv=jmod, styp=kbid)
             zk8(jmod)=mo
 !
             call refdcp(resuco, resux)

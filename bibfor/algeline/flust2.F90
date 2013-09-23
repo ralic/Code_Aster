@@ -166,7 +166,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
             numod = nuor(imod)
 !
             call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
-                        0, lmasg, k8b)
+                        0, sjv=lmasg, styp=k8b)
             zr(imist+imod-1) = zr(lmasg)
 !
             fi = zr(ifreqi+numod-1)
@@ -175,7 +175,7 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !
 !
             call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod,&
-                        0, lfact, k8b)
+                        0, sjv=lfact, styp=k8b)
             fact(3*(imod-1)+1) = zr(lfact ) * masg(imod)
             fact(3*(imod-1)+2) = zr(lfact+1) * masg(imod)
             fact(3*(imod-1)+3) = zr(lfact+2) * masg(imod)
@@ -224,9 +224,9 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
         do 100 imod = 1, nbm
             numod = nuor(imod)
             call rsadpa(base, 'L', 1, 'MASS_GENE', numod,&
-                        0, lmasg, k8b)
+                        0, sjv=lmasg, styp=k8b)
             call rsadpa(base, 'L', 1, 'FACT_PARTICI_DX', numod,&
-                        0, lfact, k8b)
+                        0, sjv=lfact, styp=k8b)
             masg(imod) = zr(lmasg)
             fact(3*(imod-1)+1) = zr(lfact ) * masg(imod)
             fact(3*(imod-1)+2) = zr(lfact+1) * masg(imod)

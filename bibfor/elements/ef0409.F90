@@ -45,12 +45,14 @@ subroutine ef0409(nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+                npg, ipoids, ivf, idfdx, jgano)
     call jevech('PEFFORR', 'E', ichn)
 !
     call jevech('PGEOMER', 'L', igeom)
-    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo, iret)
-    call tecach('OON', 'PCONTRR', 'L', 7, jtab, iret)
+    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
+    call tecach('OON', 'PCONTRR', 'L', iret, nval=7,&
+                itab=jtab)
     call r8inir(32, 0.d0, effint, 1)
 !
     do ipg = 1, npg

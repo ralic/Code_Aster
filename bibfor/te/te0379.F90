@@ -1,10 +1,10 @@
 subroutine te0379(option, nomte)
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,8 +41,8 @@ subroutine te0379(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    call tecach('OOO', 'PERREUR', 'L', 3, itab,&
-                iret)
+    call tecach('OOO', 'PERREUR', 'L', iret, nval=3,&
+                itab=itab)
     call jevech('PERRENO', 'E', ierrn)
     ierr=itab(1)
     nbcmp=itab(2)

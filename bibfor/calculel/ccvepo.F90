@@ -78,7 +78,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
     suropt = ' '
     if (typesd .eq. 'MODE_MECA') then
         call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1,&
-                    0, ltymo, k8b)
+                    0, sjv=ltymo, styp=k8b)
         typemo=zk16(ltymo)
     endif
 !

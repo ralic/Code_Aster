@@ -1,11 +1,11 @@
 subroutine te0452(option, nomte)
-    implicit  none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/excent.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
+!
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -37,32 +37,32 @@ subroutine te0452(option, nomte)
     ASSERT(option.eq.'EFGE_EXCENT')
 !
 !     -- IL Y A 4 CAS POSSIBLES : GAUSS/NOEUD + REEL/COMPLEXE
-    call tecach('ONO', 'PEFFONR', 'L', 7, itab1,&
-                iret)
+    call tecach('ONO', 'PEFFONR', 'L', iret, nval=7,&
+                itab=itab1)
     if (iret .eq. 0) then
         lreel=.true.
-        call tecach('OOO', 'PEFFOENR', 'E', 7, itab2,&
-                    ibid)
+        call tecach('OOO', 'PEFFOENR', 'E', ibid, nval=7,&
+                    itab=itab2)
     else
-        call tecach('ONO', 'PEFFONC', 'L', 7, itab1,&
-                    iret)
+        call tecach('ONO', 'PEFFONC', 'L', iret, nval=7,&
+                    itab=itab1)
         if (iret .eq. 0) then
             lreel=.false.
-            call tecach('OOO', 'PEFFOENC', 'E', 7, itab2,&
-                        ibid)
+            call tecach('OOO', 'PEFFOENC', 'E', ibid, nval=7,&
+                        itab=itab2)
         else
-            call tecach('ONO', 'PEFFOGR', 'L', 7, itab1,&
-                        iret)
+            call tecach('ONO', 'PEFFOGR', 'L', iret, nval=7,&
+                        itab=itab1)
             if (iret .eq. 0) then
                 lreel=.true.
-                call tecach('OOO', 'PEFFOEGR', 'E', 7, itab2,&
-                            ibid)
+                call tecach('OOO', 'PEFFOEGR', 'E', ibid, nval=7,&
+                            itab=itab2)
             else
                 lreel=.false.
-                call tecach('OOO', 'PEFFOGC', 'L', 7, itab1,&
-                            ibid)
-                call tecach('OOO', 'PEFFOEGC', 'E', 7, itab2,&
-                            ibid)
+                call tecach('OOO', 'PEFFOGC', 'L', ibid, nval=7,&
+                            itab=itab1)
+                call tecach('OOO', 'PEFFOEGC', 'E', ibid, nval=7,&
+                            itab=itab2)
             endif
         endif
     endif

@@ -46,7 +46,7 @@ subroutine te0583(option, nomte)
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
     real(kind=8) :: hk, poids, rayon, theta, tk(4), ck, sk
     real(kind=8) :: cosfi, sinfi, te, pgl4(3, 3), fpesa4(6), xpg(4)
-    real(kind=8) :: r8b, rext, sec, rho(1), r, time, valpar(4)
+    real(kind=8) :: r8b=0.d0, rext, sec, rho(1), r, time, valpar(4)
     integer :: codres(1), kpg, spt
     character(len=8) :: nompar(4), fami, poum
     character(len=16) :: phenom
@@ -374,8 +374,7 @@ subroutine te0583(option, nomte)
         nompar(1) = 'X'
         nompar(2) = 'Y'
         nompar(3) = 'Z'
-        call tecach('NNN', 'PTEMPSR', 'L', 1, itemps,&
-                    iret)
+        call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
         if (itemps .ne. 0) then
             time = zr(itemps)
             valpar(4) = time

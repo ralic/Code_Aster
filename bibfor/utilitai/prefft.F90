@@ -57,7 +57,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !     ------------------------------------------------------------------
     integer :: nbordr, jordr, ibid, i, ii
     integer :: iordr, lacce, lfon, iddl, nbva, neq
-    integer :: lvar, ier, lordr, lval, iret
+    integer :: lvar, ier, lordr, lval, iret, tord(1)
     integer :: lvale, nout, nbvin, nbvout, lfon2, j
     real(kind=8) :: r8b, dimag
     complex(kind=8) :: c16b
@@ -74,12 +74,13 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !
     call gettco(resin, typres)
     call jelira(resin//'.ORDR', 'LONUTI', nbordr)
-    call rsorac(resin, 'LONUTI', ibid, r8b, k8b,&
-                c16b, r8b, k8b, nbordr, 1,&
+    call rsorac(resin, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tord, 1,&
                 ibid)
+    nbordr=tord(1)            
     knume='KNUME'
     call wkvect(knume, 'V V I', nbordr, jordr)
-    call rsorac(resin, 'TOUT_ORDRE', ibid, r8b, k8b,&
+    call rsorac(resin, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
                 ibid)
     call jeveuo(knume, 'L', lordr)
@@ -128,7 +129,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
                 call rsexch('F', resin, grande, iordr, cham19,&
                             iret)
                 call rsadpa(resin, 'L', 1, 'INST', iordr,&
-                            0, lacce, k8b)
+                            0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
 !              --- REMPLIR LE VECTEUR ABSCISSES DE LA FONCTION PREFFT
 !                  AVEC LA LISTE D'INSTANTS RECUPEREE
@@ -244,7 +245,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
                 call rsexch('F', resin, grande, iordr, cham19,&
                             iret)
                 call rsadpa(resin, 'L', 1, 'FREQ', iordr,&
-                            0, lacce, k8b)
+                            0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
                 zr(lvar+iordr-1) = zr(lacce)
                 zr(lfon+ii) = dble(zc(lvale+iddl-1))

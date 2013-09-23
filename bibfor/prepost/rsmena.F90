@@ -48,7 +48,7 @@ subroutine rsmena(resu)
 ! 0.3. ==> VARIABLES LOCALES
 !
     integer :: n1, n2, k, jlist, nbcon, ibid, nbordr, jordr, jcoche
-    integer :: i, nbnosy, jtach, j, iret, ierd, i1, jrs24
+    integer :: i, nbnosy, jtach, j, iret, ierd, i1, jrs24, tord(1)
     character(len=8) :: kbid, tych, res8
     character(len=16) :: nomsym
     character(len=19) :: res19, noco19
@@ -95,11 +95,12 @@ subroutine rsmena(resu)
 !
 !     1.2 ON "COCHE" LES  PROF_CHNO REFERENCES :
     call jelira(res19//'.DESC', 'NOMMAX', nbnosy)
-    call rsorac(res19, 'LONUTI', ibid, r8b, kbid,&
-                c16b, r8b, kbid, nbordr, 1,&
+    call rsorac(res19, 'LONUTI', 0, r8b, kbid,&
+                c16b, r8b, kbid, tord, 1,&
                 ibid)
+    nbordr=tord(1)            
     call wkvect('&&RSMENA.NUME_ORDRE', 'V V I', nbordr, jordr)
-    call rsorac(res19, 'TOUT_ORDRE', ibid, r8b, kbid,&
+    call rsorac(res19, 'TOUT_ORDRE', 0, r8b, kbid,&
                 c16b, r8b, kbid, zi(jordr), nbordr,&
                 ibid)
     call wkvect('&&RSMENA.COCHE', 'V V I', nbcon, jcoche)

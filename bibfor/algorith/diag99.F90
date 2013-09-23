@@ -172,45 +172,45 @@ subroutine diag99(nomres)
         call rsnoch(nomres, 'DEPL', iorne)
 !
         call rsadpa(meca, 'L', 1, 'NUME_MODE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zi(jiad) = zi(iad)
 !
         call rsadpa(meca, 'L', 1, 'FREQ', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'FREQ', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(meca, 'L', 1, 'NORME', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'NORME', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zk24(jiad) = zk24(iad)
 !
         call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(meca, 'L', 1, 'MASS_GENE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(meca, 'L', 1, 'RIGI_GENE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(meca, 'L', 1, 'TYPE_MODE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
 80  continue
@@ -220,41 +220,41 @@ subroutine diag99(nomres)
         iorne = iorne+1
 !
         call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zi(jiad) = iorol+nbmode
 !
         call rsadpa(nomres, 'E', 1, 'FREQ', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
         call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
         call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
         call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zr(jiad) = 0.d0
 !
         call rsadpa(stat, 'L', 1, 'NOEUD_CMP', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'NOEUD_CMP', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
         call rsadpa(stat, 'L', 1, 'TYPE_DEFO', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
         call rsadpa(stat, 'L', 1, 'TYPE_MODE', iorol,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
-                    0, jiad, k8b)
+                    0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
         call rsexch(' ', nomres, 'DEPL', iorne, chamol,&

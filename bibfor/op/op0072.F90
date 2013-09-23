@@ -71,7 +71,7 @@ subroutine op0072()
     integer :: i, iadesc, iadref, iadvec, iamatr, iarefe
     integer :: iavale, ibid, icod, idbase, iddeeq, idvec1, idvec2
     integer :: idvec3, idvec4, idvect, iret, j, jrefa, llnequ
-    integer :: n0, n1, n2, n3, n4, nbid, nbmode
+    integer :: n0, n1, n2, n3, n4, nbid, nbmode, tmod(1)
     integer :: neq
     real(kind=8) :: bid, ebid, pij
 !-----------------------------------------------------------------------
@@ -92,8 +92,9 @@ subroutine op0072()
 ! --- RECUPERATION DU NB DE MODES
 !
     call rsorac(basemo, 'LONUTI', ibid, bid, k8bid,&
-                cbid, ebid, 'ABSOLU', nbmode, 1,&
+                cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
+    nbmode=tmod(1)            
 !
 !
     call jeveuo(numgen//'.SMOS.SMDE', 'L', jsmde)

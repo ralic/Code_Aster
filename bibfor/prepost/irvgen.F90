@@ -101,15 +101,15 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             call mgutdm(mogene, blan, istru, 'NOM_BASE_MODALE', ib,&
                         mode)
             call rsadpa(mode, 'L', 1, 'FREQ', imode,&
-                        0, jfreq, k8b)
+                        0, sjv=jfreq, styp=k8b)
             if (lhist) then
                 basmod = mode
                 call jeveuo(basmod//'.ORDR', 'L', jordr)
                 call rsadpa(basmod, 'L', 1, 'TYPE_DEFO', zi(jordr-1+ imode),&
-                            0, jpara, k8b)
+                            0, sjv=jpara, styp=k8b)
                 typmod = zk16(jpara)(1:9)
                 call rsadpa(basmod, 'L', 1, 'NOEUD_CMP', zi(jordr-1+ imode),&
-                            0, jpara, k8b)
+                            0, sjv=jpara, styp=k8b)
                 noeu = zk16(jpara)(1:8)
                 cmp = zk16(jpara)(9:16)
                 if (typval(1:1) .eq. 'R') then
@@ -142,7 +142,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
                     typeba, ir)
 !---------ON RECUPERE LE TYPE DE MODES STAT/DYN
         call rsadpa(mode, 'L', 1, 'TYPE_MODE', 1,&
-                    0, iad, k8b)
+                    0, sjv=iad, styp=k8b)
         dynsta=zk16(iad)(1:8)
         if (typrem .eq. 'MODE_MECA' .or. typrem .eq. 'MODE_GENE') then
             typmod = '  PROPRE'
@@ -188,7 +188,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
         ir = 0
         do 20 i = 1, nbmode
             call rsadpa(mode, 'L', 1, 'TYPE_MODE', i,&
-                        0, iad, k8b)
+                        0, sjv=iad, styp=k8b)
             dynsta=zk16(iad)(1:8)
             if (nbcmpg .gt. 0) then
                 do 22 j = 1, nbcmpg
@@ -200,18 +200,18 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 !             IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
             if (dynsta .eq. 'MODE_STA') then
                 call rsadpa(mode, 'L', 1, 'NOEUD_CMP', i,&
-                            0, jfreq, k8b)
+                            0, sjv=jfreq, styp=k8b)
             else
                 call rsadpa(mode, 'L', 1, 'FREQ', i,&
-                            0, jfreq, k8b)
+                            0, sjv=jfreq, styp=k8b)
             endif
             if (lhist) then
                 if (lbase) then
                     call rsadpa(basmod, 'L', 1, 'TYPE_DEFO', zi(jordr-1+ i),&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     typmod = zk16(jpara)(1:9)
                     call rsadpa(basmod, 'L', 1, 'NOEUD_CMP', zi(jordr-1+ i),&
-                                0, jpara, k8b)
+                                0, sjv=jpara, styp=k8b)
                     noeu = zk16(jpara)(1:8)
                     cmp = zk16(jpara)(9:16)
                 endif

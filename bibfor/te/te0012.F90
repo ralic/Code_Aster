@@ -50,7 +50,7 @@ subroutine te0012(option, nomte)
 !
     character(len=16) :: nomte, option, phenom
     character(len=4) :: fami
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
     real(kind=8) :: a(3, 3, 27, 27), matp(81, 81), matv(3321)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, rho(1)
     integer :: ipoids, ivf, idfde, igeom, imate
@@ -264,11 +264,8 @@ subroutine te0012(option, nomte)
 ! OPTION ECIN_ELEM : CALCUL DE L'ENERGIE CINETIQUE
 !
     else if (option.eq.'ECIN_ELEM') then
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
-        call tecach(stopz, 'PVITESR', 'L', 1, ivite,&
-                    iret)
+        stopz='ONO'
+        call tecach(stopz, 'PVITESR', 'L', iret, iad=ivite)
 ! IRET NE PEUT VALOIR QUE 0 (TOUT EST OK) OU 2 (CHAMP NON FOURNI)
         if (iret .eq. 0) then
             call jevech('PENERCR', 'E', iecin)
@@ -290,8 +287,7 @@ subroutine te0012(option, nomte)
             call pmavec('ZERO', nddl, matp, zr(ivite), masvit)
             zr(iecin) = .5d0*ddot(nddl,zr(ivite),1,masvit,1)
         else
-            call tecach(stopz, 'PDEPLAR', 'L', 1, idepl,&
-                        iret)
+            call tecach(stopz, 'PDEPLAR', 'L', iret, iad=idepl)
             if (iret .eq. 0) then
                 call jevech('POMEGA2', 'L', ifreq)
                 call jevech('PENERCR', 'E', iecin)

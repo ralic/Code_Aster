@@ -338,8 +338,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nocmp(3) = 'Z'
 !
     call mecact('V', '&&RAPOCO.CAXE_POU', 'LIGREL', ligrel, 'GEOM_R',&
-                3, nocmp, icmp, axepou, ccmp,&
-                kcmp)
+                ncmp=3, lnomcmp=nocmp, vr=axepou)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES :
 !     ----------------------------------------------
@@ -493,8 +492,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     coorig(3) = zg
 !
     call mecact('V', '&&RAPOCO.CAORIGE', 'LIGREL', ligrel, 'GEOM_R',&
-                3, nocmp, icmp, coorig, ccmp,&
-                kcmp)
+                ncmp=3, lnomcmp=nocmp, vr=coorig)
 !
 ! --- DETERMINATION DE 2 LISTES  DE VECTEURS PAR ELEMENT PRENANT
 ! --- LEURS VALEURS AUX NOEUDS DES ELEMENTS.

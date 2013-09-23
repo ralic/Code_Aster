@@ -85,10 +85,10 @@ subroutine sfifj(nomres)
 ! RECUPERATION DE LA FREQUENCE MINIMALE ET MAX DES MODES
 !
         call rsadpa(base, 'L', 1, 'FREQ', zi(jordr-1+1),&
-                    0, jpara, k8b)
+                    0, sjv=jpara, styp=k8b)
         fmin = zr(jpara)
         call rsadpa(base, 'L', 1, 'FREQ', zi(jordr-1+nbm),&
-                    0, jpara, k8b)
+                    0, sjv=jpara, styp=k8b)
         fmax = zr(jpara)
     else
         call getvid(' ', 'CHAM_NO', scal=chamno, nbret=ibid)

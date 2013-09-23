@@ -121,10 +121,10 @@ subroutine crvrc2()
     call detrsd('CHAM_ELEM_S', chout)
     call rsnoch(resu, 'TEMP', iordr)
     call rsadpa(resu1, 'L', 1, 'INST', iordr,&
-                0, jinst, kbid)
+                0, sjv=jinst, styp=kbid)
     vinst=zr(jinst)
     call rsadpa(resu, 'E', 1, 'INST', iordr,&
-                0, jinst, kbid)
+                0, sjv=jinst, styp=kbid)
     zr(jinst) = vinst
 !
     10 end do

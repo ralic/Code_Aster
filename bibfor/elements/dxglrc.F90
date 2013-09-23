@@ -219,8 +219,8 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     leul = .false.
 !
     if (.not. lrgm) then
-        call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
+                    itab=jtab)
         icontm=jtab(1)
         ASSERT(npg.eq.jtab(3))
         call jevech('PVARIMR', 'L', ivarim)
@@ -295,8 +295,8 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
         nbvar = 0
     else
         read (zk16(icompo-1+2),'(I16)') nbvar
-        call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                    itab=jtab)
 ! SIGMAM : EFFORTS DANS REPERE UTILISATEUR
 !
         do i = 1, nbcon*npg

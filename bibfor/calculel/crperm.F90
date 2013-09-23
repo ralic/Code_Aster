@@ -51,7 +51,7 @@ subroutine crperm()
 !
 !
 !
-    integer :: n1, nbcham, iord1, iord2, nbperm, jordr, nbtrou, ip, ibid, ic
+    integer :: n1, nbcham, iord1(1), iord2, nbperm, jordr, nbtrou, ip, ibid, ic
     integer :: iret, jlim1, jlim2, nbma, jlino, nbno2, nncp
     real(kind=8) :: inst1, tran(3), prec
     real(kind=8) :: valr
@@ -76,7 +76,7 @@ subroutine crperm()
     if (n1 .eq. 0) then
         call jelira(resu1//'           .ORDR', 'LONUTI', ibid)
         call jeveuo(resu1//'           .ORDR', 'L', jordr)
-        iord1 = zi(jordr+ibid-1)
+        iord1(1) = zi(jordr+ibid-1)
     else
         call getvr8(' ', 'PRECISION', scal=prec, nbret=n1)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
@@ -128,7 +128,7 @@ subroutine crperm()
     endif
 !
     do 100 ic = 1, nbcham
-        call rsexch('F', resu1, cham(ic), iord1, ch1,&
+        call rsexch('F', resu1, cham(ic), iord1(1), ch1,&
                     iret)
         call rsexch('F', resu2, cham(ic), iord2, ch2,&
                     iret)

@@ -174,8 +174,7 @@ subroutine ef0344(nomte)
 70  end do
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS
-    call tecach('ONN', 'PFR1D1D', 'L', 1, lforcr,&
-                iret)
+    call tecach('ONN', 'PFR1D1D', 'L', iret, iad=lforcr)
     if (lforcr .ne. 0) then
         call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a,&
                     xl, rad, angs2, 1, nno,&
@@ -188,8 +187,7 @@ subroutine ef0344(nomte)
     endif
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS (SOUS FORME DE FONCTION)
-    call tecach('ONN', 'PFF1D1D', 'L', 1, lforcf,&
-                iret)
+    call tecach('ONN', 'PFF1D1D', 'L', iret, iad=lforcf)
     if (lforcf .ne. 0) then
         call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a,&
                     xl, rad, angs2, 1, nno,&

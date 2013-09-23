@@ -66,7 +66,7 @@ subroutine ritz99(nomres)
     integer :: ii, inord, ioci, jamo2, jamog
     integer :: lnbm, lrang1, lrang2, n, nam
     integer :: nbamor, nbdef, nbg, nbgl, nbi, nbid, nbli
-    integer :: nbmod1, nbmod2, nbmoda, nbmodb, nbold, nbtot
+    integer :: nbmod1, nbmod2, nbmoda, nbmodb, nbold(1), nbtot
     real(kind=8) :: bid, ebid
 !-----------------------------------------------------------------------
     seul=.false.
@@ -106,9 +106,9 @@ subroutine ritz99(nomres)
                     cbid, ebid, 'ABSOLU', nbold, 1,&
                     nbid)
         if (ibi4 .eq. 0) then
-            nbmodb = nbold
+            nbmodb = nbold(1)
         else
-            nbmodb = min(nbmod2,nbold)
+            nbmodb = min(nbmod2,nbold(1))
         endif
 !
         call dismoi('F', 'NB_MODES_TOT', resul1, 'RESULTAT', nbmod1,&
@@ -132,7 +132,7 @@ subroutine ritz99(nomres)
             call rsorac(resul1, 'LONUTI', ibid, bid, k8b,&
                         cbid, ebid, 'ABSOLU', nbold, 1,&
                         nbid)
-            if (nbtot .gt. nbold) call rsagsd(nomres, nbtot)
+            if (nbtot .gt. nbold(1)) call rsagsd(nomres, nbtot)
 !
             call getvid('    ', 'NUME_REF', iocc=1, scal=numref, nbret=ibid)
             if (ibid .eq. 0) then
@@ -211,12 +211,12 @@ subroutine ritz99(nomres)
         call getvis('RITZ', 'NMAX_MODE', iocc=1, scal=nbmod1, nbret=ibi5)
         nbmoda = nbmod1
         call rsorac(resul1, 'LONUTI', ibid, bid, k8b,&
-                    cbid, ebid, 'ABSOLU', nbold, 1,&
+                    cbid, ebid, 'ABSOLU', nbold(1), 1,&
                     nbid)
         if (ibi5 .eq. 0) then
-            nbmoda = nbold
+            nbmoda = nbold(1)
         else
-            nbmoda = min(nbmod1,nbold)
+            nbmoda = min(nbmod1,nbold(1))
         endif
     else if (nbgl.gt.1) then
         nbmoda=0
@@ -227,11 +227,11 @@ subroutine ritz99(nomres)
                         cbid, ebid, 'ABSOLU', nbold, 1,&
                         nbid)
             if (ibi5 .eq. 0) then
-                nbmoda = nbmoda+nbold
-                zi(lnbm+i-1)=nbold
+                nbmoda = nbmoda+nbold(1)
+                zi(lnbm+i-1)=nbold(1)
             else
-                nbmoda = nbmoda+min(zi(idor+i-1),nbold)
-                zi(lnbm+i-1)=min(zi(idor+i-1),nbold)
+                nbmoda = nbmoda+min(zi(idor+i-1),nbold(1))
+                zi(lnbm+i-1)=min(zi(idor+i-1),nbold(1))
             endif
 30      continue
     endif
@@ -249,9 +249,9 @@ subroutine ritz99(nomres)
                     cbid, ebid, 'ABSOLU', nbold, 1,&
                     nbid)
         if (ibi6 .eq. 0) then
-            nbmodb = nbold
+            nbmodb = nbold(1)
         else
-            nbmodb = min(nbmod2,nbold)
+            nbmodb = min(nbmod2,nbold(1))
         endif
         if (nbmodb .gt. 0) then
             call wkvect(trang2, 'V V I', nbmodb, lrang2)
@@ -317,7 +317,7 @@ subroutine ritz99(nomres)
         if (nbgl .eq. 1) then
             do 81 iam = 1, nbmoda
                 call rsadpa(resul1, 'E', 1, 'AMOR_REDUIT', iam,&
-                            0, iamor, k8b)
+                            0, sjv=iamor, styp=k8b)
                 zr(iamor) = zr(jamog+iam-1)
 81          continue
         endif

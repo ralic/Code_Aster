@@ -28,7 +28,6 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
     implicit none
 !
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
@@ -37,6 +36,7 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
 #include "asterfort/nbsigm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/xxnmpl.h"
+!
     integer :: nnop, imate, lgpg, codret, igeom, nfiss, jfisno
     integer :: cnset(4*32), heavt(*), lonch(10), ndim
     integer :: nfh, nfe, ddlc, ddlm, idepl, ivectu, ideplp
@@ -105,8 +105,8 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
     call elref1(elrefp)
 !
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', 2, jtab,&
-                iret)
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+                itab=jtab)
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM

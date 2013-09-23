@@ -363,7 +363,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
             call rsnoch(nomres, type(ich), iarchi)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
-                        0, linst, k8b)
+                        0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
 200      continue
         call jedetr('&&TRAN77.BASE')

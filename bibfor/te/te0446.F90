@@ -73,7 +73,7 @@ subroutine te0446(option, nomte)
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
     if (option.eq.'FORC_NODA') then
-        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo, iretc)
+        call tecach('ONN', 'PCOMPOR', 'L', iretc, iad=icompo)
 !
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERES
 !
@@ -87,7 +87,7 @@ subroutine te0446(option, nomte)
 !
 ! --- VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL
-        call tecach('OON', 'PCONTMR', 'L', 7, jtab, iret)
+        call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
 !
         do ipg=1, npg
             icontm=jtab(1)+8*(ipg-1)

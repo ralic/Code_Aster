@@ -74,8 +74,8 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
     ASSERT(goun.eq.'G' .or. goun.eq.'N')
 !
 !     -- ADRESSE DU CHAMP LOCAL A MODIFIER + NBPT + NBSP
-    call tecach('NOO', param, loue, 7, itab,&
-                iret)
+    call tecach('NOO', param, loue, iret, nval=7,&
+                itab=itab)
     ASSERT(iret.eq.0 .or. iret.eq.1)
 !
 !     -- SI IRET=1 : IL N'Y A RIEN A FAIRE :

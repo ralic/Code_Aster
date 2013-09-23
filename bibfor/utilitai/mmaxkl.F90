@@ -128,11 +128,11 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             exitim = .false.
             time=0.d0
             call rsadpa(resuco, 'L', 1, 'NOM_CAS', iord,&
-                        0, iad, k8b)
+                        0, sjv=iad, styp=k8b)
             nomcas=zk16(iad)
         else
             call rsadpa(resuco, 'L', 1, 'INST', iord,&
-                        0, jinst, k8b)
+                        0, sjv=jinst, styp=k8b)
             time = zr(jinst)
             exitim = .true.
         endif

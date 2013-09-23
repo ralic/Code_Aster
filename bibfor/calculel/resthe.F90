@@ -75,7 +75,6 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-!
 #include "asterfort/calcul.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -85,6 +84,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mecact.h"
 #include "asterfort/wkvect.h"
+!
     integer :: niveau, ifm, niv, iaux
     real(kind=8) :: valthe, insold, inst
     logical :: evol
@@ -96,14 +96,12 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nbcmp, nbin, nbout, icmp, iarepe, mceld, mcelv, pceld, pcelv, igd
+    integer :: nbcmp, nbin, nbout, iarepe, mceld, mcelv, pceld, pcelv, igd
     integer :: iadef, iavaf, ncmpf, iadeh, iavah, ncmph, ncmpt, iadet, iavat
     integer :: nbjeve, ijeveo
     character(len=1) :: base
     character(len=8) :: lpain(9), lpaout(1), licmp(19)
     character(len=24) :: lchin(9), lchout(1), kcmp(19), charev
-    real(kind=8) :: rcmp
-    complex(kind=8) :: ccmp
 !
     call jemarq()
 !
@@ -222,8 +220,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
 ! CARTE NOMMEE &&RESTHER.CHARGE SUR LE MODELE LIGREL.
     base = 'V'
     call mecact(base, '&&RESTHER.CHARGE', 'MODELE', ligrel, 'NEUT_K24',&
-                nbcmp, licmp, icmp, rcmp, ccmp,&
-                kcmp)
+                ncmp=nbcmp, lnomcmp=licmp, vk=kcmp)
 !
 ! LANCEMENT DES CALCULS ELEMENTAIRES-----------------------------------
     lpain(1) = 'PGEOMER'

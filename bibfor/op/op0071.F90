@@ -36,7 +36,7 @@ subroutine op0071()
 #include "asterfort/projmr.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
-    integer :: ibid, n1, n2, n3, n4, ier, nbmode, neq, jsmde, iret
+    integer :: ibid, n1, n2, n3, n4, ier, nbmode(1), neq, jsmde, iret
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typmat
@@ -69,14 +69,14 @@ subroutine op0071()
 !
 !==================================================
 !
-    call rsorac(basemo, 'LONUTI', ibid, rbid, k8b,&
+    call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
                 cbid, rbid, 'ABSOLU', nbmode, 1,&
                 ibid)
 !
 ! RECUPERATION DU NOMBRE DE MODES REDUIT,
 ! NB_VECT DONNE PAR NUME_DDL_GENE
     call jeveuo(nugene//'.SMOS.SMDE', 'L', jsmde)
-    nbmode = zi(jsmde-1+1)
+    nbmode(1) = zi(jsmde-1+1)
 !
 !
     call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
@@ -99,10 +99,10 @@ subroutine op0071()
 !
     if (typmat .eq. 'R') then
         call projmr(matras, nomres, basemo, nugene, nu,&
-                    neq, nbmode)
+                    neq, nbmode(1))
     else if (typmat.eq.'C') then
         call projmc(matras, nomres, basemo, nugene, nu,&
-                    neq, nbmode)
+                    neq, nbmode(1))
     else
         call utmess('F', 'ALGORITH9_40', sk=typmat)
     endif

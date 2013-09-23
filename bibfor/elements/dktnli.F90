@@ -180,8 +180,8 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 !
     call jevech('PMATERC', 'L', imate)
 !
-    call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
+                itab=jtab)
     nbsp=jtab(7)
     icontm=jtab(1)
     ASSERT(npg.eq.jtab(3))
@@ -262,8 +262,8 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     read (zk16(icompo-1+2),'(I16)') nbvar
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
-    call tecach('OON', 'PVARIMR', 'L', 7, jtab,&
-                iret)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
+                itab=jtab)
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_36', sk=zk16(icompo-1+6))
     endif

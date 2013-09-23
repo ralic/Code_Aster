@@ -51,7 +51,7 @@ subroutine speph0(nomu, table)
     integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn, inoen
     integer :: icmpn, nbmail, i, imain, inddl, inoeud, iddl, nupo, ivari, napex1
     integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
-    integer :: isip, icham, nbn1, nbn2
+    integer :: isip, icham, nbn1, nbn2, tmod(1)
     integer :: i1, lnumi, lnumj, mxval, lrefe, lfreq, lrefes, lfreqs
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
@@ -73,8 +73,9 @@ subroutine speph0(nomu, table)
 !
     epsi = 0.d0
     call rsorac(modmec, 'LONUTI', ibid, r8b, k8b,&
-                c16b, epsi, k8b, nbmod1, 1,&
+                c16b, epsi, k8b, tmod, 1,&
                 nbtrou)
+    nbmod1=tmod(1)            
     call wkvect('&&SPEPH0.NUMERO.ORDRE', 'V V I', nbmod1, lnumor)
     call rsorac(modmec, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, epsi, k8b, zi(lnumor), nbmod1,&
@@ -99,7 +100,7 @@ subroutine speph0(nomu, table)
             do 10 im = 1, nbmod1
                 imod1 = zi(lnumor+im-1)
                 call rsadpa(modmec, 'L', 1, 'FREQ', imod1,&
-                            0, iad, k8b)
+                            0, sjv=iad, styp=k8b)
                 freq1 = zr(iad)
                 if ((freq1-bande(1))* (freq1-bande(2)) .le. 0.d0) then
                     nbmode = nbmode + 1
@@ -302,8 +303,9 @@ subroutine speph0(nomu, table)
         cmp = zk8(ilcpex+imr-1)
         acces = noeud//cmp
         call rsorac(modsta, 'NOEUD_CMP', ibid, r8b, acces,&
-                    c16b, r8b, k8b, numod, 1,&
+                    c16b, r8b, k8b, tmod, 1,&
                     nbtrou)
+        numod=tmod(1)            
         if (nbtrou .ne. 1) then
             valk (1) = modsta
             valk (2) = acces

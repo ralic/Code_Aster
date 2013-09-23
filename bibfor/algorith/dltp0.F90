@@ -44,7 +44,7 @@ subroutine dltp0(t0, nume)
     complex(kind=8) :: c16b
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, jadr, jbint, jordr, n1, nbordr
+    integer :: i, ibid, jadr, jbint, jordr, n1, nbordr(1), tnume(1)
     integer :: nbtrou, nc, ndy, nni, np, nt
     real(kind=8) :: prec, r8b, temps
 !-----------------------------------------------------------------------
@@ -62,8 +62,9 @@ subroutine dltp0(t0, nume)
             call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=temps, nbret=nt)
             if (nt .eq. 0) then
                 call rsorac(dyna, 'DERNIER', ibid, temps, k8b,&
-                            c16b, prec, crit, nume, 1,&
+                            c16b, prec, crit, tnume, 1,&
                             nbtrou)
+                nume=tnume(1)            
                 if (nbtrou .ne. 1) then
                     call utmess('F', 'ALGORITH3_24')
                 endif
@@ -71,8 +72,9 @@ subroutine dltp0(t0, nume)
                 call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
                 call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
                 call rsorac(dyna, 'INST', ibid, temps, k8b,&
-                            c16b, prec, crit, nume, 1,&
+                            c16b, prec, crit, tnume, 1,&
                             nbtrou)
+                nume=tnume(1)            
                 if (nbtrou .lt. 0) then
                     valk = dyna
                     valr = temps
@@ -86,14 +88,14 @@ subroutine dltp0(t0, nume)
             endif
         else
 !           --- VERIFICATION QUE NUME EXISTE ---
-            call rsorac(dyna, 'LONUTI', ibid, r8b, k8b,&
+            call rsorac(dyna, 'LONUTI', 0, r8b, k8b,&
                         c16b, r8b, k8b, nbordr, 1,&
                         ibid)
-            call wkvect('&&OP0048.NUME_ORDRE', 'V V I', nbordr, jordr)
-            call rsorac(dyna, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                        c16b, r8b, k8b, zi(jordr), nbordr,&
+            call wkvect('&&OP0048.NUME_ORDRE', 'V V I', nbordr(1), jordr)
+            call rsorac(dyna, 'TOUT_ORDRE', 0, r8b, k8b,&
+                        c16b, r8b, k8b, zi(jordr), nbordr(1),&
                         ibid)
-            do 10 i = 1, nbordr
+            do 10 i = 1, nbordr(1)
                 if (zi(jordr+i-1) .eq. nume) goto 12
 10          continue
             call utmess('F', 'ALGORITH3_36', sk=dyna)
@@ -102,7 +104,7 @@ subroutine dltp0(t0, nume)
 !
 !        --- RECUPERATION DE L'INSTANT ---
         call rsadpa(dyna, 'L', 1, 'INST', nume,&
-                    1, jadr, ctype)
+                    1, sjv=jadr, styp=ctype)
         t0 = zr(jadr)
     else
 !

@@ -17,7 +17,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
+    implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -69,7 +69,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=8) :: nomch0
-    character(len=8) :: k8bid, newnom
+    character(len=8) :: newnom
     character(len=16) :: option
     character(len=19) :: ligrmo, ligcal
     character(len=13) :: prefob
@@ -81,7 +81,6 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     logical :: ldual
     character(len=24) :: nomlis
     integer :: jlisci, nbch, indxch
-    complex(kind=8) :: c16bid
     integer :: nbdual
 !
 ! ----------------------------------------------------------------------
@@ -127,8 +126,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
     chtime = '&&VEDIMD.CH_INST_R'
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
-                1, 'INST', ibid, instan, c16bid,&
-                k8bid)
+                ncmp=1, nomcmp='INST', sr=instan)
 !
 ! --- CHAMPS D'ENTREES STANDARDS
 !

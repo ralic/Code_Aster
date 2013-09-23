@@ -64,7 +64,7 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: wq4(12), depl(24), masloc(300), masglo(300), vite(24)
     real(kind=8) :: rho, epais, roe, ctor, excent, detj, wgt, zero, coefm
     real(kind=8) :: caraq4(25), jacob(5), qsi, eta
-    character(len=1) :: stopz(3)
+    character(len=3) :: stopz
 !     ------------------------------------------------------------------
     data (ii(k),k=1,8)/1,10,19,28,37,46,55,64/
     data (jj(k),k=1,8)/5,14,23,32,33,42,51,60/
@@ -149,19 +149,15 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
                     mas)
 !
     else if (option.eq.'ECIN_ELEM') then
-        stopz(1)='O'
-        stopz(2)='N'
-        stopz(3)='O'
+        stopz='ONO'
 ! IRET NE PEUT VALOIR QUE 0 (TOUT VA BIEN) OU 2 (CHAMP NON FOURNI)
-        call tecach(stopz, 'PDEPLAR', 'L', 1, jdepg,&
-                    iret)
+        call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepg)
         if (iret .eq. 0) then
             call utpvgl(4, 6, pgl, zr(jdepg), depl)
             call dxqloe(flex, memb, mefl, ctor, .false.,&
                         depl, ener)
         else
-            call tecach(stopz, 'PVITESR', 'L', 1, jvitg,&
-                        iret)
+            call tecach(stopz, 'PVITESR', 'L', iret, iad=jvitg)
             if (iret .eq. 0) then
                 call utpvgl(4, 6, pgl, zr(jvitg), vite)
                 call dxqloe(flex, memb, mefl, ctor, .false.,&
