@@ -60,10 +60,6 @@ cata_msg={
  problème(s) rencontre(s) lors de la lecture des fréquences.
 """),
 
-16: _(u"""
-  on ne traite pas le type de modes " %(k1)s ".
-"""),
-
 17: _(u"""
  Seul le type réel est traité.
 """),

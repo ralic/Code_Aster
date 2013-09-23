@@ -139,9 +139,9 @@ class POST_MISS(object):
     def concepts_communs(self):
         """Construction des concepts partagés entre
         les différentes étapes du post-traitement"""
-        __nddlg = NUME_DDL_GENE(BASE=self.param['BASE_MODALE'],
+        _nddlg = NUME_DDL_GENE(BASE=self.param['BASE_MODALE'],
                                 STOCKAGE= 'PLEIN')
-        self.nddlgen = __nddlg
+        self.nddlgen = _nddlg
         __rigigen = PROJ_MATR_BASE(BASE=self.param['BASE_MODALE'],
                                    NUME_DDL_GENE=self.nddlgen,
                                    MATR_ASSE=self.param['MATR_RIGI'])

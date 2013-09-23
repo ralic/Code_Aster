@@ -62,14 +62,13 @@ subroutine rfrgen(trange)
 !     ------------------------------------------------------------------
     integer :: ibid
     integer :: ifm, niv
-    character(len=1) :: type
     character(len=24) :: valk(2), nogno
     character(len=4) :: interp(2), intres
     character(len=8) :: k8b, crit, noeud, cmp, noma, nomacc, basemo
     character(len=8) :: monmot(2), nonmot
     character(len=14) :: nume
-    character(len=16) :: nomcmd, typcon, nomcha, nomsy, tysd
-    character(len=19) :: nomfon, knume, kinst, resu, matras, fonct
+    character(len=16) :: nomcmd, typcon, nomcha, tysd
+    character(len=19) :: nomfon, knume, kinst, resu, fonct
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -77,8 +76,8 @@ subroutine rfrgen(trange)
     integer :: ier, ierd, ign2, ii, ino, inoeud, iordr
     integer :: ip, ipas, ipsdel, iret, itresu, jfon, jinst
     integer :: ldesc, lfon, lg1, lg2, lordr, lpas, lpro
-    integer :: lvar, mxmode, n1, n2, n3, nbexci, nbinsg
-    integer :: nbmode, nbordr, nbpari, nbpark, nbparr, nbpas, neq
+    integer :: lvar, n1, n2, n3, nbexci, nbinsg
+    integer :: nbmode, nbordr, nbpas, neq
     integer :: nfonct, ngn, numcmp
     real(kind=8) :: alpha, epsi, rep, rep1(1)
     complex(kind=8) :: cbid
@@ -225,36 +224,16 @@ subroutine rfrgen(trange)
         else
             call dismoi('F', 'BASE_MODALE', resu, 'RESU_DYNA', ibid,&
                         basemo, iret)
-            call dismoi('F', 'REF_RIGI_PREM', basemo, 'RESU_DYNA', ibid,&
-                        matras, iret)
-            nomsy = 'DEPL'
+            call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
+                        nume, iret)
+            call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
+                        noma, ie)
 !
-!
-            if (matras .ne. ' ') then
-                call vprecu(basemo, nomsy, -1, ibid, '&&RFRGEN.VECT.PROPRE',&
-                            0, k8b, k8b, k8b, k8b,&
-                            neq, mxmode, type, nbpari, nbparr,&
-                            nbpark)
-                call jeveuo('&&RFRGEN.VECT.PROPRE', 'L', idbase)
-                if (type .ne. 'R') then
-                    call utmess('F', 'UTILITAI4_16', sk=type)
-                endif
-!
-                call dismoi('F', 'NOM_NUME_DDL', matras, 'MATR_ASSE', ibid,&
-                            nume, ie)
-                call dismoi('F', 'NOM_MAILLA', matras, 'MATR_ASSE', ibid,&
-                            noma, ie)
-            else
-                call dismoi('F', 'NUME_DDL', basemo, 'RESU_DYNA', ibid,&
-                            nume, iret)
-                call dismoi('F', 'NOM_MAILLA', nume, 'NUME_DDL', ibid,&
-                            noma, ie)
-                call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&
-                            k8b, ie)
-                call wkvect('&&RFRGEN.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
-                call copmod(basemo, 'DEPL', neq, nume, nbmode,&
-                            'R', zr( idbase), cbid)
-            endif
+            call dismoi('F', 'NB_EQUA', nume, 'NUME_DDL', neq,&
+                        k8b, ie)
+            call wkvect('&&RFRGEN.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
+            call copmod(basemo, 'DEPL', neq, nume, nbmode,&
+                        'R', zr( idbase), cbid)
 !
             call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
             if (ngn .ne. 0) then
