@@ -28,6 +28,7 @@ subroutine te0409(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
     character(len=16) :: option, nomte
 !
 !   CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE POUR LA MODELISATION DKTG

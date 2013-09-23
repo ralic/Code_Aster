@@ -1,0 +1,203 @@
+subroutine lcidbg(fami, kpg, ksp, ndim, typmod,&
+                  imate, compor, crit, instam, instap,&
+                  neps, epsm, deps, nsig, sigm,&
+                  vim, option, angmas)
+    implicit none
+    
+#include "jeveux.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/utmess.h"
+#include "asterfort/tecael.h"
+#include "asterfort/rcvarc.h"
+
+    integer :: imate, kpg, ksp, ndim, neps, nsig, iv, nbvari, iadzi, iazk24
+    integer :: nval,nimp, nbcvrc, jvcnom, ier, nbvrc, iref(10), ier2
+    character(len=*) ::  fami
+    character(len=8) ::  typmod(*),nomail,novrc,nomvrc(10)
+    character(len=16) :: compor(*), option
+    real(kind=8) :: deps(neps), epsm(neps),vim(*),sigm(nsig), epsp(neps), vrcm(10),vrcp(10), valvrc
+    real(kind=8) :: crit(*), angmas(*), lvalr(20), vref(10)
+    real(kind=8) :: instam, instap,rac2
+    common /caii14/nbcvrc,jvcnom
+    data nimp / 0/
+    save nimp
+!
+! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jean-michel.proix at edf.fr
+! ======================================================================
+!.......................................................................
+!
+!   but: impression d'un fichier de commande simu_point_mat en cas d'echec 
+!   l'ecriture de defi_materiau est laisse pour le moment a l'utilisateur
+!
+!       in      fami    famille de point de gauss (rigi,mass,...)
+!       in      kpg,ksp numero du (sous)point de gauss
+!       in      ndim    dimension de l espace (3d=3,2d=2,1d=1)
+!               typmod  type de modelisation
+!               imate    adresse du materiau code
+!               compor    comportement de l element
+!                     compor(1) = relation de comportement (chaboche...)
+!                     compor(2) = nb de variables internes
+!                     compor(3) = type de deformation (petit,jaumann...)
+!               crit    criteres  locaux
+!                       crit(1) = nombre d iterations maxi a convergence
+!                                 (iter_inte_maxi == itecrel)
+!                       crit(2) = type de jacobien a t+dt
+!                                 (type_matr_comp == macomp)
+!                                 0 = en vitesse     > symetrique
+!                                 1 = en incremental > non-symetrique
+!                                 9 = methode implex
+!                       crit(3) = valeur de la tolerance de convergence
+!                                 (resi_inte_rela == rescrel)
+!                       crit(5) = nombre d'increments pour le
+!                                 redecoupage local du pas de temps
+!                                 (iter_inte_pas == itedec)
+!                                 0 = pas de redecoupage
+!                                 n = nombre de paliers
+!               instam   instant t
+!               instap   instant t+dt
+!               epsm   deformation totale a t
+!               deps   increment de deformation totale
+!               sigm    contrainte a t
+!               vim    variables internes a t    + indicateur etat t
+!               option     option de calcul a faire
+!                             'rigi_meca_tang'> dsidep(t)
+!                             'full_meca'     > dsidep(t+dt) , sig(t+dt)
+!                             'raph_meca'     > sig(t+dt)
+!                             'rigi_meca_implex' > dsidep(t), sigextr
+!               angmas
+!       OUT     un fichier
+!
+
+    nimp=nimp+1
+    if (nimp>5) goto 9999
+
+    rac2=sqrt(2.0d0)
+    if (compor(3) .eq. 'SIMO_MIEHE') goto 9999
+    if (option(1:4).eq. 'RIGI') goto 9999
+    
+    nbvrc=0
+    if (nbcvrc .gt. 0) then
+       do iv=1,nbcvrc
+          novrc=zk8(jvcnom-1+iv)
+          call rcvarc(' ', novrc, '-', fami, kpg,ksp, valvrc , ier)
+          if (ier .eq. 0) then
+              nbvrc=nbvrc+1
+              nomvrc(nbvrc)=novrc
+              vrcm(nbvrc)=valvrc
+              call rcvarc(' ', novrc, '+',   fami, kpg, ksp, vrcp(nbvrc), ier)
+              if ((novrc.eq.'TEMP').or.(novrc.eq.'SECH')) then
+                 call rcvarc(' ', novrc, 'REF', fami, kpg, ksp, vref(nbvrc), ier2)
+                 iref(nbvrc)=1
+              else
+                 iref(nbvrc)=0
+              endif
+          endif
+       end do
+    endif
+
+    read (compor(2),'(I16)') nbvari
+    if (fami.ne.'PMAT') then
+       call tecael(iadzi, iazk24)
+       nomail = zk24(iazk24-1+3) (1:8)
+    else
+       nomail='PMAT'
+       kpg=0
+    endif
+
+    nval=0
+    if (typmod(1).eq.'C_PLAN') then
+       nval=1
+    else if (typmod(1).eq.'D_PLAN') then
+       nval=2
+    else if (typmod(1).eq.'AXIS') then
+       nval=2
+    else if (typmod(1).eq.'3D') then
+       nval=3
+    endif 
+    
+    do iv=1,neps
+       epsp(iv)=epsm(iv)+deps(iv)
+    enddo
+    do iv=4,neps
+       epsm(iv)=epsm(iv)/rac2
+       epsp(iv)=epsp(iv)/rac2
+    enddo
+    if (nval<3) then
+       epsm(5)=0.d0
+       epsm(6)=0.d0
+       sigm(5)=0.d0
+       sigm(6)=0.d0
+    endif
+    
+    lvalr(1)=instam
+    lvalr(2)=instap
+    
+    call utmess('I','COMPOR2_50',sk=nomail,si=kpg, nr=2, valr=lvalr)
+    call utmess('I','COMPOR2_51',sk='EXX', nr=4, valr=[instam,epsm(1),instap,epsp(1)])
+    call utmess('I','COMPOR2_51',sk='EYY', nr=4, valr=[instam,epsm(2),instap,epsp(2)])
+    call utmess('I','COMPOR2_51',sk='EZZ', nr=4, valr=[instam,epsm(3),instap,epsp(3)])
+    call utmess('I','COMPOR2_51',sk='EXY', nr=4, valr=[instam,epsm(4),instap,epsp(4)])
+    if (nval.eq.3) then
+       call utmess('I','COMPOR2_51',sk='EXZ', nr=4, valr=[instam,epsm(5),instap,epsp(5)])
+       call utmess('I','COMPOR2_51',sk='EYZ', nr=4, valr=[instam,epsm(6),instap,epsp(6)])
+    endif
+    
+    if (nbvrc .gt. 0) then
+       do iv=1,nbvrc
+          call utmess('I','COMPOR2_61',sk=nomvrc(iv), nr=4, valr=[instam,vrcm(iv),instap,vrcp(iv)])
+       end do
+    endif
+
+    if (nval.eq.1) then
+       call utmess('I','COMPOR2_52')
+       call utmess('I','COMPOR2_53')
+    endif
+    if (nval.eq.2) then
+       call utmess('I','COMPOR2_52')
+    endif
+    if (nval.eq.3) then
+       call utmess('I','COMPOR2_54')
+    endif
+
+    call utmess('I','COMPOR2_55',nr=6, valr=epsm)
+    call utmess('I','COMPOR2_56',nr=6, valr=sigm)
+    do iv=1,nbvari
+       call utmess('I','COMPOR2_57',nr=1, valr=vim(iv))
+    enddo
+    call utmess('I','COMPOR2_58',sk=compor(1))
+    if (nbvrc.gt.0) then
+       call utmess('I','COMPOR2_62')
+       do iv=1,nbvrc
+          if (iref(iv)==1) then
+              call utmess('I','COMPOR2_63',nk=2,valk=[nomvrc(iv),nomvrc(iv)],sr=vref(iv))
+          else
+              call utmess('I','COMPOR2_64',nk=2,valk=[nomvrc(iv),nomvrc(iv)])
+          endif
+       end do
+       call utmess('I','COMPOR2_65')
+    endif
+    if (option(1:4).eq. 'FULL') then
+       call utmess('I','COMPOR2_59')
+    else
+       call utmess('I','COMPOR2_60')
+    endif
+    
+9999  continue
+end subroutine

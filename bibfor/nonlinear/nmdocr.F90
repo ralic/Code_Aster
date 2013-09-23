@@ -88,7 +88,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !
 ! ----------------------------------------------------------------------
     call jemarq()
-    carcri = carcrz
+    carcri = carcrz(1:19)
     call dismoi('C', 'NOM_MAILLA', modele(1:8), 'MODELE', i,&
                 noma, irett)
     call getres(k8b, k16bid, nomcmd)

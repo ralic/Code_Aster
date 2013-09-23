@@ -156,6 +156,7 @@ subroutine te0031(option, nomte)
             call codent(icou, 'G', num)
             call codent(1, 'G', val)
             nomres='C'//num//'_V'//val
+            r8bid=0.d0
             call rcvalb(fami, kpg, spt, poum, zi(jmate),&
                         ' ', 'ELAS_COQMU', 0, ' ', [r8bid],&
                         1, nomres, epi, codret, 0)

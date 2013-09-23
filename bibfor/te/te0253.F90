@@ -76,6 +76,7 @@ subroutine te0253(option, nomte)
     kpg=1
     spt=1
     poum='+'
+    r8b=0.d0
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
                 ' ', 'FLUIDE', 0, ' ', [r8b],&
                 2, nomres, valres, icodre, 1)

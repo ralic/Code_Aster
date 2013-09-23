@@ -32,6 +32,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/nmcpl2.h"
 #include "asterfort/nmcpl3.h"
 #include "asterfort/redece.h"
+#include "asterfort/lcidbg.h"
     integer :: kpg, ksp, ndim, imate, codret, icp, numlc
     integer :: neps, nsig, nwkin, nwkout, ndsde
     character(len=8) :: typmod(*)
@@ -187,5 +188,10 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
         call lcvali(fami, kpg, ksp, imate, compor,&
                     ndim, epsm, deps, instam, instap,&
                     codret)
+    elseif (codret .eq. 1) then
+        call lcidbg(fami, kpg, ksp, ndim, typmod,&
+                  imate, compor, crit, instam, instap,&
+                  neps, epsm, deps, nsig, sigm,&
+                  vim, option, angmas)
     endif
 end subroutine
