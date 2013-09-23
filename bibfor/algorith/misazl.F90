@@ -50,8 +50,8 @@ subroutine misazl(vecinc, defico)
 !
 !
     integer :: nnoco, ntnoe
-    integer :: ino, nbno, nec, ncmpmx, numno
-    integer :: ibid, ier
+    integer :: ino, nbno, nec, ncmpmx, numno(1)
+    integer :: ibid, ier, ino_ind(1)
     integer :: jnocmp, jprno, jnueq, jvale, jdg
     integer :: numlc, numlf1, numlf2
     integer :: poslc, poslf1, poslf2
@@ -105,21 +105,22 @@ subroutine misazl(vecinc, defico)
 !
 ! --- PARCOURS DES NOEUDS ESCLAVES ET ANNULATION DES LAGR. DANS LE .VALE
 !
-    do 10 ino = 1, nnoco
+    do ino = 1, nnoco
 !       NOEUDS ESCLAVES
         call cftypn(defico, ino, typno)
         if (typno .eq. 'ESCL') then
             nbno = nbno+1
 !         NUMERO ABSOLU DU NOEUD ESCLAVE
-            call cfnumn(defico, 1, ino, numno)
+            ino_ind(1) = ino
+            call cfnumn(defico, 1, ino_ind, numno)
 !         DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD ESCLAVE
-            jdg = jprno - 1 + (numno-1)*(2+nec) + 1 + 2
+            jdg = jprno - 1 + (numno(1)-1)*(2+nec) + 1 + 2
 !         POSITIONS DES LAGRANGES DANS LE DG
             poslc = iposdg(zi(jdg),numlc )
             poslf1 = iposdg(zi(jdg),numlf1)
             poslf2 = iposdg(zi(jdg),numlf2)
 !         INDIRECTION VERS LE .NUEQ
-            inueq = zi(jprno - 1 + (numno-1)*(2+nec) + 1)
+            inueq = zi(jprno - 1 + (numno(1)-1)*(2+nec) + 1)
             ASSERT(poslc.ne.0)
 !         ADRESSE DU DDL LAGS_C DANS LE .VALE
             ivalc = zi(jnueq - 1 + inueq - 1 + poslc)
@@ -135,7 +136,7 @@ subroutine misazl(vecinc, defico)
                 endif
             endif
         endif
-10  end do
+    end do
     ASSERT(nbno.eq.ntnoe)
 !
     call jedema()

@@ -1,5 +1,21 @@
 subroutine cfpoin(noma, defico, newgeo, sdappa)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfcorn.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmex.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,25 +34,10 @@ subroutine cfpoin(noma, defico, newgeo, sdappa)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-!
-#include "asterfort/apzoni.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfcorn.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmex.h"
-#include "asterfort/cfnumn.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-    character(len=8) :: noma
-    character(len=19) :: sdappa
-    character(len=24) :: defico
-    character(len=19) :: newgeo
+    character(len=8), intent(in) :: noma
+    character(len=19), intent(in) :: sdappa
+    character(len=24), intent(in) :: defico
+    character(len=19), intent(in) :: newgeo
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,8 +53,7 @@ subroutine cfpoin(noma, defico, newgeo, sdappa)
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=24) :: appoin, apinfp
@@ -63,7 +63,7 @@ subroutine cfpoin(noma, defico, newgeo, sdappa)
     integer :: suppok
     integer :: ip, inoe, izone
     integer :: nbpt, nbnoe
-    integer :: posnoe, numnoe
+    integer :: posnoe(1), numnoe(1)
     integer :: jdecne
     real(kind=8) :: coorpt(3)
     character(len=8) :: nomnoe
@@ -98,7 +98,7 @@ subroutine cfpoin(noma, defico, newgeo, sdappa)
 ! --- BOUCLE SUR LES ZONES
 !
     ip = 1
-    do 10 izone = 1, nzoco
+    do izone = 1, nzoco
 !
 ! ----- INFORMATION SUR LA ZONE
 !
@@ -112,36 +112,36 @@ subroutine cfpoin(noma, defico, newgeo, sdappa)
 !
 ! ----- BOUCLE SUR LES POINTS
 !
-        do 20 inoe = 1, nbnoe
+        do inoe = 1, nbnoe
 !
 ! ------- NUMERO ABSOLU DU NOEUD
 !
-            posnoe = jdecne + inoe
-            call cfnumn(defico, 1, posnoe, numnoe)
+            posnoe(1) = jdecne + inoe
+            call cfnumn(defico, 1, posnoe(1), numnoe(1))
 !
 ! ------- COORDONNEES DU NOEUD
 !
-            call cfcorn(newgeo, numnoe, coorpt)
+            call cfcorn(newgeo, numnoe(1), coorpt)
             zr(jpoin + 3*(ip-1)+1-1) = coorpt(1)
             zr(jpoin + 3*(ip-1)+2-1) = coorpt(2)
             zr(jpoin + 3*(ip-1)+3-1) = coorpt(3)
 !
 ! ------- NOEUD EXCLU ?
 !
-            call cfmmex(defico, 'CONT', izone, numnoe, suppok)
+            call cfmmex(defico, 'CONT', izone, numnoe(1), suppok)
             zi(jinfp+ip-1) = suppok
 !
 ! ------- NOM DU POINT
 !
-            call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+            call jenuno(jexnum(noma//'.NOMNOE', numnoe(1)), nomnoe)
             nompt = 'NOEUD   '//nomnoe
             zk16(jpnoms+ip-1) = nompt
 !
 ! ------- POINT SUIVANT
 !
             ip = ip + 1
-20      continue
-10  end do
+        end do
+    end do
 !
     call jedema()
 !

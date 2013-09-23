@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apnumn(sdappa, defico, posno, numno)
-        character(len=19) :: sdappa
-        character(len=24) :: defico
-        integer :: posno
-        integer :: numno
+    subroutine apnumn(defico, posno, numno)
+        character(len=24), intent(in) :: defico
+        integer, intent(in) :: posno(1)
+        integer, intent(out) :: numno(1)
     end subroutine apnumn
 end interface

@@ -65,9 +65,9 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 !
     nbexfr = 0
     ndexfr = 0
-    do 10 ino = 1, 10
+    do ino = 1, 10
         ndexcl(ino) = 0
-10  end do
+    end do
 !
 ! --- NUMEROS DES NOEUDS DE LA MAILLE DANS SD CONTACT
 !
@@ -77,7 +77,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 !
 ! --- REPERAGE SI LE NOEUD EST UN NOEUD A EXCLURE
 !
-    do 50 ino = 1, nnomai
+    do ino = 1, nnomai
         numno = numnno(ino)
         call cfmmex(defico, 'FROT', izone, numno, suppok)
         if (suppok .eq. 1) then
@@ -86,7 +86,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
         else
             ndexcl(ino) = 0
         endif
-50  end do
+    end do
 !
 ! --- CODAGE
 !

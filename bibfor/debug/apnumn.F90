@@ -1,4 +1,8 @@
-subroutine apnumn(sdappa, defico, posno, numno)
+subroutine apnumn(defico, posno, numno)
+!
+    implicit      none
+!
+#include "asterfort/cfnumn.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +22,9 @@ subroutine apnumn(sdappa, defico, posno, numno)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterfort/cfnumn.h"
-    character(len=19) :: sdappa
-    character(len=24) :: defico
-    integer :: posno, numno
+    character(len=24), intent(in) :: defico
+    integer, intent(in) :: posno(1)
+    integer, intent(out) :: numno(1)
 !
 ! ----------------------------------------------------------------------
 !
@@ -33,7 +35,6 @@ subroutine apnumn(sdappa, defico, posno, numno)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 ! IN  DEFICO : SD DEFINITION DU CONTACT
 ! IN  POSNO  : POSITION DU NOEUD DANS LES SD
 ! OUT NUMNO  : NUMERO ABSOLU DU NOEUD DANS LE MAILLAGE

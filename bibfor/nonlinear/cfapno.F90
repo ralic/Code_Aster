@@ -2,6 +2,24 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
                   lctf3d, ndimg, izone, posnoe, numnoe,&
                   coorne, posnom, tau1m, tau2m, iliai)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/apvect.h"
+#include "asterfort/cfaddm.h"
+#include "asterfort/cfcorn.h"
+#include "asterfort/cfnewj.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cftanr.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,32 +38,21 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/apvect.h"
-#include "asterfort/cfaddm.h"
-#include "asterfort/cfcorn.h"
-#include "asterfort/cfnewj.h"
-#include "asterfort/cfnumn.h"
-#include "asterfort/cftanr.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/mmnorm.h"
-#include "asterfort/utmess.h"
-!
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: newgeo
-    real(kind=8) :: coorne(3)
-    real(kind=8) :: tau1m(3), tau2m(3)
-    integer :: izone, ndimg
-    integer :: posnom, posnoe, numnoe
-    integer :: iliai
-    logical :: lctfd, lctf3d
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
+    character(len=19), intent(in) :: newgeo
+    real(kind=8), intent(in) :: coorne(3)
+    real(kind=8), intent(in) :: tau1m(3)
+    real(kind=8), intent(in) :: tau2m(3)
+    integer, intent(in) :: izone
+    integer, intent(in) :: ndimg
+    integer, intent(in) :: posnom(1)
+    integer, intent(in) :: posnoe
+    integer, intent(in) :: numnoe
+    integer, intent(in) :: iliai
+    logical, intent(in) :: lctfd
+    logical, intent(in) :: lctf3d
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,8 +79,7 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 ! IN  TAU2M  : SECONDE TANGENTE SUR LE NOEUD MAITRE
 ! IN  ILIAI  : INDICE DE LA LIAISON COURANTE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=19) :: sdappa
@@ -82,7 +88,7 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
     real(kind=8) :: r8bid, jeu
     real(kind=8) :: coornm(3)
     character(len=8) :: nomnoe
-    integer :: numnom
+    integer :: numnom(1)
     real(kind=8) :: coefno(9)
 !
 ! ----------------------------------------------------------------------
@@ -92,7 +98,7 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 !
 ! --- NUMERO DU NOEUD MAITRE
 !
-    call cfnumn(defico, 1, posnom, numnom)
+    call cfnumn(defico, 1, posnom(1), numnom(1))
 !
 ! --- LECTURE APPARIEMENT
 !
@@ -100,17 +106,17 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 !
 ! --- RECUPERATIONS DES TANGENTES AU NOEUD MAITRE
 !
-    call apvect(sdappa, 'APPARI_NOEUD_TAU1', posnom, tau1m)
-    call apvect(sdappa, 'APPARI_NOEUD_TAU2', posnom, tau2m)
+    call apvect(sdappa, 'APPARI_NOEUD_TAU1', posnom(1), tau1m)
+    call apvect(sdappa, 'APPARI_NOEUD_TAU2', posnom(1), tau2m)
 !
 ! --- COORDONNNEES DU NOEUD MAITRE
 !
-    call cfcorn(newgeo, numnom, coornm)
+    call cfcorn(newgeo, numnom(1), coornm)
 !
 ! --- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
     call cftanr(noma, ndimg, defico, resoco, izone,&
-                posnoe, 'NOEU', posnom, numnom, r8bid,&
+                posnoe, 'NOEU', posnom(1), numnom(1), r8bid,&
                 r8bid, tau1m, tau2m, tau1, tau2)
 !
 ! --- CALCUL DE LA NORMALE INTERIEURE

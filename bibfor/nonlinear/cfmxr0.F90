@@ -1,5 +1,23 @@
 subroutine cfmxr0(defico, resoco, noma)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,24 +36,9 @@ subroutine cfmxr0(defico, resoco, noma)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/cfnumn.h"
-#include "asterfort/cnscno.h"
-#include "asterfort/cnscre.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/wkvect.h"
-    character(len=24) :: defico, resoco
-    character(len=8) :: noma
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
+    character(len=8), intent(in) :: noma
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,8 +53,7 @@ subroutine cfmxr0(defico, resoco, noma)
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 ! IN  NOMA   : NOM DU MAILLAGE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: nbcmp
     parameter    (nbcmp = 30)
@@ -63,7 +65,7 @@ subroutine cfmxr0(defico, resoco, noma)
     integer :: zresu, zperc
     integer :: ifm, niv
     integer :: izone, icmp, inoe, ibid
-    integer :: nbnoe, posnoe, numnoe
+    integer :: nbnoe, posnoe(1), numnoe(1)
     integer :: nbno, ino, numno
     integer :: nzoco
     character(len=8) :: k8bid
@@ -139,26 +141,26 @@ subroutine cfmxr0(defico, resoco, noma)
 ! --- INITIALISATION DU CHAM_NO_S VALE_CONT
 !
     if (lmail) then
-        do 10 izone = 1, nzoco
+        do izone = 1, nzoco
             jdecne = mminfi(defico,'JDECNE',izone )
             nbnoe = mminfi(defico,'NBNOE' ,izone )
-            do 11 inoe = 1, nbnoe
-                posnoe = inoe + jdecne
-                call cfnumn(defico, 1, posnoe, numnoe)
-                do 12 icmp = 1, zresu
-                    zr(jcnsvr-1+zresu*(numnoe-1)+icmp) = 0.d0
-                    zl(jcnslr-1+zresu*(numnoe-1)+icmp) = .true.
-12              continue
-11          continue
-10      continue
+            do inoe = 1, nbnoe
+                posnoe(1) = inoe + jdecne
+                call cfnumn(defico, 1, posnoe(1), numnoe(1))
+                do icmp = 1, zresu
+                    zr(jcnsvr-1+zresu*(numnoe(1)-1)+icmp) = 0.d0
+                    zl(jcnslr-1+zresu*(numnoe(1)-1)+icmp) = .true.
+                end do
+            end do
+        end do
     else
-        do 113 ino = 1, nbno
+        do ino = 1, nbno
             numno = ino
-            do 123 icmp = 1, zresu
+            do icmp = 1, zresu
                 zr(jcnsvr-1+zresu*(numno-1)+icmp) = 0.d0
                 zl(jcnslr-1+zresu*(numno-1)+icmp) = .true.
-123          continue
-113      continue
+            end do
+        end do
     endif
 !
 ! --- CREATION DU CHAM_NO_S PERCUSSION
@@ -174,18 +176,18 @@ subroutine cfmxr0(defico, resoco, noma)
     if (lmail) then
         call jeveuo(cnsper(1:19)//'.CNSV', 'E', jcnsvp)
         call jeveuo(cnsper(1:19)//'.CNSL', 'E', jcnslp)
-        do 1 izone = 1, nzoco
+        do izone = 1, nzoco
             jdecne = mminfi(defico,'JDECNE',izone )
             nbnoe = mminfi(defico,'NBNOE' ,izone )
-            do 2 inoe = 1, nbnoe
-                posnoe = inoe + jdecne
-                call cfnumn(defico, 1, posnoe, numnoe)
-                do 3 icmp = 1, zperc
-                    zr(jcnsvp-1+zperc*(numnoe-1)+icmp) = 0.d0
-                    zl(jcnslp-1+zperc*(numnoe-1)+icmp) = .false.
- 3              continue
- 2          continue
- 1      continue
+            do inoe = 1, nbnoe
+                posnoe(1) = inoe + jdecne
+                call cfnumn(defico, 1, posnoe(1), numnoe(1))
+                do icmp = 1, zperc
+                    zr(jcnsvp-1+zperc*(numnoe(1)-1)+icmp) = 0.d0
+                    zl(jcnslp-1+zperc*(numnoe(1)-1)+icmp) = .false.
+                end do
+            end do
+        end do
     endif
 !
 ! --- TRANSFO. EN CHAM_NO

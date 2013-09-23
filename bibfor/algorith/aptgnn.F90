@@ -1,24 +1,5 @@
 subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
                   nbno, itype, vector)
-!
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -40,6 +21,24 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: sdappa
     character(len=8) :: noma
@@ -65,11 +64,10 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 ! IN  ITYPE  : NORMALE 'AUTO'(0)/'FIXE'(1)/'VECT_Y'(2)
 ! IN  VECTOR : POUR ITYPE = 1 OU 2
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=8) :: nomnoe, nommai, valk(2)
-    integer :: posmai, nummai, posno, numno
+    integer :: posmai, nummai, posno(1), numno(1)
     integer :: nmanom, nnosdm
     integer :: jdeciv, jdec
     integer :: ino, ima, inocou, inomai
@@ -92,7 +90,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
 ! --- BOUCLE SUR LES NOEUDS
 !
-    do 20 ino = 1, nbno
+    do ino = 1, nbno
 !
 ! ----- INITIALISATIONS
 !
@@ -108,24 +106,24 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
 ! ----- NOEUD COURANT
 !
-        posno = ino+jdecno
+        posno(1) = ino+jdecno
 !
 ! ----- NUMERO ABSOLU ET NOM DU NOEUD
 !
-        call apnumn(sdappa, defico, posno, numno)
-        call jenuno(jexnum(noma//'.NOMNOE', numno ), nomnoe)
+        call apnumn(defico, posno(1), numno(1))
+        call jenuno(jexnum(noma//'.NOMNOE', numno(1)), nomnoe)
 !
 ! ----- NOMBRE DE MAILLES ATTACHEES AU NOEUD
 !
-        call apninv(sdappa, defico, posno, 'NMANOM', nmanom)
+        call apninv(sdappa, defico, posno(1), 'NMANOM', nmanom)
 !
 ! ----- DECALAGE POUR CONNECTIVITE INVERSE
 !
-        call apninv(sdappa, defico, posno, 'JDECIV', jdeciv)
+        call apninv(sdappa, defico, posno(1), 'JDECIV', jdeciv)
 !
 ! ----- BOUCLE SUR LES MAILLES ATTACHEES
 !
-        do 10 ima = 1, nmanom
+        do ima = 1, nmanom
 !
 ! ------- POSITION DE LA MAILLE ATTACHEE
 !
@@ -154,11 +152,11 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 ! ------- LA MAILLE
 !
             inocou = 0
-            do 30 inomai = 1, nnosdm
-                if (zi(jdec+inomai-1) .eq. numno) then
+            do inomai = 1, nnosdm
+                if (zi(jdec+inomai-1) .eq. numno(1)) then
                     inocou = inomai
                 endif
-30          continue
+            end do
             ASSERT(inocou.ne.0)
 !
 ! ------- RECUPERATIONS DES TANGENTES EN CE NOEUD
@@ -182,7 +180,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
             normal(1) = normal(1) + vnorm(1)
             normal(2) = normal(2) + vnorm(2)
             normal(3) = normal(3) + vnorm(3)
-10      continue
+        end do
 !
 ! ----- MOYENNATION DE LA NORMALE SUR TOUTES LES MAILLES LIEES AU NOEUD
 !
@@ -217,13 +215,13 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 !
 ! ----- STOCKAGE DES VECTEURS TANGENTS EXTERIEURS SUR LE NOEUD
 !
-        zr(jptgno+6*(posno-1)+1-1) = taund1(1)
-        zr(jptgno+6*(posno-1)+2-1) = taund1(2)
-        zr(jptgno+6*(posno-1)+3-1) = taund1(3)
-        zr(jptgno+6*(posno-1)+4-1) = taund2(1)
-        zr(jptgno+6*(posno-1)+5-1) = taund2(2)
-        zr(jptgno+6*(posno-1)+6-1) = taund2(3)
-20  end do
+        zr(jptgno+6*(posno(1)-1)+1-1) = taund1(1)
+        zr(jptgno+6*(posno(1)-1)+2-1) = taund1(2)
+        zr(jptgno+6*(posno(1)-1)+3-1) = taund1(3)
+        zr(jptgno+6*(posno(1)-1)+4-1) = taund2(1)
+        zr(jptgno+6*(posno(1)-1)+5-1) = taund2(2)
+        zr(jptgno+6*(posno(1)-1)+6-1) = taund2(3)
+    end do
 !
     call jedema()
 end subroutine

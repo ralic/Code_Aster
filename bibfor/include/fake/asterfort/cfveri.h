@@ -18,16 +18,16 @@
 interface
     subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
                       npt, jeux, loca, enti, zone,instan)
-        character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=19) :: newgeo
-        character(len=19) :: sdappa
-        integer :: npt
-        character(len=24) :: jeux
-        character(len=24) :: loca
-        character(len=24) :: enti
-        character(len=24) :: zone
-        real(kind=8) :: instan
+        character(len=8), intent(in) :: noma
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=19), intent(in) :: newgeo
+        character(len=19), intent(in) :: sdappa
+        character(len=24), intent(in) :: jeux
+        character(len=24), intent(in) :: loca
+        character(len=24), intent(in) :: enti
+        character(len=24), intent(in) :: zone
+        integer, intent(in) :: npt
+        real(kind=8), intent(in) :: instan
     end subroutine cfveri
 end interface

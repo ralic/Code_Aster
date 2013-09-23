@@ -1,25 +1,8 @@
 subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
                   instan)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
     implicit none
+!
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
@@ -45,12 +28,30 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
     character(len=8) :: noma
     character(len=19) :: sdappa
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo
     real(kind=8) :: instan
-    
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,15 +68,14 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: izone, i, iliai, ip
     integer :: jdecne
     integer :: inoe
-    integer :: posmae, posnoe, posmam, posnom
-    integer :: numnoe
+    integer :: posmae, posnoe(1), posmam, posnom(1)
+    integer :: numnoe(1)
     integer :: entapp, typapp
     logical :: lctfd, lctf3d
     integer :: nzoco, ndimg, nbpt, nbliai
@@ -84,8 +84,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
     character(len=8) :: nomnoe
     real(kind=8) :: ksipr1, ksipr2, tau1m(3), tau2m(3)
     real(kind=8) :: coorne(3), dissup
-    real(kind=8) :: coefff, coefpn, coefpt, coefte
-    
+    real(kind=8) :: coefff, coefpn, coefpt, coefte 
 !
 ! ----------------------------------------------------------------------
 !
@@ -151,15 +150,15 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- INDICE ABSOLU DANS LE MAILLAGE DU NOEUD
 !
-            call cfnumn(defico, 1, posnoe, numnoe)
+            call cfnumn(defico, 1, posnoe(1), numnoe(1))
 !
 ! ------- COORDONNEES DU NOEUD
 !
-            call cfcorn(newgeo, numnoe, coorne)
+            call cfcorn(newgeo, numnoe(1), coorne)
 !
 ! ------- NOM DU NOEUD
 !
-            call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+            call jenuno(jexnum(noma//'.NOMNOE', numnoe(1)), nomnoe)
 !
 ! ------- INFOS APPARIEMENT
 !
@@ -184,8 +183,8 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
                 iliai = iliai + 1
 ! --------- CALCUL LIAISON
                 call cfapno(noma, newgeo, defico, resoco, lctfd,&
-                            lctf3d, ndimg, izone, posnoe, numnoe,&
-                            coorne, posnom, tau1m, tau2m, iliai)
+                            lctf3d, ndimg, izone, posnoe(1), numnoe(1),&
+                            coorne, posnom(1), tau1m, tau2m, iliai)
 !
             else if (typapp.eq.2) then
 ! --------- CARAC. MAITRE
@@ -194,7 +193,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
                 iliai = iliai + 1
 ! --------- CALCUL LIAISON
                 call cfapma(noma, newgeo, defico, resoco, lctfd,&
-                            lctf3d, ndimg, izone, posnoe, numnoe,&
+                            lctf3d, ndimg, izone, posnoe(1), numnoe(1),&
                             coorne, posmam, ksipr1, ksipr2, tau1m,&
                             tau2m, iliai)
             else
@@ -203,14 +202,14 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-            call cfdist(defico, 'DISCRETE', izone, posnoe, posmae,&
+            call cfdist(defico, 'DISCRETE', izone, posnoe(1), posmae,&
                         coorne, dissup, instan)
 !
 ! ------- CARACTERISTIQUES DE LA LIAISON POUR LA ZONE
 !
             call cfparz(resoco, iliai, coefff, coefpn, coefpt,&
-                        coefte, dissup, izone, ip, numnoe,&
-                        posnoe)
+                        coefte, dissup, izone, ip, numnoe(1),&
+                        posnoe(1))
 !
 35          continue
 !

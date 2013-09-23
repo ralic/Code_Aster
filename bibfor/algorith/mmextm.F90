@@ -62,9 +62,9 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 !
 ! --- INITIALISATIONS
 !
-    do 10,ino = 1,nbnmax
-    mlagr(ino) = 0.d0
-    10 end do
+    do ino = 1,nbnmax
+        mlagr(ino) = 0.d0
+    end do
 !
 ! --- NUMEROS DANS SD CONTACT DES NOEUDS DE LA MAILLE ESCLAVE
 !
@@ -78,9 +78,9 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 ! --- EXTRACTION DU MULTIPLICATEUR
 !
     call jeveuo(cnsmul//'.CNSV', 'L', jcnslb)
-    do 20 ino = 1, nnomai
+    do ino = 1, nnomai
         mlagr(ino) = zr(jcnslb-1+numnno(ino))
-20  end do
+    end do
 !
     call jedema()
 end subroutine

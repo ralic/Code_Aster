@@ -1,5 +1,16 @@
 subroutine cfnomm(noma, defico, typent, posent, noment)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,21 +29,11 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-!
-#include "asterfort/assert.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/cfnumn.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-    character(len=8) :: noma
-    character(len=24) :: defico
-    integer :: posent
-    character(len=8) :: noment
-    character(len=4) :: typent
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: defico
+    integer, intent(in) :: posent
+    character(len=4), intent(in) :: typent
+    character(len=8), intent(out) :: noment
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,11 +52,10 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 !                <NOEU>  NOEUD
 ! OUT NOMENT : NOM DE L'ENTITE
 !
+! ----------------------------------------------------------------------
 !
-!
-!
-    integer :: nummai, numnoe
-    integer :: posmai, posnoe
+    integer :: nummai, numnoe(1)
+    integer :: posmai, posnoe(1)
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,12 +74,11 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 !
     else if (typent.eq.'NOEU') then
         posnoe = abs(posent)
-        call cfnumn(defico, 1, posnoe, numnoe)
-        call jenuno(jexnum(noma//'.NOMNOE', numnoe), noment)
+        call cfnumn(defico, 1, posnoe(1), numnoe(1))
+        call jenuno(jexnum(noma//'.NOMNOE', numnoe(1)), noment)
     else
         ASSERT(.false.)
     endif
-!
 !
     call jedema()
 !

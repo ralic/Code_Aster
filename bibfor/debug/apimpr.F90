@@ -1,5 +1,23 @@
 subroutine apimpr(sdappa, ifm)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/apcopt.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/apinfr.h"
+#include "asterfort/apnomk.h"
+#include "asterfort/apnomp.h"
+#include "asterfort/apnumm.h"
+#include "asterfort/apnumn.h"
+#include "asterfort/appari.h"
+#include "asterfort/apvect.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,25 +36,8 @@ subroutine apimpr(sdappa, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-!
-#include "asterfort/apcopt.h"
-#include "asterfort/apinfi.h"
-#include "asterfort/apinfr.h"
-#include "asterfort/apnomk.h"
-#include "asterfort/apnomp.h"
-#include "asterfort/apnumm.h"
-#include "asterfort/apnumn.h"
-#include "asterfort/appari.h"
-#include "asterfort/apvect.h"
-#include "asterfort/apzoni.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-    character(len=19) :: sdappa
-    integer :: ifm
+    character(len=19), intent(in) :: sdappa
+    integer, intent(in) :: ifm
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,8 +51,7 @@ subroutine apimpr(sdappa, ifm)
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 ! IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=24) :: rnomsd, defico
     integer :: nbzone, ntpt, nbpt
@@ -60,8 +60,8 @@ subroutine apimpr(sdappa, ifm)
     real(kind=8) :: dist, ksi1, ksi2, tau1(3), tau2(3)
     character(len=16) :: nompt
     integer :: izone, ip, k, i
-    integer :: numnom, nummam
-    integer :: posnom, posmam
+    integer :: numnom(1), nummam
+    integer :: posnom(1), posmam
     character(len=8) :: noma, nomnom, nommam
 !
 ! ----------------------------------------------------------------------
@@ -86,15 +86,15 @@ subroutine apimpr(sdappa, ifm)
 !
     write(ifm,*) '<APPARIEMENT> ------ ZONES ------ '
 !
-    write(ifm,1000) nbzone
-    write(ifm,1001) ntpt
+    write(ifm,100) nbzone
+    write(ifm,101) ntpt
 !
-    1000 format (' <APPARIEMENT> NOMBRE DE ZONES                   : ',i6)
-    1001 format (' <APPARIEMENT> NOMBRE MAX. DE POINTS A APPARIER  : ',i6)
+    100 format (' <APPARIEMENT> NOMBRE DE ZONES                   : ',i6)
+    101 format (' <APPARIEMENT> NOMBRE MAX. DE POINTS A APPARIER  : ',i6)
 !
 ! --- BOUCLE SUR LES ZONES
 !
-    do 10 izone = 1, nbzone
+    do izone = 1, nbzone
 !
 ! ----- INFORMATION SUR LA ZONE
 !
@@ -102,12 +102,12 @@ subroutine apimpr(sdappa, ifm)
 !
 ! ----- BOUCLE SUR LES POINTS
 !
-        do 20 i = 1, nbpt
+        do i = 1, nbpt
 !
 ! ------- INFOS SUR LE POINT
 !
             call apnomp(sdappa, ip, nompt)
-            write(ifm,4000) ip,nompt
+            write(ifm,400) ip,nompt
             call apcopt(sdappa, ip, coorpt)
 !
 !
@@ -122,61 +122,61 @@ subroutine apimpr(sdappa, ifm)
             call apvect(sdappa, 'APPARI_TAU2', ip, tau2)
 !
             if (typapp .eq. -1) then
-                write(ifm,5001)
+                write(ifm,501)
             else if (typapp.eq.-2) then
-                write(ifm,5002)
+                write(ifm,502)
             else if (typapp.eq.-3) then
-                write(ifm,5003)
+                write(ifm,503)
             else if (typapp.eq.0) then
-                write(ifm,5004)
+                write(ifm,504)
             else if (typapp.eq.1) then
-                write(ifm,4001) coorpt(1),coorpt(2),coorpt(3)
+                write(ifm,401) coorpt(1),coorpt(2),coorpt(3)
                 posnom = entapp
-                call apnumn(sdappa, defico, posnom, numnom)
-                call jenuno(jexnum(noma//'.NOMNOE', numnom), nomnom)
-                write(ifm,6001) nomnom
-                write(ifm,8001) dist
+                call apnumn(defico, posnom(1), numnom(1))
+                call jenuno(jexnum(noma//'.NOMNOE', numnom(1)), nomnom)
+                write(ifm,601) nomnom
+                write(ifm,801) dist
             else if (typapp.eq.2) then
-                write(ifm,4001) coorpt(1),coorpt(2),coorpt(3)
+                write(ifm,401) coorpt(1),coorpt(2),coorpt(3)
                 posmam = entapp
                 call apnumm(sdappa, defico, posmam, nummam)
                 call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
-                write(ifm,6002) nommam
+                write(ifm,602) nommam
 !
-                write(ifm,7001) ksi1,ksi2
-                write(ifm,8001) dist
-                write(ifm,9001) (tau1(k),k=1,3)
-                write(ifm,9002) (tau2(k),k=1,3)
+                write(ifm,701) ksi1,ksi2
+                write(ifm,801) dist
+                write(ifm,901) (tau1(k),k=1,3)
+                write(ifm,902) (tau2(k),k=1,3)
             else
-                write(ifm,5004)
+                write(ifm,504)
             endif
 !
 ! ------- POINT SUIVANT
 !
             ip = ip + 1
-20      continue
-10  end do
+        end do
+    end do
 !
-    4000 format (' <APPARIEMENT> POINT            ',i6,' (',&
+    400 format (' <APPARIEMENT> POINT            ',i6,' (',&
      &        a16,')')
-    4001 format (' <APPARIEMENT> ** DE COORDONNEES ',1pe15.8,&
+    401 format (' <APPARIEMENT> ** DE COORDONNEES ',1pe15.8,&
      &        1pe15.8,1pe15.8)
 !
-    5001 format (' <APPARIEMENT> -> EXCLU - PAR SANS_NOEUD')
-    5002 format (' <APPARIEMENT> -> EXCLU - PAR TOLE_APPA')
-    5003 format (' <APPARIEMENT> -> EXCLU - PAR TOLE_PROJ_EXT')
-    5004 format (' <APPARIEMENT> -> NON APPARIE (ERREUR)')
+    501 format (' <APPARIEMENT> -> EXCLU - PAR SANS_NOEUD')
+    502 format (' <APPARIEMENT> -> EXCLU - PAR TOLE_APPA')
+    503 format (' <APPARIEMENT> -> EXCLU - PAR TOLE_PROJ_EXT')
+    504 format (' <APPARIEMENT> -> NON APPARIE (ERREUR)')
 !
 !
-    6001 format (' <APPARIEMENT> -> APPARIEMENT AVEC NOEUD  ',a8)
-    6002 format (' <APPARIEMENT> -> APPARIEMENT AVEC MAILLE ',a8)
+    601 format (' <APPARIEMENT> -> APPARIEMENT AVEC NOEUD  ',a8)
+    602 format (' <APPARIEMENT> -> APPARIEMENT AVEC MAILLE ',a8)
 !
-    7001 format (' <APPARIEMENT>      SUR POINT KSI1,KSI2: ',&
+    701 format (' <APPARIEMENT>      SUR POINT KSI1,KSI2: ',&
      &          1pe15.8,1pe15.8)
-    8001 format (' <APPARIEMENT>      DISTANCE: ',1pe15.8)
-    9001 format (' <APPARIEMENT>      TANGENTE BRUTE  DIR. 1   : ',&
+    801 format (' <APPARIEMENT>      DISTANCE: ',1pe15.8)
+    901 format (' <APPARIEMENT>      TANGENTE BRUTE  DIR. 1   : ',&
      &         3(1pe15.8,2x))
-    9002 format (' <APPARIEMENT>      TANGENTE BRUTE  DIR. 2   : ',&
+    902 format (' <APPARIEMENT>      TANGENTE BRUTE  DIR. 2   : ',&
      &         3(1pe15.8,2x))
 !
     call jedema()

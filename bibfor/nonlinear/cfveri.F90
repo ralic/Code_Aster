@@ -1,25 +1,8 @@
 subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
                   npt, jeux, loca, enti, zone, instan)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
     implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -47,14 +30,36 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmnpoi.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: newgeo
-    character(len=19) :: sdappa
-    character(len=24) :: jeux, loca, enti, zone
-    integer :: npt
-    real(kind=8) :: instan
-    
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
+    character(len=19), intent(in) :: newgeo
+    character(len=19), intent(in) :: sdappa
+    character(len=24), intent(in) :: jeux
+    character(len=24), intent(in) :: loca
+    character(len=24), intent(in) :: enti
+    character(len=24), intent(in) :: zone
+    integer, intent(in) :: npt
+    real(kind=8), intent(in) :: instan
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,13 +84,13 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! IN  NPT    : NOMBRE DE POINTS EN MODE VERIF
 ! IN  INSTAN : INST VALUE
 !
-!
+! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: typapp, entapp
     integer :: jdecne
-    integer :: posmae, nummam, posnoe, posmam, numnoe
-    integer :: posnom, numnom
+    integer :: posmae, nummam, posnoe(1), posmam, numnoe(1)
+    integer :: posnom(1), numnom(1)
     integer :: izone, ip, iptm, inoe, ipt
     integer :: ndimg, nzoco
     integer :: nbpc, nbpt, npt0
@@ -151,15 +156,15 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! ------- NOEUD ESCLAVE COURANT
 !
             inoe = iptm
-            posnoe = jdecne + inoe
+            posnoe(1) = jdecne + inoe
 !
 ! ------- INDICE ABSOLU DANS LE MAILLAGE DU NOEUD
 !
-            call cfnumn(defico, 1, posnoe, numnoe)
+            call cfnumn(defico, 1, posnoe(1), numnoe(1))
 !
 ! ------- NOM DU NOEUD ESCLAVE
 !
-            call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+            call jenuno(jexnum(noma//'.NOMNOE', numnoe(1)), nomnoe)
 !
 ! ------- INFOS APPARIEMENT
 !
@@ -176,7 +181,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! ------- NOM DU POINT DE CONTACT
 !
-            call mmnpoi(noma, k8bla, numnoe, iptm, nompt)
+            call mmnpoi(noma, k8bla, numnoe(1), iptm, nompt)
 !
 ! ------- TRAITEMENT DE L'APPARIEMENT
 !
@@ -200,7 +205,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! --------- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
                 call cftanr(noma, ndimg, defico, resoco, izone,&
-                            posnoe, 'MAIL', posmam, nummam, ksipr1,&
+                            posnoe(1), 'MAIL', posmam, nummam, ksipr1,&
                             ksipr2, tau1m, tau2m, tau1, tau2)
 !
 ! --------- CALCUL DE LA NORMALE INTERIEURE
@@ -216,7 +221,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-                call cfdist(defico, 'DISCRETE', izone, posnoe, posmae,&
+                call cfdist(defico, 'DISCRETE', izone, posnoe(1), posmae,&
                             coorpc, dist, instan)
 !
 ! --------- JEU TOTAL
@@ -226,22 +231,22 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- NOEUD MAITRE
 !
-                posnom = entapp
-                call cfnumn(defico, 1, posnom, numnom)
+                posnom(1) = entapp
+                call cfnumn(defico, 1, posnom(1), numnom(1))
 !
 ! --------- NOM DU NOEUD MAITRE
 !
-                call jenuno(jexnum(noma//'.NOMNOE', numnom), nomnom)
+                call jenuno(jexnum(noma//'.NOMNOE', numnom(1)), nomnom)
                 noment = nomnom
 !
 ! --------- COORDONNNEES DU NOEUD MAITRE
 !
-                call cfcorn(newgeo, numnom, geomp)
+                call cfcorn(newgeo, numnom(1), geomp)
 !
 ! --------- RE-DEFINITION BASE TANGENTE SUIVANT OPTIONS
 !
                 call cftanr(noma, ndimg, defico, resoco, izone,&
-                            posnoe, 'NOEU', posnom, numnom, r8bid,&
+                            posnoe(1), 'NOEU', posnom(1), numnom(1), r8bid,&
                             r8bid, tau1m, tau2m, tau1, tau2)
 !
 ! --------- CALCUL DE LA NORMALE INTERIEURE
@@ -257,7 +262,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 !
 ! --------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-                call cfdist(defico, 'DISCRETE', izone, posnoe, posmae,&
+                call cfdist(defico, 'DISCRETE', izone, posnoe(1), posmae,&
                             coorpc, dist, instan)
 !
 ! --------- JEU TOTAL
@@ -280,7 +285,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! ------- SAUVEGARDE
 !
             zr(jjeux+ipt-1) = jeu
-            zi(jloca+ipt-1) = numnoe
+            zi(jloca+ipt-1) = numnoe(1)
             zi(jzone+ipt-1) = izone
             zk16(jenti+2*(ipt-1)+1-1) = nompt
             zk16(jenti+2*(ipt-1)+2-1) = noment

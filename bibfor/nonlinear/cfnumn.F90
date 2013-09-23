@@ -1,5 +1,12 @@
 subroutine cfnumn(defico, nno, posnno, numnno)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,23 +25,18 @@ subroutine cfnumn(defico, nno, posnno, numnno)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: defico
-    integer :: nno
-    integer :: posnno(nno)
-    integer :: numnno(nno)
+    character(len=24), intent(in) :: defico
+    integer, intent(in) :: nno
+    integer, intent(in) :: posnno(nno)
+    integer, intent(out) :: numnno(nno)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE CONTACT (METHODES MAILLEES - UTILITAIRE)
 !
 ! DONNE LES NUMEROS ABSOLUS DES NOEUDS DE CONTACT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
 ! IN  DEFICO : SD DE CONTACT (DEFINITION)
@@ -42,14 +44,13 @@ subroutine cfnumn(defico, nno, posnno, numnno)
 ! IN  POSNNO : INDICE DANS CONTNO DES NOEUDS
 ! OUT NUMNNO : INDICE ABSOLUS DES NOEUDS DANS LE MAILLAGE
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ino, posno
     character(len=24) :: contno
     integer :: jnoco
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -60,10 +61,10 @@ subroutine cfnumn(defico, nno, posnno, numnno)
 !
 ! --- NUMERO DES NOEUDS
 !
-    do 10 ino = 1, nno
+    do ino = 1, nno
         posno = posnno(ino)
         numnno(ino) = zi(jnoco+posno-1)
-10  end do
+    end do
 !
     call jedema()
 !

@@ -17,7 +17,7 @@
 !
 interface
     subroutine apimpr(sdappa, ifm)
-        character(len=19) :: sdappa
-        integer :: ifm
+        character(len=19), intent(in) :: sdappa
+        integer, intent(in) :: ifm
     end subroutine apimpr
 end interface

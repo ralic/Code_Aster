@@ -17,8 +17,8 @@
 !
 interface
     subroutine cfmxr0(defico, resoco, noma)
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=8) :: noma
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=8), intent(in) :: noma
     end subroutine cfmxr0
 end interface

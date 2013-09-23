@@ -19,20 +19,20 @@ interface
     subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
                       lctf3d, ndimg, izone, posnoe, numnoe,&
                       coorne, posnom, tau1m, tau2m, iliai)
-        character(len=8) :: noma
-        character(len=19) :: newgeo
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        logical :: lctfd
-        logical :: lctf3d
-        integer :: ndimg
-        integer :: izone
-        integer :: posnoe
-        integer :: numnoe
-        real(kind=8) :: coorne(3)
-        integer :: posnom
-        real(kind=8) :: tau1m(3)
-        real(kind=8) :: tau2m(3)
-        integer :: iliai
+        character(len=8), intent(in) :: noma
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        character(len=19), intent(in) :: newgeo
+        real(kind=8), intent(in) :: coorne(3)
+        real(kind=8), intent(in) :: tau1m(3)
+        real(kind=8), intent(in) :: tau2m(3)
+        integer, intent(in) :: izone
+        integer, intent(in) :: ndimg
+        integer, intent(in) :: posnom(1)
+        integer, intent(in) :: posnoe
+        integer, intent(in) :: numnoe
+        integer, intent(in) :: iliai
+        logical, intent(in) :: lctfd
+        logical, intent(in) :: lctf3d
     end subroutine cfapno
 end interface

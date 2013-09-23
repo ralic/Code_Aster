@@ -1,27 +1,8 @@
 subroutine apverl(sdappa)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+   implicit     none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-! aslint: disable=
-    implicit     none
 #include "jeveux.h"
-!
 #include "asterc/r8prem.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/apatta.h"
@@ -43,7 +24,26 @@ subroutine apverl(sdappa)
 #include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
 #include "blas/ddot.h"
-    character(len=19) :: sdappa
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=19), intent(in) :: sdappa
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,8 +55,7 @@ subroutine apverl(sdappa)
 !
 ! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     character(len=24) :: rnomsd
     character(len=8) :: noma
@@ -67,7 +66,7 @@ subroutine apverl(sdappa)
     integer :: jdecnm, nbnom
     integer :: inom, ima, inocou, inomai
     integer :: jdec, jdeciv
-    integer :: posmam, nummam, posnom, numnom
+    integer :: posmam, nummam, posnom(1), numnom(1)
     integer :: nmanom, nnosdm
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     real(kind=8) :: taund1(3), taund2(3), normnd(3)
@@ -115,7 +114,7 @@ subroutine apverl(sdappa)
 ! --- BOUCLE SUR LES ZONES
 !
     inoeu = 0
-    do 10 izone = 1, nbzone
+    do izone = 1, nbzone
         call apzoni(sdappa, izone, 'NBNOM', nbnom)
         call apzoni(sdappa, izone, 'JDECNM', jdecnm)
         call apzonl(sdappa, izone, 'CALC_NORM_MAIT', apcald)
@@ -123,20 +122,20 @@ subroutine apverl(sdappa)
 !
 ! ----- BOUCLE SUR LES NOEUDS
 !
-        do 20 inom = 1, nbnom
+        do inom = 1, nbnom
 !
-            posnom = inom+jdecnm
-            call apnumn(sdappa, defico, posnom, numnom)
-            call jenuno(jexnum(noma//'.NOMNOE', numnom), nomnom)
+            posnom(1) = inom+jdecnm
+            call apnumn(defico, posnom(1), numnom(1))
+            call jenuno(jexnum(noma//'.NOMNOE', numnom(1)), nomnom)
 !
 ! ------- TANGENTES SUR CE NOEUD
 !
-            taund1(1) = zr(jptgno+6*(posnom-1)+1-1)
-            taund1(2) = zr(jptgno+6*(posnom-1)+2-1)
-            taund1(3) = zr(jptgno+6*(posnom-1)+3-1)
-            taund2(1) = zr(jptgno+6*(posnom-1)+4-1)
-            taund2(2) = zr(jptgno+6*(posnom-1)+5-1)
-            taund2(3) = zr(jptgno+6*(posnom-1)+6-1)
+            taund1(1) = zr(jptgno+6*(posnom(1)-1)+1-1)
+            taund1(2) = zr(jptgno+6*(posnom(1)-1)+2-1)
+            taund1(3) = zr(jptgno+6*(posnom(1)-1)+3-1)
+            taund2(1) = zr(jptgno+6*(posnom(1)-1)+4-1)
+            taund2(2) = zr(jptgno+6*(posnom(1)-1)+5-1)
+            taund2(3) = zr(jptgno+6*(posnom(1)-1)+6-1)
 !
 ! ------- CALCUL DE LA NORMALE _INTERIEURE_
 !
@@ -144,15 +143,15 @@ subroutine apverl(sdappa)
 !
 ! ------- NOMBRE DE MAILLES ATTACHEES AU NOEUD
 !
-            call apninv(sdappa, defico, posnom, 'NMANOM', nmanom)
+            call apninv(sdappa, defico, posnom(1), 'NMANOM', nmanom)
 !
 ! ------- DECALAGE POUR CONNECTIVITE INVERSE
 !
-            call apninv(sdappa, defico, posnom, 'JDECIV', jdeciv)
+            call apninv(sdappa, defico, posnom(1), 'JDECIV', jdeciv)
 !
 ! ------- BOUCLE SUR LES MAILLES ATTACHEES
 !
-            do 30 ima = 1, nmanom
+            do ima = 1, nmanom
                 call apatta(sdappa, defico, jdeciv, ima, posmam)
                 call apnumm(sdappa, defico, posmam, nummam)
                 call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
@@ -164,11 +163,11 @@ subroutine apverl(sdappa)
 ! --------- LA MAILLE
 !
                 inocou = 0
-                do 40 inomai = 1, nnosdm
-                    if (zi(jdec+inomai-1) .eq. numnom) then
+                do inomai = 1, nnosdm
+                    if (zi(jdec+inomai-1) .eq. numnom(1)) then
                         inocou = inomai
                     endif
-40              continue
+                end do
                 ASSERT(inocou.ne.0)
 !
 ! --------- RECUPERATIONS DES TANGENTES EN CE NOEUD
@@ -193,26 +192,26 @@ subroutine apverl(sdappa)
                 if (val .lt. -1.d0) val = -1.d0
                 angle = acos(val)
                 angle = angle*r8rddg()
-                oldang = zr(jlista+numnom-1)
-                oldnom = zk8(jlistn+numnom-1)
+                oldang = zr(jlista+numnom(1)-1)
+                oldnom = zk8(jlistn+numnom(1)-1)
                 if (angle .gt. angmax) then
                     if (oldnom .eq. ' ') then
                         inoeu = inoeu+1
                         if (oldang .lt. angle) then
-                            zk8(jlistn+numnom-1) = nomnom
-                            zr(jlista+numnom-1) = angle
+                            zk8(jlistn+numnom(1)-1) = nomnom
+                            zr(jlista+numnom(1)-1) = angle
                         endif
                     endif
                 endif
 31              continue
-30          continue
-20      continue
+            end do
+        end do
 27      continue
-10  end do
+    end do
 !
     call jeecra(apverk, 'LONUTI', inoeu)
 !
-999  continue
+999 continue
 !
     call jedema()
 !
