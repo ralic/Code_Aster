@@ -103,8 +103,8 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     optio2 = option
     call infniv(ifm, niv)
     do 10,iaux = 1,maxin
-    lpain(iaux) = ' '
-    lchin(iaux) = ' '
+        lpain(iaux) = ' '
+        lchin(iaux) = ' '
     10 end do
 !
 !
@@ -428,8 +428,9 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
             codret = 1
             call utmess('A', 'CALCULEL2_89', sk=optio2)
         endif
-!     POUR 'SIEF_ELNO' CAS X-FEM, ON VERIFIE LA PRESENCE DU CHAMP
-!     SUPPLEMENTAIRE "DE CONTRAINTES AUX NOEUDS PAR SOUS ELEMENTS"
+
+!       pour 'sief_elno' cas x-fem, on verifie la presence du champ
+!       supplementaire "de contraintes aux noeuds par sous elements"
         if (ifiss .ne. 0 .and. option .eq. 'SIEF_ELNO') then
             call exisd('CHAMP_GD', lchout(2), iret)
             if (iret .eq. 0) then
@@ -445,4 +446,5 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
 !
     endif
 40  continue
+
 end subroutine

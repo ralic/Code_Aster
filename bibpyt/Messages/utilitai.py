@@ -132,10 +132,10 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
  Lors de la recopie du champ "%(k1)s" vers le champ "%(k2)s" utilisant
  le NUME_DDL "%(k3)s" certaines composantes de "%(k2)s" ont du être
  mises à zéro.
- 
+
  En effet, certaines parties attendues dans le champ "%(k2)s" n'étaient
  pas présentes dans "%(k1)s", elles ont donc été mises à zéros.
- 
+
  Ce problème peut survenir lorsque la numérotation du champ "%(k1)s"
  n'est pas intégralement incluse dans celle de "%(k2)s".
 """),
@@ -263,7 +263,7 @@ Erreur utilisateur :
      POIDS_MAILLES, GROUPAGE...),
    - générer votre partitionnement manuellement (autant de groupes de mailles et de
      groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
-     dédié: DEFI_PART_FETI_OPS.
+     dédié: DEFI_PARTITION_OPS.
 """),
 
 

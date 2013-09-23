@@ -32,7 +32,6 @@ cata_msg = {
 
 2 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
 
-3 : _(u"""    * Nombre d'itérations du solveur FETI         : %(i1)d"""),
 
 10 : _(u"""    * Nombre d'itérations de résolution contact   : %(i1)d"""),
 

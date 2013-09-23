@@ -56,8 +56,8 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ibid, irefe, idime, nbsd, ifetc, idd, kfetc, i, ivfetc, ifm, niv
-    integer :: icmb, iret, ival, ilimpi, ifeti, lvale, iconst
+    integer :: ibid, irefe, idime, i, ifm, niv
+    integer :: icmb, iret, ival, ilimpi, lvale, iconst
     integer :: jdesc, jrefe, jvale
     integer :: kdesc, krefe, kvale
     integer :: nbdesc, nbrefe, nbvale
@@ -65,11 +65,10 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     real(kind=8) :: dimag
     complex(kind=8) :: c8cst
     character(len=4) :: docu, type
-    character(len=5) :: refe, desc, vale, fetc
+    character(len=5) :: refe, desc, vale
     character(len=8) :: k8b
     character(len=19) :: ch19, ch19r
-    character(len=24) :: method, sdfeti, metho1, sdfet1, k24b
-    logical :: lfeti, iddok
+    character(len=24) :: k24b
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -93,11 +92,6 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         call jelira(k24b, 'DOCU', cval=docu)
     endif
 !
-! INIT. POUR FETI: NOMBRE DE SOUS-DOMAINES
-    nbsd=0
-    method=' '
-    sdfeti=' '
-    fetc='.FETC'
 !
 ! INIT. DE BASE
     if (docu .eq. 'CHNO') then
@@ -112,266 +106,139 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         call utmess('F', 'UTILITAI_21')
     endif
 !
-    if (docu .eq. 'CHNO') then
-! FETI OR NOT ?
-! ON VERIFIE QUE TOUTE LES CHAM_NO DE LA LISTE SONT HOMOGENES
-        k24b=ch19//refe
-        call jeexin(k24b, iret)
-        if (iret .ne. 0) then
-            call jelira(k24b, 'LONMAX', nbrefe)
-        else
-            if (niv .ge. 2) write (ifm, *)'<FETI/VTCMBL> CHAM_NO SANS REFE ', k24b(1:19)
-            nbrefe=0
-        endif
-        if (nbrefe .ne. 4) then
-            if (niv .ge. 2) write (ifm, * ) '<FETI/VTCMBL> CHAM_NO NON ETENDU POUR FETI ',&
-                            k24b(1:19)
-        else
-            call jeveuo(k24b, 'L', irefe)
-            method=zk24(irefe+2)
-            sdfeti=zk24(irefe+3)
-        endif
 !
-        do 10 icmb = 2, nbcmb
-            ch19=nomch(icmb)
-            k24b=ch19//refe
-            call jeexin(k24b, iret)
-            if (iret .ne. 0) then
-                call jelira(k24b, 'LONMAX', nbrefe)
-            else
-                if (niv .ge. 2) write (ifm, * )'<FETI/VTCMBL> CHAM_NO SANS REFE ', k24b(1:19)
-                nbrefe=0
-            endif
-            if (nbrefe .ne. 4) then
-                metho1=' '
-                sdfet1=' '
-            else
-                call jeveuo(k24b, 'L', irefe)
-                metho1=zk24(irefe+2)
-                sdfet1=zk24(irefe+3)
-                if ((metho1.ne.method) .or. (sdfet1.ne. sdfeti)) then
-                    call utmess('F', 'ALGELINE3_92')
-                endif
-            endif
-10      continue
-    endif
 !
-! INIT. POUR METHODE FETI
-    if (method(1:4) .eq. 'FETI') then
-        call jeveuo(sdfeti(1:19)//'.FDIM', 'L', idime)
-        nbsd=zi(idime)
-! PREPARATION POUR LA BOUCLE SUR LES SOUS-DOMAINES. STOCKAGE
-! DES ADRESSES DES .FETC DE CHACUN DES CHAM_NOS A CONCATENER
-! POUR EVITER (NBCMB-1)*NBSD APPELS A JEVEUO !
-        call wkvect('&&VECFETC', 'V V I', nbcmb, ivfetc)
-        do 20 icmb = 1, nbcmb
-            ch19=nomch(icmb)
-            call jeveuo(ch19//fetc, 'L', ifetc)
-            zi(ivfetc+icmb-1)=ifetc
-20      continue
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        lfeti=.true.
+!   PREMIER CHAM_NO A CONCATENER
+    ch19=nomch(1)
+!
+!   OBTENTION DES ADRESSES ET DES TAILLES DES .DESC, .REFE ET .VALE
+!   DU PREMIER CHAM_NO A CONCATENER. ON SUPPOSE QUE
+!   TOUS LES CHAM_NOS DE LA LISTE NOMCH SONT HOMOGENES SUR CE POINT.
+    call jelira(ch19//desc, 'LONMAX', nbdesc)
+    call jelira(ch19//vale, 'LONMAX', nbvale)
+    call jelira(ch19//refe, 'LONMAX', nbrefe)
+    call jeveuo(ch19//desc, 'L', jdesc)
+    call jeveuo(ch19//refe, 'L', jrefe)
+
+!   CONSTRUCTION D'UN CHAM_GD RESULTAT SUR LE MODELE DE NOMCH(1)
+    ch19r=chpres
+    call jeexin(ch19r//vale, iret)
+    if (iret .eq. 0) then
+        call wkvect(ch19r//desc, 'V V I', nbdesc, kdesc)
+        call wkvect(ch19r//vale, 'V V '//type, nbvale, kvale)
+        call wkvect(ch19r//refe, 'V V K24', nbrefe, krefe)
     else
-        lfeti=.false.
+        call jeveuo(ch19r//desc, 'E', kdesc)
+        call jelira(ch19r//desc, 'LONMAX', nbdes1)
+        call jeveuo(ch19r//refe, 'E', krefe)
+        call jelira(ch19r//refe, 'LONMAX', nbref1)
+        call jelira(ch19r//vale, 'LONMAX', nbval1)
+!       VERIFICATION DE LA COHERENCE DES DIMENSIONS
+        ASSERT(nbdes1.eq.nbdesc)
+        ASSERT(nbref1.eq.nbrefe)
+        ASSERT(nbval1.eq.nbvale)
     endif
+
+    call jeecra(ch19r//desc, 'DOCU', cval=docu)
+!   RECOPIE DU .DESC ET DU .REFE DU PREMIER CHAM_NO DE LA LISTE
+!   DANS CEUX DU CHAM_NO SOLUTION
+    do 30 i = 0, nbdesc-1
+        zi(kdesc+i)=zi(jdesc+i)
+30  continue
+    do 40 i = 0, nbrefe-1
+        zk24(krefe+i)=zk24(jrefe+i)
+40  continue
 !
-!========================================
-! BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-!========================================
-! IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
-    do 150 idd = 0, nbsd
+!   CHANGER LA GRANDEUR
+    call sdchgd(ch19r, typres)
 !
-! TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
-! LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU
-! SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
-        if (.not.lfeti) then
-            iddok=.true.
-        else
-            if (zi(ilimpi+idd) .eq. 1) then
-                iddok=.true.
-            else
-                iddok=.false.
-            endif
-        endif
-        if (iddok) then
+!   VECTEUR RECEPTACLE TEMPORAIRE DE LA COMBINAISON LINEAIRE
+    call wkvect('&&VTCMBL.VALE', 'V V '//type, nbvale, lvale)
 !
-            if (idd .eq. 0) then
-! PREMIER CHAM_NO GLOBAL A CONCATENER
-                ch19=nomch(1)
-            else
-! DETOURS PAR LE .FETC DU PREMIER CHAM_NO GLOBAL A CONCATENER POUR
-! OBTENIR LE NOM DU CHAM_NO LOCAL CORRESPONDANT (CH19)
-                ch19=zk24(zi(ivfetc)+idd-1)(1:19)
-            endif
-!
-! OBTENTION DES ADRESSES ET DES TAILLES DES .DESC, .REFE ET .VALE
-! DU PREMIER CHAM_NO (GLOBAL OU LOCAL) A CONCATENER. ON SUPPOSE QUE
-! TOUS LES CHAM_NOS DE LA LISTE NOMCH SONT HOMOGENES SUR CE POINT.
-            call jelira(ch19//desc, 'LONMAX', nbdesc)
-            call jelira(ch19//vale, 'LONMAX', nbvale)
-            call jelira(ch19//refe, 'LONMAX', nbrefe)
-            call jeveuo(ch19//desc, 'L', jdesc)
-            call jeveuo(ch19//refe, 'L', jrefe)
-!
-! CONSTRUCTION D'UN CHAM_GD RESULTAT SUR LE MODELE DE NOMCH(1)
-            if (idd .eq. 0) then
-! CHAM_NO GLOBAL RESULTAT
-                ch19r=chpres
-                call jeexin(ch19r(1:19)//fetc, ifeti)
-            else
-! CHAM_NO RESULTAT A CREER
-                if (ifeti .eq. 0) then
-                    call gcncon('.', k8b)
-                    k8b(1:1)='F'
-                    ch19r=chpres(1:11)//k8b
-                    zk24(kfetc+idd-1)(1:19)=ch19r
-                else
-! CHAM_NO RESULTAT DEJA EXISTANT A ECRASER
-                    ch19r=zk24(kfetc+idd-1)(1:19)
-                endif
-            endif
-            call jeexin(ch19r//vale, iret)
-            if (iret .eq. 0) then
-                call wkvect(ch19r//desc, 'V V I', nbdesc, kdesc)
-                call wkvect(ch19r//vale, 'V V '//type, nbvale, kvale)
-                call wkvect(ch19r//refe, 'V V K24', nbrefe, krefe)
-! SI FETI CONSTITUTION DE L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
-                if ((nbsd.gt.0) .and. (idd.eq.0)) call wkvect(ch19r// fetc, 'V V K24', nbsd,&
-                                                              kfetc)
-            else
-                call jeveuo(ch19r//desc, 'E', kdesc)
-                call jelira(ch19r//desc, 'LONMAX', nbdes1)
-                call jeveuo(ch19r//refe, 'E', krefe)
-                call jelira(ch19r//refe, 'LONMAX', nbref1)
-                call jelira(ch19r//vale, 'LONMAX', nbval1)
-! VERIFICATION DE LA COHERENCE DES DIMENSIONS
-                ASSERT(nbdes1.eq.nbdesc)
-                ASSERT(nbref1.eq.nbrefe)
-                ASSERT(nbval1.eq.nbvale)
-! SI FETI CONNEXION A L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
-                if ((nbsd.gt.0) .and. (idd.eq.0)) call jeveuo(ch19r// fetc, 'E', kfetc)
-            endif
-            call jeecra(ch19r//desc, 'DOCU', cval=docu)
-! RECOPIE DU .DESC ET DU .REFE DU PREMIER CHAM_NO DE LA LISTE
-! DANS CEUX DU CHAM_NO SOLUTION
-            do 30 i = 0, nbdesc-1
-                zi(kdesc+i)=zi(jdesc+i)
-30          continue
-            do 40 i = 0, nbrefe-1
-                zk24(krefe+i)=zk24(jrefe+i)
-40          continue
-!
-! CHANGER LA GRANDEUR
-            call sdchgd(ch19r, typres)
-!
-! VECTEUR RECEPTACLE TEMPORAIRE DE LA COMBINAISON LINEAIRE
-            call wkvect('&&VTCMBL.VALE', 'V V '//type, nbvale, lvale)
 !
 !-----------------------------------------------------------------------
 ! --- BOUCLE SUR LES CHAM_GDS A COMBINER
 !-----------------------------------------------------------------------
-            iconst=1
-            do 120 icmb = 1, nbcmb
+    iconst=1
+    do 120 icmb = 1, nbcmb
 !
-! CHAM_NO A CONCATENER
-                if (idd .eq. 0) then
-! DOMAINE GLOBAL
-                    ch19=nomch(icmb)
-                else
-! SOUS-DOMAINE N°IDD
-                    ch19=zk24(zi(ivfetc+icmb-1)+idd-1)(1:19)
-                endif
+!       CHAM_NO A CONCATENER
+        ch19=nomch(icmb)
 !
-                call jeveuo(ch19//vale, 'L', jvale)
-                if (typres(1:1) .eq. 'R') then
-                    if (typech(icmb)(1:1) .eq. 'R') then
-                        do 50 ival = 0, nbvale-1
-                            zr(lvale+ival)=zr(lvale+ival)+ const(&
+        call jeveuo(ch19//vale, 'L', jvale)
+        if (typres(1:1) .eq. 'R') then
+            if (typech(icmb)(1:1) .eq. 'R') then
+                do 50 ival = 0, nbvale-1
+                    zr(lvale+ival)=zr(lvale+ival)+ const(&
                             iconst)*zr(jvale+ival)
-50                      continue
-                    else
-                        if (typcst(icmb)(1:1) .eq. 'R') then
-                            do 60 ival = 0, nbvale-1
-                                zr(lvale+ival)=zr(lvale+ival)+&
+50              continue
+            else
+                if (typcst(icmb)(1:1) .eq. 'R') then
+                    do 60 ival = 0, nbvale-1
+                        zr(lvale+ival)=zr(lvale+ival)+&
                                 const(iconst)*dble(zc(jvale+ival))
-60                          continue
-                        else if (typcst(icmb)(1:1).eq.'I') then
-                            do 70 ival = 0, nbvale-1
-                                zr(lvale+ival)=zr(lvale+ival)+&
+60                  continue
+                else if (typcst(icmb)(1:1).eq.'I') then
+                    do 70 ival = 0, nbvale-1
+                        zr(lvale+ival)=zr(lvale+ival)+&
                                 const(iconst)*dimag(zc(jvale+ival))
-70                          continue
-                        else
-                            type=typcst(icmb)(1:1)
-                            call utmess('F', 'PREPOST3_6', sk=type)
-                        endif
-                    endif
+70                  continue
                 else
-                    if (typech(icmb)(1:1) .eq. 'R') then
-                        if (typcst(icmb)(1:1) .eq. 'R') then
-                            do 80 ival = 0, nbvale-1
-                                zc(lvale+ival)=zc(lvale+ival)+&
-                                const(iconst)*zr(jvale+ival)
-80                          continue
-                        else if (typcst(icmb)(1:1).eq.'C') then
-                            c8cst=dcmplx(const(iconst),const(iconst+1)&
-                            )
-                            do 90 ival = 0, nbvale-1
-                                zc(lvale+ival)=zc(lvale+ival)+c8cst*&
-                                zr(jvale+ival)
-90                          continue
-                        endif
-                    else
-                        if (typcst(icmb)(1:1) .eq. 'R') then
-                            do 100 ival = 0, nbvale-1
-                                zc(lvale+ival)=zc(lvale+ival)+&
-                                const(iconst)*zc(jvale+ival)
-100                          continue
-                        else if (typcst(icmb)(:1).eq.'C') then
-                            c8cst=dcmplx(const(iconst),const(iconst+1)&
-                            )
-                            do 110 ival = 0, nbvale-1
-                                zc(lvale+ival)=zc(lvale+ival)+c8cst*&
-                                zc(jvale+ival)
-110                          continue
-                        endif
-                    endif
+                    type=typcst(icmb)(1:1)
+                    call utmess('F', 'PREPOST3_6', sk=type)
                 endif
-                call jelibe(ch19//vale)
-                iconst=iconst+1
-                if (typcst(icmb)(1:1) .eq. 'C') iconst=iconst+1
-!
-!-----------------------------------------------------------------------
-! --- FIN BOUCLE CHAM_GD
-!-----------------------------------------------------------------------
-120          continue
+            endif
+        else
+            if (typech(icmb)(1:1) .eq. 'R') then
+                if (typcst(icmb)(1:1) .eq. 'R') then
+                    do 80 ival = 0, nbvale-1
+                        zc(lvale+ival)=zc(lvale+ival)+&
+                                const(iconst)*zr(jvale+ival)
+80                  continue
+                else if (typcst(icmb)(1:1).eq.'C') then
+                    c8cst=dcmplx(const(iconst),const(iconst+1)&
+                            )
+                    do 90 ival = 0, nbvale-1
+                        zc(lvale+ival)=zc(lvale+ival)+c8cst*&
+                                zr(jvale+ival)
+90                  continue
+                endif
+            else
+                if (typcst(icmb)(1:1) .eq. 'R') then
+                    do 100 ival = 0, nbvale-1
+                        zc(lvale+ival)=zc(lvale+ival)+&
+                                const(iconst)*zc(jvale+ival)
+100                  continue
+                else if (typcst(icmb)(:1).eq.'C') then
+                    c8cst=dcmplx(const(iconst),const(iconst+1)&
+                            )
+                    do 110 ival = 0, nbvale-1
+                        zc(lvale+ival)=zc(lvale+ival)+c8cst*&
+                                zc(jvale+ival)
+110                  continue
+                endif
+            endif
+        endif
+        call jelibe(ch19//vale)
+        iconst=iconst+1
+        if (typcst(icmb)(1:1) .eq. 'C') iconst=iconst+1
+120  continue
+
 !
 !   IL EST NECESSAIRE D'ACTUALISER KVALE SI LE RESULTAT EST DANS NOMCH()
-            call jeveuo(ch19r//vale, 'E', kvale)
-            if (type(1:1) .eq. 'R') then
-                do 130 ival = 0, nbvale-1
-                    zr(kvale+ival)=zr(lvale+ival)
-130              continue
-            else if (type(1:1).eq.'C') then
-                do 140 ival = 0, nbvale-1
-                    zc(kvale+ival)=zc(lvale+ival)
-140              continue
-            endif
+    call jeveuo(ch19r//vale, 'E', kvale)
+    if (type(1:1) .eq. 'R') then
+        do 130 ival = 0, nbvale-1
+            zr(kvale+ival)=zr(lvale+ival)
+130      continue
+    else if (type(1:1).eq.'C') then
+        do 140 ival = 0, nbvale-1
+            zc(kvale+ival)=zc(lvale+ival)
+140      continue
+    endif
 !
-! DESTRUCTION DU RECEPTACLE TEMPORAIRE, CAR SA TAILLE VA CHANGER A
-! L'ITERATION SUIVANTE
-            call jedetr('&&VTCMBL.VALE')
-!
-! LIBERATION DU CHAMP JEVEUX RESULTAT
-            call jelibe(ch19r//vale)
-!
-        endif
-!========================================
-! FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-!========================================
-150  end do
-!
-! DESTRUCTION OBJET JEVEUX TEMPORAIRE POUR FETI
-    if (nbsd .gt. 0) call jedetr('&&VECFETC')
+    call jedetr('&&VTCMBL.VALE')
+    call jelibe(ch19r//vale)
 !
     call jedema()
 end subroutine

@@ -41,8 +41,6 @@ subroutine assde1(champ)
     character(len=19) :: champ2
     logical :: dbg
 ! -DEB------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     champ2 = champ
 !
     dbg=.true.
@@ -51,7 +49,7 @@ subroutine assde1(champ)
 !
 !
 !
-!        POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
+!   -- POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
     call jedetr(champ2//'.CELD')
     call jedetr(champ2//'.CELV')
     call jedetr(champ2//'.CELK')
@@ -67,33 +65,5 @@ subroutine assde1(champ)
     call jedetr(champ2//'.NCMP')
     call jedetr(champ2//'.PTMA')
     call jedetr(champ2//'.PTMS')
-!
-! DESTRUCTION DE LA LISTE DE CHAM_NO LOCAUX SI FETI
-    k24b=champ2//'.FETC'
-    call jeexin(k24b, iret)
-! FETI OR NOT ?
-    if (iret .gt. 0) then
-        desc='.DESC'
-        refe='.REFE'
-        vale='.VALE'
-        call jelira(k24b, 'LONMAX', nbsd)
-        call jeveuo(k24b, 'L', ifetc)
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-!========================================
-! BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-!========================================
-        do 5 idd = 1, nbsd
-            if (zi(ilimpi+idd) .eq. 1) then
-                k19b=zk24(ifetc+idd-1)(1:19)
-                call jedetr(k19b//desc)
-                call jedetr(k19b//refe)
-                call jedetr(k19b//vale)
-            endif
- 5      continue
-!========================================
-! FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-!========================================
-        call jedetr(k24b)
-    endif
 !
 end subroutine

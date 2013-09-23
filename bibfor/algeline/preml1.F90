@@ -56,7 +56,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
     integer :: libre, iovflo, ncmpa, ifm, niv, p(neq), q(n2), nrl
     integer :: it
     integer :: nec, prno(*), deeq(*), ino, nbcmp
-    logical :: lfeti, matgen, liaiso
+    logical :: matgen, liaiso
 !--------------------------------------------------------------
 !
 !     VERSION RENUMEROTATION PAR NOEUD
@@ -79,15 +79,6 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !
 !
     call infniv(ifm, niv)
-! FETI OR NOT FETI ?
-    call jeexin('&FETI.MAILLE.NUMSD', iret)
-    if (iret .ne. 0) then
-        call infmue()
-        call infniv(ifm, niv)
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
 !--------------------------------------------------------------
 !     LA RENUMEROTATION VA ETRE FAITE AVEC LA CONNECTIVITE NODALE
 !     ET NON PLUS LA CONNECTIVITE PAR DDL COMME AVANT
@@ -384,39 +375,6 @@ subroutine preml1(neq, n2, diag, delg, col,&
         if (renum .eq. 2) then
             write(ifm,*)'   --- NOMBRE D''OP. FLOTTANTES ',nbops
         endif
-!
-! STOCKAGE INFO SI FETI
-    endif
-    if (lfeti) then
-! INTRODUIT POUR PRENDRE EN COMPTE LES TROUS DANS LA LISTE DES SOUS
-! -DOMAINES TRAITES EN PARALLELE PAR UN PROCESSEUR
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        ilimpi=ilimpi+1
-        call jeveuo('&FETI.INFO.STOCKAGE.FIDD', 'E', ifet1)
-        nbsd=zi(ifet1+1)
-        ifet2=zi(ifet1)
-! SI ON COMMENCE LE PROCESSUS, IL FAUT TROUVER LE PREMIER SD CONCERNE
-! PAR LE PROCESSUS
-        if (ifet2 .eq. 0) then
-            do 445 i = 0, nbsd-1
-                iaux=zi(ilimpi+i)
-                if (iaux .eq. 1) then
-                    ifet2=i
-                    zi(ifet1)=i
-                    goto 446
-                endif
-445          continue
-            call utmess('A', 'ALGELINE3_26')
-446          continue
-        endif
-        call jeveuo('&FETI.INFO.STOCKAGE.FVAL', 'E', ifet3)
-        zi(ifet3+ifet2)=diag(neq)
-        call jeveuo('&FETI.INFO.STOCKAGE.FNBN', 'E', ifet4)
-        zi(ifet4+ifet2)=nbnd
-! MISE A JOUR DES SOMMES FINALES
-        zi(ifet3+nbsd)=zi(ifet3+nbsd)+diag(neq)
-        zi(ifet4+nbsd)=zi(ifet4+nbsd)+nbnd
-        call infbav()
     endif
     ier=0
 end subroutine

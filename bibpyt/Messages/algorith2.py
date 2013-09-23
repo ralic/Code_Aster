@@ -154,17 +154,6 @@ Risques & conseils :
 
 
 
-40 : _(u"""
- ! nombre de sous-domaines illicite !
-"""),
-
-41 : _(u"""
- en parallèle, il faut au moins un sous-domaine par processeur !
-"""),
-
-42 : _(u"""
- en parallèle, STOGI = OUI obligatoire pour limiter les messages !
-"""),
 
 43 : _(u"""
  pas de calcul sur le critère de Rice disponible

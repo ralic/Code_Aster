@@ -42,11 +42,8 @@ class sd_cham_no(sd_titre):
         refe=self.REFE.get_stripped()
         mail      = refe[0]
         prof_chno = refe[1]
-        if refe[2] == 'FETI' :
-           assert refe[3] != '', refe
-        else :
-           assert refe[2] == '', refe
-           assert refe[3] == '', refe
+        assert refe[2] == '', refe
+        assert refe[3] == '', refe
         return mail,prof_chno
 
     def check_cham_no_i_REFE(self, checker):

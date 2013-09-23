@@ -58,7 +58,7 @@ subroutine promor(nuz, base)
     character(len=8) :: ma, mo, kbid, exiele, exivf
 !----------------------------------------------------------------------
     character(len=14) :: nu
-    logical :: lfeti, ldist, ldgrel, lmadis
+    logical :: ldist, ldgrel, lmadis
     character(len=19) :: nomlig
     integer :: iconx1, iconx2, ili, iadlie, iel, iadnem
     integer :: idprn1
@@ -146,16 +146,6 @@ subroutine promor(nuz, base)
     call infniv(ifm, niv)
     call jemarq()
     nu=nuz
-!
-!     -- FETI OR NOT FETI ?
-    call jeexin('&FETI.MAILLE.NUMSD', iret)
-    if (iret .ne. 0) then
-        call infmue()
-        call infniv(ifm, niv)
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
 !
 !
     call dismoi('F', 'NOM_MODELE', nu, 'NUME_DDL', ibid,&
@@ -525,7 +515,6 @@ subroutine promor(nuz, base)
         call utmess('I', 'FACTOR_2', ni=3, vali=vali, sr=valr(1))
     endif
 !
-    if (lfeti) call infbav()
     call jedema()
 !
 end subroutine

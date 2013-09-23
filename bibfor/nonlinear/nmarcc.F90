@@ -20,7 +20,6 @@ subroutine nmarcc(result, numarc, typchz, nomchz)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assde2.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
@@ -70,7 +69,6 @@ subroutine nmarcc(result, numarc, typchz, nomchz)
 !
 ! --- COPIE DU CHAMP DANS SD RESULTAT
 !
-    call assde2(nomcha)
     call copisd('CHAMP_GD', 'G', nomcha, champ)
     call rsnoch(result, typcha, numarc)
 !

@@ -42,7 +42,6 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 ! IN  COMPOR : COMPOR POUR LES MULTIFIBRE (POU_D_EM)
 !   -------------------------------------------------------------------
 !     ASTER INFORMATIONS:
-!       30/01/04 (OB): MODIF CRITER POUR SOLVEUR FETI.
 !-----------------------------------------------------------------------
 !
     implicit none
@@ -50,7 +49,6 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
-#include "asterfort/assde2.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infniv.h"
@@ -106,11 +104,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     call jeveuo(solveu//'.SLVK', 'L', islvk)
     chsol = '&&'//nompro//'_SOLUTION  '
-    if (zk24(islvk) .eq. 'FETI') then
-        criter = '&&'//nompro//'_RESFET_FETI    '
-    else
-        criter = '&&'//nompro//'_RESGRA_GCPC    '
-    endif
+    criter = '&&'//nompro//'_RESGRA_GCPC    '
 !
     depl = '&&MERESO.DEPL'
 !
@@ -151,15 +145,13 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     write (ifm,100) 'DEPL', partps(1), itps
 !
-    call rsexch(' ', result, 'DEPL', itps, chdepl,&
-                iret)
+    call rsexch(' ', result, 'DEPL', itps, chdepl, iret)
+
     if (iret .le. 100) then
-!     NETTOYAGE DES SCORIES DE SD FETI, NORMALEMENT INUTILE, MAIS ON
-!     NE SAIT JAMAIS !
-        call assde2(depl)
         call copisd('CHAMP_GD', 'G', depl(1:19), chdepl(1:19))
         call rsnoch(result, 'DEPL', itps)
     endif
+
 !
 !*** INST
 !

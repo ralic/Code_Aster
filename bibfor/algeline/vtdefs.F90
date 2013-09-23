@@ -56,7 +56,6 @@ subroutine vtdefs(chpout, chpin, base, typc)
     character(len=4) :: tych
     character(len=8) :: k8bid
     character(len=19) :: ch19, arg1, arg2
-    logical :: lfeti, iddok
 !
 !-----------------------------------------------------------------------
     integer :: ier
@@ -64,53 +63,11 @@ subroutine vtdefs(chpout, chpin, base, typc)
     call jemarq()
     ch19 = chpin
 !
-    call dismoi('F', 'TYPE_CHAMP', ch19, 'CHAMP', ibid,&
-                tych, ier)
-!
-! INIT. A CAUSE DE FETI
-    nbsd=0
-    lfeti=.false.
-!
-! CHAM_NO
-    if (tych .eq. 'NOEU') then
-! FETI OR NOT ?
-        call jeexin(ch19//'.FETC', iret)
-        if (iret .ne. 0) lfeti=.true.
-        if (lfeti) then
-            call jelira(ch19//'.FETC', 'LONMAX', nbsd)
-            call jeveuo(ch19//'.FETC', 'L', ifetc)
-            call wkvect(chpout(1:19)//'.FETC', 'V V K24', nbsd, kfetc)
-            call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        endif
-    endif
-!
-    do 10 idd = 0, nbsd
-! TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
-! LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU
-! SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
-        if (.not.lfeti) then
-            iddok=.true.
-        else
-            if (zi(ilimpi+idd) .eq. 1) then
-                iddok=.true.
-            else
-                iddok=.false.
-            endif
-        endif
-        if (iddok) then
-            if (idd .gt. 0) then
-                arg2=zk24(ifetc+idd-1)
-                call gcncon('.', k8bid)
-                k8bid(1:1)='F'
-                arg1=chpout(1:11)//k8bid
-                zk24(kfetc+idd-1)=arg1
-            else
-                arg1=chpout
-                arg2=chpin
-            endif
-            call vtdef1(arg1, arg2, base, typc, lfeti)
-        endif
-10  end do
+    call dismoi('F', 'TYPE_CHAMP', ch19, 'CHAMP', ibid, tych, ier)
+
+    arg1=chpout
+    arg2=chpin
+    call vtdef1(arg1, arg2, base, typc)
     call jedema()
 !
 end subroutine

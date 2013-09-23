@@ -15,14 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
-                      veinpn)
-        integer :: lmat
-        integer :: nprec
-        integer :: nmrig
-        character(len=*) :: vemrig
-        character(len=*) :: feti
-        character(len=*) :: veinpn
-    end subroutine tldlg2
-end interface
+          interface 
+            subroutine tldlg2(lmat,nprec,nmrig,vemrig)
+              integer :: lmat
+              integer :: nprec
+              integer :: nmrig
+              character(*) :: vemrig
+            end subroutine tldlg2
+          end interface 

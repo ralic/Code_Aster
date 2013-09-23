@@ -28,7 +28,6 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/fetmpi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -39,7 +38,6 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmequi.h"
-#include "asterfort/nmfeti.h"
 #include "asterfort/nmigno.h"
 #include "asterfort/nmimre.h"
 #include "asterfort/nmpcin.h"
@@ -105,11 +103,10 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     integer :: ifm, niv, nivmpi, nocc
     integer :: neq
     character(len=8) :: k8bid, noddlm
-    logical :: lfeti, ldyna, lfetip, lstat, lcine, lctcc
+    logical :: ldyna, lstat, lcine, lctcc
     character(len=19) :: profch, foiner
     character(len=24) :: k24bid
     character(len=19) :: commoi, depmoi
-    character(len=24) :: cnfeti
     character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
     character(len=19) :: cnfnod, cndipi, cndfdo
     integer :: jdeeq, jfnod, jbudi, jdfdo, jdipi
@@ -214,54 +211,6 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                 profch, ier)
     call jeveuo(profch(1:19)//'.DEEQ', 'L', jdeeq)
 !
-! --- PREPARATION FETI
-!
-    call nmfeti(numedd, ifm, lfeti, nivmpi, lfetip)
-!
-! --- SI FETI PARALLELE, ON COMMUNIQUE A CHAQUE PROC LA SOMME DES
-! --- CHAM_NOS GLOBAUX PARTIELLEMENT CALCULES
-! --- A OPTIMISER VIA UN DES CRITERES LOCAUX
-!
-    if (lfetip) then
-        cnfeti = cndiri(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, cnfeti, cnfeti, r8bid)
-        cnfeti = cnbudi(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, cnfeti, cnfeti, r8bid)
-        cnfeti = cnfint(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, k24bid, k24bid, r8bid)
-        cnfeti = cnfext(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, k24bid, k24bid, r8bid)
-        cnfeti = cnvcfo(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, k24bid, k24bid, r8bid)
-        cnfeti = cndfdo(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, k24bid, k24bid, r8bid)
-        if (ldyna) then
-            cnfeti = foiner(1:19)//'.VALE'
-            call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                        ibid, cnfeti, k24bid, k24bid, r8bid)
-        endif
-        if (linit) then
-            cnfeti = cnvcf1(1:19)//'.VALE'
-            call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                        ibid, cnfeti, k24bid, k24bid, r8bid)
-        endif
-        if (lrefe) then
-            cnfeti = cnrefe(1:19)//'.VALE'
-            call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                        ibid, cnfeti, k24bid, k24bid, r8bid)
-        endif
-        if (lcine) then
-            cnfeti = cnfnod(1:19)//'.VALE'
-            call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                        ibid, cnfeti, k24bid, k24bid, r8bid)
-        endif
-    endif
 !
 ! --- CALCULE LE MAX DES RESIDUS PAR CMP POUR LE RESIDU RESI_COMP_RELA
 !

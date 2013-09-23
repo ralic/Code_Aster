@@ -102,7 +102,6 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     integer :: nel, niv, nlag, nma, nn
     integer :: ns, numa, nunoel
     integer :: islvk, vali(4)
-    logical :: lfeti
 !
 !     NBNOM  : NOMBRE DE NOEUDS DU MAILLAGE
 !     DERLI  : NOM DE L'OBJET NU.DERLI CREE SUR 'V'
@@ -198,16 +197,6 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
     call infniv(ifm, niv)
     nu = nuz
-!
-! --- FETI OR NOT FETI ?
-    call jeexin('&FETI.MAILLE.NUMSD', iret)
-    if (iret .gt. 0) then
-        call infmue()
-        call infniv(ifm, niv)
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
 !
 ! --- SI LE CONCEPT : NU EXISTE DEJA, ON LE DETRUIT COMPLETEMENT :
 !     ----------------------------------------------------------
@@ -963,7 +952,6 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     endif
 !
 !
-! AUGMENTATION DE LA TAILLE DU .REFN (DE 2 A 4) POUR FETI
     call wkvect(nu//'.NUME.REFN', base(1:1)//' V K24', 4, idref)
     zk24(idref) = mailla
     zk24(idref+1) = nomgds
@@ -1005,6 +993,5 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     call jedetr(derli)
     call jedetr(vsuiv)
     call jedetr(dsclag)
-    if (lfeti) call infbav()
 !
 end subroutine

@@ -19,17 +19,13 @@
 
 cata_msg={
 
-1: _(u"""
- Résolution FETI : option invalide
-"""),
 
-2: _(u"""
- Résolution FETI : problème objet  %(k1)s .FETG . il est de longueur impaire
-"""),
 
-3: _(u"""
- Résolution FETI : division par zéro dans la construction du alpha
-"""),
+
+
+
+
+
 
 4: _(u"""
  valeur inférieure à la tolérance

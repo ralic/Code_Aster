@@ -203,13 +203,13 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
 
 #  3 : MUMPS (distribue par sous-domaines)
 # ------------------------------------------
-SDFETI = DEFI_PART_FETI(
+SDPART = DEFI_PARTITION(
                 MODELE=MO,
                 NB_PART=4,
                 EXCIT=(_F(CHARGE=SYMETRI2)),
                 METHODE='KMETIS',
                 NOM_GROUP_MA='SD');
-MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDPART))
 RESU3=STAT_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,
                    GESTION_MEMOIRE='AUTO'),

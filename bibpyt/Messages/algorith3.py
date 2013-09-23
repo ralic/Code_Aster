@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
@@ -39,18 +39,18 @@ cata_msg = {
   -> Contact avec DYNA_TRAN_MODAL : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).
   -> Risque & Conseil :
      DIST_MAIT et DIST_ESCL permettent de tenir compte d'une épaisseur de matériau non représentée dans le maillage
-     (rayon d'une poutre, épaisseur d'une coque ou simplement une bosse). Une trop forte interpénétration peut venir 
-     d'une erreur dans le fichier de commande : RIGI_NOR trop faible ; noeuds de contact qui ne sont en vis à vis ; 
-     OBSTACLE et NORM_OBSTACLE incohérents. Dans le cas de deux poutres aux fibres neutres confondues, elle peut 
+     (rayon d'une poutre, épaisseur d'une coque ou simplement une bosse). Une trop forte interpénétration peut venir
+     d'une erreur dans le fichier de commande : RIGI_NOR trop faible ; noeuds de contact qui ne sont en vis à vis ;
+     OBSTACLE et NORM_OBSTACLE incohérents. Dans le cas de deux poutres aux fibres neutres confondues, elle peut
      générer des erreurs dans l'orientation des forces de contact.
 """),
 
 11 : _(u"""
- méthode à pas adaptatif : la donnée du pas est obligatoire 
+ méthode à pas adaptatif : la donnée du pas est obligatoire
 """),
 
 12 : _(u"""
- le pas de temps ne peut pas être nul  
+ le pas de temps ne peut pas être nul
 """),
 
 13 : _(u"""
@@ -63,7 +63,7 @@ cata_msg = {
 """),
 
 15 : _(u"""
- La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
+ La méthode d'intégration %(k1)s n'est pas disponible pour les analyses
  transitoires sur base modale
 """),
 
@@ -85,7 +85,7 @@ On arrête de le réduire, car le nombre de réductions a atteint %(i1)d, qui es
 """),
 
 19 : _(u"""
- La méthode d'intégration %(k1)s n'est pas disponible pour les analyses 
+ La méthode d'intégration %(k1)s n'est pas disponible pour les analyses
  transitoires sur base physique
 """),
 
@@ -107,15 +107,15 @@ Nombre d'itérations     : %(i2)d
 """),
 
 25 : _(u"""
- le champ "DEPL" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s 
+ le champ "DEPL" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s
 """),
 
 26 : _(u"""
- le champ "VITE" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s 
+ le champ "VITE" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s
 """),
 
 27 : _(u"""
- le champ "ACCE" n'est pas trouve dans le concept DYNA_TRANS  %(k1)s 
+ le champ "ACCE" n'est pas trouve dans le concept DYNA_TRANS  %(k1)s
 """),
 
 28 : _(u"""
@@ -127,7 +127,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 36 : _(u"""
- NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s 
+ NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s
 """),
 
 37 : _(u"""
@@ -143,7 +143,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 42 : _(u"""
- critère inconnu :  %(k1)s 
+ critère inconnu :  %(k1)s
 """),
 
 43 :_(u"""
@@ -155,7 +155,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
 56 : _(u"""
- la durée du transitoire est limitée par les possibilités de la transformée de Fourier rapide 
+ la durée du transitoire est limitée par les possibilités de la transformée de Fourier rapide
 """),
 
 57 : _(u"""
@@ -170,37 +170,12 @@ Nombre d'itérations     : %(i2)d
  la matrice interspectrale possède un pivot nul.
 """),
 
-61 : _(u"""
- option non prévue !
-"""),
 
-62 : _(u"""
- Problème 1 test spectre fi par ARPACK
-"""),
 
-63 : _(u"""
- Problème 2 test spectre fi par ARPACK
-"""),
 
-64 : _(u"""
- valeur de STOGI incohérente
-"""),
 
-65 : _(u"""
- en parallèle STOGI=OUI obligatoire pour l'instant
-"""),
 
-66 : _(u"""
- option de calcul incohérente
-"""),
 
-67 : _(u"""
- Problème division par zéro dans la construction du BETA
-"""),
-
-72 : _(u"""
- donnée erronée, multiplicité nulle
-"""),
 
 78 : _(u"""
  pas de discrétisation de l'interspectre non constant.
@@ -238,7 +213,7 @@ Nombre d'itérations     : %(i2)d
 
 89 : _(u"""
  valeurs propres non ordonnées :
- %(k1)s  %(k2)s  %(k3)s 
+ %(k1)s  %(k2)s  %(k3)s
 """),
 
 90 : _(u"""

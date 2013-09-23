@@ -188,9 +188,9 @@ Le module de Young est nul.
   Sur les éléments quelconques on peut obtenir des résultats faux.
 """),
 
-76 : _(u"""
- la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine !
-"""),
+
+
+
 
 78 : _(u"""
  Problème récupération donnée matériau dans THM_DIFFU %(k1)s

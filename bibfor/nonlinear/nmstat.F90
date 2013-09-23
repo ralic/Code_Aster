@@ -65,7 +65,7 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     real(kind=8) :: tpsint, tpsasm, tpsfac, tps2mb, tpssol
     real(kind=8) :: tps, tpsmoy, tpspst, tpslst, tpsrst
     real(kind=8) :: effica
-    integer :: nbrint, nbrfac, nbrsol, nbrfet, nbrrel
+    integer :: nbrint, nbrfac, nbrsol, nbrrel
     integer :: nbiter, nbinst
     real(kind=8) :: tpscog
     real(kind=8) :: tpscda
@@ -138,7 +138,6 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     ctcvec = 0
     ctiter = 0
     ctcfro = 0
-    nbrfet = 0
     nbrrel = 0
 !
 ! --- AFFICHAGE POUR CE PAS ?
@@ -168,7 +167,6 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
     call nmrvai(sdstat, 'INTEGRATION', phase, nbrint)
     call nmrvai(sdstat, 'FACTOR', phase, nbrfac)
     call nmrvai(sdstat, 'SOLVE', phase, nbrsol)
-    call nmrvai(sdstat, 'FETI_ITER', phase, nbrfet)
     call nmrvai(sdstat, 'RECH_LINE_ITER', phase, nbrrel)
 !
     if ((phase.eq.'P') .or. (phase.eq.'T')) then
@@ -287,13 +285,8 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         call impfot(tpsrst, tpscvt)
         call utmess('I', 'MECANONLINE7_6', sk=tpscvt)
 !
-! ----- STATISTIQUES RECHERCHE LINEAIRE + FETI
-!
         if (nbrrel .ne. 0) then
             call utmess('I', 'MECANONLINE7_8', si=nbrrel)
-        endif
-        if (nbrfet .ne. 0) then
-            call utmess('I', 'MECANONLINE7_9', si=nbrfet)
         endif
 !
 ! ----- STATISTIQUES SUR LE CONTACT
@@ -321,13 +314,8 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
         vali(5) = nbrsol
         call utmess('I', 'MECANONLINE8_1', ni=5, vali=vali)
 !
-! ----- STATISTIQUES RECHERCHE LINEAIRE + FETI
-!
         if (nbrrel .ne. 0) then
             call utmess('I', 'MECANONLINE8_2', si=nbrrel)
-        endif
-        if (nbrfet .ne. 0) then
-            call utmess('I', 'MECANONLINE8_3', si=nbrfet)
         endif
 !
 ! ----- STATISTIQUES SUR LE CONTACT

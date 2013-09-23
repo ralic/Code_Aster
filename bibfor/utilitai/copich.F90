@@ -55,8 +55,8 @@ subroutine copich(base, ch1z, ch2z)
     character(len=16) :: concep, cmd
     character(len=19) :: prno, prno2, prno3, ch1esc, ch2esc, ch1, ch2
     character(len=24) :: noojb
-    integer :: ibid, iret, iret1, iret2, jad, ier, nbsd, ilimpi, ifeti
-    integer :: ifetc1, ifetc2, idd, nuprf
+    integer :: ibid, iret, iret1, iret2, jad, ier, nbsd, ilimpi
+    integer :: idd, nuprf
     logical :: leco
 !-----------------------------------------------------------------------
     call jemarq()
@@ -77,9 +77,6 @@ subroutine copich(base, ch1z, ch2z)
 !     -- CAS DES CHAM_NO :
 !     ----------------------
     if (docu .eq. 'CHNO') then
-!
-! --- ON DUPLIQUE LE CHAM_NO MAITRE DANS TOUS LES CAS
-!
         call jedup1(ch1//'.DESC', base, ch2//'.DESC')
         call jedup1(ch1//'.REFE', base, ch2//'.REFE')
         call jedup1(ch1//'.VALE', base, ch2//'.VALE')
@@ -119,38 +116,6 @@ subroutine copich(base, ch1z, ch2z)
             endif
         endif
 !
-! --- SI FETI, ON DUPLIQUE AUSSI LES CHAM_NO ESCLAVES
-        call jeexin(ch1//'.FETC', ifeti)
-        if (ifeti .ne. 0) then
-            call jelira(ch1//'.FETC', 'LONMAX', nbsd)
-            call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-            call jeveuo(ch1//'.FETC', 'L', ifetc1)
-            call jeexin(ch2//'.FETC', iret)
-! --- SI LE CHAM_NO CH2 N'EST PAS FETI, ON CREE LES CHAM_NOS FILS
-!     SINON ON LES REUTILISE
-            if (iret .eq. 0) then
-                call wkvect(ch2//'.FETC', base//' V K24', nbsd, ifetc2)
-            else
-                call jeveuo(ch2//'.FETC', 'L', ifetc2)
-            endif
-! --- BOUCLE SUR LES SOUS-DOMAINES CF VTCREB OU VTCMBL PAR EXEMPLE
-            do 20 idd = 1, nbsd
-                if (zi(ilimpi+idd) .eq. 1) then
-                    ch1esc=zk24(ifetc1+idd-1)(1:19)
-                    if (iret .eq. 0) then
-                        call gcncon('.', k8bid)
-                        k8bid(1:1)='F'
-                        ch2esc=ch2(1:11)//k8bid
-                        zk24(ifetc2+idd-1)(1:19)=ch2esc
-                    else
-                        ch2esc=zk24(ifetc2+idd-1)(1:19)
-                    endif
-                    call jedup1(ch1esc//'.DESC', base, ch2esc//'.DESC')
-                    call jedup1(ch1esc//'.REFE', base, ch2esc//'.REFE')
-                    call jedup1(ch1esc//'.VALE', base, ch2esc//'.VALE')
-                endif
-20          continue
-        endif
 !
 !     -- CAS DES CARTES :
 !     ----------------------

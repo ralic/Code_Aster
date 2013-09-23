@@ -15,15 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine vtcre1(champ, numedd, classe, type, method,&
-                      sdfeti, neq)
-        character(len=24) :: champ
-        character(len=24) :: numedd
-        character(len=1) :: classe
-        character(len=1) :: type
-        character(len=24) :: method
-        character(len=24) :: sdfeti
-        integer :: neq
-    end subroutine vtcre1
-end interface
+          interface 
+            subroutine vtcre1(champ,numedd,classe,type,neq)
+              character(len=24) :: champ
+              character(len=24) :: numedd
+              character(len=1) :: classe
+              character(len=1) :: type
+              integer :: neq
+            end subroutine vtcre1
+          end interface 

@@ -130,7 +130,7 @@ subroutine fetskp()
 ! --------- ON VERIFIE QUE LE MODELE NE CONTIENT PAS DE MAILLES TARDIVES
 ! --------- QUI SONT ESSENTIELLEMENT DES NOEUDS A CE STADE
                 if (zi(idma-1+ima) .lt. 0) then
-                    call utmess('F', 'FETI0_3')
+                    call utmess('F', 'PARTITION_3')
                 endif
                 zi(renum1-1+zi(idma-1+ima))=id
                 id=id+1

@@ -30,15 +30,10 @@ cata_msg={
   n'a pas une valeur cohérente %(i2)d
 """),
 
-5: _(u"""
- !! Attention, vous utilisez l'option de test FETI de l'interface.
- On va donc simuler la résolution d'un système diagonal canonique,
- pour provoquer un test d'ensemble de l'algorithme qui doit trouver
- la solution U=1 sur tous les noeuds.
- Vos résultats sont donc artificiellement faussés pour les besoins de
- ce test. Pour réaliser effectivement votre calcul, désactiver cette
- option (INFO_FETI(12:12)='F' au lieu de 'T') !!
-"""),
+
+
+
+
 
 6: _(u"""
  Résolution MULTI_FRONTALE :

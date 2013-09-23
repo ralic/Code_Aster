@@ -57,7 +57,7 @@ subroutine nminim(sdsuiv, sdimpr)
 ! ----------------------------------------------------------------------
 !
     integer :: nbcolo, larcol, tithau
-    parameter    (nbcolo=29,larcol=16,tithau=3)
+    parameter    (nbcolo=28,larcol=16,tithau=3)
     character(len=15) :: typcoz(nbcolo), ordcoz(nbcolo)
     character(len=16) :: titr1z(nbcolo), titr2z(nbcolo), titr3z(nbcolo)
     character(len=1) :: typvaz(nbcolo)
@@ -88,7 +88,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &             'CTCD_NBIT','CONT_NEWT','FROT_NEWT',&
      &             'GEOM_NEWT','CTCC_CYCL','BOUC_VALE',&
      &             'BOUC_NOEU','FROT_NOEU','GEOM_NOEU',&
-     &             'FETI_NBIT','ITER_TIME'/
+     &             'ITER_TIME'/
 !
     data typcoz /'ITER_NUME','INCR_INST','RESI_RELA',&
      &             'RESI_MAXI','RESI_REFE','RESI_COMP',&
@@ -99,7 +99,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &             'BOUC_CONT','CONT_NEWT','FROT_NEWT',&
      &             'GEOM_NEWT','CTCC_CYCL','BOUC_VALE',&
      &             'BOUC_NOEU','FROT_NOEU','GEOM_NOEU',&
-     &             'FETI_NBIT','ITER_TIME'/
+     &             'ITER_TIME'/
 !
     data titr1z /&
      &         '     NEWTON     ','   INCREMENT    ','     RESIDU     ',&
@@ -111,7 +111,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &         '     CONTACT    ','     CONTACT    ','     CONTACT    ',&
      &         '     CONTACT    ','     CONTACT    ','     CONTACT    ',&
      &         '     CONTACT    ','     CONTACT    ','     CONTACT    ',&
-     &         '     FETI       ','     NEWTON     '/
+     &         '     NEWTON     '/
 !
     data titr2z /&
      &         '    ITERATION   ','    INSTANT     ','     RELATIF    ',&
@@ -123,7 +123,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &         '    BCL. CONT.  ','   NEWTON GENE  ','   NEWTON GENE  ',&
      &         '   NEWTON GENE  ','      INFOS     ','     CRITERE    ',&
      &         '     CRITERE    ','   NEWTON GENE  ','   NEWTON GENE  ',&
-     &         '    NB. ITER    ','  TEMPS CALCUL  '/
+     &         '  TEMPS CALCUL  '/
 !
     data titr3z /&
      &         '                ','                ',' RESI_GLOB_RELA ',&
@@ -135,7 +135,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &         '    ITERATION   ','   VARI. CONT.  ','   CRIT. FROT.  ',&
      &         '   CRIT. GEOM.  ','    CYCLAGES    ','    VALEUR      ',&
      &         '    MAX. LIEU   ',' LIEU MAX FROT. ',' LIEU MAX GEOM. ',&
-     &         '                ','                '/
+     &         '                '/
 !
     data typvaz /'I','R','R',&
      &             'R','R','R',&
@@ -146,7 +146,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &             'I','I','R',&
      &             'R','K','R',&
      &             'K','K','K',&
-     &             'I','R'/
+     &             'R'/
 !
     data cnovaz /'ERRE','ERRE','SANS',&
      &             'SANS','SANS','ERRE',&
@@ -157,7 +157,7 @@ subroutine nminim(sdsuiv, sdimpr)
      &             'ERRE','ERRE','ERRE',&
      &             'ERRE','SANS','SANS',&
      &             'SANS','SANS','ERRE',&
-     &             'SANS','ERRE'/
+     &             'ERRE'/
 !
 ! ----------------------------------------------------------------------
 !

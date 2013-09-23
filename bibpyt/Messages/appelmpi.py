@@ -24,9 +24,9 @@ cata_msg={
 2 : _(u"""%(i2)4d alarmes ont été émises sur le processeur #%(i1)d.
 """),
 
-3: _(u"""
- En parallèle, il faut au moins un sous-domaine par processeur.
-"""),
+
+
+
 
 5: _(u"""
  Erreur lors de l'appel à une fonction MPI.
@@ -36,7 +36,7 @@ cata_msg={
 6: _(u"""
  Problème lié a la distribution parallèle de calculs au sein d'une macro-commande.
  Le paramètre %(k1)s=%(i1)d est incohérent.
- 
+
  Conseil:
  =======
    * Contacter l'équipe de développement.
@@ -44,11 +44,11 @@ cata_msg={
 
 8: _(u"""
  Problème lié a la distribution parallèle de calculs au sein d'une macro-commande.
- Parmi les paramètres suivants, au moins un est incohérent. 
+ Parmi les paramètres suivants, au moins un est incohérent.
      - %(k1)s=%(i1)d,
      - %(k2)s=%(i2)d,
      - %(k3)s=%(i3)d.
- 
+
  Conseil:
  =======
    * Contacter l'équipe de développement.
@@ -71,9 +71,9 @@ cata_msg={
     Il n'y a plus de temps pour continuer.
     Le calcul sera interrompu à la fin de la prochaine itération, du prochain
     pas de temps ou de la prochaine commande, ou bien brutalement par le système.
-    
+
     On accorde un délai de %(r1).0f secondes pour la prochaine communication.
-    
+
     Conseil :
         Augmentez la limite en temps du calcul.
 """),

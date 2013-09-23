@@ -53,32 +53,7 @@ subroutine vtcopy(chin, chout, kstop, codret)
     ch1 = chin
     ch2 = chout
 !
-! --- RECOPIE DES CHAM_NOS "MAITRE"
-!
     call vtcop1(ch1, ch2, kstop, codret)
-    call jeexin(ch1(1:19)//'.FETC', iret)
-!
-! --- SI FETI, ON DUPLIQUE AUSSI LES CHAM_NO ESCLAVES
-    if (iret .ne. 0) then
-        call jelira(ch1(1:19)//'.FETC', 'LONMAX', nbsd)
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        call jeveuo(ch1(1:19)//'.FETC', 'L', ifetc1)
-        call jeexin(ch2(1:19)//'.FETC', iret1)
-! --- SI LE CHAM_NO CHOUT N'EST PAS FETI, ON S'ARRETE EN ERREUR FATALE
-        if (iret1 .eq. 0) then
-            call utmess('F', 'ALGELINE3_96')
-        else
-            call jeveuo(ch2(1:19)//'.FETC', 'L', ifetc2)
-        endif
-! --- BOUCLE SUR LES SOUS-DOMAINES
-        do 10 idd = 1, nbsd
-            if (zi(ilimpi+idd) .eq. 1) then
-                ch1esc=zk24(ifetc1+idd-1)
-                ch2esc=zk24(ifetc2+idd-1)
-                call vtcop1(ch1esc, ch2esc, kstop, codret)
-            endif
-10      continue
-    endif
 !
     call jedema()
 end subroutine

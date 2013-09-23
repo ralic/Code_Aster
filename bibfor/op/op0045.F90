@@ -673,8 +673,7 @@ subroutine op0045()
         vecrig = '&&OP0045.MODE.RIGID'
         call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
         call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
-        call tldlg2(lraide, nprec, nstoc, vecrig, ' ',&
-                    ' ')
+        call tldlg2(lraide, nprec, nstoc, vecrig)
         call uttcpu('CPU.RESO.1', 'FIN', ' ')
         call uttcpu('CPU.RESO.4', 'FIN', ' ')
         if (nstoc .ne. 0) call jeveuo(vecrig, 'E', lxrig)

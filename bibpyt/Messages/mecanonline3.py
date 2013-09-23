@@ -28,25 +28,9 @@ cata_msg = {
 
  """),
 
-70 : _(u"""
- macro-élément statique et FETI incompatibles
-"""),
 
-71 : _(u"""
- chargement onde plane et FETI incompatibles
-"""),
 
-73 : _(u"""
- forces d'inertie et FETI incompatibles
-"""),
 
-78 : _(u"""
- FETI et contact discret incompatibles !
-"""),
-
-79 : _(u"""
- FETI et contact continu incompatibles !
-"""),
 
 88 : _(u"""
   -> Vous utilisez l'algorithme de contact 'GCP' avec un préconditionneur qui n'est pas adapté.

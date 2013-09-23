@@ -58,10 +58,10 @@ L1=DEFI_LIST_REEL(VALE=(1., 2.))
 # 1 : calcul de reference (METIS)
 #----------------------------------------
 RESU0=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
-                           EXCIT=( _F(CHARGE = CHAR), 
+                           EXCIT=( _F(CHARGE = CHAR),
                                    _F(CHARGE = CHARCI)
                                     ),
-                           SOLVEUR=_F(METHODE='MULT_FRONT'), 
+                           SOLVEUR=_F(METHODE='MULT_FRONT'),
                    )
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='C',
@@ -260,7 +260,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=1.E-08,),
           )
 
-SDFETI = DEFI_PART_FETI(
+SDPART = DEFI_PARTITION(
                 MODELE=MO,
                 NB_PART=4,
                 EXCIT=(_F(CHARGE=CHAR)),
@@ -268,7 +268,7 @@ SDFETI = DEFI_PART_FETI(
                 NOM_GROUP_MA='SD');
 # 4.1 : MUMPS (distribue par sous-domaines) charge_dualisee + charge_cine + SYMGEN:
 # ----------------------------------------------------------------
-MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDPART))
 RESU8=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
                    SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON'))
@@ -285,7 +285,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 # 4.2 : MUMPS (distribue par sous-domaines) charge_cine + SYMDEF:
 # ----------------------------------------------
-MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDPART))
 RESU9=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHARCI3),_F(CHARGE = CHARP)  ),
                    SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='SYMDEF'))
@@ -302,7 +302,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #  4.3 : MUMPS (distribue par sous-domaines) charge_dualisee + charge_cine + NONSYM:
 # -----------------------------------------------------------------
-MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
+MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDPART))
 RESU10=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
                    SOLVEUR=_F(METHODE='MUMPS', TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON'))

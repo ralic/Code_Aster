@@ -29,8 +29,6 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 ! REMARQUES : ON PEUT APPELER RESOUD DE 2 FACONS
 !   1) AVEC NSECM = 0 + CHSECM, CHSOLU, BASE
 !   2) AVEC NSECM > 0 + RSOLU (OU CSOLU) + (CHSECM=CHSOLU=' ')
-!      DANS CE CAS :
-!        * LE SOLVEUR FETI EST IMPOSSIBLE
 !
 ! IN/JXIN  K19 MATASS : MATR_ASSE PREMIER MEMBRE DU SYSTEME LINEAIRE
 ! IN/JXIN  K19 MATPRE : MATR_ASSE DE PRECONDITIONNEMENT
@@ -50,7 +48,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 ! IN/OUT   C   CSOLU  : TABLEAU (*,NSECM)
 !                       IDEM RSOLU POUR LES COMPLEXES
 ! IN/JXOUT K*  CRITER : SD_CRITER (CRITERES DE CONVERGENCE)
-!                       POUR SOLVEUR ITERATIF GCPC/FETI (OU ' ' SINON)
+!                       POUR SOLVEUR ITERATIF GCPC (OU ' ' SINON)
 ! IN       L   PREPOS : / .TRUE.  => ON FAIT LES PRE ET POST-TRAITEMENTS
 !                                    DU SMB ET DE LA SOLUTION
 !                       / .FALSE. => ON NE FAIT AUCUN TRAITEMENT
@@ -84,7 +82,6 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
-#include "asterfort/resfet.h"
 #include "asterfort/resgra.h"
 #include "asterfort/resldl.h"
 #include "asterfort/utmess.h"
@@ -109,13 +106,12 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !
     integer :: jslvk, jslvr, jslvi, idbgav, neq, neq1, ier, niter, lmat, jvals
     integer :: jtrav, jval2, imd, jrefa, istopz
-    real(kind=8) :: epsi, rbid
+    real(kind=8) :: epsi
     complex(kind=8) :: cbid
     logical :: dbg
     character(len=1) :: ftype(2)
     data         ftype/'R','C'/
 ! ----------------------------------------------------------------------
-    dbg=.true.
     dbg=.false.
 !
     call jemarq()
@@ -143,7 +139,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     call jeveuo(solv19//'.SLVI', 'L', jslvi)
     metres = zk24(jslvk)
     ASSERT(metres.ne.' ')
-    if (kmpic .eq. 'NON') ASSERT(metres .eq. 'FETI' .or. metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
+    if (kmpic .eq. 'NON') ASSERT(metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
 !
 !     VERIFICATIONS ET INITIALISATIONS
     ASSERT((istop.eq.0).or.(istop.eq.2).or.(istop.eq.-9999))
@@ -154,17 +150,10 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     endif
     iret = 0
 !
-!     -- SI 'FETI', ON NE PEUT PAS APPELER MTDSCR :
-    if (metres .ne. 'FETI') then
-        call mtdscr(matr19)
-        call jeveuo(matr19//'.&INT', 'L', lmat)
-        neq=zi(lmat+2)
-        type=ftype(zi(lmat+3))
-    else
-        if (nsecm .ge. 1) then
-            call utmess('F', 'FACTOR_13')
-        endif
-    endif
+    call mtdscr(matr19)
+    call jeveuo(matr19//'.&INT', 'L', lmat)
+    neq=zi(lmat+2)
+    type=ftype(zi(lmat+3))
 !
     ASSERT(nsecm.ge.0)
     call jeveuo(matr19//'.REFA', 'L', jrefa)
@@ -180,31 +169,31 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
             call detrsd('CHAMP_GD', csol19)
             call vtdefs(csol19, secm19, base, ' ')
         endif
-        if (metres .ne. 'FETI') then
-            call jelira(secm19//'.VALE', 'LONMAX', neq1)
-            call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
-            if ((neq1.ne.neq) .and. (imd.eq.0)) then
-                call utmess('F', 'FACTOR_67')
-            endif
-            if (typ1 .ne. type) then
-                call utmess('F', 'FACTOR_68')
-            endif
-!
-            call jeveuo(secm19//'.VALE', 'L', jval2)
-            if (imd .eq. 0) then
-                call wkvect('&&RESOUD.TRAV', 'V V '//type, neq, jtrav)
-                call jacopo(neq, type, jval2, jtrav)
-            else
-                call wkvect('&&RESOUD.TRAV', 'V V '//type, neq1, jtrav)
-                call jacopo(neq1, type, jval2, jtrav)
-            endif
+
+        call jelira(secm19//'.VALE', 'LONMAX', neq1)
+        call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
+        if ((neq1.ne.neq) .and. (imd.eq.0)) then
+            call utmess('F', 'FACTOR_67')
         endif
+        if (typ1 .ne. type) then
+            call utmess('F', 'FACTOR_68')
+        endif
+!
+        call jeveuo(secm19//'.VALE', 'L', jval2)
+        if (imd .eq. 0) then
+            call wkvect('&&RESOUD.TRAV', 'V V '//type, neq, jtrav)
+            call jacopo(neq, type, jval2, jtrav)
+        else
+            call wkvect('&&RESOUD.TRAV', 'V V '//type, neq1, jtrav)
+            call jacopo(neq1, type, jval2, jtrav)
+        endif
+
     else
         ASSERT(secm19.eq.' ')
         ASSERT(csol19.eq.' ')
     endif
 !
-    if ((cine19.ne.' ') .and. (metres.ne.'FETI')) then
+    if (cine19.ne.' ') then
         call jelira(cine19//'.VALE', 'TYPE', cval=typ1)
         ASSERT(typ1.eq.type)
     endif
@@ -214,7 +203,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !
 !
     if (dbg) then
-        if (.not.(metres.eq.'FETI')) call cheksd(matr19, 'SD_MATR_ASSE', ier)
+        call cheksd(matr19, 'SD_MATR_ASSE', ier)
         if (nsecm .eq. 0) call dbgobj(secm19//'.VALE', 'OUI', 6, '&&RESOUD 2ND MEMBRE')
         call dbgobj(cine19//'.VALE', 'OUI', 6, '&&RESOUD CINE19')
         call dbgobj(matr19//'.VALM', 'OUI', 6, '&&RESOUD MATR.VALM')
@@ -236,7 +225,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                 call resldl(solv19, matr19, cine19, 1, zr(jtrav),&
                             [cbid], prepos)
             else
-                call resldl(solv19, matr19, cine19, 1, [rbid],&
+                call resldl(solv19, matr19, cine19, 1, [0.d0],&
                             zc(jtrav), prepos)
             endif
         endif
@@ -253,18 +242,11 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                 call amumph('RESOUD', solv19, matr19, zr(jtrav), [cbid],&
                             cine19, 1, iret, prepos)
             else
-                call amumph('RESOUD', solv19, matr19, [rbid], zc(jtrav),&
+                call amumph('RESOUD', solv19, matr19, [0.d0], zc(jtrav),&
                             cine19, 1, iret, prepos)
             endif
         endif
         ASSERT(iret.eq.0)
-!
-!
-!
-    else if (metres.eq.'FETI') then
-!     ----------------------------------
-        call resfet(matr19, cine19, secm19, csol19, niter,&
-                    crit19, solv19)
 !
 !
 !
@@ -302,7 +284,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !
 !
 !     -- RECOPIE DANS LE CHAMP SOLUTION S'IL Y A LIEU :
-    if ((nsecm.eq.0) .and. (metres.ne.'FETI')) then
+    if (nsecm.eq.0) then
         call jeveuo(csol19//'.VALE', 'E', jvals)
         if (imd .eq. 0) then
             call jacopo(neq, type, jtrav, jvals)

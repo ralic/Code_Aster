@@ -1,5 +1,4 @@
-subroutine vtcre1(champ, numedd, classe, type, method,&
-                  sdfeti, neq)
+subroutine vtcre1(champ, numedd, classe, type, neq)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +27,6 @@ subroutine vtcre1(champ, numedd, classe, type, method,&
 !     IN  TYPCE  : K1  : TYPE DES VALEURS DU CHAM_NO A CREER
 !                  'R'    ==> COEFFICIENTS REELS
 !                  'C'    ==> COEFFICIENTS COMPLEXES
-!     OUT METHOD,SDFETI: K24 : PARAMETRES DU SOLVEUR.
 !     OUT   NEQ   : I   : INTEGER
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES:
@@ -56,7 +54,7 @@ subroutine vtcre1(champ, numedd, classe, type, method,&
 #include "asterfort/sdchgd.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: classe, type
-    character(len=24) :: champ, numedd, method, sdfeti
+    character(len=24) :: champ, numedd
     integer :: neq
 !
 !
@@ -73,23 +71,12 @@ subroutine vtcre1(champ, numedd, classe, type, method,&
     call jemarq()
 !
 ! ------------------------------- REFE --------------------------------
-! --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP
-!
-! ON ETOFFE L'OBJET .REFE DU CHAMNO AVEC LE TYPE DE RESOLUTION ET LE
-! NOM DE LA SD_FETI PRIS DANS LE .REFN DU NUME_DDL SOUS-JACENT
-!
     call jeveuo(numedd(1:14)//'.NUME.REFN', 'L', jrefn)
     refe(1:19) = champ
 !
-    method = zk24(jrefn+2)
-    sdfeti = zk24(jrefn+3)
     call wkvect(refe, classe//' V K24', 4, jchamp)
     zk24(jchamp) = zk24(jrefn)
     zk24(jchamp+1) = numedd(1:14)//'.NUME'
-    if (method .eq. 'FETI') then
-        zk24(jchamp+2) = method
-        zk24(jchamp+3) = sdfeti
-    endif
 !
 ! ------------------------------- DESC --------------------------------
 ! --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP

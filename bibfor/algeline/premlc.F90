@@ -43,7 +43,6 @@ subroutine premlc(n1, diag, col, parent, parend,&
     integer :: nouvsn(0:n1), ancsn(*), p(*), q(*)
     integer :: nrl, maxrl, minrl, nbsnd, j1, j2, ianc, ip, ipp, iret
     integer :: vali(3)
-    logical :: lfeti
 !--------------------------------------------------------------
 !      5) POUR LES REL.LIN.,ON FAIT RL1(I)=LAMBD1,I ETANT LE
 !        DDL DE REL.LIN.
@@ -61,24 +60,8 @@ subroutine premlc(n1, diag, col, parent, parend,&
 !       RQE GENERALE AVEC LES REL.LIN. ON UTILISE LA DONNEE SUIVANTE :
 !       LES DDL ENCADRES SONT DEFINIS PAR
 !      ( COL(J),J=DIAG(LAMBDA2-1)+2,DIAG(LAMBDA2)-1 )
-!--------------------------------------------- CALCUL DE ADJNC1
-!****************************************************************
-!****************************************************************
-!-----RECUPERATION DU NIVEAU D'IMPRESSION
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call infniv(ifm, niv)
-! FETI OR NOT FETI ?
-    call jeexin('&FETI.MAILLE.NUMSD', iret)
-    if (iret .ne. 0) then
-        call infmue()
-        call infniv(ifm, niv)
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
-!-----------------------------------------------------------------
 !
 !------------------------------- RELATIONS LINEAIRES
     do 160 i = 1, nrl
@@ -251,7 +234,5 @@ subroutine premlc(n1, diag, col, parent, parend,&
         write(ifm,*)'   --- APRES ADDITION  DES  RELATIONS LINEAIRES '
         write(ifm,*)'   --- NOMBRE DE SUPERNOEUDS ',nbsnd
     endif
-    if (lfeti) call infbav()
-!****************************************************************
-!****************************************************************
+
 end subroutine

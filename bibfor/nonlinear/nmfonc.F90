@@ -401,10 +401,6 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     call gcucon(result, 'EVOL_NOLI', iret)
     if (iret .gt. 0) fonact(39) = 1
 !
-! --- SOLVEUR FETI ?
-!
-    if (metres .eq. 'FETI') fonact(11) = 1
-!
 ! --- SOLVEUR LDLT?
 !
     if (metres .eq. 'LDLT') fonact(41) = 1
@@ -679,10 +675,6 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
             nbfonc = nbfonc + 1
         endif
 !
-        if (isfonc(fonact,'FETI')) then
-            write (ifm,*) '<MECANONLINE> ...... SOLVEUR FETI'
-            nbfonc = nbfonc + 1
-        endif
         if (isfonc(fonact,'LDLT')) then
             write (ifm,*) '<MECANONLINE> ...... SOLVEUR LDLT'
             nbfonc = nbfonc + 1

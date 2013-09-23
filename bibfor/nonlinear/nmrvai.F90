@@ -137,10 +137,6 @@ subroutine nmrvai(sdstat, questz, phase, vali)
             zi(jstvit-1+15) = zi(jstvit-1+15) + vali
             zi(jstvip-1+15) = zi(jstvip-1+15) + vali
             zi(jstvin-1+15) = zi(jstvin-1+15) + vali
-        else if (questi.eq.'FETI_ITER') then
-            zi(jstvit-1+16) = zi(jstvit-1+16) + vali
-            zi(jstvip-1+16) = zi(jstvip-1+16) + vali
-            zi(jstvin-1+16) = zi(jstvin-1+16) + vali
         else
             ASSERT(.false.)
         endif
@@ -223,10 +219,6 @@ subroutine nmrvai(sdstat, questz, phase, vali)
             if (phase .eq. 'P') vali = zi(jstvip-1+15)
             if (phase .eq. 'N') vali = zi(jstvin-1+15)
 !
-        else if (questi.eq.'FETI_ITER') then
-            if (phase .eq. 'T') vali = zi(jstvit-1+16)
-            if (phase .eq. 'P') vali = zi(jstvip-1+16)
-            if (phase .eq. 'N') vali = zi(jstvin-1+16)
 !
         else
             ASSERT(.false.)

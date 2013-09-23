@@ -77,7 +77,7 @@ subroutine detrsd(typesd, nomsd)
     character(len=19) :: champ, matas, table, solveu, fnc, resu
     character(len=19) :: ligrel, nuage, ligret, mltf, stock, k19, matel, liste
     character(len=24) :: k24b, typobj, knomsd
-    logical :: lfeti, lbid
+    logical :: lbid
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -181,31 +181,6 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(solveu//'.SLVI')
         call jedetr(solveu//'.SLVK')
         call jedetr(solveu//'.SLVR')
-!
-! DESTRUCTION DE LA LISTE DE SD SOLVEUR LOCAUX SI FETI
-        k24b = solveu//'.FETS'
-        call jeexin(k24b, iret)
-! FETI OR NOT ?
-        if (iret .gt. 0) then
-            lfeti = .true.
-!
-        else
-            lfeti = .false.
-        endif
-!
-        if (lfeti) then
-            call jelira(k24b, 'LONMAX', nbsd)
-            call jeveuo(k24b, 'L', ifets)
-            call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-            do 10 idd = 1, nbsd
-                if (zi(ilimpi+idd) .eq. 1) then
-                    k19 = zk24(ifets+idd-1) (1:19)
-                    call detrs2('SOLVEUR', k19)
-                endif
-!
-10          continue
-            call jedetr(k24b)
-        endif
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'VOISINAGE') then
@@ -405,67 +380,15 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(matas//'.VALM')
         call jedetr(matas//'.WALF')
 !
-! FETI OR NOT ?
-        k24b = matas//'.FETM'
-        call jeexin(k24b, iret)
-        if (iret .gt. 0) then
-            lfeti = .true.
-        else
-            lfeti = .false.
-        endif
-!
-        if (lfeti) then
-            call jedetr(matas//'.FETF')
-            call jedetr(matas//'.FETP')
-            call jedetr(matas//'.FETR')
-!
-            call jelira(k24b, 'LONMAX', nbsd)
-            call jeveuo(k24b, 'L', ifetm)
-            call jeexin('&FETI.LISTE.SD.MPI', iret)
-            if (iret .gt. 0) then
-                call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-                do 30 idd = 1, nbsd
-                    if (zi(ilimpi+idd) .eq. 1) then
-                        k19 = zk24(ifetm+idd-1) (1:19)
-                        call detrs2('MATR_ASSE', k19)
-                    endif
-30              continue
-            endif
-!
-            call jedetr(k24b)
-        endif
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'CHAM_NO') then
 !     ----------------------------------
         k19 = nomsd
-!
         call jedetr(k19//'.DESC')
         call jedetr(k19//'.REFE')
         call jedetr(k19//'.VALE')
-! FETI OR NOT ?
-        k24b = k19//'.FETC'
-        call jeexin(k24b, iret)
-        if (iret .gt. 0) then
-            lfeti = .true.
-!
-        else
-            lfeti = .false.
-        endif
-!
-        if (lfeti) then
-            call jelira(k24b, 'LONMAX', nbsd)
-            call jeveuo(k24b, 'L', ifetc)
-            call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-            do 40 idd = 1, nbsd
-                if (zi(ilimpi+idd) .eq. 1) then
-                    k19 = zk24(ifetc+idd-1) (1:19)
-                    call detrs2('CHAM_NO', k19)
-                endif
-!
-40          continue
-            call jedetr(k24b)
-        endif
+
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'CARTE') then
 !     ----------------------------------
@@ -597,31 +520,6 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(nu//'.VSUIVE')
         call jedetr(nu//'.OLDN')
         call jedetr(nu//'.NEWN')
-!
-! FETI OR NOT ?
-        k24b = nu//'.FETN'
-        call jeexin(k24b, iret)
-        if (iret .gt. 0) then
-            lfeti = .true.
-!
-        else
-            lfeti = .false.
-        endif
-!
-        if (lfeti) then
-            call jelira(k24b, 'LONMAX', nbsd)
-            call jeveuo(k24b, 'L', ifetn)
-            call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-            do 50 idd = 1, nbsd
-                if (zi(ilimpi+idd) .eq. 1) then
-                    k19 = zk24(ifetn+idd-1) (1:19)
-! RECURSIVITE DE SECOND NIVEAU SUR DETRSD
-                    call detrs2('NUME_DDL', k19(1:14))
-                endif
-!
-50          continue
-            call jedetr(k24b)
-        endif
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'NUML_DDL') then

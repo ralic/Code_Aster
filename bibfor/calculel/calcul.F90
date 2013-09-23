@@ -40,7 +40,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/extrai.h"
-#include "asterfort/fetmpi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inigrl.h"
 #include "asterfort/inpara.h"
@@ -117,20 +116,19 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !-----------------------------------------------------------------------
-    logical :: lfetmo, lfetts, lfettd, ldist, lfeti, lfetic, dbg, ldgrel
-    real(kind=8) :: rbid, temp1(6), temp2(6)
+    logical :: ldist, dbg, ldgrel
     character(len=8) :: lpain2(nin), lpaou2(nou)
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=19) :: ligrel
-    character(len=24) :: k24b, infofe, valk(2), kfel
+    character(len=24) :: valk(2)
     character(len=1) :: stop
-    integer :: iachii, iachik, iachix, iadsgd, ibid, nbproc, ifeti1, jparal
-    integer :: ialiel, iamaco, iamloc, iamsco, ianoop, ianote, iaobtr, idd
-    integer :: iaopds, iaopmo, iaopno, iaoppa, iaoptt, ima, ifcpu, rang, ifm
+    integer :: iachii, iachik, iachix, iadsgd, ibid, nbproc, jparal
+    integer :: ialiel, iamaco, iamloc, iamsco, ianoop, ianote, iaobtr
+    integer :: iaopds, iaopmo, iaopno, iaoppa, iaoptt, ima, rang, ifm
     integer :: niv
-    integer :: ier, illiel, ilmaco, ilmloc, ilmsco, ilopmo, iinf, iret1, ifel1
-    integer :: ilopno, iret, iuncod, j, lgco, ifel2, iret2, ilimpi
-    integer :: npario, nbobmx, nparin, nbsd, jnumsd, n1
+    integer :: ier, illiel, ilmaco, ilmloc, ilmsco, ilopmo
+    integer :: ilopno, iret, iuncod, j, lgco
+    integer :: npario, nbobmx, nparin, jnumsd, n1
     integer :: vali(4)
     integer :: nbobtr, nval
     character(len=32) :: phemod
@@ -145,9 +143,9 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     mpi_int :: mrank, msize
 !
 !
-!     -- FONCTIONS FORMULES :
-!     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-#define numail(igr,iel) zi(ialiel-1+zi(illiel-1+igr)-1+iel)
+!   -- FONCTIONS FORMULES :
+!   NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
+#   define numail(igr,iel) zi(ialiel-1+zi(illiel-1+igr)-1+iel)
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -170,10 +168,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     ASSERT(stop.eq.'S'.or.stop.eq.'C')
 !
     dbg=.false.
-    lfetmo=.false.
-    lfetts=.false.
-    lfettd=.false.
-    lfetic=.false.
 !
 !
 !
@@ -201,96 +195,12 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     call getvli(cas)
     iuncod = iunifi('CODE')
     if (iuncod .gt. 0) call getres(k8bid, k16bid, cmde)
+
+
 !
-!
-!     0.1- CAS D'UN CALCUL "FETI" :
-!          CALCUL DE : LFETMO,LFETTS,LFETTD,LFETIC,INFOFE
-!     -----------------------------------------------------------------
-    infofe='FFFFFFFFFFFFFFFFFFFFFFFF'
-    call jeexin('&FETI.MAILLE.NUMSD', iret)
-    lfeti=(iret.gt.0)
-    if (lfeti) then
-!       - CALCUL DU RANG ET DU NBRE DE PROC
-        call fetmpi(2, ibid, ibid, 1, rang,&
-                    ibid, k24b, k24b, k24b, rbid)
-        call fetmpi(3, ibid, ibid, 1, ibid,&
-                    nbproc, k24b, k24b, k24b, rbid)
-!       - ON PROFILE OU PAS ?
-        call jeveuo('&FETI.FINF', 'L', iinf)
-        infofe=zk24(iinf)
-        if (infofe(11:11) .eq. 'T') then
-            lfetic=.true.
-            call uttcpr('CPU.CALC.2', 6, temp1)
-        endif
-!
-!       - SI PARALLELISME ON VA "DISTRIBUER" LES CALCULS ELEMENTAIRES :
-        if (nbproc .gt. 1) then
-            if (ligrel(9:15) .eq. '.MODELE') then
-!         -    FETI PARALLELE SUR LIGREL DE MODELE
-!         -    ON VA DONC TRIER PAR MAILLE PHYSIQUE
-                lfetmo=.true.
-                call jeveuo('&FETI.MAILLE.NUMSD', 'L', ifeti1)
-                ifeti1=ifeti1-1
-            else
-!         -    PROBABLEMENT FETI PARALLELE SUR LIGREL TARDIF
-!         -    DANS LE DOUTE, ON S'ABSTIENT ET ON FAIT TOUT
-                kfel=ligrel(1:19)//'.FEL1'
-                call jeexin(kfel, iret1)
-                if (iret1 .ne. 0) then
-!         -   LIGREL A MAILLES TARDIVES
-                    call jelira(kfel, 'LONMAX', nbsd)
-                    call jeveuo(kfel, 'L', ifel1)
-                    call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-                    do 20 idd = 1, nbsd
-                        if (zi(ilimpi+idd) .eq. 1) then
-!         -   LE SOUS-DOMAINE IDD EST CONCERNE PAR CE PROC
-                            if (zk24(ifel1+idd-1)(1:19) .eq. ligrel(1: 19)) then
-!         -   LIGREL TARDIF CONCENTRE SUR LE SOUS DOMAINE IDD
-!         -   IL FAUT TOUT FAIRE
-                                lfetts=.true.
-                                elseif (zk24(ifel1+idd-1)(1:19).ne.' ')&
-                            then
-!         -   LIGREL TARDIF DUPLIQUE, NOTAMMENT, SUR LE SOUS DOMAINE IDD
-!             POINTE PAR UN .FEL2 (AUTRE QUE LIGREL DE CONTACT INIT)
-                                kfel=ligrel(1:19)//'.FEL2'
-                                call jeexin(kfel, iret2)
-                                if (iret2 .ne. 0) then
-!         -   ON VA TRIER PAR MAILLE TARDIVE, SINON ON FAIT TOUT PAR
-!         -   PRUDENCE
-                                    lfettd=.true.
-                                    call jeveuo(kfel, 'L', ifel2)
-                                endif
-                            endif
-                        endif
-20                  continue
-                endif
-            endif
-            if ((lfetmo.and.lfetts) .or. (lfetmo.and.lfettd) .or. (lfetts.and.lfettd)) then
-                call utmess('F', 'CALCULEL6_75')
-            endif
-        endif
-!
-!       -- MONITORING FETI :
-        if (infofe(1:1) .eq. 'T') then
-            write (ifm,*)'<FETI/CALCUL> RANG ',rang
-            write (ifm,*)'<FETI/CALCUL> LIGREL/OPTION ',ligrel,' ',&
-            option
-            if (lfetmo) then
-                write (ifm,*)'<FETI/CALCUL> LIGREL DE MODELE'
-            else if (lfetts) then
-                write (ifm,*)'<FETI/CALCUL> LIGREL TARDIF NON DUPLIQUE'
-            else if (lfettd) then
-                write (ifm,*)'<FETI/CALCUL> LIGREL TARDIF DUPLIQUE'
-            else
-                if (nbproc .gt. 1) write (ifm,*)'<FETI/CALCUL> AUTRE LIGREL'
-            endif
-        endif
-    endif
-!
-!
-!     0.2- CAS D'UN CALCUL "DISTRIBUE" :
+!     -- CAS D'UN CALCUL "DISTRIBUE" :
 !     -- CALCUL DE LDIST :
-!          .TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES (PAS FETI)
+!          .TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES
 !          .FALSE. : SINON
 !     -- CALCUL DE LDGREL :
 !          .TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES PAR GREL
@@ -302,7 +212,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     call dismoi('F', 'PARTITION', ligrel, 'LIGREL', ibid,&
                 partit, ibid)
     call jeexin(partit//'.PRTK', iret)
-    if ((iret.ne.0) .and. (.not.lfeti)) then
+    if (iret.ne.0)  then
         ldist=.true.
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
@@ -426,7 +336,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     4- ALLOCATION DES RESULTATS ET DES CHAMPS LOCAUX:
 !     -------------------------------------------------
     call alrslt(opt, ligrel, nou2, lchou2, lpaou2,&
-                base2, ldist, lfeti)
+                base2, ldist)
     call alchlo(opt, ligrel, nin2, lpain2, lchin2,&
                 nou2, lpaou2)
 !
@@ -468,42 +378,14 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         if (numc .gt. 0) then
 !
 !         -- EN MODE PARALLELE
-!         -- SI FETI OU CALCUL DISTRIBUE , ON VA REMPLIR
+!         -- SI CALCUL DISTRIBUE , ON VA REMPLIR
 !         -- LE VECTEUR AUXILIAIRE '&CALCUL.PARALLELE'
-            if (lfetmo .or. lfettd .or. ldist) then
+            if (ldist) then
                 call wkvect('&CALCUL.PARALLELE', 'V V L', nbelgr, jparal)
                 do 80 iel = 1, nbelgr
                     ima=numail(igr,iel)
-                    if (lfetmo) then
-!               - LIGREL DE MODELE, ON TAG EN SE BASANT SUR
-!                '&FETI.MAILLE.NUMSD'
-                        if (ima .le. 0) then
-                            call utmess('F', 'CALCULEL6_76')
-                        endif
-                        if (zi(ifeti1+ima) .gt. 0) zl(jparal-1+iel)= .true.
-                    else if (lfettd) then
-                        if (ima .ge. 0) then
-                            call utmess('F', 'CALCULEL6_76')
-                        endif
-                        idd=zi(ifel2+2*(-ima-1)+1)
-!               - MAILLE TARDIVES, ON TAG EN SE BASANT SUR .FEL2
-!                 (VOIR NUMERO.F)
-                        if (idd .gt. 0) then
-!                 - MAILLE NON SITUEE A L'INTERFACE
-                            if (zi(ilimpi+idd) .eq. 1) zl(jparal-1+iel)= .true.
-                        else if (idd.eq.0) then
-!                 - MAILLE D'UN AUTRE PROC, ON NE FAIT RIEN
-!                   ZL(JPARAL-1+IEL) INITIALISE A .FALSE.
-                        else if (idd.lt.0) then
-!                 - MAILLE A L'INTERFACE, ON NE S'EMBETE PAS ET ON FAIT
-!                    TOUT (C'EST DEJA ASSEZ COMPLIQUE COMME CELA !)
-                            zl(jparal-1+iel)=.true.
-                        endif
-!
-                    else if (ldist) then
+                    if (ldist) then
                         if (.not.ldgrel) then
-!                 - LIGREL DE MODELE, ON TAGUE EN SE BASANT SUR
-!                   PARTIT//'.NUPROC.MAILLE'
                             if (ima .lt. 0) then
                                 if (rang .eq. 0) then
                                     zl(jparal-1+iel)=.true.
@@ -514,16 +396,11 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                                 endif
                             endif
                         else
-!                 -- SI LDGREL, ON EST SUR LE BON PROC :
+!                           -- SI LDGREL, ON EST SUR LE BON PROC :
                             zl(jparal-1+iel)=.true.
                         endif
                     endif
 80              continue
-!
-!           -- MONITORING
-                if (infofe(2:2) .eq. 'T') call utimsd(ifm, 2, .false., .true.,&
-                                                      '&CALCUL.PARALLELE', 1, ' ')
-!
             endif
 !
 !         6.1 INITIALISATION DES TYPE_ELEM :
@@ -606,12 +483,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     call uttcpu('CPU.CALC.2', 'FIN', ' ')
     call uttcpu('CPU.CALC.1', 'FIN', ' ')
 !
-    if (lfetic) then
-        call uttcpr('CPU.CALC.2', 6, temp2)
-        call jeveuo('&FETI.INFO.CPU.ELEM', 'E', ifcpu)
-        zr(ifcpu+rang)=zr(ifcpu+rang)+ (temp2(5)-temp1(5))+(temp2(6)-&
-        temp1(6))
-    endif
 !
     call jedema()
 !

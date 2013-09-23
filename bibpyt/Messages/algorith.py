@@ -40,9 +40,8 @@ cata_msg = {
  le VECT_ELEM n'existe pas :  %(k1)s
 """),
 
-16 : _(u"""
- les charges cinématiques sont pour l'instant proscrites avec FETI
-"""),
+
+
 
 21 : _(u"""
  le noeud  %(k1)s  n'appartient pas au maillage :  %(k2)s

@@ -22,7 +22,6 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
     implicit      none
 #include "jeveux.h"
-#include "asterfort/fetmpi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -30,7 +29,6 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmfeti.h"
     character(len=24) :: numedd
     character(len=19) :: sddyna, sdnume
     character(len=19) :: veasse(*)
@@ -68,9 +66,8 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
     integer :: jccid, jfint, jdiri, jfext, jvcfo, jiner
     integer :: ifm, niv, nivmpi
-    logical :: lfeti, ldyna, lfetip, lcine
+    logical :: ldyna, lcine
     character(len=24) :: k24bid
-    character(len=24) :: cnfeti
     character(len=19) :: cndiri, cnvcfo
     integer :: ibid, ieq
     real(kind=8) :: val2, val3, r8bid, appui, fext
@@ -109,33 +106,6 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
     sdnuco = sdnume(1:19)//'.NUCO'
     call jeveuo(sdnuco, 'L', jnuco)
 !
-! --- PREPARATION FETI
-!
-    call nmfeti(numedd, ifm, lfeti, nivmpi, lfetip)
-!
-! --- SI FETI PARALLELE, ON COMMUNIQUE A CHAQUE PROC LA SOMME DES
-! --- CHAM_NOS GLOBAUX PARTIELLEMENT CALCULES
-! --- A OPTIMISER VIA UN DES CRITERES LOCAUX
-!
-    if (lfetip) then
-        cnfeti = cndiri(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, cnfeti, cnfeti, r8bid)
-        cnfeti = cnfint(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, k24bid, k24bid, r8bid)
-        cnfeti = cnfext(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, k24bid, k24bid, r8bid)
-        cnfeti = cnvcfo(1:19)//'.VALE'
-        call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                    ibid, cnfeti, k24bid, k24bid, r8bid)
-        if (ldyna) then
-            cnfeti = foiner(1:19)//'.VALE'
-            call fetmpi(71, neq, ifm, nivmpi, ibid,&
-                        ibid, cnfeti, k24bid, k24bid, r8bid)
-        endif
-    endif
 !
 ! --- ACCES AUX CHAM_NO
 !

@@ -312,21 +312,8 @@ Conseils :
  Attention, le calcul d'erreur est faux si la maille n'est pas correctement orientée.
 """),
 
-75: _(u"""
-  Problème de parallélisation des calculs élémentaires avec FETI.
-  Incompatibilité entre LIGRELs dans la routine CALCUL.
 
-  Risques & conseils :
-  Essayez de passer en séquentiel ou de changer de solveur linéaire.
-"""),
 
-76: _(u"""
-  Problème de parallélisation des calculs élémentaires avec FETI.
-  Incompatibilité LIGREL/numéro de maille dans la routine CALCUL.
-
-  Risques & conseils :
-  Essayez de passer en séquentiel ou de changer de solveur linéaire.
-"""),
 
 77: _(u"""
 Problème lors de la création du champ par éléments (%(k1)s).

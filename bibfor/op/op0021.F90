@@ -17,7 +17,7 @@ subroutine op0021()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-----------------------------------------------------------------------
-!     COMMANDE:  DEFI_PART_FETI
+!     COMMANDE:  DEFI_PARTITION
 !
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES:
@@ -62,12 +62,11 @@ subroutine op0021()
 ! OBTENTION DU NOM UTILISATEUR DE L'OBJET RESULTAT
     call getres(result, k16bid, nomcmd)
 !
-! CREATION DE LA SD_FETI DU MEME NOM
+! CREATION DE LA SD_PARTIT DU MEME NOM
 !      CALL OBTEMP(RESULT)
     call fetcrf(result)
 !
 ! MONITORING
-    if (niv .ge. 3) write (ifm,*)'<FETI/OP0021> LECTURE NOM-USER: ',result
 !
     call jedema()
 end subroutine

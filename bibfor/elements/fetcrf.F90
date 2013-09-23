@@ -1,4 +1,4 @@
-subroutine fetcrf(sdfet1)
+subroutine fetcrf(sdpart1)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +18,10 @@ subroutine fetcrf(sdfet1)
 ! ======================================================================
 ! person_in_charge: aimery.assire at edf.fr
 !-----------------------------------------------------------------------
-!    - FONCTION REALISEE:  CREATION DE LA STRUCTURE DE DONNEES FETI.
-!      ELLE EST CONTENUE DANS UN CONCEPT PRODUIT DE TYPE SD_FETI
+!    - FONCTION REALISEE:  CREATION DE LA STRUCTURE DE DONNEES SD_PARTIT.
 !
-! IN SDFETI   : NOM DU CONCEPT PRODUIT
-! OUT SDFETI  : LE CONCEPT EST CREE ET INSTANCIE
+! IN sdpart   : NOM DU CONCEPT PRODUIT
+! OUT sdpart  : LE CONCEPT EST CREE ET INSTANCIE
 !
 !   -------------------------------------------------------------------
 !     SUBROUTINES APPELLEES:
@@ -73,7 +72,7 @@ subroutine fetcrf(sdfet1)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8) :: sdfet1
+    character(len=8) :: sdpart1
 !
 !
 ! DECLARATION VARIABLES LOCALES
@@ -96,8 +95,8 @@ subroutine fetcrf(sdfet1)
     integer :: ifcfb, nzocom, kadr, ladr, ima, jzone, isuco, jnoco, ifetb, lfetb
     integer :: ddlm, madr, iiaux1, jdim, ifcnm, nbsurf, inddz
     character(len=4) :: k4tmp
-    character(len=8) :: k8bid, nom, ma, k8b, nomo, nomn1, nomn, noma
-    character(len=19) :: sdfeti, ligrmo, ligrch
+    character(len=8) :: k8bid, nom, ma, k8b, nomo, nomn1, nomn, noma, nocha1
+    character(len=19) :: sdpart, ligrmo, ligrch
     character(len=24) :: nomsda, nomsdb, nomsdi, nomsdg, nomsdm, nomsdh, nomsdj
     character(len=24) :: nomsln, nomsli, nomslm, nomnoe, nomgma, nomref, grpma
     character(len=24) :: valk(3), methco, pzone, psurma, psurno, contma, nomfcl
@@ -113,22 +112,22 @@ subroutine fetcrf(sdfet1)
 !**********************************************************************
 ! INITIALISATIONS
 !**********************************************************************
-    sdfeti=sdfet1
-    nomref=sdfeti//'.FREF'
-    nomsdm=sdfeti//'.FDIM'
-    nomsda=sdfeti//'.FETA'
-    nomsdb=sdfeti//'.FETB'
-    nomsdg=sdfeti//'.FETG'
-    nomsdh=sdfeti//'.FETH'
-    nomsdi=sdfeti//'.FETI'
-    nomsdj=sdfeti//'.FETJ'
-    nomsln=sdfeti//'.FLIN'
-    nomsli=sdfeti//'.FLII'
-    nomslm=sdfeti//'.FLIM'
-    nomfcl=sdfeti//'.FCFL'
-    nomfci=sdfeti//'.FCFI'
-    nomfcm=sdfeti//'.FCFM'
-    nomfcn=sdfeti//'.FCFN'
+    sdpart=sdpart1
+    nomref=sdpart//'.FREF'
+    nomsdm=sdpart//'.FDIM'
+    nomsda=sdpart//'.FETA'
+    nomsdb=sdpart//'.FETB'
+    nomsdg=sdpart//'.FETG'
+    nomsdh=sdpart//'.FETH'
+    nomsdi=sdpart//'.FETI'
+    nomsdj=sdpart//'.FETJ'
+    nomsln=sdpart//'.FLIN'
+    nomsli=sdpart//'.FLII'
+    nomslm=sdpart//'.FLIM'
+    nomfcl=sdpart//'.FCFL'
+    nomfci=sdpart//'.FCFI'
+    nomfcm=sdpart//'.FCFM'
+    nomfcn=sdpart//'.FCFN'
 !     RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
     call getvid(' ', 'MODELE', scal=nomo, nbret=nbvm)
 !
@@ -140,8 +139,7 @@ subroutine fetcrf(sdfet1)
     if (nbchar .gt. 0) then
         call wkvect('&&FETCRF.NOMCHA   ', 'V V K8', nbchar, nomcha)
         do 800 i = 1, nbchar
-            call getvid('EXCIT', 'CHARGE', iocc=i, scal=k8b, nbret=nd)
-            zk8(nomcha-1+i)=k8b
+            call getvid('EXCIT', 'CHARGE', iocc=i, scal=zk8(nomcha-1+i), nbret=nd)
 800      continue
     endif
 !     NBSD: NBRE D'OCCURENCE DU MOT-CLE DEFI
@@ -228,7 +226,7 @@ subroutine fetcrf(sdfet1)
 21  end do
     ASSERT(ier.eq.0)
 !
-!     CREATION SDFETI / .FETB
+!     CREATION sdpart / .FETB
     call jecrec(nomsdb, 'G V I', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsd)
 !     VECTEUR DES NBRE DE NOEUDS
@@ -296,7 +294,7 @@ subroutine fetcrf(sdfet1)
         call jerazo('&&FETCRF.TMP  ', nbnot2, 1)
         call gmgnre(ma, nbnoto, zi(jtrav), zi(ialima), nbmail,&
                     zi(jtmp), nbnosd, 'TOUS')
-!       CREATION DE SDFETI.FETB
+!       CREATION DE sdpart.FETB
         k24buf=zk24(nomsd-1+i)
         call jecroc(jexnom(nomsdb, k24buf))
         intbuf=2*nbnosd
@@ -837,31 +835,25 @@ subroutine fetcrf(sdfet1)
                 iform = cfdisi(zk8(nomcha-1+ich)//'.CONTACT', 'FORMULATION')
 !
                 do 805 izone = 1, nzoco
-                    if (iform .eq. 2) then
-                        lcfc1=.true.
-                    else
-                        call utmess('F', 'ELEMENTS5_32')
-                    endif
+                    if (iform .eq. 2)  lcfc1=.true.
 805              continue
             endif
+
 ! **** 9.1 SI ON TROUVE DES NOEUDS TARDIFS DANS LA CHARGE
             inbno=0
             call jeexin(ligrch//'.NBNO', n1)
             if (n1 .ne. 0) then
                 call jeveuo(ligrch//'.NBNO', 'L', iadr)
-!         OBJET TEMP POUR STOCKER LES NOEUDS TARDIFS DEJA TRAITES ET
-!         AINSI EVITER LES NOEUDS COMPTES 2 FOIS AVEC LIAISON_DDL....
+!               OBJET TEMP POUR STOCKER LES NOEUDS TARDIFS DEJA TRAITES ET
+!               AINSI EVITER LES NOEUDS COMPTES 2 FOIS AVEC LIAISON_DDL....
                 inbno=zi(iadr)
                 if (inbno .ne. 0) then
-                    if (lcfc1) then
-                        call utmess('F', 'ELEMENTS5_33')
-                    endif
-!             VECTEUR DES NOEUDS TARDIFS DEJA COMPTES
+!                   VECTEUR DES NOEUDS TARDIFS DEJA COMPTES
                     call wkvect('&&FETCRF.LIAISON', 'V V I', inbno, iliais)
                     iaux1=3*inbno
-!             ILIDDL(1,J)=NOEUD PHYSIQUE ASSOCIE AU NOEUD TARDIF
-!             ILIDDL(2,J)= SON NUMERO DE SD;
-!             ILIDDL(3,J)= COMPTEUR (SI > 1 LIAISON_***)
+!                   ILIDDL(1,J)=NOEUD PHYSIQUE ASSOCIE AU NOEUD TARDIF
+!                   ILIDDL(2,J)= SON NUMERO DE SD;
+!                   ILIDDL(3,J)= COMPTEUR (SI > 1 LIAISON_***)
                     call wkvect('&&FETCRF.LIAISONDDL', 'V V I', iaux1, iliddl)
                 endif
                 icompt=0
@@ -870,9 +862,6 @@ subroutine fetcrf(sdfet1)
 ! **** 9.2 SI ON TROUVE DES MAILLES TARDIVES DANS LA CHARGE
             call jeexin(ligrch//'.NEMA', n2)
             if (n2 .ne. 0) then
-                if (lcfc1) then
-                    call utmess('F', 'ELEMENTS5_33')
-                endif
 !           NB MAILLES TARDIVES
                 call jelira(ligrch//'.NEMA', 'NUTIOC', nbobj1)
 !           LONGUEUR TOTALE DE LA COLLECTION
@@ -1303,14 +1292,14 @@ subroutine fetcrf(sdfet1)
 !  ET LES POINTEURS DE CONTACT ADHOC
     nzocom=0
     do 940 ich = 1, nbchar
-        k8bid=zk8(nomcha-1+ich)
-        methco = k8bid//'.CONTACT.METHCO'
-        pzone = k8bid//'.CONTACT.PZONECO'
-        psurma = k8bid//'.CONTACT.PSUMACO'
-        psurno = k8bid//'.CONTACT.PSUNOCO'
-        contma = k8bid//'.CONTACT.MAILCO'
-        contno = k8bid//'.CONTACT.NOEUCO'
-        ndimco = k8bid//'.CONTACT.NDIMCO'
+        nocha1=zk8(nomcha-1+ich)
+        methco = nocha1//'.CONTACT.METHCO'
+        pzone  = nocha1//'.CONTACT.PZONECO'
+        psurma = nocha1//'.CONTACT.PSUMACO'
+        psurno = nocha1//'.CONTACT.PSUNOCO'
+        contma = nocha1//'.CONTACT.MAILCO'
+        contno = nocha1//'.CONTACT.NOEUCO'
+        ndimco = nocha1//'.CONTACT.NDIMCO'
 !
         call jeexin(methco, iret)
         zi(ifcfb+9*(ich-1))=0
@@ -1371,60 +1360,46 @@ subroutine fetcrf(sdfet1)
                     jdecno = zi(jsuno+isuco-1)
 !
                     zi(ifcnm+ich-1)=zi(ifcnm+ich-1)+nbma
-! BOUCLE SUR SES MAILLES
+                    ! BOUCLE SUR SES MAILLES
                     do 953 ima = 1, nbma
                         numma = zi(jmaco+jdecma+ima-1)
-! BOUCLE SUR LES SOUS-DOMAINES
+                        ! BOUCLE SUR LES SOUS-DOMAINES
                         do 954 idd = 1, nbsd
-! ILS ONT DES MAILLES DE BORD OU PAS ?
+                            ! ILS ONT DES MAILLES DE BORD OU PAS ?
                             if (zi(nbrd-1+idd) .eq. 1) then
                                 nomgma=zk24(lstbrd-1+idd)
                                 call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmabo)
                                 call jeveuo(jexnom(grpma, nomgma), 'L', ialibd)
                                 nbmabo=nbmabo-1
-! BOUCLE SUR LES MAILLES DE BORD
+                                ! BOUCLE SUR LES MAILLES DE BORD
                                 do 955 j = 0, nbmabo
                                     if (zi(ialibd+j) .eq. numma) then
-                                        if ((cfsd.gt.0) .and. ( cfsd.ne.idd)) then
-                                            vali(1)=numma
-                                            vali(2)=izone
-                                            vali(3)=ich
-                                            vali(4)=idd
-                                            vali(5)=cfsd
-                                            call utmess('F', 'ELEMENTS5_34', ni=5, vali=vali)
-                                        endif
                                         cfsd=idd
                                         goto 952
                                     endif
-! FIN BOUCLE SUR LES MAILLES DE BORD DU SD
 955                              continue
                             endif
 ! SORTIE DU IF; ON A TROUVE QUE LA MAILLE DE CONTACT NUMMA EST CONCERNEE
 ! PAR LE SD IDD. ON VA VERIFIER QU'ELLE NE L'EST PAS AUCUN AUTRE SD
 952                          continue
-! FIN BOUCLE SUR LES SD
 954                      continue
-! FIN BOUCLE SUR LES MAILLES DE CONTACT
 953                  continue
-! SI UNE SURFACE DE CONTACT N'A TROUVE AUCUN SD, UTMESS_F
+
+                    ! SI UNE SURFACE DE CONTACT N'A TROUVE AUCUN SD, UTMESS_F
                     if (cfsd .gt. 0) then
                         zi(ifcfl+(ich-1)*nzocom+izone)=cfsd
                         zi(ifcfm+cfsd-1)=zi(ifcfm+cfsd-1)+nbma
                         zi(ifcfn+cfsd-1)=zi(ifcfn+cfsd-1)+nbno
-                    else
-                        vali(1)=isurf
-                        vali(2)=izone
-                        vali(3)=ich
-                        call utmess('F', 'ELEMENTS5_35', ni=3, vali=vali)
                     endif
-! FIN BOUCLE SUR LES SURFACES
+                 ! FIN BOUCLE SUR LES SURFACES
 949              continue
-! FIN BOUCLE SUR LES ZONES DE CONTACT
+             ! FIN BOUCLE SUR LES ZONES DE CONTACT
 951          continue
         endif
-! FIN BOUCLE SUR LES CHARGES
+    ! FIN BOUCLE SUR LES CHARGES
 950  end do
-! CREATION OBJETS .FCFL, .FCFI, .FCFM ET .FCFN POUR FETI+CONTACT
+
+! CREATION OBJETS .FCFL, .FCFI, .FCFM ET .FCFN POUR FETI+CONTACT (inutiles => a supprimer)
     call jecrec(nomfcl, 'G V K24', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsd)
     call jecrec(nomfci, 'G V I', 'NO', 'DISPERSE', 'VARIABLE',&
@@ -1538,11 +1513,6 @@ subroutine fetcrf(sdfet1)
                                     jj=zi(jnoco+jdecno+ino-1)
                                     zi(ladr+j2+1)=jj
                                     do 369 j = 1, nbfete
-                                        if (zi(jadri+4*(j-1)) .eq. jj) then
-                                            vali(1)=jj
-                                            vali(2)=izone
-                                            call utmess('F', 'ELEMENTS5_38', ni=2, vali=vali)
-                                        endif
 369                                  continue
                                     do 469 j = 0, j2
                                         if (zi(ladr+j) .eq. jj) then
@@ -1550,13 +1520,7 @@ subroutine fetcrf(sdfet1)
                                             vali(1)=i
                                             vali(2)=izone
                                             if (j .ge. inddz) then
-! DANS LA MEME ZONE, ON NE VA PAS LE COMPTER
-                                                call utmess('A', 'ELEMENTS5_36', ni=2, vali=vali)
                                                 goto 869
-                                            else
-! ENTRE ZONES, ON LE COMPTE MAIS CELA VA SANS DOUTE POSER PB A L'ALGO
-! DE CONTACT
-                                                call utmess('A', 'ELEMENTS5_37', si=vali(1))
                                             endif
                                         endif
 469                                  continue

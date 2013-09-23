@@ -21,7 +21,7 @@ cata_msg = {
 
 1 : _(u"""
   Erreur d'utilisation :
-    Pour les méthodes itératives GCPC et FETI, on ne peut pas encore utiliser
+    Pour la méthodes itérative GCPC, on ne peut pas encore utiliser
     de matrice non-symétrique.
 
   Conseil : Changer de solveur
@@ -45,13 +45,9 @@ cata_msg = {
  modèles discordants
 """),
 
-6 : _(u"""
- FETI : maille positive avec LIGREL de charge !
-"""),
 
-7 : _(u"""
- FETI : maille négative avec LIGREL de modèle !
-"""),
+
+
 
 8 : _(u"""
  le mot-clé :  %(k1)s  est incorrect.
@@ -70,10 +66,8 @@ cata_msg = {
  on ne peut assembler que des vecteurs réels ou complexes
 """),
 
-12 : _(u"""
- le maillage  %(k1)s  contient des super-mailles
- pour l'instant, elles sont proscrites avec FETI
-"""),
+
+
 
 13 : _(u"""
  ICHIN = 0
@@ -144,9 +138,9 @@ cata_msg = {
  les DDL du NUME_DDL ont bougé
 """),
 
-32 : _(u"""
- phénomène non prévu dans le MOLOC de NUMER2 pour DD
-"""),
+
+
+
 
 33 : _(u"""
  le .PRNO est construit sur plus que le maillage
@@ -270,21 +264,6 @@ Risques & conseils :
    Le maillage 2 : %(k2)s est lié au ligrel 2 : %(k4)s
 """),
 
-67 : _(u"""
- Problème dans NUMERO.F avec FETI: L'objet PROF_CHNO.NUEQ est différent de
- l'identité pour i= %(i1)d on a NUEQ(i)= %(i2)d
-"""),
 
-68 : _(u"""
- Problème avec le solveur linéaire FETI: %(i1)d incohérence(s) entre la SD_FETI
- et le paramétrage de l'opérateur.
-
- Conseil:
- ========
- Vérifiez bien que le modèle et la liste de charges utilisés lors du partitionnement
- (opérateur DEFI_PART...) sont identiques à ceux utilisés pour le calcul.
-
- Détail informatique: arrêt dans NUMERO.f.
-"""),
 
 }

@@ -28,7 +28,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                PARTITION=_F(PARALLELISME='CENTRALISE',),
                );
 
-PART=DEFI_PART_FETI(MODELE=MO,
+PART=DEFI_PARTITION(MODELE=MO,
                     EXCIT=_F(),
                     NB_PART=4,);
 

@@ -33,12 +33,7 @@ class sd_nume_equa(sd_prof_chno):
     def check_REFN(self, checker):
         assert self.REFN.exists
         refn = self.REFN.get_stripped()
-        # cas FETI :
-        if refn[2] == 'FETI' :
-           assert refn[3] != ''
-           # on pourrait tester la sd_feti ...
-        else :
-           assert refn[3] in ('','XXXX') # non-information
+        assert refn[3] in ('','XXXX') # non-information
 
         # nom de la grandeur :
         assert refn[1] != ''

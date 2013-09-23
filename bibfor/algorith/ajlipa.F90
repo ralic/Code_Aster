@@ -53,7 +53,7 @@ subroutine ajlipa(modelz, base)
 !
 !
     character(len=8) :: modele, partit, ma, kbid, mopart, valk(3)
-    character(len=19) :: ligrmo, sdfeti
+    character(len=19) :: ligrmo, partit1
     character(len=24) :: k24b, kdis
 !
     integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma, jmail, ierd
@@ -139,7 +139,7 @@ subroutine ajlipa(modelz, base)
 ! ----------------------------------------------------------------------
 !
     dist0 = 0
-    sdfeti = ' '
+    partit1 = ' '
     call gcncon('_', partit)
     zk8(jpart-1+1) = partit
 !
@@ -169,8 +169,8 @@ subroutine ajlipa(modelz, base)
 !
     if (kdis .eq. 'SOUS_DOMAINE') then
         call getvis('PARTITION', 'CHARGE_PROC0_SD', iocc=1, scal=dist0, nbret=ibid)
-        call getvid('PARTITION', 'PARTITION', iocc=1, scal=sdfeti, nbret=ibid)
-        if (ibid .eq. 1) zk24(jprtk-1+2)= sdfeti
+        call getvid('PARTITION', 'PARTITION', iocc=1, scal=partit1, nbret=ibid)
+        if (ibid .eq. 1) zk24(jprtk-1+2)= partit1
     else if (kdis(1:4).eq.'MAIL') then
         call getvis('PARTITION', 'CHARGE_PROC0_MA', iocc=1, scal=dist0, nbret=ibid)
     endif
@@ -178,10 +178,10 @@ subroutine ajlipa(modelz, base)
 !     -- VERIFICATION POUR LE CAS DU PARTITIONNEMENT EN SOUS-DOMAINES :
 !     -----------------------------------------------------------------
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call jeveuo(sdfeti//'.FREF', 'L', jfref)
+        call jeveuo(partit1//'.FREF', 'L', jfref)
         mopart = zk8(jfref-1+1)
         if (modele .ne. mopart) then
-            valk(1) = sdfeti(1:8)
+            valk(1) = partit1(1:8)
             valk(2) = modele
             valk(3) = mopart
             call utmess('F', 'ALGORITH17_17', nk=3, valk=valk)
@@ -192,7 +192,7 @@ subroutine ajlipa(modelz, base)
 !        PAR RAPPORT AU NOMBRE DE PROCESSEURS
 !     ---------------------------------------------------------------
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call jeveuo(sdfeti//'.FDIM', 'L', jfdim)
+        call jeveuo(partit1//'.FDIM', 'L', jfdim)
         nbsd = zi(jfdim-1+1)
 !       IL FAUT AU MOINS UN SD PAR PROC HORS PROC0
         if (((nbsd-dist0).lt.(nbproc-1)) .and. (dist0.gt.0)) then
@@ -234,8 +234,8 @@ subroutine ajlipa(modelz, base)
         call sdpart(nbsd, dist0, zi(jparsd))
         do 30 idd = 1, nbsd
             if (zi(jparsd-1+idd) .eq. 1) then
-                call jeveuo(jexnum(sdfeti//'.FETA', idd), 'L', jfeta)
-                call jelira(jexnum(sdfeti//'.FETA', idd), 'LONMAX', nbmasd)
+                call jeveuo(jexnum(partit1//'.FETA', idd), 'L', jfeta)
+                call jelira(jexnum(partit1//'.FETA', idd), 'LONMAX', nbmasd)
                 do 20 i = 1, nbmasd
                     i2 = zi(jfeta-1+i)
                     if (zi(jnumsd-1+i2) .ne. -999) then

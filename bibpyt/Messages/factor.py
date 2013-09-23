@@ -89,12 +89,7 @@ Risques et conseils :
 """),
 
 
-13: _(u"""
-Solveur FETI :
-  Le solveur FETI est impossible dans ce contexte.
-Solution :
-  Il faut changer de solveur.
-"""),
+
 
 
 
@@ -118,7 +113,7 @@ Conseils :
    Il se peut que votre version de MUMPS n'ait pas été compilée avec le support de ce numéroteur.
    Dans le doute, RENUM='AUTO' permet de laisser MUMPS faire le meilleur choix.
  """),
- 
+
 51: _(u"""
 Solveur MUMPS :
   JEVEUX a déchargé sur disque le maximum d'objets possibles afin de laisser de la
@@ -198,11 +193,11 @@ Conseils :
 Solveur MUMPS :
   MUMPS manque de mémoire lors de la factorisation de la matrice à cause du pivotage.
   L'espace supplémentaire requis par ce pivotage est difficilement prévisible a priori.
-  MUMPS vient d'échouer avec une valeur de cet espace supplémentaire égale à: 
+  MUMPS vient d'échouer avec une valeur de cet espace supplémentaire égale à:
                                SOLVEUR/PCENT_PIVOT=%(i1)d %%.
   On va réessayer avec une valeur plus importante: %(i2)d %%.
   La prochaine fois, relancer votre calcul en prenant ces nouvelles valeurs du paramétrage.
-  C'est la tentative n %(i3)d de factorisation ! 
+  C'est la tentative n %(i3)d de factorisation !
 
 Attention :
   Ce procédé automatique de correction est limité à %(i4)d tentatives !
@@ -227,14 +222,13 @@ Conseils :
   Contactez l'assistance.
 """),
 
-61: _(u"""
-Erreur Programmeur lors de la résolution d'un système linéaire :
- La numérotation des inconnues est incohérente entre la matrice et le second membre.
- Matrice       : %(k1)s
- Second membre : %(k2)s
 
- Si solveur : 'FETI' : numéro du sous-domaine (ou domaine global) : %(i1)d
-"""),
+
+
+
+
+
+
 
 62: _(u"""
 Solveur MUMPS :
@@ -316,7 +310,7 @@ Solveur MUMPS :
   Votre exécutable Aster embarque la version de MUMPS: %(k1)s
   Les seules versions de MUMPS supportée dans Code_Aster sont, pour l'instant:
                               la 4.9.2 et la 4.10.0.
-  
+
 Conseils :
   Télécharger, installer et relier à Code_Aster une version de MUMPS adéquate.
   Utiliser un autre solveur linéaire (mot-clé SOLVEUR/METHODE, par exemple "MULT_FRONT" ou "PETSC")
@@ -329,7 +323,7 @@ Solveur MUMPS :
   pourcentage prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2).0f %%.
   Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
   en fin de résolution via la mot-clé RESI_RELA.
-  
+
 Conseils :
   Pour améliorer la qualité de la solution vous pouvez activez les options de pré et
   post-traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
@@ -360,7 +354,7 @@ Solveur MUMPS :
   %(i1)d Mo (avec %(i2)d %% de marge), alors qu'il n'y a que %(i3)d Mo de disponible sur ce processeur !
   Le calcul pourrait donc être ralenti ou achopper pour cette raison.
   Nombre de systèmes linéaires à factoriser en même temps: %(i4)d.
-  
+
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
   (par ordre décroissant d'efficacité):
@@ -381,7 +375,7 @@ Solveur MUMPS :
      - OUT_OF_CORE: %(i4)d Mo.
   Estimations à %(i5)d %% de marge près.
   Nombre de systèmes linéaires à factoriser en même temps: %(i6)d.
-  
+
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul
   plus économe (par ordre décroissant d'efficacité):
@@ -407,14 +401,14 @@ Solveur MUMPS :
 
 79: _(u"""
 Solveur MUMPS :
-  Dépassement de capacité du terme n %(i1)d du second membre. Sa valeur absolue vaut %(r1)g alors que la 
+  Dépassement de capacité du terme n %(i1)d du second membre. Sa valeur absolue vaut %(r1)g alors que la
   limite est fixée à %(r2)g.
 """),
 
 80: _(u"""
 Solveur MUMPS :
 
-  Attention, vous avez paramétré le solveur linéaire de manière a résoudre un système linéaire 
+  Attention, vous avez paramétré le solveur linéaire de manière a résoudre un système linéaire
   SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre système
   linéaire à valeur complexe. Ceci est contradictoire.
 
@@ -426,15 +420,15 @@ Conseil :
 
 - Taille du système linéaire: %(i1)d
 - Nombre de systèmes linéaires à factoriser en même temps: %(i8)d.
- 
+
 - Mémoire minimale consommée par Code_Aster (JEVEUX, Superviseur, Python...) : %(i2)d Mo
 - Estimation de la mémoire MUMPS avec GESTION_MEMOIRE='IN_CORE'              : %(i3)d Mo
 - Estimation de la mémoire MUMPS avec GESTION_MEMOIRE='OUT_OF_CORE'          : %(i4)d Mo
 - Estimation de l'espace disque pour MUMPS avec GESTION_MEMOIRE='OUT_OF_CORE': %(i5)d Mo
- 
-  > Pour ce calcul, il faudrait donc une quantité de mémoire au minimum de 
+
+  > Pour ce calcul, il faudrait donc une quantité de mémoire au minimum de
         - %(i6)d Mo si GESTION_MEMOIRE='IN_CORE',
-        - %(i7)d Mo si GESTION_MEMOIRE='OUT_OF_CORE'. 
+        - %(i7)d Mo si GESTION_MEMOIRE='OUT_OF_CORE'.
   En cas de doute, utilisez GESTION_MEMOIRE='AUTO'.
 
 """),
@@ -475,14 +469,14 @@ Conseil :
 85: _(u"""
 Solveur MUMPS :
   MUMPS essaye d'allouer %(i1)d Mo de mémoire mais il n'y arrive pas. Il se base
-  sur une estimation de la mémoire disponible et celle-ci est sans doute faussée. Cela peut 
+  sur une estimation de la mémoire disponible et celle-ci est sans doute faussée. Cela peut
    arriver, par exemple, sur d'anciens noyaux système.
 
   > Par précaution, on va réessayer en laissant complètement la main à MUMPS et en passant en
     gestion mémoire OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE'). Le calcul sera
     potentiellement plus lent, mais cela gommera ces problèmes d'estimations mémoire préalables tout
     en économisant au maximum la consommation mémoire de MUMPS.
-  
+
 Conseil :
   Contactez l'équipe de développement.
 

@@ -17,7 +17,7 @@
 # person_in_charge: aimery.assire at edf.fr
 
 DEFI_PART_PA_OPS=PROC(nom="DEFI_PART_PA_OPS",op=29,
-                    fr="Creation partitionnement en sous-domaines pour FETI",
+                    fr="Creation partitionnement en sous-domaines",
                     docu="U4.00.00",
                     UIinfo={"groupes":("Modélisation",)},
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster,squelette) ),
@@ -48,7 +48,6 @@ DEFI_PART_PA_OPS=PROC(nom="DEFI_PART_PA_OPS",op=29,
          TRAITER_BORDS   =SIMP(statut='f',typ='TXM',defaut='OUI',into=('OUI','NON') ),
 
          # Si le mot-clé suivant est renseigné, crée de nouveau group_ma a partir des bords
-         # Note : le calcul FETI sera impossible
          b_traiter_bords =BLOC(condition="TRAITER_BORDS == 'OUI'", fr="Crée t on des nouveaux group_ma",
            NOM_GROUP_MA_BORD  =SIMP(statut='f',typ='TXM'),
              ),

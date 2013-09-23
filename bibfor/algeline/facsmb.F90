@@ -77,20 +77,9 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
     integer :: i, k, j, nd, p, sni, andi, sn, suiv, cour
     integer :: ind, ndk, ndi, dli, ilimpi
     integer :: ifm, niv, long, decal, iret, ifet1, ifet2, ifet3, nbsd, iaux
-    logical :: lfeti
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     call infniv(ifm, niv)
-! FETI OR NOT FETI AVEC IMPRESSION NIVEAU 1?
-    call jeexin('&FETI.MAILLE.NUMSD', iret)
-    if (iret .ne. 0) then
-        call infmue()
-        call infniv(ifm, niv)
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
     ier =0
 !     CALCUL DE INVSUP FILS ET FRERE
     do 120 i = 1, nbsn
@@ -267,32 +256,7 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
     if (niv .ge. 2) then
         write(ifm,*)'   --- LONGUEUR DE LA MATRICE FACTORISEE ',decal
     endif
-! STOCKAGE INFO SI FETI
-    if (lfeti) then
-! INTRODUIT POUR PRENDRE EN COMPTE LES TROUS DANS LA LISTE DES SOUS
-! -DOMAINES TRAITES EN PARALLELE PAR UN PROCESSEUR
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        ilimpi=ilimpi+1
-        call jeveuo('&FETI.INFO.STOCKAGE.FIDD', 'E', ifet1)
-        nbsd=zi(ifet1+1)
-! NUMERO DU SOUS-DOMAINE EN COURS - 1
-        ifet2=zi(ifet1)
-        call jeveuo('&FETI.INFO.STOCKAGE.FVAF', 'E', ifet3)
-        zi(ifet3+ifet2)=decal
-! MISE A JOUR DES SOMMES FINALES
-        zi(ifet3+nbsd)=zi(ifet3+nbsd)+decal
-! IL FAUT MAINTENANT TROUVER LE PROCHAIN SD CONCERNE PAR LE PROCESSUS
-        do 350 i = ifet2+1, nbsd
-            iaux=zi(ilimpi+i)
-            if (iaux .eq. 1) then
-                zi(ifet1)=i
-                goto 351
-            endif
-350      continue
-!
-351      continue
-        call infbav()
-    endif
+
 !
 999  continue
 !

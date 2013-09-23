@@ -23,9 +23,7 @@ cata_msg = {
 Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
 """),
 
-2 : _(u"""
- Le calcul des énergies n'est pas disponible avec le solveur FETI.
-"""),
+
 
 3 : _(u"""
  Il n'est pas possible actuellement de calculer des modes de flambement
@@ -256,7 +254,7 @@ Conseils: Vérifiez la cohérence des maillages.
 """),
 
 56 : _(u"""
-  Il n'est pas possible actuellement de calculer des modes vibratoires (MODE_VIBR) 
+  Il n'est pas possible actuellement de calculer des modes vibratoires (MODE_VIBR)
   sur un modèle dont au moins une matrice assemblée (masse ou raideur) est non-symétrique.
 """),
 }

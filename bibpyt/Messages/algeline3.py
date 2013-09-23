@@ -133,21 +133,11 @@ Conseils & solution :
  Résolution LDLT : erreur de programmation.
 """),
 
-26: _(u"""
- Problème d'affichage FETI dans PREML1
-"""),
 
-27: _(u"""
- Solveur interne LDLT interdit pour l'instant avec FETI
-"""),
 
-28: _(u"""
- Solveur interne MUMPS interdit pour l'instant avec FETI
-"""),
 
-29: _(u"""
- Solveur interne GCPC pour l'instant proscrit  avec FETI
-"""),
+
+
 
 30: _(u"""
  Matrices A et B incompatibles pour l'opération *
@@ -208,7 +198,7 @@ Conseil :
 
 
 44: _(u"""
-La méthode de résolution:  %(k1)s  est inconnue. on attend LDLT,GCPC, MULT_FRONT ou FETI
+La méthode de résolution:  %(k1)s  est inconnue. on attend LDLT,GCPC, MULT_FRONT
 """),
 
 45: _(u"""
@@ -241,9 +231,9 @@ Attention : plus de six modes de corps rigide ont été détectés.
 Si vous pensez avoir une seule structure dans le modèle, cela peut provenir de noeud(s) orphelin(s). Dans ce cas, vérifiez le maillage.
 """),
 
-50: _(u"""
-Attention  %(k1)s .VALF existe déjà
-"""),
+
+
+
 
 51: _(u"""
 Le tableau B est insuffisamment dimensionné pour l'opération *
@@ -379,10 +369,10 @@ MODE à créer avant appel à VPSTOR
   Avec l'option 'CENTRE', ce shift vaut %(k1)s,
   Avec l'option 'BANDE', c'est le milieu de la bande sélectionnée,
   Avec l'option 'PLUS_PETITE' ou 'TOUT', il prend la valeur 0.
-  
+
   Malgré la stratégie de décalage du shift, cette matrice dynamique reste
   numériquement singulière.
-  
+
   -> Risque :
   Cette matrice étant abondamment utilisée pour résoudre des systèmes linéaires
   à chaque itération du processus modal, cette quasi singularité peut fausser les résultats
@@ -390,7 +380,7 @@ MODE à créer avant appel à VPSTOR
 
   -> Conseils :
   La structure analysée présente probablement des modes de corps rigide.
-  
+
     * si aucun mode de corps rigide n'était attendu :
   Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
   ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k2)s)
@@ -416,7 +406,7 @@ MODE à créer avant appel à VPSTOR
 84: _(u"""
   Malgré la stratégie de décalage, la matrice dynamique reste numériquement
   singulière.
-  
+
   -> Risque :
   Le test de Sturm qui sert à évaluer le nombre de modes présents dans l'intervalle
   peut être faussé.
@@ -425,7 +415,7 @@ MODE à créer avant appel à VPSTOR
   Vous pouvez modifier les paramètres du solveur linéaire (par exemple METHODE ou NPREC),
   ou ceux de l'algorithme de décalage (PREC_SHIFT, NMAX_ITER_SHIFT et %(k1)s) pour
   vérifiez qu'il s'agit bien d'une singularité et non d'un problème numérique ponctuel.
-  
+
   S'il ne s'agit pas d'un test de vérification ('VERIFICATION A POSTERIORI DES MODES'),
   vous pouvez aussi relancer un autre calcul en décalant les bornes de l'intervalle de
   recherche pour éviter cette fréquence.
@@ -447,13 +437,11 @@ MODE à créer avant appel à VPSTOR
 Objet .REFE/.REFA/.CELK inexistant.
 """),
 
-91: _(u"""
-CHAM_NO non FETI
-"""),
 
-92: _(u"""
-Liste de CHAM_NO à concaténer hétérogène
-"""),
+
+
+
+
 
 93: _(u"""
 Les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s
@@ -467,9 +455,7 @@ Le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut être copié dans le CHAM_NO  %(k3)
 Champ à représentation constante : cas non traité.
 """),
 
-96: _(u"""
-CHOUT non FETI
-"""),
+
 
 97: _(u"""
 Type de tri inconnu

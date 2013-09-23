@@ -87,16 +87,5 @@ class sd_solveur(AsBase):
             assert slvk[9] in ('XXXX')
             assert slvk[10] in ('XXXX')
             assert slvk[11] in ('XXXX')
-        elif method == 'FETI' :
-            assert slvk[1] in ('LUMPE','SANS')
-            assert slvk[2] in ('OUI', 'NON')
-            assert slvk[3] in ('MD','MDA','METIS')
-            assert slvk[4] in ('OUI','NON')
-            assert slvk[6] in ('GS','GSM','IGSM','SANS')
-            assert slvk[7] in ('MULT','SANS')
-            assert slvk[8] in ('CAL','OUI','NON')
-            assert slvk[9] in ('NON')
-            assert slvk[10] in ('OUI','NON')
-            assert slvk[11] in ('XXXX')
         else :
             pass

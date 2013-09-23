@@ -60,7 +60,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     integer :: reincr
     integer :: jslvk, n1
     logical :: lcont, lallv, lctcc, lctcd, lpena, leltc
-    logical :: lfeti, lpilo, lreli, lmacr, lunil
+    logical :: lpilo, lreli, lmacr, lunil
     logical :: lmvib, lflam, lexpl, lxfem, lmodim
     logical :: lrcmk, lgcpc, lpetsc, lamg, lsyme, limpex
     logical :: londe, ldyna, lgrot, ltheta, lnkry
@@ -75,7 +75,6 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lfeti = isfonc(fonact,'FETI')
     lxfem = isfonc(fonact,'XFEM')
     lctcc = isfonc(fonact,'CONT_CONTINU')
     lctcd = isfonc(fonact,'CONT_DISCRET')
@@ -114,26 +113,6 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     lrcmk = zk24(jslvk-1+4) .eq. 'RCMK'
     lamg = ((zk24(jslvk-1+2).eq.'ML') .or. (zk24(jslvk-1+2).eq.'BOOMER'))
     lsyme = zk24(jslvk-1+5).eq.'OUI'
-!
-! --- FETI
-!
-    if (lfeti) then
-        if (lmacr) then
-            call utmess('F', 'MECANONLINE3_70')
-        endif
-        if (londe) then
-            call utmess('F', 'MECANONLINE3_71')
-        endif
-        if (ldyna) then
-            call utmess('F', 'MECANONLINE3_73')
-        endif
-        if (lctcd) then
-            call utmess('F', 'MECANONLINE3_78')
-        endif
-        if (lctcc) then
-            call utmess('F', 'MECANONLINE3_79')
-        endif
-    endif
 !
 ! --- CONTACT DISCRET
 !
@@ -292,9 +271,6 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! --- ENERGIES
 !
     if (lener) then
-        if (lfeti) then
-            call utmess('F', 'MECANONLINE5_2')
-        endif
         if (lproj) then
             call utmess('F', 'MECANONLINE5_6')
         endif

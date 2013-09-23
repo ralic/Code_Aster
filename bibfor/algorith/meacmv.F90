@@ -275,14 +275,12 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
         chamn4 = chths(1:19)
     endif
 !
-! 3.6.2. ==> CONCATENATION DES SECOND(S) MEMBRE(S) AVEC EVENTUELLEMENT
-!            LEURS ENCAPSULATIONS FETI
+! 3.6.2. ==> CONCATENATION DES SECOND(S) MEMBRE(S)
 !
-    call fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
-                vecass)
+    call fetccn(chamn1, chamn2, chamn3, chamn4, typcum, vecass)
 !
 !
-! 3.7. ==> CHARGES CINEMATIQUES                              ---& CNCHCI
+! 3.7. ==> CHARGES CINEMATIQUES
 !
     cnchci = blan24
     call ascavc(charge, infoch, fomult, numedd, time,&

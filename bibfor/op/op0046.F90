@@ -155,8 +155,7 @@ subroutine op0046()
 !
     call dismoi('F', 'NOM_MAILLA', nomode, 'MODELE', ibid,&
                 noma, ierd)
-    call dismoi('F', 'NB_CHAMP_MAX', result, 'RESULTAT', nbmax,&
-                k8bla, ierd)
+    call dismoi('F', 'NB_CHAMP_MAX', result, 'RESULTAT', nbmax, k8bla, ierd)
     call getvtx(' ', 'OPTION', scal=nosy, nbret=n7)
     ASSERT(nosy.eq.'SIEF_ELGA'.or.nosy.eq.'SANS')
 !
@@ -172,22 +171,20 @@ subroutine op0046()
     if ((k8bla(1:3).eq.'OUI') .and. (kstr(1:3).eq.'OUI')) then
         call utmess('F', 'MECASTATIQUE_1')
     endif
-!
+
     exipou = .false.
-!
     call dismoi('F', 'EXI_POUX', modele, 'MODELE', ibid,&
                 k8bla, ierd)
     if (k8bla(1:3) .eq. 'OUI') exipou = .true.
     call jelira(charge, 'LONMAX', nchar)
-!
+
     if (exipou) then
-!
         call jeveuo(charge, 'L', jchar)
         call cochre(zk24(jchar), nchar, nbchre, iocc)
         if (nbchre .gt. 1) then
             call utmess('F', 'MECASTATIQUE_25')
         endif
-!
+
         typcoe = 'R'
         alpha = 1.d0
         if (iocc .gt. 0) then
@@ -195,7 +192,7 @@ subroutine op0046()
             call getvid('EXCIT', 'FONC_MULT', iocc=iocc, scal=nomfon, nbret=nfon)
         endif
     endif
-!
+
     call jeveuo(listps//'           .VALE', 'L', iainst)
     do 13 iordr = 1, nbmax
         call rsexch(' ', result, 'DEPL', iordr, chamgd,&

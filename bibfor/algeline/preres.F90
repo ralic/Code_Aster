@@ -17,7 +17,7 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT/MUMPS/FETI)
+! BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT/MUMPS)
 !       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC)
 !
 ! SOLVEZ (K19) IN : OBJET SOLVEUR (OU ' ')
@@ -31,8 +31,7 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !                   MAIS ON A PERDU BEAUCOUP DE DECIMALES
 !             /3 -> LA FACTORISATION EST ALLEE AU BOUT
 !                   MAIS ON NE SAIT PAS DIRE SI ON A PERDU DES DECIMALES
-!                   (CAS DE FETI OU DE MUMPS SI NPREC<0
-!                    ET SI LA FACTO EST OK)
+!
 ! MATPRE(K19) IN/JXVAR : MATRICE DE PRECONDITIONNEMENT (SI GCPC)
 ! MATASS(K19) IN/JXVAR : MATRICE A FACTORISER OU A PRECONDITIONNER
 ! NPVNEG (I) OUT : NBRE DE TERMES DIAGONAUX NEGATIFS DE LA FACTORISEE
@@ -54,11 +53,9 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterc/cheksd.h"
-#include "asterfort/alfeti.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/fetfac.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedbg2.h"
 #include "asterfort/jedema.h"
@@ -77,14 +74,14 @@ subroutine preres(solvez, base, iret, matpre, matass,&
     character(len=1) :: base
     character(len=*) :: matass, matpre, solvez
 !
-    integer :: nbsd, idd, idd0, ifetm, ifets, idbgav, ifm, niv, islvk, ibid
-    integer :: islvi, lmat, idime, nprec, ndeci, isingu, niremp, nbsdf, iinf
-    integer :: ifcpu, ilimpi, istopz, iretgc
-    real(kind=8) :: temps(6), rbid
-    character(len=24) :: metres, sdfeti, infofe, k24b, opt, precon
-    character(len=19) :: matas, maprec, solvsd, matas1, k19b, solveu
+    integer :: idbgav, ifm, niv, islvk, ibid
+    integer :: islvi, lmat, nprec, ndeci, isingu, niremp
+    integer :: ifcpu, istopz, iretgc
+    real(kind=8) :: rbid
+    character(len=24) :: metres, k24b, opt, precon
+    character(len=19) :: matas, maprec, matas1, solveu
     character(len=8) :: renum, kmpic, kmatd
-    logical :: lfeti, iddok, lfetic, dbg
+    logical :: dbg
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -110,105 +107,30 @@ subroutine preres(solvez, base, iret, matpre, matass,&
                                      solveu, ibid)
     call jeveuo(solveu//'.SLVK', 'L', islvk)
     metres = zk24(islvk)
-!
-!     -- FETI OR NOT FETI :
-    lfeti= (metres(1:4).eq.'FETI')
-!
-    if (dbg .and. (.not. lfeti)) then
+
+
+    if (dbg) then
         call cheksd(matas, 'SD_MATR_ASSE', ibid)
         call cheksd(solveu, 'SD_SOLVEUR', ibid)
     endif
-!
+
     call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
     call dismoi('F', 'MATR_DISTR', matas, 'MATR_ASSE', ibid,&
                 kmatd, ibid)
+
     if (kmpic .eq. 'NON') then
-        if (metres .eq. 'FETI' .or. metres .eq. 'MUMPS' .or.&
+        if (metres .eq. 'MUMPS' .or.&
             ( metres.eq.'PETSC'.and.kmatd.eq.'OUI')) then
-!          -- SI FETI OU MUMPS, ON PEUT CONTINUER AVEC UNE
-!             MATRICE INCOMPLETE :
         else
-!          -- SINON, IL FAUT COMPLETER AVANT DE POURSUIVRE
             call sdmpic('MATR_ASSE', matas)
         endif
     endif
 !
 !
 !
-!     -- CAS DU SOLVEUR FETI :
-!     --------------------------
-    lfetic=.false.
-    if (lfeti) then
-        sdfeti=zk24(islvk+5)
-        call jeveuo('&FETI.FINF', 'L', iinf)
-        infofe=zk24(iinf)
-        if (infofe(11:11) .eq. 'T') lfetic=.true.
-        call jeveuo(sdfeti(1:19)//'.FDIM', 'L', idime)
-!       NOMBRE DE SOUS-DOMAINES
-        nbsd=zi(idime)
-        nbsdf=0
-        idd0=1
-!       ADRESSE JEVEUX DE LA LISTE DES MATR_ASSE ET DE SOLVEURS
-!       ASSOCIES AUX SOUS-DOMAINES
-        call jeveuo(matas//'.FETM', 'L', ifetm)
-        call jeveuo(solveu//'.FETS', 'L', ifets)
-        call jeveuo('&FETI.INFO.CPU.FACN', 'E', ifcpu)
-!       ADRESSE JEVEUX OBJET FETI & MPI
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-!       NETTOYAGE DES SD FETI SI NECESSAIRE (SUCCESSION DE CALCULS
-!       DECOUPLES) ET INITIALISATION NUMERO D'INCREMENT
-        opt='NETTOYAGE_SDI'
-        call alfeti(opt, k19b, k19b, k19b, k19b,&
-                    ibid, rbid, k24b, rbid, ibid,&
-                    k24b, k24b, k24b, k24b, ibid,&
-                    k24b, k24b, ibid)
-    else
-        nbsd=0
-        idd0=0
-        infofe='FFFFFFFFFFFFFFFFFFFFFFFF'
-    endif
-!
-!
-!========================================
-! BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-!========================================
-! IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
-    do 100 idd = idd0, nbsd
-!
-! TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
-! LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU
-! SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
-! ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE
-        if (.not. lfeti) then
-            iddok=.true.
-        else
-            if (zi(ilimpi+idd) .eq. 1) then
-                iddok=.true.
-            else
-                iddok=.false.
-            endif
-        endif
-!
-        if (iddok) then
-            if (lfeti) call jemarq()
-            if (lfetic) then
-                call uttcpu('CPU.PRERES.FETI', 'INIT', ' ')
-                call uttcpu('CPU.PRERES.FETI', 'DEBUT', ' ')
-            endif
-!
-            if (idd .gt. 0) then
-!           MATR_ASSE ASSOCIEE A CHAQUE SOUS-DOMAINE
-                matas=zk24(ifetm+idd-1)(1:19)
-                solvsd=zk24(ifets+idd-1)(1:19)
-                call jeveuo(solvsd//'.SLVK', 'L', islvk)
-                metres = zk24(islvk)
-                call jeveuo(solvsd//'.SLVI', 'L', islvi)
-            else
                 call jeveuo(solveu//'.SLVI', 'L', islvi)
-            endif
-!
-!         ALLOCATION OBJET JEVEUX TEMPORAIRE .&INT/&IN2
+
             call mtdscr(matas)
             call jeveuo(matas//'.&INT', 'E', lmat)
 !
@@ -216,19 +138,8 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !             MULTIFRONTALE OU LDLT OU MUMPS               C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS') then
-                if (lfeti .and. (metres.eq.'LDLT')) then
-                    call utmess('F', 'ALGELINE3_27')
-                endif
-                if (lfeti .and. (metres.eq.'MUMPS')) then
-                    call utmess('F', 'ALGELINE3_28')
-                endif
                 nprec = zi(islvi-1+1)
                 if (istopz .eq. -9999) istopz = zi(islvi-1+3)
-                if (lfeti) then
-                    call fetfac(lmat, matas, idd, nprec, nbsd,&
-                                matas1, sdfeti, nbsdf, base, infofe)
-                    iret=3
-                else
                     renum=' '
                     if (metres(1:10) .eq. 'MULT_FRONT') renum=zk24( islvk-1+4)
                     if ((metres(1:5).eq.'MUMPS') .and. (istopz.eq.2) .and. (nprec.lt.0)) then
@@ -239,15 +150,11 @@ subroutine preres(solvez, base, iret, matpre, matass,&
                                 iret, solveu)
                     if ((nprec.lt.0) .and. (iret.ne.2)) iret=3
 !
-                endif
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                         PETSC                            C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             else if (metres.eq.'PETSC') then
-                if (lfeti) then
-                    call utmess('F', 'ALGELINE4_2')
-                endif
                 call apetsc('DETR_MAT', ' ', matas, rbid, ' ',&
                             0, ibid, iret)
                 call apetsc('PRERES', solveu, matas, rbid, ' ',&
@@ -257,9 +164,6 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !                         GCPC                             C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
             else if (metres.eq.'GCPC') then
-                if (lfeti) then
-                    call utmess('F', 'ALGELINE3_29')
-                endif
 !
                 call jeveuo(solveu//'.SLVK', 'L', islvk)
                 call jeveuo(solveu//'.SLVI', 'E', islvi)
@@ -277,18 +181,7 @@ subroutine preres(solvez, base, iret, matpre, matass,&
                 iret=0
             endif
 !
-            if (lfetic) then
-                call uttcpu('CPU.PRERES.FETI', 'FIN', ' ')
-                call uttcpr('CPU.PRERES.FETI', 6, temps)
-                zr(ifcpu+idd)=temps(5)+temps(6)
-            endif
-            if (lfeti) call jedema()
 !
-!========================================
-! FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
-!========================================
-        endif
-100  end do
 !
     call jedbg2(ibid, idbgav)
     call uttcpu('CPU.RESO.1', 'FIN', ' ')

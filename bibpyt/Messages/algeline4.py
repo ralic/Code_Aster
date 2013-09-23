@@ -23,9 +23,7 @@ cata_msg = {
  Seules les méthodes de résolution LDLT, MUMPS et MULT_FRONT sont autorisées.
 """),
 
-2 : _(u"""
- solveur interne PETSc interdit pour l'instant avec FETI
-"""),
+ 
 
 3 : _(u"""
  Solveur GCPC :
@@ -75,18 +73,9 @@ Risques & conseils :
 7 : _(u"""
  Erreur données : maille déjà existante :  %(k1)s
 """),
-8 : _(u"""
- Erreur lors de la résolution du système linéaire d'interface de FETI :
- Non convergence  avec le nombre d'itérations autorisées :  %(i1)d
-   norme du résidu (absolu)  :  %(r1)f
-   norme du résidu (relatif) :  %(r2)f
 
- Conseils :
-  * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
-  * Vous pouvez activer le préconditionneur si cela n'est pas fait (PRE_COND='LUMPE').
-  * Vous pouvez vérifier votre interface via INFO_FETI (cf. U2.08.03).
-  * Vous pouvez vérifier le nombre de modes rigides en mode INFO=2.
-"""),
+
+
 9 : _(u"""
  Erreur données GROUP_MA déjà existant :  %(k1)s
 """),

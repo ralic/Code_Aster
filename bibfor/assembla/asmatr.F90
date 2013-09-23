@@ -141,7 +141,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !     -- VERIFICATIONS :
 !     ------------------
     metres = zk24(jslvk)
-    if ((metres.eq.'GCPC'.or.metres.eq.'FETI') .and. (matsym.eq.'N')) then
+    if ((metres.eq.'GCPC') .and. (matsym.eq.'N')) then
         call utmess('F', 'ASSEMBLA_1', sk=matsym)
     endif
 !

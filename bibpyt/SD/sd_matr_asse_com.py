@@ -52,7 +52,7 @@ class sd_matr_asse_com(sd_titre):
             sd2=sd_maillage(refa[0]) ; sd2.check(checker)
             sd2=sd_nume_ddl(refa[1]) ; sd2.check(checker)
         assert refa[2] in ('ELIMF','ELIML','') , refa
-        assert refa[4] in ('FETI','') , refa
+        assert refa[4] == '' , refa
         # pour les matrices generalisees, refa[7] n'est pas toujours rempli :
         if not lgene :
             # glute à résorber : j'ajoute '' à la liste permise pour le test yyyy108e :

@@ -48,66 +48,18 @@ subroutine vtcreb(champz, numedz, basez, typcz, neq)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: idime, nbsd, ifetc, idd, ilimpi, ifetn, neql
+    integer :: idime, neql
     character(len=1) :: classe, typc
     character(len=8) :: k8bid
     character(len=11) :: k11b
-    character(len=24) :: champ, numedd, method, sdfeti, k24bid, k24b
+    character(len=24) :: champ, numedd, k24bid, k24b
 !
 !------------------------------------------------------------------
-! INIT.
     call jemarq()
     champ = champz
     numedd = numedz
     classe = basez(1:1)
     typc = typcz(1:1)
-!
-! --------------------------------------------------------------
-! CREATION ET REMPLISSAGE DE LA SD CHAM_NO "MAITRE"
-! --------------------------------------------------------------
-!
-    call vtcre1(champ, numedd, classe, typc, method,&
-                sdfeti, neq)
-! --------------------------------------------------------------
-! CREATION ET REMPLISSAGE DE LA SD CHAM_NO.REFE "ESCLAVE" LIEE A
-! CHAQUE SOUS-DOMAINE
-! --------------------------------------------------------------
-    if (method(1:4) .eq. 'FETI') then
-!
-        call jeveuo(sdfeti(1:19)//'.FDIM', 'L', idime)
-        nbsd=zi(idime)
-!
-! CONSTITUTION DE L'OBJET JEVEUX .FETC
-        call wkvect(champ(1:19)//'.FETC', classe//' V K24', nbsd, ifetc)
-! STOCKE &&//NOMPRO(1:6)//'.2.' POUR COHERENCE AVEC L'EXISTANT
-        k11b=champ(1:10)//'.'
-!
-        k24b=' '
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        do 10 idd = 1, nbsd
-            if (zi(ilimpi+idd) .eq. 1) then
-!
-                call jemarq()
-! REMPLISSAGE OBJET .FETC
-! NOUVELLE CONVENTION POUR LES CHAM_NOS FILS, GESTTION DE NOMS
-! ALEATOIRES
-                call gcncon('.', k8bid)
-                k8bid(1:1)='F'
-                k24b(1:19)=k11b//k8bid
-                zk24(ifetc+idd-1)=k24b
-                call jeveuo(numedd(1:14)//'.FETN', 'L', ifetn)
-                call vtcre1(k24b, zk24(ifetn+idd-1), classe, typc, k24bid,&
-                            k24bid, neql)
-                call jedema()
-!
-            endif
-10      continue
-!
-    endif
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-!
-! FIN ------------------------------------------------------------------
+    call vtcre1(champ, numedd, classe, typc, neq)
     call jedema()
 end subroutine

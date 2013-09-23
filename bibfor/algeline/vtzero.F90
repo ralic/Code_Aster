@@ -17,10 +17,9 @@ subroutine vtzero(chamna)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-----------------------------------------------------------------------
-!    - FONCTION REALISEE:  INITIALISATION A ZERO DU .VALE DU CHAM_NO
-!      CHAMN EN RESPECTANT L'ENCAPSULATION FETI.
+!    - fonction realisee:  initialisation a zero du .vale du cham_no chamna
 !     ------------------------------------------------------------------
-!     IN  CHAMNA  :  K* : CHAM_NO MAITRE
+!     IN  CHAMNA  :  K* : CHAM_NO
 !----------------------------------------------------------------------
     implicit none
 !
@@ -37,49 +36,22 @@ subroutine vtzero(chamna)
 ! DECLARATION VARIABLES LOCALES
     integer :: nbsd, ilimpi, ifetc, idd, neq, ival, i, neq1, iret
     character(len=24) :: kval, chamn
-    logical :: iddok, lfeti
+    logical :: iddok
 !
 ! CORPS DU PROGRAMME
     call jemarq()
     chamn=chamna
 !
-! --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE FETI
-    call jeexin(chamn(1:19)//'.FETC', iret)
-    if (iret .ne. 0) then
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
-    if (lfeti) then
-        call jelira(chamn(1:19)//'.FETC', 'LONMAX', nbsd)
-        call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-        call jeveuo(chamn(1:19)//'.FETC', 'L', ifetc)
-    else
-        nbsd=0
-    endif
-!
-! --- BOUCLE SUR LES SOUS-DOMAINES CF ASSMAM OU VTCMBL PAR EXEMPLE
-    do 20 idd = 0, nbsd
-        iddok=.false.
-        if (.not.lfeti) then
-            iddok=.true.
-        else
-            if (zi(ilimpi+idd) .eq. 1) iddok=.true.
-        endif
-        if (iddok) then
-            if (idd .eq. 0) then
-                kval=chamn(1:19)//'.VALE'
-            else
-                kval=zk24(ifetc+idd-1)(1:19)//'.VALE'
-            endif
-            call jeveuo(kval, 'E', ival)
-            call jelira(kval, 'LONMAX', neq)
-            neq1=neq-1
-            do 10 i = 0, neq1
-                zr(ival+i)=0.d0
-10          continue
-        endif
-20  end do
+
+    kval=chamn(1:19)//'.VALE'
+    call jeveuo(kval, 'E', ival)
+    call jelira(kval, 'LONMAX', neq)
+    neq1=neq-1
+    do 10 i = 0, neq1
+        zr(ival+i)=0.d0
+10  continue
+
+
 !
     call jedema()
 end subroutine

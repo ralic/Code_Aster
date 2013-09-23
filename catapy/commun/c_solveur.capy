@@ -105,10 +105,9 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _feti   = False
    _dist   = False
 
-#  FETI et MATR_DISTRIBUEE ne fonctionnent que dans MECA_STATIQUE et MECA_NON_LINE
+#  MATR_DISTRIBUEE ne fonctionnent que dans MECA_STATIQUE et MECA_NON_LINE
    if COMMAND in ('CALC_IFS_DNL',
                   'CALC_PRECONT',
                   'DYNA_NON_LINE',
@@ -118,7 +117,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                   'MECA_STATIQUE',
                   'STAT_NON_LINE',
                   ):
-      _feti = True
       _dist = True
 
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -182,7 +180,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _BlocMU={}
    _BlocGC={}
    _BlocPE={}
-   _BlocFE={}
 
 #  Préconditionneurs
    _BlocGC_INC={}
@@ -211,8 +208,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
          _into = ("LDLT", "MUMPS", )
    else:
       _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC", )
-      if _feti:
-         _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC", "FETI", )
 
    if COMMAND =='MODE_NON_LINE':
       _defaut = "MUMPS"
@@ -228,13 +223,12 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 #
-# MULT_FRONT/LDLT/MUMPS/FETI (RENUM/NPREC/STOP_SINGULIER)
+# MULT_FRONT/LDLT/MUMPS (RENUM/NPREC/STOP_SINGULIER)
 #
 # ----------------------------------------------------------------------------------------------------------------------------------
 
 #  RENUM
    _BlocMF['RENUM'] = SIMP(statut='f', typ='TXM', defaut="METIS", into=("MD", "MDA", "METIS", ), )
-   _BlocFE['RENUM'] = SIMP(statut='f', typ='TXM', defaut="METIS", into=("MD", "MDA", "METIS", ), )
 
    if _rcmk:
       _into = ("RCMK", "SANS", )
@@ -253,7 +247,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _BlocMF['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
    _BlocLD['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
    _BlocMU['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
-   _BlocFE['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -268,7 +261,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
       _BlocMF['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
       _BlocLD['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
       _BlocMU['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
-      _BlocFE['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 #
@@ -383,27 +375,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    _BlocXX_Autres['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS","RCMK", ), )
 
-# ----------------------------------------------------------------------------------------------------------------------------------
-#
-# FETI (MOT-CLES RESTANT)
-#
-# ----------------------------------------------------------------------------------------------------------------------------------
-
-   _BlocFE['PARTITION'      ] = SIMP(statut='o',typ=sd_feti_sdaster)
-   _BlocFE['RESI_RELA'      ] = SIMP(statut='f',typ='R',defaut=1.E-6,val_min=0.)
-   _BlocFE['NMAX_ITER'      ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
-   _BlocFE['REAC_RESI'      ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
-   _BlocFE['TYPE_REORTHO_DD'] = SIMP(statut='f',typ='TXM',defaut="GSM",into=("SANS","GS","GSM","IGSM") )
-   _BlocFE['NB_REORTHO_DD'  ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
-   _BlocFE['NB_REORTHO_INST'] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
-   _BlocFE['PRE_COND'       ] = SIMP(statut='f',typ='TXM',defaut="LUMPE",into=("LUMPE","SANS") )
-   _BlocFE['SCALING'        ] = SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") )
-   _BlocFE['VERIF_SDFETI'   ] = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") )
-   _BlocFE['TEST_CONTINU'   ] = SIMP(statut='f',typ='R',defaut=1.E-8,val_min=0.)
-   _BlocFE['INFO_FETI'      ] = SIMP(statut='f',typ='TXM',defaut='FFFFFFFFFFFFFFFFFFFFFFFF')
-   _BlocFE['STOCKAGE_GI'    ] = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","CAL") )
-   _BlocFE['NB_SD_PROC0'    ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
-   _BlocFE['ACCELERATION_SM'] = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 #
@@ -460,10 +431,6 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                                                          **_BlocXX_Autres
                                                          ),
                                      **_BlocPE
-                                     ),
-                 b_feti       = BLOC(condition = "METHODE == 'FETI' ",
-                                     fr="Paramètres de la méthode FETI 1",
-                                     **_BlocFE
                                      ),
                  **_MotCleSimples
                  )

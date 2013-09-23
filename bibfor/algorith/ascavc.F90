@@ -65,7 +65,6 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     character(len=24) :: vachci, valk(2), infobl
     character(len=8) :: charge
     integer :: irefn, ier
-    logical :: lfeti
     data chamno/'&&ASCAVC.???????'/
     data vachci/'&&ASCAVC.LISTE_CI'/
     data charci/'&&ASCAVC.LISTE_CHI'/
@@ -75,15 +74,9 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     call jemarq()
     if (vci .eq. ' ') vci='&&ASCAVC.VCI'
     vci2=vci
-! RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
+
     call infniv(ifm, niv)
 !
-! --- FETI OR NOT ?
-    lfeti = .false.
-    call jeveuo(numedd(1:14)//'.NUME.REFN', 'L', irefn)
-    if (zk24(irefn+2) .eq. 'FETI') then
-        lfeti=.true.
-    endif
 !
     newnom='.0000000'
 !
@@ -120,9 +113,6 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 !
 !     -- S'IL Y A DES CHARGES CINEMATIQUES :
     else
-        if (lfeti) then
-            call utmess('F', 'ALGORITH_16')
-        endif
 !
         ichci = 0
         call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&

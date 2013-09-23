@@ -20,7 +20,6 @@ subroutine nmmeng(fonact)
 !
     implicit      none
 #include "jeveux.h"
-#include "asterfort/alfeti.h"
 #include "asterfort/detmat.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -45,7 +44,6 @@ subroutine nmmeng(fonact)
     character(len=19) :: k19bid
     integer :: ibid
     real(kind=8) :: r8bid
-    logical :: lfeti
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,19 +53,6 @@ subroutine nmmeng(fonact)
 !
     call detmat()
 !
-! --- SI FETI, NETTOYAGE DES OBJETS TEMPORAIRES
-! --- NETTOYAGE DES SD FETI SI NECESSAIRE (SUCCESSION DE CALCULS
-! --- DECOUPLES)
-! --- ET INITIALISATION NUMERO D'INCREMENT
-!
-    lfeti = isfonc(fonact,'FETI')
-    if (lfeti) then
-        opt='NETTOYAGE_SDT'
-        call alfeti(opt, k19bid, k19bid, k19bid, k19bid,&
-                    ibid, r8bid, k24bid, r8bid, ibid,&
-                    k24bid, k24bid, k24bid, k24bid, ibid,&
-                    k24bid, k24bid, ibid)
-    endif
 !
     call jedema()
 !

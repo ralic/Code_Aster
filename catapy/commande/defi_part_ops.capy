@@ -16,8 +16,8 @@
 # ======================================================================
 # person_in_charge: aimery.assire at edf.fr
 
-DEFI_PART_OPS=OPER(nom="DEFI_PART_OPS",op=21,sd_prod=sd_feti_sdaster,
-                    fr="Creation partitionnement en sous-domaines pour FETI",
+DEFI_PART_OPS=OPER(nom="DEFI_PART_OPS",op=21,sd_prod=sd_partit,
+                    fr="Creation partitionnement en sous-domaines",
                     docu="U4.23.05",reentrant='n',
                     UIinfo={"groupes":("Modélisation",)},
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),

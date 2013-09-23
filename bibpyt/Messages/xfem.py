@@ -55,8 +55,7 @@ cata_msg={
      dépasser NB_COUCHES = 7.
      Vous pouvez aussi laisser NB_COUCHES = %(i1)d, mais il pourra s'avérer
      nécessaire d'augmenter le nombre maximales de décimales perdues dans
-     STAT_NON_LINE (mot-clé NPREC de SOLVEUR pour les méthodes LDLT, MULT_FRONT
-     ou FETI.
+     STAT_NON_LINE (mot-clé NPREC de SOLVEUR pour les méthodes LDLT ou MULT_FRONT)
 """),
 
 6: _(u"""
@@ -164,7 +163,7 @@ cata_msg={
 """),
 
 21: _(u"""
-     Vous avez défini au moins un fond ouvert et un fond fermé lors d'un appel à 
+     Vous avez défini au moins un fond ouvert et un fond fermé lors d'un appel à
      DEFI_FISS_XFEM.
      Conseil:
      Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents.
@@ -476,12 +475,12 @@ cata_msg={
 
 71: _(u"""
   -> DEFI_FISS_XFEM :
-     La jonction de fissures n'est pas une fonctionnalité disponible pour les modèles 
+     La jonction de fissures n'est pas une fonctionnalité disponible pour les modèles
      thermiques. Or le modèle %(k1)s est un modèle thermique.
 """),
 
 72: _(u"""
-  -> Vous utilisez le mot-clé FISSURE, or le modèle %(k1)s que vous avez renseigné 
+  -> Vous utilisez le mot-clé FISSURE, or le modèle %(k1)s que vous avez renseigné
      pour le mot clé MODELE n'est pas un modèle X-FEM.
   -> Conseil:
      Veuillez utiliser un autre mot-clé ou revoyez la définition de votre modèle.
@@ -491,7 +490,7 @@ cata_msg={
   -> Vous avez renseigné %(k1)s pour le mot-clé FISSURE, or cette fissure est absente
      du modèle %(k2)s que vous avez renseigné pour le mot-clé MODELE.
   -> Conseil:
-     Assurez vous de renseigner pour le mot-clé FISSURE une liste de fissures 
+     Assurez vous de renseigner pour le mot-clé FISSURE une liste de fissures
      présentes dans le modèle ou revoyez la définition de votre modèle.
 """),
 
@@ -513,7 +512,7 @@ cata_msg={
 
 
 77: _(u"""
-  -> Il y a éventuellement des créations de mailles 
+  -> Il y a éventuellement des créations de mailles
      supplémentaires de type POI1 lorsque des affectations sont faites sur des nœuds ou des groupes de
      noeuds. Ces mailles ne sont pas accessibles à l’utilisateur. Ceci a crée une maille tardive.
 

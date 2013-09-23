@@ -73,7 +73,6 @@ subroutine copisd(typesd, base, sd1, sd2)
     character(len=19) :: ch1, ch2, sdr1, k191, k192
     character(len=24) :: masfe1, masfe2, x1, x2
     integer :: ifetm1, ifetm2, j1, iexi
-    logical :: lfeti
 !
 !
 ! DEB-------------------------------------------------------------------
@@ -277,34 +276,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.VALF', bas2, k192//'.VALF')
         call jedup1(k191//'.WALF', bas2, k192//'.WALF')
         call jedup1(k191//'.VALM', bas2, k192//'.VALM')
-!
-! FETI OR NOT ?
-        masfe1 = k191//'.FETM'
-        call jeexin(masfe1, iret)
-        if (iret .gt. 0) then
-            lfeti = .true.
-        else
-            lfeti = .false.
-        endif
-!
-        if (lfeti) then
-            masfe2 = k192//'.FETM'
-            call jedup1(masfe1, bas2, masfe2)
-            call jedup1(k191//'.FETF', bas2, k192//'.FETF')
-            call jedup1(k191//'.FETP', bas2, k192//'.FETP')
-            call jedup1(k191//'.FETR', bas2, k192//'.FETR')
-!
-            call jelira(masfe1, 'LONMAX', nbsd)
-            call jeveuo(masfe1, 'L', ifetm1)
-            call jeveuo(masfe2, 'E', ifetm2)
-            call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
-            do 30 idd = 1, nbsd
-                if (zi(ilimpi+idd) .eq. 1) then
-                    zk24(ifetm2+idd-1) = zk24(ifetm1+idd-1)
-                endif
-30          continue
-!
-        endif
 !
 !
 ! --------------------------------------------------------------------

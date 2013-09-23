@@ -4,7 +4,6 @@ subroutine cresol(solveu)
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
-#include "asterfort/crsvfe.h"
 #include "asterfort/crsvgc.h"
 #include "asterfort/crsvld.h"
 #include "asterfort/crsvmf.h"
@@ -128,19 +127,12 @@ subroutine cresol(solveu)
         endif
     endif
 !
-! ------------------------------------------------------
-! --- CREATION DES TROIS COMPOSANTES DE LA SD_SOLVEUR
-!     POUR FETI C'EST FAIT POUR LE DOMAINE GLOBAL ET CHAQUE SD
-!     VIA CRSVFE/CRESO1
-! ------------------------------------------------------
-    if (method .ne. 'FETI') then
-        zslvk = sdsolv('ZSLVK')
-        zslvr = sdsolv('ZSLVR')
-        zslvi = sdsolv('ZSLVI')
-        call wkvect(solveu//'.SLVK', 'V V K24', zslvk, islvk)
-        call wkvect(solveu//'.SLVR', 'V V R', zslvr, islvr)
-        call wkvect(solveu//'.SLVI', 'V V I', zslvi, islvi)
-    endif
+    zslvk = sdsolv('ZSLVK')
+    zslvr = sdsolv('ZSLVR')
+    zslvi = sdsolv('ZSLVI')
+    call wkvect(solveu//'.SLVK', 'V V K24', zslvk, islvk)
+    call wkvect(solveu//'.SLVR', 'V V R', zslvr, islvr)
+    call wkvect(solveu//'.SLVI', 'V V I', zslvi, islvi)
 !
 ! ------------------------------------------------------
 ! --- LECTURE MOT-CLE ET REMPLISSAGE DE LA SD_SOLVEUR PROPRE A CHAQUE
@@ -150,11 +142,6 @@ subroutine cresol(solveu)
     if (method .eq. 'MUMPS') then
 !     -----------------------------
         call crsvmu(nomsol, solveu, istop, nprec, syme,&
-                    epsmat, mixpre, kmd)
-!
-    else if (method.eq.'FETI') then
-!     -----------------------------
-        call crsvfe(nomsol, solveu, istop, nprec, syme,&
                     epsmat, mixpre, kmd)
 !
     else if (method.eq.'PETSC') then

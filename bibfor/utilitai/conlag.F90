@@ -50,47 +50,17 @@ subroutine conlag(matasz, cond)
 !
     matass=matasz
     cond=1.d0
-    call jeexin(matass//'.FETM', iret)
 !
-! --- CAS FETI - ON BOUCLE SUR TOUTES LES MATRICES DES SOUS-DOMAINES.
-!     DES QUE L'ON TROUVE UN CONDITIONNEMENT DE LAGRANGE, ON SORT CAR
-!     CETTE VALEUR EST LA MEME POUR TOUTES LES MATRICES
-!
+! ---  on sort des que l'on trouve un conditionnement de lagrange
+    call jeexin(matass//'.CONL', iret)
     if (iret .ne. 0) then
-        call jeveuo(matass//'.FETM', 'L', jfetm)
-        call jelira(matass//'.FETM', 'LONUTI', nbsd)
-        do 10 idd = 1, nbsd
-            matdd=zk24(jfetm+idd-1)
-            call jeexin(matdd//'.CONL', iret)
-            if (iret .ne. 0) then
-                call dismoi('F', 'NB_EQUA', matdd, 'MATR_ASSE', neq,&
-                            k8bid, iret)
-                call jeveuo(matdd//'.CONL', 'L', jconl)
-                do 20 jcol = 1, neq
-                    cond = 1.d0/zr(jconl-1+jcol)
-                    if (cond .ne. 1.d0) then
-                        goto 9999
-                    endif
-20              continue
-            endif
-10      continue
-!
-! --- CAS AUTRE QUE FETI - ON SORT DES QUE L'ON TROUVE UN
-!     CONDITIONNEMENT DE LAGRANGE
-!
-    else
-        call jeexin(matass//'.CONL', iret)
-        if (iret .ne. 0) then
-            call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
-                        k8bid, iret)
-            call jeveuo(matass//'.CONL', 'L', jconl)
-            do 30 jcol = 1, neq
-                cond = 1.d0/zr(jconl-1+jcol)
-                if (cond .ne. 1.d0) then
-                    goto 9999
-                endif
-30          continue
-        endif
+        call dismoi('F', 'NB_EQUA', matass, 'MATR_ASSE', neq,&
+                    k8bid, iret)
+        call jeveuo(matass//'.CONL', 'L', jconl)
+        do 30 jcol = 1, neq
+            cond = 1.d0/zr(jconl-1+jcol)
+            if (cond .ne. 1.d0)  goto 9999
+30      continue
     endif
 !
 9999  continue

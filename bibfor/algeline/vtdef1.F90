@@ -1,4 +1,4 @@
-subroutine vtdef1(chpout, chpin, base, typc, lfeti)
+subroutine vtdef1(chpout, chpin, base, typc)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,6 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
 !                    'R'  ==> COEFFICIENTS REELS
 !                    'C'  ==> COEFFICIENTS COMPLEXES
 !                    ' '  ==> COEFFICIENTS DU TYPE DU CHAM_... CHPIN
-! IN : LFETI  : FLAG INDIQUANT SI LA METHODE EST DE FETI OU NON
 !     ------------------------------------------------------------------
 !     PRECAUTIONS D'EMPLOI :
 !       1) LE CHAM_... "CHPOUT" NE DOIT PAS EXISTER
@@ -60,7 +59,6 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
     character(len=4) :: tych, docu
     character(len=19) :: ch19
     character(len=24) :: vale, refe, desc, celk, tamp
-    logical :: lfeti
 !
 !     ------------------------------------------------------------------
     data refe / '                   .REFE' /
@@ -88,7 +86,6 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
         call utmess('F', 'UTILITAI_21')
     endif
 !
-!     --------------------------- REFE --------------------------------
 !     --------------------------- CELK --------------------------------
 !     --- RECUPERATION DES INFORMATIONS DE CHPIN ---
     tamp(1:19) = chpin
@@ -105,7 +102,6 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
         zk24(lchpou+ival) = zk24(lchpin+ival)
 10  end do
 !
-!     --- LIBERATION ---
     tamp(1:19) = chpin
     tamp(1:19) = chpout
 !
@@ -128,39 +124,19 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
         zi(lchpou+ival) = zi(lchpin+ival)
 20  end do
 !
-!     --- LIBERATION ---
     desc(1:19) = chpin
     desc(1:19) = chpout
 !
 !     --------------------------- VALE --------------------------------
-!     ------------- CREATION DE L'OBJET SIMPLE DES VALEURS -------------
-!     --- TYPE DES VALEURS, LONGUEUR D'UN VECTEUR ---
     vale(1:19) = chpin
     type = typc(1:1)
     if (type .eq. ' ') call jelira(vale, 'TYPE', cval=type)
     call jelira(vale, 'LONMAX', nbval)
-    if (lfeti) then
-        call jeveuo(vale, 'L', lchpin)
-        nbval1=nbval-1
-    endif
     vale(1:19) = chpout
     call jecreo(vale, classe//' V '//type)
     call jeecra(vale, 'LONMAX', nbval)
     call jeveuo(vale, 'E', lchp)
 !
-! SI FETI INITIALISATION DU .VALE DIRECTEMENT SANS PASSER PAR
-! COPISD+COPICH+JEDUPO LORS D'UN APPEL DANS RESOUD
-    if (lfeti) then
-        if (type .eq. 'R') then
-            do 30 ival = 0, nbval1
-                zr(lchp+ival) = 0.d0
-30          continue
-        else if (type.eq.'C') then
-            do 40 ival = 0, nbval1
-                zc(lchp+ival) = dcmplx(0.d0,0.d0)
-40          continue
-        endif
-    endif
 !
 !     --- CHANGER LA GRANDEUR ---
     call sdchgd(chpout, type)

@@ -92,7 +92,6 @@ function isfonc(list_func_acti, func_name_z)
 !       ERRE_TEMPS_THM     :  CALCUL DE L'ERREUR EN TEMPS POUR LA THM
 !       EXI_VARC           :  PRESENCE DE VARIABLES DE COMMANDES
 !       REUSE              :  CONCEPT RE-ENTRANT
-!       FETI               :  SOLVEUR FETI
 !       LDLT               :  SOLVEUR LDLT
 !       MULT_FRONT         :  SOLVEUR MULT_FRONT
 !       GCPC               :  SOLVEUR GCPC
@@ -203,8 +202,6 @@ function isfonc(list_func_acti, func_name_z)
     else if (func_name.eq.'REUSE') then
         isfonc = list_func_acti(39).eq.1
 !
-    else if (func_name.eq.'FETI') then
-        isfonc = list_func_acti(11).eq.1
     else if (func_name.eq.'LDLT') then
         isfonc = list_func_acti(41).eq.1
     else if (func_name.eq.'MULT_FRONT') then

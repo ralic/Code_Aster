@@ -1,14 +1,11 @@
 subroutine assma3(lmasym, lmesym, tt, igr, iel,&
-                  c1, rang, ifel2, ifel3, ifel4,&
-                  ifel5, ifm, jfnusd, jnueq, jnumsd,&
-                  jresl, jrsvi, nbvel, nnoe, lfeti,&
-                  llich, llichd, llichp, llimo, ldist,&
-                  ldgrel, ilima, jadli, jadne, jprn1,&
-                  jprn2, jnulo1, jnulo2, jposd1, jposd2,&
-                  admodl, lcmodl, mode, nec, nmxcmp,&
-                  ncmp, jsmhc, jsmdi, iconx1, iconx2,&
-                  ligre1, ligre2, infofe, jtmp2, lgtmp2,&
-                  jvalm, ilinu, idd, ellagr, exivf,&
+                  c1, rang, jnueq, jnumsd, jresl,&
+                  jrsvi, nbvel, nnoe, ldist, ldgrel,&
+                  ilima, jadli, jadne, jprn1, jprn2,&
+                  jnulo1, jnulo2, jposd1, jposd2, admodl,&
+                  lcmodl, mode, nec, nmxcmp, ncmp,&
+                  jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
+                  lgtmp2, jvalm, ilinu, ellagr, exivf,&
                   jdesc, jrepe, jptvoi, jelvoi, codvoi)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +29,6 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !-----------------------------------------------------------------------
 ! BUT : ASSEMBLER UN ELEMENT FINI
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/ascopr.h"
 #include "asterfort/asret2.h"
@@ -42,21 +38,18 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 #include "asterfort/utmess.h"
 #include "asterfort/voiuti.h"
     logical :: lmasym, lmesym
-    character(len=19) :: ligre1, ligre2
     character(len=*) :: exivf
     character(len=2) :: tt
     real(kind=8) :: c1
-    character(len=24) :: infofe
-    integer :: iel, admodl, rang, compt, iconx1, iconx2, jadli, jadne
+    integer :: iel, admodl, rang, iconx1, iconx2, jadli, jadne
     integer :: i1, i2, iad1, iad11, iad2, iad21
-    integer :: iaux1, iaux2, iaux3, idd, ifel2, ifel3, ifel4, ifel5
-    integer :: ifm, igr, jfnusd, ilima, ilinu, nbterm
-    integer :: jfel4, jnueq, jnulo1, jnumsd, jposd1, jprn1, jprn2
+    integer :: igr, ilima, ilinu, nbterm
+    integer :: jnueq, jnulo1, jnumsd, jposd1, jprn1, jprn2
     integer :: jresl, jrsvi, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
     integer :: lcmodl, k1, k2, n2, n3, jnulo2, jposd2
     integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
     integer :: nec, nmxcmp, nnoe, numa, nk2, decael, jdesc
-    logical :: lfel2, lfeti, llich, llichd, llichp, llimo, ldist, ldgrel
+    logical :: ldist, ldgrel
 !
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, jrepe, jptvoi, jelvoi, nbvois
@@ -92,44 +85,6 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !     NUMA : NUMERO DE LA MAILLE
     numa=zzliel(ilima,igr,iel)
 !
-!     -- MONITORING:
-!     ----------------
-    if ((infofe(5:5).eq.'T') .and. lfeti) then
-        write (ifm,*)'<FETI/ASSMAM>','IDD',idd,'LIGREL',ligre1,&
-        'ILIMA', ilima
-        write (ifm,*)'IGR',igr,'IEL',iel,'NUMA',numa
-        if (llimo) write (ifm,*)'.LOGI',zi(jfnusd-1+abs(numa))
-        if (llich) then
-            if (llichd) then
-                write (ifm,*)'LIGREL DE CHARGE '//'PROJETE DE FILS ',&
-                ligre2
-            else
-                write (ifm,*)'LIGREL DE CHARGE INITIAL'
-            endif
-            write (ifm,*)'MAILLE ET/OU NOEUD TARDIF'
-        endif
-    endif
-!
-!
-!     -- SI FETI :
-!     --------------
-    if (lfeti) then
-!       SI ON EST DANS UN CALCUL FETI SUR UN SOUS-DOMAINE,
-!       ON SE POSE LA QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA
-!       AU SOUS-DOMAINE IDD
-        if (numa .gt. 0) then
-            if (llich) then
-                call utmess('F', 'ASSEMBLA_6')
-            endif
-!         ELLE APPARTIENT AU GREL IGR DU LIGREL PHYSIQUE ILIMA
-            if (zi(jfnusd-1+numa) .ne. idd) goto 110
-        else
-!         ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
-            if (llimo) then
-                call utmess('F', 'ASSEMBLA_7')
-            endif
-        endif
-    endif
 !
 !
 !     -- SI LES CALCULS ONT ETE DISTRIBUES :
@@ -187,46 +142,6 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
     else
         numa=-numa
 !
-!       -- SI FETI & LIGREL TARDIF:
-        if (llichd) then
-!         SI POUR FETI, MAILLE TARDIVE DUPLIQUEE, ON SE POSE
-!         LA QUESTION DE L'APPARTENANCE DE CETTE MAILLE TARDIVE
-!         AU SOUS-DOMAINE IDD VIA L'OBJET .FEL2 (C'EST LE PENDANT
-!         DE &FETI.MAILLE.NUMSD POUR LES MAILLES DU MODELE)
-!         LFEL2=.TRUE. ON ASSEMBLE LES CONTRIBUTIONS DE
-!         CETTE MAILLE TARDIVE
-!         LFEL2=.FALSE. ON LA SAUTE
-            lfel2=.false.
-            iaux1=zi(ifel2+2*(numa-1)+1)
-            if (iaux1 .gt. 0) then
-!           C'EST UNE MAILLE TARDIVE NON SITUEE SUR UNE INTERFACE
-!           ELLE CONCERNE LE SD, ON L'ASSEMBLE
-                if (iaux1 .eq. idd) lfel2=.true.
-            else if (iaux1.lt.0) then
-!           C'EST UNE MAILLE TARDIVE SITUEE SUR UNE INTERFACE,
-!           DONC PARTAGEE ENTRE PLUSIEURS SOUS-DOMAINES
-                compt=0
-                iaux2=(zi(ifel4)/3)-1
-                do 20 jfel4 = 0, iaux2
-                    iaux3=ifel4+3*jfel4+3
-                    if (zi(iaux3) .eq. numa) then
-                        compt=compt+1
-                        if (zi(iaux3-1) .eq. idd) then
-!                 ELLE CONCERNE LE SD, ON L'ASSEMBLE
-                            lfel2=.true.
-                            goto 30
-!
-                        endif
-!               ON A LU TOUTES LES VALEURS, ON SORT DE LA BOUCLE
-                        if (compt .eq. -iaux1) goto 30
-                    endif
-20              continue
-30              continue
-            endif
-!         ON SAUTE LA CONTRIBUTION
-            if (.not.lfel2) goto 110
-        endif
-!
 !
 !       MISE A JOUR DE ELLAGR :
 !       LA MAILLE EST UN ELEMENT DE DUALISATION DE CL (LAGRANGE) SI:
@@ -254,31 +169,6 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !           NOEUD TARDIF
                 n1=-n1
 !
-                if (llichp) then
-!             SI FETI & LIGREL TARDIF
-!             SI POUR FETI, NOEUD TARDIF DUPLIQUE,
-!             VERITABLE N1 DANS LE LIGREL DUPL
-                    iaux1=zi(ifel3+2*(n1-1)+1)
-                    if (iaux1 .gt. 0) then
-!               C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE
-!               NON SUR L'INTERFACE
-                        n1=-zi(ifel3+2*(n1-1))
-!
-                    else if (iaux1.lt.0) then
-!               C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE
-!               DE L'INTERFACE
-                        iaux2=(zi(ifel5)/3)-1
-                        do 40 jfel4 = 0, iaux2
-                            iaux3=ifel5+3*jfel4+3
-                            if (zi(iaux3) .eq. n1) then
-                                if (zi(iaux3-1) .eq. idd) then
-!                     VOICI SON NUMERO LOCAL CONCERNANT LE SD
-                                    n1=-zi(iaux3-2)
-                                endif
-                            endif
-40                      continue
-                    endif
-                endif
 !
 !
 !           -- NUMERO D'EQUATION DU PREMIER DDL DE N1

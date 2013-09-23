@@ -1,5 +1,5 @@
 subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
-                  base, ldist, lfeti)
+                  base, ldist)
     implicit none
 !
 ! ======================================================================
@@ -41,7 +41,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
     character(len=19) :: ligrel
     character(len=*) :: base, lchout(*)
     character(len=8) :: lpaout(*)
-    logical :: ldist, lfeti
+    logical :: ldist
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !      IOPT : OPTION
@@ -51,7 +51,6 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !       NOUT : NOMBRE DE CHAMPS DE SORTIE
 !       BASE : 'G', 'V' OU 'L'
 !     LDIST : CALCUL DISTRIBUE
-!     LFETI : CALCUL FETI
 !     SORTIES:
 !      CREATION DES CHAMPS GLOBAUX RESULTATS
 !
@@ -96,8 +95,8 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
             endif
             call alchml(ligrel, nomopt, nompar, base, nochou,&
                         iret, dcel)
-!        -- LES CHAM_ELEMS SONT INCOMPLETS AVEC FETI OU LDIST
-            if (ldist .or. lfeti) then
+!           -- les cham_elems sont incomplets si ldist
+            if (ldist) then
                 call jeveuo(nochou//'.CELK', 'E', jcelk)
                 zk24(jcelk-1+7)='MPI_INCOMPLET'
             endif
@@ -106,8 +105,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !        -- SINON --> RESUELEM
             ASSERT((code.ge.3).and.(code.le.5))
             call alresl(iopt, ligrel, nochou, nompar, base)
-!        -- LES RESU_ELEMS SONT COMPLETS AVEC FETI (MATRICE/ SM LOCAUX)
-!           MAIS INCOMPLETS EN LDIST (BLOCS DE MATRICE/SM GLOBAUX)
+!        -- LES RESU_ELEMS SONT INCOMPLETS EN LDIST
             if (ldist) then
                 call jeveuo(nochou//'.NOLI', 'E', jnoli)
                 zk24(jnoli-1+3)='MPI_INCOMPLET'

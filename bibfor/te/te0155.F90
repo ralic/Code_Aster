@@ -56,7 +56,7 @@ subroutine te0155(option, nomte)
     character(len=8) :: nompar(4), poum
     real(kind=8) :: a, e(1), rho(1), xl, temp, xdep, xrig, w(6), w2(3)
     real(kind=8) :: pgl(3, 3), fl(6), qg(6), ql(6), valpa1(4), valpa2(4)
-    real(kind=8) :: r8min, s, s2, s3, s4, s5, xxx, r8bid=0.d0, vect(6)
+    real(kind=8) :: r8min, s, s2, s3, s4, s5, r1, vect(6)
     integer :: nno, nc, lx, lorien, idepla, ideplp, i, lvect, lsect
     integer :: lmater, lpesa, lforc, itemps, nbpar, iret
     integer :: ifcx, iadzi, iazk24, kpg, spt
@@ -79,7 +79,6 @@ subroutine te0155(option, nomte)
     nno = 2
     nc = 3
     fami = 'RIGI'
-    r8bid = 0.0d0
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
     call jevech('PGEOMER', 'L', lx)
@@ -157,7 +156,7 @@ subroutine te0155(option, nomte)
         spt=1
         poum='+'
         call rcvalb('FPG1', kpg, spt, poum, zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [r8bid],&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'RHO', rho, codres, 1)
 !
         call jevech('PPESANR', 'L', lpesa)
@@ -206,9 +205,9 @@ subroutine te0155(option, nomte)
             global = .true.
         else
             call jevech('PFR1D1D', 'L', lforc)
-            xxx = abs(zr(lforc+3))
-            global = xxx .lt. 1.d-3
-            normal = xxx .gt. 1.001d0
+            r1 = abs(zr(lforc+3))
+            global = r1 .lt. 1.d-3
+            normal = r1 .gt. 1.001d0
         endif
         elseif ( option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq.&
     'CHAR_MECA_SF1D1D' ) then
@@ -447,7 +446,7 @@ subroutine te0155(option, nomte)
 !        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         call jevech('PMATERC', 'L', lmater)
         call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [r8bid],&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'E', e, codres, 1)
 !
 !        TEMPERATURE DE REFERENCE
@@ -486,7 +485,7 @@ subroutine te0155(option, nomte)
 !        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         call jevech('PMATERC', 'L', lmater)
         call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [r8bid],&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'E', e, codres, 1)
 !
         call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
@@ -496,7 +495,7 @@ subroutine te0155(option, nomte)
             instan = 0.d0
         endif
 !
-!        TEMPERATURE EFFETIVE
+!        TEMPERATURE EFFECTIVE
         call rcvarc(' ', 'TEMP', '+', fami, 1,&
                     1, temp, iret)
 !
@@ -555,7 +554,7 @@ subroutine te0155(option, nomte)
 !        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         call jevech('PMATERC', 'L', lmater)
         call rcvalb('RIGI', 1, 1, '+', zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [r8bid],&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'E', e, codres, 1)
 !
 ! ---- RECUPERATION DE L'INSTANT
@@ -567,7 +566,7 @@ subroutine te0155(option, nomte)
             instan = 0.d0
         endif
 !
-!        TEMPERATURE EFFETIVE
+!        TEMPERATURE EFFECTIVE
         call rcvarc(' ', 'TEMP', '+', fami, 1,&
                     1, temp, iret1)
 !

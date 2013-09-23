@@ -108,7 +108,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lreli, lnkry, lfeti, limpex, lcont
+    logical :: lreli, lnkry, limpex, lcont
     integer :: iret
     real(kind=8) :: r8bid
     real(kind=8) :: resigr, pasmin
@@ -122,7 +122,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     integer :: nbiter, itesup
     integer :: ifm, niv
     real(kind=8) :: relcoe
-    integer :: relite, fetite
+    integer :: relite
 !
 ! ----------------------------------------------------------------------
 !
@@ -153,13 +153,11 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     vgeom = r8vide()
     relcoe = r8vide()
     relite = -1
-    fetite = -1
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
     lreli = isfonc(fonact,'RECH_LINE')
     lnkry = isfonc(fonact,'NEWTON_KRYLOV')
-    lfeti = isfonc(fonact,'FETI')
     limpex = isfonc(fonact,'IMPLEX')
     lcont = isfonc(fonact,'CONTACT')
 !
@@ -200,19 +198,6 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     endif
     call nmrvai(sdstat, 'RECH_LINE_ITER', 'E', relite)
 !
-! --- STATISTIQUES POUR FETI
-!
-    if (lfeti) then
-        critfe = '&FETI.CRITER.CRTI'
-        call jeexin(critfe, iret)
-        if (iret .gt. 0) then
-            call jeveuo(critfe, 'L', jcrit)
-            fetite = zi(jcrit)
-            call jedetr(critfe)
-        endif
-    endif
-    call nmrvai(sdstat, 'FETI_ITER', 'E', fetite)
-!
 ! --- CALCUL DES RESIDUS
 !
     call nmresi(noma, mate, numedd, sdnume, fonact,&
@@ -244,7 +229,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! --- ENREGISTRE LES DONNEES POUR AFFICHAGE DANS LA SDIMPR
 !
-    call nmimrv(sdimpr, fonact, iterat, fetite, relcoe,&
+    call nmimrv(sdimpr, fonact, iterat, relcoe,&
                 relite, eta)
 !
 ! --- CAPTURE ERREUR EVENTUELLE

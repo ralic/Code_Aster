@@ -40,7 +40,6 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 #include "asterc/etausr.h"
 #include "asterc/getres.h"
 #include "asterc/r8maem.h"
-#include "asterfort/alfeti.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -88,7 +87,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     character(len=19) :: maprec, vecass, chdepl, k19b, matass
     character(len=24) :: numedd, method, criter, opt, k24b, modele, carele
     character(len=24) :: fomult, noojb
-    logical :: matcst, assmat, lfeti
+    logical :: matcst, assmat
     logical :: lbid, ltemp, lhydr, lsech, lptot
 !
 ! DEB------------------------------------------------------------------
@@ -140,15 +139,6 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     matcst=(.not.(repk.eq.'OUI'))
 !
 ! 2.2. ==> NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
-! FETI OR NOT FETI ?
-    call jeveuo(solveu(1:19)//'.SLVK', 'L', islvk)
-    method=zk24(islvk)
-! SI FETI, INITIALISATION DES OBJETS TEMPORAIRES DE MONITORING
-    if (method(1:4) .eq. 'FETI') then
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
 !
     numedd=  '12345678.NUMED'
     noojb='12345678.00000.NUME.PRNO'
@@ -249,15 +239,6 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 999  continue
     call detrsd('CHAMP_GD', vecass)
 !
-    if (lfeti) then
-! NETTOYAGE DES SD FETI SI NECESSAIRE (SUCCESSION DE CALCULS DECOUPLES)
-! ET INITIALISATION NUMERO D'INCREMENT
-        opt='NETTOYAGE_SDT'
-        call alfeti(opt, k19b, k19b, k19b, k19b,&
-                    ibid, rbid, k24b, rbid, ibid,&
-                    k24b, k24b, k24b, k24b, ibid,&
-                    k24b, k24b, ibid)
-    endif
 !
     call jeexin(criter(1:19)//'.CRTI', iret)
     if (iret .ne. 0) then

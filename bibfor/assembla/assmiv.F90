@@ -138,36 +138,6 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     bas=base
 !
 ! ------------------------------------------------------------------
-!     -- SI LES CALCULS ONT ETE "DISTRIBUES" :
-!        CALCUL DE :
-!           * LDIST  : .TRUE. : LES CALCULS ONT ETE DISTRIBUES
-!           * LDGREL : .TRUE. : LES CALCULS ONT ETE DISTRIBUES PAR GREL
-!           * JNUMSD : ADRESSE DE PARTIT//'.NUPROC.MAILLE'
-!
-!     -- IL EXISTE TROIS FORMES DE CALCUL DISTRIBUE BASES SUR UNE PARTI
-!        TION:
-!        * FETI: LE FLAG A ACTIVER EST LE LOGICAL LFETI
-!              (PAS CONCERNE ICI, HORS PERIMETRE FETI)
-!        * DISTRIBUE (AVEC OU SANS MUMPS) EN STD: FLAG LDIST
-!        * DISTRIBUE AVEC MUMPS + OPTION MATR_DISTIBUEE: LDIST (PAS CON
-!            CERNE ICI, ON NE RETAILLE QUE LES MATRICES)
-!
-!        AU SENS ASSMIV, LES DEUX DERNIERS CAS DE FIGURES SONT IDENTI
-!        QUES. POUR PLUS D'INFO CF. COMMENTAIRES DS ASSMAM.
-!
-!         EN BREF ON A 4 CAS DE FIGURES DE CALCUL ASTER ET ILS SE DECLI
-!         NENT COMME SUIT VIS-A-VIS DES VARIABLES DE ASSVEC:
-!        1/ CALCUL STD SEQ PAS FETI:
-!            LFETI='F',LDIST='F'
-!        2/ CALCUL FETI SEQ OU PARALLELE (MATRICES MERE ET FILLES)
-!            LFETI='T',LDIST='F'  (PAS CONCERNE ICI)
-!        3/ CALCUL PARALLELE (AVEC OU SANS MUMPS) DISTRIBUE STD:
-!            LFETI='F',LDIST='T'
-!        4/ CAS PARTICULIER DU PRECEDENT: SOLVEUR=MUMPS + OPTION MATR
-!          DISTRIBUEE ACTIVEE      (PAS CONCERNE ICI)
-!            LFETI='F',LDIST='T'
-!
-! ------------------------------------------------------------------
     ldist=.false.
     ldgrel=.false.
     rang=0

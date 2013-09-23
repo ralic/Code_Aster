@@ -54,7 +54,7 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 !
     integer :: ifm, niv
     logical :: lreli, lpilo, lctcd, lctcc
-    logical :: lborst, lrefe, lfeti, lcomp
+    logical :: lborst, lrefe, lcomp
     logical :: lboucc, lboucf, lboucg, lallv, lnewtf, lnewtc, lnewtg
     character(len=24) :: sdtabc, slcolo, sdcolo
     integer :: icolo, nbcolo
@@ -78,7 +78,6 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
     lctcc = isfonc(fonact,'CONT_CONTINU')
     lrefe = isfonc(fonact,'RESI_REFE')
     lborst = isfonc(fonact,'DEBORST')
-    lfeti = isfonc(fonact,'FETI')
     lboucf = isfonc(fonact,'BOUCLE_EXT_FROT')
     lboucg = isfonc(fonact,'BOUCLE_EXT_GEOM')
     lboucc = isfonc(fonact,'BOUCLE_EXT_CONT')
@@ -220,11 +219,6 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
         call oblsap(slcolo, 'CTCC_CYCL', .true.)
     endif
 !
-! --- FETI
-!
-    if (lfeti) then
-        call oblsap(slcolo, 'FETI_NBIT', .true.)
-    endif
 !
 ! --- TEMPS PASSE DANS L'ITERATION
 !

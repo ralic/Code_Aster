@@ -1,4 +1,4 @@
-subroutine nmimrv(sdimpr, fonact, iterat, fetite, relcoe,&
+subroutine nmimrv(sdimpr, fonact, iterat, relcoe,&
                   relite, eta)
 !
 ! ======================================================================
@@ -27,7 +27,7 @@ subroutine nmimrv(sdimpr, fonact, iterat, fetite, relcoe,&
     integer :: fonact(*), iterat
     character(len=24) :: sdimpr
     real(kind=8) :: relcoe, eta
-    integer :: relite, fetite
+    integer :: relite
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,14 +42,13 @@ subroutine nmimrv(sdimpr, fonact, iterat, fetite, relcoe,&
 ! IN  SDIMPR : SD AFFICHAGE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
-! IN  FETITE : NB ITER. FETI
 ! IN  RELCOE : VALEUR COEF. RECHERCHE LINEAIRE
 ! IN  RELITE : NB ITER. RECHERCHE LINEAIRE
 ! IN  ETA    : VALEUR COEF. PILOTAGE
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: lreli, lfeti, lpilo, lborst
+    logical :: lreli, lpilo, lborst
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,7 +59,6 @@ subroutine nmimrv(sdimpr, fonact, iterat, fetite, relcoe,&
     lborst = isfonc(fonact,'DEBORST')
     lpilo = isfonc(fonact,'PILOTAGE')
     lreli = isfonc(fonact,'RECH_LINE')
-    lfeti = isfonc(fonact,'FETI')
 !
 ! --- ECRITURE CRITERES RECHERCHE LINEAIRE
 !
@@ -75,11 +73,6 @@ subroutine nmimrv(sdimpr, fonact, iterat, fetite, relcoe,&
         call nmimcr(sdimpr, 'PILO_COEF', eta, .true.)
     endif
 !
-! --- ECRITURE NUMERO ITERATION FETI
-!
-    if (lfeti) then
-        call nmimci(sdimpr, 'FETI_NBIT', fetite, .true.)
-    endif
 !
 ! --- ECRITURE DE BORST
 !

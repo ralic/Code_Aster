@@ -39,7 +39,6 @@ subroutine vlaxpy(alpha, chamna, chamnb)
     integer :: neq, ival1, ival2, iret1, iret2, i, ibid, jnum
     character(len=19) :: prno
     character(len=24) :: chamn1, chamn2
-    logical :: lfeti
 !----------------------------------------------------------------------
 !
     call jemarq()
@@ -51,18 +50,6 @@ subroutine vlaxpy(alpha, chamna, chamnb)
                 prno, iret1)
     call jeveuo(prno(1:14)// '.NUME.DELG', 'L', jnum)
 !
-! --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE FETI
-    call jeexin(chamn1(1:19)//'.FETC', iret1)
-    if (iret1 .ne. 0) then
-        call jeexin(chamn2(1:19)//'.FETC', iret2)
-        if (iret2 .eq. 0) then
-            call utmess('F', 'ALGELINE3_91')
-        endif
-        lfeti=.true.
-    else
-        lfeti=.false.
-    endif
-    ASSERT(.not.lfeti)
 !
 ! --- MISE A JOUR DES VALEURS DES LAGRANGE
     call jeveuo(chamn1(1:19)//'.VALE', 'L', ival1)

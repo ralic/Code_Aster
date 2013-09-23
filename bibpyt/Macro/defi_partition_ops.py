@@ -19,7 +19,7 @@
 
 
 # ===========================================================================
-#           CORPS DE LA MACRO "DEFI_PART_FETI"
+#           CORPS DE LA MACRO "DEFI_PARTITION"
 #           -------------------------------------
 # USAGE :
 #  MAILLAGE        maillage a partitionner
@@ -35,7 +35,7 @@
 # script PYTHON : lancement de DEFI_PART_PA_OPS et de DEFI_PART_OPS
 
 
-def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTION_CONNEX,INFO,**args):
+def defi_partition_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTION_CONNEX,INFO,**args):
 
   import aster, string, sys
 
@@ -56,7 +56,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
   DEFI_FICHIER    = self.get_cmd('DEFI_FICHIER')
   DEFI_PART_PA_OPS   = self.get_cmd('DEFI_PART_PA_OPS')
 
-  nompro='DEFI_PART_FETI'
+  nompro='DEFI_PARTITION'
 
   # Maillage
   if args.has_key('MODELE'):
@@ -75,7 +75,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
   # Test sur le nombre de caractères de NOM_GROUP_MA
   if ( len(NOM_GROUP_MA)+len(str(NB_PART)) > 7 ):
     ln=7-len(str(NB_PART))
-    UTMESS('F','FETI0_1',vali=ln)
+    UTMESS('F','PARTITION_1',vali=ln)
 
   # Verification que des GROUP_MA ne portent pas deja les memes noms
   _lst = []
@@ -84,15 +84,15 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
   for i in range(NB_PART):
     if ( NOM_GROUP_MA+str(i) in _lst ):
       ngrma=NOM_GROUP_MA+str(i)
-      UTMESS('F','FETI0_2',valk=ngrma)
+      UTMESS('F','PARTITION_2',valk=ngrma)
     if args.has_key('NOM_GROUP_MA_BORD') :
       if args['NOM_GROUP_MA_BORD'] != None :
         if ( args['NOM_GROUP_MA_BORD']+str(i) in _lst ):
           ngrma=args['NOM_GROUP_MA_BORD']+str(i)
-          UTMESS('F','FETI0_2',valk=ngrma)
+          UTMESS('F','PARTITION_2',valk=ngrma)
 
   # Le concept sortant dans le contexte de la macro
-  self.DeclareOut('_SDFETI',self.sd)
+  self.DeclareOut('_SDPART',self.sd)
 
   # Debut :
 
@@ -148,7 +148,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
   _LST_GMA = MAILLAGE.LIST_GROUP_MA()
   _LST_GMA = map(lambda x: x[0], _LST_GMA)
 
-  # Creation de la SDFETI
+  # Creation de la SDPART
   if args.has_key('MODELE'):
     if args['MODELE'] != None :
       _tmp  = []
@@ -174,16 +174,16 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
               if dExcit[-1][i]==None : del dExcit[-1][i]
           motscle2['EXCIT']=dExcit
 
-      _SDFETI=DEFI_PART_OPS(NOM='SDD',
+      _SDPART=DEFI_PART_OPS(NOM='SDD',
                             MODELE=args['MODELE'],
                             INFO=1,
                             **motscle2
                             );
     else:
-      _SDFETI=None
+      _SDPART=None
 
   else:
-    _SDFETI=None
+    _SDPART=None
 
 
   # Fin :

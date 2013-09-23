@@ -28,7 +28,7 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/nueffe.h"
 #include "asterfort/nugllo.h"
-#include "asterfort/profma.h"
+#include "asterfort/promor.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: moloc, vligr(*), solveu, base, nu, nuposs
     integer :: nbligr
@@ -111,7 +111,7 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
         endif
     endif
 !
-    call profma(nu1, solve2, bas2(1:1))
+    call promor(nu1, bas2(1:1))
     call jedetr(nu1//'     .ADLI')
     call jedetr(nu1//'     .ADNE')
 !

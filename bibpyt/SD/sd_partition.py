@@ -18,6 +18,9 @@
 
 from SD import *
 
+
+# sd_partition (utilisee par la sd_modele) :
+#--------------------------------------------
 class sd_partition(AsBase):
     nomj = SDNom(fin=8)
     PRTI = AsVI(lonmax=1)
@@ -41,3 +44,35 @@ class sd_partition(AsBase):
 
         if  prtk[0] != 'GROUP_ELEM' :
             assert self.NUPROC_MAILLE.exists
+
+
+
+# sd_partit (cree par la commande DEFI_PARTITION :
+#----------------------------------------------------
+
+# AJACOT_PB en attendant la correction de la fiche 10475 :
+# on dédouble la SD pour la rendre facultative.
+
+
+class sd_partit1(AsBase):
+    nomj = SDNom(fin=19)
+    FLIM = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FDIM = AsVI(lonmax=5, )
+    FREF = AsVK8()
+    FETG = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FLIN = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='K', ltyp=24, )
+    FLII = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FETB = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FETA = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FETJ = AsVI()
+    FETI = AsVI()
+    FETH = AsVI()
+    FCFI = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FCFL = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='K', ltyp=24, )
+    FCFM = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FCFN = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+
+
+class sd_partit(AsBase):
+    nomj = SDNom(fin=19)
+    sd1 = Facultatif(sd_partit1(SDNom('')))

@@ -61,7 +61,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
 !
 !
-    logical :: lpilo, lfeti
+    logical :: lpilo
     integer :: ifm, niv
     integer :: jcri, jcri1
     integer :: iret
@@ -90,7 +90,6 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 ! --- FONCTIONNALITES ACTIVEES
 !
     lpilo = isfonc(fonact,'PILOTAGE')
-    lfeti = isfonc(fonact,'FETI')
 !
 ! --- SECOND MEMBRE FIXE
 !
@@ -143,21 +142,6 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
         endif
     endif
 !
-! --- FETI OR NOT ?
-! --- SI FETI ON DUPLIQUE L'INFO DU NBRE D'ITERATIONS POUR AFFICHAGE DE
-! --- NMCONV. ON NE GARDE PAS L'OBJET GRGC.CRTI CAR CELA PERTURBE LE
-! --- REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS
-!
-    if (lfeti) then
-        call jeexin('&FETI.CRITER.CRTI', iret)
-        if (iret .eq. 0) then
-            call wkvect('&FETI.CRITER.CRTI', 'V V I', 1, jcri1)
-        else
-            call jeveuo('&FETI.CRITER.CRTI', 'E', jcri1)
-        endif
-        call jeveuo(crgc//'.CRTI', 'L', jcri)
-        zi(jcri1) = zi(jcri)
-    endif
 !
 9999  continue
 !

@@ -238,6 +238,7 @@ def checksd(nomsd, typesd):
       4 : on n'a meme pas pu tester
     """
     from Utilitai.Utmess import UTMESS
+    import aster
     nomsd  = nomsd.strip()
     typesd = typesd.lower().strip()
     # import
