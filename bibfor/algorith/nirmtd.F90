@@ -90,7 +90,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
     nbsig = nbsigm()
     do ia = 1, 3
         kd(ia) = 1.d0
-        kd(ia+1) = 2.d0/rac2
+        kd(ia+3) = 2.d0/rac2
     end do
 !
 ! - RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
