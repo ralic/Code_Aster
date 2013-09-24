@@ -27,20 +27,16 @@ subroutine execop()
 #include "asterc/uttrst.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/detmat.h"
 #include "asterfort/ex0000.h"
 #include "asterfort/ex0100.h"
 #include "asterfort/foint0.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/jedetv.h"
-#include "asterfort/jelibz.h"
-#include "asterfort/jerecu.h"
-#include "asterfort/jereou.h"
 #include "asterfort/jermxd.h"
 #include "asterfort/jevema.h"
 #include "asterfort/mecoel.h"
 #include "asterfort/op9999.h"
 #include "asterfort/opsexe.h"
+#include "asterfort/post_op.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
@@ -51,7 +47,7 @@ subroutine execop()
     common /inf001/ nivuti,nivpgm,unite
 !
     integer :: nuoper, nuop2, imaav, imaap
-    real(kind=8) :: tpres, pcent, rval(12)
+    real(kind=8) :: tpres, rval(12)
     character(len=6) :: nommar
     character(len=8) ::  k8tab(7)
     integer :: iret, iret2
@@ -148,22 +144,10 @@ subroutine execop()
         call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
     endif
 !
-!     -- DESTRUCTION DES MATRICES DE LA BASE VOLATILE
-!        ET SURTOUT DE LEURS INSTANCES MUMPS ET/OU PETSC :
-    call detmat()
-!
-!     --LIBERATION DES OBJETS RAMENES EN MEMOIRE PAR JEVEUT :
-    call jelibz('G')
-!
 !     -- ON IMPRIME LES COMPTEURS DE TEMPS :
 !        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)
     call uttcpg('IMPR', 'CUMU')
 !
-!     -- DESTRUCTION DES OBJETS DE LA BASE VOLATILE :
-    call jedetv()
-!
-    pcent = 0.01d0
-    call jereou('V', pcent)
-    call jerecu('G')
+    call post_op()
 !
 end subroutine

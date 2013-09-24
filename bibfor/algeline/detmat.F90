@@ -39,25 +39,26 @@ subroutine detmat()
                 nbmat)
     ASSERT(nbmat.ge.0)
 !
-    do 1,i=1,nbmat
+    do i=1,nbmat
 !
 !        ON VERIFIE QUE L'OBJET REPERE EXISTE TOUJOURS
 !        IL A EN EFFET PU ETRE DETRUIT DANS LE CAS FETI PAR EXEMPLE
-    call jeexin(lirefa(i), ier)
-    if (ier .eq. 0) goto 1
-    matass = lirefa(i)(1:19)
+        call jeexin(lirefa(i), ier)
+        if (ier .eq. 0) goto 10
+        matass = lirefa(i)(1:19)
 !
 !        ON DETRUIT L'EVENTUELLE INSTANCE MUMPS ASSOCIEE A LDLT_SP
-    call dismoi('C', 'SOLVEUR', matass, 'MATR_ASSE', ibid,&
+        call dismoi('C', 'SOLVEUR', matass, 'MATR_ASSE', ibid,&
                 solveu, ier)
-    if (ier .eq. 0 .and. solveu(1:4) .ne. 'XXXX') then
-        call detlsp(matass, solveu)
-    endif
+        if (ier .eq. 0 .and. solveu(1:4) .ne. 'XXXX') then
+            call detlsp(matass, solveu)
+        endif
 !
 !        ON DETRUIT LES MATR_ASSE AINSI QUE LES
 !        EVENTUELLES INSTANCES MUMPS ET PETSC
-    call detrsd('MATR_ASSE', matass)
+        call detrsd('MATR_ASSE', matass)
 !
-    1 end do
+10      continue
+    end do
 !
 end subroutine

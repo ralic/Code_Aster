@@ -162,6 +162,10 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
 !           NOM DU CONCEPT COURANT
             call getres(nomres, k8b, k8b)
 !
+            if (isjvup() .eq. 1) then
+                call post_op()
+            endif
+!
             if (nomres .ne. ' ') then
 !             LE CONCEPT EST REPUTE VALIDE :
 !               - SI ERREUR <S> OU EXCEPTION
@@ -182,9 +186,6 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
             endif
 !
             if (isjvup() .eq. 1) then
-!
-!             -- MENAGE SUR LA BASE VOLATILE
-                call jedetv()
 !
 !             REMONTER LES N JEDEMA COURT-CIRCUITES
                 call jevema(imaap)

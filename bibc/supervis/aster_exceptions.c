@@ -22,6 +22,7 @@
 #include <setjmp.h>
 
 #include "aster.h"
+#include "aster_fort.h"
 #include "aster_exceptions.h"
 
 /*
@@ -145,7 +146,9 @@ void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
     PyObject *tup_valk, *tup_vali, *tup_valr;
     char *kvar;
     int i;
-    
+    /* call clean-up subroutine as after each operator */
+    CALL_POST_OP();
+
     tup_valk = PyTuple_New( *nbk ) ;
     for(i=0;i<*nbk;i++){
        kvar = valk + i*lvk;
