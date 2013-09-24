@@ -1,0 +1,126 @@
+# TITRE TRACTION SIMPLE META_LEMA_ANI AVEC SIMU_POINT_MAT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='HSNV136D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='OUI')
+
+
+L_INST=DEFI_LIST_REEL(         DEBUT=0.0,INTERVALLE=(
+                              _F(  JUSQU_A = 1.0,  NOMBRE = 1),
+                              _F(  JUSQU_A = 1.03,  NOMBRE = 3),
+                                        )
+                          )
+
+TEMP=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=( 0. ,    700.0,
+                           60.,    700.,),
+                    PROL_GAUCHE='CONSTANT',
+                    PROL_DROITE='CONSTANT',)
+
+phase1=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=( 0. ,    1.,
+                           60.,    1.,),
+                    PROL_GAUCHE='CONSTANT',
+                    PROL_DROITE='CONSTANT',)
+
+
+phase0=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=( 0. ,   0.,
+                           60.,   0.,),
+                    PROL_GAUCHE='CONSTANT',
+                    PROL_DROITE='CONSTANT',)
+
+ACIER=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
+                               NU = 0.35,
+                               F_ALPHA = 0.,
+                               C_ALPHA = 0.,
+                               PHASE_REFE = 'FROID',
+                               EPSF_EPSC_TREF = 0.,),
+                   META_LEMA_ANI=_F(
+                            F1_A=2.40,    F2_A=0.20,     C_A=9.40,
+                            F1_M=0.0,    F2_M=0.80E-04, C_M=0.99E-04,
+                            F1_N=4.40,    F2_N=3.0,     C_N=6.1,
+                            F1_Q=19900., F2_Q=21000.,  C_Q=6200.,
+                            F_MRR_RR=1.,                 C_MRR_RR=1.,
+                            F_MTT_TT=1.,                 C_MTT_TT=1.,
+                            F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
+                            F_MRT_RT=0.75,               C_MRT_RT=0.75,
+                            F_MRZ_RZ=0.75,               C_MRZ_RZ=0.75,
+                            F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,),),
+
+
+
+S1=DEFI_FONCTION(      NOM_PARA='INST',
+                             PROL_DROITE='CONSTANT',
+                                   VALE=(  0.,      0.,
+                                           1.,      0.,
+                                           2.,    3.5,   )
+                         )
+
+
+# COMME HSNV136A MAIS AVEC SIMU_POINT_MAT
+
+VL=SIMU_POINT_MAT(INFO=1,
+                      MATER=ACIER,
+                      COMPORTEMENT=(_F(RELATION = 'META_LEMA_ANI',
+                                    RELATION_KIT='ZIRC',),),
+                      INCREMENT=(_F(LIST_INST=L_INST,),),
+                      NEWTON=_F(REAC_ITER=1,),
+                      SUPPORT='ELEMENT',
+                      AFFE_VARC=(
+                              _F(V1=phase1,V2=phase0,V3=phase0,V4=phase0,NOM_VARC='M_ZIRC',),
+                              _F(VALE_FONC=TEMP,
+                                 VALE_REF=700.,
+                                 NOM_VARC='TEMP',),),
+                      EPSI_IMPOSE=_F(EPYY=S1,),
+                      CONVERGENCE=_F(RESI_GLOB_MAXI=0.001),
+                       );
+
+
+IMPR_TABLE(TABLE=VL)
+
+
+
+
+TEST_TABLE(
+           VALE_CALC=0.105,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='EPYY',
+           TABLE=VL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.03,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=333.08507710305,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIYY',
+           TABLE=VL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.03,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.10077999999999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='V1',
+           TABLE=VL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.03,),
+           )
+
+FIN()
