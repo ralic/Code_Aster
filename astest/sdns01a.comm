@@ -663,7 +663,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=330.8992,
               )
 
 TEST_TABLE(
-           VALE_CALC=2229.5540679937,
+           VALE_CALC=2229.5515037805,
            NOM_PARA='NORME',
            TABLE=NEXT,
            )
