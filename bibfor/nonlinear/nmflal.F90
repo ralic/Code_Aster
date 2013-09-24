@@ -106,13 +106,12 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
 !     RIGIDITE GEOMETRIQUE INTEGREE A LA MATRICE TANGENTE
     do 10 i = 1, nbv
         if ((zk16(init+2+20*(i-1)).eq.'GROT_GDEP') .or.&
-            (zk16(init+2+ 20*(i-1)).eq.'GDEF_HYPO_ELAS') .or.&
-            (zk16(init+2+20*(i-1)) .eq.'SIMO_MIEHE')) then
+            (zk16(init+2+20*(i-1)).eq.'GDEF_HYPO_ELAS') .or.&
+            (zk16(init+2+20*(i-1)).eq.'SIMO_MIEHE') .or.&
+            (zk16(init+2+20*(i-1)).eq.'GDEF_LOG')) then
             defo = 1
-        else if ((zk16(init+2+20*(i-1)).eq.'GDEF_LOG')) then
-            ASSERT(.false.)
         endif
-10  end do
+10  enddo
 !
 ! --- RECUPERATION DES OPTIONS
 !

@@ -101,6 +101,8 @@ subroutine nmdopo(sddyna, method, sdpost)
     optrig = ' '
     opmrig = ' '
     sign = ' '
+    bande(1) = -10.d0
+    bande(2) = 10.d0
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -235,22 +237,6 @@ subroutine nmdopo(sddyna, method, sdpost)
         call nmecsd('POST_TRAITEMENT', sdpost, 'COEF_DIM_FLAMB', cdsp, r8bid,&
                     k24bid)
 !
-! ----- BANDE DE RECH. DE FREQ.
-!
-        call getvr8(motfac, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=bande,&
-                    nbret=iret, isdefault=iarg)
-        if (iarg .eq. 0) then
-            optmod = 'BANDE'
-        else
-            optmod = 'PLUS_PETITE'
-        endif
-        call nmecsd('POST_TRAITEMENT', sdpost, 'BANDE_FLAMB_1', ibid, bande(1),&
-                    k24bid)
-        call nmecsd('POST_TRAITEMENT', sdpost, 'BANDE_FLAMB_2', ibid, bande(2),&
-                    k24bid)
-        call nmecsd('POST_TRAITEMENT', sdpost, 'OPTION_EXTR_FLAM', ibid, r8bid,&
-                    optmod)
-!
 ! ----- PRISE EN COMPTE MATRICE RIGIDITE GEOMETRIQUE OU PAS
 !
         call getvtx(motfac, 'RIGI_GEOM', iocc=iocc, scal=ngeo, nbret=iret,&
@@ -264,6 +250,22 @@ subroutine nmdopo(sddyna, method, sdpost)
         endif
         call nmecsd('POST_TRAITEMENT', sdpost, 'RIGI_GEOM_FLAMB', ibid, r8bid,&
                     optrig)
+!
+! ----- BANDE DE RECH. DE FREQ.
+!
+        call getvr8(motfac, 'CHAR_CRIT', iocc=iocc, nbval=2, vect=bande,&
+                    nbret=iret, isdefault=iarg)
+        if (iret.eq.0) then
+            optmod = 'PLUS_PETITE'
+        else
+            optmod = 'BANDE'
+        endif
+        call nmecsd('POST_TRAITEMENT', sdpost, 'BANDE_FLAMB_1', ibid, bande(1),&
+                    k24bid)
+        call nmecsd('POST_TRAITEMENT', sdpost, 'BANDE_FLAMB_2', ibid, bande(2),&
+                    k24bid)
+        call nmecsd('POST_TRAITEMENT', sdpost, 'OPTION_EXTR_FLAM', ibid, r8bid,&
+                    optmod)
 !
 ! ----- EXCLUSION DE CERTAINS DDLS  ET MODIFICATION RIGIDITE
 !
