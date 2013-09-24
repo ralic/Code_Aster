@@ -5,5 +5,5 @@ P mpi_nbcpu 2
 P mpi_nbnoeud 1
 P testlist I
 
-F comm ssnl125a.comm D 1
-F mmed ssnl125a.mmed D 20
+F comm ssnl125b.comm D 1
+F mmed ssnl125b.mmed D 20

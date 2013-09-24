@@ -190,9 +190,115 @@ def Acier_Cine_Line(DMATER,args):
    #
    return mclef
 
+  
+def Ident_Endo_Fiss_Exp(ft,fc,beta=0.1,prec=1E-10,itemax=100):
+
+# Estimation initiale
+  A = (2.0/3.0 + 3*beta**2)**0.5
+  r = fc/ft
+  C = 3**0.5
+  L = A*(r-1)
+  p0 = 2*(1-C)
+  pp = (1-L)
+  delta = pp**2-p0
+  x = -pp+delta**0.5
+  
+# Resolution de l'equation par methode de Newton
+  for i in range(itemax):
+    f  = L*x + (2+numpy.exp(-2*r*x))**0.5 - (2+numpy.exp(2*x))**0.5
+    if abs(f) < prec: break
+    df = L - r*numpy.exp(-2*r*x)/(2+numpy.exp(-2*r*x))**0.5 - numpy.exp(2*x)/(2+numpy.exp(2*x))**0.5
+    x  = x - f/df
+  else:
+    UTMESS('F', 'COMPOR1_87' )
+  
+  tau  = A*x + (2+numpy.exp(2*x))**0.5
+  sig0 = ft/x
+  
+  return (sig0,tau)
+  
+    
+   
+def Endo_Fiss_Exp(DMATER,args):
+   """
+   ENDO_FISS_EXP = Paramètes utilisateurs de la loi ENDO_FISS_EXP
+      E              = Module de Young
+      NU             = Coefficient de Poisson
+      FT             = Limite en traction simple
+      FT_FENDAGE     = Limite en traction obtenue via un essai bresilien
+      FC             = Limite en compression simple
+      GF             = Energie de fissuration
+      P              = Parametre dominant de la loi cohésive asymptotique
+      DSIG_DU        = Pente initiale (au signe pres) de la loi cohesive asymptotique
+      Q              = Parametre secondaire de la loi cohesive asymptotique
+      Q_REL          = Parametre Q exprime de maniere relative par rapport a Qmax(P)
+      LARG_BANDE     = Largeur de bande d'endommagement (2*D)
+   """
+   #
+   MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
+
+   
+ # Lecture et interpretation des parametres utilisateurs
+   E   = MATER['E']
+   NU  = MATER['NU']
+   GF  = MATER['GF']
+   FC  = MATER['FC']
+   CRM = MATER['COEF_RIGI_MINI']
+   D   = MATER['LARG_BANDE']/2.0
+
+   if MATER['FT'] <> None:
+     FT = MATER['FT']
+   else:
+     FT = MATER['FT_FENDAGE']*1.10   # L'essai de fendage sous-estime de 10% Ft
+     
+   if MATER['P'] <> None:
+     P = MATER['P']
+   else:
+     dsdu = MATER['DSIG_DU']
+     sref = FT
+     uref = GF/SY
+     dsdubar = uref/sref * dsdu
+     P = (1.5*numpy.pi)**(2.0/3.0)-2
+     
+   if MATER['Q'] <> None:
+     Q = MATER['Q']
+   elif MATER['Q_REL'] <> None:
+     qmax = (1.11375+0.565239*P-0.003322*P**2)*(1-numpy.exp(-1.98935*P)) - 0.01
+     Q = qmax * MATER['Q_REL']
+   else:
+     Q = 0.0
+   
+   
+ # Parametres de la fonction d'ecrouissage
+   K = 0.75*GF/D
+   C = 0.375*GF*D
+   M = 1.5*E*GF/(D*FT**2)
+
+   if M < P+2 :
+     UTMESS('F','COMPOR1_85',valr=(float(M),float(P)))
 
 
-def defi_mater_gc_ops(self,MAZARS,ACIER,REGLE,**args):
+ # Parametres de la fonction seuil
+   if FC/FT < 5.83 :
+     UTMESS('F', 'COMPOR1_86', valr=(float(FC)/float(FT),) )
+   (sig0,tau) = Ident_Endo_Fiss_Exp(FT,FC)
+
+   
+ # Parametres pour DEFI_MATERIAU    
+   mclef = {
+     'ELAS':            {'E':E, 'NU':NU},
+     'ENDO_FISS_EXP':   {'M':M,'P':P,'Q':Q,'K':K,'TAU':tau,'SIG0':sig0,'COEF_RIGI_MINI':CRM},
+     'NON_LOCAL':       {'C_GRAD_VARI':C, 'PENA_LAGR':1.E3*K},
+     }
+   
+   mclef['INFO'] = 1
+   if 'INFO' in args: mclef['INFO'] = args['INFO']
+
+      
+   return mclef
+   
+
+def defi_mater_gc_ops(self,MAZARS,ACIER,ENDO_FISS_EXP,REGLE,**args):
    """
    C'est : soit ACIER soit MAZARS
    """
@@ -207,5 +313,6 @@ def defi_mater_gc_ops(self,MAZARS,ACIER,REGLE,**args):
    if ( REGLE == 'EC2'):
       if ( MAZARS != None ): mclef = Mazars_Unil(MAZARS[0],args)
       if ( ACIER  != None ): mclef = Acier_Cine_Line(ACIER[0],args)
+   if (ENDO_FISS_EXP != None): mclef = Endo_Fiss_Exp(ENDO_FISS_EXP[0],args)
    # Définition du matériau
    Materiau = DEFI_MATERIAU(**mclef)

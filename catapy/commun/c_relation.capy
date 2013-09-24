@@ -91,6 +91,7 @@ def C_RELATION( COMMAND ):
                                         "ELAS_GONF",
                                         "ELAS_HYPER",
                                         "ENDO_CARRE",
+                                        "ENDO_FISS_EXP",
                                         "ENDO_FRAGILE",
                                         "ENDO_HETEROGENE",
                                         "ENDO_ISOT_BETON",

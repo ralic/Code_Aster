@@ -636,10 +636,11 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                     nvi, dsidep, codret)
     case (57)
         call lc0057(fami, kpg, ksp, ndim, imate,&
-                    compor, crit, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
+                compor, crit, instam, instap, neps,&
+                epsm, deps, nsig, sigm, vim,&
+                option, angmas, sigp, vip, nwkin,&
+                wkin, typmod, icomp, nvi, ndsde,&
+                dsidep, nwkout, wkout, codret)
     case (58)
         call lc0058(fami, kpg, ksp, ndim, imate,&
                     compor, crit, instam, instap, epsm,&

@@ -4,7 +4,7 @@ subroutine lc0046(fami, kpg, ksp, ndim, imate,&
                   option, angmas, sigp, vip, nwkin,&
                   wkin, typmod, icomp, nvi, ndsde,&
                   dsidep, nwkout, wkout, codret)
-!
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,9 @@ subroutine lc0046(fami, kpg, ksp, ndim, imate,&
     implicit none
 #include "asterfort/lcesgv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lcquma.h"
+#include "asterfort/lcquga.h"
+
     integer :: imate, ndim, codret, kpg, ksp, neps, nsig, ndsde, nwkin, nwkout
     integer :: icomp, nvi
     real(kind=8) :: wkin(nwkin), wkout(nwkout), crit(*)
@@ -54,16 +57,15 @@ subroutine lc0046(fami, kpg, ksp, ndim, imate,&
 !             DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !
 ! ----------------------------------------------------------------------
-!
-!     FORMULATION NON-LOCALE A GRADIENT D'ENDOMMAGEMENT
+
+!   FORMULATION NON-LOCALE A GRADIENT D'ENDOMMAGEMENT
     if (typmod(2) .eq. 'GRADVARI') then
 !
-        call lcesgv(fami, kpg, ksp, neps, typmod,&
-                    option, imate, epsm, deps, vim,&
-                    nint(crit(1)), crit(3), sigp, vip, dsidep,&
-                    codret)
+        call lcesgv(fami, kpg, ksp, neps, typmod, option, imate, lcquma, lcquga, &
+                    epsm, deps, vim, .false., nint(crit(1)), crit(3), &
+                    sigp, vip, dsidep,codret)
 !
-!     ENDO_SCALAIRE N'EST PAS DISOPNIBLE POUR D'AUTRE FORMULATIONS
+!   ENDO_SCALAIRE N'EST PAS DISOPNIBLE POUR D'AUTRE FORMULATIONS
     else
 !
         call utmess('F', 'COMPOR1_66')

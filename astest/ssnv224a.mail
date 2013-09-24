@@ -1,0 +1,67 @@
+ TITRE
+VE-09-AVRI-2010 11:41:54                                                        
+ FINSF
+ %
+ COOR_2D
+ N1    0 0
+ N2    2 0
+ N3    2 2
+ N4    0 2
+ N5    1 0
+ N6    2 1
+ N7    1 2
+ N8    0 1
+ FINSF
+ %
+ %
+ QUAD8   
+ M1       N1       N2       N3       N4       N5       N6       N7      
+          N8      
+ FINSF
+ %
+ GROUP_NO
+ G00     
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ G20     
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ G22     
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ G02     
+ N4      
+ FINSF
+ %
+ GROUP_NO
+ G10     
+ N5      
+ FINSF
+ %
+ GROUP_NO
+ G21     
+ N6      
+ FINSF
+ %
+ GROUP_NO
+ G12     
+ N7      
+ FINSF
+ %
+ GROUP_NO
+ G01     
+ N8      
+ FINSF
+ %
+ GROUP_MA
+ MATIERE 
+ M1      
+ FINSF
+ %
+ FIN

@@ -424,4 +424,19 @@ Comportement  %(k1)s : le paramètre %(k2)s devrait rester positif. Il vaut actu
 Conseils: modifiez sa valeur dans CIN1_CHAB / CIN2_CHAB.
 """),
 
+85 : _(u"""
+La largeur de bande est trop grande par rapport à la longueur de la zone cohésive si bien que
+m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.
+"""),
+
+86 : _(u"""
+Le ratio FC/FT (%(r1)E) est inférieur à 5.83 (valeur limite pour le modèle ENDO_FISS_BETON).
+"""),
+
+87 : _(u"""
+L'identification numérique des paramètres SIG0 et TAU à partir de FT et FC a échoué : valeurs exotiques ?
+"""),
+
+
+
 }

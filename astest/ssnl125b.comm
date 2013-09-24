@@ -1,0 +1,279 @@
+# -*- coding: utf-8 -*-
+# TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE A GRADIENT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+
+E  = 30000.
+NU = 0.0
+ft = 3.0
+fc = 30.0  # pour info
+Gf = 0.1
+D  = 50.
+p  = 1.5
+
+
+
+
+DEBUT(CODE=_F(NOM='SSNL125C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
+      MESURE_TEMPS=_F(MOYENNE='NON'))
+
+# -----------------------------------------------------
+#                 MAILLAGE ET MODELE
+# -----------------------------------------------------
+
+MA =  LIRE_MAILLAGE(FORMAT='MED')
+
+# ytest1 et ytest2 : ordonnees des points auxquels on releve les grandeurs testees
+
+ytest1 = -7.5
+ytest2 =  7.5
+
+DEFI_GROUP(reuse         = MA,
+           MAILLAGE      = MA,
+           CREA_GROUP_NO = (_F(GROUP_MA = 'MATIERE'),
+                            _F(OPTION = 'ENV_SPHERE',
+                               NOM = 'NO1',
+                               POINT = (0.,ytest1),
+                               RAYON = (1.e-5),
+                               PRECISION=(1.e-5)),
+                            _F(OPTION = 'ENV_SPHERE',
+                               NOM = 'NO2',
+                               POINT = (0.,ytest2),
+                               RAYON = (1.e-5),
+                               PRECISION=(1.e-5)),
+                            _F(NOM = 'NOTEST',
+                               UNION = ('NO1','NO2')),
+
+                            ))
+
+DEFI_GROUP(reuse         = MA,
+           MAILLAGE      = MA,
+           DETR_GROUP_NO = (_F(NOM = 'NO1'),
+                            _F(NOM = 'NO2')))
+
+MO = AFFE_MODELE(MAILLAGE = MA,
+                 AFFE     = _F(GROUP_MA     = 'MATIERE',
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = 'AXIS_GRAD_VARI'),
+                 PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+
+# -----------------------------------------------------
+#                  PARAMETRES MATERIAU
+# -----------------------------------------------------
+
+
+# DEFINITION DU BETON 
+FRAG = DEFI_MATER_GC(
+  ENDO_FISS_EXP = _F(
+    E  = E,
+    NU = NU,
+    FT = ft,
+    GF = Gf,
+    FC = fc,
+    P  = 1.5,
+    LARG_BANDE = 2*D,
+    ),
+  )
+    
+
+CHMAT = AFFE_MATERIAU(MAILLAGE = MA,
+                      AFFE     = (_F(GROUP_MA = 'MATIERE', MATER = FRAG)))
+
+# -----------------------------------------------------
+#                DISCRETISATION EN "TEMPS"
+# -----------------------------------------------------
+
+# -- eps1 t.q. endommagement a l'infini = 0.20 :
+eps1 = 2.70000000000000e-04
+
+# -- eps2 t.q. endommagement a l'infini = 0.50 :
+eps2 = 7.34846922834953e-04
+
+# -- eps3 t.q. endommagement a l'infini = 0.99 :
+eps3 = 1.10464444958548e-02
+
+INSTANTS = DEFI_LIST_REEL(DEBUT      = 0.,
+                          INTERVALLE = (_F(JUSQU_A = eps1, NOMBRE =1),
+                                        _F(JUSQU_A = eps2, NOMBRE =1),
+                                        _F(JUSQU_A = eps3, NOMBRE =1)))
+
+RAMPE = DEFI_FONCTION(NOM_PARA = 'INST',
+                      VALE     = (0.,0., 1.,1.))
+
+# -----------------------------------------------------
+#                    CHARGEMENT
+# -----------------------------------------------------
+
+ZERO = DEFI_CONSTANTE(VALE = 0)
+
+PROFIL = DEFI_FONCTION(NOM_PARA    = 'Y',
+                       VALE        = (-125.,0.,0.,0.,250.,250.),
+                       PROL_GAUCHE = 'CONSTANT',
+                       PROL_DROITE = 'LINEAIRE')
+
+CINE = AFFE_CHAR_MECA_F(MODELE   = MO,
+                        DDL_IMPO = _F(GROUP_NO = 'MATIERE',
+                                      DX = ZERO,
+                                      DY = PROFIL))
+
+# -----------------------------------------------------
+#                CALCUL NON LINEAIRE
+# -----------------------------------------------------
+
+EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
+   
+                                      SYME = 'OUI'),
+                     MODELE      = MO,
+                     CHAM_MATER  = CHMAT,
+                     EXCIT       = (_F(CHARGE = CINE,
+                                      FONC_MULT = RAMPE)),
+                     COMPORTEMENT= _F(RELATION = 'ENDO_FISS_EXP',
+                                     DEFORMATION = 'PETIT',
+                                     ),
+                     INCREMENT   = _F(LIST_INST = INSTANTS),
+                     NEWTON      = _F(MATRICE = 'TANGENTE',
+                                     REAC_INCR = 1,
+                                     REAC_ITER = 1),
+                     CONVERGENCE = _F(ITER_GLOB_MAXI = 20,
+                                      RESI_REFE_RELA = 1.e-6,
+                                      SIGM_REFE = ft,
+                                      LAGR_REFE =Gf/D,
+                                      VARI_REFE = 1.,
+                                      ))
+
+# -----------------------------------------------------
+#    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS
+# -----------------------------------------------------
+
+EVOL=CALC_CHAMP(reuse=EVOL,
+                RESULTAT=EVOL,
+                CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO'),
+                VARI_INTERNE=('VARI_ELNO','VARI_NOEU'));
+
+# -----------------------------------------------------
+#     EXTRACTION EN Y = ytest1 ET Y = ytest2
+# -----------------------------------------------------
+
+RESU = MACR_LIGN_COUPE(RESULTAT   = EVOL,
+                       NOM_CHAM   = 'VARI_NOEU',
+                       LIGN_COUPE = _F(TYPE = 'GROUP_NO',
+                                       GROUP_NO = 'NOTEST'))
+
+# -----------------------------------------------------
+#      COMPARAISON AVEC LES VALEURS DE REFERENCE
+# -----------------------------------------------------
+
+# -- references en ytest1 et ytest2 a l'instant eps1 :
+valref11 = 1.93274688119012e-02
+valref12 = 1.41846675324338e-01
+
+# -- references en ytest1 et ytest2 a l'instant eps2 :
+valref21 = 1.39107889370765e-01
+valref22 = 3.80008828951670e-01
+
+# -- references en ytest1 et ytest2 a l'instant eps3 :
+valref31 = 6.14240950943351e-01
+valref32 = 9.77312427816067e-01
+
+prec     = 2.e-03
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.E-3,
+           VALE_CALC=0.019334781,
+           VALE_REFE=0.019327468811901199,
+           NOM_PARA='V1',
+           TABLE=RESU,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=2.7E-4,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=-7.5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.E-3,
+           VALE_CALC=0.141975480,
+           VALE_REFE=0.14184667532433801,
+           NOM_PARA='V1',
+           TABLE=RESU,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=2.7E-4,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=7.5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.E-3,
+           VALE_CALC=0.139227327,
+           VALE_REFE=0.13910788937076499,
+           NOM_PARA='V1',
+           TABLE=RESU,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=7.3484692283495303E-4,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=-7.5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.E-3,
+           VALE_CALC=0.380279954,
+           VALE_REFE=0.38000882895166999,
+           NOM_PARA='V1',
+           TABLE=RESU,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=7.3484692283495303E-4,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=7.5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.E-3,
+           VALE_CALC=0.615183197,
+           VALE_REFE=0.61424095094335096,
+           NOM_PARA='V1',
+           TABLE=RESU,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=0.011046444495854801,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=-7.5,),
+                   ),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=2.E-3,
+           VALE_CALC=0.977966470,
+           VALE_REFE=0.97731242781606698,
+           NOM_PARA='V1',
+           TABLE=RESU,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=0.011046444495854801,),
+                   _F(NOM_PARA='COOR_Y',
+                      VALE=7.5,),
+                   ),
+           )
+
+IMPR_TABLE(TABLE = RESU,
+           FORMAT_R='E12.14')
+
+
+
+FIN()

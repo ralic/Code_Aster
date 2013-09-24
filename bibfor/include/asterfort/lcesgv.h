@@ -15,26 +15,32 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
-                      option, mat, epsm, deps, vim,&
-                      itemax, precvg, sig, vip, dsidep,&
-                      iret)
-        integer :: neps
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+
+interface 
+    subroutine lcesgv(fami, kpg, ksp, neps, typmod, option, mat, lccrma, lcesga, epsm,&
+                      deps, vim, fige, itemax, precvg,&
+                      sig, vip, dsidep, iret)
+        interface
+        subroutine lccrma(mat, fami, kpg, ksp, poum)
+            integer,intent(in) :: mat, kpg, ksp
+            character(len=1),intent(in):: poum
+            character(len=*),intent(in) :: fami
+        end subroutine lccrma
+
+        subroutine lcesga(mode, eps, gameps, dgamde, itemax, precvg, iret)
+            integer,intent(in) :: mode, itemax
+            real(kind=8),intent(in) :: eps(6), precvg
+            integer,intent(out):: iret
+            real(kind=8),intent(out):: gameps, dgamde(6)
+        end subroutine lcesga
+        end interface
+
+        logical :: fige
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: mat
-        real(kind=8) :: epsm(neps)
-        real(kind=8) :: deps(neps)
-        real(kind=8) :: vim(*)
-        integer :: itemax
-        real(kind=8) :: precvg
-        real(kind=8) :: sig(neps)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: dsidep(neps, neps)
-        integer :: iret
+        character(len=*) :: fami
+        integer :: neps, mat, iret, kpg, ksp, itemax
+        real(kind=8) :: epsm(neps), deps(neps), vim(*), precvg
+        real(kind=8) :: vip(*), sig(neps), dsidep(neps, neps)
     end subroutine lcesgv
-end interface
+end interface 

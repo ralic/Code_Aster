@@ -15,10 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+
+interface 
     function lcesvf(mode, a)
-        integer :: mode
-        real(kind=8) :: a
+        integer,intent(in) :: mode
+        real(kind=8),intent(in) :: a
         real(kind=8) :: lcesvf
     end function lcesvf
-end interface
+end interface 

@@ -23,7 +23,7 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
    UIinfo={"groupes":("Modélisation",) },
    fr="Définir des lois matériaux spécifique au Génie Civil",
    #
-   regles = (UN_PARMI('MAZARS','ACIER',), ),
+   regles = (UN_PARMI('MAZARS','ACIER','ENDO_FISS_EXP'), ),
    #
    REGLE =SIMP(statut='f',typ='TXM',     into=('EC2',),     defaut='EC2'),
    # ============================================================================
@@ -69,6 +69,27 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
       EPSI_LIM       =SIMP(statut='f',typ='R',  fr="Déformation limite, post-traitement"),
    ),
    # ============================================================================
+   ENDO_FISS_EXP       =FACT(statut= 'f',max= 1,
+      fr="Définir les paramètres matériaux du béton pour la loi ENDO_FISS_EXP",
+      regles = (
+        UN_PARMI('FT','FT_FENDAGE'),
+        UN_PARMI('P','DSIG_DU'),
+        EXCLUS('Q','Q_REL'),
+        ),
+      E              =SIMP(statut='o',typ='R',  val_min=0.0E+0,                     fr="Module d'Young"),
+      NU             =SIMP(statut='o',typ='R',  val_min=0.0E+0, val_max=0.5E+0,     fr="Coefficient de poisson"),
+      FT             =SIMP(statut='f',typ='R',  val_min=0.0E+0                ,     fr="Limite en traction simple"),
+      FT_FENDAGE     =SIMP(statut='f',typ='R',  val_min=0.0E+0                ,     fr="Limite en traction obtenue via un essai brésilien"),
+      FC             =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,     fr="Limite en compression simple"),
+      GF             =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,     fr="Energie de fissuration"),
+      P              =SIMP(statut='f',typ='R',  val_min=1.0E+0                ,     fr="Parametre dominant de la loi cohésive asymptotique"),
+      DSIG_DU        =SIMP(statut='f',typ='R',  val_min=1.102658              ,     fr="Pente initiale (au signe pres) de la loi cohesive asymptotique"),
+      Q              =SIMP(statut='f',typ='R',  val_min=0.0E+0                ,     fr="Parametre secondaire de la loi cohesive asymptotique"),
+      Q_REL          =SIMP(statut='f',typ='R',  val_min=0.0E+0, val_max=1.0   ,     fr="Parametre Q exprime de maniere relative par rapport a Qmax(P)"),
+      LARG_BANDE     =SIMP(statut='o',typ='R',  val_min=0.0E+0                ,     fr="Largeur de bande d'endommagement (2*D)"),
+      COEF_RIGI_MINI =SIMP(statut='f',typ='R',  val_min=0.0, defaut = 0.0     ,     fr="Rigidite minimale dans la matrice tangente"),
+   ),
+   # ============================================================================
    INFO        =SIMP(statut='f',typ='I',     into=(1,2,),     defaut=1),
    RHO         =SIMP(statut='f',typ='R',     fr="Masse volumique"),
    ALPHA       =SIMP(statut='f',typ='R',     fr="Coefficient de dilatation"),
@@ -76,3 +97,4 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
    AMOR_BETA   =SIMP(statut='f',typ='R'),
    AMOR_HYST   =SIMP(statut='f',typ='R'),
 )
+

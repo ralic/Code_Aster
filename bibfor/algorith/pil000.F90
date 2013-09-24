@@ -21,15 +21,22 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
 !
     implicit none
 #include "asterc/r8gaem.h"
+#include "asterfort/lcmfbo.h"
+#include "asterfort/lcmfga.h"
+#include "asterfort/lcmfma.h"
+#include "asterfort/lcqubo.h"
+#include "asterfort/lcquga.h"
+#include "asterfort/lcquma.h"
 #include "asterfort/pidegv.h"
 #include "asterfort/pieigv.h"
 #include "asterfort/piesgv.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: typmod(*)
-    character(len=16) :: compor(*), typilo
-    integer :: neps, mat
-    real(kind=8) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax
-    real(kind=8) :: vim(*), sigm(neps), copilo(2, 2)
+    character(len=8),intent(in) :: typmod(*)
+    character(len=16),intent(in) :: compor(*), typilo
+    integer,intent(in) :: neps, mat
+    real(kind=8),intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax
+    real(kind=8),intent(in) :: vim(*), sigm(neps)
+    real(kind=8),intent(out) :: copilo(2, 2)
 !
 ! ----------------------------------------------------------------------
 !     PILOTAGE PRED_ELAS : BRANCHEMENT SELON COMPORTEMENT
@@ -47,39 +54,38 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
 ! IN  ETAMAX  BORNE SUP DU PILOTAGE (SI UTILE)               (PRED_ELAS)
 ! OUT COPILO  COEFFICIENT DE PILOTAGE : F := A0+A1*ETA = TAU
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
+!
 !
 ! MODELISATION A GRADIENT DE VARIABLES INTERNES
-    if (typmod(2) .eq. 'GRADVARI') then
-!
-!      PILOTAGE 'DEFORMATION'
-        if (typilo .eq. 'DEFORMATION') then
-            call pidegv(neps, tau, epsm, epsp, epsd,&
-                        copilo)
-!
-!      PILOTAGE 'PRED_ELAS'
-        else
-            if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) then
-                call utmess('F', 'MECANONLINE_60', sk=compor(1))
-            endif
-!
-            if (compor(1) .eq. 'ENDO_SCALAIRE') then
-                call piesgv(neps, tau, mat, vim, epsm,&
-                            epsp, epsd, typmod(1), etamin, etamax,&
-                            copilo)
-!
-            else if (compor(1).eq.'ENDO_ISOT_BETON') then
-                call pieigv(neps, tau, mat, vim, epsm,&
-                            epsp, epsd, typmod(1), etamin, etamax,&
-                            copilo)
-!
-            else
-                call utmess('F', 'MECANONLINE_59')
-            endif
-!
-        endif
-    else
+    if (typmod(2) .ne. 'GRADVARI') &
         call utmess('F', 'MECANONLINE_61', sk=typmod(2))
+!
+!
+! PILOTAGE 'DEFORMATION'
+    if (typilo .eq. 'DEFORMATION') then
+        call pidegv(neps, tau, epsm, epsp, epsd, copilo)
+!
+!
+! PILOTAGE 'PRED_ELAS'
+    else
+        if (etamin .eq. -r8gaem() .or. etamax .eq. r8gaem()) &
+            call utmess('F', 'MECANONLINE_60', sk=compor(1))
+!
+        if (compor(1) .eq. 'ENDO_SCALAIRE') then
+            call piesgv(neps, tau, mat, lcquma, vim, epsm, epsp, epsd, typmod, lcquga,&
+                        etamin, etamax, lcqubo, copilo)
+!
+        else if (compor(1).eq.'ENDO_FISS_EXP') then
+            call piesgv(neps,tau,mat,lcmfma,vim,epsm,epsp,epsd,typmod,lcmfga,etamin,etamax, &
+                        lcmfbo,copilo)
+!
+        else if (compor(1).eq.'ENDO_ISOT_BETON') then
+            call pieigv(neps, tau, mat, vim, epsm, epsp, epsd, typmod, etamin, etamax, copilo)
+!
+        else
+            call utmess('F', 'MECANONLINE_59')
+        endif
+!
     endif
 !
 end subroutine

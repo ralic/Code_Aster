@@ -119,11 +119,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 ! --- MODELE X-FEM AVEC CONTACT ?
 !
     call jeexin(modele(1:8)//'.XFEM_CONT', ier)
-    if (ier .eq. 0) then
-        lcontx = .false.
-    else
-        lcontx = .true.
-    endif
+    lcontx = ier.ne.0
 !
 ! --- ON FAIT UN CALCUL DE PILOTAGE
 !
@@ -142,11 +138,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     else
         ASSERT(.false.)
     endif
-    if (nivdbg .ge. 2) then
-        debug = .true.
-    else
-        debug = .false.
-    endif
+    debug = nivdbg.ge.2
 !
 ! --- RECUPERATION DES DONNEES XFEM
 !
@@ -163,8 +155,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
-                lchout)
+    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -281,8 +272,8 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 ! --- LECTURE DES COMPOSANTES DU CHAM_ELEM_S
 !
     icmp = 0
-    do 100 ma = 1, nbma
-        do 200 pt = 1, nbpt
+    do ma = 1, nbma
+        do pt = 1, nbpt
             call cesexi('C', jcesd, jcesl, ma, pt,&
                         1, 1, ja0)
             call cesexi('C', jcesd, jcesl, ma, pt,&
@@ -313,24 +304,27 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
                 if (zr(jcesv-1 + ja4) .ne. r8vide()) then
 ! ---         A T ON REMPLI CODE-RETOUR ? OUI -> PAS DE SOLUTION
                     pilcvg = 1
-                    goto 9999
+                    goto 999
                 endif
             endif
 !
 ! ---     COEFFICIENTS DE LA OU DES DROITES
 !
-            if (ja0 .ne. 0) then
-                zr(ja0a1 + icmp ) = zr(jcesv-1 + ja0)
-                zr(ja0a1 + icmp + 1) = zr(jcesv-1 + ja1)
-                icmp = icmp+2
-                if (zr(jcesv-1 + ja2) .ne. r8vide()) then
-                    zr(ja0a1 + icmp ) = zr(jcesv-1 + ja2)
-                    zr(ja0a1 + icmp + 1) = zr(jcesv-1 + ja3)
+            if (ja0.ne.0) then
+                if (zr(jcesv-1 + ja0).ne.r8vide()) then
+                    zr(ja0a1 + icmp    ) = zr(jcesv-1 + ja0)
+                    zr(ja0a1 + icmp + 1) = zr(jcesv-1 + ja1)
                     icmp = icmp+2
+                    if (zr(jcesv-1 + ja2).ne.r8vide()) then
+                        zr(ja0a1 + icmp )    = zr(jcesv-1 + ja2)
+                        zr(ja0a1 + icmp + 1) = zr(jcesv-1 + ja3)
+                        icmp = icmp+2
+                    endif
                 endif
             endif
-200      continue
-100  end do
+200         continue
+        end do
+    end do
 !
     npg = icmp / 2
 !
@@ -342,7 +336,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
         pilcvg = 1
     endif
 !
-9999  continue
+999  continue
 !
     call jedema()
 end subroutine

@@ -15,16 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function lcesrf(am, weps, r, v, prec,&
-                    itemax, iret)
-        real(kind=8) :: am
-        real(kind=8) :: weps
-        real(kind=8) :: r
-        real(kind=8) :: v
-        real(kind=8) :: prec
-        integer :: itemax
-        integer :: iret
+
+interface 
+    function lcesrf(am, gameps, r, v, prec, itemax, iret)
         real(kind=8) :: lcesrf
+        integer :: itemax, iret
+        real(kind=8) :: gameps, r, v, am, prec
     end function lcesrf
-end interface
+end interface 
