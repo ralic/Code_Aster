@@ -179,8 +179,8 @@ extern void DEFSSPSPPSPPP(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE
 #define CALL_AFFICH(a,b) CALLSS(AFFICH,affich,a,b)
 extern void DEFSS(AFFICH,affich,char *,STRING_SIZE,char *,STRING_SIZE);
 
-#define CALL_UTMESS(cod, idmess) CALLSS(UTMESS, utmess, cod, idmess)
-extern void DEFSS(UTMESS, utmess, char *, STRING_SIZE, char *, STRING_SIZE);
+#define CALL_UTMESS(cod, idmess) CALLSS(UTMESS_CWRAP, utmess_cwrap, cod, idmess)
+extern void DEFSS(UTMESS_CWRAP, utmess_cwrap, char *, STRING_SIZE, char *, STRING_SIZE);
 
 /* particulier car on fixe les longueurs des chaines valk */
 #define VALK_SIZE 128
