@@ -99,6 +99,8 @@ previous_errors = set([
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
     'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx',
     'xxxxxx.py',
+    # pour comport2 qui écrit un morceau de fichier de commandes
+    'EXZ', 'EYZ', 'EZZ',
     ])
 
 current_errors = checker.get_unknown_words()
@@ -147,9 +149,9 @@ tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=294,
+           VALE_CALC_I=297,
            VALE_REFE_I=0,
-           PRECISION=300,
+           PRECISION=297,
            NOM_PARA='NBWARN',
            TABLE=tabw,
            )
