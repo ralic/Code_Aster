@@ -296,7 +296,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !       -----------------------------------------------------
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
-         if (.not.lpb13) call amumpu(1, 'C', kxmps, usersm, ibid,lbid, K24bid, nbfact)
+         if (.not.lpb13) call amumpu(1, 'C', kxmps, usersm, ibid,lbid, k24bid, nbfact)
 
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 ! ---   ASSOCIEE

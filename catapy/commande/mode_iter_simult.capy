@@ -62,7 +62,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45, sd_prod= mode_iter_simult_
          b_sorensen =BLOC(condition = "METHODE == 'SORENSEN'",
            PREC_SOREN      =SIMP(statut='f',typ='R',defaut= 0.E+0,val_min=0.E+0 ),
            NMAX_ITER_SOREN =SIMP(statut='f',typ='I',defaut= 20,val_min=0 ),
-           PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717,val_min=0.E+0 ),
+           PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717),
          ),
          b_qz =BLOC(condition = "METHODE == 'QZ'",
            TYPE_QZ      =SIMP(statut='f',typ='TXM',defaut="QZ_SIMPLE",into=("QZ_QR","QZ_SIMPLE","QZ_EQUI") ),

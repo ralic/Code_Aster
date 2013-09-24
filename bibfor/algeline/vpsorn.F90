@@ -104,7 +104,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 #include "asterfort/mrmult.h"
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vpgskp.h"
+#include "asterfort/vpgsmm.h"
 #include "asterfort/vpordo.h"
 !
     integer :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq), neqact
@@ -179,7 +179,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     call dnaupd(ido, bmat, nbeq, which, nfreq,&
                 tolsor, resid, nbvect, vect, nbeq,&
                 iparam, ipntr, workd, workl, lonwl,&
-                info, neqact, alpha)
+                info, neqact, abs(alpha))
 !
 ! NOMBRE DE MODES CONVERGES
     nconv = iparam(5)
@@ -346,8 +346,8 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
                 nbeq)
 !
 ! RE-ORTHONORMALISATION SUIVANT IGS PAR RAPPORT A B
-    call vpgskp(nbeq, nconv, vect, alpha, lmasse,&
-                1, vaux, ddlexc, workv)
+    call vpgsmm(nbeq, nconv, vect, alpha, lmasse,&
+                1, vaux, ddlexc, workv, dsor, omecor)
 !
 ! FIN DE VPSORN
 !

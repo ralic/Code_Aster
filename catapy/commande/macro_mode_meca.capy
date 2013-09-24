@@ -52,7 +52,7 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
          b_sorensen =BLOC(condition = "METHODE == 'SORENSEN'",
            PREC_SOREN      =SIMP(statut='f',typ='R',defaut= 0.E+0,val_min=0.E+0 ),
            NMAX_ITER_SOREN =SIMP(statut='f',typ='I',defaut= 20,val_min=0 ),
-           PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717,val_min=0.E+0 ),
+           PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717),
          ),
 
          OPTION          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("MODE_RIGIDE","SANS") ),

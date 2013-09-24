@@ -397,7 +397,7 @@ subroutine op0045()
         call getvr8(' ', 'PREC_SOREN', scal=tolsor, nbret=l)
         call getvis(' ', 'NMAX_ITER_SOREN', scal=maxitr, nbret=l)
         call getvr8(' ', 'PARA_ORTHO_SOREN', scal=alpha, nbret=l)
-        if ((alpha.lt.1.2d0*eps) .or. (alpha.gt.0.83d0-eps)) then
+        if ((abs(alpha).lt.1.2d0*eps) .or. (abs(alpha).gt.0.83d0-eps)) then
             call utmess('E', 'ALGELINE2_64')
         endif
 !     --- RECUPERATION PARAM QZ ---
@@ -1157,7 +1157,7 @@ subroutine op0045()
                         tolsor, zc(lvec), zc(lresid), zc(lworkd), zc(lworkl),&
                         lonwl, zl(lselec), zc(ldsor), sigma, zc(laux),&
                         zc(lworkv), zr( lworkr), zi(lprod), zi(lddl), neqact,&
-                        maxitr, ifm, niv, priram, alpha,&
+                        maxitr, ifm, niv, priram, abs(alpha),&
                         nconv, flage, solveu)
             npivot = nblagr
             call rectfc(nconv, nconv, sigma, npivot, nblagr,&
@@ -1378,7 +1378,7 @@ subroutine op0045()
                                 zr(lworkd), zr(lworkl), lonwl, zl(lselec), zr( ldsor),&
                                 zr(lsurdr), zr(ldiagr), sigma, zr(laux), zr(lworkv),&
                                 zi(lprod), zi(lddl), neqact, maxitr, ifm,&
-                                niv, priram, alpha, nconv, flage,&
+                                niv, priram, abs(alpha), nconv, flage,&
                                 zr(laur), zc(lauc), zc(laul), solveu)
                     nfreq = nconv / 2
                     call wp3vec(appr, optiof, nfreq, nconv, neq,&
@@ -1393,7 +1393,7 @@ subroutine op0045()
                                 nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd),&
                                 zc(lworkl), lonwl, zl(lselec), zc(ldsor), sigma,&
                                 zc(laux), zc(lworkv), zi(lprod), zi(lddl), neqact,&
-                                maxitr, ifm, niv, priram, alpha,&
+                                maxitr, ifm, niv, priram, abs(alpha),&
                                 nconv, flage, zc(lauc), zr(laur), solveu)
                     nfreq = nconv / 2
                     call wp4vec(nfreq, nconv, neq, sigma, zc(ldsor),&
@@ -1415,7 +1415,7 @@ subroutine op0045()
                             nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd),&
                             zc( lworkl), lonwl, zl(lselec), zc(ldsor), sigma,&
                             zc(laux), zc(lworkv), zi(lprod), zi(lddl), neqact,&
-                            maxitr, ifm, niv, priram, alpha,&
+                            maxitr, ifm, niv, priram, abs(alpha),&
                             nconv, flage, zc(lauc), zr(laur), solveu)
                 nfreq = nconv / 2
                 call wp5vec(optiof, nfreq, nconv, neq, zc(ldsor),&

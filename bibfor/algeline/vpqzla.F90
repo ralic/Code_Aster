@@ -104,7 +104,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 #include "asterfort/mcmult.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vpgskp.h"
+#include "asterfort/vpgsmm.h"
 #include "asterfort/vpordc.h"
 #include "asterfort/vpordo.h"
 #include "asterfort/wkvect.h"
@@ -1049,8 +1049,8 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                 call utmess(kmsg, 'ALGELINE5_66', ni=2, vali=vali)
             endif
         endif
-        call vpgskp(qrn, nconv, zr(lvec), alpha, lmasse,&
-                    2, zr(ivp1), ddlexc, zr(ivp2))
+       call vpgsmm(qrn, nconv, zr(lvec), alpha, lmasse,&
+                    2, zr(ivp1), ddlexc, zr(ivp2),zr(lvalpr),omecor)
 !
     else if ((.not.lc).and.((lnsm).or.(lnsr).or.(.not.lkr))) then
 ! ---- GENERALISE COMPLEXE SYM OU NON, REEL NON SYM

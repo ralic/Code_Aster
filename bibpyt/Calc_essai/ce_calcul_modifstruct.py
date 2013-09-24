@@ -349,6 +349,7 @@ class CalcEssaiModifStruct:
                                      MATR_MASS = __MPROJ,
                                      VERI_MODE = _F(SEUIL = 1.E-05,
                                                     STOP_ERREUR = 'OUI',),
+                                     PARA_ORTHO_SOREN=-0.717,
                                      CALC_FREQ = calc_freq)
         except aster.error,err :
             message = "ERREUR ASTER : " + mess.GetText('I',err.id_message, err.valk, err.vali, err.valr)
@@ -692,6 +693,7 @@ class CalcEssaiModifStruct:
                                          MATR_MASS = mcouple,
                                          VERI_MODE = _F( SEUIL = 1.E-05,
                                                          STOP_ERREUR = 'OUI',),
+                                         PARA_ORTHO_SOREN=-0.717,
                                          CALC_FREQ = calc_freq,);
             except aster.error,err :
                 message = "ERREUR ASTER : " + mess.GetText('I',err.id_message, err.valk, err.vali, err.valr)
