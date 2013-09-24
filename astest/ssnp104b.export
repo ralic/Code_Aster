@@ -1,4 +1,4 @@
-P time_limit 150
+P time_limit 250
 P memory_limit 256
 P testlist C
 F comm ssnp104b.comm D 1

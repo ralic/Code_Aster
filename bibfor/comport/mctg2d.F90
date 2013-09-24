@@ -84,13 +84,24 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
 !
 !***********************************************************************
 !
+! Spectral decomposition of the trial stress
+!
+! ITRI =  0 : TRI EN VALEUR RELATIVE
+!         1 : TRI EN VALEUR ABSOLUE
+!         2 : PAS DE TRI
+    itri  =2
+! IORDER =  0 : TRI PAR ORDRE CROISSANT
+!           1 : TRI PAR ORDRE DECROISSANT
+!           2 : PAS DE TRI
+    iorder=2
+!
 ! Initialize unit matrix = (1 0 0 1 0 1) for Jacobi
     call vecini(nmax, r0, t1)
     t1(1)=r1
     t1(4)=r1
     t1(6)=r1
 !
-!ALL MATINI(MMAX  ,MMAX  ,R0    ,EIGPRJ)
+!CALL MATINI(MMAX  ,MMAX  ,R0    ,EIGPRJ)
     call matini(mmax, mmax, r0, eigxpr)
 ! Matrix  TR = (SIXX SIXY SIYY) for Jacobi
 ! Produce EIGPRJ: Base Projection Matrix from initial base
